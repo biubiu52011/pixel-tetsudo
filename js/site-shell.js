@@ -45,7 +45,7 @@
       '<h1 class="pixel-title" data-i18n="app.title">ピクセル鉄道</h1></div></div></header>' +
       '<div class="lang-switcher-wrapper" data-site-shell="language">' +
       '<button id="langToggleBtn" class="lang-toggle-btn" title="Switch Language" aria-haspopup="listbox" aria-controls="langSwitcher" aria-expanded="false" aria-label="Switch language">' +
-      '<img src="../images/Language.png" alt="Language" class="lang-icon"></button>' +
+      '<img src="../images/language-globe.svg" alt="Language" class="lang-icon"></button>' +
       '<div id="langSwitcher" class="lang-switcher" role="listbox" aria-label="Select language"><div class="lang-options">' +
       '<button class="lang-btn active" data-lang="ja" data-code="JA" role="option" aria-selected="true">日本語</button>' +
       '<button class="lang-btn" data-lang="zh" data-code="ZH" role="option" aria-selected="false">中文</button>' +

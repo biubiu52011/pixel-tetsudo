@@ -144,7 +144,11 @@ function applyData(data, i18n) {
       if (v && v.en) window.EN_STATION_NAME_MAP[v.en] = jp;
     });
 
-    window.UNIFIED_LINES = data.lines || {};
+    // Railway-line icon PNGs are absent from this deployment. Use SVG code/color
+    // badges on display copies while leaving the cached source data unchanged.
+    window.UNIFIED_LINES = window.RailwayImageFallback
+      ? window.RailwayImageFallback.prepareLines(data.lines || {})
+      : (data.lines || {});
     
     // 旅游数据：全局景点池（不绑定车站）。
     // 锚点字段（station_coords / station_exits）以及旧的按车站分组
@@ -230,8 +234,8 @@ function applyData(data, i18n) {
       },
 
       // 线路查询。
-      getLine: function(id) { return data.lines[id] || null; },
-      getAllLines: function() { return data.lines; },
+      getLine: function(id) { return window.UNIFIED_LINES[id] || null; },
+      getAllLines: function() { return window.UNIFIED_LINES; },
       getLineStations: function(id) {
         var line = data.lines[id];
         return line ? line.stations || [] : [];
