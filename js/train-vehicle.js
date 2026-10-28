@@ -3622,9 +3622,9 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     }).filter(function(v,i,a){return a.findIndex(function(x){return x.label===v.label;})===i;});
     var allowCandidateArtwork=ctx.allowCandidateArtwork===true;
     var first=candidates.length===1?candidates[0]:null, candidate=first, icon='';
-    // 多候选计划不能因为候选车型恰好共用一张代表图就显示图片：
-    // 这仍然无法证明当前列车是哪一个车型。只有明确允许候选图的
-    // 运营号/计划规则，才可显示带 planned 标记的代表图。
+    // 单一候选可以直接投影其图库图。多候选只有在所有候选明确共用
+    // 同一张代表 PNG 时才显示该图；图片只是视觉代表，不会把
+    // representativeModel 写成某一个候选，也不会改变 PLANNED_CANDIDATES。
     if (first || allowCandidateArtwork) {
       candidate=first||candidates.find(function(v){return v.canonical&&
         (resolveVehicleArtwork(v.canonical.displayName,ctx.serviceDate)||v.canonical.asset||v.canonical.plannedAsset);});
@@ -3632,6 +3632,14 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       if (!candidate) return null;
       var asset=candidate.canonical&&(resolveVehicleArtwork(candidate.canonical.displayName,ctx.serviceDate)||candidate.canonical.asset||candidate.canonical.plannedAsset||"");
       icon=asset || '';
+    } else if (candidates.length > 1) {
+      var sharedAssets = candidates.map(function(v) {
+        return v.canonical && (resolveVehicleArtwork(v.canonical.displayName,ctx.serviceDate) ||
+          v.canonical.asset || v.canonical.plannedAsset || "");
+      });
+      if (sharedAssets.length && sharedAssets.every(function(v) { return !!v && v === sharedAssets[0]; })) {
+        icon = sharedAssets[0];
+      }
     }
     var plan={status:candidates.length===1?'PLANNED_MODEL':'PLANNED_CANDIDATES',
       models:candidates.map(function(v){return v.label;}),
