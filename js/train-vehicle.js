@@ -4171,33 +4171,41 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         (!p.vehicleFormationCandidates || !p.vehicleFormationCandidates.length)) {
       iconSrc = resolveVehicleArtwork(p.vehicleType) || "";
     }
-    // 上游运用号解析可以把实时列车缩小到一组有来源的车型，但不能在
-    // 多车型车队中伪造 EXACT。候选图片仍然应有可见的代表图，
-    // 否则 UI 会把“已经完成候选判定”的列车退回灰点，用户无法
-    // 区分“没有数据”和“有数据但车型仍待实体车号确认”。
-    // 这里仅取候选库给出的第一张稳定排序代表图，并用 planned
-    // 标记保留不确定性；不写回 vehicleType/identityStatus。
-    if (!iconSrc && p) {
-      var candidateArtwork = p.operationArtworkCandidates ||
-        (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || [];
-      if (Array.isArray(candidateArtwork)) {
-        for (var cai = 0; cai < candidateArtwork.length; cai++) {
-          var candidateAsset = candidateArtwork[cai] && candidateArtwork[cai].asset;
-          if (isGalleryPng(candidateAsset)) {
-            iconSrc = candidateAsset;
-            plannedMarker = true;
-            break;
-          }
+    // 运用号库只能把实时列车缩小到一个候选集合，不能把集合中的
+    // 第一张 PNG 冒充为当前编成。此前这里无条件取第一张候选图，
+    // 导致大江户线所有 A/B 运用都显示为 12-000 形，形成“自定义
+    // 图片失败”的假象。候选集合必须保留为候选状态；只有单一资产
+    // 或经过日期化编组规则确认时，才允许投影到车辆 PNG。
+    var candidateAssets = [];
+    var candidateArtwork = p && (p.operationArtworkCandidates ||
+      (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
+    if (!iconSrc && Array.isArray(candidateArtwork)) {
+      for (var cai = 0; cai < candidateArtwork.length; cai++) {
+        var candidateAsset = candidateArtwork[cai] && candidateArtwork[cai].asset;
+        if (isGalleryPng(candidateAsset) && candidateAssets.indexOf(candidateAsset) < 0) {
+          candidateAssets.push(candidateAsset);
         }
+      }
+      if (candidateAssets.length === 1 && p &&
+          (p.candidateArtworkConfirmedByDatedRule === true ||
+           p.vehicleIdentityStatus === "EXACT")) {
+        iconSrc = candidateAssets[0];
+        plannedMarker = true;
       }
     }
     if(!iconSrc&&vehiclePlan&&
-       (_issuedVehiclePlans.has(vehiclePlan) || vehiclePlan.allowCandidateArtwork===true)){
+       (_issuedVehiclePlans.has(vehiclePlan) || vehiclePlan.allowCandidateArtwork===true) &&
+       (vehiclePlan.status !== "PLANNED_CANDIDATES" ||
+        vehiclePlan.candidateArtworkConfirmedByDatedRule === true)){
       // 已确认车型若只有计划代表 PNG，也应展示该图；
       // 只标记为 planned，避免把代表图误报成实际编组照片。
       iconSrc=vehiclePlan.iconPath||'';plannedMarker=!!iconSrc;
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
+      if (!iconSrc && candidateAssets.length) {
+        return { kind: "candidate", iconSrc: "", planned: false,
+          candidateAssets: candidateAssets.slice() };
+      }
       return { kind: "unresolved", iconSrc: "" };
     }
     return { kind: "vehicle", iconSrc: iconSrc, planned: plannedMarker };
