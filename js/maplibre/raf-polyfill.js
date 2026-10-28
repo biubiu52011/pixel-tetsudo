@@ -1,1 +1,11 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò¢$böÇ–f–ÆÃ¢izZKBşKˆŞXúşŠxš^™Ú"&WVW7Dæ–ÖF–öäg&ÖRKˆŞŠznXùKÉ®XÚjÛ²ÖÆ–'&Rk‹.iù>[ê®xêş8 ¢6WEF–ÖV÷WBf×2š›Xª‚(˜‚cg>ûÉ¾yJh‹~zºò$bjÚ>[‹i{nhÈjÚNzÙnyZ^ûÈ…õ÷&ev÷&·2K‹¢G'VRXÛ>‹{>‹ø~ûÈ8"¢ğ¢†gVæ7F–öâ‚’°¢–b‡G—Vöbv–æF÷rç&WVW7Dæ–ÖF–öäg&ÖRÓÒvgVæ7F–öârÇÂv–æF÷råõ÷&ev÷&·2’°¢v–æF÷råõ÷&ev÷&·2ÒG'VS°¢v–æF÷rç&WVW7Dæ–ÖF–öäg&ÖRÒgVæ7F–öâ†6"’°¢&WGW&â6WEF–ÖV÷WB†gVæ7F–öâ‚’²6"‡W&f÷&Öæ6Rææ÷r‚’“²ÒÂb“°¢Ó°¢v–æF÷ræ6æ6VÄæ–ÖF–öäg&ÖRÒgVæ7F–öâ†–B’²6ÆV%F–ÖV÷WB†–B“²Ó°¢Ğ§Ò’‚“° 
+/* RAF polyfill: æ— å¤´/ä¸å¯è§é¡µé¢ requestAnimationFrame ä¸è§¦å‘ä¼šå¡æ­» MapLibre æ¸²æŸ“å¾ªç¯ã€‚
+   setTimeout 16ms é©±åŠ¨ â‰ˆ 60fpsï¼›ç”¨æˆ·ç«¯ RAF æ­£å¸¸æ—¶æŒ‰æ­¤ç­–ç•¥ï¼ˆ__rafWorks ä¸º true å³è·³è¿‡ï¼‰ã€‚ */
+(function () {
+  if (typeof window.requestAnimationFrame !== 'function' || !window.__rafWorks) {
+    window.__rafWorks = true;
+    window.requestAnimationFrame = function (cb) {
+      return setTimeout(function () { cb(performance.now()); }, 16);
+    };
+    window.cancelAnimationFrame = function (id) { clearTimeout(id); };
+  }
+})();

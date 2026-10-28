@@ -1,4 +1,307 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò ¢¢—†VÂFWG7VFòÒ‹ùŠÎ™;îŠz>iéYš€¢¢jøşiÚ{«ş‹zşKÛşyJK‹Ni{b&W6öÇWF–öä6öçFW‡N8.‹ùŠÎ™;îKˆŞzØK¨â6æöæ–6ÂZéîKÙ>8 ¢¢ğ¢†gVæ7F–öâ‚’°¢'W6R7G&–7B#°¢f"ö–æ—F–Æ—¦VBÒfÇ6S°¢f"ö&÷VæF'”ÖÒ·Ó°¢f"ö'&æ6„ödÖÒ·Ó°¢f"öF—&V7EF‡&÷Vv‚Ò·Ó° ¢gVæ7F–öâ'V–ÆD–æFW†W2‚’°¢f"Æ–æW2Òv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"6÷'&–F÷'2Ò‡v–æF÷rå'VçF–ÖT6öæf–rÇÂ·Ò’å4U%d”4Uô4õ%$”Dõ%ôÄ”äU2ÇÂ·Ó°¢ö&÷VæF'”ÖÒ·Ó²ö'&æ6„ödÖÒ·Ó²öF—&V7EF‡&÷Vv‚Ò·Ó°¢ö&¦V7Bæ¶W—2†Æ–æW2’æf÷$V6‚†gVæ7F–öâ†Æ–æT–B’°¢f"Æ–æRÒÆ–æW5¶Æ–æT–EÒÇÂ·Ó°¢–b†Æ–æRæ'&æ6„öbbbÆ–æW5¶Æ–æRæ'&æ6„öeÒ’ö'&æ6„ödÖ¶Æ–æT–EÒÒÆ–æRæ'&æ6„öc°¢f"&÷VæF&–W2Ò'&’æ—4'&’†Æ–æRç6W'f–6T&÷VæF&–W2’òÆ–æRç6W'f–6T&÷VæF&–W2¢µÓ°¢ö&÷VæF'”Ö¶Æ–æT–EÒÒ·Ó°¢öF—&V7EF‡&÷Vv…¶Æ–æT–EÒÒµÓ°¢&÷VæF&–W2æf÷$V6‚†gVæ7F–öâ†&÷VæF'’’°¢–b‚&÷VæF'’ÇÂ&÷VæF'’æÆ–æT–BÇÂÆ–æW5¶&÷VæF'’æÆ–æT–EÒ’&WGW&ã°¢–b†6÷'&–F÷'5¶Æ–æT–EÒÇÂ6÷'&–F÷'5¶&÷VæF'’æÆ–æT–EÒ’&WGW&ã°¢f"¦ö–ç2Ò'&’æ—4'&’†&÷VæF'’æ†æF÷fW%7FF–öç2’ò&÷VæF'’æ†æF÷fW%7FF–öç2æf–ÇFW"„&ööÆVâ’¢µÓ°¢–b†¦ö–ç2æÆVæwF‚’°¢ö&÷VæF'”Ö¶Æ–æT–EÕ¶&÷VæF'’æÆ–æT–EÒÒ¦ö–ç2ç6Æ–6R‚“°¢öF—&V7EF‡&÷Vv…¶Æ–æT–EÒçW6‚†&÷VæF'’æÆ–æT–B“°¢Ğ¢Ò“°¢Ò“°¢ö–æ—F–Æ—¦VC×G'VS°¢Ğ ¢gVæ7F–öâ66÷&TWf–FVæ6R†Æ"—°¢f"3Ó°¢f"ÆÒ‡v–æF÷råTä”d”TEôÄ”äU2bgv–æF÷råTä”d”TEôÄ”äU5¶Ò—ÇÆçVÆÃ°¢f"Æ#Ò‡v–æF÷råTä”d”TEôÄ”äU2bgv–æF÷råTä”d”TEôÄ”äU5¶%Ò—ÇÆçVÆÃ°¢–b‚…öF—&V7EF‡&÷Vv…¶×ÇÅµÒ’æ–æFW„öb†"“ãÓ—2³Ó3°¢–b†ÆbfÆ"bfÆæ6öFRbfÆ"æ6öFRbfÆæ6öFSÓÓÖÆ"æ6öFR—2³Ò†Ææ÷W&F÷#ÓÓÖÆ"æ÷W&F÷"“ó#¢ÓS°¢f"6ÖÆbfÆç7FF–öç3öÆç7FF–öç3¥µÓ°¢f"6#ÖÆ"bfÆ"ç7FF–öç3öÆ"ç7FF–öç3¥µÓ°¢f"6WC×·ÒÇ63Ó°¢6æf÷$V6‚†gVæ7F–öâ‡‚—·6WE·…Ó×G'VS·Ò“°¢6"æf÷$V6‚†gVæ7F–öâ‡‚—¶–b‡6WE·…Ò—62²³·Ò“°¢–b‡63ã—2³Ó°¢&WGW&â3°¢Ğ ¢gVæ7F–öâ÷7FF–öä¶W’‡b—·f"Õ7G&–ær‡gÇÂ""’ç7Æ—B‚"â"“·&WGW&â·æÆVæwF‚Ó×ÇÂ"#·Ğ¢gVæ7F–öâ÷6W'f–6UGFW&ä–G2†Æ"—°¢f"Æ–æW3×v–æF÷råTä”d”TEôÄ”äU7ÇÇ·ÒÂ–G3×·Ó°¢¶Æ%Òæf÷$V6‚†gVæ7F–öâ†Æ–æT–B—°¢f"Æ–æSÖÆ–æW5¶Æ–æT–E×ÇÇ·Ó°¢„'&’æ—4'&’†Æ–æRç6W'f–6UGFW&ç2“öÆ–æRç6W'f–6UGFW&ç3¥µÒ’æf÷$V6‚†gVæ7F–öâ‡GFW&â—°¢f"ÖVÖ&W'3Ô'&’æ—4'&’‡GFW&âbgGFW&âæÆ–æT–G2“÷GFW&âæÆ–æT–G3¥µÓ°¢–b‡GFW&âbgGFW&âæ–BbfÖVÖ&W'2æ–æFW„öb†“ãÓbfÖVÖ&W'2æ–æFW„öb†"“ãÓ––G5·GFW&âæ–EÓ×G'VS°¢Ò“°¢Ò“°¢&WGW&âö&¦V7Bæ¶W—2†–G2’ç6÷'B‚“°¢Ğ¢gVæ7F–öâö†56W'f–6UGFW&ç2†Æ–æT–B—°¢f"Æ–æSÒ‡v–æF÷råTä”d”TEôÄ”äU7ÇÇ·Ò•¶Æ–æT–EÓ°¢&WGW&â†Æ–æRbd'&’æ—4'&’†Æ–æRç6W'f–6UGFW&ç2’bfÆ–æRç6W'f–6UGFW&ç2æÆVæwF‚“°¢Ğ¢gVæ7F–öâ÷6÷W&6UG&—¶W’‡b’°¢f"3Õ7G&–ær‡gÇÂ""“°¢–b‡2æ–æFW„öb‚&öGBåG&–åF–ÖWF&ÆS¢"“ÓÓÓ—&WGW&â2ç6Æ–6R‚&öGBåG&–åF–ÖWF&ÆS¢"æÆVæwF‚“°¢&WGW&â2æ–æFW„öb‚'7W&6S¥G&–å'Vã¢"“ÓÓÓò""¢3°¢Ğ¢gVæ7F–öâ÷F–ÖTÖ–â‡b—¶–b‚b—&WGW&âçVÆÃ·f"ÓÕ7G&–ær‡b’æÖF6‚‚õâ…ÆG³Ã'Ò“¢…ÆG³'Ò’ò“¶–b‚Ò—&WGW&âçVÆÃ·&WGW&â'6T–çB†Õ³ÒÃ’£c·'6T–çB†Õ³%ÒÃ“·Ğ¢gVæ7F–öâ÷6VvÖVçB‡GBÆÆ–æT–B—°¢f"Ò‡GBbgGE²&öGC§G&–åF–ÖWF&ÆTö&¦V7B%Ò—ÇÅµÓ²–b‚æÆVæwF‚—&WGW&âçVÆÃ°¢f"f—'7CÖ³×ÇÇ·ÒÂÆ7CÖ¶æÆVæwF‚Ó×ÇÇ·Ó°¢f"f—'7E7FF–öãÕ÷7FF–öä¶W’†f—'7E²&öGC¦FW'GW&U7FF–öâ%×ÇÆf—'7E²&öGC¦'&—fÅ7FF–öâ%×ÇÆf—'7E²&öGC§7FF–öâ%Ò“°¢f"Æ7E7FF–öãÕ÷7FF–öä¶W’†Æ7E²&öGC¦'&—fÅ7FF–öâ%×ÇÆÆ7E²&öGC¦FW'GW&U7FF–öâ%×ÇÆÆ7E²&öGC§7FF–öâ%Ò“°¢f"f—'7EF–ÖSÕ÷F–ÖTÖ–â†f—'7E²&öGC¦FW'GW&UF–ÖR%×ÇÆf—'7E²&öGC¦'&—fÅF–ÖR%Ò“°¢f"Æ7EF–ÖSÕ÷F–ÖTÖ–â†Æ7E²&öGC¦'&—fÅF–ÖR%×ÇÆÆ7E²&öGC¦FW'GW&UF–ÖR%Ò“°¢f"G&–äçVÖ&W#Õ7G&–ær‡GE²&öGC§G&–äçVÖ&W"%×ÇÇGE²&öGC§G&–â%×ÇÂ""“°¢f"6ÆVæF#Õ7G&–ær‡GE²&öGC¦6ÆVæF"%×ÇÂ""“°¢f"FW7F–æF–öç3×GE²&öGC¦FW7F–æF–öå7FF–öâ%Ó°¢–b‚'&’æ—4'&’†FW7F–æF–öç2’–FW7F–æF–öç3ÖFW7F–æF–öç3õ¶FW7F–æF–öç5Ó¥µÓ°¢f"FW7F–æF–öãÖFW7F–æF–öç2æÆVæwFƒõ÷7FF–öä¶W’†FW7F–æF–öç5³Ò“¢"#°¢f"–CÕ7G&–ær‡GE²$–B%×ÇÇGE²&÷vÃ§6ÖT2%×ÇÂ‚‡GE²&öGC§&–Çv’%×ÇÆÆ–æT–GÇÂ""’²'Â"·G&–äçVÖ&W"’“°¢f"6÷W&6T–CÕ÷6÷W&6UG&—¶W’‡GBå÷6÷W&6UG&—–GÇÇGE²&÷vÃ§6ÖT2%×ÇÇGE²$–B%Ò“°¢f"&Wf–÷W3Ô'&’æ—4'&’‡GBå÷&Wf–÷W5F–ÖWF&ÆT–G2“÷GBå÷&Wf–÷W5F–ÖWF&ÆT–G2æÖ…÷6÷W&6UG&—¶W’“¥µÓ°¢f"æW‡CÔ'&’æ—4'&’‡GBåöæW‡EF–ÖWF&ÆT–G2“÷GBåöæW‡EF–ÖWF&ÆT–G2æÖ…÷6÷W&6UG&—¶W’“¥µÓ°¢&WGW&â¶Æ–æT–C¦Æ–æT–BÆ–C¦–BÇ6÷W&6T–C§6÷W&6T–BÇ&Wf–÷W3§&Wf–÷W2ÆæW‡C¦æW‡BÀ¢G&–äçVÖ&W#§G&–äçVÖ&W"Æ6ÆVæF#¦6ÆVæF"ÆFW7F–æF–öã¦FW7F–æF–öâÀ¢f—'7E7FF–öã¦f—'7E7FF–öâÆÆ7E7FF–öã¦Æ7E7FF–öâÆf—'7EF–ÖS¦f—'7EF–ÖRÆÆ7EF–ÖS¦Æ7EF–ÖWÓ°¢Ğ¢gVæ7F–öâö6öæf—&ÖVDVFvR†Æ"Æ¦ö–ç2—°¢–b‚ÇÂ'ÇÂ¦ö–ç7ÇÂ¦ö–ç2æÆVæwF‚—&WGW&âçVÆÃ°¢f"f÷'v&CÖæÆ7E7FF–öãÓÓÖ"æf—'7E7FF–öâbf¦ö–ç2æ–æFW„öb†æÆ7E7FF–öâ“ãÓ°¢f"&WfW'6SÖ"æÆ7E7FF–öãÓÓÖæf—'7E7FF–öâbf¦ö–ç2æ–æFW„öb†"æÆ7E7FF–öâ“ãÓ°¢–b‚f÷'v&Bbb&WfW'6R—&WGW&âçVÆÃ°¢f"GCÖf÷'v&BbfæÆ7EF–ÖRÓÖçVÆÂbf"æf—'7EF–ÖRÓÖçVÆÃö"æf—'7EF–ÖRÖæÆ7EF–ÖS ¢&WfW'6Rbf"æÆ7EF–ÖRÓÖçVÆÂbfæf—'7EF–ÖRÓÖçVÆÃöæf—'7EF–ÖRÖ"æÆ7EF–ÖS¦çVÆÃ°¢òòi{nX‹¾ŠiÚ^k©™;îhê^XúşXª[Ë®{¸ş‹ø~‹Únz¹’şi{n™{Nš¨ÎŠøy¨N‹ëyXÎ8 ¢òòKˆŞ[é~yJiÚ^k©[É^yJ{Én˜
-KØŞ{Úîh‰n{¹^‹ø~h¹>h™8 ¢f"6÷W&6TÆ–æ¶VCÒ‚†f÷'v&Bbb‚†ææW‡Bæ–æFW„öb†"ç6÷W&6T–B“ãÓbf"ç6÷W&6T–B—ÇÀ¢†"ç&Wf–÷W2æ–æFW„öb†ç6÷W&6T–B“ãÓbfç6÷W&6T–B’’—ÇÀ¢‡&WfW'6Rbb‚†"ææW‡Bæ–æFW„öb†ç6÷W&6T–B“ãÓbfç6÷W&6T–B—ÇÀ¢†ç&Wf–÷W2æ–æFW„öb†"ç6÷W&6T–B“ãÓbf"ç6÷W&6T–B’’’“°¢f"6ÖT–CÖæ–CÓÓÖ"æ–BÂ6ÖTæóÖçG&–äçVÖ&W"bfçG&–äçVÖ&W#ÓÓÖ"çG&–äçVÖ&W#°¢f"6ÖT6ÆVæF#Ò†æ6ÆVæF"bf"æ6ÆVæF"bfæ6ÆVæF#ÓÓÖ"æ6ÆVæF"“°¢f"6ÖTFW7F–æF–öãÒ†æFW7F–æF–öâbf"æFW7F–æF–öâbfæFW7F–æF–öãÓÓÖ"æFW7F–æF–öâ“°¢f"–æfW'&VD&÷VæF'•F–ÖSÖfÇ6S°¢–b†GCÓÓÖçVÆÂ—°¢òò6öÖRæ÷&ÖÆ—¦VBF–ÖWF&ÆW2&WF–âF†RW‡Æ–6—B&÷VæF'’7FF–öâ'W@¢òòöÖ—B—G2FW&Ö–æÂ'&—fÂF–ÖRâ¦ö–âöæÇ’v†VâF†R6ÖR6W'f–6RF’À¢òòG&–âçVÖ&W"ÂæBV&Æ—6†VBFW7F–æF–öâ–FVçF–g’öæR6öçF–çV÷W2'Vâà¢–b‚6ÖTæ÷ÇÂ6ÖT6ÆVæF'ÇÂ6ÖTFW7F–æF–öâ—&WGW&âçVÆÃ°¢GCÓ°¢–æfW'&VD&÷VæF'•F–ÖS×G'VS°¢Ğ¢–b†GCÃÇÆGCã#—&WGW&âçVÆÃ°¢&WGW&â¶GC¦GBÇ6ÖT–C§6ÖT–BÇ6ÖTæó§6ÖTæòÇ6÷W&6TÆ–æ¶VC§6÷W&6TÆ–æ¶VBÀ¢çVÖ&W$6†ævVC¢6ÖT–Bbb6ÖTæòÀ¢–æfW'&VD&÷VæF'•F–ÖS¦–æfW'&VD&÷VæF'•F–ÖRÀ¢66÷&S¢‡6÷W&6TÆ–æ¶VCóC£’²‡6ÖT–CóC¢‡6ÖTæóó#£’’°¢†–æfW'&VD&÷VæF'•F–ÖSó¢†GCÃÓSó3¦GCÃÓó#£’—Ó°¢Ğ¢gVæ7F–öâ&W6öÇfUF–ÖWF&ÆT6†–â‡GBÆÆ–æT–BÆ6æF–FFW2—°¢–b‚ö–æ—F–Æ—¦VB–'V–ÆD–æFW†W2‚“°¢f"&6SÕ÷6VvÖVçB‡GBÆÆ–æT–B“²–b‚&6R—&WGW&â·'Vææ–æt6†–ä–C¦çVÆÂÆWf–FVæ6S¢$äõõ4TtÔTåB'Ó°¢f"6VvÖVçG3Õ¶&6UÒÂ6VVã×·Ó²6VVå¶&6RæÆ–æT–B²'Â"¶&6Ræ–EÓ×G'VS°¢†6æF–FFW7ÇÅµÒ’æf÷$V6‚†gVæ7F–öâ‡‚—°¢–b‚‡ÇÂ‚æÆ–æT–GÇÂ‚çF–ÖWF&ÆR—&WGW&ã°¢f"3Õ÷6VvÖVçB‡‚çF–ÖWF&ÆRÇ‚æÆ–æT–B’Â¶W“×2bb‡2æÆ–æT–B²'Â"·2æ–B“°¢–b‡2bb6VVå¶¶W•Ò—·6VVå¶¶W•Ó×G'VS·6VvÖVçG2çW6‚‡2“·Ğ¢Ò“°¢f"F£×·Ó²6VvÖVçG2æf÷$V6‚†gVæ7F–öâ‡2—¶F¥·2æÆ–æT–B²'Â"·2æ–EÓÕµÓ·Ò“°¢òòXú®iÈzºşx+’şi{n™{NX	˜h˜Şˆ;Ş[Ú.h‰‹ë8.KùŞyYXéşZx°¢òò6æöæ–6Â˜XŞZûš®[¨şKº^Xø®y»YÎy¨Bö6öæf—&ÖVDVFvRşjÚ~K˜K».Š88 ¢f"7F'G3Ôö&¦V7Bæ7&VFR†çVÆÂ’Â—'3ÕµÒÂ—%6VVãÔö&¦V7Bæ7&VFR†çVÆÂ“°¢6VvÖVçG2æf÷$V6‚†gVæ7F–öâ‡6VvÖVçBÆ–æFW‚—°¢–b‡6VvÖVçBæf—'7E7FF–öâ’‡7F'G5·6VvÖVçBæf—'7E7FF–öå×ÇÂ‡7F'G5·6VvÖVçBæf—'7E7FF–öåÓÕµÒ’’çW6‚†–æFW‚“°¢Ò“°¢6VvÖVçG2æf÷$V6‚†gVæ7F–öâ‡6VvÖVçBÆ–æFW‚—°¢‡7F'G5·6VvÖVçBæÆ7E7FF–öå×ÇÅµÒ’æf÷$V6‚†gVæ7F–öâ†÷F†W$–æFW‚—°¢–b†–æFWƒÓÓÖ÷F†W$–æFW‚—&WGW&ã°¢f"æW‡C×6VvÖVçG5¶÷F†W$–æFW…Ó°¢f"6ÖU'VãÒ‡6VvÖVçBçG&–äçVÖ&W"bg6VvÖVçBçG&–äçVÖ&W#ÓÓÖæW‡BçG&–äçVÖ&W"b`¢6VvÖVçBæ6ÆVæF"bg6VvÖVçBæ6ÆVæF#ÓÓÖæW‡Bæ6ÆVæF"b`¢6VvÖVçBæFW7F–æF–öâbg6VvÖVçBæFW7F–æF–öãÓÓÖæW‡BæFW7F–æF–öâ“°¢f"Ö—76–æt&÷VæF'•F–ÖS×6VvÖVçBæÆ7EF–ÖSÓÓÖçVÆÇÇÆæW‡Bæf—'7EF–ÖSÓÓÖçVÆÃ°¢–b†Ö—76–æt&÷VæF'•F–ÖR—°¢–b‚6ÖU'Vâ—&WGW&ã°¢ÖVÇ6W°¢f"vÖæW‡Bæf—'7EF–ÖR×6VvÖVçBæÆ7EF–ÖS°¢–b†vÃÇÆvã#—&WGW&ã°¢Ğ¢f"ÆóÔÖF‚æÖ–â†–æFW‚Æ÷F†W$–æFW‚’Æ†“ÔÖF‚æÖ‚†–æFW‚Æ÷F†W$–æFW‚’Æ¶W“ÖÆò²wÂr¶†“°¢–b‡—%6VVå¶¶W•Ò—&WGW&ã°¢—%6VVå¶¶W•Ó×G'VS·—'2çW6‚‡¶“¦ÆòÆ£¦†—Ò“°¢Ò“°¢Ò“°¢—'2ç6÷'B†gVæ7F–öâ†Æ"—·&WGW&âæ’Ö"æ—ÇÆæ¢Ö"æ£·Ò“°¢f"VFvT6æF–FFW3ÕµÓ°¢—'2æf÷$V6‚†gVæ7F–öâ‡—"—°¢f"×6VvÖVçG5·—"æ•ÒÆ#×6VvÖVçG5·—"æ¥Ó°¢–b‚…öF—&V7EF‡&÷Vv…¶æÆ–æT–E×ÇÅµÒ’æ–æFW„öb†"æÆ–æT–B“Ã—&WGW&ã°¢f"¦ö–ç3Ò…ö&÷VæF'”Ö¶æÆ–æT–EÒbeö&÷VæF'”Ö¶æÆ–æT–EÕ¶"æÆ–æT–EÒ—ÇÅµÓ°¢f"WcÕö6öæf—&ÖVDVFvR†Æ"Æ¦ö–ç2“²–b‚WgÇÆWbçVç&W6öÇfVB—&WGW&ã°¢VFvT6æF–FFW2çW6‚‡¶¦Æ#¦"ÆWc¦WbÇGFW&ä–G3¥÷6W'f–6UGFW&ä–G2†æÆ–æT–BÆ"æÆ–æT–B—Ò“°¢Ò“°¢òò˜:XˆnK™Zê.iÈŞXªYŞz{Zû[©NKˆ{¸N[{.XZÎ[ˆ>y¨N‹ùŠÎjŠ[ÈşûÈÀ¢òòˆÎKˆŞiŠşXúşKº^ˆz®yK{¸NYy¨NKˆiÚ™;î8.Kè¾Zh.k™XÙ~ikZëş{«şKŠŞûÈÀ¢òòZè~˜;ŞZê²ŞjŠ®š¾‹K®Y(Îš¹[HâŞK‰Îk[~˜>iŠşKˆŞYÎjŠ[Èş8.[`¢òòX	˜Y»î™™X‹nYÊYÎKˆKŠ¢6æöæ–6ÂjŠ[ÈşXh^ûÉ¾Zh.iéÎiÚ^k© ¢òò™;îhê^izk9^˜Zé®jŠ[ÈşûÈÎ[KùŞhÈiÊ®zîŠêNûÈÎKˆŞŠh{¸NY€¢òòKŠNiÚyÈ¾KËÎiÈiXy¨NXØ®jë^‹zş[èN8.‹[[¸®XX>i[hÚîûÈKˆ®˜xîK‰ÎKªÎ{«şûÈYÊ€¢òò{«>XZ^Šz>iéˆÈ>Y»Ni{nK™şKÛşyJy»YÎ™zjy¾8 ¢f"66÷VEGFW&äVFvW3ÖVFvT6æF–FFW2æf–ÇFW"†gVæ7F–öâ‡‚—·&WGW&â‚çGFW&ä–G2æÆVæwFƒã·Ò“°¢f"66÷VDÆ–æT–G3×·Ó°¢66÷VEGFW&äVFvW2æf÷$V6‚†gVæ7F–öâ‡‚—·66÷VDÆ–æT–G5·‚ææÆ–æT–EÓ×G'VS·66÷VDÆ–æT–G5·‚æ"æÆ–æT–EÓ×G'VS·Ò“°¢f"GFW&å66÷SÔö&¦V7Bæ¶W—2‡66÷VDÆ–æT–G2’ç6öÖR…ö†56W'f–6UGFW&ç2“°¢–b‡GFW&å66÷R—°¢f"GFW&å6WC×·Ó°¢66÷VEGFW&äVFvW2æf÷$V6‚†gVæ7F–öâ‡‚—·‚çGFW&ä–G2æf÷$V6‚†gVæ7F–öâ†–B—·GFW&å6WE¶–EÓ×G'VS·Ò“·Ò“°¢f"7F—fUGFW&ç3Ôö&¦V7Bæ¶W—2‡GFW&å6WB’ç6÷'B‚“°¢–b†7F—fUGFW&ç2æÆVæwFƒã—°¢f"Æ–æ¶VEGFW&å6WC×·Ó°¢66÷VEGFW&äVFvW2æf÷$V6‚†gVæ7F–öâ‡‚—°¢–b‚‚æWbç6÷W&6TÆ–æ¶VB—&WGW&ã°¢‚çGFW&ä–G2æf÷$V6‚†gVæ7F–öâ†–B—¶Æ–æ¶VEGFW&å6WE¶–EÓ×G'VS·Ò“°¢Ò“°¢f"Æ–æ¶VEGFW&ç3Ôö&¦V7Bæ¶W—2†Æ–æ¶VEGFW&å6WB’ç6÷'B‚“°¢–b†Æ–æ¶VEGFW&ç2æÆVæwFƒÓÓÓ’7F—fUGFW&ç3ÖÆ–æ¶VEGFW&ç3°¢VÇ6R&WGW&â·'Vææ–æt6†–ä–C¦&6Ræ–BÆWf–FVæ6S¢$äõô4ôäd•$ÔTEô$õTäD%•õEDU$åôÔ$”uTõU2'Ó°¢Ğ¢–b†7F—fUGFW&ç2æÆVæwFƒÓÓÓ—°¢VFvT6æF–FFW3ÖVFvT6æF–FFW2æf–ÇFW"†gVæ7F–öâ‡‚—°¢&WGW&â‚çGFW&ä–G2æÆVæwFƒãbb‚çGFW&ä–G2æ–æFW„öb†7F—fUGFW&ç5³Ò“ãÓ°¢Ò“°¢Ğ¢Ğ¢òòXú®iÈYÊ‹ùŠÎ‹ëyXÀ¢òòYÊKŠNjë^KŠŞ˜;ŞYJşKˆi{nûÈÎh˜Şhê^Xù~KˆŞYÎ‹ÚnjÊ8.y»N˜	®X[>{;²²KªNhêP¢òò‹Únz¹’²i{n™{N‹ùî{ºŞh
-~KˆŞ‹k>Kº^YÊZÙYÊX[nK¹nX	˜i{nZèÎh‰zîŠêN8 ¢VFvT6æF–FFW2æf÷$V6‚†gVæ7F–öâ†V2—°¢f"WcÖV2æWc°¢òò6†ævVBG&–âçVÖ&W"Ö’¦ö–âöæÇ’v†VâF†R—&–ær—2Væ—VRf÷ ¢òò—&–ær—2Væ—VRf÷"$õD‚6VvÖVçG3²6†&VB&÷VæF'’÷"F–ÖRvÆöæP¢òò—2–ç7Vff–6–VçBà¢–b†WbæçVÖ&W$6†ævVB—°¢f"VW'3ÖVFvT6æF–FFW2æf–ÇFW"†gVæ7F–öâ‡‚—°¢–b‚‚æWbæçVÖ&W$6†ævVB—&WGW&âfÇ6S°¢&WGW&â‚æÓÓÖV2æÇÇ‚æ#ÓÓÖV2æÇÇ‚æÓÓÖV2æ'ÇÇ‚æ#ÓÓÖV2æ#°¢Ò“°¢–b‡VW'2æÆVæwF‚ÓÓ’°¢f"6ÖU6W'f–6UGFW&ãÖV2çGFW&ä–G2æÆVæwFƒãbbVW'2æÆVæwFƒãbbVW'2æWfW'’†gVæ7F–öâ‡‚—°¢&WGW&â‚çGFW&ä–G2ç6öÖR†gVæ7F–öâ†–B—·&WGW&âV2çGFW&ä–G2æ–æFW„öb†–B“ãÓ·Ò“°¢Ò“°¢–b‚6ÖU6W'f–6UGFW&â—°¢òòYJşKˆy¨Ni‹î[ÈşiÚ^k©™;îhê^XúşKº^XË®XˆnX[nK¹niÚK»ny»YÎy¨@¢òòhÚ.K™i{n™{NX	˜8.jÚ~K˜h‰niz™;îhê^X	˜{º~{ºŞhé.™šN8 ¢f"Æ–æ¶VEVW'3×VW'2æf–ÇFW"†gVæ7F–öâ‡‚—·&WGW&â‚æWbç6÷W&6TÆ–æ¶VC·Ò“°¢–b‚Wbç6÷W&6TÆ–æ¶VGÇÆÆ–æ¶VEVW'2æÆVæwF‚ÓÓ—&WGW&ã°¢Ğ¢Ğ¢Ğ¢f"³ÖV2ææÆ–æT–B²'Â"¶V2ææ–BÆ&³ÖV2æ"æÆ–æT–B²'Â"¶V2æ"æ–C°¢F¥¶µÒçW6‚‡¶¶W“¦&²ÆWc¦WgÒ“¶F¥¶&µÒçW6‚‡¶¶W“¦²ÆWc¦WgÒ“°¢Ò“°¢f"&ö÷CÖ&6RæÆ–æT–B²'Â"¶&6Ræ–BÇÕ·&ö÷EÒÇf—3×·Ó·f—5·&ö÷EÓ×G'VS·f"–G3ÕµÒÇ7G&öæsÖfÇ6RÆçVÖ&W$6†ævVCÖfÇ6RÆÆ–æ¶VD'•6÷W&6SÖfÇ6RÆÖ„vÓ°¢v†–ÆR‡æÆVæwF‚—·f"7W#×ç6†–gB‚’Ç'G3Ö7W"ç7Æ—B‚'Â"“¶–G2çW6‚‡'G2ç6Æ–6Rƒ’æ¦ö–â‚'Â"’“²†F¥¶7W%×ÇÅµÒ’æf÷$V6‚†gVæ7F–öâ†R—¶–b†RæWbç6ÖT–B—7G&öæs×G'VS¶–b†RæWbæçVÖ&W$6†ævVB–çVÖ&W$6†ævVC×G'VS¶–b†RæWbç6÷W&6TÆ–æ¶VB–Æ–æ¶VD'•6÷W&6S×G'VS¶–b†RæWbæGCæÖ„v–Ö„vÖRæWbæGC¶–b‚f—5¶Ræ¶W•Ò—·f—5¶Ræ¶W•Ó×G'VS·çW6‚†Ræ¶W’“·×Ò“·Ğ¢–G3Ö–G2æf–ÇFW"†gVæ7F–öâ‡bÆ’Æ—·&WGW&âæ–æFW„öb‡b“ÓÓÖ“·Ò’ç6÷'B‚“°¢–b†–G2æÆVæwFƒÓÓÓ—&WGW&â·'Vææ–æt6†–ä–C¦&6Ræ–BÆWf–FVæ6S¢$äõô4ôäd•$ÔTEô$õTäD%’'Ó°¢&WGW&â·'Vææ–æt6†–ä–C¢'&3¢"¶–G2æ¦ö–â‚'â"’ÆWf–FVæ6S¦Æ–æ¶VD'•6÷W&6Sò$4ôäd•$ÔTEô$õTäD%’µ4õU$4UõD”ÔUD$ÄUôÄ”ä²#¢‡7G&öæsò$4ôäd•$ÔTEõ4TtÔTåEôu$‚µD”ÔUD$ÄUô”B#¢†çVÖ&W$6†ævVCò$4ôäd•$ÔTEõTä•TUô$õTäD%’µE$”åôåTÔ$U%ô4„ätTB#¢$4ôäd•$ÔTEõ4TtÔTåEôu$‚µE$”åôåTÔ$U""’’ÇF–ÖTvÖ–ã¦Ö„vÇ6VvÖVçD6÷VçC¦–G2æÆVæwF‡Ó°¢Ğ ¢òòh˜iÈ™8‹zşX[yJûÉ®‹ùiŠşX	˜™JîûÈÎKˆŞiŠşZéîKÙ>{Énh‰ûÈÎK™şKˆŞiŠğ¢òòiØ>ZˆiÚ^k©Zû‹”N8.Xú®iÈYJşKˆy¨NZéîi{b²i{nX‹¾Š€¢òòXË˜XŞh˜ŞXúşKº^ZHŞyJ[{.iÈ8{¸şiÚ^k©š¨ÎŠøy¨B'Vææ–æt6†–ä–N8 ¢òò‹[~x+’şZx¾Xùş{¸x+K¸Ş[îK¨îŠêX‰.iÚ^k©Šë[ÙR”NûÉ°¢òòZéîi{bôEBŠë[Ù^[‹[‹k*iÈ‹ùK©¾ZÙ~jë^ûÈÎYºjÚNKˆŞˆ;ŞYÊ‹ù˜xÎ{Én˜
-8 ¢gVæ7F–öâ66†VGVÆVDÖF6„¶W’†Æ–æT–BÂ÷6—F–öâ—°¢–b‚Æ–æT–BÇÂ÷6—F–öâ’&WGW&â"#°¢f"çVÓÕ7G&–ær‡÷6—F–öâçG&–äçVÖ&W"ÇÂ""’çG&–Ò‚“°¢f"FFSÕ7G&–ær‡÷6—F–öâç6W'f–6TFFRÇÂ""’ç6Æ–6RƒÃ“°¢f"F—#Õ7G&–ær‡÷6—F–öâç&–ÄF—&V7F–öâÇÂ""’ç7Æ—B‚õ³¢åÒò’ç÷‚’çG&–Ò‚“°¢–b‚çVÒÇÂõåÆG³GÒÕÆG³'ÒÕÆG³'ÒBòçFW7B†FFR’ÇÂF—"’&WGW&â"#°¢–b‚õâƒó¦W7E÷ÆöGE²ã¥×Ç7W&6S§ÆÖçVÂ×FV×ÆFS§ÇÆææVB×G&—¢’ö’çFW7B†çVÒ’’&WGW&â"#°¢òòŠxNˆÈ>XÉn[‹ŠxôEBxêş{«şikY	XŠ¾YŞûÈÎKØnKˆŞKúîiK¢òò6æöæ–6Â‹Únz¹š®[¨ş8xêş{«şh¹>h™h‰nYËY»îXzKÙ^8 ¢–b‚õâ„–ææW'Ä–ææW$Æö÷’Bö’çFW7B†F—"’’F—#Ò$”ääU$Äôõ#°¢VÇ6R–b‚õâ„÷WFW'Ä÷WFW$Æö÷’Bö’çFW7B†F—"’’F—#Ò$õUDU$Äôõ#°¢VÇ6RF—#ÖF—"çFõWW$66R‚“°¢&WGW&â'66†VGVÆVBÖÖF6ƒ¢"°¢¶Æ–æT–BÆFFRÆçVÒÆF—%ÒæÖ†gVæ7F–öâ‡b—·&WGW&âVæ6öFUU$”6ö×öæVçB…7G&–ær‡b’“·Ò’æ¦ö–â‚'Â"“°¢Ğ ¢gVæ7F–öâ—5F‡&÷Vv„E7FF–öâ†Æ–æTÆÆ–æT"Ç7FF–öä–B—°¢–b‚ö–æ—F–Æ—¦VB–'V–ÆD–æFW†W2‚“°¢f"¦ö–ç3Ò…ö&÷VæF'”Ö¶Æ–æTÒbeö&÷VæF'”Ö¶Æ–æTÕ¶Æ–æT%Ò—ÇÅµÓ°¢&WGW&â¦ö–ç2æ–æFW„öb‡7FF–öä–B“ãÓ°¢Ğ ¢gVæ7F–öâvWE&W6öÇWF–öä6öçFW‡B†Æ–æT–BÂf–Æ&ÆTÆ–æT–G2—°¢–b‚ö–æ—F–Æ—¦VB–'V–ÆD–æFW†W2‚“°¢f"ÆÆ÷vVCÖçVÆÃ°¢–b„'&’æ—4'&’†f–Æ&ÆTÆ–æT–G2’—¶ÆÆ÷vVC×·Ó¶f–Æ&ÆTÆ–æT–G2æf÷$V6‚†gVæ7F–öâ†–B—¶ÆÆ÷vVE¶–EÓ×G'VS·Ò“·Ğ¢f"&VÆFVCÕµÒÂF‡&÷VvƒÒ…öF—&V7EF‡&÷Vv…¶Æ–æT–E×ÇÅµÒ’æf–ÇFW"†gVæ7F–öâ†÷F†W"—·&WGW&âÆÆ÷vVGÇÆÆÆ÷vVE¶÷F†W%Ó·Ò“°¢f"Æ–æSÒ‡v–æF÷råTä”d”TEôÄ”äU2bgv–æF÷råTä”d”TEôÄ”äU5¶Æ–æT–EÒ—ÇÆçVÆÃ°¢f"—4Æ–3ÖfÇ6RÆÆ–4Æ–æT–CÖçVÆÃ°¢f"'&æ6„Æ–æT–CÖÆ–æRbfÆ–æRæ'&æ6„ögÇÆçVÆÃ°¢f"—4'&æ6ƒÒ'&æ6„Æ–æT–C°¢&WGW&â°¢Æ–æT–C¦Æ–æT–BÀ¢—5F‡&÷Vv…6W'f–6S§F‡&÷Vv‚æÆVæwFƒãÀ¢&VÆFVDÆ–æW3§F‡&÷Vv‚À¢—4Æ–3¦—4Æ–2À¢Æ–4Æ–æT–C¦Æ–4Æ–æT–BÀ¢—4'&æ6ƒ¦—4'&æ6‚À¢'&æ6„Æ–æT–C¦'&æ6„Æ–æT–BÀ¢–FVçF—G“¢‡F‡&÷Vv‚æÆVæwF‡ÇÆ—4Æ–7ÇÆ—4'&æ6‚“ò%$TÄDTB#¢%4U$DR"À¢&V6öã¢‡F‡&÷Vv‚æÆVæwFƒò%D…$õTt…õ4U%d”4R#¢†—4Æ–3ò$Ä”5ôôb#¢†—4'&æ6ƒò$%$ä4…ôôb#¢$äõôD•$T5Eõ$TÄD”ôâ"’’¢Ó°¢Ğ ¢òòKØŞ{ÚîKÉXX{ª~y¨N˜.yJˆÈ>Y»Nz¨NK¨îZéîKÙ>‹ùŠÎ™;î‹ª¾K»Ş8 ¢òò[ø^š¾YÎi{nXË˜XŞXéşZx¾™8‹zşYŞYŞz›®™{N8iÈŞXªiz^Y(ÎikY	8 ¢gVæ7F–öâ6÷W&6U÷6—F–öäÖF6„¶W’†Æ–æT–BÂ÷6—F–öâ’°¢f"¶W’Ò66†VGVÆVDÖF6„¶W’†Æ–æT–BÂ÷6—F–öâ“°¢f"&–Çv’Ò÷6—F–öâbb‡÷6—F–öâç6÷W&6U&–Çv’ÇÂ÷6—F–öâç&–Çv’“°¢–b‚¶W’ÇÂõæöGEÂå&–Çv“¥µâåÒµÂââ²òçFW7B‡&–Çv’ÇÂrr’’&WGW&ârs°¢&WGW&â¶W’²wÂr²Væ6öFUU$”6ö×öæVçB‡&–Çv’“°¢Ğ ¢gVæ7F–öâ–æ—B‚—¶–b…ö–æ—F–Æ—¦VB—&WGW&ã¶'V–ÆD–æFW†W2‚“·Ğ ¢v–æF÷rå'Vææ–æt6†–å&W6öÇfW#×°¢–æ—C¦–æ—BÀ¢vWDF—&V7EF‡&÷Vv„Æ–æW3¦gVæ7F–öâ†Æ–B—¶–b‚ö–æ—F–Æ—¦VB–'V–ÆD–æFW†W2‚“·&WGW&â…öF—&V7EF‡&÷Vv…¶Æ–E×ÇÅµÒ’ç6Æ–6R‚“·ÒÀ¢vWE6W'f–6UGFW&ä–G3¦gVæ7F–öâ†Æ"—¶–b‚ö–æ—F–Æ—¦VB–'V–ÆD–æFW†W2‚“·&WGW&â÷6W'f–6UGFW&ä–G2†Æ"“·ÒÀ¢—5F‡&÷Vv„E7FF–öã¦—5F‡&÷Vv„E7FF–öâÀ¢vWE&W6öÇWF–öä6öçFW‡C¦vWE&W6öÇWF–öä6öçFW‡BÀ¢&W6öÇfUF–ÖWF&ÆT6†–ã§&W6öÇfUF–ÖWF&ÆT6†–âÀ¢66†VGVÆVDÖF6„¶W“§66†VGVÆVDÖF6„¶W’À¢6÷W&6U÷6—F–öäÖF6„¶W“§6÷W&6U÷6—F–öäÖF6„¶W’À¢övWD–æFW†W3¦gVæ7F–öâ‚—·&WGW&ç¶&÷VæF&–W3¥ö&÷VæF'”ÖÆ'&æ6„ödÖ¥ö'&æ6„ödÖÆF—&V7EF‡&÷Vvƒ¥öF—&V7EF‡&÷Vv‡Ó·Ğ¢Ó° ¢–b‡v–æF÷råTä”d”TEôÄ”äU2—¶–æ—B‚“·Ğ§Ò’‚“°
+/*
+ * Pixel Tetsudo - è¿è¡Œé“¾è§£æå™¨
+ * æ¯æ¡çº¿è·¯ä½¿ç”¨ä¸´æ—¶ ResolutionContextã€‚è¿è¡Œé“¾ä¸ç­‰äº canonical å®ä½“ã€‚
+ */
+(function() {
+  "use strict";
+  var _initialized = false;
+  var _boundaryMap = {};
+  var _branchOfMap = {};
+  var _directThrough = {};
+
+  function buildIndexes() {
+    var lines = window.UNIFIED_LINES || {};
+    var corridors = (window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {};
+    _boundaryMap = {}; _branchOfMap = {}; _directThrough = {};
+    Object.keys(lines).forEach(function(lineId) {
+      var line = lines[lineId] || {};
+      if (line.branchOf && lines[line.branchOf]) _branchOfMap[lineId] = line.branchOf;
+      var boundaries = Array.isArray(line.serviceBoundaries) ? line.serviceBoundaries : [];
+      _boundaryMap[lineId] = {};
+      _directThrough[lineId] = [];
+      boundaries.forEach(function(boundary) {
+        if (!boundary || !boundary.lineId || !lines[boundary.lineId]) return;
+        if (corridors[lineId] || corridors[boundary.lineId]) return;
+        var joins = Array.isArray(boundary.handoverStations) ? boundary.handoverStations.filter(Boolean) : [];
+        if (joins.length) {
+          _boundaryMap[lineId][boundary.lineId] = joins.slice();
+          _directThrough[lineId].push(boundary.lineId);
+        }
+      });
+    });
+    _initialized=true;
+  }
+
+  function scoreEvidence(a,b){
+    var s=0;
+    var la=(window.UNIFIED_LINES&&window.UNIFIED_LINES[a])||null;
+    var lb=(window.UNIFIED_LINES&&window.UNIFIED_LINES[b])||null;
+    if((_directThrough[a]||[]).indexOf(b)>=0)s+=3;
+    if(la&&lb&&la.code&&lb.code&&la.code===lb.code)s+=(la.operator===lb.operator)?2:-5;
+    var sa=la&&la.stations?la.stations:[];
+    var sb=lb&&lb.stations?lb.stations:[];
+    var set={},sc=0;
+    sa.forEach(function(x){set[x]=true;});
+    sb.forEach(function(x){if(set[x])sc++;});
+    if(sc>0)s+=1;
+    return s;
+  }
+
+  function _stationKey(v){var p=String(v||"").split(".");return p[p.length-1]||"";}
+  function _servicePatternIds(a,b){
+    var lines=window.UNIFIED_LINES||{}, ids={};
+    [a,b].forEach(function(lineId){
+      var line=lines[lineId]||{};
+      (Array.isArray(line.servicePatterns)?line.servicePatterns:[]).forEach(function(pattern){
+        var members=Array.isArray(pattern&&pattern.lineIds)?pattern.lineIds:[];
+        if(pattern&&pattern.id&&members.indexOf(a)>=0&&members.indexOf(b)>=0)ids[pattern.id]=true;
+      });
+    });
+    return Object.keys(ids).sort();
+  }
+  function _hasServicePatterns(lineId){
+    var line=(window.UNIFIED_LINES||{})[lineId];
+    return !!(line&&Array.isArray(line.servicePatterns)&&line.servicePatterns.length);
+  }
+  function _sourceTripKey(v) {
+    var s=String(v||"");
+    if(s.indexOf("odpt.TrainTimetable:")===0)return s.slice("odpt.TrainTimetable:".length);
+    return s.indexOf("supabase:TrainRun:")===0 ? "" : s;
+  }
+  function _timeMin(v){if(!v)return null;var m=String(v).match(/^(\d{1,2}):(\d{2})/);if(!m)return null;return parseInt(m[1],10)*60+parseInt(m[2],10);}
+  function _segment(tt,lineId){
+    var a=(tt&&tt["odpt:trainTimetableObject"])||[]; if(!a.length)return null;
+    var first=a[0]||{}, last=a[a.length-1]||{};
+    var firstStation=_stationKey(first["odpt:departureStation"]||first["odpt:arrivalStation"]||first["odpt:station"]);
+    var lastStation=_stationKey(last["odpt:arrivalStation"]||last["odpt:departureStation"]||last["odpt:station"]);
+    var firstTime=_timeMin(first["odpt:departureTime"]||first["odpt:arrivalTime"]);
+    var lastTime=_timeMin(last["odpt:arrivalTime"]||last["odpt:departureTime"]);
+    var trainNumber=String(tt["odpt:trainNumber"]||tt["odpt:train"]||"");
+    var calendar=String(tt["odpt:calendar"]||"");
+    var destinations=tt["odpt:destinationStation"];
+    if(!Array.isArray(destinations))destinations=destinations?[destinations]:[];
+    var destination=destinations.length?_stationKey(destinations[0]):"";
+    var id=String(tt["@id"]||tt["owl:sameAs"]||((tt["odpt:railway"]||lineId||"")+"|"+trainNumber));
+    var sourceId=_sourceTripKey(tt._sourceTripId||tt["owl:sameAs"]||tt["@id"]);
+    var previous=Array.isArray(tt._previousTimetableIds)?tt._previousTimetableIds.map(_sourceTripKey):[];
+    var next=Array.isArray(tt._nextTimetableIds)?tt._nextTimetableIds.map(_sourceTripKey):[];
+    return {lineId:lineId,id:id,sourceId:sourceId,previous:previous,next:next,
+      trainNumber:trainNumber,calendar:calendar,destination:destination,
+      firstStation:firstStation,lastStation:lastStation,firstTime:firstTime,lastTime:lastTime};
+  }
+  function _confirmedEdge(a,b,joins){
+    if(!a||!b||!joins||!joins.length)return null;
+    var forward=a.lastStation===b.firstStation&&joins.indexOf(a.lastStation)>=0;
+    var reverse=b.lastStation===a.firstStation&&joins.indexOf(b.lastStation)>=0;
+    if(!forward&&!reverse)return null;
+    var dt=forward&&a.lastTime!==null&&b.firstTime!==null?b.firstTime-a.lastTime:
+           reverse&&b.lastTime!==null&&a.firstTime!==null?a.firstTime-b.lastTime:null;
+    // æ—¶åˆ»è¡¨æ¥æºé“¾æ¥å¯åŠ å¼ºç»è¿‡è½¦ç«™/æ—¶é—´éªŒè¯çš„è¾¹ç•Œã€‚
+    // ä¸å¾—ç”¨æ¥æºå¼•ç”¨ç¼–é€ ä½ç½®æˆ–ç»•è¿‡æ‹“æ‰‘ã€‚
+    var sourceLinked=!!((forward&&((a.next.indexOf(b.sourceId)>=0&&b.sourceId)||
+      (b.previous.indexOf(a.sourceId)>=0&&a.sourceId)))||
+      (reverse&&((b.next.indexOf(a.sourceId)>=0&&a.sourceId)||
+      (a.previous.indexOf(b.sourceId)>=0&&b.sourceId))));
+    var sameId=a.id===b.id, sameNo=a.trainNumber&&a.trainNumber===b.trainNumber;
+    var sameCalendar=!!(a.calendar&&b.calendar&&a.calendar===b.calendar);
+    var sameDestination=!!(a.destination&&b.destination&&a.destination===b.destination);
+    var inferredBoundaryTime=false;
+    if(dt===null){
+      // Some normalized timetables retain the explicit boundary station but
+      // omit its terminal arrival time. Join only when the same service day,
+      // train number, and published destination identify one continuous run.
+      if(!sameNo||!sameCalendar||!sameDestination)return null;
+      dt=0;
+      inferredBoundaryTime=true;
+    }
+    if(dt<0||dt>20)return null;
+    return {dt:dt,sameId:sameId,sameNo:sameNo,sourceLinked:sourceLinked,
+      numberChanged:!sameId&&!sameNo,
+      inferredBoundaryTime:inferredBoundaryTime,
+      score:(sourceLinked?4:0)+(sameId?4:(sameNo?2:0))+
+        (inferredBoundaryTime?1:(dt<=5?3:dt<=10?2:1))};
+  }
+  function resolveTimetableChain(tt,lineId,candidates){
+    if(!_initialized)buildIndexes();
+    var base=_segment(tt,lineId); if(!base)return {runningChainId:null,evidence:"NO_SEGMENT"};
+    var segments=[base], seen={}; seen[base.lineId+"|"+base.id]=true;
+    (candidates||[]).forEach(function(x){
+      if(!x||!x.lineId||!x.timetable)return;
+      var s=_segment(x.timetable,x.lineId), key=s&&(s.lineId+"|"+s.id);
+      if(s&&!seen[key]){seen[key]=true;segments.push(s);}
+    });
+    var adj={}; segments.forEach(function(s){adj[s.lineId+"|"+s.id]=[];});
+    // åªæœ‰ç«¯ç‚¹/æ—¶é—´å€™é€‰æ‰èƒ½å½¢æˆè¾¹ã€‚ä¿ç•™åŸå§‹
+    // canonical é…å¯¹é¡ºåºä»¥åŠç›¸åŒçš„ _confirmedEdge/æ­§ä¹‰ä»²è£ã€‚
+    var starts=Object.create(null), pairs=[], pairSeen=Object.create(null);
+    segments.forEach(function(segment,index){
+      if(segment.firstStation)(starts[segment.firstStation]||(starts[segment.firstStation]=[])).push(index);
+    });
+    segments.forEach(function(segment,index){
+      (starts[segment.lastStation]||[]).forEach(function(otherIndex){
+        if(index===otherIndex)return;
+        var next=segments[otherIndex];
+        var sameRun=!!(segment.trainNumber&&segment.trainNumber===next.trainNumber&&
+          segment.calendar&&segment.calendar===next.calendar&&
+          segment.destination&&segment.destination===next.destination);
+        var missingBoundaryTime=segment.lastTime===null||next.firstTime===null;
+        if(missingBoundaryTime){
+          if(!sameRun)return;
+        }else{
+          var gap=next.firstTime-segment.lastTime;
+          if(gap<0||gap>20)return;
+        }
+        var lo=Math.min(index,otherIndex),hi=Math.max(index,otherIndex),key=lo+'|'+hi;
+        if(pairSeen[key])return;
+        pairSeen[key]=true;pairs.push({i:lo,j:hi});
+      });
+    });
+    pairs.sort(function(a,b){return a.i-b.i||a.j-b.j;});
+    var edgeCandidates=[];
+    pairs.forEach(function(pair){
+      var a=segments[pair.i],b=segments[pair.j];
+      if((_directThrough[a.lineId]||[]).indexOf(b.lineId)<0)return;
+      var joins=(_boundaryMap[a.lineId]&&_boundaryMap[a.lineId][b.lineId])||[];
+      var ev=_confirmedEdge(a,b,joins); if(!ev||ev.unresolved)return;
+      edgeCandidates.push({a:a,b:b,ev:ev,patternIds:_servicePatternIds(a.lineId,b.lineId)});
+    });
+    // éƒ¨åˆ†ä¹˜å®¢æœåŠ¡åç§°å¯¹åº”ä¸€ç»„å·²å…¬å¸ƒçš„è¿è¡Œæ¨¡å¼ï¼Œ
+    // è€Œä¸æ˜¯å¯ä»¥è‡ªç”±ç»„åˆçš„ä¸€æ¡é“¾ã€‚ä¾‹å¦‚æ¹˜å—æ–°å®¿çº¿ä¸­ï¼Œ
+    // å®‡éƒ½å®«-æ¨ªé¡»è´ºå’Œé«˜å´-ä¸œæµ·é“æ˜¯ä¸åŒæ¨¡å¼ã€‚å°†
+    // å€™é€‰å›¾é™åˆ¶åœ¨åŒä¸€ä¸ª canonical æ¨¡å¼å†…ï¼›å¦‚æœæ¥æº
+    // é“¾æ¥æ— æ³•é€‰å®šæ¨¡å¼ï¼Œå°±ä¿æŒæœªç¡®è®¤ï¼Œä¸è¦ç»„åˆ
+    // ä¸¤æ¡çœ‹ä¼¼æœ‰æ•ˆçš„åŠæ®µè·¯å¾„ã€‚èµ°å»Šå…ƒæ•°æ®ï¼ˆä¸Šé‡ä¸œäº¬çº¿ï¼‰åœ¨
+    // çº³å…¥è§£æèŒƒå›´æ—¶ä¹Ÿä½¿ç”¨ç›¸åŒé—¨æ§›ã€‚
+    var scopedPatternEdges=edgeCandidates.filter(function(x){return x.patternIds.length>0;});
+    var scopedLineIds={};
+    scopedPatternEdges.forEach(function(x){scopedLineIds[x.a.lineId]=true;scopedLineIds[x.b.lineId]=true;});
+    var patternScope=Object.keys(scopedLineIds).some(_hasServicePatterns);
+    if(patternScope){
+      var patternSet={};
+      scopedPatternEdges.forEach(function(x){x.patternIds.forEach(function(id){patternSet[id]=true;});});
+      var activePatterns=Object.keys(patternSet).sort();
+      if(activePatterns.length>1){
+        var linkedPatternSet={};
+        scopedPatternEdges.forEach(function(x){
+          if(!x.ev.sourceLinked)return;
+          x.patternIds.forEach(function(id){linkedPatternSet[id]=true;});
+        });
+        var linkedPatterns=Object.keys(linkedPatternSet).sort();
+        if(linkedPatterns.length===1) activePatterns=linkedPatterns;
+        else return {runningChainId:base.id,evidence:"NO_CONFIRMED_BOUNDARY_PATTERN_AMBIGUOUS"};
+      }
+      if(activePatterns.length===1){
+        edgeCandidates=edgeCandidates.filter(function(x){
+          return x.patternIds.length>0 && x.patternIds.indexOf(activePatterns[0])>=0;
+        });
+      }
+    }
+    // åªæœ‰åœ¨è¿è¡Œè¾¹ç•Œ
+    // åœ¨ä¸¤æ®µä¸­éƒ½å”¯ä¸€æ—¶ï¼Œæ‰æ¥å—ä¸åŒè½¦æ¬¡ã€‚ç›´é€šå…³ç³» + äº¤æ¥
+    // è½¦ç«™ + æ—¶é—´è¿ç»­æ€§ä¸è¶³ä»¥åœ¨å­˜åœ¨å…¶ä»–å€™é€‰æ—¶å®Œæˆç¡®è®¤ã€‚
+    edgeCandidates.forEach(function(ec){
+      var ev=ec.ev;
+      // A changed train number may join only when the pairing is unique for
+      // pairing is unique for BOTH segments; a shared boundary or time gap alone
+      // is insufficient.
+      if(ev.numberChanged){
+        var peers=edgeCandidates.filter(function(x){
+          if(!x.ev.numberChanged)return false;
+          return x.a===ec.a||x.b===ec.a||x.a===ec.b||x.b===ec.b;
+        });
+        if(peers.length!==1) {
+          var sameServicePattern=ec.patternIds.length>0 && peers.length>0 && peers.every(function(x){
+            return x.patternIds.some(function(id){return ec.patternIds.indexOf(id)>=0;});
+          });
+          if(!sameServicePattern){
+            // å”¯ä¸€çš„æ˜¾å¼æ¥æºé“¾æ¥å¯ä»¥åŒºåˆ†å…¶ä»–æ¡ä»¶ç›¸åŒçš„
+            // æ¢ä¹˜æ—¶é—´å€™é€‰ã€‚æ­§ä¹‰æˆ–æ— é“¾æ¥å€™é€‰ç»§ç»­æ’é™¤ã€‚
+            var linkedPeers=peers.filter(function(x){return x.ev.sourceLinked;});
+            if(!ev.sourceLinked||linkedPeers.length!==1)return;
+          }
+        }
+      }
+      var ak=ec.a.lineId+"|"+ec.a.id,bk=ec.b.lineId+"|"+ec.b.id;
+      adj[ak].push({key:bk,ev:ev});adj[bk].push({key:ak,ev:ev});
+    });
+    var root=base.lineId+"|"+base.id,q=[root],vis={};vis[root]=true;var ids=[],strong=false,numberChanged=false,linkedBySource=false,maxGap=0;
+    while(q.length){var cur=q.shift(),parts=cur.split("|");ids.push(parts.slice(1).join("|"));(adj[cur]||[]).forEach(function(e){if(e.ev.sameId)strong=true;if(e.ev.numberChanged)numberChanged=true;if(e.ev.sourceLinked)linkedBySource=true;if(e.ev.dt>maxGap)maxGap=e.ev.dt;if(!vis[e.key]){vis[e.key]=true;q.push(e.key);}});}
+    ids=ids.filter(function(v,i,a){return a.indexOf(v)===i;}).sort();
+    if(ids.length===1)return {runningChainId:base.id,evidence:"NO_CONFIRMED_BOUNDARY"};
+    return {runningChainId:"rc:"+ids.join("~"),evidence:linkedBySource?"CONFIRMED_BOUNDARY+SOURCE_TIMETABLE_LINK":(strong?"CONFIRMED_SEGMENT_GRAPH+TIMETABLE_ID":(numberChanged?"CONFIRMED_UNIQUE_BOUNDARY+TRAIN_NUMBER_CHANGED":"CONFIRMED_SEGMENT_GRAPH+TRAIN_NUMBER")),timeGapMin:maxGap,segmentCount:ids.length};
+  }
+
+  // æ‰€æœ‰é“è·¯å…±ç”¨ï¼šè¿™æ˜¯å€™é€‰é”®ï¼Œä¸æ˜¯å®ä½“ç¼–æˆï¼Œä¹Ÿä¸æ˜¯
+  // æƒå¨æ¥æºå¯¹è±¡ IDã€‚åªæœ‰å”¯ä¸€çš„å®æ—¶ + æ—¶åˆ»è¡¨
+  // åŒ¹é…æ‰å¯ä»¥å¤ç”¨å·²æœ‰ã€ç»æ¥æºéªŒè¯çš„ runningChainIdã€‚
+  // èµ·ç‚¹/å§‹å‘/ç»ˆç‚¹ä»å±äºè®¡åˆ’æ¥æºè®°å½• IDï¼›
+  // å®æ—¶ ODPT è®°å½•å¸¸å¸¸æ²¡æœ‰è¿™äº›å­—æ®µï¼Œå› æ­¤ä¸èƒ½åœ¨è¿™é‡Œç¼–é€ ã€‚
+  function scheduledMatchKey(lineId, position){
+    if(!lineId || !position) return "";
+    var num=String(position.trainNumber || "").trim();
+    var date=String(position.serviceDate || "").slice(0,10);
+    var dir=String(position.railDirection || "").split(/[:.]/).pop().trim();
+    if(!num || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !dir) return "";
+    if(/^(?:est_|odpt[.:]|supabase:|manual-template:|planned-trip:)/i.test(num)) return "";
+    // è§„èŒƒåŒ–å¸¸è§ ODPT ç¯çº¿æ–¹å‘åˆ«åï¼Œä½†ä¸ä¿®æ”¹
+    // canonical è½¦ç«™é¡ºåºã€ç¯çº¿æ‹“æ‰‘æˆ–åœ°å›¾å‡ ä½•ã€‚
+    if(/^(Inner|InnerLoop)$/i.test(dir)) dir="INNERLOOP";
+    else if(/^(Outer|OuterLoop)$/i.test(dir)) dir="OUTERLOOP";
+    else dir=dir.toUpperCase();
+    return "scheduled-match:"+
+      [lineId,date,num,dir].map(function(v){return encodeURIComponent(String(v));}).join("|");
+  }
+
+  function isThroughAtStation(lineA,lineB,stationId){
+    if(!_initialized)buildIndexes();
+    var joins=(_boundaryMap[lineA]&&_boundaryMap[lineA][lineB])||[];
+    return joins.indexOf(stationId)>=0;
+  }
+
+  function getResolutionContext(lineId, availableLineIds){
+    if(!_initialized)buildIndexes();
+    var allowed=null;
+    if(Array.isArray(availableLineIds)){allowed={};availableLineIds.forEach(function(id){allowed[id]=true;});}
+    var related=[], through=(_directThrough[lineId]||[]).filter(function(other){return !allowed||allowed[other];});
+    var line=(window.UNIFIED_LINES&&window.UNIFIED_LINES[lineId])||null;
+    var isAlias=false,aliasLineId=null;
+    var branchLineId=line&&line.branchOf||null;
+    var isBranch=!!branchLineId;
+    return {
+      lineId:lineId,
+      isThroughService:through.length>0,
+      relatedLines:through,
+      isAlias:isAlias,
+      aliasLineId:aliasLineId,
+      isBranch:isBranch,
+      branchLineId:branchLineId,
+      identity:(through.length||isAlias||isBranch)?"RELATED":"SEPARATE",
+      reason:(through.length?"THROUGH_SERVICE":(isAlias?"ALIAS_OF":(isBranch?"BRANCH_OF":"NO_DIRECT_RELATION")))
+    };
+  }
+
+  // ä½ç½®ä¼˜å…ˆçº§çš„é€‚ç”¨èŒƒå›´çª„äºå®ä½“è¿è¡Œé“¾èº«ä»½ã€‚
+  // å¿…é¡»åŒæ—¶åŒ¹é…åŸå§‹é“è·¯å‘½åç©ºé—´ã€æœåŠ¡æ—¥å’Œæ–¹å‘ã€‚
+  function sourcePositionMatchKey(lineId, position) {
+    var key = scheduledMatchKey(lineId, position);
+    var railway = position && (position.sourceRailway || position.railway);
+    if (!key || !/^odpt\.Railway:[^.]+\..+/.test(railway || '')) return '';
+    return key + '|' + encodeURIComponent(railway);
+  }
+
+  function init(){if(_initialized)return;buildIndexes();}
+
+  window.RunningChainResolver={
+    init:init,
+    getDirectThroughLines:function(lid){if(!_initialized)buildIndexes();return (_directThrough[lid]||[]).slice();},
+    getServicePatternIds:function(a,b){if(!_initialized)buildIndexes();return _servicePatternIds(a,b);},
+    isThroughAtStation:isThroughAtStation,
+    getResolutionContext:getResolutionContext,
+    resolveTimetableChain:resolveTimetableChain,
+    scheduledMatchKey:scheduledMatchKey,
+    sourcePositionMatchKey:sourcePositionMatchKey,
+    _getIndexes:function(){return{boundaries:_boundaryMap,branchOfMap:_branchOfMap,directThrough:_directThrough};}
+  };
+
+  if(window.UNIFIED_LINES){init();}
+})();

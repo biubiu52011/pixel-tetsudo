@@ -1,1 +1,22 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂç'2ÖÖöFÂ²F—7Æ“¢æöæS²Ğ¢ç'2×FW‡BÖ×WFVG¶6öÆ÷#§f"‚Ò×FW‡BÖ×WFVB“·Ğ ¢ò¢ÓÓÓÓÓÓÓÓÓÒÖöFÂWFFVBF–ÖR6V7F–öâÓÓÓÓÓÓÓÓÓÒ¢ğ¢ç'2×WFFVB×6V7F–öç·FF–æs¢f"‚Ò×BÖÆr“²&6¶w&÷VæC¢f"‚ÒÖ&r“²&÷&FW#¢7‚6öÆ–Bf"‚Ò×FW‡B“²–ÖvR×&VæFW&–æs¢—†VÆFVC²&÷&FW"×&F—W3¢f"‚Ò×&F—W2“·Òç'2×WFFVB×F–ÖW¶föçB×6—¦S¢7ƒ²6öÆ÷#¢f"‚Ò×FW‡BÖ×WFVB“²föçB×vV–v‡C¢s²ÆWGFW"×76–æs¢ãWƒ·Ğ¢ò¢ÓÓÓÓÓÓÓÓÓÒÖö&–ÆRF§W7FÖVçG2ÓÓÓÓÓÓÓÓÓÒ¢ğ¢ò¢Æ–æT6&BÖö&–ÆR&W6VçFF–öâÆ—fW2–â6†&VB7G–ÆRæ772â¢ğ ¤ÖVF–†Ö‚×v–GFƒ¢cC‚’°¢æ6öæf–rÖ'Fâ°¢Ö–â×v–GFƒ¢CGƒ°¢Ö–âÖ†V–v‡C¢CGƒ°¢FF–æs¢ƒ°¢Ğ§Ğ   ¢ò¢ÓÓÓÓÓÓÓÓÓÒ'Vä–æfô’Æ–æ·2‡cBã2ã“cC¢Xéşih~hùXùbU$Âk‹.iù>K‹®™;îhê^ŠÂ’ÓÓÓÓÓÓÓÓÓÒ¢ğ¢ç'2Ö6W6RÖÆ–æ·7¶Ö&v–â×F÷¢ƒ²FF–ær×F÷¢‡ƒ²&÷&FW"×F÷¢7‚6öÆ–Bf"‚Ò×FW‡B“²F—7Æ“¢fÆWƒ²fÆW‚ÖF—&V7F–öã¢6öÇVÖã²v¢gƒ·Ğ¢ç'2Ö6W6RÖÆ–æ·¶föçB×6—¦S¢'ƒ²föçB×vV–v‡C¢s²6öÆ÷#¢f"‚ÒÖ66VçBÂ3ƒƒ2“²FW‡BÖFV6÷&F–öã¢VæFW&Æ–æS²÷fW&fÆ÷r×w&¢ç—v†W&S²ÆWGFW"×76–æs¢ã7ƒ·Ğ¢ç'2Ö6W6RÖÆ–æ³¦7F—fW¶÷6—G“¢ãs·Ğ
+.rs-modal { display: none; }
+.rs-text-muted{color:var(--text-muted);}
+
+/* ========== Modal Updated Time Section ========== */
+.rs-updated-section{padding: var(--pad-lg); background: var(--bg); border: 3px solid var(--text); image-rendering: pixelated; border-radius: var(--radius);}.rs-updated-time{font-size: 13px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;}
+/* ========== Mobile adjustments ========== */
+/* LineCard mobile presentation lives in shared style.css. */
+
+@media (max-width: 640px) {
+  .config-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
+  }
+}
+
+
+
+/* ========== RunInfoAPI links (v4.3.964: åŸæ–‡æå– URL æ¸²æŸ“ä¸ºé“¾æ¥è¡Œ) ========== */
+.rs-cause-links{margin-top: 10px; padding-top: 8px; border-top: 3px solid var(--text); display: flex; flex-direction: column; gap: 6px;}
+.rs-cause-link{font-size: 12px; font-weight: 700; color: var(--accent, #008803); text-decoration: underline; overflow-wrap: anywhere; letter-spacing: 0.3px;}
+.rs-cause-link:active{opacity: 0.7;}

@@ -1,6 +1,130 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò ¢¢—†VÂFWG7VFòÒ˜	®yJ[z^X[p¢¢ğ¢†gVæ7F–öâ‚’°¢'W6R7G&–7B#° ¢v–æF÷ræW66T‡FÖÂÒgVæ7F–öâ‡7G"’°¢–b‚7G"’&WGW&ârs°¢–b‡G—Vöb7G"ÓÒw7G&–ærr’&WGW&ârs°¢–b‡7G"æ–æFW„öb‚"b"’Âbb7G"æ–æFW„öb‚#Â"’Âbb7G"æ–æFW„öb‚#â"’Âbb7G"æ–æFW„öb‚r"r’Âbb7G"æ–æFW„öb‚"r"’Â’&WGW&â7G#°¢6öç7BF—bÒFö7VÖVçBæ7&VFTVÆVÖVçB‚&F—b"“°¢F—bçFW‡D6öçFVçBÒ7G#°¢&WGW&âF—bæ–ææW$…DÔÃ°¢Ó° ¢v–æF÷rævWD&6UF‚ÒgVæ7F–öâ‚’°¢6öç7BF‚Òv–æF÷ræÆö6F–öâçF†æÖS°¢&WGW&âF‚æ–æ6ÇVFW2‚r÷vW2òr’òrââr¢rs°¢Ó° ¢v–æF÷ræf÷&ÖEF–ÖRÒgVæ7F–öâ†Ö–çWFW2’°¢f"‚ÒÖF‚æfÆö÷"†Ö–çWFW2òc“°¢f"ÒÒÖ–çWFW2Rc°¢&WGW&â‚²s¢r²†ÒÂòsr¢rr’²Ó°¢Ó° ¢òòXZ[iÊ®ZHNyb&öÖ—6Rh¹.{¹ŞXYÎ[©^(	N(	Nkh™šB%Væ6Vv‡B†–â&öÖ—6R’"hê~X‹nXûYš®™û>8 ¢òòzÊÎKˆik’ş˜~yYKº>zûÈZh.iz~x˜‚ôEBY8Ş[©B&V¦V7NûÈy¨N˜~kÈş‹zş[èNKˆŞXhŞX‹~{ª.ZÙ~ûÈÎXú®yY’FV'VrŠë[Ù^8 ¢–b‡G—Vöbv–æF÷ræFDWfVçDÆ—7FVæW"ÓÓÒ&gVæ7F–öâ"’°¢v–æF÷ræFDWfVçDÆ—7FVæW"‚'Væ†æFÆVG&V¦V7F–öâ"ÂgVæ7F–öâ†R’°¢G'’²–b†RbbG—VöbRç&WfVçDFVfVÇBÓÓÒ&gVæ7F–öâ"’Rç&WfVçDFVfVÇB‚“²Ò6F6‚…öR’·Ğ¢f""ÒRbbRç&V6öã°¢f"×6rÒ'Væ¶æ÷vâ&V¦V7F–öâ#°¢–b‡"’°¢–b‡G—Vöb"ÓÓÒ&ö&¦V7B"bb"ÓÒçVÆÂ’°¢–b‡"æÖW76vR’×6rÒ"æÖW76vS°¢VÇ6R–b‡"æ6öFRÓÒVæFVf–æVB’×6rÒ&6öFSÒ"²"æ6öFS°¢VÇ6R–b‡"æ‡GG7FGW2ÓÒVæFVf–æVB’×6rÒ&‡GG7FGW3Ò"²"æ‡GG7FGW2²"6öFSÒ"²‡"æ6öFRÓÒVæFVf–æVBò"æ6öFR¢"Ò"“°¢VÇ6R²G'’²×6rÒ¥4ôâç7G&–æv–g’‡"“²Ò6F6‚…öS"’²×6rÒ7G&–ær‡"“²ÒĞ¢ÒVÇ6R°¢G'’²×6rÒ7G&–ær‡"“²Ò6F6‚…öS2’²×6rÒ&æöâ×7G&–ær&V¦V7F–öâ#²Ğ¢Ğ¢Ğ¢6öç6öÆRæFV'Vr‚%µ—†VÅFWG7VFõÒVæ†æFÆVG&V¦V7F–öã¢"Â×6r“°¢Ò“°¢Ğ§Ò’‚“° ¢òò6æöæ–6Â‹ù‰
-^YXn™JîŠxNˆÈ>XÉnûÉ¤Äõ2jÎ[ÈşûÈ…TäDU%44õ$UõUU.ûÈ(iBj~XxnjÎ[ÈşûÈ„¥"ÔV7NûÈ8 ¢f"E$å4•Eôäõ$ÔÄ•¤RÒ°¢$¥%ôT5B#¢$¥"ÔV7B"Â$¥%õtU5B#¢$¥"vW7B"À¢%Dôµ”õôÔUE$ò#¢%Fö·–ôÖWG&ò"Â%DôT’#¢%FöV’"Â%”ô´ô„ÔôÕTä”4•Â#¢%–ö¶ö†Ö×Væ–6—Â"À¢$´T”ò#¢$¶V–ò"Â$ôDµ•R#¢$öF·—R"Â%4T”%R#¢%6V–'R"Â%Dô%R#¢%Fö'R"Â%Dôµ•R#¢%Fö·—R"À¢$´T”µ•R#¢$¶V–·—R"Â$´T•4T’#¢$¶V—6V’"Â%4õDUE5R#¢%6÷FWG7R"Â%$”ä´’#¢%&–æ¶’"À¢$Ô”äDõôÔ•$’#¢$Ö–æFôÖ—&’"Â%Eu"#¢%Eu""Â$Ô•"#¢$Ô•""À¢%DÔôÔôäõ$”Â#¢%FÖÖöæ÷&–Â"À¢%•U$”´ÔôÔR#¢%—W&–¶ÖöÖR"Â%E5TµT$ôU…$U52#¢%G7V·V&W‡&W72"À¢$Täõ4„”ÔôTÄT5E$”2#¢$Væ÷6†–ÖVÆV7G&–2 ¢Ó°¢òòj~Xxni[hÚî[©>‹ù‰
-^YXn™Jâ(i"Äõ2™JîûÈ„äõ$ÔÄ•¤Ry¨NXøŞY	‹ÚÎhÚ.ûÉ¾ZHNy`¢òòG7V·V&W‡&W72(i"E5TµT$ôU…$U52zØKˆŞŠxNX‰h»ÎXiûÈ8 ¢f"Äõ5ô´U•ôÔÒ°¢$¥"ÔV7B#¢$¥%ôT5B"Â$¥"vW7B#¢$¥%õtU5B"À¢%Fö·–ôÖWG&ò#¢%Dôµ”õôÔUE$ò"Â%FöV’#¢%DôT’"Â%–ö¶ö†Ö×Væ–6—Â#¢%”ô´ô„ÔôÕTä”4•Â"À¢$¶V–ò#¢$´T”ò"Â$öF·—R#¢$ôDµ•R"Â%6V–'R#¢%4T”%R"Â%Fö'R#¢%Dô%R"Â%Fö·—R#¢%Dôµ•R"À¢$¶V–·—R#¢$´T”µ•R"Â$¶V—6V’#¢$´T•4T’"Â%6÷FWG7R#¢%4õDUE5R"Â%&–æ¶’#¢%$”ä´’"À¢$Ö–æFôÖ—&’#¢$Ô”äDõôÔ•$’"Â%Eu"#¢%Eu""Â$Ô•"#¢$Ô•""À¢%FÖÖöæ÷&–Â#¢%DÔôÔôäõ$”Â"À¢%—W&–¶ÖöÖR#¢%•U$”´ÔôÔR"Â%G7V·V&W‡&W72#¢%E5TµT$ôU…$U52"À¢%6—FÖæWuW&&åG&ç6—B#¢%4•DÔôäUuõU$$åõE$å4•B"À¢%Fö·–ôÖöæ÷&–Â#¢%Dôµ”õôÔôäõ$”Â"À¢òòikZ)îKŠNZënXÙ^‹Ú‹ù‰
-^YXnûÈXØ>‰˜;Ş[ˆ.8:.88î8:Î8;Î8:²òk™XÙ~8:.88î8:Î8;Î8:¾ûÈ¢$6†–&W&&äÖöæ÷&–Â#¢$4„”$õU$$åôÔôäõ$”Â"À¢%6†öæäÖöæ÷&–Â#¢%4„ôäåôÔôäõ$”Â"À¢$Væ÷6†–ÖVÆV7G&–2#¢$Täõ4„”ÔôTÄT5E$”2 ¢Ó°¢v–æF÷råG&ç6—D6öç7FçG2Ò°¢õôõ$DU#¢°¢$¥"ÔV7B"À¢%Fö·–ôÖWG&ò"Â%FöV’"Â%–ö¶ö†Ö×Væ–6—Â"À¢$¶V–ò"Â$öF·—R"Â%6V–'R"Â%Fö'R"Â%Fö·—R"À¢$¶V–·—R"Â$¶V—6V’"Â%6÷FWG7R"À¢%Eu""Â$Ö–æFôÖ—&’"Â$Ô•""Â%&–æ¶’"À¢%G7V·V&W‡&W72"Â%—W&–¶ÖöÖR"Â%FÖÖöæ÷&–Â"À¢%Fö·–ôÖöæ÷&–Â"Â%6—FÖæWuW&&åG&ç6—B"À¢òòikZ)îKŠNZënXÙ^‹Ú‹ù‰
-^YXnûÈXØ>‰˜;Ş[ˆ.8:.88î8:Î8;Î8:²òk™XÙ~8:.88î8:Î8;Î8:¾ûÈ¢$6†–&W&&äÖöæ÷&–Â"Â%6†öæäÖöæ÷&–Â"Â$Væ÷6†–ÖVÆV7G&–2"Â%WG7VæöÖ—–Æ–v‡E&–Â"À¢òòik[›.{«ş‹ù‰
-^YXnûÈiÛk[~˜2ş[™›ÒşK™Ş[yâşXÉ~k[~˜>ik[›{y®ûÈ¢$¥"Ô6VçG&Â"Â$¥"Ô·—W6‡R"Â$¥"Ô†ö¶¶–Fò"À¢$¥"Õ6†–¶ö·R"À¢$¶–çFWG7R"À¢$†æ·—R"À¢$†ç6†–â"À¢$¶V–†â"À¢$ææ¶’"À¢$ÖV—FWG7R"À¢$æ—6†—FWG7R"À¢$÷6¶ÖWG&ò"À¢$æv÷–×Væ–6—Â"À¢$·–÷Fô×Væ–6—Â"À¢$¶ö&T×Væ–6—Â"À¢%6÷&ô×Væ–6—Â"À¢%6VæF”×Væ–6—Â"À¢$gV·Vö¶×Væ–6—Â"À¢$†—&÷6†–ÖVÆV7G&–2 ¢ÒÀ¢äõ$ÔÄ•¤S¢E$å4•Eôäõ$ÔÄ•¤RÀ¢òò¥$R„¥.iÛiz^iÊÂ’y›ŞYŞXÙ^ûÉ®‹zş{y®Š‰Xûr¤ä¥’XZŠhny¹nûÉ¾xJŠ‰Xû~8îYËik{y®ûÈ†÷W&F÷#Ô¥"ÔV7NûÈXYÎ[©P¢¥$UôÔ$µô4ôDU3¢²$¤"Â$¤""Â$¤2"Â$¤R"Â$¤‚"Â$¤’"Â$¤¢"Â$¤²"Â$¤Â"Â$¤Ò"Â$¤â"Â$¤ò"Â$¥2"Â$¥B"Â$¥R"Â$¥’%ÒÀ¢—4¥$U&÷WFS¢gVæ7F–öâ†Æ–æR’°¢–b‚Æ–æR’&WGW&âfÇ6S°¢f"6öFRÒ7G&–ær†Æ–æRæ6öFRÇÂ""“°¢–b‡F†—2ä¥$UôÔ$µô4ôDU2æ–æFW„öb†6öFR’ãÒ’&WGW&âG'VS°¢–b†6öFRæ–æFW„öb‚$¤’Ò"’ÓÓÒ’&WGW&âG'VS²òò›kNŠh¾{y®iJş{y¢¤’Ôòò¤’ÕP¢&WGW&âÆ–æRæ÷W&F÷"ÓÓÒ$¥"ÔV7B#²òòxJŠ‰Xû~8îYËik{y®ûÈKˆ®‹h®{y®8;¾kN˜:{y®zØûÈ¢ÒÀ¢õôäÔU3¢·ÒÀ¢òòK»¾hHşjÎ[ÈşûÈ‚$¥"ÔV7B"ò$¥%ôT5B"ò&§"V7B.ûÈ(i"j~XxbD"ôôEB™JîûÈ‚$¥"ÔV7B.ûÈ8 ¢æ÷&ÖÆ—¦T÷¢gVæ7F–öâ†÷’°¢–b‚÷’&WGW&â÷°¢f"¶W’Ò7G&–ær†÷’ç&WÆ6R‚òÒörÂ%ò"’ç&WÆ6R‚òörÂ%ò"’çFõWW$66R‚“°¢&WGW&âE$å4•Eôäõ$ÔÄ•¤U¶¶W•ÒÇÂ÷°¢ÒÀ¢òòj~XxnjÎ[ÈòşK»¾hHşjÎ[Èò(i"Äõ2™JîûÈ‚$¥"ÔV7B"(i"$¥%ôT5B.ûÈ8 ¢FôÆ÷4¶W“¢gVæ7F–öâ†÷’°¢–b‚÷’&WGW&â÷°¢–b„Äõ5ô´U•ôÔ¶÷Ò’&WGW&âÄõ5ô´U•ôÔ¶÷Ó°¢&WGW&â7G&–ær†÷’ç&WÆ6R‚òÒörÂ%ò"’ç&WÆ6R‚òörÂ%ò"’çFõWW$66R‚“°¢Ğ¢Ó°
+/*
+ * Pixel Tetsudo - é€šç”¨å·¥å…·
+ */
+(function() {
+  "use strict";
+
+  window.escapeHtml = function(str) {
+    if (!str) return '';
+    if (typeof str !== 'string') return '';
+    if (str.indexOf("&") < 0 && str.indexOf("<") < 0 && str.indexOf(">") < 0 && str.indexOf('"') < 0 && str.indexOf("'") < 0) return str;
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  };
+
+  window.getBasePath = function() {
+    const path = window.location.pathname;
+    return path.includes('/pages/') ? '..' : '';
+  };
+
+  window.formatTime = function(minutes) {
+    var h = Math.floor(minutes / 60);
+    var m = minutes % 60;
+    return h + ':' + (m < 10 ? '0' : '') + m;
+  };
+
+  // å…¨å±€æœªå¤„ç† Promise æ‹’ç»å…œåº•â€”â€”æ¶ˆé™¤ "Uncaught (in promise)" æ§åˆ¶å°å™ªéŸ³ã€‚
+  // ç¬¬ä¸‰æ–¹/é—ç•™ä»£ç ï¼ˆå¦‚æ—§ç‰ˆ ODPT å“åº” rejectï¼‰çš„é—æ¼è·¯å¾„ä¸å†åˆ·çº¢å­—ï¼Œåªç•™ debug è®°å½•ã€‚
+  if (typeof window.addEventListener === "function") {
+    window.addEventListener("unhandledrejection", function(e) {
+      try { if (e && typeof e.preventDefault === "function") e.preventDefault(); } catch(_e) {}
+      var r = e && e.reason;
+      var msg = "unknown rejection";
+      if (r) {
+        if (typeof r === "object" && r !== null) {
+          if (r.message) msg = r.message;
+          else if (r.code !== undefined) msg = "code=" + r.code;
+          else if (r.httpStatus !== undefined) msg = "httpStatus=" + r.httpStatus + " code=" + (r.code !== undefined ? r.code : "-");
+          else { try { msg = JSON.stringify(r); } catch(_e2) { msg = String(r); } }
+        } else {
+          try { msg = String(r); } catch(_e3) { msg = "non-string rejection"; }
+        }
+      }
+      console.debug("[PixelTetsudo] unhandledrejection:", msg);
+    });
+  }
+})();
+
+  // canonical è¿è¥å•†é”®è§„èŒƒåŒ–ï¼šLOS æ ¼å¼ï¼ˆUNDERSCORE_UPPERï¼‰â†” æ ‡å‡†æ ¼å¼ï¼ˆJR-Eastï¼‰ã€‚
+  var TRANSIT_NORMALIZE = {
+    "JR_EAST": "JR-East", "JR_WEST": "JR West",
+    "TOKYO_METRO": "TokyoMetro", "TOEI": "Toei", "YOKOHAMA_MUNICIPAL": "YokohamaMunicipal",
+    "KEIO": "Keio", "ODAKYU": "Odakyu", "SEIBU": "Seibu", "TOBU": "Tobu", "TOKYU": "Tokyu",
+    "KEIKYU": "Keikyu", "KEISEI": "Keisei", "SOTETSU": "Sotetsu", "RINKAI": "Rinkai",
+    "MINATO_MIRAI": "MinatoMirai", "TWR": "TWR", "MIR": "MIR",
+    "TAMA_MONORAIL": "TamaMonorail",
+    "YURIKAMOME": "Yurikamome", "TSUKUBA_EXPRESS": "TsukubaExpress",
+    "ENOSHIMA_ELECTRIC": "EnoshimaElectric"
+  };
+  // æ ‡å‡†æ•°æ®åº“è¿è¥å•†é”® â†’ LOS é”®ï¼ˆNORMALIZE çš„åå‘è½¬æ¢ï¼›å¤„ç†
+  // TsukubaExpress â†’ TSUKUBA_EXPRESS ç­‰ä¸è§„åˆ™æ‹¼å†™ï¼‰ã€‚
+  var LOS_KEY_MAP = {
+    "JR-East": "JR_EAST", "JR West": "JR_WEST",
+    "TokyoMetro": "TOKYO_METRO", "Toei": "TOEI", "YokohamaMunicipal": "YOKOHAMA_MUNICIPAL",
+    "Keio": "KEIO", "Odakyu": "ODAKYU", "Seibu": "SEIBU", "Tobu": "TOBU", "Tokyu": "TOKYU",
+    "Keikyu": "KEIKYU", "Keisei": "KEISEI", "Sotetsu": "SOTETSU", "Rinkai": "RINKAI",
+    "MinatoMirai": "MINATO_MIRAI", "TWR": "TWR", "MIR": "MIR",
+    "TamaMonorail": "TAMA_MONORAIL",
+    "Yurikamome": "YURIKAMOME", "TsukubaExpress": "TSUKUBA_EXPRESS",
+    "SaitamaNewUrbanTransit": "SAITAMA_NEW_URBAN_TRANSIT",
+    "TokyoMonorail": "TOKYO_MONORAIL",
+    // æ–°å¢ä¸¤å®¶å•è½¨è¿è¥å•†ï¼ˆåƒè‘‰éƒ½å¸‚ãƒ¢ãƒãƒ¬ãƒ¼ãƒ« / æ¹˜å—ãƒ¢ãƒãƒ¬ãƒ¼ãƒ«ï¼‰
+    "ChibaUrbanMonorail": "CHIBA_URBAN_MONORAIL",
+    "ShonanMonorail": "SHONAN_MONORAIL",
+    "EnoshimaElectric": "ENOSHIMA_ELECTRIC"
+  };
+  window.TransitConstants = {
+    OP_ORDER: [
+      "JR-East",
+      "TokyoMetro", "Toei", "YokohamaMunicipal",
+      "Keio", "Odakyu", "Seibu", "Tobu", "Tokyu",
+      "Keikyu", "Keisei", "Sotetsu",
+      "TWR", "MinatoMirai", "MIR", "Rinkai",
+      "TsukubaExpress", "Yurikamome", "TamaMonorail",
+      "TokyoMonorail", "SaitamaNewUrbanTransit",
+      // æ–°å¢ä¸¤å®¶å•è½¨è¿è¥å•†ï¼ˆåƒè‘‰éƒ½å¸‚ãƒ¢ãƒãƒ¬ãƒ¼ãƒ« / æ¹˜å—ãƒ¢ãƒãƒ¬ãƒ¼ãƒ«ï¼‰
+      "ChibaUrbanMonorail", "ShonanMonorail", "EnoshimaElectric", "UtsunomiyaLightRail",
+      // æ–°å¹²çº¿è¿è¥å•†ï¼ˆæ±æµ·é“/å±±é™½/ä¹å·/åŒ—æµ·é“æ–°å¹¹ç·šï¼‰
+      "JR-Central", "JR-Kyushu", "JR-Hokkaido",
+      "JR-Shikoku",
+      "Kintetsu",
+      "Hankyu",
+      "Hanshin",
+      "Keihan",
+      "Nankai",
+      "Meitetsu",
+      "Nishitetsu",
+      "OsakaMetro",
+      "NagoyaMunicipal",
+      "KyotoMunicipal",
+      "KobeMunicipal",
+      "SapporoMunicipal",
+      "SendaiMunicipal",
+      "FukuokaMunicipal",
+      "HiroshimaElectric"
+    ],
+    NORMALIZE: TRANSIT_NORMALIZE,
+    // JRE (JRæ±æ—¥æœ¬) ç™½åå•ï¼šè·¯ç·šè¨˜å· JA~JY å…¨è¦†ç›–ï¼›ç„¡è¨˜å·ã®åœ°æ–¹ç·šï¼ˆoperator=JR-Eastï¼‰å…œåº•
+    JRE_MARK_CODES: ["JA","JB","JC","JE","JH","JI","JJ","JK","JL","JM","JN","JO","JS","JT","JU","JY"],
+    isJRERoute: function(line) {
+      if (!line) return false;
+      var code = String(line.code || "");
+      if (this.JRE_MARK_CODES.indexOf(code) >= 0) return true;
+      if (code.indexOf("JI-") === 0) return true;  // é¶´è¦‹ç·šæ”¯ç·š JI-O / JI-U
+      return line.operator === "JR-East";          // ç„¡è¨˜å·ã®åœ°æ–¹ç·šï¼ˆä¸Šè¶Šç·šãƒ»æ°´éƒ¡ç·šç­‰ï¼‰
+    },
+    OP_NAMES: {},
+    // ä»»æ„æ ¼å¼ï¼ˆ"JR-East" / "JR_EAST" / "jr east"ï¼‰â†’ æ ‡å‡† DB/ODPT é”®ï¼ˆ"JR-East"ï¼‰ã€‚
+    normalizeOp: function(op) {
+      if (!op) return op;
+      var key = String(op).replace(/-/g, "_").replace(/ /g, "_").toUpperCase();
+      return TRANSIT_NORMALIZE[key] || op;
+    },
+    // æ ‡å‡†æ ¼å¼/ä»»æ„æ ¼å¼ â†’ LOS é”®ï¼ˆ"JR-East" â†’ "JR_EAST"ï¼‰ã€‚
+    toLosKey: function(op) {
+      if (!op) return op;
+      if (LOS_KEY_MAP[op]) return LOS_KEY_MAP[op];
+      return String(op).replace(/-/g, "_").replace(/ /g, "_").toUpperCase();
+    }
+  };

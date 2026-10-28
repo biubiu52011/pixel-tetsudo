@@ -1,1 +1,92 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò¢¢&÷WFR6V&6‚66†VGVÆR÷væW#¢¥5B6W'f–6RF’ÂFFVB6÷W&6W2æBfV6–&ÆR6öææV7F–öç2â¢ð¢†gVæ7F–öâ‚’°¢wW6R7G&–7Bs°¢gVæ7F–öâ¶W’‡2’²&WGW&â7G&–ær‡2ÇÂrr’ç7Æ—B‚râr’ç÷‚’ç&WÆ6R‚òÒörÂrr“²Ð¢gVæ7F–öâ'6UF–ÖR‡2’°¢–b‚õåÆG³Ã'Ó¥ÆG³'ÒBòçFW7B…7G&–ær‡2ÇÂrr’’’&WGW&âçVÆÃ°¢f"Ò2ç7Æ—B‚s¢r’æÖ„çVÖ&W"“°¢–b‡³Òâ#rÇÂ³ÒâS’’&WGW&âçVÆÃ°¢&WGW&â‡³ÒÂBò³Ò²#B¢³Ò’¢c²³Ó°¢Ð¢gVæ7F–öâ6öçFW‡B†÷F–öç2’°¢÷F–öç2Ò÷F–öç2ÇÂ·Ó°¢f"æ÷rÒæWrFFR„FFRææ÷r‚’²’¢3c“°¢f"Ö–çWFRÒ'6UF–ÖR†÷F–öç2æÖöFRÓÓÒvæ÷rrÇÂ÷F–öç2æÖöFRòæ÷rævWEUD4†÷W'2‚’²s¢r²7G&–ær†æ÷rævWEUD4Ö–çWFW2‚’’çE7F'Bƒ"Âsr’¢÷F–öç2çF–ÖR“°¢f"F’ÒæWrFFR†æ÷rævWEF–ÖR‚’“°¢–b†æ÷rævWEUD4†÷W'2‚’ÂB’F’ç6WEUD4FFR†F’ævWEUD4FFR‚’Ò“°¢&WGW&â²Ö–çWFS¦Ö–çWFRÂÖöFS¦÷F–öç2æÖöFRÇÂvæ÷rrÂFFS¦F’çFô•4õ7G&–ær‚’ç6Æ–6RƒÃ’À¢6ÆVæF'3¦F’ævWEUD4F’‚’ÓÓÒò²t†öÆ–F’rÂu7VæF’rÂu6GW&F”†öÆ–F’uÒ¢F’ævWEUD4F’‚’ÓÓÒbò²u6GW&F’rÂu6GW&F”†öÆ–F’uÒ¢²uvVV¶F’uÒÓ°¢Ð¢gVæ7F–öâ6æF–FFW2‡&÷w2Âg&öÒÂFòÂ7G‚’°¢f"÷WBÒµÓ°¢‡&÷w2ÇÂµÒ’æf÷$V6‚†gVæ7F–öâ‡GB’°¢–b‡GBå÷6W'f–6TFFRbbGBå÷6W'f–6TFFRÓÒ7G‚æFFR’&WGW&ã°¢f"6ÂÒ7G&–ær‡GE²vöGC¦6ÆVæF"uÒÇÂrr’ç7Æ—B‚s¢r’ç÷‚“°¢òòFFVB&÷f–FW"&÷w2&RWF†÷&—FF—fRâæWfW"7V'7F—GWFRæ÷F†W"6ÆVæF"à¢–b‚GBå÷6W'f–6TFFRbb‚6ÂÇÂ7G‚æ6ÆVæF'2æ–æFW„öb†6Â’Â’’&WGW&ã°¢f"7F÷2ÒGE²vöGC§G&–åF–ÖWF&ÆTö&¦V7BuÒÇÂµÒÂ7F'BÒÓ°¢f÷"‡f"“Ó¶“Ç7F÷2æÆVæwFƒ¶’²²’°¢f"7F÷Ò7F÷5¶•ÒÂ7FF–öâÒ¶W’‡7F÷²vöGC¦FW'GW&U7FF–öâuÒÇÂ7F÷²vöGC¦'&—fÅ7FF–öâuÒ“°¢–b‡7F'BÂbb7FF–öâÓÓÒ¶W’†g&öÒ’’7F'BÒ“°¢VÇ6R–b‡7F'BãÒbb7FF–öâÓÓÒ¶W’‡Fò’’°¢f"FWÒ7F÷5·7F'EÕ²vöGC¦FW'GW&UF–ÖRuÒÂ'"Ò7F÷²vöGC¦'&—fÅF–ÖRuÒÇÂ7F÷²vöGC¦FW'GW&UF–ÖRuÓ°¢f"BÒ'6UF–ÖR†FW’ÂÒ'6UF–ÖR†'"“°¢–b†BÒçVÆÂbbÒçVÆÂbbãÒB’÷WBçW6‚‡¶FW¦FWÆ'#¦'"ÆFWÖ–ã¦BÆ'$Ö–ã¦ÇG&–ã§GE²vöGC§G&–äçVÖ&W"uÒÇÂrrÆFW7F–æF–öã¦¶W’‡7F÷5·7F÷2æÆVæwF‚ÓÕ²vöGC¦'&—fÅ7FF–öâuÒÇÂ7F÷5·7F÷2æÆVæwF‚ÓÕ²vöGC¦FW'GW&U7FF–öâuÒ—Ò“°¢'&V³°¢Ð¢Ð¢Ò“°¢&WGW&â÷WC°¢Ð¢gVæ7F–öâf–æDæW‡EG&–â‡&÷w2Âg&öÒÂFòÂÖ–çWFRÂ6ÆVæF'2Âf–ÇFW"’°¢f"7GƒÖ6öçFW‡B‚“²–b†6ÆVæF'2’7G‚æ6ÆVæF'3Ö6ÆVæF'2æÖ†gVæ7F–öâ†2—·&WGW&â2ç7Æ—B‚s¢r’ç÷‚“·Ò“°¢&WGW&â6æF–FFW2‡&÷w2Æg&öÒÇFòÆ7G‚’æf–ÇFW"†gVæ7F–öâ†‚—·&WGW&â‚æFWÖ–ããÖÖ–çWFRbb‚f–ÇFW"ÇÂf–ÇFW%¶‚çG&–åÒ“·Ò’ç6÷'B†gVæ7F–öâ†Æ"—·&WGW&âæ'$Ö–âÖ"æ'$Ö–âÇÂæFWÖ–âÖ"æFWÖ–ã·Ò•³ÒÇÂçVÆÃ°¢Ð¢gVæ7F–öâÆöB†–B’°¢f"6Æ–VçC×v–æF÷räôED6Æ–VçBÂÆ–æS×v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ævWDÆ–æR†–B“°¢–b‚6Æ–VçBÇÂÆ–æRÇÂ6Æ–VçBævWD66†VEG&–å'Vç2’&WGW&â&öÖ—6Rç&W6öÇfR…µÒ“°¢òòöæRFFVBÆâ6÷W&6S²æV—F†W"V×G’6ÆVæF'2æ÷"f–ÇW&W2&Wf—fRÆö6ÂF&ÆW2à¢&WGW&â&öÖ—6Rç&W6öÇfR†6Æ–VçBævWD66†VEG&–å'Vç2†–B’’æ6F6‚†gVæ7F–öâ‚—·&WGW&âµÓ·Ò“°¢Ð¢gVæ7F–öâ'VffW"‡G‚’²&WGW&âÖF‚æÖ‚ƒ2ÂçVÖ&W"‡G‚bbG‚çvÆ¶–ætGW&F–öâ’ÇÂ“²Ð¢gVæ7F–öâF‡&÷Vv‚‡G‚ÆÆ"’²&WGW&â‡G‚bbG‚çF‡&÷Vv‚bbbb"bbçG&–âbbçG&–ãÓÓÖ"çG&–âbb"æFWÖ–ããÖæ'$Ö–â“²Ð¢gVæ7F–öâVç&–6…6VvÖVçG2‡6VvÖVçG2Â÷F–öç2’°¢f"7GƒÖ6öçFW‡B†÷F–öç2’Â&–FW3ÕµÒÂG&ç6fW'3ÕµÓ°¢‡6VvÖVçG2ÇÂµÒ’æf÷$V6‚†gVæ7F–öâ‡2Æ’—¶–b‡2çG—SÓÓÒw&–FRr’&–FW2çW6‚‡·6Vs§2Æ–Gƒ¦—Ò“¶VÇ6R–b‡2çG—SÓÓÒwG&ç6fW"r’G&ç6fW'5·&–FW2æÆVæwF‚ÓÓ×·6Vs§2Æ–Gƒ¦—Ó·Ò“°¢–b†7G‚æÖ–çWFSÓÖçVÆÂÇÂ&–FW2æÆVæwF‚’&WGW&â&öÖ—6Rç&W6öÇfR‡·F–ÖW3§·ÒÆ6ö×ÆWFS¦fÇ6RÇ&V6öã¢v–çfÆ–BwÒ“°¢f"–G3Ô'&’æg&öÒ†æWr6WB‡&–FW2æÖ†gVæ7F–öâ‡"—·&WGW&â"ç6VræÆ–æT–C·Ò’’“°¢&WGW&â&öÖ—6RæÆÂ†–G2æÖ†gVæ7F–öâ†–B—·&WGW&âÆöB†–B“·Ò’’çF†Vâ†gVæ7F–öâ†Æ—7G2—°¢f"6†ö–6W3×&–FW2æÖ†gVæ7F–öâ‡"—·&WGW&â6æF–FFW2†Æ—7G5¶–G2æ–æFW„öb‡"ç6VræÆ–æT–B•ÒÇ"ç6Vræg&öÕ7FF–öâÇ"ç6VrçFõ7FF–öâÆ7G‚“·Ò“°¢òòG–æÖ–2&öw&ÖÖ–ær&WF–ç2ÇFW&æFRG&–â6†ö–6W3²w&VVG’&ö&F–ær6âÖ—72ÆFW"W‡&W72÷"fV6–&ÆRG&ç6fW"à¢f"&WfW'6SÖ7G‚æÖöFSÓÓÒv'&—fRrÂ7FFW3Õ·¶7W'6÷#¦7G‚æÖ–çWFRÆ†—G3¥µÒÇG&–ã¦çVÆÇÕÒÂ÷&FW#×&–FW2æÖ†gVæ7F–öâ…òÆ’—·&WGW&â“·Ò“°¢–b‡&WfW'6R’÷&FW"ç&WfW'6R‚“°¢÷&FW"æf÷$V6‚†gVæ7F–öâ†’—°¢f"æW‡CÕµÓ°¢6†ö–6W5¶•Òæf÷$V6‚†gVæ7F–öâ††—B—°¢f"&W7CÖçVÆÃ°¢7FFW2æf÷$V6‚†gVæ7F–öâ‡7FFR—°¢f"æV–v†&÷#×7FFRæ†—G5·&WfW'6Rò’³¢’ÓÓ°¢f"Gƒ×G&ç6fW'5·&WfW'6Rò’¢’ÓÒÂ6ÖS×&WfW'6RòF‡&÷Vv‚‡G‚bbG‚ç6VrÆ†—BÆæV–v†&÷"’¢F‡&÷Vv‚‡G‚bbG‚ç6VrÆæV–v†&÷"Æ†—B“°¢f"vÖæV–v†&÷"bb6ÖRò'VffW"‡G‚bbG‚ç6Vr’¢°¢f"fV6–&ÆS×&WfW'6Rò†—Bæ'$Ö–â¶vÃ×7FFRæ7W'6÷"¢†—BæFWÖ–ãã×7FFRæ7W'6÷"¶v°¢–b†fV6–&ÆRbb‚&W7BÇÂ‡&WfW'6Rò7FFRæ†—G5·&–FW2æÆVæwF‚ÓÒæ'$Ö–ãæ&W7Bæ†—G5·&–FW2æÆVæwF‚ÓÒæ'$Ö–â¢7FFRæ†—G5³ÒæFWÖ–ãæ&W7Bæ†—G5³ÒæFWÖ–â’’’&W7C×7FFS°¢Ò“°¢–b†&W7B—·f"†—G3Ö&W7Bæ†—G2ç6Æ–6R‚“¶†—G5¶•ÓÖ†—C¶æW‡BçW6‚‡¶7W'6÷#§&WfW'6Rò†—BæFWÖ–â¢†—Bæ'$Ö–âÆ†—G3¦†—G7Ò“·Ð¢Ò“°¢7FFW3ÖæW‡C°¢Ò“°¢7FFW2ç6÷'B†gVæ7F–öâ†Æ"—·&WGW&â&WfW'6Rò"æ7W'6÷"Öæ7W'6÷"¢æ7W'6÷"Ö"æ7W'6÷#·Ò“°¢–b‚7FFW2æÆVæwF‚’&WGW&â·F–ÖW3§·ÒÆ6ö×ÆWFS¦fÇ6RÇ&V6öã¢væò×6W'f–6RrÇ6W'f–6TFFS¦7G‚æFFWÓ°¢f"†—G3×7FFW5³Òæ†—G2ÂF–ÖW3×·ÒÂ6öææV7F–öç3×·ÒÂF÷væw&FSÕµÓ°¢†—G2æf÷$V6‚†gVæ7F–öâ††—BÆ’—·F–ÖW5·&–FW5¶•Òæ–G…ÓÖ†—C°¢–b‡v–æF÷råÆFf÷&Õ&W6öÇfW"bbv–æF÷råÆFf÷&Õ&W6öÇfW"ç&W6öÇfR’°¢G'’²f"ÆFf÷&Ó×v–æF÷råÆFf÷&Õ&W6öÇfW"ç&W6öÇfR‡&–FW5¶•Òç6VræÆ–æT–BÇ&–FW5¶•Òç6Vræg&öÕ7FF–öâÇ&–FW5¶•Òç6VræF—&V7F–öâ“¶–b‡ÆFf÷&Ò’†—BçÆFf÷&Ó×ÆFf÷&Ó²Ò6F6‚†R’·Ð¢Ð¢–b†’—·f"Gƒ×G&ç6fW'5¶’ÓÒÂ6ÖS×F‡&÷Vv‚‡G‚bbG‚ç6VrÆ†—G5¶’ÓÒÆ†—B’ÂF÷FÃÖ†—BæFWÖ–âÖ†—G5¶’ÓÒæ'$Ö–ã°¢–b‡G‚—¶6öææV7F–öç5·G‚æ–G…Ó×·F‡&÷Vvƒ§6ÖRÇF÷FÃ§F÷FÂÇvÆ³§6ÖRò¢'VffW"‡G‚ç6Vr’Çv—C§6ÖRò¢F÷FÂÖ'VffW"‡G‚ç6Vr—Ó¶–b‡G‚ç6VrçF‡&÷Vv‚bb6ÖR’F÷væw&FRçW6‚‡G‚æ–G‚“·×Ð¢Ò“°¢&WGW&â·F–ÖW3§F–ÖW2Æ6öææV7F–öç3¦6öææV7F–öç2ÆF÷væw&FS¦F÷væw&FRÆ6ö×ÆWFS§G'VRÇ6W'f–6TFFS¦7G‚æFFRÆFW'GW&S¦†—G5³ÒæFWÆ'&—fÃ¦†—G5¶†—G2æÆVæwF‚ÓÒæ'"ÆGW&F–öäÖ–ã¦†—G5¶†—G2æÆVæwF‚ÓÒæ'$Ö–âÖ†—G5³ÒæFWÖ–âÆ–æ—F–Åv—C¦7G‚æÖöFSÓÓÒv'&—fRrò¢†—G5³ÒæFWÖ–âÖ7G‚æÖ–çWFWÓ°¢Ò“°¢Ð¢v–æF÷rå&÷WFUF–ÖWF&ÆS×¶Vç&–6…6VvÖVçG3¦Vç&–6…6VvÖVçG2Æf–æDæW‡EG&–ã¦f–æDæW‡EG&–çÓ°§Ò’‚“°
+/** Route search schedule owner: JST service day, dated sources and feasible connections. */
+(function() {
+  'use strict';
+  function key(s) { return String(s || '').split('.').pop().replace(/-/g, ''); }
+  function parseTime(s) {
+    if (!/^\d{1,2}:\d{2}$/.test(String(s || ''))) return null;
+    var p = s.split(':').map(Number);
+    if (p[0] > 27 || p[1] > 59) return null;
+    return (p[0] < 4 ? p[0] + 24 : p[0]) * 60 + p[1];
+  }
+  function context(options) {
+    options = options || {};
+    var now = new Date(Date.now() + 9 * 3600000);
+    var minute = parseTime(options.mode === 'now' || !options.mode ? now.getUTCHours() + ':' + String(now.getUTCMinutes()).padStart(2, '0') : options.time);
+    var day = new Date(now.getTime());
+    if (now.getUTCHours() < 4) day.setUTCDate(day.getUTCDate() - 1);
+    return { minute:minute, mode:options.mode || 'now', date:day.toISOString().slice(0,10),
+      calendars:day.getUTCDay() === 0 ? ['Holiday','Sunday','SaturdayHoliday'] : day.getUTCDay() === 6 ? ['Saturday','SaturdayHoliday'] : ['Weekday'] };
+  }
+  function candidates(rows, from, to, ctx) {
+    var out = [];
+    (rows || []).forEach(function(tt) {
+      if (tt._serviceDate && tt._serviceDate !== ctx.date) return;
+      var cal = String(tt['odpt:calendar'] || '').split(':').pop();
+      // Dated provider rows are authoritative. Never substitute another calendar.
+      if (!tt._serviceDate && (!cal || ctx.calendars.indexOf(cal) < 0)) return;
+      var stops = tt['odpt:trainTimetableObject'] || [], start = -1;
+      for (var i=0;i<stops.length;i++) {
+        var stop = stops[i], station = key(stop['odpt:departureStation'] || stop['odpt:arrivalStation']);
+        if (start < 0 && station === key(from)) start = i;
+        else if (start >= 0 && station === key(to)) {
+          var dep = stops[start]['odpt:departureTime'], arr = stop['odpt:arrivalTime'] || stop['odpt:departureTime'];
+          var d = parseTime(dep), a = parseTime(arr);
+          if (d != null && a != null && a >= d) out.push({dep:dep,arr:arr,depMin:d,arrMin:a,train:tt['odpt:trainNumber'] || '',destination:key(stops[stops.length-1]['odpt:arrivalStation'] || stops[stops.length-1]['odpt:departureStation'])});
+          break;
+        }
+      }
+    });
+    return out;
+  }
+  function findNextTrain(rows, from, to, minute, calendars, filter) {
+    var ctx=context(); if(calendars) ctx.calendars=calendars.map(function(c){return c.split(':').pop();});
+    return candidates(rows,from,to,ctx).filter(function(h){return h.depMin>=minute && (!filter || filter[h.train]);}).sort(function(a,b){return a.arrMin-b.arrMin || a.depMin-b.depMin;})[0] || null;
+  }
+  function load(id) {
+    var client=window.ODPTClient, line=window.RailwayDB && window.RailwayDB.getLine(id);
+    if(!client || !line || !client.getCachedTrainRuns) return Promise.resolve([]);
+    // One dated plan source; neither empty calendars nor failures revive local tables.
+    return Promise.resolve(client.getCachedTrainRuns(id)).catch(function(){return [];});
+  }
+  function buffer(tx) { return Math.max(3, Number(tx && tx.walkingDuration) || 0); }
+  function through(tx,a,b) { return !!(tx && tx.through && a && b && a.train && a.train===b.train && b.depMin>=a.arrMin); }
+  function enrichSegments(segments, options) {
+    var ctx=context(options), rides=[], transfers=[];
+    (segments || []).forEach(function(s,i){if(s.type==='ride') rides.push({seg:s,idx:i});else if(s.type==='transfer') transfers[rides.length-1]={seg:s,idx:i};});
+    if(ctx.minute==null || !rides.length) return Promise.resolve({times:{},complete:false,reason:'invalid'});
+    var ids=Array.from(new Set(rides.map(function(r){return r.seg.lineId;})));
+    return Promise.all(ids.map(function(id){return load(id);})).then(function(lists){
+      var choices=rides.map(function(r){return candidates(lists[ids.indexOf(r.seg.lineId)],r.seg.fromStation,r.seg.toStation,ctx);});
+      // Dynamic programming retains alternate train choices; greedy boarding can miss a later express or feasible transfer.
+      var reverse=ctx.mode==='arrive', states=[{cursor:ctx.minute,hits:[],train:null}], order=rides.map(function(_,i){return i;});
+      if(reverse) order.reverse();
+      order.forEach(function(i){
+        var next=[];
+        choices[i].forEach(function(hit){
+          var best=null;
+          states.forEach(function(state){
+            var neighbor=state.hits[reverse ? i+1 : i-1];
+            var tx=transfers[reverse ? i : i-1], same=reverse ? through(tx && tx.seg,hit,neighbor) : through(tx && tx.seg,neighbor,hit);
+            var gap=neighbor && !same ? buffer(tx && tx.seg) : 0;
+            var feasible=reverse ? hit.arrMin+gap<=state.cursor : hit.depMin>=state.cursor+gap;
+            if(feasible && (!best || (reverse ? state.hits[rides.length-1].arrMin>best.hits[rides.length-1].arrMin : state.hits[0].depMin>best.hits[0].depMin))) best=state;
+          });
+          if(best){var hits=best.hits.slice();hits[i]=hit;next.push({cursor:reverse ? hit.depMin : hit.arrMin,hits:hits});}
+        });
+        states=next;
+      });
+      states.sort(function(a,b){return reverse ? b.cursor-a.cursor : a.cursor-b.cursor;});
+      if(!states.length) return {times:{},complete:false,reason:'no-service',serviceDate:ctx.date};
+      var hits=states[0].hits, times={}, connections={}, downgrade=[];
+      hits.forEach(function(hit,i){times[rides[i].idx]=hit;
+        if(window.PlatformResolver && window.PlatformResolver.resolve) {
+          try { var platform=window.PlatformResolver.resolve(rides[i].seg.lineId,rides[i].seg.fromStation,rides[i].seg.direction);if(platform) hit.platform=platform; } catch(e) {}
+        }
+        if(i){var tx=transfers[i-1], same=through(tx && tx.seg,hits[i-1],hit), total=hit.depMin-hits[i-1].arrMin;
+          if(tx){connections[tx.idx]={through:same,total:total,walk:same ? 0 : buffer(tx.seg),wait:same ? 0 : total-buffer(tx.seg)};if(tx.seg.through && !same) downgrade.push(tx.idx);}}
+      });
+      return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:hits[hits.length-1].arr,durationMin:hits[hits.length-1].arrMin-hits[0].depMin,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
+    });
+  }
+  window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain};
+})();

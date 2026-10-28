@@ -1,14 +1,455 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò ¢¢—†VÂFWG7VFòÒvV"'Vä–æfò‚¢¢Zé{Ù‹ùŠÎh8^hª^jŠYÙ~ûÉ®K‹¢ôEBiz‹ùŠÎh8^hª^i[hÚîy¨N‹ù‰
-^YXnûÈXØ>‰˜;Ş[ˆ.8:.88î8:Î8;Î8:²òk™XÙ~8:.88î8:Î8;Î8:¾ûÈ¢¢hùKé¾‹ùŠÎx«nXk^i[hÚîk©8 ¢ ¢¢kŠ˜>K¨¾ZéîûÈ[{.jZûûÈûÉ ¢¢ÒôEB’ZûKŠNZënYØ~‹ùNY¹îz›®i[{¸NûÈ„…EE#&öG“ÕµŞûÈÎZûxZ~{¸BFÖÖöæ÷&–ÂjÚ>[‹ûÈ(i"ôEBkŠ˜>KˆŞZÙYÊ8 ¢¢ÒKŠNZënZé{Ùšinš^šn˜:YØ~iÈ‹ùŠÎh8^hª^XË®YÙ~ûÈ‚.˜¾ŠÎx«nk8"ò.8:.88î8:Î8;Î8:¾˜¾ŠÎh8^Z.ûÈûÈÄ…DÔÂK‹¢UDbÓûÈÀ¢¢jÚ>ih~ZéîkX¾jÚ>[‹ûÉ¾KØnY8Ş[©NZKNiz66W72Ô6öçG&öÂÔÆÆ÷rÔ÷&–v–â(i"kXşŠxYšy»N‹ùâfWF6‚Š*²4õ%2hºnhŠ®8 ¢¢ÒXZÎX[Kº>ynKˆŞXúş™ÚûÉ§"æ¦–ææ’ZûKŠNz¹h©>XùnKˆŞz‹>Zé®ûÈXØ>XûbC#’™™kXûÈûÉ¶’æÆÆ÷&–v–ç2çv–âò’æ6öFWF'2æ6öÒk©z¹’S#.8 ¢¢Òk™XÙ~Zé{Ù‹ùŠÎx«nhKúXû~Y»îûÈ‡6W'f–6U7FGW56–vä&ÇVRõ–VÆÆ÷rõ&VBçæ~ûÈK‹®Y»®Zé®YŞYŞih~K»b(i"Xúş{¸òÆ–Ösà¢¢‹zYùşXª‹ÛŞûÈKˆŞXùr4õ%2™™X‹nûÈX®™»nKéŞ‹YnZéîi{nx«nhXŠNZé®8 ¢ ¢¢i[hÚîkXûÈZI®˜	®˜>ûÈÎhÈXúşyJh
-~ˆz®Xª™˜Ş{ª~ûÈûÉ ¢¢)YÎk©Kº>ynûÈiÊÎYË˜:{Û"÷&÷‡“÷W&ÃŞ(
-bi{nY
-şyJûÈÎXúşXZˆz®XªûÈ¢¢)"æ¦–ææ’XZÎX[™ˆ^Šû¾Kº>ynûÈ™Ùh˜:{Û.YJşKˆXZih~˜	®˜>ûÉ¾XØ>XûbC#’™™kXûÈÎZK‹J^XÛ>™˜Ş{ª~ûÈ¢¢)"k™XÙ~KúXû~Y»âÆ–Ösâx«nhj8kX¾ûÈZéîi{nx«nhûÈÎ™»b4õ%2KéŞ‹YnûÈ¢¢)2h˜¾Xª{)‹KNZé{ÙXéşih~ûÈXúş™ÚXYÎ[©^ûÈÆÆö6Å7F÷&vRhÈK˜^XÉnûÈÎKˆŞˆz®XªŠhny¹nûÈ¢¢(i"vWDFVÆ”–æfò‚’Ké²FFgW6–öâ‰èŞY‚(i"&VÇF–ÖR[Ëz©~y»Nhê^i‹îzK®Zé{ÙXéşih~XZihp¢ ¢¢Zé{Ùy»N‹ùî˜	®˜>z{¾™šN(	N(	NKŠNZënZé{ÙY8Ş[©NZKNYØ~iz66W72Ô6öçG&öÂÔÆÆ÷rÔ÷&–v–îûÈÀ¢¢™Ùh˜:{Û.Kˆ¾kXşŠxYšy»N‹ùî[ø^xKnŠ*²4õ%2hºnhŠ®ûÉ·"æ¦–ææ’K‹®™Ùh˜:{Û.YJşKˆXZih~˜	®˜0¢ ¢¢[^zK®ŠxNX‰ûÈ˜^[ê®yJh‹~™HZé®Xú>[èNûÈûÉ ¢¢[Ëz©~˜¾ŠÎh8^ZXË®y»Nhê^i‹îzK®Zé{ÙXéşih~XZih~ûÈÎKˆŞX®z(îx˜~XÉnX[>™JîŠøŞŠz>iéûÉ°¢¢x«nhiŠ[NûÈjÚ>[‹‚ş[»n‹ùòşXÎ‹ùş˜	®yú^ûÈK¸^KÙÎXÚx˜~jh.ŠxKˆîXYÎ[©^8 ¢¢ğ¢†gVæ7F–öâ‚’°¢'W6R7G&–7B#° ¢f"5Dõ$tUô´U’Ò'E÷'Væ–æfõ÷vV%÷c#°¢f"$Te$U4…ô”åDU%dÅôÕ2ÒR¢c¢²òòˆz®Xª‹ÚîŠú.™{N™©NûÈƒRXˆn™)şûÈ¢f"dUD4…õD”ÔTõUEôÕ2ÒS° ¢òòÓÓÓÓÓÓÓÓÓÒ{Ùš^k©‹ù‰
-^YXn˜XŞ{ÚâÓÓÓÓÓÓÓÓÓĞ¢òò6—FS¢Zé{Ùy»N™;îûÈh™>[ÈZé{Ùö–g&Ö^ûÈûÉ¶&Æö6³¢šinš^‹ùŠÎh8^hª^XË®YÙ~j~š)X[>™JîŠøŞûÉ¶W‡G&&Æö6³¢™˜NXªKúhşXË®YÙp¢f"4õU$4U2Ò°¢$6†–&W&&äÖöæ÷&–Â#¢°¢6—FS¢&‡GG3¢òö6†–&ÖÖöæ÷&–Âæ6òæ§ò"À¢&Æö6³¢²%ÇS“F%ÇSƒƒF5ÇSs&#eÇSf63%ÒÂòò˜¾ŠÎx«nk8¢W‡G&&Æö6³¢²%ÇS3VEÇS3fUÇSFVCeÇSc3UÇSSƒ3%Òòò8Ş8îK¹nh8^Z¢ÒÀ¢%6†öæäÖöæ÷&–Â#¢°¢6—FS¢&‡GG3¢ò÷wwrç6†öæâÖÖöæ÷&–Âæ6òæ§ò"À¢&Æö6³¢²%ÇS3S%ÇS36UÇS3V5ÇS3f5ÇS3V%ÇS“F%ÇSƒƒF5ÇSc3UÇSSƒ3%ÒÂòò8:.88î8:Î8;Î8:¾˜¾ŠÎh8^Z¢6–væÃ¢²òòKúXû~Y»îZéîi{nx«nhXŠNZé ¢æ÷&ÖÃ¢&‡GG3¢ò÷wwrç6†öæâÖÖöæ÷&–Âæ6òæ§ö6öÖÖöâö–ÖvW2÷6W'f–6U7FGW56–vä&ÇVRçær"À¢FVÆ–VC¢&‡GG3¢ò÷wwrç6†öæâÖÖöæ÷&–Âæ6òæ§ö6öÖÖöâö–ÖvW2÷6W'f–6U7FGW56–vå–VÆÆ÷rçær"À¢7W7VæFVC¢&‡GG3¢ò÷wwrç6†öæâÖÖöæ÷&–Âæ6òæ§ö6öÖÖöâö–ÖvW2÷6W'f–6U7FGW56–vå&VBçær ¢Ğ¢Ğ¢Ó° ¢òò{«ş‹zò(i"‹ù‰
-^YXnûÈ{Ùš^k©ûÈûÉ¾KˆâôED6Æ–VçBäÄ”äUõDõôõU$Dõ"Šz>ˆ
-nûÈŠú^ŠKˆŞy›¾Šë‹ùKŠNZënûÈ¢f"Ä”äUõDõôõÒ°¢$6†–&Ööæ÷&–Ã#¢$6†–&W&&äÖöæ÷&–Â"À¢$6†–&Ööæ÷&–Ã"#¢$6†–&W&&äÖöæ÷&–Â"À¢%6†öæäÖöæ÷&–Â#¢%6†öæäÖöæ÷&–Â ¢Ó° ¢òòÓÓÓÓÓÓÓÓÓÒXh^ZÙ{É>ZÙ‚ÓÓÓÓÓÓÓÓÓĞ¢f"öFFÒçVÆÃ°¢f"öÆöF–ærÒ·Ó²òò÷ÓâG'V^ûÈ™‹.[›nXùh©>XùnûÈ¢f"÷F–ÖW"ÒçVÆÃ° ¢gVæ7F–öâÆöD66†R‚’°¢–b…öFF’&WGW&âöFF°¢G'’°¢f"&rÒv–æF÷ræÆö6Å7F÷&vRbbv–æF÷ræÆö6Å7F÷&vRævWD—FVÒ…5Dõ$tUô´U’“°¢–b‡&r’°¢f"'6VBÒ¥4ôâç'6R‡&r“°¢–b‡'6VBbb'6VBçbÓÓÒbb'6VBæFF’öFFÒ'6VBæFF°¢Ğ¢Ò6F6‚†R’·Ğ¢–b‚öFF’öFFÒ·Ó°¢&WGW&âöFF°¢Ğ ¢gVæ7F–öâW'6—7B‚’°¢G'’°¢–b‡v–æF÷ræÆö6Å7F÷&vR’°¢v–æF÷ræÆö6Å7F÷&vRç6WD—FVÒ…5Dõ$tUô´U’Â¥4ôâç7G&–æv–g’‡²c¢ÂFF¢öFFÒ’“°¢Ğ¢Ò6F6‚†R’·Ğ¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒx«nhiŠ[NûÈK¸^jh.Šx‚şXYÎ[©^ûÉ¾Xéşih~XZ˜xşKùŞyYYÊ‚FWF–ÎûÈ’ÓÓÓÓÓÓÓÓÓĞ¢gVæ7F–öâÖ7FGW2‡FW‡B’°¢–b‚FW‡B’&WGW&âçVÆÃ°¢–b‡v–æF÷rå'Vä–æfôWfÇVF÷"’°¢f"&W7VÇBÒv–æF÷rå'Vä–æfôWfÇVF÷"æWfÇVFR‡²6÷W&6S¢&öff–6–Å÷vV""Â7W'&VçD÷W&F–öæÅ6÷W&6S¢G'VRÂFW‡C¢FW‡BÒ“°¢òòF†RWfÇVF÷"–çFVçF–öæÆÇ’&WGW&ç2–æfòf÷"&&—G&'’æöâÖV×G’FW‡Bà¢òòvV'6—FR&Æö6²Ç6ò6öçF–ç2æf–vF–öâö†VÇ6÷’Â6òöæÇ’66WB¢òò7FGW2v†VâF†RFW‡B6'&–W2÷W&F–öæÂWf–FVæ6Râ÷F†W'v—6RÆ–æP¢òò7V6‚2.8®YXş8NY8(ş8²"6â&V6öÖRF†Rf—6–&ÆR'VâÖ–æfò7FGW2à¢f"Wf–FVæ6RÒ'&’æ—4'&’‡&W7VÇBæWf–FVæ6R’ò&W7VÇBæWf–FVæ6R¢µÓ°¢f"÷W&F–öæÂÒWf–FVæ6Rç6öÖR†gVæ7F–öâ†—FVÒ’°¢&WGW&â—FVÒbb—FVÒçG—Rbb—FVÒçG—RÓÒ%Tä4Ä54”d”TEõDU…B#°¢Ò“°¢òò&–æfò"Ç6ò6÷fW'2vR†VF–æw2æBV&Æ–6F–öâ×öÆ–7’6÷’âvV ¢òò6÷W&6RÖ’VçFW"F†R66†RöæÇ’gFW"—BW‡÷6W26öæ7&WFR7W'&Vç@¢òò7FFR†æ÷&ÖÂöFVÆ’÷7W7Vç6–öâöæ÷F–6R’à¢&WGW&â÷W&F–öæÂbb&W7VÇBç7FGW2ÓÒ&–æfò"bb&W7VÇBç7FGW2ÓÒ'Væ¶æ÷vâ"ò&W7VÇBç7FGW2¢çVÆÃ°¢Ğ¢&WGW&â&–æfò#°¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒ{Énzhê.kX¾KˆîŠz>zÓÓÓÓÓÓÓÓÓĞ¢òòZé{Ù…DÔÂK‹¢UDbÓûÈZéîkX¾jÚ>ih~jÚ>[‹ûÈûÉ¾KùŞyY˜	®yJhê.kX¾Kº^X[ÎZëX[nK¹nk©8.‹ùNY¹â²FW‡BÂVæ6öF–ærĞ¢gVæ7F–öâFV6öFU&W7öç6R†'VbÂ6öçFVçEG—R’°¢f"Væ2ÒçVÆÃ°¢G'’°¢f"6ÒÒ7G&–ær†6öçFVçEG—RÇÂ""’æÖF6‚‚ö6†'6WCÒ…µÇrÕÒ²’ö’“°¢–b†6Ò’Væ2Ò6Õ³ÒçFôÆ÷vW$66R‚“°¢Ò6F6‚†R’·Ğ¢–b‚Væ2’°¢G'’°¢f"†VBÒ'Vbç6Æ–6RƒÂc’çFõ7G&–ær‚'WFc‚"“°¢f"†ÒÒ†VBæÖF6‚‚ö6†'6WCÕ²"uÓò…µÇrÕÒ²’ö’“°¢–b††Ò’Væ2Ò†Õ³ÒçFôÆ÷vW$66R‚“°¢Ò6F6‚†R’·Ğ¢Ğ¢òòUDbÓ‚KÉXXûÈZé{ÙZéîkX²UDbÓûÈûÉ·6†–gEö¦—2XYÎ[©P¢f"G'”Æ—7BÒµÓ°¢–b†Væ2bbVæ2ÓÒ'WFbÓ‚"bbVæ2ÓÒ'WFc‚"’G'”Æ—7BçW6‚†Væ2“°¢G'”Æ—7BçW6‚‚'WFbÓ‚"“°¢–b†Væ2bbVæ2ÓÓÒ'WFbÓ‚"’G'”Æ—7BçVç6†–gB‚'WFbÓ‚"“°¢G'”Æ—7BçW6‚‚'6†–gEö¦—2"“°¢f÷"‡f"BÒ²BÂG'”Æ—7BæÆVæwFƒ²B²²’°¢G'’°¢f"FV2ÒæWrFW‡DFV6öFW"‡G'”Æ—7E·EÒ“°¢f"2ÒFV2æFV6öFR†'Vb“°¢f"&BÒ°¢f÷"‡f"¢Ò²¢Â2æÆVæwF‚bb¢Â3²¢²²’–b‡2æ6†$6öFTB†¢’ÓÓÒ„dddB’&B²³°¢–b†&BÂ3’&WGW&â²FW‡C¢2ÂVæ6öF–æs¢G'”Æ—7E·EÒÓ°¢Ò6F6‚†R’·Ğ¢Ğ¢&WGW&â²FW‡C¢'VbçFõ7G&–ær‚'WFc‚"’ÂVæ6öF–æs¢'WFbÓ‚"Ó°¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒZé{Ù…DÔÂŠz>iéÓÓÓÓÓÓÓÓÓĞ¢òò‹é>XZ^ûÉ®jÚ>zîŠz>zy¨NZé{Ùšinš^ih~iÊÎûÈ„…DÔÂh‰b"æ¦–æÖ&¶F÷vâYØ~XúşûÈ8.‹é>X{®ûÉ§²7FGW4Æ–æRÂFWF–ÂĞ¢òò…DÔÂ[Ú.h‹ùŠÎh8^hª^[‹hÊNYÊYÎKˆŠÂ(i"XXhÈYÙ~{ª~j~zÛîXˆnŠÎûÉ¾x«nhŠÎhÈx«nhŠøŞXË˜XŞûÈ™Ùîšinih~iÊÎŠÎûÈûÉ°¢òòjè¾yYj~zÛâşk:˜x®ŠÎ‹{>‹ø~ûÉ¾˜~ZûÎˆŠ®j~š){¹>iÙşXË®YÙ~8 ¢gVæ7F–öâ'6U6—FUFW‡B‡FW‡BÂ÷’°¢f"6frÒ4õU$4U5¶÷Ó°¢–b‚6frÇÂFW‡B’&WGW&âçVÆÃ°¢f"&Æö6µFw2ÒóÂ…Âò“ò†Æ—ÇÆF—gÇ7çÆ…³Óe×ÇG'ÇFGÆ'"•µãåÒ£âöv“°¢f"6V7F–öäVæBÒş8®YXş8NY8(ş8·Î8+^8*N8889î88>89wÎhêyJh8^ZÎKÉ®zKîjh.ŠhÎ8*.8*ş8+¾8+—Î8:®8;>8*÷Î88¾8:^8;Î8+—Î8®yú^8(8·Î8(8ş8.8(¾‹:®YX÷ÎX¾K«®h8^ZÎ89~8:8*N898+~8;ÇÎXŠyJŠhş{HGÎXXŞ‹*ÎK¨¾šWÎk.K«§ÎhêyJ‚ó°¢f"æ÷&ÖÆ—¦VBÒ7G&–ær‡FW‡B’ç&WÆ6R†&Æö6µFw2Â%Æâ"’ç&WÆ6R‚óÆ'%Ç2¥Âóóâöv’Â%Æâ"“°¢f"Æ–æW2Òæ÷&ÖÆ—¦VBç7Æ—B‚õÇ#õÆâò’æÖ†gVæ7F–öâ†Â’²&WGW&âÂçG&–Ò‚“²Ò“°¢f"–ä&Æö6²ÒfÇ6S°¢f"6öÆÆV7FVBÒµÓ° ¢f÷"‡f"’Ò²’ÂÆ–æW2æÆVæwFƒ²’²²’°¢f"Æ–æRÒÆ–æW5¶•Ó°¢–b‚Æ–æR’6öçF–çVS°¢–b‚–ä&Æö6²’°¢f"†—BÒfÇ6S°¢f÷"‡f""Ò²"Â6fræ&Æö6²æÆVæwFƒ²"²²’°¢–b†Æ–æRæ–æFW„öb†6fræ&Æö6µ¶%Ò’ãÒ’²†—BÒG'VS²'&V³²Ğ¢Ğ¢–b††—B’²–ä&Æö6²ÒG'VS²6öçF–çVS²Ğ¢6öçF–çVS°¢Ğ¢–b‡6V7F–öäVæBçFW7B†Æ–æR’’²–ä&Æö6²ÒfÇ6S²6öçF–çVS²Ğ¢–b‚õâÅ²òçFW7B†Æ–æR’’6öçF–çVS°¢òòÖ&¶F÷vâ™;îhê^ih~iÊÎhùXùb·FW‡EÒ‡W&Â¢f"FW‡DöæÇ’ÒÆ–æS°¢f"ÆÒÒFW‡DöæÇ’æÖF6‚‚õåÅ²…µåÅÕÒ²•ÅÕÂ‚ò“°¢–b†ÆÒ’FW‡DöæÇ’ÒÆÕ³Ó°¢FW‡DöæÇ’ÒFW‡DöæÇ’ç&WÆ6R‚õ²¥ö5ÒörÂ""’çG&–Ò‚“°¢–b‚FW‡DöæÇ’’6öçF–çVS°¢òòjè¾yYj~zÛâşk:˜x¢ş‹è^XªXZ^Xú>‹{>‹øp¢–b‡FW‡DöæÇ’æ–æFW„öb‚#Â"’ãÒÇÂFW‡DöæÇ’æ–æFW„öb‚"ÒÓâ"’ãÒ’6öçF–çVS°¢–b‚ş˜^[»nŠ‹Îiˆîi»‡ÎZé®iÉşX‹8î8NjXhWÎYº>KÙ>X›.[É^K™~‹¸®X‹‡ÎKúXûwÎ8*.8*N8+>8;7Ä–ÖvRÆB²òçFW7B‡FW‡DöæÇ’’’6öçF–çVS°¢6öÆÆV7FVBçW6‚‡FW‡DöæÇ’“°¢Ğ ¢òòx«nhŠÂÒzÊÎKˆKŠ®Y
-¾x«nhŠøŞy¨NŠÎûÈjÚ>[‹‚ş˜^[»bş˜¾KÉşŠh¾Y8(ş8¾zØûÈûÉ¾izXË˜XŞX‰yJšinKŠ®ih~iÊÎŠÎXYÎ[©P¢f"7FGW4Æ–æRÒçVÆÃ°¢f"6’ÒÓ°¢f÷"‡f"¢Ò²¢Â6öÆÆV7FVBæÆVæwFƒ²¢²²’°¢–b†Ö7FGW2†6öÆÆV7FVE¶¥Ò’’²7FGW4Æ–æRÒ6öÆÆV7FVE¶¥Ó²6’Ò£²'&V³²Ğ¢Ğ¢òòFòæ÷BfÆÂ&6²FòF†Rf—'7B&&—G&'’&Æö6²Æ–æS¢—BÖ’&R†VÇÀ¢òò6öçF7BÂ÷"æf–vF–öâVçG'’&F†W"F†ââ÷W&F–ær×7FGW26Æ–Òà¢–b‚7FGW4Æ–æR’&WGW&âçVÆÃ°¢f"FWF–ÂÒ7FGW4Æ–æS°¢f÷"‡f"²Ò6’²²²Â6öÆÆV7FVBæÆVæwFƒ²²²²’°¢FWF–Â³Ò%Æâ"²6öÆÆV7FVE¶µÓ°¢Ğ¢f"7FGW2ÒÖ7FGW2‡7FGW4Æ–æR“°¢&WGW&â²7FGW4Æ–æS¢7FGW4Æ–æRÂFWF–Ã¢FWF–ÂÂ7FGW3¢7FGW2ÇÂ&æ÷&ÖÂ"Â–çFW'fÃ¢çVÆÂÓ°¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒ…DÔÂh©>XùnûÈZI®˜	®˜>ûÈ’ÓÓÓÓÓÓÓÓÓĞ¢òò˜	®˜2)YÎk©Kº>ynûÉ®ˆº^YÎk©iÊÎYË˜:{Û.ZÙYÊ‚÷&÷‡’zºşx+ûÈÎX‰KÛşyJûÈ…—F†öâzºşiz4õ%2™™X‹nûÈ¢gVæ7F–öâG'•6ÖT÷&–v–å&÷‡’†÷’°¢&WGW&âæWr&öÖ—6R†gVæ7F–öâ‡&W6öÇfR’°¢G'’°¢f"W&ÂÒVæ6öFUU$”6ö×öæVçB…4õU$4U5¶÷Òç6—FR“°¢fWF6‚‚"÷&÷‡“÷W&ÃÒ"²W&ÂÂ²ÖWF†öC¢$tUB"Ò’çF†Vâ†gVæ7F–öâ‡&W2’°¢–b‚&W2æö²’²&W6öÇfR†çVÆÂ“²&WGW&ã²Ğ¢&W2æ'&”'VffW"‚’çF†Vâ†gVæ7F–öâ†'Vb’°¢&W6öÇfR‡²ö³¢G'VRÂ'Vc¢'VbÂ7C¢&W2æ†VFW'2ævWB‚&6öçFVçB×G—R"’ÇÂ""Ò“°¢Ò’æ6F6‚†gVæ7F–öâ‚’²&W6öÇfR†çVÆÂ“²Ò“°¢Ò’æ6F6‚†gVæ7F–öâ‚’²&W6öÇfR†çVÆÂ“²Ò“°¢Ò6F6‚†R’²&W6öÇfR†çVÆÂ“²Ğ¢Ò“°¢Ğ¢òò˜	®˜2)"æ¦–ææûÈZû’UDbÓ‚š^™Ú.XúşyJûÉµ6†–gBÔ¤•2š^™Ú.KÉ®K›z(	N(	NŠz>zYîj
-š¨ÎûÈÎK›zX‰KŠ.[È>ûÈ¢gVæ7F–öâG'”¦–æ†÷’°¢&WGW&âæWr&öÖ—6R†gVæ7F–öâ‡&W6öÇfR’°¢G'’°¢f"7G&ÂÒçVÆÃ°¢G'’²7G&ÂÒæWr&÷'D6öçG&öÆÆW"‚“²Ò6F6‚†R’·Ğ¢f"F–ÖW"Ò6WEF–ÖV÷WB†gVæ7F–öâ‚’²G'’²–b†7G&Â’7G&Âæ&÷'B‚“²Ò6F6‚†R’·Ò&W6öÇfR†çVÆÂ“²ÒÂdUD4…õD”ÔTõUEôÕ2“°¢f"÷G2Ò²ÖWF†öC¢$tUB"Â†VFW'3¢²$66WB#¢'FW‡B÷Æ–âÂFW‡BöÖ&¶F÷vâ"ÒÓ°¢–b†7G&Â’÷G2ç6–væÂÒ7G&Âç6–væÃ°¢fWF6‚‚&‡GG3¢ò÷"æ¦–ææ’ò"²4õU$4U5¶÷Òç6—FRÂ÷G2’çF†Vâ†gVæ7F–öâ‡&W2’°¢–b‚&W2æö²’²6ÆV%F–ÖV÷WB‡F–ÖW"“²&W6öÇfR†çVÆÂ“²&WGW&ã²Ğ¢&W2æ'&”'VffW"‚’çF†Vâ†gVæ7F–öâ†'Vb’°¢6ÆV%F–ÖV÷WB‡F–ÖW"“°¢òò"æ¦–æih~iÊÎ[©NXúşy»NhêRUDbÓ‚Šz>zûÉµ6†–gBÔ¤•2k©z¹KÉ®K›z(i"KªN{¹’'6Rj
-š¨ÎûÈh›î[é~X‹XË®YÙ~j~š)h˜Ş˜x~yJûÈ¢&W6öÇfR‡²ö³¢G'VRÂ'Vc¢'VbÂ7C¢&W2æ†VFW'2ævWB‚&6öçFVçB×G—R"’ÇÂ""Ò“°¢Ò’æ6F6‚†gVæ7F–öâ‚’²6ÆV%F–ÖV÷WB‡F–ÖW"“²&W6öÇfR†çVÆÂ“²Ò“°¢Ò’æ6F6‚†gVæ7F–öâ‚’²6ÆV%F–ÖV÷WB‡F–ÖW"“²&W6öÇfR†çVÆÂ“²Ò“°¢Ò6F6‚†R’²&W6öÇfR†çVÆÂ“²Ğ¢Ò“°¢Ğ ¢òòh©>XùnhÈ~Zé®‹ù‰
-^YXn[›n‰Ş[©>ûÉ¾h‰X©ş‹ùNY¹âFVÆ”–æfşûÈÎZK‹J^‹ùNY¹âçVÆÎûÈKùŞyYiz~i[hÚîûÈ¢gVæ7F–öâ&Vg&W6‚†÷’°¢f"6frÒ4õU$4U5¶÷Ó°¢–b‚6fr’&WGW&â&öÖ—6Rç&W6öÇfR†çVÆÂ“°¢–b…öÆöF–æu¶÷Ò’&WGW&â&öÖ—6Rç&W6öÇfR†vWDFVÆ”–æfô'”÷†÷’“°¢öÆöF–æu¶÷ÒÒG'VS°¢&WGW&âfWF6„…DÔÂ†÷’çF†Vâ†gVæ7F–öâ‡FW‡B’°¢–b‚FW‡B’&WGW&âçVÆÃ°¢f"'6VBÒ'6U6—FUFW‡B‡FW‡BÂ÷“°¢–b‚'6VB’&WGW&âçVÆÃ°¢f"FFÒÆöD66†R‚“°¢FF¶÷ÒÒ°¢7FGW3¢'6VBç7FGW2À¢–çFW'fÃ¢'6VBæ–çFW'fÂÀ¢6W6S¢'6VBç7FGW4Æ–æRÀ¢FWF–Ã¢'6VBæFWF–ÂÀ¢WFFVDC¢FFRææ÷r‚’À¢6÷W&6S¢'vV""À¢&s¢FW‡@¢Ó°¢W'6—7B‚“°¢æ÷F–g•WFFR‚“°¢&WGW&âFF¶÷Ó°¢Ò’æ6F6‚†gVæ7F–öâ†R’°¢6öç6öÆRæFV'Vr‚%µvV%'Vä–æfõÒ&Vg&W6‚"²÷²"f–ÆVC¢"ÂRbbRæÖW76vRòRæÖW76vR¢R“°¢&WGW&âçVÆÃ°¢Ò’çF†Vâ†gVæ7F–öâ‡"’°¢öÆöF–æu¶÷ÒÒfÇ6S°¢&WGW&â#°¢Ò“°¢Ğ ¢gVæ7F–öâfWF6„…DÔÂ†÷’°¢òò˜	®˜>š®[¨şûÉ®YÎk©Kº>yb(i""æ¦–ææûÉ¾šinKŠ®Kª~X{®Y
-¾XË®YÙ~j~š)y¨Nih~iÊÎXÛ>˜x~yJ€¢&WGW&âG'•6ÖT÷&–v–å&÷‡’†÷’çF†Vâ†gVæ7F–öâ‡#’°¢–b‡#’°¢f"CÒFV6öFU&W7öç6R‡#æ'VbÂ#æ7B“°¢–b‡'6U6—FUFW‡B†CçFW‡BÂ÷’’&WGW&âCçFW‡C°¢Ğ¢&WGW&âG'”¦–æ†÷’çF†Vâ†gVæ7F–öâ‡#2’°¢–b‚#2’&WGW&âçVÆÃ°¢f"C2ÒFV6öFU&W7öç6R‡#2æ'VbÂ#2æ7B“°¢–b‡'6U6—FUFW‡B†C2çFW‡BÂ÷’’&WGW&âC2çFW‡C°¢&WGW&âçVÆÃ°¢Ò“°¢Ò“°¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒk™XÙ~KúXû~Y»îx«nhj8kX¾ûÈ™»b4õ%2Zéîi{nx«nhûÈ’ÓÓÓÓÓÓÓÓÓĞ¢òòZé{Ù‹ùŠÎx«nhKúXû~Y»îih~K»nYŞY»®Zé®ûÈ„&ÇVSŞjÚ>[‹‚ò–VÆÆ÷sŞ˜^[»bò&VCŞ˜¾‹º.Šh¾Y8(ş8¾ûÈûÈÀ¢òòÆ–Ösâ‹zYùşXª‹ÛŞKˆŞXùr4õ%2™™X‹b(i"yKY»îx˜~Xª‹ÛŞh‰‹J^XŠNZé®[Ù>X˜Şx«nh8 ¢gVæ7F–öâFWFV7E6–væÅ7FGW2†÷’°¢&WGW&âæWr&öÖ—6R†gVæ7F–öâ‡&W6öÇfR’°¢f"6frÒ4õU$4U5¶÷Ó°¢–b‚6frÇÂ6frç6–væÂ’²&W6öÇfR†çVÆÂ“²&WGW&ã²Ğ¢f"ÖÒ6frç6–væÃ°¢f"¶W—2Òö&¦V7Bæ¶W—2†Ö“°¢f"6†V6¶VBÒÂ&W7VÇBÒçVÆÃ°¢¶W—2æf÷$V6‚†gVæ7F–öâ†²’°¢f"–ÖrÒæWr–ÖvR‚“°¢–ÖræöæÆöBÒgVæ7F–öâ‚’²&W7VÇBÒ³²Ó°¢–ÖræöæW'&÷"ÒgVæ7F–öâ‚’·Ó°¢–ÖræöæÆöBÒ–ÖræöæW'&÷"ÒgVæ7F–öâ‚’°¢6†V6¶VB²³°¢–b†6†V6¶VBÓÓÒ¶W—2æÆVæwF‚’&W6öÇfR‡&W7VÇB“°¢Ó°¢–Örç7&2ÒÖ¶µÓ°¢Ò“°¢6WEF–ÖV÷WB†gVæ7F–öâ‚’²&W6öÇfR‡&W7VÇB“²ÒÂC“°¢Ò“°¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒh˜¾Xª‹é>XZ^ûÈXúş™ÚXYÎ[©^ûÈÎKˆŞˆz®XªŠhny¹nûÈ’ÓÓÓÓÓÓÓÓÓĞ¢gVæ7F–öâ6WDÖçVÂ†÷ÂFW‡B’°¢–b‚4õU$4U5¶÷ÒÇÂFW‡B’&WGW&âçVÆÃ°¢f"'6VBÒ'6U6—FUFW‡B‡FW‡BÂ÷“°¢–b‚'6VB’&WGW&âçVÆÃ°¢f"FFÒÆöD66†R‚“°¢FF¶÷ÒÒ°¢7FGW3¢‡'6VBbb'6VBç7FGW2’ÇÂ&æ÷&ÖÂ"À¢–çFW'fÃ¢'6VBò'6VBæ–çFW'fÂ¢çVÆÂÀ¢6W6S¢‡'6VBbb'6VBç7FGW4Æ–æR’ÇÂ7G&–ær‡FW‡B’ç7Æ—B‚õÇ#õÆâò•³ÒÇÂ""À¢FWF–Ã¢'6VBò'6VBæFWF–Â¢7G&–ær‡FW‡B’çG&–Ò‚’À¢WFFVDC¢FFRææ÷r‚’À¢6÷W&6S¢&ÖçVÂ"À¢&s¢7G&–ær‡FW‡B¢Ó°¢W'6—7B‚“°¢æ÷F–g•WFFR‚“°¢&WGW&âFF¶÷Ó°¢Ğ ¢gVæ7F–öâ6ÆV"†÷’°¢f"FFÒÆöD66†R‚“°¢–b†FF¶÷Ò’²FVÆWFRFF¶÷Ó²W'6—7B‚“²æ÷F–g•WFFR‚“²Ğ¢Ğ ¢gVæ7F–öâvWDFVÆ”–æfô'”÷†÷’°¢f"FFÒÆöD66†R‚“°¢f"BÒFF¶÷Ó°¢–b‚B’&WGW&âçVÆÃ°¢&WGW&â°¢7FGW3¢Bç7FGW2À¢–çFW'fÃ¢Bæ–çFW'fÂÀ¢6W6S¢Bæ6W6RÀ¢FWF–Ã¢BæFWF–ÂÀ¢WFFVDC¢BçWFFVDBÀ¢6÷W&6S¢Bç6÷W&6P¢Ó°¢Ğ ¢òòKé²FFgW6–öâ‹>yJûÉ®{«ş‹zò(i"FVÆ”–æfşûÈK¸^{Ùš^k©{«ş‹zşûÈ¢gVæ7F–öâvWDFVÆ”–æfò†Æ–æT–BÂÆ–æR’°¢f"÷Ò†Æ–æRbbÆ–æRæ÷W&F÷"’ÇÂÄ”äUõDõôõ¶Æ–æT–EÒÇÂçVÆÃ°¢–b‚÷ÇÂ4õU$4U5¶÷Ò’&WGW&âçVÆÃ°¢f"–æfòÒvWDFVÆ”–æfô'”÷†÷“°¢–b†–æfò’&WGW&â–æfó°¢òò{Ùš^k©{«ş‹zş8[	®izi[hÚîûÉ®KˆŞi‹îzK¢æõööGNûÈÎiKK‹¢æõöFFûÈh©>XùnZK‹JRşiÊ®[ÈZx¾ûÈ¢&WGW&â²7FGW3¢&æõöFF"Â–çFW'fÃ¢çVÆÂÂ6W6S¢çVÆÂÂFWF–Ã¢çVÆÂÂWFFVDC¢çVÆÂÂ6÷W&6S¢çVÆÂÓ°¢Ğ ¢gVæ7F–öâ—5vV$Æ–æR†Æ–æT–B’°¢&WGW&âÄ”äUõDõôõ¶Æ–æT–EÓ°¢Ğ¢gVæ7F–öâvWD÷W&F÷$f÷$Æ–æR†Æ–æT–B’°¢&WGW&âÄ”äUõDõôõ¶Æ–æT–EÒÇÂçVÆÃ°¢Ğ¢gVæ7F–öâvWE6—FUW&Â†÷’°¢&WGW&â…4õU$4U5¶÷Òbb4õU$4U5¶÷Òç6—FR’ÇÂçVÆÃ°¢Ğ¢gVæ7F–öâvWD–æfò†÷’°¢&WGW&âvWDFVÆ”–æfô'”÷†÷“°¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒ‹ÚîŠú.ûÈYîXûi¨.XÂşX˜ŞXûh.ZHŞûÈÎKˆâFFgW6–öây»YÎjŠ[ÈşûÈ’ÓÓÓÓÓÓÓÓÓĞ¢f"÷f—6–&–Æ—G”&÷VæBÒfÇ6S°¢gVæ7F–öâ7F'EöÆÆ–ær‚’°¢–b‚÷f—6–&–Æ—G”&÷VæB’°¢÷f—6–&–Æ—G”&÷VæBÒG'VS°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚wf—6–&–Æ—G–6†ævRrÂgVæ7F–öâ‚’°¢–b†Fö7VÖVçBæ†–FFVâ’°¢–b…÷F–ÖW"’²6ÆV$–çFW'fÂ…÷F–ÖW"“²÷F–ÖW"ÒçVÆÃ²Ğ¢ÒVÇ6R°¢&Vg&W6„ÆÄ–e7FÆR‚“°¢7F'EöÆÆ–ær‚“°¢Ğ¢Ò“°¢Ğ¢–b…÷F–ÖW"ÇÂFö7VÖVçBæ†–FFVâ’&WGW&ã°¢÷F–ÖW"Ò6WD–çFW'fÂ†gVæ7F–öâ‚’°¢G'’²&Vg&W6„ÆÄ–e7FÆR‚“²Ò6F6‚†R’·Ğ¢ÒÂ$Te$U4…ô”åDU%dÅôÕ2“°¢Ğ ¢gVæ7F–öâ&Vg&W6„ÆÄ–e7FÆR‚’°¢f"æ÷rÒFFRææ÷r‚“°¢ö&¦V7Bæ¶W—2…4õU$4U2’æf÷$V6‚†gVæ7F–öâ†÷’°¢f"FFÒÆöD66†R‚“°¢f"BÒFF¶÷Ó°¢–b†BbbBç6÷W&6RÓÓÒ&ÖçVÂ"’&WGW&ã°¢–b†Bbb†æ÷rÒBçWFFVDB’Â$Te$U4…ô”åDU%dÅôÕ2’&WGW&ã°¢&Vg&W6‚†÷“°¢òòk™XÙ~ûÉ®KúXû~Y»îx«nhXYÎ[©^ûÈKˆâ…DÔÂh©>Xùn[›nŠÎûÉ´…DÔÂh‰X©şX‰Šhny¹nûÈÎZK‹J^X‰yJKúXû~Y»îûÈ¢–b…4õU$4U5¶÷Òç6–væÂ’°¢FWFV7E6–væÅ7FGW2†÷’çF†Vâ†gVæ7F–öâ†²’°¢–b‚²’&WGW&ã°¢f"FF"ÒÆöD66†R‚“°¢f"W†—7F–ærÒFF%¶÷Ó°¢òòK¸^[Ù>[	®izvV"i[hÚîûÈh‰bvV"h©>XùnZK‹J^ûÈK‰NizÖçVÂi[hÚîi{n˜x~yJ€¢–b†W†—7F–ærbbW†—7F–ærç6÷W&6RÓÓÒ&ÖçVÂ"’&WGW&ã°¢–b†W†—7F–ærbbW†—7F–ærç6÷W&6RÓÓÒ'vV""bb†æ÷rÒW†—7F–ærçWFFVDB’Â$Te$U4…ô”åDU%dÅôÕ2’&WGW&ã°¢–b‚W†—7F–ærÇÂW†—7F–ærç6÷W&6RÓÒ'vV""’°¢FF%¶÷ÒÒ°¢7FGW3¢²ÓÓÒ&æ÷&ÖÂ"ò&æ÷&ÖÂ"¢†²ÓÓÒ&FVÆ–VB"ò&FVÆ–VB"¢'7W7VæFVB"’À¢–çFW'fÃ¢çVÆÂÀ¢6W6S¢²ÓÓÒ&æ÷&ÖÂ"ò.xûîYÊ8[›>[‹˜	®8(®˜¾ŠÎ8~8n8®8(®8î88""¢†²ÓÓÒ&FVÆ–VB"ò.˜^[»n8Îy›®yIş8~8n8N8î88""¢.˜¾‹º.8).Šh¾Y8(ş8¾8n8N8î88""’À¢FWF–Ã¢²ÓÓÒ&æ÷&ÖÂ"ò.xûîYÊ8[›>[‹˜	®8(®˜¾ŠÎ8~8n8®8(®8î88.ûÈk™XÙ~8:.88î8:Î8;Î8:¾XZÎ[Èş8+^8*N888î˜¾ŠÎx«nk8KúXû~8(8(®ûÈ’"¢""À¢WFFVDC¢FFRææ÷r‚’À¢6÷W&6S¢'vV""À¢&s¢" ¢Ó°¢W'6—7B‚“°¢æ÷F–g•WFFR‚“°¢Ğ¢Ò“°¢Ğ¢Ò“°¢Ğ ¢gVæ7F–öâæ÷F–g•WFFR‚’°¢G'’°¢v–æF÷ræF—7F6„WfVçB†æWr7W7FöÔWfVçB‚'B×'Væ–æfò×WFFVB"Â²FWF–Ã¢·ÒÒ’“°¢Ò6F6‚†R’·Ğ¢Ğ ¢òòÓÓÓÓÓÓÓÓÓÒZûZIb’ÓÓÓÓÓÓÓÓÓĞ¢v–æF÷råvV%'Vä–æfòÒ°¢vWDFVÆ”–æfó¢vWDFVÆ”–æfòÀ¢&Vg&W6ƒ¢&Vg&W6‚À¢&Vg&W6„ÆÄ–e7FÆS¢&Vg&W6„ÆÄ–e7FÆRÀ¢6WDÖçVÃ¢6WDÖçVÂÀ¢6ÆV#¢6ÆV"À¢—5vV$Æ–æS¢—5vV$Æ–æRÀ¢vWD÷W&F÷$f÷$Æ–æS¢vWD÷W&F÷$f÷$Æ–æRÀ¢vWE6—FUW&Ã¢vWE6—FUW&ÂÀ¢vWD–æfó¢vWD–æfòÀ¢FWFV7E6–væÅ7FGW3¢FWFV7E6–væÅ7FGW2À¢7F'EöÆÆ–æs¢7F'EöÆÆ–ærÀ¢4õU$4U3¢4õU$4U0¢Ó° ¢òòš^™Ú.Xª‹ÛŞXÛ>Y
-şXª‹ÚîŠú.ûÉ¾šinjÊz¸¾XÛ>X‹~ikKˆjÊûÈiÈ{É>ZÙX‰hÈ‹ø~iÉşXŠNijŞûÈ¢G'’°¢–b†Fö7VÖVçBç&VG•7FFRÓÓÒ&ÆöF–ær"’°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚$DôÔ6öçFVçDÆöFVB"ÂgVæ7F–öâ‚’°¢G'’²v–æF÷råvV%'Vä–æfòç&Vg&W6„ÆÄ–e7FÆR‚“²v–æF÷råvV%'Vä–æfòç7F'EöÆÆ–ær‚“²Ò6F6‚†R’·Ğ¢Ò“°¢ÒVÇ6R°¢v–æF÷råvV%'Vä–æfòç&Vg&W6„ÆÄ–e7FÆR‚“°¢v–æF÷råvV%'Vä–æfòç7F'EöÆÆ–ær‚“°¢Ğ¢Ò6F6‚†R’·Ğ§Ò’‚“°
+/*
+ * Pixel Tetsudo - Web RunInfo ()
+ * å®˜ç½‘è¿è¡Œæƒ…æŠ¥æ¨¡å—ï¼šä¸º ODPT æ— è¿è¡Œæƒ…æŠ¥æ•°æ®çš„è¿è¥å•†ï¼ˆåƒè‘‰éƒ½å¸‚ãƒ¢ãƒãƒ¬ãƒ¼ãƒ« / æ¹˜å—ãƒ¢ãƒãƒ¬ãƒ¼ãƒ«ï¼‰
+ * æä¾›è¿è¡ŒçŠ¶å†µæ•°æ®æºã€‚
+ *
+ * æ¸ é“äº‹å®ï¼ˆå·²æ ¸å¯¹ï¼‰ï¼š
+ * - ODPT API å¯¹ä¸¤å®¶å‡è¿”å›ç©ºæ•°ç»„ï¼ˆHTTP 200 body=[]ï¼Œå¯¹ç…§ç»„ TamaMonorail æ­£å¸¸ï¼‰â†’ ODPT æ¸ é“ä¸å­˜åœ¨ã€‚
+ * - ä¸¤å®¶å®˜ç½‘é¦–é¡µé¡¶éƒ¨å‡æœ‰è¿è¡Œæƒ…æŠ¥åŒºå—ï¼ˆ"é‹è¡ŒçŠ¶æ³" / "ãƒ¢ãƒãƒ¬ãƒ¼ãƒ«é‹è¡Œæƒ…å ±"ï¼‰ï¼ŒHTML ä¸º UTF-8ï¼Œ
+ *   æ­£æ–‡å®æµ‹æ­£å¸¸ï¼›ä½†å“åº”å¤´æ—  Access-Control-Allow-Origin â†’ æµè§ˆå™¨ç›´è¿ fetch è¢« CORS æ‹¦æˆªã€‚
+ * - å…¬å…±ä»£ç†ä¸å¯é ï¼šr.jina.ai å¯¹ä¸¤ç«™æŠ“å–ä¸ç¨³å®šï¼ˆåƒå¶ 429 é™æµï¼‰ï¼›api.allorigins.win / api.codetabs.com æºç«™ 522ã€‚
+ * - æ¹˜å—å®˜ç½‘è¿è¡ŒçŠ¶æ€ä¿¡å·å›¾ï¼ˆserviceStatusSignBlue/Yellow/Red.pngï¼‰ä¸ºå›ºå®šå‘½åæ–‡ä»¶ â†’ å¯ç» <img>
+ *   è·¨åŸŸåŠ è½½ï¼ˆä¸å— CORS é™åˆ¶ï¼‰åšé›¶ä¾èµ–å®æ—¶çŠ¶æ€åˆ¤å®šã€‚
+ *
+ * æ•°æ®æµï¼ˆå¤šé€šé“ï¼ŒæŒ‰å¯ç”¨æ€§è‡ªåŠ¨é™çº§ï¼‰ï¼š
+ *   â‘  åŒæºä»£ç†ï¼ˆæœ¬åœ°éƒ¨ç½² /proxy?url=â€¦ æ—¶å¯ç”¨ï¼Œå¯å…¨è‡ªåŠ¨ï¼‰
+ *   â‘¡ r.jina.ai å…¬å…±é˜…è¯»ä»£ç†ï¼ˆé™æ€éƒ¨ç½²å”¯ä¸€å…¨æ–‡é€šé“ï¼›åƒå¶ 429 é™æµï¼Œå¤±è´¥å³é™çº§ï¼‰
+ *   â‘¢ æ¹˜å—ä¿¡å·å›¾ <img> çŠ¶æ€æ£€æµ‹ï¼ˆå®æ—¶çŠ¶æ€ï¼Œé›¶ CORS ä¾èµ–ï¼‰
+ *   â‘£ æ‰‹åŠ¨ç²˜è´´å®˜ç½‘åŸæ–‡ï¼ˆå¯é å…œåº•ï¼ŒlocalStorage æŒä¹…åŒ–ï¼Œä¸è‡ªåŠ¨è¦†ç›–ï¼‰
+ *   â†’ getDelayInfo() ä¾› DataFusion èåˆ â†’ realtime å¼¹çª—ç›´æ¥æ˜¾ç¤ºå®˜ç½‘åŸæ–‡å…¨æ–‡
+ *
+ * å®˜ç½‘ç›´è¿é€šé“ç§»é™¤â€”â€”ä¸¤å®¶å®˜ç½‘å“åº”å¤´å‡æ—  Access-Control-Allow-Originï¼Œ
+ *   é™æ€éƒ¨ç½²ä¸‹æµè§ˆå™¨ç›´è¿å¿…ç„¶è¢« CORS æ‹¦æˆªï¼›r.jina.ai ä¸ºé™æ€éƒ¨ç½²å”¯ä¸€å…¨æ–‡é€šé“
+ *
+ * å±•ç¤ºè§„åˆ™ï¼ˆéµå¾ªç”¨æˆ·é”å®šå£å¾„ï¼‰ï¼š
+ *   å¼¹çª—é‹è¡Œæƒ…å ±åŒºç›´æ¥æ˜¾ç¤ºå®˜ç½‘åŸæ–‡å…¨æ–‡ï¼Œä¸åšç¢ç‰‡åŒ–å…³é”®è¯è§£æï¼›
+ *   çŠ¶æ€æ˜ å°„ï¼ˆæ­£å¸¸/å»¶è¿Ÿ/åœè¿/é€šçŸ¥ï¼‰ä»…ä½œå¡ç‰‡æ¦‚è§ˆä¸å…œåº•ã€‚
+ */
+(function() {
+  "use strict";
+
+  var STORAGE_KEY = "pt_runinfo_web_v1";
+  var REFRESH_INTERVAL_MS = 5 * 60 * 1000;   // è‡ªåŠ¨è½®è¯¢é—´éš”ï¼ˆ5 åˆ†é’Ÿï¼‰
+  var FETCH_TIMEOUT_MS = 15000;
+
+  // ========== ç½‘é¡µæºè¿è¥å•†é…ç½® ==========
+  // site: å®˜ç½‘ç›´é“¾ï¼ˆæ‰“å¼€å®˜ç½‘/iframeï¼‰ï¼›block: é¦–é¡µè¿è¡Œæƒ…æŠ¥åŒºå—æ ‡é¢˜å…³é”®è¯ï¼›extraBlock: é™„åŠ ä¿¡æ¯åŒºå—
+  var SOURCES = {
+    "ChibaUrbanMonorail": {
+      site: "https://chiba-monorail.co.jp/",
+      block: ["\u904b\u884c\u72b6\u6cc1"],                       // é‹è¡ŒçŠ¶æ³
+      extraBlock: ["\u305d\u306e\u4ed6\u60c5\u5831"]              // ãã®ä»–æƒ…å ±
+    },
+    "ShonanMonorail": {
+      site: "https://www.shonan-monorail.co.jp/",
+      block: ["\u30e2\u30ce\u30ec\u30fc\u30eb\u904b\u884c\u60c5\u5831"],  // ãƒ¢ãƒãƒ¬ãƒ¼ãƒ«é‹è¡Œæƒ…å ±
+      signal: {                                                     // ä¿¡å·å›¾å®æ—¶çŠ¶æ€åˆ¤å®š
+        normal: "https://www.shonan-monorail.co.jp/common/images/serviceStatusSignBlue.png",
+        delayed: "https://www.shonan-monorail.co.jp/common/images/serviceStatusSignYellow.png",
+        suspended: "https://www.shonan-monorail.co.jp/common/images/serviceStatusSignRed.png"
+      }
+    }
+  };
+
+  // çº¿è·¯ â†’ è¿è¥å•†ï¼ˆç½‘é¡µæºï¼‰ï¼›ä¸ ODPTClient.LINE_TO_OPERATOR è§£è€¦ï¼ˆè¯¥è¡¨ä¸ç™»è®°è¿™ä¸¤å®¶ï¼‰
+  var LINE_TO_OP = {
+    "ChibaMonorail1": "ChibaUrbanMonorail",
+    "ChibaMonorail2": "ChibaUrbanMonorail",
+    "ShonanMonorail": "ShonanMonorail"
+  };
+
+  // ========== å†…å­˜ç¼“å­˜ ==========
+  var _data = null;
+  var _loading = {};   // op -> trueï¼ˆé˜²å¹¶å‘æŠ“å–ï¼‰
+  var _timer = null;
+
+  function loadCache() {
+    if (_data) return _data;
+    try {
+      var raw = window.localStorage && window.localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && parsed.v === 1 && parsed.data) _data = parsed.data;
+      }
+    } catch(e) {}
+    if (!_data) _data = {};
+    return _data;
+  }
+
+  function persist() {
+    try {
+      if (window.localStorage) {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: 1, data: _data }));
+      }
+    } catch(e) {}
+  }
+
+  // ========== çŠ¶æ€æ˜ å°„ï¼ˆä»…æ¦‚è§ˆ/å…œåº•ï¼›åŸæ–‡å…¨é‡ä¿ç•™åœ¨ detailï¼‰ ==========
+  function mapStatus(text) {
+    if (!text) return null;
+    if (window.RunInfoEvaluator) {
+      var result = window.RunInfoEvaluator.evaluate({ source: "official_web", currentOperationalSource: true, text: text });
+      // The evaluator intentionally returns info for arbitrary non-empty text.
+      // A website block also contains navigation/help copy, so only accept a
+      // status when the text carries operational evidence. Otherwise a line
+      // such as "ãŠå•ã„åˆã‚ã›" can become the visible run-info status.
+      var evidence = Array.isArray(result.evidence) ? result.evidence : [];
+      var operational = evidence.some(function(item) {
+        return item && item.type && item.type !== "UNCLASSIFIED_TEXT";
+      });
+      // "info" also covers page headings and publication-policy copy. A web
+      // source may enter the cache only after it exposes a concrete current
+      // state (normal/delay/suspension/notice).
+      return operational && result.status !== "info" && result.status !== "unknown" ? result.status : null;
+    }
+    return "info";
+  }
+
+  // ========== ç¼–ç æ¢æµ‹ä¸è§£ç  ==========
+  // å®˜ç½‘ HTML ä¸º UTF-8ï¼ˆå®æµ‹æ­£æ–‡æ­£å¸¸ï¼‰ï¼›ä¿ç•™é€šç”¨æ¢æµ‹ä»¥å…¼å®¹å…¶ä»–æºã€‚è¿”å› { text, encoding }
+  function decodeResponse(buf, contentType) {
+    var enc = null;
+    try {
+      var cm = String(contentType || "").match(/charset=([\w-]+)/i);
+      if (cm) enc = cm[1].toLowerCase();
+    } catch(e) {}
+    if (!enc) {
+      try {
+        var head = buf.slice(0, 6000).toString("utf8");
+        var hm = head.match(/charset=["']?([\w-]+)/i);
+        if (hm) enc = hm[1].toLowerCase();
+      } catch(e) {}
+    }
+    // UTF-8 ä¼˜å…ˆï¼ˆå®˜ç½‘å®æµ‹ UTF-8ï¼‰ï¼›shift_jis å…œåº•
+    var tryList = [];
+    if (enc && enc !== "utf-8" && enc !== "utf8") tryList.push(enc);
+    tryList.push("utf-8");
+    if (enc && enc === "utf-8") tryList.unshift("utf-8");
+    tryList.push("shift_jis");
+    for (var t = 0; t < tryList.length; t++) {
+      try {
+        var dec = new TextDecoder(tryList[t]);
+        var s = dec.decode(buf);
+        var bad = 0;
+        for (var j = 0; j < s.length && j < 3000; j++) if (s.charCodeAt(j) === 0xFFFD) bad++;
+        if (bad < 30) return { text: s, encoding: tryList[t] };
+      } catch(e) {}
+    }
+    return { text: buf.toString("utf8"), encoding: "utf-8" };
+  }
+
+  // ========== å®˜ç½‘ HTML è§£æ ==========
+  // è¾“å…¥ï¼šæ­£ç¡®è§£ç çš„å®˜ç½‘é¦–é¡µæ–‡æœ¬ï¼ˆHTML æˆ– r.jina Markdown å‡å¯ï¼‰ã€‚è¾“å‡ºï¼š{ statusLine, detail }
+  // HTML å½¢æ€è¿è¡Œæƒ…æŠ¥å¸¸æŒ¤åœ¨åŒä¸€è¡Œ â†’ å…ˆæŒ‰å—çº§æ ‡ç­¾åˆ†è¡Œï¼›çŠ¶æ€è¡ŒæŒ‰çŠ¶æ€è¯åŒ¹é…ï¼ˆéé¦–æ–‡æœ¬è¡Œï¼‰ï¼›
+  // æ®‹ç•™æ ‡ç­¾/æ³¨é‡Šè¡Œè·³è¿‡ï¼›é‡å¯¼èˆªæ ‡é¢˜ç»“æŸåŒºå—ã€‚
+  function parseSiteText(text, op) {
+    var cfg = SOURCES[op];
+    if (!cfg || !text) return null;
+    var blockTags = /<(\/)?(li|p|div|span|h[1-6]|tr|td|br)[^>]*>/gi;
+    var sectionEnd = /ãŠå•ã„åˆã‚ã›|ã‚µã‚¤ãƒˆãƒãƒƒãƒ—|æ¡ç”¨æƒ…å ±|ä¼šç¤¾æ¦‚è¦|ã‚¢ã‚¯ã‚»ã‚¹|ãƒªãƒ³ã‚¯|ãƒ‹ãƒ¥ãƒ¼ã‚¹|ãŠçŸ¥ã‚‰ã›|ã‚ˆãã‚ã‚‹è³ªå•|å€‹äººæƒ…å ±|ãƒ—ãƒ©ã‚¤ãƒã‚·ãƒ¼|åˆ©ç”¨è¦ç´„|å…è²¬äº‹é …|æ±‚äºº|æ¡ç”¨/;
+    var normalized = String(text).replace(blockTags, "\n").replace(/<br\s*\/?>/gi, "\n");
+    var lines = normalized.split(/\r?\n/).map(function(l) { return l.trim(); });
+    var inBlock = false;
+    var collected = [];
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (!line) continue;
+      if (!inBlock) {
+        var hit = false;
+        for (var b = 0; b < cfg.block.length; b++) {
+          if (line.indexOf(cfg.block[b]) >= 0) { hit = true; break; }
+        }
+        if (hit) { inBlock = true; continue; }
+        continue;
+      }
+      if (sectionEnd.test(line)) { inBlock = false; continue; }
+      if (/^!\[/.test(line)) continue;
+      // Markdown é“¾æ¥æ–‡æœ¬æå– [text](url)
+      var textOnly = line;
+      var lm = textOnly.match(/^\[([^\]]+)\]\(/);
+      if (lm) textOnly = lm[1];
+      textOnly = textOnly.replace(/[*_`#]/g, "").trim();
+      if (!textOnly) continue;
+      // æ®‹ç•™æ ‡ç­¾/æ³¨é‡Š/è¾…åŠ©å…¥å£è·³è¿‡
+      if (textOnly.indexOf("<") >= 0 || textOnly.indexOf("-->") >= 0) continue;
+      if (/é…å»¶è¨¼æ˜æ›¸|å®šæœŸåˆ¸ã®ã”æ¡ˆå†…|å›£ä½“å‰²å¼•ä¹—è»Šåˆ¸|ä¿¡å·|ã‚¢ã‚¤ã‚³ãƒ³|Image \d+/.test(textOnly)) continue;
+      collected.push(textOnly);
+    }
+
+    // çŠ¶æ€è¡Œ = ç¬¬ä¸€ä¸ªå«çŠ¶æ€è¯çš„è¡Œï¼ˆæ­£å¸¸/é…å»¶/é‹ä¼‘/è¦‹åˆã‚ã›ç­‰ï¼‰ï¼›æ— åŒ¹é…åˆ™ç”¨é¦–ä¸ªæ–‡æœ¬è¡Œå…œåº•
+    var statusLine = null;
+    var si = -1;
+    for (var j = 0; j < collected.length; j++) {
+      if (mapStatus(collected[j])) { statusLine = collected[j]; si = j; break; }
+    }
+    // Do not fall back to the first arbitrary block line: it may be a help,
+    // contact, or navigation entry rather than an operating-status claim.
+    if (!statusLine) return null;
+    var detail = statusLine;
+    for (var k = si + 1; k < collected.length; k++) {
+      detail += "\n" + collected[k];
+    }
+    var status = mapStatus(statusLine);
+    return { statusLine: statusLine, detail: detail, status: status || "normal", interval: null };
+  }
+
+  // ========== HTML æŠ“å–ï¼ˆå¤šé€šé“ï¼‰ ==========
+  // é€šé“ â‘  åŒæºä»£ç†ï¼šè‹¥åŒæºæœ¬åœ°éƒ¨ç½²å­˜åœ¨ /proxy ç«¯ç‚¹ï¼Œåˆ™ä½¿ç”¨ï¼ˆPython ç«¯æ—  CORS é™åˆ¶ï¼‰
+  function trySameOriginProxy(op) {
+    return new Promise(function(resolve) {
+      try {
+        var url = encodeURIComponent(SOURCES[op].site);
+        fetch("/proxy?url=" + url, { method: "GET" }).then(function(res) {
+          if (!res.ok) { resolve(null); return; }
+          res.arrayBuffer().then(function(buf) {
+            resolve({ ok: true, buf: buf, ct: res.headers.get("content-type") || "" });
+          }).catch(function() { resolve(null); });
+        }).catch(function() { resolve(null); });
+      } catch(e) { resolve(null); }
+    });
+  }
+  // é€šé“ â‘¡ r.jina.aiï¼ˆå¯¹ UTF-8 é¡µé¢å¯ç”¨ï¼›Shift-JIS é¡µé¢ä¼šä¹±ç â€”â€”è§£ç åæ ¡éªŒï¼Œä¹±ç åˆ™ä¸¢å¼ƒï¼‰
+  function tryJina(op) {
+    return new Promise(function(resolve) {
+      try {
+        var ctrl = null;
+        try { ctrl = new AbortController(); } catch(e) {}
+        var timer = setTimeout(function() { try { if (ctrl) ctrl.abort(); } catch(e) {} resolve(null); }, FETCH_TIMEOUT_MS);
+        var opts = { method: "GET", headers: { "Accept": "text/plain, text/markdown" } };
+        if (ctrl) opts.signal = ctrl.signal;
+        fetch("https://r.jina.ai/" + SOURCES[op].site, opts).then(function(res) {
+          if (!res.ok) { clearTimeout(timer); resolve(null); return; }
+          res.arrayBuffer().then(function(buf) {
+            clearTimeout(timer);
+            // r.jina æ–‡æœ¬åº”å¯ç›´æ¥ UTF-8 è§£ç ï¼›Shift-JIS æºç«™ä¼šä¹±ç  â†’ äº¤ç»™ parse æ ¡éªŒï¼ˆæ‰¾å¾—åˆ°åŒºå—æ ‡é¢˜æ‰é‡‡ç”¨ï¼‰
+            resolve({ ok: true, buf: buf, ct: res.headers.get("content-type") || "" });
+          }).catch(function() { clearTimeout(timer); resolve(null); });
+        }).catch(function() { clearTimeout(timer); resolve(null); });
+      } catch(e) { resolve(null); }
+    });
+  }
+
+  // æŠ“å–æŒ‡å®šè¿è¥å•†å¹¶è½åº“ï¼›æˆåŠŸè¿”å› delayInfoï¼Œå¤±è´¥è¿”å› nullï¼ˆä¿ç•™æ—§æ•°æ®ï¼‰
+  function refresh(op) {
+    var cfg = SOURCES[op];
+    if (!cfg) return Promise.resolve(null);
+    if (_loading[op]) return Promise.resolve(getDelayInfoByOp(op));
+    _loading[op] = true;
+    return fetchHTML(op).then(function(text) {
+      if (!text) return null;
+      var parsed = parseSiteText(text, op);
+      if (!parsed) return null;
+      var data = loadCache();
+      data[op] = {
+        status: parsed.status,
+        interval: parsed.interval,
+        cause: parsed.statusLine,
+        detail: parsed.detail,
+        updatedAt: Date.now(),
+        source: "web",
+        raw: text
+      };
+      persist();
+      notifyUpdate();
+      return data[op];
+    }).catch(function(e) {
+      console.debug("[WebRunInfo] refresh " + op + " failed:", e && e.message ? e.message : e);
+      return null;
+    }).then(function(r) {
+      _loading[op] = false;
+      return r;
+    });
+  }
+
+  function fetchHTML(op) {
+    // é€šé“é¡ºåºï¼šåŒæºä»£ç† â†’ r.jina.aiï¼›é¦–ä¸ªäº§å‡ºå«åŒºå—æ ‡é¢˜çš„æ–‡æœ¬å³é‡‡ç”¨
+    return trySameOriginProxy(op).then(function(r1) {
+      if (r1) {
+        var d1 = decodeResponse(r1.buf, r1.ct);
+        if (parseSiteText(d1.text, op)) return d1.text;
+      }
+      return tryJina(op).then(function(r3) {
+        if (!r3) return null;
+        var d3 = decodeResponse(r3.buf, r3.ct);
+        if (parseSiteText(d3.text, op)) return d3.text;
+        return null;
+      });
+    });
+  }
+
+  // ========== æ¹˜å—ä¿¡å·å›¾çŠ¶æ€æ£€æµ‹ï¼ˆé›¶ CORS å®æ—¶çŠ¶æ€ï¼‰ ==========
+  // å®˜ç½‘è¿è¡ŒçŠ¶æ€ä¿¡å·å›¾æ–‡ä»¶åå›ºå®šï¼ˆBlue=æ­£å¸¸ / Yellow=é…å»¶ / Red=é‹è»¢è¦‹åˆã‚ã›ï¼‰ï¼Œ
+  // <img> è·¨åŸŸåŠ è½½ä¸å— CORS é™åˆ¶ â†’ ç”±å›¾ç‰‡åŠ è½½æˆè´¥åˆ¤å®šå½“å‰çŠ¶æ€ã€‚
+  function detectSignalStatus(op) {
+    return new Promise(function(resolve) {
+      var cfg = SOURCES[op];
+      if (!cfg || !cfg.signal) { resolve(null); return; }
+      var map = cfg.signal;
+      var keys = Object.keys(map);
+      var checked = 0, result = null;
+      keys.forEach(function(k) {
+        var img = new Image();
+        img.onload = function() { result = k; };
+        img.onerror = function() {};
+        img.onload = img.onerror = function() {
+          checked++;
+          if (checked === keys.length) resolve(result);
+        };
+        img.src = map[k];
+      });
+      setTimeout(function() { resolve(result); }, 4000);
+    });
+  }
+
+  // ========== æ‰‹åŠ¨è¾“å…¥ï¼ˆå¯é å…œåº•ï¼Œä¸è‡ªåŠ¨è¦†ç›–ï¼‰ ==========
+  function setManual(op, text) {
+    if (!SOURCES[op] || !text) return null;
+    var parsed = parseSiteText(text, op);
+    if (!parsed) return null;
+    var data = loadCache();
+    data[op] = {
+      status: (parsed && parsed.status) || "normal",
+      interval: parsed ? parsed.interval : null,
+      cause: (parsed && parsed.statusLine) || String(text).split(/\r?\n/)[0] || "",
+      detail: parsed ? parsed.detail : String(text).trim(),
+      updatedAt: Date.now(),
+      source: "manual",
+      raw: String(text)
+    };
+    persist();
+    notifyUpdate();
+    return data[op];
+  }
+
+  function clear(op) {
+    var data = loadCache();
+    if (data[op]) { delete data[op]; persist(); notifyUpdate(); }
+  }
+
+  function getDelayInfoByOp(op) {
+    var data = loadCache();
+    var d = data[op];
+    if (!d) return null;
+    return {
+      status: d.status,
+      interval: d.interval,
+      cause: d.cause,
+      detail: d.detail,
+      updatedAt: d.updatedAt,
+      source: d.source
+    };
+  }
+
+  // ä¾› DataFusion è°ƒç”¨ï¼šçº¿è·¯ â†’ delayInfoï¼ˆä»…ç½‘é¡µæºçº¿è·¯ï¼‰
+  function getDelayInfo(lineId, line) {
+    var op = (line && line.operator) || LINE_TO_OP[lineId] || null;
+    if (!op || !SOURCES[op]) return null;
+    var info = getDelayInfoByOp(op);
+    if (info) return info;
+    // ç½‘é¡µæºçº¿è·¯ã€å°šæ— æ•°æ®ï¼šä¸æ˜¾ç¤º no_odptï¼Œæ”¹ä¸º no_dataï¼ˆæŠ“å–å¤±è´¥/æœªå¼€å§‹ï¼‰
+    return { status: "no_data", interval: null, cause: null, detail: null, updatedAt: null, source: null };
+  }
+
+  function isWebLine(lineId) {
+    return !!LINE_TO_OP[lineId];
+  }
+  function getOperatorForLine(lineId) {
+    return LINE_TO_OP[lineId] || null;
+  }
+  function getSiteUrl(op) {
+    return (SOURCES[op] && SOURCES[op].site) || null;
+  }
+  function getInfo(op) {
+    return getDelayInfoByOp(op);
+  }
+
+  // ========== è½®è¯¢ï¼ˆåå°æš‚åœ/å‰å°æ¢å¤ï¼Œä¸ DataFusion ç›¸åŒæ¨¡å¼ï¼‰ ==========
+  var _visibilityBound = false;
+  function startPolling() {
+    if (!_visibilityBound) {
+      _visibilityBound = true;
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          if (_timer) { clearInterval(_timer); _timer = null; }
+        } else {
+          refreshAllIfStale();
+          startPolling();
+        }
+      });
+    }
+    if (_timer || document.hidden) return;
+    _timer = setInterval(function() {
+      try { refreshAllIfStale(); } catch(e) {}
+    }, REFRESH_INTERVAL_MS);
+  }
+
+  function refreshAllIfStale() {
+    var now = Date.now();
+    Object.keys(SOURCES).forEach(function(op) {
+      var data = loadCache();
+      var d = data[op];
+      if (d && d.source === "manual") return;
+      if (d && (now - d.updatedAt) < REFRESH_INTERVAL_MS) return;
+      refresh(op);
+      // æ¹˜å—ï¼šä¿¡å·å›¾çŠ¶æ€å…œåº•ï¼ˆä¸ HTML æŠ“å–å¹¶è¡Œï¼›HTML æˆåŠŸåˆ™è¦†ç›–ï¼Œå¤±è´¥åˆ™ç”¨ä¿¡å·å›¾ï¼‰
+      if (SOURCES[op].signal) {
+        detectSignalStatus(op).then(function(k) {
+          if (!k) return;
+          var data2 = loadCache();
+          var existing = data2[op];
+          // ä»…å½“å°šæ—  web æ•°æ®ï¼ˆæˆ– web æŠ“å–å¤±è´¥ï¼‰ä¸”æ—  manual æ•°æ®æ—¶é‡‡ç”¨
+          if (existing && existing.source === "manual") return;
+          if (existing && existing.source === "web" && (now - existing.updatedAt) < REFRESH_INTERVAL_MS) return;
+          if (!existing || existing.source !== "web") {
+            data2[op] = {
+              status: k === "normal" ? "normal" : (k === "delayed" ? "delayed" : "suspended"),
+              interval: null,
+              cause: k === "normal" ? "ç¾åœ¨ã€å¹³å¸¸é€šã‚Šé‹è¡Œã—ã¦ãŠã‚Šã¾ã™ã€‚" : (k === "delayed" ? "é…å»¶ãŒç™ºç”Ÿã—ã¦ã„ã¾ã™ã€‚" : "é‹è»¢ã‚’è¦‹åˆã‚ã›ã¦ã„ã¾ã™ã€‚"),
+              detail: k === "normal" ? "ç¾åœ¨ã€å¹³å¸¸é€šã‚Šé‹è¡Œã—ã¦ãŠã‚Šã¾ã™ã€‚ï¼ˆæ¹˜å—ãƒ¢ãƒãƒ¬ãƒ¼ãƒ«å…¬å¼ã‚µã‚¤ãƒˆã®é‹è¡ŒçŠ¶æ³ä¿¡å·ã‚ˆã‚Šï¼‰" : "",
+              updatedAt: Date.now(),
+              source: "web",
+              raw: ""
+            };
+            persist();
+            notifyUpdate();
+          }
+        });
+      }
+    });
+  }
+
+  function notifyUpdate() {
+    try {
+      window.dispatchEvent(new CustomEvent("pt-runinfo-updated", { detail: {} }));
+    } catch(e) {}
+  }
+
+  // ========== å¯¹å¤– API ==========
+  window.WebRunInfo = {
+    getDelayInfo: getDelayInfo,
+    refresh: refresh,
+    refreshAllIfStale: refreshAllIfStale,
+    setManual: setManual,
+    clear: clear,
+    isWebLine: isWebLine,
+    getOperatorForLine: getOperatorForLine,
+    getSiteUrl: getSiteUrl,
+    getInfo: getInfo,
+    detectSignalStatus: detectSignalStatus,
+    startPolling: startPolling,
+    SOURCES: SOURCES
+  };
+
+  // é¡µé¢åŠ è½½å³å¯åŠ¨è½®è¯¢ï¼›é¦–æ¬¡ç«‹å³åˆ·æ–°ä¸€æ¬¡ï¼ˆæœ‰ç¼“å­˜åˆ™æŒ‰è¿‡æœŸåˆ¤æ–­ï¼‰
+  try {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function() {
+        try { window.WebRunInfo.refreshAllIfStale(); window.WebRunInfo.startPolling(); } catch(e) {}
+      });
+    } else {
+      window.WebRunInfo.refreshAllIfStale();
+      window.WebRunInfo.startPolling();
+    }
+  } catch(e) {}
+})();

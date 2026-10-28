@@ -1,1 +1,62 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò ¢¢ix^k‹Ž{¾Yè¾‹è^Xªž[z^X[p¢¢KÙÎK‹®ix^k‹ŽiÚyºî‹{>‹ÚÎkK¾Xª‚þ[©~™;¢þišþx+žš^™Ú.y¨NYJþKˆK¨¾ZéîiÚ^k©8 ¢¢ð¢†gVæ7F–öâ‚’°¢'W6R7G&–7B#° ¢f"dÄ”EõE•U2Ò²WfVçC¢Â6†÷¢Â7÷C¢Ó°¢f"4„õõDu2Ò°¢fööC¢À¢&W7FW&çC¢À¢6fS¢À¢7vVWG3¢À¢G&–æ³¢À¢&#¢À¢&¶W'“¢À¢Æö6Å÷7V6–ÇG“¢À¢6†÷–æs¢À¢6†÷¢À¢†÷FVÃ¢À¢Æ“¢¢Ó° ¢gVæ7F–öâæ÷&ÖÆ—¦UG—R‡fÇVR’°¢fÇVRÒ7G&–ær‡fÇVRÇÂ""’çG&–Ò‚’çFôÆ÷vW$66R‚“°¢òòy›î‹J~YXnYË¢þ‹JÞxšžKŠÞ[ø>{¹þKˆ[Ù.XZ^išþx+ž8 ¢–b‡fÇVRÓÓÒ&ÖÆÂ"ÇÂfÇVRÓÓÒ&FW'FÖVçB"ÇÂfÇVRÓÓÒ&FW'FÖVçE÷7F÷&R ¢ÇÂfÇVRÓÓÒ'6†÷–æuöÖÆÂ"ÇÂfÇVRÓÓÒ'6†÷–æuöÖÆÅ÷7F÷&R ¢ÇÂfÇVRÓÓÒ'6†÷–ærÖ6VçFW""ÇÂfÇVRÓÓÒ'6†÷–æuö6VçFW""’&WGW&â'7÷B#°¢–b‡fÇVRÓÓÒ'6–v‡B"ÇÂfÇVRÓÓÒ'6–v‡G2"ÇÂfÇVRÓÓÒ&ÆæFÖ&²"’&WGW&â'7÷B#°¢–b‡fÇVRÓÓÒ'7F÷&R"ÇÂfÇVRÓÓÒ'&W7FW&çB"ÇÂfÇVRÓÓÒ&v÷W&ÖWB"’&WGW&â'6†÷#°¢&WGW&âdÄ”EõE•U5·fÇVUÒòfÇVR¢"#°¢Ð ¢gVæ7F–öâvWE7÷EG—R‡7÷B’°¢–b‚7÷B’&WGW&â'7÷B#°¢f"W‡Æ–6—BÒæ÷&ÖÆ—¦UG—R‡7÷BçF÷W&—6ÕG—RÇÂ7÷Bæ6FVv÷'’ÇÂ7÷BçG—RÇÂ7÷Bæ¶–æB“°¢–b†W‡Æ–6—B’&WGW&âW‡Æ–6—C° ¢f"Fw2Ò7÷BçFw2ÇÂµÓ°¢–b‡Fw2æ–æFW„öb‚&WfVçB"’ãÒ’&WGW&â&WfVçB#°¢òòÖÆÂj~zÛîKÉŽXXŽ{ª~š¹ŽK¨î[©~™;®j~zÛî8 ¢–b‡Fw2æ–æFW„öb‚&ÖÆÂ"’ãÒ’&WGW&â'7÷B#°¢f÷"‡f"’Ò²’ÂFw2æÆVæwFƒ²’²²’°¢–b…4„õõDu5·Fw5¶•ÕÒ’&WGW&â'6†÷#°¢Ð¢&WGW&â'7÷B#°¢Ð ¢gVæ7F–öâ'F—F–öå7÷G2‡7÷G2’°¢f"'V6¶WG2Ò²WfVçC¢µÒÂ6†÷¢µÒÂ7÷C¢µÒÓ°¢‡7÷G2ÇÂµÒ’æf÷$V6‚†gVæ7F–öâ‡7÷B’°¢'V6¶WG5¶vWE7÷EG—R‡7÷B•ÒçW6‚‡7÷B“°¢Ò“°¢&WGW&â'V6¶WG3°¢Ð ¢v–æF÷råF÷W&—6ÕG—RÒ°¢vWE7÷EG—S¢vWE7÷EG—RÀ¢'F—F–öå7÷G3¢'F—F–öå7÷G0¢Ó°§Ò’‚“° 
+/*
+ * æ—…æ¸¸ç±»åž‹è¾…åŠ©å·¥å…·
+ * ä½œä¸ºæ—…æ¸¸æ¡ç›®è·³è½¬æ´»åŠ¨/åº—é“º/æ™¯ç‚¹é¡µé¢çš„å”¯ä¸€äº‹å®žæ¥æºã€‚
+ */
+(function () {
+  "use strict";
+
+  var VALID_TYPES = { event: 1, shop: 1, spot: 1 };
+  var SHOP_TAGS = {
+    food: 1,
+    restaurant: 1,
+    cafe: 1,
+    sweets: 1,
+    drink: 1,
+    bar: 1,
+    bakery: 1,
+    local_specialty: 1,
+    shopping: 1,
+    shop: 1,
+    hotel: 1,
+    play: 1
+  };
+
+  function normalizeType(value) {
+    value = String(value || "").trim().toLowerCase();
+    // ç™¾è´§å•†åœº/è´­ç‰©ä¸­å¿ƒç»Ÿä¸€å½’å…¥æ™¯ç‚¹ã€‚
+    if (value === "mall" || value === "department" || value === "department_store"
+      || value === "shopping_mall" || value === "shopping_mall_store"
+      || value === "shopping-center" || value === "shopping_center") return "spot";
+    if (value === "sight" || value === "sights" || value === "landmark") return "spot";
+    if (value === "store" || value === "restaurant" || value === "gourmet") return "shop";
+    return VALID_TYPES[value] ? value : "";
+  }
+
+  function getSpotType(spot) {
+    if (!spot) return "spot";
+    var explicit = normalizeType(spot.tourismType || spot.category || spot.type || spot.kind);
+    if (explicit) return explicit;
+
+    var tags = spot.tags || [];
+    if (tags.indexOf("event") >= 0) return "event";
+    // mall æ ‡ç­¾ä¼˜å…ˆçº§é«˜äºŽåº—é“ºæ ‡ç­¾ã€‚
+    if (tags.indexOf("mall") >= 0) return "spot";
+    for (var i = 0; i < tags.length; i++) {
+      if (SHOP_TAGS[tags[i]]) return "shop";
+    }
+    return "spot";
+  }
+
+  function partitionSpots(spots) {
+    var buckets = { event: [], shop: [], spot: [] };
+    (spots || []).forEach(function (spot) {
+      buckets[getSpotType(spot)].push(spot);
+    });
+    return buckets;
+  }
+
+  window.TourismType = {
+    getSpotType: getSpotType,
+    partitionSpots: partitionSpots
+  };
+})();

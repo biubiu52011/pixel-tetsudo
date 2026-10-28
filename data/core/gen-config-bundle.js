@@ -1,1 +1,57 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂòò'VæFÆRF†R7FF–2FFö6÷&R6öæf–rF&ÆW2–çFòöæRf–ÆRFò&VGV6RÇ67&—Câ&WVW7G2à¢òò÷&FW"föÆÆ÷w2†öÖRæ‡FÖÂw2W†—7F–ær&VÆF—fRÆöB÷&FW"âW&RFF²6ÖÆÂ””dW2À¢òò6ò6öæ6FVæF–öâ—26fR2Æöær2÷&FW"—2&W6W'fVBà¦6öç7Bg2Ò&WV—&R‚vg2r“°¦6öç7BF‚Ò&WV—&R‚wF‚r“°¦6öç7BF—"ÒõöF—&æÖS° ¦6öç7B÷&FW"Ò°¢wG&ç6fW"Ö†–çG2æ§2rÀ¢w'VçF–ÖRÖ6öæf–ræ§2rÀ¢wÆFf÷&ÒÖFFæ§2rÀ¢wG&–â×G—RÖFVg2æ§2rÀ¥Ó° ¦gVæ7F–öâ'V–ÆD'VæFÆR‚’°¢ÆWB÷WBÒrò¢—†VÂFWG7VFòÒFF6öæf–r'VæFÆR†WFòÖÖW&vVB’åÆâr°¢r¢ÖW&vVBg&öÓ¢r²÷&FW"æ¦ö–â‚rÂr’²råÆâr°¢r¢Fòæ÷BVF—B†W&S²VF—BF†R6÷W&6Rf–ÆW2æB&R×'VâæöFRFFö6÷&RövVâÖ6öæf–rÖ'VæFÆRæ§5Æâ¢õÆâs°¢f÷"†6öç7Bböb÷&FW"’°¢6öç7BÒF‚æ¦ö–â†F—"Âb“°¢–b‚g2æW†—7G57–æ2‡’’6öçF–çVS°¢ÆWB7&2Òg2ç&VDf–ÆU7–æ2‡ÂwWFc‚r“°¢òò7G&—$ôĞ¢–b‡7&2æ6†$6öFTBƒ’ÓÓÒ„dTdb’7&2Ò7&2ç6Æ–6Rƒ“°¢÷WB³ÒuÆâòòÓÓÓÓÒr²b²rÓÓÓÓÕÆâr²7&2²uÆâs°¢Ğ¢&WGW&â÷WC°§Ğ ¦gVæ7F–öâw&—FT'VæFÆR†W‡V7FVBÒ'V–ÆD'VæFÆR‚’’°¢6öç7BF&vWBÒF‚æ¦ö–â†F—"ÂvFFÖ6öæf–rÖ'VæFÆRæ§2r“°¢g2çw&—FTf–ÆU7–æ2‡F&vWBÂW‡V7FVBÂwWFc‚r“°¢6öç6öÆRæÆör‚ww&÷FRFFÖ6öæf–rÖ'VæFÆRæ§2‚rÂ†W‡V7FVBæÆVæwF‚ò#B’çFôf—†VBƒ’Ât´"’r“°§Ğ ¦gVæ7F–öâ6†V6´'VæFÆR†W‡V7FVBÒ'V–ÆD'VæFÆR‚’’°¢6öç7BF&vWBÒF‚æ¦ö–â†F—"ÂvFFÖ6öæf–rÖ'VæFÆRæ§2r“°¢6öç7B7GVÂÒg2æW†—7G57–æ2‡F&vWB’òg2ç&VDf–ÆU7–æ2‡F&vWBÂwWFc‚r’¢rs°¢–b†7GVÂÓÒW‡V7FVB’°¢6öç6öÆRæW'&÷"‚vFFÖ6öæf–rÖ'VæFÆRæ§2—27FÆS²'VâæöFRFFö6÷&RövVæW&FRÖÆÂæ§2r“°¢&WGW&âfÇ6S°¢Ğ¢6öç6öÆRæÆör‚vFFÖ6öæf–rÖ'VæFÆRæ§2—27–æ6‡&öæ—¦VBr“°¢&WGW&âG'VS°§Ğ ¦gVæ7F–öâÖ–â‚’°¢6öç7BW‡V7FVBÒ'V–ÆD'VæFÆR‚“°¢–b‡&ö6W72æ&wbæ–æ6ÇVFW2‚rÒÖ6†V6²r’’°¢–b‚6†V6´'VæFÆR†W‡V7FVB’’&ö6W72æW†—D6öFRÒ°¢&WGW&ã°¢Ğ¢w&—FT'VæFÆR†W‡V7FVB“°§Ğ ¦–b‡&WV—&RæÖ–âÓÓÒÖöGVÆR’Ö–â‚“°¦ÖöGVÆRæW‡÷'G2Ò²'V–ÆD'VæFÆRÂw&—FT'VæFÆRÂ6†V6´'VæFÆRÂ÷&FW"Ó°
+// Bundle the static data/core config tables into one file to reduce <script> requests.
+// Order follows home.html's existing relative load order. Pure data + small IIFEs,
+// so concatenation is safe as long as order is preserved.
+const fs = require('fs');
+const path = require('path');
+const dir = __dirname;
+
+const order = [
+  'transfer-hints.js',
+  'runtime-config.js',
+  'platform-data.js',
+  'train-type-defs.js',
+];
+
+function buildBundle() {
+  let out = '/* Pixel Tetsudo - Data Config Bundle (auto-merged).\n' +
+    ' * Merged from: ' + order.join(', ') + '.\n' +
+    ' * Do not edit here; edit the source files and re-run node data/core/gen-config-bundle.js\n */\n';
+  for (const f of order) {
+    const p = path.join(dir, f);
+    if (!fs.existsSync(p)) continue;
+    let src = fs.readFileSync(p, 'utf8');
+    // strip BOM
+    if (src.charCodeAt(0) === 0xFEFF) src = src.slice(1);
+    out += '\n// ===== ' + f + ' =====\n' + src + '\n';
+  }
+  return out;
+}
+
+function writeBundle(expected = buildBundle()) {
+  const target = path.join(dir, 'data-config-bundle.js');
+  fs.writeFileSync(target, expected, 'utf8');
+  console.log('wrote data-config-bundle.js (', (expected.length / 1024).toFixed(0), 'KB )');
+}
+
+function checkBundle(expected = buildBundle()) {
+  const target = path.join(dir, 'data-config-bundle.js');
+  const actual = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
+  if (actual !== expected) {
+    console.error('data-config-bundle.js is stale; run node data/core/generate-all.js');
+    return false;
+  }
+  console.log('data-config-bundle.js is synchronized');
+  return true;
+}
+
+function main() {
+  const expected = buildBundle();
+  if (process.argv.includes('--check')) {
+    if (!checkBundle(expected)) process.exitCode = 1;
+    return;
+  }
+  writeBundle(expected);
+}
+
+if (require.main === module) main();
+module.exports = { buildBundle, writeBundle, checkBundle, order };

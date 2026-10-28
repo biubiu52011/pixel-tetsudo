@@ -1,8 +1,496 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò¢ ¢¢—†VÂFWG7VFòÒi	Î{J"T’jŠYÙ~ûÈ[{.KÉXÉnûÈ¢¢ğ¢†gVæ7F–öâ‚’°¢wW6R7G&–7Bs° ¢6öç7B6V&6…T’Ò°¢6öçF–æW#¢çVÆÂÀ¢g&öÔ–çWC¢çVÆÂÀ¢Fô–çWC¢çVÆÂÀ¢6V&6„'Fã¢çVÆÂÀ¢&W7VÇG4F—c¢çVÆÂÀ ¢òòXZÎX[ûÉ®hÈ‹Únz¹’”BZ¾XX^‹[~x+’ş{¸x+‹é>XZ^jn8.Kº^Kˆ¾KŠNzxŞh.ZHŞ‹zş[èNX[yJ‹ùKˆXZ^Xú>ûÉ ¢òòög&öÓÒgFóÒU$Âh.ZHŞûÈ†–æ—NûÈY(ÎXènXû.h.ZHŞûÈ…6V&6„†—7F÷'’ç&W7F÷&Tg&öÕ&V6VçNûÈ8 ¢òòYÎi{nŠëî{ÚâfÇVRY(ÎiØ>Zˆy¨BFF×7FF–öâÖ–NûÉ¾‹>yJikKˆŞ[é~y»Nhê^i8ŞKÙÎXh^˜:x«nh8 ¢6WE&÷WFS¢gVæ7F–öâ†g&öÔ–BÂFô–B’°¢f"F"Òv–æF÷rå&–Çv”D#°¢f"ÆærÒv–æF÷ræ7W'&VçDÆærÇÂv¦s°¢f"f–ÆÂÒgVæ7F–öâ†–çWBÂ–B’°¢–b‚–çWBÇÂ–B’&WGW&ã°¢f"æÖRÒ†F"bbF"ç&W6öÇfU7FF–öäæÖR’ò†F"ç&W6öÇfU7FF–öäæÖR†–BÂÆær’ÇÂ–B’¢–C°¢–çWBçfÇVRÒæÖS°¢òòXXkKîXù–çWNûÈÎŠêy¹Y
-ÎYškˆ^yn‹ø~iÉò”B[›nX‹~ik[»®Šêà¢òòXhŞXiXZ^iØ>Zˆ‹Únz¹’”N8 ¢–çWBæF—7F6„WfVçB†æWrWfVçB‚v–çWBr’“°¢–çWBç6WDGG&–'WFR‚vFF×7FF–öâÖ–BrÂ–B“°¢Ó°¢f–ÆÂ‡F†—2æg&öÔ–çWBÂg&öÔ–B“°¢f–ÆÂ‡F†—2çFô–çWBÂFô–B“°¢ÒÀ ¢–æ—C¢gVæ7F–öâ‚’°¢F†—2æ6öçF–æW"ÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6„6öçF–æW"r“°¢–b‚F†—2æ6öçF–æW"’°¢&WGW&ã°¢Ğ ¢F†—2æg&öÔ–çWBÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6„g&öÒr“°¢F†—2çFô–çWBÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6…Fòr“°¢F†—2ç6V&6„'FâÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6„'Fâr“°¢F†—2ç7v'FâÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w7v'Fâr“°¢F†—2ç&W7VÇG4F—bÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6…&W7VÇG2r“° ¢F†—2çF–ÖTÖöFRÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6…F–ÖTÖöFRr“°¢F†—2çF–ÖT–çWBÒFö7VÖVçBævWDVÆVÖVçD'”–B‚w6V&6…F–ÖRr“°¢–b‡F†—2çF–ÖTÖöFRbbF†—2çF–ÖT–çWB’°¢f"6Æö6²ÒæWrFFR„FFRææ÷r‚’³’£3c“°¢F†—2çF–ÖT–çWBçfÇVRÒ7G&–ær†6Æö6²ævWEUD4†÷W'2‚’’çE7F'Bƒ"Âsr’²s¢rµ7G&–ær†6Æö6²ævWEUD4Ö–çWFW2‚’’çE7F'Bƒ"Âsr“°¢F†—2çF–ÖTÖöFRæFDWfVçDÆ—7FVæW"‚v6†ævRrÂ‚’Óâ²F†—2çF–ÖT–çWBæF—6&ÆVC×F†—2çF–ÖTÖöFRçfÇVSÓÓÒvæ÷rs²Ò“°¢Ğ ¢òòŠz>iéög&öÓÒògFóÒU$ÂXø.i[8.zØ’&–Çv”D"i[hÚî[{º®YîXhŞyÉşjÚ>Z¾XX^ûÉ°¢òòŠz>ié{Ù~ššÎZÙ~‹Únz¹’”NûÈZh"¶—FÕ6Væ§^ûÈ™ÈŠhYŞz{iŠ[NûÉ°¢òò‹ø~izZ¾XX^KÉ®Šê’6WE&÷WFRY¹î˜X‹‹é>XZ^jnKŠŞy¨NXéşZx¾{Ù~ššÎZÙr”NûÈÀ¢òò[Ú.h‰x+X{¾XènXû.Šë[Ù^i{ny¨N(	Î{Ù~ššÎZÙ~k8NkÈş(	Ş8 ¢f"÷&×2ÒçVÆÃ°¢G'’²÷&×2ÒæWrU$Å6V&6…&×2‡v–æF÷ræÆö6F–öâç6V&6‚“²Ò6F6‚†R’·Ğ¢f"ög&öÕ&ÒÒ÷&×2ò÷&×2ævWB‚vg&öÒr’¢çVÆÃ°¢f"÷Fõ&ÒÒ÷&×2ò÷&×2ævWB‚wFòr’¢çVÆÃ°¢–b…ög&öÕ&ÒÇÂ÷Fõ&Ò’°¢f"6VÆbÒF†—3°¢f"÷G&–W2Ò°¢†gVæ7F–öâ÷v—DF"‚’°¢f"÷&VG’Ò‡v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖRb`¢v–æF÷räFFÆöFW"bbv–æF÷räFFÆöFW"æ—4ÆöFVBbbv–æF÷räFFÆöFW"æ—4ÆöFVB‚’“°¢f"öW'"Ò‡v–æF÷räFFÆöFW"bbv–æF÷räFFÆöFW"ævWDW'&÷"bbv–æF÷räFFÆöFW"ævWDW'&÷"‚’“°¢–b…÷&VG’ÇÂöW'"ÇÂ÷G&–W2â3’°¢6VÆbç6WE&÷WFR…ög&öÕ&ÒÂ÷Fõ&Ò“°¢G'’²v–æF÷ræ†—7F÷'’ç&WÆ6U7FFR‡·ÒÂrrÂv–æF÷ræÆö6F–öâçF†æÖR“²Ò6F6‚†R’·Ğ¢ÒVÇ6R°¢÷G&–W2²³°¢6WEF–ÖV÷WB…÷v—DF"ÂS“°¢Ğ¢Ò’‚“°¢Ğ¢F†—2æÆ7E&÷WFU&W7VÇBÒçVÆÃ°¢F†—2æ&–æDWfVçG2‚“°¢v–æF÷ræöäÆæwVvT6†ævR‚‚’ÓâF†—2ç&Vg&W6…T’‚’“°¢ÒÀ ¢&Vg&W6…T“¢gVæ7F–öâ‚’°¢6öç7BBÒv–æF÷rçBÇÂgVæ7F–öâ†¶W’’²&WGW&â¶W“²Ó°¢–b‡F†—2æg&öÔ–çWB’F†—2æg&öÔ–çWBçÆ6V†öÆFW"ÒB‚w6V&6‚æg&öÕÆ6V†öÆFW"r“°¢–b‡F†—2çFô–çWB’F†—2çFô–çWBçÆ6V†öÆFW"ÒB‚w6V&6‚çFõÆ6V†öÆFW"r“°¢–b‡F†—2ç6V&6„'Fâ’F†—2ç6V&6„'FâçFW‡D6öçFVçBÒB‚w6V&6‚æ'Fâr“°¢òò™Ùh¶FFÖ“†åÒò¶FFÖ“†â×Æ6V†öÆFW%Òˆ¨.x+Xú®yK¢òòÆærÖ–æ—Bæ§2‹Iş‹J>8.‹ù˜xÎKˆŞŠh˜xŞXiK»¾hHşXX>{Jy¨BFW‡D6öçFVçNûÉ®ZHŞY€¢òòhê~K»nXúşˆ;ŞXÈ^Y
-¾[ø^š¾YÊXˆ~hÚ.ŠúŞŠˆYîKùŞyYy¨N{¹>ièNh
-~Y»îjrşzÊnXû~8 ¢òòkˆ^z›®[»®Šêî{É>ZÙûÈÎKÛş˜xŞikiú^Šú.i{nhÈikŠúŞŠˆŠz>iéYŞz{8 ¢F†—2å÷7VvvW7F–öä66†RÒ·Ó°¢F†—2å÷7VvvW7F–öä66†TDôÒÒ·Ó°¢F†—2å÷7VvvW7F–öä&–æDFöæRÒ·Ó°¢òò˜xŞikŠz>ié‹é>XZ^jnKŠŞ[{.˜‹Únz¹YŞz{ûÈK¸^YÊ[{.yúR7FF–öä–Bi{nûÈ8 ¢f"öÆærÒv–æF÷ræ7W'&VçDÆærÇÂv¦s°¢–b‡F†—2æg&öÔ–çWB’°¢f"öf–BÒF†—2æg&öÔ–çWBævWDGG&–'WFR‚vFF×7FF–öâÖ–Br“°¢–b…öf–Bbbv–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR’°¢f"öfâÒv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR…öf–BÂöÆær“°¢–b…öfâ’F†—2æg&öÔ–çWBçfÇVRÒöfã°¢Ğ¢Ğ¢–b‡F†—2çFô–çWB’°¢f"÷F–BÒF†—2çFô–çWBævWDGG&–'WFR‚vFF×7FF–öâÖ–Br“°¢–b…÷F–Bbbv–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR’°¢f"÷FâÒv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR…÷F–BÂöÆær“°¢–b…÷Fâ’F†—2çFô–çWBçfÇVRÒ÷Fã°¢Ğ¢Ğ¢òòZh.iéÎ[{.hš~ŠÎ‹ø~i	Î{J.ûÈÎX‰˜xŞikk‹.iù>‹zş[èN{¹>iéÎ8 ¢–b‡F†—2æÆ7E&÷WFU&W7VÇBbbF†—2ç&W7VÇG4F—bbbF†—2ç&W7VÇG4F—bæ–ææW$…DÔÂçG&–Ò‚’ÓÒrr’°¢F†—2ç&VæFW%&W7VÇG2‡F†—2æÆ7E&÷WFU&W7VÇBÂB“°¢Ğ¢ÒÀ  ¢÷7v–çWG3¢gVæ7F–öâ‚’°¢f"g&öÕfÂÒF†—2æg&öÔ–çWBòF†—2æg&öÔ–çWBçfÇVR¢rs°¢f"FõfÂÒF†—2çFô–çWBòF†—2çFô–çWBçfÇVR¢rs°¢f"g&öÔ–BÒF†—2æg&öÔ–çWBò‡F†—2æg&öÔ–çWBævWDGG&–'WFR‚vFF×7FF–öâÖ–Br’ÇÂrr’¢rs°¢f"Fô–BÒF†—2çFô–çWBò‡F†—2çFô–çWBævWDGG&–'WFR‚vFF×7FF–öâÖ–Br’ÇÂrr’¢rs°¢–b‡F†—2æg&öÔ–çWB’°¢F†—2æg&öÔ–çWBçfÇVRÒFõfÃ°¢F†—2æg&öÔ–çWBç6WDGG&–'WFR‚vFF×7FF–öâÖ–BrÂFô–BÇÂrr“°¢Ğ¢–b‡F†—2çFô–çWB’°¢F†—2çFô–çWBçfÇVRÒg&öÕfÃ°¢F†—2çFô–çWBç6WDGG&–'WFR‚vFF×7FF–öâÖ–BrÂg&öÔ–BÇÂrr“°¢Ğ¢òòŠznXù[»®ŠêîX‹~ik8 ¢–b‡F†—2æg&öÔ–çWBbbF†—2æg&öÔ–çWBçfÇVR’°¢F†—2ç6†÷u7VvvW7F–öç2‡F†—2æg&öÔ–çWBçfÇVRÂvg&öÕ7VvvW7F–öç2rÂF†—2æg&öÔ–çWB“°¢Ğ¢–b‡F†—2çFô–çWBbbF†—2çFô–çWBçfÇVR’°¢F†—2ç6†÷u7VvvW7F–öç2‡F†—2çFô–çWBçfÇVRÂwFõ7VvvW7F–öç2rÂF†—2çFô–çWB“°¢Ğ¢ÒÀ ¢&–æDWfVçG3¢gVæ7F–öâ‚’°¢6öç7B6VÆbÒF†—3° ¢–b‡F†—2ç7v'Fâ’°¢F†—2ç7v'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ‚’ÓâF†—2å÷7v–çWG2‚’“°¢Ğ¢–b‡F†—2ç6V&6„'Fâ’°¢F†—2ç6V&6„'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ‚’Óâ6VÆbçW&f÷&Õ6V&6‚‚’“°¢Ğ ¢–b‡F†—2æg&öÔ–çWB’°¢F†—2æg&öÔ–çWBæFDWfVçDÆ—7FVæW"‚v¶W—&W72rÂRÓâ°¢–b†Ræ¶W’ÓÓÒtVçFW"r’6VÆbçW&f÷&Õ6V&6‚‚“°¢Ò“°¢F†—2æg&öÔ–çWBæFDWfVçDÆ—7FVæW"‚v–çWBrÂgVæ7F–öâ‚’°¢òòh˜¾Xª{Én‹éKÉ®KÛşK˜¾X˜Ş˜KŠŞy¨N‹Únz¹ZKiXûÉ®Zh.iéÎKˆŞkˆ^™šNûÈÀ¢òòFF×7FF–öâÖ–BK¸ŞhÈ~Y	iz~‹Únz¹ûÈÎˆÀ¢òò‹é>XZ^jni‹îzK®ikYŞz{ûÈÇW&f÷&Õ6V&6‚XÛNKÉ®Šz>iéX‹iz~‹Únz¹8 ¢F†—2ç&VÖ÷fTGG&–'WFR‚vFF×7FF–öâÖ–Br“°¢6VÆbç6†÷u7VvvW7F–öç2‡F†—2çfÇVRÂvg&öÕ7VvvW7F–öç2rÂF†—2“°¢Ò“°¢Ğ ¢–b‡F†—2çFô–çWB’°¢F†—2çFô–çWBæFDWfVçDÆ—7FVæW"‚v¶W—&W72rÂRÓâ°¢–b†Ræ¶W’ÓÓÒtVçFW"r’6VÆbçW&f÷&Õ6V&6‚‚“°¢Ò“°¢F†—2çFô–çWBæFDWfVçDÆ—7FVæW"‚v–çWBrÂgVæ7F–öâ‚’°¢òò6ÖR7FÆRFF×7FF–öâÖ–B–çfÆ–FF–öâ2F†Rg&öÒ–çWB&÷fRà¢F†—2ç&VÖ÷fTGG&–'WFR‚vFF×7FF–öâÖ–Br“°¢6VÆbç6†÷u7VvvW7F–öç2‡F†—2çfÇVRÂwFõ7VvvW7F–öç2rÂF†—2“°¢Ò“°¢Ğ ¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂRÓâ°¢–b‚RçF&vWBæ6Æ÷6W7B‚ræ–çWBÖw&÷Wr’’°¢Fö7VÖVçBçVW'•6VÆV7F÷$ÆÂ‚rç7VvvW7F–öç2r’æf÷$V6‚†VÂÓâVÂæ6Æ74Æ—7Bç&VÖ÷fR‚v7F—fRr’“°¢Ğ¢Ò“°¢ÒÀ ¢÷7VvvW7F–öä66†S¢·ÒÀ¢÷7VvvW7F–öä&–æDFöæS¢·ÒÀ ¢6†÷u7VvvW7F–öç3¢gVæ7F–öâ‡VW'’Â6öçF–æW$–BÂ–çWDVÂ’°¢6öç7B6öçF–æW"ÒFö7VÖVçBævWDVÆVÖVçD'”–B†6öçF–æW$–B“°¢–b‚6öçF–æW"’&WGW&ã° ¢–b‚VW'’ÇÂVW'’æÆVæwF‚Â’°¢6öçF–æW"æ6Æ74Æ—7Bç&VÖ÷fR‚v7F—fRr“°¢6öçF–æW"æ–ææW$…DÔÂÒrs°¢&WGW&ã°¢Ğ ¢òò{É>ZÙ[»®ŠêîûÈÎ˜şXXŞ˜xŞZHŞiú^Šú.8 ¢–b‚F†—2å÷7VvvW7F–öä66†U·VW'•Ò’°¢F†—2å÷7VvvW7F–öä66†U·VW'•ÒÒv–æF÷rå&÷WFU6V&6‚òv–æF÷rå&÷WFU6V&6‚æf–æE7FF–öç4'•FW&Ò‡VW'’’¢µÓ°¢Ğ¢6öç7B7FF–öç2ÒF†—2å÷7VvvW7F–öä66†U·VW'•Ó°¢–b‡7FF–öç2æÆVæwF‚ÓÓÒ’°¢6öçF–æW"æ6Æ74Æ—7Bç&VÖ÷fR‚v7F—fRr“°¢6öçF–æW"æ–ææW$…DÔÂÒrs°¢&WGW&ã°¢Ğ ¢òò[Ù>X˜Şiú^Šú.iÈ{É>ZÙ‚DôÒi{ny»Nhê^ZHŞyJ8 ¢6öç7B66†VD¶W’Ò6öçF–æW$–B²uòr²VW'“°¢–b‡F†—2å÷7VvvW7F–öä&–æDFöæU¶66†VD¶W•Ò’°¢6öçF–æW"æ–ææW$…DÔÂÒF†—2å÷7VvvW7F–öä66†TDôÕ¶66†VD¶W•ÒÇÂrs°¢6öçF–æW"æ6Æ74Æ—7BæFB‚v7F—fRr“°¢òò˜xŞik{¹Zé®x+X{¾ZHNynYšûÉ®˜xŞXi’–ææW$…DÔÂKÉ®™Hjøiz~ˆ¨.x+¢òòXø®X[ny¹Y
-ÎYšûÈÎYî{ºÒ–çWBK¨¾K»nKÉ®ŠêiÚyºîizk9^x+X{¾8 ¢F†—2åö&–æE7VvvW7F–öäWfVçG2†6öçF–æW"Â–çWDVÂ“°¢&WGW&ã°¢Ğ ¢6öçF–æW"æ–ææW$…DÔÂÒ7FF–öç2æÖ†gVæ7F–öâ‡2’° —f"F–BÒ2ç7FF–öä–BÇÂ3° —f"FâÒ2æF—7Æ”æÖRÇÂ3° —&WGW&â#ÆF—b6Æ73ÕÂ'7VvvW7F–öâÖ—FVÕÂ"FF×7FF–öâÖ–CÕÂ""²v–æF÷ræW66T‡FÖÂ†F–B’²%Â#â"²v–æF÷ræW66T‡FÖÂ†Fâ’²#ÂöF—câ#° —Ò’æ¦ö–â‚""“° ¢6öçF–æW"æ6Æ74Æ—7BæFB‚v7F—fRr“° ¢òò{É>ZÙk‹.iù>Yîy¨B…DÔÎ8 ¢F†—2å÷7VvvW7F–öä66†TDôÒÒF†—2å÷7VvvW7F–öä66†TDôÒÇÂ·Ó°¢F†—2å÷7VvvW7F–öä66†TDôÕ¶66†VD¶W•ÒÒ6öçF–æW"æ–ææW$…DÔÃ°¢F†—2å÷7VvvW7F–öä&–æDFöæU¶66†VD¶W•ÒÒG'VS° ¢F†—2åö&–æE7VvvW7F–öäWfVçG2†6öçF–æW"Â–çWDVÂ“°¢ÒÀ ¢ö&–æE7VvvW7F–öäWfVçG3¢gVæ7F–öâ†6öçF–æW"Â–çWDVÂ’°¢6öçF–æW"çVW'•6VÆV7F÷$ÆÂ‚rç7VvvW7F–öâÖ—FVÒr’æf÷$V6‚†—FVÒÓâ°¢—FVÒæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ‚’Óâ°¢f"F–BÒ—FVÒævWDGG&–'WFR‚vFF×7FF–öâÖ–Br“°¢f"FâÒ—FVÒçFW‡D6öçFVçC°¢–çWDVÂçfÇVRÒFã°¢–çWDVÂç6WDGG&–'WFR‚vFF×7FF–öâÖ–BrÂF–BÇÂrr“°¢6öçF–æW"æ6Æ74Æ—7Bç&VÖ÷fR‚v7F—fRr“°¢6öçF–æW"æ–ææW$…DÔÂÒrs°¢Ò“°¢Ò“°¢ÒÀ ¢W&f÷&Õ6V&6ƒ¢gVæ7F–öâ‚’°¢òò&VfW"7FF–öâ”Bg&öÒFF×7FF–öâÖ–B‡6WB'’7VvvW7F–öâ6Æ–6²“²fÆÂ&6²FòF—7Æ’æÖRf÷"F—&V7B–çW@¢6öç7B&tg&öÒÒ‡F†—2æg&öÔ–çWBò‡F†—2æg&öÔ–çWBævWDGG&–'WFR‚vFF×7FF–öâÖ–Br’ÇÂF†—2æg&öÔ–çWBçfÇVRçG&–Ò‚’’¢rr“°¢6öç7B&uFòÒ‡F†—2çFô–çWBò‡F†—2çFô–çWBævWDGG&–'WFR‚vFF×7FF–öâÖ–Br’ÇÂF†—2çFô–çWBçfÇVRçG&–Ò‚’’¢rr“°¢òòy»Nhê^‹é>XZ^Y¹î˜ûÉ®i‹îzK®YŞz{[ø^š¾Šz>iéK‹¢6æöæ–6Â‹Únz¹’”NûÈZh"¶—F6Væ§R(i"¶—FÕ6Væ§^ûÈ8 ¢f"÷&W6öÇfT–BÒgVæ7F–öâ‡b’°¢–b‚b’&WGW&ârs°¢–b‡v–æF÷rå7FF–öå&W6öÇfW"’°¢f""Òv–æF÷rå7FF–öå&W6öÇfW"ç&W6öÇfR‡b“°¢–b‡"bb"æÆVæwF‚âbb%³Òç7FF–öä–B’&WGW&â%³Òç7FF–öä–C°¢Ğ¢&WGW&âc°¢Ó°¢6öç7Bg&öÒÒ÷&W6öÇfT–B‡&tg&öÒ“°¢6öç7BFòÒ÷&W6öÇfT–B‡&uFò“°¢6öç7BBÒv–æF÷rçBÇÂgVæ7F–öâ†¶W’’²&WGW&â¶W“²Ó° ¢F†—2å÷&VæFW$vVæW&F–öâÒ‡F†—2å÷&VæFW$vVæW&F–öâÇÂ’²°¢F†—2æÆ7E&÷WFU&W7VÇBÒçVÆÃ°¢f"F–ÖT÷F–öç3×¶ÖöFS§F†—2çF–ÖTÖöFRòF†—2çF–ÖTÖöFRçfÇVR¢væ÷rrÇF–ÖS§F†—2çF–ÖT–çWBòF†—2çF–ÖT–çWBçfÇVR¢rwÓ°¢–b‡F–ÖT÷F–öç2æÖöFRÓÒvæ÷rrbbõåÆG³'Ó¥ÆG³'ÒBòçFW7B‡F–ÖT÷F–öç2çF–ÖR’’°¢F†—2ç&W7VÇG4F—bçFW‡D6öçFVçC×B‚w6V&6‚æ–çfÆ–E÷F–ÖRr“²&WGW&ã°¢Ğ¢–b‚g&öÒÇÂFò’°¢–b‡F†—2ç&W7VÇG4F—b’°¢F†—2ç&W7VÇG4F—bæ–ææW$…DÔÂÒsÆF—b6Æ73Ò'6V&6‚ÖW'&÷"#âr²B‚wfÆ–FFRæ–çWE÷&WV—&VBr’²sÂöF—câs°¢Ğ¢&WGW&ã°¢Ğ ¢–b‡F†—2ç&W7VÇG4F—b’°¢F†—2ç&W7VÇG4F—bæ–ææW$…DÔÂÒsÆF—b6Æ73Ò''2ÖÆöF–ær#ãÆF—b6Æ73Ò''2ÖÆöF–ær×7–ææW"#ãÂöF—cãÇ7ãâr²B‚w7FGW2æÆöF–ærr’²sÂ÷7ããÂöF—câs°¢Ğ ¢F†—2æ7W'&VçDÖöFRÒF†—2æ7W'&VçDÖöFRÇÂv6öÖ&òs°¢ÆWB&W7VÇBÒçVÆÃ°¢–b‡v–æF÷rå&÷WFU6V&6‚’°¢&W7VÇBÒv–æF÷rå&÷WFU6V&6‚æf–æE&÷WFR†g&öÒÂFòÂF†—2æ7W'&VçDÖöFR“°¢–b‡F†—2ç&W7VÇG4F—b’°¢–b‡&W7VÇB’°¢&W7VÇBçF–ÖT÷F–öç3×F–ÖT÷F–öç3°¢F†—2ç&VæFW%&W7VÇG2‡&W7VÇBÂB“°¢F†—2æÆ7E&÷WFU&W7VÇBÒ&W7VÇC°¢òò[n[{.ZèÎh‰y¨Ni	Î{J.hÈK˜^XÉnX‹†—7F÷'ûÈ„†—7F÷'’˜	®‹ør6V&6…T¢òòXZÎX[’kh‹K‹é>X{®ûÉ¶†—7F÷'’æ§2KŠŞiz~y¨BÖöæ¶W’×F6€¢òòXÈ^Š8^ièN˜
-[îh
-~KØnK¸îiÊ®ŠznXùûÈ8 ¢–b‡v–æF÷rå6V&6„†—7F÷'’bbv–æF÷rå6V&6„†—7F÷'’ç6fUFô†—7F÷'’’°¢v–æF÷rå6V&6„†—7F÷'’ç6fUFô†—7F÷'’†g&öÒÂFòÂ&W7VÇB“°¢Ğ¢ÒVÇ6R°¢F†—2ç&W7VÇG4F—bæ–ææW$…DÔÂÒsÆF—b6Æ73Ò'6V&6‚ÖW'&÷"#âr²B‚w6V&6‚ææõ÷&W7VÇG2r’²sÂöF—câs°¢Ğ¢Ğ¢Ğ¢&WGW&â&W7VÇC°¢ÒÀ ¢vWE&÷WFU&VÇF–ÖS¢gVæ7F–öâ‡&W7VÇB’°¢–b‚&W7VÇBÇÂ&W7VÇBç&÷WFU6VvÖVçG2ÇÂ&W7VÇBç&÷WFU6VvÖVçG2æÆVæwF‚ÓÓÒ’&WGW&âçVÆÃ°¢f"66†T¶W’Ò&W7VÇBç&÷WFU6VvÖVçG2æÖ†gVæ7F–öâ‡6Vr’°¢&WGW&â6VræÆ–æT–BÇÂ6VræÆ–æTæÖRÇÂrs°¢Ò’æ¦ö–â‚wÇÂr“°¢–b‚F†—2å÷&÷WFU&VÇF–ÖT66†R’F†—2å÷&÷WFU&VÇF–ÖT66†RÒ·Ó°¢–b‡F†—2å÷&÷WFU&VÇF–ÖT66†U¶66†T¶W•Ò’&WGW&âF†—2å÷&÷WFU&VÇF–ÖT66†U¶66†T¶W•Ó°¢f"'DFFÒçVÆÃ°¢G'’²'DFFÒv–æF÷räDDôeU4”ôâòv–æF÷räDDôeU4”ôâævWDFVÆ”–æfôf÷$Æ–æT–G2‡&W7VÇBç&÷WFU6VvÖVçG2æÖ†gVæ7F–öâ‡2—·&WGW&â2æÆ–æT–GÒ’æf–ÇFW"„&ööÆVâ’’¢çVÆÃ²Ò6F6‚†R’·Ğ¢F†—2å÷&÷WFU&VÇF–ÖT66†U¶66†T¶W•ÒÒ'DFF°¢&WGW&â'DFF°¢ÒÀ ¢òò{«ş‹zş[ëŞzºûÉ®KÛşyJ‚&–Çv”D"y¨BÆ–æRæ–Öv^ûÈ…&÷f–FW"h˜iÈZÙ~jë^ûÈY»îj~ûÈÀ¢òò{Ë®[	Y»îj~i{nY¹î˜X‹[{.Šz>iéy¨Ni‹îzK®YŞz{ûÈÎ˜şXXŞX{®xëz›®y›Ş8 ¢öÆ–æT&FvS¢gVæ7F–öâ†Æ–BÂÆB’°¢–b‚Æ–B’&WGW&ârs°¢f"æÒÒ‡v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfTÆ–æTæÖR’òv–æF÷rå&–Çv”D"ç&W6öÇfTÆ–æTæÖR†Æ–BÂv–æF÷ræ7W'&VçDÆær’¢Æ–C°¢f"Æ–æRÒ‡v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ævWDÆ–æR’òv–æF÷rå&–Çv”D"ævWDÆ–æR†Æ–B’¢çVÆÃ°¢f"ö6æöæ–6Ä–ÖrÒÆ–æRbbÆ–æRæ–ÖvRbbò8+8:¾8;Î89wÎ8:Ş8+GÎ89î8;Î8*÷Î8*.8*N8+>8;7Î8+~8;>89Î8:²’òçFW7B†Æ–æRæ–ÖvR’òÆ–æRæ–ÖvR¢rs°¢f"–ÖrÒö6æöæ–6Ä–ÖrÇÂ‡v–æF÷räÆ–æT÷W&F–öå7—7FV×5&W6öÇfT–6öâbbv–æF÷räÆ–æT÷W&F–öå7—7FV×5&W6öÇfT–6öâ†Æ–B’’ÇÂrs°¢–b‚–ÖrbbÆ–æRbbv–æF÷råG&ç6—D6öç7FçG2bbv–æF÷råG&ç6—D6öç7FçG2æ—4¥$U&÷WFRbbv–æF÷råG&ç6—D6öç7FçG2æ—4¥$U&÷WFR†Æ–æR’’–ÖrÒ"ââö–ÖvW2ş˜˜N˜2ô¥.iÛiz^iÊÂô¥.8+8:¾8;Î89rçær#°¢f"÷ÆD6†—Òrs°¢–b‡ÆB’°¢f"÷Æ&VÂÒ‡v–æF÷rçBbbv–æF÷rçB‚w6V&6‚çÆFf÷&Òr’’òv–æF÷rçB‚w6V&6‚çÆFf÷&Òr’ç&WÆ6R‚w·ÒrÂÆB’¢‡ÆB²~Xû~z¹Xûr“°¢÷ÆD6†—ÒsÇ7â6Æ73Ò&¦÷W&æW’ÖÆ–æR×ÆFf÷&Ò#âr²v–æF÷ræW66T‡FÖÂ…÷Æ&VÂ’²sÂ÷7ãâs°¢Ğ¢–b†–Ör’°¢&WGW&âsÇ7â6Æ73Ò&¦÷W&æW’ÖÆ–æRÖ&FvR#ãÆ–Ör6Æ73Ò&¦÷W&æW’ÖÆ–æRÖ–6öâ"7&3Ò"r²v–æF÷ræW66T‡FÖÂ†–Ör’²r"ÇCÒ"r²v–æF÷ræW66T‡FÖÂ†æÒ’²r"F—FÆSÒ"r²v–æF÷ræW66T‡FÖÂ†æÒ’²r"ÆöF–æsÒ&Æ§’#ãÇ7â6Æ73Ò&¦÷W&æW’ÖÆ–æRÖæÖR#âr²v–æF÷ræW66T‡FÖÂ†æÒ’²sÂ÷7ãâr²÷ÆD6†—²sÂ÷7ãâs°¢Ğ¢&WGW&âsÇ7â6Æ73Ò&¦÷W&æW’ÖÆ–æRÖæÖRÖfÆÆ&6²#âr²v–æF÷ræW66T‡FÖÂ†æÒ’²÷ÆD6†—²sÂ÷7ãâs°¢ÒÀ ¢&VæFW%&W7VÇG3¢gVæ7F–öâ‡&W7VÇBÂB’°¢–b‚F†—2ç&W7VÇG4F—b’&WGW&ã°¢f"&VæFW$vVæW&F–öã×F†—2å÷&VæFW$vVæW&F–öãÒ‡F†—2å÷&VæFW$vVæW&F–öâÇÂ’³°¢f"ÆærÒv–æF÷ræ7W'&VçDÆærÇÂv¦s°¢f"GW"Ò&W7VÇBæGW&F–öäÖ–âÇÂ°¢f"G&ç6fW'2Ò°¢f"6Vw2Ò&W7VÇBç&÷WFU6VvÖVçG2ÇÂ&W7VÇBæÆ–æT–æfòÇÂµÓ°¢f÷"‡f"’Ò²’Â6Vw2æÆVæwFƒ²’²²’²–b‡6Vw5¶•ÒçG—RÓÓÒwG&ç6fW"rbb6Vw5¶•ÒçF‡&÷Vv‚’G&ç6fW'2²³²Ğ ¢f"÷&–v–âÒv–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖRòv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR‡&W7VÇBçF…³ÒÂÆær’¢‡&W7VÇBçF…³ÒÇÂrr“°¢f"FW7BÒv–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖRòv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR‡&W7VÇBçF…·&W7VÇBçF‚æÆVæwF‚ÒÒÂÆær’¢‡&W7VÇBçF…·&W7VÇBçF‚æÆVæwF‚ÒÒÇÂrr“° ¢f"‡FÖÂÒsÆF—b6Æ73Ò'6V&6‚×&W7VÇB¦÷W&æW’Ö6&B#âs°¢òòjŠ[Èşj~zÛîûÈhêˆÙòiÈ[ú²òiÈ[	hÚ.K™ûÈûÈÎZû[©NhÚ.K™jXh^8 ¢f"öÖöFW2Òµ²v6öÖ&òrÂB‚w6V&6‚æÖöFRæ6öÖ&òr•ÒÂ²vGW&F–öârÂB‚w6V&6‚æÖöFRæGW&F–öâr•ÒÂ²wG&ç6fW'2rÂB‚w6V&6‚æÖöFRçG&ç6fW'2r•ÕÓ°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’ÖÖöFW2#âs°¢f÷"‡f"öÖ’Ò²öÖ’ÂöÖöFW2æÆVæwFƒ²öÖ’²²’°¢f"öÔ6Ç2Ò…öÖöFW5µöÖ•Õ³ÒÓÓÒF†—2æ7W'&VçDÖöFR’òvÖöFR×F"7F—fRr¢vÖöFR×F"s°¢‡FÖÂ³ÒsÆ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò"r²öÔ6Ç2²r"FFÖÖöFSÒ"r²öÖöFW5µöÖ•Õ³Ò²r#âr²v–æF÷ræW66T‡FÖÂ…öÖöFW5µöÖ•Õ³Ò’²sÂö'WGFöãâs°¢Ğ¢‡FÖÂ³ÒsÂöF—câs°¢òòj~š)ûÉ®h¾i{n™[ò²hÚ.K™jÊi[²KËzé~zZK»~8 ¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’Ö†VFW"#âs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’ÖGW&F–öâ#âr²GW"²rr²B‚w6V&6‚æÖ–å÷Væ—Br’²sÂ÷7ãâs°¢–b‡G&ç6fW'2â’²‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’×G&ç6fW'2#âr²G&ç6fW'2²rr²B‚w6V&6…÷&W7VÇBçG&ç6fW%ö6÷VçBr’²sÂ÷7ãâs²Ğ¢f"÷F÷FÄf&RÒ‡v–æF÷räf&TW7F–ÖF÷"bb&W7VÇBç&÷WFU6VvÖVçG2’òv–æF÷räf&TW7F–ÖF÷"æW7F–ÖFUF÷FÂ‡&W7VÇBç&÷WFU6VvÖVçG2’¢çVÆÃ°¢–b…÷F÷FÄf&R’²‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’Öf&R#ì*Rr²÷F÷FÄf&RçFôÆö6ÆU7G&–ær‚’²rÇ7â6Æ73Ò&¦÷W&æW’Öf&R×Fr#âr²v–æF÷ræW66T‡FÖÂ‡B‚w6V&6‚æf&U÷Frr’’²sÂ÷7ããÂ÷7ãâs²Ğ¢‡FÖÂ³ÒsÂöF—câs°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’×66†VGVÆR"&öÆSÒ'7FGW2"&–ÖÆ—fSÒ'öÆ—FR#âr·v–æF÷ræW66T‡FÖÂ‡B‚w6V&6‚ç66†VGVÆUöÆöF–ærr’’²sÂöF—câs°¢òòi{n™{N{«şûÉ®‹[~x+’(i"XË®™{B(i"{¸x+8 ¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’×F–ÖVÆ–æR#âs°¢òò‹[~x+ˆ¨.x+8 ¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’ÖæöFR¦÷W&æW’ÖæöFRÒÖ÷&–v–â#âs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’ÖæöFRÖF÷B#ãÂ÷7ãâs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’ÖæöFRÖÆ&VÂ#âr²v–æF÷ræW66T‡FÖÂ†÷&–v–â’²sÂ÷7ãâs°¢‡FÖÂ³ÒsÂöF—câs°¢òòXË®™{N8 ¢–b‡6Vw2æÆVæwF‚â’°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’×6VvÖVçG2#âs°¢f÷"‡f"’Ò²’Â6Vw2æÆVæwFƒ²’²²’°¢f"6VrÒ6Vw5¶•Ó°¢–b‡6VrçG—RÓÓÒwG&ç6fW"r’°¢òòhÚ.K™[ëŞzºûÉ®ZéîxëiKniY¾ˆ{2§2÷G&ç6fW"Ö&FvRæ§>ûÈ‡v–æF÷råG&ç6fW$&Fv^ûÈûÈÎj~[ÈşKˆîy»N˜	®XùKÙ>{¹şKˆ ¢‡FÖÂ³Òv–æF÷råG&ç6fW$&FvRòv–æF÷råG&ç6fW$&FvRæ'V–ÆB‡6Vw2Â’ÂÆærÂF†—2åöÆ–æT&FvRæ&–æB‡F†—2’’¢rs°¢ÒVÇ6R°¢f"Æ–æT–BÒ6VræÆ–æT–BÇÂçVÆÃ°¢f"Æ–æTæÖRÒÆ–æT–Bò‡v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfTÆ–æTæÖRòv–æF÷rå&–Çv”D"ç&W6öÇfTÆ–æTæÖR†Æ–æT–BÂv–æF÷ræ7W'&VçDÆær’¢çVÆÂ’¢çVÆÃ°¢f"Æ–æT6öÆ÷"Ò‡v–æF÷räÆ–æT÷W&F–öå7—7FV×5&W6öÇfT6öÆ÷"bbv–æF÷räÆ–æT÷W&F–öå7—7FV×5&W6öÇfT6öÆ÷"†Æ–æT–B’’ÇÂ‡v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ævWDÆ–æR†Æ–æT–B’ò‡v–æF÷rå&–Çv”D"ævWDÆ–æR†Æ–æT–B’æ6öÆ÷"ÇÂçVÆÂ’¢çVÆÂ’ÇÂçVÆÃ°¢f"g&öÕ7BÒv–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖRòv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR‡6Vræg&öÕ7FF–öâÂÆær’¢‡6Vræg&öÕ7FF–öâÇÂrr“°¢f"Fõ7BÒv–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖRòv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR‡6VrçFõ7FF–öâÂÆær’¢‡6VrçFõ7FF–öâÇÂrr“°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’×6Vr"FF×6VrÖ6öÆ÷#Ò"r²v–æF÷ræW66T‡FÖÂ†Æ–æT6öÆ÷"ÇÂrr’²r"FF×6VrÖ–GƒÒ"r²’²r#âs°¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’×6VrÖ†VB#âs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’×6VrÖæÖR#âr²v–æF÷ræW66T‡FÖÂ†Æ–æTæÖRÇÂrr’²sÂ÷7ãâs°¢–b‡6VrçG&–åG—R’²‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’×6Vr×G—R#âr²v–æF÷ræW66T‡FÖÂ‡B‚wG&–å÷G—Râr²6VrçG&–åG—R’’²sÂ÷7ãâs²Ğ¢òò‹ùŠÎx«nh[ëŞzºKˆîZéîi{nš^™Ú.YÎjÚ^ûÈK¸^[»nŠúòşXÎ‹ùi{ni‹îzK®ûÈ8 ¢f"÷7D&FvRÒrs°¢–b†Æ–æT–Bbbv–æF÷räFFgW6–öâ’°¢G'’°¢f"ögW6VBÒv–æF÷räFFgW6–öâævWDgW6VDFF‚“°¢f"öfÂÒögW6VBbbögW6VBæÆ–æW2bbögW6VBæÆ–æW5¶Æ–æT–EÓ°¢f"öF’ÒöfÂbböfÂæFVÆ”–æfó°¢–b…öF’bb…öF’ç7FGW2ÓÓÒvFVÆ–VBrÇÂöF’ç7FGW2ÓÓÒw7W7VæFVBr’’°¢f"÷7D6Ç2ÒöF’ç7FGW2ÓÓÒvFVÆ–VBròvFVÆ–VBr¢w7W7VæFVBs°¢f"÷7D–6öâÒöF’ç7FGW2ÓÓÒvFVÆ–VBròuÇS#V#2r¢uÇSCrs°¢f"÷7DÆ&VÂÒ‡v–æF÷rçBbbv–æF÷rçB‚w7FGW2âr²öF’ç7FGW2’’ÇÂöF’ç7FGW3°¢÷7D&FvRÒrÇ7â6Æ73Ò'&÷WFR×7FGW2Ö&FvRr²÷7D6Ç2²r#âr²÷7D–6öâ²rr²v–æF÷ræW66T‡FÖÂ…÷7DÆ&VÂ’²sÂ÷7ãâs°¢Ğ¢Ò6F6‚…öR’·Ğ¢Ğ¢–b…÷7D&FvR’²‡FÖÂ³Ò÷7D&FvS²Ğ¢òòikY	[ëŞzºûÉ®K™~‹¸®h8^ZûÈŠÎXXûÈhé¾YÊK™~‹¸®jë^š.˜:(	N(	E–†öş[ÈşK™~‹¸®šx^y»NKˆ¾hÈ.KØŞûÉ¾h.Xùnjë^{¸x+ûÈŠÎ‹ù¾ikY	ûÈ¢òòûÈ{«ş‹zşz¹[¨şXøŞY	K™‹Únjë^i»îŠúşi‹îzK®‹[~x+z¹YŞûÈÎKè¾ûÉ®ikZëş(i.kˆ¾‹ri‹îzK¢.ikZëşik™Ú".ûÈÎK™Zê.ŠxnŠy.[©NZx¾{¸iŠşš›nY	y¨Nz¹ûÈ¢–b‡6VræF—&V7F–öâÓÒbbÆ–æT–B’°¢f"öF—%7BÒ6VrçFõ7FF–öã°¢f"öF—$æÖRÒ‡v–æF÷rå&–Çv”D"bbv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR’òv–æF÷rå&–Çv”D"ç&W6öÇfU7FF–öäæÖR…öF—%7BÂÆær’¢öF—%7C°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’×6VrÖF—&V7F–öâÖ&FvR#âr²v–æF÷ræW66T‡FÖÂ‡B‚w6V&6‚æF—&V7F–öâr’ç&WÆ6R‚w·7ÒrÂöF—$æÖR’’²sÂ÷7ãâs°¢Ğ¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’×6Vr×F–ÖW2"FF×6Vr×F–ÖW3Ò"r²’²r#ãÂ÷7ãâs°¢‡FÖÂ³ÒsÂöF—câs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’×6Vr×&÷WFR#âr²v–æF÷ræW66T‡FÖÂ†g&öÕ7B’²rg&'#²r²v–æF÷ræW66T‡FÖÂ‡Fõ7B’²sÂ÷7ãâs°¢‡FÖÂ³ÒsÂöF—câs°¢Ğ¢Ğ¢‡FÖÂ³ÒsÂöF—câs°¢Ğ¢òò{¸x+ˆ¨.x+8 ¢‡FÖÂ³ÒsÆF—b6Æ73Ò&¦÷W&æW’ÖæöFR¦÷W&æW’ÖæöFRÒÖFW7B#âs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’ÖæöFRÖF÷B#ãÂ÷7ãâs°¢‡FÖÂ³ÒsÇ7â6Æ73Ò&¦÷W&æW’ÖæöFRÖÆ&VÂ#âr²v–æF÷ræW66T‡FÖÂ†FW7B’²sÂ÷7ãâs°¢‡FÖÂ³ÒsÂöF—câs°¢‡FÖÂ³ÒsÂöF—câs°¢‡FÖÂ³ÒsÂöF—câs° ¢f"FW7E7FF–öâÒ&W7VÇBçF…·&W7VÇBçF‚æÆVæwF‚ÒÓ°¢f"7÷G4‡FÖÂÒrs°¢–b†FW7E7FF–öâbbG—VöbF†—2ç&VæFW$æV&'•7÷G2ÓÓÒvgVæ7F–öâr’²7÷G4‡FÖÂÒF†—2ç&VæFW$æV&'•7÷G2†FW7E7FF–öâÂB“²Ğ¢F†—2ç&W7VÇG4F—bæ–ææW$…DÔÂÒ‡FÖÃ°¢òò˜	®‹ørDôÒ’[©NyJŠÎzˆ¾XË®™{N‹ëjnš)Îˆ›.ûÈzÊnY‚55ûÉ·7G–ÆR×7&2w6VÆbrKÉ®™‹¾jÚ.Xh^ˆB7G–ÆR[îh
-~ûÈ8 ¢F†—2ç&W7VÇG4F—bçVW'•6VÆV7F÷$ÆÂ‚ræ¦÷W&æW’×6Vrr’æf÷$V6‚†gVæ7F–öâ‡6Vr’°¢f"6öÆ÷"Ò6VrævWDGG&–'WFR‚vFF×6VrÖ6öÆ÷"r“°¢–b†6öÆ÷"’6Vrç7G–ÆRç6WE&÷W'G’‚v&÷&FW"ÖÆVgBÖ6öÆ÷"rÂ6öÆ÷"“°¢Ò“°¢–b‡7÷G4‡FÖÂ’²F†—2ç&W7VÇG4F—bæ–ç6W'DF¦6VçD…DÔÂ‚v&Vf÷&VVæBrÂ7÷G4‡FÖÂ“²Ğ¢òòy›®yØi˜.X‹¾hêzé~ûÈ[È.jÚ^Y¹îZ¾ûÈ(	N(	DôEBi{nX‹¾Š‚şh˜¾XªŠiú^Šú.ZèÎh‰Yîh¨¢#C£^y›¢C£.yØ ¢òòk:XZ^YNK™~‹¸®jë^Xû>Kê~ûÈi[hÚîiÊ®[{º®i{nKˆŞ™‹¾Zîšin[şûÈÎiú^Šú.ZK‹J^™Ù›¹™˜Ş{ª~K‹®izi{nX‹¾[^zK®ûÈ¢–b‡v–æF÷rå&÷WFUF–ÖWF&ÆRbb&W7VÇBç&÷WFU6VvÖVçG2’°¢f"÷'E6VÆbÒF†—3°¢f"÷'DEÒB‚w6V&6‚çF–ÖUöFWr’ÇÂuÇSscvs°¢f"÷'D"ÒB‚w6V&6‚çF–ÖUö'"r’ÇÂuÇSssCs°¢v–æF÷rå&÷WFUF–ÖWF&ÆRæVç&–6…6VvÖVçG2‡&W7VÇBç&÷WFU6VvÖVçG2Â&W7VÇBçF–ÖT÷F–öç2’çF†Vâ†gVæ7F–öâ‡&W2’°¢–b‚÷'E6VÆbç&W7VÇG4F—bÇÂ&VæFW$vVæW&F–öâÓÕ÷'E6VÆbå÷&VæFW$vVæW&F–öâ’&WGW&ã°¢f"æ÷F–6SÕ÷'E6VÆbç&W7VÇG4F—bçVW'•6VÆV7F÷"‚ræ¦÷W&æW’×66†VGVÆRr“°¢–b†æ÷F–6R’æ÷F–6RçFW‡D6öçFVçC×&W2bb&W2æ6ö×ÆWFRò&W2ç6W'f–6TFFR²r+rr·B‚w6V&6‚ç66†VGVÆU÷7VÖÖ'’r’ç&WÆ6R‚w¶GÒrÇ&W2æFW'GW&R’ç&WÆ6R‚w¶ÒrÇ&W2æ'&—fÂ’ç&WÆ6R‚w¶×ÒrÇ&W2æGW&F–öäÖ–â’²r+rr·B‚w6V&6‚ç66†VGVÆUöæ÷FRr’¢B‚w6V&6‚ç66†VGVÆUöÖ—76–ærr“°¢–b‡&W2bb&W2æ6ö×ÆWFR—·f"GW&F–öãÕ÷'E6VÆbç&W7VÇG4F—bçVW'•6VÆV7F÷"‚ræ¦÷W&æW’ÖGW&F–öâr“¶–b†GW&F–öâ’GW&F–öâçFW‡D6öçFVçC×&W2æGW&F–öäÖ–â²rr·B‚w6V&6‚æÖ–å÷Væ—Br“·Ğ¢òòVç&–6‚‹ùNY¹â²F–ÖW2ÂF÷væw&FRŞûÉ¶F÷væw&FRÒy»N˜	®‹Jş˜	®ZK‹J^™È™˜Ş{ª~K‹®hÚ.K™y¨BG&ç6fW"jë^{J.[ÉP¢f"÷F–ÖW2Ò‡&W2bb&W2çF–ÖW2’ò&W2çF–ÖW2¢‡&W2ÇÂ·Ò“°¢f÷"‡f"÷&–G‚–â÷F–ÖW2’°¢f"÷6Æ÷BÒ÷'E6VÆbç&W7VÇG4F—bçVW'•6VÆV7F÷"‚u¶FF×6Vr×F–ÖW3Ò"r²÷&–G‚²r%Òr“°¢–b‚÷6Æ÷BÇÂ÷F–ÖW5µ÷&–G…Ò’6öçF–çVS°¢f"÷FÒÒ÷F–ÖW5µ÷&–G…Ó°¢f"÷ÆD‡FÖÂÒ÷FÒçÆFf÷&ÒòsÇ7â6Æ73Ò&¦÷W&æW’×6Vr×ÆFf÷&Ò#âr²v–æF÷ræW66T‡FÖÂ‡B‚w6V&6‚çÆFf÷&Òr’ç&WÆ6R‚w·ÒrÂ÷FÒçÆFf÷&Ò’’²sÂ÷7ãâr¢rs°¢÷6Æ÷Bæ–ææW$…DÔÂÒsÇ7â6Æ73Ò&¦÷W&æW’×6Vr×F–ÖRÖFW#âr²v–æF÷ræW66T‡FÖÂ…÷FÒæFW’²÷'DE²sÂ÷7ãâr°¢÷ÆD‡FÖÂ°¢sÇ7â6Æ73Ò&¦÷W&æW’×6Vr×F–ÖRÖ'"#âr²v–æF÷ræW66T‡FÖÂ…÷FÒæ'"’²÷'D"²sÂ÷7ãâs°¢Ğ¢òòy»N˜	®™˜Ş{ª~ûÉ¤ôEBXˆnŠiz‹Jş˜	®‹ÚnjÊi{nûÈÂ.K™~hù¾KˆŞŠh.iKY¹îhÚ.K™ih~j[›nXë¾™šNy»N˜	®j~[ÈşûÈ˜şXXŞŠúşZûÎûÈ¢f"öFrÒ‡&W2bb&W2æF÷væw&FR’ÇÂµÓ°¢f÷"‡f"öC"Ò²öC"ÂöFræÆVæwFƒ²öC"²²’°¢f"÷G"Ò÷'E6VÆbç&W7VÇG4F—bçVW'•6VÆV7F÷"‚u¶FF×G‚Ö–GƒÒ"r²öFuµöC%Ò²r%Òr“°¢–b‚÷G"’6öçF–çVS°¢÷G"æ6Æ74Æ—7Bç&VÖ÷fR‚v¦÷W&æW’×G&ç6fW"Ò×F‡&÷Vv‚r“°¢f"÷G‡BÒ÷G"çVW'•6VÆV7F÷"‚ræ¦÷W&æW’×G&ç6fW"×FW‡Br“°¢–b…÷G‡B’°¢÷G‡Bæ6Æ74Æ—7Bç&VÖ÷fR‚v¦÷W&æW’×G&ç6fW"×FW‡BÒ×F‡&÷Vv‚r“°¢÷G‡BçFW‡D6öçFVçBÒB‚w6V&6…÷&W7VÇBçG&ç6fW"r“°¢Ğ¢Ğ¢Ò’æ6F6‚†gVæ7F–öâ‚—¶–b‡&VæFW$vVæW&F–öãÓÓÕ÷'E6VÆbå÷&VæFW$vVæW&F–öâ—·f"æ÷F–6SÕ÷'E6VÆbç&W7VÇG4F—bçVW'•6VÆV7F÷"‚ræ¦÷W&æW’×66†VGVÆRr“¶–b†æ÷F–6R’æ÷F–6RçFW‡D6öçFVçC×B‚w6V&6‚ç66†VGVÆUöÖ—76–ærr“·×Ò“°¢Ğ¢òòjŠ[Èşj~zÛîXˆ~hÚ.ûÉ®KÛşyJikjŠ[Èş˜xŞiki	Î{J.ûÈYÊ‚–ææW$…DÔÂhùKªNYî{¹Zé®ûÈ8 ¢f"÷6VÆbÒF†—3°¢f"öÖöFUF'2ÒF†—2ç&W7VÇG4F—bòF†—2ç&W7VÇG4F—bçVW'•6VÆV7F÷$ÆÂ‚ræÖöFR×F"r’¢µÓ°¢f÷"‡f"÷F’Ò²÷F’ÂöÖöFUF'2æÆVæwFƒ²÷F’²²’°¢öÖöFUF'5µ÷F•ÒæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ‚’°¢÷6VÆbæ7W'&VçDÖöFRÒF†—2ævWDGG&–'WFR‚vFFÖÖöFRr“°¢÷6VÆbçW&f÷&Õ6V&6‚‚“°¢Ò“°¢Ğ¢ÒÀ    ¢Ó° ¢v–æF÷rå6V&6…T’Ò6V&6…T“° ¢–b†Fö7VÖVçBç&VG•7FFRÓÓÒvÆöF–ærr’°¢Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚tDôÔ6öçFVçDÆöFVBrÂ‚’Óâ6V&6…T’æ–æ—B‚’“°¢ÒVÇ6R°¢6V&6…T’æ–æ—B‚“°¢Ğ§Ò’‚“°
+/**
+ * Pixel Tetsudo - æœç´¢ UI æ¨¡å—ï¼ˆå·²ä¼˜åŒ–ï¼‰
+ */
+(function() {
+  'use strict';
+
+  const SearchUI = {
+    container: null,
+    fromInput: null,
+    toInput: null,
+    searchBtn: null,
+    resultsDiv: null,
+
+    // å…¬å…± APIï¼šæŒ‰è½¦ç«™ ID å¡«å……èµ·ç‚¹/ç»ˆç‚¹è¾“å…¥æ¡†ã€‚ä»¥ä¸‹ä¸¤ç§æ¢å¤è·¯å¾„å…±ç”¨è¿™ä¸€å…¥å£ï¼š
+    // ?from=&to= URL æ¢å¤ï¼ˆinitï¼‰å’Œå†å²æ¢å¤ï¼ˆSearchHistory.restoreFromRecentï¼‰ã€‚
+    // åŒæ—¶è®¾ç½® value å’Œæƒå¨çš„ data-station-idï¼›è°ƒç”¨æ–¹ä¸å¾—ç›´æ¥æ“ä½œå†…éƒ¨çŠ¶æ€ã€‚
+    setRoute: function(fromId, toId) {
+      var db = window.RailwayDB;
+      var lang = window.currentLang || 'ja';
+      var fill = function(input, id) {
+        if (!input || !id) return;
+        var name = (db && db.resolveStationName) ? (db.resolveStationName(id, lang) || id) : id;
+        input.value = name;
+        // å…ˆæ´¾å‘ inputï¼Œè®©ç›‘å¬å™¨æ¸…ç†è¿‡æœŸ ID å¹¶åˆ·æ–°å»ºè®®
+        // å†å†™å…¥æƒå¨è½¦ç«™ IDã€‚
+        input.dispatchEvent(new Event('input'));
+        input.setAttribute('data-station-id', id);
+      };
+      fill(this.fromInput, fromId);
+      fill(this.toInput, toId);
+    },
+
+    init: function() {
+      this.container = document.getElementById('searchContainer');
+      if (!this.container) {
+        return;
+      }
+
+      this.fromInput = document.getElementById('searchFrom');
+      this.toInput = document.getElementById('searchTo');
+      this.searchBtn = document.getElementById('searchBtn');
+      this.swapBtn = document.getElementById('swapBtn');
+      this.resultsDiv = document.getElementById('searchResults');
+
+      this.timeMode = document.getElementById('searchTimeMode');
+      this.timeInput = document.getElementById('searchTime');
+      if(this.timeMode && this.timeInput) {
+        var clock = new Date(Date.now()+9*3600000);
+        this.timeInput.value = String(clock.getUTCHours()).padStart(2,'0')+':'+String(clock.getUTCMinutes()).padStart(2,'0');
+        this.timeMode.addEventListener('change', () => { this.timeInput.disabled=this.timeMode.value==='now'; });
+      }
+
+      // è§£æ ?from=/&to= URL å‚æ•°ã€‚ç­‰ RailwayDB æ•°æ®å°±ç»ªåå†çœŸæ­£å¡«å……ï¼›
+      // è§£æç½—é©¬å­—è½¦ç«™ IDï¼ˆå¦‚ Kita-Senjuï¼‰éœ€è¦åç§°æ˜ å°„ï¼›
+      // è¿‡æ—©å¡«å……ä¼šè®© setRoute å›é€€åˆ°è¾“å…¥æ¡†ä¸­çš„åŸå§‹ç½—é©¬å­— IDï¼Œ
+      // å½¢æˆç‚¹å‡»å†å²è®°å½•æ—¶çš„â€œç½—é©¬å­—æ³„æ¼â€ã€‚
+      var _params = null;
+      try { _params = new URLSearchParams(window.location.search); } catch(e) {}
+      var _fromParam = _params ? _params.get('from') : null;
+      var _toParam = _params ? _params.get('to') : null;
+      if (_fromParam || _toParam) {
+        var self = this;
+        var _tries = 0;
+        (function _waitDb() {
+          var _ready = !!(window.RailwayDB && window.RailwayDB.resolveStationName &&
+                          window.DataLoader && window.DataLoader.isLoaded && window.DataLoader.isLoaded());
+          var _err = !!(window.DataLoader && window.DataLoader.getError && window.DataLoader.getError());
+          if (_ready || _err || _tries > 300) {
+            self.setRoute(_fromParam, _toParam);
+            try { window.history.replaceState({}, '', window.location.pathname); } catch(e) {}
+          } else {
+            _tries++;
+            setTimeout(_waitDb, 50);
+          }
+        })();
+      }
+      this.lastRouteResult = null;
+      this.bindEvents();
+      window.onLanguageChange(() => this.refreshUI());
+    },
+
+    refreshUI: function() {
+      const t = window.t || function(key) { return key; };
+      if (this.fromInput) this.fromInput.placeholder = t('search.fromPlaceholder');
+      if (this.toInput) this.toInput.placeholder = t('search.toPlaceholder');
+      if (this.searchBtn) this.searchBtn.textContent = t('search.btn');
+      // é™æ€ [data-i18n] / [data-i18n-placeholder] èŠ‚ç‚¹åªç”±
+      // lang-init.js è´Ÿè´£ã€‚è¿™é‡Œä¸è¦é‡å†™ä»»æ„å…ƒç´ çš„ textContentï¼šå¤åˆ
+      // æ§ä»¶å¯èƒ½åŒ…å«å¿…é¡»åœ¨åˆ‡æ¢è¯­è¨€åä¿ç•™çš„ç»“æ„æ€§å›¾æ ‡/ç¬¦å·ã€‚
+      // æ¸…ç©ºå»ºè®®ç¼“å­˜ï¼Œä½¿é‡æ–°æŸ¥è¯¢æ—¶æŒ‰æ–°è¯­è¨€è§£æåç§°ã€‚
+      this._suggestionCache = {};
+      this._suggestionCacheDOM = {};
+      this._suggestionBindDone = {};
+      // é‡æ–°è§£æè¾“å…¥æ¡†ä¸­å·²é€‰è½¦ç«™åç§°ï¼ˆä»…åœ¨å·²çŸ¥ stationId æ—¶ï¼‰ã€‚
+      var _lang = window.currentLang || 'ja';
+      if (this.fromInput) {
+        var _fid = this.fromInput.getAttribute('data-station-id');
+        if (_fid && window.RailwayDB && window.RailwayDB.resolveStationName) {
+          var _fn = window.RailwayDB.resolveStationName(_fid, _lang);
+          if (_fn) this.fromInput.value = _fn;
+        }
+      }
+      if (this.toInput) {
+        var _tid = this.toInput.getAttribute('data-station-id');
+        if (_tid && window.RailwayDB && window.RailwayDB.resolveStationName) {
+          var _tn = window.RailwayDB.resolveStationName(_tid, _lang);
+          if (_tn) this.toInput.value = _tn;
+        }
+      }
+      // å¦‚æœå·²æ‰§è¡Œè¿‡æœç´¢ï¼Œåˆ™é‡æ–°æ¸²æŸ“è·¯å¾„ç»“æœã€‚
+      if (this.lastRouteResult && this.resultsDiv && this.resultsDiv.innerHTML.trim() !== '') {
+        this.renderResults(this.lastRouteResult, t);
+      }
+    },
+
+
+    _swapInputs: function() {
+      var fromVal = this.fromInput ? this.fromInput.value : '';
+      var toVal = this.toInput ? this.toInput.value : '';
+      var fromId = this.fromInput ? (this.fromInput.getAttribute('data-station-id') || '') : '';
+      var toId = this.toInput ? (this.toInput.getAttribute('data-station-id') || '') : '';
+      if (this.fromInput) {
+        this.fromInput.value = toVal;
+        this.fromInput.setAttribute('data-station-id', toId || '');
+      }
+      if (this.toInput) {
+        this.toInput.value = fromVal;
+        this.toInput.setAttribute('data-station-id', fromId || '');
+      }
+      // è§¦å‘å»ºè®®åˆ·æ–°ã€‚
+      if (this.fromInput && this.fromInput.value) {
+        this.showSuggestions(this.fromInput.value, 'fromSuggestions', this.fromInput);
+      }
+      if (this.toInput && this.toInput.value) {
+        this.showSuggestions(this.toInput.value, 'toSuggestions', this.toInput);
+      }
+    },
+
+    bindEvents: function() {
+      const self = this;
+
+      if (this.swapBtn) {
+        this.swapBtn.addEventListener('click', () => this._swapInputs());
+      }
+      if (this.searchBtn) {
+        this.searchBtn.addEventListener('click', () => self.performSearch());
+      }
+
+      if (this.fromInput) {
+        this.fromInput.addEventListener('keypress', e => {
+          if (e.key === 'Enter') self.performSearch();
+        });
+        this.fromInput.addEventListener('input', function() {
+          // æ‰‹åŠ¨ç¼–è¾‘ä¼šä½¿ä¹‹å‰é€‰ä¸­çš„è½¦ç«™å¤±æ•ˆï¼šå¦‚æœä¸æ¸…é™¤ï¼Œ
+          // data-station-id ä»æŒ‡å‘æ—§è½¦ç«™ï¼Œè€Œ
+          // è¾“å…¥æ¡†æ˜¾ç¤ºæ–°åç§°ï¼ŒperformSearch å´ä¼šè§£æåˆ°æ—§è½¦ç«™ã€‚
+          this.removeAttribute('data-station-id');
+          self.showSuggestions(this.value, 'fromSuggestions', this);
+        });
+      }
+
+      if (this.toInput) {
+        this.toInput.addEventListener('keypress', e => {
+          if (e.key === 'Enter') self.performSearch();
+        });
+        this.toInput.addEventListener('input', function() {
+          // Same stale data-station-id invalidation as the from input above.
+          this.removeAttribute('data-station-id');
+          self.showSuggestions(this.value, 'toSuggestions', this);
+        });
+      }
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.input-group')) {
+          document.querySelectorAll('.suggestions').forEach(el => el.classList.remove('active'));
+        }
+      });
+    },
+
+    _suggestionCache: {},
+    _suggestionBindDone: {},
+
+    showSuggestions: function(query, containerId, inputEl) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      if (!query || query.length < 1) {
+        container.classList.remove('active');
+        container.innerHTML = '';
+        return;
+      }
+
+      // ç¼“å­˜å»ºè®®ï¼Œé¿å…é‡å¤æŸ¥è¯¢ã€‚
+      if (!this._suggestionCache[query]) {
+        this._suggestionCache[query] = window.RouteSearch ? window.RouteSearch.findStationsByTerm(query) : [];
+      }
+      const stations = this._suggestionCache[query];
+      if (stations.length === 0) {
+        container.classList.remove('active');
+        container.innerHTML = '';
+        return;
+      }
+
+      // å½“å‰æŸ¥è¯¢æœ‰ç¼“å­˜ DOM æ—¶ç›´æ¥å¤ç”¨ã€‚
+      const cachedKey = containerId + '_' + query;
+      if (this._suggestionBindDone[cachedKey]) {
+        container.innerHTML = this._suggestionCacheDOM[cachedKey] || '';
+        container.classList.add('active');
+        // é‡æ–°ç»‘å®šç‚¹å‡»å¤„ç†å™¨ï¼šé‡å†™ innerHTML ä¼šé”€æ¯æ—§èŠ‚ç‚¹
+        // åŠå…¶ç›‘å¬å™¨ï¼Œåç»­ input äº‹ä»¶ä¼šè®©æ¡ç›®æ— æ³•ç‚¹å‡»ã€‚
+        this._bindSuggestionEvents(container, inputEl);
+        return;
+      }
+
+      container.innerHTML = stations.map(function(s) {
+				var did = s.stationId || s;
+				var dn = s.displayName || s;
+				return "<div class=\"suggestion-item\" data-station-id=\"" + window.escapeHtml(did) + "\">" + window.escapeHtml(dn) + "</div>";
+			}).join("");
+
+      container.classList.add('active');
+
+      // ç¼“å­˜æ¸²æŸ“åçš„ HTMLã€‚
+      this._suggestionCacheDOM = this._suggestionCacheDOM || {};
+      this._suggestionCacheDOM[cachedKey] = container.innerHTML;
+      this._suggestionBindDone[cachedKey] = true;
+
+      this._bindSuggestionEvents(container, inputEl);
+    },
+
+    _bindSuggestionEvents: function(container, inputEl) {
+      container.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+          var did = item.getAttribute('data-station-id');
+          var dn = item.textContent;
+          inputEl.value = dn;
+          inputEl.setAttribute('data-station-id', did || '');
+          container.classList.remove('active');
+          container.innerHTML = '';
+        });
+      });
+    },
+
+    performSearch: function() {
+      // Prefer station ID from data-station-id (set by suggestion click); fall back to display name for direct input
+      const rawFrom = (this.fromInput ? (this.fromInput.getAttribute('data-station-id') || this.fromInput.value.trim()) : '');
+      const rawTo = (this.toInput ? (this.toInput.getAttribute('data-station-id') || this.toInput.value.trim()) : '');
+      // ç›´æ¥è¾“å…¥å›é€€ï¼šæ˜¾ç¤ºåç§°å¿…é¡»è§£æä¸º canonical è½¦ç«™ IDï¼ˆå¦‚ Kitasenju â†’ Kita-Senjuï¼‰ã€‚
+      var _resolveId = function(v) {
+        if (!v) return '';
+        if (window.StationResolver) {
+          var r = window.StationResolver.resolve(v);
+          if (r && r.length > 0 && r[0].stationId) return r[0].stationId;
+        }
+        return v;
+      };
+      const from = _resolveId(rawFrom);
+      const to = _resolveId(rawTo);
+      const t = window.t || function(key) { return key; };
+
+      this._renderGeneration = (this._renderGeneration || 0) + 1;
+      this.lastRouteResult = null;
+      var timeOptions={mode:this.timeMode ? this.timeMode.value : 'now',time:this.timeInput ? this.timeInput.value : ''};
+      if(timeOptions.mode!=='now' && !/^\d{2}:\d{2}$/.test(timeOptions.time)) {
+        this.resultsDiv.textContent=t('search.invalid_time'); return;
+      }
+      if (!from || !to) {
+        if (this.resultsDiv) {
+          this.resultsDiv.innerHTML = '<div class="search-error">' + t('validate.input_required') + '</div>';
+        }
+        return;
+      }
+
+      if (this.resultsDiv) {
+        this.resultsDiv.innerHTML = '<div class="rs-loading"><div class="rs-loading-spinner"></div><span>' + t('status.loading') + '</span></div>';
+      }
+
+      this.currentMode = this.currentMode || 'combo';
+      let result = null;
+      if (window.RouteSearch) {
+        result = window.RouteSearch.findRoute(from, to, this.currentMode);
+        if (this.resultsDiv) {
+          if (result) {
+            result.timeOptions=timeOptions;
+            this.renderResults(result, t);
+            this.lastRouteResult = result;
+            // å°†å·²å®Œæˆçš„æœç´¢æŒä¹…åŒ–åˆ° Historyï¼ˆHistory é€šè¿‡ SearchUI
+            // å…¬å…± API æ¶ˆè´¹è¾“å‡ºï¼›history.js ä¸­æ—§çš„ monkey-patch
+            // åŒ…è£…æ„é€ å±æ€§ä½†ä»æœªè§¦å‘ï¼‰ã€‚
+            if (window.SearchHistory && window.SearchHistory.saveToHistory) {
+              window.SearchHistory.saveToHistory(from, to, result);
+            }
+          } else {
+            this.resultsDiv.innerHTML = '<div class="search-error">' + t('search.no_results') + '</div>';
+          }
+        }
+      }
+      return result;
+    },
+
+    getRouteRealtime: function(result) {
+      if (!result || !result.routeSegments || result.routeSegments.length === 0) return null;
+      var cacheKey = result.routeSegments.map(function(seg) {
+        return seg.lineId || seg.lineName || '';
+      }).join('||');
+      if (!this._routeRealtimeCache) this._routeRealtimeCache = {};
+      if (this._routeRealtimeCache[cacheKey]) return this._routeRealtimeCache[cacheKey];
+      var rtData = null;
+      try { rtData = window.DATA_FUSION ? window.DATA_FUSION.getDelayInfoForLineIds(result.routeSegments.map(function(s){return s.lineId}).filter(Boolean)) : null; } catch(e) {}
+      this._routeRealtimeCache[cacheKey] = rtData;
+      return rtData;
+    },
+
+    // çº¿è·¯å¾½ç« ï¼šä½¿ç”¨ RailwayDB çš„ line.imageï¼ˆProvider æ‰€æœ‰å­—æ®µï¼‰å›¾æ ‡ï¼Œ
+    // ç¼ºå°‘å›¾æ ‡æ—¶å›é€€åˆ°å·²è§£æçš„æ˜¾ç¤ºåç§°ï¼Œé¿å…å‡ºç°ç©ºç™½ã€‚
+    _lineBadge: function(lid, plat) {
+      if (!lid) return '';
+      var nm = (window.RailwayDB && window.RailwayDB.resolveLineName) ? window.RailwayDB.resolveLineName(lid, window.currentLang) : lid;
+      var line = (window.RailwayDB && window.RailwayDB.getLine) ? window.RailwayDB.getLine(lid) : null;
+      var _canonicalImg = line && line.image && !/(ã‚°ãƒ«ãƒ¼ãƒ—|ãƒ­ã‚´|ãƒãƒ¼ã‚¯|ã‚¢ã‚¤ã‚³ãƒ³|ã‚·ãƒ³ãƒœãƒ«)/.test(line.image) ? line.image : '';
+      var img = _canonicalImg || (window.LineOperationSystemsResolveIcon && window.LineOperationSystemsResolveIcon(lid)) || '';
+      if (!img && line && window.TransitConstants && window.TransitConstants.isJRERoute && window.TransitConstants.isJRERoute(line)) img = "../images/é‰„é“/JRæ±æ—¥æœ¬/JRã‚°ãƒ«ãƒ¼ãƒ—.png";
+      var _platChip = '';
+      if (plat) {
+        var _plabel = (window.t && window.t('search.platform')) ? window.t('search.platform').replace('{p}', plat) : (plat + 'å·ç«™å°');
+        _platChip = '<span class="journey-line-platform">' + window.escapeHtml(_plabel) + '</span>';
+      }
+      if (img) {
+        return '<span class="journey-line-badge"><img class="journey-line-icon" src="' + window.escapeHtml(img) + '" alt="' + window.escapeHtml(nm) + '" title="' + window.escapeHtml(nm) + '" loading="lazy"><span class="journey-line-name">' + window.escapeHtml(nm) + '</span>' + _platChip + '</span>';
+      }
+      return '<span class="journey-line-name-fallback">' + window.escapeHtml(nm) + _platChip + '</span>';
+    },
+
+    renderResults: function(result, t) {
+      if (!this.resultsDiv) return;
+      var renderGeneration=this._renderGeneration=(this._renderGeneration || 0)+1;
+      var lang = window.currentLang || 'ja';
+      var dur = result.durationMin || 0;
+      var transfers = 0;
+      var segs = result.routeSegments || result.lineInfo || [];
+      for (var i = 0; i < segs.length; i++) { if (segs[i].type === 'transfer' && !segs[i].through) transfers++; }
+
+      var origin = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(result.path[0], lang) : (result.path[0] || '');
+      var dest = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(result.path[result.path.length - 1], lang) : (result.path[result.path.length - 1] || '');
+
+      var html = '<div class="search-result journey-card">';
+      // æ¨¡å¼æ ‡ç­¾ï¼ˆæ¨è / æœ€å¿« / æœ€å°‘æ¢ä¹˜ï¼‰ï¼Œå¯¹åº”æ¢ä¹˜æ¡ˆå†…ã€‚
+      var _modes = [['combo', t('search.mode.combo')], ['duration', t('search.mode.duration')], ['transfers', t('search.mode.transfers')]];
+      html += '<div class="journey-modes">';
+      for (var _mi = 0; _mi < _modes.length; _mi++) {
+        var _mCls = (_modes[_mi][0] === this.currentMode) ? 'mode-tab active' : 'mode-tab';
+        html += '<button type="button" class="' + _mCls + '" data-mode="' + _modes[_mi][0] + '">' + window.escapeHtml(_modes[_mi][1]) + '</button>';
+      }
+      html += '</div>';
+      // æ ‡é¢˜ï¼šæ€»æ—¶é•¿ + æ¢ä¹˜æ¬¡æ•° + ä¼°ç®—ç¥¨ä»·ã€‚
+      html += '<div class="journey-header">';
+      html += '<span class="journey-duration">' + dur + ' ' + t('search.min_unit') + '</span>';
+      if (transfers > 0) { html += '<span class="journey-transfers">' + transfers + ' ' + t('search_result.transfer_count') + '</span>'; }
+      var _totalFare = (window.FareEstimator && result.routeSegments) ? window.FareEstimator.estimateTotal(result.routeSegments) : null;
+      if (_totalFare) { html += '<span class="journey-fare">Â¥' + _totalFare.toLocaleString() + ' <span class="journey-fare-tag">' + window.escapeHtml(t('search.fare_tag')) + '</span></span>'; }
+      html += '</div>';
+      html += '<div class="journey-schedule" role="status" aria-live="polite">'+window.escapeHtml(t('search.schedule_loading'))+'</div>';
+      // æ—¶é—´çº¿ï¼šèµ·ç‚¹ â†’ åŒºé—´ â†’ ç»ˆç‚¹ã€‚
+      html += '<div class="journey-timeline">';
+      // èµ·ç‚¹èŠ‚ç‚¹ã€‚
+      html += '<div class="journey-node journey-node--origin">';
+      html += '<span class="journey-node-dot"></span>';
+      html += '<span class="journey-node-label">' + window.escapeHtml(origin) + '</span>';
+      html += '</div>';
+      // åŒºé—´ã€‚
+      if (segs.length > 0) {
+        html += '<div class="journey-segments">';
+        for (var i = 0; i < segs.length; i++) {
+          var seg = segs[i];
+          if (seg.type === 'transfer') {
+            // æ¢ä¹˜å¾½ç« ï¼šå®ç°æ”¶æ•›è‡³ js/transfer-badge.jsï¼ˆwindow.TransferBadgeï¼‰ï¼Œæ ·å¼ä¸ç›´é€šå˜ä½“ç»Ÿä¸€
+            html += window.TransferBadge ? window.TransferBadge.build(segs, i, lang, this._lineBadge.bind(this)) : '';
+          } else {
+            var lineId = seg.lineId || null;
+            var lineName = lineId ? (window.RailwayDB && window.RailwayDB.resolveLineName ? window.RailwayDB.resolveLineName(lineId, window.currentLang) : null) : null;
+            var lineColor = (window.LineOperationSystemsResolveColor && window.LineOperationSystemsResolveColor(lineId)) || (window.RailwayDB && window.RailwayDB.getLine(lineId) ? (window.RailwayDB.getLine(lineId).color || null) : null) || null;
+            var fromSt = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(seg.fromStation, lang) : (seg.fromStation || '');
+            var toSt = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(seg.toStation, lang) : (seg.toStation || '');
+            html += '<div class="journey-seg" data-seg-color="' + window.escapeHtml(lineColor || '') + '" data-seg-idx="' + i + '">';
+            html += '<div class="journey-seg-head">';
+            html += '<span class="journey-seg-name">' + window.escapeHtml(lineName || '') + '</span>';
+            if (seg.trainType) { html += '<span class="journey-seg-type">' + window.escapeHtml(t('train_type.' + seg.trainType)) + '</span>'; }
+            // è¿è¡ŒçŠ¶æ€å¾½ç« ä¸å®æ—¶é¡µé¢åŒæ­¥ï¼ˆä»…å»¶è¯¯/åœè¿æ—¶æ˜¾ç¤ºï¼‰ã€‚
+            var _stBadge = '';
+            if (lineId && window.DataFusion) {
+              try {
+                var _fused = window.DataFusion.getFusedData();
+                var _fl = _fused && _fused.lines && _fused.lines[lineId];
+                var _di = _fl && _fl.delayInfo;
+                if (_di && (_di.status === 'delayed' || _di.status === 'suspended')) {
+                  var _stCls = _di.status === 'delayed' ? 'delayed' : 'suspended';
+                  var _stIcon = _di.status === 'delayed' ? '\u25b3' : '\u00d7';
+                  var _stLabel = (window.t && window.t('status.' + _di.status)) || _di.status;
+                  _stBadge = ' <span class="route-status-badge ' + _stCls + '">' + _stIcon + ' ' + window.escapeHtml(_stLabel) + '</span>';
+                }
+              } catch(_e) {}
+            }
+            if (_stBadge) { html += _stBadge; }
+            // æ–¹å‘å¾½ç« ï¼šä¹—è»Šæƒ…å ±ï¼ˆè¡Œå…ˆï¼‰æ›åœ¨ä¹—è»Šæ®µé ‚éƒ¨â€”â€”Yahooå¼ä¹—è»Šé§…ç›´ä¸‹æŒ‚ä½ï¼›æ’å–æ®µç»ˆç‚¹ï¼ˆè¡Œè¿›æ–¹å‘ï¼‰
+            // ï¼ˆçº¿è·¯ç«™åºåå‘ä¹˜è½¦æ®µæ›¾è¯¯æ˜¾ç¤ºèµ·ç‚¹ç«™åï¼Œä¾‹ï¼šæ–°å®¿â†’æ¸‹è°· æ˜¾ç¤º"æ–°å®¿æ–¹é¢"ï¼Œä¹˜å®¢è§†è§’åº”å§‹ç»ˆæ˜¯é©¶å‘çš„ç«™ï¼‰
+            if (seg.direction !== 0 && lineId) {
+              var _dirSt = seg.toStation;
+              var _dirName = (window.RailwayDB && window.RailwayDB.resolveStationName) ? window.RailwayDB.resolveStationName(_dirSt, lang) : _dirSt;
+              html += '<span class="journey-seg-direction-badge">' + window.escapeHtml(t('search.direction').replace('{s}', _dirName)) + '</span>';
+            }
+            html += '<span class="journey-seg-times" data-seg-times="' + i + '"></span>';
+            html += '</div>';
+            html += '<span class="journey-seg-route">' + window.escapeHtml(fromSt) + ' &rarr; ' + window.escapeHtml(toSt) + '</span>';
+            html += '</div>';
+          }
+        }
+        html += '</div>';
+      }
+      // ç»ˆç‚¹èŠ‚ç‚¹ã€‚
+      html += '<div class="journey-node journey-node--dest">';
+      html += '<span class="journey-node-dot"></span>';
+      html += '<span class="journey-node-label">' + window.escapeHtml(dest) + '</span>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+
+      var destStation = result.path[result.path.length - 1];
+      var spotsHtml = '';
+      if (destStation && typeof this.renderNearbySpots === 'function') { spotsHtml = this.renderNearbySpots(destStation, t); }
+      this.resultsDiv.innerHTML = html;
+      // é€šè¿‡ DOM API åº”ç”¨è¡Œç¨‹åŒºé—´è¾¹æ¡†é¢œè‰²ï¼ˆç¬¦åˆ CSPï¼›style-src 'self' ä¼šé˜»æ­¢å†…è” style å±æ€§ï¼‰ã€‚
+      this.resultsDiv.querySelectorAll('.journey-seg').forEach(function(seg) {
+        var color = seg.getAttribute('data-seg-color');
+        if (color) seg.style.setProperty('border-left-color', color);
+      });
+      if (spotsHtml) { this.resultsDiv.insertAdjacentHTML('beforeend', spotsHtml); }
+      // ç™ºç€æ™‚åˆ»æ¨ç®—ï¼ˆå¼‚æ­¥å›å¡«ï¼‰â€”â€”ODPT æ—¶åˆ»è¡¨/æ‰‹åŠ¨è¡¨æŸ¥è¯¢å®ŒæˆåæŠŠ "14:05ç™º 14:12ç€"
+      // æ³¨å…¥å„ä¹—è»Šæ®µå³ä¾§ï¼ˆæ•°æ®æœªå°±ç»ªæ—¶ä¸é˜»å¡é¦–å±ï¼ŒæŸ¥è¯¢å¤±è´¥é™é»˜é™çº§ä¸ºæ— æ—¶åˆ»å±•ç¤ºï¼‰
+      if (window.RouteTimetable && result.routeSegments) {
+        var _rtSelf = this;
+        var _rtDP = t('search.time_dep') || '\u767a';
+        var _rtAR = t('search.time_arr') || '\u7740';
+        window.RouteTimetable.enrichSegments(result.routeSegments, result.timeOptions).then(function(res) {
+          if (!_rtSelf.resultsDiv || renderGeneration!==_rtSelf._renderGeneration) return;
+          var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
+          if(notice) notice.textContent=res && res.complete ? res.serviceDate+' Â· '+t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin)+' Â· '+t('search.schedule_note') : t('search.schedule_missing');
+          if(res && res.complete){var duration=_rtSelf.resultsDiv.querySelector('.journey-duration');if(duration) duration.textContent=res.durationMin+' '+t('search.min_unit');}
+          // enrich è¿”å› { times, downgrade }ï¼›downgrade = ç›´é€šè´¯é€šå¤±è´¥éœ€é™çº§ä¸ºæ¢ä¹˜çš„ transfer æ®µç´¢å¼•
+          var _times = (res && res.times) ? res.times : (res || {});
+          for (var _ridx in _times) {
+            var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
+            if (!_slot || !_times[_ridx]) continue;
+            var _tm = _times[_ridx];
+            var _platHtml = _tm.platform ? '<span class="journey-seg-platform">' + window.escapeHtml(t('search.platform').replace('{p}', _tm.platform)) + '</span>' : '';
+            _slot.innerHTML = '<span class="journey-seg-time-dep">' + window.escapeHtml(_tm.dep) + _rtDP + '</span>' +
+                              _platHtml +
+                              '<span class="journey-seg-time-arr">' + window.escapeHtml(_tm.arr) + _rtAR + '</span>';
+          }
+          // ç›´é€šé™çº§ï¼šODPT åˆ†è¡¨æ— è´¯é€šè½¦æ¬¡æ—¶ï¼Œ"ä¹—æ›ä¸è¦"æ”¹å›æ¢ä¹˜æ–‡æ¡ˆå¹¶å»é™¤ç›´é€šæ ·å¼ï¼ˆé¿å…è¯¯å¯¼ï¼‰
+          var _dg = (res && res.downgrade) || [];
+          for (var _d2 = 0; _d2 < _dg.length; _d2++) {
+            var _tr = _rtSelf.resultsDiv.querySelector('[data-tx-idx="' + _dg[_d2] + '"]');
+            if (!_tr) continue;
+            _tr.classList.remove('journey-transfer--through');
+            var _txt = _tr.querySelector('.journey-transfer-text');
+            if (_txt) {
+              _txt.classList.remove('journey-transfer-text--through');
+              _txt.textContent = t('search_result.transfer');
+            }
+          }
+        }).catch(function(){if(renderGeneration===_rtSelf._renderGeneration){var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');if(notice) notice.textContent=t('search.schedule_missing');}});
+      }
+      // æ¨¡å¼æ ‡ç­¾åˆ‡æ¢ï¼šä½¿ç”¨æ–°æ¨¡å¼é‡æ–°æœç´¢ï¼ˆåœ¨ innerHTML æäº¤åç»‘å®šï¼‰ã€‚
+      var _self = this;
+      var _modeTabs = this.resultsDiv ? this.resultsDiv.querySelectorAll('.mode-tab') : [];
+      for (var _ti = 0; _ti < _modeTabs.length; _ti++) {
+        _modeTabs[_ti].addEventListener('click', function() {
+          _self.currentMode = this.getAttribute('data-mode');
+          _self.performSearch();
+        });
+      }
+    },
+
+
+
+
+  };
+
+  window.SearchUI = SearchUI;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => SearchUI.init());
+  } else {
+    SearchUI.init();
+  }
+})();

@@ -1,17 +1,372 @@
-YªçŠxÁ«yÉZ­çpŠØ\¢{-ºÇ¥z×è®·š²È ¦åzö«‰¦åzÂò¢ ¢¢{«ş‹zş[^zK®iÈŞXª8 ¢¢{¹şKˆzêynh˜iÈ{«ş‹zşh¾ŠxKŠŞy¨BT’hé.[¨ş8 ¢ ¢¢hé.[¨şXÙ^KØÒÒ[^zK®ZéîKÙ2ò‹ùŠÎ{;¾{¹şûÉ ¢¢jøşiÚ{«ş‹zşŠë[Ù^˜;ŞXúşKº^i®[Šb&W6VçFF–öæXË®YÙ~ûÈyK[{.kyky¨BÄõ2[.YiKnˆÎiÚ^y¨@¢¢6æöæ–6ÂXX>i[hÚîûÈ8&&W6VçFF–öâæÆ–æT–G5³ÒÓÓÒÆ–æT–Fy¨NŠë[Ù^iŠşK‹¾Šë[Ù^ûÉ°¢¢h‰Y{«ş‹zşûÈ†Æ–æT–G5³âåŞûÈX[Kª¾K‹¾Šë[Ù^y¨Nhé.[¨şKØŞ{ÚîûÈÎKˆŞXÙ^xºÎXÚyJ‚T’KØŞ{Úî8 ¢ ¢¢XZ[{¾XŠ¾š®[¨şûÉ¤¥"âÖWG&şûÈYËKˆ¾™8ûÈ“â&—fF^ûÈzx™8ûÈ“â÷F†W.ûÈX[nK¹nûÈ8 ¢¢YÎKˆ‹ù‰
-^YXn{¸NXh^KéŞjÊjùN‹è>ûÉ ¢¢i‹î[Èò&W6VçFF–öâæ÷&FW"(i"x›jè®zÊnXûr(i"Õ¢zÊnXûp¢¢(i"i‹îzK®YŞz{(i"z‹>Zé®y¨NXéşZx¾š®[¨ş8 ¢ ¢¢6æöæ–6Âxšyn{«ş‹zşK¸ŞYÊ‚&–Çv•öFFæ§6öâKŠŞxºÎz¸¾[»®jŠûÉ°¢¢iÊÎ[.Xú®‹Iş‹J>[^zK®ûÈÎKˆŞY[›nh‰niKXi’6æöæ–6Âh¹>h™8 ¢ ¢¢XZÎX[ûÉ ¢¢ÒvWDF—7Æ”÷&FW"†Æ–æW2Â÷F–öç2’(i"hÈš®[¨şhé.X‰~y¨N{«ş‹zò”NûÈK‹¾Šë[ÙR²h‰YûÈ¢¢÷F–öç2æ–æ6ÇVFU6W'f–6T6÷'&–F÷'>ûÉ®[nK¸^yJK¨î[^zK®y¨N‹[[¸®XÚx˜~{«>XZ^hé.[¨ş8 ¢¢ÒvWE&W6VçFF–öä÷&FW"†Æ–æW2’(i"hÈš®[¨şhé.X‰~y¨NK‹¾[^zK®ZéîKÙ0¢¢ÒvWDF—7Æ”÷&FW$Ö†Æ–æW2’(i"{«ş‹zò”BX‹[^zK®[¨şXû~y¨NiŠ[@¢¢Ò÷&FW$÷W&F÷'2†÷2’(i"hÈ{¾XŠ¾8¥"Y»®Zé®š®[¨ş8õôõ$DU"Y(ÎZÙ~jøŞš®[¨şhé.X‰~‹ù‰
-^YX`¢¢ğ¢†gVæ7F–öâ‚’°¢'W6R7G&–7B#° ¢òòÓÓÓÓÒâ{¾XŠ¾KˆîY»®Zé®š®[¨òÓÓÓÓĞ ¢f"4DTtõ%•ôõ$DU"Ò²$¥""Â$ÖWG&ò"Â%&—fFR"Â$÷F†W"%Ó°¢f"¥%ôõU$Dõ%ôõ$DU"Ò°¢$¥"ÔV7B"À¢$¥"Ô6VçG&Â"À¢$¥"ÕvW7B"À¢$¥"Ô†ö¶¶–Fò"À¢$¥"Õ6†–¶ö·R"À¢$¥"Ô·—W6‡R"À¢$¥"Ôg&V–v‡B ¢Ó° ¢òòiÈ[ş{¾XŠ¾XX>i[hÚîûÉ®KºR$¥"Ò"X˜Ş{ÈŠønXŠ²¥"‹ù‰
-^YX`¢òòûÈ„¥"ÔV7Bò¥"ÕvW7Bò¥"Ô6VçG&Âò¥"Ô·—W6‡Rò¥"Ô†ö¶¶–Fòò¥"Õ6†–¶ö·^ûÈ8 ¢òòÖWG&òÒXZÎ‰
-^8;¾YËKˆ¾™8ûÉµ&—fFRÒZJ~Yè¾zx™8Xø®XxnZJ~Yè²ş‹ùy[ş8;¾KŠŞ˜:8;¾K™Ş[yîzx™8ûÉ°¢òòX[nKÙ‹ù‰
-^YXnûÈXÙ^‹Ú8ikKªN˜	®8uN8Eu"zØûÈ[Ù.XZR÷F†W.8 ¢f"ÔUE$õôõ2Ò°¢%Fö·–ôÖWG&ò"Â%FöV’"Â%–ö¶ö†Ö×Væ–6—Â"À¢$÷6¶ÖWG&ò"Â$æv÷–×Væ–6—Â"Â$·–÷Fô×Væ–6—Â"Â$¶ö&T×Væ–6—Â"À¢%6÷&ô×Væ–6—Â"Â%6VæF”×Væ–6—Â"Â$gV·Vö¶×Væ–6—Â"Â$†—&÷6†–ÖVÆV7G&–2 ¢Ó°¢f"$•dDUôõ2Ò°¢$¶V–ò"Â$öF·—R"Â$Væ÷6†–ÖVÆV7G&–2"Â%6V–'R"Â%Fö'R"Â%Fö·—R"À¢$¶V–·—R"Â$¶V—6V’"Â%6÷FWG7R"À¢$¶–çFWG7R"Â$†æ·—R"Â$†ç6†–â"Â$¶V–†â"Â$ææ¶’"À¢$ÖV—FWG7R"Â$æ—6†—FWG7R ¢Ó° ¢òòÓÓÓÓÒ"âYû®zXˆn{¾Kˆîhé.[¨ş™JâÓÓÓÓĞ ¢gVæ7F–öâ6FVv÷'”öb†÷’°¢–b‚÷’&WGW&â$÷F†W"#°¢–b‚õä¥"ÒòçFW7B†÷’’&WGW&â$¥"#°¢–b„ÔUE$õôõ2æ–æFW„öb†÷’ãÒ’&WGW&â$ÖWG&ò#°¢–b…$•dDUôõ2æ–æFW„öb†÷’ãÒ’&WGW&â%&—fFR#°¢&WGW&â$÷F†W"#°¢Ğ ¢gVæ7F–öâ6FVv÷'”–æFW‚†÷’°¢f"2Ò6FVv÷'”öb†÷“°¢f"’Ò4DTtõ%•ôõ$DU"æ–æFW„öb†2“°¢&WGW&â’ãÒò’¢4DTtõ%•ôõ$DU"æÆVæwF‚Ò°¢Ğ ¢gVæ7F–öâ§$÷W&F÷$–æFW‚†÷’°¢f"’Ò¥%ôõU$Dõ%ôõ$DU"æ–æFW„öb†÷“°¢&WGW&â’ãÒò’¢¥%ôõU$Dõ%ôõ$DU"æÆVæwFƒ°¢Ğ ¢òòŠxNˆÈ>XÉnzÊnXû~ûÉ®{ªòÕ¢ZÙ~jøŞhÈZÙ~jøŞhé.[¨şûÉ¾X[nK¹nzÊnXû~ûÈi[ZÙ~8"Ò.8k{~YZÙ~zÊn84¤¾ûÈ¢òòŠxnK‹®(	Îx›jè®zÊnXû~(	ŞûÈÎhé.YÊ‚Õ¢K˜¾X˜Ş8 ¢gVæ7F–öâ7–Ö&öÅ6÷'D¶W’†6öFR’°¢f"2Ò7G&–ær†6öFRÇÂ""’çFõWW$66R‚“°¢–b‚2’&WGW&â#'Â#²òòæò7–Ö&öÂÓâfÆÆ&6²F–W ¢–b‚õå´Õ¥Ò²BòçFW7B†2’’&WGW&â#Â"²3²òòÕ¢F–W ¢&WGW&â#Â"²3²òò7V6–ÂF–W"†f—'7B¢Ğ ¢gVæ7F–öâF—7Æ”æÖTöb†Æ–æRÂ&W2’°¢–b‡&W2’&WGW&â&W2ææÖT¦ÇÂ&W2ææÖTVâÇÂ"#°¢&WGW&â†Æ–æRbb†Æ–æRææÖT¦ÇÂÆ–æRææÖTVâÇÂÆ–æRææÖR’’ÇÂ"#°¢Ğ ¢òòik[›.{«şiŠş™Ú.Y	K™Zê.y¨N™8‹zş{¾XŠ¾ûÈÎKˆŞiŠş‹ù‰
-^YXnh‰n[^zK®{;¾{¹ş8 ¢òòYÊjøşKŠ¢¥"‹ù‰
-^YXn{¸NXh^ûÈÎ[nZè>KÙÎK‹®išî˜	®{«ş‹zşK˜¾Yîy¨N‹ùî{ºŞXË®YÙ~ûÈÀ¢òò˜şXXÒfÆÆ&6²Šë[Ù^h¨®išî˜	®{«ş‹zşhù.XZ^KˆŞYÎy¨Nik[›.{«şiÈŞXªK˜¾™{N8 ¢gVæ7F–öâ—56†–æ¶ç6VäÆ–æR†Æ–æR’°¢–b‚Æ–æR’&WGW&âfÇ6S°¢f"–BÒ7G&–ær†Æ–æRææÖRÇÂ""“°¢f"¦Ò7G&–ær†Æ–æRææÖT¦ÇÂ""“°¢f"VâÒ7G&–ær†Æ–æRææÖTVâÇÂ""“°¢&WGW&âõ6†–æ¶ç6Vâö’çFW7B†–B’ÇÂşik[›{y¢òçFW7B†¦’ÇÂõ6†–æ¶ç6Vâö’çFW7B†Vâ“°¢Ğ ¢òòyIşh‰‹ù‰
-^YXn{¸NXh^ZéîKÙ>y¨NzîZé®h
-~hé.[¨ş™Jî8 ¢gVæ7F–öâVçF—G•6÷'D¶W’†VçF—G’’°¢f"&W2ÒVçF—G’ç&W3°¢f"÷&FW$¶W’Ò‡&W2bb&W2æ÷&FW"ÒçVÆÂ¢ò#Â"²7G&–ær‚‚#"²7G&–ær‡&W2æ÷&FW"’’ç6Æ–6R‚ÓB’¢¢#'Â#°¢f"6öFRÒ‡&W2bb&W2æ6öFR’ÇÂ†VçF—G’æÆ–æRbbVçF—G’æÆ–æRæ6öFR’ÇÂ"#°¢f"7–Ô¶W’Ò#Â"²7–Ö&öÅ6÷'D¶W’†6öFR“°¢f"æÖT¶W’ÒF—7Æ”æÖTöb†VçF—G’æÆ–æRÂ&W2“°¢f"÷&–rÒ7G&–ær‚‚#"²7G&–ær†VçF—G’æ÷&–r’’ç6Æ–6R‚Ób’“°¢&WGW&â÷&FW$¶W’²'Â"²7–Ô¶W’²'Â"²æÖT¶W’²'Â"²÷&–s°¢Ğ ¢òòiKn™¸bÆ–æW6KŠŞX{®xëy¨N‹ù‰
-^YXn™JîûÉ¾iÊ®KÊXZ^i{nY¹î˜X‹Tä”d”TEôÄ”äU>8 ¢gVæ7F–öâ6öÆÆV7D÷W&F÷'2†Æ–æW2’°¢f"7&2ÒÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"÷2ÒµÓ°¢ö&¦V7Bæ¶W—2‡7&2’æf÷$V6‚†gVæ7F–öâ†Æ–B’°¢f"÷Ò7&5¶Æ–EÒbb7&5¶Æ–EÒæ÷W&F÷#°¢–b†÷bb÷2æ–æFW„öb†÷’ÓÓÒÓ’÷2çW6‚†÷“°¢Ò“°¢&WGW&â÷3°¢Ğ ¢òòÓÓÓÓÒ2â‹ù‰
-^YXnKˆî[^zK®ZéîKÙ>hé.[¨òÓÓÓÓĞ ¢ò¢ ¢¢hÈXZ[{¾XŠ¾ûÈ„¥"âÖWG&òâ&—fFRâ÷F†W.ûÈ8¥"Y»®Zé®{¸Nš®[¨ş8¢¢õôõ$DU.ûÈšyºâ6æöæ–6Âš®[¨şûÈY(ÎZÙ~jøŞš®[¨şhé.X‰~XZ˜:‹ù‰
-^YXn™Jî8 ¢¢iÊ®yú^‹ù‰
-^YXnKˆŞ[é~ZûÎˆ{N[È.[‹8 ¢¢ğ¢gVæ7F–öâvWD÷W&F÷$÷&FW"†Æ–æW2’°¢f"¶æ÷vâÒ‡v–æF÷råG&ç6—D6öç7FçG2bb'&’æ—4'&’‡v–æF÷råG&ç6—D6öç7FçG2äõôõ$DU"’¢òv–æF÷råG&ç6—D6öç7FçG2äõôõ$DU"ç6Æ–6R‚’¢µÓ°¢f"÷2Ò6öÆÆV7D÷W&F÷'2†Æ–æW2“°¢f"÷WBÒµÓ°¢¶æ÷vâæf÷$V6‚†gVæ7F–öâ†÷’²–b†÷2æ–æFW„öb†÷’ÓÒÓbb÷WBæ–æFW„öb†÷’ÓÓÒÓ’÷WBçW6‚†÷“²Ò“°¢÷2æf÷$V6‚†gVæ7F–öâ†÷’²–b†÷WBæ–æFW„öb†÷’ÓÓÒÓ’÷WBçW6‚†÷“²Ò“°¢÷WBç6÷'B†gVæ7F–öâ†Â"’°¢f"6Ò6FVv÷'”–æFW‚†’Â6"Ò6FVv÷'”–æFW‚†"“°¢–b†6ÓÒ6"’&WGW&â6Ò6#°¢–b†6FVv÷'”öb†’ÓÓÒ$¥""bb6FVv÷'”öb†"’ÓÓÒ$¥""’°¢f"¦Ò§$÷W&F÷$–æFW‚†’Â¦"Ò§$÷W&F÷$–æFW‚†"“°¢–b†¦ÓÒ¦"’&WGW&â¦Ò¦#°¢Ğ¢f"–Ò¶æ÷vâæ–æFW„öb†’Â–"Ò¶æ÷vâæ–æFW„öb†"“°¢–b†–ãÒbb–"ãÒ’&WGW&â–Ò–#°¢–b†–ãÒ’&WGW&âÓ°¢–b†–"ãÒ’&WGW&â°¢&WGW&â7G&–ær†’æÆö6ÆT6ö×&R…7G&–ær†"’“°¢Ò“°¢&WGW&â÷WC°¢Ğ ¢ò¢ ¢¢÷&FW$÷W&F÷'2†÷2ûÉ®z‹>Zé®hé.X‰~K»¾hHş‹ù‰
-^YXnZÙ™¸nûÈzÙ¾˜jşKÛşyJûÈ8 ¢¢š®[¨ş˜^[ê¢vWD÷W&F÷$÷&FW.ûÉ¾[Ù>X˜ŞZèÎi[Nš®[¨şK˜¾ZIny¨N‹ù‰
-^YXn‹ûŞXªX‹ZÙ~jøŞ[¨şiÊ¾[î8 ¢¢ğ¢gVæ7F–öâ÷&FW$÷W&F÷'2†÷2’°¢–b‚'&’æ—4'&’†÷2’ÇÂ÷2æÆVæwF‚ÓÓÒ’&WGW&â÷2ÇÂµÓ°¢f"gVÆÂÒvWD÷W&F÷$÷&FW"†çVÆÂ“°¢f"–ägVÆÂÒµÒÂ&W7BÒµÓ°¢÷2æf÷$V6‚†gVæ7F–öâ†÷’²†gVÆÂæ–æFW„öb†÷’ãÒò–ägVÆÂ¢&W7B’çW6‚†÷“²Ò“°¢–ägVÆÂç6÷'B†gVæ7F–öâ†Â"’²&WGW&âgVÆÂæ–æFW„öb†’ÒgVÆÂæ–æFW„öb†"“²Ò“°¢&W7Bç6÷'B†gVæ7F–öâ†Â"’²&WGW&â7G&–ær†’æÆö6ÆT6ö×&R…7G&–ær†"’“²Ò“°¢&WGW&â–ägVÆÂæ6öæ6B‡&W7B“°¢Ğ ¢ò¢ ¢¢‹ùNY¹îXZ[[^zK®š®[¨şKŠŞy¨NK‹¾[^zK®ZéîKÙ>8 ¢¢jøşKŠ®ZI®{«ş‹zş[^zK®ZéîKÙ>Xú®‹JxÊîKˆKŠ®hé.[¨şXÙ^KØŞ8 ¢¢ğ¢gVæ7F–öâvWE&W6VçFF–öä÷&FW"†ÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂ·Ó°¢f"&W4VçF—F–W2ÒµÒÂ6÷fW&VBÒ·Ó°¢ö&¦V7Bæ¶W—2†ÆÄÆ–æW2’æf÷$V6‚†gVæ7F–öâ†Æ–B’°¢f"Æ–æRÒÆÄÆ–æW5¶Æ–EÓ°¢–b‚Æ–æRÇÂÆ–æRç&W6VçFF–öâ’&WGW&ã°¢–b‚‚‡v–æF÷rå'VçF–ÖT6öæf–rÇÂ·Ò’å4U%d”4Uô4õ%$”Dõ%ôÄ”äU2ÇÂ·Ò•¶Æ–EÒ’°¢6÷fW&VE¶Æ–EÒÒG'VS°¢&WGW&ã°¢Ğ¢f"–G2ÒÆ–æRç&W6VçFF–öâæÆ–æT–G3°¢–b‚'&’æ—4'&’†–G2’ÇÂ–G2æÆVæwF‚ÓÓÒ’&WGW&ã°¢–b†–G5³ÒÓÒÆ–B’&WGW&ã²òòÖVÖ&W"&V6÷&C¢æ÷B6÷'B6Æ÷@¢&W4VçF—F–W2çW6‚‡²–C¢Æ–BÂ&W3¢Æ–æRç&W6VçFF–öâÂÆ–æS¢Æ–æRÂ÷&–s¢&W4VçF—F–W2æÆVæwF‚Â—5&W6VçFF–öã¢G'VRÒ“°¢–G2æf÷$V6‚†gVæ7F–öâ†Ò’²6÷fW&VE¶ÕÒÒG'VS²Ò“°¢Ò“°¢òòfÆÆ&6²ZéîKÙ>ûÉ®k*iÈ’&W6VçFF–öâK‰NKˆŞ[îK¨îX[nK¹n[^zK®ZéîKÙ>h‰Yy¨N{«ş‹zş8 ¢f"fÆÆ&6²ÒµÓ°¢ö&¦V7Bæ¶W—2†ÆÄÆ–æW2’æf÷$V6‚†gVæ7F–öâ†Æ–B’°¢f"Æ–æRÒÆÄÆ–æW5¶Æ–EÓ°¢–b‚Æ–æRÇÂ6÷fW&VE¶Æ–EÒ’&WGW&ã°¢–b‚‚‡v–æF÷rå'VçF–ÖT6öæf–rÇÂ·Ò’å4U%d”4Uô4õ%$”Dõ%ôÄ”äU2ÇÂ·Ò•¶Æ–EÒ’&WGW&ã°¢fÆÆ&6²çW6‚‡²–C¢Æ–BÂ&W3¢çVÆÂÂÆ–æS¢Æ–æRÂ÷&–s¢²fÆÆ&6²æÆVæwF‚Â—5&W6VçFF–öã¢fÇ6RÒ“°¢Ò“° ¢f"'”÷Ò·Ó°¢&W4VçF—F–W2æf÷$V6‚†gVæ7F–öâ†R’°¢f"÷Ò†RæÆ–æRbbRæÆ–æRæ÷W&F÷"’ÇÂ%Væ¶æ÷vâ#°¢Råö÷Ò÷°¢–b‚'”÷¶÷Ò’'”÷¶÷ÒÒµÓ°¢'”÷¶÷ÒçW6‚†R“°¢Ò“°¢fÆÆ&6²æf÷$V6‚†gVæ7F–öâ†R’°¢f"÷Ò†RæÆ–æRbbRæÆ–æRæ÷W&F÷"’ÇÂ%Væ¶æ÷vâ#°¢Råö÷Ò÷°¢–b‚'”÷¶÷Ò’'”÷¶÷ÒÒµÓ°¢'”÷¶÷ÒçW6‚†R“°¢Ò“° ¢f"÷÷&FW"ÒvWD÷W&F÷$÷&FW"†ÆÄÆ–æW2’æf–ÇFW"†gVæ7F–öâ†÷’²&WGW&â'”÷¶÷Ó²Ò“°¢ö&¦V7Bæ¶W—2†'”÷’æf÷$V6‚†gVæ7F–öâ†÷’²–b†÷÷&FW"æ–æFW„öb†÷’ÓÓÒÓ’÷÷&FW"çW6‚†÷“²Ò“° ¢f"&W7VÇBÒµÓ°¢÷÷&FW"æf÷$V6‚†gVæ7F–öâ†÷’°¢f"Æ—7BÒ'”÷¶÷Òç6Æ–6R‚“°¢Æ—7Bç6÷'B†gVæ7F–öâ†Â"’°¢–b†æ—5&W6VçFF–öâÓÒ"æ—5&W6VçFF–öâ’&WGW&âæ—5&W6VçFF–öâòÓ¢²òò76VævW"7—7FV×2f—'7@¢–b‚æ—5&W6VçFF–öâbb6FVv÷'”öb†÷’ÓÓÒ$¥""’°¢f"6†–æ¶ç6VâÒ—56†–æ¶ç6VäÆ–æR†æÆ–æR“°¢f"%6†–æ¶ç6VâÒ—56†–æ¶ç6VäÆ–æR†"æÆ–æR“°¢–b†6†–æ¶ç6VâÓÒ%6†–æ¶ç6Vâ’&WGW&â6†–æ¶ç6Vâò¢Ó²òò6öçfVçF–öæÂfÆÆ&6²ÂF†VâöæR6†–æ¶ç6Vâ&Æö6°¢Ğ¢f"¶ÒVçF—G•6÷'D¶W’†’Â¶"ÒVçF—G•6÷'D¶W’†"“°¢&WGW&â¶Â¶"òÓ¢†¶â¶"ò¢“°¢Ò“°¢Æ—7Bæf÷$V6‚†gVæ7F–öâ†R’²&W7VÇBçW6‚†R“²Ò“°¢Ò“°¢&WGW&â&W7VÇC°¢Ğ ¢ò¢ ¢¢‹ùNY¹îZèÎi[Ny¨BÆ–æT–Bš®[¨şûÉ®XXiKîhÈ[^zK®š®[¨şhé.X‰~y¨NK‹¾Šë[Ù^ûÈÎXhŞiKîX[nh‰Y{«ş‹zş8 ¢¢h‰YX[Kª¾K‹¾Šë[Ù^y¨Nhé.[¨şKØŞ{ÚîûÈÅT’ˆ®Y[.‹Iş‹J>Xë¾˜xŞ8 ¢¢ğ¢gVæ7F–öâvWDF—7Æ”÷&FW"†ÆÄÆ–æW2Â÷F–öç2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂ·Ó°¢÷F–öç2Ò÷F–öç2ÇÂ·Ó°¢f"&W2ÒvWE&W6VçFF–öä÷&FW"†ÆÄÆ–æW2“°¢f"÷WBÒµÓ°¢&W2æf÷$V6‚†gVæ7F–öâ†R’°¢÷WBçW6‚†Ræ–B“°¢–b†Rç&W2’°¢†Rç&W2æÆ–æT–G2ÇÂµÒ’æf÷$V6‚†gVæ7F–öâ†Ò’°¢–b†ÒÓÒRæ–BbbÆÄÆ–æW5¶ÕÒ’÷WBçW6‚†Ò“°¢Ò“°¢Ğ¢Ò“°¢–b†÷F–öç2æ–æ6ÇVFU6W'f–6T6÷'&–F÷'2’°¢ö&¦V7Bæ¶W—2†ÆÄÆ–æW2’æf÷$V6‚†gVæ7F–öâ†Æ–B’°¢f"Æ–æRÒÆÄÆ–æW5¶Æ–EÓ°¢–b‚Æ–æRÇÂ‚‚‡v–æF÷rå'VçF–ÖT6öæf–rÇÂ·Ò’å4U%d”4Uô4õ%$”Dõ%ôÄ”äU2ÇÂ·Ò•¶Æ–EÒ’’&WGW&ã°¢f"&W6VçFF–öâÒÆ–æRç&W6VçFF–öâÇÂ·Ó°¢f"gFW$Æ–æT–BÒ&W6VçFF–öâægFW$Æ–æT–C°¢–b†gFW$Æ–æT–Bbb÷WBæ–æFW„öb†Æ–B’ÓÓÒÓ’°¢f"gFW$–æFW‚Ò÷WBæ–æFW„öb†gFW$Æ–æT–B“°¢–b†gFW$–æFW‚ãÒ’÷WBç7Æ–6R†gFW$–æFW‚²ÂÂÆ–B“°¢Ğ¢Ò“°¢Ğ¢&WGW&â÷WC°¢Ğ ¢gVæ7F–öâvWDF—7Æ”÷&FW$Ö†ÆÄÆ–æW2’°¢f"÷&FW"ÒvWDF—7Æ”÷&FW"†ÆÄÆ–æW2“°¢f"ÖÒ·Ó°¢f÷"‡f"’Ò²’Â÷&FW"æÆVæwFƒ²’²²’Ö¶÷&FW%¶•ÕÒÒ“°¢&WGW&âÖ°¢Ğ ¢òòÓÓÓÓÒBâ{«ş‹zş‹ª¾K»ŞKˆîXˆniJşX[>{;²ÓÓÓÓĞ ¢gVæ7F–öâvWE&W6VçFF–öâ†Æ–æT–BÂÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"Æ–æRÒÆÄÆ–æW5¶Æ–æT–EÒÇÂçVÆÃ°¢&WGW&âÆ–æRbbÆ–æRç&W6VçFF–öâòÆ–æRç&W6VçFF–öâ¢çVÆÃ°¢Ğ ¢gVæ7F–öâvWE&–Ö'•&W6VçFF–öâ†Æ–æT–BÂÆÄÆ–æW2’°¢f"&W2ÒvWE&W6VçFF–öâ†Æ–æT–BÂÆÄÆ–æW2“°¢&WGW&â&W2bb'&’æ—4'&’‡&W2æÆ–æT–G2’bb&W2æÆ–æT–G5³ÒÓÓÒÆ–æT–Bò&W2¢çVÆÃ°¢Ğ ¢gVæ7F–öâvWE&W6VçFF–öäÖVÖ&W'2†Æ–æT–BÂÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"&W2ÒvWE&–Ö'•&W6VçFF–öâ†Æ–æT–BÂÆÄÆ–æW2“°¢&WGW&â&W2ò&W2æÆ–æT–G2æf–ÇFW"†gVæ7F–öâ†–B’²&WGW&âÆÄÆ–æW5¶–EÓ²Ò’¢µÓ°¢Ğ ¢òò6æöæ–6Â‹ª¾K»Ş8iÚ^k©‹ª¾K»ŞY(ÎK™Zê.XúşŠxzÊnXû~YNˆz®h›şh¸^KˆŞYÎˆÎ‹J>8 ¢òòYÎKˆ‹ù‰
-^YXnXh^K™şXúşˆ;ŞX[Kª¾zÊnXû~ûÉ¾zÊnXû~KˆŞˆ;ŞyJK¨î˜hºZéîKÙ>8 ¢gVæ7F–öâvWDÆ–æT–FVçF—G’†Æ–æT–BÂÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"Æ–æRÒÆÄÆ–æW5¶Æ–æT–EÓ°¢–b‚Æ–æR’&WGW&âçVÆÃ°¢f"÷W&F÷"ÒÆ–æRæ÷W&F÷"ÇÂ"#°¢f"6Æ–VçBÒv–æF÷räôED6Æ–VçBÇÂ·Ó°¢f"6æöæ–6ÂÒ‡v–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ò•¶Æ–æT–EÒÇÂÆ–æS°¢f"–çFW&æÄ6öFRÒÆ–æRæ–çFW&æÄ6öFRÇÂ6æöæ–6Âæ–çFW&æÄ6öFRÇÂÆ–æT–C°¢f"6÷W&6T÷W&F÷"Ò†6Æ–VçBäÄ”äUõDõôõU$Dõ"ÇÂ·Ò•¶Æ–æT–EÒÇÂ÷W&F÷#°¢f"&–Çv”6öFRÒ†6Æ–VçBäÄ”äUõ$”Åt•ô4ôDRÇÂ·Ò•¶Æ–æT–EÒÇÂÆ–æT–C°¢&WGW&â²6æöæ–6Ä–C¢Æ–æT–BÂ÷W&F÷#¢÷W&F÷"À¢¶W“¢÷W&F÷"²#£¢"²Æ–æT–BÀ¢–çFW&æÄ6öFS¢–çFW&æÄ6öFRÀ¢–çFW&æÄ¶W“¢÷W&F÷"²#£¢"²–çFW&æÄ6öFRÀ¢F—7Æ”6öFS¢†Æ–æRç&W6VçFF–öâÇÂ·Ò’æ6öFRÇÂÆ–æRæ6öFRÇÂ""À¢&–Çv”6öFS¢&–Çv”6öFRÀ¢6÷W&6T÷W&F÷#¢6÷W&6T÷W&F÷"À¢6÷W&6T¶W“¢6÷W&6T÷W&F÷"²#£¢"²&–Çv”6öFRÀ¢&–Çv”–C¢†6Æ–VçBäÄ”äUõDõôõU$Dõ"ÇÂ·Ò•¶Æ–æT–EĞ¢ò&öGBå&–Çv“¢"²6÷W&6T÷W&F÷"²"â"²&–Çv”6öFR¢çVÆÂÓ°¢Ğ ¢gVæ7F–öâvWE7FGW4ÖVÖ&W'2†ÖVÖ&W$–G2ÂÖöFRÂÆÄÆ–æW2Â&–Ö'”–B’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢–b†ÖöFRÓÒ'&VÇF–ÖR"’&WGW&âÖVÖ&W$–G2ç6Æ–6R‚“°¢&WGW&âÖVÖ&W$–G2æf–ÇFW"†gVæ7F–öâ†–B’°¢&WGW&â–BÓÓÒ&–Ö'”–BÇÂvWE&–Ö'•&W6VçFF–öâ†–BÂÆÄÆ–æW2“°¢Ò“°¢Ğ ¢òòxºÎz¸¾y¨NK™Zê.{«ş‹zş[ø^š¾i‹î[ÈşKÙÎK‹®ˆz®[{y¨N{«ş‹zş[^zK®8 ¢òòiÊ®YŞYŞy¨NXh^˜:iJş{«şizŠë¢5Â‹ª¾K»ŞZh.KÙ^ûÈÎ˜;ŞKùŞyYYÊx‹n{«ş‹zşXh^˜:8 ¢gVæ7F–öâ—4–æFWVæFVçDÆ–æR†Æ–æT–BÂÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"Æ–æRÒÆÄÆ–æW5¶Æ–æT–EÓ°¢&WGW&â†Æ–æRbb‚Æ–æRæ'&æ6„öbÇÂvWE&–Ö'•&W6VçFF–öâ†Æ–æT–BÂÆÄÆ–æW2’’“°¢Ğ ¢gVæ7F–öâvWDÖ'&æ6„–G2†Æ–æT–BÂÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢f"ÖVÖ&W'2ÒvWE&W6VçFF–öäÖVÖ&W'2†Æ–æT–BÂÆÄÆ–æW2“°¢&WGW&âö&¦V7Bæ¶W—2†ÆÄÆ–æW2’æf–ÇFW"†gVæ7F–öâ†–B’°¢&WGW&â–BÓÒÆ–æT–BbbÆÄÆ–æW5¶–EÒæ'&æ6„öbÓÓÒÆ–æT–Bb`¢‚—4–æFWVæFVçDÆ–æR†–BÂÆÄÆ–æW2’ÇÂÖVÖ&W'2æ–æFW„öb†–B’ãÒ“°¢Ò“°¢Ğ ¢gVæ7F–öâ—4'&æ6‚†Æ–æT–BÂÆÄÆ–æW2’°¢ÆÄÆ–æW2ÒÆÄÆ–æW2ÇÂv–æF÷råTä”d”TEôÄ”äU2ÇÂ·Ó°¢G'’°¢–b‡v–æF÷rå'Vææ–æt6†–å&W6öÇfW"bbG—Vöbv–æF÷rå'Vææ–æt6†–å&W6öÇfW"ævWE&W6öÇWF–öä6öçFW‡BÓÓÒ&gVæ7F–öâ"’°¢f"7G‚Òv–æF÷rå'Vææ–æt6†–å&W6öÇfW"ævWE&W6öÇWF–öä6öçFW‡B†Æ–æT–BÂö&¦V7Bæ¶W—2†ÆÄÆ–æW2’“°¢–b†7G‚’&WGW&â7G‚æ—4'&æ6‚ÓÓÒG'VS°¢Ğ¢Ò6F6‚†R’·Ğ¢f"Æ–æRÒÆÄÆ–æW5¶Æ–æT–EÒÇÂçVÆÃ°¢&WGW&â†Æ–æRbbÆ–æRæ'&æ6„öb“°¢Ğ ¢òòÓÓÓÓÒRâZûZInZûÎX{¢ÓÓÓÓĞ ¢v–æF÷räÆ–æU&W6VçFF–öå6W'f–6RÒ°¢vWDF—7Æ”÷&FW#¢vWDF—7Æ”÷&FW"À¢vWE&W6VçFF–öä÷&FW#¢vWE&W6VçFF–öä÷&FW"À¢vWDF—7Æ”÷&FW$Ö¢vWDF—7Æ”÷&FW$ÖÀ¢vWD÷W&F÷$÷&FW#¢vWD÷W&F÷$÷&FW"À¢÷&FW$÷W&F÷'3¢÷&FW$÷W&F÷'2À¢6FVv÷'”öc¢6FVv÷'”öbÀ¢vWE&W6VçFF–öã¢vWE&W6VçFF–öâÀ¢vWE&–Ö'•&W6VçFF–öã¢vWE&–Ö'•&W6VçFF–öâÀ¢vWE&W6VçFF–öäÖVÖ&W'3¢vWE&W6VçFF–öäÖVÖ&W'2À¢vWDÆ–æT–FVçF—G“¢vWDÆ–æT–FVçF—G’À¢vWE7FGW4ÖVÖ&W'3¢vWE7FGW4ÖVÖ&W'2À¢vWDÖ'&æ6„–G3¢vWDÖ'&æ6„–G2À¢—4–æFWVæFVçDÆ–æS¢—4–æFWVæFVçDÆ–æRÀ¢—4'&æ6ƒ¢—4'&æ6€¢Ó°§Ò’‚“°
+/**
+ * çº¿è·¯å±•ç¤ºæœåŠ¡ã€‚
+ * ç»Ÿä¸€ç®¡ç†æ‰€æœ‰çº¿è·¯æ€»è§ˆä¸­çš„ UI æ’åºã€‚
+ *
+ * æ’åºå•ä½ = å±•ç¤ºå®ä½“ / è¿è¡Œç³»ç»Ÿï¼š
+ *   æ¯æ¡çº¿è·¯è®°å½•éƒ½å¯ä»¥æºå¸¦ `presentation` åŒºå—ï¼ˆç”±å·²æ·˜æ±°çš„ LOS å±‚å¸æ”¶è€Œæ¥çš„
+ *   canonical å…ƒæ•°æ®ï¼‰ã€‚`presentation.lineIds[0] === lineId` çš„è®°å½•æ˜¯ä¸»è®°å½•ï¼›
+ *   æˆå‘˜çº¿è·¯ï¼ˆlineIds[1..]ï¼‰å…±äº«ä¸»è®°å½•çš„æ’åºä½ç½®ï¼Œä¸å•ç‹¬å ç”¨ UI ä½ç½®ã€‚
+ *
+ * å…¨å±€ç±»åˆ«é¡ºåºï¼šJR > Metroï¼ˆåœ°ä¸‹é“ï¼‰> Privateï¼ˆç§é“ï¼‰> Otherï¼ˆå…¶ä»–ï¼‰ã€‚
+ * åŒä¸€è¿è¥å•†ç»„å†…ä¾æ¬¡æ¯”è¾ƒï¼š
+ *   æ˜¾å¼ presentation.order â†’ ç‰¹æ®Šç¬¦å· â†’ A-Z ç¬¦å·
+ *   â†’ æ˜¾ç¤ºåç§° â†’ ç¨³å®šçš„åŸå§‹é¡ºåºã€‚
+ *
+ * canonical ç‰©ç†çº¿è·¯ä»åœ¨ railway_data.json ä¸­ç‹¬ç«‹å»ºæ¨¡ï¼›
+ * æœ¬å±‚åªè´Ÿè´£å±•ç¤ºï¼Œä¸åˆå¹¶æˆ–æ”¹å†™ canonical æ‹“æ‰‘ã€‚
+ *
+ * å…¬å…± APIï¼š
+ *   - getDisplayOrder(lines, options) â†’ æŒ‰é¡ºåºæ’åˆ—çš„çº¿è·¯ IDï¼ˆä¸»è®°å½• + æˆå‘˜ï¼‰
+ *     options.includeServiceCorridorsï¼šå°†ä»…ç”¨äºå±•ç¤ºçš„èµ°å»Šå¡ç‰‡çº³å…¥æ’åºã€‚
+ *   - getPresentationOrder(lines) â†’ æŒ‰é¡ºåºæ’åˆ—çš„ä¸»å±•ç¤ºå®ä½“
+ *   - getDisplayOrderMap(lines) â†’ çº¿è·¯ ID åˆ°å±•ç¤ºåºå·çš„æ˜ å°„
+ *   - orderOperators(ops) â†’ æŒ‰ç±»åˆ«ã€JR å›ºå®šé¡ºåºã€OP_ORDER å’Œå­—æ¯é¡ºåºæ’åˆ—è¿è¥å•†
+ */
+(function() {
+  "use strict";
+
+  // ===== 1. ç±»åˆ«ä¸å›ºå®šé¡ºåº =====
+
+  var CATEGORY_ORDER = ["JR", "Metro", "Private", "Other"];
+  var JR_OPERATOR_ORDER = [
+    "JR-East",
+    "JR-Central",
+    "JR-West",
+    "JR-Hokkaido",
+    "JR-Shikoku",
+    "JR-Kyushu",
+    "JR-Freight"
+  ];
+
+  // æœ€å°ç±»åˆ«å…ƒæ•°æ®ï¼šä»¥ "JR-" å‰ç¼€è¯†åˆ« JR è¿è¥å•†
+  // ï¼ˆJR-East / JR-West / JR-Central / JR-Kyushu / JR-Hokkaido / JR-Shikokuï¼‰ã€‚
+  // Metro = å…¬è¥ãƒ»åœ°ä¸‹é“ï¼›Private = å¤§å‹ç§é“åŠå‡†å¤§å‹/è¿‘ç•¿ãƒ»ä¸­éƒ¨ãƒ»ä¹å·ç§é“ï¼›
+  // å…¶ä½™è¿è¥å•†ï¼ˆå•è½¨ã€æ–°äº¤é€šã€AGTã€TWR ç­‰ï¼‰å½’å…¥ Otherã€‚
+  var METRO_OPS = [
+    "TokyoMetro", "Toei", "YokohamaMunicipal",
+    "OsakaMetro", "NagoyaMunicipal", "KyotoMunicipal", "KobeMunicipal",
+    "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal", "HiroshimaElectric"
+  ];
+  var PRIVATE_OPS = [
+    "Keio", "Odakyu", "EnoshimaElectric", "Seibu", "Tobu", "Tokyu",
+    "Keikyu", "Keisei", "Sotetsu",
+    "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
+    "Meitetsu", "Nishitetsu"
+  ];
+
+  // ===== 2. åŸºç¡€åˆ†ç±»ä¸æ’åºé”® =====
+
+  function categoryOf(op) {
+    if (!op) return "Other";
+    if (/^JR-/.test(op)) return "JR";
+    if (METRO_OPS.indexOf(op) >= 0) return "Metro";
+    if (PRIVATE_OPS.indexOf(op) >= 0) return "Private";
+    return "Other";
+  }
+
+  function categoryIndex(op) {
+    var c = categoryOf(op);
+    var i = CATEGORY_ORDER.indexOf(c);
+    return i >= 0 ? i : CATEGORY_ORDER.length - 1;
+  }
+
+  function jrOperatorIndex(op) {
+    var i = JR_OPERATOR_ORDER.indexOf(op);
+    return i >= 0 ? i : JR_OPERATOR_ORDER.length;
+  }
+
+  // è§„èŒƒåŒ–ç¬¦å·ï¼šçº¯ A-Z å­—æ¯æŒ‰å­—æ¯æ’åºï¼›å…¶ä»–ç¬¦å·ï¼ˆæ•°å­—ã€"-"ã€æ··åˆå­—ç¬¦ã€CJKï¼‰
+  // è§†ä¸ºâ€œç‰¹æ®Šç¬¦å·â€ï¼Œæ’åœ¨ A-Z ä¹‹å‰ã€‚
+  function symbolSortKey(code) {
+    var c = String(code || "").toUpperCase();
+    if (!c) return "2|";                    // no symbol -> fallback tier
+    if (/^[A-Z]+$/.test(c)) return "1|" + c; // A-Z tier
+    return "0|" + c;                        // special tier (first)
+  }
+
+  function displayNameOf(line, pres) {
+    if (pres) return pres.nameJa || pres.nameEn || "";
+    return (line && (line.nameJa || line.nameEn || line.name)) || "";
+  }
+
+  // æ–°å¹²çº¿æ˜¯é¢å‘ä¹˜å®¢çš„é“è·¯ç±»åˆ«ï¼Œä¸æ˜¯è¿è¥å•†æˆ–å±•ç¤ºç³»ç»Ÿã€‚
+  // åœ¨æ¯ä¸ª JR è¿è¥å•†ç»„å†…ï¼Œå°†å®ƒä½œä¸ºæ™®é€šçº¿è·¯ä¹‹åçš„è¿ç»­åŒºå—ï¼Œ
+  // é¿å… fallback è®°å½•æŠŠæ™®é€šçº¿è·¯æ’å…¥ä¸åŒçš„æ–°å¹²çº¿æœåŠ¡ä¹‹é—´ã€‚
+  function isShinkansenLine(line) {
+    if (!line) return false;
+    var id = String(line.name || "");
+    var ja = String(line.nameJa || "");
+    var en = String(line.nameEn || "");
+    return /Shinkansen/i.test(id) || /æ–°å¹¹ç·š/.test(ja) || /Shinkansen/i.test(en);
+  }
+
+  // ç”Ÿæˆè¿è¥å•†ç»„å†…å®ä½“çš„ç¡®å®šæ€§æ’åºé”®ã€‚
+  function entitySortKey(entity) {
+    var pres = entity.pres;
+    var orderKey = (pres && pres.order != null)
+      ? "1|" + String(("0000" + String(pres.order)).slice(-4))
+      : "2|";
+    var code = (pres && pres.code) || (entity.line && entity.line.code) || "";
+    var symKey = "0|" + symbolSortKey(code);
+    var nameKey = displayNameOf(entity.line, pres);
+    var orig = String(("000000" + String(entity.orig)).slice(-6));
+    return orderKey + "|" + symKey + "|" + nameKey + "|" + orig;
+  }
+
+  // æ”¶é›† `lines` ä¸­å‡ºç°çš„è¿è¥å•†é”®ï¼›æœªä¼ å…¥æ—¶å›é€€åˆ° UNIFIED_LINESã€‚
+  function collectOperators(lines) {
+    var src = lines || window.UNIFIED_LINES || {};
+    var ops = [];
+    Object.keys(src).forEach(function(lid) {
+      var op = src[lid] && src[lid].operator;
+      if (op && ops.indexOf(op) === -1) ops.push(op);
+    });
+    return ops;
+  }
+
+  // ===== 3. è¿è¥å•†ä¸å±•ç¤ºå®ä½“æ’åº =====
+
+  /**
+   * æŒ‰å…¨å±€ç±»åˆ«ï¼ˆJR > Metro > Private > Otherï¼‰ã€JR å›ºå®šç»„é¡ºåºã€
+   * OP_ORDERï¼ˆé¡¹ç›® canonical é¡ºåºï¼‰å’Œå­—æ¯é¡ºåºæ’åˆ—å…¨éƒ¨è¿è¥å•†é”®ã€‚
+   * æœªçŸ¥è¿è¥å•†ä¸å¾—å¯¼è‡´å¼‚å¸¸ã€‚
+   */
+  function getOperatorOrder(lines) {
+    var known = (window.TransitConstants && Array.isArray(window.TransitConstants.OP_ORDER))
+      ? window.TransitConstants.OP_ORDER.slice() : [];
+    var ops = collectOperators(lines);
+    var out = [];
+    known.forEach(function(op) { if (ops.indexOf(op) !== -1 && out.indexOf(op) === -1) out.push(op); });
+    ops.forEach(function(op) { if (out.indexOf(op) === -1) out.push(op); });
+    out.sort(function(a, b) {
+      var ca = categoryIndex(a), cb = categoryIndex(b);
+      if (ca !== cb) return ca - cb;
+      if (categoryOf(a) === "JR" && categoryOf(b) === "JR") {
+        var ja = jrOperatorIndex(a), jb = jrOperatorIndex(b);
+        if (ja !== jb) return ja - jb;
+      }
+      var ia = known.indexOf(a), ib = known.indexOf(b);
+      if (ia >= 0 && ib >= 0) return ia - ib;
+      if (ia >= 0) return -1;
+      if (ib >= 0) return 1;
+      return String(a).localeCompare(String(b));
+    });
+    return out;
+  }
+
+  /**
+   * orderOperators(ops)ï¼šç¨³å®šæ’åˆ—ä»»æ„è¿è¥å•†å­é›†ï¼ˆç­›é€‰æ ä½¿ç”¨ï¼‰ã€‚
+   * é¡ºåºéµå¾ª getOperatorOrderï¼›å½“å‰å®Œæ•´é¡ºåºä¹‹å¤–çš„è¿è¥å•†è¿½åŠ åˆ°å­—æ¯åºæœ«å°¾ã€‚
+   */
+  function orderOperators(ops) {
+    if (!Array.isArray(ops) || ops.length === 0) return ops || [];
+    var full = getOperatorOrder(null);
+    var inFull = [], rest = [];
+    ops.forEach(function(op) { (full.indexOf(op) >= 0 ? inFull : rest).push(op); });
+    inFull.sort(function(a, b) { return full.indexOf(a) - full.indexOf(b); });
+    rest.sort(function(a, b) { return String(a).localeCompare(String(b)); });
+    return inFull.concat(rest);
+  }
+
+  /**
+   * è¿”å›å…¨å±€å±•ç¤ºé¡ºåºä¸­çš„ä¸»å±•ç¤ºå®ä½“ã€‚
+   * æ¯ä¸ªå¤šçº¿è·¯å±•ç¤ºå®ä½“åªè´¡çŒ®ä¸€ä¸ªæ’åºå•ä½ã€‚
+   */
+  function getPresentationOrder(allLines) {
+    allLines = allLines || {};
+    var presEntities = [], covered = {};
+    Object.keys(allLines).forEach(function(lid) {
+      var line = allLines[lid];
+      if (!line || !line.presentation) return;
+      if (((window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {})[lid]) {
+        covered[lid] = true;
+        return;
+      }
+      var ids = line.presentation.lineIds;
+      if (!Array.isArray(ids) || ids.length === 0) return;
+      if (ids[0] !== lid) return; // member record: not a sort slot
+      presEntities.push({ id: lid, pres: line.presentation, line: line, orig: presEntities.length, isPresentation: true });
+      ids.forEach(function(m) { covered[m] = true; });
+    });
+    // fallback å®ä½“ï¼šæ²¡æœ‰ presentation ä¸”ä¸å±äºå…¶ä»–å±•ç¤ºå®ä½“æˆå‘˜çš„çº¿è·¯ã€‚
+    var fallback = [];
+    Object.keys(allLines).forEach(function(lid) {
+      var line = allLines[lid];
+      if (!line || covered[lid]) return;
+      if (((window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {})[lid]) return;
+      fallback.push({ id: lid, pres: null, line: line, orig: 100000 + fallback.length, isPresentation: false });
+    });
+
+    var byOp = {};
+    presEntities.forEach(function(e) {
+      var op = (e.line && e.line.operator) || "Unknown";
+      e._op = op;
+      if (!byOp[op]) byOp[op] = [];
+      byOp[op].push(e);
+    });
+    fallback.forEach(function(e) {
+      var op = (e.line && e.line.operator) || "Unknown";
+      e._op = op;
+      if (!byOp[op]) byOp[op] = [];
+      byOp[op].push(e);
+    });
+
+    var opOrder = getOperatorOrder(allLines).filter(function(op) { return byOp[op]; });
+    Object.keys(byOp).forEach(function(op) { if (opOrder.indexOf(op) === -1) opOrder.push(op); });
+
+    var result = [];
+    opOrder.forEach(function(op) {
+      var list = byOp[op].slice();
+      list.sort(function(a, b) {
+        if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1; // passenger systems first
+        if (!a.isPresentation && categoryOf(op) === "JR") {
+          var aShinkansen = isShinkansenLine(a.line);
+          var bShinkansen = isShinkansenLine(b.line);
+          if (aShinkansen !== bShinkansen) return aShinkansen ? 1 : -1; // conventional fallback, then one Shinkansen block
+        }
+        var ka = entitySortKey(a), kb = entitySortKey(b);
+        return ka < kb ? -1 : (ka > kb ? 1 : 0);
+      });
+      list.forEach(function(e) { result.push(e); });
+    });
+    return result;
+  }
+
+  /**
+   * è¿”å›å®Œæ•´çš„ lineId é¡ºåºï¼šå…ˆæ”¾æŒ‰å±•ç¤ºé¡ºåºæ’åˆ—çš„ä¸»è®°å½•ï¼Œå†æ”¾å…¶æˆå‘˜çº¿è·¯ã€‚
+   * æˆå‘˜å…±äº«ä¸»è®°å½•çš„æ’åºä½ç½®ï¼ŒUI èšåˆå±‚è´Ÿè´£å»é‡ã€‚
+   */
+  function getDisplayOrder(allLines, options) {
+    allLines = allLines || {};
+    options = options || {};
+    var pres = getPresentationOrder(allLines);
+    var out = [];
+    pres.forEach(function(e) {
+      out.push(e.id);
+      if (e.pres) {
+        (e.pres.lineIds || []).forEach(function(m) {
+          if (m !== e.id && allLines[m]) out.push(m);
+        });
+      }
+    });
+    if (options.includeServiceCorridors) {
+      Object.keys(allLines).forEach(function(lid) {
+        var line = allLines[lid];
+        if (!line || !(((window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {})[lid])) return;
+        var presentation = line.presentation || {};
+        var afterLineId = presentation.afterLineId;
+        if (afterLineId && out.indexOf(lid) === -1) {
+          var afterIndex = out.indexOf(afterLineId);
+          if (afterIndex >= 0) out.splice(afterIndex + 1, 0, lid);
+        }
+      });
+    }
+    return out;
+  }
+
+  function getDisplayOrderMap(allLines) {
+    var order = getDisplayOrder(allLines);
+    var map = {};
+    for (var i = 0; i < order.length; i++) map[order[i]] = i;
+    return map;
+  }
+
+  // ===== 4. çº¿è·¯èº«ä»½ä¸åˆ†æ”¯å…³ç³» =====
+
+  function getPresentation(lineId, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    var line = allLines[lineId] || null;
+    return line && line.presentation ? line.presentation : null;
+  }
+
+  function getPrimaryPresentation(lineId, allLines) {
+    var pres = getPresentation(lineId, allLines);
+    return pres && Array.isArray(pres.lineIds) && pres.lineIds[0] === lineId ? pres : null;
+  }
+
+  function getPresentationMembers(lineId, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    var pres = getPrimaryPresentation(lineId, allLines);
+    return pres ? pres.lineIds.filter(function(id) { return !!allLines[id]; }) : [];
+  }
+
+  // canonical èº«ä»½ã€æ¥æºèº«ä»½å’Œä¹˜å®¢å¯è§ç¬¦å·å„è‡ªæ‰¿æ‹…ä¸åŒèŒè´£ã€‚
+  // åŒä¸€è¿è¥å•†å†…ä¹Ÿå¯èƒ½å…±äº«ç¬¦å·ï¼›ç¬¦å·ä¸èƒ½ç”¨äºé€‰æ‹©å®ä½“ã€‚
+  function getLineIdentity(lineId, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    var line = allLines[lineId];
+    if (!line) return null;
+    var operator = line.operator || "";
+    var client = window.ODPTClient || {};
+    var canonical = (window.UNIFIED_LINES || {})[lineId] || line;
+    var internalCode = line.internalCode || canonical.internalCode || lineId;
+    var sourceOperator = (client.LINE_TO_OPERATOR || {})[lineId] || operator;
+    var railwayCode = (client.LINE_RAILWAY_CODE || {})[lineId] || lineId;
+    return { canonicalId: lineId, operator: operator,
+      key: operator + "::" + lineId,
+      internalCode: internalCode,
+      internalKey: operator + "::" + internalCode,
+      displayCode: (line.presentation || {}).code || line.code || "",
+      railwayCode: railwayCode,
+      sourceOperator: sourceOperator,
+      sourceKey: sourceOperator + "::" + railwayCode,
+      railwayId: (client.LINE_TO_OPERATOR || {})[lineId]
+        ? "odpt.Railway:" + sourceOperator + "." + railwayCode : null };
+  }
+
+  function getStatusMembers(memberIds, mode, allLines, primaryId) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    if (mode !== "realtime") return memberIds.slice();
+    return memberIds.filter(function(id) {
+      return id === primaryId || !getPrimaryPresentation(id, allLines);
+    });
+  }
+
+  // ç‹¬ç«‹çš„ä¹˜å®¢çº¿è·¯å¿…é¡»æ˜¾å¼ä½œä¸ºè‡ªå·±çš„çº¿è·¯å±•ç¤ºã€‚
+  // æœªå‘½åçš„å†…éƒ¨æ”¯çº¿æ— è®º SQL èº«ä»½å¦‚ä½•ï¼Œéƒ½ä¿ç•™åœ¨çˆ¶çº¿è·¯å†…éƒ¨ã€‚
+  function isIndependentLine(lineId, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    var line = allLines[lineId];
+    return !!(line && (!line.branchOf || getPrimaryPresentation(lineId, allLines)));
+  }
+
+  function getMapBranchIds(lineId, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    var members = getPresentationMembers(lineId, allLines);
+    return Object.keys(allLines).filter(function(id) {
+      return id !== lineId && allLines[id].branchOf === lineId &&
+        (!isIndependentLine(id, allLines) || members.indexOf(id) >= 0);
+    });
+  }
+
+  function isBranch(lineId, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    try {
+      if (window.RunningChainResolver && typeof window.RunningChainResolver.getResolutionContext === "function") {
+        var ctx = window.RunningChainResolver.getResolutionContext(lineId, Object.keys(allLines));
+        if (ctx) return ctx.isBranch === true;
+      }
+    } catch(e) {}
+    var line = allLines[lineId] || null;
+    return !!(line && line.branchOf);
+  }
+
+  // ===== 5. å¯¹å¤–å¯¼å‡º =====
+
+  window.LinePresentationService = {
+    getDisplayOrder: getDisplayOrder,
+    getPresentationOrder: getPresentationOrder,
+    getDisplayOrderMap: getDisplayOrderMap,
+    getOperatorOrder: getOperatorOrder,
+    orderOperators: orderOperators,
+    categoryOf: categoryOf,
+    getPresentation: getPresentation,
+    getPrimaryPresentation: getPrimaryPresentation,
+    getPresentationMembers: getPresentationMembers,
+    getLineIdentity: getLineIdentity,
+    getStatusMembers: getStatusMembers,
+    getMapBranchIds: getMapBranchIds,
+    isIndependentLine: isIndependentLine,
+    isBranch: isBranch
+  };
+})();
