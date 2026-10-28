@@ -316,7 +316,7 @@
   }
 
   function stationBadgeHtml(dist) {
-    return dist.stationName ? '<span class="station-badge"><img src="../images/icon-metro-station.svg" alt="" class="station-icon">' + escapeHtml(dist.stationName) + '</span>' : '';
+    return dist.stationName ? '<span class="station-badge"><img src="../images/地铁站点.svg" alt="" class="station-icon">' + escapeHtml(dist.stationName) + '</span>' : '';
   }
 
   // 这些稳定挂载点归共享详情所有者负责。铁路事件不得

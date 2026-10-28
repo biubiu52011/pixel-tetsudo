@@ -319,6 +319,7 @@
       var line = (window.RailwayDB && window.RailwayDB.getLine) ? window.RailwayDB.getLine(lid) : null;
       var _canonicalImg = line && line.image && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(line.image) ? line.image : '';
       var img = _canonicalImg || (window.LineOperationSystemsResolveIcon && window.LineOperationSystemsResolveIcon(lid)) || '';
+      if (!img && line && window.TransitConstants && window.TransitConstants.isJRERoute && window.TransitConstants.isJRERoute(line)) img = "../images/鉄道/JR東日本/JRグループ.png";
       var _platChip = '';
       if (plat) {
         var _plabel = (window.t && window.t('search.platform')) ? window.t('search.platform').replace('{p}', plat) : (plat + '号站台');
