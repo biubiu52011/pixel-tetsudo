@@ -1138,7 +1138,7 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","aliases":[]},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
-  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuIsesaki","TobuSkytree","TobuNikko"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
+  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
   "remaining-fleet-extra-10": {"displayName":"東武500系","iconName":"東武500系","asset":"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png","lineIds":["TobuNikko"],"lineAliases":{"TobuNikko":["500系「リバティ」","500系「リバティ会津」"]},"aliases":["東武500系（リバティ）","東武500系（リバティりょうもう）","500系「リバティ」","500系「リバティ会津」"]},
   "remaining-fleet-extra-11": {"displayName":"東武200型","iconName":"東武200型","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png","aliases":["東武200型（りょうもう）","東武200系"]},
   "remaining-fleet-extra-12": {"displayName":"東武250型","iconName":"東武250型","asset":"../images/列车/東武鉄道/東武鉄道_200型_250番台.png","aliases":["東武250系","東武250系（両毛）"]},
@@ -2761,7 +2761,9 @@ Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
       !Array.isArray(scoped.lineIds) || !scoped.lineIds.length) return;
   // 车型名没有携带车次/代际时，专用涂装 PNG 不能冒充整个系列。
   // 这些记录仍保留为计划候选，等实时/编成证据给出精确子型后再投影。
-  if (scoped.candidateOnly === true) return;
+  // 线路范围本身只表示“这条线可能使用该车”，不等于已确认具体车型。
+  // 只有经过人工/来源审核显式标记的记录才允许从计划图提升为正式 asset。
+  if (scoped.candidateOnly === true || scoped.promotePlannedAsset !== true) return;
   scoped.asset = scoped.plannedAsset;
   scoped.artworkStatus = "verified-scoped-asset";
   scoped.plannedAsset = null;
@@ -3652,7 +3654,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       if (!candidate) return null;
       var asset=candidate.canonical&&(resolveVehicleArtwork(candidate.canonical.displayName,ctx.serviceDate)||candidate.canonical.asset||candidate.canonical.plannedAsset||"");
       icon=asset || '';
-    } else if (candidates.length > 1) {
+    } else if (candidates.length > 1 && ctx._positionSource !== 'supabase-train-run') {
       var sharedAssets = candidates.map(function(v) {
         return v.canonical && (resolveVehicleArtwork(v.canonical.displayName,ctx.serviceDate) ||
           v.canonical.asset || v.canonical.plannedAsset || "");
@@ -3862,7 +3864,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         (!!plannedEvidence.operationCode && plannedEvidence.evidenceRole!=='timetable-plan'));
       var planInput=familyOverride?familyPlan:(_sqlSourceCandidates.length?_sqlSourceCandidates.join(' / '):(_declaredVehicleInput||familyPlan||''));
       var usesFamily=!!familyPlan&&(familyOverride||(!_sqlSourceCandidates.length&&!_declaredVehicleInput));
-      vehResult.vehiclePlan=resolveTimetableVehiclePlan(planInput,{lineId:lineId,operator:usesFamily&&plannedEvidence.operator||(_resolvedEvidence&&_resolvedEvidence.decisive&&_resolvedEvidence.operator)||line.operator,serviceDate:serviceDate,source:usesFamily?'operation-family-plan':'sql-timetable-plan',sourceUrl:usesFamily?plannedEvidence.sourceUrl:(tt._timetableProvenance||''),itineraryStations:_baseOperationCtx.itineraryStations,_plannedArtworkInventory:true});
+      vehResult.vehiclePlan=resolveTimetableVehiclePlan(planInput,{lineId:lineId,operator:usesFamily&&plannedEvidence.operator||(_resolvedEvidence&&_resolvedEvidence.decisive&&_resolvedEvidence.operator)||line.operator,serviceDate:serviceDate,source:usesFamily?'operation-family-plan':'sql-timetable-plan',sourceUrl:usesFamily?plannedEvidence.sourceUrl:(tt._timetableProvenance||''),itineraryStations:_baseOperationCtx.itineraryStations,_positionSource:tt._positionSource||'',_plannedArtworkInventory:true});
     }
     run.identity = {
       planInputKey:planInputKey,
