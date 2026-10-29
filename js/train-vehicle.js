@@ -765,6 +765,7 @@ var CANONICAL_VEHICLES = {
   "jr-e233-1000": {
     displayName:"E233系1000番台", iconName:"E233系1000番台",
     asset:"../images/列车/JR東日本/JR東日本_E233系_1000番台.png",
+    lineIds:["KeihinTohokuNegishi"],
     aliases:["JR東日本E233系1000番台","JR E233系1000番台"]
   },
   "jr-e233-6000": {
@@ -855,7 +856,7 @@ var CANONICAL_VEHICLES = {
   "keisei-8900": {"displayName":"京成8900形","iconName":"京成8900形","asset":null,"plannedAsset":"../images/列车/京成電鉄/京成電鉄_8900形.png","aliases":["京成電鉄8900形"]},
   "keisei-3400": { displayName: "京成3400形", iconName: "京成3400形", asset: "../images/列车/京成電鉄/京成電鉄_3400形.png", aliases: ["京成3400形","京成電鉄3400形"] },
   "keisei-3700": { displayName: "京成3700形", iconName: "京成3700形", asset: "../images/列车/京成電鉄/京成電鉄_3700形.png", aliases: ["京成3700形","京成電鉄3700形"] },
-  "keio-5000": { displayName: "京王5000系", iconName: "京王5000系", asset: "../images/列车/京王電鉄/京王電鉄_5000系.png", lineIds: ["KeioMain","KeioTakao"], lineAliases: { KeioMain: ["5000系"], KeioTakao: ["5000系"] }, aliases: ["京王5000系","京王電鉄5000系"] },
+  "keio-5000": { displayName: "京王5000系", iconName: "京王5000系", asset: "../images/列车/京王電鉄/京王電鉄_5000系.png", lineIds: ["KeioMain","KeioTakao","Shinjuku"], lineAliases: { KeioMain: ["5000系"], KeioTakao: ["5000系"], Shinjuku: ["5000系"] }, aliases: ["京王5000系","京王電鉄5000系"] },
   "odakyu-4000": { displayName: "小田急4000形", iconName: "小田急4000形", asset: "../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png", allowCrossOperator: true, aliases: ["小田急4000形","小田急電鉄4000形"] },
   "metro-16000": {
     displayName: "東京メトロ16000系", iconName: "東京メトロ16000系",
@@ -881,8 +882,8 @@ var CANONICAL_VEHICLES = {
   "tobu-70090": { displayName: "東武70090型", iconName: "東武70090型", asset: "../images/列车/東武鉄道/東武鉄道_70090型.png", aliases: ["東武70090型","東武70090系","東武70090系（TH-LINER）","東武70090系(TH-LINER)",
       "東武70090系（THライナー専用・日比谷線直通）"] },
   "sotetsu-13000-8": { displayName: "相鉄13000系", iconName: "相鉄13000系", asset: "../images/列车/相模鉄道/相模鉄道_13000系_YOKOHAMA_NAVYBLUE.png", aliases: ["相鉄13000系(8両)","相鉄13000系"] },
-  "sotetsu-20000-10": { displayName: "相鉄20000系", iconName: "相鉄20000系", asset: "../images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png", aliases: ["相鉄20000系(10両)","相鉄20000系（10両）"] },
-  "sotetsu-21000": { displayName: "相鉄21000系", iconName: "相鉄21000系", asset: "../images/列车/相模鉄道/相模鉄道_21000系.png", aliases: ["相鉄21000系", "相鉄21000系(8両)"] },
+  "sotetsu-20000-10": { displayName: "相鉄20000系", iconName: "相鉄20000系", asset: "../images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png", lineIds:["Toyoko","TokyuMeguro","Mita","Namboku"], aliases: ["相鉄20000系(10両)","相鉄20000系（10両）"] },
+  "sotetsu-21000": { displayName: "相鉄21000系", iconName: "相鉄21000系", asset: "../images/列车/相模鉄道/相模鉄道_21000系.png", lineIds:["Meguro","TokyuMeguro","Mita","Namboku"], aliases: ["相鉄21000系", "相鉄21000系(8両)"] },
 
   "jr-east-209-500-keiyo": {
     displayName: "209系500番台（京葉線）",
@@ -924,6 +925,7 @@ var CANONICAL_VEHICLES = {
     displayName: "東葉高速2000系",
     iconName: "東葉高速鉄道2000系",
     asset: "../images/列车/東葉高速鉄道/東葉高速鉄道_2000系.png",
+    lineIds: ["Tozai"],
     aliases: ["東葉高速2000系", "東葉高速鉄道2000系", "東葉高速2000系(10両)"]
   },
   "jr-east-e233-2000-joban-local-chiyoda": {
@@ -993,8 +995,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E233系7000番台",
     iconName: "E233系7000番台",
     asset: "../images/列车/JR東日本/JR東日本_E233系_7000番台.png",
-    lineIds: ["SaikyoKawagoe", "Rinkai"],
-    lineAliases: { SaikyoKawagoe: ["E233系7000番台"], Rinkai: ["E233系7000番台", "JR東日本E233系7000番台"] },
+    lineIds: ["SaikyoKawagoe", "Rinkai", "SotetsuJRDirect"],
+    lineAliases: { SaikyoKawagoe: ["E233系7000番台"], Rinkai: ["E233系7000番台", "JR東日本E233系7000番台"], SotetsuJRDirect: ["E233系7000番台"] },
     aliases: ["E233系7000番台", "JR E233系7000番台", "JR東日本E233系7000番台"]
   },
   "twr-70-000-rinkai": {
@@ -1055,15 +1057,15 @@ var CANONICAL_VEHICLES = {
     lineAliases: { Uchibo: ["209系2000番台 / 2100番台"], Sotobo: ["209系2000番台 / 2100番台"], Togane: ["209系2000番台 / 2100番台"], Narita: ["209系2000番台 / 2100番台"], SobuMain: ["209系2000番台 / 2100番台"] },
     aliases: ["209系2000番台 / 2100番台"]
   },
-  "planned-stock-library-0": {"displayName":"E233系8000番台","iconName":"E233系8000番台","asset":"../images/列车/JR東日本/JR東日本_E233系_8000番台.png","aliases":["JR東日本E233系8000番台","JR E233系8000番台"]},
-  "planned-stock-library-1": {"displayName":"E235系1000番台","iconName":"E235系1000番台","asset":"../images/列车/JR東日本/JR東日本_E235系_1000番台.png","aliases":["JR東日本E235系1000番台","JR E235系1000番台"]},
+  "planned-stock-library-0": {"displayName":"E233系8000番台","iconName":"E233系8000番台","asset":"../images/列车/JR東日本/JR東日本_E233系_8000番台.png","lineIds":["Nambu"],"aliases":["JR東日本E233系8000番台","JR E233系8000番台"]},
+  "planned-stock-library-1": {"displayName":"E235系1000番台","iconName":"E235系1000番台","asset":"../images/列车/JR東日本/JR東日本_E235系_1000番台.png","lineIds":["Yokosuka","SobuRapid","SobuMain"],"aliases":["JR東日本E235系1000番台","JR E235系1000番台"]},
   "planned-stock-library-2": {"displayName":"E259系","iconName":"E259系","asset":"../images/列车/JR東日本/JR東日本_E259系.png","lineIds":["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch","ShonanShinjuku"],"aliases":["E259系（成田エクスプレス）","E259系（しおさい）","JR東日本E259系","JR E259系"]},
   "planned-stock-library-3": {"displayName":"E257系5500番台","iconName":"E257系5500番台","asset":"../images/列车/JR東日本/JR東日本_E257系_5500番台.png","lineIds":["Agatsuma","Joetsu","Takasaki"],"lineAliases":{"Agatsuma":["E257系5500番台","E257系（草津・四萬・あかぎ）"],"Joetsu":["E257系5500番台"],"Takasaki":["E257系5500番台"]},"aliases":["JR東日本E257系5500番台","JR E257系5500番台","E257系（草津・四萬・あかぎ）"]},
   "planned-stock-library-4": {"displayName":"E129系","iconName":"E129系","asset":"../images/列车/JR東日本/JR東日本_E129系.png","aliases":["JR東日本E129系","JR E129系"]},
       "planned-stock-library-5": {"displayName":"E127系0番台（南武支線）","iconName":"E127系0番台（南武支線）","asset":"../images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png","lineIds":["NambuBranch"],"lineAliases":{"NambuBranch":["E127系0番台"]},"aliases":["JR東日本E127系0番台（南武支線）","JR E127系0番台（南武支線）"]},
   "planned-stock-library-6": {"displayName":"E127系0番台（新潟地区）","iconName":"E127系0番台（新潟地区）","asset":"../images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.png","aliases":["JR東日本E127系0番台（新潟地区）","JR E127系0番台（新潟地区）"]},
   "planned-stock-library-7": {"displayName":"211系（長野地区）","iconName":"211系（長野地区）","asset":"../images/列车/JR東日本/JR東日本_211系_長野色.png","lineIds":["ChuoMain","Shinonoi","Shinetsu"],"lineAliases":{"ChuoMain":["211系"],"Shinonoi":["211系"],"Shinetsu":["211系"]},"aliases":["JR東日本211系（長野地区）","JR 211系（長野地区）"]},
-  "jr-east-211-takasaki": {"displayName":"211系（高崎地区）","iconName":"211系（高崎地区）","asset":"../images/列车/JR東日本/JR東日本_211系_湘南色.png","lineIds":["Takasaki","Ryomo"],"lineAliases":{"Takasaki":["211系"],"Ryomo":["211系"]},"aliases":["JR東日本211系（高崎地区）"]},
+  "jr-east-211-takasaki": {"displayName":"211系（高崎地区）","iconName":"211系（高崎地区）","asset":"../images/列车/JR東日本/JR東日本_211系_湘南色.png","lineIds":["Takasaki","Ryomo","Joetsu"],"lineAliases":{"Takasaki":["211系"],"Ryomo":["211系"],"Joetsu":["211系"]},"aliases":["JR東日本211系（高崎地区）"]},
   "planned-stock-library-8": {"displayName":"701系5000番台","iconName":"701系5000番台","asset":"../images/列车/JR東日本/JR東日本_701系_5000番台.png","aliases":["JR東日本701系5000番台","JR 701系5000番台"]},
   "planned-stock-library-9": {"displayName":"701系5500番台","iconName":"701系5500番台","asset":"../images/列车/JR東日本/JR東日本_701系_5500番台.png","lineIds":["Yamagata"],"lineAliases":{"Yamagata":["701系5500番台"]},"aliases":["JR東日本701系5500番台","JR 701系5500番台"]},
   "planned-stock-library-10": {"displayName":"キハ110系","iconName":"キハ110系","asset":"../images/列车/JR東日本/JR東日本_キハ110系.png","aliases":["JR東日本キハ110系","JR キハ110系","キハ110系0番台（快速南三陸）","JR東日本キハ110系0番台（快速南三陸）"]},
@@ -1084,8 +1086,8 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-21": {"displayName":"E7系","iconName":"E7系","asset":"../images/列车/JR東日本/JR東日本_E7系.png","aliases":["JR東日本E7系","JR E7系"]},
   "planned-stock-library-22": {"displayName":"E8系","iconName":"E8系","asset":"../images/列车/JR東日本/JR東日本_E8系.png","aliases":["JR東日本E8系","JR E8系"]},
   "planned-stock-library-23": {"displayName":"H5系","iconName":"H5系","asset":"../images/列车/JR北海道/JR北海道_H5系.png","aliases":[]},
-  "planned-stock-library-24": {"displayName":"N700系（JR東海）","iconName":"N700系（JR東海）","asset":null,"plannedAsset":"../images/列车/JR東海/JR東海_N700系.png","aliases":["JR東海N700系"]},
-  "planned-stock-library-25": {"displayName":"N700系（JR西日本）","iconName":"N700系（JR西日本）","asset":null,"plannedAsset":"../images/列车/JR西日本/JR西日本_N700系.png","lineIds":["SanyoShinkansen"],"aliases":["JR西日本N700系"]},
+  "planned-stock-library-24": {"displayName":"N700系（JR東海）","iconName":"N700系（JR東海）","asset":null,"plannedAsset":"../images/列车/JR東海/JR東海_N700系.png","lineIds":["TokaidoShinkansen"],"aliases":["JR東海N700系"]},
+  "planned-stock-library-25": {"displayName":"N700系（JR西日本）","iconName":"N700系（JR西日本）","asset":null,"plannedAsset":"../images/列车/JR西日本/JR西日本_N700系.png","lineIds":["TokaidoShinkansen","SanyoShinkansen"],"aliases":["JR西日本N700系"]},
   "planned-stock-library-26": {"displayName":"N700系7000番台（JR西日本）","iconName":"N700系7000番台（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_N700系_7000番台.png","lineIds":["SanyoShinkansen","KyushuShinkansen"],"aliases":["JR西日本N700系7000番台"]},
   "planned-stock-library-27": {"displayName":"500系（JR西日本）","iconName":"500系（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_500系.png","lineIds":["SanyoShinkansen"],"aliases":["JR西日本500系"]},
   "planned-stock-library-28": {"displayName":"800系（JR九州）","iconName":"800系（JR九州）","asset":"../images/列车/JR九州/JR九州_800系.png","aliases":["JR九州800系"]},
@@ -1138,16 +1140,16 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","aliases":[]},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
-  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
+  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuNikko","TobuSkytree"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
   "remaining-fleet-extra-10": {"displayName":"東武500系","iconName":"東武500系","asset":"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png","lineIds":["TobuNikko"],"lineAliases":{"TobuNikko":["500系「リバティ」","500系「リバティ会津」"]},"aliases":["東武500系（リバティ）","東武500系（リバティりょうもう）","500系「リバティ」","500系「リバティ会津」"]},
   "remaining-fleet-extra-11": {"displayName":"東武200型","iconName":"東武200型","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png","aliases":["東武200型（りょうもう）","東武200系"]},
   "remaining-fleet-extra-12": {"displayName":"東武250型","iconName":"東武250型","asset":"../images/列车/東武鉄道/東武鉄道_200型_250番台.png","aliases":["東武250系","東武250系（両毛）"]},
   "remaining-fleet-extra-13": {"displayName":"東武80000系","iconName":"東武80000系","asset":"../images/列车/東武鉄道/東武鉄道_80000系.png","aliases":[]},
   "remaining-fleet-extra-14": {"displayName":"小田急30000形","iconName":"小田急30000形","asset":null,"plannedAsset":"../images/列车/小田急電鉄/小田急電鉄_30000形_EXEα.png","aliases":["小田急30000形 EXEα"]},
   "remaining-fleet-extra-15": {"displayName":"E721系","iconName":"E721系","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E721系_仙台地区.png","aliases":[]},
-  "jr-east-e127-100-nagano-plan": {"displayName":"E127系100番台","iconName":"E127系100番台（長野色）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png","aliases":["JR東日本E127系100番台","E127系100番台（長野色）","JR東日本E127系100番台（長野色）"]},
-  "jr-east-e127-100-nagano-horo-plan": {"displayName":"E127系100番台（長野色・幌付）","iconName":"E127系100番台（長野色・幌付）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E127系_100番台_長野色_幌付.png","aliases":["JR東日本E127系100番台（長野色・幌付）"]},
-  "jr-east-hbe300-furusato-plan": {"displayName":"HB-E300系（リゾートビューふるさと）","iconName":"HB-E300系（リゾートビューふるさと）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png","aliases":["JR東日本HB-E300系（リゾートビューふるさと）"]},
+  "jr-east-e127-100-nagano-plan": {"displayName":"E127系100番台","iconName":"E127系100番台（長野色）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png","lineIds":["Oito","Shinonoi","ChuoTatsuno"],"aliases":["JR東日本E127系100番台","E127系100番台（長野色）","JR東日本E127系100番台（長野色）"]},
+  "jr-east-e127-100-nagano-horo-plan": {"displayName":"E127系100番台（長野色・幌付）","iconName":"E127系100番台（長野色・幌付）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E127系_100番台_長野色_幌付.png","lineIds":["Oito","Shinonoi","ChuoTatsuno"],"aliases":["JR東日本E127系100番台（長野色・幌付）"]},
+  "jr-east-hbe300-furusato-plan": {"displayName":"HB-E300系（リゾートビューふるさと）","iconName":"HB-E300系（リゾートビューふるさと）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png","lineIds":["Oito","Shinonoi"],"aliases":["JR東日本HB-E300系（リゾートビューふるさと）"]},
   "jr-east-hbe300-satono-plan": {"displayName":"HB-E300系（SATONO）","iconName":"HB-E300系（SATONO）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_HB-E300系_SATONO_1号車.png","aliases":[]},
   "jr-east-c57-banetsu-plan": {"displayName":"C57形（SLばんえつ物語）","iconName":"C57形（SLばんえつ物語）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png","aliases":[]},
   "jr-east-de10-banetsu-plan": {"displayName":"DE10形（DLばんえつ物語）","iconName":"DE10形（DLばんえつ物語）","asset":"../images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png","plannedAsset":null,"aliases":[]},
@@ -1161,7 +1163,7 @@ var CANONICAL_VEHICLES = {
   "jr-east-e231-3000-hachiko": {"displayName":"E231系3000番台","iconName":"E231系3000番台","asset":"../images/列车/JR東日本/JR東日本_E231系_3000番台.png","lineIds":["Hachiko","Kawagoe"],"lineAliases":{"Hachiko":["E231系3000番台"],"Kawagoe":["E231系3000番台"]},"aliases":["JR東日本E231系3000番台"]},
   "jr-east-hbe220-hachiko-plan": {"displayName":"HB-E220系（八高線）","iconName":"HB-E220系（八高線）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_HB-E220系_八高線.png","aliases":["JR東日本HB-E220系（八高線）"]},
   "jr-east-e131-nagano-planned": {"displayName":"E131系（長野地区）","iconName":"E131系（長野地区）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_長野地区.png","aliases":["JR東日本E131系（長野地区）"]},
-  "jr-east-e231-0-musashino": {"displayName":"E231系0番台（武蔵野線）","iconName":"E231系0番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_E231系_0番台.png","lineIds":["Musashino"],"lineAliases":{"Musashino":["E231系0番台"]},"aliases":["E231系0番台（武蔵野線）"]},
+  "jr-east-e231-0-musashino": {"displayName":"E231系0番台（武蔵野線）","iconName":"E231系0番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_E231系_0番台.png","lineIds":["Musashino","Keiyo"],"lineAliases":{"Musashino":["E231系0番台"],"Keiyo":["E231系0番台"]},"aliases":["E231系0番台（武蔵野線）"]},
   "jr-east-209-500-musashino": {"displayName":"209系500番台（武蔵野線）","iconName":"209系500番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_209系_500番台_武藏野線.png","lineIds":["Musashino"],"lineAliases":{"Musashino":["209系500番台（武蔵野線）"]},"aliases":["209系500番台（武蔵野線）"]},
   "jr-east-e257-500-boso": {displayName:"E257系500番台",iconName:"E257系500番台",asset:"../images/列车/JR東日本/JR東日本_E257系_500番台.png",lineIds:["Uchibo","Sotobo","SobuMain"],lineAliases:{Uchibo:["E257系500番台"],Sotobo:["E257系500番台"],SobuMain:["E257系500番台（しおさい）"],Keiyo:["E257系500番台","E257系500番台（わかしお・さざなみ）","JR東日本E257系500番台（わかしお・さざなみ）"]},aliases:["E257系500番台","E257系500番台（わかしお・さざなみ）"]},
   "jr-east-e233-5000-keiyo": {
@@ -1184,16 +1186,16 @@ var CANONICAL_VEHICLES = {
     displayName: "E231系1000番台",
     iconName: "E231系1000番台",
     asset: "../images/列车/JR東日本/JR東日本_E231系_1000番台.png",
-    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain"],
-    lineAliases: { ShonanShinjuku: ["E231系1000番台"], UenoTokyo: ["E231系1000番台"], UtsunomiyaJR: ["E231系1000番台"], Takasaki: ["E231系1000番台"], Tokaido: ["E231系1000番台"], TokaidoMain: ["E231系1000番台"] },
+    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Ito"],
+    lineAliases: { ShonanShinjuku: ["E231系1000番台"], UenoTokyo: ["E231系1000番台"], UtsunomiyaJR: ["E231系1000番台"], Takasaki: ["E231系1000番台"], Tokaido: ["E231系1000番台"], TokaidoMain: ["E231系1000番台"], Ito: ["E231系1000番台"] },
     aliases: ["E231系1000番台"]
   },
   "jr-east-e233-3000-shonan-shinjuku": {
     displayName: "E233系3000番台",
     iconName: "E233系3000番台",
     asset: "../images/列车/JR東日本/JR東日本_E233系3000番台.png",
-    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain"],
-    lineAliases: { ShonanShinjuku: ["E233系3000番台"], UenoTokyo: ["E233系3000番台"], UtsunomiyaJR: ["E233系3000番台"], Takasaki: ["E233系3000番台"], Tokaido: ["E233系3000番台"], TokaidoMain: ["E233系3000番台"] },
+    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Ito"],
+    lineAliases: { ShonanShinjuku: ["E233系3000番台"], UenoTokyo: ["E233系3000番台"], UtsunomiyaJR: ["E233系3000番台"], Takasaki: ["E233系3000番台"], Tokaido: ["E233系3000番台"], TokaidoMain: ["E233系3000番台"], Ito: ["E233系3000番台"] },
     aliases: ["E233系3000番台"]
   },
   "jr-east-e257-2000-odoriko": {
@@ -1216,11 +1218,12 @@ var CANONICAL_VEHICLES = {
     displayName: "253系（日光・きぬがわ）",
     iconName: "253系（日光・きぬがわ）",
     asset: "../images/列车/JR東日本/JR東日本_253系_1000番台.png",
-    lineIds: ["UtsunomiyaJR", "TobuNikko", "Nikkoku"],
+    lineIds: ["UtsunomiyaJR", "TobuNikko", "Nikkoku", "ShonanShinjuku"],
     lineAliases: {
       UtsunomiyaJR: ["253系"],
       TobuNikko: ["253系"],
-      Nikkoku: ["253系"]
+      Nikkoku: ["253系"],
+      ShonanShinjuku: ["253系"]
     },
     aliases: ["253系（日光・きぬがわ）", "E253系（日光・きぬがわ）", "JR東日本E253系"]
   },
@@ -1628,6 +1631,7 @@ function _toeiOperationPngLibraryEntry(ctx) {
   for (var i = 0; i < TOEI_OPERATION_PNG_LIBRARY.length; i++) {
     var entry = TOEI_OPERATION_PNG_LIBRARY[i];
     if (entry.lineId !== ctx.lineId) continue;
+    if (entry.operator && operator && entry.operator !== operator) continue;
     if (entry.operationPatterns.some(function(pattern) {
       return familyPatternMatches(pattern, code);
     })) return entry;
@@ -2285,8 +2289,9 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "keikyu-2100": ["Keikyu", "KeikyuAirport", "KeikyuKurihama"],
   "keio-7000": ["KeioMain", "KeioShin", "KeioSagami", "KeioTakao", "KeioKeibajo", "KeioZoo"],
   "keio-8000": ["KeioMain", "KeioShin", "KeioSagami", "KeioTakao", "KeioKeibajo", "KeioZoo"],
-  "keio-9000": ["KeioMain", "KeioShin", "KeioSagami", "KeioTakao", "KeioKeibajo", "KeioZoo"],
+  "keio-9000": ["KeioMain", "KeioShin", "KeioSagami", "KeioTakao", "KeioKeibajo", "KeioZoo", "Shinjuku"],
   "jr-east-e231-800-tozai-through": ["Tozai", "ChuoSobuLocal"],
+  "metro-2000": ["Marunouchi", "MarunouchiBranch"],
   "metro-07-10": ["Tozai", "ChuoSobuLocal"],
   "metro-15000-10": ["Tozai", "ChuoSobuLocal"],
   "toyo-rapid-2000-tozai-through": ["ToyoRapid", "Tozai", "ChuoSobuLocal"],
@@ -2310,6 +2315,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "toei-fleet-6": ["Oedo"],
   "toei-fleet-7": ["Oedo"],
   "toei-fleet-8": ["Oedo"],
+  "metro-05-chiyoda-shuttle": ["Chiyoda", "ChiyodaBranch"],
   "toei-fleet-9": ["Oedo"],
   "toei-fleet-10": ["Oedo"],
   "toei-fleet-11": ["Nippori_Toneri"],
@@ -2320,6 +2326,9 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "keisei-3200": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara"],
   "keisei-3500-updated": ["Keisei", "KeiseiOshiage", "KeiseiKanamachi", "KeiseiChiba", "KeiseiChihara"],
   "keisei-3600": ["Keisei", "KeiseiOshiage", "KeiseiKanamachi", "KeiseiChiba", "KeiseiChihara"],
+  "keisei-80000": ["Keisei"],
+  "keisei-8800": ["Keisei"],
+  "keisei-8900": ["Keisei"],
   "keisei-3400": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara"],
   "keisei-3700": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara"],
   "odakyu-4000": ["Odawara", "OdakyuEnoshima", "OdakyuTama", "Chiyoda", "ChiyodaBranch", "JobanLocal"],
@@ -2353,26 +2362,33 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "tobu-9000": ["Tojo", "Yurakucho", "Fukutoshin"],
   "tobu-9050": ["Tojo", "Yurakucho", "Fukutoshin"],
   "sotetsu-13000-8": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "SotetsuJRDirect"],
-  "sotetsu-20000-10": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Fukutoshin"],
-  "sotetsu-21000": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Mita", "Namboku"],
-  "sotetsu-12000": ["SotetsuMain", "SotetsuIzumino", "SotetsuJRDirect"],
+  "sotetsu-20000-10": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Fukutoshin", "Toyoko", "TokyuMeguro", "Mita", "Namboku"],
+  "sotetsu-21000": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Meguro", "TokyuMeguro", "Mita", "Namboku"],
+  "sotetsu-12000": ["SotetsuMain", "SotetsuIzumino", "SotetsuJRDirect", "SaikyoKawagoe"],
   "jr-east-209-3000-hachiko-kawagoe": ["Hachiko", "Kawagoe"],
   "jr-east-209-3100-kawagoe": ["Kawagoe"],
-  "jr-e233-1000": ["KeihinTohoku"],
+  "jr-e233-1000": ["KeihinTohoku", "KeihinTohokuNegishi"],
   "jr-e131-800": ["Senseki"],
   "jr-east-209-500-musashino": ["Musashino"],
   "subway-fleet-1": ["Tozai", "ChuoSobuLocal"],
   "subway-fleet-3": ["Oedo"],
-  "subway-fleet-4": ["KeioMain", "KeioShin"],
+  "subway-fleet-4": ["KeioMain", "KeioShin", "Shinjuku"],
   "subway-fleet-5": ["Asakusa", "Keikyu", "KeikyuAirport", "KeikyuKurihama", "KeikyuZushi"],
   "planned-stock-library-0": ["Nambu"],
   "planned-stock-library-3": ["Takasaki"],
   "planned-stock-library-8": ["Tazawako"],
   "planned-stock-library-9": ["YamagataShinkansen"],
+  "planned-stock-library-10": ["BanetsuEast", "BanetsuWest"],
+  "jr-east-highrail1375-plan": ["Komii"],
+  "remaining-fleet-extra-15": ["BanetsuWest"],
+  "jr-east-c57-banetsu-plan": ["BanetsuWest"],
+  "jr-east-de10-banetsu-plan": ["BanetsuWest"],
+  "jr-east-hbe300-satono-plan": ["BanetsuWest"],
   "planned-stock-library-1": ["Yokosuka", "SobuRapid"],
-  "planned-stock-library-2": ["Narita", "NaritaAirportBranch", "SobuRapid"],
+  "planned-stock-library-2": ["Yokosuka", "Narita", "NaritaAirportBranch", "SobuRapid", "ShonanShinjuku"],
+  "planned-stock-library-5": ["NambuBranch", "Oito"],
   "planned-stock-library-4": ["Shinetsu", "Hakushin", "Echigo", "Miyo"],
-  "planned-stock-library-6": ["Shinetsu", "Hakushin"],
+  "planned-stock-library-6": ["Shinetsu", "Hakushin", "Oito"],
   "planned-stock-library-11": ["Kururi", "Suigun"],
   "planned-stock-library-12": ["Kururi"],
   "planned-stock-library-13": ["Hachinohe"],
@@ -2793,7 +2809,11 @@ function resolveCanonicalVehicle(name) {
 
 function _canonicalVehicleMatchesLine(rec, lineId) {
   var scoped = rec && Array.isArray(rec.lineIds) ? rec.lineIds : [];
-  return !scoped.length || !lineId || scoped.indexOf(String(lineId)) >= 0;
+  // 有线路上下文时，未声明线路范围的素材不能被当作全网车型。
+  // 这类记录可能只是图库待审/计划候选；放行会把孤立 PNG 投影到
+  // 完全无关的线路（例如把ばんえつ物語的 DE10 投到都营线）。
+  if (lineId) return scoped.length > 0 && scoped.indexOf(String(lineId)) >= 0;
+  return true;
 }
 
 // 直通时刻表可能以“所属方+车型”携带跨线候选（例如小田急↔JR
@@ -2842,14 +2862,12 @@ function resolveCanonicalVehicleForPlan(name, ctx) {
   if (direct && direct.displayName === "相鉄21000系" && /^(?:Mita|Namboku)$/.test(lineId) && String(ctx && ctx.trainNumber || "").trim() && !/G(?:[1-5]|[AB])?$/.test(String(ctx && ctx.trainNumber || "").toUpperCase())) return null;
   if (_canonicalVehicleMatchesLine(direct, lineId)) return direct;
   if (direct && _canonicalVehicleMatchesItinerary(direct, ctx)) return direct;
-  // 完整车型名已经显式携带地区/线路限定时，保留来源给出的精确身份；
-  // 线路范围只继续拦截裸车型名，避免 E127系、E231系0番台等通用标签
-  // 借用其他线路的图片。
-  var explicitCanonicalName = direct && (
+  // 即使名称带有地区/线路括号，也不能绕过 lineIds 作用域。
+  // 只有没有线路上下文的独立目录查询才允许返回未限界的完整名称。
+  return !lineId && direct && (
     _canonicalVehicleAliasKey(direct.displayName) === n ||
     _canonicalVehicleAliasKey(direct.iconName) === n
-  );
-  return direct && explicitCanonicalName && /[（(][^）)]+[）)]$/.test(n) ? direct : null;
+  ) ? direct : null;
 }
 
 // 可选的预验证内存目录可以扩展内置图片。
@@ -3380,10 +3398,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       // 实时记录已有线路/运营方上下文时，车型必须在该作用域内解析。
       // 不能在线路作用域解析失败后回退到全局同名目录，否则同一系列会
       // 把别的运营方或别的线路的 PNG 覆盖到当前列车上。
-      var exact = resolveCanonicalVehicleForPlan(raw, ctx);
-      if (!exact && !ctx.lineId && !ctx.railway && !ctx.operator && !ctx.assignmentOperator) {
-        exact = resolveCanonicalVehicle(raw);
-      }
+      var canonical = resolveCanonicalVehicleForPlan(raw, ctx) || resolveCanonicalVehicle(raw);
+      var exact = canonical && (!ctx.lineId || _canonicalVehicleMatchesLine(canonical, ctx.lineId) ||
+        _canonicalVehicleMatchesItinerary(canonical, ctx))
+        ? canonical : null;
       if (exact) return exact.displayName;
       for (var j = 0; j < labels.length; j++) {
         var candidate = labels[j];
@@ -3454,23 +3472,49 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     // 未注册或有歧义的别名绝不猜测或合并。
     var pool = Object.create(null);
     var orderArr = [];
-    function admittedIdentity(value) {
+    function admittedIdentity(value, source) {
       var raw = String(value || '').trim();
-      var canonical = resolveCanonicalVehicleForPlan(raw, ctx) || resolveCanonicalVehicle(raw);
-      if (canonical && ctx.lineId && !_canonicalVehicleMatchesLine(canonical, ctx.lineId)) canonical = null;
-      return canonical ? canonical.displayName : raw;
+      var scopedCanonical = resolveCanonicalVehicleForPlan(raw, ctx);
+      if (scopedCanonical) return scopedCanonical.displayName;
+      var direct = resolveCanonicalVehicle(raw);
+      if (!direct) {
+        // SQL 认证的精确车型可以没有内置目录条目，但只能在同一条
+        // 已校验 PNG 路径上使用；普通实时/时刻表自由文本仍拒绝。
+        if (source === 'verified-timetable-artwork' &&
+            /^images\/列车\/[^/.][^/]*\/[^/.][^/]*\.png$/.test(String(ctx.verifiedTimetableArtworkPath || '')) &&
+            String(ctx.verifiedTimetableArtworkPath || '').indexOf('..') < 0) return raw;
+        return '';
+      }
+      var scoped = Array.isArray(direct.lineIds) ? direct.lineIds : [];
+      // 线路上下文下，未声明 lineIds 的记录永远不能进入身份池。
+      if (ctx.lineId && !scoped.length) return '';
+      // 只有实体车号/车籍表是跨线直通的强证据。实时字段里的车型名称
+      // 仍可能是旧缓存、错误线路或供应商复制值，不能单凭“realtime”
+      // 绕过规范目录的 lineIds；普通车型必须命中当前线路或已声明的
+      // itinerary 直通范围，避免无链接线路出现另一条线的 PNG。
+      var crossLineRealtime = source === 'roster-physical-id' ||
+        source === 'official-realtime-car-number' ||
+        // 仅保留无来源上下文的离线兼容调用；正式 ODPT/GTFS 实时行
+        // 一定带 railway/operator，必须走严格线路作用域。
+        (source === 'realtime' && !ctx.railway && !ctx.operator && !ctx.trainOwner);
+      if (ctx.lineId && scoped.indexOf(String(ctx.lineId)) < 0 && !crossLineRealtime) return '';
+      return direct.displayName;
     }
     [
       { source: 'realtime', value: ctx.realtimeVehicleType },
       { source: 'realtime-derived', value: ctx.realtimeDerivedVehicleType },
       { source: 'realtime-derived-candidates', value: realtimeCandidateLabels },
       { source: 'timetable', value: tcar ? '' : ctx.timetableVehicleType },
+      { source: 'verified-timetable-artwork',
+        value: (!ctx.timetableVehicleType ||
+          String(ctx.verifiedTimetableModel || '') === String(ctx.timetableVehicleType || ''))
+          ? ctx.verifiedTimetableModel : '' },
       { source: tcar && tcar.sourceUrl ? 'roster-physical-id' : 'official-realtime-car-number', value: tcarLabel },
       { source: 'official-train-owner-single-fleet', value: toeiFleet },
       { source: 'official-realtime-owner-fleet-candidates', value: toeiFleetCandidates.join(' / ') }
     ].forEach(function(group) {
       splitCandidates(group.value).forEach(function(rawCandidate) {
-        var candidate = admittedIdentity(rawCandidate);
+        var candidate = admittedIdentity(rawCandidate, group.source);
         if (!candidate) return;
         if (!pool[candidate]) {
           pool[candidate] = { sources: [] };
@@ -3530,7 +3574,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         // 不能信任孤立路径或任意时刻表候选：
         // 调用方必须证明同一精确车型及其认证映射。
         var dbArt = String(ctx.verifiedTimetableArtworkPath || '');
-        var dbModel = admittedIdentity(ctx.verifiedTimetableModel);
+        var dbModel = admittedIdentity(ctx.verifiedTimetableModel, 'verified-timetable-artwork');
         if (!iconPath && chosen === dbModel &&
             /^images\/列车\/[^/.][^/]*\/[^/.][^/]*\.png$/.test(dbArt) &&
             dbArt.indexOf('..') < 0) {
@@ -3582,6 +3626,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
 
     return {
       name: chosen,                                  // EXACT vehicle only; empty while ambiguous
+      lineId: String(ctx.lineId || ''),
+      operator: String(ctx.operator || ctx.assignmentOperator || ''),
       verifiedCarNumber: tcar && chosen === tcarLabel ? tcar.number : '',
       candidates: effectiveCandidates,               // admitted evidence candidates
       allCandidates: orderArr,                        // admitted evidence pool for diagnostics
@@ -3652,9 +3698,9 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     }).filter(function(v,i,a){return a.findIndex(function(x){return x.label===v.label;})===i;});
     var allowCandidateArtwork=ctx.allowCandidateArtwork===true;
     var first=candidates.length===1?candidates[0]:null, candidate=first, icon='';
-    // 单一候选可以直接投影其图库图。多候选只有在所有候选明确共用
-    // 同一张代表 PNG 时才显示该图；图片只是视觉代表，不会把
-    // representativeModel 写成某一个候选，也不会改变 PLANNED_CANDIDATES。
+    // 单一候选可以直接投影其图库图。离线/人工时刻表中的多候选若
+    // 明确共用同一张计划代表图，可以展示该计划图，但不会选择车型。
+    // SQL 当前计划仍保持中性，避免把不完整的实时补充候选误当成图证据。
     if (first || allowCandidateArtwork) {
       candidate=first||candidates.find(function(v){return v.canonical&&
         (resolveVehicleArtwork(v.canonical.displayName,ctx.serviceDate)||v.canonical.asset||v.canonical.plannedAsset);});
@@ -3678,6 +3724,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         : (allowCandidateArtwork && candidate ? candidate.label : ''),iconPath:icon,
       source:ctx.source||'sql-timetable-plan',evidenceRole:'timetable-plan',
       sourceUrl:ctx.sourceUrl||'',formationId:'',
+      lineId:String(ctx.lineId||''),operator:String(ctx.operator||''),
       allowCandidateArtwork:allowCandidateArtwork};
     _issuedVehiclePlans.add(plan);
     return plan;
@@ -4197,20 +4244,39 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       src.endsWith(".png") && src.split("/").length === 5;
   }
   function selectMarkerArtwork(p, artworkFailed) {
-    var iconSrc = p && p.vehicleResolvedUpstream === true ? (p.vehicleIconPath || "") : "";
+    var contextLineId = String(p && (p.lineId || p.positionLineId) || "").trim();
+    var resolutionLineId = String(p && (p.vehicleResolutionLineId ||
+      (p.vehicleResolution && p.vehicleResolution.lineId)) || "").trim();
+    var resolutionSources = p && p.vehicleResolution && Array.isArray(p.vehicleResolution.sources)
+      ? p.vehicleResolution.sources : [];
+    // 车型字段本身不是跨线授权。只有实体车号/车籍表来源才能在
+    // 解析器线路戳记暂缺时保留物理车型图片；这样旧的实时车型缓存
+    // 不会把 PNG 带到没有线路链接的地图上。
+    var strongRealtimeEvidence = !!(p && p.vehicleResolvedFromRealtime === true &&
+      (resolutionSources.indexOf('official-realtime-car-number') >= 0 ||
+       resolutionSources.indexOf('roster-physical-id') >= 0));
+    // 带线路上下文的旧缓存若没有解析器线路戳记，不能继续信任其中携带的
+    // vehicleIconPath；否则一条线路的旧 PNG 会在另一条线路复用。
+    var scopedProjection = !contextLineId ||
+      (resolutionLineId && resolutionLineId === contextLineId) || strongRealtimeEvidence;
+    var iconSrc = p && p.vehicleResolvedUpstream === true && scopedProjection
+      ? (p.vehicleIconPath || "") : "";
     var vehiclePlan=p&&p.vehiclePlan;
     var plannedMarker=false;
     if (!iconSrc && p && p.vehicleResolvedUpstream === true &&
         p.vehicleType && !p.vehicleFormationId &&
         (!p.vehicleFormationCandidates || !p.vehicleFormationCandidates.length)) {
-      iconSrc = resolveVehicleArtwork(p.vehicleType) || "";
+      var canonical = contextLineId
+        ? resolveCanonicalVehicleForPlan(p.vehicleType, {lineId:contextLineId,operator:p.operator||p.assignmentOperator||""})
+        : resolveCanonicalVehicle(p.vehicleType);
+      iconSrc = canonical && (canonical.asset || canonical.plannedAsset) || "";
     }
     // 运用号库可能只得到候选集合，但只要候选条目本身有已审核的
     // PNG，就可以用确定性的首个条目作为“计划参考图”显示。它不是
     // 实车确证：planned 标记和候选集合会继续保留，车型文字也不会
     // 被公开成 EXACT。这样实时位置不会退化为灰点，同时不伪造实体车号。
     var candidateAssets = [];
-    var candidateArtwork = p && (p.operationArtworkCandidates ||
+    var candidateArtwork = p && scopedProjection && (p.operationArtworkCandidates ||
       (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
     if (!iconSrc && Array.isArray(candidateArtwork)) {
       for (var cai = 0; cai < candidateArtwork.length; cai++) {
@@ -4226,7 +4292,9 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         plannedMarker = true;
       }
     }
-    if(!iconSrc&&vehiclePlan&&
+    var planMatchesLine = !contextLineId || (vehiclePlan &&
+      String(vehiclePlan.lineId || '') === contextLineId);
+    if(!iconSrc&&vehiclePlan&&planMatchesLine&&
        (_issuedVehiclePlans.has(vehiclePlan) || vehiclePlan.allowCandidateArtwork===true) &&
        (vehiclePlan.status !== "PLANNED_CANDIDATES" ||
         vehiclePlan.candidateArtworkConfirmedByDatedRule === true)){

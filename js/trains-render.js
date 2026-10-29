@@ -1119,10 +1119,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       name: p && (p.vehicleType || p.trainClass ||
         (p.vehicleResolution && p.vehicleResolution.name)) || ""
     };
-    if (!vehicle.status && vehicle.name) vehicle.status = "EXACT";
     // 仅向用户公开已确认车型；运用号库候选只留在内部判定链，
     // 未确认时不显示车型文字，也不把候选 PNG 冒充为当前实车。
-    if (vehicle.status === "EXACT" && vehicle.name) tip.push(vehicle.name);
+    // 旧数据可能只带 vehicleType/trainClass 而没有身份状态；这类自由文本
+    // 不能再被当成 EXACT，否则不存在于规范车型目录的名称会泄漏到 UI。
+    if (vehicle.status === "EXACT" && vehicle.name &&
+        window.TrainVehicle && typeof window.TrainVehicle.resolveCanonicalVehicle === "function") {
+      var canonicalVehicle = window.TrainVehicle.resolveCanonicalVehicle(vehicle.name);
+      if (canonicalVehicle && canonicalVehicle.displayName) tip.push(canonicalVehicle.displayName);
+    }
     // 保留线路门槛：源码截取型消费者可能只加载标题函数而不加载全部辅助函数。
     if (typeof _isOedoTailTrain === "function" && _isOedoTailTrain(lineId, p) && p && p.destinationStation) {
       var _towardHikarigaoka = String(p.destinationStation).split(/[:.]/).pop() === "Hikarigaoka";

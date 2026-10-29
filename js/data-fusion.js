@@ -112,6 +112,7 @@
     if (!p) return p;
     var r = resolution || null;
     p.vehicleResolution = r;
+    p.vehicleResolutionLineId = r && r.lineId || p.lineId || '';
     p.vehiclePlan = r && r.vehiclePlan || null;
     p.trainClass = r && r.identityStatus === "EXACT" ? (r.name || "") : "";
     p.vehicleType = r && r.identityStatus === "EXACT" ? (r.vehicleTypeStr || r.name || "") : "";
