@@ -1,4 +1,3 @@
-Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed.
 function registerEvidenceProvider(provider) {
   if (!provider) return;
   if (window.TrainOperationEvidence && typeof window.TrainOperationEvidence.register === "function") {
