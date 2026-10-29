@@ -1495,7 +1495,8 @@ function resolveRosterCar(ctx) {
     displayName: rec.displayName,
     iconName: rec.displayName,
     asset: rec.asset,
-    aliases: rec.aliases
+    aliases: rec.aliases,
+    candidateOnly: rec.candidateOnly === true
   };
   if(rec.plannedAsset) CANONICAL_VEHICLES[rec.id].plannedAsset=rec.plannedAsset;
 });
@@ -2760,7 +2761,7 @@ Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
       !Array.isArray(scoped.lineIds) || !scoped.lineIds.length) return;
   // 车型名没有携带车次/代际时，专用涂装 PNG 不能冒充整个系列。
   // 这些记录仍保留为计划候选，等实时/编成证据给出精确子型后再投影。
-  if (id === "toei-fleet-3" || id === "toei-fleet-7" || id === "planned-stock-library-38") return;
+  if (scoped.candidateOnly === true) return;
   scoped.asset = scoped.plannedAsset;
   scoped.artworkStatus = "verified-scoped-asset";
   scoped.plannedAsset = null;
