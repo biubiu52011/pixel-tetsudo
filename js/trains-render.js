@@ -1079,10 +1079,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       typeof window.TrainVehicle.selectMarkerArtwork === "function"
       ? window.TrainVehicle.selectMarkerArtwork(p, artworkFailed)
       : { kind: "unresolved", iconSrc: "" };
-    var markerKind = artwork.kind === "vehicle" && artwork.iconSrc ? "vehicle" :
-      (artwork.kind === "candidate" ? "candidate" : "unresolved");
     return {
-      kind: markerKind,
+      kind: artwork.kind === "vehicle" && artwork.iconSrc ? "vehicle" : "unresolved",
       iconSrc: artwork.iconSrc || "",
       planned: artwork.planned === true,
       candidateAssets: Array.isArray(artwork.candidateAssets) ? artwork.candidateAssets.slice() : [],
@@ -1091,8 +1089,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 中性圆点；位置仍然可见，不会伪造图片。
       compact: !(artwork.kind === "vehicle" && artwork.iconSrc),
       className: artwork.planned === true ? "train-icon planned" :
-        (markerKind === "candidate" ? "train-icon candidate" :
-          (p && p.estimated === true ? "train-icon estimated" : "train-icon"))
+        (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
   }
 
@@ -1126,13 +1123,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 仅向用户公开已确认车型；运用号库候选只留在内部判定链，
     // 未确认时不显示车型文字，也不把候选 PNG 冒充为当前实车。
     if (vehicle.status === "EXACT" && vehicle.name) tip.push(vehicle.name);
-    else if (p && Array.isArray(p.vehicleCandidates) && p.vehicleCandidates.length) {
-      var candidateText = p.vehicleCandidates.filter(function(v, i, a) {
-        return v && a.indexOf(v) === i;
-      }).join(" / ");
-      if (candidateText) tip.push((/^zh/.test(lang) ? "车型候选 " :
-        (lang === "en" ? "Possible stock " : "候補車種 ")) + candidateText);
-    }
     // 保留线路门槛：源码截取型消费者可能只加载标题函数而不加载全部辅助函数。
     if (typeof _isOedoTailTrain === "function" && _isOedoTailTrain(lineId, p) && p && p.destinationStation) {
       var _towardHikarigaoka = String(p.destinationStation).split(/[:.]/).pop() === "Hikarigaoka";
