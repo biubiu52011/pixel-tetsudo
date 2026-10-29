@@ -3439,6 +3439,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     var hasExplicitVehicle = !!(String(ctx.realtimeVehicleType || '').trim() ||
       String(ctx.realtimeDerivedVehicleType || '').trim() ||
       String(ctx.timetableVehicleType || '').trim() || tcar);
+    var realtimeCandidateLabels = Array.isArray(ctx.realtimeVehicleCandidates)
+      ? ctx.realtimeVehicleCandidates.join(' / ') : '';
     var toeiFleet = hasExplicitVehicle ? null : resolveToeiOwnerSingleFleet(ctx);
     var toeiFleetCandidates = hasExplicitVehicle || toeiFleet
       ? [] : resolveToeiOwnerFleetCandidates(ctx);
@@ -3461,6 +3463,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     [
       { source: 'realtime', value: ctx.realtimeVehicleType },
       { source: 'realtime-derived', value: ctx.realtimeDerivedVehicleType },
+      { source: 'realtime-derived-candidates', value: realtimeCandidateLabels },
       { source: 'timetable', value: tcar ? '' : ctx.timetableVehicleType },
       { source: tcar && tcar.sourceUrl ? 'roster-physical-id' : 'official-realtime-car-number', value: tcarLabel },
       { source: 'official-train-owner-single-fleet', value: toeiFleet },
@@ -3560,6 +3563,11 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         identityReason = 'timetable-vehicle-evidence';
       } else {
         identityReason = 'unique-converged-vehicle-evidence';
+      }
+      if (pool[chosen] && pool[chosen].sources.length === 1 &&
+          pool[chosen].sources[0] === 'realtime-derived-candidates') {
+        identityStatus = 'NARROWED';
+        identityReason = 'realtime-derived-vehicle-candidate';
       }
     } else if (effectiveCandidates.length > 0) {
       identityStatus = 'NARROWED';
@@ -4072,8 +4080,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       }
     }
     var planned=false;
-    var input=evidence&&(evidence.vehicleType||(evidence.vehicleCandidates||[]).join(' / '))||
+    var input=evidence&&evidence.vehicleType||
       String(ctx.realtimeDerivedVehicleType || '');
+    var realtimeVehicleCandidates=evidence&&Array.isArray(evidence.vehicleCandidates)
+      ? evidence.vehicleCandidates.slice() : [];
     var formations=evidence&&evidence.decisive&&!planned&&evidence.formationId
       ? _splitFormationIds(evidence.formationId) : [];
     if(ctx.formationId)formations.push(String(ctx.formationId).trim());
@@ -4081,7 +4091,9 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     formations=formations.filter(function(id,i,a){return id&&a.indexOf(id)===i;});
     var adapted=Object.assign({},ctx,{
       formationId:formations.length===1?formations[0]:'',formationCandidates:formations,
-      realtimeDerivedVehicleType:planned?'':input,timetableVehicleType:planned?input:''
+      realtimeDerivedVehicleType:planned?'':input,
+      realtimeVehicleCandidates:planned?[]:realtimeVehicleCandidates,
+      timetableVehicleType:planned?input:''
     });
     var result=resolve(adapted);
     // 实时解析不创建任何运行计划、历史参考或代表性车型计划。
