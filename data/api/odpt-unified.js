@@ -922,7 +922,9 @@
             setNumber = Number(match[1]);
             break;
         }
-        if (setNumber === null) return "都営12-600形";
+        // GTFS trip_id/运用号没有实体编成号时不能冒充 12-600 形；
+        // 交给 TrainVehicle 的运用号候选库决定参考 PNG。
+        if (setNumber === null) return "";
         if (setNumber >= 611 && setNumber <= 618) return "都営12-600形（1次車）";
         if (setNumber >= 621 && setNumber <= 681) return "都営12-600形（前期車）";
         if (setNumber >= 691) return "都営12-600形（後期車）";
