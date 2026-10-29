@@ -4193,11 +4193,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         (!p.vehicleFormationCandidates || !p.vehicleFormationCandidates.length)) {
       iconSrc = resolveVehicleArtwork(p.vehicleType) || "";
     }
-    // 运用号库只能把实时列车缩小到一个候选集合，不能把集合中的
-    // 第一张 PNG 冒充为当前编成。此前这里无条件取第一张候选图，
-    // 导致大江户线所有 A/B 运用都显示为 12-000 形，形成“自定义
-    // 图片失败”的假象。候选集合必须保留为候选状态；只有单一资产
-    // 或经过日期化编组规则确认时，才允许投影到车辆 PNG。
+    // 运用号库可能只得到候选集合，但只要候选条目本身有已审核的
+    // PNG，就可以用确定性的首个条目作为“计划参考图”显示。它不是
+    // 实车确证：planned 标记和候选集合会继续保留，车型文字也不会
+    // 被公开成 EXACT。这样实时位置不会退化为灰点，同时不伪造实体车号。
     var candidateAssets = [];
     var candidateArtwork = p && (p.operationArtworkCandidates ||
       (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
@@ -4225,7 +4224,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
       if (!iconSrc && candidateAssets.length) {
-        return { kind: "candidate", iconSrc: "", planned: false,
+        return { kind: "vehicle", iconSrc: candidateAssets[0], planned: true,
           candidateAssets: candidateAssets.slice() };
       }
       return { kind: "unresolved", iconSrc: "" };
