@@ -1138,7 +1138,7 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","aliases":[]},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
-  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
+  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuIsesaki","TobuSkytree","TobuNikko"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
   "remaining-fleet-extra-10": {"displayName":"東武500系","iconName":"東武500系","asset":"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png","lineIds":["TobuNikko"],"lineAliases":{"TobuNikko":["500系「リバティ」","500系「リバティ会津」"]},"aliases":["東武500系（リバティ）","東武500系（リバティりょうもう）","500系「リバティ」","500系「リバティ会津」"]},
   "remaining-fleet-extra-11": {"displayName":"東武200型","iconName":"東武200型","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png","aliases":["東武200型（りょうもう）","東武200系"]},
   "remaining-fleet-extra-12": {"displayName":"東武250型","iconName":"東武250型","asset":"../images/列车/東武鉄道/東武鉄道_200型_250番台.png","aliases":["東武250系","東武250系（両毛）"]},
@@ -1161,7 +1161,6 @@ var CANONICAL_VEHICLES = {
   "jr-east-e231-3000-hachiko": {"displayName":"E231系3000番台","iconName":"E231系3000番台","asset":"../images/列车/JR東日本/JR東日本_E231系_3000番台.png","lineIds":["Hachiko","Kawagoe"],"lineAliases":{"Hachiko":["E231系3000番台"],"Kawagoe":["E231系3000番台"]},"aliases":["JR東日本E231系3000番台"]},
   "jr-east-hbe220-hachiko-plan": {"displayName":"HB-E220系（八高線）","iconName":"HB-E220系（八高線）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_HB-E220系_八高線.png","aliases":["JR東日本HB-E220系（八高線）"]},
   "jr-east-e131-nagano-planned": {"displayName":"E131系（長野地区）","iconName":"E131系（長野地区）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_長野地区.png","aliases":["JR東日本E131系（長野地区）"]},
-  "jr-east-e233-1000-keiyo": {"displayName":"E233系1000番台（京葉線）","iconName":"E233系1000番台（京葉線）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E233系_5000番台.png","lineIds":["Keiyo"],"lineAliases":{"Keiyo":["E233系1000番台（京葉線）"]},"aliases":["E233系1000番台（京葉線）"]},
   "jr-east-e231-0-musashino": {"displayName":"E231系0番台（武蔵野線）","iconName":"E231系0番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_E231系_0番台.png","lineIds":["Musashino"],"lineAliases":{"Musashino":["E231系0番台"]},"aliases":["E231系0番台（武蔵野線）"]},
   "jr-east-209-500-musashino": {"displayName":"209系500番台（武蔵野線）","iconName":"209系500番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_209系_500番台_武藏野線.png","lineIds":["Musashino"],"lineAliases":{"Musashino":["209系500番台（武蔵野線）"]},"aliases":["209系500番台（武蔵野線）"]},
   "jr-east-e257-500-boso": {displayName:"E257系500番台",iconName:"E257系500番台",asset:"../images/列车/JR東日本/JR東日本_E257系_500番台.png",lineIds:["Uchibo","Sotobo","SobuMain"],lineAliases:{Uchibo:["E257系500番台"],Sotobo:["E257系500番台"],SobuMain:["E257系500番台（しおさい）"],Keiyo:["E257系500番台","E257系500番台（わかしお・さざなみ）","JR東日本E257系500番台（わかしお・さざなみ）"]},aliases:["E257系500番台","E257系500番台（わかしお・さざなみ）"]},
@@ -2358,7 +2357,6 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "sotetsu-12000": ["SotetsuMain", "SotetsuIzumino", "SotetsuJRDirect"],
   "jr-east-209-3000-hachiko-kawagoe": ["Hachiko", "Kawagoe"],
   "jr-east-209-3100-kawagoe": ["Kawagoe"],
-  "jr-east-e233-1000-keiyo": ["Keiyo"],
   "jr-e233-1000": ["KeihinTohoku"],
   "jr-e131-800": ["Senseki"],
   "jr-east-209-500-musashino": ["Musashino"],
@@ -2751,6 +2749,18 @@ UNREGISTERED_ARTWORK_CATALOG.forEach(function(record) {
   plannedAliases.forEach(function(alias) {
     _registerCanonicalVehiclePlannedAlias(alias, record);
   });
+});
+
+// 具有明确线路作用域且文件已存在的素材，已经完成审核，不能继续停留在
+// 计划候选层。统一提升为正式 asset，使线路计划和实时身份投影使用同一
+// 个规范图片；没有 lineIds 的素材仍保持待审，避免把孤立 PNG 扩散到全网。
+Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
+  var scoped = CANONICAL_VEHICLES[id];
+  if (!scoped || scoped.asset || !scoped.plannedAsset ||
+      !Array.isArray(scoped.lineIds) || !scoped.lineIds.length) return;
+  scoped.asset = scoped.plannedAsset;
+  scoped.artworkStatus = "verified-scoped-asset";
+  scoped.plannedAsset = null;
 });
 
 Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
@@ -5255,4 +5265,3 @@ function resolveEvidence(trainNumber,ctx){
 var provider={id:"jr-chuo-sobu-holiday-formations-20261024",grade:"C",sourceUrl:SOURCE,resolveEvidence:resolveEvidence};
 registerEvidenceProvider(provider);
 })();
-
