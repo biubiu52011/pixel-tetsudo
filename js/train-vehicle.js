@@ -1,3 +1,4 @@
+Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed.
 function registerEvidenceProvider(provider) {
   if (!provider) return;
   if (window.TrainOperationEvidence && typeof window.TrainOperationEvidence.register === "function") {
@@ -1566,6 +1567,9 @@ var TOEI_OPERATION_PNG_LIBRARY = [
     lineId: "Mita",
     operator: "Toei",
     operationPatterns: ["20T-89T"],
+    // 同一运用号段覆盖 6300 形与 6500 形；保留完整候选集，
+    // 不能把号段本身当成单一车型证据。
+    candidateOnly: true,
     mappings: [
       { vehicleType: "都営6300形（3次車）" },
       { vehicleType: "都営6500形" }
@@ -1576,6 +1580,9 @@ var TOEI_OPERATION_PNG_LIBRARY = [
     lineId: "Oedo",
     operator: "Toei",
     operationPatterns: ["*A", "*B"],
+    // A/B 运用号会跨越 12-000 与 12-600 各次车，
+    // 只有实体车号或日期编成证据才能提升为具体 PNG。
+    candidateOnly: true,
     mappings: [
       { vehicleType: "都営12-000形（4次車）" },
       { vehicleType: "都営12-600形（1次車）" },
@@ -5249,3 +5256,4 @@ function resolveEvidence(trainNumber,ctx){
 var provider={id:"jr-chuo-sobu-holiday-formations-20261024",grade:"C",sourceUrl:SOURCE,resolveEvidence:resolveEvidence};
 registerEvidenceProvider(provider);
 })();
+
