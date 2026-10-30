@@ -857,7 +857,7 @@ var CANONICAL_VEHICLES = {
   "keisei-3400": { displayName: "京成3400形", iconName: "京成3400形", asset: "../images/列车/京成電鉄/京成電鉄_3400形.png", aliases: ["京成3400形","京成電鉄3400形"] },
   "keisei-3700": { displayName: "京成3700形", iconName: "京成3700形", asset: "../images/列车/京成電鉄/京成電鉄_3700形.png", aliases: ["京成3700形","京成電鉄3700形"] },
   "keio-5000": { displayName: "京王5000系", iconName: "京王5000系", asset: "../images/列车/京王電鉄/京王電鉄_5000系.png", lineIds: ["KeioMain","KeioTakao","Shinjuku"], lineAliases: { KeioMain: ["5000系"], KeioTakao: ["5000系"], Shinjuku: ["5000系"] }, aliases: ["京王5000系","京王電鉄5000系"] },
-  "odakyu-4000": { displayName: "小田急4000形", iconName: "小田急4000形", asset: "../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png", lineIds: ["Odawara"], allowCrossOperator: true, aliases: ["小田急4000形","小田急電鉄4000形"] },
+  "odakyu-4000": { displayName: "小田急4000形", iconName: "小田急4000形", asset: "../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png", allowCrossOperator: true, aliases: ["小田急4000形","小田急電鉄4000形"] },
   "metro-16000": {
     displayName: "東京メトロ16000系", iconName: "東京メトロ16000系",
     asset: "../images/列车/東京メトロ/東京メトロ_16000系.png",
@@ -2100,7 +2100,6 @@ Object.assign(CANONICAL_VEHICLES,{
   },
   "odakyu-1000": {
     "displayName": "小田急1000形",
-    "lineIds": ["Odawara"],
     "iconName": "小田急1000形",
     "asset": "../images/列车/小田急電鉄/小田急電鉄_1000形_標準色.png",
     "aliases": []
@@ -2127,14 +2126,12 @@ Object.assign(CANONICAL_VEHICLES,{
   },
   "odakyu-60000": {
     "displayName": "小田急60000形",
-    "lineIds": ["Odawara"],
     "iconName": "小田急60000形",
     "asset": "../images/列车/小田急電鉄/小田急電鉄_60000形_MSE.png",
     "aliases": ["小田急60000系(MSE)"]
   },
   "odakyu-70000": {
     "displayName": "小田急70000形",
-    "lineIds": ["Odawara"],
     "iconName": "小田急70000形",
     "asset": "../images/列车/小田急電鉄/小田急電鉄_70000形_GSE.png",
     "aliases": []
@@ -3828,7 +3825,14 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     var _sqlSourceCandidates = tt._positionSource === 'supabase-train-run'
       ? String(tt._sqlVehicleCandidateLabel || '').split(/\s*\/\s*/)
           .map(function(v) { return v.trim(); }).filter(Boolean) : [];
-    var _declaredVehicleInput = String(tt.vehicleType || '').trim();
+    // SQL 的 source_single_type_candidate 只证明“该计划条目有一个候选名称”，
+    // 并未证明该服务日运行了该车型。即使唯一候选恰好有规范 PNG，
+    // 也不得把它投入 EXACT 的身份仲裁；候选保留在
+    // _sqlSourceCandidates，之后由计划参考通道投影为 planned。
+    var _sourceCandidateOnly = tt._positionSource === 'supabase-train-run' &&
+      tt._sqlVehicleMappingLevel === 'source_single_type_candidate';
+    var _declaredVehicleInput = _sourceCandidateOnly
+      ? '' : String(tt.vehicleType || '').trim();
     var _timetableVehicleInput = [_operationVehicleInput, _declaredVehicleInput]
       .filter(Boolean).filter(function(v,i,a) { return a.indexOf(v) === i; }).join(' / ');
     // 精确且经过边界验证的 SQL 车型可以缩小运行
