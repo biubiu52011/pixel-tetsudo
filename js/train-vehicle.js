@@ -4259,11 +4259,15 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     // vehicleIconPath；否则一条线路的旧 PNG 会在另一条线路复用。
     var scopedProjection = !contextLineId ||
       (resolutionLineId && resolutionLineId === contextLineId) || strongRealtimeEvidence;
+    // 候选集合没有实体车号兜底，必须同时带有位置线路和解析线路；
+    // 扁平缓存若丢失任一线路戳记，就不能把候选图带入当前地图。
+    var candidateScopedProjection = !!contextLineId && !!resolutionLineId &&
+      resolutionLineId === contextLineId;
     var iconSrc = p && p.vehicleResolvedUpstream === true && scopedProjection
       ? (p.vehicleIconPath || "") : "";
     var vehiclePlan=p&&p.vehiclePlan;
     var plannedMarker=false;
-    if (!iconSrc && p && p.vehicleResolvedUpstream === true &&
+    if (!iconSrc && scopedProjection && p && p.vehicleResolvedUpstream === true &&
         p.vehicleType && !p.vehicleFormationId &&
         (!p.vehicleFormationCandidates || !p.vehicleFormationCandidates.length)) {
       var canonical = contextLineId
@@ -4271,12 +4275,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         : resolveCanonicalVehicle(p.vehicleType);
       iconSrc = canonical && (canonical.asset || canonical.plannedAsset) || "";
     }
-    // 运用号库可能只得到候选集合，但只要候选条目本身有已审核的
-    // PNG，就可以用确定性的首个条目作为“计划参考图”显示。它不是
-    // 实车确证：planned 标记和候选集合会继续保留，车型文字也不会
-    // 被公开成 EXACT。这样实时位置不会退化为灰点，同时不伪造实体车号。
+    // 运用号库可能只得到候选集合。候选 PNG 只作为可诊断元数据交给
+    // renderer；在实体车号或唯一日期规则确认前，不选第一张图冒充实车。
     var candidateAssets = [];
-    var candidateArtwork = p && scopedProjection && (p.operationArtworkCandidates ||
+    var candidateArtwork = p && candidateScopedProjection && (p.operationArtworkCandidates ||
       (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
     if (!iconSrc && Array.isArray(candidateArtwork)) {
       for (var cai = 0; cai < candidateArtwork.length; cai++) {
@@ -4304,7 +4306,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
       if (!iconSrc && candidateAssets.length) {
-        return { kind: "vehicle", iconSrc: candidateAssets[0], planned: true,
+        return { kind: "candidate", iconSrc: "", planned: false,
           candidateAssets: candidateAssets.slice() };
       }
       return { kind: "unresolved", iconSrc: "" };

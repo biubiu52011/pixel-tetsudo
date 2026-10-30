@@ -122,8 +122,8 @@
     p.vehicleIdentityReason = r ? (r.identityReason || "") : "no-vehicle-evidence";
     p.vehicleIconPath = r && r.identityStatus === "EXACT" ? (r.iconPath || "") : "";
     // 保留运用号库的候选 PNG 作为独立展示元数据。候选不改变
-    // identityStatus，也不进入 vehicleType；它只是让渲染层能显示
-    // “已缩小范围、仍待实体车号确认”的代表图，而不是退回灰点。
+    // identityStatus，也不进入 vehicleType；渲染层只用它标识
+    // “已缩小范围、仍待实体车号确认”的候选点，不挑一张冒充实车。
     p.operationArtworkCandidates = r && Array.isArray(r.operationArtworkCandidates)
       ? r.operationArtworkCandidates.map(function(entry) {
           return {

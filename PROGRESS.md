@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### REALTIME-CANDIDATE-CONTRACT-20261030 — 候选车型恢复中性显示（COMPLETE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 根因 | `selectMarkerArtwork()` 将 NARROWED 多车型候选的第一张 PNG 返回为普通 `vehicle`，使候选身份看起来像已确定实车；缺少线路戳记的扁平候选也可能被投影。 |
+| 修复 | 多候选现在返回 `kind: candidate` 与完整候选资产元数据，复用 renderer 已有的线路色/紫色候选点，不投影具体 PNG；候选投影必须同时携带匹配的位置线路和解析线路。确定车型和唯一计划车型继续沿原 EXACT 契约显示。 |
+| 验证 | 本地车型流水线、无猜车型、图标解析、运营证据、都营 GTFS、请求契约、HAR 回放、运行链/位置/终点、renderer、资产路径及架构守卫通过。HAR 为 429 行、281 条 EXACT/PNG；597 个图片引用、598 个 canonical artwork、0 个失效路径。 |
+| 发布边界 | 普通提交推送 `main` 仅触发 CI；未授权生产 Pages 发布。 |
+
 ### STATION-EXIT-SOURCE-GUARD-20261030 — 清理捏造车站出入口与跨站补位（本地完成）
 
 | 项目 | 当前状态 |
