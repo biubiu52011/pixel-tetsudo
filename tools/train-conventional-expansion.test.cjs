@@ -46,4 +46,39 @@ const kuroshio=plan('JR西日本283系 / JR西日本287系 / JR西日本289系',
 assert.equal(kuroshio.status,'PLANNED_CANDIDATES');
 assert.equal(kuroshio.iconPath,'',
   'multiple Kuroshio model candidates cannot choose one model PNG');
+// Actual consumer path: SQL undated/no-model runs may receive only a PLAN
+// reference, without manufacturing vehicleResult.identityStatus=EXACT.
+function timetableCase(lineId,operator,trainType,mapping,candidate){
+  const run={trainNumber:'TEST_'+lineId+'_'+trainType,calendar:'odpt.Calendar:Weekday',trainType};
+  const tt={_positionSource:'supabase-train-run',
+    _sqlVehicleMappingLevel:mapping||'unresolved',
+    _sqlVehicleCandidateLabel:candidate||'',
+    _serviceDate:'2026-10-30','odpt:trainType':trainType};
+  return browser.TrainVehicle.resolveTimetableRun(run,tt,lineId,{operator},'2026-10-30').vehicleResult;
+}
+const kRun=timetableCase('KeioSagami','Keio','odpt.TrainType:Keio.KeioLiner');
+assert.equal(kRun.identityStatus,'UNKNOWN');
+assert.equal(kRun.vehiclePlan.status,'PLANNED_MODEL');
+assert.match(kRun.vehiclePlan.iconPath,/京王電鉄_5000系\\.png$/);
+const tRun=timetableCase('TobuIsesaki','Tobu','odpt.TrainType:Tobu.TH-LINER');
+assert.equal(tRun.identityStatus,'UNKNOWN');
+assert.equal(tRun.vehiclePlan.status,'PLANNED_MODEL');
+assert.match(tRun.vehiclePlan.iconPath,/東武鉄道_70090型\\.png$/);
+for(const [lineId,operator,trainType] of [
+  ['KeioSagami','Keio','odpt.TrainType:Keio.Local'],
+  ['TobuNikko','Tobu','odpt.TrainType:Tobu.TH-LINER'],
+  ['TobuIsesaki','Tobu','odpt.TrainType:Tobu.LimitedExpress'],
+  ['TobuIsesaki','Keio','odpt.TrainType:Tobu.TH-LINER']
+]){
+  const result=timetableCase(lineId,operator,trainType);
+  assert.equal(result.identityStatus,'UNKNOWN');
+  assert.ok(!result.vehiclePlan?.iconPath,
+    'unsupported line/type/operator must not borrow official service PNG');
+}
+const sourced=timetableCase('KeioSagami','Keio','odpt.TrainType:Keio.KeioLiner',
+  'source_single_type_candidate','5000系');
+assert.equal(sourced.identityStatus,'UNKNOWN',
+  'SQL single source candidate must not be promoted to actual vehicle');
+assert.equal(sourced.vehiclePlan.status,'PLANNED_MODEL');
+assert.match(sourced.vehiclePlan.iconPath,/京王電鉄_5000系\\.png$/);
 console.log('Official Keio/Tobu/Kuroshio plan, native PNG scope and UNKNOWN safeguards: PASS');
