@@ -2785,6 +2785,22 @@ Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
   scoped.plannedAsset = null;
 });
 
+// JR九州の公式資料：西九州新幹線はN700S系（6両）。
+// 型式のみの計画証拠。実車の編成番号・塗装は証明しない。
+// この型式専用の原生PNGは現在のリポジトリに存在しないため、
+// JR西日本/JR東海のN700画像を代用せず中性マーカーを維持する。
+CANONICAL_VEHICLES["jr-kyushu-n700s-nishikyushu-plan"] = {
+  displayName: "JR九州N700S系（西九州新幹線）",
+  iconName: "JR九州N700S系（西九州新幹線）",
+  asset: null,
+  plannedAsset: null,
+  lineIds: ["NishiKyushuShinkansen"],
+  aliases: ["JR九州N700S系", "N700S系（西九州新幹線）"],
+  candidateOnly: true,
+  artworkStatus: "missing-native-asset",
+  evidenceSource: "https://www.jrkyushu.co.jp/train/kids/guardian/train_equipment/"
+};
+
 Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
   var rec = CANONICAL_VEHICLES[id];
   rec.id = id;
