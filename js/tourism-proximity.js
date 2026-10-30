@@ -1,265 +1,173 @@
-/**
- * TourismProximity â€” ç»Ÿä¸€é‚»è¿‘æŸ¥è¯¢ API
- * é›†ä¸­æä¾›æ‰€æœ‰æ—…æ¸¸è·ç¦»æŸ¥è¯¢çš„ Haversine è®¡ç®—ä¸ç¼“å­˜ã€‚
- *
- * ç”¨æ³•ï¼š
- *   var results = TourismProximity.getNearbySpotsByStation(stationId, { radius: 3000, limit: 10 });
- *
- * è¿”å›ï¼š{ spot, distance, distanceText, stationId } æ•°ç»„ï¼›å¤±è´¥æ—¶è¿”å› []ã€‚
- */
-(function() {
-  'use strict';
+Û^š›bh¥êß¢¹­…â'ŠØš–,ŞçÚº[C®+Ş²Š^­«b¢z'¶…ŠW’ÊË^ššè¾'^­ö¢•çKÊŠ‚ˆ
+ˆİ\š\ÛT›Ş[Z]H8 %9îçù. :`®ú/äy§éz+èˆTBˆ
+ˆ:fá¹.+y£ä9/¦ù¢`9§"y¥áy®.:-çyé®ù§éz+è¹æ¡]™\œÚ[™H:+¨yë¥ù.#¹ï$ùkf8à ‚ˆ
+‚ˆ
+ˆ9å*9¬å{ï&‚ˆ
+ˆ˜\ˆ™\İ[ÈHİ\š\ÛT›Ş[Z]K™Ù]™X\˜TÜİĞTİ][ÛŠİ][Û’YÈ˜Y]\ÎˆÌ[Z]ˆLJNÂˆ
+‚ˆ
+ˆ:/å9fç»ï&ÈÜİ\İ[˜ÙK\İ[˜ÙU^İ][Û’YH9¥l9îá;ï&ùi,z-)y¥íº/å9fçˆ×xà ‚ˆ
+‹ÂŠ[˜İ[ÛŠ
+HÂˆ	İ\ÙHİšXİ	ÎÂ‚ˆ˜\ˆˆHŒÍÌLÈËÈX\˜Y]\È[ˆY]\œÂˆ˜\ˆQUSÔQUTÈHÌÈËÈÚÛBˆ˜\ˆQUSÓSRUHLÂˆ˜\ˆĞPÒWÕÓTÈHŒÈËÈŒÙXÛÛ™Âˆ˜\ˆĞPÒWÓRS—ÓSÕ‘WÓHHLÈËÈ™XÛÛ\]HÛ›HYˆ\Ù\ˆ[İ™YHLBˆËÈ9aî¹cèùgd9¨!ùoázhnù§iz!ê¹cëú/ïy®«ù§iy®¤;ï&ù¥èÛİ\˜ÙH9æ¡9/,9ë¥Ëùêæy.+yoàùag9n¥y.#ycà¹.#¹£ª:#d8à ‚ˆ˜\ˆ‘T’Q’QQÑVUÔÓÕTÑTÈHÂˆÜÛWÛİ™\œ\ÜÎˆYKˆÙ™šXÚX[Üİ][Û—ÛX\ˆYKˆÙ™šXÚX[Üİ][Û—ÜYÙNˆYBˆNÂ‚ˆÊŠ‚ˆ
+ˆ:+¨yë¥ù.)9.*¹îãùî«9n©¹à®y.búeí9æ¡]™\œÚ[™H:-çyé®ûï"9ìlûï"xà ‚ˆ
+ˆ9.îù. 9à®y¥è9¥b;ï"9¢%¹ï.¹i,{ï"y¥íº/å9fçˆ[™š[š]xà ‚ˆ
+‹Âˆ[˜İ[Ûˆ]™\œÚ[™J]K™ÌK]‹™ÌŠHÂˆYˆ
+]HOH[™ÌHOH[]ˆOH[™ÌˆOH[
+H™]\›ˆ[™š[š]NÂˆËÈ:f,¹«h¹/oùå*;ï";ï"ygd9¨!øà ‚ˆYˆ
 
-  var R = 6371000; // Earth radius in meters
-  var DEFAULT_RADIUS = 3000; // 3km
-  var DEFAULT_LIMIT = 10;
-  var CACHE_TTL_MS = 60000; // 60 seconds
-  var CACHE_MIN_MOVE_M = 100; // Recompute only if user moved >= 100m
+]HOOH	‰ˆ™ÌHOOH
+H
+]ˆOOH	‰ˆ™ÌˆOOH
+JH™]\›ˆ[™š[š]NÂˆ˜\ˆ]H
+]ˆH]JH
+ˆX]”HÈNÂˆ˜\ˆ™ÈH
+™ÌˆH™ÌJH
+ˆX]”HÈNÂˆ˜\ˆHHX]œÚ[Š]ÈŠH
+ˆX]œÚ[Š]ÈŠH
+ÂˆX]˜ÛÜÊ]H
+ˆX]”HÈN
+H
+ˆX]˜ÛÜÊ]ˆ
+ˆX]”HÈN
+H
+‚ˆX]œÚ[Š™ÈÈŠH
+ˆX]œÚ[Š™ÈÈŠNÂˆ˜\ˆÈHˆ
+ˆX]˜][ŒŠX]œÜ\
+JKX]œÜ\
+HHJJNÂˆ™]\›ˆˆ
+ˆÎÂˆB‚ˆÊŠ‚ˆ
+ˆ9¨/9o#ùc%¹å*9.£¹¦/¹é.¹æ¡:-çyé®øà ‚ˆ
+‹Âˆ[˜İ[Ûˆ›Ü›X]\İ[˜ÙJY]\œÊHÂˆYˆ
+Y]\œÈOOH[™š[š]HY]\œÈOOH[\Ó˜SŠY]\œÊJH™]\›ˆ[ÂˆYˆ
+Y]\œÈL
+H™]\›ˆX]œ›İ[™
+Y]\œÊH
+È	ÛIÎÂˆ™]\›ˆ
+Y]\œÈÈL
+KÑš^Y
+JH
+È	ÚÛIÎÂˆB‚ˆÊŠ‚ˆ
+ˆ9l!º-çyé®ù¨/9o#ùc%¹..¹«iz(c9b!ºd§ù¥l;ï":gh¹d$yå*9¢-ù¦/¹é.»ï"xà ‚ˆ
+ˆ9`aùk¦¹nlùgaù«iz(c:`'ùn©¹..ˆ9ìlËùb!ºd§øà ‚ˆ
+‹Âˆ[˜İ[Ûˆ›Ü›X]Ø[ÓZ[]\ÊY]\œËLNŠHÂˆYˆ
+Y]\œÈOOH[™š[š]HY]\œÈOOH[\Ó˜SŠY]\œÊJH™]\›ˆ[Âˆ˜\ˆ]İ][ÛˆHLNˆ	‰ˆLN‹˜]Üİ][ÛˆÈLN‹˜]Üİ][Ûˆˆ	úiáybcIÎÂˆ˜\ˆZ[•Ø[ÈHLNˆ	‰ˆLN‹›Z[—İØ[ÈÈLN‹›Z[—İØ[Èˆ	ùb!¹o¤¹«jIÎÂˆYˆ
+Y]\œÈL
+H™]\›ˆ]İ][ÛÂˆ˜\ˆZ[œÈHX]œ›İ[™
+Y]\œÈÈ
+NÂˆ™]\›ˆZ[œÈ
+È	È	È
+ÈZ[•Ø[ÎÂˆB‚ˆÊŠ‚ˆ
+ˆ9§¡9nî¹¢%º/å9fçº/i¹êæzfa:/äy¦kùà®yæ¡9ï$ùkf9îäù§§8à ‚ˆ
+ˆ\˜[HÜİš[™ßHİ][Û’YH:/i¹êæy¨!ú+á‚ˆ
+ˆ\˜[HÓØš™XİHÜ[ÛœÈHÈ˜Y]\Îˆ[X™\‹[Z]ˆ[X™\ˆBˆ
+ˆ™]\›œÈĞ\œ˜^OÜÜİ\İ[˜ÙK\İ[˜ÙU^İ][Û’YOŸBˆ
+‹Âˆ[˜İ[ÛˆÙ]™X\˜TÜİĞTİ][ÛŠİ][Û’YÜ[ÛœÊHÂˆÜ[ÛœÈHÜ[ÛœÈßNÂˆ˜\ˆ˜Y]\ÈH
+Ü[ÛœËœ˜Y]\Èˆ
+HÈÜ[ÛœËœ˜Y]\ÈˆQUSÔQUTÎÂˆ˜\ˆ[Z]H
+Ü[ÛœË›[Z]ˆ
+HÈÜ[ÛœË›[Z]ˆQUSÓSRUÂ‚ˆ˜\ˆÜİÈHÚ[™İË•ÕT’TÓWÔÔÕÈ×NÂˆYˆ
+\ÜİË›[™İ
+H™]\›ˆ×NÈËÈ[œ™XYH]H\È›İHØXÚXX›H™X\˜HÛ˜\Úİ‚ˆ˜\ˆØÈHÚ[™İË”ÕUSÓ—ĞÓÓÔ‘ÈßNÂˆYˆ
+\İ][Û’Y
+H™]\›ˆ×NÂ‚ˆËÈ:)èù§¤:/i¹êæygd9¨!ûï&¹/&9ab9/oùå*˜Z[Ø^Q»ï#9d)¹b&y/oùå*ÕUSÓ—ĞÓÓÔ‘øà ‚ˆ˜\ˆİ][ÛÛÛÜ™H[ÂˆYˆ
+Ú[™İË”˜Z[Ø^Qˆ	‰ˆÚ[™İË”˜Z[Ø^Q‹™Ù]İ][Û“ØØ][ÛŠHÂˆİ][ÛÛÛÜ™HÚ[™İË”˜Z[Ø^Q‹™Ù]İ][Û“ØØ][ÛŠİ][Û’Y
+NÂˆBˆYˆ
+\İ][ÛÛÛÜ™
+HÂˆİ][ÛÛÛÜ™HØÖÜİ][Û’YNÂˆBˆYˆ
+\İ][ÛÛÛÜ™\İ][ÛÛÛÜ™ÌH\İ][ÛÛÛÜ™ÌWJH™]\›ˆ×NÂ‚ˆ˜\ˆÓ]Hİ][ÛÛÛÜ™ÌNÂˆ˜\ˆÓ™ÈHİ][ÛÛÛÜ™ÌWNÂ‚ˆËÈ9¨.y£kº/i¹êæygd9¨!ùd£9cb¹o¡9§¡9nî¹ï$ùkf:e+»ï"9.#y/oùå*İ][Û’Y;ï#9.éyi!9ä!¹d#yéì9cæ9/dûï"xà ‚ˆ˜\ˆØXÚRÙ^HHÓ]Ñš^Y
+ŠH
+È‹ˆ
+ÈÓ™ËÑš^Y
+ŠH
+È	ß	È
+È˜Y]\È
+È	ß	È
+È[Z]Âˆ˜\ˆ›İÈH]K››İÊ
+NÂ‚ˆËÈ9¨à9§éyï$ùkf8à ‚ˆYˆ
+Ü›Ş[Z]PØXÚVØØXÚRÙ^WJHÂˆ˜\ˆØXÚYHÜ›Ş[Z]PØXÚVØØXÚRÙ^WNÂˆYˆ
 
-  /**
-   * è®¡ç®—ä¸¤ä¸ªç»çº¬åº¦ç‚¹ä¹‹é—´çš„ Haversine è·ç¦»ï¼ˆç±³ï¼‰ã€‚
-   * ä»»ä¸€ç‚¹æ— æ•ˆï¼ˆ0,0 æˆ–ç¼ºå¤±ï¼‰æ—¶è¿”å› Infinityã€‚
-   */
-  function haversine(lat1, lng1, lat2, lng2) {
-    if (lat1 == null || lng1 == null || lat2 == null || lng2 == null) return Infinity;
-    // é˜²æ­¢ä½¿ç”¨ï¼ˆ0,0ï¼‰åæ ‡ã€‚
-    if ((lat1 === 0 && lng1 === 0) || (lat2 === 0 && lng2 === 0)) return Infinity;
-    var dLat = (lat2 - lat1) * Math.PI / 180;
-    var dLng = (lng2 - lng1) * Math.PI / 180;
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
-
-  /**
-   * æ ¼å¼åŒ–ç”¨äºæ˜¾ç¤ºçš„è·ç¦»ã€‚
-   */
-  function formatDistance(meters) {
-    if (meters === Infinity || meters === null || isNaN(meters)) return null;
-    if (meters < 1000) return Math.round(meters) + 'm';
-    return (meters / 1000).toFixed(1) + 'km';
-  }
-
-  /**
-   * å°†è·ç¦»æ ¼å¼åŒ–ä¸ºæ­¥è¡Œåˆ†é’Ÿæ•°ï¼ˆé¢å‘ç”¨æˆ·æ˜¾ç¤ºï¼‰ã€‚
-   * å‡å®šå¹³å‡æ­¥è¡Œé€Ÿåº¦ä¸º 80 ç±³/åˆ†é’Ÿã€‚
-   */
-  function formatWalkMinutes(meters, i18n) {
-    if (meters === Infinity || meters === null || isNaN(meters)) return null;
-    var atStation = i18n && i18n.at_station ? i18n.at_station : 'é§…å‰';
-    var minWalk = i18n && i18n.min_walk ? i18n.min_walk : 'åˆ†å¾’æ­©';
-    if (meters < 100) return atStation;
-    var mins = Math.round(meters / 80);
-    return mins + ' ' + minWalk;
-  }
-
-  /**
-   * æ„å»ºæˆ–è¿”å›è½¦ç«™é™„è¿‘æ™¯ç‚¹çš„ç¼“å­˜ç»“æœã€‚
-   * @param {string} stationId - è½¦ç«™æ ‡è¯†
-   * @param {Object} options - { radius: number, limit: number }
-   * @returns {Array<{spot, distance, distanceText, stationId}>}
-   */
-  function getNearbySpotsByStation(stationId, options) {
-    options = options || {};
-    var radius = (options.radius > 0) ? options.radius : DEFAULT_RADIUS;
-    var limit = (options.limit > 0) ? options.limit : DEFAULT_LIMIT;
-
-    var spots = window.TOURISM_SPOTS || [];
-    if (!spots.length) return []; // Unready data is not a cacheable nearby snapshot.
-    var sc = window.STATION_COORDS || {};
-    if (!stationId) return [];
-
-    // è§£æè½¦ç«™åæ ‡ï¼šä¼˜å…ˆä½¿ç”¨ RailwayDBï¼Œå¦åˆ™ä½¿ç”¨ STATION_COORDSã€‚
-    var stationCoord = null;
-    if (window.RailwayDB && window.RailwayDB.getStationLocation) {
-      stationCoord = window.RailwayDB.getStationLocation(stationId);
-    }
-    if (!stationCoord) {
-      stationCoord = sc[stationId];
-    }
-    if (!stationCoord || !stationCoord[0] || !stationCoord[1]) return [];
-
-    var sLat = stationCoord[0];
-    var sLng = stationCoord[1];
-
-    // æ ¹æ®è½¦ç«™åæ ‡å’ŒåŠå¾„æ„å»ºç¼“å­˜é”®ï¼ˆä¸ä½¿ç”¨ stationIdï¼Œä»¥å¤„ç†åç§°å˜ä½“ï¼‰ã€‚
-    var cacheKey = sLat.toFixed(6) + "," + sLng.toFixed(6) + '|' + radius + '|' + limit;
-    var now = Date.now();
-
-    // æ£€æŸ¥ç¼“å­˜ã€‚
-    if (_proximityCache[cacheKey]) {
-      var cached = _proximityCache[cacheKey];
-      if ((now - cached.timestamp) < CACHE_TTL_MS) {
-        // TTL æœªè¿‡æœŸï¼šè¿”å›ç¼“å­˜ç»“æœã€‚
-        return cached.results;
-      }
-      // TTL å·²è¿‡æœŸï¼šç»§ç»­é‡æ–°è®¡ç®—ã€‚
-    }
-
-    // ä»å…¨å±€æ™¯ç‚¹æ± æ”¶é›†æ‰€æœ‰æ¡ç›®å¹¶è®¡ç®—è·ç¦»ã€‚
-    var results = [];
-    for (var i = 0; i < spots.length; i++) {
-      var spot = spots[i];
-      if (!spot || !spot.coord || !spot.coord[0] || !spot.coord[1]) continue;
-      var dist = haversine(sLat, sLng, spot.coord[0], spot.coord[1]);
-      if (dist === Infinity) continue;
-      if (dist <= radius) {
-        results.push({
-          spot: spot,
-          distance: dist,
-          distanceText: formatWalkMinutes(dist),
-          stationId: stationId,
-          exitDirection: getExitNameByCoords(stationId, dist, spot.coord[0], spot.coord[1]),
-        });
-      }
-    }
-
-    // æŒ‰è·ç¦»å‡åºæ’åºã€‚
-    results.sort(function(a, b) { return a.distance - b.distance; });
-    results = results.slice(0, limit);
-
-    // æ›´æ–°ç¼“å­˜ã€‚
-    _proximityCache[cacheKey] = {
-      timestamp: now,
-      results: results
-    };
-
-    return results;
-  }
-
-  /**
-   * ä½¿ç¼“å­˜å¤±æ•ˆï¼ˆæ•°æ®å˜åŒ–æ—¶è°ƒç”¨ï¼‰ã€‚
-   */
-  function invalidateCache() {
-    _proximityCache = {};
-  }
-
-  /**
-   * ç›´æ¥è·å– Haversine è·ç¦»ï¼ˆä¾›éœ€è¦åŸå§‹è·ç¦»çš„æ¨¡å—ä½¿ç”¨ï¼‰ã€‚
-   */
-  function getDistance(lat1, lng1, lat2, lng2) {
-    return haversine(lat1, lng1, lat2, lng2);
-  }
-
-  /**
-   * æŒ‰å‡ºå…¥å£ç»çº¬åº¦å–æœ€è¿‘å‡ºå£ã€‚
-   * éå† STATION_EXITS[stationId] ä¸­æ¯ä¸ªå‡ºå£çš„çœŸå®åæ ‡ï¼ŒHaversine å–ä¸ spot æœ€è¿‘è€…ã€‚
-   * @param {string} stationId - è½¦ç«™æ ‡è¯†
-   * @param {number} spotLat - Spot latitude
-   * @param {number} spotLng - Spot longitude
-   * @returns {Object|null} { name, distance } or nullï¼ˆç«™æ— å‡ºå£æ•°æ®ï¼‰
-   */
-  function getNearestExit(stationId, spotLat, spotLng) {
-    if (spotLat == null || spotLng == null) return null;
-    var stationExits = (window.STATION_EXITS && window.STATION_EXITS[stationId]) || [];
-    if (!stationExits.length) return null;
-    var best = null;
-    for (var i = 0; i < stationExits.length; i++) {
-      var ex = stationExits[i];
-      if (!ex || ex.lat == null || ex.lng == null) continue;
-      var d = haversine(spotLat, spotLng, ex.lat, ex.lng);
-      if (d === Infinity) continue;
-      if (!best || d < best.distance) best = { name: ex.name, distance: d };
-    }
-    return best;
-  }
-
-  /**
-   * å‡ºå£åè§£æï¼šspot è·ç«™ä¸­å¿ƒ <80m è§†ä¸ºé§…ç›´çµï¼Œå¦åˆ™å–ç»çº¬åº¦æœ€è¿‘å‡ºå£ã€‚
-   * @returns {string|null} exit name or 'é§…ç›´çµ' or nullï¼ˆæ— å‡ºå£æ•°æ®ï¼‰
-   */
-  function getExitNameByCoords(stationId, stationToSpotDist, spotLat, spotLng) {
-    if (stationToSpotDist < 80) return 'é§…ç›´çµ';
-    var nearest = getNearestExit(stationId, spotLat, spotLng);
-    return nearest ? nearest.name : null;
-  }
-
-
-  /**
-   * æ ¹æ®ç”¨æˆ·ä½ç½®æŸ¥æ‰¾æœ€è¿‘è½¦ç«™ã€‚
-   * @param {number} userLat - ç”¨æˆ·çº¬åº¦
-   * @param {number} userLng - ç”¨æˆ·ç»åº¦
-   * @returns {Object|null} { stationId, distance, coord }ï¼Œæ— ç»“æœæ—¶è¿”å› null
-   */
-
-
-
-  /**
-   * è·¨ç«™æœ€ä¼˜å‡ºç«™æ¨èâ€”â€”éå† STATION_EXITS å…¨éƒ¨ç«™ï¼Œå¯¹æ¯ç«™å–æœ€è¿‘å‡ºå£ï¼Œ
-   * æŒ‰å‡ºå£â†’spot è·ç¦»å‡åºï¼Œç»™å‡ºå…¨å±€æœ€ä¼˜å‡ºç«™ç«™+å‡ºå£ï¼›åŒæ—¶è¿”å›å½“å‰ç«™(fromStationId)çš„å‡ºç«™ä¿¡æ¯ã€‚
-   * åœºæ™¯ï¼šå®šä½åˆ° A ç«™æ—¶æ˜¾ç¤º"ä» A ç«™ O å£å‡º"ï¼›è‹¥å…¶ä»–ç«™å‡ºå£æ˜æ˜¾æ›´è¿‘ï¼Œæ¨è"å» X ç«™ Y å£å‡º"ã€‚
-   * @param {number} spotLat - Spot latitude
-   * @param {number} spotLng - Spot longitude
-   * @param {string|null} fromStationId - å½“å‰å®šä½/æ¥æºç«™ IDï¼ˆå¯ç©ºï¼‰
-   * @param {number} maxDistM - åªè€ƒè™‘å‡ºå£è·ç¦»åœ¨æ­¤èŒƒå›´å†…çš„ç«™ï¼ˆé»˜è®¤ 2000mï¼‰
-   * @returns {Object|null} {
-   *   best: { stationId, exitName, distance } | null,
-   *   fromExit: { stationId, exitName, distance } | null,
-   *   list: Array<{ stationId, exitName, distance }>
-   * }
-   */
-  function recommendExitStation(spotLat, spotLng, fromStationId, maxDistM) {
-    if (spotLat == null || spotLng == null) return null;
-    maxDistM = (maxDistM > 0) ? maxDistM : 2000;
-    var allExits = (window.STATION_EXITS) || {};
-    var list = [];
-    Object.keys(allExits).forEach(function(sid) {
-      var nearest = getNearestExit(sid, spotLat, spotLng);
-      if (!nearest || nearest.distance == null || nearest.distance === Infinity) return;
-      if (nearest.distance > maxDistM) return;
-      list.push({ stationId: sid, exitName: nearest.name, distance: nearest.distance });
-    });
-    list.sort(function(a, b) { return a.distance - b.distance; });
-    if (!list.length) return { best: null, fromExit: null, list: [] };
-    var fromExit = null;
-    if (fromStationId) {
-      var f = getNearestExit(fromStationId, spotLat, spotLng);
-      if (f && f.distance != null && f.distance !== Infinity && f.distance <= maxDistM) {
-        fromExit = { stationId: fromStationId, exitName: f.name, distance: f.distance };
-      }
-    }
-    return { best: list[0], fromExit: fromExit, list: list };
-  }
-
-  function getNearestStation(userLat, userLng) {
-    if (userLat == null || userLng == null) return null;
-    var sc = window.STATION_COORDS || {};
-    var nearest = null;
-    var minDist = Infinity;
-    Object.keys(sc).forEach(function(stationId) {
-      var coord = sc[stationId];
-      if (!coord || !coord[0] || !coord[1]) return;
-      if (coord[0] === 0 && coord[1] === 0) return;
-      var dist = haversine(userLat, userLng, coord[0], coord[1]);
-      if (dist < minDist) {
-        minDist = dist;
-        nearest = { stationId: stationId, distance: dist, coord: coord };
-      }
-    });
-    return nearest;
-  }
-  var _proximityCache = {};
-  window.addEventListener("pt:tourism-ready", invalidateCache);
-  window.addEventListener("pt:railway-ready", invalidateCache);
-
-  window.TourismProximity = {
-    getNearbySpotsByStation: getNearbySpotsByStation,
-    getDistance: getDistance,
-    getNearestStation: getNearestStation,
-    getNearestExit: getNearestExit,
-    getExitNameByCoords: getExitNameByCoords,
-    recommendExitStation: recommendExitStation,
-    formatDistance: formatDistance,
-    formatWalkMinutes: formatWalkMinutes,
-    invalidateCache: invalidateCache,
-    // æš´éœ²å¸¸é‡ä»¥ä¿æŒå‘åå…¼å®¹ã€‚
-    DEFAULT_RADIUS: DEFAULT_RADIUS,
-    DEFAULT_LIMIT: DEFAULT_LIMIT,
-    CACHE_TTL_MS: CACHE_TTL_MS,
-    CACHE_MIN_MOVE_M: CACHE_MIN_MOVE_M
-  };
-
-})();
-
+›İÈHØXÚY[Y\İ[\
+HĞPÒWÕÓTÊHÂˆËÈ9§*º/áù§'ûï&º/å9fç¹ï$ùkf9îäù§§8à ‚ˆ™]\›ˆØXÚYœ™\İ[ÎÂˆBˆËÈ9mìº/áù§'ûï&¹îéùîëzaãy¥¬:+¨yë¥øà ‚ˆB‚ˆËÈ9.ã¹aj9l`9¦kùà®y¬h9¥-ºfá¹¢`9§"y§hyæë¹nmº+¨yë¥ú-çyé®øà ‚ˆ˜\ˆ™\İ[ÈH×NÂˆ›Üˆ
+˜\ˆHHÈHÜİË›[™İÈJÊÊHÂˆ˜\ˆÜİHÜİÖÚWNÂˆYˆ
+\Üİ\Üİ˜ÛÛÜ™\Üİ˜ÛÛÜ™ÌH\Üİ˜ÛÛÜ™ÌWJHÛÛ[YNÂˆ˜\ˆ\İH]™\œÚ[™JÓ]Ó™ËÜİ˜ÛÛÜ™ÌKÜİ˜ÛÛÜ™ÌWJNÂˆYˆ
+\İOOH[™š[š]JHÛÛ[YNÂˆYˆ
+\İH˜Y]\ÊHÂˆ™\İ[Ëœ\Ú
+ÂˆÜİˆÜİˆ\İ[˜ÙNˆ\İˆ\İ[˜ÙU^ˆ›Ü›X]Ø[ÓZ[]\Ê\İ
+Kˆİ][Û’Yˆİ][Û’Yˆ^]\™Xİ[ÛˆÙ]^]˜[YPPÛÛÜ™Êİ][Û’Y\İÜİ˜ÛÛÜ™ÌKÜİ˜ÛÛÜ™ÌWJKˆJNÂˆBˆB‚ˆËÈ9£"z-çyé®ùcaùn£ù£¤¹n£øà ‚ˆ™\İ[ËœÛÜ
+[˜İ[ÛŠKŠHÈ™]\›ˆK™\İ[˜ÙHH‹™\İ[˜ÙNÈJNÂˆ™\İ[ÈH™\İ[ËœÛXÙJ[Z]
+NÂ‚ˆËÈ9¦í9¥¬9ï$ùkf8à ‚ˆÜ›Ş[Z]PØXÚVØØXÚRÙ^WHHÂˆ[Y\İ[\ˆ›İËˆ™\İ[Îˆ™\İ[ÂˆNÂ‚ˆ™]\›ˆ™\İ[ÎÂˆB‚ˆÊŠ‚ˆ
+ˆ9/oùï$ùkf9i,y¥b;ï"9¥l9£k¹cæ9c%¹¥íº, ùå*;ï"xà ‚ˆ
+‹Âˆ[˜İ[Ûˆ[˜[Y]PØXÚJ
+HÂˆÜ›Ş[Z]PØXÚHHßNÂˆB‚ˆÊŠ‚ˆ
+ˆ9æí9£©z#­ùcåˆ]™\œÚ[™H:-çyé®ûï"9/¦úg :) yc§ùiâú-çyé®ùæ¡9ª(ygeù/oùå*;ï"xà ‚ˆ
+‹Âˆ[˜İ[ÛˆÙ]\İ[˜ÙJ]K™ÌK]‹™ÌŠHÂˆ™]\›ˆ]™\œÚ[™J]K™ÌK]‹™ÌŠNÂˆB‚ˆÊŠ‚ˆ
+ˆ9£"y§"y§iy®¤9æ¡9aî¹aiycèùîãùî«9n©¹cå¹§ :/äyaî¹cèøà ‚ˆ
+ˆ:`cyc¡ˆÕUSÓ—ÑVUÖÜİ][Û’YH9.+y«ãù.*¹mìºj£:+àyaî¹cèûï#]™\œÚ[™H9cå¹.#ˆÜİ9§ :/äz !xà ‚ˆ
+ˆ\˜[HÜİš[™ßHİ][Û’YH:/i¹êæy¨!ú+á‚ˆ
+ˆ\˜[HÛ[X™\ŸHÜİ]HÜİ]]YBˆ
+ˆ\˜[HÛ[X™\ŸHÜİ™ÈHÜİÛ™Ú]YBˆ
+ˆ™]\›œÈÓØš™Xİ[HÈ˜[YK\İ[˜ÙHHÜˆ[;ï"9êæy¥è9aî¹cèù¥l9£k»ï"Bˆ
+‹Âˆ[˜İ[ÛˆÙ]™X\™\İ^]
+İ][Û’YÜİ]Üİ™ÊHÂˆYˆ
+Üİ]OH[Üİ™ÈOH[
+H™]\›ˆ[Âˆ˜\ˆİ][Û‘^]ÈH
+Ú[™İË”ÕUSÓ—ÑVUÈ	‰ˆÚ[™İË”ÕUSÓ—ÑVUÖÜİ][Û’YJH×NÂˆYˆ
+\İ][Û‘^]Ë›[™İ
+H™]\›ˆ[Âˆ˜\ˆ™\İH[Âˆ›Üˆ
+˜\ˆHHÈHİ][Û‘^]Ë›[™İÈJÊÊHÂˆ˜\ˆ^Hİ][Û‘^]ÖÚWNÂˆYˆ
+Y^U‘T’Q’QQÑVUÔÓÕTÑTÖÙ^œÛİ\˜ÙWHˆ\[Ùˆ^›˜[YHOOH	Üİš[™ÉÈY^›˜[YKš[J
+Hˆ^›]OH[^›™ÈOH[
+HÛÛ[YNÂˆ˜\ˆH]™\œÚ[™JÜİ]Üİ™Ë^›]^›™ÊNÂˆYˆ
+OOH[™š[š]JHÛÛ[YNÂˆYˆ
+X™\İ™\İ™\İ[˜ÙJH™\İHÈ˜[YNˆ^›˜[YK\İ[˜ÙNˆNÂˆBˆ™]\›ˆ™\İÂˆB‚ˆÊŠ‚ˆ
+ˆ9aî¹cèùd#z)èù§¤;ï&¹cêº/å9fç¹§"y§iy®¤9æ¡9k§ºfayaî¹cèûï&ù¬¨y§"yaî¹cèù¥l9£k¹¥íº/å9fçˆ[8à ‚ˆ
+ˆ9êæy.+yoàú-çyé®ù.#z ïz+ày¦#¹kf9g*:iáyæí9íd9alùìîûï#9fè9«i9.#ya£y£kº-çyé®ùå'ù¢$9aî¹cèùd#xà ‚ˆ
+ˆ™]\›œÈÜİš[™ß[H^]˜[YHÜˆ[;ï"9¥è9mìºj£:+àyaî¹cèù¥l9£k»ï"Bˆ
+‹Âˆ[˜İ[ÛˆÙ]^]˜[YPPÛÛÜ™Êİ][Û’Yİ][Û•ÔÜİ\İÜİ]Üİ™ÊHÂˆ˜\ˆ™X\™\İHÙ]™X\™\İ^]
+İ][Û’YÜİ]Üİ™ÊNÂˆ™]\›ˆ™X\™\İÈ™X\™\İ›˜[YHˆ[ÂˆB‚‚ˆÊŠ‚ˆ
+ˆ9¨.y£k¹å*9¢-ù/cyïk¹§éy¢o¹§ :/äz/i¹êæxà ‚ˆ
+ˆ\˜[HÛ[X™\ŸH\Ù\“]H9å*9¢-ùî«9n©‚ˆ
+ˆ\˜[HÛ[X™\ŸH\Ù\“™ÈH9å*9¢-ùîãùn©‚ˆ
+ˆ™]\›œÈÓØš™Xİ[HÈİ][Û’Y\İ[˜ÙKÛÛÜ™{ï#9¥è9îäù§§9¥íº/å9fçˆ[ˆ
+‹Â‚‚‚ˆÊŠ‚ˆ
+ˆ:-ê9êæy§ 9/&9aî¹êæy£ª:#d8 %8 %:`cyc¡ˆÕUSÓ—ÑVUÈ9aj:`ê9êæ{ï#9kîy«ãùêæycå¹§ :/äyaî¹cèûï#ˆ
+ˆ9£"yaî¹cèø¡¤œÜİ:-çyé®ùcaùn£ûï#9îæyaî¹aj9l`9§ 9/&9aî¹êæyêæJùaî¹cèûï&ùd#9¥íº/å9fç¹odùbcyêæJœ›ÛTİ][Û’Y
+yæ¡9aî¹êæy/èy køà ‚ˆ
+ˆ9g.¹¦kûï&¹k¦¹/cyb,H9êæy¥í¹¦/¹é.ˆ¹.ãˆH9êæHÈ9cèùaîˆ»ï&ú"éyam¹.å¹êæyaî¹cèù¦#¹¦/¹¦í:/ä{ï#9£ª:#d¹c®È9êæHH9cèùaîˆ¸à ‚ˆ
+ˆ\˜[HÛ[X™\ŸHÜİ]HÜİ]]YBˆ
+ˆ\˜[HÛ[X™\ŸHÜİ™ÈHÜİÛ™Ú]YBˆ
+ˆ\˜[HÜİš[™ß[Hœ›ÛTİ][Û’YH9odùbcyk¦¹/cKù§iy®¤9êæHQ;ï"9cëùên»ï"Bˆ
+ˆ\˜[HÛ[X™\ŸHX^\İHH9cêº  ú&dyaî¹cèú-çyé®ùg*9«i:# ùfí9a¡yæ¡9êæ{ï":næ:+©Œ{ï"Bˆ
+ˆ™]\›œÈÓØš™Xİ[HÂˆ
+ˆ™\İˆÈİ][Û’Y^]˜[YK\İ[˜ÙHH[ˆ
+ˆœ›ÛQ^]ˆÈİ][Û’Y^]˜[YK\İ[˜ÙHH[ˆ
+ˆ\İˆ\œ˜^OÈİ][Û’Y^]˜[YK\İ[˜ÙHO‚ˆ
+ˆBˆ
+‹Âˆ[˜İ[Ûˆ™XÛÛ[Y[™^]İ][ÛŠÜİ]Üİ™Ëœ›ÛTİ][Û’YX^\İJHÂˆYˆ
+Üİ]OH[Üİ™ÈOH[
+H™]\›ˆ[ÂˆX^\İHH
+X^\İHˆ
+HÈX^\İHˆŒÂˆ˜\ˆ[^]ÈH
+Ú[™İË”ÕUSÓ—ÑVUÊHßNÂˆ˜\ˆ\İH×NÂˆØš™XİšÙ^\Ê[^]ÊK™›Ü‘XXÚ
+[˜İ[ÛŠÚY
+HÂˆ˜\ˆ™X\™\İHÙ]™X\™\İ^]
+ÚYÜİ]Üİ™ÊNÂˆYˆ
+[™X\™\İ™X\™\İ™\İ[˜ÙHOH[™X\™\İ™\İ[˜ÙHOOH[™š[š]JH™]\›ÂˆYˆ
+™X\™\İ™\İ[˜ÙHˆX^\İJH™]\›Âˆ\İœ\Ú
+Èİ][Û’YˆÚY^]˜[YNˆ™X\™\İ›˜[YK\İ[˜ÙNˆ™X\™\İ™\İ[˜ÙHJNÂˆJNÂˆ\İœÛÜ
+[˜İ[ÛŠKŠHÈ™]\›ˆK™\İ[˜ÙHH‹™\İ[˜ÙNÈJNÂˆYˆ
+[\İ›[™İ
+H™]\›ˆÈ™\İˆ[œ›ÛQ^]ˆ[\İˆ×HNÂˆ˜\ˆœ›ÛQ^]H[ÂˆYˆ
+œ›ÛTİ][Û’Y
+HÂˆ˜\ˆˆHÙ]™X\™\İ^]
+œ›ÛTİ][Û’YÜİ]Üİ™ÊNÂˆYˆ
+ˆ	‰ˆ‹™\İ[˜ÙHOH[	‰ˆ‹™\İ[˜ÙHOOH[™š[š]H	‰ˆ‹™\İ[˜ÙHHX^\İJHÂˆœ›ÛQ^]HÈİ][Û’Yˆœ›ÛTİ][Û’Y^]˜[YNˆ‹›˜[YK\İ[˜ÙNˆ‹™\İ[˜ÙHNÂˆBˆBˆ™]\›ˆÈ™\İˆ\İÌKœ›ÛQ^]ˆœ›ÛQ^]\İˆ\İNÂˆB‚ˆ[˜İ[ÛˆÙ]™X\™\İİ][ÛŠ\Ù\“]\Ù\“™ÊHÂˆYˆ
+\Ù\“]OH[\Ù\“™ÈOH[
+H™]\›ˆ[Âˆ˜\ˆØÈHÚ[™İË”ÕUSÓ—ĞÓÓÔ‘ÈßNÂˆ˜\ˆ™X\™\İH[Âˆ˜\ˆZ[‘\İH[™š[š]NÂˆØš™XİšÙ^\ÊØÊK™›Ü‘XXÚ
+[˜İ[ÛŠİ][Û’Y
+HÂˆ˜\ˆÛÛÜ™HØÖÜİ][Û’YNÂˆYˆ
+XÛÛÜ™XÛÛÜ™ÌHXÛÛÜ™ÌWJH™]\›ÂˆYˆ
+ÛÛÜ™ÌHOOH	‰ˆÛÛÜ™ÌWHOOH
+H™]\›Âˆ˜\ˆ\İH]™\œÚ[™J\Ù\“]\Ù\“™ËÛÛÜ™ÌKÛÛÜ™ÌWJNÂˆYˆ
+\İZ[‘\İ
+HÂˆZ[‘\İH\İÂˆ™X\™\İHÈİ][Û’Yˆİ][Û’Y\İ[˜ÙNˆ\İÛÛÜ™ˆÛÛÜ™NÂˆBˆJNÂˆ™]\›ˆ™X\™\İÂˆBˆ˜\ˆÜ›Ş[Z]PØXÚHHßNÂˆÚ[™İË˜Y]™[\İ[™\Šœİ\š\ÛK\™XYH‹[˜[Y]PØXÚJNÂˆÚ[™İË˜Y]™[\İ[™\Šœœ˜Z[Ø^K\™XYH‹[˜[Y]PØXÚJNÂ‚ˆÚ[™İË•İ\š\ÛT›Ş[Z]HHÂˆÙ]™X\˜TÜİĞTİ][ÛˆÙ]™X\˜TÜİĞTİ][Û‹ˆÙ]\İ[˜ÙNˆÙ]\İ[˜ÙKˆÙ]™X\™\İİ][ÛˆÙ]™X\™\İİ][Û‹ˆÙ]™X\™\İ^]ˆÙ]™X\™\İ^]ˆÙ]^]˜[YPPÛÛÜ™ÎˆÙ]^]˜[YPPÛÛÜ™Ëˆ™XÛÛ[Y[™^]İ][Ûˆ™XÛÛ[Y[™^]İ][Û‹ˆ›Ü›X]\İ[˜ÙNˆ›Ü›X]\İ[˜ÙKˆ›Ü›X]Ø[ÓZ[]\Îˆ›Ü›X]Ø[ÓZ[]\Ëˆ[˜[Y]PØXÚNˆ[˜[Y]PØXÚKˆËÈ9¦­:g,¹n.:aãù.éy/çy£ yd$yd#¹ao9k®xà ‚ˆQUSÔQUTÎˆQUSÔQUTËˆQUSÓSRUˆQUSÓSRUˆĞPÒWÕÓTÎˆĞPÒWÕÓTËˆĞPÒWÓRS—ÓSÕ‘WÓNˆĞPÒWÓRS—ÓSÕ‘WÓBˆNÂ‚ŸJJ
+NÂ‚
