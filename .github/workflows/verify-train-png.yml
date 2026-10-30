@@ -14,6 +14,7 @@ on:
       - 'tools/train-sql-vehicle-mapping.test.cjs'
       - 'tools/train-sql-service-reconciliation.test.cjs'
       - 'supabase/migrations/20261030112329_separate_shinkansen_service_names_and_audit_run_links.sql'
+      - 'supabase/migrations/20261030112949_quarantine_seibu_laview_legacy_vehicle_labels.sql'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
