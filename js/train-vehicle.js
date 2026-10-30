@@ -1137,7 +1137,7 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-3": {"displayName":"西武10000系","iconName":"西武10000系","asset":"../images/列车/西武鉄道/西武鉄道_10000系_ニューレッドアロー.png","aliases":["西武10000系（レッドアロー）","10000系（レッドアロー）"]},
   "remaining-fleet-extra-4": {"displayName":"西武8500系","iconName":"西武8500系","asset":"../images/列车/西武鉄道/西武鉄道_8500系_レオライナー.png","aliases":["西武8500系（レオライナー、新型導入中）"]},
   "remaining-fleet-extra-5": {"displayName":"西武7000系","iconName":"西武7000系","asset":"../images/列车/西武鉄道/西武鉄道_7000系_サステナ車両.png","aliases":["西武7000系（2026年ワンマン化）"]},
-  "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","aliases":[]},
+  "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","lineIds":["SeibuYamaguchi"],"aliases":["L00系（レオライナー）"],"candidateOnly":true,"evidenceSource":"https://www.seiburailway.jp/railway/encyclopedia/L00/"},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
   "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuNikko","TobuSkytree"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
@@ -1970,8 +1970,8 @@ Object.assign(CANONICAL_VEHICLES,{
     "iconName": "西武40000系",
     "asset": "../images/列车/西武鉄道/西武鉄道_40000系_青帯.png",
     "lineIds": ["Ikebukuro", "Yurakucho_Seibu", "SeibuChichibu", "SeibuShinjuku"],
-    "lineAliases": {"SeibuShinjuku":["40000系（Laview）"]},
-    "aliases": ["40000系（Laview）"]
+    "lineAliases": {"SeibuShinjuku":["40000系（S-TRAIN）","40000系（拝島ライナー）"]},
+    "aliases": ["西武40000系（S-TRAIN）","西武40000系（拝島ライナー）"]
   },
   "tobu-50070": {
     "displayName": "東武50070系",
@@ -2799,6 +2799,36 @@ CANONICAL_VEHICLES["jr-kyushu-n700s-nishikyushu-plan"] = {
   candidateOnly: true,
   artworkStatus: "missing-native-asset",
   evidenceSource: "https://www.jrkyushu.co.jp/train/kids/guardian/train_equipment/"
+};
+
+// 在来線：公式列車案内に基づくモデル参照。未収録PNGの仮画像は作らない。
+// ソニック（883 / 885）と大阪環状線323は運用編成を確定しない。
+CANONICAL_VEHICLES["jr-kyushu-883-sonic-plan"] = {
+  displayName: "JR九州883系",
+  iconName: "JR九州883系",
+  asset: null, plannedAsset: null,
+  lineIds: ["Nippo", "KagoshimaMain"],
+  aliases: ["883系（ソニック）"],
+  candidateOnly: true, artworkStatus: "missing-native-asset",
+  evidenceSource: "https://www.jrkyushu.co.jp/trains/sp/sonic/"
+};
+CANONICAL_VEHICLES["jr-kyushu-885-sonic-plan"] = {
+  displayName: "JR九州885系",
+  iconName: "JR九州885系",
+  asset: null, plannedAsset: null,
+  lineIds: ["Nippo", "KagoshimaMain"],
+  aliases: ["885系（ソニック）"],
+  candidateOnly: true, artworkStatus: "missing-native-asset",
+  evidenceSource: "https://www.jrkyushu.co.jp/trains/sp/sonic/"
+};
+CANONICAL_VEHICLES["jr-west-323-local-plan"] = {
+  displayName: "JR西日本323系",
+  iconName: "JR西日本323系",
+  asset: null, plannedAsset: null,
+  lineIds: ["OsakaLoop", "Yumesaki"],
+  aliases: ["323系（大阪環状線）"],
+  candidateOnly: true, artworkStatus: "missing-native-asset",
+  evidenceSource: "https://www.jr-odekake.net/railroad/service/train-woman.html"
 };
 
 Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
