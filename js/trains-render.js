@@ -1079,10 +1079,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainMarkerSpec(p, trainUid, lineId) {
     // TrainVehicle 是 PNG/中性标记的唯一选择权威。本模块
     // 只负责展示几何、碰撞布局和图片加载恢复。
-    var artworkFailed = _isTrainArtworkFailureActive(trainUid, p);
+    // 实际绘制线路是独立的权限边界；不要让来源对象在另一条图面线路
+    // 上重放旧 PNG。仅传给统一选择器，不能修改原始列车记录或车型结果。
+    var selectionPosition = p && lineId
+      ? Object.assign({}, p, { displayLineId: lineId }) : p;
+    var artworkFailed = _isTrainArtworkFailureActive(trainUid, selectionPosition);
     var artwork = window.TrainVehicle &&
       typeof window.TrainVehicle.selectMarkerArtwork === "function"
-      ? window.TrainVehicle.selectMarkerArtwork(p, artworkFailed)
+      ? window.TrainVehicle.selectMarkerArtwork(selectionPosition, artworkFailed)
       : { kind: "unresolved", iconSrc: "" };
     var hasImage = artwork.kind === "vehicle" && !!artwork.iconSrc;
     return {
