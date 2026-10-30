@@ -17,11 +17,19 @@
   var CACHE_MIN_MOVE_M = 100; // Recompute only if user moved >= 100m
   // 出口坐标必须来自可追溯来源；无 source 的估算/站中心兜底不参与推荐。
   var VERIFIED_EXIT_SOURCES = {
-    osm_overpass: true,
     official_station_map: true,
     official_station_page: true
   };
-  var EXPLICIT_EXIT_NAME = /(出口|出入口|入口|口$|改札口)$/i;
+
+  function isVerifiedStationExit(entry, stationId) {
+    return entry && entry.stationId === stationId &&
+      typeof entry.name === 'string' && entry.name.trim() &&
+      typeof entry.operator === 'string' && entry.operator.trim() &&
+      entry.kind === 'station_exit' && entry.reviewStatus === 'verified' &&
+      entry.coordinateSource === 'openstreetmap' &&
+      typeof entry.officialSource === 'string' && /^https:\/\//.test(entry.officialSource) &&
+      VERIFIED_EXIT_SOURCES[entry.source];
+  }
 
   /**
    * 计算两个经纬度点之间的 Haversine 距离（米）。
@@ -165,9 +173,7 @@
     var best = null;
     for (var i = 0; i < stationExits.length; i++) {
       var ex = stationExits[i];
-      if (!ex || ex.kind !== 'station_exit' || !VERIFIED_EXIT_SOURCES[ex.source] ||
-          typeof ex.name !== 'string' || !ex.name.trim() ||
-          !EXPLICIT_EXIT_NAME.test(ex.name.trim()) ||
+      if (!isVerifiedStationExit(ex, stationId) ||
           ex.lat == null || ex.lng == null) continue;
       var d = haversine(spotLat, spotLng, ex.lat, ex.lng);
       if (d === Infinity) continue;
@@ -197,9 +203,8 @@
 
 
   /**
-   * 跨站最优出站推荐——遍历 STATION_EXITS 全部站，对每站取最近出口，
-   * 按出口→spot 距离升序，给出全局最优出站站+出口；同时返回当前站(fromStationId)的出站信息。
-   * 场景：定位到 A 站时显示"从 A 站 O 口出"；若其他站出口明显更近，推荐"去 X 站 Y 口出"。
+   * 仅推荐当前车站已核验的出口。
+   * 没有当前站出口证据时返回空结果，禁止借用邻站出口补位。
    * @param {number} spotLat - Spot latitude
    * @param {number} spotLng - Spot longitude
    * @param {string|null} fromStationId - 当前定位/来源站 ID（可空）
@@ -213,24 +218,19 @@
   function recommendExitStation(spotLat, spotLng, fromStationId, maxDistM) {
     if (spotLat == null || spotLng == null) return null;
     maxDistM = (maxDistM > 0) ? maxDistM : 2000;
-    var allExits = (window.STATION_EXITS) || {};
-    var list = [];
-    Object.keys(allExits).forEach(function(sid) {
-      var nearest = getNearestExit(sid, spotLat, spotLng);
-      if (!nearest || nearest.distance == null || nearest.distance === Infinity) return;
-      if (nearest.distance > maxDistM) return;
-      list.push({ stationId: sid, exitName: nearest.name, distance: nearest.distance });
-    });
-    list.sort(function(a, b) { return a.distance - b.distance; });
-    if (!list.length) return { best: null, fromExit: null, list: [] };
-    var fromExit = null;
-    if (fromStationId) {
-      var f = getNearestExit(fromStationId, spotLat, spotLng);
-      if (f && f.distance != null && f.distance !== Infinity && f.distance <= maxDistM) {
-        fromExit = { stationId: fromStationId, exitName: f.name, distance: f.distance };
-      }
+    if (!fromStationId) return { best: null, fromExit: null, list: [] };
+
+    var nearest = getNearestExit(fromStationId, spotLat, spotLng);
+    if (!nearest || nearest.distance == null || nearest.distance === Infinity || nearest.distance > maxDistM) {
+      return { best: null, fromExit: null, list: [] };
     }
-    return { best: list[0], fromExit: fromExit, list: list };
+
+    var fromExit = {
+      stationId: fromStationId,
+      exitName: nearest.name,
+      distance: nearest.distance
+    };
+    return { best: fromExit, fromExit: fromExit, list: [fromExit] };
   }
 
   function getNearestStation(userLat, userLng) {

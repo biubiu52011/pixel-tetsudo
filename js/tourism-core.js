@@ -156,7 +156,7 @@
     return 'spot';
   }
 
-  // 距离/出站指引计算（跨站最优出口融合口径）→ {stationName, distMain, distSub, distText}
+  // 距离/出站指引计算：只使用当前车站已核验出口，绝不借用邻站出口。
   function computeDistance(spot, stationKey) {
     var ctx = { stationName: '', distText: '', distMain: '', distSub: '' };
     if (window.DataLoader && !window.DataLoader.isLoaded()) return ctx;

@@ -4,13 +4,13 @@
 
 # Pixel Tetsudo 工程进度
 
-### STATION-EXIT-SOURCE-GUARD-20261030 — 清理捏造车站出入口（本地完成）
+### STATION-EXIT-SOURCE-GUARD-20261030 — 清理捏造车站出入口与跨站补位（本地完成）
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 根因 | `tourism_data.json` 的 `station_exits` 被扩展为全线站点，并混入站中心固定偏移、站前兜底及无来源估算坐标；这些记录被当作真实出入口参与最近出口推荐。 |
-| 修复 | 仅保留有明确 `source` 且名称明确带出口/入口/方向口/改札口的 OSM Overpass 记录（10 站、36 条）；删除站名、商场、JR/TX 标识、公园门、无来源估算和站中心兜底。`db-loader.js` 与 `tourism-proximity.js` 共同拒绝不符合名称/来源/类型契约的候选；距离小于 80m 不再自动捏造“駅直結”。 |
-| 验证 | `node data/core/generate-all.js --check`、`node --check data/core/db-loader.js`、`node --check js/tourism-proximity.js`、`node tools/tourism-exit-integrity.test.cjs` 通过。既有 `tourism-loading.test.cjs` 仍有与本改动无关的样式加载断言失败，未修改其契约。 |
+| 根因 | 一是 `tourism_data.json` 曾把站中心偏移、站前兜底及无来源估算坐标当作真实出入口；二是详情页会遍历所有车站，在 2 公里内选择任意最近出口，导致没有出口资料的小站借用邻站出口。 |
+| 修复 | 出口库收敛为 10 个已逐站核验车站、41 条记录，每条均保存运营方、官方站页/站图、坐标来源与审核状态。`db-loader.js` 与 `tourism-proximity.js` 只接受证据字段完整且归属当前站的记录；详情页只查询当前车站，未收录的小站退回本站中心步行距离，不再跨站补出口，也不再自动捏造“駅直結”。 |
+| 验证 | `node data/core/generate-all.js --check`、`node --check data/core/db-loader.js`、`node --check js/tourism-proximity.js`、`node --check js/tourism-core.js`、`node tools/tourism-exit-integrity.test.cjs` 通过；新增回归覆盖“邻站出口更近”和“小站无资料”两种情况。既有 `tourism-loading.test.cjs` 仍有与本改动无关的样式加载断言失败，未修改其契约。 |
 | 备份 | `.work/backups/20261030-station-exits/` |
 
 ### REALTIME-UNKNOWN-REDUCTION-20261029 — 实时灰色判定收敛（本地完成）

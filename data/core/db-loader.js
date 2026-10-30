@@ -509,11 +509,20 @@ function applyData(data, i18n) {
   // 出入口只接受有明确来源标记的坐标。没有 source 的旧估算、站中心
   // 兜底和运行时拼接记录一律丢弃，避免把推定位置展示成真实出入口。
   var VERIFIED_EXIT_SOURCES = {
-    osm_overpass: true,
     official_station_map: true,
     official_station_page: true
   };
-  var EXPLICIT_EXIT_NAME = /(出口|出入口|入口|口$|改札口)$/i;
+
+  function isVerifiedStationExit(entry, stationId) {
+    return entry && entry.stationId === stationId &&
+      typeof entry.name === 'string' && entry.name.trim() &&
+      typeof entry.operator === 'string' && entry.operator.trim() &&
+      entry.kind === 'station_exit' && entry.reviewStatus === 'verified' &&
+      entry.coordinateSource === 'openstreetmap' &&
+      typeof entry.officialSource === 'string' && /^https:\/\//.test(entry.officialSource) &&
+      Number.isFinite(Number(entry.lat)) && Number.isFinite(Number(entry.lng)) &&
+      VERIFIED_EXIT_SOURCES[entry.source];
+  }
 
   function normalizeStationExits(raw) {
     var out = {};
@@ -521,16 +530,18 @@ function applyData(data, i18n) {
     Object.keys(raw).forEach(function(stationId) {
       var entries = Array.isArray(raw[stationId]) ? raw[stationId] : [];
       var verified = entries.filter(function(entry) {
-        return entry && typeof entry.name === 'string' && entry.name.trim() &&
-          entry.kind === 'station_exit' && EXPLICIT_EXIT_NAME.test(entry.name.trim()) &&
-          Number.isFinite(Number(entry.lat)) && Number.isFinite(Number(entry.lng)) &&
-          VERIFIED_EXIT_SOURCES[entry.source];
+        return isVerifiedStationExit(entry, stationId);
       }).map(function(entry) {
         return {
+          stationId: entry.stationId,
           name: entry.name.trim(),
           lat: Number(entry.lat),
           lng: Number(entry.lng),
+          operator: entry.operator.trim(),
           source: entry.source,
+          officialSource: entry.officialSource,
+          coordinateSource: entry.coordinateSource,
+          reviewStatus: entry.reviewStatus,
           kind: entry.kind
         };
       });
@@ -551,7 +562,8 @@ function applyData(data, i18n) {
     window.TOURISM_EVENTS = buckets.event;
     window.TOURISM_SHOPS = buckets.shop;
     window.TOURISM_SIGHTS = buckets.spot;
-    // 出口坐标使用 { stationId: [{name,lat,lng,source}] }；只保留有来源记录。
+    // 出口坐标使用 { stationId: [{name,lat,lng,...evidence}] }；
+    // 官方名称/归属、独立坐标来源和人工审核三项缺一不可。
     window.STATION_EXITS = normalizeStationExits(override.station_exits);
     window.TOURISM_DATA = {};
     window.TOURISM_STATIONS = [];
