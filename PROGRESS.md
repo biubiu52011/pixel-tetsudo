@@ -4,6 +4,19 @@
 
 # Pixel Tetsudo 工程进度
 
+
+### TRAIN-PNG-END-TO-END-20261030 — PNG 判定、SVG 渲染与主分支验证（COMPLETE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 图片身份 | `TrainVehicle.selectMarkerArtwork` 只显示已确认的规范车型 PNG，或由签发的单车型计划在估算位置显示明确的 `planned` 参考图；实时 `UNKNOWN/NARROWED`、多车型计划以及缺少适用线路的旧缓存不得选图。图片路径限定为本站 `images/列车` 图库。 |
+| 渲染修复 | `trains-render.js` 按实际显示线路请求 PNG，保留 `candidate` 类型和全部诊断资产；`planned` DOM 类型在刷新时保持一致，避免每次轮询重复删除和加载同一 PNG。SVG image 保留 `href`/`xlink:href` 和 `data-train-artwork`，加载失败立即回退位置圆点。 |
+| 标签一致性 | 车型提示文字使用规范解析身份并执行与图片相同的线路/实体车号门槛；旧缓存不能在 PNG 退回中性点时继续向用户宣称已确认的另一条线路车型。 |
+| PNG 完整性 | 核对 GitHub 图库目录：共享车型文件的 578 条唯一 PNG 引用全部存在（0 缺失）；`tools/train-vehicle-assets.test.cjs` 已加入 Node 回归，验证文件存在、PNG 文件头及图片尺寸。另有 1 张 E233 5000 番台 PNG 未被规范目录引用，保留未绑定，不以素材文件名推断车型。 |
+| 自动验证 | `tools/train-png-display-contract.test.cjs` 覆盖身份、候选、计划、跨线、图片路径、SVG 创建、错误回退和无障碍提示；GitHub Actions `Verify train PNG contracts` 在 `main` 上全部通过（run `41042549296`，日志确认 PNG 合同与 578 图片均 PASS）。核心 4 文件 `node --check` 通过。 |
+| 开发/发布边界 | 本轮直接提交 `main`，没有使用 PR。新增主分支 PNG 测试 CI；两个 GitHub Pages 工作流均已改为 `workflow_dispatch` 手动发布，不会因后续直接提交而自动部署。浏览器现场真实 ODPT + SVG 图片回读仍未验证，不宣称生产页面完成验收。 |
+
+
 ### REALTIME-CANDIDATE-CONTRACT-20261030 — 候选车型恢复中性显示（COMPLETE）
 
 | 项目 | 当前状态 |
