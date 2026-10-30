@@ -14,10 +14,15 @@ on:
       - 'tools/train-sql-vehicle-mapping.test.cjs'
       - 'tools/train-sql-service-reconciliation.test.cjs'
       - 'tools/train-official-source-crosswalk.test.cjs'
+      - 'tools/train-official-fleet-plan.test.cjs'
       - 'supabase/migrations/20261030112329_separate_shinkansen_service_names_and_audit_run_links.sql'
       - 'supabase/migrations/20261030112949_quarantine_seibu_laview_legacy_vehicle_labels.sql'
       - 'supabase/migrations/20261030114512_crosswalk_official_train_run_numbers_to_service_names_20261030.sql'
       - 'supabase/migrations/20261030114616_official_nishi_kyushu_n700s_scoped_planned_fleet_20261030.sql'
+      - 'supabase/migrations/20261030115225_jr_kyushu_mixed_n700_800_service_plan_without_guess_20261030.sql'
+      - 'supabase/migrations/20261030115316_official_sanyo_multiple_n700_variants_prevent_png_guess_20261030.sql'
+      - 'supabase/migrations/20261030115351_join_official_service_runs_to_scoped_planned_vehicle_families_20261030.sql'
+      - 'supabase/migrations/20261030115444_official_tokaido_n700_n700a_n700s_planned_candidates_20261030.sql'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
@@ -47,3 +52,5 @@ jobs:
         run: node tools/train-sql-service-reconciliation.test.cjs
       - name: Verify sourced service crosswalk and scoped N700S model
         run: node tools/train-official-source-crosswalk.test.cjs
+      - name: Verify sourced JR mixed fleet plans never become exact PNGs
+        run: node tools/train-official-fleet-plan.test.cjs
