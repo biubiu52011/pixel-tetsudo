@@ -11,6 +11,7 @@ on:
       - 'js/train-position-estimator.js'
       - 'tools/train-png-display-contract.test.cjs'
       - 'tools/train-vehicle-assets.test.cjs'
+      - 'tools/train-sql-vehicle-mapping.test.cjs'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
@@ -34,3 +35,5 @@ jobs:
         run: node tools/train-png-display-contract.test.cjs
       - name: Verify registered PNG paths and file headers
         run: node tools/train-vehicle-assets.test.cjs
+      - name: Verify SQL candidate identity boundaries
+        run: node tools/train-sql-vehicle-mapping.test.cjs
