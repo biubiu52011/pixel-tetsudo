@@ -856,7 +856,7 @@ var CANONICAL_VEHICLES = {
   "keisei-8900": {"displayName":"京成8900形","iconName":"京成8900形","asset":null,"plannedAsset":"../images/列车/京成電鉄/京成電鉄_8900形.png","aliases":["京成電鉄8900形"]},
   "keisei-3400": { displayName: "京成3400形", iconName: "京成3400形", asset: "../images/列车/京成電鉄/京成電鉄_3400形.png", aliases: ["京成3400形","京成電鉄3400形"] },
   "keisei-3700": { displayName: "京成3700形", iconName: "京成3700形", asset: "../images/列车/京成電鉄/京成電鉄_3700形.png", aliases: ["京成3700形","京成電鉄3700形"] },
-  "keio-5000": { displayName: "京王5000系", iconName: "京王5000系", asset: "../images/列车/京王電鉄/京王電鉄_5000系.png", lineIds: ["KeioMain","KeioTakao","Shinjuku"], lineAliases: { KeioMain: ["5000系"], KeioTakao: ["5000系"], Shinjuku: ["5000系"] }, aliases: ["京王5000系","京王電鉄5000系"] },
+  "keio-5000": { displayName: "京王5000系", iconName: "京王5000系", asset: "../images/列车/京王電鉄/京王電鉄_5000系.png", lineIds: ["KeioMain","KeioTakao","KeioSagami","Shinjuku"], lineAliases: { KeioMain: ["5000系"], KeioTakao: ["5000系"], KeioSagami: ["5000系"], Shinjuku: ["5000系"] }, aliases: ["京王5000系","京王電鉄5000系"] },
   "odakyu-4000": { displayName: "小田急4000形", iconName: "小田急4000形", asset: "../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png", allowCrossOperator: true, aliases: ["小田急4000形","小田急電鉄4000形"] },
   "metro-16000": {
     displayName: "東京メトロ16000系", iconName: "東京メトロ16000系",
