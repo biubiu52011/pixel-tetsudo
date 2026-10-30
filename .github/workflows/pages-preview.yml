@@ -1,8 +1,8 @@
 name: Pixel Tetsudo Pages preview
 
+# 生产/预览 Pages 只能由显式人工调度触发。
+# main 的普通源码提交仅进入验证工作流，不自动发布网站。
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
