@@ -1,0 +1,33 @@
+name: Verify train PNG contracts
+
+# 不使用 PR；直接提交 main 仅运行验证，不触发 Pages 发布。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/train-vehicle.js'
+      - 'js/trains-render.js'
+      - 'js/data-fusion.js'
+      - 'js/train-position-estimator.js'
+      - 'tools/train-png-display-contract.test.cjs'
+      - 'pages/trains.html'
+      - '.github/workflows/verify-train-png.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          node --check js/train-vehicle.js
+          node --check js/trains-render.js
+          node --check js/data-fusion.js
+          node --check js/train-position-estimator.js
+      - name: Verify vehicle PNG decisions and SVG projection
+        run: node tools/train-png-display-contract.test.cjs
