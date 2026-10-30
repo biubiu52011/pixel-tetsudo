@@ -9,7 +9,7 @@
 | 项目 | 当前状态 |
 | --- | --- |
 | 根因 | `tourism_data.json` 的 `station_exits` 被扩展为全线站点，并混入站中心固定偏移、站前兜底及无来源估算坐标；这些记录被当作真实出入口参与最近出口推荐。 |
-| 修复 | 仅保留有明确 `source` 的 OSM Overpass 出入口记录（15 站、93 条）；删除无来源估算/站中心兜底。`db-loader.js` 与 `tourism-proximity.js` 共同拒绝无来源出入口；距离小于 80m 不再自动捏造“駅直結”。 |
+| 修复 | 仅保留有明确 `source` 且名称明确带出口/入口/方向口/改札口的 OSM Overpass 记录（10 站、36 条）；删除站名、商场、JR/TX 标识、公园门、无来源估算和站中心兜底。`db-loader.js` 与 `tourism-proximity.js` 共同拒绝不符合名称/来源/类型契约的候选；距离小于 80m 不再自动捏造“駅直結”。 |
 | 验证 | `node data/core/generate-all.js --check`、`node --check data/core/db-loader.js`、`node --check js/tourism-proximity.js`、`node tools/tourism-exit-integrity.test.cjs` 通过。既有 `tourism-loading.test.cjs` 仍有与本改动无关的样式加载断言失败，未修改其契约。 |
 | 备份 | `.work/backups/20261030-station-exits/` |
 

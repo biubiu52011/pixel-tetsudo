@@ -21,6 +21,7 @@
     official_station_map: true,
     official_station_page: true
   };
+  var EXPLICIT_EXIT_NAME = /(出口|出入口|入口|口$|改札口)$/i;
 
   /**
    * 计算两个经纬度点之间的 Haversine 距离（米）。
@@ -164,8 +165,9 @@
     var best = null;
     for (var i = 0; i < stationExits.length; i++) {
       var ex = stationExits[i];
-      if (!ex || !VERIFIED_EXIT_SOURCES[ex.source] ||
+      if (!ex || ex.kind !== 'station_exit' || !VERIFIED_EXIT_SOURCES[ex.source] ||
           typeof ex.name !== 'string' || !ex.name.trim() ||
+          !EXPLICIT_EXIT_NAME.test(ex.name.trim()) ||
           ex.lat == null || ex.lng == null) continue;
       var d = haversine(spotLat, spotLng, ex.lat, ex.lng);
       if (d === Infinity) continue;

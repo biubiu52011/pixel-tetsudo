@@ -513,6 +513,7 @@ function applyData(data, i18n) {
     official_station_map: true,
     official_station_page: true
   };
+  var EXPLICIT_EXIT_NAME = /(出口|出入口|入口|口$|改札口)$/i;
 
   function normalizeStationExits(raw) {
     var out = {};
@@ -521,6 +522,7 @@ function applyData(data, i18n) {
       var entries = Array.isArray(raw[stationId]) ? raw[stationId] : [];
       var verified = entries.filter(function(entry) {
         return entry && typeof entry.name === 'string' && entry.name.trim() &&
+          entry.kind === 'station_exit' && EXPLICIT_EXIT_NAME.test(entry.name.trim()) &&
           Number.isFinite(Number(entry.lat)) && Number.isFinite(Number(entry.lng)) &&
           VERIFIED_EXIT_SOURCES[entry.source];
       }).map(function(entry) {
@@ -528,7 +530,8 @@ function applyData(data, i18n) {
           name: entry.name.trim(),
           lat: Number(entry.lat),
           lng: Number(entry.lng),
-          source: entry.source
+          source: entry.source,
+          kind: entry.kind
         };
       });
       if (verified.length) out[stationId] = verified;
