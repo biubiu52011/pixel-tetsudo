@@ -3785,7 +3785,35 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     return plan;
   }
 
-  function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
+  // Officially documented service-type plans for undated SQL timetable projections.
+// Only two exact operator + line + train-type combinations are supported.
+// Never use this for live vehicle identification, exact formation or a generic
+// LimitedExpress; the result flows only into vehicleResult.vehiclePlan.
+function _officialConventionalServicePlan(tt, lineId, line) {
+  if (!tt || tt._positionSource !== 'supabase-train-run' ||
+      tt._sqlVehicleMappingLevel !== 'unresolved') return null;
+  var operator = normOp(tt['odpt:operator'] || line && line.operator || '');
+  var serviceType = String(tt['odpt:trainType'] || '').trim();
+  if (operator === 'Keio' && lineId === 'KeioSagami' &&
+      serviceType === 'odpt.TrainType:Keio.KeioLiner') {
+    return {
+      operator: operator, vehicleCandidates: ['京王5000系'],
+      evidenceRole: 'timetable-plan', planOverride: false,
+      sourceUrl: 'https://www.keio.co.jp/zasekishitei/'
+    };
+  }
+  if (operator === 'Tobu' && lineId === 'TobuIsesaki' &&
+      serviceType === 'odpt.TrainType:Tobu.TH-LINER') {
+    return {
+      operator: operator, vehicleCandidates: ['東武70090型'],
+      evidenceRole: 'timetable-plan', planOverride: false,
+      sourceUrl: 'https://www.tobu.co.jp/corporation/rail/vehicles/'
+    };
+  }
+  return null;
+}
+
+function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var serviceDate = serviceDateOverride || tt['_serviceDate'] || tt['serviceDate'] || tt['operatingDate'] || '';
     var identityKey = lineId + "|" + String(serviceDate || "").slice(0, 10);
     var evidenceRevision = window.TrainOperationEvidence.getRevision();
@@ -3976,6 +4004,12 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       var plannedEvidence=_plannedFamilyEvidence || (window.TrainOperationEvidence &&
         typeof window.TrainOperationEvidence.resolveEvidence === 'function'
         ? window.TrainOperationEvidence.resolveEvidence(trainNumber,_baseOperationCtx,'planned') : null);
+      // A SQL row with no asserted model may still carry an unambiguous
+      // OFFICIAL service category (KeioLiner / TH-LINER). This fallback
+      // projects its reference PNG only; identityStatus remains UNKNOWN.
+      if (!plannedEvidence && !_sqlSourceCandidates.length && !_declaredVehicleInput) {
+        plannedEvidence = _officialConventionalServicePlan(tt, lineId, line);
+      }
       var familyPlan=plannedEvidence&&(plannedEvidence.vehicleType||(plannedEvidence.vehicleCandidates||[]).join(' / '));
       var familyOverride=plannedEvidence&&(plannedEvidence.planOverride || plannedEvidence.evidenceRole==='timetable-reference' ||
         (!!plannedEvidence.operationCode && plannedEvidence.evidenceRole!=='timetable-plan'));
