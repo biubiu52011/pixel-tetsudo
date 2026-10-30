@@ -15,6 +15,7 @@ on:
       - 'tools/train-sql-service-reconciliation.test.cjs'
       - 'tools/train-official-source-crosswalk.test.cjs'
       - 'tools/train-official-fleet-plan.test.cjs'
+      - 'tools/train-conventional-source-mapping.test.cjs'
       - 'supabase/migrations/20261030112329_separate_shinkansen_service_names_and_audit_run_links.sql'
       - 'supabase/migrations/20261030112949_quarantine_seibu_laview_legacy_vehicle_labels.sql'
       - 'supabase/migrations/20261030114512_crosswalk_official_train_run_numbers_to_service_names_20261030.sql'
@@ -23,6 +24,9 @@ on:
       - 'supabase/migrations/20261030115316_official_sanyo_multiple_n700_variants_prevent_png_guess_20261030.sql'
       - 'supabase/migrations/20261030115351_join_official_service_runs_to_scoped_planned_vehicle_families_20261030.sql'
       - 'supabase/migrations/20261030115444_official_tokaido_n700_n700a_n700s_planned_candidates_20261030.sql'
+      - 'supabase/migrations/20261030121254_official_conventional_seibu_jrwest_jrkyushu_plan_fleet_20261030.sql'
+      - 'supabase/migrations/20261030121401_quarantine_seibu_yamaguchi_8500_only_obsolete_candidate_20261030.sql'
+      - 'supabase/migrations/20261030121430_audit_source_scoped_conventional_timetable_fleet_plans_20261030.sql'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
@@ -54,3 +58,5 @@ jobs:
         run: node tools/train-official-source-crosswalk.test.cjs
       - name: Verify sourced JR mixed fleet plans never become exact PNGs
         run: node tools/train-official-fleet-plan.test.cjs
+      - name: Verify conventional-line scoped source maps and no-guessing boundaries
+        run: node tools/train-conventional-source-mapping.test.cjs
