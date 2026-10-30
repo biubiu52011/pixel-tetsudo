@@ -1127,14 +1127,28 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var vehicle = {
       status: p && (p.vehicleIdentityStatus ||
         (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "",
-      name: p && (p.vehicleType || p.trainClass ||
-        (p.vehicleResolution && p.vehicleResolution.name)) || ""
+      // 规范解析器身份优先于兼容扁平字段，避免旧缓存标题抢先显示。
+      name: p && ((p.vehicleResolution && p.vehicleResolution.name) ||
+        p.vehicleType || p.trainClass) || ""
     };
     // 仅向用户公开已确认车型；运用号库候选只留在内部判定链，
     // 未确认时不显示车型文字，也不把候选 PNG 冒充为当前实车。
     // 旧数据可能只带 vehicleType/trainClass 而没有身份状态；这类自由文本
     // 不能再被当成 EXACT，否则不存在于规范车型目录的名称会泄漏到 UI。
-    if (vehicle.status === "EXACT" && vehicle.name &&
+    var resolvedLineId = String(p && (p.vehicleResolutionLineId ||
+      (p.vehicleResolution && p.vehicleResolution.lineId)) || "").trim();
+    var resolutionSources = p && p.vehicleResolution && Array.isArray(p.vehicleResolution.sources)
+      ? p.vehicleResolution.sources : [];
+    var physicalThroughEvidence = !!(p && p.vehicleResolvedFromRealtime === true &&
+      (resolutionSources.indexOf("official-realtime-car-number") >= 0 ||
+       resolutionSources.indexOf("roster-physical-id") >= 0));
+    var titleScoped = !lineId || (resolvedLineId && resolvedLineId === lineId) ||
+      physicalThroughEvidence;
+    // 标签与 PNG 使用同一线路和确定身份门槛；不能出现圆点已退回未知，
+    // 无障碍标题却继续宣称一辆未经确认的具体车型。
+    if (vehicle.status === "EXACT" && vehicle.name && titleScoped &&
+        (!p || p.vehicleResolvedUpstream !== false) &&
+        (!p || !p.vehicleResolution || p.vehicleResolution.identityStatus === "EXACT") &&
         window.TrainVehicle && typeof window.TrainVehicle.resolveCanonicalVehicle === "function") {
       var canonicalVehicle = window.TrainVehicle.resolveCanonicalVehicle(vehicle.name);
       if (canonicalVehicle && canonicalVehicle.displayName) tip.push(canonicalVehicle.displayName);
