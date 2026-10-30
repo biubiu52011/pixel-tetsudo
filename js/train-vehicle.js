@@ -857,7 +857,7 @@ var CANONICAL_VEHICLES = {
   "keisei-3400": { displayName: "京成3400形", iconName: "京成3400形", asset: "../images/列车/京成電鉄/京成電鉄_3400形.png", aliases: ["京成3400形","京成電鉄3400形"] },
   "keisei-3700": { displayName: "京成3700形", iconName: "京成3700形", asset: "../images/列车/京成電鉄/京成電鉄_3700形.png", aliases: ["京成3700形","京成電鉄3700形"] },
   "keio-5000": { displayName: "京王5000系", iconName: "京王5000系", asset: "../images/列车/京王電鉄/京王電鉄_5000系.png", lineIds: ["KeioMain","KeioTakao","Shinjuku"], lineAliases: { KeioMain: ["5000系"], KeioTakao: ["5000系"], Shinjuku: ["5000系"] }, aliases: ["京王5000系","京王電鉄5000系"] },
-  "odakyu-4000": { displayName: "小田急4000形", iconName: "小田急4000形", asset: "../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png", allowCrossOperator: true, aliases: ["小田急4000形","小田急電鉄4000形"] },
+  "odakyu-4000": { displayName: "小田急4000形", iconName: "小田急4000形", asset: "../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png", lineIds: ["Odawara"], allowCrossOperator: true, aliases: ["小田急4000形","小田急電鉄4000形"] },
   "metro-16000": {
     displayName: "東京メトロ16000系", iconName: "東京メトロ16000系",
     asset: "../images/列车/東京メトロ/東京メトロ_16000系.png",
@@ -2100,6 +2100,7 @@ Object.assign(CANONICAL_VEHICLES,{
   },
   "odakyu-1000": {
     "displayName": "小田急1000形",
+    "lineIds": ["Odawara"],
     "iconName": "小田急1000形",
     "asset": "../images/列车/小田急電鉄/小田急電鉄_1000形_標準色.png",
     "aliases": []
@@ -2126,12 +2127,14 @@ Object.assign(CANONICAL_VEHICLES,{
   },
   "odakyu-60000": {
     "displayName": "小田急60000形",
+    "lineIds": ["Odawara"],
     "iconName": "小田急60000形",
     "asset": "../images/列车/小田急電鉄/小田急電鉄_60000形_MSE.png",
     "aliases": ["小田急60000系(MSE)"]
   },
   "odakyu-70000": {
     "displayName": "小田急70000形",
+    "lineIds": ["Odawara"],
     "iconName": "小田急70000形",
     "asset": "../images/列车/小田急電鉄/小田急電鉄_70000形_GSE.png",
     "aliases": []
