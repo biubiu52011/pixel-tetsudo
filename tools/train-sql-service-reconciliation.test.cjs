@@ -38,4 +38,15 @@ assert.match(audit,/verified_timetable_id/);
 assert.doesNotMatch(sql,/\bUPDATE\s+train_runs\b/i,
   'reconciliation does not rewrite unverified actual run identities');
 assert.match(sql,/REVOKE ALL ON rail_audit\.train_run_timetable_reconciliation/);
-console.log('SQL service-name and run-link safeguards: PASS');
+const seibu=fs.readFileSync(
+  'supabase/migrations/20261030112949_quarantine_seibu_laview_legacy_vehicle_labels.sql','utf8');
+assert.match(seibu,/CREATE OR REPLACE VIEW rail_audit\.seibu_laview_legacy_conflicts/);
+assert.match(seibu,/40000系（Laview）/);
+assert.match(seibu,/SeibuChichibu/);
+assert.match(seibu,/Haijima/);
+assert.match(seibu,/THEN NULL::text/);
+assert.match(seibu,/THEN 'unresolved'::text/);
+assert.match(seibu,/REVOKE ALL ON rail_audit\.seibu_laview_legacy_conflicts/);
+assert.doesNotMatch(seibu,/\bUPDATE\s+public\.train_timetable_vehicle_mappings/i);
+assert.doesNotMatch(seibu,/\bSET\s+vehicle_type\s*=\s*'001系'/i);
+console.log('SQL service-name, Seibu legacy label and safe run-link safeguards: PASS');
