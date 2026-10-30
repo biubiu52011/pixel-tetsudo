@@ -131,4 +131,112 @@ assert.match(renderSource, /getAttribute\("data-marker-kind"\) !== _trainMarkerD
   'planned PNG must not be removed and reloaded on every refresh');
 assert.match(renderSource, /setAttribute\("data-train-artwork", spec\.iconSrc\)/,
   'image DOM must retain its catalog provenance');
-console.log('train PNG display contract: PASS (exact, candidate, planned, scopes, paths, refresh)');
+// Cross-line / stale tooltip labels cannot claim a physical model when PNG is withheld.
+const tooltipContext = vm.createContext({
+  window: {
+    currentLang: 'en',
+    TRAIN_TYPE_NAMES: {},
+    TrainVehicle: { resolveCanonicalVehicle: name => identities[name] || null },
+  },
+  _trainPositionSourceText: () => 'Live',
+  _trainDestText: value => value,
+  t: () => '',
+});
+vm.runInContext(extract(renderSource,
+  '  function _trainMarkerTitle(p, lineId) {',
+  '  function _trainPositionSourceText(p) {'), tooltipContext);
+const titledExact = {
+  ...exact,
+  vehicleResolution: {
+    name: 'JR E233系5000番台', lineId: 'Keiyo', identityStatus: 'EXACT', sources: [],
+  },
+  trainNumber: '611Y',
+};
+assert.match(tooltipContext._trainMarkerTitle(titledExact, 'Keiyo'), /E233/);
+assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Yamanote').includes('E233'),
+  'stale cross-line title must not disclose an unverified vehicle');
+assert.ok(!tooltipContext._trainMarkerTitle({
+  ...titledExact, vehicleIdentityStatus: 'NARROWED',
+}, 'Keiyo').includes('E233'), 'candidate identity must not appear in a title');
+assert.ok(!tooltipContext._trainMarkerTitle({
+  ...titledExact, vehicleResolvedUpstream: false,
+}, 'Keiyo').includes('E233'), 'rejected identity must not appear in a title');
+assert.match(tooltipContext._trainMarkerTitle({
+  ...titledExact,
+  vehicleResolvedFromRealtime: true,
+  vehicleResolution: {
+    ...titledExact.vehicleResolution,
+    sources: ['official-realtime-car-number'],
+  },
+}, 'Yamanote'), /E233/, 'physical car proof may support a through-service label');
+
+// Minimal SVG DOM exercises the actual image/circle creation, xlink, and failure fallback.
+function svgNode(tagName) {
+  const attrs = Object.create(null);
+  const listeners = Object.create(null);
+  return {
+    tagName,
+    children: [],
+    attrs,
+    listeners,
+    isConnected: true,
+    setAttribute(k, v) { attrs[k] = String(v); },
+    setAttributeNS(ns, k, v) { attrs[k] = String(v); },
+    getAttribute(k) { return attrs[k] === undefined ? null : attrs[k]; },
+    removeAttribute(k) { delete attrs[k]; },
+    addEventListener(k, fn) { listeners[k] = fn; },
+    appendChild(child) { child.parentNode = this; this.children.push(child); },
+    removeChild(child) {
+      const index = this.children.indexOf(child);
+      if (index >= 0) this.children.splice(index, 1);
+      child.parentNode = null;
+    },
+  };
+}
+const markerContext = vm.createContext({
+  document: { createElementNS(ns, tag) { return svgNode(tag); } },
+  _trainMarkerTitle: () => 'Train 611Y',
+  _setTrainMarkerAccessibilityLabel: (node, text) => node.setAttribute('aria-label', text),
+  _setTrainFormationAttribute: () => {},
+  _rememberTrainArtworkFailure: () => {},
+});
+vm.runInContext(extract(renderSource,
+  '  function _trainMarkerDomKind(spec) {',
+  '  function _trainMarkerSpec(p, trainUid, lineId) {'), markerContext);
+vm.runInContext(extract(renderSource,
+  '  function _setTrainIconPosition(icon, px, py, p, lineId, isLoop) {',
+  '  function _removeTrainLabels('), markerContext);
+vm.runInContext(extract(renderSource,
+  '  function _createTrainMarker(trainLayer, svgNS, trainUid, spec, px, py, p, lineId, isLoop, color, loc) {',
+  '  function updateTrainLayer('), markerContext);
+const markerLayer = svgNode('g');
+const svgNS = 'http://www.w3.org/2000/svg';
+const renderedImage = markerContext._createTrainMarker(
+  markerLayer, svgNS, 't2', plannedSpec, 40, 50,
+  unknownEstimate, 'Keiyo', false, '#008803', null,
+);
+assert.equal(renderedImage.tagName, 'image', 'verified plan PNG must be a real SVG image');
+assert.equal(renderedImage.getAttribute('href'), genericPng);
+assert.equal(renderedImage.getAttribute('data-train-artwork'), genericPng);
+assert.equal(renderedImage.getAttribute('data-marker-kind'), 'planned');
+assert.equal(renderedImage.getAttribute('data-marker-reference-only'), 'true');
+assert.equal(renderedImage.getAttribute('x'), '33');
+assert.equal(renderedImage.getAttribute('y'), '41');
+assert.equal(renderedImage.getAttribute('aria-label'), 'Train 611Y');
+const candidateMarker = markerContext._createTrainMarker(
+  markerLayer, svgNS, 't1', candidateSpec, 80, 90,
+  narrowed, 'Keiyo', false, '#008803', null,
+);
+assert.equal(candidateMarker.tagName, 'circle');
+assert.equal(candidateMarker.getAttribute('data-marker-kind'), 'candidate');
+assert.equal(candidateMarker.getAttribute('data-vehicle-candidate'), 'true');
+assert.ok(!candidateMarker.getAttribute('href'), 'candidate must not carry an image URL');
+
+renderedImage.listeners.error();
+assert.ok(!markerLayer.children.includes(renderedImage),
+  'failed PNG must be removed instead of leaving an invisible image');
+assert.equal(markerLayer.children.filter(node => node.getAttribute('data-train-id') === 't2')[0].tagName,
+  'circle', 'failed PNG must retain the train position as a neutral circle');
+
+console.log('train PNG display contract: PASS (selection, scope, SVG DOM, fallback, tooltip)');
+
