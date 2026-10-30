@@ -53,4 +53,36 @@ assert.equal(rapid.iconPath,'','223/225 mixed fleet cannot project single PNG');
 const wrongLine=w.__testPlanResolution('JR西日本323系',
  {operator:'JR-West',lineId:'Nippo'});
 assert.equal(wrongLine.iconPath,'');
+// Production resolver must expose only a fleet REFERENCE, never a chosen train.
+function runService(lineId,operator,service){
+  const serviceUrn='odpt.TrainType:'+operator+'.'+service;
+  const run={trainNumber:'NONEXISTENT_TEST_RUN',calendar:'odpt.Calendar:Weekday',
+    trainType:serviceUrn};
+  const tt={_positionSource:'supabase-train-run',
+    _sqlVehicleMappingLevel:'unresolved',_sqlVehicleCandidateLabel:'',
+    vehicleType:'',_serviceDate:'2026-10-30','odpt:trainType':serviceUrn};
+  return w.TrainVehicle.resolveTimetableRun(run,tt,lineId,{operator},'2026-10-30').vehicleResult;
+}
+const ol=runService('OsakaLoop','JR-West','Local');
+assert.equal(ol.identityStatus,'UNKNOWN');
+assert.equal(ol.vehiclePlan.status,'FLEET_REFERENCE');
+assert.deepEqual(Array.from(ol.vehiclePlan.models),['JR西日本323系']);
+assert.equal(ol.vehiclePlan.iconPath,'');
+assert.equal(ol.vehiclePlan.representativeModel,'');
+const kr=runService('TokaidoKansai','JR-West','Rapid');
+assert.equal(kr.identityStatus,'UNKNOWN');
+assert.equal(kr.vehiclePlan.status,'FLEET_REFERENCE');
+assert.deepEqual(Array.from(kr.vehiclePlan.models),['JR西日本223系','JR西日本225系']);
+assert.equal(kr.vehiclePlan.iconPath,'');
+for(const [line,op,type] of [
+ ['OsakaLoop','JR-West','KansaiAirportRapid'],
+ ['TokaidoKansai','JR-West','Local'],
+ ['OsakaLoop','JR-Kyushu','Local'],
+ ['Nippo','JR-Kyushu','Local']
+]){
+  const actual=runService(line,op,type);
+  assert.equal(actual.identityStatus,'UNKNOWN');
+  assert.ok(!actual.vehiclePlan?.iconPath,'do not assign an off-corridor PNG');
+  assert.notEqual(actual.vehiclePlan?.status,'FLEET_REFERENCE');
+}
 console.log('JR West local rapid and JR Kyushu scoped corridor source contract: PASS');
