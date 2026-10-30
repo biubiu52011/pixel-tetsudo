@@ -3692,7 +3692,16 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           '東急':'東急電鉄','東武':'東武鉄道','西武':'西武鉄道','相鉄':'相模鉄道',
           '都営':'都営地下鉄','東京メトロ':'東京メトロ'}[owner]||owner;
         // 未限定所属方的标签不能借用其他所属方的车辆。
-        if(direct && (declared || direct.allowCrossOperator === true || (!owner && !ctx.operator) || assetOwner===expected || /^TX-/.test(name)))canonical=direct;
+        // 唯一例外：目录明确为本线路登记了相同车型的 lineAliases，
+        // 这证明它是合法的跨社直通计划候选（如 Rinkai 的 JR E233 7000）。
+        // 此授权只服务时刻表 planned 图片，不决定实际列车/编组。
+        var sameLineModelAlias = direct && ctx.lineId && direct.lineAliases &&
+          Array.isArray(direct.lineAliases[String(ctx.lineId)]) &&
+          direct.lineAliases[String(ctx.lineId)].some(function(alias) {
+            return _canonicalVehicleAliasKey(alias) === _canonicalVehicleAliasKey(name);
+          });
+        if(direct && (declared || direct.allowCrossOperator === true || (!owner && !ctx.operator) ||
+            assetOwner===expected || /^TX-/.test(name) || sameLineModelAlias))canonical=direct;
       }
       return {label:canonical?canonical.displayName:name,canonical:canonical};
     }).filter(function(v,i,a){return a.findIndex(function(x){return x.label===v.label;})===i;});
