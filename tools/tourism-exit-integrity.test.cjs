@@ -1,21 +1,32 @@
-Û^š›bh¥êß¢¹­…â'ŠØš–,ŞçÚº[C®+Ş²Š^­«b¢z'¶…ŠW’ÊË^ššè¾'^­ö¢•çIİ\ÙHİšXİ	ÎÂ‚˜ÛÛœİ\ÜÙ\H™\]Z\™J	Û›ÙN˜\ÜÙ\ÜİšXİ	ÊNÂ˜ÛÛœİœÈH™\]Z\™J	Û›ÙN™œÉÊNÂ˜ÛÛœİ›HH™\]Z\™J	Û›ÙN›IÊNÂ‚˜ÛÛœİİ\š\ÛHH”ÓÓ‹œ\œÙJœËœ™XYš[TŞ[˜Ê	Ù]KØÛÜ™Kİİ\š\ÛWÙ]KšœÛÛ‰Ë	İ]	ÊJNÂ˜ÛÛœİ^]ÈHİ\š\ÛKœİ][Û—Ù^]ÈßNÂ˜ÛÛœİ[šY\ÈHØš™Xİ˜[Y\Ê^]ÊK™›]
+'use strict';
 
-NÂ‚˜\ÜÙ\™\]X[
-İ\š\ÛKœİ][Û—Ù^]×ÛY]KœÛXŞK	İ™\šYšYY[Û›IÊNÂ˜\ÜÙ\›ÚÊ[šY\Ë›[™İˆ	İ™\šYšYYİ][Ûˆ^]ÈÚİ[™[XZ[ˆ]˜Z[X›IÊNÂ˜\ÜÙ\›ÚÊ[šY\Ë™]™\J
-[JHOˆ[KœÛİ\˜ÙHOOH	ÛÜÛWÛİ™\œ\ÜÉÊJNÂ˜\ÜÙ\›ÚÊ[šY\Ë™]™\J
-[JHOˆ[X™\‹š\Ñš[š]J[K›]
-H	‰ˆ[X™\‹š\Ñš[š]J[K›™ÊJJNÂ‚˜ÛÛœİÚ[™İÈHÂˆÕUSÓ—ÑVUÎˆÂˆ™\šYšYYˆŞÈ˜[YNˆ	Ìyåj¹aî¹cèÉË]ˆÍKŒ™ÎˆLÎKŒÛİ\˜ÙNˆ	ÛÜÛWÛİ™\œ\ÜÉÈWKˆ˜XœšXØ]YˆŞÈ˜[YNˆ	ùêæybcIË]ˆÍKŒ™ÎˆLÎKŒWKˆKˆY]™[\İ[™\Š
-HßKŸNÂ˜ÛÛœİÛÛ^HÈÚ[™İËÛÛœÛÛK]KX][X™\‹\Ó˜SˆNÂ›Kœ[’[“™]ĞÛÛ^
-œËœ™XYš[TŞ[˜Ê	ÚœËİİ\š\ÛK\›Ş[Z]KšœÉË	İ]	ÊKÛÛ^Âˆš[[˜[YNˆ	ÚœËİİ\š\ÛK\›Ş[Z]KšœÉËŸJNÂ‚˜\ÜÙ\™\]X[
-Ú[™İË•İ\š\ÛT›Ş[Z]K™Ù]™X\™\İ^]
-	Õ™\šYšYY	ËÍKŒLÎKŒ
-K›˜[YK	Ìyåj¹aî¹cèÉÊNÂ˜\ÜÙ\™\]X[
-Ú[™İË•İ\š\ÛT›Ş[Z]K™Ù]™X\™\İ^]
-	Ñ˜XœšXØ]Y	ËÍKŒLÎKŒ
-K[
-NÂ˜\ÜÙ\™\]X[
-Ú[™İË•İ\š\ÛT›Ş[Z]K™Ù]^]˜[YPPÛÛÜ™Ê	Õ[šÛ›İÛ‰ËLÍKŒLÎKŒ
-K[
-NÂ‚˜ÛÛœÛÛK›ÙÊİ\š\ÛH^][YÜš]NˆTÔÈ
-	Ù[šY\Ë›[™İHÛİ\˜ÙY^]ÊX
-NÂ
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+
+const tourism = JSON.parse(fs.readFileSync('data/core/tourism_data.json', 'utf8'));
+const exits = tourism.station_exits || {};
+const entries = Object.values(exits).flat();
+
+assert.equal(tourism.station_exits_meta.policy, 'verified-only');
+assert.ok(entries.length > 0, 'verified station exits should remain available');
+assert.ok(entries.every((entry) => entry.source === 'osm_overpass'));
+assert.ok(entries.every((entry) => Number.isFinite(entry.lat) && Number.isFinite(entry.lng)));
+
+const window = {
+  STATION_EXITS: {
+    Verified: [{ name: '1ç•ªå‡ºå£', lat: 35.0, lng: 139.0, source: 'osm_overpass' }],
+    Fabricated: [{ name: 'ç«™å‰', lat: 35.0, lng: 139.0 }],
+  },
+  addEventListener() {},
+};
+const context = { window, console, Date, Math, Number, isNaN };
+vm.runInNewContext(fs.readFileSync('js/tourism-proximity.js', 'utf8'), context, {
+  filename: 'js/tourism-proximity.js',
+});
+
+assert.equal(window.TourismProximity.getNearestExit('Verified', 35.0, 139.0).name, '1ç•ªå‡ºå£');
+assert.equal(window.TourismProximity.getNearestExit('Fabricated', 35.0, 139.0), null);
+assert.equal(window.TourismProximity.getExitNameByCoords('Unknown', 10, 35.0, 139.0), null);
+
+console.log(`tourism exit integrity: PASS (${entries.length} sourced exits)`);
