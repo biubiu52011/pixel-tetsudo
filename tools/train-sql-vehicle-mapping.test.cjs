@@ -41,6 +41,7 @@ const cases = [
   ['Nippori_Toneri', 'Toei', '330形'],
   ['TamaMonorail', 'TamaMonorail', '1000系'],
   ['TobuUtsunomiya', 'Tobu', '20400型'],
+  ['Rinkai', 'TWR', 'E233系7000番台'],
 ];
 
 for (const [line, operator, vehicle] of cases) {
@@ -95,4 +96,16 @@ for (const [line, operator, name] of [
     name + ': original vehicle-specific catalog image remains present');
 }
 
-console.log('SQL vehicle mapping contract: PASS (candidate-only vs sourced model, planned PNG, 9 cases)');
+// A source-registered cross-operator alias is a scoped planned artwork mapping,
+// never an operator-wide default nor a realtime vehicle assignment.
+for (const [line, operator, model] of [
+  ['Tojo', 'Tobu', 'E233系7000番台'],
+  ['Rinkai', 'TWR', 'E235系1000番台'],
+]) {
+  const mismatched = plannedFixture(line, operator, model, 'source_single_type_candidate');
+  assert.equal(mismatched.vehicleResult.identityStatus, 'UNKNOWN');
+  assert.equal(mismatched.vehicleResult.vehiclePlan?.iconPath || '', '',
+    line + ': unregistered cross-line vehicle type must not borrow a PNG');
+}
+
+console.log('SQL vehicle mapping contract: PASS (candidates, scoped through-line planned PNG, negatives)');
