@@ -4243,6 +4243,18 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     return src.startsWith("../images/列车/") &&
       src.endsWith(".png") && src.split("/").length === 5;
   }
+  function normalizeGalleryPngPath(path) {
+    // SQL/静态配置有时以站点根目录形式存储，但列车页面位于 /pages/。
+    // 只规范已经是图库结构的相对/站点根路径，不补齐车型、不接受外站 URL。
+    var src = String(path || "").trim();
+    if (src.indexOf("images/列车/") === 0) src = "../" + src;
+    else if (src.indexOf("/images/列车/") === 0) src = ".." + src;
+    if (!isGalleryPng(src)) return "";
+    var parts = src.split("/");
+    return parts[3] !== "." && parts[3] !== ".." &&
+      parts[4] !== "." && parts[4] !== ".." &&
+      parts[4].indexOf("?") < 0 && parts[4].indexOf("#") < 0 ? src : "";
+  }
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -4267,7 +4279,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     var candidateScopedProjection = !!contextLineId && !!resolutionLineId &&
       resolutionLineId === contextLineId;
     var iconSrc = identityConfirmed && scopedProjection
-      ? (p.vehicleIconPath || (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
+      ? normalizeGalleryPngPath(p.vehicleIconPath ||
+          (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
     var plannedMarker = false;
     // 上游已确认车型但扁平化丢失 iconPath 时，可按同一个规范身份重新
@@ -4276,8 +4289,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         (p.vehicleType || (p.vehicleResolution && p.vehicleResolution.name)) &&
         !p.vehicleFormationId &&
         (!p.vehicleFormationCandidates || !p.vehicleFormationCandidates.length)) {
-      iconSrc = resolveArtworkForIdentity(
-        p.vehicleType || p.vehicleResolution.name, "", p.serviceDate, false) || "";
+      iconSrc = normalizeGalleryPngPath(resolveArtworkForIdentity(
+        p.vehicleType || p.vehicleResolution.name, "", p.serviceDate, false));
     }
     // 候选图片只能核对出处，不能因为 PNG 只有一张就变成具体实车。
     var candidateAssets = [];
@@ -4285,8 +4298,9 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
     if (!iconSrc && Array.isArray(candidateArtwork)) {
       for (var cai = 0; cai < candidateArtwork.length; cai++) {
-        var candidateAsset = candidateArtwork[cai] && candidateArtwork[cai].asset;
-        if (isGalleryPng(candidateAsset) && candidateAssets.indexOf(candidateAsset) < 0) {
+        var candidateAsset = normalizeGalleryPngPath(
+          candidateArtwork[cai] && candidateArtwork[cai].asset);
+        if (candidateAsset && candidateAssets.indexOf(candidateAsset) < 0) {
           candidateAssets.push(candidateAsset);
         }
       }
@@ -4310,7 +4324,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     if (!iconSrc && p && p.estimated === true && vehiclePlan && planMatchesLine &&
         _issuedVehiclePlans.has(vehiclePlan) && vehiclePlan.status === "PLANNED_MODEL" &&
         Array.isArray(vehiclePlan.models) && vehiclePlan.models.length === 1) {
-      iconSrc = vehiclePlan.iconPath || "";
+      iconSrc = normalizeGalleryPngPath(vehiclePlan.iconPath);
       plannedMarker = !!iconSrc;
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
