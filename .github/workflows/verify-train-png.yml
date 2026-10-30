@@ -17,6 +17,7 @@ on:
       - 'tools/train-official-fleet-plan.test.cjs'
       - 'tools/train-conventional-source-mapping.test.cjs'
       - 'tools/train-conventional-expansion.test.cjs'
+      - 'tools/train-regional-fleet-scope.test.cjs'
       - 'supabase/migrations/20261030112329_separate_shinkansen_service_names_and_audit_run_links.sql'
       - 'supabase/migrations/20261030112949_quarantine_seibu_laview_legacy_vehicle_labels.sql'
       - 'supabase/migrations/20261030114512_crosswalk_official_train_run_numbers_to_service_names_20261030.sql'
@@ -29,6 +30,7 @@ on:
       - 'supabase/migrations/20261030121401_quarantine_seibu_yamaguchi_8500_only_obsolete_candidate_20261030.sql'
       - 'supabase/migrations/20261030121430_audit_source_scoped_conventional_timetable_fleet_plans_20261030.sql'
       - 'supabase/migrations/20261030122739_official_keio_tobu_kuroshio_conventional_fleet_20261030.sql'
+      - 'supabase/migrations/20261030125204_scoped_conventional_local_fleet_and_corridor_evidence_20261030.sql'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
@@ -64,3 +66,5 @@ jobs:
         run: node tools/train-conventional-source-mapping.test.cjs
       - name: Verify scoped Keio and Tobu artwork and multi-vehicle Kuroshio
         run: node tools/train-conventional-expansion.test.cjs
+      - name: Verify non-exclusive JR West fleet and JR Kyushu corridor references
+        run: node tools/train-regional-fleet-scope.test.cjs
