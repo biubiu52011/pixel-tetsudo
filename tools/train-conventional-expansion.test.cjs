@@ -59,11 +59,11 @@ function timetableCase(lineId,operator,trainType,mapping,candidate){
 const kRun=timetableCase('KeioSagami','Keio','odpt.TrainType:Keio.KeioLiner');
 assert.equal(kRun.identityStatus,'UNKNOWN');
 assert.equal(kRun.vehiclePlan.status,'PLANNED_MODEL');
-assert.match(kRun.vehiclePlan.iconPath,/京王電鉄_5000系\\.png$/);
+assert.ok(kRun.vehiclePlan.iconPath.endsWith('/京王電鉄_5000系.png'));
 const tRun=timetableCase('TobuIsesaki','Tobu','odpt.TrainType:Tobu.TH-LINER');
 assert.equal(tRun.identityStatus,'UNKNOWN');
 assert.equal(tRun.vehiclePlan.status,'PLANNED_MODEL');
-assert.match(tRun.vehiclePlan.iconPath,/東武鉄道_70090型\\.png$/);
+assert.ok(tRun.vehiclePlan.iconPath.endsWith('/東武鉄道_70090型.png'));
 for(const [lineId,operator,trainType] of [
   ['KeioSagami','Keio','odpt.TrainType:Keio.Local'],
   ['TobuNikko','Tobu','odpt.TrainType:Tobu.TH-LINER'],
@@ -80,5 +80,5 @@ const sourced=timetableCase('KeioSagami','Keio','odpt.TrainType:Keio.KeioLiner',
 assert.equal(sourced.identityStatus,'UNKNOWN',
   'SQL single source candidate must not be promoted to actual vehicle');
 assert.equal(sourced.vehiclePlan.status,'PLANNED_MODEL');
-assert.match(sourced.vehiclePlan.iconPath,/京王電鉄_5000系\\.png$/);
+assert.ok(sourced.vehiclePlan.iconPath.endsWith('/京王電鉄_5000系.png'));
 console.log('Official Keio/Tobu/Kuroshio plan, native PNG scope and UNKNOWN safeguards: PASS');
