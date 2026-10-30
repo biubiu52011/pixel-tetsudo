@@ -624,7 +624,7 @@
       "search.now": "今すぐ出発",
       "search.depart_at": "出発時刻を指定",
       "search.arrive_by": "到着時刻を指定",
-      "search.time_jst": "日時",
+      "search.time_jst": "時刻",
       "search.invalid_time": "有効な時刻を選択してください。",
       "search.schedule_loading": "時刻表と接続を確認中…",
       "search.schedule_missing": "指定時刻の全区間の接続を確認できません。以下は路線経路の目安です。",
