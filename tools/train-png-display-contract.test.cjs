@@ -13,7 +13,7 @@ function extract(source, start, end) {
   return source.slice(a, b);
 }
 
-const genericPng = '../images/列车/JR東日本/JR東日本_E233系_5000番台.png';
+const genericPng = '../images/列车/JR東日本/JR東日本_E233系5000番台.png';
 const otherPng = '../images/列车/JR東日本/JR東日本_E231系.png';
 const e233 = { displayName: 'JR E233系5000番台' };
 const e231 = { displayName: 'E231系0番台' };
@@ -44,9 +44,9 @@ const exact = {
   estimated: false,
 };
 assert.equal(choose(exact).kind, 'vehicle', 'confirmed identity must show PNG');
-assert.equal(choose({ ...exact, vehicleIconPath: 'images/列车/JR東日本/JR東日本_E233系_5000番台.png' }).iconSrc,
+assert.equal(choose({ ...exact, vehicleIconPath: 'images/列车/JR東日本/JR東日本_E233系5000番台.png' }).iconSrc,
   genericPng, 'catalog root-relative path must resolve on pages/trains.html');
-assert.equal(choose({ ...exact, vehicleIconPath: '/images/列车/JR東日本/JR東日本_E233系_5000番台.png' }).iconSrc,
+assert.equal(choose({ ...exact, vehicleIconPath: '/images/列车/JR東日本/JR東日本_E233系5000番台.png' }).iconSrc,
   genericPng, 'site-root path must resolve on pages/trains.html');
 assert.equal(choose({ ...exact, vehicleIconPath: '', vehicleResolution: null }).iconSrc,
   genericPng, 'missing flattened path may reuse the same exact canonical identity');
