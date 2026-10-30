@@ -3810,6 +3810,25 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       sourceUrl: 'https://www.tobu.co.jp/corporation/rail/vehicles/'
     };
   }
+  // Explicit *partial* regional fleet references are NOT dispatch plans.
+  // Keep the series names discoverable in timetable diagnostics while hiding
+  // all PNGs and not selecting a representative train/livery.
+  if (operator === 'JR-West' && lineId === 'OsakaLoop' &&
+      serviceType === 'odpt.TrainType:JR-West.Local') {
+    return {
+      operator: operator, vehicleCandidates: ['JR西日本323系'],
+      evidenceRole: 'route-fleet-reference', _fleetReferenceOnly: true,
+      sourceUrl: 'https://www.westjr.co.jp/press/article/2019/05/page_14241.html'
+    };
+  }
+  if (operator === 'JR-West' && lineId === 'TokaidoKansai' &&
+      serviceType === 'odpt.TrainType:JR-West.Rapid') {
+    return {
+      operator: operator, vehicleCandidates: ['JR西日本223系','JR西日本225系'],
+      evidenceRole: 'route-fleet-reference', _fleetReferenceOnly: true,
+      sourceUrl: 'https://www.westjr.co.jp/press/article/2020/02/page_15645.html'
+    };
+  }
   return null;
 }
 
@@ -4016,6 +4035,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       var planInput=familyOverride?familyPlan:(_sqlSourceCandidates.length?_sqlSourceCandidates.join(' / '):(_declaredVehicleInput||familyPlan||''));
       var usesFamily=!!familyPlan&&(familyOverride||(!_sqlSourceCandidates.length&&!_declaredVehicleInput));
       vehResult.vehiclePlan=resolveTimetableVehiclePlan(planInput,{lineId:lineId,operator:usesFamily&&plannedEvidence.operator||(_resolvedEvidence&&_resolvedEvidence.decisive&&_resolvedEvidence.operator)||line.operator,serviceDate:serviceDate,source:usesFamily?'operation-family-plan':'sql-timetable-plan',sourceUrl:usesFamily?plannedEvidence.sourceUrl:(tt._timetableProvenance||''),itineraryStations:_baseOperationCtx.itineraryStations,_positionSource:tt._positionSource||'',_plannedArtworkInventory:true});
+      if (plannedEvidence && plannedEvidence._fleetReferenceOnly === true &&
+          vehResult.vehiclePlan && vehResult.identityStatus !== 'EXACT') {
+        // Evidence covers a corridor or a subset of regional local services.
+        // No single scheduled vehicle and no reliable livery can be inferred.
+        vehResult.vehiclePlan.status = 'FLEET_REFERENCE';
+        vehResult.vehiclePlan.iconPath = '';
+        vehResult.vehiclePlan.representativeModel = '';
+        vehResult.vehiclePlan.evidenceRole = 'route-fleet-reference';
+        vehResult.vehiclePlan.sourceUrl = plannedEvidence.sourceUrl;
+      }
     }
     run.identity = {
       planInputKey:planInputKey,
