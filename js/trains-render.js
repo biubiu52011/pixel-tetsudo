@@ -1071,6 +1071,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     for (var i = 0; i < labels.length; i++) labels[i].parentNode.removeChild(labels[i]);
   }
 
+  function _trainMarkerDomKind(spec) {
+    return spec && spec.planned === true ? "planned" :
+      (spec && spec.kind || "unresolved");
+  }
+
   function _trainMarkerSpec(p, trainUid, lineId) {
     // TrainVehicle 是 PNG/中性标记的唯一选择权威。本模块
     // 只负责展示几何、碰撞布局和图片加载恢复。
@@ -1079,15 +1084,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       typeof window.TrainVehicle.selectMarkerArtwork === "function"
       ? window.TrainVehicle.selectMarkerArtwork(p, artworkFailed)
       : { kind: "unresolved", iconSrc: "" };
+    var hasImage = artwork.kind === "vehicle" && !!artwork.iconSrc;
     return {
-      kind: artwork.kind === "vehicle" && artwork.iconSrc ? "vehicle" : "unresolved",
-      iconSrc: artwork.iconSrc || "",
-      planned: artwork.planned === true,
-      candidateAssets: Array.isArray(artwork.candidateAssets) ? artwork.candidateAssets.slice() : [],
+      kind: hasImage ? "vehicle" : (artwork.kind === "candidate" ? "candidate" : "unresolved"),
+      iconSrc: hasImage ? artwork.iconSrc : "",
+      planned: hasImage && artwork.planned === true,
+      candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
+        ? artwork.candidateAssets.slice() : [],
       // 已认证的车型身份在地图上使用图库 PNG 绘制；
       // 没有认证车型的地点才保持为紧凑的
       // 中性圆点；位置仍然可见，不会伪造图片。
-      compact: !(artwork.kind === "vehicle" && artwork.iconSrc),
+      compact: !hasImage,
       className: artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
@@ -1196,6 +1203,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       marker.setAttribute("width", "14");
       marker.setAttribute("height", "18");
       marker.setAttribute("href", spec.iconSrc);
+      marker.setAttribute("data-train-artwork", spec.iconSrc);
       // Safari/iOS SVG <image> 兼容性：保持 SVG2 与 XLink
       // 引用一致；此处不进行新的车辆或资产选择。
       marker.setAttributeNS("http://www.w3.org/1999/xlink", "href", spec.iconSrc);
@@ -1231,14 +1239,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         marker.setAttribute("data-vehicle-candidate", "true");
         marker.setAttribute("data-vehicle-candidate-assets", (spec.candidateAssets || []).join("|"));
       }
-      if (knownVehicle && spec.iconSrc) marker.setAttribute("data-train-artwork", spec.iconSrc);
     }
     var titleText = _trainMarkerTitle(p, lineId);
     if (titleText) _setTrainMarkerAccessibilityLabel(marker, titleText);
     _setTrainFormationAttribute(marker, p);
     marker.setAttribute("data-train-id", String(trainUid));
-    marker.setAttribute("data-marker-kind", spec.planned ? "planned" :
-      (knownVehicle ? "vehicle" : (candidateVehicle ? "candidate" : "unresolved")));
+    marker.setAttribute("data-marker-kind", _trainMarkerDomKind(spec));
     if (spec.planned) marker.setAttribute("data-marker-reference-only", "true");
     marker.setAttribute("data-marker-display", compact ? "compact" : "artwork");
     marker.setAttribute("class", spec.className);
@@ -1342,7 +1348,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       updatedIds[trainUid] = true;
       var existingIcon = markerById[String(trainUid)] || null;
       var expectedTag = markerSpec.kind === "vehicle" && !markerSpec.compact ? "image" : "circle";
-      if (existingIcon && (existingIcon.getAttribute("data-marker-kind") !== markerSpec.kind ||
+      if (existingIcon && (existingIcon.getAttribute("data-marker-kind") !== _trainMarkerDomKind(markerSpec) ||
           String(existingIcon.tagName || "").toLowerCase() !== expectedTag)) {
         existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
       }
@@ -1365,10 +1371,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             existingIcon.getAttribute("href") !== markerSpec.iconSrc) {
           existingIcon.setAttribute("href", markerSpec.iconSrc);
           existingIcon.setAttributeNS("http://www.w3.org/1999/xlink", "href", markerSpec.iconSrc);
+          existingIcon.setAttribute("data-train-artwork", markerSpec.iconSrc);
           existingIcon.setAttribute("visibility", "visible");
         }
-        if (markerSpec.kind === "vehicle" && markerSpec.compact) {
-          existingIcon.setAttribute("data-train-artwork", markerSpec.iconSrc || "");
+        if (markerSpec.kind === "candidate") {
+          existingIcon.setAttribute("data-vehicle-candidate-assets", markerSpec.candidateAssets.join("|"));
         }
         // SVG 标记会跨轮询保留，但其已验证编组可能发生变化。
         // 刷新无障碍标签，不要保留过期的列车数据。
