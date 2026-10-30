@@ -10,6 +10,7 @@ on:
       - 'js/data-fusion.js'
       - 'js/train-position-estimator.js'
       - 'tools/train-png-display-contract.test.cjs'
+      - 'tools/train-vehicle-assets.test.cjs'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
@@ -31,3 +32,5 @@ jobs:
           node --check js/train-position-estimator.js
       - name: Verify vehicle PNG decisions and SVG projection
         run: node tools/train-png-display-contract.test.cjs
+      - name: Verify registered PNG paths and file headers
+        run: node tools/train-vehicle-assets.test.cjs
