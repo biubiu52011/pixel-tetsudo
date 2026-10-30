@@ -4244,39 +4244,42 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       src.endsWith(".png") && src.split("/").length === 5;
   }
   function selectMarkerArtwork(p, artworkFailed) {
-    var contextLineId = String(p && (p.lineId || p.positionLineId) || "").trim();
+    // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
+    var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
     var resolutionLineId = String(p && (p.vehicleResolutionLineId ||
       (p.vehicleResolution && p.vehicleResolution.lineId)) || "").trim();
     var resolutionSources = p && p.vehicleResolution && Array.isArray(p.vehicleResolution.sources)
       ? p.vehicleResolution.sources : [];
-    // 车型字段本身不是跨线授权。只有实体车号/车籍表来源才能在
-    // 解析器线路戳记暂缺时保留物理车型图片；这样旧的实时车型缓存
-    // 不会把 PNG 带到没有线路链接的地图上。
+    var identityStatus = String(p && (p.vehicleIdentityStatus ||
+      (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "");
+    // 自由文本车型、独立的 iconPath、计划候选和旧的扁平缓存均不能授权 PNG。
+    // 仅复用已确认的上游解析结果；旧位置缺失投影旗标时要求嵌套解析结果也为 EXACT。
+    var identityConfirmed = identityStatus === "EXACT" && !!(p &&
+      (p.vehicleResolvedUpstream === true ||
+       (p.vehicleResolvedUpstream == null && p.vehicleResolution &&
+        p.vehicleResolution.identityStatus === "EXACT")));
     var strongRealtimeEvidence = !!(p && p.vehicleResolvedFromRealtime === true &&
       (resolutionSources.indexOf('official-realtime-car-number') >= 0 ||
        resolutionSources.indexOf('roster-physical-id') >= 0));
-    // 带线路上下文的旧缓存若没有解析器线路戳记，不能继续信任其中携带的
-    // vehicleIconPath；否则一条线路的旧 PNG 会在另一条线路复用。
     var scopedProjection = !contextLineId ||
       (resolutionLineId && resolutionLineId === contextLineId) || strongRealtimeEvidence;
-    // 候选集合没有实体车号兜底，必须同时带有位置线路和解析线路；
-    // 扁平缓存若丢失任一线路戳记，就不能把候选图带入当前地图。
+    // 多车型运用号候选只在位置线路与解析线路一致时保留诊断元数据。
     var candidateScopedProjection = !!contextLineId && !!resolutionLineId &&
       resolutionLineId === contextLineId;
-    var iconSrc = p && p.vehicleResolvedUpstream === true && scopedProjection
-      ? (p.vehicleIconPath || "") : "";
-    var vehiclePlan=p&&p.vehiclePlan;
-    var plannedMarker=false;
-    if (!iconSrc && scopedProjection && p && p.vehicleResolvedUpstream === true &&
-        p.vehicleType && !p.vehicleFormationId &&
+    var iconSrc = identityConfirmed && scopedProjection
+      ? (p.vehicleIconPath || (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
+    var vehiclePlan = p && p.vehiclePlan;
+    var plannedMarker = false;
+    // 上游已确认车型但扁平化丢失 iconPath 时，可按同一个规范身份重新
+    // 获取原生 PNG；不接受计划图片、自由文本、编成不唯一时的降级反查。
+    if (!iconSrc && identityConfirmed && scopedProjection && p &&
+        (p.vehicleType || (p.vehicleResolution && p.vehicleResolution.name)) &&
+        !p.vehicleFormationId &&
         (!p.vehicleFormationCandidates || !p.vehicleFormationCandidates.length)) {
-      var canonical = contextLineId
-        ? resolveCanonicalVehicleForPlan(p.vehicleType, {lineId:contextLineId,operator:p.operator||p.assignmentOperator||""})
-        : resolveCanonicalVehicle(p.vehicleType);
-      iconSrc = canonical && (canonical.asset || canonical.plannedAsset) || "";
+      iconSrc = resolveArtworkForIdentity(
+        p.vehicleType || p.vehicleResolution.name, "", p.serviceDate, false) || "";
     }
-    // 运用号库可能只得到候选集合。候选 PNG 只作为可诊断元数据交给
-    // renderer；在实体车号或唯一日期规则确认前，不选第一张图冒充实车。
+    // 候选图片只能核对出处，不能因为 PNG 只有一张就变成具体实车。
     var candidateAssets = [];
     var candidateArtwork = p && candidateScopedProjection && (p.operationArtworkCandidates ||
       (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
@@ -4287,22 +4290,28 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           candidateAssets.push(candidateAsset);
         }
       }
-      if (candidateAssets.length === 1 && p &&
-          (p.candidateArtworkConfirmedByDatedRule === true ||
-           p.vehicleIdentityStatus === "EXACT")) {
+      // 日期规则只能为已经独立确认的同一 canonical 车型补回原生 PNG，
+      // 不能给 UNKNOWN/NARROWED 挑代表图，也不能跨车型、跨线路借图。
+      var exactModel = identityConfirmed && scopedProjection &&
+        resolveCanonicalVehicle(p.vehicleType ||
+          (p.vehicleResolution && p.vehicleResolution.name) || "");
+      var candidateModel = candidateArtwork.length === 1 &&
+        resolveCanonicalVehicle(candidateArtwork[0].vehicleType || "");
+      if (candidateAssets.length === 1 && p.candidateArtworkConfirmedByDatedRule === true &&
+          exactModel && candidateModel === exactModel) {
         iconSrc = candidateAssets[0];
         plannedMarker = true;
       }
     }
     var planMatchesLine = !contextLineId || (vehiclePlan &&
-      String(vehiclePlan.lineId || '') === contextLineId);
-    if(!iconSrc&&vehiclePlan&&planMatchesLine&&
-       (_issuedVehiclePlans.has(vehiclePlan) || vehiclePlan.allowCandidateArtwork===true) &&
-       (vehiclePlan.status !== "PLANNED_CANDIDATES" ||
-        vehiclePlan.candidateArtworkConfirmedByDatedRule === true)){
-      // 已确认车型若只有计划代表 PNG，也应展示该图；
-      // 只标记为 planned，避免把代表图误报成实际编组照片。
-      iconSrc=vehiclePlan.iconPath||'';plannedMarker=!!iconSrc;
+      String(vehiclePlan.lineId || "") === contextLineId);
+    // 单车型、由共享计划解析器签发的时刻表位置可显示计划参考图；
+    // 实时记录和多车型计划绝不能借用或抽选其中一张 PNG。
+    if (!iconSrc && p && p.estimated === true && vehiclePlan && planMatchesLine &&
+        _issuedVehiclePlans.has(vehiclePlan) && vehiclePlan.status === "PLANNED_MODEL" &&
+        Array.isArray(vehiclePlan.models) && vehiclePlan.models.length === 1) {
+      iconSrc = vehiclePlan.iconPath || "";
+      plannedMarker = !!iconSrc;
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
       if (!iconSrc && candidateAssets.length) {
