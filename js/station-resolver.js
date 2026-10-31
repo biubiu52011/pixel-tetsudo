@@ -34,10 +34,10 @@
     //    Resolve only when unambiguous; on collision return the original id rather than guessing.
     // Normalize away both hyphens and spaces: name_map variants like "Keikyū Kawasaki"
     // (space + macron) must match canonical "Keikyu-Kawasaki".
-    var noHyphen = lower.replace(/[-\s]/g, '');
+    var noHyphen = lower.replace(/[-_\s]/g, '');
     var matched = null;
     for (var k = 0; k < arr.length; k++) {
-      if (_asciiLower(arr[k]).replace(/[-\s]/g, '') === noHyphen) {
+      if (_asciiLower(arr[k]).replace(/[-_\s]/g, '') === noHyphen) {
         if (matched) return id;
         matched = arr[k];
       }
