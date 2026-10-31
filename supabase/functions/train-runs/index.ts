@@ -470,13 +470,17 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // The branch map displays only Ayase--KitaAyase, not the whole
   // through-train itinerary. Canonical IDs and stored timetables are unchanged.
   if (lineId === "ChiyodaBranch") {
-    for (const run of result) {
+    // Reject full-line rows that do not operate across this short branch,
+    // rather than counting them as missing or incomplete branch trains.
+    for (let i = result.length - 1; i >= 0; i--) {
+      const run = result[i];
       const segment = run.stops.filter((stop: any) => {
         const station = String(stop.station_urn || "");
         return /\.(?:Ayase|KitaAyase)$/.test(station);
       });
       const distinct = new Set(segment.map((stop: any) => String(stop.station_urn || "")));
-      run.stops = segment.length === 2 && distinct.size === 2 ? segment : [];
+      if (segment.length === 2 && distinct.size === 2) run.stops = segment;
+      else result.splice(i, 1);
     }
   }
   await linkPlannedOperations(db,result,selectedRevision);
