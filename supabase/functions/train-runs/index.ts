@@ -325,6 +325,29 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     suppressedOsakaStationFragments = initialSources - templates.length;
   }
 
+  // Never attempt location interpolation on a published run whose next
+  // station occurs earlier on the same service day without a midnight wrap.
+  // The source remains stored for provenance; this is a reversible,
+  // non-destructive runtime quarantine of source_only timetable fragments.
+  // No clock or railway vehicle model is inferred.
+  let suppressedClockReversalRuns = 0;
+  {
+    const beforeClockCheck = templates.length;
+    templates = templates.filter((t: any) => {
+      const evidence = sourceResolution.get(t.id);
+      if (evidence?.group_evidence !== "source_only") return true;
+      const stops: any[] = byTemplate.get(t.id) || [];
+      for (let i = 1; i < stops.length; i++) {
+        const prevClock = String(stops[i - 1].departure_clock || stops[i - 1].arrival_clock || "");
+        const nextClock = String(stops[i].arrival_clock || stops[i].departure_clock || "");
+        const midnightWrap = prevClock >= "20:00" && nextClock <= "04:00";
+        if (prevClock && nextClock && prevClock > nextClock && !midnightWrap) return false;
+      }
+      return true;
+    });
+    suppressedClockReversalRuns = beforeClockCheck - templates.length;
+  }
+
   // Vehicle type may be verified by a *different* timetable segment of
   // the very same through train. At the canonical Osaki boundary, accept a
   // single exact Rinkai model only when BOTH schedules agree on operating
@@ -514,7 +537,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   const validRuns = result.filter(r => r.stops.length >= 2 &&
     r.stops.every(s => !!s.station_urn) &&
     r.stops.filter(s => s.arrival_time || s.departure_time).length >= 2);
-  let omittedIncompleteRuns = suppressedOsakaStationFragments + result.length - validRuns.length;
+  let omittedIncompleteRuns = suppressedOsakaStationFragments + suppressedClockReversalRuns + result.length - validRuns.length;
   // A source may contain unusable upstream rows intentionally omitted from SQL.
   // Preserve that partial status rather than claiming full line coverage.
   if (selectedCalendar) {
@@ -562,6 +585,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     calendar_status: "selected", selected_calendar: selectedCalendar,
     omitted_incomplete_runs: omittedIncompleteRuns,
     suppressed_station_only_source_fragments: suppressedOsakaStationFragments,
+    suppressed_non_midnight_clock_reversal_runs: suppressedClockReversalRuns,
     runs: validRuns });
 }
 
