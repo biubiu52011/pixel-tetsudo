@@ -87,3 +87,73 @@ WHERE timetable_readiness='registered_id_without_matching_timetable'
 ORDER BY plan_templates DESC;
 SELECT * FROM public.published_nonjr_operator_identity_review;
 ```
+
+
+---
+
+## 后续实际处理：公司归属、缺线路来源分流、候选车型显示（2026-10-31）
+
+本节覆盖生产库与 GitHub `main` 的已完成修复；**没有导入虚构的平日/休日车次或按具体日期存放列车运用，更没有指定实际车辆编组**。
+
+### 1. 网页已停止将单一候选车型当作确定车型
+原 `data/api/odpt-unified.js` 中，只要 `vehicle_mapping_level=source_single_type_candidate` 且候选只有一项，便会填充 `vehicleType`。后端设计上明确此等级**不等于已核实的计划运用车型**。
+
+已修正为只在 `dated_schedule_rule`、`dated_operation_owner`、`verified_scheduled_boundary` 提供确定 `vehicleType`。候选车型仍保存在 `_sqlVehicleCandidateLabel`，证据等级仍保存在 `_sqlVehicleMappingLevel`，不删除来源。
+
+[已修正前端适配器](../../data/api/odpt-unified.js)（commit `3b7458fb1e178bbef1eadbb7d0bf301ac0305f24`）
+
+### 2. 修正 New Shuttle 公司归属，不修改埼玉高速铁道
+
+官方经营主体：**埼玉新都市交通株式会社**；旧登记将 New Shuttle 的 `railway_lines.timetable_operator` 写成 `SaitamaRailway`。已实改为 `SaitamaNewUrbanTransit`，而 `SaitamaRapid` 原先正确的 `SaitamaRailway` 不变。
+
+- [校正 SQL](../../supabase/migrations/20261031235610_new_shuttle_official_operator_metadata.sql)
+- 官方：[New Shuttle 公司概要](https://www.new-shuttle.jp/company/resume/)
+- 老的 `railway_urn`、原始停站路径与前端旧 ODPT 源命名空间**暂未直接改写**，避免破坏现有接口标识和来源可追溯性。前端历史兼容映射仅更新注释，明确它不代表实际经营公司。
+
+### 3. 12个没有同名 SQL 计划的登记线路：分开处理
+
+新增内部视图 `published_nonjr_registered_line_import_triage`，识别路线登记与真实计划来源，不擅自套用其他线路的列车。
+
+| 处理组 | 数量 | 线路 |
+|---|---:|---|
+| 外部时刻表 API **已配置**，但无 SQL 计划 | 5 | Asakusa, KeioMain, Oedo, Shinjuku, TobuSkytree |
+| 没有 SQL 计划，也**没有配置**外部时刻表 API | 7 | Arakawa, KeioInokashira, KeioKeibajo, KeioTakao, Noda, Ogose, Tojo |
+
+**注意：接口设置为 true 不代表当前调用已测试正常，也不意味着有完整的两种运行日出版计划**。第二组的7条线路确实需要合法的时刻表导入与接入工作。
+
+[来源分流视图 SQL](../../supabase/migrations/20261031235700_nonjr_missing_registered_route_import_triage.sql)
+
+### 4. 五个运营商命名案例已真正参与审计统计
+
+`published_nonjr_timetable_vehicle_readiness` 现在在聚合时优先采用前文已核实的线路级公司身份，而不是总按原始 `railway_urn` 名称分组；原来源字段仍保留便于追踪：
+
+- NewShuttle 424 计划 → `SaitamaNewUrbanTransit`，与 `SaitamaRapid` 533 计划分开；
+- TsukubaExpress 841 计划 → `TsukubaExpress`（旧源为 `MIR`）；
+- ChibaMonorail1/2 共 888 计划 → `ChibaUrbanMonorail`；
+- MinatoMirai 1,216 计划 → `YokohamaMinatomiraiRailway`。
+
+[已实改汇总视图 SQL](../../supabase/migrations/20261031235800_nonjr_verified_operator_grouping.sql)
+
+### 5. 一家公司的规则，不得用于该公司所有线路
+
+新增内部 `published_nonjr_line_vehicle_rule_scope`，在原运营商名称匹配基础上，额外要求车型规则的 `network_key` 或 `plan_scope.lineIds` 明确包含对应线路。
+
+例：横滨高速铁道虽然有一条 `Y000` 车型规则，但规则的 `network_key=kodomonokuni`，不是 `MinatoMirai`。因此：
+- 横滨高速铁道运营商级规则：1；
+- 港未来线实际适用线路规则：**0**；
+- 港未来线 1,216 条计划仍是车型**待判定**，不能通过 Y000 的公司规则虚假补全。
+
+NewShuttle、TsukubaExpress 和千叶单轨的线路级候选规则可在新视图找到，但**规则适用线路≠已确认某班车的车型**。
+
+[车型规则线路适用性 SQL](../../supabase/migrations/20261031235900_nonjr_line_vehicle_rule_scope.sql)
+
+### 6. 最终验收和剩余工作
+
+- 线路审计 ID：**89**（77 条已收录来源＋12 条登记但无同名计划）；
+- 非 JR 计划模板：**55,673**，其中**403** 有计划运用规则、**7,006** 仅有单车型候选、**48,264** 仍无法判定；
+- 运行计划总模板：**92,586**、停站记录 **1,135,945**；
+- `train_runs=0`，非 Weekday/SaturdayHoliday 日历分类 **0**，没有孤立 Canonical 计划；
+- 新增内部视图 `security_invoker=true` 且未向 `anon` 授权，已检验读权限；
+- 前端代码与数据库 SQL 已推送 `main`；未测试公网浏览器端到端时序，也未宣称已补完未知车型。
+
+下一步需对7条未接入的线路先确认合法来源；对5条已配置外部接口的线路，实际核验 API 是否能提供准确的平日/土休日出版计划。车型方面则优先寻找**按列车计划运用号、来源版本**的具体车型关联规则，尤其京急、西武、京成、相铁、东京地铁；不能凭公司只有一个候选车型就冒充列车计划车型。
