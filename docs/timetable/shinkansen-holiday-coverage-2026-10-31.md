@@ -66,3 +66,31 @@
 西九州新干线审计由 `sparse_review` 调整为 `calendar_review`，记录 `JRKYUSHU_20260314_PUBLISHED_BASE_47_TRAINS_24_OUT_23_IN`，同时保留 `PUBLISHED_BASELINE_CAPTURED_EXTRA_TRAINS_UNVERIFIED` 与 `WEEKDAY_SOURCE_REVISION_UNVERIFIED`。**这不表示所有时刻表已被核实完整，也不意味着列车实际运行编组已知。**
 
 注意：`source_trip_id` 中的数字 `20260314` 是**来源版本日期**，不是某日实际运行记录。数据库日历仍只有 `odpt.Calendar:Weekday` / `odpt.Calendar:SaturdayHoliday`。下阶段应继续在其他新干线线路采集逐车次经官方资料确认的定期土休日计划，不能把旧平日模板直接复制并声称完整。
+
+---
+
+## 2026-10-31 后续：九州新干线官方三页定期基准表
+
+**官方来源**：[JR 九州定期时刻表 2026-03-14 至 2027-02-28](https://www.jrkyushu.co.jp/english/pdf/timetable_20260314_20270228.pdf)，PDF 第 2–4 页（从 0 计数为 1–3）。
+
+原有九州新干线土休日 8 班，本轮完成三页定期基准表的补录：
+
+| GitHub SQL | 本次新增 | 停站记录 | 备注 |
+|---|---:|---:|---|
+| [九州线第1页补录及さくら401校正](../../supabase/migrations/20261031181500_kyushu_shinkansen_holiday_regular_p1_and_sakura401.sql) | 23 班 | 172 | さくら401 的终点由 09:39 校正为 09:34，站序改为官方9站 |
+| [九州线第2页](../../supabase/migrations/20261031183500_kyushu_shinkansen_holiday_regular_p2.sql) | 36 班 | 263 | 补齐白天和下午双向定期服务 |
+| [九州线第3页](../../supabase/migrations/20261031190000_kyushu_shinkansen_holiday_regular_p3.sql) | 35 班 | 265 | 补齐夜间双向及短区间列车 |
+| [第1页剩余5班及みずほ602校正](../../supabase/migrations/20261031192000_kyushu_shinkansen_holiday_p1_last_five_and_mizuho602.sql) | 5 班 | 48 | 补齐表中最后5班；みずほ602 增补川内站 07:45 |
+
+**累计增量**：99 班，748 条新增停站；此前 さくら401 的 16 条过时停站改为 9 条正式站点，みずほ602 从3站增至4站。九州线现有土休日 **107 班**，全部车次编号互不重复，其中下行54、上行53。
+
+数据库完整性检查：`published_timetable_plan_trains` 全网共 **92,586**，`published_timetable_plan_stops` **1,135,945**；没有未关联计划、孤立停站或每日 `train_runs` 记录。
+
+九州线审计从 `sparse_review` 更新为 `calendar_review`，并添加 `JRKYUSHU_20260314_REGULAR_MAJOR_HOLIDAY_BASELINE_107_TRAINS_54_OUT_53_IN`。重要限制：
+
+- 本轮完成的是官方**英文主要定期列车**资料所列三页的基准车次，不代表全部本地站车次、临时加班车或所有出版物车次；
+- 平日旧来源尚未按 2026 修订版逐班核对，不能由此宣布两类计划都已准确完成；
+- 没有导入每日实际编组、车辆观察或按特定日期的运行记录。
+- 此条记录中的 20260314 是**时刻表版本标识**，不参与运行日筛选。
+
+仍需优先补齐东海道、山阳、东北、北海道、秋田、山形、北陆、上越等目前土休日各 1 班的线路；九州线可进一步核对更完整的日本语出版物数据以弥补英文主要列车资料的覆盖限制。
