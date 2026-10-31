@@ -424,7 +424,7 @@
         "KeiseiKanamachi": "Keisei",
         "KeiseiOshiage": "Keisei",
         "NaritaSkyAccess": "Keisei",
-        "NewShuttle": "SaitamaRailway", // ODPT 官方 operator 为 SaitamaRailway（埼玉新都市交通）。
+        "NewShuttle": "SaitamaRailway", // 旧 ODPT/源码命名空间兼容；实际运营者为 SaitamaNewUrbanTransit。
         "Sobu": "JR-East",
         "SotetsuIzumino": "Sotetsu",
         "SotetsuShinYokohama": "Sotetsu",
@@ -549,7 +549,7 @@
     "OdakyuTama": "Tama",
     // 相鉄（新横浜線の source-specific railway code）
     "SotetsuShinYokohama": "SotetsuShinYokohama",
-    // 埼玉新都市交通（operator 已改 SaitamaRailway，railway 同名）
+    // NewShuttle 旧来源铁路码兼容；数据库的真实运营公司已单独更正。
     "NewShuttle": "SaitamaRailway",
     // Kitakami、Yamada 等同名 railway 直接透传，无需额外垫片。
 };
