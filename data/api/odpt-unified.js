@@ -2003,6 +2003,8 @@
                 dateUnverifiedRuns: Number(body.date_unverified_runs) || 0,
                 omittedIncompleteRuns: Number(body.omitted_incomplete_runs) || 0,
                 suppressedStationOnlyFragments: Number(body.suppressed_station_only_source_fragments) || 0,
+                suppressedClockReversalRuns: Number(body.suppressed_non_midnight_clock_reversal_runs) || 0,
+                auditCoverageStatus: body.audit_coverage_status || "unverified",
                 runs: Array.isArray(body.runs) ? body.runs.length : 0,
                 updatedAt: Date.now()
             };
