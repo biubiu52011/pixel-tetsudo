@@ -3847,8 +3847,10 @@ function _officialConventionalServicePlan(tt, lineId, line) {
         models: ['西武9000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/9000/'
       },
+      // 4-car local services and documented event/through stock. Reference only,
+      // not an exhaustive or train-specific assignment (8/10-car extras differ).
       Seibu_Sayama: {
-        models: ['西武101系','西武7000系'],
+        models: ['西武101系','西武7000系','西武40000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       }
     }[lineId];
