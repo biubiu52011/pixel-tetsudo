@@ -31,3 +31,38 @@
 
 ### 后续完成标准
 每条线路需独立审查全部**定期**列车的 Weekday 与 SaturdayHoliday 运行日、时刻、方向、站序；不把临时列车批量升级为日常列车；在取得可重用且合法的来源资料后，补齐全部对应车次，最后才解除 `HOLIDAY_TRAIN_BY_TRAIN_COVERAGE_INCOMPLETE`。
+
+---
+
+## 2026-10-31 后续导入：JR 九州定期列车时刻表
+
+官方资料：[JR 九州 2026-03-14 至 2027-02-28 定期列车时刻表](https://www.jrkyushu.co.jp/english/pdf/timetable_20260314_20270228.pdf)。
+
+以该资料为基础，进一步新增 **53 班 SaturdayHoliday 计划、237 条停站**，均通过 Supabase 事务写入，建立 `train_timetable_members` 主成员关系；不是每天生成的实际列车记录。原平日时刻和实际编组资料没有被改动。
+
+| 本次批次 | 车次 | 停站 | GitHub SQL |
+|---|---:|---:|---|
+| 西九州新干线首批（15）+ 九州新干线（7） | 22 | 112 | [20261031164500_jrkyushu_regular_holiday_verified_stops.sql](../../supabase/migrations/20261031164500_jrkyushu_regular_holiday_verified_stops.sql) |
+| 西九州新干线日间、晚间定期车次 | 25 | 106 | [20261031171500_nishi_kyushu_regular_holiday_evening_trains.sql](../../supabase/migrations/20261031171500_nishi_kyushu_regular_holiday_evening_trains.sql) |
+| 西九州新干线短区间车次 | 6 | 19 | [20261031174000_nishi_kyushu_regular_holiday_short_section_trains.sql](../../supabase/migrations/20261031174000_nishi_kyushu_regular_holiday_short_section_trains.sql) |
+
+与前一轮的 10 班抽样合并后，十条新干线的土休日计划数量：
+
+| Line key | 土休日列车 | 已知限制 |
+|---|---:|---|
+| NishiKyushuShinkansen | **47**（下行24、上行23） | 官方 *regular base timetable* 所列双向 47 班已收录；加开列车、调整公告及平日源版本未完整核查 |
+| KyushuShinkansen | **8** | 抽样资料，未覆盖全部定期班次 |
+| AkitaShinkansen | 1 | 抽样资料，尚不完整 |
+| HokkaidoShinkansen | 1 | 抽样资料，尚不完整 |
+| HokurikuShinkansen | 1 | 抽样资料，尚不完整 |
+| JoetsuShinkansen | 1 | 抽样资料，尚不完整 |
+| SanyoShinkansen | 1 | 抽样资料，尚不完整 |
+| TohokuShinkansen | 1 | 抽样资料，尚不完整 |
+| TokaidoShinkansen | 1 | 抽样资料，尚不完整 |
+| YamagataShinkansen | 1 | 抽样资料，尚不完整 |
+
+导入后的全库检查：**92,487 计划模板、1,135,203 停站**；未关联 Canonical 的模板数 0、无主模板的停站数 0，按日期旧运行记录数 0，非法运行日分类数 0，审计计数偏差数 0。已通过 `anon` 角色查询土休日公开计划。
+
+西九州新干线审计由 `sparse_review` 调整为 `calendar_review`，记录 `JRKYUSHU_20260314_PUBLISHED_BASE_47_TRAINS_24_OUT_23_IN`，同时保留 `PUBLISHED_BASELINE_CAPTURED_EXTRA_TRAINS_UNVERIFIED` 与 `WEEKDAY_SOURCE_REVISION_UNVERIFIED`。**这不表示所有时刻表已被核实完整，也不意味着列车实际运行编组已知。**
+
+注意：`source_trip_id` 中的数字 `20260314` 是**来源版本日期**，不是某日实际运行记录。数据库日历仍只有 `odpt.Calendar:Weekday` / `odpt.Calendar:SaturdayHoliday`。下阶段应继续在其他新干线线路采集逐车次经官方资料确认的定期土休日计划，不能把旧平日模板直接复制并声称完整。
