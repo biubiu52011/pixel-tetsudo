@@ -52,3 +52,43 @@
 3. 对“相同分钟但不同列车号”的 27 对，验证是否真实同车或编号变化；证明前不自动合并；
 4. 对 JR-West 18 条受尾部 H 影响的线路，分种别和来源逐条核对车次编号；使用 Weekday/SaturdayHoliday 字段而非拼接假号作为日历区分；
 5. 取得合法、可版本化的平日/休日完整车次时刻后，再修正停站链、Canonical 归属与审计。不可把单站出发时刻插值得到全线路停站，更不可生成每日实际编组。
+
+---
+
+## 2026-10-31 处理结果：39 个已核实号码与实际读取隔离
+
+已经执行下面两项**实际修复**：
+
+**1. 39 个大阪环状线土休日车次的列车编号纠正**
+
+2026 年 JR 西日本内回区间出版资料及逐车次资料证实 3304K、3306K、3310K 至 3398K 中数据库保存的一组 39 个源编号被写作 `33xxKH`。生产 SQL 迁移严格校验39条、Canonical一对一、无目标编号冲突后，更新了：
+
+- `manual_timetable_templates.train_number`
+- `train_timetables.primary_train_number`
+
+不改变来源主键/Canonical ID、运行日、停站、时刻、列车种别或车辆。修正后39/39保持一致。**其余任何 `H` 都未修改**，因为JR西日本真实车次也可能以 H 结尾（例如 4507H）。
+
+[SQL 迁移](../../supabase/migrations/20261031231500_osaka_loop_verified_39_yamatoji_number_corrections.sql)
+
+**2. 将单站片段从计划运用解析环节隔离，不删除原始证据**
+
+Supabase Edge Function `train-runs` v272 在 OsakaLoop/OsakaHigashi 两线路中，在计划运用及车型来源解析前剔除无法组成两个不同且有时刻车站的片段。保留数据库源行供后续追溯。接口返回：
+
+- `omitted_incomplete_runs`（所有遗漏来源）
+- `suppressed_station_only_source_fragments`（本次严格隔离的片段数）
+
+网页的数据 API 也会将该字段映射为 `suppressedStationOnlyFragments` 状态元数据。**这不是恢复了全程计划**，只是修复了残缺源行进入完整列车处理逻辑的问题。
+
+生产库结构核对：
+
+| 线路 | 平日单站隔离 | 土休日单站隔离 | 平日仍有完整两站时刻源 | 土休日仍有完整两站时刻源 |
+|---|---:|---:|---:|---:|
+| OsakaLoop | 98 | 105 | 427 | 427 |
+| OsakaHigashi | 46 | 48 | 143 | 142 |
+| 总计 | **144** | **153** | **570** | **569** |
+
+全部单站原始源保留在数据库，不把它们简单认定为“297 班列车缺失”；没有擅自合并同站同时、不同车次号的 27 对候选。文件恢复检查：GitHub `main` 目录 `data/timetables` 只含 `Oedo-manual.js` 和 `vehicle-operation-evidence-data.js`，对 `OsakaLoop-manual.js`、`OsakaHigashi-manual.js` 的历史提交路径查询均为空，无法从当前仓库重建源。
+
+**最终数据库校验**：92,586 计划模板、1,135,945 停站，按具体日期运行记录0，非法日历0，Canonical失联0；Edge Function v272 ACTIVE，与 GitHub `main` 文件内容一致。
+
+下一阶段要恢复剩余单站片段为完整时刻表，需取得可合法复用且可明确版本的 JR 西日本来源；确认每条原始车次的起终点、内外回、每站到发后，再逐条补站。不能推算，不应全局裁剪 H。
