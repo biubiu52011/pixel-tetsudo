@@ -1118,7 +1118,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "";
     if (status === "EXACT" || !isSeibuLine || !isCommuterType ||
         !plan || !Array.isArray(plan.models)) return "";
-    var models = plan.models.map(function(v) { return String(v || "").trim(); }).filter(Boolean);
+    var models = plan.models.map(function(v) { return String(v || "").trim(); })
+      .filter(Boolean)
+      // 旧資料に混在する特急用 001 / 10000 系は通勤車候補として表示しない。
+      .filter(function(v) { return !/(?:^|西武)(?:001|10000)系|Laview|レッドアロー/i.test(v); });
     if (!models.length) return "";
     lang = String(lang || "ja").toLowerCase();
     var prefix = /^zh/.test(lang) ? "通勤车型参考（实际编组未确认）：" :
