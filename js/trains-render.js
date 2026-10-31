@@ -1107,6 +1107,27 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // Public identification boundary: marker spec ends before title formatting.
   // 对外身份是计划列车号，而不是车辆的
   // 运行号/编组分配。内部 ID 和 SQL 键绝不作为标签。
+  // Candidate descriptions are informational and must never promote a
+  // historical or route-wide fleet list into actual trainset identity.
+  function _seibuCommuterCandidatesLabel(p, lineId, lang) {
+    var plan = p && (p.vehiclePlan ||
+      (p.vehicleResolution && p.vehicleResolution.vehiclePlan));
+    var isSeibuLine = /^(?:Ikebukuro|Haijima|Kokubunji|Yurakucho_Seibu|SeibuShinjuku|SeibuTamako|SeibuTamagawa|SeibuChichibu|SeibuEn|SeibuToshima|SeibuYamaguchi|Seibu_Sayama)$/.test(String(lineId || ""));
+    var isCommuterType = /(?:\\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
+    var status = p && (p.vehicleIdentityStatus ||
+      (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "";
+    if (status === "EXACT" || !isSeibuLine || !isCommuterType ||
+        !plan || !Array.isArray(plan.models)) return "";
+    var models = plan.models.map(function(v) { return String(v || "").trim(); }).filter(Boolean);
+    if (!models.length) return "";
+    lang = String(lang || "ja").toLowerCase();
+    var prefix = /^zh/.test(lang) ? "通勤车型参考（实际编组未确认）：" :
+      lang === "en" ? "Commuter fleet candidates (not confirmed): " :
+      lang === "ko" ? "통근형 차량 후보(실제 편성 미확인): " :
+      "通勤車両候補（実編成未確認）：";
+    return prefix + models.join(" / ");
+  }
+
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
@@ -1153,24 +1174,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var canonicalVehicle = window.TrainVehicle.resolveCanonicalVehicle(vehicle.name);
       if (canonicalVehicle && canonicalVehicle.displayName) tip.push(canonicalVehicle.displayName);
     }
-    // 西武の通勤列車は、車両が確定していなくても公表された形式候補を表示する。
-    // あくまで路線/計画上の参考候補。具体的な当日運用・編成・PNGを確定させない。
-    var _commuterPlan = p && (p.vehiclePlan ||
-      (p.vehicleResolution && p.vehicleResolution.vehiclePlan));
-    var _seibuCommuterLine = /^(?:Ikebukuro|Haijima|Kokubunji|Yurakucho_Seibu|SeibuShinjuku|SeibuTamako|SeibuTamagawa|SeibuChichibu|SeibuEn|SeibuToshima|SeibuYamaguchi|Seibu_Sayama)$/.test(String(lineId || ""));
-    var _commuterType = /(?:\\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
-    if (vehicle.status !== "EXACT" && _seibuCommuterLine && _commuterType &&
-        _commuterPlan && Array.isArray(_commuterPlan.models) &&
-        _commuterPlan.models.length) {
-      var _commuterModels = _commuterPlan.models.filter(function(s) { return !!String(s || "").trim(); });
-      if (_commuterModels.length) {
-        var _candidatePrefix = /^zh/.test(lang) ? "通勤车型参考（未确定实际编组）：" :
-          (lang === "en" ? "Commuter fleet candidates (not confirmed): " :
-          (lang === "ko" ? "통근형 차량 후보(실제 편성 미확인): " :
-          "通勤車両候補（当日の編成未確認）："));
-        tip.push(_candidatePrefix + _commuterModels.join(" / "));
-      }
-    }
+    var _fleetReference = _seibuCommuterCandidatesLabel(p, lineId, lang);
+    if (_fleetReference) tip.push(_fleetReference);
     // 保留线路门槛：源码截取型消费者可能只加载标题函数而不加载全部辅助函数。
     if (typeof _isOedoTailTrain === "function" && _isOedoTailTrain(lineId, p) && p && p.destinationStation) {
       var _towardHikarigaoka = String(p.destinationStation).split(/[:.]/).pop() === "Hikarigaoka";
@@ -1775,7 +1780,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var entry=document.createElement('div');entry.className='train-fold-entry';entry.setAttribute('role','listitem');
         var caption=document.createElement('div');
         caption.textContent=arrow+(popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認'));
-        entry.appendChild(caption);list.appendChild(entry);
+        entry.appendChild(caption);
+        // Make fleet candidates visible in the folded train list, not just
+        // in aria-labels. Do not replace the neutral vehicle marker with a PNG.
+        var fleetText = _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang);
+        if (fleetText) {
+          var fleetNote = document.createElement('div');
+          fleetNote.className = 'train-fold-vehicle-candidates';
+          fleetNote.textContent = fleetText;
+          entry.appendChild(fleetNote);
+        }
+        list.appendChild(entry);
         count++;
       });
       heading.textContent=titleText+' ('+count+')';
