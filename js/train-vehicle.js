@@ -3791,7 +3791,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
 // LimitedExpress; the result flows only into vehicleResult.vehiclePlan.
 function _officialConventionalServicePlan(tt, lineId, line) {
   if (!tt || tt._positionSource !== 'supabase-train-run' ||
-      tt._sqlVehicleMappingLevel !== 'unresolved') return null;
+      (tt._sqlVehicleMappingLevel !== 'unresolved' && lineId !== 'Seibu_Sayama')) return null;
   var operator = normOp(tt['odpt:operator'] || line && line.operator || '');
   var serviceType = String(tt['odpt:trainType'] || '').trim();
   if (operator === 'Keio' && lineId === 'KeioSagami' &&
@@ -3836,7 +3836,7 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       /odpt\.TrainType:Seibu\.(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress)$/.test(serviceType)) {
     var seibuCommuterFleet = {
       SeibuShinjuku: {
-        models: ['西武2000系','西武20000系','西武30000系','西武40000系'],
+        models: ['西武2000系','西武6000系','西武20000系','西武30000系','西武40000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       },
       SeibuTamagawa: {
@@ -3846,6 +3846,10 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       SeibuTamako: {
         models: ['西武9000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/9000/'
+      },
+      Seibu_Sayama: {
+        models: ['西武101系','西武7000系'],
+        source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       }
     }[lineId];
     if (seibuCommuterFleet) {
@@ -4047,7 +4051,13 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if(vehResult.identityStatus==='EXACT'&&!vehResult.iconPath){
       vehResult.vehiclePlan=resolveTimetableVehiclePlan(vehResult.name,{lineId:lineId,operator:line.operator,serviceDate:serviceDate,source:'known-model-representative',_plannedArtworkInventory:true});
     } else if(vehResult.identityStatus!=='EXACT'){
-      var plannedEvidence=_plannedFamilyEvidence || (window.TrainOperationEvidence &&
+      // Sayama local services have two currently documented fleet families.
+      // The legacy single 7000-series label is not a unique per-train assignment.
+      var _sayamaRouteFleet = lineId === 'Seibu_Sayama' &&
+        tt._positionSource === 'supabase-train-run' &&
+        tt['odpt:trainType'] === 'odpt.TrainType:Seibu.Local'
+          ? _officialConventionalServicePlan(tt, lineId, line) : null;
+      var plannedEvidence=_sayamaRouteFleet || _plannedFamilyEvidence || (window.TrainOperationEvidence &&
         typeof window.TrainOperationEvidence.resolveEvidence === 'function'
         ? window.TrainOperationEvidence.resolveEvidence(trainNumber,_baseOperationCtx,'planned') : null);
       // A SQL row with no asserted model may still carry an unambiguous
@@ -4057,7 +4067,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         plannedEvidence = _officialConventionalServicePlan(tt, lineId, line);
       }
       var familyPlan=plannedEvidence&&(plannedEvidence.vehicleType||(plannedEvidence.vehicleCandidates||[]).join(' / '));
-      var familyOverride=plannedEvidence&&(plannedEvidence.planOverride || plannedEvidence.evidenceRole==='timetable-reference' ||
+      var familyOverride=plannedEvidence&&(plannedEvidence.planOverride ||
+        (plannedEvidence === _sayamaRouteFleet && !!_sayamaRouteFleet) ||
+        plannedEvidence.evidenceRole==='timetable-reference' ||
         (!!plannedEvidence.operationCode && plannedEvidence.evidenceRole!=='timetable-plan'));
       var planInput=familyOverride?familyPlan:(_sqlSourceCandidates.length?_sqlSourceCandidates.join(' / '):(_declaredVehicleInput||familyPlan||''));
       var usesFamily=!!familyPlan&&(familyOverride||(!_sqlSourceCandidates.length&&!_declaredVehicleInput));
