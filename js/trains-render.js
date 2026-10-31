@@ -1113,7 +1113,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var plan = p && (p.vehiclePlan ||
       (p.vehicleResolution && p.vehicleResolution.vehiclePlan));
     var isSeibuLine = /^(?:Ikebukuro|Haijima|Kokubunji|Yurakucho_Seibu|SeibuShinjuku|SeibuTamako|SeibuTamagawa|SeibuChichibu|SeibuEn|SeibuToshima|SeibuYamaguchi|Seibu_Sayama)$/.test(String(lineId || ""));
-    var isCommuterType = /(?:\\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
+    var isCommuterType = /(?:\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
     var status = p && (p.vehicleIdentityStatus ||
       (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "";
     if (status === "EXACT" || !isSeibuLine || !isCommuterType ||
