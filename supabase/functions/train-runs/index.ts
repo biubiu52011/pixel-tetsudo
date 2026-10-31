@@ -199,6 +199,19 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       query = revision ? query.eq('revision_id',revision.id) : query.is('revision_id',null);
       return query.order("id").range(first,last);
     });
+    // ChiyodaBranch has only KitaAyase-bound alias rows. The 2026
+    // opposite-direction train plans already exist under Chiyoda. Reuse
+    // those canonical sources for branch display without importing duplicates.
+    if (lineId === "ChiyodaBranch" && !revision) {
+      const opposite = await pages((first, last) => db.from("manual_timetable_templates")
+        .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date")
+        .eq("line_key", "Chiyoda")
+        .eq("calendar_urn", calendar)
+        .eq("direction_urn", "odpt.RailDirection:TokyoMetro.YoyogiUehara")
+        .is("revision_id", null)
+        .order("id").range(first, last));
+      selected.push(...opposite);
+    }
     if (selected.length || revision) { templates = selected; selectedCalendar = calendar; selectedRevision = revision; break; }
   }
   // Retain both original SQL imports, but serve one verified itinerary.
@@ -454,6 +467,18 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       }),
     };
   });
+  // The branch map displays only Ayase--KitaAyase, not the whole
+  // through-train itinerary. Canonical IDs and stored timetables are unchanged.
+  if (lineId === "ChiyodaBranch") {
+    for (const run of result) {
+      const segment = run.stops.filter((stop: any) => {
+        const station = String(stop.station_urn || "");
+        return /\.(?:Ayase|KitaAyase)$/.test(station);
+      });
+      const distinct = new Set(segment.map((stop: any) => String(stop.station_urn || "")));
+      run.stops = segment.length === 2 && distinct.size === 2 ? segment : [];
+    }
+  }
   await linkPlannedOperations(db,result,selectedRevision);
   // Incomplete source rows are preserved in SQL for auditing, but must not
   // suppress other source-verified trains for the same railway/calendar.
