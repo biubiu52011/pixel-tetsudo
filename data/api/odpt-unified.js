@@ -1886,15 +1886,13 @@
                 }
                 return o;
             }),
-            // 多来源未核验标签不得升级为 EXACT 车型身份。
-            // 唯一车型候选来自手工运用表时，可作为计划车型证据；
-            // 多候选仍保持未判定，禁止按线路或图片猜测。
+            // 车型候选不等于已经核实的出版计划车型：即使候选只有一种，
+            // 也不将 source_single_type_candidate 升级为确定的 vehicleType。
+            // 候选列表和证据等级仍保留在 _sqlVehicleCandidateLabel / _sqlVehicleMappingLevel。
             vehicleType:(run.vehicle_mapping_level==="dated_schedule_rule" ||
                 run.vehicle_mapping_level==="dated_operation_owner" ||
-                run.vehicle_mapping_level==="verified_scheduled_boundary" ||
-                (run.vehicle_mapping_level==="source_single_type_candidate" &&
-                 String(run.vehicle_type_candidates||"").split(/\s*\/\s*/).filter(Boolean).length===1))
-                ? (run.vehicle_type_label || run.vehicle_type_candidates || null) : null,
+                run.vehicle_mapping_level==="verified_scheduled_boundary")
+                ? (run.vehicle_type_label || null) : null,
             _positionSource:"supabase-train-run"
         };
     }
