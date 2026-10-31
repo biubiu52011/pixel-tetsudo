@@ -3833,7 +3833,7 @@ function _officialConventionalServicePlan(tt, lineId, line) {
   // 車両運用や当日の編成が確定したとは扱わず、PNG も選ばない。
   // 特急・S-TRAIN・拝島ライナーにはこの通勤用フォールバックを適用しない。
   if (operator === 'Seibu' &&
-      /odpt\\.TrainType:Seibu\\.(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress)$/.test(serviceType)) {
+      /odpt\.TrainType:Seibu\.(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress)$/.test(serviceType)) {
     var seibuCommuterFleet = {
       SeibuShinjuku: {
         models: ['西武2000系','西武20000系','西武30000系','西武40000系'],
