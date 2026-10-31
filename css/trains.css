@@ -75,7 +75,8 @@
 
 
 /* Dense trains stay as paired units; the folded list preserves every train. */
-.train-fold-entry { display:flex; align-items:center; gap:4px 12px; padding:12px 4px; border-bottom:1px solid #94a3b840; }
+.train-fold-entry { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; padding:12px 4px; border-bottom:1px solid #94a3b840; }
+.train-fold-vehicle-candidates { flex-basis:100%; color:#64748b; font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
 .train-fold-entry:last-child { border-bottom:0; }
 
 
