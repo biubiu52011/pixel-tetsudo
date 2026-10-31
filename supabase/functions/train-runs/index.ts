@@ -303,6 +303,28 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     throw new Error("CANONICAL_CONTINUATION_STOPS_UNAVAILABLE");
   }
 
+  // Osaka's historical manually imported schedules contain station-only
+  // references: 203 on OsakaLoop and 94 on OsakaHigashi across both calendars.
+  // Do not treat a single station clock as a train, match it to a vehicle
+  // operation, or interpolate its unknown itinerary. Retain the original SQL
+  // template for later verification. Other lines retain their existing rules.
+  let suppressedOsakaStationFragments = 0;
+  if (lineId === "OsakaLoop" || lineId === "OsakaHigashi") {
+    const initialSources = templates.length;
+    templates = templates.filter((t: any) => {
+      const mapped = sourceResolution.get(t.id);
+      const sourceStops: any[] = mapped?.group_evidence === "verified_continuation"
+        ? (canonicalStopsById.get(Number(mapped.timetable_id)) || [])
+        : (byTemplate.get(t.id) || []);
+      if (sourceStops.length < 2) return false;
+      const stations = new Set(sourceStops
+        .filter((s: any) => !!(s.arrival_clock || s.departure_clock))
+        .map((s: any) => String(s.station_urn || s.arrival_station_urn || s.departure_station_urn || "")));
+      return stations.size >= 2;
+    });
+    suppressedOsakaStationFragments = initialSources - templates.length;
+  }
+
   // Vehicle type may be verified by a *different* timetable segment of
   // the very same through train. At the canonical Osaki boundary, accept a
   // single exact Rinkai model only when BOTH schedules agree on operating
@@ -492,7 +514,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   const validRuns = result.filter(r => r.stops.length >= 2 &&
     r.stops.every(s => !!s.station_urn) &&
     r.stops.filter(s => s.arrival_time || s.departure_time).length >= 2);
-  let omittedIncompleteRuns = result.length - validRuns.length;
+  let omittedIncompleteRuns = suppressedOsakaStationFragments + result.length - validRuns.length;
   // A source may contain unusable upstream rows intentionally omitted from SQL.
   // Preserve that partial status rather than claiming full line coverage.
   if (selectedCalendar) {
@@ -538,7 +560,9 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     audit_coverage_status: auditStatus, audit_issues: auditIssues,
     revision:selectedRevision,plan_status:selectedRevision ? 'published_revision' : 'unverified',
     calendar_status: "selected", selected_calendar: selectedCalendar,
-    omitted_incomplete_runs: omittedIncompleteRuns, runs: validRuns });
+    omitted_incomplete_runs: omittedIncompleteRuns,
+    suppressed_station_only_source_fragments: suppressedOsakaStationFragments,
+    runs: validRuns });
 }
 
 Deno.serve(async (req: Request) => {
