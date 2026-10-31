@@ -507,8 +507,23 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // daily service. Never upgrade a source-labelled sample to HIT coverage.
   const sourceSampleOnly = templates.some((t: any) =>
     String(t.source_path || "").startsWith("official-sampled:"));
-  const complete = validRuns.length > 0 && omittedIncompleteRuns === 0 && !sourceSampleOnly;
-  const partial = validRuns.length > 0 && (omittedIncompleteRuns > 0 || sourceSampleOnly);
+  // A full set of nonempty stops is NOT proof that the published line
+  // timetable is complete. The all-operator coverage audit explicitly
+  // distinguishes sampled / sparse / calendar-review / unverified sources.
+  // Keep every sourced train visible, but never label unreviewed coverage HIT.
+  const { data: planAudit, error: planAuditError } = await db
+    .from("published_timetable_coverage_audit")
+    .select("coverage_status,issues")
+    .eq("line_key", lineId)
+    .maybeSingle();
+  if (planAuditError) throw planAuditError;
+  const auditStatus = String(planAudit?.coverage_status || "unverified");
+  const auditIssues = Array.isArray(planAudit?.issues) ? planAudit.issues : [];
+  const independentlyVerifiedCoverage =
+    auditStatus === "verified" || auditStatus === "complete";
+  const complete = validRuns.length > 0 && omittedIncompleteRuns === 0 &&
+    !sourceSampleOnly && independentlyVerifiedCoverage;
+  const partial = validRuns.length > 0 && !complete;
   const dateVerifiedRuns = validRuns.filter(r => r.timetable_date_verified).length;
   return json({ ok: true, complete, partial,
     // These counts do not change the existing structural coverage behavior.
@@ -517,7 +532,10 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     date_unverified_runs: validRuns.length - dateVerifiedRuns,
     cache: complete ? "HIT" : partial ? "PARTIAL" : "MISS",
     source: "DATABASE_MANUAL_TEMPLATES", line_id: lineId, service_date: serviceDate,
-    source_coverage: sourceSampleOnly ? "verified-partial-sample" : "calendar-template",
+    source_coverage: sourceSampleOnly ? "verified-partial-sample"
+      : independentlyVerifiedCoverage ? "verified-published-calendar"
+      : "calendar-source-coverage-unverified",
+    audit_coverage_status: auditStatus, audit_issues: auditIssues,
     revision:selectedRevision,plan_status:selectedRevision ? 'published_revision' : 'unverified',
     calendar_status: "selected", selected_calendar: selectedCalendar,
     omitted_incomplete_runs: omittedIncompleteRuns, runs: validRuns });
