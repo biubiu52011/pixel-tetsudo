@@ -120,7 +120,7 @@ function applyData(data, i18n) {
     // 每次 resolveStationName 未命中时执行的 O(n) 线性扫描（StationResolver._buildIndex 约调用 3500 次）。
     _i18nNormMap = {};
     for (var _ik in _stationI18n) {
-      var _norm = _ik.replace(/-/g, '').toLowerCase();
+      var _norm = _ik.replace(/[-_\s]/g, '').toLowerCase();
       if (!Object.prototype.hasOwnProperty.call(_i18nNormMap, _norm)) {
         _i18nNormMap[_norm] = _ik;
       } else if (_i18nNormMap[_norm] !== _ik) {
@@ -291,8 +291,19 @@ function applyData(data, i18n) {
         }
         // 宽松匹配：直接查找没命中时，去掉连字符再查。
         if (_i18nNormMap) {
-          var _normId = String(id).replace(/-/g, '').toLowerCase();
-          var _normKey = _i18nNormMap[_normId];
+          var _rawId = String(id);
+          // Published SQL station URNs may use Nishi_Tokorozawa while the
+          // canonical i18n key is Nishi-Tokorozawa. Resolve for display only;
+          // never rewrite actual station IDs used for train joins.
+          var _displayCandidates = [_rawId];
+          var _stationSuffix = _rawId.split(/[.:]/).pop();
+          if (_stationSuffix !== _rawId) _displayCandidates.push(_stationSuffix);
+          var _normKey = null;
+          for (var _ci = 0; _ci < _displayCandidates.length; _ci++) {
+            var _normId = _displayCandidates[_ci].replace(/[-_\s]/g, '').toLowerCase();
+            _normKey = _i18nNormMap[_normId];
+            if (_normKey) break;
+          }
           if (_normKey) {
             var _i18n2 = _stationI18n[_normKey];
             if (lang === 'zh' && _i18n2.zh) return _i18n2.zh;
@@ -332,7 +343,7 @@ function applyData(data, i18n) {
           Object.keys(nm).forEach(function(jpKey) {
             var val = nm[jpKey];
             if (typeof val !== 'string') return;
-            var lk = val.toLowerCase().replace(/-/g, ''); // 归一化 ODPT 与站表中的连字符差异。
+            var lk = val.toLowerCase().replace(/[-_\s]/g, ''); // 归一化 ODPT 与站表中的连字符差异。
             // 两者都存在时优先使用不带末尾“駅”的键。
             if (!valToKey[lk] || (jpKey.slice(-1) !== '\u99c5' && valToKey[lk].slice(-1) === '\u99c5')) {
               valToKey[lk] = jpKey;
@@ -340,7 +351,7 @@ function applyData(data, i18n) {
           });
           _nameMapCache.valToKey = valToKey;
         }
-        var matchedKey = valToKey[String(id).toLowerCase().replace(/-/g, '')]; // 查询侧同样去除连字符。
+        var matchedKey = valToKey[String(id).split(/[.:]/).pop().toLowerCase().replace(/[-_\s]/g, '')]; // 查询侧同样去除连字符。
         if (matchedKey) {
           // 在规范化键之前保存原始英文值。
           var _enVal = nm[matchedKey];
