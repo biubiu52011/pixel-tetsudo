@@ -3829,6 +3829,33 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       sourceUrl: 'https://www.westjr.co.jp/press/article/2020/02/page_15645.html'
     };
   }
+  // 西武通勤電車：公開されている車両形式と路線範囲だけを参照。
+  // 車両運用や当日の編成が確定したとは扱わず、PNG も選ばない。
+  // 特急・S-TRAIN・拝島ライナーにはこの通勤用フォールバックを適用しない。
+  if (operator === 'Seibu' &&
+      /odpt\\.TrainType:Seibu\\.(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress)$/.test(serviceType)) {
+    var seibuCommuterFleet = {
+      SeibuShinjuku: {
+        models: ['西武2000系','西武20000系','西武30000系','西武40000系'],
+        source: 'https://www.seiburailway.jp/railway/encyclopedia/'
+      },
+      SeibuTamagawa: {
+        models: ['西武101系'],
+        source: 'https://www.seiburailway.jp/railway/encyclopedia/101/'
+      },
+      SeibuTamako: {
+        models: ['西武9000系'],
+        source: 'https://www.seiburailway.jp/railway/encyclopedia/9000/'
+      }
+    }[lineId];
+    if (seibuCommuterFleet) {
+      return {
+        operator:'Seibu', vehicleCandidates:seibuCommuterFleet.models,
+        evidenceRole:'route-fleet-reference', _fleetReferenceOnly:true,
+        planOverride:false, sourceUrl:seibuCommuterFleet.source
+      };
+    }
+  }
   return null;
 }
 
