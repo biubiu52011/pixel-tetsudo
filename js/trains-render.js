@@ -1124,10 +1124,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       .filter(function(v) { return !/(?:^|西武)(?:001|10000)系|Laview|レッドアロー/i.test(v); });
     if (!models.length) return "";
     lang = String(lang || "ja").toLowerCase();
-    var prefix = /^zh/.test(lang) ? "通勤车型参考（实际编组未确认）：" :
-      lang === "en" ? "Commuter fleet candidates (not confirmed): " :
-      lang === "ko" ? "통근형 차량 후보(실제 편성 미확인): " :
-      "通勤車両候補（実編成未確認）：";
+    var lineReference = plan.evidenceRole === "route-fleet-reference" ||
+      plan.status === "FLEET_REFERENCE";
+    var prefix = lineReference
+      ? (/^zh/.test(lang) ? "线路车型参考（非全部车次，实际编组未确认）：" :
+          lang === "en" ? "Line fleet references (non-exhaustive; not confirmed for this train): " :
+          lang === "ko" ? "노선 차량 참고(전체 차종 아님·실제 편성 미확인): " :
+          "路線車両参考（一部形式のみ・当該列車の編成未確認）：")
+      : (/^zh/.test(lang) ? "通勤车型候选（实际编组未确认）：" :
+          lang === "en" ? "Commuter fleet candidates (not confirmed): " :
+          lang === "ko" ? "통근형 차량 후보(실제 편성 미확인): " :
+          "通勤車両候補（実編成未確認）：");
     return prefix + models.join(" / ");
   }
 
