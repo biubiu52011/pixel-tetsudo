@@ -2002,6 +2002,7 @@
                 dateVerifiedRuns: Number(body.date_verified_runs) || 0,
                 dateUnverifiedRuns: Number(body.date_unverified_runs) || 0,
                 omittedIncompleteRuns: Number(body.omitted_incomplete_runs) || 0,
+                suppressedStationOnlyFragments: Number(body.suppressed_station_only_source_fragments) || 0,
                 runs: Array.isArray(body.runs) ? body.runs.length : 0,
                 updatedAt: Date.now()
             };
