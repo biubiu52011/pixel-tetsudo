@@ -1838,7 +1838,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   }
 
   function _stationKey(id) {
-    return _canonicalStationId(id).replace(/-/g, '').toLowerCase();
+    return _canonicalStationId(id).replace(/[-_]/g, '').toLowerCase();
   }
 
   function _resolveStationLoose(id) {
@@ -1847,13 +1847,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var db = window.RailwayDB;
     var direct = (db && db.resolveStationName) ? db.resolveStationName(id, window.currentLang) : id;
     if (direct && direct !== id) return direct;
-    var norm = String(id).replace(/-/g, '').toLowerCase();
+    var norm = String(id).replace(/[-_]/g, '').toLowerCase();
     var hit = '';
     if (db && typeof db.getStations === 'function') {
       try {
         var sts = db.getStations();
         for (var k in sts) {
-          if (String(k).replace(/-/g, '').toLowerCase() === norm) { hit = k; break; }
+          if (String(k).replace(/[-_]/g, '').toLowerCase() === norm) { hit = k; break; }
         }
       } catch(e) {}
     }
@@ -1861,7 +1861,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       for (var lid in window.UNIFIED_LINES) {
         var arr = (window.UNIFIED_LINES[lid] || {}).stations || [];
         for (var i = 0; i < arr.length; i++) {
-          if (String(arr[i]).replace(/-/g, '').toLowerCase() === norm) { hit = arr[i]; break; }
+          if (String(arr[i]).replace(/[-_]/g, '').toLowerCase() === norm) { hit = arr[i]; break; }
         }
         if (hit) break;
       }
