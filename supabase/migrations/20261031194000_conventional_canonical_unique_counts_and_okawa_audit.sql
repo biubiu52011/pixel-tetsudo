@@ -76,3 +76,22 @@ SET issues=ARRAY(SELECT DISTINCT v FROM unnest(
              'CHiYODA_BRANCH_ROUTE_PROJECTION_STILL_REQUIRES_REVIEW']::text[]) v ORDER BY v),
     checked_at=now()
 WHERE line_key='ChiyodaBranch';
+
+-- Edge train-runs v270 uses Chiyoda main-line southbound plan rows only as
+-- a read-time Ayase--KitaAyase branch projection. No new database alias rows
+-- and no new per-date or actual-formation data is inserted.
+UPDATE public.published_timetable_coverage_audit AS a
+SET issues=ARRAY(SELECT DISTINCT i FROM unnest(
+  array_remove(COALESCE(a.issues,ARRAY[]::text[]),
+    'CHiYODA_BRANCH_ROUTE_PROJECTION_STILL_REQUIRES_REVIEW') ||
+  ARRAY[
+    'BRANCH_API_V270_PROJECTION_AYASE_KITAAYASE_ONLY',
+    'BRANCH_API_V270_REUSES_249_WEEKDAY_AND_224_HOLIDAY_CANONICAL_TRAINS',
+    'BOTH_BRANCH_DIRECTIONS_PRESENT_FROM_EXISTING_CHIYODA_MAIN_TIMETABLE',
+    'BRANCH_RAW_ALIAS_SOUTHBOUND_NOT_STORED_SEPARATELY',
+    'CHIYODA_20260314_REVISION_NOT_VERIFIED'
+  ]::text[]
+) i ORDER BY i),checked_at=now()
+WHERE a.line_key='ChiyodaBranch'
+  AND (SELECT count(*) FROM manual_timetable_templates
+       WHERE line_key='ChiyodaBranch')=238;
