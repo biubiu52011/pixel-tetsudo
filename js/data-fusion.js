@@ -1120,6 +1120,59 @@
   // without pretending the incomplete record is a live position.
   var _realtimeEvidenceWithoutPosition = {};
 
+  // Link one current ODPT observation to one published canonical train only
+  // when the corridor, service-day number/direction, unique plan, unique live
+  // observation and an observed route station agree. No timetable-derived
+  // value is ever treated as a realtime position or actual vehicle model.
+  function _linkJobanCanonicalRealtime(estimated, posMap) {
+    var resolver=window.RunningChainResolver;
+    if(!resolver||typeof resolver.jobanCanonicalBridgeKey!=="function")return 0;
+    var scheduled=Object.create(null), observed=Object.create(null);
+    ["Joban","JobanMain"].forEach(function(lid){
+      (estimated[lid]||[]).forEach(function(p){
+        var k=resolver.jobanCanonicalBridgeKey(lid,p);
+        if(!k||!p.runningChainId||!Array.isArray(p.canonicalStopKeys)||
+           !p.canonicalStopKeys.length)return;
+        var id=String(p.canonicalTimetableId||"");
+        if(!id)return;
+        var group=scheduled[k]||(scheduled[k]=Object.create(null));
+        var hit=group[id];
+        if(!hit)group[id]={chain:p.runningChainId,stops:p.canonicalStopKeys};
+        else if(hit.chain!==p.runningChainId)hit.conflict=true;
+      });
+      (posMap[lid]||[]).forEach(function(p){
+        var k=resolver.jobanCanonicalBridgeKey(lid,p);
+        if(k)(observed[k]||(observed[k]=[])).push(p);
+      });
+    });
+    function station(v) {
+      return String(v||"").split(".").pop().replace(/[-_\\s]/g,"").toLowerCase();
+    }
+    var linked=0;
+    Object.keys(observed).forEach(function(k){
+      var live=observed[k], candidates=scheduled[k];
+      // A second simultaneous real source record is still ambiguous: a
+      // train number alone does not prove two live objects are one vehicle.
+      if(live.length!==1||!candidates||Object.keys(candidates).length!==1)return;
+      var id=Object.keys(candidates)[0], plan=candidates[id], p=live[0];
+      if(plan.conflict||!plan.chain||p.runningChainId)return;
+      var from=station(p.sourceFromStation), to=station(p.sourceToStation);
+      var stops=plan.stops.map(station);
+      if(!from||stops.indexOf(from)<0)return;
+      // If the provider gives the next stop and it is published, reject a
+      // backwards jump. Unpublished passing stations are not evidence.
+      if(to) {
+        var start=stops.indexOf(from), next=stops.indexOf(to);
+        if(next<0||next<start)return;
+      }
+      p.runningChainId=plan.chain;
+      p.runningChainEvidence="VERIFIED_SQL_CANONICAL_REALTIME_STATION";
+      p.canonicalTimetableId=id;
+      linked++;
+    });
+    return linked;
+  }
+
   function loadTrainPositions() {
     var _perfStart = _perfNow();
     try {
@@ -1565,6 +1618,7 @@
                 if (k) _scheduledLiveCounts[k] = (_scheduledLiveCounts[k] || 0) + 1;
               });
             });
+            _linkJobanCanonicalRealtime(estimated, posMap);
             var _chainVehicleCandidates = {};
             function _queueChainVehicle(p) {
               if (!p || !p.runningChainId || !p.vehicleType) return;
