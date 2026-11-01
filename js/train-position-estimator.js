@@ -1105,11 +1105,18 @@
         }
         // A database-confirmed continuation has an authoritative train ID.
         // Do not let availability of neighbouring line pages change that ID.
-        // Restrict to the Joban rapid/main corridor until other corridors have
-        // equivalent canonical service proof and regression coverage.
-        if(lineId==="Joban"||lineId==="JobanMain") {
+        // Scope fixed canonical identity to verified member-line combinations.
+        // No timetable-only source can claim another line's physical train.
+        if(["Joban","JobanMain","ChuoRapid","Ome","ChuoMain",
+            "ShonanShinjuku","Tokaido"].indexOf(lineId)>=0) {
           positions.forEach(function(pos) {
-            if(pos.canonicalGroupEvidence==="verified_continuation" &&
+            var memberLines=Array.isArray(pos.canonicalLineIds)?pos.canonicalLineIds:[];
+            var verifiedCorridor=
+              (memberLines.indexOf("Joban")>=0&&memberLines.indexOf("JobanMain")>=0)||
+              (memberLines.indexOf("ChuoRapid")>=0&&memberLines.indexOf("Ome")>=0)||
+              (memberLines.indexOf("ChuoRapid")>=0&&memberLines.indexOf("ChuoMain")>=0)||
+              (memberLines.indexOf("ShonanShinjuku")>=0&&memberLines.indexOf("Tokaido")>=0);
+            if(verifiedCorridor&&pos.canonicalGroupEvidence==="verified_continuation" &&
                pos.canonicalTimetableId &&
                /^canonical-sql-trip:/.test(String(pos.timetableIdentity||""))) {
               pos.runningChainId=pos.timetableIdentity;
