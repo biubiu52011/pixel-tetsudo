@@ -72,8 +72,8 @@ const rejects=[
     sourceRailway:'odpt.Railway:JR-East.Chuo',trainNumber:'740M'})]}],
   ['wrong provider railroad', {ChuoMain:[plan()]}, {ChuoRapid:[live({
     sourceRailway:'odpt.Railway:TokyoMetro.ChuoRapid'})]}],
-  ['invalid real segment railroad', {ChuoMain:[plan()]}, {ChuoRapid:[live({
-    sourceRailway:'odpt.Railway:JR-East.Chuo',trainNumber:'640M'})]}],
+  ['640M is not a rapid-source alias', {ChuoMain:[plan()]}, {ChuoRapid:[live({
+    sourceRailway:'odpt.Railway:JR-East.ChuoRapid',trainNumber:'640M'})]}],
   ['non-canonical source', {ChuoMain:[plan(66496,{
     canonicalGroupEvidence:'source_only'})]}, {ChuoRapid:[live()]}],
   ['Ome canonical route does not apply', {ChuoRapid:[plan(168581,{
