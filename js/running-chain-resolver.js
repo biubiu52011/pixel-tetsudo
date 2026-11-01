@@ -285,6 +285,45 @@
     return scheduledMatchKey("JR-East-ChuoRapid-Ome-through",position);
   }
 
+  // Real aliases come from verified SQL members. Inbound/outbound and source
+  // railway namespace must match; never guess M/T/H suffix conversions.
+  function chuoMainCanonicalBridgeKeys(lineId, position) {
+    if ((lineId!=="ChuoRapid"&&lineId!=="ChuoMain")||!position) return [];
+    var railway=String(position.sourceRailway||"");
+    if (!/^odpt\\.Railway:JR-East\\.(?:ChuoRapid|Chuo)$/.test(railway)) return [];
+    if (position.estimated===true) {
+      if (position.positionSource!=="supabase-train-run" ||
+          position.canonicalGroupEvidence!=="verified_continuation" ||
+          !position.canonicalTimetableId ||
+          !Array.isArray(position.canonicalLineIds) ||
+          position.canonicalLineIds.indexOf("ChuoRapid")<0 ||
+          position.canonicalLineIds.indexOf("ChuoMain")<0 ||
+          !Array.isArray(position.canonicalTrainNumberAliases)) return [];
+      var keys=[];
+      position.canonicalTrainNumberAliases.forEach(function(alias){
+        if (!alias || (alias.line_key!=="ChuoRapid"&&alias.line_key!=="ChuoMain") ||
+            !alias.railway_urn || !alias.train_number ||
+            !alias.direction_urn || !position.railDirection)return;
+        var aliasDirection=String(alias.direction_urn).split(/[:.]/).pop().toUpperCase();
+        var planDirection=String(position.railDirection).split(/[:.]/).pop().toUpperCase();
+        if (aliasDirection!==planDirection) return;
+        var key=scheduledMatchKey("JR-East-ChuoRapid-ChuoMain-through",{
+          serviceDate:position.serviceDate,trainNumber:alias.train_number,
+          railDirection:alias.direction_urn
+        });
+        // The observed railway identity is part of the candidate key.
+        if (key) {
+          var value=key+"|"+encodeURIComponent(String(alias.railway_urn));
+          if(keys.indexOf(value)<0)keys.push(value);
+        }
+      });
+      return keys;
+    }
+    if (position.positionSource!=="realtime-api" || !position.sourceFromStation) return [];
+    var realtimeKey=scheduledMatchKey("JR-East-ChuoRapid-ChuoMain-through",position);
+    return realtimeKey?[realtimeKey+"|"+encodeURIComponent(railway)]:[];
+  }
+
   function getVerifiedCanonicalPartners(lineId) {
     var config=(window.RuntimeConfig||{}).VERIFIED_CANONICAL_PLAN_PARTNERS||{};
     var partners=config[lineId];
@@ -341,6 +380,7 @@
     scheduledMatchKey:scheduledMatchKey,
     jobanCanonicalBridgeKey:jobanCanonicalBridgeKey,
     omeCanonicalBridgeKey:omeCanonicalBridgeKey,
+    chuoMainCanonicalBridgeKeys:chuoMainCanonicalBridgeKeys,
     sourcePositionMatchKey:sourcePositionMatchKey,
     _getIndexes:function(){return{boundaries:_boundaryMap,branchOfMap:_branchOfMap,directThrough:_directThrough};}
   };
