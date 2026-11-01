@@ -68,7 +68,10 @@
   // evidence of realtime position or of a different physical vehicle.
   var VERIFIED_CANONICAL_PLAN_PARTNERS = Object.freeze({
     Joban: Object.freeze(["JobanMain"]),
-    JobanMain: Object.freeze(["Joban"])
+    JobanMain: Object.freeze(["Joban"]),
+    // Ome/ChuoRapid 259 SQL verified services; no new physical line edge.
+    ChuoRapid: Object.freeze(["Ome"]),
+    Ome: Object.freeze(["ChuoRapid"])
   });
 
   // 乘客服务走廊保留来源记录和车站
