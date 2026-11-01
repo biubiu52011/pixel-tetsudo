@@ -3872,6 +3872,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // 复用的时刻表对象可能收到修正后的车型、列车号或所属方
     // 证据；这些变化都不能复用此前的未知/车型计划。
     var planInputKey=JSON.stringify([tt._sqlVehicleCandidateLabel||'',tt.vehicleType||'',
+      tt._sqlVerifiedPublishedVehicleType||'',tt._sqlVerifiedPublishedVehicleSourceUrl||'',
       run.trainNumber||'',tt['odpt:trainType']||run.trainType||'',run.calendar||'',
       tt['odpt:operator']||line.operator||'',tt['odpt:railway']||'',
       tt['odpt:trainOwner']||tt.trainOwner||'',run.destinationStationUrn||'',
@@ -4073,9 +4074,32 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         (plannedEvidence === _sayamaRouteFleet && !!_sayamaRouteFleet) ||
         plannedEvidence.evidenceRole==='timetable-reference' ||
         (!!plannedEvidence.operationCode && plannedEvidence.evidenceRole!=='timetable-plan'));
-      var planInput=familyOverride?familyPlan:(_sqlSourceCandidates.length?_sqlSourceCandidates.join(' / '):(_declaredVehicleInput||familyPlan||''));
-      var usesFamily=!!familyPlan&&(familyOverride||(!_sqlSourceCandidates.length&&!_declaredVehicleInput));
-      vehResult.vehiclePlan=resolveTimetableVehiclePlan(planInput,{lineId:lineId,operator:usesFamily&&plannedEvidence.operator||(_resolvedEvidence&&_resolvedEvidence.decisive&&_resolvedEvidence.operator)||line.operator,serviceDate:serviceDate,source:usesFamily?'operation-family-plan':'sql-timetable-plan',sourceUrl:usesFamily?plannedEvidence.sourceUrl:(tt._timetableProvenance||''),itineraryStations:_baseOperationCtx.itineraryStations,_positionSource:tt._positionSource||'',_plannedArtworkInventory:true});
+      // SQL Edge Function certified the published timetable's model with
+      // source-ID, source URL and revision checks. Treat this as a PLANNED
+      // MODEL only: never inject it into _timetableVehicleInput, vehicleType,
+      // assignment evidence, or the actual rolling-stock identity resolver.
+      // Historical source candidates and mixed route fleets cannot replace it.
+      var publishedSqlPlan = tt._positionSource === 'supabase-train-run' &&
+        (tt._sqlVehicleMappingLevel === 'official_service_vehicle_plan' ||
+         tt._sqlVehicleMappingLevel === 'published_number_family_plan') &&
+        String(tt._sqlVerifiedPublishedVehicleSourceUrl || '').trim()
+          ? String(tt._sqlVerifiedPublishedVehicleType || '').trim() : '';
+      var planInput=publishedSqlPlan ||
+        (familyOverride?familyPlan:(_sqlSourceCandidates.length?_sqlSourceCandidates.join(' / '):(_declaredVehicleInput||familyPlan||'')));
+      var usesFamily=!publishedSqlPlan&&!!familyPlan&&
+        (familyOverride||(!_sqlSourceCandidates.length&&!_declaredVehicleInput));
+      vehResult.vehiclePlan=resolveTimetableVehiclePlan(planInput,{
+        lineId:lineId,
+        operator:usesFamily&&plannedEvidence.operator||
+          (_resolvedEvidence&&_resolvedEvidence.decisive&&_resolvedEvidence.operator)||line.operator,
+        serviceDate:serviceDate,
+        source:publishedSqlPlan?'database-verified-published-plan':
+          (usesFamily?'operation-family-plan':'sql-timetable-plan'),
+        sourceUrl:publishedSqlPlan?tt._sqlVerifiedPublishedVehicleSourceUrl:
+          (usesFamily?plannedEvidence.sourceUrl:(tt._timetableProvenance||'')),
+        itineraryStations:_baseOperationCtx.itineraryStations,
+        _positionSource:tt._positionSource||'',_plannedArtworkInventory:true
+      });
       if (plannedEvidence && plannedEvidence._fleetReferenceOnly === true &&
           vehResult.vehiclePlan && vehResult.identityStatus !== 'EXACT') {
         // Evidence covers a corridor or a subset of regional local services.
