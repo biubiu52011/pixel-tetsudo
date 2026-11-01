@@ -2219,7 +2219,30 @@
             return Promise.all([
                 Promise.all(timetablePromises),
                 newOps.length ? loadRealtimeData(false, newOps, true) : Promise.resolve()
-            ]);
+            ]).then(function(results) {
+                // Recheck after BOTH sources load: realtime may arrive before SQL
+                // plans, otherwise the first snapshot falsely reports no plan.
+                var op = "JR-East";
+                var active = (_activeRealtimeLineIds && _activeRealtimeLineIds[op]) || [];
+                var boso = ["SobuMain", "Narita", "NaritaAirportBranch",
+                    "Uchibo", "Sotobo", "Togane", "Kashima"];
+                var status = window.ODPT_REALTIME_STATUS && window.ODPT_REALTIME_STATUS[op];
+                if (status && status.ok && window.ODPTClient && window.ODPTClient.auditRealtimeLine &&
+                    active.some(function(lineId) { return boso.indexOf(lineId) >= 0; })) {
+                    var snapshot = (window.ODPT_TRAIN_POSITIONS && window.ODPT_TRAIN_POSITIONS[op]) || [];
+                    var audit = {};
+                    active.forEach(function(lineId) {
+                        if (boso.indexOf(lineId) < 0) return;
+                        var found = window.ODPTClient.auditRealtimeLine(lineId, snapshot);
+                        found.probeStatus = found.matchedCount > 0
+                            ? "exact-railway-rows-found-model-not-certified"
+                            : "no-exact-railway-rows-in-current-snapshot";
+                        audit[lineId] = found;
+                    });
+                    window.ODPT_BOSO_REALTIME_AUDIT = audit;
+                }
+                return results;
+            });
         },
 
         // 获取运行情报/延误信息
@@ -2270,6 +2293,56 @@
                 var actual = parseRailwayIdentity(t);
                 return !!(actual && actual.key === expected.key);
             });
+            // Compare a realtime train ONLY with today's already-loaded
+            // SQL published plans from the same exact provider railway.
+            // The comparison is a transient diagnostic, never a fleet proof.
+            var planned = window.ODPT_TIMETABLES && window.ODPT_TIMETABLES[operator];
+            var activeServiceDate = _serviceDateJst();
+            var planByNumber = Object.create(null);
+            var currentPlanRows = 0;
+            if (Array.isArray(planned)) planned.forEach(function(tt) {
+                if (!tt || tt._serviceDate !== activeServiceDate) return;
+                var planIdentity = parseRailwayIdentity(tt);
+                if (!planIdentity || planIdentity.key !== expected.key) return;
+                var no = String(tt["odpt:trainNumber"] || "").trim();
+                if (!no) return;
+                (planByNumber[no] || (planByNumber[no] = [])).push(tt);
+                currentPlanRows++;
+            });
+            function matchPublishedPlan(t) {
+                var no = String(t["odpt:trainNumber"] || "").trim();
+                if (!no) return { status: "missing-api-train-number" };
+                if (!currentPlanRows) return { status: "no-current-service-day-plan-loaded" };
+                var options = planByNumber[no] || [];
+                if (!options.length) return { status: "unmatched-train-number" };
+                var direction = String(t["odpt:railDirection"] || "");
+                if (direction) options = options.filter(function(tt) {
+                    var plannedDirection = String(tt["odpt:railDirection"] || "");
+                    return !plannedDirection || plannedDirection === direction;
+                });
+                if (!options.length) return { status: "direction-mismatch" };
+                var station = String(t["odpt:fromStation"] || "");
+                if (!station) return { status: "number-only-no-api-station", candidatePlans: options.length };
+                options = options.filter(function(tt) {
+                    var stops = tt["odpt:trainTimetableObject"];
+                    return Array.isArray(stops) && stops.some(function(stop) {
+                        return station === String(stop["odpt:arrivalStation"] || "") ||
+                            station === String(stop["odpt:departureStation"] || "");
+                    });
+                });
+                if (!options.length) return { status: "source-station-not-in-published-plan" };
+                if (options.length !== 1) return { status: "ambiguous-published-plans", candidatePlans: options.length };
+                var one = options[0];
+                return {
+                    status: "unique-same-railway-number-and-station",
+                    // Source-backed planned model is separate from API vehicle identity.
+                    // Its source revision may still be undated; do not elevate it.
+                    publishedPlanModelLabel: one._sqlVerifiedPublishedVehicleType || "",
+                    plannedMappingLevel: one._sqlVehicleMappingLevel || "unresolved",
+                    timetableValidity: one._timetableValidity || "unknown",
+                    timetableDateVerified: one._timetableDateVerified === true
+                };
+            }
             var directionCounts = {};
             var locatedCount = 0;
             var numberedCount = 0;
@@ -2292,6 +2365,13 @@
                 locationCoverage: matched.length ? locatedCount / matched.length : 0,
                 trainNumberCoverage: matched.length ? numberedCount / matched.length : 0,
                 directionCounts: directionCounts,
+                currentServiceDatePlanRows: currentPlanRows,
+                plannedComparisonOnly: true,
+                planMatchCounts: matched.reduce(function(counts, t) {
+                    var status = matchPublishedPlan(t).status;
+                    counts[status] = (counts[status] || 0) + 1;
+                    return counts;
+                }, {}),
                 matchedRows: matched.map(function(t) {
                     return {
                         trainNumber: t["odpt:trainNumber"] || "",
@@ -2306,7 +2386,8 @@
                         railwayNumberSyntax: /^[0-9]{1,5}[A-Za-z]?$/.test(String(t["odpt:trainNumber"] || "")),
                         apiVehicleType: t["odpt:vehicleType"] || "",
                         hasVehicleId: !!(t["gtfs:vehicleId"] || t.vehicleCarNumber || t.carNumber),
-                        hasCarComposition: t["odpt:carComposition"] != null
+                        hasCarComposition: t["odpt:carComposition"] != null,
+                        publishedPlanMatch: matchPublishedPlan(t)
                     };
                 })
             };
