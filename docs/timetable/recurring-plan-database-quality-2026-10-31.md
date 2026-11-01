@@ -285,3 +285,29 @@ JR East 2026-11官方网站列车详细时刻确认:
 - 2026-11-01 写入后复查：车型映射全库 **21,559**、`count(distinct timetable_id)=21,559`（无重复）；本批50条全为 `actual_vehicle_confirmed=false`。剩余 `source_single_type_candidate` 从**3,408降到3,358**。
 - 还有69,695条canonical计划列车没有车型映射，尤其混用通勤车与无官方逐车次车型依据的来源；不要将“已存在映射”当作“已达到同一强度的官方计划车型确认”。山形线新庄—山形26条旧701系标签继续留在待核实状态。
 - `source_path='data/timetables/*-manual.js'` 为历史来源元数据，可能不是 GitHub 当前存在的文件；以后重新导入时需对照这份审计和 Supabase 最新模板，不能恢复错误的全线E257标签。
+
+
+## 13. 2026-11-01 计划车型继续核实：61条（常规及季节性特急）
+
+本节只针对列车**出版式运营计划车型**（车型系列），没有录入真实每天运行日期、实车编组、实时运行结果，也没有更改到发时刻。 `mapping_level=official_service_vehicle_plan` 表示已由官方列车服务与车辆资料对应到型号，**并非每班列车实测编组**。
+
+| 范围 | 计划车型 | 升级记录 | 证据ID |
+|---|---|---:|---:|
+| 上越线＋吾妻线「草津・四万31/34号」，4031M与4034M来源分段（休日） | E257系5500番台 | 4 | 4950 |
+| 中央本线常规「あずさ／かいじ」22个列车番号，Weekday＋SaturdayHoliday两套（22×2） | E353系 | 44 | 4953/4952 |
+| 其中「​​あずさ50号」5050M的千叶方向 ChuoSobuLocal 另两个来源分段 | E353系 | 2 | 4953/4952 |
+| 羽越线季节性「いなほ」8005M、8010M、8052M、8055M、8086M、9083M（SaturdayHoliday来源模板） | E653系 | 6 | 4951 |
+| 中央本线季节性「あずさ」8074M、8075M、8077M、8079M、8083M（仅SaturdayHoliday） | E353系 | 5 | 4954 |
+| **合计** | | **61** | |
+
+### 官方型号与对应车次
+
+- 「草津・四万」4031M/4034M：JR East官方2026-11 [31号](https://timetables.jreast.co.jp/2611/train/095/098841.html)、[34号](https://timetables.jreast.co.jp/2611/train/095/098851.html)匹配数据库高崎→渋川→長野原草津口 / 反向来源段；[JR East官方车辆](https://www.jreast.co.jp/multi/traininformation/kusatsu_shima/)明确使用 E257系5500番台。
+- 常规「あずさ／かいじ」：JR East 2026-11 官方[中央本线平日下行](https://timetables.jreast.co.jp/2611/timetable-v/223d1p.html)、[平日上行](https://timetables.jreast.co.jp/2611/timetable-v/223u1p.html)、[休日下行](https://timetables.jreast.co.jp/2611/timetable-v/223d2p.html)、[休日上行](https://timetables.jreast.co.jp/2611/timetable-v/223u2p.html)，及[JR East E353官方车型页](https://www.jreast.co.jp/train/express/azusa_kaiji.html)。该批22个列车番号：3127M、3131M、3152M、3156M、3158M、5041M、5045M、5049M、5050M、5053M、5055M、5102M、5106M、5110M、5114M、5135M、5139M、5143M、5147M、5151M、5157M、5159M；另5050M「​​あずさ50号」延长至千叶，跨ChuoSobuLocal来源有额外2条，不要混淆“分段记录数量”与“独立列车车次数量”。
+- 季节性「あずさ」：JR East 2026-11 [8074M](https://timetables.jreast.co.jp/2611/train/060/064271.html)、[8075M](https://timetables.jreast.co.jp/2611/train/060/064261.html)、[8077M](https://timetables.jreast.co.jp/2611/train/070/071581.html)、[8079M](https://timetables.jreast.co.jp/2611/train/070/071591.html)、[8083M](https://timetables.jreast.co.jp/2611/train/075/076761.html) 的具体名称与番号匹配，再参照上述官方 E353 型号。**没有升级 8083M 的 Weekday旧来源记录**：官方发布的对应运转时段是周末及节假日，旧Weekday来源存在日历模板不匹配风险。
+- 季节性「いなほ」：JR East [2026-05-15新潟支社临时列车车型公告第2页](https://www.jreast.co.jp/press/2026/niigata/20260515_ni01.pdf)将いなほ5/10秋田延长与增发いなほ52/55/83/86列为 **E653系**（4辆或7辆取决于公布列车与季节）；[JR East E653官方说明](https://www.jreast.co.jp/train/express/inaho_shirayuki.html)。JR East 2026-11时刻表核实 [8005M](https://timetables.jreast.co.jp/2611/train/075/076172.html)、[8010M](https://timetables.jreast.co.jp/2611/train/075/076182.html)、[8052M](https://timetables.jreast.co.jp/2611/train/110/112631.html)、[8055M](https://timetables.jreast.co.jp/2611/train/110/112621.html)、[9083M](https://timetables.jreast.co.jp/2611/train/125/128421.html)，及2026-09 [8086M](https://timetables.jreast.co.jp/2610/train/090/090791.html)。**确认只到E653车型系列，不确认实际车厢数或各季节完全相同的编组**。其中9083M 2026年冬的时刻已与夏季版有差异，旧来源到发时刻并未因此获认证。
+- 特别谨慎：羽越线来源 `9011M` 被旧模板标为E653いなほ候选，但2026-11 JR East其他时刻表存在 `9011M=サンライズ出雲91号` https://timetables.jreast.co.jp/2611/train/045/047321.html ，而羽越线此来源自象潟至秋田、到时19:55，与当期普通「いなほ11号」运营区间不符。**暂不提升、不得拿相同号码跨线路强行赋予285系**。需追溯旧模板版本/实际线路图与列车名称；这里只做风险标记。
+
+### 写后复核
+
+2026-11-01 已核验 source_id=4950～4954对应61条映射；来源`manual_timetable_templates.vehicle_type_label` 与`train_timetable_vehicle_mappings.vehicle_type` 全部一致，`actual_vehicle_confirmed=false`。总映射依旧21,559、`COUNT(DISTINCT timetable_id)=21,559`，单一车型候选从3,358降至 **3,297**。另外69,695条还没有任何车型映射。**日期与编组均不是本次任务目标**。
