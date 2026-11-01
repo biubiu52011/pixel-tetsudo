@@ -131,3 +131,42 @@ KeihinTohoku、Nambu、Yamanote 等在静态线路数据中没有列出直接ser
 - 本轮 **没有新增任何 canonical 计划列车、实际每日运行、车辆编组或车型映射**。映射仍21,774、无重复；`actual_vehicle_confirmed`全部false。
 - **现场数据待验收**：现有环境无有效ODPT当期实时列车网络快照，无法证明实际移动端所有边界位置或来源车次都能连续显示。SQL计划来源为2026-10历史版，不能将其逐日开行情况或准确到发时刻当作已核实的2026-11实际运行。
 
+
+## 7. 2026-11-01 湘南新宿线 × 东海道／横须贺：严格双向来源验收与35列 canonical 归并
+
+### 全库审计的重要前提
+
+此前 `train_timetable_continuity` 只对Joban/Ome/Chuo等已建设的线路有连接；湘南新宿线虽有380个来源计划，东海道Tokaido有692、宇都宫UtsunomiyaJR有599、高崎Takasaki有450、横须贺Yokosuka有691，但**跨这些线路没有已确认的 canonical links**。JR-East官方[Ofuna駅时刻表](https://timetables.jreast.co.jp/en/timetable/list0342.html)展示各运行系统对应的车站区间；[ODPT JR-East 2026时刻表数据集](https://ckan.odpt.org/en/dataset/jreast__r_train_timetable)注明只覆盖部分区域/部分直通，实时[GTFS-RT数据集](https://ckan.odpt.org/en/dataset/odpt_jreast_tokyo_area)也不承诺每班临时/直通列车均有真实位置。
+
+只按**同calendar+trainNumber**连接湘南新宿与周边：Takasaki有135候选、Tokaido139、UtsunomiyaJR128、Yokosuka144。由于湘南新宿来源方向采用Northbound/Southbound，周边干线采用Inbound/Outbound，单纯字符串对比得0，并不等于没有物理贯通。进一步以**同源唯一番号+真实交界站同一时刻+来源前后序互引+修订版本一致**验证，Ofuna得到：
+- **ShonanShinjuku ↔ Tokaido：35个**（东海道→湘南新宿18、反方向17）。
+- **ShonanShinjuku ↔ Yokosuka：2个**（每方向1，来源2526Y和2551Y）。
+- 在Takasaki/UtsunomiyaJR方向的同号候选里，本轮按相同端点时钟条件**没有可自动归并的组**。需后续用完整端点引用、passing/boundary时序、来源修订等另行核对，不能直接按号合并。
+
+### 本轮已实际落库：35个东海道/湘南新宿贯通canonical列车
+
+新增 `published_shonan_verified_boundary_sources` security-invoker视图，以直接可查SQL证明37个候选：`from_template_id`、`to_template_id`、`line_key`、双向 `source_trip_id` 前后序引用、同 `calendar_urn`／同 `train_number`／同 `source_revision_date`、Ofuna端点 **arrival_clock=departure_clock**、正确顺序（northbound=Inbound，southbound=Outbound）。严格使用 `reciprocal_source_ids_station_time_revision` 级别，不能把同号视为同一物理列车。
+
+35个Tokaido配对进一步预检全部成功：
+- 双方原来都是 `source_only`，每端恰好一个source member、各不少于2站；
+- 无任一对已有 `train_timetable_continuity` 占用、无同一root或child被多对使用；
+- 无 `train_runs` 运行日期引用、无车型映射、无运用证据引用；可以保留原有root canonical ID安全合并。
+- 在一次**原子数据库迁移**中写入35个continuity边，将child `train_timetable_members` 迁移到root，`segment_order=1`、`member_role=verified_continuation`、`merge_first_stop=true`（大船公共边界只计一次），更新root `group_evidence=verified_continuation`，并删除35个已无成员的source-only child canonical记录。所有原 `manual_timetable_templates` 和停止时刻原封不动保留。
+- `train_timetable_stops` 是使用成员索引的动态 **VIEW**；更新成员关系即可即时呈现一条跨区段完整计划，没有写入真实每日运行时间或复制停站。
+- 迁移 `20261101180000_merge_35_shonan_tokaido_canonical_trains.sql` 已写入GitHub；第一次实际数据库操作采用同等严格的非幂等预检事务，仓库文件为便于重放的幂等变体（重放没有未归并对象时不会重复操作）。
+- 合并后验证：35/35同一canonical，35/35 `verified_continuation`，35/35每列2个source member、跨2条line_keys，合并后的停站序列号**没有重复**；全库canonical计划列车 **91,254→91,219**，是去掉35个重复身份，不代表班次取消。其余两条Yokosuka仍各自保持source_only，独立待审。
+
+### 横须贺两对为什么保留
+
+`2526Y`、`2551Y` 虽然具有相同的Ofuna双向来源时刻与来源引用，但两条Yokosuka源模板已有 `E235系1000番台` 单一车型候选映射，Shonan段没有相应确认。为了避免把车型候选从横须贺车次直接提升/传播到整个湘南新宿列车，本轮**没有合并这两对**。须独立核实型号与实际服务关系，不能因为看见E235候选就自动把它赋给湘南新宿线。
+
+### 运行时已部署：HYBRID canonical 身份桥接
+
+1. `supabase/functions/train-runs/index.ts`：现有 `verified_continuation` 返回完整站序／`canonical_line_ids`；本轮把已经SQL确认 `ShonanShinjuku+Tokaido` 的source members并入 `canonical_number_aliases` 返回集合，不允许普通 `source_only` 或单靠同号获得这些别名。
+2. `RunningChainResolver.shonanTokaidoCanonicalBridgeKeys`：限定 `lineId` 为ShonanShinjuku/Tokaido、运营商JR-East的准确ODPT rail namespace，并用**官方方向对应** `Northbound↔Inbound`、`Southbound↔Outbound` 构造已验证canonical候选。服务日期、源铁路、车次、方向都是键的一部分；只有SQL两个成员线路完整且verified才能产生计划键。不会放宽Yokosuka、Takasaki、Utsunomiya或其他运营商。
+3. `js/data-fusion.js`：加入第四条独立的 `_linkVerifiedCanonicalRealtime` 走廊；仍必须唯一canonical、唯一实时观测且 `fromStation`／`toStation` 在完整计划站序一致。实时永远保持 `positionSource=realtime-api`，不会由计划来源推定实际车组。
+4. `RuntimeConfig.VERIFIED_CANONICAL_PLAN_PARTNERS` 增加 `ShonanShinjuku↔Tokaido`，只是**计划SQL预取**不改变线路几何或创造额外行车区间；`train-position-estimator` 对同一已证实跨线路列车固定 `canonical-sql-trip:<serviceDate>:<id>` 身份。
+5. 新增 `tools/shonan-tokaido-canonical-hybrid.test.cjs`：北向/南向正例与13个拒绝用例（Yokosuka候选不得合并、不同服务日、不同车次、相反方向、其它运营商、源铁路不符、错误站点、站序倒退、多个计划/实时候选等）。本轮与Joban、ChuoRapid/Ome、ChuoRapid/ChuoMain三个既有测试使用**仓库源码**一起运行，四组均PASS。
+6. Supabase `train-runs` 已从v276升级为 **v277 ACTIVE**，再次读取已部署 `index.ts` 与GitHub当前文件**字节内容一致**；车型映射仍**21,774**条、唯一mapping ID也是21,774、`actual_vehicle_confirmed`全部false。
+
+**剩余局限**：官方ODPT Challenge 2026提供部分实时源但本环境没有真实当日ODPT列车跨大船的连续快照；上述是数据库与离线源码测试验证，非手机端实际线路切换完备性担保。TokaidoMain作为历史来源另有与Tokaido相同的分段行程，可能仍产生来源投影重复；本轮没有越权重写这批历史来源。高崎/宇都宫和横须贺剩余链接需要分段证据审查，不能拿新白名单替代canonical核验。
