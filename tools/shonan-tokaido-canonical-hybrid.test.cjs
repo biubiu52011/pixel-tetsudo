@@ -130,6 +130,6 @@ for(const [name,p,r] of rejected){
 assert.match(edgeText,/aliasIds.*connectedIds/);
 assert.match(edgeText,/lines\.includes\("ShonanShinjuku"\) &&[\s\S]*?\["Tokaido","Takasaki","UtsunomiyaJR"\]\.some/);
 assert.match(estText,/memberLines\.indexOf\("ShonanShinjuku"\)/);
-assert.match(cfgText,/ShonanShinjuku: Object\.freeze\(\["Tokaido"\]\)/);
+assert.match(cfgText,/ShonanShinjuku: Object\.freeze\(\["Tokaido","Takasaki","UtsunomiyaJR"\]\)/);
 assert.match(fusionText,/shonanTokaidoCanonicalBridgeKeys/);
 console.log('Shonan/Tokaido 35 verified Ofuna services HYBRID: PASS');
