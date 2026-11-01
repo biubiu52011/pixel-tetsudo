@@ -106,9 +106,16 @@ async function activeRevision(db: any, lineId: string, serviceDate: string, cale
 }
 
 function scheduleVehicleType(mapped: any, revision: any) {
-  if (!['dated_schedule_rule','dated_operation_owner'].includes(mapped.mapping_level)) return '';
-  // A historical timetable mapping cannot certify a newly published diagram.
-  // Keep its source label as a candidate until the matching revision is checked.
+  // Train-level planned vehicle evidence is valid across every verified
+  // continuation segment. It is a MODEL in the publication plan, not an
+  // observed physical formation or a dated rolling-stock working.
+  const publishedPlan = ['official_service_vehicle_plan',
+    'published_number_family_plan'].includes(mapped.mapping_level);
+  const datedPlan = ['dated_schedule_rule',
+    'dated_operation_owner'].includes(mapped.mapping_level);
+  if (!publishedPlan && !datedPlan) return '';
+  if (publishedPlan && (!mapped.vehicle_source_id || !mapped.vehicle_source_url)) return '';
+  // A source from a previous revision never certifies a newer published plan.
   if (revision && (mapped.vehicle_revision_date !== revision.effective_from ||
       !mapped.vehicle_source_id || !mapped.vehicle_source_url)) return '';
   return String(mapped.vehicle_type || '');
@@ -446,6 +453,14 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       ? (candidateArtworkByOwnerModel.get(candidateKey) || []) : [];
     const candidateArtwork = candidateImages.length === 1 ? candidateImages[0] : null;
     const ruleType = scheduleVehicleType(mapped,selectedRevision);
+    const publishedPlan = ['official_service_vehicle_plan',
+      'published_number_family_plan'].includes(mapped.mapping_level);
+    // On a through train the lead source might be the Joban rapid section,
+    // whose historical source template has no vehicle field. A model candidate
+    // recorded on a different verified member belongs to the canonical TRAIN.
+    // Keep candidates explicitly unverified instead of silently erasing them.
+    const trainCandidate = mapped.mapping_level === 'source_single_type_candidate'
+      ? String(mapped.vehicle_type || '').trim() : '';
     const verifiedBoundaryType = String(boundaryVehicle.get(t.id) || "");
     const conflict = !!(ruleType && verifiedBoundaryType && ruleType !== verifiedBoundaryType);
     const exactScheduleType = conflict ? "" : (ruleType || verifiedBoundaryType);
@@ -479,17 +494,21 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       // A single source label is a candidate, not observed rolling stock.
       // Only decisive, source-dated timetable rules may identify a planned type.
       vehicle_type_label: exactScheduleType || null,
-      vehicle_type_candidates: t.vehicle_type_label || null,
+      vehicle_type_candidates: t.vehicle_type_label || trainCandidate || null,
       vehicle_candidate_artwork_path: candidateArtwork,
       vehicle_candidate_artwork_status: candidateArtwork
         ? "historical-single-model-operator-generic-unverified" : null,
       vehicle_mapping_level: scheduleLevel,
-      vehicle_evidence_source: ruleType && !conflict ? (mapped.mapping_level === "dated_operation_owner" ? "database-dated-operation-owner" : "database-dated-schedule-rule")
+      vehicle_evidence_source: ruleType && !conflict
+        ? (publishedPlan ? "database-published-service-plan"
+          : mapped.mapping_level === "dated_operation_owner"
+            ? "database-dated-operation-owner" : "database-dated-schedule-rule")
         : verifiedBoundaryType && !conflict ? "verified-scheduled-boundary:Rinkai/Osaki" : null,
       vehicle_evidence_source_id: ruleType && !conflict ? mapped.vehicle_source_id : null,
       vehicle_evidence_url: ruleType && !conflict ? mapped.vehicle_source_url : null,
       // Only source-dated unique model PNG; never a guessed formation/livery.
-      vehicle_artwork_path: ruleType && !conflict ? (mapped.vehicle_artwork_path || null) : null,
+      vehicle_artwork_path: ruleType && !conflict && !publishedPlan
+        ? (mapped.vehicle_artwork_path || null) : null,
       source_trip_id: t.source_trip_id || null,
       previous_timetable_ids: t.previous_timetable_ids || [],
       next_timetable_ids: t.next_timetable_ids || [],
