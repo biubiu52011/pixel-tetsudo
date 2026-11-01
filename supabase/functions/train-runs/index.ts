@@ -309,6 +309,24 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   if (connectedIds.some(id => !(canonicalStopsById.get(id) || []).length)) {
     throw new Error("CANONICAL_CONTINUATION_STOPS_UNAVAILABLE");
   }
+  // A verified SQL train can traverse two physical source lines. Return the
+  // actual member lines with its canonical ID, so a live bridge cannot treat a
+  // ChuoRapid/ChuoMain trip as a ChuoRapid/Ome trip just because numbers match.
+  const canonicalLinesById = new Map<number, string[]>();
+  for (let i = 0; i < connectedIds.length; i += 40) {
+    const ids = connectedIds.slice(i, i + 40);
+    const rows = await pages((first, last) => db.from("train_timetable_lines")
+      .select("timetable_id,line_key").in("timetable_id", ids)
+      .order("timetable_id").order("line_key").range(first,last));
+    for (const row of rows) {
+      const list = canonicalLinesById.get(Number(row.timetable_id)) || [];
+      if (row.line_key && !list.includes(row.line_key)) list.push(row.line_key);
+      canonicalLinesById.set(Number(row.timetable_id),list);
+    }
+  }
+  if (connectedIds.some(id => !(canonicalLinesById.get(id) || []).length)) {
+    throw new Error("CANONICAL_CONTINUATION_LINES_UNAVAILABLE");
+  }
 
   // Osaka's historical manually imported schedules contain station-only
   // references: 203 on OsakaLoop and 94 on OsakaHigashi across both calendars.
@@ -477,6 +495,8 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       operation_status: isCancelled({ id: "canonical-train-timetable:" + mapped.timetable_id, operator }, lineId, exceptions) ? "cancelled" : "scheduled",
       canonical_timetable_id: mapped.timetable_id,
       canonical_group_evidence: mapped.group_evidence,
+      canonical_line_ids: mapped.group_evidence === "verified_continuation"
+        ? (canonicalLinesById.get(Number(mapped.timetable_id)) || []) : [],
       line_id: lineId,
       service_date: serviceDate,
       calendar_type: calendarType(t.calendar_urn),
