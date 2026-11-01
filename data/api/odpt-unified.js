@@ -1873,6 +1873,22 @@
               ?run.canonical_number_aliases:[],
             "_sqlVehicleMappingLevel":run.vehicle_mapping_level||"unresolved",
             "_sqlVehicleCandidateLabel":run.vehicle_type_candidates||"",
+            // Authoritative published plan model, not an observed physical carset.
+            // The Edge Function emits vehicle_type_label for these levels only
+            // after checking a source ID, source URL and timetable revision.
+            // Keep it separate from vehicleType, which feeds live identity.
+            "_sqlVerifiedPublishedVehicleType":(
+                (run.vehicle_mapping_level==="official_service_vehicle_plan" ||
+                 run.vehicle_mapping_level==="published_number_family_plan") &&
+                run.vehicle_evidence_source_id && run.vehicle_evidence_url &&
+                run.vehicle_type_label
+            ) ? String(run.vehicle_type_label).trim() : "",
+            "_sqlVerifiedPublishedVehicleSourceUrl":(
+                (run.vehicle_mapping_level==="official_service_vehicle_plan" ||
+                 run.vehicle_mapping_level==="published_number_family_plan") &&
+                run.vehicle_evidence_source_id && run.vehicle_evidence_url &&
+                run.vehicle_type_label
+            ) ? String(run.vehicle_evidence_url) : "",
             "_sqlCandidateArtworkPath":run.vehicle_candidate_artwork_path||null,
             "_sqlCandidateArtworkStatus":run.vehicle_candidate_artwork_status||null,
             "_vehicleEvidenceSource":run.vehicle_evidence_source||null,
