@@ -372,3 +372,32 @@ GROUP BY 1,2,3 ORDER BY 1,2,3;
 ### 验收边界
 
 GitHub 已更新代码和回归测试（目录可运行 `node tools/joban-realtime-railway-scope.test.cjs`）；使用仓库当前版本的匹配函数在隔离环境检查完成，无误投 `JobanLocal`。但本轮没有获得带有效 ODPT Key 的**真实实时数据快照**，因此**没有声称能验证实际当前列车跨取手站的轨迹和所有公开数据源运行状况**。后续须在手机浏览器现场检查快速线 `JobanRapid` ↔ `Joban` 源切换时，运行ID／站序／地图范围是否平滑衔接；运营商回传的临时列车缺失不能当作数据库里不存在。
+
+
+## 16. 2026-11-01 常磐线リアルタイム × canonical 列车唯一匹配（HYBRID）
+
+第14节修复了常磐线计划车型只在前一线路段存在的问题；第15节修复了 ODPT `JobanRapid` 与 `Joban` 两个实时铁路代码被单线过滤。本节补齐**第三个断点：实时观测与同一 canonical 列车计划的唯一身份关联**。
+
+### 问题
+
+`RunningChainResolver.scheduledMatchKey(lineId,position)` 的 key 包含渲染线路 `lineId`。所以实时位置在 `Joban` 快速区段，数据库官方出版计划在 `JobanMain` 本线区段，即使数据库已经确认同一个 `train_timetables.id`，旧匹配也无法跨线继承同一 `runningChainId`。另外详情页此前并不自动加载本线/快速线这一对重叠 canonical 来源，可能缺少待匹配的邻线计划。
+
+### 已落地的修复（不新建服务器，不记录每日实车）
+
+1. `js/running-chain-resolver.js` 新增 `jobanCanonicalBridgeKey(lineId,position)`，只对 `Joban`／`JobanMain`、来源为 JR-East `JobanRapid`／`Joban` 开放，要求服务日、列车号、方向；计划端额外要求 `canonical_group_evidence=verified_continuation` 且存在 `canonical_timetable_id`。该键**仅为候选键**，不能凭编号认定实车。
+2. `js/train-position-estimator.js` 将经官方来源关联的 canonical ID / 核实级别 / 完整来源停站表标识带到**计划位置**，并把常磐线已核实贯通计划的 `runningChainId` 固定为 `canonical-sql-trip:<serviceDate>:<canonicalId>`，避免详情页加载部分区段时重算身份。它仍只是出版时刻表推算，绝不伪造实时源。
+3. `js/data-fusion.js` 新增 `_linkJobanCanonicalRealtime(estimated,posMap)`：按上述候选键找**唯一计划canonical ID**、**唯一有效实时对象**；校验实时源 `fromStation` 确实在出版行程停站路径中，已公布的 `toStation` 不能逆序。只有这些全部满足时才把真实 ODPT 行挂到同一个 `runningChainId`，并显示 `runningChainEvidence=VERIFIED_SQL_CANONICAL_REALTIME_STATION`。不覆盖 ODPT 原始源、更新时间、实时区间、车型、车型图片、编组及观测标记。存在同号重复计划、两个实时观测、来源/方向/日历/站点不符时**不合并**。
+4. 在 `data/core/runtime-config.js` 增加独立的 `VERIFIED_CANONICAL_PLAN_PARTNERS` 配置：`Joban`↔`JobanMain`。由 `RunningChainResolver.getVerifiedCanonicalPartners` 提供**计划数据加载依赖**，不是物理 `serviceBoundaries` 转轨边；`js/trains-page.js` 在打开任意一侧时激活两侧 SQL 计划，`js/data-fusion.js` 的增量估算也同时计算该对区段。地图几何、颜色、既有线路定义不变。
+5. 新增可运行的 Node 回归脚本 `tools/joban-canonical-realtime-hybrid.test.cjs`，读取以上实际源文件，验证唯一匹配及13组正反例（从本线到快速、反方向、不同serviceDate、同号不同实际车、方向差、站点差、不同运营商、JobanLocal隔离、未核实来源不匹配、绝不制造实际编组）。脚本命令：`node tools/joban-canonical-realtime-hybrid.test.cjs`。匹配核心函数已在独立JS环境通过13组正反例与语法检查；当前环境尚未通过真实浏览器网络取得有效ODPT列车快照，不可把单元测试等同线路实际运行验收。
+
+### 严守区别
+
+- **live position truth**：仍只来自有效 `odpt:Train` 实时源，不由计划补出来。
+- **planned position**：SQL/时刻表按钟推定，必须标明非实际观测；缺失实时可以补充显示，但不能覆盖同一列车的有效实时点。
+- **train identity**：在唯一校验通过时保持已出版计划 `canonical_timetable_id` 的贯通运行身份；不靠线路号或来源车次号单独确定。
+- **vehicle model / formation**：计划E531/E657的候选或官方计划等级不变；实时来源没有实车车型证据时，不提升成EXACT PNG/实车编组。
+- **coverage**：`JobanMain` 仍是HYBRID，不能以激活两个ODPT源推断取手以北、羽鸟以北乃至仙台方向全线实时位置可用。
+
+### 后续实地验收
+
+在浏览器连上有效ODPT JR-East实时数据后，记录一列公开来源中可见且确实跨越相关区间的列车，确认：从当前页的`Joban`到`JobanMain`不会因不同ODPT铁路码生成第二个canonical身份；最新ODPT位置始终标为LIVE；未匹配时间段继续显示`推算`或`身份待确认`；有多条同时实时快照时不能错误合并。离线源码测试不能替代这个动态验收。
