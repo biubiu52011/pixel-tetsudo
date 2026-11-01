@@ -290,7 +290,7 @@
   function chuoMainCanonicalBridgeKeys(lineId, position) {
     if ((lineId!=="ChuoRapid"&&lineId!=="ChuoMain")||!position) return [];
     var railway=String(position.sourceRailway||"");
-    if (!/^odpt\\.Railway:JR-East\\.(?:ChuoRapid|Chuo)$/.test(railway)) return [];
+    if (!/^odpt\.Railway:JR-East\.(?:ChuoRapid|Chuo)$/.test(railway)) return [];
     if (position.estimated===true) {
       if (position.positionSource!=="supabase-train-run" ||
           position.canonicalGroupEvidence!=="verified_continuation" ||
