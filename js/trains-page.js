@@ -148,6 +148,19 @@
               _timetablePartners.indexOf(id) < 0) _timetablePartners.push(id);
         });
       }
+      // A verified canonical plan may extend across an overlapping map line
+      // without a physical handover edge (Joban rapid/main at Toride).
+      // Load that SQL partner for train-level live matching; do not change the
+      // visible map geometry or invent a realtime point on its behalf.
+      if (window.RunningChainResolver &&
+          typeof window.RunningChainResolver.getVerifiedCanonicalPartners === "function") {
+        (window.RunningChainResolver.getVerifiedCanonicalPartners(lineId) || []).forEach(function(id) {
+          if (!lines[id]) return;
+          if (_requestedLines.indexOf(id) < 0) _requestedLines.push(id);
+          if (needsSqlTrainPlan(id) && _timetablePartners.indexOf(id) < 0)
+            _timetablePartners.push(id);
+        });
+      }
       // 激活与 getRealtimePositions 渲染范围相同的延伸/支线范围。
       // 展示成员关系独立存在：增加数据依赖不得
       // 改变系统几何或标题。
