@@ -4100,6 +4100,18 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         itineraryStations:_baseOperationCtx.itineraryStations,
         _positionSource:tt._positionSource||'',_plannedArtworkInventory:true
       });
+      // A single historical source label is still a candidate, NOT a
+      // confirmed planned train model. Hide its representative PNG and keep
+      // the model name for evidence review until a train-level publication
+      // or an independent verified operation rule establishes the plan.
+      if (vehResult.vehiclePlan && !publishedSqlPlan && !usesFamily &&
+          tt._positionSource === 'supabase-train-run' &&
+          tt._sqlVehicleMappingLevel === 'source_single_type_candidate') {
+        vehResult.vehiclePlan.status = 'PLANNED_CANDIDATES';
+        vehResult.vehiclePlan.representativeModel = '';
+        vehResult.vehiclePlan.iconPath = '';
+        vehResult.vehiclePlan.evidenceRole = 'unverified-source-candidate';
+      }
       if (plannedEvidence && plannedEvidence._fleetReferenceOnly === true &&
           vehResult.vehiclePlan && vehResult.identityStatus !== 'EXACT') {
         // Evidence covers a corridor or a subset of regional local services.
