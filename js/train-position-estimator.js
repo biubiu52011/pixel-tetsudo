@@ -1115,7 +1115,10 @@
               (memberLines.indexOf("Joban")>=0&&memberLines.indexOf("JobanMain")>=0)||
               (memberLines.indexOf("ChuoRapid")>=0&&memberLines.indexOf("Ome")>=0)||
               (memberLines.indexOf("ChuoRapid")>=0&&memberLines.indexOf("ChuoMain")>=0)||
-              (memberLines.indexOf("ShonanShinjuku")>=0&&memberLines.indexOf("Tokaido")>=0);
+              (memberLines.indexOf("ShonanShinjuku")>=0&&
+                ["Tokaido","Takasaki","UtsunomiyaJR"].some(function(other){
+                  return memberLines.indexOf(other)>=0;
+                }));
             if(verifiedCorridor&&pos.canonicalGroupEvidence==="verified_continuation" &&
                pos.canonicalTimetableId &&
                /^canonical-sql-trip:/.test(String(pos.timetableIdentity||""))) {
