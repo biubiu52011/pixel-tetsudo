@@ -1873,6 +1873,10 @@
               ?run.canonical_number_aliases:[],
             "_sqlVehicleMappingLevel":run.vehicle_mapping_level||"unresolved",
             "_sqlVehicleCandidateLabel":run.vehicle_type_candidates||"",
+            // Historical operation evidence is auditable, but does not
+            // establish an exact planned or realtime vehicle type.
+            "_sqlVehicleCandidateSourceUrl":run.vehicle_candidate_source_url||"",
+            "_sqlVehicleCandidateSourceId":run.vehicle_candidate_source_id||null,
             // Authoritative published plan model, not an observed physical carset.
             // The Edge Function emits vehicle_type_label for these levels only
             // after checking a source ID, source URL and timetable revision.
