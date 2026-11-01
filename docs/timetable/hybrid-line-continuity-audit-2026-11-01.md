@@ -170,3 +170,49 @@ KeihinTohoku、Nambu、Yamanote 等在静态线路数据中没有列出直接ser
 6. Supabase `train-runs` 已从v276升级为 **v277 ACTIVE**，再次读取已部署 `index.ts` 与GitHub当前文件**字节内容一致**；车型映射仍**21,774**条、唯一mapping ID也是21,774、`actual_vehicle_confirmed`全部false。
 
 **剩余局限**：官方ODPT Challenge 2026提供部分实时源但本环境没有真实当日ODPT列车跨大船的连续快照；上述是数据库与离线源码测试验证，非手机端实际线路切换完备性担保。TokaidoMain作为历史来源另有与Tokaido相同的分段行程，可能仍产生来源投影重复；本轮没有越权重写这批历史来源。高崎/宇都宫和横须贺剩余链接需要分段证据审查，不能拿新白名单替代canonical核验。
+
+
+## 8. 2026-11-01 湘南新宿线 × 高崎／宇都宫：大宫263组正式canonical合并，HYBRID v278
+
+### 为什么上轮没找到，以及本轮的严格证据
+
+ShonanShinjuku计划采用 `Northbound` / `Southbound`，Takasaki／UtsunomiyaJR在大宫以北则采用 `Outbound` / `Inbound`，且**北行对应Outbound、南行对应Inbound**。与东海道侧 `Northbound↔Inbound` 正好相反。因此字符串同名匹配得0，不意味着没有真正贯通。
+
+本轮基于既存 **出版式ODPT来源** 对ShonanShinjuku + Takasaki／UtsunomiyaJR同calendar、同完整车次号的263组逐条验证：
+- 双方source trip ID均存在且 `previous_timetable_ids`、`next_timetable_ids` **相互引用**；
+- `source_revision_date`一致、运营者为JR-East、平日／休日一致；
+- 以大宫站为真实**两个来源段的边界端点**，前段到达与后段发车均有有效时刻，前后顺序和方向正确；
+- 两端时刻差：Shonan→Takasaki **67组（1–3分钟）**；Takasaki→Shonan **68组（1–4分钟）**；Shonan→Utsunomiya **64组（1–6分钟）**；Utsunomiya→Shonan **64组（1–3分钟）**；
+- 263个from和263个to源模板均一对一，且没有占用旧的 `train_timetable_continuity` 的起点或终点；
+- 不能仅靠番号重合推断车次连续；[JR East大宫站时刻表](https://timetables.jreast.co.jp/en/timetable/list0350.html)可用于复核运行系统和方向，精确到每个列车的关系以SQL保存的相互引用、端点时刻为证据。
+
+新增 `published_shonan_omiya_verified_boundary_sources` 安全调用者视图（`security_invoker=true`）即时复算263组。迁移源码：
+- `supabase/migrations/20261101190000_shonan_omiya_verified_sources.sql`；
+- `supabase/migrations/20261101191000_merge_263_shonan_omiya_canonical_trains.sql`：**完整复刻已执行的原子SQL迁移**，包含严格计数预检（北131、南132）、成员和引用安全校验、唯一性检查、停站顺序后检。此迁移是一次性变更而不是可反复跑的重建脚本；在现有项目上无需再次执行。
+
+### 实际数据库处理结果
+
+- **263组全部合并** 到既存 canonical `train_timetable_id`，不生成物理列车编组或真实每日行车记录。
+- 北行131组在已存在的Shonan canonical尾部继续接入高崎／宇都宫来源；南行132组将高崎／宇都宫来源**前置**，但保留此前Shonan canonical ID（若有后续东海道段则继续保留）。
+- 先前已连接的Ofuna 35列东海道↔湘南新宿全部保留，最后 **35个三段贯通**：东海道→湘南新宿→高崎18个、高崎→湘南新宿→东海道17个。其余228个为两段贯通。
+- 停站序号通过 `train_timetable_members.segment_order` / `stop_offset` / `merge_first_stop` 重新编排，每个相邻边界站只出现一次。**263/263** 出现正确数量的完整 `train_timetable_stops`，站序号无重复，跨线来源member无重复。
+- 全库canonical计划列车 **91,219→90,956**（减少263个重复区段ID）；`verified_continuation` canonical数从1,119增至 **1,347**（其中35原先已经是已核实贯通身份）。总车型映射仍 **21,774**，所有mapping均 `actual_vehicle_confirmed=false`，唯一 `timetable_id` 21,774。
+- Shonan／Yokosuka在大船的 **2526Y、2551Y两个来源** 依然没有合并；虽然双向来源/时刻有证据，但横须贺来源的车型候选为E235系1000番台，不能贸然传播到湘南新宿的实际车型。未做批量清理或升级。
+
+### HYBRID实时与计划接口
+
+`train-runs` v278（Supabase ACTIVE）:
+- `canonical_line_ids` 返回完整已验证来源线路成员；
+- `canonical_number_aliases` 在SQL verified Shonan + Tokaido、Takasaki或UtsunomiyaJR 关系下返回真实来源别名，不用车次番号近似匹配；
+- `js/running-chain-resolver.js` 新增 `shonanTakasakiCanonicalBridgeKeys` 和 `shonanUtsunomiyaCanonicalBridgeKeys`，匹配候选 key 要求车次、铁路命名空间、归一化方向、服务日，并仍要求数据库同时包含来源路线及 `verified_continuation`。
+- `js/data-fusion.js` 在原有常磐、中央/青梅、中央本线变号、湘南/东海道四条走廊基础上新增这2条，严格保留**唯一计划、唯一实时观测、来源站点、停站方向与顺序**要求；不把计划估计点标记成实时。
+- `RuntimeConfig.VERIFIED_CANONICAL_PLAN_PARTNERS` 新增 ShonanShinjuku↔Takasaki、ShonanShinjuku↔UtsunomiyaJR 的SQL计划预取，不意味着提供商这两条线路每段都有实时覆盖。
+- `train-position-estimator.js` 在已确认的2/3段 canonical 计划中固定 `runningChainId`，不让局部线路视图重设同一列车身份。
+- 新增 `tools/shonan-omiya-northern-canonical-hybrid.test.cjs`：高崎/宇都宫两方向与Tokaido-Shonan-Takasaki三段贯通正例，且有未核实来源、同号不同车、错误运营商、方向、服务日、站序倒退、重复候选、错误线路等拒绝例。一起回归**5个套件全部PASS**。
+- 已再次从Supabase取回v278部署文件，确认与GitHub `supabase/functions/train-runs/index.ts` **内容完全一致**。
+
+### 精度限制与后续
+
+以上是**出版计划的来源连续性**，不是“今天一定有这班车”的证明；只有 `Weekday`、`SaturdayHoliday` 两种计划。JR East 2026-11出版时刻可能与当前历史ODPT source修订不同，实时覆盖会按车次/时间缺失。由于缺少有效ODPT实时快照，本轮未做真实移动端列车跨大宫的动态验收，不能宣称所有实时列车在两个源中都能追踪。
+
+下一步优先核实 **横须贺2个车型冲突来源**、SobuRapid↔Yokosuka跨系统，以及来源重复的 TokaidoMain，不得用相似车次或路线上同一站直接套用此次合并规则。
