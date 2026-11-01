@@ -963,6 +963,21 @@ window.getTransferHint = function(stationId, lang) {
     }
   };
 
+  // SQL 已核实的同一计划列车所跨线路：仅用于按需加载和更新依赖。
+  // 这些是已存在的 canonical member 关系，不是实时位置、实体编组
+  // 或依赖车次号进行自动合并的授权。未核实的横须贺线候选不加入。
+  var VERIFIED_CANONICAL_PLAN_PARTNERS = Object.freeze({
+    "Joban": Object.freeze(["JobanMain"]),
+    "JobanMain": Object.freeze(["Joban"]),
+    "ChuoRapid": Object.freeze(["ChuoMain", "Ome"]),
+    "ChuoMain": Object.freeze(["ChuoRapid"]),
+    "Ome": Object.freeze(["ChuoRapid"]),
+    "ShonanShinjuku": Object.freeze(["Takasaki", "Tokaido", "UtsunomiyaJR"]),
+    "Takasaki": Object.freeze(["ShonanShinjuku", "Tokaido"]),
+    "Tokaido": Object.freeze(["ShonanShinjuku", "Takasaki"]),
+    "UtsunomiyaJR": Object.freeze(["ShonanShinjuku"])
+  });
+
   // JR East 公布的 Train Location 覆盖范围。端点按运营商提供；
   // 下方线路注册表只准入来源公告覆盖的铁路身份；
   // SQL 仍是所有线路的计划/车型回退来源。
@@ -1192,6 +1207,7 @@ window.getTransferHint = function(stationId, lang) {
     SOURCE_RAILWAY_LINE_SCOPE: SOURCE_RAILWAY_LINE_SCOPE,
     SOURCE_RAILWAY_CANONICAL_LINE: SOURCE_RAILWAY_CANONICAL_LINE,
     SERVICE_CORRIDOR_LINES: SERVICE_CORRIDOR_LINES,
+    VERIFIED_CANONICAL_PLAN_PARTNERS: VERIFIED_CANONICAL_PLAN_PARTNERS,
     PRIORITY_OPS: PRIORITY_OPS,
     JR_EAST_TRAIN_LOCATION_SCOPE: JR_EAST_TRAIN_LOCATION_SCOPE,
     REALTIME_POSITION_POLICY: REALTIME_POSITION_POLICY,
