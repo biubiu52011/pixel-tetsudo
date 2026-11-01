@@ -226,3 +226,33 @@ JR East 2026-11官方网站列车详细时刻确认:
 - source grade=B：车型的运营商官方证明可信，但内部模板的具体车次编号、源修订日期和精确行程并未全量核实。
 - 2026-11-01 写后核验：581条源证据ID均有对应行且车次映射与模板车型一致；全库车型映射21,559条，distinct timetable_id仍为21,559；单一车型候选数 4,161→**3,580**。没有凭线路候选批量推定真实每日车组。
 - 最早遗留的“山形线新庄→山形”26条车型争议依然待单独核对，不能从上述「つばさ」的E8车型推广到普通列车。
+
+
+## 11. 2026-11-01 常规特急车型确认172条及2026年「しおさい」明确更正
+
+本次仅处理**已存在**的 `source_single_type_candidate` 车型映射，按照2026-11 JR东日本官方车次、官方使用车辆资料和2026-03/2024-03改正公告升级计划车型。来源表仍只含 Weekday/SaturdayHoliday 计划；不保存实际每日运行、真实编组或车辆运用。原始时刻、停站和车次编号不修改。
+
+| 范围 | 车型 | 升级映射数 | evidence_sources.id | 备注 |
+|---|---|---:|---:|---|
+| JobanMain 常磐线「ひたち／ときわ」常规偶数号2–30及52–86 | E657系 | 66 | 4936 | 33个不同番号×2日历 |
+| Shinetsu 「しらゆき」51M–58M | E653系 | 16 | 4937 | 8号数×2日历 |
+| Uetsu 「いなほ」1M–14M | E653系 | 28 | 4938 | 14号数×2日历 |
+| Agatsuma+Joetsu「草津・四万」3001M–3004M常规段 | E257系5500番台 | 16 | 4939 | 两个区段×4号数×2日历；并非16条独立列车实车 |
+| Sotobo「わかしお」1051M–1071M来源 | E257系500番台 | 37 | 4940 | 平日21、土休日16，排除临时特别车型 |
+| Uchibo「さざなみ」1001M–1007M来源 | E257系500番台 | 7 | 4941 | 仅平日7条 |
+| SobuMain「しおさい4号」4004M（Weekday） | **E259系** | 1 | 4942 | **纠正原错误E257标签** |
+| SobuMain「しおさい6号」4006M（Weekday） | E257系500番台 | 1 | 4943 | 逐车次核实 |
+| **合计** | | **172** | | |
+
+官方证据：
+- JR East [E657「ひたち／ときわ」](https://www.jreast.co.jp/train/express/hitachi_tokiwa.html)；[常磐线2026年11月平日上行](https://timetables.jreast.co.jp/2611/timetable-v/240u1p.html)、[休日上行](https://timetables.jreast.co.jp/2611/timetable-v/240u2p.html)；[2M](https://timetables.jreast.co.jp/2611/train/045/048471.html)、[86M](https://timetables.jreast.co.jp/2611/train/050/050381.html)。
+- JR East [E653「いなほ／しらゆき」](https://www.jreast.co.jp/train/express/inaho_shirayuki.html)；2026-11 [いなほ1号 1M](https://timetables.jreast.co.jp/2611/train/060/064091.html)、[14号14M](https://timetables.jreast.co.jp/2611/train/060/064191.html)、[しらゆき1号51M](https://timetables.jreast.co.jp/2611/train/060/064031.html)、[8号58M](https://timetables.jreast.co.jp/2611/train/075/076201.html)。
+- JR East [E257系5500番台「草津・四万」](https://www.jreast.co.jp/multi/traininformation/kusatsu_shima/)；2026-11 [3001M](https://timetables.jreast.co.jp/2611/train/045/047081.html)、[3004M](https://timetables.jreast.co.jp/2611/train/045/047111.html)。
+- JR East [E257「わかしお／さざなみ」](https://www.jreast.co.jp/multi/traininformation/sazanami_wakashio/index.html)；[2024-03千叶支社改正公告PDF第2页](https://www.jreast.co.jp/press/2023/chiba/20231215_c01.pdf)明确常规两列车服务改用E257系5辆；2026-11 [わかしお1号1051M](https://timetables.jreast.co.jp/2611/train/045/049461.html)、[さざなみ1号1001M](https://timetables.jreast.co.jp/2611/train/045/049721.html)。一些**临时**「新宿わかしお」使用255系，不适用常规一律E257的简化规则。
+- **特别重要**：JR East [2026-03千叶支社改正公告PDF第2页](https://www.jreast.co.jp/press/2025/chiba/20251212_c01.pdf)明列平日 **しおさい4号改E259系6辆、しおさい6号改E257系5辆**；2026-11官方 [4004M](https://timetables.jreast.co.jp/2611/train/035/038311.html)、[4006M](https://timetables.jreast.co.jp/2611/train/095/098921.html)对应车次、区间、出发时间，已相应纠正数据库来源模板和映射。不得根据「しおさい」线路统一设E257或E259；其他号数仍需各自车型证明。
+
+**保留未核实边界**：Uetsu 8005M、8010M、8052M、8055M、8086M、9011M、9083M共7个临时来源；Agatsuma/Joetsu 4031M、4034M各2条来源；SobuMain 其他20条 E257（しおさい）候选均不在本次升级范围。编号后缀、相同服务名和来源单类型标签不能证明季节列车实际车型。此前山形线26条普通列车也仍待逐车次核对。
+
+技术记录：曾尝试为上述`4004M/4006M`设置`mapping_level=dated_schedule_rule`，数据库约束要求随该等级提供车辆规则ID，写入被原子拒绝；随后使用含官方A档证据的`official_service_vehicle_plan`完成两条更新，无遗留部分事务。其余170条以官方服务计划级别存储，全部`actual_vehicle_confirmed=false`。
+
+写后 SQL 验证（2026-11-01快照）：证据 source_id=4936～4943 正好172条，映射总量21,559、distinct timetable_id也是21,559（无重复），`source_single_type_candidate`从3,580降至**3,408**。全部172条`train_timetable_vehicle_mappings.vehicle_type`与`manual_timetable_templates.vehicle_type_label`一致。这个更新并不增加映射覆盖的 canonical 列车数。
