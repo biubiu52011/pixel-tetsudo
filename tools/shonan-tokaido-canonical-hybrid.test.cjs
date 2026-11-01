@@ -128,7 +128,7 @@ for(const [name,p,r] of rejected){
   assert.ok(rows.every(x=>!x.runningChainId),name+' must not inherit identity');
 }
 assert.match(edgeText,/aliasIds.*connectedIds/);
-assert.match(edgeText,/lines\.includes\("ShonanShinjuku"\) && lines\.includes\("Tokaido"\)/);
+assert.match(edgeText,/lines\.includes\("ShonanShinjuku"\) &&[\s\S]*?\["Tokaido","Takasaki","UtsunomiyaJR"\]\.some/);
 assert.match(estText,/memberLines\.indexOf\("ShonanShinjuku"\)/);
 assert.match(cfgText,/ShonanShinjuku: Object\.freeze\(\["Tokaido"\]\)/);
 assert.match(fusionText,/shonanTokaidoCanonicalBridgeKeys/);
