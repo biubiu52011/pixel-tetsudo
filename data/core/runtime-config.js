@@ -62,6 +62,15 @@
     "SotetsuDirect": "SaikyoKawagoe"
   };
 
+  // Verified SQL canonical trains can contain multiple line segments even
+  // when the map's physical topology is overlapping rather than a new
+  // switch/transfer edge. These are plan-fetch dependencies ONLY, never
+  // evidence of realtime position or of a different physical vehicle.
+  var VERIFIED_CANONICAL_PLAN_PARTNERS = Object.freeze({
+    Joban: Object.freeze(["JobanMain"]),
+    JobanMain: Object.freeze(["Joban"])
+  });
+
   // 乘客服务走廊保留来源记录和车站
   // 拓扑，但不是独立线路，也不是列车之间的交接边。
   var SERVICE_CORRIDOR_LINES = Object.freeze({ UenoTokyo: true });
@@ -390,6 +399,7 @@
     // 直通运行
     SOURCE_RAILWAY_LINE_SCOPE: SOURCE_RAILWAY_LINE_SCOPE,
     SOURCE_RAILWAY_CANONICAL_LINE: SOURCE_RAILWAY_CANONICAL_LINE,
+    VERIFIED_CANONICAL_PLAN_PARTNERS: VERIFIED_CANONICAL_PLAN_PARTNERS,
     SERVICE_CORRIDOR_LINES: SERVICE_CORRIDOR_LINES,
     PRIORITY_OPS: PRIORITY_OPS,
     JR_EAST_TRAIN_LOCATION_SCOPE: JR_EAST_TRAIN_LOCATION_SCOPE,
