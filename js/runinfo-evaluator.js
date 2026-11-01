@@ -145,10 +145,18 @@
 
     var directionalSuspension = /(?:上り線|下り線|内回り|外回り)[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止|運休)/.test(s);
     if (directionalSuspension) evidence.push({ type: "DIRECTIONAL_SUSPENSION" });
+    // Official status pages sometimes omit the affected scope and state only
+    // the current operation, e.g. “運転を見合わせています”. This is still
+    // an explicit live suspension, not a generic notice. Keep through-service
+    // cancellation separate: “直通運転を中止しています” remains notice.
+    var unscopedCurrentSuspension = /運転(?:を)?(?:見合わせ|中止)(?:しています|しております|ています|ております|中|となっています|中です)/.test(s) && !through;
+    if (unscopedCurrentSuspension && !(whole || explicitRangeSuspension || directionalSuspension || partial || currentCancellation)) {
+      evidence.push({ type: "UNSCOPED_CURRENT_SUSPENSION" });
+    }
     // Any confirmed suspension is rendered as ×, including a station range,
     // one direction, or a partial train cancellation. The affected scope is
     // still preserved separately in interval/direction/impacts.
-    if (whole || explicitRangeSuspension || directionalSuspension || partial || currentCancellation) {
+    if (whole || explicitRangeSuspension || directionalSuspension || partial || currentCancellation || unscopedCurrentSuspension) {
       return { status: "suspended", evidence: evidence, delayUpperBoundMinutes: null };
     }
     if (timetable || serviceChange) return { status: "delayed", evidence: evidence, delayUpperBoundMinutes: null };

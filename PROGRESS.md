@@ -146,9 +146,9 @@
 | 项目 | 当前状态 |
 | --- | --- |
 | 已知样本 / 根因 | 运行情报出现新原因时，原因短语可能被截成“の信号確認”等残片；GTFS 标准原因曾直接以中文进入按日文来源处理的融合/翻译链。前者根因是旧正则从因果连接词附近取片段，后者根因是适配层把展示语言当成事实值。 |
-| 原位修复 | `js/runinfo-evaluator.js` 按因果连接词和逗号边界提取完整原因，去除句首线路主语残片及影响区间前缀，并解析全角恢复时间；明确本线停运（全线、区间、方向、部分列车）统一为 `suspended/×`，直通运行中止单独保持 `notice/△`；检测到“已恢复后仍有延误/运休”时由当前状态覆盖过去停运，改为 `delayed/△`；新增官网同类字段的统一判定：折返し运转、行先変更、减班等服务变更归入 `delayed/△`，当前“运休しています”归入 `suspended/×`，官网关于“何种情况发布运行信息”的说明文字不再被当作当前故障；`js/realtime-view.js` 的状态行在直通中止时显示“直通運転中止”，原因仍保留在详细原文中；`data/api/odpt-unified.js` 输出日文标准原因并保留 `gtfs:causeCode`；`js/delay-translator.js` 补齐 GTFS 1–12 原因及“架線に支障物”的四语展示；`js/runinfo-web.js` 不再把官网块中的“お問い合わせ”等任意文本当成运行状态，未识别时不写入缓存。未新增旁路运行情报链。 |
-| 验证 | `node --check` 变更脚本通过；`runinfo-evaluator`、`runinfo-web-parser`、`runinfo-modal-sync`、`delay-translator-fulltext`、`runinfo-scope`、`runinfo-loading-state` 全部通过；停运样本解析为原因“架線に支障物”、区间“荻窪→西荻窪駅”、恢复时间“14:20頃”、状态 `suspended/×`；追加的“已于14:14頃恢复，随后仍有延误和运休”样本解析为 `delayed/△`；直通中止样本“立川→青梅駅”解析为 `notice/△`，状态行显示“直通運転中止”而非原因；消息类别“問い合わせ”保持 `notice/!`；新增验证折返し运转为 `delayed/△`、当前运休为 `suspended/×`、官网阈值说明/效果枚举文字保持 unknown；同步修正状态卡测试使用现行 `data-lines` 字段，并将加载状态测试改为检查当前代码契约。 |
-| 浏览器 / 发布 | `browser runtime: NOT VERIFIED`；当前目录不是 Git 工作树，未提交、未推送、未部署。需在运行情报页回读新的 GTFS 原因卡片及详情弹窗。 |
+| 原位修复 | `js/runinfo-evaluator.js` 按因果连接词和逗号边界提取完整原因，去除句首线路主语残片及影响区间前缀，并解析全角恢复时间；明确本线停运（全线、区间、方向、部分列车）统一为 `suspended/×`，直通运行中止单独保持 `notice/△`；检测到“已恢复后仍有延误/运休”时由当前状态覆盖过去停运，改为 `delayed/△`；新增官网同类字段的统一判定：折返し运转、行先変更、减班等服务变更归入 `delayed/△`，当前“运休しています”归入 `suspended/×`，官网关于“何种情况发布运行信息”的说明文字不再被当作当前故障；补齐无范围的当前句式“運転を見合わせています／運転中止しています／運転見合わせ中”，统一为 `suspended/×`，直通句式仍保持 `notice/△`；`js/realtime-view.js` 的状态行在直通中止时显示“直通運転中止”，原因仍保留在详细原文中；`data/api/odpt-unified.js` 输出日文标准原因并保留 `gtfs:causeCode`；`js/delay-translator.js` 补齐 GTFS 1–12 原因及“架線に支障物”的四语展示；`js/runinfo-web.js` 不再把官网块中的“お問い合わせ”等任意文本当成运行状态，未识别时不写入缓存。未新增旁路运行情报链。 |
+| 验证 | `node --check` 变更脚本通过；`runinfo-evaluator`、`runinfo-web-parser`、`runinfo-modal-sync`、`delay-translator-fulltext`、`runinfo-scope`、`runinfo-loading-state` 全部通过；停运样本解析为原因“架線に支障物”、区间“荻窪→西荻窪駅”、恢复时间“14:20頃”、状态 `suspended/×`；追加的“已于14:14頃恢复，随后仍有延误和运休”样本解析为 `delayed/△`；直通中止样本“立川→青梅駅”解析为 `notice/△`，状态行显示“直通運転中止”而非原因；消息类别“問い合わせ”保持 `notice/!`；新增验证折返し运转为 `delayed/△`、当前运休为 `suspended/×`、官网阈值说明/效果枚举文字保持 unknown；同步修正状态卡测试使用现行 `data-lines` 字段，并将加载状态测试改为检查当前代码契约；本轮新增无范围当前中断的 evaluator、DataFusion 与官网缓存链回归均通过。 |
+| 浏览器 / 发布 | `browser runtime: NOT VERIFIED`；实际 Git 工作树为 `.work/ocr-realtime-20261030`，本轮仅有运行情报评估器源码与本条记录待提交，未推送、未部署。需在运行情报页回读新的官网/GTFS 中断卡片及详情弹窗。 |
 
 ### SCRIPT-CONSOLIDATION-20261023 — 脚本历史补丁收敛（本地持续整理）
 
