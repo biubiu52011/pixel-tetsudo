@@ -256,3 +256,32 @@ JR East 2026-11官方网站列车详细时刻确认:
 技术记录：曾尝试为上述`4004M/4006M`设置`mapping_level=dated_schedule_rule`，数据库约束要求随该等级提供车辆规则ID，写入被原子拒绝；随后使用含官方A档证据的`official_service_vehicle_plan`完成两条更新，无遗留部分事务。其余170条以官方服务计划级别存储，全部`actual_vehicle_confirmed=false`。
 
 写后 SQL 验证（2026-11-01快照）：证据 source_id=4936～4943 正好172条，映射总量21,559、distinct timetable_id也是21,559（无重复），`source_single_type_candidate`从3,580降至**3,408**。全部172条`train_timetable_vehicle_mappings.vehicle_type`与`manual_timetable_templates.vehicle_type_label`一致。这个更新并不增加映射覆盖的 canonical 列车数。
+
+
+## 12. 2026-11-01 确认50条既有车型候选：しおさい纠错、地铁MSE、E261、285及东武500
+
+本批依据经营者官方车型资料和明确的列车服务归属，将 **50 条既有 `source_single_type_candidate` 映射**升级为 `official_service_vehicle_plan`。车型映射覆盖总数没有变化；只更新计划车型型号、对应证据及原始来源模板的 `vehicle_type_label`。没有修改列车到发时间、日历、实际车辆编组或运营日期。
+
+| 对象及原始条件 | 正式计划车型 | 数量 | Supabase evidence id |
+|---|---|---:|---:|
+| SobuMain 常规「しおさい」4001M–4014M剩余候选，排除已单独修复的4004M、4006M及4011M | E259系 | 19 | 4944 |
+| SobuMain 平日「しおさい11号」4011M | E257系500番台 | 1 | 4945 |
+| Chiyoda 直通特急（非普通电车） | 小田急60000形 MSE | 18 | 4946 |
+| TokaidoMain 寝台特急「サンライズ出雲」5031M／5032M | 285系 | 4 | 4947 |
+| TokaidoMain「サフィール踊り子」3001M／3002M | E261系 | 4 | 4948 |
+| Sano「リバティりょうもう」1612／1643 | 东武500系 | 4 | 4949 |
+
+### 逐服务官方车型证据
+
+- **しおさい按班次区分E259/E257**：JR东日本 JRE Media 更新于2026-03-18的[官方「しおさい」介绍](https://media.jreast.co.jp/articles/2432)直接写明 **E257系用于しおさい6・11号**，其余常规列车采用 E259系；[2026-03-14改正对4、6号车辆置换的报道](https://news.mynavi.jp/article/20251213-3807169/)以及 [2026常规时刻表](https://shinkansenkenkyu.com/time-shiosai/)用于交叉核对，原来的4004M⇒E259和4006M⇒E257在上一轮已正确修复、此次没有再次改写。现有SobuMain整批22条来源车型全部去掉旧统一E257候选错误，保留编号、时刻、日历。原先剩余20条中的19条变E259、4011M变E257。
+- **小田急60000形MSE**：[东京Metro官方千代田线特急Romancecar页面](https://www.tokyometro.jp/romancecar/index.html)明确显示使用MSE（60000形）。仅匹配18条`odpt.TrainType:TokyoMetro.LimitedExpress`并原已标签为60000 MSE的模板，**不能**将地铁千代田线普通车或其他直通车辆也设为MSE；源编号如A1711E并未逐个与运营者最新运用番号独立比对。
+- **285系**：[JR东海官方285系列车说明](https://railway.jr-central.co.jp/train/express/detail_02_05/index.html)指明寝台特急「サンライズ出雲／瀬戸」使用285系。TokaidoMain原始来源只含东京—热海段，不替代出云/濑户全程逐站核验。
+- **E261系**：[JR东日本官方「サフィール踊り子」车辆说明](https://www.jreast.co.jp/saphir/cars/)唯一标明E261系，追加该车东海道本线来源段4条；此前伊东线同服务4条已确认，各来源段单独记录。
+- **东武500系**：[东武铁道官方「リバティ」](https://www.tobu.co.jp/railway/special_express/vehicle/revaty/)明确「リバティりょうもう」使用500系。Sano 1612／1643各Weekday、SaturdayHoliday两种计划共4条，只确认服务车型，不宣称源车次编号已全面与[东武2026-03-14官方时刻表](https://www.tobu.co.jp/pdf/timetable/2026/time-table_02_nobori.pdf?202603=)逐号核实。
+
+### 核验及限制
+
+- source_id=4944～4949共**50条**；升级后 `vehicle_type` 均等于 `manual_timetable_templates.vehicle_type_label`。
+- 2026-11-01 写入后复查：车型映射全库 **21,559**、`count(distinct timetable_id)=21,559`（无重复）；本批50条全为 `actual_vehicle_confirmed=false`。剩余 `source_single_type_candidate` 从**3,408降到3,358**。
+- 还有69,695条canonical计划列车没有车型映射，尤其混用通勤车与无官方逐车次车型依据的来源；不要将“已存在映射”当作“已达到同一强度的官方计划车型确认”。山形线新庄—山形26条旧701系标签继续留在待核实状态。
+- `source_path='data/timetables/*-manual.js'` 为历史来源元数据，可能不是 GitHub 当前存在的文件；以后重新导入时需对照这份审计和 Supabase 最新模板，不能恢复错误的全线E257标签。
