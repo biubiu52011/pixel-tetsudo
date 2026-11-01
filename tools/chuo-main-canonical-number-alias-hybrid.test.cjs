@@ -26,16 +26,16 @@ const ctx={window,console};vm.createContext(ctx);
 vm.runInContext(fusionText.slice(a,b),ctx);
 const link=ctx._linkVerifiedCanonicalRealtime;
 const aliases=[
-  {line_key:'ChuoMain',train_number:'640M',railway_urn:'odpt.Railway:JR-East.Chuo',
+  {line_key:'ChuoMain',train_number:'640M',railway_urn:'odpt.Railway:JR-East.ChuoMain',
     direction_urn:'odpt.RailDirection:Inbound'},
-  {line_key:'ChuoMain',train_number:'640T',railway_urn:'odpt.Railway:JR-East.Chuo',
+  {line_key:'ChuoMain',train_number:'640T',railway_urn:'odpt.Railway:JR-East.ChuoMain',
     direction_urn:'odpt.RailDirection:Inbound'},
   {line_key:'ChuoRapid',train_number:'640T',railway_urn:'odpt.Railway:JR-East.ChuoRapid',
     direction_urn:'odpt.RailDirection:Inbound'},
 ];
 function plan(id=66496,opts={}) {
   return Object.assign({serviceDate:'2026-11-02',trainNumber:'640M',railDirection:'Inbound',
-    sourceRailway:'odpt.Railway:JR-East.Chuo',positionSource:'supabase-train-run',
+    sourceRailway:'odpt.Railway:JR-East.ChuoMain',positionSource:'supabase-train-run',
     estimated:true,canonicalGroupEvidence:'verified_continuation',
     canonicalTimetableId:id,canonicalLineIds:['ChuoMain','ChuoRapid'],
     canonicalTrainNumberAliases:aliases,
