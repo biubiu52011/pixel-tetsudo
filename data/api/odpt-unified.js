@@ -2240,6 +2240,10 @@
                         audit[lineId] = found;
                     });
                     window.ODPT_BOSO_REALTIME_AUDIT = audit;
+                    if (window.ODPTClient.auditRealtimeRailwayIdentities) {
+                        window.ODPT_BOSO_REALTIME_SOURCE_INVENTORY =
+                            window.ODPTClient.auditRealtimeRailwayIdentities(op, snapshot);
+                    }
                 }
                 return results;
             });
@@ -3220,6 +3224,12 @@
                             if (Object.keys(bosoAudit).length) {
                                 // 当前活动线路的最新快照；不写 localStorage / Supabase。
                                 window.ODPT_BOSO_REALTIME_AUDIT = bosoAudit;
+                                // Exact provider railway identities observed in this snapshot.
+                                // Zero exact rows should be distinguished from alias mismatch.
+                                if (window.ODPTClient.auditRealtimeRailwayIdentities) {
+                                    window.ODPT_BOSO_REALTIME_SOURCE_INVENTORY =
+                                        window.ODPTClient.auditRealtimeRailwayIdentities(op, window.ODPT_TRAIN_POSITIONS[op]);
+                                }
                             }
                         }
                     }).catch(function(e) {
@@ -3233,6 +3243,27 @@
                             at: Date.now(),
                             message: e && e.message || "request failed"
                         };
+                        // A failed request is not evidence of zero trains.
+                        // Invalidate the in-memory Boso audit rather than
+                        // exposing stale matches from the previous poll.
+                        if (op === "JR-East") {
+                            var requestedBoso = (_activeRealtimeLineIds && _activeRealtimeLineIds[op]) || [];
+                            var bosoKeys = ["SobuMain", "Narita", "NaritaAirportBranch",
+                                "Uchibo", "Sotobo", "Togane", "Kashima"];
+                            var failedAudit = {};
+                            requestedBoso.forEach(function(lineId) {
+                                if (bosoKeys.indexOf(lineId) < 0) return;
+                                failedAudit[lineId] = {
+                                    lineId: lineId,
+                                    ok: false,
+                                    matchedCount: 0,
+                                    probeStatus: "realtime-source-fetch-failed",
+                                    sourceHttpStatus: Number(e && e.httpStatus) || 0
+                                };
+                            });
+                            window.ODPT_BOSO_REALTIME_AUDIT = failedAudit;
+                            window.ODPT_BOSO_REALTIME_SOURCE_INVENTORY = null;
+                        }
                         console.debug("[ODPT] " + op + " train positions fetch failed; retaining previous snapshot:", e && e.message);
                     })
                 );
