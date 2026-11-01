@@ -12,6 +12,12 @@
     return resolver && typeof resolver.getDirectThroughLines === "function"
       ? resolver.getDirectThroughLines(lineId) || [] : [];
   }
+  // Fetch/update dependency only; distinct from physical through adjacency.
+  function _canonicalPlanPartners(lineId) {
+    var resolver=window.RunningChainResolver;
+    return resolver && typeof resolver.getVerifiedCanonicalPartners==="function"
+      ? resolver.getVerifiedCanonicalPartners(lineId)||[] : [];
+  }
 
   "use strict";
 
@@ -887,6 +893,7 @@
       } catch(e) {}
       try {
         deps = deps.concat(_directThroughLines(id));
+        deps = deps.concat(_canonicalPlanPartners(id));
       } catch(e) {}
       if (line.branchOf) deps.push(line.branchOf);
       if (line.branches) deps = deps.concat(line.branches);
