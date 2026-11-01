@@ -33,13 +33,13 @@ assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('JobanLocal'))
 assert.deepEqual(Array.from(resolver.getDirectThroughLines('Joban')),
   [], 'source-fetch partners must not invent a physical through edge');
 
-const start = fusionText.indexOf('  function _linkJobanCanonicalRealtime(');
+const start = fusionText.indexOf('  function _linkVerifiedCanonicalRealtime(');
 const end = fusionText.indexOf('  function loadTrainPositions()', start);
 assert.ok(start >= 0 && end > start);
 const ctx = { window, console };
 vm.createContext(ctx);
 vm.runInContext(fusionText.slice(start, end), ctx);
-const link = ctx._linkJobanCanonicalRealtime;
+const link = ctx._linkVerifiedCanonicalRealtime;
 assert.equal(typeof link, 'function');
 
 function plan(id, opts = {}) {
