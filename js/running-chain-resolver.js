@@ -252,6 +252,21 @@
       [lineId,date,num,dir].map(function(v){return encodeURIComponent(String(v));}).join("|");
   }
 
+  // Candidate key only. The operator, observed station and a unique, verified
+  // canonical timetable are checked independently by DataFusion before linkage.
+  // JobanLocal is a different service even where its station names overlap.
+  function jobanCanonicalBridgeKey(lineId, position) {
+    if((lineId!=="Joban"&&lineId!=="JobanMain")||!position)return "";
+    if(!/^odpt\\.Railway:JR-East\\.(?:JobanRapid|Joban)$/.test(String(position.sourceRailway||"")))return "";
+    if(position.estimated===true) {
+      if(position.positionSource!=="supabase-train-run" ||
+         position.canonicalGroupEvidence!=="verified_continuation" ||
+         !position.canonicalTimetableId)return "";
+    } else if(position.positionSource!=="realtime-api" ||
+      !position.sourceFromStation)return "";
+    return scheduledMatchKey("JR-East-Joban-through",position);
+  }
+
   function isThroughAtStation(lineA,lineB,stationId){
     if(!_initialized)buildIndexes();
     var joins=(_boundaryMap[lineA]&&_boundaryMap[lineA][lineB])||[];
@@ -299,6 +314,7 @@
     getResolutionContext:getResolutionContext,
     resolveTimetableChain:resolveTimetableChain,
     scheduledMatchKey:scheduledMatchKey,
+    jobanCanonicalBridgeKey:jobanCanonicalBridgeKey,
     sourcePositionMatchKey:sourcePositionMatchKey,
     _getIndexes:function(){return{boundaries:_boundaryMap,branchOfMap:_branchOfMap,directThrough:_directThrough};}
   };
