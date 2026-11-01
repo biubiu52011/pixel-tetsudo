@@ -186,3 +186,43 @@ JR East 2026-11官方网站列车详细时刻确认:
 - 2026-11-01 验证：total train_timetable_vehicle_mappings = 21,559；unique timetable_id = 21,559（无重复）；本批升级 source_id=4926-4930 合计90；剩余 source_single_type_candidate 4,161。
 - 这90条是原本有映射的候选转为官方服务车型，故**已映射车次覆盖总数不变**。本批全部 actual_vehicle_confirmed=false（保留实际编组未知）。
 - 山形线新庄→山形26条旧701系5500番台来源，及其他临时列车与混用车型，仍需逐次核查，不得冒充整库确认完成。
+
+
+## 10. 2026-11-01 按官方专用服务确认车型：581条候选升级
+
+**定位：** 对已有的单一车型候选实施车型型号归一化与官方服务-车辆对应的证据升级，保留全部原始列车（服务）编号、运行日历、停站、时刻，不涉及实际编组或实际运行日期。数据库中仅 Weekday/SaturdayHoliday 两种计划；不能据此推断每天真的开行。原始 source_path 中若指向已不在 GitHub main 的 *-manual.js，只是数据库历史来源元数据，不可将本记录误当现存原始JS来源。
+
+### 三类新干线：169条
+
+| 线路/服务 | 修正前错误的车型字段 | 正确计划车型 | 数量 | 证据ID |
+|---|---|---|---:|---:|
+| AkitaShinkansen「こまち」 | こまち | E6系 | 44 | 4931 |
+| TohokuShinkansen「こまち」 | こまち | E6系 | 14 | 4931 |
+| YamagataShinkansen「つばさ」 | つばさ | E8系 | 45 | 4933 |
+| TohokuShinkansen「つばさ」 | つばさ | E8系 | 21 | 4933 |
+| NishiKyushuShinkansen「かもめ」 | かもめ | N700S系 | 45 | 4932 |
+
+- E8系：JR East 2026年改正明确「つばさ」统一使用E8 https://media.jreast.co.jp/articles/5625 ，车辆官方介绍 https://www.jreast.co.jp/train/shinkan/e8.html 。该确认是对命名为Tsubasa/つばさ的服务，不可把“东北新干线其他列车”都变为E8。
+- E6系：JR East 2026秋田新干线资料明确「こまち」全车使用E6 https://event.jreast.co.jp/pages/akita_shinkansen_699 ，车辆介绍 https://www.jreast.co.jp/train/shinkan/e6.html 。
+- N700S系：JR九州西九州新干线「かもめ」车型 https://www.jrkyushu.co.jp/railway/ticket/rule/tokudai_baggage/ 与2026-2027官方服务介绍 https://www.jrkyushu.co.jp/english/train/shinkansen_kamome.html 。
+- 原历史列车编号如 Komachi27、Tsubasa121、こまち1、かもめ102号 **仍原样保留**；它们是来源模板中的“列车名＋号数”，不能说已经核实为铁路公司的数字运用番号。只修正车型字段，绝不把列车名称填入车型字段。
+
+### 成田特快与Skyliner：412条
+
+| 线路/服务 | 归一化型号 | 数量 | 证据ID |
+|---|---|---:|---:|
+| Narita 成田エクスプレス | E259系 | 108 | 4934 |
+| NaritaAirportBranch 成田エクスプレス | E259系 | 108 | 4934 |
+| SobuMain 成田エクスプレス | E259系 | 108 | 4934 |
+| NaritaSkyAccess スカイライナー | AE形 | 88 | 4935 |
+
+- JR East https://www.jreast.co.jp/train/express/nex.html 明确「成田エクスプレス」使用E259系。候选源符合JR-East.LimitedExpress及机场方向线路分段，旧编号2001M-2054M；来源编号未逐条以2026-11官方逐列车表独立核实。
+- 京成 https://www.keisei.co.jp/keisei/tetudou/accessj/sharyou.htm 明确第三代スカイライナー使用AE形；本批候选为Keisei.Skyliner类型、AE格式源号，不能声称源号全部是官方2026版运用代码。
+
+### 实施与证据边界
+
+- 数据库更新 public.train_timetable_vehicle_mappings 的 vehicle_type、mapping_level=official_service_vehicle_plan、source_id=4931～4935；actual_vehicle_confirmed=false，**不是**“官方每班车逐车实测”。
+- 同步修正581个 manual_timetable_templates.vehicle_type_label（服务名误写为车型的169条，车型名称规范化的412条）。未改 primary_train_number、calendar_urn、stop clocks、运行日期、车辆编组。
+- source grade=B：车型的运营商官方证明可信，但内部模板的具体车次编号、源修订日期和精确行程并未全量核实。
+- 2026-11-01 写后核验：581条源证据ID均有对应行且车次映射与模板车型一致；全库车型映射21,559条，distinct timetable_id仍为21,559；单一车型候选数 4,161→**3,580**。没有凭线路候选批量推定真实每日车组。
+- 最早遗留的“山形线新庄→山形”26条车型争议依然待单独核对，不能从上述「つばさ」的E8车型推广到普通列车。
