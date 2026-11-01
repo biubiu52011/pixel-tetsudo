@@ -1138,7 +1138,8 @@
     var corridors=[
       {lines:["Joban","JobanMain"], matcher:"jobanCanonicalBridgeKey"},
       {lines:["ChuoRapid","Ome"], matcher:"omeCanonicalBridgeKey"},
-      {lines:["ChuoRapid","ChuoMain"], matcher:"chuoMainCanonicalBridgeKeys"}
+      {lines:["ChuoRapid","ChuoMain"], matcher:"chuoMainCanonicalBridgeKeys"},
+      {lines:["ShonanShinjuku","Tokaido"], matcher:"shonanTokaidoCanonicalBridgeKeys"}
     ];
     corridors.forEach(function(corridor) {
       if(typeof resolver[corridor.matcher]!=="function")return;
