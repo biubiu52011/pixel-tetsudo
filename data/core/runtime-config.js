@@ -190,6 +190,9 @@
      "Daishi_Tobu": true,
     "Itsukaichi": true,
     "Joban": true,
+    // JR East realtime coverage is limited to Hatori and south, not the
+    // entire JobanMain route. Keep its default HYBRID policy.
+    "JobanMain": true,
     "JobanLocal": true,
     "Kawagoe": true,
     "KeioMain": true,
