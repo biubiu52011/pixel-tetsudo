@@ -64,7 +64,7 @@ function live(line,number,dir,from,to,opts={}) {
  const railway={ShonanShinjuku:'ShonanShinjuku',
  Takasaki:'Takasaki',UtsunomiyaJR:'Utsunomiya'}[line];
  return Object.assign({serviceDate:'2026-11-01',trainNumber:number,
-   railDirection:direction,sourceRailway:'odpt.Railway:JR-East.'+rail,
+   railDirection:direction,sourceRailway:'odpt.Railway:JR-East.'+railway,
    positionSource:'realtime-api',estimated:false,
    sourceFromStation:'odpt.Station:JR-East.'+railway+'.'+from,
    sourceToStation:'odpt.Station:JR-East.'+railway+'.'+to},opts);
