@@ -327,6 +327,49 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   if (connectedIds.some(id => !(canonicalLinesById.get(id) || []).length)) {
     throw new Error("CANONICAL_CONTINUATION_LINES_UNAVAILABLE");
   }
+  // Actual source-specific train numbers may change at Tachikawa/Takao.
+  // These are aliases of an already VERIFIED canonical train, NOT additional
+  // trains. Never derive aliases by stripping T/H/M from a number.
+  const canonicalAliasesById = new Map<number, any[]>();
+  if (lineId === "ChuoRapid" || lineId === "ChuoMain") {
+    const chuoIds = connectedIds.filter(id => {
+      const lines = canonicalLinesById.get(id) || [];
+      return lines.includes("ChuoRapid") && lines.includes("ChuoMain");
+    });
+    for (let i = 0; i < chuoIds.length; i += 40) {
+      const ids = chuoIds.slice(i, i + 40);
+      const members = await pages((first, last) => db.from("train_timetable_members")
+        .select("timetable_id,source_template_id").in("timetable_id",ids)
+        .order("timetable_id").order("source_template_id").range(first,last));
+      const templateIds = [...new Set(members.map((m:any)=>Number(m.source_template_id)))];
+      const sourceTemplates:any[] = [];
+      for (let j = 0; j < templateIds.length; j += 100) {
+        const batch = templateIds.slice(j, j + 100);
+        sourceTemplates.push(...await pages((first,last) => db.from("manual_timetable_templates")
+          .select("id,line_key,train_number,railway_urn,direction_urn")
+          .in("id",batch).order("id").range(first,last)));
+      }
+      const templateById = new Map(sourceTemplates.map((m:any)=>[Number(m.id),m]));
+      for (const member of members) {
+        const source:any = templateById.get(Number(member.source_template_id));
+        if (!source || !source.train_number || !source.railway_urn) {
+          throw new Error("CANONICAL_TRAIN_NUMBER_ALIAS_SOURCE_UNAVAILABLE");
+        }
+        const id = Number(member.timetable_id);
+        const aliases = canonicalAliasesById.get(id) || [];
+        const alias = {line_key:source.line_key,train_number:source.train_number,
+          railway_urn:source.railway_urn,direction_urn:source.direction_urn};
+        if (!aliases.some((x:any)=>x.line_key===alias.line_key &&
+          x.train_number===alias.train_number &&
+          x.railway_urn===alias.railway_urn &&
+          x.direction_urn===alias.direction_urn)) aliases.push(alias);
+        canonicalAliasesById.set(id,aliases);
+      }
+    }
+    if (chuoIds.some(id => !(canonicalAliasesById.get(id) || []).length)) {
+      throw new Error("CANONICAL_CHUO_TRAIN_NUMBER_ALIASES_UNAVAILABLE");
+    }
+  }
 
   // Osaka's historical manually imported schedules contain station-only
   // references: 203 on OsakaLoop and 94 on OsakaHigashi across both calendars.
@@ -497,6 +540,8 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       canonical_group_evidence: mapped.group_evidence,
       canonical_line_ids: mapped.group_evidence === "verified_continuation"
         ? (canonicalLinesById.get(Number(mapped.timetable_id)) || []) : [],
+      canonical_number_aliases: mapped.group_evidence === "verified_continuation"
+        ? (canonicalAliasesById.get(Number(mapped.timetable_id)) || []) : [],
       line_id: lineId,
       service_date: serviceDate,
       calendar_type: calendarType(t.calendar_urn),
