@@ -2299,7 +2299,14 @@
                         railDirection: t["odpt:railDirection"] || "",
                         fromStation: t["odpt:fromStation"] || "",
                         toStation: t["odpt:toStation"] || "",
-                        delay: t["odpt:delay"] || 0
+                        delay: t["odpt:delay"] || 0,
+                        // 诊断中保留 API 原始列车身份，但不由其推断车型/实际编组。
+                        apiTrainId: t["owl:sameAs"] || t["@id"] || "",
+                        gtfsTripId: t["gtfs:tripId"] || "",
+                        railwayNumberSyntax: /^[0-9]{1,5}[A-Za-z]?$/.test(String(t["odpt:trainNumber"] || "")),
+                        apiVehicleType: t["odpt:vehicleType"] || "",
+                        hasVehicleId: !!(t["gtfs:vehicleId"] || t.vehicleCarNumber || t.carNumber),
+                        hasCarComposition: t["odpt:carComposition"] != null
                     };
                 })
             };
@@ -3112,6 +3119,27 @@
                             window.ODPT_REALTIME_AUDIT.YamanoteHistory = history;
                             window.ODPT_REALTIME_AUDIT.YamanoteFullCandidate =
                                 window.ODPTClient.assessRealtimeFullCandidate("Yamanote", history);
+                        }
+                        // 房总地区只做精确 railway identity 的在内存诊断。
+                        // API 返回车次号不等于车型；0 行只能说明本次快照未观察到。
+                        // 没有额外网络请求，不保存日期车辆编组，不升级 SQL 判定。
+                        if (op === "JR-East" && window.ODPTClient && window.ODPTClient.auditRealtimeLine) {
+                            var activeBosoLines = (_activeRealtimeLineIds && _activeRealtimeLineIds[op]) || [];
+                            var bosoProbeLines = ["SobuMain", "Narita", "NaritaAirportBranch",
+                                "Uchibo", "Sotobo", "Togane", "Kashima"];
+                            var bosoAudit = {};
+                            activeBosoLines.forEach(function(lineId) {
+                                if (bosoProbeLines.indexOf(lineId) < 0) return;
+                                var result = window.ODPTClient.auditRealtimeLine(lineId, window.ODPT_TRAIN_POSITIONS[op]);
+                                result.probeStatus = result.matchedCount > 0
+                                    ? "exact-railway-rows-found-model-not-certified"
+                                    : "no-exact-railway-rows-in-current-snapshot";
+                                bosoAudit[lineId] = result;
+                            });
+                            if (Object.keys(bosoAudit).length) {
+                                // 当前活动线路的最新快照；不写 localStorage / Supabase。
+                                window.ODPT_BOSO_REALTIME_AUDIT = bosoAudit;
+                            }
                         }
                     }).catch(function(e) {
                         // A transient 429/403/network error is not a confirmed
