@@ -272,6 +272,7 @@
         "Chiyoda": "TokyoMetro",
 
         "ChuoRapid": "JR-East",
+        "ChuoMain": "JR-East",
         "ChuoSobuLocal": "JR-East",
         "KeikyuDaishi": "Keikyu",
         "Daishi_Tobu": "Tobu",
@@ -464,6 +465,7 @@
       "Marunouchi": "Marunouchi",
       "MarunouchiBranch": "MarunouchiBranch", // 丸ノ内線支線（方南町支線）独立 ODPT railway
       "Chuo": "Chuo",
+      "ChuoMain": "Chuo",
       "Sobu": "Sobu",
       "TokaidoMain": "Tokaido",
       "Ou": "Ou",
@@ -1867,6 +1869,8 @@
             "_canonicalTrainTimetableId":run.canonical_timetable_id||null,
             "_canonicalGroupEvidence":run.canonical_group_evidence||"source_only",
             "_canonicalLineIds":Array.isArray(run.canonical_line_ids)?run.canonical_line_ids:[],
+            "_canonicalTrainNumberAliases":Array.isArray(run.canonical_number_aliases)
+              ?run.canonical_number_aliases:[],
             "_sqlVehicleMappingLevel":run.vehicle_mapping_level||"unresolved",
             "_sqlVehicleCandidateLabel":run.vehicle_type_candidates||"",
             "_sqlCandidateArtworkPath":run.vehicle_candidate_artwork_path||null,
