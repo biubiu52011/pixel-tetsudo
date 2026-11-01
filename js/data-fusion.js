@@ -1139,7 +1139,9 @@
       {lines:["Joban","JobanMain"], matcher:"jobanCanonicalBridgeKey"},
       {lines:["ChuoRapid","Ome"], matcher:"omeCanonicalBridgeKey"},
       {lines:["ChuoRapid","ChuoMain"], matcher:"chuoMainCanonicalBridgeKeys"},
-      {lines:["ShonanShinjuku","Tokaido"], matcher:"shonanTokaidoCanonicalBridgeKeys"}
+      {lines:["ShonanShinjuku","Tokaido"], matcher:"shonanTokaidoCanonicalBridgeKeys"},
+      {lines:["ShonanShinjuku","Takasaki"], matcher:"shonanTakasakiCanonicalBridgeKeys"},
+      {lines:["ShonanShinjuku","UtsunomiyaJR"], matcher:"shonanUtsunomiyaCanonicalBridgeKeys"}
     ];
     corridors.forEach(function(corridor) {
       if(typeof resolver[corridor.matcher]!=="function")return;
