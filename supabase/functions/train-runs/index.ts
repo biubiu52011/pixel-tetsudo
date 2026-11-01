@@ -331,13 +331,14 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // These are aliases of an already VERIFIED canonical train, NOT additional
   // trains. Never derive aliases by stripping T/H/M from a number.
   const canonicalAliasesById = new Map<number, any[]>();
-  if (lineId === "ChuoRapid" || lineId === "ChuoMain") {
-    const chuoIds = connectedIds.filter(id => {
+  if (["ChuoRapid","ChuoMain","ShonanShinjuku","Tokaido"].includes(lineId)) {
+    const aliasIds = connectedIds.filter(id => {
       const lines = canonicalLinesById.get(id) || [];
-      return lines.includes("ChuoRapid") && lines.includes("ChuoMain");
+      return (lines.includes("ChuoRapid") && lines.includes("ChuoMain")) ||
+        (lines.includes("ShonanShinjuku") && lines.includes("Tokaido"));
     });
-    for (let i = 0; i < chuoIds.length; i += 40) {
-      const ids = chuoIds.slice(i, i + 40);
+    for (let i = 0; i < aliasIds.length; i += 40) {
+      const ids = aliasIds.slice(i, i + 40);
       const members = await pages((first, last) => db.from("train_timetable_members")
         .select("timetable_id,source_template_id").in("timetable_id",ids)
         .order("timetable_id").order("source_template_id").range(first,last));
@@ -366,8 +367,8 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
         canonicalAliasesById.set(id,aliases);
       }
     }
-    if (chuoIds.some(id => !(canonicalAliasesById.get(id) || []).length)) {
-      throw new Error("CANONICAL_CHUO_TRAIN_NUMBER_ALIASES_UNAVAILABLE");
+    if (aliasIds.some(id => !(canonicalAliasesById.get(id) || []).length)) {
+      throw new Error("CANONICAL_VERIFIED_TRAIN_NUMBER_ALIASES_UNAVAILABLE");
     }
   }
 
