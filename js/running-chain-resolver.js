@@ -257,7 +257,7 @@
   // JobanLocal is a different service even where its station names overlap.
   function jobanCanonicalBridgeKey(lineId, position) {
     if((lineId!=="Joban"&&lineId!=="JobanMain")||!position)return "";
-    if(!/^odpt\\.Railway:JR-East\\.(?:JobanRapid|Joban)$/.test(String(position.sourceRailway||"")))return "";
+    if(!/^odpt\.Railway:JR-East\.(?:JobanRapid|Joban)$/.test(String(position.sourceRailway||"")))return "";
     if(position.estimated===true) {
       if(position.positionSource!=="supabase-train-run" ||
          position.canonicalGroupEvidence!=="verified_continuation" ||
