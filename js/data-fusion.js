@@ -1137,25 +1137,32 @@
     var scheduled=Object.create(null), observed=Object.create(null);
     var corridors=[
       {lines:["Joban","JobanMain"], matcher:"jobanCanonicalBridgeKey"},
-      {lines:["ChuoRapid","Ome"], matcher:"omeCanonicalBridgeKey"}
+      {lines:["ChuoRapid","Ome"], matcher:"omeCanonicalBridgeKey"},
+      {lines:["ChuoRapid","ChuoMain"], matcher:"chuoMainCanonicalBridgeKeys"}
     ];
     corridors.forEach(function(corridor) {
       if(typeof resolver[corridor.matcher]!=="function")return;
       corridor.lines.forEach(function(lid){
       (estimated[lid]||[]).forEach(function(p){
-        var k=resolver[corridor.matcher](lid,p);
-        if(!k||!p.runningChainId||!Array.isArray(p.canonicalStopKeys)||
+        var keys=resolver[corridor.matcher](lid,p);
+        if(!Array.isArray(keys))keys=keys?[keys]:[];
+        if(!keys.length||!p.runningChainId||!Array.isArray(p.canonicalStopKeys)||
            !p.canonicalStopKeys.length)return;
         var id=String(p.canonicalTimetableId||"");
         if(!id)return;
-        var group=scheduled[k]||(scheduled[k]=Object.create(null));
-        var hit=group[id];
-        if(!hit)group[id]={chain:p.runningChainId,stops:p.canonicalStopKeys};
-        else if(hit.chain!==p.runningChainId)hit.conflict=true;
+        keys.forEach(function(k){
+          var group=scheduled[k]||(scheduled[k]=Object.create(null));
+          var hit=group[id];
+          if(!hit)group[id]={chain:p.runningChainId,stops:p.canonicalStopKeys};
+          else if(hit.chain!==p.runningChainId)hit.conflict=true;
+        });
       });
       (posMap[lid]||[]).forEach(function(p){
-        var k=resolver[corridor.matcher](lid,p);
-        if(k)(observed[k]||(observed[k]=[])).push(p);
+        var keys=resolver[corridor.matcher](lid,p);
+        if(!Array.isArray(keys))keys=keys?[keys]:[];
+        keys.forEach(function(k){
+          if(k)(observed[k]||(observed[k]=[])).push(p);
+        });
       });
       });
     });
