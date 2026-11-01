@@ -331,11 +331,12 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // These are aliases of an already VERIFIED canonical train, NOT additional
   // trains. Never derive aliases by stripping T/H/M from a number.
   const canonicalAliasesById = new Map<number, any[]>();
-  if (["ChuoRapid","ChuoMain","ShonanShinjuku","Tokaido"].includes(lineId)) {
+  if (["ChuoRapid","ChuoMain","ShonanShinjuku","Tokaido","Takasaki","UtsunomiyaJR"].includes(lineId)) {
     const aliasIds = connectedIds.filter(id => {
       const lines = canonicalLinesById.get(id) || [];
       return (lines.includes("ChuoRapid") && lines.includes("ChuoMain")) ||
-        (lines.includes("ShonanShinjuku") && lines.includes("Tokaido"));
+        (lines.includes("ShonanShinjuku") &&
+          ["Tokaido","Takasaki","UtsunomiyaJR"].some(other=>lines.includes(other)));
     });
     for (let i = 0; i < aliasIds.length; i += 40) {
       const ids = aliasIds.slice(i, i + 40);
