@@ -74,3 +74,30 @@ KeihinTohoku、Nambu、Yamanote 等在静态线路数据中没有列出直接ser
 4. **先把实际来源对录入为verified continuity，再为下一条走廊做唯一匹配测试**。不直接把常磐线专用规则套到多运营商/跨号线路。
 5. **缺少实时API并不意味着全部列车没有计划数据**。如果只有计划来源，应显示计划推算或未确认状态，不能画成实时位置。
 
+
+## 5. 2026-11-01 中央快速↔青梅：已落实HYBRID实时/计划canonical唯一匹配
+
+该线路**不是**之前中央快速↔中央本线79条变号列车。数据库已独立验证：
+- `ChuoRapid → Ome`：127个现有、`verified_continuation`、同服务日模板、同来源车次号码的canonical列车；
+- `Ome → ChuoRapid`：132个，条件同上；
+- 259个 canonical timetable_id 的 `train_timetable_lines` 均同时且仅含 `ChuoRapid` 和 `Ome`，**没有任意一个关联 ChuoMain**；
+- 原始来源铁路代码分别是 `odpt.Railway:JR-East.ChuoRapid`（259来源成员）和 `odpt.Railway:JR-East.Ome`（259来源成员）。
+- 259条已在先前的车型映射表内，不新增列车，也不修改候选车型或实车编组。
+
+### 已完成代码改动
+
+1. `supabase/functions/train-runs/index.ts` 在读取 `verified_continuation` 的完整 `train_timetable_stops` 后，对相同 canonical IDs 批量获取 `train_timetable_lines`，返回额外的 `canonical_line_ids`。该字段是来源事实，**仅描述实际属于同一canonical列车的线路**，不是简单的地图直通白名单；读取失败时不虚构归属。
+2. `data/api/odpt-unified.js` 和 `js/train-position-estimator.js` 分别将 `canonical_line_ids` 保留成 `_canonicalLineIds` 和计划位置的 `canonicalLineIds`；不影响ODPT实时观测、编组及图片。
+3. `js/running-chain-resolver.js` 在原有 `jobanCanonicalBridgeKey` 之外新增严格的 `omeCanonicalBridgeKey`：JR-East运营商、来源 `ChuoRapid` 或 `Ome`；SQL计划端必须 `group_evidence=verified_continuation`、存在 canonical ID **且 canonicalLineIds 同时包含 Ome、ChuoRapid**，实时端必须有真实 `fromStation`。共同 key 还需服务日＋完整车次号＋运行方向。该条件明确拒绝中央快速↔中央本线的T/H ↔ M 变号来源。
+4. `js/data-fusion.js` 的 `_linkVerifiedCanonicalRealtime` 现在独立处理两条经核实的走廊：Joban／JobanMain与ChuoRapid／Ome，各使用独立候选key。依旧需要**唯一canonical计划、唯一实时观测、实际来源站点和完整计划行程站序一致**才绑定共同runningChainId；不能因线路相同或列车号相同强行合并。原先常磐专用的同等限制保持不变。
+5. `data/core/runtime-config.js` 的 `VERIFIED_CANONICAL_PLAN_PARTNERS` 新增 `ChuoRapid ↔ Ome`，仅为计划加载依赖，不创造新铁路拓扑边或改变地图几何。
+6. 新增 `tools/chuo-ome-canonical-realtime-hybrid.test.cjs`，并更新原 `tools/joban-canonical-realtime-hybrid.test.cjs` 继续对通用匹配器执行原有常磐回归测试。
+
+### 上线与复核
+
+- Supabase `train-runs` 已部署 **v275，ACTIVE**，再次读取线上函数代码与GitHub `supabase/functions/train-runs/index.ts` **完全一致**。
+- 实际源码在隔离JS环境中测试：常磐旧回归PASS，中央快速/青梅新回归PASS；青梅测试包括两个方向成功、计划服务日不符、号数不符、方向不符、来源运营商不符、车站顺序倒退、两个候选计划、两个同时实时观测、中央快速/中央本线误关联、无canonical来源证明、JobanLocal/中央总武各站停车误入等反例。绝不根据服务车型推断具体实车编组。
+- 2026-11-01数据库复查：canonical 259条两来源完全匹配（259/259）、与ChuoMain线路交叠0；全库车型映射仍 **21,774** 条（无重复），候选 **3,446**，本轮没有写入新列车或实际运行日期。
+- **局限**：该轮尚无带有效ODPT实时车次的端到端HTTP快照，也没有实际手机端跨立川/青梅方向线路切换的动态追踪证据；回归PASS不能当成实时现场验收。不能声称其他HYBRID线已经自动获得同等严格的canonical桥接。
+- **待落实**：中央快速／中央本线的79条已核实贯通中，变号（T/H↔M）需要按官方逐段服务号别名、切换站/时间、真实站点、唯一canonical身份构建新的专用证据，不能用青梅线路的同号规则迁就。尤其11条相互矛盾的车型标签仍待逐车次核对。
+
