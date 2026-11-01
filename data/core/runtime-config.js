@@ -226,6 +226,16 @@
     "KeioZoo": true,
     "KeihinTohoku": true,
     "Keiyo": true,
+    // 房总地区仅允许按需探测 JR-East 的运营商级列车位置源。
+    // 是否有各线路的实际返回数据，由 odpt:railway 精确匹配结果决定；
+    // 不代表整条线路已获得 FULL 覆盖，也不代表 API 编号就是车型。
+    "SobuMain": true,
+    "Narita": true,
+    "NaritaAirportBranch": true,
+    "Uchibo": true,
+    "Sotobo": true,
+    "Togane": true,
+    "Kashima": true,
      "Kiryu": true,
      "Koizumi": true,
     "Mita": true,
