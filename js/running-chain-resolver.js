@@ -267,6 +267,12 @@
     return scheduledMatchKey("JR-East-Joban-through",position);
   }
 
+  function getVerifiedCanonicalPartners(lineId) {
+    var config=(window.RuntimeConfig||{}).VERIFIED_CANONICAL_PLAN_PARTNERS||{};
+    var partners=config[lineId];
+    return Array.isArray(partners)?partners.slice():[];
+  }
+
   function isThroughAtStation(lineA,lineB,stationId){
     if(!_initialized)buildIndexes();
     var joins=(_boundaryMap[lineA]&&_boundaryMap[lineA][lineB])||[];
@@ -309,6 +315,7 @@
   window.RunningChainResolver={
     init:init,
     getDirectThroughLines:function(lid){if(!_initialized)buildIndexes();return (_directThrough[lid]||[]).slice();},
+    getVerifiedCanonicalPartners:getVerifiedCanonicalPartners,
     getServicePatternIds:function(a,b){if(!_initialized)buildIndexes();return _servicePatternIds(a,b);},
     isThroughAtStation:isThroughAtStation,
     getResolutionContext:getResolutionContext,
