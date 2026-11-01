@@ -1,8 +1,9 @@
 'use strict';
 
 // Only the 35 reciprocal, exact-clock Ofuna train segments are granted a
-// canonical train across ShonanShinjuku and Tokaido. Never apply this to
-// similarly numbered unproven Yokosuka/Takasaki/Utsunomiya records.
+// canonical train across ShonanShinjuku and Tokaido. Do not infer an Ofuna pairing from
+// similarly numbered services; Omiya's 263 source-verified services are
+// tested independently.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
@@ -12,7 +13,7 @@ const edgeText=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
 const cfgText=fs.readFileSync('data/core/runtime-config.js','utf8');
 const estText=fs.readFileSync('js/train-position-estimator.js','utf8');
 const win={UNIFIED_LINES:{},RuntimeConfig:{VERIFIED_CANONICAL_PLAN_PARTNERS:{
-  ShonanShinjuku:['Tokaido'],Tokaido:['ShonanShinjuku']
+  ShonanShinjuku:['Tokaido','Takasaki','UtsunomiyaJR'],Tokaido:['ShonanShinjuku'],Takasaki:['ShonanShinjuku'],UtsunomiyaJR:['ShonanShinjuku']
 }}};
 vm.runInNewContext(resolverText,{window:win,console});
 const resolver=win.RunningChainResolver;
