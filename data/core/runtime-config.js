@@ -74,8 +74,10 @@
     Ome: Object.freeze(["ChuoRapid"]),
     ChuoMain: Object.freeze(["ChuoRapid"]),
     // 35 reciprocal ODPT source IDs and exact Ofuna boundary clocks.
-    ShonanShinjuku: Object.freeze(["Tokaido"]),
-    Tokaido: Object.freeze(["ShonanShinjuku"])
+    ShonanShinjuku: Object.freeze(["Tokaido","Takasaki","UtsunomiyaJR"]),
+    Tokaido: Object.freeze(["ShonanShinjuku"]),
+    Takasaki: Object.freeze(["ShonanShinjuku"]),
+    UtsunomiyaJR: Object.freeze(["ShonanShinjuku"])
   });
 
   // 乘客服务走廊保留来源记录和车站
