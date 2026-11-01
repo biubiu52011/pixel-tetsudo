@@ -290,8 +290,11 @@
   function chuoMainCanonicalBridgeKeys(lineId, position) {
     if ((lineId!=="ChuoRapid"&&lineId!=="ChuoMain")||!position) return [];
     var railway=String(position.sourceRailway||"");
-    if (!/^odpt\.Railway:JR-East\.(?:ChuoRapid|Chuo)$/.test(railway)) return [];
+    // Legacy published SQL calls this segment ChuoMain; the current JR East
+    // realtime railway API calls it Chuo. This explicit normalization applies
+    // ONLY to already SQL-verified ChuoMain member aliases.
     if (position.estimated===true) {
+      if (!/^odpt\.Railway:JR-East\.(?:ChuoMain|ChuoRapid|Chuo)$/.test(railway))return [];
       if (position.positionSource!=="supabase-train-run" ||
           position.canonicalGroupEvidence!=="verified_continuation" ||
           !position.canonicalTimetableId ||
@@ -307,19 +310,27 @@
         var aliasDirection=String(alias.direction_urn).split(/[:.]/).pop().toUpperCase();
         var planDirection=String(position.railDirection).split(/[:.]/).pop().toUpperCase();
         if (aliasDirection!==planDirection) return;
+        var aliasRailway=String(alias.railway_urn);
+        if (alias.line_key==="ChuoMain" &&
+            aliasRailway==="odpt.Railway:JR-East.ChuoMain")
+          aliasRailway="odpt.Railway:JR-East.Chuo";
+        // Reject an alias whose namespace disagrees with its proven line.
+        if ((alias.line_key==="ChuoMain" && aliasRailway!=="odpt.Railway:JR-East.Chuo") ||
+            (alias.line_key==="ChuoRapid" && aliasRailway!=="odpt.Railway:JR-East.ChuoRapid"))return;
         var key=scheduledMatchKey("JR-East-ChuoRapid-ChuoMain-through",{
           serviceDate:position.serviceDate,trainNumber:alias.train_number,
           railDirection:alias.direction_urn
         });
         // The observed railway identity is part of the candidate key.
         if (key) {
-          var value=key+"|"+encodeURIComponent(String(alias.railway_urn));
+          var value=key+"|"+encodeURIComponent(aliasRailway);
           if(keys.indexOf(value)<0)keys.push(value);
         }
       });
       return keys;
     }
-    if (position.positionSource!=="realtime-api" || !position.sourceFromStation) return [];
+    if (!/^odpt\.Railway:JR-East\.(?:ChuoRapid|Chuo)$/.test(railway) ||
+        position.positionSource!=="realtime-api" || !position.sourceFromStation) return [];
     var realtimeKey=scheduledMatchKey("JR-East-ChuoRapid-ChuoMain-through",position);
     return realtimeKey?[realtimeKey+"|"+encodeURIComponent(railway)]:[];
   }
