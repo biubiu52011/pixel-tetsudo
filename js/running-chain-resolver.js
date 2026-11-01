@@ -335,6 +335,57 @@
     return realtimeKey?[realtimeKey+"|"+encodeURIComponent(railway)]:[];
   }
 
+  // Applies only to existing SQL-verified canonical ShonanShinjuku/Tokaido
+  // train members, never to a merely equal train number or a generic route
+  // boundary. Translate direction labels by the known JR East service pair:
+  // Northbound=Inbound; Southbound=Outbound, without guessing suffixes.
+  function shonanTokaidoCanonicalBridgeKeys(lineId, position) {
+    if ((lineId!=="ShonanShinjuku"&&lineId!=="Tokaido")||!position)return [];
+    var railway=String(position.sourceRailway||"");
+    var direction=function(raw) {
+      var d=String(raw||"").split(/[:.]/).pop();
+      if(d==="Northbound"||d==="Inbound")return "north";
+      if(d==="Southbound"||d==="Outbound")return "south";
+      return "";
+    };
+    var observedDirection=direction(position.railDirection);
+    if(!observedDirection)return [];
+    var allowedRailway=lineId==="ShonanShinjuku"
+      ? "odpt.Railway:JR-East.ShonanShinjuku"
+      : "odpt.Railway:JR-East.Tokaido";
+    if(railway!==allowedRailway)return [];
+    function key(number,dir,rail) {
+      var core=scheduledMatchKey("JR-East-Shonan-Tokaido-through",{
+        serviceDate:position.serviceDate,trainNumber:number,railDirection:dir
+      });
+      return core?core+"|"+encodeURIComponent(rail):"";
+    }
+    if(position.estimated===true) {
+      if(position.positionSource!=="supabase-train-run"||
+         position.canonicalGroupEvidence!=="verified_continuation"||
+         !position.canonicalTimetableId||
+         !Array.isArray(position.canonicalLineIds)||
+         position.canonicalLineIds.indexOf("ShonanShinjuku")<0||
+         position.canonicalLineIds.indexOf("Tokaido")<0||
+         !Array.isArray(position.canonicalTrainNumberAliases))return [];
+      var keys=[];
+      position.canonicalTrainNumberAliases.forEach(function(alias){
+        if(!alias||!alias.train_number||!alias.direction_urn||
+           (alias.line_key!=="ShonanShinjuku"&&alias.line_key!=="Tokaido"))return;
+        var sourceRailway=alias.line_key==="ShonanShinjuku"
+          ? "odpt.Railway:JR-East.ShonanShinjuku" : "odpt.Railway:JR-East.Tokaido";
+        if(alias.railway_urn!==sourceRailway||
+           direction(alias.direction_urn)!==observedDirection)return;
+        var k=key(alias.train_number,observedDirection,sourceRailway);
+        if(k&&keys.indexOf(k)<0)keys.push(k);
+      });
+      return keys;
+    }
+    if(position.positionSource!=="realtime-api"||!position.sourceFromStation)return [];
+    var liveKey=key(position.trainNumber,observedDirection,railway);
+    return liveKey?[liveKey]:[];
+  }
+
   function getVerifiedCanonicalPartners(lineId) {
     var config=(window.RuntimeConfig||{}).VERIFIED_CANONICAL_PLAN_PARTNERS||{};
     var partners=config[lineId];
@@ -392,6 +443,7 @@
     jobanCanonicalBridgeKey:jobanCanonicalBridgeKey,
     omeCanonicalBridgeKey:omeCanonicalBridgeKey,
     chuoMainCanonicalBridgeKeys:chuoMainCanonicalBridgeKeys,
+    shonanTokaidoCanonicalBridgeKeys:shonanTokaidoCanonicalBridgeKeys,
     sourcePositionMatchKey:sourcePositionMatchKey,
     _getIndexes:function(){return{boundaries:_boundaryMap,branchOfMap:_branchOfMap,directThrough:_directThrough};}
   };
