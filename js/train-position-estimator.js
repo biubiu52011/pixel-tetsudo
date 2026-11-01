@@ -1108,7 +1108,7 @@
         // Scope fixed canonical identity to verified member-line combinations.
         // No timetable-only source can claim another line's physical train.
         if(["Joban","JobanMain","ChuoRapid","Ome","ChuoMain",
-            "ShonanShinjuku","Tokaido"].indexOf(lineId)>=0) {
+            "ShonanShinjuku","Tokaido","Takasaki","UtsunomiyaJR"].indexOf(lineId)>=0) {
           positions.forEach(function(pos) {
             var memberLines=Array.isArray(pos.canonicalLineIds)?pos.canonicalLineIds:[];
             var verifiedCorridor=
