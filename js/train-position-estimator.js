@@ -808,6 +808,8 @@
             // never as realtime observed position or a physical carset identity.
             canonicalTimetableId: tt._canonicalTrainTimetableId || null,
             canonicalGroupEvidence: tt._canonicalGroupEvidence || "source_only",
+            canonicalLineIds: Array.isArray(tt._canonicalLineIds)
+              ? tt._canonicalLineIds.slice() : [],
             canonicalStopKeys: tt._canonicalGroupEvidence === "verified_continuation" &&
                 tt._canonicalTrainTimetableId
               ? run.stops.map(function(stop){return String(stop.stationUrn||"").split(".").pop();}).filter(Boolean)
