@@ -82,3 +82,33 @@ ORDER BY insufficient_timed_station_templates DESC, line_key;
 ```
 
 以上 SQL 需要数据库管理或服务角色权限，不能以 `anon` 调用本次内部审计视图。
+
+
+## 6. 2026-11-01 车型确认和旧来源文件同步提醒
+
+2026-11-01 在 Supabase 核验的计划车型，不包含实际车组或实际运行日。
+
+### 山形线历史来源路径（不能直接按旧路径重新导入）
+
+Supabase 中保留的 source_path=data/timetables/Yamagata-manual.js 是历史来源元数据。GitHub main 主分支实际 data/timetables 目录未包含 Yamagata-manual.js，现存 Oedo-manual.js 和 vehicle-operation-evidence-data.js。不能自行重新创建该大文件当作经过核实的原始时刻表。
+
+Supabase 中已将25条来源误标为普通701系5500番台的「つばさ」新庄→福岛计划纠正为 JR-East.Shinkansen / E8系，车型对应映射 source_id=4915，mapping_level=official_service_vehicle_plan。官方证据：https://www.jreast.co.jp/train/shinkan/e8.html 和 https://timetables.jreast.co.jp/2611/train/050/051843.html 。今后来源重新导入时不得凭历史字段覆盖这25条纠正；需先核对列车番号、日历、线路、来源版本。其余山形线普通列车不受此项车型确证约束。
+
+### 中央本线计划车型新增3条
+
+2026-11 官方逐车次资料将大月→高尾车次与中央快速直通关联，计划车型 E233系0番台。映射等级 published_number_family_plan（不是当日实车编组）。
+
+| 车次和日历 | 大月发—高尾到 | 高尾后列车番号 | Supabase source_id |
+|---|---|---|---|
+| 722M / Weekday | 06:26—07:02 | 722T（通勤特快） | 4917 |
+| 724M / SaturdayHoliday | 06:26—07:02 | 724T（中央特快） | 4918 |
+| 1324M / SaturdayHoliday | 12:23—13:01 | 1324T（中央特快） | 4916 |
+
+官方页面：
+- https://timetables.jreast.co.jp/2611/train/125/125291.html
+- https://timetables.jreast.co.jp/en/2611/train/105/109611.html
+- https://timetables.jreast.co.jp/en/2611/train/120/124691.html
+- https://www.jreast.co.jp/train/local/e233.html
+
+2026-11-01 核验：车型映射累计21,522条；该批中央本线剩余37条尚需逐车次确证。统计为当时快照，不代表全库完成。
+
