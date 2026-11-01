@@ -267,6 +267,24 @@
     return scheduledMatchKey("JR-East-Joban-through",position);
   }
 
+  // Same-number bridge only for SQL-verified ChuoRapid + Ome members.
+  // ChuoRapid/ChuoMain trains often change T/H <-> M, and must NEVER be
+  // admitted through this same-number corridor.
+  function omeCanonicalBridgeKey(lineId, position) {
+    if((lineId!=="Ome"&&lineId!=="ChuoRapid")||!position)return "";
+    if(!/^odpt\.Railway:JR-East\.(?:Ome|ChuoRapid)$/.test(String(position.sourceRailway||"")))return "";
+    if(position.estimated===true) {
+      if(position.positionSource!=="supabase-train-run" ||
+         position.canonicalGroupEvidence!=="verified_continuation" ||
+         !position.canonicalTimetableId ||
+         !Array.isArray(position.canonicalLineIds) ||
+         position.canonicalLineIds.indexOf("Ome")<0 ||
+         position.canonicalLineIds.indexOf("ChuoRapid")<0)return "";
+    } else if(position.positionSource!=="realtime-api" ||
+      !position.sourceFromStation)return "";
+    return scheduledMatchKey("JR-East-ChuoRapid-Ome-through",position);
+  }
+
   function getVerifiedCanonicalPartners(lineId) {
     var config=(window.RuntimeConfig||{}).VERIFIED_CANONICAL_PLAN_PARTNERS||{};
     var partners=config[lineId];
@@ -322,6 +340,7 @@
     resolveTimetableChain:resolveTimetableChain,
     scheduledMatchKey:scheduledMatchKey,
     jobanCanonicalBridgeKey:jobanCanonicalBridgeKey,
+    omeCanonicalBridgeKey:omeCanonicalBridgeKey,
     sourcePositionMatchKey:sourcePositionMatchKey,
     _getIndexes:function(){return{boundaries:_boundaryMap,branchOfMap:_branchOfMap,directThrough:_directThrough};}
   };
