@@ -803,6 +803,15 @@
             stationIndex: currentStationIndex,
             trainId: lineId + '_' + trainNumber,
             timetableIdentity: timetableIdentity,
+            // Verified SQL continuation identifies the same SERVICE across source lines.
+            // Expose source stops only for the cross-segment matching proof,
+            // never as realtime observed position or a physical carset identity.
+            canonicalTimetableId: tt._canonicalTrainTimetableId || null,
+            canonicalGroupEvidence: tt._canonicalGroupEvidence || "source_only",
+            canonicalStopKeys: tt._canonicalGroupEvidence === "verified_continuation" &&
+                tt._canonicalTrainTimetableId
+              ? run.stops.map(function(stop){return String(stop.stationUrn||"").split(".").pop();}).filter(Boolean)
+              : [],
             sourceRailway: tt["odpt:railway"] || "",
             positionLineId: lineId,
             scheduledItineraryKey: run.scheduledItineraryKey || "",
@@ -1089,6 +1098,20 @@
               }
             });
           }
+        }
+        // A database-confirmed continuation has an authoritative train ID.
+        // Do not let availability of neighbouring line pages change that ID.
+        // Restrict to the Joban rapid/main corridor until other corridors have
+        // equivalent canonical service proof and regression coverage.
+        if(lineId==="Joban"||lineId==="JobanMain") {
+          positions.forEach(function(pos) {
+            if(pos.canonicalGroupEvidence==="verified_continuation" &&
+               pos.canonicalTimetableId &&
+               /^canonical-sql-trip:/.test(String(pos.timetableIdentity||""))) {
+              pos.runningChainId=pos.timetableIdentity;
+              pos.runningChainEvidence="VERIFIED_SQL_CANONICAL";
+            }
+          });
         }
         if (positions.length > 0) {
           // This layer returns timetable-derived positions ONLY. Realtime
