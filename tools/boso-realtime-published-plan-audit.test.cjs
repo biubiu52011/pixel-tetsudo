@@ -11,14 +11,14 @@ const config = fs.readFileSync('data/core/runtime-config.js', 'utf8');
 const start = api.indexOf('auditRealtimeLine: function(lineId, rows) {');
 const end = api.indexOf('auditRealtimeRailwayIdentities: function(', start);
 assert.ok(start >= 0 && end > start, 'realtime audit remains available');
-const method = api.slice(start, end).trim().replace(/,\\s*$/, '');
+const method = api.slice(start, end).trim().replace(/,\s*$/, '');
 
 for (const line of ['SobuMain','Narita','NaritaAirportBranch','Uchibo','Sotobo','Togane','Kashima']) {
   assert.ok(config.includes('"' + line + '": true,'), line + ' is permitted for on-demand probe');
 }
 assert.match(config, /defaultMode: "HYBRID"/);
 assert.match(api, /probeStatus: "realtime-source-fetch-failed"/);
-assert.match(api, /window\\.ODPT_BOSO_REALTIME_SOURCE_INVENTORY/);
+assert.match(api, /window\.ODPT_BOSO_REALTIME_SOURCE_INVENTORY/);
 
 const date = '2026-11-01';
 const railway = 'odpt.Railway:JR-East.Uchibo';
