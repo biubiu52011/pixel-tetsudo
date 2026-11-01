@@ -123,3 +123,34 @@ Supabase 中已将25条来源误标为普通701系5500番台的「つばさ」�
 - 写入表 public.train_timetable_vehicle_mappings：vehicle_type=E233系0番台、mapping_level=published_number_family_plan、actual_vehicle_confirmed=false；保留原始source_path 2610车次明细页，另以2026-11官方综合时刻表作为source_id证据。不存实际编组或具体日期车次。
 - SQL复核：本次37条全部写入；2026-11-01快照全库映射21,559条且timetable_id无重复。原本“大月→高尾E233系0番台40条待映射”的批次在此前3条和本次37条完成后，剩余0条。**仅代表这40条候选完成计划车型证据配对，不代表中央本线所有车次或所有线路完成确认**。
 
+
+## 8. 2026-11-01 车型候选升级：E353系与HB-E300系
+
+此节记录计划列车车型证据升级，不新增每日期实际车次，不证明实车编组，不把“可用车辆”当作每一班车的编组记录。
+
+### 官方名称、车次和车型交叉核对：10条E353系候选升级
+
+依据JR East 2026年11月公布的特急详细时刻与车型官方页（https://www.jreast.co.jp/train/express/azusa_kaiji.html），以下原先 mapping_level=source_single_type_candidate、source_id为空的十条映射已改为 official_service_vehicle_plan，车型统一为 E353系：
+
+- あずさ1号：1M；ChuoMain 2条（Weekday、SaturdayHoliday）。来源 source_id=4921；https://timetables.jreast.co.jp/2611/train/005/008041.html。
+- あずさ3号：5003M；ChuoMain、ChuoSobuLocal 各2条，共4条。来源 source_id=4922；https://timetables.jreast.co.jp/2611/train/050/054811.html。与富士回游2103M并行／併結的情况不得误称为同一列车编号。
+- あずさ38号：38M；ChuoMain、Oito 各2条，共4条。来源 source_id=4923；https://timetables.jreast.co.jp/2611/train/110/111551.html。
+
+注意：1M的2026-11官方平日与休日到达时刻版本存在差异，数据库这两条来源的旧到达钟并未在本车型任务中复核或调整。车型来源的核实**不自动证明**旧时刻数据为最新版。特别是临时特急不能只凭“あずさ”名字一律推断车型，应以当次计划公布的车辆型号为准。
+
+### 大糸线「リゾートビューふるさと」：4条HB-E300系候选升级
+
+- 8361D 松本11:43→南小谷13:40：Weekday、SaturdayHoliday 两条；source_id=4924；JR East https://timetables.jreast.co.jp/2611/train/025/029481.html。
+- 8362D 南小谷14:29→松本16:02：两条；source_id=4925；JR East https://timetables.jreast.co.jp/2611/train/045/047332.html。
+- JR East长野支社 https://www.jreast.co.jp/press/2025/nagano/20260312_na01.pdf 官方车辆资料指出 リゾートビューふるさと 使用的同型车为 HB-E300系。
+- 上述四条原为 source_single_type_candidate，现以 official_service_vehicle_plan、vehicle_type=HB-E300系 表示车型；但这是季节性开行的列车，**出现Weekday、SaturdayHoliday两个来源模板不代表每个平日及休日都开行**。
+
+### 不要误删已核实的四条HB-E300
+
+历史 evidence_sources.id=4828 的警告涉及大糸线3220M、5356M当年被错贴“リゾートビューふるさと”车型的**另外四条旧模板**。2026-11-01复查，这两种车次各两套日历的现有记录 vehicle_type_label 与车型映射都为NULL；不再误标。它不是针对8361D、8362D这四条真正的「リゾートビューふるさと」车次，**禁止根据4828的旧备注删除后者的正确车型映射**。2026-11官方大糸线上行时刻：https://timetables.jreast.co.jp/2611/timetable-v/230u1.html 。
+
+### 剩余未解决
+
+- 山形线新庄→山形的26条来源被贴701系5500番台，但官方逐车次时刻不等于车型证据，不得直接升级。
+- ChuoMain中8091M经2026-11官方列车时刻（https://timetables.jreast.co.jp/2611/train/090/094611.html）确认车名是「信州1号」，现有候选标签“E353系（あずさ・かいじ）”的服务注释不准确；需按发布期车辆资料独立核实该条再改。
+- 2026-11-01 SQL复核：全库仍有21,559条vehicle mappings，14条属于从候选升级到已核实型号，**没有新增14个已覆盖列车**；source_single_type_candidate剩余4,251条，升级数据源为4921～4925。以上不代表全库车型全量通过。
