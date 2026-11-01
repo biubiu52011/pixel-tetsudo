@@ -351,3 +351,24 @@ GROUP BY 1,2,3 ORDER BY 1,2,3;
 ```
 
 期待这375条没有 `missing_canonical_vehicle_mapping` 或 `conflicting_member_vehicle_labels`，并且整个计划的车型候选与官方模型不能混为同一证据等级。未来源计划重新导入应按照 `train_timetable_members` 为每一个canonical列车聚合，不能重新用 `lead_source_template_id` 限定车型；历史 `*-manual.js` 文件路径只是来源元数据。
+
+
+## 15. 2026-11-01 常磐线快速实时源：跨 `JobanRapid` / `Joban` 保留实际位置
+
+在上一节 canonical 计划列车连续性修复之后，查出**实时位置筛选层**仍存在独立断点。原始 `data/api/odpt-unified.js` 的 `_rebuildRealtimePositionViews()` 为当前激活线路只接受 **1个完全一致**的 `odpt:railway`；但 ODPT JR-East 发布了 `odpt.Railway:JR-East.JobanRapid`（对应内置 `Joban`）和 `odpt.Railway:JR-East.Joban`（对应 `JobanMain`）两个数据源代码。它们在取手/土浦附近是**同一条物理贯通服务**的来源区段，直接仅订阅其一可能令来源切换时列车从实况图消失。
+
+### 已执行源码修复
+
+1. `data/api/odpt-unified.js`：新增 `_matchesActiveRealtimeRailway()`；当且仅当运营商为 **JR-East**、当前激活线路为 **`Joban` 或 `JobanMain`** 且实时 ODPT铁路码为 **`JobanRapid` 或 `Joban`** 时，允许两种源记录一同进入实时数据融合。其它线路继续原有的精确匹配，绝不将 `JobanLocal`／千代田线各停车混入。未知铁路身份的旧行为保持不变。
+2. `data/core/runtime-config.js`：`REALTIME_POSITION_API_LINES.JobanMain=true`，使从常磐本线详情页也能激活 JR-East 实时数据，而不只是快速线；`JobanMain` 默认位置策略仍是 **HYBRID**（未经证明全线可用不得设置 FULL）。根据 [ODPT 官方2026挑战数据目录](https://ckan.odpt.org/en/dataset/odpt_jreast_tokyo_area)，常磐线实时覆盖范围**仅羽鸟（羽鳥）以南**、且部分临时/跨线列车未必收录。不能因此宣称仙台方向全线有实时位置。
+3. 新增 `tools/joban-realtime-railway-scope.test.cjs` 回归测试，确保：快速线与本线均接收两种JR-East来源、`JobanLocal`只接受自身数据、山手线不受影响、跨运营商同名后缀不会穿透边界。对实际 `_rebuildRealtimePositionViews()` 代码进行隔离测试，快速线／本线／各站停车3组筛选均通过，辅助11个线路范围正反例通过。
+
+### 必须保留的实时-计划隔离
+
+- **实时位置** 只能来自来源包含有效站点和有效期的 `odpt:Train`/GTFS-RT VehiclePosition；不能根据计划时刻表或列车终点伪造实时位置。过期实时记录不得继续覆盖当前时刻表估计。
+- **同一实体身份** 尽可能基于真实 `owl:sameAs`／`odpt:train` 及可靠的 canonical 连续性，不得对同一天不同车次只按编号合并，亦不能把 `JobanMain` 的来源车型候选自动提升为当天实车车号或PNG。
+- 计划表继续只有 Weekday 和 SaturdayHoliday；实时位置仅在浏览器内短期存在，不写入永久运行日期或实际编组数据库。
+
+### 验收边界
+
+GitHub 已更新代码和回归测试（目录可运行 `node tools/joban-realtime-railway-scope.test.cjs`）；使用仓库当前版本的匹配函数在隔离环境检查完成，无误投 `JobanLocal`。但本轮没有获得带有效 ODPT Key 的**真实实时数据快照**，因此**没有声称能验证实际当前列车跨取手站的轨迹和所有公开数据源运行状况**。后续须在手机浏览器现场检查快速线 `JobanRapid` ↔ `Joban` 源切换时，运行ID／站序／地图范围是否平滑衔接；运营商回传的临时列车缺失不能当作数据库里不存在。
