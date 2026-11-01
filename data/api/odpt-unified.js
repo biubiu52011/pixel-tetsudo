@@ -2059,6 +2059,23 @@
     // Keep the complete operator snapshot for cache/persistence, but expose a
     // line-scoped view to DataFusion when a detail page has an active selection.
     // GTFS-RT endpoints are operator-wide and cannot be queried by railway.
+    // A single verified JR East Joban through train may change the provider
+    // railway field between Joban and JobanRapid at the rapid-line boundary.
+    // Admission is restricted to this exact operator and corridor; the fusion
+    // layer still requires an actual source station and never creates a live
+    // position from the timetable or the train number alone.
+    function _matchesActiveRealtimeRailway(op, railwayRaw, allowed) {
+        var railway = parseRailwayIdentity(railwayRaw);
+        if (!railway) return op !== "Toei";
+        return (allowed || []).some(function(lineId) {
+            var target = getLineRailwayIdentity(lineId);
+            if (target && target.key === railway.key) return true;
+            return op === "JR-East" && railway.operator === "JR-East" &&
+                (lineId === "Joban" || lineId === "JobanMain") &&
+                (railway.railwayCode === "Joban" ||
+                 railway.railwayCode === "JobanRapid");
+        });
+    }
     function _rebuildRealtimePositionViews() {
         var full = window.ODPT_TRAIN_POSITIONS || {};
         var views = {};
@@ -2070,14 +2087,8 @@
                 return;
             }
             views[op] = rows.filter(function(row) {
-                var railway = parseRailwayIdentity(row && row["odpt:railway"]);
-                // Unknown railway identity remains available for non-GTFS
-                // providers whose canonical station resolver can still place it.
-                if (!railway) return op !== "Toei";
-                return allowed.some(function(lineId) {
-                    var target = getLineRailwayIdentity(lineId);
-                    return target && target.key === railway.key;
-                });
+                return _matchesActiveRealtimeRailway(
+                    op, row && row["odpt:railway"], allowed);
             });
         });
         window.ODPT_TRAIN_POSITION_VIEWS = views;
