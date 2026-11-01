@@ -3873,6 +3873,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // 证据；这些变化都不能复用此前的未知/车型计划。
     var planInputKey=JSON.stringify([tt._sqlVehicleCandidateLabel||'',tt.vehicleType||'',
       tt._sqlVerifiedPublishedVehicleType||'',tt._sqlVerifiedPublishedVehicleSourceUrl||'',
+      tt._sqlVehicleCandidateSourceUrl||'',
       run.trainNumber||'',tt['odpt:trainType']||run.trainType||'',run.calendar||'',
       tt['odpt:operator']||line.operator||'',tt['odpt:railway']||'',
       tt['odpt:trainOwner']||tt.trainOwner||'',run.destinationStationUrn||'',
@@ -4096,7 +4097,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         source:publishedSqlPlan?'database-verified-published-plan':
           (usesFamily?'operation-family-plan':'sql-timetable-plan'),
         sourceUrl:publishedSqlPlan?tt._sqlVerifiedPublishedVehicleSourceUrl:
-          (usesFamily?plannedEvidence.sourceUrl:(tt._timetableProvenance||'')),
+          (usesFamily?plannedEvidence.sourceUrl:
+            (tt._sqlVehicleMappingLevel==='source_single_type_candidate'
+              ? (tt._sqlVehicleCandidateSourceUrl||'')
+              : (tt._timetableProvenance||''))),
         itineraryStations:_baseOperationCtx.itineraryStations,
         _positionSource:tt._positionSource||'',_plannedArtworkInventory:true
       });
