@@ -1146,7 +1146,7 @@
       });
     });
     function station(v) {
-      return String(v||"").split(".").pop().replace(/[-_\\s]/g,"").toLowerCase();
+      return String(v||"").split(".").pop().replace(/[-_\s]/g,"").toLowerCase();
     }
     var linked=0;
     Object.keys(observed).forEach(function(k){
