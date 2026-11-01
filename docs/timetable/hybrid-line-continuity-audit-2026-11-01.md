@@ -101,3 +101,33 @@ KeihinTohoku、Nambu、Yamanote 等在静态线路数据中没有列出直接ser
 - **局限**：该轮尚无带有效ODPT实时车次的端到端HTTP快照，也没有实际手机端跨立川/青梅方向线路切换的动态追踪证据；回归PASS不能当成实时现场验收。不能声称其他HYBRID线已经自动获得同等严格的canonical桥接。
 - **待落实**：中央快速／中央本线的79条已核实贯通中，变号（T/H↔M）需要按官方逐段服务号别名、切换站/时间、真实站点、唯一canonical身份构建新的专用证据，不能用青梅线路的同号规则迁就。尤其11条相互矛盾的车型标签仍待逐车次核对。
 
+
+## 6. 2026-11-01 中央快速 ↔ 中央本线79条 **变号贯通**：实名别名 + HYBRID
+
+### 事实与边界
+
+与259条同号的青梅／中央快速贯通不同，中央本线与中央快速经过区段后列车号码由 `M` 改为 `T/H`（及反方向），**不得用字符串后缀替换或相邻线路关系生成身份**。
+
+数据库对79个既存 `group_evidence=verified_continuation` 的 canonical 列车逐一核对：
+- 平日39、土休日40，每列具有3个来源模板：ChuoMain的M，ChuoMain的T/H，以及ChuoRapid的T/H，共 **237个来源成员**；
+- 79个canonical列车各有至少一个M和一个T/H来源车次，所有来源 `direction_urn` 和 `railway_urn` 均存在；
+- 按 `calendar_urn + train_number + railway_urn + direction_urn` 聚合，**0个别名组合对应超过一个canonical列车**；
+- 数据库实际存的中央本线来源 `railway_urn=odpt.Railway:JR-East.ChuoMain` 共158条，快速来源 `...ChuoRapid` 79条；实际ODPT实时来源则使用 `odpt.Railway:JR-East.Chuo`，不能直接进行源字符串精确比较；
+- 此79列车中40个已存 `published_number_family_plan=E233系0番台`，另外28条 `source_single_type_candidate=E233系0番台`，**11条仍存在 E233 vs 211/E233 车型来源冲突**。身份核实独立于车型核实，未变更这11条车型，也没有新增实际编组数据。
+
+### 已提交的端到端链路（不是号码推测）
+
+1. Edge Function `train-runs` 原先已返回 canonical ID、完整合并的停站、来源线路；本轮再通过 **已证实属于同一canonical列车的 `train_timetable_members`** 读取 `manual_timetable_templates` 的 `train_number`、`line_key`、`railway_urn`、`direction_urn`，为中央快速/本线的已核实列车返回 `canonical_number_aliases`。不同来源的车次号都挂在**同一个 canonical timetable_id** 下。来源缺失时抛出显式错误，不伪造号码/时刻。
+2. `data/api/odpt-unified.js` 将该字段转换为 `_canonicalTrainNumberAliases`；`js/train-position-estimator.js` 仅作为计划列车证据带出 `canonicalTrainNumberAliases`，不会覆盖实时列车的铁路原始身份。
+3. `RunningChainResolver.chuoMainCanonicalBridgeKeys` 根据**来源真实别名**生成（服务日＋车次号＋方向＋铁路命名空间）候选键，只接受 `canonicalLineIds` 同时包含 `ChuoRapid` 和 `ChuoMain` 的 `verified_continuation` 来源。校验源别名和所属线路，**仅**将数据库历史 `JR-East.ChuoMain` 别名标准化成JR东日本当前实时源 `JR-East.Chuo`，不改变其他线路或运营商，不猜测M/T/H后缀关系。
+4. `js/data-fusion.js` 已扩展为3条相互独立的matcher：JobanRapid/Joban、ChuoRapid/Ome、ChuoRapid/ChuoMain。原来的唯一 canonical ID／唯一有效实时快照／服务日方向／实际站点路径/下一站不倒退限制继续生效；**只有一个候选并证实线路和编号对应时**才继承 `runningChainId`。位置来源仍为真实 `realtime-api`；计划车型不转化为实际实车编组。
+5. `data/core/runtime-config.js` 扩展 `VERIFIED_CANONICAL_PLAN_PARTNERS`：ChuoRapid←→ChuoMain 的计划 SQL 必须作为依赖预取。将 `ChuoMain` 加入部分 realtime API lines（继续默认HYBRID，**不是FULL**）；`data/api/odpt-unified.js` 显式声明 `ChuoMain` 属于JR-East以及对外ODPT码 `Chuo`。
+
+### 已执行测试与部署
+
+- `tools/chuo-main-canonical-number-alias-hybrid.test.cjs`：真实SQL所用 ChuoMain 来源 URN 与 ODPT.Chuo 实时 URN 的规范化；`640M`↔`640T` 两方向成功案例；错误车次后缀、来源线不符、跨运营商、来源无canonical证明、方向/服务日不同、车站外、站序倒退、多个计划、多个实时观测、青梅和各停车隔离等拒绝案例。
+- 原常磐 `tools/joban-canonical-realtime-hybrid.test.cjs`、中央快速／青梅 `tools/chuo-ome-canonical-realtime-hybrid.test.cjs` 一起用**仓库实际JS源码**在隔离环境运行，**三个回归套件PASS**；修正了原有测试关于新增 partner 的fixture与断言。
+- Supabase `train-runs` 从v275更新部署到 **v276 ACTIVE**；函数部署文件再次读取，与GitHub源码一致。
+- 本轮 **没有新增任何 canonical 计划列车、实际每日运行、车辆编组或车型映射**。映射仍21,774、无重复；`actual_vehicle_confirmed`全部false。
+- **现场数据待验收**：现有环境无有效ODPT当期实时列车网络快照，无法证明实际移动端所有边界位置或来源车次都能连续显示。SQL计划来源为2026-10历史版，不能将其逐日开行情况或准确到发时刻当作已核实的2026-11实际运行。
+
