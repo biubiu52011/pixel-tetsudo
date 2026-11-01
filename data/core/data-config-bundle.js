@@ -866,6 +866,26 @@ window.getTransferHint = function(stationId, lang) {
     "SotetsuDirect": "SaikyoKawagoe"
   };
 
+  // Verified SQL canonical trains can contain multiple line segments even
+  // when the map's physical topology is overlapping rather than a new
+  // switch/transfer edge. These are plan-fetch dependencies ONLY, never
+  // evidence of realtime position or of a different physical vehicle.
+  var VERIFIED_CANONICAL_PLAN_PARTNERS = Object.freeze({
+    Joban: Object.freeze(["JobanMain"]),
+    JobanMain: Object.freeze(["Joban"]),
+    // Ome/ChuoRapid 259 SQL verified services; no new physical line edge.
+    ChuoRapid: Object.freeze(["Ome","ChuoMain"]),
+    Ome: Object.freeze(["ChuoRapid"]),
+    ChuoMain: Object.freeze(["ChuoRapid"]),
+    // 35 reciprocal ODPT source IDs and exact Ofuna boundary clocks.
+    ShonanShinjuku: Object.freeze(["Tokaido","Takasaki","UtsunomiyaJR"]),
+    // 35 SQL-verified three-part services also span Tokaido and Takasaki.
+    // This is a fetch dependency through ShonanShinjuku, not a direct track edge.
+    Tokaido: Object.freeze(["ShonanShinjuku","Takasaki"]),
+    Takasaki: Object.freeze(["ShonanShinjuku","Tokaido"]),
+    UtsunomiyaJR: Object.freeze(["ShonanShinjuku"])
+  });
+
   // 乘客服务走廊保留来源记录和车站
   // 拓扑，但不是独立线路，也不是列车之间的交接边。
   var SERVICE_CORRIDOR_LINES = Object.freeze({ UenoTokyo: true });
@@ -963,21 +983,6 @@ window.getTransferHint = function(stationId, lang) {
     }
   };
 
-  // SQL 已核实的同一计划列车所跨线路：仅用于按需加载和更新依赖。
-  // 这些是已存在的 canonical member 关系，不是实时位置、实体编组
-  // 或依赖车次号进行自动合并的授权。未核实的横须贺线候选不加入。
-  var VERIFIED_CANONICAL_PLAN_PARTNERS = Object.freeze({
-    "Joban": Object.freeze(["JobanMain"]),
-    "JobanMain": Object.freeze(["Joban"]),
-    "ChuoRapid": Object.freeze(["ChuoMain", "Ome"]),
-    "ChuoMain": Object.freeze(["ChuoRapid"]),
-    "Ome": Object.freeze(["ChuoRapid"]),
-    "ShonanShinjuku": Object.freeze(["Takasaki", "Tokaido", "UtsunomiyaJR"]),
-    "Takasaki": Object.freeze(["ShonanShinjuku", "Tokaido"]),
-    "Tokaido": Object.freeze(["ShonanShinjuku", "Takasaki"]),
-    "UtsunomiyaJR": Object.freeze(["ShonanShinjuku"])
-  });
-
   // JR East 公布的 Train Location 覆盖范围。端点按运营商提供；
   // 下方线路注册表只准入来源公告覆盖的铁路身份；
   // SQL 仍是所有线路的计划/车型回退来源。
@@ -1003,12 +1008,17 @@ window.getTransferHint = function(stationId, lang) {
     "Arakawa": true,
     "Asakusa": true,
     "ChuoRapid": true,
+    // JR-East Chuo source is a partial HYBRID observation, not FULL.
+    "ChuoMain": true,
     "ChuoSobuLocal": true,
      // Tobu GTFS-RT is an operator-wide feed; activate every canonical
      // Tobu railway here and retain COARSE policy where station precision is limited.
      "Daishi_Tobu": true,
     "Itsukaichi": true,
     "Joban": true,
+    // JR East realtime coverage is limited to Hatori and south, not the
+    // entire JobanMain route. Keep its default HYBRID policy.
+    "JobanMain": true,
     "JobanLocal": true,
     "Kawagoe": true,
     "KeioMain": true,
@@ -1206,8 +1216,8 @@ window.getTransferHint = function(stationId, lang) {
     // 直通运行
     SOURCE_RAILWAY_LINE_SCOPE: SOURCE_RAILWAY_LINE_SCOPE,
     SOURCE_RAILWAY_CANONICAL_LINE: SOURCE_RAILWAY_CANONICAL_LINE,
-    SERVICE_CORRIDOR_LINES: SERVICE_CORRIDOR_LINES,
     VERIFIED_CANONICAL_PLAN_PARTNERS: VERIFIED_CANONICAL_PLAN_PARTNERS,
+    SERVICE_CORRIDOR_LINES: SERVICE_CORRIDOR_LINES,
     PRIORITY_OPS: PRIORITY_OPS,
     JR_EAST_TRAIN_LOCATION_SCOPE: JR_EAST_TRAIN_LOCATION_SCOPE,
     REALTIME_POSITION_POLICY: REALTIME_POSITION_POLICY,
