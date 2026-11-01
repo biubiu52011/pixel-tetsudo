@@ -154,3 +154,35 @@ Supabase 中已将25条来源误标为普通701系5500番台的「つばさ」�
 - 山形线新庄→山形的26条来源被贴701系5500番台，但官方逐车次时刻不等于车型证据，不得直接升级。
 - ChuoMain中8091M经2026-11官方列车时刻（https://timetables.jreast.co.jp/2611/train/090/094611.html）确认车名是「信州1号」，现有候选标签“E353系（あずさ・かいじ）”的服务注释不准确；需按发布期车辆资料独立核实该条再改。
 - 2026-11-01 SQL复核：全库仍有21,559条vehicle mappings，14条属于从候选升级到已核实型号，**没有新增14个已覆盖列车**；source_single_type_candidate剩余4,251条，升级数据源为4921～4925。以上不代表全库车型全量通过。
+
+
+## 9. 2026-11-01 E353系常规特急计划车型：90条候选升级
+
+这一批属于计划车型（published planned fleet/model）确证；不等于每日真实列车运行或实际车辆编组。不新增 canonical 列车，也不修补旧来源时刻。
+
+### 常规「あずさ／かいじ／富士回遊」88条
+
+利用 JR East 2026-11 官方中央本线平日/土休日的列车番号-列车名对应表，配合官方 https://www.jreast.co.jp/train/express/azusa_kaiji.html 中 E353系车型资料，将既有映射中限定的来源候选（source_single_type_candidate）升级为 official_service_vehicle_plan、vehicle_type=E353系：
+
+- 下行：46条，Weekday 23条、SaturdayHoliday 23条；22种不同车次番号在两个日历各1条，另「あずさ5号」5M跨大糸线原始来源段各1条。原 2611 对照：平日 https://timetables.jreast.co.jp/2611/timetable-v/223d1.html ，休日 https://timetables.jreast.co.jp/2611/timetable-v/223d2.html ，官方来源 source_id=4927/4926。
+- 下行被逐组核实的 22 个番号：5M、9M、13M、17M、21M、25M、29M、33M、37M、5004M、5008M、5012M、5016M、3107M、3111M、3115M、3119M、3123M、2103M、2107M、2111M、2115M。
+- 上行：42条，Weekday 21条、SaturdayHoliday 21条。官方来源：平日 https://timetables.jreast.co.jp/2611/timetable-v/223u1.html ，休日 https://timetables.jreast.co.jp/2611/timetable-v/223u2.html ，source_id=4929/4928。
+- 上行被核实的21个番号：18M、22M、26M、30M、34M、42M、44M、46M、54M、60M、3120M、3124M、3128M、3132M、3136M、3140M、3148M、2132M、2136M、2144M、2148M。
+- 车次名前缀单独关联：3107M／2117之前请看实际官方 3107M+2107M 併結，「かいじ」和「富士回遊」不是同一个列车编号；3123M、3132M＋2132M、44M＋2144M 亦应保留相应官方番号/方向。此次只更新车型映射，不修改名称/时刻/编组。
+
+以上仅是**明确在官方2026-11常规特急列表中的已存在车次**。不得将80xx、90xx等季节/增发列车根据阿拉伯数字后缀或线路通用车型批量强制E353：部分「富士回遊93号」在JR East 2026年春季官方增发资料中列为E257系；每个发布期须单独查具体车型。
+
+### 特急「信州」8091M／8092M：2条
+
+JR East 2026-11官方网站列车详细时刻确认:
+- 8091M → 特急「信州1号」：https://timetables.jreast.co.jp/2611/train/090/094611.html 。
+- 8092M → 特急「信州2号」：https://timetables.jreast.co.jp/2611/train/095/099331.html 。
+- 2026年JR East夏季临时列车车辆公告 第10页 https://www.jreast.co.jp/railway/extratrain/2026/summer_list.pdf 明列「信州1/2/3号」E353系。
+
+两条既有 Weekday 候选已设置 vehicle_type=E353系、mapping_level=official_service_vehicle_plan、source_id=4930，并把两个来源模板原先误加的「E353系（あずさ・かいじ）」服务标签纠正为「E353系（信州）」。**不代表每日平日开行**；数据库两条旧来源片段只是塩尻单站，不能当成完整行程、也不能以此为时刻表覆盖合格证据。
+
+### 入库验收和未完成边界
+
+- 2026-11-01 验证：total train_timetable_vehicle_mappings = 21,559；unique timetable_id = 21,559（无重复）；本批升级 source_id=4926-4930 合计90；剩余 source_single_type_candidate 4,161。
+- 这90条是原本有映射的候选转为官方服务车型，故**已映射车次覆盖总数不变**。本批全部 actual_vehicle_confirmed=false（保留实际编组未知）。
+- 山形线新庄→山形26条旧701系5500番台来源，及其他临时列车与混用车型，仍需逐次核查，不得冒充整库确认完成。
