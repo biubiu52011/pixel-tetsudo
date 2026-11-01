@@ -4106,7 +4106,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       // or an independent verified operation rule establishes the plan.
       if (vehResult.vehiclePlan && !publishedSqlPlan && !usesFamily &&
           tt._positionSource === 'supabase-train-run' &&
-          tt._sqlVehicleMappingLevel === 'source_single_type_candidate') {
+          (tt._sqlVehicleMappingLevel === 'source_single_type_candidate' ||
+           tt._sqlVehicleMappingLevel === 'official_service_vehicle_plan' ||
+           tt._sqlVehicleMappingLevel === 'published_number_family_plan')) {
         vehResult.vehiclePlan.status = 'PLANNED_CANDIDATES';
         vehResult.vehiclePlan.representativeModel = '';
         vehResult.vehiclePlan.iconPath = '';
