@@ -70,8 +70,9 @@
     Joban: Object.freeze(["JobanMain"]),
     JobanMain: Object.freeze(["Joban"]),
     // Ome/ChuoRapid 259 SQL verified services; no new physical line edge.
-    ChuoRapid: Object.freeze(["Ome"]),
-    Ome: Object.freeze(["ChuoRapid"])
+    ChuoRapid: Object.freeze(["Ome","ChuoMain"]),
+    Ome: Object.freeze(["ChuoRapid"]),
+    ChuoMain: Object.freeze(["ChuoRapid"])
   });
 
   // 乘客服务走廊保留来源记录和车站
@@ -196,6 +197,8 @@
     "Arakawa": true,
     "Asakusa": true,
     "ChuoRapid": true,
+    // JR-East Chuo source is a partial HYBRID observation, not FULL.
+    "ChuoMain": true,
     "ChuoSobuLocal": true,
      // Tobu GTFS-RT is an operator-wide feed; activate every canonical
      // Tobu railway here and retain COARSE policy where station precision is limited.
