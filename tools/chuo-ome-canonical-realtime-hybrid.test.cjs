@@ -20,9 +20,9 @@ const window={ UNIFIED_LINES:{},RuntimeConfig:{VERIFIED_CANONICAL_PLAN_PARTNERS:
 vm.runInNewContext(resolverText,{window,console},{filename:'running-chain-resolver.js'});
 const resolver=window.RunningChainResolver;
 assert.equal(typeof resolver.omeCanonicalBridgeKey,'function');
-assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ChuoRapid')),['Ome']);
+assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ChuoRapid')),['Ome','ChuoMain']);
 assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Ome')),['ChuoRapid']);
-assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ChuoMain')),[]);
+assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ChuoMain')),['ChuoRapid']);
 const start=fusionText.indexOf('  function _linkVerifiedCanonicalRealtime(');
 const end=fusionText.indexOf('  function loadTrainPositions()',start);
 assert.ok(start>=0 && end>start,'the shared canonical/live bridge exists');
