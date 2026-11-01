@@ -17,9 +17,12 @@ const win={UNIFIED_LINES:{},RuntimeConfig:{VERIFIED_CANONICAL_PLAN_PARTNERS:{
 vm.runInNewContext(resolverText,{window:win,console});
 const resolver=win.RunningChainResolver;
 assert.equal(typeof resolver.shonanTokaidoCanonicalBridgeKeys,'function');
-assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ShonanShinjuku')),['Tokaido']);
+assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ShonanShinjuku')),
+  ['Tokaido','Takasaki','UtsunomiyaJR']);
 assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Tokaido')),['ShonanShinjuku']);
 assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Yokosuka')),[]);
+assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Takasaki')),['ShonanShinjuku']);
+assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('UtsunomiyaJR')),['ShonanShinjuku']);
 const a=fusionText.indexOf('  function _linkVerifiedCanonicalRealtime(');
 const b=fusionText.indexOf('  function loadTrainPositions()',a);
 assert.ok(a>=0&&b>a);
