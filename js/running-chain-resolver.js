@@ -386,6 +386,65 @@
     return liveKey?[liveKey]:[];
   }
 
+  // Two source-verified northern Shonan through corridors at Omiya.
+  // Partner directions are reversed nomenclature: Shonan Northbound is
+  // Takasaki/Utsunomiya Outbound; Shonan Southbound is partner Inbound.
+  // A true train match requires existing SQL member lines and their official
+  // source-specific train numbers; proximity/same number alone is insufficient.
+  function shonanNorthernCanonicalBridgeKeys(lineId,position,northernLine) {
+    if(!position || (lineId!=="ShonanShinjuku" && lineId!==northernLine))return [];
+    var railway=String(position.sourceRailway||"");
+    var northernRailway=northernLine==="Takasaki"
+      ? "odpt.Railway:JR-East.Takasaki" : "odpt.Railway:JR-East.Utsunomiya";
+    var centralRailway="odpt.Railway:JR-East.ShonanShinjuku";
+    if(railway!==centralRailway && railway!==northernRailway)return [];
+    function direction(raw,rail) {
+      var d=String(raw||"").split(/[:.]/).pop();
+      if(rail===centralRailway)
+        return d==="Northbound"?"NORTH":d==="Southbound"?"SOUTH":"";
+      if(rail===northernRailway)
+        return d==="Outbound"?"NORTH":d==="Inbound"?"SOUTH":"";
+      return "";
+    }
+    var targetDirection=direction(position.railDirection,railway);
+    if(!targetDirection)return [];
+    function scoped(number,d,rail){
+      var core=scheduledMatchKey("JR-East-Shonan-"+northernLine+"-through",{
+        serviceDate:position.serviceDate,trainNumber:number,railDirection:d
+      });
+      return core?core+"|"+encodeURIComponent(rail):"";
+    }
+    if(position.estimated===true) {
+      if(position.positionSource!=="supabase-train-run" ||
+         position.canonicalGroupEvidence!=="verified_continuation" ||
+         !position.canonicalTimetableId ||
+         !Array.isArray(position.canonicalLineIds) ||
+         position.canonicalLineIds.indexOf("ShonanShinjuku")<0 ||
+         position.canonicalLineIds.indexOf(northernLine)<0 ||
+         !Array.isArray(position.canonicalTrainNumberAliases))return [];
+      var result=[];
+      position.canonicalTrainNumberAliases.forEach(function(alias){
+        if(!alias || !alias.train_number || !alias.direction_urn ||
+          (alias.line_key!=="ShonanShinjuku" && alias.line_key!==northernLine))return;
+        var aliasedRail=alias.line_key==="ShonanShinjuku"?centralRailway:northernRailway;
+        if(alias.railway_urn!==aliasedRail ||
+           direction(alias.direction_urn,aliasedRail)!==targetDirection)return;
+        var k=scoped(alias.train_number,targetDirection,aliasedRail);
+        if(k && result.indexOf(k)<0)result.push(k);
+      });
+      return result;
+    }
+    if(position.positionSource!=="realtime-api" || !position.sourceFromStation)return [];
+    var k=scoped(position.trainNumber,targetDirection,railway);
+    return k?[k]:[];
+  }
+  function shonanTakasakiCanonicalBridgeKeys(lid,p) {
+    return shonanNorthernCanonicalBridgeKeys(lid,p,"Takasaki");
+  }
+  function shonanUtsunomiyaCanonicalBridgeKeys(lid,p) {
+    return shonanNorthernCanonicalBridgeKeys(lid,p,"UtsunomiyaJR");
+  }
+
   function getVerifiedCanonicalPartners(lineId) {
     var config=(window.RuntimeConfig||{}).VERIFIED_CANONICAL_PLAN_PARTNERS||{};
     var partners=config[lineId];
@@ -444,6 +503,8 @@
     omeCanonicalBridgeKey:omeCanonicalBridgeKey,
     chuoMainCanonicalBridgeKeys:chuoMainCanonicalBridgeKeys,
     shonanTokaidoCanonicalBridgeKeys:shonanTokaidoCanonicalBridgeKeys,
+    shonanTakasakiCanonicalBridgeKeys:shonanTakasakiCanonicalBridgeKeys,
+    shonanUtsunomiyaCanonicalBridgeKeys:shonanUtsunomiyaCanonicalBridgeKeys,
     sourcePositionMatchKey:sourcePositionMatchKey,
     _getIndexes:function(){return{boundaries:_boundaryMap,branchOfMap:_branchOfMap,directThrough:_directThrough};}
   };
