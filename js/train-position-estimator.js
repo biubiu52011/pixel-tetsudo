@@ -810,6 +810,8 @@
             canonicalGroupEvidence: tt._canonicalGroupEvidence || "source_only",
             canonicalLineIds: Array.isArray(tt._canonicalLineIds)
               ? tt._canonicalLineIds.slice() : [],
+            canonicalTrainNumberAliases: Array.isArray(tt._canonicalTrainNumberAliases)
+              ? tt._canonicalTrainNumberAliases.slice() : [],
             canonicalStopKeys: tt._canonicalGroupEvidence === "verified_continuation" &&
                 tt._canonicalTrainTimetableId
               ? run.stops.map(function(stop){return String(stop.stationUrn||"").split(".").pop();}).filter(Boolean)
