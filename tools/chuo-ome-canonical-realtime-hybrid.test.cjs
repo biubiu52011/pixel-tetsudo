@@ -14,7 +14,7 @@ const edgeText=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
 const cfgText=fs.readFileSync('data/core/runtime-config.js','utf8');
 
 const window={ UNIFIED_LINES:{},RuntimeConfig:{VERIFIED_CANONICAL_PLAN_PARTNERS:{
-  ChuoRapid:['Ome'],Ome:['ChuoRapid'],
+  ChuoRapid:['Ome','ChuoMain'],Ome:['ChuoRapid'],ChuoMain:['ChuoRapid'],
   Joban:['JobanMain'],JobanMain:['Joban'],
 }} };
 vm.runInNewContext(resolverText,{window,console},{filename:'running-chain-resolver.js'});
@@ -111,6 +111,6 @@ assert.match(apiText,/"_canonicalLineIds":Array\.isArray\(run\.canonical_line_id
 assert.match(estText,/canonicalLineIds: Array\.isArray\(tt\._canonicalLineIds\)/);
 assert.match(estText,/pos\.runningChainId=pos\.timetableIdentity/);
 assert.match(fusionText,/_linkVerifiedCanonicalRealtime\(estimated,\s*posMap\)/);
-assert.match(cfgText,/ChuoRapid: Object\.freeze\(\["Ome"\]\)/);
+assert.match(cfgText,/ChuoRapid: Object\.freeze\(\["Ome","ChuoMain"\]\)/);
 
 console.log('JR-East ChuoRapid/Ome canonical HYBRID match: PASS');
