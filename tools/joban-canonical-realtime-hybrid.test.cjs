@@ -120,7 +120,7 @@ for (const [label, plans, lives] of [
 assert.match(estimatorText, /canonicalStopKeys:\s*tt\._canonicalGroupEvidence/);
 assert.match(estimatorText, /pos\.runningChainId=pos\.timetableIdentity/);
 assert.match(estimatorText, /pos\.runningChainEvidence="VERIFIED_SQL_CANONICAL"/);
-assert.match(fusionText, /_linkJobanCanonicalRealtime\(estimated,\s*posMap\)/);
+assert.match(fusionText, /_linkVerifiedCanonicalRealtime\(estimated,\s*posMap\)/);
 assert.match(configText, /VERIFIED_CANONICAL_PLAN_PARTNERS/);
 assert.match(pageText, /getVerifiedCanonicalPartners\(lineId\)/);
 assert.match(fusionText, /deps = deps\.concat\(_canonicalPlanPartners\(id\)\)/);
