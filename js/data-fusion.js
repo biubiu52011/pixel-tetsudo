@@ -1131,13 +1131,19 @@
   // when the corridor, service-day number/direction, unique plan, unique live
   // observation and an observed route station agree. No timetable-derived
   // value is ever treated as a realtime position or actual vehicle model.
-  function _linkJobanCanonicalRealtime(estimated, posMap) {
+  function _linkVerifiedCanonicalRealtime(estimated, posMap) {
     var resolver=window.RunningChainResolver;
-    if(!resolver||typeof resolver.jobanCanonicalBridgeKey!=="function")return 0;
+    if(!resolver)return 0;
     var scheduled=Object.create(null), observed=Object.create(null);
-    ["Joban","JobanMain"].forEach(function(lid){
+    var corridors=[
+      {lines:["Joban","JobanMain"], matcher:"jobanCanonicalBridgeKey"},
+      {lines:["ChuoRapid","Ome"], matcher:"omeCanonicalBridgeKey"}
+    ];
+    corridors.forEach(function(corridor) {
+      if(typeof resolver[corridor.matcher]!=="function")return;
+      corridor.lines.forEach(function(lid){
       (estimated[lid]||[]).forEach(function(p){
-        var k=resolver.jobanCanonicalBridgeKey(lid,p);
+        var k=resolver[corridor.matcher](lid,p);
         if(!k||!p.runningChainId||!Array.isArray(p.canonicalStopKeys)||
            !p.canonicalStopKeys.length)return;
         var id=String(p.canonicalTimetableId||"");
@@ -1148,8 +1154,9 @@
         else if(hit.chain!==p.runningChainId)hit.conflict=true;
       });
       (posMap[lid]||[]).forEach(function(p){
-        var k=resolver.jobanCanonicalBridgeKey(lid,p);
+        var k=resolver[corridor.matcher](lid,p);
         if(k)(observed[k]||(observed[k]=[])).push(p);
+      });
       });
     });
     function station(v) {
@@ -1625,7 +1632,7 @@
                 if (k) _scheduledLiveCounts[k] = (_scheduledLiveCounts[k] || 0) + 1;
               });
             });
-            _linkJobanCanonicalRealtime(estimated, posMap);
+            _linkVerifiedCanonicalRealtime(estimated, posMap);
             var _chainVehicleCandidates = {};
             function _queueChainVehicle(p) {
               if (!p || !p.runningChainId || !p.vehicleType) return;
