@@ -75,8 +75,10 @@
     ChuoMain: Object.freeze(["ChuoRapid"]),
     // 35 reciprocal ODPT source IDs and exact Ofuna boundary clocks.
     ShonanShinjuku: Object.freeze(["Tokaido","Takasaki","UtsunomiyaJR"]),
-    Tokaido: Object.freeze(["ShonanShinjuku"]),
-    Takasaki: Object.freeze(["ShonanShinjuku"]),
+    // 35 SQL-verified three-part services also span Tokaido and Takasaki.
+    // This is a fetch dependency through ShonanShinjuku, not a direct track edge.
+    Tokaido: Object.freeze(["ShonanShinjuku","Takasaki"]),
+    Takasaki: Object.freeze(["ShonanShinjuku","Tokaido"]),
     UtsunomiyaJR: Object.freeze(["ShonanShinjuku"])
   });
 
