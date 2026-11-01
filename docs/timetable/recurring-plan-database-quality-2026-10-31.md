@@ -311,3 +311,43 @@ JR East 2026-11官方网站列车详细时刻确认:
 ### 写后复核
 
 2026-11-01 已核验 source_id=4950～4954对应61条映射；来源`manual_timetable_templates.vehicle_type_label` 与`train_timetable_vehicle_mappings.vehicle_type` 全部一致，`actual_vehicle_confirmed=false`。总映射依旧21,559、`COUNT(DISTINCT timetable_id)=21,559`，单一车型候选从3,358降至 **3,297**。另外69,695条还没有任何车型映射。**日期与编组均不是本次任务目标**。
+
+
+## 14. 2026-11-01 常磐线—快速线贯通列车：按 canonical 列车身份恢复车型
+
+### 故障成因
+
+不是列车跨越取手站时换了一辆车，也不是数据库缺少跨线停站。数据库 `train_timetable_continuity` 已有 JobanMain→Joban **188条**，Joban→JobanMain **187条**，全部在 `train_timetable_members.timetable_id` 层正确合并，合计 **375个独立canonical贯通列车**。这些列车的 `train_timetable_stops` 无缺失站UR​N且满足至少两站、两条计时点要求。
+
+真正的问题是旧的车型回填逻辑只通过 `train_timetables.lead_source_template_id` 读取首段线路车型标签，而没有读取同一 `timetable_id` 下的其他 `train_timetable_members.source_template_id`。JobanMain→Joban 的188条首段有车型标签；Joban→JobanMain 的187条首段 Joban（快速线）为空，尽管后续同一辆车的 JobanMain 段车型标签不为空。这造成用户跨越快速区段时看到确定车型突然消失。注意：两条线路历史模板的 `physical_service_key` 都为NULL，**不能单独据此说 canonical 列车ID未统一**；实际已统一，唯一身份是 `timetable_id`。
+
+### 已执行的数据库修复
+
+- 以 `train_timetable_continuity` 的双向链接、同日历、同车次、`train_timetable_members` 共同canonical ID、`group_evidence=verified_continuation` 和恰好2个来源段为条件，向**既存 canonical 列车**补全缺失的187条 `train_timetable_vehicle_mappings`，没有新建列车。
+- 121条使用后续 JobanMain 段的单一 `E531系` 来源标签，级别 **`source_single_type_candidate`**（车型候选，不宣称每班车官方确定）。
+- 66条常磐线特急 `ひたち／ときわ` 根据官方服务型号 `E657系`（`evidence_sources.id=4936`）写入 **`official_service_vehicle_plan`**；来源段为 JobanMain，但 mapping 挂到**同一 canonical timetable_id**，包含快速线区间。
+- 两日历 `Weekday`／`SaturdayHoliday` 继续只是出版式计划，没有记录每日实车、编组或实际运营日期。
+- 修复后全库车型映射21,746、唯一 `timetable_id` 数也是21,746；常磐跨区段375个canonical train**均有模型候选或官方计划车型**，并不代表每个都是官方逐车次实车确认。
+
+### Edge Function 已部署：train-runs v274
+
+对应 GitHub `supabase/functions/train-runs/index.ts` 的提交 `921259b79b841dc10c3d7e925c8a7df2be4d3143`：
+- `train_timetable_source_resolution` 与 `canonical_timetable_id` 本来就按 canonical 列车返回；现在 `scheduleVehicleType` 可将有 `source_id`、`source_url` 支撑的 `official_service_vehicle_plan`、`published_number_family_plan` 作为**计划车型**显示，同时保留来源版本匹配检查；不再仅识别日期规则而掩盖全部已核实的出版式计划型号。
+- 若所选快速线模板无车型字段，仍从该canonical映射的 `vehicle_type` 回填 `vehicle_type_candidates`，保持候选等级，不能冒充官方确认。
+- `vehicle_evidence_source=database-published-service-plan` 区分官方计划与日期实车；`vehicle_artwork_path` 不会因为计划证据而强行指定具体车辆编组/涂装。
+- 已通过 Supabase `get_edge_function` 再次核查：部署版本 **274 ACTIVE**，文件内容与GitHub完全一致。运行环境无法联网解析公网域名，**尚不能声称实际HTTP请求和移动端视觉已完整验收**。
+
+### 持续性监控与防止回退
+
+新建 `published_train_continuation_vehicle_coverage` （security_invoker视图；数据库迁移 + GitHub），按 **同一个canonical train** 聚合全部线路来源和车身型号，有候选冲突/未映射时发出明确状态，不能按某一线路的默认车型强行确认。
+
+复核SQL：
+
+```sql
+SELECT vehicle_coverage_status, mapping_level, canonical_vehicle_model, COUNT(*)
+FROM public.published_train_continuation_vehicle_coverage
+WHERE line_keys @> ARRAY['Joban', 'JobanMain']::text[]
+GROUP BY 1,2,3 ORDER BY 1,2,3;
+```
+
+期待这375条没有 `missing_canonical_vehicle_mapping` 或 `conflicting_member_vehicle_labels`，并且整个计划的车型候选与官方模型不能混为同一证据等级。未来源计划重新导入应按照 `train_timetable_members` 为每一个canonical列车聚合，不能重新用 `lead_source_template_id` 限定车型；历史 `*-manual.js` 文件路径只是来源元数据。
