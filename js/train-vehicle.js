@@ -3962,6 +3962,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var _sqlSourceCandidates = tt._positionSource === 'supabase-train-run'
       ? String(tt._sqlVehicleCandidateLabel || '').split(/\s*\/\s*/)
           .map(function(v) { return v.trim(); }).filter(Boolean) : [];
+    // ODPT trainNumber identifies a public SERVICE, not an E231/E233 carset.
+    // The evidence-backed Shonan-color baseline stores two alternatives in one
+    // source label. Split it for planned fleet diagnostics only; never EXACT.
+    if (tt._positionSource === 'supabase-train-run' &&
+        tt._sqlVehicleMappingLevel === 'source_single_type_candidate' &&
+        Number(tt._sqlVehicleCandidateSourceId) === 5051 &&
+        tt._sqlVehicleCandidateLabel === '湘南色（E231系1000番台・E233系3000番台）' &&
+        /^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo)$/.test(String(lineId || ''))) {
+      _sqlSourceCandidates = ['E231系1000番台', 'E233系3000番台'];
+    }
     // SQL 的 source_single_type_candidate 只证明“该计划条目有一个候选名称”，
     // 并未证明该服务日运行了该车型。即使唯一候选恰好有规范 PNG，
     // 也不得把它投入 EXACT 的身份仲裁；候选保留在
