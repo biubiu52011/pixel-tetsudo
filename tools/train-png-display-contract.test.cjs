@@ -170,6 +170,49 @@ assert.match(tooltipContext._trainMarkerTitle({
   },
 }, 'Yamanote'), /E233/, 'physical car proof may support a through-service label');
 
+// Planned models, candidate fleets and route references share a display layer,
+// without turning any of them into real-time vehicle/formation identity.
+vm.runInContext(extract(renderSource,
+  '  function _trainFleetPlanLabel(p, lineId, lang) {',
+  '  function _trainMarkerTitle(p, lineId) {'), tooltipContext);
+const plannedFleet = {
+  estimated: true, vehicleIdentityStatus: 'UNKNOWN',
+  vehiclePlan: { status: 'PLANNED_MODEL', lineId: 'Keiyo',
+    evidenceRole: 'timetable-plan', models: ['JR E233系5000番台'] },
+};
+assert.match(tooltipContext._trainFleetPlanLabel(plannedFleet, 'Keiyo', 'en'),
+  /Scheduled model.*E233/, 'verified model is identified as a scheduled reference');
+assert.match(tooltipContext._trainMarkerTitle(plannedFleet, 'Keiyo'),
+  /Scheduled model.*E233/, 'accessible marker title must include scheduled fleet reference');
+assert.equal(tooltipContext._trainFleetPlanLabel(plannedFleet, 'Yamanote', 'en'), '',
+  'planned fleet must never spill onto a different display line');
+assert.equal(tooltipContext._trainFleetPlanLabel({ ...plannedFleet, estimated: false }, 'Keiyo', 'en'), '',
+  'scheduled model must not be shown as the actual realtime car');
+assert.equal(tooltipContext._trainFleetPlanLabel({
+  ...plannedFleet, vehicleIdentityStatus: 'EXACT'
+}, 'Keiyo', 'en'), '', 'actual confirmed identity cannot also be mislabeled as only planned');
+const sqlCandidate = {
+  ...plannedFleet, vehiclePlan: { status: 'PLANNED_CANDIDATES',
+    evidenceRole: 'unverified-source-candidate', lineId: 'Keiyo',
+    models: ['JR E233系5000番台'] },
+};
+assert.match(tooltipContext._trainFleetPlanLabel(sqlCandidate, 'Keiyo', 'en'),
+  /Vehicle candidates.*unverified.*E233/,
+  'a single SQL source candidate must remain unverified, even with a catalog PNG');
+assert.match(tooltipContext._trainMarkerTitle(sqlCandidate, 'Keiyo'),
+  /Vehicle candidates.*unverified/,
+  'unverified SQL candidate must appear as a caution in accessible title');
+assert.match(tooltipContext._trainFleetPlanLabel({
+  ...plannedFleet, vehiclePlan: { status: 'FLEET_REFERENCE',
+    evidenceRole: 'route-fleet-reference', lineId: 'Keiyo',
+    models: ['E231系', 'E233系'] }
+}, 'Keiyo', 'en'), /Line fleet reference.*not confirmed/,
+  'route fleet is only a reference, not a train-specific plan');
+assert.match(renderSource,
+  /_trainFleetPlanLabel\(p, marker\._displayLineId \|\| "", lang\)/,
+  'folded train list must show the same planned/candidate distinction');
+
+
 // Minimal SVG DOM exercises the actual image/circle creation, xlink, and failure fallback.
 function svgNode(tagName) {
   const attrs = Object.create(null);
