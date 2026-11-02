@@ -14,7 +14,7 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=142, 'phase-5 Shinkansen fleet preset groups missing');
+assert.ok(entries.length>=169, 'phase-6 JR West/Kyushu fleet groups missing');
 const railwayData = JSON.parse(fs.readFileSync(
   path.join(root,'data/core/railway_data.compact.json'),'utf8'));
 const checked = Object.keys(railwayData.lines || {});
@@ -101,7 +101,7 @@ for(const [line,op,type] of [
 }
 
 // Phase 3: all additions must remain source-backed, scoped reference lists.
-assert.ok(seen.size>=182,'phase-5 route scopes missing');
+assert.ok(seen.size>=212,'phase-6 route scopes missing');
 for (const [line,operator,requiredModel] of [
   ['Musashino','JR-East','209系500番台'],
   ['Sagami','JR-East','E131系500番台'],
@@ -235,6 +235,46 @@ for (const [line,op,type] of [
 }
 assert.equal(presets.lookup('TokaidoShinkansen','JR-Central',''),null,
   'unknown Shinkansen service must not guess');
+
+// Phase 6: representative JR West / Kyushu operator-owned stock only.
+for (const [line,op,model] of [
+  ['OsakaLoop','JR-West','JR西日本323系'],
+  ['Yumesaki','JR-West','JR西日本323系'],
+  ['KansaiMain','JR-West','JR西日本221系'],
+  ['OsakaHigashi','JR-West','JR西日本221系'],
+  ['TokaidoKansai','JR-West','JR西日本225系'],
+  ['Hanwa','JR-West','JR西日本223系'],
+  ['Gakkentoshi','JR-West','JR西日本321系'],
+  ['WakayamaLine','JR-West','JR西日本227系1000番台'],
+  ['Sakurai','JR-West','JR西日本227系1000番台'],
+  ['Kure','JR-West','JR西日本227系0番台'],
+  ['Kabe','JR-West','JR西日本227系0番台'],
+  ['HimejiLine','JR-West','JR西日本キハ127形'],
+  ['KakogawaLine','JR-West','JR西日本125系'],
+  ['KagoshimaMain','JR-Kyushu','JR九州821系'],
+  ['KashiiLine','JR-Kyushu','JR九州BEC819系（DENCHA）'],
+  ['NagasakiMain','JR-Kyushu','JR九州YC1系'],
+  ['Sasebo','JR-Kyushu','JR九州YC1系'],
+  ['Omura','JR-Kyushu','JR九州YC1系'],
+  ['Chikuhi','JR-Kyushu','JR九州305系'],
+  ['Karatsu','JR-Kyushu','JR九州303系'],
+  ['Wakamatsu','JR-Kyushu','JR九州BEC819系']
+]) {
+  const v=presets.lookup(line,op,'odpt.TrainType:'+op+'.Local');
+  assert.ok(v && v.vehicleCandidates.includes(model),
+    line+': missing JR West/Kyushu model '+model);
+  assert.equal(v.evidenceRole,'route-fleet-reference');
+  assert.equal(v._fleetReferenceOnly,true);
+  assert.ok(!v.vehicleType && !v.iconPath);
+}
+for (const [line,op,type] of [
+  ['OsakaLoop','JR-West','LimitedExpress'],
+  ['Hanwa','JR-West','Kuroshio'],
+  ['NagasakiMain','JR-Kyushu','LimitedExpress'],
+  ['KashiiLine','JR-Kyushu','Express']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),
+  type==='Express' ? presets.lookup(line,op,'odpt.TrainType:'+op+'.Express') : null,
+  line+': never infer premium service rolling stock');
 
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
