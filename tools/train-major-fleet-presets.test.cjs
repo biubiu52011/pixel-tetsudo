@@ -271,10 +271,9 @@ for (const [line,op,type] of [
   ['OsakaLoop','JR-West','LimitedExpress'],
   ['Hanwa','JR-West','Kuroshio'],
   ['NagasakiMain','JR-Kyushu','LimitedExpress'],
-  ['KashiiLine','JR-Kyushu','Express']
-]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),
-  type==='Express' ? presets.lookup(line,op,'odpt.TrainType:'+op+'.Express') : null,
-  line+': never infer premium service rolling stock');
+  ['KashiiLine','JR-Kyushu','Shinkansen']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type), null,
+  line+': never infer premium/out-of-scope service rolling stock');
 
 // Phase 7: remaining source-backed Kyushu, western rural and city tram lines.
 for (const [line,op,model] of [
