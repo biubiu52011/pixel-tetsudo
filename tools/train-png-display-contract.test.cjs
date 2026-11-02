@@ -375,6 +375,44 @@ for (const example of [
   assert.equal(n700.vehicleResult.vehiclePlan.lineId, example.line);
   assert.deepEqual(Array.from(n700.vehicleResult.vehiclePlan.models), ['N700系']);
 }
+// Kyushu-only Sakura 400-series services have individually published N700
+// or 800 stock. Neither subseries, physical formation, nor a calendar-agnostic
+// 402 (special-day N700/800 substitution) may be inferred.
+for (const example of [
+  ['さくら403', '800系'],
+  ['さくら404', 'N700系'],
+  ['さくら405', '800系'],
+  ['さくら406', '800系'],
+  ['さくら407', '800系'],
+  ['さくら409', '800系'],
+  ['さくら410', 'N700系'],
+  ['さくら411', '800系']
+]) {
+  const published = sqlPlanVm.resolveTimetableRun(
+    { trainNumber: example[0], calendar:'odpt.Calendar:SaturdayHoliday' },
+    { _positionSource: 'supabase-train-run',
+      _sqlVehicleMappingLevel:'official_service_vehicle_plan',
+      _sqlVerifiedPublishedVehicleType:example[1],
+      _sqlVerifiedPublishedVehicleSourceUrl:
+        'https://www.jrkyushu-timetable.jp/sp/2611/0034/00349101.html',
+      _sqlVehiclePlanConfirmed:true },
+    'KyushuShinkansen', {operator:'JR-Kyushu'});
+  assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
+  assert.equal(published.vehicleResult.identityStatus, 'UNKNOWN');
+  assert.equal(published.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+  assert.equal(published.vehicleResult.vehiclePlan.confirmed, true);
+  assert.deepEqual(Array.from(published.vehicleResult.vehiclePlan.models), [example[1]]);
+}
+for (const trainNumber of ['さくら400', 'さくら402']) {
+  const unconfirmed = sqlPlanVm.resolveTimetableRun(
+    { trainNumber, calendar:'odpt.Calendar:SaturdayHoliday' },
+    { _positionSource:'supabase-train-run',
+      _sqlVehicleMappingLevel:'unresolved',
+      _sqlVehicleCandidateLabel:'N700系 / 800系' },
+    'KyushuShinkansen', {operator:'JR-Kyushu'});
+  assert.equal(unconfirmed.vehicleResult.vehiclePlan.confirmed, false,
+    'an outdated train number or dated subseries exception remains unconfirmed');
+}
 const kyushuOnlySakura = sqlPlanVm.resolveTimetableRun(
   { trainNumber: 'さくら400', calendar: 'odpt.Calendar:SaturdayHoliday' },
   { _positionSource:'supabase-train-run',
