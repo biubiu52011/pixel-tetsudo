@@ -162,9 +162,14 @@ const titledExact = {
   trainNumber: '611Y',
 };
 assert.match(tooltipContext._trainMarkerTitle(titledExact, 'Keiyo'), /E233/);
-assert.match(tooltipContext._trainMarkerTitle({ ...titledExact, estimated: true }, 'Keiyo'),
-  /Timetable model \(not actual stock\).*E233/,
-  'accessible labels must qualify a resolved scheduled model as non-physical');
+assert.match(tooltipContext._trainMarkerTitle({
+  ...titledExact, estimated: true, plannedVehicleCandidateStatus: 'dated_schedule_rule'
+}, 'Keiyo'), /Timetable model \(not actual stock\).*E233/,
+  'certified scheduled mapping must be labelled as timetable-only');
+assert.match(tooltipContext._trainMarkerTitle({
+  ...titledExact, estimated: true
+}, 'Keiyo'), /Estimated-position model \(schedule unverified\).*E233/,
+  'an estimated position with unrelated exact evidence is not a verified timetable model');
 assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Keiyo').includes('Timetable model'),
   'confirmed non-estimated vehicles must not acquire a timetable-only label');
 
@@ -232,8 +237,12 @@ vm.runInContext(extract(renderSource,
   '  function _trainFleetPlanLabel(p, lineId, lang) {'), tooltipContext);
 const mappedModel = {
   ...titledExact, estimated: true, vehicleResolvedUpstream: true,
-  vehicleIdentityStatus: 'EXACT',
+  vehicleIdentityStatus: 'EXACT', plannedVehicleCandidateStatus: 'dated_schedule_rule',
 };
+assert.match(tooltipContext._trainFoldExactVehicleLabel({
+  ...mappedModel, plannedVehicleCandidateStatus: 'unresolved'
+}, 'Keiyo', 'en'), /Estimated-position model reference.*not schedule-certified/,
+  'folded list must not certify an incidental exact vehicle observation as a timetable model');
 assert.match(tooltipContext._trainFoldExactVehicleLabel(mappedModel, 'Keiyo', 'en'),
   /Timetable model.*E233/, 'planned exact mapping is not a claim about actual physical stock');
 assert.equal(tooltipContext._trainFoldExactVehicleLabel(mappedModel, 'Yamanote', 'en'), '',
