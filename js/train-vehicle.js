@@ -3829,6 +3829,22 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       sourceUrl: 'https://www.westjr.co.jp/press/article/2020/02/page_15645.html'
     };
   }
+  // 房総の京葉線直通快速（列車番号末尾 A）は総武快速の F 番号と
+  // 別系統。公刊時刻表は直通のみ確定し、個別の車両形式は確定しない。
+  // 京葉線のE233-5000と転入E233-1000を路線参考に留め、
+  // 長期運用離脱中の209-500を2026年の所定形式とは扱わない。
+  if (operator === 'JR-East' &&
+      /^(?:Sotobo|Uchibo)$/.test(String(lineId || '')) &&
+      serviceType === 'odpt.TrainType:JR-East.Rapid' &&
+      /^[0-9]+A$/.test(String(tt['odpt:trainNumber'] || tt.trainNumber || '').trim())) {
+    return {
+      operator: 'JR-East',
+      vehicleCandidates: ['E233系5000番台', 'E233系1000番台'],
+      evidenceRole: 'route-fleet-reference', _fleetReferenceOnly: true,
+      planOverride: false,
+      sourceUrl: 'https://timetables.jreast.co.jp/2611/train/130/131942.html'
+    };
+  }
   // 房総普通列車：209系から改造E233系への段階的置換。
   // 外房・内房の既存E131系0番台と、2027年以降導入予定の
   // 新造E131系を混同しない。東金線への将来投入は含めない。
