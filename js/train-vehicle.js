@@ -3844,6 +3844,26 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           return representative;
         }
       }
+      if (lineId === "SaikyoKawagoe" &&
+          sourceRailway === "odpt.Railway:JR-East.SaikyoKawagoe" &&
+          num === "691F" && p.calendarType === "holiday" &&
+          day >= "2026-03-14" && day <= "2027-03-12" &&
+          (!p.trainOperator || p.trainOperator === "JR-East" || p.trainOperator === "TWR")) {
+        var ref = resolveTimetableVehiclePlan("東京臨海高速鉄道70-000形", {
+          lineId: "SaikyoKawagoe", operator: "TWR", serviceDate: day,
+          source: "twr-shared-working-representative",
+          sourceUrl: "https://ameblo.jp/tc205-37/entry-12972142687.html",
+          _positionSource: "train-timetable"
+        });
+        if (ref && ref.status === "PLANNED_MODEL" && ref.iconPath) {
+          ref.status = "FLEET_REPRESENTATIVE";
+          ref.evidenceRole = "shared-working-representative";
+          ref.representativeOnly = true;
+          ref.alternativeModels = ["東京臨海高速鉄道71-000形"];
+          ref.confirmed = false;
+          return ref;
+        }
+      }
       return null;
     }
     var types = Object.create(null);
@@ -4672,7 +4692,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // This PNG is visibly tagged PLANNED and cannot be mistaken for live stock.
     if (p && p.positionSource === "realtime-api" && vehiclePlan &&
         (vehiclePlan.source === "published-number-calendar-reference" ||
-         vehiclePlan.source === "keiyo-shared-working-representative") &&
+         vehiclePlan.source === "keiyo-shared-working-representative" ||
+         vehiclePlan.source === "twr-shared-working-representative") &&
         _issuedVehiclePlans.has(vehiclePlan) &&
         (vehiclePlan.status === "PLANNED_MODEL" ||
          vehiclePlan.status === "FLEET_REPRESENTATIVE") &&
