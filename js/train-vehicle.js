@@ -3986,8 +3986,19 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var _routeFleetOnly = tt._positionSource === 'supabase-train-run' &&
       (tt._sqlVehicleMappingLevel === 'official_single_fleet_plan' ||
        tt._sqlVehicleMappingLevel === 'official_model_family_plan');
+    // Published timetable model names are planned evidence, not physical
+    // rolling-stock identity for this train position.
+    var _publishedModelPlanOnly = tt._positionSource === 'supabase-train-run' &&
+      (tt._sqlVehicleMappingLevel === 'official_service_vehicle_plan' ||
+       tt._sqlVehicleMappingLevel === 'published_number_family_plan');
     var _sourceCandidateOnly = tt._positionSource === 'supabase-train-run' &&
-      (tt._sqlVehicleMappingLevel === 'source_single_type_candidate' || _routeFleetOnly);
+      (tt._sqlVehicleMappingLevel === 'source_single_type_candidate' ||
+       _routeFleetOnly || _publishedModelPlanOnly);
+    if (_sourceCandidateOnly && !_sqlSourceCandidates.length &&
+        String(tt.vehicleType || '').trim()) {
+      _sqlSourceCandidates = String(tt.vehicleType).split(/\s*\/\s*/)
+        .map(function(v) { return v.trim(); }).filter(Boolean);
+    }
     var _declaredVehicleInput = _sourceCandidateOnly
       ? '' : String(tt.vehicleType || '').trim();
     var _timetableVehicleInput = [_operationVehicleInput, _declaredVehicleInput]
@@ -3997,13 +4008,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // 断言，也绝不能按图片可用性从有歧义的列表中挑选车型。
     var _declaredModels = _declaredVehicleInput.split('/').map(function(v){return v.trim();}).filter(Boolean);
     var _operationModels = String(_operationVehicleInput || '').split('/').map(function(v){return v.trim();}).filter(Boolean);
-    var _uniqueSqlCandidate = tt._positionSource === 'supabase-train-run' &&
-      tt._sqlVehicleMappingLevel === 'source_single_type_candidate' &&
-      _declaredModels.length === 1;
-    if (_uniqueSqlCandidate || (_declaredModels.length === 1 && _operationModels.length > 1 &&
-        _operationModels.indexOf(_declaredModels[0]) >= 0)) {
-      // 同一运行的唯一来源候选优先于宽泛的线路运用族；
-      // 多车型候选仍不得被压缩成单一车型。
+    if (_declaredModels.length === 1 && _operationModels.length > 1 &&
+        _operationModels.indexOf(_declaredModels[0]) >= 0) {
+      // Narrow a broad operation family only with independently admitted
+      // exact evidence; SQL source-only candidates are not identity input.
       _timetableVehicleInput = _declaredModels[0];
     }
     // 日期有效且具有决定性的列车级车型可以缩小时刻表更宽泛的
