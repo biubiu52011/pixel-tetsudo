@@ -1443,16 +1443,20 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         marker.setAttribute("visibility", "hidden");
         // 立即保留这列已知列车的已验证位置，
         // 不必等待图片/网络错误后的下一次 ODPT 轮询。
-        var oldUnit = _trainUnitContainer(marker);
-        var oldLabel = oldUnit && oldUnit.querySelector('[data-train-label-for]');
+        var unit = _trainUnitContainer(marker);
+        if (!unit) return;
+        // Swap the artwork INSIDE the same component. Do not instantiate
+        // a second complete train or detach/reparent its destination caption.
         var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
           {kind:"unresolved", iconSrc:"", className:spec.className},
-          marker._displayX, marker._displayY, p, lineId, isLoop, color, loc);
+          marker._displayX, marker._displayY, marker._trainPosition || p,
+          lineId, isLoop, color, loc);
         if (neutral) {
-          var newUnit = _trainUnitContainer(neutral);
-          if (newUnit && oldLabel) newUnit.appendChild(oldLabel);
-          if (oldUnit && oldUnit.parentNode) oldUnit.parentNode.removeChild(oldUnit);
-          else if (marker.parentNode) marker.parentNode.removeChild(marker);
+          neutral._displayStationIdx = marker._displayStationIdx;
+          neutral._displayNextStationIdx = marker._displayNextStationIdx;
+          neutral._displayRoutePos = marker._displayRoutePos;
+          unit.insertBefore(neutral, marker);
+          unit.removeChild(marker);
           _resolveTrainLabelCollisions(trainLayer);
         }
       });
@@ -1492,9 +1496,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // A marker and its direction label must never be siblings of trainLayer.
     var unit = document.createElementNS(svgNS, "g");
     unit.setAttribute("data-train-unit-id", String(trainUid));
-    unit.setAttribute("class", "train-unit");
+    unit.setAttribute("class", "train-unit train-component");
+    unit.setAttribute("data-train-component-id", String(trainUid));
     unit.appendChild(marker);
-    trainLayer.appendChild(unit);
+    // This is an unmounted component part. The public component constructor
+    // attaches the completed unit and creates the caption in one operation.
     _setTrainIconPosition(marker, px, py, p, lineId, isLoop);
     marker._displayX = px;
     marker._displayY = py;
@@ -1504,6 +1510,32 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (loc && loc.nextIdx != null && isFinite(Number(loc.nextIdx))) marker._displayNextStationIdx = Number(loc.nextIdx);
     if (loc && loc.routePos != null && isFinite(Number(loc.routePos))) marker._displayRoutePos = Number(loc.routePos);
     return marker;
+  }
+
+  // TrainComponent is the sole public lifecycle for a timetable/realtime
+  // glyph. SVG image/circle, arrow, and destination are private render parts;
+  // they are mounted, moved and disposed as one keyed component.
+  function _createTrainComponent(trainLayer, svgNS, trainUid, spec,
+      px, py, p, lineId, isLoop, color, loc) {
+    var marker = _createTrainMarker(trainLayer, svgNS, trainUid, spec,
+      px, py, p, lineId, isLoop, color, loc);
+    if (!marker) return null;
+    var component = _trainUnitContainer(marker);
+    trainLayer.appendChild(component);
+    _syncTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId);
+    return marker;
+  }
+
+  function _positionTrainComponent(marker, trainLayer, svgNS, trainUid,
+      px, py, p, lineId, isLoop) {
+    _setTrainIconPosition(marker, px, py, p, lineId, isLoop);
+    _syncTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId);
+  }
+
+  function _moveTrainComponent(marker, trainLayer, trainUid,
+      px, py, p, lineId, isLoop) {
+    _setTrainIconPosition(marker, px, py, p, lineId, isLoop);
+    _moveTrainLabels(trainLayer, trainUid, px, py, p, lineId);
   }
 
   function updateTrainLayer(svg, positions, stationCoords, lineId, line, geometry) {
@@ -1705,14 +1737,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           _loopCorrection || !isFinite(_distance) || _distance > _snapDistance;
 
         if (_shouldSnap || _distance <= 0.5) {
-          _setTrainIconPosition(existingIcon, _targetX, _targetY, p, lineId, isLoop);
+          _positionTrainComponent(existingIcon, trainLayer, svgNS, trainUid,
+            _targetX, _targetY, p, lineId, isLoop);
           existingIcon._displayX = _targetX;
           existingIcon._displayY = _targetY;
           existingIcon._displayLineId = lineId;
           if (isFinite(_targetIdx)) existingIcon._displayStationIdx = _targetIdx;
           if (isFinite(_targetNextIdx)) existingIcon._displayNextStationIdx = _targetNextIdx;
           if (isFinite(_targetRoutePos)) existingIcon._displayRoutePos = _targetRoutePos;
-          _syncTrainLabels(trainLayer, svgNS, trainUid, _targetX, _targetY, p, lineId);
         } else {
           // 每个 RAF 拥有一个不可变的目标快照。函数作用域的循环
           // 变量过去会导致所有回调都移动最后一列车。
@@ -1723,7 +1755,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           // 每次更新都拉伸到固定的 14 秒。
           var _animDur = Math.max(350, Math.min(3000, Math.round(_distance * 35)));
           var _animStart = performance.now();
-          _syncTrainLabels(trainLayer, svgNS, trainUid, _startX, _startY, p, lineId);
+          _positionTrainComponent(_icon, trainLayer, svgNS, trainUid,
+            _startX, _startY, p, lineId, isLoop);
           function _animFrame(now) {
             if (!_icon.isConnected || document.hidden) { _icon._moveRaf = 0; return; }
             var _t = Math.min(1, (now - _animStart) / _animDur);
@@ -1743,8 +1776,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             _icon._displayX = _curX;
             _icon._displayY = _curY;
             _icon._displayLineId = lineId;
-            _setTrainIconPosition(_icon, _curX, _curY, p, lineId, isLoop);
-            _moveTrainLabels(trainLayer, trainUid, _curX, _curY, p, lineId);
+            _moveTrainComponent(_icon, trainLayer, trainUid,
+              _curX, _curY, p, lineId, isLoop);
             _resolveTrainLabelCollisions(trainLayer, now);
             if (_t < 1) {
               _icon._moveRaf = requestAnimationFrame(_animFrame);
@@ -1763,9 +1796,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             _startRoutePos, _routeDiff, _loopRect, _dx, _dy, _distance);
         }
       } else {
-        existingIcon = _createTrainMarker(trainLayer, svgNS, trainUid, markerSpec, px, py, p, lineId, isLoop, color, loc);
+        existingIcon = _createTrainComponent(trainLayer, svgNS, trainUid,
+          markerSpec, px, py, p, lineId, isLoop, color, loc);
         markerById[String(trainUid)] = existingIcon;
-        _syncTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId);
       }
     }
     
