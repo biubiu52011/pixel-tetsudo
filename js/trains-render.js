@@ -1138,6 +1138,27 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return prefix + models.join(" / ");
   }
 
+  // Present train-number-matched Shonan-color plan candidates, NOT a live
+  // E231/E233 vehicle identification. No representative PNG is authorized.
+  function _shonanFleetCandidatesLabel(p, lineId, lang) {
+    if (!/^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo)$/.test(String(lineId || "")) ||
+        !p || p.estimated !== true ||
+        p.vehicleIdentityStatus === "EXACT" ||
+        p.plannedVehicleCandidateStatus !== "source_single_type_candidate" ||
+        !/(?:[.:])(?:Local|Rapid|SpecialRapid)$/.test(String(p.trainType || ""))) return "";
+    var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    if (!plan || plan.evidenceRole !== "unverified-source-candidate" ||
+        !Array.isArray(plan.models) || plan.models.length !== 2 ||
+        !plan.models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
+        !plan.models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return "";
+    lang = String(lang || "ja").toLowerCase();
+    var prefix = /^zh/.test(lang) ? "湘南色计划车型候选（具体车辆未确认）：" :
+      lang === "en" ? "Shonan-color planned fleet (exact vehicle unknown): " :
+      lang === "ko" ? "쇼난색 계획 차량 후보(실제 차종 미확인): " :
+      "湘南色・計画車両候補（当該車両の形式未確認）：";
+    return prefix + "E231系1000番台 / E233系3000番台";
+  }
+
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
@@ -1184,7 +1205,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var canonicalVehicle = window.TrainVehicle.resolveCanonicalVehicle(vehicle.name);
       if (canonicalVehicle && canonicalVehicle.displayName) tip.push(canonicalVehicle.displayName);
     }
-    var _fleetReference = _seibuCommuterCandidatesLabel(p, lineId, lang);
+    var _fleetReference = _seibuCommuterCandidatesLabel(p, lineId, lang) || _shonanFleetCandidatesLabel(p, lineId, lang);
     if (_fleetReference) tip.push(_fleetReference);
     // 保留线路门槛：源码截取型消费者可能只加载标题函数而不加载全部辅助函数。
     if (typeof _isOedoTailTrain === "function" && _isOedoTailTrain(lineId, p) && p && p.destinationStation) {
@@ -1793,7 +1814,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         entry.appendChild(caption);
         // Make fleet candidates visible in the folded train list, not just
         // in aria-labels. Do not replace the neutral vehicle marker with a PNG.
-        var fleetText = _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang);
+        var fleetText = _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) || _shonanFleetCandidatesLabel(p, marker._displayLineId || "", lang);
         if (fleetText) {
           var fleetNote = document.createElement('div');
           fleetNote.className = 'train-fold-vehicle-candidates';
