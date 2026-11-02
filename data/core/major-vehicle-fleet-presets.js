@@ -50,8 +50,13 @@
       models:['E233系2000番台'], sourceUrl:JR_E233},
     {id:'jr-keiyo', operator:'JR-East', lineIds:['Keiyo'],
       models:['E233系5000番台','E233系1000番台'], sourceUrl:JR_E233},
-    {id:'jr-saikyo-kawagoe', operator:'JR-East', lineIds:['SaikyoKawagoe','Kawagoe'],
+    // 大崎～川越（埼京・川越線直通）と川越～高麗川（八高・川越線）は別の車隊。
+    // どちらも路線単位の参考情報に過ぎず、個別列車の実車確定には使わない。
+    {id:'jr-saikyo-kawagoe', operator:'JR-East', lineIds:['SaikyoKawagoe'],
       models:['E233系7000番台'], sourceUrl:JR_E233},
+    {id:'jr-kawagoe-west', operator:'JR-East', lineIds:['Kawagoe'],
+      models:['E231系3000番台','209系3500番台'],
+      sourceUrl:'https://www.jreast.co.jp/press/2025/omiya/20250925_o01.pdf'},
     {id:'jr-shonan-color', operator:'JR-East',
       lineIds:['Tokaido','TokaidoMain','Takasaki','UtsunomiyaJR','ShonanShinjuku','UenoTokyo'],
       models:['E231系1000番台','E233系3000番台'], sourceUrl:JR_OTHER},
@@ -575,6 +580,13 @@
   // when the upstream timetable explicitly supplies a different trainOwner.
   // Network presence or a suffix on the public train number alone is not proof.
   var throughRows = [
+    // Only when upstream supplies the explicit vehicle owner. A route name,
+    // train suffix or fleet preset alone never confirms a train's physical stock.
+    {operator:'JR-East', lineIds:['SaikyoKawagoe'], vehicleOwner:'TWR',
+      models:['東京臨海高速鉄道70-000形','東京臨海高速鉄道71-000形'],
+      sourceUrl:'https://www.twr.co.jp/route/tabid/144/Default.aspx'},
+    {operator:'JR-East', lineIds:['SaikyoKawagoe','SotetsuJRDirect'], vehicleOwner:'Sotetsu',
+      models:['相鉄12000系'], sourceUrl:'https://www.sotetsu.co.jp/life/gallery/train/'},
     {operator:'TokyoMetro', lineIds:['Hibiya'], vehicleOwner:'Tobu',
       models:['東武70000型','東武70090型'], sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
     {operator:'TokyoMetro', lineIds:['Tozai'], vehicleOwner:'JR-East',
