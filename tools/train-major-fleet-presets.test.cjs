@@ -14,7 +14,7 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=64, 'expanded private-railway fleet preset groups missing');
+assert.ok(entries.length>=92, 'phase-3 local and urban fleet preset groups missing');
 const railwayData = JSON.parse(fs.readFileSync(
   path.join(root,'data/core/railway_data.compact.json'),'utf8'));
 const checked = Object.keys(railwayData.lines || {});
@@ -98,6 +98,54 @@ for(const [line,op,type] of [
   assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
     'premium service must not borrow commuter fleet '+line+'/'+type);
 }
+
+// Phase 3: all additions must remain source-backed, scoped reference lists.
+assert.ok(seen.size>=117,'phase-3 route scopes missing');
+for (const [line,operator,requiredModel] of [
+  ['Musashino','JR-East','209系500番台'],
+  ['Sagami','JR-East','E131系500番台'],
+  ['TsurumiOkawa','JR-East','E131系1000番台'],
+  ['SotetsuJRDirect','JR-East','E233系7000番台'],
+  ['MarunouchiBranch','TokyoMetro','東京メトロ2000系'],
+  ['ChiyodaBranch','TokyoMetro','東京メトロ05系（区間列車用）'],
+  ['Arakawa','Toei','都電8900形'],
+  ['SeibuShinjuku','Seibu','西武20000系'],
+  ['SeibuTamako','Seibu','西武9000系'],
+  ['SeibuYamaguchi','Seibu','西武L00系'],
+  ['Kokubunji','Seibu','西武8000系（2025年導入）'],
+  ['Seibu_Sayama','Seibu','西武7000系（2026年導入）'],
+  ['Daishi_Tobu','Tobu','東武8000系'],
+  ['Tobu_Kameido','Tobu','東武8000系'],
+  ['TokyuOimachi','Tokyu','東急6020系'],
+  ['TokyuSetagaya','Tokyu','東急300系'],
+  ['Yurikamome','Yurikamome','ゆりかもめ7500系'],
+  ['TamaMonorail','TamaMonorail','多摩都市モノレール1000系'],
+  ['NewShuttle','SaitamaNewUrbanTransit','ニューシャトル2020系'],
+  ['ChibaMonorail2','ChibaUrbanMonorail','千葉都市モノレール0形'],
+  ['ShonanMonorail','ShonanMonorail','湘南モノレール5000系'],
+  ['Enoshima','EnoshimaElectric','江ノ電700形（2026年導入）'],
+  ['ToyoRapid','ToyoRapid','東葉高速鉄道2000系'],
+  ['UtsunomiyaLRT','UtsunomiyaLightRail','宇都宮ライトレールHU300形']
+]) {
+  const item=presets.lookup(line,operator,'odpt.TrainType:'+operator+'.Local');
+  assert.ok(item && item.vehicleCandidates.includes(requiredModel),
+    line+': missing scoped reference model '+requiredModel);
+  assert.equal(item._fleetReferenceOnly,true,line+': must remain fleet-only');
+  assert.equal(item.planOverride,false,line+': cannot override train evidence');
+  assert.ok(!item.iconPath && !item.vehicleType,line+': cannot choose PNG or identity');
+}
+for (const [line,op,type] of [
+  ['SeibuYamaguchi','Seibu','LimitedExpress'],
+  ['Enoshima','EnoshimaElectric','LimitedExpress'],
+  ['Tobu_Kameido','Tobu','TJ-Liner'],
+  ['Seibu_Sayama','Seibu','LimitedExpress']
+]) {
+  assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
+    line+': special service cannot inherit commuter fleet');
+}
+// A branch reference must not leak into another operator or similarly-named line.
+assert.equal(presets.lookup('SeibuYamaguchi','JR-East','odpt.TrainType:JR-East.Local'),null);
+assert.equal(presets.lookup('Yurikamome','TokyoMonorail','odpt.TrainType:TokyoMonorail.Local'),null);
 
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
