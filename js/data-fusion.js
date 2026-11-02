@@ -1268,6 +1268,16 @@
       }) ? "holiday" : "weekday";
       if (!_publishedCalendars.length)
         _snapshotCalendarType = (_snapshotJstNow.getUTCDay() === 0 || _snapshotJstNow.getUTCDay() === 6) ? "holiday" : "weekday";
+      // Published weekday/holiday train plans follow the RAILWAY SERVICE DAY.
+      // At 03:09 JST this is yesterday, not tomorrow's first-train calendar.
+      var _planCalendars = window.TrainPositionEstimator &&
+        typeof window.TrainPositionEstimator.getCurrentCalendars === "function"
+          ? window.TrainPositionEstimator.getCurrentCalendars() : [];
+      var _snapshotPlanCalendarType = _planCalendars.length
+        ? (_planCalendars.some(function(c) {
+            return /odpt\.Calendar:(?:Holiday|Sunday|Saturday|SaturdayHoliday)$/.test(c);
+          }) ? "holiday" : "weekday")
+        : (_snapshotServiceDay === 0 || _snapshotServiceDay === 6 ? "holiday" : "weekday");
       var _vehicleResolveCalls = 0, _vehicleResolveMs = 0, _vehicleResolveErrors = 0;
       var _vehicleEvidenceCalls = 0, _vehicleEvidenceMs = 0;
       // Build the ODPT railway-code reverse lookup once per position snapshot.
@@ -1453,6 +1463,7 @@
               trainNumber: trainNumber,
               operationCode: t["odpt:operationCode"] || t.operationCode || "",
               serviceDate: _snapshotServiceDate,
+              calendarType: _snapshotPlanCalendarType,
               delayMin: delayMin,
               railDirection: directionName,
               destinationStation: destStation,
@@ -1556,6 +1567,19 @@
             // An intermittent missing vehicle field must not erase a model
             // already established for this same ODPT train source identity.
             _preserveRealtimeSourceVehicle(positionData, odptVehicleType);
+            // A live location may use an exact published train/calendar MODEL
+            // even when no real carset was observed. Never promote this plan
+            // into vehicleIdentityStatus or actual formation evidence.
+            if (window.TrainVehicle &&
+                typeof window.TrainVehicle.resolvePublishedPositionPlan === "function") {
+              try {
+                var _publishedPositionPlan =
+                  window.TrainVehicle.resolvePublishedPositionPlan(positionData);
+                if (_publishedPositionPlan) positionData.vehiclePlan = _publishedPositionPlan;
+              } catch (planError) {
+                console.debug("[DataFusion] published vehicle plan unavailable", planError);
+              }
+            }
             // Zero-fallback vehicle contract: realtime records without explicit
             // vehicle evidence keep trainClass empty. Line/operator/train number,
             // service type and through-service context may not manufacture it.
