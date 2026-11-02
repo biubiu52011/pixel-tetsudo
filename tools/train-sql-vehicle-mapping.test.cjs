@@ -52,10 +52,10 @@ for (const [line, operator, vehicle] of cases) {
     line + ': a unique candidate must not emit an EXACT PNG');
   assert.equal(result.timetableVehicleInput, '',
     line + ': a SQL candidate must not feed the actual-identity resolver');
-  assert.equal(result.vehicleResult.vehiclePlan?.status, 'PLANNED_MODEL',
-    line + ': source name may only be retained as a planned reference');
-  assert.ok(result.vehicleResult.vehiclePlan?.iconPath,
-    line + ': catalog model reference remains available');
+  assert.equal(result.vehicleResult.vehiclePlan?.status, 'PLANNED_CANDIDATES',
+    line + ': unverified source must remain a planned candidate, not a certified model');
+  assert.equal(result.vehicleResult.vehiclePlan?.iconPath, '',
+    line + ': an unverified source cannot authorize a catalog PNG');
 
   const display = window.TrainVehicle.selectMarkerArtwork({
     positionLineId: line,
@@ -66,9 +66,8 @@ for (const [line, operator, vehicle] of cases) {
     vehiclePlan: result.vehicleResult.vehiclePlan,
     estimated: true,
   }, false);
-  assert.equal(display.kind, 'vehicle', line + ': a planned reference may use the catalog PNG');
-  assert.equal(display.planned, true,
-    line + ': it must be marked planned and never masquerade as the actual train');
+  assert.equal(display.kind, 'unresolved',
+    line + ': an unverified source candidate must remain a neutral position marker');
   const liveDisplay = window.TrainVehicle.selectMarkerArtwork({
     positionLineId: line,
     vehicleResolutionLineId: line,
@@ -108,4 +107,4 @@ for (const [line, operator, model] of [
     line + ': unregistered cross-line vehicle type must not borrow a PNG');
 }
 
-console.log('SQL vehicle mapping contract: PASS (candidates, scoped through-line planned PNG, negatives)');
+console.log('SQL vehicle mapping contract: PASS (unverified candidates, dated exact, scoped negatives)');
