@@ -183,6 +183,44 @@ assert.equal(fleetPlanVm._officialConventionalServicePlan(
   bosoTemplate, 'Keiyo', { operator: 'JR-East' }), null,
 'the local fleet must not expand to unrelated railway displays');
 
+// November 2026 Keiyo through Rapid 'A' numbers have their own route
+// family. Never assign them the E235-1000 stock of the F-number trains.
+const bosoKeiyoRapid = {
+  ...bosoTemplate,
+  'odpt:trainType': 'odpt.TrainType:JR-East.Rapid',
+  'odpt:trainNumber': '3604A',
+};
+for (const lineId of ['Sotobo', 'Uchibo']) {
+  const fleet = fleetPlanVm._officialConventionalServicePlan(
+    bosoKeiyoRapid, lineId, { operator: 'JR-East' });
+  assert.ok(fleet, 'A-number Keiyo through Rapid must have a route reference');
+  assert.equal(fleet.evidenceRole, 'route-fleet-reference');
+  assert.equal(fleet._fleetReferenceOnly, true);
+  assert.equal(fleet.planOverride, false);
+  assert.equal(fleet.vehicleType, undefined);
+  assert.deepEqual(Array.from(fleet.vehicleCandidates),
+    ['E233系5000番台', 'E233系1000番台']);
+  assert.equal(fleet.vehicleCandidates.includes('E235系1000番台'), false);
+  assert.equal(fleet.vehicleCandidates.includes('209系500番台'), false,
+    'inactive Keiyo 209-500 cannot be declared scheduled by historical fleet lists');
+}
+for (const trainNumber of ['3604F', '3604Y', '3604M', '3604']) {
+  assert.equal(fleetPlanVm._officialConventionalServicePlan({
+    ...bosoKeiyoRapid, 'odpt:trainNumber': trainNumber,
+  }, 'Sotobo', { operator: 'JR-East' }), null,
+  'Keiyo A-number fleet cannot contaminate other numbering families');
+}
+assert.equal(fleetPlanVm._officialConventionalServicePlan(
+  bosoKeiyoRapid, 'Togane', { operator: 'JR-East' }), null);
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...bosoKeiyoRapid, _sqlVehicleMappingLevel: 'published_number_family_plan',
+}, 'Uchibo', { operator: 'JR-East' }), null,
+'certified SQL plan outranks A-number route fallback');
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...bosoKeiyoRapid, 'odpt:trainType': 'odpt.TrainType:JR-East.Local',
+}, 'Uchibo', { operator: 'JR-East' }).vehicleCandidates.includes('E131系0番台'), true,
+'local and rapid Boso fleet references remain distinct');
+
 // SQL published models describe the weekday/holiday timetable, not the
 // observed physical stock. Even one verified model must pass through vehiclePlan.
 const sqlPlanVm = vm.createContext({
@@ -255,6 +293,17 @@ assert.equal(unmappedBosoPlan.vehicleResult.vehiclePlan.status, 'FLEET_REFERENCE
 assert.equal(unmappedBosoPlan.vehicleResult.vehiclePlan.iconPath, '',
   'an unmapped local train must not acquire a representative PNG');
 assert.equal(unmappedBosoPlan.vehicleResult.vehiclePlan.lineId, 'Togane');
+
+const unknownKeiyoRapid = sqlPlanVm.resolveTimetableRun(
+  { trainNumber: '3604A', calendar: 'odpt.Calendar:SaturdayHoliday' },
+  bosoKeiyoRapid, 'Sotobo', { operator: 'JR-East' });
+assert.equal(unknownKeiyoRapid.vehicleResult.identityStatus, 'UNKNOWN');
+assert.equal(unknownKeiyoRapid.vehicleResult.vehiclePlan.status, 'FLEET_REFERENCE',
+  'unmapped Keiyo through Rapid remains route stock reference');
+assert.equal(unknownKeiyoRapid.vehicleResult.vehiclePlan.iconPath, '',
+  'unverified Keiyo A-number Rapid cannot borrow an E233 or E235 PNG');
+assert.deepEqual(Array.from(unknownKeiyoRapid.vehicleResult.vehiclePlan.models),
+  ['E233系5000番台', 'E233系1000番台']);
 
 // Remaining marker tests ensure planned references are not physical SVG identities.
 const renderVm = vm.createContext({
