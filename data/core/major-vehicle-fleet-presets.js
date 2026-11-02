@@ -224,6 +224,114 @@
     {id:'tokyo-monorail', operator:'TokyoMonorail', lineIds:['TokyoMonorail'],
       models:['東京モノレール1000形','東京モノレール2000形','東京モノレール10000形'],
       sourceUrl:'https://www.tokyo-monorail.co.jp/fun/vehicle/'}
+
+    // ===== 2026-11 phase 3: branch lines, local fleets and urban transit =====
+    // All rows remain operator-scoped, reference-only candidates. These do not
+    // assert any train's actual rolling stock, car number, formation or artwork.
+
+    // JR East: keep branches separate; regional through services can use
+    // additional stock not included in this representative reference list.
+    {id:'jr-musashino', operator:'JR-East', lineIds:['Musashino'],
+      models:['E231系0番台','209系500番台'],
+      sourceUrl:'https://www.jreast.co.jp/train/local/'},
+    {id:'jr-sagami', operator:'JR-East', lineIds:['Sagami'],
+      models:['E131系500番台'], sourceUrl:'https://www.jreast.co.jp/train/local/'},
+    {id:'jr-tsurumi-branches', operator:'JR-East',
+      lineIds:['TsurumiUmiShibaura','TsurumiOkawa'],
+      models:['E131系1000番台'], sourceUrl:'https://www.jreast.co.jp/train/local/'},
+    {id:'jr-sotetsu-direct', operator:'JR-East', lineIds:['SotetsuJRDirect'],
+      models:['E233系7000番台'], sourceUrl:JR_E233},
+
+    // Tokyo Metro's short service branches must not inherit arbitrary train
+    // types from other sections of Chiyoda or Marunouchi.
+    {id:'metro-marunouchi-branch', operator:'TokyoMetro', lineIds:['MarunouchiBranch'],
+      models:['東京メトロ2000系'], sourceUrl:METRO},
+    {id:'metro-chiyoda-branch', operator:'TokyoMetro', lineIds:['ChiyodaBranch'],
+      models:['東京メトロ05系（区間列車用）','東京メトロ16000系'], sourceUrl:METRO},
+
+    // Toei Arakawa (Tokyo Sakura Tram) uses streetcar families rather than
+    // the subway or Nippori-Toneri rolling stock.
+    {id:'toei-arakawa-tram', operator:'Toei', lineIds:['Arakawa'],
+      models:['都電7700形','都電8500形','都電8800形','都電8900形','都電9000形'],
+      sourceUrl:'https://www.kotsu.metro.tokyo.jp/about/service/toden.html'},
+
+    // Seibu: branch-local vehicles, sustainable transferred rolling stock and
+    // the 2026 L00 Leo Liner are distinct from ordinary Ikebukuro Line stock.
+    {id:'seibu-shinjuku', operator:'Seibu', lineIds:['SeibuShinjuku'],
+      models:['西武2000系','西武20000系','西武30000系','西武40000系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
+    {id:'seibu-chichibu-local', operator:'Seibu', lineIds:['SeibuChichibu'],
+      models:['西武4000系','西武40000系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
+    {id:'seibu-tamako', operator:'Seibu', lineIds:['SeibuTamako'],
+      models:['西武9000系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/9000/'},
+    {id:'seibu-yamaguchi', operator:'Seibu', lineIds:['SeibuYamaguchi'],
+      models:['西武8500系','西武L00系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/L00/'},
+    {id:'seibu-kokubunji', operator:'Seibu', lineIds:['Kokubunji'],
+      models:['西武2000系','西武8000系（2025年導入）'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/8000/'},
+    {id:'seibu-sayama', operator:'Seibu', lineIds:['Seibu_Sayama'],
+      models:['西武2000系','西武7000系（2026年導入）'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/7000/'},
+    {id:'seibu-toshima', operator:'Seibu', lineIds:['SeibuToshima'],
+      models:['西武2000系','西武30000系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
+    {id:'seibu-tamagawa', operator:'Seibu', lineIds:['SeibuTamagawa'],
+      models:['西武101系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
+
+    // Tobu's small local branches should not inherit the entire Skytree
+    // or Tojo network fleet.
+    {id:'tobu-daishi', operator:'Tobu', lineIds:['Daishi_Tobu'],
+      models:['東武8000系'],
+      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    {id:'tobu-kameido', operator:'Tobu', lineIds:['Tobu_Kameido'],
+      models:['東武8000系'],
+      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    {id:'tobu-northern-branches', operator:'Tobu',
+      lineIds:['Kiryu','Koizumi','Sano'],
+      models:['東武8000系'],
+      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+
+    // Tokyu Oimachi Line currently mixes older local stock with new
+    // 5-car 6020 and 7-car express 6020 sets; the route alone is insufficient
+    // to pick an exact model or even its formation length.
+    {id:'tokyu-oimachi', operator:'Tokyu', lineIds:['TokyuOimachi'],
+      models:['東急6000系','東急6020系','東急9000系','東急9020系'],
+      sourceUrl:'https://www.tokyu.co.jp/company/information/detail/58201.html'},
+    {id:'tokyu-setagaya', operator:'Tokyu', lineIds:['TokyuSetagaya'],
+      models:['東急300系'], sourceUrl:TOKYU},
+
+    // Automated guideway, monorail and tram vehicles are line-specific.
+    {id:'yurikamome-modern', operator:'Yurikamome', lineIds:['Yurikamome'],
+      models:['ゆりかもめ7300系','ゆりかもめ7500系'],
+      sourceUrl:'https://www.yurikamome.co.jp/feature/vehicle/'},
+    {id:'tama-monorail', operator:'TamaMonorail', lineIds:['TamaMonorail'],
+      models:['多摩都市モノレール1000系'],
+      sourceUrl:'https://www.locationbox.metro.tokyo.lg.jp/catalog/996/'},
+    {id:'new-shuttle', operator:'SaitamaNewUrbanTransit', lineIds:['NewShuttle'],
+      models:['ニューシャトル2000系','ニューシャトル2020系'],
+      sourceUrl:'https://new-shuttle.jp/newshuttle_atraction/'},
+    {id:'chiba-monorail', operator:'ChibaUrbanMonorail',
+      lineIds:['ChibaMonorail1','ChibaMonorail2'],
+      models:['千葉都市モノレール1000形','千葉都市モノレール0形'],
+      sourceUrl:'https://chiba-monorail.co.jp/index.php/about-monorail/sharyou/'},
+    {id:'shonan-monorail', operator:'ShonanMonorail', lineIds:['ShonanMonorail'],
+      models:['湘南モノレール5000系'],
+      sourceUrl:'https://www.shonan-monorail.co.jp/fun/vehicle.html'},
+    {id:'enoden-local', operator:'EnoshimaElectric', lineIds:['Enoshima'],
+      models:['江ノ電1000形','江ノ電2000形','江ノ電20形','江ノ電500形',
+        '江ノ電700形（2026年導入）'],
+      sourceUrl:'https://www.enoden.co.jp/fan/museum/vehicle/700/'},
+    {id:'toyo-rapid-owned', operator:'ToyoRapid', lineIds:['ToyoRapid'],
+      models:['東葉高速鉄道2000系'],
+      sourceUrl:'https://www.toyokosoku.co.jp/company/profile'},
+    {id:'utsunomiya-lrt', operator:'UtsunomiyaLightRail', lineIds:['UtsunomiyaLRT'],
+      models:['宇都宮ライトレールHU300形'],
+      sourceUrl:'https://www.miyarail.co.jp/userguide-ticket-info'}
+
   ];
 
   // Only commuter/passenger stopping patterns. In particular do NOT assign a
