@@ -1689,12 +1689,30 @@
                   var k = key(p), options = k && byKey[k];
                   if (!options || options.length !== 1 || liveCounts[k] !== 1) return;
                   var match = options[0], plan = match.vehiclePlan;
-                  // For a verified continuation, the reported live station
-                  // must lie on the published canonical stop chain as well.
-                  var stops = match.canonicalStopKeys;
-                  var station = String(p.sourceFromStation).split('.').pop();
-                  if (Array.isArray(stops) && stops.length &&
-                      (!station || stops.indexOf(station) < 0)) return;
+                  // Public train numbers are reused. Match the service
+                  // CLASS and observed previous station to THIS line's
+                  // published stop chain; even source_only SQL schedules
+                  // must pass, not just verified_continuation chains.
+                  var observedType = String(p.trainType || '').split(/[.:]/).pop();
+                  var plannedType = String(match.trainType || '').split(/[.:]/).pop();
+                  if (observedType && plannedType && observedType !== plannedType) return;
+                  var stops = match.scheduledStopKeys;
+                  if (!Array.isArray(stops) || stops.length < 2) return;
+                  function normalizeStop(value) {
+                    return String(value || '').split('.').pop()
+                      .replace(/[\\s_\\-‐‑–—]/g, '').toLowerCase();
+                  }
+                  var station = normalizeStop(p.sourceFromStation);
+                  if (!station || !stops.some(function(stop) {
+                    return normalizeStop(stop) === station;
+                  })) return;
+                  // Verified continuations also require membership in the
+                  // canonical chain, never just any shared station name.
+                  if (match.canonicalGroupEvidence === 'verified_continuation' &&
+                      Array.isArray(match.canonicalStopKeys) &&
+                      !match.canonicalStopKeys.some(function(stop) {
+                        return normalizeStop(stop) === station;
+                      })) return;
                   var candidateModels = ['E231系1000番台', 'E233系3000番台'];
                   // This field is deliberately NOT vehiclePlan: actual
                   // vehicle identity remains UNKNOWN until live evidence.
