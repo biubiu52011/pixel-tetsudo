@@ -1210,7 +1210,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var status = p && (p.vehicleIdentityStatus || (resolved && resolved.identityStatus));
     if (!p || (p.vehiclePlan &&
         (p.vehiclePlan.source === "published-number-calendar-reference" ||
-         p.vehiclePlan.source === "keiyo-shared-working-representative")) ||
+         p.vehiclePlan.source === "keiyo-shared-working-representative" ||
+         p.vehiclePlan.source === "twr-shared-working-representative")) ||
         status !== "EXACT" || p.vehicleResolvedUpstream === false ||
         (resolved && resolved.identityStatus !== "EXACT")) return "";
     var sourceLine = String(p.vehicleResolutionLineId || (resolved && resolved.lineId) || "");
@@ -1253,7 +1254,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
     var sharedWorkingRepresentative = p.positionSource === "realtime-api" &&
-      plan && plan.source === "keiyo-shared-working-representative";
+      plan && (plan.source === "keiyo-shared-working-representative" ||
+        plan.source === "twr-shared-working-representative");
     var publishedLivePlan = p.positionSource === "realtime-api" &&
       plan && (plan.source === "published-number-calendar-reference" ||
         sharedWorkingRepresentative);
@@ -1353,7 +1355,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 无障碍标题却继续宣称一辆未经确认的具体车型。
     if (!(p && p.vehiclePlan &&
           (p.vehiclePlan.source === "published-number-calendar-reference" ||
-           p.vehiclePlan.source === "keiyo-shared-working-representative")) &&
+           p.vehiclePlan.source === "keiyo-shared-working-representative" ||
+           p.vehiclePlan.source === "twr-shared-working-representative")) &&
         vehicle.status === "EXACT" && vehicle.name && titleScoped &&
         (!p || p.vehicleResolvedUpstream !== false) &&
         (!p || !p.vehicleResolution || p.vehicleResolution.identityStatus === "EXACT") &&
