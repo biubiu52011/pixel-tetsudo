@@ -1717,7 +1717,12 @@
                   // This field is deliberately NOT vehiclePlan: actual
                   // vehicle identity remains UNKNOWN until live evidence.
                   p.timetableFleetReference = {
-                    status: 'UNCONFIRMED_PLANNED_FLEET',
+                    // An undated/imported plan may show the current corridor
+                    // fleet group, but must never claim a verified 2026
+                    // train-by-train schedule.
+                    status: match.timetableDateVerified === true
+                      ? 'UNCONFIRMED_PLANNED_FLEET'
+                      : 'UNVERIFIED_ROUTE_FLEET',
                     models: candidateModels,
                     sourceUrl: plan.sourceUrl || '',
                     trainNumber: p.trainNumber,
