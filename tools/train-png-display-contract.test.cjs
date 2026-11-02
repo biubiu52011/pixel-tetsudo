@@ -149,6 +149,69 @@ assert.equal(fleetPlanVm._officialConventionalServicePlan({
 }, 'SeibuToshima', { operator: 'Seibu' }), null,
 'route fallback must not override an existing SQL fleet plan');
 
+// SQL published models describe the weekday/holiday timetable, not the
+// observed physical stock. Even one verified model must pass through vehiclePlan.
+const sqlPlanVm = vm.createContext({
+  window: { TrainOperationEvidence: {
+    getRevision: () => 1, resolveEvidence: () => null,
+    normalizeOperationCode: () => '',
+  } },
+  resolve(ctx) {
+    sqlPlanVm.resolvedInput = ctx;
+    return { identityStatus: 'UNKNOWN', name: '', iconPath: '' };
+  },
+  resolveTimetableVehiclePlan(input, meta) {
+    sqlPlanVm.planInput = input;
+    sqlPlanVm.planMeta = meta;
+    return input ? {
+      status: input.includes(' / ') ? 'PLANNED_CANDIDATES' : 'PLANNED_MODEL',
+      models: input.split(/\s*\/\s*/), iconPath: genericPng,
+      source: meta.source, evidenceRole: 'timetable-plan', lineId: meta.lineId,
+    } : null;
+  },
+  _officialConventionalServicePlan: () => null,
+  _splitFormationIds: () => [],
+  resolveCanonicalVehicle: () => null,
+  resolveCanonicalVehicleForPlan: () => null,
+});
+vm.runInContext(extract(vehicleSource,
+  'function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {',
+  '  function _operationDayDistance('), sqlPlanVm);
+function checkSqlModel(level, verifiedUrl) {
+  return sqlPlanVm.resolveTimetableRun(
+    { trainNumber: '601M', calendar: 'odpt.Calendar:Weekday' },
+    { _positionSource: 'supabase-train-run',
+      _sqlVehicleMappingLevel: level, vehicleType: 'E233系6000番台',
+      _sqlVerifiedPublishedVehicleType: 'E233系6000番台',
+      _sqlVerifiedPublishedVehicleSourceUrl: verifiedUrl || '' },
+    'Yokohama', { operator: 'JR-East' });
+}
+let publishedModel = checkSqlModel('official_service_vehicle_plan', 'https://example.org/official');
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
+  'official published timetable vehicle cannot become an actual identity');
+assert.equal(sqlPlanVm.planMeta.source, 'database-verified-published-plan');
+assert.equal(publishedModel.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+publishedModel = checkSqlModel('published_number_family_plan', 'https://example.org/official');
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
+  'published-number family is a planned model, not a physical train');
+assert.equal(publishedModel.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+let unverifiedSql = checkSqlModel('official_service_vehicle_plan', '');
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
+assert.equal(unverifiedSql.vehicleResult.vehiclePlan.status, 'PLANNED_CANDIDATES');
+assert.equal(unverifiedSql.vehicleResult.vehiclePlan.iconPath, '',
+  'uncertified SQL model cannot select a representative PNG');
+unverifiedSql = checkSqlModel('official_single_fleet_plan', '');
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
+assert.equal(unverifiedSql.vehicleResult.vehiclePlan.status, 'FLEET_REFERENCE',
+  'an operator-wide single fleet is still a route reference');
+unverifiedSql = checkSqlModel('source_single_type_candidate', '');
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
+assert.equal(unverifiedSql.vehicleResult.vehiclePlan.status, 'PLANNED_CANDIDATES');
+checkSqlModel('dated_schedule_rule', '');
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, 'E233系6000番台',
+  'existing independent dated schedule evidence must retain its mapping');
+
+// Remaining marker tests ensure planned references are not physical SVG identities.
 const renderVm = vm.createContext({
   window: { TrainVehicle: { selectMarkerArtwork(p) {
     renderVm.captured = p;
