@@ -3976,8 +3976,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // 并未证明该服务日运行了该车型。即使唯一候选恰好有规范 PNG，
     // 也不得把它投入 EXACT 的身份仲裁；候选保留在
     // _sqlSourceCandidates，之后由计划参考通道投影为 planned。
+    var _routeFleetOnly = tt._positionSource === 'supabase-train-run' &&
+      (tt._sqlVehicleMappingLevel === 'official_single_fleet_plan' ||
+       tt._sqlVehicleMappingLevel === 'official_model_family_plan');
     var _sourceCandidateOnly = tt._positionSource === 'supabase-train-run' &&
-      tt._sqlVehicleMappingLevel === 'source_single_type_candidate';
+      (tt._sqlVehicleMappingLevel === 'source_single_type_candidate' || _routeFleetOnly);
     var _declaredVehicleInput = _sourceCandidateOnly
       ? '' : String(tt.vehicleType || '').trim();
     var _timetableVehicleInput = [_operationVehicleInput, _declaredVehicleInput]
@@ -4127,6 +4130,14 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         vehResult.vehiclePlan.representativeModel = '';
         vehResult.vehiclePlan.iconPath = '';
         vehResult.vehiclePlan.evidenceRole = 'unverified-source-candidate';
+      }
+      // Official corridor fleet evidence is not a certified train-level plan.
+      if (_routeFleetOnly && vehResult.vehiclePlan && !publishedSqlPlan &&
+          !usesFamily && vehResult.identityStatus !== 'EXACT') {
+        vehResult.vehiclePlan.status = 'FLEET_REFERENCE';
+        vehResult.vehiclePlan.representativeModel = '';
+        vehResult.vehiclePlan.iconPath = '';
+        vehResult.vehiclePlan.evidenceRole = 'route-fleet-reference';
       }
       if (plannedEvidence && plannedEvidence._fleetReferenceOnly === true &&
           vehResult.vehiclePlan && vehResult.identityStatus !== 'EXACT') {
