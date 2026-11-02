@@ -1347,7 +1347,14 @@
           // InnerLoop / OuterLoop is direction evidence only. Keep the
           // source destination intact; rendering prefers a real terminal when present.
           var matchingLines = [];
-          var _canonicalSourceLine = SOURCE_RAILWAY_CANONICAL_LINE[railwayName] || "";
+          // ODPT railway URNs carry an operator namespace (JR-East.Tokaido)
+          // while SOURCE_RAILWAY_CANONICAL_LINE uses bare railway codes.
+          // Prefer the full key if explicitly configured, otherwise resolve
+          // the short code only inside the verified current operator namespace.
+          var _sourceRailwayShort = String(railwayName || "").split(".").pop();
+          var _canonicalSourceLine = SOURCE_RAILWAY_CANONICAL_LINE[railwayName] ||
+            (/^(?:JR-East|Toei|TokyoMetro|Sotetsu|TWR)\.[^.]+$/.test(String(railwayName || ""))
+              ? SOURCE_RAILWAY_CANONICAL_LINE[_sourceRailwayShort] : "") || "";
           var _stationCandidates = _stationIndex[String(stationKey).replace(/-/g, "").toLowerCase()] || [];
           _stationCandidates.forEach(function(_candidate) {
             var lid = _candidate.lineId;
