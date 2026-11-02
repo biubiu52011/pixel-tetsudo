@@ -1209,7 +1209,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var resolved = p && p.vehicleResolution;
     var status = p && (p.vehicleIdentityStatus || (resolved && resolved.identityStatus));
     if (!p || (p.vehiclePlan &&
-        p.vehiclePlan.source === "published-number-calendar-reference") ||
+        (p.vehiclePlan.source === "published-number-calendar-reference" ||
+         p.vehiclePlan.source === "keiyo-shared-working-representative")) ||
         status !== "EXACT" || p.vehicleResolvedUpstream === false ||
         (resolved && resolved.identityStatus !== "EXACT")) return "";
     var sourceLine = String(p.vehicleResolutionLineId || (resolved && resolved.lineId) || "");
@@ -1251,8 +1252,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    var sharedWorkingRepresentative = p.positionSource === "realtime-api" &&
+      plan && plan.source === "keiyo-shared-working-representative";
     var publishedLivePlan = p.positionSource === "realtime-api" &&
-      plan && plan.source === "published-number-calendar-reference";
+      plan && (plan.source === "published-number-calendar-reference" ||
+        sharedWorkingRepresentative);
     if ((!publishedLivePlan && p.estimated !== true) ||
         (!publishedLivePlan &&
          (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) === "EXACT")) return "";
@@ -1268,14 +1272,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         !Array.isArray(plan.models)) return "";
     var status = String(plan.status || "");
     if (status !== "PLANNED_MODEL" && status !== "PLANNED_CANDIDATES" &&
-        status !== "FLEET_REFERENCE") return "";
+        status !== "FLEET_REFERENCE" && status !== "FLEET_REPRESENTATIVE") return "";
     var models = plan.models.map(function(v) { return String(v || "").trim(); }).filter(Boolean);
     if (!models.length) return "";
     lang = String(lang || "ja").toLowerCase();
     // Only two public outcomes. The model names remain useful references,
     // but a mapped/inferred plan alone does not prove timetable assignment.
     var confirmed = status === "PLANNED_MODEL" && plan.confirmed === true;
-    var prefix = publishedLivePlan
+    var prefix = sharedWorkingRepresentative
+      ? (/^zh/.test(lang) ? "线路代表车型（共通运用，非固定车型或当日实车）：" :
+          lang === "en" ? "Representative line model (shared working; not assigned stock): " :
+          lang === "ko" ? "노선 대표 차종(공통 운용, 실제 배정 아님): " :
+          "路線代表車種（共通運用・実車や固定配車ではありません）：")
+      : publishedLivePlan
       ? (/^zh/.test(lang) ? "计划车型（平日／休日时刻表参考，非当日实车）：" :
           lang === "en" ? "Published scheduled model (not actual-day stock): " :
           lang === "ko" ? "계획 차종(당일 실차 아님): " :
@@ -1333,7 +1342,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 标签与 PNG 使用同一线路和确定身份门槛；不能出现圆点已退回未知，
     // 无障碍标题却继续宣称一辆未经确认的具体车型。
     if (!(p && p.vehiclePlan &&
-          p.vehiclePlan.source === "published-number-calendar-reference") &&
+          (p.vehiclePlan.source === "published-number-calendar-reference" ||
+           p.vehiclePlan.source === "keiyo-shared-working-representative")) &&
         vehicle.status === "EXACT" && vehicle.name && titleScoped &&
         (!p || p.vehicleResolvedUpstream !== false) &&
         (!p || !p.vehicleResolution || p.vehicleResolution.identityStatus === "EXACT") &&
