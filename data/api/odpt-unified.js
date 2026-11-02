@@ -1872,6 +1872,9 @@
             "_canonicalTrainNumberAliases":Array.isArray(run.canonical_number_aliases)
               ?run.canonical_number_aliases:[],
             "_sqlVehicleMappingLevel":run.vehicle_mapping_level||"unresolved",
+            // A recurring plan is only confirmed when the server verified the
+            // source is official, rather than a B/C-grade enthusiast inference.
+            "_sqlVehiclePlanConfirmed":run.vehicle_plan_confirmed===true,
             "_sqlVehicleCandidateLabel":run.vehicle_type_candidates||"",
             // Historical operation evidence is auditable, but does not
             // establish an exact planned or realtime vehicle type.
