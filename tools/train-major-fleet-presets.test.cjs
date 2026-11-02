@@ -14,7 +14,7 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=132, 'phase-4 regional fleet preset groups missing');
+assert.ok(entries.length>=142, 'phase-5 Shinkansen fleet preset groups missing');
 const railwayData = JSON.parse(fs.readFileSync(
   path.join(root,'data/core/railway_data.compact.json'),'utf8'));
 const checked = Object.keys(railwayData.lines || {});
@@ -30,7 +30,8 @@ entries.forEach(row=>{
       'operator mismatch on canonical line ID: '+key);
     assert.ok(!seen.has(key),'duplicate operator/line preset: '+key);
     seen.add(key);
-    const evidence=presets.lookup(line,row.operator,'odpt.TrainType:'+row.operator+'.Local');
+    const evidence=presets.lookup(line,row.operator,'odpt.TrainType:'+row.operator+'.'+
+      (row.shinkansenTypes ? 'Shinkansen' : 'Local'));
     assert.equal(evidence.evidenceRole,'route-fleet-reference');
     assert.equal(evidence._fleetReferenceOnly,true);
     assert.equal(evidence.planOverride,false);
@@ -100,7 +101,7 @@ for(const [line,op,type] of [
 }
 
 // Phase 3: all additions must remain source-backed, scoped reference lists.
-assert.ok(seen.size>=172,'phase-4 route scopes missing');
+assert.ok(seen.size>=182,'phase-5 route scopes missing');
 for (const [line,operator,requiredModel] of [
   ['Musashino','JR-East','209系500番台'],
   ['Sagami','JR-East','E131系500番台'],
@@ -195,6 +196,45 @@ for (const [line,op,type] of [
   line+': limited/special service cannot borrow regular route fleet');
 assert.equal(presets.lookup('Senzan','TokyoMetro','odpt.TrainType:TokyoMetro.Local'),null);
 assert.equal(presets.lookup('Oga','JR-East','odpt.TrainType:JR-East.Shinkansen'),null);
+
+// Phase 5: named Shinkansen services must match exact canonical operator
+// and line scopes, never making a vehicle identity or choosing a PNG.
+for (const [line,op,service,model] of [
+  ['TohokuShinkansen','JR-East','Hayabusa','E5系'],
+  ['JoetsuShinkansen','JR-East','Toki','E7系'],
+  ['HokurikuShinkansen','JR-East','Kagayaki','E7系'],
+  ['YamagataShinkansen','JR-East','Tsubasa','E8系'],
+  ['AkitaShinkansen','JR-East','Komachi','E6系'],
+  ['HokkaidoShinkansen','JR-Hokkaido','Hayate','H5系（JR北海道保有車）'],
+  ['TokaidoShinkansen','JR-Central','Nozomi','N700S系'],
+  ['SanyoShinkansen','JR-West','Kodama','500系'],
+  ['KyushuShinkansen','JR-Kyushu','Sakura','800系'],
+  ['NishiKyushuShinkansen','JR-Kyushu','Kamome','N700S系（西九州・かもめ用6両編成）']
+]) {
+  const v=presets.lookup(line,op,'odpt.TrainType:'+op+'.'+service);
+  assert.ok(v && v.vehicleCandidates.includes(model),line+' missing '+service);
+  assert.equal(v.evidenceRole,'route-fleet-reference');
+  assert.equal(v._fleetReferenceOnly,true);
+  assert.equal(v.planOverride,false);
+  assert.ok(!v.vehicleType && !v.iconPath,line+': no Shinkansen identity/PNG');
+}
+for (const [line,op,type] of [
+  ['TohokuShinkansen','JR-East','Local'],
+  ['TohokuShinkansen','JR-East','Rapid'],
+  ['TohokuShinkansen','JR-East','Nozomi'],
+  ['YamagataShinkansen','JR-East','Komachi'],
+  ['JoetsuShinkansen','JR-East','Hayabusa'],
+  ['TokaidoShinkansen','JR-Central','Hayabusa'],
+  ['SanyoShinkansen','JR-West','Tsubame'],
+  ['KyushuShinkansen','JR-Kyushu','Kamome'],
+  ['NishiKyushuShinkansen','JR-Kyushu','Sakura'],
+  ['HokkaidoShinkansen','JR-East','Hayabusa']
+]) {
+  assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
+    line+': must reject out-of-scope Shinkansen service '+type);
+}
+assert.equal(presets.lookup('TokaidoShinkansen','JR-Central',''),null,
+  'unknown Shinkansen service must not guess');
 
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
