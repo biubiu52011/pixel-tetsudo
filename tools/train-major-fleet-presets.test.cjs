@@ -14,13 +14,20 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=30);
+assert.ok(entries.length>=64, 'expanded private-railway fleet preset groups missing');
+const railwayData = JSON.parse(fs.readFileSync(
+  path.join(root,'data/core/railway_data.compact.json'),'utf8'));
+const checked = Object.keys(railwayData.lines || {});
+assert.ok(checked.length>=200,'railway data failed to load');
 const seen=new Set();
 entries.forEach(row=>{
   assert.ok(/^https:\/\//.test(row.sourceUrl),row.id+': source');
   assert.ok(row.models.length>0,row.id+': models');
   row.lineIds.forEach(line=>{
     const key=row.operator+'|'+line;
+    assert.ok(checked.includes(line),'unknown canonical line ID in preset: '+key);
+    assert.equal(railwayData.lines[line].operator,row.operator,
+      'operator mismatch on canonical line ID: '+key);
     assert.ok(!seen.has(key),'duplicate operator/line preset: '+key);
     seen.add(key);
     const evidence=presets.lookup(line,row.operator,'odpt.TrainType:'+row.operator+'.Local');
@@ -45,6 +52,53 @@ for (const [line,op,type] of [
   const found=presets.lookup(line,op,type && 'odpt.TrainType:'+op+'.'+type);
   assert.equal(found,null,'must not use out-of-scope fleet: '+line+'/'+op+'/'+type);
 }
+
+// Phase 2: operator/route-specific fleet references, including new 2025/26 stock.
+for (const [line, operator, requiredModel] of [
+  ['KeioMain','Keio','京王2000系'],
+  ['KeioInokashira','Keio','京王1000系'],
+  ['Odawara','Odakyu','小田急5000形'],
+  ['KeikyuAirport','Keikyu','京急1000形'],
+  ['Keisei','Keisei','京成3200形（2025年導入）'],
+  ['NaritaSkyAccess','Keisei','京成3100形'],
+  ['Tojo','Tobu','東武50070型'],
+  ['Noda','Tobu','東武80050型'],
+  ['SotetsuMain','Sotetsu','相鉄13000系'],
+  ['Ikebukuro','Seibu','西武40000系'],
+  ['YokohamaBlue','YokohamaMunicipal','横浜市営地下鉄4000形'],
+  ['TsukubaExpress','TsukubaExpress','TX-2000系'],
+  ['Rinkai','Rinkai','東京臨海高速鉄道71-000形'],
+  ['MinatoMirai','MinatoMirai','横浜高速鉄道Y500系'],
+  ['SaitamaRapid','SaitamaRapidRailway','埼玉高速鉄道2000系'],
+  ['TokyoMonorail','TokyoMonorail','東京モノレール10000形']
+]) {
+  const item=presets.lookup(line,operator,'odpt.TrainType:'+operator+'.Local');
+  assert.ok(item && item.vehicleCandidates.includes(requiredModel),
+    line+': missing '+requiredModel);
+  assert.equal(item._fleetReferenceOnly,true,line+': fleet only');
+  assert.equal(item.planOverride,false,line+': must not override a train-specific plan');
+}
+const access = presets.lookup('NaritaSkyAccess','Keisei',
+  'odpt.TrainType:Keisei.Local');
+assert.ok(!access.vehicleCandidates.some(model=>model.includes('AE')),
+  'Skyliner must not be treated as an ordinary service');
+const tx=presets.lookup('TsukubaExpress','TsukubaExpress',
+  'odpt.TrainType:TsukubaExpress.Local');
+assert.ok(tx.vehicleCandidates.some(model=>/守谷/.test(model)),
+  'TX-1000 geographic constraint must remain visible');
+for(const [line,op,type] of [
+  ['KeioMain','Keio','KeioLiner'],
+  ['Odawara','Odakyu','LimitedExpress'],
+  ['KeikyuAirport','Keikyu','MorningWing'],
+  ['NaritaSkyAccess','Keisei','Skyliner'],
+  ['Tojo','Tobu','TJ-Liner'],
+  ['Noda','Tobu','LimitedExpress'],
+  ['Ikebukuro','Seibu','LimitedExpress'],
+]) {
+  assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
+    'premium service must not borrow commuter fleet '+line+'/'+type);
+}
+
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js') <
@@ -63,7 +117,11 @@ function run(lineId,op,type,level,candidate){
 }
 for (const [line,op] of [
   ['Yamanote','JR-East'],['Ginza','TokyoMetro'],['Mita','Toei'],
-  ['TokyuToyoko','Tokyu'],['Yokosuka','JR-East']
+  ['TokyuToyoko','Tokyu'],['Yokosuka','JR-East'],
+  ['KeioMain','Keio'],['Odawara','Odakyu'],['Keikyu','Keikyu'],
+  ['Keisei','Keisei'],['Tojo','Tobu'],['Noda','Tobu'],
+  ['SotetsuMain','Sotetsu'],['YokohamaBlue','YokohamaMunicipal'],
+  ['Rinkai','Rinkai'],['TsukubaExpress','TsukubaExpress']
 ]) {
   const v=run(line,op,'Local');
   assert.equal(v.identityStatus,'UNKNOWN',line+': reference is not actual identity');
@@ -80,4 +138,7 @@ const historical=run('Yamanote','JR-East','Local','source_single_type_candidate'
 assert.equal(historical.identityStatus,'UNKNOWN');
 assert.equal(historical.vehiclePlan?.status,'PLANNED_CANDIDATES');
 assert.equal(historical.vehiclePlan?.iconPath,'');
+const modelUnknown=run('Tojo','Tobu','LimitedExpress');
+assert.equal(modelUnknown.identityStatus,'UNKNOWN');
+assert.ok(!modelUnknown.vehiclePlan?.models?.length);
 console.log('major fleet presets: PASS ('+entries.length+' operator-owned groups, '+seen.size+' line scopes)');
