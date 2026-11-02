@@ -3905,6 +3905,12 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       };
     }
   }
+  // 主要线路的静态车队预设仅用于补足无来源 SQL 班次的参考说明。
+  // 不介入车型身份、运行号判定，也不选择单车 PNG。
+  var majorPreset = window.MajorVehicleFleetPresets &&
+    typeof window.MajorVehicleFleetPresets.lookup === 'function'
+      ? window.MajorVehicleFleetPresets.lookup(lineId, operator, serviceType) : null;
+  if (majorPreset) return majorPreset;
   return null;
 }
 
