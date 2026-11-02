@@ -1142,15 +1142,24 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // E231/E233 vehicle identification. No representative PNG is authorized.
   function _shonanFleetCandidatesLabel(p, lineId, lang) {
     if (!/^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo)$/.test(String(lineId || "")) ||
-        !p || p.estimated !== true ||
-        p.vehicleIdentityStatus === "EXACT" ||
-        p.plannedVehicleCandidateStatus !== "source_single_type_candidate" ||
+        !p || p.vehicleIdentityStatus === "EXACT" ||
         !/(?:[.:])(?:Local|Rapid|SpecialRapid)$/.test(String(p.trainType || ""))) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
-    if (!plan || plan.evidenceRole !== "unverified-source-candidate" ||
-        !Array.isArray(plan.models) || plan.models.length !== 2 ||
-        !plan.models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
-        !plan.models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return "";
+    // A live record can display a unique train-number-matched timetable
+    // REFERENCE, but that is not the actual vehicle occupying the position.
+    var liveReference = p.positionSource === "realtime-api" &&
+      p.timetableFleetReference &&
+      p.timetableFleetReference.status === "UNCONFIRMED_PLANNED_FLEET"
+        ? p.timetableFleetReference : null;
+    var models = liveReference && Array.isArray(liveReference.models)
+      ? liveReference.models
+      : (p.estimated === true &&
+         p.plannedVehicleCandidateStatus === "source_single_type_candidate" &&
+         plan && plan.evidenceRole === "unverified-source-candidate" &&
+         Array.isArray(plan.models) ? plan.models : []);
+    if (models.length !== 2 ||
+        !models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
+        !models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return "";
     lang = String(lang || "ja").toLowerCase();
     var prefix = /^zh/.test(lang) ? "湘南色计划车型候选（具体车辆未确认）：" :
       lang === "en" ? "Shonan-color planned fleet (exact vehicle unknown): " :
