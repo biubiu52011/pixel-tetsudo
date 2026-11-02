@@ -284,6 +284,39 @@ checkSqlModel('dated_schedule_rule', '');
 assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, 'E233系6000番台',
   'existing independent dated schedule evidence must retain its mapping');
 
+// Imported/manual SQL source annotations can exist without an approved
+// mapping (e.g. the Boso E233 autumn 2026 transition). A single annotated
+// name is not a verified recurring weekday/holiday stock assignment.
+const bosoUnmappedAnnotation = 'E233系（房総地区改造6両・所定計画家族／実車・代走未確定）';
+for (const level of ['unresolved', 'conflicting_scheduled_evidence']) {
+  const annotated = sqlPlanVm.resolveTimetableRun(
+    { trainNumber: '1624M', calendar: 'odpt.Calendar:Weekday' },
+    { ...bosoTemplate, _sqlVehicleMappingLevel: level,
+      _sqlVehicleCandidateLabel: bosoUnmappedAnnotation,
+      vehicleType: bosoUnmappedAnnotation },
+    'Togane', { operator: 'JR-East' });
+  assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
+    'unmapped SQL annotations must not enter the exact identity resolver');
+  assert.equal(annotated.vehicleResult.vehiclePlan.status, 'PLANNED_CANDIDATES',
+    'unmapped one-model source annotation is still unverified');
+  assert.equal(annotated.vehicleResult.vehiclePlan.evidenceRole, 'unverified-source-candidate');
+  assert.equal(annotated.vehicleResult.vehiclePlan.representativeModel, '');
+  assert.equal(annotated.vehicleResult.vehiclePlan.iconPath, '',
+    'an unverified source annotation must never authorize a candidate PNG');
+  assert.equal(annotated.vehicleResult.vehiclePlan.models[0], bosoUnmappedAnnotation,
+    'keep the original annotation visible for provenance review');
+}
+// Old SQL rows carrying a model only in vehicleType are also unverified when
+// the mapping level is unresolved, even without a separate candidate label.
+const unmappedRawModel = sqlPlanVm.resolveTimetableRun(
+  { trainNumber: '1632M', calendar: 'odpt.Calendar:Weekday' },
+  { ...bosoTemplate, _sqlVehicleMappingLevel: 'unresolved',
+    vehicleType: 'E233系（房総地区・改造車）' },
+  'Sotobo', { operator: 'JR-East' });
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
+assert.equal(unmappedRawModel.vehicleResult.vehiclePlan.status, 'PLANNED_CANDIDATES');
+assert.equal(unmappedRawModel.vehicleResult.vehiclePlan.iconPath, '');
+
 const unmappedBosoPlan = sqlPlanVm.resolveTimetableRun(
   { trainNumber: '1624M', calendar: 'odpt.Calendar:Weekday' },
   bosoTemplate, 'Togane', { operator: 'JR-East' });
