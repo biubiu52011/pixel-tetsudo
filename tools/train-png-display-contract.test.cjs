@@ -798,7 +798,29 @@ function svgNode(tagName) {
     getAttribute(k) { return attrs[k] === undefined ? null : attrs[k]; },
     removeAttribute(k) { delete attrs[k]; },
     addEventListener(k, fn) { listeners[k] = fn; },
-    appendChild(child) { child.parentNode = this; this.children.push(child); },
+    appendChild(child) {
+      if (child.parentNode) child.parentNode.removeChild(child);
+      child.parentNode = this;
+      this.children.push(child);
+    },
+    querySelector(selector) {
+      const attribute = selector.match(/^\[([\w-]+)(?:="([^"]*)")?\]$/);
+      const cls = selector.match(/^\.([\w-]+)$/);
+      const find = (node) => {
+        for (const child of node.children) {
+          if (attribute && child.getAttribute(attribute[1]) != null &&
+              (attribute[2] === undefined || child.getAttribute(attribute[1]) === attribute[2]))
+            return child;
+          if (cls && String(child.getAttribute('class') || '').split(' ').includes(cls[1]))
+            return child;
+          const nested = find(child);
+          if (nested) return nested;
+        }
+        return null;
+      };
+      return find(this);
+    },
+    getBBox() { return {x:0,y:0,width:50,height:10}; },
     removeChild(child) {
       const index = this.children.indexOf(child);
       if (index >= 0) this.children.splice(index, 1);
@@ -812,7 +834,20 @@ const markerContext = vm.createContext({
   _setTrainMarkerAccessibilityLabel: (node, text) => node.setAttribute('aria-label', text),
   _setTrainFormationAttribute: () => {},
   _rememberTrainArtworkFailure: () => {},
+  _resolveTrainLabelCollisions: () => {},
+  _trainMoveDir: () => 'up',
+  _isLoopDirName: () => false,
+  _isOedoTailTrain: () => false,
+  _trainDestText: () => '久里浜',
+  _trainLabelSignature: () => 'Uchibo|ja|Inbound|Kurihama|Rapid',
+  _trainLabelY: (_, py) => py + 21,
+  _sixTrainDirectionLane: () => null,
+  _isMobileView: () => false,
+  window: { currentLang: 'ja', TRAIN_TYPE_NAMES: {} },
 });
+vm.runInContext(extract(renderSource,
+  '  function _trainUnitContainer(child) {',
+  '  // 描述当前显示的行；'), markerContext);
 vm.runInContext(extract(renderSource,
   '  function _trainMarkerDomKind(spec) {',
   '  function _trainMarkerSpec(p, trainUid, lineId) {'), markerContext);
@@ -822,6 +857,12 @@ vm.runInContext(extract(renderSource,
 vm.runInContext(extract(renderSource,
   '  function _createTrainMarker(trainLayer, svgNS, trainUid, spec, px, py, p, lineId, isLoop, color, loc) {',
   '  function updateTrainLayer('), markerContext);
+vm.runInContext(extract(renderSource,
+  '  function appendTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId) {',
+  '  // 将已创建的列车标签移动到'), markerContext);
+vm.runInContext(extract(renderSource,
+  '  function _moveTrainLabels(trainLayer, trainUid, px, py, p, lineId) {',
+  '  // 让标签内容与当前服务区段保持同步'), markerContext);
 const markerLayer = svgNode('g');
 const svgNS = 'http://www.w3.org/2000/svg';
 const renderedImage = markerContext._createTrainMarker(
@@ -833,8 +874,41 @@ assert.equal(renderedImage.getAttribute('href'), genericPng);
 assert.equal(renderedImage.getAttribute('data-train-artwork'), genericPng);
 assert.equal(renderedImage.getAttribute('data-marker-kind'), 'planned');
 assert.equal(renderedImage.getAttribute('data-marker-reference-only'), 'true');
-assert.equal(renderedImage.getAttribute('x'), '33');
-assert.equal(renderedImage.getAttribute('y'), '41');
+assert.equal(renderedImage.getAttribute('x'), '-7');
+assert.equal(renderedImage.getAttribute('y'), '-9');
+const trainUnit = renderedImage.parentNode;
+assert.equal(trainUnit.getAttribute('data-train-unit-id'), 't2');
+assert.equal(trainUnit.getAttribute('transform'), 'translate(40,50)',
+  'the SVG unit, not the image, owns the world-space train position');
+assert.ok(markerLayer.children.includes(trainUnit));
+markerContext.appendTrainLabels(markerLayer, svgNS, 't2', 40, 50,
+  {railDirection:'odpt.RailDirection:Inbound',
+    destinationStation:'odpt.Station:JR-East.Yokosuka.Kurihama'},
+  'Uchibo');
+const unitLabel = trainUnit.querySelector('[data-train-label-for="t2"]');
+assert.ok(unitLabel, 'the route caption and marker must belong to one train group');
+assert.equal(unitLabel.getAttribute('data-label-signature'),
+  'Uchibo|ja|Inbound|Kurihama|Rapid');
+assert.equal(unitLabel.querySelector('.train-label-dir').getAttribute('y'), '21',
+  'the destination label Y must be relative to its own train center');
+// Regression: previously an artwork marker at Y=379 could leave its
+// 久里浜 label stranded at Y=478 after an independent update.
+markerContext._setTrainIconPosition(renderedImage, 159.5, 379,
+  {railDirection:'odpt.RailDirection:Inbound'}, 'Uchibo', false);
+markerContext._moveTrainLabels(markerLayer, 't2', 159.5, 379,
+  {railDirection:'odpt.RailDirection:Inbound'}, 'Uchibo');
+assert.equal(trainUnit.getAttribute('transform'), 'translate(159.5,379)');
+assert.equal(renderedImage.getAttribute('y'), '-9');
+assert.equal(unitLabel.querySelector('.train-label-dir').getAttribute('y'), '21');
+assert.equal(unitLabel.parentNode, renderedImage.parentNode,
+  'marker and label must never drift into separate world-space coordinate systems');
+markerContext._setTrainIconPosition(renderedImage, 159.5, 459,
+  {railDirection:'odpt.RailDirection:Inbound'}, 'Uchibo', false);
+assert.equal(trainUnit.getAttribute('transform'), 'translate(159.5,459)');
+assert.equal(unitLabel.querySelector('.train-label-dir').getAttribute('y'), '21',
+  'asynchronous artwork callbacks cannot strand a caption at an old Y');
+renderedImage.listeners.load();
+assert.equal(trainUnit.getAttribute('transform'), 'translate(159.5,459)');
 assert.equal(renderedImage.getAttribute('aria-label'), 'Train 611Y');
 const candidateMarker = markerContext._createTrainMarker(
   markerLayer, svgNS, 't1', candidateSpec, 80, 90,
@@ -846,10 +920,28 @@ assert.equal(candidateMarker.getAttribute('data-vehicle-candidate'), 'true');
 assert.ok(!candidateMarker.getAttribute('href'), 'candidate must not carry an image URL');
 
 renderedImage.listeners.error();
-assert.ok(!markerLayer.children.includes(renderedImage),
-  'failed PNG must be removed instead of leaving an invisible image');
-assert.equal(markerLayer.children.filter(node => node.getAttribute('data-train-id') === 't2')[0].tagName,
-  'circle', 'failed PNG must retain the train position as a neutral circle');
+assert.ok(!markerLayer.children.includes(trainUnit),
+  'failed SVG artwork must not leave the original unit orphaned');
+const fallbackUnit = markerLayer.children.find(node =>
+  node.getAttribute('data-train-unit-id') === 't2');
+assert.ok(fallbackUnit);
+const fallbackMarker = fallbackUnit.querySelector('[data-train-id="t2"]');
+assert.equal(fallbackMarker.tagName, 'circle',
+  'failed PNG must retain the train position as a neutral circle');
+assert.equal(fallbackUnit.getAttribute('transform'), 'translate(159.5,459)');
+assert.ok(fallbackUnit.querySelector('[data-train-label-for="t2"]'),
+  'image failure must preserve the matching destination caption');
+assert.equal(markerLayer.children.filter(node =>
+  node.getAttribute('data-train-unit-id') === 't2').length, 1,
+  'image failure must not create duplicate train units');
+const sixLayer = svgNode('g');
+sixLayer.ownerSVGElement = {__geometry:{isSixShapedLoop:true}};
+const sixMarker = markerContext._createTrainMarker(
+  sixLayer,svgNS,'oedo',plannedSpec,40,50,unknownEstimate,'Oedo',false,'#008803',null);
+assert.equal(sixMarker.parentNode, sixLayer,
+  'six-shaped route labels must retain their special, fixed-corridor layout');
+assert.equal(sixMarker.getAttribute('x'), '33');
+assert.equal(sixMarker.getAttribute('y'), '41');
 
 console.log('train PNG display contract: PASS (selection, scope, SVG DOM, fallback, tooltip)');
 
