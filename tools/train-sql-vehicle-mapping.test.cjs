@@ -95,6 +95,26 @@ for (const [line, operator, name] of [
     name + ': original vehicle-specific catalog image remains present');
 }
 
+// Source-backed line-fleet labels remain informative but never identify a
+// particular departure's planned or physical vehicle, even if a PNG exists.
+for (const level of ['official_single_fleet_plan', 'official_model_family_plan']) {
+  const fleet = plannedFixture('TamaMonorail', 'TamaMonorail', '1000系', level);
+  assert.equal(fleet.vehicleResult.identityStatus, 'UNKNOWN');
+  assert.equal(fleet.timetableVehicleInput, '',
+    level + ': route fleet must not be used by the actual-identity resolver');
+  assert.equal(fleet.vehicleResult.vehiclePlan?.status, 'FLEET_REFERENCE');
+  assert.equal(fleet.vehicleResult.vehiclePlan?.evidenceRole, 'route-fleet-reference');
+  assert.ok(fleet.vehicleResult.vehiclePlan?.models?.length,
+    level + ': the known fleet model remains readable as a route reference');
+  assert.equal(fleet.vehicleResult.vehiclePlan?.iconPath, '',
+    level + ': a source-backed route fleet must not authorize a train PNG');
+}
+const edgeSource = fs.readFileSync('supabase/functions/train-runs/index.ts', 'utf8');
+assert.match(edgeSource, /const fleetReferenceLabel = \['official_single_fleet_plan',/,
+  'the API must expose an official line fleet as reference-only candidate data');
+assert.match(edgeSource, /vehicle_type_candidates: fleetReferenceLabel \|\|/,
+  'mapped route fleet names must survive when the original template label is blank');
+
 // A source-registered cross-operator alias is a scoped planned artwork mapping,
 // never an operator-wide default nor a realtime vehicle assignment.
 for (const [line, operator, model] of [
