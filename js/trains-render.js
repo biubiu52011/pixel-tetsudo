@@ -1302,6 +1302,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       (models.length > 6 ? (/^zh/.test(lang) ? " 等" : " …") : "");
   }
 
+  // The fold list only needs a model name next to service/destination.
+  // Keep the full provenance in the row's tooltip/accessible label; never
+  // render the separate candidates paragraph or imply a model when unknown.
+  function _trainFoldModelName(fleetLabel) {
+    var label = String(fleetLabel || "");
+    var delimiter = label.indexOf("：");
+    if (delimiter < 0) delimiter = label.indexOf(":");
+    return delimiter < 0 ? "" : label.slice(delimiter + 1).trim();
+  }
+
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
@@ -2081,24 +2091,23 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var captionText=captionNode&&captionNode.textContent?String(captionNode.textContent).trim():'';
         var captionType=label&&label.getAttribute?String(label.getAttribute('data-label-type')||'').trim():'';
         var popupCaption=captionType&&captionText ? captionType+' · '+captionText : captionText;
-        var symbol=label&&label.getAttribute?label.getAttribute('data-dir-sym'):'';
-        var arrow=symbol==='up'?'▲ ':symbol==='down'?'▼ ':'';
         var entry=document.createElement('div');entry.className='train-fold-entry';entry.setAttribute('role','listitem');
-        var caption=document.createElement('div');
-        caption.textContent=arrow+(popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認'));
-        entry.appendChild(caption);
-        // Make fleet candidates visible in the folded train list, not just
-        // in aria-labels. Do not replace the neutral vehicle marker with a PNG.
+        // Compact single-row layout: service · destination · model.
+        // The direction arrow belongs to the map marker, not the fold list.
+        var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var fleetText = _trainFoldExactVehicleLabel(p, marker._displayLineId || "", lang) ||
           _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) ||
           _shonanFleetCandidatesLabel(p, marker._displayLineId || "", lang) ||
           _trainFleetPlanLabel(p, marker._displayLineId || "", lang);
-        if (fleetText) {
-          var fleetNote = document.createElement('div');
-          fleetNote.className = 'train-fold-vehicle-candidates';
-          fleetNote.textContent = fleetText;
-          entry.appendChild(fleetNote);
+        var modelName = _trainFoldModelName(fleetText);
+        var caption=document.createElement('div');
+        caption.textContent=captionBase+(modelName?' · '+modelName:'');
+        // Do not lose reference/actual-car provenance when collapsing the text.
+        if(modelName) {
+          caption.title=fleetText;
+          caption.setAttribute('aria-label',captionBase+' · '+fleetText);
         }
+        entry.appendChild(caption);
         list.appendChild(entry);
         count++;
       });
