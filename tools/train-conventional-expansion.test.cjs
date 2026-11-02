@@ -79,6 +79,8 @@ const sourced=timetableCase('KeioSagami','Keio','odpt.TrainType:Keio.KeioLiner',
   'source_single_type_candidate','5000系');
 assert.equal(sourced.identityStatus,'UNKNOWN',
   'SQL single source candidate must not be promoted to actual vehicle');
-assert.equal(sourced.vehiclePlan.status,'PLANNED_MODEL');
-assert.ok(sourced.vehiclePlan.iconPath.endsWith('/京王電鉄_5000系.png'));
+assert.equal(sourced.vehiclePlan.status,'PLANNED_CANDIDATES',
+  'a SQL source-only candidate is not an independently certified KeioLiner plan');
+assert.equal(sourced.vehiclePlan.iconPath,'',
+  'unverified SQL candidate must not display a train-specific plan PNG');
 console.log('Official Keio/Tobu/Kuroshio plan, native PNG scope and UNKNOWN safeguards: PASS');
