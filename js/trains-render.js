@@ -1182,6 +1182,40 @@ function _isTrainArtworkFailureActive(trainUid, p) {
 
   // Display the timetable fleet mapping as a reference, separate from actual
   // train identity. Never describe a live/unknown-position train as this model.
+  // Folded trains need the model already authorized by the identity resolver;
+  // never copy an unverified cached name or interpret a schedule as physical proof.
+  function _trainFoldExactVehicleLabel(p, lineId, lang) {
+    var resolved = p && p.vehicleResolution;
+    var status = p && (p.vehicleIdentityStatus || (resolved && resolved.identityStatus));
+    if (!p || status !== "EXACT" || p.vehicleResolvedUpstream === false ||
+        (resolved && resolved.identityStatus !== "EXACT")) return "";
+    var sourceLine = String(p.vehicleResolutionLineId || (resolved && resolved.lineId) || "");
+    var sources = resolved && Array.isArray(resolved.sources) ? resolved.sources : [];
+    var physical = p.vehicleResolvedFromRealtime === true &&
+      (sources.indexOf("official-realtime-car-number") >= 0 ||
+       sources.indexOf("roster-physical-id") >= 0);
+    if (lineId && sourceLine !== String(lineId) && !physical) return "";
+    if (!window.TrainVehicle || typeof window.TrainVehicle.resolveCanonicalVehicle !== "function") return "";
+    var canonical = window.TrainVehicle.resolveCanonicalVehicle((resolved && resolved.name) || p.vehicleType || "");
+    if (!canonical || !canonical.displayName) return "";
+    lang = String(lang || "ja").toLowerCase();
+    var prefix = p.estimated === true
+      ? (/^zh/.test(lang) ? "时刻表车型映射（非当日实车）：" :
+          lang === "en" ? "Timetable model (not confirmed physical stock): " :
+          lang === "ko" ? "시각표 차종(당일 실차 확인 아님): " :
+          "時刻表の車種（当日の実車未確認）：")
+      : physical
+        ? (/^zh/.test(lang) ? "已确认实际车型：" :
+            lang === "en" ? "Physically confirmed model: " :
+            lang === "ko" ? "실차 확인 차종: " :
+            "実車確認済み車種：")
+        : (/^zh/.test(lang) ? "车型映射参考（实车未独立确认）：" :
+            lang === "en" ? "Mapped model (physical stock unverified): " :
+            lang === "ko" ? "차종 매핑 참고(실차 미확인): " :
+            "車種対応参考（実車未確認）：");
+    return prefix + canonical.displayName;
+  }
+
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p || p.estimated !== true ||
         (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) === "EXACT") return "";
@@ -1875,7 +1909,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         entry.appendChild(caption);
         // Make fleet candidates visible in the folded train list, not just
         // in aria-labels. Do not replace the neutral vehicle marker with a PNG.
-        var fleetText = _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) ||
+        var fleetText = _trainFoldExactVehicleLabel(p, marker._displayLineId || "", lang) ||
+          _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) ||
           _shonanFleetCandidatesLabel(p, marker._displayLineId || "", lang) ||
           _trainFleetPlanLabel(p, marker._displayLineId || "", lang);
         if (fleetText) {
