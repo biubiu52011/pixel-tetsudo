@@ -3916,6 +3916,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // 证据；这些变化都不能复用此前的未知/车型计划。
     var planInputKey=JSON.stringify([tt._sqlVehicleCandidateLabel||'',tt.vehicleType||'',
       tt._sqlVerifiedPublishedVehicleType||'',tt._sqlVerifiedPublishedVehicleSourceUrl||'',
+      tt._sqlVehiclePlanConfirmed===true,
       tt._sqlVehicleCandidateSourceUrl||'',
       run.trainNumber||'',tt['odpt:trainType']||run.trainType||'',run.calendar||'',
       tt['odpt:operator']||line.operator||'',tt['odpt:railway']||'',
@@ -4202,6 +4203,15 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         vehResult.vehiclePlan.representativeModel = '';
         vehResult.vehiclePlan.evidenceRole = 'route-fleet-reference';
         vehResult.vehiclePlan.sourceUrl = plannedEvidence.sourceUrl;
+      }
+      // Binary confirmation is about the PUBLISHED timetable model, not the
+      // actual day's vehicle. Inferred fan-number families remain unconfirmed
+      // even when their model was retained in a PLANNED_MODEL evidence slot.
+      if (vehResult.vehiclePlan) {
+        vehResult.vehiclePlan.confirmed = Boolean(publishedSqlPlan &&
+          tt._sqlVehiclePlanConfirmed === true &&
+          vehResult.vehiclePlan.status === 'PLANNED_MODEL' &&
+          vehResult.vehiclePlan.evidenceRole !== 'route-fleet-reference');
       }
     }
     run.identity = {
