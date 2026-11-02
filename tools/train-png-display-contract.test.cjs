@@ -341,6 +341,50 @@ for (const example of [
   assert.deepEqual(Array.from(planned.vehicleResult.vehiclePlan.models), [example.model]);
   assert.equal(planned.vehicleResult.vehiclePlan.lineId, example.line);
 }
+// 2026 November operator-published N700 stock is shared by numbered
+// Sanyo/Kyushu THROUGH Mizuho and Sakura services. Route-only Kyushu Sakura
+// numbers with no matching through segment must not inherit this conclusion.
+for (const example of [
+  { line: 'SanyoShinkansen', operator: 'JR-West', train: 'みずほ600',
+    calendar: 'odpt.Calendar:Weekday' },
+  { line: 'KyushuShinkansen', operator: 'JR-Kyushu', train: 'みずほ600',
+    calendar: 'odpt.Calendar:Weekday' },
+  { line: 'KyushuShinkansen', operator: 'JR-Kyushu', train: 'みずほ608',
+    calendar: 'odpt.Calendar:SaturdayHoliday' },
+  { line: 'SanyoShinkansen', operator: 'JR-West', train: 'さくら740',
+    calendar: 'odpt.Calendar:Weekday' },
+  { line: 'KyushuShinkansen', operator: 'JR-Kyushu', train: 'さくら401',
+    calendar: 'odpt.Calendar:Weekday' },
+  { line: 'KyushuShinkansen', operator: 'JR-Kyushu', train: 'さくら740',
+    calendar: 'odpt.Calendar:SaturdayHoliday' }
+]) {
+  const n700 = sqlPlanVm.resolveTimetableRun(
+    { trainNumber: example.train, calendar: example.calendar },
+    { _positionSource: 'supabase-train-run',
+      _sqlVehicleMappingLevel: 'official_service_vehicle_plan',
+      _sqlVerifiedPublishedVehicleType: 'N700系',
+      _sqlVerifiedPublishedVehicleSourceUrl:
+        'https://www.jrkyushu-timetable.jp/sp/2611/0009/00091301.html',
+      _sqlVehiclePlanConfirmed: true },
+    example.line, { operator: example.operator });
+  assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
+    'operator-certified N700 scheduled family is not a carset identity');
+  assert.equal(n700.vehicleResult.identityStatus, 'UNKNOWN');
+  assert.equal(n700.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+  assert.equal(n700.vehicleResult.vehiclePlan.confirmed, true);
+  assert.equal(n700.vehicleResult.vehiclePlan.lineId, example.line);
+  assert.deepEqual(Array.from(n700.vehicleResult.vehiclePlan.models), ['N700系']);
+}
+const kyushuOnlySakura = sqlPlanVm.resolveTimetableRun(
+  { trainNumber: 'さくら400', calendar: 'odpt.Calendar:SaturdayHoliday' },
+  { _positionSource:'supabase-train-run',
+    _sqlVehicleMappingLevel:'unresolved',
+    _sqlVehicleCandidateLabel:'N700系 / 800系' },
+  'KyushuShinkansen', { operator:'JR-Kyushu' });
+assert.equal(kyushuOnlySakura.vehicleResult.vehiclePlan.confirmed, false,
+  'Kyushu-only Sakura must not inherit N700 through-service certification');
+assert.equal(kyushuOnlySakura.vehicleResult.identityStatus, 'UNKNOWN');
+
 const unsupportedHakuba = sqlPlanVm.resolveTimetableRun(
   { trainNumber: '9095M', calendar: 'odpt.Calendar:Weekday' },
   { _positionSource:'supabase-train-run',
