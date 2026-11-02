@@ -1586,8 +1586,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (!_existingUid) continue;
       if (!markerById[_existingUid]) markerById[_existingUid] = _existingMarker;
       else {
+        // Two DOM markers with the same logical train ID can survive a
+        // repaint, browser restore, or an older PNG-fallback implementation.
+        // Remove the ENTIRE duplicate component, not only its SVG icon.
         if (_existingMarker._moveRaf) cancelAnimationFrame(_existingMarker._moveRaf);
-        if (_existingMarker.parentNode) _existingMarker.parentNode.removeChild(_existingMarker);
+        var _duplicateUnit = _trainUnitContainer(_existingMarker);
+        if (_duplicateUnit && _duplicateUnit.parentNode)
+          _duplicateUnit.parentNode.removeChild(_duplicateUnit);
+        else if (_existingMarker.parentNode)
+          _existingMarker.parentNode.removeChild(_existingMarker);
       }
     }
     
@@ -1815,8 +1822,41 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         else if (allIcons[ii].parentNode) allIcons[ii].parentNode.removeChild(allIcons[ii]);
       }
     }
+    // Enforce the same DOM component invariant for every operator/line,
+    // regardless of whether the current train renders as PNG or circle.
+    _pruneDetachedTrainParts(trainLayer);
     _resolveTrainLabelCollisions(trainLayer);
     if (trainLayer._refreshTrainFoldPopover) trainLayer._refreshTrainFoldPopover();
+  }
+
+  // All train graphics are one keyed TrainComponent. Previous versions
+  // could leave orphan root-level circles or captions in trainLayer.
+  // Remove those relics on every incremental refresh; never allow them to
+  // co-exist with the component's newer internal icon/label parts.
+  function _pruneDetachedTrainParts(trainLayer) {
+    if (!trainLayer) return;
+    var roots = Array.prototype.slice.call(trainLayer.children || []);
+    var seen = Object.create(null);
+    for (var i = roots.length - 1; i >= 0; i--) {
+      var node = roots[i];
+      if (!node || !node.getAttribute) continue;
+      var componentId = node.getAttribute('data-train-component-id');
+      if (componentId) {
+        var marker = node.querySelector('[data-train-id]');
+        if (!marker || marker.getAttribute('data-train-id') !== componentId ||
+            seen[componentId]) {
+          if (marker && marker._moveRaf) cancelAnimationFrame(marker._moveRaf);
+          trainLayer.removeChild(node);
+        } else {
+          seen[componentId] = true;
+        }
+      } else if (node.hasAttribute('data-train-id') ||
+                 node.hasAttribute('data-train-label-for')) {
+        // These are parts of a TrainComponent, never independent siblings.
+        if (node._moveRaf) cancelAnimationFrame(node._moveRaf);
+        trainLayer.removeChild(node);
+      }
+    }
   }
 
   function _resolveTrainLabelCollisions(trainLayer, frameTime) {
