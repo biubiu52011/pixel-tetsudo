@@ -1180,6 +1180,40 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return prefix + "E231系1000番台 / E233系3000番台";
   }
 
+  // Display the timetable fleet mapping as a reference, separate from actual
+  // train identity. Never describe a live/unknown-position train as this model.
+  function _trainFleetPlanLabel(p, lineId, lang) {
+    if (!p || p.estimated !== true ||
+        (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) === "EXACT") return "";
+    var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    if (!plan || String(plan.lineId || "") !== String(lineId || "") ||
+        !Array.isArray(plan.models)) return "";
+    var status = String(plan.status || "");
+    if (status !== "PLANNED_MODEL" && status !== "PLANNED_CANDIDATES" &&
+        status !== "FLEET_REFERENCE") return "";
+    var models = plan.models.map(function(v) { return String(v || "").trim(); }).filter(Boolean);
+    if (!models.length) return "";
+    lang = String(lang || "ja").toLowerCase();
+    var fleetOnly = status === "FLEET_REFERENCE" || plan.evidenceRole === "route-fleet-reference";
+    var verified = status === "PLANNED_MODEL" && plan.evidenceRole !== "unverified-source-candidate";
+    var prefix = fleetOnly
+      ? (/^zh/.test(lang) ? "线路车型参考（非本车确认）：" :
+          lang === "en" ? "Line fleet reference (not confirmed for this train): " :
+          lang === "ko" ? "노선 차량 참고(해당 열차 미확인): " :
+          "路線車両参考（当該列車の形式未確認）：")
+      : verified
+        ? (/^zh/.test(lang) ? "计划车型（非实时车辆）：" :
+            lang === "en" ? "Scheduled model (not a live vehicle ID): " :
+            lang === "ko" ? "계획 차종(실시간 차량 확인 아님): " :
+            "計画車種（実車の確認ではありません）：")
+        : (/^zh/.test(lang) ? "车型候选（计划及实车未确认）：" :
+            lang === "en" ? "Vehicle candidates (schedule and actual train unverified): " :
+            lang === "ko" ? "차종 후보(계획·실차 미확인): " :
+            "車種候補（計画・実車未確認）：");
+    return prefix + models.slice(0, 6).join(" / ") +
+      (models.length > 6 ? (/^zh/.test(lang) ? " 等" : " …") : "");
+  }
+
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
@@ -1230,7 +1264,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       (typeof _seibuCommuterCandidatesLabel === "function"
         ? _seibuCommuterCandidatesLabel(p, lineId, lang) : "") ||
       (typeof _shonanFleetCandidatesLabel === "function"
-        ? _shonanFleetCandidatesLabel(p, lineId, lang) : "");
+        ? _shonanFleetCandidatesLabel(p, lineId, lang) : "") ||
+      (typeof _trainFleetPlanLabel === "function"
+        ? _trainFleetPlanLabel(p, lineId, lang) : "");
     if (_fleetReference) tip.push(_fleetReference);
     // 保留线路门槛：源码截取型消费者可能只加载标题函数而不加载全部辅助函数。
     if (typeof _isOedoTailTrain === "function" && _isOedoTailTrain(lineId, p) && p && p.destinationStation) {
@@ -1839,7 +1875,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         entry.appendChild(caption);
         // Make fleet candidates visible in the folded train list, not just
         // in aria-labels. Do not replace the neutral vehicle marker with a PNG.
-        var fleetText = _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) || _shonanFleetCandidatesLabel(p, marker._displayLineId || "", lang);
+        var fleetText = _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) ||
+          _shonanFleetCandidatesLabel(p, marker._displayLineId || "", lang) ||
+          _trainFleetPlanLabel(p, marker._displayLineId || "", lang);
         if (fleetText) {
           var fleetNote = document.createElement('div');
           fleetNote.className = 'train-fold-vehicle-candidates';
