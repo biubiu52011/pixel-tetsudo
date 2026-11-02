@@ -524,6 +524,11 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     // Keep candidates explicitly unverified instead of silently erasing them.
     const trainCandidate = mapped.mapping_level === 'source_single_type_candidate'
       ? String(mapped.vehicle_type || '').trim() : '';
+    // Source-backed operator/line fleet is a reference, not a certified train.
+    const fleetReferenceLabel = ['official_single_fleet_plan',
+      'official_model_family_plan'].includes(mapped.mapping_level) &&
+      mapped.vehicle_source_id && mapped.vehicle_source_url
+        ? String(mapped.vehicle_type || '').trim() : '';
     const verifiedBoundaryType = String(boundaryVehicle.get(t.id) || "");
     const conflict = !!(ruleType && verifiedBoundaryType && ruleType !== verifiedBoundaryType);
     const exactScheduleType = conflict ? "" : (ruleType || verifiedBoundaryType);
@@ -561,7 +566,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       // A single source label is a candidate, not observed rolling stock.
       // Only decisive, source-dated timetable rules may identify a planned type.
       vehicle_type_label: exactScheduleType || null,
-      vehicle_type_candidates: t.vehicle_type_label || trainCandidate || null,
+      vehicle_type_candidates: fleetReferenceLabel || t.vehicle_type_label || trainCandidate || null,
       vehicle_candidate_artwork_path: candidateArtwork,
       vehicle_candidate_artwork_status: candidateArtwork
         ? "historical-single-model-operator-generic-unverified" : null,
