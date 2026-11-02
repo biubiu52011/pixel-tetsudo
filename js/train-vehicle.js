@@ -3829,6 +3829,23 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       sourceUrl: 'https://www.westjr.co.jp/press/article/2020/02/page_15645.html'
     };
   }
+  // 房総普通列車：209系から改造E233系への段階的置換。
+  // 外房・内房の既存E131系0番台と、2027年以降導入予定の
+  // 新造E131系を混同しない。東金線への将来投入は含めない。
+  // いずれも路線の参考形式であり、個別の計画車種や実車ではない。
+  if (operator === 'JR-East' &&
+      serviceType === 'odpt.TrainType:JR-East.Local' &&
+      /^(?:Sotobo|Uchibo|Togane)$/.test(String(lineId || ''))) {
+    var bosoRouteModels = lineId === 'Togane'
+      ? ['209系', 'E233系（房総地区・改造車）', 'E233系5000番台']
+      : ['209系', 'E233系（房総地区・改造車）', 'E131系0番台'];
+    return {
+      operator: 'JR-East', vehicleCandidates: bosoRouteModels,
+      evidenceRole: 'route-fleet-reference', _fleetReferenceOnly: true,
+      planOverride: false,
+      sourceUrl: 'https://www.jreast.co.jp/press/2026/chiba_j/20260910_c02.pdf'
+    };
+  }
   // 西武通勤電車：公開されている車両形式と路線範囲だけを参照。
   // 車両運用や当日の編成が確定したとは扱わず、PNG も選ばない。
   // 特急・S-TRAIN・拝島ライナーにはこの通勤用フォールバックを適用しない。
