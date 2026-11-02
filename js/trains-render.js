@@ -1199,11 +1199,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var canonical = window.TrainVehicle.resolveCanonicalVehicle((resolved && resolved.name) || p.vehicleType || "");
     if (!canonical || !canonical.displayName) return "";
     lang = String(lang || "ja").toLowerCase();
-    var prefix = p.estimated === true
+    // Estimated location is NOT proof of a certified scheduled vehicle.
+    // Only these train-level SQL mapping levels can be named a timetable model.
+    var scheduledExact = p.estimated === true &&
+      /^(?:dated_schedule_rule|dated_operation_owner|verified_scheduled_boundary)$/.test(
+        String(p.plannedVehicleCandidateStatus || ""));
+    var prefix = scheduledExact
       ? (/^zh/.test(lang) ? "时刻表车型映射（非当日实车）：" :
           lang === "en" ? "Timetable model (not confirmed physical stock): " :
           lang === "ko" ? "시각표 차종(당일 실차 확인 아님): " :
           "時刻表の車種（当日の実車未確認）：")
+      : p.estimated === true
+        ? (/^zh/.test(lang) ? "推算位置车型参考（非计划车型确认）：" :
+            lang === "en" ? "Estimated-position model reference (not schedule-certified): " :
+            lang === "ko" ? "추정 위치 차종 참고(계획 차종 미확인): " :
+            "推定位置の車種参考（計画形式未確認）：")
       : physical
         ? (/^zh/.test(lang) ? "已确认实际车型：" :
             lang === "en" ? "Physically confirmed model: " :
@@ -1295,11 +1305,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (canonicalVehicle && canonicalVehicle.displayName) {
         // A resolved model on a timetable position is planned rolling stock,
         // not confirmation of a physical train on a particular day.
+        var isScheduledModel = p && p.estimated === true &&
+          /^(?:dated_schedule_rule|dated_operation_owner|verified_scheduled_boundary)$/.test(
+            String(p.plannedVehicleCandidateStatus || ""));
         var modelPrefix = p && p.estimated === true
-          ? (/^zh/.test(lang) ? "时刻表车型（非当日实车）：" :
-             lang === "en" ? "Timetable model (not actual stock): " :
-             lang === "ko" ? "시각표 차종(당일 실차 미확인): " :
-             "時刻表車種（当日の実車未確認）：") : "";
+          ? (isScheduledModel
+            ? (/^zh/.test(lang) ? "时刻表车型（非当日实车）：" :
+               lang === "en" ? "Timetable model (not actual stock): " :
+               lang === "ko" ? "시각표 차종(당일 실차 미확인): " :
+               "時刻表車種（当日の実車未確認）：")
+            : (/^zh/.test(lang) ? "推算位置车型参考（计划未确认）：" :
+               lang === "en" ? "Estimated-position model (schedule unverified): " :
+               lang === "ko" ? "추정 위치 차종(계획 미확인): " :
+               "推定位置の車種参考（計画未確認）：")) : "";
         tip.push(modelPrefix + canonicalVehicle.displayName);
       }
     }
