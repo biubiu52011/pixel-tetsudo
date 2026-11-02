@@ -1208,7 +1208,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFoldExactVehicleLabel(p, lineId, lang) {
     var resolved = p && p.vehicleResolution;
     var status = p && (p.vehicleIdentityStatus || (resolved && resolved.identityStatus));
-    if (!p || status !== "EXACT" || p.vehicleResolvedUpstream === false ||
+    if (!p || (p.vehiclePlan &&
+        p.vehiclePlan.source === "published-number-calendar-reference") ||
+        status !== "EXACT" || p.vehicleResolvedUpstream === false ||
         (resolved && resolved.identityStatus !== "EXACT")) return "";
     var sourceLine = String(p.vehicleResolutionLineId || (resolved && resolved.lineId) || "");
     var sources = resolved && Array.isArray(resolved.sources) ? resolved.sources : [];
@@ -1247,9 +1249,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   }
 
   function _trainFleetPlanLabel(p, lineId, lang) {
-    if (!p || p.estimated !== true ||
-        (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) === "EXACT") return "";
+    if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    var publishedLivePlan = p.positionSource === "realtime-api" &&
+      plan && plan.source === "published-number-calendar-reference";
+    if ((!publishedLivePlan && p.estimated !== true) ||
+        (!publishedLivePlan &&
+         (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) === "EXACT")) return "";
     // An estimated timetable train without any model evidence still has the
     // binary public result UNCONFIRMED, never an empty third status.
     if (!plan && lineId && String(p.positionLineId || "") === String(lineId)) {
@@ -1269,7 +1275,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // Only two public outcomes. The model names remain useful references,
     // but a mapped/inferred plan alone does not prove timetable assignment.
     var confirmed = status === "PLANNED_MODEL" && plan.confirmed === true;
-    var prefix = confirmed
+    var prefix = publishedLivePlan
+      ? (/^zh/.test(lang) ? "计划车型（平日／休日时刻表参考，非当日实车）：" :
+          lang === "en" ? "Published scheduled model (not actual-day stock): " :
+          lang === "ko" ? "계획 차종(당일 실차 아님): " :
+          "計画車種（当日の実車ではありません）：")
+      : confirmed
       ? (/^zh/.test(lang) ? "计划车型已确认（非当日实车）：" :
           lang === "en" ? "Scheduled model confirmed (not actual-day stock): " :
           lang === "ko" ? "계획 차종 확인(당일 실차 아님): " :
@@ -1321,7 +1332,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       physicalThroughEvidence;
     // 标签与 PNG 使用同一线路和确定身份门槛；不能出现圆点已退回未知，
     // 无障碍标题却继续宣称一辆未经确认的具体车型。
-    if (vehicle.status === "EXACT" && vehicle.name && titleScoped &&
+    if (!(p && p.vehiclePlan &&
+          p.vehiclePlan.source === "published-number-calendar-reference") &&
+        vehicle.status === "EXACT" && vehicle.name && titleScoped &&
         (!p || p.vehicleResolvedUpstream !== false) &&
         (!p || !p.vehicleResolution || p.vehicleResolution.identityStatus === "EXACT") &&
         window.TrainVehicle && typeof window.TrainVehicle.resolveCanonicalVehicle === "function") {
