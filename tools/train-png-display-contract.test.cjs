@@ -313,9 +313,9 @@ assert.equal(officialNumberPlan.vehicleResult.identityStatus, 'UNKNOWN',
 // each plan independently: Oito Hakuba, Shinonoi Shinano, Joetsu Toki/Tanigawa.
 for (const example of [
   { line: 'Oito', train: '8041M', calendar: 'odpt.Calendar:SaturdayHoliday',
-    model: 'E353系', source: 'https://www.jreast.co.jp/en/press/2026/winterextratrain/index.html/' },
+    model: 'E353系', source: 'https://www.jreast.co.jp/railway/extratrain/2026/spring_list_1.pdf' },
   { line: 'Oito', train: '8042M', calendar: 'odpt.Calendar:SaturdayHoliday',
-    model: 'E353系', source: 'https://www.jreast.co.jp/en/press/2026/winterextratrain/index.html/' },
+    model: 'E353系', source: 'https://www.jreast.co.jp/railway/extratrain/2026/spring_list_1.pdf' },
   { line: 'Shinonoi', train: '1001M', calendar: 'odpt.Calendar:Weekday',
     model: '383系', source: 'https://company.jr-central.co.jp/sustainability/social/conventional-line/' },
   { line: 'Shinonoi', train: '1026M', calendar: 'odpt.Calendar:SaturdayHoliday',
