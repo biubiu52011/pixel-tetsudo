@@ -456,13 +456,13 @@ const titledExact = {
 assert.match(tooltipContext._trainMarkerTitle(titledExact, 'Keiyo'), /E233/);
 assert.match(tooltipContext._trainMarkerTitle({
   ...titledExact, estimated: true, plannedVehicleCandidateStatus: 'dated_schedule_rule'
-}, 'Keiyo'), /Timetable model \(not actual stock\).*E233/,
+}, 'Keiyo'), /Scheduled model unconfirmed.*E233/,
   'certified scheduled mapping must be labelled as timetable-only');
 assert.match(tooltipContext._trainMarkerTitle({
   ...titledExact, estimated: true
-}, 'Keiyo'), /Estimated-position model \(schedule unverified\).*E233/,
+}, 'Keiyo'), /Scheduled model unconfirmed.*E233/,
   'an estimated position with unrelated exact evidence is not a verified timetable model');
-assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Keiyo').includes('Timetable model'),
+assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Keiyo').includes('Scheduled model'),
   'confirmed non-estimated vehicles must not acquire a timetable-only label');
 assert.match(tooltipContext._trainMarkerTitle(titledExact, 'Keiyo'),
   /Mapped model \(physical stock unverified\).*E233/,
@@ -504,6 +504,11 @@ assert.ok(!tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'Ikebukuro',
   .includes('001'), 'limited express stock cannot become commuter candidates');
 assert.equal(tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'SeibuToshima', 'en'), '',
   'Seibu candidate names must not leak to a different Seibu route');
+assert.equal(tooltipContext._seibuCommuterCandidatesLabel({
+  ...seibuFleet, vehiclePlan: { ...seibuFleet.vehiclePlan, confirmed:true,
+    status:'PLANNED_MODEL' },
+}, 'Ikebukuro', 'en'), '',
+'a confirmed Seibu service must not be relabeled as an unconfirmed corridor fleet');
 assert.match(tooltipContext._trainMarkerTitle(seibuFleet, 'Ikebukuro'),
   /Scheduled model unconfirmed.*2000/,
   'the marker tooltip should use the same scoped Seibu reference');
@@ -620,10 +625,18 @@ const mappedModel = {
 };
 assert.match(tooltipContext._trainFoldExactVehicleLabel({
   ...mappedModel, plannedVehicleCandidateStatus: 'unresolved'
-}, 'Keiyo', 'en'), /Estimated-position model reference.*not schedule-certified/,
+}, 'Keiyo', 'en'), /Scheduled model unconfirmed.*E233/,
   'folded list must not certify an incidental exact vehicle observation as a timetable model');
 assert.match(tooltipContext._trainFoldExactVehicleLabel(mappedModel, 'Keiyo', 'en'),
-  /Timetable model.*E233/, 'planned exact mapping is not a claim about actual physical stock');
+  /Scheduled model unconfirmed.*E233/, 'planned exact mapping is not a claim about actual physical stock');
+assert.match(tooltipContext._trainFoldExactVehicleLabel({
+  ...mappedModel, vehiclePlan: {confirmed:true}
+}, 'Keiyo', 'en'), /Scheduled model confirmed.*E233/,
+'folded titles confirm only the officially sourced plan, not an assumed formation');
+assert.match(tooltipContext._trainMarkerTitle({
+  ...mappedModel, vehiclePlan: {confirmed:true}
+}, 'Keiyo'), /Scheduled model confirmed.*E233/,
+'accessible title uses the same two-valued plan confirmation');
 assert.equal(tooltipContext._trainFoldExactVehicleLabel(mappedModel, 'Yamanote', 'en'), '',
   'mapped model cannot be displayed on another line without physical proof');
 assert.equal(tooltipContext._trainFoldExactVehicleLabel({
