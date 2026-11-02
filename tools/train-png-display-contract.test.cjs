@@ -863,6 +863,12 @@ vm.runInContext(extract(renderSource,
 vm.runInContext(extract(renderSource,
   '  function _moveTrainLabels(trainLayer, trainUid, px, py, p, lineId) {',
   '  // 让标签内容与当前服务区段保持同步'), markerContext);
+vm.runInContext(extract(renderSource,
+  '  function _syncTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId) {',
+  '  function updateRunningInfo('), markerContext);
+assert.match(renderSource,
+  /if \(existingIcon && !_trainUnitContainer\(existingIcon\)\)/,
+  'legacy ungrouped markers must be replaced by a common SVG train unit');
 const markerLayer = svgNode('g');
 const svgNS = 'http://www.w3.org/2000/svg';
 const renderedImage = markerContext._createTrainMarker(
@@ -922,6 +928,27 @@ assert.equal(candidateMarker.tagName, 'circle');
 assert.equal(candidateMarker.getAttribute('data-marker-kind'), 'candidate');
 assert.equal(candidateMarker.getAttribute('data-vehicle-candidate'), 'true');
 assert.ok(!candidateMarker.getAttribute('href'), 'candidate must not carry an image URL');
+const candidateUnit = candidateMarker.parentNode;
+assert.equal(candidateUnit.getAttribute('data-train-unit-id'), 't1',
+  'unverified vehicle candidates must also render within one SVG unit');
+assert.equal(candidateMarker.getAttribute('cx'), '0');
+assert.equal(candidateMarker.getAttribute('cy'), '0');
+markerContext.appendTrainLabels(markerLayer,svgNS,'t1',80,90,
+  {railDirection:'odpt.RailDirection:Outbound',
+    destinationStation:'odpt.Station:JR-East.Uchibo.Kimitsu'},
+  'Uchibo');
+const candidateLabel = candidateUnit.querySelector('[data-train-label-for="t1"]');
+assert.ok(candidateLabel, 'candidate/neutral circle and destination have one parent');
+markerContext._setTrainIconPosition(candidateMarker,120,175,
+  {railDirection:'odpt.RailDirection:Outbound'},'Uchibo',false);
+markerContext._moveTrainLabels(markerLayer,'t1',120,175,
+  {railDirection:'odpt.RailDirection:Outbound'},'Uchibo');
+assert.equal(candidateUnit.getAttribute('transform'),'translate(120,175)');
+assert.equal(candidateMarker.getAttribute('cx'),'0');
+assert.equal(candidateMarker.getAttribute('cy'),'0');
+assert.equal(candidateLabel.querySelector('.train-label-dir').getAttribute('y'),'21');
+assert.equal(candidateLabel.parentNode,candidateMarker.parentNode,
+  '177M-style neutral circle and its arrow/君津 must never be sibling train-layer elements');
 
 renderedImage.listeners.error();
 assert.ok(!markerLayer.children.includes(trainUnit),
@@ -942,10 +969,35 @@ const sixLayer = svgNode('g');
 sixLayer.ownerSVGElement = {__geometry:{isSixShapedLoop:true}};
 const sixMarker = markerContext._createTrainMarker(
   sixLayer,svgNS,'oedo',plannedSpec,40,50,unknownEstimate,'Oedo',false,'#008803',null);
-assert.equal(sixMarker.parentNode, sixLayer,
-  'six-shaped route labels must retain their special, fixed-corridor layout');
-assert.equal(sixMarker.getAttribute('x'), '33');
-assert.equal(sixMarker.getAttribute('y'), '41');
+const sixUnit = sixMarker.parentNode;
+assert.equal(sixUnit.getAttribute('data-train-unit-id'),'oedo',
+  'even six-shaped Oedo markers must belong to exactly one unit');
+assert.equal(sixUnit.parentNode,sixLayer);
+assert.equal(sixUnit.getAttribute('transform'),'translate(40,50)');
+assert.equal(sixMarker.getAttribute('x'),'-7');
+assert.equal(sixMarker.getAttribute('y'),'-9');
+const oedoPosition = {railDirection:'odpt.RailDirection:Inbound',
+  destinationStation:'odpt.Station:Toei.Oedo.Tochomae',stationIndex:1};
+markerContext.appendTrainLabels(sixLayer,svgNS,'oedo',40,50,oedoPosition,'Oedo');
+const sixLabel = sixUnit.querySelector('[data-train-label-for="oedo"]');
+assert.ok(sixLabel, 'six-shaped Oedo keeps its absolute corridor label in the same DOM unit');
+assert.match(sixLabel.getAttribute('transform'),/^translate\(-40,-50\)/,
+  'fixed corridor coordinates must compensate for the parent train transform');
+markerContext._setTrainIconPosition(sixMarker,60,80,oedoPosition,'Oedo',false);
+markerContext._moveTrainLabels(sixLayer,'oedo',60,80,oedoPosition,'Oedo');
+assert.equal(sixUnit.getAttribute('transform'),'translate(60,80)');
+assert.match(sixLabel.getAttribute('transform'),/^translate\(-60,-80\)/,
+  'Oedo fixed corridor stays in place even when the one-unit train moves');
+assert.equal(sixLabel.parentNode,sixMarker.parentNode);
+// Test healing a legacy detached caption during an incremental refresh.
+sixLayer.appendChild(sixLabel);
+assert.equal(sixLabel.parentNode,sixLayer);
+markerContext._syncTrainLabels(sixLayer,svgNS,'oedo',60,80,oedoPosition,'Oedo');
+assert.ok(sixUnit.querySelector('[data-train-label-for="oedo"]'),
+  'legacy detached captions must be recreated inside their own train unit');
+assert.equal(sixLayer.children.filter(node=>node.getAttribute('data-train-label-for')==='oedo').length,0,
+  'legacy standalone label must no longer exist next to the train unit');
+assert.ok(sixUnit.querySelector('[data-train-label-for="oedo"]').parentNode===sixUnit);
 
 console.log('train PNG display contract: PASS (selection, scope, SVG DOM, fallback, tooltip)');
 
