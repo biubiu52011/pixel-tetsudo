@@ -259,6 +259,73 @@
     } catch(e) { return 0; }
   }
 
+  // ODPT Train can publish tomorrow's first train before departure. A fresh
+  // Train API timestamp proves a record is recent, NOT that its scheduled trip
+  // has entered service. Only an exact operator/railway/number/calendar match
+  // to a timed published timetable may exclude that parked/future record.
+  // null means no sufficiently complete timetable evidence: never guess.
+  var _serviceWindowCacheBucket = -1;
+  var _serviceWindowCacheSource = null;
+  var _serviceWindowCache = Object.create(null);
+  function isPublishedTrainInService(record, operatorKey) {
+    var number = String(record && (record["odpt:trainNumber"] ||
+      record["odpt:train"]) || "").trim();
+    var railway = String(record && record["odpt:railway"] || "").trim();
+    var op = String(operatorKey || "").replace(/^odpt\.Operator:/, "");
+    var source = window.ODPT_TIMETABLES;
+    if (!number || !railway || !op || !source) return null;
+    var timetables = source[op] || source["odpt.Operator:" + op];
+    if (!Array.isArray(timetables) || !timetables.length) return null;
+    var bucket = Math.floor(Date.now() / 30000);
+    if (_serviceWindowCacheBucket !== bucket || _serviceWindowCacheSource !== source) {
+      _serviceWindowCacheBucket = bucket;
+      _serviceWindowCacheSource = source;
+      _serviceWindowCache = Object.create(null);
+    }
+    var calendars = getCurrentCalendars();
+    var nowMinute = getCurrentMinutes();
+    var day = getTokyoServiceDate();
+    var key = op + "|" + railway + "|" + number + "|" + calendars.join(",") + "|" + day;
+    var windows = _serviceWindowCache[key];
+    if (!windows) {
+      windows = [];
+      for (var i = 0; i < timetables.length; i++) {
+        var tt = timetables[i];
+        if (!tt || String(tt["odpt:trainNumber"] || tt["odpt:train"] || "") !== number ||
+            String(tt["odpt:railway"] || "") !== railway ||
+            calendars.indexOf(String(tt["odpt:calendar"] || "")) < 0) continue;
+        // Historical/undated local SQL rows cannot certify current-day
+        // operation hours. This guard uses official TrainTimetable data only.
+        if (tt._positionSource && tt._positionSource !== "train-timetable") continue;
+        if (tt._serviceDate && String(tt._serviceDate) !== day) continue;
+        var stops = tt["odpt:trainTimetableObject"];
+        if (!Array.isArray(stops) || !stops.length) continue;
+        var firstDeparture = null, lastTimed = null;
+        stops.forEach(function(stop) {
+          var dep = parseTimeToMinutes(stop && stop["odpt:departureTime"]);
+          var arr = parseTimeToMinutes(stop && stop["odpt:arrivalTime"]);
+          if (dep !== null && (firstDeparture === null || dep < firstDeparture)) firstDeparture = dep;
+          if (dep !== null && (lastTimed === null || dep > lastTimed)) lastTimed = dep;
+          if (arr !== null && (lastTimed === null || arr > lastTimed)) lastTimed = arr;
+        });
+        if (firstDeparture !== null && lastTimed !== null &&
+            lastTimed >= firstDeparture) {
+          windows.push({from: firstDeparture, until: lastTimed});
+        }
+      }
+      _serviceWindowCache[key] = windows;
+    }
+    if (!windows.length) return null;
+    var rawDelay = Number(record["odpt:delay"]);
+    // A measured delay may carry a real running train beyond the timetable.
+    // Do not keep an ordinary first-train marker parked all night.
+    var delayGrace = Number.isFinite(rawDelay) && rawDelay > 0
+      ? Math.min(rawDelay / 60 + 15, 180) : 15;
+    return windows.some(function(w) {
+      return nowMinute >= w.from && nowMinute <= w.until + delayGrace;
+    });
+  }
+
   // ========== 车站名称提取 ==========
   function extractStationKey(stationUrn) {
     try {
@@ -1164,6 +1231,7 @@
     getCurrentCalendars: getCurrentCalendars,
     getWallClockCalendars: getWallClockCalendars,
     getCurrentMinutes: getCurrentMinutes,
+    isPublishedTrainInService: isPublishedTrainInService,
     getCurrentServiceDate: getTokyoServiceDate,
     normalizeStationKey: normalizeStationKey,
     isLimitedExpress: isLimitedExpress
