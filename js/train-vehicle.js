@@ -3909,7 +3909,12 @@ function _officialConventionalServicePlan(tt, lineId, line) {
   // 不介入车型身份、运行号判定，也不选择单车 PNG。
   var majorPreset = typeof window !== 'undefined' && window.MajorVehicleFleetPresets &&
     typeof window.MajorVehicleFleetPresets.lookup === 'function'
-      ? window.MajorVehicleFleetPresets.lookup(lineId, operator, serviceType) : null;
+      ? window.MajorVehicleFleetPresets.lookup(lineId, operator, serviceType, {
+          // This is explicit timetable ownership, never derived from train number.
+          // Foreign-owned through trains must not silently inherit a route
+          // operator's stock (for example Toei Mita vs Sotetsu 21000).
+          trainOwner: normOp(tt['odpt:trainOwner'] || tt.trainOwner || '')
+        }) : null;
   if (majorPreset) return majorPreset;
   return null;
 }
