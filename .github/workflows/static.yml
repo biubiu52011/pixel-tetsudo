@@ -3,11 +3,6 @@ name: Deploy static content to Pages
 
 on:
   workflow_dispatch:
-  # Temporary direct-main trigger for this user-requested release only.
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/static.yml'
 
 permissions:
   contents: read
