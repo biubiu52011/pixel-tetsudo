@@ -3785,6 +3785,59 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     return plan;
   }
 
+  // Published train-number + weekday/holiday rolling-stock plans can be shown
+  // alongside a fresh live POSITION. They are never actual-day carset evidence.
+  // Require the complete source railway, timetable calendar and exact number;
+  // a line-wide fleet or a suffix-derived working is not a train-level plan.
+  var _publishedPositionPlanSource = null;
+  var _publishedPositionPlanByNumber = Object.create(null);
+  function resolvePublishedPositionPlan(p) {
+    if (!p || !p.trainNumber || !p.serviceDate ||
+        (p.calendarType !== "weekday" && p.calendarType !== "holiday")) return null;
+    var lineId = String(p.positionLineId || p.lineId || "").trim();
+    var sourceRailway = String(p.sourceRailway || "").trim();
+    if (!lineId || !sourceRailway) return null;
+    var rules = window.VEHICLE_REFERENCE_RULES;
+    if (rules !== _publishedPositionPlanSource) {
+      _publishedPositionPlanSource = rules;
+      _publishedPositionPlanByNumber = Object.create(null);
+      (Array.isArray(rules) ? rules : []).forEach(function(row) {
+        if (!row || !row.trainNumber || !row.sourceUrl || !row.effectiveFrom) return;
+        (_publishedPositionPlanByNumber[row.trainNumber] ||
+          (_publishedPositionPlanByNumber[row.trainNumber] = [])).push(row);
+      });
+    }
+    var num = String(p.trainNumber).trim();
+    var day = String(p.serviceDate).slice(0, 10);
+    var hits = (_publishedPositionPlanByNumber[num] || []).filter(function(row) {
+      return String(row.trainNumber) === num &&
+        String(row.calendarType || "") === p.calendarType &&
+        (!row.effectiveFrom || day >= row.effectiveFrom) &&
+        (!row.effectiveTo || day <= row.effectiveTo) &&
+        _evidenceNetworkMatches(row.networkKey,
+          {lineId: lineId, railway: sourceRailway});
+    });
+    if (!hits.length) return null;
+    var types = Object.create(null);
+    hits.forEach(function(row) {
+      if (String(row.vehicleType || "").trim()) types[String(row.vehicleType).trim()] = true;
+    });
+    var models = Object.keys(types);
+    if (models.length !== 1) return null;
+    var first = hits[0];
+    var plan = resolveTimetableVehiclePlan(models[0], {
+      lineId: lineId, operator: first.operator || p.trainOperator || "",
+      serviceDate: day, source: "published-number-calendar-reference",
+      sourceUrl: first.sourceUrl, _positionSource: "train-timetable"
+    });
+    if (!plan || plan.status !== "PLANNED_MODEL" || !plan.iconPath) return null;
+    // A model reference is sufficient for the requested planned display,
+    // without asserting that this is the physical train seen today.
+    plan.evidenceRole = "timetable-reference";
+    plan.confirmed = false;
+    return plan;
+  }
+
   // Officially documented service-type plans for undated SQL timetable projections.
 // Only two exact operator + line + train-type combinations are supported.
 // Never use this for live vehicle identification, exact formation or a generic
@@ -4586,6 +4639,22 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // On realtime POSITION records, an exact-number/calendar published plan
+    // is the display baseline, even when the actual carset is unknown/different.
+    // This PNG is visibly tagged PLANNED and cannot be mistaken for live stock.
+    if (p && p.positionSource === "realtime-api" && vehiclePlan &&
+        vehiclePlan.source === "published-number-calendar-reference" &&
+        _issuedVehiclePlans.has(vehiclePlan) &&
+        vehiclePlan.status === "PLANNED_MODEL" &&
+        Array.isArray(vehiclePlan.models) && vehiclePlan.models.length === 1 &&
+        contextLineId && vehiclePlan.lineId === contextLineId) {
+      var plannedSrc = normalizeGalleryPngPath(vehiclePlan.iconPath);
+      if (plannedSrc && artworkFailed !== true) {
+        return {kind: "vehicle", iconSrc: plannedSrc, planned: true};
+      }
+      // Do not fall back to actual-day evidence when a planned PNG fails.
+      return {kind: "unresolved", iconSrc: ""};
+    }
     var plannedMarker = false;
     // 上游已确认车型但扁平化丢失 iconPath 时，可按同一个规范身份重新
     // 获取原生 PNG；不接受计划图片、自由文本、编成不唯一时的降级反查。
@@ -4648,6 +4717,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   window.TrainVehicle = {
     resolveRealtime: resolveRealtime,
     resolveTimetableRun: resolveTimetableRun,
+    resolvePublishedPositionPlan: resolvePublishedPositionPlan,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     getOperationPngLibrary: getOperationPngLibrary,
