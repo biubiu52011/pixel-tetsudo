@@ -265,6 +265,21 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   if (templates.some((t: any) => !sourceResolution.has(t.id))) {
     throw new Error("UNMAPPED_CANONICAL_TIMETABLE_SOURCE");
   }
+  // Binary PLAN confirmation must come from evidence provenance, not from
+  // the presence of a mapped family name. B-grade fan working inferences are
+  // still UNCONFIRMED; A/B official service evidence is admissible.
+  // Keep source metadata internal and never infer a physical carset.
+  const vehicleEvidenceById = new Map<number, { source_type: string; evidence_grade: string }>();
+  const evidenceIds = [...new Set([...sourceResolution.values()]
+    .map((row: any) => Number(row.vehicle_source_id))
+    .filter((id: number) => Number.isInteger(id) && id > 0))];
+  for (let i = 0; i < evidenceIds.length; i += 100) {
+    const { data, error } = await db.from("evidence_sources")
+      .select("id,source_type,evidence_grade")
+      .in("id", evidenceIds.slice(i, i + 100));
+    if (error) throw error;
+    for (const row of data || []) vehicleEvidenceById.set(Number(row.id), row);
+  }
   const seenCanonical = new Set<number>();
   templates = templates.filter((t: any) => {
     const key = Number(sourceResolution.get(t.id).timetable_id);
@@ -579,6 +594,15 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       vehicle_candidate_artwork_status: candidateArtwork
         ? "historical-single-model-operator-generic-unverified" : null,
       vehicle_mapping_level: scheduleLevel,
+      // Confirmed means this recurring PLAN model is certified by official
+      // service/number evidence; it never means actual dispatch confirmation.
+      vehicle_plan_confirmed: Boolean(
+        ruleType && !conflict && publishedPlan &&
+        vehicleEvidenceById.get(Number(mapped.vehicle_source_id))?.source_type === "official" &&
+        ["A", "B"].includes(String(
+          vehicleEvidenceById.get(Number(mapped.vehicle_source_id))?.evidence_grade || ""
+        ))
+      ),
       vehicle_evidence_source: ruleType && !conflict
         ? (publishedPlan ? "database-published-service-plan"
           : mapped.mapping_level === "dated_operation_owner"
