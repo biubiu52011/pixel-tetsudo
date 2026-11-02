@@ -1,7 +1,10 @@
-# Pages deploy is an explicit release action, not a side effect of a main commit.
+# Deploy only committed main-branch content. Merges and direct pushes to main
+# publish automatically after preflight checks; manual dispatch remains available.
 name: Deploy static content to Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
