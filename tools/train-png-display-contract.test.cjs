@@ -5,6 +5,12 @@ const vm = require('node:vm');
 
 const vehicleSource = fs.readFileSync('js/train-vehicle.js', 'utf8');
 const renderSource = fs.readFileSync('js/trains-render.js', 'utf8');
+const edgeSource = fs.readFileSync('supabase/functions/train-runs/index.ts', 'utf8');
+const adapterSource = fs.readFileSync('data/api/odpt-unified.js', 'utf8');
+assert.match(edgeSource, /vehicle_plan_confirmed: Boolean\(/);
+assert.match(edgeSource, /source_type === "official"/);
+assert.match(edgeSource, /\["A", "B"\].includes/);
+assert.match(adapterSource, /"_sqlVehiclePlanConfirmed":run\.vehicle_plan_confirmed===true/);
 
 function extract(source, start, end) {
   const a = source.indexOf(start);
@@ -272,20 +278,22 @@ const sqlPlanVm = vm.createContext({
 vm.runInContext(extract(vehicleSource,
   'function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {',
   '  function _operationDayDistance('), sqlPlanVm);
-function checkSqlModel(level, verifiedUrl) {
+function checkSqlModel(level, verifiedUrl, confirmed) {
   return sqlPlanVm.resolveTimetableRun(
     { trainNumber: '601M', calendar: 'odpt.Calendar:Weekday' },
     { _positionSource: 'supabase-train-run',
       _sqlVehicleMappingLevel: level, vehicleType: 'E233系6000番台',
       _sqlVerifiedPublishedVehicleType: 'E233系6000番台',
-      _sqlVerifiedPublishedVehicleSourceUrl: verifiedUrl || '' },
+      _sqlVerifiedPublishedVehicleSourceUrl: verifiedUrl || '',
+      _sqlVehiclePlanConfirmed: confirmed === true },
     'Yokohama', { operator: 'JR-East' });
 }
-let publishedModel = checkSqlModel('official_service_vehicle_plan', 'https://example.org/official');
+let publishedModel = checkSqlModel('official_service_vehicle_plan', 'https://example.org/official', true);
 assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
   'official published timetable vehicle cannot become an actual identity');
 assert.equal(sqlPlanVm.planMeta.source, 'database-verified-published-plan');
 assert.equal(publishedModel.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+assert.equal(publishedModel.vehicleResult.vehiclePlan.confirmed, true);
 publishedModel = checkSqlModel('published_number_family_plan', 'https://example.org/official');
 assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
   'published-number family is a planned model, not a physical train');
@@ -293,6 +301,13 @@ assert.equal(publishedModel.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
 assert.equal(publishedModel.vehicleResult.vehiclePlan.evidenceRole,
   'inferred-published-number-family',
   'published train-number families must remain inferential, not guaranteed stock');
+assert.equal(publishedModel.vehicleResult.vehiclePlan.confirmed, false,
+  'B-grade amateur family evidence cannot become a confirmed schedule');
+const officialNumberPlan = checkSqlModel(
+  'published_number_family_plan', 'https://example.org/official', true);
+assert.equal(officialNumberPlan.vehicleResult.vehiclePlan.confirmed, true);
+assert.equal(officialNumberPlan.vehicleResult.identityStatus, 'UNKNOWN',
+  'confirmed planned models are not actual-day physical vehicle identity');
 // Database has the 5680Y/5983Y split trains separately mapped to the
 // Keiyo E233-5000 plan. A documented Y train must keep its train-specific
 // published family and never be replaced by the generic M-number fallback.
@@ -483,14 +498,14 @@ const seibuFleet = {
     models: ['西武2000系', '西武40000系', '西武001系'] },
 };
 assert.match(tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'Ikebukuro', 'en'),
-  /Line fleet references.*2000.*40000/,
+  /Scheduled model unconfirmed.*2000.*40000/,
   'commuter fleet reference should show supported Seibu candidate names');
 assert.ok(!tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'Ikebukuro', 'en')
   .includes('001'), 'limited express stock cannot become commuter candidates');
 assert.equal(tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'SeibuToshima', 'en'), '',
   'Seibu candidate names must not leak to a different Seibu route');
 assert.match(tooltipContext._trainMarkerTitle(seibuFleet, 'Ikebukuro'),
-  /Line fleet references.*2000/,
+  /Scheduled model unconfirmed.*2000/,
   'the marker tooltip should use the same scoped Seibu reference');
 
 const shonanFleet = {
@@ -502,7 +517,7 @@ const shonanFleet = {
     models: ['E231系1000番台', 'E233系3000番台'] },
 };
 assert.match(tooltipContext._shonanFleetCandidatesLabel(shonanFleet, 'Tokaido', 'en'),
-  /Shonan-color corridor fleet reference.*E231.*E233/,
+  /Scheduled model unconfirmed.*E231.*E233/,
   'two Shonan model candidates must remain references, not exact stock');
 assert.equal(tooltipContext._shonanFleetCandidatesLabel(shonanFleet, 'UenoTokyo', 'en'), '',
   'Shonan candidates must not be projected onto a different line');
@@ -511,7 +526,7 @@ const liveShonan = { ...shonanFleet, estimated: false, positionSource: 'realtime
   timetableFleetReference: { lineId: 'Tokaido', status: 'UNCONFIRMED_PLANNED_FLEET',
     models: ['E231系1000番台', 'E233系3000番台'] } };
 assert.match(tooltipContext._shonanFleetCandidatesLabel(liveShonan, 'Tokaido', 'en'),
-  /Shonan-color planned fleet.*E231.*E233/,
+  /Scheduled model unconfirmed.*E231.*E233/,
   'a live train may describe a scoped timetable reference without choosing a PNG');
 assert.equal(tooltipContext._shonanFleetCandidatesLabel(liveShonan, 'UenoTokyo', 'en'), '',
   'a live timetable fleet reference cannot cross lines');
@@ -524,12 +539,18 @@ vm.runInContext(extract(renderSource,
 const plannedFleet = {
   estimated: true, vehicleIdentityStatus: 'UNKNOWN',
   vehiclePlan: { status: 'PLANNED_MODEL', lineId: 'Keiyo',
-    evidenceRole: 'timetable-plan', models: ['JR E233系5000番台'] },
+    evidenceRole: 'timetable-plan', confirmed: true, models: ['JR E233系5000番台'] },
 };
 assert.match(tooltipContext._trainFleetPlanLabel(plannedFleet, 'Keiyo', 'en'),
-  /Scheduled model.*E233/, 'verified model is identified as a scheduled reference');
+  /Scheduled model confirmed.*E233/, 'official plan is confirmed only with source proof');
 assert.match(tooltipContext._trainMarkerTitle(plannedFleet, 'Keiyo'),
-  /Scheduled model.*E233/, 'accessible marker title must include scheduled fleet reference');
+  /Scheduled model confirmed.*E233/, 'accessible marker title must include binary plan status');
+assert.match(tooltipContext._trainFleetPlanLabel(plannedFleet, 'Keiyo', 'zh'),
+  /计划车型已确认.*E233/);
+assert.equal(tooltipContext._trainFleetPlanLabel({
+  ...plannedFleet, vehiclePlan: { ...plannedFleet.vehiclePlan, confirmed: false }
+}, 'Keiyo', 'en').includes('Scheduled model confirmed'), false,
+'a guessed model must not become confirmed simply because PLANNED_MODEL is set');
 const inferredFleet = {
   estimated: true, vehicleIdentityStatus: 'UNKNOWN',
   trainNumber: '1624M',
@@ -537,14 +558,14 @@ const inferredFleet = {
     evidenceRole: 'inferred-published-number-family', models: ['E233系（房総地区・改造車）'] },
 };
 assert.match(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Togane', 'en'),
-  /Inferred scheduled model family.*E233/,
+  /Scheduled model unconfirmed.*E233/,
   'published-number evidence must have an inferred-family UI qualifier');
 assert.match(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Togane', 'ja'),
-  /所定車種系列の推定.*E233/);
+  /計画車種未確認.*E233/);
 assert.match(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Togane', 'zh'),
-  /推定所定车型系列.*E233/);
+  /计划车型未确认.*E233/);
 assert.match(tooltipContext._trainMarkerTitle(inferredFleet, 'Togane'),
-  /Inferred scheduled model family.*E233/,
+  /Scheduled model unconfirmed.*E233/,
   'accessibility title must not silently imply a confirmed physical vehicle');
 assert.equal(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Sotobo', 'en'), '',
   'nominal family must not leak across the Sotobo/Togane segment boundary');
@@ -563,16 +584,16 @@ const sqlCandidate = {
     models: ['JR E233系5000番台'] },
 };
 assert.match(tooltipContext._trainFleetPlanLabel(sqlCandidate, 'Keiyo', 'en'),
-  /Vehicle candidates.*unverified.*E233/,
+  /Scheduled model unconfirmed.*E233/,
   'a single SQL source candidate must remain unverified, even with a catalog PNG');
 assert.match(tooltipContext._trainMarkerTitle(sqlCandidate, 'Keiyo'),
-  /Vehicle candidates.*unverified/,
+  /Scheduled model unconfirmed/,
   'unverified SQL candidate must appear as a caution in accessible title');
 assert.match(tooltipContext._trainFleetPlanLabel({
   ...plannedFleet, vehiclePlan: { status: 'FLEET_REFERENCE',
     evidenceRole: 'route-fleet-reference', lineId: 'Keiyo',
     models: ['E231系', 'E233系'] }
-}, 'Keiyo', 'en'), /Line fleet reference.*not confirmed/,
+}, 'Keiyo', 'en'), /Scheduled model unconfirmed.*E231/,
   'route fleet is only a reference, not a train-specific plan');
 assert.match(renderSource,
   /_trainFleetPlanLabel\(p, marker\._displayLineId \|\| "", lang\)/,
