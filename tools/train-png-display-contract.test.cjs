@@ -551,6 +551,18 @@ assert.equal(tooltipContext._trainFleetPlanLabel({
   ...plannedFleet, vehiclePlan: { ...plannedFleet.vehiclePlan, confirmed: false }
 }, 'Keiyo', 'en').includes('Scheduled model confirmed'), false,
 'a guessed model must not become confirmed simply because PLANNED_MODEL is set');
+const noVehicleEvidence = {
+  estimated: true, positionLineId: 'Togane', vehicleIdentityStatus: 'UNKNOWN',
+  trainNumber: '9999M', vehiclePlan: null
+};
+assert.equal(tooltipContext._trainFleetPlanLabel(noVehicleEvidence, 'Togane', 'zh'),
+  '计划车型未确认', 'a timetable with no model must still have one of the two states');
+assert.equal(tooltipContext._trainFleetPlanLabel(noVehicleEvidence, 'Togane', 'en'),
+  'Scheduled model unconfirmed');
+assert.equal(tooltipContext._trainFleetPlanLabel(noVehicleEvidence, 'Sotobo', 'zh'), '',
+  'missing evidence must not create an unconfirmed annotation on another line');
+assert.match(tooltipContext._trainMarkerTitle(noVehicleEvidence, 'Togane'),
+  /Scheduled model unconfirmed/, 'accessible title must include the binary unknown state');
 const inferredFleet = {
   estimated: true, vehicleIdentityStatus: 'UNKNOWN',
   trainNumber: '1624M',
