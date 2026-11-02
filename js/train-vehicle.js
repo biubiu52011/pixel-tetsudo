@@ -4163,6 +4163,14 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         itineraryStations:_baseOperationCtx.itineraryStations,
         _positionSource:tt._positionSource||'',_plannedArtworkInventory:true
       });
+      // A published-number family plan may be supported by a nominal working
+      // inference rather than an operator's fixed dispatch roster. Display
+      // the planned FAMILY with an explicit inference qualifier, not a
+      // confirmed current train or a guaranteed stock assignment.
+      if (publishedSqlPlan && vehResult.vehiclePlan &&
+          tt._sqlVehicleMappingLevel === 'published_number_family_plan') {
+        vehResult.vehiclePlan.evidenceRole = 'inferred-published-number-family';
+      }
       // A single historical source label is still a candidate, NOT a
       // confirmed planned train model. Hide its representative PNG and keep
       // the model name for evidence review until a train-level publication
