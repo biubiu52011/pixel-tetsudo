@@ -1,12 +1,8 @@
-# One-time operator-requested release trigger; restore manual dispatch afterwards.
+# Pages deploy is an explicit release action, not a side effect of a main commit.
 name: Deploy static content to Pages
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/static.yml'
 
 permissions:
   contents: read
