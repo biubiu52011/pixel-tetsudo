@@ -212,6 +212,36 @@ assert.match(renderSource,
   /_trainFleetPlanLabel\(p, marker\._displayLineId \|\| "", lang\)/,
   'folded train list must show the same planned/candidate distinction');
 
+vm.runInContext(extract(renderSource,
+  '  function _trainFoldExactVehicleLabel(p, lineId, lang) {',
+  '  function _trainFleetPlanLabel(p, lineId, lang) {'), tooltipContext);
+const mappedModel = {
+  ...titledExact, estimated: true, vehicleResolvedUpstream: true,
+  vehicleIdentityStatus: 'EXACT',
+};
+assert.match(tooltipContext._trainFoldExactVehicleLabel(mappedModel, 'Keiyo', 'en'),
+  /Timetable model.*E233/, 'planned exact mapping is not a claim about actual physical stock');
+assert.equal(tooltipContext._trainFoldExactVehicleLabel(mappedModel, 'Yamanote', 'en'), '',
+  'mapped model cannot be displayed on another line without physical proof');
+assert.equal(tooltipContext._trainFoldExactVehicleLabel({
+  ...mappedModel, vehicleResolvedUpstream: false
+}, 'Keiyo', 'en'), '', 'rejected mapping cannot be displayed as confirmed');
+assert.match(tooltipContext._trainFoldExactVehicleLabel({
+  ...mappedModel, estimated: false
+}, 'Keiyo', 'en'), /Mapped model.*unverified/,
+  'scheduled or indirectly mapped model must not be labeled physically confirmed');
+assert.match(tooltipContext._trainFoldExactVehicleLabel({
+  ...mappedModel, estimated: false, vehicleResolvedFromRealtime: true,
+  vehicleResolution: {
+    ...mappedModel.vehicleResolution, sources: ['official-realtime-car-number']
+  }
+}, 'Yamanote', 'en'), /Physically confirmed model/,
+  'independently proven actual stock can be shown on a through line');
+assert.match(renderSource,
+  /_trainFoldExactVehicleLabel\(p, marker\._displayLineId \|\| "", lang\)/,
+  'folded list must display confirmed model names with scoped evidence labels');
+
+
 
 // Minimal SVG DOM exercises the actual image/circle creation, xlink, and failure fallback.
 function svgNode(tagName) {
