@@ -3839,6 +3839,13 @@ function _officialConventionalServicePlan(tt, lineId, line) {
         models: ['西武2000系','西武6000系','西武20000系','西武30000系','西武40000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       },
+      // 西武豊島線：刊行計画の路線車種候補のみ。編成・個別列車は未確定。
+      // 2026 planned fleet scope contains four route-eligible commuter models;
+      // the historical 2000 series remains explicitly unverified for 2026 runs.
+      SeibuToshima: {
+        models: ['西武2000系','西武20000系','西武30000系','西武40000系50番台'],
+        source: 'https://www.seiburailway.jp/railway/encyclopedia/'
+      },
       SeibuTamagawa: {
         models: ['西武101系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/101/'
