@@ -1353,7 +1353,7 @@
           // the short code only inside the verified current operator namespace.
           var _sourceRailwayShort = String(railwayName || "").split(".").pop();
           var _canonicalSourceLine = SOURCE_RAILWAY_CANONICAL_LINE[railwayName] ||
-            (/^(?:JR-East|Toei|TokyoMetro|Sotetsu|TWR)\.[^.]+$/.test(String(railwayName || ""))
+            (/^JR-East\.[^.]+$/.test(String(railwayName || ""))
               ? SOURCE_RAILWAY_CANONICAL_LINE[_sourceRailwayShort] : "") || "";
           var _stationCandidates = _stationIndex[String(stationKey).replace(/-/g, "").toLowerCase()] || [];
           _stationCandidates.forEach(function(_candidate) {
