@@ -4019,14 +4019,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var _routeFleetOnly = tt._positionSource === 'supabase-train-run' &&
       (tt._sqlVehicleMappingLevel === 'official_single_fleet_plan' ||
        tt._sqlVehicleMappingLevel === 'official_model_family_plan');
-    // Published timetable model names are planned evidence, not physical
-    // rolling-stock identity for this train position.
-    var _publishedModelPlanOnly = tt._positionSource === 'supabase-train-run' &&
-      (tt._sqlVehicleMappingLevel === 'official_service_vehicle_plan' ||
-       tt._sqlVehicleMappingLevel === 'published_number_family_plan');
+    // Only independently dated, single-model timetable evidence is admitted
+    // to the identity resolver. Every other SQL model label is a plan/reference
+    // candidate, including unmapped manual timetable annotations and conflicts.
+    // A one-model annotation alone must never become EXACT or a planned PNG.
     var _sourceCandidateOnly = tt._positionSource === 'supabase-train-run' &&
-      (tt._sqlVehicleMappingLevel === 'source_single_type_candidate' ||
-       _routeFleetOnly || _publishedModelPlanOnly);
+      !_plannedSqlVehicle;
     if (_sourceCandidateOnly && !_sqlSourceCandidates.length &&
         String(tt.vehicleType || '').trim()) {
       _sqlSourceCandidates = String(tt.vehicleType).split(/\s*\/\s*/)
@@ -4170,10 +4168,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       // the model name for evidence review until a train-level publication
       // or an independent verified operation rule establishes the plan.
       if (vehResult.vehiclePlan && !publishedSqlPlan && !usesFamily &&
-          tt._positionSource === 'supabase-train-run' &&
-          (tt._sqlVehicleMappingLevel === 'source_single_type_candidate' ||
-           tt._sqlVehicleMappingLevel === 'official_service_vehicle_plan' ||
-           tt._sqlVehicleMappingLevel === 'published_number_family_plan')) {
+          _sourceCandidateOnly && !_routeFleetOnly) {
         vehResult.vehiclePlan.status = 'PLANNED_CANDIDATES';
         vehResult.vehiclePlan.representativeModel = '';
         vehResult.vehiclePlan.iconPath = '';
