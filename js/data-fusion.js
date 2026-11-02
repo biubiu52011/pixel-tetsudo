@@ -1642,6 +1642,72 @@
                 if (k) _scheduledLiveCounts[k] = (_scheduledLiveCounts[k] || 0) + 1;
               });
             });
+            // A realtime train number may locate ONE published Shonan-color
+            // schedule. Attach its fleet group as display-only reference:
+            // never pass the plan into the live vehicle resolver, trainClass,
+            // vehicleType, formation or the physical chain evidence registry.
+            // Distinct routes sharing a public number remain unresolved.
+            (function attachShonanScheduledFleetReference() {
+              var resolver = window.RunningChainResolver;
+              if (!resolver || typeof resolver.sourcePositionMatchKey !== 'function') return;
+              var scopedLines = {
+                Tokaido: true, TokaidoMain: true, Takasaki: true,
+                UtsunomiyaJR: true, ShonanShinjuku: true, UenoTokyo: true
+              };
+              Object.keys(scopedLines).forEach(function(lid) {
+                var planned = estimated[lid] || [];
+                var live = posMap[lid] || [];
+                if (!planned.length || !live.length) return;
+                var byKey = Object.create(null), liveCounts = Object.create(null);
+                function key(p) {
+                  return resolver.sourcePositionMatchKey(lid, p);
+                }
+                planned.forEach(function(p) {
+                  if (!p || p.estimated !== true ||
+                      p.positionSource !== 'supabase-train-run' ||
+                      p.plannedVehicleCandidateStatus !== 'source_single_type_candidate' ||
+                      p.vehicleIdentityStatus === 'EXACT') return;
+                  var plan = p.vehiclePlan;
+                  if (!plan || plan.evidenceRole !== 'unverified-source-candidate' ||
+                      !Array.isArray(plan.models) || plan.models.length !== 2 ||
+                      !plan.models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
+                      !plan.models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return;
+                  var k = key(p);
+                  if (!k) return;
+                  if (!byKey[k]) byKey[k] = [];
+                  byKey[k].push(p);
+                });
+                live.forEach(function(p) {
+                  if (!p || p.positionSource !== 'realtime-api') return;
+                  var k = key(p);
+                  if (k) liveCounts[k] = (liveCounts[k] || 0) + 1;
+                });
+                live.forEach(function(p) {
+                  if (!p || p.positionSource !== 'realtime-api' ||
+                      p.vehicleIdentityStatus === 'EXACT' ||
+                      !p.sourceFromStation) return;
+                  var k = key(p), options = k && byKey[k];
+                  if (!options || options.length !== 1 || liveCounts[k] !== 1) return;
+                  var match = options[0], plan = match.vehiclePlan;
+                  // For a verified continuation, the reported live station
+                  // must lie on the published canonical stop chain as well.
+                  var stops = match.canonicalStopKeys;
+                  var station = String(p.sourceFromStation).split('.').pop();
+                  if (Array.isArray(stops) && stops.length &&
+                      (!station || stops.indexOf(station) < 0)) return;
+                  var candidateModels = ['E231系1000番台', 'E233系3000番台'];
+                  // This field is deliberately NOT vehiclePlan: actual
+                  // vehicle identity remains UNKNOWN until live evidence.
+                  p.timetableFleetReference = {
+                    status: 'UNCONFIRMED_PLANNED_FLEET',
+                    models: candidateModels,
+                    sourceUrl: plan.sourceUrl || '',
+                    trainNumber: p.trainNumber,
+                    railway: p.sourceRailway
+                  };
+                });
+              });
+            })();
             _linkVerifiedCanonicalRealtime(estimated, posMap);
             var _chainVehicleCandidates = {};
             function _queueChainVehicle(p) {
