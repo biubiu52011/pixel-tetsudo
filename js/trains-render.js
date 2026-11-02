@@ -1253,11 +1253,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     lang = String(lang || "ja").toLowerCase();
     var fleetOnly = status === "FLEET_REFERENCE" || plan.evidenceRole === "route-fleet-reference";
     var verified = status === "PLANNED_MODEL" && plan.evidenceRole !== "unverified-source-candidate";
+    var inferredNumberFamily = verified && plan.evidenceRole === "inferred-published-number-family";
     var prefix = fleetOnly
       ? (/^zh/.test(lang) ? "线路车型参考（非本车确认）：" :
           lang === "en" ? "Line fleet reference (not confirmed for this train): " :
           lang === "ko" ? "노선 차량 참고(해당 열차 미확인): " :
           "路線車両参考（当該列車の形式未確認）：")
+      : inferredNumberFamily
+        ? (/^zh/.test(lang) ? "推定所定车型系列（非实车保证）：" :
+            lang === "en" ? "Inferred scheduled model family (actual stock unverified): " :
+            lang === "ko" ? "추정 정규편성 차종 계열(실차 미확인): " :
+            "所定車種系列の推定（実車未確認）：")
       : verified
         ? (/^zh/.test(lang) ? "计划车型（非实时车辆）：" :
             lang === "en" ? "Scheduled model (not a live vehicle ID): " :
