@@ -268,6 +268,23 @@ publishedModel = checkSqlModel('published_number_family_plan', 'https://example.
 assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
   'published-number family is a planned model, not a physical train');
 assert.equal(publishedModel.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+assert.equal(publishedModel.vehicleResult.vehiclePlan.evidenceRole,
+  'inferred-published-number-family',
+  'published train-number families must remain inferential, not guaranteed stock');
+const bosoFamilyPlan = sqlPlanVm.resolveTimetableRun(
+  { trainNumber: '1624M', calendar: 'odpt.Calendar:Weekday' },
+  { ...bosoTemplate, _sqlVehicleMappingLevel: 'published_number_family_plan',
+    _sqlVerifiedPublishedVehicleType: 'E233系（房総地区・改造車）',
+    _sqlVerifiedPublishedVehicleSourceUrl: 'https://example.org/boso-fleet-evidence' },
+  'Togane', { operator: 'JR-East' });
+assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
+  'B-grade nominal plan must not enter the actual identity resolver');
+assert.equal(bosoFamilyPlan.vehicleResult.identityStatus, 'UNKNOWN');
+assert.equal(bosoFamilyPlan.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+assert.equal(bosoFamilyPlan.vehicleResult.vehiclePlan.evidenceRole,
+  'inferred-published-number-family');
+assert.deepEqual(Array.from(bosoFamilyPlan.vehicleResult.vehiclePlan.models),
+  ['E233系（房総地区・改造車）']);
 let unverifiedSql = checkSqlModel('official_service_vehicle_plan', '');
 assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
 assert.equal(unverifiedSql.vehicleResult.vehiclePlan.status, 'PLANNED_CANDIDATES');
@@ -475,6 +492,26 @@ assert.match(tooltipContext._trainFleetPlanLabel(plannedFleet, 'Keiyo', 'en'),
   /Scheduled model.*E233/, 'verified model is identified as a scheduled reference');
 assert.match(tooltipContext._trainMarkerTitle(plannedFleet, 'Keiyo'),
   /Scheduled model.*E233/, 'accessible marker title must include scheduled fleet reference');
+const inferredFleet = {
+  estimated: true, vehicleIdentityStatus: 'UNKNOWN',
+  trainNumber: '1624M',
+  vehiclePlan: { status: 'PLANNED_MODEL', lineId: 'Togane',
+    evidenceRole: 'inferred-published-number-family', models: ['E233系（房総地区・改造車）'] },
+};
+assert.match(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Togane', 'en'),
+  /Inferred scheduled model family.*E233/,
+  'published-number evidence must have an inferred-family UI qualifier');
+assert.match(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Togane', 'ja'),
+  /所定車種系列の推定.*E233/);
+assert.match(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Togane', 'zh'),
+  /推定所定车型系列.*E233/);
+assert.match(tooltipContext._trainMarkerTitle(inferredFleet, 'Togane'),
+  /Inferred scheduled model family.*E233/,
+  'accessibility title must not silently imply a confirmed physical vehicle');
+assert.equal(tooltipContext._trainFleetPlanLabel(inferredFleet, 'Sotobo', 'en'), '',
+  'nominal family must not leak across the Sotobo/Togane segment boundary');
+assert.equal(tooltipContext._trainFleetPlanLabel({ ...inferredFleet, estimated:false }, 'Togane', 'en'), '',
+  'a planned family cannot masquerade as realtime stock');
 assert.equal(tooltipContext._trainFleetPlanLabel(plannedFleet, 'Yamanote', 'en'), '',
   'planned fleet must never spill onto a different display line');
 assert.equal(tooltipContext._trainFleetPlanLabel({ ...plannedFleet, estimated: false }, 'Keiyo', 'en'), '',
