@@ -1127,17 +1127,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       .filter(function(v) { return !/(?:^|西武)(?:001|10000)系|Laview|レッドアロー/i.test(v); });
     if (!models.length) return "";
     lang = String(lang || "ja").toLowerCase();
-    var lineReference = plan.evidenceRole === "route-fleet-reference" ||
-      plan.status === "FLEET_REFERENCE";
-    var prefix = lineReference
-      ? (/^zh/.test(lang) ? "线路车型参考（非全部车次，实际编组未确认）：" :
-          lang === "en" ? "Line fleet references (non-exhaustive; not confirmed for this train): " :
-          lang === "ko" ? "노선 차량 참고(전체 차종 아님·실제 편성 미확인): " :
-          "路線車両参考（一部形式のみ・当該列車の編成未確認）：")
-      : (/^zh/.test(lang) ? "通勤车型候选（实际编组未确认）：" :
-          lang === "en" ? "Commuter fleet candidates (not confirmed): " :
-          lang === "ko" ? "통근형 차량 후보(실제 편성 미확인): " :
-          "通勤車両候補（実編成未確認）：");
+    var prefix = /^zh/.test(lang) ? "计划车型未确认（参考）：" :
+      lang === "en" ? "Scheduled model unconfirmed (reference only): " :
+      lang === "ko" ? "계획 차종 미확인(참고): " :
+      "計画車種未確認（参考）：";
     return prefix + models.join(" / ");
   }
 
@@ -1181,15 +1174,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var currentPlanVerified = liveReference
       ? liveReference.status === "UNCONFIRMED_PLANNED_FLEET"
       : p.timetableDateVerified === true;
-    var prefix = currentPlanVerified
-      ? (/^zh/.test(lang) ? "湘南色计划车型候选（具体车辆未确认）：" :
-         lang === "en" ? "Shonan-color planned fleet (exact vehicle unknown): " :
-         lang === "ko" ? "쇼난색 계획 차량 후보(실제 차종 미확인): " :
-         "湘南色・計画車両候補（当該車両の形式未確認）：")
-      : (/^zh/.test(lang) ? "湘南色主力车型参考（当前车次及具体车辆未确认）：" :
-         lang === "en" ? "Shonan-color corridor fleet reference (train and model unverified): " :
-         lang === "ko" ? "쇼난색 노선 주요 차종 참고(해당 열차 미확인): " :
-         "湘南色・路線の主力車種参考（当該列車の車種未確認）：");
+    var prefix = /^zh/.test(lang) ? "计划车型未确认（湘南色参考）：" :
+      lang === "en" ? "Scheduled model unconfirmed (Shonan-color reference): " :
+      lang === "ko" ? "계획 차종 미확인(쇼난색 참고): " :
+      "計画車種未確認（湘南色参考）：";
     return prefix + "E231系1000番台 / E233系3000番台";
   }
 
@@ -1251,28 +1239,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var models = plan.models.map(function(v) { return String(v || "").trim(); }).filter(Boolean);
     if (!models.length) return "";
     lang = String(lang || "ja").toLowerCase();
-    var fleetOnly = status === "FLEET_REFERENCE" || plan.evidenceRole === "route-fleet-reference";
-    var verified = status === "PLANNED_MODEL" && plan.evidenceRole !== "unverified-source-candidate";
-    var inferredNumberFamily = verified && plan.evidenceRole === "inferred-published-number-family";
-    var prefix = fleetOnly
-      ? (/^zh/.test(lang) ? "线路车型参考（非本车确认）：" :
-          lang === "en" ? "Line fleet reference (not confirmed for this train): " :
-          lang === "ko" ? "노선 차량 참고(해당 열차 미확인): " :
-          "路線車両参考（当該列車の形式未確認）：")
-      : inferredNumberFamily
-        ? (/^zh/.test(lang) ? "推定所定车型系列（非实车保证）：" :
-            lang === "en" ? "Inferred scheduled model family (actual stock unverified): " :
-            lang === "ko" ? "추정 정규편성 차종 계열(실차 미확인): " :
-            "所定車種系列の推定（実車未確認）：")
-      : verified
-        ? (/^zh/.test(lang) ? "计划车型（非实时车辆）：" :
-            lang === "en" ? "Scheduled model (not a live vehicle ID): " :
-            lang === "ko" ? "계획 차종(실시간 차량 확인 아님): " :
-            "計画車種（実車の確認ではありません）：")
-        : (/^zh/.test(lang) ? "车型候选（计划及实车未确认）：" :
-            lang === "en" ? "Vehicle candidates (schedule and actual train unverified): " :
-            lang === "ko" ? "차종 후보(계획·실차 미확인): " :
-            "車種候補（計画・実車未確認）：");
+    // Only two public outcomes. The model names remain useful references,
+    // but a mapped/inferred plan alone does not prove timetable assignment.
+    var confirmed = status === "PLANNED_MODEL" && plan.confirmed === true;
+    var prefix = confirmed
+      ? (/^zh/.test(lang) ? "计划车型已确认（非当日实车）：" :
+          lang === "en" ? "Scheduled model confirmed (not actual-day stock): " :
+          lang === "ko" ? "계획 차종 확인(당일 실차 아님): " :
+          "計画車種確認済み（当日の実車ではありません）：")
+      : (/^zh/.test(lang) ? "计划车型未确认（参考）：" :
+          lang === "en" ? "Scheduled model unconfirmed (reference only): " :
+          lang === "ko" ? "계획 차종 미확인(참고): " :
+          "計画車種未確認（参考）：");
     return prefix + models.slice(0, 6).join(" / ") +
       (models.length > 6 ? (/^zh/.test(lang) ? " 等" : " …") : "");
   }
