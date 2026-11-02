@@ -1487,17 +1487,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 单个位置标记仅用于提供信息，不是可交互的详情按钮。
     // 折叠 +N 徽标仍是唯一的列车级弹窗操作。
     marker.setAttribute("role", "img");
-    var sixShape = trainLayer.ownerSVGElement && trainLayer.ownerSVGElement.__geometry &&
-      trainLayer.ownerSVGElement.__geometry.isSixShapedLoop;
-    if (!sixShape) {
-      var unit = document.createElementNS(svgNS, "g");
-      unit.setAttribute("data-train-unit-id", String(trainUid));
-      unit.setAttribute("class", "train-unit");
-      unit.appendChild(marker);
-      trainLayer.appendChild(unit);
-    } else {
-      trainLayer.appendChild(marker);
-    }
+    // The unit is mandatory for ALL marker kinds (PNG, candidate, neutral)
+    // and ALL geometry, including Oedo's six-shaped display corridors.
+    // A marker and its direction label must never be siblings of trainLayer.
+    var unit = document.createElementNS(svgNS, "g");
+    unit.setAttribute("data-train-unit-id", String(trainUid));
+    unit.setAttribute("class", "train-unit");
+    unit.appendChild(marker);
+    trainLayer.appendChild(unit);
     _setTrainIconPosition(marker, px, py, p, lineId, isLoop);
     marker._displayX = px;
     marker._displayY = py;
@@ -1594,6 +1591,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       updatedIds[trainUid] = true;
       var existingIcon = markerById[String(trainUid)] || null;
       var expectedTag = markerSpec.kind === "vehicle" && !markerSpec.compact ? "image" : "circle";
+      // Upgrade DOM made by an earlier renderer without carrying over its
+      // world-space caption coordinates. Rebuild as a single SVG unit.
+      if (existingIcon && !_trainUnitContainer(existingIcon)) {
+        existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
+        _removeTrainLabels(trainLayer, trainUid);
+      }
       if (existingIcon && (existingIcon.getAttribute("data-marker-kind") !== _trainMarkerDomKind(markerSpec) ||
           String(existingIcon.tagName || "").toLowerCase() !== expectedTag)) {
         existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
@@ -2287,9 +2290,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function appendTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId) {
     var marker = trainLayer.querySelector('[data-train-id="' + String(trainUid).replace(/"/g, '') + '"]');
     var unit = _trainUnitContainer(marker);
-    // Keep local caption Y fixed relative to the marker's center.
-    // The wrapper moves BOTH elements atomically on every animation frame.
-    if (unit) { px = 0; py = 0; }
+    // Ordinary maps use marker-relative coordinates. Oedo's six-shaped
+    // label lanes use absolute corridor coordinates cancelled by an inverse
+    // group transform; both still belong to the same SVG train unit.
+    var sixMap = !!(unit && trainLayer.ownerSVGElement &&
+      trainLayer.ownerSVGElement.__geometry &&
+      trainLayer.ownerSVGElement.__geometry.isSixShapedLoop);
+    var unitX = px, unitY = py;
+    if (unit && !sixMap) { px = 0; py = 0; }
     var moveDir = _trainMoveDir(p, lineId);
     var isLoopDir = _isLoopDirName(p.railDirection);
     var dn = String(p.railDirection || '').split(/[:.]/).pop(); // 同时拆冒号和点号（odpt:RailDirection:Waseda 和 TokyoMetro.YoyogiUehara 两种格式）
@@ -2402,8 +2410,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         _whitePlate.setAttribute("fill", "rgba(255,255,255,0.88)");
         labelGroup.insertBefore(_whitePlate, labelGroup.firstChild);
       }
-      labelGroup.setAttribute("transform", "translate(" + _offsetX + ",0)");
-      labelGroup.setAttribute("data-label-raw-transform", "translate(" + _offsetX + ",0)");
+      var _groupOffset = sixMap
+        ? "translate(" + (-unitX) + "," + (-unitY) + ") " : "";
+      labelGroup.setAttribute("transform", _groupOffset + "translate(" + _offsetX + ",0)");
+      labelGroup.setAttribute("data-label-raw-transform", _groupOffset + "translate(" + _offsetX + ",0)");
       // 缓存普通标签的居中结果，避免逐帧同步时重建 DOM。
       labelGroup.setAttribute("data-base-offset", String(-(_bbox.x + _bbox.width / 2)));
     } catch(_e) {}
@@ -2414,7 +2424,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _moveTrainLabels(trainLayer, trainUid, px, py, p, lineId) {
     var label = trainLayer.querySelector('[data-train-label-for="' + String(trainUid).replace(/"/g, '') + '"]');
     if (!label) return;
-    if (_trainUnitContainer(label)) { px = 0; py = 0; }
+    var unit = _trainUnitContainer(label);
+    var sixMap = !!(unit && trainLayer.ownerSVGElement &&
+      trainLayer.ownerSVGElement.__geometry &&
+      trainLayer.ownerSVGElement.__geometry.isSixShapedLoop);
+    var unitX = px, unitY = py;
+    if (unit && !sixMap) { px = 0; py = 0; }
     var moveDir = _trainMoveDir(p, lineId);
     var _sixLane = label.getAttribute("data-six-direction-visible") === "true"
       ? _sixTrainDirectionLane(trainLayer, p, lineId, px, py,
@@ -2443,6 +2458,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     } else {
       label.setAttribute('transform', 'translate(' + (px + _base) + ',0)');
     }
+    if (sixMap) {
+      // Keep fixed six-shape corridor lanes at their world position even
+      // though their image/circle is now inside the same moving wrapper.
+      label.setAttribute('transform',
+        'translate(' + (-unitX) + ',' + (-unitY) + ') ' + label.getAttribute('transform'));
+    }
     label.setAttribute('data-label-raw-transform', label.getAttribute('transform'));
   }
 
@@ -2450,9 +2471,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // 在动画帧中保留低成本的仅移动更新。
   function _syncTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId) {
     var existing = trainLayer.querySelector('[data-train-label-for="' + String(trainUid).replace(/"/g, '') + '"]');
-    var _sixMap = trainLayer && trainLayer.ownerSVGElement &&
-      trainLayer.ownerSVGElement.__geometry &&
-      trainLayer.ownerSVGElement.__geometry.isSixShapedLoop;
+    var marker = trainLayer.querySelector('[data-train-id="' + String(trainUid).replace(/"/g, '') + '"]');
+    var unit = _trainUnitContainer(marker);
+    // Ensure even captions from an older DOM cannot remain detached
+    // from their matching artwork after an incremental update.
+    if (existing && unit && existing.parentNode !== unit) {
+      existing.parentNode.removeChild(existing);
+      existing = null;
+    }
     // 为所有有证据支持的大江户线列车恢复面向乘客的方向标签。
     // 相同的追加/移动生命周期会将它们放入预留的内部通道；
     // 绝不为了处理碰撞而隐藏整条线路的方向。
