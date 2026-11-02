@@ -454,6 +454,18 @@ assert.equal(invalidThrough.identityStatus,'UNKNOWN');
 assert.ok(!invalidThrough.vehiclePlan?.models?.length,
   'foreign trainOwner must not inherit TokyoMetro 16000 cars');
 
+// Timetable integration must preserve Oimachi local/express fleet separation.
+const oimachiLocal=run('TokyuOimachi','Tokyu','Local');
+const oimachiExpress=run('TokyuOimachi','Tokyu','Express');
+for(const plan of [oimachiLocal,oimachiExpress]) {
+  assert.equal(plan.identityStatus,'UNKNOWN');
+  assert.equal(plan.iconPath,'');
+  assert.equal(plan.vehiclePlan?.status,'FLEET_REFERENCE');
+}
+assert.ok(oimachiLocal.vehiclePlan?.models?.some(m=>/6020/.test(m)));
+assert.ok(!oimachiExpress.vehiclePlan?.models?.some(m=>/9000|9020/.test(m)));
+assert.ok(oimachiExpress.vehiclePlan?.models?.some(m=>/6000|6020/.test(m)));
+
 const limited=run('Yokosuka','JR-East','LimitedExpress');
 assert.ok(!limited.vehiclePlan?.models?.length,
   'LimitedExpress must not borrow conventional commuter fleet');
