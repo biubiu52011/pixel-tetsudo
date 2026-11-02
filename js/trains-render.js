@@ -2092,21 +2092,44 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var captionType=label&&label.getAttribute?String(label.getAttribute('data-label-type')||'').trim():'';
         var popupCaption=captionType&&captionText ? captionType+' · '+captionText : captionText;
         var entry=document.createElement('div');entry.className='train-fold-entry';entry.setAttribute('role','listitem');
-        // Compact single-row layout: service · destination · model.
-        // The direction arrow belongs to the map marker, not the fold list.
+        // Use the SAME artwork decision as the SVG map marker; the fold list
+        // neither guesses stock nor changes realtime positions. Keep two
+        // distinct cells: vehicle image / service and destination.
+        var lineId=marker._displayLineId || p.positionLineId || p.lineId || "";
+        var markerSpec=_trainMarkerSpec(p,id,lineId);
+        var iconBox=document.createElement('div');
+        iconBox.className='train-fold-vehicle-icon';
         var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
-        var fleetText = _trainFoldExactVehicleLabel(p, marker._displayLineId || "", lang) ||
-          _seibuCommuterCandidatesLabel(p, marker._displayLineId || "", lang) ||
-          _shonanFleetCandidatesLabel(p, marker._displayLineId || "", lang) ||
-          _trainFleetPlanLabel(p, marker._displayLineId || "", lang);
-        var modelName = _trainFoldModelName(fleetText);
         var caption=document.createElement('div');
-        caption.textContent=captionBase+(modelName?' · '+modelName:'');
-        // Do not lose reference/actual-car provenance when collapsing the text.
-        if(modelName) {
-          caption.title=fleetText;
-          caption.setAttribute('aria-label',captionBase+' · '+fleetText);
+        caption.className='train-fold-train-info';
+        caption.textContent=captionBase;
+        if (markerSpec.kind==='vehicle' && markerSpec.iconSrc) {
+          var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
+            _seibuCommuterCandidatesLabel(p,lineId,lang) ||
+            _shonanFleetCandidatesLabel(p,lineId,lang) ||
+            _trainFleetPlanLabel(p,lineId,lang);
+          var modelName=_trainFoldModelName(fleetText);
+          var icon=document.createElement('img');
+          icon.className='train-fold-vehicle-image';
+          icon.src=markerSpec.iconSrc;
+          icon.alt=modelName||(lang==='en'?'Train model icon':/^zh/.test(lang)?'车型图标':lang==='ko'?'차량 아이콘':'車両アイコン');
+          icon.loading='lazy';
+          if(fleetText) {
+            icon.title=fleetText;
+            entry.setAttribute('aria-label',captionBase+' · '+fleetText);
+          }
+          icon.onerror=function(){
+            // A failed PNG must not leave a broken-image symbol in the list.
+            if(icon.parentNode===iconBox)iconBox.removeChild(icon);
+            iconBox.classList.add('unresolved');
+          };
+          iconBox.appendChild(icon);
+        } else {
+          // Match the map's neutral marker when the vehicle is unresolved.
+          iconBox.classList.add('unresolved');
+          iconBox.setAttribute('aria-hidden','true');
         }
+        entry.appendChild(iconBox);
         entry.appendChild(caption);
         list.appendChild(entry);
         count++;
