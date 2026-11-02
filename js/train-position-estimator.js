@@ -816,6 +816,15 @@
                 tt._canonicalTrainTimetableId
               ? run.stops.map(function(stop){return String(stop.stationUrn||"").split(".").pop();}).filter(Boolean)
               : [],
+            // Published station stops for THIS line's planned service.
+            // Live train-number matching must check the observed source station
+            // against these stops even for a source_only canonical timetable.
+            // These are planned station keys, NOT real-time vehicle positions.
+            scheduledStopKeys: tt._positionSource === "supabase-train-run"
+              ? run.stops.map(function(stop) {
+                  return String(stop.stationUrn || "").split(".").pop();
+                }).filter(Boolean)
+              : [],
             sourceRailway: tt["odpt:railway"] || "",
             positionLineId: lineId,
             scheduledItineraryKey: run.scheduledItineraryKey || "",
