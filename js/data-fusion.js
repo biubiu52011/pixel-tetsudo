@@ -1700,7 +1700,7 @@
                   if (!Array.isArray(stops) || stops.length < 2) return;
                   function normalizeStop(value) {
                     return String(value || '').split('.').pop()
-                      .replace(/[\\s_\\-‐‑–—]/g, '').toLowerCase();
+                      .replace(/[\s_‐‑–—-]/g, '').toLowerCase();
                   }
                   var station = normalizeStop(p.sourceFromStation);
                   if (!station || !stops.some(function(stop) {
