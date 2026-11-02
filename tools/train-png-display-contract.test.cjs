@@ -117,6 +117,38 @@ assert.equal(choose({ ...exact, vehicleIconPath: 'https://invalid.example/train.
 assert.equal(vehicleVm.selectMarkerArtwork(exact, true).kind, 'unresolved',
   'failed PNG must fall back to a neutral position marker');
 
+// Published Seibu Toshima fleet scope is a route candidate list, not a
+// day-specific vehicle assignment or a license to choose a representative PNG.
+const fleetPlanVm = vm.createContext({ normOp: name => name });
+vm.runInContext(extract(vehicleSource,
+  'function _officialConventionalServicePlan(tt, lineId, line) {',
+  'function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {'),
+  fleetPlanVm);
+const seibuToshimaTemplate = {
+  _positionSource: 'supabase-train-run',
+  _sqlVehicleMappingLevel: 'unresolved',
+  'odpt:operator': 'Seibu',
+  'odpt:trainType': 'odpt.TrainType:Seibu.Local',
+};
+const toshimaPlan = fleetPlanVm._officialConventionalServicePlan(
+  seibuToshimaTemplate, 'SeibuToshima', { operator: 'Seibu' });
+assert.ok(toshimaPlan, 'Seibu Toshima must expose a timetable route fleet reference');
+assert.equal(toshimaPlan.evidenceRole, 'route-fleet-reference');
+assert.equal(toshimaPlan._fleetReferenceOnly, true);
+assert.equal(toshimaPlan.planOverride, false);
+assert.equal(toshimaPlan.vehicleType, undefined,
+  'route candidates cannot become a confirmed exact vehicle');
+assert.deepEqual(Array.from(toshimaPlan.vehicleCandidates),
+  ['西武2000系', '西武20000系', '西武30000系', '西武40000系50番台']);
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...seibuToshimaTemplate, 'odpt:trainType': 'odpt.TrainType:Seibu.LimitedExpress'
+}, 'SeibuToshima', { operator: 'Seibu' }), null,
+'Seibu limited express services may not inherit commuter fleet candidates');
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...seibuToshimaTemplate, _sqlVehicleMappingLevel: 'official_single_fleet_plan'
+}, 'SeibuToshima', { operator: 'Seibu' }), null,
+'route fallback must not override an existing SQL fleet plan');
+
 const renderVm = vm.createContext({
   window: { TrainVehicle: { selectMarkerArtwork(p) {
     renderVm.captured = p;
