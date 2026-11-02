@@ -14,7 +14,7 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=92, 'phase-3 local and urban fleet preset groups missing');
+assert.ok(entries.length>=132, 'phase-4 regional fleet preset groups missing');
 const railwayData = JSON.parse(fs.readFileSync(
   path.join(root,'data/core/railway_data.compact.json'),'utf8'));
 const checked = Object.keys(railwayData.lines || {});
@@ -100,7 +100,7 @@ for(const [line,op,type] of [
 }
 
 // Phase 3: all additions must remain source-backed, scoped reference lists.
-assert.ok(seen.size>=117,'phase-3 route scopes missing');
+assert.ok(seen.size>=172,'phase-4 route scopes missing');
 for (const [line,operator,requiredModel] of [
   ['Musashino','JR-East','209系500番台'],
   ['Sagami','JR-East','E131系500番台'],
@@ -147,6 +147,55 @@ for (const [line,op,type] of [
 assert.equal(presets.lookup('SeibuYamaguchi','JR-East','odpt.TrainType:JR-East.Local'),null);
 assert.equal(presets.lookup('Yurikamome','TokyoMonorail','odpt.TrainType:TokyoMonorail.Local'),null);
 
+// Phase 4: sourced regional fleet candidates are reference-only, never identity.
+for (const [line,operator,expected] of [
+  ['Echigo','JR-East','E129系'],
+  ['Hakushin','JR-East','E129系'],
+  ['Miyo','JR-East','E129系'],
+  ['Yahiko','JR-East','E129系'],
+  ['Agatsuma','JR-East','211系'],
+  ['ChuoMain','JR-East','E127系'],
+  ['Sotobo','JR-East','E131系'],
+  ['NaritaAbikoBranch','JR-East','E231系0番台'],
+  ['Kashima','JR-East','E131系'],
+  ['Senseki','JR-East','E131系（仙石線仕様）'],
+  ['SensekiTohoku','JR-East','HB-E210系'],
+  ['Senzan','JR-East','E721系'],
+  ['TohokuMain','JR-East','HB-E220系'],
+  ['OuMain','JR-East','EV-E801系'],
+  ['Oga','JR-East','EV-E801系'],
+  ['Gono','JR-East','GV-E400系'],
+  ['Kounan','JR-East','キハ100系・キハ110系'],
+  ['Komii','JR-East','キハE200形'],
+  ['Kururi','JR-East','キハE130系'],
+  ['Tadami','JR-East','キハE120形'],
+  ['Kamaishi','JR-East','HB-E220系'],
+  ['Hachiko','JR-East','HB-E220系（非電化区間）'],
+  ['Karasuyama','JR-East','EV-E301系'],
+  ['Mito','JR-East','E531系'],
+  ['NambuBranch','JR-East','E127系'],
+  ['SeibuEn','Seibu','西武2000系']
+]) {
+  const item=presets.lookup(line,operator,'odpt.TrainType:'+operator+'.Local');
+  assert.ok(item && item.vehicleCandidates.includes(expected),
+    line+': missing regional fleet candidate '+expected);
+  assert.equal(item.evidenceRole,'route-fleet-reference');
+  assert.equal(item._fleetReferenceOnly,true);
+  assert.equal(item.planOverride,false);
+  assert.ok(!item.iconPath && !item.vehicleType,
+    line+': route candidate cannot become actual vehicle identity');
+}
+for (const [line,op,type] of [
+  ['Senseki','JR-East','LimitedExpress'],
+  ['ChuoMain','JR-East','LimitedExpress'],
+  ['Gono','JR-East','ResortShirakami'],
+  ['Kamaishi','JR-East','SLGinga'],
+  ['SeibuEn','Seibu','LimitedExpress']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
+  line+': limited/special service cannot borrow regular route fleet');
+assert.equal(presets.lookup('Senzan','TokyoMetro','odpt.TrainType:TokyoMetro.Local'),null);
+assert.equal(presets.lookup('Oga','JR-East','odpt.TrainType:JR-East.Shinkansen'),null);
+
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js') <
@@ -168,6 +217,8 @@ for (const [line,op] of [
   ['TokyuToyoko','Tokyu'],['Yokosuka','JR-East'],
   ['KeioMain','Keio'],['Odawara','Odakyu'],['Keikyu','Keikyu'],
   ['Keisei','Keisei'],['Tojo','Tobu'],['Noda','Tobu'],
+  ['Senseki','JR-East'],['SensekiTohoku','JR-East'],
+  ['Kamaishi','JR-East'],['NambuBranch','JR-East'],
   ['SotetsuMain','Sotetsu'],['YokohamaBlue','YokohamaMunicipal'],
   ['Rinkai','Rinkai'],['TsukubaExpress','TsukubaExpress']
 ]) {
