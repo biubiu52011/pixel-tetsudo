@@ -44,6 +44,15 @@ const exact = {
   estimated: false,
 };
 assert.equal(choose(exact).kind, 'vehicle', 'confirmed identity must show PNG');
+assert.equal(choose(exact).planned, false,
+  'a genuinely observed train PNG must not be labelled a timetable projection');
+assert.equal(choose({ ...exact, estimated: true }).kind, 'vehicle',
+  'a source-backed timetable model must retain its native PNG');
+assert.equal(choose({ ...exact, estimated: true }).planned, true,
+  'an estimated train with an exact scheduled model is still a reference-only PNG');
+assert.equal(choose({ ...exact, estimated: true, displayLineId: 'Yamanote' }).kind,
+  'unresolved', 'a timetable model cannot cross display lines even as a planned PNG');
+
 assert.equal(choose({ ...exact, vehicleIconPath: 'images/列车/JR東日本/JR東日本_E233系5000番台.png' }).iconSrc,
   genericPng, 'catalog root-relative path must resolve on pages/trains.html');
 assert.equal(choose({ ...exact, vehicleIconPath: '/images/列车/JR東日本/JR東日本_E233系5000番台.png' }).iconSrc,
@@ -153,6 +162,12 @@ const titledExact = {
   trainNumber: '611Y',
 };
 assert.match(tooltipContext._trainMarkerTitle(titledExact, 'Keiyo'), /E233/);
+assert.match(tooltipContext._trainMarkerTitle({ ...titledExact, estimated: true }, 'Keiyo'),
+  /Timetable model \(not actual stock\).*E233/,
+  'accessible labels must qualify a resolved scheduled model as non-physical');
+assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Keiyo').includes('Timetable model'),
+  'confirmed non-estimated vehicles must not acquire a timetable-only label');
+
 assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Yamanote').includes('E233'),
   'stale cross-line title must not disclose an unverified vehicle');
 assert.ok(!tooltipContext._trainMarkerTitle({
