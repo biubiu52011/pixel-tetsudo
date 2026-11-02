@@ -149,6 +149,40 @@ assert.equal(fleetPlanVm._officialConventionalServicePlan({
 }, 'SeibuToshima', { operator: 'Seibu' }), null,
 'route fallback must not override an existing SQL fleet plan');
 
+// In the 2026 Boso replacement period, local route fleet information can
+// inform an unmapped timetable, but cannot identify a specific train or PNG.
+const bosoTemplate = {
+  _positionSource: 'supabase-train-run',
+  _sqlVehicleMappingLevel: 'unresolved',
+  'odpt:operator': 'JR-East',
+  'odpt:trainType': 'odpt.TrainType:JR-East.Local',
+};
+for (const lineId of ['Sotobo', 'Uchibo', 'Togane']) {
+  const fleet = fleetPlanVm._officialConventionalServicePlan(
+    bosoTemplate, lineId, { operator: 'JR-East' });
+  assert.ok(fleet, 'unmapped Boso local should expose a line-specific reference');
+  assert.equal(fleet.evidenceRole, 'route-fleet-reference');
+  assert.equal(fleet._fleetReferenceOnly, true);
+  assert.equal(fleet.planOverride, false);
+  assert.equal(fleet.vehicleType, undefined);
+  assert.ok(fleet.vehicleCandidates.includes('209系'));
+  assert.ok(fleet.vehicleCandidates.includes('E233系（房総地区・改造車）'));
+  assert.equal(fleet.vehicleCandidates.includes('E131系0番台'), lineId !== 'Togane',
+    'future Togane E131 must not appear as a 2026 operating fleet');
+  assert.equal(fleet.vehicleCandidates.includes('E233系5000番台'), lineId === 'Togane');
+}
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...bosoTemplate, 'odpt:trainType': 'odpt.TrainType:JR-East.LimitedExpress',
+}, 'Sotobo', { operator: 'JR-East' }), null,
+'a Boso limited express cannot inherit the local fleet reference');
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...bosoTemplate, _sqlVehicleMappingLevel: 'published_number_family_plan',
+}, 'Togane', { operator: 'JR-East' }), null,
+'train-number-mapped SQL fleet evidence must not be overwritten by route fallback');
+assert.equal(fleetPlanVm._officialConventionalServicePlan(
+  bosoTemplate, 'Keiyo', { operator: 'JR-East' }), null,
+'the local fleet must not expand to unrelated railway displays');
+
 // SQL published models describe the weekday/holiday timetable, not the
 // observed physical stock. Even one verified model must pass through vehiclePlan.
 const sqlPlanVm = vm.createContext({
