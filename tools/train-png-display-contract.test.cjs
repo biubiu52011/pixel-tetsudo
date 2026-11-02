@@ -222,6 +222,27 @@ assert.equal(fleetPlanVm._officialConventionalServicePlan({
 }, 'Uchibo', { operator: 'JR-East' }).vehicleCandidates.includes('E131系0番台'), true,
 'local and rapid Boso fleet references remain distinct');
 
+// Narita / Sobu published-number evidence is nominal 209 FAMILY only:
+ // the raw family name must not pick a random 209 subseries or generic PNG.
+const catalogVm = { window: {}, console: { debug(){}, warn(){}, error(){} } };
+const catalogSnippet = vehicleSource.replace(
+  'window.TrainVehicle = {',
+  'window.__testPlanResolution = resolveTimetableVehiclePlan;\nwindow.TrainVehicle = {'
+);
+assert.notEqual(catalogSnippet, vehicleSource,
+  'the production catalog plan resolver must remain accessible for contract tests');
+vm.runInNewContext(catalogSnippet, catalogVm, { timeout: 15000 });
+for (const lineId of ['Narita', 'NaritaAirportBranch', 'SobuMain']) {
+  const nominal209 = catalogVm.window.__testPlanResolution('209系', {
+    operator: 'JR-East', lineId,
+    source: 'database-verified-published-plan'
+  });
+  assert.equal(nominal209.status, 'PLANNED_MODEL');
+  assert.deepEqual(Array.from(nominal209.models), ['209系']);
+  assert.equal(nominal209.iconPath, '',
+    'nominal 209 family alone must never select a specific 209-subseries PNG');
+}
+
 // SQL published models describe the weekday/holiday timetable, not the
 // observed physical stock. Even one verified model must pass through vehiclePlan.
 const sqlPlanVm = vm.createContext({
