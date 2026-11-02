@@ -3848,12 +3848,15 @@ function _officialConventionalServicePlan(tt, lineId, line) {
   // 房総普通列車：209系から改造E233系への段階的置換。
   // 外房・内房の既存E131系0番台と、2027年以降導入予定の
   // 新造E131系を混同しない。東金線への将来投入は含めない。
+  // 東金線の通常 M 番号は京葉線直通の Y 番号ではない。
+  // E233系5000番台の京葉直通所定は検証済み 5680Y/5983Y に
+  // 限定し、M 番号へ既定で転記しない（代走可能性は否定しない）。
   // いずれも路線の参考形式であり、個別の計画車種や実車ではない。
   if (operator === 'JR-East' &&
       serviceType === 'odpt.TrainType:JR-East.Local' &&
       /^(?:Sotobo|Uchibo|Togane)$/.test(String(lineId || ''))) {
     var bosoRouteModels = lineId === 'Togane'
-      ? ['209系', 'E233系（房総地区・改造車）', 'E233系5000番台']
+      ? ['209系', 'E233系（房総地区・改造車）']
       : ['209系', 'E233系（房総地区・改造車）', 'E131系0番台'];
     return {
       operator: 'JR-East', vehicleCandidates: bosoRouteModels,
