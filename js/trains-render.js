@@ -1292,7 +1292,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         (!p || !p.vehicleResolution || p.vehicleResolution.identityStatus === "EXACT") &&
         window.TrainVehicle && typeof window.TrainVehicle.resolveCanonicalVehicle === "function") {
       var canonicalVehicle = window.TrainVehicle.resolveCanonicalVehicle(vehicle.name);
-      if (canonicalVehicle && canonicalVehicle.displayName) tip.push(canonicalVehicle.displayName);
+      if (canonicalVehicle && canonicalVehicle.displayName) {
+        // A resolved model on a timetable position is planned rolling stock,
+        // not confirmation of a physical train on a particular day.
+        var modelPrefix = p && p.estimated === true
+          ? (/^zh/.test(lang) ? "时刻表车型（非当日实车）：" :
+             lang === "en" ? "Timetable model (not actual stock): " :
+             lang === "ko" ? "시각표 차종(당일 실차 미확인): " :
+             "時刻表車種（当日の実車未確認）：") : "";
+        tip.push(modelPrefix + canonicalVehicle.displayName);
+      }
     }
     var _fleetReference =
       (typeof _seibuCommuterCandidatesLabel === "function"
