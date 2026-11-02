@@ -117,6 +117,38 @@ assert.equal(choose({ ...exact, vehicleIconPath: 'https://invalid.example/train.
 assert.equal(vehicleVm.selectMarkerArtwork(exact, true).kind, 'unresolved',
   'failed PNG must fall back to a neutral position marker');
 
+// Published Seibu Toshima fleet scope is a route candidate list, not a
+// day-specific vehicle assignment or a license to choose a representative PNG.
+const fleetPlanVm = vm.createContext({ normOp: name => name });
+vm.runInContext(extract(vehicleSource,
+  'function _officialConventionalServicePlan(tt, lineId, line) {',
+  'function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {'),
+  fleetPlanVm);
+const seibuToshimaTemplate = {
+  _positionSource: 'supabase-train-run',
+  _sqlVehicleMappingLevel: 'unresolved',
+  'odpt:operator': 'Seibu',
+  'odpt:trainType': 'odpt.TrainType:Seibu.Local',
+};
+const toshimaPlan = fleetPlanVm._officialConventionalServicePlan(
+  seibuToshimaTemplate, 'SeibuToshima', { operator: 'Seibu' });
+assert.ok(toshimaPlan, 'Seibu Toshima must expose a timetable route fleet reference');
+assert.equal(toshimaPlan.evidenceRole, 'route-fleet-reference');
+assert.equal(toshimaPlan._fleetReferenceOnly, true);
+assert.equal(toshimaPlan.planOverride, false);
+assert.equal(toshimaPlan.vehicleType, undefined,
+  'route candidates cannot become a confirmed exact vehicle');
+assert.deepEqual(Array.from(toshimaPlan.vehicleCandidates),
+  ['西武2000系', '西武20000系', '西武30000系', '西武40000系50番台']);
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...seibuToshimaTemplate, 'odpt:trainType': 'odpt.TrainType:Seibu.LimitedExpress'
+}, 'SeibuToshima', { operator: 'Seibu' }), null,
+'Seibu limited express services may not inherit commuter fleet candidates');
+assert.equal(fleetPlanVm._officialConventionalServicePlan({
+  ...seibuToshimaTemplate, _sqlVehicleMappingLevel: 'official_single_fleet_plan'
+}, 'SeibuToshima', { operator: 'Seibu' }), null,
+'route fallback must not override an existing SQL fleet plan');
+
 const renderVm = vm.createContext({
   window: { TrainVehicle: { selectMarkerArtwork(p) {
     renderVm.captured = p;
@@ -172,6 +204,9 @@ assert.match(tooltipContext._trainMarkerTitle({
   'an estimated position with unrelated exact evidence is not a verified timetable model');
 assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Keiyo').includes('Timetable model'),
   'confirmed non-estimated vehicles must not acquire a timetable-only label');
+assert.match(tooltipContext._trainMarkerTitle(titledExact, 'Keiyo'),
+  /Mapped model \(physical stock unverified\).*E233/,
+  'a mapped non-estimated model without physical evidence must not look like an actual car');
 
 assert.ok(!tooltipContext._trainMarkerTitle(titledExact, 'Yamanote').includes('E233'),
   'stale cross-line title must not disclose an unverified vehicle');
@@ -189,6 +224,52 @@ assert.match(tooltipContext._trainMarkerTitle({
     sources: ['official-realtime-car-number'],
   },
 }, 'Yamanote'), /E233/, 'physical car proof may support a through-service label');
+
+// Load the route-specific label helpers as well as the generic projection.
+// A tooltip-only source extraction must still work without these helpers.
+vm.runInContext(extract(renderSource,
+  '  function _seibuCommuterCandidatesLabel(p, lineId, lang) {',
+  '  function _trainFoldExactVehicleLabel(p, lineId, lang) {'), tooltipContext);
+const seibuFleet = {
+  estimated: true, trainType: 'Seibu.Ikebukuro.Local',
+  vehicleIdentityStatus: 'NARROWED',
+  vehiclePlan: { status: 'FLEET_REFERENCE', lineId: 'Ikebukuro',
+    evidenceRole: 'route-fleet-reference',
+    models: ['西武2000系', '西武40000系', '西武001系'] },
+};
+assert.match(tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'Ikebukuro', 'en'),
+  /Line fleet references.*2000.*40000/,
+  'commuter fleet reference should show supported Seibu candidate names');
+assert.ok(!tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'Ikebukuro', 'en')
+  .includes('001'), 'limited express stock cannot become commuter candidates');
+assert.equal(tooltipContext._seibuCommuterCandidatesLabel(seibuFleet, 'SeibuToshima', 'en'), '',
+  'Seibu candidate names must not leak to a different Seibu route');
+assert.match(tooltipContext._trainMarkerTitle(seibuFleet, 'Ikebukuro'),
+  /Line fleet references.*2000/,
+  'the marker tooltip should use the same scoped Seibu reference');
+
+const shonanFleet = {
+  estimated: true, trainType: 'JR.Tokaido.Local',
+  vehicleIdentityStatus: 'NARROWED',
+  plannedVehicleCandidateStatus: 'source_single_type_candidate',
+  vehiclePlan: { status: 'PLANNED_CANDIDATES', lineId: 'Tokaido',
+    evidenceRole: 'unverified-source-candidate',
+    models: ['E231系1000番台', 'E233系3000番台'] },
+};
+assert.match(tooltipContext._shonanFleetCandidatesLabel(shonanFleet, 'Tokaido', 'en'),
+  /Shonan-color corridor fleet reference.*E231.*E233/,
+  'two Shonan model candidates must remain references, not exact stock');
+assert.equal(tooltipContext._shonanFleetCandidatesLabel(shonanFleet, 'UenoTokyo', 'en'), '',
+  'Shonan candidates must not be projected onto a different line');
+const liveShonan = { ...shonanFleet, estimated: false, positionSource: 'realtime-api',
+  positionLineId: 'Tokaido',
+  timetableFleetReference: { lineId: 'Tokaido', status: 'UNCONFIRMED_PLANNED_FLEET',
+    models: ['E231系1000番台', 'E233系3000番台'] } };
+assert.match(tooltipContext._shonanFleetCandidatesLabel(liveShonan, 'Tokaido', 'en'),
+  /Shonan-color planned fleet.*E231.*E233/,
+  'a live train may describe a scoped timetable reference without choosing a PNG');
+assert.equal(tooltipContext._shonanFleetCandidatesLabel(liveShonan, 'UenoTokyo', 'en'), '',
+  'a live timetable fleet reference cannot cross lines');
 
 // Planned models, candidate fleets and route references share a display layer,
 // without turning any of them into real-time vehicle/formation identity.
