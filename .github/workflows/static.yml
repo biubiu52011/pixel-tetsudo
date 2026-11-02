@@ -3,6 +3,11 @@ name: Deploy static content to Pages
 
 on:
   workflow_dispatch:
+  # Temporary direct-main trigger for this user-requested release only.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/static.yml'
 
 permissions:
   contents: read
@@ -24,6 +29,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Verify train presets before Pages upload
+        run: |
+          node --check js/train-vehicle.js
+          node --check data/core/major-vehicle-fleet-presets.js
+          node tools/train-major-fleet-presets.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
