@@ -1226,7 +1226,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var canonicalVehicle = window.TrainVehicle.resolveCanonicalVehicle(vehicle.name);
       if (canonicalVehicle && canonicalVehicle.displayName) tip.push(canonicalVehicle.displayName);
     }
-    var _fleetReference = _seibuCommuterCandidatesLabel(p, lineId, lang) || _shonanFleetCandidatesLabel(p, lineId, lang);
+    var _fleetReference =
+      (typeof _seibuCommuterCandidatesLabel === "function"
+        ? _seibuCommuterCandidatesLabel(p, lineId, lang) : "") ||
+      (typeof _shonanFleetCandidatesLabel === "function"
+        ? _shonanFleetCandidatesLabel(p, lineId, lang) : "");
     if (_fleetReference) tip.push(_fleetReference);
     // 保留线路门槛：源码截取型消费者可能只加载标题函数而不加载全部辅助函数。
     if (typeof _isOedoTailTrain === "function" && _isOedoTailTrain(lineId, p) && p && p.destinationStation) {
