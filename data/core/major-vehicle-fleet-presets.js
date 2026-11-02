@@ -512,7 +512,51 @@
     {id:'jrkyushu-wakamatsu', operator:'JR-Kyushu', lineIds:['Wakamatsu'],
       models:['JR九州BEC819系'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
     {id:'jrkyushu-sasaguri', operator:'JR-Kyushu', lineIds:['Sasaguri'],
-      models:['JR九州817系','JR九州821系'], sourceUrl:'https://www.jrkyushu.co.jp/train/'}
+      models:['JR九州817系','JR九州821系'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+
+    // ===== 2026-11 phase 7: JR West remainder, Kyushu regional and Hakodate =====
+    // These are operator-scoped reference fleets only, not train assignments.
+    // Diesel/electric and through-running corridor boundaries must be
+    // checked against a station-level service record before identification.
+    // For Hitahikosan, the BRT section is explicitly NOT a railway vehicle.
+    {id:'jrwest-sanin-main', operator:'JR-West', lineIds:['SaninMain'],
+      models:['JR西日本221系（嵯峨野線区間）','JR西日本223系5500番台','JR西日本キハ126系','JR西日本キハ120形','JR西日本キハ40系'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+    {id:'jrwest-bantan', operator:'JR-West', lineIds:['Bantan'],
+      models:['JR西日本103系（電化区間）','JR西日本キハ40系（非電化区間）'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+    {id:'jrwest-maizuru', operator:'JR-West', lineIds:['Maizuru'],
+      models:['JR西日本125系','JR西日本223系5500番台'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+    {id:'jrwest-yamaguchi', operator:'JR-West', lineIds:['Yamaguchi'],
+      models:['JR西日本キハ40系','JR西日本キハ47形'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+    {id:'jrwest-iwatoku', operator:'JR-West', lineIds:['Iwakado'],
+      models:['JR西日本キハ40系','JR西日本キハ47形'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+    {id:'jrwest-ube', operator:'JR-West', lineIds:['Ube'],
+      models:['JR西日本105系','JR西日本123系'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+    {id:'jrkyushu-nippo', operator:'JR-Kyushu', lineIds:['Nippo'],
+      models:['JR九州815系','JR九州817系'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-kyudai', operator:'JR-Kyushu', lineIds:['Kyudai'],
+      models:['JR九州キハ125形','JR九州キハ200形','JR九州キハ220形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-hohi', operator:'JR-Kyushu', lineIds:['Hohi'],
+      models:['JR九州815系（熊本～肥後大津の電化区間）','JR九州817系（電化区間）','JR九州キハ200形（非電化区間）','JR九州キハ220形（非電化区間）'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-misumi', operator:'JR-Kyushu', lineIds:['Misumi'],
+      models:['JR九州キハ200形','JR九州キハ220形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-ibusuki', operator:'JR-Kyushu', lineIds:['IbusukiMakurazaki'],
+      models:['JR九州キハ40系','JR九州キハ47形','JR九州キハ200形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-gotoji', operator:'JR-Kyushu', lineIds:['Gotoji'],
+      models:['JR九州キハ40系','JR九州キハ47形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-nichinan', operator:'JR-Kyushu', lineIds:['Nichinan'],
+      models:['JR九州キハ40系','JR九州キハ47形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-miyazaki-airport', operator:'JR-Kyushu', lineIds:['MiyazakiAirport'],
+      models:['JR九州817系','JR九州713系'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-kitto', operator:'JR-Kyushu', lineIds:['Kitto'],
+      models:['JR九州キハ40系','JR九州キハ47形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-kagoshima-branches', operator:'JR-Kyushu', lineIds:['KagoshimaMainJA','KagoshimaMainJB'],
+      models:['JR九州811系','JR九州813系','JR九州817系','JR九州821系'], sourceUrl:'https://www.jrkyushu.co.jp/company/info/history/history07.html'},
+    {id:'jrkyushu-haruda', operator:'JR-Kyushu', lineIds:['Haruda'],
+      models:['JR九州キハ40系','JR九州キハ47形'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jrkyushu-hitahikosan-rail', operator:'JR-Kyushu', lineIds:['Hitahikosan'],
+      models:['JR九州キハ40系（城野～添田の鉄道区間のみ）','JR九州キハ47形（城野～添田の鉄道区間のみ）'], sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'hakodate-tram-owned', operator:'HakodateCity', lineIds:['Hakodate2','Hakodate5'],
+      models:['函館市電710形','函館市電800形','函館市電2000形','函館市電3000形','函館市電7000形','函館市電8000形','函館市電8100形','函館市電9600形'], sourceUrl:'https://www.city.hakodate.hokkaido.jp/docs/2014012101097/'}
   ];
 
   // Only commuter/passenger stopping patterns. In particular do NOT assign a
