@@ -112,8 +112,12 @@ for (const level of ['official_single_fleet_plan', 'official_model_family_plan']
 const edgeSource = fs.readFileSync('supabase/functions/train-runs/index.ts', 'utf8');
 assert.match(edgeSource, /const fleetReferenceLabel = \['official_single_fleet_plan',/,
   'the API must expose an official line fleet as reference-only candidate data');
-assert.match(edgeSource, /vehicle_type_candidates: fleetReferenceLabel \|\|/,
-  'mapped route fleet names must survive when the original template label is blank');
+assert.match(edgeSource, /vehicle_type_candidates: trainCandidate \|\| fleetReferenceLabel \|\|/,
+  'train-level candidate priority and official route reference fallback must both survive');
+assert.match(edgeSource, /vehicle_historical_source_label: t\.vehicle_type_label \|\| null/,
+  'source-historical label must remain separately available for audits');
+assert.match(edgeSource, /vehicle_candidate_source_url: mapped\.mapping_level/,
+  'existing train-specific candidate provenance must not be lost');
 
 // A source-registered cross-operator alias is a scoped planned artwork mapping,
 // never an operator-wide default nor a realtime vehicle assignment.
