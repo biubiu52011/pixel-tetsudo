@@ -74,9 +74,14 @@
 
 
 
-/* Dense trains stay as paired units; the folded list preserves every train. */
-.train-fold-entry { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; padding:12px 4px; border-bottom:1px solid #94a3b840; }
+/* Fold rows have two cells: map-authorized rolling-stock PNG and service/destination.
+   Keep an unresolved-position dot if the map has no verified/scheduled artwork. */
+.train-fold-entry { display:flex; flex-wrap:nowrap; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid #94a3b840; min-width:0; }
 .train-fold-entry:last-child { border-bottom:0; }
+.train-fold-vehicle-icon { display:flex; flex:0 0 56px; width:56px; height:40px; align-items:center; justify-content:center; }
+.train-fold-vehicle-image { display:block; width:100%; height:100%; object-fit:contain; }
+.train-fold-vehicle-icon.unresolved::after { content:""; width:9px; height:9px; border-radius:50%; background:#666; }
+.train-fold-train-info { flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
 
 
 /* SVG route labels inherit the same language-specific pixel family as the page. */
