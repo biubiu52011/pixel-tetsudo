@@ -1149,7 +1149,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // REFERENCE, but that is not the actual vehicle occupying the position.
     var liveReference = p.positionSource === "realtime-api" &&
       p.timetableFleetReference &&
-      p.timetableFleetReference.status === "UNCONFIRMED_PLANNED_FLEET"
+      (p.timetableFleetReference.status === "UNCONFIRMED_PLANNED_FLEET" ||
+       p.timetableFleetReference.status === "UNVERIFIED_ROUTE_FLEET")
         ? p.timetableFleetReference : null;
     var models = liveReference && Array.isArray(liveReference.models)
       ? liveReference.models
@@ -1161,10 +1162,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         !models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
         !models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return "";
     lang = String(lang || "ja").toLowerCase();
-    var prefix = /^zh/.test(lang) ? "湘南色计划车型候选（具体车辆未确认）：" :
-      lang === "en" ? "Shonan-color planned fleet (exact vehicle unknown): " :
-      lang === "ko" ? "쇼난색 계획 차량 후보(실제 차종 미확인): " :
-      "湘南色・計画車両候補（当該車両の形式未確認）：";
+    // Most imported Shonan-color timetables are still
+    // undated_not_current_verified. A corridor fleet is useful reference,
+    // but does NOT establish the model of this scheduled/live train.
+    var currentPlanVerified = liveReference
+      ? liveReference.status === "UNCONFIRMED_PLANNED_FLEET"
+      : p.timetableDateVerified === true;
+    var prefix = currentPlanVerified
+      ? (/^zh/.test(lang) ? "湘南色计划车型候选（具体车辆未确认）：" :
+         lang === "en" ? "Shonan-color planned fleet (exact vehicle unknown): " :
+         lang === "ko" ? "쇼난색 계획 차량 후보(실제 차종 미확인): " :
+         "湘南色・計画車両候補（当該車両の形式未確認）：")
+      : (/^zh/.test(lang) ? "湘南色主力车型参考（当前车次及具体车辆未确认）：" :
+         lang === "en" ? "Shonan-color corridor fleet reference (train and model unverified): " :
+         lang === "ko" ? "쇼난색 노선 주요 차종 참고(해당 열차 미확인): " :
+         "湘南色・路線の主力車種参考（当該列車の車種未確認）：");
     return prefix + "E231系1000番台 / E233系3000番台";
   }
 
