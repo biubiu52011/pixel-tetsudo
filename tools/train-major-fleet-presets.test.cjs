@@ -14,7 +14,7 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=169, 'phase-6 JR West/Kyushu fleet groups missing');
+assert.ok(entries.length>=188, 'phase-7 regional and Hakodate fleet groups missing');
 const railwayData = JSON.parse(fs.readFileSync(
   path.join(root,'data/core/railway_data.compact.json'),'utf8'));
 const checked = Object.keys(railwayData.lines || {});
@@ -101,7 +101,7 @@ for(const [line,op,type] of [
 }
 
 // Phase 3: all additions must remain source-backed, scoped reference lists.
-assert.ok(seen.size>=212,'phase-6 route scopes missing');
+assert.ok(seen.size>=233,'phase-7 route scopes missing');
 for (const [line,operator,requiredModel] of [
   ['Musashino','JR-East','209系500番台'],
   ['Sagami','JR-East','E131系500番台'],
@@ -276,6 +276,54 @@ for (const [line,op,type] of [
   type==='Express' ? presets.lookup(line,op,'odpt.TrainType:'+op+'.Express') : null,
   line+': never infer premium service rolling stock');
 
+// Phase 7: remaining source-backed Kyushu, western rural and city tram lines.
+for (const [line,op,model] of [
+  ['SaninMain','JR-West','JR西日本キハ126系'],
+  ['Bantan','JR-West','JR西日本103系（電化区間）'],
+  ['Maizuru','JR-West','JR西日本125系'],
+  ['Yamaguchi','JR-West','JR西日本キハ47形'],
+  ['Iwakado','JR-West','JR西日本キハ40系'],
+  ['Ube','JR-West','JR西日本123系'],
+  ['Nippo','JR-Kyushu','JR九州815系'],
+  ['Kyudai','JR-Kyushu','JR九州キハ125形'],
+  ['Hohi','JR-Kyushu','JR九州キハ200形（非電化区間）'],
+  ['Misumi','JR-Kyushu','JR九州キハ200形'],
+  ['IbusukiMakurazaki','JR-Kyushu','JR九州キハ47形'],
+  ['Gotoji','JR-Kyushu','JR九州キハ40系'],
+  ['Nichinan','JR-Kyushu','JR九州キハ47形'],
+  ['MiyazakiAirport','JR-Kyushu','JR九州817系'],
+  ['Kitto','JR-Kyushu','JR九州キハ40系'],
+  ['KagoshimaMainJA','JR-Kyushu','JR九州821系'],
+  ['KagoshimaMainJB','JR-Kyushu','JR九州813系'],
+  ['Haruda','JR-Kyushu','JR九州キハ47形'],
+  ['Hitahikosan','JR-Kyushu','JR九州キハ40系（城野～添田の鉄道区間のみ）'],
+  ['Hakodate2','HakodateCity','函館市電9600形'],
+  ['Hakodate5','HakodateCity','函館市電2000形']
+]) {
+  const reference=presets.lookup(line,op,'odpt.TrainType:'+op+'.Local');
+  assert.ok(reference && reference.vehicleCandidates.includes(model),
+    line+': missing phase-7 regional reference '+model);
+  assert.equal(reference.evidenceRole,'route-fleet-reference');
+  assert.equal(reference._fleetReferenceOnly,true);
+  assert.equal(reference.planOverride,false);
+  assert.ok(!reference.iconPath && !reference.vehicleType,
+    line+': must not identify a real train or choose a PNG');
+}
+// Unsafe inference blockers: portions of the lines are BRT/non-rail, a
+// through-running train has another vehicle owner, or the database currently
+// attributes the Hakata-Minami line to JR Kyushu instead of JR West.
+for (const [line,op] of [
+  ['Kesennuma','JR-East'],['Ofunato','JR-East'],
+  ['TokyuKodomonokuni','Tokyu'],['HakataMinami','JR-Kyushu']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.Local'),null,
+  line+': leave unverified ownership/BRT identification unresolved');
+for(const [line,op,type] of [
+  ['SaninMain','JR-West','LimitedExpress'],
+  ['Nippo','JR-Kyushu','LimitedExpress'],
+  ['Hakodate2','HakodateCity','LimitedExpress']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
+  'premium service must not inherit ordinary stock '+line);
+
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js') <
@@ -300,6 +348,8 @@ for (const [line,op] of [
   ['Senseki','JR-East'],['SensekiTohoku','JR-East'],
   ['Kamaishi','JR-East'],['NambuBranch','JR-East'],
   ['SotetsuMain','Sotetsu'],['YokohamaBlue','YokohamaMunicipal'],
+  ['SaninMain','JR-West'],['Nippo','JR-Kyushu'],
+  ['Hohi','JR-Kyushu'],['Hakodate2','HakodateCity'],
   ['Rinkai','Rinkai'],['TsukubaExpress','TsukubaExpress']
 ]) {
   const v=run(line,op,'Local');
