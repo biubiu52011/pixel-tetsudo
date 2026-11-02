@@ -1121,6 +1121,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (status === "EXACT" || !isSeibuLine || !isCommuterType ||
         !plan || String(plan.lineId || "") !== String(lineId || "") ||
         !Array.isArray(plan.models)) return "";
+    // A certified train plan must use the generic confirmed label, not the
+    // Seibu corridor-candidate helper that otherwise wins title precedence.
+    if (plan.confirmed === true) return "";
     var models = plan.models.map(function(v) { return String(v || "").trim(); })
       .filter(Boolean)
       // 旧資料に混在する特急用 001 / 10000 系は通勤車候補として表示しない。
@@ -1202,19 +1205,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     lang = String(lang || "ja").toLowerCase();
     // Estimated location is NOT proof of a certified scheduled vehicle.
     // Only these train-level SQL mapping levels can be named a timetable model.
-    var scheduledExact = p.estimated === true &&
-      /^(?:dated_schedule_rule|dated_operation_owner|verified_scheduled_boundary)$/.test(
-        String(p.plannedVehicleCandidateStatus || ""));
-    var prefix = scheduledExact
-      ? (/^zh/.test(lang) ? "时刻表车型映射（非当日实车）：" :
-          lang === "en" ? "Timetable model (not confirmed physical stock): " :
-          lang === "ko" ? "시각표 차종(당일 실차 확인 아님): " :
-          "時刻表の車種（当日の実車未確認）：")
+    var confirmedPlan = p.estimated === true &&
+      p.vehiclePlan && p.vehiclePlan.confirmed === true;
+    var prefix = confirmedPlan
+      ? (/^zh/.test(lang) ? "计划车型已确认（非当日实车）：" :
+          lang === "en" ? "Scheduled model confirmed (not actual-day stock): " :
+          lang === "ko" ? "계획 차종 확인(당일 실차 아님): " :
+          "計画車種確認済み（当日の実車ではありません）：")
       : p.estimated === true
-        ? (/^zh/.test(lang) ? "推算位置车型参考（非计划车型确认）：" :
-            lang === "en" ? "Estimated-position model reference (not schedule-certified): " :
-            lang === "ko" ? "추정 위치 차종 참고(계획 차종 미확인): " :
-            "推定位置の車種参考（計画形式未確認）：")
+        ? (/^zh/.test(lang) ? "计划车型未确认（参考）：" :
+            lang === "en" ? "Scheduled model unconfirmed (reference only): " :
+            lang === "ko" ? "계획 차종 미확인(참고): " :
+            "計画車種未確認（参考）：")
       : physical
         ? (/^zh/.test(lang) ? "已确认实际车型：" :
             lang === "en" ? "Physically confirmed model: " :
@@ -1310,19 +1312,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (canonicalVehicle && canonicalVehicle.displayName) {
         // A resolved model on a timetable position is planned rolling stock,
         // not confirmation of a physical train on a particular day.
-        var isScheduledModel = p && p.estimated === true &&
-          /^(?:dated_schedule_rule|dated_operation_owner|verified_scheduled_boundary)$/.test(
-            String(p.plannedVehicleCandidateStatus || ""));
-        var modelPrefix = p && p.estimated === true
-          ? (isScheduledModel
-            ? (/^zh/.test(lang) ? "时刻表车型（非当日实车）：" :
-               lang === "en" ? "Timetable model (not actual stock): " :
-               lang === "ko" ? "시각표 차종(당일 실차 미확인): " :
-               "時刻表車種（当日の実車未確認）：")
-            : (/^zh/.test(lang) ? "推算位置车型参考（计划未确认）：" :
-               lang === "en" ? "Estimated-position model (schedule unverified): " :
-               lang === "ko" ? "추정 위치 차종(계획 미확인): " :
-               "推定位置の車種参考（計画未確認）："))
+        var confirmedPlan = p && p.estimated === true &&
+          p.vehiclePlan && p.vehiclePlan.confirmed === true;
+        var modelPrefix = confirmedPlan
+          ? (/^zh/.test(lang) ? "计划车型已确认（非当日实车）：" :
+              lang === "en" ? "Scheduled model confirmed (not actual-day stock): " :
+              lang === "ko" ? "계획 차종 확인(당일 실차 아님): " :
+              "計画車種確認済み（当日の実車ではありません）：")
+          : p && p.estimated === true
+            ? (/^zh/.test(lang) ? "计划车型未确认（参考）：" :
+                lang === "en" ? "Scheduled model unconfirmed (reference only): " :
+                lang === "ko" ? "계획 차종 미확인(참고): " :
+                "計画車種未確認（参考）：")
           : (physicalThroughEvidence ? "" :
               (/^zh/.test(lang) ? "车型映射参考（实车未独立确认）：" :
                 lang === "en" ? "Mapped model (physical stock unverified): " :
