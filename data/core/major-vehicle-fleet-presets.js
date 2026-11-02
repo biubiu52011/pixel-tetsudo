@@ -26,7 +26,7 @@
   // Carefully scoped to operator-owned principal stock, not a promise that
   // *every* train on the line is operated by these families.
   var rows = [
-    {id:'jr-yamanote', operator:'JR-East', lineIds:['Yamanote'],
+    {id:'jr-yamanote', operator:'JR-East', lineIds:['Yamanote'], serviceTypes:['Local'],
       models:['E235系0番台（山手線）'], sourceUrl:JR_E235},
     {id:'jr-keihin-tohoku', operator:'JR-East', lineIds:['KeihinTohoku'],
       models:['E233系1000番台'], sourceUrl:JR_E233},
@@ -56,9 +56,9 @@
       lineIds:['Tokaido','TokaidoMain','Takasaki','UtsunomiyaJR','ShonanShinjuku','UenoTokyo'],
       models:['E231系1000番台','E233系3000番台'], sourceUrl:JR_OTHER},
 
-    {id:'metro-ginza', operator:'TokyoMetro', lineIds:['Ginza'],
+    {id:'metro-ginza', operator:'TokyoMetro', lineIds:['Ginza'], serviceTypes:['Local'],
       models:['東京メトロ1000系'], sourceUrl:METRO},
-    {id:'metro-marunouchi', operator:'TokyoMetro', lineIds:['Marunouchi'],
+    {id:'metro-marunouchi', operator:'TokyoMetro', lineIds:['Marunouchi'], serviceTypes:['Local'],
       models:['東京メトロ2000系'], sourceUrl:METRO},
     {id:'metro-hibiya', operator:'TokyoMetro', lineIds:['Hibiya'],
       models:['東京メトロ13000系'], sourceUrl:METRO},
@@ -79,9 +79,9 @@
       models:['都営6300形','都営6500形'], sourceUrl:TOEI},
     {id:'toei-shinjuku', operator:'Toei', lineIds:['Shinjuku'],
       models:['都営10-300形'], sourceUrl:TOEI},
-    {id:'toei-oedo', operator:'Toei', lineIds:['Oedo'],
+    {id:'toei-oedo', operator:'Toei', lineIds:['Oedo'], serviceTypes:['Local'],
       models:['都営12-000形','都営12-600形'], sourceUrl:TOEI},
-    {id:'toei-nippori-toneri', operator:'Toei', lineIds:['Nippori_Toneri'],
+    {id:'toei-nippori-toneri', operator:'Toei', lineIds:['Nippori_Toneri'], serviceTypes:['Local'],
       models:['都営300形','都営320形','都営330形'], sourceUrl:TOEI},
 
     {id:'tokyu-toyoko', operator:'Tokyu', lineIds:['TokyuToyoko'],
@@ -102,7 +102,7 @@
       lineIds:['KeioMain','KeioShin','KeioSagami','KeioTakao'],
       models:['京王2000系','京王5000系','京王7000系','京王8000系','京王9000系'],
       sourceUrl:'https://www.keio.co.jp/keiofan/museum/exist/'},
-    {id:'keio-inokashira', operator:'Keio', lineIds:['KeioInokashira'],
+    {id:'keio-inokashira', operator:'Keio', lineIds:['KeioInokashira'], serviceTypes:['Local'],
       models:['京王1000系'], sourceUrl:'https://www.keio.co.jp/keiofan/museum/exist/'},
     {id:'keio-short-branches', operator:'Keio', lineIds:['KeioKeibajo','KeioZoo'],
       models:['京王7000系'], sourceUrl:'https://www.keio.co.jp/keiofan/museum/exist/'},
@@ -244,14 +244,14 @@
 
     // Tokyo Metro's short service branches must not inherit arbitrary train
     // types from other sections of Chiyoda or Marunouchi.
-    {id:'metro-marunouchi-branch', operator:'TokyoMetro', lineIds:['MarunouchiBranch'],
+    {id:'metro-marunouchi-branch', operator:'TokyoMetro', lineIds:['MarunouchiBranch'], serviceTypes:['Local'],
       models:['東京メトロ2000系'], sourceUrl:METRO},
-    {id:'metro-chiyoda-branch', operator:'TokyoMetro', lineIds:['ChiyodaBranch'],
+    {id:'metro-chiyoda-branch', operator:'TokyoMetro', lineIds:['ChiyodaBranch'], serviceTypes:['Local'],
       models:['東京メトロ05系（区間列車用）','東京メトロ16000系'], sourceUrl:METRO},
 
     // Toei Arakawa (Tokyo Sakura Tram) uses streetcar families rather than
     // the subway or Nippori-Toneri rolling stock.
-    {id:'toei-arakawa-tram', operator:'Toei', lineIds:['Arakawa'],
+    {id:'toei-arakawa-tram', operator:'Toei', lineIds:['Arakawa'], serviceTypes:['Local'],
       models:['都電7700形','都電8500形','都電8800形','都電8900形','都電9000形'],
       sourceUrl:'https://www.kotsu.metro.tokyo.jp/about/service/toden.html'},
 
@@ -266,7 +266,7 @@
     {id:'seibu-tamako', operator:'Seibu', lineIds:['SeibuTamako'],
       models:['西武9000系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/9000/'},
-    {id:'seibu-yamaguchi', operator:'Seibu', lineIds:['SeibuYamaguchi'],
+    {id:'seibu-yamaguchi', operator:'Seibu', lineIds:['SeibuYamaguchi'], serviceTypes:['Local'],
       models:['西武8500系','西武L00系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/L00/'},
     {id:'seibu-kokubunji', operator:'Seibu', lineIds:['Kokubunji'],
@@ -298,37 +298,47 @@
     // Tokyu Oimachi Line currently mixes older local stock with new
     // 5-car 6020 and 7-car express 6020 sets; the route alone is insufficient
     // to pick an exact model or even its formation length.
+    // 大井町線は急行7両・各駅停車5両。路線だけで編成を決めない。
     {id:'tokyu-oimachi', operator:'Tokyu', lineIds:['TokyuOimachi'],
+      serviceTypes:['Local','Express'],
       models:['東急6000系','東急6020系','東急9000系','東急9020系'],
-      sourceUrl:'https://www.tokyu.co.jp/company/information/detail/58201.html'},
-    {id:'tokyu-setagaya', operator:'Tokyu', lineIds:['TokyuSetagaya'],
+      modelsByService:{
+        Local:['東急6020系（5両・各駅停車）','東急9000系','東急9020系'],
+        Express:['東急6000系（7両・急行）','東急6020系（7両・急行）']
+      }, sourceUrl:'https://www.tokyu.co.jp/company/information/detail/58201.html'},
+    {id:'tokyu-setagaya', operator:'Tokyu', lineIds:['TokyuSetagaya'], serviceTypes:['Local'],
       models:['東急300系'], sourceUrl:TOKYU},
+    // 東急が列車運行、横浜高速鉄道が線路・Y000系車両を所有する例外。
+    {id:'tokyu-kodomonokuni-y000', operator:'Tokyu', lineIds:['TokyuKodomonokuni'],
+      vehicleOwner:'MinatoMirai', serviceTypes:['Local'],
+      models:['横浜高速鉄道Y000系'],
+      sourceUrl:'https://www.tokyu.co.jp/railway/train-history/kd/'},
 
     // Automated guideway, monorail and tram vehicles are line-specific.
-    {id:'yurikamome-modern', operator:'Yurikamome', lineIds:['Yurikamome'],
+    {id:'yurikamome-modern', operator:'Yurikamome', lineIds:['Yurikamome'], serviceTypes:['Local'],
       models:['ゆりかもめ7300系','ゆりかもめ7500系'],
       sourceUrl:'https://www.yurikamome.co.jp/feature/vehicle/'},
-    {id:'tama-monorail', operator:'TamaMonorail', lineIds:['TamaMonorail'],
+    {id:'tama-monorail', operator:'TamaMonorail', lineIds:['TamaMonorail'], serviceTypes:['Local'],
       models:['多摩都市モノレール1000系'],
       sourceUrl:'https://www.locationbox.metro.tokyo.lg.jp/catalog/996/'},
-    {id:'new-shuttle', operator:'SaitamaNewUrbanTransit', lineIds:['NewShuttle'],
+    {id:'new-shuttle', operator:'SaitamaNewUrbanTransit', lineIds:['NewShuttle'], serviceTypes:['Local'],
       models:['ニューシャトル2000系','ニューシャトル2020系'],
       sourceUrl:'https://new-shuttle.jp/newshuttle_atraction/'},
     {id:'chiba-monorail', operator:'ChibaUrbanMonorail',
-      lineIds:['ChibaMonorail1','ChibaMonorail2'],
+      lineIds:['ChibaMonorail1','ChibaMonorail2'], serviceTypes:['Local'],
       models:['千葉都市モノレール1000形','千葉都市モノレール0形'],
       sourceUrl:'https://chiba-monorail.co.jp/index.php/about-monorail/sharyou/'},
-    {id:'shonan-monorail', operator:'ShonanMonorail', lineIds:['ShonanMonorail'],
+    {id:'shonan-monorail', operator:'ShonanMonorail', lineIds:['ShonanMonorail'], serviceTypes:['Local'],
       models:['湘南モノレール5000系'],
       sourceUrl:'https://www.shonan-monorail.co.jp/fun/vehicle.html'},
-    {id:'enoden-local', operator:'EnoshimaElectric', lineIds:['Enoshima'],
+    {id:'enoden-local', operator:'EnoshimaElectric', lineIds:['Enoshima'], serviceTypes:['Local'],
       models:['江ノ電1000形','江ノ電2000形','江ノ電20形','江ノ電500形',
         '江ノ電700形（2026年導入）'],
       sourceUrl:'https://www.enoden.co.jp/fan/museum/vehicle/700/'},
     {id:'toyo-rapid-owned', operator:'ToyoRapid', lineIds:['ToyoRapid'],
       models:['東葉高速鉄道2000系'],
       sourceUrl:'https://www.toyokosoku.co.jp/company/profile'},
-    {id:'utsunomiya-lrt', operator:'UtsunomiyaLightRail', lineIds:['UtsunomiyaLRT'],
+    {id:'utsunomiya-lrt', operator:'UtsunomiyaLightRail', lineIds:['UtsunomiyaLRT'], serviceTypes:['Local'],
       models:['宇都宮ライトレールHU300形'],
       sourceUrl:'https://www.miyarail.co.jp/userguide-ticket-info'}
 ,
@@ -559,11 +569,63 @@
       models:['函館市電710形','函館市電800形','函館市電2000形','函館市電3000形','函館市電7000形','函館市電8000形','函館市電8100形','函館市電9600形'], sourceUrl:'https://www.city.hakodate.hokkaido.jp/docs/2014012101097/'}
   ];
 
+
+  // Operator-owned through-service candidates. These are NOT additional
+  // operator/line combinations in the canonical line dataset. Use them only
+  // when the upstream timetable explicitly supplies a different trainOwner.
+  // Network presence or a suffix on the public train number alone is not proof.
+  var throughRows = [
+    {operator:'TokyoMetro', lineIds:['Hibiya'], vehicleOwner:'Tobu',
+      models:['東武70000型','東武70090型'], sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    {operator:'TokyoMetro', lineIds:['Tozai'], vehicleOwner:'JR-East',
+      models:['E231系800番台'], sourceUrl:'https://www.jreast.co.jp/train/local/e231.html'},
+    {operator:'TokyoMetro', lineIds:['Tozai'], vehicleOwner:'ToyoRapid',
+      models:['東葉高速鉄道2000系'], sourceUrl:'https://www.toyokosoku.co.jp/company/profile'},
+    {operator:'TokyoMetro', lineIds:['Chiyoda'], vehicleOwner:'JR-East',
+      models:['E233系2000番台'], sourceUrl:JR_E233},
+    {operator:'TokyoMetro', lineIds:['Chiyoda'], vehicleOwner:'Odakyu',
+      models:['小田急4000形'], sourceUrl:'https://www.odakyu.jp/company/railroad/train/'},
+    {operator:'JR-East', lineIds:['JobanLocal'], vehicleOwner:'TokyoMetro',
+      models:['東京メトロ16000系'], sourceUrl:METRO},
+    {operator:'JR-East', lineIds:['JobanLocal'], vehicleOwner:'Odakyu',
+      models:['小田急4000形'], sourceUrl:'https://www.odakyu.jp/company/railroad/train/'},
+    {operator:'TokyoMetro', lineIds:['Hanzomon'], vehicleOwner:'Tokyu',
+      models:['東急5000系','東急2020系'], sourceUrl:TOKYU},
+    {operator:'TokyoMetro', lineIds:['Hanzomon'], vehicleOwner:'Tobu',
+      models:['東武50050型'], sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    {operator:'TokyoMetro', lineIds:['Namboku'], vehicleOwner:'SaitamaRapidRailway',
+      models:['埼玉高速鉄道2000系'], sourceUrl:'https://www.s-rail.co.jp/news/2026/339.html'},
+    {operator:'TokyoMetro', lineIds:['Namboku'], vehicleOwner:'Tokyu',
+      models:['東急3000系','東急5080系','東急3020系'], sourceUrl:TOKYU},
+    {operator:'TokyoMetro', lineIds:['Namboku'], vehicleOwner:'Sotetsu',
+      models:['相鉄21000系'], sourceUrl:'https://www.sotetsu.co.jp/life/gallery/train/'},
+    {operator:'Toei', lineIds:['Mita'], vehicleOwner:'Tokyu',
+      models:['東急3000系','東急5080系','東急3020系'], sourceUrl:TOKYU},
+    {operator:'Toei', lineIds:['Mita'], vehicleOwner:'Sotetsu',
+      models:['相鉄21000系'], sourceUrl:'https://www.sotetsu.co.jp/life/gallery/train/'},
+    {operator:'TokyoMetro', lineIds:['Yurakucho','Fukutoshin'], vehicleOwner:'Tobu',
+      models:['東武50070型'], sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    {operator:'TokyoMetro', lineIds:['Yurakucho','Fukutoshin'], vehicleOwner:'Seibu',
+      models:['西武6000系','西武40000系'], sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
+    {operator:'TokyoMetro', lineIds:['Fukutoshin'], vehicleOwner:'Tokyu',
+      models:['東急5050系','東急5050系4000番台'], sourceUrl:TOKYU},
+    {operator:'TokyoMetro', lineIds:['Fukutoshin'], vehicleOwner:'MinatoMirai',
+      models:['横浜高速鉄道Y500系'], sourceUrl:'https://www.mm21railway.co.jp/info/news/2026/03/denayokohama-dena-baystars-train-2026.html?mode=pc'},
+    {operator:'TokyoMetro', lineIds:['Fukutoshin'], vehicleOwner:'Sotetsu',
+      models:['相鉄20000系'], sourceUrl:'https://www.sotetsu.co.jp/life/gallery/train/'},
+    {operator:'Toei', lineIds:['Asakusa'], vehicleOwner:'Keikyu',
+      models:['京急1000形','京急600形'], sourceUrl:'https://www.keikyu.co.jp/ride/train/'},
+    {operator:'Toei', lineIds:['Asakusa'], vehicleOwner:'Keisei',
+      models:['京成3000形','京成3100形'], sourceUrl:'https://www.keisei.co.jp/keisei/keisei_museum/pictbook/'},
+    {operator:'Rinkai', lineIds:['Rinkai'], vehicleOwner:'JR-East',
+      models:['E233系7000番台'], sourceUrl:JR_E233}
+  ];
+
   // Only commuter/passenger stopping patterns. In particular do NOT assign a
   // commuter model to a LimitedExpress/liner/special or an unnamed service.
   var ORDINARY = /^(?:Local|Rapid|SpecialRapid|CommuterRapid|SemiExpress|Express|RapidExpress|CommuterExpress|CommuterSemiExpress|ChuoSpecialRapid|OmeSpecialRapid|CommuterSpecialRapid|SectionRapid|SectionExpress|SectionSemiExpress)$/;
 
-  function lookup(lineId, operator, trainType) {
+  function lookup(lineId, operator, trainType, options) {
     var id = String(lineId || '').trim();
     var op = String(operator || '').trim();
     var type = String(trainType || '').trim();
@@ -571,19 +633,28 @@
     var prefix = 'odpt.TrainType:' + op + '.';
     if (type.indexOf(prefix) !== 0) return null;
     var suffix = type.slice(prefix.length);
-    // High-speed service names are accepted ONLY for a specifically scoped
-    // Shinkansen row, not as an ordinary-train/express fallback.
+    // Conventional services and explicitly scoped Shinkansen named services.
     if (!ORDINARY.test(suffix) && !/^Shinkansen$/.test(suffix) &&
         !/^(?:Hayabusa|Hayate|Yamabiko|Nasuno|Komachi|Tsubasa|Toki|Tanigawa|Kagayaki|Hakutaka|Asama|Nozomi|Hikari|Kodama|Mizuho|Sakura|Tsubame|Kamome)$/.test(suffix)) return null;
+    // An observed ODPT trainOwner is not always the operating line's company.
+    // No trainOwner -> line fleet only. Known other owner -> explicit through
+    // mapping only. Never borrow the line operator's models in that case.
+    var owner = String(options && options.trainOwner || '').trim()
+      .replace(/^odpt\.(?:Operator|TrainOwner):/, '');
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
       if (row.operator !== op || row.lineIds.indexOf(id) < 0) continue;
       if (row.shinkansenTypes) {
-        if (row.shinkansenTypes.indexOf(suffix) < 0) continue;
-      } else if (!ORDINARY.test(suffix)) continue;
+        if (row.shinkansenTypes.indexOf(suffix) < 0) return null;
+      } else if (!ORDINARY.test(suffix)) return null;
+      if (row.serviceTypes && row.serviceTypes.indexOf(suffix) < 0) return null;
+      if (owner && owner !== (row.vehicleOwner || row.operator)) break;
+      var models = row.modelsByService ? row.modelsByService[suffix] : row.models;
+      if (!models || !models.length) return null;
       return {
         operator: row.operator,
-        vehicleCandidates: row.models.slice(),
+        vehicleOwner: row.vehicleOwner || row.operator,
+        vehicleCandidates: models.slice(),
         evidenceRole: 'route-fleet-reference',
         _fleetReferenceOnly: true,
         planOverride: false,
@@ -591,16 +662,42 @@
         presetId: row.id
       };
     }
+    if (!owner || !ORDINARY.test(suffix)) return null;
+    for (var j = 0; j < throughRows.length; j++) {
+      var through = throughRows[j];
+      if (through.operator !== op || through.vehicleOwner !== owner ||
+          through.lineIds.indexOf(id) < 0) continue;
+      return {
+        operator: op, vehicleOwner: owner,
+        vehicleCandidates: through.models.slice(),
+        evidenceRole: 'route-fleet-reference',
+        _fleetReferenceOnly: true,
+        planOverride: false,
+        sourceUrl: through.sourceUrl,
+        presetId: 'through-owner-' + op + '-' + id + '-' + owner
+      };
+    }
     return null;
   }
 
   root.MajorVehicleFleetPresets = Object.freeze({
-    version: '2026-11-02',
+    version: '2026-11-03-kanto',
     lookup: lookup,
+    listThrough: function () {
+      return throughRows.map(function(row) {
+        return {operator:row.operator, vehicleOwner:row.vehicleOwner,
+          lineIds:row.lineIds.slice(), models:row.models.slice(), sourceUrl:row.sourceUrl};
+      });
+    },
     list: function () {
       return rows.map(function (row) {
         return {id:row.id, operator:row.operator, lineIds:row.lineIds.slice(),
-          models:row.models.slice(), shinkansenTypes:row.shinkansenTypes ? row.shinkansenTypes.slice() : null, sourceUrl:row.sourceUrl};
+          models:row.models.slice(), vehicleOwner:row.vehicleOwner || row.operator,
+          serviceTypes:row.serviceTypes ? row.serviceTypes.slice() : null,
+          modelsByService:row.modelsByService ? Object.keys(row.modelsByService).reduce(function(o,k) {
+            o[k]=row.modelsByService[k].slice(); return o;
+          }, {}) : null,
+          shinkansenTypes:row.shinkansenTypes ? row.shinkansenTypes.slice() : null, sourceUrl:row.sourceUrl};
       });
     }
   });
