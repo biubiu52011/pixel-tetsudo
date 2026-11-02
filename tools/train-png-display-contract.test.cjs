@@ -169,7 +169,8 @@ for (const lineId of ['Sotobo', 'Uchibo', 'Togane']) {
   assert.ok(fleet.vehicleCandidates.includes('E233系（房総地区・改造車）'));
   assert.equal(fleet.vehicleCandidates.includes('E131系0番台'), lineId !== 'Togane',
     'future Togane E131 must not appear as a 2026 operating fleet');
-  assert.equal(fleet.vehicleCandidates.includes('E233系5000番台'), lineId === 'Togane');
+  assert.equal(fleet.vehicleCandidates.includes('E233系5000番台'), false,
+    'Keiyo through-split E233-5000 cannot be presumed for generic Boso M-number locals');
 }
 assert.equal(fleetPlanVm._officialConventionalServicePlan({
   ...bosoTemplate, 'odpt:trainType': 'odpt.TrainType:JR-East.LimitedExpress',
@@ -271,6 +272,22 @@ assert.equal(publishedModel.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
 assert.equal(publishedModel.vehicleResult.vehiclePlan.evidenceRole,
   'inferred-published-number-family',
   'published train-number families must remain inferential, not guaranteed stock');
+// Database has the 5680Y/5983Y split trains separately mapped to the
+// Keiyo E233-5000 plan. A documented Y train must keep its train-specific
+// published family and never be replaced by the generic M-number fallback.
+for (const trainNumber of ['5680Y', '5983Y']) {
+  const yPlan = sqlPlanVm.resolveTimetableRun(
+    { trainNumber, calendar: 'odpt.Calendar:Weekday' },
+    { ...bosoTemplate, 'odpt:trainNumber': trainNumber,
+      _sqlVehicleMappingLevel: 'published_number_family_plan',
+      _sqlVerifiedPublishedVehicleType: 'E233系5000番台',
+      _sqlVerifiedPublishedVehicleSourceUrl: 'https://timetables.jreast.co.jp/2611/train/130/131952.html' },
+    'Togane', { operator: 'JR-East' });
+  assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '');
+  assert.equal(yPlan.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+  assert.deepEqual(Array.from(yPlan.vehicleResult.vehiclePlan.models), ['E233系5000番台']);
+  assert.equal(yPlan.vehicleResult.vehiclePlan.evidenceRole, 'inferred-published-number-family');
+}
 const bosoFamilyPlan = sqlPlanVm.resolveTimetableRun(
   { trainNumber: '1624M', calendar: 'odpt.Calendar:Weekday' },
   { ...bosoTemplate, _sqlVehicleMappingLevel: 'published_number_family_plan',
