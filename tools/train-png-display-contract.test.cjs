@@ -308,6 +308,48 @@ const officialNumberPlan = checkSqlModel(
 assert.equal(officialNumberPlan.vehicleResult.vehiclePlan.confirmed, true);
 assert.equal(officialNumberPlan.vehicleResult.identityStatus, 'UNKNOWN',
   'confirmed planned models are not actual-day physical vehicle identity');
+// Official named-service plans are confirmed even when actual physical
+// train identity remains UNKNOWN. The railway/timetable context must scope
+// each plan independently: Oito Hakuba, Shinonoi Shinano, Joetsu Toki/Tanigawa.
+for (const example of [
+  { line: 'Oito', train: '8041M', calendar: 'odpt.Calendar:SaturdayHoliday',
+    model: 'E353系', source: 'https://www.jreast.co.jp/en/press/2026/winterextratrain/index.html/' },
+  { line: 'Oito', train: '8042M', calendar: 'odpt.Calendar:SaturdayHoliday',
+    model: 'E353系', source: 'https://www.jreast.co.jp/en/press/2026/winterextratrain/index.html/' },
+  { line: 'Shinonoi', train: '1001M', calendar: 'odpt.Calendar:Weekday',
+    model: '383系', source: 'https://company.jr-central.co.jp/sustainability/social/conventional-line/' },
+  { line: 'Shinonoi', train: '1026M', calendar: 'odpt.Calendar:SaturdayHoliday',
+    model: '383系', source: 'https://company.jr-central.co.jp/sustainability/social/conventional-line/' },
+  { line: 'JoetsuShinkansen', train: 'Toki301', calendar: 'odpt.Calendar:SaturdayHoliday',
+    model: 'E7系', source: 'https://www.jreast.co.jp/multi/routemaps/joetsushinkansen.html' },
+  { line: 'JoetsuShinkansen', train: 'Tanigawa401', calendar: 'odpt.Calendar:Weekday',
+    model: 'E7系', source: 'https://www.jreast.co.jp/multi/routemaps/joetsushinkansen.html' }
+]) {
+  const planned = sqlPlanVm.resolveTimetableRun(
+    { trainNumber: example.train, calendar: example.calendar },
+    { _positionSource: 'supabase-train-run',
+      _sqlVehicleMappingLevel: 'official_service_vehicle_plan',
+      _sqlVerifiedPublishedVehicleType: example.model,
+      _sqlVerifiedPublishedVehicleSourceUrl: example.source,
+      _sqlVehiclePlanConfirmed: true },
+    example.line, { operator: 'JR-East' });
+  assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, '',
+    'officially confirmed plan must never become an actual train identity');
+  assert.equal(planned.vehicleResult.identityStatus, 'UNKNOWN');
+  assert.equal(planned.vehicleResult.vehiclePlan.confirmed, true);
+  assert.equal(planned.vehicleResult.vehiclePlan.status, 'PLANNED_MODEL');
+  assert.deepEqual(Array.from(planned.vehicleResult.vehiclePlan.models), [example.model]);
+  assert.equal(planned.vehicleResult.vehiclePlan.lineId, example.line);
+}
+const unsupportedHakuba = sqlPlanVm.resolveTimetableRun(
+  { trainNumber: '9095M', calendar: 'odpt.Calendar:Weekday' },
+  { _positionSource:'supabase-train-run',
+    _sqlVehicleMappingLevel:'unresolved',
+    _sqlVehicleCandidateLabel:'E353系（あずさ）' },
+  'Oito', { operator:'JR-East' });
+assert.equal(unsupportedHakuba.vehicleResult.vehiclePlan.confirmed, false,
+  'unmapped raw Azusa label on 9095M must remain unconfirmed');
+
 // Database has the 5680Y/5983Y split trains separately mapped to the
 // Keiyo E233-5000 plan. A documented Y train must keep its train-specific
 // published family and never be replaced by the generic M-number fallback.
