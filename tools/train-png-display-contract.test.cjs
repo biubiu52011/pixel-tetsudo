@@ -203,7 +203,8 @@ const sqlPlanVm = vm.createContext({
       source: meta.source, evidenceRole: 'timetable-plan', lineId: meta.lineId,
     } : null;
   },
-  _officialConventionalServicePlan: () => null,
+  _officialConventionalServicePlan: (...args) =>
+    fleetPlanVm._officialConventionalServicePlan(...args),
   _splitFormationIds: () => [],
   resolveCanonicalVehicle: () => null,
   resolveCanonicalVehicleForPlan: () => null,
@@ -244,6 +245,16 @@ assert.equal(unverifiedSql.vehicleResult.vehiclePlan.status, 'PLANNED_CANDIDATES
 checkSqlModel('dated_schedule_rule', '');
 assert.equal(sqlPlanVm.resolvedInput.timetableVehicleType, 'E233系6000番台',
   'existing independent dated schedule evidence must retain its mapping');
+
+const unmappedBosoPlan = sqlPlanVm.resolveTimetableRun(
+  { trainNumber: '1624M', calendar: 'odpt.Calendar:Weekday' },
+  bosoTemplate, 'Togane', { operator: 'JR-East' });
+assert.equal(unmappedBosoPlan.vehicleResult.identityStatus, 'UNKNOWN');
+assert.equal(unmappedBosoPlan.vehicleResult.vehiclePlan.status, 'FLEET_REFERENCE',
+  'an unmapped Boso local must use a scoped route reference, not PLANNED_MODEL');
+assert.equal(unmappedBosoPlan.vehicleResult.vehiclePlan.iconPath, '',
+  'an unmapped local train must not acquire a representative PNG');
+assert.equal(unmappedBosoPlan.vehicleResult.vehiclePlan.lineId, 'Togane');
 
 // Remaining marker tests ensure planned references are not physical SVG identities.
 const renderVm = vm.createContext({
