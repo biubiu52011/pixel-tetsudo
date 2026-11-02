@@ -796,6 +796,7 @@ function svgNode(tagName) {
     setAttribute(k, v) { attrs[k] = String(v); },
     setAttributeNS(ns, k, v) { attrs[k] = String(v); },
     getAttribute(k) { return attrs[k] === undefined ? null : attrs[k]; },
+    hasAttribute(k) { return attrs[k] !== undefined; },
     removeAttribute(k) { delete attrs[k]; },
     addEventListener(k, fn) { listeners[k] = fn; },
     appendChild(child) {
@@ -873,6 +874,13 @@ vm.runInContext(extract(renderSource,
 vm.runInContext(extract(renderSource,
   '  function _syncTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId) {',
   '  function updateRunningInfo('), markerContext);
+vm.runInContext(extract(renderSource,
+  '  function _pruneDetachedTrainParts(trainLayer) {',
+  '  function _resolveTrainLabelCollisions('), markerContext);
+assert.match(renderSource, /_pruneDetachedTrainParts\(trainLayer\);/,
+  'global incremental refresh must sanitize ungrouped train elements');
+assert.match(renderSource, /var _duplicateUnit = _trainUnitContainer\(_existingMarker\)/,
+  'duplicate detection must dispose the full component, not only its circle');
 assert.match(renderSource,
   /if \(existingIcon && !_trainUnitContainer\(existingIcon\)\)/,
   'legacy ungrouped markers must be replaced by a common SVG train unit');
@@ -1013,6 +1021,78 @@ assert.ok(sixUnit.querySelector('[data-train-label-for="oedo"]'),
 assert.equal(sixLayer.children.filter(node=>node.getAttribute('data-train-label-for')==='oedo').length,0,
   'legacy standalone label must no longer exist next to the train unit');
 assert.ok(sixUnit.querySelector('[data-train-label-for="oedo"]').parentNode===sixUnit);
+
+// Global contract: all operators and all line geometries use exactly the
+// same TrainComponent lifecycle. This covers generic timetable circles,
+// through rapid trains, numbered Shinkansen, private railways and Oedo loops.
+const globalSampleLines = [
+  'Uchibo', 'Sotobo', 'Togane', 'Yamanote', 'Keiyo',
+  'SobuMain', 'Narita', 'JobanMain', 'SeibuTamagawa',
+  'Oedo', 'SanyoShinkansen', 'KyushuShinkansen',
+  'TohokuShinkansen', 'JoetsuShinkansen'
+];
+for (let i = 0; i < globalSampleLines.length; i++) {
+  const lineId = globalSampleLines[i], uid = 'global-component-' + i;
+  const layer = svgNode('g');
+  if (lineId === 'Oedo') layer.ownerSVGElement =
+    {__geometry:{isSixShapedLoop:true}};
+  const position = { ...narrowed,
+    railDirection:'odpt.RailDirection:Outbound',
+    destinationStation:'odpt.Station:JR-East.Uchibo.Kimitsu' };
+  const icon = markerContext._createTrainComponent(
+    layer,svgNS,uid,candidateSpec,100,160,
+    position,lineId,lineId==='Oedo','#008803',null);
+  const root = icon.parentNode;
+  assert.equal(layer.children.length,1,
+    lineId + ': create must mount one complete root component');
+  assert.equal(root.getAttribute('data-train-component-id'),uid);
+  assert.equal(root.querySelector('[data-train-id="'+uid+'"]'),icon);
+  assert.ok(root.querySelector('[data-train-label-for="'+uid+'"]'),
+    lineId + ': destination and icon must mount atomically');
+  markerContext._moveTrainComponent(icon,layer,uid,125,190,
+    position,lineId,lineId==='Oedo');
+  assert.equal(root.getAttribute('transform'),'translate(125,190)',
+    lineId + ': motion must belong to the whole component');
+  markerContext._pruneDetachedTrainParts(layer);
+  assert.equal(layer.children.length,1,
+    lineId + ': global sweep must preserve valid component');
+  assert.equal(icon.parentNode,root);
+}
+// Old renderer may have left a sibling circle, standalone caption, or a
+// duplicate train component after a PNG failure or route refresh.
+const globalOrphans = svgNode('g');
+const healthyIcon = markerContext._createTrainComponent(
+  globalOrphans,svgNS,'healthy',candidateSpec,100,180,
+  {railDirection:'odpt.RailDirection:Outbound',
+    destinationStation:'odpt.Station:JR-East.Uchibo.Kimitsu'},
+  'Uchibo',false,'#008803',null);
+const healthyRoot = healthyIcon.parentNode;
+const looseCircle = svgNode('circle');
+looseCircle.setAttribute('data-train-id','stray-circle');
+globalOrphans.appendChild(looseCircle);
+const looseCaption = svgNode('g');
+looseCaption.setAttribute('data-train-label-for','stray-caption');
+globalOrphans.appendChild(looseCaption);
+const emptyComponent = svgNode('g');
+emptyComponent.setAttribute('data-train-component-id','empty');
+globalOrphans.appendChild(emptyComponent);
+const duplicateComponent = svgNode('g');
+duplicateComponent.setAttribute('data-train-component-id','healthy');
+const duplicateIcon = svgNode('circle');
+duplicateIcon.setAttribute('data-train-id','healthy');
+duplicateComponent.appendChild(duplicateIcon);
+globalOrphans.appendChild(duplicateComponent);
+// The rightmost duplicate is kept, so a duplicate of the real healthy train
+// must not win by DOM order when it lacks a matching destination caption.
+// Move it earlier so the live component is the last and wins.
+globalOrphans.removeChild(duplicateComponent);
+globalOrphans.children.unshift(duplicateComponent);
+duplicateComponent.parentNode=globalOrphans;
+markerContext._pruneDetachedTrainParts(globalOrphans);
+assert.deepEqual(globalOrphans.children,[healthyRoot],
+  'all lines: remove orphan circles, captions, empty and duplicate units');
+assert.ok(healthyRoot.querySelector('[data-train-label-for="healthy"]'),
+  'global sanitization must preserve the complete live unit');
 
 console.log('train PNG display contract: PASS (selection, scope, SVG DOM, fallback, tooltip)');
 
