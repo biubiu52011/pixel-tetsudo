@@ -475,9 +475,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return (positions || []).filter(_isRealtimePositionFresh);
   }
 
+  // Ordinary maps keep a train's artwork and direction together in one
+  // SVG coordinate system. Six-shaped Oedo maps use independent fixed lanes.
+  function _trainUnitContainer(child) {
+    var parent = child && child.parentNode;
+    return parent && parent.getAttribute &&
+      parent.getAttribute('data-train-unit-id') ? parent : null;
+  }
+
   function _discardTrainMarker(markerById, trainUid, icon) {
     if (icon._moveRaf) cancelAnimationFrame(icon._moveRaf);
-    if (icon.parentNode) icon.parentNode.removeChild(icon);
+    var unit = _trainUnitContainer(icon);
+    if (unit && unit.parentNode) unit.parentNode.removeChild(unit);
+    else if (icon.parentNode) icon.parentNode.removeChild(icon);
     delete markerById[String(trainUid)];
     return null;
   }
@@ -1039,14 +1049,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
 
   function _setTrainIconPosition(icon, px, py, p, lineId, isLoop) {
     if (!icon) return;
-    var x = px - 7;
-    var y = py - 9;
+    var unit = _trainUnitContainer(icon);
+    // The group is the ONLY world-space position for an ordinary train.
+    // Image load, a new PNG, and a later RAF cannot leave the caption at
+    // an earlier station's Y coordinate.
+    if (unit) unit.setAttribute('transform', 'translate(' + px + ',' + py + ')');
+    var x = unit ? -7 : px - 7;
+    var y = unit ? -9 : py - 9;
     var tag = String(icon.tagName || '').toLowerCase();
     if (tag === 'circle') {
       // 即使车型未知，来源已验证的实时位置仍保持可见；
       // 这里显示的是中性位置圆点，而不是车辆图片。
-      icon.setAttribute('cx', String(px));
-      icon.setAttribute('cy', String(py));
+      icon.setAttribute('cx', String(unit ? 0 : px));
+      icon.setAttribute('cy', String(unit ? 0 : py));
       icon.removeAttribute('transform');
       icon.setAttribute('data-marker-raw-transform', '');
       return;
@@ -1056,7 +1071,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       icon.setAttribute('y', String(y));
       var direction = p && p.railDirection || '';
       if (!isLoop && direction.indexOf('Outbound') >= 0) {
-        icon.setAttribute('transform', 'translate(' + px + ', ' + py + ') scale(-1, 1) translate(' + (-px) + ', ' + (-py) + ')');
+        icon.setAttribute('transform', unit
+          ? 'scale(-1, 1)'
+          : 'translate(' + px + ', ' + py + ') scale(-1, 1) translate(' + (-px) + ', ' + (-py) + ')');
       } else {
         icon.removeAttribute('transform');
       }
@@ -1413,6 +1430,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 引用一致；此处不进行新的车辆或资产选择。
       marker.setAttributeNS("http://www.w3.org/1999/xlink", "href", spec.iconSrc);
       marker.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      marker.addEventListener("load", function () {
+        // SVG <image> may become measurable after the initial caption pass.
+        // Recheck overlap without rebuilding or independently moving its label.
+        if (trainLayer && trainLayer.isConnected && marker.isConnected)
+          _resolveTrainLabelCollisions(trainLayer);
+      });
       marker.addEventListener("error", function () {
         if (!trainLayer || !trainLayer.isConnected || !marker.isConnected) return;
         var uid = marker.getAttribute("data-train-id") || "";
@@ -1420,10 +1443,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         marker.setAttribute("visibility", "hidden");
         // 立即保留这列已知列车的已验证位置，
         // 不必等待图片/网络错误后的下一次 ODPT 轮询。
+        var oldUnit = _trainUnitContainer(marker);
+        var oldLabel = oldUnit && oldUnit.querySelector('[data-train-label-for]');
         var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
           {kind:"unresolved", iconSrc:"", className:spec.className},
           marker._displayX, marker._displayY, p, lineId, isLoop, color, loc);
-        if (neutral && marker.parentNode) marker.parentNode.removeChild(marker);
+        if (neutral) {
+          var newUnit = _trainUnitContainer(neutral);
+          if (newUnit && oldLabel) newUnit.appendChild(oldLabel);
+          if (oldUnit && oldUnit.parentNode) oldUnit.parentNode.removeChild(oldUnit);
+          else if (marker.parentNode) marker.parentNode.removeChild(marker);
+          _resolveTrainLabelCollisions(trainLayer);
+        }
       });
     } else {
       marker.setAttribute("r", "4.5");
@@ -1456,6 +1487,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 单个位置标记仅用于提供信息，不是可交互的详情按钮。
     // 折叠 +N 徽标仍是唯一的列车级弹窗操作。
     marker.setAttribute("role", "img");
+    var sixShape = trainLayer.ownerSVGElement && trainLayer.ownerSVGElement.__geometry &&
+      trainLayer.ownerSVGElement.__geometry.isSixShapedLoop;
+    if (!sixShape) {
+      var unit = document.createElementNS(svgNS, "g");
+      unit.setAttribute("data-train-unit-id", String(trainUid));
+      unit.setAttribute("class", "train-unit");
+      unit.appendChild(marker);
+      trainLayer.appendChild(unit);
+    } else {
+      trainLayer.appendChild(marker);
+    }
     _setTrainIconPosition(marker, px, py, p, lineId, isLoop);
     marker._displayX = px;
     marker._displayY = py;
@@ -1464,7 +1506,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (loc && loc.idx != null && isFinite(Number(loc.idx))) marker._displayStationIdx = Number(loc.idx);
     if (loc && loc.nextIdx != null && isFinite(Number(loc.nextIdx))) marker._displayNextStationIdx = Number(loc.nextIdx);
     if (loc && loc.routePos != null && isFinite(Number(loc.routePos))) marker._displayRoutePos = Number(loc.routePos);
-    trainLayer.appendChild(marker);
     return marker;
   }
 
@@ -1733,7 +1774,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var tid = allIcons[ii].getAttribute('data-train-id') || allIcons[ii].getAttribute('data-train-label-for');
       if (!updatedIds[tid]) {
         if (allIcons[ii]._moveRaf) cancelAnimationFrame(allIcons[ii]._moveRaf);
-        allIcons[ii].parentNode.removeChild(allIcons[ii]);
+        var unit = _trainUnitContainer(allIcons[ii]);
+        if (unit && unit.parentNode) unit.parentNode.removeChild(unit);
+        else if (allIcons[ii].parentNode) allIcons[ii].parentNode.removeChild(allIcons[ii]);
       }
     }
     _resolveTrainLabelCollisions(trainLayer);
@@ -2242,6 +2285,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   }
 
   function appendTrainLabels(trainLayer, svgNS, trainUid, px, py, p, lineId) {
+    var marker = trainLayer.querySelector('[data-train-id="' + String(trainUid).replace(/"/g, '') + '"]');
+    var unit = _trainUnitContainer(marker);
+    // Keep local caption Y fixed relative to the marker's center.
+    // The wrapper moves BOTH elements atomically on every animation frame.
+    if (unit) { px = 0; py = 0; }
     var moveDir = _trainMoveDir(p, lineId);
     var isLoopDir = _isLoopDirName(p.railDirection);
     var dn = String(p.railDirection || '').split(/[:.]/).pop(); // 同时拆冒号和点号（odpt:RailDirection:Waseda 和 TokyoMetro.YoyogiUehara 两种格式）
@@ -2329,8 +2377,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     ldir.setAttribute("class", "train-label-dir");
     ldir.textContent = labelText;
     labelGroup.appendChild(ldir);
-    // append 后用 getBBox 居中在 px
-    trainLayer.appendChild(labelGroup);
+    // Measure in the SAME local coordinate space as the image/circle.
+    // Special six-shaped maps retain their separate, stationary label lanes.
+    if (unit) unit.appendChild(labelGroup);
+    else trainLayer.appendChild(labelGroup);
     try {
       var _bbox = labelGroup.getBBox();
       var _offsetX = px - (_bbox.x + _bbox.width / 2);
@@ -2364,6 +2414,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _moveTrainLabels(trainLayer, trainUid, px, py, p, lineId) {
     var label = trainLayer.querySelector('[data-train-label-for="' + String(trainUid).replace(/"/g, '') + '"]');
     if (!label) return;
+    if (_trainUnitContainer(label)) { px = 0; py = 0; }
     var moveDir = _trainMoveDir(p, lineId);
     var _sixLane = label.getAttribute("data-six-direction-visible") === "true"
       ? _sixTrainDirectionLane(trainLayer, p, lineId, px, py,
