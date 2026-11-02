@@ -3817,7 +3817,35 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         _evidenceNetworkMatches(row.networkKey,
           {lineId: lineId, railway: sourceRailway});
     });
-    if (!hits.length) return null;
+    if (!hits.length) {
+      // Keiyo 437Y is working 37 in the published 2026 timetable. The
+      // ten-car 37 working is shared among stock types, so no uniquely
+      // assigned train-level model can be claimed. In the user's explicitly
+      // reference-model display mode, use the corridor's principal E233-5000
+      // as a REPRESENTATIVE ICON, never as a verified working or live carset.
+      // Scope strictly to the exact railway, full train number, calendar and
+      // the lifetime of the referenced March-2026 service revision.
+      if (lineId === "Keiyo" &&
+          sourceRailway === "odpt.Railway:JR-East.Keiyo" &&
+          num === "437Y" && day >= "2026-03-14" && day <= "2027-03-12" &&
+          (p.trainOperator === "JR-East" || !p.trainOperator)) {
+        var representative = resolveTimetableVehiclePlan("E233系5000番台", {
+          lineId: "Keiyo", operator: "JR-East", serviceDate: day,
+          source: "keiyo-shared-working-representative",
+          sourceUrl: "https://ameblo.jp/tc205-37/entry-12979587262.html",
+          _positionSource: "train-timetable"
+        });
+        if (representative && representative.iconPath) {
+          representative.status = "FLEET_REPRESENTATIVE";
+          representative.evidenceRole = "shared-working-representative";
+          representative.representativeOnly = true;
+          representative.alternativeModels = ["E233系1000番台", "209系500番台"];
+          representative.confirmed = false;
+          return representative;
+        }
+      }
+      return null;
+    }
     var types = Object.create(null);
     hits.forEach(function(row) {
       if (String(row.vehicleType || "").trim()) types[String(row.vehicleType).trim()] = true;
@@ -4643,9 +4671,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // is the display baseline, even when the actual carset is unknown/different.
     // This PNG is visibly tagged PLANNED and cannot be mistaken for live stock.
     if (p && p.positionSource === "realtime-api" && vehiclePlan &&
-        vehiclePlan.source === "published-number-calendar-reference" &&
+        (vehiclePlan.source === "published-number-calendar-reference" ||
+         vehiclePlan.source === "keiyo-shared-working-representative") &&
         _issuedVehiclePlans.has(vehiclePlan) &&
-        vehiclePlan.status === "PLANNED_MODEL" &&
+        (vehiclePlan.status === "PLANNED_MODEL" ||
+         vehiclePlan.status === "FLEET_REPRESENTATIVE") &&
         Array.isArray(vehiclePlan.models) && vehiclePlan.models.length === 1 &&
         contextLineId && vehiclePlan.lineId === contextLineId) {
       var plannedSrc = normalizeGalleryPngPath(vehiclePlan.iconPath);
