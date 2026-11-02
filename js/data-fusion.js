@@ -1306,13 +1306,6 @@
           var fromId = t["odpt:fromStation"] || "";
           var stationKey = String(fromId).split(".").pop();
           var _rawTrainNo = t["odpt:trainNumber"] || t["odpt:train"] || "";
-          // A newly received ODPT record may describe a train parked for
-          // TOMORROW'S first service. Freshness alone does not mean it is
-          // currently running. Reject it only when this exact scheduled trip
-          // has a matching published calendar/time window proving inactivity.
-          if (window.TrainPositionEstimator &&
-              typeof window.TrainPositionEstimator.isPublishedTrainInService === "function" &&
-              window.TrainPositionEstimator.isPublishedTrainInService(t, op) === false) return;
           if (!stationKey) {
             if (_rawTrainNo) {
               var _evKey = String(op) + "::" + String(_rawTrainNo);
