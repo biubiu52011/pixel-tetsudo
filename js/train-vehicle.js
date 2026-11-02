@@ -4563,6 +4563,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return { kind: "unresolved", iconSrc: "" };
     }
+    // An estimated position is a timetable projection even when its source
+    // certifies one model. Preserve the PNG, but never present it as the
+    // physical stock observed on a particular day.
+    if (p && p.estimated === true) plannedMarker = true;
     return { kind: "vehicle", iconSrc: iconSrc, planned: plannedMarker };
   }
 
