@@ -1231,6 +1231,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (!p || p.estimated !== true ||
         (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) === "EXACT") return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // An estimated timetable train without any model evidence still has the
+    // binary public result UNCONFIRMED, never an empty third status.
+    if (!plan && lineId && String(p.positionLineId || "") === String(lineId)) {
+      lang = String(lang || "ja").toLowerCase();
+      return /^zh/.test(lang) ? "计划车型未确认" :
+        lang === "en" ? "Scheduled model unconfirmed" :
+        lang === "ko" ? "계획 차종 미확인" : "計画車種未確認";
+    }
     if (!plan || String(plan.lineId || "") !== String(lineId || "") ||
         !Array.isArray(plan.models)) return "";
     var status = String(plan.status || "");
