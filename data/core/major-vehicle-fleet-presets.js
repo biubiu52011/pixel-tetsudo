@@ -223,7 +223,7 @@
     // 当日の運転割当を証明しない。
     {id:'tokyo-monorail', operator:'TokyoMonorail', lineIds:['TokyoMonorail'],
       models:['東京モノレール1000形','東京モノレール2000形','東京モノレール10000形'],
-      sourceUrl:'https://www.tokyo-monorail.co.jp/fun/vehicle/'}
+      sourceUrl:'https://www.tokyo-monorail.co.jp/fun/vehicle/'},
 
     // ===== 2026-11 phase 3: branch lines, local fleets and urban transit =====
     // All rows remain operator-scoped, reference-only candidates. These do not
