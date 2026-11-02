@@ -1116,8 +1116,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var isCommuterType = /(?:\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
     var status = p && (p.vehicleIdentityStatus ||
       (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "";
+    // A Seibu candidate is scoped to the plan's actual line, not to every
+    // line operated by Seibu (e.g. Ikebukuro vs Toshima).
     if (status === "EXACT" || !isSeibuLine || !isCommuterType ||
-        !plan || !Array.isArray(plan.models)) return "";
+        !plan || String(plan.lineId || "") !== String(lineId || "") ||
+        !Array.isArray(plan.models)) return "";
     var models = plan.models.map(function(v) { return String(v || "").trim(); })
       .filter(Boolean)
       // 旧資料に混在する特急用 001 / 10000 系は通勤車候補として表示しない。
@@ -1152,6 +1155,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       (p.timetableFleetReference.status === "UNCONFIRMED_PLANNED_FLEET" ||
        p.timetableFleetReference.status === "UNVERIFIED_ROUTE_FLEET")
         ? p.timetableFleetReference : null;
+    // Do not spread a timetable/corridor candidate across unrelated
+    // displayed lines merely because they share the same fleet family.
+    if (liveReference) {
+      if (liveReference.lineId &&
+          String(liveReference.lineId) !== String(lineId || "")) return "";
+      if (p.positionLineId &&
+          String(p.positionLineId) !== String(lineId || "")) return "";
+    } else if (!plan || String(plan.lineId || "") !== String(lineId || "")) {
+      return "";
+    }
     var models = liveReference && Array.isArray(liveReference.models)
       ? liveReference.models
       : (p.estimated === true &&
@@ -1317,7 +1330,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             : (/^zh/.test(lang) ? "推算位置车型参考（计划未确认）：" :
                lang === "en" ? "Estimated-position model (schedule unverified): " :
                lang === "ko" ? "추정 위치 차종(계획 미확인): " :
-               "推定位置の車種参考（計画未確認）：")) : "";
+               "推定位置の車種参考（計画未確認）："))
+          : (physicalThroughEvidence ? "" :
+              (/^zh/.test(lang) ? "车型映射参考（实车未独立确认）：" :
+                lang === "en" ? "Mapped model (physical stock unverified): " :
+                lang === "ko" ? "차종 매핑 참고(실차 미확인): " :
+                "車種対応参考（実車未確認）："));
         tip.push(modelPrefix + canonicalVehicle.displayName);
       }
     }
