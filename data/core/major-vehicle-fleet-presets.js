@@ -419,7 +419,42 @@
     {id:'jr-yonesaka-rail', operator:'JR-East', lineIds:['Yonezawa'],
       models:['キハ110系（運行中の鉄道区間）'], sourceUrl:'https://www.jreast.co.jp/train/local/kiha110.html'},
     {id:'seibu-seibuen', operator:'Seibu', lineIds:['SeibuEn'],
-      models:['西武2000系'], sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/2000/'}
+      models:['西武2000系'], sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/2000/'},
+
+    // ===== 2026-11 phase 5: Shinkansen operator-owned fleet references =====
+    // A named service NEVER implies its exact rolling stock or consist.
+    // A Hokkaido H5 / West N700S owner row does not include every JR East,
+    // JR Central or partner-operated through train seen on the same tracks.
+    {id:'jr-east-tohoku-shinkansen', operator:'JR-East', lineIds:['TohokuShinkansen'],
+      models:['E2系','E5系','E6系','E8系'], shinkansenTypes:['Shinkansen','Hayabusa','Hayate','Yamabiko','Nasuno','Komachi','Tsubasa'],
+      sourceUrl:'https://www.jreast.co.jp/railway/train/'},
+    {id:'jr-east-joetsu-shinkansen', operator:'JR-East', lineIds:['JoetsuShinkansen'],
+      models:['E7系'], shinkansenTypes:['Shinkansen','Toki','Tanigawa'],
+      sourceUrl:'https://www.jreast.co.jp/train/shinkan/e7.html'},
+    {id:'jr-east-hokuriku-shinkansen', operator:'JR-East', lineIds:['HokurikuShinkansen'],
+      models:['E7系'], shinkansenTypes:['Shinkansen','Kagayaki','Hakutaka','Asama'],
+      sourceUrl:'https://www.jreast.co.jp/train/shinkan/e7.html'},
+    {id:'jr-east-yamagata-shinkansen', operator:'JR-East', lineIds:['YamagataShinkansen'],
+      models:['E8系'], shinkansenTypes:['Shinkansen','Tsubasa'],
+      sourceUrl:'https://www.jreast.co.jp/train/shinkan/e8.html'},
+    {id:'jr-east-akita-shinkansen', operator:'JR-East', lineIds:['AkitaShinkansen'],
+      models:['E6系'], shinkansenTypes:['Shinkansen','Komachi'],
+      sourceUrl:'https://www.jreast.co.jp/train/shinkan/e6.html'},
+    {id:'jr-hokkaido-shinkansen', operator:'JR-Hokkaido', lineIds:['HokkaidoShinkansen'],
+      models:['H5系（JR北海道保有車）'], shinkansenTypes:['Shinkansen','Hayabusa','Hayate'],
+      sourceUrl:'https://www.jrhokkaido.co.jp/train/shinkansen.html'},
+    {id:'jr-central-tokaido-shinkansen', operator:'JR-Central', lineIds:['TokaidoShinkansen'],
+      models:['N700S系','N700A系'], shinkansenTypes:['Shinkansen','Nozomi','Hikari','Kodama'],
+      sourceUrl:'https://recommend.jr-central.co.jp/gooddayexpress/evolution/'},
+    {id:'jr-west-sanyo-shinkansen', operator:'JR-West', lineIds:['SanyoShinkansen'],
+      models:['500系','N700系（JR西日本保有車）','N700S系（JR西日本保有車）'], shinkansenTypes:['Shinkansen','Nozomi','Hikari','Kodama','Mizuho','Sakura'],
+      sourceUrl:'https://www.jr-odekake.net/train/500/'},
+    {id:'jr-kyushu-kyushu-shinkansen', operator:'JR-Kyushu', lineIds:['KyushuShinkansen'],
+      models:['800系','N700系8000番台（R編成）'], shinkansenTypes:['Shinkansen','Mizuho','Sakura','Tsubame'],
+      sourceUrl:'https://www.jrkyushu.co.jp/train/'},
+    {id:'jr-kyushu-nishi-kyushu-shinkansen', operator:'JR-Kyushu', lineIds:['NishiKyushuShinkansen'],
+      models:['N700S系（西九州・かもめ用6両編成）'], shinkansenTypes:['Shinkansen','Kamome'],
+      sourceUrl:'https://www.jrkyushu.co.jp/train/'}
   ];
 
   // Only commuter/passenger stopping patterns. In particular do NOT assign a
@@ -432,10 +467,18 @@
     var type = String(trainType || '').trim();
     if (!id || !op || !type) return null;
     var prefix = 'odpt.TrainType:' + op + '.';
-    if (type.indexOf(prefix) !== 0 || !ORDINARY.test(type.slice(prefix.length))) return null;
+    if (type.indexOf(prefix) !== 0) return null;
+    var suffix = type.slice(prefix.length);
+    // High-speed service names are accepted ONLY for a specifically scoped
+    // Shinkansen row, not as an ordinary-train/express fallback.
+    if (!ORDINARY.test(suffix) && !/^Shinkansen$/.test(suffix) &&
+        !/^(?:Hayabusa|Hayate|Yamabiko|Nasuno|Komachi|Tsubasa|Toki|Tanigawa|Kagayaki|Hakutaka|Asama|Nozomi|Hikari|Kodama|Mizuho|Sakura|Tsubame|Kamome)$/.test(suffix)) return null;
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
       if (row.operator !== op || row.lineIds.indexOf(id) < 0) continue;
+      if (row.shinkansenTypes) {
+        if (row.shinkansenTypes.indexOf(suffix) < 0) continue;
+      } else if (!ORDINARY.test(suffix)) continue;
       return {
         operator: row.operator,
         vehicleCandidates: row.models.slice(),
@@ -455,7 +498,7 @@
     list: function () {
       return rows.map(function (row) {
         return {id:row.id, operator:row.operator, lineIds:row.lineIds.slice(),
-          models:row.models.slice(), sourceUrl:row.sourceUrl};
+          models:row.models.slice(), shinkansenTypes:row.shinkansenTypes ? row.shinkansenTypes.slice() : null, sourceUrl:row.sourceUrl};
       });
     }
   });
