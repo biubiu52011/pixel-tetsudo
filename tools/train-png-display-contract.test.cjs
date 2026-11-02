@@ -904,6 +904,10 @@ assert.equal(unitLabel.parentNode, renderedImage.parentNode,
   'marker and label must never drift into separate world-space coordinate systems');
 markerContext._setTrainIconPosition(renderedImage, 159.5, 459,
   {railDirection:'odpt.RailDirection:Inbound'}, 'Uchibo', false);
+// In actual RAF frames the marker's display-state snapshot advances together
+// with the common SVG unit. Simulate that before an async PNG error.
+renderedImage._displayX = 159.5;
+renderedImage._displayY = 459;
 assert.equal(trainUnit.getAttribute('transform'), 'translate(159.5,459)');
 assert.equal(unitLabel.querySelector('.train-label-dir').getAttribute('y'), '21',
   'asynchronous artwork callbacks cannot strand a caption at an old Y');
