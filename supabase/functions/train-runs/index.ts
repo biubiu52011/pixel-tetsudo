@@ -566,7 +566,15 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       // A single source label is a candidate, not observed rolling stock.
       // Only decisive, source-dated timetable rules may identify a planned type.
       vehicle_type_label: exactScheduleType || null,
-      vehicle_type_candidates: fleetReferenceLabel || t.vehicle_type_label || trainCandidate || null,
+      // Source-backed train-level candidates override stale raw labels only
+      // in the candidate channel; preserve historical source for provenance.
+      // Official line fleets are fallback references, never exact models.
+      vehicle_type_candidates: trainCandidate || fleetReferenceLabel || t.vehicle_type_label || null,
+      vehicle_historical_source_label: t.vehicle_type_label || null,
+      vehicle_candidate_source_id: mapped.mapping_level === "source_single_type_candidate"
+        ? (mapped.vehicle_source_id || null) : null,
+      vehicle_candidate_source_url: mapped.mapping_level === "source_single_type_candidate"
+        ? (mapped.vehicle_source_url || null) : null,
       vehicle_candidate_artwork_path: candidateArtwork,
       vehicle_candidate_artwork_status: candidateArtwork
         ? "historical-single-model-operator-generic-unverified" : null,
