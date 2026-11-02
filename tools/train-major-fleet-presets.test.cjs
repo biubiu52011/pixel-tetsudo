@@ -14,7 +14,7 @@ vm.runInNewContext(presetFile,ctx,{timeout:10000});
 const presets=browser.MajorVehicleFleetPresets;
 assert.ok(presets && typeof presets.lookup==='function');
 const entries=presets.list();
-assert.ok(entries.length>=188, 'phase-7 regional and Hakodate fleet groups missing');
+assert.ok(entries.length>=189, 'capital-area Kodomonokuni Y000 fleet preset missing');
 const railwayData = JSON.parse(fs.readFileSync(
   path.join(root,'data/core/railway_data.compact.json'),'utf8'));
 const checked = Object.keys(railwayData.lines || {});
@@ -35,7 +35,9 @@ entries.forEach(row=>{
     assert.equal(evidence.evidenceRole,'route-fleet-reference');
     assert.equal(evidence._fleetReferenceOnly,true);
     assert.equal(evidence.planOverride,false);
-    assert.deepEqual(Array.from(evidence.vehicleCandidates),Array.from(row.models));
+    const expected=(row.modelsByService && !row.shinkansenTypes)
+      ? (row.modelsByService.Local || []) : row.models;
+    assert.deepEqual(Array.from(evidence.vehicleCandidates),Array.from(expected));
     assert.ok(!evidence.iconPath && !evidence.vehicleType,
       'fleet reference cannot assign actual vehicle or PNG');
   });
@@ -101,7 +103,7 @@ for(const [line,op,type] of [
 }
 
 // Phase 3: all additions must remain source-backed, scoped reference lists.
-assert.ok(seen.size>=233,'phase-7 route scopes missing');
+assert.ok(seen.size>=234,'capital-area route scopes missing');
 for (const [line,operator,requiredModel] of [
   ['Musashino','JR-East','209系500番台'],
   ['Sagami','JR-East','E131系500番台'],
@@ -117,7 +119,7 @@ for (const [line,operator,requiredModel] of [
   ['Seibu_Sayama','Seibu','西武7000系（2026年導入）'],
   ['Daishi_Tobu','Tobu','東武8000系'],
   ['Tobu_Kameido','Tobu','東武8000系'],
-  ['TokyuOimachi','Tokyu','東急6020系'],
+  ['TokyuOimachi','Tokyu','東急6020系（5両・各駅停車）'],
   ['TokyuSetagaya','Tokyu','東急300系'],
   ['Yurikamome','Yurikamome','ゆりかもめ7500系'],
   ['TamaMonorail','TamaMonorail','多摩都市モノレール1000系'],
@@ -313,7 +315,7 @@ for (const [line,op,model] of [
 // attributes the Hakata-Minami line to JR Kyushu instead of JR West.
 for (const [line,op] of [
   ['Kesennuma','JR-East'],['Ofunato','JR-East'],
-  ['TokyuKodomonokuni','Tokyu'],['HakataMinami','JR-Kyushu']
+  ['HakataMinami','JR-Kyushu']
 ]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.Local'),null,
   line+': leave unverified ownership/BRT identification unresolved');
 for(const [line,op,type] of [
@@ -323,6 +325,79 @@ for(const [line,op,type] of [
 ]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.'+type),null,
   'premium service must not inherit ordinary stock '+line);
 
+// Tokyo capital-area fleet ownership and line/service isolation.
+// A trainOwner is SOURCE INPUT, never deduced from a train number suffix.
+const kodomo=presets.lookup('TokyuKodomonokuni','Tokyu','odpt.TrainType:Tokyu.Local');
+assert.ok(kodomo && kodomo.vehicleCandidates.includes('横浜高速鉄道Y000系'));
+assert.equal(kodomo.vehicleOwner,'MinatoMirai');
+assert.equal(kodomo.operator,'Tokyu'); // operator != actual rolling stock owner
+assert.equal(kodomo._fleetReferenceOnly,true);
+assert.ok(!kodomo.iconPath && !kodomo.vehicleType);
+assert.equal(presets.lookup('TokyuKodomonokuni','Tokyu','odpt.TrainType:Tokyu.Express'),null);
+assert.equal(presets.lookup('TokyuKodomonokuni','Tokyu','odpt.TrainType:Tokyu.Local',
+  {trainOwner:'Tokyu'}),null);
+assert.ok(presets.lookup('TokyuKodomonokuni','Tokyu','odpt.TrainType:Tokyu.Local',
+  {trainOwner:'odpt.TrainOwner:MinatoMirai'}));
+const localOimachi=presets.lookup('TokyuOimachi','Tokyu','odpt.TrainType:Tokyu.Local');
+const expressOimachi=presets.lookup('TokyuOimachi','Tokyu','odpt.TrainType:Tokyu.Express');
+assert.ok(localOimachi.vehicleCandidates.includes('東急6020系（5両・各駅停車）'));
+assert.ok(!localOimachi.vehicleCandidates.some(v=>/7両/.test(v)));
+assert.ok(expressOimachi.vehicleCandidates.includes('東急6020系（7両・急行）'));
+assert.ok(!expressOimachi.vehicleCandidates.some(v=>/5両|9000系|9020系/.test(v)));
+assert.equal(presets.lookup('TokyuOimachi','Tokyu','odpt.TrainType:Tokyu.Rapid'),null);
+for (const [line,op] of [
+  ['Yamanote','JR-East'],['Ginza','TokyoMetro'],['Marunouchi','TokyoMetro'],
+  ['ChiyodaBranch','TokyoMetro'],['KeioInokashira','Keio'],
+  ['Yurikamome','Yurikamome'],['Enoshima','EnoshimaElectric'],
+  ['SeibuYamaguchi','Seibu']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.Express'),null,
+  line+': only Local is valid on this line');
+
+const throughPresets=presets.listThrough();
+assert.ok(throughPresets.length>=22);
+const throughKeys=new Set();
+for (const entry of throughPresets) {
+  assert.ok(entry.vehicleOwner && entry.vehicleOwner!==entry.operator);
+  assert.ok(entry.models.length && /^https:\/\//.test(entry.sourceUrl));
+  for (const line of entry.lineIds) {
+    const key=entry.operator+'|'+line+'|'+entry.vehicleOwner;
+    assert.ok(!throughKeys.has(key),'duplicate through ownership scope '+key);
+    throughKeys.add(key);
+    assert.equal(railwayData.lines[line].operator,entry.operator);
+    const v=presets.lookup(line,entry.operator,'odpt.TrainType:'+entry.operator+'.Local',
+      {trainOwner:entry.vehicleOwner});
+    assert.ok(v && v._fleetReferenceOnly && !v.iconPath && !v.vehicleType);
+    assert.equal(v.vehicleOwner,entry.vehicleOwner);
+    assert.deepEqual(Array.from(v.vehicleCandidates),Array.from(entry.models));
+  }
+}
+for (const [line,op,owner,model] of [
+  ['Hibiya','TokyoMetro','Tobu','東武70000型'],
+  ['Tozai','TokyoMetro','JR-East','E231系800番台'],
+  ['Tozai','TokyoMetro','ToyoRapid','東葉高速鉄道2000系'],
+  ['Chiyoda','TokyoMetro','Odakyu','小田急4000形'],
+  ['JobanLocal','JR-East','TokyoMetro','東京メトロ16000系'],
+  ['Hanzomon','TokyoMetro','Tobu','東武50050型'],
+  ['Namboku','TokyoMetro','SaitamaRapidRailway','埼玉高速鉄道2000系'],
+  ['Mita','Toei','Sotetsu','相鉄21000系'],
+  ['Fukutoshin','TokyoMetro','Tokyu','東急5050系'],
+  ['Asakusa','Toei','Keikyu','京急1000形'],
+  ['Rinkai','Rinkai','JR-East','E233系7000番台']
+]) {
+  const v=presets.lookup(line,op,'odpt.TrainType:'+op+'.Local',
+    {trainOwner:'odpt.TrainOwner:'+owner});
+  assert.ok(v && v.vehicleCandidates.includes(model),line+' missing '+owner);
+  assert.equal(v.identityStatus,undefined);
+}
+for (const [line,op,owner] of [
+  ['Chiyoda','TokyoMetro','Keisei'],
+  ['Tozai','TokyoMetro','Tokyu'],
+  ['Asakusa','Toei','Tobu'],
+  ['Ginza','TokyoMetro','JR-East'],
+  ['Rinkai','Rinkai','Seibu']
+]) assert.equal(presets.lookup(line,op,'odpt.TrainType:'+op+'.Local',
+  {trainOwner:owner}),null,line+': unknown foreign owner cannot borrow route fleet');
+
 const scripts=fs.readFileSync(path.join(root,'pages/trains.html'),'utf8');
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js')>0);
 assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js') <
@@ -330,13 +405,15 @@ assert.ok(scripts.indexOf('major-vehicle-fleet-presets.js') <
 
 vm.runInNewContext(fs.readFileSync(path.join(root,'js/train-vehicle.js'),'utf8'),
   ctx,{filename:'train-vehicle.js',timeout:15000});
-function run(lineId,op,type,level,candidate){
+function run(lineId,op,type,level,candidate,owner){
   const r={trainNumber:'UNKNOWN_123',calendar:'odpt.Calendar:Weekday',
     trainType:'odpt.TrainType:'+op+'.'+type};
   const tt={_positionSource:'supabase-train-run',
     _sqlVehicleMappingLevel:level||'unresolved',
     _sqlVehicleCandidateLabel:candidate||'',
-    'odpt:trainType':r.trainType,_serviceDate:'2026-11-02'};
+    'odpt:trainType':r.trainType,
+    'odpt:trainOwner':owner ? 'odpt.TrainOwner:'+owner : '',
+    _serviceDate:'2026-11-02'};
   return browser.TrainVehicle.resolveTimetableRun(r,tt,lineId,{operator:op},'2026-11-02').vehicleResult;
 }
 for (const [line,op] of [
@@ -346,6 +423,7 @@ for (const [line,op] of [
   ['Keisei','Keisei'],['Tojo','Tobu'],['Noda','Tobu'],
   ['Senseki','JR-East'],['SensekiTohoku','JR-East'],
   ['Kamaishi','JR-East'],['NambuBranch','JR-East'],
+  ['TokyuKodomonokuni','Tokyu'],['TokyuOimachi','Tokyu'],
   ['SotetsuMain','Sotetsu'],['YokohamaBlue','YokohamaMunicipal'],
   ['SaninMain','JR-West'],['Nippo','JR-Kyushu'],
   ['Hohi','JR-Kyushu'],['Hakodate2','HakodateCity'],
@@ -357,6 +435,25 @@ for (const [line,op] of [
   assert.equal(v.vehiclePlan?.status,'FLEET_REFERENCE',line+': missing route reference');
   assert.equal(v.vehiclePlan?.iconPath,'',line+': no fleet PNG');
 }
+// End-to-end timetable adapter must honor explicit ownership when present.
+for (const [line,op,owner,expected] of [
+  ['Mita','Toei','Sotetsu','相鉄21000系'],
+  ['Tozai','TokyoMetro','ToyoRapid','東葉高速鉄道2000系'],
+  ['Chiyoda','TokyoMetro','Odakyu','小田急4000形'],
+  ['Rinkai','Rinkai','JR-East','E233系7000番台']
+]) {
+  const v=run(line,op,'Local','unresolved','',owner);
+  assert.equal(v.identityStatus,'UNKNOWN');
+  assert.equal(v.iconPath,'');
+  assert.equal(v.vehiclePlan?.status,'FLEET_REFERENCE');
+  assert.ok(v.vehiclePlan?.models?.some(m=>String(m).includes(expected)),
+    line+': owner-scoped timetable vehicle plan missing '+expected);
+}
+const invalidThrough=run('Chiyoda','TokyoMetro','Local','unresolved','','Keisei');
+assert.equal(invalidThrough.identityStatus,'UNKNOWN');
+assert.ok(!invalidThrough.vehiclePlan?.models?.length,
+  'foreign trainOwner must not inherit TokyoMetro 16000 cars');
+
 const limited=run('Yokosuka','JR-East','LimitedExpress');
 assert.ok(!limited.vehiclePlan?.models?.length,
   'LimitedExpress must not borrow conventional commuter fleet');
