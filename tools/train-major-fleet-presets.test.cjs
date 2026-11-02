@@ -374,7 +374,7 @@ for (const entry of throughPresets) {
 for (const [line,op,owner,model] of [
   ['Hibiya','TokyoMetro','Tobu','東武70000型'],
   ['Tozai','TokyoMetro','JR-East','E231系800番台'],
-  ['Tozai','TokyoMetro','ToyoRapid','東葉高速鉄道2000系'],
+  ['Tozai','TokyoMetro','ToyoRapid','2000系'],
   ['Chiyoda','TokyoMetro','Odakyu','小田急4000形'],
   ['JobanLocal','JR-East','TokyoMetro','東京メトロ16000系'],
   ['Hanzomon','TokyoMetro','Tobu','東武50050型'],
