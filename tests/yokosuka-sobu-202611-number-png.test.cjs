@@ -12,6 +12,7 @@ const indexFile='data/timetables/jreast-sobu-yokosuka-202611-number-index.js';
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
   indexFile,
+  'data/timetables/jreast-chiba-number-index-202611.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
@@ -27,7 +28,7 @@ function position(line,number,type,calendar='holiday',change={}) {
   return {
     trainId:'published:'+line+':'+number,
     trainNumber:number,positionLineId:line,
-    sourceRailway:'odpt.Railway:JR-East.'+line,trainOperator:'JR-East',
+    sourceRailway:'odpt.Railway:JR-East.'+(line==='SobuMain'?'Sobu':line),trainOperator:'JR-East',
     trainType:'odpt.TrainType:JR-East.'+type,
     serviceDate:'2026-11-03',calendarType:calendar,
     positionSource:'realtime-api',estimated:false,
@@ -160,4 +161,75 @@ test('source railway, operator, train type, date, approved model and page cache 
   const vehicle=html.indexOf('js/train-vehicle.js');
   assert.ok(gallery>=0&&gallery<indexAt&&indexAt<numberRules&&numberRules<vehicle,
     'approved gallery and dated index must load before number PNG selector');
+});
+
+
+test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
+  assert.ok(root.JREastChibaNumberIndex202611);
+  assert.equal(root.JREastChibaNumberIndex202611.rows,35);
+  const p235='../images/列车/JR東日本/JR東日本_E235系_1000番台.png';
+  const p259='../images/列车/JR東日本/JR東日本_E259系.png';
+  const p257='../images/列车/JR東日本/JR東日本_E257系_500番台.png';
+  const entries=[
+    ['SobuMain','2627F','Rapid','holiday','E235系1000番台',p235],
+    ['Uchibo','2577F','Rapid','holiday','E235系1000番台',p235],
+    ['Sotobo','3573F','Rapid','holiday','E235系1000番台',p235],
+    ['Kashima','2520M','Local','holiday','E235系1000番台',p235],
+    ['Narita','2545M','Local','weekday','E235系1000番台',p235],
+    ['Yokosuka','1005S','Local','holiday','E235系1000番台',p235],
+    ['Yokosuka','2001M','LimitedExpress','holiday','E259系',p259],
+    ['SobuMain','4001M','LimitedExpress','holiday','E259系',p259],
+    ['SobuRapid','4001M','LimitedExpress','holiday','E259系',p259],
+    ['SobuMain','4006M','LimitedExpress','weekday','E257系500番台',p257],
+    ['SobuRapid','4006M','LimitedExpress','weekday','E257系500番台',p257],
+    ['Keiyo','1051M','LimitedExpress','holiday','E257系500番台',p257],
+    ['Sotobo','1071M','LimitedExpress','weekday','E257系500番台',p257],
+    ['Uchibo','1001M','LimitedExpress','weekday','E257系500番台',p257]
+  ];
+  entries.forEach(([line,num,kind,calendar,model,png])=>{
+    const p=position(line,num,kind,calendar);
+    assertModel(p,model,png);
+    const sql={...p,positionSource:'supabase-train-run',estimated:true,
+      calendarType:'',serviceId:calendar==='weekday'?
+        'odpt.Calendar:Weekday':'odpt.Calendar:SaturdayHoliday',
+      trainOperator:''};
+    assertModel(sql,model,png);
+  });
+  const index=root.JREastChibaNumberIndex202611;
+  const looksSimilar=[
+    position('SobuMain','4001M','LimitedExpress','holiday',{
+      sourceRailway:'odpt.Railway:JR-East.SobuMain'}),
+    position('SobuMain','4006M','LimitedExpress','weekday',{
+      sourceRailway:'odpt.Railway:JR-East.SobuRapid'}),
+    position('Yokosuka','2204M','LimitedExpress','holiday'),
+    position('Yokosuka','2522Y','Local','holiday'),
+    position('Yokosuka','1004H','Local','holiday'),
+    position('Yokosuka','3835M','Local','weekday'),
+    position('Kashima','548M','Local','holiday'),
+    position('SobuRapid','4006M','LimitedExpress','holiday'),
+    position('Uchibo','1001M','LimitedExpress','holiday'),
+    position('Sotobo','1071M','LimitedExpress','holiday'),
+    position('Narita','2001M','Local','holiday'),
+    position('SobuRapid','1004F','Rapid','weekday'),
+    position('SobuMain','4001M','LimitedExpress','holiday',{
+      realtimeVehicleType:'E257系500番台'}),
+    position('Uchibo','2577F','Rapid','holiday',{
+      vehiclePlan:{status:'PLANNED_MODEL',models:['E131系0番台']}})
+  ];
+  looksSimilar.forEach(p=>{
+    assert.equal(choose(p),null,'no incorrect train or actual model '+JSON.stringify(p));
+  });
+  assert.equal(index.observedE2575000['2026-09-21'].join(','),
+    '9071M,9077M,8083M','three evidenced one-day Azusa carset numbers');
+  for(const n of ['9071M','9077M','8083M']) {
+    assert.equal(choose(position('ChuoMain',n,'LimitedExpress','holiday')),null,
+      'Sep 21 E257-5000 observation never proves Nov service or PNG');
+  }
+  const html=fs.readFileSync('pages/trains.html','utf8');
+  const src=fs.readFileSync('data/timetables/jreast-chiba-number-index-202611.js','utf8');
+  const version=src.match(/version:"([^"]+)"/);
+  assert.ok(version);
+  assert.ok(html.includes('jreast-chiba-number-index-202611.js?v='+version[1]));
+  assert.ok(html.indexOf('jreast-chiba-number-index-202611.js') <
+    html.indexOf('train-number-png-ranges.js'));
 });
