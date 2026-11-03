@@ -829,3 +829,65 @@ test('Joban 2026-11 E231 H / E657 Hitachi-Tokiwa M official-number artwork',()=>
     html.indexOf('train-number-png-ranges.js'),
     'H set must load before the PNG selector');
 });
+
+test('Nambu 2319F official holiday train renders representative E233 PNG',()=>{
+  const image='../images/列车/JR東日本/JR東日本_E233系_8000番台.png';
+  const trainId='planned-trip:2026-11-03|JR-East|odpt.Railway%3AJR-East.Nambu|Nambu|2319F';
+  const position=live({
+    trainId,
+    trainNumber:'2319F',positionLineId:'Nambu',
+    sourceRailway:'odpt.Railway:JR-East.Nambu',trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-03',calendarType:'holiday',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  });
+  const reference=root.TrainVehicle.lookupTrainNumberRangePng(position);
+  assert.equal(reference.model,'E233系8000番台');
+  assert.equal(reference.pngPath,image);
+  assert.equal(reference.planned,true);
+  const visual=marker(position,'Nambu');
+  assert.equal(visual.kind,'vehicle');
+  assert.equal(visual.iconSrc,image);
+  assert.equal(visual.planned,true);
+  assert.equal(visual.compact,false);
+  assert.equal(position.vehicleIdentityStatus,'UNKNOWN',
+    'an E233-8000 reference does not exclude E233-8500 actual workings');
+  assert.equal(position.vehicleResolvedUpstream,false);
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...position,displayLineId:'Nambu'},true).kind,'unresolved',
+    'a failed PNG must retain the neutral ODPT position marker');
+  const rapid={...position,trainNumber:'4027F',
+    trainType:'odpt.TrainType:JR-East.Rapid'};
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(rapid).pngPath,image);
+  const planned=sql({
+    trainId,trainNumber:'2319F',positionLineId:'Nambu',
+    sourceRailway:'odpt.Railway:JR-East.Nambu',trainOperator:'',
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-03',calendarType:'holiday'
+  });
+  assert.equal(marker(planned,'Nambu').iconSrc,image,
+    'a SQL position can use its exact JR East railway scope when operator is omitted');
+  for(const changes of [
+    {trainNumber:'2319M'},
+    {trainNumber:'331F'},
+    {trainNumber:'5000F'},
+    {positionLineId:'NambuBranch'},
+    {displayLineId:'Yokohama'},
+    {sourceRailway:'odpt.Railway:JR-East.NambuBranch'},
+    {sourceRailway:'odpt.Railway:JR-East.NambuHamakawasaki'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.Nambu'},
+    {sourceRailway:''},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {trainType:''},
+    {serviceDate:'2026-10-31'},
+    {serviceDate:'2026-12-01'},
+    {serviceDate:''},
+    {realtimeVehicleType:'E127系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E233系8500番台']}}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+      {...position,...changes}),null,
+      'invalid Nambu representative artwork '+JSON.stringify(changes));
+  }
+});
