@@ -162,7 +162,8 @@
       allowedModelLabels:["211系（長野地区）"],rejectAmbiguousPlan:true,
       model:"211系（長野地区）",
       pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色.png"},
-    // 2026-11 JR East Keihin-Tohoku / Negishi public A/B/C train numbers:
+    // 2026-11 JR East Keihin-Tohoku / Negishi: exact published numbers,
+    // independently checked 1,263/1,263 against four 2611 official lists.
     // e.g. southbound 411B and 463C, northbound 950B and 818A.
     // The entire published 3/4-digit number is a train number; never
     // convert it to a two-digit operation suffix. Local / Rapid services
@@ -177,6 +178,7 @@
     // https://www.jreast.co.jp/train/local/e233.html
     {lineIds:["KeihinTohoku"],numberFormat:"full",
       from:400,to:2499,suffixes:"ABC",operator:"JR-East",
+      numberIndex:"jreast-keihin-202611",
       sourceOperatorFallback:true,trainTypes:["Local","Rapid"],
       sourceRailways:["odpt.Railway:JR-East.KeihinTohokuNegishi",
         "odpt.Railway:JR-East.KeihinTohoku"],
@@ -473,6 +475,11 @@
       }
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.numberIndex==="jreast-keihin-202611"){
+        var keihinIndex=root.JREastKeihin202611NumberIndex;
+        if(!keihinIndex || typeof keihinIndex.contains!=="function" ||
+            !keihinIndex.contains(number,context))continue;
+      }
       if(row.numberIndex==="jreast-sobu-yokosuka-202611"){
         // Prefer the complete typed, real-railway-URN source index. Old
         // snapshots used the UI key SobuMain where the provider uses Sobu
@@ -515,6 +522,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-ito-odoriko-v19",match:match
+    version:"20261104-keihin-official-numbers-v20",match:match
   });
 })(window);
