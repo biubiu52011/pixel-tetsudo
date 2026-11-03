@@ -4994,6 +4994,81 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       planned:true,representative:true};
   }
 
+  // A SOURCE-ONLY E531 label normally cannot authorize an icon. Exception:
+  // one two-segment Joban <-> JobanMain canonical SQL service, with its
+  // reciprocal continuity verified and (for live positions) independently
+  // joined to the *one* ODPT observation at a published station.
+  // Even here the PNG is an explicitly PLANNED REFERENCE, not a carset.
+  function lookupVerifiedJobanCanonicalE531Png(p) {
+    if (!p || !/^[0-9]{3,4}M$/.test(String(p.trainNumber || "")) ||
+        (p.positionSource !== "supabase-train-run" &&
+         p.positionSource !== "realtime-api")) return null;
+    var line=String(p.positionLineId || p.lineId || "").trim();
+    var displayLine=String(p.displayLineId || line).trim();
+    if ((line !== "Joban" && line !== "JobanMain") ||
+        displayLine !== line) return null;
+    var sourceRailway=String(p.sourceRailway || "");
+    if (sourceRailway !== "odpt.Railway:JR-East.Joban" &&
+        sourceRailway !== "odpt.Railway:JR-East.JobanRapid") return null;
+    var op=String(p.trainOperator || p.operator || "");
+    if (op && op !== "JR-East" && op !== "odpt.Operator:JR-East") return null;
+    var date=String(p.serviceDate || "").slice(0,10);
+    // Restrict undated source-model annotations to the timetable generation
+    // being inspected; later revisions must be re-audited, not assumed.
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+        date < "2026-03-14" || date > "2027-03-12") return null;
+    var calendar=String(p.calendarType || "");
+    if (calendar !== "weekday" && calendar !== "holiday") {
+      var raw=String(p.serviceId || p.timetableCalendar || "");
+      calendar=/(?:^|[.:])Weekday$/.test(raw) ? "weekday" :
+        /(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
+          ? "holiday" : "";
+    }
+    if (calendar !== "weekday" && calendar !== "holiday") return null;
+    var kind=String(p.trainType || "").split(/[.:]/).pop();
+    if (["Local","Rapid","SpecialRapid"].indexOf(kind) < 0) return null;
+    var id=String(p.canonicalTimetableId || "");
+    if (!/^[0-9]+$/.test(id) ||
+        String(p.runningChainId || "") !==
+          "canonical-sql-trip:" + date + ":" + id) return null;
+    var verified=false;
+    if (p.positionSource === "supabase-train-run") {
+      verified=p.canonicalGroupEvidence === "verified_continuation" &&
+        Array.isArray(p.canonicalLineIds) &&
+        p.canonicalLineIds.indexOf("Joban") >= 0 &&
+        p.canonicalLineIds.indexOf("JobanMain") >= 0 &&
+        p.plannedVehicleCandidateStatus === "source_single_type_candidate" &&
+        Array.isArray(p.plannedVehicleCandidates) &&
+        p.plannedVehicleCandidates.length === 1 &&
+        p.plannedVehicleCandidates[0] === "E531系";
+    } else {
+      var ref=p.canonicalPlannedVehicleReference || null;
+      verified=p.runningChainEvidence ===
+          "VERIFIED_SQL_CANONICAL_REALTIME_STATION" &&
+        !!ref && ref.source === "verified-canonical-sql-source-candidate" &&
+        ref.model === "E531系" && ref.confirmed === false &&
+        String(ref.canonicalTimetableId || "") === id &&
+        ref.serviceDate === date && ref.trainNumber === p.trainNumber;
+    }
+    if (!verified) return null;
+    var models=p.vehiclePlan && p.vehiclePlan.models;
+    if (Array.isArray(models) && models.length &&
+        (models.length !== 1 || models[0] !== "E531系")) return null;
+    // A conflicting explicit ODPT vehicle model must win over a historical
+    // SQL candidate; never paint a different observed vehicle as E531.
+    var realtimeModel=String(p.realtimeVehicleType ||
+      p.realtimeDerivedVehicleType || "");
+    if (realtimeModel && realtimeModel !== "E531系") return null;
+    var png=normalizeGalleryPngPath(
+      "../images/列车/JR東日本/JR東日本_E531系.png");
+    var garage=window.VehicleGaragePngMap;
+    if (!png || !garage || !garage.matchModelPath("E531系",png,line))
+      return null;
+    return {trainNumber:p.trainNumber,lineId:line,model:"E531系",
+      pngPath:png,source:"verified-canonical-sql-model-reference",
+      planned:true,representative:true};
+  }
+
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -5025,7 +5100,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
     // its actual-car status, or the original train-number identity.
     var numberPng = !identityConfirmed ?
-      (lookupTrainNumberPng(p) || lookupTrainNumberRangePng(p)) : null;
+      (lookupTrainNumberPng(p) || lookupTrainNumberRangePng(p) ||
+       lookupVerifiedJobanCanonicalE531Png(p)) : null;
     if (numberPng) {
       if (artworkFailed !== true) {
         return {kind:"vehicle",iconSrc:numberPng.pngPath,planned:true};
@@ -5119,6 +5195,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     resolvePublishedPositionPlan: resolvePublishedPositionPlan,
     lookupTrainNumberPng: lookupTrainNumberPng,
     lookupTrainNumberRangePng: lookupTrainNumberRangePng,
+    lookupVerifiedJobanCanonicalE531Png: lookupVerifiedJobanCanonicalE531Png,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     getOperationPngLibrary: getOperationPngLibrary,
