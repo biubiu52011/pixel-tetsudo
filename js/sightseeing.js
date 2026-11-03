@@ -41,7 +41,8 @@
       match: ['shrine', 'temple', 'museum', 'history', 'modern']
     },
     { key: 'gourmet', label: 'tourism.group_gourmet',
-      match: ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'family']
+      // 亲子 family 是受众维度，不应把游乐设施误归入美食筛选。
+      match: ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty']
     },
     { key: 'shopping', label: 'tourism.group_shopping',
       // 百货商场归入景点；购物筛选只包含普通店铺。
@@ -105,7 +106,9 @@
     if (tags.indexOf('event') >= 0) return 'event';
     // 百货商场优先归景点。
     if (tags.indexOf('mall') >= 0) return 'spot';
-    if (tags.indexOf('food') >= 0 || tags.indexOf('shopping') >= 0 || tags.indexOf('play') >= 0) return 'shop';
+    // TourismType 是正常路径的唯一分类来源；回退路径也覆盖吃、喝、购物与玩乐。
+    var shopTags = ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'shopping', 'shop', 'hotel', 'play'];
+    if (tags.some(function(tag) { return shopTags.indexOf(tag) >= 0; })) return 'shop';
     return 'spot';
   }
   function isAcrossRiver(stationLat, stationLng, spotLat, spotLng) {
