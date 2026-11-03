@@ -643,9 +643,11 @@ test('SQL Yokohama 2221K uses E233-6000 as display-only image',()=>{
   assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
 });
 test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind reassignment',()=>{
+  const holidayYokohama = {serviceDate:'2026-11-03',calendarType:'holiday',
+    sourceRailway:'odpt.Railway:JR-East.Yokohama'};
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
-  assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama').model,'E233系6000番台');
-  assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama').model,'E233系6000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama',holidayYokohama).model,'E233系6000番台');
+  assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama',holidayYokohama).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe').model,
     'E233系7000番台','the Saikyo tail interpretation is unchanged');
   assert.equal(root.TrainNumberPngRanges.match('2221K','Rinkai').model,
@@ -1442,6 +1444,8 @@ test('Tsurumi SQL source-operator fallback rejects ambiguous and foreign sources
     assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
       'Tsurumi must reject '+JSON.stringify(bad));
   }
-  assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama').model,'E233系6000番台');
+  assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama',{
+    serviceDate:'2026-11-03',calendarType:'holiday',
+    sourceRailway:'odpt.Railway:JR-East.Yokohama'}).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
 });
