@@ -24,7 +24,7 @@
   function match(model,number,line,context) {
     if(!context)return false;
     var date=String(context.serviceDate||"").slice(0,10);
-    if(!/^\d{4}-\d{2}-\\d{2}$/.test(date) ||
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date) ||
       date<"2026-11-01"||date>"2026-11-30")return false;
     if(String(context.sourceRailway||"")!==
        "odpt.Railway:JR-East."+String(line||""))return false;
@@ -39,7 +39,7 @@
     return !!(sets[group]&&sets[group].has(String(number||"")));
   }
   root.JREastSobuYokosuka202611NumberIndex=Object.freeze({
-    version:"20261103-yokosuka-sobu-published-v1",
+    version:"20261103-yokosuka-sobu-published-v2",
     models:Object.freeze(["E235系1000番台","E259系","E257系500番台"]),
     match:match
   });
