@@ -93,7 +93,7 @@ test('2026-11-07 Supabase edge uses verified official numbered Sotobo replacemen
   const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
   assert.match(edge,/applyBosoNovember7DatedNumbers/);
   assert.match(edge,/serviceDate !== "2026-11-07"/);
-  for(const [normal,official] of [['3573F','9573M'],['3719F','9887M'],['3845F','8939M']]){
+  for(const [normal,official] of [['3573F','9573M'],['3719F','9887M'],['3845F','8939M'],['3680F','9680M'],['3606F','9606M']]){
     assert.match(edge,new RegExp('"'+normal+'": \\{number:"'+official+'"'));
   }
   assert.match(edge,/run\.timetable_date_verified = true/);
