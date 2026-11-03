@@ -105,6 +105,18 @@
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
+    // 2026-11 Joban Rapid E231-0: exact weekday / holiday 2611 H
+    // public train-number set, never a blanket 430H-2495H interval.
+    // https://timetables.jreast.co.jp/2611/timetable-v/642u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/642u2.html
+    {lineIds:["Joban"],numberFormat:"full",from:430,to:2495,
+      suffixes:"H",operator:"JR-East",trainTypes:["Rapid"],
+      sourceRailways:["odpt.Railway:JR-East.JobanRapid"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"joban-e231-h-202611",
+      allowedModelLabels:["E231系0番台","E231系0番台（常磐快速線・LED）"],
+      model:"E231系0番台（常磐快速線・LED）",
+      pngPath:"../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png"},
     // 2026-11 JR East regular Hitachi 1-30M / Tokiwa 51-86M.
     // These are exact timetable-bounded limited-express public numbers,
     // NOT a claim about the particular physical E657 formation.
@@ -115,6 +127,7 @@
       sourceRailways:["odpt.Railway:JR-East.Joban",
         "odpt.Railway:JR-East.JobanRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E657系","E657系（ひたち・ときわ）"],
       model:"E657系",
       pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
     {lineIds:["Joban","JobanMain"],numberFormat:"full",from:51,to:86,
@@ -122,6 +135,7 @@
       sourceRailways:["odpt.Railway:JR-East.Joban",
         "odpt.Railway:JR-East.JobanRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E657系","E657系（ひたち・ときわ）"],
       model:"E657系",
       pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
     // JR East's 2026-11 holiday timetable lists 1252M as a regular
@@ -232,6 +246,22 @@
       }
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.numberIndex==="joban-e231-h-202611"){
+        var idx=root.JobanE231RapidNumberIndex;
+        if(!idx || typeof idx.match!=="function" ||
+            !idx.match(number,String(context&&context.calendarType||""),
+              context&&context.serviceDate))continue;
+      }
+      if(row.allowedModelLabels && context){
+        var observed=String(context.realtimeVehicleType ||
+          context.realtimeDerivedVehicleType || "").trim();
+        if(observed && row.allowedModelLabels.indexOf(observed)<0)continue;
+        var plan=context.vehiclePlan;
+        if(plan && (plan.confirmed===true || plan.status==="PLANNED_MODEL") &&
+            Array.isArray(plan.models) && plan.models.length &&
+            plan.models.some(function(m){return row.allowedModelLabels.indexOf(m)<0;}))
+          continue;
+      }
       if(row.requireCompatiblePlan && context && context.vehiclePlan &&
           Array.isArray(context.vehiclePlan.models) && context.vehiclePlan.models.length &&
           context.vehiclePlan.models.indexOf(row.model)<0)continue;
@@ -242,6 +272,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v10",match:match
+    version:"20261103-direct-number-v11",match:match
   });
 })(window);
