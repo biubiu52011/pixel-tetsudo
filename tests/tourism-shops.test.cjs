@@ -40,6 +40,7 @@ function renderShop(spot) {
   const messages = {
     'detail.menu': 'おすすめ',
     'detail.shop_photo': '店舗写真',
+    'detail.illustration': 'イメージ画像',
     'detail.tips': '訪問Tips',
     'detail.info_fee': '費用',
     'detail.info_hours': '営業時間',
@@ -151,6 +152,18 @@ test('verified shop photos replace note placeholders without pretending to be it
   assert.doesNotMatch(html, /dp-dish-price/, 'text notes do not invent prices');
 });
 
+test('illustrations have the same card layout and are not misrepresented as shop photos', () => {
+  const cover = '../images/観光地/recommend-illustrations/readin-writing-workshop.svg';
+  const html = renderShop({
+    name: 'Readin’ Writin’', tags: ['shopping'],
+    menu: [{ item: '子どもから高齢者まで参加可', kind: 'note', cover, coverRole: 'illustration' }],
+  });
+  assert.match(html, /イメージ画像/);
+  assert.match(html, /alt="Readin’ Writin’ - イメージ画像"/);
+  assert.match(html, /dp-dish-img/);
+  assert.doesNotMatch(html, /店舗写真|data-gallery-idx=|dp-dish-price/);
+});
+
 test('products and notes share one spot.menu recommendation carousel', () => {
   const mixed = renderShop({
     name: 'Cafe', tags: ['food'],
@@ -194,6 +207,7 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
   assert.ok(merchants.length >= 200, 'the complete catalog was checked');
   let noteCount = 0;
   let verifiedCovers = 0;
+  let illustratedCovers = 0;
   for (const spot of merchants) {
     assert.ok(Array.isArray(spot.menu) && spot.menu.length > 0, spot.name + ' lacks menu');
     assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips'), spot.name + ' keeps legacy tips');
@@ -208,8 +222,12 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
         assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'note should not invent image');
         assert.ok(!Object.prototype.hasOwnProperty.call(item, 'price'), 'note should not invent price');
         if (item.cover) {
-          assert.equal(item.coverRole, 'shop', 'storefront covers must be labelled as shop imagery');
-          assert.ok(item.cover.startsWith('../images/'), 'storefront covers use repository assets');
+          assert.ok(['shop', 'illustration'].includes(item.coverRole), 'covers must disclose photo vs illustration');
+          assert.ok(item.cover.startsWith('../images/'), 'covers should use repository assets');
+          if (item.coverRole === 'illustration') {
+            illustratedCovers++;
+            assert.match(item.cover, /\.svg$/, 'original illustrations should be SVG');
+          }
           const relative = item.cover.replace(/^\.\.\//, '');
           assert.ok(fs.existsSync(path.resolve(__dirname, '..', relative)), item.cover + ' is missing');
           verifiedCovers++;
@@ -221,7 +239,8 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
     }
   }
   assert.ok(noteCount > 500, 'tips were migrated as text-only menu entries');
-  assert.ok(verifiedCovers >= 800, 'most migrated shop notes have verified images');
+  assert.equal(verifiedCovers, noteCount, 'every migrated shop note has an available cover');
+  assert.equal(illustratedCovers, 9, 'only the nine newly illustrated notes are marked as illustrations');
   const compact = JSON.stringify(data);
   assert.equal(source('data/core/tourism_data.compact.json'), compact + '\n');
   assert.equal(
