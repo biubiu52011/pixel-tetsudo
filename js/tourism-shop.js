@@ -45,7 +45,10 @@
       rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.addr + '</span><span class="dp-info-label">' + C.t('detail.address') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotAddress) + '</span></div>';
     }
     return '<div class="dp-head">'
-      + '<div class="dp-head-row"><h1 class="dp-name">' + C.escapeHtml(ctx.spotName) + '</h1>' + ctx.typeBadge + '</div>'
+      + '<div class="dp-head-row"><h1 class="dp-name">' + C.escapeHtml(ctx.spotName) + '</h1>' + ctx.typeBadge
+      + (ctx.spot.businessStatus === 'reported_closed'
+        ? '<span class="dp-shop-status">' + C.escapeHtml(C.t('detail.reported_closed')) + '</span>' : '')
+      + '</div>'
       + '<div class="dp-info-merged">' + rows + '</div>'
       + (ctx.tagsHtml ? '<div class="dp-chips">' + ctx.tagsHtml + '</div>' : '')
       + '</div>';
@@ -82,39 +85,66 @@
       + '<div class="dp-dish-name">' + C.escapeHtml(name) + '</div>'
       + (item.price != null && item.price !== ''
         ? '<div class="dp-dish-price">' + C.escapeHtml(String(item.price)) + '</div>'
-        : '') + '</div>';
+        : '')
+      + (item.sourceUrl && /^https:\/\//i.test(item.sourceUrl)
+        ? '<a class="dp-dish-source" href="' + C.escapeHtml(item.sourceUrl)
+          + '" target="_blank" rel="noopener noreferrer">' + C.escapeHtml(C.t('detail.official_source')) + '</a>'
+        : '<span class="dp-dish-unverified">' + C.escapeHtml(C.t('detail.unverified')) + '</span>')
+      + '</div>';
   }
 
-  // ⑤ 推荐内容：餐饮、零售、娱乐和体验型商家都从 spot.menu 展示。
+  // ⑤ 只有真实商品、服务和体验才进入おすすめ；kind=note 保留在数据中作参考信息。
   function buildRecommendationsCard(spot) {
-    if (Array.isArray(spot.menu) && spot.menu.length > 0) {
-      var titleKey = 'detail.menu';
-      var list = spot.menu.slice(0, 10);
-      var badgeChar = String(spot.name || '').trim().charAt(0) || C.t('detail.badge_initial_fallback');
+    if (spot.businessStatus === 'reported_closed') return '';
+    var items = Array.isArray(spot.menu) ? spot.menu.map(function(item, index) {
+      return { item: item, index: index };
+    }).filter(function(entry) { return entry.item && entry.item.kind !== 'note'; }) : [];
+    if (!items.length) return '';
 
-      // 横向滚动预览行（含"查看全部"按钮）
-      var html = '<div class="dp-card dp-menu">';
-      html += '<div class="dp-menu-head"><h3 class="dp-sec-title">' + C.t(titleKey) + '</h3>';
-      html += '<button class="dp-menu-viewall" data-modal="' + ('dpMenuModal_' + (spot.menu._idx || 0)) + '">' + C.t('detail.view_all') + ' &rsaquo;</button>';
-      html += '</div><div class="dp-menu-carousel">';
-      for (var mi = 0; mi < list.length; mi++) {
-        html += buildRecommendedItem(spot, list[mi], mi, badgeChar);
-      }
-      html += '</div></div>';
-
-      // 全屏推荐内容模态
-      var modalId = 'dpMenuModal_' + (spot.menu._idx || 0);
-      html += '<div class="dp-menu-modal" id="' + modalId + '" role="dialog" aria-modal="true" aria-label="' + C.escapeHtml(C.t(titleKey)) + '">';
-      html += '<button class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close')) + '">&times;</button>';
-      html += '<div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">' + C.t(titleKey) + '</h3>';
-      html += '<div class="dp-menu-modal-grid">';
-      for (var mi2 = 0; mi2 < spot.menu.length; mi2++) {
-        html += buildRecommendedItem(spot, spot.menu[mi2], mi2, badgeChar);
-      }
-      html += '</div></div></div>';
-      return html;
+    var title = C.escapeHtml(C.t('detail.menu'));
+    var badgeChar = String(spot.name || '').trim().charAt(0) || C.t('detail.badge_initial_fallback');
+    var modalId = 'dpMenuModal_' + (spot.menu._idx || 0);
+    var html = '<div class="dp-card dp-menu"><div class="dp-menu-head">'
+      + '<h3 class="dp-sec-title">' + title + '</h3>'
+      + '<button class="dp-menu-viewall" data-modal="' + modalId + '">'
+      + C.escapeHtml(C.t('detail.view_all')) + ' &rsaquo;</button></div>'
+      + '<div class="dp-menu-carousel">';
+    for (var i = 0; i < Math.min(items.length, 10); i++) {
+      html += buildRecommendedItem(spot, items[i].item, items[i].index, badgeChar);
     }
-    return '';
+    html += '</div></div><div class="dp-menu-modal" id="' + modalId
+      + '" role="dialog" aria-modal="true" aria-label="' + title + '">'
+      + '<button class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close'))
+      + '">&times;</button><div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">'
+      + title + '</h3><div class="dp-menu-modal-grid">';
+    for (var j = 0; j < items.length; j++) {
+      html += buildRecommendedItem(spot, items[j].item, items[j].index, badgeChar);
+    }
+    return html + '</div></div></div>';
+  }
+
+  // 与真实商品区分：旧访问信息以紧凑文字形式出现，不再冒充商品图片卡片。
+  function buildVisitorNotes(spot) {
+    if (spot.businessStatus === 'reported_closed') {
+      return '<div class="dp-card dp-visitor-notes"><p class="dp-visitor-note-text">'
+        + C.escapeHtml(C.t('detail.closed_warning')) + '</p>'
+        + (spot.businessStatusSource && /^https:\/\//i.test(spot.businessStatusSource)
+          ? '<a class="dp-dish-source" href="' + C.escapeHtml(spot.businessStatusSource)
+            + '" target="_blank" rel="noopener noreferrer">' + C.escapeHtml(C.t('detail.check_source')) + '</a>'
+          : '') + '</div>';
+    }
+    var list = [];
+    (spot.menu || []).forEach(function(item, index) {
+      if (!item || item.kind !== 'note') return;
+      var translated = spot.menu_i18n && spot.menu_i18n[index] && spot.menu_i18n[index][C.state.lang];
+      var value = translated || item.item;
+      if (typeof value === 'string' && value.trim()) list.push(value.trim());
+    });
+    if (!list.length) return '';
+    return '<div class="dp-card dp-visitor-notes"><h3 class="dp-sec-title">'
+      + C.escapeHtml(C.t('detail.visit_notes')) + '</h3><p class="dp-visitor-note-text">'
+      + list.map(function(value) { return C.escapeHtml(value); }).join(' · ')
+      + '</p></div>';
   }
 
   // ⑥ 位置地图
@@ -126,7 +156,8 @@
   function renderShopPage(spot, stationKey) {
     var ctx = C.buildContext(spot, stationKey);
     var html = buildHero(ctx) + buildHeadCard(ctx)
-      + buildRecommendationsCard(spot) + buildInfoCard(ctx) + buildAboutCard(ctx) + buildMapCard(ctx)
+      + buildRecommendationsCard(spot) + buildInfoCard(ctx) + buildAboutCard(ctx)
+      + buildVisitorNotes(spot) + buildMapCard(ctx)
       + '<div class="dp-note">' + C.escapeHtml(C.t('detail.ai_note')) + '</div>';
     var container = document.getElementById('articleContainer');
     if (!container) return;
