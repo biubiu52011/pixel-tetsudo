@@ -2019,19 +2019,33 @@
             if (body.runs.some(function(run) {
                 return !run || run.line_id !== lineId || run.service_date !== serviceDate;
             })) throw new Error('TrainRun row identity mismatch');
+            // A source that has not passed a publication audit is not a
+            // confirmed missing train. Keep source confidence, row integrity
+            // and data availability as independent diagnostic dimensions.
+            var knownOmittedRuns=Math.max(0,Number(body.omitted_incomplete_runs)||0);
+            var auditStatus=String(body.audit_coverage_status||"unverified");
+            var sourceVerified=body.complete===true ||
+                (auditStatus==="verified"||auditStatus==="complete");
+            var knownOmissions=knownOmittedRuns>0;
+            var hasPlanRows=body.runs.length>0;
             _trainRunLastStatus[lineId] = {
                 serviceDate: serviceDate, source: body.source || "",
                 complete: body.complete === true, partial: body.partial === true,
+                // Legacy partial is a source-verification flag, not a train-loss count.
+                planAvailability:hasPlanRows?"available":"unconfirmed",
+                sourceVerification:sourceVerified?"verified":auditStatus,
+                recordIntegrity:knownOmissions?"known_omissions":"no_known_omissions",
+                missingTrainCount:null, // Not inferable from unaudited source rows.
                 calendarStatus: body.calendar_status || "",
                 sourceCoverage: body.source_coverage || "",
                 selectedCalendar: body.selected_calendar || "",
                 dateVerifiedRuns: Number(body.date_verified_runs) || 0,
                 dateUnverifiedRuns: Number(body.date_unverified_runs) || 0,
-                omittedIncompleteRuns: Number(body.omitted_incomplete_runs) || 0,
+                omittedIncompleteRuns: knownOmittedRuns,
                 suppressedStationOnlyFragments: Number(body.suppressed_station_only_source_fragments) || 0,
                 suppressedClockReversalRuns: Number(body.suppressed_non_midnight_clock_reversal_runs) || 0,
-                auditCoverageStatus: body.audit_coverage_status || "unverified",
-                runs: Array.isArray(body.runs) ? body.runs.length : 0,
+                auditCoverageStatus: auditStatus,
+                runs: body.runs.length,
                 updatedAt: Date.now()
             };
             if (body.source === "CALENDAR_NOT_VERIFIED" &&
@@ -2050,10 +2064,13 @@
             }).map(function(run){
                 var tt=_trainRunToTimetable(run);
                 if (!tt) return null;
-                if(body.complete!==true) {
-                    tt._timetableCoverage=body.partial===true ? "partial" : "unverified";
-                    tt._omittedIncompleteRuns=Number(body.omitted_incomplete_runs)||0;
-                }
+                // PARTIAL must mean there are known omitted records; a
+                // populated but undated source is unverified, not a known gap.
+                tt._timetableCoverage=knownOmissions ? "partial" :
+                    body.complete===true ? "verified" : "unverified";
+                tt._timetableSourceVerification=sourceVerified?"verified":auditStatus;
+                tt._timetableRecordIntegrity=knownOmissions?"known_omissions":"no_known_omissions";
+                tt._omittedIncompleteRuns=knownOmittedRuns;
                 return tt;
             }).filter(Boolean):[];
             _trainRunCache[key]={at:Date.now(),rows:rows};
@@ -2063,6 +2080,8 @@
             _trainRunLastStatus[lineId] = {
                 serviceDate: serviceDate, source: "SOURCE_ERROR", complete: false,
                 partial: false, calendarStatus: "unknown", runs: 0,
+                planAvailability: "error", sourceVerification: "unknown",
+                recordIntegrity: "unknown", missingTrainCount: null,
                 error: String(err && err.message || err), updatedAt: Date.now()
             };
             // 保留用户可见回退，但不要把失败的 SQL
