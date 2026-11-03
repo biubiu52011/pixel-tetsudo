@@ -54,6 +54,7 @@
     var days=row[3] ? row[3].map(function(d){return "2026-11-"+d;}) : null;
     return {
       trainNumber:row[0],serviceName:row[1],vehicleType:"E353系",
+      garagePngPath:"../images/列车/JR東日本/JR東日本_E353系.png",
       operator:"JR-East",networkKey:"ChuoMain",
       sourceRailways:["odpt.Railway:JR-East.Chuo","odpt.Railway:JR-East.ChuoMain"],
       trainType:"LimitedExpress",calendarType:row[2],
