@@ -105,6 +105,21 @@
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
+    // 2026-11 Nambu mainline JR-East F-numbered Local/Rapid services.
+    // Holiday 2319F: Kawasaki 23:13 -> Musashi-Mizonokuchi 23:34.
+    // E233-8000 is a representative line-stock IMAGE; E233-8500 also
+    // works on this line, so F numbers never prove a physical carset.
+    // https://timetables.jreast.co.jp/2611/train/140/141401.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/703d2.html
+    // https://media.jreast.co.jp/articles/1712
+    {lineIds:["Nambu"],numberFormat:"full",from:400,to:4999,
+      suffixes:"F",trainTypes:["Local","Rapid"],operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Nambu"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系8000番台"],
+      model:"E233系8000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_8000番台.png"},
     // 2026-11 Joban Rapid E231-0: exact weekday / holiday 2611 H
     // public train-number set, never a blanket 430H-2495H interval.
     // https://timetables.jreast.co.jp/2611/timetable-v/642u1.html
@@ -232,7 +247,17 @@
       }
       if(row.operator){
         var trainOperator=String(context&&(context.trainOperator||context.operator)||"");
-        if(trainOperator!==row.operator&&trainOperator!=="odpt.Operator:"+row.operator)continue;
+        // A planned SQL position can omit a trainOperator field even while
+        // carrying its exact JR-East ODPT railway URN. For explicitly
+        // source-scoped rows only, this verified namespace is sufficient.
+        var scopedSource=String(context&&context.sourceRailway||"");
+        var operatorFromSource=row.sourceOperatorFallback===true &&
+          !trainOperator && Array.isArray(row.sourceRailways) &&
+          row.sourceRailways.indexOf(scopedSource)>=0 &&
+          scopedSource.indexOf("odpt.Railway:"+row.operator+".")===0;
+        if(trainOperator!==row.operator&&
+            trainOperator!=="odpt.Operator:"+row.operator&&
+            !operatorFromSource)continue;
       }
       if(row.validFrom){
         var serviceDate=String(context&&context.serviceDate||"").slice(0,10);
@@ -272,6 +297,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v11",match:match
+    version:"20261103-direct-number-v12",match:match
   });
 })(window);
