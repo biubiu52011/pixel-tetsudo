@@ -550,10 +550,21 @@
     // JR East Tsurumi regular services changed to E131-1000 fleet in March
     // 2024. These remain scheduled DISPLAY REFERENCES, not observed sets.
     // 2026-11-03 holiday train 2200: Ogimachi 22:10 -> Tsurumi 22:27.
+    // The 2026-11-04 weekday 602/605/606 are also published bare numbers.
+    // SQL train-run estimates can omit trainOperator even though the exact
+    // original JR-East Tsurumi railway URN is present. Admit ONLY that
+    // authoritative source-railway namespace; never infer JR-East from a
+    // trainNumber or generic model candidate.
     // https://timetables.jreast.co.jp/2611/train/030/030851.html
+    // https://timetables.jreast.co.jp/2611/train/010/014271.html
+    // https://timetables.jreast.co.jp/2611/train/010/014301.html
     {lineIds:["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],
       numberFormat:"bare",from:400,to:2599,suffixes:"",
-      trainType:"Local",operator:"JR-East",validFrom:"2024-03-16",
+      trainType:"Local",operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Tsurumi",
+        "odpt.Railway:JR-East.TsurumiUmiShibauraBranch",
+        "odpt.Railway:JR-East.TsurumiOkawaBranch"],
+      validFrom:"2024-03-16",
       model:"E131系1000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png"},
     // 2026 scheduled Chuo limited express: 1M (Azusa 1),
@@ -713,6 +724,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-narita-abiko-2611-v27",match:match
+    version:"20261104-tsurumi-source-operator-v28",match:match
   });
 })(window);

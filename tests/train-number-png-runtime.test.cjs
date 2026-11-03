@@ -1319,3 +1319,66 @@ test('Yamanote G train number range never leaks to a different line or service',
   assert.equal(root.TrainNumberPngRanges.match('1501G','Yamanote',
     {...base,trainType:'odpt.TrainType:JR-East.Local'}).trainNumber,'1501G');
 });
+
+test('2026-11-04 Tsurumi 602/605/606 SQL positions omit operator but render scoped E131-1000 PNG',()=>{
+  const png='../images/列车/JR東日本/JR東日本_E131系_1000番台.png';
+  for(const [trainNumber,departure,terminal] of [
+    ['602','Ogimachi','Tsurumi'],
+    ['605','Tsurumi','Ogimachi'],
+    ['606','Bentembashi','Tsurumi']
+  ]){
+    const p=sql({
+      trainNumber,
+      trainId:'planned-trip:2026-11-04|JR-East|odpt.Railway:JR-East.Tsurumi|Tsurumi|'+trainNumber,
+      serviceDate:'2026-11-04',calendarType:'weekday',
+      positionLineId:'Tsurumi',trainOperator:undefined,operator:undefined,
+      sourceRailway:'odpt.Railway:JR-East.Tsurumi',
+      trainType:'odpt.TrainType:JR-East.Local',
+      positionSource:'supabase-train-run',estimated:true,
+      destinationStation:terminal,fromStation:departure
+    });
+    assert.equal(p.trainOperator,undefined,'SQL estimator does not copy operator into planned position');
+    const matched=root.TrainNumberPngRanges.match(trainNumber,'Tsurumi',p);
+    assert.ok(matched,'Tsurumi '+trainNumber+' must match exact JR-East source URN');
+    assert.equal(matched.model,'E131系1000番台');
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(mapped,trainNumber+' must resolve despite absent trainOperator');
+    assert.equal(mapped.pngPath,png);
+    assert.equal(mapped.representative,true);
+    const spec=marker(p,'Tsurumi');
+    assert.equal(spec.kind,'vehicle');
+    assert.equal(spec.planned,true);
+    assert.equal(spec.compact,false);
+    assert.equal(spec.iconSrc,png);
+    assert.equal(p.positionSource,'supabase-train-run');
+    assert.equal(p.estimated,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+});
+test('Tsurumi SQL source-operator fallback rejects ambiguous and foreign sources',()=>{
+  const base=sql({
+    trainNumber:'606',trainId:'planned-trip:2026-11-04|JR-East|Tsurumi|606',
+    serviceDate:'2026-11-04',calendarType:'weekday',
+    positionLineId:'Tsurumi',trainOperator:undefined,operator:undefined,
+    sourceRailway:'odpt.Railway:JR-East.Tsurumi',
+    trainType:'odpt.TrainType:JR-East.Local'
+  });
+  for(const bad of [
+    {sourceRailway:''},
+    {sourceRailway:'odpt.Railway:JR-East.Yokohama'},
+    {sourceRailway:'odpt.Railway:JR-Central.Tsurumi'},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {serviceDate:'2023-11-04'},
+    {serviceDate:''},
+    {trainNumber:'606B'},
+    {positionLineId:'Yokohama'},
+    {displayLineId:'Yokohama'}
+  ]){
+    const p={...base,...bad};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'Tsurumi must reject '+JSON.stringify(bad));
+  }
+  assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama').model,'E233系6000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
+});
