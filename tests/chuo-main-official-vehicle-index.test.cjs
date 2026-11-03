@@ -159,15 +159,18 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
     };
   }
   w.TrainPositionEstimator.registerManualTimetable('ChuoMain',[
-    timetable('8084M'),timetable('9086M')
+    timetable('8084M'),timetable('9086M'),timetable('8083M')
   ]);
   const positions=w.TrainPositionEstimator.estimateAllPositions(
     {ChuoMain:rail.lines.ChuoMain},{},{},null,{lineIds:['ChuoMain']}).ChuoMain || [];
-  assert.equal(positions.length,2);
+  assert.equal(positions.length,1,
+    'only the published Nov 3 special train should have a position');
   const allowed=positions.find(p=>p.trainNumber==='8084M');
   const excluded=positions.find(p=>p.trainNumber==='9086M');
   assert.ok(allowed);
-  assert.ok(excluded);
+  assert.equal(excluded,undefined,'9086M has NO published Nov 3 operation');
+  assert.equal(positions.find(p=>p.trainNumber==='8083M'),undefined,
+    '8083M has NO published Nov 3 operation');
   assert.equal(allowed.estimated,true);
   assert.equal(allowed.vehicleIdentityStatus,'UNKNOWN');
   assert.equal(allowed.vehiclePlan?.evidenceRole,'official-train-name-and-model');
@@ -175,5 +178,5 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
   assert.equal(png.kind,'vehicle');
   assert.equal(png.planned,true);
   assert.match(png.iconSrc,/JR東日本_E353系\.png$/);
-  assert.notEqual(excluded.vehiclePlan?.evidenceRole,'official-train-name-and-model');
+
 });
