@@ -19,10 +19,10 @@ test('shop routing supports food, drink, retail and play (including explicit cat
   const sandbox = { window: {} };
   execute('js/tourism-type.js', sandbox);
   const getType = sandbox.window.TourismType.getSpotType;
-  for (const tags of [['food'], ['drink'], ['shopping'], ['play'], ['cafe'], ['bar'], ['shop']]) {
+  for (const tags of [['food'], ['drink'], ['shopping'], ['play'], ['cafe'], ['bar'], ['shop'], ['store']]) {
     assert.equal(getType({ tags }), 'shop', tags.join(','));
   }
-  for (const category of ['restaurant', 'cafe', 'arcade', 'amusement', 'experience', 'entertainment', 'shopping']) {
+  for (const category of ['restaurant', 'cafe', 'arcade', 'amusement', 'experience', 'entertainment', 'shopping', 'store']) {
     assert.equal(getType({ category }), 'shop', category);
   }
   assert.equal(getType({ tags: ['mall', 'food'] }), 'spot', 'mall remains a spot');
@@ -100,37 +100,90 @@ test('play recommendations render with optional prices and without empty tips', 
   assert.equal(priceFields.length, 4, 'two priced items in preview and modal; unpriced item omitted');
 });
 
-test('tips-only shops use the same recommendations carousel without invented products or prices', () => {
-  const tipsOnly = renderShop({
-    name: 'Craft Store', tags: ['shopping'], menu: [],
-    tips: ['Handmade goods', 'Daily selection on SNS', 'Open early'],
-    tips_i18n: { ja: ['手作り雑貨', '新着商品はSNSで確認', '朝から営業'] },
+test('text-only menu entries use the same carousel without fabricated products or prices', () => {
+  const notesOnly = renderShop({
+    name: 'Craft Store', tags: ['store'],
+    menu: [
+      { item: 'Handmade goods', kind: 'note' },
+      { item: 'Daily selection on SNS', kind: 'note' },
+      { item: 'Open early', kind: 'note' },
+    ],
+    menu_i18n: [
+      { ja: '手作り雑貨', en: 'Handmade goods' },
+      { ja: '新着商品はSNSで確認', en: 'Daily selection on SNS' },
+      { ja: '朝から営業', en: 'Open early' },
+    ],
   });
-  assert.match(tipsOnly, /おすすめ/);
-  assert.match(tipsOnly, /dp-menu-carousel dp-rec-text-carousel/);
-  assert.match(tipsOnly, /dpRecommendTipsModal/);
-  assert.match(tipsOnly, /すべて見る/);
-  assert.match(tipsOnly, /手作り雑貨/);
-  assert.match(tipsOnly, /新着商品はSNSで確認/);
-  assert.match(tipsOnly, /朝から営業/);
-  assert.doesNotMatch(tipsOnly, /dp-shop-picks|dp-pick-list|訪問Tips/);
-  assert.doesNotMatch(tipsOnly, /dp-dish-price|dp-dish-img/);
-  assert.doesNotMatch(tipsOnly, /Handmade goods/, 'translation should take precedence');
+  assert.match(notesOnly, /おすすめ/);
+  assert.match(notesOnly, /dp-menu-carousel/);
+  assert.match(notesOnly, /dp-rec-text-item--menu/);
+  assert.match(notesOnly, /すべて見る/);
+  assert.match(notesOnly, /手作り雑貨/);
+  assert.match(notesOnly, /新着商品はSNSで確認/);
+  assert.match(notesOnly, /朝から営業/);
+  assert.doesNotMatch(notesOnly, /dp-shop-picks|dp-pick-list|訪問Tips/);
+  assert.doesNotMatch(notesOnly, /dp-dish-price|dp-dish-img|dp-dish-badge/);
+  assert.doesNotMatch(notesOnly, /Handmade goods/, 'menu translations take priority');
 });
 
-test('structured offers retain the image/price carousel and distinct visit tips; empty shops show neither', () => {
-  const withMenu = renderShop({
+test('products and notes share one spot.menu recommendation carousel', () => {
+  const mixed = renderShop({
     name: 'Cafe', tags: ['food'],
-    menu: [{ item: 'Coffee', price: '500円' }],
-    tips: ['Check opening hours'],
+    menu: [
+      { item: 'Coffee', price: '500円' },
+      { item: 'Check opening hours', kind: 'note' },
+    ],
+    menu_i18n: [
+      { ja: 'コーヒー' },
+      { ja: '営業時間を確認' },
+    ],
+    // Deprecated field must not create a second recommendation section.
+    tips: ['Old visit tip'],
   });
-  assert.match(withMenu, /dp-menu-carousel/);
-  assert.match(withMenu, /Coffee/);
-  assert.match(withMenu, /500円/);
-  assert.match(withMenu, /訪問Tips/);
-  assert.doesNotMatch(withMenu, /dp-rec-text-carousel/);
+  assert.match(mixed, /dp-menu-carousel/);
+  assert.match(mixed, /コーヒー/);
+  assert.match(mixed, /500円/);
+  assert.match(mixed, /営業時間を確認/);
+  assert.match(mixed, /dp-rec-text-item--menu/);
+  assert.doesNotMatch(mixed, /訪問Tips|Old visit tip|dp-shop-picks|dp-rec-text-carousel/);
   const empty = renderShop({ name: 'Cafe', tags: ['food'], menu: [], tips: [] });
-  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-carousel/);
+  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-item/);
+});
+
+test('all merchant data is normalized to spot.menu and generated snapshots remain in sync', () => {
+  const data = JSON.parse(source('data/core/tourism_data.json'));
+  const sandbox = { window: {} };
+  execute('js/tourism-type.js', sandbox);
+  const isShop = sandbox.window.TourismType.getSpotType;
+  const merchants = data.spots.filter(spot => isShop(spot) === 'shop');
+  assert.ok(merchants.length >= 200, 'the complete catalog was checked');
+  let noteCount = 0;
+  for (const spot of merchants) {
+    assert.ok(Array.isArray(spot.menu) && spot.menu.length > 0, spot.name + ' lacks menu');
+    assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips'), spot.name + ' keeps legacy tips');
+    assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips_i18n'), spot.name + ' keeps legacy translations');
+    assert.ok(Array.isArray(spot.menu_i18n), spot.name + ' lacks menu translations');
+    assert.equal(spot.menu.length, spot.menu_i18n.length, spot.name + ' translation length mismatch');
+    for (let i = 0; i < spot.menu.length; i++) {
+      const item = spot.menu[i];
+      assert.equal(typeof item.item, 'string', spot.name + ' item name missing');
+      if (item.kind === 'note') {
+        noteCount++;
+        assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'note should not invent image');
+        assert.ok(!Object.prototype.hasOwnProperty.call(item, 'price'), 'note should not invent price');
+        for (const lang of ['ja', 'zh', 'en', 'ko']) {
+          assert.equal(typeof spot.menu_i18n[i][lang], 'string', spot.name + ' note missing ' + lang);
+        }
+      }
+    }
+  }
+  assert.ok(noteCount > 500, 'tips were migrated as text-only menu entries');
+  const compact = JSON.stringify(data);
+  assert.equal(source('data/core/tourism_data.compact.json'), compact + '\n');
+  assert.equal(
+    source('data/core/tourism-data.file.js'),
+    'window.RAILWAY_TOURISM = ' + compact.replace(/<\/script/gi, '<\\/script') + ';\n',
+  );
 });
 
 test('all four languages use an industry-neutral recommendations title', () => {
