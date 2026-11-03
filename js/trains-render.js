@@ -2203,7 +2203,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
-        caption.textContent=captionBase;
+        var foldTrainNumber=String(p.trainNumber||'').trim();
+        // Public service numbers belong in the list too, not only the
+        // marker's accessibility title. Never print synthetic source IDs.
+        if (/^est_/i.test(foldTrainNumber) ||
+            /^(?:odpt[.:]|supabase:|manual-template:|planned-trip:)/i.test(foldTrainNumber))
+          foldTrainNumber='';
+        var foldCoupling=p.coupling && window.TrainCoupling &&
+          typeof window.TrainCoupling.label==='function'
+            ? window.TrainCoupling.label(p.coupling,lang) : '';
+        caption.textContent=[foldTrainNumber ? '#'+foldTrainNumber : '',
+          captionBase,foldCoupling].filter(Boolean).join(' · ');
         if (markerSpec.kind==='vehicle' && markerSpec.iconSrc) {
           var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
             _seibuCommuterCandidatesLabel(p,lineId,lang) ||
@@ -2217,7 +2227,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           icon.loading='lazy';
           if(fleetText) {
             icon.title=fleetText;
-            entry.setAttribute('aria-label',captionBase+' · '+fleetText);
+            entry.setAttribute('aria-label',caption.textContent+' · '+fleetText);
           }
           icon.onerror=function(){
             // A failed PNG must not leave a broken-image symbol in the list.
