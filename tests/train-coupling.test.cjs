@@ -63,7 +63,7 @@ test("split portions at Tokyo and beyond remain two separately numbered services
   for (const index of [4,5,6]) {
     const result = coupling.prepare([position("2002M",index),position("2202M",index)],stations);
     assert.equal(result.length,2);
-    assert.deepEqual(result.map(p=>p.trainNumber),["2002M","2202M"]);
+    assert.deepEqual(Array.from(result, p=>p.trainNumber),["2002M","2202M"]);
     assert.notEqual(result[0].trainId,result[1].trainId);
   }
 });
@@ -142,7 +142,7 @@ test("Atami split: two independent train numbers after junction, one jointly dis
   assert.equal(coupling.prepare([position("3021M",5,opts),position("4021M",5,opts)],line).length,2);
   const separate = coupling.prepare([position("3021M",6,opts),position("4021M",6,opts)],line);
   assert.equal(separate.length,2);
-  assert.deepEqual(separate.map(x=>x.trainNumber),["3021M","4021M"]);
+  assert.deepEqual(Array.from(separate, x=>x.trainNumber),["3021M","4021M"]);
   assert.match(coupling.label(separate[0].coupling,"zh"),/热海站分离后/);
 });
 
