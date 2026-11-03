@@ -105,6 +105,25 @@
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
+    // 2026-11 JR East regular Hitachi 1-30M / Tokiwa 51-86M.
+    // These are exact timetable-bounded limited-express public numbers,
+    // NOT a claim about the particular physical E657 formation.
+    // https://www.jreast.co.jp/train/express/hitachi_tokiwa.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/240u1p.html
+    {lineIds:["Joban","JobanMain"],numberFormat:"full",from:1,to:30,
+      suffixes:"M",operator:"JR-East",trainType:"LimitedExpress",
+      sourceRailways:["odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      model:"E657系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
+    {lineIds:["Joban","JobanMain"],numberFormat:"full",from:51,to:86,
+      suffixes:"M",operator:"JR-East",trainType:"LimitedExpress",
+      sourceRailways:["odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      model:"E657系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
     // JR East's 2026-11 holiday timetable lists 1252M as a regular
     // Katsuta -> Shinagawa service with a Green car. The canonical SQL
     // JobanMain -> Joban record also carries an E531 source-model candidate.
@@ -223,6 +242,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v9",match:match
+    version:"20261103-direct-number-v10",match:match
   });
 })(window);
