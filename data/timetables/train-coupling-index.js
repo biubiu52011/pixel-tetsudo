@@ -57,7 +57,7 @@
 
   function phaseOf(p, stationCoords) {
     var current = stationKey(p && (p.stationId || p.currentStation));
-    var idx = Number(p && p.stationIndex);
+    var idx = p && p.stationIndex != null ? Number(p.stationIndex) : NaN;
     if ((!current || (!shared[current] && !branch[current])) &&
         Array.isArray(stationCoords) && Number.isInteger(idx) && idx >= 0 && idx < stationCoords.length) {
       current = stationKey(stationCoords[idx] && stationCoords[idx].stationId);
