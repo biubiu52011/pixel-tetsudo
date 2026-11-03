@@ -134,5 +134,5 @@ test('SVG titles explain mixed fleet but do not hand out a fabricated PNG',()=>{
   // Renderer cache versions advance independently of the Shonan fleet
   // index: any dated asset version is valid, as long as it loads AFTER
   // the source index and never falls back to an unversioned stale script.
-  assert.match(html,/trains-render\\.js\\?v=20261104-[^"' ]+/);
+  assert.match(html,/trains-render\.js\?v=20261104-[^"' ]+/);
 });
