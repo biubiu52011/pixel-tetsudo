@@ -653,3 +653,20 @@ test('1252M Joban canonical / realtime has E531 planned PNG with strict evidence
   assert.match(migration,/actual_vehicle_confirmed/);
   assert.match(migration,/ON CONFLICT \(timetable_id\) DO NOTHING/);
 });
+
+test('train-map page loads the current number PNG rules instead of stale cached v7',()=>{
+  const page=fs.readFileSync('pages/trains.html','utf8');
+  const rules=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const expected=rules.match(/version:"([^"]+)",match:match/);
+  assert.ok(expected,'train-number rule module exposes a version');
+  const script=page.match(/<script src="\.\.\/data\/timetables\/train-number-png-ranges\.js\?v=([^"]+)"\/?>/);
+  assert.ok(script,'the train SVG page must load its number-to-PNG rules');
+  assert.equal(script[1],expected[1],
+    'change the page asset query whenever the train-number rule module changes');
+  const garageAt=page.indexOf('vehicle-garage-png-map.js');
+  const rulesAt=page.indexOf('train-number-png-ranges.js');
+  const vehicleAt=page.indexOf('js/train-vehicle.js');
+  const rendererAt=page.indexOf('js/trains-render.js');
+  assert.ok(garageAt>=0 && garageAt<rulesAt && rulesAt<vehicleAt &&
+    vehicleAt<rendererAt,'gallery, rules, selector and SVG renderer load in order');
+});
