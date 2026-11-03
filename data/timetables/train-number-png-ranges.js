@@ -293,6 +293,64 @@
       allowedModelLabels:["E231系3000番台"],
       rejectAmbiguousPlan:true,model:"E231系3000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E231系_3000番台.png"},
+    // Boso 2026-11: a narrow SQL published-number *nominal* stock family.
+    // 209 8-car and a few 4-car scheduled references survive the 209/E233
+    // transition. The PNG is only a route/model family representation,
+    // NOT a sighting of the real train or a promised 209 allocation.
+    // Never infer every M-number in the line is 209: the same route uses
+    // E131-0/80 and E233 converted stock. A conflicting actual model or
+    // a multi-model planned service overrides this fallback.
+    // 2026-11 JR East line tables:
+    // https://timetables.jreast.co.jp/2611/timetable-v/221u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/221d2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/220u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/220d1.html
+    {lineIds:["Uchibo"],numberFormat:"full",from:123,to:1135,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,publishedNumbers:[
+        "1133M","1135M","123M","129M","137M","141M",
+        "169M","175M","181M","187M","193M","197M"
+      ],
+      sourceRailways:["odpt.Railway:JR-East.Uchibo"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["209系","209系2000番台","209系2100番台",
+        "209系2000番台 / 2100番台",
+        "209系（8両所定・計画車種／実際の代走は別）",
+        "209系（4両所定・計画車種／番台・実車未確定）"],
+      rejectAmbiguousPlan:true,
+      model:"209系2000番台 / 2100番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_209系_2000・2100番台_房総地区.png"},
+    {lineIds:["Sotobo"],numberFormat:"full",from:221,to:1226,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,publishedNumbers:[
+        "1226M","221M","223M","240M","244M","261M",
+        "269M","275M","278M","286M","289M","297M"
+      ],
+      sourceRailways:["odpt.Railway:JR-East.Sotobo"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["209系","209系2000番台","209系2100番台",
+        "209系2000番台 / 2100番台",
+        "209系（8両所定・計画車種／実際の代走は別）"],
+      rejectAmbiguousPlan:true,
+      model:"209系2000番台 / 2100番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_209系_2000・2100番台_房総地区.png"},
+    // Sotobo Y-numbered KEIYO continuity: four current SQL references
+    // are explicitly labeled E233-5000. This is NOT a blanket rule for
+    // all A/Y services: other Keiyo through stock include E233-0/1000
+    // and 209 variants. Use 2611 full numbers, retain line and model
+    // evidence boundaries and never treat an icon as actual-car proof.
+    // https://timetables.jreast.co.jp/2611/timetable-v/220u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/220d1.html
+    {lineIds:["Sotobo"],numberFormat:"full",from:3680,to:5983,
+      suffixes:"Y",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      publishedNumbers:["3680Y","4883Y","5680Y","5983Y"],
+      sourceRailways:["odpt.Railway:JR-East.Sotobo"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系5000番台"],
+      rejectAmbiguousPlan:true,
+      model:"E233系5000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系5000番台.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -608,6 +666,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-yokohama-2611-exact-numbers-v24",match:match
+    version:"20261104-boso-209-keiyo-y-v25",match:match
   });
 })(window);
