@@ -162,6 +162,28 @@
       allowedModelLabels:["211系（長野地区）"],rejectAmbiguousPlan:true,
       model:"211系（長野地区）",
       pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色.png"},
+    // 2026-11 JR East Keihin-Tohoku / Negishi public A/B/C train numbers:
+    // e.g. southbound 411B and 463C, northbound 950B and 818A.
+    // The entire published 3/4-digit number is a train number; never
+    // convert it to a two-digit operation suffix. Local / Rapid services
+    // share the E233-1000 representative line-stock image.
+    // K trains are Yokohama Line through services (E233-6000) and must
+    // NOT borrow the Keihin-Tohoku E233-1000 artwork.
+    // Stock PNG is a display reference, NOT actual-carset verification.
+    // https://timetables.jreast.co.jp/2611/timetable-v/623d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/623d2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/623u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/623u2.html
+    // https://www.jreast.co.jp/train/local/e233.html
+    {lineIds:["KeihinTohoku"],numberFormat:"full",
+      from:400,to:2499,suffixes:"ABC",operator:"JR-East",
+      sourceOperatorFallback:true,trainTypes:["Local","Rapid"],
+      sourceRailways:["odpt.Railway:JR-East.KeihinTohokuNegishi",
+        "odpt.Railway:JR-East.KeihinTohoku"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系1000番台"],
+      model:"E233系1000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_1000番台.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -357,7 +379,7 @@
     var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
     // Include G for Yamanote's full public 3/4-digit G train numbers.
     // Line-scoped matching below prevents G from leaking to other routes.
-    var numbered=number.match(/^([0-9]{1,4})([KFMSTHYG])$/);
+    var numbered=number.match(/^([0-9]{1,4})([ABCKFMSTHYG])$/);
     var bare=number.match(/^([0-9]{3,4})$/);
     if((!regular&&!numbered&&!bare)||!line)return null;
     for(var i=0;i<rows.length;i++){
@@ -460,6 +482,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-chuo-main-local-m-v17",match:match
+    version:"20261104-keihin-abc-v18",match:match
   });
 })(window);
