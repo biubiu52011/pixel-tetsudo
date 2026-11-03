@@ -255,9 +255,10 @@ function renderGrid() {
     const allSpots = getAllSpotsDynamic();
     const stationCoords = getStationCoords();
     const sCoord = stationCoords[stationKey];
-    let spotList = allSpots;
+    // 已有明确闭店报告的商家不作为仍在营业的周边推荐。
+    let spotList = allSpots.filter(function(s) { return s.businessStatus !== 'reported_closed'; });
     if (sCoord && sCoord[0] && sCoord[1]) {
-      spotList = allSpots.filter(function(s) {
+      spotList = spotList.filter(function(s) {
         return s.distM !== null && s.distM <= 3000;
       });
     }
