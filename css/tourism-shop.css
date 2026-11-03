@@ -80,3 +80,43 @@
 /* Full menu preserves complete existing labels and price notes. */
 .article-content--shop .dp-menu-modal .dp-dish-name { display: block; -webkit-line-clamp: unset; overflow: visible; }
 .article-content--shop .dp-menu-modal .dp-dish-price { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+
+/* 文字のみのおすすめ：商品画像・価格のない店舗も同じ横スクロールと全件表示を使う。 */
+.article-content--shop .dp-rec-text-carousel .dp-rec-text-item {
+  flex: 0 0 min(230px, 72vw);
+  scroll-snap-align: start;
+}
+.article-content--shop .dp-rec-text-item {
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  gap: 10px;
+  min-height: 116px;
+  padding: 16px 13px;
+  border: 1px solid #ffe7d7;
+  border-radius: 12px;
+  background: #fff7f1;
+}
+.article-content--shop .dp-rec-text-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: #E8590C;
+}
+.article-content--shop .dp-rec-text-body {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #333;
+  overflow-wrap: anywhere;
+}
+.article-content--shop .dp-rec-text-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+.article-content--shop .dp-rec-text-grid .dp-rec-text-item {
+  width: 100%;
+  min-height: 0;
+}
