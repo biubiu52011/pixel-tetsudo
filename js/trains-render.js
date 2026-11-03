@@ -1311,8 +1311,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           lang === "en" ? "Scheduled model unconfirmed (reference only): " :
           lang === "ko" ? "계획 차종 미확인(참고): " :
           "計画車種未確認（参考）：");
+    var alternates = sharedWorkingRepresentative && Array.isArray(plan.alternativeModels)
+      ? plan.alternativeModels.map(function(model){return String(model || "").trim();})
+          .filter(function(model){return !!model && models.indexOf(model) < 0;})
+      : [];
+    var altText = alternates.length
+      ? (/^zh/.test(lang) ? "（其他可能车型：" :
+         lang === "en" ? " (Other possible models: " :
+         lang === "ko" ? " (다른 가능 차종: " : "（その他の候補車種：") +
+        alternates.slice(0, 4).join(" / ") +
+        (/^zh/.test(lang) || lang === "ja" ? "）" : ")")
+      : "";
     return prefix + models.slice(0, 6).join(" / ") +
-      (models.length > 6 ? (/^zh/.test(lang) ? " 等" : " …") : "");
+      (models.length > 6 ? (/^zh/.test(lang) ? " 等" : " …") : "") + altText;
   }
 
   // The fold list only needs a model name next to service/destination.
