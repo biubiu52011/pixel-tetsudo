@@ -27,6 +27,7 @@
     bar: 'tourism.tag_bar',
     bakery: 'tourism.tag_bakery',
     shop: 'tourism.tag_shop',
+    store: 'tourism.tag_store',
     hotel: 'tourism.tag_hotel',
     local_specialty: 'tourism.tag_local_specialty',
     family: 'tourism.tag_family',
