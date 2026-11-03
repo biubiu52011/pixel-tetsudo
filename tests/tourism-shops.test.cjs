@@ -164,6 +164,20 @@ test('illustrations have the same card layout and are not misrepresented as shop
   assert.doesNotMatch(html, /店舗写真|data-gallery-idx=|dp-dish-price/);
 });
 
+test('product offers without a product photo use a labelled merchant photo without false gallery data', () => {
+  const cover = '../images/観光地/木挽町よしや.jpg';
+  const html = renderShop({
+    name: '木挽町よしや', tags: ['food'],
+    menu: [{ item: 'どら焼き（2個入）', price: '378円', cover, coverRole: 'shop' }],
+  });
+  assert.match(html, /どら焼き（2個入）/);
+  assert.match(html, /378円/);
+  assert.match(html, /店舗写真/);
+  assert.match(html, /dp-dish-img/);
+  assert.doesNotMatch(html, /data-gallery-idx=/,
+    'shop representatives must never enter a product-specific gallery');
+});
+
 test('products and notes share one spot.menu recommendation carousel', () => {
   const mixed = renderShop({
     name: 'Cafe', tags: ['food'],
@@ -208,6 +222,8 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
   let noteCount = 0;
   let verifiedCovers = 0;
   let illustratedCovers = 0;
+  let productPhotoCount = 0;
+  let shopPhotoProductCount = 0;
   for (const spot of merchants) {
     assert.ok(Array.isArray(spot.menu) && spot.menu.length > 0, spot.name + ' lacks menu');
     assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips'), spot.name + ' keeps legacy tips');
@@ -235,9 +251,27 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
         for (const lang of ['ja', 'zh', 'en', 'ko']) {
           assert.equal(typeof spot.menu_i18n[i][lang], 'string', spot.name + ' note missing ' + lang);
         }
+      } else {
+        assert.ok(item.img || item.cover, spot.name + ' product or experience is missing an image');
+        const mediaPath = item.img || item.cover;
+        assert.ok(mediaPath.startsWith('../images/'), spot.name + ' media must be local');
+        assert.ok(fs.existsSync(path.resolve(__dirname, '..', mediaPath.replace(/^\.\.\//, ''))),
+          spot.name + ' has a broken product/experience image path: ' + mediaPath);
+        if (item.img) {
+          productPhotoCount++;
+          assert.ok(!item.cover, 'real product photography must remain preferred');
+        } else {
+          shopPhotoProductCount++;
+          assert.equal(item.coverRole, 'shop', 'shared storefront imagery must be labelled as shop photo');
+          assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'do not invent a product photo');
+        }
       }
     }
   }
+  assert.equal(productPhotoCount + shopPhotoProductCount, 378,
+    'all original product and experience recommendations are covered');
+  assert.equal(shopPhotoProductCount, 303, 'missing and broken product images have shop photo covers');
+  assert.equal(productPhotoCount, 75, 'all valid product-specific photos are preserved');
   assert.ok(noteCount > 500, 'tips were migrated as text-only menu entries');
   assert.equal(verifiedCovers, noteCount, 'every migrated shop note has an available cover');
   assert.equal(illustratedCovers, 9, 'only the nine newly illustrated notes are marked as illustrations');
