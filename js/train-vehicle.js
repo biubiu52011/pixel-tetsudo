@@ -3836,7 +3836,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         // Holiday 69E is the published 8-car Musashino-through working:
         // 1269E Fuchuhommachi 12:40 -> Tokyo 14:30 (2026-03-14 revision).
         // It shares E231-0 and 209-500 fleet; PNG is only a representative.
-        var eightCarHoliday = ["602E", "903E", "1002E", "1269E", "1602E",
+        // 1452E: 2026-11-03 holiday, Tokyo 14:25 -> Fuchuhommachi 16:13,
+        // published under shared 53E Musashino working. It is NOT a 52E
+        // physical-car assignment; never infer formation from the train suffix.
+        var eightCarHoliday = ["602E", "903E", "1002E", "1269E", "1452E", "1602E",
           "1803E", "1902E", "2003E"];
         if (/^[0-9]{3,5}[YA]$/.test(num)) {
           keiyoGroup = "10-car";
