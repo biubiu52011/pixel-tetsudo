@@ -241,3 +241,43 @@ test('Sotetsu M numbering uses full numbers rather than final digits',()=>{
   assert.equal(root.TrainNumberPngRanges.match('277M','Rinkai'),null);
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
 });
+
+test('1932T: ChuoRapid ODPT live number -> scoped E233-0 SVG PNG',()=>{
+  const p=live({trainNumber:'1932T',trainId:'odpt.Train:JR-East.ChuoRapid.1932T',
+    positionLineId:'ChuoRapid',sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
+    trainType:'odpt.TrainType:JR-East.Rapid'});
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped);
+  assert.equal(mapped.trainNumber,'1932T');
+  assert.equal(mapped.model,'E233系0番台');
+  assert.equal(mapped.representative,true);
+  assert.match(mapped.pngPath,/JR東日本_E233系_0番台\.png$/);
+  const spec=marker(p,'ChuoRapid');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(spec.iconSrc,mapped.pngPath);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+});
+test('1932T: SQL planned-trip reuses the same ChuoRapid direct-number PNG',()=>{
+  const p=sql({trainNumber:'1932T',
+    trainId:'planned-trip:2026-11-03|JR-East|ChuoRapid|1932T',
+    positionLineId:'ChuoRapid',sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
+    trainType:'odpt.TrainType:JR-East.Rapid'});
+  assert.match(marker(p,'ChuoRapid').iconSrc,/JR東日本_E233系_0番台\.png$/);
+});
+test('2026 ChuoRapid T/H number ranges never leak to other lines or M trains',()=>{
+  for(const num of ['486T','1926H','1932T','2452T']){
+    const row=root.TrainNumberPngRanges.match(num,'ChuoRapid');
+    assert.ok(row,num+' should match the actual ChuoRapid train-number interval');
+    assert.equal(row.model,'E233系0番台');
+  }
+  for(const num of ['2627M','399T','2600T','1932M','1932B']){
+    assert.equal(root.TrainNumberPngRanges.match(num,'ChuoRapid'),null,
+      num+' must remain outside the T/H train-number range');
+  }
+  assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoMain'),null);
+  assert.equal(root.TrainNumberPngRanges.match('1932T','SaikyoKawagoe'),null);
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
+});
