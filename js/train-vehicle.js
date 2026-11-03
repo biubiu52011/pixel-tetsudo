@@ -3833,7 +3833,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         var tenCarEWeekday = ["3702E", "2703E"];
         var eightCarWeekday = ["500E", "701E"];
         var eightCarHoliday = ["602E", "903E"];
-        if (/^\\d{3,5}[YA]$/.test(num)) {
+        if (/^[0-9]{3,5}[YA]$/.test(num)) {
           keiyoGroup = "10-car";
         } else if (p.calendarType === "weekday" &&
             tenCarEWeekday.indexOf(num) >= 0) {
