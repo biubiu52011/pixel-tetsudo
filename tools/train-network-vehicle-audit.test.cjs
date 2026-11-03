@@ -56,7 +56,7 @@ for(const entry of entries){
         audit.galleryBackedScopedReferences++;
         assert.ok(/^..\/images\/列车\/.+\.png$/.test(plan.iconPath),
           key+': image must be local gallery PNG');
-        assert.ok(fs.existsSync(path.join(root,plan.iconPath)),
+        assert.ok(fs.existsSync(path.resolve(root,'pages',plan.iconPath)),
           key+': resolved image missing '+plan.iconPath);
       }else audit.nonGalleryScopedReferences++;
       const record=canonical.resolveCanonicalVehicle(model);
