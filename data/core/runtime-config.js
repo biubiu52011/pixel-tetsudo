@@ -334,6 +334,7 @@
     "MinamiSendai": "Minami-Sendai",
     "HigashiAbiko": "Higashi-Abiko",
     "ShimosaManzaki": "Shimosa-Manzaki",
+    "ShimosaKozaki": "Shimosa-Kanzaki",
     "NaritaAirportTerminal2and3": "Airport-Terminal-2",
     "NaritaAirportTerminal1": "Narita-Airport",
     "NaritaAirportTerminal2": "Airport-Terminal-2",
