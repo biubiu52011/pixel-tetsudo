@@ -2112,6 +2112,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var label=labels[id]||groups[id];
         var captionNode=label&&label.querySelector?label.querySelector('.train-label-dir'):null;
         var captionText=captionNode&&captionNode.textContent?String(captionNode.textContent).trim():'';
+        var keiyoTrainNo=_keiyoPublicTrainNumber(p,marker._displayLineId || p.positionLineId || p.lineId || "");
+        // The SVG map caption already includes the Keiyo service number.
+        // Remove its prefix before composing the fold row, then add it once.
+        if (keiyoTrainNo && captionText.indexOf(keiyoTrainNo+' · ')===0) {
+          captionText=captionText.slice((keiyoTrainNo+' · ').length);
+        }
         var captionType=label&&label.getAttribute?String(label.getAttribute('data-label-type')||'').trim():'';
         var popupCaption=captionType&&captionText ? captionType+' · '+captionText : captionText;
         var entry=document.createElement('div');entry.className='train-fold-entry';entry.setAttribute('role','listitem');
@@ -2125,7 +2131,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
-        var keiyoTrainNo=_keiyoPublicTrainNumber(p,lineId);
         caption.textContent=captionBase+(keiyoTrainNo?' · '+keiyoTrainNo:'');
         if (markerSpec.kind==='vehicle' && markerSpec.iconSrc) {
           var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
