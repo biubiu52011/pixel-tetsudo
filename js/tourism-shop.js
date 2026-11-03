@@ -1,7 +1,7 @@
 /*
  * Tourism Detail - Shop 吃喝玩乐综合商家详情页（餐饮/购物/娱乐/体验）
  * 参考点评网站店铺页信息架构：
- *   顶部图集（点击全屏）→ 白色店名卡（人均大字）→ 商户信息卡（地址/营业时间/交通）
+ *   顶部图集（点击全屏）→ 白色商家信息卡（费用/营业时间/交通/地址）
  *   → 介绍 → 推荐内容（餐饮/商品/游玩体验）→ 位置地图 → AI 整理注记
  * 复用 TourismDetailCore：数据加载/语言切换/距离口径/地图/翻译；渲染完全自绘（dp- 前缀命名空间，不依赖公共 hero 框架）。
  */
@@ -26,7 +26,7 @@
     return '<div class="dp-hero ' + ctx.heroClass + '">' + img + '<div class="dp-hero-shade"></div>' + photoTag + '</div>';
   }
 
-  // ② 店名卡（融合信息行）：店名 + 类型徽章 + 费用/人均 + 营业时间 + 距离 + 地址 + 分类芯片
+  // ② 商家信息卡：名称 + 类型徽章 + 费用 + 营业时间 + 距离 + 地址 + 分类芯片
   function buildHeadCard(ctx) {
     var ICON = {
       fee:   '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M11 8v1h.01V8h1v2h2v1h-2v3.5A1.5 1.5 0 0 0 15.5 16H14v1h1.5a2.5 2.5 0 0 0 2.5-2.5V9h-2V8h-3zm2-4H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10v-1H3V5h10v3zm4-1h-3v1h3v13a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-2z"/></svg>',
