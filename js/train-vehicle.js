@@ -3818,52 +3818,50 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           {lineId: lineId, railway: sourceRailway});
     });
     if (!hits.length) {
-      // The 2026-03-14 published Keiyo diagrams separate 10-car
-      // 209/E233 workings from 8-car Musashino 209/E231 workings.
-      // Train-number suffixes Y/A are in the Keiyo 10-car family, but E
-      // is shared: 3702E and 2703E are 10-car Keiyo workings, while 500E,
-      // 701E, 602E and 903E are published 8-car Musashino workings.
-      // Never blindly map EVERY E or M train to one stock type.
-      // These are representative scheduled icons, not the actual day's set.
-      if (lineId === "Keiyo" &&
-          sourceRailway === "odpt.Railway:JR-East.Keiyo" &&
-          day >= "2026-03-14" && day <= "2027-03-12" &&
+      // A train appearing in BOTH the Keiyo and Musashino ODPT timetable
+      // snapshots for the same calendar is a cross-line 8-car working.
+      // This is exact-number route evidence, NOT a unique carset assignment.
+      // Do not treat every "E" suffix as Musashino: 10-car Keiyo E workings
+      // also exist, including explicitly published weekday 3702E/2703E.
+      var throughIndex = window.KeiyoMusashinoThroughIndex;
+      var matchingLineRailway =
+        (lineId === "Keiyo" && sourceRailway === "odpt.Railway:JR-East.Keiyo") ||
+        (lineId === "Musashino" && sourceRailway === "odpt.Railway:JR-East.Musashino");
+      if (matchingLineRailway && day >= "2026-03-14" &&
+          day <= "2027-03-12" &&
           (!p.trainOperator || p.trainOperator === "JR-East")) {
         var keiyoGroup = "";
-        var tenCarEWeekday = ["3702E", "2703E"];
-        var eightCarWeekday = ["500E", "701E", "800E", "702E", "903E",
-          "1102E", "1502E", "1803E", "1902E", "2003E"];
-        // Holiday 69E is the published 8-car Musashino-through working:
-        // 1269E Fuchuhommachi 12:40 -> Tokyo 14:30 (2026-03-14 revision).
-        // It shares E231-0 and 209-500 fleet; PNG is only a representative.
-        // 1452E: 2026-11-03 holiday, Tokyo 14:25 -> Fuchuhommachi 16:13,
-        // published under shared 53E Musashino working. It is NOT a 52E
-        // physical-car assignment; never infer formation from the train suffix.
-        var eightCarHoliday = ["602E", "903E", "1002E", "1269E", "1452E", "1602E",
-          "1803E", "1902E", "2003E"];
-        if (/^[0-9]{3,5}[YA]$/.test(num)) {
-          keiyoGroup = "10-car";
-        } else if (p.calendarType === "weekday" &&
-            tenCarEWeekday.indexOf(num) >= 0) {
-          keiyoGroup = "10-car";
-        } else if ((p.calendarType === "weekday" &&
-                       eightCarWeekday.indexOf(num) >= 0) ||
-                   (p.calendarType === "holiday" &&
-                       eightCarHoliday.indexOf(num) >= 0)) {
+        var throughSnapshotValid = !!throughIndex &&
+          day >= String(throughIndex.effectiveFrom || "") &&
+          day <= String(throughIndex.effectiveTo || "");
+        var throughNumbers = throughSnapshotValid &&
+          Array.isArray(throughIndex[p.calendarType])
+            ? throughIndex[p.calendarType] : [];
+        var isPublishedThrough = /^[0-9]{3,5}E$/.test(num) &&
+          throughNumbers.indexOf(num) >= 0;
+        if (isPublishedThrough) {
           keiyoGroup = "8-car";
+        } else if (lineId === "Keiyo" &&
+                   (/^[0-9]{3,5}[YA]$/.test(num) ||
+                    (p.calendarType === "weekday" &&
+                     (num === "3702E" || num === "2703E")))) {
+          // Keiyo-only published 10-car family. E-number exceptions require
+          // exact documented trains, never inferred from E suffix alone.
+          keiyoGroup = "10-car";
         }
         if (keiyoGroup) {
-          var keiyoModel = keiyoGroup === "10-car"
-            ? "E233系5000番台" : "E231系0番台（武蔵野線）";
-          var sourceUrl = keiyoGroup === "10-car"
+          var throughWorking = keiyoGroup === "8-car";
+          var keiyoModel = throughWorking
+            ? "E231系0番台（武蔵野線）" : "E233系5000番台";
+          var sourceUrl = throughWorking
             ? (p.calendarType === "holiday"
-              ? "https://ameblo.jp/tc205-37/entry-12979589094.html"
-              : "https://ameblo.jp/tc205-37/entry-12979587262.html")
-            : (p.calendarType === "holiday"
               ? "https://ameblo.jp/tc205-37/entry-12979589918.html"
-              : "https://ameblo.jp/tc205-37/entry-12979589532.html");
+              : "https://ameblo.jp/tc205-37/entry-12979589532.html")
+            : (p.calendarType === "holiday"
+              ? "https://ameblo.jp/tc205-37/entry-12979589094.html"
+              : "https://ameblo.jp/tc205-37/entry-12979587262.html");
           var keiyoPlan = resolveTimetableVehiclePlan(keiyoModel, {
-            lineId: "Keiyo", operator: "JR-East", serviceDate: day,
+            lineId: lineId, operator: "JR-East", serviceDate: day,
             source: "keiyo-shared-working-representative",
             sourceUrl: sourceUrl, _positionSource: "train-timetable"
           });
@@ -3873,9 +3871,22 @@ function _canonicalVehicleIconPath(name, serviceDate) {
             keiyoPlan.evidenceRole = "shared-working-representative";
             keiyoPlan.representativeOnly = true;
             keiyoPlan.representativeGroup = keiyoGroup;
-            keiyoPlan.alternativeModels = keiyoGroup === "10-car"
-              ? ["E233系1000番台", "209系500番台（京葉線）"]
-              : ["209系500番台（武蔵野線）"];
+            keiyoPlan.alternativeModels = throughWorking
+              ? ["209系500番台（武蔵野線）"]
+              : ["209系500番台（京葉線）"];
+            if (throughWorking) {
+              var ops = window.TrainOperationEvidence;
+              keiyoPlan.operationCode = ops &&
+                typeof ops.normalizeOperationCode === "function"
+                  ? ops.normalizeOperationCode(num,
+                      {lineId:lineId,railway:sourceRailway}) : "";
+              keiyoPlan.crossLineEvidence = {
+                kind: "same-number-both-lines",
+                timetableSnapshot: throughIndex.version,
+                dayType: p.calendarType,
+                railways: ["Keiyo", "Musashino"]
+              };
+            }
             keiyoPlan.confirmed = false;
             return keiyoPlan;
           }
@@ -5394,9 +5405,21 @@ var calendarRows={weekday:{},holiday:{
  "81E":["E231系0番台（武蔵野線）","MU19"],"83E":["E231系0番台（武蔵野線）","MU14"]
 }};
 var currentMusashinoRows=Object.assign({},calendarRows.holiday);
-function serviceDay(date){
- var d=new Date(String(date||"")+"T12:00:00Z"),day=d.getUTCDay();
- return day===0||day===6?"holiday":"weekday";
+function serviceDay(date,ctx){
+ // Reuse the estimator's published Japanese national-holiday calendar.
+ // Nov 3 (Culture Day) must NOT be mistaken for a weekday.
+ if(ctx && (ctx.calendarType==="weekday"||ctx.calendarType==="holiday"))
+   return ctx.calendarType;
+ var estimator=window.TrainPositionEstimator;
+ if(estimator && typeof estimator.getCalendarsForDate==="function"){
+   var calendars=estimator.getCalendarsForDate(date);
+   if(calendars.length)
+     return calendars.some(function(c){
+       return /odpt\.Calendar:(?:Holiday|Sunday|Saturday|SaturdayHoliday)$/.test(c);
+     }) ? "holiday" : "weekday";
+ }
+ // Without a certified calendar avoid applying historical calendar rows.
+ return "";
 }
 function opNo(n,ctx){
  var raw=String((ctx&&ctx.operationCode)||n||"").toUpperCase().trim();
@@ -5417,7 +5440,7 @@ function resolveEvidence(trainNumber,ctx){
  var isRealtimeObservation=ctx.positionSource==="realtime-api";
  var isRealtimeResolution=ctx._realtimeVehicleResolution===true;
  var sourceRows=(d==="2026-10-24"&&isRealtimeResolution&&!isRealtimeObservation)?{}:(rows[d]||{}),
-  calendar=serviceDay(d),dayRows=calendarRows[calendar]||{};
+  calendar=serviceDay(d,ctx),dayRows=calendarRows[calendar]||{};
  var musashinoRows=isRealtimeObservation&&d==="2026-10-24"?currentMusashinoRows:{};
  var v=sourceRows[k]||(bare&&sourceRows[bare])||musashinoRows[k]||(bare&&musashinoRows[bare])||dayRows[k]||(bare&&dayRows[bare]);
  if(!v)return null;
@@ -5425,11 +5448,11 @@ function resolveEvidence(trainNumber,ctx){
  var sourceOperation=Array.isArray(v)&&bare&&(sourceRows[bare]===v||dayRows[bare]===v)?bare:k;
  var isMusashino=Array.isArray(v)&&/E$/.test(k)&&/武蔵野線/.test(model);
  var fromCalendar=!sourceRows[k]&&!(bare&&sourceRows[bare])&&!musashinoRows[k]&&!(bare&&musashinoRows[bare]);
- var result={operator:"JR-East",vehicleType:model,formationId:Array.isArray(v)?v[1]:"",operationCode:k,
+ var result={operator:"JR-East",vehicleType:model,formationId:!fromCalendar&&Array.isArray(v)?v[1]:"",operationCode:k,
   grade:"C",sourceUrl:isMusashino
    ? "https://loo-ool.com/rail/M/22/"+d.replace(/-/g,"")+"/?U="+sourceOperation
    : SOURCE+"23/"+d.replace(/-/g,"")+"/?U="+sourceOperation,
-  provenance:fromCalendar?calendar+" Musashino operation observation":"dated Keiyo operation observation"};
+  provenance:fromCalendar?calendar+" Musashino timetable reference (no same-day carset)":"dated Keiyo operation observation"};
  if(!fromCalendar)result.observedDate=d;
  return result;
 }
@@ -5438,7 +5461,7 @@ function resolveCalendarReference(trainNumber,ctx){
  if(!rec||rec.observedDate)return null;
  return {operator:rec.operator,vehicleType:rec.vehicleType,operationCode:rec.operationCode,
   grade:"C",sourceUrl:rec.sourceUrl,observedDate:"",evidenceRole:"timetable-reference",
-  provenance:"published "+serviceDay(String(ctx&&ctx.serviceDate||""))+" Musashino operation reference"};
+  provenance:"published "+serviceDay(String(ctx&&ctx.serviceDate||""),ctx)+" Musashino operation reference"};
 }
 registerEvidenceProvider({id:"jr-keiyo-dated-operations",grade:"C",resolveEvidence:resolveEvidence});
 registerEvidenceProvider({id:"jr-musashino-calendar-reference",grade:"C",resolveEvidence:resolveCalendarReference});
