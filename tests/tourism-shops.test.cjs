@@ -39,6 +39,7 @@ function renderShop(spot) {
   };
   const messages = {
     'detail.menu': 'おすすめ',
+    'detail.shop_photo': '店舗写真',
     'detail.tips': '訪問Tips',
     'detail.info_fee': '費用',
     'detail.info_hours': '営業時間',
@@ -130,6 +131,26 @@ test('migrated tips use the identical square image-card layout without invented 
   assert.doesNotMatch(notesOnly, /Handmade goods/, 'menu translations take priority');
 });
 
+test('verified shop photos replace note placeholders without pretending to be item photos', () => {
+  const cover = '../images/観光地/木挽町よしや.jpg';
+  const html = renderShop({
+    name: '木挽町よしや', tags: ['food'],
+    menu: [
+      { item: '1日1300個売れる名物どら焼き。', kind: 'note', cover, coverRole: 'shop' },
+      { item: '一枚皮で餡を挟む珍しい製法。', kind: 'note' },
+    ],
+  });
+  assert.equal((html.match(/class="dp-dish-photo-source"/g) || []).length, 2,
+    'the store-photo source appears in preview and modal');
+  assert.equal((html.match(/alt="木挽町よしや - 店舗写真"/g) || []).length, 2);
+  assert.ok(html.includes(cover), 'source photo path is retained');
+  assert.equal((html.match(/class="dp-dish-badge"/g) || []).length, 2,
+    'unphotographed notes still get the same-size placeholder');
+  assert.doesNotMatch(html, /data-gallery-idx="/,
+    'a representative store photo must not be mislabelled or duplicated as product gallery media');
+  assert.doesNotMatch(html, /dp-dish-price/, 'text notes do not invent prices');
+});
+
 test('products and notes share one spot.menu recommendation carousel', () => {
   const mixed = renderShop({
     name: 'Cafe', tags: ['food'],
@@ -164,6 +185,7 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
   const merchants = data.spots.filter(spot => isShop(spot) === 'shop');
   assert.ok(merchants.length >= 200, 'the complete catalog was checked');
   let noteCount = 0;
+  let verifiedCovers = 0;
   for (const spot of merchants) {
     assert.ok(Array.isArray(spot.menu) && spot.menu.length > 0, spot.name + ' lacks menu');
     assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips'), spot.name + ' keeps legacy tips');
@@ -177,6 +199,13 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
         noteCount++;
         assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'note should not invent image');
         assert.ok(!Object.prototype.hasOwnProperty.call(item, 'price'), 'note should not invent price');
+        if (item.cover) {
+          assert.equal(item.coverRole, 'shop', 'storefront covers must be labelled as shop imagery');
+          assert.ok(item.cover.startsWith('../images/'), 'storefront covers use repository assets');
+          const relative = item.cover.replace(/^\.\.\//, '');
+          assert.ok(fs.existsSync(path.resolve(__dirname, '..', relative)), item.cover + ' is missing');
+          verifiedCovers++;
+        }
         for (const lang of ['ja', 'zh', 'en', 'ko']) {
           assert.equal(typeof spot.menu_i18n[i][lang], 'string', spot.name + ' note missing ' + lang);
         }
@@ -184,6 +213,7 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
     }
   }
   assert.ok(noteCount > 500, 'tips were migrated as text-only menu entries');
+  assert.ok(verifiedCovers >= 800, 'most migrated shop notes have verified images');
   const compact = JSON.stringify(data);
   assert.equal(source('data/core/tourism_data.compact.json'), compact + '\n');
   assert.equal(
