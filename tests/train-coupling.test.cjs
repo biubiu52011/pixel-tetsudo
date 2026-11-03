@@ -138,12 +138,12 @@ test("Atami split: two independent train numbers after junction, one jointly dis
   assert.equal(before.length,1);
   assert.equal(before[0].coupling.junction,"Atami");
   assert.deepEqual(Array.from(before[0].coupling.numbers),["3021M","4021M"]);
-  assert.match(coupling.label(before[0].coupling,"ja"),/熱海駅|Atami駅/); // station key currently uses "Atami"
+  assert.match(coupling.label(before[0].coupling,"ja"),/熱海駅/);
   assert.equal(coupling.prepare([position("3021M",5,opts),position("4021M",5,opts)],line).length,2);
   const separate = coupling.prepare([position("3021M",6,opts),position("4021M",6,opts)],line);
   assert.equal(separate.length,2);
   assert.deepEqual(separate.map(x=>x.trainNumber),["3021M","4021M"]);
-  assert.match(coupling.label(separate[0].coupling,"zh"),/Atami站分离后/);
+  assert.match(coupling.label(separate[0].coupling,"zh"),/热海站分离后/);
 });
 
 test("Atami join: two independent train numbers on private branches, one jointly displayed to Tokyo", () => {
@@ -154,5 +154,5 @@ test("Atami join: two independent train numbers on private branches, one jointly
   assert.equal(coupling.prepare([position("3024M",2,opts),position("4024M",2,opts)],line).length,2);
   const joint=coupling.prepare([position("3024M",3,opts),position("4024M",3,opts)],line);
   assert.equal(joint.length,1);
-  assert.match(coupling.label(joint[0].coupling,"zh"),/Atami站并结/);
+  assert.match(coupling.label(joint[0].coupling,"zh"),/热海站并结/);
 });
