@@ -186,6 +186,24 @@
       allowedModelLabels:["E233系1000番台"],
       model:"E233系1000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_1000番台.png"},
+    // Official 2611 Keihin-Tohoku K numbers are Yokohama Line through
+    // segments. They must NEVER be shown as E233-1000: E233-6000 is a
+    // representative gallery image only, not the actual observed carset.
+    // Many northbound K timetable segments end at their through-service
+    // boundary, without a terminal arrival in THIS source line. Do not
+    // convert the boundary departure clock into a fake terminal arrival.
+    // https://timetables.jreast.co.jp/2611/timetable-v/623u1.html
+    // https://media.jreast.co.jp/articles/1710
+    {lineIds:["KeihinTohoku"],numberFormat:"full",
+      from:400,to:4999,suffixes:"K",operator:"JR-East",
+      numberIndex:"jreast-keihin-202611",
+      sourceOperatorFallback:true,trainTypes:["Local","Rapid"],
+      sourceRailways:["odpt.Railway:JR-East.KeihinTohokuNegishi",
+        "odpt.Railway:JR-East.KeihinTohoku"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系6000番台"],
+      model:"E233系6000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
     // Ito Line: exact-number 2026-11 OFFICIAL JR East limited express
     // services at Ito, not an M-suffix-wide vehicle assumption.
     // 3001M/3002M = Saphir Odoriko (E261).
@@ -522,6 +540,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-keihin-official-numbers-v20",match:match
+    version:"20261104-keihin-official-abck-v21",match:match
   });
 })(window);
