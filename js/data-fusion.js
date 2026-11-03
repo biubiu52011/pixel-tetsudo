@@ -1135,6 +1135,9 @@
     var resolver=window.RunningChainResolver;
     if(!resolver)return 0;
     var scheduled=Object.create(null), observed=Object.create(null);
+    var handover = window.TrainPositionEstimator &&
+      typeof window.TrainPositionEstimator.getCanonicalHandoverEvidence === "function"
+        ? window.TrainPositionEstimator.getCanonicalHandoverEvidence() || {} : {};
     var corridors=[
       {lines:["Joban","JobanMain"], matcher:"jobanCanonicalBridgeKey"},
       {lines:["ChuoRapid","Ome"], matcher:"omeCanonicalBridgeKey"},
@@ -1146,7 +1149,13 @@
     corridors.forEach(function(corridor) {
       if(typeof resolver[corridor.matcher]!=="function")return;
       corridor.lines.forEach(function(lid){
-      (estimated[lid]||[]).forEach(function(p){
+      // Bounded boundary evidence survives the LAST published station
+      // without appearing as a fabricated train position. Deduplication is
+      // by canonical timetable ID, not by public train number.
+      (estimated[lid]||[]).concat(
+        corridor.matcher === "chuoMainCanonicalBridgeKeys"
+          ? (handover[lid] || []) : []
+      ).forEach(function(p){
         var keys=resolver[corridor.matcher](lid,p);
         if(!Array.isArray(keys))keys=keys?[keys]:[];
         if(!keys.length||!p.runningChainId||!Array.isArray(p.canonicalStopKeys)||
@@ -1195,6 +1204,76 @@
       linked++;
     });
     return linked;
+  }
+
+  // A verified ChuoMain ↔ ChuoRapid service has one active position source.
+  // This does not merge train numbers or physical formations: the SQL
+  // canonical ID has already been matched to ONE real observation using the
+  // published aliases, direction and actual observed from/to stations.
+  function _preferVerifiedChuoLiveHandover(estimated, posMap) {
+    var live = Object.create(null), matched = Object.create(null);
+    ["ChuoMain","ChuoRapid"].forEach(function(lid) {
+      (posMap[lid] || []).forEach(function(p) {
+        if (!p || p.positionSource !== "realtime-api" ||
+            !p.runningChainId || !p.canonicalTimetableId ||
+            p.runningChainEvidence !== "VERIFIED_SQL_CANONICAL_REALTIME_STATION" ||
+            !p.sourceFromStation) return;
+        var k = String(p.runningChainId) + "|" + String(p.serviceDate || "");
+        if (!live[k]) live[k] = [];
+        live[k].push(p);
+      });
+    });
+    var handovers = window.TrainPositionEstimator &&
+      typeof window.TrainPositionEstimator.getCanonicalHandoverEvidence === "function"
+        ? window.TrainPositionEstimator.getCanonicalHandoverEvidence() || {} : {};
+    function approvedPlan(p) {
+      return p && p.estimated === true &&
+        p.canonicalGroupEvidence === "verified_continuation" &&
+        Array.isArray(p.canonicalLineIds) &&
+        p.canonicalLineIds.indexOf("ChuoMain") >= 0 &&
+        p.canonicalLineIds.indexOf("ChuoRapid") >= 0;
+    }
+    ["ChuoMain","ChuoRapid"].forEach(function(lid) {
+      // The handover-only evidence is never inserted into a position array.
+      (handoverCandidates(lid) || []).forEach(function(p) {
+        if (!approvedPlan(p) || !p.runningChainId) return;
+        var k = String(p.runningChainId) + "|" + String(p.serviceDate || "");
+        if (!live[k] || live[k].length !== 1) return;
+        (matched[k] || (matched[k] = [])).push(p);
+      });
+      estimated[lid] = (estimated[lid] || []).filter(function(p) {
+        if (!approvedPlan(p) || !p.runningChainId) return true;
+        var k = String(p.runningChainId) + "|" + String(p.serviceDate || "");
+        if (!live[k] || live[k].length !== 1) return true;
+        (matched[k] || (matched[k] = [])).push(p);
+        return false; // Real source owns the position for this service.
+      });
+    });
+    function handoverCandidates(lid) { return handovers[lid] || []; }
+    var switched = 0;
+    Object.keys(matched).forEach(function(k) {
+      var p = live[k][0], rows = matched[k];
+      var origin = rows.filter(function(row) {
+        return row.positionLineId === "ChuoMain" ||
+          /(?:^|:)JR-East\.ChuoMain$/.test(String(row.sourceRailway || ""));
+      })[0] || rows[0];
+      if (!origin || !p || !p.canonicalTimetableId ||
+          String(p.canonicalTimetableId) !== String(origin.canonicalTimetableId)) return;
+      // Preserve the public originating number as identity metadata, but
+      // never overwrite the live provider's legitimate T/H/M train number.
+      p.throughOriginTrainNumber = String(origin.trainNumber || "");
+      p.positionSourceHandover = "TIMETABLE_TO_REALTIME_TAKAO";
+      if (!p.destinationStation) {
+        var destinations = rows.map(function(row) {
+          return String(row.destinationStation || "").trim();
+        }).filter(Boolean);
+        if (destinations.length && destinations.every(function(d) {
+          return d === destinations[0];
+        })) p.destinationStation = destinations[0];
+      }
+      switched++;
+    });
+    return switched;
   }
 
   function loadTrainPositions() {
@@ -1763,6 +1842,9 @@
               });
             })();
             _linkVerifiedCanonicalRealtime(estimated, posMap);
+            // Source handover must happen before merging estimated positions
+            // so a live Chuo train cannot coexist with its last SQL marker.
+            _preferVerifiedChuoLiveHandover(estimated, posMap);
             var _chainVehicleCandidates = {};
             function _queueChainVehicle(p) {
               if (!p || !p.runningChainId || !p.vehicleType) return;
