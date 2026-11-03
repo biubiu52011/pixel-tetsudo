@@ -1292,6 +1292,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // Only two public outcomes. The model names remain useful references,
     // but a mapped/inferred plan alone does not prove timetable assignment.
     var confirmed = status === "PLANNED_MODEL" && plan.confirmed === true;
+    // The official source identifies a named service and its model; this
+    // certifies only the published reference, NOT physical stock today.
+    var officialNamedReference = status === "PLANNED_MODEL" &&
+      plan.evidenceRole === "official-train-name-and-model" &&
+      !!plan.modelEvidenceUrl && !!plan.serviceName;
     var prefix = sharedWorkingRepresentative
       ? (/^zh/.test(lang) ? "线路代表车型（共通运用，非固定车型或当日实车）：" :
           lang === "en" ? "Representative line model (shared working; not assigned stock): " :
@@ -1302,6 +1307,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           lang === "en" ? "Published scheduled model (not actual-day stock): " :
           lang === "ko" ? "계획 차종(당일 실차 아님): " :
           "計画車種（当日の実車ではありません）：")
+      : officialNamedReference
+      ? (/^zh/.test(lang) ? "JR官方列车车型参考（非当日实车）：" :
+          lang === "en" ? "JR official named-service model (not actual-day stock): " :
+          lang === "ko" ? "JR 공식 열차 차종 참고(당일 실차 아님): " :
+          "JR公式列車の車種資料（当日の実車ではありません）：")
       : confirmed
       ? (/^zh/.test(lang) ? "计划车型已确认（非当日实车）：" :
           lang === "en" ? "Scheduled model confirmed (not actual-day stock): " :
