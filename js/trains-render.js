@@ -33,7 +33,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   if (!failure) return false;
   var current = window.TrainVehicle && window.TrainVehicle.selectMarkerArtwork
     ? window.TrainVehicle.selectMarkerArtwork(p, false) : null;
-  var samePath = current && current.iconSrc && current.iconSrc === failure.path;
+  var samePath = current && ((current.iconSrc && current.iconSrc === failure.path) ||
+    (current.kind === "candidate" && Array.isArray(current.candidateAssets) &&
+     current.candidateAssets.indexOf(failure.path) >= 0));
   var active = samePath && Date.now() - failure.at < _TRAIN_ARTWORK_FAILURE_RETRY_MS;
   if (!active) {
     delete _trainArtworkFailure[key];
@@ -1070,6 +1072,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var x = unit ? -7 : px - 7;
     var y = unit ? -9 : py - 9;
     var tag = String(icon.tagName || '').toLowerCase();
+    if (tag === 'g' && icon.getAttribute('data-vehicle-candidate') === 'true') {
+      // The parent train-unit owns world coordinates, including its caption.
+      // Mirroring only the paired gallery artwork respects train direction.
+      if (!isLoop && String(p && p.railDirection || '').indexOf('Outbound') >= 0)
+        icon.setAttribute('transform', 'scale(-1,1)');
+      else icon.removeAttribute('transform');
+      icon.setAttribute('data-marker-raw-transform', icon.getAttribute('transform') || '');
+      return;
+    }
     if (tag === 'circle') {
       // 即使车型未知，来源已验证的实时位置仍保持可见；
       // 这里显示的是中性位置圆点，而不是车辆图片。
@@ -1119,6 +1130,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       ? window.TrainVehicle.selectMarkerArtwork(selectionPosition, artworkFailed)
       : { kind: "unresolved", iconSrc: "" };
     var hasImage = artwork.kind === "vehicle" && !!artwork.iconSrc;
+    var hasCandidatePair = artwork.kind === "candidate" &&
+      Array.isArray(artwork.candidateAssets) && artwork.candidateAssets.length === 2;
     return {
       kind: hasImage ? "vehicle" : (artwork.kind === "candidate" ? "candidate" : "unresolved"),
       iconSrc: hasImage ? artwork.iconSrc : "",
@@ -1128,7 +1141,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 已认证的车型身份在地图上使用图库 PNG 绘制；
       // 没有认证车型的地点才保持为紧凑的
       // 中性圆点；位置仍然可见，不会伪造图片。
-      compact: !hasImage,
+      compact: !hasImage && !hasCandidatePair,
       className: artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
@@ -1522,12 +1535,50 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var knownVehicle = spec.kind === "vehicle" && !!spec.iconSrc;
     var candidateVehicle = spec.kind === "candidate";
     var compact = spec.compact === true;
-    // 未知车型不等于未知位置：只有精确车型身份才获得
-    // 图库 PNG。其他已验证的实时/时刻表位置使用中性
-    // 实心位置圆点，绝不伪造列车轮廓或车队车型。
-    var markerTag = knownVehicle ? "image" : "circle";
+    var candidatePair = candidateVehicle && !compact &&
+      Array.isArray(spec.candidateAssets) && spec.candidateAssets.length === 2;
+    // An uncertain Shonan fleet is rendered with BOTH vetted garage PNGs
+    // inside ONE train component, never with a guessed single-model glyph.
+    var markerTag = knownVehicle ? "image" : (candidatePair ? "g" : "circle");
     var marker = document.createElementNS(svgNS, compact ? "circle" : markerTag);
-    if (knownVehicle && !compact) {
+    if (candidatePair) {
+      marker.setAttribute("data-vehicle-unresolved", "true");
+      marker.setAttribute("data-vehicle-candidate", "true");
+      marker.setAttribute("data-vehicle-candidate-assets", spec.candidateAssets.join("|"));
+      spec.candidateAssets.forEach(function(path, i) {
+        var img = document.createElementNS(svgNS, "image");
+        img.setAttribute("x", String(i === 0 ? -11 : 0));
+        img.setAttribute("y", "-8");
+        img.setAttribute("width", "11");
+        img.setAttribute("height", "16");
+        img.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        img.setAttribute("href", path);
+        img.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
+        img.addEventListener("load", function() {
+          if (trainLayer && trainLayer.isConnected && marker.isConnected)
+            _resolveTrainLabelCollisions(trainLayer);
+        });
+        img.addEventListener("error", function() {
+          if (!trainLayer || !trainLayer.isConnected || !marker.isConnected) return;
+          _rememberTrainArtworkFailure(trainUid, path);
+          marker.setAttribute("visibility", "hidden");
+          var unit = _trainUnitContainer(marker);
+          if (!unit) return;
+          var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
+            {kind:"unresolved",iconSrc:"",className:spec.className},
+            marker._displayX, marker._displayY, marker._trainPosition || p,
+            lineId, isLoop, color, loc);
+          if (!neutral) return;
+          neutral._displayStationIdx = marker._displayStationIdx;
+          neutral._displayNextStationIdx = marker._displayNextStationIdx;
+          neutral._displayRoutePos = marker._displayRoutePos;
+          unit.insertBefore(neutral, marker);
+          unit.removeChild(marker);
+          _resolveTrainLabelCollisions(trainLayer);
+        });
+        marker.appendChild(img);
+      });
+    } else if (knownVehicle && !compact) {
       marker.setAttribute("width", "14");
       marker.setAttribute("height", "18");
       marker.setAttribute("href", spec.iconSrc);
@@ -1735,7 +1786,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 中性圆点仍参与现有布局/标签/动画。
       updatedIds[trainUid] = true;
       var existingIcon = markerById[String(trainUid)] || null;
-      var expectedTag = markerSpec.kind === "vehicle" && !markerSpec.compact ? "image" : "circle";
+      var expectedTag = markerSpec.kind === "vehicle" && !markerSpec.compact ? "image" :
+        (markerSpec.kind === "candidate" && !markerSpec.compact ? "g" : "circle");
       // Upgrade DOM made by an earlier renderer without carrying over its
       // world-space caption coordinates. Rebuild as a single SVG unit.
       if (existingIcon && !_trainUnitContainer(existingIcon)) {
@@ -1744,6 +1796,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
       if (existingIcon && (existingIcon.getAttribute("data-marker-kind") !== _trainMarkerDomKind(markerSpec) ||
           String(existingIcon.tagName || "").toLowerCase() !== expectedTag)) {
+        existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
+      }
+      if (existingIcon && markerSpec.kind === "candidate" && !markerSpec.compact &&
+          existingIcon.getAttribute("data-vehicle-candidate-assets") !==
+          markerSpec.candidateAssets.join("|")) {
         existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
       }
       if (existingIcon && existingIcon.getAttribute("data-marker-display") !==

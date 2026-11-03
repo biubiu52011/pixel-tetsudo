@@ -136,3 +136,93 @@ test('SVG titles explain mixed fleet but do not hand out a fabricated PNG',()=>{
   // the source index and never falls back to an unversioned stale script.
   assert.match(html,/trains-render\.js\?v=20261104-[^"' ]+/);
 });
+
+test('Takasaki 826M is an official 06:54 Kagohara -> 08:12 Ueno mixed fleet, not an unknown number',()=>{
+  const position=p('Takasaki','826M','Local','weekday',{
+    serviceDate:'2026-11-04',positionSource:'supabase-train-run'});
+  const info=index.match(position);
+  assert.ok(info);
+  assert.equal(info.trainNumber,'826M');
+  assert.equal(info.status,'UNCONFIRMED_PLANNED_FLEET');
+  const artwork=root.TrainVehicle.selectMarkerArtwork(position,false);
+  assert.equal(artwork.kind,'candidate');
+  assert.equal(artwork.planned,false);
+  assert.equal(artwork.physicalFormationConfirmed,false);
+  assert.deepEqual(Array.from(artwork.candidateAssets),[
+    '../images/列车/JR東日本/JR東日本_E231系_1000番台.png',
+    '../images/列车/JR東日本/JR東日本_E233系3000番台.png']);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(position),null,
+    'a mixed fleet must never turn into a single model range');
+  assert.equal(position.vehicleIdentityStatus,'UNKNOWN');
+  // Supabase and realtime can display the same source-scoped candidates,
+  // but a different display line or date must not borrow the PNGs.
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({
+    ...position,positionSource:'realtime-api'} ,false).kind,'candidate');
+  for (const changed of [
+    {displayLineId:'UtsunomiyaJR'},
+    {positionLineId:'ShonanShinjuku'},
+    {serviceDate:'2026-12-01'},
+    {calendarType:'holiday'},
+    {sourceRailway:'odpt.Railway:JR-East.Utsunomiya'},
+    {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true},
+    {vehiclePlan:{confirmed:true,status:'PLANNED_MODEL',models:['E231系1000番台']}},
+  ]) {
+    assert.notEqual(root.TrainVehicle.selectMarkerArtwork({
+      ...position,...changed},false).kind,'candidate',JSON.stringify(changed));
+  }
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(position,true).kind,'unresolved',
+    'broken gallery artwork must fall back to a neutral location marker');
+});
+test('one SVG component renders two existing candidate PNGs without changing 826M or train ID',()=>{
+  const position=p('Takasaki','826M','Local','weekday',{
+    serviceDate:'2026-11-04',positionSource:'supabase-train-run'});
+  const render=fs.readFileSync('js/trains-render.js','utf8');
+  const from=render.indexOf('  function _trainMarkerSpec(');
+  const to=render.indexOf('  // Public identification boundary:',from);
+  assert.ok(from>=0&&to>from);
+  vm.runInContext(render.slice(from,to)+
+    '\nthis.pairedSpec=_trainMarkerSpec;',ctx);
+  const spec=ctx.pairedSpec(position,'planned-trip-826M','Takasaki');
+  assert.equal(spec.kind,'candidate');
+  assert.equal(spec.compact,false,'two PNGs, not a grey circle');
+  assert.equal(spec.candidateAssets.length,2);
+  // The browser creates two <image> children inside a single keyed <g>.
+  const start=render.indexOf('  function _createTrainMarker(');
+  const end=render.indexOf('  // TrainComponent is the sole public lifecycle',start);
+  assert.ok(start>=0&&end>start);
+  class FakeSvg {
+    constructor(tag){this.tagName=tag;this.attrs={};this.children=[];this.parentNode=null;
+      this.listeners={};this.isConnected=true;}
+    setAttribute(n,v){this.attrs[n]=String(v)}
+    setAttributeNS(ns,n,v){this.setAttribute(n,v)}
+    getAttribute(n){return this.attrs[n]||''}
+    removeAttribute(n){delete this.attrs[n]}
+    addEventListener(n,fn){this.listeners[n]=fn}
+    appendChild(c){this.children.push(c);c.parentNode=this;return c}
+    insertBefore(c,d){let i=this.children.indexOf(d);this.children.splice(i,0,c);c.parentNode=this;}
+    removeChild(c){this.children.splice(this.children.indexOf(c),1);c.parentNode=null;}
+  }
+  ctx.document={createElementNS(ns,tag){return new FakeSvg(tag)}};
+  vm.runInContext(`
+    function _trainMarkerTitle(p){return '列車番号 '+p.trainNumber+' | 計画車種未確認';}
+    function _setTrainMarkerAccessibilityLabel(marker,s){marker.setAttribute('aria-label',s);}
+    function _setTrainFormationAttribute(){}
+    function _trainUnitContainer(marker){return marker.parentNode&&marker.parentNode.getAttribute('data-train-unit-id')?marker.parentNode:null;}
+    function _setTrainIconPosition(marker,x,y){marker.parentNode.setAttribute('transform','translate('+x+','+y+')');}
+    function _resolveTrainLabelCollisions(){}
+    function _rememberTrainArtworkFailure(){}
+  `+render.slice(start,end)+'\nthis.makePairedMarker=_createTrainMarker;',ctx);
+  const marker=ctx.makePairedMarker({isConnected:true},
+    'http://www.w3.org/2000/svg','planned-trip-826M',spec,159.5,245,
+    position,'Takasaki',false,'#008803',null);
+  assert.equal(marker.tagName,'g');
+  assert.equal(marker.children.length,2);
+  assert.ok(marker.children.every(child=>child.tagName==='image'));
+  assert.equal(marker.getAttribute('data-marker-kind'),'candidate');
+  assert.equal(marker.getAttribute('data-marker-display'),'artwork');
+  assert.equal(marker.getAttribute('data-vehicle-unresolved'),'true');
+  assert.equal(marker.parentNode.getAttribute('data-train-unit-id'),'planned-trip-826M');
+  assert.equal(marker.parentNode.children.length,1,'no duplicate train position');
+  assert.equal(marker.parentNode.getAttribute('transform'),'translate(159.5,245)');
+  assert.match(marker.getAttribute('aria-label'),/826M.*計画車種未確認/);
+});
