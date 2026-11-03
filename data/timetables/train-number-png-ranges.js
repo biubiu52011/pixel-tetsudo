@@ -59,9 +59,10 @@
     // This is an illustrative same-line stock image, not a confirmed set.
     {lineIds:["Yamanote"],numberFormat:"full",
       from:301,to:2433,suffixes:"G",trainType:"Local",
+      numberIndex:"jreast-yamanote-202611",
       operator:"JR-East",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Yamanote"],
-      validFrom:"2026-11-01",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
       allowedModelLabels:["E235系0番台","E235系0番台（山手線）"],
       model:"E235系0番台（山手線）",
       pngPath:"../images/列车/JR東日本/JR東日本_E235系_0番台.png"},
@@ -548,6 +549,11 @@
       }
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.numberIndex==="jreast-yamanote-202611"){
+        var yamanoteIndex=root.JREastYamanote202611NumberIndex;
+        if(!yamanoteIndex || typeof yamanoteIndex.contains!=="function" ||
+            !yamanoteIndex.contains(number,context))continue;
+      }
       if(row.numberIndex==="jreast-keihin-202611"){
         var keihinIndex=root.JREastKeihin202611NumberIndex;
         if(!keihinIndex || typeof keihinIndex.contains!=="function" ||
@@ -595,6 +601,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-hachiko-d-e-v22",match:match
+    version:"20261104-yamanote-2611-exact-numbers-v23",match:match
   });
 })(window);
