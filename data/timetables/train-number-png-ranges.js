@@ -48,6 +48,57 @@
 (function(root){
   "use strict";
   var rows=[
+
+    // Takasaki/Joetsu local 211: exact published JR 2611 numbers also
+    // corroborated by dated Takasaki-area 211 working reports (Nov 1-3).
+    // This is a gallery reference only; neither the number nor the
+    // working report proves the physical formation on a later service day.
+    // Do NOT include green-car 8xxM, E through-services, Y rapid trains,
+    // or E257 3xxx/4xxx limited expresses as a 211 PNG by suffix.
+    // https://timetables.jreast.co.jp/2611/timetable-v/238d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/238u1.html
+    // https://takasaki-115.bbs.fc2.com/
+    {lineIds:["Takasaki"],numberFormat:"full",from:420,to:746,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      publishedNumbers:["420M","421M","422M","423M","425M","427M","428M","429M","430M","431M","432M","433M","434M","435M","436M","437M","438M","439M","440M","441M","442M","443M","444M","445M","446M","447M","448M","449M","450M","451M","452M","453M","454M","455M","456M","457M","458M","459M","460M","461M","462M","463M","464M","466M","467M","469M","470M","471M","472M","475M","479M","480M","520M","521M","524M","525M","526M","527M","528M","529M","530M","531M","532M","533M","534M","536M","538M","539M","541M","542M","543M","545M","625M","627M","629M","633M","634M","635M","636M","637M","639M","641M","645M","651M","652M","653M","654M","721M","723M","724M","725M","726M","727M","728M","730M","731M","732M","733M","734M","735M","737M","738M","739M","740M","741M","743M","744M","745M","746M"],
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Takasaki"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["211系（高崎地区）","211系"],
+      rejectAmbiguousPlan:true,
+      model:"211系（高崎地区）",
+      pngPath:"../images/列车/JR東日本/JR東日本_211系_湘南色.png"},
+    // JR East introduced E131-600 for Utsunomiya--Kuroiso
+    // (including some Oyama extensions) and Nikko through service.
+    // The complete source-number list comes from existing SQL stop
+    // templates; official 2611 columns confirm these numbered services.
+    // E131 is a reference model for these short regional services,
+    // NOT the common E231/E233 sets on Ueno-Tokyo through trains.
+    // Without published station clocks, this rule does NOT create a trip.
+    // https://www.jreast.co.jp/press/2021/omiya/20211217_o01.pdf
+    // https://timetables.jreast.co.jp/2611/timetable-v/239d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/239u1.html
+    // https://tr-pf.net/ssline/unyou/20260314/um_form_dw.htm
+    {lineIds:["UtsunomiyaJR"],numberFormat:"full",
+      from:620,to:699,suffixes:"M",trainType:"Local",
+      publishedNumbers:["620M","622M","623M","624M","625M","626M","627M","628M","629M","630M","632M","633M","634M","635M","636M","637M","638M","639M","640M","641M","642M","643M","644M","645M","646M","647M","648M","649M","650M","651M","652M","653M","654M","655M","656M","657M","658M","659M","660M","661M","662M","663M","664M","665M","666M","667M","668M","669M","670M","671M","672M","673M","674M","675M","676M","677M","678M","679M","680M","681M","682M","683M","684M","685M","686M","687M","688M","689M","690M","691M","692M","693M","694M","695M","696M","697M","698M","699M"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Utsunomiya"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E131系600番台","E131系"],
+      rejectAmbiguousPlan:true,
+      model:"E131系600番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_600番台.png"},
+    {lineIds:["UtsunomiyaJR"],numberFormat:"full",
+      from:2823,to:2823,suffixes:"M",trainType:"Local",
+      publishedNumbers:["2823M"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Utsunomiya"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E131系600番台","E131系"],
+      rejectAmbiguousPlan:true,
+      model:"E131系600番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_600番台.png"},
     // Yamanote E235-0: official November 2026 LOCAL G-number family.
     // Outside (外回り) = odd G, inside (内回り) = even G;
     // the FULL public number is used, not its two-digit operation tail.
@@ -758,6 +809,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-joban-local-kse-png-v30",match:match
+    version:"20261104-jreast-north-number-png-v31",match:match
   });
 })(window);

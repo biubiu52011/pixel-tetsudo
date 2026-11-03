@@ -1449,3 +1449,53 @@ test('Tsurumi SQL source-operator fallback rejects ambiguous and foreign sources
     sourceRailway:'odpt.Railway:JR-East.Yokohama'}).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
 });
+
+
+test('Takasaki 211 exact 2026-11 M-number reference does not absorb shared fleets',()=>{
+  const base=sql({positionLineId:'Takasaki',
+    sourceRailway:'odpt.Railway:JR-East.Takasaki',
+    trainNumber:'425M',trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-04',calendarType:'weekday',
+    vehiclePlan:undefined});
+  const expected='../images/列车/JR東日本/JR東日本_211系_湘南色.png';
+  for(const n of ['425M','429M','521M','625M','725M']){
+    const p={...base,trainNumber:n};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p)?.pngPath,expected,n);
+    assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).planned,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN','reference must not confirm actual carset');
+  }
+  for(const n of ['821M','1820E','2820Y','3001M','639H']){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...base,trainNumber:n}),null,n);
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,sourceRailway:'odpt.Railway:JR-East.Utsunomiya'}),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,serviceDate:'2026-12-01'}),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,vehiclePlan:{confirmed:true,models:['E233系3000番台']}}),null);
+});
+test('UtsunomiyaJR E131-600 exact numbers use the actual UI railway key',()=>{
+  const base=sql({positionLineId:'UtsunomiyaJR',
+    sourceRailway:'odpt.Railway:JR-East.Utsunomiya',
+    trainNumber:'639M',trainType:'odpt.TrainType:JR-East.Local',
+    calendarType:'weekday',serviceDate:'2026-11-04',
+    vehiclePlan:undefined});
+  const expected='../images/列车/JR東日本/JR東日本_E131系_600番台.png';
+  assert.equal(root.VehicleGaragePngMap.matchModelPath('E131系600番台',expected,
+    'UtsunomiyaJR'),true,'UI line key must match garage');
+  for(const n of ['620M','623M','639M','698M','699M','2823M']){
+    const p={...base,trainNumber:n};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p)?.pngPath,expected,n);
+    assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).planned,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+  for(const n of ['521M','1520E','2520Y','621M','631M']){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...base,trainNumber:n}),null,n);
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,positionLineId:'Takasaki'}),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,vehiclePlan:{confirmed:true,models:['E231系1000番台']}}),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainType:'odpt.TrainType:JR-East.LimitedExpress'}),null);
+});
