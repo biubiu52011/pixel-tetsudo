@@ -539,8 +539,9 @@
         typeof window.TrainVehicle.resolvePublishedPositionPlan !== "function") return;
     var currentPlan = position.vehiclePlan;
     // Preserve independently confirmed single-model timetable evidence.
-    if (currentPlan && (currentPlan.status === "PLANNED_MODEL" ||
-        currentPlan.confirmed === true)) return;
+    if (currentPlan && (currentPlan.confirmed === true ||
+        (currentPlan.status === "PLANNED_MODEL" &&
+         currentPlan.source !== "operation-family-plan"))) return;
     var calendar = String(run.calendar || tt["odpt:calendar"] || "");
     var calendarType = /(?:^|[:.])Weekday$/.test(calendar) ? "weekday" :
       /(?:^|[:.])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(calendar)
