@@ -1224,7 +1224,9 @@
         if (!p || p.positionSource !== "realtime-api" ||
             !p.runningChainId || !p.canonicalTimetableId ||
             p.runningChainEvidence !== "VERIFIED_SQL_CANONICAL_REALTIME_STATION" ||
-            !p.sourceFromStation) return;
+            !p.sourceFromStation ||
+            (p.sourceValidUntil && (!Number.isFinite(Date.parse(p.sourceValidUntil)) ||
+              Date.parse(p.sourceValidUntil) < Date.now()))) return;
         var k = String(p.runningChainId) + "|" + String(p.serviceDate || "");
         if (!live[k]) live[k] = [];
         live[k].push(p);
