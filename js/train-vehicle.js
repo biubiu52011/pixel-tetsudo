@@ -3831,8 +3831,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           (!p.trainOperator || p.trainOperator === "JR-East")) {
         var keiyoGroup = "";
         var tenCarEWeekday = ["3702E", "2703E"];
-        var eightCarWeekday = ["500E", "701E"];
-        var eightCarHoliday = ["602E", "903E"];
+        var eightCarWeekday = ["500E", "701E", "800E", "702E", "903E",
+          "1102E", "1502E", "1803E", "1902E", "2003E"];
+        var eightCarHoliday = ["602E", "903E", "1002E", "1602E",
+          "1803E", "1902E", "2003E"];
         if (/^[0-9]{3,5}[YA]$/.test(num)) {
           keiyoGroup = "10-car";
         } else if (p.calendarType === "weekday" &&
