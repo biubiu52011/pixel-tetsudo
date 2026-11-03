@@ -152,7 +152,9 @@
     var tags = (spot && spot.tags) || [];
     if (tags.indexOf('event') >= 0) return 'event';
     if (tags.indexOf('mall') >= 0) return 'spot';
-    if (tags.indexOf('food') >= 0 || tags.indexOf('shopping') >= 0 || tags.indexOf('play') >= 0) return 'shop';
+    // 回退分类与 TourismType.SHOP_TAGS 对齐，支持吃、喝、购物和游玩体验。
+    var shopTags = ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'shopping', 'shop', 'hotel', 'play'];
+    if (tags.some(function(tag) { return shopTags.indexOf(tag) >= 0; })) return 'shop';
     return 'spot';
   }
 
