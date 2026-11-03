@@ -15505,15 +15505,21 @@
    "menu": [
     {
      "item": "香りが記憶に残るケーキを目指す。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/lessentielle-aroma-cake.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "ローズや山椒など意外な組み合わせ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/lessentielle-spice-cake.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "美しい見た目とあふれる香り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/lessentielle-pastry-selection.svg",
+     "coverRole": "illustration"
     }
    ],
    "menu_i18n": [
@@ -26629,15 +26635,21 @@
    "menu": [
     {
      "item": "子どもから高齢者まで参加可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/readin-writing-workshop.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "書くことを趣味にしたい人に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/readin-daily-journal.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "読むことと書くことをつなぐ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/readin-books-and-writing.svg",
+     "coverRole": "illustration"
     }
    ],
    "menu_i18n": [
@@ -28414,15 +28426,21 @@
    "menu": [
     {
      "item": "ラ・ロシェールのグラスが手頃",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/mamour-french-glassware.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "1点1000円程度から",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/mamour-tableware.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "アポイント制なので事前連絡を",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/recommend-illustrations/mamour-appointment.svg",
+     "coverRole": "illustration"
     }
    ],
    "menu_i18n": [
