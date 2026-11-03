@@ -9,6 +9,7 @@ on:
       - 'data/core/major-vehicle-fleet-presets.js'
       - 'tools/train-major-fleet-presets.test.cjs'
       - 'tools/train-network-vehicle-audit.test.cjs'
+      - 'tools/vehicle-garage-png-map.test.cjs'
       - 'tools/train-visual-fold.test.cjs'
       - 'tests/scheduled-vehicle-mapping.test.cjs'
       - 'tests/chuo-takao-source-handover.test.cjs'
@@ -66,6 +67,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check js/train-vehicle.js
+          node --check data/timetables/vehicle-garage-png-map.js
           node --check data/core/major-vehicle-fleet-presets.js
           node --check js/trains-render.js
           node --check js/data-fusion.js
@@ -76,6 +78,8 @@ jobs:
         run: node tools/train-visual-fold.test.cjs
       - name: Audit all 237 railway routes, 191 fleet scopes and gallery references
         run: node tools/train-network-vehicle-audit.test.cjs
+      - name: Verify all garage PNG-to-stock maps and official train references
+        run: node tools/vehicle-garage-png-map.test.cjs
       - name: Verify dated references, Takao source handover and train split/join rules
         run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/chuo-takao-source-handover.test.cjs tests/chuo-main-timetable-only.test.cjs tests/chuo-main-official-vehicle-index.test.cjs tests/train-coupling.test.cjs
       - name: Verify vehicle PNG decisions and SVG projection
