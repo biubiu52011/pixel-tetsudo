@@ -72,15 +72,15 @@
       html += '<button class="dp-menu-viewall" data-modal="' + ('dpMenuModal_' + (spot.menu._idx || 0)) + '">' + C.t('detail.view_all') + ' &rsaquo;</button>';
       html += '</div><div class="dp-menu-carousel">';
       for (var mi = 0; mi < list.length; mi++) {
-        var it = list[mi];
-      var itemText = (spot.menu_i18n && spot.menu_i18n[mi] && spot.menu_i18n[mi][C.state.lang])
+        var it = list[mi] || {};
+        var itemText = (spot.menu_i18n && spot.menu_i18n[mi] && spot.menu_i18n[mi][C.state.lang])
           || it.item || C.t('detail.i18n_missing');
         var thumb = it.img
           ? '<img class="dp-dish-img" src="' + C.escapeHtml(it.img) + '" alt="' + C.escapeHtml(itemText) + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="' + C.galleryIndexForMenu(spot, mi) + '">'
           : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
         html += '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb + '</div>'
           + '<div class="dp-dish-name">' + C.escapeHtml(itemText) + '</div>'
-          + '<div class="dp-dish-price">' + C.escapeHtml(it.price) + '</div></div>';
+          + (it.price != null && it.price !== '' ? '<div class="dp-dish-price">' + C.escapeHtml(String(it.price)) + '</div>' : '') + '</div>';
       }
       html += '</div></div>';
 
@@ -91,15 +91,15 @@
       html += '<div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">' + C.t(titleKey) + '</h3>';
       html += '<div class="dp-menu-modal-grid">';
       for (var mi2 = 0; mi2 < spot.menu.length; mi2++) {
-        var it2 = spot.menu[mi2];
-      var itemText2 = (spot.menu_i18n && spot.menu_i18n[mi2] && spot.menu_i18n[mi2][C.state.lang])
+        var it2 = spot.menu[mi2] || {};
+        var itemText2 = (spot.menu_i18n && spot.menu_i18n[mi2] && spot.menu_i18n[mi2][C.state.lang])
           || it2.item || C.t('detail.i18n_missing');
         var thumb2 = it2.img
           ? '<img class="dp-dish-img" src="' + C.escapeHtml(it2.img) + '" alt="' + C.escapeHtml(itemText2) + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="' + C.galleryIndexForMenu(spot, mi2) + '">'
           : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
         html += '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb2 + '</div>'
           + '<div class="dp-dish-name">' + C.escapeHtml(itemText2) + '</div>'
-          + '<div class="dp-dish-price">' + C.escapeHtml(it2.price) + '</div></div>';
+          + (it2.price != null && it2.price !== '' ? '<div class="dp-dish-price">' + C.escapeHtml(String(it2.price)) + '</div>' : '') + '</div>';
       }
       html += '</div></div></div>';
       return html + buildTipsCard(spot, 'detail.tips');
@@ -108,6 +108,8 @@
   }
 
   function buildTipsCard(spot, titleKey) {
+    // 只有实际内容才渲染提示/推荐，避免娱乐设施出现「内容未提供」的空卡片。
+    if (!spot.tips || spot.tips.length === 0) return '';
     var htmlFallback = '<div class="dp-card dp-shop-picks"><h3 class="dp-sec-title">' + C.t(titleKey) + '</h3><ul class="dp-pick-list">';
     if (spot.tips && spot.tips.length > 0) {
       for (var ti = 0; ti < spot.tips.length; ti++) {
