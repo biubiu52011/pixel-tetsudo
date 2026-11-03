@@ -418,7 +418,8 @@ function applyData(data, i18n) {
   var DB_CACHE_KEY = "pt_db_v" + DB_CACHE_VERSION;
   // tourism 使用独立缓存键（pt_tourism_v*）——realtime 等页面
   // 通过 PT_SKIP_TOURISM 跳过 2.24MB tourism_data.json 的下载/解析/缓存读写。
-  var TOURISM_CACHE_KEY = "pt_tourism_v" + DB_CACHE_VERSION;
+  // 统一商家 menu 数据后单独升级旅游缓存，防止旧 tips 快照先显示。
+  var TOURISM_CACHE_KEY = "pt_tourism_v" + DB_CACHE_VERSION + "_unified_menu_1";
   var SKIP_TOURISM = !!(window.PT_SKIP_TOURISM);
 
   function cacheRead() {
