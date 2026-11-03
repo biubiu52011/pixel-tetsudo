@@ -56,6 +56,8 @@ on:
       - 'supabase/migrations/20261030122739_official_keio_tobu_kuroshio_conventional_fleet_20261030.sql'
       - 'supabase/migrations/20261030125204_scoped_conventional_local_fleet_and_corridor_evidence_20261030.sql'
       - 'supabase/migrations/20261030130459_railfan_source_registry_and_official_sonic_two_stop_crosscheck_20261030.sql'
+      - 'supabase/functions/train-runs/index.ts'
+      - 'tests/boso-2611-dated-service-exceptions.test.cjs'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
   workflow_dispatch:
@@ -77,6 +79,8 @@ jobs:
           node --check js/trains-render.js
           node --check js/data-fusion.js
           node --check js/train-position-estimator.js
+      - name: Verify Boso dated official number exceptions and historical SQL guards
+        run: node --test tests/boso-2611-dated-service-exceptions.test.cjs tests/boso-202611-schedule-fallback.test.cjs
       - name: Verify scoped major vehicle fleet presets and neutral markers
         run: node tools/train-major-fleet-presets.test.cjs
       - name: Verify visual folding of dense train markers on SVG maps
