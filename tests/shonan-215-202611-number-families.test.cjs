@@ -33,7 +33,8 @@ test('date/calendar/type/actual railway scoped mixed E233-3000 and E231-1000 pub
   assert.equal(index.rows,38);
   const samples=[
     ['Tokaido','1820E','Local'],['TokaidoMain','1820E','Local'],
-    ['UtsunomiyaJR','1520E','Local'],['Takasaki','1820E','Local'],
+    ['UtsunomiyaJR','1520E','Local'],['UtsunomiyaJR','520M','Local'],
+    ['UtsunomiyaJR','2683M','Local'],['Takasaki','1820E','Local'],
     ['UenoTokyo','1820E','Local'],
     ['ShonanShinjuku','2520Y','Local'],
     ['ShonanShinjuku','2820Y','Rapid'],
@@ -75,7 +76,13 @@ test('deny single-model inference, calendar reuse and cross-source model borrowi
     p('Yokosuka','1005S','Local','holiday'),
     p('UenoTokyo','1257M','Local'),
     p('Tokaido','3071M','LimitedExpress'),
-    p('ShonanShinjuku','9591M','Rapid','holiday')
+    p('ShonanShinjuku','9591M','Rapid','holiday'),
+    // Utsunomiya-Kuroiso E131 600 family; Nikko through 2823M is E131.
+    p('UtsunomiyaJR','620M','Local'),
+    p('UtsunomiyaJR','632M','Local'),
+    p('UtsunomiyaJR','699M','Local'),
+    p('UtsunomiyaJR','2823M','Local'),
+    p('UtsunomiyaJR','620M','Local','holiday')
   ])assert.equal(index.match(x),null,'no foreign or retired fleet claim');
 });
 test('historical 215 is bounded to 2020/2021 and seasonal service requires exact date proof',()=>{
