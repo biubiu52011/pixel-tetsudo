@@ -48,6 +48,23 @@
 (function(root){
   "use strict";
   var rows=[
+    // Yamanote E235-0: official November 2026 LOCAL G-number family.
+    // Outside (外回り) = odd G, inside (内回り) = even G;
+    // the FULL public number is used, not its two-digit operation tail.
+    // Official service examples: 301G, 405G, 360G, 1000G, 2433G.
+    // https://timetables.jreast.co.jp/2611/timetable-v/630d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/630d2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/630u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/630u2.html
+    // This is an illustrative same-line stock image, not a confirmed set.
+    {lineIds:["Yamanote"],numberFormat:"full",
+      from:301,to:2433,suffixes:"G",trainType:"Local",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Yamanote"],
+      validFrom:"2026-11-01",
+      allowedModelLabels:["E235系0番台","E235系0番台（山手線）"],
+      model:"E235系0番台（山手線）",
+      pngPath:"../images/列车/JR東日本/JR東日本_E235系_0番台.png"},
     {lineIds:["SaikyoKawagoe","Rinkai"],from:0,to:71,suffixes:"KFS",
       model:"E233系7000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_7000番台.png"},
@@ -368,6 +385,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v14",match:match
+    version:"20261104-yamanote-e235-0-v15",match:match
   });
 })(window);
