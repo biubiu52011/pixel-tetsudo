@@ -15,6 +15,7 @@ const root={},ctx=vm.createContext({
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
   'data/timetables/joban-e231-h-202611-index.js',
+  'data/timetables/jreast-keihin-2611-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -958,6 +959,50 @@ test('Nambu 2319F official holiday train renders representative E233 PNG',()=>{
 });
 
 
+test('JR East 2611 Keihin-Tohoku official index matches all four source calendars/directions',()=>{
+  const index=root.JREastKeihin202611NumberIndex;
+  assert.ok(index);
+  const expected={
+    'Weekday|Northbound':343,'Weekday|Southbound':343,
+    'SaturdayHoliday|Northbound':287,'SaturdayHoliday|Southbound':290
+  };
+  assert.equal(index.version,'2026-11');
+  let count=0;
+  for(const [key,number] of Object.entries(expected)){
+    const names=index.lists[key];
+    assert.equal(names.length,number,key);
+    assert.equal(new Set(names).size,number,key+' duplicates');
+    count+=names.length;
+  }
+  assert.equal(count,1263);
+  assert.equal(index.contains('411B',{calendarType:'weekday',railDirection:'Southbound'}),true);
+  assert.equal(index.contains('411B',{calendarType:'weekday',railDirection:'Northbound'}),false);
+  assert.equal(index.contains('818A',{calendarType:'weekday',railDirection:'Northbound'}),true);
+  assert.equal(index.contains('818A',{calendarType:'holiday',railDirection:'Northbound'}),false);
+  assert.equal(index.contains('2431B',{calendarType:'holiday',railDirection:'Southbound'}),true);
+  assert.equal(index.contains('2431B',{calendarType:'weekday',railDirection:'Southbound'}),false);
+  assert.equal(index.contains('4009K',{calendarType:'weekday',railDirection:'Northbound'}),true);
+  assert.equal(index.contains('4009K',{calendarType:'holiday',railDirection:'Northbound'}),false);
+  for(const n of ['411K','399B','2500B','841C','0B']){
+    assert.equal(index.contains(n,{}),false,'no arbitrary-range number '+n);
+  }
+});
+test('Keihin-Tohoku E233-1000 official membership is day-type and direction aware',()=>{
+  const base=live({positionLineId:'KeihinTohoku',
+    trainType:'odpt.TrainType:JR-East.Local',
+    sourceRailway:'odpt.Railway:JR-East.KeihinTohokuNegishi'});
+  const mapped=(number,extra={})=>root.TrainVehicle.lookupTrainNumberRangePng(
+    {...base,trainNumber:number,...extra});
+  assert.equal(mapped('411B',{calendarType:'weekday',railDirection:'Southbound'}).model,'E233系1000番台');
+  assert.equal(mapped('411B',{calendarType:'weekday',railDirection:'Northbound'}),null);
+  assert.equal(mapped('818A',{calendarType:'holiday',railDirection:'Northbound'}),null);
+  assert.equal(mapped('818A',{calendarType:'weekday',railDirection:'Northbound'}).model,'E233系1000番台');
+  assert.equal(mapped('2431B',{calendarType:'holiday',railDirection:'Southbound'}).model,'E233系1000番台');
+  assert.equal(mapped('2431B',{calendarType:'weekday',railDirection:'Southbound'}),null);
+  // Yokohama through trains can be published on the same table but
+  // are not eligible for an E233-1000 display image on this route.
+  assert.equal(mapped('4009K',{calendarType:'weekday',railDirection:'Northbound'}),null);
+});
 test('Keihin-Tohoku 411B is a full published 2026-11 number on live, SQL and timetable map markers',()=>{
   const image='../images/列车/JR東日本/JR東日本_E233系_1000番台.png';
   for(const positionSource of ['realtime-api','supabase-train-run','train-timetable']){
@@ -991,8 +1036,13 @@ test('Keihin-Tohoku A/B/C numbered services stay distinct from Yokohama K throug
   const base=live({positionLineId:line,
     sourceRailway:'odpt.Railway:JR-East.KeihinTohokuNegishi',
     trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'});
-  for(const n of ['401A','411B','463C','950B','818A','2431B']){
-    const p={...base,trainNumber:n};
+  for(const [n,calendarType,direction] of [
+    ['401A','holiday','Southbound'],['411B','holiday','Southbound'],
+    ['463C','holiday','Southbound'],['950B','holiday','Northbound'],
+    ['818A','weekday','Northbound'],['2431B','holiday','Southbound']
+  ]){
+    const p={...base,trainNumber:n,calendarType,
+      railDirection:'odpt.RailDirection:'+direction};
     const selected=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(selected,'published Keihin-Tohoku ABC service '+n);
     assert.equal(selected.model,'E233系1000番台');
