@@ -1261,7 +1261,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
-    var sharedWorkingRepresentative = p.positionSource === "realtime-api" &&
+    var sharedWorkingRepresentative =
+      (p.positionSource === "realtime-api" || p.estimated === true) &&
       plan && (plan.source === "keiyo-shared-working-representative" ||
         plan.source === "twr-shared-working-representative" ||
         plan.source === "north-south-shared-working-representative" ||
