@@ -557,6 +557,55 @@
       allowedModelLabels:["E233系8000番台"],
       model:"E233系8000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_8000番台.png"},
+    // 2026-11 JR Chuo-Sobu through Tozai: on JR source segments the
+    // official number changes from Metro S or JR K to Y/A. Y/A themselves
+    // do NOT identify the owner. Apply only exact stop-linked indexed numbers.
+    // 15000 is one representative Metro S fleet; 05/07 share its duties.
+    {lineIds:["ChuoSobuLocal"],numberFormat:"full",from:400,to:2599,
+      suffixes:"YA",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.ChuoSobuLocal"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"chuo-sobu-tozai-2611",throughOwner:"S",
+      allowedModelLabels:["東京メトロ15000系"],
+      model:"東京メトロ15000系",
+      pngPath:"../images/列车/東京メトロ/東京メトロ_15000系.png"},
+    {lineIds:["ChuoSobuLocal"],numberFormat:"full",from:400,to:2599,
+      suffixes:"YA",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.ChuoSobuLocal"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"chuo-sobu-tozai-2611",throughOwner:"K",
+      allowedModelLabels:["E231系800番台","E231系800番台（東西線直通）"],
+      model:"E231系800番台（東西線直通）",
+      pngPath:"../images/列车/JR東日本/JR東日本_E231系_800番台.png"},
+    // TokyoMetro Tozai source numbers have an A/B direction prefix and
+    // an optional R after the S/K/T ownership suffix (e.g. B711KR).
+    // Keep the original full public number; never turn it into an operation ID.
+    {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
+      suffixes:"S",excludeTrainType:"LimitedExpress",
+      operator:"TokyoMetro",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:TokyoMetro.Tozai"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["東京メトロ15000系"],
+      model:"東京メトロ15000系",
+      pngPath:"../images/列车/東京メトロ/東京メトロ_15000系.png"},
+    {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
+      suffixes:"K",excludeTrainType:"LimitedExpress",
+      operator:"TokyoMetro",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:TokyoMetro.Tozai"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E231系800番台","E231系800番台（東西線直通）"],
+      model:"E231系800番台（東西線直通）",
+      pngPath:"../images/列车/JR東日本/JR東日本_E231系_800番台.png"},
+    {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
+      suffixes:"T",excludeTrainType:"LimitedExpress",
+      operator:"TokyoMetro",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:TokyoMetro.Tozai"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["東葉高速2000系"],
+      model:"東葉高速2000系",
+      pngPath:"../images/列车/東葉高速鉄道/東葉高速鉄道_2000系.png"},
     // 2026-11 Joban Local (常磐線各駅停車) / Chiyoda through:
     // FULL published JR timetable numbers carry K (JR), S (Tokyo Metro),
     // E (Odakyu). K/S/E designate owning-company families, not a verified
@@ -701,7 +750,11 @@
     // Line-scoped matching below prevents G from leaking to other routes.
     var numbered=number.match(/^([0-9]{1,4})([ABCDEKFMSTHYG])$/);
     var bare=number.match(/^([0-9]{3,4})$/);
-    if((!regular&&!numbered&&!bare)||!line)return null;
+    // Metro Tozai timetable: B485S / B711KR / A1758T.
+    // The A/B prefix and optional R belong to the full train number.
+    var metroNumber=line==="Tozai"
+      ? number.match(/^[AB]([0-9]{3,4})([KST])R?$/) : null;
+    if((!regular&&!numbered&&!bare&&!metroNumber)||!line)return null;
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
@@ -717,6 +770,9 @@
       }else if(format==="bare"&&bare){
         numberValue=Number(bare[1]);
         suffix="";
+      }else if(format==="metro-prefixed"&&metroNumber){
+        numberValue=Number(metroNumber[1]);
+        suffix=metroNumber[2];
       }else continue;
       if(numberValue<row.from||numberValue>row.to||
           row.suffixes.indexOf(suffix)<0)continue;
@@ -760,6 +816,17 @@
       }
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.numberIndex==="chuo-sobu-tozai-2611"){
+        var rawCal=String(context&&(context.calendarType||context.serviceId||
+          context.timetableCalendar)||"");
+        var cal=rawCal==="weekday"||/(?:^|[.:])Weekday$/.test(rawCal) ? "weekday" :
+          rawCal==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(rawCal)
+          ? "holiday" : "";
+        var direction=String(context&&(context.railDirection||context.direction)||"")
+          .split(/[.:]/).pop();
+        var indexed=chuoSobuTozai2611[cal+"_"+direction+"_"+row.throughOwner];
+        if(!indexed||indexed.indexOf(number)<0)continue;
+      }
       if(row.numberIndex==="jreast-yokohama-202611"){
         var yokohamaIndex=root.JREastYokohama202611NumberIndex;
         if(!yokohamaIndex || typeof yokohamaIndex.contains!=="function" ||
@@ -817,6 +884,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jreast-north-number-png-v32",match:match
+    version:"20261104-chuo-sobu-tozai-through-v33",match:match
   });
 })(window);
