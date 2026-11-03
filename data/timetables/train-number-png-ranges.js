@@ -112,13 +112,16 @@
     // are excluded: shared route is not evidence they are E235 trainsets.
     // https://timetables.jreast.co.jp/2611/timetable-v/222d1.html
     // https://timetables.jreast.co.jp/2611/timetable-v/222d2.html
-    {lineIds:["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch"],
-      numberFormat:"full",from:400,to:5999,suffixes:"FS",
+    {lineIds:["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch",
+        "Uchibo","Sotobo","Kashima"],
+      numberFormat:"full",from:400,to:5999,suffixes:"FSM",
       operator:"JR-East",sourceOperatorFallback:true,
       trainTypes:["Local","Rapid"],
       sourceRailways:["odpt.Railway:JR-East.Yokosuka",
-        "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.SobuMain",
-        "odpt.Railway:JR-East.Narita","odpt.Railway:JR-East.NaritaAirportBranch"],
+        "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.Sobu",
+        "odpt.Railway:JR-East.Narita","odpt.Railway:JR-East.NaritaAirportBranch",
+        "odpt.Railway:JR-East.Uchibo","odpt.Railway:JR-East.Sotobo",
+        "odpt.Railway:JR-East.Kashima"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       numberIndex:"jreast-sobu-yokosuka-202611",
       allowedModelLabels:["E235系1000番台"],
@@ -135,7 +138,7 @@
       trainType:"LimitedExpress",operator:"JR-East",
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Yokosuka",
-        "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.SobuMain",
+        "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.Sobu",
         "odpt.Railway:JR-East.Narita","odpt.Railway:JR-East.NaritaAirportBranch"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       numberIndex:"jreast-sobu-yokosuka-202611",
@@ -148,13 +151,13 @@
     // same model reference across each sourced segment.
     // E257-5000 does NOT share this range: it mainly runs date-specific
     // specials; its model PNG is not yet in the approved gallery.
-    {lineIds:["Keiyo","Sotobo","Uchibo","SobuMain"],
+    {lineIds:["Keiyo","Sotobo","Uchibo","SobuMain","SobuRapid"],
       numberFormat:"full",from:1001,to:4011,suffixes:"M",
       trainType:"LimitedExpress",operator:"JR-East",
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Keiyo",
         "odpt.Railway:JR-East.Sotobo","odpt.Railway:JR-East.Uchibo",
-        "odpt.Railway:JR-East.SobuMain"],
+        "odpt.Railway:JR-East.Sobu","odpt.Railway:JR-East.SobuRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       numberIndex:"jreast-sobu-yokosuka-202611",
       allowedModelLabels:["E257系500番台","E257系500番台（わかしお・さざなみ）"],
@@ -266,7 +269,7 @@
     // Determine the interpretation FROM THE LINE RULE, not from the suffix.
     // This is never a train number -> operation number conversion.
     var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
-    var numbered=number.match(/^([0-9]{1,4})([KFMSTH])$/);
+    var numbered=number.match(/^([0-9]{1,4})([KFMSTHY])$/);
     var bare=number.match(/^([0-9]{3,4})$/);
     if((!regular&&!numbered&&!bare)||!line)return null;
     for(var i=0;i<rows.length;i++){
@@ -327,9 +330,17 @@
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
       if(row.numberIndex==="jreast-sobu-yokosuka-202611"){
-        var officialIndex=root.JREastSobuYokosuka202611NumberIndex;
-        if(!officialIndex || typeof officialIndex.match!=="function" ||
-            !officialIndex.match(row.model,number,line,context))continue;
+        // Prefer the complete typed, real-railway-URN source index. Old
+        // snapshots used the UI key SobuMain where the provider uses Sobu
+        // and omitted Boso through segments and Shiosai mixed workings.
+        var newIndex=root.JREastChibaNumberIndex202611;
+        if(newIndex && typeof newIndex.match==="function"){
+          if(newIndex.match(number,line,context)!==row.model)continue;
+        }else{
+          var officialIndex=root.JREastSobuYokosuka202611NumberIndex;
+          if(!officialIndex || typeof officialIndex.match!=="function" ||
+              !officialIndex.match(row.model,number,line,context))continue;
+        }
       }
       if(row.numberIndex==="joban-e231-h-202611"){
         var idx=root.JobanE231RapidNumberIndex;
@@ -357,6 +368,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v13",match:match
+    version:"20261103-direct-number-v14",match:match
   });
 })(window);
