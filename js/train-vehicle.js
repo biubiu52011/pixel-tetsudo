@@ -3956,10 +3956,20 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     var num = String(p.trainNumber).trim();
     var day = String(p.serviceDate).slice(0, 10);
     var hits = (_publishedPositionPlanByNumber[num] || []).filter(function(row) {
+      var kind=String(p.trainType || "").split(/[:.]/).pop();
+      var fromOfficial=Array.isArray(row.sourceRailways);
       return String(row.trainNumber) === num &&
         String(row.calendarType || "") === p.calendarType &&
         (!row.effectiveFrom || day >= row.effectiveFrom) &&
         (!row.effectiveTo || day <= row.effectiveTo) &&
+        // Special trains must match their EXPLICIT operating dates. A
+        // Saturday/Holiday service is not automatically operated every holiday.
+        (!Array.isArray(row.operatingDates) ||
+          row.operatingDates.indexOf(day) >= 0) &&
+        (!row.trainType || kind === String(row.trainType)) &&
+        (!row.operator || !p.trainOperator ||
+          String(p.trainOperator).replace(/^odpt\.Operator:/,"") === String(row.operator)) &&
+        (!fromOfficial || row.sourceRailways.indexOf(sourceRailway) >= 0) &&
         _evidenceNetworkMatches(row.networkKey,
           {lineId: lineId, railway: sourceRailway});
     });
@@ -4079,7 +4089,12 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     if (!plan || plan.status !== "PLANNED_MODEL" || !plan.iconPath) return null;
     // A model reference is sufficient for the requested planned display,
     // without asserting that this is the physical train seen today.
-    plan.evidenceRole = "timetable-reference";
+    plan.evidenceRole = first.evidenceRole || "timetable-reference";
+    plan.modelEvidenceUrl = first.modelSourceUrl || "";
+    plan.serviceName = first.serviceName || "";
+    plan.publishedTrainNumber = num;
+    plan.publishedCalendarType = p.calendarType;
+    plan.actualVehicleConfirmed = false;
     plan.confirmed = false;
     return plan;
   }
