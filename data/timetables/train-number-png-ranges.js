@@ -286,7 +286,9 @@
     // Determine the interpretation FROM THE LINE RULE, not from the suffix.
     // This is never a train number -> operation number conversion.
     var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
-    var numbered=number.match(/^([0-9]{1,4})([KFMSTHY])$/);
+    // Include G for Yamanote's full public 3/4-digit G train numbers.
+    // Line-scoped matching below prevents G from leaking to other routes.
+    var numbered=number.match(/^([0-9]{1,4})([KFMSTHYG])$/);
     var bare=number.match(/^([0-9]{3,4})$/);
     if((!regular&&!numbered&&!bare)||!line)return null;
     for(var i=0;i<rows.length;i++){
