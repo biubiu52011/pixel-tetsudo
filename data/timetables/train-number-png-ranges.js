@@ -105,6 +105,61 @@
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
+    // 2026-11 JR East Yokosuka-Sobu numbered services.
+    // EXACT public numbers from the dated source index, NEVER arbitrary ranges.
+    // The Yokosuka S / Sobu Rapid F through-train family uses E235-1000
+    // as an illustrative model. Yokosuka H/Y and odd M-numbered workings
+    // are excluded: shared route is not evidence they are E235 trainsets.
+    // https://timetables.jreast.co.jp/2611/timetable-v/222d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/222d2.html
+    {lineIds:["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch"],
+      numberFormat:"full",from:400,to:5999,suffixes:"FS",
+      operator:"JR-East",sourceOperatorFallback:true,
+      trainTypes:["Local","Rapid"],
+      sourceRailways:["odpt.Railway:JR-East.Yokosuka",
+        "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.SobuMain",
+        "odpt.Railway:JR-East.Narita","odpt.Railway:JR-East.NaritaAirportBranch"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"jreast-sobu-yokosuka-202611",
+      allowedModelLabels:["E235系1000番台"],
+      model:"E235系1000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E235系_1000番台.png"},
+    // N'EX 2001-2054M from published limited-express service numbers;
+    // Shiosai 400xM uses E259 *except* the day-specific E257-500
+    // trains (e.g. weekday 4006M / 4011M). Exact calendar/line lookup
+    // prevents assigning the wrong vehicle to those two services.
+    // https://www.jreast.co.jp/train/express/nex.html
+    // https://www.jreast.co.jp/press/2023/chiba/20231215_c01.pdf
+    {lineIds:["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch"],
+      numberFormat:"full",from:2001,to:4014,suffixes:"M",
+      trainType:"LimitedExpress",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Yokosuka",
+        "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.SobuMain",
+        "odpt.Railway:JR-East.Narita","odpt.Railway:JR-East.NaritaAirportBranch"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"jreast-sobu-yokosuka-202611",
+      allowedModelLabels:["E259系","E259系（成田エクスプレス）","E259系（しおさい）"],
+      model:"E259系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E259系.png"},
+    // E257-500 Boso numbered services: weekday Sazanami 1001-1007M,
+    // Wakashio 1051-1071M with daily calendar gaps, and Shiosai
+    // 4006M / 4011M. Keiyo/Sotobo/Uchibo/SobuMain uses the
+    // same model reference across each sourced segment.
+    // E257-5000 does NOT share this range: it mainly runs date-specific
+    // specials; its model PNG is not yet in the approved gallery.
+    {lineIds:["Keiyo","Sotobo","Uchibo","SobuMain"],
+      numberFormat:"full",from:1001,to:4011,suffixes:"M",
+      trainType:"LimitedExpress",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Keiyo",
+        "odpt.Railway:JR-East.Sotobo","odpt.Railway:JR-East.Uchibo",
+        "odpt.Railway:JR-East.SobuMain"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"jreast-sobu-yokosuka-202611",
+      allowedModelLabels:["E257系500番台","E257系500番台（わかしお・さざなみ）"],
+      model:"E257系500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_500番台.png"},
     // 2026-11 Nambu mainline JR-East F-numbered Local/Rapid services.
     // Holiday 2319F: Kawasaki 23:13 -> Musashi-Mizonokuchi 23:34.
     // E233-8000 is a representative line-stock IMAGE; E233-8500 also
@@ -271,6 +326,11 @@
       }
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.numberIndex==="jreast-sobu-yokosuka-202611"){
+        var officialIndex=root.JREastSobuYokosuka202611NumberIndex;
+        if(!officialIndex || typeof officialIndex.match!=="function" ||
+            !officialIndex.match(row.model,number,line,context))continue;
+      }
       if(row.numberIndex==="joban-e231-h-202611"){
         var idx=root.JobanE231RapidNumberIndex;
         if(!idx || typeof idx.match!=="function" ||
@@ -297,6 +357,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v12",match:match
+    version:"20261103-direct-number-v13",match:match
   });
 })(window);
