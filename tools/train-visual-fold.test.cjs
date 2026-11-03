@@ -23,6 +23,7 @@ function node(tag){
     setAttribute(k,v){attrs[k]=String(v)},
     getAttribute(k){return attrs[k]===undefined?null:attrs[k]},
     removeAttribute(k){delete attrs[k]},
+    closest(){return null},
     appendChild(child){child.parentNode=this;this.children.push(child);return child},
     removeChild(child){this.children.splice(this.children.indexOf(child),1);child.parentNode=null},
   };
