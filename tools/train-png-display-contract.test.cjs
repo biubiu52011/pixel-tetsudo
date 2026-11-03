@@ -784,7 +784,7 @@ assert.match(tooltipContext._trainFoldExactVehicleLabel({
 }, 'Yamanote', 'en'), /Physically confirmed model/,
   'independently proven actual stock can be shown on a through line');
 assert.match(renderSource,
-  /_trainFoldExactVehicleLabel\(p, marker\._displayLineId \|\| "", lang\)/,
+  /_trainFoldExactVehicleLabel\(p,lineId,lang\)/,
   'folded list must display confirmed model names with scoped evidence labels');
 
 
