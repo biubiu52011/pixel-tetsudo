@@ -55,3 +55,53 @@ test('Nambu branch target uses its existing parent icon without rewriting identi
   assert.equal(chip.lineId,'NambuBranch');
   assert.ok(chip.image.includes('南武線.png'));
 });
+
+test('terminal branch caption clears Hama-Kawasaki transfer icon on mobile',()=>{
+  const map=getMap('Nambu');
+  const offset=vm.runInContext('_branchTerminalCaptionOffset',ctx);
+  assert.equal(offset([]),18,'ordinary branch ends keep their former baseline');
+  assert.equal(offset(map['Hama-Kawasaki']),42,
+    'single icon requires a caption lower than the previous 18px');
+
+  // Execute the actual SVG branch-caption drawing block with the canonical
+  // NambuBranch station order (remote terminus first, parent junction last).
+  const source=fs.readFileSync('js/trains-render.js','utf8');
+  const a=source.indexOf('          // 竖列支线名放回 SVG 层');
+  const b=source.indexOf('          } // else（竖列现状）闭合',a);
+  assert.ok(a>=0&&b>a);
+  const drawn=[];
+  ctx.document.createElementNS=(_ns,tag)=>({
+    tag,attrs:{},textContent:'',
+    setAttribute(name,value){this.attrs[name]=String(value);}
+  });
+  ctx.staticLayer={appendChild(node){drawn.push(node);}};
+  ctx.svgNS='http://www.w3.org/2000/svg';
+  ctx.branch=lines.NambuBranch;
+  ctx._rStations=lines.NambuBranch.stations.slice().reverse();
+  ctx._jFind7={station:'Shitte'};
+  ctx.transferMap=map;
+  ctx.bx=180;
+  ctx._connY=100;
+  ctx._vOwn=4;
+  ctx.branchSp=45;
+  ctx.bColor='#ffe400';
+  vm.runInContext(source.slice(a,b),ctx);
+  const caption=drawn.find(n=>n.tag==='text'&&n.textContent==='浜川崎支線');
+  assert.ok(caption,'the branch caption must still be visible');
+  assert.equal(Number(caption.attrs.y),100+3*45+42);
+  const lastStopY=100+3*45;
+  const iconBottom=lastStopY+9+16;
+  const captionTop=Number(caption.attrs.y)-10;
+  assert.ok(captionTop-iconBottom>=5,
+    'branch name may not overlap the bottom of the reciprocal transfer icon');
+  assert.equal(caption.attrs['text-anchor'],'middle');
+});
+test('vertical-branch geometry reserves caption clearance even in reversed station order',()=>{
+  const source=fs.readFileSync('js/trains-data.js','utf8');
+  assert.match(source,/var _bgTail = _bgArr\.reduce\(/,
+    'the maximum branch y must not use the original station-array tail');
+  assert.match(source,/svgH = Math\.max\(svgH, _bgTail\.y \+ _terminalOffset \+ 16\)/);
+  assert.equal(lines.NambuBranch.stations[0],'Hama-Kawasaki',
+    'NambuBranch terminal comes first in the canonical source order');
+  assert.equal(lines.NambuBranch.stations.at(-1),'Shitte');
+});
