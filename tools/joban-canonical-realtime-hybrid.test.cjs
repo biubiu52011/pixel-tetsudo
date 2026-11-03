@@ -87,6 +87,43 @@ expectMatched({ Joban: [plan(80, {
   sourceRailway: 'odpt.Railway:JR-East.JobanRapid',
 })] }, { JobanMain: [mainRt] }, 1);
 
+// A source-only single E531 candidate is explicitly scoped to the
+// one validated SQL canonical service. It is not live rolling-stock evidence.
+const candidatePlan = plan(174919, {
+  serviceDate:'2026-11-03',trainNumber:'1257M',railDirection:'Outbound',
+  runningChainId:'canonical-sql-trip:2026-11-03:174919',
+  positionLineId:'JobanMain',canonicalLineIds:['Joban','JobanMain'],
+  plannedVehicleCandidateStatus:'source_single_type_candidate',
+  plannedVehicleCandidates:['E531系'],
+  canonicalStopKeys:['Shinagawa','Ueno','Toride','Tsuchiura','Mito','Katsuta']
+});
+const candidateLive = live({
+  serviceDate:'2026-11-03',trainNumber:'1257M',railDirection:'Outbound',
+  positionLineId:'Joban',
+  sourceFromStation:'odpt.Station:JR-East.JobanRapid.Ueno',
+  sourceToStation:'odpt.Station:JR-East.JobanRapid.Toride'
+});
+expectMatched({JobanMain:[candidatePlan]}, {Joban:[candidateLive]}, 1);
+assert.equal(candidateLive.runningChainId,'canonical-sql-trip:2026-11-03:174919');
+assert.deepEqual(JSON.parse(JSON.stringify(candidateLive.canonicalPlannedVehicleReference)),{
+  source:'verified-canonical-sql-source-candidate',
+  model:'E531系',canonicalTimetableId:'174919',
+  serviceDate:'2026-11-03',trainNumber:'1257M',confirmed:false
+});
+assert.equal(candidateLive.vehicleType,undefined,'do not invent actual type');
+assert.equal(candidateLive.vehicleFormationId,undefined,'do not invent formation');
+const conflictingLive = live({
+  serviceDate:'2026-11-03',trainNumber:'1257M',railDirection:'Outbound',
+  positionLineId:'Joban',
+  sourceFromStation:'odpt.Station:JR-East.JobanRapid.Ueno',
+  sourceToStation:'odpt.Station:JR-East.JobanRapid.Toride'
+});
+expectMatched({JobanMain:[plan(174919,{
+  ...candidatePlan,plannedVehicleCandidates:['E531系','E231系0番台']
+})]}, {Joban:[conflictingLive]}, 1);
+assert.equal(conflictingLive.canonicalPlannedVehicleReference,undefined,
+  'conflicting canonical source models cannot authorize E531 artwork');
+
 for (const [label, plans, lives] of [
   ['two plans with same number', { JobanMain: [plan(80), plan(81)] }, { Joban: [live()] }],
   ['two simultaneous live snapshots', { JobanMain: [plan(80)] },
