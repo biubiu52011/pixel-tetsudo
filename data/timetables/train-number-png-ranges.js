@@ -105,6 +105,22 @@
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
+    // JR East's 2026-11 holiday timetable lists 1252M as a regular
+    // Katsuta -> Shinagawa service with a Green car. The canonical SQL
+    // JobanMain -> Joban record also carries an E531 source-model candidate.
+    // On the rapid-line diagram the same through train may be labelled Rapid.
+    // This is a narrow PLANNED artwork reference, not a confirmed carset.
+    // https://timetables.jreast.co.jp/2611/timetable-v/642u2p.html
+    // https://www.jreast.co.jp/en/train/local/e531.html
+    {lineIds:["Joban","JobanMain"],numberFormat:"full",
+      from:1252,to:1252,suffixes:"M",operator:"JR-East",
+      trainTypes:["Local","Rapid"],calendarType:"holiday",
+      sourceRailways:["odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      requireCompatiblePlan:true,
+      model:"E531系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E531系.png"},
     // JR East Tsurumi regular services changed to E131-1000 fleet in March
     // 2024. These remain scheduled DISPLAY REFERENCES, not observed sets.
     // 2026-11-03 holiday train 2200: Ogimachi 22:10 -> Tsurumi 22:27.
@@ -189,6 +205,17 @@
         var serviceDate=String(context&&context.serviceDate||"").slice(0,10);
         if(!/^\d{4}-\d{2}-\d{2}$/.test(serviceDate)||serviceDate<row.validFrom)continue;
       }
+      if(row.validTo && String(context&&context.serviceDate||"").slice(0,10)>row.validTo)continue;
+      if(row.calendarType && String(context&&context.calendarType||"")!==row.calendarType)continue;
+      if(row.trainTypes){
+        var runtimeType=String(context&&(context.trainType||context.typeName)||"").split(/[.:]/).pop();
+        if(row.trainTypes.indexOf(runtimeType)<0)continue;
+      }
+      if(row.sourceRailways &&
+          row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.requireCompatiblePlan && context && context.vehiclePlan &&
+          Array.isArray(context.vehiclePlan.models) && context.vehiclePlan.models.length &&
+          context.vehiclePlan.models.indexOf(row.model)<0)continue;
       return {trainNumber:number,lineId:line,model:row.model,
         pngPath:row.pngPath,source:"train-number-range",
         planned:true,representative:true};
@@ -196,6 +223,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v8",match:match
+    version:"20261103-direct-number-v9",match:match
   });
 })(window);
