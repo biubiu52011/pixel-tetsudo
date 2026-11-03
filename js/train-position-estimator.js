@@ -282,12 +282,18 @@
   }
 
   // 规范化用于匹配的车站键（移除连字符，处理常见变体）。
-  function normalizeStationKey(key) {
+  function normalizeStationKey(key, lineId) {
     try {
       if (!key) return "";
-      // 使用与实时融合相同的车站身份别名。SQL 来源
-      // 名称（包括机场航站楼）必须匹配 canonical 地图车站。
-      var sharedAliases = window.RuntimeConfig && window.RuntimeConfig.STATION_ALIAS;
+      // Prefer a RAILWAY-SCOPED alias for ambiguous station names:
+      // 成田線湖北 Kohoku != 日暮里舎人ライナー江北 Kohoku.
+      // For unambiguous names, use the existing shared alias table.
+      var config = window.RuntimeConfig || {};
+      var scopes = config.STATION_ALIAS_BY_RAILWAY || {};
+      var scoped = lineId && scopes[lineId];
+      if (scoped && Object.prototype.hasOwnProperty.call(scoped, key))
+        key = scoped[key];
+      var sharedAliases = config.STATION_ALIAS;
       if (sharedAliases && Object.prototype.hasOwnProperty.call(sharedAliases, key)) key = sharedAliases[key];
       var k = String(key).toLowerCase();
       // 移除连字符和空格。
@@ -394,7 +400,7 @@
       if (!raw) continue;
       var stationUrn = raw["odpt:departureStation"] || raw["odpt:arrivalStation"] || raw["odpt:station"] || "";
       var stationKey = extractStationKey(stationUrn);
-      var normStationKey = normalizeStationKey(stationKey);
+      var normStationKey = normalizeStationKey(stationKey, lineId);
       var idx = stationIndexMap[normStationKey];
       if (idx === undefined) idx = stationIndexMap[stationKey];
       if (idx === undefined && verifiedContinuation && projection) {
