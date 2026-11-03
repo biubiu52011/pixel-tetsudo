@@ -11,6 +11,7 @@ on:
       - 'tools/train-network-vehicle-audit.test.cjs'
       - 'tools/train-visual-fold.test.cjs'
       - 'tests/scheduled-vehicle-mapping.test.cjs'
+      - 'tests/chuo-takao-source-handover.test.cjs'
       - 'tests/train-coupling.test.cjs'
       - 'data/core/railway_data.compact.json'
       - 'data/timetables/**'
@@ -73,8 +74,8 @@ jobs:
         run: node tools/train-visual-fold.test.cjs
       - name: Audit all 237 railway routes, 191 fleet scopes and gallery references
         run: node tools/train-network-vehicle-audit.test.cjs
-      - name: Verify dated references and public train-number split/join rules
-        run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/train-coupling.test.cjs
+      - name: Verify dated references, Takao source handover and train split/join rules
+        run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/chuo-takao-source-handover.test.cjs tests/train-coupling.test.cjs
       - name: Verify vehicle PNG decisions and SVG projection
         run: node tools/train-png-display-contract.test.cjs
       - name: Verify registered PNG paths and file headers
