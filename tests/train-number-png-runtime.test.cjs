@@ -515,9 +515,10 @@ test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind r
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama').model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama').model,'E233系6000番台');
-  for(const line of ['SaikyoKawagoe','KeihinTohoku','KeihinTohokuNegishi','ChuoRapid','Rinkai']){
-    assert.equal(root.TrainNumberPngRanges.match('2221K',line),line==='SaikyoKawagoe'
-      ? root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe') : null,
+  assert.equal(root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe').model,
+    'E233系7000番台','the Saikyo tail interpretation is unchanged');
+  for(const line of ['KeihinTohoku','KeihinTohokuNegishi','ChuoRapid','Rinkai']){
+    assert.equal(root.TrainNumberPngRanges.match('2221K',line),null,
       'scoped K train number must not reassign vehicles to '+line);
   }
   for(const n of ['399K','5000K','2221T','2221M','2221S','2149']){
