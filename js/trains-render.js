@@ -536,12 +536,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _prepareTrainPositions(positions, stationCoords) {
     var ordered = _sortTrainPositionsBySource(positions);
     if (!stationCoords || !stationCoords.length) return ordered;
-    return ordered.filter(function(position) {
+    var valid = ordered.filter(function(position) {
       if (_trainPositionRank(position) === 0) return true;
       var stationIndex = position && position.stationIndex != null
         ? Number(position.stationIndex) : NaN;
       return isFinite(stationIndex) && stationIndex >= 0 && stationIndex < stationCoords.length;
     });
+    // Published coupling can group only two verifiably co-located portions
+    // on the same corridor. After the junction each retains its own number,
+    // destination and stable source ID. Do not alter upstream identities.
+    return window.TrainCoupling && typeof window.TrainCoupling.prepare === "function"
+      ? window.TrainCoupling.prepare(valid, stationCoords) : valid;
   }
 
   // 服务走廊记录可能携带完整时刻表路径，但其
@@ -1412,6 +1417,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (_loopNames[_loopD]) tip.push(_loopNames[_loopD][/^zh/.test(lang) ? 1 : (lang === "en" ? 2 : (lang === "ko" ? 3 : 0))]);
     }
     if (p && p.destinationStation) tip.push(_trainDestText(p.destinationStation));
+    // A split portion retains its own official number. The partner's number
+    // is shown only as a sourced timetable coupling relationship, not as an
+    // actual-day physical carset identification.
+    if (p && p.coupling && window.TrainCoupling &&
+        typeof window.TrainCoupling.label === "function") {
+      var couplingLabel = window.TrainCoupling.label(p.coupling, lang);
+      if (couplingLabel) tip.push(couplingLabel);
+    }
     tip.push(_trainPositionSourceText(p));
     return tip.join(" | ");
   }
