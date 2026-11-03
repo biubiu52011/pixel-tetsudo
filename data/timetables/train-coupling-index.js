@@ -200,6 +200,9 @@
     if (!coupling || coupling.kind !== "published-formation-coupling") return "";
     lang = String(lang || "ja").toLowerCase();
     var pair = coupling.numbers.join(" + "), station = coupling.junction;
+    if (/^zh/.test(lang)) station = station === "Atami" ? "热海" : station === "Tokyo" ? "东京" : station;
+    else if (lang === "ja") station = station === "Atami" ? "熱海" : station === "Tokyo" ? "東京" : station;
+    else if (lang === "ko") station = station === "Atami" ? "아타미" : station === "Tokyo" ? "도쿄" : station;
     var splitting = coupling.operation === "split";
     if (/^zh/.test(lang)) {
       if (coupling.phase === "coupled") return "时刻表并结车号 " + pair + "（" + station + "站" + (splitting ? "分离" : "并结") + "）";
@@ -229,7 +232,7 @@
   }
 
   root.TrainCoupling = Object.freeze({
-    version:"20261103-jr-coupling-v2",
+    version:"20261103-jr-coupling-v3",
     sourceUrl:SOURCE, sourceOutboundUrl:SOURCE_OUTBOUND,
     lookup:numberMatch, phaseOf:phaseOf, prepare:prepare, label:label
   });
