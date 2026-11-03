@@ -736,8 +736,14 @@ assert.match(tooltipContext._trainFleetPlanLabel({
     models: ['E231系', 'E233系'] }
 }, 'Keiyo', 'en'), /Scheduled model unconfirmed.*E231/,
   'route fleet is only a reference, not a train-specific plan');
+// The fold list now computes the active display line exactly once before
+// calling all fleet-label helpers. Verify BOTH the line scope and the call,
+// not a historical inline spelling that no longer exists.
 assert.match(renderSource,
-  /_trainFleetPlanLabel\(p, marker\._displayLineId \|\| "", lang\)/,
+  /var lineId=marker\._displayLineId \|\| p\.positionLineId \|\| p\.lineId \|\| "";/,
+  'folded train list must use the current displayed line');
+assert.match(renderSource,
+  /_trainFleetPlanLabel\(p,lineId,lang\)/,
   'folded train list must show the same planned/candidate distinction');
 
 vm.runInContext(extract(renderSource,
