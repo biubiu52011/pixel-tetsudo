@@ -178,6 +178,8 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
     ['Narita','2545M','Local','weekday','E235系1000番台',p235],
     ['Yokosuka','1005S','Local','holiday','E235系1000番台',p235],
     ['Yokosuka','2001M','LimitedExpress','holiday','E259系',p259],
+    ['Yokosuka','2204M','LimitedExpress','holiday','E259系',p259],
+    ['Yokosuka','2249M','LimitedExpress','holiday','E259系',p259],
     ['SobuMain','4001M','LimitedExpress','holiday','E259系',p259],
     ['SobuRapid','4001M','LimitedExpress','holiday','E259系',p259],
     ['SobuMain','4006M','LimitedExpress','weekday','E257系500番台',p257],
@@ -201,7 +203,7 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
       sourceRailway:'odpt.Railway:JR-East.SobuMain'}),
     position('SobuMain','4006M','LimitedExpress','weekday',{
       sourceRailway:'odpt.Railway:JR-East.SobuRapid'}),
-    position('Yokosuka','2204M','LimitedExpress','holiday'),
+    position('Yokosuka','2255M','LimitedExpress','holiday'),
     position('Yokosuka','2522Y','Local','holiday'),
     position('Yokosuka','1004H','Local','holiday'),
     position('Yokosuka','3835M','Local','weekday'),
