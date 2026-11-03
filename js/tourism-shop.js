@@ -59,9 +59,32 @@
     return '<div class="dp-card"><h3 class="dp-sec-title">' + C.t('detail.about') + '</h3><p class="dp-text">' + C.escapeHtml(ctx.desc) + '</p></div>';
   }
 
-  // ⑤ 推荐内容：餐饮、零售、娱乐和体验型商家统一标题；无具体项目时回退到文本贴士
+  // 所有商家推荐统一来源 spot.menu。
+  // kind=note 是从历史 tips 迁移的文字提示：不伪造商品图、名称或价格。
+  function buildRecommendedItem(spot, item, index, badgeChar) {
+    item = item || {};
+    var name = (spot.menu_i18n && spot.menu_i18n[index] && spot.menu_i18n[index][C.state.lang])
+      || item.item || C.t('detail.i18n_missing');
+    if (item.kind === 'note') {
+      return '<div class="dp-rec-text-item dp-rec-text-item--menu">'
+        + '<span class="dp-rec-text-dot" aria-hidden="true"></span>'
+        + '<span class="dp-rec-text-body">' + C.escapeHtml(name) + '</span></div>';
+    }
+    var thumb = item.img
+      ? '<img class="dp-dish-img" src="' + C.escapeHtml(item.img) + '" alt="' + C.escapeHtml(name)
+        + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="'
+        + C.galleryIndexForMenu(spot, index) + '">'
+      : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
+    return '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb + '</div>'
+      + '<div class="dp-dish-name">' + C.escapeHtml(name) + '</div>'
+      + (item.price != null && item.price !== ''
+        ? '<div class="dp-dish-price">' + C.escapeHtml(String(item.price)) + '</div>'
+        : '') + '</div>';
+  }
+
+  // ⑤ 推荐内容：餐饮、零售、娱乐和体验型商家都从 spot.menu 展示。
   function buildRecommendationsCard(spot) {
-    if (spot.menu && spot.menu.length > 0) {
+    if (Array.isArray(spot.menu) && spot.menu.length > 0) {
       var titleKey = 'detail.menu';
       var list = spot.menu.slice(0, 10);
       var badgeChar = String(spot.name || '').trim().charAt(0) || C.t('detail.badge_initial_fallback');
@@ -72,15 +95,7 @@
       html += '<button class="dp-menu-viewall" data-modal="' + ('dpMenuModal_' + (spot.menu._idx || 0)) + '">' + C.t('detail.view_all') + ' &rsaquo;</button>';
       html += '</div><div class="dp-menu-carousel">';
       for (var mi = 0; mi < list.length; mi++) {
-        var it = list[mi] || {};
-        var itemText = (spot.menu_i18n && spot.menu_i18n[mi] && spot.menu_i18n[mi][C.state.lang])
-          || it.item || C.t('detail.i18n_missing');
-        var thumb = it.img
-          ? '<img class="dp-dish-img" src="' + C.escapeHtml(it.img) + '" alt="' + C.escapeHtml(itemText) + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="' + C.galleryIndexForMenu(spot, mi) + '">'
-          : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
-        html += '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb + '</div>'
-          + '<div class="dp-dish-name">' + C.escapeHtml(itemText) + '</div>'
-          + (it.price != null && it.price !== '' ? '<div class="dp-dish-price">' + C.escapeHtml(String(it.price)) + '</div>' : '') + '</div>';
+        html += buildRecommendedItem(spot, list[mi], mi, badgeChar);
       }
       html += '</div></div>';
 
@@ -91,72 +106,14 @@
       html += '<div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">' + C.t(titleKey) + '</h3>';
       html += '<div class="dp-menu-modal-grid">';
       for (var mi2 = 0; mi2 < spot.menu.length; mi2++) {
-        var it2 = spot.menu[mi2] || {};
-        var itemText2 = (spot.menu_i18n && spot.menu_i18n[mi2] && spot.menu_i18n[mi2][C.state.lang])
-          || it2.item || C.t('detail.i18n_missing');
-        var thumb2 = it2.img
-          ? '<img class="dp-dish-img" src="' + C.escapeHtml(it2.img) + '" alt="' + C.escapeHtml(itemText2) + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="' + C.galleryIndexForMenu(spot, mi2) + '">'
-          : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
-        html += '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb2 + '</div>'
-          + '<div class="dp-dish-name">' + C.escapeHtml(itemText2) + '</div>'
-          + (it2.price != null && it2.price !== '' ? '<div class="dp-dish-price">' + C.escapeHtml(String(it2.price)) + '</div>' : '') + '</div>';
+        html += buildRecommendedItem(spot, spot.menu[mi2], mi2, badgeChar);
       }
       html += '</div></div></div>';
-      return html + buildTipsCard(spot, 'detail.tips');
+      return html;
     }
-    // 没有结构化商品/体验项目时，也使用统一的推荐卡片，而非旧式 Tips 列表。
-    return buildTextRecommendationsCard(spot);
+    return '';
   }
 
-  // 文字推荐共用商品推荐的「横向预览 + 查看全部」布局。
-  // tips 是说明文字，不应伪造图片、商品名或价格，也不应丢失原有文案。
-  function buildTextRecommendationsCard(spot) {
-    if (!Array.isArray(spot.tips) || spot.tips.length === 0) return '';
-    var items = [];
-    for (var i = 0; i < spot.tips.length; i++) {
-      var translated = spot.tips_i18n && spot.tips_i18n[C.state.lang] && spot.tips_i18n[C.state.lang][i];
-      var value = translated || spot.tips[i];
-      if (typeof value === 'string' && value.trim()) items.push(value.trim());
-    }
-    if (items.length === 0) return '';
-
-    function textItem(text) {
-      return '<div class="dp-rec-text-item">'
-        + '<span class="dp-rec-text-dot" aria-hidden="true"></span>'
-        + '<span class="dp-rec-text-body">' + C.escapeHtml(text) + '</span></div>';
-    }
-
-    var modalId = 'dpRecommendTipsModal';
-    var title = C.t('detail.menu');
-    var html = '<div class="dp-card dp-menu dp-rec-text-panel">'
-      + '<div class="dp-menu-head"><h3 class="dp-sec-title">' + title + '</h3>'
-      + '<button class="dp-menu-viewall" data-modal="' + modalId + '">' + C.t('detail.view_all') + ' &rsaquo;</button>'
-      + '</div><div class="dp-menu-carousel dp-rec-text-carousel">';
-    for (var j = 0; j < Math.min(items.length, 10); j++) html += textItem(items[j]);
-    html += '</div></div>';
-    html += '<div class="dp-menu-modal" id="' + modalId + '" role="dialog" aria-modal="true" aria-label="' + C.escapeHtml(title) + '">'
-      + '<button class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close')) + '">&times;</button>'
-      + '<div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">' + title + '</h3>'
-      + '<div class="dp-menu-modal-grid dp-rec-text-grid">';
-    for (var k = 0; k < items.length; k++) html += textItem(items[k]);
-    return html + '</div></div></div>';
-  }
-
-  function buildTipsCard(spot, titleKey) {
-    // 只有实际内容才渲染提示/推荐，避免娱乐设施出现「内容未提供」的空卡片。
-    if (!spot.tips || spot.tips.length === 0) return '';
-    var htmlFallback = '<div class="dp-card dp-shop-picks"><h3 class="dp-sec-title">' + C.t(titleKey) + '</h3><ul class="dp-pick-list">';
-    if (spot.tips && spot.tips.length > 0) {
-      for (var ti = 0; ti < spot.tips.length; ti++) {
-        var tipText = (spot.tips_i18n && spot.tips_i18n[C.state.lang] && spot.tips_i18n[C.state.lang][ti])
-          || spot.tips[ti] || C.t('detail.i18n_missing');
-        htmlFallback += '<li>' + C.escapeHtml(tipText) + '</li>';
-      }
-    } else {
-      htmlFallback += '<li>' + C.escapeHtml(C.t('detail.i18n_missing')) + '</li>';
-    }
-    return htmlFallback + '</ul></div>';
-  }
   // ⑥ 位置地图
   function buildMapCard(ctx) {
     return '<div class="dp-card"><h3 class="dp-sec-title">' + C.t('detail.location') + '</h3>'
@@ -180,7 +137,7 @@
   // 图片点击放大统一走 core 的图集查看器（bindGallery）。
 
 
-  // 菜单全屏模态（查看全部）
+  // 统一推荐内容全屏模态（查看全部）
   function bindMenuModal() {
     var viewBtns = document.querySelectorAll('button.dp-menu-viewall');
     for (var vi = 0; vi < viewBtns.length; vi++) {
