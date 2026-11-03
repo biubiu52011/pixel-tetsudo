@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640" role="img" aria-label="Original thematic illustration">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFF5ED"/><stop offset="1" stop-color="#FFE7D8"/></linearGradient><radialGradient id="orb"><stop stop-color="#FFFFFF" stop-opacity=".7"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs>
+<rect width="640" height="640" fill="url(#bg)"/>
+<circle cx="65" cy="76" r="185" fill="url(#orb)"/><circle cx="597" cy="540" r="199" fill="url(#orb)"/>
+<path d="M0 545Q110 505 232 546T490 534T640 541V640H0Z" fill="#E9A28A" opacity=".13"/>
+<g fill="none" stroke="#A95C6F" stroke-width="7" opacity=".24"><circle cx="83" cy="133" r="24"/><circle cx="563" cy="161" r="36"/><path d="M80 486l25 18-28 11"/><path d="M532 459q23-24 45-3"/></g>
+<circle cx="541" cy="94" r="10" fill="#E9A28A" opacity=".5"/><circle cx="120" cy="552" r="14" fill="#A95C6F" opacity=".21"/>
+<path d="M97 234.6 Q100.6 245.4 111.4 249 Q100.6 252.6 97 263.4 Q93.4 252.6 82.6 249 Q93.4 245.4 97 234.6" fill="#E9A28A" opacity=".9"/><path d="M536 366.2 Q539.2 375.8 548.8 379 Q539.2 382.2 536 391.8 Q532.8 382.2 523.2 379 Q532.8 375.8 536 366.2" fill="#E9A28A" opacity=".9"/>
+<ellipse cx="325" cy="466" rx="205" ry="42" fill="#C79D82" opacity=".18"/><ellipse cx="325" cy="448" rx="217" ry="47" fill="#FFFDF9" stroke="#E9C8B6" stroke-width="10"/><rect x="189" y="268" width="272" height="159" rx="22" fill="#F5C4A1"/><rect x="189" y="330" width="272" height="25" rx="9" fill="#FFF5DB"/><rect x="189" y="391" width="272" height="20" rx="10" fill="#FFF5DB"/><path d="M187 283 Q212 236 254 263 Q284 218 322 248 Q356 218 392 248 Q438 222 464 283Z" fill="#FFFCED" stroke="#E3ACB1" stroke-width="7"/><g fill="#D96377"><circle cx="268" cy="261" r="19"/><circle cx="310" cy="252" r="19"/><circle cx="353" cy="262" r="19"/></g><path d="M309 225 Q330 201 346 220" fill="none" stroke="#6B9F79" stroke-width="11" stroke-linecap="round"/><path d="M158 245.4 Q162.4 258.6 175.6 263 Q162.4 267.4 158 280.6 Q153.6 267.4 140.4 263 Q153.6 258.6 158 245.4" fill="#FFCF8B" opacity=".9"/>
+<rect x="12" y="12" width="616" height="616" rx="35" fill="none" stroke="#A95C6F" stroke-width="3" opacity=".11"/>
+</svg>
