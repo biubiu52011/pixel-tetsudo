@@ -568,6 +568,96 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   };
 }
 
+
+  // JR East 2611, 2026-11-07 only: the recurring ODPT source uses cancelled
+  // normal numbers. Its nine Sotobo station clocks are independently identical
+  // to the official replacement's complete published Sotobo segment.
+  // Do not rewrite or certify the immutable source template/canonical ID.
+  // Only substitute the DATED public number after an exact nine-stop match,
+  // an official A-grade source entry, and explicit operating-day scope.
+  async function applyBosoNovember7DatedNumbers(runs: any[]): Promise<number> {
+    if (serviceDate !== "2026-11-07" || !["Sotobo","Uchibo"].includes(lineId)) return 0;
+    const uchiboCancelled = new Set(["3680F","3606F"]);
+    const sotoboAlternatives: Record<string,{number:string,key:string,signature:string}> = {
+      "3573F": {number:"9573M",key:"20261104-jre-2611-boso-1107-sotobo-9573m",
+        signature:"Chiba::05:21|HonChiba:05:23:05:23|Soga:05:26:05:27|Kamatori:05:31:05:32|Honda:05:35:05:36|Toke:05:40:05:41|Oami:05:44:05:45|Mobara:05:53:05:54|KazusaIchinomiya:06:01:"},
+      "3719F": {number:"9887M",key:"20261104-jre-2611-boso-1107-sotobo-9887m",
+        signature:"Chiba::09:27|HonChiba:09:29:09:30|Soga:09:33:09:39|Kamatori:09:44:09:44|Honda:09:47:09:48|Toke:09:52:09:53|Oami:09:57:09:57|Mobara:10:05:10:06|KazusaIchinomiya:10:13:"},
+      "3845F": {number:"8939M",key:"20261104-jre-2611-boso-1107-sotobo-8939m",
+        signature:"Chiba::10:26|HonChiba:10:28:10:28|Soga:10:32:10:37|Kamatori:10:41:10:42|Honda:10:45:10:46|Toke:10:50:10:51|Oami:10:54:10:55|Mobara:11:03:11:04|KazusaIchinomiya:11:11:"}
+    };
+    // An invalid/absent provenance row fails closed; never turn a cancelled
+    // 2026-11-07 normal service into a speculative replacement train.
+    const sources = new Map<string, any>();
+    if (lineId === "Sotobo") {
+      const keys = Object.values(sotoboAlternatives).map(x=>x.key);
+      const {data,error} = await db.from("evidence_sources")
+        .select("source_key,source_url,source_type,evidence_grade")
+        .in("source_key",keys);
+      if (error) throw error;
+      (data || []).forEach((s: any)=>sources.set(s.source_key,s));
+    }
+    let replaced = 0;
+    for (const run of runs) {
+      if (run.calendar_type !== "saturday_holiday" ||
+          run.operator !== "JR-East" ||
+          run.train_type !== "odpt.TrainType:JR-East.Rapid" ||
+          run.canonical_group_evidence !== "source_only" ||
+          run.network_key !== "odpt.Railway:JR-East." + lineId) continue;
+      if (lineId === "Uchibo" && uchiboCancelled.has(run.train_number)) {
+        run.operation_status = "cancelled";
+        continue;
+      }
+      const replacement = lineId === "Sotobo" ? sotoboAlternatives[run.train_number] : null;
+      if (!replacement) continue;
+      // This original normal service does not run on 11/7 in ANY case.
+      run.operation_status = "cancelled";
+      const source = sources.get(replacement.key);
+      const validSource = source?.source_type === "official" &&
+        source?.evidence_grade === "A" &&
+        typeof source?.source_url === "string" &&
+        source.source_url.startsWith("https://timetables.jreast.co.jp/2611/train/");
+      if (!validSource || !Array.isArray(run.stops) || run.stops.length !== 9 ||
+          run.rail_direction !== "odpt.RailDirection:Outbound") continue;
+      const signature = run.stops.map((stop: any) =>
+        [stop.station_key, String(stop.arrival_time || "").slice(0,5),
+          String(stop.departure_time || "").slice(0,5)].join(":")).join("|");
+      if (signature !== replacement.signature) continue;
+      // A dated replacement is a NEW public train NUMBER, not the old
+      // source's vehicle operation, formation or verified canonical identity.
+      run.train_number = replacement.number;
+      run.id = "official-dated-train:2026-11-07:Sotobo:" + replacement.number;
+      run.trip_id = run.id;
+      run.operation_status = "scheduled";
+      run.operation_code = "";
+      run.operation_owner = null;
+      run.operation_owner_source_url = null;
+      run.canonical_timetable_id = null;
+      run.canonical_group_evidence = "source_only";
+      run.canonical_line_ids = [];
+      run.canonical_number_aliases = [];
+      run.source_trip_id = null;
+      run.previous_timetable_ids = [];
+      run.next_timetable_ids = [];
+      run.plan_source = "official-20261107-number-stop-verified-override";
+      run.train_number_verification = "official-20261107-all-nine-stops";
+      run.train_number_source_url = source.source_url;
+      run.timetable_validity = "date_verified";
+      run.timetable_date_verified = true;
+      run.source_revision_date = null;
+      run.vehicle_type_label = null;
+      run.vehicle_type_candidates = null;
+      run.vehicle_mapping_level = "unresolved";
+      run.vehicle_plan_confirmed = false;
+      run.vehicle_artwork_path = null;
+      run.vehicle_evidence_source = null;
+      run.vehicle_evidence_source_id = null;
+      run.vehicle_evidence_url = null;
+      replaced++;
+    }
+    return replaced;
+  }
+
   const result = templates.map((t) => {
     const operator = timetableOperator || /^odpt\.Railway:([^.]+)\./.exec(t.railway_urn || "")?.[1] || "";
     const mapped = sourceResolution.get(t.id);
@@ -707,6 +797,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
   await linkPlannedOperations(db,result,selectedRevision);
+  const bosoDatedNumberOverrides = await applyBosoNovember7DatedNumbers(result);
   // Incomplete source rows are preserved in SQL for auditing, but must not
   // suppress other source-verified trains for the same railway/calendar.
   // Never extrapolate a missing stop or report full coverage for a partial set.
@@ -751,6 +842,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   return json({ ok: true, complete, partial,
     // These counts do not change the existing structural coverage behavior.
     cancelled_runs: validRuns.filter(r => r.operation_status === "cancelled").length,
+    official_dated_number_overrides: bosoDatedNumberOverrides,
     date_verified_runs: dateVerifiedRuns,
     date_unverified_runs: validRuns.length - dateVerifiedRuns,
     cache: complete ? "HIT" : partial ? "PARTIAL" : "MISS",

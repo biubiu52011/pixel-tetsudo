@@ -89,6 +89,22 @@ test('11/7 09:30 and 10:29: 3719F and 3845F are suppressed only on the exception
       'Sunday 11/8 '+number+' still runs');
   }
 });
+test('2026-11-07 Supabase edge uses verified official numbered Sotobo replacements, no legacy train_runs writes',()=>{
+  const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+  assert.match(edge,/applyBosoNovember7DatedNumbers/);
+  assert.match(edge,/serviceDate !== "2026-11-07"/);
+  for(const [normal,official] of [['3573F','9573M'],['3719F','9887M'],['3845F','8939M']]){
+    assert.match(edge,new RegExp('"'+normal+'": \\{number:"'+official+'"'));
+  }
+  assert.match(edge,/run\.timetable_date_verified = true/);
+  assert.match(edge,/run\.canonical_timetable_id = null/);
+  assert.match(edge,/run\.operation_code = ""/);
+  assert.match(edge,/signature !== replacement\.signature/);
+  assert.match(edge,/\.from\("evidence_sources"\)/);
+  assert.match(edge,/run\.operation_status = "cancelled"/);
+  assert.doesNotMatch(edge,/\.from\("train_runs"\)/,
+    'legacy train_runs is intentionally write-disabled and must not be used as an active source');
+});
 test('dated suppression applies only to SQL planned positions, never a live or independent source',()=>{
   const p=run('2026-11-06T20:24:00Z','train-timetable');
   assert.ok(p.some(x=>x.trainNumber==='3573F'));

@@ -69,12 +69,39 @@ stop times. Never synthesize their positions or mutate the original
 published train numbers. Further 11/7 and seasonal exceptions are
 not yet exhaustively audited.
 
+## 2026-11-07 verified dated Sotobo number corrections (no new files)
+
+The existing `train-runs` Edge Function now substitutes exactly three scheduled
+Sotobo *display numbers* for **2026-11-07 only**, after an all-nine-stop
+clock/station signature match and an A-grade official source lookup in the
+existing `evidence_sources` table. The original SQL source templates,
+source numbers and canonical records are retained unchanged:
+
+| Normal SaturdayHoliday source | Official 11/7 Sotobo section | Exact source stop clocks | Official dated train |
+| --- | --- | --- | --- |
+| `3573F` | `9573M` | Nine matched | [9573F / 9573M](https://timetables.jreast.co.jp/2611/train/185/185851.html) |
+| `3719F` | `9887M` | Nine matched | [9887F / 9887M](https://timetables.jreast.co.jp/2611/train/185/186261.html) |
+| `3845F` | `8939M` | Nine matched | [9939F / 8939M](https://timetables.jreast.co.jp/2611/train/185/186321.html) |
+
+These are dated *published service labels*, not observed positions or actual
+vehicle/carset proof. All changes fail closed if the original stops or official
+source evidence differ. The two Uchibo normal train numbers `3680F` and
+`3606F` are explicitly cancelled at the read boundary on 11/7, but their
+replacement `9680M` and `9606M` itineraries have **not** been validated
+stop-by-stop and are intentionally not synthesized.
+
+The retired `train_runs` table is protected by the
+`train_runs_legacy_write_disabled` database constraint. Its old import
+function is NOT a supported way to publish current scheduled data; the
+runtime fix edits the existing response adapter only.
+
 ## Remaining work / do-not-infer boundaries
 
 1. Verify all **10,017** Boso SQL stop-clock rows against the applicable
    official train-specific published stop times, including 24:xx.
-2. Source and import validated, date-specific replacement timetable
-   segments for 11/7, with separate exact train-number identities.
+2. Source and validate remaining 11/7 replacement timetable segments (especially
+   Uchibo 9680M/9606M and related rapid-line sections). Three source-matched
+   Sotobo numbers are currently served as strictly dated response overrides.
 3. Audit the **13 known cross-line renumbered Boso families** and
    Keiyo / Togane / Yokosuka through continuations against continuity
    evidence; do not merge same-sounding services by hour or tail digit.
