@@ -59,7 +59,8 @@ function fixture({mobile=false,side='right',count=19,maxRows=4}={}) {
     side,transferMap:{[name]:transfers},
     rS(s){return s;}
   };
-  assert.doesNotThrow(()=>context.drawStation(o),'overflow must never crash SVG map');
+  assert.doesNotThrow(()=>context.drawStation(layer,'http://www.w3.org/2000/svg',o),
+    'overflow must never crash SVG map');
   const backgrounds=nodes.filter(it=>it.tag==='rect' &&
     it.attrs.fill==='rgba(255,255,255,0.72)');
   const extras=nodes.filter(it=>it.tag==='text' && /^\+\d+$/.test(it.textContent));
