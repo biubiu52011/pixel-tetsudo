@@ -1186,16 +1186,16 @@ var CANONICAL_VEHICLES = {
     displayName: "E231系1000番台",
     iconName: "E231系1000番台",
     asset: "../images/列车/JR東日本/JR東日本_E231系_1000番台.png",
-    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Ito"],
-    lineAliases: { ShonanShinjuku: ["E231系1000番台"], UenoTokyo: ["E231系1000番台"], UtsunomiyaJR: ["E231系1000番台"], Takasaki: ["E231系1000番台"], Tokaido: ["E231系1000番台"], TokaidoMain: ["E231系1000番台"], Ito: ["E231系1000番台"] },
+    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Yokosuka", "Ito"],
+    lineAliases: { ShonanShinjuku: ["E231系1000番台"], UenoTokyo: ["E231系1000番台"], UtsunomiyaJR: ["E231系1000番台"], Takasaki: ["E231系1000番台"], Tokaido: ["E231系1000番台"], TokaidoMain: ["E231系1000番台"], Yokosuka: ["E231系1000番台"], Ito: ["E231系1000番台"] },
     aliases: ["E231系1000番台"]
   },
   "jr-east-e233-3000-shonan-shinjuku": {
     displayName: "E233系3000番台",
     iconName: "E233系3000番台",
     asset: "../images/列车/JR東日本/JR東日本_E233系3000番台.png",
-    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Ito"],
-    lineAliases: { ShonanShinjuku: ["E233系3000番台"], UenoTokyo: ["E233系3000番台"], UtsunomiyaJR: ["E233系3000番台"], Takasaki: ["E233系3000番台"], Tokaido: ["E233系3000番台"], TokaidoMain: ["E233系3000番台"], Ito: ["E233系3000番台"] },
+    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Yokosuka", "Ito"],
+    lineAliases: { ShonanShinjuku: ["E233系3000番台"], UenoTokyo: ["E233系3000番台"], UtsunomiyaJR: ["E233系3000番台"], Takasaki: ["E233系3000番台"], Tokaido: ["E233系3000番台"], TokaidoMain: ["E233系3000番台"], Yokosuka: ["E233系3000番台"], Ito: ["E233系3000番台"] },
     aliases: ["E233系3000番台"]
   },
   "jr-east-e257-2000-odoriko": {
