@@ -177,6 +177,14 @@ test('products and notes share one spot.menu recommendation carousel', () => {
   assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-item|dp-dish-thumb/);
 });
 
+test('active transit routes do not appear as standalone sightseeing spots', () => {
+  const { spots } = JSON.parse(source('data/core/tourism_data.json'));
+  assert.ok(!spots.some(spot => spot.name === '都電荒川線（三ノ輪橋）'),
+    'operating Toden Arakawa tram line belongs to railway information, not a sightseeing destination');
+  assert.ok(spots.some(spot => spot.name === '東京駅丸の内駅舎'),
+    'independently visitable historic station architecture remains a sightseeing spot');
+});
+
 test('all merchant data is normalized to spot.menu and generated snapshots remain in sync', () => {
   const data = JSON.parse(source('data/core/tourism_data.json'));
   const sandbox = { window: {} };
