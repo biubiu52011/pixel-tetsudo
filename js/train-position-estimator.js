@@ -1027,8 +1027,12 @@
         canonicalTimetableId:id, canonicalGroupEvidence:"verified_continuation",
         canonicalLineIds:tt._canonicalLineIds.slice(),
         canonicalTrainNumberAliases:tt._canonicalTrainNumberAliases.slice(),
-        canonicalStopKeys:run.stops.map(function(stop) {
-          return extractStationKey(stop.stationUrn);
+        // The canonical SQL source supplies the full published itinerary.
+        // compileTrainRun intentionally clips POSITION at a local terminal;
+        // the identity handover must not lose the opposite-side stop keys.
+        canonicalStopKeys:(tt["odpt:trainTimetableObject"] || []).map(function(stop) {
+          return extractStationKey(stop && (stop["odpt:departureStation"] ||
+            stop["odpt:arrivalStation"] || stop["odpt:station"]));
         }).filter(Boolean),
         serviceDate:serviceDate, trainNumber:run.trainNumber,
         trainType:run.trainType, railDirection:run.railDirection,
