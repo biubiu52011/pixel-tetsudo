@@ -35,6 +35,7 @@ jobs:
           node --test tests/tourism-shops.test.cjs
           node --test tools/route-timetable-service-calendar.test.cjs
           node --test tools/hamakawasaki-transfer-badges.test.cjs
+          node --test tools/yamanote-transfer-overflow.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
