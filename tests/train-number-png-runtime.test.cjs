@@ -537,3 +537,50 @@ test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind r
     trainType:'odpt.TrainType:JR-East.LimitedExpress'
   })),null,'commuter K number should not overwrite a LimitedExpress record');
 });
+
+test('Tsurumi holiday train 2200 renders a planned E131-1000 PNG',()=>{
+  const p=sql({
+    trainNumber:'2200',
+    trainId:'planned-trip:2026-11-03|JR-East|Tsurumi|2200',
+    sourceRailway:'odpt.Railway:JR-East.Tsurumi',
+    positionLineId:'Tsurumi',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    positionSource:'train-timetable',
+    calendarType:'holiday',
+    serviceDate:'2026-11-03',
+    vehiclePlan:{
+      lineId:'Tsurumi',
+      status:'FLEET_REFERENCE',
+      models:['E131系1000番台'],
+      evidenceRole:'route-fleet-reference'
+    }
+  });
+  const png='../images/列车/JR東日本/JR東日本_E131系_1000番台.png';
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped,'2200 must have a scoped planned-image reference');
+  assert.equal(mapped.model,'E131系1000番台');
+  assert.equal(mapped.pngPath,png);
+  const spec=marker(p,'Tsurumi');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(spec.iconSrc,png);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN','a planned image is not a physical carset');
+  assert.equal(p.vehicleResolvedUpstream,false);
+  assert.equal(marker(p,'Yokohama').kind,'unresolved','never borrow this image on another line');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...p,displayLineId:'Tsurumi'},true).kind,
+    'unresolved','PNG loading failure must keep the neutral location dot');
+
+  for(const change of [
+    {serviceDate:'2023-11-03'},
+    {serviceDate:''},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {trainNumber:'2200B'},
+    {trainNumber:'9999'}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...p,...change}),null,
+      'do not falsely map '+JSON.stringify(change));
+  }
+});
