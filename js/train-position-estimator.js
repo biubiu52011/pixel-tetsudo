@@ -698,6 +698,35 @@
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
 
+        // A historical Saturday/Holiday template may include a special
+        // train which the current JR East monthly timetable runs on ONLY
+        // explicitly selected dates. It must not produce a phantom planned
+        // marker on unrelated holidays. This rule does not touch realtime.
+        if (lineId === "ChuoMain" &&
+            tt._positionSource === "supabase-train-run" &&
+            window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES &&
+            String(serviceDate).slice(0,7) ===
+              window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES.revision) {
+          var officialRules=window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES.rules || [];
+          var officialNumber=String(run.trainNumber || "").trim();
+          var officialCal=/(?:^|[:.])Weekday$/.test(calendar) ? "weekday" :
+            /(?:^|[:.])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(calendar)
+              ? "holiday" : "";
+          var officialRailway=String(tt["odpt:railway"] || "");
+          var officialType=String(tt["odpt:trainType"] || "").split(/[:.]/).pop();
+          var datedRule=officialRules.filter(function(rule) {
+            return rule && rule.trainNumber === officialNumber &&
+              rule.calendarType === officialCal &&
+              rule.trainType === officialType &&
+              Array.isArray(rule.sourceRailways) &&
+              rule.sourceRailways.indexOf(officialRailway) >= 0 &&
+              (!rule.effectiveFrom || serviceDate >= rule.effectiveFrom) &&
+              (!rule.effectiveTo || serviceDate <= rule.effectiveTo);
+          })[0];
+          if (datedRule && Array.isArray(datedRule.operatingDates) &&
+              datedRule.operatingDates.indexOf(serviceDate) < 0) continue;
+        }
+
         // 按铁路筛选（如果 lineId 匹配）。
         var railwayKey = run.railwayKey;
         if (railwayKey && railwayKey !== lineId &&
