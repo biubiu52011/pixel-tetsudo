@@ -4984,11 +4984,13 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // The Yokosuka and Sobu Rapid diagrams each include their verified
     // Tokyo-bound continuation as a separate "extension" position. The
     // rendered line is then Yokosuka while the numbered 2262F SOURCE run
-    // remains SobuRapid. Resolve the numbered model on the SOURCE railway;
+    // remains SobuRapid. The DataFusion boundary projection is tagged with
+    // through-boundary; the trains-data continuation is tagged extension.
+    // Resolve the numbered model on the SOURCE railway;
     // approve its image on BOTH lines. Never reclassify the run using the
     // displayed railway or allow an arbitrary shared-station projection.
     var scopedYokosukaSobuExtension = displayLineId !== lineId &&
-      p.fusionRole === "extension" &&
+      (p.fusionRole === "extension" || p.fusionRole === "through-boundary") &&
       String(p.fusionLineId || "") === lineId &&
       ((lineId === "SobuRapid" && displayLineId === "Yokosuka") ||
        (lineId === "Yokosuka" && displayLineId === "SobuRapid"));
