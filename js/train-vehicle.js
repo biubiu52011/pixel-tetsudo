@@ -3818,30 +3818,59 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           {lineId: lineId, railway: sourceRailway});
     });
     if (!hits.length) {
-      // Keiyo 437Y is working 37 in the published 2026 timetable. The
-      // ten-car 37 working is shared among stock types, so no uniquely
-      // assigned train-level model can be claimed. In the user's explicitly
-      // reference-model display mode, use the corridor's principal E233-5000
-      // as a REPRESENTATIVE ICON, never as a verified working or live carset.
-      // Scope strictly to the exact railway, full train number, calendar and
-      // the lifetime of the referenced March-2026 service revision.
+      // The 2026-03-14 published Keiyo diagrams separate 10-car
+      // 209/E233 workings from 8-car Musashino 209/E231 workings.
+      // Train-number suffixes Y/A are in the Keiyo 10-car family, but E
+      // is shared: 3702E and 2703E are 10-car Keiyo workings, while 500E,
+      // 701E, 602E and 903E are published 8-car Musashino workings.
+      // Never blindly map EVERY E or M train to one stock type.
+      // These are representative scheduled icons, not the actual day's set.
       if (lineId === "Keiyo" &&
           sourceRailway === "odpt.Railway:JR-East.Keiyo" &&
-          num === "437Y" && day >= "2026-03-14" && day <= "2027-03-12" &&
-          (p.trainOperator === "JR-East" || !p.trainOperator)) {
-        var representative = resolveTimetableVehiclePlan("E233系5000番台", {
-          lineId: "Keiyo", operator: "JR-East", serviceDate: day,
-          source: "keiyo-shared-working-representative",
-          sourceUrl: "https://ameblo.jp/tc205-37/entry-12979587262.html",
-          _positionSource: "train-timetable"
-        });
-        if (representative && representative.iconPath) {
-          representative.status = "FLEET_REPRESENTATIVE";
-          representative.evidenceRole = "shared-working-representative";
-          representative.representativeOnly = true;
-          representative.alternativeModels = ["E233系1000番台", "209系500番台"];
-          representative.confirmed = false;
-          return representative;
+          day >= "2026-03-14" && day <= "2027-03-12" &&
+          (!p.trainOperator || p.trainOperator === "JR-East")) {
+        var keiyoGroup = "";
+        var tenCarEWeekday = ["3702E", "2703E"];
+        var eightCarWeekday = ["500E", "701E"];
+        var eightCarHoliday = ["602E", "903E"];
+        if (/^\\d{3,5}[YA]$/.test(num)) {
+          keiyoGroup = "10-car";
+        } else if (p.calendarType === "weekday" &&
+            tenCarEWeekday.indexOf(num) >= 0) {
+          keiyoGroup = "10-car";
+        } else if ((p.calendarType === "weekday" &&
+                       eightCarWeekday.indexOf(num) >= 0) ||
+                   (p.calendarType === "holiday" &&
+                       eightCarHoliday.indexOf(num) >= 0)) {
+          keiyoGroup = "8-car";
+        }
+        if (keiyoGroup) {
+          var keiyoModel = keiyoGroup === "10-car"
+            ? "E233系5000番台" : "E231系0番台（武蔵野線）";
+          var sourceUrl = keiyoGroup === "10-car"
+            ? (p.calendarType === "holiday"
+              ? "https://ameblo.jp/tc205-37/entry-12979589094.html"
+              : "https://ameblo.jp/tc205-37/entry-12979587262.html")
+            : (p.calendarType === "holiday"
+              ? "https://ameblo.jp/tc205-37/entry-12979589918.html"
+              : "https://ameblo.jp/tc205-37/entry-12979589532.html");
+          var keiyoPlan = resolveTimetableVehiclePlan(keiyoModel, {
+            lineId: "Keiyo", operator: "JR-East", serviceDate: day,
+            source: "keiyo-shared-working-representative",
+            sourceUrl: sourceUrl, _positionSource: "train-timetable"
+          });
+          if (keiyoPlan && keiyoPlan.status === "PLANNED_MODEL" &&
+              keiyoPlan.iconPath) {
+            keiyoPlan.status = "FLEET_REPRESENTATIVE";
+            keiyoPlan.evidenceRole = "shared-working-representative";
+            keiyoPlan.representativeOnly = true;
+            keiyoPlan.representativeGroup = keiyoGroup;
+            keiyoPlan.alternativeModels = keiyoGroup === "10-car"
+              ? ["E233系1000番台", "209系500番台（京葉線）"]
+              : ["209系500番台（武蔵野線）"];
+            keiyoPlan.confirmed = false;
+            return keiyoPlan;
+          }
         }
       }
       if (lineId === "SaikyoKawagoe" &&
