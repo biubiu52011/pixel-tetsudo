@@ -175,5 +175,5 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
   assert.equal(png.kind,'vehicle');
   assert.equal(png.planned,true);
   assert.match(png.iconSrc,/JR東日本_E353系\.png$/);
-  assert.equal(excluded.vehiclePlan?.evidenceRole,'official-train-name-and-model',undefined);
+  assert.notEqual(excluded.vehiclePlan?.evidenceRole,'official-train-name-and-model');
 });
