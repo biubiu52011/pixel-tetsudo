@@ -1,5 +1,5 @@
 /*
- * Tourism Detail - Shop 店铺独立详情页（大众点评风格 UI/UX）
+ * Tourism Detail - Shop 吃喝玩乐综合商家详情页（餐饮/购物/娱乐/体验）
  * 参考点评网站店铺页信息架构：
  *   顶部图集（点击全屏）→ 白色店名卡（人均大字）→ 商户信息卡（地址/营业时间/交通）
  *   → 介绍 → 推荐内容（餐饮/商品/游玩体验）→ 位置地图 → AI 整理注记
@@ -11,11 +11,8 @@
   var C = window.TourismDetailCore;
   if (!C) { console.error('[TourismDetailShop] Core missing'); return; }
 
-  // 人均标签：含价格(円/前後/〜/～)才叫"人均"；無料/実費占位类店铺用通用"费用"
-  // 与 spot/event 页口径对齐，不无条件显示"人均"。
-  function feeLabelFor(spotFee) {
-    return /[円前後〜～]/.test(spotFee) ? C.t('detail.info_fee_per_person') : C.t('detail.info_fee');
-  }
+  // 店铺涵盖餐饮、饮品、购物、娱乐及体验，金额不等于「人均消费」。
+  // 统一使用「费用」标签，实际价格/免费/票价等说明保持数据原文。
 
   // ① 顶部图集：有图 → 大图可点开全屏；无图 → 类型渐变占位
   function buildHero(ctx) {
@@ -38,7 +35,7 @@
       addr:  '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>'
     };
     var rows = '';
-    rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.fee + '</span><span class="dp-info-label">' + feeLabelFor(ctx.spotFee) + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotFee) + '</span></div>';
+    rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.fee + '</span><span class="dp-info-label">' + C.t('detail.info_fee') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotFee) + '</span></div>';
     rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.hours + '</span><span class="dp-info-label">' + C.t('detail.info_hours') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotHours) + '</span></div>';
     rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.hours + '</span><span class="dp-info-label">' + C.t('detail.best_time') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotBestTime) + '</span></div>';
     {
@@ -63,7 +60,7 @@
   }
 
   // ⑤ 推荐内容：餐饮、零售、娱乐和体验型商家统一标题；无具体项目时回退到文本贴士
-  function buildMenuCard(spot) {
+  function buildRecommendationsCard(spot) {
     if (spot.menu && spot.menu.length > 0) {
       var titleKey = 'detail.menu';
       var list = spot.menu.slice(0, 10);
@@ -132,7 +129,7 @@
   function renderShopPage(spot, stationKey) {
     var ctx = C.buildContext(spot, stationKey);
     var html = buildHero(ctx) + buildHeadCard(ctx)
-      + buildMenuCard(spot) + buildInfoCard(ctx) + buildAboutCard(ctx) + buildMapCard(ctx)
+      + buildRecommendationsCard(spot) + buildInfoCard(ctx) + buildAboutCard(ctx) + buildMapCard(ctx)
       + '<div class="dp-note">' + C.escapeHtml(C.t('detail.ai_note')) + '</div>';
     var container = document.getElementById('articleContainer');
     if (!container) return;
