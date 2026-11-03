@@ -494,6 +494,7 @@
     cached = {
       layoutKey: layoutKey,
       trainNumber: trainNumber,
+      serviceName: String(tt._sqlServiceName || ""),
       timetableObjectId: timetableObjectId,
       timetableIdentity: timetableIdentity,
       scheduledItineraryKey: scheduledItineraryKey,
@@ -1009,6 +1010,7 @@
             runningChainId: timetableIdentity,
             runningChainEvidence: "TIMETABLE_SEGMENT",
             trainNumber: trainNumber,
+            serviceName: run.serviceName || "",
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
