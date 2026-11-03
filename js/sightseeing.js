@@ -503,6 +503,8 @@ function renderGrid() {
 
   // 初始加载后旅游数据到达时重新渲染（延后加载 1.8MB 数据）。
   window.addEventListener('pt:tourism-ready', function() {
+    // 清空可能在旅游数据加载前缓存的空列表，避免新商家延迟60秒才显示。
+    _distCache = {};
     if (state.selectedStation) renderAll();
   });
 
