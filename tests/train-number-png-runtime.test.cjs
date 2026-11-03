@@ -584,3 +584,72 @@ test('Tsurumi holiday train 2200 renders a planned E131-1000 PNG',()=>{
       'do not falsely map '+JSON.stringify(change));
   }
 });
+
+test('1252M Joban canonical / realtime has E531 planned PNG with strict evidence bounds',()=>{
+  const planned='../images/列车/JR東日本/JR東日本_E531系.png';
+  const position=sql({
+    trainId:'canonical-sql-trip:2026-11-03:50188',
+    trainNumber:'1252M',
+    serviceDate:'2026-11-03',
+    calendarType:'holiday',
+    positionLineId:'JobanMain',
+    sourceRailway:'odpt.Railway:JR-East.Joban',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    vehiclePlan:{status:'PLANNED_CANDIDATES',lineId:'JobanMain',
+      models:['E531系'],confirmed:false,evidenceRole:'source-single-type-candidate'}
+  });
+  const sqlArt=marker(position,'JobanMain');
+  assert.equal(sqlArt.kind,'vehicle');
+  assert.equal(sqlArt.iconSrc,planned);
+  assert.equal(sqlArt.planned,true);
+  assert.equal(sqlArt.compact,false);
+  assert.equal(position.vehicleIdentityStatus,'UNKNOWN',
+    'the SQL candidate is not observed physical stock');
+  assert.equal(position.vehicleResolvedUpstream,false);
+
+  const realtime=live({
+    trainId:'canonical-sql-trip:2026-11-03:50188',
+    trainNumber:'1252M',
+    serviceDate:'2026-11-03',
+    calendarType:'holiday',
+    positionLineId:'Joban',
+    sourceRailway:'odpt.Railway:JR-East.JobanRapid',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Rapid'
+  });
+  const icon=marker(realtime,'Joban');
+  assert.equal(icon.kind,'vehicle');
+  assert.equal(icon.planned,true);
+  assert.equal(icon.iconSrc,planned);
+  assert.equal(realtime.vehicleIdentityStatus,'UNKNOWN');
+  assert.equal(marker(realtime,'JobanMain').kind,'unresolved',
+    'a Joban realtime location must not draw on an unverified display line');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...realtime,displayLineId:'Joban'},true).kind,
+    'unresolved','a failed reference PNG keeps the neutral realtime position dot');
+  for(const invalid of [
+    {serviceDate:'2026-12-01'},
+    {serviceDate:'2026-10-31'},
+    {serviceDate:''},
+    {calendarType:'weekday'},
+    {trainOperator:'Tobu'},
+    {sourceRailway:'odpt.Railway:JR-East.JobanLocal'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.Joban'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {trainNumber:'1252H'},
+    {trainNumber:'1253M'},
+    {vehiclePlan:{status:'PLANNED_CANDIDATES',models:['E231系0番台']}}
+  ]){
+    const altered={...realtime,...invalid};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(altered),null,
+      'invalid canonical E531 reference '+JSON.stringify(invalid));
+  }
+
+  const migration=fs.readFileSync(
+    'supabase/migrations/20261103223500_backfill_joban_main_to_rapid_canonical_vehicle_candidates.sql','utf8');
+  assert.match(migration,/a\.line_key = 'JobanMain'/);
+  assert.match(migration,/b\.line_key = 'Joban'/);
+  assert.match(migration,/source_single_type_candidate/);
+  assert.match(migration,/actual_vehicle_confirmed/);
+  assert.match(migration,/ON CONFLICT \(timetable_id\) DO NOTHING/);
+});
