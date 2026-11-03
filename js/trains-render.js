@@ -2117,9 +2117,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // Remove its prefix before composing the fold row, then add it once.
         if (keiyoTrainNo && captionText.indexOf(keiyoTrainNo+' · ')===0) {
           captionText=captionText.slice((keiyoTrainNo+' · ').length);
+        } else if (keiyoTrainNo && captionText===keiyoTrainNo) {
+          captionText='';
         }
         var captionType=label&&label.getAttribute?String(label.getAttribute('data-label-type')||'').trim():'';
-        var popupCaption=captionType&&captionText ? captionType+' · '+captionText : captionText;
+        var popupCaption=captionType&&captionText ? captionType+' · '+captionText :
+          (captionText || (keiyoTrainNo ? captionType : ''));
         var entry=document.createElement('div');entry.className='train-fold-entry';entry.setAttribute('role','listitem');
         // Use the SAME artwork decision as the SVG map marker; the fold list
         // neither guesses stock nor changes realtime positions. Keep two
@@ -2484,11 +2487,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     } else if (dn) {
       labelText = _resolveStationLoose(dn) || dn;
     }
-    if (!labelText) return;
-    // Keiyo: keep the published service number visible on the map, not only
-    // in the SVG aria-label. All other lines retain their existing labels.
+    // Keiyo may provide a numbered live train without a destination. In
+    // that case show its number alone instead of hiding the whole SVG label.
     var keiyoTrainNo = _keiyoPublicTrainNumber(p, lineId);
-    if (keiyoTrainNo) labelText = keiyoTrainNo + ' · ' + labelText;
+    if (!labelText && !keiyoTrainNo) return;
+    if (keiyoTrainNo) labelText = keiyoTrainNo +
+      (labelText ? ' · ' + labelText : '');
     // 折叠列表复用来源支持的服务类型和方向；
     // 地图不会打开逐列车详情面板。
     var _typeText = '';
