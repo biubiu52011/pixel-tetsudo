@@ -698,6 +698,33 @@
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
 
+        // JR East 2026-11-07 (Saturday) Boso rapid train numbering differs
+        // from the normal SaturdayHoliday train plan. Official 2611 tables
+        // explicitly cancel these numbered services on that date:
+        // Uchibo 3680F -> 9680M / 9680F, 3606F -> 9606M / 9606F
+        // Sotobo 3573F -> 9573F / 9573M,
+        //        3719F -> 9887F / 9887M, 3845F -> 9939F / 8939M.
+        // The alternate numbered services are NOT yet present as complete
+        // dated SQL timetable runs. Suppress only these proven phantom
+        // NORMAL services, never synthesize another train, or alter ODPT.
+        // Sources (11/7 conditional "◆" operating-day columns):
+        // https://timetables.jreast.co.jp/2611/timetable-v/221u2p.html
+        // https://timetables.jreast.co.jp/2611/timetable-v/220d2p.html
+        if (tt._positionSource === "supabase-train-run" &&
+            serviceDate === "2026-11-07" &&
+            /(?:^|[:.])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(
+              String(calendar || "")) &&
+            String(tt["odpt:railway"] || "") ===
+              "odpt.Railway:JR-East." + lineId &&
+            String(tt["odpt:trainType"] || "").split(/[:.]/).pop() ===
+              "Rapid" &&
+            ((lineId === "Uchibo" &&
+                ["3680F","3606F"].indexOf(run.trainNumber) >= 0) ||
+             (lineId === "Sotobo" &&
+                ["3573F","3719F","3845F"].indexOf(run.trainNumber) >= 0))) {
+          continue;
+        }
+
         // A historical Saturday/Holiday template may include a special
         // train which the current JR East monthly timetable runs on ONLY
         // explicitly selected dates. It must not produce a phantom planned
