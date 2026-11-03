@@ -1956,7 +1956,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         claimed[other.id] = true;
         ids.push(other.id);
       });
-      if (ids.length > 1) grouped[anchor.id] = ids;
+      if (ids.length > 1) grouped[anchor.id] = [anchor.id].concat(ids.slice(1).sort());
     });
     return grouped;
   }
