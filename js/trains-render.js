@@ -393,7 +393,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
       if (moreText) {
         var more = document.createElementNS(svgNS, "text");
-        var moreX = ix0 + rowW + GAP;
+        // The row widths are recomputed by _setRows() when crowded stations
+        // switch from four badges per row to three or two. Use the final
+        // widest row, not the removed rowW variable (ReferenceError).
+        var moreX = ix0 + maxRowW + GAP;
         var moreY = iy0 + 8;
         more.setAttribute("x", moreX);
         more.setAttribute("y", moreY);
