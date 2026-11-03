@@ -130,7 +130,7 @@ test('05:40 Toke dwell, then 05:42 departures preserve real station clocks',()=>
   const rapid=find(stopped,'Sotobo','3591F');
   assert.ok(rapid,'3591F remains in timetable at Toke');
   assert.equal(lines.Sotobo.stations[rapid.stationIndex],'Toke');
-  assert.equal(rapid.segmentToIndex,undefined,
+  assert.equal(rapid.segmentToIndex,null,
     '05:40 arrival must be a station stop, not a premature departure');
   const departed=estimateAt('2026-11-03T20:42:00Z');
   segment(departed,'Sotobo','220M','Hon-Chiba','Chiba');
