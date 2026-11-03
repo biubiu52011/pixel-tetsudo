@@ -411,6 +411,21 @@ function _transferCoordinatesCompatible(fromLine, fromStation, toLine, toStation
   } catch (e) { return false; }
 }
 
+// Vertical branch captions sit below their terminal station's transfer icons.
+// Both geometry and the SVG renderer use the same spacing rule. Reserve for
+// the narrowest 2-icon rows after the mobile renderer reduces its row width.
+function _branchTerminalCaptionOffset(transferItems) {
+  var ordinary = (transferItems || []).filter(function(item) {
+    return item && !item.through;
+  }).length;
+  if (!ordinary) return 18;
+  var cap = Number(window.RuntimeConfig && window.RuntimeConfig.TRANSFER_MAX_ROWS) || 4;
+  var rows = Math.ceil(Math.min(ordinary, 4 * Math.max(1, cap)) / 2);
+  // Badge rows begin at station y + 9; 18px per row. A 10px caption
+  // baseline at this offset leaves at least 5px below the image badge.
+  return 9 + rows * 18 + 15;
+}
+
 function _getTransferMap(lineId, staticRevision) {
   var _langNow = window.currentLang || "ja";
   var _activeSystemIds = Array.isArray(window.TrainsActiveSystemLineIds) ? window.TrainsActiveSystemLineIds : [];
@@ -1511,8 +1526,22 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         if (Object.prototype.hasOwnProperty.call(branchGeom, _bgKey)) {
           var _bgArr = branchGeom[_bgKey];
           if (_bgArr && _bgArr.length) {
-            var _bgLast = _bgArr[_bgArr.length - 1];
-            if (_bgLast && _bgLast.y > _maxBrY) _maxBrY = _bgLast.y;
+            // The source station array may run from the remote terminus
+            // back to the parent junction (e.g. NambuBranch). Its LAST array
+            // entry is not necessarily the lowest SVG position.
+            var _bgTail = _bgArr.reduce(function(furthest, p) {
+              return p && (!furthest || p.y > furthest.y) ? p : furthest;
+            }, null);
+            if (_bgTail) {
+              _maxBrY = Math.max(_maxBrY, _bgTail.y);
+              var _bgBranchIndex = branchLines.findIndex(function(b) { return b.id === _bgKey; });
+              if (_bgBranchIndex >= 0 && _branchModes[_bgBranchIndex] !== 'h') {
+                var _terminalOffset = _branchTerminalCaptionOffset(transferMap[_bgTail.stationId]);
+                // The caption is rendered after the last station's badge.
+                // Leave 16px below its baseline even on narrow viewports.
+                svgH = Math.max(svgH, _bgTail.y + _terminalOffset + 16);
+              }
+            }
           }
         }
       }
