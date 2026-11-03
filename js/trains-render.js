@@ -1927,6 +1927,40 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
   }
 
+  // Fold is a DISPLAY-only grouping of different physical services,
+  // not a train-number deduplication or a coupled-formation assertion.
+  // Screen-pixel distances are used so mobile viewBox scaling does not turn
+  // a dense cluster into a collection of overlapping vehicle images.
+  function _groupNearbyTrainMarkers(entries, distance) {
+    var limit = Number(distance) || 44;
+    var ordered = (entries || []).filter(function(item) {
+      return item && item.id && isFinite(item.x) && isFinite(item.y);
+    }).slice().sort(function(a, b) {
+      // Prefer the existing PNG when a grey position dot shares its location.
+      return Number(!!b.artwork) - Number(!!a.artwork) ||
+        String(a.id).localeCompare(String(b.id));
+    });
+    var claimed = Object.create(null), grouped = Object.create(null);
+    ordered.forEach(function(anchor) {
+      if (claimed[anchor.id]) return;
+      claimed[anchor.id] = true;
+      var ids = [anchor.id];
+      ordered.forEach(function(other) {
+        if (claimed[other.id] || anchor.id === other.id) return;
+        var dx = other.x - anchor.x, dy = other.y - anchor.y;
+        var overlap = Math.abs(dx) <= 18 && Math.abs(dy) <= 18;
+        var sameDirection = !!anchor.direction && anchor.direction === other.direction;
+        // No chain clustering: every child must be close to the same anchor,
+        // otherwise trains from different stations could disappear together.
+        if (!overlap && !(sameDirection && dx * dx + dy * dy <= limit * limit)) return;
+        claimed[other.id] = true;
+        ids.push(other.id);
+      });
+      if (ids.length > 1) grouped[anchor.id] = ids;
+    });
+    return grouped;
+  }
+
   function _resolveTrainLabelCollisions(trainLayer, frameTime) {
     var svg = trainLayer && trainLayer.ownerSVGElement;
     var layout = window.TrainTrackLayout;
@@ -1954,7 +1988,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (!matrix || !matrix.a || !matrix.d) return;
     var oldBadges = trainLayer.querySelectorAll('[data-train-fold-badge]');
     for (var f=0;f<oldBadges.length;f++) oldBadges[f].parentNode.removeChild(oldBadges[f]);
-    var labels = [], groups = {}, markers = {};
+    var labels = [], groups = {}, markers = {}, iconEntries = [];
     var icons = trainLayer.querySelectorAll('[data-train-id]');
     for (var m = 0; m < icons.length; m++) {
       var icon = icons[m];
@@ -1962,8 +1996,31 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       icon.removeAttribute('display');
       if (iconRaw) icon.setAttribute('transform', iconRaw);
       else icon.removeAttribute('transform');
-      markers[icon.getAttribute('data-train-id')] = icon;
+      var id = icon.getAttribute('data-train-id');
+      var unit = _trainUnitContainer(icon);
+      // Restore previous fold members BEFORE measuring their actual positions.
+      // Retained SVG components continue moving while visually folded.
+      if (unit && unit.getAttribute('data-train-fold-hidden') === 'true') {
+        unit.removeAttribute('visibility');
+        unit.removeAttribute('data-train-fold-hidden');
+      }
+      markers[id] = icon;
+      var bounds = icon.getBoundingClientRect();
+      if (bounds.width > 0 && bounds.height > 0) {
+        var p = icon._trainPosition || {};
+        iconEntries.push({
+          id: id, x: bounds.x + bounds.width / 2,
+          y: bounds.y + bounds.height / 2,
+          artwork: String(icon.tagName || '').toLowerCase() === 'image',
+          direction: String(p.railDirection || '').split(/[:.]/).pop()
+        });
+      }
     }
+    var nearby = _groupNearbyTrainMarkers(iconEntries, 44);
+    var spatialChildren = Object.create(null);
+    Object.keys(nearby).forEach(function(root) {
+      nearby[root].slice(1).forEach(function(id) { spatialChildren[id] = true; });
+    });
     var nodes = trainLayer.querySelectorAll('[data-train-label-for]');
     for (var i = 0; i < nodes.length; i++) {
       var node = nodes[i];
@@ -1976,6 +2033,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var id = node.getAttribute('data-train-label-for');
       var marker = markers[id];
       if (marker && rect.width && rect.height) {
+        groups[id] = node;
+        // Only the spatial group's representative participates in the
+        // remaining label layout; child labels will live in its fold list.
+        if (spatialChildren[id]) continue;
         var iconBox = marker.getBoundingClientRect();
         var left = rect.x, top = rect.y;
         var pairWidth = rect.width;
@@ -2011,6 +2072,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var fixed = svg.querySelectorAll('text, .static-layer image, [data-train-id]');
     for (var j = 0; j < fixed.length; j++) {
       if (fixed[j].closest('[data-train-label-for]')) continue;
+      if (spatialChildren[fixed[j].getAttribute('data-train-id') || '']) continue;
       var box = fixed[j].getBoundingClientRect();
       if (box.width && box.height) obstacles.push({x: box.x, y: box.y, width: box.width, height: box.height});
     }
@@ -2019,20 +2081,36 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 相近标签会折叠；绝不把它推向无关车站。
     var offsets = layout.resolveLabels(labels, obstacles, bounds,
       {maxShift:24, maxLateralShift:16, maxFoldAnchorDistance:44});
-    var folded = {};
+    var folded = nearby;
     Object.keys(offsets).forEach(function (id) {
       var label = groups[id], marker = markers[id], offset = offsets[id];
       if (offset.collapsedInto) {
-        // 折叠方向文字不能抹除真实的列车位置标记。
-        label.setAttribute('display', 'none');
-        (folded[offset.collapsedInto] = folded[offset.collapsedInto] || [offset.collapsedInto]).push(id);
+        var root = offset.collapsedInto;
+        var merged = folded[root] || [root];
+        (folded[id] || [id]).forEach(function(member) {
+          if (merged.indexOf(member) < 0) merged.push(member);
+        });
+        folded[root] = merged;
+        if (id !== root) delete folded[id];
         return;
       }
       var shift = 'translate(' + (offset.x / matrix.a) + ',' + (offset.y / matrix.d) + ') ';
       label.setAttribute('transform', shift + label.getAttribute('data-label-raw-transform'));
       var rawMarkerTransform = marker.getAttribute('data-marker-raw-transform') || '';
       marker.setAttribute('transform', rawMarkerTransform);
-    });    _syncTrainFoldBadges(trainLayer, folded, groups, markers);
+    });
+    // Hide only the additional *visual components*. Every train ID,
+    // position, vehicle image and destination remains in the DOM, available
+    // in the fold popover and for the next live/timetable refresh.
+    Object.keys(folded).forEach(function(root) {
+      folded[root].slice(1).forEach(function(id) {
+        var unit = _trainUnitContainer(markers[id]);
+        if (!unit) return;
+        unit.setAttribute('visibility', 'hidden');
+        unit.setAttribute('data-train-fold-hidden', 'true');
+      });
+    });
+    _syncTrainFoldBadges(trainLayer, folded, groups, markers, matrix);
   }
 
   // The SVG badges are rebuilt as collision layout moves. A stable listener
@@ -2127,15 +2205,23 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     layer._cancelTrainFoldGesture = clearPending;
   }
 
-  function _syncTrainFoldBadges(layer, folded, groups, markers) {
+  function _syncTrainFoldBadges(layer, folded, groups, markers, matrix) {
     _bindTrainFoldBadgeActivation(layer);
     layer._foldBadgeGroups = groups;
     layer._foldBadgeMarkers = markers;
+    var sx = Math.abs(Number(matrix && matrix.a)) || 1;
+    var sy = Math.abs(Number(matrix && matrix.d)) || 1;
     Object.keys(folded).forEach(function(id) {
-      var label=groups[id], ids=folded[id], ns='http://www.w3.org/2000/svg';
-      var box=label.getBBox(), cx=box.x+box.width/2, y=box.y+box.height+3;
+      var ids=folded[id], ns='http://www.w3.org/2000/svg';
+      if (!ids || ids.length < 2) return;
+      // The badge is attached to the surviving TrainComponent, NOT the
+      // destination label: a crowded or missing label must never prevent
+      // access to the folded vehicles. Its offset stays constant in pixels.
+      var unit = _trainUnitContainer(markers[id]);
+      if (!unit) return;
       var badge=document.createElementNS(ns,'g');
       badge.setAttribute('data-train-fold-badge',id);
+      badge.setAttribute('transform','translate(0,'+(-24/sy)+') scale('+(1/sx)+','+(1/sy)+')');
       badge._foldTrainIds = ids.slice();
       badge.setAttribute('role','button');badge.setAttribute('tabindex','0');
       badge.setAttribute('pointer-events','all');
@@ -2147,17 +2233,20 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       badge.style.userSelect='none';
       badge.style.outline='none';
       var plate=document.createElementNS(ns,'rect');
-      plate.setAttribute('x',cx-17);plate.setAttribute('y',y);
-      plate.setAttribute('width',34);plate.setAttribute('height',16);
-      plate.setAttribute('rx',8);plate.setAttribute('fill','#fff');
-      plate.setAttribute('stroke','#64748b');badge.appendChild(plate);
+      plate.setAttribute('x',-16);plate.setAttribute('y',-10);
+      plate.setAttribute('width',32);plate.setAttribute('height',20);
+      plate.setAttribute('rx',10);plate.setAttribute('fill','#fff');
+      plate.setAttribute('stroke','#64748b');
+      plate.setAttribute('stroke-width','1.5');
+      badge.appendChild(plate);
       var labelText=document.createElementNS(ns,'text');
-      labelText.setAttribute('x',cx);labelText.setAttribute('y',y+11);
-      labelText.setAttribute('text-anchor','middle');labelText.setAttribute('font-size','10');
+      labelText.setAttribute('x',0);labelText.setAttribute('y',4);
+      labelText.setAttribute('text-anchor','middle');labelText.setAttribute('font-size','12');
+      labelText.setAttribute('font-weight','bold');
       labelText.setAttribute('fill','#334155');
       labelText.textContent='+'+(ids.length-1);
       badge.appendChild(labelText);
-      label.appendChild(badge);
+      unit.appendChild(badge);
     });
   }
 
