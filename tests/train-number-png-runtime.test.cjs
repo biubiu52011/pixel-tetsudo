@@ -245,6 +245,67 @@ test('Sotetsu M numbering uses full numbers rather than final digits',()=>{
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
 });
 
+test('JobanLocal K/S/E published whole-number artwork uses its three approved PNGs for live and SQL',()=>{
+  const cases=[
+    ['400K','E233系2000番台','JR東日本_E233系_2000番台.png'],
+    ['1928K','E233系2000番台','JR東日本_E233系_2000番台.png'],
+    ['550S','東京メトロ16000系','東京メトロ_16000系.png'],
+    ['2008S','東京メトロ16000系','東京メトロ_16000系.png'],
+    ['440E','小田急4000形','小田急電鉄_4000形_標準色.png'],
+    ['1948E','小田急4000形','小田急電鉄_4000形_標準色.png']
+  ];
+  for(const [number,model,asset] of cases){
+    for(const source of ['realtime-api','supabase-train-run','train-timetable']){
+      const p=live({
+        trainNumber:number,trainId:'odpt.Train:JR-East.JobanLocal.'+number,
+        positionLineId:'JobanLocal',
+        sourceRailway:'odpt.Railway:JR-East.JobanLocal',
+        trainType:'odpt.TrainType:JR-East.Local',positionSource:source
+      });
+      const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(chosen,number+' / '+source);
+      assert.equal(chosen.trainNumber,number);
+      assert.equal(chosen.model,model);
+      assert.ok(chosen.pngPath.endsWith('/'+asset));
+      assert.equal(chosen.representative,true);
+      const svg=marker(p,'JobanLocal');
+      assert.equal(svg.kind,'vehicle');
+      assert.equal(svg.iconSrc,chosen.pngPath);
+      assert.equal(svg.planned,true);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+      assert.equal(p.vehiclePlan,undefined);
+    }
+  }
+  const sqlPosition=sql({trainNumber:'1948E',positionLineId:'JobanLocal',
+    sourceRailway:'odpt.Railway:JR-East.JobanLocal',
+    trainType:'odpt.TrainType:JR-East.Local',trainOperator:''});
+  assert.match(marker(sqlPosition,'JobanLocal').iconSrc,/4000形_標準色\.png$/);
+});
+test('JobanLocal PNG family excludes other lines, operators, dates, types and conflicting models',()=>{
+  const base={trainNumber:'550S',positionLineId:'JobanLocal',
+    sourceRailway:'odpt.Railway:JR-East.JobanLocal',
+    trainType:'odpt.TrainType:JR-East.Local'};
+  for(const extra of [
+    {trainNumber:'550H'}, {trainNumber:'300S'}, {trainNumber:'2600S'},
+    {trainNumber:'550M'}, {trainNumber:'550'},
+    {positionLineId:'Joban'}, {positionLineId:'Chiyoda'},
+    {positionLineId:'ChiyodaBranch'},
+    {sourceRailway:'odpt.Railway:JR-East.JobanRapid'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.Chiyoda'},
+    {trainOperator:'JR-West'}, {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {serviceDate:'2026-10-31'}, {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'E233系2000番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E233系2000番台']}}
+  ]){
+    const p=live({...base,...extra});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'unapproved JobanLocal variant '+JSON.stringify(extra));
+  }
+  assert.equal(root.TrainNumberPngRanges.match('1948E','Joban'),null);
+  assert.equal(root.TrainNumberPngRanges.match('1948E','JobanMain'),null);
+  assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe'),null);
+});
 test('1932T: ChuoRapid ODPT live number -> scoped E233-0 SVG PNG',()=>{
   const p=live({trainNumber:'1932T',trainId:'odpt.Train:JR-East.ChuoRapid.1932T',
     positionLineId:'ChuoRapid',sourceRailway:'odpt.Railway:JR-East.ChuoRapid',

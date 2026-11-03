@@ -498,6 +498,40 @@
       allowedModelLabels:["E233系8000番台"],
       model:"E233系8000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_8000番台.png"},
+    // 2026-11 Joban Local (常磐線各駅停車) / Chiyoda through:
+    // FULL published JR timetable numbers carry K (JR), S (Tokyo Metro),
+    // E (Odakyu). K/S/E designate owning-company families, not a verified
+    // formation or a two-digit operation-code conversion. Keep 1948E as 1948E.
+    // Scope to the JR-East JobanLocal SOURCE railway: Joban Rapid's H numbers
+    // and short Chiyoda-branch workings do not inherit these illustrations.
+    // https://timetables.jreast.co.jp/2611/timetable-v/641u1p.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/641u2p.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/641d1p.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/641d2p.html
+    {lineIds:["JobanLocal"],numberFormat:"full",from:400,to:2599,
+      suffixes:"K",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.JobanLocal"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系2000番台"],
+      model:"E233系2000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_2000番台.png"},
+    {lineIds:["JobanLocal"],numberFormat:"full",from:400,to:2599,
+      suffixes:"S",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.JobanLocal"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["東京メトロ16000系"],
+      model:"東京メトロ16000系",
+      pngPath:"../images/列车/東京メトロ/東京メトロ_16000系.png"},
+    {lineIds:["JobanLocal"],numberFormat:"full",from:400,to:2599,
+      suffixes:"E",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.JobanLocal"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["小田急4000形"],
+      model:"小田急4000形",
+      pngPath:"../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png"},
     // 2026-11 Joban Rapid E231-0: exact weekday / holiday 2611 H
     // public train-number set, never a blanket 430H-2495H interval.
     // https://timetables.jreast.co.jp/2611/timetable-v/642u1.html
@@ -724,6 +758,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-narita-abiko-tsurumi-fix-v29",match:match
+    version:"20261104-joban-local-kse-png-v30",match:match
   });
 })(window);
