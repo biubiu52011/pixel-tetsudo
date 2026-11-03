@@ -978,10 +978,75 @@
    * @param {object} existingPositions - Deprecated input, ignored (realtime merging belongs to DataFusion)
    * @returns {object} Estimated positions keyed by lineId
    */
+  // At a published Takao boundary the final ChuoMain train position must
+  // expire, but its verified SQL service identity may still be needed when
+  // the FIRST ChuoRapid/JR-East.Chuo realtime observation arrives later.
+  // These records are identity-only: they are never returned as train
+  // positions, may never interpolate a position, and cannot identify stock.
+  var _canonicalHandoverEvidence = {};
+  function getCanonicalHandoverEvidence() {
+    return _canonicalHandoverEvidence;
+  }
+  function _collectChuoTakaoHandover(lineId, line, timetables, allLines) {
+    if (lineId !== "ChuoMain" && lineId !== "ChuoRapid") return [];
+    if (!line || !Array.isArray(line.stations)) return [];
+    var layout = getEstimatorStationLayout(lineId, line);
+    var projection = sourceRouteProjection(lineId, layout.workLine, layout.stationIndexMap, allLines);
+    var now = getCurrentMinutes(), serviceDate = getTokyoServiceDate();
+    var calendar = getCurrentCalendars(), evidence = [], seen = {};
+    (timetables || []).forEach(function(tt) {
+      if (!tt || tt._positionSource !== "supabase-train-run" ||
+          tt._sqlLineId !== lineId ||
+          tt._serviceDate && tt._serviceDate !== serviceDate ||
+          tt._canonicalGroupEvidence !== "verified_continuation" ||
+          !tt._canonicalTrainTimetableId ||
+          !Array.isArray(tt._canonicalLineIds) ||
+          tt._canonicalLineIds.indexOf("ChuoMain") < 0 ||
+          tt._canonicalLineIds.indexOf("ChuoRapid") < 0 ||
+          !Array.isArray(tt._canonicalTrainNumberAliases) ||
+          !tt._canonicalTrainNumberAliases.length) return;
+      var run = compileTrainRun(tt, lineId, layout.workLine, layout.stationIndexMap, projection);
+      if (!run || !run.trainNumber || !run.railDirection ||
+          !run.calendar || calendar.indexOf(run.calendar) < 0) return;
+      var takao = run.stops.filter(function(stop) {
+        return normalizeStationKey(extractStationKey(stop.stationUrn)) === "takao";
+      });
+      if (takao.length !== 1) return;
+      var minute = takao[0].arrivalMinute == null
+        ? takao[0].departureMinute : takao[0].arrivalMinute;
+      // A bounded 90-minute window from the published Takao passage covers
+      // the first later live snapshot, but does not claim the scheduled
+      // train is still at Takao or shift it to another station.
+      if (minute == null || now < minute - 20 || now > minute + 90) return;
+      var id = String(tt._canonicalTrainTimetableId);
+      var chain = run.timetableIdentity;
+      if (!/^canonical-sql-trip:/.test(chain) || seen[id]) return;
+      seen[id] = true;
+      evidence.push({
+        runningChainId:chain, timetableIdentity:chain,
+        canonicalTimetableId:id, canonicalGroupEvidence:"verified_continuation",
+        canonicalLineIds:tt._canonicalLineIds.slice(),
+        canonicalTrainNumberAliases:tt._canonicalTrainNumberAliases.slice(),
+        canonicalStopKeys:run.stops.map(function(stop) {
+          return extractStationKey(stop.stationUrn);
+        }).filter(Boolean),
+        serviceDate:serviceDate, trainNumber:run.trainNumber,
+        trainType:run.trainType, railDirection:run.railDirection,
+        destinationStation:run.destinationStation,
+        sourceRailway:String(tt["odpt:railway"] || ""),
+        positionSource:"supabase-train-run", estimated:true,
+        handoverEvidenceOnly:true, handoverBoundaryStation:"Takao",
+        handoverBoundaryMinute:minute
+      });
+    });
+    return evidence;
+  }
+
   function estimateAllPositions(allLines, odptTrains, delayInfo, existingPositions, options) {
     try {
       options = options || {};
       var estimated = {};
+      _canonicalHandoverEvidence = {};
       var requested = Array.isArray(options.lineIds) ? options.lineIds : null;
       var lineIds = requested ? requested.filter(function(id) { return !!(allLines && allLines[id]); }) : Object.keys(allLines || {});
 
@@ -1107,6 +1172,10 @@
         // One scoped lookup serves positioning and through-chain evidence.
         var lineTimetable = _lineTimetables(lineId);
         if (lineTimetable.length === 0) continue;
+        if (lineId === "ChuoMain" || lineId === "ChuoRapid") {
+          _canonicalHandoverEvidence[lineId] =
+            _collectChuoTakaoHandover(lineId, line, lineTimetable, allLines);
+        }
 
         var positions = estimateLinePositions(lineId, line, lineTimetable, delayInfo, opId, allLines);
         if (positions.length > 0 && window.RunningChainResolver && typeof window.RunningChainResolver.resolveTimetableChain === "function") {
@@ -1223,6 +1292,7 @@
   window.TrainPositionEstimator = {
     version: ESTIMATOR_VERSION,
     estimateLinePositions: estimateLinePositions,
+    getCanonicalHandoverEvidence: getCanonicalHandoverEvidence,
     estimateAllPositions: estimateAllPositions,
     registerManualTimetable: registerManualTimetable,
     getRegisteredManualLineIds: function() { return Object.keys(_manualTimetableRegistry); },
