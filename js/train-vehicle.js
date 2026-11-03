@@ -4878,10 +4878,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
-    // On realtime POSITION records, an exact-number/calendar published plan
-    // is the display baseline, even when the actual carset is unknown/different.
-    // This PNG is visibly tagged PLANNED and cannot be mistaken for live stock.
-    if (p && p.positionSource === "realtime-api" && vehiclePlan &&
+    // On realtime and timetable-estimated POSITION records, only a certified
+    // exact-number/calendar published plan may supply a DISPLAY REFERENCE.
+    // This never confirms a carset or upgrades UNKNOWN/NARROWED identity.
+    // Reference PNGs always carry the PLANNED marker style.
+    if (p && (p.positionSource === "realtime-api" || p.estimated === true) && vehiclePlan &&
         (vehiclePlan.source === "published-number-calendar-reference" ||
          vehiclePlan.source === "keiyo-shared-working-representative" ||
          vehiclePlan.source === "twr-shared-working-representative" ||
