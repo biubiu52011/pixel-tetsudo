@@ -9,6 +9,7 @@ on:
       - 'data/core/major-vehicle-fleet-presets.js'
       - 'tools/train-major-fleet-presets.test.cjs'
       - 'tools/train-network-vehicle-audit.test.cjs'
+      - 'tools/train-visual-fold.test.cjs'
       - 'tests/scheduled-vehicle-mapping.test.cjs'
       - 'tests/train-coupling.test.cjs'
       - 'data/core/railway_data.compact.json'
@@ -68,6 +69,8 @@ jobs:
           node --check js/train-position-estimator.js
       - name: Verify scoped major vehicle fleet presets and neutral markers
         run: node tools/train-major-fleet-presets.test.cjs
+      - name: Verify visual folding of dense train markers on SVG maps
+        run: node tools/train-visual-fold.test.cjs
       - name: Audit all 237 railway routes, 191 fleet scopes and gallery references
         run: node tools/train-network-vehicle-audit.test.cjs
       - name: Verify dated references and public train-number split/join rules
