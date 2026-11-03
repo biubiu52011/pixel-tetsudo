@@ -1800,7 +1800,7 @@
         var origin = String(first.station_urn || first.station_key || "");
         var lastStation = String(last.station_urn || last.station_key || "");
         var terminal = _dbDestinationStation(run) || lastStation;
-        var number = String(run.train_number || "").trim();
+        var number = String(run.train_number || run.source_train_label || "").trim();
         var serviceDate = String(run.service_date || "").slice(0, 10);
         var firstClock = "";
         for (var i = 0; i < stops.length; i++) {
@@ -1835,6 +1835,9 @@
                 ? ("canonical-sql-trip:" + run.service_date + ":" + run.canonical_timetable_id)
                 : scheduledId,
             "odpt:trainNumber":run.train_number||"",
+            "_sqlServiceName":run.service_name||"",
+            "_sqlTrainNumberVerification":run.train_number_verification||"",
+            "_sqlTrainNumberEvidenceUrl":run.train_number_source_url||"",
             "odpt:railway":run.network_key && String(run.network_key).indexOf("odpt.Railway:")===0 ? run.network_key : "odpt.Railway:" + String(run.operator||LINE_TO_OPERATOR[run.line_id]||"") + "." + String(run.network_key||LINE_RAILWAY_CODE[run.line_id]||run.line_id||""),
             "odpt:calendar":({
                 weekday:"odpt.Calendar:Weekday",
