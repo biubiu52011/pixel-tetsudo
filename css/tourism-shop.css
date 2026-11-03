@@ -81,8 +81,8 @@
 .article-content--shop .dp-menu-modal .dp-dish-name { display: block; -webkit-line-clamp: unset; overflow: visible; }
 .article-content--shop .dp-menu-modal .dp-dish-price { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 
-/* 文字のみのおすすめ：商品画像・価格のない店舗も同じ横スクロールと全件表示を使う。 */
-.article-content--shop .dp-rec-text-carousel .dp-rec-text-item {
+/* menu 内 kind=note の文字推荐：同一栏目混排实际商品和无图片/价格的备注。 */
+.article-content--shop .dp-menu-carousel .dp-rec-text-item--menu {
   flex: 0 0 min(230px, 72vw);
   scroll-snap-align: start;
 }
@@ -112,11 +112,8 @@
   color: #333;
   overflow-wrap: anywhere;
 }
-.article-content--shop .dp-rec-text-grid {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
-}
-.article-content--shop .dp-rec-text-grid .dp-rec-text-item {
-  width: 100%;
+.article-content--shop .dp-menu-modal-grid .dp-rec-text-item--menu {
+  grid-column: 1 / -1;
   min-height: 0;
+  width: 100%;
 }
