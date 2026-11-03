@@ -754,6 +754,24 @@
               datedRule.operatingDates.indexOf(serviceDate) < 0) continue;
         }
 
+        // Togane Nov 2026 SQL number admission follows all four JR East
+        // 2611 published day/direction lists (30 inbound, 31 outbound).
+        // Apply to PLANNED SQL services only. It cannot change an actual
+        // observation, infer vehicle assignment, or certify stop clocks.
+        // Historical SQL remains usable outside Nov 2026; re-audit future
+        // editions before imposing the same number list.
+        if (lineId === "Togane" &&
+            tt._positionSource === "supabase-train-run" &&
+            window.JREastToganeNumberIndex202611 &&
+            typeof window.JREastToganeNumberIndex202611.verify === "function") {
+          var publishedTogane = window.JREastToganeNumberIndex202611.verify(
+            run.trainNumber, tt["odpt:railway"] || "",
+            tt["odpt:railDirection"] || "",
+            tt["odpt:trainType"] || "",
+            calendar, serviceDate);
+          if (publishedTogane === false) continue;
+        }
+
         // NambuBranch has an exact JR East November 2026 public-number
         // schedule in both directions. Admit only those SQL services for
         // this edition; keep the train number as 500H/2211H, NOT a guessed
