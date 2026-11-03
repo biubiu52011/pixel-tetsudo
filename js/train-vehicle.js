@@ -5449,9 +5449,13 @@ function resolveEvidence(trainNumber,ctx){
  var isMusashino=Array.isArray(v)&&/E$/.test(k)&&/武蔵野線/.test(model);
  var fromCalendar=!sourceRows[k]&&!(bare&&sourceRows[bare])&&!musashinoRows[k]&&!(bare&&musashinoRows[bare]);
  var result={operator:"JR-East",vehicleType:model,formationId:!fromCalendar&&Array.isArray(v)?v[1]:"",operationCode:k,
-  grade:"C",sourceUrl:isMusashino
-   ? "https://loo-ool.com/rail/M/22/"+d.replace(/-/g,"")+"/?U="+sourceOperation
-   : SOURCE+"23/"+d.replace(/-/g,"")+"/?U="+sourceOperation,
+  grade:"C",sourceUrl:fromCalendar
+   ? (calendar==="holiday"
+      ? "https://ameblo.jp/tc205-37/entry-12979589918.html"
+      : "https://ameblo.jp/tc205-37/entry-12979589532.html")
+   : (isMusashino
+      ? "https://loo-ool.com/rail/M/22/"+d.replace(/-/g,"")+"/?U="+sourceOperation
+      : SOURCE+"23/"+d.replace(/-/g,"")+"/?U="+sourceOperation),
   provenance:fromCalendar?calendar+" Musashino timetable reference (no same-day carset)":"dated Keiyo operation observation"};
  if(!fromCalendar)result.observedDate=d;
  return result;
