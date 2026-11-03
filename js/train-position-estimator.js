@@ -213,7 +213,7 @@
   // live positions without changing the estimator's position logic.
   function getCalendarsForDate(serviceDate) {
     var day = String(serviceDate || "").slice(0, 10);
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(day)) return [];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return [];
     var jstDate = new Date(day + "T12:00:00Z");
     if (isNaN(jstDate.getTime()) ||
         jstDate.toISOString().slice(0, 10) !== day) return [];
