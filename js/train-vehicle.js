@@ -3789,6 +3789,12 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       sourceUrl:ctx.sourceUrl||'',formationId:'',
       lineId:String(ctx.lineId||''),operator:String(ctx.operator||''),
       allowCandidateArtwork:allowCandidateArtwork};
+    // Garage PNG mapping confirms the scoped image for an already-decided
+    // canonical model. It never chooses a model for an unassigned train.
+    var garage=window.VehicleGaragePngMap;
+    plan.garagePngMapped=!!(garage && icon && candidate && candidate.canonical &&
+      garage.matchModelPath(candidate.canonical.displayName,icon,String(ctx.lineId||'')));
+    if (plan.garagePngMapped) plan.garagePngPath=icon;
     _issuedVehiclePlans.add(plan);
     return plan;
   }
@@ -4095,6 +4101,16 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       sourceUrl: first.sourceUrl, _positionSource: "train-timetable"
     });
     if (!plan || plan.status !== "PLANNED_MODEL" || !plan.iconPath) return null;
+    // If an official row explicitly maps to a garage PNG, both the model
+    // and its line-scoped catalog image must agree, or reject the mapping.
+    if (first.garagePngPath) {
+      var garageIndex=window.VehicleGaragePngMap;
+      if (!garageIndex ||
+          !garageIndex.matchModelPath(plan.models[0],plan.iconPath,lineId) ||
+          plan.iconPath !== String(first.garagePngPath)) return null;
+      plan.garagePngMapped=true;
+      plan.garagePngPath=plan.iconPath;
+    }
     // A model reference is sufficient for the requested planned display,
     // without asserting that this is the physical train seen today.
     plan.evidenceRole = first.evidenceRole || "timetable-reference";
