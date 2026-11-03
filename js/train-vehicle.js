@@ -794,7 +794,7 @@ var CANONICAL_VEHICLES = {
   "jr-e131-1000": {
     displayName:"E131系1000番台", iconName:"E131系1000番台",
     asset:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png",
-    lineIds:["ChuoMain","Shinonoi","Shinetsu"],lineAliases:{ChuoMain:["E131系1000番台"],Shinonoi:["E131系1000番台"],Shinetsu:["E131系1000番台"]},
+    lineIds:["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],lineAliases:{Tsurumi:["E131系1000番台"],TsurumiUmiShibaura:["E131系1000番台"],TsurumiOkawa:["E131系1000番台"]},
     aliases:["JR東日本E131系1000番台","JR E131系1000番台"]
   },
   "metro-2000": {
@@ -1162,7 +1162,7 @@ var CANONICAL_VEHICLES = {
   "jr-east-e261-saphir": {"displayName":"E261系","iconName":"E261系","asset":"../images/列车/JR東日本/JR東日本_E261系_サフィール踊り子.png","lineIds":["Tokaido","TokaidoMain","Ito"],"lineAliases":{"Tokaido":["E261系"],"TokaidoMain":["E261系"],"Ito":["E261系"]},"aliases":["E261系（サフィール踊り子）"]},
   "jr-east-e231-3000-hachiko": {"displayName":"E231系3000番台","iconName":"E231系3000番台","asset":"../images/列车/JR東日本/JR東日本_E231系_3000番台.png","lineIds":["Hachiko","Kawagoe"],"lineAliases":{"Hachiko":["E231系3000番台"],"Kawagoe":["E231系3000番台"]},"aliases":["JR東日本E231系3000番台"]},
   "jr-east-hbe220-hachiko-plan": {"displayName":"HB-E220系（八高線）","iconName":"HB-E220系（八高線）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_HB-E220系_八高線.png","aliases":["JR東日本HB-E220系（八高線）"]},
-  "jr-east-e131-nagano-planned": {"displayName":"E131系（長野地区）","iconName":"E131系（長野地区）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_長野地区.png","aliases":["JR東日本E131系（長野地区）"]},
+  "jr-east-e131-nagano-planned": {"displayName":"E131系200番台（長野地区）","iconName":"E131系200番台（長野地区）","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_長野地区.png","lineIds":["ChuoMain","Shinonoi","Shinetsu"],"lineAliases":{"ChuoMain":["E131系200番台"],"Shinonoi":["E131系200番台"],"Shinetsu":["E131系200番台"]},"aliases":["E131系200番台","E131系（長野地区）","JR東日本E131系（長野地区）"],"candidateOnly":true,"artworkStatus":"planned-gallery-reference-only","evidenceSource":"https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf"},
   "jr-east-e231-0-musashino": {"displayName":"E231系0番台（武蔵野線）","iconName":"E231系0番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_E231系_0番台.png","lineIds":["Musashino","Keiyo"],"lineAliases":{"Musashino":["E231系0番台"],"Keiyo":["E231系0番台"]},"aliases":["E231系0番台（武蔵野線）"]},
   "jr-east-209-500-musashino": {"displayName":"209系500番台（武蔵野線）","iconName":"209系500番台（武蔵野線）","asset":"../images/列车/JR東日本/JR東日本_209系_500番台_武藏野線.png","lineIds":["Musashino"],"lineAliases":{"Musashino":["209系500番台（武蔵野線）"]},"aliases":["209系500番台（武蔵野線）"]},
   "jr-east-e257-500-boso": {displayName:"E257系500番台",iconName:"E257系500番台",asset:"../images/列车/JR東日本/JR東日本_E257系_500番台.png",lineIds:["Uchibo","Sotobo","SobuMain"],lineAliases:{Uchibo:["E257系500番台"],Sotobo:["E257系500番台"],SobuMain:["E257系500番台（しおさい）"],Keiyo:["E257系500番台","E257系500番台（わかしお・さざなみ）","JR東日本E257系500番台（わかしお・さざなみ）"]},aliases:["E257系500番台","E257系500番台（わかしお・さざなみ）"]},
