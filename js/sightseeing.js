@@ -46,7 +46,7 @@
     },
     { key: 'shopping', label: 'tourism.group_shopping',
       // 百货商场归入景点；购物筛选只包含普通店铺。
-      match: ['shopping', 'shop', 'hotel']
+      match: ['shopping', 'shop', 'store', 'hotel']
     },
     { key: 'nature', label: 'tourism.group_nature',
       match: ['nature', 'park']
