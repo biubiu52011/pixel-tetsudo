@@ -1263,14 +1263,10 @@
       // never overwrite the live provider's legitimate T/H/M train number.
       p.throughOriginTrainNumber = String(origin.trainNumber || "");
       p.positionSourceHandover = "TIMETABLE_TO_REALTIME_TAKAO";
-      if (!p.destinationStation) {
-        var destinations = rows.map(function(row) {
-          return String(row.destinationStation || "").trim();
-        }).filter(Boolean);
-        if (destinations.length && destinations.every(function(d) {
-          return d === destinations[0];
-        })) p.destinationStation = destinations[0];
-      }
+      // The originating section may publish "Takao" as its own terminus
+      // even though the real train has already crossed that station.
+      // A handover identity is NEVER evidence for a destination; keep the
+      // ODPT destination or an independently verified full-service result.
       switched++;
     });
     return switched;
