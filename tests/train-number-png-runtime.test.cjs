@@ -999,9 +999,20 @@ test('Keihin-Tohoku E233-1000 official membership is day-type and direction awar
   assert.equal(mapped('818A',{calendarType:'weekday',railDirection:'Northbound'}).model,'E233系1000番台');
   assert.equal(mapped('2431B',{calendarType:'holiday',railDirection:'Southbound'}).model,'E233系1000番台');
   assert.equal(mapped('2431B',{calendarType:'weekday',railDirection:'Southbound'}),null);
-  // Yokohama through trains can be published on the same table but
-  // are not eligible for an E233-1000 display image on this route.
-  assert.equal(mapped('4009K',{calendarType:'weekday',railDirection:'Northbound'}),null);
+  // Yokohama K through services use E233-6000, not the ABC E233-1000.
+  assert.equal(mapped('4009K',{calendarType:'weekday',railDirection:'Northbound'}).model,'E233系6000番台');
+  assert.equal(mapped('4009K',{calendarType:'holiday',railDirection:'Northbound'}),null);
+  assert.equal(mapped('4747K',{calendarType:'holiday',railDirection:'Northbound'}).model,'E233系6000番台');
+  assert.equal(mapped('516K',{calendarType:'weekday',railDirection:'Southbound'}).model,'E233系6000番台');
+  for(const source of ['realtime-api','supabase-train-run','train-timetable']){
+    const p={...base,trainNumber:'4009K',calendarType:'weekday',
+      railDirection:'odpt.RailDirection:Northbound',
+      positionSource:source,estimated:source!=='realtime-api'};
+    const mappedK=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(mappedK.model,'E233系6000番台');
+    assert.ok(mappedK.pngPath.includes('E233系_6000番台'));
+    assert.equal(marker(p,'KeihinTohoku').kind,'vehicle');
+  }
 });
 test('Keihin-Tohoku 411B is a full published 2026-11 number on live, SQL and timetable map markers',()=>{
   const image='../images/列车/JR東日本/JR東日本_E233系_1000番台.png';
@@ -1052,7 +1063,7 @@ test('Keihin-Tohoku A/B/C numbered services stay distinct from Yokohama K throug
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(rapid).model,
     'E233系1000番台','northbound rapid train still uses the same family');
   for(const change of [
-    {trainNumber:'411K'}, {trainNumber:'4009K'},
+    {trainNumber:'411K'},
     {trainNumber:'399B'}, {trainNumber:'2500B'},
     {trainNumber:'411M'}, {trainNumber:'411'},
     {positionLineId:'Yokohama'}, {positionLineId:'Yamanote'},
