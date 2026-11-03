@@ -528,6 +528,56 @@
     return candidates;
   }
 
+  // Scheduled positions must pass through the same exact train-number /
+  // service-calendar REFERENCE lookup as fresh ODPT positions. A corridor
+  // representative is not an observed physical trainset: never upgrade
+  // vehicleIdentityStatus, vehicleType, trainClass, formation or car number.
+  function attachPublishedVehiclePlanToEstimate(position, run, tt, lineId, line) {
+    if (!position || !run || !tt || position.estimated !== true ||
+        position.vehicleIdentityStatus === "EXACT" ||
+        !window.TrainVehicle ||
+        typeof window.TrainVehicle.resolvePublishedPositionPlan !== "function") return;
+    var currentPlan = position.vehiclePlan;
+    // Preserve independently confirmed single-model timetable evidence.
+    if (currentPlan && (currentPlan.status === "PLANNED_MODEL" ||
+        currentPlan.confirmed === true)) return;
+    var calendar = String(run.calendar || tt["odpt:calendar"] || "");
+    var calendarType = /(?:^|[:.])Weekday$/.test(calendar) ? "weekday" :
+      /(?:^|[:.])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(calendar)
+        ? "holiday" : "";
+    if (!calendarType || !String(position.serviceDate || "").match(/^\d{4}-\d{2}-\d{2}$/))
+      return;
+    var railway = String(tt["odpt:railway"] || position.sourceRailway || "");
+    if (!railway || !position.trainNumber) return;
+    var operator = String(tt["odpt:operator"] || (line && line.operator) || "")
+      .replace(/^odpt\.Operator:/, "");
+    var reference;
+    try {
+      reference = window.TrainVehicle.resolvePublishedPositionPlan({
+        trainNumber: position.trainNumber,
+        serviceDate: position.serviceDate,
+        calendarType: calendarType,
+        positionLineId: lineId,
+        sourceRailway: railway,
+        trainOperator: operator,
+        trainType: position.trainType,
+        positionSource: position.positionSource,
+        estimated: true
+      });
+    } catch (e) {
+      // No reference must never turn a valid estimated position into a failure.
+      return;
+    }
+    if (!reference || !reference.iconPath ||
+        (reference.status !== "PLANNED_MODEL" &&
+         reference.status !== "FLEET_REPRESENTATIVE") ||
+        reference.lineId !== lineId) return;
+    position.calendarType = calendarType;
+    position.vehiclePlan = reference;
+    // The chosen gallery artwork is a scheduled reference only. Keep the
+    // physical car identity unresolved for both E231/E233 common workings.
+  }
+
   // 车型证据、身份和图片由统一运行时负责。
   function resolveTrainRunIdentity(run, tt, lineId, line, serviceDateOverride) {
     if (window.TrainVehicle && window.TrainVehicle.resolveTimetableRun) {
@@ -905,6 +955,11 @@
             vehicleResolvedUpstream: vehResult.identityStatus === 'EXACT',
             timetableVehicleType: _timetableVehicleInput
           });
+          // Complete scheduled train-to-reference mapping AFTER positional
+          // evidence has been determined. The map still cannot call this an
+          // actual-day carset; it can show a labelled planned fleet PNG.
+          attachPublishedVehiclePlanToEstimate(
+            positions[positions.length - 1], run, tt, lineId, line);
         }
       }
 
