@@ -34,6 +34,7 @@ jobs:
           node tools/train-major-fleet-presets.test.cjs
           node --test tests/tourism-shops.test.cjs
           node --test tools/route-timetable-service-calendar.test.cjs
+          node --test tools/hamakawasaki-transfer-badges.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
