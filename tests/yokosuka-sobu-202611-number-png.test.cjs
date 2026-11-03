@@ -89,13 +89,15 @@ test('E259 Narita Express 2001M-2054M and calendar-specific Shiosai 400xM',()=>{
     ['SobuMain','4002M','LimitedExpress','weekday'],
     ['SobuMain','4014M','LimitedExpress','holiday']
   ])assertModel(position(...args),'E259系',p259);
-  for(const [number,calendar] of [
-    ['4006M','weekday'],['4011M','weekday'],['4002M','holiday'],
-    ['2054M','holiday']
-  ]){
-    const line=number==='2054M'?'SobuRapid':'SobuMain';
-    assert.equal(choose(position(line,number,'LimitedExpress',calendar)),null,
-      'Shiosai E257-500 and absent Narita Express must not map to E259 '+number);
+  for(const number of ['4006M','4011M']){
+    const p=position('SobuMain',number,'LimitedExpress','weekday');
+    const reference=choose(p);
+    assert.equal(reference && reference.model,'E257系500番台',
+      'weekday Shiosai '+number+' must be E257-500, not E259');
+  }
+  for(const [line,number] of [['SobuMain','4002M'],['SobuRapid','2054M']]){
+    assert.equal(choose(position(line,number,'LimitedExpress','holiday')),null,
+      'absent holiday NEX/Shiosai number '+line+' '+number);
   }
 });
 test('E257-500 Wakashio/Sazanami, Keiyo through line and two weekday Shiosai runs',()=>{
@@ -113,9 +115,11 @@ test('E257-500 Wakashio/Sazanami, Keiyo through line and two weekday Shiosai run
   for(const args of [
     ['Uchibo','1001M','LimitedExpress','holiday'],
     ['Sotobo','1052M','LimitedExpress','holiday'],
-    ['Keiyo','1001M','LimitedExpress','holiday'],
-    ['SobuMain','4007M','LimitedExpress','weekday']
+    ['Keiyo','1001M','LimitedExpress','holiday']
   ])assert.equal(choose(position(...args)),null);
+  const e259=choose(position('SobuMain','4007M','LimitedExpress','weekday'));
+  assert.equal(e259 && e259.model,'E259系',
+    'weekday Shiosai 4007M must stay E259 rather than E257-500');
 });
 test('do not treat E257-5000 8xxx/9xxx special numbers as a monthly fleet interval',()=>{
   for(const num of ['9071M','9077M','8083M','9882M','9086M']){
