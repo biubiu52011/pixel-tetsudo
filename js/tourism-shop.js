@@ -2,7 +2,7 @@
  * Tourism Detail - Shop 店铺独立详情页（大众点评风格 UI/UX）
  * 参考点评网站店铺页信息架构：
  *   顶部图集（点击全屏）→ 白色店名卡（人均大字）→ 商户信息卡（地址/营业时间/交通）
- *   → 介绍 → 推荐菜·价目表（菜名+点线+橙价）→ 位置地图 → AI 整理注记
+ *   → 介绍 → 推荐内容（餐饮/商品/游玩体验）→ 位置地图 → AI 整理注记
  * 复用 TourismDetailCore：数据加载/语言切换/距离口径/地图/翻译；渲染完全自绘（dp- 前缀命名空间，不依赖公共 hero 框架）。
  */
 (function() {
@@ -62,11 +62,10 @@
     return '<div class="dp-card"><h3 class="dp-sec-title">' + C.t('detail.about') + '</h3><p class="dp-text">' + C.escapeHtml(ctx.desc) + '</p></div>';
   }
 
-  // ⑤ 推荐菜/价目表：横向滚动卡片 + 全屏模态（最多10道，有图显图、无图用店名首字徽章）；无 → 文本贴士回退
+  // ⑤ 推荐内容：餐饮、零售、娱乐和体验型商家统一标题；无具体项目时回退到文本贴士
   function buildMenuCard(spot) {
     if (spot.menu && spot.menu.length > 0) {
-      var isFood = (spot.tags || []).indexOf('food') >= 0;
-      var titleKey = isFood ? 'detail.menu' : 'detail.goods';
+      var titleKey = 'detail.menu';
       var list = spot.menu.slice(0, 10);
       var badgeChar = String(spot.name || '').trim().charAt(0) || C.t('detail.badge_initial_fallback');
 
@@ -88,7 +87,7 @@
       }
       html += '</div></div>';
 
-      // 全屏菜单模态
+      // 全屏推荐内容模态
       var modalId = 'dpMenuModal_' + (spot.menu._idx || 0);
       html += '<div class="dp-menu-modal" id="' + modalId + '" role="dialog" aria-modal="true" aria-label="' + C.escapeHtml(C.t(titleKey)) + '">';
       html += '<button class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close')) + '">&times;</button>';
@@ -108,8 +107,7 @@
       html += '</div></div></div>';
       return html + buildTipsCard(spot, 'detail.tips');
     }
-    var titleKey = ((spot.tags || []).indexOf('food') >= 0) ? 'detail.menu' : 'detail.goods';
-    return buildTipsCard(spot, titleKey);
+    return buildTipsCard(spot, 'detail.menu');
   }
 
   function buildTipsCard(spot, titleKey) {
