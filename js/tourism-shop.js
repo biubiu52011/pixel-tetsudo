@@ -104,7 +104,42 @@
       html += '</div></div></div>';
       return html + buildTipsCard(spot, 'detail.tips');
     }
-    return buildTipsCard(spot, 'detail.menu');
+    // 没有结构化商品/体验项目时，也使用统一的推荐卡片，而非旧式 Tips 列表。
+    return buildTextRecommendationsCard(spot);
+  }
+
+  // 文字推荐共用商品推荐的「横向预览 + 查看全部」布局。
+  // tips 是说明文字，不应伪造图片、商品名或价格，也不应丢失原有文案。
+  function buildTextRecommendationsCard(spot) {
+    if (!Array.isArray(spot.tips) || spot.tips.length === 0) return '';
+    var items = [];
+    for (var i = 0; i < spot.tips.length; i++) {
+      var translated = spot.tips_i18n && spot.tips_i18n[C.state.lang] && spot.tips_i18n[C.state.lang][i];
+      var value = translated || spot.tips[i];
+      if (typeof value === 'string' && value.trim()) items.push(value.trim());
+    }
+    if (items.length === 0) return '';
+
+    function textItem(text) {
+      return '<div class="dp-rec-text-item">'
+        + '<span class="dp-rec-text-dot" aria-hidden="true"></span>'
+        + '<span class="dp-rec-text-body">' + C.escapeHtml(text) + '</span></div>';
+    }
+
+    var modalId = 'dpRecommendTipsModal';
+    var title = C.t('detail.menu');
+    var html = '<div class="dp-card dp-menu dp-rec-text-panel">'
+      + '<div class="dp-menu-head"><h3 class="dp-sec-title">' + title + '</h3>'
+      + '<button class="dp-menu-viewall" data-modal="' + modalId + '">' + C.t('detail.view_all') + ' &rsaquo;</button>'
+      + '</div><div class="dp-menu-carousel dp-rec-text-carousel">';
+    for (var j = 0; j < Math.min(items.length, 10); j++) html += textItem(items[j]);
+    html += '</div></div>';
+    html += '<div class="dp-menu-modal" id="' + modalId + '" role="dialog" aria-modal="true" aria-label="' + C.escapeHtml(title) + '">'
+      + '<button class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close')) + '">&times;</button>'
+      + '<div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">' + title + '</h3>'
+      + '<div class="dp-menu-modal-grid dp-rec-text-grid">';
+    for (var k = 0; k < items.length; k++) html += textItem(items[k]);
+    return html + '</div></div></div>';
   }
 
   function buildTipsCard(spot, titleKey) {
