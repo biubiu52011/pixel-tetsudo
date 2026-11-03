@@ -1150,6 +1150,62 @@ test('Ito local mixed fleet and Shuzenji/seasonal expresses cannot acquire an in
   assert.equal(root.TrainVehicle.selectMarkerArtwork(
     {...p,displayLineId:'Ito'},true).kind,'unresolved');
 });
+test('Hachiko north 54 official D number family -> HB-E220 representative PNG on realtime and timetable',()=>{
+  const image='../images/列车/JR東日本/JR東日本_HB-E220系.png';
+  for(const source of ['realtime-api','supabase-train-run','train-timetable']){
+    for(const trainNumber of ['220D','2282D','2248D','249D']){
+      const p=live({trainNumber,trainId:'odpt.Train:JR-East.Hachiko.'+trainNumber,
+        positionLineId:'Hachiko',
+        sourceRailway:'odpt.Railway:JR-East.Hachiko',
+        trainType:'odpt.TrainType:JR-East.Local',
+        trainOperator:source==='supabase-train-run'?'':'JR-East',
+        positionSource:source,estimated:source!=='realtime-api'});
+      const m=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(m,trainNumber+' '+source);
+      assert.equal(m.trainNumber,trainNumber,'never rewrite official D train number');
+      assert.equal(m.model,'HB-E220系','KiHa110 is retired on 2026-11 Hachiko');
+      assert.equal(m.pngPath,image);
+      const spec=marker(p,'Hachiko');
+      assert.equal(spec.kind,'vehicle');
+      assert.equal(spec.iconSrc,image);
+      assert.equal(spec.planned,true);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    }
+  }
+});
+test('Hachiko south E retains E231/209 mixed-fleet evidence and excludes Kawagoe H',()=>{
+  const base=live({trainNumber:'461E',
+    trainId:'planned-trip:2026-11-03|JR-East|Hachiko|461E',
+    positionLineId:'Hachiko',sourceRailway:'odpt.Railway:JR-East.Hachiko',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'});
+  const img='../images/列车/JR東日本/JR東日本_E231系_3000番台.png';
+  for(const n of ['461E','568E','2377E','4778E']){
+    const p={...base,trainNumber:n};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p).pngPath,img);
+    assert.equal(marker(p,'Hachiko').iconSrc,img);
+  }
+  for(const change of [
+    {trainNumber:'460H'},{trainNumber:'460E'},{trainNumber:'250D'},
+    {trainNumber:'219D'},{trainNumber:'2250D'},
+    {trainNumber:'461D',trainType:'odpt.TrainType:JR-East.Local'},
+    {positionLineId:'Kawagoe'}, {sourceRailway:'odpt.Railway:JR-East.Kawagoe'},
+    {trainOperator:'JR-Central'}, {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {serviceDate:'2026-10-31'}, {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'209系3500番台'},
+    {vehiclePlan:{status:'PLANNED_CANDIDATES',
+      models:['E231系3000番台','209系3500番台']}}
+  ]) {
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...base,...change}),null,
+      'do not manufacture electric fleet identity '+JSON.stringify(change));
+  }
+  const north={...base,trainNumber:'220D'};
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...north,
+    realtimeVehicleType:'キハ110系'}),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...north,
+    vehiclePlan:{status:'PLANNED_MODEL',models:['キハ110系']}}),null);
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...north,displayLineId:'Hachiko'},true).kind,'unresolved');
+});
 test('Yamanote E235-0 G-number family uses its own officially scoped PNG',()=>{
   const image='../images/列车/JR東日本/JR東日本_E235系_0番台.png';
   const examples=[
