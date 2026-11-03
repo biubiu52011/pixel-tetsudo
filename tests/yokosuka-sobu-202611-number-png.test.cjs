@@ -235,3 +235,60 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
   assert.ok(html.indexOf('jreast-chiba-number-index-202611.js') <
     html.indexOf('train-number-png-ranges.js'));
 });
+
+test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extension',()=>{
+  // User-reported actual SVG: 2026-11-03 Chiba 23:50 -> Tokyo, 2262F.
+  // The direction label is in the Yokosuka display, but the train
+  // keeps its official SobuRapid source/number and planned reference.
+  const uid='planned-trip:2026-11-03|JR-East|odpt.Railway%3AJR-East.SobuRapid|SobuRapid|2262F';
+  const p=position('SobuRapid','2262F','Rapid','holiday',{
+    trainId:uid,positionSource:'supabase-train-run',estimated:true,
+    fusionLineId:'SobuRapid',fusionRole:'extension',
+    destinationStation:'Tokyo',railDirection:'odpt.RailDirection:Inbound'
+  });
+  assertModel(p,'E235系1000番台',p235);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+    {...p,displayLineId:'Yokosuka'}).pngPath,p235);
+  const projected=ctx._trainMarkerSpec(p,uid,'Yokosuka');
+  assert.equal(projected.kind,'vehicle');
+  assert.equal(projected.iconSrc,p235);
+  assert.equal(projected.planned,true);
+  assert.equal(projected.compact,false);
+  assert.equal(p.positionLineId,'SobuRapid','keep source railway');
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN','never claim actual formation');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...p,displayLineId:'Yokosuka'},true).kind,'unresolved',
+    'failed projection PNG retains the gray location marker');
+  const live={...p,positionSource:'realtime-api',estimated:false};
+  assert.equal(ctx._trainMarkerSpec(live,uid,'Yokosuka').iconSrc,p235);
+  const nex=position('SobuRapid','2001M','LimitedExpress','holiday',{
+    fusionLineId:'SobuRapid',fusionRole:'extension'
+  });
+  assert.equal(ctx._trainMarkerSpec(nex,nex.trainId,'Yokosuka').iconSrc,p259,
+    'the same verified extension preserves NEX model reference');
+  const reverse=position('Yokosuka','1005S','Local','holiday',{
+    fusionLineId:'Yokosuka',fusionRole:'extension'
+  });
+  assert.equal(ctx._trainMarkerSpec(reverse,reverse.trainId,'SobuRapid').iconSrc,p235);
+  for(const changes of [
+    {fusionRole:''},{fusionRole:'branch'},
+    {fusionLineId:'Yokosuka'},{fusionLineId:''},
+    {sourceRailway:'odpt.Railway:JR-East.Yokosuka'},
+    {trainNumber:'2263F'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {calendarType:'weekday'},
+    {serviceDate:'2026-12-01'},
+    {trainOperator:'JR-West'},
+    {realtimeVehicleType:'E217系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E217系']}}
+  ]){
+    const wrong={...p,...changes};
+    assert.equal(ctx._trainMarkerSpec(wrong,uid,'Yokosuka').kind,'unresolved',
+      'invalid cross-line PNG projection: '+JSON.stringify(changes));
+  }
+  assert.equal(ctx._trainMarkerSpec(p,uid,'SobuMain').kind,'unresolved',
+    'an extension cannot borrow arbitrary third-line artwork');
+  const page=fs.readFileSync('pages/trains.html','utf8');
+  assert.match(page,/train-vehicle\.js\?v=20261104-sobu-2262-extension-v1/,
+    'train vehicle selector cache must be busted');
+});
