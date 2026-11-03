@@ -16,6 +16,7 @@ on:
       - 'tests/chuo-main-timetable-only.test.cjs'
       - 'tests/chuo-main-official-vehicle-index.test.cjs'
       - 'tests/train-number-png-runtime.test.cjs'
+      - 'tests/yokosuka-sobu-202611-number-png.test.cjs'
       - 'tests/train-coupling.test.cjs'
       - 'data/core/railway_data.compact.json'
       - 'data/timetables/**'
@@ -83,7 +84,7 @@ jobs:
       - name: Verify all garage PNG-to-stock maps and official train references
         run: node tools/vehicle-garage-png-map.test.cjs
       - name: Verify realtime and SQL number-to-PNG on SVG maps
-        run: node --test tests/train-number-png-runtime.test.cjs
+        run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs
       - name: Verify dated references, Takao source handover and train split/join rules
         run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/chuo-takao-source-handover.test.cjs tests/chuo-main-timetable-only.test.cjs tests/chuo-main-official-vehicle-index.test.cjs tests/train-coupling.test.cjs
       - name: Verify vehicle PNG decisions and SVG projection
