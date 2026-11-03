@@ -522,6 +522,52 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
   }
 
+// JR East 2611: train *service name* is not the railway train number.
+const JR_EAST_SHINKANSEN_OFFICIAL_2611: Record<string, {number:string; url:string}> = {
+  "HokurikuShinkansen|かがやき501|Tokyo|06:16": {
+    number: "3501E", url: "https://timetables.jreast.co.jp/2611/train/095/098481.html"
+  },
+  "JoetsuShinkansen|Toki301|Tokyo|06:08": {
+    number: "1301C", url: "https://timetables.jreast.co.jp/2611/train/035/038221.html"
+  },
+  "TohokuShinkansen|Hayabusa29|Tokyo|14:44": {
+    number: "29B", url: "https://timetables.jreast.co.jp/2611/train/125/129731.html"
+  },
+  "AkitaShinkansen|こまち1|Tokyo|06:32": {
+    number: "3001M", url: "https://timetables.jreast.co.jp/2611/train/030/033833.html"
+  },
+  // Tsubasa 121 runs as 121B to Fukushima and 121M after Fukushima.
+  // The SQL Yamagata segment starts at Fukushima 07:48, not Tokyo.
+  "YamagataShinkansen|つばさ121|Fukushima|07:48": {
+    number: "121M", url: "https://timetables.jreast.co.jp/2611/train/025/029831.html"
+  },
+};
+
+function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: any) {
+  const line = String(t.line_key || "");
+  const label = String(t.train_number || "").trim();
+  if (!["TohokuShinkansen","HokurikuShinkansen","YamagataShinkansen",
+    "AkitaShinkansen","JoetsuShinkansen"].includes(line) ||
+      !String(t.railway_urn || "").startsWith("odpt.Railway:JR-East.") ||
+      !label || /^[0-9]{1,5}[A-Z]$/.test(label) || /^[0-9]{1,5}$/.test(label)) {
+    return null;
+  }
+  const origin = stationKey(String(firstStop?.station_urn ||
+    firstStop?.departure_station_urn || firstStop?.arrival_station_urn || ""));
+  const clock = String(firstStop?.departure_clock || firstStop?.arrival_clock || "").slice(0,5);
+  const key = [line,label,origin,clock].join("|");
+  const official = /^2026-11-\d{2}$/.test(serviceDate)
+    ? JR_EAST_SHINKANSEN_OFFICIAL_2611[key] : undefined;
+  // Unverified names remain visible as SERVICE NAMES; never manufacture a
+  // B/M/E/C suffix or claim that the service name is a JR train number.
+  return {
+    number: official?.number || "",
+    serviceName: label,
+    status: official ? "official-2611-origin-clock" : "unverified-service-name",
+    officialUrl: official?.url || null,
+  };
+}
+
   const result = templates.map((t) => {
     const operator = timetableOperator || /^odpt\.Railway:([^.]+)\./.exec(t.railway_urn || "")?.[1] || "";
     const mapped = sourceResolution.get(t.id);
@@ -553,6 +599,8 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       : mapped.mapping_level || "unresolved";
     const completeStops = mapped.group_evidence === "verified_continuation"
       ? canonicalStopsById.get(mapped.timetable_id) : null;
+    const officialNumber = resolveJrEastShinkansenNumber(
+      t, serviceDate, (byTemplate.get(t.id) || [])[0]);
     return {
       // Only SQL-certified identical itineraries share identity across line sources.
       // Keep separate line records/stops; never dedupe by departure time alone.
@@ -571,7 +619,11 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       trip_id: "canonical-train-timetable:" + mapped.timetable_id,
       plan_source: "sql-recurring-timetable",
       operator, network_key: t.railway_urn,
-      train_number: t.train_number,
+      train_number: officialNumber ? officialNumber.number : t.train_number,
+      service_name: officialNumber?.serviceName || null,
+      source_train_label: officialNumber?.serviceName || null,
+      train_number_verification: officialNumber?.status || "source-record",
+      train_number_source_url: officialNumber?.officialUrl || null,
       operation_code: mapped.operation_code || "",
       operation_owner: mapped.operation_owner || null,
       operation_owner_source_url: mapped.operation_owner_source_url || null,
