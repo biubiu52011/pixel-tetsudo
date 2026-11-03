@@ -11,6 +11,7 @@ const ctx=vm.createContext({
   window:root,Date,console:{debug(){},log(){},warn(){},error(){}}
 });
 for(const file of [
+  'data/timetables/vehicle-garage-png-map.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
 ]){
@@ -129,6 +130,7 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
     window:w,Date:TestDate,console:{log(){},warn(){},debug(){},error(){}}
   });
   for(const file of [
+    'data/timetables/vehicle-garage-png-map.js',
     'js/train-vehicle.js',
     'data/timetables/vehicle-operation-evidence-data.js',
     'js/train-position-estimator.js'
