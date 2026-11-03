@@ -1915,6 +1915,10 @@
                     if(s.arrival_time) o["odpt:arrivalStation"]=s.station_urn;
                     if(s.departure_time || !s.arrival_time) o["odpt:departureStation"]=s.station_urn;
                 }
+                if(s.source_train_number && s.source_line_key){
+                    o["_sqlTrainNumber"]=String(s.source_train_number);
+                    o["_sqlSourceLineKey"]=String(s.source_line_key);
+                }
                 return o;
             }),
             // 车型候选不等于已经核实的出版计划车型：即使候选只有一种，

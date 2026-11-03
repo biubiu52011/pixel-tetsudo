@@ -312,7 +312,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   for (let i = 0; i < connectedIds.length; i += 30) {
     const ids = connectedIds.slice(i, i + 30);
     const rows = await pages((first, last) => db.from("train_timetable_stops")
-      .select("timetable_id,stop_sequence,station_urn,arrival_clock,departure_clock")
+      .select("timetable_id,stop_sequence,station_urn,arrival_clock,departure_clock,source_template_id,line_key,train_number")
       .in("timetable_id", ids)
       .order("timetable_id").order("stop_sequence").range(first, last));
     for (const row of rows) {
@@ -679,6 +679,9 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         return {
           station_urn: urn,
           station_key: stationKey(urn),
+          // Original member-stop values, not generated suffixes.
+          source_train_number: completeStops ? String(s.train_number || "") : "",
+          source_line_key: completeStops ? String(s.line_key || "") : "",
           arrival_time: sqlTime(s.arrival_clock),
           departure_time: sqlTime(s.departure_clock),
           arrival_minute: minuteOf(s.arrival_clock),

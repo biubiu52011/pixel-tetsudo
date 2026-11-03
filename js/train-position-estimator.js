@@ -379,6 +379,22 @@
     return result;
   }
 
+  // Public train numbers can change at verified JR through-run boundaries
+  // (e.g. ChuoMain 640M -> ChuoRapid 640T). Never guess a suffix.
+  function _canonicalTrainNumberAtPosition(tt, stop, fallback) {
+    if (!tt || tt._positionSource !== "supabase-train-run" ||
+        tt._canonicalGroupEvidence !== "verified_continuation" ||
+        !stop || !stop.sourceTrainNumber || !stop.sourceLineKey) return fallback;
+    var aliases = tt._canonicalTrainNumberAliases;
+    if (!Array.isArray(aliases)) return fallback;
+    var number = String(stop.sourceTrainNumber).trim();
+    var line = String(stop.sourceLineKey).trim();
+    return aliases.some(function(a) {
+      return a && String(a.line_key || "") === line &&
+        String(a.train_number || "") === number;
+    }) ? number : fallback;
+  }
+
   function compileTrainRun(tt, lineId, workLine, stationIndexMap, projection) {
     if (!tt) return null;
     var verifiedContinuation = tt._positionSource === 'supabase-train-run' &&
@@ -411,6 +427,8 @@
         raw: raw,
         stationUrn: stationUrn,
         stationIndex: idx,
+        sourceTrainNumber: String(raw["_sqlTrainNumber"] || ""),
+        sourceLineKey: String(raw["_sqlSourceLineKey"] || ""),
         arrivalMinute: parseTimeToMinutes(raw["odpt:arrivalTime"]),
         departureMinute: parseTimeToMinutes(raw["odpt:departureTime"])
       });
@@ -861,6 +879,7 @@
         var segmentToIndex = null;
         var segmentProgress = 0;
         var lastDepartedStop = null;
+        var canonicalNumberStop = null;
 
         for (var s = 0; s < fullStops.length; s++) {
           var stop = fullStops[s];
@@ -900,14 +919,16 @@
             segmentToIndex = idx;
             var _segDur = Math.max(1, effectiveArrival - lastDepartedStop.time);
             segmentProgress = Math.max(0, Math.min(1, (adjustedCurrentMin - lastDepartedStop.time) / _segDur));
+            canonicalNumberStop = lastDepartedStop.sourceStop || null;
             break;
           }
           if (effectiveArrival !== null && adjustedCurrentMin >= effectiveArrival) {
             currentStationIndex = idx;
             foundInService = true;
+            canonicalNumberStop = stop;
           }
           if (effectiveDeparture !== null && adjustedCurrentMin >= effectiveDeparture) {
-            lastDepartedStop = { idx: idx, time: effectiveDeparture };
+            lastDepartedStop = { idx: idx, time: effectiveDeparture, sourceStop: stop };
           }
           // 尚未发车（停车中或未到达）即停——列车不会越过本站
           if (effectiveDeparture !== null && adjustedCurrentMin < effectiveDeparture) {
@@ -946,6 +967,8 @@
           }
           if (lastArrTime !== null && adjustedCurrentMin > lastArrTime) continue; // No post-terminal schedule movement.
 
+          var publicTrainNumber = _canonicalTrainNumberAtPosition(
+            tt, canonicalNumberStop, trainNumber);
           processedTrainIds[timetableIdentity] = true;
           var trainClassification = classifyTrain(run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
@@ -1009,7 +1032,9 @@
             scheduledItineraryKey: run.scheduledItineraryKey || "",
             runningChainId: timetableIdentity,
             runningChainEvidence: "TIMETABLE_SEGMENT",
-            trainNumber: trainNumber,
+            trainNumber: publicTrainNumber,
+            trainNumberSource: publicTrainNumber !== trainNumber
+              ? "canonical-source-stop" : "timetable-record",
             serviceName: run.serviceName || "",
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
