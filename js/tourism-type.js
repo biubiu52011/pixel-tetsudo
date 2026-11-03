@@ -17,6 +17,7 @@
     local_specialty: 1,
     shopping: 1,
     shop: 1,
+    store: 1,
     hotel: 1,
     play: 1
   };
