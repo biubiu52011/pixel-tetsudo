@@ -1,5 +1,7 @@
 'use strict';
 /* Central Main <-> Chuo Rapid source handover at Takao.
+ * Synthetic time/stop fixtures exercise the database-derived canonical
+ * 640M/640T alias; they do not assert any specific actual-day operation.
  * A canonical published train persists without inventing a live position.
  * Run with: node --test tests/chuo-takao-source-handover.test.cjs
  */
@@ -18,12 +20,12 @@ const lines={
   ChuoRapid:{operator:'JR-East',stations:['Takao','Tachikawa','Nakano']}
 };
 function timetable(id=66496,extra={}){
-  const date='2026-11-03';
+  const date='2026-11-02';
   return Object.assign({
     '@id':'canonical-sql-trip:'+date+':'+id,
     'odpt:railway':'odpt.Railway:JR-East.ChuoMain',
     'odpt:trainNumber':'640M',
-    'odpt:calendar':'odpt.Calendar:Holiday',
+    'odpt:calendar':'odpt.Calendar:Weekday',
     'odpt:railDirection':'odpt.RailDirection:Inbound',
     'odpt:trainType':'odpt.TrainType:JR-East.Local',
     // A source section's destination can be Takao even when the
@@ -81,7 +83,7 @@ function live(extra={}){
   return Object.assign({
     trainNumber:'640T',railDirection:'odpt.RailDirection:Inbound',
     sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
-    serviceDate:'2026-11-03',positionSource:'realtime-api',estimated:false,
+    serviceDate:'2026-11-02',positionSource:'realtime-api',estimated:false,
     sourceFromStation:'odpt.Station:JR-East.ChuoRapid.Tachikawa',
     sourceToStation:'odpt.Station:JR-East.ChuoRapid.Nakano',
     destinationStation:'Nakano',trainId:'odpt:live-640T',
@@ -89,16 +91,16 @@ function live(extra={}){
   },extra);
 }
 test('outside realtime region, scheduled 640M keeps its own source and canonical identity',()=>{
-  const x=bootstrap('2026-11-03T06:50:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T06:50:00Z',[timetable()]);
   const p=(x.scheduled.ChuoMain||[])[0];
   assert.ok(p,'Otsuki-to-Takao section needs a scheduled position');
   assert.equal(p.trainNumber,'640M');
   assert.equal(p.positionSource,'supabase-train-run');
-  assert.equal(p.runningChainId,'canonical-sql-trip:2026-11-03:66496');
+  assert.equal(p.runningChainId,'canonical-sql-trip:2026-11-02:66496');
   assert.equal(p.estimated,true);
 });
 test('after timetable terminus: identity survives 27 minutes without a phantom position',()=>{
-  const x=bootstrap('2026-11-03T07:27:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T07:27:00Z',[timetable()]);
   assert.equal((x.scheduled.ChuoMain||[]).length,0);
   const e=x.evidence.ChuoMain;
   assert.equal(e.length,1);
@@ -109,11 +111,11 @@ test('after timetable terminus: identity survives 27 minutes without a phantom p
     'terminal clipping may not discard the verified opposite-side stop');
 });
 test('one authorized 640T live record replaces 640M source without changing real train number',()=>{
-  const x=bootstrap('2026-11-03T07:27:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T07:27:00Z',[timetable()]);
   const p=live(),observed={ChuoRapid:[p]};
   assert.equal(x.link(x.scheduled,observed),1);
   assert.equal(x.switchSource(x.scheduled,observed),1);
-  assert.equal(p.runningChainId,'canonical-sql-trip:2026-11-03:66496');
+  assert.equal(p.runningChainId,'canonical-sql-trip:2026-11-02:66496');
   assert.equal(p.runningChainEvidence,'VERIFIED_SQL_CANONICAL_REALTIME_STATION');
   assert.equal(p.trainNumber,'640T','the provider number must never be rewritten');
   assert.equal(p.throughOriginTrainNumber,'640M');
@@ -123,7 +125,7 @@ test('one authorized 640T live record replaces 640M source without changing real
   assert.equal((x.scheduled.ChuoMain||[]).length,0);
 });
 test('an unconfirmed timetable terminal cannot overwrite a real continuation destination',()=>{
-  const x=bootstrap('2026-11-03T07:27:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T07:27:00Z',[timetable()]);
   const p=live({destinationStation:''}),observed={ChuoRapid:[p]};
   assert.equal(x.link(x.scheduled,observed),1);
   x.switchSource(x.scheduled,observed);
@@ -131,7 +133,7 @@ test('an unconfirmed timetable terminal cannot overwrite a real continuation des
   assert.equal(p.destinationStation,'');
 });
 test('when the live observation is already present, hide same-canonical planned map marker',()=>{
-  const x=bootstrap('2026-11-03T07:00:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T07:00:00Z',[timetable()]);
   const p=live(),observed={ChuoRapid:[p]};
   const plan=x.scheduled.ChuoMain[0];
   assert.ok(plan);
@@ -150,7 +152,7 @@ test('wrong number, operator, day, direction and station cannot claim another ph
     {sourceToStation:'odpt.Station:JR-East.ChuoRapid.Otsuki'},
   ];
   bad.forEach((options,i)=>{
-    const x=bootstrap('2026-11-03T07:27:00Z',[timetable()]);
+    const x=bootstrap('2026-11-02T07:27:00Z',[timetable()]);
     const p=live(options),observed={ChuoRapid:[p]};
     assert.equal(x.link(x.scheduled,observed),0,'mismatch '+i);
     assert.equal(x.switchSource(x.scheduled,observed),0,'no switching '+i);
@@ -158,11 +160,11 @@ test('wrong number, operator, day, direction and station cannot claim another ph
   });
 });
 test('two active live observations or two canonical candidates remain ambiguous',()=>{
-  let x=bootstrap('2026-11-03T07:27:00Z',[timetable()]);
+  let x=bootstrap('2026-11-02T07:27:00Z',[timetable()]);
   const duplicated={ChuoRapid:[live(),live({trainId:'live-two'})]};
   assert.equal(x.link(x.scheduled,duplicated),0);
   assert.equal(x.switchSource(x.scheduled,duplicated),0);
-  x=bootstrap('2026-11-03T07:27:00Z',[timetable(),timetable(66499)]);
+  x=bootstrap('2026-11-02T07:27:00Z',[timetable(),timetable(66499)]);
   const p=live(),observed={ChuoRapid:[p]};
   assert.equal(x.link(x.scheduled,observed),0);
   assert.equal(x.switchSource(x.scheduled,observed),0);
@@ -173,14 +175,14 @@ test('unverified same-number or no published alias never yields canonical handov
     {_canonicalTrainNumberAliases:[]},
     {_canonicalLineIds:['ChuoMain']},
   ]){
-    const x=bootstrap('2026-11-03T07:27:00Z',[timetable(66496,extra)]);
+    const x=bootstrap('2026-11-02T07:27:00Z',[timetable(66496,extra)]);
     assert.equal((x.evidence.ChuoMain||[]).length,0);
     const p=live(),observed={ChuoRapid:[p]};
     assert.equal(x.link(x.scheduled,observed),0);
   }
 });
 test('identity-only evidence expires after the bounded published Takao handover window',()=>{
-  const x=bootstrap('2026-11-03T09:00:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T09:00:00Z',[timetable()]);
   assert.equal((x.evidence.ChuoMain||[]).length,0);
   const p=live(),observed={ChuoRapid:[p]};
   assert.equal(x.link(x.scheduled,observed),0);
@@ -216,22 +218,22 @@ test('when realtime coverage ends, verified 641M can continue from Takao on publ
        direction_urn:'odpt.RailDirection:Outbound'}
     ]
   });
-  const x=bootstrap('2026-11-03T08:10:00Z',[reverse]);
+  const x=bootstrap('2026-11-02T08:10:00Z',[reverse]);
   const planned=(x.scheduled.ChuoMain||[])[0];
   assert.ok(planned,'Takao-to-Otsuki section must remain visible from scheduled data');
   assert.equal(planned.trainNumber,'641M');
-  assert.equal(planned.runningChainId,'canonical-sql-trip:2026-11-03:66497');
+  assert.equal(planned.runningChainId,'canonical-sql-trip:2026-11-02:66497');
   assert.equal(planned.positionSource,'supabase-train-run');
   assert.equal(x.switchSource(x.scheduled,{ChuoRapid:[]}),0);
   assert.equal(x.scheduled.ChuoMain.length,1,'no live record: do not hide estimated train');
 });
 test('expired live position cannot suppress published fallback even with a canonical identity',()=>{
-  const x=bootstrap('2026-11-03T06:50:00Z',[timetable()]);
+  const x=bootstrap('2026-11-02T06:50:00Z',[timetable()]);
   const p=live({
-    runningChainId:'canonical-sql-trip:2026-11-03:66496',
+    runningChainId:'canonical-sql-trip:2026-11-02:66496',
     canonicalTimetableId:'66496',
     runningChainEvidence:'VERIFIED_SQL_CANONICAL_REALTIME_STATION',
-    sourceValidUntil:'2026-11-03T06:40:00Z'
+    sourceValidUntil:'2026-11-02T06:40:00Z'
   });
   const observed={ChuoRapid:[p]};
   assert.equal(x.switchSource(x.scheduled,observed),0);
