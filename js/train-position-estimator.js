@@ -754,6 +754,23 @@
               datedRule.operatingDates.indexOf(serviceDate) < 0) continue;
         }
 
+        // JR East Narita Abiko branch official 2611 number index:
+        // weekday/holiday 40 each direction; full 820M-899M number
+        // identities. Restrict ONLY SQL-derived PLANNED positions.
+        // Never infer a Joban continuation, actual carset, or substitute
+        // operation number. Do not block ODPT / independent timetables.
+        if (lineId === "NaritaAbikoBranch" &&
+            tt._positionSource === "supabase-train-run" &&
+            window.JREastNaritaAbikoNumberIndex202611 &&
+            typeof window.JREastNaritaAbikoNumberIndex202611.verify === "function") {
+          var listedAbiko = window.JREastNaritaAbikoNumberIndex202611.verify(
+            run.trainNumber, tt["odpt:railway"] || "",
+            tt["odpt:railDirection"] || "",
+            tt["odpt:trainType"] || "",
+            calendar, serviceDate);
+          if (listedAbiko === false) continue;
+        }
+
         // Togane Nov 2026 SQL number admission follows all four JR East
         // 2611 published day/direction lists (30 inbound, 31 outbound).
         // Apply to PLANNED SQL services only. It cannot change an actual
