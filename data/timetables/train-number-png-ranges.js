@@ -13,7 +13,7 @@
     {lineIds:["SaikyoKawagoe","Rinkai"],from:0,to:71,suffixes:"KFS",
       model:"E233系7000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_7000番台.png"},
-    {lineIds:["SaikyoKawagoe","Rinkai"],from:72,to:79,suffixes:"KFS",
+    {lineIds:["SaikyoKawagoe"],from:72,to:79,suffixes:"KFS",
       model:"相鉄12000系",
       pngPath:"../images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png"},
     // 70-000 / 71-000 can both work here. The PNG is a DISPLAY DEFAULT,
