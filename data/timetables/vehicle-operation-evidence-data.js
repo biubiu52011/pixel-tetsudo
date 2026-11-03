@@ -20,6 +20,12 @@
   // Exact operating dates in November 2026. Even 9xxxM cannot be assumed
   // to operate on all holiday dates.
   var special=[
+    ["8083M","あずさ83号","holiday",["07","14","21","22","28"],
+      "https://timetables.jreast.co.jp/2611/train/075/076761.html"],
+    ["8170M","かいじ70号","weekday",null,
+      "https://timetables.jreast.co.jp/2611/train/115/115091.html"],
+    ["9085M","あずさ85号","holiday",["21"],
+      "https://timetables.jreast.co.jp/2611/train/110/110741.html"],
     ["8084M","あずさ84号","holiday",
       ["01","03","08","15","22","23","29"],
       "https://timetables.jreast.co.jp/2611/train/070/071601.html"],
