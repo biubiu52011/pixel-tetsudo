@@ -8,6 +8,17 @@ on:
       - 'js/train-vehicle.js'
       - 'data/core/major-vehicle-fleet-presets.js'
       - 'tools/train-major-fleet-presets.test.cjs'
+      - 'tools/train-network-vehicle-audit.test.cjs'
+      - 'tests/scheduled-vehicle-mapping.test.cjs'
+      - 'tests/train-coupling.test.cjs'
+      - 'data/core/railway_data.compact.json'
+      - 'data/timetables/**'
+      - 'data/api/odpt-unified.js'
+      - 'js/running-chain-resolver.js'
+      - 'images/列车/**'
+      - 'tools/*canonical*test.cjs'
+      - 'tools/joban-realtime-railway-scope.test.cjs'
+      - 'tools/boso-realtime-published-plan-audit.test.cjs'
       - 'js/trains-render.js'
       - 'js/data-fusion.js'
       - 'js/train-position-estimator.js'
@@ -57,6 +68,10 @@ jobs:
           node --check js/train-position-estimator.js
       - name: Verify scoped major vehicle fleet presets and neutral markers
         run: node tools/train-major-fleet-presets.test.cjs
+      - name: Audit all 237 railway routes, 191 fleet scopes and gallery references
+        run: node tools/train-network-vehicle-audit.test.cjs
+      - name: Verify dated references and public train-number split/join rules
+        run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/train-coupling.test.cjs
       - name: Verify vehicle PNG decisions and SVG projection
         run: node tools/train-png-display-contract.test.cjs
       - name: Verify registered PNG paths and file headers
@@ -77,3 +92,12 @@ jobs:
         run: node tools/train-regional-fleet-scope.test.cjs
       - name: Verify fan-source audit and official Sonic double-clock matches
         run: node tools/train-railfan-official-corroboration.test.cjs
+      - name: Verify cross-line canonical identity and realtime hybrid boundaries
+        run: |
+          node tools/joban-canonical-realtime-hybrid.test.cjs
+          node tools/joban-realtime-railway-scope.test.cjs
+          node tools/chuo-ome-canonical-realtime-hybrid.test.cjs
+          node tools/chuo-main-canonical-number-alias-hybrid.test.cjs
+          node tools/shonan-tokaido-canonical-hybrid.test.cjs
+          node tools/shonan-omiya-northern-canonical-hybrid.test.cjs
+          node tools/boso-realtime-published-plan-audit.test.cjs
