@@ -190,3 +190,50 @@ test('the folding UI continues hiding ordinary train numbers',()=>{
   assert.match(render,/caption\.textContent=captionBase;/);
   assert.doesNotMatch(render,/caption\.textContent=.*foldTrainNumber/);
 });
+
+
+test('when realtime coverage ends, verified 641M can continue from Takao on published clocks',()=>{
+  const reverse=timetable(66497,{
+    'odpt:trainNumber':'641M',
+    'odpt:railDirection':'odpt.RailDirection:Outbound',
+    'odpt:destinationStation':['odpt.Station:JR-East.ChuoMain.Otsuki'],
+    'odpt:trainTimetableObject':[
+      {'odpt:departureStation':'odpt.Station:JR-East.ChuoRapid.Nakano',
+       'odpt:departureTime':'16:00'},
+      {'odpt:departureStation':'odpt.Station:JR-East.ChuoRapid.Tachikawa',
+       'odpt:departureTime':'16:20'},
+      {'odpt:departureStation':'odpt.Station:JR-East.ChuoMain.Takao',
+       'odpt:departureTime':'17:00'},
+      {'odpt:arrivalStation':'odpt.Station:JR-East.ChuoMain.Otsuki',
+       'odpt:arrivalTime':'17:40'}
+    ],
+    _canonicalTrainNumberAliases:[
+      {line_key:'ChuoRapid',train_number:'641T',
+       railway_urn:'odpt.Railway:JR-East.ChuoRapid',
+       direction_urn:'odpt.RailDirection:Outbound'},
+      {line_key:'ChuoMain',train_number:'641M',
+       railway_urn:'odpt.Railway:JR-East.ChuoMain',
+       direction_urn:'odpt.RailDirection:Outbound'}
+    ]
+  });
+  const x=bootstrap('2026-11-03T08:10:00Z',[reverse]);
+  const planned=(x.scheduled.ChuoMain||[])[0];
+  assert.ok(planned,'Takao-to-Otsuki section must remain visible from scheduled data');
+  assert.equal(planned.trainNumber,'641M');
+  assert.equal(planned.runningChainId,'canonical-sql-trip:2026-11-03:66497');
+  assert.equal(planned.positionSource,'supabase-train-run');
+  assert.equal(x.switchSource(x.scheduled,{ChuoRapid:[]}),0);
+  assert.equal(x.scheduled.ChuoMain.length,1,'no live record: do not hide estimated train');
+});
+test('expired live position cannot suppress published fallback even with a canonical identity',()=>{
+  const x=bootstrap('2026-11-03T06:50:00Z',[timetable()]);
+  const p=live({
+    runningChainId:'canonical-sql-trip:2026-11-03:66496',
+    canonicalTimetableId:'66496',
+    runningChainEvidence:'VERIFIED_SQL_CANONICAL_REALTIME_STATION',
+    sourceValidUntil:'2026-11-03T06:40:00Z'
+  });
+  const observed={ChuoRapid:[p]};
+  assert.equal(x.switchSource(x.scheduled,observed),0);
+  assert.equal(x.scheduled.ChuoMain.length,1);
+});
