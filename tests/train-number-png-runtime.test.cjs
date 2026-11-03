@@ -891,3 +891,69 @@ test('Nambu 2319F official holiday train renders representative E233 PNG',()=>{
       'invalid Nambu representative artwork '+JSON.stringify(changes));
   }
 });
+
+
+test('Yamanote E235-0 G-number family uses its own officially scoped PNG',()=>{
+  const image='../images/列车/JR東日本/JR東日本_E235系_0番台.png';
+  const examples=[
+    ['301G','holiday'],['405G','weekday'],['360G','holiday'],
+    ['1000G','weekday'],['2406G','weekday'],['2433G','weekday']
+  ];
+  for(const [trainNumber,calendarType] of examples){
+    const p=live({trainNumber,trainId:'odpt.Train:JR-East.Yamanote.'+trainNumber,
+      sourceRailway:'odpt.Railway:JR-East.Yamanote',
+      positionLineId:'Yamanote',calendarType,
+      trainType:'odpt.TrainType:JR-East.Local'});
+    const selected=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(selected,trainNumber+' must match full Yamanote G number');
+    assert.equal(selected.model,'E235系0番台（山手線）');
+    assert.equal(selected.pngPath,image);
+    const svg=marker(p,'Yamanote');
+    assert.equal(svg.kind,'vehicle');
+    assert.equal(svg.iconSrc,image);
+    assert.equal(svg.planned,true,'number family is a representative display only');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+      'the numbered run does not prove actual carset');
+  }
+  const scheduled=sql({
+    trainNumber:'360G',trainId:'planned-trip:2026-11-03|JR-East|Yamanote|360G',
+    sourceRailway:'odpt.Railway:JR-East.Yamanote',positionLineId:'Yamanote',
+    trainOperator:'',trainType:'odpt.TrainType:JR-East.Local'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(scheduled).pngPath,image,
+    'missing SQL operator can use the exact JR-East Yamanote source railway');
+  assert.equal(marker(scheduled,'Yamanote').iconSrc,image);
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...scheduled,displayLineId:'Yamanote'},true).kind,'unresolved',
+    'a broken image must remain a neutral position marker');
+});
+test('Yamanote G train number range never leaks to a different line or service',()=>{
+  const base=live({trainNumber:'1501G',
+    sourceRailway:'odpt.Railway:JR-East.Yamanote',
+    positionLineId:'Yamanote',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  for(const changes of [
+    {trainNumber:'300G'}, {trainNumber:'2434G'},
+    {trainNumber:'2501G'}, {trainNumber:'1501H'},
+    {trainNumber:'1501M'}, {trainNumber:'111G'},
+    {trainNumber:'3G'}, {trainNumber:'1501'},
+    {positionLineId:'KeihinTohoku'},
+    {sourceRailway:'odpt.Railway:JR-East.KeihinTohoku'},
+    {sourceRailway:''}, {trainOperator:'JR-West'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {trainType:''}, {serviceDate:'2019-11-03'},
+    {serviceDate:'2026-10-31'}, {serviceDate:''},
+    {realtimeVehicleType:'E231系500番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E231系500番台']}}
+  ]){
+    const wrong={...base,...changes};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(wrong),null,
+      'Yamanote exact range rejects '+JSON.stringify(changes));
+  }
+  assert.equal(marker(base,'KeihinTohoku').kind,'unresolved',
+    'the same train cannot borrow a Yamanote image on another display');
+  assert.equal(root.TrainNumberPngRanges.match('1501G','ChuoRapid'),null);
+  assert.equal(root.TrainNumberPngRanges.match('1501G','Yokosuka'),null);
+  assert.equal(root.TrainNumberPngRanges.match('1501G','Yamanote',
+    {...base,trainType:'odpt.TrainType:JR-East.Local'}).trainNumber,'1501G');
+});
