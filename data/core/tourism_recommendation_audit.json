@@ -1,0 +1,2346 @@
+{
+  "asOf": "2026-11-03",
+  "methodology": "A menu item is official-source reviewed only when its title and any displayed price are backed by a specific primary-source URL. Old kind=note items are historical visit notes, not confirmed products. Existing items without provenance remain unverified. Cover images alone do not establish product identity or availability.",
+  "totals": {
+    "shops": 289,
+    "notes": 813,
+    "verified": 20,
+    "unverified": 375,
+    "reviewedShops": 7,
+    "reportedClosed": 1,
+    "noteOnly": 158
+  },
+  "shops": [
+    {
+      "name": "アニメイト 池袋本店",
+      "status": "source_reviewed",
+      "officialItems": 3,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": [
+        "https://www.animate.co.jp/shop/ikebukuro/floor/"
+      ]
+    },
+    {
+      "name": "乙女ロード (Otome Road)",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Bivi 南千住",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "尾花（Obana）うなぎ料理",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ポケモンセンターMEGA TOKYO",
+      "status": "source_reviewed",
+      "officialItems": 2,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": [
+        "https://shop.pokemon.co.jp/ja/shop/pokemoncenter-megatokyo"
+      ]
+    },
+    {
+      "name": "ドン・キホーテ 池袋東口駅前店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ギャラクシティ",
+      "status": "source_reviewed",
+      "officialItems": 3,
+      "legacyItems": 0,
+      "visitorNotes": 1,
+      "officialUrls": [
+        "https://www.galaxcity.jp/facilities/",
+        "https://www.galaxcity.jp/facilities/ganbaru-wall.html",
+        "https://www.galaxcity.jp/about/"
+      ]
+    },
+    {
+      "name": "大谷田温泉明神の湯",
+      "status": "source_reviewed",
+      "officialItems": 3,
+      "legacyItems": 0,
+      "visitorNotes": 1,
+      "officialUrls": [
+        "https://dormy-hotels.com/spa/myoujin/price.php",
+        "https://dormy-hotels.com/spa/myoujin/spa.php"
+      ]
+    },
+    {
+      "name": "豊洲市場",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "築地場外市場",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "新宿ゴールデン街",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "かっぱ橋道具街",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "神保町古書店街",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "アメヤ横丁",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "自由が丘",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "神楽坂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "代官山蔦屋書店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "銀座木村家本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "神田まつや",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "浅草たい焼き工房 求楽",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "めぐろ三ツ星食堂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "REJOUIR（レジュイール）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Les Grands Arbres(レ・グラン・ザルブル)",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "榎本ハンバーグ研究所",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "フランス料理 でぐち弐番",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "パパブブレ 中野店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ベーゼンドルファー東京",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "フナバシ屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "中台製作所",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "木挽町よしや",
+      "status": "source_reviewed",
+      "officialItems": 3,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": [
+        "https://kobikichoyoshiya.com/list/"
+      ]
+    },
+    {
+      "name": "HARIOランプワークファクトリー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "日比谷図書文化館",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "如水会館 カフェ&パブ マーキュリー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ZAKUROらんぷ家",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ポポー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Butterfly dogcandy（バタフライ ドッグキャンディ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "日の出湯",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "柴田慶信商店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "駅前商店ひまわり",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "NOE CAFE",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "YOGA ME！",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "獣肉酒家　米とサーカス",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "高田馬場ミャンマー語教室",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "東京ドームシティアトラクションズ 「ビッグ・オー」",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "L’ESSENTIELLE（レセンシエル）",
+      "status": "source_reviewed",
+      "officialItems": 3,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": [
+        "https://www.lessentielle.info/cake"
+      ]
+    },
+    {
+      "name": "マツダ映画社",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "東京スパイスハウス",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "米農家の店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "JUNGLE BOOKS",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "10minutes（テンミニッツ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "SOUTH LAB 南方（サウスラボ みなかた）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Balmy Cafe （バルミーカフェ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "PostCoffee（ポストコーヒー）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "スパイスマジック カルカッタ南口店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "浅草聚楽",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 6,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "White atelier BY CONVERSE 原宿店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "麺昇 神の手",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "神楽坂飯店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "藝大アートプラザ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "古城",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Saci Pereré",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "gonno bakery market",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "魔法の文学館",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "にっぽんの洋食 赤坂 津つ井",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "SOBA CAFE IKEMORI 赤坂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "BLUE BOTTLE COFFEE 清澄白河ロースタリー&カフェ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "清澄白河フジマル醸造所",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "日進ワールドデリカテッセン",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "AND THE FRIET",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "亜細亜割烹 蓮月",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "国立印刷局 東京工場",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "デイリーチコ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "中野ビール工房",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ゴールドカレー 中野坂上店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "梅翁総本舗",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "銀之塔",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "香源（こうげん）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "小津和紙",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "和牛すき焼き 伊勢重",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "江戸うさぎ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "美火土陶椀（みかど とうわん）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "黒猫舎（くろねこしゃ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "山本そろばん店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "mic",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ペリカンカフェ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "鳥のいるカフェ 浅草店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "365 Anniversary",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "音楽喫茶アカシア",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "べんてん",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ゲーセンミカド",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "レッドロック",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "寒天工房 讃岐屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "InSPYre（インスパイヤ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "札幌軒",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "喫茶 蔵",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "patisserie emplir（パティスリー アンプリル）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "欧風カレー&シチュー専門店 トマト",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "オバケン シーズン５ 「畏怖 咽び家」",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Café Kaya",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ウクレレ・マニア",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "久米繊維工業ファクトリーショップ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "somenova（ソメノバ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "LABOUR AND WAIT TOKYO",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Dear Bear",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "トウキョウミタイワラ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "黄金湯",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "pignic Cafe 代々木公園店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "北海道めんこい くまちゃん温泉 渋谷本館",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ほぼ上野オスシマチ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "JICA地球ひろば 食のゾーン J's Cafe",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "NECOT COFFEE HOUSE",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "The Mixology",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "生姜サウナ 金の亀",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "深川吉野屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Brew Parlor 3615",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "麻布 香雅堂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "フランス菓子CADOT",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "小山酒造",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "マグロマート",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Kakuya Coffee Stand",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "福弘釣具店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Iron Fairies",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ナイルレストラン",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "江戸切子の店 華硝 日本橋店（はなしょう）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "パレスサイクリング",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "竹尾 見本帖本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "赤坂四川飯店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Cha Tea",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "creer ijima（クレエ・イジマ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "バッグ工房　ヴィドゥルス",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "浅草リトルシアター",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "きものレンタルwargo東京浅草店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Sabö Asaichi(サボウアサイチ)",
+      "status": "reported_closed",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": [],
+      "statusSource": "https://tabelog.com/tokyo/A1311/A131101/13201512/"
+    },
+    {
+      "name": "Readin’ Writin’",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "東京SOBOKU二胡スクール",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "小島米店 成増店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ゆ～ポッポ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "CRIOLLO（クリオロ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "早稲田松竹",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "アジアンクッキングスタジオ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Pia Cuore（ピアクオーレ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "おかめ工房",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "パン家のどん助",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "レストランツムラ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "さかづきBrewing",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "アヤセベーカリー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ラべイユ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "chura＊chura",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "押上温泉 大黒湯",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "MOKUBAZA（モクバザ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "M’amour（マムール）",
+      "status": "source_reviewed",
+      "officialItems": 3,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": [
+        "https://m-amour.stores.jp/items?page=2",
+        "https://m-amour.stores.jp/?category_id=60f3e5cd053624739cbd3217"
+      ]
+    },
+    {
+      "name": "シャンティ紅茶",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "tufting studio KEKE",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "篠原まるよし風鈴",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "B-PUMP TOKYO 秋葉原",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "TAIKO-LAB 青山",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "パンダ茶房by銀座清月堂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "LASOLA Bhutan Restaurant",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Akasaka Zen Space",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Bar和ごころ赤坂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "アタゴール",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "グラス・ラボ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Thai Food Dining Shangri-La（タイ フード ダイニング シャングリ・ラ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "王子扇屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "思月園",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "タイ屋台999(カオ・カオ・カオ)",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "むし社",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "コートロッジ 中野店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "麺屋あらき竃の番人外伝",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Le Chou （ル シュー）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "BOULANGERIE Dudestin (ブーランジェリーデュデスタン)",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "喫茶YOU",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "BANANA JUICE",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "GINZA HAKKO 木の香（きのか）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "日比谷松本楼",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "みやびカタックダンスアカデミー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "山田松香木店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "JAMBO",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "銀座 尚呼（なおこ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "アミューズ カフェシアター",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "辻屋本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "元祖食品サンプル屋　合羽橋店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ほていや 中塚商店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "和光市バッティングセンター",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Lito rukka（リトルッカ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "つばさ基地",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "シチズンプラザスケートリンク",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Viet Shop（ベトショップ）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "プネウマカレー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "味覚庵",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "なぜ蕎麦にラー油を入れるのか",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "アキッチョ デシカ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "味噌一 高円寺本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "上川口屋（かみかわぐちや）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ペンギンのいるBAR　池袋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "タイランド",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "PAPIER LABO. （パピエラボ.）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "茶割",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "卍力",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "BEER VISTA BREWRY",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "築地玉寿司　晴海通り店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "スケボーパーク＆スケボースクール「RAMP ZERO」",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "クロサワ楽器 お茶の水駅前店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "上野の森アートスクール（上野の森美術館）",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ジンジャーエール専門店「孝芳堂」",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "杉本とうふ店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Studio Aurora",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "TEMARU OMUSUBI STAND",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 6,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "赤坂青野",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "豆虎 赤坂焙煎所",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "きぼし食堂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "キッチンフライパン",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "東京華山椒",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Binti 亀有店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "STAND BY ME",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "らーめん 桔梗と空",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "蘭蝶",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "千けい菜ゐと",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "にんにく料理酒場 Garlic Carinderia",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "パウえる 江北店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "珈琲はんなり",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "喫茶アジェンデ＆カレーシャ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "TOS CURRY",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "TAMBOURIN CURRY＆BAR",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "駄菓子屋 かしづき",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "BOWWOW316",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "AWAYA",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "あだちブルワリー",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "中村鞄製作所 東京本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "ベルクス 足立花畑中央店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "Tokyo Acryl",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "DECOLA．",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "土屋鞄製造所 西新井本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "島田屋製菓",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "select gallery & bar “baku”",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "株式会社伊藤鞄製作所・ショールーム＆カフェ「Regalo Felice」",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "東横INN草加駅西口",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "中田屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "田口屋菓子舗",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "甘味処 なごみ庵",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "下町グルメ食堂 勝めし屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "晴れの日も雨の日も",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "たいやき117",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "わかば堂製作所",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "喜田家 梅島店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "御菓子司 たから家",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "和歌藤",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "かどやの槍かけだんご",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "煮干し中華そば 山形屋",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "osteria YOSHI",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "Cielo Azzurro",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "洋食堂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "茶匠 おくむら園",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "お茶の家 小堀商店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "KiKi北千住",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "Blau ESPRESSO",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "TAVETALINA",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "ジャギ飯店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 9,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "餃子たけし",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "焼小籠包 ぎょうざ 樹苞 六町本店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "LUSH-COFFEE Roaster Laboratory",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "Brunch＆Coffee グランドゥカフェ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "Ogiso cafe",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "食堂ソラノシタ",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "鮨よし",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "寿司と炭火 大地",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "きく鮨",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "北千住fuji",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "千寿宿 玄",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "路地裏 久九",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "市場食堂 さかなや",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "秋田郷土料理 えん",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 1,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "チャンコ大心",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "千住の永見",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "定食屋 かあちゃん",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "わんぱく食堂",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "遊食家 楽",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "BAKERY やすべぇ。",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "AREUM BAGEL 北千住店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "天ぷら立ち飲み 蓮",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "立ち飲み うめつば",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "びあマ北千住",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 3,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "ざわさん 北千住サンロード店",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 5,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "Bar Brass",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 4,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "WAVY DUNES",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "Bar Sora [宇宙]",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "ROCK BAR 7th-chord",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 2,
+      "visitorNotes": 2,
+      "officialUrls": []
+    },
+    {
+      "name": "本多劇場",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    },
+    {
+      "name": "下北沢SHELTER",
+      "status": "pending_review",
+      "officialItems": 0,
+      "legacyItems": 0,
+      "visitorNotes": 3,
+      "officialUrls": []
+    }
+  ]
+}
