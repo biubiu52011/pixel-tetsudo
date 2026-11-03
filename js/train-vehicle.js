@@ -4980,14 +4980,28 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       return null;
     var lineId = String(p.positionLineId || p.lineId || "").trim();
     var displayLineId = String(p.displayLineId || lineId).trim();
-    if (!lineId || displayLineId !== lineId) return null;
+    if (!lineId || !displayLineId) return null;
+    // The Yokosuka and Sobu Rapid diagrams each include their verified
+    // Tokyo-bound continuation as a separate "extension" position. The
+    // rendered line is then Yokosuka while the numbered 2262F SOURCE run
+    // remains SobuRapid. Resolve the numbered model on the SOURCE railway;
+    // approve its image on BOTH lines. Never reclassify the run using the
+    // displayed railway or allow an arbitrary shared-station projection.
+    var scopedYokosukaSobuExtension = displayLineId !== lineId &&
+      p.fusionRole === "extension" &&
+      String(p.fusionLineId || "") === lineId &&
+      ((lineId === "SobuRapid" && displayLineId === "Yokosuka") ||
+       (lineId === "Yokosuka" && displayLineId === "SobuRapid"));
+    if (displayLineId !== lineId && !scopedYokosukaSobuExtension) return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
     var match = rules.match(p.trainNumber, lineId, p);
     if (!match) return null;
     var png = normalizeGalleryPngPath(match.pngPath);
     var garage = window.VehicleGaragePngMap;
-    if (!png || !garage || !garage.matchModelPath(match.model, png, lineId))
+    if (!png || !garage || !garage.matchModelPath(match.model, png, lineId) ||
+        (scopedYokosukaSobuExtension &&
+         !garage.matchModelPath(match.model, png, displayLineId)))
       return null;
     return {trainNumber:String(p.trainNumber).trim(),lineId:lineId,
       model:match.model,pngPath:png,source:"train-number-range",
