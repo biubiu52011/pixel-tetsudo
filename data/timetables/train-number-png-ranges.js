@@ -370,6 +370,34 @@
       rejectAmbiguousPlan:true,
       model:"E233系5000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系5000番台.png"},
+    // Narita Abiko Branch 2026-11: all 80 exact 820M..899M numbers
+    // correspond to planned E231-0 Joban rapid-type stock. Departure
+    // times, day calendar and same-day carset are independent evidence.
+    // No 800-series number is an E231 vehicle formation / operation ID.
+    // https://timetables.jreast.co.jp/2611/timetable-v/215u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/215d2.html
+    // https://www.jreast.co.jp/train/local/e231.html
+    {lineIds:["NaritaAbikoBranch"],numberFormat:"full",
+      from:820,to:899,suffixes:"M",trainType:"Local",
+      operator:"JR-East",sourceOperatorFallback:true,
+      publishedNumbers:[
+        "820M","821M","822M","823M","824M","825M","826M","827M"
+        "828M","829M","830M","831M","832M","833M","834M","835M"
+        "836M","837M","838M","839M","840M","841M","842M","843M"
+        "844M","845M","846M","847M","848M","849M","850M","851M"
+        "852M","853M","854M","855M","856M","857M","858M","859M"
+        "860M","861M","862M","863M","864M","865M","866M","867M"
+        "868M","869M","870M","871M","872M","873M","874M","875M"
+        "876M","877M","878M","879M","880M","881M","882M","883M"
+        "884M","885M","886M","887M","888M","889M","890M","891M"
+        "892M","893M","894M","895M","896M","897M","898M","899M"
+      ],
+      sourceRailways:["odpt.Railway:JR-East.NaritaAbikoBranch"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E231系0番台"],
+      rejectAmbiguousPlan:true,
+      model:"E231系0番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E231系_0番台.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -685,6 +713,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-togane-keiyo-y-v26",match:match
+    version:"20261104-narita-abiko-2611-v27",match:match
   });
 })(window);
