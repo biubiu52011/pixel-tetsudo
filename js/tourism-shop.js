@@ -60,16 +60,12 @@
   }
 
   // 所有商家推荐统一来源 spot.menu。
-  // kind=note 是从历史 tips 迁移的文字提示：不伪造商品图、名称或价格。
+  // kind=note 同样采用图片式商品卡布局；没有实际图片时使用店名首字占位图，
+  // 保留文字且不虚构价格。
   function buildRecommendedItem(spot, item, index, badgeChar) {
     item = item || {};
     var name = (spot.menu_i18n && spot.menu_i18n[index] && spot.menu_i18n[index][C.state.lang])
       || item.item || C.t('detail.i18n_missing');
-    if (item.kind === 'note') {
-      return '<div class="dp-rec-text-item dp-rec-text-item--menu">'
-        + '<span class="dp-rec-text-dot" aria-hidden="true"></span>'
-        + '<span class="dp-rec-text-body">' + C.escapeHtml(name) + '</span></div>';
-    }
     var thumb = item.img
       ? '<img class="dp-dish-img" src="' + C.escapeHtml(item.img) + '" alt="' + C.escapeHtml(name)
         + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="'
