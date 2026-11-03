@@ -97,6 +97,69 @@
       from:400,to:2599,suffixes:"TH",
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    // Chuo Main November 2026: full M train numbers, NOT trailing
+    // operation numbers. JR East's published tables pair the same M
+    // service with a T/H train number at Takao: 640M -> 640T,
+    // 726M -> 726H and 2339T -> 2339M. The 640M morning train
+    // waits overnight at Otsuki before departing; this is a real
+    // ODPT train record, never an advance-generated timetable vehicle.
+    // The E233 PNG is a representative stock image, not an observed set.
+    // https://timetables.jreast.co.jp/2611/timetable-v/223u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/223u2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/223d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/223d2.html
+    // https://ameblo.jp/tc205-37/entry-12978162403.html
+    {lineIds:["ChuoMain"],numberFormat:"full",
+      from:600,to:2399,suffixes:"M",excludeTrainType:"LimitedExpress",
+      publishedNumbers:[
+        "640M","645M","648M","661M","722M","724M","726M","744M",
+        "760M","818M","865M","919M","1025M","1081M","1103M",
+        "1115M","1118M","1164M","1173M","1175M","1223M",
+        "1257M","1280M","1302M","1314M","1324M","1349M",
+        "1393M","1427M","1429M","1472M","1474M","1519M",
+        "1522M","1556M","1569M","1626M","1628M","1629M",
+        "1633M","1648M","1692M","1709M","1725M","1727M",
+        "1753M","1818M","1825M","1853M","1867M","1868M",
+        "1917M","1919M","1923M","1928M","1932M","1991M",
+        "1993M","2008M","2024M","2026M","2052M","2152M",
+        "2166M","2218M","2222M","2290M","2292M","2339M"
+      ],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Chuo",
+        "odpt.Railway:JR-East.ChuoMain"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系0番台"],
+      model:"E233系0番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    // Chuo Main's 320M-367M local family includes 321M (Enzan 05:38
+    // -> Nirasaki 06:12). The documented three-car 211 operation is the
+    // gallery REFERENCE, not proof of the actual November 2026 set.
+    // E131-200 entered the Chuo Main fleet in autumn 2026; reject a
+    // conflicting/ambiguous upstream model instead of overwriting it.
+    // No number outside the published 2026 November 320-367 set is
+    // admitted just because it falls inside the numerical interval.
+    // https://timetables.jreast.co.jp/2611/train/010/010161.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/223d2.html
+    // https://ameblo.jp/tc205-37/entry-12832324798.html
+    // https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf
+    {lineIds:["ChuoMain"],numberFormat:"full",
+      from:320,to:367,suffixes:"M",trainType:"Local",
+      publishedNumbers:[
+        "320M","321M","322M","323M","324M","325M","326M",
+        "327M","328M","329M","330M","331M","332M","333M",
+        "334M","335M","336M","337M","338M","339M","340M",
+        "341M","342M","343M","344M","345M","346M","347M",
+        "348M","349M","350M","351M","352M","353M","354M",
+        "355M","356M","357M","358M","359M","360M","361M",
+        "362M","363M","364M","365M","367M"
+      ],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Chuo",
+        "odpt.Railway:JR-East.ChuoMain"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["211系（長野地区）"],rejectAmbiguousPlan:true,
+      model:"211系（長野地区）",
+      pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -275,7 +338,11 @@
       model:"E353系",
       pngPath:"../images/列车/JR東日本/JR東日本_E353系.png"}
   ];
-  rows.forEach(function(row){Object.freeze(row.lineIds);Object.freeze(row);});
+  rows.forEach(function(row){
+    Object.freeze(row.lineIds);
+    if(row.publishedNumbers)Object.freeze(row.publishedNumbers);
+    Object.freeze(row);
+  });
   Object.freeze(rows);
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
@@ -294,6 +361,7 @@
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
+      if(row.publishedNumbers && row.publishedNumbers.indexOf(number)<0)continue;
       var format=row.numberFormat||"tail";
       var numberValue,suffix;
       if(format==="tail"&&regular){
@@ -367,6 +435,9 @@
             !idx.match(number,String(context&&context.calendarType||""),
               context&&context.serviceDate))continue;
       }
+      if(row.rejectAmbiguousPlan && context && context.vehiclePlan &&
+         Array.isArray(context.vehiclePlan.models) &&
+         context.vehiclePlan.models.length!==1)continue;
       if(row.allowedModelLabels && context){
         var observed=String(context.realtimeVehicleType ||
           context.realtimeDerivedVehicleType || "").trim();
@@ -387,6 +458,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-yamanote-e235-0-v16",match:match
+    version:"20261104-chuo-main-local-m-v17",match:match
   });
 })(window);
