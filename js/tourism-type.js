@@ -28,7 +28,10 @@
       || value === "shopping_mall" || value === "shopping_mall_store"
       || value === "shopping-center" || value === "shopping_center") return "spot";
     if (value === "sight" || value === "sights" || value === "landmark") return "spot";
-    if (value === "store" || value === "restaurant" || value === "gourmet") return "shop";
+    // 不仅餐饮：饮品、零售、娱乐及体验类的显式分类均属于商家。
+    if (value === "store" || value === "gourmet" || SHOP_TAGS[value]
+      || value === "experience" || value === "entertainment"
+      || value === "arcade" || value === "amusement" || value === "leisure") return "shop";
     return VALID_TYPES[value] ? value : "";
   }
 
