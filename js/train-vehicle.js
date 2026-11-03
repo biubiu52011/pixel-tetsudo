@@ -3803,6 +3803,13 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     // Utsunomiya or Takasaki by its train number alone.
     if (!route || !Array.isArray(route.n) || route.n.length !== 1 ||
         !Array.isArray(route.s)) return null;
+    // E/Y cross-corridor references are ordinary/rapid services, not a
+    // sufficient vehicle model for arbitrary special trains sharing a number.
+    // A different published train type is a hard mismatch, not evidence to
+    // override an unresolved physical carset.
+    var serviceType = String(p.trainType || "").split(/[:.]/).pop();
+    if (serviceType && !/^(?:Local|Rapid|SpecialRapid|CommuterRapid|CommuterSpecialRapid)$/.test(serviceType))
+      return null;
     var railwayByLine = {
       ShonanShinjuku: "odpt.Railway:JR-East.ShonanShinjuku",
       UenoTokyo: "odpt.Railway:JR-East.UenoTokyo",
