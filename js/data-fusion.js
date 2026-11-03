@@ -861,7 +861,14 @@
           var _stName = (p.stationId || '').split('.').pop();
           var _tlIdx = (_ownStationIndex.has(_stName) ? _ownStationIndex.get(_stName) : -1);
           if (_tlIdx >= 0) {
-            var _copy = Object.assign({}, p, { stationIndex: _tlIdx, fusionLineId: _tlLine });
+            var _copy = Object.assign({}, p, {
+              stationIndex: _tlIdx,
+              fusionLineId: _tlLine,
+              // This is a position at one verified shared boundary station,
+              // not a new realtime record on the host railway. Retain the
+              // SOURCE line and mark the projection for scoped PNG checks.
+              fusionRole: "through-boundary"
+            });
             _rtPositions.push(_copy);
             if (_pid) _existingIds[_pid] = true;
           }
