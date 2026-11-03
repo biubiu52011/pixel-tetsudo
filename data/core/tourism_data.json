@@ -738,15 +738,21 @@
    "menu": [
     {
      "item": "世界最大級のアニメストア",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アニメイト 池袋本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "全9階建て",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アニメイト 池袋本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "限定グッズは早めに",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アニメイト 池袋本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -821,15 +827,21 @@
    "menu": [
     {
      "item": "サンシャインシティ脇",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/乙女ロード (Otome Road).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "女性向けアニメショップが集結",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/乙女ロード (Otome Road).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "執事喫茶もあり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/乙女ロード (Otome Road).jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -1132,15 +1144,21 @@
    "menu": [
     {
      "item": "駅直結",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bivi 南千住.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "飲食店が充実",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bivi 南千住.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "生活雑貨も買える",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bivi 南千住.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -1754,15 +1772,21 @@
     },
     {
      "item": "百年老舗のうなぎ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/尾花（Obana）うなぎ料理.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日本庭園が美しい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/尾花（Obana）うなぎ料理.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "予約推奨",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/尾花（Obana）うなぎ料理.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -2596,15 +2620,21 @@
    "menu": [
     {
      "item": "限定グッズは売り切れ注意",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ポケモンセンター MEGA TOKYO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "サンシャインシティと併せて訪問",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ポケモンセンター MEGA TOKYO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "土日は混雑しやすい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ポケモンセンター MEGA TOKYO.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -2983,15 +3013,21 @@
    "menu": [
     {
      "item": "24時間営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ドン・キホーテ 池袋東口駅前店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "免税対応",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ドン・キホーテ 池袋東口駅前店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "お土産調達に便利",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ドン・キホーテ 池袋東口駅前店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -3131,7 +3167,9 @@
    "menu": [
     {
      "item": "東武伊勢崎線「西新井駅」から 徒歩3分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ギャラクシティ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -3193,7 +3231,9 @@
    "menu": [
     {
      "item": "東武伊勢崎線「五反野駅」から",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/大谷田温泉明神の湯.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -8142,15 +8182,21 @@
    "menu": [
     {
      "item": "マグロ競り見学は要予約",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/豊洲市場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "海鮮丼が絶品",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/豊洲市場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "場内の清掃が行き届く",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/豊洲市場.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -9526,15 +9572,21 @@
    "menu": [
     {
      "item": "朝早い時間帯が新鮮な食材でおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/築地場外市場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "玉子焼きの食べ歩きが定番",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/築地場外市場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日曜・祝日は休みの店が多い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/築地場外市場.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -9685,15 +9737,21 @@
    "menu": [
     {
      "item": "昭和レトロな街並みは写真映えする",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/新宿ゴールデン街.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "一部の店は紹介制のため事前リサーチを",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/新宿ゴールデン街.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "路地の雰囲気を味わうだけでも楽しい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/新宿ゴールデン街.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -10913,15 +10971,21 @@
    "menu": [
     {
      "item": "食品サンプルを買える専門店あり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/かっぱ橋道具街.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "合羽橋本通りは日曜日が歩行者天国",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/かっぱ橋道具街.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "浅草寺から徒歩10分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/かっぱ橋道具街.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -10997,15 +11061,21 @@
    "menu": [
     {
      "item": "夏の神田古本まつりが有名",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神保町古書店街.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名物カレー店（ボンディ・キッチン南海など）",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神保町古書店街.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "三省堂書店本店も見どころ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神保町古書店街.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -11080,15 +11150,21 @@
    "menu": [
     {
      "item": "大晦日の買い出し風景が有名",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アメヤ横丁.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ドライフルーツとナッツの量り売り",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アメヤ横丁.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "上野駅・御徒町駅からすぐ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アメヤ横丁.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -11539,15 +11615,21 @@
    "menu": [
     {
      "item": "スイーツフォレストで食べ歩き",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/自由が丘.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "路地裏に個性派ショップが点在",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/自由が丘.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "駅前の「熊野神社」も穴場",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/自由が丘.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -11623,15 +11705,21 @@
    "menu": [
     {
      "item": "石畳の路地（兵庫横丁・かくれんぼ横丁）",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神楽坂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "毘沙門天（善国寺）へ参拝",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神楽坂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜の大人の散策がおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神楽坂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -11706,15 +11794,21 @@
    "menu": [
     {
      "item": "世界で最も美しい書店20選に選出",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/代官山蔦屋書店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "犬連れOKのグリーンエリア",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/代官山蔦屋書店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜遅くまで営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/代官山蔦屋書店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -11798,15 +11892,21 @@
     },
     {
      "item": "あんぱん発祥の店（1869年創業）",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀座木村家本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名物の酒種あんぱん",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀座木村家本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "2階の喫茶室でモーニングも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀座木村家本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -11905,15 +12005,21 @@
     },
     {
      "item": "創業1884年の老舗",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神田まつや.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "せいろと天ぷらの名店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神田まつや.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "昼時は行列必至",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神田まつや.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12013,15 +12119,21 @@
     },
     {
      "item": "手焼きたい焼き体験が人気（要予約）",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草たい焼き工房 求楽.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "あんこたっぷりの一丁焼き",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草たい焼き工房 求楽.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "テイクアウト中心",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草たい焼き工房 求楽.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12115,15 +12227,21 @@
     },
     {
      "item": "ふわとろオムライスが名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/めぐろ三ツ星食堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "現金のみ（CASH ONLY）",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/めぐろ三ツ星食堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチは早めの来店を",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/めぐろ三ツ星食堂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12296,15 +12414,21 @@
    "menu": [
     {
      "item": "ネクタイなどは糸をほどいてからシミ抜きすることも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/REJOUIR（レジュイール）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ヨーロッパ修行の「服のお医者さん」。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/REJOUIR（レジュイール）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "品物ごとに料金が変わる無料表制。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/REJOUIR（レジュイール）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12392,15 +12516,21 @@
     },
     {
      "item": "目の前のツリーハウスは登って記念写真。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Les Grands Arbres(レ・グラン・ザルブル).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1・2階は花屋、3階・屋上がカフェ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Les Grands Arbres(レ・グラン・ザルブル).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜カフェや花の買い物にも使える癒し空間。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Les Grands Arbres(レ・グラン・ザルブル).jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12662,15 +12792,21 @@
     },
     {
      "item": "注文ごとに焼き上げるふわジューシーな一品。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/榎本ハンバーグ研究所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "最高の瞬間を味わうためお急ぎ客はお断り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/榎本ハンバーグ研究所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "西ケ原駅すぐ、ランチが狙い目。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/榎本ハンバーグ研究所.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12761,15 +12897,21 @@
    "menu": [
     {
      "item": "ミシュランビブグルマン掲載の実力店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フランス料理 でぐち弐番.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "駅0分で本格フレンチがリーズナブル。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フランス料理 でぐち弐番.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "記念日やシーズンイベントにも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フランス料理 でぐち弐番.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -12849,15 +12991,21 @@
    "menu": [
     {
      "item": "宝石のようなポップな飴がずらり。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パパブブレ 中野店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "目の前で職人が飴を切る実演。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パパブブレ 中野店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "贈り物やお土産にも最適。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パパブブレ 中野店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13016,15 +13164,21 @@
    "menu": [
     {
      "item": "世界三大ピアノの一つを自由に試弾。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ベーゼンドルファー東京.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "熟練職人の手作業、年250台の希少品。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ベーゼンドルファー東京.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "予約すればスタジオ利用も可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ベーゼンドルファー東京.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13103,15 +13257,21 @@
    "menu": [
     {
      "item": "見た目に反してスッキリ飲みやすい小松菜ハイボール。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フナバシ屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "半年かけて完成した地元密着の一杯。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フナバシ屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "西船橋駅すぐ、夜の飲み会に。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フナバシ屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13272,15 +13432,21 @@
    "menu": [
     {
      "item": "神輿作りの全工程を自社で行う稀有な工房。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中台製作所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "これまで2千基の製作・修理実績。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中台製作所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "職人の技を間近で見学できる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中台製作所.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13452,15 +13618,21 @@
     },
     {
      "item": "1日1300個売れる名物どら焼き。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/木挽町よしや.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1個からオリジナル焼印を製作可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/木挽町よしや.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "一枚皮で餡を挟む珍しい製法。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/木挽町よしや.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13637,15 +13809,21 @@
    "menu": [
     {
      "item": "1921年創業、理化学ガラスの老舗。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/HARIOランプワークファクトリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "手加工でしか出せないガラスアクセサリー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/HARIOランプワークファクトリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "小伝馬町駅すぐ、江戸切子の街散策に。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/HARIOランプワークファクトリー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13808,15 +13986,21 @@
    "menu": [
     {
      "item": "図書館の本をカフェに持ち込みOK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日比谷図書文化館.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "三角の近代建築外観は必見。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日比谷図書文化館.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "都会の喧騒を離れたコーヒー読書。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日比谷図書文化館.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -13908,15 +14092,21 @@
     },
     {
      "item": "50年以上愛される白いモンブラン。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/如水会館 カフェ&パブ マーキュリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "裏ごし栗たっぷり、口どけなめらか。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/如水会館 カフェ&パブ マーキュリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "歴史ある会館でいただく贅沢なひととき。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/如水会館 カフェ&パブ マーキュリー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14093,15 +14283,21 @@
    "menu": [
     {
      "item": "2～3時間でオリジナルランプが完成。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ZAKUROらんぷ家.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "灯りをつけた瞬間の感動は格別。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ZAKUROらんぷ家.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "空きがあれば当日体験も可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ZAKUROらんぷ家.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14181,15 +14377,21 @@
    "menu": [
     {
      "item": "卵・カツ・コロッケ・フルーツまで種類豊富。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ポポー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "売り切れ次第終了、早起きが必須。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ポポー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ぎゅうぎゅう具のサンドイッチは圧巻。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ポポー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14268,15 +14470,21 @@
    "menu": [
     {
      "item": "初心者も大歓迎、1回で作る体験レッスン。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Butterfly dogcandy（バタフライ ドッグキャンディ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "超小型犬から大型犬までパターン完備。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Butterfly dogcandy（バタフライ ドッグキャンディ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "愛犬にぴったりの一着を手作り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Butterfly dogcandy（バタフライ ドッグキャンディ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14436,15 +14644,21 @@
    "menu": [
     {
      "item": "樹齢1000年の古代檜風呂で柔らかなお湯。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日の出湯.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "業界初・炭酸シャワー完備。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日の出湯.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "牧場直送牛乳（￥250）で仕上げる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日の出湯.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14605,15 +14819,21 @@
    "menu": [
     {
      "item": "天然杉の白木がご飯の水分を程よく吸収。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/柴田慶信商店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "冷めても美味しい曲げわっぱ弁当。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/柴田慶信商店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "伝統的工芸品指定の逸品。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/柴田慶信商店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14692,15 +14912,21 @@
    "menu": [
     {
      "item": "和光市産野菜の「ぴくる酢」が名物。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/駅前商店ひまわり.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "イチゴ・ブルーベリーのカステラも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/駅前商店ひまわり.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "和光土産はここで揃う。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/駅前商店ひまわり.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14780,15 +15006,21 @@
    "menu": [
     {
      "item": "まるでドールハウスのような店内。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/NOE CAFE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "シカゴ・ロンドン・パリの逸品が並ぶ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/NOE CAFE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "撮影OK、フォトジェニックな時間。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/NOE CAFE.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14867,15 +15099,21 @@
    "menu": [
     {
      "item": "「個人」を意味するイシュタ・ヨガ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/YOGA ME！.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自分の体に合ったヨガが見つかる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/YOGA ME！.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "今の自分と向き合う時間に。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/YOGA ME！.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -14966,15 +15204,21 @@
     },
     {
      "item": "鹿・熊・ワニまで世界の獣肉がずらり。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/獣肉酒家 米とサーカス.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "味は食べてからのお楽しみ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/獣肉酒家 米とサーカス.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "カンガルーは低糖質で美容・ダイエット向き。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/獣肉酒家 米とサーカス.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15071,15 +15315,21 @@
    "menu": [
     {
      "item": "先生とのつながりが国際交流の第一歩。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/高田馬場ミャンマー語教室.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "アジア文化にグッと近づける。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/高田馬場ミャンマー語教室.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ビザ免除で注目のミャンマー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/高田馬場ミャンマー語教室.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15238,15 +15488,21 @@
    "menu": [
     {
      "item": "世界初・中でカラオケができる観覧車。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京ドームシティアトラクションズ 「ビッグ・オー」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜は夜景の中で熱唱も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京ドームシティアトラクションズ 「ビッグ・オー」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1周15分、絶景を見下ろして開放感。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京ドームシティアトラクションズ 「ビッグ・オー」.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15493,15 +15749,21 @@
    "menu": [
     {
      "item": "一人でも試写室を貸し切れる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/マツダ映画社.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "弁士による無声映画鑑賞会を各地で。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/マツダ映画社.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "6,000巻におよぶ古典映画ライブラリー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/マツダ映画社.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15592,15 +15854,21 @@
     },
     {
      "item": "試食しながら自分好みを選べる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京スパイスハウス.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "世界各国のスパイスが博物館陳列。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京スパイスハウス.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "カレー作りの幅がぐっと広がる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京スパイスハウス.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15698,15 +15966,21 @@
    "menu": [
     {
      "item": "イカそっくり寿司はナタデココと大葉。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/米農家の店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "いくらそっくりはタピオカの醤油漬け。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/米農家の店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "栄養価の高いスペルト小麦の麺も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/米農家の店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15785,15 +16059,21 @@
    "menu": [
     {
      "item": "古本を見に行くついでに占ってもらえる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JUNGLE BOOKS.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "30分以内なら何件でも相談OK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JUNGLE BOOKS.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "入りやすい古書店スタイル。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JUNGLE BOOKS.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15873,15 +16153,21 @@
    "menu": [
     {
      "item": "一見雑貨屋、実はおしゃれな釣具店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/10minutes（テンミニッツ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "カラフルなルアーは眺めているだけで楽しい。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/10minutes（テンミニッツ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "釣りウェアやバッグは普段使いもOK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/10minutes（テンミニッツ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -15960,15 +16246,21 @@
    "menu": [
     {
      "item": "看板「ハムユイバーグ」は予約必須。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/SOUTH LAB 南方（サウスラボ みなかた）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "広東・潮州に東南アジアも融合。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/SOUTH LAB 南方（サウスラボ みなかた）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "香港の食を知る写真家がプロデュース。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/SOUTH LAB 南方（サウスラボ みなかた）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16129,15 +16421,21 @@
    "menu": [
     {
      "item": "約1000種類のオリジナルハンガーが並ぶ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Balmy Cafe （バルミーカフェ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ニット専用など機能的な逸品も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Balmy Cafe （バルミーカフェ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1本300円～から購入OK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Balmy Cafe （バルミーカフェ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16216,15 +16514,21 @@
    "menu": [
     {
      "item": "プロが好みを診断して豆を提案。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/PostCoffee（ポストコーヒー）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "淹れ方レクチャーも受けられる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/PostCoffee（ポストコーヒー）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "冷めても変化する風味を楽しむ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/PostCoffee（ポストコーヒー）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16315,15 +16619,21 @@
     },
     {
      "item": "北インドとは別物の南インド料理。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/スパイスマジック カルカッタ南口店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "パリパリ巨大ドーサプレートが一番人気。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/スパイスマジック カルカッタ南口店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "豆と野菜のカレー「サンバル」を味わって。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/スパイスマジック カルカッタ南口店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16450,15 +16760,21 @@
     },
     {
      "item": "10銭ハヤシライスや3銭コロッケ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草聚楽.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日本独自の洋食\"YOSHOKU\"を堪能。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草聚楽.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "外国人観光客にも人気の浅草グルメ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草聚楽.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16573,15 +16889,21 @@
    "menu": [
     {
      "item": "世界に一足だけのスニーカー作り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/White atelier BY CONVERSE 原宿店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "チャーム選びやお絵かきに夢中。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/White atelier BY CONVERSE 原宿店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夢中になってあっという間の時間。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/White atelier BY CONVERSE 原宿店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16673,15 +16995,21 @@
     },
     {
      "item": "鉄板焼13年の料理人が生んだ一杯。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麺昇 神の手.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "目の前で大きな炎が燃えるフランベ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麺昇 神の手.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "痺れる辛味噌スープがクセになる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麺昇 神の手.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16779,15 +17107,21 @@
    "menu": [
     {
      "item": "60分以内に完食でジャンボ餃子無料。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神楽坂飯店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "何人かでシェアして楽しむのもOK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神楽坂飯店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "一升チャーハンなど大盛りメニューも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/神楽坂飯店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16866,15 +17200,21 @@
    "menu": [
     {
      "item": "藝大関係作家の作品を購入できる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/藝大アートプラザ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "企画展の作品はその場で購入可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/藝大アートプラザ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "上野公園散策の合間にアートを。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/藝大アートプラザ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -16954,15 +17294,21 @@
    "menu": [
     {
      "item": "地下に広がる中世ヨーロッパの世界。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/古城.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "オーダーメイドの大きなステンドグラス。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/古城.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名物ミックスサンドをゆったり味わう。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/古城.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17042,15 +17388,21 @@
    "menu": [
     {
      "item": "生演奏とサンバの距離が近い。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Saci Pereré.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "東京にいながらブラジル旅行気分。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Saci Pereré.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ライブ日程はHPでチェック。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Saci Pereré.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17230,15 +17582,21 @@
     },
     {
      "item": "絵本から飛び出したようなかわいいパン。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/gonno bakery market.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ベーコンエピなどおつまみパンも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/gonno bakery market.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "TVCM出演のメガネ食パンを要チェック。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/gonno bakery market.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17342,15 +17700,21 @@
    "menu": [
     {
      "item": "いちご色の「コリコの町」が広がる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/魔法の文学館.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "約16,000冊の児童書が自由に読める。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/魔法の文学館.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "最上階カフェ・キキのいちご色クリームソーダ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/魔法の文学館.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17450,15 +17814,21 @@
     },
     {
      "item": "箸で食べる和魂洋才のビフテキ丼。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/にっぽんの洋食 赤坂 津つ井.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日本の調味料で仕上げる\"母の味\"。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/にっぽんの洋食 赤坂 津つ井.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1950年創業の老舗の看板料理。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/にっぽんの洋食 赤坂 津つ井.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17573,15 +17943,21 @@
     },
     {
      "item": "乱切り麺に黒胡椒が絡む革命つけそば。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/SOBA CAFE IKEMORI 赤坂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "そば粉を贅沢にふった「そばソフト」も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/SOBA CAFE IKEMORI 赤坂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "そばの常識が覆る一杯。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/SOBA CAFE IKEMORI 赤坂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17758,15 +18134,21 @@
     },
     {
      "item": "バリスタに豆や淹れ方を質問できる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BLUE BOTTLE COFFEE 清澄白河ロースタリー&カフェ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "隣接のロースタリーで焙煎を見学",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BLUE BOTTLE COFFEE 清澄白河ロースタリー&カフェ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "清澄白河はコーヒー店巡りに最適",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BLUE BOTTLE COFFEE 清澄白河ロースタリー&カフェ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17864,15 +18246,21 @@
     },
     {
      "item": "テイスティングルームで飲み比べ可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/清澄白河フジマル醸造所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自家醸造ワインとイタリアンのペアリング",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/清澄白河フジマル醸造所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "平日はディナー中心の営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/清澄白河フジマル醸造所.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -17965,15 +18353,21 @@
    "menu": [
     {
      "item": "精肉コーナーが目玉・珍しい肉がずらり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日進ワールドデリカテッセン.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "世界の輸入菓子・酒・野菜が豊富",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日進ワールドデリカテッセン.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "外国人客が約7割という国際的な店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日進ワールドデリカテッセン.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18048,15 +18442,21 @@
    "menu": [
     {
      "item": "芋の品種とカットを選べる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AND THE FRIET.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自家製ディップやトッピング豊富",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AND THE FRIET.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "パッケージもおしゃれで写真映え",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AND THE FRIET.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18142,15 +18542,21 @@
     },
     {
      "item": "シェフは中国東北で修行した餃子の匠",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/亜細亜割烹 蓮月.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "カリッモチッの手作り餃子が名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/亜細亜割烹 蓮月.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "立地でなく味で勝負する店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/亜細亜割烹 蓮月.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18320,15 +18726,21 @@
    "menu": [
     {
      "item": "事前電話予約と書類提出が必要",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/国立印刷局 東京工場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大きな印刷機でお札が刷られる様子は迫力",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/国立印刷局 東京工場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "偽造防止技術も学べる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/国立印刷局 東京工場.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18489,15 +18901,21 @@
     },
     {
      "item": "名物は8段重ねソフトクリーム490円",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/デイリーチコ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "味はおまかせの8種類",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/デイリーチコ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "長さを測りたくなるフォトジェニックさ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/デイリーチコ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18598,15 +19016,21 @@
     },
     {
      "item": "常時5種類の自家製地ビールを飲み比べ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中野ビール工房.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ビールもおつまみも全て500円均一",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中野ビール工房.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "季節限定ビールも狙い目",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中野ビール工房.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18704,15 +19128,21 @@
     },
     {
      "item": "最大10kgの大食いカレーに挑戦可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゴールドカレー 中野坂上店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "60分で完食で賞金10万円",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゴールドカレー 中野坂上店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "金沢カレーの濃厚な味わい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゴールドカレー 中野坂上店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -18804,15 +19234,21 @@
    "menu": [
     {
      "item": "西船橋産ニンジンの饅頭が名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/梅翁総本舗.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "小松菜を使った蒸し菓子も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/梅翁総本舗.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "創業80年の手作り和菓子を土産に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/梅翁総本舗.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19125,15 +19561,21 @@
     },
     {
      "item": "名物は栄養満点のタンシチュー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀之塔.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "歌舞伎役者ゆかりの店として知られる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀之塔.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "東銀座・歌舞伎座近くの老舗",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀之塔.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19226,15 +19668,21 @@
    "menu": [
     {
      "item": "お香ワークショップは予約制・約90分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/香源（こうげん）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1階には約5000種のお香を販売",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/香源（こうげん）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "友人同士での体験もおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/香源（こうげん）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19309,15 +19757,21 @@
    "menu": [
     {
      "item": "3000種の和紙が壁一面に並ぶ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小津和紙.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "手漉き・機械漉きで書き心地が段違い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小津和紙.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "店の人が紙の選び方を教えてくれる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小津和紙.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19410,15 +19864,21 @@
     },
     {
      "item": "明治創業150年のすき焼きの味",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和牛すき焼き 伊勢重.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "もう一つの名物・牛佃煮は土産に人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和牛すき焼き 伊勢重.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "佃煮は9:30から店頭販売",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和牛すき焼き 伊勢重.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19754,15 +20214,21 @@
     },
     {
      "item": "1日200～300個売れる妖怪いちご大福",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/江戸うさぎ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "イチゴの舌がのぞくキャラ和菓子",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/江戸うさぎ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "フォトジェニックで土産にも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/江戸うさぎ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19854,15 +20320,21 @@
    "menu": [
     {
      "item": "初心者でも電動ろくろを使える",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/美火土陶椀（みかど とうわん）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "作った器に名前や絵付けも可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/美火土陶椀（みかど とうわん）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "焼き上がりは約2週間後",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/美火土陶椀（みかど とうわん）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -19948,15 +20420,21 @@
     },
     {
      "item": "見た目が可愛い猫むすびが名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/黒猫舎（くろねこしゃ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "具は猫の大好物・鮭",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/黒猫舎（くろねこしゃ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "レトロな雰囲気の純喫茶",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/黒猫舎（くろねこしゃ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20123,15 +20601,21 @@
    "menu": [
     {
      "item": "店先の巨大そろばんが目印",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/山本そろばん店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "2メートル近い139桁そろばんも展示",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/山本そろばん店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "お土産用のミニそろばんも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/山本そろばん店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20205,15 +20689,21 @@
    "menu": [
     {
      "item": "後ろポケットに入れやすい財布が人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/mic.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "2003年グッドデザイン賞受賞",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/mic.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "機能美を追求した革製品",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/mic.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20299,15 +20789,21 @@
     },
     {
      "item": "老舗パン屋ペリカン直営のカフェ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ペリカンカフェ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名物は厚切り食パンの炭焼きトースト",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ペリカンカフェ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "午前中に売り切れる日もある早めの時間がおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ペリカンカフェ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20403,15 +20899,21 @@
     },
     {
      "item": "100羽以上の鳥と放鳥ルームで触れ合える",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/鳥のいるカフェ 浅草店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "服を汚さないポンチョ無料貸出",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/鳥のいるカフェ 浅草店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "気に入れば連れて帰れる鳥も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/鳥のいるカフェ 浅草店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20566,15 +21068,21 @@
    "menu": [
     {
      "item": "名物はきめ細かいロールケーキ「和光ロール」",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/365 Anniversary.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "記念日にはメッセージ入り特注ケーキ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/365 Anniversary.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "仕事帰りの手土産にも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/365 Anniversary.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20661,15 +21169,21 @@
     },
     {
      "item": "珍しいクラシックレコードが楽しめる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/音楽喫茶アカシア.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "俳句・英会話など曜日替わり教室",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/音楽喫茶アカシア.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "単発参加も可能で新しい趣味探しに",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/音楽喫茶アカシア.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20769,15 +21283,21 @@
     },
     {
      "item": "メニューはラーメン・塩・つけ麺のみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/べんてん.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "営業は11時～14時半の3時間半のみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/べんてん.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "行列必至・スープ切れで早仕舞い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/べんてん.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20863,15 +21383,21 @@
    "menu": [
     {
      "item": "80～90年代のレトロゲームが現役稼働",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゲーセンミカド.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "世界中の強豪ゲーマーが集まる聖地",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゲーセンミカド.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "高田馬場駅すぐの好立地",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゲーセンミカド.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -20957,15 +21483,21 @@
     },
     {
      "item": "名物は卵黄がのったローストビーフ丼",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/レッドロック.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "開店前から行列ができる人気店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/レッドロック.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ボリューム満点で写真映え",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/レッドロック.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21070,15 +21602,21 @@
     },
     {
      "item": "創業100年の寒天専門店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/寒天工房 讃岐屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大きめ寒天・細めところてんがこだわり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/寒天工房 讃岐屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "縁側に座って街行く人を眺める",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/寒天工房 讃岐屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21170,15 +21708,21 @@
    "menu": [
     {
      "item": "レーザー網を避け暗号を解く10分ミッション",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/InSPYre（インスパイヤ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "頭も体力も使うリアル潜入ゲーム",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/InSPYre（インスパイヤ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "新宿駅から徒歩5分の好立地",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/InSPYre（インスパイヤ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21340,15 +21884,21 @@
     },
     {
      "item": "全国丼グランプリ5年連続金賞の札幌丼",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/札幌軒.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "甘辛い肉と紅生姜の相性抜群",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/札幌軒.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "茗荷谷駅すぐの立地",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/札幌軒.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21452,15 +22002,21 @@
     },
     {
      "item": "大正12年の質屋蔵を改装した店内",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶 蔵.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "暖かなオレンジの光が心地よい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶 蔵.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ケーキ・ランチ・コーヒーがそろう",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶 蔵.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21552,15 +22108,21 @@
    "menu": [
     {
      "item": "賞味期限1時間の綾瀬モンブランが名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/patisserie emplir（パティスリー アンプリル）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "注文後に絞られるクリームのバランス",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/patisserie emplir（パティスリー アンプリル）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "赤いドアが目印のかわいい店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/patisserie emplir（パティスリー アンプリル）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21647,15 +22209,21 @@
     },
     {
      "item": "36種のスパイスを約140時間煮込む",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/欧風カレー&シチュー専門店 トマト.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "旨み凝縮のコク深い欧風カレー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/欧風カレー&シチュー専門店 トマト.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチ・ディナーとも売切れ次第終了",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/欧風カレー&シチュー専門店 トマト.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21747,15 +22315,21 @@
    "menu": [
     {
      "item": "住宅街に突如現れるミッションクリア型",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/オバケン シーズン５ 「畏怖 咽び家」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "有名遊園地のお化け屋敷を手がける演出",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/オバケン シーズン５ 「畏怖 咽び家」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "集合場所の住所は当日のお楽しみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/オバケン シーズン５ 「畏怖 咽び家」.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21830,15 +22404,21 @@
    "menu": [
     {
      "item": "熊谷守一美術館に併設のカフェ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Café Kaya.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "画家の次女が手びねりした器でコーヒー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Café Kaya.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "コーヒーと焼き菓子のみの静かな空間",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Café Kaya.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21912,15 +22492,21 @@
    "menu": [
     {
      "item": "ビンテージから初心者向けまで勢揃い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ウクレレ・マニア.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "卸直営で比較的リーズナブル",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ウクレレ・マニア.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "HPの合い言葉でハワイアンコーヒー無料",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ウクレレ・マニア.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -21995,15 +22581,21 @@
    "menu": [
     {
      "item": "国産Tシャツの老舗メーカー直営",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/久米繊維工業ファクトリーショップ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "デコパーツを選んで世界に一枚のTシャツ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/久米繊維工業ファクトリーショップ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ワークショップは事前予約制",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/久米繊維工業ファクトリーショップ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22077,15 +22669,21 @@
    "menu": [
     {
      "item": "初心者から本格派まで体験可能",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/somenova（ソメノバ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "一番人気はうずまき模様のタイダイ染め",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/somenova（ソメノバ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "出来上がりは広げる瞬間までのお楽しみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/somenova（ソメノバ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22159,15 +22757,21 @@
    "menu": [
     {
      "item": "ロンドン本店に次ぐ世界第2号店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LABOUR AND WAIT TOKYO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "完成度が高く機能的な生活道具",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LABOUR AND WAIT TOKYO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ブラシだけで20種類以上という品揃え",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LABOUR AND WAIT TOKYO.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22241,15 +22845,21 @@
    "menu": [
     {
      "item": "世界の上質なテディベアが数千種類",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Dear Bear.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "100年ものの数十万円クマも展示",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Dear Bear.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "千円以下の手頃なクマやキーホルダーも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Dear Bear.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22324,15 +22934,21 @@
    "menu": [
     {
      "item": "ひよこ豆で作る甘い団子ブンディラドゥが人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/トウキョウミタイワラ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "店員もコックも全員インド人の本格派",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/トウキョウミタイワラ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "店内にはカフェも併設",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/トウキョウミタイワラ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22406,15 +23022,21 @@
    "menu": [
     {
      "item": "1932年創業の銭湯をフルリニューアル",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/黄金湯.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "番台バーでオリジナルペールエール",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/黄金湯.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "2階に宿泊施設も併設",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/黄金湯.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22488,15 +23110,21 @@
    "menu": [
     {
      "item": "完全個室制でこぶたをひとりじめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/pignic Cafe 代々木公園店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "人懐っこいこぶたが駆け寄ってくる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/pignic Cafe 代々木公園店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日本初のマイクロブタお散歩体験も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/pignic Cafe 代々木公園店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22570,15 +23198,21 @@
    "menu": [
     {
      "item": "テーブルの絵本を見て具材を選ぶ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/北海道めんこい くまちゃん温泉 渋谷本館.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "煮えるとくまちゃんが転がる演出",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/北海道めんこい くまちゃん温泉 渋谷本館.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "一人鍋専門店で一人でも安心",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/北海道めんこい くまちゃん温泉 渋谷本館.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22661,15 +23295,21 @@
     },
     {
      "item": "イクラ山盛りのマウント寿司が名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ほぼ上野オスシマチ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "アイスコーンにのったマグロユッケも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ほぼ上野オスシマチ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "見た目も味も楽しむ新感覚寿司",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ほぼ上野オスシマチ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22907,15 +23547,21 @@
    "menu": [
     {
      "item": "月替わりで世界の郷土料理が楽しめる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JICA地球ひろば 食のゾーン J's Cafe.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "TFTセットは1食20円が途上国へ寄付",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JICA地球ひろば 食のゾーン J's Cafe.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチ後はJICAの展示も見学可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JICA地球ひろば 食のゾーン J's Cafe.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -22989,15 +23635,21 @@
    "menu": [
     {
      "item": "保護猫たちと自由に暮らす空間",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/NECOT COFFEE HOUSE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "お膝の上に乗ってくる人懐っこい子も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/NECOT COFFEE HOUSE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ねこのお昼寝を眺めるだけで癒やされる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/NECOT COFFEE HOUSE.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23091,15 +23743,21 @@
     },
     {
      "item": "果物や野菜を使ったミクソロジーカクテル",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/The Mixology.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "遠心分離機など最新器材を導入",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/The Mixology.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "赤坂駅すぐの隠れ家的バー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/The Mixology.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23197,15 +23855,21 @@
    "menu": [
     {
      "item": "焼き生姜ロウリュと生姜水風呂",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/生姜サウナ 金の亀.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "水分補給の生姜水に生姜味噌汁まで",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/生姜サウナ 金の亀.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "発汗・血行促進したい人に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/生姜サウナ 金の亀.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23288,15 +23952,21 @@
     },
     {
      "item": "完全予約制・貸切専用なので事前に電話予約を",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/深川吉野屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "デッキから夜景を撮るなら三脚は軽量が便利",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/深川吉野屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "冬は防寒、夏は夕涼みにちょうどいい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/深川吉野屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23458,15 +24128,21 @@
    "menu": [
     {
      "item": "初心者は店員が丁寧に淹れ方を教えてくれる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Brew Parlor 3615.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "器具やカップは自分で選ぶ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Brew Parlor 3615.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "朝7時から開いている",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Brew Parlor 3615.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23541,15 +24217,21 @@
    "menu": [
     {
      "item": "初心者向け「組香」体験が人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麻布 香雅堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "体験詳細は店舗へ要問合せ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麻布 香雅堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "香道具や香木、お線香も購入可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麻布 香雅堂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23851,15 +24533,21 @@
    "menu": [
     {
      "item": "看板マドレーヌは川端康成も愛用",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フランス菓子CADOT.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "店内に直筆の推薦文が飾られる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フランス菓子CADOT.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "おみやげにも最適",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/フランス菓子CADOT.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -23936,15 +24624,21 @@
    "menu": [
     {
      "item": "蔵見学は平日11:00・14:00発・約40分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小山酒造.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名物は丸健水産の出汁で割る「出汁割」",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小山酒造.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "100年の町蔵を見学できる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小山酒造.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -24038,15 +24732,21 @@
     },
     {
      "item": "数量限定「中落ち」は早めに",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/マグロマート.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "赤身・トロ・希少部位も揃う",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/マグロマート.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜がおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/マグロマート.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -24371,15 +25071,21 @@
    "menu": [
     {
      "item": "夕方から深夜までの営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Kakuya Coffee Stand.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "場所が変わることがあるので事前確認",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Kakuya Coffee Stand.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "こだわりの1種類を味わう",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Kakuya Coffee Stand.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -24453,15 +25159,21 @@
    "menu": [
     {
      "item": "豪快な看板が目印",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/福弘釣具店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "店主との釣り談義も楽しみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/福弘釣具店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者にも丁寧に教えてくれる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/福弘釣具店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -24694,15 +25406,21 @@
     },
     {
      "item": "妖精モチーフのカクテルがフォトジェニック",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Iron Fairies.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "地下の隠れ家的空間",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Iron Fairies.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "営業時間が遅くまで",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Iron Fairies.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -24809,15 +25527,21 @@
     },
     {
      "item": "全部かき混ぜて食べるのが作法",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ナイルレストラン.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "客の9割が注文する名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ナイルレストラン.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチが狙い目",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ナイルレストラン.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -24916,15 +25640,21 @@
    "menu": [
     {
      "item": "体験は約60分・要予約",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/江戸切子の店 華硝 日本橋店（はなしょう）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "完成したぐい呑は一生モノ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/江戸切子の店 華硝 日本橋店（はなしょう）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1名から予約可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/江戸切子の店 華硝 日本橋店（はなしょう）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25073,15 +25803,21 @@
    "menu": [
     {
      "item": "自転車持参で解放区間を走る",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パレスサイクリング.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日曜午前がねらい目",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パレスサイクリング.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "皇居と丸の内ビル街を一望",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パレスサイクリング.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25232,15 +25968,21 @@
    "menu": [
     {
      "item": "2Fの展示は1〜2ヶ月で入替",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/竹尾 見本帖本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "まるで美術館のような店内",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/竹尾 見本帖本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "紙そのものの手触りを楽しむ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/竹尾 見本帖本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25328,15 +26070,21 @@
     },
     {
      "item": "陳麻婆豆腐が不動の人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/赤坂四川飯店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "花椒の痺れる辛さが本格",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/赤坂四川飯店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜がゆっくり楽しめる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/赤坂四川飯店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25429,15 +26177,21 @@
    "menu": [
     {
      "item": "1人から受けられる体験レッスン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Cha Tea.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "チケット制で都合の良い日に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Cha Tea.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "紅茶歴史や道具選びも学べる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Cha Tea.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25511,15 +26265,21 @@
    "menu": [
     {
      "item": "ワックス原型から金属鋳造まで",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/creer ijima（クレエ・イジマ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "金やプラチナも選べる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/creer ijima（クレエ・イジマ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "所要0.5〜1時間と手軽",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/creer ijima（クレエ・イジマ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25593,15 +26353,21 @@
    "menu": [
     {
      "item": "留め金や内側も本物そのまま",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/バッグ工房 ヴィドゥルス.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "卒業後の記念保管にぴったり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/バッグ工房 ヴィドゥルス.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "思い出を手元に残せる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/バッグ工房 ヴィドゥルス.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25675,15 +26441,21 @@
    "menu": [
     {
      "item": "芸人の息遣いが聞こえる距離",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草リトルシアター.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "小学生は無料",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草リトルシアター.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "浅草散歩の途中で大笑い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/浅草リトルシアター.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25757,15 +26529,21 @@
    "menu": [
     {
      "item": "レギュラープランは手頃な価格",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きものレンタルwargo東京浅草店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "着物で浅草寺や仲見世へ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きものレンタルwargo東京浅草店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "事前予約がおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きものレンタルwargo東京浅草店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -25839,15 +26617,21 @@
    "menu": [
     {
      "item": "おからパンのモーニングが名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Sabö Asaichi(サボウアサイチ).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日替わりランチはSNSで確認",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Sabö Asaichi(サボウアサイチ).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "早朝から開いている",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Sabö Asaichi(サボウアサイチ).jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26003,15 +26787,21 @@
    "menu": [
     {
      "item": "初心者向け体験レッスンあり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京SOBOKU二胡スクール.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "すべての二胡の音色を聴き比べ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京SOBOKU二胡スクール.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "楽器選びの相談もしやすい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京SOBOKU二胡スクール.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26085,15 +26875,21 @@
    "menu": [
     {
      "item": "変わり種おにぎりを選ぶ楽しみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小島米店 成増店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名店の米で握られる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小島米店 成増店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "朝早くから購入可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/小島米店 成増店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26167,15 +26963,21 @@
    "menu": [
     {
      "item": "露天風呂から星空を",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゆ～ポッポ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "風呂上がりのクリームソーダも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゆ～ポッポ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "都内でも早いバリアフリー導入",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ゆ～ポッポ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26249,15 +27051,21 @@
    "menu": [
     {
      "item": "糖質制限スイーツが珍しく美味",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/CRIOLLO（クリオロ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "スリム・レアチーズ・フレーズが定番",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/CRIOLLO（クリオロ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "見た目も宝石のよう",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/CRIOLLO（クリオロ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26332,15 +27140,21 @@
    "menu": [
     {
      "item": "名作を二本立てで楽しむ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/早稲田松竹.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "学生復活プロジェクトの歴史あり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/早稲田松竹.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "リーズナブルな鑑賞料金",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/早稲田松竹.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26414,15 +27228,21 @@
    "menu": [
     {
      "item": "一品は一人ずつ作れる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アジアンクッキングスタジオ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "レッスンは1回ごとの申込み",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アジアンクッキングスタジオ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "盛り付け写真の後は試食タイム",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アジアンクッキングスタジオ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26502,15 +27322,21 @@
     },
     {
      "item": "カクテルショーは要予約",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Pia Cuore（ピアクオーレ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "味も折り紙付き",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Pia Cuore（ピアクオーレ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大人の夜のエンタメ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Pia Cuore（ピアクオーレ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26591,15 +27417,21 @@
    "menu": [
     {
      "item": "型紙と糊で立体感ある柄を",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/おかめ工房.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "沖縄モチーフ中心に自由に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/おかめ工房.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "水のきれいな落合の街",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/おかめ工房.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26685,15 +27517,21 @@
     },
     {
      "item": "明太子パン兄弟を食べ比べ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パン家のどん助.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "焼き上がり時間は看板で確認",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パン家のどん助.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "猫の手ごまあんぱんなど変わり種も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パン家のどん助.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26786,15 +27624,21 @@
    "menu": [
     {
      "item": "ぷるんぷるん卵のオムライス",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/レストランツムラ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ハンバーグやグラタンも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/レストランツムラ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "行列必至の人気店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/レストランツムラ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -26944,15 +27788,21 @@
    "menu": [
     {
      "item": "名前で味を想像して注文",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/さかづきBrewing.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ここだけの北千住産ビール",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/さかづきBrewing.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "昼から開く土日が狙い目",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/さかづきBrewing.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27034,15 +27884,21 @@
     },
     {
      "item": "一升パンは写真映え抜群",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アヤセベーカリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "パンボックスも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アヤセベーカリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "事前オーダーが必要",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アヤセベーカリー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27129,15 +27985,21 @@
    "menu": [
     {
      "item": "瓶詰めハチミツを見比べる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ラべイユ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "野菜やハーブ蜜源も豊富",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ラべイユ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "無添加アカシアサブレは手土産に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ラべイユ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27288,15 +28150,21 @@
    "menu": [
     {
      "item": "揚げたてサーターアンダギー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/chura＊chura.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "紅芋クリームなどトッピング可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/chura＊chura.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "シーサーのラテアート",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/chura＊chura.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27370,15 +28238,21 @@
    "menu": [
     {
      "item": "翌朝まで入れるオールナイト",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/押上温泉 大黒湯.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日替わり薬湯が楽しみ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/押上温泉 大黒湯.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "朝風呂で一日を始める",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/押上温泉 大黒湯.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27527,15 +28401,21 @@
    "menu": [
     {
      "item": "チーズキーマカレーが看板",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/MOKUBAZA（モクバザ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "開店前から行列",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/MOKUBAZA（モクバザ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "20時間以上かけて丁寧に仕込む",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/MOKUBAZA（モクバザ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27700,15 +28580,21 @@
     },
     {
      "item": "ダージリン・アッサムなど産地別",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/シャンティ紅茶.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "定番から季節限定まで",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/シャンティ紅茶.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "好みの一杯を見つける",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/シャンティ紅茶.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27794,15 +28680,21 @@
    "menu": [
     {
      "item": "キャンバスに柄を打ち込む",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/tufting studio KEKE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "カラフルな糸壁がフォトジェニック",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/tufting studio KEKE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "事前予約制",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/tufting studio KEKE.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27877,15 +28769,21 @@
    "menu": [
     {
      "item": "自分だけの音色を作る",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/篠原まるよし風鈴.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "鳴り口がギザギザの江戸風鈴",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/篠原まるよし風鈴.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "佐竹商店街の散策とセット",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/篠原まるよし風鈴.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -27959,15 +28857,21 @@
    "menu": [
     {
      "item": "LED光る壁はここだけ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/B-PUMP TOKYO 秋葉原.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者にはスタッフが丁寧に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/B-PUMP TOKYO 秋葉原.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "靴レンタル可",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/B-PUMP TOKYO 秋葉原.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28041,15 +28945,21 @@
    "menu": [
     {
      "item": "バチを持って音楽に合わせ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAIKO-LAB 青山.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "仕事帰りの参加も多い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAIKO-LAB 青山.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "頭も体もフル回転",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAIKO-LAB 青山.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28132,15 +29042,21 @@
     },
     {
      "item": "パンダシルエットのパフェ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パンダ茶房by銀座清月堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "店内はぬいぐるいだらけ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パンダ茶房by銀座清月堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "上野動物園帰りに立ち寄り",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パンダ茶房by銀座清月堂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28227,15 +29143,21 @@
    "menu": [
     {
      "item": "看板はチーズと唐辛子のエマダツィ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LASOLA Bhutan Restaurant.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "辛さ調節できるモモもあり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LASOLA Bhutan Restaurant.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "食後は体の芯から温まる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LASOLA Bhutan Restaurant.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28462,15 +29384,21 @@
    "menu": [
     {
      "item": "仕事終わりの19時開始",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Akasaka Zen Space.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大都会の中の静寂",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Akasaka Zen Space.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自分と向き合う時間",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Akasaka Zen Space.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28544,15 +29472,21 @@
    "menu": [
     {
      "item": "宝石のようなボンボンショコラ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar和ごころ赤坂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ノンアルコールメニューもあり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar和ごころ赤坂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初めてのバーにも安心",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar和ごころ赤坂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28626,15 +29560,21 @@
    "menu": [
     {
      "item": "食後は列車内のラウンジで一杯。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アタゴール.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチは早めの完売に注意。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アタゴール.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "訪問前の予約が安心。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アタゴール.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -28708,15 +29648,21 @@
    "menu": [
     {
      "item": "液だれしない醤油差し作り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/グラス・ラボ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "お子様でも参加OK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/グラス・ラボ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "力加減が難しい穴あけ体験。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/グラス・ラボ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29020,15 +29966,21 @@
    "menu": [
     {
      "item": "広尾で世界旅行気分の各国料理。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Thai Food Dining Shangri-La（タイ フード ダイニング シャングリ・ラ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチもディナーもOK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Thai Food Dining Shangri-La（タイ フード ダイニング シャングリ・ラ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大使館街に佇む一軒。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Thai Food Dining Shangri-La（タイ フード ダイニング シャングリ・ラ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29179,15 +30131,21 @@
    "menu": [
     {
      "item": "ほかほかの厚焼き玉子。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/王子扇屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "『王子の狐』に登場する味。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/王子扇屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "手土産にも喜ばれる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/王子扇屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29262,15 +30220,21 @@
    "menu": [
     {
      "item": "全国から仕入れた銘茶が並ぶ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/思月園.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "おいしい飲み方もレクチャー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/思月園.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自分好みの一杯を探そう。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/思月園.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29345,15 +30309,21 @@
    "menu": [
     {
      "item": "パクチー2kgのチャレンジメニュー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/タイ屋台999(カオ・カオ・カオ).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "4名以上から参加可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/タイ屋台999(カオ・カオ・カオ).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "完食でパクチー食べ放題特典。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/タイ屋台999(カオ・カオ・カオ).jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29427,15 +30397,21 @@
    "menu": [
     {
      "item": "カブトムシやクワガタが人気。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/むし社.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "蝶の標本はインテリアにも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/むし社.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者にも優しい店員。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/むし社.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29518,15 +30494,21 @@
     },
     {
      "item": "18種の薬用スパイスカレー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/コートロッジ 中野店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "スープ状のカレーをライスやナンで。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/コートロッジ 中野店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "現地風の〆はフライドライス。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/コートロッジ 中野店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29620,15 +30602,21 @@
     },
     {
      "item": "醤油・味噌・塩に次ぐ第四のラーメン。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麺屋あらき竃の番人外伝.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "スパイスの効いた一杯。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麺屋あらき竃の番人外伝.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "深夜まで営業。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/麺屋あらき竃の番人外伝.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29789,15 +30777,21 @@
    "menu": [
     {
      "item": "浦安でしか飲めない菱焼酎。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Le Chou （ル シュー）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "マイルドな口当たり。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Le Chou （ル シュー）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "駅近フレンチで味わう。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Le Chou （ル シュー）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -29872,15 +30866,21 @@
    "menu": [
     {
      "item": "クープ・デュ・モンド優勝シェフの店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BOULANGERIE Dudestin (ブーランジェリーデュデスタン).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "厨房が見える開放的な店内。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BOULANGERIE Dudestin (ブーランジェリーデュデスタン).jpg",
+     "coverRole": "shop"
     },
     {
      "item": "売り切れ次第閉店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BOULANGERIE Dudestin (ブーランジェリーデュデスタン).jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30034,15 +31034,21 @@
     },
     {
      "item": "ふわふわプルプルの卵。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶YOU.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "歌舞伎役者も通う名店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶YOU.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "行列必至の人気店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶YOU.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30123,15 +31129,21 @@
    "menu": [
     {
      "item": "完熟バナナのみ使用。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BANANA JUICE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "売り切れ次第閉店の幻の味。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BANANA JUICE.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "トッピングも自由に。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BANANA JUICE.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30213,15 +31225,21 @@
     },
     {
      "item": "白木のマトリョーシカを焼き絵付け。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/GINZA HAKKO 木の香（きのか）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "少人数制で初心者も安心。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/GINZA HAKKO 木の香（きのか）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "国内最大級の品揃え。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/GINZA HAKKO 木の香（きのか）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30323,15 +31341,21 @@
     },
     {
      "item": "創業明治36年のビーフカレー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日比谷松本楼.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "公園の中の優雅な店内。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日比谷松本楼.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "100年守られた味を。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/日比谷松本楼.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30498,15 +31522,21 @@
    "menu": [
     {
      "item": "紀元前から続く古典舞踊。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/みやびカタックダンスアカデミー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "リズムが脳を活性化。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/みやびカタックダンスアカデミー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者から本格派まで。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/みやびカタックダンスアカデミー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30581,15 +31611,21 @@
    "menu": [
     {
      "item": "老舗の香り文化を体験。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/山田松香木店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "匂袋・煉香作り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/山田松香木店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "香原料の説明を受けながら。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/山田松香木店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30663,15 +31699,21 @@
    "menu": [
     {
      "item": "ブレイズ・コーンロウ・ドレッド。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JAMBO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日本ヘアブレイディング協会認定。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JAMBO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初めてでも相談に乗ってくれる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/JAMBO.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30754,15 +31796,21 @@
     },
     {
      "item": "江戸伝統の木目金。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀座 尚呼（なおこ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "結婚・婚約指輪のオーダー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀座 尚呼（なおこ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "世界も注目の金属技法。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/銀座 尚呼（なおこ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -30928,15 +31976,21 @@
     },
     {
      "item": "出演者との距離が近い。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アミューズ カフェシアター.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "料理も出演者がサーブ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アミューズ カフェシアター.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ほぼ毎日公演。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アミューズ カフェシアター.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31017,15 +32071,21 @@
    "menu": [
     {
      "item": "台と鼻緒を選んでオーダー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/辻屋本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "106年続く専門店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/辻屋本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "職人が足に合わせて。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/辻屋本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31099,15 +32159,21 @@
    "menu": [
     {
      "item": "天ぷらの衣を作る体験。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/元祖食品サンプル屋 合羽橋店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "小学生から参加OK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/元祖食品サンプル屋 合羽橋店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "80年以上の技術。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/元祖食品サンプル屋 合羽橋店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31182,15 +32248,21 @@
    "menu": [
     {
      "item": "三社祭の袖振大豆。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ほていや 中塚商店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "常時45種類の豆菓子。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ほていや 中塚商店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "レトロな店先も必見。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ほていや 中塚商店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31340,15 +32412,21 @@
    "menu": [
     {
      "item": "20球200円で気軽に。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和光市バッティングセンター.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "昭和レトロな内装。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和光市バッティングセンター.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "仕事帰りのストレス発散に。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和光市バッティングセンター.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31422,15 +32500,21 @@
    "menu": [
     {
      "item": "動物性不使用のコクある味。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Lito rukka（リトルッカ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "オーガニック野菜。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Lito rukka（リトルッカ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "完全予約制。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Lito rukka（リトルッカ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31504,15 +32588,21 @@
    "menu": [
     {
      "item": "バク転や殺陣を習う。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/つばさ基地.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者でも安心。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/つばさ基地.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "子ども向けクラスも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/つばさ基地.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31586,15 +32676,21 @@
    "menu": [
     {
      "item": "貸靴完備で手ぶらでOK。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/シチズンプラザスケートリンク.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者向け教室も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/シチズンプラザスケートリンク.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "思い立ったらすぐ滑れる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/シチズンプラザスケートリンク.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31668,15 +32764,21 @@
    "menu": [
     {
      "item": "チリソースなど調味料が豊富。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Viet Shop（ベトショップ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ベトナムビールも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Viet Shop（ベトショップ）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "木曜は蒸し春巻き販売。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Viet Shop（ベトショップ）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31762,15 +32864,21 @@
     },
     {
      "item": "いりこのアンチョビチキン。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/プネウマカレー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "売り切れ次第閉店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/プネウマカレー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ユニークな店長のSNSも話題。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/プネウマカレー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31862,15 +32970,21 @@
    "menu": [
     {
      "item": "最高級・紀州南高梅A級のみ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/味覚庵.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "8種類を試食して選ぶ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/味覚庵.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "かつお梅や蜂蜜梅も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/味覚庵.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -31953,15 +33067,21 @@
     },
     {
      "item": "ラー油つけそば。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/なぜ蕎麦にラー油を入れるのか.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1000円以下で満腹。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/なぜ蕎麦にラー油を入れるのか.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "生卵やフライドガーリックをトッピング。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/なぜ蕎麦にラー油を入れるのか.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32349,15 +33469,21 @@
    "menu": [
     {
      "item": "50cmの手作りピザ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アキッチョ デシカ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "軒先でリアルオークション。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アキッチョ デシカ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "雨の日は狙い目。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/アキッチョ デシカ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32445,15 +33571,21 @@
     },
     {
      "item": "52種の味噌ダレ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/味噌一 高円寺本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "20円カンパでトッピング。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/味噌一 高円寺本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "収益の一部は寄付。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/味噌一 高円寺本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32564,15 +33696,21 @@
     },
     {
      "item": "加賀藩御用達の飴屋が前身。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/上川口屋（かみかわぐちや）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "13代目が守る駄菓子屋。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/上川口屋（かみかわぐちや）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "昔ながらの店構え。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/上川口屋（かみかわぐちや）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32675,15 +33813,21 @@
     },
     {
      "item": "えさやりタイムが人気。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ペンギンのいるBAR 池袋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "フードも充実。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ペンギンのいるBAR 池袋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "家族でも楽しめる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ペンギンのいるBAR 池袋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32763,15 +33907,21 @@
    "menu": [
     {
      "item": "食材はすべて現地直輸入。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/タイランド.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "メコンハイボールとどうぞ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/タイランド.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "リトルバンコクの草分け。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/タイランド.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32845,15 +33995,21 @@
    "menu": [
     {
      "item": "オリジナルの紙製品。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/PAPIER LABO. （パピエラボ.）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "名刺や招待状のオーダー可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/PAPIER LABO. （パピエラボ.）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "活版印刷の質感が魅力。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/PAPIER LABO. （パピエラボ.）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -32929,15 +34085,21 @@
    "menu": [
     {
      "item": "100種のお茶割り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/茶割.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "唐揚げも100種。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/茶割.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自分好みの組み合わせを発見。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/茶割.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33031,15 +34193,21 @@
     },
     {
      "item": "14種スパイスのスープ。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/卍力.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "五感で味わう店内。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/卍力.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "行列のできる人気店。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/卍力.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33149,15 +34317,21 @@
     },
     {
      "item": "醸造所オリジナルのクラフトビール。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BEER VISTA BREWRY.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "『Itsumono』が名物エール。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BEER VISTA BREWRY.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "印刷所リノベの空間。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BEER VISTA BREWRY.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33262,15 +34436,21 @@
     },
     {
      "item": "白衣と帽子で職人体験。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/築地玉寿司 晴海通り店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自分で握った寿司を味わう。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/築地玉寿司 晴海通り店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "江戸前寿司の老舗。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/築地玉寿司 晴海通り店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33362,15 +34542,21 @@
    "menu": [
     {
      "item": "高架下の全天候型パーク。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/スケボーパーク＆スケボースクール「RAMP ZERO」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "体験レッスン開校。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/スケボーパーク＆スケボースクール「RAMP ZERO」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "年齢・国籍を超えた交流。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/スケボーパーク＆スケボースクール「RAMP ZERO」.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33444,15 +34630,21 @@
    "menu": [
     {
      "item": "約50店が並ぶ楽器街。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/クロサワ楽器 お茶の水駅前店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ビンテージギターが目玉。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/クロサワ楽器 お茶の水駅前店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "試奏もできる。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/クロサワ楽器 お茶の水駅前店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33526,15 +34718,21 @@
    "menu": [
     {
      "item": "油彩・水彩・日本画な多彩。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/上野の森アートスクール（上野の森美術館）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "受講作をアトリエ展に出品可。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/上野の森アートスクール（上野の森美術館）.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者から経験者まで。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/上野の森アートスクール（上野の森美術館）.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33629,15 +34827,21 @@
     },
     {
      "item": "スパイス6種を調合。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ジンジャーエール専門店「孝芳堂」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "テーマは自由。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ジンジャーエール専門店「孝芳堂」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "土佐生姜と瀬戸田レモン使用。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ジンジャーエール専門店「孝芳堂」.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33761,15 +34965,21 @@
     },
     {
      "item": "やさしい寄せ豆腐。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/杉本とうふ店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "手作り豆乳は140円。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/杉本とうふ店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "開店直後はホットで。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/杉本とうふ店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33874,15 +35084,21 @@
    "menu": [
     {
      "item": "常時50種類のドライフラワー。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Studio Aurora.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自由な発想で花束作り。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Studio Aurora.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "贈り物にも人気。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Studio Aurora.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -33985,15 +35201,21 @@
     },
     {
      "item": "常時15～20種類のおむすび。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TEMARU OMUSUBI STAND.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "卵かけご飯やお茶漬けにも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TEMARU OMUSUBI STAND.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "沖縄の即席味噌汁も。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TEMARU OMUSUBI STAND.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34109,15 +35331,21 @@
     },
     {
      "item": "夏限定の冷やしみたらし。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/赤坂青野.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "とろり餡とやわらか餅。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/赤坂青野.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "赤坂の夏の風物詩。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/赤坂青野.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34210,15 +35438,21 @@
     },
     {
      "item": "焙煎具合を指定できる豆。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/豆虎 赤坂焙煎所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ドリップバッグや水出しも。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/豆虎 赤坂焙煎所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "初心者は店員に相談。",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/豆虎 赤坂焙煎所.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34314,15 +35548,21 @@
     },
     {
      "item": "刺身盛り定食が看板",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きぼし食堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大盛りはごはん800g",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きぼし食堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "昼から飲める",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きぼし食堂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34427,15 +35667,21 @@
     },
     {
      "item": "ボリューム満点",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/キッチンフライパン.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチがお得",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/キッチンフライパン.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北千住駅徒歩8分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/キッチンフライパン.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34558,15 +35804,21 @@
     },
     {
      "item": "花椒の香り",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京華山椒.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "モーニング営業あり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京華山椒.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "金土日は夜まで",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東京華山椒.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34672,15 +35924,21 @@
     },
     {
      "item": "焼きたてナン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Binti 亀有店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ランチセットが人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Binti 亀有店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "亀有駅徒歩6分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Binti 亀有店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34782,15 +36040,21 @@
     },
     {
      "item": "濃厚つけ麺",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/STAND BY ME.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "スープ売り切れ早仕舞い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/STAND BY ME.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北千住駅徒歩8分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/STAND BY ME.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -34904,15 +36168,21 @@
     },
     {
      "item": "看板の醤油ラーメン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/らーめん 桔梗と空.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "火～土曜営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/らーめん 桔梗と空.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北千住駅徒歩7分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/らーめん 桔梗と空.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35010,15 +36280,21 @@
    "menu": [
     {
      "item": "ナポリタンが名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/蘭蝶.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "朝8時から営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/蘭蝶.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "綾瀬駅徒歩5分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/蘭蝶.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35108,15 +36384,21 @@
     },
     {
      "item": "あだちブルワリーの樽生",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千けい菜ゐと.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜遅くまで",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千けい菜ゐと.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "五反野駅徒歩2分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千けい菜ゐと.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35218,15 +36500,21 @@
     },
     {
      "item": "丸ごとにんにく料理",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/にんにく料理酒場 Garlic Carinderia.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ビールが進む",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/にんにく料理酒場 Garlic Carinderia.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "五反野駅徒歩9分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/にんにく料理酒場 Garlic Carinderia.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35318,15 +36606,21 @@
     },
     {
      "item": "特大かき氷",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パウえる 江北店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夏の行列店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パウえる 江北店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "西新井大師西駅徒歩9分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/パウえる 江北店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35418,15 +36712,21 @@
    "menu": [
     {
      "item": "黒蜜きなこのかき氷",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/珈琲はんなり.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "木のぬくもり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/珈琲はんなり.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大師前駅徒歩7分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/珈琲はんなり.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35504,15 +36804,21 @@
     },
     {
      "item": "スパイスカレー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶アジェンデ＆カレーシャ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "サフランライス",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶アジェンデ＆カレーシャ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "見沼代親水公園駅徒歩3分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喫茶アジェンデ＆カレーシャ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35592,15 +36898,21 @@
    "menu": [
     {
      "item": "カツカレー",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TOS CURRY.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜遅くまで営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TOS CURRY.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "梅島駅徒歩6分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TOS CURRY.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35686,15 +36998,21 @@
     },
     {
      "item": "バナナリー thali",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAMBOURIN CURRY＆BAR.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "スパイス好きに",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAMBOURIN CURRY＆BAR.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北千住駅徒歩4分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAMBOURIN CURRY＆BAR.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35786,15 +37104,21 @@
    "menu": [
     {
      "item": "昭和レトロな品揃え",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/駄菓子屋 かしづき.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大人も楽しい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/駄菓子屋 かしづき.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北綾瀬駅から徒歩8分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/駄菓子屋 かしづき.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35868,15 +37192,21 @@
    "menu": [
     {
      "item": "レトロ雑貨が充実",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BOWWOW316.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "インテリア雑貨",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BOWWOW316.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北千住駅徒歩7分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BOWWOW316.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -35954,15 +37284,21 @@
     },
     {
      "item": "クラフトビールの種類豊富",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AWAYA.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "一杯ずつ楽しむ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AWAYA.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "北千住駅徒歩8分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AWAYA.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -36054,15 +37390,21 @@
     },
     {
      "item": "地ビールが充実",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/あだちブルワリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "週末は早くから",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/あだちブルワリー.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "西新井・江北エリア",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/あだちブルワリー.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -37590,15 +38932,21 @@
    "menu": [
     {
      "item": "職人の技を見学,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中村鞄製作所 東京本店.png",
+     "coverRole": "shop"
     },
     {
      "item": "上質なランドセル,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中村鞄製作所 東京本店.png",
+     "coverRole": "shop"
     },
     {
      "item": "事前予約推奨",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中村鞄製作所 東京本店.png",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -37672,15 +39020,21 @@
    "menu": [
     {
      "item": "食料品から雑貨まで,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ベルクス 足立花畑中央店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "駐輪場広い,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ベルクス 足立花畑中央店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "週末に便利",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ベルクス 足立花畑中央店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -37754,15 +39108,21 @@
    "menu": [
     {
      "item": "アクリル素材が豊富,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Tokyo Acryl.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ものづくり体験,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Tokyo Acryl.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "火・日曜休み",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Tokyo Acryl.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -37836,15 +39196,21 @@
    "menu": [
     {
      "item": "ドライフラワー,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/DECOLA．.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "雑貨めぐりに,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/DECOLA．.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "月・火曜休み",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/DECOLA．.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -37918,15 +39284,21 @@
    "menu": [
     {
      "item": "上質な革製品,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/土屋鞄製造所 西新井本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "直営店限定品,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/土屋鞄製造所 西新井本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "火曜休み",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/土屋鞄製造所 西新井本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38008,15 +39380,21 @@
     },
     {
      "item": "元祖バウムクーヘン,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/島田屋製菓.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "手土産に人気,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/島田屋製菓.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日曜祝日休み",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/島田屋製菓.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38114,15 +39492,21 @@
     },
     {
      "item": "夜の雰囲気,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/select gallery & bar “baku”.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ギャラリー併設,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/select gallery & bar “baku”.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "13時から",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/select gallery & bar “baku”.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38214,15 +39598,21 @@
    "menu": [
     {
      "item": "白いショールーム,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/株式会社伊藤鞄製作所・ショールーム＆カフェ「Regalo Felice」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "カフェでひと休み,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/株式会社伊藤鞄製作所・ショールーム＆カフェ「Regalo Felice」.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "革製品を見学",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/株式会社伊藤鞄製作所・ショールーム＆カフェ「Regalo Felice」.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38296,15 +39686,21 @@
    "menu": [
     {
      "item": "格安,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東横INN草加駅西口.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "駅近,",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東横INN草加駅西口.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "出張に便利",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/東横INN草加駅西口.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38393,11 +39789,15 @@
     },
     {
      "item": "つきたての弾力を味わえる午前中が狙い目",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中田屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "草だんごや豆大福も名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/中田屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38509,11 +39909,15 @@
     },
     {
      "item": "わらび餅は数量限定",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/田口屋菓子舗.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "季節の上生菓子も要チェック",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/田口屋菓子舗.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38629,11 +40033,15 @@
     },
     {
      "item": "田口屋と同じ住所で併設",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/甘味処 なごみ庵.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "白玉入りあんみつが人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/甘味処 なごみ庵.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38751,11 +40159,15 @@
     },
     {
      "item": "名物の勝めしを是非",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/下町グルメ食堂 勝めし屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ボリュームと価格が魅力",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/下町グルメ食堂 勝めし屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38855,11 +40267,15 @@
    "menu": [
     {
      "item": "午後には売り切れることも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/晴れの日も雨の日も.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "手土産にも最適",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/晴れの日も雨の日も.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -38945,11 +40361,15 @@
     },
     {
      "item": "焼きたてアツアツを",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/たいやき117.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "リーズナブルな小腹満たし",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/たいやき117.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39059,11 +40479,15 @@
     },
     {
      "item": "スコーンは当日中に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/わかば堂製作所.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "紅茶と一緒にどうぞ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/わかば堂製作所.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39166,11 +40590,15 @@
     },
     {
      "item": "どら焼きは名物中の名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喜田家 梅島店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "最中や羊羹も定番",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/喜田家 梅島店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39269,11 +40697,15 @@
     },
     {
      "item": "福俵モナカは贈答に人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/御菓子司 たから家.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "季節限定品を要チェック",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/御菓子司 たから家.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39368,11 +40800,15 @@
    "menu": [
     {
      "item": "豆大福は出来たてを",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和歌藤.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "素朴で懐かしい味",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/和歌藤.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39451,11 +40887,15 @@
     },
     {
      "item": "見た目も楽しい名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/かどやの槍かけだんご.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "その場で一串",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/かどやの槍かけだんご.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39545,11 +40985,15 @@
     },
     {
      "item": "煮干し醤油そばが看板",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/煮干し中華そば 山形屋.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "あっさり奥深いスープ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/煮干し中華そば 山形屋.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39646,11 +41090,15 @@
     },
     {
      "item": "季節の手打ちパスタを",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/osteria YOSHI.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ワインとペアリング",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/osteria YOSHI.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39759,11 +41207,15 @@
     },
     {
      "item": "記念日ディナーに",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Cielo Azzurro.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "コースがおすすめ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Cielo Azzurro.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39856,11 +41308,15 @@
    "menu": [
     {
      "item": "ランチがコスパ良し",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/洋食堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "家庭的な味わい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/洋食堂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -39943,11 +41399,15 @@
     },
     {
      "item": "遊葉茶房でゆったり煎茶を",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/茶匠 おくむら園.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "日本茶講座も開催",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/茶匠 おくむら園.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40035,11 +41495,15 @@
    "menu": [
     {
      "item": "試飲して選べる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/お茶の家 小堀商店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "元宿神社が目印",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/お茶の家 小堀商店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40124,11 +41588,15 @@
     },
     {
      "item": "古民家の空間で素に戻る時間",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/KiKi北千住.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "週末は夜まで営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/KiKi北千住.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40233,11 +41701,15 @@
     },
     {
      "item": "朝9時オープンで朝食に",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Blau ESPRESSO.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "アサイーボウルが人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Blau ESPRESSO.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40336,11 +41808,15 @@
     },
     {
      "item": "薪窯ピッツァとアサイーをシェア",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAVETALINA.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "テーブルのタブレットで注文",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/TAVETALINA.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40469,11 +41945,15 @@
     },
     {
      "item": "野菜たっぷり餃子が看板",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ジャギ飯店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "香港裏路地風の雰囲気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ジャギ飯店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40608,11 +42088,15 @@
     },
     {
      "item": "売り切れ次第終了",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/餃子たけし.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "パリパリ焼き餃子",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/餃子たけし.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40707,11 +42191,15 @@
     },
     {
      "item": "焼きたてをほおばる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/焼小籠包 ぎょうざ 樹苞 六町本店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "イートインスペースあり",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/焼小籠包 ぎょうざ 樹苞 六町本店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40804,11 +42292,15 @@
     },
     {
      "item": "固めクラシックプリン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LUSH-COFFEE Roaster Laboratory.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "犬と一緒に過ごせる席も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/LUSH-COFFEE Roaster Laboratory.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -40907,11 +42399,15 @@
     },
     {
      "item": "なめらか金の卵プリン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Brunch＆Coffee グランドゥカフェ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "モーニングも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Brunch＆Coffee グランドゥカフェ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41010,11 +42506,15 @@
     },
     {
      "item": "ハイブリッド食感プリン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Ogiso cafe.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "週替わりカレーも人気",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Ogiso cafe.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41126,11 +42626,15 @@
     },
     {
      "item": "区役所14階の眺望",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/食堂ソラノシタ.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "白いプリンが珍しい",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/食堂ソラノシタ.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41245,11 +42749,15 @@
     },
     {
      "item": "煮穴子の握りが格別",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/鮨よし.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "熱燗飲み比べセットも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/鮨よし.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41355,11 +42863,15 @@
     },
     {
      "item": "日本酒3種飲み比べ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/寿司と炭火 大地.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "炭火焼きやおでんも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/寿司と炭火 大地.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41458,11 +42970,15 @@
     },
     {
      "item": "ランチが圧倒的お得",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きく鮨.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "赤酢のシャリ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/きく鮨.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41562,11 +43078,15 @@
     },
     {
      "item": "古民家の隠れ家空間",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/北千住fuji.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "地元食材と古美器",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/北千住fuji.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41654,11 +43174,15 @@
    "menu": [
     {
      "item": "ゲストハウス併設の酒場",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千寿宿 玄.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "旅話で盛り上がる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千寿宿 玄.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41740,11 +43264,15 @@
     },
     {
      "item": "〆は本格フランス菓子",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/路地裏 久九.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "刺身と日本酒の店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/路地裏 久九.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41848,11 +43376,15 @@
     },
     {
      "item": "秋冬はアンコウ鍋",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/市場食堂 さかなや.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "予約必須の人気店",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/市場食堂 さかなや.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -41950,11 +43482,15 @@
     },
     {
      "item": "きりたんぽ鍋が名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/秋田郷土料理 えん.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "夜は2人前予約制",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/秋田郷土料理 えん.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42030,11 +43566,15 @@
    "menu": [
     {
      "item": "秘伝つみれちゃんこ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/チャンコ大心.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "セルフで具を投入",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/チャンコ大心.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42120,11 +43660,15 @@
     },
     {
      "item": "名物・千寿揚げを",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千住の永見.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "冬期限定の永見鍋",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/千住の永見.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42231,11 +43775,15 @@
     },
     {
      "item": "デカから揚げ定食",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/定食屋 かあちゃん.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "土日は朝8時オープン",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/定食屋 かあちゃん.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42339,11 +43887,15 @@
     },
     {
      "item": "3メニューの潔さ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/わんぱく食堂.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "自家製麹で肉が柔らか",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/わんぱく食堂.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42453,11 +44005,15 @@
     },
     {
      "item": "ファミリー・宴会にも",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/遊食家 楽.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "22時まで定食",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/遊食家 楽.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42551,11 +44107,15 @@
    "menu": [
     {
      "item": "昼過ぎには品薄",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BAKERY やすべぇ。.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "惣菜パンが充実",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/BAKERY やすべぇ。.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42637,11 +44197,15 @@
     },
     {
      "item": "午後には完売も",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AREUM BAGEL 北千住店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "むっちりふわふわ食感",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/AREUM BAGEL 北千住店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42746,11 +44310,15 @@
     },
     {
      "item": "揚げたてをサクッと",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/天ぷら立ち飲み 蓮.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "大根の天ぷらが名物",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/天ぷら立ち飲み 蓮.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42844,11 +44412,15 @@
    "menu": [
     {
      "item": "3時までやってる",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/立ち飲み うめつば.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "ここだけの酎ハイ",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/立ち飲み うめつば.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -42931,11 +44503,15 @@
     },
     {
      "item": "角打ちOK（抜栓料220円〜）",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/びあマ北千住.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "1,000種の缶・瓶",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/びあマ北千住.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43048,11 +44624,15 @@
     },
     {
      "item": "1階は開店即満席",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ざわさん 北千住サンロード店.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "和イタリアンの献立",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ざわさん 北千住サンロード店.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43168,11 +44748,15 @@
     },
     {
      "item": "チャージ600円",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar Brass.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "モクテルも豊富",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar Brass.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43274,11 +44858,15 @@
     },
     {
      "item": "好きなフルーツで注文",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/WAVY DUNES.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "チャージ300円",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/WAVY DUNES.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43368,11 +44956,15 @@
     },
     {
      "item": "国産ジンの品揃え",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar Sora 宇宙.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "チャージ600円＋10％",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/Bar Sora 宇宙.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43463,11 +45055,15 @@
     },
     {
      "item": "好きな曲をリクエスト",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ROCK BAR 7th-chord.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "昼はカフェ営業",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/ROCK BAR 7th-chord.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43547,15 +45143,21 @@
    "menu": [
     {
      "item": "下北沢駅から徒歩3分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/本多劇場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "若手劇団の公演も多い",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/本多劇場.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "小劇場ならではの近い距離感",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/本多劇場.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
@@ -43630,15 +45232,21 @@
    "menu": [
     {
      "item": "下北沢駅から徒歩3分",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/下北沢SHELTER.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "インディーズ発掘の聖地",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/下北沢SHELTER.jpg",
+     "coverRole": "shop"
     },
     {
      "item": "『ぼっち・ざ・ろっく！』の聖地",
-     "kind": "note"
+     "kind": "note",
+     "cover": "../images/観光地/下北沢SHELTER.jpg",
+     "coverRole": "shop"
     }
    ],
    "menu_i18n": [
