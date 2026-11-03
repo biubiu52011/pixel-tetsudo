@@ -16,6 +16,7 @@ for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
   'data/timetables/joban-e231-h-202611-index.js',
   'data/timetables/jreast-keihin-2611-number-index.js',
+  'data/timetables/jreast-yamanote-2611-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -1205,6 +1206,54 @@ test('Hachiko south E retains E231/209 mixed-fleet evidence and excludes Kawagoe
     vehiclePlan:{status:'PLANNED_MODEL',models:['キハ110系']}}),null);
   assert.equal(root.TrainVehicle.selectMarkerArtwork(
     {...north,displayLineId:'Hachiko'},true).kind,'unresolved');
+});
+test('JR 2611 Yamanote exact official G numbers by calendar and loop',()=>{
+  const index=root.JREastYamanote202611NumberIndex;
+  assert.ok(index,'official Yamanote 2611 index is loaded');
+  for(const [k,count] of Object.entries({
+    'Weekday|InnerLoop':255,
+    'Weekday|OuterLoop':267,
+    'SaturdayHoliday|InnerLoop':255,
+    'SaturdayHoliday|OuterLoop':260
+  })){
+    assert.equal(index.lists[k].length,count,k);
+    assert.equal(new Set(index.lists[k]).size,count,k+' unique full train numbers');
+  }
+  const cases=[
+    ['360G','weekday','InnerLoop',true],
+    ['360G','weekday','OuterLoop',false],
+    ['301G','holiday','OuterLoop',true],
+    ['301G','holiday','InnerLoop',false],
+    ['2400G','holiday','InnerLoop',true],
+    ['2400G','weekday','InnerLoop',false],
+    ['2433G','weekday','OuterLoop',true],
+    ['2433G','holiday','OuterLoop',false],
+    ['2427G','holiday','OuterLoop',true],
+    ['2427G','weekday','OuterLoop',false],
+    ['2501G','holiday','OuterLoop',false]
+  ];
+  for(const [n,calendarType,direction,expected] of cases){
+    const p=live({trainNumber:n,positionLineId:'Yamanote',
+      sourceRailway:'odpt.Railway:JR-East.Yamanote',calendarType,
+      railDirection:'odpt.RailDirection:'+direction,
+      trainType:'odpt.TrainType:JR-East.Local'});
+    assert.equal(index.contains(n,p),expected,n+' index '+calendarType+' '+direction);
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(Boolean(mapped),expected,n+' artwork '+calendarType+' '+direction);
+    if(mapped)assert.equal(mapped.model,'E235系0番台（山手線）');
+  }
+  for(const positionSource of ['realtime-api','supabase-train-run','train-timetable']){
+    const p=live({trainNumber:'360G',
+      trainId:'odpt.Train:JR-East.Yamanote.360G',
+      positionLineId:'Yamanote',sourceRailway:'odpt.Railway:JR-East.Yamanote',
+      positionSource,estimated:positionSource!=='realtime-api',
+      calendarType:'weekday',railDirection:'odpt.RailDirection:InnerLoop',
+      trainType:'odpt.TrainType:JR-East.Local'});
+    const image=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(image,positionSource);
+    assert.equal(marker(p,'Yamanote').kind,'vehicle');
+    assert.equal(marker(p,'Yamanote').iconSrc,image.pngPath);
+  }
 });
 test('Yamanote E235-0 G-number family uses its own officially scoped PNG',()=>{
   const image='../images/列车/JR東日本/JR東日本_E235系_0番台.png';
