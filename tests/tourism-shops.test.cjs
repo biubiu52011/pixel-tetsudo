@@ -100,7 +100,7 @@ test('play recommendations render with optional prices and without empty tips', 
   assert.equal(priceFields.length, 4, 'two priced items in preview and modal; unpriced item omitted');
 });
 
-test('text-only menu entries use the same carousel without fabricated products or prices', () => {
+test('migrated tips use the identical square image-card layout without invented images or prices', () => {
   const notesOnly = renderShop({
     name: 'Craft Store', tags: ['store'],
     menu: [
@@ -116,13 +116,17 @@ test('text-only menu entries use the same carousel without fabricated products o
   });
   assert.match(notesOnly, /おすすめ/);
   assert.match(notesOnly, /dp-menu-carousel/);
-  assert.match(notesOnly, /dp-rec-text-item--menu/);
+  assert.match(notesOnly, /dp-dish-thumb/);
+  assert.match(notesOnly, /dp-dish-badge/);
+  assert.match(notesOnly, /dp-dish-name/);
   assert.match(notesOnly, /すべて見る/);
   assert.match(notesOnly, /手作り雑貨/);
   assert.match(notesOnly, /新着商品はSNSで確認/);
   assert.match(notesOnly, /朝から営業/);
   assert.doesNotMatch(notesOnly, /dp-shop-picks|dp-pick-list|訪問Tips/);
-  assert.doesNotMatch(notesOnly, /dp-dish-price|dp-dish-img|dp-dish-badge/);
+  assert.doesNotMatch(notesOnly, /dp-dish-price|dp-dish-img|dp-rec-text-item/);
+  assert.equal((notesOnly.match(/class="dp-dish-badge"/g) || []).length, 6, 'each note has a preview and modal placeholder');
+  assert.match(notesOnly, /class="dp-dish-badge">C<\/span>/, 'placeholder uses store name initial');
   assert.doesNotMatch(notesOnly, /Handmade goods/, 'menu translations take priority');
 });
 
@@ -144,10 +148,12 @@ test('products and notes share one spot.menu recommendation carousel', () => {
   assert.match(mixed, /コーヒー/);
   assert.match(mixed, /500円/);
   assert.match(mixed, /営業時間を確認/);
-  assert.match(mixed, /dp-rec-text-item--menu/);
-  assert.doesNotMatch(mixed, /訪問Tips|Old visit tip|dp-shop-picks|dp-rec-text-carousel/);
+  assert.match(mixed, /dp-dish-badge/);
+  assert.match(mixed, /dp-dish-thumb/);
+  assert.match(mixed, /dp-dish-name/);
+  assert.doesNotMatch(mixed, /訪問Tips|Old visit tip|dp-shop-picks|dp-rec-text-carousel|dp-rec-text-item/);
   const empty = renderShop({ name: 'Cafe', tags: ['food'], menu: [], tips: [] });
-  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-item/);
+  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-item|dp-dish-thumb/);
 });
 
 test('all merchant data is normalized to spot.menu and generated snapshots remain in sync', () => {
