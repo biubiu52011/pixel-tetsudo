@@ -100,13 +100,37 @@ test('play recommendations render with optional prices and without empty tips', 
   assert.equal(priceFields.length, 4, 'two priced items in preview and modal; unpriced item omitted');
 });
 
-test('tips-only shopping and entirely empty recommendations use appropriate UI', () => {
-  const tipsOnly = renderShop({ name: 'Craft Store', tags: ['shopping'], menu: [], tips: ['Handmade goods'] });
+test('tips-only shops use the same recommendations carousel without invented products or prices', () => {
+  const tipsOnly = renderShop({
+    name: 'Craft Store', tags: ['shopping'], menu: [],
+    tips: ['Handmade goods', 'Daily selection on SNS', 'Open early'],
+    tips_i18n: { ja: ['手作り雑貨', '新着商品はSNSで確認', '朝から営業'] },
+  });
   assert.match(tipsOnly, /おすすめ/);
-  assert.match(tipsOnly, /Handmade goods/);
-  assert.doesNotMatch(tipsOnly, /内容なし/);
+  assert.match(tipsOnly, /dp-menu-carousel dp-rec-text-carousel/);
+  assert.match(tipsOnly, /dpRecommendTipsModal/);
+  assert.match(tipsOnly, /すべて見る/);
+  assert.match(tipsOnly, /手作り雑貨/);
+  assert.match(tipsOnly, /新着商品はSNSで確認/);
+  assert.match(tipsOnly, /朝から営業/);
+  assert.doesNotMatch(tipsOnly, /dp-shop-picks|dp-pick-list|訪問Tips/);
+  assert.doesNotMatch(tipsOnly, /dp-dish-price|dp-dish-img/);
+  assert.doesNotMatch(tipsOnly, /Handmade goods/, 'translation should take precedence');
+});
+
+test('structured offers retain the image/price carousel and distinct visit tips; empty shops show neither', () => {
+  const withMenu = renderShop({
+    name: 'Cafe', tags: ['food'],
+    menu: [{ item: 'Coffee', price: '500円' }],
+    tips: ['Check opening hours'],
+  });
+  assert.match(withMenu, /dp-menu-carousel/);
+  assert.match(withMenu, /Coffee/);
+  assert.match(withMenu, /500円/);
+  assert.match(withMenu, /訪問Tips/);
+  assert.doesNotMatch(withMenu, /dp-rec-text-carousel/);
   const empty = renderShop({ name: 'Cafe', tags: ['food'], menu: [], tips: [] });
-  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head/);
+  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-carousel/);
 });
 
 test('all four languages use an industry-neutral recommendations title', () => {
