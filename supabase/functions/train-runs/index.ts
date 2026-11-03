@@ -573,11 +573,18 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // normal numbers. Its nine Sotobo station clocks are independently identical
   // to the official replacement's complete published Sotobo segment.
   // Do not rewrite or certify the immutable source template/canonical ID.
-  // Only substitute the DATED public number after an exact nine-stop match,
+  // Substitute the DATED public number after an exact nine/eleven-stop match,
   // an official A-grade source entry, and explicit operating-day scope.
   async function applyBosoNovember7DatedNumbers(runs: any[]): Promise<number> {
     if (serviceDate !== "2026-11-07" || !["Sotobo","Uchibo"].includes(lineId)) return 0;
     const uchiboCancelled = new Set(["3680F","3606F"]);
+    const uchiboAlternatives: Record<string,{number:string,key:string,signature:string}> = {
+      "3680F": {number:"9680M",key:"20261104-jre-2611-boso-1107-uchibo-9680m",
+        signature:"Kimitsu::06:02|Kisarazu:06:09:06:10|Sodegaura:06:15:06:16|Nagaura:06:19:06:20|Anegasaki:06:24:06:25|Goi:06:29:06:30|Yawatajuku:06:33:06:34|Hamano:06:36:06:37|Soga:06:40:06:43|HonChiba:06:46:06:46|Chiba:06:49:"},
+      "3606F": {number:"9606M",key:"20261104-jre-2611-boso-1107-uchibo-9606m",
+        signature:"Kimitsu::06:29|Kisarazu:06:36:06:37|Sodegaura:06:42:06:43|Nagaura:06:46:06:47|Anegasaki:06:51:06:51|Goi:06:56:06:57|Yawatajuku:07:00:07:01|Hamano:07:03:07:04|Soga:07:08:07:09|HonChiba:07:12:07:12|Chiba:07:15:"}
+    };
+
     const sotoboAlternatives: Record<string,{number:string,key:string,signature:string}> = {
       "3573F": {number:"9573M",key:"20261104-jre-2611-boso-1107-sotobo-9573m",
         signature:"Chiba::05:21|HonChiba:05:23:05:23|Soga:05:26:05:27|Kamatori:05:31:05:32|Honda:05:35:05:36|Toke:05:40:05:41|Oami:05:44:05:45|Mobara:05:53:05:54|KazusaIchinomiya:06:01:"},
@@ -589,8 +596,9 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     // An invalid/absent provenance row fails closed; never turn a cancelled
     // 2026-11-07 normal service into a speculative replacement train.
     const sources = new Map<string, any>();
-    if (lineId === "Sotobo") {
-      const keys = Object.values(sotoboAlternatives).map(x=>x.key);
+    const alternatives = lineId === "Sotobo" ? sotoboAlternatives : uchiboAlternatives;
+    {
+      const keys = Object.values(alternatives).map(x=>x.key);
       const {data,error} = await db.from("evidence_sources")
         .select("source_key,source_url,source_type,evidence_grade")
         .in("source_key",keys);
@@ -604,11 +612,12 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
           run.train_type !== "odpt.TrainType:JR-East.Rapid" ||
           run.canonical_group_evidence !== "source_only" ||
           run.network_key !== "odpt.Railway:JR-East." + lineId) continue;
-      if (lineId === "Uchibo" && uchiboCancelled.has(run.train_number)) {
+      const originalNumber = run.train_number;
+      const replacement = alternatives[originalNumber];
+      if (!replacement && lineId === "Uchibo" && uchiboCancelled.has(originalNumber)) {
         run.operation_status = "cancelled";
         continue;
       }
-      const replacement = lineId === "Sotobo" ? sotoboAlternatives[run.train_number] : null;
       if (!replacement) continue;
       // This original normal service does not run on 11/7 in ANY case.
       run.operation_status = "cancelled";
@@ -616,9 +625,12 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       const validSource = source?.source_type === "official" &&
         source?.evidence_grade === "A" &&
         typeof source?.source_url === "string" &&
-        source.source_url.startsWith("https://timetables.jreast.co.jp/2611/train/");
-      if (!validSource || !Array.isArray(run.stops) || run.stops.length !== 9 ||
-          run.rail_direction !== "odpt.RailDirection:Outbound") continue;
+        (source.source_url.startsWith("https://timetables.jreast.co.jp/2611/train/") ||
+         source.source_url.startsWith("https://timetables.jreast.co.jp/en/2611/train/"));
+      if (!validSource || !Array.isArray(run.stops) ||
+          run.stops.length !== (lineId === "Uchibo" ? 11 : 9) ||
+          run.rail_direction !== "odpt.RailDirection:" +
+            (lineId === "Uchibo" ? "Inbound" : "Outbound")) continue;
       const signature = run.stops.map((stop: any) =>
         [stop.station_key, String(stop.arrival_time || "").slice(0,5),
           String(stop.departure_time || "").slice(0,5)].join(":")).join("|");
@@ -626,7 +638,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       // A dated replacement is a NEW public train NUMBER, not the old
       // source's vehicle operation, formation or verified canonical identity.
       run.train_number = replacement.number;
-      run.id = "official-dated-train:2026-11-07:Sotobo:" + replacement.number;
+      run.id = "official-dated-train:2026-11-07:" + lineId + ":" + replacement.number;
       run.trip_id = run.id;
       run.operation_status = "scheduled";
       run.operation_code = "";
@@ -640,7 +652,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.previous_timetable_ids = [];
       run.next_timetable_ids = [];
       run.plan_source = "official-20261107-number-stop-verified-override";
-      run.train_number_verification = "official-20261107-all-nine-stops";
+      run.train_number_verification = "official-20261107-all-" + run.stops.length + "-stops";
       run.train_number_source_url = source.source_url;
       run.timetable_validity = "date_verified";
       run.timetable_date_verified = true;
