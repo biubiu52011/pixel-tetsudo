@@ -737,6 +737,33 @@
    "address": "東京都豊島区東池袋1-20-7",
    "menu": [
     {
+     "item": "キャラクターグッズ（4・5F）",
+     "kind": "category",
+     "sourceUrl": "https://www.animate.co.jp/shop/ikebukuro/floor/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/アニメイト 池袋本店.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "マンガ・画材（2・3F）",
+     "kind": "category",
+     "sourceUrl": "https://www.animate.co.jp/shop/ikebukuro/floor/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/アニメイト 池袋本店.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "animate ONLY SHOP（7F）",
+     "kind": "experience",
+     "sourceUrl": "https://www.animate.co.jp/shop/ikebukuro/floor/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/アニメイト 池袋本店.jpg",
+     "coverRole": "shop"
+    },
+    {
      "item": "世界最大級のアニメストア",
      "kind": "note",
      "cover": "../images/観光地/アニメイト 池袋本店.jpg",
@@ -757,6 +784,24 @@
    ],
    "menu_i18n": [
     {
+     "ja": "キャラクターグッズ（4・5F）",
+     "zh": "角色周边（4、5层）",
+     "en": "Character goods (floors 4–5)",
+     "ko": "캐릭터 굿즈(4·5층)"
+    },
+    {
+     "ja": "マンガ・画材（2・3F）",
+     "zh": "漫画与画材（2、3层）",
+     "en": "Manga and art supplies (floors 2–3)",
+     "ko": "만화·화구(2·3층)"
+    },
+    {
+     "ja": "animate ONLY SHOP（7F）",
+     "zh": "主题限定专区（7层）",
+     "en": "Themed ONLY SHOP (floor 7)",
+     "ko": "테마 한정 숍(7층)"
+    },
+    {
      "ja": "世界最大級のアニメストア",
      "zh": "世界最大级的动漫商店",
      "en": "One of the worlds largest anime stores",
@@ -774,7 +819,8 @@
      "en": "Get limited goods early",
      "ko": "한정 굿즈는 일찍 구매"
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "乙女ロード (Otome Road)",
@@ -2623,6 +2669,24 @@
    "address": "東京都豊島区東池袋3-1-2 サンシャインシティ専門店街アルパ2F",
    "menu": [
     {
+     "item": "ポケモンカードステーション",
+     "kind": "experience",
+     "sourceUrl": "https://shop.pokemon.co.jp/ja/shop/pokemoncenter-megatokyo",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/ポケモンセンター MEGA TOKYO.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "Pokémon GO Lab.",
+     "kind": "experience",
+     "sourceUrl": "https://shop.pokemon.co.jp/ja/shop/pokemoncenter-megatokyo",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/ポケモンセンター MEGA TOKYO.jpg",
+     "coverRole": "shop"
+    },
+    {
      "item": "限定グッズは売り切れ注意",
      "kind": "note",
      "cover": "../images/観光地/ポケモンセンター MEGA TOKYO.jpg",
@@ -2643,6 +2707,18 @@
    ],
    "menu_i18n": [
     {
+     "ja": "ポケモンカードステーション",
+     "zh": "宝可梦卡牌专区",
+     "en": "Pokémon Card Station",
+     "ko": "포켓몬 카드 스테이션"
+    },
+    {
+     "ja": "Pokémon GO Lab.",
+     "zh": "Pokémon GO体验区",
+     "en": "Pokémon GO Lab",
+     "ko": "포켓몬 GO 랩"
+    },
+    {
      "ja": "限定グッズは売り切れ注意",
      "zh": "限定周边可能售罄",
      "en": "Exclusive goods may sell out",
@@ -2660,7 +2736,8 @@
      "en": "Crowded on weekends",
      "ko": "주말에는 혼잡할 수 있어요"
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "池袋PARCO",
@@ -3136,7 +3213,7 @@
    "image": "../images/観光地/ギャラクシティ.jpg",
    "bestTime": "日中",
    "hours": "9:00～21:30（こども体験エリアは18:00まで）",
-   "fee": "無料",
+   "fee": "施設入場無料／プラネタリウム有料（大人500円）",
    "name_i18n": {
     "ja": "ギャラクシティ",
     "zh": "银河城（科学体验馆）",
@@ -3156,10 +3233,10 @@
     "ko": "9:00~21:30 (어린이 체험 구역은 18:00까지)"
    },
    "fee_i18n": {
-    "ja": "無料",
-    "zh": "免费",
-    "en": "Free",
-    "ko": "무료"
+    "ja": "施設入場無料／プラネタリウム有料（大人500円）",
+    "zh": "场馆免费入场／天象馆另行收费（成人500日元）",
+    "en": "Free facility entry / planetarium adults ¥500",
+    "ko": "시설 무료 입장 / 플라네타륨 성인 500엔"
    },
    "bestTime_i18n": {
     "ja": "日中",
@@ -3170,6 +3247,36 @@
    "address": "東京都足立区栗原1-3-1",
    "menu": [
     {
+     "item": "スペースあすれちっく",
+     "kind": "experience",
+     "sourceUrl": "https://www.galaxcity.jp/facilities/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "無料（整理券・利用条件あり）",
+     "cover": "../images/観光地/ギャラクシティ.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "がんばるウォール体験",
+     "kind": "experience",
+     "sourceUrl": "https://www.galaxcity.jp/facilities/ganbaru-wall.html",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "無料（実施日・整理券制）",
+     "cover": "../images/観光地/ギャラクシティ.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "まるちたいけんドーム（大人）",
+     "kind": "experience",
+     "sourceUrl": "https://www.galaxcity.jp/about/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "500円（大人）",
+     "cover": "../images/観光地/ギャラクシティ.jpg",
+     "coverRole": "shop"
+    },
+    {
      "item": "東武伊勢崎線「西新井駅」から 徒歩3分",
      "kind": "note",
      "cover": "../images/観光地/ギャラクシティ.jpg",
@@ -3178,12 +3285,31 @@
    ],
    "menu_i18n": [
     {
+     "ja": "スペースあすれちっく",
+     "zh": "大型立体攀爬网",
+     "en": "Three-level net playground",
+     "ko": "3층 대형 네트 놀이터"
+    },
+    {
+     "ja": "がんばるウォール体験",
+     "zh": "攀岩墙体验",
+     "en": "Climbing wall experience",
+     "ko": "클라이밍 월 체험"
+    },
+    {
+     "ja": "まるちたいけんドーム（大人）",
+     "zh": "天象馆（成人）",
+     "en": "Planetarium (adult ticket)",
+     "ko": "플라네타륨(성인)"
+    },
+    {
      "ja": "東武伊勢崎線「西新井駅」から 徒歩3分",
      "zh": "西新井站步行3分钟",
      "en": "3 min walk from 西新井 Station",
      "ko": "西新井역에서 도보 3분"
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "大谷田温泉明神の湯",
@@ -3199,8 +3325,8 @@
    ],
    "image": "../images/観光地/大谷田温泉明神の湯.jpg",
    "bestTime": "日中",
-   "hours": "9:00～22:00（最終入館21:30・毎月第3火曜休館）",
-   "fee": "有料",
+   "hours": "9:00～23:00（最終入館22:30・毎月第3火曜休）",
+   "fee": "大人800円～（入館時刻・曜日による）",
    "name_i18n": {
     "ja": "大谷田温泉明神の湯",
     "zh": "大谷田温泉 明神之汤",
@@ -3214,16 +3340,16 @@
     "ko": "아다치구 오야타에 있는 천연 온천 당일치기 시설. 노천탕과 사우나를 갖춘 지역 주민의 쉼터이다."
    },
    "hours_i18n": {
-    "ja": "9:00～22:00（最終入館21:30・毎月第3火曜休館）",
-    "zh": "9:00–22:00（最晚入馆21:30・每月第3个周二休息）",
-    "en": "9:00–22:00 (last entry 21:30; closed 3rd Tue monthly)",
-    "ko": "9:00~22:00 (최종 입장 21:30, 매월 셋째 화요일 휴관)"
+    "ja": "9:00～23:00（最終入館22:30・毎月第3火曜休）",
+    "zh": "9:00–23:00（最晚22:30入馆；每月第3个周二休息）",
+    "en": "9:00–23:00 (last admission 22:30; closed third Tuesday)",
+    "ko": "9:00~23:00(최종 입장 22:30, 매월 셋째 화요일 휴무)"
    },
    "fee_i18n": {
-    "ja": "有料",
-    "zh": "收费",
-    "en": "Paid",
-    "ko": "유료"
+    "ja": "大人800円～（入館時刻・曜日による）",
+    "zh": "成人800日元起（依入馆时段与星期而不同）",
+    "en": "Adults from ¥800 (varies by entry time and day)",
+    "ko": "성인 800엔부터(요일·입장 시간에 따라 변동)"
    },
    "bestTime_i18n": {
     "ja": "日中",
@@ -3234,6 +3360,35 @@
    "address": "東京都足立区大谷田1-18-1",
    "menu": [
     {
+     "item": "大人入館（平日10:00～17:00）",
+     "kind": "experience",
+     "sourceUrl": "https://dormy-hotels.com/spa/myoujin/price.php",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "900円",
+     "cover": "../images/観光地/大谷田温泉明神の湯.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "大人入館（土日祝14:00以降）",
+     "kind": "experience",
+     "sourceUrl": "https://dormy-hotels.com/spa/myoujin/price.php",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "1,300円",
+     "cover": "../images/観光地/大谷田温泉明神の湯.jpg",
+     "coverRole": "shop"
+    },
+    {
+     "item": "オートロウリュサウナ",
+     "kind": "experience",
+     "sourceUrl": "https://dormy-hotels.com/spa/myoujin/spa.php",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/大谷田温泉明神の湯.jpg",
+     "coverRole": "shop"
+    },
+    {
      "item": "東武伊勢崎線「五反野駅」から",
      "kind": "note",
      "cover": "../images/観光地/大谷田温泉明神の湯.jpg",
@@ -3242,12 +3397,31 @@
    ],
    "menu_i18n": [
     {
+     "ja": "大人入館（平日10:00～17:00）",
+     "zh": "成人入馆（平日10–17时）",
+     "en": "Adult admission (weekday 10–17h)",
+     "ko": "성인 입장(평일 10~17시)"
+    },
+    {
+     "ja": "大人入館（土日祝14:00以降）",
+     "zh": "成人入馆（周末及节假日14时后）",
+     "en": "Adult admission (weekends after 14h)",
+     "ko": "성인 입장(주말·공휴일 14시 이후)"
+    },
+    {
+     "ja": "オートロウリュサウナ",
+     "zh": "自动浇水桑拿",
+     "en": "Automatic löyly sauna",
+     "ko": "오토 로울류 사우나"
+    },
+    {
      "ja": "東武伊勢崎線「五反野駅」から",
      "zh": "从站出发",
      "en": "From  Station",
      "ko": "역에서 출발"
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "足立区立郷土博物館",
@@ -13512,7 +13686,7 @@
     139.768768
    ],
    "dist": "日比谷線 東銀座駅 徒歩5分",
-   "desc": "東銀座の路地裏で大正時代から続く和菓子店。1日1300個も売れるどら焼きにオリジナル焼印を。",
+   "desc": "歌舞伎座近くで100年以上続く和菓子店。十勝産小豆を使った手焼きのどら焼きが看板商品。",
    "tags": [
     "all",
     "food"
@@ -13520,12 +13694,12 @@
    "image": "../images/観光地/木挽町よしや.jpg",
    "bestTime": "昼～夕方",
    "hours": {
-    "ja": "10:00～18:00（日・祝休、土不定休）",
-    "zh": "10:00–18:00（日、祝休，土不定休）",
-    "en": "10:00–18:00 (closed Sun, hol; Sat irregular)",
-    "ko": "10:00~18:00 (일·공휴일 휴무, 토 부정휴무)"
+    "ja": "10:00～15:00（土曜不定休・日祝休）",
+    "zh": "10:00–15:00（周六不定休、周日及节假日休息）",
+    "en": "10:00–15:00 (irregular Sat; closed Sun and holidays)",
+    "ko": "10:00~15:00(토요일 부정기 휴무·일요일·공휴일 휴무)"
    },
-   "fee": "どら焼き 378円〜",
+   "fee": "どら焼き 170円／個・5個入850円（いずれも税別）",
    "name_i18n": {
     "ja": "木挽町よしや",
     "zh": "木挽町 Yoshoya",
@@ -13533,22 +13707,22 @@
     "ko": "코비키초 요시야"
    },
    "desc_i18n": {
-    "ja": "東銀座の路地裏で大正時代から続く和菓子店。1日1300個も売れるどら焼きにオリジナル焼印を。",
-    "zh": "东银座巷内、自大正年间经营的和果子老店，日销1300个的铜锣烧可加定制烙印。",
-    "en": "A wagashi shop in an Azuma-Ginza alley since the Taisho era; its dorayaki (1,300 a day) can be custom-branded.",
-    "ko": "히가시긴자 골목에서 다이쇼 시대부터 이어지는 화과자 집. 하루 1,300개 팔리는 도라야키에 오리지널 날인을."
+    "ja": "歌舞伎座近くで100年以上続く和菓子店。十勝産小豆を使った手焼きのどら焼きが看板商品。",
+    "zh": "歌舞伎座附近经营百余年的和果子店，招牌是使用十胜红豆手工制作的铜锣烧。",
+    "en": "A century-old confectionery near Kabukiza, known for handmade dorayaki with Tokachi azuki beans.",
+    "ko": "가부키자 인근에서 100년 넘게 이어온 화과자점. 도카치 팥을 사용한 수제 도라야키가 대표 상품."
    },
    "hours_i18n": {
-    "ja": "10:00～18:00（日・祝休、土不定休）",
-    "zh": "10:00–18:00（日、祝休，土不定休）",
-    "en": "10:00–18:00 (closed Sun, hol; Sat irregular)",
-    "ko": "10:00~18:00 (일·공휴일 휴무, 토 부정휴무)"
+    "ja": "10:00～15:00（土曜不定休・日祝休）",
+    "zh": "10:00–15:00（周六不定休、周日及节假日休息）",
+    "en": "10:00–15:00 (irregular Sat; closed Sun and holidays)",
+    "ko": "10:00~15:00(토요일 부정기 휴무·일요일·공휴일 휴무)"
    },
    "fee_i18n": {
-    "ja": "どら焼き 378円〜",
-    "zh": "铜锣烧 378日元起",
-    "en": "Dorayaki from ¥378",
-    "ko": "도라야키 378엔~"
+    "ja": "どら焼き 170円／個・5個入850円（いずれも税別）",
+    "zh": "铜锣烧单个170日元、5个装850日元（均未税）",
+    "en": "Dorayaki ¥170 each or ¥850 for 5 (before tax)",
+    "ko": "도라야키 개당 170엔, 5개입 850엔(세금 별도)"
    },
    "bestTime_i18n": {
     "ja": "昼～夕方",
@@ -13559,20 +13733,32 @@
    "address": "東京都中央区銀座3-12-9",
    "menu": [
     {
-     "item": "どら焼き（2個入）",
-     "price": "378円",
+     "item": "よしやのどら焼き（5個入）",
+     "kind": "product",
+     "sourceUrl": "https://kobikichoyoshiya.com/list/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "850円（税別）",
      "cover": "../images/観光地/木挽町よしや.jpg",
      "coverRole": "shop"
     },
     {
-     "item": "どら焼き（5個入）",
-     "price": "810円",
+     "item": "よしやのどら焼き（8個入）",
+     "kind": "product",
+     "sourceUrl": "https://kobikichoyoshiya.com/list/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "1,360円（税別）",
      "cover": "../images/観光地/木挽町よしや.jpg",
      "coverRole": "shop"
     },
     {
-     "item": "どら焼き（10個入）",
-     "price": "1,620円",
+     "item": "よしやのどら焼き（10個入）",
+     "kind": "product",
+     "sourceUrl": "https://kobikichoyoshiya.com/list/",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "1,700円（税別）",
      "cover": "../images/観光地/木挽町よしや.jpg",
      "coverRole": "shop"
     },
@@ -13597,22 +13783,22 @@
    ],
    "menu_i18n": [
     {
-     "ja": "どら焼き（2個入）",
-     "zh": "铜锣烧（2个装）",
-     "en": "Dorayaki (2 pcs)",
-     "ko": "도라야키(2개입)"
-    },
-    {
-     "ja": "どら焼き（5個入）",
+     "ja": "よしやのどら焼き（5個入）",
      "zh": "铜锣烧（5个装）",
      "en": "Dorayaki (5 pcs)",
-     "ko": "도라야키(5개입)"
+     "ko": "도라야키 (5개입)"
     },
     {
-     "ja": "どら焼き（10個入）",
+     "ja": "よしやのどら焼き（8個入）",
+     "zh": "铜锣烧（8个装）",
+     "en": "Dorayaki (8 pcs)",
+     "ko": "도라야키 (8개입)"
+    },
+    {
+     "ja": "よしやのどら焼き（10個入）",
      "zh": "铜锣烧（10个装）",
      "en": "Dorayaki (10 pcs)",
-     "ko": "도라야키(10개입)"
+     "ko": "도라야키 (10개입)"
     },
     {
      "ja": "1日1300個売れる名物どら焼き。",
@@ -13632,7 +13818,8 @@
      "en": "A rare single-pancake construction.",
      "ko": "한 장의 피로 팥을 끼운 희귀 제법."
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "ストックプラス",
@@ -15513,12 +15700,12 @@
    "image": "../images/観光地/L’ESSENTIELLE（レセンシエル）.jpg",
    "bestTime": "昼～夕方",
    "hours": {
-    "ja": "10:00～19:00（木曜休）",
-    "zh": "10:00–19:00（周四休）",
-    "en": "10:00–19:00 (closed Thu)",
-    "ko": "10:00~19:00 (목요일 휴무)"
+    "ja": "10:00～18:00（木曜休）",
+    "zh": "10:00–18:00（周四休）",
+    "en": "10:00–18:00 (closed Thu)",
+    "ko": "10:00~18:00(목요일 휴무)"
    },
-   "fee": "予算1,000円前後（ケーキ・カフェ）",
+   "fee": "ケーキは店頭価格・季節で変動",
    "name_i18n": {
     "ja": "L’ESSENTIELLE（レセンシエル）",
     "zh": "L'ESSENTIELLE",
@@ -15532,16 +15719,16 @@
     "ko": "묘가다니의 향기가 테마인 파티스리. 로즈·통카·바질·산초 등 향긋한 케이크가 진열."
    },
    "hours_i18n": {
-    "ja": "10:00～19:00（木曜休）",
-    "zh": "10:00–19:00（周四休）",
-    "en": "10:00–19:00 (closed Thu)",
-    "ko": "10:00~19:00 (목요일 휴무)"
+    "ja": "10:00～18:00（木曜休）",
+    "zh": "10:00–18:00（周四休）",
+    "en": "10:00–18:00 (closed Thu)",
+    "ko": "10:00~18:00(목요일 휴무)"
    },
    "fee_i18n": {
-    "ja": "予算1,000円前後（ケーキ・カフェ）",
-    "zh": "人均约1000日元（蛋糕·咖啡）",
-    "en": "~1,000 JPY (cake / cafe)",
-    "ko": "약 1,000엔 (케이크·카페)"
+    "ja": "ケーキは店頭価格・季節で変動",
+    "zh": "蛋糕价格与品种因季节及到店情况而变化",
+    "en": "Cake prices and selection vary seasonally",
+    "ko": "케이크 가격·종류는 계절에 따라 변동"
    },
    "bestTime_i18n": {
     "ja": "昼～夕方",
@@ -15551,6 +15738,33 @@
    },
    "address": "東京都文京区小石川4-16-7",
    "menu": [
+    {
+     "item": "シューアラクレーム",
+     "kind": "product",
+     "sourceUrl": "https://www.lessentielle.info/cake",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/recommend-illustrations/lessentielle-aroma-cake.svg",
+     "coverRole": "illustration"
+    },
+    {
+     "item": "フロマージュ ユズ（柚子・山椒）",
+     "kind": "product",
+     "sourceUrl": "https://www.lessentielle.info/cake",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/recommend-illustrations/lessentielle-spice-cake.svg",
+     "coverRole": "illustration"
+    },
+    {
+     "item": "フロレゾン（フランボワーズ）",
+     "kind": "product",
+     "sourceUrl": "https://www.lessentielle.info/cake",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "cover": "../images/観光地/recommend-illustrations/lessentielle-pastry-selection.svg",
+     "coverRole": "illustration"
+    },
     {
      "item": "香りが記憶に残るケーキを目指す。",
      "kind": "note",
@@ -15572,6 +15786,24 @@
    ],
    "menu_i18n": [
     {
+     "ja": "シューアラクレーム",
+     "zh": "香草奶油泡芙",
+     "en": "Choux à la crème",
+     "ko": "슈 아 라 크렘"
+    },
+    {
+     "ja": "フロマージュ ユズ（柚子・山椒）",
+     "zh": "柚子花椒芝士蛋糕",
+     "en": "Yuzu and sansho fromage",
+     "ko": "유자 산초 프로마주"
+    },
+    {
+     "ja": "フロレゾン（フランボワーズ）",
+     "zh": "覆盆子慕斯蛋糕",
+     "en": "Floraison raspberry mousse",
+     "ko": "플로레종 라즈베리 무스"
+    },
+    {
      "ja": "香りが記憶に残るケーキを目指す。",
      "zh": "以香气留下记忆的蛋糕为目标。",
      "en": "Cakes designed to stay in memory through scent.",
@@ -15589,7 +15821,8 @@
      "en": "Beautiful looks and generous aroma.",
      "ko": "아름다운 비주얼과 넘치는 향."
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "林泉寺（縛られ地蔵尊）",
@@ -26706,8 +26939,8 @@
    ],
    "image": "../images/観光地/Sabö Asaichi(サボウアサイチ).jpg",
    "bestTime": "昼",
-   "hours": "火〜金8:00〜19:00、土・祝9:00〜19:00／月・日曜不定休",
-   "fee": "モーニング 1,000円前後",
+   "hours": "閉店情報あり（営業状況要確認）",
+   "fee": "現在の販売・価格情報は確認できません",
    "name_i18n": {
     "ja": "Sabö Asaichi(サボウアサイチ)",
     "zh": "Sabö Asaichi",
@@ -26721,16 +26954,16 @@
     "ko": "두부집이 만든 오카라 식빵 모닝이 평판, 일일 런치의 건더기 풍부한 미소국도 절품 카페."
    },
    "hours_i18n": {
-    "ja": "火〜金8:00〜19:00、土・祝9:00〜19:00／月・日曜不定休",
-    "zh": "周二~五8:00~19:00、土祝9:00~19:00／月日不定期休",
-    "en": "Tue-Fri 8:00-19:00, Sat/hol 9:00-19:00 / closed Mon, Sun, irregular",
-    "ko": "화~금 8:00~19:00, 토·공휴 9:00~19:00 / 월·일 부정기"
+    "ja": "閉店情報あり（営業状況要確認）",
+    "zh": "有歇业记录（营业状态待确认）",
+    "en": "Reported closed (verify status before visiting)",
+    "ko": "폐점 정보 있음(영업 여부 확인 필요)"
    },
    "fee_i18n": {
-    "ja": "モーニング 1,000円前後",
-    "zh": "早餐 约1000日元",
-    "en": "Morning set ~1,000 JPY",
-    "ko": "모닝 약 1,000엔"
+    "ja": "現在の販売・価格情報は確認できません",
+    "zh": "目前无法确认营业和售价",
+    "en": "Current operating status and prices unverified",
+    "ko": "현재 영업 여부와 가격 확인 불가"
    },
    "bestTime_i18n": {
     "ja": "昼",
@@ -26778,7 +27011,10 @@
      "en": "Opens early in the morning",
      "ko": "아침 일찍 영업"
     }
-   ]
+   ],
+   "businessStatus": "reported_closed",
+   "businessStatusSource": "https://tabelog.com/tokyo/A1311/A131101/13201512/",
+   "businessStatusReviewedAt": "2026-11-03"
   },
   {
    "name": "Readin’ Writin’",
@@ -28597,8 +28833,8 @@
    ],
    "image": "../images/観光地/M’amour（マムール）.jpg",
    "bestTime": "昼",
-   "hours": "12:00〜18:00（アポイント制）／水・木曜定休",
-   "fee": "雑貨・アンティーク 1,000円〜",
+   "hours": "12:00～18:00（月火は要予約／金土日は通常営業・水木休）",
+   "fee": "商品により異なる（掲載商品例1,760円～）",
    "name_i18n": {
     "ja": "M’amour（マムール）",
     "zh": "M'amour",
@@ -28612,16 +28848,16 @@
     "ko": "메구로 가구 거리에 있는 프랑스 잡화·앤티크 셀렉트숍, 실용적이고 아름다운 식기·커트러리 완비."
    },
    "hours_i18n": {
-    "ja": "12:00〜18:00（アポイント制）／水・木曜定休",
-    "zh": "12:00~18:00（预约制）／水·木休",
-    "en": "12:00-18:00 (by appointment) / closed Wed & Thu",
-    "ko": "12:00~18:00 (아포인트제) / 수·목 정기휴무"
+    "ja": "12:00～18:00（月火は要予約／金土日は通常営業・水木休）",
+    "zh": "12:00–18:00（周一、周二须预约；周五至周日正常营业；周三、周四休）",
+    "en": "12:00–18:00 (appointment Mon–Tue; open Fri–Sun; closed Wed–Thu)",
+    "ko": "12:00~18:00(월·화 예약제, 금~일 일반 영업, 수·목 휴무)"
    },
    "fee_i18n": {
-    "ja": "雑貨・アンティーク 1,000円〜",
-    "zh": "杂货与古董约1000日元起",
-    "en": "Grocery & antiques from ¥1,000",
-    "ko": "잡화·앤티크 1,000엔~"
+    "ja": "商品により異なる（掲載商品例1,760円～）",
+    "zh": "依商品而异（所列示例从1,760日元起）",
+    "en": "Varies by product (listed examples from ¥1,760)",
+    "ko": "상품별 상이(예시 상품 1,760엔부터)"
    },
    "bestTime_i18n": {
     "ja": "昼",
@@ -28631,6 +28867,36 @@
    },
    "address": "東京都目黒区下目黒5-1-11",
    "menu": [
+    {
+     "item": "ヴェルサイユローズゴブレット",
+     "kind": "product",
+     "sourceUrl": "https://m-amour.stores.jp/items?page=2",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "2,200円（税込）",
+     "cover": "../images/観光地/recommend-illustrations/mamour-french-glassware.svg",
+     "coverRole": "illustration"
+    },
+    {
+     "item": "ビストロワイングラス",
+     "kind": "product",
+     "sourceUrl": "https://m-amour.stores.jp/items?page=2",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "1,760円（税込）",
+     "cover": "../images/観光地/recommend-illustrations/mamour-tableware.svg",
+     "coverRole": "illustration"
+    },
+    {
+     "item": "フルールドリス カトラリー（ケーキフォーク・ティースプーン）",
+     "kind": "product",
+     "sourceUrl": "https://m-amour.stores.jp/?category_id=60f3e5cd053624739cbd3217",
+     "sourceType": "official",
+     "verifiedAt": "2026-11-03",
+     "price": "1,980円（税込）",
+     "cover": "../images/観光地/recommend-illustrations/mamour-appointment.svg",
+     "coverRole": "illustration"
+    },
     {
      "item": "ラ・ロシェールのグラスが手頃",
      "kind": "note",
@@ -28652,6 +28918,24 @@
    ],
    "menu_i18n": [
     {
+     "ja": "ヴェルサイユローズゴブレット",
+     "zh": "凡尔赛玫瑰玻璃杯",
+     "en": "Versailles Rose goblet",
+     "ko": "베르사유 로즈 고블렛"
+    },
+    {
+     "ja": "ビストロワイングラス",
+     "zh": "Bistro葡萄酒杯",
+     "en": "Bistro wine glass",
+     "ko": "비스트로 와인잔"
+    },
+    {
+     "ja": "フルールドリス カトラリー（ケーキフォーク・ティースプーン）",
+     "zh": "百合花纹餐具（蛋糕叉/茶匙）",
+     "en": "Fleur-de-lis cake fork / teaspoon",
+     "ko": "플뢰르 드 리스 케이크 포크·티스푼"
+    },
+    {
      "ja": "ラ・ロシェールのグラスが手頃",
      "zh": "拉·罗歇爾杯子价格亲民",
      "en": "La Rochère glasses are affordable",
@@ -28669,7 +28953,8 @@
      "en": "Appointment system—contact ahead",
      "ko": "아포인트제라 사전 연락"
     }
-   ]
+   ],
+   "recommendationReviewedAt": "2026-11-03"
   },
   {
    "name": "シャンティ紅茶",
