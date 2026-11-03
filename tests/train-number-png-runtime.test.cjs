@@ -308,6 +308,73 @@ test('JobanLocal PNG family excludes other lines, operators, dates, types and co
   assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe').model,
     'E233系7000番台','existing Saikyo K-tail mapping must remain unchanged');
 });
+test('Chuo-Sobu subway number crosswalk resolves exact Y/A source trains without confusing Metro S and JR K',()=>{
+  const cases=[
+    ['485Y','Westbound','weekday','東京メトロ15000系','東京メトロ_15000系.png'],
+    ['711A','Westbound','weekday','E231系800番台（東西線直通）','JR東日本_E231系_800番台.png'],
+    ['640Y','Eastbound','weekday','東京メトロ15000系','東京メトロ_15000系.png'],
+    ['604Y','Eastbound','weekday','E231系800番台（東西線直通）','JR東日本_E231系_800番台.png'],
+    ['1023Y','Westbound','holiday','東京メトロ15000系','東京メトロ_15000系.png'],
+    ['1003Y','Westbound','holiday','E231系800番台（東西線直通）','JR東日本_E231系_800番台.png']
+  ];
+  for(const [num,direction,calendar,model,asset] of cases){
+    const p=sql({trainNumber:num,positionLineId:'ChuoSobuLocal',
+      sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
+      trainType:'odpt.TrainType:JR-East.Local',trainOperator:'JR-East',
+      railDirection:direction,serviceDate:'2026-11-04',calendarType:calendar,
+      serviceId:calendar==='weekday'?'odpt.Calendar:Weekday':'odpt.Calendar:SaturdayHoliday'});
+    const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(chosen,num+' / '+direction+' / '+calendar);
+    assert.equal(chosen.trainNumber,num,'public JR segment number must not be rewritten');
+    assert.equal(chosen.model,model);
+    assert.ok(chosen.pngPath.endsWith('/'+asset));
+    assert.equal(chosen.representative,true);
+    const svg=marker(p,'ChuoSobuLocal');
+    assert.equal(svg.kind,'vehicle');
+    assert.equal(svg.iconSrc,chosen.pngPath);
+    assert.equal(svg.planned,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+});
+test('Tozai A/B-prefixed complete K/S/T numbers and rapid R keep actual number and source scope',()=>{
+  for(const [num,model,asset] of [
+    ['B485S','東京メトロ15000系','東京メトロ_15000系.png'],
+    ['B711KR','E231系800番台（東西線直通）','JR東日本_E231系_800番台.png'],
+    ['A1758T','東葉高速2000系','東葉高速鉄道_2000系.png']
+  ]){
+    const p=live({trainNumber:num,positionLineId:'Tozai',serviceDate:'2026-11-04',
+      sourceRailway:'odpt.Railway:TokyoMetro.Tozai',trainOperator:'TokyoMetro',
+      trainType:'odpt.TrainType:TokyoMetro.Rapid'});
+    const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(chosen,num);
+    assert.equal(chosen.trainNumber,num);
+    assert.equal(chosen.model,model);
+    assert.ok(chosen.pngPath.endsWith('/'+asset));
+    assert.equal(marker(p,'Tozai').iconSrc,chosen.pngPath);
+  }
+});
+test('Tozai through representative PNG rejects wrong JR segment numbers, direction, calendar, source, stock and dates',()=>{
+  const base={trainNumber:'485Y',positionLineId:'ChuoSobuLocal',
+    sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
+    railDirection:'Westbound',calendarType:'weekday',serviceDate:'2026-11-04',
+    trainType:'odpt.TrainType:JR-East.Local',trainOperator:'JR-East'};
+  for(const change of [
+    {trainNumber:'485B'},{trainNumber:'485S'},{trainNumber:'711A'},
+    {railDirection:'Eastbound'},{railDirection:''},{calendarType:'holiday'},
+    {positionLineId:'ChuoRapid'},{sourceRailway:'odpt.Railway:TokyoMetro.Tozai'},
+    {trainOperator:'TokyoMetro'},{trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {serviceDate:'2026-12-01'},{serviceDate:'2026-10-31'},
+    {realtimeVehicleType:'東京メトロ07系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',confirmed:true,models:['E231系800番台']}}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({...base,...change})),null,
+      'conflicting/non-verified route '+JSON.stringify(change));
+  }
+  assert.equal(root.TrainNumberPngRanges.match('A1758T','ChuoSobuLocal'),null,
+    'Toyo Rapid 2000 must not be inferred onto the JR local line');
+  assert.equal(root.TrainNumberPngRanges.match('B485S','ChuoSobuLocal'),null);
+  assert.equal(root.TrainNumberPngRanges.match('485Y','JobanLocal'),null);
+});
 test('1932T: ChuoRapid ODPT live number -> scoped E233-0 SVG PNG',()=>{
   const p=live({trainNumber:'1932T',trainId:'odpt.Train:JR-East.ChuoRapid.1932T',
     positionLineId:'ChuoRapid',sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
