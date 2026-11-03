@@ -24,6 +24,7 @@ on:
       - 'images/列车/**'
       - 'tools/*canonical*test.cjs'
       - 'tools/joban-realtime-railway-scope.test.cjs'
+      - 'tools/nambu-branch-official-hybrid.test.cjs'
       - 'tools/boso-realtime-published-plan-audit.test.cjs'
       - 'js/trains-render.js'
       - 'js/data-fusion.js'
@@ -105,6 +106,10 @@ jobs:
         run: node tools/train-regional-fleet-scope.test.cjs
       - name: Verify fan-source audit and official Sonic double-clock matches
         run: node tools/train-railfan-official-corroboration.test.cjs
+      - name: Verify official Hamakawasaki branch timetable and exact live isolation
+        run: |
+          node --check data/timetables/nambu-branch-official-202611.js
+          node tools/nambu-branch-official-hybrid.test.cjs
       - name: Verify cross-line canonical identity and realtime hybrid boundaries
         run: |
           node tools/joban-canonical-realtime-hybrid.test.cjs
