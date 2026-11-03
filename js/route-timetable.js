@@ -8,14 +8,46 @@
     if (p[0] > 27 || p[1] > 59) return null;
     return (p[0] < 4 ? p[0] + 24 : p[0]) * 60 + p[1];
   }
+  // Follow the same published Japan holiday dates and optional operator
+  // overrides as TrainPositionEstimator. Route search is also loaded on Home,
+  // where TrainPositionEstimator is not available.
+  // https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
+  var publishedHolidays = {
+    '2026': new Set(['01-01','01-12','02-11','02-23','03-20','04-29',
+      '05-03','05-04','05-05','05-06','07-20','08-11','09-21','09-22',
+      '09-23','10-12','11-03','11-23']),
+    '2027': new Set(['01-01','01-11','02-11','02-23','03-21','03-22',
+      '04-29','05-03','05-04','05-05','07-19','08-11','09-20',
+      '09-23','10-11','11-03','11-23'])
+  };
+  function calendarsForDate(date) {
+    var estimator = window.TrainPositionEstimator;
+    if (estimator && typeof estimator.getCalendarsForDate === 'function') {
+      return estimator.getCalendarsForDate(date).map(function(c){return c.split(':').pop();});
+    }
+    var published = publishedHolidays[date.slice(0,4)];
+    var parsed = new Date(date + 'T12:00:00Z');
+    if (!published || isNaN(parsed.getTime()) ||
+        parsed.toISOString().slice(0,10) !== date) return [];
+    var day = parsed.getUTCDay(), override = window.RuntimeConfig &&
+      window.RuntimeConfig.SERVICE_DAY_CALENDAR &&
+      window.RuntimeConfig.SERVICE_DAY_CALENDAR[date];
+    if (override === 'holiday') day = 0;
+    else if (override === 'weekday') day = 1;
+    else if (override === 'saturday') day = 6;
+    else if (published.has(date.slice(5))) day = 0;
+    return day === 0 ? ['Holiday','SaturdayHoliday','Sunday'] :
+      day === 6 ? ['Saturday','SaturdayHoliday'] : ['Weekday'];
+  }
   function context(options) {
     options = options || {};
     var now = new Date(Date.now() + 9 * 3600000);
     var minute = parseTime(options.mode === 'now' || !options.mode ? now.getUTCHours() + ':' + String(now.getUTCMinutes()).padStart(2, '0') : options.time);
     var day = new Date(now.getTime());
     if (now.getUTCHours() < 4) day.setUTCDate(day.getUTCDate() - 1);
-    return { minute:minute, mode:options.mode || 'now', date:day.toISOString().slice(0,10),
-      calendars:day.getUTCDay() === 0 ? ['Holiday','Sunday','SaturdayHoliday'] : day.getUTCDay() === 6 ? ['Saturday','SaturdayHoliday'] : ['Weekday'] };
+    var date = day.toISOString().slice(0,10);
+    return { minute:minute, mode:options.mode || 'now', date:date,
+      calendars:calendarsForDate(date) };
   }
   function candidates(rows, from, to, ctx) {
     var out = [];
