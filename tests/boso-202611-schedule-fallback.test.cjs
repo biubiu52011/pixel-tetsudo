@@ -123,11 +123,18 @@ test('05:25 JST: Uchibo 120M and Sotobo 220M / 3591F run independently',()=>{
   segment(o,'Sotobo','220M','Toke','Honda');
   segment(o,'Sotobo','3591F','Hon-Chiba','Soga');
 });
-test('05:40 JST: Uchibo 120M finished, Sotobo 220M and 3591F remain',()=>{
-  const o=estimateAt('2026-11-03T20:40:00Z');
-  assert.equal(find(o,'Uchibo','120M'),undefined);
-  segment(o,'Sotobo','220M','Soga','Hon-Chiba');
-  segment(o,'Sotobo','3591F','Toke','Oami');
+test('05:40 Toke dwell, then 05:42 departures preserve real station clocks',()=>{
+  const stopped=estimateAt('2026-11-03T20:40:00Z');
+  assert.equal(find(stopped,'Uchibo','120M'),undefined);
+  segment(stopped,'Sotobo','220M','Soga','Hon-Chiba');
+  const rapid=find(stopped,'Sotobo','3591F');
+  assert.ok(rapid,'3591F remains in timetable at Toke');
+  assert.equal(lines.Sotobo.stations[rapid.stationIndex],'Toke');
+  assert.equal(rapid.segmentToIndex,undefined,
+    '05:40 arrival must be a station stop, not a premature departure');
+  const departed=estimateAt('2026-11-03T20:42:00Z');
+  segment(departed,'Sotobo','220M','Hon-Chiba','Chiba');
+  segment(departed,'Sotobo','3591F','Toke','Oami');
 });
 test('06:07 JST: Uchibo 3680F and Sotobo 221M keep source train numbers',()=>{
   const o=estimateAt('2026-11-03T21:07:00Z');
