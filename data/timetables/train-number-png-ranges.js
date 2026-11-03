@@ -100,7 +100,10 @@
     // Chuo Main November 2026: full M train numbers, NOT trailing
     // operation numbers. JR East's published tables pair the same M
     // service with a T/H train number at Takao: 640M -> 640T,
-    // 726M -> 726H and 2339T -> 2339M. The 640M morning train
+    // 726M -> 726H and 2339T -> 2339M. Include only M numbers
+    // directly paired with T/H in the 2026-11 weekday or holiday
+    // official tables; nearby M-only locals have no E233 proof.
+    // The 640M morning train
     // waits overnight at Otsuki before departing; this is a real
     // ODPT train record, never an advance-generated timetable vehicle.
     // The E233 PNG is a representative stock image, not an observed set.
@@ -112,17 +115,16 @@
     {lineIds:["ChuoMain"],numberFormat:"full",
       from:600,to:2399,suffixes:"M",excludeTrainType:"LimitedExpress",
       publishedNumbers:[
-        "640M","645M","648M","661M","722M","724M","726M","744M",
+        "640M","648M","661M","722M","724M","726M","744M",
         "760M","818M","865M","919M","1025M","1081M","1103M",
-        "1115M","1118M","1164M","1173M","1175M","1223M",
-        "1257M","1280M","1302M","1314M","1324M","1349M",
-        "1393M","1427M","1429M","1472M","1474M","1519M",
-        "1522M","1556M","1569M","1626M","1628M","1629M",
-        "1633M","1648M","1692M","1709M","1725M","1727M",
-        "1753M","1818M","1825M","1853M","1867M","1868M",
-        "1917M","1919M","1923M","1928M","1932M","1991M",
-        "1993M","2008M","2024M","2026M","2052M","2152M",
-        "2166M","2218M","2222M","2290M","2292M","2339M"
+        "1115M","1118M","1164M","1173M","1175M","1223M","1257M",
+        "1280M","1302M","1314M","1324M","1349M","1393M","1427M",
+        "1429M","1472M","1474M","1519M","1522M","1556M","1569M",
+        "1626M","1628M","1629M","1633M","1648M","1692M","1709M",
+        "1725M","1727M","1753M","1818M","1825M","1853M","1867M",
+        "1868M","1917M","1919M","1923M","1928M","1932M","1991M",
+        "1993M","2008M","2024M","2026M","2052M","2152M","2166M",
+        "2218M","2222M","2290M","2292M","2339M"
       ],
       operator:"JR-East",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Chuo",
