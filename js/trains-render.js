@@ -1377,6 +1377,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var prefix = /^zh/.test(lang) ? "列车番号" : (lang === "en" ? "Train No." : "列車番号");
       tip.push(prefix + " " + number);
     }
+    // A Shinkansen service name / service number is not the operating train number.
+    if (p && p.serviceName) {
+      var namePrefix = /^zh/.test(lang) ? "列车名" :
+        (lang === "en" ? "Service" : (lang === "ko" ? "열차명" : "列車名"));
+      tip.push(namePrefix + " " + String(p.serviceName));
+    }
     if (p && p.trainType) {
       var defs = window.TRAIN_TYPE_NAMES || {};
       var def = defs[p.trainType];
