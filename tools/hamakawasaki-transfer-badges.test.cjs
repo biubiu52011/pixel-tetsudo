@@ -76,7 +76,7 @@ test('terminal branch caption clears Hama-Kawasaki transfer icon on mobile',()=>
   });
   ctx.staticLayer={appendChild(node){drawn.push(node);}};
   ctx.svgNS='http://www.w3.org/2000/svg';
-  ctx.branch=lines.NambuBranch;
+  ctx.branch={...lines.NambuBranch,id:'NambuBranch'};
   ctx._rStations=lines.NambuBranch.stations.slice().reverse();
   ctx._jFind7={station:'Shitte'};
   ctx.transferMap=map;
