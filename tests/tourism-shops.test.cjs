@@ -250,6 +250,49 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
   );
 });
 
+test('official-source audit matches the complete business catalog', () => {
+  const data = JSON.parse(source('data/core/tourism_data.json'));
+  const audit = JSON.parse(source('data/core/tourism_recommendation_audit.json'));
+  const sandbox = { window: {} };
+  execute('js/tourism-type.js', sandbox);
+  const shops = data.spots.filter(spot => sandbox.window.TourismType.getSpotType(spot) === 'shop');
+  assert.equal(audit.totals.shops, shops.length);
+  const indexed = new Map(audit.shops.map(item => [item.name, item]));
+  assert.equal(indexed.size, shops.length);
+  let reviewed = 0, unsupported = 0, notes = 0, closed = 0, verifiedShops = 0, noteOnly = 0;
+  for (const spot of shops) {
+    const entry = indexed.get(spot.name);
+    assert.ok(entry, 'missing merchant review record: ' + spot.name);
+    const offers = (spot.menu || []).filter(item => item.kind !== 'note');
+    const sourced = offers.filter(item => item.sourceType === 'official' && item.sourceUrl);
+    const noteCount = (spot.menu || []).length - offers.length;
+    assert.equal(entry.officialItems, sourced.length, spot.name);
+    assert.equal(entry.legacyItems, offers.length - sourced.length, spot.name);
+    assert.equal(entry.visitorNotes, noteCount, spot.name);
+    reviewed += sourced.length;
+    unsupported += offers.length - sourced.length;
+    notes += noteCount;
+    if (sourced.length) verifiedShops++;
+    if (offers.length === 0) noteOnly++;
+    if (spot.businessStatus === 'reported_closed') {
+      closed++;
+      assert.equal(entry.status, 'reported_closed');
+      assert.ok(spot.businessStatusSource.startsWith('https://'));
+    }
+  }
+  assert.equal(audit.totals.verified, reviewed);
+  assert.equal(audit.totals.unverified, unsupported);
+  assert.equal(audit.totals.notes, notes);
+  assert.equal(audit.totals.reportedClosed, closed);
+  assert.equal(audit.totals.reviewedShops, verifiedShops);
+  assert.equal(audit.totals.noteOnly, noteOnly);
+  const yoshiya = shops.find(item => item.name === '木挽町よしや');
+  assert.ok(yoshiya.menu.some(item => item.item.includes('5個入') && item.price.includes('850円')));
+  assert.ok(!yoshiya.menu.some(item => item.item.includes('2個入') && item.kind !== 'note'));
+  const galaxcity = shops.find(item => item.name === 'ギャラクシティ');
+  assert.ok(galaxcity.menu.some(item => item.item.includes('がんばるウォール') && item.sourceUrl));
+});
+
 test('all four languages use an industry-neutral recommendations title', () => {
   const labels = [...source('js/translations.js').matchAll(/"detail\.menu": "([^"]+)"/g)]
     .map(match => match[1].replace(/\\u([0-9a-f]{4})/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16))));
