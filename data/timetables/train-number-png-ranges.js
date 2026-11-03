@@ -387,6 +387,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-yamanote-e235-0-v15",match:match
+    version:"20261104-yamanote-e235-0-v16",match:match
   });
 })(window);
