@@ -1,0 +1,159 @@
+'use strict';
+/* Exact JR East 2026-11 Yokosuka-Sobu/Boso public-number display PNGs.
+ * E257-5000 special trainset is NEVER inferred from an 8xxx/9xxx M range.
+ * Run: node --test tests/yokosuka-sobu-202611-number-png.test.cjs
+ */
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),vm=require('node:vm');
+const root={};
+const ctx=vm.createContext({window:root,Date,console:{debug(){},warn(){},log(){},error(){}},
+  _isTrainArtworkFailureActive(){return false}});
+const indexFile='data/timetables/jreast-sobu-yokosuka-202611-number-index.js';
+for(const file of [
+  'data/timetables/vehicle-garage-png-map.js',
+  indexFile,
+  'data/timetables/train-number-png-ranges.js',
+  'js/train-vehicle.js'
+])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
+const render=fs.readFileSync('js/trains-render.js','utf8');
+const start=render.indexOf('  function _trainMarkerDomKind(');
+const end=render.indexOf('  // Public identification boundary:',start);
+assert.ok(start>=0&&end>start);
+vm.runInContext(render.slice(start,end),ctx,{filename:'js/trains-render.js:spec'});
+const p235='../images/列车/JR東日本/JR東日本_E235系_1000番台.png';
+const p259='../images/列车/JR東日本/JR東日本_E259系.png';
+const p257='../images/列车/JR東日本/JR東日本_E257系_500番台.png';
+function position(line,number,type,calendar='holiday',change={}) {
+  return {
+    trainId:'published:'+line+':'+number,
+    trainNumber:number,positionLineId:line,
+    sourceRailway:'odpt.Railway:JR-East.'+line,trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.'+type,
+    serviceDate:'2026-11-03',calendarType:calendar,
+    positionSource:'realtime-api',estimated:false,
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
+    ...change
+  };
+}
+function choose(p) {
+  return root.TrainVehicle.lookupTrainNumberRangePng(p);
+}
+function picture(p) {
+  return ctx._trainMarkerSpec(p,p.trainId,p.positionLineId);
+}
+function assertModel(p,model,icon){
+  const answer=choose(p);
+  assert.ok(answer,p.positionLineId+' '+p.trainNumber+' '+p.calendarType);
+  assert.equal(answer.model,model);
+  assert.equal(answer.pngPath,icon);
+  assert.equal(answer.planned,true);
+  const marker=picture(p);
+  assert.equal(marker.kind,'vehicle');
+  assert.equal(marker.iconSrc,icon);
+  assert.equal(marker.planned,true);
+  assert.equal(marker.compact,false);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+    'public timetable reference must not confirm physical carset');
+  assert.equal(p.vehicleResolvedUpstream,false);
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...p,displayLineId:p.positionLineId},true).kind,'unresolved');
+}
+test('E235-1000 Yokosuka S, Sobu Rapid F and verified Narita F through lines',()=>{
+  for(const args of [
+    ['Yokosuka','1005S','Local','holiday'],
+    ['Yokosuka','1004S','Local','weekday'],
+    ['SobuRapid','1004F','Rapid','holiday'],
+    ['SobuRapid','1005F','Rapid','weekday'],
+    ['SobuMain','2627F','Rapid','holiday'],
+    ['Narita','2627F','Rapid','holiday'],
+    ['NaritaAirportBranch','2627F','Rapid','holiday']
+  ])assertModel(position(...args),'E235系1000番台',p235);
+  // Yokosuka Shonan-Shinjuku H/Y and M-numbered trains are different
+  // service groups, not proof that the physical train is E235-1000.
+  for(const number of ['859H','2521Y','4521Y','3835M','1004F']){
+    assert.equal(choose(position('Yokosuka',number,'Local','weekday')),null,
+      'Yokosuka other service family must not be blanket mapped '+number);
+  }
+  assert.equal(choose(position('SobuRapid','1004F','Rapid','weekday')),null,
+    'weekday and holiday have distinct published number sets');
+});
+test('E259 Narita Express 2001M-2054M and calendar-specific Shiosai 400xM',()=>{
+  for(const args of [
+    ['Yokosuka','2001M','LimitedExpress','holiday'],
+    ['Yokosuka','2054M','LimitedExpress','holiday'],
+    ['SobuRapid','2001M','LimitedExpress','holiday'],
+    ['SobuMain','2001M','LimitedExpress','holiday'],
+    ['Narita','2054M','LimitedExpress','holiday'],
+    ['NaritaAirportBranch','2054M','LimitedExpress','weekday'],
+    ['SobuMain','4001M','LimitedExpress','holiday'],
+    ['SobuMain','4002M','LimitedExpress','weekday'],
+    ['SobuMain','4014M','LimitedExpress','holiday']
+  ])assertModel(position(...args),'E259系',p259);
+  for(const [number,calendar] of [
+    ['4006M','weekday'],['4011M','weekday'],['4002M','holiday'],
+    ['2054M','holiday']
+  ]){
+    const line=number==='2054M'?'SobuRapid':'SobuMain';
+    assert.equal(choose(position(line,number,'LimitedExpress',calendar)),null,
+      'Shiosai E257-500 and absent Narita Express must not map to E259 '+number);
+  }
+});
+test('E257-500 Wakashio/Sazanami, Keiyo through line and two weekday Shiosai runs',()=>{
+  for(const args of [
+    ['Uchibo','1001M','LimitedExpress','weekday'],
+    ['Uchibo','1007M','LimitedExpress','weekday'],
+    ['Sotobo','1051M','LimitedExpress','holiday'],
+    ['Sotobo','1052M','LimitedExpress','weekday'],
+    ['Sotobo','1071M','LimitedExpress','weekday'],
+    ['Keiyo','1051M','LimitedExpress','holiday'],
+    ['Keiyo','1001M','LimitedExpress','weekday'],
+    ['SobuMain','4006M','LimitedExpress','weekday'],
+    ['SobuMain','4011M','LimitedExpress','weekday']
+  ])assertModel(position(...args),'E257系500番台',p257);
+  for(const args of [
+    ['Uchibo','1001M','LimitedExpress','holiday'],
+    ['Sotobo','1052M','LimitedExpress','holiday'],
+    ['Keiyo','1001M','LimitedExpress','holiday'],
+    ['SobuMain','4007M','LimitedExpress','weekday']
+  ])assert.equal(choose(position(...args)),null);
+});
+test('do not treat E257-5000 8xxx/9xxx special numbers as a monthly fleet interval',()=>{
+  for(const num of ['9071M','9077M','8083M','9882M','9086M']){
+    assert.equal(choose(position('SobuMain',num,'LimitedExpress')),null);
+    assert.equal(choose(position('Yokosuka',num,'LimitedExpress')),null);
+  }
+  // Without a dated train-by-train official roster AND an approved 5000
+  // series gallery artwork, do not borrow the E257-500 PNG.
+});
+test('source railway, operator, train type, date, approved model and page cache isolation',()=>{
+  const base=position('Yokosuka','1005S','Local');
+  for(const change of [
+    {sourceRailway:'odpt.Railway:JR-East.SobuRapid'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.Yokosuka'},
+    {sourceRailway:''},
+    {trainOperator:'JR-West'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {serviceDate:'2026-12-01'},
+    {serviceDate:'2026-10-31'},
+    {serviceDate:''},
+    {calendarType:'unknown',serviceId:''},
+    {realtimeVehicleType:'E231系1000番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E231系1000番台']}}
+  ])assert.equal(choose({...base,...change}),null,JSON.stringify(change));
+  const sql={...base,positionSource:'supabase-train-run',estimated:true,
+    trainOperator:'',calendarType:'',serviceId:'odpt.Calendar:SaturdayHoliday'};
+  assertModel(sql,'E235系1000番台',p235);
+  assert.equal(ctx._trainMarkerSpec({...base,displayLineId:'SobuRapid'},
+    base.trainId,'SobuRapid').kind,'unresolved');
+  const html=fs.readFileSync('pages/trains.html','utf8');
+  const index=fs.readFileSync(indexFile,'utf8');
+  const version=index.match(/version:"([^"]+)"/);
+  assert.ok(version);
+  assert.ok(html.includes('jreast-sobu-yokosuka-202611-number-index.js?v='+version[1]));
+  const gallery=html.indexOf('vehicle-garage-png-map.js');
+  const indexAt=html.indexOf('jreast-sobu-yokosuka-202611-number-index.js');
+  const numberRules=html.indexOf('train-number-png-ranges.js');
+  const vehicle=html.indexOf('js/train-vehicle.js');
+  assert.ok(gallery>=0&&gallery<indexAt&&indexAt<numberRules&&numberRules<vehicle,
+    'approved gallery and dated index must load before number PNG selector');
+});
