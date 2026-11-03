@@ -2,6 +2,8 @@
  * Match the published trainNumber directly: K/F/S service numbers use the
  * final two numeric characters; Sotetsu/JR-through M numbers and ChuoRapid
  * T/H service numbers use their full train-number range.
+ * Ome line additionally uses suffixless three/four-digit train numbers;
+ * these are public train numbers too, NOT vehicle identifiers.
  * Chuo corridor regular express M numbers use full numbers PLUS the published
  * train type (LimitedExpress) because ordinary services also carry M numbers.
  * Never convert any train number to an operation number.
@@ -21,6 +23,14 @@
  * https://timetables.jreast.co.jp/2611/timetable-v/223d2p.html
  * https://timetables.jreast.co.jp/2611/timetable-v/223u2p.html
  * E353 stock: https://www.jreast.co.jp/train/express/azusa_kaiji.html
+ *
+ * Ome (incl. Ome-Okutama) and Itsukaichi published train numbers, Nov 2026:
+ * https://timetables.jreast.co.jp/2611/timetable-v/652u1.html
+ * https://timetables.jreast.co.jp/2611/timetable-v/652u2.html
+ * https://timetables.jreast.co.jp/2611/timetable-v/652d1p.html
+ * https://timetables.jreast.co.jp/2611/timetable-v/652d2.html
+ * JR East confirms E233-0 on suffixless 843/1103 and 1379T/721T:
+ * https://media.jreast.co.jp/articles/2564
  */
 (function(root){
   "use strict";
@@ -57,6 +67,19 @@
       from:400,to:2599,suffixes:"TH",
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
+    // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
+    // 1705, 2348). They are FULL public numbers, not operation-number tails.
+    // The common E233-0 gallery PNG represents the model; a 4-car Ome-Okutama
+    // train must not be claimed to be a verified 10-car physical formation.
+    {lineIds:["Ome"],numberFormat:"full",
+      from:400,to:2599,suffixes:"TH",excludeTrainType:"LimitedExpress",
+      model:"E233系0番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    {lineIds:["Ome"],numberFormat:"bare",
+      from:400,to:2499,suffixes:"",excludeTrainType:"LimitedExpress",
+      model:"E233系0番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
     // 2026 scheduled Chuo limited express: 1M (Azusa 1),
     // 3107M (Kaiji 7), 2107M (Fuji Excursion 7), 5003M (Azusa 3).
     // These intervals overlap M-number ordinary trains, so require the
@@ -85,13 +108,15 @@
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
     // Match train NUMBER ranges, not an inferred operation ID.
-    // 1940K uses terminal 40; 277M and 1932T use their full number.
+    // 1940K uses terminal 40; 277M, 1932T and plain 1103 use their
+    // entire published train number, without operation-number conversion.
     var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
     var through=number.match(/^([0-9]{1,4})([MTH])$/);
-    if((!regular&&!through)||!line)return null;
-    var numberValue=regular?Number(regular[1]):Number(through[1]);
-    var suffix=regular?regular[2]:through[2];
-    var format=regular?"tail":"full";
+    var bare=number.match(/^([0-9]{3,4})$/);
+    if((!regular&&!through&&!bare)||!line)return null;
+    var numberValue=Number(regular?regular[1]:through?through[1]:bare[1]);
+    var suffix=regular?regular[2]:through?through[2]:"";
+    var format=regular?"tail":bare?"bare":"full";
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if((row.numberFormat||"tail")!==format||
@@ -99,6 +124,10 @@
           numberValue>row.to||row.suffixes.indexOf(suffix)<0)continue;
       // M suffix alone does not distinguish an express from an ordinary
       // train: require the ODPT or SQL train-type field for these rows.
+      var actualType=String(context&&(context.trainType||context.typeName)||"");
+      if(row.excludeTrainType &&
+         (/(?:^|[.:])LimitedExpress$/i.test(actualType) ||
+          /^特急$/.test(actualType) || /^limited express$/i.test(actualType)))continue;
       if(row.trainType){
         var trainType=String(context&&(context.trainType||context.typeName)||"");
         if(!/(?:^|[.:])LimitedExpress$/i.test(trainType)&&
@@ -112,6 +141,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v4",match:match
+    version:"20261103-direct-number-v5",match:match
   });
 })(window);

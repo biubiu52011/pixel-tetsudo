@@ -332,3 +332,68 @@ test('Chuo M regulars, numbered non-expresses and date-gated extras never become
   assert.equal(root.TrainNumberPngRanges.match('3107M','ChuoMain',
     {trainType:'odpt.TrainType:JR-East.LimitedExpress'}).model,'E353系');
 });
+
+test('2026 Ome official plain train numbers map directly to E233-0 PNG',()=>{
+  const numbers=['509','843','1103','1705','2348'];
+  for(const trainNumber of numbers){
+    const p=live({trainNumber,positionLineId:'Ome',
+      trainId:'odpt.Train:JR-East.Ome.'+trainNumber,
+      sourceRailway:'odpt.Railway:JR-East.Ome',
+      trainType:'odpt.TrainType:JR-East.Local'});
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(mapped,'published Ome train number '+trainNumber);
+    assert.equal(mapped.trainNumber,trainNumber);
+    assert.equal(mapped.model,'E233系0番台');
+    assert.equal(mapped.representative,true);
+    assert.match(mapped.pngPath,/JR東日本_E233系_0番台\.png$/);
+    const spec=marker(p,'Ome');
+    assert.equal(spec.kind,'vehicle');
+    assert.equal(spec.planned,true);
+    assert.equal(spec.iconSrc,mapped.pngPath);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+});
+test('2026 Ome official T and H suffix numbers map directly to E233-0 PNG',()=>{
+  for(const trainNumber of ['434T','405H','1378T','1926H','2386T']){
+    const p=live({trainNumber,positionLineId:'Ome',
+      trainId:'odpt.Train:JR-East.Ome.'+trainNumber,
+      sourceRailway:'odpt.Railway:JR-East.Ome',
+      trainType:'odpt.TrainType:JR-East.Local'});
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(mapped,trainNumber);
+    assert.equal(mapped.model,'E233系0番台');
+    assert.match(marker(p,'Ome').iconSrc,/JR東日本_E233系_0番台\.png$/);
+  }
+});
+test('2026 Ome SQL planned-trip number uses the same PNG as live ODPT',()=>{
+  const p=sql({trainNumber:'1103',
+    trainId:'planned-trip:2026-11-03|JR-East|Ome|1103',
+    positionLineId:'Ome',
+    sourceRailway:'odpt.Railway:JR-East.Ome',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped);
+  assert.equal(marker(p,'Ome').iconSrc,mapped.pngPath);
+});
+test('Ome regular train-number mapping excludes specials and unrelated lines',()=>{
+  for(const n of ['7741','7847','9270M','9271M','9351M','9577M','399','2500','399T','2600T','1103M']){
+    const p=live({trainNumber:n,positionLineId:'Ome',
+      sourceRailway:'odpt.Railway:JR-East.Ome',
+      trainType:'odpt.TrainType:JR-East.Local'});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      n+' must not enter the regular Ome map');
+  }
+  for(const line of ['ChuoRapid','ChuoMain','SaikyoKawagoe']){
+    assert.equal(root.TrainNumberPngRanges.match('1103',line),null,
+      'bare Ome train numbers must stay scoped: '+line);
+  }
+  for(const n of ['843','1378T']){
+    const p=live({trainNumber:n,positionLineId:'Ome',
+      trainType:'odpt.TrainType:JR-East.LimitedExpress'});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'a LimitedExpress must not receive an ordinary Ome reference');
+  }
+  assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
+});
