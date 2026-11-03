@@ -1590,6 +1590,14 @@
           }
           var _handover = _resolveRealtimeHandover(t, targetLine, allLines);
           if (_handover) targetLine = _handover.target;
+          // Nambu branch is NOT in the published JR-East live-position
+          // coverage. Its optional on-demand probe must fail closed unless
+          // this fresh observation explicitly belongs to the exact railway.
+          // Never reconstruct an allegedly live Hamakawasaki train by station
+          // overlap, suffix H or the timetable's official number alone.
+          if (targetLine && targetLine.lid === "NambuBranch" &&
+              String(t["odpt:railway"] || "") !==
+                "odpt.Railway:JR-East.NambuBranch") return;
           if (targetLine) {
             var lid = targetLine.lid;
             var idx = targetLine.idx;
