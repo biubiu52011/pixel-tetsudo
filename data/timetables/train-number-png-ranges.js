@@ -184,6 +184,39 @@
       allowedModelLabels:["E233系1000番台"],
       model:"E233系1000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_1000番台.png"},
+    // Ito Line: exact-number 2026-11 OFFICIAL JR East limited express
+    // services at Ito, not an M-suffix-wide vehicle assumption.
+    // 3001M/3002M = Saphir Odoriko (E261).
+    // 3021/22/24/25/26/29/30/31M = regular Odoriko (E257).
+    // This is a planned representative PNG only. 40xxM Shuzenji
+    // sections turn at Atami; they are NOT Ito through train numbers.
+    // Seasonal 80xxM/90xxM and 3003M variants require dated evidence.
+    // Official 2026-11 train refs:
+    // https://timetables.jreast.co.jp/2611/train/060/063541.html
+    // https://timetables.jreast.co.jp/2611/train/010/010061.html
+    // https://timetables.jreast.co.jp/2611/train/095/099001.html
+    // https://timetables.jreast.co.jp/2611/train/095/098981.html
+    // https://www.izukyu.co.jp/train/train.php
+    {lineIds:["Ito"],numberFormat:"full",from:3001,to:3002,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["3001M","3002M"],operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Ito"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E261系"],
+      model:"E261系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E261系_サフィール踊り子.png"},
+    {lineIds:["Ito"],numberFormat:"full",from:3021,to:3031,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:[
+        "3021M","3022M","3024M","3025M","3026M",
+        "3029M","3030M","3031M"
+      ],operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Ito"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系2000番台"],
+      model:"E257系2000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_2000番台.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -482,6 +515,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-keihin-abc-v18",match:match
+    version:"20261104-ito-odoriko-v19",match:match
   });
 })(window);
