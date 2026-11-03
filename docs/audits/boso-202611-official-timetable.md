@@ -85,10 +85,17 @@ source numbers and canonical records are retained unchanged:
 
 These are dated *published service labels*, not observed positions or actual
 vehicle/carset proof. All changes fail closed if the original stops or official
-source evidence differ. The two Uchibo normal train numbers `3680F` and
-`3606F` are explicitly cancelled at the read boundary on 11/7, but their
-replacement `9680M` and `9606M` itineraries have **not** been validated
-stop-by-stop and are intentionally not synthesized.
+source evidence differ. For Uchibo, the two official **11-stop** November 7 replacement
+sections also exactly match the stored normal SaturdayHoliday route clocks:
+
+| Regular source number | Official 11/7 Uchibo section | Full clock verification | JR East |
+| --- | --- | --- | --- |
+| `3680F` | `9680M` | 11/11 stops match | [9680M / 9680F](https://timetables.jreast.co.jp/en/2611/train/185/187511.html) |
+| `3606F` | `9606M` | 11/11 stops match | [9606M / 9606F](https://timetables.jreast.co.jp/en/2611/train/185/187491.html) |
+
+Only dated response display numbering is corrected. Original historical SQL
+numbers are not overwritten; other 11/7 exceptional services and downstream
+SobuRapid/Yokosuka portions are not inferred or fabricated.
 
 The retired `train_runs` table is protected by the
 `train_runs_legacy_write_disabled` database constraint. Its old import
@@ -99,9 +106,10 @@ runtime fix edits the existing response adapter only.
 
 1. Verify all **10,017** Boso SQL stop-clock rows against the applicable
    official train-specific published stop times, including 24:xx.
-2. Source and validate remaining 11/7 replacement timetable segments (especially
-   Uchibo 9680M/9606M and related rapid-line sections). Three source-matched
-   Sotobo numbers are currently served as strictly dated response overrides.
+2. Verify remaining 11/7 replacement timetable segments, especially
+   downstream SobuRapid/Yokosuka and other exceptional Boso services.
+   Five stop-verified Sotobo/Uchibo sections are currently served
+   as strictly dated response-number overrides.
 3. Audit the **13 known cross-line renumbered Boso families** and
    Keiyo / Togane / Yokosuka through continuations against continuity
    evidence; do not merge same-sounding services by hour or tail digit.
