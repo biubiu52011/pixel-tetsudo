@@ -14,6 +14,7 @@ const root={},ctx=vm.createContext({
 });
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
+  'data/timetables/joban-e231-h-202611-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -750,4 +751,81 @@ test('train-map page loads the current number PNG rules instead of stale cached 
   const rendererAt=page.indexOf('js/trains-render.js');
   assert.ok(garageAt>=0 && garageAt<rulesAt && rulesAt<vehicleAt &&
     vehicleAt<rendererAt,'gallery, rules, selector and SVG renderer load in order');
+});
+
+test('Joban 2026-11 E231 H / E657 Hitachi-Tokiwa M official-number artwork',()=>{
+  const e231='../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png';
+  const e657='../images/列车/JR東日本/JR東日本_E657系.png';
+  const rapid=(number,overrides={})=>live({
+    trainNumber:number,
+    positionLineId:'Joban',sourceRailway:'odpt.Railway:JR-East.JobanRapid',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Rapid',
+    serviceDate:'2026-11-03',calendarType:'holiday',...overrides
+  });
+  const express=(number,overrides={})=>live({
+    trainNumber:number,
+    positionLineId:'Joban',sourceRailway:'odpt.Railway:JR-East.JobanRapid',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.LimitedExpress',
+    serviceDate:'2026-11-03',calendarType:'holiday',...overrides
+  });
+  assert.equal(root.JobanE231RapidNumberIndex.weekdayCount,154);
+  assert.equal(root.JobanE231RapidNumberIndex.holidayCount,153);
+  for(const n of ['430H','1030H','2491H']){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(rapid(n)).pngPath,e231);
+    const rendered=marker(rapid(n),'Joban');
+    assert.equal(rendered.kind,'vehicle');
+    assert.equal(rendered.planned,true);
+    assert.equal(rendered.iconSrc,e231);
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+    rapid('2495H',{calendarType:'weekday'})).pngPath,e231);
+  for(const n of ['1M','30M','51M','86M']){
+    const p=express(n);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p).pngPath,e657);
+    assert.equal(marker(p,'Joban').iconSrc,e657);
+    assert.equal(marker(p,'Joban').planned,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+      'published numbers never identify a particular carset');
+    const main=express(n,{
+      positionLineId:'JobanMain',sourceRailway:'odpt.Railway:JR-East.Joban'
+    });
+    assert.equal(marker(main,'JobanMain').iconSrc,e657);
+  }
+  for(const p of [
+    rapid('1030H',{calendarType:'weekday'}),
+    rapid('2495H',{calendarType:'holiday'}),
+    rapid('999H'),rapid('1257M'),
+    rapid('430H',{serviceDate:'2026-12-01'}),
+    rapid('430H',{serviceDate:''}),
+    rapid('430H',{calendarType:''}),
+    rapid('430H',{positionLineId:'JobanMain'}),
+    rapid('430H',{sourceRailway:'odpt.Railway:JR-East.JobanLocal'}),
+    rapid('430H',{trainOperator:'TokyoMetro'}),
+    rapid('430H',{trainType:'odpt.TrainType:JR-East.LimitedExpress'}),
+    rapid('430H',{realtimeVehicleType:'E531系'}),
+    rapid('430H',{vehiclePlan:{status:'PLANNED_MODEL',models:['E531系']}}),
+    express('31M'),express('50M'),express('87M'),express('430H'),
+    express('1M',{trainType:'odpt.TrainType:JR-East.Local'}),
+    express('1M',{positionLineId:'JobanLocal'}),
+    express('1M',{sourceRailway:'odpt.Railway:JR-East.JobanLocal'}),
+    express('1M',{serviceDate:'2027-01-01'}),
+    express('1M',{realtimeVehicleType:'E653系'}),
+    express('1M',{vehiclePlan:{status:'PLANNED_MODEL',models:['E531系']}})
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'invalid service must not receive E231/E657 PNG: '+JSON.stringify(p));
+  }
+  const p=rapid('1030H');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...p,displayLineId:'Joban'},true).kind,
+    'unresolved','failed E231 PNG keeps the neutral location dot');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...express('1M'),
+    displayLineId:'Joban'},true).kind,'unresolved');
+  const html=fs.readFileSync('pages/trains.html','utf8');
+  const index=fs.readFileSync('data/timetables/joban-e231-h-202611-index.js','utf8');
+  const indexVersion=index.match(/version:"([^"]+)"/);
+  assert.ok(indexVersion,'snapshot must expose cache version');
+  assert.ok(html.includes('joban-e231-h-202611-index.js?v='+indexVersion[1]));
+  assert.ok(html.indexOf('joban-e231-h-202611-index.js') <
+    html.indexOf('train-number-png-ranges.js'),
+    'H set must load before the PNG selector');
 });
