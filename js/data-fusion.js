@@ -1213,6 +1213,54 @@
     return linked;
   }
 
+  // A ChuoMain *source-only* timetable run is a separate scheduled service.
+  // The published number may be reused in a partial live feed. Do not erase
+  // its independent location (or copy its destination onto the live train)
+  // on NUMBER matching alone. Position ownership is transferred only when
+  // exactly one fresh live observation actually traverses published stops
+  // for this one timetable run, in timetable order.
+  function _chuoMainSourceOnlyLiveMatch(estimate, liveRows) {
+    if (!estimate || estimate.positionLineId !== "ChuoMain" ||
+        estimate.positionSource !== "supabase-train-run" ||
+        estimate.canonicalGroupEvidence !== "source_only") return null;
+    var stops = Array.isArray(estimate.scheduledStopKeys)
+      ? estimate.scheduledStopKeys : [];
+    if (stops.length < 2 || !estimate.serviceDate ||
+        !estimate.trainNumber || !estimate.railDirection) return false;
+    function normalizedStation(v) {
+      return String(v || "").split(".").pop()
+        .replace(/[-_\s]/g,"").toLowerCase();
+    }
+    function direction(v) {
+      return String(v || "").split(/[.:]/).pop().toUpperCase();
+    }
+    var route = stops.map(normalizedStation);
+    var matches = (liveRows || []).filter(function(p) {
+      if (!p || p.positionSource !== "realtime-api" || !p.sourceFromStation ||
+          p.estimated === true ||
+          String(p.trainNumber || "").trim().toUpperCase() !==
+            String(estimate.trainNumber).trim().toUpperCase() ||
+          String(p.serviceDate || "").slice(0,10) !==
+            String(estimate.serviceDate).slice(0,10) ||
+          direction(p.railDirection) !== direction(estimate.railDirection) ||
+          !/^odpt\.Railway:JR-East\.(?:Chuo|ChuoMain)$/.test(String(p.sourceRailway||"")) ||
+          !/^odpt\.Railway:JR-East\.(?:ChuoMain|Chuo)$/.test(String(estimate.sourceRailway||""))) return false;
+      var expiry=String(p.sourceValidUntil || "");
+      if (expiry && (!isFinite(Date.parse(expiry)) || Date.parse(expiry) < Date.now()))
+        return false;
+      var scheduledType=String(estimate.trainType||"").split(/[.:]/).pop();
+      var actualType=String(p.trainType||"").split(/[.:]/).pop();
+      if (scheduledType && actualType && scheduledType !== actualType) return false;
+      var from=route.indexOf(normalizedStation(p.sourceFromStation));
+      if (from < 0) return false;
+      var to=normalizedStation(p.sourceToStation);
+      // The feed may omit the next station. If supplied, its order is
+      // independently checkable from this specific published itinerary.
+      return !to || (route.indexOf(to) >= from && route.indexOf(to) >= 0);
+    });
+    return matches.length === 1;
+  }
+
   // A verified ChuoMain ↔ ChuoRapid service has one active position source.
   // This does not merge train numbers or physical formations: the SQL
   // canonical ID has already been matched to ONE real observation using the
@@ -2101,12 +2149,19 @@
                 // when SQL has conflicting variants. This does not bridge their
                 // vehicle identity or inherit ambiguous destination information.
                 var _sourceKey = _sourcePositionKey(p);
-                if (_sourceKey && _liveSourceCounts[_sourceKey] === 1) return;
+                var _sourceOnlyOwnership =
+                  _chuoMainSourceOnlyLiveMatch(p, posMap[lid]);
+                // A source-only central-main train cannot be removed by a
+                // number collision with a live train on another station path.
+                var _maySuppressOnNumber = _sourceOnlyOwnership !== false;
+                if (_sourceKey && _liveSourceCounts[_sourceKey] === 1 &&
+                    _maySuppressOnNumber) return;
                 var _noKey = _sameLineNumberKey(p);
                 var _uniqueSchedule = _noKey &&
                   _estKeyCounts[_noKey] === 1 && _liveKeyCounts[_noKey] === 1;
                 if ((_pid && _haveId[_pid]) ||
-                    (_uniqueSchedule && _haveScheduledKey[_noKey])) return;
+                    (_uniqueSchedule && _haveScheduledKey[_noKey] &&
+                     _maySuppressOnNumber)) return;
                 posMap[lid].push(p);
                 if (_pid) _haveId[_pid] = true;
                 if (_noKey) _haveScheduledKey[_noKey] = true;
@@ -2143,6 +2198,10 @@
                      match = _estByTerminalKey[terminalKey];
                    }
                  }
+                // Do not steal the terminal of an unrelated ChuoMain-only
+                // schedule that merely happens to share a public number.
+                if (match && _chuoMainSourceOnlyLiveMatch(match, [p]) === false)
+                  match = null;
                 if (match && match.destinationStation) p.destinationStation = match.destinationStation;
               });
             });
