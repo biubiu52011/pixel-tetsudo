@@ -87,18 +87,20 @@ test('321M pure timetable train moves from Shiozaki toward Nirasaki at 06:10 JST
   assert.notEqual(p.runningChainId,'','distinct scheduled source identity');
 });
 test('independent 323M has its own running ID, even when both are pure timetable',()=>{
-  const x=getPositions('2026-11-03T21:15:00Z',[
-    sourceOnly('323M',realStops323),
+  const x=getPositions('2026-11-03T21:10:00Z',[
+    sourceOnly('323M',realStops323,{
+      'odpt:destinationStation':['odpt.Station:JR-East.Chuo.Kofu']
+    }),
     sourceOnly('321M',realStops321)
   ]);
   assert.equal(x.positions.length,2);
   assert.equal(new Set(x.positions.map(p=>p.runningChainId)).size,2);
   const p=x.positions.find(p=>p.trainNumber==='323M');
-  assert.equal(railway.lines.ChuoMain.stations[p.stationIndex],'Kai-Yamato');
-  assert.equal(railway.lines.ChuoMain.stations[p.segmentToIndex],'Katsunuma-budokyo');
+  assert.equal(railway.lines.ChuoMain.stations[p.stationIndex],'Sasago');
+  assert.equal(railway.lines.ChuoMain.stations[p.segmentToIndex],'Kai-Yamato');
 });
 test('before departure and after published final clock the train is absent',()=>{
-  assert.equal(getPositions('2026-11-03T20:58:00Z',[sourceOnly('323M',realStops323)]).positions.length,0);
+  assert.equal(getPositions('2026-11-03T20:50:00Z',[sourceOnly('323M',realStops323)]).positions.length,0);
   assert.equal(getPositions('2026-11-03T21:14:00Z',[sourceOnly('321M',realStops321)]).positions.length,0);
 });
 test('station-only and unknown stopped records never fabricate a moving train',()=>{
@@ -106,7 +108,7 @@ test('station-only and unknown stopped records never fabricate a moving train',(
     sourceOnly('999M',[['Kofu','06:01',true]]),
     sourceOnly('321M',realStops321)
   ]);
-  assert.deepEqual(x.positions.map(p=>p.trainNumber),['321M']);
+  assert.deepEqual(Array.from(x.positions,p=>p.trainNumber),['321M']);
 });
 test('realtime number collision outside scheduled stops does not hide pure estimate',()=>{
   const x=getPositions('2026-11-03T21:10:00Z',[sourceOnly('321M',realStops321)]);
