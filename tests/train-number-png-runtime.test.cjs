@@ -341,9 +341,10 @@ test('2026-11 ChuoMain published M numbers map to representative PNGs without op
     ['2152M','odpt.TrainType:JR-East.Local','E233系0番台','E233系_0番台']
   ];
   for(const [trainNumber,trainType,model,asset] of cases){
-    for(const source of ['realtime-api','supabase-train-run']){
+    for(const source of ['realtime-api','supabase-train-run','train-timetable']){
       const p=live({trainNumber,trainType,positionSource:source,
         trainId:'odpt.Train:JR-East.Chuo.'+trainNumber});
+      assert.equal(p.trainNumber,trainNumber,'the source switch must not rewrite the public number');
       const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
       assert.ok(mapped,trainNumber+' / '+source);
       assert.equal(mapped.trainNumber,trainNumber);
@@ -358,6 +359,21 @@ test('2026-11 ChuoMain published M numbers map to representative PNGs without op
       assert.equal(p.vehiclePlan,undefined);
     }
   }
+});
+test('Chuo Main -> Chuo Rapid published T/H aliases share gallery model but retain their segment numbers',()=>{
+  const common={serviceDate:'2026-11-04',trainOperator:'JR-East'};
+  const before=root.TrainNumberPngRanges.match('640M','ChuoMain',{
+    ...common,sourceRailway:'odpt.Railway:JR-East.Chuo',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  const after=root.TrainNumberPngRanges.match('640T','ChuoRapid',{
+    ...common,sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
+    trainType:'odpt.TrainType:JR-East.ChuoSpecialRapid'});
+  assert.ok(before);
+  assert.ok(after);
+  assert.equal(before.trainNumber,'640M');
+  assert.equal(after.trainNumber,'640T');
+  assert.equal(before.model,after.model);
+  assert.equal(before.pngPath,after.pngPath);
 });
 test('ChuoMain local M families stay source, month, model and train-number scoped',()=>{
   const base={positionLineId:'ChuoMain',
