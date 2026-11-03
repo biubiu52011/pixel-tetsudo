@@ -159,7 +159,7 @@ test('1940K: ODPT train NUMBER range -> E233-7000 PNG on SaikyoKawagoe SVG',()=>
   assert.equal(selected.trainNumber,'1940K');
   assert.equal(selected.model,'E233系7000番台');
   assert.equal(selected.source,'train-number-range');
-  assert.match(selected.pngPath,/JR東日本_E233系_7000番台\\.png$/);
+  assert.match(selected.pngPath,/JR東日本_E233系_7000番台\.png$/);
   const spec=marker(p,'SaikyoKawagoe');
   assert.equal(spec.kind,'vehicle');
   assert.equal(spec.planned,true);
@@ -171,7 +171,7 @@ test('1940K: ODPT train NUMBER range -> E233-7000 PNG on SaikyoKawagoe SVG',()=>
 test('the same direct train-number range works for estimated SQL positions',()=>{
   const p=sql({trainNumber:'1940K',positionLineId:'SaikyoKawagoe',
     sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
-  assert.match(marker(p,'SaikyoKawagoe').iconSrc,/E233系_7000番台\\.png$/);
+  assert.match(marker(p,'SaikyoKawagoe').iconSrc,/E233系_7000番台\.png$/);
 });
 test('K/F/S number tails select display PNG by scoped number ranges, without converting to operation IDs',()=>{
   const cases=[
