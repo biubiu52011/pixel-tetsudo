@@ -4970,6 +4970,30 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     };
   }
 
+  // A direct ODPT/SQL train NUMBER range is a display-image reference.
+  // Do not transform it into an operating number or assert a live carset.
+  function lookupTrainNumberRangePng(p) {
+    if (!p || !p.trainNumber ||
+        !(p.positionSource === "realtime-api" ||
+          p.positionSource === "supabase-train-run" ||
+          p.positionSource === "train-timetable" || p.estimated === true))
+      return null;
+    var lineId = String(p.positionLineId || p.lineId || "").trim();
+    var displayLineId = String(p.displayLineId || lineId).trim();
+    if (!lineId || displayLineId !== lineId) return null;
+    var rules = window.TrainNumberPngRanges;
+    if (!rules || typeof rules.match !== "function") return null;
+    var match = rules.match(p.trainNumber, lineId);
+    if (!match) return null;
+    var png = normalizeGalleryPngPath(match.pngPath);
+    var garage = window.VehicleGaragePngMap;
+    if (!png || !garage || !garage.matchModelPath(match.model, png, lineId))
+      return null;
+    return {trainNumber:String(p.trainNumber).trim(),lineId:lineId,
+      model:match.model,pngPath:png,source:"train-number-range",
+      planned:true,representative:true};
+  }
+
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -5000,7 +5024,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // Last-mile lookup handles raw ODPT/SQL positions that carry the train
     // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
     // its actual-car status, or the original train-number identity.
-    var numberPng = !identityConfirmed ? lookupTrainNumberPng(p) : null;
+    var numberPng = !identityConfirmed ?
+      (lookupTrainNumberPng(p) || lookupTrainNumberRangePng(p)) : null;
     if (numberPng) {
       if (artworkFailed !== true) {
         return {kind:"vehicle",iconSrc:numberPng.pngPath,planned:true};
@@ -5093,6 +5118,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     resolveTimetableRun: resolveTimetableRun,
     resolvePublishedPositionPlan: resolvePublishedPositionPlan,
     lookupTrainNumberPng: lookupTrainNumberPng,
+    lookupTrainNumberRangePng: lookupTrainNumberRangePng,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     getOperationPngLibrary: getOperationPngLibrary,

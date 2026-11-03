@@ -14,6 +14,7 @@ const root={},ctx=vm.createContext({
 });
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
+  'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
 ])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
@@ -145,4 +146,57 @@ test('renderer always queries the unified number-to-PNG selector on the displaye
   assert.match(render,/var markerSpec = _trainMarkerSpec\(p, trainUid, lineId\)/);
   assert.match(render,/caption\.textContent=captionBase;/,
     'ordinary train numbers must not reappear in folded list');
+});
+
+test('1940K: ODPT train NUMBER range -> E233-7000 PNG on SaikyoKawagoe SVG',()=>{
+  const p=live({trainNumber:'1940K',trainId:'odpt.Train:JR-East.SaikyoKawagoe.1940K',
+    positionLineId:'SaikyoKawagoe',sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null,
+    'no exact published vehicle should be fabricated for 1940K');
+  const selected=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(selected);
+  assert.equal(selected.trainNumber,'1940K');
+  assert.equal(selected.model,'E233系7000番台');
+  assert.equal(selected.source,'train-number-range');
+  assert.match(selected.pngPath,/JR東日本_E233系_7000番台\\.png$/);
+  const spec=marker(p,'SaikyoKawagoe');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(spec.iconSrc,selected.pngPath);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  assert.equal(p.vehiclePlan,undefined);
+});
+test('the same direct train-number range works for estimated SQL positions',()=>{
+  const p=sql({trainNumber:'1940K',positionLineId:'SaikyoKawagoe',
+    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
+  assert.match(marker(p,'SaikyoKawagoe').iconSrc,/E233系_7000番台\\.png$/);
+});
+test('K/F/S number tails select display PNG by scoped number ranges, without converting to operation IDs',()=>{
+  const cases=[
+    ['1938F','E233系7000番台'],
+    ['1940S','E233系7000番台'],
+    ['1976K','相鉄12000系'],
+    ['1984K','東京臨海高速鉄道70-000形']
+  ];
+  for(const [number,model] of cases){
+    const p=live({trainNumber:number,positionLineId:'SaikyoKawagoe',
+      sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
+    const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(chosen,number+' must match the published number range');
+    assert.equal(chosen.model,model);
+    assert.equal(marker(p,'SaikyoKawagoe').kind,'vehicle');
+  }
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').trainNumber,'1940K');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','ChuoMain'),null);
+});
+test('unlisted number tails and mismatched display lines remain neutral',()=>{
+  for(const number of ['1992K','1940M','garbage']){
+    const p=live({trainNumber:number,positionLineId:'SaikyoKawagoe'});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null);
+    assert.equal(marker(p,'SaikyoKawagoe').kind,'unresolved');
+  }
+  const valid=live({trainNumber:'1940K',positionLineId:'SaikyoKawagoe'});
+  assert.equal(marker(valid,'ChuoMain').kind,'unresolved');
 });
