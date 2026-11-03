@@ -1174,6 +1174,24 @@
             // itinerary, so the first realtime stop beyond Takao is valid.
             hit.stops = p.canonicalStopKeys;
           }
+          // Joban E531 is sourced by one specific, two-member SQL canonical
+          // service. Carry only the UNCONFIRMED MODEL CANDIDATE across the
+          // already verified position bridge; never copy a physical carset.
+          if(corridor.matcher === "jobanCanonicalBridgeKey" &&
+              p.positionSource === "supabase-train-run" &&
+              p.canonicalGroupEvidence === "verified_continuation" &&
+              Array.isArray(p.canonicalLineIds) &&
+              p.canonicalLineIds.indexOf("Joban") >= 0 &&
+              p.canonicalLineIds.indexOf("JobanMain") >= 0 &&
+              p.plannedVehicleCandidateStatus === "source_single_type_candidate") {
+            var sourceModels=Array.isArray(p.plannedVehicleCandidates)
+              ? p.plannedVehicleCandidates : [];
+            var record=group[id];
+            if(sourceModels.length === 1 && sourceModels[0] === "E531系")
+              record.jobanE531SourceCandidate = true;
+            else if(sourceModels.length)
+              record.jobanCandidateConflict = true;
+          }
         });
       });
       (posMap[lid]||[]).forEach(function(p){
@@ -1208,6 +1226,17 @@
       p.runningChainId=plan.chain;
       p.runningChainEvidence="VERIFIED_SQL_CANONICAL_REALTIME_STATION";
       p.canonicalTimetableId=id;
+      if(plan.jobanE531SourceCandidate && !plan.jobanCandidateConflict &&
+          (p.positionLineId === "Joban" || p.positionLineId === "JobanMain")) {
+        // This is a verified same-service association, NOT actual rolling
+        // stock telemetry. The renderer still checks source/date/line/model.
+        p.canonicalPlannedVehicleReference = {
+          source:"verified-canonical-sql-source-candidate",
+          model:"E531系",canonicalTimetableId:id,
+          serviceDate:p.serviceDate,trainNumber:p.trainNumber,
+          confirmed:false
+        };
+      }
       linked++;
     });
     return linked;
