@@ -3853,6 +3853,77 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     return plan;
   }
 
+  // Distinguish Joban H/M services on Ueno-Tokyo from Tokaido/Utsunomiya/
+  // Takasaki E and Shonan-Shinjuku Y workings. Shonan M is limited express;
+  // the same suffix alone gives no rolling-stock identity.
+  function _northSouthMHPositionPlan(p, lineId, sourceRailway, num, day) {
+    var index = window.NorthSouthMHIndex;
+    if (!index || !index.service || day < index.effectiveFrom ||
+        day > index.effectiveTo ||
+        !index.service[p.calendarType]) return null;
+    var byDay=index.service[p.calendarType];
+    var groups={
+      "joban-rapid": {model:"E231系0番台（常磐快速線・LED）"},
+      "joban-medium": {model:"E531系"},
+      "narita-express": {model:"E259系"},
+      "kinugawa": {model:"253系（日光・きぬがわ）"},
+      "spacia-nikko": {model:"東武100系"},
+      "shonan-express": {model:"E257系2000番台"},
+      "akagi": {model:"E257系5500番台"}
+    };
+    var candidates = [];
+    ["UenoTokyo","ShonanShinjuku"].forEach(function(corridor) {
+      var rec=byDay[corridor] && byDay[corridor][num];
+      if(rec)candidates.push({corridor:corridor,rec:rec});
+    });
+    // Same number in two different service families would be ambiguous.
+    if(candidates.length!==1)return null;
+    var matched=candidates[0], route=matched.rec, corridor=matched.corridor;
+    if(!groups[route.g])return null; // excludes 321M cross-network collision
+    if(p.trainOperator && p.trainOperator!=="JR-East" &&
+       !(route.g==="spacia-nikko" && p.trainOperator==="Tobu"))return null;
+    var expectedType=String(route.t||"");
+    if(p.trainType && expectedType &&
+        String(p.trainType).split(".").pop()!==expectedType)return null;
+    var railwayByLine={
+      UenoTokyo:"odpt.Railway:JR-East.UenoTokyo",
+      ShonanShinjuku:"odpt.Railway:JR-East.ShonanShinjuku",
+      Joban:"odpt.Railway:JR-East.Joban",
+      JobanMain:"odpt.Railway:JR-East.Joban",
+      Yokosuka:"odpt.Railway:JR-East.Yokosuka",
+      UtsunomiyaJR:"odpt.Railway:JR-East.Utsunomiya",
+      Takasaki:"odpt.Railway:JR-East.Takasaki",
+      Tokaido:"odpt.Railway:JR-East.Tokaido",
+      TokaidoMain:"odpt.Railway:JR-East.Tokaido"
+    };
+    if(railwayByLine[lineId]!==sourceRailway)return null;
+    var lineMember=lineId==="TokaidoMain"?"Tokaido":lineId;
+    if(lineMember!==corridor &&
+       (!Array.isArray(route.m)||route.m.indexOf(lineMember)<0))return null;
+    var referenceUrl=corridor==="UenoTokyo"
+       ? "https://timetables.jreast.co.jp/2611/timetable-v/642u1.html"
+       : "https://tr-pf.net/ssline/unyou/20260314/ss_form_sw.htm";
+    var plan=resolveTimetableVehiclePlan(groups[route.g].model,{
+      lineId:lineId,
+      operator:route.g==="spacia-nikko"?"Tobu":"JR-East",
+      serviceDate:day,
+      source:"north-south-mh-service-representative",
+      sourceUrl:referenceUrl,_positionSource:"train-timetable"
+    });
+    if(!plan||plan.status!=="PLANNED_MODEL"||!plan.iconPath)return null;
+    plan.status="FLEET_REPRESENTATIVE";
+    plan.evidenceRole="service-type-timetable-reference";
+    plan.representativeOnly=true;
+    plan.confirmed=false;
+    plan.crossLineEvidence={
+      kind:"exact-number-service-and-calendar",
+      corridor:corridor,serviceGroup:route.g,trainNumber:num,
+      snapshot:index.version,calendarType:p.calendarType,
+      confirmedPhysicalCar:false
+    };
+    return plan;
+  }
+
   // Published train-number + weekday/holiday rolling-stock plans can be shown
   // alongside a fresh live POSITION. They are never actual-day carset evidence.
   // Require the complete source railway, timetable calendar and exact number;
@@ -3888,6 +3959,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     if (!hits.length) {
       var northSouthPlan = _northSouthPublishedPositionPlan(p,lineId,sourceRailway,num,day);
       if(northSouthPlan)return northSouthPlan;
+      var mhPlan = _northSouthMHPositionPlan(p,lineId,sourceRailway,num,day);
+      if(mhPlan)return mhPlan;
       // A train appearing in BOTH the Keiyo and Musashino ODPT timetable
       // snapshots for the same calendar is a cross-line 8-car working.
       // This is exact-number route evidence, NOT a unique carset assignment.
@@ -4812,7 +4885,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         (vehiclePlan.source === "published-number-calendar-reference" ||
          vehiclePlan.source === "keiyo-shared-working-representative" ||
          vehiclePlan.source === "twr-shared-working-representative" ||
-         vehiclePlan.source === "north-south-shared-working-representative") &&
+         vehiclePlan.source === "north-south-shared-working-representative" ||
+         vehiclePlan.source === "north-south-mh-service-representative") &&
         _issuedVehiclePlans.has(vehiclePlan) &&
         (vehiclePlan.status === "PLANNED_MODEL" ||
          vehiclePlan.status === "FLEET_REPRESENTATIVE") &&
