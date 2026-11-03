@@ -3845,7 +3845,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       north: route.n[0],
       south: route.s.slice(),
       calendarType: p.calendarType,
-      trainNumber: num
+      trainNumber: num,
+      timetableSource: route.sourceKind || "odpt-cross-line",
+      explicitJoinProof: route.joinProof || "",
+      excludedSameNumberNorthLines: route.nAlternates || []
     };
     return plan;
   }
