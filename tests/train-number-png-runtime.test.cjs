@@ -461,3 +461,76 @@ test('Itsukaichi keeps T/H commuter number range and excludes specials or unrela
     trainNumber:'2149',positionLineId:'Itsukaichi',
     trainType:'odpt.TrainType:JR-East.LimitedExpress'})),null);
 });
+
+test('2026 Yokohama 2221K matches full JR train number -> E233-6000 SVG PNG',()=>{
+  const p=live({
+    trainNumber:'2221K',
+    trainId:'planned-trip:2026-11-03|JR-East|odpt.Railway:JR-East.Yokohama|Yokohama|2221K',
+    positionLineId:'Yokohama',
+    sourceRailway:'odpt.Railway:JR-East.Yokohama',
+    railDirection:'odpt.RailDirection:Outbound',
+    trainType:'odpt.TrainType:JR-East.Local'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null);
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped,'2221K must resolve by full train NUMBER on Yokohama');
+  assert.equal(mapped.trainNumber,'2221K');
+  assert.equal(mapped.model,'E233系6000番台');
+  assert.equal(mapped.representative,true);
+  assert.equal(mapped.pngPath,'../images/列车/JR東日本/JR東日本_E233系_6000番台.png');
+  const spec=marker(p,'Yokohama');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(spec.iconSrc,mapped.pngPath);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN','display default must not imply real formation');
+});
+test('Yokohama weekday/holiday and rapid K numbers use the same scoped full-number rule',()=>{
+  for(const [number,trainType] of [
+    ['415K','Local'],['2221K','Local'],['2419K','Local'],
+    ['3937K','Rapid'],['4013K','Rapid'],['4747K','Rapid']
+  ]){
+    const p=live({trainNumber:number,
+      positionLineId:'Yokohama',sourceRailway:'odpt.Railway:JR-East.Yokohama',
+      trainType:'odpt.TrainType:JR-East.'+trainType});
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(mapped,number+' is a Yokohama full-number train');
+    assert.equal(mapped.model,'E233系6000番台');
+    assert.match(marker(p,'Yokohama').iconSrc,/JR東日本_E233系_6000番台\.png$/);
+  }
+});
+test('SQL Yokohama 2221K uses E233-6000 as display-only image',()=>{
+  const p=sql({trainNumber:'2221K',
+    trainId:'planned-trip:2026-11-03|JR-East|Yokohama|2221K',
+    positionLineId:'Yokohama',
+    sourceRailway:'odpt.Railway:JR-East.Yokohama',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped);
+  assert.equal(mapped.source,'train-number-range');
+  assert.equal(marker(p,'Yokohama').iconSrc,mapped.pngPath);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+});
+test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind reassignment',()=>{
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama').model,'E233系6000番台');
+  assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama').model,'E233系6000番台');
+  for(const line of ['SaikyoKawagoe','KeihinTohoku','KeihinTohokuNegishi','ChuoRapid','Rinkai']){
+    assert.equal(root.TrainNumberPngRanges.match('2221K',line),line==='SaikyoKawagoe'
+      ? root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe') : null,
+      'scoped K train number must not reassign vehicles to '+line);
+  }
+  for(const n of ['399K','5000K','2221T','2221M','2221S','2149']){
+    assert.equal(root.TrainNumberPngRanges.match(n,'Yokohama'),null,
+      'invalid Yokohama number '+n+' must not map to the fleet');
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+    trainNumber:'2221K',positionLineId:'Yokohama',
+    displayLineId:'KeihinTohoku',
+    sourceRailway:'odpt.Railway:JR-East.Yokohama'
+  })),null,'do not attach Yokohama artwork across a display-line boundary');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+    trainNumber:'2221K',positionLineId:'Yokohama',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress'
+  })),null,'commuter K number should not overwrite a LimitedExpress record');
+});

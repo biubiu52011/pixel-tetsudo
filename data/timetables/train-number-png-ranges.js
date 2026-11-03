@@ -1,7 +1,8 @@
 /* Train NUMBER -> display PNG ranges (not operating-number conversion).
- * Match the published trainNumber directly: K/F/S service numbers use the
- * final two numeric characters; Sotetsu/JR-through M numbers and ChuoRapid
- * T/H service numbers use their full train-number range.
+ * Match published trainNumber DIRECTLY per line. Saikyo/Rinkai K/F/S trains
+ * use their final two numerical characters; Yokohama line K trains instead
+ * use the entire published 3/4-digit train number. Sotetsu M, ChuoRapid T/H,
+ * and other full-number rules retain their original whole-number semantics.
  * Ome / Itsukaichi lines additionally use suffixless three/four-digit train numbers;
  * these are public train numbers too, NOT vehicle identifiers.
  * Chuo corridor regular express M numbers use full numbers PLUS the published
@@ -35,6 +36,14 @@
  * https://timetables.jreast.co.jp/2611/train/050/053471.html
  * E233 fleet operates on Itsukaichi per JR East:
  * https://www.jreast.co.jp/train/local/e233.html
+ *
+ * Yokohama line 2026 Nov weekday/holiday public K train numbers:
+ * https://timetables.jreast.co.jp/2611/timetable-v/608d1p.html
+ * https://timetables.jreast.co.jp/2611/timetable-v/608d2.html
+ * 2221K (Haigashi-Kanagawa 22:04 -> Hashimoto 22:49 holiday):
+ * https://timetables.jreast.co.jp/2611/train/145/146521.html
+ * JR East E233-6000 (Yokohama line):
+ * https://media.jreast.co.jp/articles/1710
  */
 (function(root){
   "use strict";
@@ -86,6 +95,16 @@
       from:400,to:2499,suffixes:"",excludeTrainType:"LimitedExpress",
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    // Yokohama trains use FULL public K numbers, including 415K, 2107K,
+    // 2221K, 3937K, 4013K and 4747K (2026 weekday/weekend JR timetable).
+    // The E233-6000 gallery default is scoped to Yokohama only. A train
+    // continuing onto KeihinTohoku/Negishi is not reclassified from the
+    // display line alone; a separate validated source-railway projection
+    // would be needed to paint its vehicle on another line.
+    {lineIds:["Yokohama"],numberFormat:"full",
+      from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
+      model:"E233系6000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
     // 2026 scheduled Chuo limited express: 1M (Azusa 1),
     // 3107M (Kaiji 7), 2107M (Fuji Excursion 7), 5003M (Azusa 3).
     // These intervals overlap M-number ordinary trains, so require the
@@ -114,20 +133,31 @@
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
     // Match train NUMBER ranges, not an inferred operation ID.
-    // 1940K uses terminal 40; 277M, 1932T and plain 1103 use their
-    // entire published train number, without operation-number conversion.
+    // One train number can have both a scoped tail and a full-number
+    // interpretation: 1940K -> 40 on Saikyo, 1940K -> 1940 on Yokohama.
+    // Determine the interpretation FROM THE LINE RULE, not from the suffix.
+    // This is never a train number -> operation number conversion.
     var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
-    var through=number.match(/^([0-9]{1,4})([MTH])$/);
+    var numbered=number.match(/^([0-9]{1,4})([KFMSTH])$/);
     var bare=number.match(/^([0-9]{3,4})$/);
-    if((!regular&&!through&&!bare)||!line)return null;
-    var numberValue=Number(regular?regular[1]:through?through[1]:bare[1]);
-    var suffix=regular?regular[2]:through?through[2]:"";
-    var format=regular?"tail":bare?"bare":"full";
+    if((!regular&&!numbered&&!bare)||!line)return null;
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
-      if((row.numberFormat||"tail")!==format||
-          row.lineIds.indexOf(line)<0||numberValue<row.from||
-          numberValue>row.to||row.suffixes.indexOf(suffix)<0)continue;
+      if(row.lineIds.indexOf(line)<0)continue;
+      var format=row.numberFormat||"tail";
+      var numberValue,suffix;
+      if(format==="tail"&&regular){
+        numberValue=Number(regular[1]);
+        suffix=regular[2];
+      }else if(format==="full"&&numbered){
+        numberValue=Number(numbered[1]);
+        suffix=numbered[2];
+      }else if(format==="bare"&&bare){
+        numberValue=Number(bare[1]);
+        suffix="";
+      }else continue;
+      if(numberValue<row.from||numberValue>row.to||
+          row.suffixes.indexOf(suffix)<0)continue;
       // M suffix alone does not distinguish an express from an ordinary
       // train: require the ODPT or SQL train-type field for these rows.
       var actualType=String(context&&(context.trainType||context.typeName)||"");
@@ -147,6 +177,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v6",match:match
+    version:"20261103-direct-number-v7",match:match
   });
 })(window);
