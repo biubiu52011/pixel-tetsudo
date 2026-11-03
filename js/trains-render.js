@@ -1314,30 +1314,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return delimiter < 0 ? "" : label.slice(delimiter + 1).trim();
   }
 
-  // Keiyo ODPT publishes public train numbers (e.g. 437Y). Show them
-  // independently from the vehicle model/formation. A missing trainNumber
-  // may be recovered only from this same Keiyo train's explicit source URN.
-  // Never derive it from an unrelated run, destination or timetable.
-  function _keiyoPublicTrainNumber(p, lineId) {
-    if (lineId !== "Keiyo" || !p) return "";
-    var railway = String(p.sourceRailway || "");
-    if (railway && railway !== "odpt.Railway:JR-East.Keiyo") return "";
-    var raw = String(p.trainNumber || "").trim();
-    if (/^[0-9]{1,5}[A-Za-z]{0,2}$/.test(raw)) return raw.toUpperCase();
-    var ids = [raw, p.trainId, p.sourceTrainId];
-    for (var i = 0; i < ids.length; i++) {
-      var match = String(ids[i] || "").trim()
-        .match(/^odpt\.Train:JR-East\.Keiyo\.([0-9]{1,5}[A-Za-z]{0,2})$/);
-      if (match) return match[1].toUpperCase();
-    }
-    return "";
-  }
-
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
-    var number = _keiyoPublicTrainNumber(p, lineId) ||
-      String((p && p.trainNumber) || "").trim();
+    var number = String((p && p.trainNumber) || "").trim();
     if (number && !/^est_/i.test(number) &&
         !/^(?:odpt[.:]|supabase:|manual-template:|planned-trip:)/i.test(number)) {
       var prefix = /^zh/.test(lang) ? "列车番号" : (lang === "en" ? "Train No." : "列車番号");
@@ -2112,17 +2092,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var label=labels[id]||groups[id];
         var captionNode=label&&label.querySelector?label.querySelector('.train-label-dir'):null;
         var captionText=captionNode&&captionNode.textContent?String(captionNode.textContent).trim():'';
-        var keiyoTrainNo=_keiyoPublicTrainNumber(p,marker._displayLineId || p.positionLineId || p.lineId || "");
-        // The SVG map caption already includes the Keiyo service number.
-        // Remove its prefix before composing the fold row, then add it once.
-        if (keiyoTrainNo && captionText.indexOf(keiyoTrainNo+' · ')===0) {
-          captionText=captionText.slice((keiyoTrainNo+' · ').length);
-        } else if (keiyoTrainNo && captionText===keiyoTrainNo) {
-          captionText='';
-        }
         var captionType=label&&label.getAttribute?String(label.getAttribute('data-label-type')||'').trim():'';
-        var popupCaption=captionType&&captionText ? captionType+' · '+captionText :
-          (captionText || (keiyoTrainNo ? captionType : ''));
+        var popupCaption=captionType&&captionText ? captionType+' · '+captionText : captionText;
         var entry=document.createElement('div');entry.className='train-fold-entry';entry.setAttribute('role','listitem');
         // Use the SAME artwork decision as the SVG map marker; the fold list
         // neither guesses stock nor changes realtime positions. Keep two
@@ -2134,7 +2105,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
-        caption.textContent=captionBase+(keiyoTrainNo?' · '+keiyoTrainNo:'');
+        caption.textContent=captionBase;
         if (markerSpec.kind==='vehicle' && markerSpec.iconSrc) {
           var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
             _seibuCommuterCandidatesLabel(p,lineId,lang) ||
@@ -2443,8 +2414,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       window.currentLang || "ja",
       p && p.railDirection || "",
       p && p.destinationStation || "",
-      p && p.trainType || "",
-      _keiyoPublicTrainNumber(p, lineId)
+      p && p.trainType || ""
     ].join("|");
   }
 
@@ -2487,12 +2457,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     } else if (dn) {
       labelText = _resolveStationLoose(dn) || dn;
     }
-    // Keiyo may provide a numbered live train without a destination. In
-    // that case show its number alone instead of hiding the whole SVG label.
-    var keiyoTrainNo = _keiyoPublicTrainNumber(p, lineId);
-    if (!labelText && !keiyoTrainNo) return;
-    if (keiyoTrainNo) labelText = keiyoTrainNo +
-      (labelText ? ' · ' + labelText : '');
+    if (!labelText) return;
     // 折叠列表复用来源支持的服务类型和方向；
     // 地图不会打开逐列车详情面板。
     var _typeText = '';
