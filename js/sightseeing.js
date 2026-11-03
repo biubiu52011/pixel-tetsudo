@@ -195,7 +195,9 @@
     // 委托给统一 TourismProximity API。
     let nearby = [];
     try {
-      nearby = TourismProximity.getNearbySpotsByStation(stationKey, { radius: 3500, limit: 30 });
+      // 先取完整附近候选池，再按美食/购物/玩乐类别筛选。
+      // 否则附近的游乐和购物店可能被全类别最近30条挤出筛选结果。
+      nearby = TourismProximity.getNearbySpotsByStation(stationKey, { radius: 3500, limit: Math.max(30, getSPOTS().length) });
     } catch(e) {
       console.warn('[Sightseeing] getNearbySpotsByStation failed:', e);
     }
@@ -278,16 +280,17 @@ function renderGrid() {
       if (b.distM === null) return -1;
       return a.distM - b.distM;
     });
+    // 排除不可达的跨河结果后再判空、截断，避免空白结果或30条名额被占用。
+    spotList = spotList.filter(function(s) { return !s.isAcross; });
     if (spotList.length === 0) {
       dom.grid.innerHTML = '';
       if (dom.empty) dom.empty.classList.remove('hidden');
       return;
     }
     if (dom.empty) dom.empty.classList.add('hidden');
-    // 限制为前 30 条（已登记 39 个景点；保留浅草/晴空塔等较远景点）。
+    // 每个筛选类别都最多显示30条，不在筛选前截断候选池。
     spotList = spotList.slice(0, 30);
 
-    spotList = spotList.filter(function(s) { return !s.isAcross; });
     spotList.sort(function(a, b) {
       if (a.distM === null || a.distM === undefined) return 1;
       if (b.distM === null || b.distM === undefined) return -1;
