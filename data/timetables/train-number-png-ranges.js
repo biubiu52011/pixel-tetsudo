@@ -105,6 +105,15 @@
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
+    // JR East Tsurumi regular services changed to E131-1000 fleet in March
+    // 2024. These remain scheduled DISPLAY REFERENCES, not observed sets.
+    // 2026-11-03 holiday train 2200: Ogimachi 22:10 -> Tsurumi 22:27.
+    // https://timetables.jreast.co.jp/2611/train/030/030851.html
+    {lineIds:["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],
+      numberFormat:"bare",from:400,to:2599,suffixes:"",
+      trainType:"Local",operator:"JR-East",validFrom:"2024-03-16",
+      model:"E131系1000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png"},
     // 2026 scheduled Chuo limited express: 1M (Azusa 1),
     // 3107M (Kaiji 7), 2107M (Fuji Excursion 7), 5003M (Azusa 3).
     // These intervals overlap M-number ordinary trains, so require the
@@ -166,9 +175,19 @@
           /^特急$/.test(actualType) || /^limited express$/i.test(actualType)))continue;
       if(row.trainType){
         var trainType=String(context&&(context.trainType||context.typeName)||"");
-        if(!/(?:^|[.:])LimitedExpress$/i.test(trainType)&&
+        if(row.trainType==="Local"){
+          if(!/(?:^|[.:])Local$/i.test(trainType)&&!/^普通$/.test(trainType))continue;
+        }else if(!/(?:^|[.:])LimitedExpress$/i.test(trainType)&&
             !/^特急$/.test(trainType)&&
             !/^limited express$/i.test(trainType))continue;
+      }
+      if(row.operator){
+        var trainOperator=String(context&&(context.trainOperator||context.operator)||"");
+        if(trainOperator!==row.operator&&trainOperator!=="odpt.Operator:"+row.operator)continue;
+      }
+      if(row.validFrom){
+        var serviceDate=String(context&&context.serviceDate||"").slice(0,10);
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(serviceDate)||serviceDate<row.validFrom)continue;
       }
       return {trainNumber:number,lineId:line,model:row.model,
         pngPath:row.pngPath,source:"train-number-range",
@@ -177,6 +196,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v7",match:match
+    version:"20261103-direct-number-v8",match:match
   });
 })(window);
