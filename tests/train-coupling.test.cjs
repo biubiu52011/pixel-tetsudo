@@ -99,3 +99,60 @@ test("labels distinguish timetable coupled pair, own post-split number and actua
   assert.match(coupling.label(split.coupling,"ja"),/相手 2002M/);
   assert.match(coupling.label(split.coupling,"en"),/other portion 2002M/);
 });
+
+
+test("Odoriko 1 and 9 split at Atami with distinct 30xxM/40xxM numbers", () => {
+  const one = position("3021M",1,{positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"});
+  const nine = position("4029M",1,{positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"});
+  assert.equal(coupling.lookup(one).partner,"4021M");
+  assert.equal(coupling.lookup(nine).partner,"3029M");
+  assert.equal(coupling.lookup(one).junction,"Atami");
+  assert.equal(coupling.lookup(one).operation,"split");
+  assert.equal(coupling.lookup(nine).serviceName,"Odoriko");
+});
+
+test("Odoriko 4 and 10 join at Atami, rather than split", () => {
+  const four = position("3024M",1,{positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"});
+  const ten = position("4030M",1,{positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"});
+  assert.equal(coupling.lookup(four).partner,"4024M");
+  assert.equal(coupling.lookup(ten).partner,"3030M");
+  assert.equal(coupling.lookup(four).operation,"join");
+  assert.equal(coupling.lookup(ten).operation,"join");
+});
+
+test("temporary Odoriko 7 and 8 respect exact November 2026 operating dates", () => {
+  const options = {positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"};
+  assert.equal(coupling.lookup(position("9027M",1,options)).partner,"8077M");
+  assert.equal(coupling.lookup(position("8078M",1,options)).partner,"9028M");
+  assert.equal(coupling.lookup(position("9027M",1,{...options,serviceDate:"2026-11-02"})),null);
+  assert.equal(coupling.lookup(position("8078M",1,{...options,serviceDate:"2026-11-04"})),null);
+  assert.equal(coupling.lookup(position("9027M",1,{...options,serviceDate:"2026-11-29"})).partner,"8077M");
+});
+
+test("Atami split: two independent train numbers after junction, one jointly displayed before", () => {
+  const line = ["Tokyo","Shinagawa","Yokohama","Ofuna","Odawara","Atami","Ito","IzukyuShimoda"]
+    .map(stationId=>({stationId}));
+  const opts = {positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"};
+  const pair = [position("3021M",3,opts),position("4021M",3,opts)];
+  const before = coupling.prepare(pair,line);
+  assert.equal(before.length,1);
+  assert.equal(before[0].coupling.junction,"Atami");
+  assert.deepEqual(Array.from(before[0].coupling.numbers),["3021M","4021M"]);
+  assert.match(coupling.label(before[0].coupling,"ja"),/熱海駅|Atami駅/); // station key currently uses "Atami"
+  assert.equal(coupling.prepare([position("3021M",5,opts),position("4021M",5,opts)],line).length,2);
+  const separate = coupling.prepare([position("3021M",6,opts),position("4021M",6,opts)],line);
+  assert.equal(separate.length,2);
+  assert.deepEqual(separate.map(x=>x.trainNumber),["3021M","4021M"]);
+  assert.match(coupling.label(separate[0].coupling,"zh"),/Atami站分离后/);
+});
+
+test("Atami join: two independent train numbers on private branches, one jointly displayed to Tokyo", () => {
+  const line = ["Shuzenji","Mishima","Atami","Odawara","Yokohama","Shinagawa","Tokyo"]
+    .map(stationId=>({stationId}));
+  const opts = {positionLineId:"Tokaido",sourceRailway:"odpt.Railway:JR-East.Tokaido"};
+  assert.equal(coupling.prepare([position("3024M",1,opts),position("4024M",1,opts)],line).length,2);
+  assert.equal(coupling.prepare([position("3024M",2,opts),position("4024M",2,opts)],line).length,2);
+  const joint=coupling.prepare([position("3024M",3,opts),position("4024M",3,opts)],line);
+  assert.equal(joint.length,1);
+  assert.match(coupling.label(joint[0].coupling,"zh"),/Atami站并结/);
+});
