@@ -237,6 +237,61 @@
       allowedModelLabels:["E257系2000番台"],
       model:"E257系2000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E257系_2000番台.png"},
+    // Hachiko north 2026-11 official 54 D train numbers (28 up, 26 down).
+    // 2026 service uses HB-E220, not retired KiHa110. Timetable calendar
+    // and actual departures remain owned by the source, not this image rule.
+    // https://timetables.jreast.co.jp/2611/timetable-v/705u2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/705d2.html
+    // https://www.jreast.co.jp/train/local/hb_e220.html
+    {lineIds:["Hachiko"],numberFormat:"full",from:220,to:2294,
+      suffixes:"D",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,publishedNumbers:[
+        "220D","221D","2223D","222D","2248D","224D","225D","2260D",
+        "2261D","2262D","2263D","2264D","2265D","2266D","2267D","2268D",
+        "2269D","226D","2270D","2271D","227D","2281D","2282D","2283D",
+        "2284D","2286D","2288D","2289D","228D","2290D","2291D","2292D",
+        "2293D","2294D","229D","230D","231D","232D","233D","234D",
+        "235D","236D","237D","238D","239D","240D","241D","242D",
+        "243D","244D","245D","246D","247D","249D"
+      ],sourceRailways:["odpt.Railway:JR-East.Hachiko"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["HB-E220系","HB-E220系（八高線）"],
+      rejectAmbiguousPlan:true,model:"HB-E220系",
+      pngPath:"../images/列车/JR東日本/JR東日本_HB-E220系.png"},
+    // Hachiko south E train-number set from the SQL undated templates;
+    // current official timetable is 706u/d, full 2611 parity NOT yet proven.
+    // E231-3000 and 209-3500 are both eligible fleets. Representative
+    // E231 must not override competing observed stock or an ambiguous plan.
+    // H suffix is the neighboring Kawagoe route portion, not Hachiko's E.
+    // https://timetables.jreast.co.jp/2611/timetable-v/706u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/706d1.html
+    {lineIds:["Hachiko"],numberFormat:"full",from:461,to:4778,
+      suffixes:"E",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,publishedNumbers:[
+        "1061E","1064E","1067E","1068E","1071E","1160E","1165E","1166E",
+        "1169E","1170E","1174E","1175E","1179E","1265E","1266E","1269E",
+        "1271E","1274E","1275E","1278E","1361E","1364E","1367E","1368E",
+        "1379E","1460E","1465E","1466E","1469E","1470E","1474E","1475E",
+        "1479E","1565E","1566E","1569E","1571E","1574E","1575E","1578E",
+        "1661E","1664E","1667E","1668E","1672E","1675E","1679E","1760E",
+        "1765E","1766E","1767E","1768E","1769E","1770E","1771E","1773E",
+        "1774E","1778E","1779E","1861E","1866E","1867E","1868E","1871E",
+        "1872E","1874E","1875E","1876E","1878E","1879E","1964E","1966E",
+        "1967E","1969E","1970E","1974E","1975E","1979E","2060E","2065E",
+        "2066E","2073E","2077E","2078E","2160E","2161E","2167E","2168E",
+        "2172E","2175E","2176E","2261E","2266E","2274E","2279E","2373E",
+        "2377E","461E","4778E","563E","565E","568E","572E","574E",
+        "579E","660E","662E","664E","666E","667E","669E","670E",
+        "671E","673E","674E","675E","676E","678E","761E","762E",
+        "763E","764E","765E","767E","768E","771E","772E","777E",
+        "860E","863E","864E","865E","866E","869E","870E","873E",
+        "874E","875E","877E","878E","879E","965E","966E","969E",
+        "974E","975E","978E","979E"
+      ],sourceRailways:["odpt.Railway:JR-East.Hachiko"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E231系3000番台"],
+      rejectAmbiguousPlan:true,model:"E231系3000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E231系_3000番台.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -432,7 +487,7 @@
     var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
     // Include G for Yamanote's full public 3/4-digit G train numbers.
     // Line-scoped matching below prevents G from leaking to other routes.
-    var numbered=number.match(/^([0-9]{1,4})([ABCKFMSTHYG])$/);
+    var numbered=number.match(/^([0-9]{1,4})([ABCDEKFMSTHYG])$/);
     var bare=number.match(/^([0-9]{3,4})$/);
     if((!regular&&!numbered&&!bare)||!line)return null;
     for(var i=0;i<rows.length;i++){
@@ -540,6 +595,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-keihin-official-abck-v21",match:match
+    version:"20261104-hachiko-d-e-v22",match:match
   });
 })(window);
