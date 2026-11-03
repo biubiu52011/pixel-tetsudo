@@ -51,6 +51,15 @@ const samples={
       ['Honda','05:35','05:36'],['Toke','05:40','05:41'],
       ['Oami','05:44','05:45'],['Mobara','05:53','05:54'],
       ['KazusaIchinomiya','06:01',null]]],
+    // JR East 2611 official 1235M: Chiba 23:59 -> Oami 24:27.
+    // SQL stores subsequent 24:xx as 00:xx. 04:00 service-day
+    // cutoff MUST keep this train attached to Nov 4 overnight.
+    // https://timetables.jreast.co.jp/2611/train/100/102421.html
+    ['1235M','Outbound','Sotobo.Oami',[
+      ['Chiba',null,'23:59'],['HonChiba','00:02','00:03'],
+      ['Soga','00:06','00:09'],['Kamatori','00:13','00:14'],
+      ['Honda','00:17','00:18'],['Toke','00:22','00:23'],
+      ['Oami','00:27',null]]],
     // local 221M short southern segment, no invented intermediate stops
     ['221M','Outbound','Sotobo.AwaKamogawa',[
       ['AwaKominato',null,'06:04'],['AwaAmatsu','06:08','06:08'],
@@ -141,6 +150,21 @@ test('06:07 JST: Uchibo 3680F and Sotobo 221M keep source train numbers',()=>{
   segment(o,'Uchibo','3680F','Kimitsu','Kisarazu');
   segment(o,'Sotobo','221M','Awa-Kominato','Awa-Amatsu');
   assert.equal(find(o,'Sotobo','3591F'),undefined);
+});
+test('1235M Chiba 23:59 -> Oami official 24:27 retains previous service date after midnight',()=>{
+  const before=estimateAt('2026-11-04T14:59:20Z');
+  assert.ok(find(before,'Sotobo','1235M'));
+  const after=estimateAt('2026-11-04T15:15:00Z');
+  const p=find(after,'Sotobo','1235M');
+  assert.ok(p,'00:15 JST scheduled overnight train must still be visible');
+  assert.equal(p.serviceDate,'2026-11-04','past-midnight run belongs to previous service date');
+  assert.equal(lines.Sotobo.stations[p.stationIndex],'Kamatori');
+  assert.equal(lines.Sotobo.stations[p.segmentToIndex],'Honda');
+  const last=estimateAt('2026-11-04T15:24:00Z');
+  segment(last,'Sotobo','1235M','Toke','Oami');
+  const complete=estimateAt('2026-11-04T15:28:00Z');
+  assert.equal(find(complete,'Sotobo','1235M'),undefined,
+    'do not keep the train running after its published 24:27 arrival');
 });
 test('source terminal arrival clocks end each Boso position, no false perpetual train',()=>{
   const o=estimateAt('2026-11-03T22:00:00Z');
