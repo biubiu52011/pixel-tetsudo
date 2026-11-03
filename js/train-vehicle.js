@@ -4900,6 +4900,76 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       parts[4] !== "." && parts[4] !== ".." &&
       parts[4].indexOf("?") < 0 && parts[4].indexOf("#") < 0 ? src : "";
   }
+  // Map-final number -> scoped PNG resolution.
+  // Call chain: ODPT realtime / Supabase SQL position.trainNumber
+  //   -> dated, railway-scoped published number / already verified SQL plan
+  //   -> canonical stock model -> mapped garage PNG -> displayed line.
+  // This is a PLANNED image reference, not observed rolling stock.
+  function lookupTrainNumberPng(p) {
+    if (!p || !p.trainNumber ||
+        !(p.positionSource === "realtime-api" ||
+          p.positionSource === "supabase-train-run" ||
+          p.positionSource === "train-timetable" || p.estimated === true))
+      return null;
+    var lineId = String(p.positionLineId || p.lineId || "").trim();
+    var displayLineId = String(p.displayLineId || lineId).trim();
+    var date = String(p.serviceDate || "").slice(0, 10);
+    if (!lineId || displayLineId !== lineId ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+    var calendar = String(p.calendarType || "").trim();
+    if (calendar !== "weekday" && calendar !== "holiday") {
+      var raw = String(p.serviceId || p.timetableCalendar || "");
+      calendar = /(?:^|[.:])Weekday$/.test(raw) ? "weekday" :
+        /(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
+          ? "holiday" : "";
+    }
+    if (calendar !== "weekday" && calendar !== "holiday") return null;
+    var garage = window.VehicleGaragePngMap;
+    if (!garage || typeof garage.matchModelPath !== "function") return null;
+    var plan = p.vehiclePlan || null;
+    var source = "sql-number-model";
+    // Never take a generic route fleet, operation suffix, or a free-text PNG
+    // as an exact numbered service. The SQL plan must have been issued by the
+    // canonical resolver and independently certified for this service.
+    var validSqlPlan = !!(plan && _issuedVehiclePlans.has(plan) &&
+      plan.status === "PLANNED_MODEL" &&
+      (plan.source === "database-verified-published-plan" ||
+       plan.confirmed === true));
+    if (!validSqlPlan) {
+      // A conflicting already established planned MODEL must not silently
+      // be overwritten. Unconfirmed candidates may only be narrowed when
+      // they already contain the published model.
+      if (plan && plan.status === "PLANNED_MODEL") return null;
+      var official = resolvePublishedPositionPlan({
+        positionLineId: lineId,
+        sourceRailway: p.sourceRailway,
+        trainNumber: p.trainNumber,
+        serviceDate: date,
+        calendarType: calendar,
+        trainType: p.trainType,
+        trainOperator: p.trainOperator || p.operator || ""
+      });
+      if (!official) return null;
+      if (plan && Array.isArray(plan.models) && plan.models.length &&
+          plan.models.indexOf(official.models[0]) < 0) return null;
+      plan = official;
+      source = "official-published-number";
+    }
+    if (!plan || !_issuedVehiclePlans.has(plan) ||
+        plan.status !== "PLANNED_MODEL" ||
+        plan.lineId !== lineId || !Array.isArray(plan.models) ||
+        plan.models.length !== 1) return null;
+    var png = normalizeGalleryPngPath(plan.iconPath || "");
+    if (!png || !garage.matchModelPath(plan.models[0],png,lineId))
+      return null;
+    return {
+      trainNumber:String(p.trainNumber).trim(),lineId:lineId,
+      serviceDate:date,calendarType:calendar,
+      model:plan.models[0],pngPath:png,source:source,
+      planned:true,plan:plan
+    };
+  }
+
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -4927,6 +4997,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // Last-mile lookup handles raw ODPT/SQL positions that carry the train
+    // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
+    // its actual-car status, or the original train-number identity.
+    var numberPng = !identityConfirmed ? lookupTrainNumberPng(p) : null;
+    if (numberPng) {
+      if (artworkFailed !== true) {
+        return {kind:"vehicle",iconSrc:numberPng.pngPath,planned:true};
+      }
+      return {kind:"unresolved",iconSrc:""};
+    }
     // On realtime and timetable-estimated POSITION records, only a certified
     // exact-number/calendar published plan may supply a DISPLAY REFERENCE.
     // This never confirms a carset or upgrades UNKNOWN/NARROWED identity.
@@ -5012,6 +5092,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     resolveRealtime: resolveRealtime,
     resolveTimetableRun: resolveTimetableRun,
     resolvePublishedPositionPlan: resolvePublishedPositionPlan,
+    lookupTrainNumberPng: lookupTrainNumberPng,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     getOperationPngLibrary: getOperationPngLibrary,
