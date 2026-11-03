@@ -958,6 +958,70 @@ test('Nambu 2319F official holiday train renders representative E233 PNG',()=>{
 });
 
 
+test('Keihin-Tohoku 411B is a full published 2026-11 number on live, SQL and timetable map markers',()=>{
+  const image='../images/列车/JR東日本/JR東日本_E233系_1000番台.png';
+  for(const positionSource of ['realtime-api','supabase-train-run','train-timetable']){
+    const p=live({trainNumber:'411B',
+      trainId:'odpt.Train:JR-East.KeihinTohokuNegishi.411B',
+      positionLineId:'KeihinTohoku',
+      sourceRailway:'odpt.Railway:JR-East.KeihinTohokuNegishi',
+      trainOperator:positionSource==='supabase-train-run'?'':'JR-East',
+      trainType:'odpt.TrainType:JR-East.Local',positionSource,
+      estimated:positionSource!=='realtime-api'});
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(mapped,'411B '+positionSource+' must use published full train number');
+    assert.equal(mapped.trainNumber,'411B');
+    assert.equal(mapped.lineId,'KeihinTohoku');
+    assert.equal(mapped.model,'E233系1000番台');
+    assert.equal(mapped.pngPath,image);
+    assert.equal(mapped.representative,true);
+    assert.equal(mapped.source,'train-number-range');
+    const svg=marker(p,'KeihinTohoku');
+    assert.equal(svg.kind,'vehicle');
+    assert.equal(svg.planned,true);
+    assert.equal(svg.compact,false);
+    assert.equal(svg.iconSrc,image);
+    assert.equal(p.trainNumber,'411B','public train number is never rewritten');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    assert.equal(p.vehiclePlan,undefined);
+  }
+});
+test('Keihin-Tohoku A/B/C numbered services stay distinct from Yokohama K through services',()=>{
+  const line='KeihinTohoku';
+  const base=live({positionLineId:line,
+    sourceRailway:'odpt.Railway:JR-East.KeihinTohokuNegishi',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'});
+  for(const n of ['401A','411B','463C','950B','818A','2431B']){
+    const p={...base,trainNumber:n};
+    const selected=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(selected,'published Keihin-Tohoku ABC service '+n);
+    assert.equal(selected.model,'E233系1000番台');
+  }
+  const rapid={...base,trainNumber:'950B',
+    trainType:'odpt.TrainType:JR-East.Rapid'};
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(rapid).model,
+    'E233系1000番台','northbound rapid train still uses the same family');
+  for(const change of [
+    {trainNumber:'411K'}, {trainNumber:'4009K'},
+    {trainNumber:'399B'}, {trainNumber:'2500B'},
+    {trainNumber:'411M'}, {trainNumber:'411'},
+    {positionLineId:'Yokohama'}, {positionLineId:'Yamanote'},
+    {sourceRailway:'odpt.Railway:JR-East.Yokohama'},
+    {sourceRailway:'odpt.Railway:JR-East.Nambu'},
+    {sourceRailway:''}, {trainOperator:'JR-Central'},
+    {serviceDate:'2026-10-31'}, {serviceDate:'2026-12-01'},
+    {serviceDate:''}, {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {trainType:''}, {realtimeVehicleType:'E233系6000番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E233系6000番台']}}
+  ]){
+    const wrong={...base,trainNumber:'411B',...change};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(wrong),null,
+      'do not borrow E233-1000 by unrelated context '+JSON.stringify(change));
+  }
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...base,trainNumber:'411B',displayLineId:line},true).kind,
+    'unresolved','failed PNG retains neutral position marker');
+});
 test('Yamanote E235-0 G-number family uses its own officially scoped PNG',()=>{
   const image='../images/列车/JR東日本/JR東日本_E235系_0番台.png';
   const examples=[
