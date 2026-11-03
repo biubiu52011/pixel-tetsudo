@@ -60,8 +60,8 @@
   }
 
   // 所有商家推荐统一来源 spot.menu。
-  // 备注优先显示已核对的店铺照片 cover，店铺照会明确标注，不冒充商品实拍。
-  // 无有效照片时才显示店名首字占位图；没有价格的备注不造价。
+  // 备注可使用经核实的店铺照片或原创主题插画，分别标注图片类型。
+  // 没有可靠图片才使用店名首字占位图；没有价格的备注不造价。
   function buildRecommendedItem(spot, item, index, badgeChar) {
     item = item || {};
     var name = (spot.menu_i18n && spot.menu_i18n[index] && spot.menu_i18n[index][C.state.lang])
@@ -70,10 +70,13 @@
       ? '<img class="dp-dish-img" src="' + C.escapeHtml(item.img) + '" alt="' + C.escapeHtml(name)
         + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="'
         + C.galleryIndexForMenu(spot, index) + '">'
-      : item.cover && item.coverRole === 'shop'
-        ? '<img class="dp-dish-img" src="' + C.escapeHtml(item.cover) + '" alt="'
-          + C.escapeHtml(spot.name || '') + ' - ' + C.escapeHtml(C.t('detail.shop_photo'))
-          + '" loading="lazy"><span class="dp-dish-photo-source">' + C.escapeHtml(C.t('detail.shop_photo')) + '</span>'
+      : item.cover && (item.coverRole === 'shop' || item.coverRole === 'illustration')
+        ? (function () {
+          var coverLabel = C.t(item.coverRole === 'shop' ? 'detail.shop_photo' : 'detail.illustration');
+          return '<img class="dp-dish-img" src="' + C.escapeHtml(item.cover) + '" alt="'
+            + C.escapeHtml(spot.name || '') + ' - ' + C.escapeHtml(coverLabel)
+            + '" loading="lazy"><span class="dp-dish-photo-source">' + C.escapeHtml(coverLabel) + '</span>';
+        })()
         : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
     return '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb + '</div>'
       + '<div class="dp-dish-name">' + C.escapeHtml(name) + '</div>'
