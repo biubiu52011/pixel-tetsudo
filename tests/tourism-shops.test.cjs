@@ -40,6 +40,12 @@ function renderShop(spot) {
   const messages = {
     'detail.menu': 'おすすめ',
     'detail.shop_photo': '店舗写真',
+    'detail.visit_notes': '訪問メモ',
+    'detail.official_source': '公式情報',
+    'detail.unverified': '情報未確認',
+    'detail.reported_closed': '閉店情報あり',
+    'detail.closed_warning': '閉店情報あり。営業時間は要確認。',
+    'detail.check_source': '閉店情報の出典',
     'detail.illustration': 'イメージ画像',
     'detail.tips': '訪問Tips',
     'detail.info_fee': '費用',
@@ -102,106 +108,58 @@ test('play recommendations render with optional prices and without empty tips', 
   assert.equal(priceFields.length, 4, 'two priced items in preview and modal; unpriced item omitted');
 });
 
-test('migrated tips use the identical square image-card layout without invented images or prices', () => {
-  const notesOnly = renderShop({
+test('historical visit notes never masquerade as product recommendation cards', () => {
+  const html = renderShop({
     name: 'Craft Store', tags: ['store'],
     menu: [
-      { item: 'Handmade goods', kind: 'note' },
-      { item: 'Daily selection on SNS', kind: 'note' },
+      { item: 'Handmade goods', kind: 'note', cover: '../images/観光地/test.jpg', coverRole: 'shop' },
       { item: 'Open early', kind: 'note' },
     ],
-    menu_i18n: [
-      { ja: '手作り雑貨', en: 'Handmade goods' },
-      { ja: '新着商品はSNSで確認', en: 'Daily selection on SNS' },
-      { ja: '朝から営業', en: 'Open early' },
-    ],
+    menu_i18n: [{ ja: '手作り雑貨' }, { ja: '朝から営業' }],
   });
-  assert.match(notesOnly, /おすすめ/);
-  assert.match(notesOnly, /dp-menu-carousel/);
-  assert.match(notesOnly, /dp-dish-thumb/);
-  assert.match(notesOnly, /dp-dish-badge/);
-  assert.match(notesOnly, /dp-dish-name/);
-  assert.match(notesOnly, /すべて見る/);
-  assert.match(notesOnly, /手作り雑貨/);
-  assert.match(notesOnly, /新着商品はSNSで確認/);
-  assert.match(notesOnly, /朝から営業/);
-  assert.doesNotMatch(notesOnly, /dp-shop-picks|dp-pick-list|訪問Tips/);
-  assert.doesNotMatch(notesOnly, /dp-dish-price|dp-dish-img|dp-rec-text-item/);
-  assert.equal((notesOnly.match(/class="dp-dish-badge"/g) || []).length, 6, 'each note has a preview and modal placeholder');
-  assert.match(notesOnly, /class="dp-dish-badge">C<\/span>/, 'placeholder uses store name initial');
-  assert.doesNotMatch(notesOnly, /Handmade goods/, 'menu translations take priority');
+  assert.match(html, /訪問メモ/);
+  assert.match(html, /手作り雑貨/);
+  assert.match(html, /朝から営業/);
+  assert.doesNotMatch(html, /dp-menu-carousel|dp-dish-thumb|dp-dish-img|すべて見る/);
 });
 
-test('verified shop photos replace note placeholders without pretending to be item photos', () => {
-  const cover = '../images/観光地/木挽町よしや.jpg';
+test('source-backed products and experiences show a checkable original link', () => {
   const html = renderShop({
-    name: '木挽町よしや', tags: ['food'],
+    name: 'ギャラクシティ', tags: ['play'],
     menu: [
-      { item: '1日1300個売れる名物どら焼き。', kind: 'note', cover, coverRole: 'shop' },
-      { item: '一枚皮で餡を挟む珍しい製法。', kind: 'note' },
+      { item: '歩いて3分', kind: 'note' },
+      { item: 'まるちたいけんドーム', kind: 'experience', price: '500円',
+        sourceUrl: 'https://www.galaxcity.jp/about/', sourceType: 'official' },
     ],
+    menu_i18n: [{ ja: '徒歩3分' }, { ja: 'まるちたいけんドーム' }],
   });
-  assert.equal((html.match(/class="dp-dish-photo-source"/g) || []).length, 2,
-    'the store-photo source appears in preview and modal');
-  assert.equal((html.match(/alt="木挽町よしや - 店舗写真"/g) || []).length, 2);
-  assert.ok(html.includes(cover), 'source photo path is retained');
-  assert.equal((html.match(/class="dp-dish-badge"/g) || []).length, 2,
-    'unphotographed notes still get the same-size placeholder');
-  assert.doesNotMatch(html, /data-gallery-idx="/,
-    'a representative store photo must not be mislabelled or duplicated as product gallery media');
-  assert.doesNotMatch(html, /dp-dish-price/, 'text notes do not invent prices');
+  assert.match(html, /おすすめ/);
+  assert.match(html, /500円/);
+  assert.match(html, /公式情報/);
+  assert.match(html, /https:\/\/www.galaxcity.jp\/about\//);
+  assert.match(html, /訪問メモ/);
+  assert.doesNotMatch(html, /class="dp-dish-name">徒歩3分/);
 });
 
-test('illustrations have the same card layout and are not misrepresented as shop photos', () => {
-  const cover = '../images/観光地/recommend-illustrations/readin-writing-workshop.svg';
+test('old entries have a clear unverified label instead of implied official sourcing', () => {
   const html = renderShop({
-    name: 'Readin’ Writin’', tags: ['shopping'],
-    menu: [{ item: '子どもから高齢者まで参加可', kind: 'note', cover, coverRole: 'illustration' }],
-  });
-  assert.match(html, /イメージ画像/);
-  assert.match(html, /alt="Readin’ Writin’ - イメージ画像"/);
-  assert.match(html, /dp-dish-img/);
-  assert.doesNotMatch(html, /店舗写真|data-gallery-idx=|dp-dish-price/);
-});
-
-test('product offers without a product photo use a labelled merchant photo without false gallery data', () => {
-  const cover = '../images/観光地/木挽町よしや.jpg';
-  const html = renderShop({
-    name: '木挽町よしや', tags: ['food'],
-    menu: [{ item: 'どら焼き（2個入）', price: '378円', cover, coverRole: 'shop' }],
-  });
-  assert.match(html, /どら焼き（2個入）/);
-  assert.match(html, /378円/);
-  assert.match(html, /店舗写真/);
-  assert.match(html, /dp-dish-img/);
-  assert.doesNotMatch(html, /data-gallery-idx=/,
-    'shop representatives must never enter a product-specific gallery');
-});
-
-test('products and notes share one spot.menu recommendation carousel', () => {
-  const mixed = renderShop({
     name: 'Cafe', tags: ['food'],
-    menu: [
-      { item: 'Coffee', price: '500円' },
-      { item: 'Check opening hours', kind: 'note' },
-    ],
-    menu_i18n: [
-      { ja: 'コーヒー' },
-      { ja: '営業時間を確認' },
-    ],
-    // Deprecated field must not create a second recommendation section.
-    tips: ['Old visit tip'],
+    menu: [{ item: 'Coffee', price: '500円' }],
   });
-  assert.match(mixed, /dp-menu-carousel/);
-  assert.match(mixed, /コーヒー/);
-  assert.match(mixed, /500円/);
-  assert.match(mixed, /営業時間を確認/);
-  assert.match(mixed, /dp-dish-badge/);
-  assert.match(mixed, /dp-dish-thumb/);
-  assert.match(mixed, /dp-dish-name/);
-  assert.doesNotMatch(mixed, /訪問Tips|Old visit tip|dp-shop-picks|dp-rec-text-carousel|dp-rec-text-item/);
-  const empty = renderShop({ name: 'Cafe', tags: ['food'], menu: [], tips: [] });
-  assert.doesNotMatch(empty, /dp-shop-picks|dp-menu-head|dp-rec-text-item|dp-dish-thumb/);
+  assert.match(html, /情報未確認/);
+  assert.doesNotMatch(html, /公式情報/);
+});
+
+test('reported-closed venue has a warning and is not shown as an active menu', () => {
+  const html = renderShop({
+    name: 'Sabö Asaichi', tags: ['food'],
+    businessStatus: 'reported_closed',
+    businessStatusSource: 'https://tabelog.com/tokyo/A1311/A131101/13201512/',
+    menu: [{ item: 'Historical breakfast', price: '500円' }, { item: 'Open early', kind: 'note' }],
+  });
+  assert.match(html, /閉店情報あり/);
+  assert.match(html, /閉店情報の出典/);
+  assert.doesNotMatch(html, /dp-menu-carousel|Historical breakfast|Open early/);
 });
 
 test('active transit routes do not appear as standalone sightseeing spots', () => {
@@ -224,6 +182,8 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
   let illustratedCovers = 0;
   let productPhotoCount = 0;
   let shopPhotoProductCount = 0;
+  let illustratedProductCount = 0;
+  let sourceBackedCount = 0;
   for (const spot of merchants) {
     assert.ok(Array.isArray(spot.menu) && spot.menu.length > 0, spot.name + ' lacks menu');
     assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips'), spot.name + ' keeps legacy tips');
@@ -261,16 +221,23 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
           productPhotoCount++;
           assert.ok(!item.cover, 'real product photography must remain preferred');
         } else {
-          shopPhotoProductCount++;
-          assert.equal(item.coverRole, 'shop', 'shared storefront imagery must be labelled as shop photo');
+          if (item.coverRole === 'shop') shopPhotoProductCount++;
+          else if (item.coverRole === 'illustration') illustratedProductCount++;
+          else assert.fail('unclear media source on ' + spot.name);
           assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'do not invent a product photo');
+        }
+        if (item.sourceUrl) {
+          sourceBackedCount++;
+          assert.ok(item.sourceUrl.startsWith('https://'), 'source URLs must use HTTPS');
+          assert.equal(item.sourceType, 'official', 'manually reviewed items need official provenance');
+          assert.match(item.verifiedAt || '', /^20\d\d-\d\d-\d\d$/);
         }
       }
     }
   }
-  assert.equal(productPhotoCount + shopPhotoProductCount, 378,
-    'all original product and experience recommendations are covered');
-  assert.equal(shopPhotoProductCount, 303, 'missing and broken product images have shop photo covers');
+  assert.equal(productPhotoCount + shopPhotoProductCount + illustratedProductCount, 395,
+    'all active source-backed and historical product records have image references');
+  assert.equal(sourceBackedCount, 20, 'first seven reviewed shops supply 20 official-source entries');
   assert.equal(productPhotoCount, 75, 'all valid product-specific photos are preserved');
   assert.ok(noteCount > 500, 'tips were migrated as text-only menu entries');
   assert.equal(verifiedCovers, noteCount, 'every migrated shop note has an available cover');
