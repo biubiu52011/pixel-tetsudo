@@ -28,6 +28,7 @@ on:
       - 'tools/joban-realtime-railway-scope.test.cjs'
       - 'tools/nambu-branch-official-hybrid.test.cjs'
       - 'tools/boso-realtime-published-plan-audit.test.cjs'
+      - 'tools/yamanote-transfer-overflow.test.cjs'
       - 'js/trains-render.js'
       - 'js/data-fusion.js'
       - 'js/train-position-estimator.js'
@@ -80,6 +81,8 @@ jobs:
         run: node tools/train-major-fleet-presets.test.cjs
       - name: Verify visual folding of dense train markers on SVG maps
         run: node tools/train-visual-fold.test.cjs
+      - name: Verify Yamanote crowded transfer +N SVG layout
+        run: node --test tools/yamanote-transfer-overflow.test.cjs
       - name: Audit all 237 railway routes, 191 fleet scopes and gallery references
         run: node tools/train-network-vehicle-audit.test.cjs
       - name: Verify all garage PNG-to-stock maps and official train references
