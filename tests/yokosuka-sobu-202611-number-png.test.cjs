@@ -250,6 +250,9 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
     {...p,displayLineId:'Yokosuka'}).pngPath,p235);
   const projected=ctx._trainMarkerSpec(p,uid,'Yokosuka');
+  const boundary={...p,fusionRole:'through-boundary'};
+  assert.equal(ctx._trainMarkerSpec(boundary,uid,'Yokosuka').iconSrc,p235,
+    'DataFusion exact Tokyo through boundary also displays sourced model');
   assert.equal(projected.kind,'vehicle');
   assert.equal(projected.iconSrc,p235);
   assert.equal(projected.planned,true);
@@ -291,6 +294,11 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
   assert.equal(ctx._trainMarkerSpec(p,uid,'SobuMain').kind,'unresolved',
     'an extension cannot borrow arbitrary third-line artwork');
   const page=fs.readFileSync('pages/trains.html','utf8');
-  assert.match(page,/train-vehicle\.js\?v=20261104-sobu-2262-extension-v1/,
+  assert.match(page,/train-vehicle\.js\?v=20261104-sobu-2262-extension-v2/,
     'train vehicle selector cache must be busted');
+  assert.match(page,/data-fusion\.js\?v=20261104-sobu-boundary-v9/,
+    'the earlier DataFusion boundary path also needs an asset cache bust');
+  const fusion=fs.readFileSync('js/data-fusion.js','utf8');
+  assert.match(fusion,/fusionRole: "through-boundary"/,
+    'direct-through station projections explicitly mark their verified role');
 });
