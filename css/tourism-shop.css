@@ -41,7 +41,7 @@
 .article-content--shop .dp-info-label { color: #999; flex-shrink: 0; width: 74px; }
 .article-content--shop .dp-info-val { flex: 1; color: #333; line-height: 1.5; }
 
-/* ⑤ 推荐菜/价目表：横向滚动卡片 + 全屏模态（最多10道，有图显图、无图首字徽章） */
+/* ⑤ 商家推荐：餐饮、饮品、商品、娱乐及体验共用横向卡片与全屏模态 */
 .article-content--shop .dp-menu-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .article-content--shop .dp-menu-count { font-size: 12px; color: #999; background: #f6f6f6; padding: 2px 10px; border-radius: 10px; white-space: nowrap; }
 .article-content--shop .dp-menu-carousel { display: flex; overflow-x: auto; gap: 10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
@@ -57,7 +57,7 @@
 .article-content--shop .dp-pick-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .article-content--shop .dp-pick-list li { position: relative; padding: 9px 10px 9px 24px; border-radius: 8px; background: #fff7f1; color: #333; font-size: 14px; line-height: 1.55; }
 .article-content--shop .dp-pick-list li::before { content: ""; position: absolute; left: 10px; top: 17px; width: 5px; height: 5px; border-radius: 50%; background: #E8590C; }
-/* 全屏菜单模态 */
+/* 全屏推荐项目模态 */
 .dp-menu-modal { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); display: none; align-items: flex-end; justify-content: center; }
 .dp-menu-modal.is-open { display: flex; }
 .dp-menu-modal-inner { background: #fff; width: 100%; max-width: 480px; max-height: 88vh; border-radius: 16px 16px 0 0; display: flex; flex-direction: column; overflow: hidden; }
