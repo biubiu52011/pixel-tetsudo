@@ -1499,3 +1499,52 @@ test('UtsunomiyaJR E131-600 exact numbers use the actual UI railway key',()=>{
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
     ...base,trainType:'odpt.TrainType:JR-East.LimitedExpress'}),null);
 });
+
+
+test('JR official 2611 Takasaki 211 M numbers include previously missing inbound and outbound services',()=>{
+  const sqlLocal=(n,date='2026-11-04')=>sql({
+    positionLineId:'Takasaki',sourceRailway:'odpt.Railway:JR-East.Takasaki',
+    trainOperator:'JR-East',trainNumber:n,
+    trainType:'odpt.TrainType:JR-East.Local',serviceDate:date,
+    calendarType:date==='2026-11-07'?'holiday':'weekday',vehiclePlan:undefined
+  });
+  const png='../images/列车/JR東日本/JR東日本_211系_湘南色.png';
+  const additional=["424M","426M","465M","468M","473M","474M","476M","477M","478M","481M","483M","522M","523M","535M","537M","540M","544M","546M","547M","620M","621M","622M","624M","626M","628M","630M","632M","638M","640M","642M","643M","647M","649M","655M","656M","657M","658M","659M","660M","661M","720M","729M","736M","742M","747M","748M","749M","750M","753M","754M","755M","756M","757M","758M"];
+  for (const n of additional){
+    for (const day of ['2026-11-04','2026-11-07']){
+      const p=sqlLocal(n,day);
+      const result=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.equal(result?.pngPath,png,n+' '+day);
+      assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false)?.planned,true,n);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+        'reference PNG must not identify the actual physical carset');
+    }
+  }
+  // These are through-trains, green-car services, limited expresses or
+  // numbers from another route; an M suffix is never enough on its own.
+  for(const n of ['821M','961M','1820E','2820Y','4001M','999M']){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(sqlLocal(n)),null,n);
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...sqlLocal('758M'),sourceRailway:'odpt.Railway:JR-East.Utsunomiya'}),null);
+});
+test('Utsunomiya E131-600 regional exact-number mapping remains isolated',()=>{
+  const base=sql({
+    positionLineId:'UtsunomiyaJR',
+    sourceRailway:'odpt.Railway:JR-East.Utsunomiya',
+    trainOperator:'JR-East',trainNumber:'620M',
+    trainType:'odpt.TrainType:JR-East.Local',
+    calendarType:'weekday',serviceDate:'2026-11-04',vehiclePlan:undefined
+  });
+  for(const n of ['620M','639M','641M','699M','2823M']){
+    const p={...base,trainNumber:n};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p)?.model,'E131系600番台',n);
+    assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false)?.planned,true,n);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN',n);
+  }
+  // The similarly-numbered Takasaki train is not a Utsunomiya E131.
+  for(const n of ['621M','631M','521M','1520E','2520Y']){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+      ...base,trainNumber:n}),null,n);
+  }
+});

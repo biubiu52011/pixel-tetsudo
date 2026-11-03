@@ -50,7 +50,8 @@
   var rows=[
 
     // Takasaki/Joetsu local 211: exact published JR 2611 numbers also
-    // corroborated by dated Takasaki-area 211 working reports (Nov 1-3).
+    // checked against JR official Nov 2026 inbound/outbound weekday/holiday
+    // 238u1/238u2/238d1/238d2 plus dated 211 working reports.
     // This is a gallery reference only; neither the number nor the
     // working report proves the physical formation on a later service day.
     // Do NOT include green-car 8xxM, E through-services, Y rapid trains,
@@ -58,9 +59,9 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/238d1.html
     // https://timetables.jreast.co.jp/2611/timetable-v/238u1.html
     // https://takasaki-115.bbs.fc2.com/
-    {lineIds:["Takasaki"],numberFormat:"full",from:420,to:746,
+    {lineIds:["Takasaki"],numberFormat:"full",from:420,to:758,
       suffixes:"M",trainType:"Local",operator:"JR-East",
-      publishedNumbers:["420M","421M","422M","423M","425M","427M","428M","429M","430M","431M","432M","433M","434M","435M","436M","437M","438M","439M","440M","441M","442M","443M","444M","445M","446M","447M","448M","449M","450M","451M","452M","453M","454M","455M","456M","457M","458M","459M","460M","461M","462M","463M","464M","466M","467M","469M","470M","471M","472M","475M","479M","480M","520M","521M","524M","525M","526M","527M","528M","529M","530M","531M","532M","533M","534M","536M","538M","539M","541M","542M","543M","545M","625M","627M","629M","633M","634M","635M","636M","637M","639M","641M","645M","651M","652M","653M","654M","721M","723M","724M","725M","726M","727M","728M","730M","731M","732M","733M","734M","735M","737M","738M","739M","740M","741M","743M","744M","745M","746M"],
+      publishedNumbers:["420M","421M","422M","423M","424M","425M","426M","427M","428M","429M","430M","431M","432M","433M","434M","435M","436M","437M","438M","439M","440M","441M","442M","443M","444M","445M","446M","447M","448M","449M","450M","451M","452M","453M","454M","455M","456M","457M","458M","459M","460M","461M","462M","463M","464M","465M","466M","467M","468M","469M","470M","471M","472M","473M","474M","475M","476M","477M","478M","479M","480M","481M","483M","520M","521M","522M","523M","524M","525M","526M","527M","528M","529M","530M","531M","532M","533M","534M","535M","536M","537M","538M","539M","540M","541M","542M","543M","544M","545M","546M","547M","620M","621M","622M","624M","625M","626M","627M","628M","629M","630M","632M","633M","634M","635M","636M","637M","638M","639M","640M","641M","642M","643M","645M","647M","649M","651M","652M","653M","654M","655M","656M","657M","658M","659M","660M","661M","720M","721M","723M","724M","725M","726M","727M","728M","729M","730M","731M","732M","733M","734M","735M","736M","737M","738M","739M","740M","741M","742M","743M","744M","745M","746M","747M","748M","749M","750M","753M","754M","755M","756M","757M","758M"],
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Takasaki"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
@@ -809,6 +810,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jreast-north-number-png-v31",match:match
+    version:"20261104-jreast-north-number-png-v32",match:match
   });
 })(window);
