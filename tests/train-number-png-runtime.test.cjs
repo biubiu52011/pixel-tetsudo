@@ -200,3 +200,44 @@ test('unlisted number tails and mismatched display lines remain neutral',()=>{
   const valid=live({trainNumber:'1940K',positionLineId:'SaikyoKawagoe'});
   assert.equal(marker(valid,'ChuoMain').kind,'unresolved');
 });
+
+test('277M: ODPT full train-number range -> representative E233-7000 PNG',()=>{
+  const p=live({trainNumber:'277M',
+    trainId:'odpt.Train:JR-East.SaikyoKawagoe.277M',
+    positionLineId:'SaikyoKawagoe',
+    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null);
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped,'277M should use the 220M+ full-number interval');
+  assert.equal(mapped.trainNumber,'277M');
+  assert.equal(mapped.model,'E233系7000番台');
+  assert.equal(mapped.representative,true);
+  assert.match(mapped.pngPath,/JR東日本_E233系_7000番台\.png$/);
+  const rendered=marker(p,'SaikyoKawagoe');
+  assert.equal(rendered.kind,'vehicle');
+  assert.equal(rendered.planned,true);
+  assert.equal(rendered.compact,false);
+  assert.equal(rendered.iconSrc,mapped.pngPath);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN','a representative image never certifies stock');
+});
+test('277M: SQL estimates use same number-based artwork as ODPT',()=>{
+  const p=sql({trainNumber:'277M',positionLineId:'SaikyoKawagoe',
+    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
+  assert.match(marker(p,'SaikyoKawagoe').iconSrc,/JR東日本_E233系_7000番台\.png$/);
+});
+test('Sotetsu M numbering uses full numbers rather than final digits',()=>{
+  for(const n of ['120M','137M','220M','277M','299M']){
+    const m=root.TrainNumberPngRanges.match(n,'SaikyoKawagoe');
+    assert.ok(m,n+' must be mapped by its own train-number family');
+    assert.equal(m.model,'E233系7000番台');
+  }
+  for(const n of ['119M','200M','219M','300M','277K']){
+    // 277K is a separate K/F/S family; not an M-number match.
+    const m=root.TrainNumberPngRanges.match(n,'SotetsuJRDirect');
+    assert.equal(m,null,n+' must not be admitted into the through-M number range');
+  }
+  assert.equal(root.TrainNumberPngRanges.match('277M','ChuoMain'),null);
+  assert.equal(root.TrainNumberPngRanges.match('277M','Rinkai'),null);
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+});
