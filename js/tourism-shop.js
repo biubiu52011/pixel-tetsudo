@@ -142,7 +142,7 @@
     });
     if (!list.length) return '';
     return '<div class="dp-card dp-visitor-notes"><h3 class="dp-sec-title">'
-      + C.escapeHtml(C.t('detail.visit_notes')) + '</h3><p class="dp-visitor-note-text">'
+      + C.escapeHtml(C.t('detail.visit_notes') + ' · ' + C.t('detail.unverified')) + '</h3><p class="dp-visitor-note-text">'
       + list.map(function(value) { return C.escapeHtml(value); }).join(' · ')
       + '</p></div>';
   }
