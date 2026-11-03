@@ -153,7 +153,7 @@
     if (tags.indexOf('event') >= 0) return 'event';
     if (tags.indexOf('mall') >= 0) return 'spot';
     // 回退分类与 TourismType.SHOP_TAGS 对齐，支持吃、喝、购物和游玩体验。
-    var shopTags = ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'shopping', 'shop', 'hotel', 'play'];
+    var shopTags = ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'shopping', 'shop', 'store', 'hotel', 'play'];
     if (tags.some(function(tag) { return shopTags.indexOf(tag) >= 0; })) return 'shop';
     return 'spot';
   }
