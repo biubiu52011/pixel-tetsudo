@@ -654,6 +654,87 @@ test('1252M Joban canonical / realtime has E531 planned PNG with strict evidence
   assert.match(migration,/ON CONFLICT \(timetable_id\) DO NOTHING/);
 });
 
+test('1257M verified Joban canonical model candidate renders a PLANNED E531 PNG',()=>{
+  const icon='../images/列车/JR東日本/JR東日本_E531系.png';
+  const trip='canonical-sql-trip:2026-11-03:174919';
+  const p=sql({
+    trainNumber:'1257M',trainId:trip,runningChainId:trip,
+    canonicalTimetableId:174919,canonicalGroupEvidence:'verified_continuation',
+    canonicalLineIds:['Joban','JobanMain'],
+    plannedVehicleCandidateStatus:'source_single_type_candidate',
+    plannedVehicleCandidates:['E531系'],
+    sourceRailway:'odpt.Railway:JR-East.Joban',
+    positionLineId:'JobanMain',
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-03',calendarType:'holiday'
+  });
+  const source=root.TrainVehicle.lookupVerifiedJobanCanonicalE531Png(p);
+  assert.equal(source.model,'E531系');
+  assert.equal(source.pngPath,icon);
+  assert.equal(source.planned,true);
+  assert.equal(marker(p,'JobanMain').iconSrc,icon);
+  assert.equal(marker(p,'JobanMain').planned,true);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+
+  const liveTrain=live({
+    trainId:trip,trainNumber:'1257M',runningChainId:trip,
+    canonicalTimetableId:'174919',
+    runningChainEvidence:'VERIFIED_SQL_CANONICAL_REALTIME_STATION',
+    canonicalPlannedVehicleReference:{
+      source:'verified-canonical-sql-source-candidate',
+      model:'E531系',canonicalTimetableId:'174919',
+      serviceDate:'2026-11-03',trainNumber:'1257M',confirmed:false
+    },
+    sourceRailway:'odpt.Railway:JR-East.JobanRapid',
+    positionLineId:'Joban',trainType:'odpt.TrainType:JR-East.Rapid',
+    trainOperator:'JR-East',serviceDate:'2026-11-03',calendarType:'holiday'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(liveTrain),null,
+    'a bare 1257M suffix alone is not an E531 model rule');
+  assert.equal(root.TrainVehicle.lookupVerifiedJobanCanonicalE531Png(liveTrain).pngPath,icon);
+  assert.equal(marker(liveTrain,'Joban').iconSrc,icon);
+  assert.equal(marker(liveTrain,'Joban').planned,true);
+  assert.equal(marker(liveTrain,'JobanMain').kind,'unresolved');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...liveTrain,displayLineId:'Joban'},true).kind,'unresolved',
+    'failed PNG keeps neutral ODPT location');
+  assert.equal(liveTrain.vehicleIdentityStatus,'UNKNOWN',
+    'source candidate must not become physical stock');
+  assert.equal(liveTrain.vehicleResolvedUpstream,false);
+
+  for(const invalid of [
+    {trainNumber:'1258M'},
+    {runningChainId:''},
+    {canonicalTimetableId:'174918'},
+    {runningChainEvidence:'TIMETABLE_SEGMENT'},
+    {serviceDate:'2027-04-01'},
+    {serviceDate:''},
+    {calendarType:''},
+    {trainOperator:'TokyoMetro'},
+    {positionLineId:'JobanLocal'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.JobanRapid'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {realtimeVehicleType:'E231系0番台'},
+    {vehiclePlan:{status:'PLANNED_CANDIDATES',models:['E231系0番台']}},
+    {canonicalPlannedVehicleReference:null}
+  ]){
+    assert.equal(root.TrainVehicle.lookupVerifiedJobanCanonicalE531Png(
+      {...liveTrain,...invalid}),null,
+      'unverified E531 model candidate '+JSON.stringify(invalid));
+  }
+  for(const invalid of [
+    {canonicalGroupEvidence:'source_only'},
+    {plannedVehicleCandidateStatus:'official_model_family_plan'},
+    {plannedVehicleCandidates:['E531系','E231系0番台']},
+    {canonicalLineIds:['Joban']},
+    {canonicalTimetableId:null}
+  ]){
+    assert.equal(root.TrainVehicle.lookupVerifiedJobanCanonicalE531Png(
+      {...p,...invalid}),null,
+      'SQL source E531 requires unambiguous verified continuation '+JSON.stringify(invalid));
+  }
+});
+
 test('train-map page loads the current number PNG rules instead of stale cached v7',()=>{
   const page=fs.readFileSync('pages/trains.html','utf8');
   const rules=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
