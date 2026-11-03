@@ -109,3 +109,69 @@ test('existing unrelated named train reference rules are retained on extension',
   assert.match(full,/sourceRailways/);
   assert.match(full,/row\.trainType/);
 });
+
+
+test('SQL timetable-only 8084M renders a planned E353 PNG through the complete estimator path',()=>{
+  const rail=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
+  const base='2026-11-03T09:18:00Z'; // 18:18 JST
+  class TestDate extends Date {
+    constructor(...args){super(...(args.length?args:[base]))}
+    static now(){return Date.parse(base)}
+  }
+  const w={
+    RuntimeConfig:{SERVICE_DAY_CALENDAR:{}},
+    ODPTClient:{
+      LINE_RAILWAY_CODE:{ChuoMain:'Chuo'},
+      LINE_TO_OPERATOR:{ChuoMain:'JR-East'}
+    }
+  };
+  const c=vm.createContext({
+    window:w,Date:TestDate,console:{log(){},warn(){},debug(){},error(){}}
+  });
+  for(const file of [
+    'js/train-vehicle.js',
+    'data/timetables/vehicle-operation-evidence-data.js',
+    'js/train-position-estimator.js'
+  ]) vm.runInContext(fs.readFileSync(file,'utf8'),c,{filename:file});
+  function timetable(trainNumber) {
+    return {
+      '@id':'test:chuo:'+trainNumber,
+      'odpt:trainNumber':trainNumber,
+      'odpt:railway':'odpt.Railway:JR-East.Chuo',
+      'odpt:calendar':'odpt.Calendar:SaturdayHoliday',
+      'odpt:trainType':'odpt.TrainType:JR-East.LimitedExpress',
+      'odpt:railDirection':'odpt.RailDirection:Inbound',
+      'odpt:destinationStation':['odpt.Station:JR-East.Chuo.Shinjuku'],
+      'odpt:trainTimetableObject':[
+        {'odpt:departureStation':'odpt.Station:JR-East.Chuo.Kofu',
+         'odpt:departureTime':'18:17'},
+        {'odpt:arrivalStation':'odpt.Station:JR-East.Chuo.Isawa-Onsen',
+         'odpt:arrivalTime':'18:24'}
+      ],
+      _positionSource:'supabase-train-run',
+      _sqlLineId:'ChuoMain',
+      _serviceDate:'2026-11-03',
+      _canonicalGroupEvidence:'source_only',
+      _timetableValidity:'undated_not_current_verified',
+      _timetableDateVerified:false
+    };
+  }
+  w.TrainPositionEstimator.registerManualTimetable('ChuoMain',[
+    timetable('8084M'),timetable('9086M')
+  ]);
+  const positions=w.TrainPositionEstimator.estimateAllPositions(
+    {ChuoMain:rail.lines.ChuoMain},{},{},null,{lineIds:['ChuoMain']}).ChuoMain || [];
+  assert.equal(positions.length,2);
+  const allowed=positions.find(p=>p.trainNumber==='8084M');
+  const excluded=positions.find(p=>p.trainNumber==='9086M');
+  assert.ok(allowed);
+  assert.ok(excluded);
+  assert.equal(allowed.estimated,true);
+  assert.equal(allowed.vehicleIdentityStatus,'UNKNOWN');
+  assert.equal(allowed.vehiclePlan?.evidenceRole,'official-train-name-and-model');
+  const png=w.TrainVehicle.selectMarkerArtwork({...allowed,displayLineId:'ChuoMain'},false);
+  assert.equal(png.kind,'vehicle');
+  assert.equal(png.planned,true);
+  assert.match(png.iconSrc,/JR東日本_E353系\.png$/);
+  assert.equal(excluded.vehiclePlan?.evidenceRole,'official-train-name-and-model',undefined);
+});
