@@ -592,6 +592,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       marker._moveRaf = 0;
     });
     var layer = el.querySelector('.train-layer');
+    if (layer && typeof layer._cancelTrainFoldGesture === 'function') layer._cancelTrainFoldGesture();
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
   }
 
@@ -2003,50 +2004,128 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     });    _syncTrainFoldBadges(trainLayer, folded, groups, markers);
   }
 
+  // The SVG badges are rebuilt as collision layout moves. A stable listener
+  // on trainLayer avoids opening a popover on touch/pointer DOWN while the
+  // user is scrolling, and survives replacement of the SVG badge nodes.
+  function _bindTrainFoldBadgeActivation(layer) {
+    if (layer._foldBadgeActivationBound) return;
+    layer._foldBadgeActivationBound = true;
+    var pending = null, blockClickUntil = 0;
+
+    function badgeAt(target) {
+      var badge = target && typeof target.closest === 'function'
+        ? target.closest('[data-train-fold-badge]') : null;
+      return badge && layer.contains(badge) ? badge : null;
+    }
+    function activate(badge) {
+      if (!badge || !badge.isConnected || !layer.isConnected) return;
+      var ids = badge._foldTrainIds;
+      if (!Array.isArray(ids) || ids.length < 2 ||
+          !layer._foldBadgeGroups || !layer._foldBadgeMarkers) return;
+      _openTrainFoldList(layer, ids.slice(), layer._foldBadgeGroups,
+        layer._foldBadgeMarkers, badge);
+    }
+    function clearPending() {
+      document.removeEventListener('pointermove', onMove, true);
+      document.removeEventListener('pointerup', onUp, true);
+      document.removeEventListener('pointercancel', onCancel, true);
+      pending = null;
+    }
+    function onMove(e) {
+      if (!pending || e.pointerId !== pending.pointerId) return;
+      if (Math.hypot(e.clientX - pending.x, e.clientY - pending.y) > 10)
+        pending.dragged = true;
+    }
+    function onCancel(e) {
+      if (!pending || e.pointerId !== pending.pointerId) return;
+      blockClickUntil = Date.now() + 600;
+      clearPending();
+    }
+    function onUp(e) {
+      if (!pending || e.pointerId !== pending.pointerId) return;
+      var start = pending;
+      blockClickUntil = Date.now() + 600; // Ignore follow-up generated click.
+      clearPending();
+      if (start.dragged ||
+          Math.hypot(e.clientX - start.x, e.clientY - start.y) > 10 ||
+          Date.now() - start.at > 800) return;
+      // Pointer capture and animation may retarget pointerup to an obsolete
+      // badge. Hit-test the CURRENT SVG and require the SAME logical group.
+      var hit = typeof document.elementFromPoint === 'function'
+        ? document.elementFromPoint(e.clientX, e.clientY) : e.target;
+      var badge = badgeAt(hit);
+      if (!badge || badge.getAttribute('data-train-fold-badge') !== start.id)
+        return;
+      activate(badge);
+    }
+    layer.addEventListener('pointerdown', function(e) {
+      var badge = badgeAt(e.target);
+      if (!badge || e.isPrimary === false || e.button !== 0 ||
+          e.ctrlKey || e.metaKey || e.altKey) return;
+      clearPending();
+      pending = {
+        id: badge.getAttribute('data-train-fold-badge'),
+        pointerId: e.pointerId, x: e.clientX, y: e.clientY,
+        at: Date.now(), dragged: false
+      };
+      // DO NOT preventDefault on touchstart: vertical map scrolling must work.
+      document.addEventListener('pointermove', onMove, true);
+      document.addEventListener('pointerup', onUp, true);
+      document.addEventListener('pointercancel', onCancel, true);
+    });
+    layer.addEventListener('click', function(e) {
+      var badge = badgeAt(e.target);
+      if (!badge) return;
+      if (e.button != null && e.button !== 0) return;
+      e.stopPropagation();
+      // Physical click follows pointerup, which already decided whether the
+      // touch was a tap or a scroll. Fallback click remains for legacy clients
+      // without PointerEvents and screen-reader synthesized activation.
+      if (Date.now() < blockClickUntil) return;
+      blockClickUntil = Date.now() + 400;
+      activate(badge);
+    });
+    layer.addEventListener('keydown', function(e) {
+      var badge = badgeAt(e.target);
+      if (!badge || (e.key !== 'Enter' && e.key !== ' ') || e.repeat) return;
+      e.preventDefault();
+      e.stopPropagation();
+      blockClickUntil = Date.now() + 400;
+      activate(badge);
+    });
+    layer._cancelTrainFoldGesture = clearPending;
+  }
+
   function _syncTrainFoldBadges(layer, folded, groups, markers) {
+    _bindTrainFoldBadgeActivation(layer);
+    layer._foldBadgeGroups = groups;
+    layer._foldBadgeMarkers = markers;
     Object.keys(folded).forEach(function(id) {
       var label=groups[id], ids=folded[id], ns='http://www.w3.org/2000/svg';
       var box=label.getBBox(), cx=box.x+box.width/2, y=box.y+box.height+3;
       var badge=document.createElementNS(ns,'g');
       badge.setAttribute('data-train-fold-badge',id);
+      badge._foldTrainIds = ids.slice();
       badge.setAttribute('role','button');badge.setAttribute('tabindex','0');
-       badge.setAttribute('pointer-events','all');
+      badge.setAttribute('pointer-events','all');
       var lang=window.currentLang||'ja';
       var action=/^zh/.test(lang)?'展开列车':lang==='en'?'Show trains':'列車を展開';
       badge.setAttribute('aria-label',action+' ('+ids.length+')');
-       badge.style.cursor='pointer';
-       // 当父级标签设置 pointer-events:none 时，SVG 命中测试可能忽略元素的
-       // presentation 属性（六形线路图）。
-       // 同时设置 DOM 样式，使展开操作在
-       // 本地文件 Chromium 和触屏浏览器中仍可用。
-       badge.style.pointerEvents='all';
-       badge.style.userSelect='none';
-      badge.style.outline='none'; /* no default focus ring on click */
+      badge.style.cursor='pointer';
+      badge.style.pointerEvents='all';
+      badge.style.userSelect='none';
+      badge.style.outline='none';
       var plate=document.createElementNS(ns,'rect');
       plate.setAttribute('x',cx-17);plate.setAttribute('y',y);
       plate.setAttribute('width',34);plate.setAttribute('height',16);
       plate.setAttribute('rx',8);plate.setAttribute('fill','#fff');
       plate.setAttribute('stroke','#64748b');badge.appendChild(plate);
-      var text=document.createElementNS(ns,'text');
-      text.setAttribute('x',cx);text.setAttribute('y',y+11);
-      text.setAttribute('text-anchor','middle');text.setAttribute('font-size','10');
-      text.setAttribute('fill','#334155');text.textContent='+'+(ids.length-1);badge.appendChild(text);
-       var openedAt=0;
-       function open(e) {
-         // 支持 Pointer 的浏览器会在 pointerdown 后触发 click；保留
-         // click 监听器作为兼容性兜底，但不能重复打开。
-         if (e && e.type === 'click' && Date.now() - openedAt < 500) return;
-         if (e && e.type === 'pointerdown') openedAt=Date.now();
-         if (e && e.stopPropagation) e.stopPropagation();
-         if (e && e.preventDefault) e.preventDefault();
-         _openTrainFoldList(layer,ids,groups,markers,badge);
-       }
-       // 在动画帧替换此 SVG 徽标前激活；click
-       // 覆盖 pointerdown 未传递到 SVG 组的浏览器/本地文件路径，
-       // 仍可完成操作。
-       badge.addEventListener('pointerdown',open);
-       badge.addEventListener('click',open);
-      badge.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')open(e);});
+      var labelText=document.createElementNS(ns,'text');
+      labelText.setAttribute('x',cx);labelText.setAttribute('y',y+11);
+      labelText.setAttribute('text-anchor','middle');labelText.setAttribute('font-size','10');
+      labelText.setAttribute('fill','#334155');
+      labelText.textContent='+'+(ids.length-1);
+      badge.appendChild(labelText);
       label.appendChild(badge);
     });
   }
