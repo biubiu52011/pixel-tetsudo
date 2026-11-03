@@ -461,10 +461,18 @@ function registerEvidenceProvider(provider) {
         var cal = String(ctx.calendarType || "").toLowerCase();
         if (!n || !day || !cal) return null;
         var hits = (byNumber[n] || []).filter(function(r) {
+          var trainType=String(ctx.trainType || "").split(/[:.]/).pop();
           return r.trainNumber === n &&
             r.calendarType === cal &&
             (!r.effectiveFrom || day >= r.effectiveFrom) &&
             (!r.effectiveTo || day <= r.effectiveTo) &&
+            (!Array.isArray(r.operatingDates) ||
+              r.operatingDates.indexOf(day) >= 0) &&
+            (!r.trainType || trainType === String(r.trainType)) &&
+            (!r.operator || !ctx.operator ||
+              String(ctx.operator).replace(/^odpt\.Operator:/,"") === String(r.operator)) &&
+            (!Array.isArray(r.sourceRailways) ||
+              r.sourceRailways.indexOf(String(ctx.railway || "")) >= 0) &&
             _evidenceNetworkMatches(r.networkKey, ctx);
         });
         if (!hits.length) return null;
@@ -4314,7 +4322,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // 上面的规范计划提供器才是唯一允许创建
     // 循环车型计划的来源。
     if (tt._positionSource === 'supabase-train-run' && _resolvedEvidence &&
-        _resolvedEvidence.evidenceRole === 'operation-family') _resolvedEvidence = null;
+        (_resolvedEvidence.evidenceRole === 'operation-family' ||
+         // A published timetable reference must not become EXACT car identity.
+         _resolvedEvidence.evidenceRole === 'timetable-reference'))
+      _resolvedEvidence = null;
     if (_resolvedEvidence) _assignmentMatches.push(_resolvedEvidence);
     if (_resolvedEvidence && _resolvedEvidence.decisive && _resolvedEvidence.operator) {
       _assignmentOperator = _resolvedEvidence.operator;
