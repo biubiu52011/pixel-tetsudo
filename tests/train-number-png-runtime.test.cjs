@@ -16,6 +16,7 @@ for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
   'data/timetables/joban-e231-h-202611-index.js',
   'data/timetables/jreast-keihin-2611-number-index.js',
+  'data/timetables/jreast-yokohama-2611-number-index.js',
   'data/timetables/jreast-yamanote-2611-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
@@ -304,7 +305,8 @@ test('JobanLocal PNG family excludes other lines, operators, dates, types and co
   }
   assert.equal(root.TrainNumberPngRanges.match('1948E','Joban'),null);
   assert.equal(root.TrainNumberPngRanges.match('1948E','JobanMain'),null);
-  assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe'),null);
+  assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe').model,
+    'E233系7000番台','existing Saikyo K-tail mapping must remain unchanged');
 });
 test('1932T: ChuoRapid ODPT live number -> scoped E233-0 SVG PNG',()=>{
   const p=live({trainNumber:'1932T',trainId:'odpt.Train:JR-East.ChuoRapid.1932T',
