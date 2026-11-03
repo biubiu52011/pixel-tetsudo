@@ -940,8 +940,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E531系",
     iconName: "E531系",
     asset: "../images/列车/JR東日本/JR東日本_E531系.png",
-    lineIds: ["Joban", "JobanMain"],
-    lineAliases: { Joban: ["E531系"], JobanMain: ["E531系"] },
+    lineIds: ["Joban", "JobanMain", "UenoTokyo"],
+    lineAliases: { Joban: ["E531系"], JobanMain: ["E531系"], UenoTokyo: ["E531系"] },
     aliases: ["E531系"]
   },
   "jr-east-e501-mito": {
@@ -987,8 +987,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E231系0番台（常磐快速線・LED）",
     iconName: "E231系0番台（常磐快速線・LED）",
     asset: "../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png",
-    lineIds: ["Joban", "JobanRapid"],
-    lineAliases: { Joban: ["E231系0番台"], JobanRapid: ["E231系0番台（常磐快速線・LED）"] },
+    lineIds: ["Joban", "JobanRapid", "UenoTokyo"],
+    lineAliases: { Joban: ["E231系0番台"], JobanRapid: ["E231系0番台（常磐快速線・LED）"], UenoTokyo: ["E231系0番台（常磐快速線・LED）"] },
     aliases: ["E231系0番台（常磐快速線・LED）"]
   },
   "jr-east-e233-7000-saikyo": {
@@ -1060,7 +1060,7 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-0": {"displayName":"E233系8000番台","iconName":"E233系8000番台","asset":"../images/列车/JR東日本/JR東日本_E233系_8000番台.png","lineIds":["Nambu"],"aliases":["JR東日本E233系8000番台","JR E233系8000番台"]},
   "planned-stock-library-1": {"displayName":"E235系1000番台","iconName":"E235系1000番台","asset":"../images/列车/JR東日本/JR東日本_E235系_1000番台.png","lineIds":["Yokosuka","SobuRapid","SobuMain"],"aliases":["JR東日本E235系1000番台","JR E235系1000番台"]},
   "planned-stock-library-2": {"displayName":"E259系","iconName":"E259系","asset":"../images/列车/JR東日本/JR東日本_E259系.png","lineIds":["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch","ShonanShinjuku"],"aliases":["E259系（成田エクスプレス）","E259系（しおさい）","JR東日本E259系","JR E259系"]},
-  "planned-stock-library-3": {"displayName":"E257系5500番台","iconName":"E257系5500番台","asset":"../images/列车/JR東日本/JR東日本_E257系_5500番台.png","lineIds":["Agatsuma","Joetsu","Takasaki"],"lineAliases":{"Agatsuma":["E257系5500番台","E257系（草津・四萬・あかぎ）"],"Joetsu":["E257系5500番台"],"Takasaki":["E257系5500番台"]},"aliases":["JR東日本E257系5500番台","JR E257系5500番台","E257系（草津・四萬・あかぎ）"]},
+  "planned-stock-library-3": {"displayName":"E257系5500番台","iconName":"E257系5500番台","asset":"../images/列车/JR東日本/JR東日本_E257系_5500番台.png","lineIds":["Agatsuma","Joetsu","Takasaki","ShonanShinjuku"],"lineAliases":{"Agatsuma":["E257系5500番台","E257系（草津・四萬・あかぎ）"],"Joetsu":["E257系5500番台"],"Takasaki":["E257系5500番台"]},"aliases":["JR東日本E257系5500番台","JR E257系5500番台","E257系（草津・四萬・あかぎ）"]},
   "planned-stock-library-4": {"displayName":"E129系","iconName":"E129系","asset":"../images/列车/JR東日本/JR東日本_E129系.png","aliases":["JR東日本E129系","JR E129系"]},
       "planned-stock-library-5": {"displayName":"E127系0番台（南武支線）","iconName":"E127系0番台（南武支線）","asset":"../images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png","lineIds":["NambuBranch"],"lineAliases":{"NambuBranch":["E127系0番台"]},"aliases":["JR東日本E127系0番台（南武支線）","JR E127系0番台（南武支線）"]},
   "planned-stock-library-6": {"displayName":"E127系0番台（新潟地区）","iconName":"E127系0番台（新潟地区）","asset":"../images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.png","aliases":["JR東日本E127系0番台（新潟地区）","JR E127系0番台（新潟地区）"]},
@@ -1140,7 +1140,7 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","lineIds":["SeibuYamaguchi"],"aliases":["L00系（レオライナー）"],"candidateOnly":true,"evidenceSource":"https://www.seiburailway.jp/railway/encyclopedia/L00/"},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
-  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuNikko","TobuSkytree"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
+  "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuNikko","TobuSkytree","ShonanShinjuku","UtsunomiyaJR"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
   "remaining-fleet-extra-10": {"displayName":"東武500系","iconName":"東武500系","asset":"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png","lineIds":["TobuNikko"],"lineAliases":{"TobuNikko":["500系「リバティ」","500系「リバティ会津」"]},"aliases":["東武500系（リバティ）","東武500系（リバティりょうもう）","500系「リバティ」","500系「リバティ会津」"]},
   "remaining-fleet-extra-11": {"displayName":"東武200型","iconName":"東武200型","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png","aliases":["東武200型（りょうもう）","東武200系"]},
   "remaining-fleet-extra-12": {"displayName":"東武250型","iconName":"東武250型","asset":"../images/列车/東武鉄道/東武鉄道_200型_250番台.png","aliases":["東武250系","東武250系（両毛）"]},
@@ -1202,8 +1202,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E257系2000番台",
     iconName: "E257系2000番台",
     asset: "../images/列车/JR東日本/JR東日本_E257系_2000番台.png",
-    lineIds: ["Tokaido", "TokaidoMain", "Ito"],
-    lineAliases: { Tokaido: ["E257系2000番台"], TokaidoMain: ["E257系2000番台"], Ito: ["E257系2000番台"] },
+    lineIds: ["Tokaido", "TokaidoMain", "Ito", "ShonanShinjuku"],
+    lineAliases: { Tokaido: ["E257系2000番台"], TokaidoMain: ["E257系2000番台"], Ito: ["E257系2000番台"], ShonanShinjuku: ["E257系2000番台"] },
     aliases: ["E257系2000番台"]
   },
   "jr-east-e257-2500-odoriko-shonan": {
