@@ -1167,10 +1167,25 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // Present train-number-matched Shonan-color plan candidates, NOT a live
   // E231/E233 vehicle identification. No representative PNG is authorized.
   function _shonanFleetCandidatesLabel(p, lineId, lang) {
-    if (!/^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo)$/.test(String(lineId || "")) ||
+    if (!/^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo|Yokosuka|Ito)$/.test(String(lineId || "")) ||
         !p || p.vehicleIdentityStatus === "EXACT" ||
         !/(?:[.:])(?:Local|Rapid|SpecialRapid)$/.test(String(p.trainType || ""))) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // A CURRENT JR East public train number can establish only the shared
+    // Shonan-color corridor fleet (E231-1000 / E233-3000). It cannot choose
+    // one trainset or authorize either PNG. Keep the SOURCE line and CURRENT
+    // displayed line equal; don't relabel an unrelated through projection.
+    var numberIndex = window.JREastShonanMixedNumberIndex202611;
+    var numberedFamily = numberIndex && typeof numberIndex.match === "function"
+      ? numberIndex.match(Object.assign({}, p, {displayLineId:lineId})) : null;
+    if (numberedFamily && numberedFamily.authorizesPNG === false) {
+      var numberLang = String(lang || "ja").toLowerCase();
+      var numberPrefix = /^zh/.test(numberLang) ? "计划车型未确认（湘南色参考）：" :
+        numberLang === "en" ? "Scheduled model unconfirmed (Shonan-color reference): " :
+        numberLang === "ko" ? "계획 차종 미확인(쇼난색 참고): " :
+        "計画車種未確認（湘南色参考）：";
+      return numberPrefix + numberedFamily.models.join(" / ");
+    }
     // A live record can display a unique train-number-matched timetable
     // REFERENCE, but that is not the actual vehicle occupying the position.
     var liveReference = p.positionSource === "realtime-api" &&
