@@ -351,6 +351,25 @@
       rejectAmbiguousPlan:true,
       model:"E233系5000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系5000番台.png"},
+    // Official JR East 2611 Togane -> Keiyo through (not every Y run):
+    // weekday and SaturdayHoliday 5680Y Naruto 06:51 -> Oami 07:16,
+    // 5983Y Oami 19:47 -> Naruto 20:05. The SQL recurring source
+    // labels E233-5000 as a reference, not a confirmed actual trainset.
+    // 5680Y joins 3680Y between Honda and Tokyo; 5983Y is paired with
+    // 4883Y between Tokyo and Honda. These are distinct published
+    // SECTION NUMBERS and must not be rewritten or blindly merged.
+    // https://timetables.jreast.co.jp/2611/timetable-v/216u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/216d1.html
+    {lineIds:["Togane"],numberFormat:"full",from:5680,to:5983,
+      suffixes:"Y",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      publishedNumbers:["5680Y","5983Y"],
+      sourceRailways:["odpt.Railway:JR-East.Togane"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系5000番台"],
+      rejectAmbiguousPlan:true,
+      model:"E233系5000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系5000番台.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
@@ -666,6 +685,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-boso-209-keiyo-y-v25",match:match
+    version:"20261104-togane-keiyo-y-v26",match:match
   });
 })(window);
