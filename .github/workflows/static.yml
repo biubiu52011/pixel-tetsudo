@@ -32,6 +32,7 @@ jobs:
           node --check js/train-vehicle.js
           node --check data/core/major-vehicle-fleet-presets.js
           node tools/train-major-fleet-presets.test.cjs
+          node --test tests/tourism-shops.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
