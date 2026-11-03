@@ -72,7 +72,7 @@ function fixture({mobile=false,side='right',count=19,maxRows=4}={}) {
 test('Yamanote Shinjuku hub: 19 transfers display +3 without rowW error',()=>{
   const {nodes,bg,extra,o}=fixture();
   assert.equal(extra.textContent,'+3');
-  assert.equal(nodes.filter(n=>n.tag==='image').length,16);
+  assert.equal(nodes.flatMap(n=>n.children||[]).filter(n=>n.tag==='image').length,16);
   const x0=o.x+10;
   const rowWidth=4*16+3*2;
   assert.equal(Number(extra.attrs.x),x0+rowWidth+2,
@@ -83,7 +83,7 @@ test('Yamanote Shinjuku hub: 19 transfers display +3 without rowW error',()=>{
 
 test('Yamanote left-hand transfer layout measures final two-chip rows',()=>{
   const {nodes,bg,extra}=fixture({side:'left'});
-  assert.equal(nodes.filter(n=>n.tag==='image').length,8,
+  assert.equal(nodes.flatMap(n=>n.children||[]).filter(n=>n.tag==='image').length,8,
     'narrow left margin falls back from four to two badges per row');
   assert.equal(extra.textContent,'+11');
   assert.equal(Number(bg.attrs.x),1,'badge starts at safely clamped x=2');
@@ -94,8 +94,8 @@ test('Yamanote left-hand transfer layout measures final two-chip rows',()=>{
 test('mobile badge layout and no-overflow path both still render',()=>{
   const a=fixture({mobile:true,count:20});
   assert.equal(a.extra.textContent,'+4');
-  assert.equal(a.nodes.filter(n=>n.tag==='image').length,16);
+  assert.equal(a.nodes.flatMap(n=>n.children||[]).filter(n=>n.tag==='image').length,16);
   const b=fixture({mobile:true,count:4});
   assert.equal(b.extra,undefined);
-  assert.equal(b.nodes.filter(n=>n.tag==='image').length,4);
+  assert.equal(b.nodes.flatMap(n=>n.children||[]).filter(n=>n.tag==='image').length,4);
 });
