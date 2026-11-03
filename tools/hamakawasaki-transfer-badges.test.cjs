@@ -39,7 +39,7 @@ test('Hama-Kawasaki has both reciprocal visible transfer badges',()=>{
     'independent branch source remains reciprocal');
   assert.equal(at(nambu,'Hama-Kawasaki','NambuBranch').length,0,
     'embedded parent/child is not a physical transfer');
-  assert.equal(at(nambu,'Hama-Kawasaki','Tsurumi')[0].through,true === false,
+  assert.notEqual(at(nambu,'Hama-Kawasaki','Tsurumi')[0].through,true,
     'Hama-Kawasaki is an outside transfer, not through service');
 });
 test('embedded branch keeps other external transfers but hides internal parent',()=>{
