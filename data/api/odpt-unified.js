@@ -1948,6 +1948,17 @@
     }
 
     // 这是线路能力，不是运营商范围的 Train 可用性或实时记录数量。
+    // The published JR-East Train Location coverage excludes NambuBranch.
+    // A detail view may nevertheless inspect the already configured JR-East
+    // operator-wide feed for an EXACT branch railway observation. This is a
+    // bounded, opportunistic probe -- not an advertised realtime capability,
+    // not a new API and never permission to synthesize realtime positions.
+    function isNambuBranchOnDemandProbe(lineId) {
+        var id = lineId === "NambuBranch" ? getLineRailwayIdentity(lineId) : null;
+        return !!(id && LINE_TO_OPERATOR[lineId] === "JR-East" &&
+          ODPT_ENDPOINTS["JR-East"] && ODPT_ENDPOINTS["JR-East"].train);
+    }
+
     function hasRealtimePositionApi(lineId) {
         var op = LINE_TO_OPERATOR[lineId];
         if (!op || !ODPT_ENDPOINTS[op] || !(ODPT_ENDPOINTS[op].train || ODPT_ENDPOINTS[op].gtfsVehicle) ||
@@ -2113,7 +2124,15 @@
     // position from the timetable or the train number alone.
     function _matchesActiveRealtimeRailway(op, railwayRaw, allowed) {
         var railway = parseRailwayIdentity(railwayRaw);
-        if (!railway) return op !== "Toei";
+        if (!railway) {
+            // The excluded branch can only use EXPLICIT ODPT NambuBranch
+            // identities; a same-number or station-overlap record is not
+            // realtime coverage. Preserve legacy behavior for other lines.
+            if (op === "JR-East" && Array.isArray(allowed) &&
+                allowed.length === 1 && allowed[0] === "NambuBranch")
+                return false;
+            return op !== "Toei";
+        }
         return (allowed || []).some(function(lineId) {
             var target = getLineRailwayIdentity(lineId);
             if (target && target.key === railway.key) return true;
@@ -2180,7 +2199,9 @@
             var activationDate = _serviceDateJst();
             lineIds.forEach(function(lineId) {
                 var requestedOp = LINE_TO_OPERATOR[lineId];
-                if (requestedOp && hasRealtimePositionApi(lineId)) {
+                if (requestedOp &&
+                    (hasRealtimePositionApi(lineId) ||
+                     isNambuBranchOnDemandProbe(lineId))) {
                     requestedOps[requestedOp] = true;
                     if (!requestedLineIds[requestedOp]) requestedLineIds[requestedOp] = [];
                     if (requestedLineIds[requestedOp].indexOf(lineId) < 0) requestedLineIds[requestedOp].push(lineId);
@@ -2199,7 +2220,9 @@
                 var identity = getLineRailwayIdentity(lineId);
                 if (!op || !identity) return;
 
-                if (hasRealtimePositionApi(lineId) && !_activeRealtimeOperators[op]) {
+                if ((hasRealtimePositionApi(lineId) ||
+                     isNambuBranchOnDemandProbe(lineId)) &&
+                    !_activeRealtimeOperators[op]) {
                     _activeRealtimeOperators[op] = true;
                     newlyActivatedOps[op] = true;
                 }
