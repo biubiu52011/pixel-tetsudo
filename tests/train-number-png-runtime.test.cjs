@@ -314,7 +314,7 @@ test('2026 regular Chuo express SQL positions use the same E353 PNG',()=>{
   assert.equal(marker(p,'ChuoMain').iconSrc,png);
 });
 test('Chuo M regulars, numbered non-expresses and date-gated extras never become E353',()=>{
-  for(const number of ['427M','2152M','3107M','5003M','1M']){
+  for(const number of ['427M','2153M','3107M','5003M','1M']){
     const p=live({trainNumber:number,positionLineId:'ChuoMain',
       trainType:'odpt.TrainType:JR-East.Local'});
     assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,number+' is not a LimitedExpress');
@@ -334,6 +334,55 @@ test('Chuo M regulars, numbered non-expresses and date-gated extras never become
     {trainType:'odpt.TrainType:JR-East.LimitedExpress'}).model,'E353系');
 });
 
+test('2026-11 ChuoMain published M numbers map to representative PNGs without operating-number conversion',()=>{
+  const cases=[
+    ['640M','odpt.TrainType:JR-East.ChuoSpecialRapid','E233系0番台','E233系_0番台'],
+    ['321M','odpt.TrainType:JR-East.Local','211系（長野地区）','211系_長野色'],
+    ['2152M','odpt.TrainType:JR-East.Local','E233系0番台','E233系_0番台']
+  ];
+  for(const [trainNumber,trainType,model,asset] of cases){
+    for(const source of ['realtime-api','supabase-train-run']){
+      const p=live({trainNumber,trainType,positionSource:source,
+        trainId:'odpt.Train:JR-East.Chuo.'+trainNumber});
+      const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(mapped,trainNumber+' / '+source);
+      assert.equal(mapped.trainNumber,trainNumber);
+      assert.equal(mapped.model,model);
+      assert.equal(mapped.source,'train-number-range');
+      assert.equal(mapped.representative,true);
+      assert.ok(mapped.pngPath.includes(asset));
+      const spec=marker(p,'ChuoMain');
+      assert.equal(spec.kind,'vehicle');
+      assert.equal(spec.planned,true);
+      assert.equal(spec.iconSrc,mapped.pngPath);
+      assert.equal(p.vehiclePlan,undefined);
+    }
+  }
+});
+test('ChuoMain local M families stay source, month, model and train-number scoped',()=>{
+  const base={positionLineId:'ChuoMain',
+    sourceRailway:'odpt.Railway:JR-East.Chuo',
+    trainOperator:'JR-East',serviceDate:'2026-11-04',
+    trainType:'odpt.TrainType:JR-East.Local'};
+  const good=(trainNumber,extra={})=>root.TrainNumberPngRanges.match(
+    trainNumber,'ChuoMain',{...base,...extra});
+  assert.equal(good('321M').model,'211系（長野地区）');
+  assert.equal(good('640M').model,'E233系0番台');
+  for(const n of ['366M','368M','639M','641M','640T','321T','garbage']){
+    assert.equal(good(n),null,'unpublished or non-M number '+n);
+  }
+  assert.equal(good('321M',{trainType:'odpt.TrainType:JR-East.LimitedExpress'}),null);
+  assert.equal(good('321M',{sourceRailway:'odpt.Railway:JR-East.Joban'}),null);
+  assert.equal(good('640M',{trainOperator:'JR-Central'}),null);
+  assert.equal(good('640M',{serviceDate:'2026-12-01'}),null);
+  assert.equal(good('321M',{serviceDate:'2026-10-31'}),null);
+  assert.equal(good('321M',{realtimeVehicleType:'E131系200番台（長野地区）'}),null);
+  assert.equal(good('321M',{vehiclePlan:{
+    status:'PLANNED_CANDIDATES',models:['211系（長野地区）','E131系200番台']
+  }}),null);
+  assert.equal(root.TrainNumberPngRanges.match('321M','ChuoRapid',base),null);
+  assert.equal(root.TrainNumberPngRanges.match('640M','Joban',base),null);
+});
 test('2026 Ome official plain train numbers map directly to E233-0 PNG',()=>{
   const numbers=['509','843','1103','1705','2348'];
   for(const trainNumber of numbers){
