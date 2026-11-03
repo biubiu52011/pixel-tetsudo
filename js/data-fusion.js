@@ -1167,6 +1167,13 @@
           var hit=group[id];
           if(!hit)group[id]={chain:p.runningChainId,stops:p.canonicalStopKeys};
           else if(hit.chain!==p.runningChainId)hit.conflict=true;
+          else if(p.handoverEvidenceOnly === true &&
+              p.canonicalStopKeys.length > hit.stops.length) {
+            // Active line-local positions can be clipped at Takao. The
+            // identity-only canonical source retains the full verified
+            // itinerary, so the first realtime stop beyond Takao is valid.
+            hit.stops = p.canonicalStopKeys;
+          }
         });
       });
       (posMap[lid]||[]).forEach(function(p){
