@@ -1178,8 +1178,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E233系5000番台",
     iconName: "E233系5000番台",
     asset: "../images/列车/JR東日本/JR東日本_E233系5000番台.png",
-    lineIds: ["Keiyo", "Togane"],
-    lineAliases: { Keiyo: ["E233系5000番台"], Togane: ["E233系5000番台"] },
+    lineIds: ["Keiyo", "Togane", "Sotobo"],
+    lineAliases: { Keiyo: ["E233系5000番台"], Togane: ["E233系5000番台"], Sotobo: ["E233系5000番台"] },
     aliases: ["E233系5000番台", "JR E233系5000番台"]
   },
   "jr-east-e231-900-musashino": {
