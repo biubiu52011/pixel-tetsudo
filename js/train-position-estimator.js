@@ -727,6 +727,24 @@
               datedRule.operatingDates.indexOf(serviceDate) < 0) continue;
         }
 
+        // NambuBranch has an exact JR East November 2026 public-number
+        // schedule in both directions. Admit only those SQL services for
+        // this edition; keep the train number as 500H/2211H, NOT a guessed
+        // operating/car number. Outside this edition, the historical SQL
+        // timetable remains usable but its revision is still unverified.
+        // The separate realtime channel is never filtered by this plan index.
+        if (lineId === "NambuBranch" &&
+            tt._positionSource === "supabase-train-run" &&
+            window.NambuBranchOfficial202611 &&
+            typeof window.NambuBranchOfficial202611.verify === "function") {
+          var officiallyListed = window.NambuBranchOfficial202611.verify(
+            run.trainNumber, tt["odpt:railway"] || "",
+            tt["odpt:railDirection"] || "",
+            tt["odpt:trainType"] || "",
+            calendar, serviceDate);
+          if (officiallyListed === false) continue;
+        }
+
         // 按铁路筛选（如果 lineId 匹配）。
         var railwayKey = run.railwayKey;
         if (railwayKey && railwayKey !== lineId &&
