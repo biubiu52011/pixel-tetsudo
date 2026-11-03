@@ -359,16 +359,25 @@
       models:['E129系'], sourceUrl:'https://www.jreast.co.jp/train/local/e129.html'},
     {id:'jr-joetsu-regional', operator:'JR-East', lineIds:['Joetsu'],
       models:['211系','E129系'], sourceUrl:'https://www.jreast.co.jp/train/local/211.html'},
+    // E131-200 is confined to Shinonoi–Nagano, never a default for all Shinetsu.
     {id:'jr-shinetsu-regional', operator:'JR-East', lineIds:['Shinetsu'],
-      models:['211系','E129系','GV-E400系'], sourceUrl:'https://www.jreast.co.jp/train/local/e129.html'},
+      models:['211系','E129系','GV-E400系','E131系200番台'],
+      sourceUrl:'https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf'},
     {id:'jr-uetsu-regional', operator:'JR-East', lineIds:['Uetsu'],
       models:['E129系','701系','GV-E400系'], sourceUrl:'https://www.jreast.co.jp/train/local/gv_e400.html'},
     {id:'jr-gunma-local', operator:'JR-East', lineIds:['Agatsuma','Ryomo'],
       models:['211系'], sourceUrl:'https://www.jreast.co.jp/train/local/211.html'},
+    // Nagano E131-200 began entering service in autumn 2026. These entries
+    // are non-exclusive line fleet references, not train-level dispatch data.
     {id:'jr-chuo-main-local', operator:'JR-East', lineIds:['ChuoMain'],
-      models:['211系','E127系'], sourceUrl:'https://www.jreast.co.jp/train/local/211.html'},
-    {id:'jr-nagano-local', operator:'JR-East', lineIds:['Oito','Shinonoi'],
+      models:['211系','E127系','E131系200番台'],
+      sourceUrl:'https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf'},
+    // Oito is not on the published Nagano E131-200 deployment corridor.
+    {id:'jr-oito-local', operator:'JR-East', lineIds:['Oito'],
       models:['211系','E127系'], sourceUrl:'https://www.jreast.co.jp/train/local/e127.html'},
+    {id:'jr-nagano-shinonoi-local', operator:'JR-East', lineIds:['Shinonoi'],
+      models:['211系','E127系','E131系200番台'],
+      sourceUrl:'https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf'},
     {id:'jr-chuo-tatsuno', operator:'JR-East', lineIds:['ChuoTatsuno'],
       models:['E127系'], sourceUrl:'https://www.jreast.co.jp/train/local/e127.html'},
     {id:'jr-boso-local', operator:'JR-East', lineIds:['Uchibo','Sotobo'],
