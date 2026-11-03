@@ -987,8 +987,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E231系0番台",
     iconName: "E231系0番台",
     asset: "../images/列车/JR東日本/JR東日本_E231系_0番台.png",
-    lineIds: ["Joban"],
-    lineAliases: { Joban: ["E231系0番台"] },
+    lineIds: ["Joban", "NaritaAbikoBranch"],
+    lineAliases: { Joban: ["E231系0番台"], NaritaAbikoBranch: ["E231系0番台"] },
     aliases: ["E231系0番台"]
   },
   "jr-east-e231-0-joban-rapid-led": {
