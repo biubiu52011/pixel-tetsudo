@@ -150,3 +150,22 @@ test('ChuoRapid/verified continuation are not changed by source-only protection'
   assert.equal(x.match({...p,canonicalGroupEvidence:'verified_continuation'},[]),null);
   assert.equal(x.match({...p,positionLineId:'ChuoRapid'},[]),null);
 });
+
+test('Japanese Culture Day uses holiday plans, not imported weekday source clocks',()=>{
+  const weekday=sourceOnly('321M',realStops321,{
+    _serviceDate:'2026-11-03',
+    '@id':'planned-trip:ChuoMain:2026-11-03:weekday-321M'
+  });
+  const skipped=getPositions('2026-11-02T21:10:00Z',[weekday]);
+  assert.equal(skipped.positions.length,0,
+    'Nov 3 holiday must not expose a Weekday-only run');
+  const holiday=sourceOnly('321M',realStops321,{
+    _serviceDate:'2026-11-03',
+    '@id':'planned-trip:ChuoMain:2026-11-03:holiday-321M',
+    'odpt:calendar':'odpt.Calendar:SaturdayHoliday'
+  });
+  const selected=getPositions('2026-11-02T21:10:00Z',[holiday]);
+  assert.equal(selected.positions.length,1);
+  assert.equal(selected.positions[0].serviceDate,'2026-11-03');
+  assert.equal(selected.positions[0].estimated,true);
+});
