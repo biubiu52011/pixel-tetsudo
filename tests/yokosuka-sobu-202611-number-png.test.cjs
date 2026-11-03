@@ -261,6 +261,8 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
     'failed projection PNG retains the gray location marker');
   const live={...p,positionSource:'realtime-api',estimated:false};
   assert.equal(ctx._trainMarkerSpec(live,uid,'Yokosuka').iconSrc,p235);
+  // 2262F is published in both weekday and holiday number lists.
+  assert.equal(ctx._trainMarkerSpec({...p,calendarType:'weekday'},uid,'Yokosuka').iconSrc,p235);
   const nex=position('SobuRapid','2001M','LimitedExpress','holiday',{
     fusionLineId:'SobuRapid',fusionRole:'extension'
   });
@@ -276,7 +278,7 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
     {sourceRailway:'odpt.Railway:JR-East.Yokosuka'},
     {trainNumber:'2263F'},
     {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
-    {calendarType:'weekday'},
+    {calendarType:'unknown',serviceId:''},
     {serviceDate:'2026-12-01'},
     {trainOperator:'JR-West'},
     {realtimeVehicleType:'E217系'},
