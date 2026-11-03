@@ -422,6 +422,20 @@ function _getTransferMap(lineId, staticRevision) {
   var own = src[lineId];
   var declared = (own && Array.isArray(own.transferStations)) ? own.transferStations : [];
   var ownStations = (own && own.stations) ? own.stations : [];
+  // A branch without a separate icon belongs to its parent's railway family.
+  // Use the parent's published line icon for badges, but keep the branch's
+  // canonical lineId (Tsurumi -> NambuBranch is not Tsurumi -> Nambu).
+  function transferArtwork(targetId) {
+    var target = src[targetId];
+    if (!target) return "";
+    var placeholder = /(グループ|ロゴ|マーク|アイコン|シンボル)/;
+    function usable(path) { return path && !placeholder.test(path) ? path : ""; }
+    var ownIcon = usable(target.image);
+    var systemIcon = usable(window.LineOperationSystemsResolveIcon &&
+      window.LineOperationSystemsResolveIcon(targetId));
+    var parent = target.branchOf && src[target.branchOf];
+    return ownIcon || systemIcon || usable(parent && parent.image) || "";
+  }
   for (var di = 0; di < declared.length; di++) {
     var t = declared[di];
     if (!t || !t.station || !t.lineId) continue;
@@ -443,10 +457,7 @@ function _getTransferMap(lineId, staticRevision) {
     var tl = src[t.lineId];
     if (!tl) continue;
     if (!_transferCoordinatesCompatible(lineId, t.station, t.lineId, t.toStation || t.station, src)) continue;
-    var _placeholderRe = /(グループ|ロゴ|マーク|アイコン|シンボル)/;
-    var _canonicalIcon = tl.image && !_placeholderRe.test(tl.image) ? tl.image : "";
-    var _losIcon = (window.LineOperationSystemsResolveIcon && window.LineOperationSystemsResolveIcon(t.lineId)) || "";
-    var img = _canonicalIcon || ((_losIcon && !_placeholderRe.test(_losIcon)) ? _losIcon : "");
+    var img = transferArtwork(t.lineId);
     var nm = (window.RailwayDB && window.RailwayDB.resolveLineName) ? window.RailwayDB.resolveLineName(t.lineId, window.currentLang) : (tl.name || t.lineId);
     map[t.station].push({
       lineId: t.lineId, image: img, name: nm, operator: tl.operator || "",
@@ -479,10 +490,7 @@ function _getTransferMap(lineId, staticRevision) {
           window.SharedTrackPairs.isSharedStation(lineId, targetStation, sourceId)) return;
       if (!_transferCoordinatesCompatible(sourceId, t.station, lineId, targetStation, src)) return;
       if (map[targetStation] && map[targetStation].some(function(it) { return it.lineId === sourceId; })) return;
-      var sourcePlaceholderRe = /(グループ|ロゴ|マーク|アイコン|シンボル)/;
-      var sourceCanonicalIcon = sourceLine.image && !sourcePlaceholderRe.test(sourceLine.image) ? sourceLine.image : "";
-      var sourceLosIcon = (window.LineOperationSystemsResolveIcon && window.LineOperationSystemsResolveIcon(sourceId)) || "";
-      var sourceImg = sourceCanonicalIcon || ((sourceLosIcon && !sourcePlaceholderRe.test(sourceLosIcon)) ? sourceLosIcon : "");
+      var sourceImg = transferArtwork(sourceId);
       var sourceName = (window.RailwayDB && window.RailwayDB.resolveLineName) ? window.RailwayDB.resolveLineName(sourceId, window.currentLang) : (sourceLine.name || sourceId);
       if (!map[targetStation]) map[targetStation] = [];
       map[targetStation].push({
@@ -490,6 +498,44 @@ function _getTransferMap(lineId, staticRevision) {
         code: sourceLine.code || "",
         color: (window.LineOperationSystemsResolveColor && window.LineOperationSystemsResolveColor(sourceId)) || sourceLine.color || "",
         type: t.type === "out" ? "out" : "in", note: t.note || "", toStation: t.station || ""
+      });
+    });
+  });
+  // The Nambu map embeds NambuBranch (and other non-independent branches).
+  // Station chips share this ONE parent transferMap, so an external transfer
+  // declared only on the embedded branch would otherwise disappear. Copy
+  // branch-only EXTERNAL connections onto their actual station IDs, without
+  // inventing a reverse railway link or drawing parent/child as a transfer.
+  var mapBranchIds = window.LinePresentationService
+    ? window.LinePresentationService.getMapBranchIds(lineId, src) : [];
+  mapBranchIds.forEach(function(branchId) {
+    var branch = src[branchId];
+    if (!branch || !Array.isArray(branch.stations)) return;
+    (branch.transferStations || []).forEach(function(t) {
+      if (!t || !t.station || !t.lineId ||
+          branch.stations.indexOf(t.station) < 0 ||
+          t.lineId === lineId || t.lineId === branchId ||
+          mapBranchIds.indexOf(t.lineId) >= 0) return;
+      var target = src[t.lineId];
+      if (!target) return;
+      if (_activeSystemIds.indexOf(lineId) >= 0 &&
+          _activeSystemIds.indexOf(t.lineId) >= 0) return;
+      if (window.SharedTrackPairs && window.SharedTrackPairs.isSharedStation &&
+          window.SharedTrackPairs.isSharedStation(branchId,t.station,t.lineId)) return;
+      if (!_transferCoordinatesCompatible(branchId,t.station,t.lineId,
+          t.toStation || t.station,src)) return;
+      var items = map[t.station] = map[t.station] || [];
+      if (items.some(function(it) { return it.lineId === t.lineId; })) return;
+      var name = window.RailwayDB && window.RailwayDB.resolveLineName
+        ? window.RailwayDB.resolveLineName(t.lineId,window.currentLang)
+        : target.name || t.lineId;
+      items.push({
+        lineId:t.lineId, image:transferArtwork(t.lineId), name:name,
+        operator:target.operator || "", code:target.code || "",
+        color:(window.LineOperationSystemsResolveColor &&
+          window.LineOperationSystemsResolveColor(t.lineId)) || target.color || "",
+        type:t.type === "out" ? "out" : "in",note:t.note || "",
+        toStation:t.toStation || ""
       });
     });
   });
