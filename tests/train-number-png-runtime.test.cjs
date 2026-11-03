@@ -359,7 +359,7 @@ test('Tozai through representative PNG rejects wrong JR segment numbers, directi
     railDirection:'Westbound',calendarType:'weekday',serviceDate:'2026-11-04',
     trainType:'odpt.TrainType:JR-East.Local',trainOperator:'JR-East'};
   for(const change of [
-    {trainNumber:'485B'},{trainNumber:'485S'},{trainNumber:'711A'},
+    {trainNumber:'485B'},{trainNumber:'485S'},{trainNumber:'711B'},
     {railDirection:'Eastbound'},{railDirection:''},{calendarType:'holiday'},
     {positionLineId:'ChuoRapid'},{sourceRailway:'odpt.Railway:TokyoMetro.Tozai'},
     {trainOperator:'TokyoMetro'},{trainType:'odpt.TrainType:JR-East.LimitedExpress'},
