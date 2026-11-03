@@ -2,7 +2,7 @@
  * Match the published trainNumber directly: K/F/S service numbers use the
  * final two numeric characters; Sotetsu/JR-through M numbers and ChuoRapid
  * T/H service numbers use their full train-number range.
- * Ome line additionally uses suffixless three/four-digit train numbers;
+ * Ome / Itsukaichi lines additionally use suffixless three/four-digit train numbers;
  * these are public train numbers too, NOT vehicle identifiers.
  * Chuo corridor regular express M numbers use full numbers PLUS the published
  * train type (LimitedExpress) because ordinary services also carry M numbers.
@@ -31,6 +31,10 @@
  * https://timetables.jreast.co.jp/2611/timetable-v/652d2.html
  * JR East confirms E233-0 on suffixless 843/1103 and 1379T/721T:
  * https://media.jreast.co.jp/articles/2564
+ * JR East confirms Itsukaichi 2149 on Saturday/holiday dep Haijima 21:57:
+ * https://timetables.jreast.co.jp/2611/train/050/053471.html
+ * E233 fleet operates on Itsukaichi per JR East:
+ * https://www.jreast.co.jp/train/local/e233.html
  */
 (function(root){
   "use strict";
@@ -72,11 +76,13 @@
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
     // The common E233-0 gallery PNG represents the model; a 4-car Ome-Okutama
     // train must not be claimed to be a verified 10-car physical formation.
-    {lineIds:["Ome"],numberFormat:"full",
+    // Itsukaichi uses the same E233-0 gallery default; 2149 on 2026-11-03
+    // is confirmed as a suffixless 21:57 Haijima -> Musashi-Itsukaichi train.
+    {lineIds:["Ome","Itsukaichi"],numberFormat:"full",
       from:400,to:2599,suffixes:"TH",excludeTrainType:"LimitedExpress",
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
-    {lineIds:["Ome"],numberFormat:"bare",
+    {lineIds:["Ome","Itsukaichi"],numberFormat:"bare",
       from:400,to:2499,suffixes:"",excludeTrainType:"LimitedExpress",
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
@@ -141,6 +147,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261103-direct-number-v5",match:match
+    version:"20261103-direct-number-v6",match:match
   });
 })(window);

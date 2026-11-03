@@ -397,3 +397,67 @@ test('Ome regular train-number mapping excludes specials and unrelated lines',()
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
 });
+
+test('2026-11-03 Itsukaichi 2149 uses full public number -> E233-0 marker PNG',()=>{
+  const p=live({
+    trainNumber:'2149',
+    trainId:'planned-trip:2026-11-03|JR-East|odpt.Railway:JR-East.Itsukaichi|Itsukaichi|2149',
+    positionLineId:'Itsukaichi',
+    sourceRailway:'odpt.Railway:JR-East.Itsukaichi',
+    railDirection:'odpt.RailDirection:Outbound',
+    trainType:'odpt.TrainType:JR-East.Local'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null);
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+  assert.ok(mapped);
+  assert.equal(mapped.trainNumber,'2149');
+  assert.equal(mapped.lineId,'Itsukaichi');
+  assert.equal(mapped.model,'E233系0番台');
+  assert.equal(mapped.representative,true);
+  assert.match(mapped.pngPath,/JR東日本_E233系_0番台\.png$/);
+  const spec=marker(p,'Itsukaichi');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(spec.iconSrc,mapped.pngPath);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+});
+test('Itsukaichi 2149 SQL planned-trip and other confirmed plain numbers share the same PNG',()=>{
+  for(const trainNumber of ['2148','2149','2249']){
+    const p=sql({
+      trainNumber,
+      trainId:'planned-trip:2026-11-03|JR-East|Itsukaichi|'+trainNumber,
+      positionLineId:'Itsukaichi',
+      sourceRailway:'odpt.Railway:JR-East.Itsukaichi',
+      trainType:'odpt.TrainType:JR-East.Local'
+    });
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(mapped,trainNumber);
+    assert.equal(mapped.model,'E233系0番台');
+    assert.equal(marker(p,'Itsukaichi').iconSrc,mapped.pngPath);
+  }
+});
+test('Itsukaichi keeps T/H commuter number range and excludes specials or unrelated railways',()=>{
+  for(const n of ['434T','813H','1926H']){
+    const p=live({
+      trainNumber:n,positionLineId:'Itsukaichi',
+      trainType:'odpt.TrainType:JR-East.Local'
+    });
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p).model,'E233系0番台');
+  }
+  for(const n of ['7741','9270M','9351M','399','2500','2600T','2149M']){
+    const p=live({
+      trainNumber:n,positionLineId:'Itsukaichi',
+      trainType:'odpt.TrainType:JR-East.Local'
+    });
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,n);
+  }
+  assert.equal(root.TrainNumberPngRanges.match('2149','ChuoRapid'),null);
+  assert.equal(root.TrainNumberPngRanges.match('2149','SaikyoKawagoe'),null);
+  assert.equal(root.TrainNumberPngRanges.match('2149','Ome').model,'E233系0番台');
+  assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
+  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+    trainNumber:'2149',positionLineId:'Itsukaichi',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress'})),null);
+});
