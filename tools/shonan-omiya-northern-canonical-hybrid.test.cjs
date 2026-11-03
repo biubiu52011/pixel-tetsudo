@@ -13,12 +13,12 @@ const estText=fs.readFileSync('js/train-position-estimator.js','utf8');
 const cfgText=fs.readFileSync('data/core/runtime-config.js','utf8');
 const w={UNIFIED_LINES:{},RuntimeConfig:{VERIFIED_CANONICAL_PLAN_PARTNERS:{
   ShonanShinjuku:['Tokaido','Takasaki','UtsunomiyaJR'],
-  Takasaki:['ShonanShinjuku'],UtsunomiyaJR:['ShonanShinjuku']}}};
+  Takasaki:['ShonanShinjuku','Tokaido'],UtsunomiyaJR:['ShonanShinjuku']}}};
 vm.runInNewContext(resolverText,{window:w,console});
 const resolver=w.RunningChainResolver;
 assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('ShonanShinjuku')),
   ['Tokaido','Takasaki','UtsunomiyaJR']);
-assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Takasaki')),['ShonanShinjuku']);
+assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Takasaki')),['ShonanShinjuku','Tokaido']);
 assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('UtsunomiyaJR')),['ShonanShinjuku']);
 assert.deepEqual(Array.from(resolver.getVerifiedCanonicalPartners('Yokosuka')),[]);
 const a=fusionText.indexOf('  function _linkVerifiedCanonicalRealtime(');
@@ -119,5 +119,5 @@ for(const [label,plans,observations] of rejects){
 assert.match(edgeText,/"Takasaki","UtsunomiyaJR"\]\.includes\(lineId\)/);
 assert.match(edgeText,/lines\.includes\("ShonanShinjuku"\)/);
 assert.match(estText,/Takasaki","UtsunomiyaJR"\]\.some/);
-assert.match(cfgText,/Takasaki: Object\.freeze\(\["ShonanShinjuku"\]\)/);
+assert.match(cfgText,/Takasaki: Object\.freeze\(\["ShonanShinjuku","Tokaido"\]\)/);
 console.log('Shonan Omiya northern HYBRID 263 verified pairs: PASS');
