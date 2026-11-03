@@ -3833,7 +3833,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         var tenCarEWeekday = ["3702E", "2703E"];
         var eightCarWeekday = ["500E", "701E", "800E", "702E", "903E",
           "1102E", "1502E", "1803E", "1902E", "2003E"];
-        var eightCarHoliday = ["602E", "903E", "1002E", "1602E",
+        // Holiday 69E is the published 8-car Musashino-through working:
+        // 1269E Fuchuhommachi 12:40 -> Tokyo 14:30 (2026-03-14 revision).
+        // It shares E231-0 and 209-500 fleet; PNG is only a representative.
+        var eightCarHoliday = ["602E", "903E", "1002E", "1269E", "1602E",
           "1803E", "1902E", "2003E"];
         if (/^[0-9]{3,5}[YA]$/.test(num)) {
           keiyoGroup = "10-car";
