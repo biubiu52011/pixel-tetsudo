@@ -1022,6 +1022,73 @@ test('Keihin-Tohoku A/B/C numbered services stay distinct from Yokohama K throug
     {...base,trainNumber:'411B',displayLineId:line},true).kind,
     'unresolved','failed PNG retains neutral position marker');
 });
+test('November Ito official Odoriko train numbers share exact PNG across realtime and schedule',()=>{
+  const cases=[
+    ['3001M','E261系','JR東日本_E261系_サフィール踊り子.png'],
+    ['3002M','E261系','JR東日本_E261系_サフィール踊り子.png'],
+    ['3021M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3022M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3024M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3025M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3026M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3029M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3030M','E257系2000番台','JR東日本_E257系_2000番台.png'],
+    ['3031M','E257系2000番台','JR東日本_E257系_2000番台.png']
+  ];
+  for(const [number,model,file] of cases){
+    for(const source of ['realtime-api','supabase-train-run','train-timetable']){
+      const p=live({trainNumber:number,
+        trainId:'odpt.Train:JR-East.Ito.'+number,
+        sourceRailway:'odpt.Railway:JR-East.Ito',
+        positionLineId:'Ito',
+        trainOperator:source==='supabase-train-run'?'':'JR-East',
+        trainType:'odpt.TrainType:JR-East.LimitedExpress',
+        positionSource:source,estimated:source!=='realtime-api'});
+      const matched=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(matched,number+' / '+source);
+      assert.equal(matched.trainNumber,number);
+      assert.equal(matched.model,model);
+      assert.ok(matched.pngPath.endsWith(file));
+      assert.equal(matched.planned,true);
+      const display=marker(p,'Ito');
+      assert.equal(display.kind,'vehicle');
+      assert.equal(display.planned,true);
+      assert.equal(display.iconSrc,matched.pngPath);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN','number never certifies a trainset');
+      assert.equal(p.vehiclePlan,undefined);
+    }
+  }
+});
+test('Ito local mixed fleet and Shuzenji/seasonal expresses cannot acquire an invented exact model',()=>{
+  const p=live({
+    trainNumber:'3001M',positionLineId:'Ito',
+    sourceRailway:'odpt.Railway:JR-East.Ito',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress',
+    trainOperator:'JR-East'
+  });
+  for(const change of [
+    {trainNumber:'3003M'}, {trainNumber:'3023M'},
+    {trainNumber:'4021M'}, {trainNumber:'8057M'},
+    {trainNumber:'9067M'}, {trainNumber:'5637M',
+      trainType:'odpt.TrainType:JR-East.Local'},
+    {trainNumber:'1556E',trainType:'odpt.TrainType:JR-East.Local'},
+    {trainNumber:'3001M',trainType:'odpt.TrainType:JR-East.Local'},
+    {trainNumber:'3001M',trainType:''},
+    {trainNumber:'3001M',positionLineId:'Tokaido'},
+    {trainNumber:'3001M',sourceRailway:'odpt.Railway:JR-East.Tokaido'},
+    {trainNumber:'3001M',trainOperator:'IzuKyuko'},
+    {trainNumber:'3001M',serviceDate:'2026-10-31'},
+    {trainNumber:'3001M',serviceDate:'2026-12-01'},
+    {trainNumber:'3001M',realtimeVehicleType:'E257系2000番台'},
+    {trainNumber:'3021M',vehiclePlan:{
+      status:'PLANNED_MODEL',models:['E261系']}}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...p,...change}),null,
+      'Ito reference must reject '+JSON.stringify(change));
+  }
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...p,displayLineId:'Ito'},true).kind,'unresolved');
+});
 test('Yamanote E235-0 G-number family uses its own officially scoped PNG',()=>{
   const image='../images/列车/JR東日本/JR東日本_E235系_0番台.png';
   const examples=[
