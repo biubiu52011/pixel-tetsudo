@@ -107,7 +107,7 @@
     // 百货商场优先归景点。
     if (tags.indexOf('mall') >= 0) return 'spot';
     // TourismType 是正常路径的唯一分类来源；回退路径也覆盖吃、喝、购物与玩乐。
-    var shopTags = ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'shopping', 'shop', 'hotel', 'play'];
+    var shopTags = ['food', 'restaurant', 'cafe', 'sweets', 'drink', 'bar', 'bakery', 'local_specialty', 'shopping', 'shop', 'store', 'hotel', 'play'];
     if (tags.some(function(tag) { return shopTags.indexOf(tag) >= 0; })) return 'shop';
     return 'spot';
   }
