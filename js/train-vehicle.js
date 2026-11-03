@@ -3785,6 +3785,71 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     return plan;
   }
 
+  // ODPT corridor/Y/E train-number evidence. The index is generated from
+  // exact full numbers in ShonanShinjuku or UenoTokyo plus matching northern
+  // and southern timetables for the SAME weekday/holiday calendar.
+  // It establishes route membership, NOT a physical carset or fixed operation.
+  function _northSouthPublishedPositionPlan(p, lineId, sourceRailway, num, day) {
+    var index = window.NorthSouthThroughIndex;
+    if (!index || day < index.effectiveFrom || day > index.effectiveTo ||
+        !index.services || !index.services[p.calendarType] ||
+        (p.trainOperator && p.trainOperator !== "JR-East")) return null;
+    var corridor = /^[0-9]{3,5}Y$/.test(num) ? "ShonanShinjuku" :
+      /^[0-9]{3,5}E$/.test(num) ? "UenoTokyo" : "";
+    if (!corridor) return null;
+    var record = index.services[p.calendarType][corridor];
+    var route = record && record[num];
+    // A conflicting northern branch (e.g. 1832E) cannot be assigned to
+    // Utsunomiya or Takasaki by its train number alone.
+    if (!route || !Array.isArray(route.n) || route.n.length !== 1 ||
+        !Array.isArray(route.s)) return null;
+    var railwayByLine = {
+      ShonanShinjuku: "odpt.Railway:JR-East.ShonanShinjuku",
+      UenoTokyo: "odpt.Railway:JR-East.UenoTokyo",
+      UtsunomiyaJR: "odpt.Railway:JR-East.Utsunomiya",
+      Takasaki: "odpt.Railway:JR-East.Takasaki",
+      Tokaido: "odpt.Railway:JR-East.Tokaido",
+      TokaidoMain: "odpt.Railway:JR-East.Tokaido",
+      Yokosuka: "odpt.Railway:JR-East.Yokosuka"
+    };
+    if (railwayByLine[lineId] !== sourceRailway) return null;
+    var member = lineId === "TokaidoMain" ? "Tokaido" : lineId;
+    if ([corridor].concat(route.n, route.s).indexOf(member) < 0) return null;
+    // A Ueno-Tokyo E cannot pick a Shonan-Shinjuku Y fleet through number
+    // reuse; Yokosuka is authorized only by an actual indexed Y segment.
+    var isShonan = corridor === "ShonanShinjuku";
+    var model = isShonan ? "E231系1000番台" : "E233系3000番台";
+    var sourceUrl = isShonan
+      ? (p.calendarType === "holiday"
+         ? "https://timetables.jreast.co.jp/2611/timetable-v/102u2.html"
+         : "https://timetables.jreast.co.jp/2611/timetable-v/102u1.html")
+      : (p.calendarType === "holiday"
+         ? "https://timetables.jreast.co.jp/2611/timetable-v/295u2.html"
+         : "https://timetables.jreast.co.jp/2611/timetable-v/295u1.html");
+    var plan = resolveTimetableVehiclePlan(model, {
+      lineId: lineId, operator: "JR-East", serviceDate: day,
+      source: "north-south-shared-working-representative",
+      sourceUrl: sourceUrl, _positionSource: "train-timetable"
+    });
+    if (!plan || plan.status !== "PLANNED_MODEL" || !plan.iconPath) return null;
+    plan.status = "FLEET_REPRESENTATIVE";
+    plan.evidenceRole = "shared-working-representative";
+    plan.representativeOnly = true;
+    plan.confirmed = false;
+    plan.alternativeModels = isShonan
+      ? ["E233系3000番台"] : ["E231系1000番台"];
+    plan.crossLineEvidence = {
+      kind: "corridor-and-north-number-calendar",
+      snapshot: index.version,
+      corridor: corridor,
+      north: route.n[0],
+      south: route.s.slice(),
+      calendarType: p.calendarType,
+      trainNumber: num
+    };
+    return plan;
+  }
+
   // Published train-number + weekday/holiday rolling-stock plans can be shown
   // alongside a fresh live POSITION. They are never actual-day carset evidence.
   // Require the complete source railway, timetable calendar and exact number;
@@ -3818,6 +3883,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           {lineId: lineId, railway: sourceRailway});
     });
     if (!hits.length) {
+      var northSouthPlan = _northSouthPublishedPositionPlan(p,lineId,sourceRailway,num,day);
+      if(northSouthPlan)return northSouthPlan;
       // A train appearing in BOTH the Keiyo and Musashino ODPT timetable
       // snapshots for the same calendar is a cross-line 8-car working.
       // This is exact-number route evidence, NOT a unique carset assignment.
@@ -4741,7 +4808,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (p && p.positionSource === "realtime-api" && vehiclePlan &&
         (vehiclePlan.source === "published-number-calendar-reference" ||
          vehiclePlan.source === "keiyo-shared-working-representative" ||
-         vehiclePlan.source === "twr-shared-working-representative") &&
+         vehiclePlan.source === "twr-shared-working-representative" ||
+         vehiclePlan.source === "north-south-shared-working-representative") &&
         _issuedVehiclePlans.has(vehiclePlan) &&
         (vehiclePlan.status === "PLANNED_MODEL" ||
          vehiclePlan.status === "FLEET_REPRESENTATIVE") &&
