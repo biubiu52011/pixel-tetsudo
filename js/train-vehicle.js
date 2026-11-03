@@ -4983,7 +4983,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (!lineId || displayLineId !== lineId) return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
-    var match = rules.match(p.trainNumber, lineId);
+    var match = rules.match(p.trainNumber, lineId, p);
     if (!match) return null;
     var png = normalizeGalleryPngPath(match.pngPath);
     var garage = window.VehicleGaragePngMap;

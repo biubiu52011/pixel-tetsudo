@@ -281,3 +281,54 @@ test('2026 ChuoRapid T/H number ranges never leak to other lines or M trains',()
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
 });
+
+test('regular 2026 Chuo special expresses map by whole M train number and LimitedExpress type',()=>{
+  const cases=[
+    ['1M','あずさ1号'],['27M','かいじ／あずさ'],
+    ['2107M','富士回遊7号'],['3107M','かいじ7号'],
+    ['5003M','あずさ3号'],['5050M','あずさ50号']
+  ];
+  for(const [trainNumber,service] of cases){
+    for(const positionLineId of ['ChuoMain','ChuoRapid']){
+      const p=live({trainNumber,trainId:'odpt.Train:JR-East.Chuo.'+trainNumber,
+        sourceRailway:'odpt.Railway:JR-East.Chuo',positionLineId,
+        trainType:'odpt.TrainType:JR-East.LimitedExpress'});
+      const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(mapped,trainNumber+' / '+positionLineId+' ('+service+')');
+      assert.equal(mapped.model,'E353系');
+      assert.equal(mapped.pngPath,png);
+      assert.equal(mapped.representative,true);
+      const spec=marker(p,positionLineId);
+      assert.equal(spec.kind,'vehicle');
+      assert.equal(spec.planned,true);
+      assert.equal(spec.iconSrc,png);
+    }
+  }
+});
+test('2026 regular Chuo express SQL positions use the same E353 PNG',()=>{
+  const p=sql({trainNumber:'3107M',trainId:'planned-trip:2026-11-03|JR-East|ChuoMain|3107M',
+    sourceRailway:'odpt.Railway:JR-East.Chuo',
+    positionLineId:'ChuoMain',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress'});
+  assert.equal(marker(p,'ChuoMain').iconSrc,png);
+});
+test('Chuo M regulars, numbered non-expresses and date-gated extras never become E353',()=>{
+  for(const number of ['427M','2152M','3107M','5003M','1M']){
+    const p=live({trainNumber:number,positionLineId:'ChuoMain',
+      trainType:'odpt.TrainType:JR-East.Local'});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,number+' is not a LimitedExpress');
+  }
+  for(const n of ['8084M','9086M','8079M','9022M','0M','3107T']){
+    const p=live({trainNumber:n,positionLineId:'ChuoRapid',
+      trainType:'odpt.TrainType:JR-East.LimitedExpress'});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      n+' is outside the regular express intervals');
+  }
+  const unrelated=live({trainNumber:'3107M',positionLineId:'SaikyoKawagoe',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(unrelated),null);
+  assert.equal(root.TrainNumberPngRanges.match('3107M','ChuoMain'),null,
+    'the range alone without LimitedExpress context is insufficient');
+  assert.equal(root.TrainNumberPngRanges.match('3107M','ChuoMain',
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'}).model,'E353系');
+});
