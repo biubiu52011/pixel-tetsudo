@@ -316,6 +316,8 @@
     // would be needed to paint its vehicle on another line.
     {lineIds:["Yokohama"],numberFormat:"full",
       from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
+      numberIndex:"jreast-yokohama-202611",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
     // 2026-11 JR East Yokosuka-Sobu numbered services.
@@ -549,6 +551,11 @@
       }
       if(row.sourceRailways &&
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
+      if(row.numberIndex==="jreast-yokohama-202611"){
+        var yokohamaIndex=root.JREastYokohama202611NumberIndex;
+        if(!yokohamaIndex || typeof yokohamaIndex.contains!=="function" ||
+            !yokohamaIndex.contains(number,context))continue;
+      }
       if(row.numberIndex==="jreast-yamanote-202611"){
         var yamanoteIndex=root.JREastYamanote202611NumberIndex;
         if(!yamanoteIndex || typeof yamanoteIndex.contains!=="function" ||
@@ -601,6 +608,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-yamanote-2611-exact-numbers-v23",match:match
+    version:"20261104-yokohama-2611-exact-numbers-v24",match:match
   });
 })(window);
