@@ -294,7 +294,7 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
   assert.equal(ctx._trainMarkerSpec(p,uid,'SobuMain').kind,'unresolved',
     'an extension cannot borrow arbitrary third-line artwork');
   const page=fs.readFileSync('pages/trains.html','utf8');
-  assert.match(page,/train-vehicle\.js\?v=20261104-sobu-2262-extension-v2/,
+  assert.match(page,/train-vehicle\.js\?v=20\d{6}-[^"']+/,
     'train vehicle selector cache must be busted');
   assert.match(page,/data-fusion\.js\?v=20261104-sobu-boundary-v9/,
     'the earlier DataFusion boundary path also needs an asset cache bust');

@@ -207,6 +207,7 @@ test('one SVG component renders two existing candidate PNGs without changing 826
     function _trainMarkerTitle(p){return '列車番号 '+p.trainNumber+' | 計画車種未確認';}
     function _setTrainMarkerAccessibilityLabel(marker,s){marker.setAttribute('aria-label',s);}
     function _setTrainFormationAttribute(){}
+    function _trainMarkerDomKind(spec){return spec&&spec.planned===true?'planned':(spec&&spec.kind||'unresolved');}
     function _trainUnitContainer(marker){return marker.parentNode&&marker.parentNode.getAttribute('data-train-unit-id')?marker.parentNode:null;}
     function _setTrainIconPosition(marker,x,y){marker.parentNode.setAttribute('transform','translate('+x+','+y+')');}
     function _resolveTrainLabelCollisions(){}
