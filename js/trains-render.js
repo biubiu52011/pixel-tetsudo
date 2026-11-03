@@ -912,7 +912,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           if (_m) _shortName = _m[1];
           var _bNameEl = document.createElementNS(svgNS, "text");
           _bNameEl.setAttribute("x", bx);
-          _bNameEl.setAttribute("y", _connY + Math.max(0, _vOwn - 1) * branchSp + 18);
+          var _branchEndStation = (_rStations || []).filter(function(station) {
+            return station !== _jFind7.station;
+          }).slice(-1)[0];
+          var _noteOffset = _branchTerminalCaptionOffset(transferMap[_branchEndStation]);
+          _bNameEl.setAttribute("y", _connY + Math.max(0, _vOwn - 1) * branchSp + _noteOffset);
           _bNameEl.setAttribute("text-anchor", "middle");
           _bNameEl.setAttribute("font-size", "10");
           _bNameEl.setAttribute("fill", bColor);
