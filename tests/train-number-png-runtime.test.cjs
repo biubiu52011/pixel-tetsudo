@@ -857,7 +857,8 @@ test('SQL Yokohama 2221K uses E233-6000 as display-only image',()=>{
 });
 test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind reassignment',()=>{
   const holidayYokohama = {serviceDate:'2026-11-03',calendarType:'holiday',
-    sourceRailway:'odpt.Railway:JR-East.Yokohama'};
+    sourceRailway:'odpt.Railway:JR-East.Yokohama',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'};
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama',holidayYokohama).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama',holidayYokohama).model,'E233系6000番台');
@@ -1659,7 +1660,9 @@ test('Tsurumi SQL source-operator fallback rejects ambiguous and foreign sources
   }
   assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama',{
     serviceDate:'2026-11-03',calendarType:'holiday',
-    sourceRailway:'odpt.Railway:JR-East.Yokohama'}).model,'E233系6000番台');
+    sourceRailway:'odpt.Railway:JR-East.Yokohama',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'
+  }).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
 });
 
@@ -1787,4 +1790,58 @@ test('JR timetable serviceId restores scoped H and holiday M number PNGs',()=>{
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
     ...holiday,serviceId:'odpt.Calendar:Weekday'
   }),null,'holiday-only 1252M cannot borrow a weekday timetable');
+});
+
+test('JR Yokohama 2611 PNG requires original railway and commuter train type',()=>{
+  const base=live({
+    trainNumber:'2221K',positionLineId:'Yokohama',
+    sourceRailway:'odpt.Railway:JR-East.Yokohama',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local',
+    railDirection:'odpt.RailDirection:Outbound'
+  });
+  const expected='../images/列车/JR東日本/JR東日本_E233系_6000番台.png';
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(base)?.pngPath,expected);
+  assert.equal(marker(base,'Yokohama').iconSrc,expected);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainOperator:'',operator:''
+  })?.pngPath,expected,'exact JR source permits missing SQL operator');
+  for(const edit of [
+    {sourceRailway:''},
+    {sourceRailway:'odpt.Railway:JR-East.KeihinTohokuNegishi'},
+    {sourceRailway:'odpt.Railway:Keisei.Yokohama'},
+    {trainOperator:'Keisei'},
+    {trainType:''},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {serviceDate:'2026-12-01'}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...base,...edit}),null,
+      'do not borrow Yokohama-number PNG: '+JSON.stringify(edit));
+  }
+});
+
+test('JR Nambu 2611 source direction protects even/odd public F numbers',()=>{
+  const base=live({
+    positionLineId:'Nambu',sourceRailway:'odpt.Railway:JR-East.Nambu',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local',
+    calendarType:'holiday',serviceDate:'2026-11-03'
+  });
+  const path='../images/列车/JR東日本/JR東日本_E233系_8000番台.png';
+  for(const [number,direction,expected] of [
+    ['420F','Inbound',true],['420F','Outbound',false],
+    ['2319F','Outbound',true],['2319F','Inbound',false]
+  ]){
+    const p={...base,trainNumber:number,
+      railDirection:'odpt.RailDirection:'+direction};
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(Boolean(mapped),expected,number+' '+direction);
+    if(expected)assert.equal(mapped.pngPath,path);
+    else assert.equal(marker(p,'Nambu').kind,'unresolved');
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'2319F',railDirection:''
+  })?.pngPath,path,'unknown direction must not be invented');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'2319F',railDirection:'Outbound',
+    sourceRailway:'odpt.Railway:JR-East.NambuBranch'
+  }),null,'branch H numbers do not share mainline F stock references');
 });
