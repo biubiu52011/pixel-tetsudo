@@ -615,6 +615,58 @@ test('ChuoMain 2611 SQL numbers: T/H E233 and M-only 211/E131 illustrated as ONE
     plannedVehicleCandidates:['211系','E233系0番台']});
   assert.equal(marker(foreign,'ChuoRapid').kind,'unresolved');
 });
+test('ChuoMain missing numbers use one correct fleet reference or a generic train, never a grey dot',()=>{
+  const e353='../images/列车/JR東日本/JR東日本_E353系.png';
+  const n211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
+  const hbe='../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png';
+  const at=(trainNumber,trainType,models,date='2026-11-04',cal='weekday')=>
+    sql({trainNumber,serviceDate:date,calendarType:cal,
+      trainType:'odpt.TrainType:JR-East.'+trainType,
+      plannedVehicleCandidates:models});
+  for(const n of ['5102M','5135M','5159M','8091M']){
+    const p=at(n,'LimitedExpress',[n==='8091M'?'E353系（信州）':'E353系']);
+    assert.equal(marker(p).iconSrc,e353);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+  for(const n of ['9592M','9593M']){
+    const p=at(n,'Local',['211系','E233系0番台'],'2026-11-07','holiday');
+    assert.equal(marker(p).iconSrc,n211);
+  }
+  const rapid=at('2535M','Rapid',['211系','E233系0番台']);
+  assert.equal(marker(rapid).iconSrc,n211);
+  for(const n of ['9580D','9581D']){
+    const p=at(n,'Rapid',['211系','E233系0番台'],'2026-11-07','holiday');
+    const m=marker(p);
+    assert.equal(m.kind,'vehicle');
+    assert.equal(m.iconSrc,hbe);
+    assert.equal(m.planned,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+  for(const n of ['2201M','2401M','3526M']){
+    const p=at(n,'Rapid',['211系','E233系0番台']);
+    const m=marker(p);
+    assert.equal(m.kind,'unresolved');
+    assert.equal(m.genericFront,true,
+      'unproven JR-Central/Iida through stock gets one generic cab, not 211');
+    assert.equal(m.iconSrc,'');
+  }
+  for(const n of ['8084M','9086M','9093M']){
+    const p=at(n,'LimitedExpress',['E353系（あずさ・かいじ）']);
+    const m=marker(p);
+    assert.equal(m.kind,'unresolved',
+      'do not show an E353 for a seasonal train on an unverified date');
+    assert.equal(m.genericFront,true);
+  }
+  const outside=at('9580D','Rapid',['211系','E233系0番台']);
+  assert.equal(marker(outside).kind,'unresolved');
+  assert.equal(marker(outside).genericFront,true);
+  const wrongLine=at('5102M','LimitedExpress',['E353系']);
+  assert.equal(marker(wrongLine,'ChuoRapid').kind,'unresolved');
+  const wrongMonth=at('5102M','LimitedExpress',['E353系'],'2026-12-04');
+  assert.equal(root.TrainNumberPngRanges.matchChuoMainUnmappedReference(wrongMonth),null);
+  const badStock=at('5102M','LimitedExpress',['211系']);
+  assert.equal(root.TrainNumberPngRanges.matchChuoMainUnmappedReference(badStock),null);
+});
 test('regular 2026 Chuo special expresses map by whole M train number and LimitedExpress type',()=>{
   const cases=[
     ['1M','あずさ1号'],['27M','かいじ／あずさ'],
