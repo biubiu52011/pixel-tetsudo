@@ -5108,31 +5108,40 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       planned:true,representative:true};
   }
 
-  // A public Takasaki/Utsunomiya number identifies only the MIXED
-  // E231-1000 / E233-3000 fleet family. Side-by-side PNGs misleadingly
-  // imply a coupled formation. Keep the candidates in the accessibility
-  // caption, but show a neutral train POSITION marker until evidenced.
-  function isUnconfirmedNorthShonanFleet(p) {
+  // One approved E233-3000 PNG serves as an ILLUSTRATIVE placeholder
+  // for the E231-1000 / E233-3000 mixed fleet. It is neither an actual
+  // vehicle assignment nor a pair of coupled trains; the accessible
+  // title continues to list BOTH possible families. The gallery must
+  // approve this single source-scoped image on the displayed line.
+  function lookupNorthShonanIllustrativeFleet(p) {
     if (!p || p.vehicleIdentityStatus === "EXACT" ||
         p.vehicleResolvedUpstream === true ||
         (p.positionSource !== "supabase-train-run" &&
-         p.positionSource !== "realtime-api")) return false;
+         p.positionSource !== "realtime-api")) return null;
     var line = String(p.positionLineId || p.lineId || "");
     if ((line !== "Takasaki" && line !== "UtsunomiyaJR") ||
-        String(p.displayLineId || line) !== line) return false;
+        String(p.displayLineId || line) !== line) return null;
     var index = window.JREastShonanMixedNumberIndex202611;
-    if (!index || typeof index.match !== "function") return false;
+    if (!index || typeof index.match !== "function") return null;
     var evidence = index.match(p);
     if (!evidence || evidence.status !== "UNCONFIRMED_PLANNED_FLEET" ||
         evidence.authorizesPNG !== false ||
+        evidence.illustrativeNorthFleetOnly !== true ||
+        evidence.illustrativeModel !== "E233系3000番台" ||
         !Array.isArray(evidence.models) ||
         evidence.models.join("|") !== "E231系1000番台|E233系3000番台")
-      return false;
+      return null;
     var plan = p.vehiclePlan;
     // Independent, source-certified SINGLE-model plans stay eligible.
     if (plan && (plan.confirmed === true ||
-        plan.status === "PLANNED_MODEL")) return false;
-    return true;
+        plan.status === "PLANNED_MODEL")) return null;
+    var png = normalizeGalleryPngPath(
+      "../images/列车/JR東日本/JR東日本_E233系3000番台.png");
+    var garage = window.VehicleGaragePngMap;
+    if (!png || !garage || typeof garage.matchModelPath !== "function" ||
+        !garage.matchModelPath(evidence.illustrativeModel,png,line)) return null;
+    return {kind:"vehicle",iconSrc:png,planned:true,
+      representativeOnly:true,actualVehicleConfirmed:false};
   }
 
   function selectMarkerArtwork(p, artworkFailed) {
@@ -5174,10 +5183,13 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
-    // Unconfirmed E231/E233 alternatives are not an actual coupled
-    // consist; the source-scoped fleet caption remains available.
-    if (!identityConfirmed && isUnconfirmedNorthShonanFleet(p))
-      return {kind:"unresolved",iconSrc:""};
+    // Use ONE clearly planned illustrative car, not two alternatives
+    // side by side (misleading coupling), and not a grey dot. The
+    // timetable / realtime position and UNKNOWN identity are unchanged.
+    var northFleetIcon = !identityConfirmed ?
+      lookupNorthShonanIllustrativeFleet(p) : null;
+    if (northFleetIcon) return artworkFailed === true
+      ? {kind:"unresolved",iconSrc:""} : northFleetIcon;
     // On realtime and timetable-estimated POSITION records, only a certified
     // exact-number/calendar published plan may supply a DISPLAY REFERENCE.
     // This never confirms a carset or upgrades UNKNOWN/NARROWED identity.
