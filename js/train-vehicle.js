@@ -5005,7 +5005,19 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       String(p.fusionLineId || "") === lineId &&
       ((lineId === "SobuRapid" && displayLineId === "Yokosuka") ||
        (lineId === "Yokosuka" && displayLineId === "SobuRapid"));
-    if (displayLineId !== lineId && !scopedYokosukaSobuExtension) return null;
+    // Nambu's combined passenger map embeds the Shitte-HamaKawasaki
+    // branch as a distinct drawn branch. getRealtimePositions('Nambu')
+    // tags ONLY sourced NambuBranch positions as fusionRole="branch".
+    // Keep the source railway / numbered-service verification unchanged;
+    // allow its own branch PNG on the containing diagram, not on Nambu
+    // mainline trains, arbitrary extensions, or other railway diagrams.
+    var scopedNambuBranchMap = displayLineId === "Nambu" &&
+      lineId === "NambuBranch" &&
+      p.fusionRole === "branch" &&
+      String(p.fusionLineId || "") === "NambuBranch" &&
+      String(p.sourceRailway || "") === "odpt.Railway:JR-East.NambuBranch";
+    if (displayLineId !== lineId && !scopedYokosukaSobuExtension &&
+        !scopedNambuBranchMap) return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
     var match = rules.match(p.trainNumber, lineId, p);
