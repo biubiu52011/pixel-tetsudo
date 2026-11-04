@@ -659,14 +659,18 @@
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
     // 2026-11 JR East Yokosuka-Sobu numbered services.
     // EXACT public numbers from the dated source index, NEVER arbitrary ranges.
-    // The Yokosuka S / Sobu Rapid F through-train family uses E235-1000
-    // as an illustrative model. Yokosuka H/Y and odd M-numbered workings
-    // are excluded: shared route is not evidence they are E235 trainsets.
+    // Yokosuka S / Sobu Rapid F trains and source-verified 4-car
+    // Kurihama-Zushi Yokosuka H shuttles use E235-1000 reference PNG.
+    // H is admitted ONLY when present in the weekday/holiday exact typed
+    // Chiba index; the 1342H source timetable has no Green Car and runs
+    // exclusively Kurihama-Zushi. Yokosuka Y and other M workings are NOT
+    // inferred from this source. No physical J trainset is identified.
+    // https://timetables.jreast.co.jp/2611/train/135/137051.html
     // https://timetables.jreast.co.jp/2611/timetable-v/222d1.html
     // https://timetables.jreast.co.jp/2611/timetable-v/222d2.html
     {lineIds:["Yokosuka","SobuRapid","SobuMain","Narita","NaritaAirportBranch",
         "Uchibo","Sotobo","Kashima"],
-      numberFormat:"full",from:400,to:5999,suffixes:"FSM",
+      numberFormat:"full",from:400,to:5999,suffixes:"FSMH",
       operator:"JR-East",sourceOperatorFallback:true,
       trainTypes:["Local","Rapid"],
       sourceRailways:["odpt.Railway:JR-East.Yokosuka",
