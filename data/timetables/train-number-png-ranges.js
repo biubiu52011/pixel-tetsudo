@@ -821,6 +821,11 @@
     {lineIds:["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],
       numberFormat:"bare",from:400,to:2599,suffixes:"",
       trainType:"Local",operator:"JR-East",sourceOperatorFallback:true,
+      directionNumberParity:"inbound-even",
+      // JR East 2611 published 661u/d timetable, scoped by actual branch.
+      // Prior service months retain their original compatibility fallback.
+      officialMonth:"2026-11",
+      officialMonthNumbers:{"Tsurumi":{"weekday":["501","503","600","601","602","603","604","605","606","607","608","609","610","611","612","700","701","702","703","704","705","706","707","708","709","710","711","712","713","800","801","802","803","804","805","806","807","808","809","810","811","812","813","903","905","906","907","908","909","912","913","1006","1007","1012","1013","1106","1107","1112","1113","1206","1207","1212","1213","1306","1307","1312","1313","1406","1407","1412","1413","1506","1507","1512","1513","1602","1603","1604","1606","1607","1608","1609","1612","1613","1700","1701","1702","1703","1704","1705","1706","1707","1708","1709","1712","1713","1800","1801","1803","1804","1805","1806","1807","1808","1809","1812","1813","1900","1901","1906","1907","1912","1913","2000","2001","2006","2007","2012","2013","2100","2101","2106","2107","2112","2113","2200","2201","2212","2213","2300","2301"],"holiday":["503","505","602","603","604","605","606","607","608","609","702","703","704","705","706","707","708","709","802","803","804","805","806","807","808","809","902","903","904","905","908","909","1004","1005","1008","1009","1104","1105","1108","1109","1204","1205","1208","1209","1304","1305","1308","1309","1404","1405","1408","1409","1504","1505","1508","1509","1600","1601","1602","1604","1605","1608","1609","1700","1701","1702","1703","1704","1705","1708","1709","1800","1801","1802","1803","1804","1805","1808","1809","1900","1902","1903","1904","1905","1909","2000","2001","2002","2003","2004","2005","2100","2101","2104","2105","2200","2201","2300","2301"]},"TsurumiOkawa":{"weekday":["712","713","800","801","809","1706","1707","1807","1808","1913","2012","2013"],"holiday":["704","705","804","1808"]},"TsurumiUmiShibaura":{"weekday":["601","609","700","702","703","705","706","707","711","804","812","813","912","913","1112","1212","1213","1313","1512","1609","1708","1709","1712","1713","1804","1809","1900","1901","2000","2007","2106","2200"],"holiday":["605","706","707","806","807","902","904","905","1104","1204","1205","1305","1504","1604","1605","1704","1705","1802","1803","2005","2104"]}},
       sourceRailways:["odpt.Railway:JR-East.Tsurumi",
         "odpt.Railway:JR-East.TsurumiUmiShibauraBranch",
         "odpt.Railway:JR-East.TsurumiOkawaBranch"],
@@ -889,6 +894,13 @@
     if(row.publishedNumbers)Object.freeze(row.publishedNumbers);
     if(row.weekdayNumbers)Object.freeze(row.weekdayNumbers);
     if(row.holidayNumbers)Object.freeze(row.holidayNumbers);
+    if(row.officialMonthNumbers){
+      Object.keys(row.officialMonthNumbers).forEach(function(lineKey){
+        var sets=row.officialMonthNumbers[lineKey];
+        Object.freeze(sets.weekday);Object.freeze(sets.holiday);Object.freeze(sets);
+      });
+      Object.freeze(row.officialMonthNumbers);
+    }
     Object.freeze(row);
   });
   Object.freeze(rows);
@@ -924,6 +936,18 @@
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
       if(row.publishedNumbers && row.publishedNumbers.indexOf(number)<0)continue;
+      // For the verified month only, match an actual published number on
+      // THIS line and THIS timetable calendar, not a plausible bare range.
+      if(row.officialMonthNumbers &&
+         String(context&&context.serviceDate||"").slice(0,7)===row.officialMonth){
+        var monthSets=row.officialMonthNumbers[line];
+        if(!monthSets)continue;
+        var monthCal=sourceCalendar(context);
+        if(monthCal==="weekday" && monthSets.weekday.indexOf(number)<0)continue;
+        if(monthCal==="holiday" && monthSets.holiday.indexOf(number)<0)continue;
+        if(!monthCal && monthSets.weekday.indexOf(number)<0 &&
+           monthSets.holiday.indexOf(number)<0)continue;
+      }
       // Calendar-scoped timetable numbers. Missing realtime calendar
       // falls back only to the union of published services, never to
       // an unrestricted numeric F range.
