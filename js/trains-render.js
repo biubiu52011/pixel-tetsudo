@@ -1293,6 +1293,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Chuo Main regular M-only trains may be 211 or new E131-200;
+    // use the stable ONE 211 PNG only as an illustration (not actual stock).
+    if(lineId==="ChuoMain" && window.TrainNumberPngRanges &&
+       typeof window.TrainNumberPngRanges.matchChuoMainLocalReference==="function") {
+      var chuoRef=window.TrainNumberPngRanges.matchChuoMainLocalReference(
+        Object.assign({},p,{displayLineId:lineId}));
+      if(chuoRef) {
+        lang=String(lang||"ja").toLowerCase();
+        var prefix=/^zh/.test(lang)
+          ? "候选车型（地图211系车头仅示意、非当天实车）："
+          : lang==="en" ? "Fleet candidates (211 cab illustrative, not actual stock): "
+          : lang==="ko" ? "차량 후보(지도 211계는 예시, 실제 편성 미확인): "
+          : "車種候補（211系画像はイメージ・実車未確認）：";
+        return prefix+chuoRef.models.join(" / ");
+      }
+    }
     // E-number Hachiko trains can carry either E231-3000 or 209-3500.
     // The map uses ONE illustrative E231 PNG, not the day's actual carset.
     if(lineId==="Hachiko" && window.TrainNumberPngRanges &&
@@ -2441,6 +2457,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
               hachikoNote.className = 'train-fold-fleet-reference';
               hachikoNote.textContent = fleetText;
               caption.appendChild(hachikoNote);
+            }
+          }
+          // Show the mixed-fleet warning visibly, not just on a hover.
+          if (lineId === "ChuoMain" && window.TrainNumberPngRanges &&
+              typeof window.TrainNumberPngRanges.matchChuoMainLocalReference === "function") {
+            var chuoFoldReference=window.TrainNumberPngRanges.matchChuoMainLocalReference(
+              Object.assign({},p,{displayLineId:lineId}));
+            if(chuoFoldReference) {
+              var chuoNote=document.createElement('small');
+              chuoNote.className='train-fold-fleet-reference';
+              chuoNote.textContent=_trainFleetPlanLabel(p,lineId,lang);
+              caption.appendChild(chuoNote);
             }
           }
           icon.onerror=function(){
