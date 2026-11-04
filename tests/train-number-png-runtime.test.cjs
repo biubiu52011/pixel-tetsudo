@@ -1650,7 +1650,7 @@ test('Tsurumi SQL source-operator fallback rejects ambiguous and foreign sources
     {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
     {serviceDate:'2023-11-04'},
     {serviceDate:''},
-    {trainNumber:'606B'},
+    {trainNumber:'2998B'},
     {positionLineId:'Yokohama'},
     {displayLineId:'Yokohama'}
   ]){
