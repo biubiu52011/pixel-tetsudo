@@ -827,6 +827,41 @@
       validFrom:"2024-03-16",
       model:"E131系1000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png"},
+    // 2026-11 JR East Tsurumi B numbers include short branch runs.
+    // Official: 661u1 / 661d1 / 661u2 / 661d2. These are published
+    // train numbers only; E131-1000 is a route-stock representative PNG.
+    // Distinguish three source railways, both calendars and even/odd
+    // directions so one branch never inherits another branch's service.
+    {lineIds:["Tsurumi"],numberFormat:"full",from:400,to:2599,
+      suffixes:"B",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Tsurumi"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      directionNumberParity:"inbound-even",
+      weekdayNumbers:["600B","601B","602B","604B","605B","606B","608B","700B","703B","707B","709B","710B","712B","713B","801B","802B","804B","806B","807B","808B","811B","813B","909B","912B","1006B","1013B","1107B","1112B","1206B","1213B","1307B","1312B","1406B","1413B","1507B","1512B","1606B","1608B","1613B","1700B","1702B","1705B","1707B","1709B","1712B","1806B","1808B","1809B","1813B","1901B","1907B","1912B","2000B","2013B","2101B","2112B","2200B","2213B"],
+      holidayNumbers:["604B","606B","702B","705B","706B","707B","803B","804B","807B","808B","909B","1005B","1008B","1104B","1109B","1205B","1208B","1304B","1309B","1405B","1408B","1504B","1509B","1605B","1608B","1700B","1703B","1704B","1709B","1801B","1802B","1805B","1808B","1902B","1903B","2003B","2101B","2200B"],
+      model:"E131系1000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png"},
+    {lineIds:["TsurumiUmiShibaura"],numberFormat:"full",from:400,to:2599,
+      suffixes:"B",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.TsurumiUmiShibauraBranch"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      directionNumberParity:"inbound-even",
+      weekdayNumbers:["600B","601B","608B","710B","813B","912B","1013B","1312B","1413B","1608B","1613B","1705B","1712B","1808B","1901B","2101B"],
+      holidayNumbers:["604B","706B","707B","803B","1005B","1304B","1405B","1605B","1703B","1704B","1802B","1902B","1903B"],
+      model:"E131系1000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png"},
+    {lineIds:["TsurumiOkawa"],numberFormat:"full",from:400,to:2599,
+      suffixes:"B",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.TsurumiOkawaBranch"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      directionNumberParity:"inbound-even",
+      weekdayNumbers:["712B","713B","808B","1709B","1806B","1912B"],
+      holidayNumbers:["705B","1709B"],
+      model:"E131系1000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_1000番台.png"},
     // 2026 scheduled Chuo limited express: 1M (Azusa 1),
     // 3107M (Kaiji 7), 2107M (Fuji Excursion 7), 5003M (Azusa 3).
     // These intervals overlap M-number ordinary trains, so require the
