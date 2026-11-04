@@ -257,3 +257,22 @@ test('SQL number guard blocks false Abiko 900M; independent timetable is untouch
       '@id':'other:900M',_positionSource:'train-timetable'}));
   assert.equal(independent.NaritaAbikoBranch.some(x=>x.trainNumber==='900M'),true);
 });
+
+test('Abiko PNG consults the existing 2611 timetable direction when available',()=>{
+  const base=p('820M','supabase-train-run',{
+    railDirection:'odpt.RailDirection:Inbound'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(base)?.pngPath,picture);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,railDirection:'odpt.RailDirection:Outbound'
+  }),null,'even inbound number cannot be painted as outbound');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'821M',railDirection:'odpt.RailDirection:Outbound'
+  })?.pngPath,picture);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,calendarType:'',serviceId:'odpt.Calendar:Weekday'
+  })?.pngPath,picture,'SQL calendar URN is a valid timetable calendar');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,railDirection:''
+  })?.pngPath,picture,'legacy exact-number source still works without direction');
+});
