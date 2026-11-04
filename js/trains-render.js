@@ -1294,7 +1294,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
     // E-number Hachiko trains can carry either E231-3000 or 209-3500.
-    // The alternative thumbnails never prove today's physical carset.
+    // The map uses ONE illustrative E231 PNG, not the day's actual carset.
     if(lineId==="Hachiko" && window.TrainNumberPngRanges &&
        typeof window.TrainNumberPngRanges.matchHachikoSouthCandidates==="function"){
       var hachikoRef=window.TrainNumberPngRanges.matchHachikoSouthCandidates(
@@ -1306,7 +1306,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           :lang==="en"?"Alternative fleet (not observed stock): "
           :lang==="ko"?"공통운용 후보 차량(당일 실차 아님): "
           :"車種候補（共通運用・当日の実車ではありません）：";
-        return hachikoPrefix+hachikoRef.models.join(" / ");
+        var illustrativeNote = /^zh/.test(lang)
+          ? "（地图单车头为E231系示意，不代表实车）"
+          : lang==="en" ? " (single E231 icon is illustrative, not actual stock)"
+          : lang==="ko" ? " (지도 E231 아이콘은 예시이며 실차 미확인)"
+          : "（地図のE231系車両画像はイメージ・実車未確認）";
+        return hachikoPrefix+hachikoRef.models.join(" / ")+illustrativeNote;
       }
     }
     // Ito's numbered ordinary services have a scoped SQL fleet candidate,
@@ -2422,6 +2427,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           if(fleetText) {
             icon.title=fleetText;
             entry.setAttribute('aria-label',captionBase+' · '+fleetText);
+          }
+          // The E231 PNG is only a visual representative for the shared
+          // Hachiko E231/209 working. Always expose the uncertainty in the
+          // folded passenger-facing list, not just as a hover title.
+          if (lineId === "Hachiko" &&
+              window.TrainNumberPngRanges &&
+              typeof window.TrainNumberPngRanges.matchHachikoSouthCandidates === "function") {
+            var hachikoIllustration = window.TrainNumberPngRanges.matchHachikoSouthCandidates(
+              Object.assign({},p,{displayLineId:lineId}));
+            if (hachikoIllustration && fleetText) {
+              var hachikoNote = document.createElement('small');
+              hachikoNote.className = 'train-fold-fleet-reference';
+              hachikoNote.textContent = fleetText;
+              caption.appendChild(hachikoNote);
+            }
           }
           icon.onerror=function(){
             // A failed PNG must not leave a broken-image symbol in the list.
