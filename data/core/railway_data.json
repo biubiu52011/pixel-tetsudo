@@ -28394,7 +28394,7 @@
       "operator": "JR-East",
       "region": "Shizuoka Area",
       "type": "straight",
-      "durationTotalMin": 25,
+      "durationTotalMin": 23,
       "branchOf": null,
       "stations": [
         "Atami",
@@ -28406,11 +28406,10 @@
       ],
       "durations": [
         2,
-        2,
-        2,
-        2,
-        2,
-        2
+        7,
+        5,
+        5,
+        4
       ],
       "throughServices": [
         "Tokaido"
