@@ -1072,15 +1072,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var x = unit ? -7 : px - 7;
     var y = unit ? -9 : py - 9;
     var tag = String(icon.tagName || '').toLowerCase();
-    if (tag === 'g' && icon.getAttribute('data-vehicle-candidate') === 'true') {
-      // The parent train-unit owns world coordinates, including its caption.
-      // Mirroring only the paired gallery artwork respects train direction.
-      if (!isLoop && String(p && p.railDirection || '').indexOf('Outbound') >= 0)
-        icon.setAttribute('transform', 'scale(-1,1)');
-      else icon.removeAttribute('transform');
-      icon.setAttribute('data-marker-raw-transform', icon.getAttribute('transform') || '');
-      return;
-    }
     if (tag === 'circle') {
       // 即使车型未知，来源已验证的实时位置仍保持可见；
       // 这里显示的是中性位置圆点，而不是车辆图片。
@@ -1130,19 +1121,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       ? window.TrainVehicle.selectMarkerArtwork(selectionPosition, artworkFailed)
       : { kind: "unresolved", iconSrc: "" };
     var hasImage = artwork.kind === "vehicle" && !!artwork.iconSrc;
-    var hasCandidatePair = artwork.kind === "candidate" &&
-      Array.isArray(artwork.candidateAssets) && artwork.candidateAssets.length === 2;
     return {
       kind: hasImage ? "vehicle" : (artwork.kind === "candidate" ? "candidate" : "unresolved"),
       iconSrc: hasImage ? artwork.iconSrc : "",
-      planned: (hasImage || hasCandidatePair) && artwork.planned === true,
+      planned: hasImage && artwork.planned === true,
+      // For diagnostics/title ONLY. Candidate paths are NEVER drawn as
+      // multiple cabs; each train location owns exactly one SVG glyph.
       candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
         ? artwork.candidateAssets.slice() : [],
-      // 已认证的车型身份在地图上使用图库 PNG 绘制；
-      // 没有认证车型的地点才保持为紧凑的
-      // 中性圆点；位置仍然可见，不会伪造图片。
-      compact: !hasImage && !hasCandidatePair,
-      className: artwork.planned === true ? "train-icon planned" :
+      // Unknown physical stock always uses ONE neutral position circle.
+      compact: !hasImage,
+      className: hasImage && artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
   }
@@ -1588,51 +1577,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (!spec) return null;
     var knownVehicle = spec.kind === "vehicle" && !!spec.iconSrc;
     var candidateVehicle = spec.kind === "candidate";
-    var compact = spec.compact === true;
-    var candidatePair = candidateVehicle && !compact &&
-      Array.isArray(spec.candidateAssets) && spec.candidateAssets.length === 2;
-    // An uncertain Shonan fleet is rendered with BOTH vetted garage PNGs
-    // inside ONE train component, never with a guessed single-model glyph.
-    var markerTag = knownVehicle ? "image" : (candidatePair ? "g" : "circle");
-    var marker = document.createElementNS(svgNS, compact ? "circle" : markerTag);
-    if (candidatePair) {
-      marker.setAttribute("data-vehicle-unresolved", "true");
-      marker.setAttribute("data-vehicle-candidate", "true");
-      marker.setAttribute("data-vehicle-candidate-assets", spec.candidateAssets.join("|"));
-      spec.candidateAssets.forEach(function(path, i) {
-        var img = document.createElementNS(svgNS, "image");
-        img.setAttribute("x", String(i === 0 ? -11 : 0));
-        img.setAttribute("y", "-8");
-        img.setAttribute("width", "11");
-        img.setAttribute("height", "16");
-        img.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        img.setAttribute("href", path);
-        img.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
-        img.addEventListener("load", function() {
-          if (trainLayer && trainLayer.isConnected && marker.isConnected)
-            _resolveTrainLabelCollisions(trainLayer);
-        });
-        img.addEventListener("error", function() {
-          if (!trainLayer || !trainLayer.isConnected || !marker.isConnected) return;
-          _rememberTrainArtworkFailure(trainUid, path);
-          marker.setAttribute("visibility", "hidden");
-          var unit = _trainUnitContainer(marker);
-          if (!unit) return;
-          var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
-            {kind:"unresolved",iconSrc:"",className:spec.className},
-            marker._displayX, marker._displayY, marker._trainPosition || p,
-            lineId, isLoop, color, loc);
-          if (!neutral) return;
-          neutral._displayStationIdx = marker._displayStationIdx;
-          neutral._displayNextStationIdx = marker._displayNextStationIdx;
-          neutral._displayRoutePos = marker._displayRoutePos;
-          unit.insertBefore(neutral, marker);
-          unit.removeChild(marker);
-          _resolveTrainLabelCollisions(trainLayer);
-        });
-        marker.appendChild(img);
-      });
-    } else if (knownVehicle && !compact) {
+    // A multi-model candidate is ONE location with unresolved stock,
+    // not a consist of two cars. Render one circle even when callers
+    // accidentally pass two candidateAssets or compact:false.
+    var compact = spec.compact === true || candidateVehicle;
+    var marker = document.createElementNS(svgNS,
+      knownVehicle && !compact ? "image" : "circle");
+    if (knownVehicle && !compact) {
       marker.setAttribute("width", "14");
       marker.setAttribute("height", "18");
       marker.setAttribute("href", spec.iconSrc);
