@@ -951,9 +951,9 @@
       }else continue;
       if(numberValue<row.from||numberValue>row.to||
           row.suffixes.indexOf(suffix)<0)continue;
-      // JR East Nambu 2611: even F numbers run upstream (上り),
-      // odd F numbers downstream (下り). Only check source directions
-      // explicitly supplied by realtime or the stored timetable.
+      // JR East 2611 Nambu F and Tsurumi B public numbers:
+      // even numbers run upstream (上り), odd downstream (下り).
+      // Only check directions supplied by realtime or the timetable.
       if(row.directionNumberParity==="inbound-even"){
         var numberDirection=String(context&&
           (context.railDirection||context.directionUrn||context.direction)||"")
