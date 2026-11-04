@@ -27,6 +27,9 @@ const identities = { 'JR E233系5000番台': e233, 'E231系0番台': e231 };
 
 const issued = new WeakSet();
 const vehicleVm = vm.createContext({
+  // The production selector is browser-scoped; isolated VM tests must
+  // provide its window object even when no route index is loaded.
+  window: { TrainNumberPngRanges: null, VehicleGaragePngMap: null },
   _issuedVehiclePlans: issued,
   isGalleryPng: src => typeof src === 'string' &&
     src.startsWith('../images/列车/') && src.endsWith('.png') &&
