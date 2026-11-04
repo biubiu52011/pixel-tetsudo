@@ -31,6 +31,8 @@ jobs:
         run: node scripts/sync-page-scripts.cjs
       - name: Test page script manifest
         run: node --test tests/page-scripts.test.cjs
+      - name: Exercise line-scoped loader and SQL artwork contract
+        run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify train overview DOM structure and state
         run: node --test tests/train-overview-dom.test.cjs
       - name: Verify train presets before Pages upload
