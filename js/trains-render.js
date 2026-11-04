@@ -1135,7 +1135,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return {
       kind: hasImage ? "vehicle" : (artwork.kind === "candidate" ? "candidate" : "unresolved"),
       iconSrc: hasImage ? artwork.iconSrc : "",
-      planned: hasImage && artwork.planned === true,
+      planned: (hasImage || hasCandidatePair) && artwork.planned === true,
       candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
         ? artwork.candidateAssets.slice() : [],
       // 已认证的车型身份在地图上使用图库 PNG 绘制；
@@ -1304,6 +1304,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // E-number Hachiko trains can carry either E231-3000 or 209-3500.
+    // The alternative thumbnails never prove today's physical carset.
+    if(lineId==="Hachiko" && window.TrainNumberPngRanges &&
+       typeof window.TrainNumberPngRanges.matchHachikoSouthCandidates==="function"){
+      var hachikoRef=window.TrainNumberPngRanges.matchHachikoSouthCandidates(
+        Object.assign({},p,{displayLineId:lineId}));
+      if(hachikoRef){
+        lang=String(lang||"ja").toLowerCase();
+        var hachikoPrefix=/^zh/.test(lang)
+          ?"车型候选（共通运用，非当日实车）："
+          :lang==="en"?"Alternative fleet (not observed stock): "
+          :lang==="ko"?"공통운용 후보 차량(당일 실차 아님): "
+          :"車種候補（共通運用・当日の実車ではありません）：";
+        return hachikoPrefix+hachikoRef.models.join(" / ");
+      }
+    }
     // Ito's numbered ordinary services have a scoped SQL fleet candidate,
     // not a per-day rolling-stock assignment. Show the alternatives, never
     // a guessed E231/E233/Izukyu PNG or a false EXACT classification.
@@ -2468,14 +2484,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           iconBox.setAttribute('aria-hidden','true');
           // A numbered Ito local has documented alternative families. Show
           // those names in the fold without implying a single confirmed PNG.
-          if (lineId === "Ito") {
-            var itoFleetText = _trainFleetPlanLabel(p,lineId,lang);
-            if (itoFleetText && /(?:^|[.:])Local$/.test(String(p.trainType || ""))) {
+          if (lineId === "Ito" || lineId === "Hachiko") {
+            var fleetText = _trainFleetPlanLabel(p,lineId,lang);
+            if (fleetText && /(?:^|[.:])Local$/.test(String(p.trainType || ""))) {
               var fleetNote = document.createElement('small');
               fleetNote.className = 'train-fold-fleet-reference';
-              fleetNote.textContent = itoFleetText;
+              fleetNote.textContent = fleetText;
               caption.appendChild(fleetNote);
-              entry.setAttribute('aria-label',captionBase+' · '+itoFleetText);
+              entry.setAttribute('aria-label',captionBase+' · '+fleetText);
             }
           }
         }
