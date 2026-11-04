@@ -7,7 +7,14 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const crypto=require('node:crypto');
 const vm=require('node:vm');
+
+function hashFor(file) {
+  const bytes=fs.readFileSync(file);
+  return crypto.createHash('sha1').update('blob '+bytes.length+'\0')
+    .update(bytes).digest('hex').slice(0,12);
+}
 const root={},ctx=vm.createContext({
   window:root,Date,console:{debug(){},warn(){},log(){},error(){}},
   _isTrainArtworkFailureActive(){return false}
@@ -1079,10 +1086,10 @@ test('train-map page loads the current number PNG rules instead of stale cached 
   const rules=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
   const expected=rules.match(/version:"([^"]+)",match:match/);
   assert.ok(expected,'train-number rule module exposes a version');
-  const script=page.match(/<script src="\.\.\/data\/timetables\/train-number-png-ranges\.js\?v=([^"]+)"\/?>/);
+  const script=page.match(/<script\b[^>]*\bsrc="\.\.\/data\/timetables\/train-number-png-ranges\.js\?v=([0-9a-f]{12})"/);
   assert.ok(script,'the train SVG page must load its number-to-PNG rules');
-  assert.equal(script[1],expected[1],
-    'change the page asset query whenever the train-number rule module changes');
+  assert.equal(script[1],hashFor('data/timetables/train-number-png-ranges.js'),
+    'the number-to-PNG script cache key must match its current file contents');
   const garageAt=page.indexOf('vehicle-garage-png-map.js');
   const rulesAt=page.indexOf('train-number-png-ranges.js');
   const vehicleAt=page.indexOf('js/train-vehicle.js');
@@ -1162,7 +1169,7 @@ test('Joban 2026-11 E231 H / E657 Hitachi-Tokiwa M official-number artwork',()=>
   const index=fs.readFileSync('data/timetables/joban-e231-h-202611-index.js','utf8');
   const indexVersion=index.match(/version:"([^"]+)"/);
   assert.ok(indexVersion,'snapshot must expose cache version');
-  assert.ok(html.includes('joban-e231-h-202611-index.js?v='+indexVersion[1]));
+  assert.ok(html.includes('joban-e231-h-202611-index.js?v='+hashFor('data/timetables/joban-e231-h-202611-index.js')));
   assert.ok(html.indexOf('joban-e231-h-202611-index.js') <
     html.indexOf('train-number-png-ranges.js'),
     'H set must load before the PNG selector');

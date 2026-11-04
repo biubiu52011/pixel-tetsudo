@@ -4,7 +4,13 @@
  * Run: node --test tests/yokosuka-sobu-202611-number-png.test.cjs
  */
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const fs=require('node:fs'),vm=require('node:vm');
+const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
+
+function hashFor(file) {
+  const bytes=fs.readFileSync(file);
+  return crypto.createHash('sha1').update('blob '+bytes.length+'\0')
+    .update(bytes).digest('hex').slice(0,12);
+}
 const root={};
 const ctx=vm.createContext({window:root,Date,console:{debug(){},warn(){},log(){},error(){}},
   _isTrainArtworkFailureActive(){return false}});
@@ -154,7 +160,7 @@ test('source railway, operator, train type, date, approved model and page cache 
   const index=fs.readFileSync(indexFile,'utf8');
   const version=index.match(/version:"([^"]+)"/);
   assert.ok(version);
-  assert.ok(html.includes('jreast-sobu-yokosuka-202611-number-index.js?v='+version[1]));
+  assert.ok(html.includes('jreast-sobu-yokosuka-202611-number-index.js?v='+hashFor(indexFile)));
   const gallery=html.indexOf('vehicle-garage-png-map.js');
   const indexAt=html.indexOf('jreast-sobu-yokosuka-202611-number-index.js');
   const numberRules=html.indexOf('train-number-png-ranges.js');
@@ -231,7 +237,7 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
   const src=fs.readFileSync('data/timetables/jreast-chiba-number-index-202611.js','utf8');
   const version=src.match(/version:"([^"]+)"/);
   assert.ok(version);
-  assert.ok(html.includes('jreast-chiba-number-index-202611.js?v='+version[1]));
+  assert.ok(html.includes('jreast-chiba-number-index-202611.js?v='+hashFor('data/timetables/jreast-chiba-number-index-202611.js')));
   assert.ok(html.indexOf('jreast-chiba-number-index-202611.js') <
     html.indexOf('train-number-png-ranges.js'));
 });
@@ -294,10 +300,10 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
   assert.equal(ctx._trainMarkerSpec(p,uid,'SobuMain').kind,'unresolved',
     'an extension cannot borrow arbitrary third-line artwork');
   const page=fs.readFileSync('pages/trains.html','utf8');
-  assert.match(page,/train-vehicle\.js\?v=20\d{6}-[^"']+/,
-    'train vehicle selector cache must be busted');
-  assert.match(page,/data-fusion\.js\?v=20261104-sobu-boundary-v9/,
-    'the earlier DataFusion boundary path also needs an asset cache bust');
+  assert.ok(page.includes('train-vehicle.js?v='+hashFor('js/train-vehicle.js')),
+    'train vehicle selector cache must match its file contents');
+  assert.ok(page.includes('data-fusion.js?v='+hashFor('js/data-fusion.js')),
+    'DataFusion asset cache must match its file contents');
   const fusion=fs.readFileSync('js/data-fusion.js','utf8');
   assert.match(fusion,/fusionRole: "through-boundary"/,
     'direct-through station projections explicitly mark their verified role');
