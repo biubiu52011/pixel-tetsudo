@@ -5108,42 +5108,31 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       planned:true,representative:true};
   }
 
-  // A numbered Takasaki/Utsunomiya service may use either Shonan-color
-  // fleet. Display BOTH existing garage PNGs as an unconfirmed candidate
-  // pair; never silently pick a single model or claim an actual formation.
-  function lookupNorthShonanCandidatePngPair(p) {
+  // A public Takasaki/Utsunomiya number identifies only the MIXED
+  // E231-1000 / E233-3000 fleet family. Side-by-side PNGs misleadingly
+  // imply a coupled formation. Keep the candidates in the accessibility
+  // caption, but show a neutral train POSITION marker until evidenced.
+  function isUnconfirmedNorthShonanFleet(p) {
     if (!p || p.vehicleIdentityStatus === "EXACT" ||
         p.vehicleResolvedUpstream === true ||
         (p.positionSource !== "supabase-train-run" &&
-         p.positionSource !== "realtime-api")) return null;
+         p.positionSource !== "realtime-api")) return false;
     var line = String(p.positionLineId || p.lineId || "");
     if ((line !== "Takasaki" && line !== "UtsunomiyaJR") ||
-        String(p.displayLineId || line) !== line) return null;
+        String(p.displayLineId || line) !== line) return false;
     var index = window.JREastShonanMixedNumberIndex202611;
-    var garage = window.VehicleGaragePngMap;
-    if (!index || typeof index.match !== "function" ||
-        !garage || typeof garage.matchModelPath !== "function") return null;
+    if (!index || typeof index.match !== "function") return false;
     var evidence = index.match(p);
     if (!evidence || evidence.status !== "UNCONFIRMED_PLANNED_FLEET" ||
         evidence.authorizesPNG !== false ||
         !Array.isArray(evidence.models) ||
         evidence.models.join("|") !== "E231系1000番台|E233系3000番台")
-      return null;
-    // A stronger independently certified model must not be replaced by
-    // a two-car-family illustration.
+      return false;
     var plan = p.vehiclePlan;
-    if (plan && (plan.confirmed === true || plan.status === "PLANNED_MODEL"))
-      return null;
-    var models = ["E231系1000番台", "E233系3000番台"];
-    var assets = [
-      "../images/列车/JR東日本/JR東日本_E231系_1000番台.png",
-      "../images/列车/JR東日本/JR東日本_E233系3000番台.png"
-    ];
-    if (!models.every(function(model, i) {
-      return garage.matchModelPath(model, assets[i], line);
-    })) return null;
-    return {kind:"candidate", iconSrc:"", planned:false,
-      candidateAssets:assets, physicalFormationConfirmed:false};
+    // Independent, source-certified SINGLE-model plans stay eligible.
+    if (plan && (plan.confirmed === true ||
+        plan.status === "PLANNED_MODEL")) return false;
+    return true;
   }
 
   function selectMarkerArtwork(p, artworkFailed) {
@@ -5185,11 +5174,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
-    // A mixed E231/E233 source is not a single-model mapping.
-    // Keep both vetted gallery images visible, explicitly as candidates.
-    var mixedArtwork = !identityConfirmed ? lookupNorthShonanCandidatePngPair(p) : null;
-    if (mixedArtwork) return artworkFailed === true
-      ? {kind:"unresolved",iconSrc:""} : mixedArtwork;
+    // Unconfirmed E231/E233 alternatives are not an actual coupled
+    // consist; the source-scoped fleet caption remains available.
+    if (!identityConfirmed && isUnconfirmedNorthShonanFleet(p))
+      return {kind:"unresolved",iconSrc:""};
     // On realtime and timetable-estimated POSITION records, only a certified
     // exact-number/calendar published plan may supply a DISPLAY REFERENCE.
     // This never confirms a carset or upgrades UNKNOWN/NARROWED identity.
@@ -5259,6 +5247,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
       if (!iconSrc && candidateAssets.length) {
+        // Generic candidates must not restore the misleading pair on
+        // the two affected north Shonan lines.
+        if (contextLineId === "Takasaki" ||
+            contextLineId === "UtsunomiyaJR")
+          return {kind:"unresolved",iconSrc:""};
         return { kind: "candidate", iconSrc: "", planned: false,
           candidateAssets: candidateAssets.slice() };
       }
