@@ -1386,6 +1386,17 @@
         pngPath:row.pngPath,source:"train-number-range",
         planned:true,representative:true};
     }
+    // Exact rules above win. Only source-scoped SQL estimates can use
+    // these fallback service-family illustrations.
+    if(line==="ChuoMain" && context){
+      var ref=matchChuoMainUnmappedReference(context);
+      if(ref && ref.trainNumber===number && ref.illustrationOnly &&
+         ref.authorizesIllustration && ref.authorizesPNG===false &&
+         ref.confirmed===false)
+        return {trainNumber:number,lineId:line,model:ref.illustrationModel,
+          pngPath:ref.illustrationPng,source:ref.source,
+          planned:true,representative:true,illustrative:true};
+    }
     return null;
   }
   // Ito November 2026: exact JR East published TRAIN numbers, crossed
@@ -1655,10 +1666,103 @@
       status:"UNCONFIRMED_PLANNED_FLEET",
       source:"undated-sql-2026-autumn-fleet-reference"};
   }
+  // ChuoMain November 2026 SQL is an UNDATED train roster. A vehicle
+  // illustration never proves the actual formation or train operating day.
+  // JR-East: Resort View Suwako 9580D/9581D = HB-E300, Nov 7 only.
+  // https://timetables.jreast.co.jp/2611/train/185/189211.html
+  // https://www.jreast.co.jp/press/2026/nagano/20260624_na01.pdf
+  var chuoMissingServiceNumbers=Object.freeze({
+    express:Object.freeze(["5102M","5106M","5110M","5114M","5135M",
+      "5139M","5143M","5147M","5151M","5157M","5159M","8074M",
+      "8075M","8077M","8079M","8083M","8084M","8170M","8193M",
+      "8194M","8199M","8091M","8092M","9021M","9022M","9071M",
+      "9076M","9078M","9081M","9082M","9085M","9086M","9088M",
+      "9089M","9091M","9093M","9178M","9181M"]),
+    local:Object.freeze(["9592M","9593M"]),
+    rapid211:Object.freeze(["2535M"]),
+    resort:Object.freeze(["9580D","9581D"])
+  });
+  function matchChuoMainUnmappedReference(p) {
+    if(!p || p.positionSource!=="supabase-train-run" ||
+       p.estimated!==true ||
+       String(p.positionLineId||p.lineId||"")!=="ChuoMain" ||
+       String(p.displayLineId||p.positionLineId||p.lineId||"")!=="ChuoMain" ||
+       ["odpt.Railway:JR-East.ChuoMain","odpt.Railway:JR-East.Chuo"]
+         .indexOf(String(p.sourceRailway||""))<0 ||
+       !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||"")) ||
+       p.vehicleResolvedFromRealtime===true ||
+       p.vehicleIdentityStatus==="EXACT" ||
+       p.realtimeVehicleType || p.realtimeDerivedVehicleType ||
+       (p.vehiclePlan && (p.vehiclePlan.confirmed===true ||
+         p.vehiclePlan.status==="PLANNED_MODEL")))return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op && op!=="JR-East" && op!=="odpt.Operator:JR-East")return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase();
+    var type=String(p.trainType||"").split(/[.:]/).pop();
+    var cal=sourceCalendar(p),date=String(p.serviceDate||"");
+    var cs=Array.isArray(p.plannedVehicleCandidates)
+      ?p.plannedVehicleCandidates.filter(Boolean):[];
+    var ps=p.vehiclePlan && Array.isArray(p.vehiclePlan.models)
+      ?p.vehiclePlan.models.filter(Boolean):[];
+    function compatible(regex){
+      return cs.length>0 &&
+        cs.every(function(v){return regex.test(String(v));}) &&
+        (!ps.length || ps.every(function(v){return regex.test(String(v));}));
+    }
+    var model="",png="",source="";
+    if(type==="LimitedExpress" &&
+       chuoMissingServiceNumbers.express.indexOf(n)>=0 &&
+       compatible(/^E353系(?:（[^）]+）)?$/)) {
+      // An existing dated rule that rejects today's operating date
+      // must not be bypassed by an illustrative E353 fleet fallback.
+      var dated=rows.filter(function(row){
+        return row.lineIds.indexOf("ChuoMain")>=0 &&
+          row.trainType==="LimitedExpress" &&
+          Array.isArray(row.publishedNumbers) &&
+          row.publishedNumbers.indexOf(n)>=0 &&
+          Array.isArray(row.operatingDates) && row.operatingDates.length;
+      });
+      if(dated.length && !dated.some(function(row){
+        return row.operatingDates.indexOf(date)>=0 &&
+          (!row.calendarType || row.calendarType===cal);
+      }))return null;
+      model="E353系";
+      png="../images/列车/JR東日本/JR東日本_E353系.png";
+      source="sql-e353-family-reference-operation-day-unverified";
+    }else if(type==="Local" && cal==="holiday" &&
+      chuoMissingServiceNumbers.local.indexOf(n)>=0 &&
+      compatible(/^(?:211系(?:（長野地区）)?|E233系0番台|E131系200番台)$/) &&
+      cs.some(function(x){return /^211系/.test(x);})) {
+      model="211系（長野地区）";
+      png="../images/列车/JR東日本/JR東日本_211系_長野色.png";
+      source="sql-extra-local-illustration";
+    }else if(type==="Rapid" &&
+      chuoMissingServiceNumbers.rapid211.indexOf(n)>=0 &&
+      compatible(/^(?:211系(?:（長野地区）)?|E233系0番台|E131系200番台)$/) &&
+      cs.some(function(x){return /^211系/.test(x);})) {
+      model="211系（長野地区）";
+      png="../images/列车/JR東日本/JR東日本_211系_長野色.png";
+      source="2535m-observed-211-202605-reference";
+    }else if(type==="Rapid" && cal==="holiday" &&
+      date==="2026-11-07" &&
+      chuoMissingServiceNumbers.resort.indexOf(n)>=0) {
+      // The old SQL 211/E233 label is wrong for this named resort run.
+      model="HB-E300系（リゾートビューふるさと）";
+      png="../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png";
+      source="official-resort-view-suwako-20261107";
+    }
+    if(!png)return null;
+    return {lineId:"ChuoMain",trainNumber:n,models:[model],
+      illustrationModel:model,illustrationPng:png,source:source,
+      illustrationOnly:true,authorizesIllustration:true,
+      authorizesPNG:false,confirmed:false,
+      status:"UNCONFIRMED_PLANNED_FLEET"};
+  }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-chuo-main-number-coverage-v41",match:match,
+    version:"20261104-chuo-remaining-service-v42",match:match,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
-    matchChuoMainLocalReference:matchChuoMainLocalReference
+    matchChuoMainLocalReference:matchChuoMainLocalReference,
+    matchChuoMainUnmappedReference:matchChuoMainUnmappedReference
   });
 })(window);
