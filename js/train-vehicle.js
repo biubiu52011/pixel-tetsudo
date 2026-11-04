@@ -4196,6 +4196,17 @@ function _officialConventionalServicePlan(tt, lineId, line) {
     var bosoRouteModels = lineId === 'Togane'
       ? ['209系', 'E233系（房総地区・改造車）']
       : ['209系', 'E233系（房総地区・改造車）', 'E131系0番台'];
+    // During the 2026 typhoon closure, E235-1000 was independently
+    // observed substituting on some Uchibo LOCAL services (including
+    // an Oct 3 139M report). This is a DATE-SCOPED fleet possibility,
+    // NOT proof that any particular November train actually ran, and
+    // NEVER enough to select a PNG or confirm a formation.
+    // https://rail.hobidas.com/rmnews/549438/
+    if (lineId === 'Uchibo' &&
+        String(tt._serviceDate || '') >= '2026-09-23' &&
+        String(tt._serviceDate || '') <= '2026-11-08') {
+      bosoRouteModels.push('E235系1000番台');
+    }
     return {
       operator: 'JR-East', vehicleCandidates: bosoRouteModels,
       evidenceRole: 'route-fleet-reference', _fleetReferenceOnly: true,
