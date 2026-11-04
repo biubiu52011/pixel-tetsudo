@@ -56,6 +56,60 @@
   var chuoSobuTozai2611=Object.freeze({"holiday_Eastbound_K":["1202Y","1402Y","1610Y","1702Y","610Y","702Y","706Y","902Y"],"holiday_Eastbound_S":["1016Y","1020Y","1028Y","1122Y","1142Y","1216Y","1320Y","1342Y","1422Y","1516Y","1520Y","1548Y","1622Y","1628Y","1642Y","1644Y","1716Y","1734Y","1736Y","1820Y","1842Y","1848Y","1922Y","716Y","728Y","738Y","820Y","826Y","840A","848Y","858Y","922Y","936Y","944Y"],"holiday_Westbound_K":["1003Y","1303Y","1503Y","1711Y","1803Y","1807Y","803Y","811Y"],"holiday_Westbound_S":["1023Y","1117Y","1121Y","1223Y","1243Y","1317Y","1421Y","1443Y","1523Y","1529Y","1545Y","1617Y","1621Y","1635Y","1637Y","1723Y","1743Y","1749Y","617Y","621Y","627Y","629Y","639Y","723Y","737Y","741Y","749Y","759Y","817Y","845Y","921Y","929Y","943Y","949Y"],"weekday_Eastbound_K":["1602Y","1604Y","1608Y","1710Y","1802Y","1806Y","1904Y","1910Y","506A","602A","604Y","608A","610Y","910Y"],"weekday_Eastbound_S":["1012Y","1068Y","1090Y","1158Y","1180Y","1218Y","1270Y","1368Y","1380Y","1458Y","1470Y","1518Y","1548Y","1568Y","1614A","1622Y","1654Y","1656A","1680Y","1684Y","1712Y","1728A","1738A","1744Y","1764Y","1766Y","1768A","1770A","1774Y","1794A","1818Y","1820Y","1824Y","1848A","1850Y","1860A","1862A","1880A","1882A","1888Y","1914A","1916Y","1932Y","1966Y","2036Y","2082Y","2126Y","2160Y","2170Y","622Y","636A","640Y","644Y","654Y","684A","688Y","718A","728Y","730Y","734Y","764Y","790Y","792A","838Y","842Y","846Y","874A","876Y","878Y","932Y","944Y","958Y","970Y","984Y","988Y","996Y"],"weekday_Westbound_K":["1611Y","1705Y","1809Y","1811Y","1903A","1907A","2005Y","2009Y","2111Y","711A","809A","903Y","905Y"],"weekday_Westbound_S":["1059Y","1071Y","1119Y","1169Y","1259Y","1281Y","1319Y","1371Y","1469Y","1481Y","1513Y","1515Y","1539Y","1555A","1557Y","1567Y","1585Y","1595A","1623Y","1645Y","1665A","1671Y","1675Y","1689Y","1717A","1719Y","1721A","1725Y","1733Y","1749Y","1751Y","1761Y","1781Y","1815A","1829A","1837Y","1839Y","1855Y","1863Y","1867Y","1869Y","1927A","1971Y","1983Y","2061A","485Y","519Y","537Y","591Y","593Y","629Y","631A","639A","641Y","645Y","647Y","665Y","675Y","723Y","733Y","743Y","755Y","759Y","777Y","779Y","785Y","789Y","797A","813A","835A","845Y","849A","871Y","891Y","969Y","981Y"]});
   var rows=[
 
+    // JR-East 2026-11: published NUMBER families confirmed against the
+    // 2611 line tables and a JR-East stock source; no formation inference.
+    // Senseki E131-800 S-number trains, Aobadori-Ishinomaki ONLY.
+    // Exclude 55xxD Senseki-Tohoku through (HB-E210, not E131).
+    // https://media.jreast.co.jp/articles/5954
+    // https://timetables.jreast.co.jp/2611/timetable-v/264d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/264u1.html
+    {lineIds:["Senseki"],numberFormat:"full",from:400,to:2599,
+      suffixes:"S",trainTypes:["Local"],operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.Senseki"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["1031S","1032S","1042S","1044S","1061S","1062S","1063S","1064S","1065S","1081S","1083S","1121S","1122S","1131S","1132S","1133S","1161S","1162S","1163S","1164S","1165S","1166S","1182S","1184S","1221S","1222S","1231S","1232S","1234S","1261S","1263S","1264S","1266S","1281S","1331S","1332S","1333S","1361S","1362S","1364S","1381S","1382S","1421S","1422S","1431S","1432S","1434S","1461S","1462S","1481S","1482S","1521S","1522S","1531S","1532S","1541S","1572S","1581S","1584S","1621S","1622S","1631S","1632S","1641S","1642S","1643S","1644S","1645S","1672S","1682S","1721S","1722S","1731S","1732S","1741S","1742S","1743S","1744S","1745S","1746S","1747S","1748S","1749S","1772S","1821S","1822S","1831S","1832S","1841S","1842S","1843S","1844S","1845S","1846S","1847S","1848S","1921S","1922S","1932S","1941S","1942S","1943S","1945S","1946S","1947S","1948S","1949S","2021S","2022S","2031S","2041S","2043S","2044S","2045S","2046S","2048S","2050S","2121S","2132S","2141S","2142S","2143S","2144S","2145S","2146S","2221S","2222S","2241S","2242S","2243S","2341S","2342S","2343S","2441S","472S","521S","522S","533S","542S","544S","572S","621S","622S","624S","631S","632S","642S","643S","662S","721S","722S","732S","734S","741S","742S","743S","744S","745S","746S","748S","750S","752S","761S","781S","821S","822S","831S","841S","842S","843S","844S","845S","847S","861S","862S","863S","864S","882S","921S","922S","931S","932S","941S","942S","943S","944S","946S","961S","962S","963S","964S"],
+      allowedModelLabels:["E131系800番台"],
+      model:"E131系800番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_800番台.png"},
+    // JR East's 2026-03 statement keeps HB-E210 on Senseki-Tohoku Line.
+    // Existing SQL incorrectly labels some of these D-numbered runs as E131.
+    // Explicit number + type + source guard prevents that misclassification.
+    // https://www.jreast.co.jp/press/2025/sendai/20251212_s01.pdf
+    // https://timetables.jreast.co.jp/2611/timetable-v/264d1.html
+    {lineIds:["Senseki"],numberFormat:"full",from:5500,to:5599,
+      suffixes:"D",trainTypes:["Rapid","SpecialRapid"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Senseki"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["5520D","5521D","5530D","5531D","5532D","5533D","5534D","5535D","5536D","5537D","5538D","5539D","5541D","5543D","5560D","5561D","5562D","5563D","5564D","5565D","5566D","5567D","5568D","5569D","5570D","5571D","5572D","5574D"],
+      allowedModelLabels:["HB-E210系"],
+      model:"HB-E210系",
+      pngPath:"../images/列车/JR東日本/JR東日本_HB-E210系.png"},
+    // Sagami all-day regular F numbers: E131-500/580 family. The E131-500
+    // PNG is the REPRESENTATIVE image, not a confirmed G-formation.
+    // https://www.jreast.co.jp/en/train/local/e131.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/103d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/103d2.html
+    {lineIds:["Sagami"],numberFormat:"full",from:400,to:2599,
+      suffixes:"F",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.Sagami"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["1061F","1063F","1065F","1068F","1071F","1074F","1076F","1078F","1079F","1160F","1162F","1164F","1169F","1171F","1175F","1177F","1261F","1262F","1263F","1265F","1270F","1275F","1276F","1278F","1279F","1363F","1365F","1368F","1371F","1374F","1376F","1377F","1378F","1379F","1460F","1462F","1464F","1469F","1470F","1475F","1477F","1479F","1561F","1562F","1563F","1565F","1568F","1570F","1571F","1576F","1578F","1662F","1663F","1664F","1667F","1668F","1669F","1671F","1674F","1677F","1678F","1679F","1760F","1762F","1763F","1764F","1766F","1769F","1770F","1773F","1775F","1776F","1778F","1779F","1861F","1863F","1865F","1866F","1868F","1871F","1872F","1874F","1876F","1960F","1962F","1964F","1967F","1969F","1970F","1973F","1975F","1977F","1978F","2061F","2063F","2066F","2068F","2070F","2072F","2073F","2075F","2076F","2160F","2167F","2168F","2171F","2172F","2174F","2266F","2270F","2273F","2275F","2361F","2367F","2372F","2374F","461F","467F","475F","561F","562F","564F","568F","571F","573F","574F","576F","577F","579F","660F","663F","664F","666F","669F","670F","672F","675F","679F","761F","765F","767F","768F","773F","774F","776F","778F","860F","862F","864F","866F","869F","871F","872F","874F","877F","879F","961F","962F","963F","964F","965F","969F","970F","975F","978F"],
+      allowedModelLabels:["E131系500番台","E131系580番台"],
+      model:"E131系500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E131系_500番台.png"},
+    // Echigo normal 120-1999M locally scheduled services: E129 reference.
+    // 8xxx/9xxx dated extras are intentionally EXCLUDED pending vehicle proof.
+    // https://www.jreast.co.jp/train/local/e129.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/232u1.html
+    {lineIds:["Echigo"],numberFormat:"full",from:120,to:1999,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.Echigo"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["120M","121M","122M","123M","124M","125M","126M","127M","128M","129M","130M","131M","132M","133M","134M","135M","136M","137M","138M","139M","140M","141M","142M","143M","145M","146M","148M","149M","150M","151M","1521M","1522M","1523M","1524M","1525M","1526M","1527M","1528M","1529M","152M","1530M","1531M","1532M","1533M","1534M","1535M","1536M","1537M","1538M","1539M","153M","1540M","1541M","1542M","1543M","1544M","1545M","1546M","1547M","1548M","1549M","154M","1550M","1551M","1552M","1553M","1554M","1555M","1556M","1557M","1559M","155M","1561M","156M","157M","158M","159M","160M","161M","1620M","1621M","1622M","1629M","162M","1630M","1632M","1636M","1637M","163M","1643M","1646M","1647M","1648M","1649M","164M","165M","1660M","1661M","1663M","1664M","1666M","166M","1671M","1675M","1676M","1679M","167M","1680M","1682M","168M","169M","170M","172M","174M","1924M","1925M","1926M","1928M","1932M","1937M","1941M","1946M","1951M"],
+      allowedModelLabels:["E129系"],
+      model:"E129系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
     // Takasaki/Joetsu local 211: exact published JR 2611 numbers also
     // checked against JR official Nov 2026 inbound/outbound weekday/holiday
     // 238u1/238u2/238d1/238d2 plus dated 211 working reports.
@@ -884,6 +938,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-chuo-sobu-tozai-through-v33",match:match
+    version:"20261104-jre-east-single-fleet-number-v34",match:match
   });
 })(window);
