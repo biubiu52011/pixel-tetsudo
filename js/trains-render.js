@@ -1187,6 +1187,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         !p || p.vehicleIdentityStatus === "EXACT" ||
         !/(?:[.:])(?:Local|Rapid|SpecialRapid)$/.test(String(p.trainType || ""))) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Ito 16xxM/56xxM are Izukyu turnback workings, even when the
+    // legacy SQL candidate label incorrectly says E231/E233.
+    if (lineId === "Ito" && window.TrainNumberPngRanges &&
+        typeof window.TrainNumberPngRanges.matchItoFleetCandidates === "function") {
+      var itoWorking = window.TrainNumberPngRanges.matchItoFleetCandidates(
+        Object.assign({}, p, {displayLineId:lineId}));
+      if (itoWorking && itoWorking.owner === "Izukyu") return "";
+    }
     // A CURRENT JR East public train number can establish only the shared
     // Shonan-color corridor fleet (E231-1000 / E233-3000). It cannot choose
     // one trainset or authorize either PNG. Keep the SOURCE line and CURRENT
@@ -1308,11 +1316,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         Object.assign({}, p, {displayLineId:lineId}));
       if (itoCandidates) {
         lang = String(lang || "ja").toLowerCase();
-        var itoPrefix = /^zh/.test(lang) ? "列车番号对应的候选车型（非当日实车）：" :
-          lang === "en" ? "Train-number fleet candidates (not actual-day stock): " :
-          lang === "ko" ? "열차번호별 차종 후보(당일 실제 차량 아님): " :
-          "列車番号別の車種候補（当日の実車ではありません）：";
-        return itoPrefix + itoCandidates.models.join(" / ");
+        var isWorking = itoCandidates.source === "independent-20260314-working-reference";
+        var itoPrefix = isWorking
+          ? (/^zh/.test(lang) ? "车型运用参考（2026年3月编组表，非当日实车）：" :
+             lang === "en" ? "Working reference (March 2026 roster, not actual-day stock): " :
+             lang === "ko" ? "운용 차종 참고(2026년 3월, 당일 실제 차량 아님): " :
+             "車種運用参考（2026年3月編成表・当日の実車ではありません）：")
+          : (/^zh/.test(lang) ? "列车番号对应的候选车型（非当日实车）：" :
+             lang === "en" ? "Train-number fleet candidates (not actual-day stock): " :
+             lang === "ko" ? "열차번호별 차종 후보(당일 실제 차량 아님): " :
+             "列車番号別の車種候補（当日の実車ではありません）：");
+        return itoPrefix + itoCandidates.models.join(" / ") +
+          (itoCandidates.substitutionPossible
+            ? (/^zh/.test(lang) ? "（Resort21可能由8000系代走）" :
+               lang === "en" ? " (Resort21 may be replaced by 8000 series)" :
+               lang === "ko" ? " (리조트21은 8000계 대체 가능)" :
+               "（リゾート21は8000系に変更の場合あり）") : "");
       }
     }
     var sharedWorkingRepresentative =
