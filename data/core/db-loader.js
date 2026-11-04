@@ -442,27 +442,37 @@ function applyData(data, i18n) {
     } catch(e) { return null; }
   }
 
+  // localStorage serializes megabytes synchronously. Do not compete with
+  // the first paint or user input immediately after parsing railway JSON.
+  function schedulePersistentCacheWrite(task) {
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(function () { task(); });
+    } else {
+      setTimeout(task, 2500);
+    }
+  }
+
   function cacheWrite(railway, i18n, onCommitted) {
     // 将 JSON.stringify + localStorage.setItem 延后到关键路径之外。
     // Prune old caches only after the replacement is durably written; otherwise
     // a release can delete its own last-known-good recovery source.
-    setTimeout(function() {
+    schedulePersistentCacheWrite(function() {
       var committed = false;
       try {
         localStorage.setItem(DB_CACHE_KEY, JSON.stringify({ railway: railway, i18n: i18n, ts: Date.now() }));
         committed = true;
       } catch(e) { /* quota / private mode: keep older caches */ }
       if (committed && typeof onCommitted === "function") onCommitted();
-    }, 0);
+    });
   }
 
   function cacheWriteTourism(tourism) {
     if (SKIP_TOURISM) return;
-    setTimeout(function() {
+    schedulePersistentCacheWrite(function() {
       try {
         localStorage.setItem(TOURISM_CACHE_KEY, JSON.stringify({ tourism: tourism, ts: Date.now() }));
       } catch(e) {}
-    }, 0);
+    });
   }
 
   // 清理旧版本缓存（只留当前版本）
@@ -781,7 +791,20 @@ function load() {
   // Kick off data loading immediately: bundles are dynamic <script>/fetch and
   // do not need the DOM, so download+parse runs in parallel with the remaining
   // synchronous scripts and the page reaches full data sooner.
-  setTimeout(load, 0);
+  // Initial loading is deferred behind a paint opportunity. This matters on
+  // low-memory browsers where parsing compact railway/i18n JSON is expensive.
+  function loadAfterFirstPaint() {
+    setTimeout(function () {
+      load().catch(function(err) {
+        console.warn("[DbLoader] Initial load failed:", err && err.message);
+      });
+    }, 0);
+  }
+  if (typeof requestAnimationFrame === "function" && !document.hidden) {
+    requestAnimationFrame(loadAfterFirstPaint);
+  } else {
+    loadAfterFirstPaint();
+  }
 
   // ========== 未处理 Promise 拒绝监听器 ==========
   // 捕获逃出内部 catch 块的 ODPT fetch 或异步错误。
