@@ -421,8 +421,29 @@ test('JR East number PNGs reject unlisted extras, wrong train type/source/operat
   const echigo=live({trainNumber:'8132M',positionLineId:'Echigo',
     sourceRailway:'odpt.Railway:JR-East.Echigo',trainOperator:'JR-East',
     trainType:'odpt.TrainType:JR-East.Local',serviceDate:'2026-11-04'});
-  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(echigo),null,
-    '8xxx scheduled-exception working has not been stock-verified');
+  const echigoOut=live({...echigo,trainNumber:'8637M'});
+  for(const train of [echigo,echigoOut]){
+    const mapped=root.TrainVehicle.lookupTrainNumberRangePng(train);
+    assert.ok(mapped,'JR official 2611 November 4th 8xxx train should resolve');
+    assert.equal(mapped.model,'E129系');
+    assert.ok(mapped.pngPath.endsWith('/JR東日本_E129系.png'));
+    assert.equal(mapped.representative,true);
+    assert.equal(marker(train,'Echigo').planned,true);
+  }
+  for(const date of ['2026-11-01','2026-11-07','2026-11-23','2026-12-01']){
+    for(const number of ['8132M','8637M']){
+      const pos=live({...echigo,trainNumber:number,serviceDate:date});
+      assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(pos),null,
+        number+' does not operate in official 2611 timetable on '+date);
+    }
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+    live({...echigo,trainNumber:'9630M'})),null,
+    'Yahiko Chrysanthemum special number requires dedicated train evidence');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+    live({...echigo,trainNumber:'9524D',positionLineId:'Senseki',
+      sourceRailway:'odpt.Railway:JR-East.Senseki'})),null,
+    'Daté SATONO 9524D does not run in November; it is HB-E300, not E131/HB-E210');
   assert.equal(root.TrainNumberPngRanges.match('521S','JobanLocal'),null);
   assert.equal(root.TrainNumberPngRanges.match('475F','Nambu'),null);
 });
