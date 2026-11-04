@@ -246,10 +246,14 @@ html[lang="en"]{--pixel-font:'Fusion Pixel latin';}
 
 .railway-browser .rs-operator-group {
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--railway-card-gap);
 }
 
 .railway-browser .rs-operator-title {
   padding: 6px 0 8px;
+  margin-bottom: calc(-1 * var(--railway-card-gap));
 }
 
 .railway-browser .rs-cards-container {

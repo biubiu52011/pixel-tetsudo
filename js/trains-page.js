@@ -100,16 +100,25 @@
   }
 
   var _detailLoadRequestedFor = null;
+  var _overviewScrollY = 0;
+  function releaseOverviewDom() {
+    if (!listEl) return;
+    // Keep the line cards only in the visible overview; a selected SVG route
+    // must not carry 200+ invisible image/card elements in the DOM.
+    if (listEl.querySelector(".rs-line-card")) _overviewScrollY = window.scrollY || window.pageYOffset || 0;
+    listEl.replaceChildren();
+    if (filterBarEl) filterBarEl.replaceChildren();
+  }
   function showLineView(lineId, systemLineIds, expectedIdentity, expectedMemberIdentities) {
     // Map, train-number indexes and vehicle PNG logic are not part of the
     // initial line browser. Load exactly once when a detail route is entered.
     if (window.TrainsDetailLoader && !window.TrainsDetailLoader.isReady()) {
       if (_detailLoadRequestedFor === lineId) return;
       _detailLoadRequestedFor = lineId;
-      if (listEl) listEl.classList.add("hidden");
       var browser = listEl && listEl.closest("[data-railway-browser]");
       if (browser) browser.classList.add("hidden");
       if (detailEl) detailEl.classList.remove("hidden");
+      releaseOverviewDom();
       if (mapEl && window.DataState) window.DataState.renderPageState(mapEl, "loading");
       window.TrainsDetailLoader.load().then(function () {
         if (_detailLoadRequestedFor !== lineId ||
@@ -210,10 +219,10 @@
           console.debug("[trains] on-demand realtime skip:", lineId, e && e.message);
         });
       }
-      if (listEl) listEl.classList.add("hidden");
       var browser = listEl && listEl.closest("[data-railway-browser]");
       if (browser) browser.classList.add("hidden");
       if (detailEl) detailEl.classList.remove("hidden");
+      releaseOverviewDom();
       updateLineTitle(lineId, fusedLine);
       if (mapEl && window.DataState && window.DataState.setPageStateRetry) {
         window.DataState.setPageStateRetry(mapEl, function() {
@@ -273,12 +282,19 @@
       window.TrainsActiveSystemLineIds = null;
       window.TrainsActivePositionLineIds = null;
       if (window.ODPTClient && window.ODPTClient.clearRealtimeLines) window.ODPTClient.clearRealtimeLines();
+      // Restore the overview only when navigating back. Rebuild using the
+      // current language and selected operator, then restore its scroll.
+      if (detailEl) detailEl.classList.add("hidden");
       if (listEl) listEl.classList.remove("hidden");
       var browser = listEl && listEl.closest("[data-railway-browser]");
       if (browser) browser.classList.remove("hidden");
-      if (detailEl) detailEl.classList.add("hidden");
-      // 详情打开期间只是隐藏总览 DOM。返回时不要重建
-      // 总览；保留滚动位置、筛选状态和卡片。
+      if (listEl && !listEl.querySelector(".rs-line-card")) {
+        renderList(listEl);
+        renderFilterBar(filterBarEl);
+        if (_overviewScrollY && window.requestAnimationFrame) {
+          window.requestAnimationFrame(function() { window.scrollTo(0, _overviewScrollY); });
+        }
+      }
       if (listEl) setFilter(_selectedOperator);
     } catch(e) {}
   }
@@ -421,8 +437,11 @@
       }
       window.addEventListener("hashchange", _applyRoute);
       loadCachedPositions(function() {
-        renderList(listEl);
-        renderFilterBar(document.getElementById("trainsFilterBar"));
+        // Direct links should not build hundreds of hidden overview cards.
+        if (!window.location.hash) {
+          renderList(listEl);
+          renderFilterBar(document.getElementById("trainsFilterBar"));
+        }
         // canonical loader/DataState 事件负责数据就绪。不要轮询
         // 页面 DOM 长达一分钟；延迟快照由订阅器处理。
         // 路由恢复集中在 _applyRoute；此处的有限轮询
@@ -518,7 +537,7 @@
           // loading/error 状态同样包含 innerHTML，因此 DOM 长度不能判断
           // 是否已经挂载可用铁路内容。
           // canonical/融合数据延迟到达时自动恢复。
-          if (!hasLineCards) {
+          if (!hasLineCards && (!detailEl || detailEl.classList.contains("hidden"))) {
             if (_selectedOperator === null) {
               renderList(listEl, lines);
             } else {
@@ -568,7 +587,7 @@
             var _freshHost = document.createElement("div");
             var _linesNow = window.DataState.filterLinesByOperator(getLinesData(), _selectedOperator);
             var _orderNow = (window.LinePresentationService && window.UNIFIED_LINES) ? window.LinePresentationService.getDisplayOrder(window.UNIFIED_LINES, { includeServiceCorridors: true }) : [];
-            window.DataState.renderList(_freshHost, _linesNow, { mode: "trains", lineOrder: _orderNow, includeServiceCorridors: true });
+            window.DataState.renderList(_freshHost, _linesNow, { mode: "trains", lineOrder: _orderNow, includeServiceCorridors: true, flatGroups: true });
             // 同时渲染共享空态，避免旧卡片在切换语言后残留。
             listEl.innerHTML = _freshHost.innerHTML;
             setFilter(_selectedOperator);
@@ -602,7 +621,7 @@
     var allLines = linesSnapshot || getLinesData() || {};
     var filtered = window.DataState.filterLinesByOperator(allLines, _selectedOperator);
     var lineOrder = (window.LinePresentationService && window.UNIFIED_LINES) ? window.LinePresentationService.getDisplayOrder(window.UNIFIED_LINES, { includeServiceCorridors: true }) : [];
-    try { window.DataState.renderList(el, filtered, { mode: "trains", lineOrder: lineOrder, includeServiceCorridors: true }); }
+    try { window.DataState.renderList(el, filtered, { mode: "trains", lineOrder: lineOrder, includeServiceCorridors: true, flatGroups: true }); }
     catch(e) { window.DataState.renderPageState(el, "render_error"); }
   }
 

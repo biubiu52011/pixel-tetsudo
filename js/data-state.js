@@ -254,8 +254,12 @@
       container.innerHTML = '<div class="rs-empty">' + (typeof window.t === "function" ? window.t("status.no_trains") : "No data") + '</div>';
       return;
     }
+    // A real rendered list must not retain the loading/error marker.
+    container.removeAttribute("data-page-state");
+    container.removeAttribute("data-page-state-key");
     options = options || {};
     var mode = options.mode || "realtime";
+    var flatGroups = options.flatGroups === true;
     // 服务走廊默认不显示：trains.html 可以显示面向乘客的走廊卡片，
     // realtime.html 则保持来源所有权不变。
     var lineOrder = options.lineOrder || (window.LinePresentationService ? window.LinePresentationService.getDisplayOrder(window.UNIFIED_LINES, {
@@ -317,7 +321,7 @@
     for (var o = 0; o < opOrder.length; o++) {
       var op = opOrder[o];
       html += '<div class="rs-operator-group" data-operator="' + escapeHtml(op) + '"><div class="rs-operator-title">' + escapeHtml(tOp(op)) + '</div>'
-        + '<div class="rs-cards-container">';
+        + (flatGroups ? '' : '<div class="rs-cards-container">');
       // 按统一展示顺序精确渲染。主展示实体占用自己的排序位置；
       // 只有主记录渲染后才抑制成员记录。这样可以保留 Ueno-Tokyo 15.5
       // 这类分数/系统排序值，不会在单独的第一遍处理中把所有系统移到 fallback 线路之前。
@@ -338,7 +342,7 @@
         }
         html += window.LineCard.render(g.line, g.id, { mode: mode, linesObj: linesObj });
       }
-      html += "</div></div>";
+      html += flatGroups ? "</div>" : "</div></div>";
     }
     container.innerHTML = html;
     // 通过 DOM API 应用线路颜色（符合 CSP，不依赖 style-src 白名单）。
@@ -696,6 +700,14 @@
         chipsHtml += '<span class="rs-sys-chip">' + intervalText + '</span>';
       }
     }
+    // Most systems have exactly one interval; omit its redundant wrapper.
+    // Keep the wrapper for genuine multi-interval systems.
+    var rangeHtml = chipsHtml;
+    if (chipsHtml && chipsHtml.indexOf('</span><span class="rs-sys-chip">') === -1) {
+      rangeHtml = chipsHtml.replace('class="rs-sys-chip"', 'class="rs-system-lines rs-sys-chip"');
+    } else if (chipsHtml) {
+      rangeHtml = '<div class="rs-system-lines">' + chipsHtml + '</div>';
+    }
     var worstS = getStatus(worst);
     var statusHtml = "";
     if (mode === "realtime") {
@@ -728,7 +740,7 @@
       + iconHtml
       + '<div class="rs-line-info">'
       + '<div class="rs-line-name">' + escapeHtml(name) + '</div>'
-      + (mode === "trains" && chipsHtml ? '<div class="rs-system-lines">' + chipsHtml + '</div>' : '')
+      + (mode === "trains" ? rangeHtml : '')
       + '</div>'
       + statusHtml
       + '</div>';
