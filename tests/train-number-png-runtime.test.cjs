@@ -21,6 +21,7 @@ const root={},ctx=vm.createContext({
 });
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
+  'data/timetables/nambu-branch-official-202611.js',
   'data/timetables/joban-e231-h-202611-index.js',
   'data/timetables/jreast-keihin-2611-number-index.js',
   'data/timetables/jreast-yokohama-2611-number-index.js',
@@ -2149,4 +2150,77 @@ test('JR 2611 Musashino E-number reference uses exact calendar, direction and so
       'Musashino must not guess or borrow: '+JSON.stringify(modification));
   }
   assert.equal(root.TrainNumberPngRanges.match('416E','Keiyo'),null);
+});
+test('JR 2611 NambuBranch H-number positions use an official line-scoped E127 reference PNG',()=>{
+  const png='../images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png';
+  const source='odpt.Railway:JR-East.NambuBranch';
+  const base={
+    positionLineId:'NambuBranch',displayLineId:'NambuBranch',
+    trainOperator:'JR-East',sourceRailway:source,
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-04',calendarType:'weekday',
+    railDirection:'odpt.RailDirection:Inbound',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  };
+  const index=root.NambuBranchOfficial202611;
+  assert.equal(index.inboundCount,39);
+  assert.equal(index.outboundCount,41);
+  for(const [number,direction] of [
+    ['500H','Inbound'],['700H','Inbound'],['702H','Inbound'],
+    ['910H','Inbound'],['920H','Inbound'],['2210H','Inbound'],
+    ['411H','Outbound'],['701H','Outbound'],['703H','Outbound'],
+    ['921H','Outbound'],['2101H','Outbound'],['2211H','Outbound']
+  ]){
+    for(const [cal,date] of [
+      ['weekday','2026-11-04'],['holiday','2026-11-07']
+    ]){
+      for(const create of [live,sql]){
+        const p=create({...base,trainNumber:number,calendarType:cal,
+          serviceDate:date,railDirection:'odpt.RailDirection:'+direction});
+        const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+        assert.equal(chosen?.pngPath,png,number+' '+cal+' '+p.positionSource);
+        assert.equal(chosen.model,'E127系0番台（南武支線）');
+        assert.equal(chosen.representative,true);
+        const rendered=marker(p,'NambuBranch');
+        assert.equal(rendered.kind,'vehicle');
+        assert.equal(rendered.iconSrc,png,'actual SVG marker must contain branch PNG');
+        assert.equal(rendered.planned,true,'E127 representative must remain a planned image');
+        assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+          'a published H number never proves physical E127 rather than 205');
+      }
+    }
+  }
+  const last=sql({...base,trainNumber:'2211H',
+    railDirection:'odpt.RailDirection:Outbound',
+    calendarType:'',serviceId:'odpt.Calendar:SaturdayHoliday'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(last)?.pngPath,png,
+    'SQL positions often carry calendar in serviceId rather than calendarType');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...last,serviceId:'',calendarType:''
+  })?.pngPath,png,
+  'unknown realtime calendar is safe because 2611 weekday and holiday H sets coincide');
+  for(const mod of [
+    {trainNumber:'999H'}, {trainNumber:'2212H'},
+    {trainNumber:'2211F'}, {trainNumber:'2211'},
+    {trainNumber:'2211H',railDirection:'odpt.RailDirection:Inbound'},
+    {trainNumber:'700H',railDirection:'odpt.RailDirection:Outbound'},
+    {sourceRailway:'odpt.Railway:JR-East.Nambu'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.NambuBranch'},
+    {sourceRailway:''},
+    {positionLineId:'Nambu',displayLineId:'Nambu'},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {calendarType:'nonexistent',serviceId:''},
+    {serviceDate:'2026-10-31'},
+    {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'205系1000番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['205系1000番台']}}
+  ]){
+    const p=live({...base,trainNumber:'2211H',
+      railDirection:'odpt.RailDirection:Outbound',...mod});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'do not borrow or claim incorrect branch PNG: '+JSON.stringify(mod));
+  }
+  assert.equal(root.TrainNumberPngRanges.match('700H','Nambu'),null,
+    'H branch numbers never belong to F-numbered Nambu mainline');
 });
