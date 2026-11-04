@@ -2068,3 +2068,85 @@ test('JR 2611 ChuoRapid T/H PNGs use indexed calendar and directional train-numb
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid')?.model,
     'E233系0番台','legacy context-free number lookup remains available');
 });
+
+test('JR 2611 Musashino E-number reference uses exact calendar, direction and sourced stock label',()=>{
+  const pngs={
+    'E231系0番台（武蔵野線）':'../images/列车/JR東日本/JR東日本_E231系_0番台.png',
+    '209系500番台（武蔵野線）':'../images/列车/JR東日本/JR東日本_209系_500番台_武藏野線.png'
+  };
+  const common={
+    positionLineId:'Musashino',displayLineId:'Musashino',
+    sourceRailway:'odpt.Railway:JR-East.Musashino',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    calendarType:'weekday',serviceDate:'2026-11-04',
+    railDirection:'odpt.RailDirection:Inbound',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  };
+  const fleetLabels=Object.keys(pngs);
+  for(const [trainNumber,calendarType,railDirection] of [
+    ['416E','weekday','Inbound'],
+    ['445E','holiday','Outbound'],
+    ['472E','holiday','Inbound'],
+    ['408E','weekday','Inbound'],
+    ['408E','holiday','Inbound'],
+    ['2222E','weekday','Inbound'],
+    ['2281E','holiday','Outbound']
+  ]){
+    for(const realtimeVehicleType of fleetLabels){
+      const p=live({...common,trainNumber,calendarType,
+        serviceDate:calendarType==='weekday'?'2026-11-04':'2026-11-07',
+        railDirection:'odpt.RailDirection:'+railDirection,
+        realtimeVehicleType});
+      const icon=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.equal(icon?.model,realtimeVehicleType,trainNumber+' '+realtimeVehicleType);
+      assert.equal(icon.pngPath,pngs[realtimeVehicleType]);
+      assert.equal(icon.representative,true,'a model image is not an observed formation');
+      assert.equal(marker(p,'Musashino').iconSrc,pngs[realtimeVehicleType]);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    }
+  }
+  const basic=sql({...common,trainNumber:'416E',realtimeVehicleType:''});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(basic),null,
+    'the Musashino E number alone cannot choose E231 over 209');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...basic,vehiclePlan:{status:'PLANNED_CANDIDATES',
+      models:fleetLabels}
+  }),null,'multiple model candidates cannot authorize a unique PNG');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...basic,vehiclePlan:{status:'PLANNED_MODEL',
+      models:['E231系0番台']}
+  })?.pngPath,pngs['E231系0番台（武蔵野線）'],
+  'explicit single-model SQL plan selects approved E231 gallery');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...basic,vehiclePlan:{status:'PLANNED_MODEL',
+      models:['209系500番台']}
+  })?.pngPath,pngs['209系500番台（武蔵野線）'],
+  'explicit single-model SQL plan selects approved 209 gallery');
+  for(const modification of [
+    {trainNumber:'416E',calendarType:'holiday',serviceDate:'2026-11-07'},
+    {trainNumber:'472E',calendarType:'weekday'},
+    {trainNumber:'416E',railDirection:'odpt.RailDirection:Outbound'},
+    {trainNumber:'999E'},
+    {trainNumber:'2621M'},
+    {trainNumber:'2753M'},
+    {trainNumber:'9069M'},
+    {sourceRailway:'odpt.Railway:JR-East.Keiyo'},
+    {sourceRailway:''},
+    {trainOperator:'JR-West'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'E231系900番台'},
+    {realtimeVehicleType:''},
+    {realtimeVehicleType:'',vehiclePlan:{status:'PLANNED_CANDIDATES',
+      models:['209系500番台']}},
+    {realtimeVehicleType:'',vehiclePlan:{status:'PLANNED_MODEL',
+      models:['E233系0番台']}}
+  ]){
+    const p=live({...common,trainNumber:'416E',
+      realtimeVehicleType:'E231系0番台（武蔵野線）',...modification});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'Musashino must not guess or borrow: '+JSON.stringify(modification));
+  }
+  assert.equal(root.TrainNumberPngRanges.match('416E','Keiyo'),null);
+});
