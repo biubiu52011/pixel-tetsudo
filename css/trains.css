@@ -89,3 +89,6 @@
 
 /* Ito planned fleet alternatives remain readable when the train has no exact PNG. */
 .train-fold-fleet-reference { display:block; margin-top:4px; font-size:.78em; line-height:1.45; opacity:.78; }
+
+/* Chuo Main unknown stock: a single model-neutral standard train glyph. */
+.train-fold-generic-front { font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif; font-size:24px; line-height:1; }
