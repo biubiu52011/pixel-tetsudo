@@ -2289,3 +2289,78 @@ test('Nambu combined map renders branch-projected 1300H PNG without cross-line l
       'source NambuBranch PNG cannot be projected to '+otherDisplay);
   }
 });
+
+test('Tokaido 3024M Odoriko 4 coupled at Atami renders approved E257-2000 on live and SQL positions',()=>{
+  const img2000='../images/列车/JR東日本/JR東日本_E257系_2000番台.png';
+  const img2500='../images/列车/JR東日本/JR東日本_E257系_2500番台.png';
+  const uid='planned-trip:2026-11-04|JR-East|odpt.Railway%3AJR-East.Tokaido|Tokaido|3024M|odpt.RailDirection%3AInbound|odpt.Station%3AJR-East.Tokaido.Atami|13%3A32|odpt.Station%3AJR-East.Tokaido.Tokyo|odpt.Station%3AJR-East.Tokaido.Tokyo';
+  const common={
+    trainNumber:'3024M',trainId:uid,
+    positionLineId:'Tokaido',
+    sourceRailway:'odpt.Railway:JR-East.Tokaido',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress',
+    trainOperator:'JR-East',serviceDate:'2026-11-04',
+    railDirection:'odpt.RailDirection:Inbound',
+    destinationStation:'Tokyo',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  };
+  // Official timetable is two numbered portions (3024M+4024M) coupling
+  // at Atami. The observed single SVG position must stay ONE train-unit;
+  // mapping an E257 model must never synthesize a separate 4024M unit.
+  for(const [calendarType,serviceDate] of [
+    ['weekday','2026-11-04'],['holiday','2026-11-07']
+  ]){
+    for(const create of [live,sql]){
+      const p=create({...common,calendarType,serviceDate});
+      const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.equal(mapped?.model,'E257系2000番台');
+      assert.equal(mapped.pngPath,img2000);
+      assert.equal(mapped.representative,true);
+      const display=marker(p,'Tokaido');
+      assert.equal(display.kind,'vehicle');
+      assert.equal(display.iconSrc,img2000);
+      assert.equal(display.compact,false);
+      assert.equal(display.planned,true);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    }
+  }
+  const sqlRun=sql({...common,calendarType:'',
+    serviceId:'odpt.Calendar:Weekday',trainOperator:''});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(sqlRun)?.pngPath,
+    img2000,'SQL source URN alone can verify JR East operator');
+  // A separately sourced 4024M from the Shuzenji portion is the 5-car
+  // E257-2500 reference, not a reason to overwrite 3024M's 9-car image.
+  const attachment=live({...common,trainNumber:'4024M'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(attachment)?.model,
+    'E257系2500番台');
+  assert.equal(marker(attachment,'Tokaido').iconSrc,img2500);
+  for(const change of [
+    {trainNumber:'4030M'},{trainNumber:'3094M'},
+    {trainNumber:'3003M'},{trainNumber:'4025M'},
+    {trainType:'odpt.TrainType:JR-East.Local'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {railDirection:'odpt.RailDirection:Outbound'},
+    {sourceRailway:'odpt.Railway:JR-East.Ito'},
+    {sourceRailway:'odpt.Railway:JR-East.Yokosuka'},
+    {sourceRailway:'odpt.Railway:JR-West.Tokaido'},
+    {sourceRailway:''},{trainOperator:'JR-Central'},
+    {positionLineId:'Yokosuka'},
+    {positionLineId:'TokaidoMain'},
+    {serviceDate:'2026-10-31'},
+    {serviceDate:'2026-12-01'},
+    {serviceDate:''},
+    {realtimeVehicleType:'E257系500番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E257系2500番台']}}
+  ]){
+    const p=live({...common,calendarType:'weekday',...change});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'never borrow Odoriko 3024M reference: '+JSON.stringify(change));
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+    {...attachment,railDirection:'odpt.RailDirection:Outbound'}),null,
+  '4024M is published northbound, not arbitrary downbound');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...common,calendarType:'weekday',displayLineId:'SobuRapid',
+      positionSource:'realtime-api',estimated:false},false).kind,
+    'unresolved','Tokaido Odoriko PNG cannot appear on a foreign line');
+});
