@@ -12,3 +12,7 @@
 ## 冷启动与列车详情按需加载
 
 `pages/trains.html` 一览页不再立即下载、解析车型 PNG 映射、车次号段与 SVG 地图渲染模块。清单 `lazy.trains` 里的资源由生成器写入惰性 `<template id="pt-trains-detail-assets">`，不会在首屏请求。打开 `trains.html#线路ID` 时，`js/trains-detail-loader.js` 分批并保序加载。初次打开详情显示加载态，加载失败显示错误，不以虚构的车次或车型替代；返回一览后，同一页面不重复加载。新文件仍受 `script-src 'self'` 限制。
+
+## 运行状态页冷启动
+
+`realtime.html` 是 ○/△/× 运行情报与延误详情，不渲染列车位置或车型 PNG。其启动清单不再包含 `train-vehicle.js`、`train-position-estimator.js` 和列车运行实测车型证据索引；`DataFusion.loadTrainPositions` 在 `data-page="realtime"` 下直接跳过位置推定，但运行情报融合、ODPT 延误获取、运行区间和语言翻译继续保留。列车地图页不受影响。数据库 `train-runs` 已按线路从 SQL 返回计划信息与有证据的车型/PNG 字段，保留现有 SQL 优先及前端兼容回退逻辑，未复制表或引入新 API。

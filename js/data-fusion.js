@@ -1366,6 +1366,10 @@
   }
 
   function loadTrainPositions() {
+    // The realtime status screen renders line disruptions, not train markers.
+    // Do not parse, classify or estimate operator-wide train positions there.
+    // trains.html still receives the full position/evidence pipeline.
+    if (document.body && document.body.getAttribute("data-page") === "realtime") return;
     var _perfStart = _perfNow();
     try {
       // Position truth must come only from the dedicated realtime container.

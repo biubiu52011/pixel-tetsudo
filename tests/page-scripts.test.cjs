@@ -52,3 +52,19 @@ test('train detail assets are inert and preserve dependency order', () => {
   assert.match(source, /script\.async = false/, 'dynamic classic scripts must remain ordered');
   assert.match(source, /Math\.min\(from \+ 4, urls\.length\)/, 'limit in-flight detail assets');
 });
+
+test('realtime status does not load or run train positioning / PNG classification', () => {
+  const eager = expand(spec.pages.realtime);
+  for (const module of [
+    'js/train-vehicle.js',
+    'js/train-position-estimator.js',
+    'data/timetables/vehicle-operation-evidence-data.js'
+  ]) {
+    assert.ok(!eager.includes(module), 'realtime startup must not request ' + module);
+  }
+  assert.ok(eager.includes('js/runinfo-evaluator.js'));
+  assert.ok(eager.includes('js/data-fusion.js'));
+  const fusion = fs.readFileSync(path.join(root, 'js/data-fusion.js'), 'utf8');
+  assert.match(fusion, /document\.body\.getAttribute\("data-page"\) === "realtime"\) return/,
+    'status-only page skips costly train position recomputation');
+});
