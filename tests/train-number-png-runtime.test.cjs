@@ -2017,3 +2017,54 @@ test('JR 2611 Echigo 9630M Yahiko festival E129 reference respects nine operatin
     }),null,'no false special service model '+JSON.stringify(changes));
   }
 });
+
+test('JR 2611 ChuoRapid T/H PNGs use indexed calendar and directional train-number evidence',()=>{
+  const common={
+    positionLineId:'ChuoRapid',
+    sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Rapid',
+    serviceDate:'2026-11-04',calendarType:'weekday',
+    railDirection:'odpt.RailDirection:Inbound',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  };
+  const png='../images/列车/JR東日本/JR東日本_E233系_0番台.png';
+  for(const [number,calendarType,direction] of [
+    ['486T','weekday','Inbound'],['1926H','weekday','Inbound'],
+    ['1932T','weekday','Inbound'],['1932T','holiday','Inbound'],
+    ['2452T','weekday','Inbound'],['999T','holiday','Outbound'],
+    ['402H','holiday','Inbound']
+  ]){
+    const p=live({...common,trainNumber:number,calendarType,
+      serviceDate:calendarType==='weekday'?'2026-11-04':'2026-11-07',
+      railDirection:'odpt.RailDirection:'+direction});
+    const match=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(match?.pngPath,png,number+' '+calendarType+' '+direction);
+    assert.equal(match.representative,true,'no physical formation inference');
+    assert.equal(marker(p,'ChuoRapid').iconSrc,png);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+  const weekday=live({...common,trainNumber:'2452T'});
+  for(const modification of [
+    {calendarType:'holiday',serviceDate:'2026-11-07'},
+    {railDirection:'odpt.RailDirection:Outbound'},
+    {trainNumber:'999H',railDirection:'odpt.RailDirection:Outbound'},
+    {trainNumber:'2600T'},
+    {trainNumber:'1932M'},
+    {sourceRailway:'odpt.Railway:JR-East.Ome'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.Tozai'},
+    {trainOperator:'JR-West'},
+    {trainType:'odpt.TrainType:JR-East.Local'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'}
+  ]){
+    const p={...weekday,...modification};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'ChuoRapid must reject '+JSON.stringify(modification));
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(sql({
+    ...common,trainNumber:'2452T',
+    calendarType:'',serviceId:'odpt.Calendar:Weekday'
+  }))?.pngPath,png,'planned SQL serviceId supplies the weekday calendar');
+  assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid')?.model,
+    'E233系0番台','legacy context-free number lookup remains available');
+});
