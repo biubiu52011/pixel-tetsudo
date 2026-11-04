@@ -245,3 +245,22 @@ test('November SQL plan filters invented number without touching independent tim
   assert.ok(other.some(x=>x.trainNumber==='621M'),
     'existing timetable-source estimates are not suppressed by SQL guard');
 });
+
+test('Togane through Y-number PNG uses published direction and SQL calendar',()=>{
+  const base=p('5680Y','supabase-train-run',{
+    railDirection:'odpt.RailDirection:Inbound'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(base)?.pngPath,image);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,railDirection:'odpt.RailDirection:Outbound'
+  }),null,'5680Y is not a Tokyo-bound outbound source run');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'5983Y',railDirection:'odpt.RailDirection:Outbound'
+  })?.pngPath,image);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,calendarType:'',serviceId:'odpt.Calendar:Weekday'
+  })?.pngPath,image);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,railDirection:''
+  })?.pngPath,image,'keep exact-number fallback when direction is absent');
+});
