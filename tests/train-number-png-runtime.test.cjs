@@ -1827,7 +1827,7 @@ test('JR Nambu 2611 source direction protects even/odd public F numbers',()=>{
   });
   const path='../images/列车/JR東日本/JR東日本_E233系_8000番台.png';
   for(const [number,direction,expected] of [
-    ['420F','Inbound',true],['420F','Outbound',false],
+    ['404F','Inbound',true],['404F','Outbound',false],
     ['2319F','Outbound',true],['2319F','Inbound',false]
   ]){
     const p={...base,trainNumber:number,
@@ -1837,6 +1837,22 @@ test('JR Nambu 2611 source direction protects even/odd public F numbers',()=>{
     if(expected)assert.equal(mapped.pngPath,path);
     else assert.equal(marker(p,'Nambu').kind,'unresolved');
   }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'420F',calendarType:'weekday',
+    railDirection:'Inbound'
+  })?.pngPath,path,'weekday-only official 420F');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'420F',calendarType:'holiday',
+    railDirection:'Inbound'
+  }),null,'holiday cannot borrow weekday-only 420F');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'2319F',calendarType:'weekday',
+    railDirection:'Outbound'
+  }),null,'weekday cannot borrow holiday-only 2319F');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...base,trainNumber:'999F',calendarType:'holiday',
+    railDirection:'Outbound'
+  }),null,'a plausible but unpublished F number cannot show a fleet PNG');
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
     ...base,trainNumber:'2319F',railDirection:''
   })?.pngPath,path,'unknown direction must not be invented');
