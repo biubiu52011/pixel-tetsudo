@@ -1336,7 +1336,129 @@
     }
     return null;
   }
+  // Ito Local: exact public TRAIN numbers scoped to the existing SQL
+  // Weekday/SaturdayHoliday candidate families (32 JR through + 34 Izukyu).
+  // References: JR East 2026-11 101d1/101d2, JR East E231 fleet,
+  // Izukyu train/train.php. The SQL source_revision_date is NULL:
+  // these are candidate FAMILIES, never a verified daily carset or PNG.
+  // Do not expand 16xxM/56xxM ranges or guess stock from M/E suffixes.
+  var itoNumberFleetCandidates = Object.freeze([
+    {
+      "owner": "JR-East",
+      "models": [
+        "E231系1000番台",
+        "E233系3000番台"
+      ],
+      "numbers": [
+        "1560E",
+        "1589E",
+        "1597E",
+        "1621M",
+        "1622M",
+        "1623M",
+        "1624M",
+        "1626M",
+        "1629M",
+        "1634M",
+        "1653M",
+        "1656E",
+        "1658M",
+        "1661M",
+        "1663M",
+        "1664M",
+        "1666M",
+        "1667M",
+        "1669M",
+        "1670E",
+        "1670M",
+        "1671M",
+        "1672M",
+        "1673M",
+        "1674M",
+        "1675M",
+        "1676M",
+        "1677M",
+        "1678M",
+        "1883E",
+        "1932E",
+        "1941E"
+      ]
+    },
+    {
+      "owner": "Izukyu",
+      "models": [
+        "伊豆急行8000系",
+        "伊豆急行3000系",
+        "伊豆急行2100系"
+      ],
+      "numbers": [
+        "5625M",
+        "5627M",
+        "5628M",
+        "5630M",
+        "5631M",
+        "5632M",
+        "5633M",
+        "5635M",
+        "5636M",
+        "5637M",
+        "5638M",
+        "5639M",
+        "5640M",
+        "5641M",
+        "5642M",
+        "5643M",
+        "5644M",
+        "5645M",
+        "5646M",
+        "5647M",
+        "5648M",
+        "5649M",
+        "5650M",
+        "5651M",
+        "5652M",
+        "5654M",
+        "5655M",
+        "5656M",
+        "5657M",
+        "5659M",
+        "5660M",
+        "5662M",
+        "5665M",
+        "5668M"
+      ]
+    }
+  ]);
+  function matchItoFleetCandidates(p) {
+    if (!p || p.positionSource !== "supabase-train-run" ||
+        p.estimated !== true ||
+        String(p.positionLineId || p.lineId || "") !== "Ito" ||
+        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "Ito" ||
+        String(p.sourceRailway || "") !== "odpt.Railway:JR-East.Ito" ||
+        !/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "")) ||
+        !/(?:[.:])Local$/.test(String(p.trainType || ""))) return null;
+    var number = String(p.trainNumber || "").trim().toUpperCase();
+    var family = itoNumberFleetCandidates.find(function(entry) {
+      return entry.numbers.indexOf(number) >= 0;
+    });
+    if (!family) return null;
+    // The source candidate list must not contradict this public-number set.
+    var candidates = Array.isArray(p.plannedVehicleCandidates) ?
+      p.plannedVehicleCandidates.filter(Boolean) : [];
+    if (candidates.length &&
+        (candidates.length !== family.models.length ||
+         candidates.some(function(name){ return family.models.indexOf(name) < 0; })))
+      return null;
+    return {
+      lineId:"Ito", trainNumber:number, owner:family.owner,
+      models:family.models.slice(), status:"UNCONFIRMED_PLANNED_FLEET",
+      authorizesPNG:false, confirmed:false,
+      source:"sql-number-candidate-reference",
+      sourceUrl:"https://timetables.jreast.co.jp/2611/timetable-v/101d1.html"
+    };
+  }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jre-east-official-number-calendar-v36",match:match
+    version:"20261104-jre-east-ito-candidate-v37",match:match,
+    matchItoFleetCandidates:matchItoFleetCandidates
   });
 })(window);
