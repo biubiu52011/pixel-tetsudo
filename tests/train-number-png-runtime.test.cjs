@@ -2364,3 +2364,101 @@ test('Tokaido 3024M Odoriko 4 coupled at Atami renders approved E257-2000 on liv
       positionSource:'realtime-api',estimated:false},false).kind,
     'unresolved','Tokaido Odoriko PNG cannot appear on a foreign line');
 });
+
+test('Takasaki 3002M Kusatsu-Shima 2 runs with one E257-5500 reference PNG, not mixed commuter stock',()=>{
+  // 2026-11 JR East timetable: Kusatsu-Shima 2, Takasaki 14:06 ->
+  // Ueno 15:26, E257-5500. Distinct from Ito 3002M = E261 Saphir.
+  const image='../images/列车/JR東日本/JR東日本_E257系_5500番台.png';
+  const trainId='planned-trip:2026-11-04|JR-East|odpt.Railway%3AJR-East.Takasaki|Takasaki|3002M|odpt.RailDirection%3AInbound|odpt.Station%3AJR-East.Takasaki.Takasaki|14%3A06|odpt.Station%3AJR-East.Takasaki.Ueno|odpt.Station%3AJR-East.Takasaki.Ueno';
+  const base={
+    trainId,trainNumber:'3002M',positionLineId:'Takasaki',
+    sourceRailway:'odpt.Railway:JR-East.Takasaki',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress',
+    trainOperator:'JR-East',railDirection:'odpt.RailDirection:Inbound',
+    serviceDate:'2026-11-04',calendarType:'weekday',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  };
+  for(const create of [live,sql]){
+    const p=create(base);
+    const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(chosen?.model,'E257系5500番台');
+    assert.equal(chosen.pngPath,image);
+    assert.equal(chosen.representative,true);
+    const view=marker(p,'Takasaki');
+    assert.equal(view.kind,'vehicle');
+    assert.equal(view.compact,false,'draw one SVG image not a grey circle');
+    assert.equal(view.iconSrc,image);
+    assert.equal(view.planned,true);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    assert.equal(p.vehicleFormationId,undefined);
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(sql({
+    ...base,calendarType:'',serviceId:'odpt.Calendar:Weekday',
+    trainOperator:''
+  }))?.pngPath,image,'SQL calendar and operator fallback must work');
+  const regular=['3001M','3002M','3003M','3004M'];
+  for(const number of regular) {
+    const direction=Number(number.replace('M',''))%2===0?'Inbound':'Outbound';
+    for(const [calendarType,serviceDate] of [
+      ['weekday','2026-11-04'],['holiday','2026-11-07']
+    ]){
+      const p=live({...base,trainNumber:number,calendarType,serviceDate,
+        railDirection:'odpt.RailDirection:'+direction});
+      assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p)?.pngPath,
+        image,'all regular Kusatsu-Shima services: '+number+' '+calendarType);
+      assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...p,
+        railDirection:'odpt.RailDirection:'+
+          (direction==='Inbound'?'Outbound':'Inbound')}),null,
+      'same public number does not run in the opposite direction');
+    }
+  }
+  for(const [number,calendarType,correct] of [
+    ['4031M','holiday',true],['4034M','holiday',true],
+    ['4031M','weekday',false],['4034M','weekday',false],
+    ['4001M','weekday',true],['4002M','weekday',true],
+    ['4003M','weekday',true],['4004M','weekday',true],
+    ['4005M','weekday',true],['4006M','weekday',true],
+    ['4007M','weekday',true],['4008M','weekday',true],
+    ['4009M','weekday',true],['4001M','holiday',false],
+    ['4009M','holiday',false]
+  ]){
+    const direction=Number(number.replace('M',''))%2===0?'Inbound':'Outbound';
+    const p=live({...base,trainNumber:number,calendarType,
+      serviceDate:calendarType==='weekday'?'2026-11-04':'2026-11-07',
+      railDirection:'odpt.RailDirection:'+direction});
+    const found=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(Boolean(found),correct,number+' '+calendarType);
+    if(found)assert.equal(found.pngPath,image);
+  }
+  for(const changes of [
+    {trainNumber:'9999M'}, {trainNumber:'3005M'},
+    {trainNumber:'3024M'}, {trainNumber:'4000M'},
+    {trainType:'odpt.TrainType:JR-East.Local'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {trainType:''}, {railDirection:'odpt.RailDirection:Outbound'},
+    {positionLineId:'Ito'},
+    {positionLineId:'Tokaido'},
+    {sourceRailway:'odpt.Railway:JR-East.Ito'},
+    {sourceRailway:'odpt.Railway:JR-East.Tokaido'},
+    {sourceRailway:'odpt.Railway:JR-East.Agatsuma'},
+    {sourceRailway:''},
+    {trainOperator:'JR-West'}, {serviceDate:'2026-12-01'},
+    {serviceDate:'2026-10-31'},
+    {realtimeVehicleType:'E261系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E231系1000番台']}}
+  ]){
+    const p=live({...base,...changes});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'the Takasaki E257 stock cannot leak into other service: '+
+      JSON.stringify(changes));
+  }
+  const ito=live({...base,positionLineId:'Ito',
+    sourceRailway:'odpt.Railway:JR-East.Ito',trainNumber:'3002M'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(ito)?.model,
+    'E261系','same 3002M on Ito is Saphir, never Kusatsu-Shima');
+  assert.equal(marker(ito,'Ito').kind,'vehicle');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({
+    ...base,displayLineId:'UtsunomiyaJR',
+    positionSource:'realtime-api',estimated:false
+  },false).kind,'unresolved','do not project a Takasaki-only E257 onto a foreign map');
+});
