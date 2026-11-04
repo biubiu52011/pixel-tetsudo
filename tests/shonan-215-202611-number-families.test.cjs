@@ -4,7 +4,12 @@
  * node --test tests/shonan-215-202611-number-families.test.cjs
  */
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const fs=require('node:fs'),vm=require('node:vm');
+const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
+function hashFor(file) {
+  const bytes=fs.readFileSync(file);
+  return crypto.createHash('sha1').update('blob '+bytes.length+'\0')
+    .update(bytes).digest('hex').slice(0,12);
+}
 const root={};
 const ctx=vm.createContext({window:root,Date,console:{debug(){},warn(){},log(){},error(){}},
   _isTrainArtworkFailureActive(){return false}});
@@ -128,13 +133,13 @@ test('SVG titles explain mixed fleet but do not hand out a fabricated PNG',()=>{
   assert.equal(art.kind,'unresolved',
     'candidate text alone does not authorize an E233 PNG');
   const html=fs.readFileSync('pages/trains.html','utf8');
-  assert.ok(html.includes('jreast-shonan-mixed-number-index-202611.js?v='+index.version));
+  assert.ok(html.includes('jreast-shonan-mixed-number-index-202611.js?v='+hashFor(sourceFile)));
   assert.ok(html.indexOf('jreast-shonan-mixed-number-index-202611.js')<
     html.indexOf('js/trains-render.js'));
   // Renderer cache versions advance independently of the Shonan fleet
   // index: any dated asset version is valid, as long as it loads AFTER
   // the source index and never falls back to an unversioned stale script.
-  assert.match(html,/trains-render\.js\?v=20261104-[^"' ]+/);
+  assert.ok(html.includes('trains-render.js?v='+hashFor('js/trains-render.js')));
 });
 
 test('Takasaki 826M is an official 06:54 Kagohara -> 08:12 Ueno mixed fleet, not an unknown number',()=>{
