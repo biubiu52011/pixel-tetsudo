@@ -123,15 +123,21 @@
     var serviceChange = /折返し運転|折り返し運転|行先変更|行き先変更|運転本数[^。\n]*(?:減|少)|本数を減らして/.test(s);
     if (serviceChange) evidence.push({ type: "SERVICE_CHANGE" });
 
+    // Cancelling a few trains does not imply that the line is suspended.
     var partial = /一部(?:の)?(?:列車|電車|区間)?[^。\n]*(?:運休|運転見合わせ|運転を見合わせ|運転中止|取りやめ)|一部列車[^。\n]*区間運休|区間運休/.test(s);
+    var partialCancellation = /一部(?:の)?(?:列車|電車)[^。\n]*(?:運休|取りやめ)|(?:運休|取りやめ)[^。\n]*一部(?:の)?(?:列車|電車)|区間運休/.test(s);
     var reducedService = /通常の[０-９0-9]+割程度[^。\n]*運転|列車本数[^。\n]*(?:少な|減少)|本数を減らして[^。\n]*運転/.test(s);
     if (reducedService) evidence.push({ type: "REDUCED_SERVICE" });
     if (partial) evidence.push({ type: "PARTIAL_SERVICE_IMPACT" });
+    if (partialCancellation) evidence.push({ type: "PARTIAL_CANCELLATION" });
 
-    var whole = /全線[^。\n]*(?:運休|運転見合わせ|運転を見合わせ|運転中止|運転を中止|取りやめ)|全列車[^。\n]*(?:運休|取りやめ|運転を見合わせ)/.test(s);
+    var whole = /全線[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止)/.test(s) ||
+      (/(?:全線|全列車|すべての列車)[^。\n]*(?:運休|取りやめ)/.test(s) &&
+        !/一部(?:の)?(?:列車|電車)[^。\n]*(?:運休|取りやめ)/.test(s));
     if (whole) evidence.push({ type: "WHOLE_LINE_SUSPENSION" });
 
-    var explicitRangeSuspension = /[^。\n]{1,40}駅\s*[～〜－−-]\s*[^。\n]{1,40}駅(?:間)?[^。\n]*(?:運転見合わせ|運転を見合わせ|運休|運転中止)/.test(s);
+    var explicitRangeSuspension = /[^。\n]{1,40}駅\s*[～〜－−-]\s*[^。\n]{1,40}駅(?:間)?[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止)/.test(s) ||
+      (!partialCancellation && /[^。\n]{1,40}駅\s*[～〜－−-]\s*[^。\n]{1,40}駅(?:間)?[^。\n]*運休/.test(s));
     if (explicitRangeSuspension) evidence.push({ type: "RANGE_SUSPENSION" });
 
     // A past suspension followed by a resumption and current delay/cancellation
@@ -143,7 +149,8 @@
     var currentCancellation = /(?:運休|運転を?取りやめ)(?:しています|しております|となっています|が出ています|中)/.test(s);
     if (currentCancellation) evidence.push({ type: "CURRENT_CANCELLATION" });
 
-    var directionalSuspension = /(?:上り線|下り線|内回り|外回り)[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止|運休)/.test(s);
+    var directionalSuspension = /(?:上り線|下り線|内回り|外回り)[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止)/.test(s) ||
+      (!partialCancellation && /(?:上り線|下り線|内回り|外回り)[^。\n]*運休/.test(s));
     if (directionalSuspension) evidence.push({ type: "DIRECTIONAL_SUSPENSION" });
     // Official status pages sometimes omit the affected scope and state only
     // the current operation, e.g. “運転を見合わせています”. This is still
@@ -153,13 +160,14 @@
     if (unscopedCurrentSuspension && !(whole || explicitRangeSuspension || directionalSuspension || partial || currentCancellation)) {
       evidence.push({ type: "UNSCOPED_CURRENT_SUSPENSION" });
     }
-    // Any confirmed suspension is rendered as ×, including a station range,
-    // one direction, or a partial train cancellation. The affected scope is
-    // still preserved separately in interval/direction/impacts.
-    if (whole || explicitRangeSuspension || directionalSuspension || partial || currentCancellation || unscopedCurrentSuspension) {
+    // Reserve × for an explicit service suspension or confirmed entire-scope
+    // cancellation. Individual train cancellations are a disruption (△).
+    if (whole || explicitRangeSuspension || directionalSuspension || unscopedCurrentSuspension) {
       return { status: "suspended", evidence: evidence, delayUpperBoundMinutes: null };
     }
-    if (timetable || serviceChange) return { status: "delayed", evidence: evidence, delayUpperBoundMinutes: null };
+    if (partial || currentCancellation || timetable || serviceChange) {
+      return { status: "delayed", evidence: evidence, delayUpperBoundMinutes: null };
+    }
     if (through) return { status: "notice", evidence: evidence, delayUpperBoundMinutes: null };
     if (reducedService) return { status: "notice", evidence: evidence, delayUpperBoundMinutes: null };
 
@@ -478,6 +486,15 @@
     if (resumedWithCurrentDisruption && structured === "suspended") {
       structured = "delayed";
       evidence.push({ type: "RESUMED_STATUS_OVERRIDES_PAST_SUSPENSION" });
+    }
+    // A generic structured Suspension may accompany a more precise live text
+    // that describes only cancelled trains. A separate official signal still wins.
+    var currentPartialCancellation = te.status === "delayed" &&
+      (te.evidence || []).some(function(item) { return item.type === "PARTIAL_CANCELLATION"; }) &&
+      metadata.effect === "partial_cancellation";
+    if (structured === "suspended" && currentPartialCancellation && !input.signalStatus) {
+      structured = "delayed";
+      evidence.push({ type: "PARTIAL_CANCELLATION_OVERRIDES_GENERIC_SUSPENSION" });
     }
     if (structured === "suspended" && metadata.effect === "through_suspension") {
       structured = "notice";
