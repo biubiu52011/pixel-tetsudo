@@ -434,6 +434,40 @@
       allowedModelLabels:["E257系2000番台"],
       model:"E257系2000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E257系_2000番台.png"},
+    // Tokaido JR East 2026-11 regular Odoriko: published full 30xxM
+    // service numbers match the Ito source's E257-2000 nine-car portion.
+    // 3024M (Atami 13:32 -> Tokyo 14:49) couples with Shuzenji
+    // 4024M (E257-2500 five cars) at Atami. The train-unit remains
+    // ONE physical scheduled coupled service, not two invented positions.
+    // Published number + type + line + calendar/date + direction
+    // authorizes the REPRESENTATIVE model image, not actual formation.
+    // https://timetables.jreast.co.jp/2611/timetable-v/101u1.html
+    // https://timetables.jreast.co.jp/2611/train/060/064241.html
+    // https://www.jreast.co.jp/multi/traininformation/odoriko/index.html
+    {lineIds:["Tokaido"],numberFormat:"full",from:3021,to:3031,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["3021M","3022M","3024M","3025M",
+        "3026M","3029M","3030M","3031M"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Tokaido"],
+      directionNumberParity:"inbound-even",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系2000番台"],
+      model:"E257系2000番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_2000番台.png"},
+    // The 4024M Shuzenji portion appears in the official 2611 joined
+    // Odoriko 4 timetable but is not a separate Tokaido SQL live point.
+    // This narrowly scoped provision is for an independently sourced
+    // 4024M position only; NEVER duplicate 3024M to synthesize it.
+    {lineIds:["Tokaido"],numberFormat:"full",from:4024,to:4024,
+      suffixes:"M",trainType:"LimitedExpress",publishedNumbers:["4024M"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Tokaido"],
+      directionNumberParity:"inbound-even",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系2500番台"],
+      model:"E257系2500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_2500番台.png"},
     // Hachiko north 2026-11 official 54 D train numbers (28 up, 26 down).
     // 2026 service uses HB-E220, not retired KiHa110. Timetable calendar
     // and actual departures remain owned by the source, not this image rule.
