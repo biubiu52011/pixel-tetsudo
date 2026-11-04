@@ -25,6 +25,10 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Generate ordered page scripts
+        run: node scripts/sync-page-scripts.cjs
+      - name: Test page script manifest
+        run: node --test tests/page-scripts.test.cjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

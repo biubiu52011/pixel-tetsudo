@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "head": [
+    "js/lang-init.js"
+  ],
+  "groups": {
+    "core-data": [
+      "data/core/db-loader.js",
+      "data/core/data-config-bundle.js"
+    ],
+    "odpt": [
+      "data/api/odpt-links.js",
+      "data/api/odpt-unified.js"
+    ],
+    "runinfo": [
+      "js/runinfo-evaluator.js",
+      "js/runinfo-web.js"
+    ],
+    "railway-shell": [
+      "js/translations.js",
+      "js/common.js",
+      "js/line-presentation-service.js",
+      "js/data-state.js",
+      "js/site-shell.js"
+    ],
+    "tourism-detail-base": [
+      "js/tourism-type.js",
+      "data/core/db-loader.js",
+      "js/translations.js",
+      "js/site-shell.js",
+      "js/tourism-proximity.js",
+      "js/tourism-core.js"
+    ]
+  },
+  "pages": {
+    "home": [
+      "js/tourism-type.js",
+      "@core-data",
+      "js/station-resolver.js",
+      "js/translations.js",
+      "js/common.js",
+      "js/site-shell.js",
+      "@odpt",
+      "@runinfo",
+      "js/data-fusion.js",
+      "js/fare-estimator.js",
+      "js/route-search.js",
+      "js/transfer-badge.js",
+      "js/search-ui.js",
+      "js/route-timetable.js",
+      "js/tourism-proximity.js",
+      "js/sightseeing.js",
+      "js/history.js"
+    ],
+    "trains": [
+      "@core-data",
+      "@odpt",
+      "js/running-chain-resolver.js",
+      "data/core/major-vehicle-fleet-presets.js",
+      "data/timetables/keiyo-musashino-through-index.js",
+      "data/timetables/north-south-through-index.js",
+      "data/timetables/north-south-mh-index.js",
+      "data/timetables/train-coupling-index.js",
+      "data/timetables/vehicle-garage-png-map.js",
+      "data/timetables/joban-e231-h-202611-index.js",
+      "data/timetables/jreast-sobu-yokosuka-202611-number-index.js",
+      "data/timetables/jreast-chiba-number-index-202611.js",
+      "data/timetables/jreast-togane-number-index-202611.js",
+      "data/timetables/jreast-narita-abiko-number-index-202611.js",
+      "data/timetables/jreast-shonan-mixed-number-index-202611.js",
+      "data/timetables/jreast-yamanote-2611-number-index.js",
+      "data/timetables/jreast-yokohama-2611-number-index.js",
+      "data/timetables/jreast-keihin-2611-number-index.js",
+      "data/timetables/train-number-png-ranges.js",
+      "js/train-vehicle.js",
+      "data/timetables/vehicle-operation-evidence-data.js",
+      "data/timetables/nambu-branch-official-202611.js",
+      "js/train-position-estimator.js",
+      "@runinfo",
+      "js/data-fusion.js",
+      "@railway-shell",
+      "js/trains-data.js",
+      "js/trains-render.js",
+      "js/trains-page.js"
+    ],
+    "realtime": [
+      "@core-data",
+      "@odpt",
+      "js/running-chain-resolver.js",
+      "js/train-vehicle.js",
+      "data/timetables/vehicle-operation-evidence-data.js",
+      "js/train-position-estimator.js",
+      "@runinfo",
+      "js/data-fusion.js",
+      "@railway-shell",
+      "js/delay-translator.js",
+      "js/realtime-view.js"
+    ],
+    "history": [
+      "js/tourism-type.js",
+      "data/core/db-loader.js",
+      "js/translations.js",
+      "js/common.js",
+      "js/site-shell.js",
+      "js/station-resolver.js",
+      "js/history.js"
+    ],
+    "tourism-event": [
+      "@tourism-detail-base",
+      "js/tourism-event.js"
+    ],
+    "tourism-spot": [
+      "@tourism-detail-base",
+      "js/tourism-spot.js"
+    ],
+    "tourism-shop": [
+      "@tourism-detail-base",
+      "js/tourism-shop.js"
+    ]
+  }
+}
