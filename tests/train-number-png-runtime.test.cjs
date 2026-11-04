@@ -1912,3 +1912,59 @@ test('JR 2611 Tsurumi, UmiShibaura and Okawa official B numbers use scoped E131-
     ...make('TsurumiUmiShibaura','1709B','holiday','Outbound')
   }),null,'UmiShibaura cannot borrow Okawa-only B numbers');
 });
+
+test('JR 2611 Tsurumi bare numbers match official timetable calendar and exact branch',()=>{
+  const source={
+    Tsurumi:'odpt.Railway:JR-East.Tsurumi',
+    TsurumiOkawa:'odpt.Railway:JR-East.TsurumiOkawaBranch',
+    TsurumiUmiShibaura:'odpt.Railway:JR-East.TsurumiUmiShibauraBranch'
+  };
+  const make=(line,n,cal,dir)=>sql({
+    trainNumber:n,positionLineId:line,sourceRailway:source[line],
+    trainOperator:'',operator:'',
+    serviceDate:cal==='weekday'?'2026-11-04':'2026-11-07',
+    calendarType:cal,
+    railDirection:'odpt.RailDirection:'+dir,
+    trainType:'odpt.TrainType:JR-East.Local',
+    vehicleIdentityStatus:'UNKNOWN'
+  });
+  const png='../images/列车/JR東日本/JR東日本_E131系_1000番台.png';
+  for(const [line,number,calendar,direction] of [
+    ['Tsurumi','602','weekday','Inbound'],
+    ['Tsurumi','605','holiday','Outbound'],
+    ['Tsurumi','2200','holiday','Inbound'],
+    ['TsurumiOkawa','704','holiday','Inbound'],
+    ['TsurumiOkawa','712','weekday','Inbound'],
+    ['TsurumiUmiShibaura','605','holiday','Outbound'],
+    ['TsurumiUmiShibaura','2200','weekday','Inbound']
+  ]){
+    const position=make(line,number,calendar,direction);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(position)?.pngPath,png,
+      line+' '+number+' '+calendar);
+    assert.equal(marker(position,line).iconSrc,png);
+    assert.equal(position.vehicleIdentityStatus,'UNKNOWN',
+      'this is a representative fleet image, not physical carset proof');
+  }
+  for(const [line,number,calendar,direction] of [
+    ['Tsurumi','1200','holiday','Inbound'],
+    ['Tsurumi','999','weekday','Outbound'],
+    ['Tsurumi','602','weekday','Outbound'],
+    ['TsurumiOkawa','704','weekday','Inbound'],
+    ['TsurumiOkawa','712','holiday','Inbound'],
+    ['TsurumiOkawa','602','weekday','Inbound'],
+    ['TsurumiUmiShibaura','2200','holiday','Inbound'],
+    ['TsurumiUmiShibaura','602','weekday','Inbound']
+  ]){
+    const position=make(line,number,calendar,direction);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(position),null,
+      line+' must reject unpublished '+number+' '+calendar+' '+direction);
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...make('Tsurumi','999','weekday','Outbound'),
+    serviceDate:'2026-10-04'
+  })?.pngPath,png,'older months retain their existing 2024+ broad fleet fallback');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...make('Tsurumi','602','weekday','Inbound'),
+    calendarType:'',serviceId:'odpt.Calendar:Weekday'
+  })?.pngPath,png,'SQL serviceId supplies calendar without a normalized calendarType');
+});
