@@ -446,7 +446,7 @@ test('JR East number PNGs reject unlisted extras, wrong train type/source/operat
   }
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
     live({...echigo,trainNumber:'9630M'})),null,
-    'Yahiko Chrysanthemum special number requires dedicated train evidence');
+    'Yahiko festival service does not run on ordinary November 4');
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
     live({...echigo,trainNumber:'9524D',positionLineId:'Senseki',
       sourceRailway:'odpt.Railway:JR-East.Senseki'})),null,
@@ -1967,4 +1967,53 @@ test('JR 2611 Tsurumi bare numbers match official timetable calendar and exact b
     ...make('Tsurumi','602','weekday','Inbound'),
     calendarType:'',serviceId:'odpt.Calendar:Weekday'
   })?.pngPath,png,'SQL serviceId supplies calendar without a normalized calendarType');
+});
+
+test('JR 2611 Echigo 9630M Yahiko festival E129 reference respects nine operating dates',()=>{
+  const base=sql({
+    trainNumber:'9630M',positionLineId:'Echigo',
+    sourceRailway:'odpt.Railway:JR-East.Echigo',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    calendarType:'holiday',serviceDate:'2026-11-03',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  });
+  const png='../images/列车/JR東日本/JR東日本_E129系.png';
+  for(const date of [
+    '2026-11-01','2026-11-03','2026-11-07',
+    '2026-11-08','2026-11-14','2026-11-15',
+    '2026-11-21','2026-11-22','2026-11-23'
+  ]){
+    const p={...base,serviceDate:date};
+    const ref=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.equal(ref?.pngPath,png,date+' official festival train');
+    assert.equal(ref.representative,true,date);
+    assert.equal(marker(p,'Echigo').iconSrc,png,date);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+      'E129 service stock is not a confirmed physical carset');
+  }
+  for(const date of [
+    '2026-11-02','2026-11-04','2026-11-24',
+    '2026-11-28','2026-11-30','2026-12-01'
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+      ...base,serviceDate:date
+    }),null,'9630M not scheduled on '+date);
+  }
+  for(const changes of [
+    {calendarType:'weekday'},
+    {calendarType:'',serviceId:'odpt.Calendar:Weekday'},
+    {sourceRailway:''},
+    {sourceRailway:'odpt.Railway:JR-East.Yahiko'},
+    {positionLineId:'Yahiko'},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {realtimeVehicleType:'E233系0番台'},
+    {vehiclePlan:{confirmed:true,models:['E233系0番台']}},
+    {trainNumber:'9631M'}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+      ...base,...changes
+    }),null,'no false special service model '+JSON.stringify(changes));
+  }
 });
