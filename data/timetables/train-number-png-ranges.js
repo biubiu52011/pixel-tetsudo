@@ -568,7 +568,9 @@
       ],sourceRailways:["odpt.Railway:JR-East.Hachiko"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       allowedModelLabels:["E231系3000番台"],
-      rejectAmbiguousPlan:true,model:"E231系3000番台",
+      // The full public train number does not select one shared-duty carset.
+      rejectAmbiguousPlan:true,requireExplicitModelEvidence:true,
+      model:"E231系3000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E231系_3000番台.png"},
     // Boso 2026-11: a narrow SQL published-number *nominal* stock family.
     // 209 8-car and a few 4-car scheduled references survive the 209/E233
@@ -1502,8 +1504,55 @@
     }
     return null;
   }
+  // Hachiko SOUTH: 209-3500 / E231-3000 shared duties, 2026-11.
+  // The public E train number certifies neither carset.
+  // https://timetables.jreast.co.jp/2611/timetable-v/706d1.html
+  // https://timetables.jreast.co.jp/2611/timetable-v/706u1.html
+  // https://4gousya.net/jr_e/line/8113.php
+  var hachikoSouthRule=rows.find(function(row){
+    return row.lineIds.length===1 && row.lineIds[0]==="Hachiko" &&
+      row.suffixes==="E" && row.model==="E231系3000番台" &&
+      Array.isArray(row.publishedNumbers);
+  });
+  var hachikoSouthNumbers=Object.freeze(hachikoSouthRule
+    ? hachikoSouthRule.publishedNumbers.slice() : []);
+  function matchHachikoSouthCandidates(p){
+    if(!p || p.positionSource!=="supabase-train-run" ||
+       p.estimated!==true ||
+       String(p.positionLineId||p.lineId||"")!=="Hachiko" ||
+       String(p.displayLineId||p.positionLineId||p.lineId||"")!=="Hachiko" ||
+       String(p.sourceRailway||"")!=="odpt.Railway:JR-East.Hachiko" ||
+       !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||"")) ||
+       !/(?:[.:])Local$/.test(String(p.trainType||"")) ||
+       p.vehicleResolvedFromRealtime===true || p.vehicleIdentityStatus==="EXACT" ||
+       (p.vehiclePlan && (p.vehiclePlan.confirmed===true ||
+         (p.vehiclePlan.status==="PLANNED_MODEL" &&
+          Array.isArray(p.vehiclePlan.models) && p.vehiclePlan.models.length===1))))
+      return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase();
+    if(!/^[0-9]{3,4}E$/.test(n) || hachikoSouthNumbers.indexOf(n)<0) return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op && op!=="JR-East" && op!=="odpt.Operator:JR-East")return null;
+    var models=["E231系3000番台","209系3500番台"];
+    var sourceCandidates=Array.isArray(p.plannedVehicleCandidates)
+      ?p.plannedVehicleCandidates.filter(Boolean):[];
+    if(sourceCandidates.length && (sourceCandidates.length!==2 ||
+       sourceCandidates.some(function(m){return models.indexOf(m)<0;})))return null;
+    var planModels=p.vehiclePlan && Array.isArray(p.vehiclePlan.models)
+      ?p.vehiclePlan.models.filter(Boolean):[];
+    if(planModels.length && (planModels.length!==2 ||
+       planModels.some(function(m){return models.indexOf(m)<0;})))return null;
+    return {lineId:"Hachiko",trainNumber:n,models:models,
+      candidateAssets:[
+        "../images/列车/JR東日本/JR東日本_E231系_3000番台.png",
+        "../images/列车/JR東日本/JR東日本_209系_3500番台.png"
+      ],status:"UNCONFIRMED_PLANNED_FLEET",confirmed:false,
+      authorizesPNG:false,source:"hachiko-202611-common-working",
+      sourceUrl:"https://4gousya.net/jr_e/line/8113.php"};
+  }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jre-east-ito-working-v38",match:match,
-    matchItoFleetCandidates:matchItoFleetCandidates
+    version:"20261104-hachiko-candidate-v39",match:match,
+    matchItoFleetCandidates:matchItoFleetCandidates,
+    matchHachikoSouthCandidates:matchHachikoSouthCandidates
   });
 })(window);
