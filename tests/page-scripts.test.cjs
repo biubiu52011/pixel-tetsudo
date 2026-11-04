@@ -68,3 +68,23 @@ test('realtime status does not load or run train positioning / PNG classificatio
   assert.match(fusion, /document\.body\.getAttribute\("data-page"\) === "realtime"\) return/,
     'status-only page skips costly train position recomputation');
 });
+
+test('scoped train indexes are inert, owned by a line, and loader handles switching', () => {
+  const html = fs.readFileSync(path.join(root, 'pages/trains.html'), 'utf8');
+  const scopes = spec.lazyScopes.trains, lazy = expand(spec.lazy.trains);
+  for (const [asset, lines] of Object.entries(scopes)) {
+    assert.ok(lazy.includes(asset), asset + ' not in ordered lazy list');
+    assert.equal(new Set(lines).size, lines.length);
+    const row = html.split('\n').find(line => line.includes('data-script-src="../' + asset + '?v='));
+    assert.ok(row, 'Missing inert script ' + asset);
+    assert.ok(row.includes('data-line-scope="' + lines.join(',') + '"'),
+      'Missing exact per-line scope on ' + asset);
+  }
+  for (const shared of ['js/train-vehicle.js','js/trains-render.js',
+    'data/timetables/train-number-png-ranges.js']) {
+    assert.ok(!scopes[shared], 'Cross-line vehicle fallback must remain shared');
+  }
+  const page = fs.readFileSync(path.join(root, 'js/trains-page.js'), 'utf8');
+  assert.match(page, /TrainsDetailLoader\.isReady\(lineId\)/);
+  assert.match(page, /TrainsDetailLoader\.load\(lineId\)/);
+});

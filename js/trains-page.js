@@ -112,7 +112,7 @@
   function showLineView(lineId, systemLineIds, expectedIdentity, expectedMemberIdentities) {
     // Map, train-number indexes and vehicle PNG logic are not part of the
     // initial line browser. Load exactly once when a detail route is entered.
-    if (window.TrainsDetailLoader && !window.TrainsDetailLoader.isReady()) {
+    if (window.TrainsDetailLoader && !window.TrainsDetailLoader.isReady(lineId)) {
       if (_detailLoadRequestedFor === lineId) return;
       _detailLoadRequestedFor = lineId;
       var browser = listEl && listEl.closest("[data-railway-browser]");
@@ -120,7 +120,7 @@
       if (detailEl) detailEl.classList.remove("hidden");
       releaseOverviewDom();
       if (mapEl && window.DataState) window.DataState.renderPageState(mapEl, "loading");
-      window.TrainsDetailLoader.load().then(function () {
+      window.TrainsDetailLoader.load(lineId).then(function () {
         if (_detailLoadRequestedFor !== lineId ||
             (window.location.hash || "").replace(/^#/, "") !== lineId) return;
         _detailLoadRequestedFor = null;

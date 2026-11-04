@@ -35,6 +35,14 @@ for (const [name, items] of Object.entries(spec.pages)) {
   const file = path.join(root, 'pages', name + '.html'), original = fs.readFileSync(file, 'utf8');
   const head = expand(spec.head), body = expand(items);
   const lazy = expand((spec.lazy && spec.lazy[name]) || []);
+  const scopes = (spec.lazyScopes && spec.lazyScopes[name]) || {};
+  for (const [asset, lines] of Object.entries(scopes)) {
+    if (!lazy.includes(asset) || !Array.isArray(lines) || !lines.length ||
+        new Set(lines).size !== lines.length ||
+        lines.some(id => !/^[A-Za-z0-9._:-]+$/.test(id))) {
+      throw Error('Invalid scoped asset: ' + name + ':' + asset);
+    }
+  }
   if (new Set(lazy).size !== lazy.length || lazy.some(s => head.includes(s) || body.includes(s))) {
     throw Error('Duplicated lazy script: ' + name);
   }
@@ -43,7 +51,8 @@ for (const [name, items] of Object.entries(spec.pages)) {
   result = region(result, 'body', tags(body, 'body'), file);
   if (lazy.length) {
     const inert = '    <template id="pt-trains-detail-assets">\n' +
-      lazy.map(s => '      <span data-script-src="../' + s + '?v=' + version(s) + '"></span>').join('\n') +
+      lazy.map(s => '      <span data-script-src="../' + s + '?v=' + version(s) + '"' +
+        (scopes[s] ? ' data-line-scope="' + scopes[s].join(',') + '"' : '') + '></span>').join('\n') +
       '\n    </template>';
     result = region(result, 'lazy', inert, file);
   }

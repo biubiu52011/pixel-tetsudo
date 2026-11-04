@@ -119,5 +119,108 @@
       "js/train-position-estimator.js",
       "js/trains-render.js"
     ]
+  },
+  "lazyScopes": {
+    "trains": {
+      "data/timetables/keiyo-musashino-through-index.js": [
+        "Keiyo",
+        "Musashino"
+      ],
+      "data/timetables/north-south-through-index.js": [
+        "Tokaido",
+        "UenoTokyo",
+        "Takasaki",
+        "UtsunomiyaJR",
+        "ShonanShinjuku",
+        "Joban",
+        "JobanMain",
+        "Yokosuka",
+        "SobuRapid",
+        "SobuMain",
+        "ChuoMain",
+        "ChuoRapid",
+        "Narita",
+        "NaritaAirportBranch",
+        "Ito",
+        "Kawagoe",
+        "SaikyoKawagoe"
+      ],
+      "data/timetables/north-south-mh-index.js": [
+        "Tokaido",
+        "UenoTokyo",
+        "Takasaki",
+        "UtsunomiyaJR",
+        "ShonanShinjuku",
+        "Joban",
+        "JobanMain",
+        "Yokosuka",
+        "SobuRapid",
+        "SobuMain",
+        "ChuoMain",
+        "ChuoRapid",
+        "Narita",
+        "NaritaAirportBranch",
+        "Ito",
+        "Kawagoe",
+        "SaikyoKawagoe"
+      ],
+      "data/timetables/joban-e231-h-202611-index.js": [
+        "Joban",
+        "JobanMain"
+      ],
+      "data/timetables/jreast-sobu-yokosuka-202611-number-index.js": [
+        "Yokosuka",
+        "SobuRapid",
+        "SobuMain",
+        "Narita",
+        "NaritaAirportBranch",
+        "Uchibo",
+        "Sotobo",
+        "Kashima",
+        "Keiyo"
+      ],
+      "data/timetables/jreast-chiba-number-index-202611.js": [
+        "Yokosuka",
+        "SobuRapid",
+        "SobuMain",
+        "Narita",
+        "NaritaAirportBranch",
+        "Uchibo",
+        "Sotobo",
+        "Kashima",
+        "Keiyo"
+      ],
+      "data/timetables/jreast-togane-number-index-202611.js": [
+        "Togane",
+        "Keiyo",
+        "Sotobo"
+      ],
+      "data/timetables/jreast-narita-abiko-number-index-202611.js": [
+        "NaritaAbikoBranch",
+        "Narita",
+        "Joban",
+        "JobanMain"
+      ],
+      "data/timetables/jreast-shonan-mixed-number-index-202611.js": [
+        "Takasaki",
+        "UtsunomiyaJR",
+        "ShonanShinjuku",
+        "UenoTokyo",
+        "Tokaido"
+      ],
+      "data/timetables/jreast-yamanote-2611-number-index.js": [
+        "Yamanote"
+      ],
+      "data/timetables/jreast-yokohama-2611-number-index.js": [
+        "Yokohama"
+      ],
+      "data/timetables/jreast-keihin-2611-number-index.js": [
+        "KeihinTohoku"
+      ],
+      "data/timetables/nambu-branch-official-202611.js": [
+        "NambuBranch",
+        "Nambu"
+      ]
+    }
   }
 }
