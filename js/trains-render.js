@@ -1081,6 +1081,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       icon.setAttribute('data-marker-raw-transform', '');
       return;
     }
+    if (tag === 'text') {
+      icon.setAttribute('x', String(unit ? 0 : px));
+      icon.setAttribute('y', String(unit ? 0 : py));
+      icon.removeAttribute('transform');
+      icon.setAttribute('data-marker-raw-transform','');
+      return;
+    }
     if (tag === 'image') {
       icon.setAttribute('x', String(x));
       icon.setAttribute('y', String(y));
@@ -1129,7 +1136,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // multiple cabs; each train location owns exactly one SVG glyph.
       candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
         ? artwork.candidateAssets.slice() : [],
-      // Unknown physical stock always uses ONE neutral position circle.
+      // Chuo Main stock that lacks a trustworthy gallery model must
+      // still use ONE model-neutral train glyph, never a grey dot or
+      // an invented E231/211/313 image.
+      genericFront: !hasImage && lineId==="ChuoMain" && p &&
+        /^[0-9]{1,4}[A-Z]$/i.test(String(p.trainNumber||"")) &&
+        ["realtime-api","supabase-train-run","train-timetable"]
+          .indexOf(String(p.positionSource||""))>=0,
       compact: !hasImage,
       className: hasImage && artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
@@ -1293,6 +1306,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Missing ChuoMain limited expresses and special-service references:
+    // one gallery image is a planned illustration, never a physical set.
+    if (lineId === "ChuoMain" && window.TrainNumberPngRanges &&
+        typeof window.TrainNumberPngRanges.matchChuoMainUnmappedReference === "function") {
+      var extra = window.TrainNumberPngRanges.matchChuoMainUnmappedReference(
+        Object.assign({},p,{displayLineId:lineId}));
+      if (extra) {
+        lang=String(lang||"ja").toLowerCase();
+        var prefix=/^zh/.test(lang) ? "车型参考（非当天实际编组）：" :
+          lang==="en" ? "Fleet reference (actual car not confirmed): " :
+          lang==="ko" ? "차종 참고(당일 실차 미확인): " :
+          "車種参考（当日の実車未確認）：";
+        return prefix+extra.illustrationModel;
+      }
+    }
     // Chuo Main regular M-only trains may be 211 or new E131-200;
     // use the stable ONE 211 PNG only as an illustration (not actual stock).
     if(lineId==="ChuoMain" && window.TrainNumberPngRanges &&
@@ -1602,9 +1630,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // not a consist of two cars. Render one circle even when callers
     // accidentally pass two candidateAssets or compact:false.
     var compact = spec.compact === true || candidateVehicle;
+    var genericFront = !knownVehicle && spec.genericFront === true &&
+      lineId === "ChuoMain";
     var marker = document.createElementNS(svgNS,
-      knownVehicle && !compact ? "image" : "circle");
-    if (knownVehicle && !compact) {
+      knownVehicle && !compact ? "image" : (genericFront ? "text" : "circle"));
+    if (genericFront) {
+      // Built-in Unicode glyph, not a newly generated vehicle PNG.
+      // It conveys location only; rolling-stock identity is unverified.
+      marker.textContent = "🚆";
+      marker.setAttribute("font-family",
+        "'Apple Color Emoji','Segoe UI Emoji',sans-serif");
+      marker.setAttribute("font-size","16");
+      marker.setAttribute("text-anchor","middle");
+      marker.setAttribute("dominant-baseline","central");
+      marker.setAttribute("data-generic-train-front","true");
+      marker.setAttribute("data-vehicle-unresolved","true");
+    } else if (knownVehicle && !compact) {
       marker.setAttribute("width", "14");
       marker.setAttribute("height", "18");
       marker.setAttribute("href", spec.iconSrc);
@@ -1631,7 +1672,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // Swap the artwork INSIDE the same component. Do not instantiate
         // a second complete train or detach/reparent its destination caption.
         var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
-          {kind:"unresolved", iconSrc:"", className:spec.className},
+          {kind:"unresolved", iconSrc:"", className:spec.className,
+            genericFront: lineId === "ChuoMain"},
           marker._displayX, marker._displayY, marker._trainPosition || p,
           lineId, isLoop, color, loc);
         if (neutral) {
@@ -1813,7 +1855,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       updatedIds[trainUid] = true;
       var existingIcon = markerById[String(trainUid)] || null;
       var expectedTag = markerSpec.kind === "vehicle" && !markerSpec.compact ? "image" :
-        (markerSpec.kind === "candidate" && !markerSpec.compact ? "g" : "circle");
+        (markerSpec.genericFront ? "text" : "circle");
       // Upgrade DOM made by an earlier renderer without carrying over its
       // world-space caption coordinates. Rebuild as a single SVG unit.
       if (existingIcon && !_trainUnitContainer(existingIcon)) {
@@ -2461,6 +2503,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           }
           // Show the mixed-fleet warning visibly, not just on a hover.
           if (lineId === "ChuoMain" && window.TrainNumberPngRanges &&
+              typeof window.TrainNumberPngRanges.matchChuoMainUnmappedReference === "function") {
+            var extraFold=window.TrainNumberPngRanges.matchChuoMainUnmappedReference(
+              Object.assign({},p,{displayLineId:lineId}));
+            if(extraFold) {
+              var extraNote=document.createElement('small');
+              extraNote.className='train-fold-fleet-reference';
+              extraNote.textContent=_trainFleetPlanLabel(p,lineId,lang);
+              caption.appendChild(extraNote);
+            }
+          }
+          if (lineId === "ChuoMain" && window.TrainNumberPngRanges &&
               typeof window.TrainNumberPngRanges.matchChuoMainLocalReference === "function") {
             var chuoFoldReference=window.TrainNumberPngRanges.matchChuoMainLocalReference(
               Object.assign({},p,{displayLineId:lineId}));
@@ -2478,14 +2531,30 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           };
           iconBox.appendChild(icon);
         } else {
-          // Match the map's neutral marker when the physical vehicle is unresolved.
-          iconBox.classList.add('unresolved');
+          // Chuo Main: show a train glyph even when no correct fleet PNG
+          // exists (JR Central 313 through services, seasonal extras).
+          if (markerSpec.genericFront) {
+            var genericCab=document.createElement('span');
+            genericCab.className='train-fold-generic-front';
+            genericCab.textContent='🚆';
+            genericCab.setAttribute('aria-hidden','true');
+            iconBox.appendChild(genericCab);
+          } else {
+            iconBox.classList.add('unresolved');
+          }
           iconBox.setAttribute('aria-hidden','true');
           // A numbered Ito local has documented alternative families. Show
           // those names in the fold without implying a single confirmed PNG.
-          if (lineId === "Ito" || lineId === "Hachiko") {
+          if (lineId === "Ito" || lineId === "Hachiko" || lineId === "ChuoMain") {
             var fleetText = _trainFleetPlanLabel(p,lineId,lang);
-            if (fleetText && /(?:^|[.:])Local$/.test(String(p.trainType || ""))) {
+            if (lineId === "ChuoMain" && !fleetText && markerSpec.genericFront) {
+              fleetText = /^zh/.test(lang) ? "车型尚未确认（通用单车标记）" :
+                lang==="en" ? "Model unverified (generic train marker)" :
+                lang==="ko" ? "차종 미확인(공통 열차 표식)" :
+                "車種未確認（汎用列車マーカー）";
+            }
+            if (fleetText && (lineId === "ChuoMain" ||
+                /(?:^|[.:])Local$/.test(String(p.trainType || "")))) {
               var fleetNote = document.createElement('small');
               fleetNote.className = 'train-fold-fleet-reference';
               fleetNote.textContent = fleetText;
