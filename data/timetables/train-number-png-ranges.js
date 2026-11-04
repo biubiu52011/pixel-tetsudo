@@ -149,6 +149,21 @@
       allowedModelLabels:["HB-E210系"],
       model:"HB-E210系",
       pngPath:"../images/列车/JR東日本/JR東日本_HB-E210系.png"},
+    // 2026-11 official JR Echigo exception trips 8132M and 8637M.
+    // They are printed in the 2611 tables but operate only on the
+    // explicitly published construction-day calendar; 9630M YAHIKO
+    // excursion remains outside this generic E129 model rule.
+    // https://timetables.jreast.co.jp/2611/timetable-v/232u2p.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/232d2.html
+    {lineIds:["Echigo"],numberFormat:"full",from:8132,to:8637,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.Echigo"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      operatingDates:["2026-11-04","2026-11-05","2026-11-06","2026-11-09","2026-11-10","2026-11-11","2026-11-12","2026-11-13","2026-11-16","2026-11-17","2026-11-18","2026-11-19","2026-11-20","2026-11-24","2026-11-25","2026-11-26","2026-11-27","2026-11-30"],
+      publishedNumbers:["8132M","8637M"],
+      allowedModelLabels:["E129系"],
+      model:"E129系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
     // Takasaki/Joetsu local 211: exact published JR 2611 numbers also
     // checked against JR official Nov 2026 inbound/outbound weekday/holiday
     // 238u1/238u2/238d1/238d2 plus dated 211 working reports.
@@ -902,6 +917,8 @@
         if(!/^\d{4}-\d{2}-\d{2}$/.test(serviceDate)||serviceDate<row.validFrom)continue;
       }
       if(row.validTo && String(context&&context.serviceDate||"").slice(0,10)>row.validTo)continue;
+      if(row.operatingDates && row.operatingDates.indexOf(
+          String(context&&context.serviceDate||"").slice(0,10))<0)continue;
       if(row.calendarType && String(context&&context.calendarType||"")!==row.calendarType)continue;
       if(row.trainTypes){
         var runtimeType=String(context&&(context.trainType||context.typeName)||"").split(/[.:]/).pop();
@@ -977,6 +994,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jre-east-single-fleet-number-v35",match:match
+    version:"20261104-jre-east-official-number-calendar-v36",match:match
   });
 })(window);
