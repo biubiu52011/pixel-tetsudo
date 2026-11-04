@@ -1710,6 +1710,15 @@
         (!ps.length || ps.every(function(v){return regex.test(String(v));}));
     }
     var model="",png="",source="";
+    // 8xxx/9xxx temporary expresses have day-specific operation and may
+    // substitute E257 stock (e.g. 9086M): an undated SQL E353 label is
+    // NOT enough to choose the model or to claim the train runs today.
+    // Let the existing date-authorized official number resolver handle
+    // them; otherwise the renderer shows one identity-neutral train.
+    if(type==="LimitedExpress" && /^[89][0-9]{3}M$/.test(n) &&
+       n!=="8091M" && n!=="8092M")return null;
+    if(type==="LimitedExpress" &&
+       (n==="8091M" || n==="8092M") && cal!=="weekday")return null;
     if(type==="LimitedExpress" &&
        chuoMissingServiceNumbers.express.indexOf(n)>=0 &&
        compatible(/^E353系(?:（[^）]+）)?$/)) {
@@ -1759,7 +1768,7 @@
       status:"UNCONFIRMED_PLANNED_FLEET"};
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-chuo-remaining-service-v42",match:match,
+    version:"20261104-chuo-seasonal-date-v43",match:match,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
