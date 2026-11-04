@@ -3,7 +3,10 @@
  * weekday/holiday timetable, NOT as E233-3000 physical assignments.
  * E231-1000 and E233-3000 both serve these corridors, and substitute.
  * The public service suffix E/Y/M does NOT identify a vehicle formation.
- * Read-only reference/candidate, never grant a model PNG or mark EXACT.
+ * Public number never grants an ACTUAL model PNG or marks EXACT.
+ * For northern Takasaki/Utsunomiya maps, a single E233-3000 gallery
+ * PNG may be used solely as an ILLUSTRATIVE fleet placeholder, NOT a
+ * train-by-train assignment. Keep both possible models in its caption.
  *
  * Sources:
  * https://www.jreast.co.jp/train/local/e233.html
@@ -76,6 +79,11 @@
     return Object.freeze({family:"JR-East-Shonan-color-mixed",
       trainNumber:number,lineId:line,models:models,
       status:"UNCONFIRMED_PLANNED_FLEET",planned:true,
+      // This flag permits one plainly marked SAMPLE image on these
+      // two northern line maps. It does not certify the operating model,
+      // running-car formation, or which of the two stocks is present.
+      illustrativeNorthFleetOnly:line==="Takasaki"||line==="UtsunomiyaJR",
+      illustrativeModel:"E233系3000番台",
       authorizesPNG:false,physicalFormationConfirmed:false});
   }
   var archive=Object.freeze({
