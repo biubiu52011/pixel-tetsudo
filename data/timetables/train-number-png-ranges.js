@@ -361,8 +361,8 @@
       publishedNumbers:[
         "640M","648M","661M","722M","724M","726M","744M",
         "760M","818M","865M","919M","1025M","1081M","1103M",
-        "1115M","1118M","1164M","1173M","1175M","1223M","1257M",
-        "1280M","1302M","1314M","1324M","1349M","1393M","1427M",
+        "1115M","1118M","1164M","1173M","1175M","1223M","1249M","1257M",
+        "1280M","1302M","1314M","1323M","1324M","1325M","1349M","1393M","1427M",
         "1429M","1472M","1474M","1519M","1522M","1556M","1569M",
         "1626M","1628M","1629M","1633M","1648M","1692M","1709M",
         "1725M","1727M","1753M","1818M","1825M","1853M","1867M",
@@ -374,6 +374,23 @@
       sourceRailways:["odpt.Railway:JR-East.Chuo",
         "odpt.Railway:JR-East.ChuoMain"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E233系0番台"],
+      model:"E233系0番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+
+    // Chuo Main 2026-11: T/H suffix is the E233-0 Chuo Rapid through
+    // service. Exact SQL train-number sets are calendar scoped; November
+    // roster has source_revision_date=NULL, not physical car identity.
+    // https://timetables.jreast.co.jp/2611/timetable-v/223u1p.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/223u2p.html
+    {lineIds:["ChuoMain"],numberFormat:"full",from:400,to:2399,
+      suffixes:"TH",trainTypes:["Rapid","ChuoSpecialRapid","CommuterRapid"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Chuo",
+        "odpt.Railway:JR-East.ChuoMain"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      weekdayNumbers:["449T","523T","640T","648T","722T","726H","744T","818H","865T","1081T","1115H","1164T","1175T","1223H","1280T","1314H","1393T","1429H","1474T","1522H","1569T","1628H","1633T","1692T","1709H","1725T","1825H","1853T","1868T","1917H","1923H","1932T","1993T","2008H","2024T","2152T","2222H","2292T","2339T"],
+      holidayNumbers:["449T","525T","640T","648T","661T","724T","726H","760T","818H","919H","1025T","1103H","1118H","1173T","1257T","1302H","1324T","1349T","1427H","1472T","1519H","1556T","1626H","1629T","1648T","1727H","1753T","1818H","1825H","1867T","1917H","1919H","1928T","1991T","2026H","2052T","2166T","2218H","2290T","2339T"],
       allowedModelLabels:["E233系0番台"],
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
@@ -1105,6 +1122,23 @@
           source:itoWorking.source,planned:true,representative:true};
       }
     }
+
+    // Chuo Main SQL M-only locals: ONE illustrative 211 PNG, never
+    // claim the physical set is 211; E131-200 also works here as of
+    // October 2026. E233 M->T/H through numbers retain their own image.
+    if (line === "ChuoMain" && context) {
+      var chuoReference = matchChuoMainLocalReference(context);
+      if (chuoReference && chuoReference.trainNumber === number &&
+          chuoReference.illustrationOnly &&
+          chuoReference.authorizesIllustration &&
+          !chuoReference.authorizesPNG && !chuoReference.confirmed) {
+        return {trainNumber:number,lineId:line,
+          model:chuoReference.illustrationModel,
+          pngPath:chuoReference.illustrationPng,
+          source:"sql-chuo-main-local-illustration",
+          planned:true,representative:true,illustrative:true};
+      }
+    }
     // Match train NUMBER ranges, not an inferred operation ID.
     // One train number can have both a scoped tail and a full-number
     // interpretation: 1940K -> 40 on Saikyo, 1940K -> 1940 on Yokohama.
@@ -1556,9 +1590,75 @@
       authorizesPNG:false,source:"hachiko-202611-common-working",
       sourceUrl:"https://4gousya.net/jr_e/line/8113.php"};
   }
+
+  // Existing SQL's 211 / E233 candidate is undated and predates the
+  // autumn 2026 E131-200 service. Do not infer a physical model from M.
+  // https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf
+  // https://news.railway-pressnet.com/archives/92382
+  var chuoMainLocalNumbers=Object.freeze({
+    weekday:Object.freeze(["148M","150M","151M","152M","153M","154M","155M","156M","157M","158M","159M","160M","161M","162M","163M","164M","165M","166M","167M","169M","203M","205M","209M","210M","211M","320M","321M","322M","323M","324M","325M","326M","327M","328M","329M","330M","331M","332M","333M","334M","335M","336M","337M","338M","339M","340M","341M","342M","343M","344M","345M","346M","347M","348M","349M","350M","351M","352M","353M","354M","355M","356M","357M","358M","359M","360M","361M","362M","363M","364M","365M","367M","420M","421M","422M","423M","424M","425M","426M","427M","428M","429M","430M","431M","432M","433M","434M","435M","436M","437M","438M","439M","440M","441M","442M","443M","444M","445M","446M","447M","448M","449M","450M","520M","521M","522M","523M","524M","525M","526M","527M","528M","529M","530M","531M","532M","533M","534M","535M","536M","537M","538M","539M","540M","541M","542M","543M","544M","545M","546M","547M","548M","549M","550M","551M","552M","553M","554M","555M","556M","558M","645M","1223M","1227M","1229M","1230M","1231M","1232M","1233M","1234M","1235M","1236M","1262M","1403M","1405M","1407M","1408M","1410M","1412M","1413M","1416M","1418M","1419M","1420M","1421M","1423M","1424M","1425M","1426M","1428M","1429M","1431M","1432M","1433M","1434M","1436M","1450M","1451M","1452M","1453M","1454M","1455M","1456M","1457M","1460M","1461M","1464M","1465M","1467M","1519M","1520M","1522M","1524M","1530M","1531M","1532M","1534M","1536M","1538M","1539M","1540M","1542M","1544M","1546M","1548M","1550M","1551M","1553M","1557M","1559M","1561M","1563M","1565M","1567M","1568M","1570M","1571M","1573M","1575M","1577M","2230M","2234M","2237M","2238M","2241M","2243M","3424M","3425M","3520M","3523M"]),
+    holiday:Object.freeze(["148M","150M","151M","152M","153M","154M","155M","156M","157M","158M","159M","160M","161M","162M","163M","164M","165M","166M","167M","169M","203M","205M","209M","210M","211M","320M","321M","322M","323M","324M","325M","326M","327M","328M","329M","330M","331M","332M","333M","334M","335M","336M","337M","338M","339M","341M","342M","343M","346M","347M","348M","349M","350M","351M","352M","353M","354M","355M","356M","357M","358M","359M","360M","361M","362M","363M","364M","365M","367M","420M","421M","422M","423M","424M","425M","426M","427M","428M","429M","430M","431M","432M","433M","434M","435M","436M","437M","438M","439M","440M","441M","442M","443M","444M","445M","446M","447M","448M","449M","450M","520M","521M","522M","523M","524M","525M","526M","527M","528M","529M","530M","531M","532M","533M","534M","535M","536M","537M","538M","539M","540M","541M","542M","543M","544M","545M","546M","547M","548M","549M","550M","551M","552M","553M","554M","555M","556M","558M","1223M","1227M","1229M","1230M","1231M","1232M","1233M","1234M","1235M","1236M","1262M","1403M","1405M","1407M","1408M","1410M","1412M","1413M","1416M","1418M","1419M","1420M","1421M","1423M","1424M","1425M","1426M","1428M","1429M","1431M","1432M","1433M","1434M","1436M","1450M","1451M","1452M","1453M","1454M","1455M","1456M","1457M","1460M","1461M","1464M","1465M","1467M","1519M","1520M","1522M","1524M","1530M","1531M","1532M","1534M","1536M","1538M","1539M","1540M","1542M","1544M","1546M","1548M","1550M","1551M","1553M","1557M","1559M","1561M","1563M","1565M","1567M","1568M","1570M","1571M","1573M","1575M","1577M","2230M","2234M","2237M","2238M","2241M","2243M","3424M","3425M","3520M","3523M"])
+  });
+  var chuoMainE233MPairs=Object.freeze((function(){
+    var row=rows.find(function(r){
+      return r.lineIds.length===1 && r.lineIds[0]==="ChuoMain" &&
+        r.suffixes==="M" && r.model==="E233系0番台" &&
+        Array.isArray(r.publishedNumbers);
+    });
+    return row ? row.publishedNumbers.slice() : [];
+  })());
+  function matchChuoMainLocalReference(p) {
+    if(!p || p.positionSource!=="supabase-train-run" ||
+       p.estimated!==true ||
+       String(p.positionLineId||p.lineId||"")!=="ChuoMain" ||
+       String(p.displayLineId||p.positionLineId||p.lineId||"")!=="ChuoMain" ||
+       ["odpt.Railway:JR-East.ChuoMain","odpt.Railway:JR-East.Chuo"]
+         .indexOf(String(p.sourceRailway||""))<0 ||
+       !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||"")) ||
+       !/(?:[.:])Local$/.test(String(p.trainType||"")) ||
+       p.vehicleResolvedFromRealtime===true ||
+       p.vehicleIdentityStatus==="EXACT" ||
+       p.realtimeVehicleType || p.realtimeDerivedVehicleType ||
+       (p.vehiclePlan && (p.vehiclePlan.confirmed===true ||
+         p.vehiclePlan.status==="PLANNED_MODEL")))return null;
+    var num=String(p.trainNumber||"").trim().toUpperCase();
+    if(!/^[0-9]{2,4}M$/.test(num) ||
+       chuoMainE233MPairs.indexOf(num)>=0)return null;
+    var calendar=sourceCalendar(p);
+    var set=calendar==="weekday"?chuoMainLocalNumbers.weekday:
+      calendar==="holiday"?chuoMainLocalNumbers.holiday:null;
+    if(set ? set.indexOf(num)<0 :
+        chuoMainLocalNumbers.weekday.indexOf(num)<0 &&
+        chuoMainLocalNumbers.holiday.indexOf(num)<0)return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op && op!=="JR-East" && op!=="odpt.Operator:JR-East")return null;
+    var candidates=Array.isArray(p.plannedVehicleCandidates)
+      ?p.plannedVehicleCandidates.filter(Boolean):[];
+    if(candidates.length &&
+       (!candidates.some(function(x){return /^211系/.test(x);}) ||
+        candidates.some(function(x){
+          return !/^211系/.test(x) && x!=="E233系0番台" &&
+            x!=="E131系200番台";
+        })))return null;
+    if(p.vehiclePlan && Array.isArray(p.vehiclePlan.models) &&
+       p.vehiclePlan.models.length &&
+       p.vehiclePlan.models.every(function(x){
+         return !/^211系/.test(x) && x!=="E233系0番台" &&
+           x!=="E131系200番台";
+       }))return null;
+    return {lineId:"ChuoMain",trainNumber:num,
+      models:["211系（長野地区）","E131系200番台","E233系0番台"],
+      illustrationModel:"211系（長野地区）",
+      illustrationPng:"../images/列车/JR東日本/JR東日本_211系_長野色.png",
+      illustrationOnly:true,authorizesIllustration:true,
+      authorizesPNG:false,confirmed:false,
+      status:"UNCONFIRMED_PLANNED_FLEET",
+      source:"undated-sql-2026-autumn-fleet-reference"};
+  }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-hachiko-single-illustration-v40",match:match,
+    version:"20261104-chuo-main-number-coverage-v41",match:match,
     matchItoFleetCandidates:matchItoFleetCandidates,
-    matchHachikoSouthCandidates:matchHachikoSouthCandidates
+    matchHachikoSouthCandidates:matchHachikoSouthCandidates,
+    matchChuoMainLocalReference:matchChuoMainLocalReference
   });
 })(window);
