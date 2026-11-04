@@ -75,9 +75,9 @@ test('E235-1000 Yokosuka S, Sobu Rapid F and verified Narita F through lines',()
     ['Narita','2627F','Rapid','holiday'],
     ['NaritaAirportBranch','2627F','Rapid','holiday']
   ])assertModel(position(...args),'E235系1000番台',p235);
-  // Yokosuka Shonan-Shinjuku H/Y and M-numbered trains are different
-  // service groups, not proof that the physical train is E235-1000.
-  for(const number of ['859H','2521Y','4521Y','3835M','1004F']){
+  // Shonan-Shinjuku Y/M numbers are separate from the E235 corridor;
+  // published short Kurihama-Zushi H services are tested independently.
+  for(const number of ['2521Y','4521Y','3835M','1004F']){
     assert.equal(choose(position('Yokosuka',number,'Local','weekday')),null,
       'Yokosuka other service family must not be blanket mapped '+number);
   }
@@ -136,6 +136,82 @@ test('do not treat E257-5000 8xxx/9xxx special numbers as a monthly fleet interv
   // Without a dated train-by-train official roster AND an approved 5000
   // series gallery artwork, do not borrow the E257-500 PNG.
 });
+test('Yokosuka H-only 4-car Kurihama-Zushi services use the exact 2611 E235 model PNG',()=>{
+  // Independent source roster: SQL ODPT manual_timetable_templates, 17
+  // inbound and 17 outbound H numbers on EACH service calendar.
+  // Official 1342H: https://timetables.jreast.co.jp/2611/train/135/137051.html
+  // No Green Car; E217 regular service ended 2025-03. The E235 image
+  // describes the model, NOT an observed physical J-series trainset.
+  const published={
+    weekday:"823H,858H,859H,922H,923H,943H,958H,959H,1022H,1023H,1042H,1043H,1122H,1123H,1142H,1143H,1222H,1223H,1242H,1243H,1322H,1323H,1342H,1343H,1422H,1423H,1429H,1442H,1522H,1528H,1529H,1628H,1629H,1728H",
+    holiday:"853H,856H,857H,905H,952H,953H,956H,957H,1004H,1005H,1052H,1053H,1104H,1105H,1152H,1153H,1204H,1205H,1252H,1253H,1304H,1305H,1352H,1353H,1404H,1405H,1452H,1453H,1504H,1505H,1552H,1604H,1605H,1704H"
+  };
+  let matched=0;
+  for(const [cal,listed] of Object.entries(published)){
+    const nums=listed.split(',');
+    assert.equal(nums.length,34,cal+' H source train roster');
+    assert.equal(new Set(nums).size,34,cal+' distinct H numbers');
+    for(const number of nums){
+      const direction=(parseInt(number,10)%2===0)?'Inbound':'Outbound';
+      const p=position('Yokosuka',number,'Local',cal,{
+        serviceDate:cal==='weekday'?'2026-11-04':'2026-11-07',
+        railDirection:'odpt.RailDirection:'+direction,
+        positionSource:'realtime-api',estimated:false
+      });
+      assertModel(p,'E235系1000番台',p235);
+      assert.equal(choose({...p,railDirection:
+        'odpt.RailDirection:'+(direction==='Inbound'?'Outbound':'Inbound')}),null,
+      number+' reversed direction must not authorize E235');
+      const sql={...p,positionSource:'supabase-train-run',estimated:true,
+        calendarType:'',serviceId:cal==='weekday'?
+          'odpt.Calendar:Weekday':'odpt.Calendar:SaturdayHoliday',
+        trainOperator:''};
+      assert.equal(choose(sql)?.pngPath,p235,
+        number+' SQL scheduled run retains source-based E235 PNG');
+      matched++;
+    }
+  }
+  assert.equal(matched,68);
+  // This user-supplied DOM is a live-merged SQL run, not a new number.
+  const trainId='planned-trip:2026-11-04|JR-East|odpt.Railway%3AJR-East.Yokosuka|Yokosuka|1342H|odpt.RailDirection%3AInbound|odpt.Station%3AJR-East.Yokosuka.Kurihama|13%3A24|odpt.Station%3AJR-East.Yokosuka.Zushi|odpt.Station%3AJR-East.Yokosuka.Zushi';
+  const observed=position('Yokosuka','1342H','Local','weekday',{
+    trainId,sourceRailway:'odpt.Railway:JR-East.Yokosuka',
+    railDirection:'odpt.RailDirection:Inbound',
+    positionSource:'realtime-api',estimated:false,
+    serviceDate:'2026-11-04',
+    destinationStation:'Zushi',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  });
+  assert.equal(choose(observed)?.pngPath,p235);
+  const visual=ctx._trainMarkerSpec(observed,trainId,'Yokosuka');
+  assert.equal(visual.kind,'vehicle');
+  assert.equal(visual.iconSrc,p235);
+  assert.equal(visual.compact,false);
+  assert.equal(visual.planned,true);
+  assert.equal(observed.vehicleIdentityStatus,'UNKNOWN');
+  for(const changes of [
+    {calendarType:'holiday',serviceDate:'2026-11-07'},
+    {trainNumber:'1304H',calendarType:'weekday'},
+    {trainNumber:'1343H',railDirection:'odpt.RailDirection:Inbound'},
+    {trainNumber:'1390H'},
+    {trainNumber:'1342Y'},
+    {sourceRailway:'odpt.Railway:JR-East.SobuRapid'},
+    {sourceRailway:'odpt.Railway:JR-East.Sobu'},
+    {sourceRailway:''},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'E231系1000番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E217系']}}
+  ]){
+    assert.equal(choose({...observed,...changes}),null,
+      'H model artwork must not leak: '+JSON.stringify(changes));
+  }
+  assert.equal(ctx._trainMarkerSpec({...observed,displayLineId:'SobuRapid'},
+    trainId,'SobuRapid').kind,'unresolved',
+    'H-only Zushi-Kurihama shuttle cannot be projected into Tokyo-SobuRapid');
+});
+
 test('source railway, operator, train type, date, approved model and page cache isolation',()=>{
   const base=position('Yokosuka','1005S','Local');
   for(const change of [
@@ -211,7 +287,7 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
       sourceRailway:'odpt.Railway:JR-East.SobuRapid'}),
     position('Yokosuka','2255M','LimitedExpress','holiday'),
     position('Yokosuka','2522Y','Local','holiday'),
-    position('Yokosuka','1004H','Local','holiday'),
+    position('Yokosuka','1004H','Local','weekday'),
     position('Yokosuka','3835M','Local','weekday'),
     position('Kashima','548M','Local','holiday'),
     position('SobuRapid','4006M','LimitedExpress','holiday'),
