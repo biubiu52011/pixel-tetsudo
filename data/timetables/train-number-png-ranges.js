@@ -202,6 +202,53 @@
       rejectAmbiguousPlan:true,
       model:"211系（高崎地区）",
       pngPath:"../images/列车/JR東日本/JR東日本_211系_湘南色.png"},
+    // Official 2026-11 Takasaki / Joetsu / Agatsuma through expresses.
+    // Regular Kusatsu-Shima 1-4 runs every day; 31 and 34 run only on
+    // Saturdays and public holidays. Weekday Akagi 1-9 uses the same
+    // E257-5500 model but belongs to a separately calendar-scoped set.
+    // Match EXACT public numbers, Local/Rapid never inherit the model.
+    // A model-reference PNG cannot identify an actual physical formation.
+    // https://timetables.jreast.co.jp/2611/train/045/047101.html (3002M)
+    // https://timetables.jreast.co.jp/2611/train/045/047081.html (3001M)
+    // https://timetables.jreast.co.jp/2611/train/045/047091.html (3003M)
+    // https://timetables.jreast.co.jp/2611/train/045/047111.html (3004M)
+    // https://timetables.jreast.co.jp/2611/train/095/098841.html (4031M)
+    // https://timetables.jreast.co.jp/2611/train/095/098851.html (4034M)
+    // https://timetables.jreast.co.jp/2611/train/085/087691.html (4001M)
+    // https://www.jreast.co.jp/multi/traininformation/kusatsu_shima/
+    // https://www.jreast.co.jp/en/train/express/akagi.html
+    {lineIds:["Takasaki"],numberFormat:"full",from:3001,to:3004,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["3001M","3002M","3003M","3004M"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Takasaki"],
+      directionNumberParity:"inbound-even",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
+    {lineIds:["Takasaki"],numberFormat:"full",from:4031,to:4034,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["4031M","4034M"],calendarType:"holiday",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Takasaki"],
+      directionNumberParity:"inbound-even",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
+    {lineIds:["Takasaki"],numberFormat:"full",from:4001,to:4009,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["4001M","4002M","4003M","4004M","4005M",
+        "4006M","4007M","4008M","4009M"],
+      calendarType:"weekday",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Takasaki"],
+      directionNumberParity:"inbound-even",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
     // JR East introduced E131-600 for Utsunomiya--Kuroiso
     // (including some Oyama extensions) and Nikko through service.
     // The complete source-number list comes from existing SQL stop
