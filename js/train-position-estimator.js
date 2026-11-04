@@ -723,6 +723,39 @@
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
 
+        // JR East disaster timetable, 2026-11-01 through 11-08.
+        // The Anegasaki--Nagaura tracks are CLOSED in both directions
+        // (Typhoon 25). A regular SQL timetable crossing the closed
+        // section is NOT a valid whole-train plan: temporary shortened
+        // services have their own unverified stops/numbers and must not
+        // be invented from the old timetable. This affects *all* regular
+        // Boso stock families, irrespective of a vehicle PNG guess.
+        // Suppress only historical SQL-derived through-runs; leave
+        // observed realtime vehicles and independently supplied sources
+        // alone. Keep the underlying SQL templates intact.
+        // JR East: https://traininfo.jreast.co.jp/train_info/line.aspx?gid=1&lineid=uchiboline
+        // Chiba Prefecture: https://www.pref.chiba.lg.jp/kendosei/kendo/r8-taihuu25-uchibousen-kendou287.html
+        if (lineId === "Uchibo" &&
+            tt._positionSource === "supabase-train-run" &&
+            serviceDate >= "2026-11-01" && serviceDate <= "2026-11-08") {
+          var closedStations = ["Anegasaki", "Nagaura"].map(function(station) {
+            return workLine.stations.findIndex(function(urn) {
+              return normalizeStationKey(extractStationKey(urn)) ===
+                normalizeStationKey(station);
+            });
+          });
+          if (closedStations[0] >= 0 && closedStations[1] >= 0) {
+            var indices = run.stops.map(function(stop) {
+              return stop.stationIndex;
+            }).filter(function(index) { return Number.isInteger(index); });
+            if (indices.length >= 2 &&
+                Math.min.apply(null, indices) <= Math.min.apply(null, closedStations) &&
+                Math.max.apply(null, indices) >= Math.max.apply(null, closedStations)) {
+              continue;
+            }
+          }
+        }
+
         // JR East 2026-11-07 (Saturday) Boso rapid train numbering differs
         // from the normal SaturdayHoliday train plan. Official 2611 tables
         // explicitly cancel these numbered services on that date:
