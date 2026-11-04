@@ -562,6 +562,59 @@ test('2026 ChuoRapid T/H number ranges never leak to other lines or M trains',()
   assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
 });
 
+
+test('ChuoMain 2611 SQL numbers: T/H E233 and M-only 211/E131 illustrated as ONE PNG',()=>{
+  const e233='../images/列车/JR東日本/JR東日本_E233系_0番台.png';
+  const n211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
+  for(const [trainNumber,type] of [
+    ['640T','ChuoSpecialRapid'],['726H','Rapid'],
+    ['1633T','CommuterRapid']]) {
+    const p=sql({trainNumber,trainType:'odpt.TrainType:JR-East.'+type,
+      calendarType:'weekday',serviceDate:'2026-11-04',
+      plannedVehicleCandidates:['E233系0番台']});
+    assert.equal(marker(p,'ChuoMain').iconSrc,e233,
+      'the complete T/H train number carries E233 planned stock');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+  for(const trainNumber of ['1249M','1323M','1325M']){
+    const p=sql({trainNumber,serviceDate:'2026-11-04',
+      trainType:'odpt.TrainType:JR-East.Local',
+      plannedVehicleCandidates:['E233系0番台']});
+    assert.equal(marker(p,'ChuoMain').iconSrc,e233);
+  }
+  for(const trainNumber of ['1230M','1450M','321M','520M']){
+    const p=sql({trainNumber,serviceDate:'2026-11-04',
+      trainType:'odpt.TrainType:JR-East.Local',
+      plannedVehicleCandidates:['211系','E233系0番台']});
+    const ref=root.TrainNumberPngRanges.matchChuoMainLocalReference(p);
+    assert.ok(ref,trainNumber+' local must have a scoped reference');
+    assert.equal(ref.confirmed,false);
+    assert.equal(ref.authorizesPNG,false);
+    assert.ok(ref.models.includes('E131系200番台'));
+    assert.equal(marker(p,'ChuoMain').iconSrc,n211,
+      'ONE representative train front, never a double cab');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+  }
+  for(const change of [
+    {serviceDate:'2026-12-01'}, {positionLineId:'ChuoRapid'},
+    {sourceRailway:'odpt.Railway:JR-East.Yokohama'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {trainNumber:'9592M'}, {trainNumber:'2201M',
+      trainType:'odpt.TrainType:JR-East.Rapid'},
+    {realtimeVehicleType:'E131系200番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E233系0番台']}},
+  ]) {
+    const p=sql({trainNumber:'1230M',trainType:'odpt.TrainType:JR-East.Local',
+      serviceDate:'2026-11-04',
+      plannedVehicleCandidates:['211系','E233系0番台'],...change});
+    assert.equal(root.TrainNumberPngRanges.matchChuoMainLocalReference(p),null,
+      'unverified local reference rejected: '+JSON.stringify(change));
+  }
+  const foreign=sql({trainNumber:'1230M',positionLineId:'ChuoMain',
+    displayLineId:'ChuoRapid',trainType:'odpt.TrainType:JR-East.Local',
+    plannedVehicleCandidates:['211系','E233系0番台']});
+  assert.equal(marker(foreign,'ChuoRapid').kind,'unresolved');
+});
 test('regular 2026 Chuo special expresses map by whole M train number and LimitedExpress type',()=>{
   const cases=[
     ['1M','あずさ1号'],['27M','かいじ／あずさ'],
