@@ -110,6 +110,45 @@
       allowedModelLabels:["E129系"],
       model:"E129系",
       pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
+    // The 2026-11 JR-East timetable identifies all of these Karasuyama M
+    // workings. JR East specifies battery EV-E301 (ACCUM) for the route.
+    // These are service MODEL PNGs, never an observed physical carset.
+    // https://www.jreast.co.jp/es/train/local/ev_e301.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/242d1.html
+    {lineIds:["Karasuyama"],numberFormat:"full",from:321,to:347,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.Karasuyama"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["321M","322M","323M","324M","325M","326M","327M","328M","329M","330M","331M","332M","333M","334M","335M","336M","337M","338M","339M","340M","341M","342M","343M","344M","345M","346M","347M"],
+      allowedModelLabels:["EV-E301系","EV-E301系（ACCUM）"],
+      model:"EV-E301系",
+      pngPath:"../images/列车/JR東日本/JR東日本_EV-E301系.png"},
+    // Kururi all-day Local D workings: KiHa E130-100 fleet. This file is
+    // an existing gallery image; no new artwork or timetable is synthesized.
+    // https://media.jreast.co.jp/articles/6466
+    // https://timetables.jreast.co.jp/2611/timetable-v/217u1.html
+    {lineIds:["Kururi"],numberFormat:"full",from:900,to:2999,
+      suffixes:"D",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.Kururi"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["2941D","2943D","2944D","2946D","2949D","2952D","920D","921D","922D","923D","924D","925D","926D","927D","928D","929D","930D","931D","932D","933D","934D","935D","936D","937D","938D","939D","940D","941D","942D","943D","944D","945D","946D","947D","948D","949D","950D","951D","952D","953D"],
+      allowedModelLabels:["キハE130形100番台","キハE130系100番台"],
+      model:"キハE130形100番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハE130系100番台.png"},
+    // Senseki-Tohoku Railway source also contains 55xxD rapid trains.
+    // Scope HB-E210 to those proven D workings ONLY; the same source
+    // combines M/S-numbered conventional local services, which this rule
+    // must NOT reclassify as an HB-E210 formation.
+    // https://www.jreast.co.jp/train/local/hb_e210.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/264u1.html
+    {lineIds:["SensekiTohoku"],numberFormat:"full",from:5500,to:5599,
+      suffixes:"D",trainTypes:["Rapid","SpecialRapid"],operator:"JR-East",
+      sourceOperatorFallback:true,sourceRailways:["odpt.Railway:JR-East.SensekiTohoku"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["5520D","5521D","5530D","5531D","5532D","5533D","5534D","5535D","5536D","5537D","5538D","5539D","5541D","5543D","5560D","5561D","5562D","5563D","5564D","5565D","5566D","5567D","5568D","5569D","5570D","5571D","5572D","5574D"],
+      allowedModelLabels:["HB-E210系"],
+      model:"HB-E210系",
+      pngPath:"../images/列车/JR東日本/JR東日本_HB-E210系.png"},
     // Takasaki/Joetsu local 211: exact published JR 2611 numbers also
     // checked against JR official Nov 2026 inbound/outbound weekday/holiday
     // 238u1/238u2/238d1/238d2 plus dated 211 working reports.
@@ -938,6 +977,6 @@
     return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jre-east-single-fleet-number-v34",match:match
+    version:"20261104-jre-east-single-fleet-number-v35",match:match
   });
 })(window);
