@@ -676,6 +676,11 @@
         "odpt.Railway:JR-East.Kashima"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       numberIndex:"jreast-sobu-yokosuka-202611",
+      // The published regular S/F and through local M-number assignments
+      // are even inbound, odd outbound in the source timetables. The
+      // number index alone does not check a supplied travel direction.
+      // This is a train-NUMBER scope, never proof of an actual E235 set.
+      directionNumberParity:"inbound-even",
       allowedModelLabels:["E235系1000番台"],
       model:"E235系1000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E235系_1000番台.png"},
