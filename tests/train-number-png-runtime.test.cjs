@@ -1761,3 +1761,30 @@ test('Utsunomiya E131-600 regional exact-number mapping remains isolated',()=>{
       ...base,trainNumber:n}),null,n);
   }
 });
+
+test('JR timetable serviceId restores scoped H and holiday M number PNGs',()=>{
+  const rapid=sql({
+    trainNumber:'430H',positionLineId:'Joban',
+    sourceRailway:'odpt.Railway:JR-East.JobanRapid',
+    trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Rapid',
+    serviceDate:'2026-11-04',calendarType:'',
+    serviceId:'odpt.Calendar:Weekday'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(rapid)?.model,
+    'E231系0番台（常磐快速線・LED）');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...rapid,serviceId:''
+  }),null,'unknown calendar cannot select a calendar-specific H number');
+  const holiday=sql({
+    trainNumber:'1252M',positionLineId:'JobanMain',
+    sourceRailway:'odpt.Railway:JR-East.Joban',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-03',calendarType:'',
+    serviceId:'odpt.Calendar:SaturdayHoliday'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(holiday)?.model,'E531系');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...holiday,serviceId:'odpt.Calendar:Weekday'
+  }),null,'holiday-only 1252M cannot borrow a weekday timetable');
+});
