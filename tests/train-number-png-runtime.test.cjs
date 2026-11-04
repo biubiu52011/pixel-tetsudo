@@ -308,6 +308,57 @@ test('JobanLocal PNG family excludes other lines, operators, dates, types and co
   assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe').model,
     'E233系7000番台','existing Saikyo K-tail mapping must remain unchanged');
 });
+test('Kururi Karasuyama and Senseki-Tohoku scoped number PNG: published 2026-11 service only',()=>{
+  const cases=[
+    ['Karasuyama','321M','Local','EV-E301系','JR東日本_EV-E301系.png'],
+    ['Karasuyama','346M','Local','EV-E301系','JR東日本_EV-E301系.png'],
+    ['Kururi','920D','Local','キハE130形100番台','JR東日本_キハE130系100番台.png'],
+    ['Kururi','2941D','Local','キハE130形100番台','JR東日本_キハE130系100番台.png'],
+    ['SensekiTohoku','5521D','Rapid','HB-E210系','JR東日本_HB-E210系.png'],
+    ['SensekiTohoku','5530D','Rapid','HB-E210系','JR東日本_HB-E210系.png']
+  ];
+  for(const [line,number,type,model,pngFile] of cases){
+    for(const source of ['realtime-api','supabase-train-run']){
+      const p=live({
+        trainNumber:number,trainId:'odpt.Train:JR-East.'+line+'.'+number,
+        positionLineId:line,sourceRailway:'odpt.Railway:JR-East.'+line,
+        trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.'+type,
+        serviceDate:'2026-11-04',positionSource:source,estimated:source!=='realtime-api'
+      });
+      const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(mapped,line+' '+number+' '+source);
+      assert.equal(mapped.trainNumber,number);
+      assert.equal(mapped.model,model);
+      assert.ok(mapped.pngPath.endsWith('/'+pngFile));
+      assert.equal(mapped.representative,true);
+      assert.equal(marker(p,line).iconSrc,mapped.pngPath);
+      assert.equal(marker(p,line).planned,true);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    }
+  }
+});
+test('Kururi Karasuyama and Senseki-Tohoku never assign model across line, type or unconfirmed services',()=>{
+  const pos=(line,num,type='Local',extra={})=>live({
+    trainNumber:num,positionLineId:line,sourceRailway:'odpt.Railway:JR-East.'+line,
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.'+type,
+    serviceDate:'2026-11-04',...extra});
+  for(const p of [
+    pos('Karasuyama','320M'),pos('Karasuyama','321D'),
+    pos('Kururi','920M'),pos('Kururi','921D','Rapid'),
+    pos('SensekiTohoku','5521D','Local'),
+    pos('SensekiTohoku','1532S'),
+    pos('SensekiTohoku','1523M'),
+    pos('SensekiTohoku','9524D','Rapid'),
+    pos('SensekiTohoku','5521D','Rapid',{sourceRailway:'odpt.Railway:JR-East.Senseki'}),
+    pos('SensekiTohoku','5521D','Rapid',{trainOperator:'TokyoMetro'}),
+    pos('SensekiTohoku','5521D','Rapid',{serviceDate:'2026-12-01'}),
+    pos('SensekiTohoku','5521D','Rapid',{realtimeVehicleType:'E131系800番台'}),
+    pos('Kururi','920D','Local',{vehiclePlan:{status:'PLANNED_MODEL',models:['EV-E301系']}})
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'unsupported model/line/number '+JSON.stringify(p));
+  }
+});
 test('2026-11 JR East Senseki Sagami Echigo exact published numbers paint only scoped representative PNG',()=>{
   const cases=[
     ['Senseki','521S','Local','E131系800番台','JR東日本_E131系_800番台.png'],
