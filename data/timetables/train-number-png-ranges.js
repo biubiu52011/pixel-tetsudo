@@ -1087,6 +1087,22 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    // A train-number roster can authorize a REFERENCE image only when
+    // this is an Ito SQL-estimated local service in the audited Nov month.
+    // The March 2026 stock working is not a current-day physical identity.
+    // Resort21 (A) substitution risk and mixed JR E fleet remain image-less.
+    if (line === "Ito" && context) {
+      var itoWorking = matchItoFleetCandidates(context);
+      if (itoWorking && itoWorking.trainNumber === number &&
+          itoWorking.referencePng && itoWorking.referenceModel &&
+          itoWorking.models.length === 1 && itoWorking.authorizesPNG &&
+          context.vehicleResolvedFromRealtime !== true &&
+          context.vehicleIdentityStatus !== "EXACT") {
+        return {trainNumber:number,lineId:line,
+          model:itoWorking.referenceModel,pngPath:itoWorking.referencePng,
+          source:itoWorking.source,planned:true,representative:true};
+      }
+    }
     // Match train NUMBER ranges, not an inferred operation ID.
     // One train number can have both a scoped tail and a full-number
     // interpretation: 1940K -> 40 on Saikyo, 1940K -> 1940 on Yokohama.
@@ -1336,40 +1352,55 @@
     }
     return null;
   }
-  // Ito Local: exact public TRAIN numbers scoped to the existing SQL
-  // Weekday/SaturdayHoliday candidate families (32 JR through + 34 Izukyu).
-  // References: JR East 2026-11 101d1/101d2, JR East E231 fleet,
-  // Izukyu train/train.php. The SQL source_revision_date is NULL:
-  // these are candidate FAMILIES, never a verified daily carset or PNG.
-  // Do not expand 16xxM/56xxM ranges or guess stock from M/E suffixes.
-  var itoNumberFleetCandidates = Object.freeze([
+  // Ito November 2026: exact JR East published TRAIN numbers, crossed
+  // with the 2026-03-14 timetable's Atami turnaround working/formation
+  // reference (independent site, NOT an observed November car assignment).
+  // https://timetables.jreast.co.jp/2611/timetable-v/101d1.html
+  // https://timetables.jreast.co.jp/2611/timetable-v/101u1.html
+  // https://ss1.xrea.com/shirabetai.g1.xrea.com/unyou/20260314/ito_ikk.html
+  // https://www.izukyu.co.jp/train/train.php
+  // IMPORTANT: old SQL labels mistakenly classify many 16xxM shuttles
+  // as JR E231/E233; the working reference identifies them as Izukyu.
+  // Resort21 (A) may be replaced by 8000: NO single PNG for those.
+  // All assignments here are *illustrative planned stock*, never EXACT.
+  var itoMarchWorking = Object.freeze([
     {
-      "owner": "JR-East",
-      "models": [
-        "E231系1000番台",
-        "E233系3000番台"
-      ],
+      "model": "伊豆急行8000系",
+      "png": "../images/列车/伊豆急行/伊豆急行_8000系_黒排障器.png",
       "numbers": [
-        "1560E",
-        "1589E",
-        "1597E",
         "1621M",
         "1622M",
         "1623M",
         "1624M",
+        "5625M",
         "1626M",
+        "5627M",
+        "5628M",
         "1629M",
+        "5632M",
+        "5633M",
         "1634M",
-        "1653M",
-        "1656E",
-        "1658M",
+        "5635M",
+        "5638M",
+        "5639M",
+        "5640M",
+        "5641M",
+        "5646M",
+        "5647M",
+        "5650M",
+        "5651M",
+        "5654M",
+        "5655M",
+        "5660M",
         "1661M",
+        "5662M",
         "1663M",
         "1664M",
+        "5665M",
         "1666M",
         "1667M",
+        "5668M",
         "1669M",
-        "1670E",
         "1670M",
         "1671M",
         "1672M",
@@ -1378,87 +1409,101 @@
         "1675M",
         "1676M",
         "1677M",
-        "1678M",
-        "1883E",
-        "1932E",
-        "1941E"
-      ]
+        "1678M"
+      ],
+      "status": "regular"
     },
     {
-      "owner": "Izukyu",
-      "models": [
-        "伊豆急行8000系",
-        "伊豆急行3000系",
-        "伊豆急行2100系"
-      ],
+      "model": "伊豆急行3000系",
+      "png": "../images/列车/伊豆急行/伊豆急行_3000系.png",
       "numbers": [
-        "5625M",
-        "5627M",
-        "5628M",
-        "5630M",
-        "5631M",
-        "5632M",
-        "5633M",
-        "5635M",
-        "5636M",
-        "5637M",
-        "5638M",
-        "5639M",
-        "5640M",
-        "5641M",
-        "5642M",
-        "5643M",
         "5644M",
         "5645M",
-        "5646M",
-        "5647M",
-        "5648M",
-        "5649M",
-        "5650M",
-        "5651M",
         "5652M",
-        "5654M",
-        "5655M",
+        "1653M",
+        "1658M",
+        "5659M"
+      ],
+      "status": "aloha"
+    },
+    {
+      "model": "伊豆急行2100系",
+      "png": "../images/列车/伊豆急行/伊豆急行_2100系.png",
+      "numbers": [
+        "5636M",
+        "5637M",
+        "5648M",
+        "5649M"
+      ],
+      "status": "resort21-usual"
+    },
+    {
+      "model": "伊豆急行2100系",
+      "png": "",
+      "numbers": [
+        "5630M",
+        "5631M",
+        "5642M",
+        "5643M",
         "5656M",
-        "5657M",
-        "5659M",
-        "5660M",
-        "5662M",
-        "5665M",
-        "5668M"
-      ]
+        "5657M"
+      ],
+      "status": "resort21-substitution-possible"
     }
   ]);
+  var itoJrETrainNumbers = Object.freeze(["1560E","1589E","1597E","1656E","1670E","1883E","1932E","1941E"]);
   function matchItoFleetCandidates(p) {
     if (!p || p.positionSource !== "supabase-train-run" ||
         p.estimated !== true ||
         String(p.positionLineId || p.lineId || "") !== "Ito" ||
         String(p.displayLineId || p.positionLineId || p.lineId || "") !== "Ito" ||
         String(p.sourceRailway || "") !== "odpt.Railway:JR-East.Ito" ||
-        !/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "")) ||
-        !/(?:[.:])Local$/.test(String(p.trainType || ""))) return null;
+        !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate || "")) ||
+        !/(?:[.:])Local$/.test(String(p.trainType || "")) ||
+        p.vehicleResolvedFromRealtime === true ||
+        p.vehicleIdentityStatus === "EXACT" ||
+        (p.vehiclePlan && p.vehiclePlan.confirmed === true)) return null;
     var number = String(p.trainNumber || "").trim().toUpperCase();
-    var family = itoNumberFleetCandidates.find(function(entry) {
-      return entry.numbers.indexOf(number) >= 0;
+    var working = itoMarchWorking.find(function(group) {
+      return group.numbers.indexOf(number) >= 0;
     });
-    if (!family) return null;
-    // The source candidate list must not contradict this public-number set.
-    var candidates = Array.isArray(p.plannedVehicleCandidates) ?
-      p.plannedVehicleCandidates.filter(Boolean) : [];
-    if (candidates.length &&
-        (candidates.length !== family.models.length ||
-         candidates.some(function(name){ return family.models.indexOf(name) < 0; })))
-      return null;
-    return {
-      lineId:"Ito", trainNumber:number, owner:family.owner,
-      models:family.models.slice(), status:"UNCONFIRMED_PLANNED_FLEET",
-      authorizesPNG:false, confirmed:false,
-      source:"sql-number-candidate-reference",
-      sourceUrl:"https://timetables.jreast.co.jp/2611/timetable-v/101d1.html"
-    };
+    if (working) {
+      var substitution = working.status === "resort21-substitution-possible";
+      var models = substitution
+        ? ["伊豆急行2100系","伊豆急行8000系"] : [working.model];
+      var sqlCandidates = Array.isArray(p.plannedVehicleCandidates)
+        ? p.plannedVehicleCandidates.filter(Boolean) : [];
+      return {
+        lineId:"Ito", trainNumber:number, owner:"Izukyu",
+        models:models, status:"UNCONFIRMED_PLANNED_FLEET",
+        referenceModel:substitution ? "" : working.model,
+        referencePng:substitution ? "" : working.png,
+        substitutionPossible:substitution,
+        sourceCandidateConflict:sqlCandidates.length > 0 &&
+          sqlCandidates.every(function(m){return models.indexOf(m)<0;}),
+        authorizesPNG:!substitution, confirmed:false,
+        source:"independent-20260314-working-reference",
+        sourceUrl:"https://ss1.xrea.com/shirabetai.g1.xrea.com/unyou/20260314/ito_ikk.html"
+      };
+    }
+    // Eight E-suffix JR through services genuinely remain a two-fleet
+    // candidate. Do not choose E231 or E233 using the train number alone.
+    if (itoJrETrainNumbers.indexOf(number) >= 0) {
+      return {
+        lineId:"Ito",trainNumber:number,owner:"JR-East",
+        models:["E231系1000番台","E233系3000番台"],
+        status:"UNCONFIRMED_PLANNED_FLEET",
+        referenceModel:"",referencePng:"",substitutionPossible:false,
+        sourceCandidateConflict:false,
+        authorizesPNG:false,confirmed:false,
+        source:"sql-two-model-fleet-reference",
+        sourceUrl:"https://timetables.jreast.co.jp/2611/timetable-v/101d1.html"
+      };
+    }
+    return null;
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-jre-east-ito-candidate-v37",match:match,
+    version:"20261104-jre-east-ito-working-v38",match:match,
     matchItoFleetCandidates:matchItoFleetCandidates
   });
 })(window);
