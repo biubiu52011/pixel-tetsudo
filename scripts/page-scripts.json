@@ -56,31 +56,11 @@
       "@core-data",
       "@odpt",
       "js/running-chain-resolver.js",
-      "data/core/major-vehicle-fleet-presets.js",
-      "data/timetables/keiyo-musashino-through-index.js",
-      "data/timetables/north-south-through-index.js",
-      "data/timetables/north-south-mh-index.js",
-      "data/timetables/train-coupling-index.js",
-      "data/timetables/vehicle-garage-png-map.js",
-      "data/timetables/joban-e231-h-202611-index.js",
-      "data/timetables/jreast-sobu-yokosuka-202611-number-index.js",
-      "data/timetables/jreast-chiba-number-index-202611.js",
-      "data/timetables/jreast-togane-number-index-202611.js",
-      "data/timetables/jreast-narita-abiko-number-index-202611.js",
-      "data/timetables/jreast-shonan-mixed-number-index-202611.js",
-      "data/timetables/jreast-yamanote-2611-number-index.js",
-      "data/timetables/jreast-yokohama-2611-number-index.js",
-      "data/timetables/jreast-keihin-2611-number-index.js",
-      "data/timetables/train-number-png-ranges.js",
-      "js/train-vehicle.js",
-      "data/timetables/vehicle-operation-evidence-data.js",
-      "data/timetables/nambu-branch-official-202611.js",
-      "js/train-position-estimator.js",
       "@runinfo",
       "js/data-fusion.js",
       "@railway-shell",
       "js/trains-data.js",
-      "js/trains-render.js",
+      "js/trains-detail-loader.js",
       "js/trains-page.js"
     ],
     "realtime": [
@@ -116,6 +96,31 @@
     "tourism-shop": [
       "@tourism-detail-base",
       "js/tourism-shop.js"
+    ]
+  },
+  "lazy": {
+    "trains": [
+      "data/core/major-vehicle-fleet-presets.js",
+      "data/timetables/keiyo-musashino-through-index.js",
+      "data/timetables/north-south-through-index.js",
+      "data/timetables/north-south-mh-index.js",
+      "data/timetables/train-coupling-index.js",
+      "data/timetables/vehicle-garage-png-map.js",
+      "data/timetables/joban-e231-h-202611-index.js",
+      "data/timetables/jreast-sobu-yokosuka-202611-number-index.js",
+      "data/timetables/jreast-chiba-number-index-202611.js",
+      "data/timetables/jreast-togane-number-index-202611.js",
+      "data/timetables/jreast-narita-abiko-number-index-202611.js",
+      "data/timetables/jreast-shonan-mixed-number-index-202611.js",
+      "data/timetables/jreast-yamanote-2611-number-index.js",
+      "data/timetables/jreast-yokohama-2611-number-index.js",
+      "data/timetables/jreast-keihin-2611-number-index.js",
+      "data/timetables/train-number-png-ranges.js",
+      "js/train-vehicle.js",
+      "data/timetables/vehicle-operation-evidence-data.js",
+      "data/timetables/nambu-branch-official-202611.js",
+      "js/train-position-estimator.js",
+      "js/trains-render.js"
     ]
   }
 }

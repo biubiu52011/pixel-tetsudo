@@ -1087,7 +1087,7 @@ test('train-map page loads the current number PNG rules instead of stale cached 
   const rules=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
   const expected=rules.match(/version:"([^"]+)",match:match/);
   assert.ok(expected,'train-number rule module exposes a version');
-  const script=page.match(/<script\b[^>]*\bsrc="\.\.\/data\/timetables\/train-number-png-ranges\.js\?v=([0-9a-f]{12})"/);
+  const script=page.match(/data-script-src="\.\.\/data\/timetables\/train-number-png-ranges\.js\?v=([0-9a-f]{12})"/);
   assert.ok(script,'the train SVG page must load its number-to-PNG rules');
   assert.equal(script[1],hashFor('data/timetables/train-number-png-ranges.js'),
     'the number-to-PNG script cache key must match its current file contents');

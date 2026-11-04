@@ -74,26 +74,6 @@
     <script defer src="../data/api/odpt-links.js?v=c3ef70c3b783"></script>
     <script defer src="../data/api/odpt-unified.js?v=3a9db1321b73"></script>
     <script defer src="../js/running-chain-resolver.js?v=bc85abcf005a"></script>
-    <script defer src="../data/core/major-vehicle-fleet-presets.js?v=5beede772fc7"></script>
-    <script defer src="../data/timetables/keiyo-musashino-through-index.js?v=415eadc656dd"></script>
-    <script defer src="../data/timetables/north-south-through-index.js?v=6408f20dc3ea"></script>
-    <script defer src="../data/timetables/north-south-mh-index.js?v=c1cc9576c782"></script>
-    <script defer src="../data/timetables/train-coupling-index.js?v=508a1ec7e3a9"></script>
-    <script defer src="../data/timetables/vehicle-garage-png-map.js?v=4293ae7e88c6"></script>
-    <script defer src="../data/timetables/joban-e231-h-202611-index.js?v=573e3b5f1cfb"></script>
-    <script defer src="../data/timetables/jreast-sobu-yokosuka-202611-number-index.js?v=c3a6035922e0"></script>
-    <script defer src="../data/timetables/jreast-chiba-number-index-202611.js?v=6c12b4d178a9"></script>
-    <script defer src="../data/timetables/jreast-togane-number-index-202611.js?v=be9002cae597"></script>
-    <script defer src="../data/timetables/jreast-narita-abiko-number-index-202611.js?v=452f3c4aa02b"></script>
-    <script defer src="../data/timetables/jreast-shonan-mixed-number-index-202611.js?v=6ceb423078e8"></script>
-    <script defer src="../data/timetables/jreast-yamanote-2611-number-index.js?v=8e75098019af"></script>
-    <script defer src="../data/timetables/jreast-yokohama-2611-number-index.js?v=4d364497ad19"></script>
-    <script defer src="../data/timetables/jreast-keihin-2611-number-index.js?v=fc9407385ece"></script>
-    <script defer src="../data/timetables/train-number-png-ranges.js?v=65ca25c79ea9"></script>
-    <script defer src="../js/train-vehicle.js?v=38fdd69887c0"></script>
-    <script defer src="../data/timetables/vehicle-operation-evidence-data.js?v=0e9ecbe2a052"></script>
-    <script defer src="../data/timetables/nambu-branch-official-202611.js?v=1d22113af8ed"></script>
-    <script defer src="../js/train-position-estimator.js?v=074b9df77853"></script>
     <script defer src="../js/runinfo-evaluator.js?v=5c90d31f2a1c"></script>
     <script defer src="../js/runinfo-web.js?v=b56f4ff65030"></script>
     <script defer src="../js/data-fusion.js?v=f1bc5f863668"></script>
@@ -103,8 +83,33 @@
     <script defer src="../js/data-state.js?v=a9ec87025086"></script>
     <script defer src="../js/site-shell.js?v=89a3ffdcc1bb"></script>
     <script defer src="../js/trains-data.js?v=a91444388bf8"></script>
-    <script defer src="../js/trains-render.js?v=e35b16088e56"></script>
-    <script defer src="../js/trains-page.js?v=2ad3af2977a4"></script>
+    <script defer src="../js/trains-detail-loader.js?v=c4795e8fc931"></script>
+    <script defer src="../js/trains-page.js?v=512d164d360a"></script>
     <!-- pt:scripts:body:end -->
+    <!-- pt:scripts:lazy:start -->
+    <template id="pt-trains-detail-assets">
+      <span data-script-src="../data/core/major-vehicle-fleet-presets.js?v=5beede772fc7"></span>
+      <span data-script-src="../data/timetables/keiyo-musashino-through-index.js?v=415eadc656dd"></span>
+      <span data-script-src="../data/timetables/north-south-through-index.js?v=6408f20dc3ea"></span>
+      <span data-script-src="../data/timetables/north-south-mh-index.js?v=c1cc9576c782"></span>
+      <span data-script-src="../data/timetables/train-coupling-index.js?v=508a1ec7e3a9"></span>
+      <span data-script-src="../data/timetables/vehicle-garage-png-map.js?v=4293ae7e88c6"></span>
+      <span data-script-src="../data/timetables/joban-e231-h-202611-index.js?v=573e3b5f1cfb"></span>
+      <span data-script-src="../data/timetables/jreast-sobu-yokosuka-202611-number-index.js?v=c3a6035922e0"></span>
+      <span data-script-src="../data/timetables/jreast-chiba-number-index-202611.js?v=6c12b4d178a9"></span>
+      <span data-script-src="../data/timetables/jreast-togane-number-index-202611.js?v=be9002cae597"></span>
+      <span data-script-src="../data/timetables/jreast-narita-abiko-number-index-202611.js?v=452f3c4aa02b"></span>
+      <span data-script-src="../data/timetables/jreast-shonan-mixed-number-index-202611.js?v=6ceb423078e8"></span>
+      <span data-script-src="../data/timetables/jreast-yamanote-2611-number-index.js?v=8e75098019af"></span>
+      <span data-script-src="../data/timetables/jreast-yokohama-2611-number-index.js?v=4d364497ad19"></span>
+      <span data-script-src="../data/timetables/jreast-keihin-2611-number-index.js?v=fc9407385ece"></span>
+      <span data-script-src="../data/timetables/train-number-png-ranges.js?v=65ca25c79ea9"></span>
+      <span data-script-src="../js/train-vehicle.js?v=38fdd69887c0"></span>
+      <span data-script-src="../data/timetables/vehicle-operation-evidence-data.js?v=0e9ecbe2a052"></span>
+      <span data-script-src="../data/timetables/nambu-branch-official-202611.js?v=1d22113af8ed"></span>
+      <span data-script-src="../js/train-position-estimator.js?v=074b9df77853"></span>
+      <span data-script-src="../js/trains-render.js?v=e35b16088e56"></span>
+    </template>
+    <!-- pt:scripts:lazy:end -->
   </body>
 </html>

@@ -30,3 +30,25 @@ test('all assets follow ordered, non-async script loading with shared cache keys
     assert.equal(new Set(actual).size, actual.length, page + ' duplicate');
   }
 });
+
+test('train detail assets are inert and preserve dependency order', () => {
+  const html = fs.readFileSync(path.join(root, 'pages/trains.html'), 'utf8');
+  const eager = expand(spec.pages.trains), lazy = expand(spec.lazy.trains);
+  assert.ok(eager.includes('js/trains-detail-loader.js'));
+  for (const asset of ['js/train-vehicle.js','js/trains-render.js',
+    'js/train-position-estimator.js','data/timetables/train-number-png-ranges.js']) {
+    assert.ok(!eager.includes(asset), 'heavy module is not eager: ' + asset);
+    assert.ok(lazy.includes(asset), 'heavy module must remain available on detail: ' + asset);
+  }
+  assert.equal(new Set(lazy).size, lazy.length);
+  assert.ok(lazy.every(x => !eager.includes(x)));
+  const section = html.match(/<template id="pt-trains-detail-assets">([\s\S]*?)<\/template>/);
+  assert.ok(section, 'inert detail script template');
+  const sources = [...section[1].matchAll(/data-script-src="\.\.\/([^"?]+)\?v=([0-9a-f]{12})"/g)];
+  assert.deepEqual(sources.map(x => x[1]), lazy, 'source order matches manifest');
+  assert.ok(lazy.indexOf('data/timetables/train-number-png-ranges.js') < lazy.indexOf('js/train-vehicle.js'));
+  assert.ok(lazy.indexOf('js/train-vehicle.js') < lazy.indexOf('js/trains-render.js'));
+  const source = fs.readFileSync(path.join(root, 'js/trains-detail-loader.js'), 'utf8');
+  assert.match(source, /script\.async = false/, 'dynamic classic scripts must remain ordered');
+  assert.match(source, /Math\.min\(from \+ 4, urls\.length\)/, 'limit in-flight detail assets');
+});

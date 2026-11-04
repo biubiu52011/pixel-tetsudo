@@ -34,9 +34,19 @@ for (const [name, items] of Object.entries(spec.pages)) {
   if (!/^[a-z-]+$/.test(name)) throw Error('Unsafe page name: ' + name);
   const file = path.join(root, 'pages', name + '.html'), original = fs.readFileSync(file, 'utf8');
   const head = expand(spec.head), body = expand(items);
+  const lazy = expand((spec.lazy && spec.lazy[name]) || []);
+  if (new Set(lazy).size !== lazy.length || lazy.some(s => head.includes(s) || body.includes(s))) {
+    throw Error('Duplicated lazy script: ' + name);
+  }
   if (new Set([...head, ...body]).size !== head.length + body.length) throw Error('Duplicate head/body asset: ' + name);
   let result = region(original, 'head', tags(head, 'head'), file);
   result = region(result, 'body', tags(body, 'body'), file);
+  if (lazy.length) {
+    const inert = '    <template id="pt-trains-detail-assets">\n' +
+      lazy.map(s => '      <span data-script-src="../' + s + '?v=' + version(s) + '"></span>').join('\n') +
+      '\n    </template>';
+    result = region(result, 'lazy', inert, file);
+  }
   if ((result.match(/<script\b/gi) || []).length !== head.length + body.length) throw Error('Unexpected script outside manifest: ' + name);
   if (result !== original) {
     stale++;

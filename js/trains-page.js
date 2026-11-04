@@ -99,7 +99,31 @@
     if (titleEl) titleEl.textContent = _title;
   }
 
+  var _detailLoadRequestedFor = null;
   function showLineView(lineId, systemLineIds, expectedIdentity, expectedMemberIdentities) {
+    // Map, train-number indexes and vehicle PNG logic are not part of the
+    // initial line browser. Load exactly once when a detail route is entered.
+    if (window.TrainsDetailLoader && !window.TrainsDetailLoader.isReady()) {
+      if (_detailLoadRequestedFor === lineId) return;
+      _detailLoadRequestedFor = lineId;
+      if (listEl) listEl.classList.add("hidden");
+      var browser = listEl && listEl.closest("[data-railway-browser]");
+      if (browser) browser.classList.add("hidden");
+      if (detailEl) detailEl.classList.remove("hidden");
+      if (mapEl && window.DataState) window.DataState.renderPageState(mapEl, "loading");
+      window.TrainsDetailLoader.load().then(function () {
+        if (_detailLoadRequestedFor !== lineId ||
+            (window.location.hash || "").replace(/^#/, "") !== lineId) return;
+        _detailLoadRequestedFor = null;
+        showLineView(lineId, systemLineIds, expectedIdentity, expectedMemberIdentities);
+      }).catch(function(err) {
+        if (_detailLoadRequestedFor !== lineId) return;
+        _detailLoadRequestedFor = null;
+        console.error("[trains] detail asset load failed:", err);
+        if (mapEl && window.DataState) window.DataState.renderPageState(mapEl, "render_error");
+      });
+      return;
+    }
     // 每次切换线路都重新确定展示系统。单线路没有 presentation 成员时
     // 也必须清空上一个多成员系统，否则例如从 Tojo 切到 TobuIsesaki
     // 会把旧的 Tojo 位置依赖带进当前地图。
@@ -236,6 +260,7 @@
   }
 
   function hideLineView() {
+    _detailLoadRequestedFor = null;
     try {
       disposeTrainMap(mapEl);
       currentLine = null;
