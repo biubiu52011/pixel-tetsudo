@@ -2224,3 +2224,68 @@ test('JR 2611 NambuBranch H-number positions use an official line-scoped E127 re
   assert.equal(root.TrainNumberPngRanges.match('700H','Nambu'),null,
     'H branch numbers never belong to F-numbered Nambu mainline');
 });
+
+test('Nambu combined map renders branch-projected 1300H PNG without cross-line leakage',()=>{
+  // Reproduces the actual DOM: data-train-unit-id identifies NambuBranch
+  // 1300H, but the passenger label signature uses the containing "Nambu"
+  // map. The previous exact displayLineId===positionLineId check turned
+  // the approved E127 reference into a compact unresolved circle.
+  const png='../images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png';
+  const trainId='planned-trip:2026-11-04|JR-East|odpt.Railway%3AJR-East.NambuBranch|NambuBranch|1300H|odpt.RailDirection%3AInbound|odpt.Station%3AJR-East.NambuBranch.Shitte|13%3A13|odpt.Station%3AJR-East.NambuBranch.HamaKawasaki|odpt.Station%3AJR-East.NambuBranch.HamaKawasaki';
+  const branch=sql({
+    trainId,trainNumber:'1300H',
+    serviceDate:'2026-11-04',serviceId:'odpt.Calendar:Weekday',
+    calendarType:'',trainType:'odpt.TrainType:JR-East.Local',
+    railDirection:'odpt.RailDirection:Inbound',
+    sourceRailway:'odpt.Railway:JR-East.NambuBranch',
+    positionLineId:'NambuBranch',
+    trainOperator:'JR-East',
+    fusionLineId:'NambuBranch',fusionRole:'branch',
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  });
+  const source=marker(branch,'NambuBranch');
+  const combined=marker(branch,'Nambu');
+  assert.equal(source.iconSrc,png,'original source-line diagram still works');
+  assert.equal(combined.kind,'vehicle',
+    'branch-projected train on Nambu overview must not become unresolved');
+  assert.equal(combined.iconSrc,png,'Nambu containing map uses source-line artwork');
+  assert.equal(combined.planned,true);
+  assert.equal(combined.compact,false,'render SVG <image>, not a neutral circle');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...branch,displayLineId:'Nambu'
+  })?.pngPath,png,'source scope remains NambuBranch after projection');
+  assert.equal(branch.vehicleIdentityStatus,'UNKNOWN',
+    'planned E127 artwork must not claim an actual physical formation');
+  for(const modification of [
+    {fusionRole:'extension'},
+    {fusionRole:'through-boundary'},
+    {fusionRole:''},
+    {fusionLineId:'Nambu'},
+    {fusionLineId:'ChuoRapid'},
+    {fusionLineId:''},
+    {sourceRailway:'odpt.Railway:JR-East.Nambu'},
+    {sourceRailway:'odpt.Railway:TokyoMetro.NambuBranch'},
+    {sourceRailway:''},
+    {positionLineId:'Nambu'},
+    {positionLineId:'Yokohama'},
+    {trainNumber:'1301H'},
+    {trainNumber:'999H'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {railDirection:'odpt.RailDirection:Outbound'},
+    {trainOperator:'JR-West'},
+    {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'205系1000番台'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['205系1000番台']}}
+  ]){
+    const value={...branch,...modification};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+      ...value,displayLineId:'Nambu'
+    }),null,'unauthorized branch artwork: '+JSON.stringify(modification));
+    assert.notEqual(marker(value,'Nambu').iconSrc,png,
+      'foreign or unverified Nambu overview must not borrow the E127 PNG');
+  }
+  for(const otherDisplay of ['Yokohama','Keiyo','NambuBranchOther']){
+    assert.notEqual(marker(branch,otherDisplay).iconSrc,png,
+      'source NambuBranch PNG cannot be projected to '+otherDisplay);
+  }
+});
