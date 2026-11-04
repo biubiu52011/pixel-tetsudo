@@ -976,6 +976,33 @@ assert.equal(candidateLabel.querySelector('.train-label-dir').getAttribute('y'),
 assert.equal(candidateLabel.parentNode,candidateMarker.parentNode,
   '177M-style neutral circle and its arrow/君津 must never be sibling train-layer elements');
 
+// Regression for iPhone Hachiko screenshots: candidateAssets are two
+// ALTERNATIVE car models, not two physical cabs on the same train.
+renderVm.artwork = {kind:'candidate',iconSrc:'',planned:true,
+  candidateAssets:[genericPng,otherPng]};
+const dualFleetSpec = renderVm._trainMarkerSpec(narrowed,'hachiko-461E','Hachiko');
+assert.equal(dualFleetSpec.kind,'candidate');
+assert.equal(dualFleetSpec.compact,true,
+  'a pair of potential vehicle images must NEVER request a wide marker');
+assert.equal(dualFleetSpec.planned,false,
+  'two candidate models do not certify a single planned rolling-stock type');
+const dualFleetMarker=markerContext._createTrainComponent(
+  markerLayer,svgNS,'hachiko-461E',dualFleetSpec,90,110,
+  {...circlePosition,trainNumber:'461E'},'Hachiko',false,'#008803',null);
+assert.equal(dualFleetMarker.tagName,'circle',
+  'candidate pairs must render as ONE circle, never a double-headed SVG group');
+assert.equal(dualFleetMarker.getAttribute('data-vehicle-candidate'),'true');
+assert.equal(dualFleetMarker.children.filter(node=>node.tagName==='image').length,0,
+  'a train location may not contain paired candidate cab images');
+assert.equal(dualFleetMarker.parentNode.getAttribute('data-train-unit-id'),'hachiko-461E');
+// Even a misconfigured consumer setting compact:false must not draw both.
+const defensiveMarker=markerContext._createTrainMarker(
+  markerLayer,svgNS,'hachiko-direct',
+  {...dualFleetSpec,compact:false},120,120,circlePosition,
+  'Hachiko',false,'#008803',null);
+assert.equal(defensiveMarker.tagName,'circle');
+assert.equal(defensiveMarker.children.length,0);
+
 renderedImage.listeners.error();
 assert.ok(markerLayer.children.includes(trainUnit),
   'PNG failure swaps only the image; the train component must not unmount');
