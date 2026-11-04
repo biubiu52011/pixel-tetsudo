@@ -308,6 +308,73 @@ test('JobanLocal PNG family excludes other lines, operators, dates, types and co
   assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe').model,
     'E233系7000番台','existing Saikyo K-tail mapping must remain unchanged');
 });
+test('2026-11 JR East Senseki Sagami Echigo exact published numbers paint only scoped representative PNG',()=>{
+  const cases=[
+    ['Senseki','521S','Local','E131系800番台','JR東日本_E131系_800番台.png'],
+    ['Senseki','2342S','Local','E131系800番台','JR東日本_E131系_800番台.png'],
+    ['Senseki','5521D','Rapid','HB-E210系','JR東日本_HB-E210系.png'],
+    ['Senseki','5530D','Rapid','HB-E210系','JR東日本_HB-E210系.png'],
+    ['Sagami','475F','Local','E131系500番台','JR東日本_E131系_500番台.png'],
+    ['Sagami','2374F','Local','E131系500番台','JR東日本_E131系_500番台.png'],
+    ['Echigo','120M','Local','E129系','JR東日本_E129系.png'],
+    ['Echigo','1620M','Local','E129系','JR東日本_E129系.png']
+  ];
+  for(const [line,num,type,model,asset] of cases){
+    const props={trainNumber:num,positionLineId:line,displayLineId:line,
+      trainId:'odpt.Train:JR-East.'+line+'.'+num,
+      sourceRailway:'odpt.Railway:JR-East.'+line,trainOperator:'JR-East',
+      trainType:'odpt.TrainType:JR-East.'+type,serviceDate:'2026-11-04'};
+    for(const source of ['realtime-api','supabase-train-run','train-timetable']){
+      const p=live({...props,positionSource:source,estimated:source!=='realtime-api'});
+      const found=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.ok(found,line+'/'+num+'/'+source);
+      assert.equal(found.trainNumber,num,'do not convert published number to operation number');
+      assert.equal(found.model,model);
+      assert.equal(found.representative,true);
+      assert.ok(found.pngPath.endsWith('/'+asset));
+      const svg=marker(p,line);
+      assert.equal(svg.kind,'vehicle');
+      assert.equal(svg.iconSrc,found.pngPath);
+      assert.equal(svg.planned,true);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+      assert.equal(p.vehiclePlan,undefined);
+    }
+  }
+});
+test('JR East number PNGs reject unlisted extras, wrong train type/source/operator/date and conflicting evidence',()=>{
+  const senseki={trainNumber:'521S',positionLineId:'Senseki',
+    sourceRailway:'odpt.Railway:JR-East.Senseki',
+    trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-04'};
+  const bad=[
+    {trainNumber:'521D'}, {trainNumber:'5521S'}, {trainNumber:'9524D'},
+    {trainNumber:'5521D',trainType:'odpt.TrainType:JR-East.Local'},
+    {positionLineId:'Sagami'}, {displayLineId:'Sagami'},
+    {sourceRailway:'odpt.Railway:JR-East.SensekiTohoku'},
+    {trainOperator:'TokyoMetro'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {serviceDate:'2026-10-31'}, {serviceDate:'2026-12-01'},
+    {realtimeVehicleType:'HB-E210系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['HB-E210系']}}
+  ];
+  for(const change of bad){
+    const p=live({...senseki,...change});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'not a verified Senseki E131 source: '+JSON.stringify(change));
+  }
+  const sagami=live({trainNumber:'9091F',positionLineId:'Sagami',
+    sourceRailway:'odpt.Railway:JR-East.Sagami',trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',serviceDate:'2026-11-07'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(sagami),null,
+    'holiday 9xxx altered-number train needs its own dated evidence');
+  const echigo=live({trainNumber:'8132M',positionLineId:'Echigo',
+    sourceRailway:'odpt.Railway:JR-East.Echigo',trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',serviceDate:'2026-11-04'});
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(echigo),null,
+    '8xxx scheduled-exception working has not been stock-verified');
+  assert.equal(root.TrainNumberPngRanges.match('521S','JobanLocal'),null);
+  assert.equal(root.TrainNumberPngRanges.match('475F','Nambu'),null);
+});
 test('Chuo-Sobu subway number crosswalk resolves exact Y/A source trains without confusing Metro S and JR K',()=>{
   const cases=[
     ['485Y','Westbound','weekday','東京メトロ15000系','東京メトロ_15000系.png'],
