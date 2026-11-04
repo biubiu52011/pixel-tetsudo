@@ -1296,6 +1296,25 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Ito's numbered ordinary services have a scoped SQL fleet candidate,
+    // not a per-day rolling-stock assignment. Show the alternatives, never
+    // a guessed E231/E233/Izukyu PNG or a false EXACT classification.
+    if (lineId === "Ito" &&
+        (p.vehicleIdentityStatus || (p.vehicleResolution && p.vehicleResolution.identityStatus)) !== "EXACT" &&
+        !(plan && plan.confirmed === true) &&
+        window.TrainNumberPngRanges &&
+        typeof window.TrainNumberPngRanges.matchItoFleetCandidates === "function") {
+      var itoCandidates = window.TrainNumberPngRanges.matchItoFleetCandidates(
+        Object.assign({}, p, {displayLineId:lineId}));
+      if (itoCandidates) {
+        lang = String(lang || "ja").toLowerCase();
+        var itoPrefix = /^zh/.test(lang) ? "列车番号对应的候选车型（非当日实车）：" :
+          lang === "en" ? "Train-number fleet candidates (not actual-day stock): " :
+          lang === "ko" ? "열차번호별 차종 후보(당일 실제 차량 아님): " :
+          "列車番号別の車種候補（当日の実車ではありません）：";
+        return itoPrefix + itoCandidates.models.join(" / ");
+      }
+    }
     var sharedWorkingRepresentative =
       (p.positionSource === "realtime-api" || p.estimated === true) &&
       plan && (plan.source === "keiyo-shared-working-representative" ||
@@ -2425,9 +2444,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           };
           iconBox.appendChild(icon);
         } else {
-          // Match the map's neutral marker when the vehicle is unresolved.
+          // Match the map's neutral marker when the physical vehicle is unresolved.
           iconBox.classList.add('unresolved');
           iconBox.setAttribute('aria-hidden','true');
+          // A numbered Ito local has documented alternative families. Show
+          // those names in the fold without implying a single confirmed PNG.
+          if (lineId === "Ito") {
+            var itoFleetText = _trainFleetPlanLabel(p,lineId,lang);
+            if (itoFleetText && /(?:^|[.:])Local$/.test(String(p.trainType || ""))) {
+              var fleetNote = document.createElement('small');
+              fleetNote.className = 'train-fold-fleet-reference';
+              fleetNote.textContent = itoFleetText;
+              caption.appendChild(fleetNote);
+              entry.setAttribute('aria-label',captionBase+' · '+itoFleetText);
+            }
+          }
         }
         entry.appendChild(iconBox);
         entry.appendChild(caption);
