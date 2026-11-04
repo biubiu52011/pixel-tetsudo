@@ -1,7 +1,7 @@
 'use strict';
 /* Boso timetable projection regression: station clock samples from the
  * owner's existing Uchibo/Sotobo SQL templates (not a wholesale JR East
- * timetable copy). 2026-11-04 JST is a weekday.
+ * timetable copy). 2026-11-09 JST is a Monday outside the dated closure.
  * The timetable snapshot remains "undated_not_current_verified":
  * these checks prove rendering/clock interpolation, not complete 2611
  * revision parity or physical trainset assignment.
@@ -16,6 +16,15 @@ const lines=JSON.parse(fs.readFileSync(
 const estimator=fs.readFileSync('js/train-position-estimator.js','utf8');
 const samples={
   Uchibo:[
+    // 139M legacy complete through timetable; official track closure
+    // on 2026-11-04 must prevent this phantom Chiba--Kimitsu run.
+    ['139M','Outbound','Uchibo.Kimitsu',[
+      ['Chiba',null,'07:27'],['HonChiba','07:29','07:30'],
+      ['Soga','07:33','07:35'],['Hamano','07:38','07:39'],
+      ['Yawatajuku','07:41','07:42'],['Goi','07:45','07:46'],
+      ['Anegasaki','07:51','07:51'],['Nagaura','07:56','07:57'],
+      ['Sodegaura','08:00','08:01'],['Iwane','08:04','08:04'],
+      ['Kisarazu','08:08','08:09'],['Kimitsu','08:15',null]]],
     // Kisarazu -> Chiba, 120M: weekday 05:00 to 05:38
     ['120M','Inbound','Uchibo.Chiba',[
       ['Kisarazu',null,'05:00'],['Iwane','05:03','05:04'],
@@ -87,13 +96,13 @@ for(const [line,records] of Object.entries(samples))for(const
       })),
       _positionSource:'supabase-train-run',
       _sqlLineId:line,
-      _serviceDate:'2026-11-04',
+      _serviceDate:'2026-11-09',
       _timetableValidity:'undated_not_current_verified',
       _timetableDateVerified:false,
       _canonicalGroupEvidence:'source_only'
     }});
 }
-function estimateAt(utc){
+function estimateAt(utc,serviceDate='2026-11-09'){
   class FakeDate extends Date{
     constructor(...x){super(...(x.length?x:[utc]))}
     static now(){return Date.parse(utc)}
@@ -107,7 +116,9 @@ function estimateAt(utc){
   vm.runInContext(estimator,context,{filename:'js/train-position-estimator.js'});
   for(const line of ['Uchibo','Sotobo'])
     window.TrainPositionEstimator.registerManualTimetable(line,
-      all.filter(x=>x.line===line).map(x=>x.timetable));
+      all.filter(x=>x.line===line).map(x=>({
+        ...x.timetable,_serviceDate:serviceDate
+      })));
   return window.TrainPositionEstimator.estimateAllPositions(
     {Uchibo:lines.Uchibo,Sotobo:lines.Sotobo},
     {},{},null,{lineIds:['Uchibo','Sotobo']});
@@ -122,18 +133,18 @@ function segment(out,line,number,start,end){
   assert.equal(lines[line].stations[p.segmentToIndex],end);
   assert.equal(p.positionSource,'supabase-train-run');
   assert.equal(p.estimated,true);
-  assert.equal(p.serviceDate,'2026-11-04');
+  assert.equal(p.serviceDate,'2026-11-09');
   assert.equal(p.trainNumber,number);
   assert.equal(p.timetableDateVerified,false);
 }
 test('05:25 JST: Uchibo 120M and Sotobo 220M / 3591F run independently',()=>{
-  const o=estimateAt('2026-11-03T20:25:00Z');
+  const o=estimateAt('2026-11-08T20:25:00Z');
   segment(o,'Uchibo','120M','Yawatajuku','Hamano');
   segment(o,'Sotobo','220M','Toke','Honda');
   segment(o,'Sotobo','3591F','Hon-Chiba','Soga');
 });
 test('05:40 Toke dwell, then 05:42 departures preserve real station clocks',()=>{
-  const stopped=estimateAt('2026-11-03T20:40:00Z');
+  const stopped=estimateAt('2026-11-08T20:40:00Z');
   assert.equal(find(stopped,'Uchibo','120M'),undefined);
   segment(stopped,'Sotobo','220M','Soga','Hon-Chiba');
   const rapid=find(stopped,'Sotobo','3591F');
@@ -141,33 +152,33 @@ test('05:40 Toke dwell, then 05:42 departures preserve real station clocks',()=>
   assert.equal(lines.Sotobo.stations[rapid.stationIndex],'Toke');
   assert.equal(rapid.segmentToIndex,null,
     '05:40 arrival must be a station stop, not a premature departure');
-  const departed=estimateAt('2026-11-03T20:42:00Z');
+  const departed=estimateAt('2026-11-08T20:42:00Z');
   segment(departed,'Sotobo','220M','Hon-Chiba','Chiba');
   segment(departed,'Sotobo','3591F','Toke','Oami');
 });
 test('06:07 JST: Uchibo 3680F and Sotobo 221M keep source train numbers',()=>{
-  const o=estimateAt('2026-11-03T21:07:00Z');
+  const o=estimateAt('2026-11-08T21:07:00Z');
   segment(o,'Uchibo','3680F','Kimitsu','Kisarazu');
   segment(o,'Sotobo','221M','Awa-Kominato','Awa-Amatsu');
   assert.equal(find(o,'Sotobo','3591F'),undefined);
 });
 test('1235M Chiba 23:59 -> Oami official 24:27 retains previous service date after midnight',()=>{
-  const before=estimateAt('2026-11-04T14:59:20Z');
+  const before=estimateAt('2026-11-09T14:59:20Z');
   assert.ok(find(before,'Sotobo','1235M'));
-  const after=estimateAt('2026-11-04T15:15:00Z');
+  const after=estimateAt('2026-11-09T15:15:00Z');
   const p=find(after,'Sotobo','1235M');
   assert.ok(p,'00:15 JST scheduled overnight train must still be visible');
-  assert.equal(p.serviceDate,'2026-11-04','past-midnight run belongs to previous service date');
+  assert.equal(p.serviceDate,'2026-11-09','past-midnight run belongs to previous service date');
   assert.equal(lines.Sotobo.stations[p.stationIndex],'Kamatori');
   assert.equal(lines.Sotobo.stations[p.segmentToIndex],'Honda');
-  const last=estimateAt('2026-11-04T15:24:00Z');
+  const last=estimateAt('2026-11-09T15:24:00Z');
   segment(last,'Sotobo','1235M','Toke','Oami');
-  const complete=estimateAt('2026-11-04T15:28:00Z');
+  const complete=estimateAt('2026-11-09T15:28:00Z');
   assert.equal(find(complete,'Sotobo','1235M'),undefined,
     'do not keep the train running after its published 24:27 arrival');
 });
 test('source terminal arrival clocks end each Boso position, no false perpetual train',()=>{
-  const o=estimateAt('2026-11-03T22:00:00Z');
+  const o=estimateAt('2026-11-08T22:00:00Z');
   for(const line of ['Uchibo','Sotobo'])for(const p of o[line]||[])
     assert.ok(!['120M','3680F','220M','3591F','221M'].includes(p.trainNumber));
   for(const record of all){
@@ -175,4 +186,15 @@ test('source terminal arrival clocks end each Boso position, no false perpetual 
     assert.equal(stops[0][1],null,'origin has no fabricated arrival');
     assert.equal(stops.at(-1)[2],null,'terminus has no fabricated departure');
   }
+});
+
+test('2026-11-04: 139M and 120M cannot cross the closed Anegasaki--Nagaura segment',()=>{
+  const morning=estimateAt('2026-11-03T22:35:00Z','2026-11-04');
+  assert.equal(find(morning,'Uchibo','139M'),undefined);
+  const early=estimateAt('2026-11-03T20:25:00Z','2026-11-04');
+  assert.equal(find(early,'Uchibo','120M'),undefined);
+  assert.ok(find(early,'Sotobo','220M'), 'Sotobo line remains independent');
+  const restored=estimateAt('2026-11-08T22:35:00Z','2026-11-09');
+  assert.ok(find(restored,'Uchibo','139M'),
+    'dated closure must not permanently delete normal timetable');
 });
