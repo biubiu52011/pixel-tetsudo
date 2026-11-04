@@ -924,7 +924,7 @@ test('Tsurumi holiday train 2200 renders a planned E131-1000 PNG',()=>{
     {serviceDate:''},
     {trainOperator:'JR-Central'},
     {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
-    {trainNumber:'2200B'},
+    {trainNumber:'2999B'},
     {trainNumber:'9999'}
   ]){
     assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...p,...change}),null,
@@ -1860,4 +1860,55 @@ test('JR Nambu 2611 source direction protects even/odd public F numbers',()=>{
     ...base,trainNumber:'2319F',railDirection:'Outbound',
     sourceRailway:'odpt.Railway:JR-East.NambuBranch'
   }),null,'branch H numbers do not share mainline F stock references');
+});
+
+test('JR 2611 Tsurumi, UmiShibaura and Okawa official B numbers use scoped E131-1000 PNG',()=>{
+  const png='../images/列车/JR東日本/JR東日本_E131系_1000番台.png';
+  const source={
+    Tsurumi:'odpt.Railway:JR-East.Tsurumi',
+    TsurumiUmiShibaura:'odpt.Railway:JR-East.TsurumiUmiShibauraBranch',
+    TsurumiOkawa:'odpt.Railway:JR-East.TsurumiOkawaBranch'
+  };
+  const make=(line,number,calendarType,direction)=>sql({
+    trainNumber:number,positionLineId:line,sourceRailway:source[line],
+    trainOperator:'',operator:'',
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:calendarType==='weekday'?'2026-11-04':'2026-11-07',
+    calendarType,railDirection:'odpt.RailDirection:'+direction,
+    vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+  });
+  for(const [line,number,calendarType,direction] of [
+    ['Tsurumi','1005B','holiday','Outbound'],
+    ['TsurumiUmiShibaura','1005B','holiday','Outbound'],
+    ['Tsurumi','2200B','holiday','Inbound'],
+    ['Tsurumi','713B','weekday','Outbound'],
+    ['TsurumiOkawa','1709B','holiday','Outbound']
+  ]){
+    const p=make(line,number,calendarType,direction);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p)?.pngPath,png,
+      line+' '+number);
+    assert.equal(marker(p,line).iconSrc,png);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN',
+      'published train number does not identify an observed carset');
+  }
+  const holiday=make('Tsurumi','1005B','holiday','Outbound');
+  for(const diff of [
+    {calendarType:'weekday',serviceDate:'2026-11-04'},
+    {railDirection:'odpt.RailDirection:Inbound'},
+    {trainNumber:'2999B'},
+    {sourceRailway:''},
+    {sourceRailway:'odpt.Railway:JR-East.TsurumiUmiShibauraBranch'},
+    {trainOperator:'Keisei'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {serviceDate:'2026-12-01'}
+  ]){
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...holiday,...diff}),null,
+      'B-number PNG cannot borrow '+JSON.stringify(diff));
+  }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...make('TsurumiOkawa','1005B','holiday','Outbound')
+  }),null,'Tsurumi Okawa cannot borrow UmiShibaura-only B numbers');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...make('TsurumiUmiShibaura','1709B','holiday','Outbound')
+  }),null,'UmiShibaura cannot borrow Okawa-only B numbers');
 });
