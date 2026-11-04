@@ -5183,15 +5183,33 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
-    // Hachiko's southern E-number services are shared E231-3000/209-3500
-    // duties. Neither of the two candidates is an observed carset.
-    // Keep the candidate label for the tooltip/fold, but NEVER supply two
-    // image assets to the map (which would look like a coupled double cab).
+    // Hachiko south: E231-3000 and 209-3500 are in common working.
+    // Show ONE stable, explicitly illustrative train-front PNG so the map
+    // remains readable, but NEVER claim its model is the day's physical car.
+    // Candidate model identities stay available in the title and fold.
     var hachikoFleet = !identityConfirmed && window.TrainNumberPngRanges &&
       typeof window.TrainNumberPngRanges.matchHachikoSouthCandidates === "function"
       ? window.TrainNumberPngRanges.matchHachikoSouthCandidates(p) : null;
-    if (hachikoFleet) return {kind:"candidate", iconSrc:"", planned:false,
-      candidateAssets:[]};
+    if (hachikoFleet) {
+      var gallery = window.VehicleGaragePngMap;
+      var illustration = normalizeGalleryPngPath(hachikoFleet.illustrationPng);
+      if (hachikoFleet.illustrationOnly === true &&
+          hachikoFleet.authorizesIllustration === true &&
+          hachikoFleet.authorizesPNG === false &&
+          hachikoFleet.confirmed === false &&
+          hachikoFleet.illustrationModel === "E231系3000番台" &&
+          hachikoFleet.models.length === 2 &&
+          hachikoFleet.models.indexOf("209系3500番台") >= 0 &&
+          illustration && gallery &&
+          typeof gallery.matchModelPath === "function" &&
+          gallery.matchModelPath(hachikoFleet.illustrationModel, illustration, "Hachiko")) {
+        return artworkFailed === true
+          ? {kind:"unresolved",iconSrc:""}
+          : {kind:"vehicle",iconSrc:illustration,planned:true,illustrative:true};
+      }
+      // Missing/mismatched artwork must never silently select another model.
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Use ONE clearly planned illustrative car, not two alternatives
     // side by side (misleading coupling), and not a grey dot. The
     // timetable / realtime position and UNKNOWN identity are unchanged.
