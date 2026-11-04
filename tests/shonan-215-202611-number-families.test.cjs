@@ -142,75 +142,100 @@ test('SVG titles explain mixed fleet but do not hand out a fabricated PNG',()=>{
   assert.ok(html.includes('trains-render.js?v='+hashFor('js/trains-render.js')));
 });
 
-test('Takasaki 826M is an official 06:54 Kagohara -> 08:12 Ueno mixed fleet, not an unknown number',()=>{
-  const position=p('Takasaki','826M','Local','weekday',{
+test('Takasaki and Utsunomiya render ONE planned fleet reference PNG, not two cars or a grey dot',()=>{
+  const img='../images/列车/JR東日本/JR東日本_E233系3000番台.png';
+  const base=p('Takasaki','826M','Local','weekday',{
     serviceDate:'2026-11-04',positionSource:'supabase-train-run'});
-  const info=index.match(position);
-  assert.ok(info);
-  assert.equal(info.trainNumber,'826M');
-  assert.equal(info.status,'UNCONFIRMED_PLANNED_FLEET');
-  const artwork=root.TrainVehicle.selectMarkerArtwork(position,false);
-  assert.equal(artwork.kind,'unresolved');
-  assert.equal(artwork.iconSrc,'');
-  assert.equal(artwork.candidateAssets,undefined,
-    'alternative fleets do not form one physical coupled train');
-  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(position),null,
-    'a mixed fleet must never turn into a single model range');
-  assert.equal(position.vehicleIdentityStatus,'UNKNOWN');
-  // Both SQL and realtime retain the SAME neutral position, never a
-  // fabricated coupled E231+E233 image. Other lines cannot borrow it.
-  assert.equal(root.TrainVehicle.selectMarkerArtwork({
-    ...position,positionSource:'realtime-api'} ,false).kind,'unresolved');
-  const utsunomiya=p('UtsunomiyaJR','1520E','Local','weekday',{
-    serviceDate:'2026-11-04',positionSource:'realtime-api'});
-  assert.ok(index.match(utsunomiya));
-  assert.equal(root.TrainVehicle.selectMarkerArtwork(utsunomiya,false).kind,
-    'unresolved','Utsunomiya must not show the misleading dual train image');
-  assert.equal(root.TrainVehicle.selectMarkerArtwork({
-    ...utsunomiya,positionSource:'supabase-train-run'},false).kind,'unresolved');
-  for(const northern of [position,utsunomiya]){
-    const genericCandidates={...northern,vehicleResolutionLineId:northern.positionLineId,
-      operationArtworkCandidates:[
-        {vehicleType:'E231系1000番台',
-         asset:'../images/列车/JR東日本/JR東日本_E231系_1000番台.png'},
-        {vehicleType:'E233系3000番台',
-         asset:'../images/列车/JR東日本/JR東日本_E233系3000番台.png'}
-      ]};
-    const alternative=root.TrainVehicle.selectMarkerArtwork(genericCandidates,false);
-    assert.equal(alternative.kind,'unresolved',
-      'generic two-PNG fallback must not reinstate a physical coupling');
-    assert.equal(alternative.iconSrc,'');
+  const evidence=index.match(base);
+  assert.ok(evidence);
+  assert.equal(evidence.authorizesPNG,false,
+    'fleet reference cannot establish an actual model');
+  assert.equal(evidence.illustrativeNorthFleetOnly,true);
+  assert.equal(evidence.illustrativeModel,'E233系3000番台');
+  for(const [line,number,kind] of [
+    ['Takasaki','826M','Local'],
+    ['Takasaki','1820E','Local'],
+    ['Takasaki','4820Y','SpecialRapid'],
+    ['UtsunomiyaJR','1520E','Local'],
+    ['UtsunomiyaJR','520M','Local'],
+    ['UtsunomiyaJR','4520Y','Rapid']
+  ]){
+    for(const source of ['supabase-train-run','realtime-api']){
+      const position=p(line,number,kind,'weekday',{
+        serviceDate:'2026-11-04',positionSource:source,
+        estimated:source!=='realtime-api'
+      });
+      assert.ok(index.match(position),'verified source number '+line+' '+number);
+      const art=root.TrainVehicle.selectMarkerArtwork(position,false);
+      assert.equal(art.kind,'vehicle',line+' '+number+' '+source);
+      assert.equal(art.iconSrc,img);
+      assert.equal(art.planned,true);
+      assert.equal(art.representativeOnly,true);
+      assert.equal(art.actualVehicleConfirmed,false);
+      assert.equal(art.candidateAssets,undefined,
+        'never render alternate trains side-by-side');
+      assert.equal(position.vehicleIdentityStatus,'UNKNOWN');
+      assert.equal(position.vehicleResolvedUpstream,false);
+      assert.equal(position.vehicleType,undefined);
+    }
   }
-  for (const changed of [
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(base),null,
+    'mixed fleet still never grants a unique physical-model PNG');
+  const bad=[
     {displayLineId:'UtsunomiyaJR'},
     {positionLineId:'ShonanShinjuku'},
     {serviceDate:'2026-12-01'},
     {calendarType:'holiday'},
     {sourceRailway:'odpt.Railway:JR-East.Utsunomiya'},
+    {sourceRailway:'odpt.Railway:JR-West.Takasaki'},
+    {trainOperator:'JR-Central'},
+    {trainNumber:'9999E'},
     {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true},
-    {vehiclePlan:{confirmed:true,status:'PLANNED_MODEL',models:['E231系1000番台']}},
-  ]) {
-    assert.notEqual(root.TrainVehicle.selectMarkerArtwork({
-      ...position,...changed},false).kind,'candidate',JSON.stringify(changed));
+    {vehiclePlan:{confirmed:true,status:'PLANNED_MODEL',models:['E231系1000番台']}}
+  ];
+  for(const change of bad){
+    const art=root.TrainVehicle.selectMarkerArtwork({...base,...change},false);
+    assert.notEqual(art.iconSrc,img,'no unscoped fleet PNG '+JSON.stringify(change));
+    assert.notEqual(art.kind,'candidate','no misleading double vehicle picture');
   }
-  assert.equal(root.TrainVehicle.selectMarkerArtwork(position,true).kind,'unresolved',
-    'broken gallery artwork must fall back to a neutral location marker');
+  // Even if a generic two-model operation candidate is present, the
+  // numbered north-Shonan display picks one strictly illustrative icon;
+  // absent a scoped source number it falls back to a single neutral dot.
+  const generalCandidates={
+    vehicleResolutionLineId:'Takasaki',
+    operationArtworkCandidates:[
+      {vehicleType:'E231系1000番台',
+       asset:'../images/列车/JR東日本/JR東日本_E231系_1000番台.png'},
+      {vehicleType:'E233系3000番台',asset:img}
+    ]
+  };
+  const single=root.TrainVehicle.selectMarkerArtwork({
+    ...base,...generalCandidates},false);
+  assert.equal(single.kind,'vehicle');
+  assert.equal(single.iconSrc,img);
+  const unknown=root.TrainVehicle.selectMarkerArtwork({
+    ...base,...generalCandidates,trainNumber:'9999E'},false);
+  assert.equal(unknown.kind,'unresolved',
+    'unknown northern number must never render two side-by-side candidates');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(base,true).kind,'unresolved',
+    'failed PNG must retain the position as a neutral circle');
 });
-test('one SVG component renders a neutral position, not two coupled candidate PNGs',()=>{
+test('one train SVG component renders one reference image, never a tandem candidate',()=>{
   const position=p('Takasaki','826M','Local','weekday',{
     serviceDate:'2026-11-04',positionSource:'supabase-train-run'});
+  const img='../images/列车/JR東日本/JR東日本_E233系3000番台.png';
   const render=fs.readFileSync('js/trains-render.js','utf8');
   const from=render.indexOf('  function _trainMarkerSpec(');
   const to=render.indexOf('  // Public identification boundary:',from);
   assert.ok(from>=0&&to>from);
   vm.runInContext(render.slice(from,to)+
-    '\nthis.neutralSpec=_trainMarkerSpec;',ctx);
-  const spec=ctx.neutralSpec(position,'planned-trip-826M','Takasaki');
-  assert.equal(spec.kind,'unresolved');
-  assert.equal(spec.compact,true,'only one neutral position circle');
-  assert.equal(spec.candidateAssets.length,0);
-  // No artificial two-PNG consist; a single SVG train-unit still owns
-  // the position and its destination caption.
+    '\nthis.referenceSpec=_trainMarkerSpec;',ctx);
+  const spec=ctx.referenceSpec(position,'planned-trip-826M','Takasaki');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.iconSrc,img);
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false,'one illustrated fleet SVG image');
+  assert.equal(spec.candidateAssets.length,0,'no extra vehicle images');
   const start=render.indexOf('  function _createTrainMarker(');
   const end=render.indexOf('  // TrainComponent is the sole public lifecycle',start);
   assert.ok(start>=0&&end>start);
@@ -228,7 +253,7 @@ test('one SVG component renders a neutral position, not two coupled candidate PN
   }
   ctx.document={createElementNS(ns,tag){return new FakeSvg(tag)}};
   vm.runInContext(`
-    function _trainMarkerTitle(p){return '列車番号 '+p.trainNumber+' | 計画車種未確認';}
+    function _trainMarkerTitle(p){return '列車番号 '+p.trainNumber+' | 計画車種未確認（E231系 / E233系）';}
     function _setTrainMarkerAccessibilityLabel(marker,s){marker.setAttribute('aria-label',s);}
     function _setTrainFormationAttribute(){}
     function _trainMarkerDomKind(spec){return spec&&spec.planned===true?'planned':(spec&&spec.kind||'unresolved');}
@@ -236,18 +261,20 @@ test('one SVG component renders a neutral position, not two coupled candidate PN
     function _setTrainIconPosition(marker,x,y){marker.parentNode.setAttribute('transform','translate('+x+','+y+')');}
     function _resolveTrainLabelCollisions(){}
     function _rememberTrainArtworkFailure(){}
-  `+render.slice(start,end)+'\nthis.makeNeutralMarker=_createTrainMarker;',ctx);
-  const marker=ctx.makeNeutralMarker({isConnected:true},
+  `+render.slice(start,end)+'\nthis.makeSingleReferenceMarker=_createTrainMarker;',ctx);
+  const marker=ctx.makeSingleReferenceMarker({isConnected:true},
     'http://www.w3.org/2000/svg','planned-trip-826M',spec,159.5,245,
     position,'Takasaki',false,'#008803',null);
-  assert.equal(marker.tagName,'circle');
-  assert.equal(marker.children.length,0);
-  assert.equal(marker.getAttribute('data-marker-kind'),'unresolved');
-  assert.equal(marker.getAttribute('data-marker-display'),'compact');
+  assert.equal(marker.tagName,'image');
+  assert.equal(marker.children.length,0,'one SVG image, not a group of two');
+  assert.equal(marker.getAttribute('href'),img);
+  assert.equal(marker.getAttribute('data-train-artwork'),img);
+  assert.equal(marker.getAttribute('data-marker-kind'),'planned');
+  assert.equal(marker.getAttribute('data-marker-display'),'artwork');
+  assert.equal(marker.getAttribute('data-marker-reference-only'),'true');
   assert.equal(marker.getAttribute('data-vehicle-candidate'),'');
-  assert.equal(marker.getAttribute('data-vehicle-unresolved'),'true');
   assert.equal(marker.parentNode.getAttribute('data-train-unit-id'),'planned-trip-826M');
-  assert.equal(marker.parentNode.children.length,1,'no duplicate train position');
+  assert.equal(marker.parentNode.children.length,1,'one train unit, no extra formation');
   assert.equal(marker.parentNode.getAttribute('transform'),'translate(159.5,245)');
   assert.match(marker.getAttribute('aria-label'),/826M.*計画車種未確認/);
 });
