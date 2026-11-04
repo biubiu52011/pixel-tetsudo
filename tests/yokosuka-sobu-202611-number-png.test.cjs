@@ -308,3 +308,63 @@ test('2262F renders E235 on Yokosuka composite via the verified SobuRapid extens
   assert.match(fusion,/fusionRole: "through-boundary"/,
     'direct-through station projections explicitly mark their verified role');
 });
+
+test('2026-11 Yokosuka-Sobu published E235 S/F direction parity is validated on every map projection',()=>{
+  // SQL source rows consistently use even=inbound / odd=outbound for
+  // Yokosuka S, SobuRapid F, and the same stock's through line numbers.
+  // A number present in a calendar is not evidence it runs both ways.
+  for(const [line,number,kind,cal,correct,wrong] of [
+    ['Yokosuka','1004S','Local','weekday','Inbound','Outbound'],
+    ['Yokosuka','1005S','Local','holiday','Outbound','Inbound'],
+    ['SobuRapid','2262F','Rapid','holiday','Inbound','Outbound'],
+    ['SobuRapid','2262F','Rapid','weekday','Inbound','Outbound'],
+    ['SobuRapid','1004F','Rapid','holiday','Inbound','Outbound'],
+    ['SobuRapid','1005F','Rapid','weekday','Outbound','Inbound'],
+    ['SobuMain','2627F','Rapid','holiday','Outbound','Inbound'],
+    ['Narita','2627F','Rapid','holiday','Outbound','Inbound'],
+    ['Narita','2545M','Local','weekday','Outbound','Inbound']
+  ]){
+    const original=position(line,number,kind,cal,{
+      railDirection:'odpt.RailDirection:'+correct
+    });
+    assert.equal(choose(original)?.model,'E235系1000番台',
+      'published service retains its actual source direction: '+line+' '+number);
+    assert.equal(picture(original).iconSrc,p235);
+    const opposite={...original,railDirection:'odpt.RailDirection:'+wrong};
+    assert.equal(choose(opposite),null,
+      'number/calendar must not authorize the opposite direction: '+line+' '+number);
+    assert.equal(picture(opposite).kind,'unresolved',
+      'opposite direction remains a neutral marker, not an E235 set');
+    const sql={...original,positionSource:'supabase-train-run',estimated:true,
+      calendarType:'',serviceId:cal==='weekday'?
+        'odpt.Calendar:Weekday':'odpt.Calendar:SaturdayHoliday',
+      trainOperator:''};
+    assert.equal(choose(sql)?.model,'E235系1000番台',
+      'SQL service calendar must preserve valid direction');
+    assert.equal(choose({...sql,railDirection:'odpt.RailDirection:'+wrong}),null,
+      'SQL must also reject wrong directional claims');
+  }
+  const validProjection=position('SobuRapid','2262F','Rapid','holiday',{
+    positionSource:'supabase-train-run',estimated:true,
+    fusionLineId:'SobuRapid',fusionRole:'extension',
+    railDirection:'odpt.RailDirection:Inbound'
+  });
+  assert.equal(ctx._trainMarkerSpec(validProjection,validProjection.trainId,
+    'Yokosuka').iconSrc,p235,'valid Tokyo through projection remains visible');
+  assert.equal(ctx._trainMarkerSpec({...validProjection,
+    railDirection:'odpt.RailDirection:Outbound'},validProjection.trainId,
+    'Yokosuka').kind,'unresolved',
+  'wrong-direction cross-line projection may not borrow the image');
+  // N'EX uses different line-direction conventions across its services:
+  // 2001M is outbound on SobuRapid but inbound on Yokosuka. This parity
+  // restriction must NOT leak into the separate E259 LimitedExpress rule.
+  for(const [line,direction] of [
+    ['SobuRapid','Outbound'],['Yokosuka','Inbound']
+  ]){
+    const nex=position(line,'2001M','LimitedExpress','holiday',{
+      railDirection:'odpt.RailDirection:'+direction
+    });
+    assert.equal(choose(nex)?.model,'E259系',
+      'keep source-scoped NEX alongside the stricter ordinary E235 service');
+  }
+});
