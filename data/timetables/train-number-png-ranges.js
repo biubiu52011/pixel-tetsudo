@@ -531,6 +531,7 @@
       suffixes:"Y",trainType:"Local",operator:"JR-East",
       sourceOperatorFallback:true,
       publishedNumbers:["5680Y","5983Y"],
+      numberIndex:"jreast-togane-202611",
       sourceRailways:["odpt.Railway:JR-East.Togane"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       allowedModelLabels:["E233系5000番台"],
@@ -546,6 +547,7 @@
     // https://www.jreast.co.jp/train/local/e231.html
     {lineIds:["NaritaAbikoBranch"],numberFormat:"full",
       from:820,to:899,suffixes:"M",trainType:"Local",
+      numberIndex:"jreast-narita-abiko-202611",
       operator:"JR-East",sourceOperatorFallback:true,
       publishedNumbers:[
         "820M","821M","822M","823M","824M","825M","826M","827M",
@@ -845,6 +847,16 @@
     Object.freeze(row);
   });
   Object.freeze(rows);
+  // SQL positions can provide the calendar as an ODPT serviceId rather
+  // than a normalized calendarType. Read the timetable source first;
+  // never infer a service calendar from the last two train-number digits.
+  function sourceCalendar(context){
+    var raw=String(context&&(context.calendarType||context.serviceId||
+      context.timetableCalendar)||"");
+    return raw==="weekday"||/(?:^|[.:])Weekday$/.test(raw)?"weekday":
+      raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
+        ?"holiday":"";
+  }
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
@@ -919,7 +931,7 @@
       if(row.validTo && String(context&&context.serviceDate||"").slice(0,10)>row.validTo)continue;
       if(row.operatingDates && row.operatingDates.indexOf(
           String(context&&context.serviceDate||"").slice(0,10))<0)continue;
-      if(row.calendarType && String(context&&context.calendarType||"")!==row.calendarType)continue;
+      if(row.calendarType && sourceCalendar(context)!==row.calendarType)continue;
       if(row.trainTypes){
         var runtimeType=String(context&&(context.trainType||context.typeName)||"").split(/[.:]/).pop();
         if(row.trainTypes.indexOf(runtimeType)<0)continue;
@@ -965,10 +977,27 @@
               !officialIndex.match(row.model,number,line,context))continue;
         }
       }
+      // Where an actual source timetable supplies a direction, compare
+      // that direction with the existing official 2611 number index.
+      // Legacy exact-number records without direction retain the
+      // published-number fallback, not a guessed directional assignment.
+      if(row.numberIndex==="jreast-togane-202611" ||
+         row.numberIndex==="jreast-narita-abiko-202611"){
+        var officialNumberIndex=row.numberIndex==="jreast-togane-202611"
+          ?root.JREastToganeNumberIndex202611
+          :root.JREastNaritaAbikoNumberIndex202611;
+        var publishedDirection=String(context&&
+          (context.railDirection||context.directionUrn||context.direction)||"");
+        var publishedCalendar=sourceCalendar(context);
+        if(publishedDirection && publishedCalendar &&
+           (!officialNumberIndex || typeof officialNumberIndex.verify!=="function" ||
+            officialNumberIndex.verify(number,context.sourceRailway,publishedDirection,
+              actualType,publishedCalendar,context.serviceDate)!==true))continue;
+      }
       if(row.numberIndex==="joban-e231-h-202611"){
         var idx=root.JobanE231RapidNumberIndex;
         if(!idx || typeof idx.match!=="function" ||
-            !idx.match(number,String(context&&context.calendarType||""),
+            !idx.match(number,sourceCalendar(context),
               context&&context.serviceDate))continue;
       }
       if(row.rejectAmbiguousPlan && context && context.vehiclePlan &&
