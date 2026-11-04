@@ -5183,6 +5183,24 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
+    // Hachiko E services have TWO independently catalogued alternatives.
+    // Keep UNKNOWN physical identity; no single E231 default is allowed.
+    var hachikoFleet=!identityConfirmed && window.TrainNumberPngRanges &&
+      typeof window.TrainNumberPngRanges.matchHachikoSouthCandidates==="function"
+      ?window.TrainNumberPngRanges.matchHachikoSouthCandidates(p):null;
+    if(hachikoFleet){
+      var hachikoGarage=window.VehicleGaragePngMap;
+      if(!hachikoGarage || !Array.isArray(hachikoFleet.candidateAssets) ||
+         hachikoFleet.candidateAssets.length!==2 ||
+         !hachikoFleet.models.every(function(model,i){
+           return !!normalizeGalleryPngPath(hachikoFleet.candidateAssets[i]) &&
+             hachikoGarage.matchModelPath(
+               model,hachikoFleet.candidateAssets[i],"Hachiko");
+         })) return {kind:"unresolved",iconSrc:""};
+      return artworkFailed===true ? {kind:"unresolved",iconSrc:""}
+        : {kind:"candidate",iconSrc:"",planned:true,
+           candidateAssets:hachikoFleet.candidateAssets.slice()};
+    }
     // Use ONE clearly planned illustrative car, not two alternatives
     // side by side (misleading coupling), and not a grey dot. The
     // timetable / realtime position and UNKNOWN identity are unchanged.
