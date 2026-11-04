@@ -164,6 +164,24 @@
       allowedModelLabels:["E129系"],
       model:"E129系",
       pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
+    // JR East 2611 9630M: Yahiko Chrysanthemum Festival service
+    // (ordinary extension, Shibata -> Yoshida -> Yahiko).
+    // Only the nine dated November Saturday/holiday runs are published.
+    // E129 is a sourced fleet reference, never observed physical carset.
+    // https://timetables.jreast.co.jp/2611/train/185/188861.html
+    // https://www.tetsudo.com/event/61170/
+    {lineIds:["Echigo"],numberFormat:"full",from:9630,to:9630,
+      suffixes:"M",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Echigo"],
+      calendarType:"holiday",validFrom:"2026-11-01",validTo:"2026-11-30",
+      publishedNumbers:["9630M"],
+      operatingDates:["2026-11-01","2026-11-03","2026-11-07",
+        "2026-11-08","2026-11-14","2026-11-15",
+        "2026-11-21","2026-11-22","2026-11-23"],
+      allowedModelLabels:["E129系"],
+      model:"E129系",
+      pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
     // Takasaki/Joetsu local 211: exact published JR 2611 numbers also
     // checked against JR official Nov 2026 inbound/outbound weekday/holiday
     // 238u1/238u2/238d1/238d2 plus dated 211 working reports.
