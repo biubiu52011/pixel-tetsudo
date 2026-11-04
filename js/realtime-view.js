@@ -91,6 +91,16 @@
     }
     var s = window.DataState && window.DataState.STATUS_META && window.DataState.STATUS_META[status] ? window.DataState.STATUS_META[status] : STATUS_META[status] || STATUS_META.no_data;
     var statusText = t("status." + status) || status;
+    // A few cancelled trains do not amount to a service suspension.
+    // Spell out both effects when the official text reports delays + cancellations.
+    var hasPartialCancellation = delayInfo.effect === "partial_cancellation" ||
+      impacts.some(function(item) { return item && item.effect === "partial_cancellation"; });
+    if (status === "delayed" && hasPartialCancellation) {
+      var cancellationLabel = _impactLabels().effect.partial_cancellation;
+      var hasDelay = /遅れ|遅延|ダイヤ(?:が|は)?乱れ/.test(delayInfo.detail || "") ||
+        impacts.some(function(item) { return item && item.effect === "delay"; });
+      statusText = hasDelay ? statusText + "・" + cancellationLabel : cancellationLabel;
+    }
     // 标题。
     modal.querySelector(".rs-modal-title").textContent = displayTitle || getDisplayName(line) || tLine(line.id) || line.name;
     // 状态区块。
