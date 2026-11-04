@@ -74,8 +74,11 @@ test('11/7 06:32: cancelled Uchibo 3606F does not appear',()=>{
   assert.ok(!p.some(x=>x.trainNumber==='3606F'));
   assert.ok(!p.some(x=>x.trainNumber==='3680F'));
   const sunday=run('2026-11-07T21:32:00Z');
-  assert.ok(sunday.some(x=>x.trainNumber==='3606F'));
-  assert.ok(sunday.some(x=>x.trainNumber==='3680F'));
+  // November 8 is NOT a normal Sunday: JR East still suspends
+  // Anegasaki--Nagaura and closes Anegasaki--Kisarazu for works.
+  // Do not revive the regular through-service on this exceptional date.
+  assert.ok(!sunday.some(x=>x.trainNumber==='3606F'));
+  assert.ok(!sunday.some(x=>x.trainNumber==='3680F'));
 });
 test('11/7 09:30 and 10:29: 3719F and 3845F are suppressed only on the exceptional date',()=>{
   for(const [hour,number] of [['09:30','3719F'],['10:29','3845F']]){
