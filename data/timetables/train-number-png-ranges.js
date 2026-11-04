@@ -715,6 +715,23 @@
       allowedModelLabels:["E257系500番台","E257系500番台（わかしお・さざなみ）"],
       model:"E257系500番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E257系_500番台.png"},
+    // 2026-11 Nambu Branch (Shitte - HamaKawasaki) uses full public
+    // H numbers. The existing 702u/d official index controls the train
+    // number, calendar, direction and exact JR-East.NambuBranch source.
+    // E127-0 is a REPRESENTATIVE branch-stock gallery image, not a
+    // verified real carset: 205-1000 can also work on this line.
+    // https://timetables.jreast.co.jp/2611/timetable-v/702u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/702d1.html
+    // https://www.jreast.co.jp/press/2022/yokohama/20230217_y2.pdf
+    {lineIds:["NambuBranch"],numberFormat:"full",from:400,to:2299,
+      suffixes:"H",trainType:"Local",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.NambuBranch"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      numberIndex:"nambu-branch-official-202611",
+      allowedModelLabels:["E127系0番台（南武支線）","E127系0番台","E127系"],
+      model:"E127系0番台（南武支線）",
+      pngPath:"../images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png"},
     // 2026-11 Nambu mainline JR-East F-numbered Local/Rapid services.
     // Holiday 2319F: Kawasaki 23:13 -> Musashi-Mizonokuchi 23:34.
     // E233-8000 is a representative line-stock IMAGE; E233-8500 also
@@ -1118,6 +1135,28 @@
           .split(/[.:]/).pop();
         var indexed=chuoSobuTozai2611[cal+"_"+direction+"_"+row.throughOwner];
         if(!indexed||indexed.indexOf(number)<0)continue;
+      }
+      if(row.numberIndex==="nambu-branch-official-202611"){
+        var branchIdx=root.NambuBranchOfficial202611;
+        if(!branchIdx || typeof branchIdx.verify!=="function")continue;
+        var branchRawCal=String(context&&(context.calendarType||
+          context.serviceId||context.timetableCalendar)||"");
+        var branchCal=sourceCalendar(context);
+        // The published H-number sets happen to be the same on both
+        // calendars; unknown realtime calendar may use their union, but
+        // an explicitly invalid calendar must not be silently accepted.
+        if(branchRawCal && !branchCal)continue;
+        var branchCals=branchCal==="weekday" ? ["odpt.Calendar:Weekday"] :
+          branchCal==="holiday" ? ["odpt.Calendar:SaturdayHoliday"] :
+          ["odpt.Calendar:Weekday","odpt.Calendar:SaturdayHoliday"];
+        var branchDirection=String(context&&(context.railDirection||
+          context.directionUrn||context.direction)||"");
+        var branchDate=String(context&&context.serviceDate||"");
+        var branchRailway=String(context&&context.sourceRailway||"");
+        if(!branchCals.some(function(cal){
+          return branchIdx.verify(number,branchRailway,branchDirection,
+            "odpt.TrainType:JR-East.Local",cal,branchDate)===true;
+        }))continue;
       }
       if(row.numberIndex==="jreast-yokohama-202611"){
         var yokohamaIndex=root.JREastYokohama202611NumberIndex;
