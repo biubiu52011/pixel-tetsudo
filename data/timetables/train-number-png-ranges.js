@@ -589,7 +589,9 @@
     // display line alone; a separate validated source-railway projection
     // would be needed to paint its vehicle on another line.
     {lineIds:["Yokohama"],numberFormat:"full",
-      from:400,to:4999,suffixes:"K",excludeTrainType:"LimitedExpress",
+      from:400,to:4999,suffixes:"K",trainTypes:["Local","Rapid"],
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Yokohama"],
       numberIndex:"jreast-yokohama-202611",
       validFrom:"2026-11-01",validTo:"2026-11-30",
       model:"E233系6000番台",
@@ -661,6 +663,7 @@
     // https://media.jreast.co.jp/articles/1712
     {lineIds:["Nambu"],numberFormat:"full",from:400,to:4999,
       suffixes:"F",trainTypes:["Local","Rapid"],operator:"JR-East",
+      directionNumberParity:"inbound-even",
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Nambu"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
@@ -896,6 +899,16 @@
       }else continue;
       if(numberValue<row.from||numberValue>row.to||
           row.suffixes.indexOf(suffix)<0)continue;
+      // JR East Nambu 2611: even F numbers run upstream (上り),
+      // odd F numbers downstream (下り). Only check source directions
+      // explicitly supplied by realtime or the stored timetable.
+      if(row.directionNumberParity==="inbound-even"){
+        var numberDirection=String(context&&
+          (context.railDirection||context.directionUrn||context.direction)||"")
+          .split(/[.:]/).pop();
+        if((numberDirection==="Inbound" && numberValue%2!==0)||
+           (numberDirection==="Outbound" && numberValue%2!==1))continue;
+      }
       // M suffix alone does not distinguish an express from an ordinary
       // train: require the ODPT or SQL train-type field for these rows.
       var actualType=String(context&&(context.trainType||context.typeName)||"");
