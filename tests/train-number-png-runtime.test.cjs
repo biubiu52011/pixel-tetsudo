@@ -1459,11 +1459,21 @@ test('Hachiko south E retains E231/209 mixed-fleet evidence and excludes Kawagoe
     trainId:'planned-trip:2026-11-03|JR-East|Hachiko|461E',
     positionLineId:'Hachiko',sourceRailway:'odpt.Railway:JR-East.Hachiko',
     trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'});
-  const img='../images/列车/JR東日本/JR東日本_E231系_3000番台.png';
+  // These public E numbers do not tell us whether the day's carset is
+  // an E231-3000 or 209-3500. Never default to the E231 gallery PNG.
   for(const n of ['461E','568E','2377E','4778E']){
-    const p={...base,trainNumber:n};
-    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p).pngPath,img);
-    assert.equal(marker(p,'Hachiko').iconSrc,img);
+    const p={...base,trainNumber:n,estimated:true,
+      positionSource:'supabase-train-run',
+      plannedVehicleCandidates:['E231系3000番台','209系3500番台'],
+      vehiclePlan:{status:'PLANNED_CANDIDATES',
+        models:['E231系3000番台','209系3500番台']}};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null);
+    assert.deepEqual(Array.from(
+      root.TrainNumberPngRanges.matchHachikoSouthCandidates(p).models),
+      ['E231系3000番台','209系3500番台']);
+    assert.equal(marker(p,'Hachiko').kind,'candidate');
+    assert.equal(marker(p,'Hachiko').candidateAssets.length,0,
+      'Hachiko must not hand two train fronts to the map renderer');
   }
   for(const change of [
     {trainNumber:'460H'},{trainNumber:'460E'},{trainNumber:'250D'},
