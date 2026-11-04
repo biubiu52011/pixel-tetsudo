@@ -1546,12 +1546,18 @@
       candidateAssets:[
         "../images/列车/JR東日本/JR東日本_E231系_3000番台.png",
         "../images/列车/JR東日本/JR東日本_209系_3500番台.png"
-      ],status:"UNCONFIRMED_PLANNED_FLEET",confirmed:false,
+      ],
+      // A stable SINGLE gallery PNG for *visual illustration only*.
+      // It is NOT evidence that this train uses an E231 today.
+      illustrationModel:"E231系3000番台",
+      illustrationPng:"../images/列车/JR東日本/JR東日本_E231系_3000番台.png",
+      illustrationOnly:true,authorizesIllustration:true,
+      status:"UNCONFIRMED_PLANNED_FLEET",confirmed:false,
       authorizesPNG:false,source:"hachiko-202611-common-working",
       sourceUrl:"https://4gousya.net/jr_e/line/8113.php"};
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-hachiko-candidate-v39",match:match,
+    version:"20261104-hachiko-single-illustration-v40",match:match,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates
   });
