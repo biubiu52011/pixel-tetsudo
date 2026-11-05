@@ -1006,23 +1006,22 @@ const defensiveMarker=markerContext._createTrainMarker(
 assert.equal(defensiveMarker.tagName,'circle');
 assert.equal(defensiveMarker.children.length,0);
 
-// Chuo Main no-evidence stock must still be a SINGLE train-front glyph;
- // never substitute a false E231/211 PNG or a grey circle.
+// Chuo Main no-evidence stock must retain ONE neutral location marker;
+// never substitute an invented E231/211 PNG or a Unicode train glyph.
 renderVm.artwork={kind:'unresolved',iconSrc:''};
 const chuoUnknownSpec=renderVm._trainMarkerSpec({
   ...narrowed,trainNumber:'2201M',positionSource:'supabase-train-run'
 },'chuo-2201','ChuoMain');
 assert.equal(chuoUnknownSpec.kind,'unresolved');
-assert.equal(chuoUnknownSpec.genericFront,true);
+assert.equal(Object.hasOwn(chuoUnknownSpec,'genericFront'),false);
 const chuoUnknownNode=markerContext._createTrainComponent(
   markerLayer,svgNS,'chuo-2201',chuoUnknownSpec,70,100,
   {...circlePosition,trainNumber:'2201M'},'ChuoMain',false,'#ee6b28',null);
-assert.equal(chuoUnknownNode.tagName,'text');
-assert.equal(chuoUnknownNode.textContent,'🚆');
+assert.equal(chuoUnknownNode.tagName,'circle');
 assert.equal(chuoUnknownNode.getAttribute('data-vehicle-unresolved'),'true');
 assert.equal(chuoUnknownNode.parentNode.getAttribute('data-train-unit-id'),'chuo-2201');
-assert.equal(chuoUnknownNode.getAttribute('x'),'0');
-assert.equal(chuoUnknownNode.getAttribute('y'),'0');
+assert.equal(chuoUnknownNode.getAttribute('cx'),'0');
+assert.equal(chuoUnknownNode.getAttribute('cy'),'0');
 markerContext._moveTrainComponent(chuoUnknownNode,markerLayer,'chuo-2201',
   100,130,circlePosition,'ChuoMain',false);
 assert.equal(chuoUnknownNode.parentNode.getAttribute('transform'),'translate(100,130)');
