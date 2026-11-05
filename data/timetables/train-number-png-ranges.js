@@ -378,6 +378,28 @@
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
 
+    // 2611 Tatsuno branch: the published 159M Local departs Tatsuno
+    // 14:00 and terminates Shiojiri 14:25. The branch is operated by
+    // E127-100 in published route/fleet sources (JR East replacement
+    // release, Matsumoto depot and 2024 actual working record).
+    // One E127-100 Nagano front is REFERENCE ART; not the actual-day set.
+    // This source railway is ChuoTatsuno, never ChuoMain's 159M
+    // candidate family; the branch is simply drawn on ChuoMain's map.
+    // https://timetables.jreast.co.jp/en/2611/train/005/005241.html
+    // https://www.jreast.co.jp/nagano/pdf/121221.pdf
+    // https://ameblo.jp/tc205-37/entry-12854353694.html
+    {lineIds:["ChuoTatsuno"],numberFormat:"full",
+      from:159,to:159,suffixes:"M",trainType:"Local",
+      publishedNumbers:["159M"],directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.ChuoTatsuno"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      weekdayNumbers:["159M"],holidayNumbers:["159M"],
+      allowedModelLabels:["E127系","E127系100番台",
+        "E127系100番台（長野色）"],
+      requiredCandidateModelPrefix:"E127系",
+      model:"E127系100番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png"},
     // Chuo Main 2026-11: T/H suffix is the E233-0 Chuo Rapid through
     // service. Exact SQL train-number sets are calendar scoped; November
     // roster has source_revision_date=NULL, not physical car identity.
@@ -1392,6 +1414,12 @@
             !idx.match(number,sourceCalendar(context),
               context&&context.serviceDate))continue;
       }
+      if(row.requiredCandidateModelPrefix && context &&
+         Array.isArray(context.plannedVehicleCandidates) &&
+         context.plannedVehicleCandidates.length &&
+         !context.plannedVehicleCandidates.some(function(model){
+           return String(model).indexOf(row.requiredCandidateModelPrefix)===0;
+         }))continue;
       if(row.requireCandidateOverlap && context &&
          Array.isArray(context.plannedVehicleCandidates) &&
          context.plannedVehicleCandidates.length &&

@@ -102,3 +102,10 @@
 - 实际车型独立记录：2025-09（[くまぶろ](https://kumapapa.jp/blog/?p=42621)）、2026-02-08（[N608 编组列车视频](https://www.youtube.com/watch?v=r5uh_ObkLPU)）、2026-08-01（[N601 编组乘车记录](https://hiro989.hatenablog.com/?page=2)），均为 211 系。记录不代表 2026-11-05 当天的具体车辆编组。
 - SQL 该车次的两个日历模板：`211系 / E233系0番台` 混合候选，尚无数据库级明确车型映射。
 - 新增 **单车号 `439M` → JR 东日本 211 系长野色 PNG**：限 `ChuoMain`、JR East、`Local`、下行、2611 有效月份及两种官方日历。实时／SQL 来源使用同一车型**参考图**，`UNKNOWN` 身份保持不变。存在 E233/E131 的明确冲突车型信息时不能套用。不得扩张为全部 400M 号段。
+
+## 159M 辰野支线 14:00 → 塩尻 14:25（2026-11-05）
+
+- 2611 JR East 官方逐停表：<https://timetables.jreast.co.jp/en/2611/train/005/005241.html>，`159M` 普通列车，全日运营。
+- 车型依据：JR East 2012 年官方改正资料明确辰野—塩尻的原 123 系由 **E127 系两辆编组**替换（<https://www.jreast.co.jp/nagano/pdf/121221.pdf>）；2024 年松本 E127 A 编组运用表明确 `159M`（辰野14:00发、塩尻14:25到）由 E127 运用（<https://ameblo.jp/tc205-37/entry-12854353694.html>）。历史运用并不证明今天的实际车号。
+- SQL 的 `ChuoTatsuno` 两个服务日模板只有 `211系 / E127系100番台` 混合候选，当前 `vehicle_mapping` 为空；相同 `159M` 也在 `ChuoMain` 模板存在，**不能**用主线的 211 候选覆盖支线。
+- 修复：在来源 `odpt.Railway:JR-East.ChuoTatsuno`、`ChuoTatsuno`、`Local`、下行、2026-11 平日/土休日、确切编号 `159M` 的限制下，以图库 `JR東日本_E127系_100番台_長野色.png` 为参考图片；支线的 SQL 估算位置可以在 `ChuoMain` 的合并线路图绘出该图库 PNG，不移植到其他图、其他番号、其他车型或 ODPT 实时身份。位置标记的 `vehicleIdentityStatus` 继续 `UNKNOWN`，且 `planned:true`。

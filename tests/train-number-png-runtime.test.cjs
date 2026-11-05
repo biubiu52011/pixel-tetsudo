@@ -615,6 +615,63 @@ test('ChuoMain 2611 SQL numbers: T/H E233 and M-only 211/E131 illustrated as ONE
     plannedVehicleCandidates:['211系','E233系0番台']});
   assert.equal(marker(foreign,'ChuoRapid').kind,'unresolved');
 });
+test('ChuoTatsuno 159M: branch timetable position on ChuoMain SVG uses E127-100 planned PNG',()=>{
+  const png127='../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png';
+  const position=sql({
+    trainId:'planned-trip:2026-11-05|JR-East|odpt.Railway:JR-East.ChuoTatsuno|ChuoTatsuno|159M|odpt.RailDirection:Outbound|odpt.Station:JR-East.Tatsuno|14:00|odpt.Station:JR-East.Shiojiri',
+    trainNumber:'159M',serviceDate:'2026-11-05',calendarType:'weekday',
+    positionLineId:'ChuoTatsuno',
+    sourceRailway:'odpt.Railway:JR-East.ChuoTatsuno',
+    railDirection:'odpt.RailDirection:Outbound',
+    trainType:'odpt.TrainType:JR-East.Local',
+    positionSource:'supabase-train-run',estimated:true,
+    plannedVehicleCandidates:['211系','E127系100番台'],
+    vehicleIdentityStatus:'UNKNOWN'
+  });
+  assert.equal(root.TrainVehicle.lookupTrainNumberPng(position),null);
+  assert.equal(root.TrainNumberPngRanges.match('159M','ChuoMain',position),null);
+  const identified=root.TrainNumberPngRanges.match('159M','ChuoTatsuno',position);
+  assert.ok(identified);
+  assert.equal(identified.model,'E127系100番台');
+  assert.equal(identified.pngPath,png127);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath('E127系100番台',png127,'ChuoTatsuno'),true);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath('E127系100番台',png127,'ChuoMain'),true);
+  const mapped=root.TrainVehicle.lookupTrainNumberRangePng({...position,displayLineId:'ChuoMain'});
+  assert.ok(mapped);
+  assert.equal(mapped.lineId,'ChuoTatsuno');
+  assert.equal(mapped.model,'E127系100番台');
+  assert.equal(mapped.pngPath,png127);
+  const spec=marker(position,'ChuoMain');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.iconSrc,png127);
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(position.vehicleIdentityStatus,'UNKNOWN');
+  const holiday={...position,serviceDate:'2026-11-07',calendarType:'holiday'};
+  assert.equal(marker(holiday,'ChuoMain').iconSrc,png127);
+  assert.equal(marker(position,'ChuoTatsuno').iconSrc,png127);
+  for(const bad of [
+    {trainNumber:'157M'},
+    {serviceDate:'2026-12-05'},
+    {railDirection:'odpt.RailDirection:Inbound'},
+    {sourceRailway:'odpt.Railway:JR-East.ChuoMain'},
+    {sourceRailway:'odpt.Railway:JR-East.Joban'},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {plannedVehicleCandidates:['211系']},
+    {realtimeVehicleType:'211系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['211系']}},
+    {positionSource:'realtime-api',estimated:false},
+    {positionLineId:'ChuoMain'},
+    {displayLineId:'Oito'}
+  ]){
+    const modified={...position,...bad};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...modified,displayLineId:bad.displayLineId||'ChuoMain'}),null,
+      'Tatsuno branch E127 may not escape its evidence: '+JSON.stringify(bad));
+  }
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...position,displayLineId:'ChuoMain'},true).kind,'unresolved');
+});
+
 test('439M Otsuki 13:45 -> Matsumoto: planned-trip live train displays one 211 reference PNG',()=>{
   const png211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
   const position=live({

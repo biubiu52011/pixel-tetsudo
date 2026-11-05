@@ -2437,8 +2437,8 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "planned-stock-library-64": ["TobuUtsunomiya", "TobuNikko"],
   "planned-stock-library-65": ["Keisei", "NaritaSkyAccess"],
   "jr-east-e131-0-plan": ["Uchibo", "Sotobo", "Narita", "Kashima"],
-   "jr-east-e127-100-nagano-plan": ["Oito", "ChuoMain", "Shinonoi", "Shinetsu"],
-   "jr-east-e127-100-nagano-horo-plan": ["Oito", "ChuoMain", "Shinonoi", "Shinetsu"],
+   "jr-east-e127-100-nagano-plan": ["Oito", "ChuoMain", "ChuoTatsuno", "Shinonoi", "Shinetsu"],
+   "jr-east-e127-100-nagano-horo-plan": ["Oito", "ChuoMain", "ChuoTatsuno", "Shinonoi", "Shinetsu"],
   "jr-east-hbe220-hachiko-plan": ["Hachiko"],
   "jr-east-e231-900-musashino": ["Musashino"],
   "jr-209-2000-boso": ["Uchibo", "Sotobo", "Narita", "SobuMain"],
@@ -5016,8 +5016,19 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       p.fusionRole === "branch" &&
       String(p.fusionLineId || "") === "NambuBranch" &&
       String(p.sourceRailway || "") === "odpt.Railway:JR-East.NambuBranch";
+    // ChuoTatsuno's official source-only train estimates are plotted as
+    // a BRANCH inside the ChuoMain SVG. The source line and car model are
+    // still ChuoTatsuno; do not reclassify the train as ChuoMain 159M.
+    // Only timetable estimates with the exact Tatsuno railway URN may
+    // project their source-approved reference PNG into this shared diagram.
+    var scopedChuoTatsunoBranchMap = displayLineId === "ChuoMain" &&
+      lineId === "ChuoTatsuno" && p.estimated === true &&
+      (p.positionSource === "supabase-train-run" ||
+       p.positionSource === "train-timetable") &&
+      String(p.sourceRailway || "") ===
+        "odpt.Railway:JR-East.ChuoTatsuno";
     if (displayLineId !== lineId && !scopedYokosukaSobuExtension &&
-        !scopedNambuBranchMap) return null;
+        !scopedNambuBranchMap && !scopedChuoTatsunoBranchMap) return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
     var match = rules.match(p.trainNumber, lineId, p);
@@ -5025,7 +5036,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var png = normalizeGalleryPngPath(match.pngPath);
     var garage = window.VehicleGaragePngMap;
     if (!png || !garage || !garage.matchModelPath(match.model, png, lineId) ||
-        (scopedYokosukaSobuExtension &&
+        ((scopedYokosukaSobuExtension || scopedChuoTatsunoBranchMap) &&
          !garage.matchModelPath(match.model, png, displayLineId)))
       return null;
     return {trainNumber:String(p.trainNumber).trim(),lineId:lineId,
