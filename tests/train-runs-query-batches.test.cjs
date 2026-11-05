@@ -60,3 +60,22 @@ test('time table reads still enforce provenance and stable canonical aliases', (
   assert.match(source, /source_line_key: completeStops/);
   assert.match(source, /status === 200 \? cors\["Cache-Control"\] : "no-store"/);
 });
+
+test('canonical read-only RPC retains source evidence, scope limits and permissions', () => {
+  const migration = fs.readFileSync(
+    'supabase/migrations/20261105192621_train_runs_canonical_bundle_readonly_20261106.sql',
+    'utf8');
+  assert.match(migration, /CREATE OR REPLACE FUNCTION public\.train_runs_canonical_bundle/);
+  assert.match(migration, /SECURITY INVOKER/);
+  assert.match(migration, /cardinality\(p_timetable_ids\) > 40/);
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.train_runs_canonical_bundle\(bigint\[\], boolean\) FROM PUBLIC/);
+  assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.train_runs_canonical_bundle\(bigint\[\], boolean\) TO service_role/);
+  assert.match(migration, /LEFT JOIN public\.manual_timetable_templates t ON t\.id = m\.source_template_id/);
+  assert.match(source, /db\.rpc\("train_runs_canonical_bundle"/);
+  assert.match(source, /p_timetable_ids: ids, p_include_members: includeAliases/);
+  assert.match(source, /CANONICAL_BUNDLE_OUT_OF_SCOPE/);
+  assert.match(source, /INVALID_CANONICAL_BUNDLE/);
+  assert.doesNotMatch(source, /db\.from\("train_timetable_stops"\)/);
+  assert.doesNotMatch(source, /db\.from\("train_timetable_lines"\)/);
+  assert.doesNotMatch(source, /db\.from\("train_timetable_members"\)/);
+});
