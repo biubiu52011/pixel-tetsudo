@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS public.published_miyo_2611_number_roster(
  edition text NOT NULL CHECK(edition='2611'),
  line_key text NOT NULL CHECK(line_key='Miyo'),
  source_template_id bigint,
+ source_occurrence smallint NOT NULL DEFAULT 0,
  train_number text NOT NULL CHECK(train_number~'^[0-9]+[MD]$'),
  calendar_urn text NOT NULL CHECK(calendar_urn IN
   ('odpt.Calendar:Weekday','odpt.Calendar:SaturdayHoliday')),
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS public.published_miyo_2611_number_roster(
   CHECK(stop_clock_status='historical_not_2611_verified'),
  reference_only boolean NOT NULL DEFAULT true CHECK(reference_only),
  actual_vehicle_confirmed boolean NOT NULL DEFAULT false CHECK(NOT actual_vehicle_confirmed),
- PRIMARY KEY(edition,line_key,train_number,calendar_urn,direction_urn,segment_key),
+ PRIMARY KEY(edition,line_key,train_number,calendar_urn,direction_urn,segment_key,source_occurrence),
  CHECK(
    (segment_key='momiji_no_sql_source' AND source_template_id IS NULL
     AND cardinality(source_stop_keys)=0 AND vehicle_model='HB-E300系（海里）'
@@ -85,10 +86,10 @@ WITH official AS (
  FROM _miyo2611_source t
 )
 INSERT INTO public.published_miyo_2611_number_roster(
- edition,line_key,source_template_id,train_number,calendar_urn,direction_urn,
+ edition,line_key,source_template_id,source_occurrence,train_number,calendar_urn,direction_urn,
  train_type_urn,segment_key,operating_dates,excluded_dates,source_stop_keys,
  vehicle_model,png_reference,service_name,official_source_url,fleet_source_url)
-SELECT '2611','Miyo',t.id,t.train_number,t.calendar_urn,t.direction_urn,
+SELECT '2611','Miyo',t.id,t.source_occurrence,t.train_number,t.calendar_urn,t.direction_urn,
  t.train_type_urn,t.scope,
  CASE WHEN t.scope='kiku' THEN
   ARRAY['2026-11-01','2026-11-03','2026-11-07','2026-11-08',
