@@ -805,7 +805,7 @@
           // Current SQL stops do NOT include this suspended segment.
           var suspendedRikutoStop=run.stops.some(function(stop){
             var st=normalizeStationKey(extractStationKey(stop.stationUrn));
-            return /^(?:NakayamadairaOnsen|Sakaida|AkakuraOnsen|Tachikoji|Mogami|Ohori|Usugi|SemiOnsen|HigashiNagasawa|Nagasawa|MinamiShinjo|Shinjo)$/.test(st);
+            return /^(?:nakayamadairaonsen|sakaida|akakuraonsen|tachikoji|mogami|ohori|usugi|semionsen|higashinagasawa|nagasawa|minamishinjo|shinjo)$/.test(st);
           });
           if(suspendedRikutoStop)continue;
         }
