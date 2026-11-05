@@ -2162,6 +2162,98 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // 2611 大船渡線 rail-only public number proof (not a BRT bus).
+  // Regular KiHa110 carries an APPROVED representative PNG; the KiHa100
+  // Pokemon two-car tourist stock has NO matching library PNG. Never
+  // substitute generic KiHa110 or imply a confirmed individual carset.
+  function verifyOfunatoService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Ofunato"||
+       proof.segmentKey!=="ichinoseki_kesennuma_rail"||
+       !["rail_regular","rail_pokemon"].includes(proof.transportScope)||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Ofunato"||
+       (p.displayLineId&&p.displayLineId!=="Ofunato")||
+       p.sourceRailway!=="odpt.Railway:JR-East.Ofunato"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase(),
+      day=String(p.serviceDate||"").slice(0,10),
+      nm=/^([0-9]{3,4})D$/.exec(n);
+    if(!nm||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day)||
+       proof.trainNumber!==n||proof.serviceDate!==day||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/timetable-v\/269[du][12]\.html$/.test(
+         String(proof.officialSourceUrl||""))||
+       !Array.isArray(proof.sourceStopKeys))return null;
+    var direction=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(!["Inbound","Outbound"].includes(direction)||
+       String(proof.direction||"").split(/[.:]/).pop()!==direction||
+       Number(nm[1])%2!==(direction==="Inbound"?0:1)||
+       String(proof.trainType||"").split(/[.:]/).pop()!==type)return null;
+    var dow=new Date(day+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||
+         day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday")||
+       proof.officialSourceUrl.slice(-7)!==
+         (direction==="Inbound"?"u":"d")+(holiday?"2":"1")+".html")
+      return null;
+    var down=["Ichinoseki","Mataki","Rikuchu-Kanzaki","Iwanoshita",
+      "Rikuchu-Matsukawa","Geibikei","Shibajuku","Surisawa",
+      "Senmaya","Konashi","Yagoshi","Orikabe","Niitsuki","Kesennuma"];
+    var pokemonDown=["Ichinoseki","Rikuchu-Matsukawa",
+      "Geibikei","Senmaya","Kesennuma"];
+    var regularNumbers=new Set(["321D","323D","325D","329D","331D",
+      "333D","335D","337D","322D","324D","326D","328D",
+      "330D","332D","334D","338D","340D"]);
+    var kind=proof.transportScope,pokemon=kind==="rail_pokemon";
+    var expected,model,png;
+    if(pokemon){
+      var pokemonDates=new Set(["2026-11-01","2026-11-03",
+        "2026-11-07","2026-11-08","2026-11-14","2026-11-15",
+        "2026-11-21","2026-11-22","2026-11-23","2026-11-28",
+        "2026-11-29"]);
+      if(!holiday||!pokemonDates.has(day)||
+         (direction==="Outbound"&&n!=="8327D")||
+         (direction==="Inbound"&&n!=="8336D")||
+         type!=="Rapid"||
+         proof.model!=="キハ100系（POKÉMON with YOU）"||
+         proof.pngReference!==null||
+         !Array.isArray(proof.operatingDates)||
+         proof.operatingDates.length!==pokemonDates.size||
+         proof.operatingDates.some(function(d){
+           return !pokemonDates.has(String(d).slice(0,10));
+         }))return null;
+      expected=pokemonDown;
+      model=proof.model;png=null;
+    }else{
+      if(!regularNumbers.has(n)||type!=="Local"||
+         proof.model!=="キハ110系"||
+         proof.pngReference!==
+           "../images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png"||
+         (Array.isArray(proof.operatingDates)&&proof.operatingDates.length))
+        return null;
+      expected=n==="322D"?down.slice(0,9):down;
+      model=proof.model;png=proof.pngReference;
+    }
+    if(direction==="Inbound")expected=expected.slice().reverse();
+    var given=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();});
+    if(given.length!==expected.length||
+       proof.sourceStopKeys.length!==expected.length||
+       given.some(function(st,i){
+         return st!==expected[i]||proof.sourceStopKeys[i]!==expected[i];
+       }))return null;
+    return Object.freeze({number:n,kind:kind,model:model,pngPath:png,
+      edition:"2611",sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // 弥彦線 SQL number-calendar-date-and-stop proof for 2026-11.
   // No train icon on date-free historical or October-only Shu*Kura data.
   // Momiji Kairi's HB-E300 D numbers have a dated SQL PUBLIC ROSTER
@@ -2418,6 +2510,31 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Ofunato"){
+      var ofunato=Object.assign({},context||{},{trainNumber:number});
+      var rail=verifyOfunatoService(ofunato);
+      // Even valid Pokemon KiHa100 trains lack an appropriate gallery PNG.
+      // BRT F/K and non-dated or unsupported 9327/9336D never borrow one.
+      if(!rail||rail.kind!=="rail_regular"||!rail.pngPath||
+         ofunato.estimated!==true||
+         ofunato.officialNumberVerified!==true||
+         ofunato.vehicleIdentityStatus==="EXACT")return null;
+      var observed=String(ofunato.realtimeVehicleType||
+        ofunato.realtimeDerivedVehicleType||"").trim();
+      if(observed&&observed!==rail.model)return null;
+      var plan=ofunato.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==rail.model))
+        return null;
+      if(Array.isArray(ofunato.plannedVehicleCandidates)&&
+         ofunato.plannedVehicleCandidates.length&&
+         (ofunato.plannedVehicleCandidates.length!==1||
+          ofunato.plannedVehicleCandidates[0]!==rail.model))
+        return null;
+      return {trainNumber:number,lineId:line,model:rail.model,
+        pngPath:rail.pngPath,planned:true,representative:true,
+        source:"jr-east-2611-ofunato-rail-d-kiha110-sql"};
+    }
     if(line==="Miyo"){
       var scoped=Object.assign({},context||{},{trainNumber:number});
       var miyo=verifyMiyoService(scoped);
@@ -3416,6 +3533,7 @@
     verifyKururiService:verifyKururiService,
     verifyMitoService:verifyMitoService,
     verifyMiyoService:verifyMiyoService,
+    verifyOfunatoService:verifyOfunatoService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
