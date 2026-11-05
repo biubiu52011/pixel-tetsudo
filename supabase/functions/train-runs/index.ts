@@ -529,12 +529,19 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
 // dates are still subject to their existing independent coverage audit.
 const publishedShinkansenNumbersBySource =
   new Map<number, {number:string; url:string}>();
+// The 2611 JR-East booklet also publishes the JR-Hokkaido Shinkansen.
+// Match the existing SQL source railway/operator precisely; it is not
+// a license to infer H5/E5 ownership or a single rolling-stock PNG.
+const officialShinkansenRailwayOwner = lineId === "HokkaidoShinkansen"
+  ? "JR-Hokkaido" : "JR-East";
 if (/Shinkansen$/.test(lineId) &&
     /^2026-11-\d{2}$/.test(serviceDate) &&
     selectedCalendar &&
-    ["JR-East"].includes(String(timetableOperator || "JR-East"))) {
+    String(timetableOperator || officialShinkansenRailwayOwner) ===
+      officialShinkansenRailwayOwner) {
   const batch = templates.filter((t:any) =>
-    String(t.railway_urn||"")==="odpt.Railway:JR-East."+lineId);
+    String(t.railway_urn||"")==="odpt.Railway:"+
+      officialShinkansenRailwayOwner+"."+lineId);
   for (let first=0; first<batch.length; first+=100) {
     const ids=batch.slice(first,first+100).map((t:any)=>Number(t.id));
     const {data, error}=await db.from("published_train_number_evidence")
