@@ -10,7 +10,7 @@ LOCK TABLE public.evidence_sources IN SHARE ROW EXCLUSIVE MODE;
 DO $sanyo2611$
 DECLARE
   o record;
-  source_id bigint;
+  resolved_source_id bigint;
   template_id bigint;
   resolved_timetable_id bigint;
   png_path text;
@@ -77,7 +77,7 @@ BEGIN
       WHERE es.source_key=o.source_key)
     ON CONFLICT DO NOTHING;
 
-    SELECT id INTO STRICT source_id FROM public.evidence_sources es
+    SELECT id INTO STRICT resolved_source_id FROM public.evidence_sources es
     WHERE es.source_key=o.source_key AND es.source_url=o.source_url
       AND es.source_type='official' AND es.evidence_grade='A';
 
@@ -85,11 +85,11 @@ BEGIN
       (timetable_id,source_template_id,vehicle_type,mapping_level,source_id,
        source_path,actual_vehicle_confirmed)
     VALUES (resolved_timetable_id,template_id,o.model,'official_service_vehicle_plan',
-       source_id,'official-2611:'||o.source_url,false)
+       resolved_source_id,'official-2611:'||o.source_url,false)
     ON CONFLICT (timetable_id) DO NOTHING;
     IF NOT EXISTS(SELECT 1 FROM public.train_timetable_vehicle_mappings v
       WHERE v.timetable_id=resolved_timetable_id AND v.source_template_id=template_id
-        AND v.vehicle_type=o.model AND v.source_id=source_id
+        AND v.vehicle_type=o.model AND v.source_id=resolved_source_id
         AND v.mapping_level='official_service_vehicle_plan'
         AND v.actual_vehicle_confirmed=false) THEN
       RAISE EXCEPTION 'Conflicting model proof for %',o.service_name;
