@@ -2162,6 +2162,78 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // 男鹿線 2611: map a public M number to a representative
+  // EV-E801 image ONLY after exact SQL template, weekday/calendar,
+  // service-date and all nine surviving Oiwake--Oga stop keys agree.
+  // Nov 5 cancellations and Nov 20 1145M changed clocks fail closed.
+  // The six published weekday numbers missing from SQL remain in the
+  // database catalogue but cannot create invented train positions.
+  function verifyOgaService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Oga"||proof.segmentKey!=="oiwake_oga_regular_rail"||
+       proof.calendarScope!=="sql_rail_service"||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Oga"||
+       (p.displayLineId&&p.displayLineId!=="Oga")||
+       p.sourceRailway!=="odpt.Railway:JR-East.Oga"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase(),
+      date=String(p.serviceDate||"").slice(0,10),
+      m=/^([0-9]{4})M$/.exec(n);
+    if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       Number(m[1])<1120||Number(m[1])>1149||
+       proof.trainNumber!==n||proof.serviceDate!==date||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       proof.model!=="EV-E801系"||
+       proof.pngReference!=="../images/列车/JR東日本/JR東日本_EV-E801系.png"||
+       !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/timetable-v\/259[du][12]\.html$/.test(
+         String(proof.officialSourceUrl||"")))return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(type!=="Local"||
+       String(proof.trainType||"").split(/[.:]/).pop()!=="Local"||
+       !["Inbound","Outbound"].includes(dir)||
+       String(proof.direction||"").split(/[.:]/).pop()!==dir||
+       (Number(m[1])%2)!==(dir==="Inbound"?0:1))return null;
+    var official=root.JREastOgaNumberIndex202611;
+    if(!official||typeof official.verify!=="function"||
+       !official.verify(n,p.sourceRailway,p.railDirection,
+         p.trainType,sourceCalendar(p),date))return null;
+    var dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||
+        date==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday")||
+       proof.officialSourceUrl.slice(-7)!==
+         (dir==="Inbound"?"u":"d")+(holiday?"2":"1")+".html")return null;
+    var six=new Set(["1130M","1132M","1134M","1131M","1133M","1135M"]);
+    if((date==="2026-11-05"&&six.has(n))||
+       (date==="2026-11-20"&&n==="1145M"))return null;
+    var excluded=Array.isArray(proof.excludedDates)?proof.excludedDates:[],
+      clockChange=Array.isArray(proof.clockChangeDates)?proof.clockChangeDates:[];
+    if(excluded.some(function(d){return String(d).slice(0,10)===date;})||
+       clockChange.some(function(d){return String(d).slice(0,10)===date;}))
+      return null;
+    var out=["Oiwake","Detohama","Kamifutada","Futada","Tenno",
+      "Funakoshi","Wakimoto","Hadachi","Oga"];
+    var expected=dir==="Inbound"?out.reverse():out,
+      scheduled=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+        .map(function(x){return String(x||"").split(".").pop();}),
+      raw=proof.sourceStopKeys;
+    if(!Array.isArray(raw)||raw.length!==9||scheduled.length!==9||
+       scheduled.some(function(x,i){return x!==expected[i]||raw[i]!==expected[i];})||
+       proof.railwayFrom!==expected[0]||
+       proof.railwayTo!==expected[8])return null;
+    return Object.freeze({number:n,kind:"regular",model:proof.model,
+      pngPath:proof.pngReference,edition:"2611",
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // 2611 大船渡線 rail-only public number proof (not a BRT bus).
   // Regular KiHa110 carries an APPROVED representative PNG; the KiHa100
   // Pokemon two-car tourist stock has NO matching library PNG. Never
@@ -2510,6 +2582,30 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Oga"){
+      var oga=Object.assign({},context||{},{trainNumber:number});
+      var verifiedOga=verifyOgaService(oga);
+      if(!verifiedOga||oga.estimated!==true||
+         oga.officialNumberVerified!==true||
+         oga.vehicleIdentityStatus==="EXACT")return null;
+      var realtime=String(oga.realtimeVehicleType||
+        oga.realtimeDerivedVehicleType||"").trim();
+      if(realtime&&realtime!=="EV-E801系"&&
+         realtime!=="EV-E801系（ACCUM）")return null;
+      var plan=oga.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||
+          !["EV-E801系","EV-E801系（ACCUM）"].includes(plan.models[0])))
+        return null;
+      if(Array.isArray(oga.plannedVehicleCandidates)&&
+         oga.plannedVehicleCandidates.length&&
+         (oga.plannedVehicleCandidates.length!==1||
+          !["EV-E801系","EV-E801系（ACCUM）"].includes(
+            oga.plannedVehicleCandidates[0])))return null;
+      return {trainNumber:number,lineId:line,model:verifiedOga.model,
+        pngPath:verifiedOga.pngPath,planned:true,representative:true,
+        source:"jr-east-2611-oga-exact-sql-number-date-rail"};
+    }
     if(line==="Ofunato"){
       var ofunato=Object.assign({},context||{},{trainNumber:number});
       var rail=verifyOfunatoService(ofunato);
@@ -3534,6 +3630,7 @@
     verifyMitoService:verifyMitoService,
     verifyMiyoService:verifyMiyoService,
     verifyOfunatoService:verifyOfunatoService,
+    verifyOgaService:verifyOgaService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
