@@ -57,10 +57,10 @@ test('unverified and realtime data are not rewritten',()=>{
   assert.equal(resolve(plan(),null,'640M'),'640M','missing stop');
 });
 test('SQL stop source survives server -> adapter -> estimator -> marker',()=>{
-  assert.match(edge,/db\\.rpc\\("train_runs_canonical_bundle"/);
-  assert.match(canonicalSql,/'source_template_id', s\\.source_template_id/);
-  assert.match(canonicalSql,/'line_key', s\\.line_key/);
-  assert.match(canonicalSql,/'train_number', s\\.train_number/);
+  assert.ok(edge.includes('db.rpc("train_runs_canonical_bundle"'));
+  assert.ok(canonicalSql.includes("'source_template_id', s.source_template_id"));
+  assert.ok(canonicalSql.includes("'line_key', s.line_key"));
+  assert.ok(canonicalSql.includes("'train_number', s.train_number"));
   assert.match(edge,/source_train_number: completeStops/);
   assert.match(edge,/source_line_key: completeStops/);
   assert.match(api,/o\["_sqlTrainNumber"\]=String\(s\.source_train_number\)/);
