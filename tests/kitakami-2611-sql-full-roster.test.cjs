@@ -100,9 +100,9 @@ test('bus-only flooded segment, wrong operator/day/source/model cannot inherit r
   }
   for(const n of ['9729D','9730D']){
     const p=pos(n);
-    assert.equal(idx.verifySqlProof(p),null===p.sqlPublishedNumberFleetReference?null:
-       idx.verifySqlProof(p));
-    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...p,sqlPublishedNumberFleetReference:null}),null);
+    const noProof={...p,sqlPublishedNumberFleetReference:null};
+    assert.equal(idx.verifySqlProof(noProof),null,n);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(noProof),null,n);
   }
 });
 test('migrations store exact train stops and suspension separate from image range',()=>{
