@@ -66,7 +66,11 @@ WITH approved AS (
       (m.line_key='NishiKyushuShinkansen'
        AND m.train_number ~ '^かもめ[0-9]+号$'
        AND m.railway_urn='odpt.Railway:JR-Kyushu.NishiKyushuShinkansen'
-       AND m.source_path='official-sampled:holiday:https://www.jrkyushu.co.jp/english/pdf/timetable_20260314_20270228.pdf')
+       AND (
+         m.source_path='official-sampled:holiday:https://www.jrkyushu.co.jp/english/pdf/timetable_20260314_20270228.pdf'
+         OR (m.id=128894 AND m.train_number='かもめ1号'
+             AND m.source_path='official-sampled:holiday:https://www.jrkyushu-timetable.jp/sp/2608/0019/00190501.html?d=20260722&t=2828302e')
+       ))
     )
 )
 INSERT INTO public.train_timetable_vehicle_mappings
