@@ -185,7 +185,7 @@ test('planned estimator uses official numbers but cannot resurrect dated cancell
   const positions=root.TrainPositionEstimator.estimateAllPositions({
     Karasuyama:{stations:['Hoshakuji','Karasuyama'],operator:'JR-East'}
   },{},{},null,{lineIds:['Karasuyama']}).Karasuyama||[];
-  assert.deepEqual(positions.map(p=>p.trainNumber),['327M']);
+  assert.deepEqual(Array.from(positions,p=>p.trainNumber),['327M']);
   assert.equal(positions[0].estimated,true);
   assert.equal(positions[0].positionSource,'supabase-train-run');
   assert.equal(positions[0].vehicleIdentityStatus,'UNKNOWN');
