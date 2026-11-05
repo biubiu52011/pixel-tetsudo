@@ -873,6 +873,107 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // Kururi 2611: 40 published train numbers are NOT 40 operating rail
+  // journeys. Typhoon 25 closed Kururi–KazusaKameyama for all November:
+  // 6 segment-only D numbers are bus/taxi replacement, NEVER rail PNG.
+  // 11 historically through D numbers retain their public number but only
+  // their original 11-stop Kisarazu–Kururi railway segment is projected.
+  if(lineId==="Kururi"&&/^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterErr},{data:ranges,error:rangeErr}]=
+      await Promise.all([
+        db.from("published_kururi_2611_rail_vehicle_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,rail_scope,source_stop_keys,rail_stop_keys,fleet_model,png_reference,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Kururi")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Kururi")
+          .eq("segment_key","kisarazu_kururi_rail")
+      ]);
+    if(rosterErr||rangeErr)throw(rosterErr||rangeErr);
+    if((roster||[]).length!==40||(ranges||[]).length!==1)
+      throw new Error("KURURI_2611_RAIL_SCOPE_UNAVAILABLE");
+    const byNumber=new Map((roster||[]).map((r:any)=>
+      [r.train_number+"|"+r.direction_urn,r]));
+    const down=["Kisarazu","Gion","KazusaKiyokawa","HigashiKiyokawa",
+      "Yokota","HigashiYokota","Makuta","Shimogori","Obitsu","Tawarada","Kururi"];
+    const upstream=[...down].reverse();
+    const closedSet=new Set(["Hirayama","KazusaMatsuoka","KazusaKameyama"]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],rule:any=
+        byNumber.get(run.train_number+"|"+run.rail_direction);
+      if(!rule||run.network_key!=="odpt.Railway:JR-East.Kururi"||
+         rule.calendar_urn!==selectedCalendar||
+         rule.train_type_urn!=="odpt.TrainType:JR-East.Local"||
+         run.train_type!==rule.train_type_urn||
+         rule.reference_only!==true||rule.actual_vehicle_confirmed!==false||
+         !Array.isArray(run.stops)||!Array.isArray(rule.source_stop_keys)||
+         !Array.isArray(rule.rail_stop_keys)){
+        result.splice(i,1);continue;
+      }
+      const original=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      if(original.length!==rule.source_stop_keys.length||
+         original.some((key:string,j:number)=>key!==rule.source_stop_keys[j])){
+        result.splice(i,1);continue;
+      }
+      if(rule.rail_scope==="closed_segment_only"){
+        // Do NOT display a closed railway journey or lend its train number
+        // and image to the bus/taxi substitute, which has another timetable.
+        result.splice(i,1);continue;
+      }
+      const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+      const expected=inbound?upstream:down;
+      const railKeys=rule.rail_stop_keys;
+      if(railKeys.length!==11||railKeys.some((key:string,j:number)=>key!==expected[j])){
+        result.splice(i,1);continue;
+      }
+      if(rule.rail_scope==="trimmed_through_rail"){
+        if(original.length!==14||
+           !closedSet.has(original[inbound?0:11])||
+           !closedSet.has(original[inbound?1:12])||
+           !closedSet.has(original[inbound?2:13])){
+          result.splice(i,1);continue;
+        }
+        run.stops=inbound?run.stops.slice(3):run.stops.slice(0,11);
+      }else if(rule.rail_scope!=="open_rail_only"||original.length!==11){
+        result.splice(i,1);continue;
+      }
+      const railRun=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      if(railRun.some((key:string,j:number)=>key!==railKeys[j])){
+        result.splice(i,1);continue;
+      }
+      const n=/^([0-9]+)(D)$/.exec(String(run.train_number||""));
+      const valid=n&&(ranges||[]).some((r:any)=>
+        r.requires_exact_roster===true&&r.segment_key==="kisarazu_kururi_rail"&&
+        Number(n[1])>=r.min_number&&Number(n[1])<=r.max_number&&
+        n[2]===r.suffix&&r.vehicle_model===rule.fleet_model&&
+        r.png_reference===rule.png_reference);
+      if(!valid||rule.stop_clock_status!=="historical_not_2611_verified"){
+        result.splice(i,1);continue;
+      }
+      run.destination_station="odpt.Station:JR-East.Kururi."+
+        (inbound?"Kisarazu":"Kururi");
+      run.train_number_verification="official-2611-rail-only-number-route";
+      run.train_number_source_url=rule.official_source_url;
+      run.vehicle_candidate_artwork_path=null;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Kururi",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:rule.calendar_urn,
+        trainType:rule.train_type_urn,segmentKey:"kisarazu_kururi_rail",
+        railScope:rule.rail_scope,railwayFrom:inbound?"Kururi":"Kisarazu",
+        railwayTo:inbound?"Kisarazu":"Kururi",
+        plannedCandidates:["キハE130形100番台"],
+        model:rule.fleet_model,pngReference:rule.png_reference,
+        officialSourceUrl:rule.official_source_url,
+        stopClockStatus:rule.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false,
+        closedRailSection:"Kururi–KazusaKameyama"
+      };
+    }
+  }
   // JR-East Hanawa (internal Kounan) 2611: exact public numbers, scoped
   // PNG ranges and date-specific cancellations. Never paint a carset as live.
   if (lineId==="Kounan" && /^2026-11-/.test(serviceDate)) {
