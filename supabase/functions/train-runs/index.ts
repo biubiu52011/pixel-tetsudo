@@ -1033,8 +1033,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
            "odpt.Station:JR-East."+expected[n])||
          rule.from_station!==expected[0]||
          rule.to_station!==expected[expected.length-1]||
-         run.stops[0].departure!==rule.origin_departure_clock&&
-         String(run.stops[0].departure_clock||"")!==rule.origin_departure_clock){
+         String(run.stops[0].departure_time||"")!==rule.origin_departure_clock){
         result.splice(i,1);continue;
       }
       const parts=/^(\d+)(D)$/.exec(String(run.train_number||""));
