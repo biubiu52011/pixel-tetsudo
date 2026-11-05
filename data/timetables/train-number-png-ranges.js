@@ -2162,9 +2162,93 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // JR East 2611 花輪線: official-number PNG proof comes exclusively from
+  // SQL, not loose number parity or an inferred fleet/operation number.
+  function verifyHanawaService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Kounan"||proof.referenceOnly!==true||
+       proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Kounan"||
+       p.sourceRailway!=="odpt.Railway:JR-East.Kounan"||
+       p.positionSource!=="supabase-train-run"||
+       !String(proof.officialSourceUrl||"").startsWith(
+         "https://timetables.jreast.co.jp/2611/"))return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var number=String(p.trainNumber||"").trim().toUpperCase();
+    var day=String(p.serviceDate||"").slice(0,10);
+    var m=/^([0-9]+)D$/.exec(number);
+    if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day)||
+       proof.trainNumber!==number||proof.serviceDate!==day||
+       proof.stopClockStatus!=="historical_source_clocks_not_2611_verified")
+      return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop();
+    var publishedDir=String(proof.direction||"").split(/[.:]/).pop();
+    if(dir!==publishedDir||!["Inbound","Outbound"].includes(dir)||
+       (Number(m[1])%2!==(dir==="Inbound"?0:1)))return null;
+    var dow=new Date(day+"T12:00:00Z").getUTCDay();
+    var holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))
+      return null;
+    var type=String(p.trainType||"").split(/[.:]/).pop();
+    if(String(proof.trainType||"").split(/[.:]/).pop()!==type)return null;
+    var hinabi=(number==="9921D"||number==="9922D");
+    var maintenance=number==="9934D";
+    if(hinabi){
+      if(day<"2026-11-27"||day>"2026-11-30"||type!=="Rapid"||
+         proof.segmentKey!=="hinabi"||
+         proof.model!=="HB-E300系（ひなび）"||
+         proof.pngReference!=="../images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png")
+        return null;
+    }else{
+      if(type!=="Local"||proof.model!=="キハ110系"||
+         proof.pngReference!=="../images/列车/JR東日本/JR東日本_キハ110系.png")
+        return null;
+      if(maintenance){
+        if(proof.segmentKey!=="maintenance"||
+           ["2026-11-04","2026-11-05"].indexOf(day)<0)return null;
+      }else{
+        if(proof.segmentKey!=="regular"||
+           (["2026-11-04","2026-11-05"].includes(day)&&
+             ["928D","929D","1927D","1930D","1931D","1932D","1934D"].includes(number)))
+          return null;
+      }
+    }
+    var stopKeys=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();});
+    if(stopKeys.length<2||new Set(stopKeys).size<2)return null;
+    var allowed=new Set(["Akasakata","Anihata","Appi-Kogen","Araya-Shinmachi",
+      "Dobukai","Hachimantai","Higashi-Obuke","Higashi-Odate","Junisho",
+      "Kazuno-Hanawa","Kitamori","Koyanohata","Matsuo-Hachimantai",
+      "Obuke","Odate","Ogita","Otaki-Onsen","Rikuchu-Osato",
+      "Sawajiri","Shibahira","Suehiro","Tairadate","Tayama",
+      "Towada-Minami","Yokoma","Yuze-Onsen"]);
+    if(stopKeys.some(function(key){return !allowed.has(key);}))return null;
+    return Object.freeze({number:number,model:proof.model,pngPath:proof.pngReference,
+      edition:"2611",kind:hinabi?"hinabi":maintenance?"maintenance":"regular",
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Kounan"){
+      var hanawa=Object.assign({},context||{},{trainNumber:number});
+      var plan=verifyHanawaService(hanawa);
+      if(!plan||hanawa.estimated!==true||
+         hanawa.officialNumberVerified!==true||
+         hanawa.vehicleIdentityStatus==="EXACT")return null;
+      var reported=String(hanawa.realtimeVehicleType||
+         hanawa.realtimeDerivedVehicleType||"").trim();
+      if(reported&&reported!==plan.model)return null;
+      var p=hanawa.vehiclePlan;
+      if(p&&Array.isArray(p.models)&&p.models.length&&
+         (p.models.length!==1||p.models[0]!==plan.model))return null;
+      return {trainNumber:number,lineId:line,model:plan.model,
+        pngPath:plan.pngPath,source:"jr-east-2611-hanawa-sql-exact-number",
+        planned:true,representative:true};
+    }
     if(line==="Kitakami"){
       // Source of truth is SQL-issued number/route/calendar proof. The
       // earlier five-number JS-only 2611 guard remains for legacy audits,
@@ -3080,6 +3164,7 @@
     verifyKashimaService:verifyKashimaService,
     verifyKesennumaRailService:verifyKesennumaRailService,
     verifyKomiiService:verifyKomiiService,
+    verifyHanawaService:verifyHanawaService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
