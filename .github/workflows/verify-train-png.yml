@@ -16,6 +16,7 @@ on:
       - 'tests/chuo-main-timetable-only.test.cjs'
       - 'tests/chuo-main-official-vehicle-index.test.cjs'
       - 'tests/chuo-main-2611-number-index.test.cjs'
+      - 'tests/chuo-sobu-local-2611-source-scope-and-e235-fleet.test.cjs'
       - 'tests/train-number-png-runtime.test.cjs'
       - 'tests/gono-2611-number-schedule.test.cjs'
       - 'tests/hakushin-2611-official-number-png.test.cjs'
@@ -85,6 +86,7 @@ on:
       - 'supabase/migrations/20261030125204_scoped_conventional_local_fleet_and_corridor_evidence_20261030.sql'
       - 'supabase/migrations/20261030130459_railfan_source_registry_and_official_sonic_two_stop_crosscheck_20261030.sql'
       - 'supabase/functions/train-runs/index.ts'
+      - 'supabase/migrations/20261106190000_chuo_sobu_local_2611_historical_1179_source_scope_and_m_exclusions.sql'
       - 'supabase/migrations/20261106180000_rikuto_east_2611_96_official_sources_8_legacy_exclusions.sql'
       - 'supabase/migrations/20261106111500_oumain_yamagata_2611_legacy_source_scope_audit.sql'
       - 'supabase/migrations/20261106140000_oumain_2611_tsugaru_e751_exact_12_calendar_sources.sql'
@@ -188,6 +190,8 @@ jobs:
         run: node --test tests/ofunato-2611-rail-brt-pokemon-number-png.test.cjs
       - name: Verify Gono 2611 numbered planned-service rendering and date admission
         run: node --test tests/gono-2611-number-schedule.test.cjs
+      - name: Verify Chuo-Sobu local historical 1179 sources, E235 transfer and Tozai isolation
+        run: node --test tests/chuo-sobu-local-2611-source-scope-and-e235-fleet.test.cjs
       - name: Verify Chuo Main 2611 four-way published train-number inventory
         run: node --test tests/chuo-main-2611-number-index.test.cjs
       - name: Verify E233/E231 numbered mixed-fleet references and archived 215 trains
