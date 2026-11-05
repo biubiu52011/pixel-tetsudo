@@ -2162,6 +2162,56 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // 2611 久留里線: SQL proof asserts 11 stops on the surviving RAIL
+  // Kisarazu–Kururi section. 294xD bus-replaced trains cannot borrow PNG.
+  function verifyKururiService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Kururi"||proof.segmentKey!=="kisarazu_kururi_rail"||
+       !["open_rail_only","trimmed_through_rail"].includes(proof.railScope)||
+       proof.closedRailSection!=="Kururi–KazusaKameyama"||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Kururi"||
+       p.sourceRailway!=="odpt.Railway:JR-East.Kururi"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var number=String(p.trainNumber||"").trim().toUpperCase(),
+      date=String(p.serviceDate||"").slice(0,10);
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       proof.trainNumber!==number||proof.serviceDate!==date||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       proof.model!=="キハE130形100番台"||
+       proof.pngReference!=="../images/列车/JR東日本/JR東日本_キハE130系100番台.png"||
+       !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/timetable-v\/217[du][12]\.html$/.test(
+         String(proof.officialSourceUrl||"")))return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop(),
+      official=root.JREastRegionalNumberIndex202611;
+    if(!official||typeof official.verify!=="function")return null;
+    var permitted=official.verify("Kururi",number,p.sourceRailway,
+      p.railDirection,p.trainType,sourceCalendar(p),date);
+    if(!permitted||permitted.kind!=="regular"||
+       permitted.model!==proof.model||type!=="Local"||
+       String(proof.trainType||"").split(/[.:]/).pop()!==type||
+       String(proof.direction||"").split(/[.:]/).pop()!==dir)return null;
+    var day=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=day===0||day===6||date==="2026-11-03"||date==="2026-11-23";
+    if(proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))
+      return null;
+    var down=["Kisarazu","Gion","KazusaKiyokawa","HigashiKiyokawa",
+      "Yokota","HigashiYokota","Makuta","Shimogori","Obitsu","Tawarada","Kururi"];
+    var expected=dir==="Inbound"?down.reverse():down;
+    var given=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(v){return String(v||"").split(".").pop();});
+    if(given.length!==11||
+       given.some(function(st,i){return st!==expected[i];})||
+       proof.railwayFrom!==expected[0]||
+       proof.railwayTo!==expected[10])return null;
+    return Object.freeze({number:number,kind:"regular",model:proof.model,
+      pngPath:proof.pngReference,edition:"2611",railScope:proof.railScope,
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // JR East 2611 花輪線: official-number PNG proof comes exclusively from
   // SQL, not loose number parity or an inferred fleet/operation number.
   function verifyHanawaService(p){
@@ -2233,6 +2283,25 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Kururi"){
+      var scopedKururi=Object.assign({},context||{},{trainNumber:number});
+      var railPlan=verifyKururiService(scopedKururi);
+      if(!railPlan||scopedKururi.estimated!==true||
+         scopedKururi.officialNumberVerified!==true||
+         scopedKururi.vehicleIdentityStatus==="EXACT")return null;
+      var observed=String(scopedKururi.realtimeVehicleType||
+         scopedKururi.realtimeDerivedVehicleType||"").trim();
+      if(observed&&observed!==railPlan.model)return null;
+      var plan=scopedKururi.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==railPlan.model))return null;
+      if(Array.isArray(scopedKururi.plannedVehicleCandidates)&&
+         scopedKururi.plannedVehicleCandidates.length&&
+         !scopedKururi.plannedVehicleCandidates.includes(railPlan.model))return null;
+      return {trainNumber:number,lineId:line,model:railPlan.model,
+        pngPath:railPlan.pngPath,planned:true,representative:true,
+        source:"jr-east-2611-kururi-sql-open-rail-only"};
+    }
     if(line==="Kounan"){
       var hanawa=Object.assign({},context||{},{trainNumber:number});
       var plan=verifyHanawaService(hanawa);
@@ -3165,6 +3234,7 @@
     verifyKesennumaRailService:verifyKesennumaRailService,
     verifyKomiiService:verifyKomiiService,
     verifyHanawaService:verifyHanawaService,
+    verifyKururiService:verifyKururiService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
