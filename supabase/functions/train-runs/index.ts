@@ -818,9 +818,14 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       "Urasa","Yairo","Koide","Echigo-Horinouchi","Kita-Horinouchi",
       "Echigo-Kawaguchi","Ojiya","Echigo-Takaya","Miyauchi","Nagaoka"
     ]);
+    const southStopCodes=new Set([
+      "Takasaki","Takasaki-Tonyamachi","Ino","Shin-Maebashi",
+      "Gunma-Soja","Yagihara","Shibukawa","Shikishima","Tsukuda",
+      "Iwamoto","Numata","Gokan","Kamimoku","Minakami"
+    ]);
     for(const run of result as any[]) {
       const row:any=indexed.get(run.train_number+"|"+run.rail_direction);
-      if(!row || row.segment_key!=="north" ||
+      if(!row || !["north","south"].includes(row.segment_key) ||
          !row.official_source_url?.startsWith("https://timetables.jreast.co.jp/2611/"))
         continue;
       if(Array.isArray(row.operating_dates) && row.operating_dates.length &&
@@ -828,12 +833,23 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       if(row.train_type_urn!==run.train_type &&
         !(row.train_type_urn==="odpt.TrainType:JR-East.Rapid" &&
           run.train_type==="odpt.TrainType:JR-East.Local"))continue;
-      if(!Array.isArray(run.stops) || run.stops.length<2 ||
-         !run.stops.every((s:any)=>{
-           const urn=String(s.station_urn||"");
-           return urn.startsWith("odpt.Station:JR-East.Joetsu.") &&
-             northStopCodes.has(urn.split(".").pop()||"");
-         }))continue;
+      if(!Array.isArray(run.stops)||run.stops.length<2)continue;
+      const sources=run.stops.map((s:any)=>String(s.station_urn||""));
+      const northern=row.segment_key==="north" &&
+        sources.every((urn:string)=>urn.startsWith("odpt.Station:JR-East.Joetsu.") &&
+          northStopCodes.has(urn.split(".").pop()||""));
+      // Verified 211 services can continue from Joetsu through Shibukawa
+      // into Agatsuma; do not strip their stop rows or invent a new train.
+      // Two actual Joetsu stops are mandatory before granting this image.
+      const southern=row.segment_key==="south" &&
+        sources.every((urn:string)=>
+          urn.startsWith("odpt.Station:JR-East.Agatsuma.") ||
+          (urn.startsWith("odpt.Station:JR-East.Joetsu.") &&
+           southStopCodes.has(urn.split(".").pop()||""))) &&
+        sources.filter((urn:string)=>
+          urn.startsWith("odpt.Station:JR-East.Joetsu.") &&
+          southStopCodes.has(urn.split(".").pop()||"")).length>=2;
+      if(!northern&&!southern)continue;
       const numberMatch=/^(\d+)([A-Z])$/.exec(String(run.train_number||""));
       if(!numberMatch)continue;
       const count=Number(numberMatch[1]),suffix=numberMatch[2];
