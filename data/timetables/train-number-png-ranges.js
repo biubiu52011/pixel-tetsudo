@@ -1928,7 +1928,9 @@
       "Masuzawa","Arayamae","Iwate-Futsukamachi","Ayaori","Tono",
       "Aozasa","Iwate-Kamigo","Hirakura","Ashigase","Kami-Arisu",
       "Rikuchu-Ohashi","Dosen","Matsukura","Kosano","Kamaishi"]);
-    if(!stops.every(function(z){return onLine.has(z);}))return null;
+    if(stops.filter(function(z){return onLine.has(z);}).length<2||
+       !stops.every(function(z){return onLine.has(z)||z==="Morioka";}))
+      return null;
     var normal=proof.model==="HB-E220系"&&
       proof.pngReference==="../images/列车/JR東日本/JR東日本_HB-E220系.png";
     var hinabi=proof.model==="HB-E300系（ひなび）"&&
