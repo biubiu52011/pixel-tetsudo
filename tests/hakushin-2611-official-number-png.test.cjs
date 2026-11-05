@@ -69,45 +69,77 @@ test('exact 90 E129 locals plus 3921M rapid, two-day gallery scope checks',()=>{
   }
   assert.equal(count,364);
 });
-test('7 regular Inaho numbers require E653 not E129 PNG and proper service type',()=>{
-  assert.deepEqual(Array.from(idx.inahoNumbers).sort(),
-    ['1M','3M','5M','7M','9M','11M','13M'].sort());
-  for(const n of idx.inahoNumbers)for(const [day,cal]of [
+test('14 official Inaho numbers map to E653 planned artwork in both directions',()=>{
+  const all=[...idx.inahoNumbers,...idx.inahoInboundNumbers];
+  assert.equal(all.length,14);
+  assert.equal(new Set(all).size,14);
+  assert.equal(win.VehicleGaragePngMap.matchModelPath(
+    'E653系（いなほ）','../images/列车/JR東日本/JR東日本_E653系（いなほ）.png','Hakushin'),true);
+  for(const n of all)for(const [day,cal]of [
     ['2026-11-05','weekday'],['2026-11-07','holiday']
   ]){
-    const p=context(n,'Outbound','Local',day,cal);
-    const plan=verify(p,raw('Outbound','Niigata','Shibata'));
+    const outbound=parseInt(n,10)%2===1,dir=outbound?'Outbound':'Inbound';
+    const p=context(n,dir,'Local',day,cal);
+    const plan=verify(p,raw(dir,outbound?'Niigata':'Shibata',outbound?'Shibata':'Niigata'));
     assert.equal(plan.kind,'inaho');
     assert.equal(plan.trainType,'LimitedExpress');
     assert.equal(plan.serviceName,'いなほ'+parseInt(n,10)+'号');
     assert.equal(plan.model,'E653系（いなほ）');
-    assert.equal(plan.pngAvailable,false);
-    assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(p),null);
-    assert.equal(ctx._trainMarkerSpec(p,n,'Hakushin').kind,'unresolved');
+    assert.equal(plan.pngAvailable,true);
+    assert.equal(plan.actualVehicleConfirmed,false);
+    assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'incorrect Local source must not select an express PNG');
+    const corrected={...p,trainType:'odpt.TrainType:JR-East.LimitedExpress',
+      plannedVehicleCandidates:[plan.model],vehiclePlan:{status:'PLANNED_MODEL',
+        lineId:'Hakushin',models:[plan.model],confirmed:false}};
+    const chosen=win.TrainVehicle.lookupTrainNumberRangePng(corrected);
+    assert.equal(chosen?.pngPath,'../images/列车/JR東日本/JR東日本_E653系（いなほ）.png');
+    assert.equal(ctx._trainMarkerSpec(corrected,n,'Hakushin').kind,'vehicle');
+    assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(
+      {...corrected,displayLineId:'Uetsu'}),null);
+    assert.equal(corrected.vehicleIdentityStatus,'UNKNOWN');
+    if(n==='9M')assert.equal(plan.destinationStation,'Sakata');
   }
 });
-test('HB-E300 Kairi 8853D only on 14 explicit November operating dates',()=>{
+test('Kairi 8853D/8854D map HB-E300 only on 14 November service days',()=>{
   assert.equal(idx.kairiNumber,'8853D');
+  assert.equal(idx.kairiInboundNumber,'8854D');
+  assert.equal(idx.decemberKairiNumber,'8851D');
   assert.equal(idx.kairiDays.length,14);
+  assert.equal(win.VehicleGaragePngMap.matchModelPath(
+    'HB-E300系（海里）','../images/列车/JR東日本/JR東日本_HB-E300系_海里.png','Hakushin'),true);
   for(const day of idx.kairiDays){
     const dayOfWeek=new Date(day+'T12:00:00Z').getUTCDay();
     const holiday=dayOfWeek===0||dayOfWeek===6||
       day==='2026-11-03'||day==='2026-11-23';
-    const p=context('8853D','Outbound','Local',day,
-      holiday?'holiday':'weekday');
-    const plan=verify(p,raw('Outbound','Niigata','Shibata'));
-    assert.equal(plan?.kind,'kairi',day);
-    assert.equal(plan?.model,'HB-E300系（海里）');
-    assert.equal(plan?.trainType,'Rapid');
-    assert.equal(plan?.serviceName,'海里');
-    assert.equal(plan?.pngAvailable,false);
-    assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(p),null);
+    for(const [n,dir,from,to] of [
+      ['8853D','Outbound','Niigata','Shibata'],
+      ['8854D','Inbound','Shibata','Niigata']
+    ]){
+      const p=context(n,dir,'Local',day,holiday?'holiday':'weekday');
+      const plan=verify(p,raw(dir,from,to));
+      assert.equal(plan?.kind,'kairi',n+'/'+day);
+      assert.equal(plan?.model,'HB-E300系（海里）');
+      assert.equal(plan?.trainType,'Rapid');
+      assert.equal(plan?.serviceName,'海里');
+      assert.equal(plan?.pngAvailable,true);
+      assert.equal(plan?.actualVehicleConfirmed,false);
+      assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(p),null);
+      const corrected={...p,trainType:'odpt.TrainType:JR-East.Rapid',
+        plannedVehicleCandidates:[plan.model],vehiclePlan:{status:'PLANNED_MODEL',
+          lineId:'Hakushin',models:[plan.model],confirmed:false}};
+      assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(corrected)?.pngPath,
+        '../images/列车/JR東日本/JR東日本_HB-E300系_海里.png');
+      assert.equal(ctx._trainMarkerSpec(corrected,n,'Hakushin').kind,'vehicle');
+    }
   }
   for(const [day,cal] of [
     ['2026-11-02','weekday'],['2026-11-05','weekday'],
     ['2026-11-09','weekday'],['2026-11-12','weekday'],
     ['2026-11-23','holiday'],['2026-11-30','weekday']
-  ])assert.equal(verify(context('8853D','Outbound','Local',day,cal)),false);
+  ])for(const [n,dir] of [['8853D','Outbound'],['8854D','Inbound']])
+    assert.equal(verify(context(n,dir,'Local',day,cal)),false);
+  assert.equal(verify(context('8851D','Outbound','Rapid','2026-11-07','holiday')),false);
 });
 test('December-only Inaho 8055M / 9083M and old 9883D never render',()=>{
   assert.deepEqual(Array.from(idx.excludedLegacy).sort(),
@@ -199,6 +231,10 @@ test('runtime corrects old SQL 1M and 8853D and hides December-only trains',()=>
     assert.equal(p.vehiclePlan.iconPath,'');
     assert.equal(p.vehicleIconPath,'');
     assert.equal(p.vehicleCandidates.includes('E129系'),false);
+    assert.equal(win.TrainVehicle.selectMarkerArtwork(
+      {...p,displayLineId:'Hakushin'},false).kind,'vehicle',
+      'published service-number PNG must stay reference-only');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
   }
   assert.equal(positions.find(p=>p.trainNumber==='623M')
     .publishedFleetReference,'');
