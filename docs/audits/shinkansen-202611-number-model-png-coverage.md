@@ -9,13 +9,13 @@
 | 口径 | 更新前 | 更新后 |
 |---|---:|---:|
 | 原始时刻表模板（不是实际每日运行记录） | 826 | 826 |
-| 有官方依据的单一**计划车型** | 351 | **424** |
-| 无列车级单车型计划 | 475 | **402** |
+| 有官方依据的单一**计划车型** | 351 | **431** |
+| 无列车级单车型计划 | 475 | **395** |
 | 已证明当日实际物理编组 | 0 | **0** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **666** |
-| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **161** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **674** |
+| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **164** |
 
-**单车型计划覆盖率：424 / 826 = 51.3%；正式番号证据 666 / 826 = 80.6%；安全 PNG 单号 161 / 826 = 19.5%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 161 张 PNG。**
+**单车型计划覆盖率：431 / 826 = 52.2%；正式番号证据 674 / 826 = 81.6%；安全 PNG 单号 164 / 826 = 19.9%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 161 张 PNG。**
 
 ## 各线计划车型覆盖率（2026-11-06 最新回读）
 
@@ -27,11 +27,11 @@
 | JoetsuShinkansen | 18 | **18** | 0 | E7 计划车型；**18条正式番号和精确 PNG 单号映射** |
 | KyushuShinkansen | 159 | **136** | **23** | 800／N700 依官方个别列车精确区分：66 条正式番号、20 条安全 800系 PNG；N700 缺对应图库 |
 | NishiKyushuShinkansen | 92 | **92** | 0 | N700S 6 辆计划车型确定，**图库无对应 N700S PNG** |
-| SanyoShinkansen | 154 | 52 | **102** | 500/N700/N700S 混用；直通车所属方不能仅从线路推定 |
+| SanyoShinkansen | 154 | **59** | **95** | 500/700 混用且970A有日期换型；已逐车核实126条正式番号、3条500系PNG |
 | TohokuShinkansen | 82 | 35 | **47** | **81/82 正式番号**，35 条 E6/E8 单车型 PNG；其他混用未猜测 |
 | TokaidoShinkansen | 132 | 0 | **132** | N700A/N700S 与跨公司运行；没有每车次对应证据 |
 | YamagataShinkansen | 46 | **46** | 0 | **43/46 正式番号与 E8 PNG**，3 条多重番号待核 |
-| **合计** | **826** | **424** | **402** | 实际编组全部未证实；正式番号 493、精确 PNG 161 |
+| **合计** | **826** | **431** | **395** | 实际编组全部未证实；正式番号 674、精确 PNG 164 |
 
 “官方单车型计划”只表示有 `official_service_vehicle_plan` 与 `evidence_sources` 关联，并没有证实运行当天派车、具体车辆编组号或涂装。未覆盖的模板可能有线路层候选车种，但不属于列车级已确认映射。
 
@@ -222,9 +222,9 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 
 **2026-11-06 早前阶段缺口**：333个已有 SQL 模板没有单独登记完整番号证据；402个没有列车级单一计划车型证据；真正当天编组和时刻表全覆盖、iPhone Safari PNG 验收都尚未确认。Notion对应任务必须保持「进行中」。
 
-## 2026-11-06 新增 173 条正式号码、当前覆盖率 80.6%
+## 2026-11-06 早前阶段：新增 173 条正式号码、当时覆盖率 80.6%
 
-**此小节是最新实库回读**，覆盖本审计早前的 493 / 826 统计。正式号码有 666 条，其中本轮增加 173 条；PNG 仍为 161 条（19.5%），官方单车型计划仍为 424 条（51.3%），实际确认派车仍为 0。
+**此小节保留早前实库回读历史数据**，最新计数请以文末 674 / 826 小节为准。正式号码有 666 条，其中本轮增加 173 条；PNG 仍为 161 条（19.5%），官方单车型计划仍为 424 条（51.3%），实际确认派车仍为 0。
 
 - [西九州 5 个不同「かもめ」/9 条平日休日 SQL 源](../../supabase/migrations/20261106052000_nishi_kyushu_2611_five_missing_kamome_exact_g_numbers.sql)：官网逐车的 2041G、2047G、2063G、2064G、2101G，对照首站发车时刻、运营方向。无 N700S 图库 PNG，不制造替代车图。
 - [JR East 2611 下行 111 个逐列刊载 A 番号](../../supabase/migrations/20261106054500_tokaido_sanyo_kyushu_2611_111_verified_down_a_numbers.sql)：东海道45、山阳53、九州13个源模板，Weekday only；[官网下行](https://timetables.jreast.co.jp/2611/timetable-v/001d1.html)。
@@ -245,3 +245,31 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 
 本轮只在该 canonical 条目加入 `lineIds:["KyushuShinkansen"]`，并对已有的 [tools/train-png-display-contract.test.cjs](../../tools/train-png-display-contract.test.cjs) 增加正向断言（JR九州800系在九州新干线返回 `../images/列车/JR九州/JR九州_800系.png`），以及负向断言（同图片不可扩散到山阳新干线）。未改真实派车身份解析器、未加脚本入口、未使用 N700 代图。SQL 精确号码映射仍只针对有独立官方车次/车型证据的白名单；本次仅修复**车型图像解析的线路作用域**。这些是代码级验证，不代替 Safari 实机显示测试。
 
+
+## 2026-11-06 后续调查：山阳こだま逐车车型核实 + 500系原生 PNG
+
+**最新 Supabase 直接回读：826 个原始新干线源模板，674 条独立完整官方列车番号证据，164 条安全精确 PNG，431 条有单一计划车型，395 条没有唯一计划车型；实际当日车底确认证据为0。**
+
+| 线别 | 模板 | 完整番号证据 | 精确 PNG |
+|---|---:|---:|---:|
+| 秋田 | 45 | 45 | 45 |
+| 北海道 | 26 | 26 | 0 |
+| 北陆 | 72 | 66 | 0 |
+| 上越 | 18 | 18 | 18 |
+| 九州 | 159 | 86 | 20（800系） |
+| 西九州 | 92 | 90 | 0（N700S缺图） |
+| 山阳 | 154 | **126** | **3（500系）** |
+| 东北 | 82 | 81 | 35 |
+| 东海道 | 132 | 93 | 0 |
+| 山形 | 46 | 43 | 43 |
+| **合计** | **826** | **674** | **164** |
+
+**新增迁移（均直接 main 且已在现有 Supabase 执行）**：
+
+1. [こだま944/954/958/966：4条官方完整番号+4条逐车车型，其中2条500系精确PNG](../../supabase/migrations/20261106093000_sanyo_kodama_four_source_verified_500_700_numbers_two_native_500_png.sql)。500系：`944A`、`954A`；700系：`958A`、`966A`。每项校验原模板 ID、Weekday、JR West 所属、首末站和发到时刻，以及官网11月个别车次页面，链接分别为 [944A](https://timetable.jr-odekake.net/train-timetable/315471?date=20261128)、[954A](https://timetable.jr-odekake.net/train-timetable/315521?date=20261101)、[958A](https://timetable.jr-odekake.net/train-timetable/315541?date=20261110)、[966A](https://timetable.jr-odekake.net/train-timetable/315591?date=20261101)。
+2. [こだま876/970/974/976：4条官方完整番号、3条唯一计划车型和1条500系精确PNG](../../supabase/migrations/20261106095500_sanyo_four_more_kodama_numbers_only_dated_970_and_974_native_500.sql)。700系：`876A`、`976A`，暂无对应 JR West 本家原生 PNG；500系：`974A`（PNG精确单号）。**`970A`只补番号，禁止固定500或700图**，因为 JR West 11月个别列车官方页虽然主栏显示700系，但备注明确列出11月多个特定日期改用500系：[970A 日期例外来源](https://timetable.jr-odekake.net/train-timetable/315611?date=20261104)。日期换型应由已有按日期的运营规则负责，不能把整个weekday或 `970..976A` 变成一张500 PNG。
+3. [已增强既有 PNG 合约测试](../../tools/train-png-display-contract.test.cjs)：500系在SanyoShinkansen可解析现有 `../images/列车/JR西日本/JR西日本_500系.png`；若在线路上下文为KyushuShinkansen则不能借用500系；700系找不到同公司对应原生图库时维持中性图。无需修改规范车型图库：`planned-stock-library-27` 原先已经有 `lineIds:["SanyoShinkansen"]`。
+
+**资产审计**：GitHub 现有 JR 西日本图片只含 500系、N700系及N700系7000番台，**没有 700系原生PNG**；Supabase `vehicle_image_assets` 亦没有该公司的700系记录。不能以500或N700冒充，也不能仅以是否为「こだま」推断。
+
+**存量缺口**：152 条正式番号尚无独立证据（九州73、东海道39、山阳28、北陆6、山形3、西九州2、东北1）。尽管部分线路可从JR East总表识别同名/号次，仍需核对车次来源、方向、运行日和特殊编号。最新所有164条精确PNG均为单号 `min=max`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`。代码级CI与GitHub Pages成功/失败状态应分别检查；本轮没有进行Safari实机图片显示验收。
