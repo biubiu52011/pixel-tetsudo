@@ -112,6 +112,7 @@
       "data/timetables/jreast-yamanote-2611-number-index.js",
       "data/timetables/jreast-yokohama-2611-number-index.js",
       "data/timetables/jreast-keihin-2611-number-index.js",
+      "data/timetables/jreast-hakushin-2611-number-index.js",
       "data/timetables/jreast-gono-2611-number-index.js",
       "data/timetables/jreast-oga-2611-number-index.js",
       "data/timetables/jreast-ishinomaki-2611-number-index.js",
@@ -262,6 +263,9 @@
         "Kururi",
         "Karasuyama",
         "Hachinohe"
+      ],
+      "data/timetables/jreast-hakushin-2611-number-index.js": [
+        "Hakushin"
       ]
     }
   }
