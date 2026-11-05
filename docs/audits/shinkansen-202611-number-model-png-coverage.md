@@ -9,13 +9,13 @@
 | 口径 | 更新前 | 更新后 |
 |---|---:|---:|
 | 原始时刻表模板（不是实际每日运行记录） | 826 | 826 |
-| 有官方依据的单一**计划车型** | 351 | **400** |
-| 无列车级单车型计划 | 475 | **426** |
+| 有官方依据的单一**计划车型** | 351 | **424** |
+| 无列车级单车型计划 | 475 | **402** |
 | 已证明当日实际物理编组 | 0 | **0** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **279** |
-| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **141** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **493** |
+| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **161** |
 
-**单车型计划覆盖率：400 / 826 = 48.4%。这不是“车次号段全部完成”，也不是已实际显示 400 张 PNG。**
+**单车型计划覆盖率：424 / 826 = 51.3%；正式番号证据 493 / 826 = 59.7%；安全 PNG 单号 161 / 826 = 19.5%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 161 张 PNG。**
 
 ## 各线计划车型覆盖率（2026-11-06 最新回读）
 
@@ -25,13 +25,13 @@
 | HokkaidoShinkansen | 26 | 0 | **26** | **26/26 正式番号**，E5/H5 不可据名分辨、PNG 仍为 0 |
 | HokurikuShinkansen | 72 | 0 | **72** | **66/72 正式番号**，E7/W7 车底未逐车证实、PNG 仍为 0 |
 | JoetsuShinkansen | 18 | **18** | 0 | E7 计划车型；**18条正式番号和精确 PNG 单号映射** |
-| KyushuShinkansen | 159 | 112 | **47** | 800 与 N700 混用；已映射 N700 缺 JR 九州同车型通用 PNG |
+| KyushuShinkansen | 159 | **136** | **23** | 800／N700 依官方个别列车精确区分：66 条正式番号、20 条安全 800系 PNG；N700 缺对应图库 |
 | NishiKyushuShinkansen | 92 | **92** | 0 | N700S 6 辆计划车型确定，**图库无对应 N700S PNG** |
 | SanyoShinkansen | 154 | 52 | **102** | 500/N700/N700S 混用；直通车所属方不能仅从线路推定 |
 | TohokuShinkansen | 82 | 35 | **47** | **81/82 正式番号**，35 条 E6/E8 单车型 PNG；其他混用未猜测 |
 | TokaidoShinkansen | 132 | 0 | **132** | N700A/N700S 与跨公司运行；没有每车次对应证据 |
 | YamagataShinkansen | 46 | **46** | 0 | **43/46 正式番号与 E8 PNG**，3 条多重番号待核 |
-| **合计** | **826** | **400** | **426** | 实际编组全部未证实 |
+| **合计** | **826** | **424** | **402** | 实际编组全部未证实；正式番号 493、精确 PNG 161 |
 
 “官方单车型计划”只表示有 `official_service_vehicle_plan` 与 `evidence_sources` 关联，并没有证实运行当天派车、具体车辆编组号或涂装。未覆盖的模板可能有线路层候选车种，但不属于列车级已确认映射。
 
@@ -99,7 +99,7 @@ ORDER BY line_key;
 
 ### 明确未完成的验收条件
 
-**不能把以上进展称作 10 条新干线全覆盖**：剩余 426 条没有逐车计划车型证据，若要把余下 547 条尚无单独登记正式番号证据的模板变成可用于号段映射的记录，需要进一步用可合法复用的 JR 官方站/车次时刻表逐项核对，且不同工作日/土休日和临时列车不可混抄。既有 10 条新干线的土休日**时刻表覆盖本身仍不完整**（参见 `docs/timetable/shinkansen-holiday-coverage-2026-10-31.md`），因此不能从本审计推导已完成全日时刻表或实际每日运行结果。
+**不能把以上进展称作 10 条新干线全覆盖**：现有 402 条没有逐车计划车型证据，若要把余下 333 条尚无单独登记正式番号证据的模板变成可用于号段映射的记录，需要进一步用可合法复用的 JR 官方站/车次时刻表逐项核对，且不同工作日/土休日和临时列车不可混抄。既有 10 条新干线的土休日**时刻表覆盖本身仍不完整**（参见 `docs/timetable/shinkansen-holiday-coverage-2026-10-31.md`），因此不能从本审计推导已完成全日时刻表或实际每日运行结果。
 
 ## 2026-11-05 第二轮：上越新干线平日 17 条官方番号
 
@@ -187,3 +187,37 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 在前述 v306 局部部署之后，仓库已有的独立 Oito 代码随后通过正常部署流程合入线上。目前实测：Supabase train-runs **v307 ACTIVE**，其 index.ts 与 GitHub main 的源文件**全文一致**；已包含本次 JR-Hokkaido owner guard。前文的 v306 与 main 不一致只是一段中间部署状态，**不再是当前状态**。
 
 [GitHub Pages 最新部署成功](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42089177493)；[列车 PNG 契约检查已通过](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42088471449)。通过的是代码契约/Pages 部署，不代表已经逐车完成 Safari 实机图像验收。
+
+## 2026-11-06 续篇：JR 九州与东海道／山阳／西九州新干线号段审计
+
+本节是 **2026-11-06 最新活库快照**，覆盖前文注明为 2026-11-05 以及当天较早时点的统计。不能把以前的 279／141 小计当成最新结果。2611 是 **2026年11月**，各公司的官网应分别匹配对应发行月，不得认为所有数据都由 JR East 编辑。
+
+| Line | 既有 SQL 模板 | 官方完整列车番号 | 精确 PNG 单号 | 已有单车型计划 |
+|---|---:|---:|---:|---:|
+| AkitaShinkansen | 45 | 45 | 45 | 45 |
+| HokkaidoShinkansen | 26 | 26 | 0 | 0 |
+| HokurikuShinkansen | 72 | 66 | 0 | 0 |
+| JoetsuShinkansen | 18 | 18 | 18 | 18 |
+| KyushuShinkansen | 159 | **66** | **20**（800系） | **136** |
+| NishiKyushuShinkansen | 92 | **79** | **0**（N700S PNG缺失） | 92 |
+| SanyoShinkansen | 154 | **41** | 0 | 52 |
+| TohokuShinkansen | 82 | 81 | 35 | 35 |
+| TokaidoShinkansen | 132 | **28** | 0 | 0 |
+| YamagataShinkansen | 46 | 43 | 43 | 46 |
+| **合计** | **826** | **493** | **161** | **424** |
+
+本轮具体迁移和变更：
+
+1. [JR 九州 2611 西九州 40 个かもめ名称 → 79 条现有周历模板的正式 G 列车番号](../../supabase/migrations/20261106061000_nishi_kyushu_shinkansen_40_exact_jrkyushu_2611_g_numbers.sql)。特别区分 `2001G/2037G/2103G` 等与接续 `2001H` 等リレーかもめ的号。92份 N700S 计划车型证据仍没有同运营商原生PNG，所以0张PNG。
+2. [26 个经官网逐车核对的 A 号次名称 → 67 个既有东海道／山阳／九州模板](../../supabase/migrations/20261106065500_26_named_tokaido_sanyo_kyushu_a_numbers_source_scoped.sql)。JR East 2611 综合表、JR West 11月个别车次和 JR Kyushu 2611 车次页分别保留来源。`みずほ613=613A` 只证明号码，不证明旧记录里的每段在11月均能行驶。
+3. [JR 九州 つばめ300/301/302/304/305/306/308 7条正式番号 + 6条原生800系PNG](../../supabase/migrations/20261106074000_jr_kyushu_tsumbame_2611_six_native_800_png_exact_numbers.sql)：302A 是 N700，**必须排除**于800型 PNG 白名单。官方 [300A](https://www.jrkyushu-timetable.jp/sp/2611/0035/00352901.html?d=20261104&t=0829100) ／ [302A](https://www.jrkyushu-timetable.jp/sp/2611/0037/00377401.html?d=20261101&t=0829200) 页面逐车可核对。
+4. [JR East 2611 组合时刻表额外32个官方A号次名称 → 44 个东海道20／山阳20／九州4的平日模板](../../supabase/migrations/20261106082500_32_exact_additional_jreast_2611_a_train_numbers_tokaido_sanyo_kyushu.sql)，只写 Weekday 正式番号，不因为一个 A 后缀决定 N700A/N700S/500。
+5. [JR 九州另外18个つばめ官方车次逐一辨别车辆型号](../../supabase/migrations/20261106092000_18_kyushu_tsumbame_2611_model_proofs_14_native_800_png.sql)：17个新正式 A 番号、14个 800 系原生PNG、4个 N700 系单车型计划（其中302A已在上一步登记过正式番号）。`307A`,`309A`,`311A`,`302A` 是 N700，**不得归入 800**。型号计划来自个别列车公开编组说明，不代表当日实车。
+
+此次 **24 个新的列车级计划车型** 已写入既有 `train_timetable_vehicle_mappings`，并新增官方 A级 `evidence_sources`，无新建表；由 400→424，未知单车型从426→402。所有号码通过 `published_train_number_evidence` 按 `source_template_id, line_key, calendar_urn, direction_urn, edition=2611` 存储，并非修改 `manual_timetable_templates.train_number`。
+
+**运行时**：现有 [train-runs/index.ts](../../supabase/functions/train-runs/index.ts) 扩展了 JR-Kyushu G 和 JR-Central/JR-West/JR-Kyushu A 的严格官方来源白名单，保留原爱称，已部署 v308 与 v309；随后存在同仓库并行线路维护部署，最终线上版本及是否与 main 一致需单独以最新 Supabase 状态回读为准。`js/train-vehicle.js` 已有 official_service_vehicle_plan → resolveTimetableVehiclePlan → canonical generic asset 的单车型计划 PNG 通路，本轮**未修改该JS**，未曾做浏览器/iPhone Safari逐车渲染验收。
+
+**安全性**：本次不使用号码连续 min/max 蒙混未确认车次。所有新增 `published_train_png_number_ranges` 为 min=max，`requires_exact_roster=true`，`actual_vehicle_confirmed=false`；JR九州800系 PNG `../images/列车/JR九州/JR九州_800系.png` 已通过 `vehicle_image_assets` 资产与证据检查，不能拿其他运营方 N700 或不同番台 PNG 代替。
+
+**剩余缺口**：333个已有 SQL 模板没有单独登记完整番号证据；402个没有列车级单一计划车型证据；真正当天编组和时刻表全覆盖、iPhone Safari PNG 验收都尚未确认。Notion对应任务必须保持「进行中」。
