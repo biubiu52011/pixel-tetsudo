@@ -264,7 +264,7 @@
       allowedModelLabels:["キハ110系"],requiredCandidateModelPrefix:"キハ110系",
       rejectAmbiguousPlan:true,
       model:"キハ110系",
-      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
+      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png"},
     // JR East 2026-11 Kururi, Karasuyama, Hachinohe official 2611
     // train-number lists. No integer interval authorization: exact lists
     // plus the separate index verify named-train dates & cancellations.
@@ -2822,6 +2822,84 @@
       pngPath:proof.pngReference,edition:"2611",
       referenceOnly:true,actualVehicleConfirmed:false});
   }
+  // 陸羽東線 2026-11: source-templated, operator/railway/date/stop
+  // proof for KiHa110 or the Omoide painted family illustration.
+  // The old 6 second SQL occurrences and 9727/9728D are NOT positions.
+  // Actual physical formation is never asserted by a planned PNG.
+  function verifyRikutoEastService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||
+       proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="RikutoEast"||
+       !["kogota_naruko_regular","kogota_naruko_omoide_rapid"].includes(proof.segmentKey)||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="RikutoEast"||
+       (p.displayLineId&&p.displayLineId!=="RikutoEast")||
+       p.sourceRailway!=="odpt.Railway:JR-East.RikutoEast"||
+       p.positionSource!=="supabase-train-run")return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-East"&&operator!=="odpt.Operator:JR-East")return null;
+    var num=String(p.trainNumber||"").trim().toUpperCase(),
+      date=String(p.serviceDate||"").slice(0,10),
+      dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      cal=sourceCalendar(p),
+      rapid=proof.segmentKey==="kogota_naruko_omoide_rapid",
+      calendar="odpt.Calendar:"+(cal==="weekday"?"Weekday":"SaturdayHoliday"),
+      kind=rapid?"rapid":"regular",
+      model="キハ110系",
+      png=rapid?
+        "../images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png":
+        "../images/列车/JR東日本/JR東日本_キハ110系.png",
+      official="https://timetables.jreast.co.jp/2611/timetable-v/268"+
+        (dir==="Inbound"?"u":"d")+(cal==="weekday"?"1":"2")+".html";
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !["Inbound","Outbound"].includes(dir)||
+       !["holiday","weekday"].includes(cal)||
+       proof.trainNumber!==num||proof.serviceDate!==date||
+       proof.calendar!==calendar||
+       proof.direction!=="odpt.RailDirection:"+dir||
+       proof.model!==model||proof.pngReference!==png||
+       proof.officialSourceUrl!==official||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0)return null;
+    var ty=String(p.trainType||"").split(/[.:]/).pop(),
+      expectedType=rapid?"Rapid":"Local",
+      expectedName=rapid?"おもいで湯けむり"+num.slice(-2,-1)+"号":"",
+      dates=Array.isArray(proof.validDates)?proof.validDates:[],
+      officialIndex=root.JREastRikutoEastNumberIndex202611,
+      officialResult=officialIndex&&typeof officialIndex.verify==="function"?
+        officialIndex.verify(num,p.sourceRailway,p.railDirection,p.trainType,cal,date):null;
+    if(ty!==expectedType||proof.trainType!=="odpt.TrainType:JR-East."+expectedType||
+       proof.serviceName!==expectedName||
+       !officialResult||officialResult.kind!==kind||
+       officialResult.model!==model||officialResult.trainType!==expectedType||
+       (rapid?!(cal==="holiday"&&dates.length===12&&
+          dates.includes(date)&&
+          dates.every(function(d){return officialIndex.specialDates.includes(d);})):
+          !(dates.length===0)))return null;
+    // Admit the exact timetable SOURCE's ordered full railway stop list.
+    // Not the zero-minute bus section or a clipped/cropped partial source.
+    var raw=proof.sourceStopKeys,
+      stops=Array.isArray(p.scheduledStopKeys)?
+        p.scheduledStopKeys.map(function(st){return String(st||"").split(".").pop();}):[],
+      route=["Kogota","Kita-Ura","Rikuzen-Yachi","Furukawa",
+        "Tsukume","Nishi-Furukawa","Higashi-Ohsaki","Nishi-Ohsaki",
+        "Iwadeyama","Yubikan","Kaminome","Igetsuki","Kawatabi-Onsen",
+        "Naruko-Gotenyu","Naruko-Onsen"];
+    if(!Array.isArray(raw)||raw.length<2||raw.length>15||
+       raw.length!==stops.length||
+       stops.some(function(key,i){
+          var pos=route.indexOf(key);
+          return key!==raw[i]||pos<0||
+            (i>0&&(dir==="Inbound"?
+              pos>=route.indexOf(stops[i-1]):
+              pos<=route.indexOf(stops[i-1])));
+       }))return null;
+    return Object.freeze({number:num,kind:kind,trainType:expectedType,
+      model:model,pngPath:png,serviceName:expectedName,
+      edition:"2611",referenceOnly:true,actualVehicleConfirmed:false});
+  }
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
@@ -3393,14 +3471,10 @@
            westResult.model!==row.model)continue;
       }
       if(row.numberIndex==="jreast-rikuto-east-2611"){
-        var rikutoIndex=root.JREastRikutoEastNumberIndex202611;
-        var rikutoMatch=rikutoIndex&&typeof rikutoIndex.verify==="function"
-          ?rikutoIndex.verify(number,context&&context.sourceRailway,
-            context&&(context.railDirection||context.directionUrn||context.direction),
-            context&&(context.trainType||context.typeName),
-            sourceCalendar(context),context&&context.serviceDate):null;
-        if(!rikutoMatch||rikutoMatch.kind!==row.rikutoKind||
-           rikutoMatch.model!==row.model)continue;
+        var rkProof=verifyRikutoEastService(
+          Object.assign({},context||{},{trainNumber:number}));
+        if(!rkProof||rkProof.kind!==row.rikutoKind||
+           rkProof.model!==row.model||rkProof.pngPath!==row.pngPath)continue;
       }
       if(row.numberIndex==="jreast-regional-2611"){
         var regionalIndex=root.JREastRegionalNumberIndex202611;
@@ -3924,6 +3998,7 @@
     verifyMiyoService:verifyMiyoService,
     verifyOfunatoService:verifyOfunatoService,
     verifyOgaService:verifyOgaService,
+    verifyRikutoEastService:verifyRikutoEastService,
     verifyOuMainTsugaruService:verifyOuMainTsugaruService,
     verifyOitoEastService:verifyOitoEastService,
     verifyOitoWestService:verifyOitoWestService,
