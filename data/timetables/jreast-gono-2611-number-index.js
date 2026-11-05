@@ -21,7 +21,16 @@
     if(railway!=="odpt.Railway:JR-East.Gono")return false;
     var day=Number(String(date).slice(-2));
     var cal=String(calendar||"").split(/[.:]/).pop();
-    if(["Weekday","SaturdayHoliday","Saturday","Sunday","Holiday"].indexOf(cal)<0)return false;
+    if(["Weekday","SaturdayHoliday","Saturday","Sunday","Holiday","weekday","holiday"].indexOf(cal)<0)return false;
+    // 2611 SQL stores both calendars for every service. Never admit a
+    // holiday timetable on a weekday, or vice versa, merely because its
+    // train number is published. Nov 3 and Nov 23 are Japanese holidays.
+    var dow=new Date(String(date)+"T12:00:00Z").getUTCDay();
+    var isHoliday=dow===0||dow===6||String(date)==="2026-11-03"||
+      String(date)==="2026-11-23";
+    var sourceHoliday=["SaturdayHoliday","Saturday","Sunday","Holiday","holiday"]
+      .indexOf(cal)>=0;
+    if(sourceHoliday!==isHoliday)return false;
     var dir=String(direction||"").split(/[.:]/).pop();
     var n=String(number||"").trim().toUpperCase();
     // Validate the source calendar/physical timetable direction, never
@@ -31,22 +40,39 @@
     var isRegular=inbound?!!regularIn[n]:!!regularOut[n];
     if(isRegular) {
       var typ=rapidRegular.indexOf(n)>=0?"Rapid":"Local";
+      // Historic SQL mislabels the two 352x ordinary rapid services Local.
+      var sourceType=String(trainType||"").split(/[.:]/).pop();
+      if(sourceType!=="Local"&&(typ!=="Rapid"||sourceType!=="Rapid"))
+        return false;
       return Object.freeze({number:n,kind:"regular",trainType:typ,
-        model:"GV-E400系",referenceOnly:true,serviceName:""});
+        model:"GV-E400系",referenceOnly:true,serviceName:"",
+        actualVehicleConfirmed:false});
     }
     // Six in-line Gono sections of Resort Shirakami 1-6.
     // The 862xD/863xD numbers belong to Ou Main continuation sections
     // (some have only one Gono boundary station). No extra Gono train.
     var r=resort[n];
     if(!r||(inbound?"Inbound":"Outbound")!==r.dir)return false;
+    // The imported SQL has Local for all 852xD; the published resort
+    // service type is Rapid. Never accept foreign/express classifications.
+    var resortSourceType=String(trainType||"").split(/[.:]/).pop();
+    if(resortSourceType!=="Local"&&resortSourceType!=="Rapid")return false;
     if(r.days&&r.days.indexOf(day)<0)return false;
     var plan=liveryByService[r.route];
     var livery=Object.keys(plan).filter(function(name){
       return plan[name].indexOf(day)>=0;
     })[0]||"";
     if(!livery)return false;
+    // Published livery + family are safe to DISPLAY as a timetable
+    // reference, but absent approved matching artwork cannot make a PNG.
+    // くまげら uses KiHa48; 青池 / 橅 use HB-E300. Do NOT trust the
+    // historical SQL's incorrect GV-E400 vehicle candidate for resorts.
+    var fleetReference=livery==="kumagera"?"キハ48形（くまげら）":
+      livery==="aoi"?"HB-E300系（青池）":"HB-E300系（橅）";
     return Object.freeze({number:n,kind:"resort",trainType:"Rapid",
-      model:"",livery:livery,referenceOnly:true,
+      model:"",livery:livery,fleetReference:fleetReference,
+      pngAvailable:false,actualVehicleConfirmed:false,
+      referenceOnly:true,
       serviceName:"リゾートしらかみ"+r.route+"号",resortNumber:r.route});
   }
   root.JREastGonoNumberIndex202611=Object.freeze({
