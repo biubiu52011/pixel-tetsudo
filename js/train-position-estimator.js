@@ -816,6 +816,20 @@
           if(suspendedRikutoStop)continue;
         }
 
+        // 陸羽西線 restored rail services in 2026. Use only the exact
+        // 2611 numbers and calendar for November SQL-based positions.
+        // Old 9166D is not on this month's published train-number roster.
+        var officialRikutsuWestPlan=null;
+        if(lineId==="RikutsuWest"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"&&
+           window.JREastRikutsuWestNumberIndex202611&&
+           typeof window.JREastRikutsuWestNumberIndex202611.verify==="function"){
+          officialRikutsuWestPlan=window.JREastRikutsuWestNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
+            tt["odpt:trainType"]||"",run.calendar,serviceDate);
+          if(officialRikutsuWestPlan===false)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0 &&
@@ -1116,8 +1130,12 @@
           var publishedRikutoEastTrainType=officialRikutoEastPlan &&
             officialRikutoEastPlan.trainType
             ? "odpt.TrainType:JR-East."+officialRikutoEastPlan.trainType : "";
+          var publishedRikutsuWestTrainType=officialRikutsuWestPlan &&
+            officialRikutsuWestPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialRikutsuWestPlan.trainType : "";
           var effectivePublishedTrainType=publishedGonoTrainType ||
-            publishedIshinomakiTrainType || publishedRikutoEastTrainType || "";
+            publishedIshinomakiTrainType || publishedRikutoEastTrainType ||
+            publishedRikutsuWestTrainType || "";
           var trainClassification = classifyTrain(
             effectivePublishedTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
@@ -1189,7 +1207,9 @@
               : officialIshinomakiPlan && officialIshinomakiPlan.serviceName
                 ? officialIshinomakiPlan.serviceName
                 : officialRikutoEastPlan && officialRikutoEastPlan.serviceName
-                  ? officialRikutoEastPlan.serviceName : (run.serviceName || ""),
+                  ? officialRikutoEastPlan.serviceName
+                  : officialRikutsuWestPlan && officialRikutsuWestPlan.serviceName
+                    ? officialRikutsuWestPlan.serviceName : (run.serviceName || ""),
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
