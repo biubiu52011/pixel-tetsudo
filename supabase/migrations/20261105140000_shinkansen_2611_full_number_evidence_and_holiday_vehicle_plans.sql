@@ -85,4 +85,45 @@ WHERE (SELECT COUNT(*) FROM approved)=49
        WHERE es.id IN (4931,4932,4933)
          AND es.source_type='official' AND es.evidence_grade IN ('A','B'))=3
 ON CONFLICT (timetable_id) DO NOTHING;
+
+-- Exact-number PNG references only, not inferred from an interval.
+-- These three full railway numbers are already verified individually
+-- by the train-runs Edge Function and the first INSERT above.
+-- Model evidence separately comes from each published single-fleet plan;
+-- the PNGs below are canonical, available JR East generic images.
+WITH exact(line_key,full_number,suffix,expected_model,png_path) AS (
+ VALUES
+  ('AkitaShinkansen',3001,'M','E6系','../images/列车/JR東日本/JR東日本_E6系.png'),
+  ('YamagataShinkansen',121,'M','E8系','../images/列车/JR東日本/JR東日本_E8系.png'),
+  ('JoetsuShinkansen',1301,'C','E7系','../images/列车/JR東日本/JR東日本_E7系.png')
+)
+INSERT INTO public.published_train_png_number_ranges
+ (edition,line_key,segment_key,min_number,max_number,suffix,
+  vehicle_model,png_reference,source_url,requires_exact_roster,
+  actual_vehicle_confirmed)
+SELECT e.edition,e.line_key,'verified_single_service',x.full_number,
+ x.full_number,x.suffix,x.expected_model,x.png_path,
+ e.official_source_url,true,false
+FROM exact x JOIN public.published_train_number_evidence e
+ ON e.edition='2611' AND e.line_key=x.line_key
+ AND e.train_number=x.full_number::text||x.suffix
+ AND e.verification_scope='train_number_only'
+JOIN public.train_timetable_members mem
+ ON mem.source_template_id=e.source_template_id
+JOIN public.train_timetable_vehicle_mappings v
+ ON v.timetable_id=mem.timetable_id
+ AND v.source_template_id=e.source_template_id
+ AND v.vehicle_type=x.expected_model
+ AND v.mapping_level='official_service_vehicle_plan'
+ AND v.actual_vehicle_confirmed=false
+JOIN public.manual_timetable_templates m
+ ON m.id=e.source_template_id AND m.line_key=e.line_key
+ AND m.calendar_urn=e.calendar_urn AND m.direction_urn=e.direction_urn
+JOIN public.vehicle_image_assets a
+ ON a.operator='JR-East' AND a.vehicle_type=x.expected_model
+ AND a.image_path=substring(x.png_path FROM 4)
+ AND a.asset_status='available' AND a.is_generic=true
+WHERE e.calendar_urn='odpt.Calendar:SaturdayHoliday'
+ AND m.railway_urn='odpt.Railway:JR-East.'||x.line_key
+ON CONFLICT DO NOTHING;
 COMMIT;
