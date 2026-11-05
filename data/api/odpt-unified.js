@@ -1874,6 +1874,7 @@
             "_canonicalLineIds":Array.isArray(run.canonical_line_ids)?run.canonical_line_ids:[],
             "_canonicalTrainNumberAliases":Array.isArray(run.canonical_number_aliases)
               ?run.canonical_number_aliases:[],
+            "_sqlPublishedNumberFleetReference":run.published_number_fleet_reference||null,
             "_sqlVehicleMappingLevel":run.vehicle_mapping_level||"unresolved",
             // A recurring plan is only confirmed when the server verified the
             // source is official, rather than a B/C-grade enthusiast inference.
