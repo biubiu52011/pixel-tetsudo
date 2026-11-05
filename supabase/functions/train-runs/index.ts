@@ -792,6 +792,73 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       }),
     };
   });
+  // Joetsu 2611: SQL is the source of public train numbers and the
+  // vehicle-series reference PNG. The numeric PNG range alone is NEVER
+  // enough: calendar, source, explicit roster and verified route must match.
+  // This does not assert observed vehicle formation or full stop-time proof.
+  if(lineId==="Joetsu" && /^2026-11-/.test(serviceDate)) {
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}] =
+      await Promise.all([
+        db.from("published_joetsu_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,service_name,vehicle_model,png_reference,segment_key,official_source_url,operating_dates,stop_clock_status")
+          .eq("edition","2611").eq("line_key","Joetsu")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Joetsu")
+      ]);
+    if(rosterError || rangeError)
+      throw (rosterError || rangeError);
+    const indexed=new Map((roster || []).map((row:any)=>
+      [row.train_number+"|"+row.direction_urn,row]));
+    const northStopCodes=new Set([
+      "Minakami","Yubiso","Doai","Tsuchitaru","Echigo-Nakazato",
+      "Iwahara-Ski-Jo-Mae","Echigo-Yuzawa","Ishiuchi","Osawa",
+      "Joetsu-Ski-Jo-Mae","Shiozawa","Muikamachi","Itsukamachi",
+      "Urasa","Yairo","Koide","Echigo-Horinouchi","Kita-Horinouchi",
+      "Echigo-Kawaguchi","Ojiya","Echigo-Takaya","Miyauchi","Nagaoka"
+    ]);
+    for(const run of result) {
+      const row:any=indexed.get(run.train_number+"|"+run.rail_direction);
+      if(!row || row.segment_key!=="north" ||
+         !row.official_source_url?.startsWith("https://timetables.jreast.co.jp/2611/"))
+        continue;
+      if(Array.isArray(row.operating_dates) && row.operating_dates.length &&
+         !row.operating_dates.includes(serviceDate))continue;
+      if(row.train_type_urn!==run.train_type &&
+        !(row.train_type_urn==="odpt.TrainType:JR-East.Rapid" &&
+          run.train_type==="odpt.TrainType:JR-East.Local"))continue;
+      if(!Array.isArray(run.stops) || run.stops.length<2 ||
+         !run.stops.every((s:any)=>{
+           const urn=String(s.station_urn||"");
+           return urn.startsWith("odpt.Station:JR-East.Joetsu.") &&
+             northStopCodes.has(urn.split(".").pop()||"");
+         }))continue;
+      const numberMatch=/^(\\d+)([A-Z])$/.exec(String(run.train_number||""));
+      if(!numberMatch)continue;
+      const count=Number(numberMatch[1]),suffix=numberMatch[2];
+      const range=(ranges||[]).find((p:any)=>
+        p.segment_key===row.segment_key && p.requires_exact_roster===true &&
+        count>=p.min_number && count<=p.max_number &&
+        suffix===p.suffix && p.vehicle_model===row.vehicle_model &&
+        p.png_reference===row.png_reference);
+      if(!range)continue;
+      run.train_type=row.train_type_urn;
+      run.service_name=row.service_name||run.service_name;
+      run.train_number_verification="official-2611-number-scope";
+      run.train_number_source_url=row.official_source_url;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Joetsu",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:row.calendar_urn,
+        model:row.vehicle_model,pngReference:row.png_reference,
+        trainType:row.train_type_urn,segmentKey:row.segment_key,
+        officialSourceUrl:row.official_source_url,
+        stopClockStatus:row.stop_clock_status,
+        actualVehicleConfirmed:false,referenceOnly:true
+      };
+    }
+  }
   // The branch map displays only Ayase--KitaAyase, not the whole
   // through-train itinerary. Canonical IDs and stored timetables are unchanged.
   if (lineId === "ChiyodaBranch") {
