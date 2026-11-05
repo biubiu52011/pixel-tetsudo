@@ -739,6 +739,21 @@
           if(officialGonoPlan===false)continue;
         }
 
+        // November 2026 Ishinomaki: only the published 266u1/u2/d1/d2
+        // train numbers and service dates may produce SQL plan positions.
+        // Older SQL contains 9631D/9634D and December-only Satono trips.
+        // Never suppress an independently reported realtime observation.
+        var officialIshinomakiPlan = null;
+        if(lineId==="Ishinomaki" && tt._positionSource==="supabase-train-run" &&
+           String(serviceDate).slice(0,7)==="2026-11" &&
+           window.JREastIshinomakiNumberIndex202611 &&
+           typeof window.JREastIshinomakiNumberIndex202611.verify==="function"){
+          officialIshinomakiPlan=window.JREastIshinomakiNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
+            tt["odpt:trainType"]||"",run.calendar,serviceDate);
+          if(officialIshinomakiPlan===false)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
@@ -1028,8 +1043,13 @@
           // Restore the source-verified public service class for display.
           var publishedGonoTrainType=officialGonoPlan && officialGonoPlan.trainType
             ? "odpt.TrainType:JR-East."+officialGonoPlan.trainType : "";
+          var publishedIshinomakiTrainType=officialIshinomakiPlan &&
+            officialIshinomakiPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialIshinomakiPlan.trainType : "";
+          var effectivePublishedTrainType=publishedGonoTrainType ||
+            publishedIshinomakiTrainType || "";
           var trainClassification = classifyTrain(
-            publishedGonoTrainType || run.trainType, trainNumber, lineId);
+            effectivePublishedTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
           var directionName = run.directionName;
           var destinationStation = run.destinationStation;
@@ -1095,7 +1115,9 @@
             trainNumberSource: publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
             serviceName: officialGonoPlan && officialGonoPlan.serviceName
-              ? officialGonoPlan.serviceName : (run.serviceName || ""),
+              ? officialGonoPlan.serviceName
+              : officialIshinomakiPlan && officialIshinomakiPlan.serviceName
+                ? officialIshinomakiPlan.serviceName : (run.serviceName || ""),
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
@@ -1116,7 +1138,7 @@
             segmentToIndex: segmentToIndex,
             segmentProgress: segmentProgress,
             extrapolated: false,
-            trainType: publishedGonoTrainType || tt['odpt:trainType'] || '',
+            trainType: effectivePublishedTrainType || tt['odpt:trainType'] || '',
             trainOwner: _trainOwner,
             assignmentOperator: _assignmentOperator,
             operationEvidence: _assignmentMatches,
