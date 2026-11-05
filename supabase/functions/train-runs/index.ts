@@ -918,11 +918,21 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         result.splice(i,1);continue;
       }
       const unique=new Set(run.stops.map((st:any)=>st.station_key));
-      if(unique.size<2||!run.stops.every((st:any)=>{
+      const scopedStops=run.stops.filter((st:any)=>{
         const u=String(st.station_urn||"");
         return u.startsWith("odpt.Station:JR-East.") &&
           kamaishiStations.has(u.split(".").pop()||"");
-      })){result.splice(i,1);continue;}
+      });
+      // Some Hamayuri runs continue over Tohoku Main to/from Morioka.
+      // One official Morioka boundary is acceptable, but a source
+      // containing ONLY Tohoku stops (5559D) cannot claim a Kamaishi PNG.
+      if(unique.size<2||scopedStops.length<2||
+         !run.stops.every((st:any)=>{
+           const u=String(st.station_urn||"");
+           return u.startsWith("odpt.Station:JR-East.") &&
+             (kamaishiStations.has(u.split(".").pop()||"") ||
+              u==="odpt.Station:JR-East.Morioka");
+         })){result.splice(i,1);continue;}
       const digits=Number(numberMatch[1]),suffix=numberMatch[2];
       const validRange=(ranges||[]).some((r:any)=>
         r.requires_exact_roster===true&&r.segment_key===proof.segment_key&&
