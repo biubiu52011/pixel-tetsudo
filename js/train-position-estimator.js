@@ -922,6 +922,31 @@
           if(!officialKururiPlan)continue;
         }
 
+        // 大船渡線 2611: Ofunato internal line mixes BRT F/K numbers
+        // and genuine Ichinoseki--Kesennuma railway D train numbers.
+        // Only SQL-source-dated rail D records can be plotted as TRAINS.
+        // Pokemon KiHa100 has no genuine PNG in the gallery.
+        var officialOfunatoPlan=null;
+        if(lineId==="Ofunato"&&String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run")continue;
+          var ofunatoRanges=window.TrainNumberPngRanges;
+          if(!ofunatoRanges||
+             typeof ofunatoRanges.verifyOfunatoService!=="function")
+            continue;
+          officialOfunatoPlan=ofunatoRanges.verifyOfunatoService({
+            trainNumber:run.trainNumber,positionLineId:"Ofunato",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialOfunatoPlan)continue;
+        }
+
         // 2611 弥彦線 internal Miyo: 9-day Kiku segmented timetable.
         // Oct-24 Shu*Kura must be excluded, and Momiji Kairi has no
         // matching source SQL stop clocks (do not invent a position).
@@ -1536,6 +1561,35 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // 大船渡線: ordinary KiHa110 gets the pre-existing railway
+          // family PNG, but KiHa100 Pokemon never borrows that livery.
+          var _ofunatoPokemon=officialOfunatoPlan&&
+            officialOfunatoPlan.kind==="rail_pokemon";
+          var _ofunatoFleet=officialOfunatoPlan&&
+            officialOfunatoPlan.kind==="rail_regular"&&
+            officialOfunatoPlan.pngPath&&
+            vehResult.identityStatus!=="EXACT"
+              ?String(officialOfunatoPlan.model||""):"";
+          if(_ofunatoPokemon){
+            // No approved Pokemon image: a neutral train marker is more
+            // accurate than a generic KiHa110 masquerading as KiHa100.
+            _plannedCandidates=[];
+            _visibleCandidates=[];
+            _publishedVehiclePlan=null;
+          }
+          if(_ofunatoFleet){
+            _plannedCandidates=[_ofunatoFleet];
+            _visibleCandidates=[_ofunatoFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_ofunatoFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2611-ofunato-number-rail",
+              sourceUrl:tt._sqlPublishedNumberFleetReference&&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl||"",
+              lineId:"Ofunato",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // 弥彦線 E129 approved fleet PNG is representative ONLY.
           var _miyoFleet=officialMiyoPlan&&vehResult.identityStatus!=="EXACT"
             ?String(officialMiyoPlan.model||""):"";
@@ -1679,8 +1733,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet) ? "" : (vehResult.name || '');
-          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet) ? "" :
+          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon) ? "" : (vehResult.name || '');
+          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1733,7 +1787,7 @@
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
-              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialMitoPlan || officialMiyoPlan || officialYamadaPlan ||
+              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialMitoPlan || officialMiyoPlan || officialOfunatoPlan || officialYamadaPlan ||
               officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan || officialKashimaPlan ||
                officialKesennumaRailPlan || officialKomiiPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
@@ -1745,8 +1799,8 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -1823,7 +1877,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet)
+            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
