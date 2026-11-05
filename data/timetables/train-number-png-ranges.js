@@ -1839,6 +1839,8 @@
     if(String(p.positionLineId||p.lineId||"")!=="Joetsu"||
        String(p.displayLineId||"Joetsu")!=="Joetsu"||
        p.sourceRailway!=="odpt.Railway:JR-East.Joetsu")return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-East"&&operator!=="odpt.Operator:JR-East")return null;
     var number=String(p.trainNumber||"").trim().toUpperCase();
     if(proof.trainNumber!==number||proof.serviceDate!==p.serviceDate||
        proof.direction!==p.railDirection)return null;
