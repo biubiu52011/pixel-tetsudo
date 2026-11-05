@@ -1797,6 +1797,81 @@
     Object.freeze(row);
   });
   Object.freeze(rows);
+  // Official JR East November 2026: this SVG Joetsu line spans
+  // two disjoint rolling-stock areas. The 296 timetable also includes
+  // Hokuhoku HK100 M services and Iiyama D trains: never infer E129 from M.
+  var joetsuSouthNumbers=new Set(rows.filter(function(r){
+    return r.lineIds.length===1&&r.lineIds[0]==="Takasaki"&&
+      r.from===420&&r.to===758&&r.publishedNumbers;
+  }).reduce(function(a,r){return a.concat(r.publishedNumbers);},[]));
+  var joetsuNorthDown=new Set(["1721M","1723M","1725M","1727M",
+    "1729M","1731M","1735M","1737M","1739M","1741M","1743M",
+    "1745M","1747M","1749M","1751M"]);
+  var joetsuNorthUp=new Set(["1720M","1722M","1724M","1726M",
+    "1728M","1732M","1734M","1736M","1738M","1740M","1742M",
+    "1744M","1746M","1748M","1750M","1752M"]);
+  var joetsuSouthStops=new Set(["Takasaki","Takasaki-Tonyamachi","Ino",
+    "Shin-Maebashi","Gunma-Soja","Yagihara","Shibukawa","Shikishima",
+    "Tsukuda","Iwamoto","Numata","Gokan","Kamimoku","Minakami"]);
+  var joetsuNorthStops=new Set(["Minakami","Yubiso","Doai","Tsuchitaru",
+    "Echigo-Nakazato","Iwahara-Ski-Jo-Mae","Echigo-Yuzawa","Ishiuchi",
+    "Osawa","Joetsu-Ski-Jo-Mae","Shiozawa","Muikamachi","Itsukamachi",
+    "Urasa","Yairo","Koide","Echigo-Horinouchi","Kita-Horinouchi",
+    "Echigo-Kawaguchi","Ojiya","Echigo-Takaya","Miyauchi","Nagaoka"]);
+  var joetsuShuKura=Object.freeze({
+    "9780D":{days:["01","02","03"],dir:"Inbound",name:"あかねShu＊Kura"},
+    "9783D":{days:["01","02","03"],dir:"Outbound",name:"あかねShu＊Kura"},
+    "9762D":{days:["06","09"],dir:"Inbound",name:"ゆざわShu＊Kura"},
+    "9765D":{days:["06","09"],dir:"Outbound",name:"ゆざわShu＊Kura"},
+    "9781D":{days:["07","08"],dir:"Outbound",name:"摂田屋Shu＊Kura"},
+    "9782D":{days:["07","08"],dir:"Inbound",name:"摂田屋Shu＊Kura"},
+    "8124D":{days:["20","21","27","28","29"],dir:"Inbound",name:"越乃Shu＊Kura"},
+    "8133D":{days:["20","21","27","28","29"],dir:"Outbound",name:"越乃Shu＊Kura"}
+  });
+  function verifyJoetsuService(p){
+    if(!p||String(p.positionLineId||p.lineId||"")!=="Joetsu"||
+       String(p.displayLineId||"Joetsu")!=="Joetsu"||
+       p.sourceRailway!=="odpt.Railway:JR-East.Joetsu")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var day=String(p.serviceDate||"").slice(0,10);
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day))return null;
+    var cal=sourceCalendar(p);
+    var dow=new Date(day+"T12:00:00Z").getUTCDay();
+    var holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if(cal!==(holiday?"holiday":"weekday"))return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop();
+    if(dir!=="Inbound"&&dir!=="Outbound")return null;
+    var stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();}).filter(Boolean);
+    // This protects both E129 and 211 against the shared 820M etc numbers.
+    if(stops.length<2||new Set(stops).size<2)return null;
+    var south=stops.every(function(x){return joetsuSouthStops.has(x);})&&
+      stops.some(function(x){return x!=="Minakami";});
+    var north=stops.every(function(x){return joetsuNorthStops.has(x);})&&
+      stops.some(function(x){return x!=="Minakami";});
+    var n=String(p.trainNumber||"").toUpperCase().trim();
+    var type=String(p.trainType||"").split(/[.:]/).pop();
+    var result=null;
+    if(north&&type==="Local"&&
+       (dir==="Outbound"?joetsuNorthDown.has(n):joetsuNorthUp.has(n))){
+      result={kind:"north",model:"E129系",trainType:"Local",
+        pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"};
+    }else if(south&&type==="Local"&&joetsuSouthNumbers.has(n)&&
+             (dir==="Inbound"?parseInt(n,10)%2===0:parseInt(n,10)%2===1)){
+      result={kind:"south",model:"211系（高崎地区）",trainType:"Local",
+        pngPath:"../images/列车/JR東日本/JR東日本_211系_湘南色.png"};
+    }else if(north&&joetsuShuKura[n]&&joetsuShuKura[n].dir===dir&&
+             joetsuShuKura[n].days.indexOf(day.slice(8))>=0&&
+             (type==="Rapid"||
+              (p.positionSource==="supabase-train-run"&&type==="Local"))){
+      result={kind:"shukura",model:"キハ40・48形（越乃Shu＊Kura）",
+        trainType:"Rapid",serviceName:joetsuShuKura[n].name,
+        pngPath:"../images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png"};
+    }
+    return result?Object.freeze(Object.assign({number:n,referenceOnly:true,
+      actualVehicleConfirmed:false,edition:"2611"},result)):null;
+  }
   // SQL positions can provide the calendar as an ODPT serviceId rather
   // than a normalized calendarType. Read the timetable source first;
   // never infer a service calendar from the last two train-number digits.
@@ -1810,6 +1885,28 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Joetsu"){
+      var source=Object.assign({},context||{},{trainNumber:number});
+      var official=verifyJoetsuService(source);
+      if(!official||source.estimated!==true||
+         String(source.trainType||"").split(/[.:]/).pop()!==official.trainType)
+        return null;
+      var actual=String(source.realtimeVehicleType||
+        source.realtimeDerivedVehicleType||"").trim();
+      if(actual&&actual!==official.model)return null;
+      var planned=source.vehiclePlan;
+      if(planned&&Array.isArray(planned.models)&&planned.models.length&&
+         (planned.models.length!==1||planned.models[0]!==official.model))return null;
+      if(Array.isArray(source.plannedVehicleCandidates)&&
+         source.plannedVehicleCandidates.length&&
+         !source.plannedVehicleCandidates.some(function(m){
+           return m===official.model||
+             (official.kind==="south"&&m==="211系");
+         }))return null;
+      return {trainNumber:number,lineId:line,model:official.model,
+        pngPath:official.pngPath,source:"jr-east-2611-joetsu-number-stops",
+        planned:true,representative:true};
+    }
     // A train-number roster can authorize a REFERENCE image only when
     // this is an Ito SQL-estimated local service in the audited Nov month.
     // The March 2026 stock working is not a current-day physical identity.
@@ -2588,7 +2685,8 @@
       status:"UNCONFIRMED_PLANNED_FLEET"};
   }
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261104-chuo-seasonal-date-v43",match:match,
+    version:"20261105-joetsu-2611-v1",match:match,
+    verifyJoetsuService:verifyJoetsuService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
