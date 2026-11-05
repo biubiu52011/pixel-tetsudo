@@ -878,9 +878,10 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // and ONE dated SQL stop plan per train number. Never interpret the
   // 725M/756M/763M/772M clock variants as extra physical trains.
   // 9074/9075M are Oct 31-only Jōban-Nikkō limited expresses; imported
-  // 9785M has no verified Nov 2611 operating date. E501 stopped Mito
-  // revenue service in 2019; E531 5-car is a FLEET illustration, not the
-  // identity of a confirmed formation or subtype (0/3000/Akaden).
+  // 9785M has no verified Nov 2611 operating date. JR scheduled E531
+  // 5-car regular service in 2019, but temporary E501 appearances were
+  // reported in 2026; no Nov 2611 E501 number/formation proof exists.
+  // E531 is a FLEET illustration, never confirmed 0/3000/Akaden stock.
   if(lineId==="Mito"&&/^2026-11-/.test(serviceDate)){
     const [{data:roster,error:rosterError},{data:ranges,error:rangeError}]=
       await Promise.all([
