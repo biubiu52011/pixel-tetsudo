@@ -821,6 +821,86 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // JR East 2026-11 Kitakami: SQL published number roster + explicit
+  // rail-only corridor from the August 2 flood bulletin. The published
+  // 9729D/9730D excursion was October 24/25 ONLY, not a November train.
+  // No train can be drawn on Hotto-Yuda–Yokote (replacement BUS).
+  if(lineId==="Kitakami" && /^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError},
+      {data:suspension,error:suspensionError}]=await Promise.all([
+      db.from("published_kitakami_2611_number_roster")
+        .select("train_number,calendar_urn,direction_urn,train_type_urn,vehicle_model,png_reference,official_source_url,source_evidence_scope,operating_rule,railway_from,railway_to,stop_clock_status")
+        .eq("edition","2611").eq("line_key","Kitakami")
+        .eq("calendar_urn",selectedCalendar),
+      db.from("published_train_png_number_ranges")
+        .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+        .eq("edition","2611").eq("line_key","Kitakami")
+        .eq("segment_key","rail_to_hotto_yuda"),
+      db.from("published_kitakami_2611_rail_suspension")
+        .select("suspended_from,suspended_to,status,replacement_mode,effective_since")
+        .eq("edition","2611").eq("line_key","Kitakami").maybeSingle()
+    ]);
+    if(rosterError||rangeError||suspensionError)
+      throw (rosterError||rangeError||suspensionError);
+    if(!suspension||suspension.suspended_from!=="Hotto-Yuda"||
+      suspension.suspended_to!=="Yokote"||
+      suspension.status!=="suspended_until_further_notice"||
+      suspension.replacement_mode!=="replacement_bus_not_rail")
+      throw new Error("KITAKAMI_OFFICIAL_RAIL_SUSPENSION_SCOPE_UNAVAILABLE");
+    const index=new Map((roster||[]).map((r:any)=>
+      [r.train_number+"|"+r.direction_urn,r]));
+    const railwayStops=new Set(["Kitakami","Yanagihara","Ezuriko",
+      "Fujine","Tatekawame","Yokokawame","Iwasawa","Waka-Sennin",
+      "Yuda-Kinshuko","Hotto-Yuda"]);
+    const dow=new Date(serviceDate+"T12:00:00Z").getUTCDay();
+    const nationalHoliday=serviceDate==="2026-11-03"||
+      serviceDate==="2026-11-23";
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],pub:any=index.get(run.train_number+"|"+run.rail_direction);
+      if(!pub||run.network_key!=="odpt.Railway:JR-East.Kitakami"){
+        result.splice(i,1);continue;
+      }
+      if(pub.operating_rule==="except_sunday_national_holiday"&&
+         (dow===0||nationalHoliday)){result.splice(i,1);continue;}
+      const stops=run.stops||[];
+      if(stops.length<2||!Array.isArray(stops)||
+         stops.some((x:any)=>!String(x.station_urn||"").startsWith(
+            "odpt.Station:JR-East.")||
+           !railwayStops.has(String(x.station_urn).split(".").pop()||""))){
+        result.splice(i,1);continue;
+      }
+      const first=String(stops[0].station_urn).split(".").pop();
+      const last=String(stops[stops.length-1].station_urn).split(".").pop();
+      if(first!==pub.railway_from||last!==pub.railway_to){
+        result.splice(i,1);continue;
+      }
+      const num=/^(\d+)([A-Z])$/.exec(String(run.train_number||""));
+      if(!num||!(ranges||[]).some((x:any)=>
+         x.requires_exact_roster===true&&
+         Number(num[1])>=x.min_number&&Number(num[1])<=x.max_number&&
+         num[2]===x.suffix&&x.vehicle_model===pub.vehicle_model&&
+         x.png_reference===pub.png_reference)){
+        result.splice(i,1);continue;
+      }
+      run.train_type=pub.train_type_urn;
+      run.train_number_verification="official-2611-number-rail-scope";
+      run.train_number_source_url=pub.official_source_url;
+      // Important: the 2610 clock source does not become a fully verified
+      // 2611 schedule, and a vehicle SERIES illustration is not a real carset.
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Kitakami",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:pub.calendar_urn,
+        model:pub.vehicle_model,pngReference:pub.png_reference,
+        trainType:pub.train_type_urn,segmentKey:"rail_to_hotto_yuda",
+        officialSourceUrl:pub.official_source_url,
+        stopClockStatus:pub.stop_clock_status,sourceScope:pub.source_evidence_scope,
+        railwayFrom:pub.railway_from,railwayTo:pub.railway_to,
+        actualVehicleConfirmed:false,referenceOnly:true,
+        closedRailSection:"Hotto-Yuda–Yokote"
+      };
+    }
+  }
   // Joetsu 2611: SQL is the source of public train numbers and the
   // vehicle-series reference PNG. The numeric PNG range alone is NEVER
   // enough: calendar, source, explicit roster and verified route must match.
