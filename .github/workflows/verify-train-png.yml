@@ -146,6 +146,8 @@ jobs:
         run: node --test tests/iiyama-2611-official-number-png.test.cjs
       - name: Verify Ominato Nov 2026 exact services and maintenance cancellations
         run: node --test tests/ominato-2611-official-number-estimate.test.cjs
+      - name: Verify OuMain Nov 2026 six E751 Tsugaru number-to-PNG guards
+        run: node --test tests/oumain-2611-tsugaru-e751-exact-number-png.test.cjs tests/oumain-2611-source-segment-safety.test.cjs
       - name: Verify Rikutsu West Nov 2026 official numbers and Mogamigawa Rapid
         run: node --test tests/rikutsu-west-2611-official-number-png.test.cjs
       - name: Verify Rikuto East Nov 2026 numbers, special rapids and flood closure
