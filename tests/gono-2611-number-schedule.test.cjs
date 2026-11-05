@@ -158,7 +158,8 @@ test('Gono scheduled train fallback projects source SQL clocks and route aliases
     assert.ok(pos.stationIndex>=0);
     assert.ok(pos.segmentToIndex==null || pos.segmentToIndex>=0);
     if(n==='8522D'){
-      assert.equal(pos.typeName,'快速');
+      assert.equal(pos.typeName,'JR-East.Rapid');
+      assert.equal(pos.trainType,'odpt.TrainType:JR-East.Rapid');
       assert.equal(pos.serviceName,'リゾートしらかみ2号');
     }
   }
