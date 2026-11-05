@@ -102,7 +102,7 @@ test('BRT K numbers, wrong rail stations/source/month/model never receive KiHa P
    {trainOperator:'JR-West'},
    {displayLineId:'KesennumaBRT'},
    {calendarType:'weekday'},
-   {railDirection:'odpt.RailDirection:Outbound'},
+   {railDirection:'odpt.RailDirection:Inbound'},
    {trainType:'odpt.TrainType:JR-East.Rapid'},
    {serviceDate:'2026-12-07'},
    {scheduledStopKeys:['Yanagitsu','Shizugawa','Kesennuma']},
