@@ -2456,7 +2456,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var foldOfficialNumber=String((p&&p.trainNumber)||"").trim().toUpperCase();
         if(p&&p.officialNumberVerified===true&&p.estimated===true&&
            p.positionSource==="supabase-train-run"&&
-           /^\\d{2,5}[A-Z]{1,2}$/.test(foldOfficialNumber)){
+           /^\d{2,5}[A-Z]{1,2}$/.test(foldOfficialNumber)){
           var numberNote=document.createElement('small');
           numberNote.className='train-fold-official-number';
           numberNote.textContent=" · "+
