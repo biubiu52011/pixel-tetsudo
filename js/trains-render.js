@@ -1478,9 +1478,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       tip.push(prefix + " " + number);
     }
     // A Shinkansen service name / service number is not the operating train number.
-    if (lineId === "Gono" && p && p.officialNumberVerified === true &&
+    if ((lineId === "Gono" || lineId === "Hakushin") && p &&
+        p.officialNumberVerified === true &&
         p.positionSource === "supabase-train-run" &&
-        p.publishedGonoLivery && p.publishedFleetReference) {
+        (p.publishedGonoLivery || p.publishedHakushinServiceFamily) &&
+        p.publishedFleetReference) {
       var fleetPrefix=/^zh/.test(lang)?"官方计划车型（非当日实车确认）：" :
         lang==="en"?"Scheduled fleet (not an observed carset): ":
         lang==="ko"?"공식 운행 계획 차종(실차 미확인): ":
@@ -2478,9 +2480,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // their candidate PNGs are not gallery-approved. Show the correct
         // planned livery as TEXT beside the neutral marker instead of the
         // SQL's stale GV-E400 label or an invented car front.
-        if(lineId==="Gono"&&p&&p.officialNumberVerified===true&&
+        if((lineId==="Gono"||lineId==="Hakushin")&&p&&
+           p.officialNumberVerified===true&&
            p.positionSource==="supabase-train-run"&&
-           p.publishedGonoLivery&&p.publishedFleetReference){
+           (p.publishedGonoLivery||p.publishedHakushinServiceFamily)&&
+           p.publishedFleetReference){
           var resortNote=document.createElement('small');
           resortNote.className='train-fold-fleet-reference';
           resortNote.textContent=(lang==='en'?'Scheduled fleet: ':
