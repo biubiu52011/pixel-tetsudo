@@ -2386,7 +2386,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "planned-stock-library-3": ["Takasaki", "Joetsu", "Agatsuma"],
   "planned-stock-library-8": ["Tazawako"],
   "planned-stock-library-9": ["YamagataShinkansen"],
-  "planned-stock-library-10": ["BanetsuEast", "BanetsuWest", "Ishinomaki", "RikutoEast"],
+  "planned-stock-library-10": ["BanetsuEast", "BanetsuWest", "Ishinomaki", "RikutoEast", "RikutsuWest"],
   "jr-east-highrail1375-plan": ["Komii"],
   "remaining-fleet-extra-15": ["BanetsuWest"],
   "jr-east-c57-banetsu-plan": ["BanetsuWest"],
