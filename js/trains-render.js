@@ -1132,6 +1132,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       kind: hasImage ? "vehicle" : (artwork.kind === "candidate" ? "candidate" : "unresolved"),
       iconSrc: hasImage ? artwork.iconSrc : "",
       planned: hasImage && artwork.planned === true,
+      illustrative: hasImage && artwork.illustrative === true &&
+        artwork.representativeOnly === true &&
+        artwork.actualVehicleConfirmed === false,
       // For diagnostics/title ONLY. Candidate paths are NEVER drawn as
       // multiple cabs; each train location owns exactly one SVG glyph.
       candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
@@ -1142,6 +1145,34 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       className: hasImage && artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
+  }
+
+  // ODPT location evidence must never be confused with evidence that
+  // this B/C train uses the single illustrative E231-500 image. Announce
+  // its reference-only scope in the accessible text, not as actual stock.
+  function _trainMarkerAccessibleDescription(p, lineId, spec) {
+    var title = _trainMarkerTitle(p, lineId);
+    if (!spec || spec.illustrative !== true) return title;
+    var lang = window.currentLang || "ja";
+    var note = /^zh/.test(lang)
+      ? "车辆图片：线路代表图，实际车型及编组未确认"
+      : lang === "en"
+        ? "Vehicle artwork: line illustration only; actual model and formation unconfirmed"
+        : "車両画像：路線の代表図、実車形式・編成は未確認";
+    return title ? title + " · " + note : note;
+  }
+
+  function _syncTrainMarkerIllustrationStatus(marker, spec) {
+    if (!marker) return;
+    if (spec && spec.illustrative === true) {
+      marker.setAttribute("data-marker-illustrative", "mixed-line-fleet");
+      // Realtime POSITION is observed; physical VEHICLE identity is not.
+      marker.setAttribute("data-vehicle-unresolved", "true");
+    } else {
+      marker.removeAttribute("data-marker-illustrative");
+      if (String(marker.tagName || "").toLowerCase() === "image")
+        marker.removeAttribute("data-vehicle-unresolved");
+    }
   }
 
   // Public identification boundary: marker spec ends before title formatting.
@@ -1698,8 +1729,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         marker.setAttribute("data-vehicle-candidate-assets", (spec.candidateAssets || []).join("|"));
       }
     }
-    var titleText = _trainMarkerTitle(p, lineId);
+    var titleText = _trainMarkerAccessibleDescription(p, lineId, spec);
     if (titleText) _setTrainMarkerAccessibilityLabel(marker, titleText);
+    _syncTrainMarkerIllustrationStatus(marker, spec);
     _setTrainFormationAttribute(marker, p);
     marker.setAttribute("data-train-id", String(trainUid));
     marker.setAttribute("data-marker-kind", _trainMarkerDomKind(spec));
@@ -1890,8 +1922,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         }
         // SVG 标记会跨轮询保留，但其已验证编组可能发生变化。
         // 刷新无障碍标签，不要保留过期的列车数据。
-        var _freshTitle = _trainMarkerTitle(p, lineId);
+        var _freshTitle = _trainMarkerAccessibleDescription(p, lineId, markerSpec);
         _setTrainMarkerAccessibilityLabel(existingIcon, _freshTitle);
+        _syncTrainMarkerIllustrationStatus(existingIcon, markerSpec);
         _setTrainFormationAttribute(existingIcon, p);
         // Update existing icon position.
         // TrainTrackLayout 负责目标几何；此标记负责插值。
