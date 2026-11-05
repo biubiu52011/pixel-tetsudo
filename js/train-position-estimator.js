@@ -727,16 +727,15 @@
         if (!run) continue;
         var officialGonoPlan = null;
         if(lineId==="Gono" && tt._positionSource==="supabase-train-run" &&
-           String(serviceDate).slice(0,7)==="2026-11" &&
-           window.JREastGonoNumberIndex202611 &&
-           typeof window.JREastGonoNumberIndex202611.verify==="function"){
-          // The 2611 roster admits the exact Gono segment and applies
-          // the official Resort Shirakami vehicle/date calendar.
-          // Wrong Ou Main continuations cannot create Gono positions.
-          officialGonoPlan=window.JREastGonoNumberIndex202611.verify(
+           String(serviceDate).slice(0,7)==="2026-11"){
+          // Strict fail-closed: without this lazy-loaded official roster,
+          // do not show old SQL 852x resort cars as local GV-E400 trains.
+          var gonoIndex=window.JREastGonoNumberIndex202611;
+          if(!gonoIndex||typeof gonoIndex.verify!=="function")continue;
+          officialGonoPlan=gonoIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
             tt["odpt:trainType"]||"",run.calendar,serviceDate);
-          if(officialGonoPlan===false)continue;
+          if(!officialGonoPlan)continue;
         }
 
         // November 2026 Ishinomaki: only the published 266u1/u2/d1/d2
@@ -1228,6 +1227,28 @@
           var vehResult = _runIdentity.vehicleResult;
           var _plannedCandidates = _runIdentity.plannedVehicleCandidates || [];
           var _visibleCandidates = visibleVehicleCandidates(vehResult, _plannedCandidates);
+          // The source SQL falsely labels ALL Gono trains GV-E400,
+          // including Resort Shirakami. Replace the passenger-facing
+          // candidate and plan ONLY on officially indexed 852xD resorts.
+          // Preserve the old source row for audit; never claim a dated
+          // physical carset or use an unapproved 青池/橅/くまげら PNG.
+          var _gonoResortFleet=officialGonoPlan &&
+            officialGonoPlan.kind==="resort" &&
+            vehResult.identityStatus!=="EXACT"
+            ?String(officialGonoPlan.fleetReference||""):"";
+          var _publishedVehiclePlan=vehResult.vehiclePlan||null;
+          if(_gonoResortFleet){
+            _plannedCandidates=[_gonoResortFleet];
+            _visibleCandidates=[_gonoResortFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_gonoResortFleet],
+              iconPath:"",representativeModel:"",
+              source:"jr-east-2026-11-gono-resort-calendar",
+              sourceUrl:"https://www.jreast.co.jp/railway/joyful/shirakami.html",
+              lineId:"Gono",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
           var trainClass = vehResult.name || '';
@@ -1291,6 +1312,9 @@
                 String(run.trainNumber||"").toUpperCase(),
             trainNumberSource: publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
+            publishedGonoLivery:_gonoResortFleet
+              ?officialGonoPlan.livery:"",
+            publishedFleetReference:_gonoResortFleet,
             serviceName: officialGonoPlan && officialGonoPlan.serviceName
               ? officialGonoPlan.serviceName
               : officialIshinomakiPlan && officialIshinomakiPlan.serviceName
@@ -1350,7 +1374,7 @@
             trainClass: trainClass,
             vehicleType: _vehicleType,
             vehicleIconPath: vehResult.iconPath || '',
-            vehiclePlan: vehResult.vehiclePlan || null,
+            vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
             vehicleConfidence: vehResult.confidence || 'none',
             vehicleResolution: vehResult,
