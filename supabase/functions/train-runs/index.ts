@@ -818,7 +818,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       "Urasa","Yairo","Koide","Echigo-Horinouchi","Kita-Horinouchi",
       "Echigo-Kawaguchi","Ojiya","Echigo-Takaya","Miyauchi","Nagaoka"
     ]);
-    for(const run of result) {
+    for(const run of result as any[]) {
       const row:any=indexed.get(run.train_number+"|"+run.rail_direction);
       if(!row || row.segment_key!=="north" ||
          !row.official_source_url?.startsWith("https://timetables.jreast.co.jp/2611/"))
@@ -852,6 +852,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         trainNumber:run.train_number,serviceDate:serviceDate,
         direction:run.rail_direction,calendar:row.calendar_urn,
         model:row.vehicle_model,pngReference:row.png_reference,
+        serviceName:row.service_name||"",
         trainType:row.train_type_urn,segmentKey:row.segment_key,
         officialSourceUrl:row.official_source_url,
         stopClockStatus:row.stop_clock_status,
