@@ -55,6 +55,76 @@
   // https://timetables.jreast.co.jp/2611/timetable-v/671u1.html
   var chuoSobuTozai2611=Object.freeze({"holiday_Eastbound_K":["1202Y","1402Y","1610Y","1702Y","610Y","702Y","706Y","902Y"],"holiday_Eastbound_S":["1016Y","1020Y","1028Y","1122Y","1142Y","1216Y","1320Y","1342Y","1422Y","1516Y","1520Y","1548Y","1622Y","1628Y","1642Y","1644Y","1716Y","1734Y","1736Y","1820Y","1842Y","1848Y","1922Y","716Y","728Y","738Y","820Y","826Y","840A","848Y","858Y","922Y","936Y","944Y"],"holiday_Westbound_K":["1003Y","1303Y","1503Y","1711Y","1803Y","1807Y","803Y","811Y"],"holiday_Westbound_S":["1023Y","1117Y","1121Y","1223Y","1243Y","1317Y","1421Y","1443Y","1523Y","1529Y","1545Y","1617Y","1621Y","1635Y","1637Y","1723Y","1743Y","1749Y","617Y","621Y","627Y","629Y","639Y","723Y","737Y","741Y","749Y","759Y","817Y","845Y","921Y","929Y","943Y","949Y"],"weekday_Eastbound_K":["1602Y","1604Y","1608Y","1710Y","1802Y","1806Y","1904Y","1910Y","506A","602A","604Y","608A","610Y","910Y"],"weekday_Eastbound_S":["1012Y","1068Y","1090Y","1158Y","1180Y","1218Y","1270Y","1368Y","1380Y","1458Y","1470Y","1518Y","1548Y","1568Y","1614A","1622Y","1654Y","1656A","1680Y","1684Y","1712Y","1728A","1738A","1744Y","1764Y","1766Y","1768A","1770A","1774Y","1794A","1818Y","1820Y","1824Y","1848A","1850Y","1860A","1862A","1880A","1882A","1888Y","1914A","1916Y","1932Y","1966Y","2036Y","2082Y","2126Y","2160Y","2170Y","622Y","636A","640Y","644Y","654Y","684A","688Y","718A","728Y","730Y","734Y","764Y","790Y","792A","838Y","842Y","846Y","874A","876Y","878Y","932Y","944Y","958Y","970Y","984Y","988Y","996Y"],"weekday_Westbound_K":["1611Y","1705Y","1809Y","1811Y","1903A","1907A","2005Y","2009Y","2111Y","711A","809A","903Y","905Y"],"weekday_Westbound_S":["1059Y","1071Y","1119Y","1169Y","1259Y","1281Y","1319Y","1371Y","1469Y","1481Y","1513Y","1515Y","1539Y","1555A","1557Y","1567Y","1585Y","1595A","1623Y","1645Y","1665A","1671Y","1675Y","1689Y","1717A","1719Y","1721A","1725Y","1733Y","1749Y","1751Y","1761Y","1781Y","1815A","1829A","1837Y","1839Y","1855Y","1863Y","1867Y","1869Y","1927A","1971Y","1983Y","2061A","485Y","519Y","537Y","591Y","593Y","629Y","631A","639A","641Y","645Y","647Y","665Y","675Y","723Y","733Y","743Y","755Y","759Y","777Y","779Y","785Y","789Y","797A","813A","835A","845Y","849A","871Y","891Y","969Y","981Y"]});
   var rows=[
+    // JR East 2026-11 Kururi, Karasuyama, Hachinohe official 2611
+    // train-number lists. No integer interval authorization: exact lists
+    // plus the separate index verify named-train dates & cancellations.
+    // https://www.jreast.co.jp/train/local/kiha_e130.html
+    // https://www.jreast.co.jp/train/local/ev_e301.html
+    // Kururi 217u1/u2/d1/d2: 40 regular Local.
+    {lineIds:["Kururi"],numberFormat:"full",
+      from:920,to:2952,suffixes:"D",
+      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      regionalKind:"regular",publishedNumbers:["920D","922D","924D","926D","928D","930D","932D","934D","936D","938D","940D","942D","2944D","944D","2946D","946D","948D","950D","2952D","952D","921D","923D","925D","927D","929D","931D","933D","935D","937D","939D","941D","2941D","943D","2943D","945D","947D","949D","2949D","951D","953D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Kururi"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハE130形100番台","キハE130系100番台"],
+      requiredCandidateModelPrefix:"キハE130形100番台",rejectAmbiguousPlan:true,
+      model:"キハE130形100番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハE130系100番台.png"},
+    // Karasuyama 242u1/u2/d1/d2: 27 regular Local.
+    {lineIds:["Karasuyama"],numberFormat:"full",
+      from:321,to:347,suffixes:"M",
+      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      regionalKind:"regular",publishedNumbers:["322M","324M","326M","328M","330M","332M","334M","336M","338M","340M","342M","344M","346M","321M","323M","325M","327M","329M","331M","333M","335M","337M","339M","341M","343M","345M","347M"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Karasuyama"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["EV-E301系","EV-E301系（ACCUM）"],
+      requiredCandidateModelPrefix:"EV-E301系",rejectAmbiguousPlan:true,
+      model:"EV-E301系",
+      pngPath:"../images/列车/JR東日本/JR東日本_EV-E301系.png"},
+    // Hachinohe 277u1/u2/d1/d2: 41 regular Local.
+    {lineIds:["Hachinohe"],numberFormat:"full",
+      from:424,to:1463,suffixes:"D",
+      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      regionalKind:"regular",publishedNumbers:["1422D","424D","426D","1428D","1430D","432D","1434D","436D","1438D","1440D","442D","1444D","446D","1448D","1450D","1452D","454D","1456D","458D","1460D","462D","425D","1427D","429D","1431D","1433D","435D","1437D","1439D","441D","1443D","445D","1447D","449D","1451D","1453D","1455D","457D","1459D","461D","1463D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Hachinohe"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハE130形500番台","キハE130系500番台"],
+      requiredCandidateModelPrefix:"キハE130形500番台",rejectAmbiguousPlan:true,
+      model:"キハE130形500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハE130系500番台.png"},
+    // Hachinohe 277u1/d1: 2 special Local.
+    {lineIds:["Hachinohe"],numberFormat:"full",
+      from:9445,to:9446,suffixes:"D",
+      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      regionalKind:"special",publishedNumbers:["9445D","9446D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Hachinohe"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハE130形500番台","キハE130系500番台"],
+      requiredCandidateModelPrefix:"キハE130形500番台",rejectAmbiguousPlan:true,
+      model:"キハE130形500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハE130系500番台.png"},
+    // Hachinohe 277d2: 1 special Rapid.
+    {lineIds:["Hachinohe"],numberFormat:"full",
+      from:8471,to:8471,suffixes:"D",
+      trainTypes:["Rapid"],numberIndex:"jreast-regional-2611",
+      regionalKind:"special",publishedNumbers:["8471D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Hachinohe"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハE130形500番台","キハE130系500番台"],
+      requiredCandidateModelPrefix:"キハE130形500番台",rejectAmbiguousPlan:true,
+      model:"キハE130形500番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハE130系500番台.png"},
 
     // 男鹿線 2611: 29 distinct all-day Local M numbers (15 up, 14 down).
     // December/February excursion D numbers are deliberately excluded.
@@ -1748,6 +1818,17 @@
           return branchIdx.verify(number,branchRailway,branchDirection,
             "odpt.TrainType:JR-East.Local",cal,branchDate)===true;
         }))continue;
+      }
+      if(row.numberIndex==="jreast-regional-2611"){
+        var regionalIndex=root.JREastRegionalNumberIndex202611;
+        var officialRegional=regionalIndex&&typeof regionalIndex.verify==="function"
+          ?regionalIndex.verify(line,number,
+            context&&context.sourceRailway,
+            context&&(context.railDirection||context.directionUrn||context.direction),
+            context&&(context.trainType||context.typeName),
+            sourceCalendar(context),context&&context.serviceDate):null;
+        if(!officialRegional||officialRegional.model!==row.model||
+           officialRegional.kind!==row.regionalKind)continue;
       }
       if(row.numberIndex==="jreast-oga-2611"){
         var ogaIndex=root.JREastOgaNumberIndex202611;
