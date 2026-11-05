@@ -28,6 +28,12 @@
     var cal=String(calendar||"").split(/[.:]/).pop();
     if(["Weekday","SaturdayHoliday","Saturday","Sunday","Holiday",
        "weekday","holiday"].indexOf(cal)<0)return false;
+    // Source calendar must agree with the actual JR East operating date.
+    // November 3 (Culture Day) and 23 (Labor Thanksgiving Day) are
+    // holidays even when they fall on a weekday.
+    var dow=new Date(day+"T12:00:00Z").getUTCDay();
+    var holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if((cal==="Weekday"||cal==="weekday")===holiday)return false;
     var typ=String(trainType||"").split(/[.:]/).pop();
     if(typ!=="Local")return false;
     var num=String(number||"").trim().toUpperCase();
