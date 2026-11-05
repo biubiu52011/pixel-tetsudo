@@ -874,6 +874,123 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // 弥彦線 uses INTERNAL key Miyo, NOT Yahiko. 2611 regular E129
+  // trains, nine Kiku-calendar days and three Momiji Kairi D-number
+  // segments. The latter have NO historical SQL stop templates: retain
+  // roster evidence only, NEVER invent a train's position or stop clock.
+  // 9222D/9225D Shu*Kura were OCTOBER 24 ONLY, not November runs.
+  if(lineId==="Miyo"&&/^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}]=
+      await Promise.all([
+        db.from("published_miyo_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,source_template_id,source_occurrence,segment_key,operating_dates,excluded_dates,source_stop_keys,vehicle_model,png_reference,service_name,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Miyo")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Miyo")
+      ]);
+    if(rosterError||rangeError)throw(rosterError||rangeError);
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?43:57;
+    if((roster||[]).length!==expected||(ranges||[]).length!==2)
+      throw new Error("MIYO_2611_NUMBER_DATE_ROSTER_UNAVAILABLE");
+    const bySource=new Map((roster||[]).filter((r:any)=>
+      r.source_template_id!=null).map((r:any)=>
+      [Number(r.source_template_id),r]));
+    const allowedStations=new Set(["Yahiko","Yahagi","Yoshida",
+      "Nishi-Tsubame","Tsubame","Tsubame-Sanjo","Kita-Sanjo","Higashi-Sanjo"]);
+    const kikuDays=new Set(["2026-11-01","2026-11-03",
+      "2026-11-07","2026-11-08","2026-11-14","2026-11-15",
+      "2026-11-21","2026-11-22","2026-11-23"]);
+    const kiku=kikuDays.has(serviceDate);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],pub:any=bySource.get(Number(run.source_template_id));
+      if(!pub||run.network_key!=="odpt.Railway:JR-East.Miyo"||
+         pub.train_number!==run.train_number||pub.direction_urn!==run.rail_direction||
+         pub.calendar_urn!==selectedCalendar||pub.train_type_urn!==run.train_type||
+         pub.segment_key==="october_only"||
+         !["regular","kiku","seasonal_holiday"].includes(pub.segment_key)||
+         pub.reference_only!==true||pub.actual_vehicle_confirmed!==false||
+         !Array.isArray(run.stops)||!Array.isArray(pub.source_stop_keys)){
+        result.splice(i,1);continue;
+      }
+      const dates=(pub.operating_dates||[]).map((d:any)=>String(d).slice(0,10));
+      const exclude=(pub.excluded_dates||[]).map((d:any)=>String(d).slice(0,10));
+      if((dates.length&&!dates.includes(serviceDate))||exclude.includes(serviceDate)||
+         (pub.segment_key==="kiku"&&!kiku)){
+        result.splice(i,1);continue;
+      }
+      const original=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      if(original.length<2||original.length!==pub.source_stop_keys.length||
+         original.some((key:string,j:number)=>
+           key!==pub.source_stop_keys[j]||!allowedStations.has(key))){
+        result.splice(i,1);continue;
+      }
+      // 10/31--11/23 holiday Kiku timetable shortens EXISTING
+      // 234M (east segment stopped), 235M and 241M (west stopped).
+      // Replacement numbered 9234M/9235M/9241M are separate SQL rows.
+      // 228M chooses its DATE-SCOPED 3-stop template instead of the
+      // historical full route; 9228M covers the other segment.
+      let railScope="full";
+      if(kiku&&selectedCalendar==="odpt.Calendar:SaturdayHoliday"){
+        if(run.train_number==="234M"){
+          if(original.length!==8){result.splice(i,1);continue;}
+          run.stops=run.stops.slice(-3);
+          railScope="yoshida_yahiko_only";
+        }else if(run.train_number==="235M"||run.train_number==="241M"){
+          if(original.length!==8){result.splice(i,1);continue;}
+          run.stops=run.stops.slice(2);
+          railScope="yoshida_higashisanjo_only";
+        }else if(run.train_number==="228M"){
+          if(Number(pub.source_occurrence)!==1||original.length!==3){
+            result.splice(i,1);continue;
+          }
+          railScope="yoshida_yahiko_only";
+        }
+      }
+      if(run.stops.length<2||run.stops.some((st:any)=>
+        !allowedStations.has(String(st.station_urn||"").split(".").pop()||""))){
+        result.splice(i,1);continue;
+      }
+      const m=/^([0-9]+)(M)$/.exec(String(run.train_number||""));
+      const valid=m&&(ranges||[]).some((r:any)=>
+        r.requires_exact_roster===true&&
+        r.segment_key==="miyo_e129_regular_seasonal"&&
+        Number(m[1])>=r.min_number&&Number(m[1])<=r.max_number&&
+        r.suffix==="M"&&r.vehicle_model===pub.vehicle_model&&
+        r.png_reference===pub.png_reference);
+      if(!valid||pub.vehicle_model!=="E129系"||
+         pub.png_reference!=="../images/列车/JR東日本/JR東日本_E129系.png"||
+         pub.stop_clock_status!=="historical_not_2611_verified"){
+        result.splice(i,1);continue;
+      }
+      if(railScope!=="full")
+        run.destination_station=run.stops[run.stops.length-1].station_urn;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="E129系";
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_plan_confirmed=false;
+      run.train_number_verification="official-2611-miyo-number-date-rail";
+      run.train_number_source_url=pub.official_source_url;
+      if(pub.service_name)run.service_name=pub.service_name;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Miyo",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:pub.calendar_urn,
+        trainType:pub.train_type_urn,segmentKey:pub.segment_key,
+        railScope:railScope,sourceTemplateId:Number(pub.source_template_id),
+        sourceStopKeys:pub.source_stop_keys,
+        plannedCandidates:["E129系"],model:pub.vehicle_model,
+        pngReference:pub.png_reference,
+        serviceName:pub.service_name||"",
+        officialSourceUrl:pub.official_source_url,
+        stopClockStatus:pub.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // Mito Line 2611: 62 verified REGULAR M train numbers (32 up/30 down)
   // and ONE dated SQL stop plan per train number. Never interpret the
   // 725M/756M/763M/772M clock variants as extra physical trains.
