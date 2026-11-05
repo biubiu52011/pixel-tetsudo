@@ -2756,9 +2756,97 @@
       edition:"2611",kind:hinabi?"hinabi":maintenance?"maintenance":"regular",
       referenceOnly:true,actualVehicleConfirmed:false});
   }
+  // 奥羽本線 2026-11: exact six E751-based Tsugaru/Super Tsugaru
+  // public numbers (x2 calendars). SQL source clocks remain historical,
+  // and the model illustration is never a physical-carset assertion.
+  function verifyOuMainTsugaruService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||
+       proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="OuMain"||
+       proof.segmentKey!=="akita_aomori_tsugaru_e751"||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="OuMain"||
+       (p.displayLineId&&p.displayLineId!=="OuMain")||
+       p.sourceRailway!=="odpt.Railway:JR-East.OuMain"||
+       p.positionSource!=="supabase-train-run")return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-East"&&
+       operator!=="odpt.Operator:JR-East")return null;
+    var number=String(p.trainNumber||"").trim().toUpperCase(),
+      date=String(p.serviceDate||"").slice(0,10),
+      names={
+        "2021M":"スーパーつがる1号","2022M":"スーパーつがる2号",
+        "2041M":"つがる41号","2042M":"つがる42号",
+        "2043M":"つがる43号","2044M":"つがる44号"
+      },
+      name=names[number],
+      direction=String(p.railDirection||"").split(/[.:]/).pop(),
+      inbound=direction==="Inbound";
+    if(!name||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !["Inbound","Outbound"].includes(direction)||
+       (Number(number.replace(/M$/,""))%2)!==(inbound?0:1)||
+       String(p.trainType||"").split(/[.:]/).pop()!=="LimitedExpress"||
+       proof.trainNumber!==number||proof.serviceDate!==date||
+       proof.trainType!=="odpt.TrainType:JR-East.LimitedExpress"||
+       proof.serviceName!==name||
+       proof.direction!=="odpt.RailDirection:"+direction||
+       proof.model!=="E751系"||
+       proof.pngReference!=="../images/列车/JR東日本/JR東日本_E751系.png"||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0)return null;
+    var weekday=sourceCalendar(p),
+      dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||date==="2026-11-23";
+    if(weekday!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday")||
+       proof.officialSourceUrl!==
+        "https://timetables.jreast.co.jp/2611/timetable-v/258"+
+        (inbound?"u":"d")+(holiday?"2":"1")+".html")return null;
+    var original=proof.sourceStopKeys,
+      stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[]).
+        map(function(s){return String(s||"").split(".").pop();});
+    var allowed=new Set(["Akita","Hachirogata","Moritake","Higashi-Noshiro",
+      "Futatsui","Takanosu","Odate","Owani-Onsen","Hirosaki",
+      "Namioka","Shin-Aomori","Aomori"]);
+    if(!Array.isArray(original)||
+       original.length!==(number==="2021M"||number==="2022M"?14:18)||
+       stops.length!==original.length||
+       stops[0]!==(inbound?"Aomori":"Akita")||
+       stops[stops.length-1]!==(inbound?"Akita":"Aomori")||
+       stops.some(function(s,i){return !allowed.has(s)||s!==original[i];}))
+      return null;
+    return Object.freeze({number:number,serviceName:name,
+      trainType:"LimitedExpress",model:"E751系",
+      pngPath:proof.pngReference,edition:"2611",
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="OuMain"){
+      var tsugaru=Object.assign({},context||{},{trainNumber:number});
+      var model=verifyOuMainTsugaruService(tsugaru);
+      if(!model||tsugaru.estimated!==true||
+         tsugaru.officialNumberVerified!==true||
+         tsugaru.vehicleIdentityStatus==="EXACT")return null;
+      var observed=String(tsugaru.realtimeVehicleType||
+        tsugaru.realtimeDerivedVehicleType||"").trim();
+      if(observed&&observed!==model.model)return null;
+      var plan=tsugaru.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==model.model))
+         return null;
+      if(Array.isArray(tsugaru.plannedVehicleCandidates)&&
+         tsugaru.plannedVehicleCandidates.length&&
+         (tsugaru.plannedVehicleCandidates.length!==1||
+          tsugaru.plannedVehicleCandidates[0]!==model.model))return null;
+      return {trainNumber:number,lineId:line,model:model.model,
+        pngPath:model.pngPath,serviceName:model.serviceName,
+        planned:true,representative:true,
+        source:"jr-east-2611-oumain-exact-tsugaru-e751"};
+    }
     if(line==="OitoWest"){
       // Official JR-West Oito stock is orange/red KiHa120 300.
       // Existing JR-West 120 PNGs are green/blue (CHA) or purple (KAN)
@@ -3836,6 +3924,7 @@
     verifyMiyoService:verifyMiyoService,
     verifyOfunatoService:verifyOfunatoService,
     verifyOgaService:verifyOgaService,
+    verifyOuMainTsugaruService:verifyOuMainTsugaruService,
     verifyOitoEastService:verifyOitoEastService,
     verifyOitoWestService:verifyOitoWestService,
     matchItoFleetCandidates:matchItoFleetCandidates,
