@@ -8,6 +8,7 @@ const vm=require('node:vm');
 const resolverText=fs.readFileSync('js/running-chain-resolver.js','utf8');
 const fusionText=fs.readFileSync('js/data-fusion.js','utf8');
 const edgeText=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+const canonicalSql=fs.readFileSync('supabase/migrations/20261105192621_train_runs_canonical_bundle_readonly_20261106.sql','utf8');
 const apiText=fs.readFileSync('data/api/odpt-unified.js','utf8');
 const estText=fs.readFileSync('js/train-position-estimator.js','utf8');
 const cfgText=fs.readFileSync('data/core/runtime-config.js','utf8');
@@ -103,7 +104,8 @@ for (const [name,p,r] of rejects) {
   assert.ok(liveRows.every(x=>!x.runningChainId),name+': never fake a match');
 }
 assert.match(edgeText,/canonical_number_aliases:\s*mapped\.group_evidence/);
-assert.match(edgeText,/\.from\("train_timetable_members"\)/);
+assert.ok(edgeText.includes('db.rpc("train_runs_canonical_bundle"'));
+assert.ok(canonicalSql.includes("FROM public.train_timetable_members m"));
 assert.match(apiText,/"_canonicalTrainNumberAliases":Array\.isArray\(run\.canonical_number_aliases\)/);
 assert.match(estText,/canonicalTrainNumberAliases: Array\.isArray\(tt\._canonicalTrainNumberAliases\)/);
 assert.match(cfgText,/"ChuoMain": true/);
