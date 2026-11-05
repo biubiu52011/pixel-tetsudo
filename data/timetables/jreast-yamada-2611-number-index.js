@@ -51,7 +51,7 @@
     var m=/^(\d{1,2}):(\d{2})$/.exec(String(str||""));
     return m?Number(m[1])*60+Number(m[2]):null;
   }
-  function verify(number,railway,direction,trainType,calendar,date,rawStops){
+  function verify(number,railway,direction,trainType,calendar,date,rawStops,numberOnly){
     var day=String(date||"");
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day))return null;
     var n=String(number||"").trim().toUpperCase();
@@ -72,6 +72,12 @@
     // Sunday/national holidays are not. 2639D is weekday only.
     if((n==="2633D"||n==="2634D")&&(dow===0||national))return false;
     if(n==="2639D"&&(dow===0||dow===6||national))return false;
+    // PNG layer must recheck month / weekday even after its source
+    // run has been route-verified by the SQL estimator.
+    if(numberOnly===true){
+      if(isSouth&&(day==="2026-11-07"||day==="2026-11-08"))return false;
+      return true;
+    }
     // Reject old bus IDs and obsolete through runs before projection.
     // The current SQL has a separate segment with an actual 2611 number
     // for each operated service; no more than one controlled region.
@@ -102,6 +108,9 @@
   }
   root.JREastYamadaNumberIndex202611=Object.freeze({
     edition:"2026-11",railway:source,verify:verify,
+    verifyNumber:function(n,rail,direction,type,calendar,date){
+      return verify(n,rail,direction,type,calendar,date,null,true);
+    },
     northInbound:northInbound,northOutbound:northOutbound,
     southInbound:southInbound,southOutbound:southOutbound,
     endpoints:stopTerminals
