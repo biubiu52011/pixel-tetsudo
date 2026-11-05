@@ -85,6 +85,25 @@ test('a verified Morioka through terminus is allowed with Kamaishi section stops
   assert.equal(verify(denied),null);
   assert.equal(icon(denied).kind,'unresolved');
 });
+test('the SQL canonical cross-line proof alone admits verified Morioka–Hanamaki stops',()=>{
+  const stops=['Morioka','Iwate-Iioka','Yahaba','Furudate','Hizume',
+    'Ishidorii','Hanamaki-Kuko','Hanamaki','Shin-Hanamaki','Tono','Kamaishi'];
+  const prior=p('3657D','2026-11-07',{scheduledStopKeys:stops});
+  assert.equal(verify(prior),null,'number-only proof must not authorize Tohoku stops');
+  assert.equal(icon(prior).kind,'unresolved');
+  const through=p('3657D','2026-11-07',{
+    scheduledStopKeys:stops,
+    sqlPublishedNumberFleetReference:{
+      ...prior.sqlPublishedNumberFleetReference,verifiedTohokuThrough:true
+    }
+  });
+  assert.equal(verify(through)?.model,'HB-E220系');
+  assert.equal(icon(through).kind,'vehicle');
+  const injected={...through,scheduledStopKeys:
+    [...stops.slice(0,4),'Niigata',...stops.slice(4)]};
+  assert.equal(verify(injected),null);
+  assert.equal(icon(injected).kind,'unresolved');
+});
 test('no date or DB proof means no image even for 8621D or a plausible 9657D number',()=>{
   for(const number of ['5559D','5562D','9532D','9543D','9555D',
     '9657D','9659D','9664D','9666D','9672D']){
