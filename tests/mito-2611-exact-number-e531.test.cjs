@@ -161,5 +161,7 @@ test('SQL, edge source and estimator keep one dated stop template and family-onl
   assert.ok(edge.includes('vehicle_type_candidates="E531系"'));
   assert.ok(est.includes('officialMitoPlan'));
   assert.ok(est.includes('verifyMitoService'));
-  assert.ok(est.includes('officialMitoPlan || officialYamadaPlan'));
+  // Mito must remain in the number verifier chain even when adjacent
+  // seasonal lines are inserted between Mito and Yamada.
+  assert.match(est,/officialMitoPlan\\s*\\|\\|/);
 });
