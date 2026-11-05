@@ -133,3 +133,24 @@ test('Ominato 11/10–13 cancelled SQL service never shows train position',()=>{
     ['221D','223D','229D','3225D','3233D']);
   assert.deepEqual(Array.from(p,x=>x.trainNumber),['221D','3233D']);
 });
+
+test('server and SQL use the shared 36-source official roster and reject unillustrated Ominato',()=>{
+  const sql=fs.readFileSync('supabase/migrations/'+
+    '20261106100000_ominato_2611_18_official_numbers_no_fake_png.sql','utf8');
+  const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+  for(const word of ['published_train_number_evidence','Ominato',
+    '9227D','9236D','train_number_only','count(*)','<>36'])
+    assert.ok(sql.includes(word),'missing SQL evidence '+word);
+  for(const word of ['OMINATO_2611_OFFICIAL_NUMBER_EVIDENCE_UNAVAILABLE',
+    'published_train_number_evidence',
+    'run.network_key!=="odpt.Railway:JR-East.Ominato"',
+    'result.splice(i,1);continue;',
+    'run.train_type="odpt.TrainType:JR-East.Rapid"',
+    'run.service_name="しもきた"',
+    'run.vehicle_type_candidates="キハ100系"',
+    'run.vehicle_artwork_path=null',
+    'actualVehicleConfirmed:false'])
+    assert.ok(edge.includes(word),'missing Ominato server guard '+word);
+  assert.equal((idx.ordinaryInbound.length+idx.ordinaryOutbound.length+
+    idx.rapidInbound.length+idx.rapidOutbound.length)*2,36);
+});
