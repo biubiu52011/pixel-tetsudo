@@ -615,7 +615,7 @@ test('ChuoMain 2611 SQL numbers: T/H E233 and M-only 211/E131 illustrated as ONE
     plannedVehicleCandidates:['211系','E233系0番台']});
   assert.equal(marker(foreign,'ChuoRapid').kind,'unresolved');
 });
-test('ChuoMain missing numbers use one correct fleet reference or a generic train, never a grey dot',()=>{
+test('ChuoMain missing numbers keep evidence-backed PNGs and unresolved stock remains neutral',()=>{
   const e353='../images/列车/JR東日本/JR東日本_E353系.png';
   const n211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
   const hbe='../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png';
@@ -646,8 +646,8 @@ test('ChuoMain missing numbers use one correct fleet reference or a generic trai
     const p=at(n,'Rapid',['211系','E233系0番台']);
     const m=marker(p);
     assert.equal(m.kind,'unresolved');
-    assert.equal(m.genericFront,true,
-      'unproven JR-Central/Iida through stock gets one generic cab, not 211');
+    assert.equal(Object.hasOwn(m,'genericFront'),false,
+      'unproven JR-Central/Iida through stock must not invent a train front');
     assert.equal(m.iconSrc,'');
   }
   for(const n of ['8084M','9086M','9093M']){
@@ -655,17 +655,34 @@ test('ChuoMain missing numbers use one correct fleet reference or a generic trai
     const m=marker(p);
     assert.equal(m.kind,'unresolved',
       'do not show an E353 for a seasonal train on an unverified date');
-    assert.equal(m.genericFront,true);
+    assert.equal(m.iconSrc,'');
+    assert.equal(Object.hasOwn(m,'genericFront'),false);
   }
   const outside=at('9580D','Rapid',['211系','E233系0番台']);
   assert.equal(marker(outside).kind,'unresolved');
-  assert.equal(marker(outside).genericFront,true);
+  assert.equal(marker(outside).iconSrc,'');
+  assert.equal(Object.hasOwn(marker(outside),'genericFront'),false);
   const wrongLine=at('5102M','LimitedExpress',['E353系']);
   assert.equal(marker(wrongLine,'ChuoRapid').kind,'unresolved');
   const wrongMonth=at('5102M','LimitedExpress',['E353系'],'2026-12-04');
   assert.equal(root.TrainNumberPngRanges.matchChuoMainUnmappedReference(wrongMonth),null);
   const badStock=at('5102M','LimitedExpress',['211系']);
   assert.equal(root.TrainNumberPngRanges.matchChuoMainUnmappedReference(badStock),null);
+});
+test('ChuoMain renderer never substitutes a synthetic front for missing or failed PNG',()=>{
+  const unknown=sql({trainNumber:'2201M',serviceDate:'2026-11-04',
+    trainType:'odpt.TrainType:JR-East.Rapid',
+    plannedVehicleCandidates:['211系','E233系0番台']});
+  const m=marker(unknown);
+  assert.equal(m.kind,'unresolved');
+  assert.equal(m.iconSrc,'');
+  assert.equal(Object.hasOwn(m,'genericFront'),false);
+  assert.doesNotMatch(render,/data-generic-train-front|train-fold-generic-front|🚆/);
+  assert.match(render,/knownVehicle && !compact \? "image" : "circle"/);
+  assert.match(render,/iconBox\.classList\.add\('unresolved'\)/);
+  assert.match(render,/車種未確認/);
+  assert.match(render,/compact:true\},[\s\S]*?marker\._displayX/,
+    'failed PNG must immediately fall back inside the existing train unit');
 });
 test('regular 2026 Chuo special expresses map by whole M train number and LimitedExpress type',()=>{
   const cases=[
