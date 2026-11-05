@@ -34,18 +34,22 @@ function sqlProof(number,dir,date){
   // function already matched to the exact number/calendar/route/range.
   // Never create such proof in the browser or from a number alone.
   const isRegular=dir==='Outbound'?northDown.has(number):northUp.has(number);
+  const isSouth=(dir==='Outbound'&&number==='521M')||
+    (dir==='Inbound'&&number==='520M');
   const label=named[number],isNamed=!!(label&&label[0]===dir&&label[1].includes(date));
-  if(!isRegular&&!isNamed)return null;
+  if(!isRegular&&!isNamed&&!isSouth)return null;
   const holiday=['2026-11-03','2026-11-23'].includes(date)||
     [0,6].includes(new Date(date+'T12:00:00Z').getUTCDay());
-  const model=isRegular?'E129系':'キハ40・48形（越乃Shu＊Kura）';
+  const model=isRegular?'E129系':isSouth?'211系（高崎地区）':
+    'キハ40・48形（越乃Shu＊Kura）';
   return {source:'sql-jreast-2611-number-roster',lineId:'Joetsu',
     trainNumber:number,serviceDate:date,direction:'odpt.RailDirection:'+dir,
     calendar:'odpt.Calendar:'+(holiday?'SaturdayHoliday':'Weekday'),
     model,pngReference:isRegular?pn+'JR東日本_E129系.png':
+      isSouth?pn+'JR東日本_211系_湘南色.png':
       pn+'JR東日本_キハ40・48形_越乃Shu＊Kura.png',
-    trainType:'odpt.TrainType:JR-East.'+(isRegular?'Local':'Rapid'),
-    segmentKey:'north',serviceName:isNamed?label[2]:'',
+    trainType:'odpt.TrainType:JR-East.'+((isRegular||isSouth)?'Local':'Rapid'),
+    segmentKey:isSouth?'south':'north',serviceName:isNamed?label[2]:'',
     referenceOnly:true,actualVehicleConfirmed:false};
 }
 function p(number,dir,stops,date='2026-11-05',type='Local',more={}){
@@ -62,8 +66,10 @@ function p(number,dir,stops,date='2026-11-05',type='Local',more={}){
 }
 const verify=x=>range.verifyJoetsuService(x);
 const artwork=x=>win.TrainVehicle.selectMarkerArtwork(x,false);
-test('SQL-authorized E129 northern service numbers remain references and physical UNKNOWN',()=>{
+test('SQL-authorized 211 south and E129 north numbers remain references and physical UNKNOWN',()=>{
   for(const [number,dir,stops,model,file]of [
+    ['520M','Inbound',south,'211系（高崎地区）','JR東日本_211系_湘南色.png'],
+    ['521M','Outbound',south,'211系（高崎地区）','JR東日本_211系_湘南色.png'],
     ['1721M','Outbound',north,'E129系','JR東日本_E129系.png'],
     ['1720M','Inbound',north,'E129系','JR東日本_E129系.png'],
     ['1752M','Inbound',north,'E129系','JR東日本_E129系.png']
@@ -78,7 +84,7 @@ test('SQL-authorized E129 northern service numbers remain references and physica
   }
 });
 test('No SQL evidence means neutral artwork even for plausible southern 211 numbers',()=>{
-  for(const n of ['720M','721M','520M']){
+  for(const n of ['720M','721M']){
     const x=p(n,Number(n.slice(0,-1))%2?'Outbound':'Inbound',south);
     assert.equal(x.sqlPublishedNumberFleetReference,null);
     assert.equal(verify(x),null);
