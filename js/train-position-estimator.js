@@ -1249,7 +1249,12 @@
               officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
-              officialOminatoPlan || officialIiyamaPlan),
+              officialOminatoPlan || officialIiyamaPlan) &&
+              // A continuation can carry a different _sqlTrainNumber on
+              // individual stops. Never label THAT unverified number as
+              // published merely because its parent run was admitted.
+              String(publicTrainNumber||"").toUpperCase() ===
+                String(run.trainNumber||"").toUpperCase(),
             trainNumberSource: publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
             serviceName: officialGonoPlan && officialGonoPlan.serviceName
