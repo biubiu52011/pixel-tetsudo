@@ -295,6 +295,13 @@
         key = scoped[key];
       var sharedAliases = config.STATION_ALIAS;
       if (sharedAliases && Object.prototype.hasOwnProperty.call(sharedAliases, key)) key = sharedAliases[key];
+      // Gono's timetable uses official URNs Omaigoshi/Henashi, while
+      // the display map retains its older Omagoshi/Tomosaki station keys.
+      // Resolve these only for Gono, never globally or on Ou Main.
+      if(lineId==="Gono"){
+        if(key==="Omaigoshi")key="Omagoshi";
+        if(key==="Henashi")key="Tomosaki";
+      }
       var k = String(key).toLowerCase();
       // 移除连字符和空格。
       k = k.replace(/[-_\s]/g, "");
@@ -718,6 +725,19 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        var officialGonoPlan = null;
+        if(lineId==="Gono" && tt._positionSource==="supabase-train-run" &&
+           String(serviceDate).slice(0,7)==="2026-11" &&
+           window.JREastGonoNumberIndex202611 &&
+           typeof window.JREastGonoNumberIndex202611.verify==="function"){
+          // The 2611 roster admits the exact Gono segment and applies
+          // the official Resort Shirakami vehicle/date calendar.
+          // Wrong Ou Main continuations cannot create Gono positions.
+          officialGonoPlan=window.JREastGonoNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
+            tt["odpt:trainType"]||"",run.calendar,serviceDate);
+          if(officialGonoPlan===false)continue;
+        }
 
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
@@ -1003,7 +1023,13 @@
           var publicTrainNumber = _canonicalTrainNumberAtPosition(
             tt, canonicalNumberStop, trainNumber);
           processedTrainIds[timetableIdentity] = true;
-          var trainClassification = classifyTrain(run.trainType, trainNumber, lineId);
+          // Original SQL imported all Gono services as Local/GV-E400,
+          // even the named Resort Shirakami and two Rapid D services.
+          // Restore the source-verified public service class for display.
+          var publishedGonoTrainType=officialGonoPlan && officialGonoPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialGonoPlan.trainType : "";
+          var trainClassification = classifyTrain(
+            publishedGonoTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
           var directionName = run.directionName;
           var destinationStation = run.destinationStation;
@@ -1068,7 +1094,8 @@
             trainNumber: publicTrainNumber,
             trainNumberSource: publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
-            serviceName: run.serviceName || "",
+            serviceName: officialGonoPlan && officialGonoPlan.serviceName
+              ? officialGonoPlan.serviceName : (run.serviceName || ""),
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
@@ -1089,7 +1116,7 @@
             segmentToIndex: segmentToIndex,
             segmentProgress: segmentProgress,
             extrapolated: false,
-            trainType: tt['odpt:trainType'] || '',
+            trainType: publishedGonoTrainType || tt['odpt:trainType'] || '',
             trainOwner: _trainOwner,
             assignmentOperator: _assignmentOperator,
             operationEvidence: _assignmentMatches,

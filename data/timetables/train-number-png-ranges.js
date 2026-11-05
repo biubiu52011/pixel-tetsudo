@@ -251,6 +251,41 @@
       allowedModelLabels:["DE10形（DLばんえつ物語）"],
       
       model:"DE10形（DLばんえつ物語）",pngPath:"../images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png"},
+    // 2026-11 JR East 五能線 official 275u1/u2/d1/d2.
+    // 47 full public-number regular D trains on the actual Gono railway
+    // (45 locals, two fast ordinary 3524D/3526D). GV-E400 replaced
+    // conventional local/rapid stock; EXCLUDE named Resort Shirakami
+    // (852xD = HB-E300 青池/橅 or KiHa48 くまげら on dated diagrams).
+    // Source 2021 JR East Akita press 20201218_a01.pdf plus GV-E400 page.
+    // Do NOT reuse Gono data imported from Akita/Aomori Ou Main segments.
+    // https://timetables.jreast.co.jp/2611/timetable-v/275u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/275u2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/275d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/275d2.html
+    {lineIds:["Gono"],numberFormat:"full",from:122,to:2839,
+      suffixes:"D",trainTypes:["Local"],
+      publishedNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
+      weekdayNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
+      holidayNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Gono"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["GV-E400系"],
+      requiredCandidateModelPrefix:"GV-E400系",
+      model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
+    {lineIds:["Gono"],numberFormat:"full",from:3524,to:3526,
+      suffixes:"D",trainTypes:["Rapid"],
+      publishedNumbers:["3524D","3526D"],
+      weekdayNumbers:["3524D","3526D"],
+      holidayNumbers:["3524D","3526D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Gono"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["GV-E400系"],
+      requiredCandidateModelPrefix:"GV-E400系",
+      model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
     // JR-East 2026-11: published NUMBER families confirmed against the
     // 2611 line tables and a JR-East stock source; no formation inference.
     // Senseki E131-800 S-number trains, Aobadori-Ishinomaki ONLY.
