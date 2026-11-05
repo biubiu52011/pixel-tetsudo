@@ -11,6 +11,7 @@ const fusionText=fs.readFileSync('js/data-fusion.js','utf8');
 const apiText=fs.readFileSync('data/api/odpt-unified.js','utf8');
 const estText=fs.readFileSync('js/train-position-estimator.js','utf8');
 const edgeText=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+const canonicalSql=fs.readFileSync('supabase/migrations/20261105192621_train_runs_canonical_bundle_readonly_20261106.sql','utf8');
 const cfgText=fs.readFileSync('data/core/runtime-config.js','utf8');
 
 const window={ UNIFIED_LINES:{},RuntimeConfig:{VERIFIED_CANONICAL_PLAN_PARTNERS:{
@@ -105,7 +106,8 @@ for (const [label,planned,realtime] of cases) {
   assert.equal(link(planned,realtime),0,label);
   assert.ok(rows.every(r=>!r.runningChainId),label+': no guessed shared identity');
 }
-assert.match(edgeText,/\.from\("train_timetable_lines"\)/);
+assert.ok(edgeText.includes('db.rpc("train_runs_canonical_bundle"'));
+assert.ok(canonicalSql.includes("FROM public.train_timetable_lines l"));
 assert.match(edgeText,/canonical_line_ids:\s*mapped\.group_evidence/);
 assert.match(apiText,/"_canonicalLineIds":Array\.isArray\(run\.canonical_line_ids\)/);
 assert.match(estText,/canonicalLineIds: Array\.isArray\(tt\._canonicalLineIds\)/);
