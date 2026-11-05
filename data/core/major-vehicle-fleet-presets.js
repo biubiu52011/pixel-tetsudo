@@ -418,8 +418,16 @@
       models:['701系','701系5500番台','719系5000番台','E723系5000番台',
         'EV-E801系','GV-E400系','キハ110系','E751系','HB-E300系'],
       sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
-    {id:'jr-yamagata-tazawako', operator:'JR-East', lineIds:['Yamagata','Tazawako'],
-      models:['701系（標準軌仕様）'], sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
+    // In Yamagata, the September 2026 E723-5000 launch began replacing
+    // 719-5000, while standard-gauge 701-5500 continues in the fleet.
+    // These are candidate families, not dated per-number assignments.
+    // Tazawako's 701-5000 must not inherit Yamagata's mixed-fleet models.
+    {id:'jr-yamagata-regional-2611', operator:'JR-East', lineIds:['Yamagata'],
+      models:['701系5500番台','719系5000番台','E723系5000番台'],
+      sourceUrl:'https://www.jreast.co.jp/press/2025/20251126_ho03.pdf'},
+    {id:'jr-tazawako-standard-gauge', operator:'JR-East', lineIds:['Tazawako'],
+      models:['701系5000番台'],
+      sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
     {id:'jr-tsugaru', operator:'JR-East', lineIds:['Tsugaru'],
       models:['701系（鉄道運行区間）'], sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
     {id:'jr-oga-accum', operator:'JR-East', lineIds:['Oga'],
