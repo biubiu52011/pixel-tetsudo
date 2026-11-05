@@ -9,7 +9,7 @@ BEGIN;
 SELECT pg_advisory_xact_lock(2611,334);
 DO $kyushu2611_six_holiday$
 DECLARE
- r record; s record; v_id bigint; v_tt bigint; i int; cnt int;
+ r record; v_id bigint; v_tt bigint; i int; cnt int;
  station text; original text; official text; source_id bigint; mapped int:=0; png_added int:=0; plan_added int:=0;
 BEGIN
  FOR r IN SELECT * FROM (VALUES
