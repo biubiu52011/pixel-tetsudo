@@ -2448,10 +2448,23 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
-        // The folded train list is passenger-facing: show service type and
-        // destination only. Public train numbers belong to timetable/coupling
-        // identity, not this compact list, including post-split portions.
+        // Keep the default passenger-facing service/destination summary.
+        // Officially checked 2611 SQL regional plans ALSO show their real
+        // train number, not a fabricated operation ID, in a subdued label.
+        // Never add a number for unaudited historic SQL or live ODPT cars.
         caption.textContent=captionBase;
+        var foldOfficialNumber=String((p&&p.trainNumber)||"").trim().toUpperCase();
+        if(p&&p.officialNumberVerified===true&&p.estimated===true&&
+           p.positionSource==="supabase-train-run"&&
+           /^\\d{2,5}[A-Z]{1,2}$/.test(foldOfficialNumber)){
+          var numberNote=document.createElement('small');
+          numberNote.className='train-fold-official-number';
+          numberNote.textContent=" · "+
+            (lang==='en'?'Train No.':lang==='ko'?'열차번호':
+              /^zh/.test(lang)?'列车番号':'列車番号')+
+            " "+foldOfficialNumber;
+          caption.appendChild(numberNote);
+        }
         if (markerSpec.kind==='vehicle' && markerSpec.iconSrc) {
           var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
             _seibuCommuterCandidatesLabel(p,lineId,lang) ||
