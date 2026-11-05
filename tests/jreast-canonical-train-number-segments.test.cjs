@@ -6,6 +6,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+const canonicalSql=fs.readFileSync('supabase/migrations/20261105192621_train_runs_canonical_bundle_readonly_20261106.sql','utf8');
 const api=fs.readFileSync('data/api/odpt-unified.js','utf8');
 const est=fs.readFileSync('js/train-position-estimator.js','utf8');
 
@@ -56,7 +57,10 @@ test('unverified and realtime data are not rewritten',()=>{
   assert.equal(resolve(plan(),null,'640M'),'640M','missing stop');
 });
 test('SQL stop source survives server -> adapter -> estimator -> marker',()=>{
-  assert.match(edge,/source_template_id,line_key,train_number/);
+  assert.match(edge,/db\\.rpc\\("train_runs_canonical_bundle"/);
+  assert.match(canonicalSql,/'source_template_id', s\\.source_template_id/);
+  assert.match(canonicalSql,/'line_key', s\\.line_key/);
+  assert.match(canonicalSql,/'train_number', s\\.train_number/);
   assert.match(edge,/source_train_number: completeStops/);
   assert.match(edge,/source_line_key: completeStops/);
   assert.match(api,/o\["_sqlTrainNumber"\]=String\(s\.source_train_number\)/);
