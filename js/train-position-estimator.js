@@ -725,6 +725,22 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        // 白新線: 2026-11 public train numbers and actual rail segment.
+        // Historic SQL says E129 even for Inaho E653 and Kairi HB-E300,
+        // and includes 8055M / 9083M (December only) and 9883D.
+        // Hide unverified SQL, never suppress independently sourced ODPT.
+        var officialHakushinPlan=null;
+        if(lineId==="Hakushin"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var hakushinIdx=window.JREastHakushinNumberIndex202611;
+          if(!hakushinIdx||typeof hakushinIdx.verify!=="function")continue;
+          officialHakushinPlan=hakushinIdx.verify(
+            run.trainNumber,tt["odpt:railway"]||"",
+            tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
+            run.calendar,serviceDate,tt["odpt:trainTimetableObject"]);
+          if(!officialHakushinPlan)continue;
+        }
+
         var officialGonoPlan = null;
         if(lineId==="Gono" && tt._positionSource==="supabase-train-run" &&
            String(serviceDate).slice(0,7)==="2026-11"){
@@ -1207,7 +1223,11 @@
           var publishedIiyamaTrainType=officialIiyamaPlan &&
             officialIiyamaPlan.trainType
             ? "odpt.TrainType:JR-East."+officialIiyamaPlan.trainType : "";
-          var effectivePublishedTrainType=publishedGonoTrainType ||
+          var publishedHakushinTrainType=officialHakushinPlan &&
+            officialHakushinPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialHakushinPlan.trainType:"";
+          var effectivePublishedTrainType=publishedHakushinTrainType ||
+            publishedGonoTrainType ||
             publishedIshinomakiTrainType || publishedRikutoEastTrainType ||
             publishedRikutsuWestTrainType || publishedOminatoTrainType ||
             publishedIiyamaTrainType || "";
@@ -1249,10 +1269,33 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // White-Shinetsu 2611 timetable confirms these service family
+          // models but does NOT establish the real physical formation.
+          // Discard the imported E129 planned candidate for limited
+          // express Inaho and the HB-E300 Kairi resort. Since their
+          // artwork has unresolved livery / source, leave the map neutral.
+          var _hakushinSpecialFleet=officialHakushinPlan&&
+            (officialHakushinPlan.kind==="inaho"||
+             officialHakushinPlan.kind==="kairi")&&
+            vehResult.identityStatus!=="EXACT"
+            ?String(officialHakushinPlan.model||""):"";
+          if(_hakushinSpecialFleet){
+            _plannedCandidates=[_hakushinSpecialFleet];
+            _visibleCandidates=[_hakushinSpecialFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_hakushinSpecialFleet],
+              iconPath:"",representativeModel:"",
+              source:"jr-east-2026-11-hakushin-official-service",
+              sourceUrl:"https://timetables.jreast.co.jp/2611/timetable-v/255d1.html",
+              lineId:"Hakushin",operator:"JR-East",confirmed:false,
+              referenceOnly:true
+            };
+          }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = vehResult.name || '';
-          var _vehicleType = vehResult.vehicleTypeStr || '';
+          var trainClass = _hakushinSpecialFleet ? "" : (vehResult.name || '');
+          var _vehicleType = _hakushinSpecialFleet ? "" :
+            (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
           var blocked = operation.references.some(function(ref) {
@@ -1304,7 +1347,8 @@
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
-              officialKitakamiPlan || officialYamadaPlan) &&
+              officialKitakamiPlan || officialYamadaPlan ||
+              officialHakushinPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
               // individual stops. Never label THAT unverified number as
               // published merely because its parent run was admitted.
@@ -1314,9 +1358,13 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_gonoResortFleet,
-            serviceName: officialGonoPlan && officialGonoPlan.serviceName
-              ? officialGonoPlan.serviceName
+            publishedFleetReference:_hakushinSpecialFleet||_gonoResortFleet,
+            publishedHakushinServiceFamily:_hakushinSpecialFleet
+              ?officialHakushinPlan.kind:"",
+            serviceName: officialHakushinPlan && officialHakushinPlan.serviceName
+              ? officialHakushinPlan.serviceName
+              : officialGonoPlan && officialGonoPlan.serviceName
+                ? officialGonoPlan.serviceName
               : officialIshinomakiPlan && officialIshinomakiPlan.serviceName
                 ? officialIshinomakiPlan.serviceName
                 : officialRikutoEastPlan && officialRikutoEastPlan.serviceName
@@ -1373,7 +1421,8 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: vehResult.iconPath || '',
+            vehicleIconPath: _hakushinSpecialFleet
+              ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
             vehicleConfidence: vehResult.confidence || 'none',
