@@ -40,8 +40,10 @@
   var inbound=new Set(localInbound);
   var outbound=new Set(localOutbound);
   var rapid="3921M";
-  var regularInaho=new Set(["1M","3M","5M","7M","9M","11M","13M"]);
-  var kairi="8853D";
+  // JR East 2611: both directions, exact service numbers (not formation IDs).
+  var regularInahoOutbound=new Set(["1M","3M","5M","7M","9M","11M","13M"]);
+  var regularInahoInbound=new Set(["2M","4M","6M","8M","10M","12M","14M"]);
+  var kairiOutbound="8853D",kairiInbound="8854D";
   // Published November resort: Nov 1/3 and Fri/Sat/Holidays up to
   // Nov 22, then Nov 27/28/29. Nov 23 does NOT run.
   var kairiDays=Object.freeze([
@@ -110,14 +112,16 @@
     }else if(n===rapid&&dir==="Outbound"){
       kind="rapid";model="E129系";actualType="Rapid";
       if(sourceType!=="Rapid"&&sourceType!=="Local")return false;
-    }else if(dir==="Outbound"&&regularInaho.has(n)){
+    }else if((dir==="Outbound"&&regularInahoOutbound.has(n))||
+             (dir==="Inbound"&&regularInahoInbound.has(n))){
       kind="inaho";model="E653系（いなほ）";
       actualType="LimitedExpress";
       serviceName="いなほ"+parseInt(n,10)+"号";
-      // Historic SQL mistakenly says Local; do not accept an unrelated
-      // source family such as Rapid, Freight or special-rapid.
+      // Historic SQL sometimes says Local: correct from official service
+      // family without claiming a day-specific physical formation.
       if(sourceType!=="Local"&&sourceType!=="LimitedExpress")return false;
-    }else if(dir==="Outbound"&&n===kairi&&kairiDaySet.has(day)){
+    }else if(((dir==="Outbound"&&n===kairiOutbound)||
+               (dir==="Inbound"&&n===kairiInbound))&&kairiDaySet.has(day)){
       kind="kairi";model="HB-E300系（海里）";actualType="Rapid";
       serviceName="海里";
       if(sourceType!=="Local"&&sourceType!=="Rapid")return false;
@@ -129,15 +133,21 @@
     if(rawStops!==undefined&&!routeAdmitted(rawStops,dir))return false;
     return Object.freeze({number:n,kind:kind,trainType:actualType,
       model:model,serviceName:serviceName,referenceOnly:true,
-      pngAvailable:kind==="local"||kind==="rapid",
+      // Approved fleet PNGs are illustrations, not actual carset evidence.
+      pngAvailable:true,
+      destinationStation:n==="9M"?"Sakata":
+        kind==="kairi"?(dir==="Outbound"?"Sakata":"Niigata"):"",
       actualVehicleConfirmed:false,edition:"2611"});
   }
   root.JREastHakushinNumberIndex202611=Object.freeze({
     edition:"2026-11",railway:railway,
     localInbound:localInbound,localOutbound:localOutbound,
     rapidNumber:rapid,
-    inahoNumbers:Object.freeze(Array.from(regularInaho)),
-    kairiNumber:kairi,kairiDays:kairiDays,excludedLegacy:excludedLegacy,
+    inahoNumbers:Object.freeze(Array.from(regularInahoOutbound)),
+    inahoInboundNumbers:Object.freeze(Array.from(regularInahoInbound)),
+    inahoAllNumbers:Object.freeze(Array.from(regularInahoOutbound).concat(Array.from(regularInahoInbound))),
+    kairiNumber:kairiOutbound,kairiInboundNumber:kairiInbound,
+    decemberKairiNumber:"8851D",kairiDays:kairiDays,excludedLegacy:excludedLegacy,
     verify:verify
   });
 })(window);
