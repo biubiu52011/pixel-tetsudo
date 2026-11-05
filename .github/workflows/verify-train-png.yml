@@ -26,6 +26,7 @@ on:
       - 'tests/komii-2611-sql-number-png.test.cjs'
       - 'tests/hanawa-2611-exact-number-png.test.cjs'
       - 'tests/kururi-2611-open-rail-number-png.test.cjs'
+      - 'tests/mito-2611-exact-number-e531.test.cjs'
       - 'tests/ishinomaki-2611-official-number-png.test.cjs'
       - 'tests/oga-2611-official-number-png.test.cjs'
       - 'tests/jreast-regional-2611-number-png.test.cjs'
@@ -158,6 +159,8 @@ jobs:
         run: node --test tests/hanawa-2611-exact-number-png.test.cjs
       - name: Verify Kururi 2611 open-rail scope and KiHaE130 PNG
         run: node --test tests/kururi-2611-open-rail-number-png.test.cjs
+      - name: Verify Mito 2611 exact-number and dated E531 family PNG
+        run: node --test tests/mito-2611-exact-number-e531.test.cjs
       - name: Verify Gono 2611 numbered planned-service rendering and date admission
         run: node --test tests/gono-2611-number-schedule.test.cjs
       - name: Verify Chuo Main 2611 four-way published train-number inventory
