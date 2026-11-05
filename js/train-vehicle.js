@@ -5190,42 +5190,17 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   // front solely as a *fleet illustration*; never classify 662B as E231.
   // JR official fleet background: https://media.jreast.co.jp/articles/1723
   // E235 transfer: https://rail.hobidas.com/feature/543431/
+  // The complete ODPT TRAIN NUMBER is validated in the shared number
+  // range resolver. This adapter only translates its reference-only
+  // illustration to an SVG marker; it never infers an operation number.
   function lookupChuoSobuLocalFleetIllustration(p) {
-    if (!p || p.positionSource !== "realtime-api" || p.estimated === true ||
-        p.realtimePositionRecordPresent === false ||
-        p.positionLineId !== "ChuoSobuLocal" ||
-        String(p.displayLineId || p.positionLineId) !== "ChuoSobuLocal" ||
-        p.sourceRailway !== "odpt.Railway:JR-East.ChuoSobuLocal" ||
-        p.trainType !== "odpt.TrainType:JR-East.Local" ||
-        (p.trainOperator && p.trainOperator !== "JR-East" &&
-          p.trainOperator !== "odpt.Operator:JR-East") ||
-        p.vehicleIdentityStatus === "EXACT" ||
-        p.vehicleResolvedFromRealtime === true ||
-        p.actualVehicleConfirmed === true ||
-        p.vehicleFormationId ||
-        (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length) ||
-        p.realtimeVehicleType || p.vehicleType || p.vehicleIconPath ||
-        (p.vehicleResolution && p.vehicleResolution.identityStatus === "EXACT") ||
-        (p.vehicleResolutionLineId && p.vehicleResolutionLineId !== "ChuoSobuLocal"))
-      return null;
-    var n = String(p.trainNumber || "").trim().toUpperCase();
-    var day = String(p.serviceDate || "").slice(0, 10);
-    var dir = String(p.railDirection || "").split(/[.:]/).pop();
-    // The ODPT entity ID and 659 public number must be for this JR line,
-    // never a Tozai K/S alias, a Sobu Rapid F, or a Chuo Rapid T/H.
-    if (!/^[0-9]{3,4}[BC]$/.test(n) ||
-        !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day) ||
-        !["Eastbound", "Westbound"].includes(dir) ||
-        (parseInt(n, 10) % 2 === 0) !== (dir === "Eastbound") ||
-        String(p.trainId || "") !== "odpt.Train:JR-East.ChuoSobuLocal." + n)
-      return null;
-    var garage = window.VehicleGaragePngMap;
-    var model = "E231系500番台";
-    var img = "../images/列车/JR東日本/JR東日本_E231系_500番台_中央・総武線各駅停車.png";
-    if (!garage || typeof garage.matchModelPath !== "function" ||
-        !garage.matchModelPath(model, img, "ChuoSobuLocal"))
-      return null;
-    var png = normalizeGalleryPngPath(img);
+    var ranges = window.TrainNumberPngRanges;
+    var ref = ranges && typeof ranges.matchChuoSobuLocalBCLiveNumber === "function"
+      ? ranges.matchChuoSobuLocalBCLiveNumber(p) : null;
+    if (!ref || ref.referenceOnly !== true ||
+        ref.authorizesPNG !== false || ref.actualVehicleConfirmed !== false ||
+        ref.model !== null || ref.formationId !== null) return null;
+    var png = normalizeGalleryPngPath(ref.illustrationPng);
     return png ? {
       kind: "vehicle", iconSrc: png, planned: true,
       illustrative: true, representativeOnly: true,
