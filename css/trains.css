@@ -90,26 +90,3 @@
 /* Ito planned fleet alternatives remain readable when the train has no exact PNG. */
 .train-fold-fleet-reference { display:block; margin-top:4px; font-size:.78em; line-height:1.45; opacity:.78; }
 
-
-/* +N train list: a nearby, nonmodal card instead of a full-screen alert.
-   Avoid the shared .rs-modal overlay and body.modal-open scroll lock. */
-.train-fold-popover {
-  position:fixed;
-  z-index:1100;
-  max-width:calc(100vw - 24px);
-  max-height:calc(100dvh - 24px);
-  overflow-y:auto;
-  background:var(--card);
-  box-sizing:border-box;
-}
-.train-fold-popover > .rs-modal-content {
-  max-width:none;
-  max-height:min(65dvh, 520px);
-  width:100%;
-  box-sizing:border-box;
-  box-shadow:4px 4px 0 rgba(0,0,0,.22);
-}
-.train-fold-popover .rs-modal-header { padding:8px 12px; }
-.train-fold-popover .rs-modal-title { font-size:14px; letter-spacing:0; }
-.train-fold-popover .rs-modal-body { padding:6px 10px; gap:0; }
-.train-fold-popover .train-fold-entry { padding:8px 4px; }
