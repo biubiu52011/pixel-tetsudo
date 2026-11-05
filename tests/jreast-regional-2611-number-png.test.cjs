@@ -42,6 +42,7 @@ const make=(line,number,dir,date='2026-11-07',cal='holiday',
   vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
   plannedVehicleCandidates:[line==='Karasuyama'?'EV-E301系（ACCUM）':fleets[line][0]],
   ...(line==='Kururi'&&!index.kururiClosedRailNumbers.includes(number)?{
+    officialNumberVerified:true,
     scheduledStopKeys:dir==='Outbound'?
       ['Kisarazu','Gion','KazusaKiyokawa','HigashiKiyokawa',
        'Yokota','HigashiYokota','Makuta','Shimogori','Obitsu','Tawarada','Kururi']:
