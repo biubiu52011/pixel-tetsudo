@@ -1855,6 +1855,16 @@ Object.assign(CANONICAL_VEHICLES,{
     },
     "aliases": ["E231系0番台（中央・総武線）"]
   },
+  // The artwork depicts converted B31. It is a SERIES catalogue
+  // entry, not a claim that a particular 659 B/C train uses B31 today.
+  "jr-east-e235-0-chuo-sobu-2026": {
+    "displayName": "E235系0番台（中央・総武線各駅停車）",
+    "iconName": "E235系0番台（中央・総武線各駅停車）",
+    "asset": "../images/列车/JR東日本/JR東日本_E235系_0番台_B31編成_中央・総武線.png",
+    "lineIds": ["ChuoSobuLocal"],
+    "lineAliases": {"ChuoSobuLocal": ["E235系0番台"]},
+    "aliases": ["E235系0番台（中央・総武線）"]
+  },
   "metro-08": {
     "displayName": "東京メトロ08系",
     "iconName": "東京メトロ08系",
