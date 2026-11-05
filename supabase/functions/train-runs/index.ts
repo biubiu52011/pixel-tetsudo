@@ -540,9 +540,12 @@ const publishedShinkansenNumbersBySource =
 // The 2611 JR-East booklet also publishes the JR-Hokkaido Shinkansen.
 // Match the existing SQL source railway/operator precisely; it is not
 // a license to infer H5/E5 ownership or a single rolling-stock PNG.
-const officialShinkansenRailwayOwner = lineId === "NishiKyushuShinkansen"
+const officialShinkansenRailwayOwner =
+  ["NishiKyushuShinkansen","KyushuShinkansen"].includes(lineId)
   ? "JR-Kyushu"
-  : lineId === "HokkaidoShinkansen" ? "JR-Hokkaido" : "JR-East";
+  : lineId==="SanyoShinkansen" ? "JR-West"
+  : lineId==="TokaidoShinkansen" ? "JR-Central"
+  : lineId==="HokkaidoShinkansen" ? "JR-Hokkaido" : "JR-East";
 if (/Shinkansen$/.test(lineId) &&
     /^2026-11-\d{2}$/.test(serviceDate) &&
     selectedCalendar &&
@@ -570,6 +573,12 @@ if (/Shinkansen$/.test(lineId) &&
       const validOfficialNumber = lineId==="NishiKyushuShinkansen"
         ? (/^[0-9]{4}G$/.test(proofNumber) &&
           /^https:\/\/www\.jrkyushu-timetable\.jp\/sp\/2611\/[0-9]{4}\/[0-9]{8}\.html\?d=2026(?:10|11)[0-9]{2}&t=[A-Za-z0-9]+$/.test(proofUrl))
+        : ["TokaidoShinkansen","SanyoShinkansen","KyushuShinkansen"].includes(lineId)
+        ? (/^[0-9]{1,5}A$/.test(proofNumber) && (
+          /^https:\/\/timetable\.jr-odekake\.net\/train-timetable\/[0-9]+\?date=202611[0-9]{2}$/.test(proofUrl) ||
+          /^https:\/\/www\.jrkyushu-timetable\.jp\/sp\/2611\/[0-9]{4}\/[0-9]{8}\.html\?d=202611[0-9]{2}&t=[A-Za-z0-9]+$/.test(proofUrl) ||
+          /^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(proofUrl)
+          ))
         : (/^[0-9]{1,5}[BCEM]$/.test(proofNumber) &&
           /^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(proofUrl));
       if(!src || proof.line_key!==lineId ||
