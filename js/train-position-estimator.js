@@ -754,6 +754,18 @@
           if(officialIshinomakiPlan===false)continue;
         }
 
+        // Oga 2611 published M-number list and the six November 5
+        // cancellations. Do not project old SQL services as active
+        // train positions when the official monthly sheet cancels them.
+        if(lineId==="Oga"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"&&
+           window.JREastOgaNumberIndex202611&&
+           typeof window.JREastOgaNumberIndex202611.verify==="function"){
+          if(window.JREastOgaNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
+            tt["odpt:trainType"]||"",run.calendar,serviceDate)===false)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
