@@ -269,6 +269,32 @@ const sanyo800Plan = catalogVm.window.__testPlanResolution('800系', {
 assert.equal(sanyo800Plan.iconPath, '',
   'Kyushu 800-series plan PNG must not leak into Sanyo services');
 
+// JR-West 2026-11 Kodama 944A, 954A and 974A officially plan a 500
+// series and the Sanyo-specific JR-West generic 500 PNG must resolve.
+// Kodama 958A, 966A, 876A, 976A show 700 series but this gallery
+// has no scoped native JR-West 700 image. Kodama 970A varies 700/500
+// by calendar date, so SQL must NOT create any fixed plan for it.
+const sanyo500 = catalogVm.window.__testPlanResolution('500系', {
+  lineId:'SanyoShinkansen', operator:'JR-West',
+  source:'database-verified-published-plan', _plannedArtworkInventory:true
+});
+assert.equal(sanyo500.status, 'PLANNED_MODEL');
+assert.equal(sanyo500.iconPath,
+  '../images/列车/JR西日本/JR西日本_500系.png',
+  'source-backed JR-West 500 series must resolve the native Sanyo PNG');
+const wrongKyushu500 = catalogVm.window.__testPlanResolution('500系', {
+  lineId:'KyushuShinkansen', operator:'JR-West',
+  source:'database-verified-published-plan', _plannedArtworkInventory:true
+});
+assert.equal(wrongKyushu500.iconPath, '',
+  'JR-West 500 Sanyo-only artwork cannot leak to Kyushu Shinkansen');
+const missingSanyo700 = catalogVm.window.__testPlanResolution('700系', {
+  lineId:'SanyoShinkansen', operator:'JR-West',
+  source:'database-verified-published-plan', _plannedArtworkInventory:true
+});
+assert.equal(missingSanyo700.iconPath, '',
+  'JR-West 700-series plan must remain neutral without matching native PNG');
+
 // SQL published models describe the weekday/holiday timetable, not the
 // observed physical stock. Even one verified model must pass through vehiclePlan.
 const sqlPlanVm = vm.createContext({
