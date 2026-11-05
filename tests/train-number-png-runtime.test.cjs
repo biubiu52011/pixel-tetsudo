@@ -512,12 +512,10 @@ test('JobanLocal PNG family excludes other lines, operators, dates, types and co
   assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe').model,
     'E233系7000番台','existing Saikyo K-tail mapping must remain unchanged');
 });
-test('Kururi Karasuyama and Senseki-Tohoku scoped number PNG: published 2026-11 service only',()=>{
+test('Karasuyama and Senseki-Tohoku public number PNG: published 2026-11 service only',()=>{
   const cases=[
     ['Karasuyama','321M','Local','EV-E301系','JR東日本_EV-E301系.png'],
     ['Karasuyama','346M','Local','EV-E301系','JR東日本_EV-E301系.png'],
-    ['Kururi','920D','Local','キハE130形100番台','JR東日本_キハE130系100番台.png'],
-    ['Kururi','2941D','Local','キハE130形100番台','JR東日本_キハE130系100番台.png'],
     ['SensekiTohoku','5521D','Rapid','HB-E210系','JR東日本_HB-E210系.png'],
     ['SensekiTohoku','5530D','Rapid','HB-E210系','JR東日本_HB-E210系.png']
   ];
@@ -545,6 +543,43 @@ test('Kururi Karasuyama and Senseki-Tohoku scoped number PNG: published 2026-11 
       assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
     }
   }
+});
+test('Kururi 2611: no fake realtime source PNG and no 29xxD bus-as-rail mapping',()=>{
+  const base=live({
+    trainNumber:'920D',positionLineId:'Kururi',
+    sourceRailway:'odpt.Railway:JR-East.Kururi',
+    trainOperator:'JR-East',railDirection:'odpt.RailDirection:Inbound',
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-04',calendarType:'weekday',
+    plannedVehicleCandidates:['キハE130形100番台'],
+    scheduledStopKeys:['Kururi','Tawarada','Obitsu','Shimogori','Makuta',
+      'HigashiYokota','Yokota','HigashiKiyokawa','KazusaKiyokawa',
+      'Gion','Kisarazu']
+  });
+  // No JR East realtime position API; the authoritative vehicle
+  // illustration now requires the dated SQL number+open-route proof.
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(base),null);
+  const proof={source:'sql-jreast-2611-number-roster',lineId:'Kururi',
+    trainNumber:'920D',serviceDate:'2026-11-04',
+    direction:'odpt.RailDirection:Inbound',calendar:'odpt.Calendar:Weekday',
+    trainType:'odpt.TrainType:JR-East.Local',
+    segmentKey:'kisarazu_kururi_rail',railScope:'open_rail_only',
+    railwayFrom:'Kururi',railwayTo:'Kisarazu',
+    model:'キハE130形100番台',
+    pngReference:'../images/列车/JR東日本/JR東日本_キハE130系100番台.png',
+    officialSourceUrl:'https://timetables.jreast.co.jp/2611/timetable-v/217u1.html',
+    stopClockStatus:'historical_not_2611_verified',
+    closedRailSection:'Kururi–KazusaKameyama',
+    referenceOnly:true,actualVehicleConfirmed:false};
+  const planned={...base,positionSource:'supabase-train-run',
+    estimated:true,officialNumberVerified:true,
+    sqlPublishedNumberFleetReference:proof};
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(planned)?.model,
+    'キハE130形100番台');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...planned,positionSource:'realtime-api',estimated:false}),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...planned,trainNumber:'2941D'}),null);
 });
 test('Kururi Karasuyama and Senseki-Tohoku never assign model across line, type or unconfirmed services',()=>{
   const pos=(line,num,type='Local',extra={})=>live({
