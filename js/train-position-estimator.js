@@ -756,7 +756,8 @@
               trainType:tt["odpt:trainType"]||"",
               calendarType:run.calendar,serviceDate:serviceDate,
               positionSource:tt._positionSource,
-              scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";})
+              scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+              sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
             });
         }
         var officialGonoPlan = null;
@@ -1402,6 +1403,8 @@
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
             publishedFleetReference:_joetsuFleet||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:officialJoetsuPlan
+              ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
             serviceName: officialJoetsuPlan && officialJoetsuPlan.serviceName
