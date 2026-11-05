@@ -2162,6 +2162,72 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // JR-WEST OitoWest: correct 300-series orange/red diesel family,
+  // 19 official 4xxD numbers, but just 14 legacy 3-stop SQL services.
+  // All original clocks are historical and only the southern three
+  // stations have source clocks: never call them a full JR-West diagram.
+  // No suitable KiHa120 Oito orange/red PNG in gallery, so icon=null.
+  function verifyOitoWestService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jrwest-2611-number-roster"||
+       proof.lineId!=="OitoWest"||
+       proof.scope!=="jr_west_minami_otari_itoigawa_partial"||
+       proof.sourceScope!=="historical_three_station_partial"||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="OitoWest"||
+       (p.displayLineId&&p.displayLineId!=="OitoWest")||
+       p.sourceRailway!=="odpt.Railway:JR-West.Oito"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-West"&&op!=="odpt.Operator:JR-West")return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase(),
+       day=String(p.serviceDate||"").slice(0,10),
+       m=/^([0-9]{3})D$/.exec(n);
+    if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day)||
+       proof.trainNumber!==n||proof.serviceDate!==day||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       proof.model!=="キハ120形300番台（大糸線・岡山色）"||
+       proof.pngReference!==null||
+       proof.stopClockStatus!=="historical_partial_not_2611_verified"||
+       !/^https:\/\/timetable\.jr-odekake\.net\/line-timetable\/284[56]$/.test(
+          String(proof.officialSourceUrl||"")))return null;
+    var direction=String(p.railDirection||"").split(/[.:]/).pop(),
+        typ=String(p.trainType||"").split(/[.:]/).pop(),
+        inbound=direction==="Inbound";
+    if(!["Inbound","Outbound"].includes(direction)||
+       typ!=="Local"||
+       String(proof.trainType||"")!=="odpt.TrainType:JR-West.Local"||
+       String(proof.direction||"").split(/[.:]/).pop()!==direction||
+       Number(m[1])%2!==(inbound?0:1)||
+       proof.officialSourceUrl.slice(-4)!==(inbound?"2846":"2845"))
+       return null;
+    var up=new Set(["422D","426D","428D","430D",
+                     "432D","434D","438D"]),
+        down=new Set(["423D","425D","427D","429D",
+                       "431D","433D","437D"]);
+    if(!(inbound?up:down).has(n))return null;
+    var dow=new Date(day+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))
+      return null;
+    if(day==="2026-11-08"&&["429D","430D"].includes(n))return null;
+    if((Array.isArray(proof.excludedDates)?proof.excludedDates:[])
+       .some(function(d){return String(d).slice(0,10)===day;}))return null;
+    var expected=inbound?["Kita-Otari","Nakatsuchi","Minami-Otari"]:
+       ["Minami-Otari","Nakatsuchi","Kita-Otari"];
+    var given=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();});
+    var original=proof.sourceStopKeys;
+    if(given.length!==3||!Array.isArray(original)||original.length!==3||
+       given.some(function(x,i){return x!==expected[i]||x!==original[i];}))
+       return null;
+    return Object.freeze({number:n,kind:"historical_three_station_partial",
+      model:proof.model,pngPath:null,edition:"2611",
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // 大糸線 JR EAST ONLY: Matsumoto–Minami-Otari.
   // The frontend's separate JR-WEST diesel/bus implementation is NOT
   // part of this number/PNG authority. Verified source-template stop
@@ -2693,6 +2759,12 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="OitoWest"){
+      // Official JR-West Oito stock is orange/red KiHa120 300.
+      // Existing JR-West 120 PNGs are green/blue (CHA) or purple (KAN)
+      // and neither is the authentic Oito livery. Fail closed.
+      return null;
+    }
     if(line==="Oito"){
       var east=Object.assign({},context||{},{trainNumber:number});
       var official=verifyOitoEastService(east);
@@ -3765,6 +3837,7 @@
     verifyOfunatoService:verifyOfunatoService,
     verifyOgaService:verifyOgaService,
     verifyOitoEastService:verifyOitoEastService,
+    verifyOitoWestService:verifyOitoWestService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
