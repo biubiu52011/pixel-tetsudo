@@ -1858,21 +1858,36 @@
     var north=proof.segmentKey==="north"&&
       stops.every(function(x){return joetsuNorthStops.has(x);})&&
       stops.some(function(x){return x!=="Minakami";});
-    if(!north)return null;
-    var normal=proof.model==="E129系"&&
+    var south=proof.segmentKey==="south"&&
+      stops.every(function(x){
+        return joetsuSouthStops.has(x)||
+          // A source-verified Joetsu segment may be the same physical
+          // timetable as a longer Agatsuma through service.
+          x==="Naganohara-Kusatsuguchi"||x==="Kawahara-yu-Onsen"||
+          x==="Iwashima"||x==="Yakura"||x==="Gohara"||
+          x==="Gunma-Haramachi"||x==="Nakanojo"||x==="Ichishiro"||
+          x==="Onogami-Onsen"||x==="Onogami"||x==="Sohijima"||
+          x==="Kanashima"||x==="Gunma-Otsu"||x==="Haneo"||
+          x==="Fukurogura"||x==="Manza-Kazawaguchi"||x==="Omae";
+      })&&stops.filter(function(x){return joetsuSouthStops.has(x);}).length>=2;
+    if(!north&&!south)return null;
+    var localSouth=south&&proof.model==="211系（高崎地区）"&&
+      proof.trainType==="odpt.TrainType:JR-East.Local"&&
+      proof.pngReference==="../images/列车/JR東日本/JR東日本_211系_湘南色.png";
+    var normal=north&&proof.model==="E129系"&&
       proof.trainType==="odpt.TrainType:JR-East.Local"&&
       proof.pngReference==="../images/列车/JR東日本/JR東日本_E129系.png";
-    var resort=proof.model==="キハ40・48形（越乃Shu＊Kura）"&&
+    var resort=north&&proof.model==="キハ40・48形（越乃Shu＊Kura）"&&
       proof.trainType==="odpt.TrainType:JR-East.Rapid"&&
       proof.pngReference==="../images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png";
-    if(!normal&&!resort)return null;
+    if(!normal&&!resort&&!localSouth)return null;
     var t=String(p.trainType||"").split(/[.:]/).pop();
-    if(t!==(normal?"Local":"Rapid")&&
+    if(t!==((normal||localSouth)?"Local":"Rapid")&&
        !(resort&&t==="Local"&&p.positionSource==="supabase-train-run"))
       return null;
     return Object.freeze({
-      number:number,kind:normal?"north":"shukura",
-      model:proof.model,trainType:normal?"Local":"Rapid",
+      number:number,kind:normal?"north":localSouth?"south":"shukura",
+      model:proof.model,trainType:normal||localSouth?"Local":"Rapid",
       serviceName:proof.serviceName||"",
       pngPath:proof.pngReference,referenceOnly:true,
       actualVehicleConfirmed:false,edition:"2611"
