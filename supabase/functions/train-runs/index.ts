@@ -874,6 +874,114 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // 男鹿線 2611: 29 ordinary official M numbers per calendar.
+  // Historical SQL has only 23 weekday and 29 holiday sources, plus SIX
+  // weekday services documented in the official timetable but ABSENT from
+  // original SQL. Never fabricate missing positions from public numbers.
+  // Maintenance 2026-11-05 cancels 1130/32/34 and 1131/33/35M.
+  // 1145M on 2026-11-20 has DIFFERENT clocks: no old-clock projection.
+  // Model is a representative EV-E801 ACCUM FAMILY, never physical unit.
+  if(lineId==="Oga"&&/^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterErr},{data:range,error:rangeErr}]=
+      await Promise.all([
+        db.from("published_oga_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,source_template_id,source_stop_keys,calendar_scope,excluded_dates,clock_change_dates,vehicle_model,png_reference,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Oga")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Oga")
+      ]);
+    if(rosterErr||rangeErr)throw(rosterErr||rangeErr);
+    if((roster||[]).length!==29||(range||[]).length!==1)
+      throw new Error("OGA_2611_NUMBER_SQL_ROSTER_UNAVAILABLE");
+    const bySource=new Map((roster||[]).filter((row:any)=>
+      row.source_template_id!=null).map((row:any)=>
+      [Number(row.source_template_id),row]));
+    const allowed=new Set(["Oiwake","Detohama","Kamifutada",
+      "Futada","Tenno","Funakoshi","Wakimoto","Hadachi","Oga"]);
+    const outbound=["Oiwake","Detohama","Kamifutada","Futada",
+      "Tenno","Funakoshi","Wakimoto","Hadachi","Oga"];
+    const forbiddenNov5=new Set(["1130M","1132M","1134M",
+      "1131M","1133M","1135M"]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],proof:any=
+        bySource.get(Number(run.source_template_id));
+      if(!proof||proof.calendar_scope!=="sql_rail_service"||
+         proof.calendar_urn!==selectedCalendar||
+         run.network_key!=="odpt.Railway:JR-East.Oga"||
+         run.train_number!==proof.train_number||
+         run.rail_direction!==proof.direction_urn||
+         run.train_type!==proof.train_type_urn||
+         proof.reference_only!==true||
+         proof.actual_vehicle_confirmed!==false||
+         !Array.isArray(run.stops)||
+         !Array.isArray(proof.source_stop_keys)){
+        result.splice(i,1);continue;
+      }
+      const excluded=(proof.excluded_dates||[]).map((d:any)=>
+        String(d).slice(0,10));
+      const altered=(proof.clock_change_dates||[]).map((d:any)=>
+        String(d).slice(0,10));
+      if(excluded.includes(serviceDate)||altered.includes(serviceDate)||
+         (serviceDate==="2026-11-05"&&
+           forbiddenNov5.has(run.train_number))||
+         (serviceDate==="2026-11-20"&&run.train_number==="1145M")){
+        result.splice(i,1);continue;
+      }
+      const number=/^([0-9]{4})M$/.exec(String(run.train_number||""));
+      const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+      const stops=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      const expected=inbound?[...outbound].reverse():outbound;
+      if(!number||Number(number[1])%2!==(inbound?0:1)||
+         stops.length!==9||proof.source_stop_keys.length!==9||
+         stops.some((key:string,j:number)=>
+           key!==expected[j]||key!==proof.source_stop_keys[j]||
+           !allowed.has(key))){
+        result.splice(i,1);continue;
+      }
+      const inRange=(range||[]).some((r:any)=>
+        r.segment_key==="oiwake_oga_regular_rail"&&
+        r.requires_exact_roster===true&&
+        Number(number[1])>=r.min_number&&Number(number[1])<=r.max_number&&
+        r.suffix==="M"&&r.vehicle_model===proof.vehicle_model&&
+        r.png_reference===proof.png_reference);
+      if(!inRange||proof.vehicle_model!=="EV-E801系"||
+         proof.png_reference!=="../images/列车/JR東日本/JR東日本_EV-E801系.png"||
+         proof.stop_clock_status!=="historical_not_2611_verified"){
+        result.splice(i,1);continue;
+      }
+      run.train_number_verification="official-2611-oga-number-sql-rail";
+      run.train_number_source_url=proof.official_source_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="EV-E801系";
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Oga",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:proof.calendar_urn,
+        trainType:run.train_type,segmentKey:"oiwake_oga_regular_rail",
+        calendarScope:proof.calendar_scope,
+        sourceTemplateId:Number(proof.source_template_id),
+        sourceStopKeys:proof.source_stop_keys,
+        railwayFrom:expected[0],railwayTo:expected[8],
+        plannedCandidates:["EV-E801系"],
+        model:proof.vehicle_model,pngReference:proof.png_reference,
+        officialSourceUrl:proof.official_source_url,
+        excludedDates:proof.excluded_dates||[],
+        clockChangeDates:proof.clock_change_dates||[],
+        stopClockStatus:proof.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // JR-East Ofunato 2611: original SQL combines two DIFFERENT modes
   // under line ID Ofunato: 123 BRT F/K entries, 34 KiHa110 rail D
   // entries over two calendars, and two KiHa100 POKEMON holiday D entries.
