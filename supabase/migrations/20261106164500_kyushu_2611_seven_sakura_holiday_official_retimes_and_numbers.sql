@@ -5,6 +5,9 @@
 -- rows must remain untouched. 402A has N700/800 date exceptions: NO
 -- single unscoped model or PNG must be written for that template.
 -- Correct inbound 408 Hakata 21:50 arrival, not 21:52 onward departure.
+-- Existing 408 source id 5056 is grade B; preserve its known official
+-- N700 planned family, corroborated individually from the cited 2611 URL.
+-- Do not silently upgrade the shared B evidence row for other services.
 BEGIN;
 SELECT pg_advisory_xact_lock(2611,403);
 DO $sakura_2611_retime$
@@ -48,7 +51,8 @@ BEGIN
       JOIN evidence_sources es ON es.id=vm.source_id
       WHERE vm.timetable_id=v_tt AND vm.source_template_id=v_id
         AND vm.vehicle_type=r.scheduled_model AND vm.mapping_level='official_service_vehicle_plan'
-        AND vm.actual_vehicle_confirmed=false AND es.source_type='official' AND es.evidence_grade='A')<>1
+        AND vm.actual_vehicle_confirmed=false AND es.source_type='official'
+        AND (es.evidence_grade='A' OR (r.service_name='さくら408' AND es.evidence_grade='B')))<>1
       THEN RAISE EXCEPTION 'Preexisting official planned model mismatch %',r.service_name; END IF;
   END IF;
 
