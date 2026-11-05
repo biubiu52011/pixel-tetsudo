@@ -11,7 +11,8 @@ const cors = {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...cors, "Content-Type": "application/json; charset=utf-8" },
+    headers: { ...cors, "Cache-Control": status === 200 ? cors["Cache-Control"] : "no-store",
+      "Content-Type": "application/json; charset=utf-8" },
   });
 }
 
@@ -186,6 +187,23 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
     throw new Error("SQL_RESULT_TOO_LARGE");
   }
+  // Process independent SQL batches with at most three concurrent requests.
+  // Promise.all retains input batch order for canonical station and alias data.
+  async function batchedRows<T>(
+    items: T[], batchSize: number,
+    fetchBatch: (batch: T[]) => Promise<any[]>,
+  ): Promise<any[]> {
+    const rows: any[] = [];
+    const maxConcurrent = 3;
+    for (let offset = 0; offset < items.length; offset += batchSize * maxConcurrent) {
+      const reads: Promise<any[]>[] = [];
+      for (let start = offset; start < Math.min(items.length, offset + batchSize * maxConcurrent); start += batchSize) {
+        reads.push(fetchBatch(items.slice(start, start + batchSize)));
+      }
+      for (const batch of await Promise.all(reads)) rows.push(...batch);
+    }
+    return rows;
+  }
   let templates: any[] = [];
   let selectedCalendar: string | null = null;
   let selectedRevision: any = null;
@@ -252,14 +270,14 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // Canonical train schedule is the sole identity authority; original source
   // templates remain evidence, never a second source of truth for vehicle type.
   const sourceResolution = new Map<number, any>();
-  for (let i = 0; i < templates.length; i += 100) {
-    const ids = templates.slice(i, i + 100).map((t: any) => t.id);
+  const resolutionRows = await batchedRows(templates, 100, async (batch) => {
     const { data, error } = await db.from("train_timetable_source_resolution")
       .select("source_template_id,timetable_id,member_role,group_evidence,timetable_validity,mapping_level,vehicle_type,vehicle_source_id,vehicle_source_url,vehicle_revision_date,vehicle_artwork_path,operation_code,operation_source_id,operation_revision_date,operation_owner,operation_owner_source_url")
-      .in("source_template_id", ids);
+      .in("source_template_id", batch.map((t: any) => t.id));
     if (error) throw error;
-    for (const row of data || []) sourceResolution.set(row.source_template_id, row);
-  }
+    return data || [];
+  });
+  for (const row of resolutionRows) sourceResolution.set(row.source_template_id, row);
   // Reject a partial mapping instead of silently serving the old line-based
   // identity. The importer keeps this projection synchronized atomically.
   if (templates.some((t: any) => !sourceResolution.has(t.id))) {
@@ -273,13 +291,13 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   const evidenceIds = [...new Set([...sourceResolution.values()]
     .map((row: any) => Number(row.vehicle_source_id))
     .filter((id: number) => Number.isInteger(id) && id > 0))];
-  for (let i = 0; i < evidenceIds.length; i += 100) {
+  const vehicleEvidenceRows = await batchedRows(evidenceIds, 100, async (ids) => {
     const { data, error } = await db.from("evidence_sources")
-      .select("id,source_type,evidence_grade")
-      .in("id", evidenceIds.slice(i, i + 100));
+      .select("id,source_type,evidence_grade").in("id", ids);
     if (error) throw error;
-    for (const row of data || []) vehicleEvidenceById.set(Number(row.id), row);
-  }
+    return data || [];
+  });
+  for (const row of vehicleEvidenceRows) vehicleEvidenceById.set(Number(row.id), row);
   const seenCanonical = new Set<number>();
   templates = templates.filter((t: any) => {
     const key = Number(sourceResolution.get(t.id).timetable_id);
@@ -289,17 +307,16 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   });
 
   const byTemplate = new Map<number, any[]>();
-  // Keep URL/IN-list bounded; individual batches still page if stops exceed 700.
-  for (let pos = 0; pos < templates.length; pos += 100) {
-    const ids = templates.slice(pos, pos + 100).map(t => t.id);
-    const stops = await pages((first, last) => db.from("manual_timetable_template_stops")
+  // Keep IN-lists small; each batch retains its existing paginated stop query.
+  const sourceStops = await batchedRows(templates, 100, (batch) =>
+    pages((first, last) => db.from("manual_timetable_template_stops")
       .select("template_id,stop_sequence,arrival_station_urn,departure_station_urn,arrival_clock,departure_clock")
-      .in("template_id", ids).order("template_id").order("stop_sequence").range(first, last));
-    for (const stop of stops) {
-      const list = byTemplate.get(stop.template_id) || [];
-      list.push(stop);
-      byTemplate.set(stop.template_id, list);
-    }
+      .in("template_id", batch.map((t: any) => t.id))
+      .order("template_id").order("stop_sequence").range(first, last)));
+  for (const stop of sourceStops) {
+    const list = byTemplate.get(stop.template_id) || [];
+    list.push(stop);
+    byTemplate.set(stop.template_id, list);
   }
 
   // Only preverified continuation chains receive a merged end-to-end station
@@ -309,17 +326,15 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     .map((t: any) => sourceResolution.get(t.id))
     .filter((m: any) => m?.group_evidence === "verified_continuation")
     .map((m: any) => Number(m.timetable_id)))];
-  for (let i = 0; i < connectedIds.length; i += 30) {
-    const ids = connectedIds.slice(i, i + 30);
-    const rows = await pages((first, last) => db.from("train_timetable_stops")
+  const canonicalStopRows = await batchedRows(connectedIds, 30, (ids) =>
+    pages((first, last) => db.from("train_timetable_stops")
       .select("timetable_id,stop_sequence,station_urn,arrival_clock,departure_clock,source_template_id,line_key,train_number")
       .in("timetable_id", ids)
-      .order("timetable_id").order("stop_sequence").range(first, last));
-    for (const row of rows) {
-      const stops = canonicalStopsById.get(row.timetable_id) || [];
-      stops.push(row);
-      canonicalStopsById.set(row.timetable_id, stops);
-    }
+      .order("timetable_id").order("stop_sequence").range(first, last)));
+  for (const row of canonicalStopRows) {
+    const stops = canonicalStopsById.get(row.timetable_id) || [];
+    stops.push(row);
+    canonicalStopsById.set(row.timetable_id, stops);
   }
   if (connectedIds.some(id => !(canonicalStopsById.get(id) || []).length)) {
     throw new Error("CANONICAL_CONTINUATION_STOPS_UNAVAILABLE");
@@ -328,16 +343,14 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // actual member lines with its canonical ID, so a live bridge cannot treat a
   // ChuoRapid/ChuoMain trip as a ChuoRapid/Ome trip just because numbers match.
   const canonicalLinesById = new Map<number, string[]>();
-  for (let i = 0; i < connectedIds.length; i += 40) {
-    const ids = connectedIds.slice(i, i + 40);
-    const rows = await pages((first, last) => db.from("train_timetable_lines")
+  const canonicalLineRows = await batchedRows(connectedIds, 40, (ids) =>
+    pages((first, last) => db.from("train_timetable_lines")
       .select("timetable_id,line_key").in("timetable_id", ids)
-      .order("timetable_id").order("line_key").range(first,last));
-    for (const row of rows) {
-      const list = canonicalLinesById.get(Number(row.timetable_id)) || [];
-      if (row.line_key && !list.includes(row.line_key)) list.push(row.line_key);
-      canonicalLinesById.set(Number(row.timetable_id),list);
-    }
+      .order("timetable_id").order("line_key").range(first, last)));
+  for (const row of canonicalLineRows) {
+    const list = canonicalLinesById.get(Number(row.timetable_id)) || [];
+    if (row.line_key && !list.includes(row.line_key)) list.push(row.line_key);
+    canonicalLinesById.set(Number(row.timetable_id), list);
   }
   if (connectedIds.some(id => !(canonicalLinesById.get(id) || []).length)) {
     throw new Error("CANONICAL_CONTINUATION_LINES_UNAVAILABLE");
@@ -353,35 +366,30 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
         (lines.includes("ShonanShinjuku") &&
           ["Tokaido","Takasaki","UtsunomiyaJR"].some(other=>lines.includes(other)));
     });
-    for (let i = 0; i < aliasIds.length; i += 40) {
-      const ids = aliasIds.slice(i, i + 40);
-      const members = await pages((first, last) => db.from("train_timetable_members")
-        .select("timetable_id,source_template_id").in("timetable_id",ids)
-        .order("timetable_id").order("source_template_id").range(first,last));
-      const templateIds = [...new Set(members.map((m:any)=>Number(m.source_template_id)))];
-      const sourceTemplates:any[] = [];
-      for (let j = 0; j < templateIds.length; j += 100) {
-        const batch = templateIds.slice(j, j + 100);
-        sourceTemplates.push(...await pages((first,last) => db.from("manual_timetable_templates")
-          .select("id,line_key,train_number,railway_urn,direction_urn")
-          .in("id",batch).order("id").range(first,last)));
+    const members = await batchedRows(aliasIds, 40, (ids) =>
+      pages((first, last) => db.from("train_timetable_members")
+        .select("timetable_id,source_template_id").in("timetable_id", ids)
+        .order("timetable_id").order("source_template_id").range(first, last)));
+    const templateIds = [...new Set(members.map((m: any) => Number(m.source_template_id)))];
+    const sourceTemplates = await batchedRows(templateIds, 100, (ids) =>
+      pages((first, last) => db.from("manual_timetable_templates")
+        .select("id,line_key,train_number,railway_urn,direction_urn")
+        .in("id", ids).order("id").range(first, last)));
+    const templateById = new Map(sourceTemplates.map((m: any) => [Number(m.id), m]));
+    for (const member of members) {
+      const source: any = templateById.get(Number(member.source_template_id));
+      if (!source || !source.train_number || !source.railway_urn) {
+        throw new Error("CANONICAL_TRAIN_NUMBER_ALIAS_SOURCE_UNAVAILABLE");
       }
-      const templateById = new Map(sourceTemplates.map((m:any)=>[Number(m.id),m]));
-      for (const member of members) {
-        const source:any = templateById.get(Number(member.source_template_id));
-        if (!source || !source.train_number || !source.railway_urn) {
-          throw new Error("CANONICAL_TRAIN_NUMBER_ALIAS_SOURCE_UNAVAILABLE");
-        }
-        const id = Number(member.timetable_id);
-        const aliases = canonicalAliasesById.get(id) || [];
-        const alias = {line_key:source.line_key,train_number:source.train_number,
-          railway_urn:source.railway_urn,direction_urn:source.direction_urn};
-        if (!aliases.some((x:any)=>x.line_key===alias.line_key &&
-          x.train_number===alias.train_number &&
-          x.railway_urn===alias.railway_urn &&
-          x.direction_urn===alias.direction_urn)) aliases.push(alias);
-        canonicalAliasesById.set(id,aliases);
-      }
+      const id = Number(member.timetable_id);
+      const aliases = canonicalAliasesById.get(id) || [];
+      const alias = {line_key: source.line_key, train_number: source.train_number,
+        railway_urn: source.railway_urn, direction_urn: source.direction_urn};
+      if (!aliases.some((x: any) => x.line_key === alias.line_key &&
+        x.train_number === alias.train_number &&
+        x.railway_urn === alias.railway_urn &&
+        x.direction_urn === alias.direction_urn)) aliases.push(alias);
+      canonicalAliasesById.set(id, aliases);
     }
     if (aliasIds.some(id => !(canonicalAliasesById.get(id) || []).length)) {
       throw new Error("CANONICAL_VERIFIED_TRAIN_NUMBER_ALIASES_UNAVAILABLE");
@@ -2436,8 +2444,19 @@ Deno.serve(async (req: Request) => {
   const serviceDate = (url.searchParams.get("service_date") || "").trim();
   if (!/^[A-Za-z0-9._:-]{1,80}$/.test(lineId)) return json({ ok: false, error: "INVALID_LINE_ID" }, 400);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(serviceDate)) return json({ ok: false, error: "INVALID_SERVICE_DATE" }, 400);
+  const [year, month, day] = serviceDate.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 ||
+      parsed.getUTCDate() !== day) {
+    return json({ ok: false, error: "INVALID_SERVICE_DATE" }, 400);
+  }
 
-  const secretKeys = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") || "{}");
+  let secretKeys: Record<string, string>;
+  try {
+    secretKeys = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") || "{}");
+  } catch {
+    return json({ ok: false, error: "SERVER_CONFIG" }, 500);
+  }
   const secretKey = secretKeys.default || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   if (!supabaseUrl || !secretKey) return json({ ok: false, error: "SERVER_CONFIG" }, 500);
