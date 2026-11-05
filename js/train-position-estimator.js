@@ -918,6 +918,34 @@
           if(!officialOitoEastPlan)continue;
         }
 
+        // OuMain 2611: six exact published Tsugaru/Super Tsugaru
+        // limited expresses use E751. No generic OuMain M-number PNG:
+        // the backend's train number, source stops, edition and calendar
+        // must also pass the client-side source-bound validator.
+        var officialOuMainTsugaruPlan=null;
+        if(lineId==="OuMain"&&
+           ["2021M","2022M","2041M","2042M","2043M","2044M"]
+             .indexOf(String(run.trainNumber||""))>=0&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run")continue;
+          var ouTsugaru=window.TrainNumberPngRanges;
+          if(!ouTsugaru||
+             typeof ouTsugaru.verifyOuMainTsugaruService!=="function")
+             continue;
+          officialOuMainTsugaruPlan=ouTsugaru.verifyOuMainTsugaruService({
+            trainNumber:run.trainNumber,positionLineId:"OuMain",
+            displayLineId:"OuMain",sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialOuMainTsugaruPlan)continue;
+        }
+
         // 2611 Oga: only verified source-template M-number and 9-stop
         // railway SQL timetable can provide a planned EV-E801 marker.
         // November 5 six cancellations / November 20 1145M time
@@ -1656,6 +1684,23 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // Officially mapped E751 family (not a confirmed formation).
+          var _ouTsugaruFleet=officialOuMainTsugaruPlan&&
+            vehResult.identityStatus!=="EXACT"
+            ?String(officialOuMainTsugaruPlan.model||""):"";
+          if(_ouTsugaruFleet){
+            _plannedCandidates=[_ouTsugaruFleet];
+            _visibleCandidates=[_ouTsugaruFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_ouTsugaruFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2611-oumain-tsugaru-e751",
+              sourceUrl:tt._sqlPublishedNumberFleetReference&&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl||"",
+              lineId:"OuMain",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // Oga: EV-E801 is a fleet REFERENCE, not observed carset.
           var _ogaFleet=officialOgaPlan&&vehResult.identityStatus!=="EXACT"
             ?String(officialOgaPlan.model||""):"";
@@ -1894,7 +1939,7 @@
             // A verified JR East 2611 number is safe to SHOW in the folded
             // timetable list. It is not proof of an exact physical vehicle.
             officialNumberVerified: Boolean(
-              officialGonoPlan || officialIshinomakiPlan ||
+              officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
@@ -1910,12 +1955,14 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            publishedFleetReference:_ouTsugaruFleet||_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
-            serviceName: officialKamaishiPlan && officialKamaishiPlan.serviceName
+            serviceName: officialOuMainTsugaruPlan && officialOuMainTsugaruPlan.serviceName
+              ?officialOuMainTsugaruPlan.serviceName
+              : officialKamaishiPlan && officialKamaishiPlan.serviceName
               ? officialKamaishiPlan.serviceName
               : officialJoetsuPlan && officialJoetsuPlan.serviceName
               ? officialJoetsuPlan.serviceName
