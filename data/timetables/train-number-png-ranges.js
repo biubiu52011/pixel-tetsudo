@@ -2162,6 +2162,117 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // 大糸線 JR EAST ONLY: Matsumoto–Minami-Otari.
+  // The frontend's separate JR-WEST diesel/bus implementation is NOT
+  // part of this number/PNG authority. Verified source-template stop
+  // keys and dated SQL proof are mandatory. Gallery model = reference,
+  // never a physical carset, and historical stop clocks are not 2611.
+  function verifyOitoEastService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Oito"||
+       proof.scope!=="jr_east_matsumoto_minami_otari"||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Oito"||
+       (p.displayLineId&&p.displayLineId!=="Oito")||
+       p.sourceRailway!=="odpt.Railway:JR-East.Oito"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase(),
+      day=String(p.serviceDate||"").slice(0,10),
+      number=/^([0-9]+)([MD])$/.exec(n);
+    if(!number||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day)||
+       proof.trainNumber!==n||proof.serviceDate!==day||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/timetable-v\/230[du][12]\.html$/.test(
+         String(proof.officialSourceUrl||""))||
+       !Array.isArray(proof.sourceStopKeys))return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(!["Inbound","Outbound"].includes(dir)||
+       Number(number[1])%2!==(dir==="Inbound"?0:1)||
+       String(proof.direction||"").split(/[.:]/).pop()!==dir||
+       String(proof.trainType||"").split(/[.:]/).pop()!==type)return null;
+    var dow=new Date(day+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday")||
+       proof.officialSourceUrl.slice(-7)!==
+         (dir==="Inbound"?"u":"d")+(holiday?"2":"1")+".html")return null;
+    var kind=String(proof.serviceKind||""),
+      model=proof.model==null?null:String(proof.model),
+      png=proof.pngReference==null?null:String(proof.pngReference);
+    var approved=new Map([
+      ["211系（長野地区）","../images/列车/JR東日本/JR東日本_211系_長野色.png"],
+      ["E127系100番台","../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png"],
+      ["E353系","../images/列车/JR東日本/JR東日本_E353系.png"],
+      ["HB-E300系（リゾートビューふるさと）",
+       "../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png"]
+    ]);
+    if(model===null?(png!==null||n!=="5232M"||kind!=="regular") :
+       (approved.get(model)!==png))return null;
+    var active=(Array.isArray(proof.operatingDates)?proof.operatingDates:[])
+      .map(function(d){return String(d).slice(0,10);});
+    var resort=["2026-11-01","2026-11-02","2026-11-03",
+      "2026-11-06","2026-11-08","2026-11-09",
+      "2026-11-13","2026-11-14","2026-11-15","2026-11-16",
+      "2026-11-20","2026-11-21","2026-11-22","2026-11-23",
+      "2026-11-27","2026-11-28","2026-11-29","2026-11-30"];
+    var hakuba=["2026-11-01","2026-11-21","2026-11-22","2026-11-23"];
+    function exactDates(expected){
+      return active.length===expected.length&&
+        active.every(function(d){return expected.indexOf(d)>=0;})&&
+        expected.indexOf(day)>=0;
+    }
+    if(kind==="resort_furusato"){
+      if(!["8361D","8362D"].includes(n)||type!=="Rapid"||
+         model!=="HB-E300系（リゾートビューふるさと）"||
+         !exactDates(resort))return null;
+    }else if(kind==="hakuba_limited"){
+      if(!["8041M","8042M"].includes(n)||type!=="LimitedExpress"||
+         model!=="E353系"||!exactDates(hakuba))return null;
+    }else if(kind==="hakuba_local"){
+      if(!["8352M","8353M"].includes(n)||type!=="Local"||
+         model!=="E127系100番台"||!exactDates(hakuba))return null;
+    }else if(kind==="regular"){
+      if(number[2]!=="M"||n==="9095M"||
+         ["8041M","8042M","8352M","8353M"].includes(n)||
+         active.length!==0)return null;
+      var isExpress=n==="5M"||n==="38M",
+        isRapid=n==="3220M"||n==="5356M";
+      if(type!==(isExpress?"LimitedExpress":isRapid?"Rapid":"Local")||
+         (isExpress&&model!=="E353系")||
+         (n==="3220M"&&model!=="211系（長野地区）")||
+         (n==="5356M"&&model!=="E127系100番台")||
+         (!isExpress&&!isRapid&&model==="E353系"))
+        return null;
+    }else return null;
+    var allowed=new Set(["Azumi-Kutsukake","Azumi-Oiwake",
+      "Azusabashi","Chikuni","Hakuba","Hakuba-Oike","Hakuyacho",
+      "Hitoichiba","Hosono","Hotaka","Iimori","Inao","Kamishiro",
+      "Kita-Hosono","Kita-Matsumoto","Kita-Omachi","Matsumoto",
+      "Minami-Kamishiro","Minami-Omachi","Minami-Otari",
+      "Minami-Toyoshina","Nakagaya","Shimatakamatsu","Shimauchi",
+      "Shinano-Kizaki","Shinano-Matsukawa","Shinano-Moriue",
+      "Shinano-Omachi","Shinano-Tokiwa","Shinshu-Ariake",
+      "Toyoshina","Uminoguchi","Yanaba"]);
+    var stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();});
+    if(stops.length<4||stops.length>33||
+       stops.length!==proof.sourceStopKeys.length||
+       stops.some(function(key,i){
+         return !allowed.has(key)||key!==proof.sourceStopKeys[i];
+       })||
+       proof.railwayFrom!==stops[0]||
+       proof.railwayTo!==stops[stops.length-1])return null;
+    return Object.freeze({number:n,edition:"2611",
+      kind:kind,model:model,pngPath:png,
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // 男鹿線 2611: map a public M number to a representative
   // EV-E801 image ONLY after exact SQL template, weekday/calendar,
   // service-date and all nine surviving Oiwake--Oga stop keys agree.
@@ -2582,6 +2693,28 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Oito"){
+      var east=Object.assign({},context||{},{trainNumber:number});
+      var official=verifyOitoEastService(east);
+      if(!official||!official.pngPath||
+         east.estimated!==true||east.officialNumberVerified!==true||
+         east.vehicleIdentityStatus==="EXACT")return null;
+      var observed=String(east.realtimeVehicleType||
+        east.realtimeDerivedVehicleType||"").trim();
+      if(observed&&observed!==official.model)return null;
+      var plan=east.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==official.model))
+        return null;
+      if(Array.isArray(east.plannedVehicleCandidates)&&
+         east.plannedVehicleCandidates.length&&
+         (east.plannedVehicleCandidates.length!==1||
+          east.plannedVehicleCandidates[0]!==official.model))
+        return null;
+      return {trainNumber:number,lineId:line,model:official.model,
+        pngPath:official.pngPath,planned:true,representative:true,
+        source:"jr-east-2611-oito-exact-number-source-date"};
+    }
     if(line==="Oga"){
       var oga=Object.assign({},context||{},{trainNumber:number});
       var verifiedOga=verifyOgaService(oga);
@@ -3631,6 +3764,7 @@
     verifyMiyoService:verifyMiyoService,
     verifyOfunatoService:verifyOfunatoService,
     verifyOgaService:verifyOgaService,
+    verifyOitoEastService:verifyOitoEastService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
