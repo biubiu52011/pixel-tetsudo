@@ -14,6 +14,9 @@ const families={
   '651D':['Outbound','Local','HB-E220系','',prefix+'JR東日本_HB-E220系.png'],
   '1654D':['Inbound','Local','HB-E220系','',prefix+'JR東日本_HB-E220系.png'],
   '3657D':['Outbound','Rapid','HB-E220系','はまゆり',prefix+'JR東日本_HB-E220系.png'],
+  '3658D':['Inbound','Rapid','HB-E220系','はまゆり',prefix+'JR東日本_HB-E220系.png'],
+  '3659D':['Outbound','Rapid','HB-E220系','はまゆり',prefix+'JR東日本_HB-E220系.png'],
+  '3662D':['Inbound','Rapid','HB-E220系','はまゆり',prefix+'JR東日本_HB-E220系.png'],
   '3666D':['Inbound','Rapid','HB-E220系','はまゆり',prefix+'JR東日本_HB-E220系.png'],
   '8621D':['Outbound','Rapid','HB-E300系（ひなび）','ひなび 釜石',prefix+'JR東日本_HB-E300系_ひなび_陽旅.png'],
   '8622D':['Inbound','Rapid','HB-E300系（ひなび）','ひなび 釜石',prefix+'JR東日本_HB-E300系_ひなび_陽旅.png']
@@ -53,7 +56,9 @@ const verify=x=>win.TrainNumberPngRanges.verifyKamaishiService(x);
 const icon=x=>win.TrainVehicle.selectMarkerArtwork(x,false);
 test('SQL verified local, Hamayuri and Hinabi train numbers map to correct family PNG',()=>{
   for(const [number,day]of [['651D','2026-11-05'],['1654D','2026-11-07'],
-    ['3657D','2026-11-05'],['3666D','2026-11-07'],
+    ['3657D','2026-11-05'],['3658D','2026-11-05'],
+    ['3659D','2026-11-05'],['3662D','2026-11-07'],
+    ['3666D','2026-11-07'],
     ['8621D','2026-11-07'],['8622D','2026-11-23']]){
     const x=p(number,day),a=families[number],plan=verify(x);
     assert.equal(plan?.model,a[2],number);
@@ -68,9 +73,21 @@ test('SQL verified local, Hamayuri and Hinabi train numbers map to correct famil
     assert.equal(x.vehicleIdentityStatus,'UNKNOWN');
   }
 });
+test('a verified Morioka through terminus is allowed with Kamaishi section stops',()=>{
+  for(const n of ['3658D','3666D']){
+    const x=p(n,'2026-11-07',{scheduledStopKeys:
+      ['Kamaishi','Tono','Hanamaki','Morioka']});
+    assert.equal(verify(x).model,'HB-E220系',n);
+    assert.equal(icon(x).kind,'vehicle',n);
+  }
+  const denied=p('3658D','2026-11-07',{scheduledStopKeys:
+    ['Morioka','Yahaba','Hanamaki']});
+  assert.equal(verify(denied),null);
+  assert.equal(icon(denied).kind,'unresolved');
+});
 test('no date or DB proof means no image even for 8621D or a plausible 9657D number',()=>{
-  for(const number of ['9532D','9543D','9555D','9657D','9659D',
-    '9664D','9666D','9672D']){
+  for(const number of ['5559D','5562D','9532D','9543D','9555D',
+    '9657D','9659D','9664D','9666D','9672D']){
     const x=p(number);
     assert.equal(verify(x),null,number);
     assert.equal(icon(x).kind,'unresolved',number);
