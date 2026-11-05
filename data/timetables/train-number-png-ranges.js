@@ -1893,6 +1893,57 @@
       actualVehicleConfirmed:false,edition:"2611"
     });
   }
+  // Kamaishi 2611: the complete published NUMBER roster and PNG
+  // numeric range are SQL rows served by train-runs. No hardcoded train
+  // number or date can authorize a reference fleet without that proof.
+  function verifyKamaishiService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Kamaishi"||proof.referenceOnly!==true||
+       proof.actualVehicleConfirmed!==false||proof.segmentKey!=="full"||
+       !String(proof.officialSourceUrl||"").startsWith(
+         "https://timetables.jreast.co.jp/2611/"))return null;
+    if(String(p.positionLineId||p.lineId||"")!=="Kamaishi"||
+       String(p.displayLineId||"Kamaishi")!=="Kamaishi"||
+       p.sourceRailway!=="odpt.Railway:JR-East.Kamaishi")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var num=String(p.trainNumber||"").trim().toUpperCase();
+    if(proof.trainNumber!==num||proof.serviceDate!==p.serviceDate||
+       String(proof.direction||"").split(/[.:]/).pop()!==
+         String(p.railDirection||"").split(/[.:]/).pop())return null;
+    var day=String(p.serviceDate||"").slice(0,10);
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day))return null;
+    var holiday=[0,6].indexOf(new Date(day+"T12:00:00Z").getUTCDay())>=0||
+      day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))return null;
+    var stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(z){return String(z||"").split(".").pop();}).filter(Boolean);
+    if(stops.length<2||new Set(stops).size<2)return null;
+    // Historical source can contain a believable same-number train on
+    // another corridor. The SQL endpoint also validates station URNs.
+    var onLine=new Set(["Hanamaki","Nitanai","Shin-Hanamaki","Oyamada",
+      "Tsuchizawa","Haruyama","Iwanebashi","Miyamori","Kashiwagidaira",
+      "Masuzawa","Arayamae","Iwate-Futsukamachi","Ayaori","Tono",
+      "Aozasa","Iwate-Kamigo","Hirakura","Ashigase","Kami-Arisu",
+      "Rikuchu-Ohashi","Dosen","Matsukura","Kosano","Kamaishi"]);
+    if(!stops.every(function(z){return onLine.has(z);}))return null;
+    var normal=proof.model==="HB-E220系"&&
+      proof.pngReference==="../images/列车/JR東日本/JR東日本_HB-E220系.png";
+    var hinabi=proof.model==="HB-E300系（ひなび）"&&
+      proof.pngReference==="../images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png";
+    if(!normal&&!hinabi)return null;
+    var type=String(p.trainType||"").split(/[.:]/).pop();
+    var publishedType=String(proof.trainType||"").split(/[.:]/).pop();
+    if(type!==publishedType|| (hinabi&&publishedType!=="Rapid")||
+       (normal&&publishedType!=="Local"&&publishedType!=="Rapid"))return null;
+    return Object.freeze({number:num,kind:hinabi?"hinabi":
+      publishedType==="Rapid"?"hamayuri":"local",
+      model:proof.model,serviceName:proof.serviceName||"",
+      trainType:publishedType,pngPath:proof.pngReference,
+      referenceOnly:true,actualVehicleConfirmed:false,edition:"2611"});
+  }
   // SQL positions can provide the calendar as an ODPT serviceId rather
   // than a normalized calendarType. Read the timetable source first;
   // never infer a service calendar from the last two train-number digits.
@@ -1906,6 +1957,25 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Kamaishi"){
+      var src=Object.assign({},context||{},{trainNumber:number});
+      var plan=verifyKamaishiService(src);
+      if(!plan||src.estimated!==true||
+         String(src.trainType||"").split(/[.:]/).pop()!==plan.trainType)
+        return null;
+      var actualType=String(src.realtimeVehicleType||
+        src.realtimeDerivedVehicleType||"").trim();
+      if(actualType&&actualType!==plan.model)return null;
+      var fleet=src.vehiclePlan;
+      if(fleet&&Array.isArray(fleet.models)&&fleet.models.length&&
+         (fleet.models.length!==1||fleet.models[0]!==plan.model))return null;
+      if(Array.isArray(src.plannedVehicleCandidates)&&
+         src.plannedVehicleCandidates.length&&
+         src.plannedVehicleCandidates.indexOf(plan.model)<0)return null;
+      return {trainNumber:number,lineId:line,model:plan.model,
+        pngPath:plan.pngPath,source:"jreast-2611-kamaishi-sql-number-roster",
+        planned:true,representative:true};
+    }
     if(line==="Joetsu"){
       var source=Object.assign({},context||{},{trainNumber:number});
       var official=verifyJoetsuService(source);
@@ -2708,6 +2778,7 @@
   root.TrainNumberPngRanges=Object.freeze({
     version:"20261105-joetsu-2611-v1",match:match,
     verifyJoetsuService:verifyJoetsuService,
+    verifyKamaishiService:verifyKamaishiService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
