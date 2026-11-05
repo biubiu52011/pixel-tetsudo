@@ -26,6 +26,7 @@ for(const file of [
   'data/timetables/jreast-keihin-2611-number-index.js',
   'data/timetables/jreast-yokohama-2611-number-index.js',
   'data/timetables/jreast-yamanote-2611-number-index.js',
+  'data/timetables/jreast-regional-2611-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -526,7 +527,9 @@ test('Kururi Karasuyama and Senseki-Tohoku scoped number PNG: published 2026-11 
         trainNumber:number,trainId:'odpt.Train:JR-East.'+line+'.'+number,
         positionLineId:line,sourceRailway:'odpt.Railway:JR-East.'+line,
         trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.'+type,
-        serviceDate:'2026-11-04',positionSource:source,estimated:source!=='realtime-api'
+        serviceDate:'2026-11-04',
+        calendarType:line==='SensekiTohoku'?'holiday':'weekday',
+        positionSource:source,estimated:source!=='realtime-api'
       });
       const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
       assert.ok(mapped,line+' '+number+' '+source);
