@@ -1341,7 +1341,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   if((lineId==="OuMain"||lineId==="Yamagata")&&/^2026-11-/.test(serviceDate)){
     const {data:scope,error:scopeErr}=await db
       .from("published_oumain_2611_source_scope")
-      .select("source_template_id,line_key,calendar_urn,direction_urn,train_number,segment_key,source_stop_keys,model_candidates,service_type_override,source_clock_status,number_source_status,reference_only,actual_vehicle_confirmed,png_reference")
+      .select("source_template_id,line_key,calendar_urn,direction_urn,train_number,segment_key,source_stop_keys,model_candidates,service_type_override,source_clock_status,number_source_status,reference_only,actual_vehicle_confirmed,png_reference,verified_november_operating_dates,service_date_source_url")
       .eq("edition","2611").eq("line_key",lineId)
       .eq("calendar_urn",selectedCalendar);
     const scopeCount=lineId==="OuMain"?
@@ -1391,6 +1391,16 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       if(stops.length!==proof.source_stop_keys.length||
         stops.some((s:string,k:number)=>s!==proof.source_stop_keys[k])){
         result.splice(i,1);continue;
+      }
+      // NULL = no date proof yet. A non-null, possibly empty official
+      // date set is authoritative. February-only YOKOTE 9459M has no
+      // November dates; 9463M only ran November 2–4.
+      if(proof.verified_november_operating_dates!==null){
+        const dates=proof.verified_november_operating_dates;
+        if(!Array.isArray(dates)||
+           !dates.some((date:any)=>String(date).slice(0,10)===serviceDate)){
+          result.splice(i,1);continue;
+        }
       }
       if(["insufficient_source_stops","akita_shinkansen_shared",
           "yamagata_shinkansen_shared","gono_resort_through"]
