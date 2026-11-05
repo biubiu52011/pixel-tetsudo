@@ -901,6 +901,86 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // JR East 2026-11 Kashima: exact public numbers from SQL, with
+  // four same-time November 7 substitutions. A generic 5xxM or 95xxM
+  // PNG range is NEVER sufficient: verify route/calendar/day and model.
+  // Sawara is the Narita-line interchange; retain one Kashima projection
+  // and do NOT invent a Tokyo/Narita through canonical itinerary.
+  if(lineId==="Kashima" && /^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}]=
+      await Promise.all([
+        db.from("published_kashima_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,vehicle_model,png_reference,official_source_url,vehicle_source_url,date_rule,operated_dates,scope_from,scope_to,stop_clock_status")
+          .eq("edition","2611").eq("line_key","Kashima")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Kashima")
+      ]);
+    if(rosterError||rangeError)throw(rosterError||rangeError);
+    const index=new Map((roster||[]).map((row:any)=>
+      [row.train_number+"|"+row.direction_urn,row]));
+    const forward=["Sawara","Katori","Junikyo","Itako",
+      "Nobukata","Kashimajingu"];
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const rule:any=index.get(run.train_number+"|"+run.rail_direction);
+      if(!rule||run.network_key!=="odpt.Railway:JR-East.Kashima"){
+        result.splice(i,1);continue;
+      }
+      if(rule.date_rule==="only_2026_11_07"&&
+         serviceDate!=="2026-11-07"||
+         rule.date_rule==="exclude_2026_11_07"&&
+         serviceDate==="2026-11-07"||
+         Array.isArray(rule.operated_dates)&&rule.operated_dates.length>0&&
+         !rule.operated_dates.map((d:any)=>String(d).slice(0,10)).includes(serviceDate)){
+        result.splice(i,1);continue;
+      }
+      const dir=String(run.rail_direction||"").split(/[.:]/).pop();
+      const stationList=(Array.isArray(run.stops)?run.stops:[]).map((st:any)=>
+        String(st.station_urn||""));
+      const keys=stationList.map((u:string)=>u.split(".").pop());
+      const expected=dir==="Outbound"?forward:[...forward].reverse();
+      if(stationList.length!==6||
+         !stationList.every((u:string)=>u.startsWith("odpt.Station:JR-East.Kashima."))||
+         keys.some((k:string,n:number)=>k!==expected[n])||
+         keys[0]!==rule.scope_from||keys.at(-1)!==rule.scope_to){
+        result.splice(i,1);continue;
+      }
+      const parts=/^(\d+)(M)$/.exec(String(run.train_number||""));
+      if(!parts){result.splice(i,1);continue;}
+      let fleetRange:any=null;
+      if(rule.vehicle_model&&rule.png_reference){
+        fleetRange=(ranges||[]).find((r:any)=>
+          r.requires_exact_roster===true&&
+          Number(parts[1])>=r.min_number&&Number(parts[1])<=r.max_number&&
+          parts[2]===r.suffix&&r.vehicle_model===rule.vehicle_model&&
+          r.png_reference===rule.png_reference);
+        if(!fleetRange){result.splice(i,1);continue;}
+      }else if(rule.vehicle_model||rule.png_reference){
+        result.splice(i,1);continue;
+      }
+      run.train_type=rule.train_type_urn;
+      run.train_number_verification="official-2611-six-stop-number-date";
+      run.train_number_source_url=rule.official_source_url;
+      // A model FAMILY illustration is NOT a carset identity. Mixed
+      // 548/549 and 9548/9549 are intentionally PNG-UNRESOLVED.
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Kashima",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:rule.calendar_urn,
+        model:rule.vehicle_model||"",pngReference:rule.png_reference||"",
+        trainType:rule.train_type_urn,
+        segmentKey:fleetRange?fleetRange.segment_key:"mixed_unresolved",
+        officialSourceUrl:rule.official_source_url,
+        vehicleSourceUrl:rule.vehicle_source_url||"",
+        stopClockStatus:rule.stop_clock_status,
+        routeFrom:rule.scope_from,routeTo:rule.scope_to,
+        actualVehicleConfirmed:false,referenceOnly:true
+      };
+    }
+  }
+
   // Joetsu 2611: SQL is the source of public train numbers and the
   // vehicle-series reference PNG. The numeric PNG range alone is NEVER
   // enough: calendar, source, explicit roster and verified route must match.
