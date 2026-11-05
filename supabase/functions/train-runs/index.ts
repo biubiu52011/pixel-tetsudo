@@ -873,6 +873,71 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // JR-East Hanawa (internal Kounan) 2611: exact public numbers, scoped
+  // PNG ranges and date-specific cancellations. Never paint a carset as live.
+  if (lineId==="Kounan" && /^2026-11-/.test(serviceDate)) {
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}]=
+      await Promise.all([
+        db.from("published_hanawa_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,segment_key,vehicle_model,png_reference,official_source_url,operating_dates,suspended_dates,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Kounan")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Kounan")
+      ]);
+    if (rosterError||rangeError) throw(rosterError||rangeError);
+    const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?24:23;
+    if ((roster||[]).length!==expectedCount||(ranges||[]).length!==3)
+      throw new Error("HANAWA_2611_OFFICIAL_NUMBER_ROSTER_UNAVAILABLE");
+    const numbers=new Map((roster||[]).map((x:any)=>
+      [x.train_number+"|"+x.direction_urn,x]));
+    const stationKeys=new Set(["Akasakata","Anihata","Appi-Kogen",
+      "Araya-Shinmachi","Dobukai","Hachimantai","Higashi-Obuke",
+      "Higashi-Odate","Junisho","Kazuno-Hanawa","Kitamori","Koyanohata",
+      "Matsuo-Hachimantai","Obuke","Odate","Ogita","Otaki-Onsen",
+      "Rikuchu-Osato","Sawajiri","Shibahira","Suehiro","Tairadate",
+      "Tayama","Towada-Minami","Yokoma","Yuze-Onsen"]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const pub:any=numbers.get(run.train_number+"|"+run.rail_direction);
+      if(!pub||run.network_key!=="odpt.Railway:JR-East.Kounan"||
+        pub.calendar_urn!==selectedCalendar||pub.reference_only!==true||
+        pub.actual_vehicle_confirmed!==false||
+        pub.train_type_urn!==run.train_type){
+        result.splice(i,1);continue;
+      }
+      const operating=(pub.operating_dates||[]).map((d:any)=>String(d).slice(0,10));
+      const suspended=(pub.suspended_dates||[]).map((d:any)=>String(d).slice(0,10));
+      if ((operating.length&&!operating.includes(serviceDate))||
+          suspended.includes(serviceDate)){result.splice(i,1);continue;}
+      const stops=run.stops||[];
+      if(stops.length<2||stops.some((s:any)=>
+        !stationKeys.has(String(s.station_urn||"").split(".").pop()||""))){
+        result.splice(i,1);continue;
+      }
+      const n=/^([0-9]+)(D)$/.exec(String(run.train_number||""));
+      const valid=n&&(ranges||[]).some((r:any)=>
+        r.requires_exact_roster===true&&r.segment_key===pub.segment_key&&
+        Number(n[1])>=r.min_number&&Number(n[1])<=r.max_number&&
+        r.suffix===n[2]&&r.vehicle_model===pub.vehicle_model&&
+        r.png_reference===pub.png_reference);
+      if(!valid){result.splice(i,1);continue;}
+      run.train_number_verification="official-2611-number-date-rail";
+      run.train_number_source_url=pub.official_source_url;
+      if(pub.segment_key==="hinabi")run.service_name="ひなび 八幡平";
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Kounan",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:pub.calendar_urn,
+        trainType:pub.train_type_urn,segmentKey:pub.segment_key,
+        model:pub.vehicle_model,pngReference:pub.png_reference,
+        officialSourceUrl:pub.official_source_url,
+        stopClockStatus:"historical_source_clocks_not_2611_verified",
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // JR East 2026-11 Kitakami: SQL published number roster + explicit
   // rail-only corridor from the August 2 flood bulletin. The published
   // 9729D/9730D excursion was October 24/25 ONLY, not a November train.
