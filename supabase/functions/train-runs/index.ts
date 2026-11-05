@@ -1352,6 +1352,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     const bySource=new Map((scope||[]).map((p:any)=>
       [Number(p.source_template_id),p]));
     let ogaNumbers=new Map<string,any>();
+    let tsugaruNumbers=new Map<number,any>();
     if(lineId==="OuMain"){
       const {data:oga,error:ogaErr}=await db
         .from("published_oga_2611_number_roster")
@@ -1361,6 +1362,15 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       if(ogaErr||(oga||[]).length!==29)
         throw new Error("OU_2611_OGA_THROUGH_PROOF_UNAVAILABLE");
       ogaNumbers=new Map((oga||[]).map((p:any)=>[String(p.train_number),p]));
+      const {data:tsugaru,error:tsugaruErr}=await db
+        .from("published_oumain_2611_tsugaru_number_roster")
+        .select("source_template_id,calendar_urn,direction_urn,train_number,train_type_urn,source_stop_keys,service_name,vehicle_model,png_reference,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+        .eq("edition","2611").eq("line_key","OuMain")
+        .eq("calendar_urn",selectedCalendar);
+      if(tsugaruErr||(tsugaru||[]).length!==6)
+        throw new Error("OU_2611_TSUGARU_E751_ROSTER_UNAVAILABLE");
+      tsugaruNumbers=new Map((tsugaru||[]).map((r:any)=>
+        [Number(r.source_template_id),r]));
     }
     for(let i=result.length-1;i>=0;i--){
       const run:any=result[i],proof:any=bySource.get(Number(run.source_template_id));
@@ -1405,6 +1415,65 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          (serviceDate==="2026-11-09"||serviceDate==="2026-11-10")&&
          stops.includes("Yuzawa")&&stops.includes("Yokote")){
         result.splice(i,1);continue;
+      }
+      // Official 258 d/u 1/2 gives 6 E751 services with exact train
+      // numbers in both calendar scopes. Historical stop *clocks* remain
+      // unverified; the approved PNG is illustrative, not a carset claim.
+      if(proof.segment_key==="tsugaru_limited_express_candidate"){
+        const t:any=tsugaruNumbers.get(Number(run.source_template_id));
+        const name:string={
+          "2021M":"スーパーつがる1号","2022M":"スーパーつがる2号",
+          "2041M":"つがる41号","2042M":"つがる42号",
+          "2043M":"つがる43号","2044M":"つがる44号"
+        }[String(run.train_number)]||"";
+        const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+        const officialUrl="https://timetables.jreast.co.jp/2611/timetable-v/258"+
+          (inbound?"u":"d")+
+          (selectedCalendar==="odpt.Calendar:Weekday"?"1":"2")+".html";
+        if(!t||!name||t.train_number!==run.train_number||
+          t.calendar_urn!==selectedCalendar||
+          t.direction_urn!==run.rail_direction||
+          t.train_type_urn!=="odpt.TrainType:JR-East.LimitedExpress"||
+          t.service_name!==name||t.vehicle_model!=="E751系"||
+          t.png_reference!=="../images/列车/JR東日本/JR東日本_E751系.png"||
+          t.official_source_url!==officialUrl||
+          t.stop_clock_status!=="historical_not_2611_verified"||
+          t.reference_only!==true||t.actual_vehicle_confirmed!==false||
+          !Array.isArray(t.source_stop_keys)||
+          t.source_stop_keys.length!==stops.length||
+          t.source_stop_keys.some((s:string,j:number)=>s!==stops[j])||
+          stops[0]!==(inbound?"Aomori":"Akita")||
+          stops[stops.length-1]!==(inbound?"Akita":"Aomori")){
+          result.splice(i,1);continue;
+        }
+        run.train_type=t.train_type_urn;
+        run.service_name=t.service_name;
+        run.train_number_verification="official-2611-oumain-tsugaru-e751-sql";
+        run.train_number_source_url=t.official_source_url;
+        run.vehicle_type_label=null;
+        run.vehicle_type_candidates=t.vehicle_model;
+        run.vehicle_candidate_artwork_path=null;
+        run.vehicle_candidate_artwork_status=null;
+        run.vehicle_artwork_path=null;
+        run.vehicle_plan_confirmed=false;
+        run.vehicle_evidence_source=null;
+        run.vehicle_evidence_source_id=null;
+        run.vehicle_evidence_url=null;
+        run.published_number_fleet_reference={
+          source:"sql-jreast-2611-number-roster",lineId:"OuMain",
+          trainNumber:run.train_number,serviceDate:serviceDate,
+          direction:run.rail_direction,calendar:selectedCalendar,
+          trainType:run.train_type,segmentKey:"akita_aomori_tsugaru_e751",
+          serviceName:t.service_name,
+          sourceTemplateId:Number(run.source_template_id),
+          sourceStopKeys:t.source_stop_keys,
+          plannedCandidates:["E751系"],
+          model:t.vehicle_model,pngReference:t.png_reference,
+          officialSourceUrl:t.official_source_url,
+          stopClockStatus:t.stop_clock_status,
+          referenceOnly:true,actualVehicleConfirmed:false
+        };
+        continue;
       }
       if(proof.service_type_override){
         run.train_type="odpt.TrainType:JR-East."+proof.service_type_override;
