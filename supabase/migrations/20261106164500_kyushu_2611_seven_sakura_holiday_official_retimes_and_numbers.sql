@@ -1,6 +1,6 @@
 -- JR Kyushu Nov-2026 altered timetable vs 2026-03-14 baseline.
 -- Seven exact holiday Sakura services confirmed from official 2611 pages.
--- Fix BOTH existing stop owners (manual source and canonical copy),
+-- Fix the manual stop source (train_timetable_stops is a derived read-only view),
 -- then attach exact formal train number. Existing verified planned model
 -- rows must remain untouched. 402A has N700/800 date exceptions: NO
 -- single unscoped model or PNG must be written for that template.
@@ -62,12 +62,11 @@ BEGIN
         AND s.arrival_station_urn IS NULL AND s.arrival_clock IS NULL;
       GET DIAGNOSTICS cnt=ROW_COUNT;
       IF cnt<>1 THEN RAISE EXCEPTION 'Manual stop mismatch % seq %',r.service_name,i; END IF;
-      UPDATE train_timetable_stops s SET departure_clock=new_clock
-       WHERE s.source_template_id=v_id AND s.timetable_id=v_tt AND s.stop_sequence=i-1
+      IF (SELECT count(*) FROM train_timetable_stops s
+        WHERE s.source_template_id=v_id AND s.timetable_id=v_tt AND s.stop_sequence=i-1
         AND s.station_urn=station AND s.departure_station_urn=station
-        AND s.departure_clock=old_clock AND s.arrival_clock IS NULL;
-      GET DIAGNOSTICS cnt=ROW_COUNT;
-      IF cnt<>1 THEN RAISE EXCEPTION 'Canonical stop mismatch % seq %',r.service_name,i; END IF;
+        AND s.departure_clock=new_clock AND s.arrival_clock IS NULL)<>1
+       THEN RAISE EXCEPTION 'Derived stop view mismatch % seq %',r.service_name,i; END IF;
     ELSE
       UPDATE manual_timetable_template_stops s SET arrival_clock=new_clock
        WHERE s.template_id=v_id AND s.stop_sequence=i-1
@@ -75,12 +74,11 @@ BEGIN
          AND s.departure_station_urn IS NULL AND s.departure_clock IS NULL;
       GET DIAGNOSTICS cnt=ROW_COUNT;
       IF cnt<>1 THEN RAISE EXCEPTION 'Manual terminal mismatch %',r.service_name; END IF;
-      UPDATE train_timetable_stops s SET arrival_clock=new_clock
-       WHERE s.source_template_id=v_id AND s.timetable_id=v_tt AND s.stop_sequence=i-1
+      IF (SELECT count(*) FROM train_timetable_stops s
+        WHERE s.source_template_id=v_id AND s.timetable_id=v_tt AND s.stop_sequence=i-1
          AND s.station_urn=station AND s.arrival_station_urn=station
-         AND s.arrival_clock=old_clock AND s.departure_clock IS NULL;
-      GET DIAGNOSTICS cnt=ROW_COUNT;
-      IF cnt<>1 THEN RAISE EXCEPTION 'Canonical terminal mismatch %',r.service_name; END IF;
+         AND s.arrival_clock=new_clock AND s.departure_clock IS NULL)<>1
+       THEN RAISE EXCEPTION 'Derived terminal view mismatch %',r.service_name; END IF;
     END IF;
   END LOOP;
   INSERT INTO published_train_number_evidence
