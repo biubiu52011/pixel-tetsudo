@@ -757,13 +757,15 @@
         // Oga 2611 published M-number list and the six November 5
         // cancellations. Do not project old SQL services as active
         // train positions when the official monthly sheet cancels them.
+        var officialOgaPlan=null;
         if(lineId==="Oga"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"&&
            window.JREastOgaNumberIndex202611&&
            typeof window.JREastOgaNumberIndex202611.verify==="function"){
-          if(window.JREastOgaNumberIndex202611.verify(
+          officialOgaPlan=window.JREastOgaNumberIndex202611.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
-            tt["odpt:trainType"]||"",run.calendar,serviceDate)===false)continue;
+            tt["odpt:trainType"]||"",run.calendar,serviceDate);
+          if(officialOgaPlan===false)continue;
         }
 
         // Regional JR East 2611 exact public numbers and operating dates:
@@ -1241,6 +1243,13 @@
             runningChainId: timetableIdentity,
             runningChainEvidence: "TIMETABLE_SEGMENT",
             trainNumber: publicTrainNumber,
+            // A verified JR East 2611 number is safe to SHOW in the folded
+            // timetable list. It is not proof of an exact physical vehicle.
+            officialNumberVerified: Boolean(
+              officialGonoPlan || officialIshinomakiPlan ||
+              officialOgaPlan || officialRegionalPlan ||
+              officialRikutoEastPlan || officialRikutsuWestPlan ||
+              officialOminatoPlan || officialIiyamaPlan),
             trainNumberSource: publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
             serviceName: officialGonoPlan && officialGonoPlan.serviceName
