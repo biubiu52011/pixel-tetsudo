@@ -20,6 +20,32 @@
   // Exact operating dates in November 2026. Even 9xxxM cannot be assumed
   // to operate on all holiday dates.
   var special=[
+    // 2611: November date-verified supplements. The 2611 master page
+    // also includes non-November trains: never infer a month from appearance.
+    // Official "Shinshu" still uses E353; the 2023 JR-East press release
+    // explicitly identifies its 3-car E353 planned stock.
+    ["8091M","信州1号","weekday",
+      ["02","04","05","06","09","10","11","12","13","16",
+       "17","18","19","20","24","25","26","27","30"],
+      "https://timetables.jreast.co.jp/2611/train/090/094611.html",
+      "https://www.jreast.co.jp/press/2022/nagano/20230120_na01.pdf"],
+    ["8092M","信州2号","weekday",
+      ["02","04","05","06","09","10","11","12","13","16",
+       "17","18","19","20","24","25","26","27","30"],
+      "https://timetables.jreast.co.jp/2611/train/095/099331.html",
+      "https://www.jreast.co.jp/press/2022/nagano/20230120_na01.pdf"],
+    ["8074M","あずさ74号","holiday",
+      ["01","03","08","15","23"],
+      "https://timetables.jreast.co.jp/2611/train/060/064271.html"],
+    ["8075M","あずさ75号","holiday",
+      ["07","14","21","22"],
+      "https://timetables.jreast.co.jp/2611/train/060/064261.html"],
+    ["8077M","あずさ77号","holiday",
+      ["07","14","21","22","28"],
+      "https://timetables.jreast.co.jp/2611/train/070/071581.html"],
+    ["8079M","あずさ79号","holiday",
+      ["01","03","07","08","14","15","21","22","23","28"],
+      "https://timetables.jreast.co.jp/2611/train/070/071591.html"],
     ["8083M","あずさ83号","holiday",["07","14","21","22","28"],
       "https://timetables.jreast.co.jp/2611/train/075/076761.html"],
     ["8170M","かいじ70号","weekday",null,
@@ -66,7 +92,7 @@
       trainType:"LimitedExpress",calendarType:row[2],
       effectiveFrom:"2026-11-01",effectiveTo:"2026-11-30",
       operatingDates:days,sourceUrl:row[4],
-      modelSourceUrl:officialModelUrl,
+      modelSourceUrl:row[5]||officialModelUrl,
       evidenceRole:"official-train-name-and-model",
       actualVehicleConfirmed:false
     };

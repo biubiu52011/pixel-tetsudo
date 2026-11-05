@@ -32,7 +32,7 @@ function position(number,date,other={}){
   };
 }
 test('every indexed source is JR East official, scoped, dated and has gallery E353 stock image',()=>{
-  assert.ok(data.rules.length>=11);
+  assert.ok(data.rules.length>=20);
   assert.equal(root.VEHICLE_REFERENCE_RULES.length,data.rules.length);
   const nums=new Set();
   for(const r of data.rules){
@@ -43,7 +43,10 @@ test('every indexed source is JR East official, scoped, dated and has gallery E3
     assert.equal(r.trainType,'LimitedExpress');
     assert.equal(r.vehicleType,'E353系');
     assert.ok(r.sourceUrl.startsWith('https://timetables.jreast.co.jp/2611/train/'));
-    assert.equal(r.modelSourceUrl,'https://www.jreast.co.jp/train/express/azusa_kaiji.html');
+    assert.equal(r.modelSourceUrl,
+      /^(?:8091M|8092M)$/.test(r.trainNumber)
+        ? 'https://www.jreast.co.jp/press/2022/nagano/20230120_na01.pdf'
+        : 'https://www.jreast.co.jp/train/express/azusa_kaiji.html');
     assert.equal(r.actualVehicleConfirmed,false);
     assert.equal(r.effectiveFrom,'2026-11-01');
     assert.equal(r.effectiveTo,'2026-11-30');
@@ -70,6 +73,56 @@ test('every indexed source is JR East official, scoped, dated and has gallery E3
     assert.equal(glyph.iconSrc,plan.iconPath);
   }
 });
+test('new 2611 E353 plan references require their published operating dates',()=>{
+  const allowed=[
+    ['8091M','2026-11-05','weekday'],
+    ['8092M','2026-11-05','weekday'],
+    ['8074M','2026-11-03','holiday'],
+    ['8075M','2026-11-07','holiday'],
+    ['8077M','2026-11-28','holiday'],
+    ['8079M','2026-11-23','holiday']
+  ];
+  for(const [no,date,cal] of allowed){
+    const p=position(no,date,{calendarType:cal});
+    const planned=resolver(p);
+    assert.ok(planned,no+' '+date+' must have dated evidence');
+    const img=root.TrainVehicle.selectMarkerArtwork({...p,displayLineId:'ChuoMain'},false);
+    assert.equal(img.kind,'vehicle',no);
+    assert.equal(img.planned,true,no);
+    assert.match(img.iconSrc,/JR東日本_E353系\.png$/);
+    assert.equal(p.vehicleIdentityStatus,undefined,'original position is not upgraded');
+  }
+  for(const [no,date,cal] of [
+    ['8091M','2026-11-03','holiday'],
+    ['8092M','2026-11-23','holiday'],
+    ['8074M','2026-11-07','holiday'],
+    ['8075M','2026-11-08','holiday'],
+    ['8077M','2026-11-29','holiday'],
+    ['8079M','2026-11-29','holiday'],
+    ['9083M','2026-11-22','holiday'],
+    ['9079M','2026-11-05','weekday'],
+    ['9272M','2026-11-05','weekday'],
+    ['9273M','2026-11-05','weekday'],
+    ['9088M','2026-11-22','holiday']
+  ]){
+    const p=position(no,date,{calendarType:cal});
+    assert.equal(resolver(p),null,no+' '+date+' is NOT a dated stock reference');
+    assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null,
+      no+' '+date+' must not recover a non-November PNG');
+  }
+});
+test('dated special references occur on an official 2611 train-number page',()=>{
+  const pages=[
+    'data/timetables/jreast-chuo-main-2611/weekday-up.json',
+    'data/timetables/jreast-chuo-main-2611/holiday-up.json',
+    'data/timetables/jreast-chuo-main-2611/weekday-down.json',
+    'data/timetables/jreast-chuo-main-2611/holiday-down.json'
+  ].map(file=>JSON.parse(fs.readFileSync(file,'utf8')));
+  for(const n of ['8091M','8092M','8074M','8075M','8077M','8079M']){
+    assert.ok(pages.some(p=>p.columns.includes(n)),n+' must exist in published number columns');
+  }
+});
+
 test('special trains are not mapped on days that official source excludes',()=>{
   assert.equal(resolver(position('9086M','2026-11-03')),null);
   assert.equal(resolver(position('9071M','2026-11-28',{calendarType:'holiday'})),null);
