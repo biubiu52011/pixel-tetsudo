@@ -150,7 +150,7 @@ test('November 5 SQL plan only admits regular official runs; closed section neve
     ['9727D','odpt.Calendar:Weekday'],
     ['1723D','odpt.Calendar:Weekday',{stops:closed}]
   ]);
-  assert.deepEqual(p.map(x=>x.trainNumber),['1721D']);
+  assert.deepEqual(Array.from(p,x=>x.trainNumber),['1721D']);
   assert.equal(p[0].estimated,true);
   assert.equal(p[0].positionSource,'supabase-train-run');
   assert.equal(p[0].vehicleIdentityStatus,'UNKNOWN');
@@ -161,7 +161,7 @@ test('Nov 2 officially running holiday-template rapid retains official number an
     ['9721D','odpt.Calendar:SaturdayHoliday'],
     ['9727D','odpt.Calendar:SaturdayHoliday']
   ]);
-  assert.deepEqual(p.map(x=>x.trainNumber),['9721D']);
+  assert.deepEqual(Array.from(p,x=>x.trainNumber),['9721D']);
   assert.equal(p[0].trainType,'odpt.TrainType:JR-East.Rapid');
   assert.equal(p[0].serviceName,'おもいで湯けむり1号');
   assert.equal(p[0].vehicleIdentityStatus,'UNKNOWN');
