@@ -2395,13 +2395,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   }
 
   // 折叠视图是展示分组，绝不是连挂编组或合并运行。
-  // +N 展开的是地图旁的非模态小列表，不遮盖整个页面。
+  // 这是唯一的列车弹窗：显示地图上已有的车型/方向标签。
   function _openTrainFoldList(layer, ids, groups, markers, anchor) {
     if (layer._closeTrainFoldPopover) layer._closeTrainFoldPopover(false);
     var panel=document.createElement('div'), lang=window.currentLang||'ja';
     var titleText=/^zh/.test(lang)?'列车列表':lang==='en'?'Trains':'列車一覧';
-    panel.className='train-fold-popover';panel.setAttribute('role','dialog');
-    panel.setAttribute('aria-label',titleText);
+    panel.className='rs-modal active train-fold-popover';panel.setAttribute('role','dialog');
+    panel.setAttribute('aria-label',titleText);panel.setAttribute('aria-modal','true');
     var content=document.createElement('div');content.className='rs-modal-content';
     var header=document.createElement('div');header.className='rs-modal-header';
     var heading=document.createElement('h2');heading.className='rs-modal-title';
@@ -2409,45 +2409,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     close.setAttribute('aria-label',/^zh/.test(lang)?'关闭':lang==='en'?'Close':'閉じる');
     var list=document.createElement('div');list.className='rs-modal-body train-fold-list';list.setAttribute('role','list');
     header.appendChild(heading);header.appendChild(close);content.appendChild(header);content.appendChild(list);panel.appendChild(content);
-    // Fold badges are re-created during SVG relayout. Keep the last screen
-    // anchor so the card does not jump when the marker DOM is refreshed.
-    var anchorRect=anchor.getBoundingClientRect();
-    var anchorId=anchor.getAttribute('data-train-fold-badge');
-    function placePanel(){
-      var activeAnchor=anchor.isConnected ? anchor : null;
-      if(!activeAnchor){
-        var badges=layer.querySelectorAll('[data-train-fold-badge]');
-        for(var b=0;b<badges.length;b++)
-          if(badges[b].getAttribute('data-train-fold-badge')===anchorId){
-            activeAnchor=badges[b];break;
-          }
-      }
-      if(activeAnchor)anchorRect=activeAnchor.getBoundingClientRect();
-      var viewportWidth=document.documentElement.clientWidth || window.innerWidth || 320;
-      var viewportHeight=window.innerHeight || document.documentElement.clientHeight || 600;
-      var margin=12, gap=8;
-      var width=Math.min(360,viewportWidth-2*margin);
-      panel.style.width=width+'px';
-      var left=Math.max(margin,Math.min(anchorRect.left+anchorRect.width/2-width/2,
-        viewportWidth-width-margin));
-      panel.style.left=left+'px';
-      var height=panel.offsetHeight || 280;
-      var below=anchorRect.bottom+gap, above=anchorRect.top-height-gap;
-      var top=(below+height<=viewportHeight-margin || above<margin)
-        ? Math.min(below,viewportHeight-height-margin) : above;
-      panel.style.top=Math.max(margin,top)+'px';
-    }
-    function onOutsidePointerDown(e){
-      if(!panel.contains(e.target) && !anchor.contains(e.target))dismiss(false);
-    }
-    function onViewportChange(){if(layer._trainFoldPopover===panel)placePanel();}
     function dismiss(focus){
       panel.remove();
       if(observer)observer.disconnect();
-      document.removeEventListener('pointerdown',onOutsidePointerDown,true);
-      window.removeEventListener('resize',onViewportChange);
-      window.removeEventListener('scroll',onViewportChange,true);
       if(layer._trainFoldPopover===panel){layer._trainFoldPopover=null;layer._closeTrainFoldPopover=null;layer._refreshTrainFoldPopover=null;}
+      if(!document.querySelector('.rs-modal.active'))document.body.classList.remove('modal-open');
       if(focus!==false){
         var badges=layer.querySelectorAll('[data-train-fold-badge]');
         if(anchor.isConnected)anchor.focus();
@@ -2554,24 +2520,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           // those names in the fold without implying a single confirmed PNG.
           if (lineId === "Ito" || lineId === "Hachiko" || lineId === "ChuoMain") {
             var fleetText = _trainFleetPlanLabel(p,lineId,lang);
-            var isGenericChuoUnknown = lineId === "ChuoMain" && !fleetText;
-            if (isGenericChuoUnknown) {
-              fleetText = /^zh/.test(lang) ? "车型尚未确认" :
-                lang==="en" ? "Vehicle model unverified" :
-                lang==="ko" ? "차종 미확인" :
-                "車種未確認";
-            }
             if (fleetText && (lineId === "ChuoMain" ||
                 /(?:^|[.:])Local$/.test(String(p.trainType || "")))) {
-              // The neutral dot already communicates missing stock artwork.
-              // Keep the status accessible, but do not repeat it as a
-              // visible warning below the service/destination label.
-              if (!isGenericChuoUnknown) {
-                var fleetNote = document.createElement('small');
-                fleetNote.className = 'train-fold-fleet-reference';
-                fleetNote.textContent = fleetText;
-                caption.appendChild(fleetNote);
-              }
+              var fleetNote = document.createElement('small');
+              fleetNote.className = 'train-fold-fleet-reference';
+              fleetNote.textContent = fleetText;
+              caption.appendChild(fleetNote);
               entry.setAttribute('aria-label',captionBase+' · '+fleetText);
             }
           }
@@ -2583,23 +2537,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
       heading.textContent=titleText+' ('+count+')';
       if(!count)dismiss(false);
-      else placePanel();
     }
     close.addEventListener('click',function(){dismiss(true);});
-    // No backdrop: tapping elsewhere closes only this non-blocking card.
-    panel.addEventListener('click',function(e){e.stopPropagation();});
+    panel.addEventListener('click',function(e){if(e.target===panel)dismiss();});
     panel.addEventListener('keydown',function(e){
       if(e.key==='Escape'){e.stopPropagation();dismiss();}
-      // Nonmodal list: allow normal Tab navigation to the map and page.
+      if(e.key==='Tab'){e.preventDefault();close.focus();}
     });
     document.body.appendChild(panel);layer._trainFoldPopover=panel;layer._closeTrainFoldPopover=dismiss;
-    layer._refreshTrainFoldPopover=refresh;refresh();
+    document.body.classList.add('modal-open');layer._refreshTrainFoldPopover=refresh;refresh();
     if(layer._trainFoldPopover===panel){
       if(observer)observer.observe(document.body,{childList:true,subtree:true});
-      document.addEventListener('pointerdown',onOutsidePointerDown,true);
-      window.addEventListener('resize',onViewportChange);
-      window.addEventListener('scroll',onViewportChange,true);
-      close.focus({preventScroll:true});
+      close.focus();
     }
   }
 
