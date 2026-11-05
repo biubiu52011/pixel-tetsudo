@@ -2061,6 +2061,97 @@
       railwayFrom:proof.routeFrom,railwayTo:proof.routeTo,
       stopClockStatus:proof.stopClockStatus});
   }
+  // Komii 2611: exact SQL number/date/route proof. Normal KiHa110
+  // vs hybrid E200 is ambiguous per service -> NO illustration.
+  // HIGH RAIL 1375 has one named SERVICE-family PNG; never actual carset.
+  function verifyKomiiService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Komii"||proof.referenceOnly!==true||
+       proof.actualVehicleConfirmed!==false||
+       !String(proof.officialSourceUrl||"").startsWith(
+         "https://timetables.jreast.co.jp/2611/timetable-v/228"))
+      return null;
+    if(String(p.positionLineId||p.lineId||"")!=="Komii"||
+       String(p.displayLineId||"Komii")!=="Komii"||
+       p.sourceRailway!=="odpt.Railway:JR-East.Komii")return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-East"&&operator!=="odpt.Operator:JR-East")
+      return null;
+    var day=String(p.serviceDate||"").slice(0,10),
+      number=String(p.trainNumber||"").toUpperCase().trim(),
+      direction=String(p.railDirection||"").split(/[.:]/).pop();
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day)||
+       proof.trainNumber!==number||proof.serviceDate!==day||
+       !/^\d+D$/.test(number)||
+       !["Outbound","Inbound"].includes(direction)||
+       String(proof.direction||"").split(/[.:]/).pop()!==direction)return null;
+    var dow=new Date(day+"T12:00:00Z").getUTCDay();
+    var holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))
+      return null;
+    var trainType=String(p.trainType||"").split(/[.:]/).pop();
+    if(proof.trainType!=="odpt.TrainType:JR-East."+trainType||
+       !["Local","Rapid"].includes(trainType))return null;
+    var order=["Kobuchizawa","Kai-Koizumi","Kai-Oizumi","Kiyosato",
+      "Nobeyama","Shinano-Kawakami","Saku-Hirose",
+      "Saku-Uminokuchi","Umijiri","Matsubarako","Koumi",
+      "Managashi","Takaiwa","Yachiho","Kaise","Haguroshita",
+      "Aonuma","Usuda","Tatsuokajo","Otabe","Nakagomi",
+      "Namezu","Kita-Nakagomi","Iwamurada","Sakudaira",
+      "Nakasato","Misato","Mitsuoka","Otome","Higashi-Komoro",
+      "Komoro"];
+    var stops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[];
+    var stations=stops.map(function(x){return String(x||"").split(".").pop();});
+    var indices=stations.map(function(x){return order.indexOf(x);});
+    if(indices.length<2||indices.some(function(x,i){
+      return x<0||(i>0&&(direction==="Outbound"
+        ?x<=indices[i-1]:x>=indices[i-1]));
+    })||stations[0]!==proof.routeFrom||
+       stations[stations.length-1]!==proof.routeTo)return null;
+    var hasSouth=indices.some(function(x){return x<=4;});
+    var hasNorth=indices.some(function(x){return x>=10;});
+    if(hasSouth&&hasNorth&&proof.rockfallCleared!==true)return null;
+    var work=["2026-11-17","2026-11-18","2026-11-19"].includes(day);
+    if(work){
+      if(["227D","228D"].includes(number))return null;
+      if(["225D","226D","229D","230D"].includes(number)){
+        if(proof.operationalScope!=="partial_construction_official_2611"||
+           stations[0]!==(direction==="Outbound"?"Koumi":"Komoro")||
+           stations[stations.length-1]!==
+             (direction==="Outbound"?"Komoro":"Koumi"))return null;
+      }
+    }
+    var isHigh=proof.isHighRail===true,
+      highNumbers=["8221D","8222D","8223D"];
+    if(isHigh){
+      var dates=["01","02","03","06","07","08","09","13","14","15","16",
+        "20","21","22","23","27","28","29","30"].map(function(x){
+          return "2026-11-"+x;
+        });
+      if(trainType!=="Rapid"||!highNumbers.includes(number)||
+         !dates.includes(day)||day<="2026-11-09"||
+         proof.segmentKey!=="highrail1375_official"||
+         proof.model!=="キハ100・110系（HIGH RAIL 1375）"||
+         proof.pngReference!==
+           "../images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png")
+        return null;
+    }else if(proof.isHighRail!==false||trainType!=="Local"||
+      proof.segmentKey!=="regular_mixed_unresolved"||
+      proof.model||proof.pngReference||
+      !Array.isArray(proof.plannedCandidates)||
+      proof.plannedCandidates.length!==2||
+      !proof.plannedCandidates.includes("キハ110系（小海線）")||
+      !proof.plannedCandidates.includes("キハE200形"))
+      return null;
+    return Object.freeze({number:number,kind:isHigh?"highrail":"mixed_regular",
+      model:isHigh?proof.model:"",pngPath:isHigh?proof.pngReference:"",
+      trainType:trainType,isHighRail:isHigh,edition:"2611",
+      representativeOnly:true,actualVehicleConfirmed:false,
+      stopClockStatus:proof.stopClockStatus||"published_number_route_only",
+      operationalScope:proof.operationalScope||"scheduled_rail_plan"});
+  }
   // SQL positions can provide the calendar as an ODPT serviceId rather
   // than a normalized calendarType. Read the timetable source first;
   // never infer a service calendar from the last two train-number digits.
@@ -2099,6 +2190,28 @@
       return {trainNumber:number,lineId:line,model:verified.model,
         pngPath:verified.pngPath,
         source:"jreast-2611-kitakami-sql-number-rail-scope",
+        planned:true,representative:true};
+    }
+    if(line==="Komii"){
+      var q=Object.assign({},context||{},{trainNumber:number});
+      var official=verifyKomiiService(q);
+      if(!official||!official.pngPath||
+         q.estimated!==true||q.positionSource!=="supabase-train-run"||
+         q.officialNumberVerified!==true||
+         q.vehicleIdentityStatus==="EXACT")return null;
+      var observed=String(q.realtimeVehicleType||
+        q.realtimeDerivedVehicleType||"").trim();
+      if(observed&&observed!==official.model)return null;
+      if(q.vehiclePlan&&Array.isArray(q.vehiclePlan.models)&&
+        q.vehiclePlan.models.length&&
+        (q.vehiclePlan.models.length!==1||
+         q.vehiclePlan.models[0]!==official.model))return null;
+      if(Array.isArray(q.plannedVehicleCandidates)&&
+         q.plannedVehicleCandidates.length&&
+         !q.plannedVehicleCandidates.includes(official.model))return null;
+      return {trainNumber:number,lineId:line,model:official.model,
+        pngPath:official.pngPath,
+        source:"jr-east-2611-komii-sql-highrail-service-reference",
         planned:true,representative:true};
     }
     if(line==="Kesennuma"){
@@ -2966,6 +3079,7 @@
     verifyKamaishiService:verifyKamaishiService,
     verifyKashimaService:verifyKashimaService,
     verifyKesennumaRailService:verifyKesennumaRailService,
+    verifyKomiiService:verifyKomiiService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
