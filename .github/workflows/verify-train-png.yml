@@ -85,6 +85,7 @@ on:
       - 'supabase/migrations/20261030125204_scoped_conventional_local_fleet_and_corridor_evidence_20261030.sql'
       - 'supabase/migrations/20261030130459_railfan_source_registry_and_official_sonic_two_stop_crosscheck_20261030.sql'
       - 'supabase/functions/train-runs/index.ts'
+      - 'supabase/migrations/20261106180000_rikuto_east_2611_96_official_sources_8_legacy_exclusions.sql'
       - 'supabase/migrations/20261106111500_oumain_yamagata_2611_legacy_source_scope_audit.sql'
       - 'supabase/migrations/20261106140000_oumain_2611_tsugaru_e751_exact_12_calendar_sources.sql'
       - 'supabase/migrations/20261106151000_oumain_2611_official_feb_snow_and_nov_9463_date_filter.sql'
