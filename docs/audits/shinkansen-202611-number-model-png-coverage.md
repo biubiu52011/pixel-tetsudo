@@ -238,3 +238,10 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 本轮迁移已直接提交 GitHub main 并在 Supabase 独立执行，未新建表、未新增页面脚本、未启用本地服务器、未创建 PR。正式号码不能被视为全日运行证据，车型也不能当作当日实际车底，保持未解决或中性图标。仍需要列车逐车浏览器/iPhone Safari 真实图片显示验收。
 
 **CI 差异**：此前 [PNG 合约检查](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42094763681) 成功，但对应 [Pages 部署](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42094763394) 在最后「Deploy to GitHub Pages」步骤失败（前面构建及上传通过）。不能把这些记录当作网页部署/实机验收成功。
+
+### JR 九州800系原生 PNG 前端通路复核
+
+即使 SQL 对已核实的20个九州新干线「つばめ」番号登记了 EVIDENCE/PLAN/PNG（[本期800系单号证据](../../supabase/migrations/20261106092000_18_kyushu_tsumbame_2611_model_proofs_14_native_800_png.sql)），前端原有 [js/train-vehicle.js](../../js/train-vehicle.js) 中 `planned-stock-library-28` 的 JR九州800系 canonical 条目仍**没有 lineIds**。现有 `resolveCanonicalVehicleForPlan` 对有线路上下文的资产强制校验线路，故即使 SQL 返回 `800系`，原来的图库图片也可能被拦截。
+
+本轮只在该 canonical 条目加入 `lineIds:["KyushuShinkansen"]`，并对已有的 [tools/train-png-display-contract.test.cjs](../../tools/train-png-display-contract.test.cjs) 增加正向断言（JR九州800系在九州新干线返回 `../images/列车/JR九州/JR九州_800系.png`），以及负向断言（同图片不可扩散到山阳新干线）。未改真实派车身份解析器、未加脚本入口、未使用 N700 代图。SQL 精确号码映射仍只针对有独立官方车次/车型证据的白名单；本次仅修复**车型图像解析的线路作用域**。这些是代码级验证，不代替 Safari 实机显示测试。
+
