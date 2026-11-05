@@ -1829,48 +1829,51 @@
     "8133D":{days:["20","21","27","28","29"],dir:"Outbound",name:"越乃Shu＊Kura"}
   });
   function verifyJoetsuService(p){
-    if(!p||String(p.positionLineId||p.lineId||"")!=="Joetsu"||
+    // Authoritative number, calendar, model and art are signed off by
+    // the SQL-backed train-runs response. Never use a local numbered list
+    // as an alternative to missing canonical database train records.
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Joetsu"||proof.referenceOnly!==true||
+       proof.actualVehicleConfirmed!==false)return null;
+    if(String(p.positionLineId||p.lineId||"")!=="Joetsu"||
        String(p.displayLineId||"Joetsu")!=="Joetsu"||
        p.sourceRailway!=="odpt.Railway:JR-East.Joetsu")return null;
-    var op=String(p.trainOperator||p.operator||"");
-    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var number=String(p.trainNumber||"").trim().toUpperCase();
+    if(proof.trainNumber!==number||proof.serviceDate!==p.serviceDate||
+       proof.direction!==p.railDirection)return null;
     var day=String(p.serviceDate||"").slice(0,10);
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day))return null;
-    var cal=sourceCalendar(p);
-    var dow=new Date(day+"T12:00:00Z").getUTCDay();
+    var cal=sourceCalendar(p),dow=new Date(day+"T12:00:00Z").getUTCDay();
     var holiday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
-    if(cal!==(holiday?"holiday":"weekday"))return null;
-    var dir=String(p.railDirection||"").split(/[.:]/).pop();
-    if(dir!=="Inbound"&&dir!=="Outbound")return null;
+    if(cal!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))
+      return null;
     var stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
-      .map(function(x){return String(x||"").split(".").pop();}).filter(Boolean);
-    // This protects both E129 and 211 against the shared 820M etc numbers.
+      .map(function(s){return String(s||"").split(".").pop();}).filter(Boolean);
     if(stops.length<2||new Set(stops).size<2)return null;
-    var south=stops.every(function(x){return joetsuSouthStops.has(x);})&&
+    var north=proof.segmentKey==="north"&&
+      stops.every(function(x){return joetsuNorthStops.has(x);})&&
       stops.some(function(x){return x!=="Minakami";});
-    var north=stops.every(function(x){return joetsuNorthStops.has(x);})&&
-      stops.some(function(x){return x!=="Minakami";});
-    var n=String(p.trainNumber||"").toUpperCase().trim();
-    var type=String(p.trainType||"").split(/[.:]/).pop();
-    var result=null;
-    if(north&&type==="Local"&&
-       (dir==="Outbound"?joetsuNorthDown.has(n):joetsuNorthUp.has(n))){
-      result={kind:"north",model:"E129系",trainType:"Local",
-        pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"};
-    }else if(south&&type==="Local"&&joetsuSouthNumbers.has(n)&&
-             (dir==="Inbound"?parseInt(n,10)%2===0:parseInt(n,10)%2===1)){
-      result={kind:"south",model:"211系（高崎地区）",trainType:"Local",
-        pngPath:"../images/列车/JR東日本/JR東日本_211系_湘南色.png"};
-    }else if(north&&joetsuShuKura[n]&&joetsuShuKura[n].dir===dir&&
-             joetsuShuKura[n].days.indexOf(day.slice(8))>=0&&
-             (type==="Rapid"||
-              (p.positionSource==="supabase-train-run"&&type==="Local"))){
-      result={kind:"shukura",model:"キハ40・48形（越乃Shu＊Kura）",
-        trainType:"Rapid",serviceName:joetsuShuKura[n].name,
-        pngPath:"../images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png"};
-    }
-    return result?Object.freeze(Object.assign({number:n,referenceOnly:true,
-      actualVehicleConfirmed:false,edition:"2611"},result)):null;
+    if(!north)return null;
+    var normal=proof.model==="E129系"&&
+      proof.trainType==="odpt.TrainType:JR-East.Local"&&
+      proof.pngReference==="../images/列车/JR東日本/JR東日本_E129系.png";
+    var resort=proof.model==="キハ40・48形（越乃Shu＊Kura）"&&
+      proof.trainType==="odpt.TrainType:JR-East.Rapid"&&
+      proof.pngReference==="../images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png";
+    if(!normal&&!resort)return null;
+    var t=String(p.trainType||"").split(/[.:]/).pop();
+    if(t!==(normal?"Local":"Rapid")&&
+       !(resort&&t==="Local"&&p.positionSource==="supabase-train-run"))
+      return null;
+    return Object.freeze({
+      number:number,kind:normal?"north":"shukura",
+      model:proof.model,trainType:normal?"Local":"Rapid",
+      serviceName:proof.serviceName||"",
+      pngPath:proof.pngReference,referenceOnly:true,
+      actualVehicleConfirmed:false,edition:"2611"
+    });
   }
   // SQL positions can provide the calendar as an ODPT serviceId rather
   // than a normalized calendarType. Read the timetable source first;
