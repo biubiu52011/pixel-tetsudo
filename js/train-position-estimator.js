@@ -1235,8 +1235,14 @@
             effectivePublishedTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
           var directionName = run.directionName;
-          var destinationStation = run.destinationStation;
-          var destinationStationUrn = run.destinationStationUrn;
+          // 白新線 is only a segment; JR East 2611 confirms 9M
+          // continues Shibata -> Sakata. Preserve planned position clipping.
+          var officialTerminal=officialHakushinPlan &&
+            officialHakushinPlan.destinationStation||"";
+          var destinationStation=officialTerminal||run.destinationStation;
+          var destinationStationUrn=officialTerminal
+            ?"odpt.Station:JR-East."+officialTerminal
+            :run.destinationStationUrn;
           // Vehicle identity is compiled once through the canonical evidence resolver.
           var _runIdentity = resolveTrainRunIdentity(run, tt, lineId, line);
           var _trainOwner = _runIdentity.trainOwner;
