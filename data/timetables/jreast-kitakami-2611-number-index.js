@@ -26,7 +26,7 @@
       raw["odpt:arrivalStation"]||raw["odpt:station"]||raw.stationUrn||"");
     return String(item||"").split(".").pop();
   }
-  function verify(number,railway,direction,trainType,calendar,date,rawStops){
+  function verify(number,railway,direction,trainType,calendar,date,rawStops,numberOnly){
     var day=String(date||"");
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day))return null;
     var n=String(number||"").trim().toUpperCase(),route=routes[n];
@@ -45,6 +45,7 @@
     // 725D's official "休日運休" refers to Sunday/national holidays,
     // NOT Saturday. A SaturdayHoliday SQL template is valid on Saturday.
     if(n==="725D"&&(dow===0||national))return false;
+    if(numberOnly===true)return true;
     // SQL stop provenance is mandatory for live display: reject any
     // historical trip reaching the flood-damaged bus-replacement section
     // and never crop a through-service to turn it into a fictitious train.
@@ -61,6 +62,9 @@
     routes:routes,
     inbound:Object.freeze(["722D","724D","736D"]),
     outbound:Object.freeze(["725D","735D"]),
-    verify:verify
+    verify:verify,
+    verifyNumber:function(n,rail,direction,type,calendar,date){
+      return verify(n,rail,direction,type,calendar,date,null,true);
+    }
   });
 })(window);
