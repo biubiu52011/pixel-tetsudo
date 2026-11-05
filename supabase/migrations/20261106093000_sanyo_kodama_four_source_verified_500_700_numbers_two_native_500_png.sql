@@ -12,7 +12,7 @@ DECLARE
   o record;
   source_id bigint;
   template_id bigint;
-  timetable_id bigint;
+  resolved_timetable_id bigint;
   png_path text;
 BEGIN
   FOR o IN SELECT * FROM (VALUES
@@ -32,7 +32,7 @@ BEGIN
   LOOP
     -- Refuse source-name-only matching. Match operator, calendar, direction,
     -- route, first departure and last arrival AND the primary member.
-    SELECT m.id, mem.timetable_id INTO STRICT template_id, timetable_id
+    SELECT m.id, mem.timetable_id INTO STRICT template_id, resolved_timetable_id
     FROM public.manual_timetable_templates m
     JOIN public.train_timetable_members mem
       ON mem.source_template_id=m.id AND mem.member_role='primary'
@@ -84,11 +84,11 @@ BEGIN
     INSERT INTO public.train_timetable_vehicle_mappings
       (timetable_id,source_template_id,vehicle_type,mapping_level,source_id,
        source_path,actual_vehicle_confirmed)
-    VALUES (timetable_id,template_id,o.model,'official_service_vehicle_plan',
+    VALUES (resolved_timetable_id,template_id,o.model,'official_service_vehicle_plan',
        source_id,'official-2611:'||o.source_url,false)
     ON CONFLICT (timetable_id) DO NOTHING;
     IF NOT EXISTS(SELECT 1 FROM public.train_timetable_vehicle_mappings v
-      WHERE v.timetable_id=timetable_id AND v.source_template_id=template_id
+      WHERE v.timetable_id=resolved_timetable_id AND v.source_template_id=template_id
         AND v.vehicle_type=o.model AND v.source_id=source_id
         AND v.mapping_level='official_service_vehicle_plan'
         AND v.actual_vehicle_confirmed=false) THEN
