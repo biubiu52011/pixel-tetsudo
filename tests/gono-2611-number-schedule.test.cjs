@@ -10,11 +10,16 @@ vm.runInNewContext(indexSource,{window:root,console});
 const index=root.JREastGonoNumberIndex202611;
 const G='odpt.Railway:JR-East.Gono';
 const direction=n=>'odpt.RailDirection:'+(Number(n.slice(0,-1))%2?'Outbound':'Inbound');
-const calendar='odpt.Calendar:Weekday';
 const local='odpt.TrainType:JR-East.Local';
+function sourceCalendar(date){
+  const day=new Date(date+'T12:00:00Z').getUTCDay();
+  return 'odpt.Calendar:'+
+    ((day===0||day===6||date==='2026-11-03'||date==='2026-11-23')
+      ?'SaturdayHoliday':'Weekday');
+}
 function verify(n,d='2026-11-05',extra={}){
   return index.verify(n,extra.railway||G,extra.direction||direction(n),
-    extra.trainType||local,extra.calendar||calendar,d);
+    extra.trainType||local,extra.calendar||sourceCalendar(d),d);
 }
 test('official exact 47 ordinary/rapid numbers are admitted on both service calendars',()=>{
   const n=[...index.regularInbound,...index.regularOutbound];
@@ -39,6 +44,31 @@ test('official exact 47 ordinary/rapid numbers are admitted on both service cale
   assert.equal(verify('320D','2026-12-05'),null);
   assert.equal(verify('320D','2026-11-05',{railway:'odpt.Railway:JR-East.Ou'}),false);
   assert.equal(verify('320D','2026-11-05',{direction:'odpt.RailDirection:Outbound'}),false);
+});
+test('2611 source calendar rejects wrong dates and wrong vehicle categories',()=>{
+  for(const n of ['122D','3524D','8522D']){
+    assert.equal(verify(n,'2026-11-07',
+      {calendar:'odpt.Calendar:Weekday'}),false,
+      n+' cannot be weekday service on Sat');
+    assert.equal(verify(n,'2026-11-05',
+      {calendar:'odpt.Calendar:SaturdayHoliday'}),false,
+      n+' cannot be holiday service on Thu');
+    assert.equal(verify(n,'2026-11-03',
+      {calendar:'odpt.Calendar:Weekday'}),false,
+      n+' must use national-holiday calendar');
+    assert.ok(verify(n,'2026-11-03',
+      {calendar:'odpt.Calendar:SaturdayHoliday'}));
+  }
+  assert.equal(verify('122D','2026-11-05',
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'}),false);
+  assert.equal(verify('8522D','2026-11-05',
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'}),false);
+  assert.equal(verify('8522D','2026-11-05').fleetReference,
+    'HB-E300系（橅）');
+  assert.equal(verify('8521D','2026-11-05').fleetReference,
+    'HB-E300系（青池）');
+  assert.equal(verify('8523D','2026-11-05').fleetReference,
+    'キハ48形（くまげら）');
 });
 test('dated named Resort Shirakami Gono sections are not GVE400 locals',()=>{
   for(const [num,number,expected] of [
@@ -94,6 +124,48 @@ test('Gono 47 ordinary/rapid approved gallery PNGs, not the resort variants',()=
       plannedVehicleCandidates:['GV-E400系']};
     assert.equal(ctx.window.TrainVehicle.lookupTrainNumberRangePng(pos),null,
       'resort must never receive GV-E400 cab '+n);
+  }
+});
+test('Gono PNG never grants a wrong-date official train number or resort vehicle',()=>{
+  const assets=['data/timetables/vehicle-garage-png-map.js',
+    'data/timetables/jreast-gono-2611-number-index.js',
+    'data/timetables/train-number-png-ranges.js','js/train-vehicle.js',
+    'data/timetables/vehicle-operation-evidence-data.js'];
+  const root={},ctx=vm.createContext({window:root,Date,console});
+  for(const file of assets)
+    vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
+  const standard={trainNumber:'122D',positionLineId:'Gono',
+    sourceRailway:G,trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    railDirection:'odpt.RailDirection:Inbound',
+    positionSource:'supabase-train-run',estimated:true,
+    plannedVehicleCandidates:['GV-E400系'],
+    vehicleIdentityStatus:'UNKNOWN'};
+  for(const changed of [
+    {serviceDate:'2026-11-07',calendarType:'weekday'},
+    {serviceDate:'2026-11-05',calendarType:'holiday'},
+    {serviceDate:'2026-11-23',calendarType:'weekday'},
+    {serviceDate:'2026-12-05',calendarType:'holiday'},
+    {serviceDate:'2026-11-05',calendarType:'weekday',
+      trainType:'odpt.TrainType:JR-East.LimitedExpress'}
+  ])assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(
+    {...standard,...changed}),null,
+    'invalid calendar/type should never receive a front '+JSON.stringify(changed));
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...standard,serviceDate:'2026-11-03',calendarType:'holiday'
+  })?.pngPath,'../images/列车/JR東日本/JR東日本_GV-E400系.png');
+  for(const [number,day,cal]of [
+    ['8521D','2026-11-05','weekday'],
+    ['8522D','2026-11-05','weekday'],
+    ['8523D','2026-11-05','weekday'],
+    ['8523D','2026-11-10','weekday'],
+    ['8526D','2026-11-10','weekday']
+  ]){
+    const directionName=Number(number.slice(0,-1))%2?'Outbound':'Inbound';
+    const pos={...standard,trainNumber:number,serviceDate:day,
+      calendarType:cal,trainType:'odpt.TrainType:JR-East.Rapid',
+      railDirection:'odpt.RailDirection:'+directionName};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(pos),null);
   }
 });
 test('Gono scheduled train fallback projects source SQL clocks and route aliases',()=>{
