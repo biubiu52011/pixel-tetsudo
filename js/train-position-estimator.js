@@ -922,6 +922,29 @@
           if(!officialKururiPlan)continue;
         }
 
+        // Mito 2611 regular M-number proof and date-specific 756M/763M
+        // variants must come from the SQL server. Reject historical
+        // duplicate/future/October-only records, never infer formation.
+        var officialMitoPlan=null;
+        if(lineId==="Mito"&&String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run")continue;
+          var mitoIndex=window.TrainNumberPngRanges;
+          if(!mitoIndex||typeof mitoIndex.verifyMitoService!=="function")
+            continue;
+          officialMitoPlan=mitoIndex.verifyMitoService({
+            trainNumber:run.trainNumber,positionLineId:"Mito",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialMitoPlan)continue;
+        }
+
         // RikutoEast 2611: never turn the legacy SQL D-number roster into
         // phantom trains. Official 268u1/u2/d1/d2 provides the real
         // calendar, including 9721–9726D rapid dates (Oct31–Nov3 +
@@ -1490,6 +1513,22 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // Published Mito E531 5-car family, not a 0/3000 series or
+          // commemorative colour assignment for a specific train.
+          var _mitoFleet=officialMitoPlan&&vehResult.identityStatus!=="EXACT"
+            ?String(officialMitoPlan.model||""):"";
+          if(_mitoFleet){
+            _plannedCandidates=[_mitoFleet];
+            _visibleCandidates=[_mitoFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_mitoFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2611-mito-number-dated",
+              sourceUrl:tt._sqlPublishedNumberFleetReference&&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl||"",
+              lineId:"Mito",operator:"JR-East",confirmed:false,referenceOnly:true
+            };
+          }
           // Kururi: allow only SQL-authorized Kisarazu–Kururi rail family
           // illustration, never closed-only 29xxD or replacement bus.
           var _kururiFleet=officialKururiPlan&&vehResult.identityStatus!=="EXACT"
@@ -1602,8 +1641,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet) ? "" : (vehResult.name || '');
-          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet) ? "" :
+          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet) ? "" : (vehResult.name || '');
+          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1656,7 +1695,7 @@
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
-              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialYamadaPlan ||
+              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialMitoPlan || officialYamadaPlan ||
               officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan || officialKashimaPlan ||
                officialKesennumaRailPlan || officialKomiiPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
@@ -1668,8 +1707,8 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -1746,7 +1785,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet)
+            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
