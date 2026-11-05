@@ -917,9 +917,12 @@ const markerContext = vm.createContext({
 vm.runInContext(extract(renderSource,
   '  function _trainUnitContainer(child) {',
   '  // 描述当前显示的行；'), markerContext);
+// The marker constructor now shares reference-only SVG/ARIA helpers with
+// _trainMarkerSpec. Load the complete self-contained marker block so a
+// component test cannot call an uninitialised accessibility helper.
 vm.runInContext(extract(renderSource,
   '  function _trainMarkerDomKind(spec) {',
-  '  function _trainMarkerSpec(p, trainUid, lineId) {'), markerContext);
+  '  // Public identification boundary:'), markerContext);
 vm.runInContext(extract(renderSource,
   '  function _setTrainIconPosition(icon, px, py, p, lineId, isLoop) {',
   '  function _removeTrainLabels('), markerContext);
