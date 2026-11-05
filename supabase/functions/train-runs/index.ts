@@ -530,7 +530,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
 const publishedShinkansenNumbersBySource =
   new Map<number, {number:string; url:string}>();
 if (/Shinkansen$/.test(lineId) &&
-    /^2026-11-\\d{2}$/.test(serviceDate) &&
+    /^2026-11-\d{2}$/.test(serviceDate) &&
     selectedCalendar &&
     ["JR-East"].includes(String(timetableOperator || "JR-East"))) {
   const batch = templates.filter((t:any) =>
