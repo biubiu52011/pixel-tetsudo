@@ -32,6 +32,7 @@ on:
       - 'tests/ishinomaki-2611-official-number-png.test.cjs'
       - 'tests/oga-2611-official-number-png.test.cjs'
       - 'tests/oito-east-2611-sql-scope.test.cjs'
+      - 'tests/oito-west-2611-company-kiha120-number.test.cjs'
       - 'tests/jreast-regional-2611-number-png.test.cjs'
       - 'tests/rikuto-east-2611-official-number-png.test.cjs'
       - 'tests/rikutsu-west-2611-official-number-png.test.cjs'
@@ -166,6 +167,8 @@ jobs:
         run: node --test tests/mito-2611-exact-number-e531.test.cjs
       - name: Verify Miyo Yahiko 2611 E129 seasonal numbers and dates
         run: node --test tests/miyo-2611-yahiko-e129-dated-number.test.cjs
+      - name: Verify Oito JR-West 2611 company split, 4xxD number proof and no false PNG
+        run: node --test tests/oito-west-2611-company-kiha120-number.test.cjs
       - name: Verify Oito JR-East only 2611 SQL number and stock proof
         run: node --test tests/oito-east-2611-sql-scope.test.cjs
       - name: Verify Ofunato 2611 rail/BRT and Pokemon proof
