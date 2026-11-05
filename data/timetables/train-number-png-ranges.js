@@ -2162,6 +2162,86 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // 弥彦線 SQL number-calendar-date-and-stop proof for 2026-11.
+  // No train icon on date-free historical or October-only Shu*Kura data.
+  // Momiji Kairi's HB-E300 D numbers have a dated SQL PUBLIC ROSTER
+  // but NO complete station-clock source; not faked as train positions.
+  function verifyMiyoService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Miyo"||
+       !["regular","seasonal_holiday","kiku"].includes(proof.segmentKey)||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Miyo"||
+       (p.displayLineId&&p.displayLineId!=="Miyo")||
+       p.sourceRailway!=="odpt.Railway:JR-East.Miyo"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var number=String(p.trainNumber||"").trim().toUpperCase(),
+      date=String(p.serviceDate||"").slice(0,10),
+      mat=/^([0-9]{3,4})M$/.exec(number);
+    if(!mat||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       Number(mat[1])<220||Number(mat[1])>9284||
+       proof.trainNumber!==number||proof.serviceDate!==date||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       !Array.isArray(proof.sourceStopKeys)||
+       proof.sourceStopKeys.length<2||proof.sourceStopKeys.length>8||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       proof.model!=="E129系"||
+       proof.pngReference!=="../images/列车/JR東日本/JR東日本_E129系.png"||
+       !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/timetable-v\/233[du][12]\.html$/.test(
+         String(proof.officialSourceUrl||"")))return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(type!=="Local"||String(proof.trainType||"").split(/[.:]/).pop()!=="Local"||
+       !["Inbound","Outbound"].includes(dir)||
+       String(proof.direction||"").split(/[.:]/).pop()!==dir||
+       (Number(mat[1])%2)!==(dir==="Inbound"?0:1))return null;
+    var cal=sourceCalendar(p),dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||date==="2026-11-23",
+      kikuDays=new Set(["2026-11-01","2026-11-03","2026-11-07",
+        "2026-11-08","2026-11-14","2026-11-15",
+        "2026-11-21","2026-11-22","2026-11-23"]),
+      kiku=kikuDays.has(date);
+    if(cal!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday")||
+       proof.officialSourceUrl.slice(-7)!==
+          (dir==="Inbound"?"u":"d")+(holiday?"2":"1")+".html"||
+       (proof.segmentKey!=="regular"&&!holiday)||
+       (proof.segmentKey==="kiku"&&!kiku))return null;
+    var all=["Higashi-Sanjo","Kita-Sanjo","Tsubame-Sanjo","Tsubame",
+      "Nishi-Tsubame","Yoshida","Yahagi","Yahiko"];
+    var original=proof.sourceStopKeys,
+      expected=original.slice(),
+      scope="full";
+    if(kiku&&holiday){
+      if(number==="234M"){
+        if(original.length!==8)return null;
+        expected=original.slice(-3);scope="yoshida_yahiko_only";
+      }else if(number==="235M"||number==="241M"){
+        if(original.length!==8)return null;
+        expected=original.slice(2);scope="yoshida_higashisanjo_only";
+      }else if(number==="228M"){
+        if(original.length!==3)return null;
+        scope="yoshida_yahiko_only";
+      }
+    }else if(number==="228M"&&original.length!==8){
+      return null;
+    }
+    if(scope!==proof.railScope||expected.length<2||
+       original.some(function(x){return !all.includes(x);}))return null;
+    var stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();});
+    if(stops.length!==expected.length||
+       stops.some(function(x,i){return x!==expected[i];}))return null;
+    return Object.freeze({number:number,model:"E129系",
+      pngPath:proof.pngReference,edition:"2611",
+      kind:proof.segmentKey,railScope:scope,
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // JR-East 2611 水戸線: 62 exact M train numbers x 2 calendars,
   // supplied ONLY by the backend's dated SQL-number roster. Subseries,
   // red revival paint, and actual physical formations remain UNCONFIRMED.
@@ -2338,6 +2418,28 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Miyo"){
+      var scoped=Object.assign({},context||{},{trainNumber:number});
+      var miyo=verifyMiyoService(scoped);
+      if(!miyo||scoped.estimated!==true||
+         scoped.officialNumberVerified!==true||
+         scoped.vehicleIdentityStatus==="EXACT")return null;
+      var observed=String(scoped.realtimeVehicleType||
+          scoped.realtimeDerivedVehicleType||"").trim();
+      if(observed&&observed!==miyo.model)return null;
+      var plan=scoped.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==miyo.model))
+        return null;
+      if(Array.isArray(scoped.plannedVehicleCandidates)&&
+         scoped.plannedVehicleCandidates.length&&
+         (scoped.plannedVehicleCandidates.length!==1||
+          scoped.plannedVehicleCandidates[0]!==miyo.model))
+        return null;
+      return {trainNumber:number,lineId:line,model:miyo.model,
+        pngPath:miyo.pngPath,planned:true,representative:true,
+        source:"jr-east-2611-miyo-sql-number-calendar-rail"};
+    }
     if(line==="Mito"){
       var m=Object.assign({},context||{},{trainNumber:number});
       var permitted=verifyMitoService(m);
@@ -3313,6 +3415,7 @@
     verifyHanawaService:verifyHanawaService,
     verifyKururiService:verifyKururiService,
     verifyMitoService:verifyMitoService,
+    verifyMiyoService:verifyMiyoService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
