@@ -766,6 +766,25 @@
             tt["odpt:trainType"]||"",run.calendar,serviceDate)===false)continue;
         }
 
+        // Regional JR East 2611 exact public numbers and operating dates:
+        // Kururi: 40 D services; Karasuyama: scheduled work-day cancellations;
+        // Hachinohe: Nov 4/5 partial suspensions, changed clock, dated
+        // replacement trains and Sunday-only market rapid.
+        // Apply ONLY to SQL-derived planned positions, never live ODPT trains.
+        // A cancelled or partially altered historical SQL route cannot be
+        // projected as if its full current timetable still ran.
+        if(["Kururi","Karasuyama","Hachinohe"].indexOf(lineId)>=0 &&
+           tt._positionSource==="supabase-train-run" &&
+           String(serviceDate).slice(0,7)==="2026-11" &&
+           window.JREastRegionalNumberIndex202611 &&
+           typeof window.JREastRegionalNumberIndex202611.verify==="function"){
+          var officialRegionalPlan=window.JREastRegionalNumberIndex202611.verify(
+            lineId,run.trainNumber,tt["odpt:railway"]||"",
+            tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
+            run.calendar,serviceDate);
+          if(officialRegionalPlan===false)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
