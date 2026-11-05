@@ -19465,7 +19465,9 @@
   },
   "Kita-Otari": {
     "ja": "北小谷",
-    "en": "Kita-Otari"
+    "en": "Kita-Otari",
+    "zh": "北小谷",
+    "ko": "기타오타리"
   },
   "Kita-Sanjo": {
     "ja": "北三条",
@@ -28986,5 +28988,41 @@
     "zh": "今山",
     "ko": "今山",
     "en": "今山"
+  },
+  "Nakatsuchi": {
+    "ja": "中土",
+    "zh": "中土",
+    "ko": "나카쓰치",
+    "en": "Nakatsuchi"
+  },
+  "Hiraiwa": {
+    "ja": "平岩",
+    "zh": "平岩",
+    "ko": "히라이와",
+    "en": "Hiraiwa"
+  },
+  "Kotaki": {
+    "ja": "小滝",
+    "zh": "小泷",
+    "ko": "고타키",
+    "en": "Kotaki"
+  },
+  "Nechi": {
+    "ja": "根知",
+    "zh": "根知",
+    "ko": "네치",
+    "en": "Nechi"
+  },
+  "Kubiki-Ono": {
+    "ja": "頸城大野",
+    "zh": "颈城大野",
+    "ko": "구비키오노",
+    "en": "Kubiki-Ono"
+  },
+  "Himekawa": {
+    "ja": "姫川",
+    "zh": "姬川",
+    "ko": "히메카와",
+    "en": "Himekawa"
   }
 }
