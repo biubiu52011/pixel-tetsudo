@@ -12,10 +12,10 @@
 | 有官方依据的单一**计划车型** | 351 | **424** |
 | 无列车级单车型计划 | 475 | **402** |
 | 已证明当日实际物理编组 | 0 | **0** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **493** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **666** |
 | 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **161** |
 
-**单车型计划覆盖率：424 / 826 = 51.3%；正式番号证据 493 / 826 = 59.7%；安全 PNG 单号 161 / 826 = 19.5%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 161 张 PNG。**
+**单车型计划覆盖率：424 / 826 = 51.3%；正式番号证据 666 / 826 = 80.6%；安全 PNG 单号 161 / 826 = 19.5%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 161 张 PNG。**
 
 ## 各线计划车型覆盖率（2026-11-06 最新回读）
 
@@ -220,4 +220,21 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 
 **安全性**：本次不使用号码连续 min/max 蒙混未确认车次。所有新增 `published_train_png_number_ranges` 为 min=max，`requires_exact_roster=true`，`actual_vehicle_confirmed=false`；JR九州800系 PNG `../images/列车/JR九州/JR九州_800系.png` 已通过 `vehicle_image_assets` 资产与证据检查，不能拿其他运营方 N700 或不同番台 PNG 代替。
 
-**剩余缺口**：333个已有 SQL 模板没有单独登记完整番号证据；402个没有列车级单一计划车型证据；真正当天编组和时刻表全覆盖、iPhone Safari PNG 验收都尚未确认。Notion对应任务必须保持「进行中」。
+**2026-11-06 早前阶段缺口**：333个已有 SQL 模板没有单独登记完整番号证据；402个没有列车级单一计划车型证据；真正当天编组和时刻表全覆盖、iPhone Safari PNG 验收都尚未确认。Notion对应任务必须保持「进行中」。
+
+## 2026-11-06 新增 173 条正式号码、当前覆盖率 80.6%
+
+**此小节是最新实库回读**，覆盖本审计早前的 493 / 826 统计。正式号码有 666 条，其中本轮增加 173 条；PNG 仍为 161 条（19.5%），官方单车型计划仍为 424 条（51.3%），实际确认派车仍为 0。
+
+- [西九州 5 个不同「かもめ」/9 条平日休日 SQL 源](../../supabase/migrations/20261106052000_nishi_kyushu_2611_five_missing_kamome_exact_g_numbers.sql)：官网逐车的 2041G、2047G、2063G、2064G、2101G，对照首站发车时刻、运营方向。无 N700S 图库 PNG，不制造替代车图。
+- [JR East 2611 下行 111 个逐列刊载 A 番号](../../supabase/migrations/20261106054500_tokaido_sanyo_kyushu_2611_111_verified_down_a_numbers.sql)：东海道45、山阳53、九州13个源模板，Weekday only；[官网下行](https://timetables.jreast.co.jp/2611/timetable-v/001d1.html)。
+- [JR East 2611 上行 51 个逐列刊载 A 番号](../../supabase/migrations/20261106061500_tokaido_sanyo_kyushu_2611_51_verified_up_a_numbers.sql)：东海道20、山阳24、九州7个源模板，Weekday only；[官网上行](https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html)。
+- [西九州 かもめ3 两个周历模板](../../supabase/migrations/20261106064000_nishi_kyushu_kamome3_2003g_both_calendars.sql)：官网 2611 个别列车页面核实 2003G，武雄温泉 07:42；无 N700S 图片，且不以 2003H 接续列车号替代。
+
+**最新每线正式号码（分母为既有 SQL 模板）**：
+秋田45/45、北海道26/26、北陆66/72、上越18/18、九州86/159、西九州90/92、山阳118/154、东北81/82、东海道93/132、山形43/46。合计 666/826，仍缺 160。
+其间的北陆6、山形3及东北1受临时列车/运转日/名称号码冲突影响，不能把同名服务直接以爱称数字推出完整番号；其他未核对班次亦不得扩大号段。
+
+本轮迁移已直接提交 GitHub main 并在 Supabase 独立执行，未新建表、未新增页面脚本、未启用本地服务器、未创建 PR。正式号码不能被视为全日运行证据，车型也不能当作当日实际车底，保持未解决或中性图标。仍需要列车逐车浏览器/iPhone Safari 真实图片显示验收。
+
+**CI 差异**：此前 [PNG 合约检查](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42094763681) 成功，但对应 [Pages 部署](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42094763394) 在最后「Deploy to GitHub Pages」步骤失败（前面构建及上传通过）。不能把这些记录当作网页部署/实机验收成功。
