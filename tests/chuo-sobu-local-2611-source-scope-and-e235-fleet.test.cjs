@@ -267,11 +267,7 @@ test('published SQL service roster keys remain full public train numbers',()=>{
   '20261106190000_chuo_sobu_local_2611_historical_1179_source_scope_and_m_exclusions.sql','utf8');
  assert.ok(migration.includes('train_number text NOT NULL'));
  assert.ok(migration.includes('source_template_id bigint PRIMARY KEY'));
- assert.ok(migration.includes("WHEN train_number~'^[0-9]{3,4}[BC]
- assert.ok(!migration.includes('operation_code text NOT NULL'),
-  'historical operation-only number must not become source key');
-});
-"));
+ assert.ok(migration.includes("WHEN train_number~'^[0-9]{3,4}[BC]$'"));
  assert.ok(!migration.includes('operation_code text NOT NULL'),
   'historical operation-only number must not become source key');
 });
