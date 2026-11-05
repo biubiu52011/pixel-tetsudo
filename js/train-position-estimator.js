@@ -900,6 +900,28 @@
           if(officialRegionalPlan===false)continue;
         }
 
+        // 久留里線 2611: verify the exact SQL rail-only stop list after
+        // the server cropped the closed Kururi–KazusaKameyama segment.
+        var officialKururiPlan=null;
+        if(lineId==="Kururi"&&String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run")continue;
+          var kururiIndex=window.TrainNumberPngRanges;
+          if(!kururiIndex||typeof kururiIndex.verifyKururiService!=="function")
+            continue;
+          officialKururiPlan=kururiIndex.verifyKururiService({
+            trainNumber:run.trainNumber,positionLineId:"Kururi",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialKururiPlan)continue;
+        }
+
         // RikutoEast 2611: never turn the legacy SQL D-number roster into
         // phantom trains. Official 268u1/u2/d1/d2 provides the real
         // calendar, including 9721–9726D rapid dates (Oct31–Nov3 +
@@ -1468,6 +1490,22 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // Kururi: allow only SQL-authorized Kisarazu–Kururi rail family
+          // illustration, never closed-only 29xxD or replacement bus.
+          var _kururiFleet=officialKururiPlan&&vehResult.identityStatus!=="EXACT"
+            ?String(officialKururiPlan.model||""):"";
+          if(_kururiFleet){
+            _plannedCandidates=[_kururiFleet];
+            _visibleCandidates=[_kururiFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_kururiFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2611-kururi-open-rail-number-proof",
+              sourceUrl:tt._sqlPublishedNumberFleetReference&&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl||"",
+              lineId:"Kururi",operator:"JR-East",confirmed:false,referenceOnly:true
+            };
+          }
           // Hanawa SQL-issued exact train number -> representative vehicle PNG.
           var _hanawaFleet=officialHanawaPlan &&
             vehResult.identityStatus!=="EXACT"
@@ -1564,8 +1602,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet) ? "" : (vehResult.name || '');
-          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet) ? "" :
+          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet) ? "" : (vehResult.name || '');
+          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1618,7 +1656,7 @@
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
-              officialKitakamiPlan || officialHanawaPlan || officialYamadaPlan ||
+              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialYamadaPlan ||
               officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan || officialKashimaPlan ||
                officialKesennumaRailPlan || officialKomiiPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
@@ -1630,8 +1668,8 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -1708,7 +1746,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet)
+            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
