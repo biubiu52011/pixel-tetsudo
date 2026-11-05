@@ -60,10 +60,6 @@ function sqlTime(time?: string | null) {
   );
 }
 
-function stationUrn(stop: Record<string, unknown>) {
-  return String(stop["odpt:arrivalStation"] || stop["odpt:departureStation"] || "");
-}
-
 function stationKey(urn: string) {
   const p = urn.split(".");
   return p[p.length - 1] || urn;
@@ -97,12 +93,14 @@ function selectRevision(rows: any[], serviceDate: string, calendar: string | nul
   return choices[0].effective_to && serviceDate > choices[0].effective_to ? { unavailable: true } : choices[0];
 }
 
-async function activeRevision(db: any, lineId: string, serviceDate: string, calendar: string | null) {
+// The revision set is line-scoped, not calendar-scoped: fetch it once per
+// request, then select the appropriate published revision for each calendar.
+async function loadRevisionRows(db: any, lineId: string) {
   const {data,error} = await db.from('timetable_revisions')
     .select('id,version_key,effective_from,effective_to,calendar_urn,source_id,evidence_sources(source_url,source_type)')
     .eq('line_id',lineId).order('effective_from',{ascending:false});
   if (error) throw error;
-  return selectRevision(data || [],serviceDate,calendar);
+  return data || [];
 }
 
 function scheduleVehicleType(mapped: any, revision: any) {
@@ -191,8 +189,10 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   let templates: any[] = [];
   let selectedCalendar: string | null = null;
   let selectedRevision: any = null;
-  for (const calendar of serviceCalendars(serviceDate)) {
-    const revision = await activeRevision(db,lineId,serviceDate,calendar);
+  const calendars = serviceCalendars(serviceDate);
+  const revisionRows = await loadRevisionRows(db,lineId);
+  for (const calendar of calendars) {
+    const revision = selectRevision(revisionRows,serviceDate,calendar);
     // A future dedicated Holiday diagram cannot hide a currently valid
     // SaturdayHoliday alternative before that dedicated diagram takes effect.
     if (revision?.unavailable && revision.reason === 'not_yet_effective') {
