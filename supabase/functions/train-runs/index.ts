@@ -522,6 +522,49 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
   }
 
+// JR East 2611 source-template-specific published train-number crosswalk.
+// The official table pairs 列車名 with 列車番号. No suffix math, date inference,
+// route-fleet model guess or conversion into an operation code is permitted.
+// These rows certify the NUMBER only; historical source clocks and operating
+// dates are still subject to their existing independent coverage audit.
+const publishedShinkansenNumbersBySource =
+  new Map<number, {number:string; url:string}>();
+if (/Shinkansen$/.test(lineId) &&
+    /^2026-11-\\d{2}$/.test(serviceDate) &&
+    selectedCalendar &&
+    ["JR-East"].includes(String(timetableOperator || "JR-East"))) {
+  const batch = templates.filter((t:any) =>
+    String(t.railway_urn||"")==="odpt.Railway:JR-East."+lineId);
+  for (let first=0; first<batch.length; first+=100) {
+    const ids=batch.slice(first,first+100).map((t:any)=>Number(t.id));
+    const {data, error}=await db.from("published_train_number_evidence")
+      .select("edition,line_key,calendar_urn,direction_urn,train_number,source_template_id,official_source_url,verification_scope")
+      .eq("edition","2611").eq("line_key",lineId)
+      .eq("calendar_urn",selectedCalendar)
+      .in("source_template_id",ids);
+    if(error)throw error;
+    const sources=new Map(batch.map((t:any)=>[Number(t.id),t]));
+    for(const proof of data||[]) {
+      const src:any=sources.get(Number(proof.source_template_id));
+      if(!src || proof.line_key!==lineId ||
+        proof.calendar_urn!==src.calendar_urn ||
+        proof.direction_urn!==src.direction_urn ||
+        proof.verification_scope!=="train_number_only" ||
+        !/^[0-9]{1,5}[BCEM]$/.test(String(proof.train_number||"")) ||
+        !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(
+          String(proof.official_source_url||""))) {
+        throw new Error("INVALID_SHINKANSEN_OFFICIAL_NUMBER_EVIDENCE");
+      }
+      const key=Number(proof.source_template_id);
+      if(publishedShinkansenNumbersBySource.has(key))
+        throw new Error("AMBIGUOUS_SHINKANSEN_PUBLISHED_NUMBER");
+      publishedShinkansenNumbersBySource.set(key,{
+        number:String(proof.train_number),url:String(proof.official_source_url)
+      });
+    }
+  }
+}
+
 // JR East 2611: train *service name* is not the railway train number.
 const JR_EAST_SHINKANSEN_OFFICIAL_2611: Record<string, {number:string; url:string}> = {
   "HokurikuShinkansen|かがやき501|Tokyo|06:16": {
@@ -701,8 +744,17 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       : mapped.mapping_level || "unresolved";
     const completeStops = mapped.group_evidence === "verified_continuation"
       ? canonicalStopsById.get(mapped.timetable_id) : null;
-    const officialNumber = resolveJrEastShinkansenNumber(
+    const staticOfficialNumber = resolveJrEastShinkansenNumber(
       t, serviceDate, (byTemplate.get(t.id) || [])[0]);
+    const sqlOfficialNumber = publishedShinkansenNumbersBySource.get(Number(t.id));
+    if(sqlOfficialNumber && staticOfficialNumber?.number &&
+       staticOfficialNumber.number !== sqlOfficialNumber.number)
+      throw new Error("CONFLICTING_SHINKANSEN_OFFICIAL_NUMBER");
+    const officialNumber = sqlOfficialNumber ? {
+      number:sqlOfficialNumber.number, serviceName:String(t.train_number||""),
+      status:"official-2611-sql-exact-roster",
+      officialUrl:sqlOfficialNumber.url
+    } : staticOfficialNumber;
     return {
       // Only SQL-certified identical itineraries share identity across line sources.
       // Keep separate line records/stops; never dedupe by departure time alone.
