@@ -785,9 +785,39 @@
           if(officialRegionalPlan===false)continue;
         }
 
+        // RikutoEast 2611: never turn the legacy SQL D-number roster into
+        // phantom trains. Official 268u1/u2/d1/d2 provides the real
+        // calendar, including 9721–9726D rapid dates (Oct31–Nov3 +
+        // November weekends/holidays). Naruko-Onsen–Shinjo is suspended
+        // after the July 2024 damage: OLD whole-route estimates must
+        // not draw a rail train on the replacement-bus section.
+        var officialRikutoEastPlan=null;
+        if(lineId==="RikutoEast"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"&&
+           window.JREastRikutoEastNumberIndex202611&&
+           typeof window.JREastRikutoEastNumberIndex202611.verify==="function"){
+          officialRikutoEastPlan=window.JREastRikutoEastNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
+            tt["odpt:trainType"]||"",run.calendar,serviceDate);
+          if(officialRikutoEastPlan===false)continue;
+          // Stop proof is essential: any historical timetable that includes
+          // stations beyond Naruko-Onsen cannot be an operating rail run.
+          // Current SQL stops do NOT include this suspended segment.
+          var suspendedRikutoStop=run.stops.some(function(stop){
+            var st=normalizeStationKey(extractStationKey(stop.stationUrn));
+            return /^(?:NakayamadairaOnsen|Sakaida|AkakuraOnsen|Tachikoji|Mogami|Ohori|Usugi|SemiOnsen|HigashiNagasawa|Nagasawa|MinamiShinjo|Shinjo)$/.test(st);
+          });
+          if(suspendedRikutoStop)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
-        if (calendar && currentCalendars.indexOf(calendar) < 0) continue;
+        if (calendar && currentCalendars.indexOf(calendar) < 0 &&
+            !(officialRikutoEastPlan &&
+              officialRikutoEastPlan.holidayTemplateOnWeekday===true &&
+              serviceDate==="2026-11-02" &&
+              /(?:^|[.:])(?:SaturdayHoliday|Saturday|Sunday|Holiday)$/.test(calendar)))
+          continue;
 
         // JR East disaster timetable, 2026-11-01 through 11-08.
         // The Anegasaki--Nagaura tracks are CLOSED in both directions
@@ -1077,8 +1107,11 @@
           var publishedIshinomakiTrainType=officialIshinomakiPlan &&
             officialIshinomakiPlan.trainType
             ? "odpt.TrainType:JR-East."+officialIshinomakiPlan.trainType : "";
+          var publishedRikutoEastTrainType=officialRikutoEastPlan &&
+            officialRikutoEastPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialRikutoEastPlan.trainType : "";
           var effectivePublishedTrainType=publishedGonoTrainType ||
-            publishedIshinomakiTrainType || "";
+            publishedIshinomakiTrainType || publishedRikutoEastTrainType || "";
           var trainClassification = classifyTrain(
             effectivePublishedTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
@@ -1148,7 +1181,9 @@
             serviceName: officialGonoPlan && officialGonoPlan.serviceName
               ? officialGonoPlan.serviceName
               : officialIshinomakiPlan && officialIshinomakiPlan.serviceName
-                ? officialIshinomakiPlan.serviceName : (run.serviceName || ""),
+                ? officialIshinomakiPlan.serviceName
+                : officialRikutoEastPlan && officialRikutoEastPlan.serviceName
+                  ? officialRikutoEastPlan.serviceName : (run.serviceName || ""),
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
