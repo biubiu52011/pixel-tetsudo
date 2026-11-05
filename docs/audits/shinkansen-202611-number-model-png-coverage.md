@@ -12,8 +12,8 @@
 | 有官方依据的单一**计划车型** | 351 | **400** |
 | 无列车级单车型计划 | 475 | **426** |
 | 已证明当日实际物理编组 | 0 | **0** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **5** |
-| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **3** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **22** |
+| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **20** |
 
 **单车型计划覆盖率：400 / 826 = 48.4%。这不是“车次号段全部完成”，也不是已实际显示 400 张 PNG。**
 
@@ -24,7 +24,7 @@
 | AkitaShinkansen | 45 | **45** | 0 | E6 官方车型计划；只有一个正式完整番号经单独核实 |
 | HokkaidoShinkansen | 26 | 0 | **26** | E5/H5 跨运营方车辆，无法按线路/爱称指定个别车 |
 | HokurikuShinkansen | 72 | 0 | **72** | E7/W7、车辆所属方及通过运行需单车证据 |
-| JoetsuShinkansen | 18 | **18** | 0 | E7 单车型计划；只有一个正式完整番号经单独核实 |
+| JoetsuShinkansen | 18 | **18** | 0 | E7 计划车型；**18条正式番号和精确 PNG 单号映射** |
 | KyushuShinkansen | 159 | 112 | **47** | 800 与 N700 混用；已映射 N700 缺 JR 九州同车型通用 PNG |
 | NishiKyushuShinkansen | 92 | **92** | 0 | N700S 6 辆计划车型确定，**图库无对应 N700S PNG** |
 | SanyoShinkansen | 154 | 52 | **102** | 500/N700/N700S 混用；直通车所属方不能仅从线路推定 |
@@ -59,9 +59,9 @@
 
 1. 复用现有 `train_timetable_vehicle_mappings` 与 `evidence_sources`：为 **秋田 1**（`128897`）、**山形 1**（`128896`）、**西九州 47**（官方基本时刻表）共 49 条休日模板写入单车型**计划**证据，分配既有官方证据 ID `4931/4933/4932`。
 2. 西九州 **46 条**的来源为官方 2026-03-14 至 2027-02-28 定期基准 PDF；另外 **かもめ1号** 为此前逐车确认的 JR 九州官方时刻表样本，保留不同来源，不篡改源。
-3. 已写入 5 条完整正式番号与 3 条原生 PNG 的**单号范围**。所有 SQL 写入都具有来源、线路、原车次名、方向、日期类型或成员 ID 范围保护，且 `ON CONFLICT DO NOTHING` 以便重跑。
+3. 已写入 22 条完整正式番号与 20 条原生 PNG 的**单号范围**。所有 SQL 写入都具有来源、线路、原车次名、方向、日期类型或成员 ID 范围保护，且 `ON CONFLICT DO NOTHING` 以便重跑。
 4. **未修改** `manual_timetable_templates.train_number`、`train_runs`、实际编组资料、原有候选值、页面布局、`home.css`、`data/stores.csv`、`scripts/page-scripts.json` 或 `train-number-png-ranges.js`。已有 SQL→车型计划→图库解析器负责显示；不再重复创建凭空号段、脚本入口和补丁。
-5. 事务已在现有 Supabase 上执行，回读结果：`400` 单车型计划、`426` 未定、`5` 正式番号证据、`3` 精确 PNG 记录、`49` 本次新增计划、`0` 已确认实际编组。
+5. 事务已在现有 Supabase 上执行，回读结果：`400` 单车型计划、`426` 未定、`22` 正式番号证据、`20` 精确 PNG 记录、`49` 本次新增计划、`0` 已确认实际编组。
 
 **可复核 SQL 迁移**：`supabase/migrations/20261105140000_shinkansen_2611_full_number_evidence_and_holiday_vehicle_plans.sql`。该迁移已在 Supabase 执行，不需要在本地额外启动服务器。
 
@@ -100,3 +100,21 @@ ORDER BY line_key;
 ### 明确未完成的验收条件
 
 **不能把以上进展称作 10 条新干线全覆盖**：剩余 426 条没有逐车计划车型证据，若要把 821 条未完成正式番号的模板变成可用于号段映射的记录，需要进一步用可合法复用的 JR 官方站/车次时刻表逐项核对，且不同工作日/土休日和临时列车不可混抄。既有 10 条新干线的土休日**时刻表覆盖本身仍不完整**（参见 `docs/timetable/shinkansen-holiday-coverage-2026-10-31.md`），因此不能从本审计推导已完成全日时刻表或实际每日运行结果。
+
+## 2026-11-05 第二轮：上越新干线平日 17 条官方番号
+
+官方2026年11月站间时刻表提供逐列对照的 **列車番号/列車名**：
+- [上越・北陸新幹線 下り 平日](https://timetables.jreast.co.jp/2611/timetable-v/004d1.html)
+- [上越・北陸新幹線 上り 平日](https://timetables.jreast.co.jp/2611/timetable-v/004u1.html)
+
+本轮依照上述官方列车名和番号逐条核对既有的 17 条上越新干线 Weekday SQL 模板，按原始源模板ID、方向、日历、线路精确连接。新增 17 条完整列车番号官方证据、17 条 E7系 PNG 精确单号行，连同既有的休日 Toki301，共 18 条官方番号及 18 条 PNG 单号映射（不是宣称实际车辆编组确定）。
+
+例如：Toki312 是 **1312C**，Toki344 是 **1344C**，Tanigawa403 是 **2403C**。同名服务可能有季节性附加番号（如4403C），本次按2026年11月常规 Weekday 号段登记，不把特别运行日的番号改写到通用模板，也不从爱称号次机械加尾缀。来源日期与停站/到发时刻的正确性仍需要各自审计。
+
+SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_numbers_png.sql](../../supabase/migrations/20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_numbers_png.sql)
+
+已部署原有 Supabase train-runs Edge Function 至 **v298**，按日期为2026-11、官方版本2611、line_key、calendar_urn、source_template_id、direction_urn，以及官方 URL 验证后，从数据库读取正式番号，保留原始 service_name 字段。不新增页面脚本或自制图标；既有 E7 系车型计划和车图库负责图像渲染。部署及数据库回读验证成功，但尚未完成逐车浏览器端显示测试。
+
+**全库复核**：10条线826份模板；400条已确认单一计划车型、426条待定；22条正式列车番号证据；20条可精确关联的 PNG 单号记录；实际车辆编组认证为0。这些计数不是全日程时刻表的完整性，也不是实时实车位置认证。
+
+后续：以同样逐车官方表对齐秋田、山形、东北、北陆、北海道；对于 E5/H5 或 E7/W7 同线混用、併结拆分及不明配属不强制选择图片，必须查到唯一计划车型才能建立型号对应 PNG。
