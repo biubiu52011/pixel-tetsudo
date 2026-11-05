@@ -182,3 +182,22 @@ test('SVG image is a marked reference while the ODPT position and formation rema
  assert.ok(render.includes('_syncTrainMarkerIllustrationStatus(existingIcon, markerSpec)'));
  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
 });
+
+
+test('trains page points to the current PNG selector, renderer and fleet scripts',()=>{
+ const crypto=require('node:crypto');
+ const html=fs.readFileSync('pages/trains.html','utf8');
+ for(const asset of [
+  'js/train-vehicle.js','js/trains-render.js',
+  'data/timetables/vehicle-garage-png-map.js',
+  'data/timetables/train-number-png-ranges.js',
+  'data/core/major-vehicle-fleet-presets.js'
+ ]){
+  const buf=fs.readFileSync(asset);
+  const sha=crypto.createHash('sha1').update('blob '+buf.length+'\\0')
+    .update(buf).digest('hex').slice(0,12);
+  // Git's blob SHA uniquely fingerprints the browser-loaded asset.
+  assert.ok(html.includes('../'+asset+'?v='+sha),
+    'stale script URL in trains page: '+asset+' expected '+sha);
+ }
+});
