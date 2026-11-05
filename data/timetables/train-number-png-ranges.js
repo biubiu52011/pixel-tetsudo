@@ -2004,6 +2004,63 @@
       edition:"2611",referenceOnly:true,actualVehicleConfirmed:false,
       stopClockStatus:proof.stopClockStatus||"number_only"});
   }
+  // Kesennuma 2611: the historical SQL name covers RAIL D numbers and
+  // BRT K numbers. Only an SQL-issued proof for Maeyachi–Yanagitsu may
+  // authorize the KiHa110 fleet illustration. No BRT route/icon guessing.
+  function verifyKesennumaRailService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Kesennuma"||
+       proof.segmentKey!=="maeyachi_yanagitsu_rail"||
+       proof.transportMode!=="rail"||
+       proof.excludedTransportMode!=="BRT"||
+       proof.referenceOnly!==true||
+       proof.actualVehicleConfirmed!==false||
+       !String(proof.officialSourceUrl||"").startsWith(
+          "https://timetables.jreast.co.jp/2611/timetable-v/267"))
+      return null;
+    if(String(p.positionLineId||p.lineId||"")!=="Kesennuma"||
+       String(p.displayLineId||"Kesennuma")!=="Kesennuma"||
+       p.sourceRailway!=="odpt.Railway:JR-East.Kesennuma")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var number=String(p.trainNumber||"").toUpperCase().trim();
+    var day=String(p.serviceDate||"").slice(0,10);
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day)||
+       !/^(?:9(?:2[1-9]|3[0-5])|29(?:2[6-9]|3[0-8]))D$/.test(number)||
+       number!==proof.trainNumber||day!==proof.serviceDate)return null;
+    if(["2026-11-04","2026-11-05","2026-11-06"].indexOf(day)>=0&&
+       ["2927D","2930D","928D","929D"].indexOf(number)>=0)
+      return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop();
+    if(!["Outbound","Inbound"].includes(dir)||
+       dir!==String(proof.direction||"").split(/[.:]/).pop())return null;
+    var holiday=[0,6].indexOf(new Date(day+"T12:00:00Z").getUTCDay())>=0||
+       day==="2026-11-03"||day==="2026-11-23";
+    if(sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday"))
+      return null;
+    if(String(p.trainType||"").split(/[.:]/).pop()!=="Local"||
+       proof.trainType!=="odpt.TrainType:JR-East.Local")return null;
+    var route=["Maeyachi","Wabuchi","Nonodake",
+       "Rikuzen-Toyosato","Mitakedo","Yanagitsu"];
+    var expected=dir==="Outbound"?route:route.slice().reverse();
+    var listed=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[];
+    if(listed.length!==6||
+       listed.some(function(u,i){
+         return String(u||"").split(".").pop()!==expected[i];
+       })||
+       proof.routeFrom!==expected[0]||
+       proof.routeTo!==expected[5])return null;
+    if(proof.model!=="キハ110系"||
+       proof.pngReference!==
+         "../images/列车/JR東日本/JR東日本_キハ110系.png")return null;
+    return Object.freeze({number:number,kind:"local_rail",
+      model:proof.model,pngPath:proof.pngReference,trainType:"Local",
+      edition:"2611",referenceOnly:true,actualVehicleConfirmed:false,
+      railwayFrom:proof.routeFrom,railwayTo:proof.routeTo,
+      stopClockStatus:proof.stopClockStatus});
+  }
   // SQL positions can provide the calendar as an ODPT serviceId rather
   // than a normalized calendarType. Read the timetable source first;
   // never infer a service calendar from the last two train-number digits.
@@ -2042,6 +2099,27 @@
       return {trainNumber:number,lineId:line,model:verified.model,
         pngPath:verified.pngPath,
         source:"jreast-2611-kitakami-sql-number-rail-scope",
+        planned:true,representative:true};
+    }
+    if(line==="Kesennuma"){
+      var scoped=Object.assign({},context||{},{trainNumber:number});
+      var official=verifyKesennumaRailService(scoped);
+      if(!official||scoped.estimated!==true||
+         scoped.positionSource!=="supabase-train-run"||
+         scoped.officialNumberVerified!==true||
+         scoped.vehicleIdentityStatus==="EXACT")return null;
+      var live=String(scoped.realtimeVehicleType||
+          scoped.realtimeDerivedVehicleType||"").trim();
+      if(live&&live!==official.model)return null;
+      var plan=scoped.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+        (plan.models.length!==1||plan.models[0]!==official.model))return null;
+      if(Array.isArray(scoped.plannedVehicleCandidates)&&
+         scoped.plannedVehicleCandidates.length&&
+         scoped.plannedVehicleCandidates.indexOf(official.model)<0)return null;
+      return {trainNumber:number,lineId:line,model:official.model,
+        pngPath:official.pngPath,
+        source:"jr-east-2611-kesennuma-sql-rail-only-number",
         planned:true,representative:true};
     }
     if(line==="Kashima"){
@@ -2887,6 +2965,7 @@
     verifyJoetsuService:verifyJoetsuService,
     verifyKamaishiService:verifyKamaishiService,
     verifyKashimaService:verifyKashimaService,
+    verifyKesennumaRailService:verifyKesennumaRailService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
