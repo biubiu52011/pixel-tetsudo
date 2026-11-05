@@ -55,6 +55,50 @@
   // https://timetables.jreast.co.jp/2611/timetable-v/671u1.html
   var chuoSobuTozai2611=Object.freeze({"holiday_Eastbound_K":["1202Y","1402Y","1610Y","1702Y","610Y","702Y","706Y","902Y"],"holiday_Eastbound_S":["1016Y","1020Y","1028Y","1122Y","1142Y","1216Y","1320Y","1342Y","1422Y","1516Y","1520Y","1548Y","1622Y","1628Y","1642Y","1644Y","1716Y","1734Y","1736Y","1820Y","1842Y","1848Y","1922Y","716Y","728Y","738Y","820Y","826Y","840A","848Y","858Y","922Y","936Y","944Y"],"holiday_Westbound_K":["1003Y","1303Y","1503Y","1711Y","1803Y","1807Y","803Y","811Y"],"holiday_Westbound_S":["1023Y","1117Y","1121Y","1223Y","1243Y","1317Y","1421Y","1443Y","1523Y","1529Y","1545Y","1617Y","1621Y","1635Y","1637Y","1723Y","1743Y","1749Y","617Y","621Y","627Y","629Y","639Y","723Y","737Y","741Y","749Y","759Y","817Y","845Y","921Y","929Y","943Y","949Y"],"weekday_Eastbound_K":["1602Y","1604Y","1608Y","1710Y","1802Y","1806Y","1904Y","1910Y","506A","602A","604Y","608A","610Y","910Y"],"weekday_Eastbound_S":["1012Y","1068Y","1090Y","1158Y","1180Y","1218Y","1270Y","1368Y","1380Y","1458Y","1470Y","1518Y","1548Y","1568Y","1614A","1622Y","1654Y","1656A","1680Y","1684Y","1712Y","1728A","1738A","1744Y","1764Y","1766Y","1768A","1770A","1774Y","1794A","1818Y","1820Y","1824Y","1848A","1850Y","1860A","1862A","1880A","1882A","1888Y","1914A","1916Y","1932Y","1966Y","2036Y","2082Y","2126Y","2160Y","2170Y","622Y","636A","640Y","644Y","654Y","684A","688Y","718A","728Y","730Y","734Y","764Y","790Y","792A","838Y","842Y","846Y","874A","876Y","878Y","932Y","944Y","958Y","970Y","984Y","988Y","996Y"],"weekday_Westbound_K":["1611Y","1705Y","1809Y","1811Y","1903A","1907A","2005Y","2009Y","2111Y","711A","809A","903Y","905Y"],"weekday_Westbound_S":["1059Y","1071Y","1119Y","1169Y","1259Y","1281Y","1319Y","1371Y","1469Y","1481Y","1513Y","1515Y","1539Y","1555A","1557Y","1567Y","1585Y","1595A","1623Y","1645Y","1665A","1671Y","1675Y","1689Y","1717A","1719Y","1721A","1725Y","1733Y","1749Y","1751Y","1761Y","1781Y","1815A","1829A","1837Y","1839Y","1855Y","1863Y","1867Y","1869Y","1927A","1971Y","1983Y","2061A","485Y","519Y","537Y","591Y","593Y","629Y","631A","639A","641Y","645Y","647Y","665Y","675Y","723Y","733Y","743Y","755Y","759Y","777Y","779Y","785Y","789Y","797A","813A","835A","845Y","849A","871Y","891Y","969Y","981Y"]});
   var rows=[
+
+    // 陸羽東線 2611: only the 45 ordinary official D services and six
+    // 9721–9726D "おもいで湯けむり" scheduled rapids, NOT 9727/9728D
+    // nor arbitrary KiHa110 D-series on nearby railways.
+    // https://timetables.jreast.co.jp/2611/timetable-v/268u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/268u2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/268d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/268d2.html
+    {lineIds:["RikutoEast"],numberFormat:"full",from:1720,to:5735,
+      suffixes:"D",trainTypes:["Local"],
+      numberIndex:"jreast-rikuto-east-2611",rikutoKind:"regular",
+      publishedNumbers:["5720D","1720D","5722D","1722D","1724D",
+        "5724D","5726D","1726D","1728D","4730D","1732D",
+        "4734D","5728D","1736D","5730D","1738D","5732D",
+        "1740D","5734D","1742D","1744D","1746D","5721D",
+        "1721D","5723D","1723D","2725D","5725D","4725D",
+        "1727D","4729D","1731D","4733D","5727D","1735D",
+        "5729D","1737D","5731D","1739D","5733D","1741D",
+        "1743D","1745D","1747D","5735D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.RikutoEast"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系"],requiredCandidateModelPrefix:"キハ110系",
+      rejectAmbiguousPlan:true,
+      model:"キハ110系",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
+    // 9721–9726D are named Rapid trains; SQL legacy type was Local.
+    // Indexed using OFFICIAL name/calendar and independent 2026-10
+    // KiHa110 working reports, not a claim of confirmed Nov formation.
+    // https://timetables.jreast.co.jp/2611/train/185/189081.html
+    // https://railf.jp/news/2026/04/28/000000.html
+    {lineIds:["RikutoEast"],numberFormat:"full",from:9721,to:9726,
+      suffixes:"D",trainTypes:["Rapid"],
+      numberIndex:"jreast-rikuto-east-2611",rikutoKind:"rapid",
+      publishedNumbers:["9721D","9722D","9723D","9724D","9725D","9726D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.RikutoEast"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系"],requiredCandidateModelPrefix:"キハ110系",
+      rejectAmbiguousPlan:true,
+      model:"キハ110系",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
     // JR East 2026-11 Kururi, Karasuyama, Hachinohe official 2611
     // train-number lists. No integer interval authorization: exact lists
     // plus the separate index verify named-train dates & cancellations.
@@ -1793,6 +1837,16 @@
           return branchIdx.verify(number,branchRailway,branchDirection,
             "odpt.TrainType:JR-East.Local",cal,branchDate)===true;
         }))continue;
+      }
+      if(row.numberIndex==="jreast-rikuto-east-2611"){
+        var rikutoIndex=root.JREastRikutoEastNumberIndex202611;
+        var rikutoMatch=rikutoIndex&&typeof rikutoIndex.verify==="function"
+          ?rikutoIndex.verify(number,context&&context.sourceRailway,
+            context&&(context.railDirection||context.directionUrn||context.direction),
+            context&&(context.trainType||context.typeName),
+            sourceCalendar(context),context&&context.serviceDate):null;
+        if(!rikutoMatch||rikutoMatch.kind!==row.rikutoKind||
+           rikutoMatch.model!==row.model)continue;
       }
       if(row.numberIndex==="jreast-regional-2611"){
         var regionalIndex=root.JREastRegionalNumberIndex202611;
