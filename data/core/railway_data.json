@@ -14563,6 +14563,34 @@
     "JRW-Hitahikosan-1191425": {
       "lat": 33.345223,
       "lng": 130.876977
+    },
+    "Nakatsuchi": {
+      "lat": 36.805663,
+      "lng": 137.907807
+    },
+    "Kita-Otari": {
+      "lat": 36.842578,
+      "lng": 137.906459
+    },
+    "Hiraiwa": {
+      "lat": 36.886886,
+      "lng": 137.865632
+    },
+    "Kotaki": {
+      "lat": 36.938136,
+      "lng": 137.859508
+    },
+    "Nechi": {
+      "lat": 36.966683,
+      "lng": 137.86711
+    },
+    "Kubiki-Ono": {
+      "lat": 37.006085,
+      "lng": 137.872433
+    },
+    "Himekawa": {
+      "lat": 37.020347,
+      "lng": 137.860814
     }
   },
   "lines": {
@@ -31458,15 +31486,9 @@
         "Shinano-Moriue",
         "Hakuba-Oike",
         "Chikuni",
-        "Otariguchi",
-        "Kita-Otari",
-        "Naka-Otsari",
         "Minami-Otari"
       ],
       "durations": [
-        2,
-        2,
-        2,
         2,
         2,
         2,
@@ -47712,6 +47734,71 @@
         ],
         "operatorGroup": "JR_KYUSHU"
       }
+    },
+    "OitoWest": {
+      "name": "大糸线（JR西日本）",
+      "nameEn": "Oito Line (JR West)",
+      "nameJa": "大糸線（JR西日本）",
+      "nameZh": "大糸线（JR西日本）",
+      "nameKo": "오이토선（JR 서일본）",
+      "code": "OITW",
+      "color": "#E87830",
+      "operator": "JR-West",
+      "region": "Hokuriku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 58,
+      "branchOf": null,
+      "stations": [
+        "Minami-Otari",
+        "Nakatsuchi",
+        "Kita-Otari",
+        "Hiraiwa",
+        "Kotaki",
+        "Nechi",
+        "Kubiki-Ono",
+        "Himekawa",
+        "Itoigawa"
+      ],
+      "durations": [
+        6,
+        8,
+        9,
+        14,
+        6,
+        7,
+        3,
+        5
+      ],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Minami-Otari",
+          "lineId": "Oito",
+          "type": "in",
+          "note": "JR東日本 ↔ JR西日本"
+        },
+        {
+          "station": "Itoigawa",
+          "lineId": "HokurikuShinkansen",
+          "type": "out",
+          "note": ""
+        }
+      ],
+      "presentation": {
+        "code": "OITW",
+        "nameJa": "大糸線（JR西日本）",
+        "nameZh": "大糸线（JR西日本）",
+        "nameEn": "Oito Line (JR West)",
+        "nameKo": "오이토선（JR 서일본）",
+        "color": "#E87830",
+        "order": 55,
+        "lineIds": [
+          "OitoWest"
+        ],
+        "operatorGroup": "JR_WEST"
+      },
+      "serviceBoundaries": []
     }
   },
   "name_map": {
@@ -50723,7 +50810,15 @@
     "函館どつく前": "Hakodate-Hakodate-Dokku-Mae",
     "宝来町": "Hakodate-Horaicho",
     "青柳町": "Hakodate-Aoyagi-cho",
-    "谷地頭": "Hakodate-Yachigashira"
+    "谷地頭": "Hakodate-Yachigashira",
+    "中土": "Nakatsuchi",
+    "北小谷": "Kita-Otari",
+    "平岩": "Hiraiwa",
+    "小滝": "Kotaki",
+    "根知": "Nechi",
+    "頸城大野": "Kubiki-Ono",
+    "姫川": "Himekawa",
+    "南小谷": "Minami-Otari"
   },
   "stationLines": {
     "Omiya": [
@@ -55448,7 +55543,8 @@
       "Oito"
     ],
     "Minami-Otari": [
-      "Oito"
+      "Oito",
+      "OitoWest"
     ],
     "Noheji": [
       "Ominato"
@@ -58948,7 +59044,8 @@
       "HokurikuShinkansen"
     ],
     "Itoigawa": [
-      "HokurikuShinkansen"
+      "HokurikuShinkansen",
+      "OitoWest"
     ],
     "Kurobe-Unazukionsen": [
       "HokurikuShinkansen"
@@ -63122,6 +63219,27 @@
     ],
     "Hakodate-Yachigashira": [
       "Hakodate2"
+    ],
+    "Nakatsuchi": [
+      "OitoWest"
+    ],
+    "Kita-Otari": [
+      "OitoWest"
+    ],
+    "Hiraiwa": [
+      "OitoWest"
+    ],
+    "Kotaki": [
+      "OitoWest"
+    ],
+    "Nechi": [
+      "OitoWest"
+    ],
+    "Kubiki-Ono": [
+      "OitoWest"
+    ],
+    "Himekawa": [
+      "OitoWest"
     ]
   },
   "lineStationOrder": {
@@ -65044,11 +65162,13 @@
       "Shimauchi": 2,
       "Shimatakamatsu": 3,
       "Azusabashi": 4,
+      "Hitoichiba": 5,
       "Nakagaya": 6,
       "Minami-Toyoshina": 7,
       "Toyoshina": 8,
-      "Kashiwabara": 9,
+      "Hakuyacho": 9,
       "Hotaka": 10,
+      "Shinshu-Ariake": 11,
       "Azumi-Oiwake": 12,
       "Hosono": 13,
       "Kita-Hosono": 14,
@@ -65060,18 +65180,16 @@
       "Kita-Omachi": 20,
       "Shinano-Kizaki": 21,
       "Inao": 22,
-      "Uminokuchi": 23,
+      "Uminoguchi": 23,
       "Yanaba": 24,
       "Minami-Kamishiro": 25,
       "Kamishiro": 26,
       "Iimori": 27,
       "Hakuba": 28,
-      "Shinano-Morishita": 29,
+      "Shinano-Moriue": 29,
       "Hakuba-Oike": 30,
       "Chikuni": 31,
-      "Minami-Otari": 32,
-      "Hitoichiba": 5,
-      "Shinshu-Ariake": 11
+      "Minami-Otari": 32
     },
     "Ominato": {
       "Noheji": 0,
@@ -68240,6 +68358,17 @@
       "Hakodate-Suehiro-cho": 20,
       "Hakodate-Omachi": 21,
       "Hakodate-Hakodate-Dokku-Mae": 22
+    },
+    "OitoWest": {
+      "Minami-Otari": 0,
+      "Nakatsuchi": 1,
+      "Kita-Otari": 2,
+      "Hiraiwa": 3,
+      "Kotaki": 4,
+      "Nechi": 5,
+      "Kubiki-Ono": 6,
+      "Himekawa": 7,
+      "Itoigawa": 8
     }
   },
   "line_types": {
@@ -68266,7 +68395,8 @@
     "SaikyoKawagoe": "rapid",
     "Enoshima": "local",
     "Hakodate2": "local",
-    "Hakodate5": "local"
+    "Hakodate5": "local",
+    "OitoWest": "local"
   },
   "through_fallback": {
     "SotetsuDirect": {
