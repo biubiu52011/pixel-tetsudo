@@ -45,6 +45,14 @@ function registerEvidenceProvider(provider) {
   function normalizeOperationCode(trainNumber, ctx) {
     ctx = ctx || {};
     var raw = String(trainNumber || "").toUpperCase().trim();
+    // ODPT Chuo-Sobu reports public TRAIN numbers, e.g. 662B/663B.
+    // The former generic parser returned 662B/663B or sliced 62B/63B;
+    // neither is an authorised link to an observed physical formation.
+    // A separately documented timetable crosswalk must provide operation
+    // provenance, never normalize a B/C number into operating evidence.
+    if ((ctx.lineId === "ChuoSobuLocal" ||
+         ctx.railway === "odpt.Railway:JR-East.ChuoSobuLocal") &&
+        /^[0-9]{3,4}[BC]$/.test(raw)) return "";
     // 东西线公开列车号在末尾保留运行号后缀。
     // 形式为末两位数字加所属字母：507K -> 07K、603K -> 03K、655S -> 55S，
     // A650T -> 50T。应先按该网络形式解析，再尝试通用显式形式。
@@ -182,7 +190,13 @@ function registerEvidenceProvider(provider) {
           var normalizedOperation = ctx.operationCode || normalizeOperationCode(n, ctx);
           var derivedOperationMatch = ctx.operationCodeDerived === true &&
             /Keiyo|Musashino/.test([ctx.lineId, ctx.railway].join("|"));
-          var opMatch = (!ctx.requireTrainNumberMatch || derivedOperationMatch) && normalizedOperation &&
+          // Chuo-Sobu B/C: old operation-number observations are not
+          // public JR train-number evidence. Admit only an EXPLICIT same-date
+          // source row enumerating the exact 662B/663B trainNumber.
+          var chuoSobuNumberOnly = ctx.lineId === "ChuoSobuLocal" ||
+            ctx.railway === "odpt.Railway:JR-East.ChuoSobuLocal";
+          var opMatch = !chuoSobuNumberOnly &&
+            (!ctx.requireTrainNumberMatch || derivedOperationMatch) && normalizedOperation &&
             String(normalizedOperation) === String(r.operationCode);
           if (trainMatch || opMatch) matches.push(r);
         }
@@ -245,7 +259,10 @@ function registerEvidenceProvider(provider) {
           var r=records[i];
           if (!r || r.validDate !== d || !_evidenceNetworkMatches(r.networkKey, ctx)) continue;
           if (r.trainNumber && String(r.trainNumber) === n) exactTrain.push(r);
-          else if (!ctx.requireTrainNumberMatch && r.operationCode && op && String(r.operationCode) === op) operation.push(r);
+          else if (ctx.lineId !== "ChuoSobuLocal" &&
+            ctx.railway !== "odpt.Railway:JR-East.ChuoSobuLocal" &&
+            !ctx.requireTrainNumberMatch && r.operationCode && op &&
+            String(r.operationCode) === op) operation.push(r);
         }
         var matches = exactTrain.length ? exactTrain : operation;
         if (!matches.length) return null;
@@ -6294,150 +6311,13 @@ function resolveEvidence(trainNumber,ctx){ctx=ctx||{};if(!network(ctx))return nu
 registerEvidenceProvider({id:"odakyu-dated-formations",grade:"C",resolveEvidence:resolveEvidence});
 })();
 
-// 已验证的 JR 东日本中央·总武线当前服务
-// 日节假日运行表。ODPT 提供公开列车号，Loo-ool 提供
-// 由末两位数字加所属字母表示的实际编组（39B、11B、
-// 等）。保持此日期快照的范围严格：空来源单元格仍然保持
-// 未解析，不要把循环工作日/节假日计划变成猜测。
-(function(){"use strict";
-var DATE="2026-10-24", SOURCE="https://loo-ool.com/rail/K/00/20261024/";
-var rows={
- "03B":["E231系500番台","A536"],"07B":["E231系500番台","A548"],
- "09B":["E231系0番台（中央・総武線各駅停車）","B14"],"11B":["E231系500番台","A502"],
- "15B":["E231系0番台（中央・総武線各駅停車）","B26"],"17B":["E231系500番台","A537"],
- "19B":["E231系500番台","A540"],"21B":["E231系500番台","A518"],
- "23B":["E231系500番台","A511"],"25B":["E231系500番台","A545"],
- "27B":["E231系500番台","A528"],"29B":["E231系500番台","A552"],
- "33B":["E231系500番台","A551"],"35B":["E231系500番台","A535"],
- "37B":["E231系500番台","A506"],"39B":["E231系500番台","A530"],
- "51B":["E231系0番台（中央・総武線各駅停車）","B12"],"57B":["E231系0番台（中央・総武線各駅停車）","B11"],
- "59B":["E231系500番台","A538"],"61B":["E231系500番台","A503"],
- "67B":["E231系500番台","A514"],"69B":["E231系0番台（中央・総武線各駅停車）","B10"],
- "71B":["E231系500番台","A533"],"73B":["E231系500番台","A517"],
- "75B":["E231系500番台","A507"],"79B":["E231系500番台","A546"],
- "83B":["E231系500番台","A512"],"85B":["E231系500番台","A542"],
- "87B":["E231系500番台","A544"],"89B":["E231系500番台","A516"],
- "91B":["E231系500番台","A531"],"95B":["E231系500番台","A550"],
- "97B":["E231系500番台","A549"],"99B":["E231系500番台","A529"],
- "01C":["E231系500番台","A508"],"05C":["E231系500番台","A521"],
- "07C":["E231系500番台","A505"]
-};
-// 其他休日的历史编成证据。休日同一运用号可能换车，必须按日期使用。
-var historicalHolidayRows=Object.create(null);
-("2026-10-17|31B|5|A547 2026-10-17|41B|5|A548 2026-10-17|43B|5|A542 2026-10-17|49B|5|A526 2026-10-17|55B|0|B10 2026-10-17|63B|5|A543 2026-10-17|65B|5|A546 2026-10-10|31B|5|A538 2026-10-10|41B|0|B10 2026-10-10|43B|5|A501 2026-10-10|45B|5|A517 2026-10-10|49B|5|A543 2026-10-10|63B|5|A521 2026-10-10|65B|5|A551 2026-10-03|31B|5|A517 2026-10-03|43B|5|A528 2026-10-03|49B|5|A502 2026-10-03|55B|0|B12 2026-10-03|63B|5|A532 2026-10-03|81B|0|B26 2026-09-26|31B|5|A550 2026-09-26|41B|0|B12 2026-09-26|43B|5|A527 2026-09-26|49B|5|A532 2026-09-26|55B|5|A536 2026-09-26|63B|0|B14 2026-09-26|65B|5|A506 2026-09-26|81B|5|A539 2026-09-19|31B|5|A505 2026-09-19|41B|5|A519 2026-09-19|49B|5|A520 2026-09-19|55B|5|A516 2026-09-19|65B|5|A545 2026-09-19|81B|5|A508 2026-09-12|41B|5|A530 2026-09-12|43B|5|A527 2026-09-12|45B|5|A535 2026-09-12|49B|5|A518 2026-09-12|55B|5|A531 2026-09-12|63B|5|A528 2026-09-12|65B|5|A515 2026-09-05|41B|5|A503 2026-09-05|43B|5|A515 2026-09-05|63B|5|A510 2026-09-05|65B|5|A538 2026-09-05|81B|0|B10 2026-08-29|41B|5|A548 2026-08-29|43B|5|A524 2026-08-29|45B|5|A550 2026-08-29|49B|5|A510 2026-08-29|55B|5|A533").split(" ").forEach(function(item){
- var p=item.split("|"),d=p[0],code=p[1];
- (historicalHolidayRows[d]||(historicalHolidayRows[d]=Object.create(null)))[code]=[p[2],p[3]];
-});
-("2026-08-22|31B|5|A552 2026-08-22|41B|5|A533 2026-08-22|49B|5|A535 2026-08-22|55B|5|A503 2026-08-22|63B|5|A532 2026-08-22|81B|5|A536 2026-08-15|31B|5|A540 2026-08-15|41B|5|A501 2026-08-15|43B|0|B10 2026-08-15|49B|5|A532 2026-08-15|63B|5|A514 2026-08-15|81B|5|A543 2026-08-08|31B|0|B14 2026-08-08|41B|0|B26 2026-08-08|43B|5|A507 2026-08-08|45B|5|A540 2026-08-08|49B|5|A514 2026-08-08|55B|5|A519 2026-08-08|63B|5|A531 2026-08-08|81B|0|B11 2026-08-01|31B|5|A536 2026-08-01|41B|5|A503 2026-08-01|43B|5|A518 2026-08-01|55B|5|A506 2026-08-01|63B|5|A524 2026-08-01|65B|5|A517 2026-08-01|81B|5|A548 2026-07-25|41B|5|A528 2026-07-25|43B|0|B14 2026-07-25|45B|5|A501 2026-07-25|49B|5|A537 2026-07-25|55B|5|A541 2026-07-25|63B|5|A546 2026-07-25|65B|0|B26 2026-07-25|81B|5|A507 2026-07-18|41B|5|A531 2026-07-18|43B|5|A541 2026-07-18|49B|5|A515 2026-07-18|81B|5|A509 2026-07-11|31B|0|B26 2026-07-11|45B|0|B12 2026-07-11|49B|5|A517 2026-07-11|63B|5|A539 2026-07-04|41B|5|A548 2026-07-04|43B|5|A505 2026-07-04|45B|5|A507 2026-07-04|49B|5|A539 2026-07-04|55B|5|A544 2026-07-04|63B|5|A543 2026-06-27|31B|5|A508 2026-06-27|41B|0|B27 2026-06-27|45B|0|B11 2026-06-27|49B|5|A543 2026-06-27|55B|0|B14 2026-06-27|63B|5|A537 2026-06-20|41B|0|B14 2026-06-20|43B|0|B11 2026-06-20|49B|5|A545 2026-06-20|63B|5|A510 2026-06-20|65B|5|A529 2026-06-20|81B|5|A531").split(" ").forEach(function(item){
- var p=item.split("|"),d=p[0],code=p[1];
- (historicalHolidayRows[d]||(historicalHolidayRows[d]=Object.create(null)))[code]=[p[2],p[3]];
-});
-// 静态运行号 -> 规范 PNG 身份。运行表仅按
-// 工作日/节假日拆分；当当前页面也暴露实际编组时，上方的日期记录
-// 仍然是更强的来源。
-var calendarModels={
- weekday:{
-  "01B":"E231系500番台","03B":"E231系500番台","05B":"E231系500番台",
-  "07B":"E231系0番台（中央・総武線各駅停車）","09B":"E231系500番台","11B":"E231系500番台",
-  "13B":"E231系500番台","15B":"E231系500番台","17B":"E231系500番台",
-  "19B":"E231系0番台（中央・総武線各駅停車）","21B":"E231系500番台","23B":"E231系500番台","25B":"E231系500番台",
-  "27B":"E231系500番台","29B":"E231系500番台","31B":"E231系500番台",
-  "33B":"E231系500番台","35B":"E231系500番台","37B":"E231系500番台",
-  "39B":"E231系500番台","41B":"E231系500番台","43B":"E231系500番台",
-  "45B":"E231系500番台","47B":"E231系0番台（中央・総武線各駅停車）","49B":"E231系0番台（中央・総武線各駅停車）","51B":"E231系500番台",
-  "53B":"E231系500番台","55B":"E231系0番台（中央・総武線各駅停車）","57B":"E231系500番台",
-  "59B":"E231系500番台","61B":"E231系500番台","63B":"E231系500番台",
-  "65B":"E231系500番台","67B":"E231系0番台（中央・総武線各駅停車）","69B":"E231系500番台",
-  "71B":"E231系500番台","73B":"E231系500番台","75B":"E231系500番台",
-  "77B":"E231系500番台","79B":"E231系500番台","81B":"E231系500番台",
-  "83B":"E231系500番台","85B":"E231系500番台","87B":"E231系500番台",
-  "89B":"E231系500番台","91B":"E231系500番台","93B":"E231系500番台",
-  "95B":"E231系500番台","97B":"E231系500番台","99B":"E231系500番台",
-  "01C":"E231系500番台","03C":"E231系500番台","05C":"E231系500番台","07C":"E231系500番台"
- },
- holiday:{
-  "03B":"E231系500番台","07B":"E231系500番台","09B":"E231系0番台（中央・総武線各駅停車）",
-  "11B":"E231系500番台","15B":"E231系0番台（中央・総武線各駅停車）","17B":"E231系500番台",
-  "19B":"E231系500番台","21B":"E231系500番台","23B":"E231系500番台",
-  "25B":"E231系500番台","27B":"E231系500番台","29B":"E231系500番台",
-  "33B":"E231系500番台","35B":"E231系500番台","37B":"E231系500番台",
-  "39B":"E231系500番台","51B":"E231系0番台（中央・総武線各駅停車）","57B":"E231系0番台（中央・総武線各駅停車）",
-  "59B":"E231系500番台","61B":"E231系500番台","67B":"E231系500番台",
-  "69B":"E231系0番台（中央・総武線各駅停車）","71B":"E231系500番台","73B":"E231系500番台",
-  "75B":"E231系500番台","79B":"E231系500番台","83B":"E231系500番台",
-  "85B":"E231系500番台","87B":"E231系500番台","89B":"E231系500番台",
-  "91B":"E231系500番台","95B":"E231系500番台","97B":"E231系500番台",
-  "99B":"E231系500番台",
-  "31B":"E231系500番台","41B":"E231系500番台","43B":"E231系500番台",
-  "45B":"E231系500番台","49B":"E231系500番台","55B":"E231系500番台",
-  "63B":"E231系500番台","65B":"E231系500番台","81B":"E231系500番台",
-  "01C":"E231系500番台","05C":"E231系500番台","07C":"E231系500番台"
- }
-};
-// loo-ool休日運用表と同日の手動時刻表を首末駅・時刻で照合した
-// 公開列車番号 -> 実運用番号。末尾2桁への推測変換は使わない。
-var holidayTrainOperationCodes=Object.create(null);
-Object.assign(holidayTrainOperationCodes,{"2342B":"03B","444B":"45B","457B":"57B","633B":"33B","739B":"39B","779B":"79B"});
-("1000C:01C 1002B:03B 1006B:07B 1010B:11B 1014B:15B 1018B:19B 1026B:27B 1036B:37B 1043B:43B 1050B:51B 1055B:55B 1057B:57B 1058B:59B 1061B:61B 1300C:01C 1069B:69B 1072B:73B 1075B:75B 1083B:83B 1087B:87B 1089B:89B 1091B:91B 1095B:95B 1097B:97B 1098B:99B 1101C:01C 1103B:03B 1105C:05C 1106C:07C 1107B:07B 1109B:09B 1111B:11B 1115B:15B 1119B:19B 1120B:21B 1129B:29B 1134B:35B 1137B:37B 1138B:39B 1140B:41B 1142B:43B 1148B:49B 1160B:61B 1166B:67B 1168B:69B 1181B:81B 1185B:85B 1190B:91B 1196B:97B 1204C:05C 1207C:07C 1208B:09B 1227B:27B 1228B:29B 1235B:35B 1236B:37B 1239B:39B 1241B:41B 1249B:49B 1251B:51B 1254B:55B 1256B:57B 1259B:59B 1267B:67B 1269B:69B 1273B:73B 1274B:75B 1280B:81B 1282B:83B 1286B:87B 1288B:89B 1294B:95B 1299B:99B 1302B:03B 1305C:05C 1306B:07B 1310B:11B 1314B:15B 1318B:19B 1321B:21B 1326B:27B 1340B:41B 1343B:43B 1355B:55B 1357B:57B 1358B:59B 1361B:61B 1372B:73B 1375B:75B 1383B:83B 1384B:85B 1387B:87B 1389B:89B 1391B:91B 1397B:97B 1398B:99B 1401C:01C 1406C:07C 1407B:07B 1409B:09B 1411B:11B 1415B:15B 1419B:19B 1420B:21B 1429B:29B 1434B:35B 1437B:37B 1438B:39B 1442B:43B 1448B:49B 1450B:51B 1466B:67B 1468B:69B 1481B:81B 1482B:83B 1485B:85B 1490B:91B 1495B:95B 1496B:97B 1499B:99B 1500C:01C 1503B:03B 1504C:05C 1507C:07C 1508B:09B 1527B:27B 1528B:29B 1535B:35B 1536B:37B 1539B:39B 1541B:41B 1543B:43B 1549B:49B 1551B:51B 1554B:55B 1556B:57B 1574B:75B 1559B:59B 1560B:61B 1569B:69B 1573B:73B 1586B:87B 1588B:89B 1594B:95B 1602B:03B 1605C:05C 1606B:07B 1609B:09B 1610B:11B 1614B:15B 1618B:19B 1621B:21B 1623B:23B 1626B:27B 1638B:39B 1640B:41B 1655B:55B 1658B:59B 1661B:61B 1667B:67B 1672B:73B 1675B:75B 1683B:83B 1684B:85B 1689B:89B 1691B:91B 1697B:97B 1698B:99B 1706C:07C 1707B:07B 1715B:15B 1711B:11B 1719B:19B 1720B:21B 1729B:29B 1724B:25B 1734B:35B 1737B:37B 1742B:43B 1748B:49B 1750B:51B 1764B:65B 1759B:59B 1763B:63B 1766B:67B 1768B:69B 1782B:83B 1785B:85B 1787B:87B 1788B:89B 1790B:91B 1795B:95B 1799B:99B 1803B:03B 1804C:05C 1807C:07C 1818B:19B 1821B:21B 1822B:23B 1827B:27B 1828B:29B 1835B:35B 1836B:37B 1839B:39B 1841B:41B 1843B:43B 1851B:51B 1854B:55B 1860B:61B 1862B:63B 1865B:65B 1869B:69B 1873B:73B 1874B:75B 1886B:87B 1894B:95B 1896B:97B 1902B:03B 1905C:05C 1906B:07B 1910B:11B 1914B:15B 1923B:23B 1925B:25B 1926B:27B 1937B:37B 1938B:39B 1949B:49B 1958B:59B 1961B:61B 1964B:65B 1967B:67B 1972B:73B 1975B:75B 1983B:83B 1984B:85B 1989B:89B 1991B:91B 1997B:97B 1998B:99B 2006C:07C 2015B:15B 2019B:19B 2020B:21B 2029B:29B 2034B:35B 2040B:41B 2042B:43B 2050B:51B 2055B:55B 2059B:59B 2063B:63B 2068B:69B 2082B:83B 2085B:85B 2087B:87B 2088B:89B 2090B:91B 2095B:95B 2096B:97B 2104C:05C 2107B:07B 2111B:11B 2122B:23B 2124B:25B 2127B:27B 2128B:29B 2136B:37B 2139B:39B 2141B:41B 2148B:49B 2160B:61B 2162B:63B 2165B:65B 2169B:69B 2174B:75B 2183B:83B 2186B:87B 2199B:99B 2205C:05C 2207C:07C 2210B:11B 2218B:19B 2225B:25B 2235B:35B 2243B:43B 2254B:55B 2258B:59B 2264B:65B 2284B:85B 2289B:89B 2294B:95B 2298B:99B 2306B:07B 2323B:23B 2326B:27B 2338B:39B 2340B:41B 2349B:49B 2361B:61B 2363B:63B 2382B:83B 2387B:87B 2404C:05C 2419B:19B 2434B:35B 2495B:95B 2499B:99B 402B:03B 409B:09B 410B:11B 418B:19B 428B:29B 431B:31B 433B:33B 450B:51B 485B:85B 511B:11B 519B:19B 532B:33B 529B:29B 530B:31B 545B:45B 556B:57B 571B:71B 572B:73B 582B:83B 590B:91B 601C:01C 608B:09B 603B:03B 615B:15B 616B:17B 617B:17B 618B:19B 620B:21B 624B:25B 633B:33B 641B:41B 649B:49B 651B:51B 659B:59B 660B:61B 661B:61B 662B:63B 670B:71B 673B:73B 684B:85B 688B:89B 698B:99B 699B:99B 700C:01C 702B:03B 704C:05C 706C:07C 707C:07C 710B:11B 714B:15B 721B:21B 728B:29B 731B:31B 736B:37B 744B:45B 748B:49B 750B:51B 757B:57B 758B:59B 767B:67B 771B:71B 772B:73B 775B:75B 783B:83B 785B:85B 789B:89B 791B:91B 795B:95B 801C:01C 803B:03B 805C:05C 807B:07B 809B:09B 811B:11B 817B:17B 819B:19B 825B:25B 826B:27B 829B:29B 834B:35B 837B:37B 838B:39B 840B:41B 855B:55B 860B:61B 866B:67B 868B:69B 874B:75B 890B:91B 894B:95B 897B:97B 898B:99B 904C:05C 907C:07C 908B:09B 915B:15B 916B:17B 927B:27B 928B:29B 939B:39B 935B:35B 941B:41B 949B:49B 951B:51B 954B:55B 956B:57B 959B:59B 967B:67B 970B:71B 973B:73B 980B:81B 982B:83B 984B:85B 988B:89B 996B:97B 999B:99B").split(" ").forEach(function(pair){var parts=pair.split(":");holidayTrainOperationCodes[parts[0]]=parts[1];});
-function calendar(ctx){
- var c=String(ctx&&ctx.calendarType||'').toLowerCase();
- if(c==='weekday'||c==='holiday')return c;
- var d=String(ctx&&ctx.serviceDate||'').slice(0,10);
- if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return '';
- var day=new Date(d+'T12:00:00Z').getUTCDay();
- return day===0||day===6?'holiday':'weekday';
-}
-function hasCanonicalTrainNumber(trainNumber,ctx){
- var records=window.VEHICLE_OPERATION_EVIDENCE||[],date=String(ctx&&ctx.serviceDate||'').slice(0,10),n=String(trainNumber||'');
- return records.some(function(r){
-  return r&&r.validDate===date&&r.networkKey==="ChuoSobuLocal"&&
-   Array.isArray(r.trainNumbers)&&r.trainNumbers.indexOf(n)>=0;
- });
-}
-function network(ctx){
- ctx=ctx||{};
- return String(ctx.lineId||"")==="ChuoSobuLocal" &&
-   /(?:^|[:.])JR-East(?:$|[.])|JR-East/i.test(String(ctx.operator||ctx.railway||""));
-}
-function operation(trainNumber,ctx){
- var n=String(trainNumber||"").toUpperCase().trim(),c=calendar(ctx),mapped=c==="holiday"&&holidayTrainOperationCodes[n];
- if(mapped)return mapped;
- if(c==="holiday"&&/^\d{3,4}[BC]$/.test(n))return "";
- var raw=String((ctx&&ctx.operationCode)||n).toUpperCase().trim();
- var m=raw.match(/(?:^|[^0-9A-Z])(?:[AB])?\d*(\d{2})([BC])(?:R)?$/);
- return m?m[1]+m[2]:"";
-}
-function resolveEvidence(trainNumber,ctx){
- ctx=ctx||{};
- if(!network(ctx))return null;
- var date=String(ctx.serviceDate||"").slice(0,10),code=operation(trainNumber,ctx),r=rows[code];
- if(date===DATE&&r){
-  return {operator:"JR-East",vehicleType:r[0],formationId:r[1],operationCode:code,
-   grade:"C",sourceUrl:SOURCE+"?U="+code,observedDate:DATE,
-   provenance:"loo-ool 休日運用表（2026-10-24）"};
- }
- var historical=historicalHolidayRows[date]&&historicalHolidayRows[date][code];
- if(historical){
-  return {operator:"JR-East",
-   vehicleType:historical[0]==="0"?"E231系0番台（中央・総武線各駅停車）":"E231系500番台",
-   formationId:historical[1],operationCode:code,grade:"C",
-   sourceUrl:"https://loo-ool.com/rail/K/00/"+date.replace(/-/g,"")+"/?U="+code,
-   observedDate:date,provenance:"loo-ool 休日运用表（历史日期）"};
- }
- // 运行表是循环的工作日/节假日来源。只有精确的
- // 日期公开列车号记录会阻止它；其他运行的运行号记录
- // 不得抑制当前列车的车型映射。
- if(hasCanonicalTrainNumber(trainNumber,ctx))return null;
- var model=calendarModels[calendar(ctx)]&&calendarModels[calendar(ctx)][code];
- if(model)return {operator:"JR-East",vehicleType:model,operationCode:code,grade:"C",
-  sourceUrl:"https://loo-ool.com/rail/K/32/",observedDate:date,
-  evidenceRole:calendar(ctx)==="holiday"&&!r?"holiday-model-candidate":"",
-  provenance:calendar(ctx)==="holiday"&&!r
-   ?"loo-ool 休日历史多数车型候选（当日无编成）"
-   :"loo-ool 平日/休日运用番号→PNG映射"};
- if(!r)return null;
- return null;
-}
-var provider={id:"jr-chuo-sobu-holiday-formations-20261024",grade:"C",sourceUrl:SOURCE,resolveEvidence:resolveEvidence};
-registerEvidenceProvider(provider);
-})();
+// ARCHIVED_CSL_OPERATION_ONLY_SNAPSHOTS_202611
+// Removed the old 63B/weekday-majority and Oct 24 operation-number provider
+// from the active JavaScript bundle. The original 2026 operation records are
+// preserved at docs/audits/chuo-sobu-2026-legacy-operation-snapshots.txt.
+// JR-East live ODPT reports 662B, 663B etc as TRAIN NUMBERS. A suffix-derived
+// operation identity is not a same-day train-number-to-carset observation.
+// Neither archived 63B=A5xx nor a recurring E231-500 majority is eligible
+// to invent an E231-500/0 actual model for a 2026-11 realtime B/C train.
+// The scoped line fleet candidates and visually labelled route illustration
+// remain separate from confirmed physical model/formation identity.
