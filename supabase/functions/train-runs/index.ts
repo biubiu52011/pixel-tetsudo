@@ -981,6 +981,89 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // JR East 2611 Kesennuma: the same historical SQL line holds both
+  // RAIL D-trains Maeyachi–Yanagitsu and BRT K-services through Kesennuma.
+  // ONLY the exact SQL-issued 18 rail D numbers may become TRAIN positions.
+  // Nov 4–6 maintenance cancels 928D/929D throughout and the
+  // Kesennuma RAIL SEGMENT of 2927D/2930D; no replacement buses.
+  // Never assign the KiHa110 railway PNG to BRT, even on the parallel road.
+  if(lineId==="Kesennuma" && /^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError},
+      {data:interruptions,error:interruptionsError}]=await Promise.all([
+      db.from("published_kesennuma_2611_rail_roster")
+        .select("train_number,calendar_urn,direction_urn,train_type_urn,vehicle_model,png_reference,official_source_url,vehicle_family_source_url,from_station,to_station,origin_departure_clock,stop_clock_status")
+        .eq("edition","2611").eq("line_key","Kesennuma")
+        .eq("calendar_urn",selectedCalendar),
+      db.from("published_train_png_number_ranges")
+        .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+        .eq("edition","2611").eq("line_key","Kesennuma")
+        .eq("segment_key","maeyachi_yanagitsu_rail"),
+      db.from("published_kesennuma_2611_rail_interruptions")
+        .select("train_number,interruption_scope,affected_from,affected_to")
+        .eq("edition","2611").eq("line_key","Kesennuma")
+        .eq("service_date",serviceDate)
+    ]);
+    if(rosterError||rangeError||interruptionsError)
+      throw (rosterError||rangeError||interruptionsError);
+    if(!(roster||[]).length||!(ranges||[]).length)
+      throw new Error("KESENNUMA_2611_OFFICIAL_RAIL_ROSTER_UNAVAILABLE");
+    const allowed=new Map((roster||[]).map((row:any)=>
+      [row.train_number+"|"+row.direction_urn,row]));
+    const denied=new Set((interruptions||[]).filter((row:any)=>
+       row.affected_from==="Maeyachi"&&row.affected_to==="Yanagitsu"&&
+       (row.interruption_scope==="entire_train"||
+        row.interruption_scope==="rail_segment_Maeyachi_Yanagitsu"))
+       .map((row:any)=>row.train_number));
+    const railStations=["Maeyachi","Wabuchi","Nonodake",
+      "Rikuzen-Toyosato","Mitakedo","Yanagitsu"];
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const rule:any=allowed.get(run.train_number+"|"+run.rail_direction);
+      // Fail closed: BRT K suffix belongs to a different mode, despite
+      // sharing the historic Kesennuma line source and some station names.
+      if(!rule||denied.has(run.train_number)||
+         run.network_key!=="odpt.Railway:JR-East.Kesennuma"){
+        result.splice(i,1);continue;
+      }
+      const expected=String(run.rail_direction||"").endsWith("Outbound")
+        ?railStations:[...railStations].reverse();
+      if(!Array.isArray(run.stops)||run.stops.length!==6||
+         run.stops.some((stop:any,n:number)=>
+           String(stop.station_urn||"")!==
+           "odpt.Station:JR-East."+expected[n])||
+         rule.from_station!==expected[0]||
+         rule.to_station!==expected[expected.length-1]||
+         run.stops[0].departure!==rule.origin_departure_clock&&
+         String(run.stops[0].departure_clock||"")!==rule.origin_departure_clock){
+        result.splice(i,1);continue;
+      }
+      const parts=/^(\d+)(D)$/.exec(String(run.train_number||""));
+      const permitted=parts&&(ranges||[]).some((r:any)=>
+        r.requires_exact_roster===true&&r.segment_key==="maeyachi_yanagitsu_rail"&&
+        Number(parts[1])>=r.min_number&&Number(parts[1])<=r.max_number&&
+        r.suffix===parts[2]&&r.vehicle_model===rule.vehicle_model&&
+        r.png_reference===rule.png_reference);
+      if(!permitted){result.splice(i,1);continue;}
+      run.train_type=rule.train_type_urn;
+      run.train_number_verification="official-2611-rail-origin-number-day";
+      run.train_number_source_url=rule.official_source_url;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Kesennuma",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:rule.calendar_urn,
+        model:rule.vehicle_model,pngReference:rule.png_reference,
+        trainType:rule.train_type_urn,
+        segmentKey:"maeyachi_yanagitsu_rail",
+        officialSourceUrl:rule.official_source_url,
+        vehicleSourceUrl:rule.vehicle_family_source_url,
+        stopClockStatus:rule.stop_clock_status,
+        routeFrom:rule.from_station,routeTo:rule.to_station,
+        transportMode:"rail",excludedTransportMode:"BRT",
+        actualVehicleConfirmed:false,referenceOnly:true
+      };
+    }
+  }
+
   // Joetsu 2611: SQL is the source of public train numbers and the
   // vehicle-series reference PNG. The numeric PNG range alone is NEVER
   // enough: calendar, source, explicit roster and verified route must match.
