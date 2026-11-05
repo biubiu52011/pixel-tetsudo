@@ -74,3 +74,111 @@ test('existing JR 659 / Metro 671 Y/A crosswalk is not converted to B/C model ma
  assert.ok(map.includes('E231系800番台（東西線直通）'));
  assert.ok(!map.includes('numberIndex:"chuo-sobu-2611-e235-bc"'));
 });
+
+
+test('ODPT live 662B keeps realtime location and gets ONE explicitly illustrative yellow PNG',()=>{
+ const base={
+  trainNumber:'662B',trainId:'odpt.Train:JR-East.ChuoSobuLocal.662B',
+  positionSource:'realtime-api',realtimePositionRecordPresent:true,
+  estimated:false,trainOperator:'JR-East',
+  sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
+  positionLineId:'ChuoSobuLocal',railDirection:'odpt.RailDirection:Eastbound',
+  trainType:'odpt.TrainType:JR-East.Local',serviceDate:'2026-11-06',
+  calendarType:'weekday',vehicleIdentityStatus:'UNKNOWN',
+  vehicleResolvedUpstream:false,
+  plannedVehicleCandidates:['E231系500番台','E231系0番台','E235系0番台']
+ };
+ // The numbered model mapping STILL fails closed. Representative artwork
+ // must not change the actual vehicle identity, number or realtime status.
+ assert.equal(win.TrainNumberPngRanges.match('662B','ChuoSobuLocal',base),null);
+ assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(base),null);
+ const image=win.TrainVehicle.selectMarkerArtwork({...base,displayLineId:'ChuoSobuLocal'},false);
+ assert.equal(image.kind,'vehicle');
+ assert.equal(image.iconSrc,e231);
+ assert.equal(image.planned,true);
+ assert.equal(image.illustrative,true);
+ assert.equal(image.representativeOnly,true);
+ assert.equal(image.actualVehicleConfirmed,false);
+ assert.equal(base.vehicleIdentityStatus,'UNKNOWN');
+ assert.equal(base.trainId,'odpt.Train:JR-East.ChuoSobuLocal.662B');
+ assert.equal(win.TrainVehicle.selectMarkerArtwork(base,true).kind,'unresolved');
+ // B and C are public train-number suffixes, not a B31 carset mapping.
+ for(const [number,direction] of [['663B','Westbound'],['662C','Eastbound'],['663C','Westbound']]){
+  const p={...base,trainNumber:number,
+    trainId:'odpt.Train:JR-East.ChuoSobuLocal.'+number,
+    railDirection:'odpt.RailDirection:'+direction};
+  assert.equal(win.TrainVehicle.selectMarkerArtwork(p,false).iconSrc,e231);
+ }
+});
+test('unverified ODPT B/C fleet illustration cannot escape JR local source or become a carset',()=>{
+ const base={
+  trainNumber:'662B',trainId:'odpt.Train:JR-East.ChuoSobuLocal.662B',
+  positionSource:'realtime-api',realtimePositionRecordPresent:true,
+  estimated:false,trainOperator:'JR-East',
+  sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
+  positionLineId:'ChuoSobuLocal',displayLineId:'ChuoSobuLocal',
+  railDirection:'odpt.RailDirection:Eastbound',
+  trainType:'odpt.TrainType:JR-East.Local',
+  serviceDate:'2026-11-06',vehicleIdentityStatus:'UNKNOWN'
+ };
+ const invalid=[
+  {trainNumber:'662Y'},{trainNumber:'662A'},{trainNumber:'662F'},
+  {trainNumber:'662T'},{trainNumber:'5003M'},
+  {trainId:'odpt.Train:JR-East.ChuoRapid.662B'},
+  {trainId:'odpt.Train:TokyoMetro.Tozai.662B'},
+  {trainId:''},{railDirection:'odpt.RailDirection:Westbound'},
+  {sourceRailway:'odpt.Railway:JR-East.SobuRapid'},
+  {positionLineId:'SobuRapid'},
+  {displayLineId:'ChuoRapid'},
+  {trainOperator:'TokyoMetro'},
+  {trainType:'odpt.TrainType:JR-East.Rapid'},
+  {positionSource:'supabase-train-run'},
+  {realtimePositionRecordPresent:false},
+  {estimated:true},{serviceDate:'2026-12-01'},
+  {serviceDate:'2026-10-31'},
+  {vehicleIdentityStatus:'EXACT'},{vehicleResolvedFromRealtime:true},
+  {vehicleFormationId:'B31'},
+  {realtimeVehicleType:'E235系0番台'},
+  {vehicleType:'E231系0番台'},
+  {vehicleResolutionLineId:'SobuRapid'},
+  {vehicleResolution:{identityStatus:'EXACT'}}
+ ];
+ for(const bad of invalid){
+  const p={...base,...bad};
+  const m=win.TrainVehicle.selectMarkerArtwork(p,false);
+  assert.notEqual(m.iconSrc,e231,
+   'wrong 662B illustration for '+JSON.stringify(bad));
+ }
+});
+test('SVG image is a marked reference while the ODPT position and formation remain unresolved',()=>{
+ const render=fs.readFileSync('js/trains-render.js','utf8');
+ const start=render.indexOf('  function _trainMarkerDomKind(');
+ const end=render.indexOf('  // Public identification boundary:',start);
+ assert.ok(start>=0&&end>start);
+ vm.runInContext(render.slice(start,end),ctx,{filename:'js/trains-render.js:marker'});
+ const p={
+  trainNumber:'662B',trainId:'odpt.Train:JR-East.ChuoSobuLocal.662B',
+  positionSource:'realtime-api',estimated:false,
+  sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
+  positionLineId:'ChuoSobuLocal',trainOperator:'JR-East',
+  railDirection:'odpt.RailDirection:Eastbound',
+  trainType:'odpt.TrainType:JR-East.Local',
+  serviceDate:'2026-11-06',vehicleIdentityStatus:'UNKNOWN'
+ };
+ const marker=ctx._trainMarkerSpec(p,p.trainId,'ChuoSobuLocal');
+ assert.equal(marker.kind,'vehicle');
+ assert.equal(marker.iconSrc,e231);
+ assert.equal(marker.planned,true);
+ assert.equal(marker.illustrative,true);
+ assert.equal(marker.compact,false);
+ assert.equal(ctx._trainMarkerDomKind(marker),'planned');
+ ctx._trainMarkerTitle=()=> '列車番号 662B | 普通 | 西船橋 | ODPT リアルタイム';
+ const label=ctx._trainMarkerAccessibleDescription(p,'ChuoSobuLocal',marker);
+ assert.match(label,/662B/);
+ assert.match(label,/路線の代表図/);
+ assert.match(label,/編成は未確認/);
+ assert.ok(render.includes('data-marker-illustrative'));
+ assert.ok(render.includes('data-vehicle-unresolved'));
+ assert.ok(render.includes('_syncTrainMarkerIllustrationStatus(existingIcon, markerSpec)'));
+ assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+});
