@@ -23,6 +23,22 @@ vm.runInContext(render.slice(a,b),ctx);
 const idx=win.JREastKitakamiNumberIndex202611;
 const png='../images/列车/JR東日本/JR東日本_キハ110系.png';
 const urn=k=>'odpt.Station:JR-East.'+k;
+function sqlProof(n,dir,date){
+  const route=idx.routes[n];
+  if(!route)return null;
+  const dow=new Date(date+'T12:00:00Z').getUTCDay(),
+    hol=dow===0||dow===6||date==='2026-11-03'||date==='2026-11-23';
+  return {source:'sql-jreast-2611-number-roster',lineId:'Kitakami',
+    trainNumber:n,serviceDate:date,direction:'odpt.RailDirection:'+dir,
+    calendar:'odpt.Calendar:'+(hol?'SaturdayHoliday':'Weekday'),
+    model:'キハ110系',trainType:'odpt.TrainType:JR-East.Local',
+    pngReference:png,segmentKey:'rail_to_hotto_yuda',
+    officialSourceUrl:'https://timetables.jreast.co.jp/2611/train/050/052431.html',
+    sourceScope:'official_2611_stop_list',stopClockStatus:'number_only',
+    railwayFrom:route.from,railwayTo:route.to,
+    closedRailSection:'Hotto-Yuda–Yokote',
+    referenceOnly:true,actualVehicleConfirmed:false};
+}
 function stops(from,to,start='07:30',end='08:00',mid=[]){
   return [
     {'odpt:departureStation':urn(from),'odpt:departureTime':start},
@@ -40,6 +56,9 @@ function position(n,dir,date='2026-11-05',cal='weekday',extra={}){
     positionSource:'supabase-train-run',estimated:true,
     vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
     plannedVehicleCandidates:['キハ110系'],officialNumberVerified:true,
+    scheduledStopKeys:[idx.routes[n]?.from||'Kitakami',
+      idx.routes[n]?.to||'Hotto-Yuda'],
+    sqlPublishedNumberFleetReference:sqlProof(n,dir,date),
     ...extra};
 }
 function verify(p,raw){
@@ -125,6 +144,7 @@ test('estimator drops October special and impossible route; verifies public trai
       'odpt:trainTimetableObject':raw,
       _positionSource:'supabase-train-run',_sqlLineId:'Kitakami',
       _serviceDate:'2026-11-05',_timetableDateVerified:false,
+      _sqlPublishedNumberFleetReference:sqlProof(n,dir,'2026-11-05'),
       _timetableValidity:'undated_not_current_verified'};
   }
   root.TrainPositionEstimator.registerManualTimetable('Kitakami',[
