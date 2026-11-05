@@ -532,8 +532,9 @@ const publishedShinkansenNumbersBySource =
 // The 2611 JR-East booklet also publishes the JR-Hokkaido Shinkansen.
 // Match the existing SQL source railway/operator precisely; it is not
 // a license to infer H5/E5 ownership or a single rolling-stock PNG.
-const officialShinkansenRailwayOwner = lineId === "HokkaidoShinkansen"
-  ? "JR-Hokkaido" : "JR-East";
+const officialShinkansenRailwayOwner = lineId === "NishiKyushuShinkansen"
+  ? "JR-Kyushu"
+  : lineId === "HokkaidoShinkansen" ? "JR-Hokkaido" : "JR-East";
 if (/Shinkansen$/.test(lineId) &&
     /^2026-11-\d{2}$/.test(serviceDate) &&
     selectedCalendar &&
@@ -553,13 +554,21 @@ if (/Shinkansen$/.test(lineId) &&
     const sources=new Map(batch.map((t:any)=>[Number(t.id),t]));
     for(const proof of data||[]) {
       const src:any=sources.get(Number(proof.source_template_id));
+      const proofNumber=String(proof.train_number||"");
+      const proofUrl=String(proof.official_source_url||"");
+      // Published full numbers are certified by the source's own
+      // operator-specific timetable. JR Kyushu's Kamome train uses G,
+      // whereas the connecting Relay Kamome uses H; do not confuse them.
+      const validOfficialNumber = lineId==="NishiKyushuShinkansen"
+        ? (/^[0-9]{4}G$/.test(proofNumber) &&
+          /^https:\/\/www\.jrkyushu-timetable\.jp\/sp\/2611\/[0-9]{4}\/[0-9]{8}\.html\?d=2026(?:10|11)[0-9]{2}&t=[A-Za-z0-9]+$/.test(proofUrl))
+        : (/^[0-9]{1,5}[BCEM]$/.test(proofNumber) &&
+          /^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(proofUrl));
       if(!src || proof.line_key!==lineId ||
         proof.calendar_urn!==src.calendar_urn ||
         proof.direction_urn!==src.direction_urn ||
         proof.verification_scope!=="train_number_only" ||
-        !/^[0-9]{1,5}[BCEM]$/.test(String(proof.train_number||"")) ||
-        !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(
-          String(proof.official_source_url||""))) {
+        !validOfficialNumber) {
         throw new Error("INVALID_SHINKANSEN_OFFICIAL_NUMBER_EVIDENCE");
       }
       const key=Number(proof.source_template_id);
