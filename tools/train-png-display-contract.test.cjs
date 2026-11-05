@@ -252,6 +252,23 @@ for (const lineId of ['Narita', 'NaritaAirportBranch', 'SobuMain']) {
     'nominal 209 family alone must never select a specific 209-subseries PNG');
 }
 
+// JR-Kyushu 2611 Tsubame's source-verified 800-series plan has a native
+// Kyushu-Shinkansen PNG. Unrelated line contexts must not inherit this art.
+const kyushu800Plan = catalogVm.window.__testPlanResolution('800系', {
+  lineId: 'KyushuShinkansen', operator: 'JR-Kyushu',
+  source: 'database-verified-published-plan', _plannedArtworkInventory: true
+});
+assert.equal(kyushu800Plan.status, 'PLANNED_MODEL');
+assert.equal(kyushu800Plan.iconPath,
+  '../images/列车/JR九州/JR九州_800系.png',
+  'official JR-Kyushu 800-series plan must resolve its own native PNG');
+const sanyo800Plan = catalogVm.window.__testPlanResolution('800系', {
+  lineId: 'SanyoShinkansen', operator: 'JR-Kyushu',
+  source: 'database-verified-published-plan', _plannedArtworkInventory: true
+});
+assert.equal(sanyo800Plan.iconPath, '',
+  'Kyushu 800-series plan PNG must not leak into Sanyo services');
+
 // SQL published models describe the weekday/holiday timetable, not the
 // observed physical stock. Even one verified model must pass through vehiclePlan.
 const sqlPlanVm = vm.createContext({
