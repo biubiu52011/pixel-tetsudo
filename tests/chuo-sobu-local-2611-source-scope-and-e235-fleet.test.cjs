@@ -201,3 +201,73 @@ test('trains page points to the current PNG selector, renderer and fleet scripts
     'stale script URL in trains page: '+asset+' expected '+sha);
  }
 });
+
+
+test('JR 662B/663B are train numbers, not same-day E231 operation-code evidence',()=>{
+ const src=fs.readFileSync('js/train-vehicle.js','utf8');
+ const old=fs.readFileSync(
+  'docs/audits/chuo-sobu-2026-legacy-operation-snapshots.txt','utf8');
+ assert.ok(old.includes('jr-chuo-sobu-holiday-formations-20261024'));
+ assert.ok(old.includes('662B:63B'));
+ assert.ok(!src.includes('jr-chuo-sobu-holiday-formations-20261024'),
+  'legacy operation-suffix mapping must never register on live pages');
+ assert.ok(src.includes('ARCHIVED_CSL_OPERATION_ONLY_SNAPSHOTS_202611'));
+ const sample={validDate:'2026-11-06',networkKey:'ChuoSobuLocal',
+  operationCode:'63B',operator:'JR-East',vehicleType:'E231系500番台',
+  formationId:'A532',sourceUrl:'https://example.org/source-of-older-operation-only-record'};
+ const dated={...sample,trainNumber:undefined,formationIds:['A532']};
+ const a={VEHICLE_OPERATION_EVIDENCE:[sample],VEHICLE_DATED_EVIDENCE:[dated]};
+ const testCtx=vm.createContext({window:a,console:{log(){},debug(){},warn(){},error(){}},Date});
+ vm.runInContext(src,testCtx,{filename:'train-vehicle.js:isolated-operation-evidence'});
+ const evidence=a.TrainOperationEvidence;
+ const scope={lineId:'ChuoSobuLocal',railway:'odpt.Railway:JR-East.ChuoSobuLocal',
+  operator:'JR-East',serviceDate:'2026-11-06',calendarType:'weekday',
+  trainType:'odpt.TrainType:JR-East.Local',operationCode:'63B'};
+ assert.equal(evidence.normalizeOperationCode('662B',scope),'');
+ assert.equal(evidence.normalizeOperationCode('663B',scope),'');
+ assert.equal(evidence.resolveEvidence('662B',scope),null,
+  'operation-only 63B record is not physical evidence for 662B');
+ assert.equal(evidence.resolveEvidence('663B',scope),null,
+  'operation-only 63B record is not physical evidence for 663B');
+ assert.equal(evidence.resolveEvidence('663B',{...scope,requireTrainNumberMatch:false}),null);
+ assert.equal(a.TrainVehicle.selectMarkerArtwork({
+  positionSource:'realtime-api',positionLineId:'ChuoSobuLocal',
+  sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',trainOperator:'JR-East',
+  trainNumber:'662B',trainId:'odpt.Train:JR-East.ChuoSobuLocal.662B',
+  serviceDate:'2026-11-06',railDirection:'odpt.RailDirection:Eastbound',
+  trainType:'odpt.TrainType:JR-East.Local',vehicleIdentityStatus:'UNKNOWN'
+ },false).kind,'unresolved',
+  'without a loaded PNG gallery, no old operation record may invent one');
+});
+
+test('only a dated full public train-number record may enter Chuo-Sobu vehicle evidence',()=>{
+ const src=fs.readFileSync('js/train-vehicle.js','utf8');
+ const a={VEHICLE_OPERATION_EVIDENCE:[{
+  validDate:'2026-11-06',networkKey:'ChuoSobuLocal',
+  operationCode:'63B',trainNumbers:['662B'],
+  operator:'JR-East',vehicleType:'E231系0番台（中央・総武線各駅停車）',
+  formationId:'B14',grade:'C',sourceUrl:'https://example.org/dated-public-number-source'
+ }]};
+ const c=vm.createContext({window:a,Date,console:{debug(){},log(){},warn(){},error(){}}});
+ vm.runInContext(src,c,{filename:'train-vehicle.js:exact-train-number-evidence'});
+ const ctx={lineId:'ChuoSobuLocal',railway:'odpt.Railway:JR-East.ChuoSobuLocal',
+  serviceDate:'2026-11-06',operationCode:'63B',operator:'JR-East'};
+ const actual=a.TrainOperationEvidence.resolveEvidence('662B',ctx);
+ assert.ok(actual,'full train-number match must remain supported');
+ assert.equal(actual.vehicleType,'E231系0番台（中央・総武線各駅停車）');
+ assert.equal(actual.formationId,'B14');
+ assert.equal(a.TrainOperationEvidence.resolveEvidence('663B',ctx),null);
+ assert.equal(a.TrainOperationEvidence.resolveEvidence('662B',{...ctx,serviceDate:'2026-11-07'}),null);
+ assert.equal(a.TrainOperationEvidence.resolveEvidence('662B',
+  {...ctx,railway:'odpt.Railway:JR-East.ChuoRapid',lineId:'ChuoRapid'}),null);
+});
+
+test('published SQL service roster keys remain full public train numbers',()=>{
+ const migration=fs.readFileSync('supabase/migrations/'+
+  '20261106190000_chuo_sobu_local_2611_historical_1179_source_scope_and_m_exclusions.sql','utf8');
+ assert.ok(migration.includes('train_number text NOT NULL'));
+ assert.ok(migration.includes('source_template_id bigint PRIMARY KEY'));
+ assert.ok(migration.includes("CASE WHEN train_number~'^[0-9]{3,4}[BC]$'"));
+ assert.ok(!migration.includes('operation_code text NOT NULL'),
+  'historical operation-only number must not become source key');
+});
