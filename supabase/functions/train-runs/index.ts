@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -64,15 +64,6 @@ function sqlTime(time?: string | null) {
 function stationKey(urn: string) {
   const p = urn.split(".");
   return p[p.length - 1] || urn;
-}
-
-function isCancelled(run: any, lineId: string, exceptions: any[]) {
-  return exceptions.some((e: any) => {
-    if (e.train_run_id != null) return e.train_run_id === run.id;
-    // Run-scoped changes never widen into a line/operator closure.
-    if (e.line_id) return e.line_id === lineId;
-    return !!e.operator && e.operator === run.operator;
-  });
 }
 
 // A published revision replaces the whole line/calendar scope, including
@@ -174,7 +165,7 @@ async function linkPlannedOperations(db: any, runs: any[], revision: any) {
  * there is no date-specific run. Calendar variants are alternatives.
  * Page both queries because Supabase Data API defaults to at most 1000 rows.
  */
-async function readManualTemplateRuns(db: any, lineId: string, serviceDate: string, timetableOperator: string | null, exceptions: any[]): Promise<Response> {
+async function readManualTemplateRuns(db: any, lineId: string, serviceDate: string, timetableOperator: string | null): Promise<Response> {
   async function pages(makeQuery: (first: number, last: number) => any) {
     const out: any[] = [];
     const size = 700;
@@ -792,7 +783,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       // Only SQL-certified identical itineraries share identity across line sources.
       // Keep separate line records/stops; never dedupe by departure time alone.
       id: "canonical-train-timetable:" + mapped.timetable_id,
-      operation_status: isCancelled({ id: "canonical-train-timetable:" + mapped.timetable_id, operator }, lineId, exceptions) ? "cancelled" : "scheduled",
+      // Cancellation is applied by dated SQL evidence below, not an empty exception list.
+      operation_status: "scheduled",
       canonical_timetable_id: mapped.timetable_id,
       canonical_group_evidence: mapped.group_evidence,
       canonical_line_ids: mapped.group_evidence === "verified_continuation"
@@ -2466,6 +2458,9 @@ Deno.serve(async (req: Request) => {
   } catch {
     return json({ ok: false, error: "SERVER_CONFIG" }, 500);
   }
+  if (!secretKeys || typeof secretKeys !== "object" || Array.isArray(secretKeys)) {
+    return json({ ok: false, error: "SERVER_CONFIG" }, 500);
+  }
   const secretKey = secretKeys.default || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   if (!supabaseUrl || !secretKey) return json({ ok: false, error: "SERVER_CONFIG" }, 500);
@@ -2481,7 +2476,7 @@ Deno.serve(async (req: Request) => {
   // selector, not a persisted run date. No day-specific rows are queried.
   try {
     return await readManualTemplateRuns(
-      db, lineId, serviceDate, source?.timetable_operator || null, []
+      db, lineId, serviceDate, source?.timetable_operator || null
     );
   } catch (err) {
     console.error("[train-runs] SQL read failed", lineId, String(err));
