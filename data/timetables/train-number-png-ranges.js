@@ -55,6 +55,42 @@
   // https://timetables.jreast.co.jp/2611/timetable-v/671u1.html
   var chuoSobuTozai2611=Object.freeze({"holiday_Eastbound_K":["1202Y","1402Y","1610Y","1702Y","610Y","702Y","706Y","902Y"],"holiday_Eastbound_S":["1016Y","1020Y","1028Y","1122Y","1142Y","1216Y","1320Y","1342Y","1422Y","1516Y","1520Y","1548Y","1622Y","1628Y","1642Y","1644Y","1716Y","1734Y","1736Y","1820Y","1842Y","1848Y","1922Y","716Y","728Y","738Y","820Y","826Y","840A","848Y","858Y","922Y","936Y","944Y"],"holiday_Westbound_K":["1003Y","1303Y","1503Y","1711Y","1803Y","1807Y","803Y","811Y"],"holiday_Westbound_S":["1023Y","1117Y","1121Y","1223Y","1243Y","1317Y","1421Y","1443Y","1523Y","1529Y","1545Y","1617Y","1621Y","1635Y","1637Y","1723Y","1743Y","1749Y","617Y","621Y","627Y","629Y","639Y","723Y","737Y","741Y","749Y","759Y","817Y","845Y","921Y","929Y","943Y","949Y"],"weekday_Eastbound_K":["1602Y","1604Y","1608Y","1710Y","1802Y","1806Y","1904Y","1910Y","506A","602A","604Y","608A","610Y","910Y"],"weekday_Eastbound_S":["1012Y","1068Y","1090Y","1158Y","1180Y","1218Y","1270Y","1368Y","1380Y","1458Y","1470Y","1518Y","1548Y","1568Y","1614A","1622Y","1654Y","1656A","1680Y","1684Y","1712Y","1728A","1738A","1744Y","1764Y","1766Y","1768A","1770A","1774Y","1794A","1818Y","1820Y","1824Y","1848A","1850Y","1860A","1862A","1880A","1882A","1888Y","1914A","1916Y","1932Y","1966Y","2036Y","2082Y","2126Y","2160Y","2170Y","622Y","636A","640Y","644Y","654Y","684A","688Y","718A","728Y","730Y","734Y","764Y","790Y","792A","838Y","842Y","846Y","874A","876Y","878Y","932Y","944Y","958Y","970Y","984Y","988Y","996Y"],"weekday_Westbound_K":["1611Y","1705Y","1809Y","1811Y","1903A","1907A","2005Y","2009Y","2111Y","711A","809A","903Y","905Y"],"weekday_Westbound_S":["1059Y","1071Y","1119Y","1169Y","1259Y","1281Y","1319Y","1371Y","1469Y","1481Y","1513Y","1515Y","1539Y","1555A","1557Y","1567Y","1585Y","1595A","1623Y","1645Y","1665A","1671Y","1675Y","1689Y","1717A","1719Y","1721A","1725Y","1733Y","1749Y","1751Y","1761Y","1781Y","1815A","1829A","1837Y","1839Y","1855Y","1863Y","1867Y","1869Y","1927A","1971Y","1983Y","2061A","485Y","519Y","537Y","591Y","593Y","629Y","631A","639A","641Y","645Y","647Y","665Y","675Y","723Y","733Y","743Y","755Y","759Y","777Y","779Y","785Y","789Y","797A","813A","835A","845Y","849A","871Y","891Y","969Y","981Y"]});
   var rows=[
+    // 北上線: 2611 historical SQL can only project FIVE vetted local
+    // numbers on Kitakami–Hotto-Yuda; Hotto-Yuda–Yokote is BUS-ONLY.
+    // 9729D/9730D Hinabi Kinshuko ran only Oct 24–25, not Nov.
+    // https://timetables.jreast.co.jp/2611/timetable-v/251d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/251d2.html
+    {lineIds:["Kitakami"],numberFormat:"full",from:722,to:736,
+      suffixes:"D",trainTypes:["Local"],
+      numberIndex:"jreast-kitakami-2611",
+      publishedNumbers:["722D","724D","736D","725D","735D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Kitakami"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系"],
+      requiredCandidateModelPrefix:"キハ110系",rejectAmbiguousPlan:true,
+      model:"キハ110系",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
+    // 山田線: 2611 autumn partial trains only; NEVER bus numbers 1–24,
+    // nor 633D/640D/642D through rail, 363xD Rias before Dec 4,
+    // nor Jan 2027 Hinabi / Pokemon services 9635D/9638D/9640D.
+    // https://timetables.jreast.co.jp/2611/timetable-v/980u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/980d1.html
+    {lineIds:["Yamada"],numberFormat:"full",from:631,to:9642,
+      suffixes:"D",trainTypes:["Local"],
+      numberIndex:"jreast-yamada-2611",
+      publishedNumbers:["2632D","2634D","2636D","2638D","9636D",
+        "9642D","9631D","2633D","2635D","9637D","9639D","2639D",
+        "2641D","632D","644D","646D","631D","9633D","641D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Yamada"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系"],
+      requiredCandidateModelPrefix:"キハ110系",rejectAmbiguousPlan:true,
+      model:"キハ110系",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
     // 飯山線 2611: 54 all-day ordinary KiHa110 D numbers, not
     // 8124D/8133D Shu＊Kura or 8140D/8141D Oykot specialist liveries.
     // https://timetables.jreast.co.jp/2611/timetable-v/229u1.html
@@ -1895,6 +1931,20 @@
           return branchIdx.verify(number,branchRailway,branchDirection,
             "odpt.TrainType:JR-East.Local",cal,branchDate)===true;
         }))continue;
+      }
+      if(row.numberIndex==="jreast-kitakami-2611"){
+        var kitakamiIdx=root.JREastKitakamiNumberIndex202611;
+        // Route and dated service were ALREADY checked against the RAW
+        // timetable stops by the estimator. PNG must NOT bypass that.
+        if(!kitakamiIdx||!kitakamiIdx.routes[number]||
+           !context||context.officialNumberVerified!==true||
+           context.positionSource!=="supabase-train-run")continue;
+      }
+      if(row.numberIndex==="jreast-yamada-2611"){
+        var yamadaIdx=root.JREastYamadaNumberIndex202611;
+        if(!yamadaIdx||!yamadaIdx.endpoints[number]||
+           !context||context.officialNumberVerified!==true||
+           context.positionSource!=="supabase-train-run")continue;
       }
       if(row.numberIndex==="jreast-iiyama-2611"){
         var iiyamaIdx=root.JREastIiyamaNumberIndex202611;
