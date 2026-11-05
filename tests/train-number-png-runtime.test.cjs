@@ -615,6 +615,58 @@ test('ChuoMain 2611 SQL numbers: T/H E233 and M-only 211/E131 illustrated as ONE
     plannedVehicleCandidates:['211系','E233系0番台']});
   assert.equal(marker(foreign,'ChuoRapid').kind,'unresolved');
 });
+test('439M Otsuki 13:45 -> Matsumoto: planned-trip live train displays one 211 reference PNG',()=>{
+  const png211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
+  const position=live({
+    trainId:'planned-trip:2026-11-05|JR-East|odpt.Railway:JR-East.ChuoMain|ChuoMain|439M|odpt.RailDirection:Outbound|odpt.Station:JR-East.Chuo.Otsuki|13:45|odpt.Station:JR-East.Chuo.Matsumoto',
+    trainNumber:'439M', serviceDate:'2026-11-05', calendarType:'weekday',
+    sourceRailway:'odpt.Railway:JR-East.ChuoMain',
+    railDirection:'odpt.RailDirection:Outbound',
+    trainType:'odpt.TrainType:JR-East.Local',
+    positionSource:'realtime-api',estimated:false,
+    plannedVehicleCandidates:['211系','E233系0番台'],
+    vehicleIdentityStatus:'UNKNOWN'
+  });
+  const reference=root.TrainVehicle.lookupTrainNumberRangePng(position);
+  assert.ok(reference);
+  assert.equal(reference.model,'211系（長野地区）');
+  assert.equal(reference.pngPath,png211);
+  assert.equal(reference.planned,true);
+  const spec=marker(position,'ChuoMain');
+  assert.equal(spec.kind,'vehicle');
+  assert.equal(spec.iconSrc,png211);
+  assert.equal(spec.planned,true);
+  assert.equal(spec.compact,false);
+  assert.equal(position.vehicleIdentityStatus,'UNKNOWN','a reference is not an observed carset');
+  for(const source of ['supabase-train-run','train-timetable']){
+    const estimated=sql({...position,positionSource:source,estimated:true});
+    assert.equal(marker(estimated,'ChuoMain').iconSrc,png211,source);
+  }
+  const holiday=sql({...position,serviceDate:'2026-11-07',calendarType:'holiday',
+    positionSource:'supabase-train-run',estimated:true});
+  assert.equal(marker(holiday,'ChuoMain').iconSrc,png211);
+  for(const change of [
+    {trainNumber:'437M'}, {trainNumber:'440M'},
+    {serviceDate:'2026-12-05'},
+    {railDirection:'odpt.RailDirection:Inbound'},
+    {sourceRailway:'odpt.Railway:JR-East.Joban'},
+    {positionLineId:'ChuoRapid'},
+    {trainOperator:'JR-Central'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {realtimeVehicleType:'E233系0番台'},
+    {realtimeDerivedVehicleType:'E131系200番台'},
+    {plannedVehicleCandidates:['E233系0番台']},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['E233系0番台']}}
+  ]){
+    const modified={...position,...change};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(modified),null,
+      '439M reference must not cross its evidence boundary: '+JSON.stringify(change));
+  }
+  assert.equal(marker({...position,displayLineId:'ChuoRapid'},'ChuoRapid').kind,'unresolved');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(
+    {...position,displayLineId:'ChuoMain'},true).kind,'unresolved');
+});
+
 test('1461M Takao 13:28 -> Otsuki: realtime-linked planned-trip renders one 211 stock REFERENCE',()=>{
   const path211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
   const p=live({

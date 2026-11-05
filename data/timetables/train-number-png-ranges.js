@@ -394,6 +394,26 @@
       allowedModelLabels:["E233系0番台"],
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    // 439M Otsuki 13:45 -> Matsumoto is listed for BOTH calendars in
+    // JR East 2611. Independent dated 211 reports: Sep 2025 (six-car
+    // Nagano stock), Feb 2026 N608, Aug 2026 N601. These justify ONE
+    // illustrative 211 Nagano PNG, not proof of today's physical carset.
+    // https://timetables.jreast.co.jp/2611/train/095/099191.html
+    // https://kumapapa.jp/blog/?p=42621
+    // https://www.youtube.com/watch?v=r5uh_ObkLPU
+    // https://hiro989.hatenablog.com/?page=2
+    {lineIds:["ChuoMain"],numberFormat:"full",
+      from:439,to:439,suffixes:"M",trainType:"Local",
+      publishedNumbers:["439M"],directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Chuo",
+        "odpt.Railway:JR-East.ChuoMain"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      weekdayNumbers:["439M"],holidayNumbers:["439M"],
+      allowedModelLabels:["211系","211系（長野地区）"],
+      requireCandidateOverlap:true,
+      model:"211系（長野地区）",
+      pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色.png"},
     // 1461M Takao -> Otsuki has independent photographed 211-series
     // examples in 2026 (Jan 31, Sep 8). The 2611 JR-East timetable
     // confirms this exact train number on both weekday/holiday outbound.
