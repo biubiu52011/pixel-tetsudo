@@ -35,6 +35,10 @@
     Hachinohe:Object.freeze({up:hachinoheUp,down:hachinoheDown,
       model:"キハE130形500番台",suffix:"D"})
   });
+  // 2026-11 typhoon 25 closure: these SIX 29xxD published
+  // numbers are Kururi–KazusaKameyama ONLY (bus/taxi, no rail stock).
+  var kururiClosedOnly=freeze(["2941D","2943D","2949D",
+    "2944D","2946D","2952D"]);
   var karasuyamaWorkDays=freeze(["2026-11-05","2026-11-06",
     "2026-11-10","2026-11-12","2026-11-13"]);
   var karasuyamaCancelled=new Set(["330M","332M","334M",
@@ -88,6 +92,7 @@
         return false;
     }else{
       if(roster.indexOf(n)<0)return false;
+      if(line==="Kururi"&&kururiClosedOnly.indexOf(n)>=0)return false;
       if(line==="Karasuyama"&&
          karasuyamaCancelled.has(n)&&karasuyamaWorkDays.indexOf(day)>=0)
         return false;
@@ -100,6 +105,7 @@
   }
   root.JREastRegionalNumberIndex202611=Object.freeze({
     edition:"2026-11",lines:lines,verify:verify,
+    kururiClosedRailNumbers:kururiClosedOnly,
     karasuyamaWorkDays:karasuyamaWorkDays,
     hachinoheWorkDays:freeze(["2026-11-04","2026-11-05"]),
     hachinoheSundayMarketDays:freeze(Array.from(novSundayMarkets))
