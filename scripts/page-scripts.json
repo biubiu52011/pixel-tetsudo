@@ -113,6 +113,15 @@
       "data/timetables/jreast-yokohama-2611-number-index.js",
       "data/timetables/jreast-keihin-2611-number-index.js",
       "data/timetables/jreast-gono-2611-number-index.js",
+      "data/timetables/jreast-oga-2611-number-index.js",
+      "data/timetables/jreast-ishinomaki-2611-number-index.js",
+      "data/timetables/jreast-kitakami-2611-number-index.js",
+      "data/timetables/jreast-yamada-2611-number-index.js",
+      "data/timetables/jreast-iiyama-2611-number-index.js",
+      "data/timetables/jreast-ominato-2611-number-index.js",
+      "data/timetables/jreast-rikutsu-west-2611-number-index.js",
+      "data/timetables/jreast-rikuto-east-2611-number-index.js",
+      "data/timetables/jreast-regional-2611-number-index.js",
       "data/timetables/train-number-png-ranges.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
@@ -224,6 +233,35 @@
       ],
       "data/timetables/jreast-gono-2611-number-index.js": [
         "Gono"
+      ],
+      "data/timetables/jreast-oga-2611-number-index.js": [
+        "Oga"
+      ],
+      "data/timetables/jreast-ishinomaki-2611-number-index.js": [
+        "Ishinomaki"
+      ],
+      "data/timetables/jreast-kitakami-2611-number-index.js": [
+        "Kitakami"
+      ],
+      "data/timetables/jreast-yamada-2611-number-index.js": [
+        "Yamada"
+      ],
+      "data/timetables/jreast-iiyama-2611-number-index.js": [
+        "Iiyama"
+      ],
+      "data/timetables/jreast-ominato-2611-number-index.js": [
+        "Ominato"
+      ],
+      "data/timetables/jreast-rikutsu-west-2611-number-index.js": [
+        "RikutsuWest"
+      ],
+      "data/timetables/jreast-rikuto-east-2611-number-index.js": [
+        "RikutoEast"
+      ],
+      "data/timetables/jreast-regional-2611-number-index.js": [
+        "Kururi",
+        "Karasuyama",
+        "Hachinohe"
       ]
     }
   }
