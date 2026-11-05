@@ -830,6 +830,22 @@
           if(officialRikutsuWestPlan===false)continue;
         }
 
+        // 大湊線: JR East 2611 is the final authority for each D number.
+        // Maintenance 10–13 November cancels six exact rail segments; an
+        // Aomori Railway continuation does NOT restore its cancelled
+        // Ominato segment. Dec-only Hinabi 9227D/9236D is not a Nov train.
+        var officialOminatoPlan=null;
+        if(lineId==="Ominato"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"&&
+           window.JREastOminatoNumberIndex202611&&
+           typeof window.JREastOminatoNumberIndex202611.verify==="function"){
+          officialOminatoPlan=window.JREastOminatoNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",
+            tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
+            run.calendar,serviceDate);
+          if(officialOminatoPlan===false)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0 &&
@@ -1133,9 +1149,12 @@
           var publishedRikutsuWestTrainType=officialRikutsuWestPlan &&
             officialRikutsuWestPlan.trainType
             ? "odpt.TrainType:JR-East."+officialRikutsuWestPlan.trainType : "";
+          var publishedOminatoTrainType=officialOminatoPlan &&
+            officialOminatoPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialOminatoPlan.trainType : "";
           var effectivePublishedTrainType=publishedGonoTrainType ||
             publishedIshinomakiTrainType || publishedRikutoEastTrainType ||
-            publishedRikutsuWestTrainType || "";
+            publishedRikutsuWestTrainType || publishedOminatoTrainType || "";
           var trainClassification = classifyTrain(
             effectivePublishedTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
@@ -1209,7 +1228,9 @@
                 : officialRikutoEastPlan && officialRikutoEastPlan.serviceName
                   ? officialRikutoEastPlan.serviceName
                   : officialRikutsuWestPlan && officialRikutsuWestPlan.serviceName
-                    ? officialRikutsuWestPlan.serviceName : (run.serviceName || ""),
+                    ? officialRikutsuWestPlan.serviceName
+                    : officialOminatoPlan && officialOminatoPlan.serviceName
+                      ? officialOminatoPlan.serviceName : (run.serviceName || ""),
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
