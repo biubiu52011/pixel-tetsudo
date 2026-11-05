@@ -5166,6 +5166,57 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       representativeOnly:true,actualVehicleConfirmed:false};
   }
 
+  // Chuo-Sobu 2026-11: B/C are JR LOCAL train numbers, not carset IDs.
+  // Multiple E231 and transferred E235 models work these trains. A
+  // realtime position is real, but no train-number -> physical carset
+  // inference is possible. Use the already-approved E231-500 gallery
+  // front solely as a *fleet illustration*; never classify 662B as E231.
+  // JR official fleet background: https://media.jreast.co.jp/articles/1723
+  // E235 transfer: https://rail.hobidas.com/feature/543431/
+  function lookupChuoSobuLocalFleetIllustration(p) {
+    if (!p || p.positionSource !== "realtime-api" || p.estimated === true ||
+        p.realtimePositionRecordPresent === false ||
+        p.positionLineId !== "ChuoSobuLocal" ||
+        String(p.displayLineId || p.positionLineId) !== "ChuoSobuLocal" ||
+        p.sourceRailway !== "odpt.Railway:JR-East.ChuoSobuLocal" ||
+        p.trainType !== "odpt.TrainType:JR-East.Local" ||
+        (p.trainOperator && p.trainOperator !== "JR-East" &&
+          p.trainOperator !== "odpt.Operator:JR-East") ||
+        p.vehicleIdentityStatus === "EXACT" ||
+        p.vehicleResolvedFromRealtime === true ||
+        p.actualVehicleConfirmed === true ||
+        p.vehicleFormationId ||
+        (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length) ||
+        p.realtimeVehicleType || p.vehicleType || p.vehicleIconPath ||
+        (p.vehicleResolution && p.vehicleResolution.identityStatus === "EXACT") ||
+        (p.vehicleResolutionLineId && p.vehicleResolutionLineId !== "ChuoSobuLocal"))
+      return null;
+    var n = String(p.trainNumber || "").trim().toUpperCase();
+    var day = String(p.serviceDate || "").slice(0, 10);
+    var dir = String(p.railDirection || "").split(/[.:]/).pop();
+    // The ODPT entity ID and 659 public number must be for this JR line,
+    // never a Tozai K/S alias, a Sobu Rapid F, or a Chuo Rapid T/H.
+    if (!/^[0-9]{3,4}[BC]$/.test(n) ||
+        !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day) ||
+        !["Eastbound", "Westbound"].includes(dir) ||
+        (parseInt(n, 10) % 2 === 0) !== (dir === "Eastbound") ||
+        String(p.trainId || "") !== "odpt.Train:JR-East.ChuoSobuLocal." + n)
+      return null;
+    var garage = window.VehicleGaragePngMap;
+    var model = "E231系500番台";
+    var img = "../images/列车/JR東日本/JR東日本_E231系_500番台_中央・総武線各駅停車.png";
+    if (!garage || typeof garage.matchModelPath !== "function" ||
+        !garage.matchModelPath(model, img, "ChuoSobuLocal"))
+      return null;
+    var png = normalizeGalleryPngPath(img);
+    return png ? {
+      kind: "vehicle", iconSrc: png, planned: true,
+      illustrative: true, representativeOnly: true,
+      actualVehicleConfirmed: false,
+      illustrationRole: "mixed-line-fleet-not-actual-carset"
+    } : null;
+  }
+
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -5232,6 +5283,13 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       // Missing/mismatched artwork must never silently select another model.
       return {kind:"unresolved",iconSrc:""};
     }
+    // B/C live positions have reliable ODPT location but mixed actual
+    // fleets. The single yellow PNG is a LINE illustration, not E231
+    // identification. Keep stronger exact car evidence ahead of this.
+    var chuoSobuIllustration = !identityConfirmed ?
+      lookupChuoSobuLocalFleetIllustration(p) : null;
+    if (chuoSobuIllustration) return artworkFailed === true
+      ? {kind:"unresolved",iconSrc:""} : chuoSobuIllustration;
     // Use ONE clearly planned illustrative car, not two alternatives
     // side by side (misleading coupling), and not a grey dot. The
     // timetable / realtime position and UNKNOWN identity are unchanged.
