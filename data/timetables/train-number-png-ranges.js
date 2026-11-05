@@ -55,8 +55,9 @@
   // https://timetables.jreast.co.jp/2611/timetable-v/671u1.html
   var chuoSobuTozai2611=Object.freeze({"holiday_Eastbound_K":["1202Y","1402Y","1610Y","1702Y","610Y","702Y","706Y","902Y"],"holiday_Eastbound_S":["1016Y","1020Y","1028Y","1122Y","1142Y","1216Y","1320Y","1342Y","1422Y","1516Y","1520Y","1548Y","1622Y","1628Y","1642Y","1644Y","1716Y","1734Y","1736Y","1820Y","1842Y","1848Y","1922Y","716Y","728Y","738Y","820Y","826Y","840A","848Y","858Y","922Y","936Y","944Y"],"holiday_Westbound_K":["1003Y","1303Y","1503Y","1711Y","1803Y","1807Y","803Y","811Y"],"holiday_Westbound_S":["1023Y","1117Y","1121Y","1223Y","1243Y","1317Y","1421Y","1443Y","1523Y","1529Y","1545Y","1617Y","1621Y","1635Y","1637Y","1723Y","1743Y","1749Y","617Y","621Y","627Y","629Y","639Y","723Y","737Y","741Y","749Y","759Y","817Y","845Y","921Y","929Y","943Y","949Y"],"weekday_Eastbound_K":["1602Y","1604Y","1608Y","1710Y","1802Y","1806Y","1904Y","1910Y","506A","602A","604Y","608A","610Y","910Y"],"weekday_Eastbound_S":["1012Y","1068Y","1090Y","1158Y","1180Y","1218Y","1270Y","1368Y","1380Y","1458Y","1470Y","1518Y","1548Y","1568Y","1614A","1622Y","1654Y","1656A","1680Y","1684Y","1712Y","1728A","1738A","1744Y","1764Y","1766Y","1768A","1770A","1774Y","1794A","1818Y","1820Y","1824Y","1848A","1850Y","1860A","1862A","1880A","1882A","1888Y","1914A","1916Y","1932Y","1966Y","2036Y","2082Y","2126Y","2160Y","2170Y","622Y","636A","640Y","644Y","654Y","684A","688Y","718A","728Y","730Y","734Y","764Y","790Y","792A","838Y","842Y","846Y","874A","876Y","878Y","932Y","944Y","958Y","970Y","984Y","988Y","996Y"],"weekday_Westbound_K":["1611Y","1705Y","1809Y","1811Y","1903A","1907A","2005Y","2009Y","2111Y","711A","809A","903Y","905Y"],"weekday_Westbound_S":["1059Y","1071Y","1119Y","1169Y","1259Y","1281Y","1319Y","1371Y","1469Y","1481Y","1513Y","1515Y","1539Y","1555A","1557Y","1567Y","1585Y","1595A","1623Y","1645Y","1665A","1671Y","1675Y","1689Y","1717A","1719Y","1721A","1725Y","1733Y","1749Y","1751Y","1761Y","1781Y","1815A","1829A","1837Y","1839Y","1855Y","1863Y","1867Y","1869Y","1927A","1971Y","1983Y","2061A","485Y","519Y","537Y","591Y","593Y","629Y","631A","639A","641Y","645Y","647Y","665Y","675Y","723Y","733Y","743Y","755Y","759Y","777Y","779Y","785Y","789Y","797A","813A","835A","845Y","849A","871Y","891Y","969Y","981Y"]});
   var rows=[
-    // 白新線 2611: ONLY the 90 numbered E129 locals + 3921M
-    // regular rapid. No 1M..13M Inaho E653 or HB-E300 Kairi 8853D.
+    // 白新線 2611: 90 numbered E129 locals + 3921M rapid, 14 regular
+    // Inaho E653 services, and November 8853D/8854D HB-E300 Kairi.
+    // These images represent series/service, NEVER an actual-day carset.
     // https://timetables.jreast.co.jp/2611/timetable-v/255u1.html
     // https://timetables.jreast.co.jp/2611/timetable-v/255d1.html
     {lineIds:["Hakushin"],numberFormat:"full",from:623,to:1951,
@@ -97,6 +98,35 @@
       allowedModelLabels:["E129系"],requiredCandidateModelPrefix:"E129系",
       rejectAmbiguousPlan:true,model:"E129系",
       pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
+    {lineIds:["Hakushin"],numberFormat:"full",from:1,to:14,
+      suffixes:"M",trainTypes:["LimitedExpress"],
+      numberIndex:"jreast-hakushin-2611",hakushinKind:"inaho",
+      publishedNumbers:["1M","2M","3M","4M","5M","6M","7M",
+        "8M","9M","10M","11M","12M","13M","14M"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Hakushin"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E653系（いなほ）"],
+      requiredCandidateModelPrefix:"E653系（いなほ）",
+      rejectAmbiguousPlan:true,model:"E653系（いなほ）",
+      pngPath:"../images/列车/JR東日本/JR東日本_E653系（いなほ）.png"},
+    {lineIds:["Hakushin"],numberFormat:"full",from:8853,to:8854,
+      suffixes:"D",trainTypes:["Rapid"],
+      numberIndex:"jreast-hakushin-2611",hakushinKind:"kairi",
+      publishedNumbers:["8853D","8854D"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Hakushin"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      operatingDates:["2026-11-01","2026-11-03","2026-11-06","2026-11-07",
+        "2026-11-08","2026-11-13","2026-11-14","2026-11-15",
+        "2026-11-20","2026-11-21","2026-11-22",
+        "2026-11-27","2026-11-28","2026-11-29"],
+      allowedModelLabels:["HB-E300系（海里）"],
+      requiredCandidateModelPrefix:"HB-E300系（海里）",
+      rejectAmbiguousPlan:true,model:"HB-E300系（海里）",
+      pngPath:"../images/列车/JR東日本/JR東日本_HB-E300系_海里.png"},
     // 北上線: 2611 historical SQL can only project FIVE vetted local
     // numbers on Kitakami–Hotto-Yuda; Hotto-Yuda–Yokote is BUS-ONLY.
     // 9729D/9730D Hinabi Kinshuko ran only Oct 24–25, not Nov.
