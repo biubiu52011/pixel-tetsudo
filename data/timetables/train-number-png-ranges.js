@@ -70,7 +70,7 @@
     {lineIds:["Ishinomaki"],numberFormat:"full",
       from:640,to:5651,suffixes:"D",trainType:"Local",
       trainTypes:["Local"],numberIndex:"jreast-ishinomaki-2611",
-      ishinnomakiKind:"regular",
+      ishinomakiKind:"regular",
       publishedNumbers:["5620D","2622D","5624D","1626D","1628D",
         "2926D","1630D","1632D","2930D","1634D","1636D","1638D",
         "1640D","1642D","1644D","2936D","1646D","2938D","640D",
@@ -93,7 +93,7 @@
     {lineIds:["Ishinomaki"],numberFormat:"full",
       from:5530,to:5543,suffixes:"D",
       trainTypes:["Rapid"],numberIndex:"jreast-ishinomaki-2611",
-      ishinnomakiKind:"through",
+      ishinomakiKind:"through",
       publishedNumbers:["5530D","5543D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -1732,7 +1732,7 @@
             context&&(context.trainType||context.typeName),
             sourceCalendar(context),context&&context.serviceDate):null;
         if(!ishSource || ishSource.model!==row.model ||
-           ishSource.kind!==row.ishinnomakiKind)continue;
+           ishSource.kind!==row.ishinomakiKind)continue;
       }
       if(row.numberIndex==="jreast-yokohama-202611"){
         var yokohamaIndex=root.JREastYokohama202611NumberIndex;
