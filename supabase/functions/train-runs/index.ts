@@ -1169,6 +1169,86 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // 中央線・総武線各駅停車 (JR 659) 2026-11: old source rows
+  // are NOT independently verified edition-2611 number/clock evidence.
+  // B/C yellow JR local stock now includes E231-500, E231-0, E235-0;
+  // B/C is NOT a physical formation code and authorizes NO exact PNG.
+  // Y/A belongs to Tozai through services; its existing 659/671
+  // number/calendar/direction/owner crosswalk remains the ONLY family
+  // illustration authority (never infer 05/07/15000 or E231-800 from Y).
+  // Old E353 5003M/5050M are 2-stop expresses, not local trains.
+  if(lineId==="ChuoSobuLocal"&&/^2026-11-/.test(serviceDate)){
+    const {data:scope,error:scopeErr}=await db
+      .from("published_chuo_sobu_2611_source_scope")
+      .select("source_template_id,line_key,calendar_urn,direction_urn,train_number,segment_key,source_stop_keys,candidate_models,official_line_source_url,source_clock_status,train_number_verification,reference_only,actual_vehicle_confirmed,png_reference")
+      .eq("edition","2611").eq("line_key","ChuoSobuLocal")
+      .eq("calendar_urn",selectedCalendar);
+    const required=selectedCalendar==="odpt.Calendar:Weekday"?664:515;
+    if(scopeErr||(scope||[]).length!==required)
+      throw new Error("CHUO_SOBU_2611_SOURCE_SCOPE_UNAVAILABLE");
+    const bySource=new Map((scope||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const p:any=bySource.get(Number(run.source_template_id));
+      if(!p||p.line_key!=="ChuoSobuLocal"||
+        p.train_number!==run.train_number||
+        p.direction_urn!==run.rail_direction||
+        p.calendar_urn!==run.service_id||
+        p.source_clock_status!=="historical_not_2611_verified"||
+        p.train_number_verification!=="historical_source_only"||
+        p.reference_only!==true||p.actual_vehicle_confirmed!==false||
+        p.png_reference!==null||
+        run.network_key!=="odpt.Railway:JR-East.ChuoSobuLocal"||
+        !Array.isArray(p.source_stop_keys)||
+        !Array.isArray(run.stops)||
+        run.stops.length<2||run.stops.length>p.source_stop_keys.length){
+        result.splice(i,1);continue;
+      }
+      const keys=run.stops.map((s:any)=>
+        String(s.station_urn||"").split(".").pop()||"");
+      if(keys.some((key:string,j:number)=>key!==p.source_stop_keys[j])){
+        result.splice(i,1);continue;
+      }
+      const ordinary=p.segment_key==="jr_ordinary_bc";
+      const through=p.segment_key==="tozai_through_ya";
+      if(p.segment_key==="foreign_limited_express_m"){
+        // The ChuoMain/E353 evidence is a different service namespace.
+        result.splice(i,1);continue;
+      }
+      if(!(ordinary||through)||
+        run.train_type!=="odpt.TrainType:JR-East.Local"||
+        (ordinary?!/^[0-9]{3,4}[BC]$/.test(run.train_number):
+          !/^[0-9]{3,4}[YA]$/.test(run.train_number))){
+        result.splice(i,1);continue;
+      }
+      // Keep clock/number uncertainty explicit. Do not elevate old source
+      // models into an official number-to-formation or artwork claim.
+      run.train_number_verification="historical-source-only-659-2611";
+      run.train_number_source_url=null;
+      run.timetable_date_verified=false;
+      run.vehicle_type_label=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      if(ordinary)run.vehicle_type_candidates=
+        "E231系500番台 / E231系0番台 / E235系0番台";
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-source-scope-historical",
+        lineId:"ChuoSobuLocal",trainNumber:run.train_number,
+        calendar:p.calendar_urn,direction:run.rail_direction,
+        sourceTemplateId:Number(run.source_template_id),
+        sourceStopKeys:p.source_stop_keys,
+        segmentKey:p.segment_key,
+        plannedCandidates:p.candidate_models,
+        numberVerified:false,model:null,pngReference:null,
+        officialLineSourceUrl:p.official_line_source_url,
+        stopClockStatus:p.source_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // 陸羽東線 2611: 45 regular numbers in both calendars + six
   // dated "おもいで湯けむり" rapid numbers. 2024 flood leaves
   // Naruko-Onsen–Shinjo CLOSED, buses aren't railway runs.
