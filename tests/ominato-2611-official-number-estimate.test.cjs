@@ -125,6 +125,7 @@ test('legacy SQL 3225D is correctly restored to Rapid Shimokita; December specia
   assert.equal(p[1].trainType,'odpt.TrainType:JR-East.Rapid');
   assert.equal(p[1].serviceName,'しもきた');
   assert.equal(p[1].vehicleIdentityStatus,'UNKNOWN');
+  assert.equal(p[1].officialNumberVerified,true);
   assert.equal(p[1].estimated,true);
 });
 test('Ominato 11/10–13 cancelled SQL service never shows train position',()=>{
