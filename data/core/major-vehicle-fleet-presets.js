@@ -375,6 +375,12 @@
     // Oito is not on the published Nagano E131-200 deployment corridor.
     {id:'jr-oito-local', operator:'JR-East', lineIds:['Oito'],
       models:['211系','E127系'], sourceUrl:'https://www.jreast.co.jp/train/local/e127.html'},
+    // The JR-West Oito section has its OWN KiHa120-300 Okayama-style
+    // orange/red diesel family; neither existing regional 120 PNG
+    // matches the Oito livery, so the reference contains NO icon.
+    {id:'jr-west-oito-kiha120-300',operator:'JR-West',
+      lineIds:['OitoWest'],models:['キハ120形300番台（大糸線・岡山色）'],
+      sourceUrl:'https://info-otari.jp/oito_line/'},
     {id:'jr-nagano-shinonoi-local', operator:'JR-East', lineIds:['Shinonoi'],
       models:['211系','E127系','E131系200番台'],
       sourceUrl:'https://www.jreast.co.jp/press/2026/nagano/20260507_na01.pdf'},
