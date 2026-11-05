@@ -1110,16 +1110,21 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       "Namezu","Kita-Nakagomi","Iwamurada","Sakudaira",
       "Nakasato","Misato","Mitsuoka","Otome","Higashi-Komoro",
       "Komoro"];
-    const closed=closures.service_status==="suspended_until_verified_restoration" &&
-      serviceDate>=String(closures.started_on).slice(0,10)&&
-      (!closures.ended_on||serviceDate<=String(closures.ended_on).slice(0,10));
+    const rockfallStatus=String(closures.service_status||"");
     if(!["suspended_until_verified_restoration","verified_restored"].includes(
-       String(closures.service_status||"")))
+       rockfallStatus)||
+       (rockfallStatus==="verified_restored"&&!closures.ended_on))
       throw new Error("KOMII_2611_ROCKFALL_STATUS_UNRECOGNIZED");
+    // A future verified restoration must NOT erase the closure from its
+    // historical dates: the interval is inclusive through ended_on.
+    const closed=serviceDate>=String(closures.started_on).slice(0,10)&&
+      (!closures.ended_on||
+       serviceDate<=String(closures.ended_on).slice(0,10));
     for(let i=result.length-1;i>=0;i--){
       const run:any=result[i];
       const proof:any=published.get(run.train_number+"|"+run.rail_direction);
       if(!proof||run.network_key!=="odpt.Railway:JR-East.Komii"||
+         run.canonical_group_evidence!=="source_only"||
          !Array.isArray(run.stops)||run.stops.length<2||
          !Array.isArray(proof.planned_vehicle_candidates)){
         result.splice(i,1);continue;
