@@ -42,3 +42,16 @@ test('shared Shinkansen/resort and unusable source segments cannot pose as ordin
   'run.train_number_verification="historical-source-only-ou-2611"'])
   assert.ok(edge.includes(term),'Missing server admission: '+term);
 });
+
+test('dated YOKOTE festival and 9463M sources do not become daily trains',()=>{
+ const dates=fs.readFileSync('supabase/migrations/'+
+  '20261106151000_oumain_2611_official_feb_snow_and_nov_9463_date_filter.sql','utf8');
+ const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+ for(const term of ['9459M','9463M','2026-11-02','2026-11-03',
+  '2026-11-04','190611.html','187971.html',
+  "verified_november_operating_dates='{}'::date[]"])
+  assert.ok(dates.includes(term),'Missing official date proof: '+term);
+ assert.ok(edge.includes('proof.verified_november_operating_dates!==null'));
+ assert.ok(edge.includes('!dates.some((date:any)=>String(date).slice(0,10)===serviceDate)'));
+ assert.ok(edge.includes('service_date_source_url'));
+});
