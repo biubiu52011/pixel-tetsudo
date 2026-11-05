@@ -867,6 +867,31 @@
           if(officialIshinomakiPlan===false)continue;
         }
 
+        // 大糸線 JR WEST OitoWest is a different OPERATOR/diagram.
+        // No bus 790x, no East M or 8361/2D and no guessed full
+        // Itoigawa clocks. Verify only 3-station historical partial
+        // sources and keep both actual-car identity and PNG unresolved.
+        var officialOitoWestPlan=null;
+        if(lineId==="OitoWest"&&String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run"||
+             !/^4[0-9]{2}D$/.test(String(run.trainNumber||"")))continue;
+          var westIndex=window.TrainNumberPngRanges;
+          if(!westIndex||
+             typeof westIndex.verifyOitoWestService!=="function")continue;
+          officialOitoWestPlan=westIndex.verifyOitoWestService({
+            trainNumber:run.trainNumber,positionLineId:"OitoWest",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-West",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialOitoWestPlan)continue;
+        }
+
         // 大糸線 2611 JR-East Matsumoto–Minami-Otari ONLY.
         // Do NOT operate on existing separately handled JR-WEST 4xxD
         // diesel services or old 790x bus records. The East M and
@@ -1597,6 +1622,14 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // JR-West Oito KiHa120-300 orange/red is documented, but
+          // there is no corresponding original PNG in this repo.
+          var _oitoWestNoPng=!!officialOitoWestPlan;
+          if(_oitoWestNoPng){
+            _plannedCandidates=[];
+            _visibleCandidates=[];
+            _publishedVehiclePlan=null;
+          }
           // JR-East Oito exact-source / date-approved illustrated model.
           // Do not infer a model for 5232M: the SQL family is unknown.
           var _oitoEastUnknown=officialOitoEastPlan&&
@@ -1811,8 +1844,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown) ? "" : (vehResult.name || '');
-          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown) ? "" :
+          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
+          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1865,7 +1898,7 @@
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
-              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialMitoPlan || officialMiyoPlan || officialOfunatoPlan || officialOitoEastPlan || officialYamadaPlan ||
+              officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialMitoPlan || officialMiyoPlan || officialOfunatoPlan || officialOitoEastPlan || officialOitoWestPlan || officialYamadaPlan ||
               officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan || officialKashimaPlan ||
                officialKesennumaRailPlan || officialKomiiPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
@@ -1877,8 +1910,8 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -1955,7 +1988,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown)
+            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
