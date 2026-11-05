@@ -2172,6 +2172,7 @@
        proof.closedRailSection!=="Kururi–KazusaKameyama"||
        proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
        String(p.positionLineId||p.lineId||"")!=="Kururi"||
+       (p.displayLineId && p.displayLineId!=="Kururi")||
        p.sourceRailway!=="odpt.Railway:JR-East.Kururi"||
        p.positionSource!=="supabase-train-run")return null;
     var op=String(p.trainOperator||p.operator||"");
