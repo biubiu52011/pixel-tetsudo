@@ -181,3 +181,9 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 **数据库只读审计**：279条官方完整番号、141条 PNG 精确单号；所有 PNG 范围 min=max / requires_exact_roster=true / actual_vehicle_confirmed=false；缺正式番号对应证据0；与 official_service_vehicle_plan 不符的车型0；无可用 native_png 图库路径0。
 
 仍未完成：547条模板没有独立正式番号证据，包括北陆6、东北1（旧 Hayabusa39）、山形3（つばさ88/90/177 多候选），另有东海道、山阳、九州、西九州总计537条，需JR Central/West/Kyushu独立官方资料与车型图库。全部列车的真实运行日、停站时刻一致性、编组号和浏览器/iPhone Safari真实图片展示尚未逐车端到端验收。本任务仍是**进行中**，不能因番号证据提高而标记全线路已完成。
+
+### 2026-11-06 线上代码最终状态补充
+
+在前述 v306 局部部署之后，仓库已有的独立 Oito 代码随后通过正常部署流程合入线上。目前实测：Supabase train-runs **v307 ACTIVE**，其 index.ts 与 GitHub main 的源文件**全文一致**；已包含本次 JR-Hokkaido owner guard。前文的 v306 与 main 不一致只是一段中间部署状态，**不再是当前状态**。
+
+[GitHub Pages 最新部署成功](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42089177493)；[列车 PNG 契约检查已通过](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42088471449)。通过的是代码契约/Pages 部署，不代表已经逐车完成 Safari 实机图像验收。
