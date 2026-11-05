@@ -41,11 +41,35 @@ const make=(line,number,dir,date='2026-11-07',cal='holiday',
   positionSource:'supabase-train-run',estimated:true,
   vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
   plannedVehicleCandidates:[line==='Karasuyama'?'EV-E301系（ACCUM）':fleets[line][0]],
+  ...(line==='Kururi'&&!index.kururiClosedRailNumbers.includes(number)?{
+    scheduledStopKeys:dir==='Outbound'?
+      ['Kisarazu','Gion','KazusaKiyokawa','HigashiKiyokawa',
+       'Yokota','HigashiYokota','Makuta','Shimogori','Obitsu','Tawarada','Kururi']:
+      ['Kururi','Tawarada','Obitsu','Shimogori','Makuta','HigashiYokota',
+       'Yokota','HigashiKiyokawa','KazusaKiyokawa','Gion','Kisarazu'],
+    sqlPublishedNumberFleetReference:{
+      source:'sql-jreast-2611-number-roster',lineId:'Kururi',
+      trainNumber:number,serviceDate:date,
+      direction:'odpt.RailDirection:'+dir,
+      calendar:'odpt.Calendar:'+(cal==='holiday'?'SaturdayHoliday':'Weekday'),
+      trainType:'odpt.TrainType:JR-East.Local',
+      segmentKey:'kisarazu_kururi_rail',railScope:'open_rail_only',
+      railwayFrom:dir==='Outbound'?'Kisarazu':'Kururi',
+      railwayTo:dir==='Outbound'?'Kururi':'Kisarazu',
+      model:'キハE130形100番台',
+      pngReference:'../images/列车/JR東日本/JR東日本_キハE130系100番台.png',
+      officialSourceUrl:'https://timetables.jreast.co.jp/2611/timetable-v/217'+
+        (dir==='Outbound'?'d':'u')+(cal==='holiday'?'2':'1')+'.html',
+      stopClockStatus:'historical_not_2611_verified',
+      closedRailSection:'Kururi–KazusaKameyama',
+      referenceOnly:true,actualVehicleConfirmed:false
+    }
+  }:{}),
   ...extra
 });
 const verify=p=>index.verify(p.positionLineId,p.trainNumber,
   p.sourceRailway,p.railDirection,p.trainType,p.calendarType,p.serviceDate);
-test('all 108 regular public train numbers map to exact line-scoped gallery PNGs',()=>{
+test('three regional official rosters: closed-only Kururi numbers never map to railway PNG',()=>{
   assert.deepEqual(Object.keys(index.lines).sort(),
     ['Hachinohe','Karasuyama','Kururi']);
   assert.deepEqual([index.lines.Kururi.up.length,index.lines.Kururi.down.length],[20,20]);
