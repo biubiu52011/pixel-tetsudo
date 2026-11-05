@@ -414,7 +414,7 @@
       allowedModelLabels:["211系","211系（長野地区）"],
       requireCandidateOverlap:true,
       model:"211系（長野地区）",
-      pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色"},
+      pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色.png"},
     // Chuo Main's 320M-367M local family includes 321M (Enzan 05:38
     // -> Nirasaki 06:12). The documented three-car 211 operation is the
     // gallery REFERENCE, not proof of the actual November 2026 set.
