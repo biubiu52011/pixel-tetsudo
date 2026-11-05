@@ -975,6 +975,26 @@
           if(officialIiyamaPlan===false)continue;
         }
 
+        // Hanawa 2611: SQL source/number/date must authorize the picture.
+        var officialHanawaPlan=null;
+        if(lineId==="Kounan"&&String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run")continue;
+          var hanawaRange=window.TrainNumberPngRanges;
+          if(!hanawaRange||typeof hanawaRange.verifyHanawaService!=="function")continue;
+          officialHanawaPlan=hanawaRange.verifyHanawaService({
+            trainNumber:run.trainNumber,positionLineId:"Kounan",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialHanawaPlan)continue;
+        }
+
         // Kitakami Nov 2026: 8/2 flood closed Hotto-Yuda–Yokote
         // (bus replacement). Require source-backed 2611 NUMBER AND the
         // actual RAW rail stop endpoints, never crop a phantom through run.
@@ -1448,6 +1468,23 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // Hanawa SQL-issued exact train number -> representative vehicle PNG.
+          var _hanawaFleet=officialHanawaPlan &&
+            vehResult.identityStatus!=="EXACT"
+              ?String(officialHanawaPlan.model||""):"";
+          if(_hanawaFleet){
+            _plannedCandidates=[_hanawaFleet];
+            _visibleCandidates=[_hanawaFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_hanawaFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2611-hanawa-number-date-proof",
+              sourceUrl:tt._sqlPublishedNumberFleetReference &&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl||"",
+              lineId:"Kounan",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // SQL-verified Kitakami roster grants illustrative KiHa110
           // stock only on the surviving rail section, never the bus line.
           var _kitakamiFleet=officialKitakamiPlan &&
@@ -1527,8 +1564,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet) ? "" : (vehResult.name || '');
-          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet) ? "" :
+          var trainClass = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet) ? "" : (vehResult.name || '');
+          var _vehicleType = (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1581,7 +1618,7 @@
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
-              officialKitakamiPlan || officialYamadaPlan ||
+              officialKitakamiPlan || officialHanawaPlan || officialYamadaPlan ||
               officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan || officialKashimaPlan ||
                officialKesennumaRailPlan || officialKomiiPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
@@ -1593,8 +1630,8 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            publishedFleetReference:_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -1671,7 +1708,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet)
+            vehicleIconPath: (_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
