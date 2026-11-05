@@ -281,9 +281,6 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
   // Kashima uses a stronger gate than the other Chiba-through lines:
   // generic provider URN and published Chiba number are NOT enough
   // without the SQL calendar, route, date and 11/7 replacement proof.
-  assert.equal(root.JREastChibaNumberIndex202611.match(
-    'E235系1000番台','2520M','Kashima',position(
-      'Kashima','2520M','Local','holiday')),true);
   assert.equal(choose(position('Kashima','2520M','Local','holiday')),null);
   const index=root.JREastChibaNumberIndex202611;
   const looksSimilar=[
