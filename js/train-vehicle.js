@@ -1098,6 +1098,7 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-25": {"displayName":"N700系（JR西日本）","iconName":"N700系（JR西日本）","asset":null,"plannedAsset":"../images/列车/JR西日本/JR西日本_N700系.png","lineIds":["TokaidoShinkansen","SanyoShinkansen"],"aliases":["JR西日本N700系"]},
   "planned-stock-library-26": {"displayName":"N700系7000番台（JR西日本）","iconName":"N700系7000番台（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_N700系_7000番台.png","lineIds":["SanyoShinkansen","KyushuShinkansen"],"aliases":["JR西日本N700系7000番台"]},
   "planned-stock-library-27": {"displayName":"500系（JR西日本）","iconName":"500系（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_500系.png","lineIds":["SanyoShinkansen"],"aliases":["JR西日本500系"]},
+  "planned-stock-library-jrwest-700": {"displayName":"700系（JR西日本）","iconName":"700系（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_700系.png","lineIds":["SanyoShinkansen"],"aliases":["JR西日本700系"]},
   "planned-stock-library-28": {"displayName":"800系（JR九州）","iconName":"800系（JR九州）","asset":"../images/列车/JR九州/JR九州_800系.png","lineIds":["KyushuShinkansen"],"aliases":["JR九州800系"]},
   "planned-stock-library-29": {"displayName":"千葉都市モノレール0形","iconName":"千葉都市モノレール0形","asset":"../images/列车/千葉都市モノレール/千葉都市モノレール_0形.png","aliases":[]},
   "planned-stock-library-30": {"displayName":"千葉都市モノレール1000形","iconName":"千葉都市モノレール1000形","asset":"../images/列车/千葉都市モノレール/千葉都市モノレール_1000形.png","aliases":[]},

@@ -22,11 +22,15 @@ function filesIn(folder,prefix,out){
 }
 const existing=[];filesIn('images/列车','images/列车',existing);
 assert.equal(existing.length,garage.totalPng,'gallery inventory must refresh when assets change');
-assert.equal(garage.totalPng,579);
-assert.equal(garage.canonicalEntries,597);
-assert.equal(garage.mappedPng,579);
+assert.equal(garage.totalPng,580);
+assert.equal(garage.canonicalEntries,598);
+assert.equal(garage.mappedPng,580);
 for(const path of existing)assert.ok(garage.hasPng(path),'garage missing '+path);
 assert.equal(garage.unassigned.length,0);
+const jrwest700='../images/列车/JR西日本/JR西日本_700系.png';
+assert.equal(garage.hasPng(jrwest700),true);
+assert.equal(garage.matchModelPath('700系（JR西日本）',jrwest700,'SanyoShinkansen'),true);
+assert.equal(garage.matchModelPath('700系（JR西日本）',jrwest700,'KyushuShinkansen'),false);
 assert.equal(garage.alternates.length,1);
 const alt=garage.alternates[0];
 assert.match(alt,/JR東日本_E233系_5000番台\.png$/);
@@ -108,4 +112,4 @@ const marker=root.TrainVehicle.selectMarkerArtwork({
 assert.equal(marker.kind,'vehicle');
 assert.equal(marker.planned,true);
 assert.equal(marker.iconSrc,model[0].path);
-console.log('garage map: PASS — 579 assets, 597 canonical model references, one non-default alternate, scoped published train plan');
+console.log('garage map: PASS — 580 assets, 598 canonical model references, one non-default alternate, scoped published train plan');

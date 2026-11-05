@@ -288,12 +288,21 @@ const wrongKyushu500 = catalogVm.window.__testPlanResolution('500系', {
 });
 assert.equal(wrongKyushu500.iconPath, '',
   'JR-West 500 Sanyo-only artwork cannot leak to Kyushu Shinkansen');
-const missingSanyo700 = catalogVm.window.__testPlanResolution('700系', {
+// User-supplied native 82x98 transparent pixel icon; model identification is
+// a scoped generic artwork reference, not proof of a physical train formation.
+const sanyo700 = catalogVm.window.__testPlanResolution('700系', {
   lineId:'SanyoShinkansen', operator:'JR-West',
   source:'database-verified-published-plan', _plannedArtworkInventory:true
 });
-assert.equal(missingSanyo700.iconPath, '',
-  'JR-West 700-series plan must remain neutral without matching native PNG');
+assert.equal(sanyo700.status, 'PLANNED_MODEL');
+assert.equal(sanyo700.iconPath, '../images/列车/JR西日本/JR西日本_700系.png',
+  'JR-West 700-series official single-model plan uses the new native artwork');
+const unrelated700 = catalogVm.window.__testPlanResolution('700系', {
+  lineId:'KyushuShinkansen', operator:'JR-West',
+  source:'database-verified-published-plan', _plannedArtworkInventory:true
+});
+assert.equal(unrelated700.iconPath, '',
+  'JR-West 700-series image cannot leak across into Kyushu Shinkansen');
 
 // SQL published models describe the weekday/holiday timetable, not the
 // observed physical stock. Even one verified model must pass through vehiclePlan.
