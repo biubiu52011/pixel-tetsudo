@@ -194,8 +194,8 @@ test('trains page points to the current PNG selector, renderer and fleet scripts
   'data/core/major-vehicle-fleet-presets.js'
  ]){
   const buf=fs.readFileSync(asset);
-  const sha=crypto.createHash('sha1').update('blob '+buf.length+'\\0')
-    .update(buf).digest('hex').slice(0,12);
+  const sha=crypto.createHash('sha1').update('blob '+buf.length)
+    .update(Buffer.from([0])).update(buf).digest('hex').slice(0,12);
   // Git's blob SHA uniquely fingerprints the browser-loaded asset.
   assert.ok(html.includes('../'+asset+'?v='+sha),
     'stale script URL in trains page: '+asset+' expected '+sha);
