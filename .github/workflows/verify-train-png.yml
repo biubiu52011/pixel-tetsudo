@@ -25,6 +25,8 @@ on:
       - 'tests/rikutsu-west-2611-official-number-png.test.cjs'
       - 'tests/ominato-2611-official-number-estimate.test.cjs'
       - 'tests/iiyama-2611-official-number-png.test.cjs'
+      - 'tests/kitakami-2611-official-number-png.test.cjs'
+      - 'tests/yamada-2611-official-number-png.test.cjs'
       - 'scripts/page-scripts.json'
       - 'tests/yokosuka-sobu-202611-number-png.test.cjs'
       - 'tests/shonan-215-202611-number-families.test.cjs'
@@ -99,6 +101,8 @@ jobs:
           node --check data/timetables/jreast-rikutsu-west-2611-number-index.js
           node --check data/timetables/jreast-ominato-2611-number-index.js
           node --check data/timetables/jreast-iiyama-2611-number-index.js
+          node --check data/timetables/jreast-kitakami-2611-number-index.js
+          node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
       - name: Verify Boso dated official number exceptions and historical SQL guards
         run: node --test tests/boso-2611-dated-service-exceptions.test.cjs tests/boso-202611-schedule-fallback.test.cjs
@@ -116,6 +120,8 @@ jobs:
         run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs
       - name: Verify regional 2611 Ishinomaki / Oga official numbers and PNG guards
         run: node --test tests/ishinomaki-2611-official-number-png.test.cjs tests/oga-2611-official-number-png.test.cjs
+      - name: Verify Kitakami and Yamada 2611 public numbers, flood/rockfall, valid PNGs
+        run: node --test tests/kitakami-2611-official-number-png.test.cjs tests/yamada-2611-official-number-png.test.cjs
       - name: Verify 54 Iiyama locals and dated Oykot / Shu Kura service numbers
         run: node --test tests/iiyama-2611-official-number-png.test.cjs
       - name: Verify Ominato Nov 2026 exact services and maintenance cancellations
