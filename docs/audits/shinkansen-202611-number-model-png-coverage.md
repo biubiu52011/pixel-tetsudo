@@ -13,9 +13,9 @@
 | 无列车级单车型计划 | 475 | **395** |
 | 已证明当日实际物理编组 | 0 | **0** |
 | 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **674** |
-| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **164** |
+| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **168** |
 
-**单车型计划覆盖率：431 / 826 = 52.2%；正式番号证据 674 / 826 = 81.6%；安全 PNG 单号 164 / 826 = 19.9%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 161 张 PNG。**
+**单车型计划覆盖率：431 / 826 = 52.2%；正式番号证据 674 / 826 = 81.6%；安全 PNG 单号 168 / 826 = 20.3%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 168 张 PNG。**
 
 ## 各线计划车型覆盖率（2026-11-06 最新回读）
 
@@ -258,11 +258,11 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 | 上越 | 18 | 18 | 18 |
 | 九州 | 159 | 86 | 20（800系） |
 | 西九州 | 92 | 90 | 0（N700S缺图） |
-| 山阳 | 154 | **126** | **3（500系）** |
+| 山阳 | 154 | **126** | **7（500系3、700系4）** |
 | 东北 | 82 | 81 | 35 |
 | 东海道 | 132 | 93 | 0 |
 | 山形 | 46 | 43 | 43 |
-| **合计** | **826** | **674** | **164** |
+| **合计** | **826** | **674** | **168** |
 
 **新增迁移（均直接 main 且已在现有 Supabase 执行）**：
 
@@ -273,3 +273,16 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 **资产审计**：GitHub 现有 JR 西日本图片只含 500系、N700系及N700系7000番台，**没有 700系原生PNG**；Supabase `vehicle_image_assets` 亦没有该公司的700系记录。不能以500或N700冒充，也不能仅以是否为「こだま」推断。
 
 **存量缺口**：152 条正式番号尚无独立证据（九州73、东海道39、山阳28、北陆6、山形3、西九州2、东北1）。尽管部分线路可从JR East总表识别同名/号次，仍需核对车次来源、方向、运行日和特殊编号。最新所有164条精确PNG均为单号 `min=max`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`。代码级CI与GitHub Pages成功/失败状态应分别检查；本轮没有进行Safari实机图片显示验收。
+
+## 2026-11-06 用户补充 JR 西日本700系 PNG：已入库并落到4趟正式车次
+
+**最新 Supabase 回读（该节覆盖前文“164 PNG/缺700图”的历史记录）**：新干线 826 个源模板、674 条官方完整番号、431 条已核实单一计划车型，精确 PNG **168 条**（20.3%）；当天物理编组确认证据仍为 **0**。
+
+- 用户直接上传 82×98 调色板透明像素 PNG，保存为 [`images/列车/JR西日本/JR西日本_700系.png`](../../images/列车/JR西日本/JR西日本_700系.png)。为收缩调色板做了**逐像素 RGBA 完全相同**的无损 PNG 优化（966字节）；透明区域保留。GitHub Blob SHA: `fdd1679c3fc3dab7b49f096ddf4db7b03a27fdc9`。此素材是**用户提供的通用车型图**，不代表证实某趟列车、具体编组、车辆号或外观涂装。
+- 已在既有 [`js/train-vehicle.js`](../../js/train-vehicle.js) 规范车型目录新增 `700系（JR西日本）`，限定 `lineIds:["SanyoShinkansen"]`，并在原有 [`vehicle-garage-png-map.js`](../../data/timetables/vehicle-garage-png-map.js) 中登记同一图库路径与唯一车型映射（580张图库PNG、598条规范车型引用）。没有增加 HTML script src 或独立映射脚本。
+- [资产与4条精确 PNG SQL 迁移](../../supabase/migrations/20261106104000_user_jrwest_700_artwork_four_exact_sanyo_png.sql) 已执行。原生图片写入 **`vehicle_image_assets` ID=581**，运营者 `JR-West`、`vehicle_type=700系`、`asset_scope=generic`、`is_generic=true`、`file_format_status=native_png`。
+- 在已存在 `published_train_number_evidence` 以及 A 级官网 `official_service_vehicle_plan` 的前提下，只给山阳新干线平日 **`876A`、`958A`、`966A`、`976A`** 各添1条 `min_number=max_number` 的700系 PNG。对应 [876A](https://timetable.jr-odekake.net/train-timetable/315601?date=20261119)、[958A](https://timetable.jr-odekake.net/train-timetable/315541?date=20261110)、[966A](https://timetable.jr-odekake.net/train-timetable/315591?date=20261101)、[976A](https://timetable.jr-odekake.net/train-timetable/315631?date=20261101)，没有新增或臆测官方车型/车次。
+- **`970A` 仍然无固定 PNG**：官网11月多日700系与500系换型例外，不能把整月通用型图覆盖它。全部168条新干线 PNG 在 SQL 回读中 `min=max`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`，违规宽范围为0。
+- 已在原有 [`vehicle-garage-png-map.test.cjs`](../../tools/vehicle-garage-png-map.test.cjs) 与 [`train-png-display-contract.test.cjs`](../../tools/train-png-display-contract.test.cjs) 更新图库完整性计数及跨线禁止引用等测试；[该提交 PNG 全套测试通过](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42105425319)。GitHub Pages 还需要独立确认新版部署结果，iPhone Safari 仍未实机验收。
+
+**入库提交**：[`d303c0ff6e81c57716ec02a774a37aeef860499f`](https://github.com/biubiu52011/pixel-tetsudo/commit/d303c0ff6e81c57716ec02a774a37aeef860499f)，直接 `main`，没有 PR、新 SQL 表或额外 src。
