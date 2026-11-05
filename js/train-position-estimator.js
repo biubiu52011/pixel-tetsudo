@@ -803,10 +803,16 @@
           // Stop proof is essential: any historical timetable that includes
           // stations beyond Naruko-Onsen cannot be an operating rail run.
           // Current SQL stops do NOT include this suspended segment.
-          var suspendedRikutoStop=run.stops.some(function(stop){
-            var st=normalizeStationKey(extractStationKey(stop.stationUrn));
-            return /^(?:nakayamadairaonsen|sakaida|akakuraonsen|tachikoji|mogami|ohori|usugi|semionsen|higashinagasawa|nagasawa|minamishinjo|shinjo)$/.test(st);
-          });
+          // Use RAW published stop rows here, not run.stops:
+          // compileTrainRun truncates at a declared destination. A stale
+          // source can conceal cancelled onward segments after that point.
+          var suspendedRikutoStop=(tt["odpt:trainTimetableObject"]||[])
+            .some(function(raw){
+              var urn=raw&&(raw["odpt:departureStation"]||
+                raw["odpt:arrivalStation"]||raw["odpt:station"]||"");
+              var st=normalizeStationKey(extractStationKey(urn));
+              return /^(?:nakayamadairaonsen|sakaida|akakuraonsen|tachikoji|mogami|ohori|usugi|semionsen|higashinagasawa|nagasawa|minamishinjo|shinjo)$/.test(st);
+            });
           if(suspendedRikutoStop)continue;
         }
 
