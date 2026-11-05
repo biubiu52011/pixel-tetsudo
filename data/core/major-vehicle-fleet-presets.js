@@ -410,8 +410,14 @@
       models:['E721系','GV-E400系','キハ110系'], sourceUrl:'https://www.jreast.co.jp/train/local/e721.html'},
     {id:'jr-tohoku-main-regional', operator:'JR-East', lineIds:['TohokuMain'],
       models:['701系','E721系','HB-E220系'], sourceUrl:'https://www.jreast.co.jp/train/local/e721.html'},
+    // Route-wide *candidate inventory*, not a per-number vehicle assignment.
+    // 2026-09-19 E723-5000 began service on Fukushima–Shinjo; 719-5000
+    // is being phased out. The OuMain corridor also carries Gono resort,
+    // Tsugaru express, Oga ACCUM and separately modeled Shinkansen trains.
     {id:'jr-ou-main-regional', operator:'JR-East', lineIds:['OuMain'],
-      models:['701系','EV-E801系','GV-E400系','キハ110系'], sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
+      models:['701系','701系5500番台','719系5000番台','E723系5000番台',
+        'EV-E801系','GV-E400系','キハ110系','E751系','HB-E300系'],
+      sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
     {id:'jr-yamagata-tazawako', operator:'JR-East', lineIds:['Yamagata','Tazawako'],
       models:['701系（標準軌仕様）'], sourceUrl:'https://www.jreast.co.jp/train/local/701.html'},
     {id:'jr-tsugaru', operator:'JR-East', lineIds:['Tsugaru'],
