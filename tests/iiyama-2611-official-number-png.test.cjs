@@ -158,6 +158,7 @@ test('11/5 scheduled SQL only regular, 11/2 special Oykot holiday template allow
   assert.equal(day2[1].serviceName,'おいこっと');
   assert.equal(day2[1].trainType,'odpt.TrainType:JR-East.Rapid');
   assert.equal(day2[1].vehicleIdentityStatus,'UNKNOWN');
+  assert.equal(day2[1].officialNumberVerified,true);
   assert.equal(day2[1].timetableDateVerified,false);
 });
 test('Shu Kura SQL train only appears on source-published Nov 20/21/27–29',()=>{
