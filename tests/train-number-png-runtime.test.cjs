@@ -136,6 +136,124 @@ test('BanetsuEast 2611 JR official D numbers: 35 all-day weekday/holiday KiHa110
   assert.equal(marker({...normal,displayLineId:'BanetsuWest'},'BanetsuWest').kind,'unresolved');
   assert.equal(root.TrainVehicle.selectMarkerArtwork({...normal,displayLineId:'BanetsuEast'},true).kind,'unresolved');
 });
+test('BanetsuWest 2611 all 94 scheduled unique M and D stock references are calendar/direction scoped',()=>{
+  const eUpLocal=["1222M","1224M","1226M","1228M","1230M","1232M","1234M","1236M","1238M","1240M","2226M"],eDownLocal=["1221M","1223M","1225M","1227M","1229M","1231M","1233M","1235M","1237M","1239M","2225M"];
+  const eUpRapid=["3232M","3234M","3236M","3238M","3240M","3242M","3244M"],eDownRapid=["3231M","3233M","3235M","3237M","3239M","3241M","3243M"];
+  const dUpGV=["220D","2224D","2226D","2228D","2230D","2232D","2236D","2238D","2240D","2242D","2244D","2246D","224D","2252D","230D","234D","236D","238D","240D","4252D"],dDownGV=["221D","2221D","2223D","2227D","2233D","2235D","2237D","2239D","2241D","2243D","2245D","2247D","2249D","227D","231D","233D","237D","241D","4253D","2229D"];
+  const dUpKiha=["4250D","222D","226D","228D","4254D","232D","4256D","2248D","2250D"],dDownKiha=["223D","225D","4255D","229D","4257D","235D","239D","2251D","4259D"];
+  const all=[...eUpLocal,...eDownLocal,...eUpRapid,...eDownRapid,
+    ...dUpGV,...dDownGV,...dUpKiha,...dDownKiha];
+  assert.equal(all.length,94);
+  assert.equal(new Set(all).size,94);
+  const groups=[
+    [eUpLocal,'Inbound','Local','E721系','../images/列车/JR東日本/JR東日本_E721系_仙台地区.png'],
+    [eDownLocal,'Outbound','Local','E721系','../images/列车/JR東日本/JR東日本_E721系_仙台地区.png'],
+    [eUpRapid,'Inbound','Rapid','E721系','../images/列车/JR東日本/JR東日本_E721系_仙台地区.png'],
+    [eDownRapid,'Outbound','Rapid','E721系','../images/列车/JR東日本/JR東日本_E721系_仙台地区.png'],
+    [dUpGV,'Inbound','Local','GV-E400系','../images/列车/JR東日本/JR東日本_GV-E400系.png'],
+    [dDownGV.filter(x=>!['2225D','2229D'].includes(x)),'Outbound','Local','GV-E400系','../images/列车/JR東日本/JR東日本_GV-E400系.png'],
+    [['2225D','2229D'],'Outbound','Rapid','GV-E400系','../images/列车/JR東日本/JR東日本_GV-E400系.png'],
+    [dUpKiha,'Inbound','Local','キハ110系','../images/列车/JR東日本/JR東日本_キハ110系.png'],
+    [dDownKiha,'Outbound','Local','キハ110系','../images/列车/JR東日本/JR東日本_キハ110系.png']
+  ];
+  for(const [numbers,direction,type,model,png] of groups){
+    assert.equal(root.VehicleGaragePngMap.matchModelPath(model,png,'BanetsuWest'),true,
+      'pre-existing gallery art and scope required: '+model);
+    for(const n of numbers) for(const cal of ['weekday','holiday']){
+      const date=cal==='weekday'?'2026-11-05':'2026-11-07';
+      for(const make of [live,sql]){
+        const fields={
+          trainNumber:n,positionLineId:'BanetsuWest',
+          sourceRailway:'odpt.Railway:JR-East.BanetsuWest',
+          trainOperator:'JR-East',serviceDate:date,calendarType:cal,
+          railDirection:'odpt.RailDirection:'+direction,
+          trainType:'odpt.TrainType:JR-East.'+type,
+          plannedVehicleCandidates:n.endsWith('M')?['E721系']:
+            ['GV-E400系','キハ110系'],vehicleIdentityStatus:'UNKNOWN',
+          vehicleResolvedUpstream:false
+        };
+        const p=make(fields);
+        const found=root.TrainVehicle.lookupTrainNumberRangePng(p);
+        assert.ok(found,n+'/'+cal+'/'+p.positionSource);
+        assert.equal(found.model,model,n);
+        assert.equal(found.pngPath,png,n);
+        const art=marker(p,'BanetsuWest');
+        assert.equal(art.kind,'vehicle',n+'/'+cal);
+        assert.equal(art.iconSrc,png,n);
+        assert.equal(art.planned,true);
+        assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+      }
+    }
+  }
+  for(const n of ['2225D']){
+    for(const day of ["2026-11-01","2026-11-03","2026-11-08","2026-11-15","2026-11-22","2026-11-23","2026-11-29"]){
+      const p=sql({trainNumber:n,positionLineId:'BanetsuWest',
+        sourceRailway:'odpt.Railway:JR-East.BanetsuWest',
+        trainOperator:'JR-East',railDirection:'odpt.RailDirection:Outbound',
+        trainType:'odpt.TrainType:JR-East.Rapid',calendarType:'holiday',
+        serviceDate:day,plannedVehicleCandidates:['GV-E400系','キハ110系']});
+      assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,n+' is OFF '+day);
+    }
+  }
+  const sample=sql({trainNumber:'220D',positionLineId:'BanetsuWest',
+    sourceRailway:'odpt.Railway:JR-East.BanetsuWest',trainOperator:'JR-East',
+    railDirection:'odpt.RailDirection:Inbound',
+    trainType:'odpt.TrainType:JR-East.Local',
+    serviceDate:'2026-11-05',calendarType:'weekday',
+    plannedVehicleCandidates:['GV-E400系','キハ110系']});
+  for(const bad of [
+    {trainNumber:'242D'},{trainNumber:'4258D'},
+    {trainNumber:'4001M'},{trainNumber:'2225M'},
+    {sourceRailway:'odpt.Railway:JR-East.BanetsuEast'},
+    {positionLineId:'BanetsuEast'},
+    {displayLineId:'BanetsuEast'},
+    {trainOperator:'JR-West'},
+    {serviceDate:'2026-12-05'},
+    {railDirection:'odpt.RailDirection:Outbound'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {realtimeVehicleType:'キハ110系'},
+    {plannedVehicleCandidates:['E721系']},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['キハ110系']}}
+  ]){
+    const p={...sample,...bad};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'BanetsuWest source/stock boundary '+JSON.stringify(bad));
+  }
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...sample,displayLineId:'BanetsuWest'},true).kind,'unresolved');
+});
+test('BanetsuWest exact dated 2026-11 named stock: Akabeko, SL C57 and DL DE10',()=>{
+  const group=[
+    {numbers:['9211D','9212D'],days:["2026-11-01","2026-11-02","2026-11-03","2026-11-07","2026-11-08","2026-11-14","2026-11-15","2026-11-21","2026-11-22","2026-11-23","2026-11-28","2026-11-29"],model:'キハ110系',png:'../images/列车/JR東日本/JR東日本_キハ110系.png',type:'LimitedExpress'},
+    {numbers:['8226','8233'],days:["2026-11-03","2026-11-07","2026-11-14","2026-11-21"],model:'C57形（SLばんえつ物語）',png:'../images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png',type:'Rapid'},
+    {numbers:['9226','9233'],days:["2026-11-01","2026-11-08","2026-11-15"],model:'DE10形（DLばんえつ物語）',png:'../images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png',type:'Rapid'}
+  ];
+  for(const g of group) for(const day of g.days) for(const n of g.numbers){
+    const dir=Number(n.match(/^\d+/)[0])%2?'Outbound':'Inbound';
+    const pos=sql({trainNumber:n,positionLineId:'BanetsuWest',
+      sourceRailway:'odpt.Railway:JR-East.BanetsuWest',trainOperator:'JR-East',
+      railDirection:'odpt.RailDirection:'+dir,trainType:'odpt.TrainType:JR-East.'+g.type,
+      calendarType:'holiday',serviceDate:day});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(pos)?.pngPath,g.png,n+'/'+day);
+    assert.equal(marker(pos,'BanetsuWest').iconSrc,g.png,n+'/'+day);
+    assert.equal(pos.vehicleIdentityStatus,'UNKNOWN');
+  }
+  for(const [number,day,type] of [
+    ['8216D','2026-11-01','Local'],['8217D','2026-11-01','Rapid'],
+    ['9225D','2026-11-05','Rapid'],['9226D','2026-11-05','Rapid'],
+    ['8226','2026-11-01','Rapid'],['8226','2026-11-22','Rapid'],
+    ['8233','2026-11-08','Rapid'],['9226','2026-11-03','Rapid'],
+    ['9233','2026-11-21','Rapid'],['9233','2026-12-05','Rapid'],
+    ['9211D','2026-11-05','LimitedExpress'],['9212D','2026-11-05','LimitedExpress']
+  ]){
+    const p=sql({trainNumber:number,positionLineId:'BanetsuWest',
+      sourceRailway:'odpt.Railway:JR-East.BanetsuWest',
+      trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.'+type,
+      railDirection:'odpt.RailDirection:'+(Number(number.match(/^\d+/)[0])%2?'Outbound':'Inbound'),
+      serviceDate:day,calendarType:'holiday'});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      number+' '+day+' must stay unmapped');
+  }
+});
 test('ODPT realtime number -> garage PNG -> ChuoMain SVG image without preattached plan',()=>{
   const p=live();
   assert.equal(p.vehiclePlan,undefined);

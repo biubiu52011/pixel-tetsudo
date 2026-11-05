@@ -83,6 +83,174 @@
       rejectAmbiguousPlan:true,
       model:"キハ110系",
       pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
+    // Banetsu-West 2611: 261u1/u2 and 261d1/d2 JR East public
+    // train-number columns; company official pages verify LINE STOCK.
+    // https://timetables.jreast.co.jp/2611/timetable-v/261u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/261u2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/261d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/261d2.html
+    // https://www.jreast.co.jp/train/local/e721.html
+    // https://www.jreast.co.jp/train/local/gv_e400.html
+    // https://www.jreast.co.jp/train/local/kiha110.html
+    // Electrified Koriyama<->Aizuwakamatsu: 36 distinct regular M
+    // numbers (22 Local + 14 Rapid), E721 according to JR East + the
+    // 2026-06 train profile. Exactly scoped and counted, not generic M.
+    // E721 regular 22 Local M
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:1221,to:2226,suffixes:"M",
+      publishedNumbers:["1222M","1224M","1226M","1228M","1230M","1232M","1234M","1236M","1238M","1240M","2226M","1221M","1223M","1225M","1227M","1229M","1231M","1233M","1235M","1237M","1239M","2225M"],
+      trainTypes:["Local"],
+      
+      
+      
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E721系"],
+      requiredCandidateModelPrefix:"E721系",
+      model:"E721系",pngPath:"../images/列车/JR東日本/JR東日本_E721系_仙台地区.png"},
+    // E721 regular 14 Rapid M (including Aizu 1-6)
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:3231,to:3244,suffixes:"M",
+      publishedNumbers:["3232M","3234M","3236M","3238M","3240M","3242M","3244M","3231M","3233M","3235M","3237M","3239M","3241M","3243M"],
+      trainTypes:["Rapid"],
+      
+      
+      
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E721系"],
+      requiredCandidateModelPrefix:"E721系",
+      model:"E721系",pngPath:"../images/列车/JR東日本/JR東日本_E721系_仙台地区.png"},
+    // Non-electrified Aizuwakamatsu<->Niitsu: 58 regular D numbers,
+    // including 2229D Rapid. Officially a MIXED GV-E400/KiHa110 LINE.
+    // Reference split uses independent per-number rolling-stock working
+    // (2025-09), corroborated in 2026-03 timetable / 2026-11 reports.
+    // Stock substitutions are possible; never mark actualCarConfirmed.
+    // https://kitatetu-e233sai157.com/?p=61389
+    // https://w.atwiki.jp/train-boundfor/pages/196.html
+    // https://rail7.blogspot.com/2026/05/aizu-wakamatsu.html
+    // 2026-11 peculiar "2225D" is suspended on Sundays and public
+    // holidays; it DOES run on Saturdays, despite serviceId grouping
+    // SaturdayHoliday together. It has a separate date membership rule.
+    // GV-E400 normal Local D-number working reference (39)
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:220,to:4253,suffixes:"D",
+      publishedNumbers:["220D","2224D","2226D","2228D","2230D","2232D","2236D","2238D","2240D","2242D","2244D","2246D","224D","2252D","230D","234D","236D","238D","240D","4252D","221D","2221D","2223D","2227D","2233D","2235D","2237D","2239D","2241D","2243D","2245D","2247D","2249D","227D","231D","233D","237D","241D","4253D"],
+      trainTypes:["Local"],
+      
+      
+      
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["GV-E400系"],
+      requiredCandidateModelPrefix:"GV-E400系",
+      model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
+    // GV-E400 regular Rapid 2229D
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:2229,to:2229,suffixes:"D",
+      publishedNumbers:["2229D"],
+      trainTypes:["Rapid"],
+      
+      
+      
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["GV-E400系"],
+      requiredCandidateModelPrefix:"GV-E400系",
+      model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
+    // GV-E400 Rapid 2225D: weekdays/Saturdays only, Sunday/holidays OFF
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:2225,to:2225,suffixes:"D",
+      publishedNumbers:["2225D"],
+      trainTypes:["Rapid"],
+      
+      
+      operatingDates:["2026-11-02","2026-11-04","2026-11-05","2026-11-06","2026-11-07","2026-11-09","2026-11-10","2026-11-11","2026-11-12","2026-11-13","2026-11-14","2026-11-16","2026-11-17","2026-11-18","2026-11-19","2026-11-20","2026-11-21","2026-11-24","2026-11-25","2026-11-26","2026-11-27","2026-11-28","2026-11-30"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["GV-E400系"],
+      requiredCandidateModelPrefix:"GV-E400系",
+      model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
+    // KiHa110 normal Local D-number working reference (18)
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:222,to:4259,suffixes:"D",
+      publishedNumbers:["4250D","222D","226D","228D","4254D","232D","4256D","2248D","2250D","223D","225D","4255D","229D","4257D","235D","239D","2251D","4259D"],
+      trainTypes:["Local"],
+      
+      
+      
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系"],
+      requiredCandidateModelPrefix:"キハ110系",
+      model:"キハ110系",pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
+    // Temporary services: the 2611 page displays other-month trains
+    // as well. Never allow 9225D / 9226D (Jan 2027) or 9233 / 9226
+    // Christmas 2026 in this November month. Each train below is
+    // restricted to its OWN published November operating dates.
+    // Akabeko is KiHa110 series 0 (JRE 2026 media), SL is C57 180,
+    // DL is DE10 (JRE 2026 operating/vehicle article).
+    // https://media.jreast.co.jp/articles/5814
+    // https://www.toretabi.jp/railway_info/entry-25366.html
+    // https://media.jreast.co.jp/articles/6564
+    // https://www.jreast.co.jp/railway/joyful/c57.html
+    // Limited Express Akabeko KiHa110 0-number model reference 9211D/9212D
+    {lineIds:["BanetsuWest"],numberFormat:"full",
+      from:9211,to:9212,suffixes:"D",
+      publishedNumbers:["9211D","9212D"],
+      trainTypes:["LimitedExpress"],
+      
+      
+      operatingDates:["2026-11-01","2026-11-02","2026-11-03","2026-11-07","2026-11-08","2026-11-14","2026-11-15","2026-11-21","2026-11-22","2026-11-23","2026-11-28","2026-11-29"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系"],
+      
+      model:"キハ110系",pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
+    // SL Banetsu Monogatari locomotive C57 180, NOT the passenger carset
+    {lineIds:["BanetsuWest"],numberFormat:"bare",
+      from:8226,to:8233,suffixes:"",
+      publishedNumbers:["8226","8233"],
+      trainTypes:["Rapid","SLRapid"],
+      
+      
+      operatingDates:["2026-11-03","2026-11-07","2026-11-14","2026-11-21"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["C57形（SLばんえつ物語）"],
+      
+      model:"C57形（SLばんえつ物語）",pngPath:"../images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png"},
+    // DL Banetsu Monogatari locomotive DE10, NOT the passenger carset
+    {lineIds:["BanetsuWest"],numberFormat:"bare",
+      from:9226,to:9233,suffixes:"",
+      publishedNumbers:["9226","9233"],
+      trainTypes:["Rapid","SLRapid"],
+      
+      
+      operatingDates:["2026-11-01","2026-11-08","2026-11-15"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.BanetsuWest"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["DE10形（DLばんえつ物語）"],
+      
+      model:"DE10形（DLばんえつ物語）",pngPath:"../images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png"},
     // JR-East 2026-11: published NUMBER families confirmed against the
     // 2611 line tables and a JR-East stock source; no formation inference.
     // Senseki E131-800 S-number trains, Aobadori-Ishinomaki ONLY.
