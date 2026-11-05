@@ -57,7 +57,7 @@ WITH official(source_label,full_number,model,source_url,source_key) AS (
 INSERT INTO public.evidence_sources
 (id,source_key,source_url,source_type,evidence_grade,notes)
 SELECT new_id,source_key,source_url,'official','A',
- 'JR Kyushu 2611 individual Shinkansen timetable: exact '+full_number+
+ 'JR Kyushu 2611 individual Shinkansen timetable: exact '||full_number||
  ' 800 series 6-car service, not actual formation'
 FROM numbered WHERE (SELECT COUNT(*) FROM numbered)=6
 ON CONFLICT (source_key) DO NOTHING;
