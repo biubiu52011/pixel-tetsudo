@@ -1478,6 +1478,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       tip.push(prefix + " " + number);
     }
     // A Shinkansen service name / service number is not the operating train number.
+    if (lineId === "Gono" && p && p.officialNumberVerified === true &&
+        p.positionSource === "supabase-train-run" &&
+        p.publishedGonoLivery && p.publishedFleetReference) {
+      var fleetPrefix=/^zh/.test(lang)?"官方计划车型（非当日实车确认）：" :
+        lang==="en"?"Scheduled fleet (not an observed carset): ":
+        lang==="ko"?"공식 운행 계획 차종(실차 미확인): ":
+        "公式運行計画の車種（実車未確認）：";
+      tip.push(fleetPrefix+String(p.publishedFleetReference));
+    }
     if (p && p.serviceName) {
       var namePrefix = /^zh/.test(lang) ? "列车名" :
         (lang === "en" ? "Service" : (lang === "ko" ? "열차명" : "列車名"));
@@ -2464,6 +2473,20 @@ function _isTrainArtworkFailureActive(trainUid, p) {
               /^zh/.test(lang)?'列车番号':'列車番号')+
             " "+foldOfficialNumber;
           caption.appendChild(numberNote);
+        }
+        // Gono resort variants have published dated fleet evidence, but
+        // their candidate PNGs are not gallery-approved. Show the correct
+        // planned livery as TEXT beside the neutral marker instead of the
+        // SQL's stale GV-E400 label or an invented car front.
+        if(lineId==="Gono"&&p&&p.officialNumberVerified===true&&
+           p.positionSource==="supabase-train-run"&&
+           p.publishedGonoLivery&&p.publishedFleetReference){
+          var resortNote=document.createElement('small');
+          resortNote.className='train-fold-fleet-reference';
+          resortNote.textContent=(lang==='en'?'Scheduled fleet: ':
+            lang==='ko'?'계획 차종: ':/^zh/.test(lang)?'计划车型：':'計画車種：')+
+            p.publishedFleetReference;
+          caption.appendChild(resortNote);
         }
         if (markerSpec.kind==='vehicle' && markerSpec.iconSrc) {
           var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
