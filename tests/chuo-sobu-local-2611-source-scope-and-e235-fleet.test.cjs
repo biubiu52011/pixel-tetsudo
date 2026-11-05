@@ -271,3 +271,66 @@ test('published SQL service roster keys remain full public train numbers',()=>{
  assert.ok(!migration.includes('operation_code text NOT NULL'),
   'historical operation-only number must not become source key');
 });
+
+
+test('2026-11 B/C number segment is scoped 402..2499 and never equals E231-500 proof',()=>{
+ const rules=win.TrainNumberPngRanges;
+ assert.equal(typeof rules.matchChuoSobuLocalBCLiveNumber,'function');
+ const base={
+  trainNumber:'662B',trainId:'odpt.Train:JR-East.ChuoSobuLocal.662B',
+  positionSource:'realtime-api',realtimePositionRecordPresent:true,
+  positionLineId:'ChuoSobuLocal',displayLineId:'ChuoSobuLocal',
+  sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
+  trainType:'odpt.TrainType:JR-East.Local',
+  trainOperator:'JR-East',railDirection:'odpt.RailDirection:Eastbound',
+  serviceDate:'2026-11-06',vehicleIdentityStatus:'UNKNOWN',
+  operationCode:'63B'
+ };
+ const r=rules.matchChuoSobuLocalBCLiveNumber(base);
+ assert.ok(r,'ODPT 662B is an observed full number with 2611 B/C syntax');
+ assert.equal(r.trainNumber,'662B');
+ assert.equal(r.numberSource,'odpt-live-jreast-train-id');
+ assert.equal(r.numberScope,'2611-bc-402-2499');
+ assert.equal(r.model,null);
+ assert.equal(r.formationId,null);
+ assert.equal(r.authorizesPNG,false);
+ assert.equal(r.referenceOnly,true);
+ assert.equal(r.actualVehicleConfirmed,false);
+ assert.ok(r.candidateModels.includes('E231系500番台'));
+ assert.ok(r.candidateModels.includes('E231系0番台（中央・総武線各駅停車）'));
+ assert.ok(r.candidateModels.includes('E235系0番台（中央・総武線各駅停車）'));
+ assert.equal(r.illustrationPng,e231);
+ assert.equal(rules.match('662B','ChuoSobuLocal',base),null,
+   'reference-only B/C result must not pass as a verified model PNG');
+ assert.equal(win.TrainVehicle.selectMarkerArtwork(base,false).illustrative,true);
+ // Although a historical 63B row exists, without the ODPT public number
+ // that row must NOT grant an exact model or even an illustrative marker.
+ const withoutNumber={...base,trainId:'',trainNumber:'63B'};
+ assert.equal(rules.matchChuoSobuLocalBCLiveNumber(withoutNumber),null);
+ for(const number of ['401B','2500B','2662B','9999B','662Y','662A','662F']){
+  const x={...base,trainNumber:number,
+   trainId:'odpt.Train:JR-East.ChuoSobuLocal.'+number};
+  assert.equal(rules.matchChuoSobuLocalBCLiveNumber(x),null,
+   'excluded number outside verified B/C segment '+number);
+ }
+ for(const invalid of [
+  {positionSource:'supabase-train-run'},
+  {estimated:true},
+  {realtimePositionRecordPresent:false},
+  {trainId:'odpt.Train:JR-East.ChuoRapid.662B'},
+  {sourceRailway:'odpt.Railway:JR-East.SobuRapid'},
+  {positionLineId:'ChuoRapid'},
+  {displayLineId:'ChuoRapid'},
+  {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+  {serviceDate:'2026-12-01'},
+  {railDirection:'odpt.RailDirection:Westbound'},
+  {vehicleIdentityStatus:'EXACT'},
+  {vehicleFormationId:'A532'},
+  {vehicleType:'E231系500番台'}
+ ]){
+  assert.equal(rules.matchChuoSobuLocalBCLiveNumber({...base,...invalid}),null,
+   JSON.stringify(invalid));
+ }
+ // The lower/upper bounds constrain a CURRENT observed number, but do not
+ // claim every number between them is a published timetable train.
+});
