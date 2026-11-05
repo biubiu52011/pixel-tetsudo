@@ -876,6 +876,79 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // Kamaishi 2611: SQL official numbered roster is the ONLY authority
+  // for November trains and illustrative fleet PNG ranges. Historical source
+  // templates include February-only Pokemon and December-only trains; never
+  // publish those as November or recycle HB-E220 for Hinabi HB-E300.
+  if(lineId==="Kamaishi" && /^2026-11-/.test(serviceDate)) {
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}] =
+      await Promise.all([
+        db.from("published_kamaishi_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,service_name,vehicle_model,png_reference,segment_key,official_source_url,vehicle_model_source_url,operating_dates,stop_clock_status")
+          .eq("edition","2611").eq("line_key","Kamaishi")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Kamaishi")
+      ]);
+    if(rosterError||rangeError)throw (rosterError||rangeError);
+    const allowed=new Map((roster||[]).map((row:any)=>
+      [row.train_number+"|"+row.direction_urn,row]));
+    const kamaishiStations=new Set([
+      "Hanamaki","Nitanai","Shin-Hanamaki","Oyamada","Tsuchizawa",
+      "Haruyama","Iwanebashi","Miyamori","Kashiwagidaira","Masuzawa",
+      "Arayamae","Iwate-Futsukamachi","Ayaori","Tono","Aozasa",
+      "Iwate-Kamigo","Hirakura","Ashigase","Kami-Arisu",
+      "Rikuchu-Ohashi","Dosen","Matsukura","Kosano","Kamaishi"
+    ]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const proof:any=allowed.get(run.train_number+"|"+run.rail_direction);
+      // Fail closed on the published month; a source template is not a
+      // verified November operating day, even when its clock is plausible.
+      if(!proof){result.splice(i,1);continue;}
+      const dates=Array.isArray(proof.operating_dates)
+        ?proof.operating_dates.map((v:any)=>String(v).slice(0,10)):[];
+      if(dates.length&&!dates.includes(serviceDate)){
+        result.splice(i,1);continue;
+      }
+      const numberMatch=/^(\d+)([A-Z])$/.exec(String(run.train_number||""));
+      if(!numberMatch||!Array.isArray(run.stops)||run.stops.length<2||
+        run.network_key!=="odpt.Railway:JR-East.Kamaishi"){
+        result.splice(i,1);continue;
+      }
+      const unique=new Set(run.stops.map((st:any)=>st.station_key));
+      if(unique.size<2||!run.stops.every((st:any)=>{
+        const u=String(st.station_urn||"");
+        return u.startsWith("odpt.Station:JR-East.") &&
+          kamaishiStations.has(u.split(".").pop()||"");
+      })){result.splice(i,1);continue;}
+      const digits=Number(numberMatch[1]),suffix=numberMatch[2];
+      const validRange=(ranges||[]).some((r:any)=>
+        r.requires_exact_roster===true&&r.segment_key===proof.segment_key&&
+        digits>=r.min_number&&digits<=r.max_number&&
+        suffix===r.suffix&&r.vehicle_model===proof.vehicle_model&&
+        r.png_reference===proof.png_reference);
+      if(!validRange){result.splice(i,1);continue;}
+      // The model is a source-backed service-family reference, never an
+      // observed carset. Train type must come from the published number.
+      run.train_type=proof.train_type_urn;
+      run.service_name=proof.service_name||run.service_name;
+      run.train_number_verification="official-2611-number-scope";
+      run.train_number_source_url=proof.official_source_url;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Kamaishi",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:proof.calendar_urn,
+        model:proof.vehicle_model,pngReference:proof.png_reference,
+        serviceName:proof.service_name||"",
+        trainType:proof.train_type_urn,segmentKey:proof.segment_key,
+        officialSourceUrl:proof.official_source_url,
+        stopClockStatus:proof.stop_clock_status,
+        actualVehicleConfirmed:false,referenceOnly:true
+      };
+    }
+  }
   // The branch map displays only Ayase--KitaAyase, not the whole
   // through-train itinerary. Canonical IDs and stored timetables are unchanged.
   if (lineId === "ChiyodaBranch") {
