@@ -10,7 +10,7 @@ BEGIN
  ('つばめ337','337A',129027,'19:36','20:25','https://www.jrkyushu-timetable.jp/sp/2611/0035/00351201.html?d=20261103&t=0829301'),
  ('つばめ339','339A',129031,'20:06','20:55','https://www.jrkyushu-timetable.jp/sp/2611/0035/00351301.html?d=20261103&t=2828300'),
  ('つばめ341','341A',129049,'20:39','21:27','https://www.jrkyushu-timetable.jp/sp/2611/0035/00351401.html?d=20261103&t=2828300'),
- ('つばめ345','345A',129023,'22:39','23:28','https://www.jrkyushu-timetable.jp/sp/2611/0035/00351601.html?d=20261103&t=2828300')
+ ('つばめ345','345A',129033,'22:39','23:28','https://www.jrkyushu-timetable.jp/sp/2611/0035/00351601.html?d=20261103&t=2828300')
  ) AS x(service_name,number_full,source_id,first_clock,last_clock,official_url)
  LOOP
   SELECT m.id,tm.timetable_id INTO STRICT v_id,v_tt
