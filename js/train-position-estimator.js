@@ -846,11 +846,29 @@
           if(officialOminatoPlan===false)continue;
         }
 
+        // 飯山線: public 2611 D numbers, distinct Oykot and Shu＊Kura
+        // running dates. These are service types, NOT physical trainsets.
+        // The specialist liveries have no approved shared gallery image.
+        var officialIiyamaPlan=null;
+        if(lineId==="Iiyama"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"&&
+           window.JREastIiyamaNumberIndex202611&&
+           typeof window.JREastIiyamaNumberIndex202611.verify==="function"){
+          officialIiyamaPlan=window.JREastIiyamaNumberIndex202611.verify(
+            run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
+            tt["odpt:trainType"]||"",run.calendar,serviceDate);
+          if(officialIiyamaPlan===false)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0 &&
             !(officialRikutoEastPlan &&
               officialRikutoEastPlan.holidayTemplateOnWeekday===true &&
+              serviceDate==="2026-11-02" &&
+              /(?:^|[.:])(?:SaturdayHoliday|Saturday|Sunday|Holiday)$/.test(calendar)) &&
+            !(officialIiyamaPlan &&
+              officialIiyamaPlan.holidayTemplateOnWeekday===true &&
               serviceDate==="2026-11-02" &&
               /(?:^|[.:])(?:SaturdayHoliday|Saturday|Sunday|Holiday)$/.test(calendar)))
           continue;
@@ -1152,9 +1170,13 @@
           var publishedOminatoTrainType=officialOminatoPlan &&
             officialOminatoPlan.trainType
             ? "odpt.TrainType:JR-East."+officialOminatoPlan.trainType : "";
+          var publishedIiyamaTrainType=officialIiyamaPlan &&
+            officialIiyamaPlan.trainType
+            ? "odpt.TrainType:JR-East."+officialIiyamaPlan.trainType : "";
           var effectivePublishedTrainType=publishedGonoTrainType ||
             publishedIshinomakiTrainType || publishedRikutoEastTrainType ||
-            publishedRikutsuWestTrainType || publishedOminatoTrainType || "";
+            publishedRikutsuWestTrainType || publishedOminatoTrainType ||
+            publishedIiyamaTrainType || "";
           var trainClassification = classifyTrain(
             effectivePublishedTrainType || run.trainType, trainNumber, lineId);
           var railDirection = run.railDirection;
@@ -1230,7 +1252,9 @@
                   : officialRikutsuWestPlan && officialRikutsuWestPlan.serviceName
                     ? officialRikutsuWestPlan.serviceName
                     : officialOminatoPlan && officialOminatoPlan.serviceName
-                      ? officialOminatoPlan.serviceName : (run.serviceName || ""),
+                      ? officialOminatoPlan.serviceName
+                      : officialIiyamaPlan && officialIiyamaPlan.serviceName
+                        ? officialIiyamaPlan.serviceName : (run.serviceName || ""),
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
