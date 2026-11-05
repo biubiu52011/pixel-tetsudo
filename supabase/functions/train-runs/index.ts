@@ -1332,6 +1332,109 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // 奥羽本線 / 山形線 2611: one source-scoped classification for
+  // historical OuMain (776) and Yamagata (299). Never treat the old
+  // universal "701/E721" label as an exact current vehicle identity.
+  // Shinkansen records exist in their own independent line inventories;
+  // one-station rows are not positions, and Gono resort dates must be
+  // checked against Gono's dedicated official calendar.
+  if((lineId==="OuMain"||lineId==="Yamagata")&&/^2026-11-/.test(serviceDate)){
+    const {data:scope,error:scopeErr}=await db
+      .from("published_oumain_2611_source_scope")
+      .select("source_template_id,line_key,calendar_urn,direction_urn,train_number,segment_key,source_stop_keys,model_candidates,service_type_override,source_clock_status,number_source_status,reference_only,actual_vehicle_confirmed,png_reference")
+      .eq("edition","2611").eq("line_key",lineId)
+      .eq("calendar_urn",selectedCalendar);
+    const scopeCount=lineId==="OuMain"?
+      (selectedCalendar==="odpt.Calendar:Weekday"?345:431):
+      (selectedCalendar==="odpt.Calendar:Weekday"?137:162);
+    if(scopeErr||(scope||[]).length!==scopeCount)
+      throw new Error("OU_2611_SOURCE_SCOPE_UNAVAILABLE");
+    const bySource=new Map((scope||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    let ogaNumbers=new Map<string,any>();
+    if(lineId==="OuMain"){
+      const {data:oga,error:ogaErr}=await db
+        .from("published_oga_2611_number_roster")
+        .select("train_number,calendar_urn,calendar_scope,excluded_dates,clock_change_dates,reference_only,actual_vehicle_confirmed")
+        .eq("edition","2611").eq("line_key","Oga")
+        .eq("calendar_urn",selectedCalendar);
+      if(ogaErr||(oga||[]).length!==29)
+        throw new Error("OU_2611_OGA_THROUGH_PROOF_UNAVAILABLE");
+      ogaNumbers=new Map((oga||[]).map((p:any)=>[String(p.train_number),p]));
+    }
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],proof:any=bySource.get(Number(run.source_template_id));
+      if(!proof||proof.line_key!==lineId||
+        proof.train_number!==run.train_number||
+        proof.calendar_urn!==selectedCalendar||
+        proof.direction_urn!==run.rail_direction||
+        proof.source_clock_status!=="historical_not_2611_verified"||
+        proof.number_source_status!=="historical_source_only"||
+        proof.reference_only!==true||proof.actual_vehicle_confirmed!==false||
+        proof.png_reference!==null||
+        run.network_key!=="odpt.Railway:JR-East."+lineId||
+        !Array.isArray(run.stops)||!Array.isArray(proof.source_stop_keys)){
+        result.splice(i,1);continue;
+      }
+      const stops=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      if(stops.length!==proof.source_stop_keys.length||
+        stops.some((s:string,k:number)=>s!==proof.source_stop_keys[k])){
+        result.splice(i,1);continue;
+      }
+      if(["insufficient_source_stops","akita_shinkansen_shared",
+          "yamagata_shinkansen_shared","gono_resort_through"]
+          .includes(proof.segment_key)){
+        result.splice(i,1);continue;
+      }
+      // Oga services share only their Akita–Oiwake segment. The published
+      // Oga roster, not number parity, decides whether it ran that date.
+      if(proof.segment_key==="oga_accum_through"){
+        const oga=ogaNumbers.get(String(run.train_number));
+        const excluded=(oga?.excluded_dates||[]).map((d:any)=>String(d).slice(0,10));
+        const changed=(oga?.clock_change_dates||[]).map((d:any)=>String(d).slice(0,10));
+        if(!oga||oga.calendar_scope!=="sql_rail_service"||
+           oga.reference_only!==true||oga.actual_vehicle_confirmed!==false||
+           excluded.includes(serviceDate)||changed.includes(serviceDate)){
+          result.splice(i,1);continue;
+        }
+      }
+      // 439M's old full Yuzawa–Yokote clocks are invalid on Nov 9/10.
+      // Do not display the abolished partial segment as an intact train.
+      if(lineId==="OuMain"&&run.train_number==="439M"&&
+         (serviceDate==="2026-11-09"||serviceDate==="2026-11-10")&&
+         stops.includes("Yuzawa")&&stops.includes("Yokote")){
+        result.splice(i,1);continue;
+      }
+      if(proof.service_type_override){
+        run.train_type="odpt.TrainType:JR-East."+proof.service_type_override;
+      }
+      // Candidate model != observed physical trainset. No family PNG can
+      // be drawn solely from a historical source or these number ranges.
+      if(!run.vehicle_plan_confirmed&&!run.vehicle_evidence_source){
+        run.vehicle_type_label=null;
+        run.vehicle_type_candidates=Array.isArray(proof.model_candidates)&&
+          proof.model_candidates.length?proof.model_candidates.join(" / "):null;
+        run.vehicle_candidate_artwork_path=null;
+        run.vehicle_candidate_artwork_status=null;
+        run.vehicle_artwork_path=null;
+        run.vehicle_plan_confirmed=false;
+      }
+      run.train_number_verification="historical-source-only-ou-2611";
+      run.published_number_fleet_reference={
+        source:"sql-ou-2611-source-scope",lineId:lineId,
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        calendar:selectedCalendar,direction:run.rail_direction,
+        sourceTemplateId:Number(run.source_template_id),
+        segmentKey:proof.segment_key,
+        plannedCandidates:proof.model_candidates||[],
+        model:null,pngReference:null,
+        stopClockStatus:"historical_not_2611_verified",
+        officialNumberVerified:false,referenceOnly:true,
+        actualVehicleConfirmed:false
+      };
+    }
+  }
   // JR-East Ofunato 2611: original SQL combines two DIFFERENT modes
   // under line ID Ofunato: 123 BRT F/K entries, 34 KiHa110 rail D
   // entries over two calendars, and two KiHa100 POKEMON holiday D entries.
