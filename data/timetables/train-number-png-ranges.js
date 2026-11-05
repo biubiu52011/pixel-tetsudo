@@ -2162,6 +2162,60 @@
       raw==="holiday"||/(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
         ?"holiday":"";
   }
+  // JR-East 2611 水戸線: 62 exact M train numbers x 2 calendars,
+  // supplied ONLY by the backend's dated SQL-number roster. Subseries,
+  // red revival paint, and actual physical formations remain UNCONFIRMED.
+  function verifyMitoService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||proof.source!=="sql-jreast-2611-number-roster"||
+       proof.lineId!=="Mito"||proof.segmentKey!=="mito_regular_local"||
+       proof.regularLocal!==true||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       String(p.positionLineId||p.lineId||"")!=="Mito"||
+       (p.displayLineId&&p.displayLineId!=="Mito")||
+       p.sourceRailway!=="odpt.Railway:JR-East.Mito"||
+       p.positionSource!=="supabase-train-run")return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-East"&&op!=="odpt.Operator:JR-East")return null;
+    var n=String(p.trainNumber||"").trim().toUpperCase(),
+      date=String(p.serviceDate||"").slice(0,10),
+      matched=/^([0-9]{3,4})M$/.exec(n);
+    if(!matched||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       Number(matched[1])<721||Number(matched[1])>2785||
+       proof.trainNumber!==n||proof.serviceDate!==date||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       proof.model!=="E531系"||
+       proof.pngReference!=="../images/列车/JR東日本/JR東日本_E531系_水戸線.png"||
+       !/^https:\/\/timetables\.jreast\.co\.jp\/2611\/timetable-v\/246[du][12]\.html$/.test(
+         String(proof.officialSourceUrl||"")))return null;
+    var dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(type!=="Local"||String(proof.trainType||"").split(/[.:]/).pop()!==type||
+       (dir!=="Inbound"&&dir!=="Outbound")||
+       String(proof.direction||"").split(/[.:]/).pop()!==dir||
+       (Number(matched[1])%2)!==(dir==="Inbound"?0:1))return null;
+    var weekday=sourceCalendar(p),dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||date==="2026-11-23";
+    if(weekday!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+(holiday?"SaturdayHoliday":"Weekday")||
+       proof.officialSourceUrl.slice(-7)!==
+         (dir==="Inbound"?"u":"d")+(holiday?"2":"1")+".html")return null;
+    var allowed=new Set(["Oyama","Otabayashi","Yuki",
+      "Higashi-Yuki","Kawashima","Tamado","Shimodate","Niihari",
+      "Yamato-Mito","Iwase","Haguro","Fukuhara","Inada","Kasama",
+      "Shishido","Tomobe"]);
+    var stops=(Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[])
+      .map(function(x){return String(x||"").split(".").pop();});
+    if(stops.length<2||stops.length>16||
+       stops.some(function(key){return !allowed.has(key);})||
+       new Set(stops).size<2)return null;
+    return Object.freeze({number:n,kind:"regular",model:proof.model,
+      pngPath:proof.pngReference,edition:"2611",
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false});
+  }
   // 2611 久留里線: SQL proof asserts 11 stops on the surviving RAIL
   // Kisarazu–Kururi section. 294xD bus-replaced trains cannot borrow PNG.
   function verifyKururiService(p){
@@ -2284,6 +2338,28 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Mito"){
+      var m=Object.assign({},context||{},{trainNumber:number});
+      var permitted=verifyMitoService(m);
+      if(!permitted||m.estimated!==true||
+         m.officialNumberVerified!==true||
+         m.vehicleIdentityStatus==="EXACT")return null;
+      var reported=String(m.realtimeVehicleType||
+        m.realtimeDerivedVehicleType||"").trim();
+      if(reported&&reported!==permitted.model)return null;
+      var plan=m.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==permitted.model))
+        return null;
+      if(Array.isArray(m.plannedVehicleCandidates)&&
+         m.plannedVehicleCandidates.length&&
+         (m.plannedVehicleCandidates.length!==1||
+          m.plannedVehicleCandidates[0]!==permitted.model))
+        return null;
+      return {trainNumber:number,lineId:line,model:permitted.model,
+        pngPath:permitted.pngPath,planned:true,representative:true,
+        source:"jr-east-2611-mito-sql-dated-exact-number"};
+    }
     if(line==="Kururi"){
       var scopedKururi=Object.assign({},context||{},{trainNumber:number});
       var railPlan=verifyKururiService(scopedKururi);
@@ -3236,6 +3312,7 @@
     verifyKomiiService:verifyKomiiService,
     verifyHanawaService:verifyHanawaService,
     verifyKururiService:verifyKururiService,
+    verifyMitoService:verifyMitoService,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
