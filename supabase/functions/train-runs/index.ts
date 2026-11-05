@@ -910,7 +910,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // templates include February-only Pokemon and December-only trains; never
   // publish those as November or recycle HB-E220 for Hinabi HB-E300.
   if(lineId==="Kamaishi" && /^2026-11-/.test(serviceDate)) {
-    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}] =
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError},
+      {data:throughRows,error:throughError}] =
       await Promise.all([
         db.from("published_kamaishi_2611_number_roster")
           .select("train_number,calendar_urn,direction_urn,train_type_urn,service_name,vehicle_model,png_reference,segment_key,official_source_url,vehicle_model_source_url,operating_dates,stop_clock_status")
@@ -918,9 +919,15 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
           .eq("calendar_urn",selectedCalendar),
         db.from("published_train_png_number_ranges")
           .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
-          .eq("edition","2611").eq("line_key","Kamaishi")
+          .eq("edition","2611").eq("line_key","Kamaishi"),
+        db.from("published_kamaishi_2611_regular_through_segments")
+          .select("train_number,calendar_urn,canonical_timetable_id,from_line_key,to_line_key,from_template_id,to_template_id,arrival_clock,departure_clock")
+          .eq("calendar_urn",selectedCalendar)
       ]);
-    if(rosterError||rangeError)throw (rosterError||rangeError);
+    if(rosterError||rangeError||throughError)
+      throw (rosterError||rangeError||throughError);
+    const throughByNumber=new Map((throughRows||[]).map((row:any)=>
+      [String(row.train_number),row]));
     const allowed=new Map((roster||[]).map((row:any)=>
       [row.train_number+"|"+row.direction_urn,row]));
     const kamaishiStations=new Set([
@@ -952,15 +959,30 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         return u.startsWith("odpt.Station:JR-East.") &&
           kamaishiStations.has(u.split(".").pop()||"");
       });
-      // Some Hamayuri runs continue over Tohoku Main to/from Morioka.
-      // One official Morioka boundary is acceptable, but a source
-      // containing ONLY Tohoku stops (5559D) cannot claim a Kamaishi PNG.
+      // A verified 2611 same-train canonical ID is required to include
+      // intermediate Morioka–Hanamaki stops. The 5559D/5562D
+      // Tohoku-only source segments are NOT eligible on this line.
+      const through:any=throughByNumber.get(String(run.train_number||""));
+      const verifiedTohokuThrough=!!(through&&
+        through.calendar_urn===selectedCalendar&&
+        Number(through.canonical_timetable_id)===Number(run.canonical_timetable_id)&&
+        run.canonical_group_evidence==="verified_continuation"&&
+        Array.isArray(run.canonical_line_ids)&&
+        run.canonical_line_ids.includes("TohokuMain")&&
+        run.canonical_line_ids.includes("Kamaishi")&&
+        ["Kamaishi","TohokuMain"].includes(through.from_line_key)&&
+        ["Kamaishi","TohokuMain"].includes(through.to_line_key)&&
+        through.from_line_key!==through.to_line_key);
+      const tohokuStops=new Set(["Morioka","Iwate-Iioka","Yahaba",
+        "Furudate","Hizume","Ishidorii","Hanamaki-Kuko"]);
       if(unique.size<2||scopedStops.length<2||
          !run.stops.every((st:any)=>{
            const u=String(st.station_urn||"");
-           return u.startsWith("odpt.Station:JR-East.") &&
-             (kamaishiStations.has(u.split(".").pop()||"") ||
-              u==="odpt.Station:JR-East.Morioka");
+           if(!u.startsWith("odpt.Station:JR-East."))return false;
+           const code=u.split(".").pop()||"";
+           return kamaishiStations.has(code)||
+             code==="Morioka"||
+             (verifiedTohokuThrough&&tohokuStops.has(code));
          })){result.splice(i,1);continue;}
       const digits=Number(numberMatch[1]),suffix=numberMatch[2];
       const validRange=(ranges||[]).some((r:any)=>
@@ -984,6 +1006,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         trainType:proof.train_type_urn,segmentKey:proof.segment_key,
         officialSourceUrl:proof.official_source_url,
         stopClockStatus:proof.stop_clock_status,
+        verifiedTohokuThrough:verifiedTohokuThrough,
         actualVehicleConfirmed:false,referenceOnly:true
       };
     }
