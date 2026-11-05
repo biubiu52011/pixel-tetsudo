@@ -116,7 +116,8 @@ for(const [label,plans,observations] of rejects){
  assert.equal(link(plans,observations),0,label);
  assert.ok(rows.every(x=>!x.runningChainId),label);
 }
-assert.match(edgeText,/"Takasaki","UtsunomiyaJR"\]\.includes\(lineId\)/);
+assert.ok(edgeText.includes('const aliasLines = ["ChuoRapid","ChuoMain","ShonanShinjuku","Tokaido","Takasaki","UtsunomiyaJR"]'));
+assert.ok(edgeText.includes('const includeAliases = aliasLines.includes(lineId)'));
 assert.match(edgeText,/lines\.includes\("ShonanShinjuku"\)/);
 assert.match(estText,/Takasaki","UtsunomiyaJR"\]\.some/);
 assert.match(cfgText,/Takasaki: Object\.freeze\(\["ShonanShinjuku","Tokaido"\]\)/);
