@@ -230,6 +230,34 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
     if (selected.length || revision) { templates = selected; selectedCalendar = calendar; selectedRevision = revision; break; }
   }
+  // 2026-11-02 is a WEEKDAY, yet JR East explicitly runs all six
+  // "おもいで湯けむり" rapid D trains on the HOLIDAY source timetable.
+  // Enroll only the six source IDs certified by the existing SQL roster,
+  // never include the 9727/9728D 2027 legacy imports or the six
+  // duplicate/truncated rapid source occurrences.
+  if(lineId==="RikutoEast" && serviceDate==="2026-11-02" &&
+     selectedCalendar==="odpt.Calendar:Weekday" && !selectedRevision){
+    const {data:rapidProof,error:rapidProofErr}=await db
+      .from("published_rikuto_east_2611_number_roster")
+      .select("source_template_id").eq("edition","2611")
+      .eq("line_key","RikutoEast")
+      .eq("calendar_urn","odpt.Calendar:SaturdayHoliday")
+      .eq("segment_key","kogota_naruko_omoide_rapid");
+    if(rapidProofErr||(rapidProof||[]).length!==6)
+      throw new Error("RIKUTO_EAST_2611_NOV2_RAPID_PROOF_UNAVAILABLE");
+    const ids=(rapidProof||[]).map((p:any)=>Number(p.source_template_id));
+    if(new Set(ids).size!==6||ids.some((id:number)=>!Number.isSafeInteger(id)||id<=0))
+      throw new Error("RIKUTO_EAST_2611_NOV2_SOURCE_INVALID");
+    const {data:rapidSources,error:rapidSourcesErr}=await db
+      .from("manual_timetable_templates")
+      .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date")
+      .eq("line_key","RikutoEast")
+      .eq("calendar_urn","odpt.Calendar:SaturdayHoliday")
+      .is("revision_id",null).in("id",ids);
+    if(rapidSourcesErr||(rapidSources||[]).length!==6)
+      throw new Error("RIKUTO_EAST_2611_NOV2_SOURCES_NOT_FOUND");
+    templates.push(...rapidSources);
+  }
   // Retain both original SQL imports, but serve one verified itinerary.
   if (lineId === "SaikyoKawagoe") {
     const seen = new Set<string>();
@@ -1136,6 +1164,132 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         model:model||null,pngReference:png,
         officialSourceUrl:p.official_source_url,
         operatingDates:dates,
+        stopClockStatus:p.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
+  // 陸羽東線 2611: 45 regular numbers in both calendars + six
+  // dated "おもいで湯けむり" rapid numbers. 2024 flood leaves
+  // Naruko-Onsen–Shinjo CLOSED, buses aren't railway runs.
+  // All 104 legacy SQL sources are audited: 96 admissible + eight
+  // duplicate, shortened or NOT-November sources. The source_id/stop
+  // array, not numeric range or free-text KiHa110, admits each train.
+  if(lineId==="RikutoEast" && /^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterErr},
+      {data:excluded,error:excludedErr},
+      {data:range,error:rangeErr}]=await Promise.all([
+      db.from("published_rikuto_east_2611_number_roster")
+        .select("source_template_id,calendar_urn,direction_urn,train_number,source_stop_keys,train_type_urn,service_name,segment_key,valid_dates,vehicle_model,png_reference,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+        .eq("edition","2611").eq("line_key","RikutoEast"),
+      db.from("published_rikuto_east_2611_excluded_source_audit")
+        .select("source_template_id").eq("edition","2611").eq("line_key","RikutoEast"),
+      db.from("published_train_png_number_ranges")
+        .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster,actual_vehicle_confirmed")
+        .eq("edition","2611").eq("line_key","RikutoEast")
+    ]);
+    if(rosterErr||excludedErr||rangeErr||
+       (roster||[]).length!==96||(excluded||[]).length!==8||
+       (range||[]).length!==2)
+      throw new Error("RIKUTO_EAST_2611_OFFICIAL_ROSTER_UNAVAILABLE");
+    const bySource=new Map((roster||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    const forbidden=new Set((excluded||[]).map((p:any)=>
+      Number(p.source_template_id)));
+    const specials=new Set(["2026-11-01","2026-11-02","2026-11-03",
+      "2026-11-07","2026-11-08","2026-11-14","2026-11-15",
+      "2026-11-21","2026-11-22","2026-11-23","2026-11-28","2026-11-29"]);
+    const route=["Kogota","Kita-Ura","Rikuzen-Yachi","Furukawa",
+      "Tsukume","Nishi-Furukawa","Higashi-Ohsaki","Nishi-Ohsaki",
+      "Iwadeyama","Yubikan","Kaminome","Igetsuki","Kawatabi-Onsen",
+      "Naruko-Gotenyu","Naruko-Onsen"];
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const id=Number(run.source_template_id);
+      const p:any=bySource.get(id);
+      if(!p||forbidden.has(id)||
+        run.network_key!=="odpt.Railway:JR-East.RikutoEast"||
+        p.train_number!==run.train_number||
+        p.direction_urn!==run.rail_direction||
+        p.calendar_urn!==run.service_id||
+        p.stop_clock_status!=="historical_not_2611_verified"||
+        p.reference_only!==true||p.actual_vehicle_confirmed!==false||
+        p.vehicle_model!=="キハ110系"||
+        run.train_type!=="odpt.TrainType:JR-East.Local"||
+        !Array.isArray(p.source_stop_keys)||p.source_stop_keys.length<2||
+        !Array.isArray(run.stops)){
+        result.splice(i,1);continue;
+      }
+      const keys=run.stops.map((s:any)=>
+        String(s.station_urn||"").split(".").pop()||"");
+      if(keys.length!==p.source_stop_keys.length||
+        keys.some((s:string,k:number)=>s!==p.source_stop_keys[k])||
+        keys.some((s:string,k:number)=>{
+          const position=route.indexOf(s);
+          return position<0||(k>0&&(
+            run.rail_direction==="odpt.RailDirection:Inbound"?
+              position>=route.indexOf(keys[k-1]):
+              position<=route.indexOf(keys[k-1])));
+        })){
+        result.splice(i,1);continue;
+      }
+      const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+      const officialUrl="https://timetables.jreast.co.jp/2611/timetable-v/268"+
+        (inbound?"u":"d")+
+        (p.calendar_urn==="odpt.Calendar:Weekday"?"1":"2")+".html";
+      if(!["odpt.RailDirection:Inbound","odpt.RailDirection:Outbound"]
+         .includes(run.rail_direction)||p.official_source_url!==officialUrl){
+        result.splice(i,1);continue;
+      }
+      const rapid=p.segment_key==="kogota_naruko_omoide_rapid";
+      const regular=p.segment_key==="kogota_naruko_regular";
+      const numbers=rapid?
+        (inbound?["9722D","9724D","9726D"]:["9721D","9723D","9725D"]):
+        [];
+      const expectedName=rapid?
+        "おもいで湯けむり"+run.train_number.slice(-2,-1)+"号":"";
+      const validDates=Array.isArray(p.valid_dates)?
+        p.valid_dates.map((d:any)=>String(d).slice(0,10)):[];
+      const expectedPng=rapid?
+        "../images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png":
+        "../images/列车/JR東日本/JR東日本_キハ110系.png";
+      if(!(rapid||regular)||
+        p.png_reference!==expectedPng||
+        (rapid?(p.calendar_urn!=="odpt.Calendar:SaturdayHoliday"||
+          !numbers.includes(run.train_number)||
+          !specials.has(serviceDate)||
+          !validDates.includes(serviceDate)||
+          validDates.length!==12||
+          p.train_type_urn!=="odpt.TrainType:JR-East.Rapid"||
+          p.service_name!==expectedName):
+          (p.calendar_urn!==selectedCalendar||validDates.length!==0||
+          p.train_type_urn!=="odpt.TrainType:JR-East.Local"||
+          p.service_name!==""))){
+        result.splice(i,1);continue;
+      }
+      run.train_type=p.train_type_urn;
+      run.service_name=p.service_name||null;
+      run.train_number_verification="official-2611-rikuto-east-number-date-source";
+      run.train_number_source_url=p.official_source_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="キハ110系";
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"RikutoEast",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        calendar:p.calendar_urn,direction:p.direction_urn,
+        trainType:p.train_type_urn,serviceName:p.service_name,
+        segmentKey:p.segment_key,
+        sourceTemplateId:id,sourceStopKeys:p.source_stop_keys,
+        validDates:validDates,plannedCandidates:["キハ110系"],
+        model:p.vehicle_model,pngReference:p.png_reference,
+        officialSourceUrl:p.official_source_url,
         stopClockStatus:p.stop_clock_status,
         referenceOnly:true,actualVehicleConfirmed:false
       };
