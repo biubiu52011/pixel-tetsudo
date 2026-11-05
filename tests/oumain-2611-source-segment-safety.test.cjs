@@ -55,3 +55,18 @@ test('dated YOKOTE festival and 9463M sources do not become daily trains',()=>{
  assert.ok(edge.includes('!dates.some((date:any)=>String(date).slice(0,10)===serviceDate)'));
  assert.ok(edge.includes('service_date_source_url'));
 });
+
+test('Yamagata E723/719/701 is separate from Tazawako 701-5000 scope',()=>{
+ const a=fleets.indexOf("id:'jr-yamagata-regional-2611'");
+ const b=fleets.indexOf("id:'jr-tazawako-standard-gauge'");
+ assert.ok(a>=0&&b>a,'independent regional scope entries must exist');
+ const yamagata=fleets.slice(a,b);
+ const tazawako=fleets.slice(b,b+260);
+ assert.match(yamagata,/lineIds:\['Yamagata'\]/);
+ for(const m of ['701系5500番台','719系5000番台','E723系5000番台'])
+  assert.ok(yamagata.includes(m),'missing Yamagata candidate '+m);
+ assert.ok(!yamagata.includes("lineIds:['Yamagata','Tazawako']"));
+ assert.match(tazawako,/lineIds:\['Tazawako'\]/);
+ assert.ok(tazawako.includes('701系5000番台'));
+ assert.ok(!tazawako.includes('E723系5000番台'));
+});
