@@ -202,6 +202,89 @@
       rejectAmbiguousPlan:true,
       model:"211系（高崎地区）",
       pngPath:"../images/列车/JR東日本/JR東日本_211系_湘南色.png"},
+    // 2026-11 JR East Agatsuma official 236u1/u2/d1/d2:
+    // every weekday AND holiday 520-546 even (toward Shibukawa) and
+    // 521-547 odd (toward Omae), 14 per direction. Explicit entire numbers
+    // below: the range must never license unlisted services or E257 expresses.
+    // JR East's own 211-series fleet page lists the Agatsuma Line.
+    // This is an illustrated LINE STOCK, not proof of today's car number.
+    // https://timetables.jreast.co.jp/2611/timetable-v/236u1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/236u2.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/236d1.html
+    // https://timetables.jreast.co.jp/2611/timetable-v/236d2.html
+    // https://www.jreast.co.jp/train/local/211.html
+    {lineIds:["Agatsuma"],numberFormat:"full",from:520,to:547,
+      suffixes:"M",trainType:"Local",
+      publishedNumbers:["520M","522M","524M","526M","528M","530M","532M","534M","536M","538M","540M","542M","544M","546M","521M","523M","525M","527M","529M","531M","533M","535M","537M","539M","541M","543M","545M","547M"],
+      weekdayNumbers:["520M","522M","524M","526M","528M","530M","532M","534M","536M","538M","540M","542M","544M","546M","521M","523M","525M","527M","529M","531M","533M","535M","537M","539M","541M","543M","545M","547M"],
+      holidayNumbers:["520M","522M","524M","526M","528M","530M","532M","534M","536M","538M","540M","542M","544M","546M","521M","523M","525M","527M","529M","531M","533M","535M","537M","539M","541M","543M","545M","547M"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Agatsuma"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["211系（高崎地区）","211系"],
+      requireCandidateOverlap:true,rejectAmbiguousPlan:true,
+      model:"211系（高崎地区）",
+      pngPath:"../images/列车/JR東日本/JR東日本_211系_湘南色.png"},
+    // Regular Kusatsu-Shima 1-4 are all-day 3001-3004 (both calendars).
+    // Official JR East named-train page confirms E257-5500;
+    // the published NUMBER is different from an operating number.
+    // https://www.jreast.co.jp/multi/zh-CHS/traininformation/kusatsu_shima/
+    {lineIds:["Agatsuma"],numberFormat:"full",from:3001,to:3004,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["3001M","3002M","3003M","3004M"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Agatsuma"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
+    // 31 & 34 operate on Saturday/public holiday (4031 / 4034).
+    {lineIds:["Agatsuma"],numberFormat:"full",from:4031,to:4034,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["4031M","4034M"],calendarType:"holiday",
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Agatsuma"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
+    // Official 2611 運転日 exceptions: 9071 / 9082 / 9083 run only
+    // on the listed NOVEMBER dates, even though many other 9xxx columns
+    // appear in the same published sheet for Dec 2026 - Feb 2027.
+    {lineIds:["Agatsuma"],numberFormat:"full",from:9071,to:9071,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["9071M"],calendarType:"weekday",
+      operatingDates:["2026-11-12","2026-11-13","2026-11-19",
+        "2026-11-20","2026-11-26","2026-11-27"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Agatsuma"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
+    {lineIds:["Agatsuma"],numberFormat:"full",from:9082,to:9082,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["9082M"],calendarType:"holiday",
+      operatingDates:["2026-11-01","2026-11-08","2026-11-15",
+        "2026-11-22","2026-11-23","2026-11-29"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Agatsuma"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
+    {lineIds:["Agatsuma"],numberFormat:"full",from:9083,to:9083,
+      suffixes:"M",trainType:"LimitedExpress",
+      publishedNumbers:["9083M"],calendarType:"holiday",
+      operatingDates:["2026-11-07","2026-11-14","2026-11-21",
+        "2026-11-22","2026-11-28"],
+      directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Agatsuma"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E257系5500番台"],
+      model:"E257系5500番台",pngPath:"../images/列车/JR東日本/JR東日本_E257系_5500番台.png"},
     // Official 2026-11 Takasaki / Joetsu / Agatsuma through expresses.
     // Regular Kusatsu-Shima 1-4 runs every day; 31 and 34 run only on
     // Saturdays and public holidays. Weekday Akagi 1-9 uses the same
