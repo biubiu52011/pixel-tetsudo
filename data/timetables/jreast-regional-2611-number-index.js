@@ -59,8 +59,15 @@
     var d=String(direction||"").split(/[.:]/).pop();
     if(d!=="Inbound"&&d!=="Outbound")return false;
     var cal=String(calendar||"").split(/[.:]/).pop();
-    if(["Weekday","SaturdayHoliday","Saturday","Holiday","Sunday",
-      "weekday","holiday"].indexOf(cal)<0)return false;
+    var weekdayCalendar=cal==="Weekday"||cal==="weekday";
+    var holidayCalendar=["SaturdayHoliday","Saturday","Holiday","Sunday",
+      "holiday"].indexOf(cal)>=0;
+    if(!weekdayCalendar&&!holidayCalendar)return false;
+    // Published 2611 timetable categories must agree with the actual JST
+    // service date, including the November 3 and 23 national holidays.
+    var dow=new Date(day+"T12:00:00Z").getUTCDay();
+    var isHoliday=dow===0||dow===6||day==="2026-11-03"||day==="2026-11-23";
+    if(isHoliday?!holidayCalendar:!weekdayCalendar)return false;
     var type=String(trainType||"").split(/[.:]/).pop();
     var n=String(number||"").trim().toUpperCase();
     if(!/^\d{3,4}[DM]$/.test(n)||!n.endsWith(definition.suffix))return false;
