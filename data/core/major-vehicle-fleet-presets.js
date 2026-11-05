@@ -32,8 +32,14 @@
       models:['E233系1000番台'], sourceUrl:JR_E233},
     {id:'jr-chuo-ome', operator:'JR-East', lineIds:['ChuoRapid','Ome','Itsukaichi'],
       models:['E233系0番台'], sourceUrl:JR_E233},
+    // 2026: Mitaka's yellow local fleet mixes E231-500, residual
+    // E231-0 and Yamanote-transferred E235-0 (B31/B33 are *formation*
+    // IDs, not a B/C train-number mapping). Tozai through stock remains
+    // separately resolved by the 659/671 Y/A↔K/S source crosswalk.
     {id:'jr-chuo-sobu-local', operator:'JR-East', lineIds:['ChuoSobuLocal'],
-      models:['E231系500番台'], sourceUrl:JR_OTHER},
+      models:['E231系500番台','E231系0番台（中央・総武線各駅停車）',
+        'E235系0番台（中央・総武線各駅停車）'],
+      sourceUrl:'https://media.jreast.co.jp/articles/1723'},
     {id:'jr-yokosuka-sobu-rapid', operator:'JR-East', lineIds:['Yokosuka','SobuRapid'],
       models:['E235系1000番台'], sourceUrl:JR_E235},
     {id:'jr-yokohama', operator:'JR-East', lineIds:['Yokohama'],
