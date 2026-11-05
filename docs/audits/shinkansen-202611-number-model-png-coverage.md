@@ -1,6 +1,6 @@
 # 新干线 2026-11 列车番号 → 计划车型 → PNG 分级覆盖审计
 
-**日期**：2026-11-05  
+**最新回读日期**：2026-11-06  
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
@@ -12,25 +12,25 @@
 | 有官方依据的单一**计划车型** | 351 | **400** |
 | 无列车级单车型计划 | 475 | **426** |
 | 已证明当日实际物理编组 | 0 | **0** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **75** |
-| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **73** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **279** |
+| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **141** |
 
 **单车型计划覆盖率：400 / 826 = 48.4%。这不是“车次号段全部完成”，也不是已实际显示 400 张 PNG。**
 
-## 各线覆盖率（2026-11-05 更新后）
+## 各线计划车型覆盖率（2026-11-06 最新回读）
 
 | Line key | 已有模板 | 官方单车型计划 | 仍待核实 | 当前已知障碍 |
 |---|---:|---:|---:|---|
-| AkitaShinkansen | 45 | **45** | 0 | E6 官方车型计划；12条正式番号与 PNG 单号映射（平日11 + 休日1） |
-| HokkaidoShinkansen | 26 | 0 | **26** | E5/H5 跨运营方车辆，无法按线路/爱称指定个别车 |
-| HokurikuShinkansen | 72 | 0 | **72** | E7/W7、车辆所属方及通过运行需单车证据 |
+| AkitaShinkansen | 45 | **45** | 0 | E6 官方车型计划，**45/45 正式番号与 PNG 精确映射** |
+| HokkaidoShinkansen | 26 | 0 | **26** | **26/26 正式番号**，E5/H5 不可据名分辨、PNG 仍为 0 |
+| HokurikuShinkansen | 72 | 0 | **72** | **66/72 正式番号**，E7/W7 车底未逐车证实、PNG 仍为 0 |
 | JoetsuShinkansen | 18 | **18** | 0 | E7 计划车型；**18条正式番号和精确 PNG 单号映射** |
 | KyushuShinkansen | 159 | 112 | **47** | 800 与 N700 混用；已映射 N700 缺 JR 九州同车型通用 PNG |
 | NishiKyushuShinkansen | 92 | **92** | 0 | N700S 6 辆计划车型确定，**图库无对应 N700S PNG** |
 | SanyoShinkansen | 154 | 52 | **102** | 500/N700/N700S 混用；直通车所属方不能仅从线路推定 |
-| TohokuShinkansen | 82 | 35 | **47** | E2/E5/E6/E8 等、部分併结运行；不可从爱称或尾缀直接推断 |
+| TohokuShinkansen | 82 | 35 | **47** | **81/82 正式番号**，35 条 E6/E8 单车型 PNG；其他混用未猜测 |
 | TokaidoShinkansen | 132 | 0 | **132** | N700A/N700S 与跨公司运行；没有每车次对应证据 |
-| YamagataShinkansen | 46 | **46** | 0 | E8 官方车型计划；43条正式番号与 PNG 单号映射（平日42 + 休日1） |
+| YamagataShinkansen | 46 | **46** | 0 | **43/46 正式番号与 E8 PNG**，3 条多重番号待核 |
 | **合计** | **826** | **400** | **426** | 实际编组全部未证实 |
 
 “官方单车型计划”只表示有 `official_service_vehicle_plan` 与 `evidence_sources` 关联，并没有证实运行当天派车、具体车辆编组号或涂装。未覆盖的模板可能有线路层候选车种，但不属于列车级已确认映射。
@@ -99,7 +99,7 @@ ORDER BY line_key;
 
 ### 明确未完成的验收条件
 
-**不能把以上进展称作 10 条新干线全覆盖**：剩余 426 条没有逐车计划车型证据，若要把余下 751 条尚无单独登记正式番号证据的模板变成可用于号段映射的记录，需要进一步用可合法复用的 JR 官方站/车次时刻表逐项核对，且不同工作日/土休日和临时列车不可混抄。既有 10 条新干线的土休日**时刻表覆盖本身仍不完整**（参见 `docs/timetable/shinkansen-holiday-coverage-2026-10-31.md`），因此不能从本审计推导已完成全日时刻表或实际每日运行结果。
+**不能把以上进展称作 10 条新干线全覆盖**：剩余 426 条没有逐车计划车型证据，若要把余下 547 条尚无单独登记正式番号证据的模板变成可用于号段映射的记录，需要进一步用可合法复用的 JR 官方站/车次时刻表逐项核对，且不同工作日/土休日和临时列车不可混抄。既有 10 条新干线的土休日**时刻表覆盖本身仍不完整**（参见 `docs/timetable/shinkansen-holiday-coverage-2026-10-31.md`），因此不能从本审计推导已完成全日时刻表或实际每日运行结果。
 
 ## 2026-11-05 第二轮：上越新干线平日 17 条官方番号
 
@@ -115,7 +115,7 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 
 已部署原有 Supabase train-runs Edge Function 至 **v298**，按日期为2026-11、官方版本2611、line_key、calendar_urn、source_template_id、direction_urn，以及官方 URL 验证后，从数据库读取正式番号，保留原始 service_name 字段。不新增页面脚本或自制图标；既有 E7 系车型计划和车图库负责图像渲染。部署及数据库回读验证成功，但尚未完成逐车浏览器端显示测试。
 
-**全库复核**：10条线826份模板；400条已确认单一计划车型、426条待定；75条正式列车番号证据；73条可精确关联的 PNG 单号记录；实际车辆编组认证为0。这些计数不是全日程时刻表的完整性，也不是实时实车位置认证。
+**2026-11-05 当日阶段回读**：10条线826份模板；400条已确认单一计划车型、426条待定；75条正式列车番号证据；73条可精确关联的 PNG 单号记录；实际车辆编组认证为0。这些计数不是全日程时刻表的完整性，也不是实时实车位置认证。
 
 后续：继续补足秋田、山形余下未核对号码，并逐车核对东北、北陆、北海道；对于 E5/H5 或 E7/W7 同线混用、併结拆分及不明配属不强制选择图片，必须查到唯一计划车型才能建立型号对应 PNG。
 
@@ -150,3 +150,34 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 上表「其他五条」原模板数由数据库明细求和：北海道26 + 九州159 + 西九州92 + 山阳154 + 东海道132 = 563。所有精确 PNG 单号行要求 exact roster，actual_vehicle_confirmed=false，不等于实际派车。
 
 已部署原有 train-runs Edge Function **v298**：直接读取 SQL 的 published_train_number_evidence，按数据来源、11月版、服务日历、线路及原模板 ID 核对返回官方正式番号，同时保留服务名。既有车型计划及图库负责展示路径；新 SQL 行本身不是浏览器端 PNG 成功显示的证据。未进行浏览器端到端渲染验收。
+
+## 2026-11-06 新一轮实际执行与验证
+
+| 线路 | 时刻表模板 | 官方完整番号证据 | 安全单车型 PNG 精确单号 |
+|---|---:|---:|---:|
+| 秋田 | 45 | **45** | **45**（E6） |
+| 北海道 | 26 | **26** | **0**（E5/H5 无法逐车确认） |
+| 北陆 | 72 | **66** | **0**（E7/W7 无法逐车确认） |
+| 上越 | 18 | **18** | **18**（E7） |
+| 东北 | 82 | **81** | **35**（E6/E8） |
+| 山形 | 46 | **43** | **43**（E8） |
+| 九州 | 159 | 0 | 0 |
+| 西九州 | 92 | 0 | 0 |
+| 山阳 | 154 | 0 | 0 |
+| 东海道 | 132 | 0 | 0 |
+| **合计** | **826** | **279（33.8%）** | **141（17.1%）** |
+
+更新迁移均已提交 main 且执行到已有 Supabase 项目：
+
+- [北陆：65 条 2611 平日官方番号](../../supabase/migrations/20261106035000_hokuriku_shinkansen_2611_65_weekday_official_numbers_no_fleet_guess.sql)，另有既有休日1条；遇到 553E/5553E 等候选号不强行指定。
+- [东北与北海道：80+25 条 2611 平日官方番号，东北35条 E6/E8 PNG](../../supabase/migrations/20261106041500_tohoku_hokkaido_2611_105_official_numbers_35_e6_e8_png.sql)。
+- [秋田：另外33条正式 M 番号及 E6 PNG](../../supabase/migrations/20261106051000_akita_shinkansen_2611_complete_33_remaining_m_numbers_e6_png.sql)，现为45/45。
+- [北海道休日：はやて91 正式91B](../../supabase/migrations/20261106053000_hokkaido_shinkansen_2611_hayate91_holiday_official_number.sql)，根据[官方个别列车时刻表](https://timetables.jreast.co.jp/2611/train/040/044991.html)核对新青森06:33发车；不同日期06:39的变体不混用。
+
+官方列车番号来源：JR东日本2611版[上越北陆下行](https://timetables.jreast.co.jp/2611/timetable-v/004d1.html)、[上行](https://timetables.jreast.co.jp/2611/timetable-v/004u1.html)、[东北北海道下行](https://timetables.jreast.co.jp/2611/timetable-v/003d1.html)、[上行](https://timetables.jreast.co.jp/2611/timetable-v/003u1.html)、[秋田下行](https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html)及[上行](https://timetables.jreast.co.jp/2611/timetable-v/258u1p.html)。
+
+既有 [train-runs Edge Function](../../supabase/functions/train-runs/index.ts) 读取官方证据时，已修复北海道线路运用者 JR-Hokkaido 被旧 JR-East-only guard 排除的问题，**已部署 v306**。由于 GitHub main 在当时比线上 v305 多出另一个独立 Oito 线路的未部署代码，此次仅把北海道条件修改应用于当前在运行的函数并部署 v306；主分支同步提交相同修正，但**线上代码并非与 main 全文完全一致**。没有擅自上线与新干线无关的变更。
+
+**数据库只读审计**：279条官方完整番号、141条 PNG 精确单号；所有 PNG 范围 min=max / requires_exact_roster=true / actual_vehicle_confirmed=false；缺正式番号对应证据0；与 official_service_vehicle_plan 不符的车型0；无可用 native_png 图库路径0。
+
+仍未完成：547条模板没有独立正式番号证据，包括北陆6、东北1（旧 Hayabusa39）、山形3（つばさ88/90/177 多候选），另有东海道、山阳、九州、西九州总计537条，需JR Central/West/Kyushu独立官方资料与车型图库。全部列车的真实运行日、停站时刻一致性、编组号和浏览器/iPhone Safari真实图片展示尚未逐车端到端验收。本任务仍是**进行中**，不能因番号证据提高而标记全线路已完成。
