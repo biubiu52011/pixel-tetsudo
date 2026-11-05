@@ -26,7 +26,7 @@ DECLARE
   v_written int:=0;
 BEGIN
   FOR r IN SELECT * FROM (VALUES
-  ('のぞみ10','10A',9376,9202,'Hakata','08:00','10:30','10:28','12:57','https://timetable.jr-odekake.net/train-timetable/1701?date=20261025'),
+  ('のぞみ10','10A',9376,9202,'Hakata','08:00','10:30','10:28','12:57','https://timetable.jr-odekake.net/train-timetable/1701?date=20261101'),
   ('のぞみ34','34A',9347,9212,'Hakata','13:36','16:06','16:04','18:33','https://timetable.jr-odekake.net/train-timetable/69801?date=20261121'),
   ('のぞみ40','40A',9352,9214,'Hakata','15:00','17:30','17:28','19:57','https://timetable.jr-odekake.net/train-timetable/69831?date=20261101'),
   ('のぞみ46','46A',9356,9217,'Hakata','16:00','18:30','18:28','20:57','https://timetable.jr-odekake.net/train-timetable/69721?date=20261120'),
