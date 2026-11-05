@@ -23,6 +23,7 @@ on:
       - 'tests/kamaishi-2611-sql-number-vehicle.test.cjs'
       - 'tests/kashima-2611-sql-number-png.test.cjs'
       - 'tests/kesennuma-2611-rail-sql-number-png.test.cjs'
+      - 'tests/komii-2611-sql-number-png.test.cjs'
       - 'tests/ishinomaki-2611-official-number-png.test.cjs'
       - 'tests/oga-2611-official-number-png.test.cjs'
       - 'tests/jreast-regional-2611-number-png.test.cjs'
@@ -149,6 +150,8 @@ jobs:
         run: node --test tests/kashima-2611-sql-number-png.test.cjs
       - name: Verify Kesennuma 2611 rail and BRT exclusion, November maintenance, KiHa110 art
         run: node --test tests/kesennuma-2611-rail-sql-number-png.test.cjs
+      - name: Verify Komii 2611 published services, rockfall, HIGH RAIL dates and PNG
+        run: node --test tests/komii-2611-sql-number-png.test.cjs
       - name: Verify Gono 2611 numbered planned-service rendering and date admission
         run: node --test tests/gono-2611-number-schedule.test.cjs
       - name: Verify Chuo Main 2611 four-way published train-number inventory
