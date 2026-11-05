@@ -1249,6 +1249,89 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // JR-East Ominato 2026-11: the 18 officially published D numbers are
+  // validated against 36 exact source templates in shared SQL evidence.
+  // Historical 9227D/9236D belong to December, not November. The 32xxD
+  // "しもきた" services are Rapid even though older SQL calls them Local.
+  // November 10–13 track work cancels six numbers. Never project them.
+  // KiHa100 series is a *planned model family*, not a confirmed carset;
+  // no matching JR-East KiHa100 gallery PNG is currently available.
+  if(lineId==="Ominato"&&/^2026-11-/.test(serviceDate)){
+    const {data:published,error:publishedErr}=await db
+      .from("published_train_number_evidence")
+      .select("source_template_id,train_number,calendar_urn,direction_urn,official_source_url,verification_scope")
+      .eq("edition","2611").eq("line_key","Ominato")
+      .eq("calendar_urn",selectedCalendar);
+    if(publishedErr||(published||[]).length!==18)
+      throw new Error("OMINATO_2611_OFFICIAL_NUMBER_EVIDENCE_UNAVAILABLE");
+    const bySource=new Map((published||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    const allowed=new Set(["Noheji","Kita-Noheji","Arito","Fukoshi",
+      "Mutsu-Yokohama","Arihata","Chikagawa","Kanayasawa",
+      "Akagawa","Shimokita","Ominato"]);
+    const rapidNumbers=new Set(["3225D","3226D","3228D","3230D","3233D"]);
+    const cancelled=new Set(["223D","229D","234D","3225D","3228D","3230D"]);
+    const maintenance=serviceDate>="2026-11-10"&&serviceDate<="2026-11-13";
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],proof:any=bySource.get(Number(run.source_template_id));
+      const number=String(run.train_number||"");
+      const dir=String(run.rail_direction||"");
+      const num=/^([0-9]{3,4})D$/.exec(number);
+      const inbound=dir==="odpt.RailDirection:Inbound";
+      const expectedUrl="https://timetables.jreast.co.jp/2611/timetable-v/278"+
+        (inbound?"u":"d")+
+        (selectedCalendar==="odpt.Calendar:Weekday"?"1":"2")+".html";
+      if(!proof||!num||proof.train_number!==number||
+         proof.calendar_urn!==selectedCalendar||
+         proof.direction_urn!==dir||
+         proof.verification_scope!=="train_number_only"||
+         proof.official_source_url!==expectedUrl||
+         run.network_key!=="odpt.Railway:JR-East.Ominato"||
+         run.train_type!=="odpt.TrainType:JR-East.Local"||
+         Number(num[1])%2!==(inbound?0:1)||
+         !Array.isArray(run.stops)||
+         (maintenance&&cancelled.has(number))){
+        result.splice(i,1);continue;
+      }
+      const stops=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      const first=inbound?"Ominato":"Noheji",
+        last=inbound?"Noheji":"Ominato";
+      if(stops.length<4||stops.length>11||
+         stops[0]!==first||stops[stops.length-1]!==last||
+         stops.some((st:string)=>!allowed.has(st))||
+         new Set(stops).size!==stops.length){
+        result.splice(i,1);continue;
+      }
+      const isRapid=rapidNumbers.has(number);
+      if(isRapid){
+        run.train_type="odpt.TrainType:JR-East.Rapid";
+        run.service_name="しもきた";
+      }
+      run.train_number_verification="official-2611-ominato-number-sql-rail";
+      run.train_number_source_url=proof.official_source_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="キハ100系";
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Ominato",
+        trainNumber:number,serviceDate:serviceDate,
+        direction:dir,calendar:selectedCalendar,
+        trainType:run.train_type,serviceName:isRapid?"しもきた":"",
+        sourceTemplateId:Number(run.source_template_id),
+        model:"キハ100系",pngReference:null,
+        officialSourceUrl:proof.official_source_url,
+        stopClockStatus:"historical_not_2611_verified",
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // JR-East Ofunato 2611: original SQL combines two DIFFERENT modes
   // under line ID Ofunato: 123 BRT F/K entries, 34 KiHa110 rail D
   // entries over two calendars, and two KiHa100 POKEMON holiday D entries.
