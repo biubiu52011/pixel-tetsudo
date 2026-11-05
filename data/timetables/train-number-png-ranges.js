@@ -1966,6 +1966,33 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Kitakami"){
+      // Source of truth is SQL-issued number/route/calendar proof. The
+      // earlier five-number JS-only 2611 guard remains for legacy audits,
+      // but can no longer independently authorize a new public PNG.
+      var contextSource=Object.assign({},context||{},{trainNumber:number});
+      var ki=root.JREastKitakamiNumberIndex202611;
+      var verified=ki&&typeof ki.verifySqlProof==="function"
+        ?ki.verifySqlProof(contextSource):null;
+      if(!verified||contextSource.estimated!==true||
+         contextSource.positionSource!=="supabase-train-run"||
+         contextSource.officialNumberVerified!==true||
+         contextSource.vehicleIdentityStatus==="EXACT")return null;
+      var live=String(contextSource.realtimeVehicleType||
+         contextSource.realtimeDerivedVehicleType||"").trim();
+      if(live&&live!==verified.model)return null;
+      var plan=contextSource.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==verified.model))return null;
+      if(Array.isArray(contextSource.plannedVehicleCandidates)&&
+         contextSource.plannedVehicleCandidates.length&&
+         contextSource.plannedVehicleCandidates.indexOf(verified.model)<0)
+         return null;
+      return {trainNumber:number,lineId:line,model:verified.model,
+        pngPath:verified.pngPath,
+        source:"jreast-2611-kitakami-sql-number-rail-scope",
+        planned:true,representative:true};
+    }
     if(line==="Kamaishi"){
       var src=Object.assign({},context||{},{trainNumber:number});
       var plan=verifyKamaishiService(src);
