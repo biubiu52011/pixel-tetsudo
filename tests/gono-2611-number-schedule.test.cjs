@@ -236,3 +236,99 @@ test('Gono scheduled train fallback projects source SQL clocks and route aliases
     }
   }
 });
+
+
+test('Gono resort display corrects legacy GV-E400 SQL candidate without manufacturing cab',()=>{
+  const sourceFiles=[
+    'data/timetables/vehicle-garage-png-map.js',
+    'data/timetables/jreast-gono-2611-number-index.js',
+    'data/timetables/train-number-png-ranges.js',
+    'js/train-vehicle.js',
+    'data/timetables/vehicle-operation-evidence-data.js',
+    'js/train-position-estimator.js'
+  ];
+  const render=fs.readFileSync('js/trains-render.js','utf8');
+  const mStart=render.indexOf('  function _trainMarkerDomKind(');
+  const mEnd=render.indexOf('  // Public identification boundary:',mStart);
+  assert.ok(mEnd>mStart);
+  function at(number,day,clock,dir){
+    const iso=day+'T'+clock+':00Z'; // 10:10 JST for 01:10Z
+    class FakeDate extends Date{
+      constructor(...a){super(...(a.length?a:[iso]));}
+      static now(){return Date.parse(iso);}
+    }
+    const root={RuntimeConfig:{},ODPTClient:{
+      LINE_RAILWAY_CODE:{Gono:'Gono'},LINE_TO_OPERATOR:{Gono:'JR-East'}
+    }};
+    const noLog={log(){},debug(){},warn(){},error(){}};
+    const context=vm.createContext({
+      window:root,Date:FakeDate,console:noLog,
+      _isTrainArtworkFailureActive(){return false}
+    });
+    for(const p of sourceFiles)
+      vm.runInContext(fs.readFileSync(p,'utf8'),context,{filename:p});
+    vm.runInContext(render.slice(mStart,mEnd),context);
+    const from=dir==='Inbound'?'Kawabe':'Higashi-Noshiro';
+    const to=dir==='Inbound'?'Higashi-Noshiro':'Kawabe';
+    const tt={'@id':'sql:Gono:'+number,'odpt:railway':G,
+      'odpt:trainNumber':number,
+      'odpt:calendar':'odpt.Calendar:Weekday',
+      'odpt:railDirection':'odpt.RailDirection:'+dir,
+      'odpt:trainType':'odpt.TrainType:JR-East.Local',
+      'odpt:destinationStation':['odpt.Station:JR-East.Gono.'+to],
+      'odpt:trainTimetableObject':[
+        {'odpt:departureStation':'odpt.Station:JR-East.Gono.'+from,
+         'odpt:departureTime':'08:55'},
+        {'odpt:arrivalStation':'odpt.Station:JR-East.Gono.'+to,
+         'odpt:arrivalTime':'12:19'}
+      ],_positionSource:'supabase-train-run',_sqlLineId:'Gono',
+      _serviceDate:day,
+      _sqlVehicleCandidateLabel:'GV-E400系',
+      _timetableValidity:'undated_not_current_verified',
+      _timetableDateVerified:false};
+    root.TrainPositionEstimator.registerManualTimetable('Gono',[tt]);
+    const ps=root.TrainPositionEstimator.estimateAllPositions({
+      Gono:{stations:['Higashi-Noshiro','Kawabe'],operator:'JR-East'}
+    },{},{},null,{lineIds:['Gono']}).Gono||[];
+    return {ps,marker:context._trainMarkerSpec};
+  }
+  for(const [n,day,dir,expected]of [
+    ['8522D','2026-11-05','Inbound','HB-E300系（橅）'],
+    ['8523D','2026-11-05','Outbound','キハ48形（くまげら）'],
+    ['8521D','2026-11-05','Outbound','HB-E300系（青池）'],
+    ['8521D','2026-11-10','Outbound','キハ48形（くまげら）']
+  ]){
+    const scenario=at(n,day,'01:10',dir);
+    assert.equal(scenario.ps.length,1,n+'/'+day);
+    const p=scenario.ps[0];
+    assert.equal(p.trainNumber,n);
+    assert.equal(p.officialNumberVerified,true);
+    assert.equal(p.trainType,'odpt.TrainType:JR-East.Rapid');
+    assert.equal(p.publishedFleetReference,expected);
+    assert.deepEqual(Array.from(p.plannedVehicleCandidates),[expected]);
+    assert.deepEqual(Array.from(p.vehiclePlan.models),[expected]);
+    assert.ok(!p.vehicleCandidates.includes('GV-E400系'));
+    assert.equal(p.vehicleIconPath,'');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    assert.equal(p.timetableDateVerified,false);
+    assert.equal(scenario.marker(p,n,'Gono').kind,'unresolved');
+  }
+  const cancelled=at('8523D','2026-11-10','01:10','Outbound');
+  assert.equal(cancelled.ps.length,0,
+    'No Resort Shirakami no. 3 on Nov 10–13');
+});
+test('inert Gono index must be present with exact line scope and 12-hex version',()=>{
+  const manifest=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
+  const indexFile='data/timetables/jreast-gono-2611-number-index.js';
+  assert.ok(manifest.lazy.trains.includes(indexFile));
+  assert.deepEqual(Array.from(manifest.lazyScopes.trains[indexFile]),['Gono']);
+  const html=fs.readFileSync('pages/trains.html','utf8');
+  const template=html.match(/<template id="pt-trains-detail-assets">([\s\S]*?)<\/template>/);
+  assert.ok(template);
+  assert.match(template[1],
+    /data-script-src="\.\.\/data\/timetables\/jreast-gono-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Gono"/);
+  for(const [,file,rev] of template[1].matchAll(
+    /data-script-src="\.\.\/([^?"]+)\?v=([^"]+)"/g)){
+    assert.match(rev,/^[a-f0-9]{12}$/,file+' cache key');
+  }
+});
