@@ -819,6 +819,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       // Only source-dated unique model PNG; never a guessed formation/livery.
       vehicle_artwork_path: ruleType && !conflict && !publishedPlan
         ? (mapped.vehicle_artwork_path || null) : null,
+      source_template_id: Number(t.id),
       source_trip_id: t.source_trip_id || null,
       previous_timetable_ids: t.previous_timetable_ids || [],
       next_timetable_ids: t.next_timetable_ids || [],
@@ -871,6 +872,99 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_type="odpt.TrainType:JR-East.Rapid";
       run.service_name="ひなび 釜石";
       run.train_number_verification="official-2611-hinabi-through-calendar";
+    }
+  }
+  // Mito Line 2611: 62 verified REGULAR M train numbers (32 up/30 down)
+  // and ONE dated SQL stop plan per train number. Never interpret the
+  // 725M/756M/763M/772M clock variants as extra physical trains.
+  // 9074/9075M are Oct 31-only Jōban-Nikkō limited expresses; imported
+  // 9785M has no verified Nov 2611 operating date. E501 stopped Mito
+  // revenue service in 2019; E531 5-car is a FLEET illustration, not the
+  // identity of a confirmed formation or subtype (0/3000/Akaden).
+  if(lineId==="Mito"&&/^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError}]=
+      await Promise.all([
+        db.from("published_mito_2611_number_roster")
+          .select("train_number,calendar_urn,direction_urn,train_type_urn,source_template_id,source_stop_keys,date_variant_template_ids,vehicle_model,png_reference,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Mito")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Mito")
+          .eq("segment_key","mito_regular_local")
+      ]);
+    if(rosterError||rangeError)throw(rosterError||rangeError);
+    if((roster||[]).length!==62||(ranges||[]).length!==1)
+      throw new Error("MITO_2611_EXACT_NUMBER_ROSTER_UNAVAILABLE");
+    const byNumber=new Map((roster||[]).map((r:any)=>
+      [r.train_number+"|"+r.direction_urn,r]));
+    const allowedStations=new Set(["Oyama","Otabayashi","Yuki",
+      "Higashi-Yuki","Kawashima","Tamado","Shimodate","Niihari",
+      "Yamato-Mito","Iwase","Haguro","Fukuhara","Inada","Kasama",
+      "Shishido","Tomobe"]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],
+        proof:any=byNumber.get(run.train_number+"|"+run.rail_direction);
+      if(!proof||run.network_key!=="odpt.Railway:JR-East.Mito"||
+         proof.calendar_urn!==selectedCalendar||
+         proof.train_type_urn!=="odpt.TrainType:JR-East.Local"||
+         run.train_type!==proof.train_type_urn||
+         proof.reference_only!==true||proof.actual_vehicle_confirmed!==false||
+         !Array.isArray(run.stops)||run.stops.length<2||
+         run.stops.length>16||!Array.isArray(proof.source_stop_keys)||
+         proof.source_stop_keys.length<2||
+         proof.source_stop_keys.length>16){
+        result.splice(i,1);continue;
+      }
+      const dated=proof.date_variant_template_ids||{};
+      const selected=Number(dated[serviceDate]||proof.source_template_id);
+      if(!Number.isSafeInteger(selected)||
+         Number(run.source_template_id)!==selected){
+        result.splice(i,1);continue;
+      }
+      const stops=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      const referenceStops=proof.source_stop_keys;
+      if(stops.some((x:string)=>!allowedStations.has(x))||
+         referenceStops.some((x:string)=>!allowedStations.has(x))||
+         (selected===Number(proof.source_template_id) &&
+           (referenceStops.length!==stops.length||
+            referenceStops.some((key:string,j:number)=>key!==stops[j])))){
+        result.splice(i,1);continue;
+      }
+      const numberMatch=/^([0-9]+)(M)$/.exec(String(run.train_number||""));
+      const n=numberMatch?Number(numberMatch[1]):0;
+      const valid=numberMatch&&
+        n%2===(run.rail_direction==="odpt.RailDirection:Inbound"?0:1)&&
+        (ranges||[]).some((r:any)=>
+          r.requires_exact_roster===true&&r.segment_key==="mito_regular_local"&&
+          n>=r.min_number&&n<=r.max_number&&r.suffix==="M"&&
+          r.vehicle_model===proof.vehicle_model&&
+          r.png_reference===proof.png_reference);
+      if(!valid||proof.vehicle_model!=="E531系"||
+         proof.png_reference!=="../images/列车/JR東日本/JR東日本_E531系_水戸線.png"||
+         proof.stop_clock_status!=="historical_not_2611_verified"){
+        result.splice(i,1);continue;
+      }
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="E531系";
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_plan_confirmed=false;
+      run.train_number_verification="official-2611-mito-dated-number";
+      run.train_number_source_url=proof.official_source_url;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Mito",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:proof.calendar_urn,
+        trainType:proof.train_type_urn,segmentKey:"mito_regular_local",
+        sourceTemplateId:selected,regularLocal:true,
+        plannedCandidates:["E531系"],model:proof.vehicle_model,
+        pngReference:proof.png_reference,
+        officialSourceUrl:proof.official_source_url,
+        stopClockStatus:proof.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
     }
   }
   // Kururi 2611: 40 published train numbers are NOT 40 operating rail
