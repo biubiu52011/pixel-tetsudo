@@ -792,6 +792,35 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       }),
     };
   });
+  // Kamaishi <-> TohokuMain 2611 named Hinabi through trains.
+  // Canonical itineraries now join two SQL sources; the published November
+  // run-day roster must gate BOTH sides. Do not let an undated TohokuMain
+  // source template resurrect 8621D/8622D on a non-operating weekend.
+  if(lineId==="TohokuMain" && /^2026-11-/.test(serviceDate)) {
+    const {data:hinabiThrough,error:hinabiThroughError}=
+      await db.from("published_kamaishi_2611_through_segments")
+        .select("train_number,calendar_urn,operating_dates,canonical_timetable_id")
+        .eq("edition","2611")
+        .in("train_number",["8621D","8622D"]);
+    if(hinabiThroughError)throw hinabiThroughError;
+    const datesByNumber=new Map((hinabiThrough||[]).map((row:any)=>
+      [row.train_number,row]));
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      if(run.train_number!=="8621D"&&run.train_number!=="8622D")continue;
+      const proof:any=datesByNumber.get(run.train_number);
+      if(!proof||proof.calendar_urn!==selectedCalendar ||
+         Number(proof.canonical_timetable_id)!==Number(run.canonical_timetable_id)||
+         !Array.isArray(proof.operating_dates)||
+         !proof.operating_dates.map((date:any)=>String(date).slice(0,10)).includes(serviceDate)){
+        result.splice(i,1);
+        continue;
+      }
+      run.train_type="odpt.TrainType:JR-East.Rapid";
+      run.service_name="ひなび 釜石";
+      run.train_number_verification="official-2611-hinabi-through-calendar";
+    }
+  }
   // Joetsu 2611: SQL is the source of public train numbers and the
   // vehicle-series reference PNG. The numeric PNG range alone is NEVER
   // enough: calendar, source, explicit roster and verified route must match.
