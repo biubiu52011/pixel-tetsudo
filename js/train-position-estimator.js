@@ -922,11 +922,17 @@
         if(lineId==="Kitakami"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
           var kiIndex=window.JREastKitakamiNumberIndex202611;
-          if(!kiIndex||typeof kiIndex.verify!=="function")continue;
-          officialKitakamiPlan=kiIndex.verify(
-            run.trainNumber,tt["odpt:railway"]||"",
-            tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
-            run.calendar,serviceDate,tt["odpt:trainTimetableObject"]);
+          if(!kiIndex||typeof kiIndex.verifySqlProof!=="function")continue;
+          officialKitakamiPlan=kiIndex.verifySqlProof({
+            trainNumber:run.trainNumber,positionLineId:"Kitakami",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
           if(!officialKitakamiPlan)continue;
         }
 
@@ -1268,7 +1274,9 @@
             ?"odpt.TrainType:JR-East."+officialJoetsuPlan.trainType:"";
           var publishedKamaishiTrainType=officialKamaishiPlan&&officialKamaishiPlan.trainType
             ?"odpt.TrainType:JR-East."+officialKamaishiPlan.trainType:"";
-          var effectivePublishedTrainType=publishedKamaishiTrainType||publishedJoetsuTrainType||
+          var publishedKitakamiTrainType=officialKitakamiPlan&&officialKitakamiPlan.trainType
+            ?"odpt.TrainType:JR-East."+officialKitakamiPlan.trainType:"";
+          var effectivePublishedTrainType=publishedKitakamiTrainType||publishedKamaishiTrainType||publishedJoetsuTrainType||
             publishedHakushinTrainType || publishedGonoTrainType ||
             publishedIshinomakiTrainType || publishedRikutoEastTrainType ||
             publishedRikutsuWestTrainType || publishedOminatoTrainType ||
@@ -1373,10 +1381,28 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // SQL-verified Kitakami roster grants illustrative KiHa110
+          // stock only on the surviving rail section, never the bus line.
+          var _kitakamiFleet=officialKitakamiPlan &&
+            vehResult.identityStatus!=="EXACT"
+              ?String(officialKitakamiPlan.model||""):"";
+          if(_kitakamiFleet){
+            _plannedCandidates=[_kitakamiFleet];
+            _visibleCandidates=[_kitakamiFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_kitakamiFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2611-kitakami-number-rail-scope",
+              sourceUrl:tt._sqlPublishedNumberFleetReference &&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl||"",
+              lineId:"Kitakami",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet) ? "" : (vehResult.name || '');
-          var _vehicleType = (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet) ? "" :
+          var trainClass = (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet) ? "" : (vehResult.name || '');
+          var _vehicleType = (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1440,8 +1466,8 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_kamaishiFleet||_joetsuFleet||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan)
+            publishedFleetReference:_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -1493,7 +1519,7 @@
             vehicleIdentityReason: vehResult.identityReason || 'no-vehicle-evidence',
             vehicleCandidates: _visibleCandidates,
             plannedVehicleCandidates: _plannedCandidates.slice(),
-            plannedVehicleCandidateStatus: (_kamaishiFleet||_joetsuFleet)
+            plannedVehicleCandidateStatus: (_kamaishiFleet||_joetsuFleet||_kitakamiFleet)
               ? "official-service-family-reference"
               : _runIdentity.plannedVehicleCandidateStatus,
             // 候选图片仅供参考；绝不使用它替代
@@ -1511,7 +1537,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet)
+            vehicleIconPath: (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
