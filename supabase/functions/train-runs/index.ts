@@ -1063,6 +1063,172 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // JR East 2611 KOMII (Koumi), not an inferred 100-240D PNG range.
+  // 51 official service numbers have two-calendar SQL proof. The source
+  // contains 6 old holiday-only numbers excluded from the 2611 roster.
+  // Local KiHa110 / KiHaE200 are ambiguous -> NO vehicle PNG.
+  // HIGH RAIL 8221/8222/8223 have dated service-family PNG, not carset.
+  // Oct 27 rockfall Koumi-Nobeyama: NEVER forecast a train crossing
+  // suspended track until SQL explicitly records official restoration.
+  // Nov 17-19 repairs truncate 225/226/229/230, cancel 227/228.
+  if(lineId==="Komii"&&/^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterError},{data:ranges,error:rangeError},
+      {data:closures,error:closureError},
+      {data:maintenance,error:maintenanceError}]=await Promise.all([
+      db.from("published_komii_2611_number_roster")
+        .select("train_number,calendar_urn,direction_urn,train_type_urn,is_high_rail,planned_vehicle_candidates,fleet_model,png_reference,source_url,service_source_url,scheduled_dates,stop_clock_status")
+        .eq("edition","2611").eq("line_key","Komii")
+        .eq("calendar_urn",selectedCalendar),
+      db.from("published_train_png_number_ranges")
+        .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+        .eq("edition","2611").eq("line_key","Komii"),
+      db.from("published_komii_2611_rail_disruptions")
+        .select("disruption_id,segment_from,segment_to,started_on,ended_on,service_status,reported_on")
+        .eq("edition","2611").eq("line_key","Komii")
+        .eq("disruption_id","2026_10_27_rockfall").maybeSingle(),
+      db.from("published_komii_2611_maintenance")
+        .select("train_number,operation,segment_from,segment_to")
+        .eq("service_date",serviceDate)
+    ]);
+    if(rosterError||rangeError||closureError||maintenanceError)
+      throw (rosterError||rangeError||closureError||maintenanceError);
+    if((roster||[]).length!==51||!closures||
+       closures.segment_from!=="Koumi"||closures.segment_to!=="Nobeyama"||
+       !(ranges||[]).some((r:any)=>
+          r.segment_key==="highrail1375_official"&&
+          r.requires_exact_roster===true))
+      throw new Error("KOMII_2611_PUBLISHED_ROSTER_OR_ROCKFALL_SCOPE_UNAVAILABLE");
+    const published=new Map((roster||[]).map((r:any)=>
+      [String(r.train_number)+"|"+String(r.direction_urn),r]));
+    const construction=new Map((maintenance||[]).map((r:any)=>
+      [String(r.train_number),r]));
+    const order=["Kobuchizawa","Kai-Koizumi","Kai-Oizumi",
+      "Kiyosato","Nobeyama","Shinano-Kawakami","Saku-Hirose",
+      "Saku-Uminokuchi","Umijiri","Matsubarako","Koumi",
+      "Managashi","Takaiwa","Yachiho","Kaise","Haguroshita",
+      "Aonuma","Usuda","Tatsuokajo","Otabe","Nakagomi",
+      "Namezu","Kita-Nakagomi","Iwamurada","Sakudaira",
+      "Nakasato","Misato","Mitsuoka","Otome","Higashi-Komoro",
+      "Komoro"];
+    const closed=closures.service_status==="suspended_until_verified_restoration" &&
+      serviceDate>=String(closures.started_on).slice(0,10)&&
+      (!closures.ended_on||serviceDate<=String(closures.ended_on).slice(0,10));
+    if(!["suspended_until_verified_restoration","verified_restored"].includes(
+       String(closures.service_status||"")))
+      throw new Error("KOMII_2611_ROCKFALL_STATUS_UNRECOGNIZED");
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const proof:any=published.get(run.train_number+"|"+run.rail_direction);
+      if(!proof||run.network_key!=="odpt.Railway:JR-East.Komii"||
+         !Array.isArray(run.stops)||run.stops.length<2||
+         !Array.isArray(proof.planned_vehicle_candidates)){
+        result.splice(i,1);continue;
+      }
+      const direction=String(run.rail_direction||"").split(/[.:]/).pop();
+      const oldStops=run.stops;
+      const oldCodes=oldStops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      const routeIndices=oldCodes.map((code:string)=>order.indexOf(code));
+      const monotonic=routeIndices.every((index:number,j:number)=>
+         index>=0&&(j===0||
+           (direction==="Outbound"?index>routeIndices[j-1]:
+             index<routeIndices[j-1])));
+      if(!monotonic||
+         oldStops.some((st:any,j:number)=>
+            st.station_urn!=="odpt.Station:JR-East."+oldCodes[j])){
+        result.splice(i,1);continue;
+      }
+      const isHigh=proof.is_high_rail===true;
+      if(isHigh){
+        const dates=Array.isArray(proof.scheduled_dates)
+          ?proof.scheduled_dates.map((d:any)=>String(d).slice(0,10)):[];
+        if(!["8221D","8222D","8223D"].includes(run.train_number)||
+           !dates.includes(serviceDate)||
+           // Explicit official cancellation through Nov 9 after 10/27 rockfall
+           serviceDate<="2026-11-09"){
+          result.splice(i,1);continue;
+        }
+      }else if(proof.is_high_rail!==false){
+        result.splice(i,1);continue;
+      }
+      const work:any=construction.get(run.train_number);
+      if(work){
+        if(work.segment_from!=="Kobuchizawa"||
+           work.segment_to!=="Koumi"){
+          result.splice(i,1);continue;
+        }
+        if(work.operation==="cancel_whole_train"){
+          result.splice(i,1);continue;
+        }
+        if(work.operation!=="suspend_kobuchizawa_koumi_keep_other_section"||
+           !["225D","226D","229D","230D"].includes(run.train_number)){
+          result.splice(i,1);continue;
+        }
+        const boundary=oldCodes.indexOf("Koumi");
+        if(boundary<1||boundary>=oldCodes.length-1||
+           !oldCodes.includes("Kobuchizawa")){
+          result.splice(i,1);continue;
+        }
+        run.stops=direction==="Outbound"
+           ?oldStops.slice(boundary):oldStops.slice(0,boundary+1);
+        run.destination_station=String(run.stops[run.stops.length-1].station_urn||"");
+        run.operating_segment_status="partial_construction_official_2611";
+      }
+      // Cross-segment service suppression after date-scoped clipping.
+      // Nobeyama and Koumi indices need not both be stops on HighRail:
+      // the strict ordered station path is compared with the closure.
+      const indices=run.stops.map((st:any)=>order.indexOf(
+        String(st.station_urn||"").split(".").pop()||""));
+      const traversesClosure=
+        indices.some((n:number)=>n<=order.indexOf("Nobeyama"))&&
+        indices.some((n:number)=>n>=order.indexOf("Koumi"));
+      if(closed&&traversesClosure){result.splice(i,1);continue;}
+      let pngRange:any=null;
+      if(isHigh){
+        const m=/^(\d+)D$/.exec(String(run.train_number||""));
+        pngRange=m&&(ranges||[]).find((r:any)=>
+           r.requires_exact_roster===true&&
+           r.segment_key==="highrail1375_official"&&
+           Number(m[1])>=r.min_number&&Number(m[1])<=r.max_number&&
+           r.suffix==="D"&&
+           r.vehicle_model===proof.fleet_model&&
+           r.png_reference===proof.png_reference);
+        if(!pngRange){result.splice(i,1);continue;}
+      }else if(proof.fleet_model||proof.png_reference||
+        proof.planned_vehicle_candidates.length!==2||
+        !proof.planned_vehicle_candidates.includes("キハ110系（小海線）")||
+        !proof.planned_vehicle_candidates.includes("キハE200形")){
+        result.splice(i,1);continue;
+      }
+      run.train_type=proof.train_type_urn;
+      if(isHigh)run.service_name=run.train_number==="8221D"
+         ?"HIGH RAIL 1号":run.train_number==="8222D"
+         ?"HIGH RAIL 2号":"HIGH RAIL 星空";
+      run.train_number_verification="official-2611-number-rail-segment";
+      run.train_number_source_url=proof.source_url;
+      const effective=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",
+        lineId:"Komii",trainNumber:run.train_number,
+        serviceDate:serviceDate,direction:run.rail_direction,
+        calendar:proof.calendar_urn,trainType:proof.train_type_urn,
+        isHighRail:isHigh,model:proof.fleet_model||"",
+        pngReference:proof.png_reference||"",
+        plannedCandidates:proof.planned_vehicle_candidates,
+        segmentKey:isHigh?"highrail1375_official":"regular_mixed_unresolved",
+        officialSourceUrl:proof.source_url,
+        vehicleSourceUrl:proof.service_source_url,
+        stopClockStatus:proof.stop_clock_status,
+        routeFrom:effective[0],routeTo:effective[effective.length-1],
+        operationalScope:run.operating_segment_status||
+           (closed?"disruption_adjacent_unverified":"scheduled_rail_plan"),
+        rockfallCleared:!closed,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
+
   // Joetsu 2611: SQL is the source of public train numbers and the
   // vehicle-series reference PNG. The numeric PNG range alone is NEVER
   // enough: calendar, source, explicit roster and verified route must match.
