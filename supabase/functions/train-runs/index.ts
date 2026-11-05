@@ -834,7 +834,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
            return urn.startsWith("odpt.Station:JR-East.Joetsu.") &&
              northStopCodes.has(urn.split(".").pop()||"");
          }))continue;
-      const numberMatch=/^(\\d+)([A-Z])$/.exec(String(run.train_number||""));
+      const numberMatch=/^(\d+)([A-Z])$/.exec(String(run.train_number||""));
       if(!numberMatch)continue;
       const count=Number(numberMatch[1]),suffix=numberMatch[2];
       const range=(ranges||[]).find((p:any)=>
