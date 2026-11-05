@@ -34,25 +34,25 @@ function stop(line,number) {
 
 test('JR 640M -> 640T uses the exact source section, not a guessed suffix',()=>{
   const t=plan();
-  assert.equal(resolve(t,stop('ChuoMain','640M'),'640M'),'western segment');
-  assert.equal(resolve(t,stop('ChuoRapid','640T'),'640M'),'eastern segment');
-  assert.equal(resolve(t,stop('ChuoMain','640T'),'640M'),'verified main-line alias');
-  assert.equal(resolve(t,stop('ChuoRapid','640H'),'640M'),'unlisted suffix rejected');
-  assert.equal(resolve(t,stop('OtherLine','640T'),'640M'),'wrong source line rejected');
+  assert.equal(resolve(t,stop('ChuoMain','640M'),'640M'),'640M','western segment');
+  assert.equal(resolve(t,stop('ChuoRapid','640T'),'640M'),'640T','eastern segment');
+  assert.equal(resolve(t,stop('ChuoMain','640T'),'640M'),'640T','verified main-line alias');
+  assert.equal(resolve(t,stop('ChuoRapid','640H'),'640M'),'640M','unlisted suffix rejected');
+  assert.equal(resolve(t,stop('OtherLine','640T'),'640M'),'640M','wrong source line rejected');
 });
 test('Tsurumi 712 and 712B stay distinct official numbers',()=>{
   const t=plan();
-  assert.equal(resolve(t,stop('TsurumiOkawa','712'),'712'),'07:18 train');
-  assert.equal(resolve(t,stop('TsurumiOkawa','712B'),'712B'),'07:56 train');
-  assert.equal(resolve(t,stop('TsurumiOkawa','712C'),'712'),'no invented letter');
+  assert.equal(resolve(t,stop('TsurumiOkawa','712'),'712'),'712','07:18 train');
+  assert.equal(resolve(t,stop('TsurumiOkawa','712B'),'712B'),'712B','07:56 train');
+  assert.equal(resolve(t,stop('TsurumiOkawa','712C'),'712'),'712','no invented letter');
 });
 test('unverified and realtime data are not rewritten',()=>{
   assert.equal(resolve(plan({_canonicalGroupEvidence:'source_only'}),
-    stop('ChuoRapid','640T'),'640M'),'source-only');
+    stop('ChuoRapid','640T'),'640M'),'640M','source-only');
   assert.equal(resolve(plan({_positionSource:'realtime-api'}),
-    stop('ChuoRapid','640T'),'640M'),'realtime must retain provider number');
+    stop('ChuoRapid','640T'),'640M'),'640M','realtime must retain provider number');
   assert.equal(resolve(plan({_canonicalTrainNumberAliases:[]}),
-    stop('ChuoRapid','640T'),'640M'),'missing alias');
+    stop('ChuoRapid','640T'),'640M'),'640M','missing alias');
   assert.equal(resolve(plan(),null,'640M'),'640M','missing stop');
 });
 test('SQL stop source survives server -> adapter -> estimator -> marker',()=>{
