@@ -53,7 +53,7 @@ BEGIN
       AND EXISTS(SELECT 1 FROM public.manual_timetable_template_stops s
         WHERE s.template_id=m.id AND s.arrival_clock=rec.last_clock
           AND s.arrival_station_urn='odpt.Station:JR-West.SanyoShinkansen.'||rec.last_station);
-    IF verified_count<>rec.expected_count THEN
+    IF verified_count<>rec.expected_count::integer THEN
       RAISE EXCEPTION 'Expected % 2611 source templates for %, found %',
         rec.expected_count,rec.full_number,verified_count;
     END IF;
