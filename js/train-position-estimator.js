@@ -760,6 +760,25 @@
               sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
             });
         }
+        var officialKamaishiPlan=null;
+        if(lineId==="Kamaishi"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var kamaishiIdx=window.TrainNumberPngRanges;
+          if(!kamaishiIdx||typeof kamaishiIdx.verifyKamaishiService!=="function")continue;
+          officialKamaishiPlan=kamaishiIdx.verifyKamaishiService({
+            trainNumber:run.trainNumber,positionLineId:"Kamaishi",
+            displayLineId:"Kamaishi",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!officialKamaishiPlan)continue;
+        }
         var officialGonoPlan = null;
         if(lineId==="Gono" && tt._positionSource==="supabase-train-run" &&
            String(serviceDate).slice(0,7)==="2026-11"){
@@ -1247,7 +1266,9 @@
             ? "odpt.TrainType:JR-East."+officialHakushinPlan.trainType:"";
           var publishedJoetsuTrainType=officialJoetsuPlan&&officialJoetsuPlan.trainType
             ?"odpt.TrainType:JR-East."+officialJoetsuPlan.trainType:"";
-          var effectivePublishedTrainType=publishedJoetsuTrainType||
+          var publishedKamaishiTrainType=officialKamaishiPlan&&officialKamaishiPlan.trainType
+            ?"odpt.TrainType:JR-East."+officialKamaishiPlan.trainType:"";
+          var effectivePublishedTrainType=publishedKamaishiTrainType||publishedJoetsuTrainType||
             publishedHakushinTrainType || publishedGonoTrainType ||
             publishedIshinomakiTrainType || publishedRikutoEastTrainType ||
             publishedRikutsuWestTrainType || publishedOminatoTrainType ||
@@ -1335,10 +1356,27 @@
               lineId:"Joetsu",operator:"JR-East",confirmed:false,referenceOnly:true
             };
           }
+          // Official SQL Kamaishi NUMBER -> fleet illustration only.
+          var _kamaishiFleet=officialKamaishiPlan &&
+            vehResult.identityStatus!=="EXACT"
+            ?String(officialKamaishiPlan.model||""):"";
+          if(_kamaishiFleet){
+            _plannedCandidates=[_kamaishiFleet];
+            _visibleCandidates=[_kamaishiFleet];
+            _publishedVehiclePlan={
+              status:"PLANNED_MODEL",models:[_kamaishiFleet],
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-2026-11-kamaishi-number-roster",
+              sourceUrl:tt._sqlPublishedNumberFleetReference &&
+                tt._sqlPublishedNumberFleetReference.officialSourceUrl ||"",
+              lineId:"Kamaishi",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_hakushinSpecialFleet||_joetsuFleet) ? "" : (vehResult.name || '');
-          var _vehicleType = (_hakushinSpecialFleet||_joetsuFleet) ? "" :
+          var trainClass = (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet) ? "" : (vehResult.name || '');
+          var _vehicleType = (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -1392,7 +1430,7 @@
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
               officialKitakamiPlan || officialYamadaPlan ||
-              officialHakushinPlan || officialJoetsuPlan) &&
+              officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
               // individual stops. Never label THAT unverified number as
               // published merely because its parent run was admitted.
@@ -1402,12 +1440,14 @@
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
-            publishedFleetReference:_joetsuFleet||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:officialJoetsuPlan
+            publishedFleetReference:_kamaishiFleet||_joetsuFleet||_hakushinSpecialFleet||_gonoResortFleet,
+            sqlPublishedNumberFleetReference:(officialJoetsuPlan||officialKamaishiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
-            serviceName: officialJoetsuPlan && officialJoetsuPlan.serviceName
+            serviceName: officialKamaishiPlan && officialKamaishiPlan.serviceName
+              ? officialKamaishiPlan.serviceName
+              : officialJoetsuPlan && officialJoetsuPlan.serviceName
               ? officialJoetsuPlan.serviceName
               : officialHakushinPlan && officialHakushinPlan.serviceName
               ? officialHakushinPlan.serviceName
@@ -1453,7 +1493,7 @@
             vehicleIdentityReason: vehResult.identityReason || 'no-vehicle-evidence',
             vehicleCandidates: _visibleCandidates,
             plannedVehicleCandidates: _plannedCandidates.slice(),
-            plannedVehicleCandidateStatus: _joetsuFleet
+            plannedVehicleCandidateStatus: (_kamaishiFleet||_joetsuFleet)
               ? "official-service-family-reference"
               : _runIdentity.plannedVehicleCandidateStatus,
             // 候选图片仅供参考；绝不使用它替代
@@ -1471,7 +1511,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_hakushinSpecialFleet||_joetsuFleet)
+            vehicleIconPath: (_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
