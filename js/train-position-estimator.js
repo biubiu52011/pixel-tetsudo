@@ -1111,6 +1111,24 @@
               return /^(?:nakayamadairaonsen|sakaida|akakuraonsen|tachikoji|mogami|ohori|usugi|semionsen|higashinagasawa|nagasawa|minamishinjo|shinjo)$/.test(st);
             });
           if(suspendedRikutoStop)continue;
+          var rk26=window.TrainNumberPngRanges;
+          if(!officialRikutoEastPlan||!rk26||
+             typeof rk26.verifyRikutoEastService!=="function")continue;
+          var sourceBackedRikuto=rk26.verifyRikutoEastService({
+            trainNumber:run.trainNumber,positionLineId:"RikutoEast",
+            displayLineId:"RikutoEast",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";}),
+            sqlPublishedNumberFleetReference:tt._sqlPublishedNumberFleetReference||null
+          });
+          if(!sourceBackedRikuto||
+             sourceBackedRikuto.kind!==officialRikutoEastPlan.kind||
+             sourceBackedRikuto.model!==officialRikutoEastPlan.model)continue;
         }
 
         // 陸羽西線 restored rail services in 2026. Use only the exact
