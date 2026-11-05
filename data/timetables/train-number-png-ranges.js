@@ -3985,6 +3985,66 @@
       authorizesPNG:false,confirmed:false,
       status:"UNCONFIRMED_PLANNED_FLEET"};
   }
+  // JR-East 2611 中央・総武線各駅停車 B/C. The historical SQL source
+  // has 483 weekday and 429 holiday FULL public numbers, all numerically
+  // between 402 and 2499. The numeric bounds only constrain realtime
+  // data; they DO NOT declare every number in this interval a valid train.
+  // Fresh ODPT trainId is the concrete evidence that the specific number
+  // exists today. NO derivation of a 63B working number, and NO inference
+  // that an actual B/C train is E231-500 rather than E231-0 or E235-0.
+  // https://timetables.jreast.co.jp/2611/timetable-v/659u1.html
+  function matchChuoSobuLocalBCLiveNumber(p) {
+    if (!p || p.positionSource !== "realtime-api" || p.estimated === true ||
+        p.realtimePositionRecordPresent === false ||
+        p.positionLineId !== "ChuoSobuLocal" ||
+        String(p.displayLineId || p.positionLineId) !== "ChuoSobuLocal" ||
+        p.sourceRailway !== "odpt.Railway:JR-East.ChuoSobuLocal" ||
+        p.trainType !== "odpt.TrainType:JR-East.Local" ||
+        (p.trainOperator && p.trainOperator !== "JR-East" &&
+          p.trainOperator !== "odpt.Operator:JR-East") ||
+        p.vehicleIdentityStatus === "EXACT" ||
+        p.vehicleResolvedFromRealtime === true ||
+        p.actualVehicleConfirmed === true ||
+        p.vehicleFormationId ||
+        (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length) ||
+        p.realtimeVehicleType || p.vehicleType || p.vehicleIconPath ||
+        (p.vehicleResolution && p.vehicleResolution.identityStatus === "EXACT") ||
+        (p.vehicleResolutionLineId && p.vehicleResolutionLineId !== "ChuoSobuLocal"))
+      return null;
+    var n = String(p.trainNumber || "").trim().toUpperCase();
+    var day = String(p.serviceDate || "").slice(0, 10);
+    var dir = String(p.railDirection || "").split(/[.:]/).pop();
+    var num = Number(n.slice(0,-1));
+    // Only an observed JR train with its exact ODPT entity ID is admitted:
+    // a generic B/C suffix or a timeless operation number is insufficient.
+    if (!/^[0-9]{3,4}[BC]$/.test(n) || num < 402 || num > 2499 ||
+        !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day) ||
+        (dir !== "Eastbound" && dir !== "Westbound") ||
+        (num % 2 === 0) !== (dir === "Eastbound") ||
+        String(p.trainId || "") !== "odpt.Train:JR-East.ChuoSobuLocal." + n)
+      return null;
+    var model = "E231系500番台";
+    var png = "../images/列车/JR東日本/JR東日本_E231系_500番台_中央・総武線各駅停車.png";
+    var garage = root.VehicleGaragePngMap;
+    if (!garage || typeof garage.matchModelPath !== "function" ||
+        !garage.matchModelPath(model, png, "ChuoSobuLocal")) return null;
+    return {
+      lineId: "ChuoSobuLocal", trainNumber: n,
+      numberSource: "odpt-live-jreast-train-id",
+      numberScope: "2611-bc-402-2499",
+      referenceOnly: true, authorizesIllustration: true,
+      authorizesPNG: false, actualVehicleConfirmed: false,
+      model: null, formationId: null,
+      candidateModels: [
+        "E231系500番台",
+        "E231系0番台（中央・総武線各駅停車）",
+        "E235系0番台（中央・総武線各駅停車）"
+      ],
+      illustrationModel: model, illustrationPng: png,
+      status: "UNCONFIRMED_MIXED_FLEET"
+    };
+  }
+
   root.TrainNumberPngRanges=Object.freeze({
     version:"20261105-kashima-sql-2611-v1",match:match,
     verifyJoetsuService:verifyJoetsuService,
@@ -4002,6 +4062,7 @@
     verifyOuMainTsugaruService:verifyOuMainTsugaruService,
     verifyOitoEastService:verifyOitoEastService,
     verifyOitoWestService:verifyOitoWestService,
+    matchChuoSobuLocalBCLiveNumber:matchChuoSobuLocalBCLiveNumber,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
