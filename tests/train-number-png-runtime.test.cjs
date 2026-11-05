@@ -526,7 +526,10 @@ test('Kururi Karasuyama and Senseki-Tohoku scoped number PNG: published 2026-11 
       const p=live({
         trainNumber:number,trainId:'odpt.Train:JR-East.'+line+'.'+number,
         positionLineId:line,sourceRailway:'odpt.Railway:JR-East.'+line,
-        trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.'+type,
+        trainOperator:'JR-East',
+        railDirection:'odpt.RailDirection:'+
+          (parseInt(number,10)%2?'Outbound':'Inbound'),
+        trainType:'odpt.TrainType:JR-East.'+type,
         serviceDate:'2026-11-04',
         calendarType:line==='SensekiTohoku'?'holiday':'weekday',
         positionSource:source,estimated:source!=='realtime-api'
