@@ -874,6 +874,153 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // JR-East-only Oito, Matsumoto–Minami-Otari. Existing JR-West
+  // 4xxD diesel and 790x bus/segregated records are out of scope:
+  // NEVER mutate, classify or suppress them in this branch.
+  // JR-East M ordinary/Azusa/Hakuba + 8361D/8362D Furusato alone.
+  // Source numbers and historic SQL CLOCKS are different proof levels.
+  if(lineId==="Oito"&&/^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterErr},{data:ranges,error:rangeErr}]=
+      await Promise.all([
+        db.from("published_oito_east_2611_number_roster")
+          .select("source_template_id,train_number,calendar_urn,direction_urn,train_type_urn,service_kind,operating_dates,source_stop_keys,vehicle_model,png_reference,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Oito")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Oito")
+      ]);
+    if(rosterErr||rangeErr)throw(rosterErr||rangeErr);
+    const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?69:72;
+    if((roster||[]).length!==expectedCount||(ranges||[]).length!==4)
+      throw new Error("OITO_EAST_2611_NUMBER_ROSTER_UNAVAILABLE");
+    const byTemplate=new Map((roster||[]).map((r:any)=>
+      [Number(r.source_template_id),r]));
+    const eastStations=new Set(["Azumi-Kutsukake","Azumi-Oiwake",
+      "Azusabashi","Chikuni","Hakuba","Hakuba-Oike","Hakuyacho",
+      "Hitoichiba","Hosono","Hotaka","Iimori","Inao","Kamishiro",
+      "Kita-Hosono","Kita-Matsumoto","Kita-Omachi","Matsumoto",
+      "Minami-Kamishiro","Minami-Omachi","Minami-Otari",
+      "Minami-Toyoshina","Nakagaya","Shimatakamatsu","Shimauchi",
+      "Shinano-Kizaki","Shinano-Matsukawa","Shinano-Moriue",
+      "Shinano-Omachi","Shinano-Tokiwa","Shinshu-Ariake",
+      "Toyoshina","Uminoguchi","Yanaba"]);
+    const resortDates=new Set(["2026-11-01","2026-11-02",
+      "2026-11-03","2026-11-06","2026-11-08","2026-11-09",
+      "2026-11-13","2026-11-14","2026-11-15","2026-11-16",
+      "2026-11-20","2026-11-21","2026-11-22","2026-11-23",
+      "2026-11-27","2026-11-28","2026-11-29","2026-11-30"]);
+    const hakubaDates=new Set(["2026-11-01","2026-11-21",
+      "2026-11-22","2026-11-23"]);
+    const approved=new Map([
+      ["211系（長野地区）","../images/列车/JR東日本/JR東日本_211系_長野色.png"],
+      ["E127系100番台","../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png"],
+      ["E353系","../images/列车/JR東日本/JR東日本_E353系.png"],
+      ["HB-E300系（リゾートビューふるさと）",
+       "../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png"]
+    ]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],n=String(run.train_number||"");
+      // Leave JR-West D numbers and already separated buses entirely
+      // untouched; only validate East M and dedicated East resort D.
+      if(!(/^[0-9]+M$/.test(n)||n==="8361D"||n==="8362D"))
+        continue;
+      const p:any=byTemplate.get(Number(run.source_template_id));
+      if(!p||p.train_number!==n||p.calendar_urn!==selectedCalendar||
+         p.direction_urn!==run.rail_direction||
+         p.train_type_urn!==run.train_type||
+         run.network_key!=="odpt.Railway:JR-East.Oito"||
+         p.reference_only!==true||p.actual_vehicle_confirmed!==false||
+         p.stop_clock_status!=="historical_not_2611_verified"||
+         !Array.isArray(run.stops)||!Array.isArray(p.source_stop_keys)){
+        result.splice(i,1);continue;
+      }
+      const number=/^([0-9]+)([MD])$/.exec(n);
+      const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+      const actual=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      if(!number||Number(number[1])%2!==(inbound?0:1)||
+         actual.length!==p.source_stop_keys.length||
+         actual.length<4||actual.length>33||
+         actual.some((st:string,j:number)=>
+           !eastStations.has(st)||st!==p.source_stop_keys[j])){
+        result.splice(i,1);continue;
+      }
+      const kind=p.service_kind;
+      const dates=(p.operating_dates||[]).map((d:any)=>
+        String(d).slice(0,10));
+      if(kind==="december_only"){
+        result.splice(i,1);continue;
+      }
+      if(kind==="resort_furusato"){
+        if(!["8361D","8362D"].includes(n)||
+           run.train_type!=="odpt.TrainType:JR-East.Rapid"||
+           dates.length!==resortDates.size||
+           dates.some((d:string)=>!resortDates.has(d))||
+           !resortDates.has(serviceDate)){
+          result.splice(i,1);continue;
+        }
+      }else if(kind==="hakuba_limited"||kind==="hakuba_local"){
+        const isLimited=kind==="hakuba_limited";
+        if(!((isLimited&&["8041M","8042M"].includes(n))||
+           (!isLimited&&["8352M","8353M"].includes(n)))||
+           run.train_type!=="odpt.TrainType:JR-East."+
+             (isLimited?"LimitedExpress":"Local")||
+           dates.length!==hakubaDates.size||
+           dates.some((d:string)=>!hakubaDates.has(d))||
+           !hakubaDates.has(serviceDate)){
+          result.splice(i,1);continue;
+        }
+      }else if(kind!=="regular"||dates.length!==0){
+        result.splice(i,1);continue;
+      }
+      const model=String(p.vehicle_model||"");
+      const png=p.png_reference||null;
+      const suffix=number[2];
+      if(png&&(approved.get(model)!==png||
+         !(ranges||[]).some((r:any)=>
+           r.requires_exact_roster===true&&r.vehicle_model===model&&
+           r.png_reference===png&&r.suffix===suffix&&
+           Number(number[1])>=r.min_number&&
+           Number(number[1])<=r.max_number))){
+        result.splice(i,1);continue;
+      }
+      // 5232M lacks a credible specific source-fleet label. It gets
+      // its verified number but NO invented representative vehicle PNG.
+      if(!png&&model){
+        result.splice(i,1);continue;
+      }
+      run.train_number_verification="official-2611-oito-east-number-date";
+      run.train_number_source_url=p.official_source_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=model||null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      if(kind==="resort_furusato")run.service_name="リゾートビューふるさと";
+      if(kind==="hakuba_limited")run.service_name="はくば";
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Oito",
+        trainNumber:n,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:p.calendar_urn,
+        trainType:run.train_type,serviceKind:kind,
+        scope:"jr_east_matsumoto_minami_otari",
+        sourceTemplateId:Number(p.source_template_id),
+        sourceStopKeys:p.source_stop_keys,
+        railwayFrom:actual[0],railwayTo:actual[actual.length-1],
+        plannedCandidates:model?[model]:[],
+        model:model||null,pngReference:png,
+        officialSourceUrl:p.official_source_url,
+        operatingDates:dates,
+        stopClockStatus:p.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // 男鹿線 2611: 29 ordinary official M numbers per calendar.
   // Historical SQL has only 23 weekday and 29 holiday sources, plus SIX
   // weekday services documented in the official timetable but ABSENT from
