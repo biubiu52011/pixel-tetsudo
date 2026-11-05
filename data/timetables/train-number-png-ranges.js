@@ -394,6 +394,27 @@
       allowedModelLabels:["E233系0番台"],
       model:"E233系0番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
+    // 1461M Takao -> Otsuki has independent photographed 211-series
+    // examples in 2026 (Jan 31, Sep 8). The 2611 JR-East timetable
+    // confirms this exact train number on both weekday/holiday outbound.
+    // Show ONE 211 Nagano PNG as a PLANNED stock REFERENCE only; never
+    // infer the actual 2026-Nov-05 carset from historical photographs.
+    // https://timetables.jreast.co.jp/2611/train/000/003921.html
+    // https://timetables.jreast.co.jp/2611/train/000/003931.html
+    // https://tomodachiya221.livedoor.blog/archives/30401901.html
+    // https://search.yahoo.co.jp/realtime/search?p=%231461M
+    {lineIds:["ChuoMain"],numberFormat:"full",
+      from:1461,to:1461,suffixes:"M",trainType:"Local",
+      publishedNumbers:["1461M"],directionNumberParity:"inbound-even",
+      operator:"JR-East",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Chuo",
+        "odpt.Railway:JR-East.ChuoMain"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      weekdayNumbers:["1461M"],holidayNumbers:["1461M"],
+      allowedModelLabels:["211系","211系（長野地区）"],
+      requireCandidateOverlap:true,
+      model:"211系（長野地区）",
+      pngPath:"../images/列车/JR東日本/JR東日本_211系_長野色"},
     // Chuo Main's 320M-367M local family includes 321M (Enzan 05:38
     // -> Nirasaki 06:12). The documented three-car 211 operation is the
     // gallery REFERENCE, not proof of the actual November 2026 set.
@@ -1351,6 +1372,12 @@
             !idx.match(number,sourceCalendar(context),
               context&&context.serviceDate))continue;
       }
+      if(row.requireCandidateOverlap && context &&
+         Array.isArray(context.plannedVehicleCandidates) &&
+         context.plannedVehicleCandidates.length &&
+         !context.plannedVehicleCandidates.some(function(model){
+           return /^211系/.test(String(model));
+         }))continue;
       if(row.rejectAmbiguousPlan && context && context.vehiclePlan &&
          Array.isArray(context.vehiclePlan.models) &&
          context.vehiclePlan.models.length!==1)continue;
