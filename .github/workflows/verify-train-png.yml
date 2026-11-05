@@ -84,6 +84,7 @@ on:
       - 'supabase/migrations/20261030130459_railfan_source_registry_and_official_sonic_two_stop_crosscheck_20261030.sql'
       - 'supabase/functions/train-runs/index.ts'
       - 'tests/train-runs-query-batches.test.cjs'
+      - 'tests/jreast-canonical-train-number-segments.test.cjs'
       - 'tests/boso-2611-dated-service-exceptions.test.cjs'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
