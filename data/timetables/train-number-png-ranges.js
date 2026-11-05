@@ -1843,7 +1843,8 @@
     if(operator&&operator!=="JR-East"&&operator!=="odpt.Operator:JR-East")return null;
     var number=String(p.trainNumber||"").trim().toUpperCase();
     if(proof.trainNumber!==number||proof.serviceDate!==p.serviceDate||
-       proof.direction!==p.railDirection)return null;
+       String(proof.direction||"").split(/[.:]/).pop()!==
+         String(p.railDirection||"").split(/[.:]/).pop())return null;
     var day=String(p.serviceDate||"").slice(0,10);
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(day))return null;
     var cal=sourceCalendar(p),dow=new Date(day+"T12:00:00Z").getUTCDay();
