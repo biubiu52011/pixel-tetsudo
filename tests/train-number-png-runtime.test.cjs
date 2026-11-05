@@ -59,6 +59,83 @@ const png='../images/列车/JR東日本/JR東日本_E353系.png';
 function marker(p,lineId='ChuoMain'){
   return ctx._trainMarkerSpec(p,p.trainId,lineId);
 }
+test('BanetsuEast 2611 JR official D numbers: 35 all-day weekday/holiday KiHa110 reference PNGs',()=>{
+  const png110='../images/列车/JR東日本/JR東日本_キハ110系.png';
+  const up=["720D","1752D","722D","724D","728D","730D","732D","734D","736D","1754D","738D","740D","1756D","742D","744D","746D","748D","750D"];
+  const down=["721D","723D","725D","727D","729D","1751D","731D","733D","735D","737D","741D","743D","745D","1753D","1755D","747D","749D"];
+  assert.equal(up.length,18);
+  assert.equal(down.length,17);
+  assert.equal(new Set([...up,...down]).size,35);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath('キハ110系',png110,'BanetsuEast'),true);
+  for(const [numbers,direction] of [[up,'Inbound'],[down,'Outbound']]){
+    for(const [cal,date] of [['weekday','2026-11-05'],['holiday','2026-11-07']]){
+      for(const no of numbers){
+        const fields={
+          trainId:'planned-trip:'+date+'|JR-East|odpt.Railway:JR-East.BanetsuEast|BanetsuEast|'+no,
+          trainNumber:no,positionLineId:'BanetsuEast',
+          sourceRailway:'odpt.Railway:JR-East.BanetsuEast',
+          trainOperator:'JR-East',railDirection:'odpt.RailDirection:'+direction,
+          trainType:'odpt.TrainType:JR-East.Local',
+          calendarType:cal,serviceDate:date,plannedVehicleCandidates:['キハ110系'],
+          vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
+        };
+        for(const create of [live,sql]){
+          const p=create(fields);
+          const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
+          assert.ok(chosen,no+'/'+cal+'/'+p.positionSource);
+          assert.equal(chosen.model,'キハ110系');
+          assert.equal(chosen.pngPath,png110);
+          assert.equal(chosen.planned,true);
+          const artwork=marker(p,'BanetsuEast');
+          assert.equal(artwork.kind,'vehicle',no+'/'+cal);
+          assert.equal(artwork.iconSrc,png110);
+          assert.equal(artwork.planned,true);
+          assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+          assert.equal(p.vehiclePlan,undefined);
+        }
+      }
+    }
+  }
+  // SQL sources may supply the native service calendar without a normalized
+  // calendarType or trainOperator; the precise railway URN remains required.
+  const noOperator=sql({trainNumber:'720D',positionLineId:'BanetsuEast',
+    sourceRailway:'odpt.Railway:JR-East.BanetsuEast',
+    trainOperator:'',calendarType:'',serviceId:'odpt.Calendar:Weekday',
+    serviceDate:'2026-11-05',railDirection:'odpt.RailDirection:Inbound',
+    trainType:'odpt.TrainType:JR-East.Local'});
+  assert.equal(marker(noOperator,'BanetsuEast').iconSrc,png110);
+  const normal=live({trainNumber:'720D',positionLineId:'BanetsuEast',
+    sourceRailway:'odpt.Railway:JR-East.BanetsuEast',
+    trainOperator:'JR-East',serviceDate:'2026-11-05',
+    calendarType:'weekday',railDirection:'odpt.RailDirection:Inbound',
+    trainType:'odpt.TrainType:JR-East.Local',
+    plannedVehicleCandidates:['キハ110系']});
+  for(const changed of [
+    {trainNumber:'726D'}, {trainNumber:'739D'},
+    {trainNumber:'752D'}, {trainNumber:'1757D'},
+    {trainNumber:'9730D'}, {trainNumber:'9737D'},
+    {trainNumber:'720M'}, {trainNumber:'720'},
+    {serviceDate:'2026-12-26'},{serviceDate:'2027-02-13'},
+    {serviceDate:''},
+    {positionLineId:'BanetsuWest'},{displayLineId:'BanetsuWest'},
+    {sourceRailway:'odpt.Railway:JR-East.BanetsuWest'},
+    {sourceRailway:''},{trainOperator:'JR-West'},
+    {railDirection:'odpt.RailDirection:Outbound'},
+    {trainType:'odpt.TrainType:JR-East.Rapid'},
+    {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+    {plannedVehicleCandidates:['キハE130系']},
+    {realtimeVehicleType:'キハE130系'},
+    {realtimeDerivedVehicleType:'E129系'},
+    {vehiclePlan:{status:'PLANNED_MODEL',models:['キハE130系']}},
+    {vehiclePlan:{status:'PLANNED_CANDIDATES',models:['キハ110系','キハ100系']}}
+  ]){
+    const p={...normal,...changed};
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'BanetsuEast gallery cannot cross source/stock evidence: '+JSON.stringify(changed));
+  }
+  assert.equal(marker({...normal,displayLineId:'BanetsuWest'},'BanetsuWest').kind,'unresolved');
+  assert.equal(root.TrainVehicle.selectMarkerArtwork({...normal,displayLineId:'BanetsuEast'},true).kind,'unresolved');
+});
 test('ODPT realtime number -> garage PNG -> ChuoMain SVG image without preattached plan',()=>{
   const p=live();
   assert.equal(p.vehiclePlan,undefined);
