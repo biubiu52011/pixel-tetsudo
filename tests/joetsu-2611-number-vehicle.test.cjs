@@ -196,6 +196,7 @@ test('estimator corrects sourced November SQL Shu*Kura Local/E129 to Rapid and a
     assert.equal(one.trainType,'odpt.TrainType:JR-East.'+typ);
     assert.equal(one.estimated,true);
     assert.equal(one.timetableDateVerified,false);
-    assert.equal(artwork({...one,displayLineId:'Joetsu'}).kind,'vehicle');
+    const y={...one,displayLineId:'Joetsu'};
+    assert.equal(artwork(y).kind,'vehicle',n+' '+JSON.stringify({proof:y.sqlPublishedNumberFleetReference,plan:y.vehiclePlan,source:y.sourceRailway,stops:y.scheduledStopKeys,type:y.trainType,verification:verify(y),selected:artwork(y)}));
   }
 });
