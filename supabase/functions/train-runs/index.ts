@@ -312,70 +312,80 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
 
   // Only preverified continuation chains receive a merged end-to-end station
   // sequence. Never join trains here by time, number, or neighboring station.
-  const canonicalStopsById = new Map<number, any[]>();
   const connectedIds = [...new Set(templates
     .map((t: any) => sourceResolution.get(t.id))
     .filter((m: any) => m?.group_evidence === "verified_continuation")
     .map((m: any) => Number(m.timetable_id)))];
-  const canonicalStopRows = await batchedRows(connectedIds, 30, (ids) =>
-    pages((first, last) => db.from("train_timetable_stops")
-      .select("timetable_id,stop_sequence,station_urn,arrival_clock,departure_clock,source_template_id,line_key,train_number")
-      .in("timetable_id", ids)
-      .order("timetable_id").order("stop_sequence").range(first, last)));
-  for (const row of canonicalStopRows) {
-    const stops = canonicalStopsById.get(row.timetable_id) || [];
-    stops.push(row);
-    canonicalStopsById.set(row.timetable_id, stops);
+  const aliasLines = ["ChuoRapid","ChuoMain","ShonanShinjuku","Tokaido","Takasaki","UtsunomiyaJR"];
+  const includeAliases = aliasLines.includes(lineId);
+  // A single bounded read returns exact view-backed canonical stops, member
+  // lines, and (where needed) source-number aliases. The RPC does not invent
+  // new timetable identities or infer rolling stock. Keep only 40 IDs per call.
+  const bundles = await batchedRows(connectedIds, 40, async (ids) => {
+    const { data, error } = await db.rpc("train_runs_canonical_bundle", {
+      p_timetable_ids: ids, p_include_members: includeAliases
+    });
+    if (error) throw error;
+    if (!data || !Array.isArray(data.stops) ||
+        !Array.isArray(data.lines) || !Array.isArray(data.members)) {
+      throw new Error("INVALID_CANONICAL_BUNDLE");
+    }
+    return [data];
+  });
+  const canonicalStopsById = new Map<number, any[]>();
+  const canonicalLinesById = new Map<number, string[]>();
+  const canonicalSourceMembers: any[] = [];
+  const scopedIds = new Set(connectedIds);
+  for (const bundle of bundles) {
+    for (const row of bundle.stops) {
+      const id = Number(row.timetable_id);
+      if (!scopedIds.has(id)) throw new Error("CANONICAL_BUNDLE_OUT_OF_SCOPE");
+      const stops = canonicalStopsById.get(id) || [];
+      stops.push(row);
+      canonicalStopsById.set(id, stops);
+    }
+    for (const row of bundle.lines) {
+      const id = Number(row.timetable_id);
+      if (!scopedIds.has(id)) throw new Error("CANONICAL_BUNDLE_OUT_OF_SCOPE");
+      const lines = canonicalLinesById.get(id) || [];
+      if (row.line_key && !lines.includes(row.line_key)) lines.push(row.line_key);
+      canonicalLinesById.set(id, lines);
+    }
+    for (const row of bundle.members) {
+      if (!includeAliases || !scopedIds.has(Number(row.timetable_id))) {
+        throw new Error("CANONICAL_BUNDLE_OUT_OF_SCOPE");
+      }
+      canonicalSourceMembers.push(row);
+    }
   }
   if (connectedIds.some(id => !(canonicalStopsById.get(id) || []).length)) {
     throw new Error("CANONICAL_CONTINUATION_STOPS_UNAVAILABLE");
   }
-  // A verified SQL train can traverse two physical source lines. Return the
-  // actual member lines with its canonical ID, so a live bridge cannot treat a
-  // ChuoRapid/ChuoMain trip as a ChuoRapid/Ome trip just because numbers match.
-  const canonicalLinesById = new Map<number, string[]>();
-  const canonicalLineRows = await batchedRows(connectedIds, 40, (ids) =>
-    pages((first, last) => db.from("train_timetable_lines")
-      .select("timetable_id,line_key").in("timetable_id", ids)
-      .order("timetable_id").order("line_key").range(first, last)));
-  for (const row of canonicalLineRows) {
-    const list = canonicalLinesById.get(Number(row.timetable_id)) || [];
-    if (row.line_key && !list.includes(row.line_key)) list.push(row.line_key);
-    canonicalLinesById.set(Number(row.timetable_id), list);
-  }
+  // A verified train may cross two lines, but never infer continuity by
+  // train number. Both source line identities must be certified by SQL.
   if (connectedIds.some(id => !(canonicalLinesById.get(id) || []).length)) {
     throw new Error("CANONICAL_CONTINUATION_LINES_UNAVAILABLE");
   }
-  // Actual source-specific train numbers may change at Tachikawa/Takao.
-  // These are aliases of an already VERIFIED canonical train, NOT additional
-  // trains. Never derive aliases by stripping T/H/M from a number.
+  // Public train numbers can change across Takao/Tachikawa and Ofuna/Omiya.
+  // Preserve each SQL source member as an alias only for verified continuations.
   const canonicalAliasesById = new Map<number, any[]>();
-  if (["ChuoRapid","ChuoMain","ShonanShinjuku","Tokaido","Takasaki","UtsunomiyaJR"].includes(lineId)) {
+  if (includeAliases) {
     const aliasIds = connectedIds.filter(id => {
       const lines = canonicalLinesById.get(id) || [];
       return (lines.includes("ChuoRapid") && lines.includes("ChuoMain")) ||
         (lines.includes("ShonanShinjuku") &&
-          ["Tokaido","Takasaki","UtsunomiyaJR"].some(other=>lines.includes(other)));
+          ["Tokaido","Takasaki","UtsunomiyaJR"].some(other => lines.includes(other)));
     });
-    const members = await batchedRows(aliasIds, 40, (ids) =>
-      pages((first, last) => db.from("train_timetable_members")
-        .select("timetable_id,source_template_id").in("timetable_id", ids)
-        .order("timetable_id").order("source_template_id").range(first, last)));
-    const templateIds = [...new Set(members.map((m: any) => Number(m.source_template_id)))];
-    const sourceTemplates = await batchedRows(templateIds, 100, (ids) =>
-      pages((first, last) => db.from("manual_timetable_templates")
-        .select("id,line_key,train_number,railway_urn,direction_urn")
-        .in("id", ids).order("id").range(first, last)));
-    const templateById = new Map(sourceTemplates.map((m: any) => [Number(m.id), m]));
-    for (const member of members) {
-      const source: any = templateById.get(Number(member.source_template_id));
-      if (!source || !source.train_number || !source.railway_urn) {
+    const aliasIdSet = new Set(aliasIds);
+    for (const source of canonicalSourceMembers) {
+      const id = Number(source.timetable_id);
+      if (!aliasIdSet.has(id)) continue;
+      if (!source.train_number || !source.railway_urn) {
         throw new Error("CANONICAL_TRAIN_NUMBER_ALIAS_SOURCE_UNAVAILABLE");
       }
-      const id = Number(member.timetable_id);
       const aliases = canonicalAliasesById.get(id) || [];
-      const alias = {line_key: source.line_key, train_number: source.train_number,
-        railway_urn: source.railway_urn, direction_urn: source.direction_urn};
+      const alias = { line_key: source.line_key, train_number: source.train_number,
+        railway_urn: source.railway_urn, direction_urn: source.direction_urn };
       if (!aliases.some((x: any) => x.line_key === alias.line_key &&
         x.train_number === alias.train_number &&
         x.railway_urn === alias.railway_urn &&
