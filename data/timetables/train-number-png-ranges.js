@@ -544,7 +544,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/275d1.html
     // https://timetables.jreast.co.jp/2611/timetable-v/275d2.html
     {lineIds:["Gono"],numberFormat:"full",from:122,to:2839,
-      suffixes:"D",trainTypes:["Local"],
+      suffixes:"D",trainTypes:["Local"],numberIndex:"jreast-gono-2611",
       publishedNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
       weekdayNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
       holidayNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
@@ -556,7 +556,7 @@
       requiredCandidateModelPrefix:"GV-E400系",
       model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
     {lineIds:["Gono"],numberFormat:"full",from:3524,to:3526,
-      suffixes:"D",trainTypes:["Rapid"],
+      suffixes:"D",trainTypes:["Rapid"],numberIndex:"jreast-gono-2611",
       publishedNumbers:["3524D","3526D"],
       weekdayNumbers:["3524D","3526D"],
       holidayNumbers:["3524D","3526D"],
@@ -1932,19 +1932,37 @@
             "odpt.TrainType:JR-East.Local",cal,branchDate)===true;
         }))continue;
       }
+      if(row.numberIndex==="jreast-gono-2611"){
+        var gonoIndex=root.JREastGonoNumberIndex202611;
+        var gonoMatched=gonoIndex&&typeof gonoIndex.verify==="function"
+          ?gonoIndex.verify(number,context&&context.sourceRailway,
+            context&&(context.railDirection||context.directionUrn||context.direction),
+            context&&(context.trainType||context.typeName),
+            sourceCalendar(context),context&&context.serviceDate):null;
+        if(!gonoMatched||gonoMatched.kind!=="regular"||
+           gonoMatched.model!==row.model)continue;
+      }
       if(row.numberIndex==="jreast-kitakami-2611"){
         var kitakamiIdx=root.JREastKitakamiNumberIndex202611;
-        // Route and dated service were ALREADY checked against the RAW
-        // timetable stops by the estimator. PNG must NOT bypass that.
-        if(!kitakamiIdx||!kitakamiIdx.routes[number]||
+        // Estimator already checks RAW stop path. Matcher independently
+        // rechecks exact 2611 direction / date / operator calendar.
+        if(!kitakamiIdx||typeof kitakamiIdx.verifyNumber!=="function"||
            !context||context.officialNumberVerified!==true||
-           context.positionSource!=="supabase-train-run")continue;
+           context.positionSource!=="supabase-train-run"||
+           kitakamiIdx.verifyNumber(number,context.sourceRailway,
+             context.railDirection||context.directionUrn||context.direction,
+             context.trainType||context.typeName,
+             sourceCalendar(context),context.serviceDate)!==true)continue;
       }
       if(row.numberIndex==="jreast-yamada-2611"){
         var yamadaIdx=root.JREastYamadaNumberIndex202611;
-        if(!yamadaIdx||!yamadaIdx.endpoints[number]||
+        if(!yamadaIdx||typeof yamadaIdx.verifyNumber!=="function"||
            !context||context.officialNumberVerified!==true||
-           context.positionSource!=="supabase-train-run")continue;
+           context.positionSource!=="supabase-train-run"||
+           yamadaIdx.verifyNumber(number,context.sourceRailway,
+             context.railDirection||context.directionUrn||context.direction,
+             context.trainType||context.typeName,
+             sourceCalendar(context),context.serviceDate)!==true)continue;
       }
       if(row.numberIndex==="jreast-iiyama-2611"){
         var iiyamaIdx=root.JREastIiyamaNumberIndex202611;
