@@ -9,13 +9,13 @@
 | 口径 | 更新前 | 更新后 |
 |---|---:|---:|
 | 原始时刻表模板（不是实际每日运行记录） | 826 | 826 |
-| 有官方依据的单一**计划车型** | 351 | **431** |
-| 无列车级单车型计划 | 475 | **395** |
+| 有官方依据的单一**计划车型** | 351 | **439** |
+| 无列车级单车型计划 | 475 | **387** |
 | 已证明当日实际物理编组 | 0 | **0** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **674** |
-| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **168** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **681** |
+| 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **171** |
 
-**单车型计划覆盖率：431 / 826 = 52.2%；正式番号证据 674 / 826 = 81.6%；安全 PNG 单号 168 / 826 = 20.3%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 168 张 PNG。**
+**单车型计划覆盖率：439 / 826 = 53.1%；正式番号证据 681 / 826 = 82.4%；安全 PNG 单号 171 / 826 = 20.7%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 171 张 PNG。**
 
 ## 各线计划车型覆盖率（2026-11-06 最新回读）
 
@@ -27,11 +27,11 @@
 | JoetsuShinkansen | 18 | **18** | 0 | E7 计划车型；**18条正式番号和精确 PNG 单号映射** |
 | KyushuShinkansen | 159 | **136** | **23** | 800／N700 依官方个别列车精确区分：66 条正式番号、20 条安全 800系 PNG；N700 缺对应图库 |
 | NishiKyushuShinkansen | 92 | **92** | 0 | N700S 6 辆计划车型确定，**图库无对应 N700S PNG** |
-| SanyoShinkansen | 154 | **59** | **95** | 500/700 混用且970A有日期换型；已逐车核实126条正式番号、3条500系PNG |
+| SanyoShinkansen | 154 | **67** | **87** | 已有133条正式番号、10条精确PNG；970A日期换型，跨公司ひかり旧时刻有差异 |
 | TohokuShinkansen | 82 | 35 | **47** | **81/82 正式番号**，35 条 E6/E8 单车型 PNG；其他混用未猜测 |
 | TokaidoShinkansen | 132 | 0 | **132** | N700A/N700S 与跨公司运行；没有每车次对应证据 |
 | YamagataShinkansen | 46 | **46** | 0 | **43/46 正式番号与 E8 PNG**，3 条多重番号待核 |
-| **合计** | **826** | **431** | **395** | 实际编组全部未证实；正式番号 674、精确 PNG 164 |
+| **合计** | **826** | **439** | **387** | 实际编组全部未证实；正式番号 681、精确 PNG 171 |
 
 “官方单车型计划”只表示有 `official_service_vehicle_plan` 与 `evidence_sources` 关联，并没有证实运行当天派车、具体车辆编组号或涂装。未覆盖的模板可能有线路层候选车种，但不属于列车级已确认映射。
 
@@ -286,3 +286,36 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 - 已在原有 [`vehicle-garage-png-map.test.cjs`](../../tools/vehicle-garage-png-map.test.cjs) 与 [`train-png-display-contract.test.cjs`](../../tools/train-png-display-contract.test.cjs) 更新图库完整性计数及跨线禁止引用等测试；[该提交 PNG 全套测试通过](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42105425319)。GitHub Pages 还需要独立确认新版部署结果，iPhone Safari 仍未实机验收。
 
 **入库提交**：[`d303c0ff6e81c57716ec02a774a37aeef860499f`](https://github.com/biubiu52011/pixel-tetsudo/commit/d303c0ff6e81c57716ec02a774a37aeef860499f)，直接 `main`，没有 PR、新 SQL 表或额外 src。
+
+## 2026-11-06 新增调查：875A/956A/880A 700系原生PNG、四条跨线ひかり的山阳段
+
+**本节为最新实库统计，取代上文阶段性数字**：新干线模板826条、2026年11月官方完整番号**681**条（82.4%）、唯一计划车型**439**条（53.1%）、精确原生PNG**171**条（20.7%）、当天实际车底确认**0**。本轮从674/431/168分别增加7个番号、8个车型计划和3个PNG单号。
+
+### JR西日本700系通用原生PNG新增三趟
+
+[本轮原SQL迁移](../../supabase/migrations/20261106111000_jrwest_2611_three_kodama_700_native_png_source_exact.sql)直接复用此前用户提供的JR西日本700系82x98原生素材、既有车型库和资产表，无重复素材或脚本。
+
+- **875A／こだま875**：[JR西日本2611官网](https://timetable.jr-odekake.net/train-timetable/315371?date=20261108)显示700系8辆、广岛06:05发、博多07:33到、每日运行。与源模板9277（Weekday）及128895（SaturdayHoliday）分别匹配；原有weekday正式番号保留，新补holiday号码，两个日历仅生成**一条**875A单号PNG。
+- **956A／こだま956**：[官网](https://timetable.jr-odekake.net/train-timetable/315531?date=20261110)：700系8辆、博多13:51发、17点以后新大阪18:25到；Weekday源模板9349。
+- **880A／こだま880**：[官网](https://timetable.jr-odekake.net/train-timetable/315641?date=20261119)：700系8辆、博多22:20发、新下关22:46到；Weekday源模板9373。
+
+三趟分别新增700系 **875A、956A、880A** 原生 PNG 精确单号；4条源模板独立列车级官方A类车型证据全部核查成功。单号条件 min=max、requires_exact_roster=true、actual_vehicle_confirmed=false，不扩大为连续8xx、9xx号段。
+
+### 四趟跨线ひかり只登记山阳段
+
+[本轮原SQL迁移](../../supabase/migrations/20261106115500_sanyo_four_hikari_2611_a_numbers_n700_plan_only.sql)只对下面4条山阳新干线现存平日源模板写入正式番号与N700系计划车型，**不生成N700精确PNG**，也不擅自锁定JR西日本/JR东海具体实车：
+
+- **702A**：[官网](https://timetable.jr-odekake.net/train-timetable/314471?date=20261111) 冈山08:42→新大阪09:46。
+- **708A**：[官网](https://timetable.jr-odekake.net/train-timetable/314501?date=20261121) 冈山11:36→新大阪12:46。
+- **714A**：[官网](https://timetable.jr-odekake.net/train-timetable/314531?date=20261104) 冈山14:36→新大阪15:46。
+- **718A**：[官网](https://timetable.jr-odekake.net/train-timetable/314551?date=20261122) 冈山16:36→新大阪17:46。
+
+**查到旧东海道源时刻问题，停止跨线强制合并**：上述四车的东海道原始模板把新大阪第一条departure_clock记录为09:46/12:46/15:46/17:46，即官网的到站时刻；官网继续往东京的实际公布发车时刻分别是09:48/12:48/15:48/17:48。旧模板东京到站则全部晚于2611官网1分钟（如702原12:43、官网12:42）。源责任位于 data/timetables/TokaidoShinkansen-manual.js 和既有SQL模板，应先进行源数据时刻修复与版本核对，不能直接修改四条东海道段的正式号码或以补丁掩盖导入问题。本轮没有改动其任何时刻记录或正式番号。
+
+### 970A的精确日期计划，但未升级为实际车底
+
+[JR西日本2611官方970A](https://timetable.jr-odekake.net/train-timetable/315611?date=20261104)备注：11月2–4、6–7、9–12、14–18、20–21、23–24、26–27、29–30，共**22天**预计500系；11月1、5、8、13、19、22、25、28，共**8天**按主栏计划700系。随时可能临时更换。现有 train_vehicle_date_rules 和 operation_vehicle_date_rules 的应用语义属于日期车辆证据，不可仅凭计划将其写成当天已确认的实际派车。故970A继续没有任何静态单车型PNG或实际车底标记，等待现有日期分级机制查清再处理。
+
+### 安全与后续
+
+本批迁移均已commit至main、原库实际执行并回读；没有建立新SQL表、任何新script入口、本地服务器或PR。现有171条PNG严格都是min=max、requires_exact_roster=true、actual_vehicle_confirmed=false；相关原生700系图库本轮没有修改。剩余**145**个已存在模板无2611完整番号（九州73、东海道39、山阳21、北陆6、山形3、西九州2、东北1），另外**387**个缺唯一车型计划。公开Pages CI成功与iPhone Safari实际显示必须分开验收。
