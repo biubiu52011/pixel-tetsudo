@@ -890,6 +890,91 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // JR-WEST ONLY: OitoWest 南小谷--糸魚川.
+  // 19 official numbered JR-West 4xxD services in both calendars.
+  // 28 source templates are HISTORICAL 3-stop Minami/Nakatsuchi/Kita
+  // fragments, not accurate nine-station Itoigawa itineraries.
+  // 10 roster entries have NO source stops; never invent positions.
+  // 790x were replacement BUSES ONLY UNTIL October 31: not trains.
+  // The valid KiHa120-300 fleet is orange/red Okayama livery; the only
+  // gallery 120 PNGs are wrong regional colors, so NO train PNG.
+  if(lineId==="OitoWest"&&/^2026-11-/.test(serviceDate)){
+    const {data:roster,error:rosterErr}=
+      await db.from("published_oito_west_2611_number_roster")
+        .select("source_template_id,train_number,calendar_urn,direction_urn,train_type_urn,source_scope,original_stop_keys,excluded_dates,vehicle_model,png_reference,official_source_url,clock_source_status,reference_only,actual_vehicle_confirmed")
+        .eq("edition","2611").eq("line_key","OitoWest")
+        .eq("calendar_urn",selectedCalendar);
+    if(rosterErr)throw rosterErr;
+    if((roster||[]).length!==19)
+      throw new Error("OITO_WEST_2611_NUMBER_ROSTER_UNAVAILABLE");
+    const byId=new Map((roster||[]).filter((r:any)=>
+      r.source_template_id!=null).map((r:any)=>
+        [Number(r.source_template_id),r]));
+    const orderedDown=["Minami-Otari","Nakatsuchi","Kita-Otari"];
+    const publishedUp=new Set(["420D","422D","424D","426D","428D",
+      "430D","432D","434D","436D","438D"]);
+    const publishedDown=new Set(["421D","423D","425D","427D",
+      "429D","431D","433D","435D","437D"]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],n=String(run.train_number||"");
+      if(!/^[0-9]{3}D$/.test(n)){
+        // In particular 7901-7906 historical bus plans never get
+        // projected onto this *railway train* map in November.
+        result.splice(i,1);continue;
+      }
+      const p:any=byId.get(Number(run.source_template_id));
+      const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+      const expected=inbound?[...orderedDown].reverse():orderedDown;
+      const calendar=p&&p.calendar_urn===selectedCalendar;
+      const numberMatch=(inbound?publishedUp:publishedDown).has(n);
+      const actual=Array.isArray(run.stops)?run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||""):[];
+      const excluded=(p?.excluded_dates||[]).map((d:any)=>
+        String(d).slice(0,10));
+      if(!p||!calendar||!numberMatch||
+         p.source_scope!=="historical_three_station_partial"||
+         p.train_number!==n||p.direction_urn!==run.rail_direction||
+         p.train_type_urn!=="odpt.TrainType:JR-West.Local"||
+         run.train_type!==p.train_type_urn||
+         run.network_key!=="odpt.Railway:JR-West.Oito"||
+         p.vehicle_model!=="キハ120形300番台（大糸線・岡山色）"||
+         p.png_reference!==null||
+         p.clock_source_status!=="historical_partial_not_2611_verified"||
+         p.reference_only!==true||p.actual_vehicle_confirmed!==false||
+         excluded.includes(serviceDate)||
+         (serviceDate==="2026-11-08"&&["429D","430D"].includes(n))||
+         !Array.isArray(p.original_stop_keys)||
+         actual.length!==3||p.original_stop_keys.length!==3||
+         actual.some((st:string,j:number)=>
+           st!==expected[j]||st!==p.original_stop_keys[j])){
+        result.splice(i,1);continue;
+      }
+      run.train_number_verification="official-2611-jrwest-oito-partial-source";
+      run.train_number_source_url=p.official_source_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-2611-number-roster",
+        lineId:"OitoWest",trainNumber:n,serviceDate:serviceDate,
+        calendar:p.calendar_urn,direction:run.rail_direction,
+        trainType:run.train_type,sourceTemplateId:Number(p.source_template_id),
+        sourceStopKeys:p.original_stop_keys,
+        scope:"jr_west_minami_otari_itoigawa_partial",
+        sourceScope:p.source_scope,model:p.vehicle_model,
+        pngReference:null,officialSourceUrl:p.official_source_url,
+        excludedDates:p.excluded_dates||[],
+        stopClockStatus:p.clock_source_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // JR-East-only Oito, Matsumoto–Minami-Otari. Existing JR-West
   // 4xxD diesel and 790x bus/segregated records are out of scope:
   // NEVER mutate, classify or suppress them in this branch.
