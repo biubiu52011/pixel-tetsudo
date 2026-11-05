@@ -22,6 +22,7 @@ on:
       - 'tests/oga-2611-official-number-png.test.cjs'
       - 'tests/jreast-regional-2611-number-png.test.cjs'
       - 'tests/rikuto-east-2611-official-number-png.test.cjs'
+      - 'tests/rikutsu-west-2611-official-number-png.test.cjs'
       - 'scripts/page-scripts.json'
       - 'tests/yokosuka-sobu-202611-number-png.test.cjs'
       - 'tests/shonan-215-202611-number-families.test.cjs'
@@ -93,6 +94,7 @@ jobs:
           node --check data/timetables/jreast-ishinomaki-2611-number-index.js
           node --check data/timetables/jreast-oga-2611-number-index.js
           node --check data/timetables/jreast-rikuto-east-2611-number-index.js
+          node --check data/timetables/jreast-rikutsu-west-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
       - name: Verify Boso dated official number exceptions and historical SQL guards
         run: node --test tests/boso-2611-dated-service-exceptions.test.cjs tests/boso-202611-schedule-fallback.test.cjs
@@ -110,6 +112,8 @@ jobs:
         run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs
       - name: Verify regional 2611 Ishinomaki / Oga official numbers and PNG guards
         run: node --test tests/ishinomaki-2611-official-number-png.test.cjs tests/oga-2611-official-number-png.test.cjs
+      - name: Verify Rikutsu West Nov 2026 official numbers and Mogamigawa Rapid
+        run: node --test tests/rikutsu-west-2611-official-number-png.test.cjs
       - name: Verify Rikuto East Nov 2026 numbers, special rapids and flood closure
         run: node --test tests/rikuto-east-2611-official-number-png.test.cjs
       - name: Verify regional 2611 Kururi Karasuyama Hachinohe official numbers and exceptions
