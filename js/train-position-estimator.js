@@ -862,6 +862,39 @@
           if(officialIiyamaPlan===false)continue;
         }
 
+        // Kitakami Nov 2026: 8/2 flood closed Hotto-Yuda–Yokote
+        // (bus replacement). Require source-backed 2611 NUMBER AND the
+        // actual RAW rail stop endpoints, never crop a phantom through run.
+        var officialKitakamiPlan=null;
+        if(lineId==="Kitakami"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var kiIndex=window.JREastKitakamiNumberIndex202611;
+          if(!kiIndex||typeof kiIndex.verify!=="function")continue;
+          officialKitakamiPlan=kiIndex.verify(
+            run.trainNumber,tt["odpt:railway"]||"",
+            tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
+            run.calendar,serviceDate,tt["odpt:trainTimetableObject"]);
+          if(!officialKitakamiPlan)continue;
+        }
+
+        // Yamada Nov 2026: leaf-slip closure removes ALL Morioka–Miyako
+        // direct rail services. Separate north and south local runs exist,
+        // but old SQL also stores bus services as bare numbers 1–24.
+        // Nov 5–6 daytime and Nov 7–8 all-day rockfall suspensions further
+        // block the southern rail section. Admit only exact service+RAW
+        // stop endpoints, or hide rather than invent a vehicle position.
+        var officialYamadaPlan=null;
+        if(lineId==="Yamada"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var yaIndex=window.JREastYamadaNumberIndex202611;
+          if(!yaIndex||typeof yaIndex.verify!=="function")continue;
+          officialYamadaPlan=yaIndex.verify(
+            run.trainNumber,tt["odpt:railway"]||"",
+            tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
+            run.calendar,serviceDate,tt["odpt:trainTimetableObject"]);
+          if(!officialYamadaPlan)continue;
+        }
+
         // 按日历筛选（匹配当前任一日历类型）。
         var calendar = run.calendar;
         if (calendar && currentCalendars.indexOf(calendar) < 0 &&
@@ -1249,7 +1282,8 @@
               officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
-              officialOminatoPlan || officialIiyamaPlan) &&
+              officialOminatoPlan || officialIiyamaPlan ||
+              officialKitakamiPlan || officialYamadaPlan) &&
               // A continuation can carry a different _sqlTrainNumber on
               // individual stops. Never label THAT unverified number as
               // published merely because its parent run was admitted.
