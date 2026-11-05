@@ -83,6 +83,7 @@ on:
       - 'supabase/migrations/20261030125204_scoped_conventional_local_fleet_and_corridor_evidence_20261030.sql'
       - 'supabase/migrations/20261030130459_railfan_source_registry_and_official_sonic_two_stop_crosscheck_20261030.sql'
       - 'supabase/functions/train-runs/index.ts'
+      - 'tests/train-runs-query-batches.test.cjs'
       - 'tests/boso-2611-dated-service-exceptions.test.cjs'
       - 'pages/trains.html'
       - '.github/workflows/verify-train-png.yml'
@@ -119,6 +120,8 @@ jobs:
           node --check data/timetables/jreast-kitakami-2611-number-index.js
           node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
+      - name: Verify train-runs SQL batching and JR canonical identity
+        run: node --test tests/train-runs-query-batches.test.cjs tests/jreast-canonical-train-number-segments.test.cjs
       - name: Verify Boso dated official number exceptions and historical SQL guards
         run: node --test tests/boso-2611-dated-service-exceptions.test.cjs tests/boso-202611-schedule-fallback.test.cjs
       - name: Verify scoped major vehicle fleet presets and neutral markers
