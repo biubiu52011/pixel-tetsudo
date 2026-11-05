@@ -256,7 +256,6 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
     ['SobuMain','2627F','Rapid','holiday','E235系1000番台',p235],
     ['Uchibo','2577F','Rapid','holiday','E235系1000番台',p235],
     ['Sotobo','3573F','Rapid','holiday','E235系1000番台',p235],
-    ['Kashima','2520M','Local','holiday','E235系1000番台',p235],
     ['Narita','2545M','Local','weekday','E235系1000番台',p235],
     ['Yokosuka','1005S','Local','holiday','E235系1000番台',p235],
     ['Yokosuka','2001M','LimitedExpress','holiday','E259系',p259],
@@ -279,6 +278,13 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
       trainOperator:''};
     assertModel(sql,model,png);
   });
+  // Kashima uses a stronger gate than the other Chiba-through lines:
+  // generic provider URN and published Chiba number are NOT enough
+  // without the SQL calendar, route, date and 11/7 replacement proof.
+  assert.equal(root.JREastChibaNumberIndex202611.match(
+    'E235系1000番台','2520M','Kashima',position(
+      'Kashima','2520M','Local','holiday')),true);
+  assert.equal(choose(position('Kashima','2520M','Local','holiday')),null);
   const index=root.JREastChibaNumberIndex202611;
   const looksSimilar=[
     position('SobuMain','4001M','LimitedExpress','holiday',{
