@@ -874,6 +874,144 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-hinabi-through-calendar";
     }
   }
+  // JR-East Ofunato 2611: original SQL combines two DIFFERENT modes
+  // under line ID Ofunato: 123 BRT F/K entries, 34 KiHa110 rail D
+  // entries over two calendars, and two KiHa100 POKEMON holiday D entries.
+  // No BRT bus can become a train position or inherit a railway PNG.
+  // The historic SQL labelled Pokemon "Local/キハ110系"; JR 269 u2/d2
+  // publishes it as a Rapid with KiHa100 speciality stock. No Pokemon
+  // PNG exists in the library: preserve its actual *number* and railway
+  // stop plan without inventing an image, livery or physical car identity.
+  // Hinabi 9327D/9336D is FEBRUARY 2027, not November 2026.
+  if(lineId==="Ofunato" && /^2026-11-/.test(serviceDate)){
+    const [{data:roster,error:rosterErr},{data:ranges,error:rangeErr}]=
+      await Promise.all([
+        db.from("published_ofunato_2611_number_roster")
+          .select("source_template_id,train_number,calendar_urn,direction_urn,original_train_type_urn,published_train_type_urn,transport_scope,operating_dates,source_stop_keys,vehicle_model,png_reference,service_name,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("line_key","Ofunato")
+          .eq("calendar_urn",selectedCalendar),
+        db.from("published_train_png_number_ranges")
+          .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
+          .eq("edition","2611").eq("line_key","Ofunato")
+          .eq("segment_key","ichinoseki_kesennuma_regular_rail")
+      ]);
+    if(rosterErr||rangeErr)throw(rosterErr||rangeErr);
+    const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?83:76;
+    if((roster||[]).length!==expectedCount||(ranges||[]).length!==1)
+      throw new Error("OFUNATO_2611_RAIL_BRT_NUMBER_ROSTER_UNAVAILABLE");
+    const byTemplate=new Map((roster||[]).map((r:any)=>
+      [Number(r.source_template_id),r]));
+    const allowed=new Set(["Ichinoseki","Mataki","Rikuchu-Kanzaki",
+      "Iwanoshita","Rikuchu-Matsukawa","Geibikei","Shibajuku",
+      "Surisawa","Senmaya","Konashi","Yagoshi","Orikabe",
+      "Niitsuki","Kesennuma"]);
+    const pokemonDates=new Set(["2026-11-01","2026-11-03",
+      "2026-11-07","2026-11-08","2026-11-14","2026-11-15",
+      "2026-11-21","2026-11-22","2026-11-23","2026-11-28",
+      "2026-11-29"]);
+    const pokemonDown=["Ichinoseki","Rikuchu-Matsukawa",
+      "Geibikei","Senmaya","Kesennuma"];
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],proof:any=
+        byTemplate.get(Number(run.source_template_id));
+      // Including F, K, duplicate or unproved D: no railway run.
+      if(!proof||proof.transport_scope==="brt_only"||
+         run.network_key!=="odpt.Railway:JR-East.Ofunato"||
+         proof.calendar_urn!==selectedCalendar||
+         run.train_number!==proof.train_number||
+         run.rail_direction!==proof.direction_urn||
+         run.train_type!==proof.original_train_type_urn||
+         proof.reference_only!==true||
+         proof.actual_vehicle_confirmed!==false||
+         !Array.isArray(run.stops)||
+         !Array.isArray(proof.source_stop_keys)){
+        result.splice(i,1);continue;
+      }
+      const actualStops=run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()||"");
+      if(actualStops.length!==proof.source_stop_keys.length||
+         actualStops.some((key:string,j:number)=>
+           key!==proof.source_stop_keys[j]||!allowed.has(key))){
+        result.splice(i,1);continue;
+      }
+      const match=/^([0-9]+)D$/.exec(String(run.train_number||""));
+      const inbound=run.rail_direction==="odpt.RailDirection:Inbound";
+      if(!match||Number(match[1])%2!==(inbound?0:1)){
+        result.splice(i,1);continue;
+      }
+      const pokemon=proof.transport_scope==="rail_pokemon";
+      if(pokemon){
+        const operated=(proof.operating_dates||[]).map((d:any)=>
+          String(d).slice(0,10));
+        const expectedStops=inbound?[...pokemonDown].reverse():pokemonDown;
+        if(selectedCalendar!=="odpt.Calendar:SaturdayHoliday"||
+           !pokemonDates.has(serviceDate)||
+           !operated.includes(serviceDate)||
+           operated.length!==pokemonDates.size||
+           operated.some((date:string)=>!pokemonDates.has(date))||
+           !["8327D","8336D"].includes(run.train_number)||
+           proof.published_train_type_urn!=="odpt.TrainType:JR-East.Rapid"||
+           proof.vehicle_model!=="キハ100系（POKÉMON with YOU）"||
+           proof.png_reference!==null||
+           actualStops.length!==5||
+           actualStops.some((key:string,j:number)=>key!==expectedStops[j])){
+          result.splice(i,1);continue;
+        }
+        run.train_type="odpt.TrainType:JR-East.Rapid";
+        run.service_name="ポケモントレイン気仙沼号";
+        // No KiHa100 Pokemon artwork exists. Never promote a generic
+        // KiHa110 gallery image, even if the source's historic label did.
+        run.vehicle_historical_source_label=null;
+        run.vehicle_mapping_level=null;
+      }else if(proof.transport_scope==="rail_regular"){
+        const length=run.train_number==="322D"?9:14;
+        const n=Number(match[1]);
+        const approved=(ranges||[]).some((r:any)=>
+          r.requires_exact_roster===true &&
+          r.segment_key==="ichinoseki_kesennuma_regular_rail"&&
+          n>=r.min_number&&n<=r.max_number&&r.suffix==="D"&&
+          r.vehicle_model===proof.vehicle_model&&
+          r.png_reference===proof.png_reference);
+        if(length!==actualStops.length||!approved||
+           proof.vehicle_model!=="キハ110系"||
+           proof.png_reference!=="../images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png"||
+           proof.published_train_type_urn!=="odpt.TrainType:JR-East.Local"||
+           !/^[0-9]{3}D$/.test(run.train_number)){
+          result.splice(i,1);continue;
+        }
+      }else{result.splice(i,1);continue;}
+      if(proof.stop_clock_status!=="historical_not_2611_verified"){
+        result.splice(i,1);continue;
+      }
+      run.train_number_verification="official-2611-ofunato-rail-number-date";
+      run.train_number_source_url=proof.official_source_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=proof.vehicle_model;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-2611-number-roster",lineId:"Ofunato",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        direction:run.rail_direction,calendar:proof.calendar_urn,
+        trainType:run.train_type,segmentKey:"ichinoseki_kesennuma_rail",
+        transportScope:proof.transport_scope,
+        sourceTemplateId:Number(proof.source_template_id),
+        sourceStopKeys:proof.source_stop_keys,
+        plannedCandidates:[proof.vehicle_model],
+        model:proof.vehicle_model,pngReference:proof.png_reference,
+        serviceName:proof.service_name||"",
+        officialSourceUrl:proof.official_source_url,
+        operatingDates:pokemon?(proof.operating_dates||[]):[],
+        stopClockStatus:proof.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // 弥彦線 uses INTERNAL key Miyo, NOT Yahiko. 2611 regular E129
   // trains, nine Kiku-calendar days and three Momiji Kairi D-number
   // segments. The latter have NO historical SQL stop templates: retain
