@@ -1093,6 +1093,10 @@ var CANONICAL_VEHICLES = {
   "jr-east-211-takasaki": {"displayName":"211系（高崎地区）","iconName":"211系（高崎地区）","asset":"../images/列车/JR東日本/JR東日本_211系_湘南色.png","lineIds":["Takasaki","Ryomo","Joetsu","Agatsuma"],"lineAliases":{"Takasaki":["211系"],"Ryomo":["211系"],"Joetsu":["211系"],"Agatsuma":["211系"]},"aliases":["JR東日本211系（高崎地区）"]},
   "planned-stock-library-8": {"displayName":"701系5000番台","iconName":"701系5000番台","asset":"../images/列车/JR東日本/JR東日本_701系_5000番台.png","aliases":["JR東日本701系5000番台","JR 701系5000番台"]},
   "planned-stock-library-9": {"displayName":"701系5500番台","iconName":"701系5500番台","asset":"../images/列车/JR東日本/JR東日本_701系_5500番台.png","lineIds":["Yamagata"],"lineAliases":{"Yamagata":["701系5500番台"]},"aliases":["JR東日本701系5500番台","JR 701系5500番台"]},
+  "jr-east-719-5000-yamagata": {"displayName":"719系5000番台","iconName":"719系5000番台","asset":"../images/列车/JR東日本/JR東日本_719系_5000番台.png","lineIds":["Yamagata"],"lineAliases":{"Yamagata":["719系5000番台"]},"aliases":["JR東日本719系5000番台","JR 719系5000番台"]},
+  // Former Tsurumi Line stock: keep the image searchable, but do not offer
+  // it as a candidate for the present-day E131-operated train diagram.
+  "jr-east-205-1100-tsurumi-legacy": {"displayName":"205系1100番台（鶴見線）","iconName":"205系1100番台（鶴見線）","asset":"../images/列车/JR東日本/JR東日本_205系_1100番台_鶴見線.png","lineIds":[],"historicLineIds":["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],"historicalOnly":true,"aliases":["JR東日本205系1100番台","205系1100番台","205系（鶴見線）"]},
   "jr-yamagata-2026-e723-family-reference": {"displayName":"E723系5000番台","iconName":"E723系5000番台","asset":"../images/列车/JR東日本/JR東日本_E723系_5000番台.png","lineIds":["Yamagata"],"lineAliases":{"Yamagata":["E723系5000番台"]},"aliases":["JR東日本E723系5000番台","JR E723系5000番台"]},
   "planned-stock-library-10": {"displayName":"キハ110系","iconName":"キハ110系","asset":"../images/列车/JR東日本/JR東日本_キハ110系.png","aliases":["JR東日本キハ110系","JR キハ110系","キハ110系0番台（快速南三陸）","JR東日本キハ110系0番台（快速南三陸）"]},
   "jr-east-e131-0-plan": {"displayName":"E131系0番台","iconName":"E131系0番台","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_0番台.png","aliases":["JR東日本E131系0番台"]},

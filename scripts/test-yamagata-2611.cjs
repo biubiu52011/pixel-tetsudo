@@ -70,7 +70,7 @@ for (const [cal, roster] of Object.entries(index.roster)) {
       const candidates=index.resolveCandidates(p);
       assert.ok(candidates&&candidates.referenceOnly);
       assert.equal(candidates.models.length,3);
-      assert.equal(candidates.candidateAssets.length,2);
+      assert.equal(candidates.candidateAssets.length,3);
       candidates.candidateAssets.forEach((png,i)=>
         assert.ok(garage.matchModelPath(candidates.assetModels[i],png,"Yamagata")));
     }
@@ -80,7 +80,14 @@ for (const [cal, roster] of Object.entries(index.roster)) {
 assert.equal(total,183);
 assert.equal(illustrated,54);
 assert.equal(unknown,129);
-assert.equal(garage.lineModels("Yamagata").includes("719系5000番台"),false);
+assert.equal(garage.lineModels("Yamagata").includes("719系5000番台"),true);
+assert.ok(garage.matchModelPath("719系5000番台",
+  "../images/列车/JR東日本/JR東日本_719系_5000番台.png","Yamagata"));
+// The uploaded legacy 205 is searchable, not a live Tsurumi candidate.
+assert.equal(garage.findModel("205系1100番台（鶴見線）").length,1);
+assert.equal(garage.lineModels("Tsurumi").includes("205系1100番台（鶴見線）"),false);
+assert.equal(garage.matchModelPath("205系1100番台（鶴見線）",
+  "../images/列车/JR東日本/JR東日本_205系_1100番台_鶴見線.png","Tsurumi"),false);
 
 const p=fixture("Weekday","420M","2026-11-06");
 assert.equal(index.resolve(p).illustrationModel,"E723系5000番台");
@@ -115,6 +122,8 @@ function assertCache(source, relative) {
   assert.ok(html.includes('data-script-src="'+relative+'?v='+hash+'"'),
     "Stale train-page cache version: "+source);
 }
+assertCache("data/timetables/vehicle-garage-png-map.js",
+  "../data/timetables/vehicle-garage-png-map.js");
 assertCache("js/train-vehicle.js","../js/train-vehicle.js");
 assertCache("js/train-position-estimator.js","../js/train-position-estimator.js");
 assertCache("data/timetables/jreast-yamagata-2611-number-index.js",

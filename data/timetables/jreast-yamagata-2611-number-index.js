@@ -44,6 +44,7 @@ var observed={
 };
 var image={
  "701系5500番台":"../images/列车/JR東日本/JR東日本_701系_5500番台.png",
+ "719系5000番台":"../images/列车/JR東日本/JR東日本_719系_5000番台.png",
  "E723系5000番台":"../images/列车/JR東日本/JR東日本_E723系_5000番台.png"
 };
 var source={
