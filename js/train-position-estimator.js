@@ -2243,9 +2243,23 @@
             runningChainId: timetableIdentity,
             runningChainEvidence: "TIMETABLE_SEGMENT",
             trainNumber: publicTrainNumber,
-            // A verified JR East 2611 number is safe to SHOW in the folded
-            // timetable list. It is not proof of an exact physical vehicle.
-            officialNumberVerified: Boolean(
+            // Kosei's holiday H is source-calendar metadata, not part of
+            // the published number. Keep trainNumber for all identity and
+            // candidate fleet guards; only the display label drops H,
+            // and ONLY when all 18 original stops are date-verified.
+            displayTrainNumber:lineId==="Kosei"&&officialKoseiPlan&&
+              tt._timetableDateVerified===true&&
+              tt._sqlTrainNumberVerification==="official-2611-kosei-18-stop-clock"&&
+              String(tt._sqlPublishedTrainNumber||"")===
+                String(officialKoseiPlan.historicalNumber||"")
+              ?tt._sqlPublishedTrainNumber:publicTrainNumber,
+            // Date-verified published numbers are safe to show in folded
+            // views, but NEVER certify an actual physical formation.
+            officialNumberVerified: Boolean(lineId==="Kosei"&&
+              officialKoseiPlan&&tt._timetableDateVerified===true&&
+              tt._sqlTrainNumberVerification==="official-2611-kosei-18-stop-clock"&&
+              String(tt._sqlPublishedTrainNumber||"")===
+                String(officialKoseiPlan.historicalNumber||"")) || (Boolean(
               officialYonesakaPlan || officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
@@ -2257,7 +2271,7 @@
               // individual stops. Never label THAT unverified number as
               // published merely because its parent run was admitted.
               String(publicTrainNumber||"").toUpperCase() ===
-                String(run.trainNumber||"").toUpperCase(),
+                String(run.trainNumber||"").toUpperCase()),
             historicalKoseiPublicNumber:
               officialKoseiPlan?officialKoseiPlan.historicalNumber:"",
             historicalSourcePublicNumberSuffix:
