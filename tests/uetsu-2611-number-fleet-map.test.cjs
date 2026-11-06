@@ -166,6 +166,57 @@ test('no unexplained pending mapped vehicles remain in the 143 regular source nu
   }
  }
 });
+test('14M Akita–Shibata DOM: confirmed generic E653 family gets scoped Inaho icon',()=>{
+ const original=p('14M'),sqlPlan={
+  status:'PLANNED_MODEL',confirmed:true,
+  lineId:'Uetsu',source:'database-verified-published-plan',
+  models:['E653系'],iconPath:''
+ };
+ const published={
+  ...original,serviceDate:'2026-11-06',
+  positionLineId:'Uetsu',displayLineId:'Uetsu',
+  sourceRailway:'odpt.Railway:JR-East.Uetsu',
+  serviceId:'odpt.Calendar:Weekday',
+  railDirection:'Inbound',trainType:'odpt.TrainType:JR-East.LimitedExpress',
+  vehicleIdentityStatus:'UNKNOWN',
+  vehicleResolution:{identityStatus:'UNKNOWN'},
+  vehiclePlan:sqlPlan,
+  destinationStation:'Shibata',
+  plannedTripId:'planned-trip:2026-11-06|JR-East|odpt.Railway:JR-East.Uetsu|Uetsu|14M|odpt.RailDirection:Inbound'
+ };
+ delete published.calendarType;
+ const evidence=idx.verify(published);
+ assert.ok(evidence,'14M on 2026-11-06 has the verified source itinerary');
+ assert.equal(evidence.origin,'Akita');
+ assert.equal(evidence.terminus,'Shibata');
+ assert.equal(evidence.trainType,'LimitedExpress');
+ const reference=idx.resolve(published);
+ assert.ok(reference,'generic E653 planned series must not veto Inaho illustration');
+ assert.equal(reference.illustrationModel,'E653系（いなほ）');
+ assert.equal(reference.illustrationPng,idx.image.inaho);
+ assert.equal(reference.actualVehicleConfirmed,false);
+ const artwork=root.TrainVehicle.selectMarkerArtwork(published,false);
+ assert.equal(artwork.kind,'vehicle','14M should not remain an unresolved gray dot');
+ assert.equal(artwork.iconSrc,idx.image.inaho);
+ assert.equal(artwork.planned,true);
+ assert.equal(artwork.representativeOnly,true);
+ assert.equal(artwork.actualVehicleConfirmed,false);
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(published,true).kind,'unresolved',
+   'broken PNG does not fall through to another train model');
+ // An official series-level E653 designation is compatible; an opposing
+ // independently confirmed model is not. No cross-line or realtime leaks.
+ for(const n of ['E129系','701系','E653系（水戸地区）','GV-E400系'])
+  assert.equal(idx.resolve({...published,
+   vehiclePlan:{...sqlPlan,models:[n]}}),null,n+' must stay a conflict');
+ assert.equal(idx.resolve({...published,displayLineId:'Hakushin'}),null);
+ assert.equal(idx.resolve({...published,vehicleIdentityStatus:'EXACT'}),null);
+ assert.equal(idx.resolve({...published,serviceDate:'2026-12-06'}),null);
+ for(const name of ['E653系1000番台','E653系（1000番台）']){
+  const x={...published,vehiclePlan:{...sqlPlan,models:[name]}};
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(x,false).iconSrc,idx.image.inaho,
+    name+' is a family alias for verified Inaho only');
+ }
+});
 test('unconfirmed stale SQL 701/E721 candidate never overrides a source-checked number',()=>{
  for(const n of ['1M','923M','525M','823D','150D','222M']){
   const a=p(n),unconfirmed={...a,
