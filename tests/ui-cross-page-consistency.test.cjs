@@ -167,3 +167,18 @@ test('all seven pages allow user zoom while retaining device-width and safe-area
     assert.doesNotMatch(viewport[1],/maximum-scale=1|user-scalable=no/);
   }
 });
+
+test('shared ODPT and disruption evaluator URLs match source blobs across pages',()=>{
+  const consumers={
+    'data/core/db-loader.js':pages,
+    'data/api/odpt-unified.js':['home','realtime','trains'],
+    'js/runinfo-evaluator.js':['home','realtime','trains']
+  };
+  for(const [asset,names] of Object.entries(consumers)){
+    const version=blobVersion(read(asset));
+    for(const name of names){
+      const html=read('pages/'+name+'.html');
+      assert.ok(html.includes('../'+asset+'?v='+version),name+' stale asset '+asset);
+    }
+  }
+});
