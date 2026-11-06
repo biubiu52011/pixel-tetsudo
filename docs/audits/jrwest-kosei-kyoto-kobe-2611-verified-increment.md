@@ -157,3 +157,24 @@ Supabase 已经应用上述两次迁移，查询确认 **湖西 34/34、京阪�
 - 官方站时因网页明确版权限制 **未复制成另一份时刻表**：仅比较数据库已有源数据，记录来源 URL、号、日历和不可伪造的源指纹。
 
 后续缺口：湖西線大多数普通上下行／新快速以及 `4848M` 需要现行独立证据；京阪神其它普通 `C`、快速 `T` 和更多新快速 `M`、姬路及更西侧区间需要分段验收。线路总体仍为 partial，不能宣称完整时刻表。
+
+
+## 2026-11-07 第四批：JR京都・神戸線快速 T の段階的証拠
+
+在现有 `published_jrwest_kyoto_kobe_2611_source_fleet` 中追加 **6 条** Rapid T 历史片段逐站比对结果，未新建 timetable 表，也没有复制 JR 西日本发布的完整到发时刻表。相关迁移：
+`supabase/migrations/20261107142000_jrwest_kyoto_kobe_2611_rapid_t_source_clocks.sql`。
+
+| 番号 | 日历 | 旧来源已验证区间 | 核验站数 | JR西日本官方来源 |
+| --- | --- | --- | ---: | --- |
+| 714T | 平日 | 元町→京都 | 18 | [官方](https://timetable.jr-odekake.net/train-timetable/129501?date=20261028) |
+| 714T | 土休日 | 元町→京都 | 18 | [官方](https://timetable.jr-odekake.net/train-timetable/389701?date=20261024) |
+| 726T | 土休日 | 元町→京都 | 18 | [官方](https://timetable.jr-odekake.net/train-timetable/387041?date=20261024) |
+| 733T | 土休日 | 西大路→神戸 | 18 | [官方](https://timetable.jr-odekake.net/train-timetable/147931?date=20261018) |
+| 767T | 土休日 | 西大路→神戸 | 18 | [官方](https://timetable.jr-odekake.net/train-timetable/147561?date=20261107) |
+| 791T | 平日 | 西大路→神戸 | 18 | [官方](https://timetable.jr-odekake.net/train-timetable/101651?date=20261006) |
+
+每条核对了来源站序、到站/出站时间指纹和运行日；T 番号对应已认证的 `Rapid`，此前 `C=Local`、`M=SpecialRapid` 的区分保留。这些只代表导入来源已有的 18 站片段，不代表其官方公开行程的全程，也不是车辆系别、具体车辆号码或 PNG 的证据。
+
+**本批修复了重要的已有兼容漏洞：** 前一版 `train-runs` 虽加入普通 `C` 可认证的 16／19／25／33 站证据，但校验末端依然要求 7 个有时间的站点，可能造成普通车来源运行时错误。现在统一使用每条来源校验过的 `official_stop_count`，适配 `Local C`、`Rapid T`、`SpecialRapid M` 三个类型。源 ID 继续用于内部匹配，而对用户公开的番号单独保存在 `published_train_number`。
+
+当前证据视图统计：**京都神戸線共 23/23 条核验通过**（平日 12，土休日 11；普通 8、快速 6、新快速 9）；**湖西線 52/52 条**保持原数。运行时所有列车与车型图像均继续执行旧的防误配门槛；没有擅自把 223、225 或 207、321 指定到特定的 train-number。
