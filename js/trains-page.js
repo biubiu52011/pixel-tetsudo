@@ -15,11 +15,11 @@
   var backBtn = null;
   var _selectedOperator = null;
 
-  function _renderTrainMap(el, line, lineId) {
+  function _renderTrainMap(el, line, lineId, renderOptions) {
     if (!window.TrainsRender || typeof window.TrainsRender.renderTrainMap !== "function") {
       throw new Error("trains-render.js did not register window.TrainsRender");
     }
-    return window.TrainsRender.renderTrainMap(el, line, lineId);
+    return window.TrainsRender.renderTrainMap(el, line, lineId, renderOptions);
   }
 
   var _lastPositionsHash = '';
@@ -465,6 +465,9 @@
               currentLineChanges.metadata) {
             _scheduleRealtimeExpiryRefresh(currentLine, lines[currentLine]);
           }
+          // A "positions" notification updates trains/vehicle display only.
+          // Structural snapshots still validate the complete network revision.
+          var positionSnapshot = !!(changes && changes.kind === "positions");
           var detailStateHash = '';
           var staticGeometryChanged = false;
           if (currentLine && lines[currentLine]) {
@@ -473,8 +476,10 @@
               var _dd = _dl.delayInfo || {};
               var _cm = _dl._chainMeta || {};
               var mountedSvg = mapEl && mapEl.querySelector('svg');
+              var previousRevision = positionSnapshot && mountedSvg && mountedSvg.__geometry
+                ? mountedSvg.__geometry.staticRevision : undefined;
               staticGeometryChanged = !!mapEl && (!mountedSvg || !mountedSvg.__geometry ||
-                mountedSvg.__geometry.lineHash !== _computeLineHash(_dl,currentLine));
+                mountedSvg.__geometry.lineHash !== _computeLineHash(_dl,currentLine,previousRevision));
               detailStateHash = JSON.stringify({
                 id: currentLine,
                 identity: currentLineIdentity,
@@ -521,7 +526,7 @@
               var _lines = getLinesData();
               var _fusedLine = _lines[currentLine];
               if (_fusedLine) {
-      _renderTrainMap(mapEl, _fusedLine, currentLine);
+      _renderTrainMap(mapEl, _fusedLine, currentLine, { positionSnapshot: positionSnapshot });
                 _scheduleRealtimeExpiryRefresh(currentLine, _fusedLine);
               }
             }

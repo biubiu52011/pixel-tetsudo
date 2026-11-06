@@ -606,7 +606,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
   }
 
-  function renderTrainMap(el, line, lineId) {
+  function renderTrainMap(el, line, lineId, renderOptions) {
     var startedAt = performance.now();
     var renderKind = 'full';
     try {
@@ -618,8 +618,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var _lang = window.currentLang || "ja";
       var _rS = (window.RailwayDB && window.RailwayDB.resolveStationName) ? function(id){ return window.RailwayDB.resolveStationName(id, _lang) || id; } : function(id){ return id; };
       
-      // 从缓存获取线路几何（坐标唯一事实来源）。
-      var geometry = computeRouteGeometry(displayLine, lineId);
+      // Only position-only fusion notifications can reuse the previous
+      // geometry revision. All other calls verify the full static network.
+      var existingSvg = el.querySelector('svg');
+      var positionGeometry = renderOptions && renderOptions.positionSnapshot === true &&
+        existingSvg && existingSvg.getAttribute('data-line-id') === lineId
+        ? existingSvg.__geometry : null;
+      var geometry = computeRouteGeometry(displayLine, lineId, positionGeometry);
       var stationCoords = geometry.stationCoords;
       var svgW = geometry.svgW;
       var svgH = geometry.svgH;
@@ -631,7 +636,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 检查需要完整重建（线路变化）还是只更新列车层。
       // 语言属于静态层身份：切换语言必须
       // 触发完整重建（站名/换乘标题属于 i18n）。
-      var existingSvg = el.querySelector('svg');
       var isSameLine = existingSvg && existingSvg.getAttribute('data-line-id') === lineId
         && existingSvg.getAttribute('data-lang') === _lang
         && existingSvg.__geometry && existingSvg.__geometry.lineHash === geometry.lineHash;

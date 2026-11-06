@@ -938,7 +938,21 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     return lines.length ? lines : [''];
   }
 
-  function computeRouteGeometry(line, lineId) {
+  // Only the DataFusion "positions" event may reuse an existing static geometry
+  // without rescanning every line and station. The local hash still checks
+  // geometry fields, viewport width, fonts, language and active system members.
+  // A full update or explicit invalidation always uses the exact network signature.
+  function _reuseGeometryForPositionSnapshot(line, lineId, existingGeometry) {
+    if (!existingGeometry || existingGeometry.lineId !== lineId ||
+        existingGeometry.staticRevision == null ||
+        _routeGeometryCache[_geomKey(lineId)] !== existingGeometry) return null;
+    return existingGeometry.lineHash === _computeLineHash(line, lineId, existingGeometry.staticRevision)
+      ? existingGeometry : null;
+  }
+
+  function computeRouteGeometry(line, lineId, previousGeometry) {
+    var reusable = previousGeometry && _reuseGeometryForPositionSnapshot(line, lineId, previousGeometry);
+    if (reusable) return reusable;
     var staticRevision = typeof _staticNetworkSignature === 'function' ? _staticNetworkSignature() : null;
     var lineHash = _computeLineHash(line, lineId, staticRevision);
     // 先检查缓存。
