@@ -42,7 +42,7 @@ test('crossline public number changes remain non-positional',()=>{
  ])assert.ok(sql.includes(token),token);
 });
 test('the existing canonical SQL run owner exposes references separately and guards every clock',()=>{
- const kosei=edge.slice(edge.indexOf('// Date-verified Kosei published'),edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
+ const kosei=edge.slice(edge.indexOf('// Date-verified Kosei source-only'),edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
  for(const t of [
   'published_jrwest_kosei_2611_clock_evidence',
   'JRWEST_KOSEI_2611_VERIFIED_CLOCK_COVERAGE_CHANGED',
@@ -81,7 +81,7 @@ test('second Kosei expansion is 26 exact original-source proofs, 17 per calendar
   'stop_count IN(18,21)','<>34','<>17',
   'published_jrwest_kosei_2611_clock_evidence'])
    assert.ok(extra.includes(t),t);
- const kosei=edge.slice(edge.indexOf('// Date-verified Kosei published'),
+ const kosei=edge.slice(edge.indexOf('// Date-verified Kosei source-only'),
    edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
  assert.ok(kosei.includes('new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==26'));
  assert.ok(kosei.includes('run.train_number_verification="official-2611-kosei-source-stop-clock"'));
