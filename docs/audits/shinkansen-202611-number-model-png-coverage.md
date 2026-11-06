@@ -1,6 +1,6 @@
 # 新干线 2026-11 列车番号 → 计划车型 → PNG 分级覆盖审计
 
-**最新回读日期**：2026-11-06（4条官方临时车已按日修复，3份过期旧源已过滤；823/826番号、196个精确PNG，Edge版本324已部署）  
+**最新回读日期**：2026-11-06（4条官方临时车按日修复、3份过期旧源隔离；823/826番号、196个精确PNG；Edge v325与main源码一致，已复核）  
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
@@ -14,6 +14,19 @@
 - **验收指标**：已核实正式番号覆盖率、计划车型可确定率、准确 PNG 展示率、时刻表推算正确性，以及平日/休日/临时运行日的准确性。SQL/代码测试与 Pages/Safari 实际渲染验收分开标记。修正优先在已有责任 SQL 表、车型库及 train-runs 中完成，不增平行图层或补丁。
 
 > 下文历史小节保留“实际车底 0”的数据仅作证据级别说明；其不是本项目的必需指标或完成门槛。下文各阶段快照并非自动更新的最新总数。
+
+## 2026-11-06 修复完成后的 live 复核（Edge v325，GitHub main 同源）
+
+本轮用户要求“修复”时，先查 **现有负责者**；确认此前已执行 `1992881` schema（现有`manual_timetable_templates.operating_dates date[]`）、`ff0fa98` 业务修复（四条日期限定列车／三条过期源隔离）、`9b2df9a` 与 `819adfc` 运行时跨日历筛选、`aa5b8f2` 精确 E8 原生 PNG。**不重跑已成功的迁移、不新造二层脚本或补丁、不使用 PR**。
+
+Supabase live DB 检查：
+- `manual_timetable_templates` 826 份现存新干线模板中，2611 `published_train_number_evidence` 已登记 **823 份（99.6%）**；余 **3 份全部为 `operating_dates='{}'::date[]` 明确隔离的历史源**：北陆`はくたか592/594`、山阳`ひかり782`。**无尚未编号却仍被标记为实际运行的旧源**。
+- 已按官方 11 月运营日重建：`725 つばさ177=8177M`（9个运营日／25到发事件）、`728 つばさ88=9088M`（4日／28事件）、`729 つばさ90=9090M`（7日／28事件）、`1968 はくたか595=9595E`（2日／20事件）。四份官方到发事件均 **有时间、源表与只读VIEW同数**，并被标记 `date_verified`。
+- 对 2026-11 **全30天逐日**以数据库 `day=ANY(operating_dates)` 核对4条临时车选日白名单：**16个实际有这些临时车的日期**，跨平日／周六／周日／节假日。日期如 **11月7日=8177M+9595E，11月15日=9088M+9090M，11月23日=9088M+9090M**；非运营日未返回这些临时源。所有3份隔离旧源在11月全月未入选。
+- `published_train_png_number_ranges` 当前新干线 **196** 个（原193+3 E8系），均 `min_number=max_number`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`；新列车 `8177M/9088M/9090M` 仅挂官方 E8系列计划和既有 `JR東日本_E8系.png`，`9595E` 因 E7/W7未明确，**不挂不确定的PNG**。
+- `mcp__Supabase__list_edge_functions` 返回 `train-runs` **version=325、status=ACTIVE、verify_jwt=false**；`get_edge_function` 取回线上`index.ts`，与刚读取的 **GitHub main`supabase/functions/train-runs/index.ts` 完全一致，长度均177876字符**，包含`SHINKANSEN_2611_DATE_WHITELIST_SOURCE_INVALID`正式日期筛选。**已确认部署，不必再部署一次**。
+
+**验收边界：** 此次回归以官方逐车页、SQL完整数据、当前边缘函数的**部署源码逐字相等**、日期筛选SQL为证据。由于当前执行环境无法联网访问该 Supabase 公网域名，**没有实测公网Edge GET响应、GitHub Pages或Safari真机像素渲染**；以上绝不等同公网请求／客户端的端到端验收。也不声称存在实际车辆编组追踪。
 
 ## 2026-11-06 已实施：7份历史源精确到运营日，4趟2611临时车全站重建，3趟退出展示
 
