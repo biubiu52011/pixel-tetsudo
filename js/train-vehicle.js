@@ -5572,6 +5572,51 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
            illustrationRole:"uetsu-inaho-published-series-not-physical-consist"};
       }
     }
+    // Sotetsu-JR through: a public 1xxM/2xxM is the Sotetsu-side
+    // service-number family, never an E233-7000 / Sotetsu-12000
+    // carset or formation assignment. Draw ONE neutral marker with
+    // two optional gallery candidate paths, not a guessed E233 cab.
+    // Preserve independently established EXACT physical-vehicle evidence.
+    if(p&&contextLineId==="SotetsuJRDirect"&&
+       String(p.positionLineId||p.lineId||"")==="SotetsuJRDirect"&&
+       !identityConfirmed){
+      var sjIndex=window.TrainNumberPngRanges;
+      var sjRef=sjIndex&&typeof sjIndex.verifySotetsuJRService==="function"
+        ?sjIndex.verifySotetsuJRService(p):null;
+      var sjAssets=sjRef&&sjRef.candidateAssets||[];
+      var sjModels=sjRef&&sjRef.candidateModels||[];
+      var sjGarage=window.VehicleGaragePngMap;
+      var sjPlanModels=p.vehiclePlan&&p.vehiclePlan.models;
+      if(artworkFailed!==true&&sjRef&&p.estimated===true&&
+         sjRef.referenceOnly===true&&sjRef.actualVehicleConfirmed===false&&
+         sjRef.authorizesPNG===false&&sjRef.numberDateVerified===false&&
+         p.vehicleIdentityStatus==="UNKNOWN"&&
+         p.vehicleResolvedUpstream!==true&&
+         p.vehicleResolvedFromRealtime!==true&&
+         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+         !(Array.isArray(p.vehicleFormationCandidates)&&
+           p.vehicleFormationCandidates.length)&&
+         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
+         Array.isArray(p.plannedVehicleCandidates)&&
+         p.plannedVehicleCandidates.join("|")===sjModels.join("|")&&
+         (!p.vehiclePlan||p.vehiclePlan.confirmed!==true)&&
+         (!Array.isArray(sjPlanModels)||
+           sjPlanModels.join("|")===sjModels.join("|"))&&
+         sjAssets.length===2&&sjGarage&&
+         typeof sjGarage.matchModelPath==="function"&&
+         sjAssets.every(function(path,i){
+           return isGalleryPng(normalizeGalleryPngPath(path))&&
+             sjGarage.matchModelPath(
+               sjModels[i],path,"SotetsuJRDirect");
+         })){
+        return {kind:"candidate",iconSrc:"",planned:false,
+          referenceOnly:true,actualVehicleConfirmed:false,
+          candidateAssets:sjAssets.slice()};
+      }
+      // A missing SQL, date, route, exact carset or image proof never
+      // falls through to an unverified legacy generic E233 marker.
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Last-mile lookup handles raw ODPT/SQL positions that carry the train
     // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
     // its actual-car status, or the original train-number identity.
