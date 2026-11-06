@@ -36,6 +36,7 @@ function calendarFor(date){
 function station(s){return String(s||"").split(".").pop();}
 function verify(p){
  if(!p||p.positionLineId!=="Uetsu"||
+    (p.displayLineId&&p.displayLineId!=="Uetsu")||
     p.sourceRailway!=="odpt.Railway:JR-East.Uetsu"||
     p.positionSource!=="supabase-train-run"||
     p.estimated!==true)return null;
