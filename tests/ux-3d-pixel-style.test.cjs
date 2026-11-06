@@ -63,4 +63,9 @@ test('bright warning and notice colors retain readable text without train-shaped
   assert.doesNotMatch(dataState, /statusPictogramHtml|pt-train-status-art/);
   assert.doesNotMatch(realtime, /statusPictogramHtml|rs-status-symbol-art/);
   assert.match(dataState, /oldStatus\.textContent=newStatus\.textContent/);
+  assert.match(css, /\.rs-status-icon-notice \{ color: #008CC7; \}/);
+  assert.match(css, /\.rs-status-icon-delayed \{ color: #ED890E; \}/);
+  assert.match(css, /\.rs-status-icon-notice \{[\s\S]*?background: transparent;/);
+  assert.match(css, /\.rs-status-icon-notice \{[\s\S]*?border: 0;/);
+  assert.match(css, /\.rs-status-icon-notice \{[\s\S]*?box-shadow: none;/);
 });
