@@ -13,9 +13,9 @@
     notice:    { icon: "\uff01", cls: "rs-status-icon-notice",    label: "notice"    },
     delayed:   { icon: "\u25b3", cls: "rs-status-icon-delayed",  label: "delayed"   },
     suspended: { icon: "\u00d7", cls: "rs-status-icon-suspended", label: "suspended" },
-    no_data:   { icon: "\u25cc", cls: "rs-status-icon-no-data",   label: "no_data"  },
-    no_odpt:   { icon: "\u25cf", cls: "rs-status-icon-no-odpt",   label: "no_odpt"  },
-    loading:   { icon: "\u25d0", cls: "rs-status-icon-loading",   label: "loading"  }
+    no_data:   { icon: "?", cls: "rs-status-icon-no-data",   label: "no_data"  },
+    no_odpt:   { icon: "\u2014", cls: "rs-status-icon-no-odpt",   label: "no_odpt"  },
+    loading:   { icon: "\u2026", cls: "rs-status-icon-loading",   label: "loading"  }
   };
 
   // ========== 内部状态 ==========
@@ -562,8 +562,8 @@
   var STATUS_META = {
     normal:{icon:"○",cls:"rs-status-icon-normal"}, info:{icon:"！",cls:"rs-status-icon-notice"},
     notice:{icon:"！",cls:"rs-status-icon-notice"}, delayed:{icon:"△",cls:"rs-status-icon-delayed"},
-    suspended:{icon:"×",cls:"rs-status-icon-suspended"}, no_data:{icon:"◌",cls:"rs-status-icon-no-data"},
-    no_odpt:{icon:"●",cls:"rs-status-icon-no-odpt"}, loading:{icon:"◐",cls:"rs-status-icon-loading"}
+    suspended:{icon:"×",cls:"rs-status-icon-suspended"}, no_data:{icon:"?",cls:"rs-status-icon-no-data"},
+    no_odpt:{icon:"—",cls:"rs-status-icon-no-odpt"}, loading:{icon:"…",cls:"rs-status-icon-loading"}
   };
   function escapeHtml(s) {
     if (!s || typeof s !== "string") return "";
@@ -711,7 +711,7 @@
     var worstS = getStatus(worst);
     var statusHtml = "";
     if (mode === "realtime") {
-      statusHtml = '<span class="rs-status-icon ' + worstS.cls + '">' + worstS.icon + '</span>';
+      statusHtml = '<span class="rs-status-icon ' + worstS.cls + '" aria-hidden="true">' + worstS.icon + '</span>';
     }
 
     // 系统有图库图片时使用图片（已在构建期验证存在），否则回退到记号徽章。
@@ -736,7 +736,7 @@
       var _mid = memberIds[_mi];
       _memberIdentities.push(_mid + "=" + getLineIdentity(linesObj[_mid] || {}, _mid));
     }
-    return '<div class="rs-line-card rs-system-card" data-line="' + escapeHtml(firstId) + '" data-line-identity="' + escapeHtml(getLineIdentity(linesObj[firstId] || {}, firstId)) + '" data-line-identities="' + escapeHtml(_memberIdentities.join("|")) + '" data-system="' + escapeHtml(code) + '" data-lines="' + escapeHtml(memberIds.join(",")) + '" data-line-color="' + escapeHtml(color) + '">'
+    return '<div class="rs-line-card rs-system-card" role="button" tabindex="0" aria-label="' + escapeHtml(name + ' · ' + (mode === "realtime" ? t("status." + worst) : t("detail.open"))) + '" data-line="' + escapeHtml(firstId) + '" data-line-identity="' + escapeHtml(getLineIdentity(linesObj[firstId] || {}, firstId)) + '" data-line-identities="' + escapeHtml(_memberIdentities.join("|")) + '" data-system="' + escapeHtml(code) + '" data-lines="' + escapeHtml(memberIds.join(",")) + '" data-line-color="' + escapeHtml(color) + '">'
       + iconHtml
       + '<div class="rs-line-info">'
       + '<div class="rs-line-name">' + escapeHtml(name) + '</div>'
@@ -798,7 +798,7 @@
     var s = getStatus(status);
     var statusIconHtml = "";
     if (mode === "realtime") {
-      statusIconHtml = '<span class="rs-status-icon ' + s.cls + '">' + s.icon + '</span>';
+      statusIconHtml = '<span class="rs-status-icon ' + s.cls + '" aria-hidden="true">' + s.icon + '</span>';
     }
     // 线路区间副标题（trains 模式）：始终描述本线路的起点/终点。
     // presentation.subName 是关系/展示元数据，不得替换线路区间。
@@ -845,7 +845,7 @@
         _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-unknown\" title=\"Unknown relation\"></span>";
       }
     }
-    return '<div class="rs-line-card" data-line="' + escapeHtml(lineId) + '" data-line-identity="' + escapeHtml(getLineIdentity(line, lineId)) + '" data-line-color="' + escapeHtml(lineColor) + '">' + _chainBadgeHtml
+    return '<div class="rs-line-card" role="button" tabindex="0" aria-label="' + escapeHtml(displayName + ' · ' + (mode === "realtime" ? t("status." + status) : t("detail.open"))) + '" data-line="' + escapeHtml(lineId) + '" data-line-identity="' + escapeHtml(getLineIdentity(line, lineId)) + '" data-line-color="' + escapeHtml(lineColor) + '">' + _chainBadgeHtml
       + '<div class="rs-line-header">'
       + iconHtml
       + '<div class="rs-line-info">'
