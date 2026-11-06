@@ -48,23 +48,30 @@
               </div>
               <div class="search-inputs">
                 <div class="input-group">
-                  <label class="input-label" data-i18n="search.fromLabel"
+                  <label class="input-label" for="searchFrom" data-i18n="search.fromLabel"
                     >出発駅</label
                   >
                   <input
                     type="text"
                     id="searchFrom"
                     class="search-input"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-controls="fromSuggestions"
+                    aria-expanded="false"
+                    autocomplete="off"
+                    spellcheck="false"
                     data-i18n-placeholder="search.fromPlaceholder"
                     placeholder="出発駅を入力してください"
                   />
-                  <div id="fromSuggestions" class="suggestions"></div>
+                  <div id="fromSuggestions" class="suggestions" role="listbox"></div>
                 </div>
                 <button
                   id="swapBtn"
                   class="swap-btn"
-                  aria-label="swap"
-                  title="入れ替え"
+                  type="button"
+                  aria-label="出発駅と到着駅を入れ替える"
+                  title="出発駅と到着駅を入れ替える"
                 >
                   <svg
                     class="pt-icon"
@@ -84,17 +91,23 @@
                   </svg>
                 </button>
                 <div class="input-group">
-                  <label class="input-label" data-i18n="search.toLabel"
+                  <label class="input-label" for="searchTo" data-i18n="search.toLabel"
                     >到着駅</label
                   >
                   <input
                     type="text"
                     id="searchTo"
                     class="search-input"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-controls="toSuggestions"
+                    aria-expanded="false"
+                    autocomplete="off"
+                    spellcheck="false"
                     data-i18n-placeholder="search.toPlaceholder"
                     placeholder="到着駅を入力してください"
                   />
-                  <div id="toSuggestions" class="suggestions"></div>
+                  <div id="toSuggestions" class="suggestions" role="listbox"></div>
                 </div>
                 <div class="search-time-controls">
                   <div
@@ -211,7 +224,7 @@
     <script defer src="../js/fare-estimator.js?v=a47a813e27ff"></script>
     <script defer src="../js/route-search.js?v=9fcd61f24657"></script>
     <script defer src="../js/transfer-badge.js?v=2cb2948fbc21"></script>
-    <script defer src="../js/search-ui.js?v=1685c8645ebd"></script>
+    <script defer src="../js/search-ui.js?v=e4fb0fd3dd63"></script>
     <script defer src="../js/route-timetable.js?v=3932153f8a63"></script>
     <script defer src="../js/tourism-proximity.js?v=47168d13e958"></script>
     <script defer src="../js/sightseeing.js?v=0879b996a39c"></script>
