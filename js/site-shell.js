@@ -59,9 +59,10 @@
       var active = item.page === page ? " active" : "";
       var build = document.querySelector('meta[name="pt-build"]');
       var href = item.href + (build ? '?build=' + encodeURIComponent(build.content) : '');
-      return '<a href="' + href + '" class="tab-btn' + active + '" data-tab="' +
-        escapeHtml(item.tab) + '" data-i18n="' + escapeHtml(item.key) + '">' +
-        escapeHtml(item.fallback) + '</a>';
+      return '<a href="' + href + '" class="tab-btn' + active + '"' +
+        (item.page === page ? ' aria-current="page"' : '') +
+        ' data-tab="' + escapeHtml(item.tab) + '" data-i18n="' +
+        escapeHtml(item.key) + '">' + escapeHtml(item.fallback) + '</a>';
     }).join("") + '</nav>';
   }
 
