@@ -725,6 +725,29 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        // Tadami 2611: only the published JR East base diagram may
+        // generate scheduled map markers. Legacy manual imports also
+        // contain undated 9423D/9425D/9430D; keeping those as ordinary
+        // daily positions would invent train service. Fail closed if
+        // the lazily loaded, line-scoped official roster is missing.
+        // This guard never applies to independently observed ODPT trains.
+        if(lineId==="Tadami"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var tadamiIndex=window.JREastTadamiNumberIndex202611;
+          if(!tadamiIndex||typeof tadamiIndex.verify!=="function"||
+             !tadamiIndex.verify({
+               trainNumber:run.trainNumber,positionLineId:"Tadami",
+               sourceRailway:tt["odpt:railway"]||"",
+               trainOperator:tt["odpt:operator"]||"JR-East",
+               railDirection:tt["odpt:railDirection"]||"",
+               trainType:tt["odpt:trainType"]||"",
+               calendarType:run.calendar,serviceDate:serviceDate,
+               positionSource:tt._positionSource,
+               scheduledStopKeys:run.stops.map(function(x){
+                 return x.stationUrn||"";
+               })
+             }))continue;
+        }
         // 白新線: 2026-11 public train numbers and actual rail segment.
         // Historic SQL says E129 even for Inaho E653 and Kairi HB-E300,
         // and includes 8055M / 9083M (December only) and 9883D.
