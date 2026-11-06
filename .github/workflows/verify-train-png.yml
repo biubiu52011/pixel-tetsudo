@@ -14,6 +14,7 @@ on:
       - 'tests/suigun-branch-2611-completeness.test.cjs'
       - 'tests/suigun-branch-2611-through-continuity.test.cjs'
       - 'tests/suigun-2611-number-fleet.test.cjs'
+      - 'tests/tadami-2611-number-map.test.cjs'
       - 'tests/suigun-2611-edge-calendar.test.cjs'
       - 'tests/shinonoi-2611-number-fleet.test.cjs'
       - 'tests/shinonoi-2611-edge-scope.test.cjs'
@@ -201,6 +202,10 @@ jobs:
         run: node --test tests/gono-2611-number-schedule.test.cjs
       - name: Verify Suigun 2611 main/branch KiHa E130, dated extras and missing Kazekko art
         run: node --test tests/suigun-2611-number-fleet.test.cjs tests/suigun-2611-edge-calendar.test.cjs tests/suigun-branch-2611-completeness.test.cjs tests/suigun-branch-2611-through-continuity.test.cjs
+      - name: Verify Tadami 2611 base numbers, source-scope, holiday rules and gallery PNG
+        run: |
+          node --check data/timetables/jreast-tadami-2611-number-index.js
+          node --test tests/tadami-2611-number-map.test.cjs
       - name: Verify Shinonoi 2611 383 Shinano, mixed locals and SQL scope
         run: node --test tests/shinonoi-2611-number-fleet.test.cjs tests/shinonoi-2611-edge-scope.test.cjs
       - name: Verify Senzan 2611 E721, SATONO PNG and date-filtered API positions
