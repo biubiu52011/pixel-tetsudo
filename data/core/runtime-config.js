@@ -358,6 +358,17 @@
     }
   };
 
+  // ========== 日本法定节假日 / 铁路营业日 ==========
+
+  // 年份只收录已经公布的日本节假日（含补休日和国民休息日）。
+  // 与运营商的专项营业日覆盖 SERVICE_DAY_CALENDAR 分开维护。
+  // Official: https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
+  // 统一供 route-timetable 和 train-position-estimator 使用。
+  var PUBLISHED_JP_HOLIDAYS = Object.freeze({
+    "2026": Object.freeze(["01-01","01-12","02-11","02-23","03-20","04-29","05-03","05-04","05-05","05-06","07-20","08-11","09-21","09-22","09-23","10-12","11-03","11-23"]),
+    "2027": Object.freeze(["01-01","01-11","02-11","02-23","03-21","03-22","04-29","05-03","05-04","05-05","07-19","08-11","09-20","09-23","10-11","11-03","11-23"])
+  });
+
   // ========== 性能调优参数 ==========
 
   /** ODPT API 最小请求间隔（毫秒）。 */
@@ -443,6 +454,7 @@
     REFRESH_INTERVAL: REFRESH_INTERVAL,
     POSITION_INTERVAL: POSITION_INTERVAL,
     TRAIN_WARMUP_LINES: TRAIN_WARMUP_LINES,
+    PUBLISHED_JP_HOLIDAYS: PUBLISHED_JP_HOLIDAYS,
     // ODPT 缓存 / 轮询 / 存储 key
     ODPT_TIMETABLE_CACHE_KEY: ODPT_TIMETABLE_CACHE_KEY,
     ODPT_LEGACY_LS_CACHE_KEY: ODPT_LEGACY_LS_CACHE_KEY,

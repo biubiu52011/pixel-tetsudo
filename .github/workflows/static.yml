@@ -27,6 +27,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Verify generated static configuration
+        run: node data/core/gen-config-bundle.js --check
       - name: Generate ordered page scripts
         run: node scripts/sync-page-scripts.cjs
       - name: Test page script manifest
@@ -45,6 +47,7 @@ jobs:
           node --test tests/ux-3d-pixel-style.test.cjs
           node --test tests/ui-cross-page-consistency.test.cjs
           node --test tests/architecture-ownership.test.cjs
+          node --test tests/rail-service-calendar-ownership.test.cjs
       - name: Verify train presets before Pages upload
         run: |
           node --check js/train-vehicle.js

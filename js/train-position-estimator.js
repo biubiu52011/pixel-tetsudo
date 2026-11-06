@@ -171,13 +171,8 @@
     }
   }
 
-  // 日本内阁府公布的法定节假日及补休日/国民休息日。
-  // 仅包含已公布的年份；每年从官方来源更新。
-  // https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
-  var PUBLISHED_JP_HOLIDAYS = {
-    "2026": new Set(["01-01","01-12","02-11","02-23","03-20","04-29","05-03","05-04","05-05","05-06","07-20","08-11","09-21","09-22","09-23","10-12","11-03","11-23"]),
-    "2027": new Set(["01-01","01-11","02-11","02-23","03-21","03-22","04-29","05-03","05-04","05-05","07-19","08-11","09-20","09-23","10-11","11-03","11-23"])
-  };
+  // 法定节假日事实属于 data/core/runtime-config.js。
+  // 估算器只计算相应营业日，并保留按日期的运营商覆盖规则。
 
   function _jstNow() { return new Date(Date.now() + 9 * 60 * 60 * 1000); }
 
@@ -197,8 +192,9 @@
       else if (override === "weekday") day = 1;
       else if (override === "saturday") day = 6;
       else {
-        var published = PUBLISHED_JP_HOLIDAYS[String(now.getUTCFullYear())];
-        if (published && published.has(dateKey.slice(5))) day = 0;
+        var holidayTable = window.RuntimeConfig && window.RuntimeConfig.PUBLISHED_JP_HOLIDAYS;
+        var published = holidayTable && holidayTable[String(now.getUTCFullYear())];
+        if (Array.isArray(published) && published.indexOf(dateKey.slice(5)) >= 0) day = 0;
       }
       // 返回匹配的日历类型数组。
       // ODPT Holiday 包含周日和法定节假日，不包含普通周六。

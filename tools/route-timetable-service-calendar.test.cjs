@@ -6,6 +6,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const script=fs.readFileSync('js/route-timetable.js','utf8');
+const runtimeConfig=fs.readFileSync('data/core/runtime-config.js','utf8');
 const lineId='Tsurumi';
 function source(number,calendar,dep,arr,extra){
   return {
@@ -35,6 +36,8 @@ function setup(iso,rows,override){
     }}
   };
   const ctx=vm.createContext({window,Date:FixedDate,console});
+  vm.runInContext(runtimeConfig,ctx,{filename:'data/core/runtime-config.js'});
+  window.RuntimeConfig.SERVICE_DAY_CALENDAR=override||{};
   vm.runInContext(script,ctx,{filename:'js/route-timetable.js'});
   return window.RouteTimetable;
 }
