@@ -1332,6 +1332,30 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Yamagata 2026: distinguish a public operating REFERENCE from a
+    // scheduled physical consist. Remaining 701/719/E723 mixed workings
+    // have no independently verified dated model; show candidates in text
+    // but do not choose a speculative image.
+    if(lineId==="Yamagata" && window.JREastYamagataNumberIndex202611){
+      var yam=window.JREastYamagataNumberIndex202611;
+      var yProof=yam.verify(Object.assign({},p,{displayLineId:lineId}));
+      if(yProof){
+        var yIllustration=yam.resolve(Object.assign({},p,{displayLineId:lineId}));
+        lang=String(lang||"ja").toLowerCase();
+        if(yIllustration){
+          var prefix=/^zh/.test(lang)?"车型运用参考（当日实车未确认）：":
+            lang==="en"?"Observed fleet reference (not today's consist): ":
+            lang==="ko"?"차종 운용 참고(당일 실차 미확인): ":
+            "車種運用参考（当日の実車未確認）：";
+          return prefix+yIllustration.illustrationModel;
+        }
+        var unknownPrefix=/^zh/.test(lang)?"车型候选（单车次未核实）：":
+          lang==="en"?"Mixed-fleet candidates (trainset unknown): ":
+          lang==="ko"?"차종 후보(해당 열차 미확인): ":
+          "車種候補（列車別運用未確認）：";
+        return unknownPrefix+yam.candidates.join(" / ");
+      }
+    }
     // 羽越本線: the estimator emits an UNCONFIRMED physical car identity,
     // but the source-number + planned route can authorize an illustrative
     // model. Keep the distinction visible in the folded passenger list.
@@ -2639,9 +2663,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           iconBox.setAttribute('aria-hidden','true');
           // A numbered Ito local has documented alternative families. Show
           // those names in the fold without implying a single confirmed PNG.
-          if (lineId === "Ito" || lineId === "Hachiko" || lineId === "ChuoMain") {
+          if (lineId === "Ito" || lineId === "Hachiko" ||
+              lineId === "ChuoMain" || lineId === "Yamagata") {
             var fleetText = _trainFleetPlanLabel(p,lineId,lang);
-            if (fleetText && (lineId === "ChuoMain" ||
+            if (fleetText && (lineId === "ChuoMain" || lineId === "Yamagata" ||
                 /(?:^|[.:])Local$/.test(String(p.trainType || "")))) {
               var fleetNote = document.createElement('small');
               fleetNote.className = 'train-fold-fleet-reference';
