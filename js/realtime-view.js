@@ -118,12 +118,8 @@
       _causeInline = " <span class=\"rs-cause-inline\">\uff08" + escapeHtml(_cTxt) + "\uff09</span>";
     }
     var _statusGlyph = {normal:"○",delayed:"△",suspended:"×",info:"!",notice:"!",no_data:"?",no_odpt:"—",loading:"…"}[status] || "?";
-    var _statusArtwork = window.DataState && typeof window.DataState.statusPictogramHtml === "function"
-      ? window.DataState.statusPictogramHtml(status) : "";
-    statusSection.innerHTML = '<span class="rs-status-indicator"><span class="rs-status-symbol' +
-      (_statusArtwork ? ' rs-status-symbol-art' : '') + '" aria-hidden="true">' +
-      (_statusArtwork || escapeHtml(_statusGlyph)) + '</span><span class="rs-status-text">' +
-      escapeHtml(statusText) + '</span></span>' + _causeInline;
+    statusSection.innerHTML = '<span class="rs-status-indicator"><span class="rs-status-symbol" aria-hidden="true">' +
+      _statusGlyph + '</span><span class="rs-status-text">' + escapeHtml(statusText) + '</span></span>' + _causeInline;
     // 区间区块。
     var intervalSection = modal.querySelector(".rs-interval-section");
     var _lang = window.currentLang || "ja";
