@@ -670,6 +670,54 @@ if (/Shinkansen$/.test(lineId) &&
   }
 }
 
+// Shinkansen reference PNGs are authorized by the EXISTING 2611 SQL
+// exact-number roster, never by the service nickname or a broad model-family
+// gallery match. Duplicated rows for the same number/model/path are harmless;
+// conflicting evidence fails closed for that train, not for the whole line.
+const publishedShinkansenPngByNumber =
+  new Map<string,{model:string;path:string}>();
+if (/Shinkansen$/.test(lineId) && /^2026-11-\d{2}$/.test(serviceDate) &&
+    publishedShinkansenNumbersBySource.size > 0) {
+  const {data:rules,error:rulesError}=await db
+    .from("published_train_png_number_ranges")
+    .select("edition,line_key,min_number,max_number,suffix,vehicle_model,png_reference,source_url,requires_exact_roster,actual_vehicle_confirmed")
+    .eq("edition","2611").eq("line_key",lineId);
+  if(rulesError)throw rulesError;
+  const paths=[...new Set((rules||[]).map((r:any)=>
+    String(r.png_reference||"").replace(/^\.\.\//,""))
+    .filter((p:string)=>/^images\/列车\/[^/]+\/[^/]+\.png$/.test(p)))];
+  const available=new Set<string>();
+  for(let first=0;first<paths.length;first+=100){
+    const {data:assets,error:assetsError}=await db.from("vehicle_image_assets")
+      .select("image_path,vehicle_type,operator")
+      .eq("asset_status","available").eq("file_format_status","native_png")
+      .eq("operator",officialShinkansenRailwayOwner)
+      .in("image_path",paths.slice(first,first+100));
+    if(assetsError)throw assetsError;
+    for(const a of assets||[])
+      available.add(String(a.vehicle_type)+"\u0000"+String(a.image_path));
+  }
+  const conflicts=new Set<string>();
+  for(const p of rules||[]){
+    const n=Number(p.min_number),suffix=String(p.suffix||"");
+    const number=String(n)+suffix,model=String(p.vehicle_model||"");
+    const path=String(p.png_reference||"");
+    if(!Number.isInteger(n)||n<1||n!==Number(p.max_number)||
+       !/^[A-Z]$/.test(suffix)||p.requires_exact_roster!==true||
+       p.actual_vehicle_confirmed!==false||
+       !String(p.source_url||"").startsWith("https://")||
+       !available.has(model+"\u0000"+path.replace(/^\.\.\//,""))||
+       conflicts.has(number))continue;
+    const prior=publishedShinkansenPngByNumber.get(number);
+    if(prior && (prior.model!==model||prior.path!==path)){
+      publishedShinkansenPngByNumber.delete(number);
+      conflicts.add(number);
+    }else if(!prior){
+      publishedShinkansenPngByNumber.set(number,{model,path});
+    }
+  }
+}
+
 // JR East 2611: train *service name* is not the railway train number.
 const JR_EAST_SHINKANSEN_OFFICIAL_2611: Record<string, {number:string; url:string}> = {
   "HokurikuShinkansen|かがやき501|Tokyo|06:16": {
@@ -860,6 +908,18 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       status:"official-2611-sql-exact-roster",
       officialUrl:sqlOfficialNumber.url
     } : staticOfficialNumber;
+    // Official train number, single planned model and native operator PNG.
+    // This is an illustrative PLAN asset, not an observed physical carset.
+    const pngProof=sqlOfficialNumber &&
+      publishedShinkansenPngByNumber.get(sqlOfficialNumber.number);
+    const pngEvidence=pngProof &&
+      vehicleEvidenceById.get(Number(mapped.vehicle_source_id));
+    const verifiedPublishedPng=pngProof &&
+      mapped.mapping_level==="official_service_vehicle_plan" &&
+      exactScheduleType===pngProof.model && !conflict &&
+      pngEvidence?.source_type==="official" &&
+      ["A","B"].includes(String(pngEvidence.evidence_grade||""))
+        ? pngProof.path : null;
     return {
       // Only SQL-certified identical itineraries share identity across line sources.
       // Keep separate line records/stops; never dedupe by departure time alone.
@@ -926,8 +986,9 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       vehicle_evidence_source_id: ruleType && !conflict ? mapped.vehicle_source_id : null,
       vehicle_evidence_url: ruleType && !conflict ? mapped.vehicle_source_url : null,
       // Only source-dated unique model PNG; never a guessed formation/livery.
-      vehicle_artwork_path: ruleType && !conflict && !publishedPlan
-        ? (mapped.vehicle_artwork_path || null) : null,
+      vehicle_artwork_path: verifiedPublishedPng ||
+        (ruleType && !conflict && !publishedPlan
+          ? (mapped.vehicle_artwork_path || null) : null),
       source_template_id: Number(t.id),
       source_trip_id: t.source_trip_id || null,
       previous_timetable_ids: t.previous_timetable_ids || [],
