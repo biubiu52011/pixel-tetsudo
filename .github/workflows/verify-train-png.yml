@@ -11,6 +11,7 @@ on:
       - 'tools/train-network-vehicle-audit.test.cjs'
       - 'tools/vehicle-garage-png-map.test.cjs'
       - 'tools/train-visual-fold.test.cjs'
+      - 'tests/senzan-2611-number-fleet.test.cjs'
       - 'tests/ryomo-2611-number-fleet.test.cjs'
       - 'tests/scheduled-vehicle-mapping.test.cjs'
       - 'tests/chuo-takao-source-handover.test.cjs'
