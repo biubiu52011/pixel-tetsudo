@@ -104,9 +104,10 @@ function resolve(p){
    plan.source==="database-verified-published-plan"&&
    Array.isArray(plan.models)&&plan.models.length&&
    plan.models.some(function(x){return String(x)!==model;}))return null;
- var at=Number(p.stationIndex),to=p.segmentToIndex==null?at:Number(p.segmentToIndex);
- if(!Number.isInteger(at)||!Number.isInteger(to)||at<0||to<0||
-    at>=stops.length||to>=stops.length)return null;
+ // The source-station order was already verified above. Rendering coordinates
+ // (stationIndex/segmentToIndex) can differ across canonical projections or
+ // be unavailable at a terminal; they are NOT train-number/fleet evidence.
+ // Do not discard a sourced illustrative model based on display geometry.
  return {lineId:"Yamagata",trainNumber:proof.trainNumber,model:null,
   family:model,illustrationModel:model,illustrationPng:image[model],
   sourceUrl:source[model],referenceOnly:true,illustrative:true,
