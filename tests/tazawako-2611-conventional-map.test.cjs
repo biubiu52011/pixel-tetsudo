@@ -83,6 +83,18 @@ test('truncated duplicate source segments do not become extra on-map trains',()=
  assert.equal(index.verify(mid).stopCount,18);
  assert.equal(index.verify({...mid,scheduledStopKeys:mid.scheduledStopKeys.slice(0,12)}),null);
 });
+test('historical SQL Uguisuno equals diagram Uguisu-no only on the correct route',()=>{
+ for(const n of ['822M','825M','841M','846M','851M']){
+  const sample=pos(n);
+  const raw={...sample,scheduledStopKeys:sample.scheduledStopKeys.map(x=>
+    x.replace(/Uguisu-no$/, 'Uguisuno'))};
+  assert.ok(index.verify(raw),n+' SQL spelling still on map');
+  assert.equal(index.resolve(raw).illustrationModel,'701系5000番台');
+  const wrong={...raw,scheduledStopKeys:raw.scheduledStopKeys.map(x=>
+    x.replace(/Uguisuno$/, 'UguisunoOther'))};
+  assert.equal(index.verify(wrong),null,n+' no arbitrary station alias');
+ }
+});
 test('foreign source, unsupported train date, forged stop order never authorize PNG',()=>{
  const a=pos('841M');
  for(const change of [
