@@ -35,6 +35,13 @@ jobs:
         run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify train overview DOM structure and state
         run: node --test tests/train-overview-dom.test.cjs
+      - name: Verify UI content, accessibility and cross-page UX contracts
+        run: |
+          node --test tests/ux-content-clarity.test.cjs
+          node --test tests/ux-accessibility.test.cjs
+          node --test tests/ux-interaction-contract.test.cjs
+          node --test tests/ux-3d-pixel-style.test.cjs
+          node --test tests/ui-cross-page-consistency.test.cjs
       - name: Verify train presets before Pages upload
         run: |
           node --check js/train-vehicle.js
