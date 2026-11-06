@@ -27,11 +27,13 @@ test('navigation, railway cards and history controls have stepped shadows', () =
   assert.match(css, /prefers-reduced-motion/);
 });
 
-test('language selector restores a raised voxel appearance, not a flat button', () => {
+test('language selector stays circular with a subtle shadow and accessible touch target', () => {
   const css = read('css/lang-bar.css');
-  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?border-radius: 4px/);
-  assert.match(css, /box-shadow: 4px 4px 0 var\(--lang-border\)/);
-  assert.match(css, /\.lang-toggle-btn:active \{[\s\S]*?transform: translate\(3px,3px\)/);
+  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
+  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?box-shadow: 0 2px 5px rgba\(24,36,48,\.20\)/);
+  assert.match(css, /\.lang-toggle-btn:active \{[\s\S]*?translateY\(1px\)/);
+  assert.match(css, /\.lang-toggle-btn::after \{[\s\S]*?width: 44px/);
+  assert.doesNotMatch(css, /box-shadow: 4px 4px 0 var\(--lang-border\)/);
 });
 
 test('CSS links use the current Git blob versions and home avoids scoped refinements', () => {
@@ -48,12 +50,17 @@ test('CSS links use the current Git blob versions and home avoids scoped refinem
   assert.doesNotMatch(read('pages/home.html'), /ux-refinements\.css/);
 });
 
-test('delay and notice use vivid separate pixel colors, not brown status text', () => {
+test('bright warning and notice colors retain readable text without train-shaped glyphs', () => {
   const css = read('css/ux-refinements.css');
-  assert.doesNotMatch(css, /#915300|#785900/i, 'avoid muddy amber and brown labels');
-  assert.match(css, /\.rs-status-section\.rs-status-delayed \{[\s\S]*?--pt-alert-accent: #ff9e32/);
-  assert.match(css, /\.rs-status-section\.rs-status-notice \{[\s\S]*?--pt-alert-accent: #ffe14d/);
-  assert.match(css, /\.rs-status-section\.rs-status-delayed \.rs-status-symbol,[\s\S]*?box-shadow: 3px 3px 0/);
-  assert.match(css, /\.rs-status-icon-delayed \{ background: #ff9e32; \}/);
-  assert.match(css, /\.rs-status-icon-notice \{ background: #ffe14d; \}/);
+  const dataState = read('js/data-state.js');
+  const realtime = read('js/realtime-view.js');
+  assert.match(css, /--pt-alert-accent: #FFB45E/);
+  assert.match(css, /--pt-alert-accent: #67CFFF/);
+  assert.match(css, /background: #F2FBFF/);
+  assert.match(css, /background: #FFF9F2/);
+  assert.match(css, /color: #1F2A35/);
+  assert.doesNotMatch(css, /#915300|#785900|\.pt-train-status-art/);
+  assert.doesNotMatch(dataState, /statusPictogramHtml|pt-train-status-art/);
+  assert.doesNotMatch(realtime, /statusPictogramHtml|rs-status-symbol-art/);
+  assert.match(dataState, /oldStatus\.textContent=newStatus\.textContent/);
 });
