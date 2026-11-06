@@ -87,3 +87,18 @@ Supabase 已经应用上述两次迁移，查询确认 **湖西 34/34、京阪�
 
 无论新增的是公开车号还是已验证的站时，都**没有实车编组身份证据**，因此不执行 `207/321/223/225/221/521` 的逐车次 PNG 指派。历史源仍不能伪装为 JR西日本全线 2026-11 完整发车表。剩余车次需继续核验。
 
+
+### 同日追加：九条 JR京都／JR神戸线实核区间与两条运行日冲突
+
+迁移 `supabase/migrations/20261107132000_jrwest_kyoto_kobe_verified_nine_and_calendar_conflicts.sql` 继续向既有 `published_jrwest_kyoto_kobe_2611_source_fleet` 写入四个**平日**可核验的 7 站新快速区间：
+`3452M`（三ノ宮→京都）、`3511M`（高槻→神戸）、`3531M`（高槻→神戸）、`3534M`（三ノ宮→京都）。独立官方记录分别为
+[3452M](https://timetable.jr-odekake.net/train-timetable/206741?date=20261127)、
+[3511M](https://timetable.jr-odekake.net/train-timetable/173961?date=20261124)、
+[3531M](https://timetable.jr-odekake.net/train-timetable/209371?date=20261030)、
+[3534M](https://timetable.jr-odekake.net/train-timetable/206771?date=20261009)。
+京阪神累积 **9 条证据完全匹配（平日 6、土休日 3）**，均为来源局部区段的停站证据，不是全日历完整覆盖。
+
+另外历史来源 `500310-3536200-3450M` 被归为土休日，但是[当期官方 3450M](https://timetable.jr-odekake.net/train-timetable/321991?date=20261029)为平日运行；历史来源 `500310-1866500-3506M` 被归为平日，但是[当期官方 3506M](https://timetable.jr-odekake.net/train-timetable/173162?date=20261024)仅土休日运行。原始 source ID/历史时刻全部保留，不将列车“搬到”另一个日历（没有核实该新日历的来源停站）。新增 `official_calendar_conflict`、`official_calendar_urn`、`official_calendar_source_url` 约束，Edge 主动校验来源证据后从当日结果中剔除这两个错误日历的旧列车，防止 Ghost Train。
+
+正式番号只展示于通过 7 站原时刻校验的运行实例，不根据历史 ID 后缀自动认证；车辆仍为未确认混用候选且 `authorizes_png=false`。数据库检查通过：**湖西线 34/34、京都神户线 9/9、2 个日历冲突记录**。Edge 发布至 `train-runs v333`，继续沿用原单一接口、无新增前端请求或脚本。
+
