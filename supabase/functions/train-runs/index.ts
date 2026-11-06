@@ -237,7 +237,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // across Weekday/SaturdayHoliday; never include all historical rows.
   // An empty list retires a source from the current plan. NULL preserves
   // the other lines' existing recurring-calendar logic.
-  if (/Shinkansen$/.test(lineId) && /^2026-11-\\d{2}$/.test(serviceDate)) {
+  if (/Shinkansen$/.test(lineId) && /^2026-11-\d{2}$/.test(serviceDate)) {
     const {data:datedSources,error:datedError}=await db
       .from("manual_timetable_templates")
       .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date,operating_dates")
