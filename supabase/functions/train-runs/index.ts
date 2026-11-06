@@ -2336,13 +2336,16 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         db.from("published_miyo_2611_number_roster")
           .select("train_number,calendar_urn,direction_urn,train_type_urn,source_template_id,source_occurrence,segment_key,operating_dates,excluded_dates,source_stop_keys,vehicle_model,png_reference,service_name,official_source_url,stop_clock_status,reference_only,actual_vehicle_confirmed")
           .eq("edition","2611").eq("line_key","Miyo")
+          // Printed 9179D belongs to Echigo after the Yoshida changeover.
+          // Retain it as through-service audit, never a Miyo run/position.
+          .eq("actual_segment_line_key","Miyo")
           .eq("calendar_urn",selectedCalendar),
         db.from("published_train_png_number_ranges")
           .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,requires_exact_roster")
           .eq("edition","2611").eq("line_key","Miyo")
       ]);
     if(rosterError||rangeError)throw(rosterError||rangeError);
-    const expected=selectedCalendar==="odpt.Calendar:Weekday"?43:57;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?42:56;
     if((roster||[]).length!==expected||(ranges||[]).length!==2)
       throw new Error("MIYO_2611_NUMBER_DATE_ROSTER_UNAVAILABLE");
     const bySource=new Map((roster||[]).filter((r:any)=>

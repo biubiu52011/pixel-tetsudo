@@ -22,9 +22,11 @@ function filesIn(folder,prefix,out){
 }
 const existing=[];filesIn('images/列车','images/列车',existing);
 assert.equal(existing.length,garage.totalPng,'gallery inventory must refresh when assets change');
-assert.equal(garage.totalPng,580);
-assert.equal(garage.canonicalEntries,598);
-assert.equal(garage.mappedPng,580);
+// The number of legitimate PNGs changes as assets are added. Validate
+// coverage against the disk instead of freezing a previous inventory size.
+assert.ok(garage.totalPng>=580,'unexpected reduction in train PNG gallery');
+assert.ok(garage.canonicalEntries>=598,'unexpected reduction in model coverage');
+assert.equal(garage.mappedPng,garage.totalPng,'unmapped train PNGs');
 for(const path of existing)assert.ok(garage.hasPng(path),'garage missing '+path);
 assert.equal(garage.unassigned.length,0);
 const jrwest700='../images/列车/JR西日本/JR西日本_700系.png';
@@ -112,4 +114,5 @@ const marker=root.TrainVehicle.selectMarkerArtwork({
 assert.equal(marker.kind,'vehicle');
 assert.equal(marker.planned,true);
 assert.equal(marker.iconSrc,model[0].path);
-console.log('garage map: PASS — 580 assets, 598 canonical model references, one non-default alternate, scoped published train plan');
+console.log('garage map: PASS — '+garage.totalPng+' assets, '+garage.canonicalEntries+
+  ' canonical model references, one non-default alternate, scoped published train plan');

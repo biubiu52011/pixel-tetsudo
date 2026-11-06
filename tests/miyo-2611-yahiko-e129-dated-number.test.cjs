@@ -176,3 +176,25 @@ test('source contract and estimator are SQL-only; no bogus special trip creation
  assert.ok(estimator.includes('verifyMiyoService'));
  assert.ok(estimator.includes('officialMitoPlan || officialMiyoPlan'));
 });
+
+test('Momiji 9179D starts as an Echigo continuation, never a Miyo train',()=>{
+ const migration=fs.readFileSync('supabase/migrations/'+
+   '20261107033600_miyo_2611_momiji_echigo_train_number_boundary.sql','utf8');
+ const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+ assert.ok(migration.includes("train_number='9179D'"));
+ assert.ok(migration.includes("actual_segment_line_key='Echigo'"));
+ assert.ok(migration.includes("actual_segment_line_key='Miyo'"));
+ assert.ok(migration.includes('min_number=9278'));
+ assert.ok(migration.includes('max_number=9279'));
+ assert.ok(migration.includes("source_template_id IS NULL"));
+ assert.ok(edge.includes('.eq("actual_segment_line_key","Miyo")'));
+ assert.ok(edge.includes('selectedCalendar==="odpt.Calendar:Weekday"?42:56'));
+ // Original official audit still records all 100 page-row occurrences.
+ // Only 98 belong to Miyo section: 94 source rows + two each-calendar
+ // 9278D/9279D source-less Momiji references. 9179D is *not* an extra train.
+ assert.equal(mapped(make('221M','2026-11-06'))?.pngPath,path);
+ for(const n of ['9179D','9278D','9279D']){
+   const fake=make('221M','2026-11-02',{trainNumber:n});
+   assert.equal(mapped(fake),null,n+' cannot borrow the E129 PNG');
+ }
+});
