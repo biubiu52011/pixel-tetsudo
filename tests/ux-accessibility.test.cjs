@@ -62,7 +62,9 @@ test('history actions are reversible and delete is distinct from close', () => {
   assert.match(src, /historyUndoNotice/);
   assert.match(src, /M4 7h16M9 7V4h6v3/);
   assert.match(src, /history-delete-btn[^\n]+aria-label/);
-  assert.match(src, /container\.addEventListener\("keydown"/);
+  assert.match(src, /class="history-route" href="home\.html\?from=/);
+  assert.doesNotMatch(src, /history-entry" role="link"/);
+  assert.match(src, /if \(e\.target\.closest\("\.history-route"\)\) return/);
 });
 
 test('train fold uses text for unverified vehicle rather than a tiny dot', () => {
