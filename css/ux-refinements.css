@@ -214,38 +214,49 @@ body[data-page="realtime"] .rs-status-section.rs-status-notice {
   background: #fffdec;
   color: var(--text);
 }
-body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-symbol,
-body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-symbol,
-body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-symbol {
-  width: 30px;
-  height: 30px;
-  flex-basis: 30px;
-  background: var(--pt-alert-accent);
-  border: 2px solid var(--text);
-  border-radius: 2px;
-  box-shadow: 3px 3px 0 #34343b, inset 1px 1px 0 rgba(255,255,255,.75);
-  color: var(--text);
-  font-size: 22px;
+/* Unlike flat 3D buttons, the railway artwork is itself a small pixel sprite.
+   Keep a transparent silhouette and nearest-neighbor edges, as with train PNGs.
+   The original monochrome glyph remains a fallback if the art is unavailable. */
+body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-symbol-art,
+body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-symbol-art,
+body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-symbol-art {
+  width: 32px;
+  height: 40px;
+  flex: 0 0 32px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  line-height: 1;
 }
-body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
-/* The line-list symbols use the same colors, with dark ink for readability. */
+body[data-page="realtime"] .pt-train-status-art,
+body[data-page="trains"] .pt-train-status-art {
+  display: block;
+  flex: none;
+  width: 32px;
+  height: 40px;
+  max-width: none;
+  max-height: none;
+  image-rendering: pixelated;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
 body[data-page="realtime"] .rs-status-icon-delayed,
 body[data-page="trains"] .rs-status-icon-delayed,
 body[data-page="realtime"] .rs-status-icon-notice,
 body[data-page="trains"] .rs-status-icon-notice {
-  width: 26px;
-  height: 26px;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 40px;
+  padding: 0;
   color: var(--text);
-  border: 2px solid var(--text);
-  border-radius: 2px;
-  box-shadow: 2px 2px 0 #34343b, inset 1px 1px 0 rgba(255,255,255,.75);
-  font-size: 19px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  animation: none;
   line-height: 1;
 }
-body[data-page="realtime"] .rs-status-icon-delayed,
-body[data-page="trains"] .rs-status-icon-delayed { background: #ff9e32; }
-body[data-page="realtime"] .rs-status-icon-notice,
-body[data-page="trains"] .rs-status-icon-notice { background: #ffe14d; }
+body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
 body[data-page="realtime"] .rs-status-icon-suspended,
 body[data-page="trains"] .rs-status-icon-suspended { color:#b42334; }
 body[data-page="realtime"] .rs-status-icon-no-data,
