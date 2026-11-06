@@ -725,6 +725,26 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        // Yamagata local-only 2611: historical manual SQL labels some
+        // Tsubasa 1xxM as 701 Local, while other rows represent actual
+        // mixed 701/719/E723 regional trains. Full source number + stops
+        // are required before projection. The YamagataShinkansen timetable
+        // remains independent; 6xxx/8xxx/9xxx are never local glyphs.
+        if(lineId==="Yamagata"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var yamIndex=window.JREastYamagataNumberIndex202611;
+          if(!yamIndex||typeof yamIndex.verify!=="function"||
+             !yamIndex.verify({
+               trainNumber:run.trainNumber,positionLineId:"Yamagata",
+               sourceRailway:tt["odpt:railway"]||"",
+               trainOperator:tt["odpt:operator"]||"JR-East",
+               trainType:tt["odpt:trainType"]||"",
+               railDirection:tt["odpt:railDirection"]||"",
+               calendarType:run.calendar,serviceDate:serviceDate,
+               positionSource:tt._positionSource,estimated:true,
+               scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";})
+             }))continue;
+        }
         if(lineId==="Uetsu" && tt._positionSource==="supabase-train-run" &&
            String(serviceDate).startsWith("2026-11")){
           var uetsu=window.JREastUetsuNumberIndex202611;
