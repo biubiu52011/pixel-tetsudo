@@ -1177,6 +1177,65 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // number/calendar/direction/owner crosswalk remains the ONLY family
   // illustration authority (never infer 05/07/15000 or E231-800 from Y).
   // Old E353 5003M/5050M are 2-stop expresses, not local trains.
+  // Shinonoi 2611: use existing published 383 Shinano plans, and
+  // retain conservative 211/E127 line illustration on historical locals.
+  // Calendar/number proof is NOT 2026-11 stop-clock or actual-car proof.
+  if(lineId==="Shinonoi"&&/^2026-11-/.test(serviceDate)){
+    const {data:scope,error:scopeErr}=await db
+      .from("published_shinonoi_2611_fleet_scope")
+      .select("source_template_id,calendar_urn,direction_urn,train_number,train_type_urn,fleet_role,candidate_models,illustration_model,number_evidence_scope,source_url,reference_only,actual_vehicle_confirmed")
+      .eq("edition","2611").eq("line_key","Shinonoi")
+      .eq("calendar_urn",selectedCalendar);
+    if(scopeErr||(scope||[]).length!==144)
+      throw new Error("SHINONOI_2611_SOURCE_FLEET_SCOPE_UNAVAILABLE");
+    const bySource=new Map((scope||[]).map((v:any)=>
+      [Number(v.source_template_id),v]));
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const proof:any=bySource.get(Number(run.source_template_id));
+      if(!proof||proof.calendar_urn!==run.service_id||
+         proof.direction_urn!==run.rail_direction||
+         proof.train_number!==run.train_number||
+         proof.train_type_urn!==run.train_type||
+         run.network_key!=="odpt.Railway:JR-East.Shinonoi"||
+         proof.reference_only!==true||
+         proof.actual_vehicle_confirmed!==false||
+         !Array.isArray(proof.candidate_models)||
+         proof.candidate_models.length<1||
+         !["mixed_local","rapid_211_reference","shinano_383"]
+           .includes(proof.fleet_role)||
+         (proof.fleet_role==="shinano_383"?
+           proof.number_evidence_scope!=="existing_official_service_vehicle_plan":
+           proof.number_evidence_scope!=="historical_source_only")){
+        result.splice(i,1);continue;
+      }
+      // The 52 Shinano model plans are officially sourced, but no
+      // numbered train is a confirmed physical 383 formation.
+      const shinano=proof.fleet_role==="shinano_383";
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=proof.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=shinano;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.train_number_verification=shinano
+        ?"official-2611-shinano-service-number"
+        :"historical-source-only-116-2611";
+      run.timetable_date_verified=false;
+      run.published_number_fleet_reference={
+        source:"jr-east-2611-shinonoi-116",lineId:"Shinonoi",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        trainType:proof.train_type_urn,calendar:proof.calendar_urn,
+        direction:proof.direction_urn,
+        sourceTemplateId:Number(run.source_template_id),
+        numberEvidenceScope:proof.number_evidence_scope,
+        models:proof.candidate_models,
+        illustrationModel:proof.illustration_model,
+        sourceUrl:proof.source_url,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // Senzan 2611: protect actual running dates as well as planned
   // illustrations; preserve all historical source templates for audit.
   if(lineId==="Senzan"&&/^2026-11-/.test(serviceDate)){

@@ -2597,7 +2597,7 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-061", displayName: "图库待审・JR東海・c385", iconName: "图库待审・JR東海・c385", asset: null, plannedAsset: "../images/列车/JR東海/c385.png", aliases: [], operatorDirectory: "JR東海", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-062", displayName: "图库待审・JR東海・c75", iconName: "图库待审・JR東海・c75", asset: null, plannedAsset: "../images/列车/JR東海/c75.png", aliases: [], operatorDirectory: "JR東海", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-063", displayName: "图库待审・JR東海・c85h", iconName: "图库待审・JR東海・c85h", asset: null, plannedAsset: "../images/列车/JR東海/c85h.png", aliases: [], operatorDirectory: "JR東海", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-064", displayName: "图库待审・JR東海・JR東海_383系", iconName: "图库待审・JR東海・JR東海_383系", asset: null, plannedAsset: "../images/列车/JR東海/JR東海_383系.png", aliases: [], operatorDirectory: "JR東海", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "jr-central-383-shinano-2611-reference", displayName: "383系", iconName: "383系（しなの）", asset: null, plannedAsset: "../images/列车/JR東海/JR東海_383系.png", aliases: ["383系（しなの）"], lineIds: ["Shinonoi"], operatorDirectory: "JR東海", plannedOnly: true },
   { id: "artwork-inventory-065", displayName: "图库待审・いすみ鉄道・いすみ鉄道_いすみ300型", iconName: "图库待审・いすみ鉄道・いすみ鉄道_いすみ300型", asset: null, plannedAsset: "../images/列车/いすみ鉄道/いすみ鉄道_いすみ300型.png", aliases: [], operatorDirectory: "いすみ鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-066", displayName: "图库待审・いすみ鉄道・いすみ鉄道_いすみ350型", iconName: "图库待审・いすみ鉄道・いすみ鉄道_いすみ350型", asset: null, plannedAsset: "../images/列车/いすみ鉄道/いすみ鉄道_いすみ350型.png", aliases: [], operatorDirectory: "いすみ鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-067", displayName: "图库待审・ひたちなか海浜鉄道・ひたちなか海浜鉄道_キハ100形", iconName: "图库待审・ひたちなか海浜鉄道・ひたちなか海浜鉄道_キハ100形", asset: null, plannedAsset: "../images/列车/ひたちなか海浜鉄道/ひたちなか海浜鉄道_キハ100形.png", aliases: [], operatorDirectory: "ひたちなか海浜鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
@@ -5069,7 +5069,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       return null;
     return {trainNumber:String(p.trainNumber).trim(),lineId:lineId,
       model:match.model,pngPath:png,source:"train-number-range",
-      planned:true,representative:true};
+      planned:true,representative:true,
+      referenceOnly:match.referenceOnly===true,
+      illustrative:match.illustrative===true};
   }
 
   // A SOURCE-ONLY E531 label normally cannot authorize an icon. Exception:
@@ -5244,6 +5246,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        lookupVerifiedJobanCanonicalE531Png(p)) : null;
     if (numberPng) {
       if (artworkFailed !== true) {
+        if (numberPng.referenceOnly===true && numberPng.illustrative===true)
+          return {kind:"vehicle",iconSrc:numberPng.pngPath,planned:true,
+            illustrative:true,representativeOnly:true,actualVehicleConfirmed:false};
         return {kind:"vehicle",iconSrc:numberPng.pngPath,planned:true};
       }
       return {kind:"unresolved",iconSrc:""};

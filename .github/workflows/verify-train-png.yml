@@ -11,6 +11,8 @@ on:
       - 'tools/train-network-vehicle-audit.test.cjs'
       - 'tools/vehicle-garage-png-map.test.cjs'
       - 'tools/train-visual-fold.test.cjs'
+      - 'tests/shinonoi-2611-number-fleet.test.cjs'
+      - 'tests/shinonoi-2611-edge-scope.test.cjs'
       - 'tests/senzan-2611-number-fleet.test.cjs'
       - 'tests/senzan-2611-edge-calendar.test.cjs'
       - 'tests/ryomo-2611-number-fleet.test.cjs'
@@ -193,6 +195,8 @@ jobs:
         run: node --test tests/ofunato-2611-rail-brt-pokemon-number-png.test.cjs
       - name: Verify Gono 2611 numbered planned-service rendering and date admission
         run: node --test tests/gono-2611-number-schedule.test.cjs
+      - name: Verify Shinonoi 2611 383 Shinano, mixed locals and SQL scope
+        run: node --test tests/shinonoi-2611-number-fleet.test.cjs tests/shinonoi-2611-edge-scope.test.cjs
       - name: Verify Senzan 2611 E721, SATONO PNG and date-filtered API positions
         run: node --test tests/senzan-2611-number-fleet.test.cjs tests/senzan-2611-edge-calendar.test.cjs
       - name: Verify Ryomo November 2611 exact numbers, 211 fleet and E231/E233 exceptions

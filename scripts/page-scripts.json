@@ -126,6 +126,7 @@
       "data/timetables/jreast-ryomo-2611-number-index.js",
       "data/timetables/train-number-png-ranges.js",
       "data/timetables/jreast-senzan-2611-number-index.js",
+      "data/timetables/jreast-shinonoi-2611-number-index.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
       "data/timetables/nambu-branch-official-202611.js",
@@ -274,6 +275,9 @@
       ],
       "data/timetables/jreast-ryomo-2611-number-index.js": [
         "Ryomo"
+      ],
+      "data/timetables/jreast-shinonoi-2611-number-index.js": [
+        "Shinonoi"
       ]
     }
   }
