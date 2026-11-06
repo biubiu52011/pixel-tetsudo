@@ -2325,6 +2325,126 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // JR-West Kyoto/Kobe through corridor: JR京都線 is Kyoto–Osaka,
+  // JR神戸線 is Osaka–Himeji. Imported JR-West TokaidoKansai has 46
+  // undated compound-ID trips; SanyoMain carries 20 additional relevant
+  // locals/rapids from Hyougo or Akashi (the rest is NOT this corridor).
+  // Number suffixes C/T/M do NOT certify real 2026 vehicles or clocks.
+  // JR-West 221 rapid stock was transferred off by March 2024. Keep
+  // 207/321 for C locals and 223/225 for T/M rapids as FLEET CANDIDATES.
+  if((lineId==="TokaidoKansai"||lineId==="SanyoMain")&&
+     /^2026-11-/.test(serviceDate)){
+    const {data:roster,error:rosterError}=await db
+      .from("published_jrwest_kyoto_kobe_2611_source_fleet")
+      .select("source_template_id,source_line_key,candidate_segment,source_train_id,source_public_number_suffix,calendar_urn,direction_urn,train_type_urn,service_family,source_stop_keys,candidate_models,candidate_gallery_models,candidate_png_paths,fleet_source_url,timetable_source_path,timetable_validity,number_date_verified,reference_only,actual_vehicle_confirmed,authorizes_png")
+      .eq("edition","2611").eq("source_line_key",lineId)
+      .eq("calendar_urn",selectedCalendar);
+    if(rosterError)throw rosterError;
+    const expected=lineId==="TokaidoKansai"?19:
+      (selectedCalendar==="odpt.Calendar:Weekday"?11:9);
+    if((roster||[]).length!==expected)
+      throw new Error("JRWEST_KYOTO_KOBE_2611_SOURCE_FLEET_UNAVAILABLE");
+    const bySource=new Map((roster||[]).map((r:any)=>
+      [Number(r.source_template_id),r]));
+    if(bySource.size!==expected)
+      throw new Error("JRWEST_KYOTO_KOBE_DUPLICATE_SOURCE_ID");
+    for(const run of result){
+      const pub:any=bySource.get(Number(run.source_template_id));
+      if(!pub)continue; // OTHER SanyoMain districts / express / A-seat
+      const n=String(run.train_number||"");
+      const match=/^([0-9]{6})-([0-9]{4,7})-([0-9]{1,4}[CMT])$/.exec(n);
+      const dir=run.rail_direction;
+      const isLocal=run.train_type==="odpt.TrainType:JR-West.Local";
+      const isRapid=run.train_type==="odpt.TrainType:JR-West.Rapid";
+      const family=isLocal?"local_c":"regional_rapid_t_m";
+      const suffix=match?match[3]:"",lastLetter=suffix.slice(-1);
+      const expectedModels=isLocal?"207系|321系":"223系|225系";
+      const expectedSource=lineId==="TokaidoKansai"
+        ?"data/timetables/TokaidoKansai-manual.js"
+        :"data/timetables/SanyoMain-manual.js";
+      const keys=Array.isArray(run.stops)?run.stops.map((x:any)=>
+        String(x.station_urn||"").split(".").pop()):[];
+      const galleryExpected=isLocal&&lineId==="TokaidoKansai"
+        ?["JR西日本207系（NK）","JR西日本207系（Y2）","JR西日本321系"]
+        :[];
+      const pathsExpected=isLocal&&lineId==="TokaidoKansai"
+        ?["../images/列车/JR西日本/JR西日本_207系_NK.png",
+          "../images/列车/JR西日本/JR西日本_207系_Y2.png",
+          "../images/列车/JR西日本/JR西日本_321系.png"]
+        :[];
+      const fleetSourceExpected=isLocal
+        ?"https://www.westjr.co.jp/fan/paper/local/"
+        :"https://www.westjr.co.jp/press/article/2020/02/page_15645.html";
+      if(!match||!["500310","500300"].includes(match[1])&&
+           lineId==="TokaidoKansai"||
+         !match||lineId==="SanyoMain"&&match[1]!=="710100"||
+         (dir!=="odpt.RailDirection:Inbound"&&
+          dir!=="odpt.RailDirection:Outbound")||
+         Number(suffix.slice(0,-1))%2!==
+           (dir==="odpt.RailDirection:Inbound"?0:1)||
+         run.network_key!==
+           (lineId==="TokaidoKansai"
+            ?"odpt.Railway:JR-West.TokaidoKansai"
+            :"odpt.Railway:JR-West.SanyoMain")||
+         (!isLocal&&!isRapid)||
+         (isLocal&&lastLetter!=="C")||
+         (isRapid&&!["T","M"].includes(lastLetter))||
+         pub.source_line_key!==lineId||
+         pub.candidate_segment!==
+          (lineId==="TokaidoKansai"?"kyoto_osaka_kobe":"kobe_himeji")||
+         pub.source_train_id!==n||
+         pub.source_public_number_suffix!==suffix||
+         pub.calendar_urn!==selectedCalendar||
+         pub.direction_urn!==dir||pub.train_type_urn!==run.train_type||
+         pub.service_family!==family||pub.timetable_source_path!==expectedSource||
+         pub.timetable_validity!=="undated_not_current_verified"||
+         pub.fleet_source_url!==fleetSourceExpected||
+         pub.number_date_verified!==false||
+         pub.reference_only!==true||pub.actual_vehicle_confirmed!==false||
+         pub.authorizes_png!==false||
+         !Array.isArray(pub.source_stop_keys)||keys.length<2||
+         keys.length!==pub.source_stop_keys.length||
+         keys.some((k:string,j:number)=>k!==pub.source_stop_keys[j])||
+         lineId==="SanyoMain"&&
+          (!["Hyougo","Akashi"].includes(keys[0])||
+           !["Suma","Nishi-Akashi","Himeji","Amiboshi"].includes(keys[keys.length-1]))||
+         !Array.isArray(pub.candidate_models)||
+         pub.candidate_models.join("|")!==expectedModels||
+         !Array.isArray(pub.candidate_gallery_models)||
+         pub.candidate_gallery_models.join("|")!==galleryExpected.join("|")||
+         !Array.isArray(pub.candidate_png_paths)||
+         pub.candidate_png_paths.join("|")!==pathsExpected.join("|")){
+        // Historical clock remains historical; never add a guessed fleet.
+        continue;
+      }
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=pub.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      // Distinguish legacy composite source IDs from public train numbers.
+      // NO promotion to `official_number_verified`.
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-kyoto-kobe-2611-source-family",
+        lineId,sourceTrainId:n,sourcePublicNumberSuffix:suffix,
+        serviceDate,calendar:selectedCalendar,direction:dir,
+        sourceTemplateId:Number(pub.source_template_id),
+        trainType:pub.train_type_urn,serviceFamily:family,
+        sourceSegment:pub.candidate_segment,
+        sourceStopKeys:pub.source_stop_keys,
+        candidateModels:pub.candidate_models,
+        candidateGalleryModels:pub.candidate_gallery_models,
+        candidateAssets:pub.candidate_png_paths,
+        fleetSourceUrl:pub.fleet_source_url,
+        timetableSourcePath:pub.timetable_source_path,
+        timetableValidity:pub.timetable_validity,
+        numberDateVerified:false,referenceOnly:true,
+        actualVehicleConfirmed:false,authorizesPNG:false
+      };
+    }
+  }
+
   // Sotetsu-JR 2611: source-bound historical stops (Hazawa–Osaki)
   // certify only E233-7000 / Sotetsu-12000 fleet CANDIDATES.
   // Public 1xxM/2xxM are Sotetsu-side train types, NOT ownership codes.
