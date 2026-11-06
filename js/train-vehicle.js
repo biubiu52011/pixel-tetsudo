@@ -1115,9 +1115,9 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-17": {"displayName":"EV-E301系","iconName":"EV-E301系","asset":"../images/列车/JR東日本/JR東日本_EV-E301系.png","aliases":["EV-E301系（ACCUM）","JR東日本EV-E301系","JR EV-E301系"]},
   "planned-stock-library-18": {"displayName":"EV-E801系","iconName":"EV-E801系","asset":"../images/列车/JR東日本/JR東日本_EV-E801系.png","aliases":["EV-E801系（ACCUM）","JR東日本EV-E801系","JR EV-E801系"]},
   "planned-stock-library-19": {"displayName":"E5系","iconName":"E5系","asset":"../images/列车/JR東日本/JR東日本_E5系.png","aliases":["JR東日本E5系","JR E5系"]},
-  "planned-stock-library-20": {"displayName":"E6系","iconName":"E6系","asset":"../images/列车/JR東日本/JR東日本_E6系.png","aliases":["JR東日本E6系","JR E6系"]},
+  "planned-stock-library-20": {"displayName":"E6系","iconName":"E6系","asset":"../images/列车/JR東日本/JR東日本_E6系.png","lineIds":["AkitaShinkansen","TohokuShinkansen"],"aliases":["JR東日本E6系","JR E6系"]},
   "planned-stock-library-21": {"displayName":"E7系","iconName":"E7系","asset":"../images/列车/JR東日本/JR東日本_E7系.png","aliases":["JR東日本E7系","JR E7系"]},
-  "planned-stock-library-22": {"displayName":"E8系","iconName":"E8系","asset":"../images/列车/JR東日本/JR東日本_E8系.png","aliases":["JR東日本E8系","JR E8系"]},
+  "planned-stock-library-22": {"displayName":"E8系","iconName":"E8系","asset":"../images/列车/JR東日本/JR東日本_E8系.png","lineIds":["YamagataShinkansen","TohokuShinkansen"],"aliases":["JR東日本E8系","JR E8系"]},
   "planned-stock-library-23": {"displayName":"H5系","iconName":"H5系","asset":"../images/列车/JR北海道/JR北海道_H5系.png","aliases":[]},
   "planned-stock-library-24": {"displayName":"N700系（JR東海）","iconName":"N700系（JR東海）","asset":null,"plannedAsset":"../images/列车/JR東海/JR東海_N700系.png","lineIds":["TokaidoShinkansen"],"aliases":["JR東海N700系"]},
   "planned-stock-library-25": {"displayName":"N700系（JR西日本）","iconName":"N700系（JR西日本）","asset":null,"plannedAsset":"../images/列车/JR西日本/JR西日本_N700系.png","lineIds":["TokaidoShinkansen","SanyoShinkansen"],"aliases":["JR西日本N700系"]},
@@ -4562,6 +4562,32 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         itineraryStations:_baseOperationCtx.itineraryStations,
         _positionSource:tt._positionSource||'',_plannedArtworkInventory:true
       });
+      // 2611 Shinkansen: only the prevalidated SQL exact-number PNG roster
+      // can authorize an illustrative plan icon. The generic fleet gallery
+      // must NEVER convert N700 family, E5/H5 or E7/W7 into a guessed image.
+      // A plan image does NOT identify the physical trainset or formation.
+      if (/Shinkansen$/.test(lineId) && /^2026-11-\d{2}$/.test(serviceDate) &&
+          tt._positionSource === 'supabase-train-run' && vehResult.vehiclePlan) {
+        var shinkansenPlan = vehResult.vehiclePlan;
+        var shinkansenPng = normalizeGalleryPngPath(tt._sqlVehicleArtworkPath || '');
+        var shinkansenGarage = window.VehicleGaragePngMap;
+        var shinkansenApproved = !!(publishedSqlPlan &&
+          tt._sqlVehiclePlanConfirmed === true &&
+          tt._sqlVehicleMappingLevel === 'official_service_vehicle_plan' &&
+          shinkansenPlan.source === 'database-verified-published-plan' &&
+          shinkansenPlan.status === 'PLANNED_MODEL' &&
+          Array.isArray(shinkansenPlan.models) &&
+          shinkansenPlan.models.length === 1 &&
+          shinkansenPng && isGalleryPng(shinkansenPng) &&
+          shinkansenGarage &&
+          typeof shinkansenGarage.matchModelPath === 'function' &&
+          shinkansenGarage.matchModelPath(publishedSqlPlan,shinkansenPng,lineId));
+        shinkansenPlan.iconPath = shinkansenApproved ? shinkansenPng : '';
+        shinkansenPlan.garagePngMapped = shinkansenApproved;
+        shinkansenPlan.garagePngPath = shinkansenApproved ? shinkansenPng : '';
+        shinkansenPlan.actualVehicleConfirmed = false;
+        shinkansenPlan.illustrative = true;
+      }
       // A published-number family plan may be supported by a nominal working
       // inference rather than an operator's fixed dispatch roster. Display
       // the planned FAMILY with an explicit inference qualifier, not a
