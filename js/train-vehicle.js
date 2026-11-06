@@ -5269,6 +5269,106 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       illustrative:true,actualVehicleConfirmed:false};
   }
 
+
+  // Jōban Main (Haranomachi–Sendai): 701 and E721 can work separately OR
+  // together. 2025 mixed E721+701 sightings are evidence that the legacy
+  // source "701系 / E721系" must NOT be collapsed to a single carset model.
+  // The old SQL stop templates cover ONLY Sakamoto–Haranomachi (or a
+  // Shinchi fragment). These images are CANDIDATE METADATA, never drawn
+  // as real cabs, certified 2611 allocations, or published full itineraries.
+  // Source: JR East 2611 Joban 240u1/u2/d1/d2; JR East 701/E721 stock
+  // https://www.jreast.co.jp/train/local/701.html
+  // https://www.jreast.co.jp/train/local/e721.html
+  // Combined service: https://2nd-train.net/topics/article/63722/
+  function lookupJobanMainNorthMixedCandidates(p) {
+    if (!p || p.positionSource !== "supabase-train-run" ||
+        p.estimated !== true ||
+        String(p.positionLineId || p.lineId || "") !== "JobanMain" ||
+        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "JobanMain" ||
+        p.sourceRailway !== "odpt.Railway:JR-East.Joban" ||
+        p.canonicalGroupEvidence !== "source_only" ||
+        !Array.isArray(p.canonicalLineIds) || p.canonicalLineIds.length ||
+        p.timetableValidity !== "undated_not_current_verified" ||
+        p.timetableDateVerified !== false ||
+        p.vehicleIdentityStatus !== "UNKNOWN" ||
+        p.vehicleResolvedUpstream === true ||
+        p.vehicleResolvedFromRealtime === true ||
+        p.actualVehicleConfirmed === true || p.vehicleFormationId ||
+        (Array.isArray(p.vehicleFormationCandidates) &&
+         p.vehicleFormationCandidates.length) ||
+        p.realtimeVehicleType || p.realtimeDerivedVehicleType ||
+        p.vehicleIconPath ||
+        (p.vehicleResolution && p.vehicleResolution.identityStatus === "EXACT") ||
+        (p.vehiclePlan && (p.vehiclePlan.confirmed === true ||
+         p.vehiclePlan.status === "PLANNED_MODEL"))) return null;
+    var op=String(p.trainOperator || p.operator || "");
+    if (op && op !== "JR-East" && op !== "odpt.Operator:JR-East") return null;
+    var num=String(p.trainNumber || "").trim().toUpperCase();
+    var date=String(p.serviceDate || "").slice(0,10);
+    var tid=String(p.canonicalTimetableId || "");
+    if (!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date) ||
+        !/^[0-9]{3}M$/.test(num) ||
+        !/^[0-9]+$/.test(tid) ||
+        p.runningChainId !== "canonical-sql-trip:" + date + ":" + tid ||
+        !/^22[235-8]M$|^2[3-6][0-9]M$|^27[0-3]M$/.test(num) ||
+        // 224M and 229M are absent from the historical 50-number roster.
+        num === "224M" || num === "229M" ||
+        String(p.trainType || "").split(/[.:]/).pop() !== "Local" ||
+        p.plannedVehicleCandidateStatus !== "unresolved" ||
+        !Array.isArray(p.plannedVehicleCandidates) ||
+        p.plannedVehicleCandidates.length !== 2 ||
+        !p.plannedVehicleCandidates.includes("701系") ||
+        !p.plannedVehicleCandidates.includes("E721系")) return null;
+    var d=String(p.railDirection || "").split(/[.:]/).pop();
+    if (d !== "Inbound" && d !== "Outbound") return null;
+    if (Number(num.slice(0,-1)) % 2 !== (d === "Inbound" ? 0 : 1))
+      return null;
+    var c=String(p.calendarType || "");
+    if (c !== "weekday" && c !== "holiday") {
+      var raw=String(p.serviceId || p.timetableCalendar || "");
+      c=/(?:^|[.:])Weekday$/.test(raw) ? "weekday" :
+        /(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
+          ? "holiday" : "";
+    }
+    var dow=new Date(date+"T12:00:00Z").getUTCDay();
+    var holiday=dow===0 || dow===6 ||
+      date==="2026-11-03" || date==="2026-11-23";
+    if (c !== (holiday ? "holiday" : "weekday")) return null;
+    var stops=Array.isArray(p.scheduledStopKeys)
+      ? p.scheduledStopKeys.map(function(v) {
+          return String(v || "").split(".").pop();
+        }) : [];
+    var north=["Sakamoto","Shinchi","Komagamine","Soma",
+      "Nittaki","Kashima","Haranomachi"];
+    var path=d==="Inbound" ? north : north.slice().reverse();
+    // The import contains either all seven stops, or a two-stop Sakamoto
+    // to Shinchi shuttle. Never authorize a complete Sendai itinerary.
+    var expected=(num==="250M" || num==="270M")
+      ?["Sakamoto","Shinchi"]
+      :(num==="255M" || num==="271M")
+        ?["Shinchi","Sakamoto"] : path;
+    if (stops.length !== expected.length ||
+        stops.some(function(v,i) { return v !== expected[i]; }))
+      return null;
+    var assets=[
+      ["701系","../images/列车/JR東日本/JR東日本_701系_仙台地区.png"],
+      ["E721系","../images/列车/JR東日本/JR東日本_E721系_仙台地区.png"]
+    ];
+    var gallery=window.VehicleGaragePngMap;
+    if (!gallery || typeof gallery.matchModelPath !== "function" ||
+        assets.some(function(a) {
+          return !gallery.matchModelPath(a[0],a[1],"JobanMain");
+        })) return null;
+    return {
+      lineId:"JobanMain",trainNumber:num,kind:"mixed-source-candidates",
+      candidateModels:assets.map(function(a) {return a[0];}),
+      candidateAssets:assets.map(function(a) {return a[1];}),
+      source:"historical-sql-joban-north-partial-uncertain",
+      referenceOnly:true,actualVehicleConfirmed:false,
+      authorizesPNG:false,formationId:null,possibleCoupling:true
+    };
+  }
+
   // One approved E233-3000 PNG serves as an ILLUSTRATIVE placeholder
   // for the E231-1000 / E233-3000 mixed fleet. It is neither an actual
   // vehicle assignment nor a pair of coupled trains; the accessible
@@ -5488,6 +5588,15 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
+    // Northern 701/E721 candidates are metadata for ONE neutral circle.
+    // Both types can be physically coupled, so never draw two pixel cabs.
+    var northMixed = !identityConfirmed && !artworkFailed &&
+      lookupJobanMainNorthMixedCandidates(p);
+    if (northMixed && northMixed.authorizesPNG === false) {
+      return {kind:"candidate",iconSrc:"",planned:false,
+        referenceOnly:true,actualVehicleConfirmed:false,
+        candidateAssets:northMixed.candidateAssets.slice()};
+    }
     // Ryomo 2611: exact official public number/calendar/direction selects a
     // fleet REFERENCE image, not a physical carset. 211 local M trains
     // and E231/E233 green-car through trains must not be conflated.
@@ -5647,6 +5756,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     lookupTrainNumberRangePng: lookupTrainNumberRangePng,
     lookupVerifiedJobanCanonicalE531Png: lookupVerifiedJobanCanonicalE531Png,
     lookupJobanMainSourceOnlyE531Illustration: lookupJobanMainSourceOnlyE531Illustration,
+    lookupJobanMainNorthMixedCandidates: lookupJobanMainNorthMixedCandidates,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     getOperationPngLibrary: getOperationPngLibrary,

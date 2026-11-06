@@ -12,6 +12,16 @@
   // Same labelled model as the existing canonical Keiyo E233-5000 PNG,
   // but the artwork bytes differ. Keep as an explicit ALTERNATE inventory
   // entry; do not use it as a default model/formation assignment.
+  // Candidates only, NEVER a single-train PNG choice. Original artwork
+  // files exist in the repo; the historical JobanMain SQL is 701/E721
+  // ambiguous and mixed 701+E721 sets have operated on this corridor.
+  // Keep canonicalImage=0 so source-carset identity is never inferred.
+  table.push(
+    ["jr-east-joban-north-701-candidate-2611","701系",
+      "JR東日本/JR東日本_701系_仙台地区.png","JobanMain",0],
+    ["jr-east-joban-north-e721-candidate-2611","E721系",
+      "JR東日本/JR東日本_E721系_仙台地区.png","JobanMain",0]
+  );
   var alternates=[["jr-east-e233-5000-keiyo","E233系5000番台","JR東日本/JR東日本_E233系_5000番台.png","Keiyo|Togane"]];
   var unassigned=[];
   var assets=Object.create(null),byModel=Object.create(null),byPath=Object.create(null);
