@@ -222,21 +222,22 @@ body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-text,
 body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-cause-inline {
   color: #1F2A35;
 }
+/* Status is a pixel glyph, not a second raised button inside the card. */
 body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-symbol,
 body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-symbol,
 body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-symbol {
-  width: 30px;
-  height: 30px;
-  flex: 0 0 30px;
-  background: var(--pt-alert-accent);
-  border: 2px solid #303842;
-  border-radius: 3px;
-  box-shadow: 2px 2px 0 rgba(30,48,65,.24), inset 1px 1px 0 rgba(255,255,255,.72);
-  color: #202B36;
-  font-size: 22px;
+  width: 26px;
+  height: auto;
+  flex: 0 0 26px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: #263646;
+  font-size: 24px;
 }
 body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
-/* Line cards: bright color accents, original text glyphs. */
+/* Only the original status glyph stays on the right of the line card.
+   The 3D shadow belongs to the full line card, not the status symbol. */
 body[data-page="realtime"] .rs-status-icon-delayed,
 body[data-page="trains"] .rs-status-icon-delayed,
 body[data-page="realtime"] .rs-status-icon-notice,
@@ -244,21 +245,21 @@ body[data-page="trains"] .rs-status-icon-notice {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 26px;
-  width: 26px;
-  height: 26px;
-  color: #202B36;
-  border: 2px solid #303842;
-  border-radius: 3px;
-  box-shadow: 2px 2px 0 rgba(30,48,65,.20);
-  font-size: 19px;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 23px;
   line-height: 1;
   animation: none;
 }
 body[data-page="realtime"] .rs-status-icon-delayed,
-body[data-page="trains"] .rs-status-icon-delayed { background: #FFB45E; }
+body[data-page="trains"] .rs-status-icon-delayed { color: #ED890E; }
 body[data-page="realtime"] .rs-status-icon-notice,
-body[data-page="trains"] .rs-status-icon-notice { background: #67CFFF; }
+body[data-page="trains"] .rs-status-icon-notice { color: #008CC7; }
 body[data-page="realtime"] .rs-status-icon-suspended,
 body[data-page="trains"] .rs-status-icon-suspended { color:#b42334; }
 body[data-page="realtime"] .rs-status-icon-no-data,
