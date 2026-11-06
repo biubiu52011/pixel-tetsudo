@@ -9,7 +9,7 @@
 .article-content--shop .dp-hero-shade { position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, rgba(0,0,0,0.02) 45%, rgba(0,0,0,0.38) 100%); }
 .article-content--shop .dp-photo-tag { position: absolute; right: 12px; bottom: 12px; z-index: 2;
-  background: rgba(0,0,0,0.55); color: #fff; border: none; border-radius: 14px; padding: 4px 12px;
+  background: rgba(0,0,0,0.55); color: #fff; border: none; border-radius: 14px; padding: 8px 12px; min-height: 44px; display: inline-flex; align-items: center;
   font-size: 12px; cursor: pointer; font-family: inherit; }
 
 /* ② 店名卡（点评式白色卡片，上移覆盖图沿） */
@@ -46,7 +46,7 @@
 .article-content--shop .dp-menu-count { font-size: 12px; color: #999; background: #f6f6f6; padding: 2px 10px; border-radius: 10px; white-space: nowrap; }
 .article-content--shop .dp-menu-carousel { display: flex; overflow-x: auto; gap: 10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .article-content--shop .dp-menu-carousel::-webkit-scrollbar { display: none; }
-.article-content--shop .dp-menu-viewall { font-size: 13px; color: #E8590C; background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 8px; font-family: inherit; }
+.article-content--shop .dp-menu-viewall { font-size: 13px; color: #E8590C; background: none; border: none; cursor: pointer; padding: 8px 10px; min-height: 44px; border-radius: 8px; font-family: inherit; }
 .article-content--shop .dp-menu-viewall:hover { background: #fff3ed; }
 .article-content--shop .dp-dish { flex-shrink: 0; width: 110px; scroll-snap-align: start; }
 .article-content--shop .dp-dish-thumb { aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; position: relative; background: #f3f1ec; display: flex; align-items: center; justify-content: center; }
@@ -79,7 +79,7 @@
 .dp-menu-modal-inner { background: #fff; width: 100%; max-width: 480px; max-height: 88vh; border-radius: 16px 16px 0 0; display: flex; flex-direction: column; overflow: hidden; }
 .dp-menu-modal-title { margin: 0; padding: 16px 16px 12px; font-size: 16px; font-weight: 800; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
 .dp-menu-modal-grid { padding: 12px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 12px 10px; }
-.dp-menu-modal-close { position: absolute; top: 12px; right: 16px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 20px; cursor: pointer; line-height: 1; color: #333; z-index: 1; }
+.dp-menu-modal-close { position: absolute; top: 12px; right: 16px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 44px; height: 44px; min-width: 44px; min-height: 44px; font-size: 20px; cursor: pointer; line-height: 1; color: #333; z-index: 1; }
 /* 移动端适配 */
 @media (max-width: 640px) {
   .article-content--shop .dp-dish { width: 96px; }
