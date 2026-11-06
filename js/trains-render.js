@@ -1332,6 +1332,24 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // 羽越本線: the estimator emits an UNCONFIRMED physical car identity,
+    // but the source-number + planned route can authorize an illustrative
+    // model. Keep the distinction visible in the folded passenger list.
+    if(lineId==="Uetsu" && window.JREastUetsuNumberIndex202611 &&
+       typeof window.JREastUetsuNumberIndex202611.resolve==="function"){
+      var uetsuIllustration=window.JREastUetsuNumberIndex202611.resolve(
+        Object.assign({},p,{displayLineId:lineId}));
+      if(uetsuIllustration){
+        lang=String(lang||"ja").toLowerCase();
+        var uetsuPrefix=/^zh/.test(lang)
+          ?"车型参考（非当日实际编组）："
+          :lang==="en"?"Illustrative fleet (not actual-day stock): "
+          :lang==="ko"?"차종 참고(당일 실차 미확인): "
+          :"車種参考（当日の実車・編成は未確認）：";
+        return uetsuPrefix+uetsuIllustration.illustrationModel;
+      }
+    }
+
     // Missing ChuoMain limited expresses and special-service references:
     // one gallery image is a planned illustration, never a physical set.
     if (lineId === "ChuoMain" && window.TrainNumberPngRanges &&
@@ -2539,6 +2557,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           if(fleetText) {
             icon.title=fleetText;
             entry.setAttribute('aria-label',captionBase+' · '+fleetText);
+          }
+          // Uetsu source-approved icons identify a scheduled reference
+          // family, not a physically observed carset; the status must remain
+          // visible even on iOS where hovering an image is not possible.
+          if (lineId === "Uetsu" && fleetText) {
+            var uetsuNote=document.createElement('small');
+            uetsuNote.className='train-fold-fleet-reference';
+            uetsuNote.textContent=fleetText;
+            caption.appendChild(uetsuNote);
           }
           // The E231 PNG is only a visual representative for the shared
           // Hachiko E231/209 working. Always expose the uncertainty in the
