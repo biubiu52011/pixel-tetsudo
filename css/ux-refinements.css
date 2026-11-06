@@ -198,65 +198,67 @@ body[data-page="history"] .history-delete-btn:active {
   box-shadow: none;
 }
 
-/* Fresh, distinct railway alert colors: tangerine delay / lemon notice.
-   Keep text dark and render the accent as an extruded pixel tile. Avoid
-   low-contrast amber glyphs on white or muddy brown status lettering. */
+/* Bright rail-signage palette: orange for delay, clean sky blue for notices.
+   Train illustration style means crisp, readable accents; no train-shaped
+   status glyphs and no muddy yellow/brown text. Keep the existing symbols. */
 body[data-page="realtime"] .rs-status-section.rs-status-delayed {
-  --pt-alert-accent: #ff9e32;
-  border-color: var(--pt-alert-accent);
-  background: #fff6e9;
-  color: var(--text);
+  --pt-alert-accent: #FFB45E;
+  border-color: #FFB45E;
+  background: #FFF9F2;
+  color: #1F2A35;
 }
 body[data-page="realtime"] .rs-status-section.rs-status-info,
 body[data-page="realtime"] .rs-status-section.rs-status-notice {
-  --pt-alert-accent: #ffe14d;
-  border-color: var(--pt-alert-accent);
-  background: #fffdec;
-  color: var(--text);
+  --pt-alert-accent: #67CFFF;
+  border-color: #67CFFF;
+  background: #F2FBFF;
+  color: #1F2A35;
 }
-/* Unlike flat 3D buttons, the railway artwork is itself a small pixel sprite.
-   Keep a transparent silhouette and nearest-neighbor edges, as with train PNGs.
-   The original monochrome glyph remains a fallback if the art is unavailable. */
-body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-symbol-art,
-body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-symbol-art,
-body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-symbol-art {
-  width: 32px;
-  height: 40px;
-  flex: 0 0 32px;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  line-height: 1;
+body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-text,
+body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-cause-inline,
+body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-text,
+body[data-page="realtime"] .rs-status-section.rs-status-info .rs-cause-inline,
+body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-text,
+body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-cause-inline {
+  color: #1F2A35;
 }
-body[data-page="realtime"] .pt-train-status-art,
-body[data-page="trains"] .pt-train-status-art {
-  display: block;
-  flex: none;
-  width: 32px;
-  height: 40px;
-  max-width: none;
-  max-height: none;
-  image-rendering: pixelated;
-  shape-rendering: crispEdges;
-  pointer-events: none;
+body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-symbol,
+body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-symbol,
+body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-symbol {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  background: var(--pt-alert-accent);
+  border: 2px solid #303842;
+  border-radius: 3px;
+  box-shadow: 2px 2px 0 rgba(30,48,65,.24), inset 1px 1px 0 rgba(255,255,255,.72);
+  color: #202B36;
+  font-size: 22px;
 }
+body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
+/* Line cards: bright color accents, original text glyphs. */
 body[data-page="realtime"] .rs-status-icon-delayed,
 body[data-page="trains"] .rs-status-icon-delayed,
 body[data-page="realtime"] .rs-status-icon-notice,
 body[data-page="trains"] .rs-status-icon-notice {
-  flex: 0 0 32px;
-  width: 32px;
-  height: 40px;
-  padding: 0;
-  color: var(--text);
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  animation: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  color: #202B36;
+  border: 2px solid #303842;
+  border-radius: 3px;
+  box-shadow: 2px 2px 0 rgba(30,48,65,.20);
+  font-size: 19px;
   line-height: 1;
+  animation: none;
 }
-body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
+body[data-page="realtime"] .rs-status-icon-delayed,
+body[data-page="trains"] .rs-status-icon-delayed { background: #FFB45E; }
+body[data-page="realtime"] .rs-status-icon-notice,
+body[data-page="trains"] .rs-status-icon-notice { background: #67CFFF; }
 body[data-page="realtime"] .rs-status-icon-suspended,
 body[data-page="trains"] .rs-status-icon-suspended { color:#b42334; }
 body[data-page="realtime"] .rs-status-icon-no-data,
