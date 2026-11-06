@@ -44,3 +44,14 @@ test('top spacing makes room for circular language switcher; tourism aligns to s
   const lang = read('css/lang-bar.css');
   assert.match(lang, /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
 });
+
+test('empty search results do not make a blank card footer', () => {
+  assert.match(css, /#searchContainer > \.search-results:empty \{[\s\S]*?padding: 0;[\s\S]*?margin: 0;/);
+  assert.match(css, /#searchContainer > \.search-results:not\(:empty\) \{[\s\S]*?padding: 0 16px 16px;/);
+});
+
+test('search and tourism module titles share a mobile grid and typography', () => {
+  assert.match(css, /#searchContainer > \.module-title,\s*body\[data-page="home"\] #smModule > \.module-title \{/);
+  assert.match(css, /#searchContainer > \.module-title h2,\s*body\[data-page="home"\] #smModule > \.module-title h2 \{/);
+  assert.match(css, /#smModule > \.sm-location-bar \{[\s\S]*?padding: 12px 16px;/);
+});
