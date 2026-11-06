@@ -1,12 +1,50 @@
 # 新干线 2026-11 列车番号 → 计划车型 → PNG 分级覆盖审计
 
-**最新回读日期**：2026-11-07（823/826正式番号、533/826唯一计划车型；196条精确PNG规则对应193个不同线路-番号；29份模板有11月7日明确运行日白名单；Edge v335 ACTIVE，已与当前main的train-runs源码逐字比较一致）  
+**最新回读日期**：2026-11-07（827份新干线源模板：824份有2611正式番号、534份有唯一官方计划车型；新增模板为306C单日时刻变体，非新列车；196条精确PNG规则/193个不同线路+正式番号；31份来源有11月7日明确运行日；Edge v336 ACTIVE，与main源码逐字一致）  
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
 
 
 
+
+
+## 2026-11-07 续查：306C 11月21日时变版本补齐、上越两车全日计划及关联范围同步
+
+**适用范围**：继续修改现有SQL的原始来源及规范化关系表（manual_timetable_templates、manual_timetable_template_stops、train_timetables、train_timetable_members、published_train_number_evidence、train_timetable_vehicle_mappings、evidence_sources）。没有新增表、前端补丁或编组推算层。保留计划车型不代表实际车底的证据边界。
+
+### 306C 2026-11-21「時変」单日变体
+
+JR东日本 [2611上越新干线上行土休日时刻表](https://timetables.jreast.co.jp/2611/timetable-v/004u2p.html) 明确标记11月21日对306C进行时刻变更。将 [普通停站表（076001）](https://timetables.jreast.co.jp/2611/train/075/076001.html) 与 [当天变更停站表（076002）](https://timetables.jreast.co.jp/2611/train/075/076002.html) 逐站核对，证实两者均为新潟07:24→东京09:40，共12站，变更之处是上野普通09:34到/09:35发，11月21日 **09:35到/09:36发**。
+
+- **普通 source_template_id 578**：只适用于2026-11-01～30**排除11/21的29天**，保留原E7计划车型、正式番号306C及全部12站时刻。
+- **单日 source_template_id 129361**：只适用于**2026-11-21**，calendar_urn=odpt.Calendar:SaturdayHoliday，独立关联至train_timetables **177289**，所有12站与原车相同，惟上野到发按照官方变更为09:35/09:36。
+- 新增日期变体沿用已有A等级E7计划车型证据source_id 5054，独立登记官方变更时刻证据，发布番号仍为 **306C**，且actual_vehicle_confirmed=false。原图库中306C E7系 native PNG精确规则继续适用。
+
+SQL事务强校验原模板578的29天日历、正式番号306C、上野原时刻、existing-only官方E7计划车型、11月21日尚无其他306C来源；然后新增原生单日模板、12站、source_only的canonical车次、成员关联、2611休日正式番号与车型证据。**失败过一次的原因为identity GENERATED ALWAYS列不允许手工指定ID，事务已回滚**；改由数据库原生RETURNING id领取自生成ID后原子写入成功。
+
+日期交叉回读：11月20日只命中578，**11月21日只命中129361**，11月22日只命中578，三天均恰好一个306C；两条记录均能在train_timetable_source_resolution及train_timetable_stops视图中解析为12站与E7系。
+
+### 既有源停站同步与两趟「全日」补录
+
+先前已直接修订站表、但train_timetable_members末站范围仍是旧值：源模板 **575、576、577、578、586**，分别将末站索引按真实来源站表更正为 **5、9、10、11、7**，且同步核验每份停站序号均从0连续无缺漏。单日变体129361自创建时末站索引就是11。本次还补齐了以下两趟：
+
+| 2611正式番号 | 车次 | 源模板 | 原始→现有停站数 | 本轮运行日 |
+|---|---|---:|---:|---|
+| **346C** | とき346（新潟21:40→东京23:40） | 583 | 6→10 | 2026-11-01至11-30共30天 |
+| **2410C** | たにがわ410（越后汤泽11:33→东京13:00） | 588 | 6→8 | 2026-11-01至11-30共30天 |
+
+均以 [JR东日本346C官方完整停站表](https://timetables.jreast.co.jp/2611/train/020/021861.html)、[2410C官方完整停站表](https://timetables.jreast.co.jp/2611/train/050/054571.html)、[2611上越新干线上行平日表](https://timetables.jreast.co.jp/2611/timetable-v/004u1p.html) 和 [土休日表](https://timetables.jreast.co.jp/2611/timetable-v/004u2p.html)核对。346C补浦佐、越后汤泽、上毛高原、高崎4站，燕三条、长冈原到发各晚1分钟，已订正；2410C补本庄早稻田、熊谷2站，上毛高原和高崎原到发时间存在1～3分钟偏差，按正式来源订正。原E7车型计划、原生PNG参考图和原source_only身份均保持。
+
+复核时曾以爱称410查询2410C PNG而误以为缺号，后来按**实际正式番号2410C**查明原 published_train_png_number_ranges 已有同一E7 native PNG精确规则。因此**没有再插入任何PNG记录**，维持196条/193不同线路-番号。
+
+### 全局回读与限制
+
+- 2026-11-07：**827**份新干线来源模板（此前826+1份单日变更）；**824**份2611正式番号来源（823+1日期变体），**534**份唯一官方计划车型来源（533+1日期变体），3份历史源继续退役。增加的正式番号/车型来源**不是**多一趟不同列车，不能当作新开行数量。
+- 11月7日有明确日期证据的来源31份（此前29+346C及2410C两份），11月21日为30份；未取得日期证据的其它周末来源仍不能自动转为全日。
+- 精确 PNG规则继续为 **196**条，对应**193**个不同线路＋番号；306C、346C、2410C三者均已有官方A等级E7计划车型和native_png素材，无实际编组断言。
+- 线上train-runs **v336 ACTIVE**，与当次GitHub main的index.ts源码逐字一致。现有Edge代码按日历和精确operating_dates筛选，本轮纯SQL数据修改无需重部署。
+- **真实公网接口仍未验收**：执行环境尝试通过Web访问以及curl访问Supabase Edge URL，分别因不可访问与DNS解析失败未得到JSON；因此不声称Web/Safari图面或实际HTTP回包已通过。数据库日期分发、canonical视图及PNG合同的回读都已通过。下一阶段仍需实际服务响应与Safari DOM验证，且大量未完成的休日列车保持sparse/calendar-review状态。
 
 ## 2026-11-07 追加上越：302C / 306C / 345C 全列车停站重建及特定日变更隔离
 
