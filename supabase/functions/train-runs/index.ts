@@ -230,6 +230,104 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
     if (selected.length || revision) { templates = selected; selectedCalendar = calendar; selectedRevision = revision; break; }
   }
+  // Kabe / 可部線: 87 synthetic 12-stop Yokokawa-Kabe legacy grids
+  // (10 x four-minute gaps, then three) must NEVER become November 2026
+  // Hiroshima–Aki-Kameyama train positions. JR West's official issue
+  // lists real 740M/866M/868M, and 2019 operator fleet is 227 Red Wing;
+  // neither source supplies full 2026-11 stop clocks / physical carsets.
+  if(lineId==="Kabe"&&/^2026-11-\d{2}$/.test(serviceDate)&&
+     !selectedRevision&&templates.length>0){
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?54:
+      selectedCalendar==="odpt.Calendar:SaturdayHoliday"?33:0;
+    if(!expected||templates.length!==expected)
+      throw new Error("KABE_2611_SYNTHETIC_SOURCE_COVERAGE_CHANGED");
+    const [{data:legacy,error:legacyError},{data:official,error:officialError}]=
+      await Promise.all([
+        db.from("published_jrwest_kabe_2611_source_quarantine")
+          .select("source_template_id,source_train_number,calendar_urn,direction_urn,source_path,source_stop_keys,source_clock_status,reference_models,png_paths,number_date_verified,actual_vehicle_confirmed,authorizes_png,authorizes_2611_position")
+          .eq("edition","2611").eq("calendar_urn",selectedCalendar),
+        db.from("published_jrwest_kabe_2611_number_reference")
+          .select("train_number,calendar_scope,official_timetable_issue,official_source_url,origin_key,destination_key,line_fleet,fleet_source_url,number_evidence,number_date_verified,stop_clocks_verified,actual_vehicle_confirmed,png_paths,authorizes_png,authorizes_2611_position")
+          .eq("edition","2611").eq("line_key","Kabe")
+      ]);
+    if(legacyError||officialError)throw legacyError||officialError;
+    if(!Array.isArray(legacy)||legacy.length!==expected)
+      throw new Error("KABE_2611_LEGACY_QUARANTINE_MISSING");
+    const byId=new Map(legacy.map((r:any)=>[Number(r.source_template_id),r]));
+    if(byId.size!==expected)throw new Error("KABE_2611_SOURCE_ID_DUPLICATE");
+    for(const src of templates){
+      const p:any=byId.get(Number(src.id)),num=String(src.train_number||""),
+        dir=String(src.direction_urn||"");
+      if(!p||p.source_train_number!==num||
+         !/^70[0-9]{2}MH?$/.test(num)||
+         (selectedCalendar==="odpt.Calendar:SaturdayHoliday")!==num.endsWith("MH")||
+         src.railway_urn!=="odpt.Railway:JR-West.Kabe"||
+         src.train_type_urn!=="odpt.TrainType:JR-West.Local"||
+         src.source_path!=="data/timetables/Kabe-manual.js"||
+         src.vehicle_type_label!==null||src.source_revision_date!==null||
+         !["odpt.RailDirection:Inbound","odpt.RailDirection:Outbound"].includes(dir)||
+         p.calendar_urn!==selectedCalendar||p.direction_urn!==dir||
+         p.source_path!==src.source_path||
+         !Array.isArray(p.source_stop_keys)||p.source_stop_keys.length!==12||
+         p.source_stop_keys[0]!==(
+           dir==="odpt.RailDirection:Inbound"?"Kabe":"Yokokawa")||
+         p.source_stop_keys[11]!==(
+           dir==="odpt.RailDirection:Inbound"?"Yokokawa":"Kabe")||
+         p.source_clock_status!=="synthetic_4min_grid_not_2611"||
+         !Array.isArray(p.reference_models)||
+         p.reference_models.join("|")!=="227系0番台（Red Wing）"||
+         !Array.isArray(p.png_paths)||p.png_paths.length!==0||
+         p.number_date_verified!==false||p.actual_vehicle_confirmed!==false||
+         p.authorizes_png!==false||p.authorizes_2611_position!==false)
+        throw new Error("KABE_2611_SOURCE_PROOF_CONFLICT");
+    }
+    const refRules:any={
+      "740M":["saturday_holiday","https://timetable.jr-odekake.net/train-timetable/139551?date=20261031"],
+      "866M":["daily","https://timetable.jr-odekake.net/train-timetable/140121?date=20261031"],
+      "868M":["daily","https://timetable.jr-odekake.net/train-timetable/140131?date=20261031"]
+    };
+    if(!Array.isArray(official)||official.length!==3||
+       new Set(official.map((r:any)=>r.train_number)).size!==3)
+      throw new Error("KABE_2611_OFFICIAL_NUMBER_REFERENCE_INCOMPLETE");
+    const currentRefs:any[]=[];
+    for(const ref of official){
+      const rule=refRules[ref.train_number];
+      if(!rule||ref.calendar_scope!==rule[0]||
+         ref.official_source_url!==rule[1]||
+         ref.official_timetable_issue!=="2026-11"||
+         ref.line_fleet!=="227系0番台（Red Wing）"||
+         ref.origin_key!=="Aki-Kameyama"||
+         ref.destination_key!=="Hiroshima"||
+         ref.fleet_source_url!==
+           "https://www.westjr.co.jp/press/article/items/181214_00_hiroshima.pdf"||
+         ref.number_evidence!=="official_2026_11_issue_reference_only"||
+         ref.number_date_verified!==false||ref.stop_clocks_verified!==false||
+         ref.actual_vehicle_confirmed!==false||ref.authorizes_png!==false||
+         ref.authorizes_2611_position!==false||
+         !Array.isArray(ref.png_paths)||ref.png_paths.length!==0)
+        throw new Error("KABE_2611_OFFICIAL_NUMBER_REFERENCE_CONFLICT");
+      if(ref.calendar_scope==="daily"||
+         selectedCalendar==="odpt.Calendar:SaturdayHoliday")
+        currentRefs.push({train_number:ref.train_number,
+          calendar_scope:ref.calendar_scope,
+          line_fleet_candidate:ref.line_fleet,
+          number_source_url:ref.official_source_url,
+          fleet_source_url:ref.fleet_source_url,
+          number_date_verified:false,stop_clocks_verified:false,
+          actual_vehicle_confirmed:false,
+          authorizes_png:false,authorizes_2611_position:false});
+    }
+    return json({ok:true,complete:false,partial:false,cache:"MISS",
+      line_id:"Kabe",service_date:serviceDate,
+      source:"LEGACY_SYNTHETIC_CLOCKS_QUARANTINED",
+      source_coverage:"87_historical_12_station_grid_not_2026_11",
+      plan_status:"unverified",calendar_status:"selected",
+      selected_calendar:selectedCalendar,no_service_confirmed:false,
+      quarantined_legacy_sources:expected,
+      official_number_fleet_references:currentRefs,
+      date_verified_runs:0,date_unverified_runs:0,runs:[]});
+  }
+
   // The existing manual timetable owner may certify a finite set of
   // actual operating dates for an imported source (Nov 2026 temporary
   // shinkansen). The imported calendar remains provenance, not a daily
