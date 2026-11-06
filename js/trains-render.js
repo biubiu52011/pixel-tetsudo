@@ -2550,6 +2550,20 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var markerSpec=_trainMarkerSpec(p,id,lineId);
         var iconBox=document.createElement('div');
         iconBox.className='train-fold-vehicle-icon';
+        function showUnknownVehicle() {
+          // Unknown stock is a text placeholder, not a misleading train picture
+          // or an unlabelled 9px status dot.
+          iconBox.classList.add('unresolved');
+          iconBox.setAttribute('role','img');
+          var unknownLabel=lang==='en'?'Vehicle unknown':/^zh/.test(lang)?'车型未确定':lang==='ko'?'차종 미확인':'車両未特定';
+          iconBox.setAttribute('aria-label',unknownLabel);
+          if (!iconBox.querySelector('.train-fold-vehicle-placeholder')) {
+            var placeholder=document.createElement('span');
+            placeholder.className='train-fold-vehicle-placeholder';
+            placeholder.textContent=lang==='en'?'Unknown':/^zh/.test(lang)?'未确定':lang==='ko'?'미확인':'未特定';
+            iconBox.appendChild(placeholder);
+          }
+        }
         var captionBase=popupCaption||
           _uetsuFoldDestinationCaption(p,lineId,lang)||
           (lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
@@ -2653,14 +2667,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           icon.onerror=function(){
             // A failed PNG must not leave a broken-image symbol in the list.
             if(icon.parentNode===iconBox)iconBox.removeChild(icon);
-            iconBox.classList.add('unresolved');
+            showUnknownVehicle();
           };
           iconBox.appendChild(icon);
         } else {
           // Missing or failed PNG: keep one neutral marker, not an invented
           // train-front image. Number and candidate details remain readable.
-          iconBox.classList.add('unresolved');
-          iconBox.setAttribute('aria-hidden','true');
+          showUnknownVehicle();
           // A numbered Ito local has documented alternative families. Show
           // those names in the fold without implying a single confirmed PNG.
           if (lineId === "Ito" || lineId === "Hachiko" ||
