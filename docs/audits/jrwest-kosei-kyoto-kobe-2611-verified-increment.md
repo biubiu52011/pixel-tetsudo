@@ -178,3 +178,32 @@ Supabase 已经应用上述两次迁移，查询确认 **湖西 34/34、京阪�
 **本批修复了重要的已有兼容漏洞：** 前一版 `train-runs` 虽加入普通 `C` 可认证的 16／19／25／33 站证据，但校验末端依然要求 7 个有时间的站点，可能造成普通车来源运行时错误。现在统一使用每条来源校验过的 `official_stop_count`，适配 `Local C`、`Rapid T`、`SpecialRapid M` 三个类型。源 ID 继续用于内部匹配，而对用户公开的番号单独保存在 `published_train_number`。
 
 当前证据视图统计：**京都神戸線共 23/23 条核验通过**（平日 12，土休日 11；普通 8、快速 6、新快速 9）；**湖西線 52/52 条**保持原数。运行时所有列车与车型图像均继续执行旧的防误配门槛；没有擅自把 223、225 或 207、321 指定到特定的 train-number。
+
+
+## 2026-11-07 第五批：普通与快速按「番号＋日历＋源站时」继续验证
+
+本批延续唯一 `published_jrwest_kyoto_kobe_2611_source_fleet` 数据所有权，不新建平行 timetable 表。新增 SQL 迁移 `supabase/migrations/20261107143000_jrwest_kyoto_kobe_2611_more_local_rapid_verified.sql` 将 **8 条**现有来源经过 JR 西日本 2026年11月号个别列车页面的站时、种别、运营日核对后升级为已验证来源：
+
+| 公众列车番号 | 来源日历 | 历史源区间 | 核对站数 | 官方证据 |
+| --- | --- | --- | ---: | --- |
+| `172C` | 土休日 | 三ノ宮→高槻 | 25 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/129881?date=20261030)（每日） |
+| `176C` | 平日 | 三ノ宮→高槻 | 25 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/129901?date=20261026)（每日） |
+| `194C` | 土休日 | 三ノ宮→京都 | 32 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/129991?date=20261024)（土休日版本） |
+| `202C` | 平日 | 三ノ宮→京都 | 32 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/86491?date=20261013)（平日版本） |
+| `228C` | 平日 | 三ノ宮→京都 | 32 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/21281?date=20261026)（每日） |
+| `810T` | 土休日 | 三ノ宮→京都 | 18 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/389831?date=20261012)（土休日版本） |
+| `823T` | 土休日 | 西大路→神戸 | 18 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/129491?date=20261025) |
+| `835T` | 土休日 | 西大路→神戸 | 18 | [JRおでかけネット](https://timetable.jr-odekake.net/train-timetable/386891?date=20261031) |
+
+**注意「每天运行」不等于两份导入来源都已验证**：本次仅认证库里存在且来源站时匹配的那一种日历，没有为 `172C、176C、228C` 虚构另一种日历来源。
+
+**双日历同号规则：** 检索官方 `194C` 和 `810T` 会发现同一番号的平日/土休日不同官方版本。不可因为看到某个平日版本写「土休日运休」，就直接断定同番号的其他日历一定没有运行。此前 `3450M、3506M` 的专门例外隔离维持原状；这批没有新增未经核实的错误日历隔离。
+
+### 数据与接口状态
+
+- `published_jrwest_kyoto_kobe_2611_clock_evidence`：**31/31** 已验证来源，平日 **15** 条、土休日 **16** 条；`Local C` **13**、`Rapid T` **9**、`SpecialRapid M` **9**。同时保留 2 条之前已有的日历冲突记录。
+- **湖西線保持 52/52 条**已核验来源。剩余 `4848M` 在官方 2026年11月区间时刻表中可确认番号，但可访问到的整列车详情只确认了 10 月来源；**没有将旧 4 站时刻升级为 11 月已经逐站认证**。
+- Edge `train-runs` 已部署至 **v336**，仅根据源 ID 和原始指纹核验的数据使用真实公众番号字段，兼容 32 站普通车；不增添地图上的空想列车，不推断编组、不授权车辆 PNG。
+- `tests/jrwest-kosei-2611-verified-clocks-through.test.cjs` 增加 8 条来源、日历和指纹回归断言，与既有 QA 工作流共用同一测试入口。
+
+本次不改首页布局、导航、额外资源加载或渲染层。源车号仅用于内部匹配；用户无需看到历史组合 ID。全线时刻和跨线行程仍未达到完整覆盖。
