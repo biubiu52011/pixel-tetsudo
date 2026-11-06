@@ -166,6 +166,74 @@ test('no unexplained pending mapped vehicles remain in the 143 regular source nu
   }
  }
 });
+test('7M real Nov 6 DOM: timetable-EXACT E653 plan is not a physical formation',()=>{
+ // Real 19781 SQL stop list, NOT an interpolated synthetic itinerary.
+ const stops=['Shibata','Nakajo','Sakamachi','Murakami','Fuya',
+  'Atsumi-Onsen','Tsuruoka','Amarume','Sakata','Yuza','Kisakata',
+  'Nikaho','Ugo-Honjo','Akita'];
+ const published={...p('7M'),
+  trainNumber:'7M',positionLineId:'Uetsu',displayLineId:'Uetsu',
+  sourceRailway:'odpt.Railway:JR-East.Uetsu',
+  serviceDate:'2026-11-06',serviceId:'odpt.Calendar:Weekday',
+  plannedTripId:'planned-trip:2026-11-06|JR-East|odpt.Railway:JR-East.Uetsu|Uetsu|7M|odpt.RailDirection:Outbound|odpt.Station:JR-East.Shibata|15:12|odpt.Station:JR-East.Akita',
+  railDirection:'Outbound',trainType:'odpt.TrainType:JR-East.LimitedExpress',
+  scheduledStopKeys:stops.map(s=>'odpt.Station:JR-East.'+s),
+  destinationStation:'Akita',
+  vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,
+  vehicleResolution:{identityStatus:'EXACT',lineId:'Uetsu',
+   name:'E653系',sources:['database-verified-published-plan']},
+  vehicleIconPath:'',vehicleType:'E653系',
+  vehiclePlan:{lineId:'Uetsu',source:'database-verified-published-plan',
+   status:'PLANNED_MODEL',confirmed:true,models:['E653系'],iconPath:''},
+  vehicleFormationId:'',vehicleFormationCandidates:[],
+  estimated:true,positionSource:'supabase-train-run',
+  stationIndex:37,segmentToIndex:38
+ };
+ delete published.calendarType;
+ assert.ok(idx.verify(published),'7M real 14-stop SQL journey certified');
+ assert.equal(idx.resolve(published),null,
+  'generic route gallery must not mistake timetable EXACT for a physical ID');
+ const reference=idx.resolvePlannedExactInaho(published);
+ assert.ok(reference,'7M planned E653 family has an independent number-scoped illustration');
+ assert.equal(reference.family,'inaho');
+ assert.equal(reference.illustrationPng,idx.image.inaho);
+ assert.equal(reference.actualVehicleConfirmed,false);
+ const selected=root.TrainVehicle.selectMarkerArtwork(published,false);
+ assert.equal(selected.kind,'vehicle','7M must not render data-marker-kind=unresolved');
+ assert.equal(selected.iconSrc,idx.image.inaho);
+ assert.equal(selected.planned,true);
+ assert.equal(selected.illustrative,true);
+ assert.equal(selected.representativeOnly,true);
+ assert.equal(selected.actualVehicleConfirmed,false);
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(published,true).kind,'unresolved',
+  'broken PNG still falls back to a neutral marker');
+ for(const changed of [
+  {trainNumber:'15M'}, {displayLineId:'Hakushin'},
+  {sourceRailway:'odpt.Railway:JR-East.Hakushin'},
+  {scheduledStopKeys:stops.slice(1)},
+  {vehicleFormationId:'U105'}, {vehicleResolvedFromRealtime:true},
+  {vehicleResolution:{...published.vehicleResolution,
+    sources:['official-realtime-car-number']}},
+  {vehiclePlan:{...published.vehiclePlan,models:['701系']}},
+  {vehiclePlan:{...published.vehiclePlan,confirmed:false}},
+  {vehiclePlan:{...published.vehiclePlan,source:'sql-timetable-plan'}},
+  {vehiclePlan:{...published.vehiclePlan,lineId:'Hakushin'}},
+  {estimated:false}
+ ]) {
+  const x={...published,...changed};
+  assert.equal(idx.resolvePlannedExactInaho(x),null,JSON.stringify(changed));
+  assert.notEqual(root.TrainVehicle.selectMarkerArtwork(x,false).iconSrc,
+    idx.image.inaho,'wrong identity cannot borrow Inaho artwork');
+ }
+ // 14M inbound is the same certified E653 planning path in reverse.
+ const back=['Akita','Ugo-Honjo','Nikaho','Kisakata','Yuza',
+  'Sakata','Amarume','Tsuruoka','Atsumi-Onsen','Fuya',
+  'Murakami','Sakamachi','Nakajo','Shibata'];
+ const inbound={...published,trainNumber:'14M',railDirection:'Inbound',
+  scheduledStopKeys:back.map(s=>'odpt.Station:JR-East.'+s),
+  destinationStation:'Shibata'};
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(inbound,false).iconSrc,idx.image.inaho);
+});
 test('14M Akita–Shibata DOM: confirmed generic E653 family gets scoped Inaho icon',()=>{
  const original=p('14M'),sqlPlan={
   status:'PLANNED_MODEL',confirmed:true,
