@@ -5194,6 +5194,76 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       planned:true,representative:true};
   }
 
+  // JobanMain source_only SQL E531: all standalone trains lack a dated 2611
+  // vehicle allocation. The canonical timetable/source-model mapping is a
+  // historic CANDIDATE, and the original stop times are not current-verified.
+  // Give such a scoped, explicit candidate only an illustrative PIXEL PNG,
+  // never an EXACT/confirmed vehicle or a 2026 operating-day claim.
+  // Mixed 701 / E721 (Sendai area) can NOT pass this single-model gate.
+  function lookupJobanMainSourceOnlyE531Illustration(p) {
+    if (!p || p.estimated !== true ||
+        p.positionSource !== "supabase-train-run" ||
+        String(p.positionLineId || p.lineId || "") !== "JobanMain" ||
+        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "JobanMain" ||
+        p.sourceRailway !== "odpt.Railway:JR-East.Joban" ||
+        p.canonicalGroupEvidence !== "source_only" ||
+        (Array.isArray(p.canonicalLineIds) && p.canonicalLineIds.length) ||
+        p.timetableValidity !== "undated_not_current_verified" ||
+        p.timetableDateVerified !== false ||
+        p.vehicleIdentityStatus === "EXACT" ||
+        p.vehicleResolvedUpstream === true ||
+        p.actualVehicleConfirmed === true ||
+        p.vehicleFormationId ||
+        (Array.isArray(p.vehicleFormationCandidates) &&
+         p.vehicleFormationCandidates.length) ||
+        p.realtimeVehicleType || p.realtimeDerivedVehicleType ||
+        p.vehicleIconPath ||
+        (p.vehiclePlan && (p.vehiclePlan.confirmed === true ||
+          p.vehiclePlan.status === "PLANNED_MODEL"))) return null;
+    var date=String(p.serviceDate || "").slice(0,10);
+    var number=String(p.trainNumber || "").trim().toUpperCase();
+    var id=String(p.canonicalTimetableId || "");
+    if (!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date) ||
+        !/^[0-9]{3,4}M$/.test(number) ||
+        !/^[0-9]+$/.test(id) ||
+        String(p.runningChainId || "") !==
+          "canonical-sql-trip:" + date + ":" + id ||
+        String(p.trainType || "").split(/[.:]/).pop() !== "Local" ||
+        p.plannedVehicleCandidateStatus !== "source_single_type_candidate" ||
+        !Array.isArray(p.plannedVehicleCandidates) ||
+        p.plannedVehicleCandidates.length !== 1 ||
+        p.plannedVehicleCandidates[0] !== "E531系" ||
+        !Array.isArray(p.scheduledStopKeys) ||
+        p.scheduledStopKeys.length < 2) return null;
+    var operator=String(p.trainOperator || p.operator || "");
+    if (operator && operator !== "JR-East" &&
+        operator !== "odpt.Operator:JR-East") return null;
+    var direction=String(p.railDirection || "").split(/[.:]/).pop();
+    if (!["Inbound","Outbound"].includes(direction) ||
+        (Number(number.slice(0,-1)) % 2 !==
+         (direction === "Inbound" ? 0 : 1))) return null;
+    var calendar=String(p.calendarType || "");
+    if (calendar !== "weekday" && calendar !== "holiday") {
+      var raw=String(p.serviceId || p.timetableCalendar || "");
+      calendar=/(?:^|[.:])Weekday$/.test(raw) ? "weekday" :
+        /(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
+          ? "holiday" : "";
+    }
+    var dow=new Date(date+"T12:00:00Z").getUTCDay();
+    var holiday=dow===0 || dow===6 ||
+      date==="2026-11-03" || date==="2026-11-23";
+    if (calendar !== (holiday ? "holiday" : "weekday")) return null;
+    var png=normalizeGalleryPngPath(
+      "../images/列车/JR東日本/JR東日本_E531系.png");
+    var garage=window.VehicleGaragePngMap;
+    if (!png || !garage || !garage.matchModelPath ||
+        !garage.matchModelPath("E531系",png,"JobanMain")) return null;
+    return {trainNumber:number,lineId:"JobanMain",model:"E531系",
+      pngPath:png,source:"historical-sql-joban-main-e531-illustration",
+      planned:true,representative:true,referenceOnly:true,
+      illustrative:true,actualVehicleConfirmed:false};
+  }
+
   // One approved E233-3000 PNG serves as an ILLUSTRATIVE placeholder
   // for the E231-1000 / E233-3000 mixed fleet. It is neither an actual
   // vehicle assignment nor a pair of coupled trains; the accessible
@@ -5402,7 +5472,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // its actual-car status, or the original train-number identity.
     var numberPng = !identityConfirmed ?
       (lookupTrainNumberPng(p) || lookupTrainNumberRangePng(p) ||
-       lookupVerifiedJobanCanonicalE531Png(p)) : null;
+       lookupVerifiedJobanCanonicalE531Png(p) ||
+       lookupJobanMainSourceOnlyE531Illustration(p)) : null;
     if (numberPng) {
       if (artworkFailed !== true) {
         if (numberPng.referenceOnly===true && numberPng.illustrative===true)
@@ -5570,6 +5641,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     lookupTrainNumberPng: lookupTrainNumberPng,
     lookupTrainNumberRangePng: lookupTrainNumberRangePng,
     lookupVerifiedJobanCanonicalE531Png: lookupVerifiedJobanCanonicalE531Png,
+    lookupJobanMainSourceOnlyE531Illustration: lookupJobanMainSourceOnlyE531Illustration,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     getOperationPngLibrary: getOperationPngLibrary,
