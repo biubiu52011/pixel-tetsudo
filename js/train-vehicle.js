@@ -5572,6 +5572,49 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
            illustrationRole:"uetsu-inaho-published-series-not-physical-consist"};
       }
     }
+    // 湖西線: 1802M / 3145MH are historical source ordinary/rapid
+    // train identifiers. H is a weekend calendar flag, NOT a 681/683
+    // Thunderbird identity or a 221/223/225/521 physical carset.
+    // All 179 2611 source-only fleet candidates render ONE neutral SVG.
+    // 9017DH (Hanaakari seasonal special) is deliberately excluded.
+    var koseiProof=p&&p.sqlPublishedNumberFleetReference;
+    if(p&&!identityConfirmed&&contextLineId==="Kosei"&&
+       String(p.positionLineId||p.lineId||"")==="Kosei"&&
+       koseiProof&&
+       koseiProof.source==="sql-jrwest-kosei-2611-source-family"){
+      var koseiIndex=window.TrainNumberPngRanges;
+      var koseiFleet=koseiIndex&&
+        typeof koseiIndex.verifyKoseiSourceFleet==="function"
+          ?koseiIndex.verifyKoseiSourceFleet(p):null;
+      var koseiModels=koseiFleet&&koseiFleet.candidateModels||[];
+      if(artworkFailed!==true&&koseiFleet&&
+         p.estimated===true&&koseiFleet.referenceOnly===true&&
+         koseiFleet.authorizesPNG===false&&
+         koseiFleet.actualVehicleConfirmed===false&&
+         koseiFleet.numberDateVerified===false&&
+         p.vehicleIdentityStatus==="UNKNOWN"&&
+         p.vehicleResolvedUpstream!==true&&
+         p.vehicleResolvedFromRealtime!==true&&
+         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+         !(Array.isArray(p.vehicleFormationCandidates)&&
+           p.vehicleFormationCandidates.length)&&
+         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
+         Array.isArray(p.plannedVehicleCandidates)&&
+         p.plannedVehicleCandidates.join("|")===koseiModels.join("|")&&
+         (!p.vehiclePlan||p.vehiclePlan.confirmed!==true)&&
+         (!p.vehiclePlan||!Array.isArray(p.vehiclePlan.models)||
+           p.vehiclePlan.models.join("|")===koseiModels.join("|"))&&
+         koseiFleet.candidateAssets.length===0){
+        return {kind:"candidate",iconSrc:"",planned:false,
+          referenceOnly:true,actualVehicleConfirmed:false,
+          candidateModels:koseiModels.slice(),candidateAssets:[],
+          sourceHistoricalNumber:koseiFleet.historicalNumber,
+          corridorSegment:koseiFleet.corridorSegment};
+      }
+      // A stale/forged source proof never inherits a default 681/683
+      // express PNG, a separate operator livery or a guessed carset.
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Kyoto / Kobe (JR-West): the source composite ID, C/T/M number
     // suffix and Local/Rapid class identify a HISTORICAL service family,
     // NOT its exact 2026-11 207/321 or 223/225 physical carset.
