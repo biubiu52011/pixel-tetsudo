@@ -950,19 +950,11 @@
     {lineIds:["SaikyoKawagoe","Rinkai"],from:80,to:91,suffixes:"KFS",
       model:"東京臨海高速鉄道70-000形",
       pngPath:"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png"},
-    // JR East published Sotetsu-through timetable numbers use 120M+ for
-    // Sotetsu limited express and 220M+ for local services. Unlike K/F/S,
-    // the last two digits of 277M are NOT a stock-ownership operation number.
-    // Both E233-7000 and Sotetsu 12000 can operate these services.
-    // Use E233-7000 strictly as the configured representative DISPLAY PNG.
-    {lineIds:["SaikyoKawagoe","SotetsuJRDirect"],numberFormat:"full",
-      from:120,to:199,suffixes:"M",
-      model:"E233系7000番台",
-      pngPath:"../images/列车/JR東日本/JR東日本_E233系_7000番台.png"},
-    {lineIds:["SaikyoKawagoe","SotetsuJRDirect"],numberFormat:"full",
-      from:220,to:299,suffixes:"M",
-      model:"E233系7000番台",
-      pngPath:"../images/列车/JR東日本/JR東日本_E233系_7000番台.png"},
+    // Sotetsu-through 1xxM / 2xxM distinguish Sotetsu-side express/local,
+    // NOT carset ownership. Both JR E233-7000 and Sotetsu 12000 may work
+    // this corridor. Never paint a sole E233 image by full public M number
+    // on either SaikyoKawagoe or the JR SotetsuDirect connection.
+    // Official: https://www.jreast.co.jp/press/2019/20190716.pdf
     // ChuoRapid T/H: match FULL public train numbers, not operation tails.
     // The SQL timetable comprises 1008 ODPT rows plus 79 2610-sourced
     // references retained for review, not an independently verified
@@ -2502,6 +2494,77 @@
     return Object.freeze({number:n,kind:kind,model:model,pngPath:png,
       edition:"2611",sourceTemplateId:Number(proof.sourceTemplateId),
       referenceOnly:true,actualVehicleConfirmed:false});
+  }
+
+  // Source-backed fleet options for the JR connection Hazawa–Osaki.
+  // 184 old four-stop trips and 628-type 2611 pages do NOT prove the
+  // November train clock, actual formation, or model used on this train.
+  function verifySotetsuJRService(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||
+       proof.source!=="sql-jreast-sotetsu-jr-2611-source-candidate"||
+       proof.lineId!=="SotetsuJRDirect"||
+       String(p.positionLineId||p.lineId||"")!=="SotetsuJRDirect"||
+       (p.displayLineId&&p.displayLineId!=="SotetsuJRDirect")||
+       p.sourceRailway!=="odpt.Railway:JR-East.SotetsuDirect"||
+       p.positionSource!=="supabase-train-run"||
+       proof.referenceOnly!==true||proof.actualVehicleConfirmed!==false||
+       proof.numberDateVerified!==false||proof.authorizesPNG!==false||
+       proof.stopClockStatus!=="historical_not_2611_verified"||
+       proof.fleetSourceUrl!=="https://www.jreast.co.jp/press/2019/20190716.pdf")
+      return null;
+    var number=String(p.trainNumber||"").trim().toUpperCase(),
+      m=/^(1[2-5][0-9]|2[2-8][0-9])M$/.exec(number),
+      date=String(p.serviceDate||"").slice(0,10),
+      dir=String(p.railDirection||"").split(/[.:]/).pop();
+    if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !["Northbound","Southbound"].includes(dir)||
+       Number(m[1])%2!==(dir==="Northbound"?0:1)||
+       proof.trainNumber!==number||proof.serviceDate!==date||
+       proof.direction!=="odpt.RailDirection:"+dir||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       String(p.trainType||"").split(/[.:]/).pop()!=="Local"||
+       proof.trainType!=="odpt.TrainType:JR-East.Local")return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-East"&&
+       operator!=="odpt.Operator:JR-East")return null;
+    var dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||
+        date==="2026-11-23",
+      calendar=sourceCalendar(p),
+      calendarUrn="odpt.Calendar:"+
+        (holiday?"SaturdayHoliday":"Weekday"),
+      publishedPage="https://timetables.jreast.co.jp/2611/timetable-v/628"+
+        (dir==="Northbound"?"d":"u")+(holiday?"2":"1")+"p.html";
+    if(calendar!==(holiday?"holiday":"weekday")||
+       proof.calendar!==calendarUrn||
+       proof.timetableIndexUrl!==publishedPage)return null;
+    var north=["HazawaYokohamaKokudai","MusashiKosugi","NishiOi","Osaki"],
+      expected=dir==="Northbound"?north:north.slice().reverse(),
+      stops=Array.isArray(p.scheduledStopKeys)
+        ?p.scheduledStopKeys.map(function(x){return String(x||"").split(".").pop();})
+        :[],
+      sourceStops=proof.sourceStopKeys;
+    if(!Array.isArray(sourceStops)||sourceStops.length!==4||
+       stops.length!==4||stops.some(function(s,i){
+         return s!==expected[i]||sourceStops[i]!==expected[i];
+       }))return null;
+    var models=["E233系7000番台","相鉄12000系"],
+      paths=["../images/列车/JR東日本/JR東日本_E233系_7000番台.png",
+        "../images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png"];
+    if(!Array.isArray(proof.candidateModels)||
+       !Array.isArray(proof.candidateAssets)||
+       proof.candidateModels.join("|")!==models.join("|")||
+       proof.candidateAssets.join("|")!==paths.join("|"))return null;
+    return Object.freeze({
+      lineId:"SotetsuJRDirect",trainNumber:number,
+      candidateModels:Object.freeze(models),
+      candidateAssets:Object.freeze(paths),
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false,
+      authorizesPNG:false,numberDateVerified:false,formationId:null
+    });
   }
   // 弥彦線 SQL number-calendar-date-and-stop proof for 2026-11.
   // No train icon on date-free historical or October-only Shu*Kura data.
@@ -4056,6 +4119,7 @@
     verifyKururiService:verifyKururiService,
     verifyMitoService:verifyMitoService,
     verifyMiyoService:verifyMiyoService,
+    verifySotetsuJRService:verifySotetsuJRService,
     verifyOfunatoService:verifyOfunatoService,
     verifyOgaService:verifyOgaService,
     verifyRikutoEastService:verifyRikutoEastService,
