@@ -76,6 +76,7 @@
       }
       this.lastRouteResult = null;
       this.bindEvents();
+      this._updateSwapLabel();
       window.onLanguageChange(() => this.refreshUI());
     },
 
@@ -84,13 +85,18 @@
       if (this.fromInput) this.fromInput.placeholder = t('search.fromPlaceholder');
       if (this.toInput) this.toInput.placeholder = t('search.toPlaceholder');
       if (this.searchBtn) this.searchBtn.textContent = t('search.btn');
+      this._updateSwapLabel();
+      [this.fromInput, this.toInput].forEach(input => {
+        if (!input) return;
+        const list = document.getElementById(input.getAttribute('aria-controls'));
+        if (list) this._hideSuggestions(list, input);
+      });
       // 静态 [data-i18n] / [data-i18n-placeholder] 节点只由
       // lang-init.js 负责。这里不要重写任意元素的 textContent：复合
       // 控件可能包含必须在切换语言后保留的结构性图标/符号。
       // 清空建议缓存，使重新查询时按新语言解析名称。
       this._suggestionCache = {};
       this._suggestionCacheDOM = {};
-      this._suggestionBindDone = {};
       // 重新解析输入框中已选车站名称（仅在已知 stationId 时）。
       var _lang = window.currentLang || 'ja';
       if (this.fromInput) {
@@ -113,6 +119,19 @@
       }
     },
 
+
+    _updateSwapLabel: function() {
+      if (!this.swapBtn) return;
+      var labels = {
+        ja: '出発駅と到着駅を入れ替える',
+        zh: '交换出发站和到达站',
+        ko: '출발역과 도착역 바꾸기',
+        en: 'Swap departure and arrival stations'
+      };
+      var label = labels[window.currentLang || 'ja'] || labels.ja;
+      this.swapBtn.setAttribute('aria-label', label);
+      this.swapBtn.setAttribute('title', label);
+    },
 
     _swapInputs: function() {
       var fromVal = this.fromInput ? this.fromInput.value : '';
@@ -146,98 +165,127 @@
         this.searchBtn.addEventListener('click', () => self.performSearch());
       }
 
-      if (this.fromInput) {
-        this.fromInput.addEventListener('keypress', e => {
-          if (e.key === 'Enter') self.performSearch();
+      // Editable ARIA combobox: DOM focus stays on the input.
+      [this.fromInput, this.toInput].forEach(input => {
+        if (!input) return;
+        const listId = input.getAttribute('aria-controls');
+        input.addEventListener('keydown', e => {
+          if (e.isComposing || e.keyCode === 229) return;
+          let list = document.getElementById(listId);
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            if (!list || !list.classList.contains('active')) {
+              this.showSuggestions(input.value, listId, input);
+            }
+            list = document.getElementById(listId);
+            if (!list || !list.classList.contains('active')) return;
+            const options = list.querySelectorAll('[role="option"]');
+            if (!options.length) return;
+            e.preventDefault();
+            const idx = Number(list.dataset.activeIndex || '-1');
+            const next = e.key === 'ArrowDown'
+              ? (idx + 1) % options.length
+              : (idx < 0 ? options.length - 1 : (idx + options.length - 1) % options.length);
+            this._setActiveSuggestion(list, input, next);
+          } else if (e.key === 'Escape') {
+            if (list && list.classList.contains('active')) {
+              e.preventDefault();
+              this._hideSuggestions(list, input);
+            }
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const active = list && list.querySelector('[role="option"][aria-selected="true"]');
+            if (active) this._selectSuggestion(active, list, input);
+            else this.performSearch();
+          } else if (e.key === 'Tab' && list) {
+            this._hideSuggestions(list, input);
+          }
         });
-        this.fromInput.addEventListener('input', function() {
-          // 手动编辑会使之前选中的车站失效：如果不清除，
-          // data-station-id 仍指向旧车站，而
-          // 输入框显示新名称，performSearch 却会解析到旧车站。
-          this.removeAttribute('data-station-id');
-          self.showSuggestions(this.value, 'fromSuggestions', this);
+        input.addEventListener('input', () => {
+          input.removeAttribute('data-station-id');
+          this.showSuggestions(input.value, listId, input);
         });
-      }
-
-      if (this.toInput) {
-        this.toInput.addEventListener('keypress', e => {
-          if (e.key === 'Enter') self.performSearch();
-        });
-        this.toInput.addEventListener('input', function() {
-          // Same stale data-station-id invalidation as the from input above.
-          this.removeAttribute('data-station-id');
-          self.showSuggestions(this.value, 'toSuggestions', this);
-        });
-      }
+      });
 
       document.addEventListener('click', e => {
         if (!e.target.closest('.input-group')) {
-          document.querySelectorAll('.suggestions').forEach(el => el.classList.remove('active'));
+          [this.fromInput, this.toInput].forEach(input => {
+            if (!input) return;
+            const list = document.getElementById(input.getAttribute('aria-controls'));
+            if (list) this._hideSuggestions(list, input);
+          });
         }
       });
     },
 
     _suggestionCache: {},
-    _suggestionBindDone: {},
 
-    showSuggestions: function(query, containerId, inputEl) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-
-      if (!query || query.length < 1) {
-        container.classList.remove('active');
-        container.innerHTML = '';
-        return;
+    _hideSuggestions: function(list, input) {
+      list.classList.remove('active');
+      list.innerHTML = '';
+      list.dataset.activeIndex = '-1';
+      if (input) {
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
       }
-
-      // 缓存建议，避免重复查询。
-      if (!this._suggestionCache[query]) {
-        this._suggestionCache[query] = window.RouteSearch ? window.RouteSearch.findStationsByTerm(query) : [];
-      }
-      const stations = this._suggestionCache[query];
-      if (stations.length === 0) {
-        container.classList.remove('active');
-        container.innerHTML = '';
-        return;
-      }
-
-      // 当前查询有缓存 DOM 时直接复用。
-      const cachedKey = containerId + '_' + query;
-      if (this._suggestionBindDone[cachedKey]) {
-        container.innerHTML = this._suggestionCacheDOM[cachedKey] || '';
-        container.classList.add('active');
-        // 重新绑定点击处理器：重写 innerHTML 会销毁旧节点
-        // 及其监听器，后续 input 事件会让条目无法点击。
-        this._bindSuggestionEvents(container, inputEl);
-        return;
-      }
-
-      container.innerHTML = stations.map(function(s) {
-				var did = s.stationId || s;
-				var dn = s.displayName || s;
-				return "<div class=\"suggestion-item\" data-station-id=\"" + window.escapeHtml(did) + "\">" + window.escapeHtml(dn) + "</div>";
-			}).join("");
-
-      container.classList.add('active');
-
-      // 缓存渲染后的 HTML。
-      this._suggestionCacheDOM = this._suggestionCacheDOM || {};
-      this._suggestionCacheDOM[cachedKey] = container.innerHTML;
-      this._suggestionBindDone[cachedKey] = true;
-
-      this._bindSuggestionEvents(container, inputEl);
     },
 
-    _bindSuggestionEvents: function(container, inputEl) {
-      container.querySelectorAll('.suggestion-item').forEach(item => {
-        item.addEventListener('click', () => {
-          var did = item.getAttribute('data-station-id');
-          var dn = item.textContent;
-          inputEl.value = dn;
-          inputEl.setAttribute('data-station-id', did || '');
-          container.classList.remove('active');
-          container.innerHTML = '';
-        });
+    _setActiveSuggestion: function(list, input, index) {
+      const options = list.querySelectorAll('[role="option"]');
+      if (!options.length) return;
+      const chosen = (index + options.length) % options.length;
+      options.forEach((option, i) => {
+        option.setAttribute('aria-selected', i === chosen ? 'true' : 'false');
+      });
+      list.dataset.activeIndex = String(chosen);
+      input.setAttribute('aria-activedescendant', options[chosen].id);
+      if (options[chosen].scrollIntoView)
+        options[chosen].scrollIntoView({ block: 'nearest' });
+    },
+
+    _selectSuggestion: function(option, list, input) {
+      input.value = option.textContent;
+      input.setAttribute('data-station-id', option.getAttribute('data-station-id') || '');
+      this._hideSuggestions(list, input);
+    },
+
+    showSuggestions: function(query, listId, input) {
+      const list = document.getElementById(listId);
+      if (!list) return;
+      // History/URL restoration must not open an unfocused suggestion menu.
+      if (!query || document.activeElement !== input) {
+        this._hideSuggestions(list, input);
+        return;
+      }
+      if (!this._suggestionCache[query])
+        this._suggestionCache[query] = window.RouteSearch
+          ? window.RouteSearch.findStationsByTerm(query) : [];
+      const stations = this._suggestionCache[query];
+      if (!stations || !stations.length) {
+        this._hideSuggestions(list, input);
+        return;
+      }
+      this._suggestionCacheDOM = this._suggestionCacheDOM || {};
+      const cacheKey = listId + '_' + query;
+      if (!this._suggestionCacheDOM[cacheKey]) {
+        this._suggestionCacheDOM[cacheKey] = stations.map((station, i) => {
+          const id = station.stationId || station;
+          const name = station.displayName || station;
+          return '<div class="suggestion-item" role="option" id="' +
+            listId + '-option-' + i + '" aria-selected="false" data-station-id="' +
+            window.escapeHtml(id) + '">' + window.escapeHtml(name) + '</div>';
+        }).join('');
+      }
+      list.innerHTML = this._suggestionCacheDOM[cacheKey];
+      list.classList.add('active');
+      list.dataset.activeIndex = '-1';
+      input.setAttribute('aria-expanded', 'true');
+      input.removeAttribute('aria-activedescendant');
+      this._bindSuggestionEvents(list, input);
+    },
+
+    _bindSuggestionEvents: function(list, input) {
+      list.querySelectorAll('[role="option"]').forEach(option => {
+        option.addEventListener('click', () => this._selectSuggestion(option, list, input));
       });
     },
 
