@@ -1015,6 +1015,95 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       }),
     };
   });
+  // 米坂線 (internal Yonezawa) JR East 2611: only the eight-station
+  // Yonezawa--Imaizumi rail shuttle survives. All 1/2/3/.../22 rows in
+  // the historic SQL are REPLACEMENT BUSES (some falsely labelled Local).
+  // Never project a train from the long-disrupted Imaizumi--Sakamachi line.
+  // Sources: JR 252 d/u 1/2 and JR East 2026 maintenance cancellation.
+  if(lineId==="Yonezawa"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const rail=["Yonezawa","Minami-Yonezawa","Nishi-Yonezawa",
+      "Narushima","Chugun","Uzen-Komatsu","Inukawa","Imaizumi"];
+    // Exact official start and end clocks for each numbered RAIL trip.
+    // These endpoints are also present in the existing 78-row manual SQL.
+    // Intermediate SQL stop clocks are historical; don't certify their
+    // complete November revision or the physical carset.
+    const clockByNumber:Record<string,[string,string]>={
+      "7143D":["05:46","06:18"],"7145D":["06:38","07:09"],
+      "7147D":["07:38","08:17"],"7149D":["10:29","10:58"],
+      "7151D":["12:16","12:45"],"7153D":["15:58","16:28"],
+      "7155D":["17:21","17:50"],"7157D":["18:37","19:06"],
+      "7159D":["20:45","21:14"],"7142D":["06:01","06:31"],
+      "7144D":["06:49","07:24"],"7146D":["08:00","08:30"],
+      "7148D":["09:25","09:55"],"7150D":["11:30","12:00"],
+      "7152D":["15:02","15:32"],"7154D":["16:38","17:08"],
+      "7156D":["18:00","18:30"],"7158D":["19:30","20:00"]
+    };
+    const maintenanceDays=new Set([
+      "2026-11-09","2026-11-10","2026-11-11",
+      "2026-11-12","2026-11-13"
+    ]);
+    const maintenanceTrains=new Set(["7149D","7150D","7151D","7152D"]);
+    const rawById=new Map(templates.map((t:any)=>[Number(t.id),t]));
+    const clock=(x:any)=>String(x||"").slice(0,5);
+    const stop=(x:any)=>stationKey(String(x?.station_urn||
+      x?.departure_station_urn||x?.arrival_station_urn||""));
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],n=String(run.train_number||"");
+      const source:any=rawById.get(Number(run.source_template_id));
+      const direction=n.endsWith("D")&&/^71(?:4[2-9]|5[0-9])D$/.test(n)
+        ?(Number(n.slice(0,-1))%2?"Outbound":"Inbound"):"";
+      const stops=byTemplate.get(Number(run.source_template_id))||[];
+      const expected=direction==="Outbound"?rail:rail.slice().reverse();
+      const datesCancelled=maintenanceDays.has(serviceDate)&&maintenanceTrains.has(n);
+      if(!clockByNumber[n]||!direction||datesCancelled||
+        !source||source.line_key!=="Yonezawa"||
+        source.source_path!=="data/timetables/Yonezawa-manual.js"||
+        source.calendar_urn!==selectedCalendar||
+        source.direction_urn!=="odpt.RailDirection:"+direction||
+        source.railway_urn!=="odpt.Railway:JR-East.Yonezawa"||
+        source.train_type_urn!=="odpt.TrainType:JR-East.Local"||
+        run.network_key!==source.railway_urn||
+        run.train_number!==source.train_number||
+        run.rail_direction!==source.direction_urn||
+        run.train_type!==source.train_type_urn||
+        !Array.isArray(run.stops)||run.stops.length!==rail.length||
+        !Array.isArray(stops)||stops.length!==rail.length||
+        stops.some((st:any,j:number)=>stop(st)!==expected[j])||
+        run.stops.some((st:any,j:number)=>stationKey(st.station_urn||"")!==expected[j])||
+        clock(stops[0].departure_clock)!==clockByNumber[n][0]||
+        clock(stops[stops.length-1].arrival_clock)!==clockByNumber[n][1]){
+        result.splice(i,1);continue;
+      }
+      const officialUrl="https://timetables.jreast.co.jp/2611/timetable-v/252"+
+        (direction==="Outbound"?"d":"u")+
+        (selectedCalendar==="odpt.Calendar:Weekday"?"1":"2")+".html";
+      run.train_number_verification="official-2611-yonesaka-rail-only";
+      run.train_number_source_url=officialUrl;
+      // No dated rolling-stock dispatch or current intermediate-stop
+      // revision is established by an official number/endpoint match.
+      run.timetable_date_verified=false;
+      run.timetable_validity="undated_not_current_verified";
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="キハ110系";
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_artwork_path=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"jr-east-2611-252-rail-ends",lineId:"Yonezawa",
+        trainNumber:n,serviceDate,calendar:selectedCalendar,
+        direction:run.rail_direction,sourceTemplateId:Number(run.source_template_id),
+        sourceStopKeys:expected,segmentKey:"yonezawa_imaizumi_rail",
+        plannedCandidates:["キハ110系"],model:null,pngReference:null,
+        officialSourceUrl:officialUrl,
+        stopClockStatus:"origin_terminus_only_2611_verified",
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // Kamaishi <-> TohokuMain 2611 named Hinabi through trains.
   // Canonical itineraries now join two SQL sources; the published November
   // run-day roster must gate BOTH sides. Do not let an undated TohokuMain
