@@ -30,10 +30,10 @@
 .lang-toggle-btn {
     width: var(--lang-btn-size);
     height: var(--lang-btn-size);
-    /* Squared pixel-button shape matches the rest of the site. */
-    border-radius: 8px;
+    /* Raised voxel-style control (not a flat rounded icon). */
+    border-radius: 4px;
     background: #ffffff;
-    border: 2px solid var(--lang-border);
+    border: 3px solid var(--lang-border);
     padding: 0;
     cursor: pointer;
     display: flex;
@@ -42,8 +42,8 @@
     flex-shrink: 0;
     overflow: visible;
     position: relative;
-    transition: var(--transition-fast);
-    box-shadow: 0 2px 0 var(--lang-border), inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
+    box-shadow: 4px 4px 0 var(--lang-border), inset 2px 2px 0 rgba(255,255,255,0.95);
 }
 
 .lang-toggle-btn:hover {
@@ -52,7 +52,8 @@
 
 
 .lang-toggle-btn:active {
-    box-shadow: 0 1px 0 var(--lang-border);
+    transform: translate(3px,3px);
+    box-shadow: 1px 1px 0 var(--lang-border), inset 2px 2px 0 rgba(0,0,0,0.1);
 }
 
 .lang-toggle-btn:focus-visible {
@@ -83,8 +84,8 @@
     right: 0;
     background: var(--white);
     border: 2px solid var(--lang-border);
-    border-radius: var(--lang-dropdown-radius);
-    box-shadow: var(--lang-dropdown-shadow);
+    border-radius: 4px;
+    box-shadow: 5px 5px 0 var(--lang-border), inset 2px 2px 0 #fff;
     min-width: var(--lang-dropdown-width);
     z-index: 3000;
 
@@ -125,7 +126,7 @@
     font-family: var(--pixel-font, 'Fusion Pixel'), monospace;
     cursor: pointer;
     text-align: left;
-    border-radius: var(--radius-sm);
+    border-radius: 3px;
     transition: var(--transition-fast);
     color: var(--lang-text);
     white-space: nowrap;
@@ -150,6 +151,7 @@
     color: var(--white);
     font-weight: 600;
     border-color: var(--lang-border);
+    box-shadow: 2px 2px 0 var(--lang-border), inset 2px 2px 0 rgba(255,255,255,.18);
 }
 
 .lang-btn.active:hover {
