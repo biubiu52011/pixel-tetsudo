@@ -39,6 +39,24 @@ test('railway status symbols do not imply that missing data is normal', () => {
   assert.doesNotMatch(card, /aria-label="[^"]*detail\.open/);
 });
 
+test('alert artwork is a generic pixel-cab pictogram and never a real vehicle PNG', () => {
+  const win = loadCardRenderer();
+  const delayed = win.DataState.statusPictogramHtml('delayed');
+  const notice = win.DataState.statusPictogramHtml('notice');
+  assert.match(delayed, /<svg class="pt-train-status-art"/);
+  assert.match(delayed, /#ff9e32/);
+  assert.match(notice, /#ffe14d/);
+  assert.match(delayed, /shape-rendering="crispEdges"/);
+  assert.notEqual(delayed, notice);
+  assert.equal(win.DataState.statusPictogramHtml('normal'), '');
+  assert.equal(win.DataState.statusPictogramHtml('no_data'), '');
+  assert.doesNotMatch(delayed, /images\/列车|vehicleIconPath|<image/);
+  const line = {operator:'JR-East',delayInfo:{status:'delayed'}};
+  assert.match(win.LineCard.render(line, 'JobanRapid', {mode:'realtime'}), /pt-train-status-art/);
+  line.delayInfo.status = 'notice';
+  assert.match(win.LineCard.render(line, 'JobanRapid', {mode:'realtime'}), /pt-train-status-art/);
+});
+
 test('realtime detail dialog is labelled and its close control follows the title', () => {
   const html = read('pages/realtime.html');
   const titlePos = html.indexOf('id="rsModalTitle"');
