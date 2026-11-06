@@ -5572,6 +5572,64 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
            illustrationRole:"uetsu-inaho-published-series-not-physical-consist"};
       }
     }
+    // Kyoto / Kobe (JR-West): the source composite ID, C/T/M number
+    // suffix and Local/Rapid class identify a HISTORICAL service family,
+    // NOT its exact 2026-11 207/321 or 223/225 physical carset.
+    // All candidate fleets render as ONE neutral SVG train marker.
+    // Hanwa-only 223/225 gallery assets must not be reused for Kobe.
+    // Other SanyoMain districts and independently EXACT resolved cars
+    // are left to their own existing rules.
+    var jrWestProof=p&&p.sqlPublishedNumberFleetReference;
+    if(p&&!identityConfirmed&&
+       (contextLineId==="TokaidoKansai"||contextLineId==="SanyoMain")&&
+       String(p.positionLineId||p.lineId||"")===contextLineId&&
+       jrWestProof&&
+       jrWestProof.source==="sql-jrwest-kyoto-kobe-2611-source-family"){
+      var jrWestRange=window.TrainNumberPngRanges;
+      var jrWestFleet=jrWestRange&&
+        typeof jrWestRange.verifyJrWestKyotoKobeSourceFleet==="function"
+          ?jrWestRange.verifyJrWestKyotoKobeSourceFleet(p):null;
+      var jrWestAssets=jrWestFleet&&jrWestFleet.candidateAssets||[];
+      var jrWestModels=jrWestFleet&&jrWestFleet.candidateModels||[];
+      var jrWestAssetModels=jrWestFleet&&
+        jrWestFleet.candidateGalleryModels||[];
+      var jrWestGallery=window.VehicleGaragePngMap;
+      if(artworkFailed!==true&&p.estimated===true&&jrWestFleet&&
+         jrWestFleet.referenceOnly===true&&
+         jrWestFleet.actualVehicleConfirmed===false&&
+         jrWestFleet.authorizesPNG===false&&
+         jrWestFleet.numberDateVerified===false&&
+         p.vehicleIdentityStatus==="UNKNOWN"&&
+         p.vehicleResolvedUpstream!==true&&
+         p.vehicleResolvedFromRealtime!==true&&
+         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+         !(Array.isArray(p.vehicleFormationCandidates)&&
+           p.vehicleFormationCandidates.length)&&
+         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
+         Array.isArray(p.plannedVehicleCandidates)&&
+         p.plannedVehicleCandidates.join("|")===jrWestModels.join("|")&&
+         (!p.vehiclePlan||p.vehiclePlan.confirmed!==true)&&
+         (!p.vehiclePlan||!Array.isArray(p.vehiclePlan.models)||
+           p.vehiclePlan.models.join("|")===jrWestModels.join("|"))&&
+         jrWestAssets.length===jrWestAssetModels.length&&
+         (jrWestAssets.length===0||
+           (jrWestGallery&&
+            typeof jrWestGallery.matchModelPath==="function"&&
+            jrWestAssets.every(function(path,i){
+              return isGalleryPng(normalizeGalleryPngPath(path))&&
+                jrWestGallery.matchModelPath(
+                  jrWestAssetModels[i],path,contextLineId);
+            })))){
+        return {kind:"candidate",iconSrc:"",planned:false,
+          referenceOnly:true,actualVehicleConfirmed:false,
+          candidateModels:jrWestModels.slice(),
+          candidateAssets:jrWestAssets.slice(),
+          sourceNumberSuffix:jrWestFleet.historicalNumberSuffix};
+      }
+      // A dated roster, actual formation or valid line-specific PNG
+      // must be independently proven; never guess from legacy T/C/M.
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Sotetsu-JR through: a public 1xxM/2xxM is the Sotetsu-side
     // service-number family, never an E233-7000 / Sotetsu-12000
     // carset or formation assignment. Draw ONE neutral marker with
