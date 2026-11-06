@@ -123,6 +123,7 @@
       "data/timetables/jreast-rikutsu-west-2611-number-index.js",
       "data/timetables/jreast-rikuto-east-2611-number-index.js",
       "data/timetables/jreast-regional-2611-number-index.js",
+      "data/timetables/jreast-ryomo-2611-number-index.js",
       "data/timetables/train-number-png-ranges.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
@@ -266,6 +267,9 @@
       ],
       "data/timetables/jreast-hakushin-2611-number-index.js": [
         "Hakushin"
+      ],
+      "data/timetables/jreast-ryomo-2611-number-index.js": [
+        "Ryomo"
       ]
     }
   }
