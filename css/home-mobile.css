@@ -163,3 +163,11 @@
     grid-column: 1;
   }
 }
+
+/* Autocomplete is owned by SearchUI. Show the currently keyboard-selected
+   option on both desktop and mobile, without changing the existing card UI. */
+body[data-page="home"] #searchContainer .suggestion-item[aria-selected="true"] {
+  background: var(--green-pale);
+  box-shadow: inset 4px 0 0 var(--green);
+  padding-left: 20px;
+}
