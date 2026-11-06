@@ -725,6 +725,34 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        // Tsugaru 2611: only Aomori–Kanita is operating by rail.
+        // Historical SQL retains the ordinary 18-number diagram; official
+        // 324M runs Saturdays but not Sundays or Nov 3/23 holidays.
+        // Check exact source station sequence and official end clocks.
+        // Kanita–Minmaya replacement buses must never produce train icons.
+        if(lineId==="Tsugaru"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var tsugaruIndex=window.JREastTsugaruNumberIndex202611;
+          var tsugaruStops=run.stops||[];
+          var firstTsugaru=tsugaruStops[0],lastTsugaru=tsugaruStops[tsugaruStops.length-1];
+          if(!tsugaruIndex||typeof tsugaruIndex.verify!=="function"||
+             !tsugaruIndex.verify({
+               trainNumber:run.trainNumber,positionLineId:"Tsugaru",
+               sourceRailway:tt["odpt:railway"]||"",
+               trainOperator:tt["odpt:operator"]||"JR-East",
+               railDirection:tt["odpt:railDirection"]||"",
+               trainType:tt["odpt:trainType"]||"",
+               calendarType:run.calendar,serviceDate:serviceDate,
+               positionSource:tt._positionSource,estimated:true,
+               scheduledStopKeys:tsugaruStops.map(function(x){
+                 return x.stationUrn||"";
+               }),
+               firstDepartureClock:firstTsugaru&&firstTsugaru.raw&&
+                 firstTsugaru.raw["odpt:departureTime"],
+               lastArrivalClock:lastTsugaru&&lastTsugaru.raw&&
+                 lastTsugaru.raw["odpt:arrivalTime"]
+             }))continue;
+        }
         // Tazawako 2611: old SQL mixes 701 locals, E6 Komachi services
         // falsely classified as 701 'Local', and partial duplicate 8xxM
         // records. The scoped JR East source-number/stop/calendar proof
