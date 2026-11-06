@@ -48,17 +48,12 @@ test('CSS links use the current Git blob versions and home avoids scoped refinem
   assert.doesNotMatch(read('pages/home.html'), /ux-refinements\.css/);
 });
 
-test('delay and notice reuse train-PNG pixel proportions, not colored button tiles', () => {
+test('delay and notice use vivid separate pixel colors, not brown status text', () => {
   const css = read('css/ux-refinements.css');
-  const renderer = read('js/data-state.js');
-  const modal = read('js/realtime-view.js');
   assert.doesNotMatch(css, /#915300|#785900/i, 'avoid muddy amber and brown labels');
-  assert.match(css, /--pt-alert-accent: #ff9e32/);
-  assert.match(css, /--pt-alert-accent: #ffe14d/);
-  assert.match(css, /\.pt-train-status-art \{[\s\S]*?image-rendering: pixelated/);
-  assert.match(css, /\.rs-status-icon-delayed,[\s\S]*?background: transparent;/);
-  assert.match(renderer, /function statusPictogramHtml\(status\)/);
-  assert.match(renderer, /shape-rendering="crispEdges"/);
-  assert.match(renderer, /oldStatus.innerHTML=newStatus.innerHTML/);
-  assert.match(modal, /DataState.statusPictogramHtml\(status\)/);
+  assert.match(css, /\.rs-status-section\.rs-status-delayed \{[\s\S]*?--pt-alert-accent: #ff9e32/);
+  assert.match(css, /\.rs-status-section\.rs-status-notice \{[\s\S]*?--pt-alert-accent: #ffe14d/);
+  assert.match(css, /\.rs-status-section\.rs-status-delayed \.rs-status-symbol,[\s\S]*?box-shadow: 3px 3px 0/);
+  assert.match(css, /\.rs-status-icon-delayed \{ background: #ff9e32; \}/);
+  assert.match(css, /\.rs-status-icon-notice \{ background: #ffe14d; \}/);
 });
