@@ -1,6 +1,6 @@
 # 新干线 2026-11 列车番号 → 计划车型 → PNG 分级覆盖审计
 
-**最新回读日期**：2026-11-06（九州159/159正式番号完成、官方区间停运校正，东海道ひかり634/701已复核）  
+**最新回读日期**：2026-11-06（新增东海道24趟逐车正式番号与N700计划，最新815/826、510/826，已核验）  
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
@@ -14,6 +14,25 @@
 - **验收指标**：已核实正式番号覆盖率、计划车型可确定率、准确 PNG 展示率、时刻表推算正确性，以及平日/休日/临时运行日的准确性。SQL/代码测试与 Pages/Safari 实际渲染验收分开标记。修正优先在已有责任 SQL 表、车型库及 train-runs 中完成，不增平行图层或补丁。
 
 > 下文历史小节保留“实际车底 0”的数据仅作证据级别说明；其不是本项目的必需指标或完成门槛。下文各阶段快照并非自动更新的最新总数。
+
+## 2026-11-06 继续：东海道24趟ひかり计划番号、逐站时刻和N700系校正
+
+针对上一轮 **791/826 官方完整番号、486/826 唯一计划车型、193/826 PNG** 的活库，新增 **24条 `TokaidoShinkansen` Weekday 源模板的官方完整A番号、24条官方N700系计划家族**（图库不新增任何N700专属单号PNG）。本站属于**静态时刻表驱动的计划列车**，已知N700系家族≠确认N700A/N700S子车型、物理编组号或车辆运营者所属，未凭番号或路线自造贴图。
+
+**根因已核实：** 旧东海道来源 `data/timetables/TokaidoShinkansen-manual.js` 导入的模板常遗漏热海、三岛、小田原、丰桥、静冈、滨松等**实际计划停靠站**，并把部分新大阪、名古屋、京都等到站/发车混为一谈；跨山阳→东海道的 `ひかり702/706/708/710/712/714/716/718/720/722` 原源将**新大阪到站时刻**写作东海道区间的**出发时刻**，比官方发车早2分钟。只修正**已有责任表** `manual_timetable_template_stops`，补上逐车对应的到发事件、站名和时刻，再更新既有 `train_timetable_members.last_stop_sequence`。派生 `train_timetable_stops` 为只读 SQL VIEW，无需再造视图、脚本或重复源。事务执行前锁定原始模板 ID、运营者 JR-Central、线路、平日、上下行、终点、`source_only` 成员与旧全程逐站时刻，重建后逐站从 SQL VIEW 核对，最后才登记官方番号与唯一 N700 家族计划来源。
+
+迁移分批均**已 GitHub main 提交，Supabase执行并回读**：
+1. [上行6趟646A、656A、658A、660A、666A、668A](../../supabase/migrations/20261106132500_tokaido_six_hikari_646_668_2611_official_stops.sql)：独立逐车 [JR东日本646](https://timetables.jreast.co.jp/2611/train/025/027161.html)、[656](https://timetables.jreast.co.jp/2611/train/060/062671.html)、[658](https://timetables.jreast.co.jp/2611/train/025/027131.html)、[660](https://timetables.jreast.co.jp/2611/train/060/062701.html)、[666](https://timetables.jreast.co.jp/2611/train/025/027111.html)、[668](https://timetables.jreast.co.jp/2611/train/060/062721.html)，恢复小田原/丰桥/静冈/滨松等个别停靠及精确时间。
+2. [下行6趟707A、709A、711A、717A、719A、721A](../../supabase/migrations/20261106140500_tokaido_six_outbound_hikari_707_721_2611_official_stops.sql)：逐车 [707](https://timetables.jreast.co.jp/2611/train/125/128521.html)、[709](https://timetables.jreast.co.jp/2611/train/125/128531.html)、[711](https://timetables.jreast.co.jp/2611/train/125/128541.html)、[717](https://timetables.jreast.co.jp/2611/train/125/128571.html)、[719](https://timetables.jreast.co.jp/2611/train/125/128581.html)、[721](https://timetables.jreast.co.jp/2611/train/125/128591.html) 对应实际停靠热海/三岛/静冈/滨松与正确名古屋、京都时刻。东京至新大阪为既有东海道模板段，官网部分列车继续去冈山，不把山阳段错误拼作同一JR-Central源。
+3. [上行10趟702A、706A、708A、710A、712A、714A、716A、718A、720A、722A](../../supabase/migrations/20261106151500_tokaido_ten_hikari_702_722_2611_exact_stop_restoration.sql)：逐车官方 [702](https://timetables.jreast.co.jp/2611/train/125/128721.html)、[706](https://timetables.jreast.co.jp/2611/train/125/128741.html)、[708](https://timetables.jreast.co.jp/2611/train/125/128751.html)、[710](https://timetables.jreast.co.jp/2611/train/125/128761.html)、[712](https://timetables.jreast.co.jp/2611/train/125/128771.html)、[714](https://timetables.jreast.co.jp/2611/train/125/128781.html)、[716](https://timetables.jreast.co.jp/2611/train/125/128791.html)、[718](https://timetables.jreast.co.jp/2611/train/125/128801.html)、[720](https://timetables.jreast.co.jp/2611/train/125/128811.html)、[722](https://timetables.jreast.co.jp/2611/train/125/128821.html) 恢复准确的**新大阪出发时刻**，修正下游全程停站。
+4. [ひかり731A](../../supabase/migrations/20261106154000_tokaido_hikari731_2611_correct_osaka_arrival.sql)：官网 [JR西日本2026-11-07的731A](https://timetable.jr-odekake.net/train-timetable/314251?date=20261107)，名古屋06:36发，岐阜羽岛06:46到06:47发、米原06:59到07:00发、京都07:19到07:20发，**新大阪07:32到**、07:34再开往博多。旧源错误把07:34发写成东海道模板终到时刻，现已更正。
+5. [ひかり703A](../../supabase/migrations/20261106155500_tokaido_hikari703_2611_verified_jrwest_full_stops.sql)：官网 [JR西日本2026-11-17的703A](https://timetable.jr-odekake.net/train-timetable/314151?date=20261117) 证实东京08:03→新大阪10:57、经静冈09:02/09:07及滨松09:27/09:31，并于新大阪10:59继续向冈山方向。原源模板9240遗漏静冈、滨松，已修复。
+
+**最新live SQL验收：** 826现存新干线源模板中，**815条官方完整番号（98.7%，剩11）**，**510条单车型计划（61.7%，剩316）**，**193个严格精确PNG（23.4%）**；**东海道131/132正式番号、38/132单车型计划**。24趟本轮修复车次专门SQL审计：官方来源URL不符合 train-runs 既有合法范围 **0**、时间倒序 **0**、缺失站URN **0**、原始源表与派生运行时视图停站行数不一致 **0**。193条新干线PNG仍满足 `min=max`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`，全部为计划图而非实车确认。
+
+**剩余正式番号11条：** 东海道 `ひかり704`（1）、北陆 `あさま400/はくたか553/559/592/594/595`（6）、山形 `つばさ177/88/90`（3）、山阳临时 `ひかり782`（1）。`ひかり704`已找到10月29日 JR西日本官网个别列车页，注明2026年11月号并证实704A，但既有前端对于JR西日本个别列车证据 URL **仅接受 `date=202611xx`**；目前没有验证到同车有效 11月日期个别列车 URL，因此**没有偷换旧版URL或放宽验证以刷满132/132**。北陆源还存在过时车站和直通区间，山形日期号次变化仍待独立处理，不能猜E7/W7、E5/H5或日别后缀。
+
+未新建表、parallel映射器、前端script/src、PR或本地服务器；**GitHub Pages/iPhone Safari实际列车PNG展示尚未验收**，SQL的815条不等于818条已在浏览器逐车核对。
 
 ## 2026-11-06 继续：九州159／159正式番号完成、区间停运纠偏、东海道2趟ひかり
 
@@ -112,13 +131,13 @@
 | 口径 | 更新前 | 更新后 |
 |---|---:|---:|
 | 原始时刻表模板（不是实际每日运行记录） | 826 | 826 |
-| 有官方依据的单一**计划车型** | 351 | **486** |
-| 无列车级单车型计划 | 475 | **340** |
+| 有官方依据的单一**计划车型** | 351 | **510** |
+| 无列车级单车型计划 | 475 | **316** |
 | 当日实车编组确认（不作为本项目验收项） | 不适用 | **不适用** |
-| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **791** |
+| 已写入 `published_train_number_evidence` 的新干线正式**完整列车番号** | 0 | **815** |
 | 已写入 `published_train_png_number_ranges` 的新干线逐个精确番号 PNG | 0 | **193** |
 
-**单车型计划覆盖率：486 / 826 = 58.8%；正式番号证据 791 / 826 = 95.8%；安全 PNG 单号 193 / 826 = 23.4%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 193 张 PNG。**
+**单车型计划覆盖率：510 / 826 = 61.7%；正式番号证据 815 / 826 = 98.7%；安全 PNG 单号 193 / 826 = 23.4%。这不是全列车班次覆盖，也不是已在浏览器实际渲染 193 张 PNG。**
 
 ## 各线计划车型覆盖率（2026-11-06 当前最新回读）
 
@@ -132,9 +151,9 @@
 | NishiKyushuShinkansen | 92 | **92** | 0 | N700S 6 辆计划车型确定，**图库无对应 N700S PNG** |
 | SanyoShinkansen | 154 | **78** | **76** | **153/154** 正式番号、10 条精确 PNG；仅临时ひかり782仍无2026年11月有效证据 |
 | TohokuShinkansen | 82 | 35 | **47** | **82/82 正式番号**，35 条 E6/E8 单车型 PNG；其他混用未猜测 |
-| TokaidoShinkansen | 132 | **14** | **118** | **107/132** 正式番号；新增ひかり634/701逐站修正与N700计划，其他旧模板仍须核官网 |
+| TokaidoShinkansen | 132 | **38** | **94** | **131/132** 正式番号；本轮另24趟ひかり逐车补站与 N700计划，余704待有效11月个别列车证据URL |
 | YamagataShinkansen | 46 | **46** | 0 | **43/46 正式番号与 E8 PNG**，3 条多重番号待核 |
-| **合计** | **826** | **486** | **340** | **791 条正式番号、193 条精确 PNG；实车确认不属验收项** |
+| **合计** | **826** | **510** | **316** | **815 条正式番号、193 条精确 PNG；实车确认不属验收项** |
 
 “官方单车型计划”只表示有 `official_service_vehicle_plan` 与 `evidence_sources` 关联，并没有证实运行当天派车、具体车辆编组号或涂装。未覆盖的模板可能有线路层候选车种，但不属于列车级已确认映射。
 
