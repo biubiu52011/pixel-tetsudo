@@ -13,7 +13,7 @@ SELECT pg_advisory_xact_lock(2611,600);
 DO $hokuriku_reconcile_asama600$
 DECLARE
   template_ bigint; tt_ bigint; n int; i int; route_ text;
-  stations text[]:=ARRAY['Nagano','Ueda','Ueda','Sakudaira','Sakudaira','Karuizawa','Karuizawa','Takasaki','Takasaki','Omiya','Omiya','Ueno','Ueno','Tokyo']::text[];
+  stop_names text[]:=ARRAY['Nagano','Ueda','Ueda','Sakudaira','Sakudaira','Karuizawa','Karuizawa','Takasaki','Takasaki','Omiya','Omiya','Ueno','Ueno','Tokyo']::text[];
   events text[]:=ARRAY['D','A','D','A','D','A','D','A','D','A','D','A','D','A']::text[];
   clocks text[]:=ARRAY['06:02','06:13','06:14','06:24','06:24','06:33','06:34','06:49','06:50','07:14','07:15','07:35','07:36','07:40']::text[];
 BEGIN
@@ -48,23 +48,23 @@ BEGIN
  OR (select count(*) from train_timetable_stops z
     WHERE z.timetable_id=tt_ AND z.source_template_id=template_)<>9
  THEN RAISE EXCEPTION 'Old Asama400 source or view unexpectedly changed'; END IF;
- IF array_length(stations,1)<>14 OR array_length(events,1)<>14
+ IF array_length(stop_names,1)<>14 OR array_length(events,1)<>14
     OR array_length(clocks,1)<>14
  THEN RAISE EXCEPTION 'Asama600 official event sequence malformed'; END IF;
  DELETE FROM manual_timetable_template_stops s WHERE s.template_id=template_;
  GET DIAGNOSTICS n=ROW_COUNT;
  IF n<>9 THEN RAISE EXCEPTION 'Asama original event deletion mismatch'; END IF;
  FOR i IN 1..14 LOOP
-  IF NOT EXISTS (SELECT 1 FROM stations WHERE id=stations[i])
-  THEN RAISE EXCEPTION 'Official Asama station does not exist: %',stations[i]; END IF;
+  IF NOT EXISTS (SELECT 1 FROM stations WHERE id=stop_names[i])
+  THEN RAISE EXCEPTION 'Official Asama station does not exist: %',stop_names[i]; END IF;
   IF events[i]='A' THEN
    INSERT INTO manual_timetable_template_stops
    (template_id,stop_sequence,arrival_station_urn,arrival_clock)
-   VALUES (template_,i-1,'odpt.Station:JR-East.HokurikuShinkansen.'||stations[i],clocks[i]);
+   VALUES (template_,i-1,'odpt.Station:JR-East.HokurikuShinkansen.'||stop_names[i],clocks[i]);
   ELSIF events[i]='D' THEN
    INSERT INTO manual_timetable_template_stops
    (template_id,stop_sequence,departure_station_urn,departure_clock)
-   VALUES (template_,i-1,'odpt.Station:JR-East.HokurikuShinkansen.'||stations[i],clocks[i]);
+   VALUES (template_,i-1,'odpt.Station:JR-East.HokurikuShinkansen.'||stop_names[i],clocks[i]);
   ELSE RAISE EXCEPTION 'Unknown Asama event %',events[i]; END IF;
  END LOOP;
  UPDATE train_timetable_members mem SET last_stop_sequence=13
@@ -85,7 +85,7 @@ BEGIN
  OR (SELECT string_agg(regexp_replace(z.station_urn,'^.*[.]','')||'@'||
     coalesce(z.arrival_clock,z.departure_clock),'|' ORDER BY z.stop_sequence)
     FROM train_timetable_stops z WHERE z.timetable_id=tt_ AND z.source_template_id=template_) <>
-    (SELECT string_agg(stations[j]||'@'||clocks[j],'|' ORDER BY j) FROM generate_subscripts(stations,1) j)
+    (SELECT string_agg(stop_names[j]||'@'||clocks[j],'|' ORDER BY j) FROM generate_subscripts(stop_names,1) j)
  THEN RAISE EXCEPTION 'Asama600 source VIEW official events mismatch'; END IF;
  INSERT INTO published_train_number_evidence
    (edition,line_key,calendar_urn,direction_urn,train_number,source_template_id,
