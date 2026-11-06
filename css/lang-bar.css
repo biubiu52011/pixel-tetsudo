@@ -30,10 +30,10 @@
 .lang-toggle-btn {
     width: var(--lang-btn-size);
     height: var(--lang-btn-size);
-    /* Raised voxel-style control (not a flat rounded icon). */
-    border-radius: 4px;
+    /* Circular floating language control, intentionally lighter than 3D cards. */
+    border-radius: 50%;
     background: #ffffff;
-    border: 3px solid var(--lang-border);
+    border: 2px solid #41454b;
     padding: 0;
     cursor: pointer;
     display: flex;
@@ -42,8 +42,8 @@
     flex-shrink: 0;
     overflow: visible;
     position: relative;
-    transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
-    box-shadow: 4px 4px 0 var(--lang-border), inset 2px 2px 0 rgba(255,255,255,0.95);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: 0 2px 5px rgba(24,36,48,.20);
 }
 
 .lang-toggle-btn:hover {
@@ -52,8 +52,8 @@
 
 
 .lang-toggle-btn:active {
-    transform: translate(3px,3px);
-    box-shadow: 1px 1px 0 var(--lang-border), inset 2px 2px 0 rgba(0,0,0,0.1);
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(24,36,48,.16);
 }
 
 .lang-toggle-btn:focus-visible {
@@ -71,7 +71,7 @@
     margin: 0;
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+    filter: none;
     image-rendering: auto;
     pointer-events: none;
     display: block;
@@ -85,7 +85,7 @@
     background: var(--white);
     border: 2px solid var(--lang-border);
     border-radius: 4px;
-    box-shadow: 5px 5px 0 var(--lang-border), inset 2px 2px 0 #fff;
+    box-shadow: 0 5px 16px rgba(22,34,47,.16);
     min-width: var(--lang-dropdown-width);
     z-index: 3000;
 
