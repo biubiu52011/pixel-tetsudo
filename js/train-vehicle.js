@@ -5044,6 +5044,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       p.fusionRole === "branch" &&
       String(p.fusionLineId || "") === "NambuBranch" &&
       String(p.sourceRailway || "") === "odpt.Railway:JR-East.NambuBranch";
+    // Suigun's passenger map embeds the Hitachi-Ota branch at Kami-Sugaya.
+    // Display its OWN source-certified illustrative KiHa E130 artwork there;
+    // never transfer Suigun main's train-number identity onto the branch.
+    var scopedSuigunBranchMap = displayLineId === "Suigun" &&
+      lineId === "SuigunBranch" &&
+      p.fusionRole === "branch" &&
+      String(p.fusionLineId || "") === "SuigunBranch" &&
+      String(p.sourceRailway || "") === "odpt.Railway:JR-East.SuigunBranch" &&
+      p.estimated === true &&
+      p.positionSource === "supabase-train-run";
     // ChuoTatsuno's official source-only train estimates are plotted as
     // a BRANCH inside the ChuoMain SVG. The source line and car model are
     // still ChuoTatsuno; do not reclassify the train as ChuoMain 159M.
@@ -5056,7 +5066,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       String(p.sourceRailway || "") ===
         "odpt.Railway:JR-East.ChuoTatsuno";
     if (displayLineId !== lineId && !scopedYokosukaSobuExtension &&
-        !scopedNambuBranchMap && !scopedChuoTatsunoBranchMap) return null;
+        !scopedNambuBranchMap && !scopedSuigunBranchMap &&
+        !scopedChuoTatsunoBranchMap) return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
     var match = rules.match(p.trainNumber, lineId, p);
