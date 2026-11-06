@@ -725,6 +725,15 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        // Kabe SQL's 7001M–7087MH is a synthetic 12-stop
+        // Yokokawa–Kabe timetable grid, NOT the 2026-11
+        // Hiroshima–Aki-Kameyama official 7xxM / 27xxM services.
+        // The Edge Function quarantines it; this second guard
+        // prevents stale SQL caches from drawing ghost trains.
+        if(lineId==="Kabe"&&tt._positionSource==="supabase-train-run"&&
+           /^2026-11-\d{2}$/.test(serviceDate)&&
+           /^70[0-9]{2}MH?$/.test(String(run.trainNumber||"")))
+          continue;
         // Yamagata local-only 2611: verify the published ordinary-train
         // number, 35-station scope and calendar before projecting historical
         // SQL clocks. This proves the NUMBER, not current stop times/stock.
