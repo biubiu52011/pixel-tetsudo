@@ -2523,8 +2523,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Date-verified Kosei published 1802/1804/1806/1808M:
-  // the 34 source-only original 18/21-stop clocks were independently
+  // Date-verified Kosei source-only locals, including north/inbound:
+  // the 52 source-only original 4/5/18/21/22-stop clocks were independently
   // compared with the official November 2026 issue. The SQL invoker
   // view re-hashes the ORIGINAL timetable stops on every request.
   // Never relabel an unverified source run, infer a physical carset,
@@ -2535,8 +2535,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
       .eq("calendar_urn",selectedCalendar);
     if(clockError)throw clockError;
-    if((clocks||[]).length!==17||
-       new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==17)
+    if((clocks||[]).length!==26||
+       new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==26)
       throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_COVERAGE_CHANGED");
     const byClockSource=new Map((clocks||[]).map((p:any)=>
       [Number(p.source_template_id),p]));
@@ -2559,14 +2559,14 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          !proof||proof.source!=="sql-jrwest-kosei-2611-source-family"||
          proof.sourceTemplateId!==Number(p.source_template_id)||
          !Array.isArray(proof.sourceStopKeys)||
-         ![18,21].includes(stops.length)||proof.sourceStopKeys.length!==stops.length||
+         ![4,5,18,21,22].includes(stops.length)||proof.sourceStopKeys.length!==stops.length||
          stops.some((st:any,i:number)=>
            String(st.station_urn||"").split(".").pop()!==proof.sourceStopKeys[i])||
          stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==stops.length)
         throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_SOURCE_CONFLICT");
       // Keep the source identifier (including importer H) for existing
       // verifier and canonical lookups; expose the REAL public number
-      // separately, with individually certified original 18/21-stop clocks.
+      // separately, with individually certified original 4/5/18/21/22-stop clocks.
       run.published_train_number=p.published_train_number;
       run.train_number_verification="official-2611-kosei-source-stop-clock";
       run.train_number_source_url=p.official_source_url;
@@ -2731,8 +2731,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Nine JR-West Kyoto/Kobe 2026-11 7-stop source rows match the
-  // official new-rapid timetable, not just a historical suffix.
+  // Seventeen JR-West Kyoto/Kobe 2026-11 source-only rows match the
+  // official local/new-rapid timetable, not just a historical suffix.
   // Keep canonical source IDs and legacy fleet-candidate proofs intact:
   // these are published service timetables, never actual dispatch cars.
   if(lineId==="TokaidoKansai"&&/^2026-11-\d{2}$/.test(serviceDate)){
@@ -2742,7 +2742,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .eq("source_line_key","TokaidoKansai")
       .eq("calendar_urn",selectedCalendar);
     if(verifiedError)throw verifiedError;
-    const expected=selectedCalendar==="odpt.Calendar:Weekday"?6:3;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?10:7;
     if((verified||[]).length!==expected||
        new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
       throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED");
@@ -2753,12 +2753,18 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       if(!p)continue;
       const candidate:any=run.published_number_fleet_reference;
       const stops=Array.isArray(run.stops)?run.stops:[];
+      const certifiedType=p.train_type_urn==="odpt.TrainType:JR-West.Local"
+        ?"Local":p.train_type_urn==="odpt.TrainType:JR-West.Rapid"
+        ?"SpecialRapid":null;
+      const permittedStopCount=certifiedType==="Local"
+        ?[16,19,25,33].includes(p.official_stop_count)
+        :certifiedType==="SpecialRapid"&&p.official_stop_count===7;
       if(p.verified_source_match!==true||
          p.source_line_key!=="TokaidoKansai"||
          p.calendar_urn!==selectedCalendar||
-         p.train_type_urn!=="odpt.TrainType:JR-West.Rapid"||
-         p.official_public_train_type!=="SpecialRapid"||
-         p.official_stop_count!==7||
+         !certifiedType||
+         p.official_public_train_type!==certifiedType||
+         !permittedStopCount||
          p.number_date_verified!==false||
          p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
          run.network_key!=="odpt.Railway:JR-West.TokaidoKansai"||
@@ -2766,19 +2772,21 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          run.train_type!==p.train_type_urn||
          run.train_number!==p.source_train_id||
          run.rail_direction!==p.direction_urn||
-         !/^\d{4}M$/.test(p.official_train_number)||
+         !/^(?:\d{4}M|\d{3,4}C)$/.test(p.official_train_number)||
+         !p.official_train_number.endsWith(certifiedType==="Local"?"C":"M")||
          p.official_train_number!==p.source_public_number_suffix||
          !candidate||candidate.source!=="sql-jrwest-kyoto-kobe-2611-source-family"||
          candidate.sourceTrainId!==p.source_train_id||
          candidate.sourceTemplateId!==Number(p.source_template_id)||
          !Array.isArray(candidate.sourceStopKeys)||
-         stops.length!==7||candidate.sourceStopKeys.length!==7||
+         stops.length!==p.official_stop_count||
+         candidate.sourceStopKeys.length!==p.official_stop_count||
          stops.some((st:any,i:number)=>
            String(st.station_urn||"").split(".").pop()!==candidate.sourceStopKeys[i])||
          stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==7)
         throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT");
       run.published_train_number=p.official_train_number;
-      run.published_train_type="odpt.TrainType:JR-West.SpecialRapid";
+      run.published_train_type="odpt.TrainType:JR-West."+certifiedType;
       run.train_number_verification="official-2611-kyoto-kobe-source-stop-clock";
       run.train_number_source_url=p.official_source_url;
       run.timetable_validity="date_verified";
