@@ -485,35 +485,14 @@
   margin: 0 auto;
   padding: 0 16px 40px;
 }
-.detail-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 10px 20px;
-  margin: 16px 0;
-  border: 2px solid var(--border);
-  border-radius: 0;
-  background: var(--card);
-  color: var(--text);
-  font-size: 13px;
-  font-family: var(--pixel-font, 'Fusion Pixel'), monospace;
-  cursor: pointer;
-  transition: var(--transition-fast) step-start;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.detail-back-btn:hover {
-  background: var(--green);
-  border-color: var(--green-dim);
-  color: var(--white);
-  transform: translateX(4px);
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-}
+/* The tourism detail back action uses .back-btn from the canonical
+   css/style.css, preserving its pixel borders, typography and hover behavior.
+   Only the page-specific arrow and focus indicator remain here. */
 .back-arrow { font-size: 18px; line-height: 1; }
-.back-btn { display: inline-flex; align-items: center; gap: var(--space-3); padding: 10px 20px; margin: 16px 0; border: 2px solid var(--border); border-radius: 0; background: var(--card); color: var(--text); font-size: 14px; font-family: var(--pixel-font, 'Fusion Pixel'), monospace; cursor: pointer; transition: var(--transition-fast) step-start; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); text-transform: uppercase; letter-spacing: 1px; }
-
-.back-btn:hover { background: var(--green); border-color: var(--green-dim); color: var(--white); transform: translateX(4px); box-shadow: 4px 4px 0px rgba(0,0,0,0.2); }
+.detail-back-btn:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
 
 /* === Quick info bar === */
 .detail-quick-info {
