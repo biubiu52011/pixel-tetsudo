@@ -161,6 +161,8 @@
       + '<div class="dp-note">' + C.escapeHtml(C.t('detail.ai_note')) + '</div>';
     var container = document.getElementById('articleContainer');
     if (!container) return;
+    // Close any existing menu before language/data refresh replaces its DOM.
+    if (activeMenuModal) closeMenuModal(activeMenuModal);
     container.innerHTML = '<div class="article-content article-content--shop">' + html + '</div>';
     bindMenuModal();
     C.observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
@@ -171,24 +173,85 @@
   // 图片点击放大统一走 core 的图集查看器（bindGallery）。
 
 
-  // 统一推荐内容全屏模态（查看全部）
-  function bindMenuModal() {
-    var viewBtns = document.querySelectorAll('button.dp-menu-viewall');
-    for (var vi = 0; vi < viewBtns.length; vi++) {
-      viewBtns[vi].addEventListener('click', function() {
-        var modalId = this.getAttribute('data-modal');
-        var modal = document.getElementById(modalId);
-        if (modal) modal.classList.add('is-open');
-      });
-    }
-    var modals = document.querySelectorAll('.dp-menu-modal');
-    for (var mi = 0; mi < modals.length; mi++) {
-      var modal = modals[mi];
-      modal.querySelector('.dp-menu-modal-close').addEventListener('click', function() { modal.classList.remove('is-open'); document.body.style.overflow=''; });
-      modal.addEventListener('click', function(e) { if (e.target === modal) { modal.classList.remove('is-open'); document.body.style.overflow=''; } });
+  // Each shop recommendation modal owns its own close event, focus lifecycle
+  // and background scroll lock (mirrors the established realtime dialog UX).
+  var activeMenuModal = null;
+  var activeMenuTrigger = null;
+  var originalPageOverflow = null;
+
+  function closeMenuModal(modal) {
+    var target = modal || activeMenuModal;
+    if (!target || !target.classList.contains('is-open')) return;
+    target.classList.remove('is-open');
+    if (activeMenuModal === target) {
+      document.body.style.overflow = originalPageOverflow == null ? '' : originalPageOverflow;
+      var focusBack = activeMenuTrigger;
+      activeMenuModal = null;
+      activeMenuTrigger = null;
+      originalPageOverflow = null;
+      if (focusBack && focusBack.isConnected && typeof focusBack.focus === 'function')
+        focusBack.focus();
     }
   }
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { var open = document.querySelector('.dp-menu-modal.is-open'); if (open) { open.classList.remove('is-open'); document.body.style.overflow=''; } } });
+
+  function openMenuModal(modal, trigger) {
+    if (!modal) return;
+    if (activeMenuModal && activeMenuModal !== modal)
+      closeMenuModal(activeMenuModal);
+    originalPageOverflow = document.body.style.overflow;
+    activeMenuModal = modal;
+    activeMenuTrigger = trigger;
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    var close = modal.querySelector('.dp-menu-modal-close');
+    if (close) close.focus();
+  }
+
+  function bindMenuModal() {
+    document.querySelectorAll('button.dp-menu-viewall').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        openMenuModal(document.getElementById(btn.getAttribute('data-modal')), btn);
+      });
+    });
+    document.querySelectorAll('.dp-menu-modal').forEach(function(modal) {
+      // Event delegation avoids a var-in-loop closure accidentally closing
+      // the final modal instead of the one containing the pressed button.
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal ||
+            (e.target.closest && e.target.closest('.dp-menu-modal-close'))) {
+          e.preventDefault();
+          closeMenuModal(modal);
+        }
+      });
+    });
+  }
+
+  document.addEventListener('keydown', function(e) {
+    var modal = activeMenuModal;
+    if (!modal || !modal.classList.contains('is-open')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeMenuModal(modal);
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    var all = Array.from(modal.querySelectorAll(
+      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    ));
+    var focusable = all.filter(function(el) { return !el.hidden && el.getClientRects().length; });
+    if (!focusable.length) { e.preventDefault(); return; }
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    } else if (!modal.contains(document.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
   // 图集查看器全局委托（一次绑定，hero/菜单图通用）
   if (C.bindGallery) C.bindGallery();
   // 脚本位于 <body> 末尾：DOM 已完成解析，因此立即启动
