@@ -1332,6 +1332,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // 米坂線: image is a KiHa110 family example only after JR 2611
+    // rail-number/station/date proof. Never label a replacement bus or
+    // unverified physical trainset with a railway formation.
+    if(lineId==="Yonezawa"&&window.JREastYonezawaNumberIndex202611){
+      var yone=window.JREastYonezawaNumberIndex202611;
+      var yoneRef=yone.resolve(Object.assign({},p,{displayLineId:lineId}));
+      if(yoneRef){
+        lang=String(lang||"ja").toLowerCase();
+        var yonePrefix=/^zh/.test(lang)?"铁路车辆参考（实际编组未确认）：":
+          lang==="en"?"Rail fleet illustration (consist unverified): ":
+          lang==="ko"?"철도 차량 참고(실제 편성 미확인): ":
+          "鉄道車両参考（実際の編成未確認）：";
+        return yonePrefix+yoneRef.illustrationModel;
+      }
+    }
     // Yamagata 2026: distinguish a public operating REFERENCE from a
     // scheduled physical consist. Remaining 701/719/E723 mixed workings
     // have no independently verified dated model; show candidates in text
