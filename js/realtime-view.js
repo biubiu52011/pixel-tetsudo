@@ -252,6 +252,7 @@
   }
 
   function closeModal() {
+    var closingLine = _currentModalLine;
     _currentModalLine = null;
     _currentModalIdentity = "";
     var modal = document.getElementById("lineDetailModal");
@@ -259,9 +260,15 @@
     modal.classList.remove("active");
     document.body.classList.remove("modal-open");
     clearSelectedCards();
-    if (_modalPreviousFocus && typeof _modalPreviousFocus.focus === "function" && _modalPreviousFocus.isConnected) {
-      _modalPreviousFocus.focus();
+    var focusBack = (_modalPreviousFocus && _modalPreviousFocus.isConnected) ? _modalPreviousFocus : null;
+    if (!focusBack && closingLine) {
+      // Live updates may have replaced the selected line card.
+      var cards = document.querySelectorAll("#realtimeStatusContainer .rs-line-card");
+      for (var ci = 0; ci < cards.length; ci++) {
+        if (cards[ci].dataset.line === closingLine) { focusBack = cards[ci]; break; }
+      }
     }
+    if (focusBack && typeof focusBack.focus === "function") focusBack.focus();
     _modalPreviousFocus = null;
   }
 
