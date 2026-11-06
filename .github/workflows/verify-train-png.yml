@@ -157,6 +157,8 @@ jobs:
           node --check data/timetables/jreast-kitakami-2611-number-index.js
           node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
+      - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
+        run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
         run: node --test tests/train-runs-query-batches.test.cjs tests/jreast-canonical-train-number-segments.test.cjs
       - name: Verify Boso dated official number exceptions and historical SQL guards
@@ -213,8 +215,6 @@ jobs:
         run: node --test tests/kabe-2611-redwing-number-scope.test.cjs
       - name: Verify Kosei 2611 179 source-only M/MH mixed fleet and special exclusions
         run: node --test tests/kosei-2611-source-fleet.test.cjs
-      - name: Verify Kosei official 18-stop clocks and Kyoto/Kobe through-number references
-        run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify JR-West Kyoto/Kobe 2611 source-only C/T/M mixed fleet mapping
         run: node --test tests/jrwest-kyoto-kobe-2611-source-fleet.test.cjs
       - name: Verify Sotetsu-JR 2611 dual E233/12000 source-only candidate mapping
