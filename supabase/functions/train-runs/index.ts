@@ -1177,6 +1177,62 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // number/calendar/direction/owner crosswalk remains the ONLY family
   // illustration authority (never infer 05/07/15000 or E231-800 from Y).
   // Old E353 5003M/5050M are 2-stop expresses, not local trains.
+  // Senzan 2611: protect actual running dates as well as planned
+  // illustrations; preserve all historical source templates for audit.
+  if(lineId==="Senzan"&&/^2026-11-/.test(serviceDate)){
+    const {data:rows,error:err}=await db.from("published_senzan_2611_fleet_scope")
+      .select("source_template_id,calendar_urn,direction_urn,train_number,source_type_urn,published_type_urn,fleet_role,candidate_models,illustration_model,source_url,operating_dates,reference_only,actual_vehicle_confirmed")
+      .eq("edition","2611").eq("line_key","Senzan")
+      .eq("calendar_urn",selectedCalendar);
+    if(err||(rows||[]).length!==106)
+      throw new Error("SENZAN_2611_NUMBER_FLEET_SCOPE_UNAVAILABLE");
+    const scope=new Map((rows||[]).map((x:any)=>
+      [Number(x.source_template_id),x]));
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const proof:any=scope.get(Number(run.source_template_id));
+      const dates=Array.isArray(proof?.operating_dates)
+        ?proof.operating_dates.map((d:any)=>String(d).slice(0,10)):[];
+      if(!proof||proof.calendar_urn!==run.service_id||
+         proof.direction_urn!==run.rail_direction||
+         proof.train_number!==run.train_number||
+         proof.source_type_urn!==run.train_type||
+         run.network_key!=="odpt.Railway:JR-East.Senzan"||
+         proof.reference_only!==true||
+         proof.actual_vehicle_confirmed!==false||
+         (proof.fleet_role==="satono_dated"
+           ?(!["8821D","8822D"].includes(run.train_number)||
+             proof.published_type_urn!=="odpt.TrainType:JR-East.Rapid"||
+             !dates.includes(serviceDate))
+           :proof.fleet_role!=="regular_e721"||
+             !/^[0-9]{3,4}M$/.test(run.train_number)||dates.length!==0)){
+        result.splice(i,1);continue;
+      }
+      run.train_type=proof.published_type_urn;
+      if(proof.fleet_role==="satono_dated")
+        run.service_name="いろどりSATONO";
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=proof.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.train_number_verification="official-2611-number-calendar";
+      run.timetable_date_verified=false;
+      run.published_number_fleet_reference={
+        source:"jr-east-2611-senzan-265",lineId:"Senzan",
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        trainType:proof.published_type_urn,calendar:proof.calendar_urn,
+        direction:proof.direction_urn,models:proof.candidate_models,
+        illustrationModel:proof.illustration_model,
+        sourceUrl:proof.source_url,operatingDates:dates,
+        actualVehicleConfirmed:false,referenceOnly:true
+      };
+    }
+  }
   // Ryomo 2611: number-scoped fleet reference only. Exclude historical
   // 9482M/9484M/9486M without deleting the original source templates.
   if(lineId==="Ryomo"&&/^2026-11-/.test(serviceDate)){

@@ -14,7 +14,9 @@ The new `published_senzan_2611_fleet_scope` lists 212 source rows: 208 regular M
 
 Senzan now uses the existing `TrainNumberPngRanges.match` entry point, extended by `jreast-senzan-2611-number-index.js` with exact month/number/source/line/direction/type checks. The map returns planned-reference PNGs for E721 and on published dates HB-E300 SATONO. The E721 reference does not identify 0/1000 subseries and the SATONO image does not identify today's physical set.
 
-## Remaining backend limitation
-`supabase/functions/train-runs/index.ts` currently serves historical manual template positions by generic calendar. Its `Senzan` branch is not yet date-aware for SATONO and December-only Omoide. The frontend does not authorize a PNG outside allowed dates, but an **unmapped neutral estimated marker** may remain in the supplied SQL positions on a non-operating date. Do not claim full day-specific service filtering or verified legacy stop clocks until an Edge source-date guard is deployed.
+## Date-scoped backend projection
+`supabase/functions/train-runs/index.ts` now looks up the 106 scoped source records for the requested service calendar before publishing Senzan positions. It rejects historical 9821D/9822D entries on all November dates, rejects 8821D/8822D SATONO on unlisted operating dates, and removes unknown number/source/direction rows rather than publishing neutral phantom train markers. The service calendar and original run ID remain intact; the backend marks all fleet candidates as unconfirmed. A failed or incomplete roster causes the API to fail closed rather than fall back to historical trains.
+
+The 104 regular M numbers per calendar remain **planned train references** based on the imported stop clock sequence; stop clocks have not been independently certified for November 2026. Only the operating date/number scope is checked, not actual same-day running status. `tests/senzan-2611-edge-calendar.test.cjs` exercises the branch with representative records, wrong dates and missing scope.
 
 No timetable clock or actual physical train identity was certified by this change. `actual_vehicle_confirmed=false` is retained throughout.
