@@ -5249,6 +5249,33 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // Uetsu Inaho: a dated SQL PUBLISHED E653 model can have identity
+    // status EXACT yet lack a matching gallery PNG. That is an exact
+    // TIMETABLE model, not a physically identified E653 formation.
+    // Only the separate source/stops/date/plan-verified Inaho gate may
+    // provide an illustrative PNG. Never suppress true physical evidence
+    // or expand the exact model identity on this position.
+    var exactUetsuInaho = p && !isGalleryPng(iconSrc) &&
+      window.JREastUetsuNumberIndex202611 &&
+      typeof window.JREastUetsuNumberIndex202611.resolvePlannedExactInaho === "function"
+        ? window.JREastUetsuNumberIndex202611.resolvePlannedExactInaho(p) : null;
+    if (exactUetsuInaho) {
+      var inahoGallery = window.VehicleGaragePngMap;
+      var inahoImage = normalizeGalleryPngPath(exactUetsuInaho.illustrationPng);
+      if (exactUetsuInaho.referenceOnly === true &&
+          exactUetsuInaho.actualVehicleConfirmed === false &&
+          exactUetsuInaho.authorizesPNG === false &&
+          exactUetsuInaho.family === "inaho" &&
+          inahoImage && isGalleryPng(inahoImage) &&
+          inahoGallery && typeof inahoGallery.matchModelPath === "function" &&
+          inahoGallery.matchModelPath(
+            exactUetsuInaho.illustrationModel,inahoImage,"Uetsu")) {
+        return artworkFailed === true ? {kind:"unresolved",iconSrc:""} :
+          {kind:"vehicle",iconSrc:inahoImage,planned:true,illustrative:true,
+           representativeOnly:true,actualVehicleConfirmed:false,
+           illustrationRole:"uetsu-inaho-published-series-not-physical-consist"};
+      }
+    }
     // Last-mile lookup handles raw ODPT/SQL positions that carry the train
     // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
     // its actual-car status, or the original train-number identity.
