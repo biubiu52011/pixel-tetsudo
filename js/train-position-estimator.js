@@ -2243,35 +2243,42 @@
             runningChainId: timetableIdentity,
             runningChainEvidence: "TIMETABLE_SEGMENT",
             trainNumber: publicTrainNumber,
-            // Kosei's holiday H is source-calendar metadata, not part of
-            // the published number. Keep trainNumber for all identity and
-            // candidate fleet guards; only the display label drops H,
-            // and ONLY when all 18 original stops are date-verified.
-            displayTrainNumber:lineId==="Kosei"&&officialKoseiPlan&&
+            // Keep historical composite/H source trainNumber for canonical
+            // matching; only date-verified official public M numbers may be
+            // used for optional presentation. No carset inference.
+            displayTrainNumber:tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
-              tt._sqlTrainNumberVerification==="official-2611-kosei-18-stop-clock"&&
-              String(tt._sqlPublishedTrainNumber||"")===
-                String(officialKoseiPlan.historicalNumber||"")
+              ((lineId==="Kosei"&&officialKoseiPlan&&
+                tt._sqlTrainNumberVerification==="official-2611-kosei-source-stop-clock"&&
+                String(tt._sqlPublishedTrainNumber||"")===
+                String(officialKoseiPlan.historicalNumber||""))||
+               (lineId==="TokaidoKansai"&&officialJrWestKyotoKobePlan&&
+                tt._sqlTrainNumberVerification==="official-2611-kyoto-kobe-source-stop-clock"&&
+                String(tt._sqlPublishedTrainNumber||"")===
+                String(officialJrWestKyotoKobePlan.historicalNumberSuffix||"")))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber,
-            // Date-verified published numbers are safe to show in folded
-            // views, but NEVER certify an actual physical formation.
-            officialNumberVerified: Boolean(lineId==="Kosei"&&
-              officialKoseiPlan&&tt._timetableDateVerified===true&&
-              tt._sqlTrainNumberVerification==="official-2611-kosei-18-stop-clock"&&
-              String(tt._sqlPublishedTrainNumber||"")===
-                String(officialKoseiPlan.historicalNumber||"")) || (Boolean(
-              officialYonesakaPlan || officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
+            officialNumberVerified: Boolean(tt._positionSource==="supabase-train-run"&&
+              tt._timetableDateVerified===true&&
+              String(publicTrainNumber||"")===String(run.trainNumber||"")&&
+              ((lineId==="Kosei"&&officialKoseiPlan&&
+                tt._sqlTrainNumberVerification==="official-2611-kosei-source-stop-clock"&&
+                String(tt._sqlPublishedTrainNumber||"")===
+                String(officialKoseiPlan.historicalNumber||""))||
+               (lineId==="TokaidoKansai"&&officialJrWestKyotoKobePlan&&
+                tt._sqlTrainNumberVerification==="official-2611-kyoto-kobe-source-stop-clock"&&
+                String(tt._sqlPublishedTrainNumber||"")===
+                String(officialJrWestKyotoKobePlan.historicalNumberSuffix||""))))||
+              Boolean(officialYonesakaPlan || officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
               officialKitakamiPlan || officialHanawaPlan || officialKururiPlan || officialMitoPlan || officialMiyoPlan || officialOfunatoPlan || officialOitoEastPlan || officialOitoWestPlan || officialYamadaPlan ||
               officialHakushinPlan || officialJoetsuPlan || officialKamaishiPlan || officialKashimaPlan ||
                officialKesennumaRailPlan || officialKomiiPlan) &&
-              // A continuation can carry a different _sqlTrainNumber on
-              // individual stops. Never label THAT unverified number as
-              // published merely because its parent run was admitted.
+              // Other-line public number only when its underlying source
+              // identity is unchanged; never infer physical vehicle.
               String(publicTrainNumber||"").toUpperCase() ===
-                String(run.trainNumber||"").toUpperCase()),
+                String(run.trainNumber||"").toUpperCase(),
             historicalKoseiPublicNumber:
               officialKoseiPlan?officialKoseiPlan.historicalNumber:"",
             historicalSourcePublicNumberSuffix:
