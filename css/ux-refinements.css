@@ -1,0 +1,171 @@
+/* Shared UX refinements, scoped to non-home pages.
+   Preserve the existing railway badges, pixel type and home baseline. */
+
+body[data-page="realtime"] .rs-line-card:focus-visible,
+body[data-page="trains"] .rs-line-card:focus-visible,
+body[data-page="history"] .history-entry:focus-visible {
+  outline: 3px solid #006b32;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px #ffffff, 0 0 0 8px #006b32;
+}
+body[data-page="realtime"] .rs-modal-content {
+  max-width: 440px;
+  max-height: min(84dvh, 720px);
+}
+body[data-page="realtime"] .rs-modal-header {
+  gap: 14px;
+  padding: 12px 16px;
+}
+body[data-page="realtime"] .rs-modal-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+body[data-page="realtime"] .rs-modal-close {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--text);
+}
+body[data-page="realtime"] .rs-close-glyph {
+  font: 30px/1 Arial, sans-serif;
+  transform: translateY(-1px);
+}
+body[data-page="realtime"] .rs-modal-close:focus-visible {
+  outline: 3px solid #006b32;
+  outline-offset: 2px;
+}
+body[data-page="realtime"] .rs-modal-body {
+  padding: 14px;
+  gap: 10px;
+}
+body[data-page="realtime"] .rs-status-section,
+body[data-page="realtime"] .rs-interval-section,
+body[data-page="realtime"] .rs-cause-section {
+  border-width: 2px;
+  padding: 12px 14px;
+}
+body[data-page="realtime"] .rs-updated-section {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+}
+body[data-page="realtime"] .rs-status-indicator {
+  min-width: 0;
+  gap: 10px;
+  letter-spacing: 0.3px;
+}
+body[data-page="realtime"] .rs-status-indicator .rs-status-symbol {
+  flex: 0 0 26px;
+  width: 26px;
+  height: auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  line-height: 1;
+}
+body[data-page="realtime"] .rs-status-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+/* The brighter alert colors remain useful as borders/backgrounds, but
+   status text and glyphs need sufficient contrast on the pale cards. */
+body[data-page="realtime"] .rs-status-section.rs-status-delayed { color:#915300; }
+body[data-page="realtime"] .rs-status-section.rs-status-info,
+body[data-page="realtime"] .rs-status-section.rs-status-notice { color:#785900; }
+body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
+body[data-page="realtime"] .rs-status-icon-delayed,
+body[data-page="trains"] .rs-status-icon-delayed { color:#915300; }
+body[data-page="realtime"] .rs-status-icon-notice,
+body[data-page="trains"] .rs-status-icon-notice { color:#785900; }
+body[data-page="realtime"] .rs-status-icon-suspended,
+body[data-page="trains"] .rs-status-icon-suspended { color:#b42334; }
+body[data-page="realtime"] .rs-status-icon-no-data,
+body[data-page="trains"] .rs-status-icon-no-data,
+body[data-page="realtime"] .rs-status-icon-no-odpt,
+body[data-page="trains"] .rs-status-icon-no-odpt { opacity:1; color:var(--text-muted); }
+body[data-page="trains"] .train-fold-vehicle-icon.unresolved::after { content:none; }
+body[data-page="trains"] .train-fold-vehicle-placeholder {
+  display: inline-flex;
+  width: 100%;
+  min-height: 32px;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  border: 1px dashed #777;
+  border-radius: 3px;
+  background: var(--bg);
+  color: #555;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+body[data-page="history"] .history-entry[role="link"] { cursor:pointer; }
+body[data-page="history"] .history-delete-btn {
+  min-width: 44px;
+  min-height: 44px;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #a72c3d;
+  border-width: 2px;
+}
+body[data-page="history"] .history-delete-btn:focus-visible,
+body[data-page="history"] .history-clear-btn:focus-visible,
+body[data-page="history"] .history-undo-btn:focus-visible {
+  outline: 3px solid #006b32;
+  outline-offset: 2px;
+}
+body[data-page="history"] .history-undo-notice {
+  position: fixed;
+  z-index: 1600;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 2px solid #1d1d1f;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.28);
+  background: #1d1d1f;
+  color: #fff;
+  font-size: 12px;
+}
+body[data-page="history"] .history-undo-btn {
+  flex: 0 0 auto;
+  min-width: 58px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #fff;
+  color: #1d1d1f;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  body[data-page="realtime"] .rs-modal-content { max-height: 88dvh; }
+  body[data-page="realtime"] .rs-modal-body { padding: 12px; }
+  body[data-page="realtime"] .rs-interval-section,
+  body[data-page="realtime"] .rs-cause-section { padding: 10px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="realtime"] .rs-status-icon,
+  body[data-page="trains"] .rs-status-icon { animation: none; }
+}
