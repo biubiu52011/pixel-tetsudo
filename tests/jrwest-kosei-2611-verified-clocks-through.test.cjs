@@ -49,7 +49,7 @@ test('the existing canonical SQL run owner exposes references separately and gua
   'JRWEST_KOSEI_2611_VERIFIED_CLOCK_SOURCE_CONFLICT',
   'run.canonical_group_evidence!=="source_only"',
   'run.train_number!==p.source_train_number',
-  '![18,21].includes(stops.length)',
+  '![4,5,18,21,22].includes(stops.length)',
   'run.published_train_number=p.published_train_number',
   'run.timetable_date_verified=true',
   'run.plan_source="official-2611-kosei-source-clock-verified"',
