@@ -403,6 +403,13 @@
           });
         });
       }
+      listEl.addEventListener("keydown", function(e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        var card = e.target.closest(".rs-line-card");
+        if (!card || e.target !== card) return;
+        e.preventDefault();
+        card.click();
+      });
       listEl.addEventListener("click", function(e) {
         var card = e.target.closest(".rs-line-card");
         if (card && card.dataset.line) {
