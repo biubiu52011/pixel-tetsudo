@@ -398,10 +398,10 @@ function applyData(data, i18n) {
       }
     };
   }
-  // Realtime/train pages do not consume tourism data. Keep this capability
+  // Realtime, train and history pages do not consume tourism data. Keep this capability
   // decision in the loader that owns the cache and fetch lifecycle.
   var _pagePath = window.location && window.location.pathname || '';
-  if (!window.PT_SKIP_TOURISM && /\/(?:realtime|trains)\.html$/i.test(_pagePath)) {
+  if (!window.PT_SKIP_TOURISM && /\/(?:realtime|trains|history)\.html$/i.test(_pagePath)) {
     window.PT_SKIP_TOURISM = true;
   }
 

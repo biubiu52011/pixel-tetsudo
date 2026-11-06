@@ -329,6 +329,67 @@ function _fusionExtensionLines(lineId) {
   } catch(e) { return null; }
 }
 
+// Resolve the active data dependencies once, without DOM or UI policy.
+// The view chooses when to activate them; canonical topology is read here.
+function _needsSqlTrainPlan(lineId) {
+  var api = window.ODPTClient;
+  return !!(api && api.usesSqlTimetable && api.usesSqlTimetable(lineId));
+}
+function selectActiveTrainSources(lineId, systemLineIds, lines) {
+  lines = lines || getLinesData();
+      var _requestedLines = systemLineIds && systemLineIds.length
+        ? systemLineIds.slice() : [lineId];
+      // 按需加载仅有时刻表的直接直通邻线。canonical
+      // 运行链解析器提供关系，不新增第二套
+      // 埼京/临海映射，也不猜测跨运营商车次规则。
+      var _timetablePartners = [];
+      if (window.RunningChainResolver &&
+          typeof window.RunningChainResolver.getDirectThroughLines === "function" &&
+          window.ODPTClient && typeof window.ODPTClient.hasRealtimePositionApi === "function") {
+        (window.RunningChainResolver.getDirectThroughLines(lineId) || []).forEach(function(id) {
+          if (!lines[id]) return;
+          // 两个方向都重要：JR 实时列车可能进入
+          // 仅有时刻表的直通线路，临海列车也可能进入 JR。
+          if (_requestedLines.indexOf(id) < 0) _requestedLines.push(id);
+          if (_needsSqlTrainPlan(id) &&
+              _timetablePartners.indexOf(id) < 0) _timetablePartners.push(id);
+        });
+      }
+      // A verified canonical plan may extend across an overlapping map line
+      // without a physical handover edge (Joban rapid/main at Toride).
+      // Load that SQL partner for train-level live matching; do not change the
+      // visible map geometry or invent a realtime point on its behalf.
+      if (window.RunningChainResolver &&
+          typeof window.RunningChainResolver.getVerifiedCanonicalPartners === "function") {
+        (window.RunningChainResolver.getVerifiedCanonicalPartners(lineId) || []).forEach(function(id) {
+          if (!lines[id]) return;
+          if (_requestedLines.indexOf(id) < 0) _requestedLines.push(id);
+          if (_needsSqlTrainPlan(id) && _timetablePartners.indexOf(id) < 0)
+            _timetablePartners.push(id);
+        });
+      }
+      // 激活与 getRealtimePositions 渲染范围相同的延伸/支线范围。
+      // 展示成员关系独立存在：增加数据依赖不得
+      // 改变系统几何或标题。
+      var _extensions = _fusionExtensionLines(lineId) || [];
+      var _positionLines = (window.RailwayDB && window.RailwayDB.getAllLines)
+        ? window.RailwayDB.getAllLines() : lines;
+      _positionLines = _positionLines || lines;
+      var _branches = window.LinePresentationService ? window.LinePresentationService.getMapBranchIds(lineId, _positionLines) : [];
+      var _dependencies = _extensions.map(function(ext) { return ext.lid; });
+      _dependencies = _dependencies.concat(_branches);
+      if(window.SharedTrackPairs) _dependencies = _dependencies.concat(window.SharedTrackPairs.getSharedLines(lineId));
+      _dependencies.forEach(function(id) {
+        if (_positionLines[id] && _requestedLines.indexOf(id) < 0) _requestedLines.push(id);
+      });
+      _requestedLines.forEach(function(id) {
+        if (_needsSqlTrainPlan(id) && id !== lineId &&
+            _timetablePartners.indexOf(id) < 0) _timetablePartners.push(id);
+      });
+  return { realtimeLineIds: _requestedLines, timetablePartnerIds: _timetablePartners };
+}
+window.TrainsDataDependencies = { select: selectActiveTrainSources };
+
 function _fusionBaseIdx(lineId, fusionLineId) {
   try {
     var g = _routeGeometryCache[_geomKey(lineId)];

@@ -80,11 +80,6 @@
     }, Math.max(50, nextExpiry - now + 50));
   }
 
-  function needsSqlTrainPlan(lineId) {
-    var api = window.ODPTClient;
-    return !!(api && api.usesSqlTimetable && api.usesSqlTimetable(lineId));
-  }
-
   function updateLineTitle(lineId, fusedLine) {
     var _title = (window.RailwayDB && window.RailwayDB.resolveLineName ? window.RailwayDB.resolveLineName(lineId, window.currentLang) : (fusedLine.nameEn || fusedLine.nameJa || lineId));
     var _sys2 = (window.LinePresentationService && window.LinePresentationService.getPresentation)
@@ -161,58 +156,15 @@
           detailEl && !detailEl.classList.contains("hidden")) return;
       currentLine = lineId;
       currentLineIdentity = actualIdentity;
-      // 只有用户打开线路后才激活网络工作。直通服务
-      // 成员同时激活，使同一实体运行保持连续。
-      var _requestedLines = currentSystemLineIds && currentSystemLineIds.length
-        ? currentSystemLineIds.slice() : [lineId];
-      // 按需加载仅有时刻表的直接直通邻线。canonical
-      // 运行链解析器提供关系，不新增第二套
-      // 埼京/临海映射，也不猜测跨运营商车次规则。
-      var _timetablePartners = [];
-      if (window.RunningChainResolver &&
-          typeof window.RunningChainResolver.getDirectThroughLines === "function" &&
-          window.ODPTClient && typeof window.ODPTClient.hasRealtimePositionApi === "function") {
-        (window.RunningChainResolver.getDirectThroughLines(lineId) || []).forEach(function(id) {
-          if (!lines[id]) return;
-          // 两个方向都重要：JR 实时列车可能进入
-          // 仅有时刻表的直通线路，临海列车也可能进入 JR。
-          if (_requestedLines.indexOf(id) < 0) _requestedLines.push(id);
-          if (needsSqlTrainPlan(id) &&
-              _timetablePartners.indexOf(id) < 0) _timetablePartners.push(id);
-        });
+      // Dependency selection belongs to trains-data; this controller only
+      // activates sources and owns the visible detail lifecycle.
+      if (!window.TrainsDataDependencies || !window.TrainsDataDependencies.select) {
+        throw new Error("Train dependency selector unavailable");
       }
-      // A verified canonical plan may extend across an overlapping map line
-      // without a physical handover edge (Joban rapid/main at Toride).
-      // Load that SQL partner for train-level live matching; do not change the
-      // visible map geometry or invent a realtime point on its behalf.
-      if (window.RunningChainResolver &&
-          typeof window.RunningChainResolver.getVerifiedCanonicalPartners === "function") {
-        (window.RunningChainResolver.getVerifiedCanonicalPartners(lineId) || []).forEach(function(id) {
-          if (!lines[id]) return;
-          if (_requestedLines.indexOf(id) < 0) _requestedLines.push(id);
-          if (needsSqlTrainPlan(id) && _timetablePartners.indexOf(id) < 0)
-            _timetablePartners.push(id);
-        });
-      }
-      // 激活与 getRealtimePositions 渲染范围相同的延伸/支线范围。
-      // 展示成员关系独立存在：增加数据依赖不得
-      // 改变系统几何或标题。
-      var _extensions = _fusionExtensionLines(lineId) || [];
-      var _positionLines = (window.RailwayDB && window.RailwayDB.getAllLines)
-        ? window.RailwayDB.getAllLines() : lines;
-      _positionLines = _positionLines || lines;
-      var _branches = window.LinePresentationService ? window.LinePresentationService.getMapBranchIds(lineId, _positionLines) : [];
-      var _dependencies = _extensions.map(function(ext) { return ext.lid; });
-      _dependencies = _dependencies.concat(_branches);
-      if(window.SharedTrackPairs) _dependencies = _dependencies.concat(window.SharedTrackPairs.getSharedLines(lineId));
-      _dependencies.forEach(function(id) {
-        if (_positionLines[id] && _requestedLines.indexOf(id) < 0) _requestedLines.push(id);
-      });
+      var activeSources = window.TrainsDataDependencies.select(lineId, currentSystemLineIds, lines);
+      var _requestedLines = activeSources.realtimeLineIds;
+      var _timetablePartners = activeSources.timetablePartnerIds;
       window.TrainsActivePositionLineIds = _requestedLines.slice();
-      _requestedLines.forEach(function(id) {
-        if (needsSqlTrainPlan(id) && id !== lineId &&
-            _timetablePartners.indexOf(id) < 0) _timetablePartners.push(id);
-      });
       var _activationPromise = Promise.resolve();
       if (window.ODPTClient && window.ODPTClient.activateRealtimeLines) {
         _activationPromise = window.ODPTClient.activateRealtimeLines(_requestedLines).catch(function(e) {

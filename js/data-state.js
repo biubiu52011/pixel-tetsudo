@@ -32,42 +32,11 @@
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
-  function getDelayInfo(line) {
-    if (line.delayInfo) return line.delayInfo;
-    if (line.status) return { status: line.status, interval: line.interval, cause: line.cause };
-    return null;
-  }
-
-  function getLineIdentity(line, lineId) {
-    line = line || {};
-    if (line.lineIdentity && line.lineIdentity.key) return String(line.lineIdentity.key);
-    var operator = line.operator || "";
-    var railwayCode = "";
-    if (window.ODPTClient && window.ODPTClient.LINE_RAILWAY_CODE && lineId) railwayCode = window.ODPTClient.LINE_RAILWAY_CODE[lineId] || "";
-    if (!operator || !railwayCode) return "";
-    return String(operator) + "::" + String(railwayCode);
-  }
-
-  // 运行状态归线路自身所有。直通拓扑不得把另一条线路的延误/状态复制到本线路；
-  // 明确的直通影响由 RunInfoEvaluator 负责表达。
-
-  function getStatus(status) {
-    if (!status) return STATUS_META.no_data;
-    if (status === 'normal') return STATUS_META.normal;
-    return STATUS_META[status] || STATUS_META.no_data;
-  }
+  // Identity and status presentation are owned by LineCard below.
+  // The state store deliberately does not duplicate those rules.
 
   function t(key) {
     return (typeof window.t === "function") ? window.t(key) : (key || "");
-  }
-
-  // 翻译 data-fusion 在 ODPT 只提供单端车站时生成的方向后缀“方面”（如“東京方面”）。
-  // 区间内的站名已经按当前语言融合；只需按语言替换系统生成的后缀
-  // （ja 方面 / zh 方向 / ko 방면 / en bound for）。
-  function _localizeInterval(str) {
-    if (!str || String(str).indexOf("\u65b9\u9762") === -1) return str;
-    var dir = t("status.toward");
-    return String(str).split("\u65b9\u9762").join(dir || "\u65b9\u9762");
   }
 
   // 已移除 tLine：改用 RailwayDB.resolveLineName(lineId, lang)。
@@ -569,12 +538,8 @@
 (function() {
   "use strict";
 
-  var STATUS_META = {
-    normal:{icon:"○",cls:"rs-status-icon-normal"}, info:{icon:"！",cls:"rs-status-icon-notice"},
-    notice:{icon:"！",cls:"rs-status-icon-notice"}, delayed:{icon:"△",cls:"rs-status-icon-delayed"},
-    suspended:{icon:"×",cls:"rs-status-icon-suspended"}, no_data:{icon:"?",cls:"rs-status-icon-no-data"},
-    no_odpt:{icon:"—",cls:"rs-status-icon-no-odpt"}, loading:{icon:"…",cls:"rs-status-icon-loading"}
-  };
+  // One canonical status catalog, shared with the DataState store.
+  var STATUS_META = window.DataState.STATUS_META;
   function escapeHtml(s) {
     if (!s || typeof s !== "string") return "";
     return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
