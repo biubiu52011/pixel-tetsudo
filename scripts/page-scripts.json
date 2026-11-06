@@ -132,6 +132,7 @@
       "data/timetables/jreast-tazawako-2611-number-index.js",
       "data/timetables/jreast-tsugaru-2611-number-index.js",
       "data/timetables/jreast-uetsu-2611-number-index.js",
+      "data/timetables/jreast-yamagata-2611-number-index.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
       "data/timetables/nambu-branch-official-202611.js",
@@ -299,6 +300,9 @@
       ],
       "data/timetables/jreast-uetsu-2611-number-index.js": [
         "Uetsu"
+      ],
+      "data/timetables/jreast-yamagata-2611-number-index.js": [
+        "Yamagata"
       ]
     }
   }
