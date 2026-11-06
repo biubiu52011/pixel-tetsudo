@@ -22,7 +22,7 @@
 /* 4.3.807 カレンダーに追加 */
 .article-content--event .btn-add-calendar {
   margin-left: auto; border: 0; cursor: pointer;
-  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  min-height: 44px; padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
   background: #FF4500; color: #fff; transition: opacity 0.15s;
 }
 .article-content--event .btn-add-calendar:hover { opacity: 0.85; }
