@@ -1237,6 +1237,28 @@
              sourceBackedRikuto.model!==officialRikutoEastPlan.model)continue;
         }
 
+        // 米坂線: internal ID Yonezawa. Strict source-number/station/date
+        // verification prevents historical Local-labelled bus rows (1--22)
+        // from becoming moving trains. No rail position past Imaizumi.
+        var officialYonesakaPlan=null;
+        if(lineId==="Yonezawa"&&String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run")continue;
+          var yoneIndex=window.JREastYonezawaNumberIndex202611;
+          if(!yoneIndex||typeof yoneIndex.verify!=="function")continue;
+          officialYonesakaPlan=yoneIndex.verify({
+            trainNumber:run.trainNumber,positionLineId:"Yonezawa",
+            displayLineId:"Yonezawa",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,estimated:true,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";})
+          });
+          if(!officialYonesakaPlan)continue;
+        }
+
         // 陸羽西線 restored rail services in 2026. Use only the exact
         // 2611 numbers and calendar for November SQL-based positions.
         // Old 9166D is not on this month's published train-number roster.
@@ -2063,7 +2085,7 @@
             // A verified JR East 2611 number is safe to SHOW in the folded
             // timetable list. It is not proof of an exact physical vehicle.
             officialNumberVerified: Boolean(
-              officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
+              officialYonesakaPlan || officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
               officialOminatoPlan || officialIiyamaPlan ||
