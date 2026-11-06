@@ -5283,6 +5283,23 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
              actualVehicleConfirmed:false,
              illustrationRole:"yamagata-2026-observed-service-not-november-consist"};
         }
+        // A roster-verified but multi-model working is a mapped fleet
+        // candidate, not an unidentified train. Keep one neutral marker;
+        // its line colour and candidate metadata distinguish it from a
+        // genuinely missing number, without assigning a false PNG.
+        var yamCandidates=typeof yamIndex.resolveCandidates==="function"
+          ?yamIndex.resolveCandidates(p):null;
+        if(yamCandidates&&yamCandidates.referenceOnly===true&&
+            yamCandidates.actualVehicleConfirmed===false&&
+            yamGallery&&typeof yamGallery.matchModelPath==="function"){
+          var validated=(yamCandidates.candidateAssets||[]).filter(function(path,i){
+            return isGalleryPng(normalizeGalleryPngPath(path))&&
+              yamGallery.matchModelPath(yamCandidates.assetModels[i],path,"Yamagata");
+          });
+          if(validated.length)return {kind:"candidate",iconSrc:"",
+            candidateAssets:validated,planned:false,
+            actualVehicleConfirmed:false};
+        }
         return {kind:"unresolved",iconSrc:""};
       }
     }
