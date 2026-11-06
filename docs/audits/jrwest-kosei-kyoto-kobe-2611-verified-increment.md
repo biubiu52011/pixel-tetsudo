@@ -46,3 +46,44 @@
 在目标 Supabase `pnupwfmgbtxqhpzsrhfn` 已执行本迁移并查询：八条 `clock_evidence` 的 `verified_source_match=true`，另八条 `crossline_number_reference` 的编号证据约束均通过；随后部署 `train-runs` v330。
 
 注意：全量官方时刻表依法不得擅自复制传播。本次的证据不再复制官方完整时刻表，而是比对现有站时后保留必要的校验元数据。
+
+
+## 2026-11-07 续批：2026-11 官方时刻校验增量
+
+### 湖西線：原 8 → 34 条日历来源
+
+新增迁移：
+`supabase/migrations/20261107123000_jrwest_kosei_2611_expand_verified_source_clocks.sql`
+
+- 新增 26 条历史源的原始逐站指纹；累计 34 条（平日 17、土休日 17），原来 8 条保持不变。
+- 新认证公众番号：`1810M`、`1812M`、`1814M`、`1816M`、`1818M`、`1820M`、`1824M`、`1826M`、`1828M`、`1830M`、`1832M`、`1834M`、`1836M`。
+- `1810M` 平日 09:02 发京都、土休日 08:42 发，未共享一张车次时刻表。
+- `1826M` 和 `1832M` 都延长到永原，21 个站点；其余本批 18 站。新的校验不再假设所有湖西线普通车都是 18 站。
+- 只扩大原表约束，延续 `published_jrwest_kosei_2611_clock_evidence` 的运行时重算指纹检查；有任何来源时刻、站序、类型和日历变化即不核准。
+- 依据 JR 西日本 2026年11月号个别列车页面，校验原始记录而非复制、重新发布官方整个区间时刻表。部分官方 URL 参数为 2026 年 10 月，但页面已经标注数据来源为 2026年11月号；且所涉列车为每日或对应的平日/土休日运行。
+
+### JR京都線／JR神戸線：新增 5 条有官方番号的原来源行程
+
+迁移：
+`supabase/migrations/20261107124500_jrwest_kyoto_kobe_2611_five_verified_source_clocks.sql`
+
+现有候选表 `published_jrwest_kyoto_kobe_2611_source_fleet` 新增可空的来源番号、URL、指纹与已核对的 7 站区间数值。不是新建一套历史时刻所有权；候选映射仍按原来 58 条管理，只有五条获得官方车次核验：
+
+| 官方番号 | 日历 | 已验证区段 | 官方资料 |
+| --- | --- | --- | --- |
+| `3447M` | 平日 | 高槻→神戸 | [JR官方](https://timetable.jr-odekake.net/train-timetable/173871?date=20261023) |
+| `3465M` | 平日 | 高槻→神戸 | [JR官方](https://timetable.jr-odekake.net/train-timetable/206551?date=20261030) |
+| `3473M` | 土休日 | 高槻→神戸 | [JR官方](https://timetable.jr-odekake.net/train-timetable/206581?date=20261024) |
+| `3472M` | 土休日 | 三ノ宮→京都 | [JR官方](https://timetable.jr-odekake.net/train-timetable/173081?date=20261028) |
+| `3530M` | 土休日 | 三ノ宮→京都 | [JR官方](https://timetable.jr-odekake.net/train-timetable/208291?date=20261024) |
+
+以上官方都是「新快速」服务，旧 `train_type_urn=...Rapid` 保留用于历史源和车型候选的兼容判定，另保留 `published_train_type=...SpecialRapid` 证明；**不能让历史分类擅自改变物理编组的识别逻辑**。用户需要可见种别时必须在严密的服务类型校验后才能展示。
+
+`published_jrwest_kyoto_kobe_2611_clock_evidence` 为 `security_invoker` 视图，强制对源站序和时刻重新计算指纹。当天运行日类别对应后，`train-runs` 才把这 5 条 7 站源设置为 `timetable_date_verified=true`，其余候选仍为参考。
+
+### 发布与边界
+
+Supabase 已经应用上述两次迁移，查询确认 **湖西 34/34、京阪神 5/5** 有效源匹配；Edge Function 已部署为 `train-runs v332`。直接提交 `main`，不建立 PR。
+
+无论新增的是公开车号还是已验证的站时，都**没有实车编组身份证据**，因此不执行 `207/321/223/225/221/521` 的逐车次 PNG 指派。历史源仍不能伪装为 JR西日本全线 2026-11 完整发车表。剩余车次需继续核验。
+
