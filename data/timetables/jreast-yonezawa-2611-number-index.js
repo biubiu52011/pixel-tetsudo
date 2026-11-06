@@ -86,7 +86,6 @@ function resolve(p){
  if(!proof||p.vehicleResolvedFromRealtime===true||
     p.actualVehicleConfirmed===true||p.vehicleFormationId||
     p.realtimeVehicleType||p.realtimeDerivedVehicleType||
-    p.vehicleIdentityStatus==="EXACT"||
     (Array.isArray(p.vehicleFormationCandidates)&&
       p.vehicleFormationCandidates.length))return null;
  return {lineId:"Yonezawa",trainNumber:proof.trainNumber,
