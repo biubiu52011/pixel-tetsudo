@@ -114,7 +114,7 @@ BEGIN
       WHERE z.source_template_id=m_id AND z.timetable_id=t_id
         AND z.station_urn='odpt.Station:JR-Kyushu.KyushuShinkansen.Shin-Yatsushiro')
     THEN RAISE EXCEPTION '420 derived 8-stop view mismatch'; END IF;
-  IF (SELECT string_agg(regexp_replace(z.station_urn,'^.*\\.','')||'@'||
+  IF (SELECT string_agg(regexp_replace(z.station_urn,'^.*[.]','')||'@'||
       coalesce(z.departure_clock,z.arrival_clock),'|' ORDER BY z.stop_sequence)
       FROM train_timetable_stops z WHERE z.source_template_id=m_id AND z.timetable_id=t_id)
      <>'Kagoshima-Chuo@06:00|Sendai@06:12|Izumi@06:24|Shin-Minamata@06:31|Kumamoto@07:02|Kurume@07:23|Shin-Tosu@07:28|Hakata@07:41'
