@@ -37,6 +37,20 @@ test('four official timetable source groups cover 101 two-direction 211 numbers 
    }
  assert.equal(c,130);
 });
+test('101 distinct planned 211 M numbers per calendar; never infer every integer M',()=>{
+ const index=win.JREastRyomoNumberIndex202611;
+ for(const cal of ['weekday','holiday']){
+  let accepted=0;
+  for(const dir of ['Inbound','Outbound'])
+   for(let n=100;n<=999;n++){
+    const match=index.resolve(pos(n+'M',cal,dir));
+    if(match&&match.kind==='211')accepted++;
+   }
+  assert.equal(accepted,101,cal);
+ }
+ assert.equal(index.resolve(pos('648M','weekday','Outbound')),null,
+  'unlisted M number must not gain a 211 image by interval');
+});
 test('211 gallery is a planned illustration, not a confirmed carset',()=>{
  for(const n of ['420M','422M','620M','652M']){
   const p=pos(n,'weekday','Outbound');
