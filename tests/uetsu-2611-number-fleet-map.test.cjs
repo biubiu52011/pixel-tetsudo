@@ -105,7 +105,17 @@ test('five models use existing source-scoped references, not confirmed trainsets
  ['923M','E129系','e129'],
  ['823D','GV-E400系','diesel'],
  ['525M','701系（秋田地区）','akita'],
- ['8853D','HB-E300系（海里）','kairi']
+ ['8853D','HB-E300系（海里）','kairi'],
+ ['222M','701系（秋田地区）','shonai-electric-reference'],
+ ['225M','701系（秋田地区）','shonai-electric-reference'],
+ ['150D','キハ110系','rikuu-west-reference'],
+ ['151D','キハ110系','rikuu-west-reference'],
+ ['152D','キハ110系','rikuu-west-reference'],
+ ['160D','キハ110系','rikuu-west-reference'],
+ ['161D','キハ110系','rikuu-west-reference'],
+ ['162D','キハ110系','rikuu-west-reference'],
+ ['163D','キハ110系','rikuu-west-reference'],
+ ['3131D','キハ110系','rikuu-west-reference']
  ];
  for(const [n,model,family] of cases){
   const x=p(n),out=idx.resolve(x);
@@ -124,11 +134,60 @@ test('five models use existing source-scoped references, not confirmed trainsets
   assert.equal(art.representativeOnly,true);
   assert.equal(art.actualVehicleConfirmed,false);
  }
- assert.equal(idx.resolve(p('151D')),null,'Rikuu West stock not guessed');
+ assert.equal(idx.resolve(p('151D')).illustrationModel,'キハ110系',
+   '2026-11 Rikuu West 151D has source-backed generic KiHa110 artwork');
+ assert.equal(idx.resolve({...p('151D'),displayLineId:'RikutsuWest'}),null);
+ assert.equal(idx.resolve({...p('3131D'),trainType:'odpt.TrainType:JR-East.Local'}),null);
+ for(const n of ['150D','151D','152D','160D','161D','162D','163D','3131D']){
+   const mapped=idx.resolve(p(n));
+   assert.equal(mapped.illustrationPng,'../images/列车/JR東日本/JR東日本_キハ110系.png');
+   assert.equal(mapped.referenceOnly,true);
+ }
  for(const x of [{actualVehicleConfirmed:true},{vehicleIdentityStatus:'EXACT'},
   {vehicleFormationId:'S123'},{realtimeVehicleType:'E653系'},
-  {vehiclePlan:{status:'PLANNED_MODEL',models:['E653系']}}])
+  {vehiclePlan:{status:'PLANNED_MODEL',confirmed:true,models:['E653系']}}])
   assert.equal(idx.resolve({...p('923M'),...x}),null);
+});
+test('no unexplained pending mapped vehicles remain in the 143 regular source numbers',()=>{
+ for(const [cal,rows] of Object.entries(idx.roster)){
+  const day=cal==='Weekday'?'2026-11-06':'2026-11-07';
+  const calendarType=cal==='Weekday'?'weekday':'holiday';
+  for(const n of Object.keys(rows)){
+   const x=p(n,{serviceDate:day,calendarType:calendarType});
+   const reference=idx.resolve(x);
+   assert.ok(reference,cal+' '+n+' must have a source-scoped fleet reference');
+   assert.ok(root.VehicleGaragePngMap.matchModelPath(
+     reference.illustrationModel,reference.illustrationPng,'Uetsu'),
+     cal+' '+n+' mapped to registered gallery model');
+   const art=root.TrainVehicle.selectMarkerArtwork(x,false);
+   assert.equal(art.kind,'vehicle',cal+' '+n+' neutral marker not expected');
+   assert.equal(art.representativeOnly,true);
+   assert.equal(art.actualVehicleConfirmed,false);
+  }
+ }
+});
+test('unconfirmed stale SQL 701/E721 candidate never overrides a source-checked number',()=>{
+ for(const n of ['1M','923M','525M','823D','150D','222M']){
+  const a=p(n),unconfirmed={...a,
+    serviceId:'odpt.Calendar:Weekday',
+    railDirection:a.railDirection.split(':').pop(),
+    vehiclePlan:{status:'PLANNED_MODEL',confirmed:false,
+      evidenceRole:'unverified-source-candidate',models:['701系','E721系']}};
+  delete unconfirmed.calendarType;
+  const reference=idx.resolve(unconfirmed);
+  assert.ok(reference,n+' historical candidate cannot veto official mapping');
+  const result=root.TrainVehicle.selectMarkerArtwork(unconfirmed,false);
+  assert.equal(result.kind,'vehicle',n+' image not shown in true runtime record');
+  assert.equal(result.iconSrc,reference.illustrationPng);
+  assert.equal(result.actualVehicleConfirmed,false);
+  assert.equal(idx.resolve({...unconfirmed,
+    vehiclePlan:{...unconfirmed.vehiclePlan,confirmed:true}}),null,
+    'independently confirmed contradicting model must not be overridden');
+ }
+ const renderer=fs.readFileSync('js/trains-render.js','utf8');
+ assert.match(renderer,/lineId==="Uetsu" && window\.JREastUetsuNumberIndex202611/);
+ assert.match(renderer,/if \(lineId === "Uetsu" && fleetText\)/);
+ assert.match(renderer,/caption\.appendChild\(uetsuNote\)/);
 });
 test('lazy HTML version and estimator guard are synchronized with Git blob SHAs',()=>{
  const m=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
@@ -140,7 +199,7 @@ test('lazy HTML version and estimator guard are synchronized with Git blob SHAs'
  const html=fs.readFileSync('pages/trains.html','utf8');
  assert.match(html,/jreast-uetsu-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Uetsu"/);
  for(const f of [file,'data/timetables/vehicle-garage-png-map.js',
-  'js/train-position-estimator.js']){
+  'js/train-position-estimator.js','js/trains-render.js']){
   const content=fs.readFileSync(f),sha=crypto.createHash('sha1')
    .update('blob '+content.length+'\0').update(content).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+f+'?v='+sha),f+' stale cache hash');
