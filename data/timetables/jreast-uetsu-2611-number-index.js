@@ -127,7 +127,18 @@ function resolve(p){
  // Keep the veto for independently confirmed plans only.
  if(plan&&plan.status==="PLANNED_MODEL"&&plan.confirmed===true&&
     Array.isArray(plan.models)&&plan.models.length&&!plan.models.some(function(x){
-       return String(x)===model.model;}))return null;
+       var name=String(x||"").trim();
+       if(name===model.model)return true;
+       // The confirmed SQL plan can certify E653 SERIES without naming
+       // the "Inaho" illustrative livery. 1M–14M are explicitly checked
+       // LimitedExpress Inaho train numbers; only for those may the family
+       // alias use the source-scoped inaho image. No physical set/livery
+       // assignment follows from this compatibility check.
+       return model.family==="inaho"&&proof.trainType==="LimitedExpress"&&
+         verifiedInaho.has(proof.trainNumber)&&
+         (name==="E653系"||name==="E653系1000番台"||
+          name==="E653系（1000番台）");
+    }))return null;
  return {lineId:"Uetsu",trainNumber:proof.trainNumber,
    illustrationModel:model.model,illustrationPng:model.image,
    family:model.family,planned:true,referenceOnly:true,illustrative:true,
