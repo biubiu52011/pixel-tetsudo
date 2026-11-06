@@ -108,11 +108,16 @@ test('normal M weekday + MH holiday are source-candidate ONLY',()=>{
 });
 test('9017DH (historical seasonal special) must not be a Local or Thunderbird PNG',()=>{
  assert.equal(root.TrainNumberPngRanges.match('9017DH','Kosei'),null);
- for(const source of ['9017DH','9017D','9017MH']){
+ for(const source of ['9017DH','9017D']){
   const p=mk(source,'2026-11-07');
   assert.equal(verify(p),null);
   assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).iconSrc,'');
  }
+ // A made-up 9017MH is not in SQL. Merely changing a source number
+ // while retaining a genuine row's source proof must fail closed.
+ const forged=mk('1802MH','2026-11-07',{trainNumber:'9017MH'});
+ assert.equal(verify(forged),null);
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(forged,false).iconSrc,'');
  for(const n of ['1802M','3107M','4840MH']){
   assert.equal(root.TrainNumberPngRanges.match(n,'Kosei'),null,
     'M/MH must not automatically select 681/683 Thunderbird or other PNG');
