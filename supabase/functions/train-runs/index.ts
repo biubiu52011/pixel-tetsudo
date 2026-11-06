@@ -2325,6 +2325,76 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // Sotetsu-JR 2611: source-bound historical stops (Hazawa–Osaki)
+  // certify only E233-7000 / Sotetsu-12000 fleet CANDIDATES.
+  // Public 1xxM/2xxM are Sotetsu-side train types, NOT ownership codes.
+  if(lineId==="SotetsuJRDirect"&&/^2026-11-/.test(serviceDate)){
+    const {data:roster,error:rosterError}=await db
+      .from("published_sotetsu_jr_2611_fleet_roster")
+      .select("source_template_id,train_number,calendar_urn,direction_urn,train_type_urn,source_stop_keys,candidate_models,candidate_png_paths,official_fleet_source_url,timetable_index_url,stop_clock_status,reference_only,actual_vehicle_confirmed,number_date_verified,authorizes_png")
+      .eq("edition","2611").eq("line_key","SotetsuJRDirect")
+      .eq("calendar_urn",selectedCalendar);
+    if(rosterError)throw rosterError;
+    if((roster||[]).length!==92)
+      throw new Error("SOTETSU_JR_2611_HISTORICAL_FLEET_ROSTER_UNAVAILABLE");
+    const bySource=new Map(roster.map((r:any)=>[Number(r.source_template_id),r]));
+    if(bySource.size!==92)
+      throw new Error("SOTETSU_JR_2611_DUPLICATE_SOURCE_ID");
+    const north=["HazawaYokohamaKokudai","MusashiKosugi","NishiOi","Osaki"];
+    const south=north.slice().reverse();
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i],pub:any=bySource.get(Number(run.source_template_id));
+      const number=String(run.train_number||"");
+      const n=/^(1[2-5][0-9]|2[2-8][0-9])M$/.exec(number);
+      const inbound=run.rail_direction==="odpt.RailDirection:Northbound";
+      const outbound=run.rail_direction==="odpt.RailDirection:Southbound";
+      const expected=inbound?north:south;
+      const stops=Array.isArray(run.stops)?run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()):[];
+      if(!pub||!n||(!inbound&&!outbound)||
+         Number(n[1])%2!==(inbound?0:1)||
+         run.network_key!=="odpt.Railway:JR-East.SotetsuDirect"||
+         run.train_type!=="odpt.TrainType:JR-East.Local"||
+         pub.train_number!==number||pub.calendar_urn!==selectedCalendar||
+         pub.direction_urn!==run.rail_direction||
+         pub.train_type_urn!==run.train_type||
+         pub.reference_only!==true||pub.actual_vehicle_confirmed!==false||
+         pub.number_date_verified!==false||pub.authorizes_png!==false||
+         pub.stop_clock_status!=="historical_not_2611_verified"||
+         !Array.isArray(pub.source_stop_keys)||stops.length!==4||
+         stops.some((st:string,j:number)=>st!==expected[j]||
+           pub.source_stop_keys[j]!==expected[j])||
+         !Array.isArray(pub.candidate_models)||
+         pub.candidate_models.join("|")!=="E233系7000番台|相鉄12000系"||
+         !Array.isArray(pub.candidate_png_paths)||
+         pub.candidate_png_paths.join("|")!==
+          "../images/列车/JR東日本/JR東日本_E233系_7000番台.png|../images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png"){
+        result.splice(i,1);continue;
+      }
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=pub.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      // Do NOT set official train-number verification: source clocks are
+      // historical, and an exact dated 2611 trainset is not established.
+      run.published_number_fleet_reference={
+        source:"sql-jreast-sotetsu-jr-2611-source-candidate",
+        lineId:"SotetsuJRDirect",trainNumber:number,serviceDate,
+        sourceTemplateId:Number(pub.source_template_id),
+        direction:pub.direction_urn,calendar:pub.calendar_urn,
+        trainType:pub.train_type_urn,sourceStopKeys:pub.source_stop_keys,
+        candidateModels:pub.candidate_models,
+        candidateAssets:pub.candidate_png_paths,
+        fleetSourceUrl:pub.official_fleet_source_url,
+        timetableIndexUrl:pub.timetable_index_url,
+        stopClockStatus:pub.stop_clock_status,
+        referenceOnly:true,actualVehicleConfirmed:false,
+        numberDateVerified:false,authorizesPNG:false
+      };
+    }
+  }
   // 弥彦線 uses INTERNAL key Miyo, NOT Yahiko. 2611 regular E129
   // trains, nine Kiku-calendar days and three Momiji Kairi D-number
   // segments. The latter have NO historical SQL stop templates: retain
