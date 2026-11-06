@@ -45,6 +45,8 @@ on:
       - 'tests/kururi-2611-open-rail-number-png.test.cjs'
       - 'tests/mito-2611-exact-number-e531.test.cjs'
       - 'tests/miyo-2611-yahiko-e129-dated-number.test.cjs'
+      - 'tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs'
+      - 'supabase/migrations/20261107042000_sotetsu_jr_direct_2611_two_fleet_source_candidates.sql'
       - 'tests/ofunato-2611-rail-brt-pokemon-number-png.test.cjs'
       - 'tests/ishinomaki-2611-official-number-png.test.cjs'
       - 'tests/oga-2611-official-number-png.test.cjs'
@@ -198,6 +200,8 @@ jobs:
         run: node --test tests/kururi-2611-open-rail-number-png.test.cjs
       - name: Verify Mito 2611 exact-number and dated E531 family PNG
         run: node --test tests/mito-2611-exact-number-e531.test.cjs
+      - name: Verify Sotetsu-JR 2611 dual E233/12000 source-only candidate mapping
+        run: node --test tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs
       - name: Verify Miyo Yahiko 2611 E129 seasonal numbers and dates
         run: node --test tests/miyo-2611-yahiko-e129-dated-number.test.cjs
       - name: Verify Oito JR-West 2611 company split, 4xxD number proof and no false PNG
