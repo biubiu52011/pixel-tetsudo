@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS public.published_jrwest_kyoto_kobe_2611_source_fleet(
 );
 ALTER TABLE public.published_jrwest_kyoto_kobe_2611_source_fleet ENABLE ROW LEVEL SECURITY;
 COMMENT ON TABLE public.published_jrwest_kyoto_kobe_2611_source_fleet IS
-'56? source-only Kyoto/Kobe locals and rapid fleet candidates, with composite historical source ID kept separately from unverified public-number suffix. Vehicle fleet is not a 2026-11 formation; Hanwa-only 223/225 artwork is strictly excluded.';
+'58 source-only Kyoto/Kobe locals and rapid fleet candidates, with composite historical source ID kept separately from unverified public-number suffix. Vehicle fleet is not a 2026-11 formation; Hanwa-only 223/225 artwork is strictly excluded.';
 WITH base AS (
  SELECT m.id,m.line_key,m.calendar_urn,m.direction_urn,m.train_type_urn,
  m.train_number,m.source_path,m.source_occurrence,m.source_revision_date,m.vehicle_type_label,
