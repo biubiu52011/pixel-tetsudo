@@ -2591,7 +2591,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
      /^2026-11-/.test(serviceDate)){
     const {data:roster,error:rosterError}=await db
       .from("published_jrwest_kyoto_kobe_2611_source_fleet")
-      .select("source_template_id,source_line_key,candidate_segment,source_train_id,source_public_number_suffix,calendar_urn,direction_urn,train_type_urn,service_family,source_stop_keys,candidate_models,candidate_gallery_models,candidate_png_paths,fleet_source_url,timetable_source_path,timetable_validity,number_date_verified,reference_only,actual_vehicle_confirmed,authorizes_png")
+      .select("source_template_id,source_line_key,candidate_segment,source_train_id,source_public_number_suffix,calendar_urn,direction_urn,train_type_urn,service_family,source_stop_keys,candidate_models,candidate_gallery_models,candidate_png_paths,fleet_source_url,timetable_source_path,timetable_validity,number_date_verified,reference_only,actual_vehicle_confirmed,authorizes_png,official_calendar_conflict,official_calendar_urn,official_calendar_source_url")
       .eq("edition","2611").eq("source_line_key",lineId)
       .eq("calendar_urn",selectedCalendar);
     if(rosterError)throw rosterError;
@@ -2603,9 +2603,40 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       [Number(r.source_template_id),r]));
     if(bySource.size!==expected)
       throw new Error("JRWEST_KYOTO_KOBE_DUPLICATE_SOURCE_ID");
-    for(const run of result){
+    // A legacy source whose calendar contradicts the official 2611
+    // train listing must not produce a phantom weekday/holiday position.
+    const expectedCalendarConflict=lineId==="TokaidoKansai"
+      ?(selectedCalendar==="odpt.Calendar:Weekday"
+        ?["500310-1866500-3506M","odpt.Calendar:SaturdayHoliday",
+          "https://timetable.jr-odekake.net/train-timetable/173162?date=20261024"]
+        :["500310-3536200-3450M","odpt.Calendar:Weekday",
+          "https://timetable.jr-odekake.net/train-timetable/321991?date=20261029"])
+      :null;
+    const calendarConflicts=(roster||[]).filter((p:any)=>
+      p.official_calendar_conflict===true);
+    if(calendarConflicts.length!==(expectedCalendarConflict?1:0)||
+       calendarConflicts.some((p:any)=>
+         p.source_train_id!==expectedCalendarConflict?.[0]||
+         p.official_calendar_urn!==expectedCalendarConflict?.[1]||
+         p.official_calendar_source_url!==expectedCalendarConflict?.[2]||
+         p.calendar_urn!==selectedCalendar||
+         p.source_public_number_suffix!==
+           String(p.source_train_id||"").split("-").pop()||
+         p.authorizes_png!==false))
+      throw new Error("JRWEST_KYOTO_KOBE_2611_CALENDAR_SOURCE_CONFLICT");
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
       const pub:any=bySource.get(Number(run.source_template_id));
       if(!pub)continue; // OTHER SanyoMain districts / express / A-seat
+      if(pub.official_calendar_conflict===true){
+        // The authoritative source day differs from the historical
+        // calendar; do not move this old trip into the other calendar.
+        if(!expectedCalendarConflict||
+           run.train_number!==expectedCalendarConflict[0])
+          throw new Error("JRWEST_KYOTO_KOBE_2611_CALENDAR_SOURCE_CONFLICT");
+        result.splice(i,1);
+        continue;
+      }
       const n=String(run.train_number||"");
       const match=/^([0-9]{6})-([0-9]{4,7})-([0-9]{1,4}[CMT])$/.exec(n);
       const dir=run.rail_direction;
@@ -2700,7 +2731,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Five JR-West Kyoto/Kobe 2026-11 7-stop source rows match the
+  // Nine JR-West Kyoto/Kobe 2026-11 7-stop source rows match the
   // official new-rapid timetable, not just a historical suffix.
   // Keep canonical source IDs and legacy fleet-candidate proofs intact:
   // these are published service timetables, never actual dispatch cars.
@@ -2711,7 +2742,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .eq("source_line_key","TokaidoKansai")
       .eq("calendar_urn",selectedCalendar);
     if(verifiedError)throw verifiedError;
-    const expected=selectedCalendar==="odpt.Calendar:Weekday"?2:3;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?6:3;
     if((verified||[]).length!==expected||
        new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
       throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED");
