@@ -2566,6 +2566,124 @@
       authorizesPNG:false,numberDateVerified:false,formationId:null
     });
   }
+  // JR-West Kyoto/Kobe historical source C/T/M suffix: 207/321
+  // locals or 223/225 rapid service families. A compound internal
+  // number like 500310-1385400-714T is NOT a published 2611 number or
+  // physical fleet assignment. SanyoMain source only within Kobe-side
+  // Hyougo–Himeji (+ imported Amiboshi continuing stop).
+  function verifyJrWestKyotoKobeSourceFleet(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||
+       proof.source!=="sql-jrwest-kyoto-kobe-2611-source-family"||
+       proof.referenceOnly!==true||
+       proof.actualVehicleConfirmed!==false||
+       proof.authorizesPNG!==false||
+       proof.numberDateVerified!==false||
+       proof.timetableValidity!=="undated_not_current_verified"||
+       p.positionSource!=="supabase-train-run")return null;
+    var line=String(p.positionLineId||p.lineId||""),
+      date=String(p.serviceDate||"").slice(0,10),
+      num=String(p.trainNumber||"").trim(),
+      m=/^([0-9]{6})-([0-9]{4,7})-([0-9]{1,4}[CMT])$/.exec(num),
+      dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(!["TokaidoKansai","SanyoMain"].includes(line)||
+       (p.displayLineId&&p.displayLineId!==line)||
+       proof.lineId!==line||
+       p.sourceRailway!=="odpt.Railway:JR-West."+line||
+       !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !m||!["Inbound","Outbound"].includes(dir)||
+       !["Local","Rapid"].includes(type)||
+       proof.sourceTrainId!==num||proof.serviceDate!==date||
+       proof.sourcePublicNumberSuffix!==m[3]||
+       proof.direction!=="odpt.RailDirection:"+dir||
+       proof.trainType!=="odpt.TrainType:JR-West."+type||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0||
+       (line==="TokaidoKansai"&&!["500300","500310"].includes(m[1]))||
+       (line==="SanyoMain"&&m[1]!=="710100")||
+       (Number(m[3].slice(0,-1))%2)!==(dir==="Inbound"?0:1))
+      return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-West"&&operator!=="odpt.Operator:JR-West")
+      return null;
+    var weekday=sourceCalendar(p),
+      dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||
+        date==="2026-11-23";
+    if(weekday!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+
+         (holiday?"SaturdayHoliday":"Weekday"))return null;
+    var c=m[3].slice(-1),
+      family=type==="Local"?"local_c":"regional_rapid_t_m",
+      models=type==="Local"?["207系","321系"]:["223系","225系"],
+      sourceUrl=type==="Local"
+        ?"https://www.westjr.co.jp/fan/paper/local/"
+        :"https://www.westjr.co.jp/press/article/2020/02/page_15645.html",
+      galleryModels=family==="local_c"&&line==="TokaidoKansai"
+        ?["JR西日本207系（NK）","JR西日本207系（Y2）","JR西日本321系"]
+        :[],
+      assets=galleryModels.length?
+        ["../images/列车/JR西日本/JR西日本_207系_NK.png",
+         "../images/列车/JR西日本/JR西日本_207系_Y2.png",
+         "../images/列车/JR西日本/JR西日本_321系.png"]:[];
+    if((family==="local_c"&&c!=="C")||
+       (family==="regional_rapid_t_m"&&!["T","M"].includes(c))||
+       proof.serviceFamily!==family||
+       proof.sourceSegment!==
+        (line==="TokaidoKansai"?"kyoto_osaka_kobe":"kobe_himeji")||
+       proof.timetableSourcePath!=="data/timetables/"+line+"-manual.js"||
+       proof.fleetSourceUrl!==sourceUrl||
+       !Array.isArray(proof.candidateModels)||
+       proof.candidateModels.join("|")!==models.join("|")||
+       !Array.isArray(proof.candidateGalleryModels)||
+       proof.candidateGalleryModels.join("|")!==galleryModels.join("|")||
+       !Array.isArray(proof.candidateAssets)||
+       proof.candidateAssets.join("|")!==assets.join("|"))return null;
+    var west=["Kyoto","Nishiooji","Katsuragawa","Mukouchou",
+      "Nagaokakyou","Yamazaki","Shimamoto","Takatsuki",
+      "Settsu-Tomita","J-R-Soujidera","Ibaraki","Senri-Oka",
+      "Kishibe","Suita","Higashiyodogawa","Shin-Osaka","Osaka",
+      "Tsukamoto","Amagasaki","Tachibana","Koshienguchi",
+      "Nishinomiya","Sakura-Shukugawa","Ashiya","Kōnan-Yamate",
+      "Settsu-Motoyama","Sumiyoshi-Hyogo","Rokkoumichi",
+      "Maya","Nada","San-No-Miya","Motomachi","Kobe"],
+      westSanyo=["Hyougo","Shinnagata","Takatori",
+        "Suma-Kaihin-Kouen","Suma","Shioya","Tarumi","Maiko",
+        "Asagiri","Akashi","Nishi-Akashi","Okubo-Hyogo",
+        "Uozumi","Tsuchiyama","Higashi-Kakogawa","Kakogawa",
+        "Houden","Sone","Himeji-Bessho","O-Chaku",
+        "Higashi-Himeji","Himeji","Tegara-Yamahira-Kazuhiro-Sono",
+        "Ei-Ga-Ho","Harima-Katsuhara","Amiboshi"],
+      corridor=line==="TokaidoKansai"?west:westSanyo,
+      sourceStops=proof.sourceStopKeys,
+      stops=Array.isArray(p.scheduledStopKeys)
+        ?p.scheduledStopKeys.map(function(k){return String(k||"").split(".").pop();})
+        :[];
+    if(!Array.isArray(sourceStops)||sourceStops.length<2||
+       sourceStops.length!==stops.length||
+       stops.some(function(k,i){return k!==sourceStops[i];}))return null;
+    var indexes=stops.map(function(k){return corridor.indexOf(k);});
+    if(indexes.some(function(i){return i<0;})||
+       indexes.some(function(i,n){return n>0&&
+         (dir==="Outbound"?i<=indexes[n-1]:i>=indexes[n-1]);}))
+      return null;
+    if(line==="SanyoMain"&&
+       (!["Hyougo","Akashi"].includes(stops[0])||
+        !["Suma","Nishi-Akashi","Himeji","Amiboshi"].includes(
+          stops[stops.length-1])))return null;
+    return Object.freeze({
+      lineId:line,sourceTrainId:num,historicalNumberSuffix:m[3],
+      serviceFamily:family,candidateModels:Object.freeze(models),
+      candidateGalleryModels:Object.freeze(galleryModels),
+      candidateAssets:Object.freeze(assets),
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      referenceOnly:true,actualVehicleConfirmed:false,
+      authorizesPNG:false,numberDateVerified:false,
+      source:"historical-source-not-2611-carset"
+    });
+  }
+
   // 弥彦線 SQL number-calendar-date-and-stop proof for 2026-11.
   // No train icon on date-free historical or October-only Shu*Kura data.
   // Momiji Kairi's HB-E300 D numbers have a dated SQL PUBLIC ROSTER
@@ -4119,6 +4237,7 @@
     verifyKururiService:verifyKururiService,
     verifyMitoService:verifyMitoService,
     verifyMiyoService:verifyMiyoService,
+    verifyJrWestKyotoKobeSourceFleet:verifyJrWestKyotoKobeSourceFleet,
     verifySotetsuJRService:verifySotetsuJRService,
     verifyOfunatoService:verifyOfunatoService,
     verifyOgaService:verifyOgaService,
