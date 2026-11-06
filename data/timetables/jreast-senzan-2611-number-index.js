@@ -57,4 +57,22 @@ function resolve(p){
   actualVehicleConfirmed:false,model:null,formationId:null,planned:true};
 }
 root.JREastSenzanNumberIndex202611=Object.freeze({resolve:resolve});
+// Adapter for TrainVehicle's existing single number-to-artwork authority.
+// The upstream resolver stays intact for every other line; this edition
+// authorizes only a PLANNED reference PNG and never a physical formation.
+var ranges=root.TrainNumberPngRanges;
+if(ranges && typeof ranges.match==="function"){
+ var priorMatch=ranges.match;
+ root.TrainNumberPngRanges=Object.freeze(Object.assign({},ranges,{
+  match:function(number,line,position){
+   if(line!=="Senzan")return priorMatch(number,line,position);
+   var p=Object.assign({},position||{},{trainNumber:number,positionLineId:"Senzan"});
+   var entry=resolve(p);
+   return entry?{lineId:"Senzan",trainNumber:entry.trainNumber,
+      model:entry.illustrationModel,pngPath:entry.illustrationPng,
+      source:"senzan-2611-planned-fleet-only",planned:true,
+      representative:true,actualVehicleConfirmed:false}:null;
+  }
+ }));
+}
 })(window);
