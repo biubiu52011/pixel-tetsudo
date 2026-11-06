@@ -30,7 +30,8 @@
 .lang-toggle-btn {
     width: var(--lang-btn-size);
     height: var(--lang-btn-size);
-    border-radius: 50%;
+    /* Squared pixel-button shape matches the rest of the site. */
+    border-radius: 8px;
     background: #ffffff;
     border: 2px solid var(--lang-border);
     padding: 0;
