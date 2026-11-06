@@ -2731,7 +2731,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Twenty-three JR-West Kyoto/Kobe 2026-11 source-only rows match the
+  // Thirty-one JR-West Kyoto/Kobe 2026-11 source-only rows match the
   // official local/new-rapid timetable, not just a historical suffix.
   // Keep canonical source IDs and legacy fleet-candidate proofs intact:
   // these are published service timetables, never actual dispatch cars.
@@ -2742,7 +2742,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .eq("source_line_key","TokaidoKansai")
       .eq("calendar_urn",selectedCalendar);
     if(verifiedError)throw verifiedError;
-    const expected=selectedCalendar==="odpt.Calendar:Weekday"?12:11;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?15:16;
     if((verified||[]).length!==expected||
        new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
       throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED");
@@ -2757,7 +2757,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         ?"Local":p.train_type_urn==="odpt.TrainType:JR-West.Rapid"
         ?(/^[0-9]{3,4}T$/.test(p.official_train_number)?"Rapid":"SpecialRapid"):null;
       const permittedStopCount=certifiedType==="Local"
-        ?[16,19,25,33].includes(p.official_stop_count)
+        ?[16,19,25,32,33].includes(p.official_stop_count)
         :certifiedType==="Rapid"?p.official_stop_count===18
         :certifiedType==="SpecialRapid"&&p.official_stop_count===7;
       if(p.verified_source_match!==true||
