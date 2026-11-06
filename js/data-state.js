@@ -586,6 +586,11 @@
     return operator && railwayCode ? String(operator)+"::"+String(railwayCode) : "";
   }
   function getStatus(status) { return STATUS_META[status] || STATUS_META.no_data; }
+  function cardActionLabel(mode, status) {
+    if (mode === "realtime") return t("status." + status);
+    var names = { ja: "路線を表示", zh: "查看线路", ko: "노선 보기", en: "View line" };
+    return names[window.currentLang || "ja"] || names.ja;
+  }
   function t(key) { return typeof window.t==="function" ? window.t(key) : (key||""); }
   function localizeInterval(str) {
     if (!str || String(str).indexOf("方面")===-1) return str;
@@ -736,7 +741,7 @@
       var _mid = memberIds[_mi];
       _memberIdentities.push(_mid + "=" + getLineIdentity(linesObj[_mid] || {}, _mid));
     }
-    return '<div class="rs-line-card rs-system-card" role="button" tabindex="0" aria-label="' + escapeHtml(name + ' · ' + (mode === "realtime" ? t("status." + worst) : t("detail.open"))) + '" data-line="' + escapeHtml(firstId) + '" data-line-identity="' + escapeHtml(getLineIdentity(linesObj[firstId] || {}, firstId)) + '" data-line-identities="' + escapeHtml(_memberIdentities.join("|")) + '" data-system="' + escapeHtml(code) + '" data-lines="' + escapeHtml(memberIds.join(",")) + '" data-line-color="' + escapeHtml(color) + '">'
+    return '<div class="rs-line-card rs-system-card" role="button" tabindex="0" aria-label="' + escapeHtml(name + ' · ' + cardActionLabel(mode, worst)) + '" data-line="' + escapeHtml(firstId) + '" data-line-identity="' + escapeHtml(getLineIdentity(linesObj[firstId] || {}, firstId)) + '" data-line-identities="' + escapeHtml(_memberIdentities.join("|")) + '" data-system="' + escapeHtml(code) + '" data-lines="' + escapeHtml(memberIds.join(",")) + '" data-line-color="' + escapeHtml(color) + '">'
       + iconHtml
       + '<div class="rs-line-info">'
       + '<div class="rs-line-name">' + escapeHtml(name) + '</div>'
@@ -845,7 +850,7 @@
         _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-unknown\" title=\"Unknown relation\"></span>";
       }
     }
-    return '<div class="rs-line-card" role="button" tabindex="0" aria-label="' + escapeHtml(displayName + ' · ' + (mode === "realtime" ? t("status." + status) : t("detail.open"))) + '" data-line="' + escapeHtml(lineId) + '" data-line-identity="' + escapeHtml(getLineIdentity(line, lineId)) + '" data-line-color="' + escapeHtml(lineColor) + '">' + _chainBadgeHtml
+    return '<div class="rs-line-card" role="button" tabindex="0" aria-label="' + escapeHtml(displayName + ' · ' + cardActionLabel(mode, status)) + '" data-line="' + escapeHtml(lineId) + '" data-line-identity="' + escapeHtml(getLineIdentity(line, lineId)) + '" data-line-color="' + escapeHtml(lineColor) + '">' + _chainBadgeHtml
       + '<div class="rs-line-header">'
       + iconHtml
       + '<div class="rs-line-info">'
