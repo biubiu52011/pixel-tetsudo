@@ -36,14 +36,22 @@
     overflow: visible; /* keep station autocomplete popovers visible */
   }
 
-  body[data-page="home"] #searchContainer > .module-title {
+  /* Both home modules share the same title bar height and type scale. */
+  body[data-page="home"] #searchContainer > .module-title,
+  body[data-page="home"] #smModule > .module-title {
     padding: 16px 16px 14px;
     border-bottom: 2px solid var(--border);
   }
 
-  body[data-page="home"] #searchContainer > .module-title h2 {
+  body[data-page="home"] #searchContainer > .module-title h2,
+  body[data-page="home"] #smModule > .module-title h2 {
     font-size: 17px;
     line-height: 1.45;
+  }
+
+  body[data-page="home"] #smModule > .sm-location-bar {
+    min-width: 0;
+    padding: 12px 16px;
   }
 
   body[data-page="home"] #searchContainer > .search-inputs {
@@ -131,6 +139,17 @@
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 15px;
+  }
+
+  /* The empty results node must not reserve a blank strip beneath Search.
+     When real search results arrive, keep the same 16px internal gutter. */
+  body[data-page="home"] #searchContainer > .search-results:empty {
+    padding: 0;
+    margin: 0;
+  }
+  body[data-page="home"] #searchContainer > .search-results:not(:empty) {
+    min-width: 0;
+    padding: 0 16px 16px;
   }
 }
 
