@@ -4581,7 +4581,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
           shinkansenPng && isGalleryPng(shinkansenPng) &&
           shinkansenGarage &&
           typeof shinkansenGarage.matchModelPath === 'function' &&
-          shinkansenGarage.matchModelPath(publishedSqlPlan,shinkansenPng,lineId));
+          // The canonical catalogue qualifies JR Kyushu 800 and JR West
+          // 500/700 with operator names. Compare the resolved single
+          // canonical name, NOT the SQL family label's raw spelling.
+          shinkansenGarage.matchModelPath(
+            shinkansenPlan.models[0],shinkansenPng,lineId));
         shinkansenPlan.iconPath = shinkansenApproved ? shinkansenPng : '';
         shinkansenPlan.garagePngMapped = shinkansenApproved;
         shinkansenPlan.garagePngPath = shinkansenApproved ? shinkansenPng : '';
