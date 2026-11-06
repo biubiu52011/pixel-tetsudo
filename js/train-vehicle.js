@@ -1097,6 +1097,7 @@ var CANONICAL_VEHICLES = {
   // Former Tsurumi Line stock: keep the image searchable, but do not offer
   // it as a candidate for the present-day E131-operated train diagram.
   "jr-east-205-1100-tsurumi-legacy": {"displayName":"205系1100番台（鶴見線）","iconName":"205系1100番台（鶴見線）","asset":"../images/列车/JR東日本/JR東日本_205系_1100番台_鶴見線.png","lineIds":[],"historicLineIds":["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],"historicalOnly":true,"aliases":["JR東日本205系1100番台","205系1100番台","205系（鶴見線）"]},
+  "echigo-tokimeki-et127-standard": {"displayName":"ET127系（妙高はねうまライン・標準塗装）","iconName":"ET127系","asset":"../images/列车/えちごトキめき鉄道/えちごトキめき鉄道_ET127系_妙高はねうまライン.png","lineIds":[],"operatorDirectory":"えちごトキめき鉄道","aliases":["えちごトキめき鉄道ET127系","ET127系（トキ鉄）"]},
   "jr-yamagata-2026-e723-family-reference": {"displayName":"E723系5000番台","iconName":"E723系5000番台","asset":"../images/列车/JR東日本/JR東日本_E723系_5000番台.png","lineIds":["Yamagata"],"lineAliases":{"Yamagata":["E723系5000番台"]},"aliases":["JR東日本E723系5000番台","JR E723系5000番台"]},
   "planned-stock-library-10": {"displayName":"キハ110系","iconName":"キハ110系","asset":"../images/列车/JR東日本/JR東日本_キハ110系.png","aliases":["JR東日本キハ110系","JR キハ110系","キハ110系0番台（快速南三陸）","JR東日本キハ110系0番台（快速南三陸）"]},
   "jr-east-e131-0-plan": {"displayName":"E131系0番台","iconName":"E131系0番台","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_0番台.png","aliases":["JR東日本E131系0番台"]},
@@ -2539,6 +2540,8 @@ function _registerCanonicalVehiclePlannedAlias(alias, rec) {
 // 这些条目只登记文件、目录运营商和待审状态，不声明线路、编成或实时 EXACT 身份。
 // 只有后续补齐来源/线路/编成证据后，才可迁入正式车型别名或 realtime 规则。
 var UNREGISTERED_ARTWORK_CATALOG = [
+  { id: "artwork-user-4667-20261107", displayName: "图库待审・IMG_4667（緑扉・多色エンブレム）", iconName: "图库待审・IMG_4667", asset: null, plannedAsset: "../images/列车/未確認/IMG_4667.png", aliases: [], operatorDirectory: "未確認", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "artwork-user-4668-20261107", displayName: "图库待审・IMG_4668（青扉・三色エンブレム）", iconName: "图库待审・IMG_4668", asset: null, plannedAsset: "../images/列车/未確認/IMG_4668.png", aliases: [], operatorDirectory: "未確認", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-001", displayName: "图库待审・JR北海道・JR北海道_733系_1000代_はこだてライナー", iconName: "图库待审・JR北海道・JR北海道_733系_1000代_はこだてライナー", asset: null, plannedAsset: "../images/列车/JR北海道/JR北海道_733系_1000代_はこだてライナー.png", aliases: [], operatorDirectory: "JR北海道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-002", displayName: "图库待审・JR東日本・e211na1n", iconName: "图库待审・JR東日本・e211na1n", asset: null, plannedAsset: "../images/列车/JR東日本/e211na1n.png", aliases: [], operatorDirectory: "JR東日本", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-003", displayName: "图库待审・JR東日本・JR東日本_12系客車_SLばんえつ物語_オコジョ展望車", iconName: "图库待审・JR東日本・JR東日本_12系客車_SLばんえつ物語_オコジョ展望車", asset: null, plannedAsset: "../images/列车/JR東日本/JR東日本_12系客車_SLばんえつ物語_オコジョ展望車.png", aliases: [], operatorDirectory: "JR東日本", artworkStatus: "pending-source-review", plannedOnly: true },
