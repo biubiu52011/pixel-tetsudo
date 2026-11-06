@@ -41,7 +41,7 @@ function verify(p){
     p.positionSource!=="supabase-train-run"||
     p.estimated!==true)return null;
  var day=String(p.serviceDate||"").slice(0,10);
- var cal=String(p.calendarType||"").split(/[.:]/).pop();
+ var cal=String(p.calendarType||p.serviceId||p.timetableCalendar||"").split(/[.:]/).pop();
  if(cal==="weekday")cal="Weekday";if(cal==="holiday")cal="SaturdayHoliday";
  if(cal!==calendarFor(day))return null;
  var op=String(p.trainOperator||"").replace(/^odpt.Operator:/,"");
