@@ -285,7 +285,12 @@ body[data-page="trains"] .train-fold-vehicle-placeholder {
   text-align: center;
   overflow-wrap: anywhere;
 }
-body[data-page="history"] .history-entry[role="link"] { cursor:pointer; }
+body[data-page="history"] .history-entry { cursor:pointer; }
+body[data-page="history"] .history-route { text-decoration:none; }
+body[data-page="history"] .history-route:focus-visible {
+  outline: 3px solid #006b32;
+  outline-offset: 3px;
+}
 body[data-page="history"] .history-delete-btn {
   min-width: 44px;
   min-height: 44px;
