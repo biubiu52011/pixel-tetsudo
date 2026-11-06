@@ -18,48 +18,6 @@
     loading:   { icon: "\u2026", cls: "rs-status-icon-loading",   label: "loading"  }
   };
 
-  // Status pictograms share the original train PNGs' small-pixel proportions
-  // and front-cab shading, but never claim to depict a specific vehicle.
-  // Keep this renderer here: DataState owns status semantics for both the list
-  // and the realtime detail modal.
-  function statusPictogramHtml(status) {
-    if (status !== "delayed" && status !== "notice" && status !== "info") return "";
-    var delayed = status === "delayed";
-    var band = delayed ? "#ff9e32" : "#ffe14d";
-    var bandLight = delayed ? "#ffe2af" : "#fff5ac";
-    var bandShadow = delayed ? "#c85e14" : "#c3a219";
-    var mark = delayed
-      // Pixel warning triangle: delay / partial cancellation.
-      ? '<path fill="#f4f9ff" d="M7 8h2v1h1v1h1v2H5v-2h1V9h1z"/>'
-        + '<rect x="7" y="10" width="2" height="1" fill="#273648"/>'
-      // Pixel exclamation: service notice, not a delay.
-      : '<rect x="7" y="8" width="2" height="3" fill="#f4f9ff"/>'
-        + '<rect x="7" y="12" width="2" height="1" fill="#f4f9ff"/>';
-    return '<svg class="pt-train-status-art" viewBox="0 0 16 20" width="32" height="40"'
-      + ' xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"'
-      + ' aria-hidden="true" focusable="false">'
-      // Dark outer silhouette and one-pixel steel highlights.
-      + '<path fill="#29323e" d="M5 1h6v1h2v1h1v12h-1v2H3v-2H2V3h1V2h3z"/>'
-      + '<rect x="3" y="3" width="10" height="12" fill="#c5cdd5"/>'
-      + '<rect x="4" y="3" width="8" height="2" fill="#f7fbff"/>'
-      + '<rect x="12" y="4" width="1" height="9" fill="#8295a5"/>'
-      // Color band and glare echo the train images' livery and destination LEDs.
-      + '<rect x="3" y="5" width="10" height="3" fill="' + band + '"/>'
-      + '<rect x="4" y="5" width="8" height="1" fill="' + bandLight + '"/>'
-      + '<rect x="3" y="8" width="10" height="5" fill="#253648"/>'
-      + '<rect x="4" y="8" width="1" height="3" fill="#486b86"/>'
-      + mark
-      // Two lamps, lower livery stripe and running gear.
-      + '<rect x="4" y="13" width="2" height="1" fill="#fff4ad"/>'
-      + '<rect x="10" y="13" width="2" height="1" fill="#fff4ad"/>'
-      + '<rect x="3" y="14" width="10" height="1" fill="' + bandShadow + '"/>'
-      + '<rect x="4" y="15" width="8" height="1" fill="#eff3f7"/>'
-      + '<rect x="4" y="17" width="3" height="2" fill="#29323e"/>'
-      + '<rect x="9" y="17" width="3" height="2" fill="#29323e"/>'
-      + '<rect x="6" y="16" width="4" height="1" fill="#687984"/>'
-      + '</svg>';
-  }
-
   // ========== 内部状态 ==========
   var _lines = {};
   var _positions = {};
@@ -528,7 +486,6 @@
   // ========== 公共 API ==========
   window.DataState = {
     STATUS_META: STATUS_META,
-    statusPictogramHtml: statusPictogramHtml,
     TRUNK_MAIN_LINE_IDS: TRUNK_MAIN_LINE_IDS,
     renderList: renderList,
     // 供 LineCard.updateSystem 共用，使异步实时更新使用相同的成员集合。
@@ -759,9 +716,7 @@
     var worstS = getStatus(worst);
     var statusHtml = "";
     if (mode === "realtime") {
-      statusHtml = '<span class="rs-status-icon ' + worstS.cls + '" aria-hidden="true">'
-        + ((window.DataState && window.DataState.statusPictogramHtml(worst)) || worstS.icon)
-        + '</span>';
+      statusHtml = '<span class="rs-status-icon ' + worstS.cls + '" aria-hidden="true">' + worstS.icon + '</span>';
     }
 
     // 系统有图库图片时使用图片（已在构建期验证存在），否则回退到记号徽章。
@@ -848,9 +803,7 @@
     var s = getStatus(status);
     var statusIconHtml = "";
     if (mode === "realtime") {
-      statusIconHtml = '<span class="rs-status-icon ' + s.cls + '" aria-hidden="true">'
-        + ((window.DataState && window.DataState.statusPictogramHtml(status)) || s.icon)
-        + '</span>';
+      statusIconHtml = '<span class="rs-status-icon ' + s.cls + '" aria-hidden="true">' + s.icon + '</span>';
     }
     // 线路区间副标题（trains 模式）：始终描述本线路的起点/终点。
     // presentation.subName 是关系/展示元数据，不得替换线路区间。
@@ -938,12 +891,7 @@
     // Realtime patches retain DOM identity; refresh the accessible label too.
     card.setAttribute("aria-label", fresh.getAttribute("aria-label") || "");
     var oldStatus=card.querySelector(".rs-status-icon"), newStatus=fresh.querySelector(".rs-status-icon");
-    if (oldStatus && newStatus) {
-      oldStatus.className=newStatus.className;
-      // Pictograms are small inline SVGs, not text nodes. Keep markup on
-      // incremental updates instead of silently reverting to the old glyph.
-      oldStatus.innerHTML=newStatus.innerHTML;
-    }
+    if (oldStatus && newStatus) { oldStatus.className=newStatus.className; oldStatus.textContent=newStatus.textContent; }
     else if (oldStatus && !newStatus) oldStatus.remove();
     else if (!oldStatus && newStatus) { var header=card.querySelector(".rs-line-header"); if(header) header.appendChild(newStatus); }
     var oldInterval=card.querySelector(".rs-line-interval"), newInterval=fresh.querySelector(".rs-line-interval");
