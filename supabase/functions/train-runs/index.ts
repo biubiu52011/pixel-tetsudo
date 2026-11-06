@@ -210,7 +210,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
     const selected = revision?.unavailable ? [] : await pages((first, last) => {
       let query = db.from("manual_timetable_templates")
-      .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date")
+      .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date,operating_dates")
       .eq("line_key", lineId).eq("calendar_urn", calendar);
       query = revision ? query.eq('revision_id',revision.id) : query.is('revision_id',null);
       return query.order("id").range(first,last);
@@ -220,7 +220,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     // those canonical sources for branch display without importing duplicates.
     if (lineId === "ChiyodaBranch" && !revision) {
       const opposite = await pages((first, last) => db.from("manual_timetable_templates")
-        .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date")
+        .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date,operating_dates")
         .eq("line_key", "Chiyoda")
         .eq("calendar_urn", calendar)
         .eq("direction_urn", "odpt.RailDirection:TokyoMetro.YoyogiUehara")
@@ -229,6 +229,47 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       selected.push(...opposite);
     }
     if (selected.length || revision) { templates = selected; selectedCalendar = calendar; selectedRevision = revision; break; }
+  }
+  // The existing manual timetable owner may certify a finite set of
+  // actual operating dates for an imported source (Nov 2026 temporary
+  // shinkansen). The imported calendar remains provenance, not a daily
+  // operating assertion. Merge only officially date-whitelisted sources
+  // across Weekday/SaturdayHoliday; never include all historical rows.
+  // An empty list retires a source from the current plan. NULL preserves
+  // the other lines' existing recurring-calendar logic.
+  if (/Shinkansen$/.test(lineId) && /^2026-11-\\d{2}$/.test(serviceDate)) {
+    const {data:datedSources,error:datedError}=await db
+      .from("manual_timetable_templates")
+      .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date,operating_dates")
+      .eq("line_key",lineId)
+      .contains("operating_dates",[serviceDate])
+      .is("revision_id",null).order("id");
+    if(datedError)throw datedError;
+    const existing=new Set(templates.map((t:any)=>Number(t.id)));
+    for (const t of datedSources||[]) {
+      if(!Array.isArray(t.operating_dates) ||
+         !t.operating_dates.some((d:any)=>String(d).slice(0,10)===serviceDate) ||
+         t.line_key!==lineId ||
+         !String(t.railway_urn||"").endsWith("."+lineId) ||
+         !["odpt.Calendar:Weekday","odpt.Calendar:SaturdayHoliday"].includes(t.calendar_urn)) {
+        throw new Error("SHINKANSEN_2611_DATE_WHITELIST_SOURCE_INVALID");
+      }
+      if (!existing.has(Number(t.id))) {
+        templates.push(t);
+        existing.add(Number(t.id));
+      }
+    }
+  }
+  // Apply the verified exact-date whitelist to the existing template
+  // source at the point of selection, before canonical identity, stop
+  // fetching and vehicle evidence. This also excludes historical
+  // source templates with [] from the Nov 2026 train map; unrelated
+  // trains keep NULL and follow their existing calendar/revision.
+  if (/Shinkansen$/.test(lineId)) {
+    templates=templates.filter((t:any)=>
+      t.operating_dates==null ||
+      (Array.isArray(t.operating_dates) &&
+        t.operating_dates.some((d:any)=>String(d).slice(0,10)===serviceDate)));
   }
   // 2026-11-02 is a WEEKDAY, yet JR East explicitly runs all six
   // "おもいで湯けむり" rapid D trains on the HOLIDAY source timetable.
@@ -250,7 +291,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       throw new Error("RIKUTO_EAST_2611_NOV2_SOURCE_INVALID");
     const {data:rapidSources,error:rapidSourcesErr}=await db
       .from("manual_timetable_templates")
-      .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date")
+      .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date,operating_dates")
       .eq("line_key","RikutoEast")
       .eq("calendar_urn","odpt.Calendar:SaturdayHoliday")
       .is("revision_id",null).in("id",ids);
@@ -588,7 +629,9 @@ if (/Shinkansen$/.test(lineId) &&
     const {data, error}=await db.from("published_train_number_evidence")
       .select("edition,line_key,calendar_urn,direction_urn,train_number,source_template_id,official_source_url,verification_scope")
       .eq("edition","2611").eq("line_key",lineId)
-      .eq("calendar_urn",selectedCalendar)
+      // The source may be an officially date-whitelisted Weekday import
+      // running on a Saturday/holiday; validate against src.calendar_urn
+      // below, never require it to match today's selected diagram.
       .in("source_template_id",ids);
     if(error)throw error;
     const sources=new Map(batch.map((t:any)=>[Number(t.id),t]));
@@ -831,8 +874,11 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         ? (canonicalAliasesById.get(Number(mapped.timetable_id)) || []) : [],
       line_id: lineId,
       service_date: serviceDate,
-      calendar_type: calendarType(t.calendar_urn),
-      service_id: t.calendar_urn,
+      calendar_type: calendarType(
+        Array.isArray(t.operating_dates) && selectedCalendar
+          ? selectedCalendar : t.calendar_urn),
+      service_id: Array.isArray(t.operating_dates) && selectedCalendar
+        ? selectedCalendar : t.calendar_urn,
       trip_id: "canonical-train-timetable:" + mapped.timetable_id,
       plan_source: "sql-recurring-timetable",
       operator, network_key: t.railway_urn,
