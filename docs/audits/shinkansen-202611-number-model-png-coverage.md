@@ -1,8 +1,23 @@
 # 新干线 2026-11 列车番号 → 计划车型 → PNG 分级覆盖审计
 
-**最新回读日期**：2026-11-06（4条官方临时车按日修复、3份过期旧源隔离；823/826番号、196个精确PNG；Edge v325与main源码一致，已复核）  
+**最新回读日期**：2026-11-07（823/826正式番号、511/826唯一计划车型；196条精确PNG规则对应193个不同线路-番号；Edge v326与main源码一致，已复核）  
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
+
+## 2026-11-07 已实施：让既有新干线SQL精确PNG白名单进入实际列车展示
+
+本轮按“先看责任脚本和表格”核查，不新建任何运行时平行映射表。发现既有 `published_train_png_number_ranges` 新干线已登记 **196 条2611精确PNG规则**，且官方号码、计划车型与原生素材均有合法来源，但 `train-runs` 只读取该表中部分在来线规则，没有将新干线这196条规则投影给浏览器；静态 `train-number-png-ranges.js` 原本也没有新干线号码清单。结果是SQL已登记PNG并不保证实际页面展示该图。与此同时前端通用的 `resolveTimetableVehiclePlan` 有机会从“已知一个车型”的通用图库取图，不能保证新干线图片一定经过精确号码白名单。
+
+**修复均已直接提交 `main`，没有PR、没有新表/迁移：**
+
+- [现有 `train-runs` 源文件](../../supabase/functions/train-runs/index.ts)（[commit a6e5aa1](https://github.com/biubiu52011/pixel-tetsudo/commit/a6e5aa19b403d6c5018a0c59f5a2b03f92362f5c)）：只在2611新干线、已有验证完整番号的来源上，查询现有 `published_train_png_number_ranges`，必须单号 `min=max`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`，并校验既有 `vehicle_image_assets` 的运营者、车型、`native_png` 状态及路径，最后再与该源 `official_service_vehicle_plan` 官方A/B证据相符，才向既有 `vehicle_artwork_path` 返回参考PNG。重复的同号同车型同图片行允许；若同号存在相互冲突的车型或图片，只对该车关闭图，不中断全线。
+- [前端既有车型仲裁器](../../js/train-vehicle.js)（[commit 1b4a104](https://github.com/biubiu52011/pixel-tetsudo/commit/1b4a104916ab46a8717d57d4e8a7e18b2e1dad8f)）：2611新干线SQL计划的参考图只认上游返回且经图库线路/车型范围再次比对的精确PNG；没有号码白名单、只知道家族或官方确认但无素材时，清空图库泛用候选图，保持中性标记。`actualVehicleConfirmed=false`，不影响正式列车号/车型标签/计划位置。
+- [既有图库元数据](../../data/timetables/vehicle-garage-png-map.js)（[commit fb271f9](https://github.com/biubiu52011/pixel-tetsudo/commit/fb271f95ac47790f5285566f2c63887c6c09ad3f)）：E6、E8的原生图同时允许用于其已验证的**东北新干线直通区间**，不把它们变成东北全线默认车。与规范车型库 `CANONICAL_VEHICLES` 同步。
+- [页面缓存版本](../../pages/trains.html)（[commit 2b578ef](https://github.com/biubiu52011/pixel-tetsudo/commit/2b578ef4f6ed397f19c47284ffe882678191b88d)）更新两份现有脚本哈希；[回归测试](../../tests/shinkansen-2611-plan-png.test.cjs)（[commit b62a9a1](https://github.com/biubiu52011/pixel-tetsudo/commit/b62a9a106e66363f8ea17b99f0e229b867293c80)）新增合法PNG、错误PNG、缺图、未确认车型、跨月份及N700S错借N700图片的拒绝场景。
+
+**部署与SQL只读回验（2026-11-07）**：现有 Supabase 项目原 `train-runs` 已重新部署为 **v326 / ACTIVE / verify_jwt=false**，使用 `get_edge_function` 与GitHub main `index.ts`逐字比较成功（181016字符）；`pages/trains.html`引用的 `train-vehicle.js` 版本为 `a4941208af13`、`vehicle-garage-png-map.js`为`f2e158c79e65`，与当时Git blob SHA前缀相符。SQL **196条**精确规则涉及**193个不同的线路+正式番号**（秋田3001M、上越、山形各有1个同PNG的重叠证据行），**没有冲突PNG、无无效原生资产**；规则行数不可误写成196趟不同列车。
+
+**仍未完成**：不能因为发布成功而声称已在GitHub Pages/iPhone Safari截图或实际公网GET中逐车看到193趟PNG。测试脚本已入库，但GitHub Actions是否执行、运行结果、Safari真实DOM/图片的端到端验收本节尚未确证。西九州92份N700S计划虽然均有车型证据，现有图库仍**缺JR九州N700S原生PNG**，无理由借JR东海/西日本N700图片；E5/H5、E7/W7继续保留多候选，不凭号次猜图。
 
 ## 计划列车验收标准（2026-11-06 用户确认）
 
