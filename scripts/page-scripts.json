@@ -269,6 +269,9 @@
       "data/timetables/jreast-hakushin-2611-number-index.js": [
         "Hakushin"
       ],
+      "data/timetables/jreast-senzan-2611-number-index.js": [
+        "Senzan"
+      ],
       "data/timetables/jreast-ryomo-2611-number-index.js": [
         "Ryomo"
       ]
