@@ -2731,18 +2731,20 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Thirty-one JR-West Kyoto/Kobe 2026-11 source-only rows match the
+  // Thirty-five JR-West Kyoto/Kobe/Sanyo 2026-11 source-only rows match the
   // official local/new-rapid timetable, not just a historical suffix.
   // Keep canonical source IDs and legacy fleet-candidate proofs intact:
   // these are published service timetables, never actual dispatch cars.
-  if(lineId==="TokaidoKansai"&&/^2026-11-\d{2}$/.test(serviceDate)){
+  if((lineId==="TokaidoKansai"||lineId==="SanyoMain")&&/^2026-11-\d{2}$/.test(serviceDate)){
     const {data:verified,error:verifiedError}=await db
       .from("published_jrwest_kyoto_kobe_2611_clock_evidence")
       .select("source_template_id,source_line_key,source_train_id,source_public_number_suffix,calendar_urn,direction_urn,train_type_urn,official_train_number,official_source_url,official_public_train_type,official_stop_count,number_date_verified,actual_vehicle_confirmed,authorizes_png,verified_source_match")
-      .eq("source_line_key","TokaidoKansai")
+      .eq("source_line_key",lineId)
       .eq("calendar_urn",selectedCalendar);
     if(verifiedError)throw verifiedError;
-    const expected=selectedCalendar==="odpt.Calendar:Weekday"?15:16;
+    const expected=lineId==="SanyoMain"
+      ?(selectedCalendar==="odpt.Calendar:Weekday"?3:1)
+      :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);
     if((verified||[]).length!==expected||
        new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
       throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED");
@@ -2757,18 +2759,18 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         ?"Local":p.train_type_urn==="odpt.TrainType:JR-West.Rapid"
         ?(/^[0-9]{3,4}T$/.test(p.official_train_number)?"Rapid":"SpecialRapid"):null;
       const permittedStopCount=certifiedType==="Local"
-        ?[16,19,25,32,33].includes(p.official_stop_count)
+        ?(lineId==="SanyoMain"?[5,11]:[16,19,25,32,33]).includes(p.official_stop_count)
         :certifiedType==="Rapid"?p.official_stop_count===18
         :certifiedType==="SpecialRapid"&&p.official_stop_count===7;
       if(p.verified_source_match!==true||
-         p.source_line_key!=="TokaidoKansai"||
+         p.source_line_key!==lineId||
          p.calendar_urn!==selectedCalendar||
          !certifiedType||
          p.official_public_train_type!==certifiedType||
          !permittedStopCount||
          p.number_date_verified!==false||
          p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
-         run.network_key!=="odpt.Railway:JR-West.TokaidoKansai"||
+         run.network_key!=="odpt.Railway:JR-West."+lineId||
          run.canonical_group_evidence!=="source_only"||
          run.train_type!==p.train_type_urn||
          run.train_number!==p.source_train_id||
