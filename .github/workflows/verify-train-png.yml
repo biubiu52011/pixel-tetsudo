@@ -32,6 +32,8 @@ on:
       - 'tests/chuo-main-2611-number-index.test.cjs'
       - 'tests/chuo-sobu-local-2611-source-scope-and-e235-fleet.test.cjs'
       - 'tests/train-number-png-runtime.test.cjs'
+      - 'tests/joban-main-source-only-vehicle.test.cjs'
+      - 'tests/joban-main-north-mixed-fleet.test.cjs'
       - 'tests/gono-2611-number-schedule.test.cjs'
       - 'tests/hakushin-2611-official-number-png.test.cjs'
       - 'tests/joetsu-2611-number-vehicle.test.cjs'
@@ -160,6 +162,8 @@ jobs:
         run: node tools/vehicle-garage-png-map.test.cjs
       - name: Verify realtime and SQL number-to-PNG on SVG maps
         run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs
+      - name: Verify JobanMain source-only E531 and northern 701/E721 candidate-only SVG rules
+        run: node --test tests/joban-main-source-only-vehicle.test.cjs tests/joban-main-north-mixed-fleet.test.cjs
       - name: Verify regional 2611 Ishinomaki / Oga official numbers and PNG guards
         run: node --test tests/ishinomaki-2611-official-number-png.test.cjs tests/oga-2611-official-number-png.test.cjs
       - name: Verify Kitakami and Yamada 2611 public numbers, flood/rockfall, valid PNGs
