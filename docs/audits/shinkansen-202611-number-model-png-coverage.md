@@ -15,6 +15,32 @@
 
 > 下文历史小节保留“实际车底 0”的数据仅作证据级别说明；其不是本项目的必需指标或完成门槛。下文各阶段快照并非自动更新的最新总数。
 
+## 2026-11-06 GitHub Pages 北陆深链接实查：网页站序与2611 SQL站点ID失配修复
+
+**用户提供的检验入口**：https://biubiu52011.github.io/pixel-tetsudo/pages/trains.html#HokurikuShinkansen
+
+### 复现级别及根因
+
+直接读取该 GitHub Pages URL 的网页工具返回 Cache miss，连接的Browser读取也因无浏览器扩展上下文不可用，**因此没有直接得到真实网页的DOM、截图、网络控制台或iPhone Safari渲染结果**。但已读取该页面真实引用的仓库文件 `pages/trains.html`、`data/core/db-loader.js`、其在GitHub Pages使用的`data/core/railway_data.compact.json`，与现有Supabase `line_stations`、`manual_timetable_template_stops`和`train_timetable_stops`逐站比对：**网页北陆第12号车站仍是 `Myoko-Kogen`（妙高高原），而SQL此前已改成 `Joetsu-Myoko`（上越妙高）**。静态 `stations`仅有妙高高原真实坐标(36.8721825,138.2117975)，无上越妙高；`stationLines`及`lineStationOrder`也错误关联了妙高高原，车站多语言`station_i18n`更没有上越妙高。因此列车计划停站 URN 无法匹配网页当前线路站序，阻碍位置推算；SQL车次数据覆盖823/826不能代表网页正常。
+
+还发现原SQL北陆 `かがやき501` 源模板ID=128899在福井的到发事件写为`odpt.Station:JR-East.HokurikuShinkansen.Fukui`。网页规范北陆福井站 key 为`Fukui-Echizen`，而不带后缀的`Fukui`在规范数据库中实际是东武伊势崎线的**福居**站（地理位置完全不同），所以不能用全站通用别名“Fukui”掩盖问题。
+
+### 直接更新已有责任源（均 main，无PR）
+
+- 在**唯一规范源** [`data/core/railway_data.json`](../../data/core/railway_data.json) 中，将北陆`lines.HokurikuShinkansen.stations[12]`、`stationLines`和`lineStationOrder.HokurikuShinkansen`统一改为`Joetsu-Myoko`；在规范站点`stations`加入上越妙高坐标 **37.0812454,138.2484185**，`name_map`加入“上越妙高”。真正的妙高高原坐标和日文名称映射**原样保留**；只撤销其虚假的北陆新干线站序角色。
+- 在既有 [`data/core/station_i18n.json`](../../data/core/station_i18n.json) 新增上越妙高的 ja/zh/ko/en，保留真实妙高高原和真实福居的名称。
+- 使用已有 [`data/core/gen-file-data.js`](../../data/core/gen-file-data.js) 的**相同转换方法**重新生成`railway_data.compact.json`、`railway-data.file.js`、`station_i18n.compact.json`、`station-i18n.file.js`，没有创建新运行时映射脚本。GitHub读取回验：4份生成产物与规范源`JSON.stringify`**完全一致**。
+- 在 [`data/core/db-loader.js`](../../data/core/db-loader.js) 更新上述4份引用的12位内容哈希版本；在 [`pages/trains.html`](../../pages/trains.html) 更新`db-loader.js?v=63c4dbebdc1e`，触发`DB_CACHE_VERSION`缓存换代，避免Safari/localStorage沿用旧铁路站序。
+- [SQL精确事务](../../supabase/migrations/20261107014000_hokuriku_kagayaki501_fukui_station_identity_for_webmap.sql)：仅修正模板128899`かがやき501`的福井站`arrival_station_urn`及`departure_station_urn`为`Fukui-Echizen`，并验证源表与只读`train_timetable_stops`单站一致，不修改东武伊势崎线真正的福居站。
+
+### 验收
+
+- GitHub`main`新版本规范北陆线路 **24站**，上越妙高 index=12，已拥有站点坐标、多语言名称及`stationLines`关系。
+- Supabase SQL：北陆现有源模板涉及的22种实际停车站全部属于北陆24站的现有`line_stations`清单；**缺失匹配0，错误的Myoko-Kogen/Fukui URN为0**；`かがやき501`福井站只读VIEW返回正确`Fukui-Echizen` 1条。
+- 规范源及生成资产逐字一致 **4/4**；db-loader中的4个12位缓存哈希与当前4份GitHub blob SHA完全一致；`trains.html`的db-loader 12位缓存哈希与新的blob SHA一致。
+- GitHub Actions**“Verify train PNG contracts”**在相关`main`修复提交`3196ecf3`为`completed/success`，**“Deploy static content to Pages”**在同一提交也是`completed/success`。已确认发布工作流成功，但不称为实际用户浏览器视觉验收。
+- **没有公网实际页面抓取成功、没有HTTP调用在线`train-runs`终端、没有iPhone Safari截图或DOM确认**，不能据此声称地图所有车次显示、标签或位置均已经端到端验收。
+
 ## 2026-11-06 修复完成后的 live 复核（Edge v325，GitHub main 同源）
 
 本轮用户要求“修复”时，先查 **现有负责者**；确认此前已执行 `1992881` schema（现有`manual_timetable_templates.operating_dates date[]`）、`ff0fa98` 业务修复（四条日期限定列车／三条过期源隔离）、`9b2df9a` 与 `819adfc` 运行时跨日历筛选、`aa5b8f2` 精确 E8 原生 PNG。**不重跑已成功的迁移、不新造二层脚本或补丁、不使用 PR**。
