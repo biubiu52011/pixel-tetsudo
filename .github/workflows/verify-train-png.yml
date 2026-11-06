@@ -15,6 +15,7 @@ on:
       - 'tests/suigun-branch-2611-through-continuity.test.cjs'
       - 'tests/suigun-2611-number-fleet.test.cjs'
       - 'tests/tadami-2611-number-map.test.cjs'
+      - 'tests/tazawako-2611-conventional-map.test.cjs'
       - 'tests/suigun-2611-edge-calendar.test.cjs'
       - 'tests/shinonoi-2611-number-fleet.test.cjs'
       - 'tests/shinonoi-2611-edge-scope.test.cjs'
@@ -206,6 +207,10 @@ jobs:
         run: |
           node --check data/timetables/jreast-tadami-2611-number-index.js
           node --test tests/tadami-2611-number-map.test.cjs
+      - name: Verify Tazawako 2611 regular 8xx locals without Komachi contamination or short duplicate
+        run: |
+          node --check data/timetables/jreast-tazawako-2611-number-index.js
+          node --test tests/tazawako-2611-conventional-map.test.cjs
       - name: Verify Shinonoi 2611 383 Shinano, mixed locals and SQL scope
         run: node --test tests/shinonoi-2611-number-fleet.test.cjs tests/shinonoi-2611-edge-scope.test.cjs
       - name: Verify Senzan 2611 E721, SATONO PNG and date-filtered API positions
