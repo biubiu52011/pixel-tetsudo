@@ -1,0 +1,144 @@
+/* Home mobile layout contract.
+ * Owner: page-level presentation only. Do not modify the frozen home styles
+ * in css/style.css, script-owned search logic or navigation behavior.
+ * Keep the site pixel typography, button actions and 3D card treatment. */
+@media (max-width: 640px) {
+  body[data-page="home"] #tab-search {
+    /* The circular language control occupies the upper-right viewport edge. */
+    padding-top: 36px;
+    padding-right: 16px;
+    padding-left: 16px;
+    min-width: 0;
+  }
+
+  body[data-page="home"] #tab-search .home-modules {
+    width: 100%;
+    min-width: 0;
+    gap: 16px;
+  }
+
+  /* All modules share the same left and right edges; tourism previously
+     acquired an extra 8px margin on each side in the mobile base stylesheet. */
+  body[data-page="home"] #searchContainer,
+  body[data-page="home"] #smModule {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  body[data-page="home"] #searchContainer {
+    padding: 0;
+    margin-top: 10px;
+    margin-bottom: 0;
+    background: var(--card);
+    overflow: visible; /* keep station autocomplete popovers visible */
+  }
+
+  body[data-page="home"] #searchContainer > .module-title {
+    padding: 16px 16px 14px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  body[data-page="home"] #searchContainer > .module-title h2 {
+    font-size: 17px;
+    line-height: 1.45;
+  }
+
+  body[data-page="home"] #searchContainer > .search-inputs {
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+    gap: 10px;
+  }
+
+  body[data-page="home"] #searchContainer .input-group {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body[data-page="home"] #searchContainer .input-label {
+    margin-bottom: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  body[data-page="home"] #searchContainer .search-input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 16px; /* avoids Safari input focus auto-zoom */
+    line-height: 1.3;
+  }
+
+  body[data-page="home"] #searchContainer .swap-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+    margin: -2px auto;
+    border-radius: 8px;
+  }
+
+  body[data-page="home"] #searchContainer .search-time-controls {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px 10px;
+    align-items: end;
+  }
+
+  body[data-page="home"] #searchContainer .search-time-group-label {
+    grid-column: 1 / -1;
+    margin: 0 0 2px;
+    font-size: 12px;
+  }
+
+  body[data-page="home"] #searchContainer .search-time-controls .input-group {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  body[data-page="home"] #searchContainer .search-time-controls .search-input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 10px 8px;
+    text-overflow: ellipsis;
+  }
+
+  body[data-page="home"] #searchContainer input[type="time"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body[data-page="home"] #searchContainer input[type="time"]::-webkit-date-and-time-value {
+    min-width: 0;
+  }
+
+  body[data-page="home"] #searchContainer .search-btn {
+    min-height: 48px;
+    margin-top: 4px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 350px) {
+  body[data-page="home"] #searchContainer .search-time-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body[data-page="home"] #searchContainer .search-time-group-label {
+    grid-column: 1;
+  }
+}
