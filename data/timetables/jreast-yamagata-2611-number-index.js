@@ -61,6 +61,25 @@ function verify(p){
    officialNumberScope:true,sourceClocksVerified:false,
    actualVehicleConfirmed:false};
 }
+// A verified timetable number can have several plausible fleets. Expose
+// available gallery assets only as candidates; never assign one to the trip.
+function resolveCandidates(p){
+ var proof=verify(p);if(!proof)return null;
+ if(p.vehicleResolvedFromRealtime===true||p.actualVehicleConfirmed===true||
+    p.vehicleFormationId||p.realtimeVehicleType||p.realtimeDerivedVehicleType||
+    (Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length))
+   return null;
+ var known=resolve(p);
+ if(known)return null; // single sourced illustration already has precedence
+ var plan=p.vehiclePlan;
+ if(plan&&plan.status==="PLANNED_MODEL"&&plan.confirmed===true&&
+    plan.source==="database-verified-published-plan")return null;
+ var assetModels=candidates.filter(function(model){return !!image[model];});
+ return {lineId:"Yamagata",trainNumber:proof.trainNumber,
+   models:candidates.slice(),assetModels:assetModels,
+   candidateAssets:assetModels.map(function(model){return image[model];}),
+   actualVehicleConfirmed:false,referenceOnly:true};
+}
 function resolve(p){
  var proof=verify(p);if(!proof)return null;
  // A verified physical ID has its own canonical artwork path; never
@@ -94,6 +113,6 @@ function resolve(p){
 }
 root.JREastYamagataNumberIndex202611=Object.freeze({
  stops:stops,roster:roster,candidates:candidates,observed:observed,
- verify:verify,resolve:resolve,image:image
+ verify:verify,resolve:resolve,resolveCandidates:resolveCandidates,image:image
 });
 })(window);
