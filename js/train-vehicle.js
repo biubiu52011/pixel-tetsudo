@@ -2422,7 +2422,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "planned-stock-library-3": ["Takasaki", "Joetsu", "Agatsuma"],
   "planned-stock-library-8": ["Tazawako"],
   "planned-stock-library-9": ["Yamagata"],
-  "planned-stock-library-10": ["BanetsuEast", "BanetsuWest", "Ishinomaki", "RikutoEast", "RikutsuWest", "Iiyama", "Kitakami", "Yamada"],
+  "planned-stock-library-10": ["BanetsuEast", "BanetsuWest", "Ishinomaki", "RikutoEast", "RikutsuWest", "Iiyama", "Kitakami", "Yamada", "Yonezawa"],
   "jr-east-highrail1375-plan": ["Komii"],
   "remaining-fleet-extra-15": ["BanetsuWest"],
   "jr-east-c57-banetsu-plan": ["BanetsuWest"],
@@ -5283,6 +5283,39 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // 米坂線: numbered 2611 KiHa110 RAIL trains exist only between
+    // Yonezawa and Imaizumi. Historical SQL has many Local-labelled BUS
+    // rows and no dated physical consist proof: image is illustrative only.
+    // Server and estimator apply the same strict number/route/date scope.
+    if(p&&contextLineId==="Yonezawa"&&p.positionLineId==="Yonezawa"&&
+       p.estimated===true&&p.positionSource==="supabase-train-run"&&
+       String(p.serviceDate||"").slice(0,7)==="2026-11"&&
+       !strongRealtimeEvidence&&p.vehicleResolvedFromRealtime!==true&&
+       p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+       !(Array.isArray(p.vehicleFormationCandidates)&&
+         p.vehicleFormationCandidates.length)){
+      var yIndex=window.JREastYonezawaNumberIndex202611;
+      var yProof=yIndex&&typeof yIndex.verify==="function"
+        ?yIndex.verify(p):null;
+      var yRef=yProof&&typeof yIndex.resolve==="function"
+        ?yIndex.resolve(p):null;
+      var yPng=yRef&&normalizeGalleryPngPath(yRef.illustrationPng);
+      var yGallery=window.VehicleGaragePngMap;
+      if(yRef&&yRef.referenceOnly===true&&
+         yRef.actualVehicleConfirmed===false&&
+         yRef.authorizesPNG===false&&yRef.model===null&&
+         yRef.formationId===null&&yPng&&isGalleryPng(yPng)&&
+         yGallery&&typeof yGallery.matchModelPath==="function"&&
+         yGallery.matchModelPath(yRef.illustrationModel,yPng,"Yonezawa")){
+        return artworkFailed===true?{kind:"unresolved",iconSrc:""}:
+          {kind:"vehicle",iconSrc:yPng,planned:true,illustrative:true,
+           representativeOnly:true,actualVehicleConfirmed:false,
+           illustrationRole:"yonesaka-2611-rail-family-not-actual-consist"};
+      }
+      // A missing gallery entry is not a reason to fall through to
+      // unverified legacy GV-E400 or generic SQL fleet image.
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Yamagata 2611 has a MIXED 701-5500 / 719-5000 / E723-5000
     // regional working, while old SQL incorrectly labels ALL locals 701.
     // Only train-number + 35-station-scope + 2026 operating references
