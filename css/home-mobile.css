@@ -4,8 +4,8 @@
  * Keep the site pixel typography, button actions and 3D card treatment. */
 @media (max-width: 640px) {
   body[data-page="home"] #tab-search {
-    /* The circular language control occupies the upper-right viewport edge. */
-    padding-top: 36px;
+    /* Navigation already separates the header controls from this section. */
+    padding-top: 0;
     padding-right: 16px;
     padding-left: 16px;
     min-width: 0;
@@ -30,7 +30,7 @@
 
   body[data-page="home"] #searchContainer {
     padding: 0;
-    margin-top: 10px;
+    margin-top: 0;
     margin-bottom: 0;
     background: var(--card);
     overflow: visible; /* keep station autocomplete popovers visible */
@@ -153,7 +153,9 @@
   }
 }
 
-@media (max-width: 350px) {
+/* Compact iPhone widths cannot safely fit native Safari time inputs beside
+   the mode selector. Stack those existing controls without changing behavior. */
+@media (max-width: 480px) {
   body[data-page="home"] #searchContainer .search-time-controls {
     grid-template-columns: minmax(0, 1fr);
   }
