@@ -725,6 +725,20 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        if(lineId==="Uetsu" && tt._positionSource==="supabase-train-run" &&
+           String(serviceDate).startsWith("2026-11")){
+          var uetsu=window.JREastUetsuNumberIndex202611;
+          if(!uetsu||!uetsu.verify({
+            trainNumber:run.trainNumber,positionLineId:"Uetsu",
+            sourceRailway:tt["odpt:railway"]||"",
+            trainOperator:tt["odpt:operator"]||"JR-East",
+            railDirection:tt["odpt:railDirection"]||"",
+            trainType:tt["odpt:trainType"]||"",
+            calendarType:run.calendar,serviceDate:serviceDate,
+            positionSource:tt._positionSource,estimated:true,
+            scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";})
+          }))continue;
+        }
         // Tsugaru 2611: only Aomori–Kanita is operating by rail.
         // Historical SQL retains the ordinary 18-number diagram; official
         // 324M runs Saturdays but not Sundays or Nov 3/23 holidays.
