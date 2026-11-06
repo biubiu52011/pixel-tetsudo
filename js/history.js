@@ -135,20 +135,71 @@
     return entry;
   }
 
+  // Keep one reversible history operation at a time. The toast is outside the
+  // list mount so that its button survives renderHistory() replacing the list.
+  var _undoTimer = null;
+  function historyUxText(key) {
+    var lang = window.currentLang || "ja";
+    var words = {
+      ja: { deleted:"履歴を削除しました", cleared:"履歴を消去しました", undo:"元に戻す" },
+      zh: { deleted:"已删除记录", cleared:"已清空历史记录", undo:"撤销" },
+      ko: { deleted:"기록을 삭제했습니다", cleared:"기록을 모두 삭제했습니다", undo:"실행 취소" },
+      en: { deleted:"History entry deleted", cleared:"History cleared", undo:"Undo" }
+    };
+    return (words[lang] || words.ja)[key];
+  }
+  function showHistoryUndo(snapshot, type) {
+    if (_undoTimer) clearTimeout(_undoTimer);
+    var old = document.getElementById("historyUndoNotice");
+    if (old) old.remove();
+    var notice = document.createElement("div");
+    notice.id = "historyUndoNotice";
+    notice.className = "history-undo-notice";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+    var message = document.createElement("span");
+    message.textContent = historyUxText(type);
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "history-undo-btn";
+    button.textContent = historyUxText("undo");
+    button.addEventListener("click", function() {
+      if (_undoTimer) clearTimeout(_undoTimer);
+      _undoTimer = null;
+      persistHistory(snapshot);
+      notice.remove();
+      renderHistory();
+    });
+    notice.appendChild(message);
+    notice.appendChild(button);
+    document.body.appendChild(notice);
+    _undoTimer = setTimeout(function() {
+      _undoTimer = null;
+      notice.remove();
+    }, 8000);
+  }
+
   function clearHistory() {
-    localStorage.removeItem(STORAGE_KEY);
+    var previous = getHistory();
+    if (!previous.length) return;
+    try { localStorage.removeItem(STORAGE_KEY); }
+    catch (e) { console.warn("[History] Failed to clear:", e); return; }
     renderHistory();
+    showHistoryUndo(previous, "cleared");
   }
 
   function removeEntry(id) {
     const history = getHistory();
     const filtered = history.filter(function(e) { return e.id !== id; });
+    if (filtered.length === history.length) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
     } catch (e) {
       console.warn("[History] Failed to delete:", e);
+      return;
     }
     renderHistory();
+    showHistoryUndo(history, "deleted");
   }
 
   function escapeHtml(s) {
@@ -221,7 +272,7 @@
       }
       const lines = entry.lineInfo ? [...new Set(_extractLines(entry.lineInfo))].map(function(lid){ return _resolveLineIdOrName(lid, _lang); }).join(", ") : "";
 
-      html += '<div class="history-entry" data-id="' + entry.id + '">';
+      html += '<div class="history-entry" role="link" tabindex="0" data-id="' + entry.id + '" aria-label="' + escapeHtml(entry.from + " → " + entry.to) + '">';
       html += '<div class="history-route">';
       html += '<span class="history-from">' + escapeHtml(window.RailwayDB ? window.RailwayDB.resolveStationName(entry.from, window.currentLang) || entry.from : entry.from) + "</span>";
       html += '<svg class="history-arrow" viewBox="0 0 14 14" width="10" height="10" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" transform="rotate(90 7 7)" d="M6.646.146a.5.5 0 0 1 .708 0l3.5 3.5a.5.5 0 0 1-.354.854H8V13a1 1 0 1 1-2 0V4.5H3.5a.5.5 0 0 1-.354-.854z"/></svg>';
@@ -239,7 +290,7 @@
         html += '<span class="history-lines">' + escapeHtml(lines) + "</span>";
       }
       html += '<span class="history-time">' + timeStr + "</span>";
-      html += '<button class="history-delete-btn" data-id="' + entry.id + '"><svg class="pt-icon" viewBox="0 0 14 14" width="11" height="11" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.707.293A1 1 0 0 0 .293 1.707L5.586 7 .293 12.293a1 1 0 1 0 1.414 1.414L7 8.414l5.293 5.293a1 1 0 0 0 1.414-1.414L8.414 7l5.293-5.293A1 1 0 0 0 12.293.293L7 5.586z"/></svg></button>';
+      html += '<button type="button" class="history-delete-btn" data-id="' + entry.id + '" aria-label="' + escapeHtml((window.currentLang === "zh" ? "删除记录" : window.currentLang === "ko" ? "기록 삭제" : window.currentLang === "en" ? "Delete entry" : "履歴を削除") + ": " + entry.from + " → " + entry.to) + '"><svg class="pt-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" focusable="false"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v6M14 11v6"/></svg></button>';
       html += "</div>";
       html += "</div>";
     });
@@ -250,6 +301,13 @@
     // 使用事件委托绑定事件：每个容器只绑定一次。
     if (!container.dataset.eventsBound) {
       container.dataset.eventsBound = "1";
+      container.addEventListener("keydown", function(e) {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        var card = e.target.closest(".history-entry");
+        if (!card || e.target !== card) return;
+        e.preventDefault();
+        card.click();
+      });
       container.addEventListener("click", function(e) {
         var clearBtn = e.target.closest(".history-clear-btn");
         if (clearBtn) {
