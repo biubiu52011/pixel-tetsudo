@@ -10700,8 +10700,8 @@
   "Komi": {
     "ja": "小海",
     "zh": "小海",
-    "ko": "코미",
-    "en": "Komi"
+    "ko": "고우미",
+    "en": "Koumi"
   },
   "Ubajiru": {
     "ja": "姥湯",
@@ -19339,7 +19339,9 @@
   },
   "Aonuma": {
     "ja": "青沼",
-    "en": "Aonuma"
+    "en": "Aonuma",
+    "zh": "青沼",
+    "ko": "아오누마"
   },
   "Aozu": {
     "ja": "青津",
@@ -19383,7 +19385,9 @@
   },
   "Haguroshita": {
     "ja": "羽黒下",
-    "en": "Haguroshita"
+    "en": "Haguroshita",
+    "zh": "羽黑下",
+    "ko": "하구로시타"
   },
   "Hakuyacho": {
     "ja": "柏葉町",
@@ -19423,7 +19427,9 @@
   },
   "Iwamurada": {
     "ja": "岩村田",
-    "en": "Iwamurada"
+    "en": "Iwamurada",
+    "zh": "岩村田",
+    "ko": "이와무라다"
   },
   "Junisho": {
     "ja": "十二所",
@@ -19461,7 +19467,9 @@
   },
   "Kita-Nakagomi": {
     "ja": "北中込",
-    "en": "Kita-Nakagomi"
+    "en": "Kita-Nakagomi",
+    "zh": "北中込",
+    "ko": "키타나카고미"
   },
   "Kita-Otari": {
     "ja": "北小谷",
@@ -19491,7 +19499,9 @@
   },
   "Komoro": {
     "ja": "小諸",
-    "en": "Komoro"
+    "en": "Komoro",
+    "zh": "小诸",
+    "ko": "코모로"
   },
   "Koryu": {
     "ja": "光流",
@@ -19499,7 +19509,9 @@
   },
   "Koumi": {
     "ja": "小海",
-    "en": "Koumi"
+    "en": "Koumi",
+    "zh": "小海",
+    "ko": "고우미"
   },
   "Kunisada": {
     "ja": "国定",
@@ -19514,8 +19526,10 @@
     "en": "Maebashi-Oshima"
   },
   "Managashi": {
-    "ja": "万願",
-    "en": "Managashi"
+    "ja": "馬流",
+    "en": "Managashi",
+    "zh": "马流",
+    "ko": "마나가시"
   },
   "Matsubarako": {
     "ja": "松原湖",
@@ -19529,7 +19543,9 @@
   },
   "Mitsuoka": {
     "ja": "三岡",
-    "en": "Mitsuoka"
+    "en": "Mitsuoka",
+    "zh": "三冈",
+    "ko": "미츠오카"
   },
   "Mori-Miyanohara": {
     "ja": "森宮野原",
@@ -19543,19 +19559,25 @@
   },
   "Nakagomi": {
     "ja": "中込",
-    "en": "Nakagomi"
+    "en": "Nakagomi",
+    "zh": "中込",
+    "ko": "나카고미"
   },
   "Nakasato": {
-    "ja": "中里",
-    "en": "Nakasato"
+    "ja": "中佐都",
+    "en": "Nakasato",
+    "zh": "中佐都",
+    "ko": "나카사토"
   },
   "Nakata": {
     "ja": "中田",
     "en": "Nakata"
   },
   "Namezu": {
-    "ja": "名連",
-    "en": "Namezu"
+    "ja": "滑津",
+    "en": "Namezu",
+    "zh": "滑津",
+    "ko": "나메즈"
   },
   "Nanukamachi": {
     "ja": "七日町",
@@ -19632,8 +19654,10 @@
     "en": "Oshirakawa"
   },
   "Otabe": {
-    "ja": "小田部",
-    "en": "Otabe"
+    "ja": "太田部",
+    "en": "Otabe",
+    "zh": "太田部",
+    "ko": "오오타베"
   },
   "Otaki-Onsen": {
     "ja": "大滝温泉",
@@ -19680,12 +19704,16 @@
     "en": "Sakari"
   },
   "Saku-Hirose": {
-    "ja": "佐布広瀬",
-    "en": "Saku-Hirose"
+    "ja": "佐久広瀬",
+    "en": "Saku-Hirose",
+    "zh": "佐久广濑",
+    "ko": "사쿠히로세"
   },
   "Saku-Uminokuchi": {
     "ja": "佐久海ノ口",
-    "en": "Saku-Uminokuchi"
+    "en": "Saku-Uminokuchi",
+    "zh": "佐久海之口",
+    "ko": "사쿠우미노쿠치"
   },
   "Sakudaira": {
     "ja": "佐久平",
@@ -19739,7 +19767,9 @@
   },
   "Takaiwa": {
     "ja": "高岩",
-    "en": "Takaiwa"
+    "en": "Takaiwa",
+    "zh": "高岩",
+    "ko": "타카이와"
   },
   "Takekoma": {
     "ja": "竹駒",
@@ -19759,7 +19789,9 @@
   },
   "Tatsuokajo": {
     "ja": "龍岡城",
-    "en": "Tatsuokajo"
+    "en": "Tatsuokajo",
+    "zh": "龙冈城",
+    "ko": "타츠오카조"
   },
   "Tayama": {
     "ja": "田山",
@@ -19799,7 +19831,9 @@
   },
   "Umijiri": {
     "ja": "海尻",
-    "en": "Umijiri"
+    "en": "Umijiri",
+    "zh": "海尻",
+    "ko": "우미지리"
   },
   "Uminoguchi": {
     "ja": "海ノ口",
@@ -29030,5 +29064,11 @@
     "zh": "姬川",
     "ko": "히메카와",
     "en": "Himekawa"
+  },
+  "Misato-Koumi": {
+    "ja": "美里",
+    "zh": "美里",
+    "ko": "미사토",
+    "en": "Misato (Nagano)"
   }
 }

@@ -14595,6 +14595,14 @@
     "Himekawa": {
       "lat": 37.020347,
       "lng": 137.860814
+    },
+    "Koumi": {
+      "lat": 36.08873056,
+      "lng": 138.48285278
+    },
+    "Misato-Koumi": {
+      "lat": 36.2923009,
+      "lng": 138.4502564
     }
   },
   "lines": {
@@ -30339,7 +30347,7 @@
         "Iwamurada",
         "Sakudaira",
         "Nakasato",
-        "Misato",
+        "Misato-Koumi",
         "Mitsuoka",
         "Otome",
         "Higashi-Komoro",
@@ -30390,13 +30398,13 @@
         }
       ],
       "nameZh": "小海线",
-      "nameKo": "코미선",
+      "nameKo": "고우미선",
       "presentation": {
         "code": "KOI",
         "nameJa": "小海線",
         "nameZh": "小海线",
-        "nameEn": "Komii Line",
-        "nameKo": "코미선",
+        "nameEn": "Koumi Line",
+        "nameKo": "고우미선",
         "color": "#41934c",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
         "order": 45,
@@ -50823,7 +50831,14 @@
     "根知": "Nechi",
     "頸城大野": "Kubiki-Ono",
     "姫川": "Himekawa",
-    "南小谷": "Minami-Otari"
+    "南小谷": "Minami-Otari",
+    "佐久広瀬": "Saku-Hirose",
+    "小海": "Koumi",
+    "馬流": "Managashi",
+    "太田部": "Otabe",
+    "滑津": "Namezu",
+    "中佐都": "Nakasato",
+    "美里": "Misato-Koumi"
   },
   "stationLines": {
     "Omiya": [
@@ -63245,6 +63260,12 @@
     ],
     "Himekawa": [
       "OitoWest"
+    ],
+    "Koumi": [
+      "Komii"
+    ],
+    "Misato-Koumi": [
+      "Komii"
     ]
   },
   "lineStationOrder": {
@@ -64952,24 +64973,31 @@
       "Kiyosato": 3,
       "Nobeyama": 4,
       "Shinano-Kawakami": 5,
-      "Shimoyama-Aoi": 6,
-      "Haguro": 7,
-      "Kaise": 8,
-      "Yachiho": 9,
-      "Takagiwa": 10,
-      "Ubajiru": 11,
-      "Komi": 12,
-      "Matsubara-Ko": 13,
-      "Kaimen": 14,
-      "Saku-Kainouchi": 15,
-      "Naka-komi": 16,
-      "Jotaibu": 17,
-      "Ryuogajo": 18,
-      "Usuda": 19,
-      "Saku-Hirai": 20,
-      "Shigeno": 21,
-      "Otome": 22,
-      "Higashi-Komoro": 23
+      "Saku-Hirose": 6,
+      "Saku-Uminokuchi": 7,
+      "Umijiri": 8,
+      "Matsubarako": 9,
+      "Koumi": 10,
+      "Managashi": 11,
+      "Takaiwa": 12,
+      "Yachiho": 13,
+      "Kaise": 14,
+      "Haguroshita": 15,
+      "Aonuma": 16,
+      "Usuda": 17,
+      "Tatsuokajo": 18,
+      "Otabe": 19,
+      "Nakagomi": 20,
+      "Namezu": 21,
+      "Kita-Nakagomi": 22,
+      "Iwamurada": 23,
+      "Sakudaira": 24,
+      "Nakasato": 25,
+      "Misato-Koumi": 26,
+      "Mitsuoka": 27,
+      "Otome": 28,
+      "Higashi-Komoro": 29,
+      "Komoro": 30
     },
     "Kounan": {
       "Otasa": 0,

@@ -1141,6 +1141,9 @@ window.getTransferHint = function(stationId, lang) {
    * Kohoku（NipporiToneri=江北/Kohoku, NaritaAbikoBranch=湖北/Kohoku-Narita）双义。
    */
   var STATION_ALIAS_BY_RAILWAY = {
+    // 小海線: Misato on Komii = 美里; Musashino Misato = 三郷.
+    // Komi is a legacy spelling of the Koumi station identifier.
+    "Komii": { "Misato": "Misato-Koumi", "Komi": "Koumi" },
     "Tojo": { "Oyama": "Ooyama" },
     "NaritaAbikoBranch": { "Kohoku": "Kohoku-Narita" },
     "Utsunomiya": {
