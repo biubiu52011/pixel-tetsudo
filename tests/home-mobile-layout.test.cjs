@@ -34,12 +34,13 @@ test('time controls never rely on unbounded mobile intrinsic columns', () => {
   assert.match(css, /grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1fr\)/);
   assert.match(css, /input\[type="time"\] \{[\s\S]*?min-width: 0/);
   assert.match(css, /::-webkit-date-and-time-value/);
-  assert.match(css, /@media \(max-width: 350px\)/);
+  assert.match(css, /@media \(max-width: 480px\)/);
   assert.match(css, /grid-template-columns: minmax\(0, 1fr\)/);
 });
 
 test('top spacing makes room for circular language switcher; tourism aligns to search', () => {
-  assert.match(css, /#tab-search \{[\s\S]*?padding-top: 36px/);
+  assert.match(css, /#tab-search \{[\s\S]*?padding-top: 0;/);
+  assert.match(css, /#searchContainer \{[\s\S]*?margin-top: 0;/);
   assert.match(css, /#searchContainer,\s*body\[data-page="home"\] #smModule \{[\s\S]*?margin-right: 0;[\s\S]*?margin-left: 0/);
   const lang = read('css/lang-bar.css');
   assert.match(lang, /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
@@ -54,4 +55,13 @@ test('search and tourism module titles share a mobile grid and typography', () =
   assert.match(css, /#searchContainer > \.module-title,\s*body\[data-page="home"\] #smModule > \.module-title \{/);
   assert.match(css, /#searchContainer > \.module-title h2,\s*body\[data-page="home"\] #smModule > \.module-title h2 \{/);
   assert.match(css, /#smModule > \.sm-location-bar \{[\s\S]*?padding: 12px 16px;/);
+});
+
+test('forced all-page UI layer is absent and page components retain their owners', () => {
+  for (const page of ['home','history','realtime','trains','tourism-spot','tourism-shop','tourism-event']) {
+    const html = read('pages/' + page + '.html');
+    assert.doesNotMatch(html, /ui-system\.css/, page + ' should not load failed global CSS');
+  }
+  assert.doesNotMatch(css, /padding-top: 36px/);
+  assert.match(css, /@media \(max-width: 480px\)/);
 });
