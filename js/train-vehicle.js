@@ -5207,11 +5207,13 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         String(p.displayLineId || p.positionLineId || p.lineId || "") !== "JobanMain" ||
         p.sourceRailway !== "odpt.Railway:JR-East.Joban" ||
         p.canonicalGroupEvidence !== "source_only" ||
-        (Array.isArray(p.canonicalLineIds) && p.canonicalLineIds.length) ||
+        !Array.isArray(p.canonicalLineIds) || p.canonicalLineIds.length ||
         p.timetableValidity !== "undated_not_current_verified" ||
         p.timetableDateVerified !== false ||
-        p.vehicleIdentityStatus === "EXACT" ||
+        p.vehicleIdentityStatus !== "UNKNOWN" ||
         p.vehicleResolvedUpstream === true ||
+        p.vehicleResolvedFromRealtime === true ||
+        (p.vehicleResolution && p.vehicleResolution.identityStatus === "EXACT") ||
         p.actualVehicleConfirmed === true ||
         p.vehicleFormationId ||
         (Array.isArray(p.vehicleFormationCandidates) &&
@@ -5219,7 +5221,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         p.realtimeVehicleType || p.realtimeDerivedVehicleType ||
         p.vehicleIconPath ||
         (p.vehiclePlan && (p.vehiclePlan.confirmed === true ||
-          p.vehiclePlan.status === "PLANNED_MODEL"))) return null;
+          p.vehiclePlan.status === "PLANNED_MODEL" ||
+          (Array.isArray(p.vehiclePlan.models) && p.vehiclePlan.models.length &&
+           (p.vehiclePlan.models.length !== 1 ||
+            p.vehiclePlan.models[0] !== "E531系"))))) return null;
     var date=String(p.serviceDate || "").slice(0,10);
     var number=String(p.trainNumber || "").trim().toUpperCase();
     var id=String(p.canonicalTimetableId || "");
