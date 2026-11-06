@@ -189,6 +189,26 @@ test('unconfirmed stale SQL 701/E721 candidate never overrides a source-checked 
  assert.match(renderer,/if \(lineId === "Uetsu" && fleetText\)/);
  assert.match(renderer,/caption\.appendChild\(uetsuNote\)/);
 });
+test('folded Uetsu list derives source-verified terminus even with no SVG direction label',()=>{
+ const renderer=fs.readFileSync('js/trains-render.js','utf8');
+ const start=renderer.indexOf('  function _uetsuFoldDestinationCaption(');
+ const end=renderer.indexOf('  // The fold list only needs',start);
+ assert.ok(start>=0&&end>start,'source direction caption helper exists');
+ const fnCtx=vm.createContext({window:root,_trainDestText:x=>String(x).split('.').pop()});
+ vm.runInContext(renderer.slice(start,end),fnCtx);
+ const label=fnCtx._uetsuFoldDestinationCaption;
+ const sql=p('525M');
+ assert.equal(label(sql,'Uetsu','ja'),'Akita行き');
+ assert.equal(label(sql,'Uetsu','zh-CN'),'开往Akita');
+ assert.equal(label(sql,'Uetsu','en'),'Akita bound');
+ assert.equal(label(sql,'Uetsu','ko'),'Akita행');
+ assert.equal(label(sql,'OuMain','ja'),'','foreign display must not borrow Uetsu terminus');
+ assert.equal(label({...sql,sourceRailway:'odpt.Railway:JR-East.Hakushin'},'Uetsu','ja'),'');
+ assert.equal(label({...sql,scheduledStopKeys:[]},'Uetsu','ja'),'');
+ assert.equal(label({...sql,serviceDate:'2026-12-06'},'Uetsu','ja'),'');
+ assert.match(renderer,/var captionBase=popupCaption\s*\|\|\s*_uetsuFoldDestinationCaption\(p,lineId,lang\)/,
+   'visible SVG label has priority; verified endpoint replaces only the unknown fallback');
+});
 test('lazy HTML version and estimator guard are synchronized with Git blob SHAs',()=>{
  const m=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
  const file='data/timetables/jreast-uetsu-2611-number-index.js';
