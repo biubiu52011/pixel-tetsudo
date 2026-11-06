@@ -57,13 +57,13 @@
 
       <div data-site-shell-mount="footer"></div>
 
-      <div id="lineDetailModal" class="rs-modal">
+      <div id="lineDetailModal" class="rs-modal" role="dialog" aria-modal="true" aria-labelledby="rsModalTitle">
         <div class="rs-modal-content">
           <div class="rs-modal-header">
-            <button class="rs-modal-close" aria-label="閉じる">
-              <span aria-hidden="true" style="font: 28px/1 Arial, sans-serif;">×</span>
+            <h2 id="rsModalTitle" class="rs-modal-title"></h2>
+            <button type="button" class="rs-modal-close" aria-label="閉じる">
+              <span aria-hidden="true" class="rs-close-glyph">×</span>
             </button>
-            <h2 class="rs-modal-title"></h2>
           </div>
           <div class="rs-modal-body">
             <div class="rs-status-section">
