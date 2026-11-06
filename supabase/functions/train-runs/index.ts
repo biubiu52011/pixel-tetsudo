@@ -2325,6 +2325,106 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // Kosei: historical 180 source runs, but ONLY 179 M / MH service
+  // rows have a credible normal fleet family. The Saturday-only source
+  // 9017DH is a D train mislabeled Local by the historical import and
+  // MUST NOT be drawn as an ordinary 2026-11 train; official 9017D
+  // is a dated seasonal Hanaakari, not a standing Local.
+  // M+H weekend is a calendar marker, not an operation/carset code.
+  if(lineId==="Kosei"&&/^2026-11-/.test(serviceDate)){
+    const {data:roster,error:scopeError}=await db
+      .from("published_jrwest_kosei_2611_source_fleet")
+      .select("source_template_id,edition,line_key,railway_urn,source_train_number,historical_public_number,calendar_urn,direction_urn,train_type_urn,corridor_segment,source_stop_keys,candidate_models,candidate_png_paths,source_path,source_fleet_url,source_route_url,timetable_validity,reference_only,number_date_verified,actual_vehicle_confirmed,authorizes_png")
+      .eq("edition","2611").eq("line_key","Kosei")
+      .eq("calendar_urn",selectedCalendar);
+    if(scopeError)throw scopeError;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?90:89;
+    if((roster||[]).length!==expected)
+      throw new Error("JRWEST_KOSEI_2611_SOURCE_FLEET_UNAVAILABLE");
+    const bySource=new Map((roster||[]).map((a:any)=>
+      [Number(a.source_template_id),a]));
+    if(bySource.size!==expected)
+      throw new Error("JRWEST_KOSEI_2611_DUPLICATE_SOURCE_ID");
+    const corridor=["Kyoto","Yamashina","Ootsu-Kyou","Karasaki",
+      "Hieizan-Sakamoto","Ogoto-Onsen","Katata","Ono-Kansai",
+      "Wani","Hourai","Shiga","Hira","Oumi-Maiko","Kitakomatsu",
+      "Oumi-Takashima","Adogawa","Shin'asahi","Oumiimazu",
+      "Oumi-Naka-Shou","Makino","Nagahara-Kansai","Omi-Shiotsu"];
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const p:any=bySource.get(Number(run.source_template_id));
+      if(!p){result.splice(i,1);continue;}
+      const number=String(run.train_number||"");
+      const m=/^([0-9]{3,4}M)(H?)$/.exec(number);
+      const isNorth=run.rail_direction==="odpt.RailDirection:Inbound";
+      const isSouth=run.rail_direction==="odpt.RailDirection:Outbound";
+      const kind=String(run.train_type||"").split(".").pop();
+      const stops=Array.isArray(run.stops)?run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()):[];
+      const idx=stops.map((station:string)=>corridor.indexOf(station));
+      const northerlyShort=kind==="Local"&&
+        ["Omi-Shiotsu","Nagahara-Kansai"].includes(stops[0])&&
+        stops[stops.length-1]==="Oumiimazu";
+      const group=northerlyShort?"north_shuttle":kind==="Local"?"other_local":
+        kind==="Rapid"?"rapid":"special_rapid";
+      const models=group==="north_shuttle"?"223系|225系|521系":
+        group==="other_local"?"221系|223系|225系":"223系|225系";
+      const url=group==="north_shuttle"
+        ?"https://train.mi-ktt.ne.jp/rosen/koseisen/"
+        :"https://www.westjr.co.jp/fan/paper/local/";
+      if(!m||(!isNorth&&!isSouth)||stops.length<2||
+         (selectedCalendar==="odpt.Calendar:SaturdayHoliday")!==(m[2]==="H")||
+         run.network_key!=="odpt.Railway:JR-West.Kosei"||
+         !["Local","Rapid","SpecialRapid"].includes(kind)||
+         idx.some((x:number)=>x<0)||
+         idx.some((x:number,j:number)=>j>0&&
+           (isSouth?x<=idx[j-1]:x>=idx[j-1]))||
+         p.line_key!=="Kosei"||p.railway_urn!==run.network_key||
+         p.source_train_number!==number||
+         p.historical_public_number!==m[1]||
+         p.calendar_urn!==selectedCalendar||
+         p.direction_urn!==run.rail_direction||
+         p.train_type_urn!==run.train_type||
+         p.corridor_segment!==group||p.source_path!=="data/timetables/Kosei-manual.js"||
+         p.timetable_validity!=="undated_not_current_verified"||
+         p.reference_only!==true||p.number_date_verified!==false||
+         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
+         p.source_fleet_url!==url||
+         p.source_route_url!=="https://www.train-guide.westjr.co.jp/kosei.html"||
+         !Array.isArray(p.source_stop_keys)||
+         p.source_stop_keys.length!==stops.length||
+         stops.some((k:string,j:number)=>p.source_stop_keys[j]!==k)||
+         !Array.isArray(p.candidate_models)||
+         p.candidate_models.join("|")!==models||
+         !Array.isArray(p.candidate_png_paths)||
+         p.candidate_png_paths.length!==0){
+        result.splice(i,1);continue;
+      }
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=p.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-kosei-2611-source-family",
+        lineId:"Kosei",trainNumber:number,sourceTrainNumber:number,
+        historicalNumber:m[1],calendar:p.calendar_urn,
+        direction:p.direction_urn,trainType:p.train_type_urn,
+        serviceDate,sourceTemplateId:Number(p.source_template_id),
+        corridorSegment:p.corridor_segment,
+        sourceStopKeys:p.source_stop_keys,
+        candidateModels:p.candidate_models,
+        candidateAssets:p.candidate_png_paths,
+        fleetSourceUrl:p.source_fleet_url,
+        routeSourceUrl:p.source_route_url,
+        timetableValidity:p.timetable_validity,
+        referenceOnly:true,numberDateVerified:false,
+        actualVehicleConfirmed:false,authorizesPNG:false
+      };
+    }
+  }
+
   // JR-West Kyoto/Kobe through corridor: JR京都線 is Kyoto–Osaka,
   // JR神戸線 is Osaka–Himeji. Imported JR-West TokaidoKansai has 46
   // undated compound-ID trips; SanyoMain carries 20 additional relevant
