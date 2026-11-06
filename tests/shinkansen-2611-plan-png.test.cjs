@@ -15,6 +15,8 @@ for(const path of ['data/timetables/vehicle-garage-png-map.js','js/train-vehicle
 const e6='../images/列车/JR東日本/JR東日本_E6系.png';
 const e8='../images/列车/JR東日本/JR東日本_E8系.png';
 const n700='../images/列车/JR東海/JR東海_N700系.png';
+const kyushu800='../images/列车/JR九州/JR九州_800系.png';
+const sanyo500='../images/列车/JR西日本/JR西日本_500系.png';
 const garage=win.VehicleGaragePngMap;
 const tv=win.TrainVehicle;
 
@@ -60,6 +62,19 @@ test('only SQL-qualified official planned model with exact PNG is illustrated',(
   assert.equal(marker.kind,'vehicle');
   assert.equal(marker.iconSrc,e6);
   assert.equal(marker.planned,true);
+});
+
+test('SQL family names map to canonical JR Kyushu/JR West gallery names',()=>{
+  const k=plan({number:'300A',lineId:'KyushuShinkansen',
+    operator:'JR-Kyushu',model:'800系',image:kyushu800});
+  assert.ok(k);
+  assert.equal(k.models[0],'800系（JR九州）');
+  assert.equal(k.iconPath,kyushu800);
+  const w=plan({number:'700A',lineId:'SanyoShinkansen',
+    operator:'JR-West',model:'500系',image:sanyo500});
+  assert.ok(w);
+  assert.equal(w.models[0],'500系（JR西日本）');
+  assert.equal(w.iconPath,sanyo500);
 });
 
 test('no roster PNG, incorrect PNG, unconfirmed plan and other month all stay neutral',()=>{
