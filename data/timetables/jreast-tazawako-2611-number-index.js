@@ -29,7 +29,12 @@ function calForDate(date){
  return weekday===0||weekday===6||day===3||day===23
    ?"SaturdayHoliday":"Weekday";
 }
-function shortStation(x){return String(x||"").split(".").pop();}
+function shortStation(x){
+ var key=String(x||"").split(".").pop();
+ // 2026-11 manual SQL writes Uguisuno; the passenger map writes
+ // Uguisu-no. Both are 鶯野駅 and normalize to the same station.
+ return key==="Uguisuno"?"Uguisu-no":key;
+}
 function verify(p){
  if(!p||p.positionLineId&&p.positionLineId!=="Tazawako"||
     p.sourceRailway!=="odpt.Railway:JR-East.Tazawako"||
