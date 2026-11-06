@@ -2523,6 +2523,63 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // Date-verified Kosei published 1802/1804/1806/1808M:
+  // the eight source-only original 18-stop clocks were independently
+  // compared with the official November 2026 issue. The SQL invoker
+  // view re-hashes the ORIGINAL timetable stops on every request.
+  // Never relabel an unverified source run, infer a physical carset,
+  // render a PNG, or treat the holiday importer H as a train number.
+  if(lineId==="Kosei"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:clocks,error:clockError}=await db
+      .from("published_jrwest_kosei_2611_clock_evidence")
+      .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
+      .eq("calendar_urn",selectedCalendar);
+    if(clockError)throw clockError;
+    if((clocks||[]).length!==4||
+       new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==4)
+      throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_COVERAGE_CHANGED");
+    const byClockSource=new Map((clocks||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    for(const run of result){
+      const p:any=byClockSource.get(Number(run.source_template_id));
+      if(!p)continue;
+      const proof:any=run.published_number_fleet_reference;
+      const stops=Array.isArray(run.stops)?run.stops:[];
+      if(p.verified_source_match!==true||
+         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
+         String(p.valid_from).slice(0,10)>serviceDate||
+         String(p.valid_to).slice(0,10)<serviceDate||
+         p.calendar_urn!==selectedCalendar||
+         run.canonical_group_evidence!=="source_only"||
+         run.network_key!=="odpt.Railway:JR-West.Kosei"||
+         run.train_type!=="odpt.TrainType:JR-West.Local"||
+         run.rail_direction!==p.direction_urn||
+         run.train_number!==p.source_train_number||
+         p.published_train_number!==String(p.source_train_number).replace(/H$/,"")||
+         !proof||proof.source!=="sql-jrwest-kosei-2611-source-family"||
+         proof.sourceTemplateId!==Number(p.source_template_id)||
+         !Array.isArray(proof.sourceStopKeys)||
+         stops.length!==18||proof.sourceStopKeys.length!==18||
+         stops.some((st:any,i:number)=>
+           String(st.station_urn||"").split(".").pop()!==proof.sourceStopKeys[i])||
+         stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==18)
+        throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_SOURCE_CONFLICT");
+      // Keep the source identifier (including importer H) for existing
+      // verifier and canonical lookups; expose the REAL public number
+      // separately, with individually certified 18-stop clocks.
+      run.published_train_number=p.published_train_number;
+      run.train_number_verification="official-2611-kosei-18-stop-clock";
+      run.train_number_source_url=p.official_source_url;
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source="official-2611-kosei-source-clock-verified";
+      run.published_number_fleet_reference.publishedNumber=p.published_train_number;
+      run.published_number_fleet_reference.officialStopClockSourceUrl=p.official_source_url;
+      run.published_number_fleet_reference.stopClocksVerified=true;
+      // Preserve vehiclePlan UNCONFIRMED_FLEET, never authorize a PNG.
+    }
+  }
+
   // JR-West Kyoto/Kobe through corridor: JR京都線 is Kyoto–Osaka,
   // JR神戸線 is Osaka–Himeji. Imported JR-West TokaidoKansai has 46
   // undated compound-ID trips; SanyoMain carries 20 additional relevant
@@ -3755,10 +3812,43 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     !sourceSampleOnly && independentlyVerifiedCoverage;
   const partial = validRuns.length > 0 && !complete;
   const dateVerifiedRuns = validRuns.filter(r => r.timetable_date_verified).length;
+  // Independently published through-service NUMBER evidence only.
+  // It is not a source for adding runs or joining historical composite
+  // train IDs; source-clock / vehicle permissions remain false.
+  let jrwestOfficialNumberReferences:any[]=[];
+  if(["Kosei","TokaidoKansai","SanyoMain"].includes(lineId)&&
+     /^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:refs,error:refError}=await db
+      .from("published_jrwest_2611_crossline_number_reference")
+      .select("line_key,published_train_number,calendar_scope,train_type,segment_from,segment_to,continuous_service_key,official_source_url,observed_date,number_date_verified,stop_clocks_verified,actual_vehicle_confirmed,authorizes_png,authorizes_position")
+      .eq("line_key",lineId);
+    if(refError)throw refError;
+    const dayScope=selectedCalendar==="odpt.Calendar:Weekday"
+      ?"weekday":"saturday_holiday";
+    jrwestOfficialNumberReferences=(refs||[]).filter((p:any)=>{
+      if(p.line_key!==lineId||!["daily",dayScope].includes(p.calendar_scope))
+        return false;
+      if(p.number_date_verified!==true||p.stop_clocks_verified!==false||
+         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
+         p.authorizes_position!==false)
+        throw new Error("JRWEST_2611_THROUGH_NUMBER_REFERENCE_CONFLICT");
+      return true;
+    }).map((p:any)=>({
+      train_number:p.published_train_number,
+      service_type:p.train_type,
+      segment_from:p.segment_from,segment_to:p.segment_to,
+      continuation_key:p.continuous_service_key,
+      source_url:p.official_source_url,
+      observed_date:p.observed_date,
+      number_verified:true,stop_clocks_verified:false,
+      authorizes_position:false,authorizes_png:false
+    }));
+  }
   return json({ ok: true, complete, partial,
     // These counts do not change the existing structural coverage behavior.
     cancelled_runs: validRuns.filter(r => r.operation_status === "cancelled").length,
     official_dated_number_overrides: bosoDatedNumberOverrides,
+    jrwest_official_number_references: jrwestOfficialNumberReferences,
     date_verified_runs: dateVerifiedRuns,
     date_unverified_runs: validRuns.length - dateVerifiedRuns,
     cache: complete ? "HIT" : partial ? "PARTIAL" : "MISS",
