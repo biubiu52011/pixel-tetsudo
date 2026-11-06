@@ -409,45 +409,41 @@ test('unlisted number tails and mismatched display lines remain neutral',()=>{
   assert.equal(marker(valid,'ChuoMain').kind,'unresolved');
 });
 
-test('277M: ODPT full train-number range -> representative E233-7000 PNG',()=>{
+test('277M ODPT number is NOT proof of JR E233 ownership',()=>{
   const p=live({trainNumber:'277M',
     trainId:'odpt.Train:JR-East.SaikyoKawagoe.277M',
     positionLineId:'SaikyoKawagoe',
     sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
     trainType:'odpt.TrainType:JR-East.Local'});
   assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null);
-  const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
-  assert.ok(mapped,'277M should use the 220M+ full-number interval');
-  assert.equal(mapped.trainNumber,'277M');
-  assert.equal(mapped.model,'E233系7000番台');
-  assert.equal(mapped.representative,true);
-  assert.match(mapped.pngPath,/JR東日本_E233系_7000番台\.png$/);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null);
   const rendered=marker(p,'SaikyoKawagoe');
-  assert.equal(rendered.kind,'vehicle');
-  assert.equal(rendered.planned,true);
-  assert.equal(rendered.compact,false);
-  assert.equal(rendered.iconSrc,mapped.pngPath);
-  assert.equal(p.vehicleIdentityStatus,'UNKNOWN','a representative image never certifies stock');
+  assert.equal(rendered.kind,'unresolved');
+  assert.equal(rendered.iconSrc,'');
+  assert.equal(rendered.compact,true);
+  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
 });
-test('277M: SQL estimates use same number-based artwork as ODPT',()=>{
+test('277M historical SQL without a physical-carset proof stays neutral',()=>{
   const p=sql({trainNumber:'277M',positionLineId:'SaikyoKawagoe',
     sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
-  assert.match(marker(p,'SaikyoKawagoe').iconSrc,/JR東日本_E233系_7000番台\.png$/);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null);
+  assert.equal(marker(p,'SaikyoKawagoe').kind,'unresolved');
+  assert.equal(marker(p,'SaikyoKawagoe').iconSrc,'');
 });
-test('Sotetsu M numbering uses full numbers rather than final digits',()=>{
-  for(const n of ['120M','137M','220M','277M','299M']){
-    const m=root.TrainNumberPngRanges.match(n,'SaikyoKawagoe');
-    assert.ok(m,n+' must be mapped by its own train-number family');
-    assert.equal(m.model,'E233系7000番台');
+test('Sotetsu 1xx/2xx M are public service numbers, NOT E233 vs 12000 carset codes',()=>{
+  for(const line of ['SaikyoKawagoe','SotetsuJRDirect']){
+    for(const n of ['120M','137M','220M','277M','299M']){
+      assert.equal(root.TrainNumberPngRanges.match(n,line),null,
+        line+'/'+n+' may NOT select a single operator-owned fleet by M number');
+    }
   }
   for(const n of ['119M','200M','219M','300M','277K']){
-    // 277K is a separate K/F/S family; not an M-number match.
-    const m=root.TrainNumberPngRanges.match(n,'SotetsuJRDirect');
-    assert.equal(m,null,n+' must not be admitted into the through-M number range');
+    assert.equal(root.TrainNumberPngRanges.match(n,'SotetsuJRDirect'),null);
   }
   assert.equal(root.TrainNumberPngRanges.match('277M','ChuoMain'),null);
   assert.equal(root.TrainNumberPngRanges.match('277M','Rinkai'),null);
-  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,
+    'E233系7000番台','independent Saikyo K-series rule remains');
 });
 
 test('JobanLocal K/S/E published whole-number artwork uses its three approved PNGs for live and SQL',()=>{
@@ -795,7 +791,7 @@ test('2026 ChuoRapid T/H number ranges never leak to other lines or M trains',()
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoMain'),null);
   assert.equal(root.TrainNumberPngRanges.match('1932T','SaikyoKawagoe'),null);
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
-  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe'),null);
 });
 
 
@@ -1258,7 +1254,7 @@ test('Ome regular train-number mapping excludes specials and unrelated lines',()
   }
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
-  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe'),null);
 });
 
 test('2026-11-03 Itsukaichi 2149 uses full public number -> E233-0 marker PNG',()=>{
@@ -1319,7 +1315,7 @@ test('Itsukaichi keeps T/H commuter number range and excludes specials or unrela
   assert.equal(root.TrainNumberPngRanges.match('2149','SaikyoKawagoe'),null);
   assert.equal(root.TrainNumberPngRanges.match('2149','Ome').model,'E233系0番台');
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
-  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe'),null);
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
     trainNumber:'2149',positionLineId:'Itsukaichi',
     trainType:'odpt.TrainType:JR-East.LimitedExpress'})),null);
