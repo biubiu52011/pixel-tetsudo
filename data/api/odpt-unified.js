@@ -1838,6 +1838,10 @@
             "_sqlServiceName":run.service_name||"",
             "_sqlTrainNumberVerification":run.train_number_verification||"",
             "_sqlTrainNumberEvidenceUrl":run.train_number_source_url||"",
+            // Distinct human-readable public number; keep the original
+            // SQL source trainNumber (and holiday-import H) for identity.
+            "_sqlPublishedTrainNumber":run.timetable_date_verified===true
+                ? (run.published_train_number||"") : "",
             "odpt:railway":run.network_key && String(run.network_key).indexOf("odpt.Railway:")===0 ? run.network_key : "odpt.Railway:" + String(run.operator||LINE_TO_OPERATOR[run.line_id]||"") + "." + String(run.network_key||LINE_RAILWAY_CODE[run.line_id]||run.line_id||""),
             "odpt:calendar":({
                 weekday:"odpt.Calendar:Weekday",
