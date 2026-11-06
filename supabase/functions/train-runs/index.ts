@@ -2700,6 +2700,66 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // Five JR-West Kyoto/Kobe 2026-11 7-stop source rows match the
+  // official new-rapid timetable, not just a historical suffix.
+  // Keep canonical source IDs and legacy fleet-candidate proofs intact:
+  // these are published service timetables, never actual dispatch cars.
+  if(lineId==="TokaidoKansai"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:verified,error:verifiedError}=await db
+      .from("published_jrwest_kyoto_kobe_2611_clock_evidence")
+      .select("source_template_id,source_line_key,source_train_id,source_public_number_suffix,calendar_urn,direction_urn,train_type_urn,official_train_number,official_source_url,official_public_train_type,official_stop_count,number_date_verified,actual_vehicle_confirmed,authorizes_png,verified_source_match")
+      .eq("source_line_key","TokaidoKansai")
+      .eq("calendar_urn",selectedCalendar);
+    if(verifiedError)throw verifiedError;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?2:3;
+    if((verified||[]).length!==expected||
+       new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
+      throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED");
+    const byOriginalSource=new Map((verified||[]).map((r:any)=>
+      [Number(r.source_template_id),r]));
+    for(const run of result){
+      const p:any=byOriginalSource.get(Number(run.source_template_id));
+      if(!p)continue;
+      const candidate:any=run.published_number_fleet_reference;
+      const stops=Array.isArray(run.stops)?run.stops:[];
+      if(p.verified_source_match!==true||
+         p.source_line_key!=="TokaidoKansai"||
+         p.calendar_urn!==selectedCalendar||
+         p.train_type_urn!=="odpt.TrainType:JR-West.Rapid"||
+         p.official_public_train_type!=="SpecialRapid"||
+         p.official_stop_count!==7||
+         p.number_date_verified!==false||
+         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
+         run.network_key!=="odpt.Railway:JR-West.TokaidoKansai"||
+         run.canonical_group_evidence!=="source_only"||
+         run.train_type!==p.train_type_urn||
+         run.train_number!==p.source_train_id||
+         run.rail_direction!==p.direction_urn||
+         !/^\d{4}M$/.test(p.official_train_number)||
+         p.official_train_number!==p.source_public_number_suffix||
+         !candidate||candidate.source!=="sql-jrwest-kyoto-kobe-2611-source-family"||
+         candidate.sourceTrainId!==p.source_train_id||
+         candidate.sourceTemplateId!==Number(p.source_template_id)||
+         !Array.isArray(candidate.sourceStopKeys)||
+         stops.length!==7||candidate.sourceStopKeys.length!==7||
+         stops.some((st:any,i:number)=>
+           String(st.station_urn||"").split(".").pop()!==candidate.sourceStopKeys[i])||
+         stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==7)
+        throw new Error("JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT");
+      run.published_train_number=p.official_train_number;
+      run.published_train_type="odpt.TrainType:JR-West.SpecialRapid";
+      run.train_number_verification="official-2611-kyoto-kobe-source-stop-clock";
+      run.train_number_source_url=p.official_source_url;
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source="official-2611-kyoto-kobe-source-clock-verified";
+      candidate.officialPublicNumber=p.official_train_number;
+      candidate.officialStopClockSourceUrl=p.official_source_url;
+      candidate.stopClocksVerified=true;
+      // Vehicle candidate family remains unresolved, no exact PNG.
+    }
+  }
+
   // Sotetsu-JR 2611: source-bound historical stops (Hazawa–Osaki)
   // certify only E233-7000 / Sotetsu-12000 fleet CANDIDATES.
   // Public 1xxM/2xxM are Sotetsu-side train types, NOT ownership codes.
