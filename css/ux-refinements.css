@@ -2,8 +2,7 @@
    Preserve the existing railway badges, pixel type and home baseline. */
 
 body[data-page="realtime"] .rs-line-card:focus-visible,
-body[data-page="trains"] .rs-line-card:focus-visible,
-body[data-page="history"] .history-entry:focus-visible {
+body[data-page="trains"] .rs-line-card:focus-visible {
   outline: 3px solid #006b32;
   outline-offset: 3px;
   box-shadow: 4px 4px 0 #303037, 0 0 0 5px #ffffff, 0 0 0 8px #006b32;
