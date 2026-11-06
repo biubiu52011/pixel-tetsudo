@@ -1220,8 +1220,8 @@ var CANONICAL_VEHICLES = {
     displayName: "E233系3000番台",
     iconName: "E233系3000番台",
     asset: "../images/列车/JR東日本/JR東日本_E233系3000番台.png",
-    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Yokosuka", "Ito"],
-    lineAliases: { ShonanShinjuku: ["E233系3000番台"], UenoTokyo: ["E233系3000番台"], UtsunomiyaJR: ["E233系3000番台"], Takasaki: ["E233系3000番台"], Tokaido: ["E233系3000番台"], TokaidoMain: ["E233系3000番台"], Yokosuka: ["E233系3000番台"], Ito: ["E233系3000番台"] },
+    lineIds: ["ShonanShinjuku", "UenoTokyo", "UtsunomiyaJR", "Takasaki", "Tokaido", "TokaidoMain", "Yokosuka", "Ito", "Ryomo"],
+    lineAliases: { ShonanShinjuku: ["E233系3000番台"], UenoTokyo: ["E233系3000番台"], UtsunomiyaJR: ["E233系3000番台"], Takasaki: ["E233系3000番台"], Tokaido: ["E233系3000番台"], TokaidoMain: ["E233系3000番台"], Yokosuka: ["E233系3000番台"], Ito: ["E233系3000番台"], Ryomo: ["E233系3000番台"] },
     aliases: ["E233系3000番台"]
   },
   "jr-east-e257-2000-odoriko": {
@@ -5247,6 +5247,30 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         return {kind:"vehicle",iconSrc:numberPng.pngPath,planned:true};
       }
       return {kind:"unresolved",iconSrc:""};
+    }
+    // Ryomo 2611: exact official public number/calendar/direction selects a
+    // fleet REFERENCE image, not a physical carset. 211 local M trains
+    // and E231/E233 green-car through trains must not be conflated.
+    var ryomoFleet = !identityConfirmed && window.JREastRyomoNumberIndex202611 &&
+      typeof window.JREastRyomoNumberIndex202611.resolve === "function"
+      ? window.JREastRyomoNumberIndex202611.resolve(p) : null;
+    if (ryomoFleet) {
+      var ryomoGarage = window.VehicleGaragePngMap;
+      var ryomoPng = normalizeGalleryPngPath(ryomoFleet.illustrationPng);
+      if (ryomoFleet.referenceOnly !== true ||
+          ryomoFleet.authorizesPNG !== false ||
+          ryomoFleet.actualVehicleConfirmed !== false ||
+          ryomoFleet.model !== null || ryomoFleet.formationId !== null ||
+          !ryomoGarage || !ryomoGarage.matchModelPath ||
+          !ryomoPng ||
+          !ryomoGarage.matchModelPath(ryomoFleet.illustrationModel,
+            ryomoPng,"Ryomo"))
+        return {kind:"unresolved",iconSrc:""};
+      return artworkFailed === true ? {kind:"unresolved",iconSrc:""}
+        : {kind:"vehicle",iconSrc:ryomoPng,planned:true,
+           illustrative:true,representativeOnly:true,
+           actualVehicleConfirmed:false,
+           illustrationRole:"ryomo-2611-fleet-not-actual-carset"};
     }
     // Hachiko south: E231-3000 and 209-3500 are in common working.
     // Show ONE stable, explicitly illustrative train-front PNG so the map

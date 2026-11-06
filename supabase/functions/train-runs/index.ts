@@ -1177,6 +1177,54 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // number/calendar/direction/owner crosswalk remains the ONLY family
   // illustration authority (never infer 05/07/15000 or E231-800 from Y).
   // Old E353 5003M/5050M are 2-stop expresses, not local trains.
+  // Ryomo 2611: number-scoped fleet reference only. Exclude historical
+  // 9482M/9484M/9486M without deleting the original source templates.
+  if(lineId==="Ryomo"&&/^2026-11-/.test(serviceDate)){
+    const {data:scope,error:scopeError}=await db
+      .from("published_ryomo_2611_fleet_scope")
+      .select("source_template_id,calendar_urn,direction_urn,train_number,train_type_urn,fleet_role,candidate_models,illustration_model,source_url,reference_only,actual_vehicle_confirmed,formation_id")
+      .eq("edition","2611").eq("line_key","Ryomo")
+      .eq("calendar_urn",selectedCalendar);
+    const required=selectedCalendar==="odpt.Calendar:Weekday"?114:117;
+    if(scopeError||(scope||[]).length!==required)
+      throw new Error("RYOMO_2611_NUMBER_FLEET_SCOPE_UNAVAILABLE");
+    const scopeById=new Map((scope||[]).map((x:any)=>
+      [Number(x.source_template_id),x]));
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const found:any=scopeById.get(Number(run.source_template_id));
+      if(!found||run.train_number!==found.train_number||
+         run.rail_direction!==found.direction_urn||
+         run.service_id!==found.calendar_urn||
+         run.train_type!==found.train_type_urn||
+         run.network_key!=="odpt.Railway:JR-East.Ryomo"||
+         found.reference_only!==true||
+         found.actual_vehicle_confirmed!==false||
+         found.formation_id!==null){
+        result.splice(i,1);continue;
+      }
+      // Import labels were E231/E233 for every service, including 211M.
+      // A dated official number may authorize a reference picture, NEVER
+      // a daily physical formation or an EXACT vehicle status.
+      run.vehicle_type_candidates=found.candidate_models.join(" / ");
+      run.vehicle_type_label=null;
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.train_number_verification="official-2611-number-scope";
+      run.timetable_date_verified=false;
+      run.published_number_fleet_reference={
+        source:"jr-east-2611-ryomo-237",
+        lineId:"Ryomo",trainNumber:run.train_number,
+        calendar:found.calendar_urn,direction:found.direction_urn,
+        plannedCandidates:found.candidate_models,
+        illustrationModel:found.illustration_model,
+        numberVerified:true,actualVehicleConfirmed:false,
+        sourceUrl:found.source_url
+      };
+    }
+  }
   if(lineId==="ChuoSobuLocal"&&/^2026-11-/.test(serviceDate)){
     const {data:scope,error:scopeErr}=await db
       .from("published_chuo_sobu_2611_source_scope")
