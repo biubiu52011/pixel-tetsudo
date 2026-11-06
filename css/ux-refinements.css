@@ -98,37 +98,8 @@ body[data-page="realtime"] .rs-status-text {
   min-width: 0;
   overflow-wrap: anywhere;
 }
-/* ========== Restore the site's 3D pixel language ==========
-   Use stepped/extruded shadows rather than soft modern glow.  The structural
-   HTML, rail-line colors and original home CSS remain unchanged. */
-body[data-page="realtime"] .pixel-tabs,
-body[data-page="trains"] .pixel-tabs,
-body[data-page="history"] .pixel-tabs {
-  border: 2px solid var(--text);
-  border-radius: 5px;
-  box-shadow: 4px 4px 0 rgba(32,33,38,.4), inset 2px 2px 0 #ffffff;
-}
-body[data-page="realtime"] .pixel-card,
-body[data-page="trains"] .pixel-card,
-body[data-page="history"] .pixel-card {
-  border: 2px solid #46464b;
-  border-radius: 6px;
-  box-shadow: 5px 5px 0 rgba(32,33,38,.25), inset 2px 2px 0 #ffffff;
-}
-body[data-page="realtime"] .tab-btn,
-body[data-page="trains"] .tab-btn,
-body[data-page="history"] .tab-btn {
-  border-radius: 3px;
-}
-body[data-page="realtime"] .tab-btn.active,
-body[data-page="trains"] .tab-btn.active,
-body[data-page="history"] .tab-btn.active {
-  background: #dff5e7;
-  border: 2px solid #006b32;
-  box-shadow: inset 2px 2px 0 #ffffff, 2px 2px 0 #006b32;
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
+/* Shared card, navigation and back-button geometry is owned by ui-system.css.
+   This stylesheet retains only the realtime/train/history-specific exceptions. */
 body[data-page="realtime"] .rs-cards-container,
 body[data-page="trains"] .rs-cards-container {
   gap: 14px;
