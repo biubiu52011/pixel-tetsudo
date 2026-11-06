@@ -1507,6 +1507,25 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       (models.length > 6 ? (/^zh/.test(lang) ? " 等" : " …") : "") + altText;
   }
 
+  // Uetsu's fold list can exist without a visible direction SVG label
+  // after collision/overflow handling. A verified scheduled stop itinerary
+  // already knows its destination; don't call that "direction unknown".
+  // This supplies a DISPLAY caption only, not a vehicle or realtime claim.
+  function _uetsuFoldDestinationCaption(p, lineId, lang) {
+    if (lineId !== "Uetsu" || !p || p.estimated !== true ||
+        p.positionSource !== "supabase-train-run") return "";
+    var index = window.JREastUetsuNumberIndex202611;
+    if (!index || typeof index.verify !== "function") return "";
+    var proof = index.verify(Object.assign({}, p, {displayLineId:lineId}));
+    if (!proof || !proof.terminus) return "";
+    var station = _trainDestText(proof.terminus);
+    if (!station) return "";
+    lang = String(lang || "ja").toLowerCase();
+    return lang === "en" ? station + " bound" :
+      lang === "ko" ? station + "행" :
+      /^zh/.test(lang) ? "开往" + station : station + "行き";
+  }
+
   // The fold list only needs a model name next to service/destination.
   // Keep the full provenance in the row's tooltip/accessible label; never
   // render the separate candidates paragraph or imply a model when unknown.
@@ -2507,7 +2526,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var markerSpec=_trainMarkerSpec(p,id,lineId);
         var iconBox=document.createElement('div');
         iconBox.className='train-fold-vehicle-icon';
-        var captionBase=popupCaption||(lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
+        var captionBase=popupCaption||
+          _uetsuFoldDestinationCaption(p,lineId,lang)||
+          (lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
         // Keep the default passenger-facing service/destination summary.
