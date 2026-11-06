@@ -117,6 +117,18 @@ test('number-scoped E723 newly entered 2026 and 701 old regional references',()=
   }
  }
 });
+test('October observed 5429M to 5430M displays E723 artwork without claiming November consist',()=>{
+ for(const n of ['5429M','5430M']){
+  const x=p(n),ref=idx.resolve(x),art=root.TrainVehicle.selectMarkerArtwork(x,false);
+  assert.equal(ref.illustrationModel,'E723系5000番台');
+  assert.equal(ref.actualNovemberModelConfirmed,false);
+  assert.equal(ref.formationId,null);
+  assert.equal(art.kind,'vehicle');
+  assert.equal(art.iconSrc,idx.image['E723系5000番台']);
+  assert.equal(art.illustrative,true);
+  assert.equal(art.actualVehicleConfirmed,false);
+ }
+});
 test('mixed 719/701/E723 unverified train numbers remain honest candidate text, not 701 PNG',()=>{
  for(const n of ['423M','425M','426M','433M','437M','447M','449M','453M',
    '461M','1426M','1427M','1431M','1433M']){
