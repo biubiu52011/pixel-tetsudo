@@ -49,7 +49,7 @@ test('the existing canonical SQL run owner exposes references separately and gua
   'JRWEST_KOSEI_2611_VERIFIED_CLOCK_SOURCE_CONFLICT',
   'run.canonical_group_evidence!=="source_only"',
   'run.train_number!==p.source_train_number',
-  'stops.length!==18',
+  '![18,21].includes(stops.length)',
   'run.published_train_number=p.published_train_number',
   'run.timetable_date_verified=true',
   'run.plan_source="official-2611-kosei-source-clock-verified"',
@@ -62,4 +62,68 @@ test('the existing canonical SQL run owner exposes references separately and gua
    assert.ok(refs.includes(t),t);
  assert.ok(fleet.includes('authorizes_png boolean NOT NULL DEFAULT false'));
  assert.ok(!kosei.includes('run.vehicle_artwork_path='));
+});
+
+test('second Kosei expansion is 26 exact original-source proofs, 17 per calendar',()=>{
+ const extra=fs.readFileSync(
+  'supabase/migrations/20261107123000_jrwest_kosei_2611_expand_verified_source_clocks.sql','utf8');
+ const numbers=['1810','1812','1814','1816','1818','1820','1824',
+   '1826','1828','1830','1832','1834','1836'];
+ for(const n of numbers){
+  assert.ok(extra.includes("('"+n+"M','Weekday'"),n+' weekday');
+  assert.ok(extra.includes("('"+n+"MH','SaturdayHoliday'"),n+' holiday');
+ }
+ assert.ok(extra.includes("'931de61b84f4752e4e0d91fe37fb6c2e'"));
+ assert.ok(extra.includes("'6eeadbaa57e1dd0345f0e89f0f12dd5b'"));
+ assert.ok(extra.includes("'2e0c7ef96d3f3a56998912d966881f53'"));
+ assert.ok(extra.includes("'9f1d589121b4ccac67b129b5d860b5c6'"));
+ for(const t of ['m.actual_hash=e.expected_hash','m.n=e.expected_count::integer',
+  'stop_count IN(18,21)','<>34','<>17',
+  'published_jrwest_kosei_2611_clock_evidence'])
+   assert.ok(extra.includes(t),t);
+ const kosei=edge.slice(edge.indexOf('// Date-verified Kosei published'),
+   edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
+ assert.ok(kosei.includes('new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==17'));
+ assert.ok(kosei.includes('run.train_number_verification="official-2611-kosei-source-stop-clock"'));
+ assert.ok(!kosei.includes('run.vehicle_plan_confirmed=true'));
+});
+test('five Kyoto/Kobe new-rapid original segments certified; vehicles still unverified',()=>{
+ const extra=fs.readFileSync(
+ 'supabase/migrations/20261107124500_jrwest_kyoto_kobe_2611_five_verified_source_clocks.sql','utf8');
+ for(const [n,sha] of [
+  ['3447M','cb52493b61c4157550a216b7dddcff11'],
+  ['3465M','f46e2b48b71ac3d9ddb55cf758aae710'],
+  ['3473M','eb57680addd7e6b863112898faf103fc'],
+  ['3472M','2b6d07c81663d5eef6b584268adfe07a'],
+  ['3530M','63dc6bc136c50a59e312fbe049e86952']
+ ])assert.ok(extra.includes("'"+n+"'")&&extra.includes("'"+sha+"'"),n);
+ for(const t of [
+  'published_jrwest_kyoto_kobe_2611_clock_evidence',
+  'WITH (security_invoker=true)',
+  'x.n=f.official_stop_count AND x.md5=f.official_stop_md5',
+  "official_public_train_type='SpecialRapid'",
+  'actual_vehicle_confirmed=false AND authorizes_png=false',
+  '<>5'
+ ])assert.ok(extra.includes(t),t);
+ const block=edge.slice(edge.indexOf('// Five JR-West Kyoto/Kobe'),
+  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Five JR-West Kyoto/Kobe')));
+ for(const t of [
+  'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED',
+  'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT',
+  'run.published_train_number=p.official_train_number',
+  'run.timetable_date_verified=true',
+  'candidate.stopClocksVerified=true',
+  'p.actual_vehicle_confirmed!==false',
+  'p.authorizes_png!==false',
+ ])assert.ok(block.includes(t),t);
+ assert.ok(!block.includes('run.vehicle_plan_confirmed=true'));
+});
+test('frontend keeps historical matching IDs separate from display numbers',()=>{
+ const api=fs.readFileSync('data/api/odpt-unified.js','utf8');
+ const position=fs.readFileSync('js/train-position-estimator.js','utf8');
+ assert.ok(api.includes('"_sqlPublishedTrainNumber":run.timetable_date_verified===true'));
+ assert.ok(position.includes('displayTrainNumber:tt._positionSource==="supabase-train-run"'));
+ assert.ok(position.includes('official-2611-kosei-source-stop-clock'));
+ assert.ok(position.includes('official-2611-kyoto-kobe-source-stop-clock'));
+ assert.ok(position.includes('String(officialJrWestKyotoKobePlan.historicalNumberSuffix||"")'));
 });
