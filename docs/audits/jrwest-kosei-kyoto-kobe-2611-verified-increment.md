@@ -102,3 +102,58 @@ Supabase 已经应用上述两次迁移，查询确认 **湖西 34/34、京阪�
 
 正式番号只展示于通过 7 站原时刻校验的运行实例，不根据历史 ID 后缀自动认证；车辆仍为未确认混用候选且 `authorizes_png=false`。数据库检查通过：**湖西线 34/34、京都神户线 9/9、2 个日历冲突记录**。Edge 发布至 `train-runs v333`，继续沿用原单一接口、无新增前端请求或脚本。
 
+
+## 2026-11-07 第三批：湖西線北段／上行与京阪神普通车
+
+### 已部署结果
+
+- 既有 `published_jrwest_kosei_2611_verified_source_clocks` 原表新增 **18 条**来源指纹：累计 **52 条，平日 26、土休日 26**。其中 18 条为上行／北部短区间，原有 34 条下行记录保留。
+- 既有 `published_jrwest_kyoto_kobe_2611_source_fleet` 原表增加 **8 条**确认过的普通车来源：累计 **17 条，普通 8、新快速 9；平日 10、土休日 7**。其他历史来源和车型候选仍不升级为2026年11月确认时刻。
+- 数据库重算源站序及到发时间的 MD5 指纹；已检查 **湖西線 52/52**、**京阪神 17/17** `verified_source_match=true`。
+- Edge 已升级到 `train-runs v334`。仅在 **来源 ID、运行日、站序、站数、源指纹、官方番号/种别** 全部一致时标记本段时刻已核验。无重复运行表、无新前端请求、无新增付费服务。
+- 既有两条有日历冲突的 `3450M` 和 `3506M` 继续被隔离，不移动到其他日历。
+
+### 湖西線新增9个实际番号、18条日历来源
+
+| JR列车番号 | 本次核验旧来源区间 | 原来源站数 | 日历特点 | JR西日本官方页 |
+| --- | --- | ---: | --- | --- |
+| 1831M | 永原→京都 | 21 | 平日、土休日山科～京都时刻不同 | [平日](https://timetable.jr-odekake.net/train-timetable/200841?date=20261023) / [土休日](https://timetable.jr-odekake.net/train-timetable/200851?date=20261031) |
+| 1839M | 近江塩津→京都 | 22 | 每日 | [官方](https://timetable.jr-odekake.net/train-timetable/209821?date=20261030) |
+| 4838M | 永原→近江今津 | 4 | 每日，敦贺直通前段未导入 | [官方](https://timetable.jr-odekake.net/train-timetable/72471?date=20261023) |
+| 4840M | 近江塩津→近江今津 | 5 | 每日 | [官方](https://timetable.jr-odekake.net/train-timetable/76651?date=20261031) |
+| 4842M | 永原→近江今津 | 4 | 每日，敦贺直通前段未导入 | [官方](https://timetable.jr-odekake.net/train-timetable/72481?date=20261108) |
+| 4844M | 近江塩津→近江今津 | 5 | 每日 | [官方](https://timetable.jr-odekake.net/train-timetable/322481?date=20261026) |
+| 4846M | 永原→近江今津 | 4 | 每日，敦贺直通前段未导入 | [官方](https://timetable.jr-odekake.net/train-timetable/321871?date=20261108) |
+| 4850M | 近江塩津→近江今津 | 5 | 每日 | [官方](https://timetable.jr-odekake.net/train-timetable/91431?date=20261026) |
+| 4852M | 近江塩津→近江今津 | 5 | 每日 | [官方](https://timetable.jr-odekake.net/train-timetable/322491?date=20261026) |
+
+本批不包含 `4848M`：尚未核实2026年11月版的相同直通证据，不把2026年10月来源径直当成当期时刻。公开番号的 `M` 与库内假日标记 `MH` 区分；同番号的运行日来源不能擅自合并。
+
+### JR京都線／JR神戸線新增8条普通来源
+
+| 号码 | 运行日 | 已有原始来源区间 | 原来源站数 | JR西日本官方页 |
+| --- | --- | --- | ---: | --- |
+| 107C | 平日 | 京都→神戸 | 33 | [平日](https://timetable.jr-odekake.net/train-timetable/173541?date=20261026) |
+| 107C | 土休日 | 京都→神戸 | 33 | [土休日](https://timetable.jr-odekake.net/train-timetable/173551?date=20261031) |
+| 150C | 平日 | 元町→高槻 | 25 | [平日](https://timetable.jr-odekake.net/train-timetable/102541?date=20261117) |
+| 150C | 土休日 | 元町→高槻 | 25 | [土休日](https://timetable.jr-odekake.net/train-timetable/102551?date=20261024) |
+| 515C | 平日 | 京都→尼崎 | 19 | [官方](https://timetable.jr-odekake.net/train-timetable/209261?date=20261124) |
+| 221C | 土休日 | 京都→神戸 | 33 | [官方](https://timetable.jr-odekake.net/train-timetable/20011?date=20261024) |
+| 542C | 平日 | 元町→大阪（零点后） | 16 | [官方](https://timetable.jr-odekake.net/train-timetable/188971?date=20261104) |
+| 542C | 土休日 | 元町→大阪（零点后） | 16 | [官方](https://timetable.jr-odekake.net/train-timetable/188971?date=20261104) |
+
+注意：
+- `107C` 和 `221C` 官方行程继续越过神戸至西明石，但旧 SQL 只保存京都→神戸。不得为缺失站点伪造预计到发，也不能把这33站冒充全程。
+- `150C` 官方从西明石发车；旧源是元町以后至高槻的区间，与全程不同。
+- `542C` 的凌晨片段属于上一运营日的晚间列车，切勿按自然日零时盲目拆成新车；原有 `service_date` 截断逻辑不改变。
+- `C/T/M` 是用于确定发表车次的匹配信息，不意味着车型必定为207/321/223/225中的某一种，**本批没有任何逐车次 PNG 权限**。
+
+### 代码位置与验证
+
+- 迁移：`supabase/migrations/20261107140000_jrwest_kosei_2611_inbound_source_clocks.sql`
+- 迁移：`supabase/migrations/20261107141000_jrwest_kyoto_kobe_2611_local_source_clocks.sql`
+- 单一接口：`supabase/functions/train-runs/index.ts`
+- 约束测试：`tests/jrwest-kosei-2611-verified-clocks-through.test.cjs`
+- 官方站时因网页明确版权限制 **未复制成另一份时刻表**：仅比较数据库已有源数据，记录来源 URL、号、日历和不可伪造的源指纹。
+
+后续缺口：湖西線大多数普通上下行／新快速以及 `4848M` 需要现行独立证据；京阪神其它普通 `C`、快速 `T` 和更多新快速 `M`、姬路及更西侧区间需要分段验收。线路总体仍为 partial，不能宣称完整时刻表。
