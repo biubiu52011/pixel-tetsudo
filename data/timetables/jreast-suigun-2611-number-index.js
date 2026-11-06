@@ -75,7 +75,19 @@ if(ranges&&typeof ranges.match==="function"){
   match:function(number,line,p){
    if(line!=="Suigun"&&line!=="SuigunBranch")
      return previous(number,line,p);
-   var match=resolve(Object.assign({},p||{},{positionLineId:line,trainNumber:number}));
+   // A source-authenticated branch position may be drawn on the Suigun
+   // passenger diagram. Only normalize the DISPLAY scope for this exact
+   // branch projection; direct resolve() and all other cross-line lookups
+   // retain their strict source-vs-display isolation.
+   var parentBranch=!!(p && line==="SuigunBranch" &&
+     p.displayLineId==="Suigun" && p.fusionRole==="branch" &&
+     p.fusionLineId==="SuigunBranch" &&
+     p.sourceRailway==="odpt.Railway:JR-East.SuigunBranch" &&
+     p.positionLineId==="SuigunBranch" &&
+     p.estimated===true && p.positionSource==="supabase-train-run");
+   var scoped=Object.assign({},p||{},{positionLineId:line,trainNumber:number});
+   if(parentBranch)scoped.displayLineId=line;
+   var match=resolve(scoped);
    return match?{model:match.illustrationModel,pngPath:match.illustrationPng,
      lineId:line,trainNumber:match.trainNumber,source:match.provenance,
      planned:true,representative:true,referenceOnly:true,illustrative:true,
