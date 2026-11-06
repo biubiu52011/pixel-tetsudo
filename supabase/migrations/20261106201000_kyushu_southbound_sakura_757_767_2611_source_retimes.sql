@@ -45,6 +45,25 @@ BEGIN
      WHERE e.source_template_id=validated_id AND e.edition='2611'
        AND (e.train_number<>r.official_number OR e.official_source_url<>r.official_url))
    THEN RAISE EXCEPTION 'Conflicting published number %',r.service_name; END IF;
+  -- Legacy さくら763 stop 3 (seq=3): March source says Shin-Omuta
+  -- but the official Nov-2026 763A explicitly stops at Shin-Tamana
+  -- 19:32 arrival / 19:33 departure. Preserve exact old row guard.
+  IF r.service_name='さくら763' THEN
+    UPDATE manual_timetable_template_stops st
+       SET departure_station_urn='odpt.Station:JR-Kyushu.KyushuShinkansen.Shin-Tamana'
+     WHERE st.template_id=validated_id AND st.stop_sequence=3
+       AND st.departure_station_urn='odpt.Station:JR-Kyushu.KyushuShinkansen.Shin-Omuta'
+       AND st.departure_clock='19:33'
+       AND st.arrival_station_urn IS NULL AND st.arrival_clock IS NULL;
+    GET DIAGNOSTICS affected=ROW_COUNT;
+    IF affected<>1 THEN RAISE EXCEPTION 'Sakura763 old station is not Shin-Omuta 19:33'; END IF;
+    IF (SELECT count(*) FROM train_timetable_stops z
+      WHERE z.source_template_id=validated_id AND z.timetable_id=validated_tt
+      AND z.stop_sequence=3
+      AND z.departure_station_urn='odpt.Station:JR-Kyushu.KyushuShinkansen.Shin-Tamana'
+      AND z.departure_clock='19:33')<>1
+    THEN RAISE EXCEPTION 'Sakura763 station view has not reflected source correction'; END IF;
+  END IF;
   FOR i IN 1..array_length(r.stations,1) LOOP
    source_station:='odpt.Station:JR-Kyushu.KyushuShinkansen.'||r.stations[i];
    expected_clock:=r.old_clocks[i];official_clock:=r.published_clocks[i];
