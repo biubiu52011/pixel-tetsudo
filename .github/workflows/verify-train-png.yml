@@ -17,6 +17,7 @@ on:
       - 'tests/tadami-2611-number-map.test.cjs'
       - 'tests/tazawako-2611-conventional-map.test.cjs'
       - 'tests/tsugaru-2611-number-map.test.cjs'
+      - 'tests/uetsu-2611-number-fleet-map.test.cjs'
       - 'tests/suigun-2611-edge-calendar.test.cjs'
       - 'tests/shinonoi-2611-number-fleet.test.cjs'
       - 'tests/shinonoi-2611-edge-scope.test.cjs'
@@ -216,6 +217,10 @@ jobs:
         run: |
           node --check data/timetables/jreast-tsugaru-2611-number-index.js
           node --test tests/tsugaru-2611-number-map.test.cjs
+      - name: Verify Uetsu 2611 cross-regional train numbers, timetable dates and PNG family scope
+        run: |
+          node --check data/timetables/jreast-uetsu-2611-number-index.js
+          node --test tests/uetsu-2611-number-fleet-map.test.cjs
       - name: Verify Shinonoi 2611 383 Shinano, mixed locals and SQL scope
         run: node --test tests/shinonoi-2611-number-fleet.test.cjs tests/shinonoi-2611-edge-scope.test.cjs
       - name: Verify Senzan 2611 E721, SATONO PNG and date-filtered API positions
