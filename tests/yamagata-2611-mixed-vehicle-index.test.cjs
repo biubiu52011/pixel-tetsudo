@@ -117,6 +117,21 @@ test('number-scoped E723 newly entered 2026 and 701 old regional references',()=
   }
  }
 });
+test('source-verified 5430M reference survives absent or projection-specific geometry',()=>{
+ for(const change of [
+  {stationIndex:undefined,segmentToIndex:undefined},
+  {stationIndex:null,segmentToIndex:null},
+  {stationIndex:999,segmentToIndex:998},
+  {stationIndex:'Niwasaka',segmentToIndex:'Fukushima'}
+ ]){
+  const x=p('5430M',change);
+  assert.ok(idx.verify(x),'official number/stops/date still validate');
+  const art=root.TrainVehicle.selectMarkerArtwork(x,false);
+  assert.equal(art.kind,'vehicle');
+  assert.equal(art.iconSrc,idx.image['E723系5000番台']);
+  assert.equal(art.actualVehicleConfirmed,false);
+ }
+});
 test('October observed 5429M to 5430M displays E723 artwork without claiming November consist',()=>{
  for(const n of ['5429M','5430M']){
   const x=p(n),ref=idx.resolve(x),art=root.TrainVehicle.selectMarkerArtwork(x,false);
