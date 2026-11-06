@@ -1276,7 +1276,7 @@ window.getTransferHint = function(stationId, lang) {
 
 
 // ===== platform-data.js =====
-﻿/**
+/**
  * Pixel Tetsudo - 発着番線データ（Platform Data）
  *
  * 能力归属：新 Provider（数据查询层）——搜索结果的乗車段显示"何番線から発車"。
