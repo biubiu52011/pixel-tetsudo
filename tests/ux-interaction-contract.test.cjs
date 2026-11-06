@@ -148,7 +148,8 @@ test('site shell marks exactly the active section as current', () => {
   const window={};
   const doc={querySelector(){return null;},dispatchEvent(){},body:{getAttribute(){return null;}}};
   vm.runInNewContext(read('js/site-shell.js'), {
-    window, document:doc, location:{search:''}, CustomEvent:class {constructor(){}}, console
+    window, document:doc, location:{search:''}, URLSearchParams,
+    CustomEvent:class {constructor(){}}, console
   }, {timeout:4000});
   const mounts={header:{},navigation:{},footer:{}};
   const root={
