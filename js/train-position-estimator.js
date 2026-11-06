@@ -1171,6 +1171,41 @@
           if(!officialSotetsuJRPlan)continue;
         }
 
+        // Kyoto–Osaka–Kobe JR-West C/T/M source-only fleet.
+        // SanyoMain is shared with non-Kobe districts, so only SQL
+        // source-template IDs and exact stop order can admit a candidate.
+        var officialJrWestKyotoKobePlan=null;
+        if((lineId==="TokaidoKansai"||lineId==="SanyoMain")&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run"){
+            // Unrelated realtime sources remain governed by their own
+            // actual-vehicle evidence, not historical SQL C/T/M suffixes.
+          }else{
+            var jrWestKbIndex=window.TrainNumberPngRanges;
+            if(jrWestKbIndex&&
+               typeof jrWestKbIndex.verifyJrWestKyotoKobeSourceFleet==="function"){
+              officialJrWestKyotoKobePlan=
+                jrWestKbIndex.verifyJrWestKyotoKobeSourceFleet({
+                  trainNumber:run.trainNumber,positionLineId:lineId,
+                  displayLineId:lineId,
+                  sourceRailway:tt["odpt:railway"]||"",
+                  trainOperator:tt["odpt:operator"]||"JR-West",
+                  railDirection:tt["odpt:railDirection"]||"",
+                  trainType:tt["odpt:trainType"]||"",
+                  calendarType:run.calendar,serviceDate:serviceDate,
+                  positionSource:tt._positionSource,
+                  scheduledStopKeys:run.stops.map(function(st){
+                    return st.stationUrn||"";
+                  }),
+                  sqlPublishedNumberFleetReference:
+                    tt._sqlPublishedNumberFleetReference||null
+                });
+            }
+          }
+          // Unlike a true 2611 official timetable, source-only candidates
+          // may be absent: never suppress unrelated SanyoMain services.
+        }
+
         // 2611 弥彦線 internal Miyo: 9-day Kiku segmented timetable.
         // Oct-24 Shu*Kura must be excluded, and Momiji Kairi has no
         // matching source SQL stop clocks (do not invent a position).
@@ -1922,6 +1957,27 @@
             };
           }
 
+          // Source only: C=207/321 fleet; T/M rapid=223/225 fleet.
+          // The 500310-...-714T composite key is not a 2611 public
+          // number, and candidate PNGs cannot identify physical stock.
+          var _jrwestKyotoKobeScoped=!!officialJrWestKyotoKobePlan&&
+            vehResult.identityStatus!=="EXACT";
+          if(_jrwestKyotoKobeScoped){
+            _plannedCandidates=
+              officialJrWestKyotoKobePlan.candidateModels.slice();
+            _visibleCandidates=
+              officialJrWestKyotoKobePlan.candidateModels.slice();
+            _publishedVehiclePlan={
+              status:"UNCONFIRMED_FLEET",
+              models:officialJrWestKyotoKobePlan.candidateModels.slice(),
+              iconPath:"",representativeModel:"",
+              source:"sql-jrwest-kyoto-kobe-2611-source-family",
+              sourceUrl:tt._sqlPublishedNumberFleetReference&&
+                tt._sqlPublishedNumberFleetReference.fleetSourceUrl||"",
+              lineId:lineId,operator:"JR-West",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // SQL candidate set is NOT an E233 single-model authorization.
           // A genuine independently established EXACT formation wins.
           var _sotetsuJrScoped=!!officialSotetsuJRPlan&&
@@ -2083,8 +2139,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
-          var _vehicleType = (_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
+          var trainClass = (_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
+          var _vehicleType = (_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -2145,12 +2201,15 @@
               // published merely because its parent run was admitted.
               String(publicTrainNumber||"").toUpperCase() ===
                 String(run.trainNumber||"").toUpperCase(),
+            historicalSourcePublicNumberSuffix:
+              officialJrWestKyotoKobePlan
+                ?officialJrWestKyotoKobePlan.historicalNumberSuffix:"",
             trainNumberSource: publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
             publishedFleetReference:_ouTsugaruFleet||_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            sqlPublishedNumberFleetReference:(officialJrWestKyotoKobePlan||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -2204,7 +2263,8 @@
             vehicleIdentityReason: vehResult.identityReason || 'no-vehicle-evidence',
             vehicleCandidates: _visibleCandidates,
             plannedVehicleCandidates: _plannedCandidates.slice(),
-            plannedVehicleCandidateStatus: _sotetsuJrScoped
+            plannedVehicleCandidateStatus: _jrwestKyotoKobeScoped
+              ?"unresolved-mixed-fleet" : _sotetsuJrScoped
               ?"unresolved-mixed-fleet" : _komiiScoped
               ?(_komiiFleet?"official-service-family-reference":"unresolved-mixed-fleet")
               : _kesennumaFleet
@@ -2230,7 +2290,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
+            vehicleIconPath: (_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
