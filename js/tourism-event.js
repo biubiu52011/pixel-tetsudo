@@ -87,19 +87,20 @@
   // 快速信息条：開催時期 + 距離
   function buildQuickInfo(ctx) {
     var distItem = '<div class="qi-item" data-tourism-distance-row="ready"' + ((window.DataLoader && !window.DataLoader.isLoaded()) ? ' hidden' : '') + '><div class="qi-label">' + C.t('detail.distance') + '</div><div class="qi-value" data-tourism-distance>' + C.distValueHtml(ctx.dist) + '</div></div>';
-    var periodItem = '<div class="qi-item qi-period"><div class="qi-label">' + C.t('detail.period') + '</div><div class="qi-value">' + C.escapeHtml(ctx.spotBestTime) + '</div></div>';
+    var periodItem = ctx.spotBestTime ? '<div class="qi-item qi-period"><div class="qi-label">' + C.t('detail.period') + '</div><div class="qi-value">' + C.escapeHtml(ctx.spotBestTime) + '</div></div>' : '';
     return '<div class="detail-quick-info">' + periodItem + distItem + '</div>';
   }
 
   // 信息网格：開催時期(+開催時間) / 入場料 / 住所
   function buildInfoGrid(ctx) {
-    var periodRow = '<div class="info-row"><span class="info-label">' + C.t('detail.period') + '</span><span class="info-value">' + C.escapeHtml(ctx.spotBestTime) + '</span></div>';
+    var periodRow = ctx.spotBestTime ? '<div class="info-row"><span class="info-label">' + C.t('detail.period') + '</span><span class="info-value">' + C.escapeHtml(ctx.spotBestTime) + '</span></div>' : '';
     // 活动无固定营业时间：仅具体时间（軽トラ市・特設ブース）才显示"開催時間"行
     var extra = (ctx.spotHours && ctx.spotHours !== C.t('detail.unavailable'))
       ? '<div class="info-row"><span class="info-label">' + C.t('detail.info_hours') + '</span><span class="info-value">' + C.escapeHtml(ctx.spotHours) + '</span></div>'
       : '';
     var feeLabel = /[円前後〜～]/.test(ctx.spotFee) ? C.t('detail.info_fee_per_person') : C.t('detail.info_fee');
-    var feeRow = '<div class="info-row"><span class="info-label">' + feeLabel + '</span><span class="info-value">' + C.escapeHtml(ctx.spotFee) + '</span></div>';
+    var feeRow = ctx.spotFee ? '<div class="info-row"><span class="info-label">' + feeLabel + '</span><span class="info-value">' + C.escapeHtml(ctx.spotFee) + '</span></div>' : '';
+    if (!periodRow && !extra && !feeRow && !ctx.addressRow) return '';
     return '<div class="article-section"><h3 class="section-heading">' + C.t('detail.basic_info') + '</h3><div class="info-grid">'
       + periodRow + extra + feeRow + ctx.addressRow + '</div></div>';
   }

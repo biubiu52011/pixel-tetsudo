@@ -65,18 +65,20 @@ body[data-page="realtime"] .rs-modal-body {
 body[data-page="realtime"] .rs-status-section,
 body[data-page="realtime"] .rs-interval-section,
 body[data-page="realtime"] .rs-cause-section {
-  border-width: 3px;
-  border-radius: 4px;
-  padding: 12px 14px;
-  background: var(--bg);
-  box-shadow: 4px 4px 0 rgba(32,33,38,.3), inset 2px 2px 0 #ffffff;
+  border-width: 0 0 0 3px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 0;
+  padding: 10px 12px;
+  background: transparent;
+  box-shadow: none;
 }
 body[data-page="realtime"] .rs-updated-section {
-  padding: 10px 12px;
-  border: 3px solid var(--text);
-  border-radius: 4px;
-  background: var(--bg);
-  box-shadow: 4px 4px 0 rgba(32,33,38,.3), inset 2px 2px 0 #ffffff;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 body[data-page="realtime"] .rs-status-indicator {
   min-width: 0;

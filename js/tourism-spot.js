@@ -11,15 +11,16 @@
   // 快速信息条：距離 + ベストタイム
   function buildQuickInfo(ctx) {
     var distItem = '<div class="qi-item" data-tourism-distance-row="ready"' + ((window.DataLoader && !window.DataLoader.isLoaded()) ? ' hidden' : '') + '><div class="qi-label">' + C.t('detail.distance') + '</div><div class="qi-value" data-tourism-distance>' + C.distValueHtml(ctx.dist) + '</div></div>';
-    var bestItem = '<div class="qi-item"><div class="qi-label">' + C.t('detail.best_time') + '</div><div class="qi-value">' + C.escapeHtml(ctx.spotBestTime) + '</div></div>';
+    var bestItem = ctx.spotBestTime ? '<div class="qi-item"><div class="qi-label">' + C.t('detail.best_time') + '</div><div class="qi-value">' + C.escapeHtml(ctx.spotBestTime) + '</div></div>' : '';
     return '<div class="detail-quick-info">' + distItem + bestItem + '</div>';
   }
 
   // 信息网格：営業時間 / 入場料 / 住所
   function buildInfoGrid(ctx) {
-    var hoursRow = '<div class="info-row"><span class="info-label">' + C.t('detail.info_hours') + '</span><span class="info-value">' + C.escapeHtml(ctx.spotHours) + '</span></div>';
+    var hoursRow = ctx.spotHours ? '<div class="info-row"><span class="info-label">' + C.t('detail.info_hours') + '</span><span class="info-value">' + C.escapeHtml(ctx.spotHours) + '</span></div>' : '';
     var feeLabel = /[円前後〜～]/.test(ctx.spotFee) ? C.t('detail.info_fee_per_person') : C.t('detail.info_fee');
-    var feeRow = '<div class="info-row"><span class="info-label">' + feeLabel + '</span><span class="info-value">' + C.escapeHtml(ctx.spotFee) + '</span></div>';
+    var feeRow = ctx.spotFee ? '<div class="info-row"><span class="info-label">' + feeLabel + '</span><span class="info-value">' + C.escapeHtml(ctx.spotFee) + '</span></div>' : '';
+    if (!hoursRow && !feeRow && !ctx.addressRow) return '';
     return '<div class="article-section"><h3 class="section-heading">' + C.t('detail.basic_info') + '</h3><div class="info-grid">'
       + hoursRow + feeRow + ctx.addressRow + '</div></div>';
   }

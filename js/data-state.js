@@ -423,6 +423,7 @@
     opts = opts || {};
     var el = typeof containerOrId === "string" ? document.getElementById(containerOrId) : containerOrId;
     var selected = opts.selected || null;
+    var lastOptionsSignature = null;
     function available(value) {
       if (!el) return;
       el.classList.toggle("hidden", !value);
@@ -448,11 +449,20 @@
       if (!el) return;
       var availableOps = operatorsFromLines(lines);
       if (!availableOps.length) {
-        el.innerHTML = "";
+        if (el.innerHTML) el.innerHTML = "";
+        lastOptionsSignature = null;
         available(false);
         return;
       }
       available(true);
+      var optionsSignature = (t("filter.all") || "All") + "\u0001" +
+        availableOps.map(function(op) { return op + "\u0002" + operatorLabel(op); }).join("\u0001");
+      if (optionsSignature === lastOptionsSignature &&
+          el.querySelectorAll(".rs-filter-btn").length === availableOps.length + 1) {
+        select(selected, false);
+        return;
+      }
+      lastOptionsSignature = optionsSignature;
       var html = '<button type="button" class="rs-filter-btn' + (selected === null ? ' active' : '')
         + '" data-operator="" aria-pressed="' + (selected === null ? 'true' : 'false') + '">'
         + (t("filter.all") || "All") + "</button>";
@@ -834,23 +844,8 @@
       }
     }
 
-    // 读取用于徽章展示的运行链元数据（临时、仅运行时）。
-    var _chainMeta = line._chainMeta || null;
-    var _chainBadgeHtml = "";
-    if (_chainMeta) {
-      if (_chainMeta.isThroughService) {
-        _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-through\" title=\"Through Service\"></span>";
-      } else if (_chainMeta.isAlias) {
-        _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-alias\" title=\"Alias\"></span>";
-      } else if (_chainMeta.isBranch) {
-        _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-branch\" title=\"Branch\"></span>";
-      } else if (_chainMeta.identity === "SEPARATE" && _chainMeta.reason === "CODE_COLLISION_DIFF_OP") {
-        _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-collision\" title=\"Code collision\"></span>";
-      } else if (_chainMeta.identity === "UNKNOWN") {
-        _chainBadgeHtml = "<span class=\"rs-chain-badge rs-chain-badge-unknown\" title=\"Unknown relation\"></span>";
-      }
-    }
-    return '<div class="rs-line-card" role="button" tabindex="0" aria-label="' + escapeHtml(displayName + ' · ' + cardActionLabel(mode, status)) + '" data-line="' + escapeHtml(lineId) + '" data-line-identity="' + escapeHtml(getLineIdentity(line, lineId)) + '" data-line-color="' + escapeHtml(lineColor) + '">' + _chainBadgeHtml
+    // Running-chain identity is internal; no passenger-facing relation badge.
+    return '<div class="rs-line-card" role="button" tabindex="0" aria-label="' + escapeHtml(displayName + ' · ' + cardActionLabel(mode, status)) + '" data-line="' + escapeHtml(lineId) + '" data-line-identity="' + escapeHtml(getLineIdentity(line, lineId)) + '" data-line-color="' + escapeHtml(lineColor) + '">'
       + '<div class="rs-line-header">'
       + iconHtml
       + '<div class="rs-line-info">'

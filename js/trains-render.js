@@ -1578,12 +1578,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
-    var number = String((p && p.trainNumber) || "").trim();
-    if (number && !/^est_/i.test(number) &&
-        !/^(?:odpt[.:]|supabase:|manual-template:|planned-trip:)/i.test(number)) {
-      var prefix = /^zh/.test(lang) ? "列车番号" : (lang === "en" ? "Train No." : "列車番号");
-      tip.push(prefix + " " + number);
-    }
     // A Shinkansen service name / service number is not the operating train number.
     if ((lineId === "Gono" || lineId === "Hakushin") && p &&
         p.officialNumberVerified === true &&
@@ -2585,22 +2579,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
         // Keep the default passenger-facing service/destination summary.
-        // Officially checked 2611 SQL regional plans ALSO show their real
-        // train number, not a fabricated operation ID, in a subdued label.
-        // Never add a number for unaudited historic SQL or live ODPT cars.
+        // Numbers are retained as internal matching keys, not visible UI metadata.
         caption.textContent=captionBase;
-        var foldOfficialNumber=String((p&&p.trainNumber)||"").trim().toUpperCase();
-        if(p&&p.officialNumberVerified===true&&p.estimated===true&&
-           p.positionSource==="supabase-train-run"&&
-           /^\d{2,5}[A-Z]{1,2}$/.test(foldOfficialNumber)){
-          var numberNote=document.createElement('small');
-          numberNote.className='train-fold-official-number';
-          numberNote.textContent=" · "+
-            (lang==='en'?'Train No.':lang==='ko'?'열차번호':
-              /^zh/.test(lang)?'列车番号':'列車番号')+
-            " "+foldOfficialNumber;
-          caption.appendChild(numberNote);
-        }
         // Gono resort variants have published dated fleet evidence, but
         // their candidate PNGs are not gallery-approved. Show the correct
         // planned livery as TEXT beside the neutral marker instead of the

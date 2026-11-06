@@ -226,11 +226,11 @@
     var spotType = getSpotType(spot);
     var typeBadge = '<span class="type-badge type-badge--' + spotType + '">' + escapeHtml(t('detail.type_' + spotType)) + '</span>';
     var stationBadge = '<span data-tourism-station>' + stationBadgeHtml(dist) + '</span>';
-    var spotHours = getI18nField(spot, 'hours') || t('detail.i18n_missing');
+    var spotHours = getI18nField(spot, 'hours') || '';
     spotHours = translateCommonTerms(spotHours);
-    var spotFee = getI18nField(spot, 'fee') || t('detail.i18n_missing');
+    var spotFee = getI18nField(spot, 'fee') || '';
     spotFee = translateCommonTerms(spotFee);
-    var spotBestTime = getI18nField(spot, 'bestTime') || t('detail.fallback_best_time');
+    var spotBestTime = getI18nField(spot, 'bestTime') || '';
     spotBestTime = translateCommonTerms(spotBestTime);
     var spotAddress = spot.address || '';
     var addressRow = spotAddress
@@ -276,6 +276,7 @@
 
   // 贴士/推荐列表（标题与附加类由类型 JS 传入）
   function buildTipsHtml(spot, titleKey, extraClass) {
+    if (!Array.isArray(spot.tips) || !spot.tips.length) return '';
     var html = '<div class="article-section">'
       + '<h3 class="section-heading">' + t(titleKey) + '</h3>'
       + '<ul class="tips-list' + (extraClass ? ' ' + extraClass : '') + '">';
@@ -285,8 +286,6 @@
           || spot.tips[ti] || t('detail.i18n_missing');
         html += '<li>' + escapeHtml(tipText) + '</li>';
       }
-    } else {
-      html += '<li>' + escapeHtml(t('detail.fallback_best_time')) + '</li>';
     }
     return html + '</ul></div>';
   }

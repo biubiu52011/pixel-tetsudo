@@ -108,7 +108,8 @@
     // 状态区块。
     var statusSection = modal.querySelector(".rs-status-section");
     statusSection.className = "rs-status-section rs-status-" + status;
-    // 状态行 = 官方 status 词（分级翻译）+ 官方 cause（原因；非 ja 界面经 DelayTranslator 翻译）
+    // The detailed report owns its explanation; avoid repeating the same cause.
+    if (annotation && String(delayInfo.detail || cause || "").indexOf(annotation) >= 0) annotation = "";
     var _causeInline = "";
     if (annotation && status !== "normal") {
       var _cTxt = annotation;
@@ -158,6 +159,7 @@
       }
     }
     intervalSection.querySelector(".rs-interval-stations").innerHTML = intervalHtml;
+    intervalSection.classList.toggle("hidden", ["normal", "loading", "no_data", "no_odpt"].indexOf(status) >= 0);
     // 单端/文本兜底区间（如"京急線内"）在非 ja 界面使用离线翻译。
     if (_singleEndInterval && (window.currentLang || "ja") !== "ja") {
       var _intEl = intervalSection.querySelector(".rs-interval-stations .rs-station-text");
@@ -195,6 +197,7 @@
     } else {
       causeHtml = '<span class="rs-text-muted">' + t("status.none") + '</span>';
     }
+    causeSection.classList.toggle("hidden", !(_cleanSrc && ["normal", "loading", "no_data", "no_odpt"].indexOf(status) < 0));
     var _bodyTextEl = causeSection.querySelector(".rs-cause-text");
     if (_bodyTextEl) {
       _bodyTextEl.innerHTML = causeHtml;
@@ -240,6 +243,7 @@
       updateTime = t("status.unknown");
     }
     updatedSection.querySelector(".rs-updated-time").textContent = updateTime;
+    updatedSection.classList.toggle("hidden", !sourceTime || isNaN(Date.parse(sourceTime)));
     // 显示弹窗。
     modal.classList.add("active");
     document.body.classList.add("modal-open");
@@ -535,7 +539,7 @@
           // 已挂载的运营商/线路外壳，只就地更新受影响的卡片。
           reconcileRealtimeList(container, _latestLines);
           renderFilterBar(_latestLines);
-          if (_currentModalLine) openModal(_currentModalLine, _latestLines, _currentModalIdentity, _currentModalTitle);
+          if (_currentModalLine) openModal(_currentModalLine, _latestLines, _currentModalIdentity);
         }
       });
     }
@@ -594,7 +598,7 @@
           setFilter(_selectedOperator);
         }
         if (_currentModalLine && _latestLines) {
-          openModal(_currentModalLine, _latestLines, _currentModalIdentity, _currentModalTitle);
+          openModal(_currentModalLine, _latestLines, _currentModalIdentity);
         }
       });
     }

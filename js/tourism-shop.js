@@ -35,9 +35,9 @@
       addr:  '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>'
     };
     var rows = '';
-    rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.fee + '</span><span class="dp-info-label">' + C.t('detail.info_fee') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotFee) + '</span></div>';
-    rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.hours + '</span><span class="dp-info-label">' + C.t('detail.info_hours') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotHours) + '</span></div>';
-    rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.hours + '</span><span class="dp-info-label">' + C.t('detail.best_time') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotBestTime) + '</span></div>';
+    if (ctx.spotFee) rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.fee + '</span><span class="dp-info-label">' + C.t('detail.info_fee') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotFee) + '</span></div>';
+    if (ctx.spotHours) rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.hours + '</span><span class="dp-info-label">' + C.t('detail.info_hours') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotHours) + '</span></div>';
+    if (ctx.spotBestTime) rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.hours + '</span><span class="dp-info-label">' + C.t('detail.best_time') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotBestTime) + '</span></div>';
     {
       rows += '<div class="dp-info-row" data-tourism-distance-row' + ((ctx.dist.distMain || ctx.dist.distText) ? '' : ' hidden') + '><span class="dp-ico">' + ICON.dist + '</span><span class="dp-info-label">' + C.t('detail.distance') + '</span><span class="dp-info-val" data-tourism-distance>' + C.distValueHtml(ctx.dist) + '</span></div>';
     }
@@ -49,7 +49,7 @@
       + (ctx.spot.businessStatus === 'reported_closed'
         ? '<span class="dp-shop-status">' + C.escapeHtml(C.t('detail.reported_closed')) + '</span>' : '')
       + '</div>'
-      + '<div class="dp-info-merged">' + rows + '</div>'
+      + (rows ? '<div class="dp-info-merged">' + rows + '</div>' : '')
       + (ctx.tagsHtml ? '<div class="dp-chips">' + ctx.tagsHtml + '</div>' : '')
       + '</div>';
   }

@@ -49,11 +49,29 @@
         }
     }
 
+    function updateSwitcherAccessibility(lang) {
+        var names = {
+            ja: ["言語を変更", "言語を選択"],
+            zh: ["切换语言", "选择语言"],
+            ko: ["언어 변경", "언어 선택"],
+            en: ["Switch language", "Select language"]
+        };
+        var labels = names[lang] || names.ja;
+        var toggle = document.getElementById("langToggleBtn");
+        var list = document.getElementById("langSwitcher");
+        if (toggle) {
+            toggle.setAttribute("aria-label", labels[0]);
+            toggle.setAttribute("title", labels[0]);
+        }
+        if (list) list.setAttribute("aria-label", labels[1]);
+    }
+
     function applyLang(lang) {
         if (typeof window.t !== "function") return false;
         window.currentLang = lang;
         document.documentElement.lang = lang;
         updateSwitcherUI(lang);
+        updateSwitcherAccessibility(lang);
         updateTranslations();
         updateOperatorNames();
         _updatePageTitle();
@@ -165,6 +183,7 @@
         var currentLang = SUPPORTED.indexOf(savedLang) !== -1 ? savedLang : DEFAULT_LANG;
         window.currentLang = currentLang;
         updateSwitcherUI(currentLang);
+        updateSwitcherAccessibility(currentLang);
         updateTranslations();
         updateOperatorNames();
         _updatePageTitle();

@@ -10,11 +10,12 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const blobVersion = text => crypto.createHash('sha1')
   .update('blob ' + Buffer.byteLength(text) + '\0' + text).digest('hex').slice(0,12);
 
-test('realtime status and modal blocks retain a raised 3D pixel structure', () => {
+test('realtime modal keeps a raised pixel shell without nested raised info boxes', () => {
   const css = read('css/ux-refinements.css');
   assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 8px 8px 0 #26262b/);
-  assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 3px;/);
-  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 3px solid var\(--text\)/);
+  assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 0 0 0 3px;/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 0;/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?box-shadow: none;/);
   assert.match(css, /\.rs-modal-close:active \{[\s\S]*?translate\(3px,3px\)/);
 });
 

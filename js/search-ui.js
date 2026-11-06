@@ -310,11 +310,11 @@
       this.lastRouteResult = null;
       var timeOptions={mode:this.timeMode ? this.timeMode.value : 'now',time:this.timeInput ? this.timeInput.value : ''};
       if(timeOptions.mode!=='now' && !/^\d{2}:\d{2}$/.test(timeOptions.time)) {
-        this.resultsDiv.textContent=t('search.invalid_time'); return;
+        if (this.resultsDiv) this.resultsDiv.innerHTML='<div class="search-error" role="alert">'+window.escapeHtml(t('search.invalid_time'))+'</div>'; return;
       }
       if (!from || !to) {
         if (this.resultsDiv) {
-          this.resultsDiv.innerHTML = '<div class="search-error">' + t('validate.input_required') + '</div>';
+          this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('validate.input_required')) + '</div>';
         }
         return;
       }
@@ -339,7 +339,7 @@
               window.SearchHistory.saveToHistory(from, to, result);
             }
           } else {
-            this.resultsDiv.innerHTML = '<div class="search-error">' + t('search.no_results') + '</div>';
+            this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('search.no_results')) + '</div>';
           }
         }
       }
