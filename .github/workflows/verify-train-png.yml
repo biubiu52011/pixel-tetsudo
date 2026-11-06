@@ -48,6 +48,9 @@ on:
       - 'tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs'
       - 'tests/jrwest-kyoto-kobe-2611-source-fleet.test.cjs'
       - 'tests/kosei-2611-source-fleet.test.cjs'
+      - 'tests/jrwest-kosei-2611-verified-clocks-through.test.cjs'
+      - 'supabase/migrations/20261107110000_jrwest_kosei_verified_clock_and_through_number_evidence.sql'
+      - 'supabase/functions/train-runs/index.ts'
       - 'tests/kabe-2611-redwing-number-scope.test.cjs'
       - 'supabase/migrations/20261107055500_jrwest_kabe_2611_source_quarantine.sql'
       - 'supabase/migrations/20261107052500_jrwest_kosei_2611_source_fleet_candidates.sql'
@@ -210,6 +213,8 @@ jobs:
         run: node --test tests/kabe-2611-redwing-number-scope.test.cjs
       - name: Verify Kosei 2611 179 source-only M/MH mixed fleet and special exclusions
         run: node --test tests/kosei-2611-source-fleet.test.cjs
+      - name: Verify Kosei official 18-stop clocks and Kyoto/Kobe through-number references
+        run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify JR-West Kyoto/Kobe 2611 source-only C/T/M mixed fleet mapping
         run: node --test tests/jrwest-kyoto-kobe-2611-source-fleet.test.cjs
       - name: Verify Sotetsu-JR 2611 dual E233/12000 source-only candidate mapping
