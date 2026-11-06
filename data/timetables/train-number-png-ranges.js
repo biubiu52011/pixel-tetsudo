@@ -2566,6 +2566,96 @@
       authorizesPNG:false,numberDateVerified:false,formationId:null
     });
   }
+  // JR-West Kosei 179 M/MH source-only services. The weekend H is
+  // calendar metadata, NEVER an actual train operating code or model.
+  // 9017DH is a seasonal special D-train source misfiled as Local; do
+  // not convert it to an ordinary electric car or a current 2611 run.
+  function verifyKoseiSourceFleet(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||
+       proof.source!=="sql-jrwest-kosei-2611-source-family"||
+       proof.lineId!=="Kosei"||
+       String(p.positionLineId||p.lineId||"")!=="Kosei"||
+       (p.displayLineId&&p.displayLineId!=="Kosei")||
+       p.sourceRailway!=="odpt.Railway:JR-West.Kosei"||
+       p.positionSource!=="supabase-train-run"||
+       proof.referenceOnly!==true||proof.numberDateVerified!==false||
+       proof.actualVehicleConfirmed!==false||proof.authorizesPNG!==false||
+       proof.timetableValidity!=="undated_not_current_verified"||
+       proof.routeSourceUrl!=="https://www.train-guide.westjr.co.jp/kosei.html")
+      return null;
+    var date=String(p.serviceDate||"").slice(0,10),
+      n=String(p.trainNumber||"").trim().toUpperCase(),
+      m=/^([0-9]{3,4}M)(H?)$/.exec(n),
+      dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop();
+    if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !["Inbound","Outbound"].includes(dir)||
+       !["Local","Rapid","SpecialRapid"].includes(type)||
+       proof.trainNumber!==n||proof.sourceTrainNumber!==n||
+       proof.historicalNumber!==m[1]||proof.serviceDate!==date||
+       proof.direction!=="odpt.RailDirection:"+dir||
+       proof.trainType!=="odpt.TrainType:JR-West."+type||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0)return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-West"&&operator!=="odpt.Operator:JR-West")
+      return null;
+    var dow=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=dow===0||dow===6||date==="2026-11-03"||
+        date==="2026-11-23";
+    if(m[2]!== (holiday?"H":"")||
+       sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+
+          (holiday?"SaturdayHoliday":"Weekday"))return null;
+    var corridor=["Kyoto","Yamashina","Ootsu-Kyou","Karasaki",
+      "Hieizan-Sakamoto","Ogoto-Onsen","Katata","Ono-Kansai",
+      "Wani","Hourai","Shiga","Hira","Oumi-Maiko","Kitakomatsu",
+      "Oumi-Takashima","Adogawa","Shin'asahi","Oumiimazu",
+      "Oumi-Naka-Shou","Makino","Nagahara-Kansai","Omi-Shiotsu"],
+      stops=Array.isArray(p.scheduledStopKeys)
+        ?p.scheduledStopKeys.map(function(k){
+          return String(k||"").split(".").pop();}):[],
+      sourceStops=proof.sourceStopKeys,
+      positions=stops.map(function(k){return corridor.indexOf(k);});
+    if(!Array.isArray(sourceStops)||sourceStops.length<2||
+       sourceStops.length!==stops.length||
+       stops.some(function(k,i){return sourceStops[i]!==k;})||
+       positions.some(function(i){return i<0;})||
+       positions.some(function(i,j){
+         return j>0&&(dir==="Outbound"?
+           i<=positions[j-1]:i>=positions[j-1]);
+       }))return null;
+    var northShuttle=type==="Local"&&
+      ["Omi-Shiotsu","Nagahara-Kansai"].includes(stops[0])&&
+      stops[stops.length-1]==="Oumiimazu",
+      group=northShuttle?"north_shuttle":
+        type==="Local"?"other_local":
+        type==="Rapid"?"rapid":"special_rapid",
+      models=group==="north_shuttle"?["223系","225系","521系"]:
+        group==="other_local"?["221系","223系","225系"]:
+        ["223系","225系"],
+      url=group==="north_shuttle"
+        ?"https://train.mi-ktt.ne.jp/rosen/koseisen/"
+        :"https://www.westjr.co.jp/fan/paper/local/";
+    if(proof.corridorSegment!==group||
+       proof.fleetSourceUrl!==url||
+       !Array.isArray(proof.candidateModels)||
+       proof.candidateModels.join("|")!==models.join("|")||
+       !Array.isArray(proof.candidateAssets)||
+       proof.candidateAssets.length!==0)return null;
+    return Object.freeze({
+      lineId:"Kosei",sourceTrainNumber:n,
+      historicalNumber:m[1],calendar:proof.calendar,
+      corridorSegment:group,sourceTemplateId:Number(proof.sourceTemplateId),
+      candidateModels:Object.freeze(models),
+      candidateAssets:Object.freeze([]),
+      referenceOnly:true,numberDateVerified:false,
+      actualVehicleConfirmed:false,authorizesPNG:false,
+      timetableValidity:"undated_not_current_verified"
+    });
+  }
+
   // JR-West Kyoto/Kobe historical source C/T/M suffix: 207/321
   // locals or 223/225 rapid service families. A compound internal
   // number like 500310-1385400-714T is NOT a published 2611 number or
@@ -4237,6 +4327,7 @@
     verifyKururiService:verifyKururiService,
     verifyMitoService:verifyMitoService,
     verifyMiyoService:verifyMiyoService,
+    verifyKoseiSourceFleet:verifyKoseiSourceFleet,
     verifyJrWestKyotoKobeSourceFleet:verifyJrWestKyotoKobeSourceFleet,
     verifySotetsuJRService:verifySotetsuJRService,
     verifyOfunatoService:verifyOfunatoService,
