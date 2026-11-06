@@ -86,6 +86,7 @@ INSERT INTO public.manual_timetable_templates(
  id,line_key,calendar_urn,train_number,railway_urn,direction_urn,
  train_type_urn,destination_urns,vehicle_type_label,source_path,
  source_occurrence,source_revision_date,operating_dates)
+OVERRIDING SYSTEM VALUE
 SELECT source_id,'SuigunBranch','odpt.Calendar:Weekday',train_number,
  'odpt.Railway:JR-East.SuigunBranch','odpt.RailDirection:'||direction,
  'odpt.TrainType:JR-East.Local',
