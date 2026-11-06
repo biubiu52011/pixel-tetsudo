@@ -66,6 +66,8 @@
   function openModal(lineId, linesObj, expectedIdentity, displayTitle) {
     var modal = document.getElementById("lineDetailModal");
     if (!modal || !linesObj || !linesObj[lineId]) return;
+    var _opening = !modal.classList.contains("active");
+    if (_opening) _modalPreviousFocus = document.activeElement;
     var line = linesObj[lineId];
     var actualIdentity = (window.DataState && window.DataState.getLineIdentity) ? window.DataState.getLineIdentity(line, lineId) : "";
     if (expectedIdentity && actualIdentity && expectedIdentity !== actualIdentity) return;
@@ -115,17 +117,22 @@
       }
       _causeInline = " <span class=\"rs-cause-inline\">\uff08" + escapeHtml(_cTxt) + "\uff09</span>";
     }
-    statusSection.innerHTML = "<span class=\"rs-status-indicator\"><span class=\"rs-status-dot\"></span>" + statusText + "</span>" + _causeInline;
-    // 通过 DOM API 应用状态圆点颜色（符合 CSP）。
-    var dot = statusSection.querySelector(".rs-status-dot");
-    if (dot) dot.style.background = "var(--" + (s.color || ({ normal: "green", info: "yellow", notice: "yellow", delayed: "orange", suspended: "red", no_data: "gray", no_odpt: "gray", loading: "gray" }[status] || "gray")) + ")";
+    var _statusGlyph = {normal:"○",delayed:"△",suspended:"×",info:"!",notice:"!",no_data:"?",no_odpt:"—",loading:"…"}[status] || "?";
+    statusSection.innerHTML = '<span class="rs-status-indicator"><span class="rs-status-symbol" aria-hidden="true">' +
+      _statusGlyph + '</span><span class="rs-status-text">' + escapeHtml(statusText) + '</span></span>' + _causeInline;
     // 区间区块。
     var intervalSection = modal.querySelector(".rs-interval-section");
-    intervalSection.querySelector(".rs-info-label").textContent = t("status.interval");
+    var _lang = window.currentLang || "ja";
+    var _affectedLabel = {ja:"影響区間",zh:"影响区间",ko:"영향 구간",en:"Affected section"};
+    var _unknownScope = {ja:"区間情報なし",zh:"暂无区间信息",ko:"구간 정보 없음",en:"Section not specified"};
+    intervalSection.querySelector(".rs-info-label").textContent =
+      status === "normal" ? t("status.interval") : (_affectedLabel[_lang] || _affectedLabel.ja);
     var intervalHtml;
     var _singleEndInterval = false;
-    if (!scopeSummary || status === "normal" || status === "no_data") {
-      intervalHtml = '<span class="rs-station-text">' + t("status.all_lines") + '</span>';
+    if (status === "normal") {
+      intervalHtml = '<span class="rs-station-text">' + escapeHtml(t("status.all_lines")) + '</span>';
+    } else if (!scopeSummary) {
+      intervalHtml = '<span class="rs-station-text">' + escapeHtml(_unknownScope[_lang] || _unknownScope.ja) + '</span>';
     } else {
       var intervalRanges = scopeSummary.split("、");
       var parsedRanges = intervalRanges.map(function (item) { return item.split("\u2192"); });
@@ -236,6 +243,12 @@
     // 显示弹窗。
     modal.classList.add("active");
     document.body.classList.add("modal-open");
+    var _closeButton = modal.querySelector(".rs-modal-close");
+    var _closeLabels = {ja:"閉じる",zh:"关闭",ko:"닫기",en:"Close"};
+    if (_closeButton) {
+      _closeButton.setAttribute("aria-label", _closeLabels[window.currentLang || "ja"] || _closeLabels.ja);
+      if (_opening) _closeButton.focus();
+    }
   }
 
   function closeModal() {
@@ -246,6 +259,10 @@
     modal.classList.remove("active");
     document.body.classList.remove("modal-open");
     clearSelectedCards();
+    if (_modalPreviousFocus && typeof _modalPreviousFocus.focus === "function" && _modalPreviousFocus.isConnected) {
+      _modalPreviousFocus.focus();
+    }
+    _modalPreviousFocus = null;
   }
 
   let _latestLines = null;
@@ -254,6 +271,7 @@
   var _filterBar = null;
 
   let _currentModalLine = null;
+  var _modalPreviousFocus = null;
   let _currentModalTitle = "";
   let _currentModalIdentity = "";
   function escapeHtml(s) {
@@ -523,11 +541,33 @@
         if (e.target === modal) closeModal();
       });
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
+        if (!modal.classList.contains('active')) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeModal();
+        } else if (e.key === 'Tab') {
+          // The modal's only interactive control is Close; keep focus in it.
+          var focusable = Array.from(modal.querySelectorAll('button:not([disabled]),a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'))
+            .filter(function(el) { return el.getClientRects().length > 0; });
+          if (!focusable.length) return;
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (e.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+            e.preventDefault(); last.focus();
+          } else if (!e.shiftKey && (document.activeElement === last || !modal.contains(document.activeElement))) {
+            e.preventDefault(); first.focus();
+          }
+        }
       });
     }
 
     // 卡片点击处理器。
+    container.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var card = e.target.closest('.rs-line-card');
+      if (!card || e.target !== card) return;
+      e.preventDefault();
+      card.click();
+    });
     container.addEventListener('click', function(e) {
       var card = e.target.closest('.rs-line-card');
       if (card && _latestLines) {
