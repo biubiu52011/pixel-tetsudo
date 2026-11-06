@@ -149,8 +149,44 @@ function resolve(p){
        (proof.direction==="Outbound"?"d":"u")+
        (proof.calendar==="Weekday"?"1":"2")+".html"};
 }
+// The SQL publisher may certify a single scheduled E653 MODEL (EXACT)
+// without supplying a gallery PNG. That EXACT is a timetable model, not
+// the day's physical consist. The generic resolver intentionally rejects
+// EXACT identities; this narrow fallback only supplies an Inaho REFERENCE
+// after independently checking the full original number/stops/calendar.
+// Never widen generic EXACT identities or assign a physical livery/carset.
+function resolvePlannedExactInaho(p){
+ if(!p||p.positionLineId!=="Uetsu"||
+    p.displayLineId&&p.displayLineId!=="Uetsu"||
+    p.positionSource!=="supabase-train-run"||p.estimated!==true||
+    p.vehicleIdentityStatus!=="EXACT"||
+    p.vehicleResolvedFromRealtime===true||
+    p.actualVehicleConfirmed===true||p.vehicleFormationId||
+    (Array.isArray(p.vehicleFormationCandidates)&&
+     p.vehicleFormationCandidates.length>0)||
+    p.realtimeVehicleType||p.realtimeDerivedVehicleType)return null;
+ var plan=p.vehiclePlan;
+ if(!plan||plan.status!=="PLANNED_MODEL"||plan.confirmed!==true||
+    plan.lineId!=="Uetsu"||plan.source!=="database-verified-published-plan"||
+    !Array.isArray(plan.models)||plan.models.length!==1||
+    ["E653系","E653系1000番台","E653系（1000番台）",
+      "E653系（いなほ）"].indexOf(String(plan.models[0]))<0)return null;
+ var sources=p.vehicleResolution&&p.vehicleResolution.sources;
+ if(Array.isArray(sources)&&sources.some(function(k){
+    return /^(?:official-realtime-car-number|roster-physical-id|formation-verified)$/.test(String(k));
+ }))return null;
+ var proof=verify(p);
+ if(!proof||proof.trainType!=="LimitedExpress"||
+    !verifiedInaho.has(proof.trainNumber))return null;
+ var reference=resolve(Object.assign({},p,{
+   vehicleIdentityStatus:"UNKNOWN",
+   vehicleResolution:null
+ }));
+ return reference&&reference.family==="inaho"?reference:null;
+}
 root.JREastUetsuNumberIndex202611=Object.freeze({
  roster:roster,stations:openStations,verify:verify,resolve:resolve,
+ resolvePlannedExactInaho:resolvePlannedExactInaho,
  kairiDays:Array.from(kairiDays),image:image});
 var ranges=root.TrainNumberPngRanges;
 if(ranges&&typeof ranges.match==="function"){
