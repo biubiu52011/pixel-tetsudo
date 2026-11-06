@@ -55,6 +55,19 @@ test('all source entries match direction, stop length and calendar for SQL evide
   }
  }
 });
+test('production estimator positions use serviceId and directionName, not only calendarType',()=>{
+ for(const n of ['1M','923M','525M','823D','8853D']){
+  const original=p(n),runtime={...original,serviceId:'odpt.Calendar:Weekday',
+   railDirection:original.railDirection.split(':').pop()};
+  delete runtime.calendarType;
+  assert.ok(idx.verify(runtime),n+' actual runtime calendar source');
+  const fleet=idx.resolve(runtime);
+  assert.ok(fleet,n+' gallery matches serviceId-only runtime');
+  const artwork=root.TrainVehicle.selectMarkerArtwork(runtime,false);
+  assert.equal(artwork.kind,'vehicle');
+  assert.equal(artwork.iconSrc,fleet.illustrationPng);
+ }
+});
 test('date-scoped special Kairi, and 8xxx/9xxx extras are never daily services',()=>{
  assert.ok(idx.verify(p('8853D',{serviceDate:'2026-11-06'})));
  assert.ok(idx.verify(p('8853D',{serviceDate:'2026-11-07',calendarType:'holiday'})));
