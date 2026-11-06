@@ -725,6 +725,26 @@
 
         var run = compileTrainRun(tt, lineId, workLine, stationIndexMap, projection);
         if (!run) continue;
+        // Tazawako 2611: old SQL mixes 701 locals, E6 Komachi services
+        // falsely classified as 701 'Local', and partial duplicate 8xxM
+        // records. The scoped JR East source-number/stop/calendar proof
+        // keeps ONLY one full conventional itinerary per numbered service.
+        // This does not change separately observed realtime positions.
+        if(lineId==="Tazawako"&&tt._positionSource==="supabase-train-run"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          var tazawakoIndex=window.JREastTazawakoNumberIndex202611;
+          if(!tazawakoIndex||typeof tazawakoIndex.verify!=="function"||
+             !tazawakoIndex.verify({
+               trainNumber:run.trainNumber,positionLineId:"Tazawako",
+               sourceRailway:tt["odpt:railway"]||"",
+               trainOperator:tt["odpt:operator"]||"JR-East",
+               railDirection:tt["odpt:railDirection"]||"",
+               trainType:tt["odpt:trainType"]||"",
+               calendarType:run.calendar,serviceDate:serviceDate,
+               positionSource:tt._positionSource,
+               scheduledStopKeys:run.stops.map(function(x){return x.stationUrn||"";})
+             }))continue;
+        }
         // Tadami 2611: only the published JR East base diagram may
         // generate scheduled map markers. Legacy manual imports also
         // contain undated 9423D/9425D/9430D; keeping those as ordinary
