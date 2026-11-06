@@ -105,8 +105,8 @@ test('five Kyoto/Kobe new-rapid original segments certified; vehicles still unve
   'actual_vehicle_confirmed=false AND authorizes_png=false',
   '<>5'
  ])assert.ok(extra.includes(t),t);
- const block=edge.slice(edge.indexOf('// Five JR-West Kyoto/Kobe'),
-  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Five JR-West Kyoto/Kobe')));
+ const block=edge.slice(edge.indexOf('// Nine JR-West Kyoto/Kobe'),
+  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Nine JR-West Kyoto/Kobe')));
  for(const t of [
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED',
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT',
