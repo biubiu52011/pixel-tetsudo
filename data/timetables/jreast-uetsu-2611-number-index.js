@@ -19,6 +19,8 @@ var kairiDays=new Set(["2026-11-01","2026-11-03","2026-11-06",
  "2026-11-07","2026-11-08","2026-11-13","2026-11-14",
  "2026-11-15","2026-11-20","2026-11-21","2026-11-22",
  "2026-11-27","2026-11-28","2026-11-29"]);
+var rikuuWestThrough=new Set(["150D","151D","152D","160D","161D","162D","163D","3131D"]);
+var shonaiElectric=new Set(["222M","225M"]);
 var verifiedInaho=new Set(["1M","2M","3M","4M","5M","6M",
  "7M","8M","9M","10M","11M","12M","13M","14M"]);
 var image={
@@ -26,7 +28,8 @@ var image={
  e129:"../images/列车/JR東日本/JR東日本_E129系.png",
  akita:"../images/列车/JR東日本/JR東日本_701系_秋田地区.png",
  diesel:"../images/列车/JR東日本/JR東日本_GV-E400系.png",
- kairi:"../images/列车/JR東日本/JR東日本_HB-E300系_海里.png"
+ kairi:"../images/列车/JR東日本/JR東日本_HB-E300系_海里.png",
+ kiha110:"../images/列车/JR東日本/JR東日本_キハ110系.png"
 };
 function calendarFor(date){
  if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date))return "";
@@ -77,6 +80,22 @@ function classify(p,proof){
   return {model:"E653系（いなほ）",image:image.inaho,family:"inaho"};
  if((n==="8853D"||n==="8854D")&&t==="Rapid")
   return {model:"HB-E300系（海里）",image:image.kairi,family:"kairi"};
+ // The JR East 2611 Riku West 256 timetable explicitly identifies
+ // 150/151/152/160/161/162/163D as through services and 3131D as
+ // Rapid Mogamigawa. JR East documented KiHa110 operations at the
+ // 2026-01-16 railway reopening. Reuse a GENERIC KiHa110 image only.
+ if(rikuuWestThrough.has(n)&&
+    (t==="Local"||n==="3131D"&&t==="Rapid")&&
+    ((proof.origin==="Sakata"&&proof.terminus==="Amarume")||
+     (proof.origin==="Amarume"&&proof.terminus==="Sakata")))
+  return {model:"キハ110系",image:image.kiha110,family:"rikuu-west-reference"};
+ // 222M/225M run Sakata–Tsuruoka on 2026-11 JR East 2611;
+ // Akita 701 2020 published workings provide a historical FAMILY
+ // reference, not a 2026 physical trainset/formation claim.
+ if(shonaiElectric.has(n)&&t==="Local"&&
+    ((proof.origin==="Sakata"&&proof.terminus==="Tsuruoka")||
+     (proof.origin==="Tsuruoka"&&proof.terminus==="Sakata")))
+  return {model:"701系（秋田地区）",image:image.akita,family:"shonai-electric-reference"};
  if((t==="Local"||t==="Rapid")&&n.endsWith("M")&&
     min>=6&&max<=14)
   return {model:"E129系",image:image.e129,family:"e129"};
@@ -103,8 +122,11 @@ function resolve(p){
  if(!Number.isInteger(at)||!Number.isInteger(to)||
     at<0||to<0||at>=openStations.length||to>=openStations.length)return null;
  var plan=p.vehiclePlan;
- if(plan&&plan.status==="PLANNED_MODEL"&&Array.isArray(plan.models)&&
-    plan.models.length&&!plan.models.some(function(x){
+ // Undated historical SQL can produce an UNCONFIRMED 701/E721
+ // candidate plan; it cannot veto a published number-scoped model.
+ // Keep the veto for independently confirmed plans only.
+ if(plan&&plan.status==="PLANNED_MODEL"&&plan.confirmed===true&&
+    Array.isArray(plan.models)&&plan.models.length&&!plan.models.some(function(x){
        return String(x)===model.model;}))return null;
  return {lineId:"Uetsu",trainNumber:proof.trainNumber,
    illustrationModel:model.model,illustrationPng:model.image,
