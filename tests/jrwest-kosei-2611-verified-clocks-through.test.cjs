@@ -83,7 +83,7 @@ test('second Kosei expansion is 26 exact original-source proofs, 17 per calendar
    assert.ok(extra.includes(t),t);
  const kosei=edge.slice(edge.indexOf('// Date-verified Kosei published'),
    edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
- assert.ok(kosei.includes('new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==17'));
+ assert.ok(kosei.includes('new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==26'));
  assert.ok(kosei.includes('run.train_number_verification="official-2611-kosei-source-stop-clock"'));
  assert.ok(!kosei.includes('run.vehicle_plan_confirmed=true'));
 });
@@ -105,8 +105,8 @@ test('five Kyoto/Kobe new-rapid original segments certified; vehicles still unve
   'actual_vehicle_confirmed=false AND authorizes_png=false',
   '<>5'
  ])assert.ok(extra.includes(t),t);
- const block=edge.slice(edge.indexOf('// Nine JR-West Kyoto/Kobe'),
-  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Nine JR-West Kyoto/Kobe')));
+ const block=edge.slice(edge.indexOf('// Seventeen JR-West Kyoto/Kobe'),
+  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Seventeen JR-West Kyoto/Kobe')));
  for(const t of [
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED',
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT',
@@ -144,9 +144,9 @@ test('four additional Kyoto-Kobe 7-stop sources join the same evidence owner',()
  assert.ok(extra.includes('published_jrwest_kyoto_kobe_2611_clock_evidence'));
  assert.ok(extra.includes('h.n=7 AND h.original_hash=e.expected_hash'));
  assert.ok(extra.includes('<>9'));
- const kyoto=edge.slice(edge.indexOf('// Nine JR-West Kyoto/Kobe'),
+ const kyoto=edge.slice(edge.indexOf('// Seventeen JR-West Kyoto/Kobe'),
   edge.indexOf('// Sotetsu-JR 2611:'));
- assert.ok(kyoto.includes('const expected=selectedCalendar==="odpt.Calendar:Weekday"?6:3;'));
+ assert.ok(kyoto.includes('const expected=selectedCalendar==="odpt.Calendar:Weekday"?10:7;'));
  assert.ok(kyoto.includes('run.published_train_number=p.official_train_number;'));
  assert.ok(kyoto.includes('run.timetable_date_verified=true;'));
 });
@@ -165,7 +165,7 @@ test('two mismatched legacy calendars cannot create phantom Kyoto-Kobe trains',(
  assert.ok(sql.includes('official_train_number IS NULL AND authorizes_png=false'));
  assert.ok(sql.includes('official_calendar_conflict)<>2'));
  const block=edge.slice(edge.indexOf('// JR-West Kyoto/Kobe through corridor'),
-  edge.indexOf('// Nine JR-West Kyoto/Kobe'));
+  edge.indexOf('// Seventeen JR-West Kyoto/Kobe'));
  for(const term of [
    'official_calendar_conflict,official_calendar_urn,official_calendar_source_url',
    'JRWEST_KYOTO_KOBE_2611_CALENDAR_SOURCE_CONFLICT',
@@ -174,4 +174,70 @@ test('two mismatched legacy calendars cannot create phantom Kyoto-Kobe trains',(
    'new Set((clocks||[]).map'
  ].slice(0,4))assert.ok(block.includes(term),term);
  assert.ok(block.includes('result.splice(i,1)'));
+});
+
+test('third Kosei batch covers 18 inbound partial segments without route fabrication',()=>{
+ const m=fs.readFileSync(
+ 'supabase/migrations/20261107140000_jrwest_kosei_2611_inbound_source_clocks.sql','utf8');
+ const trains=['1831','1839','4838','4840','4842','4844','4846','4850','4852'];
+ for(const n of trains){
+   assert.ok(m.includes("('"+n+"M','Weekday'"),n+' weekday');
+   assert.ok(m.includes("('"+n+"MH','SaturdayHoliday'"),n+' holiday');
+ }
+ for(const proof of [
+  '6798790f9d2879210df3dd3125992403',
+  '93194ebf85bccc91f2070688802464b7',
+  'da4ad4d1415f776de485cc0020cc2669',
+  '26bd08a53988af33551e1d96f2a81677',
+  '097600c0fd28a383fa2814e697389371',
+  'f808419411092e57610d0f5f1c61fb3e',
+  '24af1d0a4db3fa25b0df49cbb6c87f2f',
+  '31b61cc21dc673189495224d4851541f',
+  '9ff2a3b5f0f7a43adb954d0a7ad8689a',
+  '058694683e8e4ff06cc34ab4637a3b5b'
+ ])assert.ok(m.includes(proof),proof);
+ for(const proof of [
+  "published_train_number IN('1831M','1839M','4838M'",
+  "direction_urn='odpt.RailDirection:Inbound'",
+  "stop_count IN(4,5,21,22)",
+  "m.original_hash=e.expected_hash AND m.n=e.expected_count::integer",
+  "<>52","<>26","<>18"
+ ])assert.ok(m.includes(proof),proof);
+ const block=edge.slice(edge.indexOf('// Date-verified Kosei'),
+ edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
+ assert.ok(block.includes('size!==26'));
+ assert.ok(block.includes('![4,5,18,21,22].includes(stops.length)'));
+ assert.ok(!block.includes('run.vehicle_plan_confirmed=true'));
+});
+test('Kyoto/Kobe 8 additional local C sources retain dated clock and candidate boundaries',()=>{
+ const m=fs.readFileSync(
+ 'supabase/migrations/20261107141000_jrwest_kyoto_kobe_2611_local_source_clocks.sql','utf8');
+ for(const [num,hash] of [
+  ['107C','93303216a8a3b9552e77c9919ec06ee9'],
+  ['107C','502f60a48136c467675c2601318361c1'],
+  ['150C','a4462fbc40fbd24b0fce2bbcba472f6d'],
+  ['515C','7575e86816d8cbf88332fc98cabe6c6c'],
+  ['221C','c284ad7a6fa6f9a896657e1ae47ce27a'],
+  ['542C','c523722106e9f524dfc2dab94f3aa210']
+ ])assert.ok(m.includes("'"+num+"'")&&m.includes("'"+hash+"'"),num);
+ for(const proof of [
+   "official_train_number~'^[0-9]{3,4}C$'",
+   "official_stop_count IN(16,19,25,33)",
+   "official_public_train_type='Local'",
+   "m.source_path='data/timetables/TokaidoKansai-manual.js'",
+   "AND f.authorizes_png=false",
+   "<>17","<>8","<>10","<>7"
+ ])assert.ok(m.includes(proof),proof);
+ const block=edge.slice(edge.indexOf('// Seventeen JR-West Kyoto/Kobe'),
+ edge.indexOf('// Sotetsu-JR 2611:'));
+ for(const proof of [
+   'const expected=selectedCalendar==="odpt.Calendar:Weekday"?10:7;',
+   'const certifiedType=p.train_type_urn==="odpt.TrainType:JR-West.Local"',
+   '[16,19,25,33].includes(p.official_stop_count)',
+   'stops.length!==p.official_stop_count',
+   'run.published_train_type="odpt.TrainType:JR-West."+certifiedType',
+   'p.actual_vehicle_confirmed!==false||p.authorizes_png!==false'
+ ])assert.ok(block.includes(proof),proof);
+ assert.ok(!block.includes('run.vehicle_plan_confirmed=true'));
+ assert.ok(!block.includes('run.vehicle_artwork_path='));
 });
