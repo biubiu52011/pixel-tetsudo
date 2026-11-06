@@ -1177,6 +1177,87 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // number/calendar/direction/owner crosswalk remains the ONLY family
   // illustration authority (never infer 05/07/15000 or E231-800 from Y).
   // Old E353 5003M/5050M are 2-stop expresses, not local trains.
+  // Suigun (main) + SuigunBranch (Hitachi-Ota) 2611:
+  // exact source-template/calendar/railway and date-scoped exceptions.
+  // Do not project obsolete manual 9821D/9822D stop clocks or fake
+  // a KiHa E130 PNG for the independent Kazekko trolley.
+  if(["Suigun","SuigunBranch"].includes(lineId)&&
+     /^2026-11-/.test(serviceDate)){
+    const {data:suigunScope,error:suigunError}=await db
+      .from("published_suigun_2611_fleet_scope")
+      .select("source_template_id,calendar_urn,direction_urn,train_number,source_type_urn,published_type_urn,source_occurrence,fleet_role,candidate_models,illustration_model,png_reference,operating_dates,excluded_dates,number_evidence_scope,source_url,reference_only,actual_vehicle_confirmed")
+      .eq("edition","2611").eq("line_key",lineId)
+      .eq("calendar_urn",selectedCalendar);
+    const expected=lineId==="Suigun"?
+      (selectedCalendar==="odpt.Calendar:Weekday"?76:83):
+      (selectedCalendar==="odpt.Calendar:Weekday"?26:30);
+    if(suigunError||(suigunScope||[]).length!==expected)
+      throw new Error("SUIGUN_2611_SOURCE_FLEET_SCOPE_UNAVAILABLE");
+    const byTemplate=new Map((suigunScope||[]).map((x:any)=>
+      [Number(x.source_template_id),x]));
+    if(byTemplate.size!==expected)
+      throw new Error("SUIGUN_2611_DUPLICATE_SOURCE_SCOPE");
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      const proof:any=byTemplate.get(Number(run.source_template_id));
+      const dates=Array.isArray(proof?.operating_dates)?
+        proof.operating_dates.map((d:any)=>String(d).slice(0,10)):[];
+      const exclusions=Array.isArray(proof?.excluded_dates)?
+        proof.excluded_dates.map((d:any)=>String(d).slice(0,10)):[];
+      if(!proof||proof.calendar_urn!==run.service_id||
+         proof.direction_urn!==run.rail_direction||
+         proof.train_number!==run.train_number||
+         proof.source_type_urn!==run.train_type||
+         run.network_key!=="odpt.Railway:JR-East."+lineId||
+         proof.reference_only!==true||
+         proof.actual_vehicle_confirmed!==false||
+         !Array.isArray(proof.candidate_models)||
+         exclusions.includes(serviceDate)||
+         (dates.length>0&&!dates.includes(serviceDate))||
+         !(proof.fleet_role==="kiha_e130_0_reference"||
+           proof.fleet_role==="kazekko_excursion_no_png")||
+         (proof.fleet_role==="kiha_e130_0_reference"?
+           (proof.illustration_model!=="キハE130系0番台"||
+            proof.png_reference!=="../images/列车/JR東日本/JR東日本_キハE130系0番台.png"||
+            proof.candidate_models.length!==1||
+            proof.candidate_models[0]!=="キハE130系0番台"||
+            proof.published_type_urn!=="odpt.TrainType:JR-East.Local"):
+           (lineId!=="Suigun"||
+            !["9821D","9822D"].includes(run.train_number)||
+            proof.png_reference!==null||proof.illustration_model!==null||
+            proof.candidate_models.length!==0||
+            proof.published_type_urn!=="odpt.TrainType:JR-East.Rapid"))){
+        result.splice(i,1);continue;
+      }
+      const trolley=proof.fleet_role==="kazekko_excursion_no_png";
+      run.train_type=proof.published_type_urn;
+      if(trolley)run.service_name="風っこ水郡線紅葉号";
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=trolley?null:"キハE130系0番台";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.train_number_verification=proof.number_evidence_scope;
+      run.timetable_date_verified=false;
+      run.published_number_fleet_reference={
+        source:"jr-east-2611-suigun-243",lineId:lineId,
+        trainNumber:run.train_number,serviceDate:serviceDate,
+        sourceTemplateId:Number(run.source_template_id),
+        calendar:proof.calendar_urn,direction:proof.direction_urn,
+        trainType:proof.published_type_urn,
+        candidateModels:proof.candidate_models,
+        illustrationModel:proof.illustration_model,
+        pngReference:proof.png_reference,
+        sourceUrl:proof.source_url,
+        operatingDates:dates,excludedDates:exclusions,
+        referenceOnly:true,actualVehicleConfirmed:false
+      };
+    }
+  }
   // Shinonoi 2611: use existing published 383 Shinano plans, and
   // retain conservative 211/E127 line illustration on historical locals.
   // Calendar/number proof is NOT 2026-11 stop-clock or actual-car proof.

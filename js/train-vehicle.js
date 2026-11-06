@@ -2425,7 +2425,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "planned-stock-library-5": ["NambuBranch", "Oito"],
   "planned-stock-library-4": ["Shinetsu", "Hakushin", "Echigo", "Miyo"],
   "planned-stock-library-6": ["Shinetsu", "Hakushin", "Oito"],
-  "planned-stock-library-11": ["Kururi", "Suigun"],
+  "planned-stock-library-11": ["Kururi", "Suigun", "SuigunBranch"],
   "planned-stock-library-12": ["Kururi"],
   "planned-stock-library-13": ["Hachinohe"],
   "planned-stock-library-14": ["Senseki", "SensekiTohoku", "Ishinomaki"],
