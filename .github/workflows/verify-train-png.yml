@@ -48,6 +48,8 @@ on:
       - 'tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs'
       - 'tests/jrwest-kyoto-kobe-2611-source-fleet.test.cjs'
       - 'tests/kosei-2611-source-fleet.test.cjs'
+      - 'tests/kabe-2611-redwing-number-scope.test.cjs'
+      - 'supabase/migrations/20261107055500_jrwest_kabe_2611_source_quarantine.sql'
       - 'supabase/migrations/20261107052500_jrwest_kosei_2611_source_fleet_candidates.sql'
       - 'supabase/migrations/20261107050000_jrwest_kyoto_kobe_2611_source_only_fleet_candidates.sql'
       - 'supabase/migrations/20261107042000_sotetsu_jr_direct_2611_two_fleet_source_candidates.sql'
@@ -204,6 +206,8 @@ jobs:
         run: node --test tests/kururi-2611-open-rail-number-png.test.cjs
       - name: Verify Mito 2611 exact-number and dated E531 family PNG
         run: node --test tests/mito-2611-exact-number-e531.test.cjs
+      - name: Verify Kabe 2611 synthetic source quarantine and 227 Red Wing number references
+        run: node --test tests/kabe-2611-redwing-number-scope.test.cjs
       - name: Verify Kosei 2611 179 source-only M/MH mixed fleet and special exclusions
         run: node --test tests/kosei-2611-source-fleet.test.cjs
       - name: Verify JR-West Kyoto/Kobe 2611 source-only C/T/M mixed fleet mapping
