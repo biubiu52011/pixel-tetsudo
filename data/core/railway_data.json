@@ -8924,6 +8924,10 @@
       "lat": 36.8721825,
       "lng": 138.2117975
     },
+    "Joetsu-Myoko": {
+      "lat": 37.0812454,
+      "lng": 138.2484185
+    },
     "Itoigawa": {
       "lat": 37.0433062,
       "lng": 137.8617531
@@ -40482,7 +40486,7 @@
         "Ueda",
         "Nagano",
         "Iiyama",
-        "Myoko-Kogen",
+        "Joetsu-Myoko",
         "Itoigawa",
         "Kurobe-Unazukionsen",
         "Toyama",
@@ -49508,6 +49512,7 @@
     "長野": "Nagano",
     "飯山": "Iiyama",
     "妙高高原": "Myoko-Kogen",
+    "上越妙高": "Joetsu-Myoko",
     "糸魚川": "Itoigawa",
     "黒部宇奈月温泉": "Kurobe-Unazukionsen",
     "富山": "Toyama",
@@ -59040,7 +59045,7 @@
     "Sakudaira": [
       "HokurikuShinkansen"
     ],
-    "Myoko-Kogen": [
+    "Joetsu-Myoko": [
       "HokurikuShinkansen"
     ],
     "Itoigawa": [
@@ -66698,7 +66703,7 @@
       "Ueda": 9,
       "Nagano": 10,
       "Iiyama": 11,
-      "Myoko-Kogen": 12,
+      "Joetsu-Myoko": 12,
       "Itoigawa": 13,
       "Kurobe-Unazukionsen": 14,
       "Toyama": 15,
