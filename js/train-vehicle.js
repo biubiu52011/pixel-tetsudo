@@ -5249,6 +5249,43 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // Yamagata 2611 has a MIXED 701-5500 / 719-5000 / E723-5000
+    // regional working, while old SQL incorrectly labels ALL locals 701.
+    // Only train-number + 35-station-scope + 2026 operating references
+    // can choose ONE illustrative PNG. A timetable EXACT series label
+    // is not a physically identified formation or a dated 701 assignment.
+    // Suppress legacy generic timetable PNG fallback on the Yamagata
+    // diagram for a source-verified but still unassigned local.
+    if (p && contextLineId==="Yamagata" && p.positionLineId==="Yamagata" &&
+        p.estimated===true && p.positionSource==="supabase-train-run" &&
+        String(p.serviceDate||"").slice(0,7)==="2026-11") {
+      var yamIndex=window.JREastYamagataNumberIndex202611;
+      var yamProof=yamIndex&&typeof yamIndex.verify==="function"
+        ?yamIndex.verify(p):null;
+      if(yamProof && !strongRealtimeEvidence &&
+          p.vehicleResolvedFromRealtime!==true &&
+          p.actualVehicleConfirmed!==true && !p.vehicleFormationId &&
+          !(Array.isArray(p.vehicleFormationCandidates)&&
+            p.vehicleFormationCandidates.length)) {
+        var yamRef=yamIndex.resolve(p);
+        var yamPath=yamRef&&normalizeGalleryPngPath(yamRef.illustrationPng);
+        var yamGallery=window.VehicleGaragePngMap;
+        if(yamRef && yamRef.referenceOnly===true &&
+            yamRef.actualVehicleConfirmed===false &&
+            yamRef.authorizesPNG===false && yamRef.model===null &&
+            yamRef.formationId===null && yamPath &&
+            isGalleryPng(yamPath) && yamGallery &&
+            typeof yamGallery.matchModelPath==="function" &&
+            yamGallery.matchModelPath(yamRef.illustrationModel,yamPath,"Yamagata")) {
+          return artworkFailed===true ? {kind:"unresolved",iconSrc:""}:
+            {kind:"vehicle",iconSrc:yamPath,planned:true,
+             illustrative:true,representativeOnly:true,
+             actualVehicleConfirmed:false,
+             illustrationRole:"yamagata-2026-observed-service-not-november-consist"};
+        }
+        return {kind:"unresolved",iconSrc:""};
+      }
+    }
     // Uetsu Inaho: a dated SQL PUBLISHED E653 model can have identity
     // status EXACT yet lack a matching gallery PNG. That is an exact
     // TIMETABLE model, not a physically identified E653 formation.
