@@ -305,7 +305,7 @@
   function mountDetailBackButton() {
     var mount = document.querySelector('[data-tourism-detail-back]');
     if (!mount || document.getElementById('detailBackBtn')) return;
-    mount.innerHTML = '<button type="button" id="detailBackBtn" class="detail-back-btn">'
+    mount.innerHTML = '<button type="button" id="detailBackBtn" class="back-btn detail-back-btn">'
       + '<span class="back-arrow"><svg viewBox="0 0 14 14" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" transform="rotate(-90 7 7)" d="M6.646.146a.5.5 0 0 1 .708 0l3.5 3.5a.5.5 0 0 1-.354.854H8V13a1 1 0 1 1-2 0V4.5H3.5a.5.5 0 0 1-.354-.854z"/></svg></span> '
       + '<span id="backBtnText">戻る</span></button>';
   }
