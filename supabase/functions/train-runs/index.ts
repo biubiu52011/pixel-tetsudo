@@ -1235,8 +1235,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .eq("edition","2611").eq("line_key",lineId)
       .eq("calendar_urn",selectedCalendar);
     const expected=lineId==="Suigun"?
-      (selectedCalendar==="odpt.Calendar:Weekday"?76:83):
-      (selectedCalendar==="odpt.Calendar:Weekday"?26:30);
+      (selectedCalendar==="odpt.Calendar:Weekday"?76:83):30;
     if(suigunError||(suigunScope||[]).length!==expected)
       throw new Error("SUIGUN_2611_SOURCE_FLEET_SCOPE_UNAVAILABLE");
     const byTemplate=new Map((suigunScope||[]).map((x:any)=>

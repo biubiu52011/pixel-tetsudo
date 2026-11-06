@@ -77,6 +77,24 @@ test('no cross-railway or cross-fleet guess based on shared 920D numbers',()=>{
  const wrong=p('820D','SuigunBranch');assert.equal(resolve(wrong),null);
  assert.equal(root.TrainVehicle.selectMarkerArtwork(src,true).kind,'unresolved');
 });
+test('2611 branch has 30 Weekday and 30 Holiday numbers, with 4 restored',()=>{
+ for(const cal of ['weekday','holiday']){
+  for(const dir of ['Outbound','Inbound']){
+   let count=0;
+   for(let n=920;n<=949;n++){
+    if(resolve(p(n+'D','SuigunBranch',cal,dir)))count++;
+   }
+   assert.equal(count,15,cal+' '+dir);
+  }
+ }
+ for(const [num,dir] of [['929D','Outbound'],['930D','Inbound'],
+  ['931D','Outbound'],['932D','Inbound']]){
+  const pos=p(num,'SuigunBranch','weekday',dir);
+  assert.equal(resolve(pos).illustrationModel,'キハE130系0番台');
+  assert.equal(icon(pos).planned,true);
+  assert.equal(icon(pos).actualVehicleConfirmed,false);
+ }
+});
 test('existing Senzan/Shinonoi match adapters survive the new nested adapter',()=>{
  const x={
   trainNumber:'1829M',positionLineId:'Senzan',displayLineId:'Senzan',

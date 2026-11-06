@@ -35,7 +35,7 @@ mainWeekday.push(mk(300,'9329D','kiha_e130_0_reference','Suigun',weekday,['2026-
 mainWeekday.push(mk(301,'9329D','kiha_e130_0_reference','Suigun',weekday,['2026-11-17','2026-11-18','2026-11-19']));
 mainWeekday.push(mk(302,'9324D','kiha_e130_0_reference','Suigun',weekday,['2026-11-17','2026-11-18','2026-11-19']));
 mainWeekday.push(mk(303,'8325D','kiha_e130_0_reference','Suigun',weekday,['2026-11-02','2026-11-03','2026-11-26','2026-11-27','2026-11-30']));
-const branchWeekday=Array.from({length:26},(_,i)=>mk(400+i,(920+i)+'D','kiha_e130_0_reference','SuigunBranch',weekday));
+const branchWeekday=Array.from({length:30},(_,i)=>mk(400+i,(920+i)+'D','kiha_e130_0_reference','SuigunBranch',weekday));
 function run(x){
  return {source_template_id:x.source_template_id,service_id:x.calendar_urn,
   rail_direction:x.direction_urn,train_number:x.train_number,
