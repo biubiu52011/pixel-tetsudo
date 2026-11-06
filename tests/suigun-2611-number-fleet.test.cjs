@@ -77,6 +77,41 @@ test('no cross-railway or cross-fleet guess based on shared 920D numbers',()=>{
  const wrong=p('820D','SuigunBranch');assert.equal(resolve(wrong),null);
  assert.equal(root.TrainVehicle.selectMarkerArtwork(src,true).kind,'unresolved');
 });
+test('Suigun parent map shows ONLY certified SuigunBranch projected KiHa E130 art',()=>{
+ const sourced=p('934D','SuigunBranch','weekday','Inbound');
+ const overlay={...sourced,displayLineId:'Suigun',fusionRole:'branch',
+  fusionLineId:'SuigunBranch'};
+ // The direct number index must remain source-display strict.
+ assert.equal(resolve(overlay),null);
+ const mapped=root.TrainNumberPngRanges.match(overlay.trainNumber,'SuigunBranch',overlay);
+ assert.equal(mapped.model,'キハE130系0番台');
+ assert.equal(mapped.pngPath,png);
+ const shown=icon(overlay);
+ assert.equal(shown.kind,'vehicle');
+ assert.equal(shown.iconSrc,png);
+ assert.equal(shown.illustrative,true);
+ assert.equal(shown.representativeOnly,true);
+ assert.equal(shown.actualVehicleConfirmed,false);
+ // The parent main-line roster must not be silently used as the source.
+ assert.equal(root.TrainNumberPngRanges.match(overlay.trainNumber,'Suigun',overlay),null);
+ for(const patch of [
+  {fusionRole:'extension'},
+  {fusionLineId:'Suigun'},
+  {positionLineId:'Suigun'},
+  {sourceRailway:'odpt.Railway:JR-East.Suigun'},
+  {displayLineId:'Ome'},
+  {estimated:false},
+  {positionSource:'realtime-api'},
+  {trainOperator:'JR-West'},
+  {calendarType:'NoCalendar'},
+  {vehicleIdentityStatus:'EXACT'}
+ ]){
+   const invalid={...overlay,...patch};
+   assert.equal(icon(invalid).kind,'unresolved',JSON.stringify(patch));
+ }
+ assert.equal(icon({...overlay,trainNumber:'820D'}).kind,'unresolved');
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(overlay,true).kind,'unresolved');
+});
 test('2611 branch has 30 Weekday and 30 Holiday numbers, with 4 restored',()=>{
  for(const cal of ['weekday','holiday']){
   for(const dir of ['Outbound','Inbound']){
