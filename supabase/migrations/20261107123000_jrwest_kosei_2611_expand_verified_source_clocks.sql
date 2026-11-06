@@ -62,10 +62,10 @@ INSERT INTO public.published_jrwest_kosei_2611_verified_source_clocks
 (source_template_id,source_train_number,published_train_number,
  calendar_urn,source_stops_md5,stop_count,official_source_url)
 SELECT m.id,e.source_train_number,regexp_replace(e.source_train_number,'H$',''),
- m.calendar_urn,e.expected_hash,e.expected_count,e.official_url
+ m.calendar_urn,e.expected_hash,e.expected_count::integer,e.official_url
 FROM e JOIN matched m ON m.train_number=e.source_train_number
 AND m.calendar_urn='odpt.Calendar:'||e.calendar_token
-AND m.actual_hash=e.expected_hash AND m.n=e.expected_count
+AND m.actual_hash=e.expected_hash AND m.n=e.expected_count::integer
 ON CONFLICT(source_template_id) DO NOTHING;
 DO $proof$
 BEGIN
