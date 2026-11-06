@@ -888,6 +888,8 @@
     if (!fresh) return false;
     applyColor(fresh);
     if ((options.mode||"realtime")!=="realtime") { card.replaceWith(fresh); return true; }
+    // Realtime patches retain DOM identity; refresh the accessible label too.
+    card.setAttribute("aria-label", fresh.getAttribute("aria-label") || "");
     var oldStatus=card.querySelector(".rs-status-icon"), newStatus=fresh.querySelector(".rs-status-icon");
     if (oldStatus && newStatus) { oldStatus.className=newStatus.className; oldStatus.textContent=newStatus.textContent; }
     else if (oldStatus && !newStatus) oldStatus.remove();
@@ -902,7 +904,12 @@
     if (!card || !linesObj) return false;
     var fresh=elementFromHtml(renderSystemById(card.dataset.line||"",linesObj,options||{mode:"realtime"}));
     if (!fresh) return false;
-    applyColor(fresh); card.replaceWith(fresh); return true;
+    applyColor(fresh);
+    var wasFocused = document.activeElement === card;
+    if (card.classList.contains("selected")) fresh.classList.add("selected");
+    card.replaceWith(fresh);
+    if (wasFocused && typeof fresh.focus === "function") fresh.focus();
+    return true;
   }
 
   window.LineCard = {
