@@ -155,3 +155,15 @@ test('shop modal traps Tab but backdrop close only affects the active dialog',()
   assert.ok(!h.second.modal.classList.contains('is-open'));
   assert.equal(h.doc.activeElement,h.second.trigger);
 });
+
+test('all seven pages allow user zoom while retaining device-width and safe-area layout',()=>{
+  for(const page of pages) {
+    const html=read('pages/'+page+'.html');
+    const viewport=html.match(/name="viewport"\s+content="([^"]+)"/);
+    assert.ok(viewport,page+' viewport');
+    assert.match(viewport[1],/width=device-width/);
+    assert.match(viewport[1],/initial-scale=1\.0/);
+    assert.match(viewport[1],/viewport-fit=cover/);
+    assert.doesNotMatch(viewport[1],/maximum-scale=1|user-scalable=no/);
+  }
+});
