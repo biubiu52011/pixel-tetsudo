@@ -127,3 +127,51 @@ test('frontend keeps historical matching IDs separate from display numbers',()=>
  assert.ok(position.includes('official-2611-kyoto-kobe-source-stop-clock'));
  assert.ok(position.includes('String(officialJrWestKyotoKobePlan.historicalNumberSuffix||"")'));
 });
+
+test('four additional Kyoto-Kobe 7-stop sources join the same evidence owner',()=>{
+ const extra=fs.readFileSync(
+  'supabase/migrations/20261107132000_jrwest_kyoto_kobe_verified_nine_and_calendar_conflicts.sql','utf8');
+ for(const [number,sha] of [
+  ['3452M','42dd7ceca39477f45a225667080ce7c4'],
+  ['3511M','5250588962676ec65abce5c820392670'],
+  ['3531M','19b19128d6e8735923e3ff33b7d7bc6f'],
+  ['3534M','7b558daa85869d18842cb1e21289e48c']
+ ]){
+  assert.ok(extra.includes("'"+number+"'"),number+' source');
+  assert.ok(extra.includes("'"+sha+"'"),number+' station clocks');
+ }
+ assert.ok(extra.includes('published_jrwest_kyoto_kobe_2611_source_fleet'));
+ assert.ok(extra.includes('published_jrwest_kyoto_kobe_2611_clock_evidence'));
+ assert.ok(extra.includes('h.n=7 AND h.original_hash=e.expected_hash'));
+ assert.ok(extra.includes('<>9'));
+ const kyoto=edge.slice(edge.indexOf('// Nine JR-West Kyoto/Kobe'),
+  edge.indexOf('// Sotetsu-JR 2611:'));
+ assert.ok(kyoto.includes('const expected=selectedCalendar==="odpt.Calendar:Weekday"?6:3;'));
+ assert.ok(kyoto.includes('run.published_train_number=p.official_train_number;'));
+ assert.ok(kyoto.includes('run.timetable_date_verified=true;'));
+});
+test('two mismatched legacy calendars cannot create phantom Kyoto-Kobe trains',()=>{
+ const sql=fs.readFileSync(
+  'supabase/migrations/20261107132000_jrwest_kyoto_kobe_verified_nine_and_calendar_conflicts.sql','utf8');
+ for(const [legacy,correct] of [
+  ['500310-3536200-3450M','odpt.Calendar:Weekday'],
+  ['500310-1866500-3506M','odpt.Calendar:SaturdayHoliday']
+ ]){
+  assert.ok(sql.includes("'"+legacy+"'"),legacy);
+  assert.ok(sql.includes("'"+correct+"'"),correct);
+ }
+ assert.ok(sql.includes('official_calendar_conflict boolean NOT NULL DEFAULT false'));
+ assert.ok(sql.includes('official_calendar_urn<>calendar_urn'));
+ assert.ok(sql.includes('official_train_number IS NULL AND authorizes_png=false'));
+ assert.ok(sql.includes('official_calendar_conflict)<>2'));
+ const block=edge.slice(edge.indexOf('// JR-West Kyoto/Kobe through corridor'),
+  edge.indexOf('// Nine JR-West Kyoto/Kobe'));
+ for(const term of [
+   'official_calendar_conflict,official_calendar_urn,official_calendar_source_url',
+   'JRWEST_KYOTO_KOBE_2611_CALENDAR_SOURCE_CONFLICT',
+   'pub.official_calendar_conflict===true',
+   'result.splice(i,1)',
+   'new Set((clocks||[]).map'
+ ].slice(0,4))assert.ok(block.includes(term),term);
+ assert.ok(block.includes('result.splice(i,1)'));
+});
