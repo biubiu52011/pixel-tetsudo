@@ -129,6 +129,7 @@
       "data/timetables/jreast-shinonoi-2611-number-index.js",
       "data/timetables/jreast-suigun-2611-number-index.js",
       "data/timetables/jreast-tadami-2611-number-index.js",
+      "data/timetables/jreast-tazawako-2611-number-index.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
       "data/timetables/nambu-branch-official-202611.js",
@@ -287,6 +288,9 @@
       ],
       "data/timetables/jreast-tadami-2611-number-index.js": [
         "Tadami"
+      ],
+      "data/timetables/jreast-tazawako-2611-number-index.js": [
+        "Tazawako"
       ]
     }
   }
