@@ -272,12 +272,13 @@
       }
       const lines = entry.lineInfo ? [...new Set(_extractLines(entry.lineInfo))].map(function(lid){ return _resolveLineIdOrName(lid, _lang); }).join(", ") : "";
 
-      html += '<div class="history-entry" role="link" tabindex="0" data-id="' + entry.id + '" aria-label="' + escapeHtml(entry.from + " → " + entry.to) + '">';
-      html += '<div class="history-route">';
+      html += '<div class="history-entry" data-id="' + entry.id + '">';
+      html += '<a class="history-route" href="home.html?from=' +
+        encodeURIComponent(entry.from) + '&to=' + encodeURIComponent(entry.to) + '">';
       html += '<span class="history-from">' + escapeHtml(window.RailwayDB ? window.RailwayDB.resolveStationName(entry.from, window.currentLang) || entry.from : entry.from) + "</span>";
       html += '<svg class="history-arrow" viewBox="0 0 14 14" width="10" height="10" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" transform="rotate(90 7 7)" d="M6.646.146a.5.5 0 0 1 .708 0l3.5 3.5a.5.5 0 0 1-.354.854H8V13a1 1 0 1 1-2 0V4.5H3.5a.5.5 0 0 1-.354-.854z"/></svg>';
       html += '<span class="history-to">' + escapeHtml(window.RailwayDB ? window.RailwayDB.resolveStationName(entry.to, window.currentLang) || entry.to : entry.to) + "</span>";
-      html += "</div>";
+      html += "</a>";
       html += '<div class="history-meta">';
       if (entry.durationMin > 0) {
         html += '<span class="history-duration">' + entry.durationMin + " " + t("unit.minute") + "</span>";
@@ -301,13 +302,6 @@
     // 使用事件委托绑定事件：每个容器只绑定一次。
     if (!container.dataset.eventsBound) {
       container.dataset.eventsBound = "1";
-      container.addEventListener("keydown", function(e) {
-        if (e.key !== "Enter" && e.key !== " ") return;
-        var card = e.target.closest(".history-entry");
-        if (!card || e.target !== card) return;
-        e.preventDefault();
-        card.click();
-      });
       container.addEventListener("click", function(e) {
         var clearBtn = e.target.closest(".history-clear-btn");
         if (clearBtn) {
@@ -320,6 +314,9 @@
           removeEntry(parseInt(delBtn.dataset.id));
           return;
         }
+        // The route link uses native navigation (including modifier-click and
+        // Enter); pointer taps on the rest of the card keep the old shortcut.
+        if (e.target.closest(".history-route")) return;
         var entryEl = e.target.closest(".history-entry");
         if (entryEl && entryEl.classList.contains("rs-loading")) return;
         if (entryEl) {
