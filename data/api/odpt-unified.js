@@ -1842,6 +1842,23 @@
             // SQL source trainNumber (and holiday-import H) for identity.
             "_sqlPublishedTrainNumber":run.timetable_date_verified===true
                 ? (run.published_train_number||"") : "",
+            // Osaka Higashi historical H is an importer calendar marker.
+            // This source-family normalization is not a 2026-11 clock proof:
+            // _sqlReferencePublicTrainNumber is NEVER a dated service claim.
+            "_sqlReferencePublicTrainNumber":
+                run.published_number_fleet_reference&&
+                run.published_number_fleet_reference.source===
+                    "sql-jrwest-osaka-higashi-2611-source-family"&&
+                run.published_number_fleet_reference.referenceOnly===true&&
+                run.published_number_fleet_reference.authorizesPNG===false
+                ?(run.reference_public_train_number||""):"",
+            "_sqlReferencePublicTrainTypeLabel":
+                run.published_number_fleet_reference&&
+                run.published_number_fleet_reference.source===
+                    "sql-jrwest-osaka-higashi-2611-source-family"&&
+                run.published_number_fleet_reference.referenceOnly===true
+                ?(run.published_train_type_label||""):"",
+
             // Station-scoped public numbers: 2217M Rapid changes to 2133M
             // Local at Sonobe. Preserve internal compound number as identity.
             "_sqlPublishedTrainNumberSegments":run.timetable_date_verified===true&&
