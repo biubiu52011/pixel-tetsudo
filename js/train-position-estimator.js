@@ -2112,7 +2112,9 @@
             _plannedCandidates=osakaHigashiRef.candidateModels.slice();
             _visibleCandidates=osakaHigashiRef.candidateModels.slice();
             _publishedVehiclePlan={
-              status:"UNCONFIRMED_FLEET",
+              // Published family reference; icon selection stays exclusively
+              // in TrainVehicle.selectMarkerArtwork's source/clock scope.
+              status:"FLEET_REFERENCE",
               models:osakaHigashiRef.candidateModels.slice(),
               iconPath:"",representativeModel:"",
               source:"sql-jrwest-osaka-higashi-2611-source-family",
