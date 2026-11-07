@@ -44407,26 +44407,26 @@
     {
      "item": "マグロぶつ",
      "price": "500円",
-     "cover": "../images/料理/千住の永見_0_マグロぶつ.svg",
-     "coverRole": "illustration"
+     "photoSourceUrl": "https://plaza.rakuten.co.jp/mashimorinotake/diary/202610240010/",
+     "photoSourceType": "third_party"
     },
     {
      "item": "千住あげ",
      "price": "470円",
-     "cover": "../images/料理/千住の永見_1_千住あげ.svg",
-     "coverRole": "illustration"
+     "photoSourceUrl": "https://ameblo.jp/tyameko018/entry-12889836724.html",
+     "photoSourceType": "third_party"
     },
     {
      "item": "煮込み",
      "price": "630円",
-     "cover": "../images/料理/千住の永見_2_煮込み.svg",
-     "coverRole": "illustration"
+     "photoSourceUrl": "https://ameblo.jp/nekonyan190721/entry-12911212783.html",
+     "photoSourceType": "third_party"
     },
     {
      "item": "ハイボール（ジャンボ）",
      "price": "490円",
-     "cover": "../images/料理/千住の永見_3_ハイボール（ジャンボ）.svg",
-     "coverRole": "illustration"
+     "photoSourceUrl": "https://kansai-onna.com/nomitabearuki/tokyo-kitasenju-magami/",
+     "photoSourceType": "third_party"
     },
     {
      "item": "名物・千寿揚げを",

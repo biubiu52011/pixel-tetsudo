@@ -38,3 +38,11 @@
 4. 运行 `node data/core/generate-all.js`，检查生成的 `tourism_data.compact.json` 与 `tourism-data.file.js` 一致；检查四张图片均可加载、`file://` 及 HTTPS 均可访问。
 5. 仅在确认拥有授权或适当许可后，才能将状态更改为 `licensed`。
 
+
+## 2026-11-07 — Current rendering (supersedes the SVG cards)
+
+- Four active menu items now contain `photoSourceUrl` and `photoSourceType: "third_party"` linking to relevant photographs on their original publishing pages. The links are **not** official menu verification.
+- Removed SVG `cover` and `coverRole` references from the four active menu entries. Until reuse permission is verified, the site displays compact text menu rows with original-photo links instead of copying or hotlinking the photographers' work.
+- The existing venue hero picture, four recorded prices, note entries and the 「情報未確認」 disclaimer remain unchanged. No four-item 「すべて見る」 dialog.
+- The photographs themselves were not downloaded or published in this repository. If photo owners grant reuse permission, place the authorized originals in `images/料理/`, write item `img` paths, and regenerate both tourism bundles.
+- Loader updates both network and `file://` tourism bundle versions and its separate local storage tourism cache key, avoiding stale SVG menu entries.

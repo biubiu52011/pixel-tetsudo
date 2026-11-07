@@ -15,10 +15,10 @@
   function shopText(key) {
     var lang = (C.state && C.state.lang) || 'ja';
     var copy = {
-      ja: { hours: '営業時間', hint: '訪問のヒント', more: '続きを読む', less: '閉じる', close: '閉じる', seeMore: 'もっと見る', seeLess: '折りたたむ' },
-      zh: { hours: '营业时间', hint: '到访建议', more: '展开介绍', less: '收起介绍', close: '关闭', seeMore: '查看更多', seeLess: '收起' },
-      en: { hours: 'Opening hours', hint: 'Visit tip', more: 'Read more', less: 'Show less', close: 'Close', seeMore: 'Show more', seeLess: 'Show less' },
-      ko: { hours: '영업시간', hint: '방문 팁', more: '더 읽기', less: '접기', close: '닫기', seeMore: '더 보기', seeLess: '접기' }
+      ja: { hours: '営業時間', hint: '訪問のヒント', more: '続きを読む', less: '閉じる', close: '閉じる', seeMore: 'もっと見る', seeLess: '折りたたむ', photoSource: '実際の料理写真（外部）' },
+      zh: { hours: '营业时间', hint: '到访建议', more: '展开介绍', less: '收起介绍', close: '关闭', seeMore: '查看更多', seeLess: '收起', photoSource: '查看实拍照片（外部）' },
+      en: { hours: 'Opening hours', hint: 'Visit tip', more: 'Read more', less: 'Show less', close: 'Close', seeMore: 'Show more', seeLess: 'Show less', photoSource: 'View dish photos (external)' },
+      ko: { hours: '영업시간', hint: '방문 팁', more: '더 읽기', less: '접기', close: '닫기', seeMore: '더 보기', seeLess: '접기', photoSource: '실제 음식 사진 (외부)' }
     };
     return (copy[lang] || copy.ja)[key] || '';
   }
@@ -135,6 +135,15 @@
       + '" target="_blank" rel="noopener noreferrer">' + C.escapeHtml(C.t('detail.official_source')) + '</a>';
   }
 
+  // 第三方摄影只链接至原始发布页，不能作为本站已授权或官方证实的照片。
+  function getPhotoSourceLink(item) {
+    if (!item || item.photoSourceType !== 'third_party' ||
+        !/^https:\/\//i.test(item.photoSourceUrl || '')) return '';
+    return '<a class="dp-dish-source dp-photo-origin" href="' + C.escapeHtml(item.photoSourceUrl)
+      + '" target="_blank" rel="noopener noreferrer nofollow">'
+      + C.escapeHtml(shopText('photoSource')) + '</a>';
+  }
+
   function isMenuIllustrated(item) {
     return !!(item && (item.img || (item.cover && item.coverRole === 'illustration')));
   }
@@ -158,7 +167,7 @@
   function buildTextItem(spot, item, index) {
     var name = getMenuName(spot, item, index);
     return '<div class="dp-menu-row"><div class="dp-menu-row-main"><div class="dp-dish-name">'
-      + C.escapeHtml(name) + '</div>' + getSourceLink(item) + '</div>'
+      + C.escapeHtml(name) + '</div>' + getSourceLink(item) + getPhotoSourceLink(item) + '</div>'
       + (item.price != null && item.price !== ''
         ? '<div class="dp-dish-price">' + C.escapeHtml(String(item.price)) + '</div>' : '')
       + '</div>';
