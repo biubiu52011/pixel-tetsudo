@@ -264,7 +264,7 @@
         raw: text
       };
       persist();
-      notifyUpdate();
+      notifyUpdate(op);
       return data[op];
     }).catch(function(e) {
       console.debug("[WebRunInfo] refresh " + op + " failed:", e && e.message ? e.message : e);
@@ -291,28 +291,11 @@
     });
   }
 
-  // ========== 湘南信号图状态检测（零 CORS 实时状态） ==========
-  // 官网运行状态信号图文件名固定（Blue=正常 / Yellow=遅延 / Red=運転見合わせ），
-  // <img> 跨域加载不受 CORS 限制 → 由图片加载成败判定当前状态。
+  // An image URL's load success proves the asset exists, not that the
+  // operator is currently showing that icon. All three static images may
+  // coexist on the CDN; this detector must never claim a live status.
   function detectSignalStatus(op) {
-    return new Promise(function(resolve) {
-      var cfg = SOURCES[op];
-      if (!cfg || !cfg.signal) { resolve(null); return; }
-      var map = cfg.signal;
-      var keys = Object.keys(map);
-      var checked = 0, result = null;
-      keys.forEach(function(k) {
-        var img = new Image();
-        img.onload = function() { result = k; };
-        img.onerror = function() {};
-        img.onload = img.onerror = function() {
-          checked++;
-          if (checked === keys.length) resolve(result);
-        };
-        img.src = map[k];
-      });
-      setTimeout(function() { resolve(result); }, 4000);
-    });
+    return Promise.resolve(null);
   }
 
   // ========== 手动输入（可靠兜底，不自动覆盖） ==========
@@ -337,13 +320,16 @@
 
   function clear(op) {
     var data = loadCache();
-    if (data[op]) { delete data[op]; persist(); notifyUpdate(); }
+    if (data[op]) { delete data[op]; persist(); notifyUpdate(op); }
   }
 
   function getDelayInfoByOp(op) {
     var data = loadCache();
     var d = data[op];
-    if (!d) return null;
+    // Cache timestamps describe collection time, not official validity.
+    // Never keep showing a live status after the source has gone stale.
+    if (!d || !Number.isFinite(Number(d.updatedAt)) ||
+        Date.now()-Number(d.updatedAt) > REFRESH_INTERVAL_MS*2) return null;
     return {
       status: d.status,
       interval: d.interval,
@@ -405,36 +391,16 @@
       if (d && d.source === "manual") return;
       if (d && (now - d.updatedAt) < REFRESH_INTERVAL_MS) return;
       refresh(op);
-      // 湘南：信号图状态兜底（与 HTML 抓取并行；HTML 成功则覆盖，失败则用信号图）
-      if (SOURCES[op].signal) {
-        detectSignalStatus(op).then(function(k) {
-          if (!k) return;
-          var data2 = loadCache();
-          var existing = data2[op];
-          // 仅当尚无 web 数据（或 web 抓取失败）且无 manual 数据时采用
-          if (existing && existing.source === "manual") return;
-          if (existing && existing.source === "web" && (now - existing.updatedAt) < REFRESH_INTERVAL_MS) return;
-          if (!existing || existing.source !== "web") {
-            data2[op] = {
-              status: k === "normal" ? "normal" : (k === "delayed" ? "delayed" : "suspended"),
-              interval: null,
-              cause: k === "normal" ? "現在、平常通り運行しております。" : (k === "delayed" ? "遅延が発生しています。" : "運転を見合わせています。"),
-              detail: k === "normal" ? "現在、平常通り運行しております。（湘南モノレール公式サイトの運行状況信号より）" : "",
-              updatedAt: Date.now(),
-              source: "web",
-              raw: ""
-            };
-            persist();
-            notifyUpdate();
-          }
-        });
-      }
+
     });
   }
 
-  function notifyUpdate() {
+  function notifyUpdate(op) {
     try {
-      window.dispatchEvent(new CustomEvent("pt-runinfo-updated", { detail: {} }));
+      var lines=Object.keys(LINE_TO_OP).filter(function(id) { return !op || LINE_TO_OP[id] === op; });
+      document.dispatchEvent(new CustomEvent("pt-runinfo-updated", {
+        detail: {lineIds: lines}
+      }));
     } catch(e) {}
   }
 
