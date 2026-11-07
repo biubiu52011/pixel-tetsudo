@@ -195,14 +195,21 @@ test('6931788 legacy realtime modal has raised inner status and information card
   assert.match(html, /class="rs-close-glyph">×<\/span>/);
 });
 
-test('6931788 navigation and stylesheet references remain consistent', () => {
+test('original scoped 3D navigation is shared globally without restyling cards', () => {
   const css = read('css/style.css');
-  const base = css.slice(css.indexOf('/* === Tabs === */'),css.indexOf('/* === Content === */'));
+  const nav = css.slice(css.indexOf('/* === Tabs === */'), css.indexOf('/* === Content === */'));
   const i = css.indexOf('/* Mobile primary navigation geometry.');
-  const mobile = css.slice(i,css.indexOf('@media (max-width: 380px)',i));
-  assert.ok(base.includes('background: var(--card)'));
-  assert.ok(base.includes('box-shadow: 3px 3px 0px rgba(0,0,0,0.15)'));
+  const mobile = css.slice(i, css.indexOf('@media (max-width: 380px)', i));
+  assert.ok(nav.includes('border: 2px solid var(--text);  border-radius: 5px;'));
+  assert.ok(nav.includes('box-shadow: 4px 4px 0 rgba(32,33,38,.4), inset 2px 2px 0 #ffffff;'));
+  assert.ok(nav.includes('white-space: nowrap;  border-radius: 3px;'));
+  assert.ok(nav.includes('background: #dff5e7; border: 2px solid #006b32;'));
+  assert.ok(nav.includes('box-shadow: inset 2px 2px 0 #ffffff, 2px 2px 0 #006b32;'));
+  // Retain the historical page-card contract and mobile nav geometry: nav only.
+  assert.ok(css.includes('.pixel-card{background: var(--card);  border: 2px solid var(--border);  border-radius: var(--radius);'));
   assert.ok(mobile.includes('grid-template-columns: repeat(4, max-content)'));
+  assert.match(read('css/lang-bar.css'), /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
+  assert.doesNotMatch(read('css/ux-refinements.css'), /body\[data-page="(?:realtime|trains|history)"\] \.pixel-tabs/);
   const version = blobVersion(css);
   for(const page of pages)
     assert.ok(read('pages/' + page + '.html').includes('../css/style.css?v=' + version), page + ' CSS version');
