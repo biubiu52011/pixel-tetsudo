@@ -227,3 +227,44 @@ JR神戸線作为运营线路跨越数据库 `TokaidoKansai` 与 `SanyoMain`；�
 已执行数据库迁移，源指纹重算通过：`SanyoMain` **4/4**、`TokaidoKansai` **31/31**，合计 **35/35**（主线平日15/土休日16；神户以西平日3/土休日1），湖西線仍为 **52/52**。Edge Function `train-runs v337` 共用同一个时刻证据门槛，按来源线区分站数而非把西段的 5/11 站当作东段的 16~33 站；所有源仍不具有真实车辆编组或 PNG 授权。新增同一测试文件的覆盖断言。
 
 注意以上四条只能证明已导入片段，**不意味着兵庫到西明石之外的路段、姬路全线、全部普通/快速班次已经完备**。
+
+
+## 2026-11-07 第七批：JR神戸線西段 10 条新核验来源及 M 号快速例外
+
+本批直接沿用 `SanyoMain` 原始模板和 `published_jrwest_kyoto_kobe_2611_source_fleet` 现有候选表；**未创建新的独立时刻表所有权、未改 UI、未加载额外 JS，也未增车次 PNG 映射**。本次两份迁移：
+
+- `supabase/migrations/20261107145000_jrwest_kobe_sanyo_2611_six_local_source_clocks.sql`
+- `supabase/migrations/20261107150000_jrwest_kobe_sanyo_2611_newrapid_rapid_source_clocks.sql`
+
+### 新增 6 条普通 C 已核验来源
+
+| 公众车次 | 原 SQL 运行日 | 已有原始区间 | 来源站数 | JR西日本 2026-11 个别列车证据 |
+| --- | --- | --- | ---: | --- |
+| `153C` | 平日 | 兵庫→須磨 | 5 | [官方](https://timetable.jr-odekake.net/train-timetable/155921?date=20261104) |
+| `189C` | 平日 | 兵庫→須磨 | 5 | [官方](https://timetable.jr-odekake.net/train-timetable/102401?date=20261023) |
+| `191C` | 平日 | 兵庫→須磨 | 5 | [官方](https://timetable.jr-odekake.net/train-timetable/86381?date=20261009) |
+| `4631C` | 土休日 | 兵庫→西明石 | 11 | [官方](https://timetable.jr-odekake.net/train-timetable/189391?date=20261023) |
+| `4693C` | 平日 | 兵庫→西明石 | 11 | [官方](https://timetable.jr-odekake.net/train-timetable/189601?date=20261013) |
+| `4729C` | 土休日 | 兵庫→西明石 | 11 | [土休日官方](https://timetable.jr-odekake.net/train-timetable/189791?date=20261017) |
+
+同一番号的**平日/土休日版本可能在个别停站有不同到发分钟**，不能从该号码的一个版本推断另一个版本；特别是 `4729C` 只认证历史 SQL 中的土休日原来源片段。所有来源时刻指纹在执行迁移前后均重新计算，未复制官方公布的整列车时刻表。
+
+### 新增 4 条快速／新快速来源
+
+| 公众番号 | 运行日 | 正式种别 | 已验证区间 | 来源站数 | 官方页面 |
+| --- | --- | --- | --- | ---: | --- |
+| `3425M` | 土休日 | 新快速 | 明石→姫路 | 4 | [JR西日本](https://timetable.jr-odekake.net/train-timetable/173971?date=20261121) |
+| `3469M` | 土休日来源 | 新快速 | 明石→姫路 | 4 | [JR西日本](https://timetable.jr-odekake.net/train-timetable/145241?date=20261124)（官方号可每日运行；只认证已有假日源） |
+| `717M` | 平日 | **快速** | 兵庫→姫路 | 17 | [JR西日本](https://timetable.jr-odekake.net/train-timetable/101711?date=20261027) |
+| `815T` | 土休日 | 快速 | 兵庫→姫路 | 17 | [JR西日本](https://timetable.jr-odekake.net/train-timetable/102101?date=20261012) |
+
+重要：`717M` 的公众列车番号末尾虽然是 `M`，**官方种别却是「快速」**，而非「新快速」。因此 `train-runs` 不再对 `SanyoMain` 简单使用 `M=SpecialRapid`。采用严格 source-only 证据：`717M` 在该区间明确标记 `published_train_type=Rapid`，`3425M/3469M` 是 `SpecialRapid`。号只是底层匹配依据，不凭号推算物理编组或渲染 223／225 PNG。A快速 `815T` 的公开列车设施信息也不构成逐车次车型确认。
+
+### 状态与剩余缺口
+
+线上已应用上述两次迁移，`train-runs` 更新为 **v339**，SQL 查询验证：
+- 京都／神户走廊 **45/45** 已认证来源，`TokaidoKansai` 31，`SanyoMain` 14；
+- 湖西線 **52/52** 已认证来源，无新增确认；
+- 以上都是**原来源片段**而非全天完整线路时刻表。对于 `3425M` 的跨米原直通 `3225M→3425M` 不能据局部 4 站信息补全实际列车位置；类似 `3469M` 北段经湖西线的直通番号也不能擅自拼合。
+
+仍待分开核验：`741T` 旧来源手柄山平和公园站分钟差异、`749T`、`789T`、`845T` 等分日历版本，`4848M` 湖西线现行来源，以及其他上／下行和特急。保留既有旧来源，防止幽灵列车；没有为未验证线路声称完整。
