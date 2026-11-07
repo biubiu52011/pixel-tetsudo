@@ -72,6 +72,7 @@ test('before 04:00 JST belongs to the preceding service date',async()=>{
   const result=await route('2026-11-03T16:00:00Z',
     [source('wrong-day','Weekday','24:05','24:20'),overnight],null,'24:00');
   assert.equal(result.complete,true);
+  assert.equal(result.serviceDate,'2026-11-03','early-morning railway service day must be prior local date');
   assert.equal(result.times[0].train,'after-midnight');
   assert.equal(result.serviceDate,'2026-11-03');
 });
