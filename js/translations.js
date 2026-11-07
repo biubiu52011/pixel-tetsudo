@@ -5,6 +5,9 @@
   "use strict";
   var translations = {
     en: {
+      "search_result.arrival_platform": "Alighting platform",
+      "search_result.departure_platform": "Boarding platform",
+      "search_result.platform_unconfirmed": "Not confirmed",
       "search.time_mode": "Time mode",
       "search.time_search": "Time search",
       "search.now": "Leave now",
@@ -323,6 +326,9 @@
       "train.transferOut": "out-of-station transfer",
     },
     zh: {
+      "search_result.arrival_platform": "下车站台",
+      "search_result.departure_platform": "上车站台",
+      "search_result.platform_unconfirmed": "尚未确认",
       "search.time_mode": "时刻模式",
       "search.time_search": "时间检索",
       "search.now": "现在出发",
@@ -641,6 +647,9 @@
       "train.transferOut": "站外换乘",
     },
     ja: {
+      "search_result.arrival_platform": "降車番線",
+      "search_result.departure_platform": "乗車番線",
+      "search_result.platform_unconfirmed": "番線未確認",
       "search.time_mode": "時刻モード",
       "search.time_search": "時間検索",
       "search.now": "今すぐ出発",
@@ -959,6 +968,9 @@
       "train.transferOut": "駅外乗換",
     },
     ko: {
+      "search_result.arrival_platform": "하차 승강장",
+      "search_result.departure_platform": "승차 승강장",
+      "search_result.platform_unconfirmed": "미확인",
       "search.time_mode": "시간 모드",
       "search.time_search": "시간 검색",
       "search.now": "지금 출발",
