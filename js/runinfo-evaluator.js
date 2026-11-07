@@ -185,18 +185,28 @@
     var places=uniq(candidates.map(function(e){return e.interval;}).filter(Boolean));
     var chosen=candidates[0];
     interval=interval||places.join("、")||null;
-    var m=text.match(/(?:最大|約|およそ)?\s*(\d{1,3})\s*(?:分間|分|min)(?!頃|後|以上)/i);
+    var delayMatches=text.match(/(?:約|およそ)?\s*[０-９0-9]{1,3}\s*(?:分間|分|min)(?!頃|後|以)/gi)||[];
     var service=text.match(/通常の\s*([０-９0-9]+)(?:\s*[～〜－−-]\s*([０-９0-9]+))?\s*割程度/);
     function n(x){return Number(String(x).replace(/[０-９]/g,function(c){return String(c.charCodeAt(0)-0xff10);}));}
+    var textDelayMinutes=delayMatches.length?Math.max.apply(null,delayMatches.map(function(v){
+      return n((v.match(/[０-９0-9]{1,3}/)||[])[0]);
+    })):null;
     var resume=null,sourceTime=textOf(input.resumeEstimate),match=sourceTime.match(/(\d{1,2}):(\d{2})/);
-    if(match&&Number(match[1])<=29&&Number(match[2])<=59)resume=match[1].padStart(2,"0")+":"+match[2]+"頃";
+    var estimateSentence=text.split(/[。\n]/).filter(function(v){
+      return /再開/.test(v)&&/(?:見込|予定|見通し)/.test(v);
+    })[0]||"";
+    var clock=sourceTime.match(/([０-９0-9]{1,2})時(?:([０-９0-9]{1,2})分)?/) ||
+      estimateSentence.match(/([０-９0-9]{1,2})時(?:([０-９0-9]{1,2})分)?/);
+    if(!match&&clock)match=[clock[0],String(n(clock[1])),String(n(clock[2]||"0"))];
+    if(match&&n(match[1])<=29&&n(match[2])<=59)
+      resume=String(n(match[1])).padStart(2,"0")+":"+String(n(match[2])).padStart(2,"0")+"頃";
     return {
       interval:interval,direction:chosen&&chosen.direction||null,effect:chosen&&chosen.effect||null,
       impacts:events.filter(function(e){return e.effect!=="negative";}).map(function(e){
         return {interval:e.interval,direction:e.direction,effect:e.effect,phase:e.phase};
       }),events:events,incidentLocation:uniq(events.map(function(e){return e.incidentLocation;}).filter(Boolean)).join("、")||null,
       cause:normalizeCause(input.cause)||extractCauseFromText(text),resume:resume,
-      detail:text||null,textDelayMinutes:m?Number(m[1]):null,
+      detail:text||null,textDelayMinutes:textDelayMinutes,
       serviceLevel:service?{minPercent:n(service[1])*10,maxPercent:n(service[2]||service[1])*10}:null
     };
   }
@@ -303,7 +313,7 @@
       messageKind: messageKind,
       noticeClassification: messageKind === "notice" ? classifyNotice(input) : null,
       status: resolvedStatus,
-      maxDelay: delayMinutes != null ? delayMinutes : metadata.textDelayMinutes,
+      maxDelay: delayMinutes != null ? delayMinutes : (resolvedStatus === "delayed" || resolvedStatus === "suspended" ? metadata.textDelayMinutes : null),
       delayUpperBoundMinutes: te.delayUpperBoundMinutes,
       interval: metadata.interval,
       direction: metadata.direction,
@@ -337,5 +347,5 @@
     return { cleanText: clean, links: links };
   }
 
-  return { extractLinks: extractLinks, version: "1.5.3", classifyNotice: classifyNotice, evaluate: evaluate, evaluateText: evaluateText, extractMetadata: extractMetadata, normalizeStructuredStatus: normalizeStructuredStatus, normalizeMessageKind: normalizeMessageKind, inferMessageKind: inferMessageKind, statusSymbol: statusSymbol };
+  return { extractLinks: extractLinks, version: "1.5.4", classifyNotice: classifyNotice, evaluate: evaluate, evaluateText: evaluateText, extractMetadata: extractMetadata, normalizeStructuredStatus: normalizeStructuredStatus, normalizeMessageKind: normalizeMessageKind, inferMessageKind: inferMessageKind, statusSymbol: statusSymbol };
 });
