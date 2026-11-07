@@ -47,7 +47,14 @@
       if(this.timeMode && this.timeInput) {
         var clock = new Date(Date.now()+9*3600000);
         this.timeInput.value = String(clock.getUTCHours()).padStart(2,'0')+':'+String(clock.getUTCMinutes()).padStart(2,'0');
-        this.timeMode.addEventListener('change', () => { this.timeInput.disabled=this.timeMode.value==='now'; });
+        const updateTimeMode = () => {
+          const isNow = this.timeMode.value === 'now';
+          this.timeInput.disabled = isNow;
+          const controls = this.timeMode.closest('.search-time-controls');
+          if (controls) controls.setAttribute('data-time-mode', this.timeMode.value);
+        };
+        this.timeMode.addEventListener('change', updateTimeMode);
+        updateTimeMode();
       }
 
       // 解析 ?from=/&to= URL 参数。等 RailwayDB 数据就绪后再真正填充；
@@ -146,13 +153,12 @@
         this.toInput.value = fromVal;
         this.toInput.setAttribute('data-station-id', fromId || '');
       }
-      // 触发建议刷新。
-      if (this.fromInput && this.fromInput.value) {
-        this.showSuggestions(this.fromInput.value, 'fromSuggestions', this.fromInput);
-      }
-      if (this.toInput && this.toInput.value) {
-        this.showSuggestions(this.toInput.value, 'toSuggestions', this.toInput);
-      }
+      // Swapping authoritative IDs must not leave an obsolete menu open.
+      [this.fromInput, this.toInput].forEach(input => {
+        if (!input) return;
+        const list = document.getElementById(input.getAttribute('aria-controls'));
+        if (list) this._hideSuggestions(list, input);
+      });
     },
 
     bindEvents: function() {
@@ -202,7 +208,9 @@
         });
         input.addEventListener('input', () => {
           input.removeAttribute('data-station-id');
-          this.showSuggestions(input.value, listId, input);
+          clearTimeout(input._suggestTimer);
+          // Debounce station matching while keeping typing responsive.
+          input._suggestTimer = setTimeout(() => this.showSuggestions(input.value, listId, input), 180);
         });
       });
 
@@ -220,6 +228,7 @@
     _suggestionCache: {},
 
     _hideSuggestions: function(list, input) {
+      if (input) clearTimeout(input._suggestTimer);
       list.classList.remove('active');
       list.innerHTML = '';
       list.dataset.activeIndex = '-1';
@@ -256,9 +265,15 @@
         this._hideSuggestions(list, input);
         return;
       }
-      if (!this._suggestionCache[query])
+      if (!Object.prototype.hasOwnProperty.call(this._suggestionCache, query)) {
+        // Bound query/HTML caches; otherwise long sessions retain every keystroke.
+        if (Object.keys(this._suggestionCache).length >= 40) {
+          this._suggestionCache = {};
+          this._suggestionCacheDOM = {};
+        }
         this._suggestionCache[query] = window.RouteSearch
           ? window.RouteSearch.findStationsByTerm(query) : [];
+      }
       const stations = this._suggestionCache[query];
       if (!stations || !stations.length) {
         this._hideSuggestions(list, input);
