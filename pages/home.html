@@ -47,7 +47,7 @@
                 <h2 data-i18n="search.title">路線検索</h2>
               </div>
               <div class="search-inputs">
-                <div class="input-group">
+                <div class="input-group input-with-clear">
                   <label class="input-label" for="searchFrom" data-i18n="search.fromLabel"
                     >出発駅</label
                   >
@@ -64,6 +64,7 @@
                     data-i18n-placeholder="search.fromPlaceholder"
                     placeholder="出発駅を入力してください"
                   />
+                  <button id="clearSearchFrom" class="clear-btn" type="button" aria-label="出発駅をクリア" hidden>×</button>
                   <div id="fromSuggestions" class="suggestions" role="listbox"></div>
                 </div>
                 <button
@@ -90,7 +91,7 @@
                     />
                   </svg>
                 </button>
-                <div class="input-group">
+                <div class="input-group input-with-clear">
                   <label class="input-label" for="searchTo" data-i18n="search.toLabel"
                     >到着駅</label
                   >
@@ -107,6 +108,7 @@
                     data-i18n-placeholder="search.toPlaceholder"
                     placeholder="到着駅を入力してください"
                   />
+                  <button id="clearSearchTo" class="clear-btn" type="button" aria-label="到着駅をクリア" hidden>×</button>
                   <div id="toSuggestions" class="suggestions" role="listbox"></div>
                 </div>
                 <div class="search-time-controls">
@@ -134,17 +136,16 @@
                       </option>
                     </select></label
                   >
-                  <label class="input-group" for="searchTime"
-                    ><span
-                      class="input-label visually-hidden"
-                      data-i18n="search.time_jst"
-                      >時刻</span
-                    ><input
-                      id="searchTime"
-                      class="search-input"
-                      type="time"
-                      disabled
-                  /></label>
+                  <div id="searchTimeDetails" hidden>
+                    <label class="input-group" for="searchDate">
+                      <span class="input-label visually-hidden" data-i18n="search.date">日付</span>
+                      <input id="searchDate" class="search-input" type="date" disabled />
+                    </label>
+                    <label class="input-group" for="searchTime">
+                      <span class="input-label visually-hidden" data-i18n="search.time_jst">時刻</span>
+                      <input id="searchTime" class="search-input" type="time" disabled />
+                    </label>
+                  </div>
                 </div>
                 <button
                   id="searchBtn"
