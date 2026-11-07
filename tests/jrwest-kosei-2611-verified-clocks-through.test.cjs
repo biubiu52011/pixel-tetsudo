@@ -272,8 +272,8 @@ test('four calendar-scoped and two weekday Kyoto-Kobe T rapid sources are finger
  for(const token of [
   '    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);',
   '/^[0-9]{3,4}T$/.test(p.official_train_number)',
-  'certifiedType==="Rapid"?p.official_stop_count===18',
-  '!/^(?:\\d{4}M|\\d{3,4}[CT])$/.test(p.official_train_number)',
+  'p.official_stop_count===18)',
+  '!/^(?:\\d{3,4}M|\\d{3,4}[CT])$/.test(p.official_train_number)',
   'stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==p.official_stop_count',
   'p.authorizes_png!==false'
  ])assert.ok(block.includes(token),token);
