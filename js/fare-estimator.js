@@ -45,6 +45,11 @@
     try {
       line = (window.RailwayDB && window.RailwayDB.getLine) ? window.RailwayDB.getLine(lineId) : null;
     } catch (e) {}
+    // Shinkansen fares require actual distance plus limited-express/seat charges.
+    // A local-station-count proxy cannot produce a defensible amount.
+    if (/shinkansen|新幹線/i.test(String(lineId || '') + ' ' +
+        String(line && line.name || '') + ' ' +
+        String(line && line.nameJa || ''))) return null;
     if (line && line.operator) group = operatorGroup(line.operator);
     var km = Math.max(1, hopCount || 1) * KM_PER_SEG[group];
     return fareFor(group, km);
@@ -59,7 +64,12 @@
     var total = 0, hasRide = false;
     for (var i = 0; i < segments.length; i++) {
       var s = segments[i];
-      if (s && s.type === 'ride' && typeof s.fare === 'number') { total += s.fare; hasRide = true; }
+      if (s && s.type === 'ride') {
+        // Never show a partial fare as the total when one leg is unpriced.
+        if (typeof s.fare !== 'number' || !Number.isFinite(s.fare)) return null;
+        total += s.fare;
+        hasRide = true;
+      }
     }
     return hasRide ? total : null;
   }
