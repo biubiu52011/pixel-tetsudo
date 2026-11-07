@@ -69,8 +69,8 @@ function renderShop(spot) {
     },
     buildContext(s) {
       return {
-        spot: s, spotName: s.name, spotFee: '無料', spotHours: '10:00',
-        spotBestTime: '年中', spotAddress: '', desc: 'About',
+        spot: s, spotName: s.name, spotFee: '無料', spotHours: s.hours || '10:00',
+        spotBestTime: '年中', spotAddress: '', desc: s.desc || 'About',
         tagsHtml: '', typeBadge: '', heroClass: '',
         mapLat: 35.6, mapLng: 139.6,
         dist: { distMain: '', distText: '', stationName: '' },
@@ -105,7 +105,7 @@ test('play recommendations render with optional prices and without empty tips', 
   assert.match(html, /費用/);
   assert.doesNotMatch(html, /訪問Tips|内容なし/);
   const priceFields = html.match(/class="dp-dish-price"/g) || [];
-  assert.equal(priceFields.length, 4, 'two priced items in preview and modal; unpriced item omitted');
+  assert.equal(priceFields.length, 2, 'short menus render each price once without an unnecessary modal');
 });
 
 test('historical visit notes never masquerade as product recommendation cards', () => {
@@ -378,7 +378,7 @@ test('shop images cannot impersonate item photography and provenance is explicit
       { item: 'Reviewed menu', sourceUrl: 'https://example.com/verified', sourceType: 'official' },
     ],
   });
-  assert.match(html, /dp-dish-badge/);
+  assert.doesNotMatch(html, /dp-dish-badge/, 'never invent product imagery');
   assert.equal(html.includes('src="../images/観光地/shop.jpg"'), false);
   assert.equal(html.includes('src="../images/illustration.svg"'), true);
   assert.match(html, /https:\/\/example\.com\/verified/);
@@ -401,4 +401,49 @@ test('missing coordinates do not place a venue at an invented map location', () 
   assert.match(valid.mapSection, /id="tourismMap"/);
   assert.equal(core.escapeHtml('A"&<\'B'), 'A&quot;&amp;&lt;&#39;B');
   assert.equal(core.escapeHtml(0), '0');
+});
+
+test('short menus use compact text rows and remove a redundant all-items dialog', () => {
+  const html = renderShop({
+    name:'びあマ北千住', tags:['food','drink','shop'],
+    hours:'月曜～土曜・祝前日14:00〜23:00（LO22:00）、日曜・祝日13:00〜22:00（LO21:00）※テイクアウトは閉店まで可',
+    desc:'長い紹介。'.repeat(75),
+    menu:[
+      {item:'クラフトビール',price:'300円〜',cover:'../images/観光地/shop.jpg',coverRole:'shop'},
+      {item:'飲み比べセット',price:'1,500円',cover:'../images/観光地/shop.jpg',coverRole:'shop'},
+      {item:'自家製ピクルス',price:'400円',cover:'../images/観光地/shop.jpg',coverRole:'shop'}
+    ]
+  });
+  assert.match(html, /dp-menu-list/);
+  assert.match(html, /dp-menu-row/);
+  assert.doesNotMatch(html, /dp-menu-carousel|dp-dish-thumb|dp-menu-modal|dp-menu-viewall/);
+  assert.match(html, /dp-about--collapsible/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, /営業時間/);
+  assert.match(html, /日曜・祝日/);
+  assert.doesNotMatch(html, /ベストシーズン|營業時間|閉する/);
+  assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 3);
+});
+
+test('long menus retain an accessible all-items dialog without fabricating pictures', () => {
+  const menu = Array.from({length:8},(_,i)=>({item:'商品'+i,price:(100+i)+'円'}));
+  const html = renderShop({name:'Large shop',tags:['store'],menu});
+  assert.match(html, /class="dp-menu-viewall"/);
+  assert.match(html, /role="dialog" aria-modal="true"/);
+  assert.match(html, /aria-label="閉じる"/);
+  assert.match(html, /dp-menu-list/);
+  assert.doesNotMatch(html, /dp-dish-badge|dp-dish-thumb/);
+  assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 14);
+});
+
+test('mixed menus keep real item photography separate from no-photo text entries', () => {
+  const html = renderShop({name:'Hybrid shop',tags:['drink'],menu:[
+    {item:'Real picture',img:'../images/items/real.jpg',sourceUrl:'https://example.com/real',sourceType:'official'},
+    {item:'Text only',cover:'../images/観光地/shop.jpg',coverRole:'shop'}
+  ]});
+  assert.match(html, /class="dp-menu-carousel"/);
+  assert.match(html, /class="dp-menu-list"/);
+  assert.ok(html.includes('src="../images/items/real.jpg"'));
+  assert.equal(html.includes('src="../images/観光地/shop.jpg"'),false);
+  assert.match(html, /公式情報/);
 });

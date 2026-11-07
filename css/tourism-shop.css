@@ -80,6 +80,66 @@
 .article-content--shop .dp-map .map-container { border-radius: var(--radius-sm, 4px); overflow: hidden; }
 .article-content--shop .dp-note { padding: 0 16px 20px; color: var(--text-muted); font-size: 12px; line-height: 1.6; }
 
+
+/* 商家专属信息与推荐视图：无菜品图片用紧凑列表，有原图才展示照片。 */
+.article-content--shop .dp-hours-value { white-space: pre-line; line-height: 1.7; }
+.article-content--shop .dp-info-row--hours { align-items: flex-start; }
+.article-content--shop .dp-menu-list { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.article-content--shop .dp-menu-row,
+.dp-menu-modal .dp-menu-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 12px 1px; min-width: 0; border-bottom: 1px solid var(--border);
+}
+.article-content--shop .dp-menu-row:first-child,
+.dp-menu-modal .dp-menu-row:first-child { padding-top: 3px; }
+.article-content--shop .dp-menu-row:last-child,
+.dp-menu-modal .dp-menu-row:last-child { border-bottom: 0; }
+.article-content--shop .dp-menu-row-main,
+.dp-menu-modal .dp-menu-row-main { flex: 1 1 auto; min-width: 0; }
+.article-content--shop .dp-menu-row .dp-dish-name,
+.dp-menu-modal .dp-menu-row .dp-dish-name {
+  display: block; margin: 0; font-size: 14px; line-height: 1.55;
+  font-weight: 600; overflow: visible; overflow-wrap: anywhere;
+}
+.article-content--shop .dp-menu-row .dp-dish-price,
+.dp-menu-modal .dp-menu-row .dp-dish-price {
+  flex: 0 0 auto; max-width: 44%; margin-top: 0; font-size: 14px;
+  text-align: right; line-height: 1.5;
+}
+.article-content--shop .dp-menu-row .dp-dish-source,
+.dp-menu-modal .dp-menu-row .dp-dish-source { margin-top: 3px; font-size: 11px; }
+.article-content--shop .dp-menu-disclaimer,
+.dp-menu-modal .dp-menu-disclaimer {
+  margin: 12px 0 0; padding: 9px 11px; border-left: 3px solid var(--border);
+  background: var(--bg3); color: var(--text-muted); font-size: 12px; line-height: 1.55;
+}
+.article-content--shop .dp-menu-carousel + .dp-menu-list,
+.dp-menu-modal .dp-menu-carousel + .dp-menu-list {
+  margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border);
+}
+.article-content--shop .dp-about--collapsible:not(.is-expanded) .dp-text {
+  display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+  overflow: hidden; white-space: normal;
+}
+.article-content--shop .dp-about-toggle {
+  display: block; min-height: 44px; margin: 8px auto 0; padding: 10px 18px;
+  border: 2px solid var(--border); border-radius: var(--radius-sm, 4px);
+  background: var(--bg3); color: var(--text); font: inherit; font-size: 13px;
+  font-weight: 700; cursor: pointer;
+}
+.article-content--shop .dp-about-toggle:hover { border-color: var(--dp-accent); color: var(--dp-accent); }
+.dp-menu-modal-grid .dp-menu-carousel { margin-bottom: 8px; }
+.dp-menu-modal .dp-menu-list { display: block; }
+.dp-menu-modal .dp-menu-row { border-color: var(--border); }
+@media (max-width: 380px) {
+  .article-content--shop .dp-menu-row,
+  .dp-menu-modal .dp-menu-row { gap: 8px; }
+  .article-content--shop .dp-menu-row .dp-dish-name,
+  .dp-menu-modal .dp-menu-row .dp-dish-name { font-size: 13px; }
+  .article-content--shop .dp-menu-row .dp-dish-price,
+  .dp-menu-modal .dp-menu-row .dp-dish-price { font-size: 12px; }
+}
+
 /* 共享的弹窗生命周期归 tourism-shop.js 管理，不与公共图集共享节点。 */
 .dp-menu-modal {
   position: fixed; inset: 0; z-index: 10000; display: none; justify-content: center; align-items: flex-end;
@@ -99,7 +159,7 @@
   border: 2px solid var(--border); border-radius: var(--radius-sm, 4px); background: var(--card);
   color: var(--text); font: inherit; font-size: 22px; cursor: pointer;
 }
-.dp-menu-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 16px 12px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px)); }
+.dp-menu-modal-grid { display: block; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px)); }
 .dp-menu-modal .dp-dish { min-width: 0; }
 .dp-menu-modal .dp-dish-name { display: block; -webkit-line-clamp: unset; overflow: visible; }
 .dp-menu-modal .dp-dish-price { white-space: normal; overflow: visible; }
@@ -115,7 +175,7 @@
   .article-content--shop .dp-info-label { flex-basis: 68px; }
   .dp-menu-modal { padding: 0; }
   .dp-menu-modal-inner { max-height: 92dvh; border-left: 0; border-right: 0; }
-  .dp-menu-modal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dp-menu-modal-grid { padding-inline: 12px; }
 }
 @media (max-width: 360px) {
   .article-content--shop .dp-name { font-size: 18px; }
