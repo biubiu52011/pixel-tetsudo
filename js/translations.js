@@ -5,6 +5,11 @@
   "use strict";
   var translations = {
     en: {
+      "search.mode_group": "Search priority",
+      "search.duration_unconfirmed": "Duration unconfirmed",
+      "search.fare_unconfirmed": "Fare unconfirmed",
+      "search.route_details": "Journey details",
+      "search_result.no_transfers": "No transfers",
       "search_result.arrival_platform": "Alighting platform",
       "search_result.departure_platform": "Boarding platform",
       "search_result.platform_unconfirmed": "Not confirmed",
@@ -326,6 +331,11 @@
       "train.transferOut": "out-of-station transfer",
     },
     zh: {
+      "search.mode_group": "搜索偏好",
+      "search.duration_unconfirmed": "用时未确认",
+      "search.fare_unconfirmed": "票价未确认",
+      "search.route_details": "行程详情",
+      "search_result.no_transfers": "无需换乘",
       "search_result.arrival_platform": "下车站台",
       "search_result.departure_platform": "上车站台",
       "search_result.platform_unconfirmed": "尚未确认",
@@ -647,6 +657,11 @@
       "train.transferOut": "站外换乘",
     },
     ja: {
+      "search.mode_group": "検索条件",
+      "search.duration_unconfirmed": "所要時間未確認",
+      "search.fare_unconfirmed": "運賃未確認",
+      "search.route_details": "経路の詳細",
+      "search_result.no_transfers": "乗換なし",
       "search_result.arrival_platform": "降車番線",
       "search_result.departure_platform": "乗車番線",
       "search_result.platform_unconfirmed": "番線未確認",
@@ -968,6 +983,11 @@
       "train.transferOut": "駅外乗換",
     },
     ko: {
+      "search.mode_group": "검색 우선순위",
+      "search.duration_unconfirmed": "소요 시간 미확인",
+      "search.fare_unconfirmed": "운임 미확인",
+      "search.route_details": "경로 상세",
+      "search_result.no_transfers": "환승 없음",
       "search_result.arrival_platform": "하차 승강장",
       "search_result.departure_platform": "승차 승강장",
       "search_result.platform_unconfirmed": "미확인",
