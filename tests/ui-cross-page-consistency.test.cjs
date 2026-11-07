@@ -198,3 +198,22 @@ test('realtime modal keeps the four raised pixel section cards', () => {
     assert.ok(html.includes('class="rs-' + section + '-section"'));
   assert.match(html, /class="rs-close-glyph">×<\/span>/);
 });
+
+test('navigation restores 2660e0d gradient styling and mobile equal-width columns', () => {
+  const css = read('css/style.css');
+  const base = css.slice(css.indexOf('/* === Tabs === */'), css.indexOf('/* === Content === */'));
+  const i = css.indexOf('/* Mobile primary navigation geometry.');
+  const mobile = css.slice(i, css.indexOf('@media (max-width: 380px)',i));
+  assert.ok(base.includes('background:linear-gradient(180deg,#fbfdff,#eef7fc)'));
+  assert.ok(base.includes('border-radius:var(--pt-radius-panel)'));
+  assert.ok(base.includes('box-shadow:var(--pt-shadow-panel)'));
+  assert.ok(base.includes('min-height:46px'));
+  assert.ok(base.includes('background:linear-gradient(180deg,#f3fff8,#dff4e8)'));
+  assert.ok(mobile.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'));
+  assert.ok(mobile.includes('min-height: 48px'));
+  assert.ok(mobile.includes('white-space: normal'));
+  assert.ok(!mobile.includes('max-content'));
+  const version = blobVersion(css);
+  for (const page of ['home','realtime','trains','history','tourism-spot','tourism-shop','tourism-event'])
+    assert.ok(read('pages/' + page + '.html').includes('../css/style.css?v=' + version), page + ' CSS cache version');
+});
