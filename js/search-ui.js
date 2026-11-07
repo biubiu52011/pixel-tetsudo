@@ -504,6 +504,7 @@
             var toSt = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(seg.toStation, lang) : (seg.toStation || '');
             html += '<div class="journey-seg" data-seg-color="' + window.escapeHtml(lineColor || '') + '" data-seg-idx="' + i + '">';
             html += '<div class="journey-seg-head">';
+            html += '<div class="journey-seg-line-group"><span class="journey-seg-color-mark" aria-hidden="true"></span>';
             html += '<span class="journey-seg-name">' + window.escapeHtml(lineName || '') + '</span>';
             if (seg.trainType) { html += '<span class="journey-seg-type">' + window.escapeHtml(t('train_type.' + seg.trainType)) + '</span>'; }
             // 运行状态徽章与实时页面同步（仅延误/停运时显示）。
@@ -522,6 +523,7 @@
               } catch(_e) {}
             }
             if (_stBadge) { html += _stBadge; }
+            html += '</div>';
             // 方向徽章：乗車情報（行先）掛在乗車段頂部——Yahoo式乗車駅直下挂位；恒取段终点（行进方向）
             // （线路站序反向乘车段曾误显示起点站名，例：新宿→渋谷 显示"新宿方面"，乘客视角应始终是驶向的站）
             if (seg.direction !== 0 && lineId) {
@@ -535,13 +537,15 @@
             html += '<div class="journey-seg-route" role="group" aria-label="' +
               window.escapeHtml(fromSt + ' → ' + toSt) + '">';
             html += '<div class="journey-seg-stop journey-seg-stop--from">' +
-              '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_dep')) + '</span>' +
+              '<div class="journey-seg-stop-clock">' +
               '<span class="journey-seg-stop-time" data-time-confirmed="false" data-seg-dep-time="' + i + '">—</span>' +
+              '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_dep')) + '</span></div>' +
               '<strong class="journey-seg-stop-name">' + window.escapeHtml(fromSt) + '</strong></div>';
             html += '<span class="journey-seg-route-arrow" aria-hidden="true">→</span>';
             html += '<div class="journey-seg-stop journey-seg-stop--to">' +
-              '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_arr')) + '</span>' +
+              '<div class="journey-seg-stop-clock">' +
               '<span class="journey-seg-stop-time" data-time-confirmed="false" data-seg-arr-time="' + i + '">—</span>' +
+              '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_arr')) + '</span></div>' +
               '<strong class="journey-seg-stop-name">' + window.escapeHtml(toSt) + '</strong></div>';
             html += '</div>';
             // Auxiliary metadata is hidden until a backed timetable row supplies it.
@@ -568,7 +572,10 @@
       // 通过 DOM API 应用行程区间边框颜色（符合 CSP；style-src 'self' 会阻止内联 style 属性）。
       this.resultsDiv.querySelectorAll('.journey-seg').forEach(function(seg) {
         var color = seg.getAttribute('data-seg-color');
-        if (color) seg.style.setProperty('border-left-color', color);
+        if (color) {
+          seg.style.setProperty('border-left-color', color);
+          seg.style.setProperty('--journey-line-color', color);
+        }
       });
       if (spotsHtml) { this.resultsDiv.insertAdjacentHTML('beforeend', spotsHtml); }
       // 発着時刻推算（异步回填）——ODPT 时刻表/手动表查询完成后把 "14:05発 14:12着"
@@ -608,7 +615,9 @@
             var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
             var _meta = _rtSelf.resultsDiv.querySelector('[data-seg-meta="' + _ridx + '"]');
             if (_slot && _meta && _tm.platform) {
-              _slot.innerHTML = '<span class="journey-seg-platform">' +
+              _slot.innerHTML = '<span class="journey-seg-meta-label">' +
+                window.escapeHtml(t('search.platform_guide')) + '</span>' +
+                '<span class="journey-seg-platform">' +
                 window.escapeHtml(t('search.platform').replace('{p}', _tm.platform)) + '</span>';
               _meta.hidden = false;
             }
