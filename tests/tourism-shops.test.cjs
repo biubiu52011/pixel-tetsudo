@@ -471,7 +471,8 @@ test('overview elevates hours and price, keeps transit update hooks, and avoids 
   assert.match(html, /class="dp-fact dp-fact--fee/);
   assert.match(html, /data-tourism-distance-row/);
   assert.match(html, /data-tourism-distance/);
-  assert.match(html, /class="dp-photo-count">2<\/span>/);
+  assert.match(html, /<img class="dp-hero-img" src="..\/images\/観光地\/千住の永見\.jpg"/);
+  assert.doesNotMatch(html, /dp-photo-tag|dp-hero-shade|dp-photo-count|data-gallery-idx="0"/);
   assert.match(html, /class="dp-tags-toggle" aria-expanded="false"/);
   assert.match(html, /dp-tag-extra/);
   assert.equal((html.match(/class="dp-fact-label"/g) || []).length, 2);
@@ -516,9 +517,19 @@ test('shop-only UI labels support Japanese, Chinese, English and Korean without 
 test('shop CSS has one pixel-style fact hierarchy, responsive rules and no fake item placeholder', () => {
   const css = source('css/tourism-shop.css');
   assert.match(css,/\.dp-facts \{/);
-  assert.match(css,/\.dp-hero \{/);
+  assert.match(css,/\.dp-hero-img \{/);
+  assert.doesNotMatch(css,/\.dp-photo-tag \{|\.dp-hero-shade \{/);
   assert.match(css,/\.dp-visit-notes \{/);
   assert.match(css,/\.dp-menu-inline-toggle/);
   assert.match(css,/@media \(max-width: 640px\)/);
   assert.doesNotMatch(css,/\.dp-dish-badge \{/);
+});
+
+test('merchant hero is only the native image, without a clickable gallery or overlay', () => {
+  const photo = renderShop({name:'千住の永見',image:'../images/観光地/千住の永見.jpg',menu:[]});
+  assert.match(photo, /<article class="article-content article-content--shop"><img class="dp-hero-img"[^>]*><header class="dp-head">/);
+  assert.equal((photo.match(/class="dp-hero-img"/g) || []).length, 1);
+  assert.doesNotMatch(photo, /dp-photo-tag|dp-hero-shade|dp-photo-count|class="dp-hero /);
+  const missing = renderShop({name:'No photo',menu:[]});
+  assert.doesNotMatch(missing, /dp-hero-img|dp-hero-shade|dp-photo-tag/);
 });

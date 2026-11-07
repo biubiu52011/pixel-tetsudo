@@ -7,36 +7,10 @@
   padding-bottom: 12px;
 }
 
-/* 1. Photo: preserve the entrance and signage, with a small, accessible gallery control. */
-.article-content--shop .dp-hero {
-  position: relative; aspect-ratio: 16 / 9; max-height: 340px; overflow: hidden;
-  background: linear-gradient(135deg, #776b56, #cebda4);
-  border-bottom: 2px solid var(--border);
-}
-.article-content--shop .dp-hero.article-hero--landmark { background: linear-gradient(135deg, #008803, #00aa00); }
-.article-content--shop .dp-hero.article-hero--history { background: linear-gradient(135deg, #8b4513, #d2691e); }
-.article-content--shop .dp-hero.article-hero--food { background: linear-gradient(135deg, #ff6347, #ffa500); }
-.article-content--shop .dp-hero.article-hero--mall { background: linear-gradient(135deg, #7b68ee, #9370db); }
-.article-content--shop .dp-hero--no-image { max-height: 190px; }
+/* 1. Unadorned store image: natural aspect ratio, no crop, overlays or controls. */
 .article-content--shop .dp-hero-img {
-  display: block; width: 100%; height: 100%; object-fit: cover;
-  object-position: center; cursor: zoom-in;
-}
-.article-content--shop .dp-hero-shade {
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, .40));
-}
-.article-content--shop .dp-photo-tag {
-  position: absolute; z-index: 2; right: 12px; bottom: 34px; display: inline-flex;
-  align-items: center; gap: 7px; min-height: 44px; padding: 8px 12px;
-  border: 2px solid rgba(255, 255, 255, .85); border-radius: 4px;
-  background: rgba(0, 0, 0, .74); color: #fff;
-  font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
-}
-.article-content--shop .dp-photo-count {
-  display: inline-block; min-width: 22px; padding: 2px 5px;
-  border-radius: 3px; background: rgba(255, 255, 255, .20);
-  font-size: 12px; font-variant-numeric: tabular-nums;
+  display: block; width: 100%; height: auto;
+  max-width: 100%; object-fit: contain;
 }
 
 /* 2. Shared pixel cards + shop-only muted orange accent. */
@@ -47,7 +21,7 @@
   box-shadow: var(--dp-shadow);
 }
 .article-content--shop .dp-head {
-  z-index: 2; margin: -22px 12px 15px; padding: 17px 16px 16px;
+  z-index: 2; margin: 12px 12px 15px; padding: 17px 16px 16px;
 }
 .article-content--shop .dp-card { margin: 0 12px 15px; padding: 16px; }
 .article-content--shop .dp-head-row {
@@ -286,9 +260,7 @@
   outline: 3px solid var(--green); outline-offset: 3px;
 }
 @media (max-width: 640px) {
-  .article-content--shop .dp-hero { aspect-ratio: 4 / 3; max-height: 280px; }
-  .article-content--shop .dp-hero--no-image { max-height: 160px; }
-  .article-content--shop .dp-head { margin: -18px 12px 14px; padding: 14px 12px; }
+  .article-content--shop .dp-head { margin: 12px 12px 14px; padding: 14px 12px; }
   .article-content--shop .dp-card { padding: 14px 12px; }
   .article-content--shop .dp-name { font-size: 20px; }
   .article-content--shop .dp-fact { padding: 10px 8px; gap: 6px; }

@@ -1,7 +1,7 @@
 /*
  * Tourism Detail - Shop 吃喝玩乐综合商家详情页（餐饮/购物/娱乐/体验）
  * 参考点评网站店铺页信息架构：
- *   顶部图集（点击全屏）→ 白色商家信息卡（费用/营业时间/交通/地址）
+ *   顶部单图 → 商家信息卡（费用/营业时间/交通/地址）
  *   → 推荐内容（餐饮/商品/游玩体验）→ 介绍 → 位置地图 → AI 整理注记
  * 复用 TourismDetailCore：数据加载/语言切换/距离口径/地图/翻译；渲染完全自绘（dp- 前缀命名空间，不依赖公共 hero 框架）。
  */
@@ -33,23 +33,11 @@
   // 统一使用「费用」标签，实际价格/免费/票价等说明保持数据原文。
 
 
-  // 主图与概要信息：先明确店名/费用/营业时间，再提供地址与详细标签。
+  // 顶部仅展示原图，不叠加按钮、遮罩或点击图集交互。
   function buildHero(ctx) {
-    var spot = ctx.spot;
-    var galleryCount = (spot.image ? 1 : 0) + (Array.isArray(spot.menu)
-      ? spot.menu.filter(function(item) { return item && item.img; }).length : 0);
-    var photoTag = spot.image
-      ? '<button type="button" class="dp-photo-tag" data-gallery="' + C.escapeHtml(spot.name || '')
-        + '" data-gallery-idx="0">' + C.escapeHtml(C.t('detail.photos'))
-        + (galleryCount > 1 ? ' <span class="dp-photo-count">' + galleryCount + '</span>' : '') + '</button>'
-      : '';
-    var img = spot.image
-      ? '<img class="dp-hero-img" src="' + C.escapeHtml(spot.image) + '" alt="'
-        + C.escapeHtml(ctx.spotName) + '" fetchpriority="high" decoding="async" data-gallery="'
-        + C.escapeHtml(spot.name || '') + '" data-gallery-idx="0">'
-      : '';
-    return '<div class="dp-hero ' + ctx.heroClass + (spot.image ? ' dp-hero--with-image' : ' dp-hero--no-image')
-      + '">' + img + '<div class="dp-hero-shade"></div>' + photoTag + '</div>';
+    if (!ctx.spot.image) return '';
+    return '<img class="dp-hero-img" src="' + C.escapeHtml(ctx.spot.image)
+      + '" alt="' + C.escapeHtml(ctx.spotName) + '" fetchpriority="high" decoding="async">';
   }
 
   function iconForInfo(name) {

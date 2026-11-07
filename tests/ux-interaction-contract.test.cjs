@@ -186,7 +186,7 @@ test('shop and event actions meet minimum touch size without forced site-wide CS
   const event=read('css/tourism-event.css');
   assert.match(shop,/\.dp-menu-modal-close \{[^}]*width: 44px; height: 44px/);
   assert.match(shop,/\.dp-menu-viewall \{[^}]*min-height: 44px/);
-  assert.match(shop,/\.dp-photo-tag \{[^}]*min-height: 44px/);
+  assert.match(shop,/\.dp-hero-img \{[^}]*width: 100%; height: auto/);
   assert.match(event,/\.btn-add-calendar \{[^}]*min-height: 44px/);
   for(const page of ['home','realtime','trains','history','tourism-spot','tourism-shop','tourism-event'])
     assert.doesNotMatch(read('pages/'+page+'.html'),/ui-system\.css/);
