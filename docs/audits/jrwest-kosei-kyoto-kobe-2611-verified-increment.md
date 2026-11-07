@@ -322,3 +322,39 @@ Edge Function `train-runs` 已发布为 **v341**，选中日历分别要求 35/3
 - 湖西線 2800系早班以外大量 28xxM 和新快速／普通上下行仍需继续逐站核验；`サンダーバード` 目前仅有先前局部列车番号引用，没有补全特急所有运行日。
 - 列车型号/车辆号段/实车编组的确认与一般时刻表分开，不凭 `M/C/T` 或运营类别指定单一 PNG。
 - 这次改动只涉及原 SQL、原 Edge 与测试，不新增首页层级和脚本依赖。**69/69 指当前完成认证的样本数，不是“全线69车次”或百分之百覆盖。**
+
+
+## 2026-11-07 第十批：湖西線中午前 14 条原时刻 + 通用站数证明
+
+### 追加 2810M～2826M
+
+`supabase/migrations/20261107154000_jrwest_kosei_2611_midmorning_14_clock_sources.sql` 复用湖西線既有证据表和单一原来源 owner，增加 **14 条** 2026 年 11 月号逐站相符的原始来源，累计 **83/83** 条 verified_source_match=true；平日 **42**、土休日 **41**。新认证来源如下：
+
+| 公众番号 | 日历 | 已核验来源区间 | 官方分日历证据 |
+| --- | --- | --- | --- |
+| `2810M` | 平日／土休日 | 京都～近江舞子（各13站） | [平日](https://timetable.jr-odekake.net/train-timetable/27411?date=20261023)、[土休日](https://timetable.jr-odekake.net/train-timetable/27421?date=20261101) |
+| `2814M` | 平日／土休日 | 京都～近江舞子（各13站） | [平日](https://timetable.jr-odekake.net/train-timetable/121111?date=20261106)、[土休日](https://timetable.jr-odekake.net/train-timetable/121121?date=20261024) |
+| `2818M` | 每日来源（2条） | 京都～近江舞子（各13站） | [官方](https://timetable.jr-odekake.net/train-timetable/27451?date=20261106) |
+| `2820M` | 每日来源（2条） | 京都～近江舞子（各13站） | [官方](https://timetable.jr-odekake.net/train-timetable/209401?date=20261101) |
+| `2822M` | 每日来源（2条） | 京都～近江舞子（各13站） | [官方](https://timetable.jr-odekake.net/train-timetable/189021?date=20261023) |
+| `2824M` | 每日来源（2条） | 京都～堅田（各7站） | [官方](https://timetable.jr-odekake.net/train-timetable/189031?date=20261024) |
+| `2826M` | 每日来源（2条） | 京都～近江舞子（各13站） | [官方](https://timetable.jr-odekake.net/train-timetable/121131?date=20261031) |
+
+**不能合并差异日历：** `2810M` 与 `2814M` 平日、土休日虽然使用同一个公开车号，但发站及中间到发分钟不同；所以历史源各自保留独立指纹。公开 `M`、旧源 `MH` 的区别仅为日历导入字段。
+
+### 清理早期固定 18 站的元数据
+
+审计进一步发现证据表原字段 `source_clock_verification` 固定为 `original_18_stops_compared_with_official`，而原来 4/5/21/22 站就已经不满足字面含义；追加 7/13 站后更容易误导排查。为避免未来一开始诊断问题就打补丁，执行迁移
+`supabase/migrations/20261107155000_jrwest_kosei_generic_source_stop_proof_cleanup.sql`：
+
+- 统一表内 83 条记录并更改默认值为 `original_source_stops_compared_with_official`；去除固定 `stop_count=18` 的列默认值，今后所有入库必须显式指定站数。
+- 延续原 `security_invoker=true` 证据视图，不新建数据 owner；强化 Kosei 线路、类型、来源路径、导入序号及原时刻 MD5 检查，**末尾追加 `stop_count`** 供数据接口调用。
+- `train-runs` 服务在站序、日历、来源指纹以外，还强制 `Number(p.stop_count)===run.stops.length`，杜绝拿 7 站的认证套在 13 或 18 站来源上。
+- 线上 SQL 查询：**83/83** 行均匹配原来源，83/83 行拥有新的通用验证标记，83/83 行原站数和视图站数一致；Edge Function 已部署至 **v343**，仍无任何车辆号段、PNG、用户 UI 变化或新增网络依赖。
+
+### 更新后总状态
+
+- 湖西線：**83/83 已核验来源**，平日42、土休日41。
+- JR京都線／JR神戸線走廊：沿用上一批 **45/45 已核验来源**，并非完整班次。
+- JR西日本跨线号码：**15 条参考分段**，包含 2026-11 的 `3143M→3443M` 和 `3145M→3445M`；只确认区段公众番号，不授权列车位置。
+- 仍未处理：大量其余 `28xxM`、湖西線新快速改号后跨两段真实运行的逐站 source 规范化、サンダーバード其它车次及车辆编组确认证据。
