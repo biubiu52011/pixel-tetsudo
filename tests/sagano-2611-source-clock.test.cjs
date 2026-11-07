@@ -51,3 +51,26 @@ test('fleet candidates are references and cannot grant real vehicles or artwork'
   assert.match(api, /referenceOnly:true,numberDateVerified:false/);
   assert.doesNotMatch(migration,/\bUPDATE\s+(?:public\.)?manual_timetable_templates\b/i);
 });
+
+
+test('browser timetable adapter carries station-specific published number evidence',()=>{
+  const adapter=fs.readFileSync('data/api/odpt-unified.js','utf8');
+  assert.match(adapter, /"_sqlPublishedTrainNumberSegments":run\.timetable_date_verified===true/);
+  assert.match(adapter, /"_sqlPublishedNumberScope":run\.timetable_date_verified===true/);
+  assert.match(adapter, /"_sqlPublishedArrivalTrainNumber"/);
+  assert.match(adapter, /"_sqlPublishedDepartureTrainNumber"/);
+  assert.match(adapter, /run\.published_train_number_segments\.length===2/);
+});
+
+test('train estimator displays Sagano published numbers only with dated SQL proof',()=>{
+  const estimator=fs.readFileSync('js/train-position-estimator.js','utf8');
+  assert.match(estimator, /lineId==="SaninMain"&&/);
+  assert.match(estimator, /saganoRef\.source==="sql-jrwest-sagano-2611-source-family"/);
+  assert.match(estimator, /tt\._sqlTrainNumberVerification==="official-2611-sagano-original-source-stop-clock"/);
+  assert.match(estimator, /saganoRef\.stopClocksVerified===true/);
+  assert.match(estimator, /saganoDisplayNumber=afterSonobe\?"2133M":"2217M"/);
+  assert.match(estimator, /displayTrainNumber:saganoDisplayNumber \|\|/);
+  assert.match(estimator, /officialNumberVerified: Boolean\(saganoDisplayNumber\)/);
+  assert.match(estimator, /var _saganoScoped=!!saganoScoped&&vehResult\.identityStatus!=="EXACT"/);
+  assert.match(estimator, /vehicleIconPath: \(_saganoScoped\|\|_koseiScoped/);
+});
