@@ -2524,7 +2524,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   }
 
   // Date-verified Kosei source-only locals, including north/inbound:
-  // the 69 source-only original 4/5/7/13/18/21/22-stop clocks were independently
+  // the 83 source-only original 4/5/7/13/18/21/22-stop clocks were independently
   // compared with the official November 2026 issue. The SQL invoker
   // view re-hashes the ORIGINAL timetable stops on every request.
   // Never relabel an unverified source run, infer a physical carset,
@@ -2535,7 +2535,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
       .eq("calendar_urn",selectedCalendar);
     if(clockError)throw clockError;
-    const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?35:34;
+    const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?42:41;
     if((clocks||[]).length!==expectedCount||
        new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==expectedCount)
       throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_COVERAGE_CHANGED");
