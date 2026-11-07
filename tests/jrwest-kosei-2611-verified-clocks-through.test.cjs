@@ -625,3 +625,30 @@ test('fourteen Nov-2026 Kosei 2810-2826 local originals remain calendar and stop
  assert.ok(kosei.includes('run.timetable_date_verified=true'));
  assert.ok(!kosei.includes('run.vehicle_artwork_path='));
 });
+
+test('Kosei source evidence labels and API proof support each original station count',()=>{
+ const sql=fs.readFileSync(
+  'supabase/migrations/20261107155000_jrwest_kosei_generic_source_stop_proof_cleanup.sql','utf8');
+ for(const needle of [
+  "source_clock_verification='original_source_stops_compared_with_official'",
+  "SET DEFAULT 'original_source_stops_compared_with_official'",
+  "ALTER COLUMN stop_count DROP DEFAULT",
+  "WITH (security_invoker=true)",
+  "AND m.source_occurrence=0 AND m.source_revision_date IS NULL",
+  "AND x.stop_count=p.stop_count AND x.source_hash=p.source_stops_md5",
+  "p.stop_count",
+  "WHERE verified_source_match)<>83",
+  "WHERE stop_count NOT IN(4,5,7,13,18,21,22))<>0",
+ ])assert.ok(sql.includes(needle),needle);
+ const i=edge.indexOf('// Date-verified Kosei source-only');
+ const j=edge.indexOf('// JR-West Kyoto/Kobe through corridor',i);
+ assert.ok(i>=0&&j>i);
+ const block=edge.slice(i,j);
+ for(const needle of [
+  'authorizes_png,verified_source_match,stop_count")',
+  'Number(p.stop_count)!==stops.length',
+  'proof.sourceStopKeys.length!==stops.length',
+  'p.actual_vehicle_confirmed!==false||p.authorizes_png!==false'
+ ])assert.ok(block.includes(needle),needle);
+ assert.ok(!block.includes('run.vehicle_artwork_path='));
+});
