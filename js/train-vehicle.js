@@ -5467,6 +5467,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // remains referenceOnly / authorizesPNG=false / no candidate assets.
     var osaka221Proof = p && p.sqlPublishedNumberFleetReference;
     if(p && contextLineId==="OsakaHigashi" &&
+       !identityConfirmed && p.vehicleIdentityStatus!=="EXACT" &&
        String(p.positionLineId||p.lineId||"")==="OsakaHigashi" &&
        p.estimated===true &&
        p.positionSource==="supabase-train-run" &&
