@@ -35,6 +35,8 @@
       if (!this.container) {
         return;
       }
+      // Diagnostic marker: identifies the active UI script even on legacy HTML.
+      this.container.setAttribute('data-route-ui-version', 'v3');
 
       this.fromInput = document.getElementById('searchFrom');
       this.toInput = document.getElementById('searchTo');
