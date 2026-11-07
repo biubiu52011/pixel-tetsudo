@@ -2532,7 +2532,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   if(lineId==="Kosei"&&/^2026-11-\d{2}$/.test(serviceDate)){
     const {data:clocks,error:clockError}=await db
       .from("published_jrwest_kosei_2611_clock_evidence")
-      .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
+      .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match,stop_count")
       .eq("calendar_urn",selectedCalendar);
     if(clockError)throw clockError;
     const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?42:41;
@@ -2560,7 +2560,9 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          !proof||proof.source!=="sql-jrwest-kosei-2611-source-family"||
          proof.sourceTemplateId!==Number(p.source_template_id)||
          !Array.isArray(proof.sourceStopKeys)||
-         ![4,5,7,13,18,21,22].includes(stops.length)||proof.sourceStopKeys.length!==stops.length||
+         ![4,5,7,13,18,21,22].includes(stops.length)||
+         Number(p.stop_count)!==stops.length||
+         proof.sourceStopKeys.length!==stops.length||
          stops.some((st:any,i:number)=>
            String(st.station_urn||"").split(".").pop()!==proof.sourceStopKeys[i])||
          stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==stops.length)
