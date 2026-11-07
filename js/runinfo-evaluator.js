@@ -76,107 +76,78 @@
     return null;
   }
 
+
+  // Source text is an event timeline, not an unordered keyword bag.
+  // Only currently active clauses may promote the live line-level status.
+  function analyzeOperationalText(raw) {
+    var text=textOf(raw).trim(), events=[], evidence=[], threshold=null;
+    if(!text)return {status:"unknown",events:events,evidence:evidence,delayUpperBoundMinutes:null};
+    var th=text.match(/([０-９0-9]{1,3})\s*分以上(?:の)?(?:遅延|遅れ)[^。\n]{0,45}(?:ありません|ございません|なし)/);
+    if(th){threshold=Number(th[1].replace(/[０-９]/g,function(c){return String(c.charCodeAt(0)-0xff10);}));
+      evidence.push({type:"DELAY_THRESHOLD_NEGATIVE",minutes:threshold});}
+    var sentences=text.replace(/が[、，]/g,"。\n").split(/[。\n；;]/).map(function(x){return x.trim();}).filter(Boolean);
+    function parseScope(sentence){
+      var ranges=[], re=/([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}A-Za-z0-9々ヶー]{1,14})(?:駅)?\s*[〜～－−-]\s*([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}A-Za-z0-9々ヶー]{1,14})駅(?:間)?/gu;
+      var m;
+      while((m=re.exec(sentence)))ranges.push({start:m.index,end:re.lastIndex,from:m[1].replace(/駅$/,""),to:m[2],interval:m[1].replace(/駅$/,"")+"→"+m[2],incident:false,direction:null});
+      ranges.forEach(function(r,i){
+        var after=sentence.slice(r.end,i+1<ranges.length?ranges[i+1].start:undefined);
+        r.incident=/^(?:での|における|で発生|で起きた)/.test(after)&&/(?:影響|原因|ため)/.test(after.slice(0,65));
+        r.direction=/内回り/.test(after)?"inner":/外回り/.test(after)?"outer":
+          /上下線|上下両線/.test(after)?"both":
+          /上り線|上り列車|上り方面/.test(after)?"up":
+          /下り線|下り列車|下り方面/.test(after)?"down":null;
+      });
+      return ranges;
+    }
+    function typeOf(s) {
+      var policy=/(?:遅れ|遅延|運休|見合わせ)[^。]{0,80}(?:場合|とき|際)[^。]{0,80}(?:お知らせ|ご案内|掲載)|(?:場合|とき|際)[^。]{0,80}(?:遅れ|遅延|運休|見合わせ)[^。]{0,80}(?:お知らせ|ご案内|掲載)/.test(s)&&
+        !/(?:現在|見合わせています|遅れが出ています|運休が出ています)/.test(s);
+      if(policy)return {phase:"policy",effect:null};
+      var planned=/(?:明日|翌日|来週|今後|再開後|次回|予定|見込|見込み|可能性|見合わせます|中止します|運休します|運転計画|実施します|実施予定|変更します)/.test(s)&&
+        !/(?:現在|ただいま|見合わせています|見合わせております|遅れが出ています|遅れがでています|運休しています|運休が出ています|運休がでています)/.test(s);
+      var historic=/(?:見合わせていました|見合わせておりました|運休していました|遅れが出ていました|遅れていました|運転を中止していました|見合わせました|平常(?:通り|どおり|運転)でした|通常(?:通り|どおり|運転)していました)/.test(s);
+      var resumed=/(?:運転(?:を)?再開|運行(?:を)?再開)(?:しました|しています|しております|済み|した)|平常運転に戻りました/.test(s);
+      var negative=/(?:運転見合わせ|運休|遅れ|遅延)[^。]{0,12}(?:ありません|ございません|なし|発生していません|出ていません)/.test(s);
+      var normal=/平常(?:通り|どおり|運転|運行)|通常(?:通り|どおり|運転|運行)|正常(?:運転|運行)/.test(s);
+      var through=/直通(?:運転|運行)[^。]{0,50}(?:中止|取りやめ|見合わせ)|(?:中止|取りやめ|見合わせ)[^。]{0,50}直通(?:運転|運行)/.test(s);
+      var partial=/(?:一部(?:の)?(?:列車|電車)|区間運休)[^。]{0,70}(?:運休|取りやめ|見合わせ)|(?:運休|取りやめ)[^。]{0,50}一部(?:の)?(?:列車|電車)|(?:運休|取りやめ)が(?:出て|でて|発生)/.test(s);
+      var suspended=/運転(?:を)?(?:見合わせ|中止)|運行(?:を)?(?:見合わせ|中止)|運転見合わせ|全線[^。]{0,50}運休/.test(s);
+      var delayed=/遅れ|遅延|ダイヤ乱れ|ダイヤ(?:が|は|の)?乱れ/.test(s);
+      var reduction=/(?:通常の\s*[０-９0-9]+(?:\s*[～〜－−-]\s*[０-９0-9]+)?割程度|運転本数[^。]{0,35}(?:減少|少な)|本数を減らして|減便|間引き運転)/.test(s);
+      var change=/折返し運転|折り返し運転|行先変更|行き先変更|運転区間(?:を|の)?変更|列車本数[^。]*減ら/.test(s);
+      if(resumed)return {phase:planned?"planned":"resolved",effect:"resumed"};
+      if(historic)return {phase:"historical",effect:suspended?"suspension":normal?"normal":"info"};
+      if(negative)return {phase:"current",effect:normal?"normal":"negative"};
+      var effect=(suspended&&!through&&!/(?:一部(?:の)?(?:列車|電車))[^。]{0,45}見合わせ/.test(s))?"suspension":
+        partial?"partial_cancellation":delayed?"delay":reduction||change?"service_change":through?"through_suspension":normal?"normal":null;
+      if(!effect&&planned&&/(?:運休|見合わせ|工事|減便|運行変更)/.test(s))effect=/(?:運休|見合わせ)/.test(s)?"partial_cancellation":"service_change";
+      return {phase:planned?"planned":"current",effect:effect};
+    }
+    sentences.forEach(function(s){
+      var p=typeOf(s);if(p.phase==="policy"){evidence.push({type:"PUBLICATION_POLICY"});return;}
+      if(!p.effect)return;
+      var scopes=parseScope(s),impact=scopes.filter(function(x){return !x.incident;}),incident=scopes.filter(function(x){return x.incident;});
+      var wholeDirection=/上下線|上下両線/.test(s)?"both":/内回り/.test(s)?"inner":/外回り/.test(s)?"outer":/上り線|上り列車/.test(s)?"up":/下り線|下り列車/.test(s)?"down":null;
+      (impact.length?impact:[{interval:/全線/.test(s)?"全線":null,direction:wholeDirection}]).forEach(function(x){
+        events.push({effect:p.effect,phase:p.phase,interval:x.interval,direction:x.direction||wholeDirection,
+          incidentLocation:incident.map(function(i){return i.interval;}).join("、")||null});
+      });
+      evidence.push({type:"EVENT_"+p.phase.toUpperCase()+"_"+p.effect.toUpperCase()});
+    });
+    var live=events.filter(function(e){return e.phase==="current";}),has=function(v){return live.some(function(e){return e.effect===v;});};
+    var status=has("suspension")?"suspended":has("delay")||has("partial_cancellation")||has("service_change")?"delayed":
+      has("through_suspension")?"notice":has("normal")?"normal":has("negative")?"info":
+      events.some(function(e){return e.phase==="resolved";})?"info":
+      events.some(function(e){return e.phase==="planned";})?"notice":"info";
+    if(evidence.some(function(e){return e.type==="PUBLICATION_POLICY";})&&!events.length)status="unknown";
+    if(threshold!=null&&!live.some(function(e){return e.effect==="normal"||e.effect==="delay"||e.effect==="suspension"||e.effect==="partial_cancellation";}))status="unknown";
+    return {status:status,events:events,evidence:evidence,delayUpperBoundMinutes:threshold};
+  }
+
   function evaluateText(text) {
-    var s = textOf(text).replace(/\s+/g, " ").trim();
-    var evidence = [];
-    if (!s) return { status: "unknown", evidence: evidence, delayUpperBoundMinutes: null };
-
-    var threshold = s.match(/([０-９0-9]{1,3})\s*分以上(?:の)?(?:遅延|遅れ)[^。\n]*(?:ありません|ございません|なし)/);
-    if (threshold) {
-      var n = parseInt(threshold[1].replace(/[０-９]/g, function(c){ return String(c.charCodeAt(0)-0xFF10); }), 10);
-      evidence.push({ type: "DELAY_THRESHOLD_NEGATIVE", minutes: n });
-      return { status: "normal", evidence: evidence, delayUpperBoundMinutes: isNaN(n) ? null : n };
-    }
-
-    if (/平常(?:通り|どおり|運転|運行)|通常(?:運転|運行)|正常(?:運転|運行)|遅延(?:は)?ありません|遅延なし/.test(s)) {
-      evidence.push({ type: "EXPLICIT_NORMAL" });
-      return { status: "normal", evidence: evidence, delayUpperBoundMinutes: null };
-    }
-
-    // Operator pages often explain their publication threshold in the same
-    // block as the live status (for example, “5 minutes or more ... we will
-    // announce it”). That sentence is policy, not a current delay.
-    if (/(?:遅延|遅れ)[^。\n]*(?:場合|とき|際)[^。\n]*(?:お知らせ|ご案内|掲載|情報)/.test(s) &&
-        !/(現在|本日|発生しています|出ています|見込んでいます)/.test(s)) {
-      evidence.push({ type: "PUBLICATION_POLICY" });
-      return { status: "unknown", evidence: evidence, delayUpperBoundMinutes: null };
-    }
-
-    // The same policy copy can enumerate effects (“delay, cancellation,
-    // through-service suspension, turnback...”) without describing an active
-    // incident. Do not let that enumeration become a live service change.
-    if (/運行情報[^。\n]*(?:あります|お知らせ|ご案内)/.test(s) &&
-        /(?:運休|直通運転|折返し運転|折り返し運転|行先変更|行き先変更)/.test(s) &&
-        !/(現在|本日|発生しています|出ています|実施しています|中止しています)/.test(s)) {
-      evidence.push({ type: "PUBLICATION_POLICY" });
-      return { status: "unknown", evidence: evidence, delayUpperBoundMinutes: null };
-    }
-
-    var through = /直通(?:運転|運行)[^。\n]*(?:中止|取りやめ|見合わせ|運休)|(?:中止|取りやめ|見合わせ)[^。\n]*直通(?:運転|運行)/.test(s);
-    if (through) evidence.push({ type: "THROUGH_SERVICE_CANCELLED" });
-
-    var timetable = /ダイヤ(?:が|は)?(?:乱れ|乱れて)|ダイヤ乱れ|時刻表[^。\n]*(?:乱れ|変更)|(?:遅延|遅れ)(?:(?:が|は|も)?(?:発生|出て|生じ|見込|見込み|あり|しています|しております|でています|となっています))/.test(s);
-    if (timetable) evidence.push({ type: "TIMETABLE_DISRUPTION" });
-
-    // Official operator cards place turnback, destination changes and
-    // reduced frequency in the same △ family as delays.
-    var serviceChange = /折返し運転|折り返し運転|行先変更|行き先変更|運転本数[^。\n]*(?:減|少)|本数を減らして/.test(s);
-    if (serviceChange) evidence.push({ type: "SERVICE_CHANGE" });
-
-    // Cancelling a few trains does not imply that the line is suspended.
-    var partial = /一部(?:の)?(?:列車|電車|区間)?[^。\n]*(?:運休|運転見合わせ|運転を見合わせ|運転中止|取りやめ)|一部列車[^。\n]*区間運休|区間運休/.test(s);
-    var partialCancellation = /一部(?:の)?(?:列車|電車)[^。\n]*(?:運休|取りやめ)|(?:運休|取りやめ)[^。\n]*一部(?:の)?(?:列車|電車)|区間運休/.test(s);
-    var reducedService = /通常の[０-９0-9]+割程度[^。\n]*運転|列車本数[^。\n]*(?:少な|減少)|本数を減らして[^。\n]*運転/.test(s);
-    if (reducedService) evidence.push({ type: "REDUCED_SERVICE" });
-    if (partial) evidence.push({ type: "PARTIAL_SERVICE_IMPACT" });
-    if (partialCancellation) evidence.push({ type: "PARTIAL_CANCELLATION" });
-
-    var whole = /全線[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止)/.test(s) ||
-      (/(?:全線|全列車|すべての列車)[^。\n]*(?:運休|取りやめ)/.test(s) &&
-        !/一部(?:の)?(?:列車|電車)[^。\n]*(?:運休|取りやめ)/.test(s));
-    if (whole) evidence.push({ type: "WHOLE_LINE_SUSPENSION" });
-
-    var explicitRangeSuspension = /[^。\n]{1,40}駅\s*[～〜－−-]\s*[^。\n]{1,40}駅(?:間)?[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止)/.test(s) ||
-      (!partialCancellation && /[^。\n]{1,40}駅\s*[～〜－−-]\s*[^。\n]{1,40}駅(?:間)?[^。\n]*運休/.test(s));
-    if (explicitRangeSuspension) evidence.push({ type: "RANGE_SUSPENSION" });
-
-    // A past suspension followed by a resumption and current delay/cancellation
-    // is no longer a suspended state. The latest operating clause wins.
-    var resumedWithCurrentDisruption = /(?:運転(?:を)?再開|運転再開)[^。\n]*(?:遅れ|遅延|運休|ダイヤ(?:が|は)?(?:乱れ|乱れて)|折返し運転|折り返し運転|行先変更|行き先変更)/.test(s);
-    if (resumedWithCurrentDisruption) evidence.push({ type: "RESUMED_WITH_CURRENT_DISRUPTION" });
-    if (resumedWithCurrentDisruption) return { status: "delayed", evidence: evidence, delayUpperBoundMinutes: null };
-
-    var currentCancellation = /(?:運休|運転を?取りやめ)(?:しています|しております|となっています|が出ています|中)/.test(s);
-    if (currentCancellation) evidence.push({ type: "CURRENT_CANCELLATION" });
-
-    var directionalSuspension = /(?:上り線|下り線|内回り|外回り)[^。\n]*(?:運転見合わせ|運転を見合わせ|運転中止|運転を中止)/.test(s) ||
-      (!partialCancellation && /(?:上り線|下り線|内回り|外回り)[^。\n]*運休/.test(s));
-    if (directionalSuspension) evidence.push({ type: "DIRECTIONAL_SUSPENSION" });
-    // Official status pages sometimes omit the affected scope and state only
-    // the current operation, e.g. “運転を見合わせています”. This is still
-    // an explicit live suspension, not a generic notice. Keep through-service
-    // cancellation separate: “直通運転を中止しています” remains notice.
-    var unscopedCurrentSuspension = /運転(?:を)?(?:見合わせ|中止)(?:しています|しております|ています|ております|中|となっています|中です)/.test(s) && !through;
-    if (unscopedCurrentSuspension && !(whole || explicitRangeSuspension || directionalSuspension || partial || currentCancellation)) {
-      evidence.push({ type: "UNSCOPED_CURRENT_SUSPENSION" });
-    }
-    // Reserve × for an explicit service suspension or confirmed entire-scope
-    // cancellation. Individual train cancellations are a disruption (△).
-    if (whole || explicitRangeSuspension || directionalSuspension || unscopedCurrentSuspension) {
-      return { status: "suspended", evidence: evidence, delayUpperBoundMinutes: null };
-    }
-    if (partial || currentCancellation || timetable || serviceChange) {
-      return { status: "delayed", evidence: evidence, delayUpperBoundMinutes: null };
-    }
-    if (through) return { status: "notice", evidence: evidence, delayUpperBoundMinutes: null };
-    if (reducedService) return { status: "notice", evidence: evidence, delayUpperBoundMinutes: null };
-
-    // A bare keyword is not enough to upgrade the whole line.
-    if (/運休|見合わせ|中止|運行情報|運転情報/.test(s)) {
-      evidence.push({ type: "UNSCOPED_OPERATIONAL_INFO" });
-      return { status: "info", evidence: evidence, delayUpperBoundMinutes: null };
-    }
-    return { status: "info", evidence: [{ type: "UNCLASSIFIED_TEXT" }], delayUpperBoundMinutes: null };
+    var a=analyzeOperationalText(text);
+    return {status:a.status,evidence:a.evidence,delayUpperBoundMinutes:a.delayUpperBoundMinutes,events:a.events};
   }
 
   function normalizeRange(v) {
@@ -185,217 +156,49 @@
   }
 
   function extractMetadata(input) {
-    input = input || {};
-    var text = textOf(input.text || "");
-    var cause = normalizeCause(input.cause);
-    var interval = normalizeRange(input.range);
-    if (!interval) {
-      var from = textOf(input.stationFromName).trim();
-      var to = textOf(input.stationToName).trim();
-      if (from && to) interval = from + "→" + to;
-      else if (from) interval = from + "方面";
-      else if (to) interval = to + "方面";
+    input=input||{};
+    var text=textOf(input.text||input.statusText||"").trim();
+    var analysis=analyzeOperationalText(text);
+    var interval=normalizeRange(input.range);
+    if(!interval){
+      var from=textOf(input.stationFromName).trim(),to=textOf(input.stationToName).trim();
+      if(from&&to)interval=from+"→"+to;
+      else if(from&&input.alertScope==="line")interval=from+"方面";
     }
-    // A cause on another railway must never become this line's affected interval.
-    // Optional canonical station membership is a second, independent safeguard.
-    var lineStations = Array.isArray(input.lineStations) ? input.lineStations.map(function(v) {
-      return textOf(v).trim().replace(/駅$/, "");
-    }) : null;
-    function belongsToLine(range) {
-      if (!range || range === "全線" || !lineStations || !lineStations.length) return true;
-      var ends = range.split("→");
-      return ends.length !== 2 || ends.every(function(v) {
-        var name = v.trim().replace(/駅$/, "");
-        if (lineStations.indexOf(name) !== -1) return true;
-        if (typeof input.resolveStationId !== "function") return false;
-        var resolved = input.resolveStationId(name);
-        return !!resolved && lineStations.indexOf(resolved) !== -1;
+    var lineStations=Array.isArray(input.lineStations)?input.lineStations.map(function(x){return textOf(x).trim().replace(/駅$/,"");}):null;
+    function belongs(r){
+      if(!r||r==="全線"||!lineStations||!lineStations.length)return true;
+      var p=r.split("→");return p.length===2&&p.every(function(x){
+        var n=x.replace(/駅$/,"");
+        if(lineStations.indexOf(n)>=0)return true;
+        var id=typeof input.resolveStationId==="function"?input.resolveStationId(n):null;
+        return id!=null&&lineStations.indexOf(id)>=0;
       });
     }
-    // Cause phrases alone do not establish foreign-line identity: a local
-    // station range can also be followed by "設備点検の影響で".
-    // Text-only official messages often carry the affected station range
-    // without structured stationFrom/stationTo fields.
-    if (!interval && text) {
-      var rangeRe = /([^。\n、，,]{1,30}?駅)\s*[～〜－−-]\s*([^。\n、，,]{1,30}?駅)(?:間)?/g;
-      var ranges = [];
-      var rangeMatch;
-      while ((rangeMatch = rangeRe.exec(text))) {
-        var left = rangeMatch[1].trim().replace(/^[・･]+/, "");
-        ranges.push(left + "→" + rangeMatch[2].trim());
-      }
-      if (!ranges.length) {
-        var omittedStationRe = /([^。\n、，,]{1,30}?)\s*[～〜－−-]\s*([^。\n、，,]{1,30}?駅)(?:間)?/g;
-        while ((rangeMatch = omittedStationRe.exec(text))) {
-          var leftOmitted = rangeMatch[1].trim().replace(/^[・･]+/, "");
-          ranges.push(leftOmitted + "→" + rangeMatch[2].trim());
-        }
-      }
-      if (!ranges.length) {
-        var fromToRe = /([^。\n、，,]{1,30}?駅)\s*から\s*([^。\n、，,]{1,30}?駅)\s*まで/g;
-        while ((rangeMatch = fromToRe.exec(text))) ranges.push(rangeMatch[1].trim() + "→" + rangeMatch[2].trim());
-      }
-      if (ranges.length) interval = ranges.filter(belongsToLine).join("、") || null;
-      if (!interval && /全線/.test(text)) interval = "全線";
-    }
-    var direction = null;
-    if (/内回り/.test(text)) direction = "inner";
-    else if (/外回り/.test(text)) direction = "outer";
-    else if (/上下線|上下両線|両方向/.test(text)) direction = "both";
-    else if (/上り線|上り列車|上り方面/.test(text)) direction = "up";
-    else if (/下り線|下り列車|下り方面/.test(text)) direction = "down";
-
-    var resumedWithCurrentDisruption = /(?:運転(?:を)?再開|運転再開)[^。\n]*(?:遅れ|遅延|運休|ダイヤ(?:が|は)?(?:乱れ|乱れて)|折返し運転|折り返し運転|行先変更|行き先変更)/.test(text);
-    var effect = null;
-    if (resumedWithCurrentDisruption) effect = "delay";
-    else if (/直通(?:運転|運行)[^。\n]*(?:中止|取りやめ|見合わせ)|(?:中止|取りやめ|見合わせ)[^。\n]*直通(?:運転|運行)/.test(text)) effect = "through_suspension";
-    else if (/運転見合わせ|運転を見合わせ|運転中止|運転を中止/.test(text)) effect = "suspension";
-    else if (/区間運休|一部(?:の)?(?:列車|電車)?[^。\n]*運休/.test(text)) effect = "partial_cancellation";
-    else if (/ダイヤ(?:が|は)?(?:乱れ|乱れて)|ダイヤ乱れ|(?:遅延|遅れ)(?:(?:が|は|も)?(?:発生|出て|生じ|見込|見込み|あり|しています|しております|でています|となっています))/.test(text)) effect = "delay";
-    else if (/折返し運転|折り返し運転|行先変更|行き先変更|運転本数[^。\n]*(?:減|少)|本数を減らして/.test(text)) effect = "service_change";
-    else if (/平常(?:通り|どおり|運転|運行)|通常(?:運転|運行)|正常(?:運転|運行)/.test(text)) effect = "normal";
-
-    function directionOf(fragment) {
-      if (/内回り/.test(fragment)) return "inner";
-      if (/外回り/.test(fragment)) return "outer";
-      if (/上下線|上下両線|両方向/.test(fragment)) return "both";
-      if (/上り線|上り列車|上り方面/.test(fragment)) return "up";
-      if (/下り線|下り列車|下り方面/.test(fragment)) return "down";
-      return null;
-    }
-    function effectOf(fragment) {
-      if (/直通(?:運転|運行)[^。\n]*(?:中止|取りやめ|見合わせ)|(?:中止|取りやめ|見合わせ)[^。\n]*直通(?:運転|運行)/.test(fragment)) return "through_suspension";
-      if (/運転見合わせ|運転を見合わせ|運転中止|運転を中止/.test(fragment)) return "suspension";
-      if (/区間運休|一部(?:の)?(?:列車|電車)?[^。\n]*運休/.test(fragment)) return "partial_cancellation";
-      if (/ダイヤ(?:が|は)?(?:乱れ|乱れて)|ダイヤ乱れ|(?:遅延|遅れ)(?:(?:が|は|も)?(?:発生|出て|生じ|見込|見込み|あり|しています|しております|でています|となっています))/.test(fragment)) return "delay";
-      if (/折返し運転|折り返し運転|行先変更|行き先変更|運転本数[^。\n]*(?:減|少)|本数を減らして/.test(fragment)) return "service_change";
-      if (/平常(?:通り|どおり|運転|運行)|通常(?:運転|運行)|正常(?:運転|運行)/.test(fragment)) return "normal";
-      return null;
-    }
-    function intervalOf(fragment) {
-      var ir = fragment.match(/([^。\n、，,]{1,30}?駅)\s*[～〜－−-]\s*([^。\n、，,]{1,30}?駅)(?:間)?/);
-      if (!ir) ir = fragment.match(/([^。\n、，,]{1,30}?)\s*[～〜－−-]\s*([^。\n、，,]{1,30}?駅)(?:間)?/);
-      if (ir) {
-        var from = ir[1].trim().replace(/^.*[（(]/, "").replace(/^[・･（(]+/, "");
-        var to = ir[2].trim().replace(/[）)]*$/, "");
-        return from + "→" + to;
-      }
-      return /全線/.test(fragment) ? "全線" : null;
-    }
-    function effectClauses(sentence) {
-      var clauses = [];
-      var re = /(直通(?:運転|運行)[^。\n]{0,40}?(?:中止|取りやめ|見合わせ)|(?:運転を?見合わせ|運転見合わせ|運転を?中止|区間運休|一部(?:の)?(?:列車|電車)?[^。\n]{0,20}?運休|ダイヤ(?:が|は)?(?:乱れ|乱れて)|ダイヤ乱れ|(?:遅延|遅れ)(?:(?:が|は|も)?(?:発生|出て|生じ|見込|見込み|あり|しています|しております|でています|となっています))|折返し運転|折り返し運転|行先変更|行き先変更|運転本数[^。\n]*(?:減|少)|本数を減らして|平常(?:通り|どおり|運転|運行)|通常(?:運転|運行)|正常(?:運転|運行)))/g;
-      var m;
-      while ((m = re.exec(sentence))) clauses.push({ index: m.index, effect: effectOf(m[0]) || effectOf(sentence.slice(Math.max(0, m.index - 40), re.lastIndex)) });
-      return clauses.filter(function(x){ return !!x.effect; });
-    }
-    function nearestBefore(items, index) {
-      var best = null;
-      items.forEach(function(item) {
-        if (item.index <= index && (!best || item.index > best.index)) best = item;
-      });
-      return best;
-    }
-    var impacts = [];
-    var precedingSentenceRange = null;
-    text.split(/[。\n；;]/).forEach(function(sentence) {
-      sentence = sentence.trim();
-      if (!sentence) return;
-
-      var scopes = [];
-      var scopeRe = /([^。\n、，,]{1,30}?駅\s*[～〜－−-]\s*[^。\n、，,]{1,30}?駅(?:間)?|[^。\n、，,]{1,30}?\s*[～〜－−-]\s*[^。\n、，,]{1,30}?駅(?:間)?|全線|上下線|上下両線|両方向|上り線|上り列車|上り方面|下り線|下り列車|下り方面|内回り(?:電車)?|外回り(?:電車)?)/g;
-      var sm;
-      while ((sm = scopeRe.exec(sentence))) {
-        var raw = sm[0];
-        var scopedInterval = intervalOf(raw);
-        // Only canonical membership, not causal wording, excludes a range.
-        if (scopedInterval && !belongsToLine(scopedInterval)) scopedInterval = null;
-        scopes.push({ index: sm.index, interval: scopedInterval, direction: directionOf(raw) });
-      }
-
-      var effects = effectClauses(sentence);
-      if (!effects.length) return;
-      effects.forEach(function(fx, effectIndex) {
-        var preceding = scopes.filter(function(s){ return s.index <= fx.index; });
-        var rangeScopes = preceding.filter(function(s){ return !!s.interval; });
-        var rangeScope = nearestBefore(rangeScopes, fx.index);
-        var directionScope = nearestBefore(preceding.filter(function(s){ return !!s.direction; }), fx.index);
-        var previousEffectIndex = effectIndex > 0 ? effects[effectIndex - 1].index : -1;
-
-        // Multiple station ranges listed before one effect share that effect
-        // ("A-B間・C-D間で運転見合わせ"). Only ranges introduced after the
-        // previous effect belong to the current clause; this prevents a later
-        // delay clause from inheriting every earlier range.
-        var clauseRanges = rangeScopes.filter(function(s){ return s.index > previousEffectIndex; });
-        if (clauseRanges.length > 1) {
-          clauseRanges.forEach(function(scope) {
-            impacts.push({
-              interval: scope.interval,
-              direction: directionScope ? directionScope.direction : null,
-              effect: fx.effect
-            });
-          });
-          return;
-        }
-
-        impacts.push({
-          interval: rangeScope ? rangeScope.interval : (!rangeScopes.length && precedingSentenceRange && /^\s*(?:上り線|下り線|上下線|内回り|外回り)(?:では|は|で)/.test(sentence) ? precedingSentenceRange : null),
-          direction: directionScope ? directionScope.direction : null,
-          effect: fx.effect
-        });
-      });
-      var sentenceRanges = scopes.filter(function(scope){ return !!scope.interval; });
-      if (sentenceRanges.length === 1) precedingSentenceRange = sentenceRanges[0].interval;
-      else if (sentenceRanges.length > 1 || !/^\s*(?:上り線|下り線|上下線|内回り|外回り)/.test(sentence)) precedingSentenceRange = null;
-    });
-    // Deduplicate only identical semantic impacts; never merge different effects
-    // or directions merely because they occur in the same sentence.
-    if (resumedWithCurrentDisruption) {
-      impacts = impacts.filter(function(item) {
-        return item.effect !== "suspension" && item.effect !== "through_suspension";
-      });
-    }
-    impacts = impacts.filter(function(item, idx, arr) {
-      return arr.findIndex(function(other) {
-        return other.interval === item.interval && other.direction === item.direction && other.effect === item.effect;
-      }) === idx;
-    });
-    if (!impacts.length && (interval || direction || effect)) impacts.push({ interval: interval, direction: direction, effect: effect });
-    var resume = null;
-    if (input.resumeEstimate) {
-      var resumeRaw = String(input.resumeEstimate);
-      var rm = resumeRaw.match(/(\d{2}):(\d{2})/);
-      if (rm) resume = rm[1] + ":" + rm[2] + (/頃|およそ|約/.test(resumeRaw) ? "頃" : "");
-    }
-    if (!resume && text) {
-      var fullwidthTime = /(?:運転(?:を)?再開|運転再開)/.test(text)
-        ? text.match(/([０-９0-9]{1,2})時([０-９0-9]{1,2})分頃/)
-        : text.match(/運転再開(?:見込|見込み|予定)[^。\n]*?([０-９0-9]{1,2})時([０-９0-9]{1,2})分頃/);
-      if (fullwidthTime) {
-        var hour = parseInt(String(fullwidthTime[1]).replace(/[０-９]/g, function(c) { return String(c.charCodeAt(0) - 0xFF10); }), 10);
-        var minute = parseInt(String(fullwidthTime[2]).replace(/[０-９]/g, function(c) { return String(c.charCodeAt(0) - 0xFF10); }), 10);
-        if (hour >= 0 && hour <= 29 && minute >= 0 && minute <= 59) {
-          resume = String(hour).padStart(2, "0") + ":" + String(minute).padStart(2, "0") + "頃";
-        }
-      }
-    }
-    var serviceLevel = null;
-    var serviceRange = text.match(/通常の\s*([０-９0-9]+)\s*[～〜－−-]\s*([０-９0-9]+)\s*割程度/);
-    var serviceSingle = !serviceRange && text.match(/通常の\s*([０-９0-9]+)\s*割程度/);
-    function toAsciiNumber(v) {
-      return parseInt(String(v).replace(/[０-９]/g, function(c){ return String(c.charCodeAt(0)-0xFF10); }), 10);
-    }
-    if (serviceRange) {
-      serviceLevel = { minPercent: toAsciiNumber(serviceRange[1]) * 10, maxPercent: toAsciiNumber(serviceRange[2]) * 10 };
-    } else if (serviceSingle) {
-      var servicePercent = toAsciiNumber(serviceSingle[1]) * 10;
-      serviceLevel = { minPercent: servicePercent, maxPercent: servicePercent };
-    }
-    var textDelayMinutes = null;
-    var dm = text.match(/(?:約|およそ)?\s*(\d{1,3})\s*(?:分間|分|min)(?!頃|後|以)/i);
-    if (dm) textDelayMinutes = parseInt(dm[1], 10);
-    if (!cause && text) cause = extractCauseFromText(text);
-    return { interval: interval, direction: direction, effect: effect, impacts: impacts, cause: cause, resume: resume, detail: text || null, textDelayMinutes: textDelayMinutes, serviceLevel: serviceLevel };
+    var events=analysis.events.map(function(x){return Object.assign({},x,{interval:belongs(x.interval)?x.interval:null});});
+    var live=events.filter(function(e){return e.phase==="current"&&e.effect!=="normal"&&e.effect!=="negative";});
+    if(!live.length)live=events.filter(function(e){return e.phase==="current";});
+    var candidates=live.length?live:events.filter(function(e){return e.phase==="planned";});
+    var rank={suspension:5,delay:4,partial_cancellation:4,service_change:4,through_suspension:3,normal:1};
+    candidates.sort(function(a,b){return (rank[b.effect]||0)-(rank[a.effect]||0);});
+    var uniq=function(a){return a.filter(function(v,i){return a.indexOf(v)===i;});};
+    var places=uniq(candidates.map(function(e){return e.interval;}).filter(Boolean));
+    var chosen=candidates[0];
+    interval=interval||places.join("、")||null;
+    var m=text.match(/(?:最大|約|およそ)?\s*(\d{1,3})\s*(?:分間|分|min)(?!頃|後|以上)/i);
+    var service=text.match(/通常の\s*([０-９0-9]+)(?:\s*[～〜－−-]\s*([０-９0-9]+))?\s*割程度/);
+    function n(x){return Number(String(x).replace(/[０-９]/g,function(c){return String(c.charCodeAt(0)-0xff10);}));}
+    var resume=null,sourceTime=textOf(input.resumeEstimate),match=sourceTime.match(/(\d{1,2}):(\d{2})/);
+    if(match&&Number(match[1])<=29&&Number(match[2])<=59)resume=match[1].padStart(2,"0")+":"+match[2]+"頃";
+    return {
+      interval:interval,direction:chosen&&chosen.direction||null,effect:chosen&&chosen.effect||null,
+      impacts:events.filter(function(e){return e.effect!=="negative";}).map(function(e){
+        return {interval:e.interval,direction:e.direction,effect:e.effect,phase:e.phase};
+      }),events:events,incidentLocation:uniq(events.map(function(e){return e.incidentLocation;}).filter(Boolean)).join("、")||null,
+      cause:normalizeCause(input.cause)||extractCauseFromText(text),resume:resume,
+      detail:text||null,textDelayMinutes:m?Number(m[1]):null,
+      serviceLevel:service?{minPercent:n(service[1])*10,maxPercent:n(service[2]||service[1])*10}:null
+    };
   }
 
   function normalizeMessageKind(v) {
@@ -439,10 +242,12 @@
   function statusSymbol(result) {
     result = result || {};
     if (result.status === "suspended") return "×";
+    if (result.status === "notice") return "!";
     if (result.messageKind === "notice") return "!";
     if (result.messageKind !== "realtime") return null;
     if (result.status === "normal") return "○";
-    if (result.status === "delayed" || result.status === "notice" || result.status === "info") return "△";
+    if (result.status === "info") return "!";
+    if (result.status === "delayed") return "△";
     return null;
   }
 
@@ -477,48 +282,23 @@
       evidence.push({ type: "OFFICIAL_SIGNAL", value: input.signalStatus });
     }
 
-    var te = evaluateText(input.text || input.statusText || "");
-    evidence = evidence.concat(te.evidence || []);
-    var metadata = extractMetadata(input);
-    var resumedWithCurrentDisruption = (te.evidence || []).some(function(item) {
-      return item && item.type === "RESUMED_WITH_CURRENT_DISRUPTION";
-    });
-    if (resumedWithCurrentDisruption && structured === "suspended") {
-      structured = "delayed";
-      evidence.push({ type: "RESUMED_STATUS_OVERRIDES_PAST_SUSPENSION" });
-    }
-    // A generic structured Suspension may accompany a more precise live text
-    // that describes only cancelled trains. A separate official signal still wins.
-    var currentPartialCancellation = te.status === "delayed" &&
-      (te.evidence || []).some(function(item) { return item.type === "PARTIAL_CANCELLATION"; }) &&
-      metadata.effect === "partial_cancellation";
-    if (structured === "suspended" && currentPartialCancellation && !input.signalStatus) {
-      structured = "delayed";
-      evidence.push({ type: "PARTIAL_CANCELLATION_OVERRIDES_GENERIC_SUSPENSION" });
-    }
-    if (structured === "suspended" && metadata.effect === "through_suspension") {
+    // GTFS effect codes 4/5/6/7/9 describe changed service rather than
+    // a whole-line delay or suspension. Keep them visible as notices.
+    var gtfsEffect = Number(input.gtfsEffectCode) || 0;
+    if (!structured && (gtfsEffect === 4 || gtfsEffect === 5 ||
+        gtfsEffect === 6 || gtfsEffect === 7 || gtfsEffect === 9)) {
       structured = "notice";
-      evidence.push({ type: "THROUGH_SUSPENSION_IS_NOT_LINE_SUSPENSION" });
+      evidence.push({ type: "GTFS_SERVICE_CHANGE", code: gtfsEffect });
     }
-    if (messageKind === "realtime" && metadata.impacts && metadata.impacts.length > 1) {
-      var hasWholeSuspension = metadata.impacts.some(function(x){ return x.interval === "全線" && x.effect === "suspension"; });
-      if (!hasWholeSuspension && structured === "suspended") evidence.push({ type: "MULTI_IMPACT_PARTIAL_OPERATION" });
+    var te=evaluateText(input.text||input.statusText||"");
+    evidence=evidence.concat(te.evidence||[]);
+    var metadata=extractMetadata(input);
+    // A GTFS NO_SERVICE for one trip or stop is not full-line suspension.
+    if((input.alertScope==="trip"||input.alertScope==="stop")&&structured==="suspended"){
+      structured="delayed";evidence.push({type:"GTFS_PARTIAL_NO_SERVICE",scope:input.alertScope});
     }
-    // A structured Suspension may describe only a station range, but any
-    // confirmed suspension still uses the suspended/× state.
-    if (structured === "suspended" && metadata.interval && metadata.interval !== "全線") {
-      evidence.push({ type: "STRUCTURED_PARTIAL_SUSPENSION", interval: metadata.interval });
-    }
-
-    // A source explicitly categorized as a notice is not current operating
-    // state evidence. Preserve parsed impact metadata for display, but never let
-    // planned/stale notices promote the line to delayed/suspended downstream.
-    var resolvedStatus = structured || te.status || "unknown";
-    if (messageKind === "notice") {
-      resolvedStatus = "notice";
-      evidence.push({ type: "NOTICE_STATUS_ISOLATION" });
-    }
-
+    var resolvedStatus=structured||te.status||"unknown";
+    if(messageKind==="notice"){resolvedStatus="notice";evidence.push({type:"NOTICE_STATUS_ISOLATION"});}
     var result = {
       messageKind: messageKind,
       noticeClassification: messageKind === "notice" ? classifyNotice(input) : null,
@@ -529,6 +309,8 @@
       direction: metadata.direction,
       effect: metadata.effect,
       impacts: metadata.impacts,
+      events: metadata.events,
+      incidentLocation: metadata.incidentLocation,
       cause: metadata.cause,
       resume: metadata.resume,
       detail: metadata.detail,
@@ -555,5 +337,5 @@
     return { cleanText: clean, links: links };
   }
 
-  return { extractLinks: extractLinks, version: "1.4.0", classifyNotice: classifyNotice, evaluate: evaluate, evaluateText: evaluateText, extractMetadata: extractMetadata, normalizeStructuredStatus: normalizeStructuredStatus, normalizeMessageKind: normalizeMessageKind, inferMessageKind: inferMessageKind, statusSymbol: statusSymbol };
+  return { extractLinks: extractLinks, version: "1.5.3", classifyNotice: classifyNotice, evaluate: evaluate, evaluateText: evaluateText, extractMetadata: extractMetadata, normalizeStructuredStatus: normalizeStructuredStatus, normalizeMessageKind: normalizeMessageKind, inferMessageKind: inferMessageKind, statusSymbol: statusSymbol };
 });
