@@ -462,7 +462,7 @@ test('mixed menus keep real item photography separate from no-photo text entries
 test('overview elevates hours and price, keeps transit update hooks, and avoids duplicate shop labels', () => {
   const html = renderShop({
     name:'千住の永見', image:'../images/観光地/千住の永見.jpg',
-    tags:['food','restaurant','local_specialty','shop'],
+    tags:['food','restaurant','local_specialty','shop','drink'],
     hours:'15:00〜22:00', fee:'一品470円〜',
     menu:[{item:'千住あげ',price:'470円',img:'../images/foods/age.jpg'}]
   });
