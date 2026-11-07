@@ -2524,7 +2524,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   }
 
   // JR-West Nara Line: the existing 331 historical source rows remain
-  // immutable. ONLY 11 source-template IDs are approved for November
+  // immutable. ONLY 21 source-template IDs are approved for November
   // 2026 after full original-stop comparisons. The historical source
   // wrongly calls 2636M/2646M (Miyakoji Rapid) and seasonal 8061M/
   // 8062M (Inishie limited express) Local; correct PUBLIC service type
@@ -2536,7 +2536,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,source_train_type_urn,published_train_type,published_train_type_label,published_service_name,source_stop_count,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
       .eq("calendar_urn",selectedCalendar);
     if(proofError)throw proofError;
-    const expectedNara=selectedCalendar==="odpt.Calendar:Weekday"?4:7;
+    const expectedNara=selectedCalendar==="odpt.Calendar:Weekday"?9:12;
     if((proofs||[]).length!==expectedNara||
        new Set((proofs||[]).map((p:any)=>Number(p.source_template_id))).size!==expectedNara)
       throw new Error("JRWEST_NARA_2611_CLOCK_PROOF_COVERAGE_CHANGED");
