@@ -42,7 +42,10 @@
     var day = validDate ? new Date(chosenDate + 'T12:00:00Z') : new Date(NaN);
     validDate = validDate && !isNaN(day.getTime()) && day.toISOString().slice(0,10) === chosenDate;
     if (!validDate) return { minute:null, mode:options.mode || 'now', date:'', calendars:[] };
-    if (manual ? /^0?[0-3]:/.test(String(chosenTime)) : now.getUTCHours() < 4) day.setUTCDate(day.getUTCDate() - 1);
+    // Without a selected date, preserve the current railway service day (including 24:00+).
+    // With a selected calendar date, 00:00-03:59 belongs to the previous service day.
+    var early = manual && options.date ? /^0?[0-3]:/.test(String(chosenTime)) : now.getUTCHours() < 4;
+    if (early) day.setUTCDate(day.getUTCDate() - 1);
     var date = day.toISOString().slice(0,10);
     return { minute:minute, mode:options.mode || 'now', date:date,
       calendars:calendarsForDate(date) };
