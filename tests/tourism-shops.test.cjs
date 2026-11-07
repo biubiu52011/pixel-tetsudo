@@ -379,8 +379,8 @@ test('shop images cannot impersonate item photography and provenance is explicit
     ],
   });
   assert.match(html, /dp-dish-badge/);
-  assert.doesNotMatch(html, /src="../images\/観光地\/shop\.jpg"/);
-  assert.match(html, /src="../images\/illustration\.svg"/);
+  assert.equal(html.includes('src="../images/観光地/shop.jpg"'), false);
+  assert.equal(html.includes('src="../images/illustration.svg"'), true);
   assert.match(html, /https:\/\/example\.com\/verified/);
   assert.doesNotMatch(html, /href="https:\/\/example\.com\/menu"/);
   assert.match(html, /<article class="article-content article-content--shop">/);
