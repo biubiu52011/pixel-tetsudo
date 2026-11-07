@@ -5458,6 +5458,79 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // Osaka Higashi: 2026 timetable's ordinary and direct-rapid services
+    // use the JR-West 221 SERIES. Source-only 2611 train clocks and the
+    // calendar suffix H cannot identify a physical N/NA/NB carset.
+    // Show the existing 221 N PNG as a SERIES ILLUSTRATION only. The
+    // N catalogue label describes the library image, not the running set.
+    // The SQL proof itself authorizes NO specific vehicle artwork; it
+    // remains referenceOnly / authorizesPNG=false / no candidate assets.
+    var osaka221Proof = p && p.sqlPublishedNumberFleetReference;
+    if(p && contextLineId==="OsakaHigashi" &&
+       String(p.positionLineId||p.lineId||"")==="OsakaHigashi" &&
+       p.estimated===true &&
+       p.positionSource==="supabase-train-run" &&
+       String(p.serviceDate||"").match(/^2026-11-(?:0[1-9]|[12][0-9]|30)$/) &&
+       osaka221Proof &&
+       osaka221Proof.source==="sql-jrwest-osaka-higashi-2611-source-family"){
+      var osakaPub=String(osaka221Proof.historicalNumber||"");
+      var osakaSource=String(osaka221Proof.sourceTrainNumber||"");
+      var osakaHoliday=osaka221Proof.calendar==="odpt.Calendar:SaturdayHoliday";
+      var osakaWeekday=osaka221Proof.calendar==="odpt.Calendar:Weekday";
+      var osakaLocal=osaka221Proof.publicTrainType==="Local";
+      var osakaRapid=osaka221Proof.publicTrainType==="DirectRapid";
+      var osakaKeys=osaka221Proof.sourceStopKeys;
+      var osakaPng="../images/列车/JR西日本/JR西日本_221系_N.png";
+      var osakaGarage=window.VehicleGaragePngMap;
+      var osakaEligible=!identityConfirmed&&!strongRealtimeEvidence &&
+        p.vehicleResolvedUpstream!==true&&
+        p.vehicleResolvedFromRealtime!==true&&
+        p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+        !(Array.isArray(p.vehicleFormationCandidates)&&
+          p.vehicleFormationCandidates.length)&&
+        p.vehicleIdentityStatus!=="EXACT"&&
+        p.sourceRailway==="odpt.Railway:JR-West.OsakaHigashi"&&
+        osaka221Proof.lineId==="OsakaHigashi"&&
+        osaka221Proof.referenceOnly===true&&
+        osaka221Proof.numberDateVerified===false&&
+        osaka221Proof.actualVehicleConfirmed===false&&
+        osaka221Proof.authorizesPNG===false&&
+        Array.isArray(osaka221Proof.candidateModels)&&
+        osaka221Proof.candidateModels.length===1&&
+        osaka221Proof.candidateModels[0]==="221系"&&
+        Array.isArray(osaka221Proof.candidateAssets)&&
+        osaka221Proof.candidateAssets.length===0&&
+        ((osakaLocal&&/^[0-9]{4}S$/.test(osakaPub)&&
+          (osakaKeys&&[8,15].indexOf(osakaKeys.length)>=0))||
+         (osakaRapid&&/^21[0-9]{2}M$/.test(osakaPub)&&
+          (osakaKeys&&[8,9].indexOf(osakaKeys.length)>=0)))&&
+        osakaSource===osakaPub+(osakaHoliday?"H":"")&&
+        (osakaWeekday||osakaHoliday)&&
+        String(p.trainNumber||"")===osakaSource&&
+        String(p.displayTrainNumber||"")===osakaPub&&
+        Array.isArray(osakaKeys)&&
+        Array.isArray(p.scheduledStopKeys)&&
+        osakaKeys.join("|")===p.scheduledStopKeys.join("|")&&
+        p.plannedVehicleCandidateStatus==="unresolved-single-family"&&
+        Array.isArray(p.plannedVehicleCandidates)&&
+        p.plannedVehicleCandidates.join("|")==="221系"&&
+        (!vehiclePlan||vehiclePlan.confirmed!==true)&&
+        (!vehiclePlan||!Array.isArray(vehiclePlan.models)||
+          vehiclePlan.models.join("|")==="221系")&&
+        osakaGarage&&typeof osakaGarage.matchModelPath==="function"&&
+        isGalleryPng(osakaPng)&&
+        osakaGarage.matchModelPath(
+          "JR西日本221系（N）",osakaPng,"OsakaHigashi");
+      if(osakaEligible&&artworkFailed!==true){
+        return {kind:"vehicle",iconSrc:osakaPng,planned:true,
+          illustrative:true,representativeOnly:true,referenceOnly:true,
+          actualVehicleConfirmed:false,illustrationModel:"221系",
+          illustrationRole:"osaka-higashi-221-series-not-actual-carset"};
+      }
+      // Invalid / stale proof must not inherit legacy 207/321 or guess
+      // a special-train 683/287 icon.
+      return {kind:"unresolved",iconSrc:""};
+    }
     // 米坂線: numbered 2611 KiHa110 RAIL trains exist only between
     // Yonezawa and Imaizumi. Historical SQL has many Local-labelled BUS
     // rows and no dated physical consist proof: image is illustrative only.
