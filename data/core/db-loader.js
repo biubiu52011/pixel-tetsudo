@@ -102,7 +102,7 @@
   // 以减少 GitHub Pages 的下载和解析量。可读源文件仍是唯一事实来源。
   var DATA_FILE = "../data/core/railway_data.compact.json?v=3bbcd6f98a6";
   var STATION_I18N_FILE = "../data/core/station_i18n.compact.json?v=8541d909f891";
-  var TOURISM_DATA_FILE = "../data/core/tourism_data.compact.json?v=5787709cd848";
+  var TOURISM_DATA_FILE = "../data/core/tourism_data.compact.json";
   var _stationI18n = {};
   var _i18nNormMap = null; // hyphen-insensitive lookup cache, built once in applyData
   var loaded = false;
@@ -419,7 +419,7 @@ function applyData(data, i18n) {
   // tourism 使用独立缓存键（pt_tourism_v*）——realtime 等页面
   // 通过 PT_SKIP_TOURISM 跳过 2.24MB tourism_data.json 的下载/解析/缓存读写。
   // 统一商家 menu 数据后单独升级旅游缓存，防止旧 tips 快照先显示。
-  var TOURISM_CACHE_KEY = "pt_tourism_v" + DB_CACHE_VERSION + "_photo_sources_20261107";
+  var TOURISM_CACHE_KEY = "pt_tourism_v" + DB_CACHE_VERSION + "_verified_recs_6";
   var SKIP_TOURISM = !!(window.PT_SKIP_TOURISM);
 
   function cacheRead() {
@@ -646,7 +646,7 @@ function applyData(data, i18n) {
   var FILE_BUNDLES = [
     "../data/core/railway-data.file.js?v=7b75497f523f",
     "../data/core/station-i18n.file.js?v=a65c4524504c",
-    "../data/core/tourism-data.file.js?v=c6c0becc49cc"
+    "../data/core/tourism-data.file.js"
   ];
   function loadScript(url) {
     return new Promise(function(res, rej) {

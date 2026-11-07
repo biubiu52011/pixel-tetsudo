@@ -184,7 +184,6 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
   let shopPhotoProductCount = 0;
   let illustratedProductCount = 0;
   let sourceBackedCount = 0;
-  let externalPhotoReferenceCount = 0;
   for (const spot of merchants) {
     assert.ok(Array.isArray(spot.menu) && spot.menu.length > 0, spot.name + ' lacks menu');
     assert.ok(!Object.prototype.hasOwnProperty.call(spot, 'tips'), spot.name + ' keeps legacy tips');
@@ -213,29 +212,19 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
           assert.equal(typeof spot.menu_i18n[i][lang], 'string', spot.name + ' note missing ' + lang);
         }
       } else {
-        assert.ok(item.img || item.cover || item.photoSourceUrl,
-          spot.name + ' product has neither local media nor original photo reference');
-        if (item.photoSourceUrl) {
-          assert.match(item.photoSourceUrl, /^https:\/\//, 'photo source must use HTTPS');
-          assert.equal(item.photoSourceType, 'third_party', 'visitor photograph is not an official source');
-        }
-        if (!item.img && !item.cover) {
-          externalPhotoReferenceCount++;
-          assert.ok(item.photoSourceUrl, 'item without local media must link to photographs');
+        assert.ok(item.img || item.cover, spot.name + ' product or experience is missing an image');
+        const mediaPath = item.img || item.cover;
+        assert.ok(mediaPath.startsWith('../images/'), spot.name + ' media must be local');
+        assert.ok(fs.existsSync(path.resolve(__dirname, '..', mediaPath.replace(/^\.\.\//, ''))),
+          spot.name + ' has a broken product/experience image path: ' + mediaPath);
+        if (item.img) {
+          productPhotoCount++;
+          assert.ok(!item.cover, 'real product photography must remain preferred');
         } else {
-          const mediaPath = item.img || item.cover;
-          assert.ok(mediaPath.startsWith('../images/'), spot.name + ' media must be local');
-          assert.ok(fs.existsSync(path.resolve(__dirname, '..', mediaPath.replace(/^\.\.\//, ''))),
-            spot.name + ' has a broken product/experience image path: ' + mediaPath);
-          if (item.img) {
-            productPhotoCount++;
-            assert.ok(!item.cover, 'real product photography must remain preferred');
-          } else {
-            if (item.coverRole === 'shop') shopPhotoProductCount++;
-            else if (item.coverRole === 'illustration') illustratedProductCount++;
-            else assert.fail('unclear media source on ' + spot.name);
-            assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'do not invent a product photo');
-          }
+          if (item.coverRole === 'shop') shopPhotoProductCount++;
+          else if (item.coverRole === 'illustration') illustratedProductCount++;
+          else assert.fail('unclear media source on ' + spot.name);
+          assert.ok(!Object.prototype.hasOwnProperty.call(item, 'img'), 'do not invent a product photo');
         }
         if (item.sourceUrl) {
           sourceBackedCount++;
@@ -246,9 +235,8 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
       }
     }
   }
-  assert.equal(productPhotoCount + shopPhotoProductCount + illustratedProductCount + externalPhotoReferenceCount, 395,
-    'every product has local media or an attributable original-photo link');
-  assert.equal(externalPhotoReferenceCount, 4, 'only Nagami uses four external photo references');
+  assert.equal(productPhotoCount + shopPhotoProductCount + illustratedProductCount, 395,
+    'all active source-backed and historical product records have image references');
   assert.equal(sourceBackedCount, 20, 'first seven reviewed shops supply 20 official-source entries');
   assert.equal(productPhotoCount, 75, 'all valid product-specific photos are preserved');
   assert.ok(noteCount > 500, 'tips were migrated as text-only menu entries');
@@ -413,28 +401,6 @@ test('missing coordinates do not place a venue at an invented map location', () 
   assert.match(valid.mapSection, /id="tourismMap"/);
   assert.equal(core.escapeHtml('A"&<\'B'), 'A&quot;&amp;&lt;&#39;B');
   assert.equal(core.escapeHtml(0), '0');
-});
-
-
-test('Nagami links to its original dish photography without SVG pseudo-photos or redundant view-all', () => {
-  const spot = JSON.parse(source('data/core/tourism_data.json')).spots.find(s => s.name === '千住の永見');
-  assert.ok(spot);
-  const html = renderShop(spot);
-  assert.equal((html.match(/class="dp-menu-row"/g) || []).length, 4);
-  assert.equal((html.match(/class="dp-dish-source dp-photo-origin"/g) || []).length, 4);
-  assert.doesNotMatch(html, /dp-menu-carousel|dp-dish-img|dp-dish-thumb|dp-menu-viewall|dp-menu-modal|イメージ画像/);
-  assert.match(html, /実際の料理写真（外部）/);
-  assert.match(html, /rel="noopener noreferrer nofollow"/);
-  assert.match(html, /情報未確認/);
-  assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 4);
-  for (const [i, p] of spot.menu.filter(item => item.kind !== 'note').entries()) {
-    assert.equal(p.price, ['500円','470円','630円','490円'][i]);
-    assert.equal(p.photoSourceType, 'third_party');
-    assert.ok(p.photoSourceUrl.startsWith('https://'));
-    assert.ok(!p.cover && !p.img);
-    assert.ok(html.includes(p.photoSourceUrl));
-  }
-  assert.ok(html.includes('class="dp-hero-img" src="../images/観光地/千住の永見.jpg"'));
 });
 
 test('short menus use compact text rows and remove a redundant all-items dialog', () => {
