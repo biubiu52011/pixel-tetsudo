@@ -41,6 +41,9 @@
       this.searchBtn = document.getElementById('searchBtn');
       this.swapBtn = document.getElementById('swapBtn');
       this.resultsDiv = document.getElementById('searchResults');
+      if (this.resultsDiv && window.t) {
+        this.resultsDiv.setAttribute('aria-label', window.t('search.results_heading'));
+      }
 
       this.timeMode = document.getElementById('searchTimeMode');
       this.timeInput = document.getElementById('searchTime');
@@ -99,6 +102,7 @@
       if (this.fromInput) this.fromInput.placeholder = t('search.fromPlaceholder');
       if (this.toInput) this.toInput.placeholder = t('search.toPlaceholder');
       if (this.searchBtn) this.searchBtn.textContent = t('search.btn');
+      if (this.resultsDiv) this.resultsDiv.setAttribute('aria-label', t('search.results_heading'));
       this._updateSwapLabel();
       [this.fromInput, this.toInput].forEach(input => {
         if (!input) return;
@@ -368,7 +372,7 @@
       }
 
       if (this.resultsDiv) {
-        this.resultsDiv.innerHTML = '<div class="rs-loading"><div class="rs-loading-spinner"></div><span>' + t('status.loading') + '</span></div>';
+        this.resultsDiv.innerHTML = '<div class="rs-loading" role="status"><div class="rs-loading-spinner" aria-hidden="true"></div><span>' + window.escapeHtml(t('status.loading')) + '</span></div>';
       }
 
       this.currentMode = this.currentMode || 'combo';
@@ -390,6 +394,9 @@
             this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('search.no_results')) + '</div>';
           }
         }
+      } else if (this.resultsDiv) {
+        this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' +
+          window.escapeHtml(t('search.search_unavailable')) + '</div>';
       }
       return result;
     },
