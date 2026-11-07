@@ -44,10 +44,10 @@
           <div class="home-modules">
             <div id="searchContainer" class="search-card pixel-card">
               <div class="module-title">
-                <h2 data-i18n="search.title">路線検索</h2>
+                <h2 id="searchTitle" data-i18n="search.title">路線検索</h2>
               </div>
               <div class="search-inputs">
-                <div class="search-stations" role="group" aria-label="出発駅・到着駅">
+                <div class="search-stations" role="group" aria-labelledby="searchTitle">
                 <div class="input-group">
                   <label class="input-label" for="searchFrom" data-i18n="search.fromLabel"
                     >出発駅</label
@@ -136,10 +136,10 @@
                       </option>
                     </select></label
                   >
-                  <label class="input-group" for="searchDate"><span class="input-label visually-hidden" data-i18n="search.date_jst">日付</span><input id="searchDate" class="search-input" type="date" disabled /></label>
+                  <label class="input-group" for="searchDate"><span class="input-label search-time-field-label" data-i18n="search.date_jst">日付</span><input id="searchDate" class="search-input" type="date" disabled /></label>
                   <label class="input-group" for="searchTime"
                     ><span
-                      class="input-label visually-hidden"
+                      class="input-label search-time-field-label"
                       data-i18n="search.time_jst"
                       >時刻</span
                     ><input
@@ -158,7 +158,7 @@
                   検索
                 </button>
               </div>
-              <div id="searchResults" class="search-results" role="status" aria-live="polite" aria-atomic="false"></div>
+              <div id="searchResults" class="search-results" role="region" aria-label="経路検索結果"></div>
             </div>
             <div id="smModule" class="sm-module pixel-card">
               <div class="module-title">
