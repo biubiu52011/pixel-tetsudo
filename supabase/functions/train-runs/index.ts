@@ -4261,7 +4261,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   const validRuns = result.filter(r => r.stops.length >= 2 &&
     r.stops.every(s => !!s.station_urn) &&
     r.stops.filter(s => s.arrival_time || s.departure_time).length >= 2);
-  let omittedIncompleteRuns = suppressedOsakaStationFragments + suppressedClockReversalRuns + result.length - validRuns.length;
+  let omittedIncompleteRuns = suppressedOsakaStationFragments + suppressedClockReversalRuns + suppressedUnverifiedOsakaHigashiSpecialSources + result.length - validRuns.length;
   // A source may contain unusable upstream rows intentionally omitted from SQL.
   // Preserve that partial status rather than claiming full line coverage.
   if (selectedCalendar) {
@@ -4343,6 +4343,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     calendar_status: "selected", selected_calendar: selectedCalendar,
     omitted_incomplete_runs: omittedIncompleteRuns,
     suppressed_station_only_source_fragments: suppressedOsakaStationFragments,
+    suppressed_unverified_osaka_higashi_special_sources: suppressedUnverifiedOsakaHigashiSpecialSources,
     suppressed_non_midnight_clock_reversal_runs: suppressedClockReversalRuns,
     runs: validRuns });
 }
