@@ -2251,7 +2251,12 @@
                (lineId==="TokaidoKansai"&&officialJrWestKyotoKobePlan&&
                 tt._sqlTrainNumberVerification==="official-2611-kyoto-kobe-source-stop-clock"&&
                 String(tt._sqlPublishedTrainNumber||"")===
-                String(officialJrWestKyotoKobePlan.historicalNumberSuffix||"")))
+                String(officialJrWestKyotoKobePlan.historicalNumberSuffix||""))||
+               (lineId==="Nara"&&
+                tt._sqlTrainNumberVerification==="official-2611-nara-source-stop-clock"&&
+                /^[0-9]{3,4}M$/.test(String(tt._sqlPublishedTrainNumber||""))&&
+                String(tt._sqlPublishedTrainNumber||"")===
+                  String(publicTrainNumber||"").replace(/H$/,""))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber,
             officialNumberVerified: Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
@@ -2263,7 +2268,12 @@
                (lineId==="TokaidoKansai"&&officialJrWestKyotoKobePlan&&
                 tt._sqlTrainNumberVerification==="official-2611-kyoto-kobe-source-stop-clock"&&
                 String(tt._sqlPublishedTrainNumber||"")===
-                String(officialJrWestKyotoKobePlan.historicalNumberSuffix||""))))||
+                String(officialJrWestKyotoKobePlan.historicalNumberSuffix||""))||
+               (lineId==="Nara"&&
+                tt._sqlTrainNumberVerification==="official-2611-nara-source-stop-clock"&&
+                /^[0-9]{3,4}M$/.test(String(tt._sqlPublishedTrainNumber||""))&&
+                String(tt._sqlPublishedTrainNumber||"")===
+                  String(publicTrainNumber||"").replace(/H$/,"")))||
               Boolean(officialYonesakaPlan || officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
