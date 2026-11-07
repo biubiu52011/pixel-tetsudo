@@ -207,3 +207,23 @@ Supabase 已经应用上述两次迁移，查询确认 **湖西 34/34、京阪�
 - `tests/jrwest-kosei-2611-verified-clocks-through.test.cjs` 增加 8 条来源、日历和指纹回归断言，与既有 QA 工作流共用同一测试入口。
 
 本次不改首页布局、导航、额外资源加载或渲染层。源车号仅用于内部匹配；用户无需看到历史组合 ID。全线时刻和跨线行程仍未达到完整覆盖。
+
+
+## 2026-11-07 第六批：JR神戸線（神戸以西）跨 SanyoMain 首次验证
+
+JR神戸線作为运营线路跨越数据库 `TokaidoKansai` 与 `SanyoMain`；不能只核验京都～神戸的 `TokaidoKansai`，就说已经完成京都～姬路。先在 `SanyoMain` 旧来源中单独核验 **4 条普通 C 列车的原站时片段**，复用现存 `published_jrwest_kyoto_kobe_2611_source_fleet` 及其 security-invoker 视图，禁止产生第二份时刻表权威数据。
+
+迁移：`supabase/migrations/20261107144000_jrwest_kobe_sanyo_2611_four_verified_local_sources.sql`。
+
+| 公布番号 | 运行日 | 已核验 SanyoMain 来源区间 | 站数 | JR 西日本 2026-11 号原站时 |
+| --- | --- | --- | ---: | --- |
+| `173C` | 平日 | 兵庫～須磨 | 5 | [来源](https://timetable.jr-odekake.net/train-timetable/102351?date=20261024) |
+| `209C` | 平日 | 兵庫～西明石 | 11 | [来源](https://timetable.jr-odekake.net/train-timetable/18981?date=20261026) |
+| `217C` | 土休日 | 兵庫～西明石 | 11 | [来源](https://timetable.jr-odekake.net/train-timetable/19441?date=20261031) |
+| `241C` | 平日 | 兵庫～西明石 | 11 | [来源](https://timetable.jr-odekake.net/train-timetable/23181?date=20261028) |
+
+同时对 `741T`（weekday、兵庫～網干）做了完整源站序对照：旧源「手柄山平和公园」11:48到、**11:49发**，而[当期 JR 官方](https://timetable.jr-odekake.net/train-timetable/148091?date=20261025)为 **11:48发**，存在 1 分钟不一致。因此**不写入已验证时刻视图、不自动改动历史库、不产生确认证据**。与明确已发布的列车时刻不一致时应先恢复正确来源，不能靠贴补小修正时刻。
+
+已执行数据库迁移，源指纹重算通过：`SanyoMain` **4/4**、`TokaidoKansai` **31/31**，合计 **35/35**（主线平日15/土休日16；神户以西平日3/土休日1），湖西線仍为 **52/52**。Edge Function `train-runs v337` 共用同一个时刻证据门槛，按来源线区分站数而非把西段的 5/11 站当作东段的 16~33 站；所有源仍不具有真实车辆编组或 PNG 授权。新增同一测试文件的覆盖断言。
+
+注意以上四条只能证明已导入片段，**不意味着兵庫到西明石之外的路段、姬路全线、全部普通/快速班次已经完备**。
