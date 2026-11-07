@@ -528,7 +528,7 @@ test('Nov 2026 Kosei morning locals and overnight trains certify 15 separate ori
  assert.ok(start>=0&&end>start);
  const block=edge.slice(start,end);
  for(const token of [
-  'const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?35:34;',
+  'const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?42:41;',
   'if((clocks||[]).length!==expectedCount||',
   'size!==expectedCount',
   '![4,5,7,13,18,21,22].includes(stops.length)',
@@ -578,4 +578,50 @@ test('two Omiimazu weekday/holiday numbering changes are references, never posit
  assert.ok(refBlock.includes('["daily",dayScope]'));
  assert.ok(refBlock.includes('p.authorizes_position!==false'));
  assert.ok(refBlock.includes('stop_clocks_verified:false'));
+});
+
+test('fourteen Nov-2026 Kosei 2810-2826 local originals remain calendar and stop-count exact',()=>{
+ const mig=fs.readFileSync(
+  'supabase/migrations/20261107154000_jrwest_kosei_2611_midmorning_14_clock_sources.sql','utf8');
+ const timetableRecords=[
+ ['2810M','Weekday','b4d232d12d6ee3669aa9c1d577780a60'],
+ ['2810MH','SaturdayHoliday','26abc7675bd159b7b09edb255f1d056f'],
+ ['2814M','Weekday','5b3fe939a300839f4d04b78c9bcb99e6'],
+ ['2814MH','SaturdayHoliday','29bb18c9a39ed017ec2274212eb60ac3'],
+ ['2818M','Weekday','50d2c81f6e8b149b1e059cb7c9ae3e0c'],
+ ['2818MH','SaturdayHoliday','50d2c81f6e8b149b1e059cb7c9ae3e0c'],
+ ['2820M','Weekday','cfe4e02efcfba6e1bcb81558a3f330c3'],
+ ['2820MH','SaturdayHoliday','cfe4e02efcfba6e1bcb81558a3f330c3'],
+ ['2822M','Weekday','610b572ded39f621e5129c366d32dcb6'],
+ ['2822MH','SaturdayHoliday','610b572ded39f621e5129c366d32dcb6'],
+ ['2824M','Weekday','9ff9b531e4d6931c61cf75ee9e4d4ef8'],
+ ['2824MH','SaturdayHoliday','9ff9b531e4d6931c61cf75ee9e4d4ef8'],
+ ['2826M','Weekday','db3253c16619296287d7a804e363c75f'],
+ ['2826MH','SaturdayHoliday','db3253c16619296287d7a804e363c75f']
+ ];
+ for(const [number,day,fingerprint] of timetableRecords){
+  assert.ok(mig.includes("('"+number+"','"+day+"'"),number+" calendar");
+  assert.ok(mig.includes("'"+fingerprint+"'"),number+" source hash");
+ }
+ for(const token of [
+  "281[0248]|282[0246]",
+  "m.source_path='data/timetables/Kosei-manual.js'",
+  "m.source_occurrence=0 AND m.source_revision_date IS NULL",
+  "m.train_type_urn='odpt.TrainType:JR-West.Local'",
+  "AND f.actual_vehicle_confirmed=false AND f.authorizes_png=false",
+  "o.n=e.stop_count::integer AND o.hash=e.source_hash",
+  "WHERE verified_source_match)<>83",
+  "calendar_urn='odpt.Calendar:Weekday')<>42",
+  "calendar_urn='odpt.Calendar:SaturdayHoliday')<>41",
+  "WHERE stop_count=7)<>4",
+  "WHERE stop_count=13)<>21"
+ ])assert.ok(mig.includes(token),token);
+ const start=edge.indexOf('// Date-verified Kosei source-only');
+ const end=edge.indexOf('// JR-West Kyoto/Kobe through corridor');
+ assert.ok(start>=0&&end>start);
+ const kosei=edge.slice(start,end);
+ assert.ok(kosei.includes('const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?42:41;'));
+ assert.ok(kosei.includes('![4,5,7,13,18,21,22].includes(stops.length)'));
+ assert.ok(kosei.includes('run.timetable_date_verified=true'));
+ assert.ok(!kosei.includes('run.vehicle_artwork_path='));
 });
