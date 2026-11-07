@@ -35,9 +35,13 @@ test('navigation, railway cards and history controls have stepped shadows', () =
 test('language selector stays circular with a subtle shadow and accessible touch target', () => {
   const css = read('css/lang-bar.css');
   assert.match(css, /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
-  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?box-shadow: 0 2px 5px rgba\(24,36,48,\.20\)/);
+  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?box-shadow: 2px 3px 0 rgba\(42,83,109,\.20\)/);
   assert.match(css, /\.lang-toggle-btn:active \{[\s\S]*?translateY\(1px\)/);
   assert.match(css, /\.lang-toggle-btn::after \{[\s\S]*?width: 44px/);
+  assert.match(css, /--lang-btn-size: 44px/);
+  assert.match(css, /background: linear-gradient\(180deg, #ffffff, #edf7fc\)/);
+  assert.match(css, /border-radius: var\(--lang-dropdown-radius\)/);
+  assert.match(css, /safe-area-inset-top/);
   assert.doesNotMatch(css, /box-shadow: 4px 4px 0 var\(--lang-border\)/);
 });
 
