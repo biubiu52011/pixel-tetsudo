@@ -183,32 +183,27 @@ test('shared ODPT and disruption evaluator URLs match source blobs across pages'
   }
 });
 
-test('2660e0d realtime modal uses an elevated shell with simple inner sections', () => {
+test('6931788 legacy realtime modal has raised inner status and information cards', () => {
   const css = read('css/ux-refinements.css');
   const html = read('pages/realtime.html');
-  assert.match(css, /\.rs-modal-content \{[\s\S]*?border-radius: var\(--pt-radius-panel\)/);
-  assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 6px 6px 0/);
-  assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 0 0 0 3px;/);
-  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 0;/);
-  assert.match(css, /\.rs-updated-section \{[\s\S]*?box-shadow: none;/);
+  const framed = css.match(/body\[data-page="realtime"\] \.rs-status-section,[\s\S]*?body\[data-page="realtime"\] \.rs-cause-section \{([^}]+)\}/);
+  assert.ok(framed, 'original pixel cards must have their own borders and shadows');
+  assert.match(framed[1], /border-width: 3px;/);
+  assert.match(framed[1], /border-radius: 4px;/);
+  assert.match(framed[1], /box-shadow: 4px 4px 0/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 3px solid var\(--text\)/);
   assert.match(html, /class="rs-close-glyph">×<\/span>/);
 });
 
-test('navigation restores 2660e0d gradient styling and mobile equal-width columns', () => {
+test('6931788 navigation and stylesheet references remain consistent', () => {
   const css = read('css/style.css');
-  const base = css.slice(css.indexOf('/* === Tabs === */'), css.indexOf('/* === Content === */'));
+  const base = css.slice(css.indexOf('/* === Tabs === */'),css.indexOf('/* === Content === */'));
   const i = css.indexOf('/* Mobile primary navigation geometry.');
-  const mobile = css.slice(i, css.indexOf('@media (max-width: 380px)',i));
-  assert.ok(base.includes('background:linear-gradient(180deg,#fbfdff,#eef7fc)'));
-  assert.ok(base.includes('border-radius:var(--pt-radius-panel)'));
-  assert.ok(base.includes('box-shadow:var(--pt-shadow-panel)'));
-  assert.ok(base.includes('min-height:46px'));
-  assert.ok(base.includes('background:linear-gradient(180deg,#f3fff8,#dff4e8)'));
-  assert.ok(mobile.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'));
-  assert.ok(mobile.includes('min-height: 48px'));
-  assert.ok(mobile.includes('white-space: normal'));
-  assert.ok(!mobile.includes('max-content'));
+  const mobile = css.slice(i,css.indexOf('@media (max-width: 380px)',i));
+  assert.ok(base.includes('background: var(--card)'));
+  assert.ok(base.includes('box-shadow: 3px 3px 0px rgba(0,0,0,0.15)'));
+  assert.ok(mobile.includes('grid-template-columns: repeat(4, max-content)'));
   const version = blobVersion(css);
-  for (const page of ['home','realtime','trains','history','tourism-spot','tourism-shop','tourism-event'])
-    assert.ok(read('pages/' + page + '.html').includes('../css/style.css?v=' + version), page + ' CSS cache version');
+  for(const page of pages)
+    assert.ok(read('pages/' + page + '.html').includes('../css/style.css?v=' + version), page + ' CSS version');
 });
