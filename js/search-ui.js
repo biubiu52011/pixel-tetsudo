@@ -529,9 +529,24 @@
               var _dirName = (window.RailwayDB && window.RailwayDB.resolveStationName) ? window.RailwayDB.resolveStationName(_dirSt, lang) : _dirSt;
               html += '<span class="journey-seg-direction-badge">' + window.escapeHtml(t('search.direction').replace('{s}', _dirName)) + '</span>';
             }
-            html += '<span class="journey-seg-times" data-seg-times="' + i + '"></span>';
             html += '</div>';
-            html += '<span class="journey-seg-route">' + window.escapeHtml(fromSt) + ' &rarr; ' + window.escapeHtml(toSt) + '</span>';
+            // One station and one time per column. Keep the existing segment indices
+            // for timetable callbacks, without changing train matching or route data.
+            html += '<div class="journey-seg-route" role="group" aria-label="' +
+              window.escapeHtml(fromSt + ' → ' + toSt) + '">';
+            html += '<div class="journey-seg-stop journey-seg-stop--from">' +
+              '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_dep')) + '</span>' +
+              '<span class="journey-seg-stop-time" data-time-confirmed="false" data-seg-dep-time="' + i + '">—</span>' +
+              '<strong class="journey-seg-stop-name">' + window.escapeHtml(fromSt) + '</strong></div>';
+            html += '<span class="journey-seg-route-arrow" aria-hidden="true">→</span>';
+            html += '<div class="journey-seg-stop journey-seg-stop--to">' +
+              '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_arr')) + '</span>' +
+              '<span class="journey-seg-stop-time" data-time-confirmed="false" data-seg-arr-time="' + i + '">—</span>' +
+              '<strong class="journey-seg-stop-name">' + window.escapeHtml(toSt) + '</strong></div>';
+            html += '</div>';
+            // Auxiliary metadata is hidden until a backed timetable row supplies it.
+            html += '<div class="journey-seg-meta" data-seg-meta="' + i + '" hidden>' +
+              '<span class="journey-seg-times" data-seg-times="' + i + '"></span></div>';
             html += '</div>';
           }
         }
@@ -560,8 +575,6 @@
       // 注入各乗車段右侧（数据未就绪时不阻塞首屏，查询失败静默降级为无时刻展示）
       if (window.RouteTimetable && result.routeSegments) {
         var _rtSelf = this;
-        var _rtDP = t('search.time_dep') || '\u767a';
-        var _rtAR = t('search.time_arr') || '\u7740';
         window.RouteTimetable.enrichSegments(result.routeSegments, result.timeOptions).then(function(res) {
           if (!_rtSelf.resultsDiv || renderGeneration!==_rtSelf._renderGeneration) return;
           var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
@@ -579,13 +592,26 @@
           // enrich 返回 { times, downgrade }；downgrade = 直通贯通失败需降级为换乘的 transfer 段索引
           var _times = (res && res.times) ? res.times : (res || {});
           for (var _ridx in _times) {
-            var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
-            if (!_slot || !_times[_ridx]) continue;
+            if (!res || !res.complete || !_times[_ridx]) continue;
             var _tm = _times[_ridx];
-            var _platHtml = _tm.platform ? '<span class="journey-seg-platform">' + window.escapeHtml(t('search.platform').replace('{p}', _tm.platform)) + '</span>' : '';
-            _slot.innerHTML = '<span class="journey-seg-time-dep">' + window.escapeHtml(_tm.dep) + _rtDP + '</span>' +
-                              _platHtml +
-                              '<span class="journey-seg-time-arr">' + window.escapeHtml(_tm.arr) + _rtAR + '</span>';
+            var _depCell = _rtSelf.resultsDiv.querySelector('[data-seg-dep-time="' + _ridx + '"]');
+            var _arrCell = _rtSelf.resultsDiv.querySelector('[data-seg-arr-time="' + _ridx + '"]');
+            if (_depCell && _tm.dep) {
+              _depCell.textContent = _tm.dep;
+              _depCell.dataset.timeConfirmed = 'true';
+            }
+            if (_arrCell && _tm.arr) {
+              _arrCell.textContent = _tm.arr;
+              _arrCell.dataset.timeConfirmed = 'true';
+            }
+            // The platform is supplementary to the train segment, not a time label.
+            var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
+            var _meta = _rtSelf.resultsDiv.querySelector('[data-seg-meta="' + _ridx + '"]');
+            if (_slot && _meta && _tm.platform) {
+              _slot.innerHTML = '<span class="journey-seg-platform">' +
+                window.escapeHtml(t('search.platform').replace('{p}', _tm.platform)) + '</span>';
+              _meta.hidden = false;
+            }
           }
           // 直通降级：ODPT 分表无贯通车次时，"乗換不要"改回换乘文案并去除直通样式（避免误导）
           var _dg = (res && res.downgrade) || [];
