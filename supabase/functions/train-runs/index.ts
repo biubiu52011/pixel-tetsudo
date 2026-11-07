@@ -2731,7 +2731,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Forty-one JR-West Kyoto/Kobe/Sanyo 2026-11 source-only rows match the
+  // Forty-five JR-West Kyoto/Kobe/Sanyo 2026-11 source-only rows match the
   // official local/new-rapid timetable, not just a historical suffix.
   // Keep canonical source IDs and legacy fleet-candidate proofs intact:
   // these are published service timetables, never actual dispatch cars.
@@ -2743,7 +2743,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .eq("calendar_urn",selectedCalendar);
     if(verifiedError)throw verifiedError;
     const expected=lineId==="SanyoMain"
-      ?(selectedCalendar==="odpt.Calendar:Weekday"?7:3)
+      ?(selectedCalendar==="odpt.Calendar:Weekday"?8:6)
       :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);
     if((verified||[]).length!==expected||
        new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
@@ -2757,11 +2757,17 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       const stops=Array.isArray(run.stops)?run.stops:[];
       const certifiedType=p.train_type_urn==="odpt.TrainType:JR-West.Local"
         ?"Local":p.train_type_urn==="odpt.TrainType:JR-West.Rapid"
-        ?(/^[0-9]{3,4}T$/.test(p.official_train_number)?"Rapid":"SpecialRapid"):null;
+        ?(lineId==="SanyoMain"&&p.official_train_number==="717M"
+            ?"Rapid":/^[0-9]{3,4}T$/.test(p.official_train_number)
+            ?"Rapid":"SpecialRapid"):null;
       const permittedStopCount=certifiedType==="Local"
         ?(lineId==="SanyoMain"?[5,11]:[16,19,25,32,33]).includes(p.official_stop_count)
-        :certifiedType==="Rapid"?p.official_stop_count===18
-        :certifiedType==="SpecialRapid"&&p.official_stop_count===7;
+        :certifiedType==="Rapid"
+        ?(lineId==="SanyoMain"
+           ?(["717M","815T"].includes(p.official_train_number)&&p.official_stop_count===17)
+           :p.official_stop_count===18)
+        :certifiedType==="SpecialRapid"&&
+          p.official_stop_count===(lineId==="SanyoMain"?4:7);
       if(p.verified_source_match!==true||
          p.source_line_key!==lineId||
          p.calendar_urn!==selectedCalendar||
@@ -2775,8 +2781,12 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          run.train_type!==p.train_type_urn||
          run.train_number!==p.source_train_id||
          run.rail_direction!==p.direction_urn||
-         !/^(?:\d{4}M|\d{3,4}[CT])$/.test(p.official_train_number)||
-         !p.official_train_number.endsWith(certifiedType==="Local"?"C":certifiedType==="Rapid"?"T":"M")||
+         !/^(?:\d{3,4}M|\d{3,4}[CT])$/.test(p.official_train_number)||
+         !p.official_train_number.endsWith(
+           certifiedType==="Local"?"C":
+           certifiedType==="Rapid"&&lineId==="SanyoMain"&&
+             p.official_train_number==="717M"?"M":
+           certifiedType==="Rapid"?"T":"M")||
          p.official_train_number!==p.source_public_number_suffix||
          !candidate||candidate.source!=="sql-jrwest-kyoto-kobe-2611-source-family"||
          candidate.sourceTrainId!==p.source_train_id||
