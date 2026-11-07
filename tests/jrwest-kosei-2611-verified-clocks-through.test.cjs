@@ -700,7 +700,7 @@ test('JR Nara 2026-11 original source clocks certify the right type, not an impo
  const proof=edge.slice(start,end);
  for(const token of [
   '.from("published_jrwest_nara_2611_clock_evidence")',
-  'selectedCalendar==="odpt.Calendar:Weekday"?4:7',
+  'selectedCalendar==="odpt.Calendar:Weekday"?9:12',
   'run.canonical_group_evidence!=="source_only"',
   'run.train_number!==p.source_train_number',
   'Number(p.source_stop_count)!==expectedCount',
@@ -720,4 +720,46 @@ test('JR Nara 2026-11 original source clocks certify the right type, not an impo
  assert.ok(estimator.includes('lineId==="Nara"&&'));
  assert.ok(estimator.includes('official-2611-nara-source-stop-clock'));
  assert.ok(estimator.includes('String(publicTrainNumber||"").replace(/H$/,"")'));
+});
+
+test('Nara 2611 ten more daily source clocks recognize 604 Local and four Miyakoji Rapid service families',()=>{
+ const m=fs.readFileSync(
+ 'supabase/migrations/20261107161000_jrwest_nara_2611_more_local_miyakoji_source_clocks.sql','utf8');
+ const proofs=[
+ ['604M','Weekday','a2165885cc4bffc637a56c0064c00939'],
+ ['604MH','SaturdayHoliday','a2165885cc4bffc637a56c0064c00939'],
+ ['2603M','Weekday','318ed2f75c9ab030b237f9a72d2a0acb'],
+ ['2603MH','SaturdayHoliday','318ed2f75c9ab030b237f9a72d2a0acb'],
+ ['2634M','Weekday','6b64623ddd10afd66fee884430cb2446'],
+ ['2634MH','SaturdayHoliday','6b64623ddd10afd66fee884430cb2446'],
+ ['2638M','Weekday','f2f4b62b4ed70d4b2038b9349ca5c40b'],
+ ['2638MH','SaturdayHoliday','f2f4b62b4ed70d4b2038b9349ca5c40b'],
+ ['2640M','Weekday','5427402e9ce604d2f0b3fdfb33194c6a'],
+ ['2640MH','SaturdayHoliday','5427402e9ce604d2f0b3fdfb33194c6a']
+ ];
+ for(const [train,calendar,hash] of proofs){
+  assert.ok(m.includes("'"+train+"'"),train);
+  assert.ok(m.includes("'"+calendar+"'"),train+' calendar');
+  assert.ok(m.includes("'"+hash+"'"),train+' hash');
+ }
+ for(const proof of [
+  'DROP CONSTRAINT nara_2611_official_type_scope',
+  "'604M','621M'",
+  "'2603M','2634M','2636M','2638M','2640M','2646M'",
+  "AND o.n=e.expected_count::integer AND o.hash=e.expected_hash",
+  'WHERE verified_source_match)<>21',
+  "calendar_urn='odpt.Calendar:Weekday')<>9",
+  "calendar_urn='odpt.Calendar:SaturdayHoliday')<>12",
+  "published_train_type='Local')<>8",
+  "published_train_type='MiyakojiRapid')<>11",
+  "published_train_type='LimitedExpress')<>2",
+  'WHERE actual_vehicle_confirmed OR authorizes_png'
+ ])assert.ok(m.includes(proof),proof);
+ const from=edge.indexOf('// JR-West Nara Line:');
+ const to=edge.indexOf('// Date-verified Kosei source-only',from);
+ const block=edge.slice(from,to);
+ assert.ok(block.includes('selectedCalendar==="odpt.Calendar:Weekday"?9:12'));
+ assert.ok(block.includes('run.train_type="odpt.TrainType:JR-West."+officialType'));
+ assert.ok(block.includes('run.timetable_date_verified=true'));
+ assert.ok(block.includes('run.vehicle_artwork_path=null'));
 });
