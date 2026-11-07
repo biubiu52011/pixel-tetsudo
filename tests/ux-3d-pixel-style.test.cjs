@@ -10,12 +10,16 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const blobVersion = text => crypto.createHash('sha1')
   .update('blob ' + Buffer.byteLength(text) + '\0' + text).digest('hex').slice(0,12);
 
-test('realtime modal keeps a raised pixel shell without nested raised info boxes', () => {
+test('realtime modal keeps its raised pixel shell and independent info cards', () => {
   const css = read('css/ux-refinements.css');
   assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 8px 8px 0 #26262b/);
-  assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 0 0 0 3px;/);
-  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 0;/);
-  assert.match(css, /\.rs-updated-section \{[\s\S]*?box-shadow: none;/);
+  const framed = css.match(/body\[data-page="realtime"\] \.rs-status-section,[\s\S]*?body\[data-page="realtime"\] \.rs-updated-section \{([^}]+)\}/);
+  assert.ok(framed, 'status, interval, run info and update time all have raised frames');
+  assert.match(framed[1], /border-width: 3px;/);
+  assert.match(framed[1], /border-style: solid;/);
+  assert.match(framed[1], /background: var\(--bg\);/);
+  assert.match(framed[1], /box-shadow: 4px 4px 0/);
+  assert.doesNotMatch(framed[1], /border-width: 0|border: 0|box-shadow: none/);
   assert.match(css, /\.rs-modal-close:active \{[\s\S]*?translate\(3px,3px\)/);
 });
 
@@ -51,15 +55,14 @@ test('CSS links use the current Git blob versions and home avoids scoped refinem
   assert.doesNotMatch(read('pages/home.html'), /ux-refinements\.css/);
 });
 
-test('bright warning and notice colors retain readable text without train-shaped glyphs', () => {
+test('restored status cards retain readable alert colors and pixel glyphs', () => {
   const css = read('css/ux-refinements.css');
   const dataState = read('js/data-state.js');
   const realtime = read('js/realtime-view.js');
-  assert.match(css, /--pt-alert-accent: #FFB45E/);
-  assert.match(css, /--pt-alert-accent: #67CFFF/);
-  assert.match(css, /background: #F2FBFF/);
-  assert.match(css, /background: #FFF9F2/);
-  assert.match(css, /color: #1F2A35/);
+  assert.match(css, /\.rs-status-section\.rs-status-info,[\s\S]*?border-color: var\(--yellow\);/);
+  assert.match(css, /\.rs-status-section\.rs-status-delayed \{[\s\S]*?border-color: var\(--orange\);/);
+  assert.match(css, /color: #805a00/);
+  assert.match(css, /color: #875100/);
   assert.doesNotMatch(css, /#915300|#785900|\.pt-train-status-art/);
   assert.doesNotMatch(dataState, /statusPictogramHtml|pt-train-status-art/);
   assert.doesNotMatch(realtime, /statusPictogramHtml|rs-status-symbol-art/);
