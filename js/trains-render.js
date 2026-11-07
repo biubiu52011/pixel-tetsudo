@@ -1158,7 +1158,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var title = _trainMarkerTitle(p, lineId);
     if (!spec || spec.illustrative !== true) return title;
     var lang = window.currentLang || "ja";
-    var note = /^zh/.test(lang)
+    var osaka221 = lineId==="OsakaHigashi"&&
+      p.sqlPublishedNumberFleetReference&&
+      p.sqlPublishedNumberFleetReference.source===
+        "sql-jrwest-osaka-higashi-2611-source-family"&&
+      p.sqlPublishedNumberFleetReference.candidateModels&&
+      p.sqlPublishedNumberFleetReference.candidateModels.join("|")==="221系";
+    var note = osaka221
+      ? (/^zh/.test(lang)?"车辆图片：221系车型示意，实际编组未确认":
+         lang==="en"?"Vehicle artwork: 221 series example; actual set unconfirmed":
+         "車両画像：221系の参考図、実際の編成未確認")
+      : /^zh/.test(lang)
       ? "车辆图片：线路代表图，实际车型及编组未确认"
       : lang === "en"
         ? "Vehicle artwork: line illustration only; actual model and formation unconfirmed"
@@ -1336,6 +1346,32 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Osaka Higashi scheduled 221 series is line-fleet evidence, not an
+    // observed N/NA/NB carset. The N library image is a representative
+    // 221-series cab, never the formation assigned to this train.
+    var osakaFleet=p.sqlPublishedNumberFleetReference;
+    if(lineId==="OsakaHigashi"&&p.positionLineId===lineId&&
+       p.estimated===true&&p.positionSource==="supabase-train-run"&&
+       /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||""))&&
+       osakaFleet&&osakaFleet.source==="sql-jrwest-osaka-higashi-2611-source-family"&&
+       osakaFleet.referenceOnly===true&&
+       osakaFleet.actualVehicleConfirmed===false&&
+       osakaFleet.authorizesPNG===false&&
+       Array.isArray(osakaFleet.candidateModels)&&
+       osakaFleet.candidateModels.join("|")==="221系"&&
+       plan&&plan.status==="FLEET_REFERENCE"&&
+       Array.isArray(plan.models)&&plan.models.join("|")==="221系"&&
+       plan.confirmed===false){
+      var cars=osakaFleet.publicTrainType==="DirectRapid"?"8":
+        osakaFleet.publicTrainType==="Local"?"6":"";
+      if(cars){
+        lang=String(lang||"ja").toLowerCase();
+        return /^zh/.test(lang)?"线路车型：221系（"+cars+"辆，实际编组未确认）":
+          lang==="en"?"Line fleet: 221 series ("+cars+" cars; actual set unconfirmed)":
+          lang==="ko"?"노선 차량: 221계 ("+cars+"량, 실제 편성 미확인)":
+          "路線車両：221系（"+cars+"両、実際の編成未確認）";
+      }
+    }
     // 米坂線: image is a KiHa110 family example only after JR 2611
     // rail-number/station/date proof. Never label a replacement bus or
     // unverified physical trainset with a railway formation.
