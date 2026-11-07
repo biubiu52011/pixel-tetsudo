@@ -2731,7 +2731,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
-  // Thirty-five JR-West Kyoto/Kobe/Sanyo 2026-11 source-only rows match the
+  // Forty-one JR-West Kyoto/Kobe/Sanyo 2026-11 source-only rows match the
   // official local/new-rapid timetable, not just a historical suffix.
   // Keep canonical source IDs and legacy fleet-candidate proofs intact:
   // these are published service timetables, never actual dispatch cars.
@@ -2743,7 +2743,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .eq("calendar_urn",selectedCalendar);
     if(verifiedError)throw verifiedError;
     const expected=lineId==="SanyoMain"
-      ?(selectedCalendar==="odpt.Calendar:Weekday"?3:1)
+      ?(selectedCalendar==="odpt.Calendar:Weekday"?7:3)
       :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);
     if((verified||[]).length!==expected||
        new Set((verified||[]).map((r:any)=>Number(r.source_template_id))).size!==expected)
