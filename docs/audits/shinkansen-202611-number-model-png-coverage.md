@@ -1,6 +1,6 @@
 # 新干线 2026-11 列车番号 → 计划车型 → PNG 分级覆盖审计
 
-**最新回读日期**：2026-11-07（827份新干线源模板、824份2611正式番号、534份唯一官方计划车型；196条精确PNG规则/193个不同线路+番号；40份模板有11月7日明确运行日、39份模板有11月21日明确运行日；上越现有19份源的2026-11日期均已明确；Edge v340 ACTIVE，与当前main的train-runs源码一致）  
+**最新回读日期**：2026-11-07（827份新干线源模板、824份2611正式番号、534份唯一官方计划车型；196条精确PNG规则/193个不同线路+番号；47份模板有11月7日明确运行日、46份模板有11月21日明确运行日；上越现有19份源的2026-11日期已明确，秋田新干线6趟E6及东北3006B新增精确日期来源；Edge v341 ACTIVE、main源码与部署一致）  
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
@@ -11,6 +11,32 @@
 
 
 
+
+
+## 2026-11-07 第六批：秋田新干线E6源到发字段根因修复与东北3006B停站校正
+
+此前上越新干线主要是漏站及日历缺失；本次发现秋田新干线现有平日旧来源**44份的531个停站原始记录全是arrival_clock/arrival_station_urn字段，没有departure字段**。列车始发时刻被误作到达，部分真实中间站到发时刻因旧导入器拆为两条同站arrival-only而看似站数更多。该问题不能通过单纯补站数解决，更不能把全44份没有官方校验的模板一键转换成拟合时刻。
+
+本轮仅逐车对照2026年11月 JR东日本2611 [东北・山形・秋田・北海道新干线下行平日](https://timetables.jreast.co.jp/2611/timetable-v/003d1p.html)、[下行土休日](https://timetables.jreast.co.jp/2611/timetable-v/003d2p.html)、[上行平日](https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html)、[上行土休日](https://timetables.jreast.co.jp/2611/timetable-v/003u2p.html)，结合完整列车停站页确认后，才原子更新现有 manual_timetable_template_stops、manual_timetable_templates、train_timetable_members、evidence_sources；没有新增JS脚本、映射层、图库或实际编组号。
+
+| 2611正式番号 | 列车和来源ID | 原始→修复后站记录 | 2026-11日期分配 | 完整官方详情 |
+|---|---|---|---|---|
+| 3001M | こまち1 / Weekday 749、SaturdayHoliday 128897 | 平日12条arrival-only→9个正确到发站；既有休日9站正确无需改 | **平日19天**交由749；**土休日11天**交由128897，互斥覆盖整月 | [JR东日本はやぶさ1/こまち1](https://timetables.jreast.co.jp/2611/train/030/033831.html) |
+| 3003M | こまち3 / 750 | 12条arrival-only→9站 | 30天，仅已有来源 | [JR东日本はやぶさ3/こまち3](https://timetables.jreast.co.jp/2611/train/110/111132.html) |
+| 3006M | こまち6 / 775 | 7条arrival-only→6站 | 30天 | [JR东日本はやぶさ6/こまち6](https://timetables.jreast.co.jp/2611/train/030/033021.html) |
+| 3010M | こまち10 / 776 | 14条arrival-only→10站 | 30天 | [JR东日本はやぶさ10/こまち10](https://timetables.jreast.co.jp/2611/train/030/033661.html) |
+| 3012M | こまち12 / 777 | 12条arrival-only→9站 | 30天 | [JR东日本はやぶさ12/こまち12](https://timetables.jreast.co.jp/2611/train/110/111123.html) |
+| 3014M | こまち14 / 778 | 14条arrival-only→10站 | 30天 | [JR东日本はやぶさ14/こまち14](https://timetables.jreast.co.jp/2611/train/030/033031.html) |
+
+官方时刻源同时给出了盛冈联结/分割的实际到发，故联结列车在东京～盛冈共用区间依照官方はやぶさB号时刻填出联结后的出发/到达，盛冈～秋田的こまちM号按单列车栏目保留；没有把两趟物理来源合并成不存在的单一车号。3001M两份日期通过2026年11月实际周末、文化日11/03及勤劳感谢日11/23分配为19+11，SQL逐日验证**30天每日期恰好1份源**。其余五趟也各自30天每日期恰好1份，重复0、缺日期0。
+
+上述六趟均保留既有正式番号及官方E6**计划**车型映射source_id=4931（原证据B等级），逐一验证已有E6原生PNG（asset_status=available、file_format_status=native_png），没有宣称实际上车的具体编组。原来源重建后全部符合始发dep-only/中间arr+dep/终到arr-only结构，train_timetable_members.stop范围与实际序号一致。新增6条官方A等级停站和日期依据；**仍剩38份秋田平日旧模板未做官方逐车标准化**，不能认为已经全面完成或自动给它们11月日历。
+
+与此同时修复东北新干线已有 **はやぶさ6号3006B（源1326）**：原盛冈07:37～东京09:47只录3站，按[同一官方并行时刻](https://timetables.jreast.co.jp/2611/train/030/033021.html)补仙台08:16到/08:17发，现4站、30天确切日期、member.last_stop_sequence 2→3。**车型仍unresolved、vehicle_artwork_path=NULL**，因为没有唯一E5或H5车底的证据，不为它设置随意PNG；与3006M并行并不构成这两号列车的实际车底或统一车型证明。
+
+SQL终验：全部新干线主来源stop首末序号0处错位；前述六趟秋田列车的2026-11每天恰好1份来源；秋田平日旧记录剩466条arrival-only（其中保留38份未经整治的旧来源），本轮6份标准化后的中途站均arr+dep。全局827份新干线源、824份番号来源、534份唯一计划车型、196条精确PNG规则/193个不同线路+番号均未变；**11月7日精确日期来源40→47份，11月21日39→46份**，并非真实新开行车次计数。
+
+线上train-runs **v341 ACTIVE**且当次GitHub main的函数源码与线上回读逐字相同，SQL依赖既有精确日期白名单的逻辑已存在，不重新部署以免影响其他并行线路。尚未获得实际公网HTTP JSON或Safari渲染验收证据；不宣称端到端页面通过。
 
 ## 2026-11-07 第五批上越：2403C/2408C原站表校正与现有来源整月防重验收
 
