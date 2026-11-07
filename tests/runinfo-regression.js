@@ -58,4 +58,12 @@ check("DataFusion forwards GTFS trip scope",()=>{
 check("expired sources are not live incidents",()=>{
   assert.equal(f._pickRecords([rec("old","Ginza","Suspension",{"dct:valid":"2000-01-01T00:00:00Z"})],{id:"Ginza",operator:"TokyoMetro"}).length,0);
 });
+check("future resumption estimate from Japanese official text",()=>{
+  const x=parse("内房線は運転を見合わせています。運転再開は２１時３０分頃を見込んでいます。");
+  assert.equal(x.resume,"21:30頃");
+});
+check("maximum observed delay among multiple published numbers",()=>{
+  const x=parse("京急線で遅れ。品川駅８分、京急蒲田駅１３分、京急川崎駅１０分程度の遅れ。");
+  assert.equal(x.maxDelay,13);
+});
 console.log("PASS",n,"offline runinfo regression checks");
