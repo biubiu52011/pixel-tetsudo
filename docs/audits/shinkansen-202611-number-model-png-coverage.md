@@ -34,6 +34,8 @@
 
 与此同时修复东北新干线已有 **はやぶさ6号3006B（源1326）**：原盛冈07:37～东京09:47只录3站，按[同一官方并行时刻](https://timetables.jreast.co.jp/2611/train/030/033021.html)补仙台08:16到/08:17发，现4站、30天确切日期、member.last_stop_sequence 2→3。**车型仍unresolved、vehicle_artwork_path=NULL**，因为没有唯一E5或H5车底的证据，不为它设置随意PNG；与3006M并行并不构成这两号列车的实际车底或统一车型证明。
 
+**既有来源与回写风险补查**：本批秋田平日源的 source_path 均登记为 `data/timetables/AkitaShinkansen-manual.js`，但2026-11-07访问GitHub main同路径得到404（其所在目录存在，历史文件并不在当前路径）。现有 `supabase/functions/train-runs/index.ts` 是按来源表/停站表 SELECT 的读取函数，不含对这两张表的 `.insert(`/`.upsert(` 写入逻辑；因此正常的train-runs读取不应覆盖本轮SQL修复。**但尚未穷举其它单独的导入/同步脚本**，以后重导老数据必须先审查其目标表、compare SQL当前快照、遵守2611逐车官方到发和日期白名单，不能按旧缺失source_path重新生成错误的arrival-only停站。
+
 SQL终验：全部新干线主来源stop首末序号0处错位；前述六趟秋田列车的2026-11每天恰好1份来源；秋田平日旧记录剩466条arrival-only（其中保留38份未经整治的旧来源），本轮6份标准化后的中途站均arr+dep。全局827份新干线源、824份番号来源、534份唯一计划车型、196条精确PNG规则/193个不同线路+番号均未变；**11月7日精确日期来源40→47份，11月21日39→46份**，并非真实新开行车次计数。
 
 线上train-runs **v341 ACTIVE**且当次GitHub main的函数源码与线上回读逐字相同，SQL依赖既有精确日期白名单的逻辑已存在，不重新部署以免影响其他并行线路。尚未获得实际公网HTTP JSON或Safari渲染验收证据；不宣称端到端页面通过。
