@@ -43,16 +43,18 @@
     html += '<span class="journey-transfer-text';
     if (seg.through) { html += ' journey-transfer-text--through'; }
     html += '">' + (window.t ? window.t(seg.through ? 'search_result.through' : 'search_result.transfer') : (seg.through ? '直通' : '乗換')) + '</span>';
-    // Platform-to-platform information is a UI slot, not an inferred number.
-    // Only real transfers get slots; through services remain compact.
-    if (!seg.through) {
+    if (lineChange) { html += lineChange; }
+    // UI slots exist even for through services, but stay hidden until a confirmed downgrade.
+    // No station-level guesses or walking instructions are rendered.
+    {
       var tr = window.t || function(key) { return ({
         'search_result.arrival_platform':'降車番線',
         'search_result.departure_platform':'乗車番線',
         'search_result.platform_unconfirmed':'番線未確認'
       })[key] || key; };
       var unknown=window.escapeHtml(tr('search_result.platform_unconfirmed'));
-      html += '<div class="journey-platform-change" role="group" aria-label="'+window.escapeHtml(txSt)+'">';
+      html += '<div class="journey-platform-change" role="group"'+
+        (seg.through ? ' hidden' : '')+' aria-label="'+window.escapeHtml(txSt)+'">';
       html += '<div class="journey-platform-slot journey-platform-slot--arrival" data-platform-status="unconfirmed">'+
         '<span class="journey-platform-label">'+window.escapeHtml(tr('search_result.arrival_platform'))+'</span>'+
         '<span class="journey-platform-value" data-platform-value="arrival">—</span>'+
@@ -64,11 +66,7 @@
         '<span class="journey-platform-note">'+unknown+'</span></div>';
       html += '</div>';
     }
-    if (lineChange) { html += lineChange; }
-    if (!seg.through && seg.station && window.getTransferHint) {
-      var hintTxt = window.getTransferHint(seg.station, lang);
-      if (hintTxt) { html += '<span class="journey-transfer-hint">' + window.escapeHtml(hintTxt) + '</span>'; }
-    }
+    // No station-wide hints: they may describe another operator pair at this station.
     html += '</div>';
     return html;
   }
