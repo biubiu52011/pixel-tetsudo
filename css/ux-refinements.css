@@ -62,23 +62,18 @@ body[data-page="realtime"] .rs-modal-body {
   padding: 16px;
   gap: 16px;
 }
+/* Original raised pixel-panel treatment for realtime modal sections.
+   Keep section borders and status colors from their existing style owners. */
 body[data-page="realtime"] .rs-status-section,
 body[data-page="realtime"] .rs-interval-section,
-body[data-page="realtime"] .rs-cause-section {
-  border-width: 0 0 0 3px;
-  border-style: solid;
-  border-color: var(--border);
-  border-radius: 0;
-  padding: 10px 12px;
-  background: transparent;
-  box-shadow: none;
-}
+body[data-page="realtime"] .rs-cause-section,
 body[data-page="realtime"] .rs-updated-section {
-  padding: 6px 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  padding: var(--pad-lg);
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 4px;
+  background: var(--bg);
+  box-shadow: 4px 4px 0 rgba(32,33,38,.28), inset 2px 2px 0 #fff;
 }
 body[data-page="realtime"] .rs-status-indicator {
   min-width: 0;
@@ -171,44 +166,28 @@ body[data-page="history"] .history-delete-btn:active {
   box-shadow: none;
 }
 
-/* Bright rail-signage palette: orange for delay, clean sky blue for notices.
-   Train illustration style means crisp, readable accents; no train-shaped
-   status glyphs and no muddy yellow/brown text. Keep the existing symbols. */
-body[data-page="realtime"] .rs-status-section.rs-status-delayed {
-  --pt-alert-accent: #FFB45E;
-  border-color: #FFB45E;
-  background: #FFF9F2;
-  color: #1F2A35;
-}
+/* Restore the legacy yellow/orange accent cards, while keeping
+   the status text dark enough to read on the pale pixel panel. */
 body[data-page="realtime"] .rs-status-section.rs-status-info,
 body[data-page="realtime"] .rs-status-section.rs-status-notice {
-  --pt-alert-accent: #67CFFF;
-  border-color: #67CFFF;
-  background: #F2FBFF;
-  color: #1F2A35;
+  border-color: var(--yellow);
+  color: #805a00;
 }
-body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-text,
-body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-cause-inline,
-body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-text,
-body[data-page="realtime"] .rs-status-section.rs-status-info .rs-cause-inline,
-body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-text,
-body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-cause-inline {
-  color: #1F2A35;
+body[data-page="realtime"] .rs-status-section.rs-status-delayed {
+  border-color: var(--orange);
+  color: #875100;
 }
-/* Status is a pixel glyph, not a second raised button inside the card. */
-body[data-page="realtime"] .rs-status-section.rs-status-delayed .rs-status-symbol,
-body[data-page="realtime"] .rs-status-section.rs-status-info .rs-status-symbol,
-body[data-page="realtime"] .rs-status-section.rs-status-notice .rs-status-symbol {
+body[data-page="realtime"] .rs-status-indicator .rs-status-symbol {
+  display: inline-flex;
+  flex: 0 0 26px;
   width: 26px;
   height: auto;
-  flex: 0 0 26px;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: #263646;
+  align-items: center;
+  justify-content: center;
   font-size: 24px;
+  line-height: 1;
+  color: inherit;
 }
-body[data-page="realtime"] .rs-status-section.rs-status-suspended { color:#b42334; }
 /* Only the original status glyph stays on the right of the line card.
    The 3D shadow belongs to the full line card, not the status symbol. */
 body[data-page="realtime"] .rs-status-icon-delayed,
