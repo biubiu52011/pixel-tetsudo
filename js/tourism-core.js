@@ -45,8 +45,9 @@
   }
 
   function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    if (str == null) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function getStationLabel(key) {
@@ -62,7 +63,7 @@
     var l = state.lang || 'ja';
     if (spot.name_i18n && spot.name_i18n[l]) return spot.name_i18n[l];
     if (spot['name_' + l]) return spot['name_' + l];
-    return '';
+    return spot.name || '';
   }
 
   // 获取 i18n 字段值并按优先级回退。
@@ -113,6 +114,15 @@
     return state.allSpots;
   }
 
+  // 稳定 ID 优先。旧旅游数据尚无 ID 的条目仍兼容 name/index 链接。
+  function findSpotById(id) {
+    if (!id || !state.allSpots.length) return null;
+    return state.allSpots.find(function(s) {
+      var key = s && (s.id || s.tourismId);
+      return key != null && String(key) === String(id);
+    }) || null;
+  }
+
   // 按名称或索引查找景点。
   function findSpotByName(name) {
     if (!name || state.allSpots.length === 0) return null;
@@ -121,6 +131,16 @@
         || (s.name_i18n && Object.keys(s.name_i18n).some(function(lang) { return s.name_i18n[lang] === name; }))
         || ['ja', 'zh', 'en', 'ko'].some(function(lang) { return s['name_' + lang] === name; });
     }) || null;
+  }
+
+  // 旅游详情不应把缺失坐标默认为东京市区中的固定位置。
+  function getValidCoordinates(spot) {
+    var coord = spot && spot.coord;
+    if (!Array.isArray(coord) || coord.length < 2) return null;
+    var lat = Number(coord[0]), lng = Number(coord[1]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) ||
+        Math.abs(lat) > 90 || Math.abs(lng) > 180 || (lat === 0 && lng === 0)) return null;
+    return [lat, lng];
   }
 
   function getGradientForTags(tags) {
@@ -162,14 +182,19 @@
   function computeDistance(spot, stationKey) {
     var ctx = { stationName: '', distText: '', distMain: '', distSub: '' };
     if (window.DataLoader && !window.DataLoader.isLoaded()) return ctx;
-    var mapLat = (spot.coord && spot.coord[0]) || 35.71;
-    var mapLng = (spot.coord && spot.coord[1]) || 139.80;
+    var coord = getValidCoordinates(spot);
+    var mapLat = coord ? coord[0] : null;
+    var mapLng = coord ? coord[1] : null;
     var stationCoords = window.STATION_COORDS || {};
     var spotStation = spot.station || state.currentStationKey || '';
     if (stationKey || state.currentStationKey) {
       ctx.stationName = getStationLabel(stationKey || state.currentStationKey);
     } else if (spotStation && stationCoords[spotStation]) {
       ctx.stationName = getStationLabel(spotStation);
+    }
+    if (!coord) {
+      if (spot.dist) ctx.distText = spot.dist;
+      return ctx;
     }
     var exitReco = null;
     if (window.TourismProximity && TourismProximity.recommendExitStation) {
@@ -211,9 +236,9 @@
     var desc = (spot.desc_i18n && spot.desc_i18n[state.lang]) || spot['desc_' + state.lang] || spot.desc || '';
     var tags = spot.tags || ['all'];
     var gradient = getGradientForTags(tags);
-    var coord = spot.coord || [35.71, 139.80];
-    var mapLat = coord[0] || 35.71;
-    var mapLng = coord[1] || 139.80;
+    var coord = getValidCoordinates(spot);
+    var mapLat = coord ? coord[0] : null;
+    var mapLng = coord ? coord[1] : null;
     var dist = computeDistance(spot, stationKey);
     var imageHtml = spot.image
       ? '<div class="article-hero-img"><img src="' + escapeHtml(spot.image) + '" alt="' + escapeHtml(spotName) + '" data-gallery="' + escapeHtml(spot.name || '') + '" data-gallery-idx="0"></div>'
@@ -244,11 +269,11 @@
       + '<h3 class="section-heading">' + t('detail.about') + '</h3>'
       + '<p class="article-text">' + escapeHtml(desc) + '</p>'
       + '</div>';
-    var mapHtml = '<div id="tourismMap" class="map-container"><div class="map-loading">' + t('detail.map_loading') + '</div></div>';
-    var mapSection = '<div class="article-section">'
-      + '<h3 class="section-heading">' + t('detail.location') + '</h3>'
-      + '<div class="map-info">' + mapHtml + '</div>'
-      + '</div>';
+    var mapSection = coord
+      ? '<div class="article-section"><h3 class="section-heading">' + t('detail.location')
+        + '</h3><div class="map-info"><div id="tourismMap" class="map-container"><div class="map-loading">'
+        + t('detail.map_loading') + '</div></div></div></div>'
+      : '';
     return {
       spot: spot, spotName: spotName, desc: desc, tags: tags, gradient: gradient,
       mapLat: mapLat, mapLng: mapLng, dist: dist,
@@ -275,7 +300,7 @@
       + quickInfo
       + '<div class="article-body">' + bodySections + '</div>';
     container.innerHTML = '<div class="article-content article-content--' + getSpotType(ctx.spot) + '">' + html + '</div>';
-    observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
+    if (ctx.mapLat !== null && ctx.mapLng !== null) observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
     var pageTitle = ctx.spotName + ' | ' + (ctx.dist.stationName || '') + ' | PIXEL TETSUDO';
     if (document.title) document.title = pageTitle;
   }
@@ -366,6 +391,7 @@
     function boot() {
       var params = new URLSearchParams(window.location.search);
       var spotName = params.get('name');
+      var spotId = params.get('id');
       var stationKey = params.get('station');
       var indexParam = params.get('index');
       var spotIndex = indexParam === null ? 0 : Number(indexParam);
@@ -377,21 +403,24 @@
       if (loader.getTourismStatus() !== 'ready') return;
       // 索引属于车站距离排序。铁路数据等待期间，
       // 不要在全局池中解析该索引。
-      if (!params.has('name') && (!stationKey || !Number.isSafeInteger(spotIndex) || spotIndex < 0 || (indexParam !== null && !/^\d+$/.test(indexParam)))) { unavailable(); return; }
-      if (!spotName && stationKey && !loader.isLoaded()) {
+      if (!spotId && !params.has('name') && (!stationKey || !Number.isSafeInteger(spotIndex) || spotIndex < 0 || (indexParam !== null && !/^\d+$/.test(indexParam)))) { unavailable(); return; }
+      if (!spotId && !spotName && stationKey && !loader.isLoaded()) {
         if (loader.getError()) unavailable();
         return;
       }
-      if (!spotName && stationKey && (!(window.STATION_COORDS || {})[stationKey] || !window.TourismProximity)) { unavailable(); return; }
+      if (!spotId && !spotName && stationKey && (!(window.STATION_COORDS || {})[stationKey] || !window.TourismProximity)) { unavailable(); return; }
       // 命名目标不依赖邻近查询成功。
       state.allSpots = getAllSpots();
-      var sameIndexRequest = !params.has('name') && resolvedIndexRequest === params.toString() && state.currentSpot;
-      if (!sameIndexRequest) state.scopedSpots = spotName ? state.allSpots : getScopedSpots();
-      // 已解析的索引只标识本次导航使用的记录，不是会在车站刷新后
-      // 静默选择邻近条目的实时排序。
-      var target = params.has('name') ? findSpotByName(spotName) : sameIndexRequest ? findSpotByName(state.currentSpot.name) : state.scopedSpots[spotIndex];
+      var sameIndexRequest = !spotId && !params.has('name') && resolvedIndexRequest === params.toString() && state.currentSpot;
+      if (!sameIndexRequest) state.scopedSpots = (spotId || params.has('name')) ? state.allSpots : getScopedSpots();
+      // 以明确 ID 为优先，旧链接按名称解析；索引仅用于旧版车站列表。
+      var target = spotId ? findSpotById(spotId) : params.has('name')
+        ? findSpotByName(spotName)
+        : sameIndexRequest ? findSpotByName(state.currentSpot.name) : state.scopedSpots[spotIndex];
       if (!target) { unavailable(); return; }
-      resolvedIndexRequest = params.has('name') ? null : params.toString();
+      var pageType = ((window.location && window.location.pathname) || '').match(/\/tourism-(shop|spot|event)\.html$/i);
+      if (pageType && getSpotType(target) !== pageType[1].toLowerCase()) { unavailable(); return; }
+      resolvedIndexRequest = (spotId || params.has('name')) ? null : params.toString();
       state.currentSpot = target;
       state.currentSpotIndex = state.scopedSpots.indexOf(target);
       var identity = JSON.stringify([target, state.lang, stationKey]);

@@ -18,7 +18,7 @@
   function buildHero(ctx) {
     var photoTag = '';
     if (ctx.spot.image) {
-      photoTag = '<button class="dp-photo-tag" data-gallery="' + C.escapeHtml(ctx.spot.name || '') + '" data-gallery-idx="0">' + C.t('detail.photos') + '</button>';
+      photoTag = '<button type="button" class="dp-photo-tag" data-gallery="' + C.escapeHtml(ctx.spot.name || '') + '" data-gallery-idx="0">' + C.t('detail.photos') + '</button>';
     }
     var img = ctx.spot.image
       ? '<img class="dp-hero-img" src="' + C.escapeHtml(ctx.spot.image) + '" alt="' + C.escapeHtml(ctx.spotName) + '" data-gallery="' + C.escapeHtml(ctx.spot.name || '') + '" data-gallery-idx="0">'
@@ -44,22 +44,21 @@
     if (ctx.spotAddress) {
       rows += '<div class="dp-info-row"><span class="dp-ico">' + ICON.addr + '</span><span class="dp-info-label">' + C.t('detail.address') + '</span><span class="dp-info-val">' + C.escapeHtml(ctx.spotAddress) + '</span></div>';
     }
-    return '<div class="dp-head">'
+    return '<header class="dp-head">'
       + '<div class="dp-head-row"><h1 class="dp-name">' + C.escapeHtml(ctx.spotName) + '</h1>' + ctx.typeBadge
       + (ctx.spot.businessStatus === 'reported_closed'
         ? '<span class="dp-shop-status">' + C.escapeHtml(C.t('detail.reported_closed')) + '</span>' : '')
       + '</div>'
       + (rows ? '<div class="dp-info-merged">' + rows + '</div>' : '')
       + (ctx.tagsHtml ? '<div class="dp-chips">' + ctx.tagsHtml + '</div>' : '')
-      + '</div>';
+      + '</header>';
   }
 
-  // 信息卡已融合进店名卡，保留空实现保持渲染调用链不变。
-  function buildInfoCard(ctx) { return '' }
-
-  // ④ 介绍
+  // 介绍仅在有正文时展示。
   function buildAboutCard(ctx) {
-    return '<div class="dp-card"><h3 class="dp-sec-title">' + C.t('detail.about') + '</h3><p class="dp-text">' + C.escapeHtml(ctx.desc) + '</p></div>';
+    if (!ctx.desc) return '';
+    return '<section class="dp-card dp-about"><h2 class="dp-sec-title">' + C.escapeHtml(C.t('detail.about'))
+      + '</h2><p class="dp-text">' + C.escapeHtml(ctx.desc) + '</p></section>';
   }
 
   // 所有商家推荐统一来源 spot.menu。
@@ -73,20 +72,17 @@
       ? '<img class="dp-dish-img" src="' + C.escapeHtml(item.img) + '" alt="' + C.escapeHtml(name)
         + '" loading="lazy" data-gallery="' + C.escapeHtml(spot.name || '') + '" data-gallery-idx="'
         + C.galleryIndexForMenu(spot, index) + '">'
-      : item.cover && (item.coverRole === 'shop' || item.coverRole === 'illustration')
-        ? (function () {
-          var coverLabel = C.t(item.coverRole === 'shop' ? 'detail.shop_photo' : 'detail.illustration');
-          return '<img class="dp-dish-img" src="' + C.escapeHtml(item.cover) + '" alt="'
-            + C.escapeHtml(spot.name || '') + ' - ' + C.escapeHtml(coverLabel)
-            + '" loading="lazy"><span class="dp-dish-photo-source">' + C.escapeHtml(coverLabel) + '</span>';
-        })()
-        : '<span class="dp-dish-badge">' + C.escapeHtml(badgeChar) + '</span>';
+      : item.cover && item.coverRole === 'illustration'
+        ? '<img class="dp-dish-img" src="' + C.escapeHtml(item.cover) + '" alt="'
+            + C.escapeHtml(name) + ' - ' + C.escapeHtml(C.t('detail.illustration'))
+            + '" loading="lazy"><span class="dp-dish-photo-source">' + C.escapeHtml(C.t('detail.illustration')) + '</span>'
+        : '<span class="dp-dish-badge" aria-hidden="true">' + C.escapeHtml(String(name).trim().charAt(0) || badgeChar) + '</span>';
     return '<div class="dp-dish"><div class="dp-dish-thumb">' + thumb + '</div>'
       + '<div class="dp-dish-name">' + C.escapeHtml(name) + '</div>'
       + (item.price != null && item.price !== ''
         ? '<div class="dp-dish-price">' + C.escapeHtml(String(item.price)) + '</div>'
         : '')
-      + (item.sourceUrl && /^https:\/\//i.test(item.sourceUrl)
+      + (item.sourceType === 'official' && item.sourceUrl && /^https:\/\//i.test(item.sourceUrl)
         ? '<a class="dp-dish-source" href="' + C.escapeHtml(item.sourceUrl)
           + '" target="_blank" rel="noopener noreferrer">' + C.escapeHtml(C.t('detail.official_source')) + '</a>'
         : '<span class="dp-dish-unverified">' + C.escapeHtml(C.t('detail.unverified')) + '</span>')
@@ -104,19 +100,19 @@
     var title = C.escapeHtml(C.t('detail.menu'));
     var badgeChar = String(spot.name || '').trim().charAt(0) || C.t('detail.badge_initial_fallback');
     var modalId = 'dpMenuModal_' + (spot.menu._idx || 0);
-    var html = '<div class="dp-card dp-menu"><div class="dp-menu-head">'
-      + '<h3 class="dp-sec-title">' + title + '</h3>'
-      + '<button class="dp-menu-viewall" data-modal="' + modalId + '">'
+    var html = '<section class="dp-card dp-menu" aria-labelledby="dp-recs-heading"><div class="dp-menu-head">'
+      + '<h2 class="dp-sec-title" id="dp-recs-heading">' + title + '</h2>'
+      + '<button type="button" class="dp-menu-viewall" data-modal="' + modalId + '">'
       + C.escapeHtml(C.t('detail.view_all')) + ' &rsaquo;</button></div>'
       + '<div class="dp-menu-carousel">';
     for (var i = 0; i < Math.min(items.length, 10); i++) {
       html += buildRecommendedItem(spot, items[i].item, items[i].index, badgeChar);
     }
-    html += '</div></div><div class="dp-menu-modal" id="' + modalId
-      + '" role="dialog" aria-modal="true" aria-label="' + title + '">'
-      + '<button class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close'))
-      + '">&times;</button><div class="dp-menu-modal-inner"><h3 class="dp-menu-modal-title">'
-      + title + '</h3><div class="dp-menu-modal-grid">';
+    html += '</div></section><div class="dp-menu-modal" id="' + modalId
+      + '" role="dialog" aria-modal="true" aria-labelledby="dp-menu-modal-title">'
+      + '<div class="dp-menu-modal-inner"><div class="dp-menu-modal-header"><h2 id="dp-menu-modal-title" class="dp-menu-modal-title">'
+      + title + '</h2><button type="button" class="dp-menu-modal-close" aria-label="' + C.escapeHtml(C.t('detail.close'))
+      + '">&times;</button></div><div class="dp-menu-modal-grid">';
     for (var j = 0; j < items.length; j++) {
       html += buildRecommendedItem(spot, items[j].item, items[j].index, badgeChar);
     }
@@ -126,46 +122,47 @@
   // 与真实商品区分：旧访问信息以紧凑文字形式出现，不再冒充商品图片卡片。
   function buildVisitorNotes(spot) {
     if (spot.businessStatus === 'reported_closed') {
-      return '<div class="dp-card dp-visitor-notes"><p class="dp-visitor-note-text">'
+      return '<section class="dp-card dp-visitor-notes"><p class="dp-visitor-note-text">'
         + C.escapeHtml(C.t('detail.closed_warning')) + '</p>'
         + (spot.businessStatusSource && /^https:\/\//i.test(spot.businessStatusSource)
           ? '<a class="dp-dish-source" href="' + C.escapeHtml(spot.businessStatusSource)
             + '" target="_blank" rel="noopener noreferrer">' + C.escapeHtml(C.t('detail.check_source')) + '</a>'
-          : '') + '</div>';
+          : '') + '</section>';
     }
     var list = [];
-    (spot.menu || []).forEach(function(item, index) {
+    (Array.isArray(spot.menu) ? spot.menu : []).forEach(function(item, index) {
       if (!item || item.kind !== 'note') return;
       var translated = spot.menu_i18n && spot.menu_i18n[index] && spot.menu_i18n[index][C.state.lang];
       var value = translated || item.item;
       if (typeof value === 'string' && value.trim()) list.push(value.trim());
     });
     if (!list.length) return '';
-    return '<div class="dp-card dp-visitor-notes"><h3 class="dp-sec-title">'
-      + C.escapeHtml(C.t('detail.visit_notes') + ' · ' + C.t('detail.unverified')) + '</h3><p class="dp-visitor-note-text">'
+    return '<section class="dp-card dp-visitor-notes"><h2 class="dp-sec-title">'
+      + C.escapeHtml(C.t('detail.visit_notes') + ' · ' + C.t('detail.unverified')) + '</h2><p class="dp-visitor-note-text">'
       + list.map(function(value) { return C.escapeHtml(value); }).join(' · ')
-      + '</p></div>';
+      + '</p></section>';
   }
 
   // ⑥ 位置地图
   function buildMapCard(ctx) {
-    return '<div class="dp-card"><h3 class="dp-sec-title">' + C.t('detail.location') + '</h3>'
-      + '<div class="map-container" id="tourismMap"><div class="map-loading">' + C.t('detail.map_loading') + '</div></div></div>';
+    if (ctx.mapLat == null || ctx.mapLng == null) return '';
+    return '<section class="dp-card dp-map"><h2 class="dp-sec-title">' + C.escapeHtml(C.t('detail.location')) + '</h2>'
+      + '<div class="map-container" id="tourismMap"><div class="map-loading">' + C.escapeHtml(C.t('detail.map_loading')) + '</div></div></section>';
   }
 
   function renderShopPage(spot, stationKey) {
     var ctx = C.buildContext(spot, stationKey);
     var html = buildHero(ctx) + buildHeadCard(ctx)
-      + buildRecommendationsCard(spot) + buildInfoCard(ctx) + buildAboutCard(ctx)
+      + buildRecommendationsCard(spot) + buildAboutCard(ctx)
       + buildVisitorNotes(spot) + buildMapCard(ctx)
       + '<div class="dp-note">' + C.escapeHtml(C.t('detail.ai_note')) + '</div>';
     var container = document.getElementById('articleContainer');
     if (!container) return;
     // Close any existing menu before language/data refresh replaces its DOM.
     if (activeMenuModal) closeMenuModal(activeMenuModal);
-    container.innerHTML = '<div class="article-content article-content--shop">' + html + '</div>';
+    container.innerHTML = '<article class="article-content article-content--shop">' + html + '</article>';
     bindMenuModal();
-    C.observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
+    if (ctx.mapLat != null && ctx.mapLng != null) C.observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
     var pageTitle = ctx.spotName + ' | ' + (ctx.dist.stationName || '') + ' | PIXEL TETSUDO';
     document.title = pageTitle;
   }
@@ -252,8 +249,7 @@
       first.focus();
     }
   });
-  // 图集查看器全局委托（一次绑定，hero/菜单图通用）
-  if (C.bindGallery) C.bindGallery();
+  // 图集事件已由 TourismDetailCore.start 统一绑定，避免重复安装。
   // 脚本位于 <body> 末尾：DOM 已完成解析，因此立即启动
   // （加载反馈会先于数据包完成而显示）。
   C.start(renderShopPage);

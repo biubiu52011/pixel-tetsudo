@@ -367,3 +367,38 @@ test('experience filter does not lose play venues beyond the first 30 nearby rec
   listeners['pt:tourism-ready']();
   assert.match(nodes.smGrid.innerHTML, /Arcade New/, 'tourism-ready must invalidate stale candidate cache');
 });
+
+test('shop images cannot impersonate item photography and provenance is explicit', () => {
+  const html = renderShop({
+    name: 'Photo Audit', tags: ['food'],
+    menu: [
+      { item: 'Storefront fallback', cover: '../images/観光地/shop.jpg', coverRole: 'shop' },
+      { item: 'Original drawing', cover: '../images/illustration.svg', coverRole: 'illustration' },
+      { item: 'Unreviewed source', sourceUrl: 'https://example.com/menu' },
+      { item: 'Reviewed menu', sourceUrl: 'https://example.com/verified', sourceType: 'official' },
+    ],
+  });
+  assert.match(html, /dp-dish-badge/);
+  assert.doesNotMatch(html, /src="../images\/観光地\/shop\.jpg"/);
+  assert.match(html, /src="../images\/illustration\.svg"/);
+  assert.match(html, /https:\/\/example\.com\/verified/);
+  assert.doesNotMatch(html, /href="https:\/\/example\.com\/menu"/);
+  assert.match(html, /<article class="article-content article-content--shop">/);
+  assert.match(html, /<section class="dp-card dp-menu"/);
+});
+
+test('missing coordinates do not place a venue at an invented map location', () => {
+  const sandbox = { window: { currentLang:'ja', t:key=>key }, document:{}, console };
+  execute('js/tourism-core.js', sandbox);
+  const core = sandbox.window.TourismDetailCore;
+  const absent = core.buildContext({ name:'Missing', coord:null, tags:['food'] }, null);
+  assert.equal(absent.mapLat, null);
+  assert.equal(absent.mapLng, null);
+  assert.equal(absent.mapSection, '');
+  const zero = core.buildContext({ name:'Zero', coord:[0,0] }, null);
+  assert.equal(zero.mapSection, '');
+  const valid = core.buildContext({ name:'Valid', coord:[35.7,139.8] }, null);
+  assert.match(valid.mapSection, /id="tourismMap"/);
+  assert.equal(core.escapeHtml('A"&<\'B'), 'A&quot;&amp;&lt;&#39;B');
+  assert.equal(core.escapeHtml(0), '0');
+});

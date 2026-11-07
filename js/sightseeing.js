@@ -340,7 +340,11 @@ function renderGrid() {
 
       // 详情页按类型路由到活动、景点或店铺页面。
       const detailType = getSpotType(s);
-      const detailUrl = 'tourism-' + detailType + '.html?station=' + encodeURIComponent(stationKey) + '&index=' + idx + '&name=' + encodeURIComponent(name);
+      const itemId = s.id || s.tourismId;
+      const selector = itemId != null && String(itemId).trim()
+        ? '&id=' + encodeURIComponent(String(itemId))
+        : '&name=' + encodeURIComponent(name);
+      const detailUrl = 'tourism-' + detailType + '.html?station=' + encodeURIComponent(stationKey) + '&index=' + idx + selector;
 
       return '<a href="' + detailUrl + '" class="sm-card' + (isEvent ? ' sm-card--event' : '') + '" data-index="' + idx + '">' +
         '<div class="sm-thumb' + (image ? '' : ' sm-thumb-noimg') + '">' + eventBadgeHtml + thumbHtml + '</div>' +
