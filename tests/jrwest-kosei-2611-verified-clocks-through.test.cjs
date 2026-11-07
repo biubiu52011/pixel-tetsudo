@@ -538,3 +538,44 @@ test('Nov 2026 Kosei morning locals and overnight trains certify 15 separate ori
  assert.ok(!block.includes('run.vehicle_artwork_path='));
  assert.ok(!block.includes('run.vehicle_plan_confirmed=true'));
 });
+
+test('two Omiimazu weekday/holiday numbering changes are references, never positions',()=>{
+ const sql=fs.readFileSync(
+ 'supabase/migrations/20261107153000_jrwest_kosei_2611_omiimazu_through_number_boundaries.sql','utf8');
+ const sourceChecks=[
+  ['Kosei','3143M','weekday','Omi-Shiotsu','Oumiimazu'],
+  ['Kosei','3443M','weekday','Oumiimazu','Yamashina'],
+  ['TokaidoKansai','3443M','weekday','Kyoto','Kobe'],
+  ['SanyoMain','3443M','weekday','Hyougo','Himeji'],
+  ['Kosei','3145M','saturday_holiday','Omi-Shiotsu','Oumiimazu'],
+  ['Kosei','3445M','saturday_holiday','Oumiimazu','Yamashina'],
+  ['TokaidoKansai','3445M','saturday_holiday','Kyoto','Osaka']
+ ];
+ for(const r of sourceChecks){
+  const first=r.slice(0,3).map(x=>"'"+x+"'").join(',');
+  assert.ok(sql.includes("("+first+","),r.join(' '));
+  assert.ok(sql.includes("'"+r[3]+"'"),r[3]);
+  assert.ok(sql.includes("'"+r[4]+"'"),r[4]);
+ }
+ for(const token of [
+  "calendar_scope IN ('daily','weekday','saturday_holiday')",
+  "number_date_verified",
+  "WHERE calendar_scope='weekday')<>4",
+  "WHERE calendar_scope='saturday_holiday')<>8",
+  "WHERE calendar_scope='daily')<>3",
+  "WHERE stop_clocks_verified OR actual_vehicle_confirmed OR authorizes_position OR authorizes_png",
+  "public.published_jrwest_2611_crossline_number_reference",
+  "ON CONFLICT (line_key,published_train_number,calendar_scope) DO NOTHING"
+ ].filter(x=>x!=='number_date_verified'))
+  assert.ok(sql.includes(token),token);
+ // The original joined 14-stop Kosei SpecialRapid source remains
+ // source-only because its PUBLIC train number changes at Omiimazu.
+ const block=edge.slice(edge.indexOf('// Date-verified Kosei source-only'),
+ edge.indexOf('// JR-West Kyoto/Kobe through corridor'));
+ assert.ok(block.includes('run.train_type!=="odpt.TrainType:JR-West.Local"'));
+ const refBlock=edge.slice(edge.lastIndexOf('jrwestOfficialNumberReferences='),
+   edge.indexOf('jrwest_official_number_references:'));
+ assert.ok(refBlock.includes('["daily",dayScope]'));
+ assert.ok(refBlock.includes('p.authorizes_position!==false'));
+ assert.ok(refBlock.includes('stop_clocks_verified:false'));
+});
