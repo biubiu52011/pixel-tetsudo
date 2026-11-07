@@ -314,3 +314,158 @@ body[data-page="home"] #searchContainer .journey-platform-arrow {
   body[data-page="home"] #searchContainer .journey-platform-slot {padding:9px 6px;}
   body[data-page="home"] #searchContainer .journey-platform-label {font-size:11px;}
 }
+
+/* Search experience v2 — one route per search criterion, with honest data states.
+   Scope every rule to the existing home module; never change css/style.css. */
+body[data-page="home"] #searchContainer > .search-inputs {gap:14px;}
+body[data-page="home"] #searchContainer .search-stations {
+  padding:14px; border:2px solid var(--border);border-radius:5px;
+  background:var(--card);box-shadow:inset 2px 2px 0 rgba(0,0,0,.035);
+  gap:12px 12px;
+}
+body[data-page="home"] #searchContainer .search-stations .input-group:first-child .input-label::before,
+body[data-page="home"] #searchContainer .search-stations .input-group:last-child .input-label::before {
+  content:"";display:inline-block;width:9px;height:9px;margin-right:8px;
+  border:2px solid var(--text);vertical-align:middle;background:var(--green);
+}
+body[data-page="home"] #searchContainer .search-stations .input-group:last-child .input-label::before {
+  background:#e68a37;
+}
+body[data-page="home"] #searchContainer .search-stations .search-input {font-weight:600;}
+body[data-page="home"] #searchContainer .search-time-controls {
+  padding:12px; background:var(--bg);border:1px solid var(--border);
+  border-radius:4px;gap:8px 10px;
+}
+body[data-page="home"] #searchContainer .search-time-controls .search-time-group-label {
+  margin:0;min-height:0;font-size:12px;
+}
+body[data-page="home"] #searchContainer .search-time-controls .search-time-field-label {
+  display:block;margin-bottom:5px;font-size:11px;min-height:0;
+}
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] {
+  grid-template-columns:minmax(0,1fr);
+}
+body[data-page="home"] #searchContainer .search-time-controls label[for="searchTimeMode"] {
+  min-width:0;
+}
+body[data-page="home"] #searchContainer > .search-results {margin-top:0;min-width:0;}
+body[data-page="home"] #searchContainer > .search-results:empty {display:none;}
+body[data-page="home"] #searchContainer > .search-results:not(:empty) {padding:0;margin:14px 0 0;}
+body[data-page="home"] #searchContainer .journey-card {
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
+  background:var(--card);border:2px solid var(--text);
+  border-radius:5px;box-shadow:3px 3px 0 rgba(32,33,38,.28);
+  overflow:hidden;min-width:0;
+}
+body[data-page="home"] #searchContainer .journey-mode-area {
+  grid-column:1/-1;padding:12px 16px;background:var(--bg3);
+  border-bottom:2px solid var(--text);
+}
+body[data-page="home"] #searchContainer .journey-mode-label {
+  font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text);
+}
+body[data-page="home"] #searchContainer .journey-modes {
+  display:flex;gap:6px;padding:0;border:0;background:transparent;
+}
+body[data-page="home"] #searchContainer .mode-tab {
+  flex:1 1 0;min-width:0;min-height:40px;white-space:normal;
+  border-radius:4px;line-height:1.3;
+}
+body[data-page="home"] #searchContainer .mode-tab:focus-visible,
+body[data-page="home"] #searchContainer .journey-details-toggle:focus-visible {
+  outline:3px solid var(--green-dim);outline-offset:2px;
+}
+body[data-page="home"] #searchContainer .journey-overview {
+  display:flex;flex-direction:column;gap:10px;padding:18px 16px;
+  min-width:0;background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-summary-route {
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  font-size:18px;font-weight:800;line-height:1.4;color:var(--text);
+  overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-summary-arrow {color:var(--green-dim);}
+body[data-page="home"] #searchContainer .journey-header {
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:0;border:0;background:transparent;
+}
+body[data-page="home"] #searchContainer .journey-duration {
+  font-size:14px;letter-spacing:0;font-weight:700;
+}
+body[data-page="home"] #searchContainer .journey-duration[data-time-status="matched"] {
+  font-size:20px;color:var(--green-dim);
+}
+body[data-page="home"] #searchContainer .journey-transfers {
+  font-size:12px;border:1px solid var(--border);padding:4px 7px;
+}
+body[data-page="home"] #searchContainer .journey-fare {
+  margin:0;font-size:12px;font-weight:600;color:var(--text-muted);
+}
+body[data-page="home"] #searchContainer .journey-schedule {
+  padding:10px 12px;border-left:3px solid var(--border);
+  background:var(--bg);font-size:12px;line-height:1.6;
+  color:var(--text-muted);overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-schedule[data-schedule-status="matched"] {
+  border-left-color:var(--green);background:var(--green-pale);
+  color:var(--text);
+}
+body[data-page="home"] #searchContainer .journey-details {
+  min-width:0;border-left:1px solid var(--border);background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-details-toggle {
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:13px 18px;border-bottom:1px solid var(--border);
+  background:var(--bg);color:var(--text);font-size:13px;font-weight:800;
+  cursor:pointer;list-style:none;min-height:44px;
+}
+body[data-page="home"] #searchContainer .journey-details-toggle::-webkit-details-marker {display:none;}
+body[data-page="home"] #searchContainer .journey-details-toggle::after {
+  content:"⌄";font-size:18px;line-height:1;color:var(--green-dim);
+}
+body[data-page="home"] #searchContainer .journey-details[open] .journey-details-toggle::after {
+  transform:rotate(180deg);
+}
+body[data-page="home"] #searchContainer .journey-details .journey-seg-route {
+  white-space:normal;overflow:visible;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-line-icons {
+  margin-left:0;max-width:100%;justify-content:flex-start;
+  flex:1 1 100%;padding:3px 0;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-transfer {
+  padding:11px 12px;align-items:flex-start;gap:7px;
+  border:2px solid var(--border);
+}
+body[data-page="home"] #searchContainer .journey-details .journey-transfer-station {
+  font-size:15px;font-weight:800;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-platform-change {
+  order:4;margin-top:4px;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-transfer-hint {display:none;}
+body[data-page="home"] #searchContainer .journey-platform-change[hidden] {display:none!important;}
+body[data-page="home"] #searchContainer .journey-details .journey-platform-slot {
+  min-height:86px;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-platform-label {font-size:12px;}
+body[data-page="home"] #searchContainer .journey-details .journey-platform-value {font-size:24px;}
+body[data-page="home"] #searchContainer .journey-details .journey-platform-note {font-size:11px;}
+body[data-page="home"] #searchContainer .journey-seg-times:empty {display:none;}
+@media(max-width:700px) {
+  body[data-page="home"] #searchContainer .journey-card {grid-template-columns:minmax(0,1fr);}
+  body[data-page="home"] #searchContainer .journey-mode-area,
+  body[data-page="home"] #searchContainer .journey-overview,
+  body[data-page="home"] #searchContainer .journey-details {grid-column:1;}
+  body[data-page="home"] #searchContainer .journey-details {border-left:0;border-top:1px solid var(--border);}
+}
+@media(max-width:640px) {
+  body[data-page="home"] #searchContainer .search-stations {padding:12px;gap:10px;}
+  body[data-page="home"] #searchContainer .journey-overview {padding:15px 14px;}
+  body[data-page="home"] #searchContainer .journey-mode-area {padding:12px 14px;}
+  body[data-page="home"] #searchContainer .journey-summary-route {font-size:17px;}
+  body[data-page="home"] #searchContainer .journey-details .journey-platform-slot {min-height:82px;}
+}
+@media(prefers-reduced-motion: reduce) {
+  body[data-page="home"] #searchContainer .rs-loading-spinner {animation:none;}
+}
