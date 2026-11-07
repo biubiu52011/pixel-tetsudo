@@ -267,7 +267,16 @@ body[data-page="home"] #searchContainer .search-stations > .input-group:last-chi
 body[data-page="home"] #searchContainer .search-stations > #swapBtn {
   grid-area:swap;align-self:center;justify-self:center;margin:0; width:44px;height:44px;
 }
-body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTime"] { display:none; }
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTime"],
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchDate"] { display:none; }
+body[data-page="home"] #searchContainer .search-time-controls:not([data-time-mode="now"]) {
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+@media(max-width:640px) {
+  body[data-page="home"] #searchContainer .search-time-controls:not([data-time-mode="now"]) {
+    grid-template-columns:minmax(0,1fr);
+  }
+}
 body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] {grid-template-columns:minmax(0,1fr);}
 body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTimeMode"] {max-width:100%;}
 @media(max-width:640px) {
