@@ -105,8 +105,8 @@ test('five Kyoto/Kobe new-rapid original segments certified; vehicles still unve
   'actual_vehicle_confirmed=false AND authorizes_png=false',
   '<>5'
  ])assert.ok(extra.includes(t),t);
- const block=edge.slice(edge.indexOf('// Thirty-one JR-West Kyoto/Kobe'),
-  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Thirty-one JR-West Kyoto/Kobe')));
+ const block=edge.slice(edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo'),
+  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo')));
  for(const t of [
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED',
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT',
@@ -144,9 +144,9 @@ test('four additional Kyoto-Kobe 7-stop sources join the same evidence owner',()
  assert.ok(extra.includes('published_jrwest_kyoto_kobe_2611_clock_evidence'));
  assert.ok(extra.includes('h.n=7 AND h.original_hash=e.expected_hash'));
  assert.ok(extra.includes('<>9'));
- const kyoto=edge.slice(edge.indexOf('// Thirty-one JR-West Kyoto/Kobe'),
+ const kyoto=edge.slice(edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo'),
   edge.indexOf('// Sotetsu-JR 2611:'));
- assert.ok(kyoto.includes('const expected=selectedCalendar==="odpt.Calendar:Weekday"?15:16;'));
+ assert.ok(kyoto.includes('    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);'));
  assert.ok(kyoto.includes('run.published_train_number=p.official_train_number;'));
  assert.ok(kyoto.includes('run.timetable_date_verified=true;'));
 });
@@ -165,7 +165,7 @@ test('two mismatched legacy calendars cannot create phantom Kyoto-Kobe trains',(
  assert.ok(sql.includes('official_train_number IS NULL AND authorizes_png=false'));
  assert.ok(sql.includes('official_calendar_conflict)<>2'));
  const block=edge.slice(edge.indexOf('// JR-West Kyoto/Kobe through corridor'),
-  edge.indexOf('// Thirty-one JR-West Kyoto/Kobe'));
+  edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo'));
  for(const term of [
    'official_calendar_conflict,official_calendar_urn,official_calendar_source_url',
    'JRWEST_KYOTO_KOBE_2611_CALENDAR_SOURCE_CONFLICT',
@@ -228,12 +228,12 @@ test('Kyoto/Kobe 8 additional local C sources retain dated clock and candidate b
    "AND f.authorizes_png=false",
    "<>17","<>8","<>10","<>7"
  ])assert.ok(m.includes(proof),proof);
- const block=edge.slice(edge.indexOf('// Thirty-one JR-West Kyoto/Kobe'),
+ const block=edge.slice(edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo'),
  edge.indexOf('// Sotetsu-JR 2611:'));
  for(const proof of [
-   'const expected=selectedCalendar==="odpt.Calendar:Weekday"?15:16;',
+   '    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);',
    'const certifiedType=p.train_type_urn==="odpt.TrainType:JR-West.Local"',
-   '[16,19,25,32,33].includes(p.official_stop_count)',
+   '[5,11]:[16,19,25,32,33]).includes(p.official_stop_count)',
    'stops.length!==p.official_stop_count',
    'run.published_train_type="odpt.TrainType:JR-West."+certifiedType',
    'p.actual_vehicle_confirmed!==false||p.authorizes_png!==false'
@@ -265,12 +265,12 @@ test('four calendar-scoped and two weekday Kyoto-Kobe T rapid sources are finger
   "verified_source_match)<>23",
   "official_public_train_type='Rapid')<>6"
  ])assert.ok(mig.includes(token),token);
- const from=edge.indexOf('// Thirty-one JR-West Kyoto/Kobe');
+ const from=edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo');
  const to=edge.indexOf('// Sotetsu-JR 2611:',from);
  assert.ok(from>=0&&to>from);
  const block=edge.slice(from,to);
  for(const token of [
-  'const expected=selectedCalendar==="odpt.Calendar:Weekday"?15:16;',
+  '    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);',
   '?(/^[0-9]{3,4}T$/.test(p.official_train_number)?"Rapid":"SpecialRapid")',
   'certifiedType==="Rapid"?p.official_stop_count===18',
   '!/^(?:\\d{4}M|\\d{3,4}[CT])$/.test(p.official_train_number)',
@@ -312,17 +312,64 @@ test('Kyoto/Kobe Nov 2026 next 8 C/T verified sources retain original source ide
    "calendar_urn='odpt.Calendar:SaturdayHoliday')<>16",
    "official_calendar_conflict)<>2"
  ])assert.ok(sql.includes(token),token);
- const begin=edge.indexOf('// Thirty-one JR-West Kyoto/Kobe');
+ const begin=edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo');
  const end=edge.indexOf('// Sotetsu-JR 2611:',begin);
  assert.ok(begin>=0 && end>begin);
  const kyoto=edge.slice(begin,end);
  for(const token of [
-   'const expected=selectedCalendar==="odpt.Calendar:Weekday"?15:16;',
-   '[16,19,25,32,33].includes(p.official_stop_count)',
+   '    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);',
+   '[5,11]:[16,19,25,32,33]).includes(p.official_stop_count)',
    'p.actual_vehicle_confirmed!==false||p.authorizes_png!==false',
    'stops.length!==p.official_stop_count',
    'run.published_train_number=p.official_train_number'
  ])assert.ok(kyoto.includes(token),token);
  assert.ok(!kyoto.includes('run.vehicle_artwork_path='));
  assert.ok(!kyoto.includes('run.vehicle_plan_confirmed=true'));
+});
+
+test('four JR Kobe Line western SanyoMain C source clocks use one evidence view',()=>{
+ const sql=fs.readFileSync('supabase/migrations/20261107144000_jrwest_kobe_sanyo_2611_four_verified_local_sources.sql','utf8');
+ const verified=[
+  ['710100-1096200-173C','173C','Weekday','ae9c0698577116c22cc407174b362d8e'],
+  ['710100-194000-209C','209C','Weekday','c3170655bb21b99b1594c87f0dde4efd'],
+  ['710100-198700-217C','217C','SaturdayHoliday','2d877ffb38d617c2547e164b90dc814c'],
+  ['710100-236600-241C','241C','Weekday','b9c0191b644b8c6e02a5b26281066df8']
+ ];
+ for(const [source,number,calendar,checksum] of verified){
+  assert.ok(sql.includes("'"+source+"'"),source);
+  assert.ok(sql.includes("'"+number+"'"),number);
+  assert.ok(sql.includes("'"+calendar+"'"),calendar);
+  assert.ok(sql.includes("'"+checksum+"'"),checksum);
+ }
+ for(const evidence of [
+  "source_line_key='SanyoMain'",
+  "official_stop_count IN (5,11)",
+  "m.line_key=f.source_line_key",
+  "m.source_path='data/timetables/'||f.source_line_key||'-manual.js'",
+  "WITH (security_invoker=true)",
+  "p.original_hash=e.expected_hash AND p.stop_count=e.expected_count::integer",
+  "source_line_key='SanyoMain')<>4",
+  "source_line_key='SanyoMain' AND calendar_urn='odpt.Calendar:Weekday')<>3",
+  "source_line_key='TokaidoKansai')<>31",
+  "source_public_number_suffix='741T'",
+  "official_train_number IS NOT NULL",
+  "WHERE verified_source_match)<>35",
+ ])assert.ok(sql.includes(evidence),evidence);
+ const start=edge.indexOf('// Thirty-five JR-West Kyoto/Kobe/Sanyo');
+ const end=edge.indexOf('// Sotetsu-JR 2611:',start);
+ assert.ok(start>=0&&end>start);
+ const b=edge.slice(start,end);
+ for(const evidence of [
+  '(lineId==="TokaidoKansai"||lineId==="SanyoMain")',
+  '.eq("source_line_key",lineId)',
+  'const expected=lineId==="SanyoMain"',
+  'selectedCalendar==="odpt.Calendar:Weekday"?3:1',
+  'selectedCalendar==="odpt.Calendar:Weekday"?15:16',
+  '(lineId==="SanyoMain"?[5,11]:[16,19,25,32,33]).includes',
+  'p.source_line_key!==lineId',
+  'run.network_key!=="odpt.Railway:JR-West."+lineId',
+  'p.actual_vehicle_confirmed!==false||p.authorizes_png!==false'
+ ])assert.ok(b.includes(evidence),evidence);
+ assert.ok(!b.includes('run.vehicle_artwork_path='));
+ assert.ok(!b.includes('run.vehicle_plan_confirmed=true'));
 });
