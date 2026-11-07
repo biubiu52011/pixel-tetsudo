@@ -33,11 +33,22 @@
   function context(options) {
     options = options || {};
     var now = new Date(Date.now() + 9 * 3600000);
-    var minute = parseTime(options.mode === 'now' || !options.mode ? now.getUTCHours() + ':' + String(now.getUTCMinutes()).padStart(2, '0') : options.time);
-    var day = new Date(now.getTime());
-    if (now.getUTCHours() < 4) day.setUTCDate(day.getUTCDate() - 1);
-    var date = day.toISOString().slice(0,10);
-    return { minute:minute, mode:options.mode || 'now', date:date,
+    var mode = options.mode === 'depart' || options.mode === 'arrive' ? options.mode : 'now';
+    // Date picker represents a calendar date in Japan, not the service day.
+    var calendarDate = mode === 'now' ? now.toISOString().slice(0, 10) : options.date;
+    var time = mode === 'now' ?
+      String(now.getUTCHours()).padStart(2, '0') + ':' + String(now.getUTCMinutes()).padStart(2, '0') :
+      options.time;
+    var minute = parseTime(time);
+    var day = new Date(String(calendarDate || '') + 'T12:00:00Z');
+    if (minute == null || isNaN(day.getTime()) ||
+        day.toISOString().slice(0,10) !== calendarDate) {
+      return { minute:null, mode:mode, date:'', calendars:[] };
+    }
+    // 00:00–03:59 belong to the previous railway service day (24:00–27:59).
+    if (minute >= 24 * 60) day.setUTCDate(day.getUTCDate() - 1);
+    var date = day.toISOString().slice(0, 10);
+    return { minute:minute, mode:mode, date:date,
       calendars:calendarsForDate(date) };
   }
   function candidates(rows, from, to, ctx) {
