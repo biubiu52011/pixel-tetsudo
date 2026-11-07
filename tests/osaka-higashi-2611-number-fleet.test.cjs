@@ -16,6 +16,8 @@ test('Osaka Higashi historic sources are not falsely presented as a full dated t
   assert.match(migration, /source_stop_count IN\(8,15\)/);
   assert.match(edge, /expected=selectedCalendar==="odpt\.Calendar:Weekday"\?142:140/);
   assert.match(edge, /source-only-osaka-higashi-number-family/);
+  assert.match(edge, /run\\.timetable_date_verified=false/);
+  assert.match(edge, /run\\.timetable_validity="undated_not_current_verified"/);
   assert.match(edge, /suppressedUnverifiedOsakaHigashiSpecialSources/);
   assert.match(edge, /new Set\(\["1091M","7092MH","9024MH"\]\)/);
 });
