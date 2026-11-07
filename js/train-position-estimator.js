@@ -2256,7 +2256,7 @@
                 tt._sqlTrainNumberVerification==="official-2611-nara-source-stop-clock"&&
                 /^[0-9]{3,4}M$/.test(String(tt._sqlPublishedTrainNumber||""))&&
                 String(tt._sqlPublishedTrainNumber||"")===
-                  String(publicTrainNumber||"").replace(/H$/,""))
+                  String(publicTrainNumber||"").replace(/H$/,"")))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber,
             officialNumberVerified: Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
@@ -2273,7 +2273,7 @@
                 tt._sqlTrainNumberVerification==="official-2611-nara-source-stop-clock"&&
                 /^[0-9]{3,4}M$/.test(String(tt._sqlPublishedTrainNumber||""))&&
                 String(tt._sqlPublishedTrainNumber||"")===
-                  String(publicTrainNumber||"").replace(/H$/,"")))||
+                  String(publicTrainNumber||"").replace(/H$/,""))))||
               Boolean(officialYonesakaPlan || officialYamagataNumberProof || officialOuMainTsugaruPlan || officialGonoPlan || officialIshinomakiPlan ||
               officialOgaPlan || officialRegionalPlan ||
               officialRikutoEastPlan || officialRikutsuWestPlan ||
