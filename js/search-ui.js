@@ -54,10 +54,13 @@
           const isNow = this.timeMode.value === 'now';
           this.timeInput.disabled = isNow;
           if (this.dateInput) this.dateInput.disabled = isNow;
+          this._clearStaleResults();
           const controls = this.timeMode.closest('.search-time-controls');
           if (controls) controls.setAttribute('data-time-mode', this.timeMode.value);
         };
         this.timeMode.addEventListener('change', updateTimeMode);
+        if (this.dateInput) this.dateInput.addEventListener('change', () => this._clearStaleResults());
+        this.timeInput.addEventListener('change', () => this._clearStaleResults());
         updateTimeMode();
       }
 
@@ -131,6 +134,13 @@
     },
 
 
+    _clearStaleResults: function() {
+      // UI invalidation only: a changed form must not display an older route.
+      this._renderGeneration = (this._renderGeneration || 0) + 1;
+      this.lastRouteResult = null;
+      if (this.resultsDiv) this.resultsDiv.replaceChildren();
+    },
+
     _updateSwapLabel: function() {
       if (!this.swapBtn) return;
       var labels = {
@@ -157,6 +167,7 @@
         this.toInput.value = fromVal;
         this.toInput.setAttribute('data-station-id', fromId || '');
       }
+      this._clearStaleResults();
       // Swapping authoritative IDs must not leave an obsolete menu open.
       [this.fromInput, this.toInput].forEach(input => {
         if (!input) return;
@@ -211,6 +222,7 @@
           }
         });
         input.addEventListener('input', () => {
+          this._clearStaleResults();
           input.removeAttribute('data-station-id');
           clearTimeout(input._suggestTimer);
           // Debounce station matching while keeping typing responsive.
@@ -278,7 +290,7 @@
         this._suggestionCache[query] = window.RouteSearch
           ? window.RouteSearch.findStationsByTerm(query) : [];
       }
-      const stations = this._suggestionCache[query];
+      const stations = (this._suggestionCache[query] || []).slice(0, 8);
       if (!stations || !stations.length) {
         this._hideSuggestions(list, input);
         return;
@@ -347,6 +359,8 @@
         }
       }
       if (!from || !to) {
+        if (!from && this.fromInput) this.fromInput.focus();
+        else if (!to && this.toInput) this.toInput.focus();
         if (this.resultsDiv) {
           this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('validate.input_required')) + '</div>';
         }
@@ -426,23 +440,39 @@
       var dest = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(result.path[result.path.length - 1], lang) : (result.path[result.path.length - 1] || '');
 
       var html = '<div class="search-result journey-card">';
-      // 模式标签（推荐 / 最快 / 最少换乘），对应换乘案内。
+      html += '<div class="journey-mode-area">';
+      html += '<div class="journey-mode-label">' + window.escapeHtml(t('search.mode_group')) + '</div>';
+      // Switch search criterion; the route engine currently returns one path, not a candidate list.
       var _modes = [['combo', t('search.mode.combo')], ['duration', t('search.mode.duration')], ['transfers', t('search.mode.transfers')]];
-      html += '<div class="journey-modes">';
+      html += '<div class="journey-modes" role="group" aria-label="' + window.escapeHtml(t('search.mode_group')) + '">';
       for (var _mi = 0; _mi < _modes.length; _mi++) {
-        var _mCls = (_modes[_mi][0] === this.currentMode) ? 'mode-tab active' : 'mode-tab';
-        html += '<button type="button" class="' + _mCls + '" data-mode="' + _modes[_mi][0] + '">' + window.escapeHtml(_modes[_mi][1]) + '</button>';
+        var _active = _modes[_mi][0] === this.currentMode;
+        var _mCls = _active ? 'mode-tab active' : 'mode-tab';
+        html += '<button type="button" class="' + _mCls + '" aria-pressed="' + (_active ? 'true' : 'false') +
+          '" data-mode="' + _modes[_mi][0] + '">' + window.escapeHtml(_modes[_mi][1]) + '</button>';
       }
-      html += '</div>';
-      // 标题：总时长 + 换乘次数 + 估算票价。
+      html += '</div></div>';
+      html += '<div class="journey-overview">';
+      html += '<div class="journey-summary-route"><span>' + window.escapeHtml(origin) +
+        '</span><span class="journey-summary-arrow" aria-hidden="true">→</span><span>' +
+        window.escapeHtml(dest) + '</span></div>';
       html += '<div class="journey-header">';
-      html += '<span class="journey-duration">' + dur + ' ' + t('search.min_unit') + '</span>';
-      if (transfers > 0) { html += '<span class="journey-transfers">' + transfers + ' ' + t('search_result.transfer_count') + '</span>'; }
-      var _totalFare = (window.FareEstimator && result.routeSegments) ? window.FareEstimator.estimateTotal(result.routeSegments) : null;
-      if (_totalFare) { html += '<span class="journey-fare">¥' + _totalFare.toLocaleString() + ' <span class="journey-fare-tag">' + window.escapeHtml(t('search.fare_tag')) + '</span></span>'; }
+      // Static graph minutes are not timetable travel times. Show time only after confirmation.
+      html += '<span class="journey-duration" data-time-status="unconfirmed">' +
+        window.escapeHtml(t('search.duration_unconfirmed')) + '</span>';
+      html += '<span class="journey-transfers">' +
+        (transfers > 0 ? transfers + ' ' + t('search_result.transfer_count') : t('search_result.no_transfers')) + '</span>';
+      // FareEstimator currently provides a station-hop proxy, not a verified fare.
+      html += '<span class="journey-fare journey-fare--unknown">' +
+        window.escapeHtml(t('search.fare_unconfirmed')) + '</span>';
       html += '</div>';
-      html += '<div class="journey-schedule" role="status" aria-live="polite">'+window.escapeHtml(t('search.schedule_loading'))+'</div>';
-      // 时间线：起点 → 区间 → 终点。
+      html += '<div class="journey-schedule" data-schedule-status="loading" role="status" aria-live="polite">' +
+        window.escapeHtml(t('search.schedule_loading')) + '</div>';
+      html += '</div>';
+      // Keep details expanded by default; users may collapse them on mobile.
+      html += '<details class="journey-details" open>';
+      html += '<summary class="journey-details-toggle">' +
+        window.escapeHtml(t('search.route_details')) + '</summary>';
       html += '<div class="journey-timeline">';
       // 起点节点。
       html += '<div class="journey-node journey-node--origin">';
@@ -504,6 +534,7 @@
       html += '<span class="journey-node-label">' + window.escapeHtml(dest) + '</span>';
       html += '</div>';
       html += '</div>';
+      html += '</details>';
       html += '</div>';
 
       var destStation = result.path[result.path.length - 1];
@@ -525,8 +556,17 @@
         window.RouteTimetable.enrichSegments(result.routeSegments, result.timeOptions).then(function(res) {
           if (!_rtSelf.resultsDiv || renderGeneration!==_rtSelf._renderGeneration) return;
           var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
-          if(notice) notice.textContent=res && res.complete ? res.serviceDate+' · '+t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin)+' · '+t('search.schedule_note') : t('search.schedule_missing');
-          if(res && res.complete){var duration=_rtSelf.resultsDiv.querySelector('.journey-duration');if(duration) duration.textContent=res.durationMin+' '+t('search.min_unit');}
+          if(notice) {
+            notice.textContent=res && res.complete ? res.serviceDate+' · '+t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin)+' · '+t('search.schedule_note') : t('search.schedule_missing');
+            notice.dataset.scheduleStatus = res && res.complete ? 'matched' : 'unconfirmed';
+          }
+          if(res && res.complete) {
+            var duration=_rtSelf.resultsDiv.querySelector('.journey-duration');
+            if(duration) {
+              duration.textContent=res.durationMin+' '+t('search.min_unit');
+              duration.dataset.timeStatus='matched';
+            }
+          }
           // enrich 返回 { times, downgrade }；downgrade = 直通贯通失败需降级为换乘的 transfer 段索引
           var _times = (res && res.times) ? res.times : (res || {});
           for (var _ridx in _times) {
@@ -549,8 +589,20 @@
               _txt.classList.remove('journey-transfer-text--through');
               _txt.textContent = t('search_result.transfer');
             }
+            // When a through-service is downgraded, reveal the reserved UI slots.
+            var slots = _tr.querySelector('.journey-platform-change');
+            if (slots) slots.hidden = false;
           }
-        }).catch(function(){if(renderGeneration===_rtSelf._renderGeneration){var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');if(notice) notice.textContent=t('search.schedule_missing');}});
+          if (_dg.length) {
+            var txCount = _rtSelf.resultsDiv.querySelector('.journey-transfers');
+            if (txCount) txCount.textContent = (transfers + _dg.length) + ' ' + t('search_result.transfer_count');
+          }
+        }).catch(function(){
+          if(renderGeneration===_rtSelf._renderGeneration){
+            var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
+            if(notice) { notice.textContent=t('search.schedule_missing');notice.dataset.scheduleStatus='unconfirmed'; }
+          }
+        });
       }
       // 模式标签切换：使用新模式重新搜索（在 innerHTML 提交后绑定）。
       var _self = this;
