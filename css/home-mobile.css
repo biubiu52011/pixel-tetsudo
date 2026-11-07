@@ -164,135 +164,336 @@
   }
 }
 
-/* Autocomplete is owned by SearchUI. Show the currently keyboard-selected
-   option on both desktop and mobile, without changing the existing card UI. */
-body[data-page="home"] #searchContainer .suggestion-item[aria-selected="true"] {
-  background: var(--green-pale);
-  box-shadow: inset 4px 0 0 var(--green);
-  padding-left: 20px;
-}
-
-/* Search presentation only — match the original hard-edged pixel navigation.
-   The HTML, SearchUI, route logic and tourism module are separate owners. */
+/* ROUTE SEARCH VISUAL SYSTEM v3 — single presentation owner for both
+   current and legacy route-search markup; css/style.css remains frozen.
+   All components share hard-edged pixel borders, 4px corners and 3px shadows. */
 body[data-page="home"] #searchContainer {
-  border: 2px solid var(--text);
-  border-radius: 5px;
-  background: var(--card);
-  box-shadow: 4px 4px 0 rgba(32,33,38,.4), inset 2px 2px 0 #fff;
+  padding:0;
+  margin-top:0;
+  min-width:0;
+  overflow:visible;
+  border:2px solid var(--text);
+  border-radius:5px;
+  background:var(--card);
+  box-shadow:4px 4px 0 rgba(32,33,38,.38),inset 2px 2px 0 #fff;
 }
 body[data-page="home"] #searchContainer > .module-title {
-  background: var(--bg3);
-  border-bottom: 2px solid var(--text);
-  border-radius: 3px 3px 0 0;
+  margin:0;
+  padding:14px 16px;
+  background:var(--bg3);
+  border-bottom:2px solid var(--text);
+  border-radius:3px 3px 0 0;
 }
 body[data-page="home"] #searchContainer > .module-title h2 {
-  color: var(--text);
+  font-size:17px;line-height:1.4;color:var(--text);
 }
-body[data-page="home"] #searchContainer .input-label,
-body[data-page="home"] #searchContainer .search-time-group-label {
-  color: var(--text);
-  font-weight: 700;
+body[data-page="home"] #searchContainer > .search-inputs {
+  display:flex;flex-direction:column;gap:14px;
+  width:100%;min-width:0;margin:0;padding:16px;
 }
-body[data-page="home"] #searchContainer .search-input {
-  border: 2px solid #46464b;
-  border-radius: 4px;
-  background: var(--card);
-  color: var(--text);
-  box-shadow: 2px 2px 0 rgba(32,33,38,.2), inset 1px 1px 0 #fff;
-}
-body[data-page="home"] #searchContainer .search-input:focus {
-  border-color: #006b32;
-  background: var(--card);
-  outline: 2px solid #006b32;
-  outline-offset: 2px;
-  box-shadow: 2px 2px 0 rgba(32,33,38,.2);
-}
-body[data-page="home"] #searchContainer .search-input::placeholder {
-  color: var(--text-muted);
-  opacity: .78;
-}
-body[data-page="home"] #searchContainer .swap-btn {
-  border: 2px solid #303037;
-  border-radius: 4px;
-  background: var(--card);
-  color: #006b32;
-  box-shadow: 3px 3px 0 rgba(32,33,38,.4), inset 1px 1px 0 #fff;
-}
-body[data-page="home"] #searchContainer .swap-btn:hover {
-  background: #dff5e7;
-  border-color: #006b32;
-}
-body[data-page="home"] #searchContainer .swap-btn:active {
-  transform: translate(3px,3px);
-  box-shadow: none;
-}
-body[data-page="home"] #searchContainer .swap-btn:focus-visible {
-  outline: 3px solid #006b32;
-  outline-offset: 3px;
-}
-body[data-page="home"] #searchContainer .search-btn {
-  border: 2px solid #006b32;
-  border-radius: 4px;
-  background: var(--green);
-  color: var(--white);
-  box-shadow: 4px 4px 0 #005b29, inset 1px 1px 0 rgba(255,255,255,.25);
-}
-body[data-page="home"] #searchContainer .search-btn:hover {
-  background: var(--green-dim);
-  box-shadow: 4px 4px 0 #005b29;
-  transform: translate(-1px,-1px);
-}
-body[data-page="home"] #searchContainer .search-btn:active {
-  transform: translate(3px,3px);
-  box-shadow: none;
-}
-body[data-page="home"] #searchContainer .search-btn:focus-visible {
-  outline: 3px solid #006b32;
-  outline-offset: 4px;
-}
-body[data-page="home"] #searchContainer .suggestions {
-  border: 2px solid #46464b;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 rgba(32,33,38,.3);
-}
-
-/* Route-search layout: scoped override, keep frozen css/style.css intact. */
 body[data-page="home"] #searchContainer .search-stations {
-  display:grid; grid-template-columns:minmax(0,1fr) 44px;
-  grid-template-areas:"from swap" "to swap"; align-items:center;
-  gap:12px 10px; min-width:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 44px;
+  grid-template-areas:"from swap" "to swap";
+  align-items:center;column-gap:12px;row-gap:12px;
+  min-width:0;padding:14px;
+  background:var(--card);border:2px solid var(--border);
+  border-radius:4px;box-shadow:inset 2px 2px 0 rgba(0,0,0,.04);
 }
 body[data-page="home"] #searchContainer .search-stations > .input-group:first-child {grid-area:from;min-width:0;}
 body[data-page="home"] #searchContainer .search-stations > .input-group:last-child {grid-area:to;min-width:0;}
 body[data-page="home"] #searchContainer .search-stations > #swapBtn {
-  grid-area:swap;align-self:center;justify-self:center;margin:0; width:44px;height:44px;
+  grid-area:swap;align-self:center;justify-self:center;margin:0;
 }
-body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTime"],
-body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchDate"] { display:none; }
-body[data-page="home"] #searchContainer .search-time-controls:not([data-time-mode="now"]) {
+/* Legacy DOM has three direct siblings rather than a .search-stations wrapper.
+   Visually group them using grid, without changing their IDs or event handlers. */
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 44px;
+  grid-template-areas:"from swap" "to swap" "time time" "submit submit";
+  align-items:center;column-gap:12px;row-gap:12px;
+}
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > .input-group:first-child {
+  grid-area:from;min-width:0;
+}
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > #swapBtn {
+  grid-area:swap;align-self:center;justify-self:center;margin:0;
+}
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > #swapBtn + .input-group {
+  grid-area:to;min-width:0;
+}
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > .search-time-controls {grid-area:time;}
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > #searchBtn {grid-area:submit;}
+body[data-page="home"] #searchContainer .input-group {min-width:0;max-width:100%;}
+body[data-page="home"] #searchContainer .input-label {
+  display:block;margin-bottom:6px;color:var(--text);
+  font-size:12px;line-height:1.4;font-weight:700;
+  text-transform:none;letter-spacing:.02em;
+}
+body[data-page="home"] #searchContainer .search-stations > .input-group:first-child .input-label::before,
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > .input-group:first-child .input-label::before,
+body[data-page="home"] #searchContainer .search-stations > .input-group:last-child .input-label::before,
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > #swapBtn + .input-group .input-label::before {
+  content:"";display:inline-block;width:10px;height:10px;
+  margin-right:8px;vertical-align:middle;border:2px solid var(--text);
+  background:var(--green);
+}
+body[data-page="home"] #searchContainer .search-stations > .input-group:last-child .input-label::before,
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > #swapBtn + .input-group .input-label::before {background:#e68a37;}
+body[data-page="home"] #searchContainer .search-input {
+  display:block;width:100%;max-width:100%;min-width:0;min-height:48px;
+  padding:10px 12px;font:inherit;font-size:16px;line-height:1.35;
+  border:2px solid #46464b;border-radius:4px;
+  background:var(--card);color:var(--text);
+  box-shadow:2px 2px 0 rgba(32,33,38,.2),inset 1px 1px 0 #fff;
+}
+body[data-page="home"] #searchContainer .search-stations .search-input,
+body[data-page="home"] #searchContainer .search-inputs:not(:has(> .search-stations)) > .input-group .search-input {font-weight:700;}
+body[data-page="home"] #searchContainer .search-input:focus {
+  border-color:#006b32;background:var(--card);outline:2px solid #006b32;
+  outline-offset:2px;box-shadow:2px 2px 0 rgba(32,33,38,.23);
+}
+body[data-page="home"] #searchContainer .search-input::placeholder {color:var(--text-muted);opacity:.78;font-weight:400;}
+body[data-page="home"] #searchContainer #swapBtn {
+  display:flex;align-items:center;justify-content:center;
+  width:44px;min-width:44px;height:44px;min-height:44px;padding:8px;
+  border:2px solid #303037;border-radius:4px;background:var(--card);color:#006b32;
+  box-shadow:3px 3px 0 rgba(32,33,38,.35),inset 1px 1px 0 #fff;
+}
+body[data-page="home"] #searchContainer #swapBtn:hover {background:var(--green-pale);transform:none;border-color:#006b32;}
+body[data-page="home"] #searchContainer #swapBtn:active {transform:translate(3px,3px);box-shadow:none;}
+body[data-page="home"] #searchContainer #swapBtn:focus-visible {outline:3px solid #006b32;outline-offset:3px;}
+body[data-page="home"] #searchContainer .search-time-controls {
+  display:grid;width:100%;min-width:0;max-width:100%;
   grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px 10px;align-items:end;
+  padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:4px;
 }
-@media(max-width:640px) {
-  body[data-page="home"] #searchContainer .search-time-controls:not([data-time-mode="now"]) {
-    grid-template-columns:minmax(0,1fr);
-  }
+body[data-page="home"] #searchContainer .search-time-group-label {
+  grid-column:1/-1;margin:0 0 3px;
+  color:var(--text);font-size:12px;font-weight:700;
 }
-body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] {grid-template-columns:minmax(0,1fr);}
-body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTimeMode"] {max-width:100%;}
-@media(max-width:640px) {
-  body[data-page="home"] #searchContainer .search-stations {gap:10px 8px;}
-  body[data-page="home"] #searchContainer .search-stations > #swapBtn {margin:0;}
+body[data-page="home"] #searchContainer .search-time-controls .input-group {min-width:0;}
+body[data-page="home"] #searchContainer .search-time-controls .search-input {font-weight:500;padding:10px 8px;text-overflow:ellipsis;}
+body[data-page="home"] #searchContainer .search-time-controls .search-time-field-label {font-size:11px;margin-bottom:5px;}
+/* Legacy markup hides the time label even when the input becomes enabled.
+   Reveal only that field label; keep the mode selector's accessible label hidden. */
+body[data-page="home"] #searchContainer .search-time-controls label[for="searchTime"] .visually-hidden,
+body[data-page="home"] #searchContainer .search-time-controls label[for="searchDate"] .visually-hidden {
+  position:static!important;clip:auto!important;clip-path:none!important;
+  width:auto!important;height:auto!important;overflow:visible!important;
+  white-space:normal!important;
+  display:block;margin:0 0 5px;color:var(--text);font-size:11px;font-weight:700;
 }
-
-/* Station transfer UI: platform positions only, no station navigation. */
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"],
+body[data-page="home"] #searchContainer .search-time-controls:has(#searchTimeMode option[value="now"]:checked) {
+  grid-template-columns:minmax(0,1fr);
+}
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchDate"],
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTime"],
+body[data-page="home"] #searchContainer .search-time-controls:has(#searchTimeMode option[value="now"]:checked) label[for="searchDate"],
+body[data-page="home"] #searchContainer .search-time-controls:has(#searchTimeMode option[value="now"]:checked) label[for="searchTime"] {
+  display:none;
+}
+body[data-page="home"] #searchContainer input[type="time"],
+body[data-page="home"] #searchContainer input[type="date"] {min-width:0;max-width:100%;}
+body[data-page="home"] #searchContainer #searchBtn {
+  width:100%;min-height:48px;padding:11px 16px;margin:0;
+  border:2px solid #006b32;border-radius:4px;
+  background:var(--green);color:var(--white);font-size:15px;font-weight:700;
+  box-shadow:4px 4px 0 #005b29,inset 1px 1px 0 rgba(255,255,255,.25);
+}
+body[data-page="home"] #searchContainer #searchBtn:hover {background:var(--green-dim);transform:translate(-1px,-1px);}
+body[data-page="home"] #searchContainer #searchBtn:active {transform:translate(3px,3px);box-shadow:none;}
+body[data-page="home"] #searchContainer #searchBtn:focus-visible {outline:3px solid #006b32;outline-offset:4px;}
+body[data-page="home"] #searchContainer .suggestions {
+  border:2px solid #46464b;border-radius:4px;
+  box-shadow:3px 3px 0 rgba(32,33,38,.3);
+}
+body[data-page="home"] #searchContainer .suggestion-item {min-height:44px;display:flex;align-items:center;}
+body[data-page="home"] #searchContainer .suggestion-item[aria-selected="true"] {
+  background:var(--green-pale);box-shadow:inset 4px 0 0 var(--green);padding-left:20px;
+}
+/* Results have the same 16px horizontal gutter as form inputs at every width. */
+body[data-page="home"] #searchContainer > .search-results,
+body[data-page="home"] #searchContainer > .search-results:not(:empty) {
+  min-width:0;margin:0 16px 16px;padding:0;
+}
+body[data-page="home"] #searchContainer > .search-results:empty {display:none;margin:0;padding:0;}
+body[data-page="home"] #searchContainer .journey-card {
+  display:flex;flex-direction:column;min-width:0;
+  background:var(--card);border:2px solid var(--text);border-radius:4px;
+  box-shadow:3px 3px 0 rgba(32,33,38,.26);overflow:hidden;
+}
+body[data-page="home"] #searchContainer .journey-mode-area {
+  padding:12px 14px;background:var(--bg3);border-bottom:2px solid var(--text);
+}
+body[data-page="home"] #searchContainer .journey-mode-label {
+  color:var(--text);font-size:12px;font-weight:700;margin-bottom:8px;
+}
+body[data-page="home"] #searchContainer .journey-modes {
+  display:flex;gap:6px;margin:0;padding:0;border:0;background:transparent;
+}
+body[data-page="home"] #searchContainer .journey-card > .journey-modes {
+  padding:12px 14px;background:var(--bg3);border-bottom:2px solid var(--text);
+}
+body[data-page="home"] #searchContainer .mode-tab {
+  display:flex;align-items:center;justify-content:center;
+  flex:1 1 0;min-width:0;min-height:42px;padding:8px 6px;
+  border:2px solid var(--border);border-radius:4px;
+  color:var(--text);font-size:12px;font-weight:700;line-height:1.3;
+  text-align:center;white-space:normal;cursor:pointer;
+  background:var(--card);
+}
+body[data-page="home"] #searchContainer .mode-tab.active {
+  border-color:var(--green-dim);background:var(--green);color:var(--white);
+}
+body[data-page="home"] #searchContainer .mode-tab:hover:not(.active) {
+  border-color:var(--green);color:var(--green);
+}
+body[data-page="home"] #searchContainer .mode-tab:focus-visible,
+body[data-page="home"] #searchContainer .journey-details-toggle:focus-visible {
+  outline:3px solid var(--green-dim);outline-offset:2px;
+}
+body[data-page="home"] #searchContainer .journey-overview {
+  display:flex;flex-direction:column;gap:10px;min-width:0;
+  padding:16px;background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-summary-route {
+  display:flex;align-items:center;flex-wrap:wrap;gap:9px;
+  color:var(--text);font-size:18px;font-weight:800;line-height:1.4;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-summary-arrow {color:var(--green-dim);}
+body[data-page="home"] #searchContainer .journey-header {
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-overview .journey-header {
+  padding:0;border:0;background:transparent;
+}
+body[data-page="home"] #searchContainer .journey-duration {
+  font-size:15px;font-weight:700;letter-spacing:0;color:var(--text);
+}
+body[data-page="home"] #searchContainer .journey-duration[data-time-status="matched"] {
+  font-size:20px;color:var(--green-dim);
+}
+body[data-page="home"] #searchContainer .journey-transfers {
+  margin:0;padding:4px 8px;border:1px solid var(--border);border-radius:4px;
+  background:var(--bg);font-size:12px;color:var(--text);
+}
+body[data-page="home"] #searchContainer .journey-fare {
+  margin:0;font-size:12px;font-weight:600;color:var(--text-muted);
+}
+body[data-page="home"] #searchContainer .journey-fare-tag {font-size:10px;color:var(--text-muted);}
+body[data-page="home"] #searchContainer .journey-schedule {
+  padding:10px 12px;border:0;border-left:3px solid var(--border);
+  border-radius:2px;background:var(--bg);
+  color:var(--text-muted);font-size:12px;line-height:1.55;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-card > .journey-schedule {
+  margin:0 16px 14px;
+}
+body[data-page="home"] #searchContainer .journey-schedule[data-schedule-status="matched"] {
+  border-left-color:var(--green);background:var(--green-pale);color:var(--text);
+}
+body[data-page="home"] #searchContainer .journey-details {
+  min-width:0;border-top:1px solid var(--border);
+  background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-details-toggle {
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:44px;gap:8px;padding:12px 16px;
+  border-bottom:1px solid var(--border);background:var(--bg);
+  color:var(--text);font-size:13px;font-weight:800;cursor:pointer;list-style:none;
+}
+body[data-page="home"] #searchContainer .journey-details-toggle::-webkit-details-marker {display:none;}
+body[data-page="home"] #searchContainer .journey-details-toggle::after {content:"▾";font-size:17px;color:var(--green-dim);}
+body[data-page="home"] #searchContainer .journey-details:not([open]) .journey-details-toggle::after {transform:rotate(-90deg);}
+body[data-page="home"] #searchContainer .journey-timeline {
+  min-width:0;padding:0;background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-node {
+  display:flex;gap:10px;align-items:center;
+  padding:13px 16px;background:var(--bg);
+  border-bottom:1px solid var(--border);
+}
+body[data-page="home"] #searchContainer .journey-node--dest {
+  border-bottom:0;border-top:1px solid var(--border);
+}
+body[data-page="home"] #searchContainer .journey-node-label {
+  font-size:16px;font-weight:800;color:var(--text);
+}
+body[data-page="home"] #searchContainer .journey-segments {
+  min-width:0;padding:8px 14px;background:var(--card);
+}
+body[data-page="home"] #searchContainer .journey-segments::before {left:20px;}
+body[data-page="home"] #searchContainer .journey-seg,
+body[data-page="home"] #searchContainer .journey-transfer {
+  position:relative;z-index:1;
+  min-width:0;margin:5px 0 5px 16px;
+  padding:11px 12px;border:2px solid var(--border);
+  border-radius:4px;background:var(--card);box-shadow:2px 2px 0 rgba(32,33,38,.1);
+}
+body[data-page="home"] #searchContainer .journey-seg {
+  display:flex;flex-direction:column;align-items:stretch;gap:5px;
+  border-left:4px solid var(--border);
+}
+body[data-page="home"] #searchContainer .journey-seg-head {
+  display:flex;align-items:center;flex-wrap:wrap;gap:6px;
+  min-width:0;
+}
+body[data-page="home"] #searchContainer .journey-seg-name {
+  color:var(--text);font-size:14px;font-weight:800;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-seg-route {
+  color:var(--text-muted);font-size:12px;
+  white-space:normal;overflow:visible;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-seg-direction-badge {
+  max-width:100%;white-space:normal;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-seg-times {
+  display:flex;align-items:center;flex-wrap:wrap;gap:6px;
+  color:var(--text);font-size:12px;
+}
+body[data-page="home"] #searchContainer .journey-seg-times:empty {display:none;}
+body[data-page="home"] #searchContainer .journey-transfer {
+  display:flex;align-items:center;flex-wrap:wrap;gap:7px;
+  border-color:var(--green-dim);background:var(--green-pale);
+}
+body[data-page="home"] #searchContainer .journey-transfer-station {
+  color:var(--text);font-size:15px;font-weight:800;
+}
+body[data-page="home"] #searchContainer .journey-transfer-text {
+  font-size:11px;font-weight:700;
+}
+body[data-page="home"] #searchContainer .journey-transfer .journey-line-icons {
+  order:3;display:flex;flex:1 0 100%;
+  max-width:100%;margin:0;padding:4px 0;
+  align-items:center;justify-content:flex-start;gap:6px;flex-wrap:wrap;
+}
+body[data-page="home"] #searchContainer .journey-transfer .journey-line-badge {
+  min-width:0;max-width:100%;flex-wrap:wrap;
+}
+body[data-page="home"] #searchContainer .journey-line-name {
+  white-space:normal;overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-line-icon {
+  width:22px;height:22px;object-fit:contain;image-rendering:pixelated;
+}
+body[data-page="home"] #searchContainer .journey-transfer-hint {display:none;}
 body[data-page="home"] #searchContainer .journey-platform-change {
-  display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);
-  flex:1 0 100%;width:100%;min-width:0;align-items:center;gap:8px;margin:5px 0 3px;
+  display:grid;order:4;flex:1 0 100%;
+  grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);
+  align-items:center;gap:8px;width:100%;min-width:0;margin:5px 0 2px;
 }
+body[data-page="home"] #searchContainer .journey-platform-change[hidden] {display:none!important;}
 body[data-page="home"] #searchContainer .journey-platform-slot {
-  display:flex;flex-direction:column;gap:4px;min-width:0;min-height:76px;
-  padding:10px 12px;border:2px solid var(--border);border-radius:4px;
-  background:var(--card);box-shadow:2px 2px 0 rgba(32,33,38,.16);
+  display:flex;flex-direction:column;gap:4px;
+  min-width:0;min-height:78px;padding:10px 12px;
+  border:2px solid var(--border);border-radius:4px;
+  background:var(--card);box-shadow:2px 2px 0 rgba(32,33,38,.14);
 }
 body[data-page="home"] #searchContainer .journey-platform-slot--departure {
   border-color:var(--green-dim);background:var(--green-pale);
@@ -301,171 +502,47 @@ body[data-page="home"] #searchContainer .journey-platform-label {
   color:var(--text);font-size:12px;font-weight:700;
 }
 body[data-page="home"] #searchContainer .journey-platform-value {
-  color:var(--text);font-size:21px;line-height:1.2;font-weight:800;font-variant-numeric:tabular-nums;
+  color:var(--text);font-size:23px;line-height:1.2;font-weight:800;
+  font-variant-numeric:tabular-nums;
 }
-body[data-page="home"] #searchContainer .journey-platform-note {font-size:11px;color:var(--text-muted);}
+body[data-page="home"] #searchContainer .journey-platform-note {
+  color:var(--text-muted);font-size:11px;
+}
 body[data-page="home"] #searchContainer .journey-platform-arrow {
   text-align:center;color:var(--green-dim);font-size:19px;font-weight:700;
+}
+body[data-page="home"] #searchContainer .search-error {
+  padding:16px;border:2px solid var(--red);
+  background:var(--card);border-radius:4px;color:var(--red);
+}
+body[data-page="home"] #searchContainer .rs-loading {
+  min-height:72px;padding:16px;gap:12px;
+  border:1px solid var(--border);background:var(--bg);
+}
+@media(max-width:700px) {
+  body[data-page="home"] #searchContainer .search-time-controls:not([data-time-mode="now"]) {
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+@media(max-width:640px) {
+  body[data-page="home"] #searchContainer > .search-inputs {padding:14px;}
+  body[data-page="home"] #searchContainer .search-stations {padding:12px;gap:10px;}
+  body[data-page="home"] #searchContainer > .search-results,
+  body[data-page="home"] #searchContainer > .search-results:not(:empty) {
+    margin:0 14px 14px;padding:0;
+  }
+  body[data-page="home"] #searchContainer .journey-mode-area,
+  body[data-page="home"] #searchContainer .journey-card > .journey-modes {padding:12px;}
+  body[data-page="home"] #searchContainer .journey-summary-route {font-size:17px;}
+  body[data-page="home"] #searchContainer .journey-platform-slot {padding:9px 7px;}
 }
 @media(max-width:380px) {
   body[data-page="home"] #searchContainer .journey-platform-change {
     grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:4px;
   }
-  body[data-page="home"] #searchContainer .journey-platform-slot {padding:9px 6px;}
   body[data-page="home"] #searchContainer .journey-platform-label {font-size:11px;}
+  body[data-page="home"] #searchContainer .mode-tab {font-size:11px;padding:8px 4px;}
 }
-
-/* Search experience v2 — one route per search criterion, with honest data states.
-   Scope every rule to the existing home module; never change css/style.css. */
-body[data-page="home"] #searchContainer > .search-inputs {gap:14px;}
-body[data-page="home"] #searchContainer .search-stations {
-  padding:14px; border:2px solid var(--border);border-radius:5px;
-  background:var(--card);box-shadow:inset 2px 2px 0 rgba(0,0,0,.035);
-  gap:12px 12px;
-}
-body[data-page="home"] #searchContainer .search-stations .input-group:first-child .input-label::before,
-body[data-page="home"] #searchContainer .search-stations .input-group:last-child .input-label::before {
-  content:"";display:inline-block;width:9px;height:9px;margin-right:8px;
-  border:2px solid var(--text);vertical-align:middle;background:var(--green);
-}
-body[data-page="home"] #searchContainer .search-stations .input-group:last-child .input-label::before {
-  background:#e68a37;
-}
-body[data-page="home"] #searchContainer .search-stations .search-input {font-weight:600;}
-body[data-page="home"] #searchContainer .search-time-controls {
-  padding:12px; background:var(--bg);border:1px solid var(--border);
-  border-radius:4px;gap:8px 10px;
-}
-body[data-page="home"] #searchContainer .search-time-controls .search-time-group-label {
-  margin:0;min-height:0;font-size:12px;
-}
-body[data-page="home"] #searchContainer .search-time-controls .search-time-field-label {
-  display:block;margin-bottom:5px;font-size:11px;min-height:0;
-}
-body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] {
-  grid-template-columns:minmax(0,1fr);
-}
-body[data-page="home"] #searchContainer .search-time-controls label[for="searchTimeMode"] {
-  min-width:0;
-}
-body[data-page="home"] #searchContainer > .search-results {margin-top:0;min-width:0;}
-body[data-page="home"] #searchContainer > .search-results:empty {display:none;}
-body[data-page="home"] #searchContainer > .search-results:not(:empty) {padding:0;margin:14px 0 0;}
-body[data-page="home"] #searchContainer .journey-card {
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
-  background:var(--card);border:2px solid var(--text);
-  border-radius:5px;box-shadow:3px 3px 0 rgba(32,33,38,.28);
-  overflow:hidden;min-width:0;
-}
-body[data-page="home"] #searchContainer .journey-mode-area {
-  grid-column:1/-1;padding:12px 16px;background:var(--bg3);
-  border-bottom:2px solid var(--text);
-}
-body[data-page="home"] #searchContainer .journey-mode-label {
-  font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text);
-}
-body[data-page="home"] #searchContainer .journey-modes {
-  display:flex;gap:6px;padding:0;border:0;background:transparent;
-}
-body[data-page="home"] #searchContainer .mode-tab {
-  flex:1 1 0;min-width:0;min-height:40px;white-space:normal;
-  border-radius:4px;line-height:1.3;
-}
-body[data-page="home"] #searchContainer .mode-tab:focus-visible,
-body[data-page="home"] #searchContainer .journey-details-toggle:focus-visible {
-  outline:3px solid var(--green-dim);outline-offset:2px;
-}
-body[data-page="home"] #searchContainer .journey-overview {
-  display:flex;flex-direction:column;gap:10px;padding:18px 16px;
-  min-width:0;background:var(--card);
-}
-body[data-page="home"] #searchContainer .journey-summary-route {
-  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
-  font-size:18px;font-weight:800;line-height:1.4;color:var(--text);
-  overflow-wrap:anywhere;
-}
-body[data-page="home"] #searchContainer .journey-summary-arrow {color:var(--green-dim);}
-body[data-page="home"] #searchContainer .journey-header {
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:0;border:0;background:transparent;
-}
-body[data-page="home"] #searchContainer .journey-duration {
-  font-size:14px;letter-spacing:0;font-weight:700;
-}
-body[data-page="home"] #searchContainer .journey-duration[data-time-status="matched"] {
-  font-size:20px;color:var(--green-dim);
-}
-body[data-page="home"] #searchContainer .journey-transfers {
-  font-size:12px;border:1px solid var(--border);padding:4px 7px;
-}
-body[data-page="home"] #searchContainer .journey-fare {
-  margin:0;font-size:12px;font-weight:600;color:var(--text-muted);
-}
-body[data-page="home"] #searchContainer .journey-schedule {
-  padding:10px 12px;border-left:3px solid var(--border);
-  background:var(--bg);font-size:12px;line-height:1.6;
-  color:var(--text-muted);overflow-wrap:anywhere;
-}
-body[data-page="home"] #searchContainer .journey-schedule[data-schedule-status="matched"] {
-  border-left-color:var(--green);background:var(--green-pale);
-  color:var(--text);
-}
-body[data-page="home"] #searchContainer .journey-details {
-  min-width:0;border-left:1px solid var(--border);background:var(--card);
-}
-body[data-page="home"] #searchContainer .journey-details-toggle {
-  display:flex;align-items:center;justify-content:space-between;
-  gap:8px;padding:13px 18px;border-bottom:1px solid var(--border);
-  background:var(--bg);color:var(--text);font-size:13px;font-weight:800;
-  cursor:pointer;list-style:none;min-height:44px;
-}
-body[data-page="home"] #searchContainer .journey-details-toggle::-webkit-details-marker {display:none;}
-body[data-page="home"] #searchContainer .journey-details-toggle::after {
-  content:"⌄";font-size:18px;line-height:1;color:var(--green-dim);
-}
-body[data-page="home"] #searchContainer .journey-details[open] .journey-details-toggle::after {
-  transform:rotate(180deg);
-}
-body[data-page="home"] #searchContainer .journey-details .journey-seg-route {
-  white-space:normal;overflow:visible;overflow-wrap:anywhere;
-}
-body[data-page="home"] #searchContainer .journey-details .journey-line-icons {
-  margin-left:0;max-width:100%;justify-content:flex-start;
-  flex:1 1 100%;padding:3px 0;
-}
-body[data-page="home"] #searchContainer .journey-details .journey-transfer {
-  padding:11px 12px;align-items:flex-start;gap:7px;
-  border:2px solid var(--border);
-}
-body[data-page="home"] #searchContainer .journey-details .journey-transfer-station {
-  font-size:15px;font-weight:800;
-}
-body[data-page="home"] #searchContainer .journey-details .journey-platform-change {
-  order:4;margin-top:4px;
-}
-body[data-page="home"] #searchContainer .journey-details .journey-transfer-hint {display:none;}
-body[data-page="home"] #searchContainer .journey-platform-change[hidden] {display:none!important;}
-body[data-page="home"] #searchContainer .journey-details .journey-platform-slot {
-  min-height:86px;
-}
-body[data-page="home"] #searchContainer .journey-details .journey-platform-label {font-size:12px;}
-body[data-page="home"] #searchContainer .journey-details .journey-platform-value {font-size:24px;}
-body[data-page="home"] #searchContainer .journey-details .journey-platform-note {font-size:11px;}
-body[data-page="home"] #searchContainer .journey-seg-times:empty {display:none;}
-@media(max-width:700px) {
-  body[data-page="home"] #searchContainer .journey-card {grid-template-columns:minmax(0,1fr);}
-  body[data-page="home"] #searchContainer .journey-mode-area,
-  body[data-page="home"] #searchContainer .journey-overview,
-  body[data-page="home"] #searchContainer .journey-details {grid-column:1;}
-  body[data-page="home"] #searchContainer .journey-details {border-left:0;border-top:1px solid var(--border);}
-}
-@media(max-width:640px) {
-  body[data-page="home"] #searchContainer .search-stations {padding:12px;gap:10px;}
-  body[data-page="home"] #searchContainer .journey-overview {padding:15px 14px;}
-  body[data-page="home"] #searchContainer .journey-mode-area {padding:12px 14px;}
-  body[data-page="home"] #searchContainer .journey-summary-route {font-size:17px;}
-  body[data-page="home"] #searchContainer .journey-details .journey-platform-slot {min-height:82px;}
-}
-@media(prefers-reduced-motion: reduce) {
+@media(prefers-reduced-motion:reduce) {
   body[data-page="home"] #searchContainer .rs-loading-spinner {animation:none;}
 }
