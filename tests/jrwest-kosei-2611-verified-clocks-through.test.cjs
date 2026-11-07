@@ -652,3 +652,72 @@ test('Kosei source evidence labels and API proof support each original station c
  ])assert.ok(block.includes(needle),needle);
  assert.ok(!block.includes('run.vehicle_artwork_path='));
 });
+
+test('JR Nara 2026-11 original source clocks certify the right type, not an imported Local',()=>{
+ const mig=fs.readFileSync(
+ 'supabase/migrations/20261107160000_jrwest_nara_2611_first_verified_source_clocks.sql','utf8');
+ const odpt=fs.readFileSync('data/api/odpt-unified.js','utf8');
+ const estimator=fs.readFileSync('js/train-position-estimator.js','utf8');
+ const proofRows=[
+  ['601M','Weekday','Local','7db854f2c5c08e8445eddc9bd3585f64'],
+  ['601MH','SaturdayHoliday','Local','d099033f51feddfa9e06976d3e647458'],
+  ['602M','Weekday','Local','e884b6ae1a49c18a3ca4bd50b27088af'],
+  ['602MH','SaturdayHoliday','Local','e884b6ae1a49c18a3ca4bd50b27088af'],
+  ['621M','Weekday','Local','12122dadb9c23af33481eb925ebb0d33'],
+  ['621MH','SaturdayHoliday','Local','a186987f1b9106df75f898dccc993627'],
+  ['2636M','Weekday','MiyakojiRapid','7df8790db317a341f987b3d51b7358af'],
+  ['2636MH','SaturdayHoliday','MiyakojiRapid','7df8790db317a341f987b3d51b7358af'],
+  ['2646MH','SaturdayHoliday','MiyakojiRapid','27994a84b0f3e8d3330996ee7f86f959'],
+  ['8061MH','SaturdayHoliday','LimitedExpress','48e5d106110131702c3aad8bc7d6a144'],
+  ['8062MH','SaturdayHoliday','LimitedExpress','df659fc2b8d9fc63f43258e1e5aa5f42']
+ ];
+ for(const [number,calendar,type,hash] of proofRows){
+   for(const token of ["'"+number+"'","'"+calendar+"'","'"+type+"'","'"+hash+"'"])
+     assert.ok(mig.includes(token),number+" "+token);
+ }
+ for(const snippet of [
+  "CREATE TABLE IF NOT EXISTS public.published_jrwest_nara_2611_verified_source_clocks",
+  "ALTER TABLE public.published_jrwest_nara_2611_verified_source_clocks ENABLE ROW LEVEL SECURITY",
+  "CREATE OR REPLACE VIEW public.published_jrwest_nara_2611_clock_evidence",
+  "WITH (security_invoker=true)",
+  "source_clock_verification='original_source_stops_compared_with_official'",
+  "m.source_path='data/timetables/Nara-manual.js'",
+  "m.source_occurrence=0 AND m.source_revision_date IS NULL",
+  "AND o.stop_count=p.source_stop_count AND o.source_hash=p.source_stops_md5",
+  "WHERE verified_source_match)<>11",
+  "WHERE published_train_type='Local')<>6",
+  "WHERE published_train_type='MiyakojiRapid')<>3",
+  "WHERE published_train_type='LimitedExpress')<>2",
+  "WHERE actual_vehicle_confirmed OR authorizes_png",
+  "'8061MH','SaturdayHoliday','Outbound','LimitedExpress'",
+  "'8062MH','SaturdayHoliday','Inbound','LimitedExpress'"
+ ])assert.ok(mig.includes(snippet),snippet);
+ assert.ok(!mig.includes("('2601MH'"),"unverified 2601M Nov source cannot be promoted");
+ assert.ok(!mig.includes("('2646M'"),"weekday 2646M clocks differ");
+ const start=edge.indexOf('// JR-West Nara Line:');
+ const end=edge.indexOf('// Date-verified Kosei source-only',start);
+ assert.ok(start>0 && end>start);
+ const proof=edge.slice(start,end);
+ for(const token of [
+  '.from("published_jrwest_nara_2611_clock_evidence")',
+  'selectedCalendar==="odpt.Calendar:Weekday"?4:7',
+  'run.canonical_group_evidence!=="source_only"',
+  'run.train_number!==p.source_train_number',
+  'Number(p.source_stop_count)!==expectedCount',
+  'sqlTime(o.arrival_clock)!==stops[i]?.arrival_time',
+  'sqlTime(o.departure_clock)!==stops[i]?.departure_time',
+  'p.published_train_type==="MiyakojiRapid"?"Rapid"',
+  'p.published_train_type==="LimitedExpress"?"LimitedExpress"',
+  'run.published_train_type_label=p.published_train_type_label',
+  'run.train_number_verification="official-2611-nara-source-stop-clock"',
+  'run.timetable_date_verified=true',
+  'run.vehicle_plan_confirmed=false',
+  'run.vehicle_artwork_path=null',
+  'actualVehicleConfirmed:false,authorizesPng:false'
+ ])assert.ok(proof.includes(token),token);
+ assert.ok(odpt.includes('"_sqlPublishedTrainTypeLabel":run.timetable_date_verified===true'));
+ assert.ok(odpt.includes('"_sqlPublishedTrainNumber":run.timetable_date_verified===true'));
+ assert.ok(estimator.includes('lineId==="Nara"&&'));
+ assert.ok(estimator.includes('official-2611-nara-source-stop-clock'));
+ assert.ok(estimator.includes('String(publicTrainNumber||"").replace(/H$/,"")'));
+});
