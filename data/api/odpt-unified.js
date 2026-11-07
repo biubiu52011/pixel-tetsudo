@@ -1842,6 +1842,13 @@
             // SQL source trainNumber (and holiday-import H) for identity.
             "_sqlPublishedTrainNumber":run.timetable_date_verified===true
                 ? (run.published_train_number||"") : "",
+            // Station-scoped public numbers: 2217M Rapid changes to 2133M
+            // Local at Sonobe. Preserve internal compound number as identity.
+            "_sqlPublishedTrainNumberSegments":run.timetable_date_verified===true&&
+                Array.isArray(run.published_train_number_segments)
+                ?run.published_train_number_segments:[],
+            "_sqlPublishedNumberScope":run.timetable_date_verified===true
+                ?(run.published_number_scope||""):"",
             // Public service type is independently verified for some
             // JR-West Nara source trips: Miyakoji Rapid / seasonal Inishie
             // are NOT locals despite legacy source train_type=Local.
@@ -1926,6 +1933,16 @@
                 if(s.station_urn) {
                     if(s.arrival_time) o["odpt:arrivalStation"]=s.station_urn;
                     if(s.departure_time || !s.arrival_time) o["odpt:departureStation"]=s.station_urn;
+                }
+                if(run.timetable_date_verified===true&&
+                   Array.isArray(run.published_train_number_segments) &&
+                   run.published_train_number_segments.length===2){
+                    if(s.published_arrival_train_number)
+                        o["_sqlPublishedArrivalTrainNumber"]=String(s.published_arrival_train_number);
+                    if(s.published_departure_train_number)
+                        o["_sqlPublishedDepartureTrainNumber"]=String(s.published_departure_train_number);
+                    if(s.published_train_type)
+                        o["_sqlPublishedTrainType"]=String(s.published_train_type);
                 }
                 if(s.source_train_number && s.source_line_key){
                     o["_sqlTrainNumber"]=String(s.source_train_number);
