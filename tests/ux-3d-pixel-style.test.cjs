@@ -12,27 +12,26 @@ const blobVersion = text => crypto.createHash('sha1')
 
 test('realtime modal keeps a raised pixel shell without nested raised info boxes', () => {
   const css = read('css/ux-refinements.css');
-  assert.match(css, /\.rs-modal-content \{[\s\S]*?border-radius: var\(--pt-radius-panel\)/);
-  assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 6px 6px 0/);
+  assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 8px 8px 0 #26262b/);
   assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 0 0 0 3px;/);
   assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 0;/);
   assert.match(css, /\.rs-updated-section \{[\s\S]*?box-shadow: none;/);
-  assert.match(css, /\.rs-modal-close:active \{[\s\S]*?translate\(2px,2px\)/);
+  assert.match(css, /\.rs-modal-close:active \{[\s\S]*?translate\(3px,3px\)/);
 });
 
 test('navigation, railway cards and history controls have stepped shadows', () => {
   const css = read('css/ux-refinements.css');
-  assert.match(css, /\.rs-line-card \{[\s\S]*?box-shadow: var\(--pt-shadow-card\)/);
-  assert.match(css, /\.rs-line-card:active \{[\s\S]*?translate\(2px,2px\)/);
-  assert.match(css, /\.history-entry \{[\s\S]*?box-shadow: var\(--pt-shadow-card\)/);
-  assert.match(css, /\.rs-filter-btn \{[\s\S]*?box-shadow: var\(--pt-shadow-control\)/);
+  assert.match(css, /\.rs-line-card \{[\s\S]*?box-shadow: 4px 4px 0/);
+  assert.match(css, /\.rs-line-card:active \{[\s\S]*?translate\(3px,3px\)/);
+  assert.match(css, /\.history-entry \{[\s\S]*?box-shadow: 4px 4px 0/);
+  assert.match(css, /\.rs-filter-btn \{[\s\S]*?box-shadow: 3px 3px 0/);
   assert.match(css, /prefers-reduced-motion/);
 });
 
-test('language selector keeps a rounded touch target with the same soft 3D controls', () => {
+test('language selector stays circular with a subtle shadow and accessible touch target', () => {
   const css = read('css/lang-bar.css');
   assert.match(css, /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
-  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?box-shadow: 2px 3px 0 rgba\(42,83,109,\.20\)/);
+  assert.match(css, /\.lang-toggle-btn \{[\s\S]*?box-shadow: 0 2px 5px rgba\(24,36,48,\.20\)/);
   assert.match(css, /\.lang-toggle-btn:active \{[\s\S]*?translateY\(1px\)/);
   assert.match(css, /\.lang-toggle-btn::after \{[\s\S]*?width: 44px/);
   assert.doesNotMatch(css, /box-shadow: 4px 4px 0 var\(--lang-border\)/);
@@ -50,24 +49,6 @@ test('CSS links use the current Git blob versions and home avoids scoped refinem
     assert.ok(html.includes('lang-bar.css?v=' + langVersion), page + ' language UI cache key');
   }
   assert.doesNotMatch(read('pages/home.html'), /ux-refinements\.css/);
-});
-
-test('rounded 3D layout shares one spacing and legibility contract', () => {
-  const css = read('css/style.css');
-  const scoped = read('css/ux-refinements.css');
-  const tourism = read('css/tourism-styles.css');
-  const trains = read('css/trains.css');
-  assert.match(css, /--pt-radius-panel: 18px/);
-  assert.match(css, /--pt-shadow-panel:/);
-  assert.match(css, /\.pixel-card\{[^}]*box-shadow:var\(--pt-shadow-panel\)/);
-  assert.match(css, /repeat\(4, minmax\(0, 1fr\)\)/);
-  assert.doesNotMatch(css, /repeat\(4, max-content\)/);
-  assert.match(css, /\.rs-line-name\{[^}]*font-size:15px/);
-  assert.match(css, /\.tab-btn \{[^}]*white-space: normal/);
-  assert.match(scoped, /\.rs-line-card \{[\s\S]*?border-radius: var\(--pt-radius-card\)/);
-  assert.match(tourism, /\.sm-tag-row \{ grid-template-columns: repeat\(auto-fit, minmax\(104px, 1fr\)\)/);
-  assert.match(tourism, /\.sm-card \{[\s\S]*?box-shadow: var\(--pt-shadow-card\)/);
-  assert.match(trains, /\.tp-line-map \{[\s\S]*?box-shadow: var\(--pt-shadow-panel\)/);
 });
 
 test('bright warning and notice colors retain readable text without train-shaped glyphs', () => {

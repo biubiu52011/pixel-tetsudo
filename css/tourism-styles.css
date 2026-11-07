@@ -111,12 +111,11 @@
 }
 .sm-tag-btn {
   font-size: 12px;
-  padding: 8px 10px;
-  min-height: 44px;
+  padding: 6px 4px;
   border: 2px solid var(--border);
-  border-radius: var(--pt-radius-control);
-  color: var(--text);
-  background: linear-gradient(180deg,#fff,#edf7fc);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background: var(--bg3);
   cursor: pointer;
   transition: var(--transition);
   display: inline-flex;
@@ -125,21 +124,18 @@
   gap: 5px;
   font-weight: 500;
   font-family: inherit;
-  white-space: normal;
-  overflow-wrap: break-word;
-  line-height: 1.4;
-  text-align: center;
-  box-shadow: var(--pt-shadow-control);
+  white-space: nowrap;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
 }
 @media (max-width: 420px) {
   .sm-tag-filters { gap: var(--space-2); padding: 12px 10px; }
-  .sm-tag-btn { font-size: 12px; padding: 8px 10px; }
-  .sm-tag-row { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 8px; }
+  .sm-tag-btn { font-size: 11px; padding: 6px 0; }
+  .sm-tag-row { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: var(--space-2); }
 }
 @media (max-width: 340px) {
-  .sm-tag-filters { gap: 8px; padding: 12px; }
-  .sm-tag-btn { font-size: 12px; padding: 8px 10px; }
-  .sm-tag-row { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 8px; }
+  .sm-tag-filters { gap: 2px; padding: 12px 6px; }
+  .sm-tag-btn { font-size: 10px; padding: 6px 0; }
+  .sm-tag-row { grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 2px; }
 }
 .sm-tag-btn:hover {
   border-color: var(--green);
@@ -153,7 +149,7 @@
   color: var(--white);
   background: var(--green);
   font-weight: 600;
-  box-shadow: 2px 3px 0 rgba(7,92,48,.24), inset 0 2px 0 rgba(255,255,255,.2);
+  box-shadow: 0 2px 8px rgba(0,168,89,0.3);
 }
 .sm-sort-btn.active {
   border-color: var(--green);
@@ -171,7 +167,7 @@
 .sm-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 18px;
+  gap: 16px;
   padding: 20px 24px;
 }
 
@@ -179,19 +175,19 @@
 .sm-card {
   background: var(--card);
   border: 2px solid var(--border);
-  border-radius: var(--pt-radius-card);
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--pt-shadow-card);
-  transition: transform 120ms steps(2,end), box-shadow 120ms steps(2,end), border-color 120ms ease;
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: var(--transition-slow);
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: inherit;
 }
 .sm-card:hover {
-  box-shadow: 4px 5px 0 rgba(42,83,109,.25), inset 0 2px 0 #fff;
-  transform: translate(-1px,-1px);
-  border-color: #8bb9a1;
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-3px);
+  border-color: var(--green-pale);
 }
 
 /* === 4.3.794 活动样式：event 条目（祭り/花火/市集）=== */
@@ -253,24 +249,22 @@
 
 /* === Card body (right text area) === */
 .sm-body {
-  padding: 14px 16px;
+  padding: 12px 14px;
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .sm-body h3 {
   font-size: 14px;
   font-weight: 700;
   margin: 0;
   color: var(--text);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  line-height: 1.3;
+  white-space: nowrap;
   overflow: hidden;
-  overflow-wrap: break-word;
+  text-overflow: ellipsis;
 }
 .sm-body .sm-dist {
   font-size: 11px;
@@ -366,7 +360,7 @@
   width: 100%;
   aspect-ratio: 16/9;
   overflow: hidden;
-  border-radius: var(--pt-radius-panel) var(--pt-radius-panel) 0 0;
+  border-radius: 12px 12px 0 0;
   background: var(--bg3);
 }
 .article-hero--landmark { background: linear-gradient(135deg, var(--green), #00AA00); }
@@ -421,9 +415,9 @@
   background: var(--card);
   border: 2px solid var(--border);
   border-top: none;
-  border-radius: 0 0 var(--pt-radius-panel) var(--pt-radius-panel);
+  border-radius: 0 0 12px 12px;
   overflow: hidden;
-  box-shadow: var(--pt-shadow-panel);
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 /* === Tags with color coding === */
@@ -506,10 +500,10 @@
   gap: 0;
   border: 2px solid var(--border);
   border-top: none;
-  border-radius: 0 0 var(--pt-radius-panel) var(--pt-radius-panel);
+  border-radius: 0 0 12px 12px;
   overflow: hidden;
   background: var(--card);
-  box-shadow: var(--pt-shadow-panel);
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 .qi-item {
   flex: 1;
@@ -631,7 +625,7 @@
   gap: 1px;
   background: var(--border);
   border: 1px solid var(--border);
-  border-radius: var(--pt-radius-control);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 .info-row {
