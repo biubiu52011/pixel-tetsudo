@@ -632,16 +632,20 @@
   // Railway-specific records require a complete namespace match.
   // Records without railway remain operator/global fallback because fetchODPT is operator-scoped.
   function selectScopedRecords(records, line) {
-    if (!records || records.length === 0) return [];
+    if (!Array.isArray(records) || !records.length) return [];
     var expected = expectedRailwayIdentity(line);
     if (!expected) return [];
-    var own = records.filter(function(rec) {
+    return records.filter(function(rec) {
+      if (!rec) return false;
       var id = parseRailwayIdentity(rec);
-      return id && id.operator.toLowerCase() === String(expected.operator).toLowerCase() &&
+      if (id) return id.operator.toLowerCase() === String(expected.operator).toLowerCase() &&
         id.railwayCode.toLowerCase() === String(expected.railwayCode).toLowerCase();
+      // A missing railway identity is NOT operator-wide permission. No
+      // accidental propagation to every line of Tokyo Metro, JR, Keio etc.
+      if (rec["pt:operatorWide"] !== true) return false;
+      var op = String(rec["odpt:operator"] || "").replace(/^odpt\.Operator:/, "");
+      return op.toLowerCase() === String(expected.operator).toLowerCase();
     });
-    if (own.length) return own;
-    return records.filter(function(rec) { return rec && !rec["odpt:railway"]; });
   }
 
   function recordText(rec) {
@@ -673,6 +677,8 @@
       stationToName: String(rec["odpt:stationTo"] || "").split(".").pop(),
       resumeEstimate: rec["odpt:resumeEstimate"],
       structuredStatus: rec["odpt:trainInformationStatus"],
+      alertScope: rec["pt:alertScope"] || null,
+      gtfsEffectCode: rec["pt:gtfsEffectCode"] || 0,
       messageKind: rec["pt:messageKind"] || rec["odpt:trainInformationCategory"] || rec["odpt:category"],
       suspension: rec["odpt:suspension"] === true,
       delay: rec["odpt:delay"] === true,
@@ -697,51 +703,70 @@
     return !isNaN(t) && t < now;
   }
 
-  function pickRecord(records, line) {
-    var scoped = selectScopedRecords(records, line);
-    if (!scoped.length) return null;
-    var rank = { suspended: 5, delayed: 4, info: 2, normal: 1, unknown: 0 };
-    var realtime = [], notices = [];
-    scoped.forEach(function(rec) {
-      var ev = evaluateRecord(rec, line);
-      // Official structured status is valid current-state evidence even when
-      // the operator omits human-readable text.
-      var hasStructuredEvidence = !!(rec["odpt:trainInformationStatus"] ||
-        rec["odpt:suspension"] === true || rec["odpt:delay"] === true ||
-        (typeof rec["odpt:delay"] === "number" && rec["odpt:delay"] > 0));
-      if (!recordText(rec) && !hasStructuredEvidence) return;
-      if (ev && ev.messageKind === "notice") notices.push({ rec: rec, ev: ev });
-      else realtime.push({ rec: rec, ev: ev });
+  // Preserve independent active records. Pick-one-by-latest dropped concurrent
+  // suspension/delay/notice events on the same railway.
+  function pickRecords(records, line) {
+    var now=Date.now(), scoped=selectScopedRecords(records, line);
+    var available=scoped.filter(function(rec) {
+      if(recordIsExpired(rec,now))return false;
+      var date=recordTime(rec);
+      if(date!=null && date>now+60000)return false;
+      var hasStructured=!!(rec["odpt:trainInformationStatus"]||rec["odpt:suspension"]===true||
+        rec["odpt:delay"]===true||(typeof rec["odpt:delay"]==="number"&&rec["odpt:delay"]>0)||
+        rec["pt:gtfsEffectCode"]);
+      return !!(recordText(rec)||hasStructured);
     });
-    var pool = realtime.length ? realtime : notices;
-    if (!pool.length) return null;
-    var now = Date.now();
-    var current = pool.filter(function(item) { return !recordIsExpired(item.rec, now) && (recordTime(item.rec) == null || recordTime(item.rec) <= now + 60000); });
-    // An explicitly expired official record is historical context, never
-    // current operating-state evidence. If every candidate expired, there is
-    // no primary current record.
-    if (!current.length) return null;
-    if (current.length) pool = current;
-
-    // When records carry source timestamps, the newest official update is the
-    // current truth. Severity only breaks ties within the same update moment.
-    var timed = pool.filter(function(item) { return recordTime(item.rec) != null; });
-    if (timed.length) {
-      var newest = Math.max.apply(null, timed.map(function(item) { return recordTime(item.rec); }));
-      pool = timed.filter(function(item) { return recordTime(item.rec) === newest; });
-    }
-
-    var chosen = null, chosenRank = -1;
-    pool.forEach(function(item) {
-      var st = item.ev ? item.ev.status : "unknown";
-      var rr = rank[st] == null ? 0 : rank[st];
-      if (!chosen || rr > chosenRank) { chosen = item.rec; chosenRank = rr; }
+    var seen=Object.create(null);
+    available=available.filter(function(rec){
+      var key=String(rec["@id"]||rec["owl:sameAs"]||"");
+      if(!key)return true;
+      if(seen[key])return false;
+      seen[key]=true;return true;
     });
-    return chosen;
+    // A later explicit normal snapshot supersedes unbounded historical
+    // incidents from the SAME feed. Bounded active GTFS alerts remain valid
+    // until their official expiry, even if an ODPT normal snapshot is newer.
+    var sources=Object.create(null);
+    available.forEach(function(rec){
+      var src=String(rec["pt:sourceType"]||"odpt");
+      if(!sources[src])sources[src]=[];
+      sources[src].push(rec);
+    });
+    available=Object.keys(sources).reduce(function(all,src){
+      var group=sources[src],normal=group.filter(function(rec){
+        var e=evaluateRecord(rec,line);
+        return e && e.status==="normal" && recordTime(rec)!=null;
+      });
+      var newestNormal=normal.length?Math.max.apply(null,normal.map(recordTime)):null;
+      if(newestNormal!=null){
+        group=group.filter(function(rec) {
+          var date=recordTime(rec);
+          return rec["dct:valid"] || date==null || date>=newestNormal;
+        });
+      }
+      return all.concat(group);
+    },[]);
+    var rank={suspended:6,delayed:5,notice:4,info:3,normal:2,unknown:1};
+    available.sort(function(a,b){
+      var x=evaluateRecord(a,line),y=evaluateRecord(b,line);
+      var ra=x&&rank[x.status]||0,rb=y&&rank[y.status]||0;
+      if(ra!==rb)return rb-ra;
+      return (recordTime(b)||0)-(recordTime(a)||0);
+    });
+    return available;
   }
 
+  function pickRecord(records,line){return pickRecords(records,line)[0]||null;}
 
-  function aggregateStatus(records, line) { var primary = pickRecord(records, line); return primary ? evaluateRecord(primary, line).status : null; }
+  function aggregateStatus(records,line){
+    var rows=pickRecords(records,line);
+    if(!rows.length)return null;
+    var statuses=rows.map(function(rec){var e=evaluateRecord(rec,line);return e&&e.status;});
+    return ["suspended","delayed","notice","info","normal","unknown"].filter(function(s){
+      return statuses.indexOf(s)>=0;
+    })[0]||null;
+  }
+
   // ========== TrainInformation full-record matching ==========
   // ODPT "odpt.Railway:TokyoMetro.Ginza" -> "Ginza"
   function extractRailwayShort(rec) {
@@ -778,13 +803,37 @@
       if (!raw) return null;
       // Only exact railway/operator identity or explicit operator-wide evidence applies.
       // Records without a matching railway identity cannot inherit another line's incident.
-      var record = pickRecord(Array.isArray(raw) ? raw : [raw], Object.assign({}, line, { id: lineId }));
-      if (!record) return null;
-      var result = evaluateRecord(record, line);
-      result.detail = recordText(record);
-      result.sourceUpdatedAt = record['dc:date'] || record['odpt:timeOfOrigin'] || null;
-      result.validUntil = record['dct:valid'] || null;
-      result.updatedAt = result.sourceUpdatedAt;
+      var records=pickRecords(Array.isArray(raw)?raw:[raw],Object.assign({},line,{id:lineId}));
+      if(!records.length)return null;
+      var evaluated=records.map(function(rec){return {rec:rec,info:evaluateRecord(rec,line)};})
+        .filter(function(item){return !!item.info;});
+      if(!evaluated.length)return null;
+      var primary=evaluated[0],result=Object.assign({},primary.info);
+      function unique(values){return values.filter(function(v,i){return values.indexOf(v)===i;});}
+      var allImpacts=[],allEvents=[],allTimes=[],allDetails=[],allRanges=[];
+      evaluated.forEach(function(item){
+        var e=item.info,rec=item.rec;
+        if(Array.isArray(e.impacts))allImpacts=allImpacts.concat(e.impacts);
+        if(Array.isArray(e.events))allEvents=allEvents.concat(e.events);
+        var date=rec["dc:date"]||rec["odpt:timeOfOrigin"]||null;
+        if(date&&isFinite(Date.parse(date)))allTimes.push(date);
+        var body=recordText(rec);
+        if(body)allDetails.push(body);
+        if(e.interval)allRanges.push(e.interval);
+      });
+      result.impacts=allImpacts.filter(function(item,index,rows){
+        return rows.findIndex(function(other){
+          return other.interval===item.interval&&other.direction===item.direction&&
+            other.effect===item.effect&&other.phase===item.phase;
+        })===index;
+      });
+      result.events=allEvents;
+      result.interval=unique(allRanges).join("、")||null;
+      result.detail=unique(allDetails).join("\n\n");
+      result.recordsCount=evaluated.length;
+      result.sourceUpdatedAt=allTimes.length?allTimes.sort(function(a,b){return Date.parse(b)-Date.parse(a);})[0]:null;
+      result.validUntil=primary.rec["dct:valid"]||null;
+      result.updatedAt=result.sourceUpdatedAt;
       return result;
     } catch(e) { return null; }
   }
@@ -2520,7 +2569,7 @@
     loadTrainPositions: loadTrainPositions,
     getCachedData: function() { return _lastFusedData; },
     classifyPositionChanges: classifyPositionChanges,
-    _selectScopedRecords: selectScopedRecords, _pickRecord: pickRecord,
+    _selectScopedRecords: selectScopedRecords, _pickRecords: pickRecords, _pickRecord: pickRecord,
     _aggregateStatus: aggregateStatus, _evaluateRecord: evaluateRecord,
     getPerformanceSamples: function() { return _perfSamples.slice(); },
     saveToCache: saveToCache, refresh: function() { return fuseAll(); },
@@ -2572,7 +2621,10 @@
 
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", init); } else { init(); }
   document.addEventListener("pt-runinfo-updated", function(event) {
-    if (event.detail && event.detail.lineId) fuseDirty([event.detail.lineId]); else fuseAll();
+    var detail=event&&event.detail||{};
+    if(Array.isArray(detail.lineIds)&&detail.lineIds.length)fuseDirty(detail.lineIds);
+    else if(detail.lineId)fuseDirty([detail.lineId]);
+    else fuseAll();
   });
   window.addEventListener("beforeunload", function() {
     if (_positionTimer) clearInterval(_positionTimer);
