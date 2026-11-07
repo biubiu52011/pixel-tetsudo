@@ -47,6 +47,7 @@
                 <h2 data-i18n="search.title">路線検索</h2>
               </div>
               <div class="search-inputs">
+                <div class="search-stations" role="group" aria-label="出発駅・到着駅">
                 <div class="input-group">
                   <label class="input-label" for="searchFrom" data-i18n="search.fromLabel"
                     >出発駅</label
@@ -109,6 +110,7 @@
                   />
                   <div id="toSuggestions" class="suggestions" role="listbox"></div>
                 </div>
+                </div>
                 <div class="search-time-controls">
                   <div
                     id="searchTimeGroupLabel"
@@ -148,13 +150,14 @@
                 </div>
                 <button
                   id="searchBtn"
+                  type="button"
                   class="search-btn"
                   data-i18n="search.btn"
                 >
                   検索
                 </button>
               </div>
-              <div id="searchResults" class="search-results"></div>
+              <div id="searchResults" class="search-results" role="status" aria-live="polite" aria-atomic="false"></div>
             </div>
             <div id="smModule" class="sm-module pixel-card">
               <div class="module-title">
