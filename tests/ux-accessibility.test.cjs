@@ -81,3 +81,10 @@ test('scoped refinements are included on relevant pages, not home', () => {
     assert.match(read('pages/' + page + '.html'), /ux-refinements\.css/);
   assert.doesNotMatch(read('pages/home.html'), /ux-refinements\.css/);
 });
+
+test('normal realtime reports retain both legacy detail sections', () => {
+  const view = read('js/realtime-view.js');
+  assert.match(view, /intervalSection\.classList\.toggle\("hidden", \["loading", "no_data", "no_odpt"\]/);
+  assert.match(view, /causeSection\.classList\.toggle\("hidden", status !== "normal"/);
+  assert.match(view, /status === "normal" \? "status.normal" : "status.none"/);
+});
