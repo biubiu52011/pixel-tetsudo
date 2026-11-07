@@ -546,3 +546,91 @@ body[data-page="home"] #searchContainer .rs-loading {
 @media(prefers-reduced-motion:reduce) {
   body[data-page="home"] #searchContainer .rs-loading-spinner {animation:none;}
 }
+
+/* Route journey segment v3: train identity → station-specific time and place.
+   Homepage-only presentation; departure/arrival slots are bound by SearchUI. */
+body[data-page="home"] #searchContainer .journey-details .journey-seg {
+  padding:0;gap:0;overflow:hidden;
+  background:var(--card);
+  border-left-width:4px;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-seg-head {
+  display:flex;align-items:center;gap:6px 9px;
+  padding:12px 13px;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+}
+body[data-page="home"] #searchContainer .journey-details .journey-seg-name {
+  font-size:15px;font-weight:800;line-height:1.45;
+  overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-seg-direction-badge {
+  display:inline-flex;align-items:center;flex:0 1 auto;
+  max-width:100%;margin-left:auto;
+  padding:3px 7px;
+  border:1px solid var(--border);
+  border-radius:3px;background:var(--card);
+  font-size:11px;line-height:1.4;
+}
+body[data-page="home"] #searchContainer .journey-details .journey-seg-route {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);
+  gap:8px;align-items:center;
+  min-width:0;padding:14px 12px 15px;
+  background:var(--card);
+  color:var(--text);white-space:normal;
+  overflow:visible;
+}
+body[data-page="home"] #searchContainer .journey-seg-stop {
+  display:flex;flex-direction:column;align-items:flex-start;
+  min-width:0;gap:3px;
+}
+body[data-page="home"] #searchContainer .journey-seg-stop-label {
+  font-size:11px;font-weight:700;line-height:1.3;
+  color:var(--text-muted);
+}
+body[data-page="home"] #searchContainer .journey-seg-stop-time {
+  min-height:26px;font-size:21px;line-height:1.2;font-weight:800;
+  color:var(--text);font-variant-numeric:tabular-nums;
+  letter-spacing:0;white-space:nowrap;
+}
+body[data-page="home"] #searchContainer .journey-seg-stop-time[data-time-confirmed="false"] {
+  font-size:18px;color:var(--text-muted);
+}
+body[data-page="home"] #searchContainer .journey-seg-stop-name {
+  display:block;min-width:0;max-width:100%;font-size:14px;
+  font-weight:800;line-height:1.4;
+  color:var(--text);overflow-wrap:anywhere;
+}
+body[data-page="home"] #searchContainer .journey-seg-route-arrow {
+  justify-self:center;align-self:center;color:var(--green-dim);
+  font-size:21px;font-weight:800;line-height:1;
+}
+body[data-page="home"] #searchContainer .journey-seg-meta {
+  padding:8px 12px;background:var(--bg);
+  border-top:1px solid var(--border);
+}
+body[data-page="home"] #searchContainer .journey-seg-meta[hidden] {display:none!important;}
+body[data-page="home"] #searchContainer .journey-seg-meta .journey-seg-times {
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+body[data-page="home"] #searchContainer .journey-seg-meta .journey-seg-platform {
+  font-size:11px;font-weight:700;line-height:1.4;
+  padding:3px 8px;background:var(--card);
+  border:1px solid var(--border);border-radius:3px;
+  color:var(--text);
+}
+@media(max-width:440px) {
+  body[data-page="home"] #searchContainer .journey-details .journey-seg-head {
+    padding:10px 11px;gap:5px 8px;
+  }
+  body[data-page="home"] #searchContainer .journey-details .journey-seg-route {
+    grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr);
+    gap:5px;padding:12px 9px;
+  }
+  body[data-page="home"] #searchContainer .journey-seg-stop-time {
+    font-size:19px;min-height:24px;
+  }
+  body[data-page="home"] #searchContainer .journey-seg-stop-name {font-size:13px;}
+  body[data-page="home"] #searchContainer .journey-seg-route-arrow {font-size:18px;}
+}
