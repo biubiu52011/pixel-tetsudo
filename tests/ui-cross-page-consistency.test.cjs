@@ -214,3 +214,31 @@ test('original scoped 3D navigation is shared globally without restyling cards',
   for(const page of pages)
     assert.ok(read('pages/' + page + '.html').includes('../css/style.css?v=' + version), page + ' CSS version');
 });
+
+test('tourism hero keeps 2660e0d desktop composition and stacks mobile photo, title and tags', () => {
+  const css = read('css/tourism-styles.css');
+  const core = read('js/tourism-core.js');
+  assert.match(css, /\.article-hero \{[\s\S]*?aspect-ratio: 16\/9/);
+  assert.match(css, /\.hero-meta \.hero-primary,[\s\S]*?\.hero-meta \.hero-tags \{\s*display: contents;/);
+  assert.match(css, /@media \(max-width: 640px\) \{[\s\S]*?\.tourism-detail-page \.article-hero--with-image \.article-hero-img \{[\s\S]*?aspect-ratio: 4 \/ 3/);
+  assert.match(css, /\.tourism-detail-page \.article-hero \.hero-tags \{[\s\S]*?order: 2/);
+  assert.match(css, /\.tourism-detail-page \.article-hero \.article-title \{[\s\S]*?order: 1/);
+  assert.match(css, /\.tourism-detail-page \.article-hero:not\(\.article-hero--with-image\) \{[\s\S]*?min-height: 168px/);
+  assert.match(css, /@media \(max-width: 380px\) \{[\s\S]*?font-size: 20px/);
+  assert.match(core, /ctx\.imageHtml \? ' article-hero--with-image' : ''/);
+  assert.match(core, /class="hero-primary"/);
+  assert.match(core, /class="hero-tags"/);
+  assert.match(core, /data-gallery-idx="0"/);
+  const sandbox = { window: { currentLang: 'ja', t: x => x }, document: {}, console };
+  vm.runInNewContext(core, sandbox, { timeout: 4000 });
+  const build = sandbox.window.TourismDetailCore.buildContext;
+  const fixture = { name_ja:'LUMINE 北千住', image:'../images/観光地/LUMINE 北千住.jpg',
+    tags:['all','mall'], coord:[35.7,139.8] };
+  const specific = build(fixture, null);
+  assert.match(specific.tagsHtml, /tag-badge mall/);
+  assert.doesNotMatch(specific.tagsHtml, /tag-badge all/);
+  assert.match(specific.imageHtml, /data-gallery/);
+  assert.match(specific.imageHtml, /data-gallery-idx="0"/);
+  assert.match(build({ name_ja:'Other', tags:['all'] }, null).tagsHtml, /tag-badge all/);
+  assert.deepEqual(fixture.tags, ['all','mall'], 'source filter tags must not change');
+});

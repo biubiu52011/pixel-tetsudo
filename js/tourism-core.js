@@ -219,7 +219,11 @@
       ? '<div class="article-hero-img"><img src="' + escapeHtml(spot.image) + '" alt="' + escapeHtml(spotName) + '" data-gallery="' + escapeHtml(spot.name || '') + '" data-gallery-idx="0"></div>'
       : '';
     var tagsHtml = '';
+    // "all" is a listing/filter category, not a useful detail label when a
+    // more specific classification is already available. Keep the source data intact.
+    var hasSpecificTag = tags.some(function(tag) { return tag !== 'all'; });
     for (var i = 0; i < tags.length; i++) {
+      if (hasSpecificTag && tags[i] === 'all') continue;
       var tagKey = 'tourism.tag_' + tags[i].replace(/-/g, '_');
       tagsHtml += '<span class="tag-badge ' + escapeHtml(tags[i]) + '">' + escapeHtml(t(tagKey)) + '</span>';
     }
@@ -259,11 +263,13 @@
   function renderInto(ctx, quickInfo, bodySections) {
     var container = document.getElementById("articleContainer");
     if (!container) return;
-    var html = '<div class="article-hero ' + ctx.heroClass + '">'
+    var html = '<div class="article-hero ' + ctx.heroClass + (ctx.imageHtml ? ' article-hero--with-image' : '') + '">'
       + ctx.imageHtml
       + '<div class="article-hero-overlay"></div>'
       + '<div class="article-hero-content">'
-      + '<div class="hero-meta">' + ctx.stationBadge + ctx.typeBadge + ctx.tagsHtml + '</div>'
+      // Desktop keeps the original inline badge row; mobile orders the groups
+      // around the title without duplicating badges or gallery elements.
+      + '<div class="hero-meta"><span class="hero-primary">' + ctx.stationBadge + ctx.typeBadge + '</span><span class="hero-tags">' + ctx.tagsHtml + '</span></div>'
       + '<h1 class="article-title">' + escapeHtml(ctx.spotName) + '</h1>'
       + '</div></div>'
       + quickInfo
