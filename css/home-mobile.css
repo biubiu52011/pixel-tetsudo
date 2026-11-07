@@ -483,33 +483,32 @@ body[data-page="home"] #searchContainer .journey-line-icon {
   width:22px;height:22px;object-fit:contain;image-rendering:pixelated;
 }
 body[data-page="home"] #searchContainer .journey-transfer-hint {display:none;}
+/* Platform information is tertiary to line identity and departure/arrival time.
+   A single, quiet inline hint replaces the oversized twin platform cards. */
 body[data-page="home"] #searchContainer .journey-platform-change {
-  display:grid;order:4;flex:1 0 100%;
-  grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);
-  align-items:center;gap:8px;width:100%;min-width:0;margin:5px 0 2px;
+  display:flex;order:4;flex:1 0 100%;align-items:baseline;
+  flex-wrap:wrap;gap:3px 7px;width:100%;min-width:0;
+  margin:2px 0 0;padding-top:5px;border-top:1px dashed var(--border);
 }
 body[data-page="home"] #searchContainer .journey-platform-change[hidden] {display:none!important;}
-body[data-page="home"] #searchContainer .journey-platform-slot {
-  display:flex;flex-direction:column;gap:4px;
-  min-width:0;min-height:78px;padding:10px 12px;
-  border:2px solid var(--border);border-radius:4px;
-  background:var(--card);box-shadow:2px 2px 0 rgba(32,33,38,.14);
-}
+body[data-page="home"] #searchContainer .journey-platform-slot,
 body[data-page="home"] #searchContainer .journey-platform-slot--departure {
-  border-color:var(--green-dim);background:var(--green-pale);
+  display:inline-flex;flex-direction:row;gap:4px;align-items:baseline;
+  width:auto;min-width:0;min-height:0;padding:0;
+  border:0;border-radius:0;background:transparent;box-shadow:none;
 }
 body[data-page="home"] #searchContainer .journey-platform-label {
-  color:var(--text);font-size:12px;font-weight:700;
+  color:var(--text-muted);font-size:11px;font-weight:500;
 }
 body[data-page="home"] #searchContainer .journey-platform-value {
-  color:var(--text);font-size:23px;line-height:1.2;font-weight:800;
+  color:var(--text);font-size:12px;line-height:1.5;font-weight:700;
   font-variant-numeric:tabular-nums;
 }
 body[data-page="home"] #searchContainer .journey-platform-note {
-  color:var(--text-muted);font-size:11px;
+  color:var(--text-muted);font-size:10px;font-weight:400;
 }
 body[data-page="home"] #searchContainer .journey-platform-arrow {
-  text-align:center;color:var(--green-dim);font-size:19px;font-weight:700;
+  color:var(--text-muted);font-size:12px;line-height:1.5;font-weight:500;
 }
 body[data-page="home"] #searchContainer .search-error {
   padding:16px;border:2px solid var(--red);
@@ -534,13 +533,11 @@ body[data-page="home"] #searchContainer .rs-loading {
   body[data-page="home"] #searchContainer .journey-mode-area,
   body[data-page="home"] #searchContainer .journey-card > .journey-modes {padding:12px;}
   body[data-page="home"] #searchContainer .journey-summary-route {font-size:17px;}
-  body[data-page="home"] #searchContainer .journey-platform-slot {padding:9px 7px;}
+  body[data-page="home"] #searchContainer .journey-platform-slot {padding:0;}
 }
 @media(max-width:380px) {
-  body[data-page="home"] #searchContainer .journey-platform-change {
-    grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:4px;
-  }
-  body[data-page="home"] #searchContainer .journey-platform-label {font-size:11px;}
+  body[data-page="home"] #searchContainer .journey-platform-change {gap:3px 5px;}
+  body[data-page="home"] #searchContainer .journey-platform-label {font-size:10px;}
   body[data-page="home"] #searchContainer .mode-tab {font-size:11px;padding:8px 4px;}
 }
 @media(prefers-reduced-motion:reduce) {
@@ -686,9 +683,9 @@ body[data-page="home"] #searchContainer .journey-seg-route-arrow {
   color:var(--green-dim);
 }
 body[data-page="home"] #searchContainer .journey-seg-meta {
-  padding:9px 14px;
-  background:var(--bg);
-  border-top:1px solid var(--border);
+  padding:0 14px 11px;
+  background:var(--card);
+  border:0;
 }
 body[data-page="home"] #searchContainer .journey-seg-meta[hidden] {display:none!important;}
 body[data-page="home"] #searchContainer .journey-seg-meta .journey-seg-times {
@@ -698,20 +695,13 @@ body[data-page="home"] #searchContainer .journey-seg-meta .journey-seg-times {
   flex-wrap:wrap;
 }
 body[data-page="home"] #searchContainer .journey-seg-meta-label {
-  font-size:11px;
-  font-weight:700;
+  font-size:10px;
+  font-weight:500;
   color:var(--text-muted);
 }
 body[data-page="home"] #searchContainer .journey-seg-meta .journey-seg-platform {
-  margin:0;
-  padding:3px 8px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:3px;
-  color:var(--text);
-  font-size:12px;
-  font-weight:800;
-  line-height:1.5;
+  margin:0;padding:0;border:0;border-radius:0;background:transparent;
+  color:var(--text-muted);font-size:11px;font-weight:600;line-height:1.5;
 }
 /* Older DOM still uses a flat head and a single route label.
    Keep it readable if a previously cached search script renders it. */
