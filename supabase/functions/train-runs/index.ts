@@ -2524,7 +2524,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   }
 
   // Date-verified Kosei source-only locals, including north/inbound:
-  // the 54 source-only original 4/5/18/21/22-stop clocks were independently
+  // the 69 source-only original 4/5/7/13/18/21/22-stop clocks were independently
   // compared with the official November 2026 issue. The SQL invoker
   // view re-hashes the ORIGINAL timetable stops on every request.
   // Never relabel an unverified source run, infer a physical carset,
@@ -2535,8 +2535,9 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
       .eq("calendar_urn",selectedCalendar);
     if(clockError)throw clockError;
-    if((clocks||[]).length!==27||
-       new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==27)
+    const expectedCount=selectedCalendar==="odpt.Calendar:Weekday"?35:34;
+    if((clocks||[]).length!==expectedCount||
+       new Set((clocks||[]).map((p:any)=>Number(p.source_template_id))).size!==expectedCount)
       throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_COVERAGE_CHANGED");
     const byClockSource=new Map((clocks||[]).map((p:any)=>
       [Number(p.source_template_id),p]));
@@ -2559,14 +2560,14 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          !proof||proof.source!=="sql-jrwest-kosei-2611-source-family"||
          proof.sourceTemplateId!==Number(p.source_template_id)||
          !Array.isArray(proof.sourceStopKeys)||
-         ![4,5,18,21,22].includes(stops.length)||proof.sourceStopKeys.length!==stops.length||
+         ![4,5,7,13,18,21,22].includes(stops.length)||proof.sourceStopKeys.length!==stops.length||
          stops.some((st:any,i:number)=>
            String(st.station_urn||"").split(".").pop()!==proof.sourceStopKeys[i])||
          stops.filter((st:any)=>st.arrival_time||st.departure_time).length!==stops.length)
         throw new Error("JRWEST_KOSEI_2611_VERIFIED_CLOCK_SOURCE_CONFLICT");
       // Keep the source identifier (including importer H) for existing
       // verifier and canonical lookups; expose the REAL public number
-      // separately, with individually certified original 4/5/18/21/22-stop clocks.
+      // separately, with individually certified original 4/5/7/13/18/21/22-stop clocks.
       run.published_train_number=p.published_train_number;
       run.train_number_verification="official-2611-kosei-source-stop-clock";
       run.train_number_source_url=p.official_source_url;
