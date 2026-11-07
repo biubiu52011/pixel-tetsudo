@@ -68,6 +68,20 @@
 
 JR おでかけネット对时刻表有版权及无授权转载/复制/加工限制。本轮仅核验原项目已经存在的少量来源记录，保存原始行校验指纹、出处及类型判定；不批量复制官方时刻表。
 
+## 2026-11-07 追补：车辆图片未显示的原因及修复
+
+用户发现上一版虽然把 282 个原始来源列车关联到 `221系`，但网页仍无车头图片。原因不在时刻表条数：`train-runs` 原本只给 `candidate_models=['221系']` 且 `authorizes_png=false`，前端 `_osakaHigashiScoped` 又清空了 `vehicleIconPath`；同时图片目录 `vehicle-garage-png-map.js` 的既存 `JR西日本_221系_N.png` 不允许 `OsakaHigashi` 线路。
+
+已按现有统一渲染规则修复，不新建一套图片解析器：
+- `data/timetables/vehicle-garage-png-map.js`：只将既存 **221 N** 代表素材加入大阪东线使用范围，不把历史的207系/321系解释为当前普通/直通快速车辆。
+- `js/train-vehicle.js`：规范目录增加大阪东线 `221系` 唯一 scoped alias；`selectMarkerArtwork` 验证 SQL 来源标记、线路、2026-11月份、公开列车号与原始 `H` 日历后缀、停站顺序和计划候选，再返回 `planned + illustrative + representativeOnly` 的221系图片。**数据库 `authorizes_png=false` 保持不变**，意味着不能从来源证明“这列车当天是图库 N 编成”；代表图单独具有已确认的车型用途，不是实际编成授权。
+- `js/train-position-estimator.js`：计划状态从内部未知 `UNCONFIRMED_FLEET` 改为可呈现的 `FLEET_REFERENCE`；**`vehicleIdentityStatus` 不升级为 `EXACT`**，`vehicleType` 与实车编组不凭候选自动填写。
+- `js/trains-render.js`：普通显示“线路车型：221系（6辆，实际编组未确认）”，直通快速显示“线路车型：221系（8辆，实际编组未确认）”，并将代表图无障碍提示明确为“车型示意”。
+- `pages/trains.html`、`pages/home.html`、`pages/realtime.html`：刷新相应静态脚本查询版本，避免浏览器继续使用旧 `train-vehicle.js` 和旧图库。
+- `tests/osaka-higashi-2611-vehicle-render.test.cjs`：真实渲染分支抽样执行、既有图库匹配、号码/站序/日期/线路/车型错配拒绝、6辆／8辆文字和页面缓存校验均通过。
+
+**边界**：这只修复已有 282 条2026-11 source-family范围内的定期普通／直通快速视觉车型映射，不让已隔离的3条旧特急片段或94条单站残缺片段凭空出现车型；特急まほろば须有另行许可且可复核的现行车次数据。没有采集到当天真实NA/NB编组的运用证据，因此不标记具体列编号。仅完成仓库静态/逻辑测试，尚未证实在最终用户浏览器中的实际页面渲染。
+
 ## 验证与未解决事项
 
 - 数据库迁移已应用；282 条 source-fleet 记录与 6 条 exact clock evidence 通过约束、计数和 invoker 哈希复核。
