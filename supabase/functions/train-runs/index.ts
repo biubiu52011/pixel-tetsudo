@@ -2423,6 +2423,148 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       };
     }
   }
+  // JR-West Sagano (Kyoto–Sonobe): 53 historic SaninMain imports represent
+  // the entire 677-km Sanin corridor. The 23 source rows touching Kyoto or
+  // Sonobe are reference-only; just six train/calendar source clocks are
+  // independently matched to JR-West operator pages for November 2026.
+  // A source's compound identifier is NOT a published operating number.
+  // Never promote unverified records to date-verified, and never choose a PNG
+  // from a corridor-level 221/223/287/289 fleet candidate.
+  if(lineId==="SaninMain"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:sourceFleet,error:fleetError}=await db
+      .from("published_jrwest_sagano_2611_source_fleet")
+      .select("source_template_id,source_train_number,historical_public_number,calendar_urn,direction_urn,train_type_urn,corridor_scope,source_stop_keys,source_stop_count,candidate_models,candidate_png_paths,timetable_validity,reference_only,number_date_verified,actual_vehicle_confirmed,authorizes_png")
+      .eq("edition","2611").eq("calendar_urn",selectedCalendar);
+    if(fleetError)throw fleetError;
+    const expectedFleet=selectedCalendar==="odpt.Calendar:Weekday"?13:10;
+    if((sourceFleet||[]).length!==expectedFleet||
+       new Set((sourceFleet||[]).map((p:any)=>Number(p.source_template_id))).size!==expectedFleet)
+      throw new Error("JRWEST_SAGANO_2611_SOURCE_SCOPE_CHANGED");
+    const bySaganoSource=new Map((sourceFleet||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    const {data:clockProofs,error:clockError}=await db
+      .from("published_jrwest_sagano_2611_clock_evidence")
+      .select("source_template_id,calendar_urn,source_train_number,published_train_number,source_stop_count,official_source_url,valid_from,valid_to,continuation_number,continuation_station,verified_source_match,actual_vehicle_confirmed,authorizes_png")
+      .eq("calendar_urn",selectedCalendar);
+    if(clockError)throw clockError;
+    if((clockProofs||[]).length!==3||
+       new Set((clockProofs||[]).map((p:any)=>Number(p.source_template_id))).size!==3)
+      throw new Error("JRWEST_SAGANO_2611_CLOCK_SCOPE_CHANGED");
+    const bySaganoClock=new Map((clockProofs||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    for(const run of result){
+      const id=Number(run.source_template_id);
+      const source:any=bySaganoSource.get(id);
+      if(!source)continue;
+      const stops:any[]=Array.isArray(run.stops)?run.stops:[];
+      const keys=stops.map((st:any)=>stationKey(String(st.station_urn||"")));
+      const number=String(run.train_number||"");
+      const historic=String(source.historical_public_number||"");
+      const candidateModels:string[]=Array.isArray(source.candidate_models)?source.candidate_models:[];
+      if(source.calendar_urn!==selectedCalendar||
+         source.source_train_number!==number||
+         source.direction_urn!==run.rail_direction||
+         source.train_type_urn!==run.train_type||
+         run.network_key!=="odpt.Railway:JR-West.SaninMain"||
+         source.timetable_validity!=="undated_source_not_date_verified"||
+         source.reference_only!==true||source.number_date_verified!==false||
+         source.actual_vehicle_confirmed!==false||source.authorizes_png!==false||
+         !Array.isArray(source.candidate_png_paths)||
+         source.candidate_png_paths.length!==0||
+         !Array.isArray(source.source_stop_keys)||
+         Number(source.source_stop_count)!==stops.length||
+         source.source_stop_keys.length!==stops.length||
+         keys.some((key:string,i:number)=>key!==source.source_stop_keys[i])||
+         !/^[0-9]{3,4}[MDK]$/.test(historic)||
+         !number.endsWith("-"+historic))
+        throw new Error("JRWEST_SAGANO_2611_SOURCE_FLEET_CONFLICT");
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=candidateModels.length?candidateModels.join(" / "):null;
+      run.vehicle_mapping_level="unresolved";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-sagano-2611-source-family",
+        lineId:"SaninMain",sourceTemplateId:id,
+        sourceTrainNumber:number,historicalNumber:historic,
+        calendar:source.calendar_urn,
+        direction:source.direction_urn,trainType:source.train_type_urn,
+        corridorScope:source.corridor_scope,
+        candidateModels:source.candidate_models,
+        candidateAssets:source.candidate_png_paths,
+        referenceOnly:true,numberDateVerified:false,
+        actualVehicleConfirmed:false,authorizesPNG:false
+      };
+      const clock:any=bySaganoClock.get(id);
+      if(!clock)continue;
+      const originals:any[]=byTemplate.get(id)||[];
+      if(clock.verified_source_match!==true||
+         clock.calendar_urn!==selectedCalendar||
+         clock.source_train_number!==number||
+         clock.published_train_number!==historic||
+         !/^[0-9]{3,4}[MDK]$/.test(clock.published_train_number)||
+         Number(clock.source_stop_count)!==stops.length||
+         originals.length!==stops.length||
+         String(clock.valid_from).slice(0,10)>serviceDate||
+         String(clock.valid_to).slice(0,10)<serviceDate||
+         clock.actual_vehicle_confirmed!==false||clock.authorizes_png!==false||
+         originals.some((original:any,i:number)=>
+           stationKey(String(original.station_urn||original.departure_station_urn||original.arrival_station_urn||""))!==keys[i]||
+           sqlTime(original.arrival_clock)!==stops[i].arrival_time||
+           sqlTime(original.departure_clock)!==stops[i].departure_time))
+        throw new Error("JRWEST_SAGANO_2611_OFFICIAL_CLOCK_CONFLICT");
+      run.published_train_number=clock.published_train_number;
+      run.train_number_verification="official-2611-sagano-original-source-stop-clock";
+      run.train_number_source_url=clock.official_source_url;
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source="official-2611-sagano-original-source-stop-clock";
+      run.published_number_fleet_reference.publishedNumber=clock.published_train_number;
+      run.published_number_fleet_reference.officialStopClockSourceUrl=clock.official_source_url;
+      run.published_number_fleet_reference.stopClocksVerified=true;
+      if(clock.continuation_number){
+        // 2217M is Rapid until Sonobe, then 2133M Local to Fukuchiyama.
+        // Preserve one physical through-service identity while making the
+        // number change explicit; never call the FULL journey "2217M".
+        if(clock.published_train_number!=="2217M"||
+           clock.continuation_number!=="2133M"||
+           clock.continuation_station!=="Sonobe"||
+           run.train_type!=="odpt.TrainType:JR-West.Rapid")
+          throw new Error("JRWEST_SAGANO_2611_CONTINUATION_CONFLICT");
+        const pivot=keys.indexOf("Sonobe");
+        if(pivot<1||pivot>=keys.length-1||keys[0]!=="Kyoto"||
+           keys[keys.length-1]!=="Fukuchiyama")
+          throw new Error("JRWEST_SAGANO_2611_CONTINUATION_STOPS_CONFLICT");
+        run.published_number_scope="first_segment_only";
+        run.continuation_train_number=clock.continuation_number;
+        run.continuation_station_urn="odpt.Station:JR-West.SaninMain.Sonobe";
+        run.published_train_number_segments=[
+          {train_number:"2217M",train_type:"odpt.TrainType:JR-West.Rapid",
+           from_station_key:"Kyoto",to_station_key:"Sonobe",
+           start_stop_index:0,end_stop_index:pivot},
+          {train_number:"2133M",train_type:"odpt.TrainType:JR-West.Local",
+           from_station_key:"Sonobe",to_station_key:"Fukuchiyama",
+           start_stop_index:pivot,end_stop_index:keys.length-1}
+        ];
+        stops.forEach((st:any,i:number)=>{
+          st.published_arrival_train_number=i<=pivot?"2217M":"2133M";
+          st.published_departure_train_number=i<pivot?"2217M":"2133M";
+          st.published_train_type=i<=pivot?
+            "odpt.TrainType:JR-West.Rapid":"odpt.TrainType:JR-West.Local";
+        });
+      }else if(clock.continuation_station){
+        throw new Error("JRWEST_SAGANO_2611_ORPHAN_CONTINUATION");
+      }else{
+        run.published_number_scope="full_source_itinerary";
+      }
+    }
+  }
+
   // Kosei: historical 180 source runs, but ONLY 179 M / MH service
   // rows have a credible normal fleet family. The Saturday-only source
   // 9017DH is a D train mislabeled Local by the historical import and
