@@ -65,3 +65,23 @@ test('forced all-page UI layer is absent and page components retain their owners
   assert.doesNotMatch(css, /padding-top: 36px/);
   assert.match(css, /@media \(max-width: 480px\)/);
 });
+
+test('route search uses historical pixel edges and shadows without changing form architecture', () => {
+  const html = read('pages/home.html');
+  assert.match(html, /id="searchFrom"/);
+  assert.match(html, /id="swapBtn"/);
+  assert.match(html, /id="searchTo"/);
+  assert.match(html, /id="searchTimeMode"/);
+  assert.doesNotMatch(html, /class="station-pair"/);
+  const block = selector => {
+    const start = css.indexOf(selector + ' {');
+    assert.ok(start >= 0, selector + ' is missing');
+    return css.slice(start, css.indexOf('}', start) + 1);
+  };
+  assert.match(block('body[data-page="home"] #searchContainer'), /border-radius: 5px/);
+  assert.match(block('body[data-page="home"] #searchContainer'), /box-shadow: 4px 4px 0/);
+  assert.match(block('body[data-page="home"] #searchContainer .search-input'), /border-radius: 4px/);
+  assert.match(block('body[data-page="home"] #searchContainer .swap-btn'), /box-shadow: 3px 3px 0/);
+  assert.match(block('body[data-page="home"] #searchContainer .search-btn'), /background: var\(--green\)/);
+  assert.doesNotMatch(css, /station-pair|#eef7fc|#b5c9d7/);
+});

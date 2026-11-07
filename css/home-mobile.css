@@ -172,80 +172,86 @@ body[data-page="home"] #searchContainer .suggestion-item[aria-selected="true"] {
   padding-left: 20px;
 }
 
-/* Keep post-launch form controls functional, without the accidental
-   blue gradient station card or additional glossy search button. */
-body[data-page="home"] #searchContainer .station-pair {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
+/* Search presentation only — match the original hard-edged pixel navigation.
+   The HTML, SearchUI, route logic and tourism module are separate owners. */
+body[data-page="home"] #searchContainer {
+  border: 2px solid var(--text);
+  border-radius: 5px;
+  background: var(--card);
+  box-shadow: 4px 4px 0 rgba(32,33,38,.4), inset 2px 2px 0 #fff;
 }
-body[data-page="home"] #searchContainer .station-pair .input-group {
-  position: relative;
-  min-width: 0;
-}
-body[data-page="home"] #searchContainer .station-pair .search-input {
-  padding-right: 48px;
-}
-body[data-page="home"] #searchContainer .station-pair .swap-btn {
-  align-self: center;
-}
-body[data-page="home"] #searchContainer .station-clear-btn {
-  position: absolute;
-  z-index: 2;
-  bottom: 6px;
-  right: 7px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: 19px;
-  cursor: pointer;
-}
-body[data-page="home"] #searchContainer .station-clear-btn[hidden],
-body[data-page="home"] #searchContainer .search-time-details[hidden] {
-  display: none !important;
-}
-body[data-page="home"] #searchContainer .station-clear-btn:hover {
+body[data-page="home"] #searchContainer > .module-title {
   background: var(--bg3);
+  border-bottom: 2px solid var(--text);
+  border-radius: 3px 3px 0 0;
+}
+body[data-page="home"] #searchContainer > .module-title h2 {
   color: var(--text);
 }
-body[data-page="home"] #searchContainer .station-clear-btn:focus-visible {
-  outline: 3px solid var(--green-dim);
+body[data-page="home"] #searchContainer .input-label,
+body[data-page="home"] #searchContainer .search-time-group-label {
+  color: var(--text);
+  font-weight: 700;
+}
+body[data-page="home"] #searchContainer .search-input {
+  border: 2px solid #46464b;
+  border-radius: 4px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 2px 2px 0 rgba(32,33,38,.2), inset 1px 1px 0 #fff;
+}
+body[data-page="home"] #searchContainer .search-input:focus {
+  border-color: #006b32;
+  background: var(--card);
+  outline: 2px solid #006b32;
   outline-offset: 2px;
+  box-shadow: 2px 2px 0 rgba(32,33,38,.2);
 }
-body[data-page="home"] #searchContainer .search-time-controls > .input-group {
-  grid-column: 1 / -1;
-}
-body[data-page="home"] #searchContainer .search-time-details {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px;
-  min-width: 0;
-}
-body[data-page="home"] #searchContainer .search-time-details .input-group {
-  min-width: 0;
-}
-body[data-page="home"] #searchContainer .search-time-details input {
-  width: 100%;
-  min-width: 0;
-}
-body[data-page="home"] #searchContainer .journey-estimate-label {
-  font-size: 11px;
+body[data-page="home"] #searchContainer .search-input::placeholder {
   color: var(--text-muted);
+  opacity: .78;
 }
-body[data-page="home"] #searchContainer .journey-estimate-label.is-verified {
-  color: var(--green-dim);
+body[data-page="home"] #searchContainer .swap-btn {
+  border: 2px solid #303037;
+  border-radius: 4px;
+  background: var(--card);
+  color: #006b32;
+  box-shadow: 3px 3px 0 rgba(32,33,38,.4), inset 1px 1px 0 #fff;
 }
-@media (max-width: 480px) {
-  body[data-page="home"] #searchContainer .search-time-details {
-    grid-template-columns: minmax(0, 1fr);
-  }
+body[data-page="home"] #searchContainer .swap-btn:hover {
+  background: #dff5e7;
+  border-color: #006b32;
+}
+body[data-page="home"] #searchContainer .swap-btn:active {
+  transform: translate(3px,3px);
+  box-shadow: none;
+}
+body[data-page="home"] #searchContainer .swap-btn:focus-visible {
+  outline: 3px solid #006b32;
+  outline-offset: 3px;
+}
+body[data-page="home"] #searchContainer .search-btn {
+  border: 2px solid #006b32;
+  border-radius: 4px;
+  background: var(--green);
+  color: var(--white);
+  box-shadow: 4px 4px 0 #005b29, inset 1px 1px 0 rgba(255,255,255,.25);
+}
+body[data-page="home"] #searchContainer .search-btn:hover {
+  background: var(--green-dim);
+  box-shadow: 4px 4px 0 #005b29;
+  transform: translate(-1px,-1px);
+}
+body[data-page="home"] #searchContainer .search-btn:active {
+  transform: translate(3px,3px);
+  box-shadow: none;
+}
+body[data-page="home"] #searchContainer .search-btn:focus-visible {
+  outline: 3px solid #006b32;
+  outline-offset: 4px;
+}
+body[data-page="home"] #searchContainer .suggestions {
+  border: 2px solid #46464b;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 rgba(32,33,38,.3);
 }
