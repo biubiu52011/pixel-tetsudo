@@ -93,3 +93,31 @@ test('source completeness remains separate from confirmed omissions',()=>{
   assert.match(src,/missingTrainCount:null/);
   assert.match(src,/tt\._timetableCoverage=knownOmissions \? "partial" :/);
 });
+
+test('explicit selected calendar date determines the timetable, not today',async()=>{
+  const checker=setup('2026-11-04T13:00:00Z',[weekday,holiday]);
+  const r=await checker.enrichSegments([segment],{mode:'depart',date:'2026-11-03',time:'22:00'});
+  assert.equal(r.complete,true);
+  assert.equal(r.serviceDate,'2026-11-03');
+  assert.equal(r.times[0].train,'2200');
+});
+test('selected early-morning date uses the previous railway service day',async()=>{
+  const row=source('overnight','SaturdayHoliday','24:15','24:32');
+  const checker=setup('2026-11-04T13:00:00Z',[row]);
+  const r=await checker.enrichSegments([segment],{mode:'depart',date:'2026-11-04',time:'00:10'});
+  assert.equal(r.complete,true);
+  assert.equal(r.serviceDate,'2026-11-03');
+  assert.equal(r.times[0].train,'overnight');
+});
+test('arrival-by selects a service completing by the selected deadline',async()=>{
+  const checker=setup('2026-11-04T13:00:00Z',[weekday,holiday]);
+  const r=await checker.enrichSegments([segment],{mode:'arrive',date:'2026-11-03',time:'22:27'});
+  assert.equal(r.complete,true);
+  assert.equal(r.times[0].train,'2200');
+});
+test('impossible dates cannot accidentally match a different service calendar',async()=>{
+  const checker=setup('2026-11-04T13:00:00Z',[weekday,holiday]);
+  const r=await checker.enrichSegments([segment],{mode:'depart',date:'2026-02-30',time:'22:00'});
+  assert.equal(r.complete,false);
+  assert.equal(r.reason,'invalid');
+});

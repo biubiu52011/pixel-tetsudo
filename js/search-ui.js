@@ -44,11 +44,18 @@
 
       this.timeMode = document.getElementById('searchTimeMode');
       this.timeInput = document.getElementById('searchTime');
-      if(this.timeMode && this.timeInput) {
-        var clock = new Date(Date.now()+9*3600000);
-        this.timeInput.value = String(clock.getUTCHours()).padStart(2,'0')+':'+String(clock.getUTCMinutes()).padStart(2,'0');
-        this.timeMode.addEventListener('change', () => { this.timeInput.disabled=this.timeMode.value==='now'; });
+      this.dateInput = document.getElementById('searchDate');
+      this.timeDetails = document.getElementById('searchTimeDetails');
+      this.clearFromBtn = document.getElementById('clearSearchFrom');
+      this.clearToBtn = document.getElementById('clearSearchTo');
+      if (this.timeMode && this.timeInput) {
+        var clock = new Date(Date.now() + 9 * 3600000);
+        if (this.dateInput) this.dateInput.value = clock.toISOString().slice(0, 10);
+        this.timeInput.value = String(clock.getUTCHours()).padStart(2, '0') + ':' + String(clock.getUTCMinutes()).padStart(2, '0');
+        this.timeMode.addEventListener('change', () => this._syncTimeControls());
+        this._syncTimeControls();
       }
+      this._syncClearButtons();
 
       // 解析 ?from=/&to= URL 参数。等 RailwayDB 数据就绪后再真正填充；
       // 解析罗马字车站 ID（如 Kita-Senju）需要名称映射；
@@ -85,6 +92,10 @@
       if (this.fromInput) this.fromInput.placeholder = t('search.fromPlaceholder');
       if (this.toInput) this.toInput.placeholder = t('search.toPlaceholder');
       if (this.searchBtn) this.searchBtn.textContent = t('search.btn');
+      if (this.clearFromBtn) this.clearFromBtn.setAttribute('aria-label', t('search.clear_from'));
+      if (this.clearToBtn) this.clearToBtn.setAttribute('aria-label', t('search.clear_to'));
+      var group = this.container && this.container.querySelector('.station-pair');
+      if (group) group.setAttribute('aria-label', t('search.fromLabel') + ' · ' + t('search.toLabel'));
       this._updateSwapLabel();
       [this.fromInput, this.toInput].forEach(input => {
         if (!input) return;
@@ -113,12 +124,39 @@
           if (_tn) this.toInput.value = _tn;
         }
       }
+      this._syncClearButtons();
       // 如果已执行过搜索，则重新渲染路径结果。
       if (this.lastRouteResult && this.resultsDiv && this.resultsDiv.innerHTML.trim() !== '') {
         this.renderResults(this.lastRouteResult, t);
       }
     },
 
+
+    _syncTimeControls: function() {
+      var custom = !!(this.timeMode && this.timeMode.value !== 'now');
+      if (this.timeDetails) this.timeDetails.hidden = !custom;
+      if (this.timeInput) this.timeInput.disabled = !custom;
+      if (this.dateInput) this.dateInput.disabled = !custom;
+    },
+
+    _syncClearButtons: function() {
+      if (this.clearFromBtn && this.fromInput) this.clearFromBtn.hidden = !this.fromInput.value;
+      if (this.clearToBtn && this.toInput) this.clearToBtn.hidden = !this.toInput.value;
+    },
+
+    _clearStation: function(input) {
+      if (!input) return;
+      input.value = '';
+      input.removeAttribute('data-station-id');
+      input.removeAttribute('aria-invalid');
+      var list = document.getElementById(input.getAttribute('aria-controls'));
+      if (list) this._hideSuggestions(list, input);
+      this._syncClearButtons();
+      this.lastRouteResult = null;
+      this._renderGeneration = (this._renderGeneration || 0) + 1;
+      if (this.resultsDiv) this.resultsDiv.innerHTML = '';
+      if (typeof input.focus === 'function') input.focus();
+    },
 
     _updateSwapLabel: function() {
       if (!this.swapBtn) return;
@@ -146,6 +184,7 @@
         this.toInput.value = fromVal;
         this.toInput.setAttribute('data-station-id', fromId || '');
       }
+      this._syncClearButtons();
       // 触发建议刷新。
       if (this.fromInput && this.fromInput.value) {
         this.showSuggestions(this.fromInput.value, 'fromSuggestions', this.fromInput);
@@ -164,6 +203,8 @@
       if (this.searchBtn) {
         this.searchBtn.addEventListener('click', () => self.performSearch());
       }
+      if (this.clearFromBtn) this.clearFromBtn.addEventListener('click', () => this._clearStation(this.fromInput));
+      if (this.clearToBtn) this.clearToBtn.addEventListener('click', () => this._clearStation(this.toInput));
 
       // Editable ARIA combobox: DOM focus stays on the input.
       [this.fromInput, this.toInput].forEach(input => {
@@ -202,6 +243,8 @@
         });
         input.addEventListener('input', () => {
           input.removeAttribute('data-station-id');
+          input.removeAttribute('aria-invalid');
+          this._syncClearButtons();
           this.showSuggestions(input.value, listId, input);
         });
       });
@@ -245,7 +288,10 @@
     _selectSuggestion: function(option, list, input) {
       input.value = option.textContent;
       input.setAttribute('data-station-id', option.getAttribute('data-station-id') || '');
+      input.removeAttribute('aria-invalid');
       this._hideSuggestions(list, input);
+      this._syncClearButtons();
+      if (input === this.fromInput && this.toInput && !this.toInput.value && typeof this.toInput.focus === 'function') this.toInput.focus();
     },
 
     showSuggestions: function(query, listId, input) {
@@ -308,16 +354,38 @@
 
       this._renderGeneration = (this._renderGeneration || 0) + 1;
       this.lastRouteResult = null;
-      var timeOptions={mode:this.timeMode ? this.timeMode.value : 'now',time:this.timeInput ? this.timeInput.value : ''};
-      if(timeOptions.mode!=='now' && !/^\d{2}:\d{2}$/.test(timeOptions.time)) {
-        if (this.resultsDiv) this.resultsDiv.innerHTML='<div class="search-error" role="alert">'+window.escapeHtml(t('search.invalid_time'))+'</div>'; return;
-      }
-      if (!from || !to) {
-        if (this.resultsDiv) {
-          this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('validate.input_required')) + '</div>';
+      var timeOptions = {
+        mode: this.timeMode ? this.timeMode.value : 'now',
+        time: this.timeInput ? this.timeInput.value : '',
+        date: this.dateInput ? this.dateInput.value : ''
+      };
+      if (timeOptions.mode !== 'now') {
+        var validDate = /^\d{4}-\d{2}-\d{2}$/.test(timeOptions.date);
+        if (validDate) {
+          var dt = new Date(timeOptions.date + 'T12:00:00Z');
+          validDate = !isNaN(dt.getTime()) && dt.toISOString().slice(0, 10) === timeOptions.date;
         }
+        if (!validDate) {
+          if (this.resultsDiv) this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('search.invalid_date')) + '</div>';
+          if (this.dateInput && typeof this.dateInput.focus === 'function') this.dateInput.focus();
+          return;
+        }
+      }
+      if(timeOptions.mode!=='now' && !/^\d{2}:\d{2}$/.test(timeOptions.time)) {
+        if (this.resultsDiv) this.resultsDiv.innerHTML='<div class="search-error" role="alert">'+window.escapeHtml(t('search.invalid_time'))+'</div>';
+        if (this.timeInput && typeof this.timeInput.focus === 'function') this.timeInput.focus();
         return;
       }
+      if (!from || !to) {
+        if (this.fromInput) this.fromInput.setAttribute('aria-invalid', String(!from));
+        if (this.toInput) this.toInput.setAttribute('aria-invalid', String(!to));
+        if (this.resultsDiv) this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('validate.input_required')) + '</div>';
+        var missing = !from ? this.fromInput : this.toInput;
+        if (missing && typeof missing.focus === 'function') missing.focus();
+        return;
+      }
+      if (this.fromInput) this.fromInput.removeAttribute('aria-invalid');
+      if (this.toInput) this.toInput.removeAttribute('aria-invalid');
 
       if (this.resultsDiv) {
         this.resultsDiv.innerHTML = '<div class="rs-loading"><div class="rs-loading-spinner"></div><span>' + t('status.loading') + '</span></div>';
@@ -403,11 +471,12 @@
       // 标题：总时长 + 换乘次数 + 估算票价。
       html += '<div class="journey-header">';
       html += '<span class="journey-duration">' + dur + ' ' + t('search.min_unit') + '</span>';
+      html += '<span class="journey-estimate-label">' + window.escapeHtml(t('search.route_estimate')) + '</span>';
       if (transfers > 0) { html += '<span class="journey-transfers">' + transfers + ' ' + t('search_result.transfer_count') + '</span>'; }
       var _totalFare = (window.FareEstimator && result.routeSegments) ? window.FareEstimator.estimateTotal(result.routeSegments) : null;
       if (_totalFare) { html += '<span class="journey-fare">¥' + _totalFare.toLocaleString() + ' <span class="journey-fare-tag">' + window.escapeHtml(t('search.fare_tag')) + '</span></span>'; }
       html += '</div>';
-      html += '<div class="journey-schedule" role="status" aria-live="polite">'+window.escapeHtml(t('search.schedule_loading'))+'</div>';
+      html += '<div class="journey-schedule" role="status" aria-live="polite">' + window.escapeHtml(t('search.route_estimate') + ' · ' + t('search.schedule_loading')) + '</div>';
       // 时间线：起点 → 区间 → 终点。
       html += '<div class="journey-timeline">';
       // 起点节点。
@@ -492,7 +561,15 @@
           if (!_rtSelf.resultsDiv || renderGeneration!==_rtSelf._renderGeneration) return;
           var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
           if(notice) notice.textContent=res && res.complete ? res.serviceDate+' · '+t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin)+' · '+t('search.schedule_note') : t('search.schedule_missing');
-          if(res && res.complete){var duration=_rtSelf.resultsDiv.querySelector('.journey-duration');if(duration) duration.textContent=res.durationMin+' '+t('search.min_unit');}
+          if (res && res.complete) {
+             var duration = _rtSelf.resultsDiv.querySelector('.journey-duration');
+             if (duration) duration.textContent = res.durationMin + ' ' + t('search.min_unit');
+             var stateLabel = _rtSelf.resultsDiv.querySelector('.journey-estimate-label');
+             if (stateLabel) {
+               stateLabel.textContent = t('search.schedule_verified');
+               stateLabel.classList.add('is-verified');
+             }
+           }
           // enrich 返回 { times, downgrade }；downgrade = 直通贯通失败需降级为换乘的 transfer 段索引
           var _times = (res && res.times) ? res.times : (res || {});
           for (var _ridx in _times) {
@@ -517,6 +594,10 @@
             }
           }
         }).catch(function(){if(renderGeneration===_rtSelf._renderGeneration){var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');if(notice) notice.textContent=t('search.schedule_missing');}});
+      }
+      if (!window.RouteTimetable || !result.routeSegments) {
+        var unavailable = this.resultsDiv.querySelector('.journey-schedule');
+        if (unavailable) unavailable.textContent = t('search.schedule_missing');
       }
       // 模式标签切换：使用新模式重新搜索（在 innerHTML 提交后绑定）。
       var _self = this;

@@ -65,3 +65,15 @@ test('forced all-page UI layer is absent and page components retain their owners
   assert.doesNotMatch(css, /padding-top: 36px/);
   assert.match(css, /@media \(max-width: 480px\)/);
 });
+
+test('home station pair and optional dated timetable controls stay scoped', () => {
+  const html = read('pages/home.html');
+  assert.match(html, /class="station-pair"/);
+  assert.match(html, /id="searchDate"[^>]*type="date"/);
+  assert.match(html, /id="searchTimeDetails"[^>]*hidden/);
+  assert.match(css, /#searchContainer \.station-pair \{/);
+  assert.match(css, /#searchContainer \.station-pair \.swap-btn \{/);
+  assert.match(css, /#searchContainer \.station-clear-btn\[hidden\]/);
+  assert.match(css, /#searchContainer \.search-time-details\[hidden\]/);
+  assert.match(css, /@media \(max-width: 480px\)/);
+});
