@@ -6,7 +6,7 @@
 :root {
     --lang-btn-size: 40px;
     --lang-dropdown-width: 200px;
-    --lang-dropdown-radius: 4px;
+    --lang-dropdown-radius: var(--pt-radius-card);
     --lang-dropdown-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
     --lang-dropdown-top: 50px;
     --lang-accent: #008803;
@@ -15,7 +15,7 @@
     --lang-hover-bg: #f0f0f5;
     --lang-text: #1d1d1f;
     --lang-font-size: 14px;
-    --lang-border: #2a2a2a;
+    --lang-border: var(--border);
 }
 
 .lang-switcher-wrapper {
@@ -32,8 +32,8 @@
     height: var(--lang-btn-size);
     /* Circular floating language control, intentionally lighter than 3D cards. */
     border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #41454b;
+    background: linear-gradient(180deg, #fff, #edf7fc);
+    border: 2px solid var(--border);
     padding: 0;
     cursor: pointer;
     display: flex;
@@ -43,7 +43,7 @@
     overflow: visible;
     position: relative;
     transition: transform 120ms ease, box-shadow 120ms ease;
-    box-shadow: 0 2px 5px rgba(24,36,48,.20);
+    box-shadow: 2px 3px 0 rgba(42,83,109,.20), inset 0 1px 0 #fff;
 }
 
 .lang-toggle-btn:hover {
@@ -53,7 +53,7 @@
 
 .lang-toggle-btn:active {
     transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(24,36,48,.16);
+    box-shadow: 1px 1px 0 rgba(42,83,109,.18);
 }
 
 .lang-toggle-btn:focus-visible {
@@ -84,8 +84,8 @@
     right: 0;
     background: var(--white);
     border: 2px solid var(--lang-border);
-    border-radius: 4px;
-    box-shadow: 0 5px 16px rgba(22,34,47,.16);
+    border-radius: var(--lang-dropdown-radius);
+    box-shadow: 4px 5px 0 rgba(42,83,109,.22), inset 0 2px 0 #fff;
     min-width: var(--lang-dropdown-width);
     z-index: 3000;
 
@@ -109,10 +109,10 @@
 .lang-options {
     display: flex;
     flex-direction: column;
-    padding: 4px;
+    padding: 8px;
     list-style: none;
     margin: 0;
-    gap: 2px;
+    gap: 4px;
 }
 
 /* Language Option Button */
@@ -126,7 +126,8 @@
     font-family: var(--pixel-font, 'Fusion Pixel'), monospace;
     cursor: pointer;
     text-align: left;
-    border-radius: 3px;
+    border-radius: var(--pt-radius-control);
+    min-height: 44px;
     transition: var(--transition-fast);
     color: var(--lang-text);
     white-space: nowrap;

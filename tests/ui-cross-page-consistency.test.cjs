@@ -14,9 +14,10 @@ const pages = ['home','realtime','trains','history','tourism-spot','tourism-shop
 test('navigation, basic cards and active tabs have one owner on all seven pages', () => {
   const base = read('css/style.css');
   const scoped = read('css/ux-refinements.css');
+  const styleVersion = blobVersion(base);
   for (const page of pages) {
     const html = read('pages/' + page + '.html');
-    assert.match(html,/\.\.\/css\/style\.css/);
+    assert.ok(html.includes('../css/style.css?v=' + styleVersion), page + ' shared CSS cache key');
     assert.match(html,/\.\.\/js\/site-shell\.js\?v=[a-f0-9]{12}/);
     assert.doesNotMatch(html,/ui-system\.css/);
   }

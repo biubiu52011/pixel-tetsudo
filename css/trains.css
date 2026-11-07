@@ -18,8 +18,9 @@
   /* Fixed width; height follows line length */
   width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
   height: auto; min-height: 0; max-height: none;
-  background: var(--bg); border: 2px solid var(--border);
-  border-radius: var(--radius-sm); padding: 14px; overflow-x: auto; overflow-y: visible; flex-shrink: 0;
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: var(--pt-radius-panel); padding: 14px; overflow-x: auto; overflow-y: visible; flex-shrink: 0;
+  box-shadow: var(--pt-shadow-panel);
 }
 @media (max-width: 640px) { .tp-line-map { padding: 6px; } }
 /* v4.3.546: 线路图完整适配——svg width=100%（viewBox 缩放），wrap 占满容器，
@@ -43,7 +44,8 @@
   text-align: center;
   font-size: 11px;
   color: var(--text-muted);
-  margin-top: 6px;
+  margin-top: 10px;
+  line-height: 1.5;
 }
 
 /* Train marker movement is owned by trains-render.js.
