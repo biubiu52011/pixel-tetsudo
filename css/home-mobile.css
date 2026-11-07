@@ -172,51 +172,23 @@ body[data-page="home"] #searchContainer .suggestion-item[aria-selected="true"] {
   padding-left: 20px;
 }
 
-/* Home search refresh: only the search module, not the frozen site shell. */
+/* Keep post-launch form controls functional, without the accidental
+   blue gradient station card or additional glossy search button. */
 body[data-page="home"] #searchContainer .station-pair {
-  position: relative;
-  display: grid;
-  gap: 16px;
-  padding: 16px;
-  border: 2px solid #b5c9d7;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #fbfdff, #eef7fc);
-  box-shadow: 3px 4px 0 rgba(42,83,109,.16), inset 0 2px 0 #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
 }
 body[data-page="home"] #searchContainer .station-pair .input-group {
   position: relative;
   min-width: 0;
 }
 body[data-page="home"] #searchContainer .station-pair .search-input {
-  padding-right: 56px;
-}
-body[data-page="home"] #searchContainer .station-pair .search-input[data-station-id]:not([data-station-id=""]) {
-  border-color: #36a16e;
-  background: #f6fff9;
+  padding-right: 48px;
 }
 body[data-page="home"] #searchContainer .station-pair .swap-btn {
-  position: absolute;
-  z-index: 3;
-  top: 50%;
-  right: 13px;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  margin: 0;
-  transform: translateY(-50%);
-  border-color: #a6d5bb;
-  border-radius: 10px;
-  color: #07542f;
-  background: #fff;
-  box-shadow: 2px 3px 0 rgba(42,83,109,.22);
-}
-body[data-page="home"] #searchContainer .station-pair .swap-btn:hover {
-  transform: translateY(-50%) rotate(180deg);
-}
-body[data-page="home"] #searchContainer .station-pair .swap-btn:active {
-  transform: translateY(-50%) translate(2px,2px);
-  box-shadow: none;
+  align-self: center;
 }
 body[data-page="home"] #searchContainer .station-clear-btn {
   position: absolute;
@@ -237,11 +209,20 @@ body[data-page="home"] #searchContainer .station-clear-btn {
   cursor: pointer;
 }
 body[data-page="home"] #searchContainer .station-clear-btn[hidden],
-body[data-page="home"] #searchContainer .search-time-details[hidden] { display: none !important; }
-body[data-page="home"] #searchContainer .station-clear-btn:hover { background: #e0eaf2; color: var(--text); }
-body[data-page="home"] #searchContainer .station-clear-btn:focus-visible,
-body[data-page="home"] #searchContainer .swap-btn:focus-visible { outline: 3px solid #136c50; outline-offset: 2px; }
-body[data-page="home"] #searchContainer .search-time-controls > .input-group { grid-column: 1 / -1; }
+body[data-page="home"] #searchContainer .search-time-details[hidden] {
+  display: none !important;
+}
+body[data-page="home"] #searchContainer .station-clear-btn:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+body[data-page="home"] #searchContainer .station-clear-btn:focus-visible {
+  outline: 3px solid var(--green-dim);
+  outline-offset: 2px;
+}
+body[data-page="home"] #searchContainer .search-time-controls > .input-group {
+  grid-column: 1 / -1;
+}
 body[data-page="home"] #searchContainer .search-time-details {
   grid-column: 1 / -1;
   display: grid;
@@ -249,37 +230,22 @@ body[data-page="home"] #searchContainer .search-time-details {
   gap: 10px;
   min-width: 0;
 }
-body[data-page="home"] #searchContainer .search-time-details .input-group { min-width: 0; }
-body[data-page="home"] #searchContainer .search-time-details input { width: 100%; min-width: 0; }
-body[data-page="home"] #searchContainer .search-btn {
-  border-radius: 11px;
-  background: linear-gradient(180deg,#109b53,#087b3e);
-  box-shadow: 3px 4px 0 rgba(7,80,44,.30), inset 0 2px 0 rgba(255,255,255,.20);
+body[data-page="home"] #searchContainer .search-time-details .input-group {
+  min-width: 0;
 }
-body[data-page="home"] #searchContainer .search-btn:focus-visible { outline: 3px solid #136c50; outline-offset: 3px; }
-body[data-page="home"] #searchContainer > .search-results:not(:empty) {
-  border-top: 2px solid var(--border);
-  margin-top: 12px;
-  padding-top: 16px;
+body[data-page="home"] #searchContainer .search-time-details input {
+  width: 100%;
+  min-width: 0;
 }
 body[data-page="home"] #searchContainer .journey-estimate-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 7px;
-  border: 1px solid #b5c9d7;
-  border-radius: 6px;
   font-size: 11px;
-  color: #50677a;
-  background: #eef7fc;
+  color: var(--text-muted);
 }
 body[data-page="home"] #searchContainer .journey-estimate-label.is-verified {
-  border-color: #9dccad;
-  color: #07542f;
-  background: #e4f8eb;
+  color: var(--green-dim);
 }
 @media (max-width: 480px) {
   body[data-page="home"] #searchContainer .search-time-details {
     grid-template-columns: minmax(0, 1fr);
   }
-  body[data-page="home"] #searchContainer .station-pair { padding: 12px; }
 }

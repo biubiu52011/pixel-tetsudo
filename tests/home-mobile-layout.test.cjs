@@ -73,6 +73,16 @@ test('home station pair and optional dated timetable controls stay scoped', () =
   assert.match(html, /id="searchTimeDetails"[^>]*hidden/);
   assert.match(css, /#searchContainer \.station-pair \{/);
   assert.match(css, /#searchContainer \.station-pair \.swap-btn \{/);
+  const pair = css.match(/#searchContainer \.station-pair \{([^}]+)\}/);
+  const swap = css.match(/#searchContainer \.station-pair \.swap-btn \{([^}]+)\}/);
+  assert.ok(pair);
+  assert.ok(swap);
+  assert.match(pair[1], /display: flex/);
+  assert.match(pair[1], /flex-direction: column/);
+  assert.doesNotMatch(pair[1], /linear-gradient|box-shadow|border-radius|border:/);
+  assert.doesNotMatch(swap[1], /position: absolute|box-shadow|linear-gradient/);
+  assert.doesNotMatch(css, /#b5c9d7|#eef7fc|#109b53/);
+
   assert.match(css, /#searchContainer \.station-clear-btn\[hidden\]/);
   assert.match(css, /#searchContainer \.search-time-details\[hidden\]/);
   assert.match(css, /@media \(max-width: 480px\)/);
