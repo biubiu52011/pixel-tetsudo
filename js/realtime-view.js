@@ -203,7 +203,6 @@
     var _bodyTextEl = causeSection.querySelector(".rs-cause-text");
     if (_bodyTextEl) {
       _bodyTextEl.innerHTML = causeHtml;
-      if (_cleanSrc) _upgradeBodyTranslation(_bodyTextEl, _cleanSrc, window.currentLang || "ja", _translationOpts(lineId, status, Object.assign({}, delayInfo, { cause: cause })), lineId);
     }
     // 非官网来源的 URL 渲染为可点击链接行（正文保持纯文字）。
     var previousLinks = causeSection.querySelector(".rs-cause-links");
@@ -245,7 +244,7 @@
       updateTime = t("status.unknown");
     }
     updatedSection.querySelector(".rs-updated-time").textContent = updateTime;
-    updatedSection.classList.toggle("hidden", !sourceTime || isNaN(Date.parse(sourceTime)));
+    updatedSection.classList.toggle("hidden", !sourceTime || isNaN(new Date(sourceTime).getTime()));
     // 显示弹窗。
     modal.classList.add("active");
     document.body.classList.add("modal-open");
@@ -333,16 +332,10 @@
     if (!tr || _needsJaTranslate(tr)) {
       return _untranslatedOfficialText(text);
     }
-    return '<div class="rs-cause-translated">' + escapeHtml(tr) + '</div>';
-  }
-
-  function _upgradeBodyTranslation(textEl, text, lang, opts, lineId) {
-    if (!textEl || lang === "ja" || !_needsJaTranslate(text) || !window.DelayTranslator || typeof window.DelayTranslator.translateRemote !== "function") return;
-    window.DelayTranslator.translateRemote(text, opts || {}, lang).then(function(r) {
-      if (!r || r.provider !== "lingva" || !r.translated || _needsJaTranslate(r.translated)) return;
-      if (_currentModalLine !== lineId || !document.body.contains(textEl)) return;
-      textEl.innerHTML = '<div class="rs-cause-translated">' + escapeHtml(r.translated) + '</div>';
-    }).catch(function(){});
+    var originalLabels = {ja:"原文",zh:"查看官方日语原文",en:"Show original Japanese notice",ko:"일본어 원문 보기"};
+    return '<div class="rs-cause-translated">' + escapeHtml(tr) + '</div>'
+      + '<details class="rs-official-original"><summary>' + escapeHtml(originalLabels[lang] || originalLabels.en) + '</summary>'
+      + '<div class="rs-cause-original">' + safe + '</div></details>';
   }
 
   function renderFilterBar(linesObj) {
