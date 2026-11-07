@@ -38,9 +38,9 @@ BEGIN
  OR (SELECT count(*) FROM public.published_jrwest_2611_crossline_number_reference
  WHERE calendar_scope='weekday')<>4
  OR (SELECT count(*) FROM public.published_jrwest_2611_crossline_number_reference
- WHERE calendar_scope='saturday_holiday')<>7
+ WHERE calendar_scope='saturday_holiday')<>8
  OR (SELECT count(*) FROM public.published_jrwest_2611_crossline_number_reference
- WHERE calendar_scope='daily')<>4
+ WHERE calendar_scope='daily')<>3
  OR EXISTS(SELECT 1 FROM public.published_jrwest_2611_crossline_number_reference
  WHERE stop_clocks_verified OR actual_vehicle_confirmed OR authorizes_position OR authorizes_png)
  THEN RAISE EXCEPTION 'JR-West Omiimazu through-number source scope changed'; END IF;
