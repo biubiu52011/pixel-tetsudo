@@ -62,6 +62,8 @@
   var _data = null;
   var _loading = {};   // op -> true（防并发抓取）
   var _timer = null;
+  // Do not retry session-wide authorization failures against the public reader.
+  var _jinaUnavailable = false;
 
   function loadCache() {
     if (_data) return _data;
@@ -197,6 +199,8 @@
   // ========== HTML 抓取（多通道） ==========
   // 通道 ① 同源代理：若同源本地部署存在 /proxy 端点，则使用（Python 端无 CORS 限制）
   function trySameOriginProxy(op) {
+    // GitHub Pages is static and has no /proxy endpoint. Avoid a guaranteed 404.
+    if (typeof location !== 'undefined' && /(?:^|\.)github\.io$/i.test(location.hostname)) return Promise.resolve(null);
     return new Promise(function(resolve) {
       try {
         var url = encodeURIComponent(SOURCES[op].site);
@@ -211,6 +215,7 @@
   }
   // 通道 ② r.jina.ai（对 UTF-8 页面可用；Shift-JIS 页面会乱码——解码后校验，乱码则丢弃）
   function tryJina(op) {
+    if (_jinaUnavailable) return Promise.resolve(null);
     return new Promise(function(resolve) {
       try {
         var ctrl = null;
@@ -219,7 +224,11 @@
         var opts = { method: "GET", headers: { "Accept": "text/plain, text/markdown" } };
         if (ctrl) opts.signal = ctrl.signal;
         fetch("https://r.jina.ai/" + SOURCES[op].site, opts).then(function(res) {
-          if (!res.ok) { clearTimeout(timer); resolve(null); return; }
+          if (!res.ok) {
+            // 401/403 are authorization failures, not temporary status updates.
+            if (res.status === 401 || res.status === 403) _jinaUnavailable = true;
+            clearTimeout(timer); resolve(null); return;
+          }
           res.arrayBuffer().then(function(buf) {
             clearTimeout(timer);
             // r.jina 文本应可直接 UTF-8 解码；Shift-JIS 源站会乱码 → 交给 parse 校验（找得到区块标题才采用）
