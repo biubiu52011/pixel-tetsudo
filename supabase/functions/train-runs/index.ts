@@ -2565,6 +2565,139 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // JR-West Osaka Higashi (2026-11). 379 historical sources contain 94
+  // one-station Shin-Osaka fragments already suppressed earlier in this
+  // function, 282 ordinary/through rapid multiple-station itineraries, and
+  // three undated old special M source fragments without current evidence.
+  // Historical holiday H is calendar metadata only for this source family.
+  // Do not infer a 2026 full timetable or an actual 221 formation.
+  let suppressedUnverifiedOsakaHigashiSpecialSources=0;
+  if(lineId==="OsakaHigashi"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:families,error:familyError}=await db
+      .from("published_jrwest_osaka_higashi_2611_source_fleet")
+      .select("source_template_id,source_train_number,historical_public_number,calendar_urn,direction_urn,source_train_type_urn,public_train_type,public_train_type_label,source_stop_count,source_stop_keys,candidate_models,candidate_png_paths,timetable_validity,reference_only,number_date_verified,actual_vehicle_confirmed,authorizes_png")
+      .eq("edition","2611").eq("calendar_urn",selectedCalendar);
+    if(familyError)throw familyError;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?142:140;
+    if((families||[]).length!==expected||
+       new Set((families||[]).map((p:any)=>Number(p.source_template_id))).size!==expected)
+      throw new Error("JRWEST_OSAKA_HIGASHI_2611_SOURCE_SCOPE_CHANGED");
+    const bySource=new Map((families||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    const {data:clockRows,error:clockError}=await db
+      .from("published_jrwest_osaka_higashi_2611_clock_evidence")
+      .select("source_template_id,source_train_number,published_train_number,calendar_urn,official_public_type,source_stop_count,official_source_url,valid_from,valid_to,verified_source_match,actual_vehicle_confirmed,authorizes_png")
+      .eq("calendar_urn",selectedCalendar);
+    if(clockError)throw clockError;
+    if((clockRows||[]).length!==3||
+       new Set((clockRows||[]).map((p:any)=>Number(p.source_template_id))).size!==3)
+      throw new Error("JRWEST_OSAKA_HIGASHI_2611_CLOCK_SCOPE_CHANGED");
+    const byClock=new Map((clockRows||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    const quarantined=new Set(["1091M","7092MH","9024MH"]);
+    for(let i=result.length-1;i>=0;i--){
+      const run:any=result[i];
+      if(run.network_key!=="odpt.Railway:JR-West.OsakaHigashi")continue;
+      const id=Number(run.source_template_id);
+      const proof:any=bySource.get(id);
+      if(!proof){
+        if(quarantined.has(String(run.train_number||""))){
+          // These 3 historical 2-stop source fragments are neither
+          // the current Mahoroba 9081/9082M nor verified 2026 services.
+          result.splice(i,1);
+          suppressedUnverifiedOsakaHigashiSpecialSources++;
+        }
+        continue;
+      }
+      const number=String(run.train_number||"");
+      const stops:any[]=Array.isArray(run.stops)?run.stops:[];
+      const keys=stops.map((p:any)=>
+        String(p.station_urn||"").split(".").pop());
+      const publicNumber=String(proof.historical_public_number||"");
+      const direct=proof.public_train_type==="DirectRapid";
+      if(proof.calendar_urn!==selectedCalendar||
+         proof.source_train_number!==number||
+         proof.source_train_type_urn!=="odpt.TrainType:JR-West.Local"||
+         run.train_type!=="odpt.TrainType:JR-West.Local"||
+         proof.direction_urn!==run.rail_direction||
+         !/^(?:[0-9]{4}S|21[0-9]{2}M)$/.test(publicNumber)||
+         number!==(selectedCalendar==="odpt.Calendar:SaturdayHoliday"
+           ?publicNumber+"H":publicNumber)||
+         (direct?!/^21[0-9]{2}M$/.test(publicNumber):
+           !/^[0-9]{4}S$/.test(publicNumber))||
+         proof.public_train_type_label!==(direct?"直通快速":"普通")||
+         proof.reference_only!==true||proof.number_date_verified!==false||
+         proof.timetable_validity!=="undated_not_current_verified"||
+         proof.actual_vehicle_confirmed!==false||proof.authorizes_png!==false||
+         !Array.isArray(proof.source_stop_keys)||
+         Number(proof.source_stop_count)!==stops.length||
+         proof.source_stop_keys.length!==stops.length||
+         stops.some((st:any,j:number)=>keys[j]!==proof.source_stop_keys[j])||
+         !Array.isArray(proof.candidate_models)||
+         proof.candidate_models.join("|")!=="221系"||
+         !Array.isArray(proof.candidate_png_paths)||
+         proof.candidate_png_paths.length!==0)
+        throw new Error("JRWEST_OSAKA_HIGASHI_2611_SOURCE_FAMILY_CONFLICT");
+
+      // A verified service TYPE is not a current verified timetable/vehicle.
+      run.published_train_number=publicNumber;
+      run.published_train_type="odpt.TrainType:JR-West."+(direct?"Rapid":"Local");
+      run.published_train_type_label=proof.public_train_type_label;
+      run.train_type=run.published_train_type;
+      run.train_number_verification="source-only-osaka-higashi-number-family";
+      run.reference_public_train_number=publicNumber;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates="221系";
+      run.vehicle_mapping_level="unresolved";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-osaka-higashi-2611-source-family",
+        lineId:"OsakaHigashi",sourceTemplateId:id,
+        sourceTrainNumber:number,historicalNumber:publicNumber,
+        calendar:proof.calendar_urn,direction:proof.direction_urn,
+        publicTrainType:proof.public_train_type,
+        publicTrainTypeLabel:proof.public_train_type_label,
+        sourceStopKeys:proof.source_stop_keys,
+        candidateModels:proof.candidate_models,
+        candidateAssets:proof.candidate_png_paths,
+        referenceOnly:true,numberDateVerified:false,
+        actualVehicleConfirmed:false,authorizesPNG:false
+      };
+      const clock:any=byClock.get(id);
+      if(!clock)continue;
+      const original:any[]=byTemplate.get(id)||[];
+      if(clock.verified_source_match!==true||
+         clock.calendar_urn!==selectedCalendar||
+         clock.source_train_number!==number||
+         clock.published_train_number!==publicNumber||
+         clock.official_public_type!==proof.public_train_type||
+         clock.actual_vehicle_confirmed!==false||
+         clock.authorizes_png!==false||
+         String(clock.valid_from).slice(0,10)>serviceDate||
+         String(clock.valid_to).slice(0,10)<serviceDate||
+         Number(clock.source_stop_count)!==stops.length||
+         original.length!==stops.length||
+         original.some((o:any,j:number)=>
+           stationKey(String(o.station_urn||o.departure_station_urn||o.arrival_station_urn||""))!==keys[j]||
+           sqlTime(o.arrival_clock)!==stops[j].arrival_time||
+           sqlTime(o.departure_clock)!==stops[j].departure_time))
+         throw new Error("JRWEST_OSAKA_HIGASHI_2611_OFFICIAL_CLOCK_CONFLICT");
+      run.train_number_verification="official-2611-osaka-higashi-source-stop-clock";
+      run.train_number_source_url=clock.official_source_url;
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source="official-2611-osaka-higashi-original-source-clock";
+      run.published_number_fleet_reference.officialStopClockSourceUrl=clock.official_source_url;
+      run.published_number_fleet_reference.stopClocksVerified=true;
+    }
+  }
+
   // Kosei: historical 180 source runs, but ONLY 179 M / MH service
   // rows have a credible normal fleet family. The Saturday-only source
   // 9017DH is a D train mislabeled Local by the historical import and
