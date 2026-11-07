@@ -29,7 +29,7 @@ test('shop routing supports food, drink, retail and play (including explicit cat
   assert.equal(getType({ tags: ['event', 'play'] }), 'event', 'event precedence remains');
 });
 
-function renderShop(spot) {
+function renderShop(spot, lang = 'ja') {
   const article = { innerHTML: '' };
   const document = {
     title: '',
@@ -61,7 +61,7 @@ function renderShop(spot) {
     'detail.i18n_missing': '内容なし',
   };
   const core = {
-    state: { lang: 'ja' },
+    state: { lang },
     t(key) { return messages[key] || key; },
     escapeHtml(value) {
       return value == null ? '' : String(value)
@@ -71,7 +71,7 @@ function renderShop(spot) {
       return {
         spot: s, spotName: s.name, spotFee: '無料', spotHours: s.hours || '10:00',
         spotBestTime: '年中', spotAddress: '', desc: s.desc || 'About',
-        tagsHtml: '', typeBadge: '', heroClass: '',
+        tags: s.tags || [], tagsHtml: '', typeBadge: '', heroClass: '',
         mapLat: 35.6, mapLng: 139.6,
         dist: { distMain: '', distText: '', stationName: '' },
       };
@@ -425,15 +425,26 @@ test('short menus use compact text rows and remove a redundant all-items dialog'
   assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 3);
 });
 
-test('long menus retain an accessible all-items dialog without fabricating pictures', () => {
+
+test('7–12 recommendations expand inline without a duplicated modal', () => {
   const menu = Array.from({length:8},(_,i)=>({item:'商品'+i,price:(100+i)+'円'}));
+  const html = renderShop({name:'Medium shop',tags:['store'],menu});
+  assert.match(html, /class="dp-menu-inline-toggle"/);
+  assert.match(html, /aria-expanded="false" aria-controls="dp-menu-more"/);
+  assert.match(html, /class="dp-menu-more" id="dp-menu-more" hidden/);
+  assert.doesNotMatch(html, /role="dialog"|dp-menu-modal|dp-dish-badge/);
+  assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 8);
+});
+
+test('13+ recommendations retain an accessible dialog and focus controls', () => {
+  const menu = Array.from({length:15},(_,i)=>({item:'商品'+i,price:(100+i)+'円'}));
   const html = renderShop({name:'Large shop',tags:['store'],menu});
   assert.match(html, /class="dp-menu-viewall"/);
   assert.match(html, /role="dialog" aria-modal="true"/);
   assert.match(html, /aria-label="閉じる"/);
   assert.match(html, /dp-menu-list/);
   assert.doesNotMatch(html, /dp-dish-badge|dp-dish-thumb/);
-  assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 14);
+  assert.equal((html.match(/class="dp-dish-price"/g) || []).length, 21);
 });
 
 test('mixed menus keep real item photography separate from no-photo text entries', () => {
@@ -446,4 +457,68 @@ test('mixed menus keep real item photography separate from no-photo text entries
   assert.ok(html.includes('src="../images/items/real.jpg"'));
   assert.equal(html.includes('src="../images/観光地/shop.jpg"'),false);
   assert.match(html, /公式情報/);
+});
+
+test('overview elevates hours and price, keeps transit update hooks, and avoids duplicate shop labels', () => {
+  const html = renderShop({
+    name:'千住の永見', image:'../images/観光地/千住の永見.jpg',
+    tags:['food','restaurant','local_specialty','shop'],
+    hours:'15:00〜22:00', fee:'一品470円〜',
+    menu:[{item:'千住あげ',price:'470円',img:'../images/foods/age.jpg'}]
+  });
+  assert.match(html, /class="dp-facts/);
+  assert.match(html, /class="dp-fact dp-fact--hours/);
+  assert.match(html, /class="dp-fact dp-fact--fee/);
+  assert.match(html, /data-tourism-distance-row/);
+  assert.match(html, /data-tourism-distance/);
+  assert.match(html, /class="dp-photo-count">2<\/span>/);
+  assert.match(html, /class="dp-tags-toggle" aria-expanded="false"/);
+  assert.match(html, /dp-tag-extra/);
+  assert.equal((html.match(/class="dp-fact-label"/g) || []).length, 2);
+});
+
+test('long mixed hours stay in one responsive fact rather than an unbroken details line', () => {
+  const html = renderShop({name:'びあマ北千住',tags:['food','drink'],hours:
+    '月曜～土曜・祝前日14:00〜23:00（LO22:00）、日曜・祝日13:00〜22:00（LO21:00）※テイクアウトは閉店まで可'
+  });
+  assert.match(html, /dp-facts--long-hours/);
+  assert.match(html, /月曜～土曜・祝前日/);
+  assert.match(html, /日曜・祝日/);
+  assert.match(html, /テイクアウト/);
+});
+
+test('visitor notes are grouped with the overview rather than standalone repeated cards', () => {
+  const html = renderShop({
+    name:'Shop with note',tags:['food'],desc:'Original description',
+    menu:[{item:'Only a reminder',kind:'note'}],
+    menu_i18n:[{ja:'冬期限定の料理'}]
+  });
+  assert.match(html, /class="dp-visit-notes"/);
+  assert.match(html, /dp-visit-notes-list/);
+  assert.match(html, /冬期限定の料理/);
+  assert.doesNotMatch(html, /class="dp-card dp-visitor-notes"/);
+  assert.equal((html.match(/class="dp-card dp-about/g) || []).length, 1);
+});
+
+test('shop-only UI labels support Japanese, Chinese, English and Korean without changing global translations', () => {
+  const fixture = {name:'Test',tags:['drink'],hours:'10:00〜20:00',
+    menu:Array.from({length:8},(_,i)=>({item:'Item'+i}))};
+  for (const [lang,label,more] of [
+    ['ja','営業時間','もっと見る'],['zh','营业时间','查看更多'],
+    ['en','Opening hours','Show more'],['ko','영업시간','더 보기']
+  ]) {
+    const html = renderShop(fixture,lang);
+    assert.ok(html.includes(label),lang+' hours label');
+    assert.ok(html.includes(more),lang+' menu expansion');
+  }
+});
+
+test('shop CSS has one pixel-style fact hierarchy, responsive rules and no fake item placeholder', () => {
+  const css = source('css/tourism-shop.css');
+  assert.match(css,/\.dp-facts \{/);
+  assert.match(css,/\.dp-hero \{/);
+  assert.match(css,/\.dp-visit-notes \{/);
+  assert.match(css,/\.dp-menu-inline-toggle/);
+  assert.match(css,/@media \(max-width: 640px\)/);
+  assert.doesNotMatch(css,/\.dp-dish-badge \{/);
 });
