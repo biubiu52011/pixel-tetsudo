@@ -251,6 +251,13 @@
 
     // ========== 线路 -> 运营商映射 ==========
     var LINE_TO_OPERATOR = {
+        // Canonical database IDs retained alongside legacy script aliases.
+        "Daishi_Keikyu": "Keikyu",
+        "TokyuDenEn": "Tokyu",
+        "SotetsuShin-Yokohama": "Sotetsu",
+        "SeibuEn": "Seibu",
+        "Seibu_Sayama": "Seibu",
+        "Yurakucho_Seibu": "Seibu",
         "TokaidoCentral": "JR-Central",
         "ChuoCentral": "JR-Central",
         "KansaiCentral": "JR-Central",
@@ -455,6 +462,12 @@
     // 内部线路 key 与 ODPT odpt.Railway code 不一致时在此映射，避免 404。
     // 仅在内部 lineId 与数据源实际 owl:sameAs railway code 不同时登记已验证 alias；禁止根据英文名/命名惯例猜测 API identity。
     var LINE_RAILWAY_CODE = {
+      "Daishi_Keikyu": "Daishi",
+      "TokyuDenEn": "DenEnToshi",
+      "SotetsuShin-Yokohama": "SotetsuShinYokohama",
+      "SeibuEn": "Seibuen",
+      "Seibu_Sayama": "Sayama",
+      "Yurakucho_Seibu": "SeibuYurakucho",
       "Hakodate2": "②_A",
       "Hakodate5": "⑤_A",
       "SaikyoKawagoe": "SaikyoKawagoe", // 大崎〜大宮〜川越
@@ -1627,6 +1640,7 @@
     }
     function _decodeGtfsAlerts(buffer, operator) {
         var feed = _gtfsReadMessage(new Uint8Array(buffer)), entities = _gtfsRepeated(feed, 2), rows = [];
+        var feedHeader = _gtfsNested(feed, 1), feedTimestamp = Number(_gtfsField(feedHeader, 3)) || 0;
         entities.forEach(function(entityBytes) {
             var entity = _gtfsReadMessage(entityBytes), alert = _gtfsNested(entity, 5);
             if (!Object.keys(alert).length) return;
@@ -1637,8 +1651,9 @@
             var period = _toeiAlertValidPeriod(periods), header = _gtfsTranslatedString(alert, 10);
             var description = _gtfsTranslatedString(alert, 11), text = _gtfsAlertText(header, description);
             var cause = _gtfsAlertCause(_gtfsField(alert, 6)), effect = _gtfsAlertEffect(_gtfsField(alert, 7));
-            var status = Number(_gtfsField(alert, 7)) === 1 ? "Suspension" :
-                (Number(_gtfsField(alert, 7)) === 2 || Number(_gtfsField(alert, 7)) === 3 ? "Delay" : "");
+            var effectCode = Number(_gtfsField(alert, 7)) || 0;
+            var status = effectCode === 1 ? "Suspension" :
+                (effectCode === 2 || effectCode === 3 ? "Delay" : "");
             var urlMap = _gtfsTranslatedString(alert, 8), url = urlMap.ja || urlMap.en || Object.keys(urlMap).map(function(k) { return urlMap[k]; })[0] || "";
             var selectors = _toeiAlertSelectors(alert);
             if (!selectors.length) selectors = [{ routeId: "", tripId: "", stopId: "" }];
@@ -1652,7 +1667,11 @@
                             : operator === "TokyoMetro"
                                 ? _tokyoMetroGtfsLineId(selector.routeId, selector.tripId, selector.stopId)
                                 : _gtfsLineIdForOperator(operator, selector.routeId, selector.tripId, selector.stopId);
-                var code = lineId === "Nippori_Toneri" ? "NipporiToneri" : lineId;
+                var code = lineId ? (LINE_RAILWAY_CODE[lineId] || lineId) : "";
+                // A trip/stop alert has no whole-line authority. If route
+                // identity cannot be resolved, never broadcast to all lines.
+                var alertScope = selector.stopId ? "stop" :
+                    (selector.tripId ? "trip" : (selector.routeId ? "line" : "unknown"));
                 var id = "gtfs-alert:" + operator + ":" + entityId + ":" + selectorIndex;
                 rows.push({
                     "@id": id,
@@ -1660,17 +1679,27 @@
                     "odpt:operator": "odpt.Operator:" + operator,
                     "odpt:railway": code ? "odpt.Railway:" + operator + "." + code : "",
                     "pt:messageKind": "realtime",
+                    "pt:sourceType": "gtfs-alert",
+                    "pt:alertScope": alertScope,
+                    "pt:tripId": selector.tripId || "",
+                    "pt:routeId": selector.routeId || "",
+                    "pt:stopId": selector.stopId || "",
+                    "pt:gtfsEffectCode": effectCode,
                     "odpt:trainInformationStatus": status,
                     "odpt:trainInformationText": text,
                     "odpt:trainInformationCause": cause,
                     "gtfs:causeCode": Number(_gtfsField(alert, 6)) || null,
                     "odpt:trainInformationEffect": effect,
                     "odpt:trainInformationUrl": url,
-                    "odpt:trainInformationRange": periods,
+                    // GTFS active_period carries timestamps, not stations.
+                    "pt:activePeriods": periods,
+                    "odpt:trainInformationRange": "",
                     "odpt:stationFrom": selector.stopId || "",
                     "gtfs:cause": cause,
                     "gtfs:effect": effect,
-                    "dc:date": period.start ? _toeiGtfsIso(period.start) : new Date().toISOString(),
+                    // Update time is the feed timestamp, never the date of
+                    // the incident start (which can be days earlier).
+                    "dc:date": feedTimestamp ? _toeiGtfsIso(feedTimestamp) : new Date().toISOString(),
                     "dct:valid": period.end ? _toeiGtfsIso(period.end) : ""
                 });
             });
@@ -3198,8 +3227,10 @@
             var ep = ODPT_ENDPOINTS[op];
 
             // 1. 加载运行情报/延误信息（优先推送，首屏不等列车位置）
-            if (!skipDelayRefresh && ep.trainInformation) {
-                var delayFetch = fetchODPT(buildUrl(op, 'trainInformation')).then(extractData);
+            if (!skipDelayRefresh && (ep.trainInformation || ep.alert || ep.gtfsAlert)) {
+                var delayFetch = ep.trainInformation
+                    ? fetchODPT(buildUrl(op, 'trainInformation')).then(extractData)
+                    : Promise.resolve([]);
                 var alertEndpointType = ep.alert ? "alert" : (ep.gtfsAlert ? "gtfsAlert" : "");
                 if (alertEndpointType) {
                     var infoResult = delayFetch.then(function(data) {
