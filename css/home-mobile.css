@@ -283,3 +283,34 @@ body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="no
   body[data-page="home"] #searchContainer .search-stations {gap:10px 8px;}
   body[data-page="home"] #searchContainer .search-stations > #swapBtn {margin:0;}
 }
+
+/* Station transfer UI: platform positions only, no station navigation. */
+body[data-page="home"] #searchContainer .journey-platform-change {
+  display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);
+  flex:1 0 100%;width:100%;min-width:0;align-items:center;gap:8px;margin:5px 0 3px;
+}
+body[data-page="home"] #searchContainer .journey-platform-slot {
+  display:flex;flex-direction:column;gap:4px;min-width:0;min-height:76px;
+  padding:10px 12px;border:2px solid var(--border);border-radius:4px;
+  background:var(--card);box-shadow:2px 2px 0 rgba(32,33,38,.16);
+}
+body[data-page="home"] #searchContainer .journey-platform-slot--departure {
+  border-color:var(--green-dim);background:var(--green-pale);
+}
+body[data-page="home"] #searchContainer .journey-platform-label {
+  color:var(--text);font-size:12px;font-weight:700;
+}
+body[data-page="home"] #searchContainer .journey-platform-value {
+  color:var(--text);font-size:21px;line-height:1.2;font-weight:800;font-variant-numeric:tabular-nums;
+}
+body[data-page="home"] #searchContainer .journey-platform-note {font-size:11px;color:var(--text-muted);}
+body[data-page="home"] #searchContainer .journey-platform-arrow {
+  text-align:center;color:var(--green-dim);font-size:19px;font-weight:700;
+}
+@media(max-width:380px) {
+  body[data-page="home"] #searchContainer .journey-platform-change {
+    grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:4px;
+  }
+  body[data-page="home"] #searchContainer .journey-platform-slot {padding:9px 6px;}
+  body[data-page="home"] #searchContainer .journey-platform-label {font-size:11px;}
+}
