@@ -1351,6 +1351,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 221-series cab, never the formation assigned to this train.
     var osakaFleet=p.sqlPublishedNumberFleetReference;
     if(lineId==="OsakaHigashi"&&p.positionLineId===lineId&&
+       p.vehicleIdentityStatus!=="EXACT"&&p.vehicleResolvedUpstream!==true&&
        p.estimated===true&&p.positionSource==="supabase-train-run"&&
        /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||""))&&
        osakaFleet&&osakaFleet.source==="sql-jrwest-osaka-higashi-2611-source-family"&&
