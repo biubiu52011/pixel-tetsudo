@@ -255,3 +255,22 @@ body[data-page="home"] #searchContainer .suggestions {
   border-radius: 4px;
   box-shadow: 3px 3px 0 rgba(32,33,38,.3);
 }
+
+/* Route-search layout: scoped override, keep frozen css/style.css intact. */
+body[data-page="home"] #searchContainer .search-stations {
+  display:grid; grid-template-columns:minmax(0,1fr) 44px;
+  grid-template-areas:"from swap" "to swap"; align-items:center;
+  gap:12px 10px; min-width:0;
+}
+body[data-page="home"] #searchContainer .search-stations > .input-group:first-child {grid-area:from;min-width:0;}
+body[data-page="home"] #searchContainer .search-stations > .input-group:last-child {grid-area:to;min-width:0;}
+body[data-page="home"] #searchContainer .search-stations > #swapBtn {
+  grid-area:swap;align-self:center;justify-self:center;margin:0; width:44px;height:44px;
+}
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTime"] { display:none; }
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] {grid-template-columns:minmax(0,1fr);}
+body[data-page="home"] #searchContainer .search-time-controls[data-time-mode="now"] label[for="searchTimeMode"] {max-width:100%;}
+@media(max-width:640px) {
+  body[data-page="home"] #searchContainer .search-stations {gap:10px 8px;}
+  body[data-page="home"] #searchContainer .search-stations > #swapBtn {margin:0;}
+}
