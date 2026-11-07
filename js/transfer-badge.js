@@ -57,14 +57,12 @@
         (seg.through ? ' hidden' : '')+' aria-label="'+window.escapeHtml(txSt)+'">';
       html += '<div class="journey-platform-slot journey-platform-slot--arrival" data-platform-status="unconfirmed">'+
         '<span class="journey-platform-label">'+window.escapeHtml(tr('search_result.arrival_platform'))+'</span>'+
-        '<span class="journey-platform-value" data-platform-value="arrival">—</span>'+
-        '<span class="journey-platform-note">'+unknown+'</span></div>';
+        '<span class="journey-platform-value" data-platform-value="arrival">—</span></div>';
       html += '<span class="journey-platform-arrow" aria-hidden="true">→</span>';
       html += '<div class="journey-platform-slot journey-platform-slot--departure" data-platform-status="unconfirmed">'+
         '<span class="journey-platform-label">'+window.escapeHtml(tr('search_result.departure_platform'))+'</span>'+
-        '<span class="journey-platform-value" data-platform-value="departure">—</span>'+
-        '<span class="journey-platform-note">'+unknown+'</span></div>';
-      html += '</div>';
+        '<span class="journey-platform-value" data-platform-value="departure">—</span></div>';
+      html += '<span class="journey-platform-note">'+unknown+'</span></div>';
     }
     // No station-wide hints: they may describe another operator pair at this station.
     html += '</div>';
