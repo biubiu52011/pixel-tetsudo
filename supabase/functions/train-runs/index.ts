@@ -2523,6 +2523,98 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // JR-West Nara Line: the existing 331 historical source rows remain
+  // immutable. ONLY 11 source-template IDs are approved for November
+  // 2026 after full original-stop comparisons. The historical source
+  // wrongly calls 2636M/2646M (Miyakoji Rapid) and seasonal 8061M/
+  // 8062M (Inishie limited express) Local; correct PUBLIC service type
+  // only after an EXACT source/calendar/stop-clock match. Never infer
+  // actual carsets, fleet PNG, or other 26xx/806x service dates.
+  if(lineId==="Nara"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:proofs,error:proofError}=await db
+      .from("published_jrwest_nara_2611_clock_evidence")
+      .select("source_template_id,source_train_number,published_train_number,calendar_urn,direction_urn,source_train_type_urn,published_train_type,published_train_type_label,published_service_name,source_stop_count,official_source_url,valid_from,valid_to,actual_vehicle_confirmed,authorizes_png,verified_source_match")
+      .eq("calendar_urn",selectedCalendar);
+    if(proofError)throw proofError;
+    const expectedNara=selectedCalendar==="odpt.Calendar:Weekday"?4:7;
+    if((proofs||[]).length!==expectedNara||
+       new Set((proofs||[]).map((p:any)=>Number(p.source_template_id))).size!==expectedNara)
+      throw new Error("JRWEST_NARA_2611_CLOCK_PROOF_COVERAGE_CHANGED");
+    const naraBySource=new Map((proofs||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    for(const run of result){
+      const p:any=naraBySource.get(Number(run.source_template_id));
+      if(!p)continue;
+      const original:any[]=byTemplate.get(Number(run.source_template_id))||[];
+      const stops:any[]=Array.isArray(run.stops)?run.stops:[];
+      const officialType=p.published_train_type==="Local"?"Local"
+        :p.published_train_type==="MiyakojiRapid"?"Rapid"
+        :p.published_train_type==="LimitedExpress"?"LimitedExpress":null;
+      const expectedLabel=p.published_train_type==="Local"?"普通"
+        :p.published_train_type==="MiyakojiRapid"?"みやこ路快速"
+        :p.published_train_type==="LimitedExpress"?"特急":null;
+      const expectedCount=p.published_train_type==="Local"?21
+        :p.published_train_type==="MiyakojiRapid"?11
+        :p.published_train_type==="LimitedExpress"?3:null;
+      if(p.verified_source_match!==true||
+         p.calendar_urn!==selectedCalendar||
+         String(p.valid_from).slice(0,10)>serviceDate||
+         String(p.valid_to).slice(0,10)<serviceDate||
+         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
+         !officialType||p.published_train_type_label!==expectedLabel||
+         p.source_train_type_urn!=="odpt.TrainType:JR-West.Local"||
+         p.published_train_number!==String(p.source_train_number).replace(/H$/,"")||
+         !/^[0-9]{3,4}M$/.test(p.published_train_number)||
+         run.canonical_group_evidence!=="source_only"||
+         run.network_key!=="odpt.Railway:JR-West.Nara"||
+         run.train_number!==p.source_train_number||
+         run.train_type!==p.source_train_type_urn||
+         run.rail_direction!==p.direction_urn||
+         Number(p.source_stop_count)!==expectedCount||
+         stops.length!==expectedCount||original.length!==expectedCount||
+         original.some((o:any,i:number)=>
+           stationKey(String(o.station_urn||o.departure_station_urn||o.arrival_station_urn||""))!==
+             stationKey(String(stops[i]?.station_urn||""))||
+           sqlTime(o.arrival_clock)!==stops[i]?.arrival_time||
+           sqlTime(o.departure_clock)!==stops[i]?.departure_time))
+        throw new Error("JRWEST_NARA_2611_CLOCK_SOURCE_CONFLICT");
+      run.published_train_number=p.published_train_number;
+      run.published_train_type="odpt.TrainType:JR-West."+officialType;
+      run.published_train_type_label=p.published_train_type_label;
+      run.train_type="odpt.TrainType:JR-West."+officialType;
+      if(p.published_service_name)run.service_name=p.published_service_name;
+      run.train_number_verification="official-2611-nara-source-stop-clock";
+      run.train_number_source_url=p.official_source_url;
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source="official-2611-nara-original-source-clock-verified";
+      // A service's public train type is NOT its precise physical carset.
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=null;
+      run.vehicle_mapping_level="unresolved";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.vehicle_evidence_source=null;
+      run.vehicle_evidence_source_id=null;
+      run.vehicle_evidence_url=null;
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-nara-2611-original-clock",lineId:"Nara",
+        sourceTemplateId:Number(p.source_template_id),
+        sourceTrainNumber:p.source_train_number,
+        calendar:p.calendar_urn,direction:p.direction_urn,
+        publicTrainNumber:p.published_train_number,
+        publicTrainType:p.published_train_type,
+        publicTrainTypeLabel:p.published_train_type_label,
+        sourceStopCount:expectedCount,
+        officialSourceUrl:p.official_source_url,
+        referenceOnly:true,stopClocksVerified:true,
+        actualVehicleConfirmed:false,authorizesPng:false
+      };
+    }
+  }
+
   // Date-verified Kosei source-only locals, including north/inbound:
   // the 83 source-only original 4/5/7/13/18/21/22-stop clocks were independently
   // compared with the official November 2026 issue. The SQL invoker
