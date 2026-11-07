@@ -2645,6 +2645,10 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.published_train_type_label=proof.public_train_type_label;
       run.train_type=run.published_train_type;
       run.train_number_verification="source-only-osaka-higashi-number-family";
+      run.train_number_source_url=null;
+      run.timetable_validity="undated_not_current_verified";
+      run.timetable_date_verified=false;
+      run.plan_source="sql-osaka-higashi-2611-historical-source-only";
       run.reference_public_train_number=publicNumber;
       run.vehicle_type_label=null;
       run.vehicle_type_candidates="221系";
