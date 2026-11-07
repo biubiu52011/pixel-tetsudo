@@ -10,38 +10,31 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const blobVersion = text => crypto.createHash('sha1')
   .update('blob ' + Buffer.byteLength(text) + '\0' + text).digest('hex').slice(0,12);
 
-test('realtime modal keeps its raised pixel shell and independent info cards', () => {
+test('realtime modal keeps a raised pixel shell without nested raised info boxes', () => {
   const css = read('css/ux-refinements.css');
-  assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 8px 8px 0 #26262b/);
-  const framed = css.match(/body\[data-page="realtime"\] \.rs-status-section,[\s\S]*?body\[data-page="realtime"\] \.rs-updated-section \{([^}]+)\}/);
-  assert.ok(framed, 'status, interval, run info and update time all have raised frames');
-  assert.match(framed[1], /border-width: 3px;/);
-  assert.match(framed[1], /border-style: solid;/);
-  assert.match(framed[1], /background: var\(--bg\);/);
-  assert.match(framed[1], /box-shadow: 4px 4px 0/);
-  assert.doesNotMatch(framed[1], /border-width: 0|border: 0|box-shadow: none/);
-  assert.match(css, /\.rs-modal-close:active \{[\s\S]*?translate\(3px,3px\)/);
+  assert.match(css, /\.rs-modal-content \{[\s\S]*?border-radius: var\(--pt-radius-panel\)/);
+  assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 6px 6px 0/);
+  assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 0 0 0 3px;/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 0;/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?box-shadow: none;/);
+  assert.match(css, /\.rs-modal-close:active \{[\s\S]*?translate\(2px,2px\)/);
 });
 
 test('navigation, railway cards and history controls have stepped shadows', () => {
   const css = read('css/ux-refinements.css');
-  assert.match(css, /\.rs-line-card \{[\s\S]*?box-shadow: 4px 4px 0/);
-  assert.match(css, /\.rs-line-card:active \{[\s\S]*?translate\(3px,3px\)/);
-  assert.match(css, /\.history-entry \{[\s\S]*?box-shadow: 4px 4px 0/);
-  assert.match(css, /\.rs-filter-btn \{[\s\S]*?box-shadow: 3px 3px 0/);
+  assert.match(css, /\.rs-line-card \{[\s\S]*?box-shadow: var\(--pt-shadow-card\)/);
+  assert.match(css, /\.rs-line-card:active \{[\s\S]*?translate\(2px,2px\)/);
+  assert.match(css, /\.history-entry \{[\s\S]*?box-shadow: var\(--pt-shadow-card\)/);
+  assert.match(css, /\.rs-filter-btn \{[\s\S]*?box-shadow: var\(--pt-shadow-control\)/);
   assert.match(css, /prefers-reduced-motion/);
 });
 
-test('language selector stays circular with a subtle shadow and accessible touch target', () => {
+test('language selector keeps a rounded touch target with the same soft 3D controls', () => {
   const css = read('css/lang-bar.css');
   assert.match(css, /\.lang-toggle-btn \{[\s\S]*?border-radius: 50%/);
   assert.match(css, /\.lang-toggle-btn \{[\s\S]*?box-shadow: 2px 3px 0 rgba\(42,83,109,\.20\)/);
   assert.match(css, /\.lang-toggle-btn:active \{[\s\S]*?translateY\(1px\)/);
   assert.match(css, /\.lang-toggle-btn::after \{[\s\S]*?width: 44px/);
-  assert.match(css, /--lang-btn-size: 44px/);
-  assert.match(css, /background: linear-gradient\(180deg, #ffffff, #edf7fc\)/);
-  assert.match(css, /border-radius: var\(--lang-dropdown-radius\)/);
-  assert.match(css, /safe-area-inset-top/);
   assert.doesNotMatch(css, /box-shadow: 4px 4px 0 var\(--lang-border\)/);
 });
 
@@ -59,14 +52,33 @@ test('CSS links use the current Git blob versions and home avoids scoped refinem
   assert.doesNotMatch(read('pages/home.html'), /ux-refinements\.css/);
 });
 
-test('restored status cards retain readable alert colors and pixel glyphs', () => {
+test('rounded 3D layout shares one spacing and legibility contract', () => {
+  const css = read('css/style.css');
+  const scoped = read('css/ux-refinements.css');
+  const tourism = read('css/tourism-styles.css');
+  const trains = read('css/trains.css');
+  assert.match(css, /--pt-radius-panel: 18px/);
+  assert.match(css, /--pt-shadow-panel:/);
+  assert.match(css, /\.pixel-card\{[^}]*box-shadow:var\(--pt-shadow-panel\)/);
+  assert.match(css, /repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.doesNotMatch(css, /repeat\(4, max-content\)/);
+  assert.match(css, /\.rs-line-name\{[^}]*font-size:15px/);
+  assert.match(css, /\.tab-btn \{[^}]*white-space: normal/);
+  assert.match(scoped, /\.rs-line-card \{[\s\S]*?border-radius: var\(--pt-radius-card\)/);
+  assert.match(tourism, /\.sm-tag-row \{ grid-template-columns: repeat\(auto-fit, minmax\(104px, 1fr\)\)/);
+  assert.match(tourism, /\.sm-card \{[\s\S]*?box-shadow: var\(--pt-shadow-card\)/);
+  assert.match(trains, /\.tp-line-map \{[\s\S]*?box-shadow: var\(--pt-shadow-panel\)/);
+});
+
+test('bright warning and notice colors retain readable text without train-shaped glyphs', () => {
   const css = read('css/ux-refinements.css');
   const dataState = read('js/data-state.js');
   const realtime = read('js/realtime-view.js');
-  assert.match(css, /\.rs-status-section\.rs-status-info,[\s\S]*?border-color: var\(--yellow\);/);
-  assert.match(css, /\.rs-status-section\.rs-status-delayed \{[\s\S]*?border-color: var\(--orange\);/);
-  assert.match(css, /color: #805a00/);
-  assert.match(css, /color: #875100/);
+  assert.match(css, /--pt-alert-accent: #FFB45E/);
+  assert.match(css, /--pt-alert-accent: #67CFFF/);
+  assert.match(css, /background: #F2FBFF/);
+  assert.match(css, /background: #FFF9F2/);
+  assert.match(css, /color: #1F2A35/);
   assert.doesNotMatch(css, /#915300|#785900|\.pt-train-status-art/);
   assert.doesNotMatch(dataState, /statusPictogramHtml|pt-train-status-art/);
   assert.doesNotMatch(realtime, /statusPictogramHtml|rs-status-symbol-art/);

@@ -183,19 +183,14 @@ test('shared ODPT and disruption evaluator URLs match source blobs across pages'
   }
 });
 
-test('realtime modal keeps the four raised pixel section cards', () => {
+test('2660e0d realtime modal uses an elevated shell with simple inner sections', () => {
   const css = read('css/ux-refinements.css');
   const html = read('pages/realtime.html');
-  const framed = css.match(/body\[data-page="realtime"\] \.rs-status-section,[\s\S]*?body\[data-page="realtime"\] \.rs-updated-section \{([^}]+)\}/);
-  assert.ok(framed, 'status, affected interval, service detail and update use the same frame');
-  assert.match(framed[1], /border-width:\s*3px/);
-  assert.match(framed[1], /border-style:\s*solid/);
-  assert.match(framed[1], /background:\s*var\(--bg\)/);
-  assert.match(framed[1], /box-shadow:\s*4px 4px/);
-  assert.doesNotMatch(framed[1], /border-width:\s*0|box-shadow:\s*none|background:\s*transparent/);
-  assert.match(css, /\.rs-status-section\.rs-status-info,[\s\S]*?border-color:\s*var\(--yellow\)/);
-  for (const section of ['status', 'interval', 'cause', 'updated'])
-    assert.ok(html.includes('class="rs-' + section + '-section"'));
+  assert.match(css, /\.rs-modal-content \{[\s\S]*?border-radius: var\(--pt-radius-panel\)/);
+  assert.match(css, /\.rs-modal-content \{[\s\S]*?box-shadow: 6px 6px 0/);
+  assert.match(css, /\.rs-status-section,\s*body\[data-page="realtime"\] \.rs-interval-section,[\s\S]*?border-width: 0 0 0 3px;/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?border: 0;/);
+  assert.match(css, /\.rs-updated-section \{[\s\S]*?box-shadow: none;/);
   assert.match(html, /class="rs-close-glyph">×<\/span>/);
 });
 

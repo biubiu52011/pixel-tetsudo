@@ -4,24 +4,24 @@
    ============================================ */
 
 :root {
-    --lang-btn-size: 44px;
-    --lang-dropdown-width: 210px;
-    --lang-dropdown-radius: 14px;
+    --lang-btn-size: 40px;
+    --lang-dropdown-width: 200px;
+    --lang-dropdown-radius: var(--pt-radius-card);
     --lang-dropdown-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
-    --lang-dropdown-top: 54px;
+    --lang-dropdown-top: 50px;
     --lang-accent: #008803;
     --lang-accent-light: #00c853;
     --lang-accent-dark: #006600;
-    --lang-hover-bg: #eaf6f0;
+    --lang-hover-bg: #f0f0f5;
     --lang-text: #1d1d1f;
     --lang-font-size: 14px;
-    --lang-border: #b5c9d7;
+    --lang-border: var(--border);
 }
 
 .lang-switcher-wrapper {
     position: fixed;
-    top: calc(12px + env(safe-area-inset-top, 0px));
-    right: calc(12px + env(safe-area-inset-right, 0px));
+    top: 12px;
+    right: 12px;
     z-index: 2500;
     display: flex;
 }
@@ -32,8 +32,8 @@
     height: var(--lang-btn-size);
     /* Circular floating language control, intentionally lighter than 3D cards. */
     border-radius: 50%;
-    background: linear-gradient(180deg, #ffffff, #edf7fc);
-    border: 2px solid #566777;
+    background: linear-gradient(180deg, #fff, #edf7fc);
+    border: 2px solid var(--border);
     padding: 0;
     cursor: pointer;
     display: flex;
@@ -47,7 +47,7 @@
 }
 
 .lang-toggle-btn:hover {
-    background: linear-gradient(180deg, #ffffff, #e3f5fb);
+    background: #f5f5f5;
 }
 
 
@@ -86,9 +86,6 @@
     border: 2px solid var(--lang-border);
     border-radius: var(--lang-dropdown-radius);
     box-shadow: 4px 5px 0 rgba(42,83,109,.22), inset 0 2px 0 #fff;
-    max-width: calc(100vw - 24px);
-    max-height: calc(100vh - 110px);
-    overflow-y: auto;
     min-width: var(--lang-dropdown-width);
     z-index: 3000;
 
@@ -129,7 +126,7 @@
     font-family: var(--pixel-font, 'Fusion Pixel'), monospace;
     cursor: pointer;
     text-align: left;
-    border-radius: 10px;
+    border-radius: var(--pt-radius-control);
     min-height: 44px;
     transition: var(--transition-fast);
     color: var(--lang-text);
@@ -180,12 +177,12 @@
 /* Responsive */
 @media (max-width: 640px) {
     :root {
-        --lang-btn-size: 44px;
-        --lang-dropdown-top: 54px;
+        --lang-btn-size: 36px;
+        --lang-dropdown-top: 46px;
     }
     .lang-switcher-wrapper {
-        top: calc(14px + env(safe-area-inset-top, 0px));
-        right: calc(14px + env(safe-area-inset-right, 0px));
+        top: 14px;
+        right: 14px;
         width: 44px;
         height: 44px;
         align-items: center;
