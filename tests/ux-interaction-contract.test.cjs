@@ -60,7 +60,12 @@ function makeSearch() {
       return [{stationId:'Tokyo',displayName:'東京'}, {stationId:'Shinjuku',displayName:'新宿'}];
     }}
   };
-  vm.runInNewContext(read('js/search-ui.js'), { window, document, console }, { timeout: 4000 });
+  // The browser owns timers; the VM fixture runs the new suggestion debounce immediately.
+  vm.runInNewContext(read('js/search-ui.js'), {
+    window, document, console,
+    setTimeout(callback) { callback(); return 1; },
+    clearTimeout() {}
+  }, { timeout: 4000 });
   const ui = window.SearchUI;
   Object.assign(ui, { fromInput:from, toInput:to, swapBtn:swap, searchBtn:search });
   let searches = 0;
