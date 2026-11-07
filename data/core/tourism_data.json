@@ -41306,26 +41306,26 @@
     {
      "item": "みたらし団子",
      "price": "110円",
-     "cover": "../images/観光地/御菓子司 たから家.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/御菓子司 たから家_0_みたらし団子.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "きんつば",
      "price": "150円",
-     "cover": "../images/観光地/御菓子司 たから家.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/御菓子司 たから家_1_きんつば.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "どら焼き",
      "price": "160円",
-     "cover": "../images/観光地/御菓子司 たから家.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/御菓子司 たから家_2_どら焼き.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "千住小町",
      "price": "210円",
-     "cover": "../images/観光地/御菓子司 たから家.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/御菓子司 たから家_3_千住小町.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "福俵モナカは贈答に人気",

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-label="千住小町の商品イメージ">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf4e7"/><stop offset="1" stop-color="#e8d8bb"/></linearGradient>
+  <radialGradient id="plate"><stop stop-color="#fffef7"/><stop offset=".85" stop-color="#faf7eb"/><stop offset="1" stop-color="#d8c9ab"/></radialGradient>
+  <radialGradient id="pancake" cx=".4" cy=".3" r=".85"><stop stop-color="#dcb16d"/><stop offset=".6" stop-color="#b87838"/><stop offset="1" stop-color="#804421"/></radialGradient>
+  <radialGradient id="bean" cx=".4" cy=".3" r="1"><stop stop-color="#8c3c49"/><stop offset=".75" stop-color="#54212c"/><stop offset="1" stop-color="#3d1824"/></radialGradient>
+  <radialGradient id="dango" cx=".35" cy=".27" r=".85"><stop stop-color="#ffe8ad"/><stop offset=".65" stop-color="#d4a36a"/><stop offset="1" stop-color="#976b43"/></radialGradient>
+  <linearGradient id="sauce" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#a04d1b" stop-opacity=".86"/><stop offset=".8" stop-color="#6f321b" stop-opacity=".93"/></linearGradient>
+  <filter id="shadow" x="-25%" y="-25%" width="150%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="13"/><feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="640" height="480" fill="url(#bg)"/>
+<path d="M0 330 Q 250 290 640 362 V480 H0Z" fill="#e7cfa8" opacity=".4"/>
+<ellipse cx="320" cy="378" rx="240" ry="58" fill="#baa37f" opacity=".16"/>
+<ellipse cx="320" cy="342" rx="240" ry="77" fill="url(#plate)" stroke="#e0d5c1" stroke-width="8" filter="url(#shadow)"/>
+<g filter="url(#shadow)">
+<g transform="translate(158 173) rotate(-14 110 90)">
+ <ellipse cx="111" cy="137" rx="124" ry="49" fill="url(#pancake)"/>
+ <path d="M-8 103Q108 124 227 97L230 137Q109 159-8 137Z" fill="#f3e6bc" stroke="#dfcea0" stroke-width="4"/>
+ <ellipse cx="110" cy="99" rx="128" ry="51" fill="url(#pancake)" stroke="#ab692e" stroke-width="4"/>
+</g>
+<g transform="translate(314 144) rotate(20 86 91)">
+ <path d="M2 83Q5 16 87 11Q161 15 167 85L169 164Q89 202 0 160Z" fill="url(#pancake)" stroke="#975822" stroke-width="5"/>
+ <path d="M11 94Q12 37 85 36Q147 34 157 97L157 155Q80 190 12 153Z" fill="#f2e5c1"/>
+ <path d="M80 103Q54 68 80 59Q114 50 127 82L125 143Q96 169 78 143Z" fill="#d8a64c" stroke="#bb8537" stroke-width="5"/>
+ <path d="M91 68l14 23-9 23 13 25" fill="none" stroke="#fae0a4" stroke-width="6" opacity=".75"/>
+ <path d="M2 83Q-3 110 0 160Q7 96 78 48Q33 45 2 83Z" fill="#e5bc7b" opacity=".36"/>
+</g></g>
+</svg>

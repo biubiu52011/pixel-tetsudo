@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-label="みたらし団子の商品イメージ">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf4e7"/><stop offset="1" stop-color="#e8d8bb"/></linearGradient>
+  <radialGradient id="plate"><stop stop-color="#fffef7"/><stop offset=".85" stop-color="#faf7eb"/><stop offset="1" stop-color="#d8c9ab"/></radialGradient>
+  <radialGradient id="pancake" cx=".4" cy=".3" r=".85"><stop stop-color="#dcb16d"/><stop offset=".6" stop-color="#b87838"/><stop offset="1" stop-color="#804421"/></radialGradient>
+  <radialGradient id="bean" cx=".4" cy=".3" r="1"><stop stop-color="#8c3c49"/><stop offset=".75" stop-color="#54212c"/><stop offset="1" stop-color="#3d1824"/></radialGradient>
+  <radialGradient id="dango" cx=".35" cy=".27" r=".85"><stop stop-color="#ffe8ad"/><stop offset=".65" stop-color="#d4a36a"/><stop offset="1" stop-color="#976b43"/></radialGradient>
+  <linearGradient id="sauce" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#a04d1b" stop-opacity=".86"/><stop offset=".8" stop-color="#6f321b" stop-opacity=".93"/></linearGradient>
+  <filter id="shadow" x="-25%" y="-25%" width="150%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="13"/><feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="640" height="480" fill="url(#bg)"/>
+<path d="M0 330 Q 250 290 640 362 V480 H0Z" fill="#e7cfa8" opacity=".4"/>
+<ellipse cx="320" cy="378" rx="240" ry="58" fill="#baa37f" opacity=".16"/>
+<ellipse cx="320" cy="342" rx="240" ry="77" fill="url(#plate)" stroke="#e0d5c1" stroke-width="8" filter="url(#shadow)"/>
+<g transform="translate(54 20) rotate(-8 266 230)">
+<path d="M160 330L458 183" stroke="#bc9666" stroke-width="13" stroke-linecap="round"/>
+<path d="M145 292L442 146" stroke="#d0ad7b" stroke-width="13" stroke-linecap="round"/>
+<circle cx="212" cy="279" r="36" fill="url(#dango)" stroke="#c48c52" stroke-width="4"/><path d="M187 268Q212 248 238 266M185 286Q212 274 238 290" fill="none" stroke="url(#sauce)" stroke-width="13" stroke-linecap="round"/><ellipse cx="200" cy="263" rx="13" ry="7" fill="#fff8d9" opacity=".5"/><circle cx="276" cy="247" r="36" fill="url(#dango)" stroke="#c48c52" stroke-width="4"/><path d="M251 236Q276 216 302 234M249 254Q276 242 302 258" fill="none" stroke="url(#sauce)" stroke-width="13" stroke-linecap="round"/><ellipse cx="264" cy="231" rx="13" ry="7" fill="#fff8d9" opacity=".5"/><circle cx="337" cy="215" r="36" fill="url(#dango)" stroke="#c48c52" stroke-width="4"/><path d="M312 204Q337 184 363 202M310 222Q337 210 363 226" fill="none" stroke="url(#sauce)" stroke-width="13" stroke-linecap="round"/><ellipse cx="325" cy="199" rx="13" ry="7" fill="#fff8d9" opacity=".5"/><circle cx="398" cy="184" r="36" fill="url(#dango)" stroke="#c48c52" stroke-width="4"/><path d="M373 173Q398 153 424 171M371 191Q398 179 424 195" fill="none" stroke="url(#sauce)" stroke-width="13" stroke-linecap="round"/><ellipse cx="386" cy="168" rx="13" ry="7" fill="#fff8d9" opacity=".5"/>
+<circle cx="197" cy="239" r="34" fill="url(#dango)" stroke="#bd874e" stroke-width="3"/><path d="M174 231Q197 215 220 228M173 250Q202 238 220 252" fill="none" stroke="url(#sauce)" stroke-width="12" stroke-linecap="round"/><circle cx="260" cy="205" r="34" fill="url(#dango)" stroke="#bd874e" stroke-width="3"/><path d="M237 197Q260 181 283 194M236 216Q265 204 283 218" fill="none" stroke="url(#sauce)" stroke-width="12" stroke-linecap="round"/><circle cx="325" cy="172" r="34" fill="url(#dango)" stroke="#bd874e" stroke-width="3"/><path d="M302 164Q325 148 348 161M301 183Q330 171 348 185" fill="none" stroke="url(#sauce)" stroke-width="12" stroke-linecap="round"/><circle cx="386" cy="137" r="34" fill="url(#dango)" stroke="#bd874e" stroke-width="3"/><path d="M363 129Q386 113 409 126M362 148Q391 136 409 150" fill="none" stroke="url(#sauce)" stroke-width="12" stroke-linecap="round"/>
+</g>
+</svg>

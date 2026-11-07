@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-label="どら焼きの商品イメージ">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf4e7"/><stop offset="1" stop-color="#e8d8bb"/></linearGradient>
+  <radialGradient id="plate"><stop stop-color="#fffef7"/><stop offset=".85" stop-color="#faf7eb"/><stop offset="1" stop-color="#d8c9ab"/></radialGradient>
+  <radialGradient id="pancake" cx=".4" cy=".3" r=".85"><stop stop-color="#dcb16d"/><stop offset=".6" stop-color="#b87838"/><stop offset="1" stop-color="#804421"/></radialGradient>
+  <radialGradient id="bean" cx=".4" cy=".3" r="1"><stop stop-color="#8c3c49"/><stop offset=".75" stop-color="#54212c"/><stop offset="1" stop-color="#3d1824"/></radialGradient>
+  <radialGradient id="dango" cx=".35" cy=".27" r=".85"><stop stop-color="#ffe8ad"/><stop offset=".65" stop-color="#d4a36a"/><stop offset="1" stop-color="#976b43"/></radialGradient>
+  <linearGradient id="sauce" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#a04d1b" stop-opacity=".86"/><stop offset=".8" stop-color="#6f321b" stop-opacity=".93"/></linearGradient>
+  <filter id="shadow" x="-25%" y="-25%" width="150%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="13"/><feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="640" height="480" fill="url(#bg)"/>
+<path d="M0 330 Q 250 290 640 362 V480 H0Z" fill="#e7cfa8" opacity=".4"/>
+<ellipse cx="320" cy="378" rx="240" ry="58" fill="#baa37f" opacity=".16"/>
+<ellipse cx="320" cy="342" rx="240" ry="77" fill="url(#plate)" stroke="#e0d5c1" stroke-width="8" filter="url(#shadow)"/>
+<g filter="url(#shadow)">
+<ellipse cx="297" cy="330" rx="155" ry="51" fill="#b16e32"/>
+<path d="M149 305C168 264 435 255 449 303Q446 324 417 333H179Q146 323 149 305Z" fill="url(#pancake)" stroke="#985a2d" stroke-width="4"/>
+<path d="M170 297Q291 323 427 291L424 321Q289 346 175 322Z" fill="url(#bean)" stroke="#542332" stroke-width="3"/>
+<ellipse cx="298" cy="289" rx="151" ry="48" fill="url(#pancake)" stroke="#96552b" stroke-width="5"/>
+<ellipse cx="297" cy="283" rx="109" ry="28" fill="#e8c188" opacity=".16"/>
+<g transform="translate(310 120) rotate(-11)"><ellipse cx="0" cy="115" rx="98" ry="48" fill="#b97a3b"/><path d="M-95 100Q-82 75 0 78Q84 70 97 100L95 127Q0 155-95 127Z" fill="url(#bean)"/><ellipse cx="0" cy="94" rx="103" ry="43" fill="url(#pancake)" stroke="#ae682f" stroke-width="4"/></g>
+</g>
+</svg>

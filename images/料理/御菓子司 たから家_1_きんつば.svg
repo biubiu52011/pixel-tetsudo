@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-label="きんつばの商品イメージ">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf4e7"/><stop offset="1" stop-color="#e8d8bb"/></linearGradient>
+  <radialGradient id="plate"><stop stop-color="#fffef7"/><stop offset=".85" stop-color="#faf7eb"/><stop offset="1" stop-color="#d8c9ab"/></radialGradient>
+  <radialGradient id="pancake" cx=".4" cy=".3" r=".85"><stop stop-color="#dcb16d"/><stop offset=".6" stop-color="#b87838"/><stop offset="1" stop-color="#804421"/></radialGradient>
+  <radialGradient id="bean" cx=".4" cy=".3" r="1"><stop stop-color="#8c3c49"/><stop offset=".75" stop-color="#54212c"/><stop offset="1" stop-color="#3d1824"/></radialGradient>
+  <radialGradient id="dango" cx=".35" cy=".27" r=".85"><stop stop-color="#ffe8ad"/><stop offset=".65" stop-color="#d4a36a"/><stop offset="1" stop-color="#976b43"/></radialGradient>
+  <linearGradient id="sauce" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#a04d1b" stop-opacity=".86"/><stop offset=".8" stop-color="#6f321b" stop-opacity=".93"/></linearGradient>
+  <filter id="shadow" x="-25%" y="-25%" width="150%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="13"/><feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="640" height="480" fill="url(#bg)"/>
+<path d="M0 330 Q 250 290 640 362 V480 H0Z" fill="#e7cfa8" opacity=".4"/>
+<ellipse cx="320" cy="378" rx="240" ry="58" fill="#baa37f" opacity=".16"/>
+<ellipse cx="320" cy="342" rx="240" ry="77" fill="url(#plate)" stroke="#e0d5c1" stroke-width="8" filter="url(#shadow)"/>
+<g filter="url(#shadow)">
+<path d="M165 325l160-38 127 46-158 45z" fill="#be9b6b"/>
+<path d="M165 325v20l130 50v-17z" fill="#b48b55"/><path d="M295 378l157-45v20l-157 42z" fill="#916d48"/>
+<g transform="translate(182 180)">
+ <path d="M0 50L96 28L158 57L58 82Z" fill="#d2b789"/><path d="M0 50v100l58 31V82z" fill="#b79a75"/><path d="M58 82l100-25v102l-100 22z" fill="#74505a"/>
+ <path d="M67 90l82-22v80l-82 22z" fill="url(#bean)"/><path d="M83 89l7 64m17-69l4 66m18-71l5 65" stroke="#b47e7a" stroke-width="3" opacity=".4"/>
+ <path d="M0 50l58 32v99L0 150Z" fill="#c7ab85" opacity=".55"/>
+</g>
+<g transform="translate(292 114) rotate(8)">
+ <path d="M0 42L95 18L160 50L65 77Z" fill="#e6ca98"/><path d="M0 42v107l65 31V77Z" fill="#c9ab7f"/><path d="M65 77l95-27v110l-95 20z" fill="url(#bean)"/>
+ <path d="M78 84l69-18v82l-69 17z" fill="#672c3c"/><circle cx="108" cy="109" r="13" fill="#8f5360" opacity=".48"/>
+</g></g>
+</svg>
