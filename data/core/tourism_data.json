@@ -44407,26 +44407,26 @@
     {
      "item": "マグロぶつ",
      "price": "500円",
-     "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/千住の永見_0_マグロぶつ.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "千住あげ",
      "price": "470円",
-     "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/千住の永見_1_千住あげ.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "煮込み",
      "price": "630円",
-     "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/千住の永見_2_煮込み.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "ハイボール（ジャンボ）",
      "price": "490円",
-     "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop"
+     "cover": "../images/料理/千住の永見_3_ハイボール（ジャンボ）.svg",
+     "coverRole": "illustration"
     },
     {
      "item": "名物・千寿揚げを",
