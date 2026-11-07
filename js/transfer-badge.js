@@ -25,24 +25,13 @@
       txSt += ' → '+targetName;
     }
     var lineChange = '';
-    // 上下车番线一体化到线徽章——前一乘车段到达站台 / 下一乘车段出发站台
-    var _arrPlat = null, _depPlat = null;
-    try {
-      if (!seg.through && window.PlatformResolver && window.PlatformResolver.resolve) {
-        if (idx > 0 && segs[idx - 1] && segs[idx - 1].type === 'ride') {
-          _arrPlat = window.PlatformResolver.resolve(segs[idx - 1].lineId, seg.station, segs[idx - 1].direction);
-        }
-        if (idx < segs.length - 1 && segs[idx + 1] && segs[idx + 1].type === 'ride') {
-          _depPlat = window.PlatformResolver.resolve(segs[idx + 1].lineId, seg.toStation || seg.station, segs[idx + 1].direction);
-        }
-      }
-    } catch (_e) {}
+    // UI placeholder only: verified platform data can later fill data-platform-value slots.
     if (seg.fromLine || (seg.toLines && seg.toLines.length)) {
       var badgeParts = [];
-      if (seg.fromLine) badgeParts.push(lineBadgeFn(seg.fromLine, _arrPlat));
+      if (seg.fromLine) badgeParts.push(lineBadgeFn(seg.fromLine, null));
       if (seg.toLines && seg.toLines.length) {
         if (badgeParts.length) badgeParts.push('<svg class="journey-line-arrow" viewBox="0 0 14 14" width="12" height="12" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" transform="rotate(90 7 7)" d="M6.646.146a.5.5 0 0 1 .708 0l3.5 3.5a.5.5 0 0 1-.354.854H8V13a1 1 0 1 1-2 0V4.5H3.5a.5.5 0 0 1-.354-.854z"/></svg>');
-        for (var bi = 0; bi < seg.toLines.length; bi++) badgeParts.push(lineBadgeFn(seg.toLines[bi], _depPlat));
+        for (var bi = 0; bi < seg.toLines.length; bi++) badgeParts.push(lineBadgeFn(seg.toLines[bi], null));
       }
       lineChange = '<span class="journey-line-icons">' + badgeParts.join('') + '</span>';
     }
@@ -54,6 +43,27 @@
     html += '<span class="journey-transfer-text';
     if (seg.through) { html += ' journey-transfer-text--through'; }
     html += '">' + (window.t ? window.t(seg.through ? 'search_result.through' : 'search_result.transfer') : (seg.through ? '直通' : '乗換')) + '</span>';
+    // Platform-to-platform information is a UI slot, not an inferred number.
+    // Only real transfers get slots; through services remain compact.
+    if (!seg.through) {
+      var tr = window.t || function(key) { return ({
+        'search_result.arrival_platform':'降車番線',
+        'search_result.departure_platform':'乗車番線',
+        'search_result.platform_unconfirmed':'番線未確認'
+      })[key] || key; };
+      var unknown=window.escapeHtml(tr('search_result.platform_unconfirmed'));
+      html += '<div class="journey-platform-change" role="group" aria-label="'+window.escapeHtml(txSt)+'">';
+      html += '<div class="journey-platform-slot journey-platform-slot--arrival" data-platform-status="unconfirmed">'+
+        '<span class="journey-platform-label">'+window.escapeHtml(tr('search_result.arrival_platform'))+'</span>'+
+        '<span class="journey-platform-value" data-platform-value="arrival">—</span>'+
+        '<span class="journey-platform-note">'+unknown+'</span></div>';
+      html += '<span class="journey-platform-arrow" aria-hidden="true">→</span>';
+      html += '<div class="journey-platform-slot journey-platform-slot--departure" data-platform-status="unconfirmed">'+
+        '<span class="journey-platform-label">'+window.escapeHtml(tr('search_result.departure_platform'))+'</span>'+
+        '<span class="journey-platform-value" data-platform-value="departure">—</span>'+
+        '<span class="journey-platform-note">'+unknown+'</span></div>';
+      html += '</div>';
+    }
     if (lineChange) { html += lineChange; }
     if (!seg.through && seg.station && window.getTransferHint) {
       var hintTxt = window.getTransferHint(seg.station, lang);
