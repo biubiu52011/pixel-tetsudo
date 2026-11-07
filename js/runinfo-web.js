@@ -215,6 +215,10 @@
   }
   // 通道 ② r.jina.ai（对 UTF-8 页面可用；Shift-JIS 页面会乱码——解码后校验，乱码则丢弃）
   function tryJina(op) {
+    // The public reader rejects browser requests from our GitHub Pages deployment
+    // (HTTP 401). A static site cannot supply server-side authorization, so do
+    // not issue an initial request that is guaranteed to fail on each page load.
+    if (typeof location !== 'undefined' && /(?:^|\.)github\.io$/i.test(location.hostname)) return Promise.resolve(null);
     if (_jinaUnavailable) return Promise.resolve(null);
     return new Promise(function(resolve) {
       try {
