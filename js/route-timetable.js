@@ -33,19 +33,9 @@
   function context(options) {
     options = options || {};
     var now = new Date(Date.now() + 9 * 3600000);
-    var manual = options.mode && options.mode !== 'now';
-    var chosenTime = manual ? options.time : now.getUTCHours() + ':' + String(now.getUTCMinutes()).padStart(2, '0');
-    var minute = parseTime(chosenTime);
-    // A calendar date between 00:00 and 03:59 belongs to the preceding railway service day.
-    var chosenDate = manual && options.date ? String(options.date) : now.toISOString().slice(0,10);
-    var validDate = /^\d{4}-\d{2}-\d{2}$/.test(chosenDate);
-    var day = validDate ? new Date(chosenDate + 'T12:00:00Z') : new Date(NaN);
-    validDate = validDate && !isNaN(day.getTime()) && day.toISOString().slice(0,10) === chosenDate;
-    if (!validDate) return { minute:null, mode:options.mode || 'now', date:'', calendars:[] };
-    // Without a selected date, preserve the current railway service day (including 24:00+).
-    // With a selected calendar date, 00:00-03:59 belongs to the previous service day.
-    var early = manual && options.date ? /^0?[0-3]:/.test(String(chosenTime)) : now.getUTCHours() < 4;
-    if (early) day.setUTCDate(day.getUTCDate() - 1);
+    var minute = parseTime(options.mode === 'now' || !options.mode ? now.getUTCHours() + ':' + String(now.getUTCMinutes()).padStart(2, '0') : options.time);
+    var day = new Date(now.getTime());
+    if (now.getUTCHours() < 4) day.setUTCDate(day.getUTCDate() - 1);
     var date = day.toISOString().slice(0,10);
     return { minute:minute, mode:options.mode || 'now', date:date,
       calendars:calendarsForDate(date) };
