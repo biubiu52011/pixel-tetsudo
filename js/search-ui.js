@@ -44,12 +44,16 @@
 
       this.timeMode = document.getElementById('searchTimeMode');
       this.timeInput = document.getElementById('searchTime');
-      if(this.timeMode && this.timeInput) {
-        var clock = new Date(Date.now()+9*3600000);
-        this.timeInput.value = String(clock.getUTCHours()).padStart(2,'0')+':'+String(clock.getUTCMinutes()).padStart(2,'0');
+      this.dateInput = document.getElementById('searchDate');
+      if (this.timeMode && this.timeInput) {
+        var clock = new Date(Date.now() + 9 * 3600000);
+        this.timeInput.value = String(clock.getUTCHours()).padStart(2, '0') + ':' +
+          String(clock.getUTCMinutes()).padStart(2, '0');
+        if (this.dateInput) this.dateInput.value = clock.toISOString().slice(0, 10);
         const updateTimeMode = () => {
           const isNow = this.timeMode.value === 'now';
           this.timeInput.disabled = isNow;
+          if (this.dateInput) this.dateInput.disabled = isNow;
           const controls = this.timeMode.closest('.search-time-controls');
           if (controls) controls.setAttribute('data-time-mode', this.timeMode.value);
         };
@@ -323,9 +327,24 @@
 
       this._renderGeneration = (this._renderGeneration || 0) + 1;
       this.lastRouteResult = null;
-      var timeOptions={mode:this.timeMode ? this.timeMode.value : 'now',time:this.timeInput ? this.timeInput.value : ''};
-      if(timeOptions.mode!=='now' && !/^\d{2}:\d{2}$/.test(timeOptions.time)) {
-        if (this.resultsDiv) this.resultsDiv.innerHTML='<div class="search-error" role="alert">'+window.escapeHtml(t('search.invalid_time'))+'</div>'; return;
+      var timeOptions = {
+        mode: this.timeMode ? this.timeMode.value : 'now',
+        time: this.timeInput ? this.timeInput.value : '',
+        date: this.dateInput ? this.dateInput.value : ''
+      };
+      if (timeOptions.mode !== 'now') {
+        var dateIsValid = /^\d{4}-\d{2}-\d{2}$/.test(timeOptions.date) &&
+          !isNaN(Date.parse(timeOptions.date + 'T12:00:00Z')) &&
+          new Date(timeOptions.date + 'T12:00:00Z').toISOString().slice(0,10) === timeOptions.date;
+        var timeIsValid = /^\d{2}:\d{2}$/.test(timeOptions.time) &&
+          Number(timeOptions.time.slice(0,2)) <= 23 &&
+          Number(timeOptions.time.slice(3,5)) <= 59;
+        if (!dateIsValid || !timeIsValid) {
+          if (this.resultsDiv) this.resultsDiv.innerHTML =
+            '<div class="search-error" role="alert">' +
+            window.escapeHtml(t(!dateIsValid ? 'search.invalid_date' : 'search.invalid_time')) + '</div>';
+          return;
+        }
       }
       if (!from || !to) {
         if (this.resultsDiv) {
