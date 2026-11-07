@@ -159,7 +159,8 @@
       }
     }
     intervalSection.querySelector(".rs-interval-stations").innerHTML = intervalHtml;
-    intervalSection.classList.toggle("hidden", ["normal", "loading", "no_data", "no_odpt"].indexOf(status) >= 0);
+    // Normal operation still has a meaningful full-line interval card in the legacy dialog.
+    intervalSection.classList.toggle("hidden", ["loading", "no_data", "no_odpt"].indexOf(status) >= 0);
     // 单端/文本兜底区间（如"京急線内"）在非 ja 界面使用离线翻译。
     if (_singleEndInterval && (window.currentLang || "ja") !== "ja") {
       var _intEl = intervalSection.querySelector(".rs-interval-stations .rs-station-text");
@@ -195,9 +196,10 @@
       _transSource = _cleanSrc;
       causeHtml = _translatedText(_cleanSrc, window.currentLang || "ja", _translationOpts(lineId, status, Object.assign({}, delayInfo, { cause: cause })));
     } else {
-      causeHtml = '<span class="rs-text-muted">' + t("status.none") + '</span>';
+      causeHtml = '<span class="rs-text-muted">' + escapeHtml(t(status === "normal" ? "status.normal" : "status.none")) + '</span>';
     }
-    causeSection.classList.toggle("hidden", !(_cleanSrc && ["normal", "loading", "no_data", "no_odpt"].indexOf(status) < 0));
+    // Keep the original four-card layout for normal reports as well as disruptions.
+    causeSection.classList.toggle("hidden", status !== "normal" && !(_cleanSrc && ["loading", "no_data", "no_odpt"].indexOf(status) < 0));
     var _bodyTextEl = causeSection.querySelector(".rs-cause-text");
     if (_bodyTextEl) {
       _bodyTextEl.innerHTML = causeHtml;
