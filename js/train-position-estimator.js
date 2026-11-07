@@ -1753,6 +1753,48 @@
           var publicTrainNumber = _canonicalTrainNumberAtPosition(
             tt, canonicalNumberStop, trainNumber);
           processedTrainIds[timetableIdentity] = true;
+          // Osaka Higashi: SQL import appended H to the Saturday/holiday
+          // SOURCE train number, not to the published 24xxS/21xxM number.
+          // Preserve source identity and never turn a source-only date into
+          // a verified service. In particular 2101M is a Direct Rapid, not Local.
+          var osakaHigashiRef=tt._sqlPublishedNumberFleetReference||null;
+          var osakaHigashiScoped=lineId==="OsakaHigashi"&&
+            tt._positionSource==="supabase-train-run"&&
+            String(serviceDate).slice(0,7)==="2026-11"&&
+            osakaHigashiRef&&
+            osakaHigashiRef.source==="sql-jrwest-osaka-higashi-2611-source-family"&&
+            osakaHigashiRef.lineId==="OsakaHigashi"&&
+            osakaHigashiRef.referenceOnly===true&&
+            osakaHigashiRef.numberDateVerified===false&&
+            osakaHigashiRef.actualVehicleConfirmed===false&&
+            osakaHigashiRef.authorizesPNG===false&&
+            osakaHigashiRef.sourceTrainNumber===String(run.trainNumber||"")&&
+            Array.isArray(osakaHigashiRef.candidateModels)&&
+            osakaHigashiRef.candidateModels.join("|")==="221系"&&
+            Array.isArray(osakaHigashiRef.candidateAssets)&&
+            osakaHigashiRef.candidateAssets.length===0;
+          var osakaHigashiDisplayNumber="";
+          var osakaHigashiOfficialVerified=false;
+          if(osakaHigashiScoped){
+            var refNumber=String(osakaHigashiRef.historicalNumber||""),
+              holidaySuffix=/SaturdayHoliday$/.test(String(osakaHigashiRef.calendar||"")),
+              expectedSourceNumber=refNumber+(holidaySuffix?"H":""),
+              refLabel=osakaHigashiRef.publicTrainType==="DirectRapid"?"直通快速":"普通";
+            if(refNumber&&expectedSourceNumber===String(run.trainNumber||"")&&
+               /^(?:[0-9]{4}S|21[0-9]{2}M)$/.test(refNumber)&&
+               String(tt._sqlReferencePublicTrainNumber||"")===refNumber&&
+               String(tt._sqlReferencePublicTrainTypeLabel||"")===refLabel&&
+               (osakaHigashiRef.publicTrainType==="Local"||
+                osakaHigashiRef.publicTrainType==="DirectRapid")){
+              osakaHigashiDisplayNumber=refNumber;
+              osakaHigashiOfficialVerified=tt._timetableDateVerified===true&&
+                tt._sqlTrainNumberVerification===
+                  "official-2611-osaka-higashi-source-stop-clock"&&
+                osakaHigashiRef.stopClocksVerified===true&&
+                String(tt._sqlPublishedTrainNumber||"")===refNumber;
+            }
+          }
+
           // The Sagano source proof is SQL-backed, source-ID and calendar
           // scoped; the old 700xxx-...-2217M composite remains the physical
           // journey identity. 2217M is Rapid up to Sonobe; after its 18:22
@@ -2062,6 +2104,23 @@
               confirmed:false,referenceOnly:true
             };
           }
+          // Every Osaka Higashi source candidate uses the 221 family, but a
+          // single series in a corridor fleet is not a dated carset proof.
+          var _osakaHigashiScoped=!!osakaHigashiScoped&&
+            vehResult.identityStatus!=="EXACT";
+          if(_osakaHigashiScoped){
+            _plannedCandidates=osakaHigashiRef.candidateModels.slice();
+            _visibleCandidates=osakaHigashiRef.candidateModels.slice();
+            _publishedVehiclePlan={
+              status:"UNCONFIRMED_FLEET",
+              models:osakaHigashiRef.candidateModels.slice(),
+              iconPath:"",representativeModel:"",
+              source:"sql-jrwest-osaka-higashi-2611-source-family",
+              sourceUrl:"https://www.westjr.co.jp/fan/paper/local/",
+              lineId:"OsakaHigashi",operator:"JR-West",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // Kosei source-only M/MH does not authorize an image. Even the
           // gallery's 681/683 models belong to unimported Thunderbird
           // LIMITED EXPRESS, never 1802M/3145MH ordinary/rapid trains.
@@ -2263,8 +2322,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
-          var _vehicleType = (_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
+          var trainClass = (_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
+          var _vehicleType = (_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -2313,7 +2372,7 @@
             // Keep historical composite/H source trainNumber for canonical
             // matching; only date-verified official public M numbers may be
             // used for optional presentation. No carset inference.
-            displayTrainNumber:saganoDisplayNumber || (tt._positionSource==="supabase-train-run"&&
+            displayTrainNumber:osakaHigashiDisplayNumber || saganoDisplayNumber || (tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
               ((lineId==="Kosei"&&officialKoseiPlan&&
                 tt._sqlTrainNumberVerification==="official-2611-kosei-source-stop-clock"&&
@@ -2329,7 +2388,7 @@
                 String(tt._sqlPublishedTrainNumber||"")===
                   String(publicTrainNumber||"").replace(/H$/,"")))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber),
-            officialNumberVerified: Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
+            officialNumberVerified: Boolean(osakaHigashiOfficialVerified) || Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
               String(publicTrainNumber||"")===String(run.trainNumber||"")&&
               ((lineId==="Kosei"&&officialKoseiPlan&&
@@ -2361,12 +2420,12 @@
             historicalSourcePublicNumberSuffix:
               officialJrWestKyotoKobePlan
                 ?officialJrWestKyotoKobePlan.historicalNumberSuffix:"",
-            trainNumberSource: saganoDisplayNumber?"official-2611-sagano-segmented-number" : publicTrainNumber !== trainNumber
+            trainNumberSource: osakaHigashiDisplayNumber?(osakaHigashiOfficialVerified?"official-2611-osaka-higashi-clock":"osaka-higashi-source-calendar-normalized") : saganoDisplayNumber?"official-2611-sagano-segmented-number" : publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
             publishedFleetReference:_ouTsugaruFleet||_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(saganoScoped||officialKoseiPlan||officialJrWestKyotoKobePlan||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            sqlPublishedNumberFleetReference:(osakaHigashiScoped||saganoScoped||officialKoseiPlan||officialJrWestKyotoKobePlan||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -2420,7 +2479,8 @@
             vehicleIdentityReason: vehResult.identityReason || 'no-vehicle-evidence',
             vehicleCandidates: _visibleCandidates,
             plannedVehicleCandidates: _plannedCandidates.slice(),
-            plannedVehicleCandidateStatus: _saganoScoped
+            plannedVehicleCandidateStatus: _osakaHigashiScoped
+              ?"unresolved-single-family" : _saganoScoped
               ?"unresolved-mixed-fleet" : _koseiScoped
               ?"unresolved-mixed-fleet" : _jrwestKyotoKobeScoped
               ?"unresolved-mixed-fleet" : _sotetsuJrScoped
@@ -2441,7 +2501,8 @@
             plannedVehicleCandidateArtworkStatus: tt._positionSource === 'supabase-train-run'
               ? (tt._sqlCandidateArtworkStatus || '') : '',
             candidateArtworkConfirmedByDatedRule: !!_runIdentity.candidateArtworkConfirmedByDatedRule,
-            typeName: trainClassification.typeName,
+            typeName:osakaHigashiScoped&&osakaHigashiRef.publicTrainType==="DirectRapid"
+              ?"直通快速":trainClassification.typeName,
             isLimitedExpress: trainClassification.isLimitedExpress,
             isThroughTrain: trainClassification.isThroughTrain,
             railDirection: directionName,
@@ -2449,7 +2510,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
+            vehicleIconPath: (_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
