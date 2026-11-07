@@ -285,3 +285,40 @@ JR神戸線作为运营线路跨越数据库 `TokaidoKansai` 与 `SanyoMain`；�
 线上数据库已执行迁移并经指纹重算确认：**湖西線 54/54 条匹配（平日 27，土休日 27）**；京阪神走廊沿用上一批 **45/45**。Edge `train-runs` 已部署为 **v340**，只在全站证据吻合且在 2026-11 窗口内才能升级来源有效性。之前各阶段“4848M 待核验”的记载是当时的审计状态，本节为**更新后的最新状态**。
 
 总体缺口仍包括：湖西線其余新快速、全部上／下行及サンダーバード特急核验，京阪神跨线连续服务更多上下行站时和车辆精确 PNG。不能以局部指纹数表示全线运营覆盖率。
+
+
+## 2026-11-07 第九批：湖西線早班短区间与跨午夜来源 + 正式改号分段
+
+### 69条原始站时证据与接口
+
+迁移 `supabase/migrations/20261107152000_jrwest_kosei_2611_early_local_and_overnight_clocks.sql` 复用现有湖西線 `manual_timetable_templates` / `published_jrwest_kosei_2611_verified_source_clocks`，**新增15条逐站核验的原来源**（平日+8、土休日+7），累计 **69/69**、平日35、土休日34、全数 `verified_source_match=true`。原来 54 条未改变。
+
+| 公众番号 | 已核验范围 | 本批来源日历数 | 官方 2026-11 证据 |
+| --- | --- | ---: | --- |
+| `2800M` | 京都→近江舞子、13站 | 2（每天） | [官方](https://timetable.jr-odekake.net/train-timetable/27321?date=20261024) |
+| `2802M` | 京都→近江舞子、13站 | 1（仅平日） | [官方](https://timetable.jr-odekake.net/train-timetable/27351?date=20261105) |
+| `2804M` | 京都→近江舞子、13站 | 2（分日历） | [平日](https://timetable.jr-odekake.net/train-timetable/27361?date=20261105)／[假日](https://timetable.jr-odekake.net/train-timetable/27371?date=20261024) |
+| `2806M` | 京都→近江舞子、13站 | 2（分日历） | [平日](https://timetable.jr-odekake.net/train-timetable/70641?date=20261016)／[假日](https://timetable.jr-odekake.net/train-timetable/70691?date=20261107) |
+| `2808M` | 京都→堅田、7站 | 2（分日历） | [平日](https://timetable.jr-odekake.net/train-timetable/70701?date=20261030)／[假日](https://timetable.jr-odekake.net/train-timetable/70711?date=20261024) |
+| `2812M` | 京都→近江舞子、13站 | 2（分日历） | [平日](https://timetable.jr-odekake.net/train-timetable/27431?date=20261105)／[假日](https://timetable.jr-odekake.net/train-timetable/27441?date=20261101) |
+| `1838M` | 京都→近江今津、18站 | 2（每天） | [官方](https://timetable.jr-odekake.net/train-timetable/140231?date=20261104) |
+| `1840M` | 京都→近江今津、18站 | 2（每天） | [官方](https://timetable.jr-odekake.net/train-timetable/91391?date=20261023) |
+
+`1838M/1840M` 于晚间出发、翌日零点后抵达；不切换出发运营日。`2802M` 没有土休日已核验源，不会制造虚构的假日条目。导入的假日 `MH` **仅是源日历标记**，与公众列车番号 `M` 区分。新增的 7/13/18 站要求所有来源时刻和站序的哈希与官方人工校验时一致，且维持不授权 PNG。
+
+Edge Function `train-runs` 已发布为 **v341**，选中日历分别要求 35/34 条来源证据，站数允许 4/5/7/13/18/21/22，仍不写入第二份时刻表，也未修改用户界面或车辆图标。
+
+### 近江今津新快速改号：7条只用于番号证据
+
+迁移 `supabase/migrations/20261107153000_jrwest_kosei_2611_omiimazu_through_number_boundaries.sql` 向已有 `published_jrwest_2611_crossline_number_reference` 增加 **7条分段番号**，累计 **15条**（weekday 4／saturday_holiday 8／daily 3）：
+
+- 平日 `3143M → 3443M`：近江今津改号，前段经近江塩津，后段经湖西線／京都・神戸線至姫路。证据：[JR 2026-11 时刻页面](https://timetable.jr-odekake.net/train-timetable/145061?date=20261006)。
+- 土休日 `3145M → 3445M`：同站改号，后段经京都至大阪。证据：[JR 2026-11 时刻页面](https://timetable.jr-odekake.net/train-timetable/145291?date=20261024)。
+
+**重要数据库边界：** 现有 `3107M`、`3143M`、`3145MH` 这类历史来源把不同正式番号的两段站时存到同一来源模板。原来源不能直接当作全程同一个公众番号的连续位置轨迹。新增证据的 `stop_clocks_verified=false`、`authorizes_position=false`、`actual_vehicle_confirmed=false`、`authorizes_png=false` 都保持硬约束；只有真正把区段按改号边界核验、分段数据规范化后，才能考虑位置证据升级。
+
+### 待办及发布范围
+
+- 湖西線 2800系早班以外大量 28xxM 和新快速／普通上下行仍需继续逐站核验；`サンダーバード` 目前仅有先前局部列车番号引用，没有补全特急所有运行日。
+- 列车型号/车辆号段/实车编组的确认与一般时刻表分开，不凭 `M/C/T` 或运营类别指定单一 PNG。
+- 这次改动只涉及原 SQL、原 Edge 与测试，不新增首页层级和脚本依赖。**69/69 指当前完成认证的样本数，不是“全线69车次”或百分之百覆盖。**
