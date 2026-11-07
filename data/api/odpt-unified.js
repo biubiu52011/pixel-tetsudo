@@ -1842,6 +1842,13 @@
             // SQL source trainNumber (and holiday-import H) for identity.
             "_sqlPublishedTrainNumber":run.timetable_date_verified===true
                 ? (run.published_train_number||"") : "",
+            // Public service type is independently verified for some
+            // JR-West Nara source trips: Miyakoji Rapid / seasonal Inishie
+            // are NOT locals despite legacy source train_type=Local.
+            "_sqlPublishedTrainType":run.timetable_date_verified===true
+                ? (run.published_train_type||"") : "",
+            "_sqlPublishedTrainTypeLabel":run.timetable_date_verified===true
+                ? (run.published_train_type_label||"") : "",
             "odpt:railway":run.network_key && String(run.network_key).indexOf("odpt.Railway:")===0 ? run.network_key : "odpt.Railway:" + String(run.operator||LINE_TO_OPERATOR[run.line_id]||"") + "." + String(run.network_key||LINE_RAILWAY_CODE[run.line_id]||run.line_id||""),
             "odpt:calendar":({
                 weekday:"odpt.Calendar:Weekday",
