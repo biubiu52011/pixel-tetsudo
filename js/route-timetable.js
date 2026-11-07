@@ -35,7 +35,7 @@
     var now = new Date(Date.now() + 9 * 3600000);
     var mode = options.mode === 'depart' || options.mode === 'arrive' ? options.mode : 'now';
     // Date picker represents a calendar date in Japan, not the service day.
-    var calendarDate = mode === 'now' ? now.toISOString().slice(0, 10) : options.date;
+    var calendarDate = mode === 'now' || !options.date ? now.toISOString().slice(0, 10) : options.date;
     var time = mode === 'now' ?
       String(now.getUTCHours()).padStart(2, '0') + ':' + String(now.getUTCMinutes()).padStart(2, '0') :
       options.time;
