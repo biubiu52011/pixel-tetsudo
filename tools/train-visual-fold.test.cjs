@@ -34,8 +34,10 @@ function box(id,x,y,width,height,artwork=true) {
 }
 assert.equal(Object.keys(group([box('up',100,100,14,18),box('down',120,100,14,18)])).length,0,
   'nonoverlapping trains across opposite directional lanes remain visible');
-assert.deepEqual(Array.from(group([box('up',100,100,28,18),box('down',120,100,28,18)]).up),
-  ['up','down'], 'overlapping opposing train components must fold');
+assert.deepEqual(Array.from(Object.values(group([
+  box('up',100,100,28,18),box('down',120,100,28,18)
+]))[0]).sort(), ['down','up'],
+  'overlapping opposing train components must fold regardless of representative ID');
 assert.equal(Object.keys(group([box('a',100,100,14,18),box('b',140,100,14,18)])).length,0,
   '40px proximity alone is not a component collision');
 assert.deepEqual(Array.from(group([
