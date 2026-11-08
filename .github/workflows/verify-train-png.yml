@@ -58,6 +58,8 @@ on:
       - 'tests/fukuchiyama-1199ch-candidate-marker.test.cjs'
       - 'tests/fukuchiyama-north-local-fleet-scope.test.cjs'
       - 'tests/gakkentoshi-transfer-source-ownership.test.cjs'
+      - 'tests/jrwest-tozai-2611-source-link.test.cjs'
+      - 'supabase/migrations/20261109061000_jrwest_tozai_2611_junction_fleet_refs.sql'
       - 'tests/fukuchiyama-line-stations-2611.test.cjs'
       - 'tests/fukuchiyama-2611-official-north-sample.test.cjs'
       - 'tests/fukuchiyama-2611-northbound-official-samples.test.cjs'
@@ -271,6 +273,8 @@ jobs:
         run: node --test tests/kabe-2611-redwing-number-scope.test.cjs
       - name: Verify Kosei 2611 179 source-only M/MH mixed fleet and special exclusions
         run: node --test tests/kosei-2611-source-fleet.test.cjs
+      - name: Verify JR-West JR Tozai 2611 five official cross-line anchors and fleet isolation
+        run: node --test tests/jrwest-tozai-2611-source-link.test.cjs
       - name: Verify JR-West Kyoto/Kobe 2611 source-only C/T/M mixed fleet mapping
         run: node --test tests/jrwest-kyoto-kobe-2611-source-fleet.test.cjs
       - name: Verify Sotetsu-JR 2611 dual E233/12000 source-only candidate mapping

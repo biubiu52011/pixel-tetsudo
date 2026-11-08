@@ -532,7 +532,7 @@
     {id:'jrwest-hanwa-kansai', operator:'JR-West', lineIds:['Hanwa','KansaiAirport'],
       models:['JR西日本223系','JR西日本225系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
     {id:'jrwest-gakkentoshi', operator:'JR-West', lineIds:['Gakkentoshi','JRTozai'],
-      models:['JR西日本207系','JR西日本321系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
+      models:['JR西日本207系','JR西日本321系'], sourceUrl:'https://www.jr-odekake.net/railroad/service/train-woman.html'},
     {id:'jrwest-fukuchiyama', operator:'JR-West', lineIds:['Fukuchiyama'],
       // Route-wide candidate fleet only; not an individual service/formation.
       models:['JR西日本207系','JR西日本321系','JR西日本223系6000番台','JR西日本225系6000番台'],
