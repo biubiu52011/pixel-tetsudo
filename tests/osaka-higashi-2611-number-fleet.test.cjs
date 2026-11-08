@@ -40,7 +40,7 @@ test('holiday H calendar marker stays out of public train number and canonical i
   assert.match(adapter, /"_sqlPublishedTrainNumber":run\.timetable_date_verified===true/);
   assert.match(estimator, /osakaHigashiDisplayNumber=refNumber/);
   assert.match(estimator, /osakaHigashiDisplayNumber \|\| saganoDisplayNumber/);
-  assert.match(estimator, /officialNumberVerified: Boolean\(osakaHigashiOfficialVerified\)/);
+  assert.match(estimator, /officialNumberVerified: Boolean\(osakaMahorobaDisplayNumber\) \|\| Boolean\(osakaHigashiOfficialVerified\)/);
   assert.match(estimator, /trainNumber: publicTrainNumber/);
 });
 
@@ -52,6 +52,6 @@ test('221 fleet is reference only and cannot force exact carset, PNG or 207/321 
   assert.match(edge, /run\.vehicle_plan_confirmed=false/);
   assert.match(estimator, /var _osakaHigashiScoped=!!osakaHigashiScoped/);
   assert.match(estimator, /_publishedVehiclePlan=\{\s*status:"UNCONFIRMED_FLEET"/);
-  assert.match(estimator, /vehicleIconPath: \(_osakaHigashiScoped\|\|_saganoScoped/);
+  assert.match(estimator, /vehicleIconPath: \(_osakaMahorobaScoped\|\|_osakaHigashiScoped\|\|_saganoScoped/);
   assert.doesNotMatch(migration, /\bUPDATE\s+(?:public\.)?manual_timetable_templates\b/i);
 });
