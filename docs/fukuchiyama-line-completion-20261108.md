@@ -106,3 +106,38 @@
 - 数据库迁移：`supabase/migrations/20261108225500_fukuchiyama_correct_evening_rapid_and_kounotori.sql`；Edge Function `train-runs` v355。新增针对车型候选安全性的 CI 测试 `tests/fukuchiyama-2611-evening-mapping.test.cjs`。
 - 真实线上 API 回归已于 2026-11-08 成功检查 2026-11-08、11-09、11-30 和 12-01：土休日接口 187 条，其中 7 条官方日历验证样本；平日 176 条，其中 6 条；7025M 11 月 30 日不出现、11 月的定日期特急在 12 月不出现。
 - 官方来源：`https://timetable.jr-odekake.net/train-timetable/240421?date=20261023`（2771）、`https://timetable.jr-odekake.net/train-timetable/147101?date=20261101`（2775土休日）、`https://timetable.jr-odekake.net/train-timetable/240441?date=20261024`（2780）、`https://timetable.jr-odekake.net/train-timetable/200181?date=20261012`（2773）、`https://timetable.jr-odekake.net/train-timetable/145181?date=20261018`（3028）、`https://timetable.jr-odekake.net/train-timetable/200071?date=20261114`（7025）。
+
+
+## 2026-11-08 最终追加：全3000／7000号段「こうのとり」车型族映射及星期五缺口
+
+> 本节数值和现况**覆盖前文较早版本中的387条／“7025M星期五尚未处理”／只有7条特急候选**等旧描述；保留旧日志仅为审计变更历史。
+
+### 43条残余历史误标的整族纠正
+- 原来的福知山线历史 SQL 中，`3000～3099 M/MH` 与 `7000～7099 M/MH` 总计**50条来源记录**，之前7条已更正，剩余**43条**仍错误归入 `JR-West.Local` 并候选207／321／223-6000／225-6000。
+- 既有原始表 `manual_timetable_templates`、`published_jrwest_fukuchiyama_2611_source_fleet` 已按同一个已知特急车次族改成 `JR-West.LimitedExpress`，候选 **`287系 / 289系`**。不生成重复车次，不修饰尚未验证的旧站点时刻。完整的日期、停站、编号证据仍需逐趟复核；旧记录继续 `undated_not_current_verified`。
+- 六条已有的7000号段土休日内部 `MH` 来源仅在**2026年11月1～29日**的周六、周日、11月3日、11月23日列入予定；不是永久每日运行的普通车。**其余7000号段的星期五具体车次仍需逐趟官网核实**。
+- 执行过的不可重复迁移：`supabase/migrations/20261108231000_fukuchiyama_kounotori_source_family_50_rows.sql`。车型参考总表仍是原有 **357条**；所有 `actual_vehicle_confirmed` 和 `authorizes_png` 为 `false`。
+
+### 7025M 的四个星期五实证样本
+- 官网2026年11月「こうのとり25号」信息说明运营期限为11月29日前，周五、周六和节假日。原先 `7025MH` 是土休日内部来源，无法直接作为星期五记录。
+- 在相同 canonical SQL 数据层为 **2026-11-06、11-13、11-20、11-27** 建立**一条**工作日来源 `7025M`、source ID `2611087025001`；复用了早已核实的 `7025MH`（原 68168）大阪21:10→福知山23:03的**11个原始停车站**，没有额外推算时刻或扩大到12月。
+- `train-runs` 严格校验来源编号、日期、车种、站序、起终点；仅在上述四日标记 `timetable_date_verified=true`。未声明实际发车、现场运转、实车编组、连续实时位置。
+- 迁移：`supabase/migrations/20261108232000_fukuchiyama_7025m_friday_official_sample.sql`。
+
+### SVG车型示意、可信度以及缓存
+- `data/timetables/train-number-png-ranges.js` 仍是负责的车型验证器：在现有源ID、区间站序、运行日、列车种别、候选车型一致的条件下，将 `30xx/70xx` 作为 `kounotori-3000-7000-express-illustration`，候选只有287／289系列。
+- `js/train-vehicle.js` 仅从**现有图库**选取 `images/列车/JR西日本/JR西日本_287系.png` 作为混合287／289候选的**一张287系列代表图**，不代表这趟列车确定使用287而非289；`planned=true`、`illustrative=true`、`representativeOnly=true`、`actualVehicleConfirmed=false`。图库加载失败、来源不匹配、无候选证据，安全回退圆点。
+- `js/trains-render.js` 多语言无障碍说明明确显示“车辆图片：287系仅是287／289系特急车型候选中的示意，不代表当日实际车辆或编组”。
+- `pages/trains.html` 对应三个懒加载脚本使用从 Git Blob 计算的版本键，避免继续展示上一次的通勤候选旧 JS；遵循 `scripts/sync-page-scripts.cjs`，不手工乱改 script 清单。
+- **剩余丹波路快速与普通 M 号段**依然可能显示候选圆点：尚缺与本路线准确匹配的223系6000番台／225系6000番台图库素材及逐趟实际运用证据。不得借用不同路线／涂装车型 PNG 假装实车。北段223系5500番台候选也一样。
+
+### 上线数据与测试
+- 总手工来源数从387变为 **388**（新增一条周五7025M），旧车型参考表**357条**，其中50条为特急候选来源。
+- Edge Function `train-runs` **v357 ACTIVE**。
+- GitHub Actions 完整车型与图片校验：`https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42485781732` 成功；包含新 `tests/fukuchiyama-2611-kounotori-family-and-friday.test.cjs`。
+- GitHub Pages 功能变更发布：`https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42485781735` 成功。
+- 单次实时调用公共 API 的成功 smoke run：`https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42485900088`：
+  - 2026-11-08（土休日）**187条**计划记录，**28条**30xx／70xx特急候选，**7条**日期确认来源；
+  - 2026-11-06（周五）**177条**计划记录，**23条**30xx／70xx特急候选，**7条**日期确认来源（其中7025M）；
+  - 2026-11-09工作日不会出现临时70xx；2026-12-01不会延用11月期限定期临时70xx。
+- 覆盖状态继续 `partial=true`、`complete=false`；前述187/177条并非全部具备2026年11月实际站时刻或实车确认。
