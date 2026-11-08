@@ -2309,9 +2309,48 @@
         return views;
     }
 
+    // Runtime feed health belongs to the request owner, not to line UI.
+    // The endpoint registry describes capability; a response timestamp and
+    // failure status describe whether its latest observations are usable.
+    function getRunInfoSourceHealth(operator, nowMillis) {
+        var op = String(operator || "").replace(/^odpt\.Operator:/, "");
+        var ep = ODPT_ENDPOINTS[op];
+        if (!ep || !(ep.trainInformation || ep.alert || ep.gtfsAlert)) {
+            return { state: "unsupported", fresh: false, operator: op };
+        }
+        var states = window.ODPT_REALTIME_STATUS || {};
+        var status = states[op + ":delay"];
+        var rows = window.ODPT_DELAY_DATA || {};
+        var hasCached = Object.prototype.hasOwnProperty.call(rows, op) && rows[op] != null;
+        if (!status || !Number.isFinite(Number(status.at))) {
+            return { state: hasCached ? "cached" : "loading", fresh: false, operator: op };
+        }
+        var now = Number.isFinite(Number(nowMillis)) && nowMillis != null
+            ? Number(nowMillis) : Date.now();
+        var cfg = window.RuntimeConfig || {};
+        var interval = Number(cfg.ODPT_INFORMATION_INTERVAL) || 30000;
+        var maxAge = Math.max(60000, Math.min(180000, interval * 3));
+        var age = Math.max(0, now - Number(status.at));
+        if (status.ok !== true) {
+            return {
+                state: "failed", fresh: false, operator: op,
+                checkedAt: Number(status.at), httpStatus: Number(status.status) || 0,
+                message: String(status.message || "request failed")
+            };
+        }
+        if (age > maxAge) {
+            return { state: "stale", fresh: false, operator: op, checkedAt: Number(status.at) };
+        }
+        return {
+            state: "ready", fresh: true, operator: op,
+            checkedAt: Number(status.at), hasRecords: hasCached && Array.isArray(rows[op]) && rows[op].length > 0
+        };
+    }
+
     // ========== 公共 API ==========
     window.ODPTClient = {
         getRequestMetrics: function() { return Object.assign({}, _requestMetrics); },
+        getRunInfoSourceHealth: getRunInfoSourceHealth,
         ENDPOINTS: ODPT_ENDPOINTS,
         LINE_TO_OPERATOR: LINE_TO_OPERATOR,
         LINE_RAILWAY_CODE: LINE_RAILWAY_CODE,
