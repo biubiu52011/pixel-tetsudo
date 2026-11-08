@@ -236,7 +236,8 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   if(lineId==="Fukuchiyama"){
     templates=templates.filter((t:any)=>{
       const source=String(t.source_path||"");
-      const expressSqlExample=[68244,68245,68251,68252].includes(Number(t.id)) &&
+      const expressSqlExample=[68244,68245,68251,68252,68314,68315,68168]
+        .includes(Number(t.id)) &&
         Array.isArray(t.operating_dates);
       if(!source.startsWith("official-sampled:fukuchiyama:")&&!expressSqlExample)
         return true;
@@ -4392,7 +4393,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     // These four legacy SQL rows were wrongly classified as Local;
     // maintain compatibility while the old and corrected snapshots deploy.
     // The 287/289 candidates remain an unconfirmed family only.
-    const expressSourceIds=[68244,68245,68251,68252];
+    const expressSourceIds=[68244,68245,68251,68252,68314,68315,68168];
     for(const run of result){
       const p:any=bySource.get(Number(run.source_template_id));
       if(!p)continue;
@@ -4554,6 +4555,56 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-kounotori-8-10-line-segment";
       run.train_number_source_url=sample.source;
       run.plan_source="jrwest-2611-kounotori-official-sampled-to-osaka-not-live";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+    }
+  }
+
+  // November 2026 Kounotori 28/25: the old four/six-stop source rows
+  // were classified LOCAL with commuter-stock candidates. After the
+  // guarded SQL correction, these are LIMITED EXPRESS reference families.
+  // This proves the timetable/line segment, NOT a physical 287/289 set or
+  // a live location. Keep legacy snapshots compatible during deployment.
+  if(lineId==="Fukuchiyama" && /^2026-11-\\d{2}$/.test(serviceDate)){
+    const holiday=selectedCalendar==="odpt.Calendar:SaturdayHoliday";
+    const expected=[
+      {id:holiday?68315:68314,
+       num:holiday?"3028MH":"3028M",
+       stations:["Fukuchiyama","Kaibara-Hyogo","Shinoyamaguchi",
+         "Sanda-Hyogo","Takarazuka","Amagasaki","Osaka"],
+       start:"20:02",end:"21:36",
+       url:holiday
+         ?"https://timetable.jr-odekake.net/train-timetable/145181?date=20261018"
+         :"https://timetable.jr-odekake.net/train-timetable/145171?date=20261007"},
+      ...(holiday?[{id:68168,num:"7025MH",
+        stations:["Osaka","Amagasaki","Takarazuka","Sanda-Hyogo",
+          "Shinmita","Sou-No","Shinoyamaguchi","Tanigawa",
+          "Kaibara-Hyogo","Kuroi-Tamba","Fukuchiyama"],
+        start:"21:10",end:"23:03",
+        url:"https://timetable.jr-odekake.net/train-timetable/200071?date=20261114"}]:[])
+    ];
+    for(const sample of expected){
+      const run=result.find((r:any)=>Number(r.source_template_id)===sample.id);
+      if(!run||run.train_number!==sample.num||
+         run.network_key!=="odpt.Railway:JR-West.Fukuchiyama")
+        throw new Error("JRWEST_FUKUCHIYAMA_2611_EVENING_SAMPLE_MISSING");
+      if(run.train_type==="odpt.TrainType:JR-West.Local"){
+        if(run.stops.length!==(sample.id===68168?6:4))
+          throw new Error("JRWEST_FUKUCHIYAMA_2611_EVENING_TRANSITION_CONFLICT");
+        continue;
+      }
+      if(run.train_type!=="odpt.TrainType:JR-West.LimitedExpress"||
+         !Array.isArray(run.stops)||run.stops.length!==sample.stations.length||
+         run.stops.some((st:any,i:number)=>st.station_key!==sample.stations[i])||
+         run.stops[0].departure_time!==sample.start||
+         run.stops[run.stops.length-1].arrival_time!==sample.end||
+         run.vehicle_type_candidates!=="287系 / 289系")
+        throw new Error("JRWEST_FUKUCHIYAMA_2611_EVENING_SAMPLE_CONFLICT");
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.train_number_verification="official-2611-kounotori-evening-corridor";
+      run.train_number_source_url=sample.url;
+      run.plan_source="jrwest-2611-kounotori-evening-official-sampled-no-live-location";
       run.vehicle_plan_confirmed=false;
       run.vehicle_artwork_path=null;
     }
