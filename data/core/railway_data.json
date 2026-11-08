@@ -14603,6 +14603,34 @@
     "Misato-Koumi": {
       "lat": 36.2923009,
       "lng": 138.4502564
+    },
+    "Tamba-Oyama": {
+      "lat": 35.0719445,
+      "lng": 135.1689997
+    },
+    "Shimotaki": {
+      "lat": 35.08787,
+      "lng": 135.09417
+    },
+    "Kaibara-Hyogo": {
+      "lat": 35.1272352,
+      "lng": 135.0770116
+    },
+    "Iso-Tamba": {
+      "lat": 35.152833,
+      "lng": 135.0637129
+    },
+    "Kuroi-Tamba": {
+      "lat": 35.1685539,
+      "lng": 135.0970767
+    },
+    "Ichijima": {
+      "lat": 35.20799,
+      "lng": 135.13006
+    },
+    "Tamba-Takeda": {
+      "lat": 35.243735,
+      "lng": 135.134095
     }
   },
   "lines": {
@@ -42716,7 +42744,7 @@
       "region": "Kansai Area",
       "type": "straight",
       "image": "../images/鉄道/JR西日本/近畿_G.png",
-      "durationTotalMin": 84,
+      "durationTotalMin": 153,
       "branchOf": null,
       "stations": [
         "Osaka",
@@ -42740,7 +42768,16 @@
         "Kusano-Hyogo",
         "Furuichi",
         "Minami-Yashiro",
-        "Shinoyamaguchi"
+        "Shinoyamaguchi",
+        "Tamba-Oyama",
+        "Shimotaki",
+        "Tanigawa",
+        "Kaibara-Hyogo",
+        "Iso-Tamba",
+        "Kuroi-Tamba",
+        "Ichijima",
+        "Tamba-Takeda",
+        "Fukuchiyama"
       ],
       "durations": [
         4,
@@ -42763,7 +42800,16 @@
         4,
         4,
         4,
-        4
+        4,
+        3,
+        16,
+        5,
+        10,
+        3,
+        9,
+        7,
+        8,
+        8
       ],
       "throughServices": [],
       "transferStations": [
@@ -42778,6 +42824,18 @@
           "lineId": "OsakaLoop",
           "type": "in",
           "note": "同站换乘"
+        },
+        {
+          "station": "Tanigawa",
+          "lineId": "KakogawaLine",
+          "type": "in/out",
+          "note": "谷川駅：加古川線へ乗換"
+        },
+        {
+          "station": "Fukuchiyama",
+          "lineId": "SaninMain",
+          "type": "in/out",
+          "note": "福知山駅：山陰本線へ乗換"
         }
       ],
       "nameZh": "福知山线(JR宝塚线)",
@@ -50838,7 +50896,14 @@
     "太田部": "Otabe",
     "滑津": "Namezu",
     "中佐都": "Nakasato",
-    "美里": "Misato-Koumi"
+    "美里": "Misato-Koumi",
+    "丹波大山": "Tamba-Oyama",
+    "下滝": "Shimotaki",
+    "石生": "Iso-Tamba",
+    "市島": "Ichijima",
+    "丹波竹田": "Tamba-Takeda",
+    "柏原（福知山線）": "Kaibara-Hyogo",
+    "黒井（福知山線）": "Kuroi-Tamba"
   },
   "stationLines": {
     "Omiya": [
@@ -60241,7 +60306,8 @@
       "SaninMain"
     ],
     "Fukuchiyama": [
-      "SaninMain"
+      "SaninMain",
+      "Fukuchiyama"
     ],
     "Kamikawa-Kuchi": [
       "SaninMain"
@@ -60938,7 +61004,8 @@
       "KakogawaLine"
     ],
     "Tanigawa": [
-      "KakogawaLine"
+      "KakogawaLine",
+      "Fukuchiyama"
     ],
     "Nishiki-Tsu": [
       "Gakkentoshi"
@@ -63266,6 +63333,27 @@
     ],
     "Misato-Koumi": [
       "Komii"
+    ],
+    "Tamba-Oyama": [
+      "Fukuchiyama"
+    ],
+    "Shimotaki": [
+      "Fukuchiyama"
+    ],
+    "Kaibara-Hyogo": [
+      "Fukuchiyama"
+    ],
+    "Iso-Tamba": [
+      "Fukuchiyama"
+    ],
+    "Kuroi-Tamba": [
+      "Fukuchiyama"
+    ],
+    "Ichijima": [
+      "Fukuchiyama"
+    ],
+    "Tamba-Takeda": [
+      "Fukuchiyama"
     ]
   },
   "lineStationOrder": {
@@ -67368,7 +67456,16 @@
       "Kusano-Hyogo": 18,
       "Furuichi": 19,
       "Minami-Yashiro": 20,
-      "Shinoyamaguchi": 21
+      "Shinoyamaguchi": 21,
+      "Tamba-Oyama": 22,
+      "Shimotaki": 23,
+      "Tanigawa": 24,
+      "Kaibara-Hyogo": 25,
+      "Iso-Tamba": 26,
+      "Kuroi-Tamba": 27,
+      "Ichijima": 28,
+      "Tamba-Takeda": 29,
+      "Fukuchiyama": 30
     },
     "OsakaHigashi": {
       "Osaka": 0,
