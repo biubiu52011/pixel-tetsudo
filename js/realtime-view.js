@@ -184,7 +184,7 @@
       }
     }
     // 原因区块 → 運行情報（直接显示 ODPT 原文，不拆解碎片；
-    // 非 ja 界面以译文为主显示，原文折叠保留，翻译失败自动回退原文。
+    // 非 ja 界面仅显示对应语言的译文，无法翻译时显示提示，不重复显示日语原文。
     var causeSection = modal.querySelector(".rs-cause-section");
     var _detailTitles = { ja: "運行情報", en: "Service Info", zh: "运行信息", ko: "운행 정보" };
     causeSection.querySelector(".rs-section-title").textContent = _detailTitles[(window.currentLang || "ja")] || "運行情報";
@@ -328,16 +328,14 @@
     };
   }
 
-  function _untranslatedOfficialText(text) {
+  function _untranslatedOfficialText() {
     return '<div class="rs-cause-untranslated">'
       + '<div class="rs-text-muted">' + escapeHtml(t("status.translation_unavailable") || t("status.no_data")) + '</div>'
-      + '<div class="rs-cause-original">' + escapeHtml(text) + '</div>'
       + '</div>';
   }
 
-  // 非日文界面只渲染译文正文。官方日文原文
-  // 仅在本地结构化/模板翻译器无法
-  // 安全翻译自由文本时显示。
+  // 多语言界面仅显示译文，不附带可展开的日语原文。
+  // 翻译不可用时显示提示；日语界面仍显示官方日语内容。
   function _translatedText(text, lang, opts) {
     var safe = escapeHtml(text);
     if (lang === "ja" || !_needsJaTranslate(text)) return safe;
@@ -347,10 +345,7 @@
     if (!tr || _needsJaTranslate(tr)) {
       return _untranslatedOfficialText(text);
     }
-    var originalLabels = {ja:"原文",zh:"查看官方日语原文",en:"Show original Japanese notice",ko:"일본어 원문 보기"};
-    return '<div class="rs-cause-translated">' + escapeHtml(tr) + '</div>'
-      + '<details class="rs-official-original"><summary>' + escapeHtml(originalLabels[lang] || originalLabels.en) + '</summary>'
-      + '<div class="rs-cause-original">' + safe + '</div></details>';
+    return '<div class="rs-cause-translated">' + escapeHtml(tr) + '</div>';
   }
 
   function renderFilterBar(linesObj) {

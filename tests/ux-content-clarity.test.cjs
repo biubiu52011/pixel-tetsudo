@@ -35,3 +35,29 @@ test('operator filter does not replace buttons on unchanged updates', () => {
   assert.match(source, /optionsSignature === lastOptionsSignature/);
   assert.match(source, /select\(selected, false\)/);
 });
+
+
+test('translated run information displays only the selected language, without Japanese original', () => {
+  const vm = require('node:vm');
+  const source = read('js/realtime-view.js');
+  assert.doesNotMatch(source, /rs-official-original|rs-cause-original|查看官方日语原文/);
+  const begin = source.indexOf('  function _untranslatedOfficialText(');
+  const end = source.indexOf('  function renderFilterBar(', begin);
+  assert.ok(begin >= 0 && end > begin);
+  const context = {
+    window: { DelayTranslator: { translate: () => ({translated: '目前没有15分钟以上的延误', matched: true}) } },
+    escapeHtml: s => String(s), t: () => '暂时无法翻译运行信息',
+    _needsJaTranslate: s => /[\u3041-\u3096]/.test(s)
+  };
+  vm.createContext(context);
+  vm.runInContext(source.slice(begin, end) + '\nthis.renderTranslated = _translatedText;', context);
+  const original = '現在、１５分以上の遅延はありません。';
+  const translated = context.renderTranslated(original, 'zh', {});
+  assert.match(translated, /目前没有15分钟以上的延误/);
+  assert.doesNotMatch(translated, /現在|<details|<summary/);
+  assert.equal(context.renderTranslated(original, 'ja', {}), original);
+  context.window.DelayTranslator = null;
+  const missing = context.renderTranslated(original, 'en', {});
+  assert.match(missing, /暂时无法翻译运行信息/);
+  assert.doesNotMatch(missing, /現在|<details|<summary/);
+});
