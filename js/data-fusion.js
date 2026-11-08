@@ -890,7 +890,10 @@
           } else if (_opState === undefined || (apiHealth && apiHealth.state === 'loading')) {
             fallbackDelay = { status: 'loading', maxDelay: null, interval: null, cause: null };
           } else if (_opState === null) {
-            fallbackDelay = { status: 'no_data', maxDelay: null, interval: null, cause: null,
+            // No transport-success evidence and no usable payload.
+            // Preserve the established no_odpt contract for callers that
+            // predate the source-health API (and offline fixtures).
+            fallbackDelay = { status: 'no_odpt', maxDelay: null, interval: null, cause: null,
               source: 'odpt_request_unavailable' };
           } else {
             fallbackDelay = { status: 'no_data', maxDelay: null, interval: null, cause: null,
