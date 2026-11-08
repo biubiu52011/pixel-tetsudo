@@ -34,7 +34,7 @@ test('reused northern express samples preserve the four southern calls and add t
  assert.match(sql,/stop_sequence=stop_sequence\+10/);
  assert.match(sql,/stop_sequence=stop_sequence-CASE/);
  assert.match(sql,/stop_sequence BETWEEN 10 AND 13/);
- assert.match(sql,/candidate_png_paths/);
+ assert.match(edge,/p\.candidate_png_paths\.length!==0/);
  assert.match(sql,/authorizes_png OR actual_vehicle_confirmed OR number_date_verified/);
 });
 test('API keeps old historical proof working before migration, verifies only November 2026 express segment after',()=>{
