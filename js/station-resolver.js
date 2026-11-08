@@ -142,9 +142,10 @@
     if (isJp) {
       // Official ja display name reverse lookup first: bypasses broken name_map targets
       // (e.g. 新橋 name_map->"Shinbashi" while the real station is Shimbashi; 北千住->Kitasenju vs Kita-Senju)
-      if (_jpToCanon[q]) {
-        return _matches(_jpToCanon[q], q, "EXACT");
-      }
+      // The same CJK text may be a Japanese name of one station and a
+      // Chinese translation of another (e.g. 日出). Merge both indexes.
+      var cjkExact = [].concat(_jpToCanon[q] || [], _zhToCanon[q] || [], _koToCanon[q] || []);
+      if (cjkExact.length) return _matches(cjkExact, q, "EXACT");
       if (_jpToEn[q]) {
         var normJp = _normalizeId(_jpToEn[q]);
         return [{ stationId: normJp, displayName: _jpToEn[q], status: "EXACT" }];
