@@ -45,6 +45,12 @@ test('published bundle data are deterministic mirrors of the readable sources',(
     assert.equal(fs.readFileSync(root+file,'utf8'),'window.'+globalKey+' = '+compact+';\n');
   }
 });
+test('qualified ODPT railway IDs still resolve scoped aliases in realtime',()=>{
+  const source=fs.readFileSync('js/data-fusion.js','utf8');
+  assert.match(source,/var _railwayAliasCode = String\(railwayName \|\| ""\)\.split\("\."\)\.pop\(\)/);
+  assert.match(source,/var _scopedStationAliases/);
+  assert.match(source,/Object\.prototype\.hasOwnProperty\.call\(_scopedStationAliases,stationKey\)/);
+});
 test('ODPT station-token compatibility stays line-scoped',()=>{
   for(const file of ['data/core/runtime-config.js','data/core/data-config-bundle.js']){
     const source=fs.readFileSync(file,'utf8');
