@@ -506,7 +506,7 @@
             html += '<div class="journey-seg-head">';
             html += '<div class="journey-seg-line-group"><span class="journey-seg-color-mark" aria-hidden="true"></span>';
             html += '<span class="journey-seg-name">' + window.escapeHtml(lineName || '') + '</span>';
-            if (seg.trainType) { html += '<span class="journey-seg-type">' + window.escapeHtml(t('train_type.' + seg.trainType)) + '</span>'; }
+            if (seg.trainType) { html += '<span class="journey-seg-type" data-seg-type="' + i + '">' + window.escapeHtml(t('train_type.' + seg.trainType)) + '</span>'; }
             // 运行状态徽章与实时页面同步（仅延误/停运时显示）。
             var _stBadge = '';
             if (lineId && window.DataFusion) {
@@ -582,7 +582,11 @@
       // 注入各乗車段右侧（数据未就绪时不阻塞首屏，查询失败静默降级为无时刻展示）
       if (window.RouteTimetable && result.routeSegments) {
         var _rtSelf = this;
-        window.RouteTimetable.enrichSegments(result.routeSegments, result.timeOptions).then(function(res) {
+        var _precomputedSchedule = arguments.length >= 3 ? arguments[2] : null;
+        var _schedulePromise = _precomputedSchedule ?
+          Promise.resolve(_precomputedSchedule) :
+          window.RouteTimetable.enrichSegments(result.routeSegments, result.timeOptions);
+        _schedulePromise.then(function(res) {
           if (!_rtSelf.resultsDiv || renderGeneration!==_rtSelf._renderGeneration) return;
           var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
           if(notice) {
@@ -608,18 +612,40 @@
               _depCell.dataset.timeConfirmed = 'true';
             }
             if (_arrCell && _tm.arr) {
-              _arrCell.textContent = _tm.arr;
-              _arrCell.dataset.timeConfirmed = 'true';
+              // Many source plans publish only the departure clock at a stop.
+              // Preserve it as a reference, never a confirmed arrival time.
+              _arrCell.textContent = _tm.arrivalClockConfirmed === false ?
+                '≈' + _tm.arr : _tm.arr;
+              _arrCell.dataset.timeConfirmed = _tm.arrivalClockConfirmed === false ? 'false' : 'true';
             }
             // The platform is supplementary to the train segment, not a time label.
             var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
             var _meta = _rtSelf.resultsDiv.querySelector('[data-seg-meta="' + _ridx + '"]');
-            if (_slot && _meta && _tm.platform) {
-              _slot.innerHTML = '<span class="journey-seg-meta-label">' +
+            if (_slot && _meta) {
+              var _parts = [];
+              if (_tm.train) _parts.push('<span class="journey-seg-train-number">' +
+                window.escapeHtml(_tm.train) + '</span>');
+              if (_tm.platform) _parts.push('<span class="journey-seg-meta-label">' +
                 window.escapeHtml(t('search.platform_guide')) + '</span>' +
                 '<span class="journey-seg-platform">' +
-                window.escapeHtml(t('search.platform').replace('{p}', _tm.platform)) + '</span>';
-              _meta.hidden = false;
+                window.escapeHtml(t('search.platform').replace('{p}', _tm.platform)) + '</span>');
+              if (_parts.length) {
+                _slot.innerHTML = _parts.join(' ');
+                _meta.hidden = false;
+              }
+            }
+            // A train's actual type overrides the static line-wide badge.
+            // For example, JA Local 759K must not be displayed as Rapid.
+            var _typeCell = _rtSelf.resultsDiv.querySelector('[data-seg-type="' + _ridx + '"]');
+            if (_typeCell && _tm.trainType) {
+              var _typeName = String(_tm.trainType).split('.').pop();
+              var _typeKey = {
+                Local:'local',Rapid:'rapid',CommuterRapid:'commuter_rapid',
+                SpecialRapid:'special_rapid',Express:'express',LimitedExpress:'limited_express'
+              }[_typeName];
+              var _known = _typeKey && t('train_type.' + _typeKey);
+              _typeCell.textContent = _known && _known !== 'train_type.' + _typeKey ?
+                _known : _typeName;
             }
           }
           // The existing interchange slots remain unconfirmed unless a
@@ -661,6 +687,37 @@
           if (_dg.length) {
             var txCount = _rtSelf.resultsDiv.querySelector('.journey-transfers');
             if (txCount) txCount.textContent = (transfers + _dg.length) + ' ' + t('search_result.transfer_count');
+          }
+          // Static best path may have no trains on the selected date.
+          // Look for alternate valid itineraries; do not invent platform/time
+          // data or label an unverified route as a booked connection.
+          if ((!res || !res.complete) && !_precomputedSchedule &&
+              window.RouteSearch && window.RouteSearch.findRouteCandidates) {
+            var alternatives=window.RouteSearch.findRouteCandidates(
+              result.path[0],result.path[result.path.length-1],
+              _rtSelf.currentMode,6).slice(1);
+            if (alternatives.length) {
+              Promise.all(alternatives.map(function(candidate){
+                return window.RouteTimetable.enrichSegments(candidate.routeSegments,result.timeOptions)
+                  .then(function(schedule){return {route:candidate,schedule:schedule};})
+                  .catch(function(){return null;});
+              })).then(function(reports) {
+                if (renderGeneration!==_rtSelf._renderGeneration) return;
+                var matched=reports.filter(function(item){return item && item.schedule.complete;});
+                matched.sort(function(a,b) {
+                  var aa=a.schedule,bb=b.schedule;
+                  return aa.arrival.localeCompare(bb.arrival) ||
+                    aa.departure.localeCompare(bb.departure);
+                });
+                if (!matched.length) return;
+                var chosen=matched[0].route;
+                chosen.timeOptions=result.timeOptions;
+                _rtSelf.renderResults(chosen,t,matched[0].schedule);
+                _rtSelf.lastRouteResult=chosen;
+                if (window.SearchHistory && window.SearchHistory.saveToHistory)
+                  window.SearchHistory.saveToHistory(chosen.path[0],chosen.path[chosen.path.length-1],chosen);
+              }).catch(function(){});
+            }
           }
         }).catch(function(){
           if(renderGeneration===_rtSelf._renderGeneration){

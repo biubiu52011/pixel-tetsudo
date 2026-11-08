@@ -63,9 +63,22 @@
         var stop = stops[i], station = key(stop['odpt:departureStation'] || stop['odpt:arrivalStation']);
         if (start < 0 && station === key(from)) start = i;
         else if (start >= 0 && station === key(to)) {
-          var dep = stops[start]['odpt:departureTime'], arr = stop['odpt:arrivalTime'] || stop['odpt:departureTime'];
+          var dep = stops[start]['odpt:departureTime'];
+          var publishedArrival = stop['odpt:arrivalTime'] || null;
+          var arr = publishedArrival || stop['odpt:departureTime'];
           var d = parseTime(dep), a = parseTime(arr);
-          if (d != null && a != null && a >= d) out.push({dep:dep,arr:arr,depMin:d,arrMin:a,train:tt['odpt:trainNumber'] || '',calendar:cal,destination:key(stops[stops.length-1]['odpt:arrivalStation'] || stops[stops.length-1]['odpt:departureStation'])});
+          if (d != null && a != null && a >= d) out.push({
+            dep:dep,arr:arr,depMin:d,arrMin:a,
+            arrivalClockConfirmed:!!publishedArrival,
+            train:tt['odpt:trainNumber'] || '',calendar:cal,
+            trainType:tt['odpt:trainType'] || '',
+            serviceName:tt._sqlServiceName || '',
+            destination:key((tt['odpt:destinationStation'] || [])[0] ||
+              stops[stops.length-1]['odpt:arrivalStation'] ||
+              stops[stops.length-1]['odpt:departureStation']),
+            canonicalId:tt._canonicalTrainTimetableId || null,
+            canonicalEvidence:tt._canonicalGroupEvidence || ''
+          });
           break;
         }
       }
@@ -83,7 +96,19 @@
     return Promise.resolve(client.getCachedTrainRuns(id, serviceDate)).catch(function(){return [];});
   }
   function buffer(tx) { return Math.max(3, Number(tx && tx.walkingDuration) || 0); }
-  function through(tx,a,b) { return !!(tx && tx.through && a && b && a.train && a.train===b.train && b.depMin>=a.arrMin); }
+  function through(tx,a,b) {
+    if (!(tx && tx.through && a && b && a.train && a.train===b.train &&
+          a.calendar && a.calendar===b.calendar)) return false;
+    // A shared train number alone cannot bridge a long layover.
+    // Accept only a plausible published boundary with a short handoff.
+    var gap=b.depMin-a.arrMin;
+    if (gap<0 || gap>10) return false;
+    if (a.canonicalEvidence==='verified_continuation' &&
+        b.canonicalEvidence==='verified_continuation' &&
+        a.canonicalId && b.canonicalId && a.canonicalId!==b.canonicalId)
+      return false;
+    return true;
+  }
   function enrichSegments(segments, options) {
     var ctx=context(options), rides=[], transfers=[];
     (segments || []).forEach(function(s,i){if(s.type==='ride') rides.push({seg:s,idx:i});else if(s.type==='transfer') transfers[rides.length-1]={seg:s,idx:i};});

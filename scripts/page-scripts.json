@@ -44,6 +44,7 @@
       "@runinfo",
       "js/data-fusion.js",
       "js/fare-estimator.js",
+      "js/running-chain-resolver.js",
       "js/route-search.js",
       "js/transfer-badge.js",
       "js/search-ui.js",

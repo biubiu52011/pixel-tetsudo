@@ -598,9 +598,51 @@
     });
   }
 
-  // 公共 API。
+  
+  // Search returns one topology candidate. If that route has no timetable
+  // match, try a bounded set of legitimate alternatives, never invented trains.
+  // This is intentionally a supplement to findRoute, not a second graph owner.
+  function findRouteCandidates(from, to, mode, limit) {
+    var cap = Math.max(1, Math.min(8, Number(limit) || 6));
+    var first = findRoute(from, to, mode);
+    if (!first || !first.routeSegments) return [];
+    var candidates = [], seen = new Set();
+    function push(route) {
+      if (!route || !route.routeSegments || !route.routeSegments.some(function(s){return s.type==='ride';})) return;
+      var signature=route.routeSegments.map(function(s) {
+        return s.type==='ride' ? s.lineId+':'+s.fromStation+':'+s.toStation :
+          'transfer:'+s.station+':'+s.toStation;
+      }).join('|');
+      if (seen.has(signature)) return;
+      seen.add(signature);
+      candidates.push(route);
+    }
+    push(first);
+    ['transfers','duration','combo'].forEach(function(variant) {
+      if (variant !== mode) push(findRoute(from,to,variant));
+    });
+    var realFrom=first.path[0], realTo=first.path[first.path.length-1];
+    var direct=[];
+    var layer=buildLayerGraph();
+    Object.keys(layer.lineMeta).forEach(function(lid) {
+      var meta=layer.lineMeta[lid];
+      var a=meta.positions.get(realFrom), b=meta.positions.get(realTo);
+      if (a == null || b == null || a === b) return;
+      var duration=durationBetween(meta,a,b);
+      if (!(duration > 0)) return;
+      var info=[{from:realFrom,to:realTo,lines:[lid]}];
+      direct.push({path:[realFrom,realTo],durationMin:duration,segments:Math.abs(b-a),
+        lineInfo:info,mode:mode||'combo',routeSegments:buildRouteSegments({lineInfo:info})});
+    });
+    direct.sort(function(a,b){return a.durationMin-b.durationMin;});
+    direct.forEach(push);
+    return candidates.slice(0,cap);
+  }
+
+  // 公共 API.
   window.RouteSearch = {
     findRoute: findRoute,
+    findRouteCandidates: findRouteCandidates,
     findStationsByTerm: findStationsByTerm,
     buildStationGraph: buildStationGraph,
     getLinesForSegment: getLinesForSegment,
