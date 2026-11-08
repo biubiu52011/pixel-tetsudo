@@ -230,6 +230,17 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
     }
     if (selected.length || revision) { templates = selected; selectedCalendar = calendar; selectedRevision = revision; break; }
   }
+  // JR-West's published 2531M example is whitelisted to its November
+  // issue. SQL may retain this source for provenance after the issue ends;
+  // never project its clocks into another month as a recurring timetable.
+  if(lineId==="Fukuchiyama"){
+    templates=templates.filter((t:any)=>{
+      if(!String(t.source_path||"").startsWith("official-sampled:fukuchiyama:"))
+        return true;
+      return Array.isArray(t.operating_dates)&&t.operating_dates.some(
+        (date:any)=>String(date).slice(0,10)===serviceDate);
+    });
+  }
   // Kabe / 可部線: 87 synthetic 12-stop Yokokawa-Kabe legacy grids
   // (10 x four-minute gaps, then three) must NEVER become November 2026
   // Hiroshima–Aki-Kameyama train positions. JR West's official issue
@@ -4419,6 +4430,36 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         actualVehicleConfirmed:false,authorizesPNG:false
       };
     }
+  }
+
+  // Exact-date train NUMBER and 10-stop proof, not a physical vehicle
+  // assignment or a real-time location. The public timetable lists 2531M
+  // daily in November 2026; MH is our SaturdayHoliday SQL suffix.
+  // Historical 252x/253x fragments cannot inherit this certification.
+  if(lineId==="Fukuchiyama" && /^2026-11-\\d{2}$/.test(serviceDate)){
+    const officialId=selectedCalendar==="odpt.Calendar:Weekday"?68234:68235;
+    const officialNumber=selectedCalendar==="odpt.Calendar:Weekday"?"2531M":"2531MH";
+    const run=result.find((r:any)=>Number(r.source_template_id)===officialId);
+    const stations=["Shinoyamaguchi","Tamba-Oyama","Shimotaki","Tanigawa",
+      "Kaibara-Hyogo","Iso-Tamba","Kuroi-Tamba","Ichijima","Tamba-Takeda","Fukuchiyama"];
+    if(!run||run.train_number!==officialNumber||
+       run.network_key!=="odpt.Railway:JR-West.Fukuchiyama"||
+       run.rail_direction!=="odpt.RailDirection:Outbound"||
+       run.train_type!=="odpt.TrainType:JR-West.Local"||
+       run.timetable_provenance!=="official-sampled:fukuchiyama:2611:2531M"||
+       !Array.isArray(run.stops)||run.stops.length!==10||
+       run.stops.some((st:any,i:number)=>st.station_key!==stations[i])||
+       run.stops[0].departure_time!=="08:37"||
+       run.stops[9].arrival_time!=="09:29")
+      throw new Error("JRWEST_FUKUCHIYAMA_2611_2531M_OFFICIAL_SAMPLE_CONFLICT");
+    run.timetable_validity="date_verified";
+    run.timetable_date_verified=true;
+    run.train_number_verification="official-2611-2531M-november";
+    run.train_number_source_url=
+      "https://timetable.jr-odekake.net/train-timetable/240391?date=20261024";
+    run.plan_source="jrwest-2611-official-sampled-2531M-no-live-location";
+    run.vehicle_plan_confirmed=false;
+    run.vehicle_artwork_path=null;
   }
 
   // Incomplete source rows are preserved in SQL for auditing, but must not
