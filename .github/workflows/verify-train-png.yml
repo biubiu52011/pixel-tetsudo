@@ -58,6 +58,9 @@ on:
       - 'tests/fukuchiyama-2611-official-north-sample.test.cjs'
       - 'tests/fukuchiyama-2611-northbound-official-samples.test.cjs'
       - 'tests/fukuchiyama-2611-kounotori-north-scope.test.cjs'
+      - 'tests/fukuchiyama-2611-evening-mapping.test.cjs'
+      - 'supabase/migrations/20261108225500_fukuchiyama_correct_evening_rapid_and_kounotori.sql'
+      - 'data/timetables/train-number-png-ranges.js'
       - 'supabase/migrations/20261108224000_fukuchiyama_kounotori_3008_3010_correct_type_north_stops.sql'
       - 'supabase/migrations/20261108223000_fukuchiyama_northbound_2528_2532_official_samples.sql'
       - 'supabase/migrations/20261108221000_fukuchiyama_november_2531m_official_sample_and_2774m_type.sql'
@@ -188,6 +191,8 @@ jobs:
         run: node --test tests/fukuchiyama-2611-northbound-official-samples.test.cjs
       - name: Verify Fukuchiyama Kounotori 3008/3010 north segments and scoped fleet candidates
         run: node --test tests/fukuchiyama-2611-kounotori-north-scope.test.cjs
+      - name: Verify Fukuchiyama late Rapid and Kounotori vehicle candidate scopes
+        run: node --test tests/fukuchiyama-2611-evening-mapping.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
