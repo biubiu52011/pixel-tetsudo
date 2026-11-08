@@ -669,7 +669,15 @@
                 var now = Date.now();
                 var cooldownUntil = apiCooldownUntil[domain] || 0;
                 if (cooldownUntil > now) {
-                    setTimeout(function() { pump(); }, cooldownUntil - now);
+                    // A throttled queue cannot deliver a fresh runinfo result.
+                    // Fail queued requests now instead of holding their promises
+                    // for a 2–5 minute cooldown (or longer on repeated failures).
+                    var waitError = new Error("HTTP backoff for " + domain);
+                    waitError.httpStatus = apiCooldownStatus[domain] || 429;
+                    while (apiRequestQueue[domain].length) {
+                        apiRequestQueue[domain].shift().reject(waitError);
+                    }
+                    apiQueueProcessing[domain] = false;
                     return;
                 }
                 var lastTime = apiLastRequestTime[domain] || 0;
@@ -3231,7 +3239,9 @@
 
     function loadRealtimeData(delayOnly, positionOperators, skipDelayRefresh) {
         validateAuthoritativeRealtimeConfig();
-        if (!skipDelayRefresh || !window.ODPT_DELAY_DATA) window.ODPT_DELAY_DATA = {};
+        // Retain settled operator statuses during refresh. Clearing this
+        // shared object on every poll reintroduced an avoidable loading state.
+        if (!window.ODPT_DELAY_DATA) window.ODPT_DELAY_DATA = {};
         // Position snapshots are retained per operator. On-demand refresh must
         // not erase another already-active operator before its own poll runs.
         if (!window.ODPT_TRAIN_POSITIONS || (!delayOnly && !positionOperators)) window.ODPT_TRAIN_POSITIONS = {};
@@ -3244,6 +3254,15 @@
         var positionOps = Array.isArray(positionOperators) ? positionOperators : ops;
         var loaded = { delay: 0, positions: 0 };
         var delayPromises = [], posPromises = [];
+        var delayPushTimer = null;
+        function scheduleDelayPush() {
+            if (delayPushTimer !== null) return;
+            // Batch near-simultaneous replies but never await other operators.
+            delayPushTimer = setTimeout(function() {
+                delayPushTimer = null;
+                pushDelay();
+            }, 35);
+        }
 
         ops.forEach(function(op) {
             var ep = ODPT_ENDPOINTS[op];
@@ -3298,6 +3317,9 @@
                             message: e && e.message || "request failed"
                         };
                         console.debug("[ODPT] " + op + " trainInformation fetch failed:", e && e.message);
+                    }).then(function() {
+                        // Deliver success, empty result, and failure independently.
+                        scheduleDelayPush();
                     })
                 );
             }
@@ -3466,7 +3488,12 @@
         // 延误情报独立推送；列车位置在 posPromises 就绪后推送（不阻塞、不依赖延误链）
         // 拉取完成即落盘原始数据（带 ts），供其他标签页和切页 stale-while-revalidate。
         if (!skipDelayRefresh) {
-            Promise.all(delayPromises).then(function() { pushDelay(); persistRawRealtime(!!delayOnly); });
+            if (!delayPromises.length) scheduleDelayPush();
+            // Complete-snapshot persistence may wait; visible status cannot.
+            Promise.all(delayPromises).then(function() {
+                scheduleDelayPush();
+                persistRawRealtime(!!delayOnly);
+            });
         }
         if (delayOnly) return Promise.resolve();  // 惰性模式不拉位置
         return Promise.all(posPromises).then(function() { pushTrainPositions(); persistRawRealtime(false); });

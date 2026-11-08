@@ -63,6 +63,7 @@ jobs:
           node --check js/runinfo-web.js
           node --test tests/runinfo-evaluator-partial-cancellation.test.cjs tests/runinfo-web-snapshot.test.cjs
           node tests/runinfo-regression.js
+          node --test tests/runinfo-operator-delivery.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
