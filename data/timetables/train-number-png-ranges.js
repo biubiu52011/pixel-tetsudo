@@ -2685,7 +2685,10 @@
        (p.displayLineId&&p.displayLineId!=="Fukuchiyama")||
        p.sourceRailway!=="odpt.Railway:JR-West.Fukuchiyama"||
        p.positionSource!=="supabase-train-run"||
-       p.estimated!==true||p.timetableDateVerified===true||
+       p.estimated!==true||
+       (p.timetableDateVerified===true&&
+         ![68244,68245,68251,68252,68314,68315,68168].includes(
+           Number(proof.sourceTemplateId)))||
        proof.referenceOnly!==true||proof.numberDateVerified!==false||
        proof.actualVehicleConfirmed!==false||proof.authorizesPNG!==false||
        proof.timetableValidity!=="undated_not_current_verified"||
@@ -2696,10 +2699,18 @@
       n=/^([0-9]{3,5})(C|MO|M)(H?)$/.exec(num),
       dir=String(p.railDirection||"").split(/[.:]/).pop(),
       type=String(p.trainType||"").split(/[.:]/).pop(),
-      models=["207系","321系","223系6000番台","225系6000番台"];
+      expressPublicBySource={
+        68244:"3008M",68245:"3008MH",68251:"3010M",68252:"3010MH",
+        68314:"3028M",68315:"3028MH",68168:"7025MH"
+      },
+      isExpress=type==="LimitedExpress"&&
+        expressPublicBySource[Number(proof.sourceTemplateId)]===num,
+      models=isExpress?["287系","289系"]:
+        ["207系","321系","223系6000番台","225系6000番台"];
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
        !n||!["Inbound","Outbound"].includes(dir)||
-       !["Local","Rapid","SectionRapid"].includes(type)||
+       !["Local","Rapid","SectionRapid","LimitedExpress"].includes(type)||
+       (type==="LimitedExpress"&&!isExpress)||
        (type!=="Local"&&n[2]!=="M")||
        proof.serviceDate!==date||proof.sourceTrainId!==num||
        proof.direction!=="odpt.RailDirection:"+dir||
@@ -2726,7 +2737,7 @@
        proof.candidateAssets.length!==0)return null;
     var digits=Number(n[1]), band=FUKUCHIYAMA_NUMBER_BANDS.find(function(x){
       return x[1]===n[2]&&digits>=x[2]&&digits<=x[3]&&
-        (!x[4]||x[4]===type);
+        (isExpress||!x[4]||x[4]===type);
     });
     if(!band)return null;
     var isC=band[1]==="C";
