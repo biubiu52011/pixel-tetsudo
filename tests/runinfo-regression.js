@@ -171,4 +171,68 @@ check("Seibu live operator-wide normal text is applied to both Seibu lines",()=>
   const expired=Object.assign({},current,{"dct:valid":"2000-01-01T00:00:00Z"});
   assert.equal(f._pickRecords([expired],lines.Ikebukuro).length,0);
 });
+check("JR i-Stations official Japanese structured statuses are recognized",()=>{
+  assert.equal(parse("",{structuredStatus:{ja:"遅延"}}).status,"delayed");
+  assert.equal(parse("",{structuredStatus:{ja:"運転見合わせ"}}).status,"suspended");
+  assert.equal(parse("",{structuredStatus:{ja:"平常運転"}}).status,"normal");
+  assert.equal(parse("",{structuredStatus:"Delay"}).status,"delayed");
+  assert.equal(parse("",{structuredStatus:"Suspension"}).status,"suspended");
+});
+check("Keikyu operator-wide normal is applied only to its own lines",()=>{
+  const lines={
+    Keikyu:{id:"Keikyu",operator:"Keikyu",name:"京急本線",stations:["Shinagawa","Yokohama"]},
+    KeikyuAirport:{id:"KeikyuAirport",operator:"Keikyu",name:"京急空港線",stations:["Keikyu-Kamata","HanedaAirport"]}
+  };
+  w.ODPTClient.LINE_TO_OPERATOR.Keikyu="Keikyu";
+  w.ODPTClient.LINE_TO_OPERATOR.KeikyuAirport="Keikyu";
+  w.ODPTClient.LINE_RAILWAY_CODE.Keikyu="Main";
+  w.ODPTClient.LINE_RAILWAY_CODE.KeikyuAirport="Airport";
+  w.DataLayer={getLine:id=>lines[id]||null,getAllLines:()=>lines};
+  w.ODPTClient.supports=(op,type)=>op==="Keikyu"&&type==="trainInformation";
+  const current={
+    "@id":"official-keikyu-company-wide",
+    "@type":"odpt:TrainInformation",
+    "odpt:operator":"odpt.Operator:Keikyu",
+    "odpt:trainInformationText":{"ja":"京急線は平常通り運転しています。"},
+    "dc:date":now,"dct:valid":new Date(Date.now()+300000).toISOString()
+  };
+  assert.equal(f._selectScopedRecords([current],lines.Keikyu).length,1);
+  assert.equal(f._selectScopedRecords([current],lines.KeikyuAirport).length,1);
+  f.updateOdptData({Keikyu:[current]});
+  const fused=f.fuseAll();
+  for(const id of Object.keys(lines)){
+    assert.equal(fused.lines[id].delayInfo.status,"normal");
+    assert.equal(fused.lines[id].delayInfo.source,"odpt");
+  }
+  const localIncident=Object.assign({},current,{"odpt:trainInformationText":{"ja":"京急線のうち空港線で遅れが出ています。"}});
+  assert.equal(f._selectScopedRecords([localIncident],lines.Keikyu).length,0);
+  assert.equal(f._selectScopedRecords([localIncident],lines.KeikyuAirport).length,0);
+  assert.equal(f._selectScopedRecords([Object.assign({},current,{"odpt:operator":"odpt.Operator:Seibu"})],lines.Keikyu).length,0);
+});
+check("official 2026 railway IDs match existing canonical Japanese line names",()=>{
+  const source=fs.readFileSync(path.join(__dirname,"../data/api/odpt-unified.js"),"utf8");
+  const lines=JSON.parse(fs.readFileSync(path.join(__dirname,"../data/core/railway_data.compact.json"),"utf8")).lines;
+  const expected={
+    Komii:["JR-East","Koumi","小海線"],
+    OuMain:["JR-East","Ou","奥羽本線"],
+    Yonezawa:["JR-East","Yonesaka","米坂線"],
+    RikutoEast:["JR-East","RikuEast","陸羽東線"],
+    RikutsuWest:["JR-East","RikuWest","陸羽西線"],
+    SobuMain:["JR-East","Sobu","総武本線"],
+    TohokuMain:["JR-East","Tohoku","東北本線"],
+    Nikkoku:["Tobu","Kinugawa","東武鬼怒川線"],
+    TokyuShinYokohama:["Tokyu","TokyuShinYokohama","東急新横浜線"]
+  };
+  function pairs(text){
+    const o={};for(const m of text.matchAll(/"([^"]+)"\s*:\s*"([^"]+)"/g))o[m[1]]=m[2];
+    return o;
+  }
+  const ops=pairs(source.slice(source.indexOf("var LINE_TO_OPERATOR = {"),source.indexOf("var LINE_RAILWAY_CODE = {")));
+  const aliases=pairs(source.slice(source.indexOf("var LINE_RAILWAY_CODE = {"),source.indexOf("// Canonical railway identity:")));
+  for(const [id,[operator,railway,name]] of Object.entries(expected)){
+    assert.equal(lines[id]?.nameJa,name,id+" canonical identity");
+    assert.equal(ops[id],operator,id+" official operator");
+    assert.equal(aliases[id]||id,railway,id+" official railway");
+  }
+});
 console.log("PASS",n,"offline runinfo regression checks");

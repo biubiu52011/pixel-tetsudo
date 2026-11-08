@@ -70,9 +70,12 @@
     var s = textOf(v);
     if (!s) return null;
     var tail = s.split(":").pop();
-    if (/^(?:Normal|normal)$/i.test(tail)) return "normal";
-    if (/^(?:Delay|Delayed|delay)$/i.test(tail)) return "delayed";
-    if (/^(?:Suspension|Suspended|suspension)$/i.test(tail)) return "suspended";
+    if (/^(?:Normal|normal)$/i.test(tail) ||
+        /^(?:平常|平常運転|平常運行|平常通り運転|平常通り運行)$/.test(tail)) return "normal";
+    if (/^(?:Delay|Delayed|delay)$/i.test(tail) ||
+        /^(?:遅延|遅れ|ダイヤ乱れ|一部運休|一部列車運休)$/.test(tail)) return "delayed";
+    if (/^(?:Suspension|Suspended|suspension)$/i.test(tail) ||
+        /^(?:運転見合わせ|運行見合わせ|運転中止|全線運休)$/.test(tail)) return "suspended";
     return null;
   }
 

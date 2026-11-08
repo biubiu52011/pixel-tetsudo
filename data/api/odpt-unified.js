@@ -251,6 +251,16 @@
 
     // ========== 线路 -> 运营商映射 ==========
     var LINE_TO_OPERATOR = {
+        // Verified official TrainInformation crosswalks for existing local lines.
+        "Komii": "JR-East",            // 小海線 → JR-East.Koumi
+        "OuMain": "JR-East",           // 奥羽本線 → JR-East.Ou
+        "Yonezawa": "JR-East",         // 米坂線 → JR-East.Yonesaka
+        "RikutoEast": "JR-East",       // 陸羽東線 → JR-East.RikuEast
+        "RikutsuWest": "JR-East",      // 陸羽西線 → JR-East.RikuWest
+        "SobuMain": "JR-East",         // 総武本線 → JR-East.Sobu
+        "TohokuMain": "JR-East",       // 東北本線 → JR-East.Tohoku
+        "Nikkoku": "Tobu",             // 東武鬼怒川線 → Tobu.Kinugawa
+        "TokyuShinYokohama": "Tokyu", // 東急新横浜線
         // Canonical database IDs retained alongside legacy script aliases.
         "Daishi_Keikyu": "Keikyu",
         "TokyuDenEn": "Tokyu",
@@ -474,6 +484,15 @@
     // 内部线路 key 与 ODPT odpt.Railway code 不一致时在此映射，避免 404。
     // 仅在内部 lineId 与数据源实际 owl:sameAs railway code 不同时登记已验证 alias；禁止根据英文名/命名惯例猜测 API identity。
     var LINE_RAILWAY_CODE = {
+      // Source-certified railway suffixes for existing, differently named IDs.
+      "Komii": "Koumi",
+      "OuMain": "Ou",
+      "Yonezawa": "Yonesaka",
+      "RikutoEast": "RikuEast",
+      "RikutsuWest": "RikuWest",
+      "SobuMain": "Sobu",
+      "TohokuMain": "Tohoku",
+      "Nikkoku": "Kinugawa",
       "Daishi_Keikyu": "Daishi",
       "TokyuDenEn": "DenEnToshi",
       "SotetsuShin-Yokohama": "SotetsuShinYokohama",
