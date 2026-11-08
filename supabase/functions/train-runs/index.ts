@@ -236,10 +236,11 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   if(lineId==="Fukuchiyama"){
     templates=templates.filter((t:any)=>{
       const source=String(t.source_path||"");
-      const number=String(t.train_number||"");
-      const scopedExpress= /^(30|70)[0-9]{2}MH?$/.test(number) &&
-        Array.isArray(t.operating_dates);
-      if(!source.startsWith("official-sampled:fukuchiyama:")&&!scopedExpress)
+      // Respect every explicit service-date whitelist, not only 30xx/70xx.
+      // Empty date[] means a preserved historical source does not operate
+      // in any projected date (e.g. 2751/2778 SatHoliday legacy copies).
+      const dated=Array.isArray(t.operating_dates);
+      if(!source.startsWith("official-sampled:fukuchiyama:")&&!dated)
         return true;
       return Array.isArray(t.operating_dates)&&t.operating_dates.some(
         (date:any)=>String(date).slice(0,10)===serviceDate);
@@ -4657,6 +4658,33 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       numberDateVerified:true,referenceOnly:true,
       actualVehicleConfirmed:false,authorizesPNG:false
     };
+  }
+
+  // JR-West November 28 2779M: the Shinmita--Shinoyamaguchi
+  // segment is CANCELLED and replaced by bus on that date. The train
+  // itself still serves Osaka--Shinmita. Preserve the original 16-stop
+  // historical SQL source for all other dates; scope this projection only.
+  // https://timetable.jr-odekake.net/train-timetable/200281?date=20261023
+  if(lineId==="Fukuchiyama" && serviceDate==="2026-11-28"){
+    const run=result.find((r:any)=>Number(r.source_template_id)===68185);
+    const expected=["Osaka","Amagasaki","Itami","Kawanishi-Ikeda",
+      "Nakayama-Tera","Takarazuka","Nishinomiya-Najio",
+      "Sanda-Hyogo","Shinmita","Hirono-Hyogo","Sou-No",
+      "Ranpon","Kusano-Hyogo","Furuichi",
+      "Minami-Yashiro","Shinoyamaguchi"];
+    if(selectedCalendar!=="odpt.Calendar:SaturdayHoliday"||
+       !run||run.train_number!=="2779MH"||
+       run.train_type!=="odpt.TrainType:JR-West.Rapid"||
+       !Array.isArray(run.stops)||run.stops.length!==expected.length||
+       run.stops.some((st:any,i:number)=>st.station_key!==expected[i]))
+      throw new Error("JRWEST_FUKUCHIYAMA_2779_1128_PARTIAL_OPERATION_CONFLICT");
+    run.stops=run.stops.slice(0,9);
+    run.timetable_validity="partial_service_disruption";
+    run.plan_source="jrwest-2611-2779m-1128-osaka-shinmita-only";
+    run.train_number_source_url=
+      "https://timetable.jr-odekake.net/train-timetable/200281?date=20261023";
+    run.vehicle_plan_confirmed=false;
+    run.vehicle_artwork_path=null;
   }
 
   // Incomplete source rows are preserved in SQL for auditing, but must not
