@@ -117,7 +117,7 @@ test('estimator does not claim actual stock identity; HTML entrypoint refreshes 
   assert.match(estimatorSrc,/var _osakaHigashiScoped=!!osakaHigashiScoped&&\s*vehResult\.identityStatus!=="EXACT"/);
   assert.match(estimatorSrc,/vehicleIconPath: \(_osakaHigashiScoped\|\|_saganoScoped/);
   assert.match(html,/vehicle-garage-png-map\.js\?v=41e136e01c89/);
-  assert.match(html,/train-vehicle\.js\?v=d272859e2314/);
-  assert.match(html,/train-position-estimator\.js\?v=1405296c8393/);
-  assert.match(html,/trains-render\.js\?v=a1fc68e71453/);
+  assert.match(html,/train-vehicle\.js\?v=1cea5e03d095/);
+  assert.match(html,/train-position-estimator\.js\?v=2a9aa8d46c24/);
+  assert.match(html,/trains-render\.js\?v=1d4ca86bb5f7/);
 });
