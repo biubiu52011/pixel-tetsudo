@@ -6,6 +6,7 @@ const sql=read('supabase/migrations/20261108231000_fukuchiyama_kounotori_source_
 const fridaySql=read('supabase/migrations/20261108232000_fukuchiyama_7025m_friday_official_sample.sql');
 const edge=read('supabase/functions/train-runs/index.ts');
 const render=read('js/trains-render.js');
+const estimator=read('js/train-position-estimator.js');
 const context={window:{},Date,console:{log(){},warn(){},error(){},debug(){}}};
 vm.createContext(context);
 for(const path of ['data/timetables/vehicle-garage-png-map.js',
@@ -113,4 +114,17 @@ test('marker accessible text distinguishes representative 287 Kounotori from 321
  assert.match(render,/287系の画像は287・289系/);
  assert.match(render,/fukKounotori/);
  assert.match(render,/车辆图片：321系仅为207／321系共通运用示意/);
+});
+
+test('station-position adapter forwards both historic Kounotori and official Friday 7025 source proof',()=>{
+ const prefix=estimator.indexOf('sqlPublishedNumberFleetReference:(osakaMahorobaScoped');
+ const suffix=estimator.indexOf('publishedHakushinServiceFamily:',prefix);
+ assert.ok(prefix>=0&&suffix>prefix);
+ const bridge=estimator.slice(prefix,suffix);
+ assert.match(bridge,/lineId==="Fukuchiyama"/);
+ assert.match(bridge,/tt\._positionSource==="supabase-train-run"/);
+ assert.match(bridge,/sql-jrwest-fukuchiyama-2611-historical-fleet-reference/);
+ assert.match(bridge,/sql-jrwest-fukuchiyama-2611-official-7025-friday/);
+ assert.match(bridge,/tt\._sqlPublishedNumberFleetReference\.source/);
+ assert.match(bridge,/\?tt\._sqlPublishedNumberFleetReference\|\|null:null/);
 });
