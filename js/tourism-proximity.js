@@ -13,6 +13,7 @@
   var R = 6371000; // Earth radius in meters
   var DEFAULT_RADIUS = 3000; // 3km
   var DEFAULT_LIMIT = 10;
+  var EXIT_RECOMMEND_MAX_DISTANCE_M = 2000;
   var CACHE_TTL_MS = 60000; // 60 seconds
   var CACHE_MIN_MOVE_M = 100; // Recompute only if user moved >= 100m
   // 出口坐标必须来自可追溯来源；无 source 的估算/站中心兜底不参与推荐。
@@ -99,8 +100,8 @@
     var sLat = stationCoord[0];
     var sLng = stationCoord[1];
 
-    // 根据车站坐标和半径构建缓存键（不使用 stationId，以处理名称变体）。
-    var cacheKey = sLat.toFixed(6) + "," + sLng.toFixed(6) + '|' + radius + '|' + limit;
+    // 出口具有车站归属；即使两个车站共享中心坐标，也必须隔离缓存。
+    var cacheKey = stationId + '|' + sLat.toFixed(6) + "," + sLng.toFixed(6) + '|' + radius + '|' + limit;
     var now = Date.now();
 
     // 检查缓存。
@@ -121,12 +122,17 @@
       var dist = haversine(sLat, sLng, spot.coord[0], spot.coord[1]);
       if (dist === Infinity) continue;
       if (dist <= radius) {
+        // 候选范围仍按车站中心筛选；展示距离与出口均使用当前站同一个已核验出口。
+        var nearestExit = getNearestExit(stationId, spot.coord[0], spot.coord[1]);
+        var recommendedExit = nearestExit && nearestExit.distance <= EXIT_RECOMMEND_MAX_DISTANCE_M
+          ? nearestExit : null;
+        var displayDistance = recommendedExit ? recommendedExit.distance : dist;
         results.push({
           spot: spot,
-          distance: dist,
-          distanceText: formatWalkMinutes(dist),
+          distance: displayDistance,
+          distanceText: formatWalkMinutes(displayDistance),
           stationId: stationId,
-          exitDirection: getExitNameByCoords(stationId, dist, spot.coord[0], spot.coord[1]),
+          exitDirection: recommendedExit ? recommendedExit.name : null,
         });
       }
     }
@@ -217,7 +223,7 @@
    */
   function recommendExitStation(spotLat, spotLng, fromStationId, maxDistM) {
     if (spotLat == null || spotLng == null) return null;
-    maxDistM = (maxDistM > 0) ? maxDistM : 2000;
+    maxDistM = (maxDistM > 0) ? maxDistM : EXIT_RECOMMEND_MAX_DISTANCE_M;
     if (!fromStationId) return { best: null, fromExit: null, list: [] };
 
     var nearest = getNearestExit(fromStationId, spotLat, spotLng);
@@ -267,6 +273,7 @@
     // 暴露常量以保持向后兼容。
     DEFAULT_RADIUS: DEFAULT_RADIUS,
     DEFAULT_LIMIT: DEFAULT_LIMIT,
+    EXIT_RECOMMEND_MAX_DISTANCE_M: EXIT_RECOMMEND_MAX_DISTANCE_M,
     CACHE_TTL_MS: CACHE_TTL_MS,
     CACHE_MIN_MOVE_M: CACHE_MIN_MOVE_M
   };

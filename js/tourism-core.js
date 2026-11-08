@@ -186,7 +186,7 @@
     var mapLat = coord ? coord[0] : null;
     var mapLng = coord ? coord[1] : null;
     var stationCoords = window.STATION_COORDS || {};
-    var spotStation = spot.station || state.currentStationKey || '';
+    var spotStation = stationKey || state.currentStationKey || spot.station || '';
     if (stationKey || state.currentStationKey) {
       ctx.stationName = getStationLabel(stationKey || state.currentStationKey);
     } else if (spotStation && stationCoords[spotStation]) {
@@ -198,7 +198,7 @@
     }
     var exitReco = null;
     if (window.TourismProximity && TourismProximity.recommendExitStation) {
-      exitReco = TourismProximity.recommendExitStation(mapLat, mapLng, stationKey || state.currentStationKey || null, 2000);
+      exitReco = TourismProximity.recommendExitStation(mapLat, mapLng, stationKey || state.currentStationKey || null, TourismProximity.EXIT_RECOMMEND_MAX_DISTANCE_M || 2000);
     }
     if (exitReco && exitReco.best) {
       var _bestLabel = getStationLabel(exitReco.best.stationId);

@@ -95,4 +95,34 @@ assert.equal(smallStationWithoutReviewedExits.best, null);
 assert.equal(smallStationWithoutReviewedExits.fromExit, null);
 assert.equal(smallStationWithoutReviewedExits.list.length, 0);
 
+// Same-center station IDs must not reuse another station's exit from the proximity cache.
+window.STATION_COORDS = {
+  SharedA: [35.0, 139.0],
+  SharedB: [35.0, 139.0],
+  NoExit: [35.0, 139.0],
+};
+window.STATION_EXITS.SharedA = [
+  { ...verifiedFixture, stationId: 'SharedA', name: '西口', lng: 138.999 },
+  { ...verifiedFixture, stationId: 'SharedA', name: '東口', lng: 139.001 },
+];
+window.STATION_EXITS.SharedB = [
+  { ...verifiedFixture, stationId: 'SharedB', name: '南口', lng: 139.002 },
+];
+window.TOURISM_SPOTS = [{ name: 'Sample spot', coord: [35.0, 139.001] }];
+
+const spotLat = 35.0, spotLng = 139.001;
+const aNearby = window.TourismProximity.getNearbySpotsByStation('SharedA', { radius: 3000, limit: 10 });
+const bNearby = window.TourismProximity.getNearbySpotsByStation('SharedB', { radius: 3000, limit: 10 });
+const noExitNearby = window.TourismProximity.getNearbySpotsByStation('NoExit', { radius: 3000, limit: 10 });
+assert.equal(aNearby[0].stationId, 'SharedA');
+assert.equal(aNearby[0].exitDirection, '東口');
+assert.equal(bNearby[0].stationId, 'SharedB');
+assert.equal(bNearby[0].exitDirection, '南口');
+assert.equal(noExitNearby[0].exitDirection, null);
+assert.ok(noExitNearby[0].distance > 0, 'unverified exits must fall back to station center');
+const aRecommendation = window.TourismProximity.recommendExitStation(spotLat, spotLng, 'SharedA');
+assert.equal(aRecommendation.best.exitName, '東口');
+assert.ok(Math.abs(aNearby[0].distance - aRecommendation.best.distance) < 0.001,
+  'overview and detail must use the same verified exit distance');
+
 console.log(`tourism exit integrity: PASS (${entries.length} officially reviewed exits)`);

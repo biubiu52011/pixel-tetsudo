@@ -173,23 +173,17 @@
     const uLng = state.userLng;
     const now = Date.now();
 
-    // 检查缓存有效性。
+    // 仅复用同一车站、有效期内的结果；移动距离要与上一次用户位置比较。
     if (_distCache.results &&
         _distCache.station === stationKey &&
-        _distCache.userLat === uLat &&
-        _distCache.userLng === uLng &&
         (now - _distCache.timestamp) < DIST_CACHE_TTL_MS) {
-      return _distCache.results;
-    }
-
-    // 用户移动距离明显时重新计算。
-    if (_distCache.results && stationKey && uLat !== null && uLng !== null) {
-      const cachedCoord = getStationCoords()[_distCache.station];
-      if (cachedCoord) {
-        const moved = TourismProximity.getDistance(uLat, uLng, cachedCoord[0], cachedCoord[1]);
-        if (moved < DIST_CACHE_MIN_MOVE_M) {
-          return _distCache.results;
-        }
+      if (_distCache.userLat === uLat && _distCache.userLng === uLng) {
+        return _distCache.results;
+      }
+      if (_distCache.userLat != null && _distCache.userLng != null &&
+          uLat != null && uLng != null &&
+          TourismProximity.getDistance(uLat, uLng, _distCache.userLat, _distCache.userLng) < DIST_CACHE_MIN_MOVE_M) {
+        return _distCache.results;
       }
     }
 
