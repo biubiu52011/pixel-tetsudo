@@ -29112,5 +29112,47 @@
     "zh": "丹波竹田",
     "ko": "단바타케다",
     "en": "Tamba-Takeda"
+  },
+  "Osakajo-Kitazume": {
+    "ja": "大阪城北詰",
+    "zh": "大阪城北诘",
+    "ko": "오사카조키타즈메",
+    "en": "Osakajokitazume"
+  },
+  "Osaka-Tenmangu": {
+    "ja": "大阪天満宮",
+    "zh": "大阪天满宫",
+    "ko": "오사카텐만구",
+    "en": "Osakatemmangu"
+  },
+  "Kitashinchi": {
+    "ja": "北新地",
+    "zh": "北新地",
+    "ko": "기타신치",
+    "en": "Kitashinchi"
+  },
+  "Shin-Fukushima": {
+    "ja": "新福島",
+    "zh": "新福岛",
+    "ko": "신후쿠시마",
+    "en": "Shin-Fukushima"
+  },
+  "Ebie": {
+    "ja": "海老江",
+    "zh": "海老江",
+    "ko": "에비에",
+    "en": "Ebie"
+  },
+  "Mitejima": {
+    "ja": "御幣島",
+    "zh": "御币岛",
+    "ko": "미테지마",
+    "en": "Mitejima"
+  },
+  "Kashima-Osaka": {
+    "ja": "加島",
+    "zh": "加岛",
+    "ko": "가시마",
+    "en": "Kashima"
   }
 }

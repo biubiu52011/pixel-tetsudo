@@ -531,7 +531,7 @@
       models:['JR西日本223系','JR西日本225系','JR西日本207系','JR西日本321系'], sourceUrl:'https://www.westjr.co.jp/press/article/2020/02/page_15645.html'},
     {id:'jrwest-hanwa-kansai', operator:'JR-West', lineIds:['Hanwa','KansaiAirport'],
       models:['JR西日本223系','JR西日本225系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
-    {id:'jrwest-gakkentoshi', operator:'JR-West', lineIds:['Gakkentoshi'],
+    {id:'jrwest-gakkentoshi', operator:'JR-West', lineIds:['Gakkentoshi','JRTozai'],
       models:['JR西日本207系','JR西日本321系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
     {id:'jrwest-fukuchiyama', operator:'JR-West', lineIds:['Fukuchiyama'],
       // Route-wide candidate fleet only; not an individual service/formation.

@@ -14631,6 +14631,34 @@
     "Tamba-Takeda": {
       "lat": 35.243735,
       "lng": 135.134095
+    },
+    "Osakajo-Kitazume": {
+      "lat": 34.69441,
+      "lng": 135.5256548
+    },
+    "Osaka-Tenmangu": {
+      "lat": 34.6973844,
+      "lng": 135.5127588
+    },
+    "Kitashinchi": {
+      "lat": 34.6983909,
+      "lng": 135.4964282
+    },
+    "Shin-Fukushima": {
+      "lat": 34.6949583,
+      "lng": 135.485667
+    },
+    "Ebie": {
+      "lat": 34.6952147,
+      "lng": 135.4735483
+    },
+    "Mitejima": {
+      "lat": 34.7120174,
+      "lng": 135.4556873
+    },
+    "Kashima-Osaka": {
+      "lat": 34.7275806,
+      "lng": 135.4539749
     }
   },
   "lines": {
@@ -42822,7 +42850,9 @@
         8,
         8
       ],
-      "throughServices": [],
+      "throughServices": [
+        "JRTozai"
+      ],
       "transferStations": [
         {
           "station": "Osaka",
@@ -42847,11 +42877,28 @@
           "lineId": "SaninMain",
           "type": "in/out",
           "note": "福知山駅：山陰本線へ乗換"
+        },
+        {
+          "station": "Amagasaki",
+          "lineId": "JRTozai",
+          "type": "in",
+          "note": "同站换乘"
         }
       ],
       "nameZh": "福知山线(JR宝塚线)",
       "nameKo": "후쿠치야마선(JR 다카라즈카선)",
-      "serviceBoundaries": [],
+      "serviceBoundaries": [
+        {
+          "lineId": "JRTozai",
+          "handoverStations": [
+            "Amagasaki"
+          ],
+          "evidence": {
+            "source": "https://www.jr-odekake.net/station/pdf/ubn.pdf; https://timetable.jr-odekake.net/train-timetable/323501?date=20261004 (route-level junction only; not individual-train identity)",
+            "confidence": "HIGH"
+          }
+        }
+      ],
       "presentation": {
         "nameJa": "福知山線（JR宝塚線）",
         "nameZh": "福知山线(JR宝塚线)",
@@ -43315,7 +43362,8 @@
         3
       ],
       "throughServices": [
-        "Nara"
+        "Nara",
+        "JRTozai"
       ],
       "transferStations": [
         {
@@ -43341,6 +43389,12 @@
           "lineId": "OsakaHigashi",
           "type": "in",
           "note": "同站换乘"
+        },
+        {
+          "station": "Kyobashi-Osaka",
+          "lineId": "JRTozai",
+          "type": "in",
+          "note": "同站换乘"
         }
       ],
       "nameZh": "学研都市线(片町线)",
@@ -43353,6 +43407,16 @@
           ],
           "evidence": {
             "source": "https://timetable.jr-odekake.net/train-timetable/123201?date=20261006 (weekday 5733C: Nara→Kizu→Gakkentoshi); https://timetable.jr-odekake.net/train-timetable/323491?date=20261013 (weekday 5421M); https://timetable.jr-odekake.net/train-timetable/123251?date=20261012 (holiday 5721M)",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "JRTozai",
+          "handoverStations": [
+            "Kyobashi-Osaka"
+          ],
+          "evidence": {
+            "source": "https://www.jr-odekake.net/station/pdf/ubn.pdf; https://timetable.jr-odekake.net/train-timetable/323501?date=20261004 (route-level junction only; not individual-train identity)",
             "confidence": "HIGH"
           }
         }
@@ -47891,6 +47955,108 @@
         "operatorGroup": "JR_WEST"
       },
       "serviceBoundaries": []
+    },
+    "JRTozai": {
+      "name": "JRTozai",
+      "nameEn": "JR Tōzai Line",
+      "nameJa": "JR東西線",
+      "code": "JRTozai",
+      "color": "#9370db",
+      "operator": "JR-West",
+      "region": "Kansai Area",
+      "type": "straight",
+      "image": "../images/鉄道/JR西日本/近畿_H.png",
+      "durationTotalMin": 18,
+      "branchOf": null,
+      "stations": [
+        "Kyobashi-Osaka",
+        "Osakajo-Kitazume",
+        "Osaka-Tenmangu",
+        "Kitashinchi",
+        "Shin-Fukushima",
+        "Ebie",
+        "Mitejima",
+        "Kashima-Osaka",
+        "Amagasaki"
+      ],
+      "durations": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3
+      ],
+      "throughServices": [
+        "Gakkentoshi",
+        "Fukuchiyama"
+      ],
+      "transferStations": [
+        {
+          "station": "Kyobashi-Osaka",
+          "lineId": "Gakkentoshi",
+          "type": "in",
+          "note": "同站换乘"
+        },
+        {
+          "station": "Kyobashi-Osaka",
+          "lineId": "OsakaLoop",
+          "type": "in",
+          "note": "同站换乘"
+        },
+        {
+          "station": "Amagasaki",
+          "lineId": "Fukuchiyama",
+          "type": "in",
+          "note": "同站换乘"
+        },
+        {
+          "station": "Amagasaki",
+          "lineId": "TokaidoKansai",
+          "type": "in",
+          "note": "同站换乘"
+        }
+      ],
+      "nameZh": "JR东西线",
+      "nameKo": "JR 도자이선",
+      "serviceBoundaries": [
+        {
+          "lineId": "Gakkentoshi",
+          "handoverStations": [
+            "Kyobashi-Osaka"
+          ],
+          "evidence": {
+            "source": "https://www.jr-odekake.net/station/pdf/ubn.pdf; https://timetable.jr-odekake.net/train-timetable/323501?date=20261004 (route-level junction only; not individual-train identity)",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "Fukuchiyama",
+          "handoverStations": [
+            "Amagasaki"
+          ],
+          "evidence": {
+            "source": "https://www.jr-odekake.net/station/pdf/ubn.pdf; https://timetable.jr-odekake.net/train-timetable/323501?date=20261004 (route-level junction only; not individual-train identity)",
+            "confidence": "HIGH"
+          }
+        }
+      ],
+      "presentation": {
+        "nameJa": "JR東西線",
+        "nameZh": "JR东西线",
+        "nameEn": "JR Tōzai Line",
+        "nameKo": "JR 도자이선",
+        "color": "#9370db",
+        "code": "H",
+        "icon": "../images/鉄道/JR西日本/近畿_H.png",
+        "order": 9,
+        "lineIds": [
+          "JRTozai"
+        ],
+        "operatorGroup": "JR_WEST"
+      }
     }
   },
   "name_map": {
