@@ -2791,6 +2791,72 @@
     });
   }
 
+  // 7025M Fridays (6/13/20/27 Nov) use a different SQL source ID
+  // than the legacy SaturdayHoliday 7025MH. Verify the canonical Friday
+  // sample by source/date/stop order instead of borrowing weekend proof.
+  function verifyFukuchiyamaFriday7025(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference,
+      dates=["2026-11-06","2026-11-13","2026-11-20","2026-11-27"],
+      stops=["Osaka","Amagasaki","Takarazuka","Sanda-Hyogo",
+        "Shinmita","Sou-No","Shinoyamaguchi","Tanigawa",
+        "Kaibara-Hyogo","Kuroi-Tamba","Fukuchiyama"],
+      models=["287系","289系"],
+      date=String(p&&p.serviceDate||"").slice(0,10),
+      keys=Array.isArray(p&&p.scheduledStopKeys)
+        ?p.scheduledStopKeys.map(function(x){return String(x||"").split(".").pop();})
+        :[];
+    if(!p||!proof||dates.indexOf(date)<0||
+       p.trainNumber!=="7025M"||
+       p.positionLineId!=="Fukuchiyama"||
+       p.displayLineId!=="Fukuchiyama"||
+       p.sourceRailway!=="odpt.Railway:JR-West.Fukuchiyama"||
+       p.positionSource!=="supabase-train-run"||
+       p.estimated!==true||p.timetableDateVerified!==true||
+       p.trainType!=="odpt.TrainType:JR-West.LimitedExpress"||
+       p.railDirection!=="odpt.RailDirection:Outbound"||
+       sourceCalendar(p)!=="weekday"||
+       proof.source!=="sql-jrwest-fukuchiyama-2611-official-7025-friday"||
+       proof.lineId!=="Fukuchiyama"||
+       Number(proof.sourceTemplateId)!==2611087025001||
+       proof.sourceTrainId!=="7025M"||
+       proof.serviceDate!==date||
+       proof.calendar!=="odpt.Calendar:Weekday"||
+       proof.direction!=="odpt.RailDirection:Outbound"||
+       proof.trainType!=="odpt.TrainType:JR-West.LimitedExpress"||
+       proof.referenceOnly!==true||
+       proof.numberDateVerified!==true||
+       proof.timetableValidity!=="date_verified"||
+       proof.actualVehicleConfirmed!==false||
+       proof.authorizesPNG!==false||
+       proof.timetableSourcePath!==
+         "official-sampled:fukuchiyama:2611:7025M-friday"||
+       !Array.isArray(proof.sourceStopKeys)||
+       proof.sourceStopKeys.join("|")!==stops.join("|")||
+       keys.join("|")!==stops.join("|")||
+       !Array.isArray(proof.candidateModels)||
+       proof.candidateModels.join("|")!==models.join("|")||
+       !Array.isArray(proof.candidateAssets)||
+       proof.candidateAssets.length!==0||
+       p.vehicleIdentityStatus==="EXACT"||
+       p.vehicleResolvedFromRealtime===true)return null;
+    var png="../images/列车/JR西日本/JR西日本_287系.png";
+    return Object.freeze({
+      lineId:"Fukuchiyama",sourceTrainNumber:"7025M",
+      sourceTemplateId:2611087025001,
+      numberBand:"kounotori-3000-7000-express-illustration",
+      sourceFleetCandidates:Object.freeze(models),
+      candidateModels:Object.freeze(models),
+      candidateGalleryModels:Object.freeze(["JR西日本287系"]),
+      candidateAssets:Object.freeze([png]),
+      illustrationModel:"JR西日本287系",
+      illustrationPng:png,
+      illustrationSourceUrl:"https://www.jr-odekake.net/railroad/train/kounotori/",
+      authorizesIllustration:true,referenceOnly:true,
+      numberDateVerified:true,actualVehicleConfirmed:false,
+      authorizesPNG:false
+    });
+  }
+
   // JR-West Kyoto/Kobe historical source C/T/M suffix: 207/321
   // locals or 223/225 rapid service families. A compound internal
   // number like 500310-1385400-714T is NOT a published 2611 number or
@@ -4464,6 +4530,7 @@
     verifyMiyoService:verifyMiyoService,
     verifyKoseiSourceFleet:verifyKoseiSourceFleet,
     verifyFukuchiyamaSourceFleet:verifyFukuchiyamaSourceFleet,
+    verifyFukuchiyamaFriday7025:verifyFukuchiyamaFriday7025,
     verifyJrWestKyotoKobeSourceFleet:verifyJrWestKyotoKobeSourceFleet,
     verifySotetsuJRService:verifySotetsuJRService,
     verifyOfunatoService:verifyOfunatoService,
