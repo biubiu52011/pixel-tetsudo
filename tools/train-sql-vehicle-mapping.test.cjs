@@ -132,3 +132,46 @@ for (const [line, operator, model] of [
 }
 
 console.log('SQL vehicle mapping contract: PASS (unverified candidates, dated exact, scoped negatives)');
+
+
+// JR-West JR Tozai scoped model-family contract.
+for (const lineId of ['JRTozai','Gakkentoshi','Fukuchiyama','TokaidoKansai']) {
+  const family=window.TrainVehicle.resolve({
+    lineId,operator:'JR-West',timetableVehicleType:'207系'
+  });
+  assert.equal(family.name,'JR西日本207系',lineId+': 207 family alias');
+  assert.equal(family.identityStatus,'EXACT',lineId+': verified model name');
+  assert.equal(family.iconPath,'',lineId+': NK/Y2 unproved');
+  for (const [model,filename] of [
+    ['JR西日本207系（NK）','JR西日本_207系_NK.png'],
+    ['JR西日本207系（Y2）','JR西日本_207系_Y2.png'],
+    ['321系','JR西日本_321系.png']
+  ]) {
+    const result=window.TrainVehicle.resolve({
+      lineId,operator:'JR-West',timetableVehicleType:model
+    });
+    assert.equal(result.identityStatus,'EXACT',lineId+': '+model);
+    assert.ok(result.iconPath.endsWith(filename),lineId+': '+model);
+  }
+}
+const metro=window.TrainVehicle.resolve({
+  lineId:'Tozai',operator:'TokyoMetro',
+  railway:'odpt.Railway:TokyoMetro.Tozai',timetableVehicleType:'207系'
+});
+assert.equal(metro.name,'','Metro Tozai must not borrow JR-West 207');
+for (const name of ['207系','JR西日本207系']) {
+  const family=window.TrainVehicle.resolveCanonicalVehicle(name);
+  assert.equal(family?.id,'jr-west-207-family');
+  assert.equal(family.asset,null);
+}
+assert.equal(window.TrainIcons.resolveVehicleArtwork('JR西日本207系'),null);
+window.TrainIcons.hydrateVerifiedArtworkCatalog([{
+  image_path:'images/列车/JR西日本/JR西日本_207系_NK.png',
+  vehicle_type:'207系',asset_scope:'subseries',subseries:'NK'
+}]);
+assert.equal(window.TrainIcons.resolveVehicleArtwork('JR西日本207系'),null);
+for(const lineId of ['JRTozai','Gakkentoshi']) {
+  const candidate=plannedFixture(lineId,'JR-West','207系','source_single_type_candidate');
+  assert.equal(candidate.vehicleResult.identityStatus,'UNKNOWN');
+  assert.equal(candidate.vehicleResult.iconPath,'');
+}

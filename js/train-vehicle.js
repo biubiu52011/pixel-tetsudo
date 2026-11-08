@@ -1276,8 +1276,10 @@ var CANONICAL_VEHICLES = {
   "jr-west-189": { displayName: "JR西日本キハ189系", iconName: "JR西日本キハ189系", asset: "../images/列车/JR西日本/JR西日本_キハ189系.png", lineIds: ["TokaidoKansai", "SaninMain"], aliases: ["キハ189系"] },
   "jr-west-189-hanaakari": { displayName: "JR西日本キハ189系（はなあかり）", iconName: "JR西日本キハ189系（はなあかり）", asset: "../images/列车/JR西日本/JR西日本_キハ189系_はなあかり.png", lineIds: ["SaninMain"], aliases: [] },
   "jr-west-205-hanwa-hn2": { displayName: "JR西日本205系（阪和線・HN2）", iconName: "JR西日本205系（阪和線・HN2）", asset: "../images/列车/JR西日本/JR西日本_205系_阪和線_HN2.png", lineIds: ["Hanwa"], lineAliases: { Hanwa: ["205系"] }, aliases: [] },
-  "jr-west-207-nk": { displayName: "JR西日本207系（NK）", iconName: "JR西日本207系（NK）", asset: "../images/列车/JR西日本/JR西日本_207系_NK.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], lineAliases: { TokaidoKansai: ["207系"], Fukuchiyama: ["207系"], Gakkentoshi: ["207系"], JRTozai: ["207系"], OsakaHigashi: ["207系"] }, aliases: [] },
-  "jr-west-207-y2": { displayName: "JR西日本207系（Y2）", iconName: "JR西日本207系（Y2）", asset: "../images/列车/JR西日本/JR西日本_207系_Y2.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], lineAliases: { TokaidoKansai: ["207系"], Fukuchiyama: ["207系"], Gakkentoshi: ["207系"], JRTozai: ["207系"], OsakaHigashi: ["207系"] }, aliases: [] },
+  // 207 model identity does not prove NK/Y2 appearance or physical formation.
+  "jr-west-207-family": { displayName: "JR西日本207系", iconName: "JR西日本207系", asset: null, plannedAsset: null, lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], aliases: ["207系"] },
+  "jr-west-207-nk": { displayName: "JR西日本207系（NK）", iconName: "JR西日本207系（NK）", asset: "../images/列车/JR西日本/JR西日本_207系_NK.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], aliases: [] },
+  "jr-west-207-y2": { displayName: "JR西日本207系（Y2）", iconName: "JR西日本207系（Y2）", asset: "../images/列车/JR西日本/JR西日本_207系_Y2.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], aliases: [] },
   "jr-west-213-w": { displayName: "JR西日本213系（W）", iconName: "JR西日本213系（W）", asset: "../images/列车/JR西日本/JR西日本_213系_W.png", lineIds: ["SanyoMain", "Ako"], lineAliases: { SanyoMain: ["213系"], Ako: ["213系"] }, aliases: [] },
   "jr-west-221-cha": { displayName: "JR西日本221系（CHA）", iconName: "JR西日本221系（CHA）", asset: "../images/列车/JR西日本/JR西日本_221系_CHA.png", lineIds: ["KansaiMain", "OsakaLoop"], lineAliases: { KansaiMain: ["221系"], OsakaLoop: ["221系"] }, aliases: [] },
   "jr-west-221-n": { displayName: "JR西日本221系（N）", iconName: "JR西日本221系（N）", asset: "../images/列车/JR西日本/JR西日本_221系_N.png", lineIds: ["KansaiMain", "OsakaLoop", "OsakaHigashi"], lineAliases: { KansaiMain: ["221系"], OsakaLoop: ["221系"], OsakaHigashi: ["221系"] }, aliases: [] },
@@ -2997,7 +2999,9 @@ function hydrateVerifiedArtworkCatalog(rows) {
     // 只有当数据库车型名称恰好对应一张已认证的通用车型图片时，
     // 该名称才有资格使用图片。编组/涂装/主题变体
     // 不能仅凭列车的车型名称选择。
-    if (row.formation_id || row.livery || row.theme) return;
+    // A bare 207 model can never borrow one SQL subseries image.
+    if (row.formation_id || row.livery || row.theme || row.subseries ||
+        row.asset_scope === 'subseries') return;
     var name = String(row.vehicle_type || "").trim();
     if (!name) return;
     if (!Object.prototype.hasOwnProperty.call(exact, name)) exact[name] = artwork;
