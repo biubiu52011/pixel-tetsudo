@@ -50,3 +50,19 @@
 资料：
 - https://timetable.jr-odekake.net/train-timetable/101641?date=20261108
 - https://ameblo.jp/tc205-37/entry-12906281412.html
+
+
+## 2026年11月北段「2531M」官方样本（增量完成，非全线覆盖）
+
+- 复用已有的两条一站来源：平日编号 `2531M`（SQL ID `68234`）与土休日内部编号 `2531MH`（SQL ID `68235`）。公开编号均为 `2531M`，官方标明每天运行。
+- JR西日本2026年11月时刻资料核实：篠山口08:37出发，经丹波大山、下滝、谷川、柏原、石生、黒井、市島、丹波竹田，福知山09:29到达。原来只有篠山口一个时刻的记录现有10站完整样本。
+- 修正这两条来源从错误的 `Inbound`（朝大阪）到 `Outbound`（朝福知山）；同步既有 `train_timetable_members` 最后站序，`train_timetable_stops` 为关联视图，自动读取新旧来源，不向视图直接写入。
+- 不建立另一套时刻表。现有 `manual_timetable_templates` / `manual_timetable_template_stops` 与 `train-runs` Edge Function 继续负责，`operating_dates` 限定2026年11月1日至30日；2026年11月以外不使用本样本。
+- 运行样本只有这一个公开车次：不因10站完整就声称北段列车班次已全覆盖。实际运行、车组号、GPS位置仍未确认。原357条历史车型 SQL 证据不变；`223系5500番台` 仅由现有纯北段普通列车车队规则提供候选，图库没有该区间对应的 PNG，因此使用中性候选标记。
+- Edge Function 用固定 source ID、站序、起终点时刻与来源限制将其标记为日期已核实；`sourceSampleOnly` 保障整条线路继续返回 `partial`，而不是完整 HIT。
+- 平日 `2774M` 原始种别误写为 `Local`，按JR西日本官方公布的「丹波路快速」更正成 `JR-West.Rapid`；同时更正 `published_jrwest_fukuchiyama_2611_source_fleet` 相关一行，保留其历史候选车型可信度。
+- 本次 SQL 文件：`supabase/migrations/20261108221000_fukuchiyama_november_2531m_official_sample_and_2774m_type.sql`；测试：`tests/fukuchiyama-2611-official-north-sample.test.cjs`。
+
+参考（JR西日本官方2026年11月时刻表）：
+- https://timetable.jr-odekake.net/train-timetable/240391?date=20261024
+- https://timetable.jr-odekake.net/train-timetable/101631?date=20261023
