@@ -454,10 +454,13 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // another month. Imported historical sources have no date whitelist.
   if(lineId==="KakogawaLine"){
     templates=templates.filter((t:any)=>{
-      if(t.source_path!=="official-202611:jrwest-kakogawa-1320s-saturdayholiday")
-        return true;
-      return Array.isArray(t.operating_dates) &&
-        t.operating_dates.some((date:any)=>String(date).slice(0,10)===serviceDate);
+      // Only date-whitelisted official sources are restricted. In particular,
+      // the previously split 1335S/2329S and 2326S/1338S legacy sources
+      // have null operating_dates and must retain their historical coverage.
+      if(!String(t.source_path||"").startsWith("official-202611:jrwest-kakogawa-") ||
+         !Array.isArray(t.operating_dates))return true;
+      return t.operating_dates.some((date:any)=>
+        String(date).slice(0,10)===serviceDate);
     });
   }
   // Retain both original SQL imports, but serve one verified itinerary.
