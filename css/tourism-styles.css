@@ -373,7 +373,9 @@
   width: 100%;
   aspect-ratio: 16/9;
   overflow: hidden;
-  border-radius: 12px 12px 0 0;
+  /* The bordered .article-content owns corner clipping. Independent inner
+     rounding exposes its white background as a wedge around the hero image. */
+  border-radius: 0;
   background: var(--bg3);
 }
 .article-hero--landmark { background: linear-gradient(135deg, var(--green), #00AA00); }
