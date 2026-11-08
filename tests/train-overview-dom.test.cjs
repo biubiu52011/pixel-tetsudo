@@ -114,6 +114,44 @@ test('JU icon maps to the canonical JR Utsunomiya line across data and cards', (
   assert.equal(png.readUInt32BE(16), 236);
   assert.equal(png.readUInt32BE(20), 236);
 
+  // A valid signature and IHDR are insufficient: an invalid PLTE/IDAT
+  // previously passed this test while Safari displayed a broken image.
+  const zlib = require('node:zlib');
+  const crcTable = Array.from({ length: 256 }, (_, n) => {
+    let crc = n;
+    for (let i = 0; i < 8; i++)
+      crc = (crc & 1) ? (0xedb88320 ^ (crc >>> 1)) : (crc >>> 1);
+    return crc >>> 0;
+  });
+  const chunkCrc = bytes => {
+    let crc = 0xffffffff;
+    for (const byte of bytes)
+      crc = crcTable[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xffffffff) >>> 0;
+  };
+  const dataParts = [];
+  let offset = 8;
+  let ended = false;
+  while (offset < png.length) {
+    assert.ok(offset + 12 <= png.length, 'PNG chunk header is complete');
+    const len = png.readUInt32BE(offset);
+    assert.ok(offset + len + 12 <= png.length, 'PNG chunk fits within file');
+    const type = png.toString('ascii', offset + 4, offset + 8);
+    assert.equal(chunkCrc(png.subarray(offset + 4, offset + 8 + len)),
+      png.readUInt32BE(offset + 8 + len), type + ' CRC matches');
+    if (type === 'IDAT') dataParts.push(png.subarray(offset + 8, offset + 8 + len));
+    offset += len + 12;
+    if (type === 'IEND') { ended = true; break; }
+  }
+  assert.ok(ended, 'PNG has an IEND chunk');
+  assert.equal(offset, png.length, 'PNG has no truncated or trailing chunks');
+  assert.ok(dataParts.length, 'PNG has image data');
+  const channels = { 2: 3, 3: 1, 6: 4 }[png[25]];
+  assert.equal(png[24], 8, 'PNG uses 8-bit samples');
+  assert.ok(channels, 'PNG has a supported color format');
+  assert.equal(zlib.inflateSync(Buffer.concat(dataParts)).length,
+    236 * (1 + 236 * channels), 'PNG scanlines inflate to full image');
+
   const win = makeView();
   const line = sources[0].lines.UtsunomiyaJR;
   const card = win.LineCard.renderSystem(
