@@ -76,11 +76,11 @@
     var ctx=context(); if(calendars) ctx.calendars=calendars.map(function(c){return c.split(':').pop();});
     return candidates(rows,from,to,ctx).filter(function(h){return h.depMin>=minute && (!filter || filter[h.train]);}).sort(function(a,b){return a.arrMin-b.arrMin || a.depMin-b.depMin;})[0] || null;
   }
-  function load(id) {
+  function load(id, serviceDate) {
     var client=window.ODPTClient, line=window.RailwayDB && window.RailwayDB.getLine(id);
     if(!client || !line || !client.getCachedTrainRuns) return Promise.resolve([]);
-    // One dated plan source; neither empty calendars nor failures revive local tables.
-    return Promise.resolve(client.getCachedTrainRuns(id)).catch(function(){return [];});
+    // Query the selected journey date, not the train map's current service day.
+    return Promise.resolve(client.getCachedTrainRuns(id, serviceDate)).catch(function(){return [];});
   }
   function buffer(tx) { return Math.max(3, Number(tx && tx.walkingDuration) || 0); }
   function through(tx,a,b) { return !!(tx && tx.through && a && b && a.train && a.train===b.train && b.depMin>=a.arrMin); }
@@ -89,7 +89,7 @@
     (segments || []).forEach(function(s,i){if(s.type==='ride') rides.push({seg:s,idx:i});else if(s.type==='transfer') transfers[rides.length-1]={seg:s,idx:i};});
     if(ctx.minute==null || !rides.length) return Promise.resolve({times:{},complete:false,reason:'invalid'});
     var ids=Array.from(new Set(rides.map(function(r){return r.seg.lineId;})));
-    return Promise.all(ids.map(function(id){return load(id);})).then(function(lists){
+    return Promise.all(ids.map(function(id){return load(id,ctx.date);})).then(function(lists){
       var choices=rides.map(function(r){return candidates(lists[ids.indexOf(r.seg.lineId)],r.seg.fromStation,r.seg.toStation,ctx);});
       // Dynamic programming retains alternate train choices; greedy boarding can miss a later express or feasible transfer.
       var reverse=ctx.mode==='arrive', states=[{cursor:ctx.minute,hits:[],train:null}], order=rides.map(function(_,i){return i;});

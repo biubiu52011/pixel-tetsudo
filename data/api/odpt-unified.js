@@ -2134,13 +2134,27 @@
         // 服务端核验 canonical 身份、来源和服务日历。
         return typeof lineId === "string" && lineId.length > 0;
     }
-    function getCachedTrainRuns(lineId) {
-        // 实时位置覆盖与时刻表可用性相互独立。
-        // 每条线路都可以读取已公布计划，不依赖实时观测。
+    function getCachedTrainRuns(lineId, requestedServiceDate) {
+        // Train overview and live maps default to today's JST service date.
+        // A transfer itinerary may request an explicitly selected service date.
         if (!usesSqlTimetable(lineId)) return Promise.resolve([]);
-        var serviceDate=_serviceDateJst(), key=lineId+"|"+serviceDate, hit=_trainRunCache[key];
+        var explicitDate=requestedServiceDate != null && requestedServiceDate !== "";
+        if (explicitDate) {
+            var parsedDate=typeof requestedServiceDate === "string" &&
+                /^\d{4}-\d{2}-\d{2}$/.test(requestedServiceDate) ?
+                new Date(requestedServiceDate+"T12:00:00Z") : new Date(NaN);
+            if (isNaN(parsedDate.getTime()) ||
+                parsedDate.toISOString().slice(0,10)!==requestedServiceDate)
+                return Promise.resolve([]);
+        }
+        var serviceDate=explicitDate?requestedServiceDate:_serviceDateJst();
+        var key=lineId+"|"+serviceDate, hit=_trainRunCache[key];
+        // Keep the current train-map cache when an itinerary queries another
+        // date. Never substitute cached train plans across service dates.
+        var currentServiceDate=_serviceDateJst();
         Object.keys(_trainRunCache).forEach(function(k) {
-            if (k.slice(k.lastIndexOf('|') + 1) !== serviceDate) delete _trainRunCache[k];
+            var date=k.slice(k.lastIndexOf('|')+1);
+            if (date!==serviceDate && date!==currentServiceDate) delete _trainRunCache[k];
         });
         if(hit && Date.now()-hit.at<600000) return Promise.resolve(hit.rows);
         if(_trainRunInflight[key]) return _trainRunInflight[key];
@@ -2154,7 +2168,8 @@
             if (!body || body.ok !== true) {
                 throw new Error("TrainRun source rejected: " + (body && body.error || "invalid-response"));
             }
-            if (_serviceDateJst() !== serviceDate) throw new Error('TrainRun service date expired in flight');
+            if (!explicitDate && _serviceDateJst() !== serviceDate)
+                throw new Error('TrainRun service date expired in flight');
             if (body.line_id !== lineId || body.service_date !== serviceDate || !Array.isArray(body.runs)) {
                 throw new Error('TrainRun response identity mismatch');
             }
@@ -2170,7 +2185,8 @@
                 (auditStatus==="verified"||auditStatus==="complete");
             var knownOmissions=knownOmittedRuns>0;
             var hasPlanRows=body.runs.length>0;
-            _trainRunLastStatus[lineId] = {
+            // Do not label a future itinerary as today's train-map status.
+            if (_serviceDateJst()===serviceDate) _trainRunLastStatus[lineId] = {
                 serviceDate: serviceDate, source: body.source || "",
                 complete: body.complete === true, partial: body.partial === true,
                 // Legacy partial is a source-verification flag, not a train-loss count.
@@ -2219,8 +2235,8 @@
             _trainRunCache[key]={at:Date.now(),rows:rows};
             return rows;
         }).catch(function(err){
-            if (_serviceDateJst() !== serviceDate) return [];
-            _trainRunLastStatus[lineId] = {
+            if (!explicitDate && _serviceDateJst() !== serviceDate) return [];
+            if (_serviceDateJst()===serviceDate) _trainRunLastStatus[lineId] = {
                 serviceDate: serviceDate, source: "SOURCE_ERROR", complete: false,
                 partial: false, calendarStatus: "unknown", runs: 0,
                 planAvailability: "error", sourceVerification: "unknown",
