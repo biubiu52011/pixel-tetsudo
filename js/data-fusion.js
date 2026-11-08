@@ -640,9 +640,18 @@
       var id = parseRailwayIdentity(rec);
       if (id) return id.operator.toLowerCase() === String(expected.operator).toLowerCase() &&
         id.railwayCode.toLowerCase() === String(expected.railwayCode).toLowerCase();
-      // A missing railway identity is NOT operator-wide permission. No
-      // accidental propagation to every line of Tokyo Metro, JR, Keio etc.
-      if (rec["pt:operatorWide"] !== true) return false;
+      // A missing railway identity is NOT operator-wide permission. Seibu's
+      // official ODPT feed publishes one company-wide normal announcement
+      // without odpt:railway, explicitly saying "西武鉄道各線".
+      // Only that positive all-lines statement is scoped to each Seibu line;
+      // incident messages without a railway remain unscoped so a local delay
+      // cannot be misreported as affecting every line.
+      var text = rec["odpt:trainInformationText"] || "";
+      var ja = typeof text === "string" ? text : (text && text.ja || "");
+      var officialSeibuAllLinesNormal = String(expected.operator).toLowerCase() === "seibu" &&
+        rec["@type"] === "odpt:TrainInformation" &&
+        /^(?:現在[、，]\s*)?西武鉄道(?:の)?(?:各線|全線)は平常(?:通り|どおり)(?:運行|運転)/.test(String(ja).trim());
+      if (rec["pt:operatorWide"] !== true && !officialSeibuAllLinesNormal) return false;
       var op = String(rec["odpt:operator"] || "").replace(/^odpt\.Operator:/, "");
       return op.toLowerCase() === String(expected.operator).toLowerCase();
     });

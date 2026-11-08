@@ -126,4 +126,38 @@ check("Seibu ODPT loading terminates after a successful empty operator feed",()=
   f.updateOdptData({Seibu:null});
   assert.equal(state().status,"no_odpt","failed request must not look like a confirmed empty feed");
 });
+check("Seibu live operator-wide normal text is applied to both Seibu lines",()=>{
+  const seibuText={"ja":"西武鉄道各線は平常通り運行しております。","en":"Seibu Line are operating on schedule."};
+  const current={
+    "@id":"urn:seibu:company-wide-status",
+    "@type":"odpt:TrainInformation",
+    "odpt:operator":"odpt.Operator:Seibu",
+    "odpt:trainInformationText":seibuText,
+    "dc:date":now,
+    "dct:valid":new Date(Date.now()+300000).toISOString()
+  };
+  w.ODPTClient.LINE_TO_OPERATOR.SeibuShinjuku="Seibu";
+  w.ODPTClient.LINE_RAILWAY_CODE.SeibuShinjuku="Shinjuku";
+  const lines={
+    Ikebukuro:{id:"Ikebukuro",name:"西武池袋線",operator:"Seibu",stations:["Ikebukuro","Nerima"]},
+    SeibuShinjuku:{id:"SeibuShinjuku",name:"西武新宿線",operator:"Seibu",stations:["SeibuShinjuku","Takadanobaba"]}
+  };
+  w.DataLayer={getLine:id=>lines[id]||null,getAllLines:()=>lines};
+  assert.equal(f._selectScopedRecords([current],lines.Ikebukuro).length,1);
+  assert.equal(f._selectScopedRecords([current],lines.SeibuShinjuku).length,1);
+  assert.equal(f._selectScopedRecords([current],{id:"Ginza",operator:"TokyoMetro"}).length,0);
+  f.updateOdptData({Seibu:[current]});
+  const fused=f.fuseAll();
+  for(const id of Object.keys(lines)){
+    assert.equal(fused.lines[id].delayInfo.status,"normal");
+    assert.equal(fused.lines[id].delayInfo.source,"odpt");
+    assert.match(fused.lines[id].delayInfo.detail,/西武鉄道各線/);
+  }
+  // A line-specific incident without railway scope must NOT spread to all Seibu lines.
+  const ambiguous=Object.assign({},current,{"@id":"local-incident","odpt:trainInformationText":{"ja":"西武鉄道各線のうち池袋線で遅れが出ています。"}});
+  assert.equal(f._selectScopedRecords([ambiguous],lines.SeibuShinjuku).length,0);
+  // An expired all-lines normal announcement must not remain current.
+  const expired=Object.assign({},current,{"dct:valid":"2000-01-01T00:00:00Z"});
+  assert.equal(f._pickRecords([expired],lines.Ikebukuro).length,0);
+});
 console.log("PASS",n,"offline runinfo regression checks");
