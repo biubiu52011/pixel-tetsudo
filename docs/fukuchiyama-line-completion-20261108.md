@@ -38,3 +38,15 @@
 参考：
 - https://express22.xsrv.jp/maintarminal/jr223-5500/
 - https://express22.xsrv.jp/maintarminal/jrfukuchiyamalinedia20240316/
+
+## 2774M 节假日快速（历史共通运用证据）
+
+- JR西日本2026年11月时刻表：公开番号 **2774M**，土休日快速，篠山口18:44出发、大阪19:51到达；项目历史模板的 `2774MH` 是带节假日 `H` 后缀的内部表示。工作日相同番号的种别为丹波路快速，不可把种别／车辆运用混同。
+- 2025年3月15日改正的明石支所 207／321 系周末共通运用表第87号运用记录同一车次（篠山口18:44→大阪19:51）。这只是**上一版历史车型族证据**，不是2026年11月8日的实际车型／编组确认。
+- 映射严格限制 `2026-11-08`、`2774MH`、`JR-West.Rapid`、Inbound、SQL来源模板 `68302`、土休日、完整16站停车序列一致；不扩散至其他2700M号段或其他日期。缺任一证据，退回原线路候选。
+- 在此范围内候选缩为207系／321系，使用现有321系PNG仅作**示意车头**；维持 `referenceOnly=true`、`numberDateVerified=false`、`actualVehicleConfirmed=false`、`authorizesPNG=false`，不认证实际编组或实时位置。图片加载失败回退为候选标记。
+- 继续使用现有 `train-number-png-ranges.js`、`train-vehicle.js`、`trains-render.js` 及回归测试，没有为这趟列车建立新的数据库或推断车辆。
+
+资料：
+- https://timetable.jr-odekake.net/train-timetable/101641?date=20261108
+- https://ameblo.jp/tc205-37/entry-12906281412.html
