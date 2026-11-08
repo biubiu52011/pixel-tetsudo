@@ -25,6 +25,68 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: One-time official ODPT runinfo audit (redacted)
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs');
+          const encoded=fs.readFileSync('data/api/odpt-links.js','utf8').match(/window\.ODPT_LINKS_ENC\s*=\s*"([^"]+)"/)?.[1];
+          if(!encoded)throw Error('ODPT link library missing');
+          const seed='PixelTetsudo'.split('').reverse().join('')+'-'+'ODPT'.split('').reverse().join('')+'-2026';
+          const buffer=Buffer.from(encoded,'base64');
+          for(let i=0;i<buffer.length;i++)buffer[i]^=seed.charCodeAt(i%seed.length);
+          const urls=JSON.parse(buffer.toString('utf8'));
+          const evaluator=require('./js/runinfo-evaluator.js');
+          const configured=new Set(['JR-East','Tobu','Keio','Keikyu','Sotetsu','Tokyu','Seibu',
+            'TokyoMetro','Toei','YokohamaMunicipal','TWR','MIR','TamaMonorail','Keisei']);
+          const base=urls.filter(x=>x.includes('/odpt:TrainInformation?'));
+          const alerts=urls.filter(x=>x.includes('/gtfs/realtime/')&&x.split('?')[0].includes('_alert'));
+          const results=[];
+          const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+          const textOf=x=>{const t=x['odpt:trainInformationText']||x['odpt:text']||'';
+            return typeof t==='string'?t:String(t.ja||t['ja-Hrkt']||t.en||'');};
+          async function probe(url,kind){
+            const query=url.split('?')[1]||'';
+            const operator=kind==='odpt'?(query.match(/odpt:operator=odpt.Operator:([^&]+)/)?.[1]||'unknown'):
+              (url.split('?')[0].split('/').at(-1)||'unknown');
+            let item={kind,operator,enabled:kind==='odpt'?configured.has(operator)||operator==='jre-is':true};
+            try{
+              const reply=await fetch(url,{headers:{Accept:kind==='odpt'?'application/json':'application/x-protobuf'},signal:AbortSignal.timeout(9000)});
+              item.http=reply.status;
+              item.contentType=(reply.headers.get('content-type')||'').split(';')[0];
+              if(kind==='odpt'&&reply.ok){
+                const obj=await reply.json();
+                const rows=Array.isArray(obj)?obj:Array.isArray(obj?.value)?obj.value:null;
+                if(!rows){item.invalidShape=true;}
+                else{
+                  item.records=rows.length;
+                  item.railwayScoped=rows.filter(x=>!!x['odpt:railway']).length;
+                  item.unscoped=rows.length-item.railwayScoped;
+                  item.unscopedWithText=rows.filter(x=>!x['odpt:railway']&&textOf(x)).length;
+                  item.sample=rows.slice(0,3).map(x=>({
+                    type:x['@type']||null,operator:x['odpt:operator']||null,
+                    railway:x['odpt:railway']||null,
+                    structured:x['odpt:trainInformationStatus']||null,
+                    state:(()=>{try{return evaluator.evaluate({source:'odpt',currentOperationalSource:true,
+                      text:textOf(x),structuredStatus:x['odpt:trainInformationStatus']}).status;}catch(e){return 'error'}})(),
+                    message:textOf(x).slice(0,130),date:x['dc:date']||null,valid:x['dct:valid']||null
+                  }));
+                }
+              }else if(kind!=='odpt'&&reply.ok){
+                item.bytes=(await reply.arrayBuffer()).byteLength;
+              }else{item.errorBodyBytes=(await reply.arrayBuffer()).byteLength;}
+            }catch(err){item.error=err?.name||'unknown';}
+            results.push(item);
+            console.log('RUNINFO_AUDIT '+JSON.stringify(item));
+          }
+          (async()=>{
+            for(const url of base){await probe(url,'odpt');await pause(900);}
+            for(const url of alerts){await probe(url,'gtfs_alert');await pause(700);}
+            console.log('RUNINFO_SUMMARY '+JSON.stringify({
+              checked:results.length,ok:results.filter(x=>x.http===200).length,
+              failed:results.filter(x=>x.http!==200).length,at:new Date().toISOString()
+            }));
+          })().catch(e=>{console.log('RUNINFO_AUDIT_FATAL',e.name);});
+          NODE
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Verify generated static configuration
