@@ -4565,7 +4565,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // guarded SQL correction, these are LIMITED EXPRESS reference families.
   // This proves the timetable/line segment, NOT a physical 287/289 set or
   // a live location. Keep legacy snapshots compatible during deployment.
-  if(lineId==="Fukuchiyama" && /^2026-11-\\d{2}$/.test(serviceDate)){
+  if(lineId==="Fukuchiyama" && /^2026-11-\d{2}$/.test(serviceDate)){
     const holiday=selectedCalendar==="odpt.Calendar:SaturdayHoliday";
     const expected=[
       {id:holiday?68315:68314,
