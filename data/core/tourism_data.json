@@ -82,7 +82,7 @@
     139.804333
    ],
    "dist": "2 min walk",
-   "desc": "北千住駅西口の駅前再開発ビル「千住ミルディス」に入る大型商業施設。西口2階のペデストリアンデッキから直接入れ、千代田線の「千住ミルディス方面改札」からは地下1階へつながる。地下1階「まるい食遊館」は生鮮食品や惣菜、1階は和洋菓子や手土産向けスイーツが充実。ファッション・コスメ・生活雑貨に加え、5階には子ども用品、キャラクターグッズやカプセルトイも揃う。9階のレストラン街「千寿万彩」には和洋中の飲食店が集まり、同じ建物の上層階にある「シアター1010」での観劇前後にも便利。",
+   "desc": "2004年に開業した北千住駅西口の「千住ミルディスⅠ番館」に入る、地下1階から9階までの大型商業施設。JR・東武線・日比谷線・つくばエクスプレスの西口側からは2階のペデストリアンデッキで、千代田線「千住ミルディス方面改札」からは地下通路でB1Fに入れるため、乗換えや雨の日にも立ち寄りやすい。B1F「まるい食遊館」は鮮魚・青果・惣菜・弁当など日常の食材探しに、1Fは和洋菓子や手土産選びに便利。2～4Fにはファッション、コスメ、生活雑貨、カフェが並ぶ。5Fは子ども服やスポーツ用品に加え、サンリオ、キャラクター雑貨、カプセルトイ、クレーンゲーム、トレーディングカードなど、親子連れや推し活にも楽しいフロア。6Fはユニクロやバッグ、リラクゼーション、旅行相談など、7Fはハンズ、眼鏡、紳士服、イベントスペースが特徴。8Fには家電のノジマやABCクッキングスタジオなどの生活・体験サービスもある。9F「千寿万彩」は寿司・天ぷら・洋食・韓国料理などを楽しめるレストラン街。同じ建物の10～12Fには足立区文化芸術劇場「シアター1010」があり、観劇前後の食事にも便利。5Fの授乳室や各階の車いす対応トイレなど、家族で使いやすい設備も備える。店舗や催事の内容は変更されるため、訪問前に公式フロアガイドを確認したい。",
    "tags": [
     "all",
     "mall"
@@ -92,11 +92,13 @@
    "hours": "B1F～8F 10:00～20:00／9Fレストラン 11:00～22:00（店舗により異なる）",
    "fee": "入館無料（飲食・買い物は別途）",
    "tips": [
-    "西口2階デッキから直結／千代田線「千住ミルディス方面改札」からB1へ",
-    "B1Fは生鮮・惣菜、1Fは和洋菓子・手土産",
-    "5Fはキッズ用品・キャラクターグッズ・カプセルトイ",
-    "9F「千寿万彩」で食事（営業時間は店舗ごとに確認）",
-    "同じ建物の上層階に「シアター1010」"
+    "西口2Fの歩行者デッキから直結。千代田線「千住ミルディス方面改札」からは地下通路でB1Fへ",
+    "B1Fは生鮮・惣菜・弁当、1Fは和洋菓子・手土産探しに便利",
+    "2～4Fはファッション・コスメ・雑貨・カフェ。買い回りや休憩に",
+    "5Fはサンリオ・キャラクターグッズ・カプセルトイ・クレーンゲーム・トレカ",
+    "6Fはユニクロや旅行サービス、7Fはハンズやイベントスペース",
+    "8Fは家電・料理教室など、9F「千寿万彩」は飲食店街（店舗ごとに営業時間が異なる）",
+    "同じ建物の10～12Fに「シアター1010」。5Fには授乳室もあり、最新のショップ・催事は公式案内で確認"
    ],
    "name_i18n": {
     "ja": "北千住丸井",
@@ -105,10 +107,10 @@
     "ko": "키타센쥬 마루이"
    },
    "desc_i18n": {
-    "ja": "北千住駅西口の駅前再開発ビル「千住ミルディス」に入る大型商業施設。西口2階のペデストリアンデッキから直接入れ、千代田線の「千住ミルディス方面改札」からは地下1階へつながる。地下1階「まるい食遊館」は生鮮食品や惣菜、1階は和洋菓子や手土産向けスイーツが充実。ファッション・コスメ・生活雑貨に加え、5階には子ども用品、キャラクターグッズやカプセルトイも揃う。9階のレストラン街「千寿万彩」には和洋中の飲食店が集まり、同じ建物の上層階にある「シアター1010」での観劇前後にも便利。",
-    "zh": "北千住丸井位于车站西口的千住Mildix综合大楼内，是北千住代表性的购物中心。从西口二楼的步行连廊可直接进入，东京地铁千代田线的「千住Mildix方向检票口」也有地下通道连接商场地下一楼。地下一楼「丸井食游馆」以生鲜和熟食为主，一楼可选购日西式甜点及伴手礼；其他楼层汇集服饰、美妆和生活杂货，五楼还有儿童用品、角色周边和扭蛋。九楼「千寿万彩」餐饮区提供日式、西式、中式等多种美食，同一栋楼上层还有「THEATRE 1010」，看演出前后也很适合顺路用餐或购物。",
-    "en": "Kitasenju Marui is a major shopping destination in the Senju Mildix complex beside Kitasenju Station's west exit. Enter directly from the second-floor pedestrian deck, or use the underground passage from the Chiyoda Line's Senju Mildix-side ticket gates to reach B1. The B1 Marui Shokuyukan food hall offers fresh groceries and prepared dishes, while 1F is ideal for sweets and gifts. Other floors feature fashion, cosmetics and everyday goods; 5F has kids' items, character merchandise and capsule toys. The 9F Senju Bansai restaurant area serves Japanese, Western and Chinese cuisines, making it an easy stop before or after a performance at Theatre 1010 on the upper floors of the same building.",
-    "ko": "기타센주 마루이는 기타센주역 서쪽 출구 앞 '센주 밀딕스' 건물에 있는 대형 쇼핑시설입니다. 서쪽 출구 2층 보행자 데크로 바로 들어갈 수 있으며, 지요다선 '센주 밀딕스 방면 개찰구'에서는 지하 통로를 통해 지하 1층으로 연결됩니다. 지하 1층 '마루이 쇼쿠유칸'에서는 신선식품과 반찬을, 1층에서는 화과자·양과자와 선물용 디저트를 고를 수 있습니다. 패션·화장품·생활잡화 외에도 5층에는 아동용품, 캐릭터 상품과 캡슐토이가 있습니다. 9층 '센주 반사이' 레스토랑가에서는 일식·양식·중식 등을 즐길 수 있어 같은 건물 상층부의 '시어터 1010' 공연 전후에 들르기에도 좋습니다."
+    "ja": "2004年に開業した北千住駅西口の「千住ミルディスⅠ番館」に入る、地下1階から9階までの大型商業施設。JR・東武線・日比谷線・つくばエクスプレスの西口側からは2階のペデストリアンデッキで、千代田線「千住ミルディス方面改札」からは地下通路でB1Fに入れるため、乗換えや雨の日にも立ち寄りやすい。B1F「まるい食遊館」は鮮魚・青果・惣菜・弁当など日常の食材探しに、1Fは和洋菓子や手土産選びに便利。2～4Fにはファッション、コスメ、生活雑貨、カフェが並ぶ。5Fは子ども服やスポーツ用品に加え、サンリオ、キャラクター雑貨、カプセルトイ、クレーンゲーム、トレーディングカードなど、親子連れや推し活にも楽しいフロア。6Fはユニクロやバッグ、リラクゼーション、旅行相談など、7Fはハンズ、眼鏡、紳士服、イベントスペースが特徴。8Fには家電のノジマやABCクッキングスタジオなどの生活・体験サービスもある。9F「千寿万彩」は寿司・天ぷら・洋食・韓国料理などを楽しめるレストラン街。同じ建物の10～12Fには足立区文化芸術劇場「シアター1010」があり、観劇前後の食事にも便利。5Fの授乳室や各階の車いす対応トイレなど、家族で使いやすい設備も備える。店舗や催事の内容は変更されるため、訪問前に公式フロアガイドを確認したい。",
+    "zh": "北千住丸井于2004年开业，位于北千住站西口的「千住Mildix I馆」，商业区从地下一层延伸至九楼。JR、东武线、日比谷线及筑波快线的乘客可经西口二楼步行连廊进入；从千代田线「千住Mildix方向检票口」则能通过地下通道直达B1，换乘途中或雨天逛街都很方便。B1的「丸井食游馆」汇集生鲜、熟食和便当，1楼适合挑选日西式甜点及伴手礼；2～4楼主要是服饰、美妆、生活杂货和咖啡馆。5楼尤其适合亲子与动漫爱好者，有儿童服饰、运动用品、三丽鸥、角色周边、扭蛋、夹娃娃机及集换式卡牌。6楼有优衣库、箱包、放松护理及旅行咨询，7楼有Hands生活杂货、眼镜、男装及活动空间；8楼还有Nojima家电卖场、ABC料理教室等生活与体验服务。9楼「千寿万彩」餐厅街提供寿司、天妇罗、洋食、韩餐等多种选择。同栋大楼10～12楼设有足立区文化艺术剧场THEATRE 1010，适合将观剧、用餐与购物排在一起。5楼设有哺乳室，馆内也有无障碍卫生间等家庭友好设施。店铺与临时活动可能调整，出发前建议查看官方楼层导览。",
+    "en": "Opened in 2004, Kitasenju Marui occupies B1 through 9F of Senju Mildix I beside Kitasenju Station's west exit. From JR, Tobu, the Hibiya Line and Tsukuba Express, use the second-floor pedestrian deck; from the Chiyoda Line's Senju Mildix-side gates, an underground passage leads directly to B1, making this an easy stop between trains or on a rainy day. The B1 Marui Shokuyukan food hall is packed with fresh groceries, deli dishes and takeaway meals, while 1F specializes in Japanese and Western sweets and gifts. Floors 2–4 offer fashion, beauty, home goods and cafés. On 5F, families and pop-culture fans can explore children's clothing, sports goods, Sanrio and character merchandise, capsule toys, crane games and trading cards. Floor 6 includes UNIQLO, luggage, relaxation and travel services; 7F has Hands, eyewear, menswear and pop-up event space; and 8F offers Nojima electronics, ABC Cooking Studio and other services. On 9F, the Senju Bansai restaurant floor offers sushi, tempura, Western dishes, Korean food and more. Theatre 1010, a public performing arts venue, occupies 10–12F of the same complex, making the mall useful before or after a show. There is a nursing room on 5F and accessible restrooms across the shopping floors. Shops and temporary events can change; check the official floor guide before visiting.",
+    "ko": "2004년에 문을 연 기타센주 마루이는 기타센주역 서쪽 출구 앞 센주 밀딕스 Ⅰ관의 지하 1층부터 9층까지 자리한 대형 상업시설입니다. JR·도부선·히비야선·쓰쿠바 익스프레스에서는 서쪽 출구 2층 보행자 데크로, 지요다선 '센주 밀딕스 방면 개찰구'에서는 지하 통로로 B1층에 바로 접근할 수 있어 환승 중이나 비 오는 날에도 편리합니다. 지하 1층 '마루이 쇼쿠유칸'에서는 신선식품·반찬·도시락을, 1층에서는 화과자·양과자와 선물용 디저트를 고를 수 있습니다. 2~4층에는 패션·화장품·생활잡화·카페가 모여 있습니다. 5층은 아동복과 스포츠용품뿐 아니라 산리오·캐릭터 굿즈·캡슐토이·크레인 게임·트레이딩 카드가 있어 가족과 덕질을 즐기는 방문객에게도 인기가 있습니다. 6층에는 유니클로·가방·릴랙세이션·여행 상담, 7층에는 핸즈·안경·남성복·이벤트 공간, 8층에는 노지마 가전매장과 ABC 쿠킹 스튜디오 등의 생활·체험 서비스가 있습니다. 9층 '센주 반사이' 레스토랑가에서는 초밥·튀김·양식·한식 등 다양한 식사를 즐길 수 있습니다. 같은 건물 10~12층에는 아다치구 문화예술극장 '시어터 1010'이 있어 공연 전후 식사에도 좋습니다. 5층 수유실과 각 층의 휠체어 이용 가능 화장실 등 가족 친화적인 시설도 마련되어 있습니다. 매장과 기간 한정 이벤트는 바뀔 수 있으므로 방문 전 공식 층별 안내를 확인하세요."
    },
    "hours_i18n": {
     "ja": "B1F～8F 10:00～20:00／9Fレストラン 11:00～22:00（店舗により異なる）",
@@ -130,32 +132,40 @@
    },
    "tips_i18n": {
     "ja": [
-     "西口2階デッキから直結／千代田線「千住ミルディス方面改札」からB1へ",
-     "B1Fは生鮮・惣菜、1Fは和洋菓子・手土産",
-     "5Fはキッズ用品・キャラクターグッズ・カプセルトイ",
-     "9F「千寿万彩」で食事（営業時間は店舗ごとに確認）",
-     "同じ建物の上層階に「シアター1010」"
+     "西口2Fの歩行者デッキから直結。千代田線「千住ミルディス方面改札」からは地下通路でB1Fへ",
+     "B1Fは生鮮・惣菜・弁当、1Fは和洋菓子・手土産探しに便利",
+     "2～4Fはファッション・コスメ・雑貨・カフェ。買い回りや休憩に",
+     "5Fはサンリオ・キャラクターグッズ・カプセルトイ・クレーンゲーム・トレカ",
+     "6Fはユニクロや旅行サービス、7Fはハンズやイベントスペース",
+     "8Fは家電・料理教室など、9F「千寿万彩」は飲食店街（店舗ごとに営業時間が異なる）",
+     "同じ建物の10～12Fに「シアター1010」。5Fには授乳室もあり、最新のショップ・催事は公式案内で確認"
     ],
     "zh": [
-     "西口二楼连廊直达；千代田线「千住Mildix方向检票口」连通B1",
-     "B1买生鲜和熟食，1楼选甜品及伴手礼",
-     "5楼有儿童用品、角色周边和扭蛋",
-     "9楼「千寿万彩」餐厅区（请确认各店营业时间）",
-     "同一栋楼的上层设有「THEATRE 1010」"
+     "西口2楼步行连廊直达；千代田线「千住Mildix方向检票口」经地下通道通往B1",
+     "B1买生鲜、熟食与便当，1楼选甜点和伴手礼",
+     "2～4楼以服饰、美妆、生活杂货和咖啡馆为主",
+     "5楼重点逛三丽鸥、角色周边、扭蛋、夹娃娃机及集换式卡牌",
+     "6楼有优衣库与旅行服务，7楼有Hands和期间限定活动空间",
+     "8楼有家电与料理教室；9楼「千寿万彩」适合用餐（各店营业时间不同）",
+     "同栋10～12楼为THEATRE 1010剧场；5楼有哺乳室，店铺及活动请查官方最新信息"
     ],
     "en": [
-     "Direct via the west-exit 2F deck; B1 access from the Chiyoda Line's Senju Mildix-side gates",
-     "B1 for groceries and deli food; 1F for sweets and gifts",
-     "5F for kids' items, character goods and capsule toys",
-     "Dine at 9F Senju Bansai (check individual restaurant hours)",
-     "Theatre 1010 occupies upper floors of the same complex"
+     "Enter from the west-exit 2F deck, or use the Chiyoda Line's underground Senju Mildix-side passage to B1",
+     "B1 for groceries, deli food and takeaway meals; 1F for sweets and souvenirs",
+     "Floors 2–4 focus on fashion, cosmetics, home goods and cafés",
+     "On 5F find Sanrio, character goods, capsule toys, crane games and trading cards",
+     "6F has UNIQLO and travel services; 7F has Hands and temporary event space",
+     "8F offers electronics and cooking classes; dine on 9F at Senju Bansai (restaurant hours vary)",
+     "Theatre 1010 occupies 10–12F; there is a nursing room on 5F. Check the official guide for current shops and events"
     ],
     "ko": [
-     "서쪽 출구 2층 데크 직결 / 지요다선 센주 밀딕스 방면 개찰구에서 B1 연결",
-     "지하 1층은 신선식품·반찬, 1층은 과자·선물",
-     "5층에는 아동용품·캐릭터 상품·캡슐토이",
-     "9층 센주 반사이 식당가 (매장별 영업시간 확인)",
-     "같은 건물 상층부에 시어터 1010"
+     "서쪽 출구 2층 데크에서 바로 입장하거나 지요다선 센주 밀딕스 방면 개찰구에서 지하 통로로 B1 연결",
+     "지하 1층은 신선식품·반찬·도시락, 1층은 과자와 선물",
+     "2~4층은 패션·화장품·생활잡화·카페 중심",
+     "5층에는 산리오·캐릭터 굿즈·캡슐토이·크레인 게임·트레이딩 카드",
+     "6층에는 유니클로와 여행 서비스, 7층에는 핸즈와 기간 한정 이벤트 공간",
+     "8층은 가전·요리 교실, 9층 센주 반사이는 레스토랑가(매장별 영업시간 상이)",
+     "같은 건물 10~12층에 시어터 1010, 5층에 수유실. 최신 매장·이벤트는 공식 안내에서 확인"
     ]
    },
    "address": "東京都足立区千住3-92"
