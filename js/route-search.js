@@ -308,7 +308,8 @@
    * 在（车站、线路）状态上运行 Dijkstra，寻找“乘车时间 + 换乘惩罚”最小的路径。
    * 返回结构保持不变：{ path, durationMin, segments, lineInfo, routeSegments }
    */
-  function findRoute(fromStation, toStation, mode) {
+  function findRoute(fromStation, toStation, mode, blockedLines) {
+    const excluded=blockedLines&&blockedLines.length?new Set(blockedLines):null;
     const pen = MODE_PENALTY[mode] || MODE_PENALTY.combo;
     if (!fromStation || !toStation) return null;
     if (fromStation.toLowerCase() === toStation.toLowerCase()) {
@@ -325,7 +326,7 @@
     }
     if (!fromKey || !toKey) return null;
 
-    const startLines = Array.from(stationLines.get(fromKey) || []);
+    const startLines=Array.from(stationLines.get(fromKey)||[]).filter(function(id){return !excluded||!excluded.has(id);});
     if (startLines.length === 0) return null;
 
     const heap = new _MinHeap();
@@ -379,7 +380,7 @@
       const txTargets = new Set(otherLines);
       if (aliasMap) { for (const ol of aliasMap.keys()) { if (ol !== lid) txTargets.add(ol); } }
       for (const ol of txTargets) {
-        if (ol === lid) continue;
+        if (ol === lid || (excluded&&excluded.has(ol))) continue;
         const txSt = (aliasMap && aliasMap.has(ol)) ? aliasMap.get(ol) : st;
         // 名称相同本身从不构成跨地区换乘依据。
         if (!_plausibleTransfer(layer,st,lid,txSt,ol)) continue;
@@ -599,44 +600,45 @@
   }
 
   
-  // Search returns one topology candidate. If that route has no timetable
-  // match, try a bounded set of legitimate alternatives, never invented trains.
-  // This is intentionally a supplement to findRoute, not a second graph owner.
-  function findRouteCandidates(from, to, mode, limit) {
-    var cap = Math.max(1, Math.min(8, Number(limit) || 6));
-    var first = findRoute(from, to, mode);
-    if (!first || !first.routeSegments) return [];
-    var candidates = [], seen = new Set();
-    function push(route) {
-      if (!route || !route.routeSegments || !route.routeSegments.some(function(s){return s.type==='ride';})) return;
-      var signature=route.routeSegments.map(function(s) {
-        return s.type==='ride' ? s.lineId+':'+s.fromStation+':'+s.toStation :
-          'transfer:'+s.station+':'+s.toStation;
-      }).join('|');
-      if (seen.has(signature)) return;
-      seen.add(signature);
-      candidates.push(route);
+  // Enumerate several reasonable topology alternatives with the same route
+  // engine. A blocked line is temporary and never changes canonical topology.
+  function findRouteCandidates(from,to,mode,limit) {
+    var cap=Math.max(1,Math.min(12,Number(limit)||8));
+    var first=findRoute(from,to,mode);
+    if(!first||!first.routeSegments)return [];
+    var seen=new Set(),routes=[],pending=[],tested=new Set();
+    var maxDuration=Math.max(35,first.durationMin*3,first.durationMin+30);
+    function add(route) {
+      if(!route||!route.routeSegments||!route.routeSegments.some(function(s){return s.type==='ride';}))return;
+      if(route.durationMin>maxDuration)return;
+      var rides=route.routeSegments.filter(function(s){return s.type==='ride';});
+      if(rides.length>5||route.routeSegments.filter(function(s){return s.type==='transfer';}).length>4)return;
+      var signature=route.routeSegments.map(function(s){return s.type==='ride'?
+        s.lineId+':'+s.fromStation+':'+s.toStation:'tx:'+s.station+':'+s.toStation;}).join('|');
+      if(seen.has(signature))return;
+      seen.add(signature);routes.push(route);
+      rides.forEach(function(s){if(s.lineId&&!tested.has(s.lineId)&&pending.indexOf(s.lineId)<0)pending.push(s.lineId);});
     }
-    push(first);
-    ['transfers','duration','combo'].forEach(function(variant) {
-      if (variant !== mode) push(findRoute(from,to,variant));
-    });
-    var realFrom=first.path[0], realTo=first.path[first.path.length-1];
-    var direct=[];
-    var layer=buildLayerGraph();
-    Object.keys(layer.lineMeta).forEach(function(lid) {
-      var meta=layer.lineMeta[lid];
-      var a=meta.positions.get(realFrom), b=meta.positions.get(realTo);
-      if (a == null || b == null || a === b) return;
-      var duration=durationBetween(meta,a,b);
-      if (!(duration > 0)) return;
-      var info=[{from:realFrom,to:realTo,lines:[lid]}];
-      direct.push({path:[realFrom,realTo],durationMin:duration,segments:Math.abs(b-a),
+    add(first);
+    ['transfers','duration','combo'].forEach(function(m){if(m!==mode)add(findRoute(from,to,m));});
+    var layer=buildLayerGraph(),direct=[];
+    var a=first.path[0],b=first.path[first.path.length-1];
+    Object.keys(layer.lineMeta).forEach(function(id){
+      var l=layer.lineMeta[id],x=l.positions.get(a),y=l.positions.get(b);
+      if(x==null||y==null||x===y)return;
+      var cost=durationBetween(l,x,y),info=[{from:a,to:b,lines:[id]}];
+      if(cost>0)direct.push({path:[a,b],durationMin:cost,segments:Math.abs(y-x),
         lineInfo:info,mode:mode||'combo',routeSegments:buildRouteSegments({lineInfo:info})});
     });
-    direct.sort(function(a,b){return a.durationMin-b.durationMin;});
-    direct.forEach(push);
-    return candidates.slice(0,cap);
+    direct.sort(function(x,y){return x.durationMin-y.durationMin;}).forEach(add);
+    var probes=0;
+    while(pending.length&&routes.length<cap&&probes<12){
+      var blocked=pending.shift();
+      if(tested.has(blocked))continue;
+      tested.add(blocked);probes++;
+      add(findRoute(from,to,mode,[blocked]));
+    }
+    return routes.slice(0,cap);
   }
 
   // 公共 API.
