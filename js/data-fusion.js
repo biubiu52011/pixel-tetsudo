@@ -850,14 +850,21 @@
       try {
         var _opLine = window.ODPTClient && window.ODPTClient.LINE_TO_OPERATOR ? (window.ODPTClient.LINE_TO_OPERATOR[lineId] || window.ODPTClient.LINE_TO_OPERATOR[line.name]) : null;
         if (_opLine && window.ODPTClient.supports && window.ODPTClient.supports(_opLine, 'trainInformation')) {
-          // RunInfo loading semantics: only explicit source evidence may produce normal. Missing/pending line data stays loading.
+          // A successful operator feed can contain no records for this line.
+          // That is a settled "no published line record", not a pending request
+          // and not proof of normal (or zero delay) operation.
           var _opKey = _normalizeOperator(_opLine);
           var _opState = odptData.delayInfo && _opKey ? odptData.delayInfo[_opKey] : undefined;
-          var _opFailed = _opState === null;
-          var _opLoading = _opState === undefined;
-          fallbackDelay = _opFailed ? { status: "no_odpt", maxDelay: 0, interval: null, cause: null }
-            : (_opLoading ? { status: "loading", maxDelay: null, interval: null, cause: null }
-              : { status: "loading", maxDelay: null, interval: null, cause: null, source: "awaiting_line_record" });
+          if (_opState === undefined) {
+            fallbackDelay = { status: "loading", maxDelay: null, interval: null, cause: null };
+          } else if (_opState === null) {
+            fallbackDelay = { status: "no_odpt", maxDelay: null, interval: null, cause: null };
+          } else {
+            fallbackDelay = {
+              status: "no_data", maxDelay: null, interval: null, cause: null,
+              source: "odpt_no_matching_line_record"
+            };
+          }
         }
       } catch(_e) {}
       // Live ODPT > official website > bounded, explicitly stale last-good cache.

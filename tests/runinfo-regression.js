@@ -103,4 +103,27 @@ check("maximum observed delay among multiple published numbers",()=>{
   const x=parse("京急線で遅れ。品川駅８分、京急蒲田駅１３分、京急川崎駅１０分程度の遅れ。");
   assert.equal(x.maxDelay,13);
 });
+check("Seibu ODPT loading terminates after a successful empty operator feed",()=>{
+  const seibu={id:"Ikebukuro",name:"西武池袋線",operator:"Seibu",stations:["Ikebukuro","Nerima"]};
+  w.ODPTClient.LINE_TO_OPERATOR.Ikebukuro="Seibu";
+  w.ODPTClient.LINE_RAILWAY_CODE.Ikebukuro="Ikebukuro";
+  w.ODPTClient.supports=(operator,type)=>operator==="Seibu"&&type==="trainInformation";
+  w.DataLayer={getLine:id=>id==="Ikebukuro"?seibu:null,getAllLines:()=>({Ikebukuro:seibu})};
+  const state=()=>f.fuseAll().lines.Ikebukuro.delayInfo;
+  assert.equal(state().status,"loading","pending operator request stays loading");
+  f.updateOdptData({Seibu:[]});
+  const empty=state();
+  assert.equal(empty.status,"no_data","successful empty response is settled");
+  assert.equal(empty.source,"odpt_no_matching_line_record");
+  assert.notEqual(empty.status,"normal","an empty feed cannot certify normal");
+  f.updateOdptData({Seibu:[{
+    "@id":"unrelated", "odpt:operator":"odpt.Operator:Seibu",
+    "odpt:railway":"odpt.Railway:Seibu.Shinjuku",
+    "odpt:trainInformationStatus":"odpt.TrainInformationStatus:Delay",
+    "odpt:trainInformationText":"遅れが出ています。"
+  }]});
+  assert.equal(state().status,"no_data","other line's alert must not be inherited");
+  f.updateOdptData({Seibu:null});
+  assert.equal(state().status,"no_odpt","failed request must not look like a confirmed empty feed");
+});
 console.log("PASS",n,"offline runinfo regression checks");
