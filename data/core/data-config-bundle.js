@@ -1156,6 +1156,8 @@ window.getTransferHint = function(stationId, lang) {
     "Komii": { "Misato": "Misato-Koumi", "Komi": "Koumi" },
     "Tojo": { "Oyama": "Ooyama" },
     "NaritaAbikoBranch": { "Kohoku": "Kohoku-Narita" },
+    // 烏山線と加古川線には別々の「滝」駅がある。外部URNは保持する。
+    "Karasuyama": { "Taki": "Taki-Tochigi" },
     // Explicitly scoped ID migration: preserve official ODPT stop tokens.
     "Nippo": { "Kanda": "Kanda-Fukuoka" },
     "KagoshimaMain": {
