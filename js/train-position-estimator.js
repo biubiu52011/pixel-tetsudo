@@ -2497,7 +2497,8 @@
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
-            serviceName: officialOuMainTsugaruPlan && officialOuMainTsugaruPlan.serviceName
+            serviceName: osakaMahorobaScoped ? osakaMahorobaRef.serviceName
+              : officialOuMainTsugaruPlan && officialOuMainTsugaruPlan.serviceName
               ?officialOuMainTsugaruPlan.serviceName
               : officialKamaishiPlan && officialKamaishiPlan.serviceName
               ? officialKamaishiPlan.serviceName
