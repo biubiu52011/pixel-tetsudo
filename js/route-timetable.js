@@ -1,7 +1,15 @@
 /** Route search schedule owner: JST service day, dated sources and feasible connections. */
 (function() {
   'use strict';
-  function key(s) { return String(s || '').split('.').pop().replace(/-/g, ''); }
+  function key(s, lineId) {
+    var id = String(s || '').split('.').pop();
+    // Official ODPT source IDs are railway-scoped. Translate only for
+    // comparisons; never mutate source URNs or another line's station ID.
+    var scopes = window.RuntimeConfig && window.RuntimeConfig.STATION_ALIAS_BY_RAILWAY || {};
+    if (lineId && scopes[lineId] && Object.prototype.hasOwnProperty.call(scopes[lineId], id))
+      id = scopes[lineId][id];
+    return id.replace(/-/g, '');
+  }
   function parseTime(s) {
     if (!/^\d{1,2}:\d{2}$/.test(String(s || ''))) return null;
     var p = s.split(':').map(Number);
@@ -51,8 +59,9 @@
     return { minute:minute, mode:mode, date:date,
       calendars:calendarsForDate(date) };
   }
-  function candidates(rows, from, to, ctx) {
+  function candidates(rows, from, to, ctx, lineId) {
     var out = [];
+    var scopedLine = lineId || (rows && rows[0] && rows[0]._sqlLineId) || '';
     (rows || []).forEach(function(tt) {
       if (tt._serviceDate && tt._serviceDate !== ctx.date) return;
       var cal = String(tt['odpt:calendar'] || '').split(':').pop();
@@ -60,9 +69,9 @@
       if (!tt._serviceDate && (!cal || ctx.calendars.indexOf(cal) < 0)) return;
       var stops = tt['odpt:trainTimetableObject'] || [], start = -1;
       for (var i=0;i<stops.length;i++) {
-        var stop = stops[i], station = key(stop['odpt:departureStation'] || stop['odpt:arrivalStation']);
-        if (start < 0 && station === key(from)) start = i;
-        else if (start >= 0 && station === key(to)) {
+        var stop = stops[i], station = key(stop['odpt:departureStation'] || stop['odpt:arrivalStation'],scopedLine);
+        if (start < 0 && station === key(from,scopedLine)) start = i;
+        else if (start >= 0 && station === key(to,scopedLine)) {
           var dep = stops[start]['odpt:departureTime'];
           var publishedArrival = stop['odpt:arrivalTime'] || null;
           var arr = publishedArrival || stop['odpt:departureTime'];
@@ -75,7 +84,7 @@
             serviceName:tt._sqlServiceName || '',
             destination:key((tt['odpt:destinationStation'] || [])[0] ||
               stops[stops.length-1]['odpt:arrivalStation'] ||
-              stops[stops.length-1]['odpt:departureStation']),
+              stops[stops.length-1]['odpt:departureStation'],scopedLine),
             canonicalId:tt._canonicalTrainTimetableId || null,
             canonicalEvidence:tt._canonicalGroupEvidence || ''
           });
@@ -85,9 +94,9 @@
     });
     return out;
   }
-  function findNextTrain(rows, from, to, minute, calendars, filter) {
+  function findNextTrain(rows, from, to, minute, calendars, filter, lineId) {
     var ctx=context(); if(calendars) ctx.calendars=calendars.map(function(c){return c.split(':').pop();});
-    return candidates(rows,from,to,ctx).filter(function(h){return h.depMin>=minute && (!filter || filter[h.train]);}).sort(function(a,b){return a.arrMin-b.arrMin || a.depMin-b.depMin;})[0] || null;
+    return candidates(rows,from,to,ctx,lineId).filter(function(h){return h.depMin>=minute && (!filter || filter[h.train]);}).sort(function(a,b){return a.arrMin-b.arrMin || a.depMin-b.depMin;})[0] || null;
   }
   function load(id, serviceDate) {
     var client=window.ODPTClient, line=window.RailwayDB && window.RailwayDB.getLine(id);
@@ -115,7 +124,7 @@
     if(ctx.minute==null || !rides.length) return Promise.resolve({times:{},complete:false,reason:'invalid'});
     var ids=Array.from(new Set(rides.map(function(r){return r.seg.lineId;})));
     return Promise.all(ids.map(function(id){return load(id,ctx.date);})).then(function(lists){
-      var choices=rides.map(function(r){return candidates(lists[ids.indexOf(r.seg.lineId)],r.seg.fromStation,r.seg.toStation,ctx);});
+      var choices=rides.map(function(r){return candidates(lists[ids.indexOf(r.seg.lineId)],r.seg.fromStation,r.seg.toStation,ctx,r.seg.lineId);});
       // Dynamic programming retains alternate train choices; greedy boarding can miss a later express or feasible transfer.
       var reverse=ctx.mode==='arrive', states=[{cursor:ctx.minute,hits:[],train:null}], order=rides.map(function(_,i){return i;});
       if(reverse) order.reverse();
