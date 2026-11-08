@@ -10,9 +10,22 @@ var _trainArtworkFailureCount = 0;
 var _TRAIN_ARTWORK_FAILURE_MAX = 500;
 var _TRAIN_ARTWORK_FAILURE_RETRY_MS = 45 * 1000;
 
+function _badgeLabel(it) {
+  return String((it && (it.name || it.lineId)) || "").slice(0, 4);
+}
 function _badgeW(it, isMobile) {
-  var txt = (it.name || it.lineId || "").slice(0, 4);
-  return txt.length * (isMobile ? 7 : 5) + 8;
+  var label = _badgeLabel(it);
+  var fontSize = isMobile ? 9 : 6.5;
+  // ThroughChip already owns cached SVG text measurement. Reuse that
+  // measurement rather than assuming CJK and Latin glyphs have equal width.
+  var measure = window.ThroughChip && window.ThroughChip.measureWidth;
+  var width = typeof measure === "function" ? Number(measure(label, fontSize)) : NaN;
+  if (!Number.isFinite(width) || width < 0) {
+    width = Array.from(label).reduce(function(sum, char) {
+      return sum + (/[^\u0000-\u007f]/.test(char) ? fontSize : fontSize * 0.65);
+    }, 0);
+  }
+  return Math.ceil(width) + 8;
 }
 
 function _rememberTrainArtworkFailure(trainUid, imagePath) {
@@ -342,7 +355,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             // 单行 badge——异名/站外信息放旁边小字，不撑高线路图
             var _toName = txl.toStation ? (window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(txl.toStation, window.currentLang) : txl.toStation) : "";
 
-            var _lineName = (txl.name || txl.lineId || "").slice(0, 4);
+            var _lineName = _badgeLabel(txl);
             var bW = _badgeW(txl, isMobileView);
             var bH = isMobileView ? 15 : 11;
             var bRect = document.createElementNS(svgNS, "rect");
