@@ -57,6 +57,12 @@ jobs:
           node --test tools/route-timetable-service-calendar.test.cjs
           node --test tools/hamakawasaki-transfer-badges.test.cjs
           node --test tools/yamanote-transfer-overflow.test.cjs
+      - name: Verify run-information state handling
+        run: |
+          node --check js/runinfo-evaluator.js
+          node --check js/runinfo-web.js
+          node --test tests/runinfo-evaluator-partial-cancellation.test.cjs tests/runinfo-web-snapshot.test.cjs
+          node tests/runinfo-regression.js
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

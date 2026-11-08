@@ -31,6 +31,11 @@
   var STORAGE_KEY = "pt_runinfo_web_v1";
   var REFRESH_INTERVAL_MS = 5 * 60 * 1000;   // 自动轮询间隔（5 分钟）
   var FETCH_TIMEOUT_MS = 15000;
+  // GitHub Actions collects the official home-page status into a small public
+  // JSON snapshot. raw.githubusercontent.com allows browser CORS reads.
+  // Never treat a stale scheduled run as fresh operational evidence.
+  var SNAPSHOT_URL = "https://raw.githubusercontent.com/biubiu52011/pixel-tetsudo/main/data/runinfo-web-snapshot.json";
+  var SNAPSHOT_MAX_AGE_MS = 45 * 60 * 1000;
 
   // ========== 网页源运营商配置 ==========
   // site: 官网直链（打开官网/iframe）；block: 首页运行情报区块标题关键词；extraBlock: 附加信息区块
@@ -243,29 +248,59 @@
     });
   }
 
+  // Scheduled official snapshot is same-repository content, not a proxy
+  // scraping service. Staleness is measured against official collection time.
+  function tryOfficialSnapshot(op) {
+    return fetch(SNAPSHOT_URL + "?t=" + Math.floor(Date.now() / REFRESH_INTERVAL_MS), {
+      method: "GET", cache: "no-store", headers: { "Accept": "application/json" }
+    }).then(function(res) {
+      if (!res.ok) return null;
+      return res.json();
+    }).then(function(json) {
+      if (!json || json.version !== 1 || !json.operators) return null;
+      var item = json.operators[op];
+      if (!item || !item.updatedAt || !item.detail ||
+          ["normal","delayed","suspended","notice"].indexOf(item.status) < 0) return null;
+      var when = Date.parse(item.updatedAt);
+      if (!Number.isFinite(when) || when > Date.now() + 60000 ||
+          Date.now() - when > SNAPSHOT_MAX_AGE_MS) return null;
+      return { status: item.status, interval: item.interval || null,
+        cause: item.cause || null, detail: item.detail, updatedAt: when,
+        source: "official_snapshot", officialUrl: item.sourceUrl || SOURCES[op].site };
+    }).catch(function() { return null; });
+  }
+
   // 抓取指定运营商并落库；成功返回 delayInfo，失败返回 null（保留旧数据）
   function refresh(op) {
     var cfg = SOURCES[op];
     if (!cfg) return Promise.resolve(null);
     if (_loading[op]) return Promise.resolve(getDelayInfoByOp(op));
     _loading[op] = true;
-    return fetchHTML(op).then(function(text) {
-      if (!text) return null;
-      var parsed = parseSiteText(text, op);
-      if (!parsed) return null;
-      var data = loadCache();
-      data[op] = {
-        status: parsed.status,
-        interval: parsed.interval,
-        cause: parsed.statusLine,
-        detail: parsed.detail,
-        updatedAt: Date.now(),
-        source: "web",
-        raw: text
-      };
-      persist();
-      notifyUpdate(op);
-      return data[op];
+    return tryOfficialSnapshot(op).then(function(snapshot) {
+      if (snapshot) {
+        var data = loadCache();
+        if (data[op] && data[op].source === "manual") return data[op];
+        // Avoid redundant UI redraws while polling a static snapshot.
+        if (data[op] && data[op].source === "official_snapshot" &&
+            data[op].updatedAt === snapshot.updatedAt) return data[op];
+        data[op] = snapshot;
+        persist();
+        notifyUpdate(op);
+        return snapshot;
+      }
+      return fetchHTML(op).then(function(text) {
+        if (!text) return null;
+        var parsed = parseSiteText(text, op);
+        if (!parsed) return null;
+        var data = loadCache();
+        data[op] = {
+          status: parsed.status, interval: parsed.interval, cause: parsed.statusLine,
+          detail: parsed.detail, updatedAt: Date.now(), source: "web", raw: text
+        };
+        persist();
+        notifyUpdate(op);
+        return data[op];
+      });
     }).catch(function(e) {
       console.debug("[WebRunInfo] refresh " + op + " failed:", e && e.message ? e.message : e);
       return null;
@@ -328,8 +363,9 @@
     var d = data[op];
     // Cache timestamps describe collection time, not official validity.
     // Never keep showing a live status after the source has gone stale.
+    var maxAge = d && d.source === "official_snapshot" ? SNAPSHOT_MAX_AGE_MS : REFRESH_INTERVAL_MS*2;
     if (!d || !Number.isFinite(Number(d.updatedAt)) ||
-        Date.now()-Number(d.updatedAt) > REFRESH_INTERVAL_MS*2) return null;
+        Date.now()-Number(d.updatedAt) > maxAge) return null;
     return {
       status: d.status,
       interval: d.interval,
