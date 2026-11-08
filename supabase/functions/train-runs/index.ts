@@ -4462,6 +4462,46 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     run.vehicle_artwork_path=null;
   }
 
+  // Exact November 2026 JR-West public timetable samples for the
+  // northern Fukuchiyama line: 2528M and 2532M are both daily northbound-
+  // toward-Shinoyamaguchi Local services. H remains an INTERNAL holiday
+  // suffix. No rolling-stock allocation, PNG or live location is certified.
+  if(lineId==="Fukuchiyama" && /^2026-11-\d{2}$/.test(serviceDate)){
+    const holiday=selectedCalendar==="odpt.Calendar:SaturdayHoliday";
+    const stations=["Fukuchiyama","Tamba-Takeda","Ichijima","Kuroi-Tamba",
+      "Iso-Tamba","Kaibara-Hyogo","Tanigawa","Shimotaki",
+      "Tamba-Oyama","Shinoyamaguchi"];
+    const examples=[
+      {id:holiday?2611082528002:2611082528001,
+       number:holiday?"2528MH":"2528M",start:"09:01",end:"10:10",
+       source:"https://timetable.jr-odekake.net/train-timetable/24391?date=20261103"},
+      {id:holiday?2611082532002:2611082532001,
+       number:holiday?"2532MH":"2532M",start:"11:07",end:"12:04",
+       source:"https://timetable.jr-odekake.net/train-timetable/24581?date=20261103"}
+    ];
+    for(const sample of examples){
+      const run=result.find((r:any)=>Number(r.source_template_id)===sample.id);
+      if(!run||run.train_number!==sample.number||
+         run.network_key!=="odpt.Railway:JR-West.Fukuchiyama"||
+         run.rail_direction!=="odpt.RailDirection:Inbound"||
+         run.train_type!=="odpt.TrainType:JR-West.Local"||
+         run.timetable_provenance!=="official-sampled:fukuchiyama:2611:"+
+           sample.number.replace(/H$/,"")||
+         !Array.isArray(run.stops)||run.stops.length!==10||
+         run.stops.some((st:any,i:number)=>st.station_key!==stations[i])||
+         run.stops[0].departure_time!==sample.start||
+         run.stops[9].arrival_time!==sample.end)
+        throw new Error("JRWEST_FUKUCHIYAMA_2611_NORTHBOUND_SAMPLE_CONFLICT");
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.train_number_verification="official-2611-northern-number-and-stops";
+      run.train_number_source_url=sample.source;
+      run.plan_source="jrwest-2611-official-sampled-northern-local-no-live-location";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+    }
+  }
+
   // Incomplete source rows are preserved in SQL for auditing, but must not
   // suppress other source-verified trains for the same railway/calendar.
   // Never extrapolate a missing stop or report full coverage for a partial set.
