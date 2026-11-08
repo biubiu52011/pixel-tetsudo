@@ -10,7 +10,7 @@ const local='odpt.TrainType:JR-West.Local';
 const north=['Shinoyamaguchi','Tamba-Oyama','Shimotaki','Tanigawa',
   'Kaibara-Hyogo','Iso-Tamba','Kuroi-Tamba','Ichijima','Tamba-Takeda','Fukuchiyama'];
 const south=['Amagasaki','Tsukaguchi','Itami','Takarazuka','Shinoyamaguchi'];
-const generic=['JR西日本207系','JR西日本321系','JR西日本223系','JR西日本225系'];
+const generic=['JR西日本207系','JR西日本321系','JR西日本223系6000番台','JR西日本225系6000番台'];
 const get=(keys,type=local,owner='')=>lookup('Fukuchiyama','JR-West',type,
   {stationKeys:keys,trainOwner:owner});
 
