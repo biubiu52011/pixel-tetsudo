@@ -30,11 +30,11 @@ function list() {
     get innerHTML() { return content; },
     set innerHTML(html) {
       content = html;
-      options = [...html.matchAll(/<div class="suggestion-item" role="option" id="([^"]+)" aria-selected="false" data-station-id="([^"]+)">([^<]+)<\/div>/g)]
+      options = [...html.matchAll(/<div class="suggestion-item" role="option" id="([^"]+)" aria-selected="false" data-station-id="([^"]+)" data-station-label="([^"]+)">([^<]+)<\/div>/g)]
         .map(match => {
-          const attrs = { 'aria-selected': 'false', 'data-station-id': match[2] };
+          const attrs = { 'aria-selected': 'false', 'data-station-id': match[2], 'data-station-label': match[3] };
           return {
-            id: match[1], textContent: match[3], handlers: {},
+            id: match[1], textContent: match[4], handlers: {},
             getAttribute(key) { return attrs[key] || null; },
             setAttribute(key, value) { attrs[key] = String(value); },
             addEventListener(key, fn) { this.handlers[key] = fn; },
