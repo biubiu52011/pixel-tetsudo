@@ -535,8 +535,10 @@
       models:['JR西日本207系','JR西日本321系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
     {id:'jrwest-fukuchiyama', operator:'JR-West', lineIds:['Fukuchiyama'],
       // Route-wide candidate fleet only; not an individual service/formation.
-      models:['JR西日本207系','JR西日本321系','JR西日本223系','JR西日本225系'],
-      sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
+      models:['JR西日本207系','JR西日本321系','JR西日本223系6000番台','JR西日本225系6000番台'],
+      // 篠山口～福知山の普通列車に限り、下の区間判定で223系5500番台へ絞る。
+      // 车型参考不等于特定列车的运用证据；不推断编成或 PNG。
+      sourceUrl:'https://express22.xsrv.jp/maintarminal/jrtakaraduka/'},
     {id:'jrwest-wakayama-sakurai', operator:'JR-West', lineIds:['WakayamaLine','Sakurai'],
       models:['JR西日本227系1000番台'], sourceUrl:'https://www.westjr.co.jp/press/article/2018/03/page_12012.html'},
     {id:'jrwest-kisei', operator:'JR-West', lineIds:['KiseiWest'],
