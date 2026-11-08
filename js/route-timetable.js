@@ -135,7 +135,26 @@
         states=next;
       });
       states.sort(function(a,b){return reverse ? b.cursor-a.cursor : a.cursor-b.cursor;});
-      if(!states.length) return {times:{},complete:false,reason:'no-service',serviceDate:ctx.date};
+      if(!states.length) {
+        // At 00:00–03:59 JST, there may be no more trains on the
+        // previous railway service day. For "now" only, continue to the
+        // next morning instead of leaving an empty journey until 04:00.
+        // An explicit 03:00 departure or arrival search keeps its date.
+        if(ctx.mode==='now' && ctx.minute>=24*60) {
+          var nextDay=new Date(ctx.date+'T12:00:00Z');
+          nextDay.setUTCDate(nextDay.getUTCDate()+1);
+          var nextDate=nextDay.toISOString().slice(0,10);
+          return enrichSegments(segments,{mode:'depart',date:nextDate,time:'04:00'})
+            .then(function(nextPlan) {
+              if(nextPlan && nextPlan.complete) {
+                nextPlan.initialWait+=Math.max(0,28*60-ctx.minute);
+                nextPlan.nextServiceMorning=true;
+              }
+              return nextPlan;
+            });
+        }
+        return {times:{},complete:false,reason:'no-service',serviceDate:ctx.date};
+      }
       var hits=states[0].hits, times={}, connections={}, downgrade=[];
       hits.forEach(function(hit,i){times[rides[i].idx]=hit;
         // Direction-wide ranges are not confirmed boarding platforms.

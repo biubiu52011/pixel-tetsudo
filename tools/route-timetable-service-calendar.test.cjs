@@ -222,3 +222,40 @@ test('short matched through connection is accepted; same-number long layover is 
   assert.equal(bad.connections[1].through,false);
   assert.deepEqual(Array.from(bad.downgrade),[1]);
 });
+
+
+test('03:00 JST now-mode continues to the next morning after the previous day has no trains',async()=>{
+  class EarlyDate extends Date {
+    constructor(...args){super(...(args.length?args:['2026-11-08T18:00:00Z']));}
+    static now(){return Date.parse('2026-11-08T18:00:00Z');}
+  }
+  const requests=[];
+  const window={
+    RuntimeConfig:{PUBLISHED_JP_HOLIDAYS:{'2026':['11-03','11-23']}},
+    RailwayDB:{getLine:()=>({})},
+    ODPTClient:{getCachedTrainRuns:(_id,day)=>{
+      requests.push(day);
+      if(day!=='2026-11-09')return Promise.resolve([]);
+      return Promise.resolve([{
+        'odpt:calendar':'odpt.Calendar:Weekday',
+        'odpt:trainNumber':'501M',
+        'odpt:trainTimetableObject':[
+          {'odpt:departureStation':'odpt.Station:JR-East.Test.A','odpt:departureTime':'05:30'},
+          {'odpt:arrivalStation':'odpt.Station:JR-East.Test.B','odpt:arrivalTime':'05:45'}
+        ],
+        _serviceDate:day
+      }]);
+    }}
+  };
+  const ctx=vm.createContext({window,Date:EarlyDate,console});
+  vm.runInContext(script,ctx,{filename:'js/route-timetable.js'});
+  const result=await window.RouteTimetable.enrichSegments([
+    {type:'ride',lineId:'Yamanote',fromStation:'A',toStation:'B'}
+  ],{mode:'now'});
+  assert.equal(result.complete,true);
+  assert.equal(result.serviceDate,'2026-11-09');
+  assert.equal(result.departure,'05:30');
+  assert.equal(result.initialWait,150,'wait from 03:00, not from 04:00');
+  assert.equal(result.nextServiceMorning,true);
+  assert.deepEqual(requests,['2026-11-08','2026-11-09']);
+});
