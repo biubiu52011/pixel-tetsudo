@@ -4040,6 +4040,13 @@
          !context.plannedVehicleCandidates.some(function(model){
            return String(model).indexOf(row.requiredCandidateModelPrefix)===0;
          }))continue;
+      // A scoped single-fleet image must not win when SQL or realtime
+      // supplies contradictory model candidates. Keep it unresolved.
+      if(row.requireCompatiblePlan && row.requiredCandidateModelPrefix &&
+         context && Array.isArray(context.plannedVehicleCandidates) &&
+         context.plannedVehicleCandidates.some(function(model){
+           return String(model||"").indexOf(row.requiredCandidateModelPrefix)!==0;
+         }))continue;
       if(row.requireCandidateOverlap && context &&
          Array.isArray(context.plannedVehicleCandidates) &&
          context.plannedVehicleCandidates.length &&
@@ -4050,6 +4057,14 @@
          Array.isArray(context.vehiclePlan.models) &&
          context.vehiclePlan.models.length!==1)continue;
       if(row.allowedModelLabels && context){
+        // Check BOTH independent observations, not just the first truthy one.
+        // Conflicting realtime labels may not justify a representative PNG.
+        if(row.requireCompatiblePlan &&
+           [context.realtimeVehicleType,context.realtimeDerivedVehicleType]
+             .some(function(model){
+               var label=String(model||"").trim();
+               return label && row.allowedModelLabels.indexOf(label)<0;
+             }))continue;
         var observed=String(context.realtimeVehicleType ||
           context.realtimeDerivedVehicleType || "").trim();
         if(observed && row.allowedModelLabels.indexOf(observed)<0)continue;
