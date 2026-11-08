@@ -81,3 +81,46 @@ test('train detail drops the invisible overview and rebuilds on return', () => {
   assert.match(controller, /if \(listEl && !listEl\.querySelector\("\.rs-line-card"\)\) \{\s*renderList\(listEl\)/);
   assert.match(controller, /if \(!hasLineCards && \(!detailEl \|\| detailEl\.classList\.contains\("hidden"\)\)\)/);
 });
+
+test('JU icon maps to the canonical JR Utsunomiya line across data and cards', () => {
+  const asset = '../images/鉄道/JR東日本/宇都宮線.png';
+  const sources = [
+    JSON.parse(fs.readFileSync('data/core/railway_data.json', 'utf8')),
+    JSON.parse(fs.readFileSync('data/core/railway_data.compact.json', 'utf8')),
+    JSON.parse(fs.readFileSync('data/core/railway-data.file.js', 'utf8')
+      .replace(/^window\\.RAILWAY_DATA\\s*=\\s*/, '').replace(/;\\s*$/, ''))
+  ];
+
+  for (const data of sources) {
+    const lines = data.lines;
+    const line = lines.UtsunomiyaJR;
+    assert.ok(line, 'canonical UtsunomiyaJR must exist');
+    assert.equal(line.operator, 'JR-East');
+    assert.equal(line.code, 'JU');
+    assert.equal(line.image, asset, 'line image maps to the replaced JU artwork');
+    assert.equal(line.presentation.icon, asset, 'overview uses the same JU artwork');
+    assert.deepEqual(line.presentation.lineIds, ['UtsunomiyaJR']);
+
+    assert.notEqual(lines.Takasaki.image, asset,
+      'Takasaki shares JU line code but not Utsunomiya artwork');
+    assert.notEqual(lines.TobuUtsunomiya.image, asset,
+      'Tobu Utsunomiya must retain its own operator image');
+    assert.notEqual(lines.UtsunomiyaLRT.image, asset,
+      'Utsunomiya LRT must retain its own line image');
+  }
+
+  const png = fs.readFileSync('images/鉄道/JR東日本/宇都宮線.png');
+  assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+  assert.equal(png.readUInt32BE(16), 236);
+  assert.equal(png.readUInt32BE(20), 236);
+
+  const win = makeView();
+  const line = sources[0].lines.UtsunomiyaJR;
+  const card = win.LineCard.renderSystem(
+    line.presentation, ['UtsunomiyaJR'], { UtsunomiyaJR: line }, { mode: 'trains' });
+  assert.ok(card.includes('src="' + asset + '"'), 'train overview renders the mapped PNG');
+
+  const search = fs.readFileSync('js/search-ui.js', 'utf8');
+  assert.match(search, /var _canonicalImg = line && line\\.image/);
+  assert.match(search, /var img = _canonicalImg \\|\\|/);
+});
