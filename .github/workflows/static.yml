@@ -12,9 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+# GitHub Pages can retain a deployment lock after an interrupted run.
+# Keep commits queued instead of cancelling a Pages upload/deployment;
+# otherwise back-to-back main commits can produce HTTP 400 deployment locks.
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
