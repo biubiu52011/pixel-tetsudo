@@ -165,6 +165,6 @@ test('JU icon maps to the canonical JR Utsunomiya line across data and cards', (
   assert.ok(card.includes('src="' + asset + '"'), 'train overview renders the mapped PNG');
 
   const search = fs.readFileSync('js/search-ui.js', 'utf8');
-  assert.match(search, /var _canonicalImg = line && line\\.image/);
-  assert.match(search, /var img = _canonicalImg \\|\\|/);
+  assert.match(search, /var _canonicalImg = line && line\.image/);
+  assert.match(search, /var img = _canonicalImg \|\|/);
 });
