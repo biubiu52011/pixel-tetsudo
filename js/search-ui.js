@@ -622,6 +622,27 @@
               _meta.hidden = false;
             }
           }
+          // The existing interchange slots remain unconfirmed unless a
+          // matched timetable supplies official train-specific stop platforms.
+          var _connections = (res && res.complete && res.connections) || {};
+          Object.keys(_connections).forEach(function(_txIdx) {
+            var _c = _connections[_txIdx];
+            if (!_c || _c.through) return;
+            var _card = _rtSelf.resultsDiv.querySelector('[data-tx-idx="' + _txIdx + '"]');
+            var _change = _card && _card.querySelector('.journey-platform-change');
+            if (!_change) return;
+            [['arrival',_c.arrivalPlatform],['departure',_c.departurePlatform]].forEach(function(entry) {
+              var _cell = _change.querySelector('[data-platform-value="' + entry[0] + '"]');
+              if (!_cell || !entry[1]) return;
+              _cell.textContent = entry[1];
+              var _slot = _cell.closest('.journey-platform-slot');
+              if (_slot) _slot.dataset.platformStatus = 'confirmed';
+            });
+            if (_c.arrivalPlatform && _c.departurePlatform) {
+              var _note = _change.querySelector('.journey-platform-note');
+              if (_note) _note.hidden = true;
+            }
+          });
           // 直通降级：ODPT 分表无贯通车次时，"乗換不要"改回换乘文案并去除直通样式（避免误导）
           var _dg = (res && res.downgrade) || [];
           for (var _d2 = 0; _d2 < _dg.length; _d2++) {

@@ -65,7 +65,7 @@
         else if (start >= 0 && station === key(to)) {
           var dep = stops[start]['odpt:departureTime'], arr = stop['odpt:arrivalTime'] || stop['odpt:departureTime'];
           var d = parseTime(dep), a = parseTime(arr);
-          if (d != null && a != null && a >= d) out.push({dep:dep,arr:arr,depMin:d,arrMin:a,train:tt['odpt:trainNumber'] || '',destination:key(stops[stops.length-1]['odpt:arrivalStation'] || stops[stops.length-1]['odpt:departureStation'])});
+          if (d != null && a != null && a >= d) out.push({dep:dep,arr:arr,depMin:d,arrMin:a,train:tt['odpt:trainNumber'] || '',calendar:cal,destination:key(stops[stops.length-1]['odpt:arrivalStation'] || stops[stops.length-1]['odpt:departureStation'])});
           break;
         }
       }
@@ -113,11 +113,16 @@
       if(!states.length) return {times:{},complete:false,reason:'no-service',serviceDate:ctx.date};
       var hits=states[0].hits, times={}, connections={}, downgrade=[];
       hits.forEach(function(hit,i){times[rides[i].idx]=hit;
-        if(window.PlatformResolver && window.PlatformResolver.resolve) {
-          try { var platform=window.PlatformResolver.resolve(rides[i].seg.lineId,rides[i].seg.fromStation,rides[i].seg.direction);if(platform) hit.platform=platform; } catch(e) {}
+        // Direction-wide ranges are not confirmed boarding platforms.
+        if(window.PlatformResolver && window.PlatformResolver.resolveTrain) {
+          try {
+            var resolver=window.PlatformResolver,segment=rides[i].seg;
+            hit.platform=resolver.resolveTrain(segment.lineId,hit.train,hit.calendar,ctx.date,segment.fromStation,hit.dep,'departure');
+            hit.arrivalPlatform=resolver.resolveTrain(segment.lineId,hit.train,hit.calendar,ctx.date,segment.toStation,hit.arr,'arrival');
+          } catch(e) {}
         }
         if(i){var tx=transfers[i-1], same=through(tx && tx.seg,hits[i-1],hit), total=hit.depMin-hits[i-1].arrMin;
-          if(tx){connections[tx.idx]={through:same,total:total,walk:same ? 0 : buffer(tx.seg),wait:same ? 0 : total-buffer(tx.seg)};if(tx.seg.through && !same) downgrade.push(tx.idx);}}
+          if(tx){connections[tx.idx]={through:same,total:total,walk:same ? 0 : buffer(tx.seg),wait:same ? 0 : total-buffer(tx.seg),arrivalPlatform:!same?(hits[i-1].arrivalPlatform||null):null,departurePlatform:!same?(hit.platform||null):null};if(tx.seg.through && !same) downgrade.push(tx.idx);}}
       });
       return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:hits[hits.length-1].arr,durationMin:hits[hits.length-1].arrMin-hits[0].depMin,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
     });

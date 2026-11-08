@@ -1779,6 +1779,582 @@ window.PlatformResolver = {
   }
 };
 
+// Manually verified 2026-11 published planned platforms (not live assignments).
+// Exact train number (including internal holiday H), service calendar, station
+// and ARRIVAL/DEPARTURE clock must agree. A blank official platform stays null.
+// Per-train official source URLs are retained for review and November revalidation.
+window.PLATFORM_TRAIN_PLANS = {
+  "Fukuchiyama": {
+    "3002M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91011?date=20261007",
+        "stops": {
+          "Amagasaki": [
+            "07:28",
+            "07:29",
+            "8"
+          ],
+          "Osaka": [
+            "07:35",
+            "07:37",
+            "8"
+          ]
+        }
+      }
+    },
+    "3002MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91101?date=20261031",
+        "stops": {
+          "Amagasaki": [
+            "07:30",
+            "07:31",
+            "7"
+          ],
+          "Osaka": [
+            "07:37",
+            "07:42",
+            "9"
+          ]
+        }
+      }
+    },
+    "7006MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/200081?date=20261004",
+        "stops": {
+          "Amagasaki": [
+            "09:19",
+            "09:20",
+            "7"
+          ],
+          "Osaka": [
+            "09:26",
+            "09:28",
+            "9"
+          ]
+        }
+      }
+    },
+    "3008M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91081?date=20261103",
+        "stops": {
+          "Fukuchiyama": [
+            null,
+            "08:40",
+            "2"
+          ],
+          "Amagasaki": [
+            "10:14",
+            "10:15",
+            "8"
+          ],
+          "Osaka": [
+            "10:21",
+            "10:23",
+            "10"
+          ]
+        }
+      }
+    },
+    "3008MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91081?date=20261103",
+        "stops": {
+          "Fukuchiyama": [
+            null,
+            "08:40",
+            "2"
+          ],
+          "Amagasaki": [
+            "10:14",
+            "10:15",
+            "8"
+          ],
+          "Osaka": [
+            "10:21",
+            "10:23",
+            "10"
+          ]
+        }
+      }
+    },
+    "3010M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91111?date=20261103",
+        "stops": {
+          "Fukuchiyama": [
+            null,
+            "09:50",
+            "2"
+          ],
+          "Amagasaki": [
+            "11:16",
+            "11:17",
+            "8"
+          ],
+          "Osaka": [
+            "11:23",
+            "11:25",
+            "10"
+          ]
+        }
+      }
+    },
+    "3010MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91111?date=20261103",
+        "stops": {
+          "Fukuchiyama": [
+            null,
+            "09:50",
+            "2"
+          ],
+          "Amagasaki": [
+            "11:16",
+            "11:17",
+            "8"
+          ],
+          "Osaka": [
+            "11:23",
+            "11:25",
+            "10"
+          ]
+        }
+      }
+    },
+    "3012M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91121?date=20261027",
+        "stops": {
+          "Amagasaki": [
+            "12:16",
+            "12:17",
+            "8"
+          ],
+          "Osaka": [
+            "12:23",
+            "12:25",
+            "10"
+          ]
+        }
+      }
+    },
+    "3012MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91121?date=20261027",
+        "stops": {
+          "Amagasaki": [
+            "12:16",
+            "12:17",
+            "8"
+          ],
+          "Osaka": [
+            "12:23",
+            "12:25",
+            "10"
+          ]
+        }
+      }
+    },
+    "3014M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91131?date=20261103",
+        "stops": {
+          "Amagasaki": [
+            "14:16",
+            "14:17",
+            "8"
+          ],
+          "Osaka": [
+            "14:23",
+            "14:25",
+            "10"
+          ]
+        }
+      }
+    },
+    "3014MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91131?date=20261103",
+        "stops": {
+          "Amagasaki": [
+            "14:16",
+            "14:17",
+            "8"
+          ],
+          "Osaka": [
+            "14:23",
+            "14:25",
+            "10"
+          ]
+        }
+      }
+    },
+    "3018M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91141?date=20261104",
+        "stops": {
+          "Amagasaki": [
+            "16:16",
+            "16:16",
+            "8"
+          ],
+          "Osaka": [
+            "16:23",
+            "16:24",
+            "11"
+          ]
+        }
+      }
+    },
+    "3018MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/91141?date=20261104",
+        "stops": {
+          "Amagasaki": [
+            "16:16",
+            "16:16",
+            "8"
+          ],
+          "Osaka": [
+            "16:23",
+            "16:24",
+            "11"
+          ]
+        }
+      }
+    },
+    "3020M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/183802?date=20261006",
+        "stops": {
+          "Amagasaki": [
+            "17:15",
+            "17:15",
+            "7"
+          ],
+          "Osaka": [
+            "17:21",
+            "17:23",
+            "10"
+          ]
+        }
+      }
+    },
+    "3020MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/183802?date=20261006",
+        "stops": {
+          "Amagasaki": [
+            "17:15",
+            "17:15",
+            "7"
+          ],
+          "Osaka": [
+            "17:21",
+            "17:23",
+            "10"
+          ]
+        }
+      }
+    },
+    "3028M": {
+      "Weekday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/145171?date=20261007",
+        "stops": {
+          "Fukuchiyama": [
+            "19:59",
+            "20:02",
+            "2"
+          ],
+          "Amagasaki": [
+            "21:29",
+            "21:30",
+            "7"
+          ],
+          "Osaka": [
+            "21:36",
+            "21:39",
+            "11"
+          ]
+        }
+      }
+    },
+    "3028MH": {
+      "SaturdayHoliday": {
+        "source": "https://timetable.jr-odekake.net/train-timetable/145181?date=20261012",
+        "stops": {
+          "Fukuchiyama": [
+            "19:59",
+            "20:02",
+            "2"
+          ],
+          "Amagasaki": [
+            "21:29",
+            "21:30",
+            "7"
+          ],
+          "Osaka": [
+            "21:36",
+            "21:38",
+            "11"
+          ]
+        }
+      }
+    }
+  },
+  "UtsunomiyaJR": {
+    "527M": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/010/013221.html",
+        "stops": {
+          "Ueno": [
+            null,
+            "06:08",
+            "6"
+          ],
+          "Omiya": [
+            "06:33",
+            "06:34",
+            "9"
+          ],
+          "Hasuda": [
+            "06:44",
+            "06:44",
+            "1"
+          ],
+          "Shiraoka": [
+            "06:48",
+            "06:48",
+            "1"
+          ],
+          "Kuki": [
+            "06:54",
+            "06:55",
+            "2"
+          ],
+          "Koga": [
+            "07:10",
+            "07:10",
+            "2"
+          ],
+          "Koganei": [
+            "07:30",
+            "07:31",
+            "1"
+          ],
+          "Utsunomiya": [
+            "07:51",
+            null,
+            "7"
+          ]
+        }
+      },
+      "SaturdayHoliday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/010/013231.html",
+        "stops": {
+          "Ueno": [
+            null,
+            "06:08",
+            "6"
+          ],
+          "Omiya": [
+            "06:33",
+            "06:34",
+            "9"
+          ],
+          "Hasuda": [
+            "06:44",
+            "06:44",
+            "1"
+          ],
+          "Shiraoka": [
+            "06:48",
+            "06:48",
+            "1"
+          ],
+          "Kuki": [
+            "06:54",
+            "06:55",
+            "2"
+          ],
+          "Koga": [
+            "07:10",
+            "07:10",
+            "2"
+          ],
+          "Koganei": [
+            "07:30",
+            "07:31",
+            "1"
+          ],
+          "Utsunomiya": [
+            "07:51",
+            null,
+            "8"
+          ]
+        }
+      }
+    },
+    "545M": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/100/100221.html",
+        "stops": {
+          "Ueno": [
+            null,
+            "19:55",
+            "16"
+          ],
+          "Omiya": [
+            "20:22",
+            "20:27",
+            "9"
+          ],
+          "Hasuda": [
+            "20:37",
+            "20:38",
+            "1"
+          ],
+          "Shiraoka": [
+            "20:42",
+            "20:42",
+            "1"
+          ],
+          "Kuki": [
+            "20:48",
+            "20:49",
+            "2"
+          ],
+          "Koga": [
+            "21:04",
+            "21:04",
+            "2"
+          ],
+          "Koganei": [
+            "21:25",
+            "21:26",
+            "1"
+          ],
+          "Utsunomiya": [
+            "21:47",
+            null,
+            "10"
+          ]
+        }
+      },
+      "SaturdayHoliday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/040/041451.html",
+        "stops": {
+          "Ueno": [
+            null,
+            "23:28",
+            "14"
+          ],
+          "Omiya": [
+            "23:55",
+            "23:56",
+            "9"
+          ],
+          "Hasuda": [
+            "00:06",
+            "00:06",
+            "1"
+          ],
+          "Shiraoka": [
+            "00:10",
+            "00:10",
+            "1"
+          ],
+          "Kuki": [
+            "00:16",
+            "00:17",
+            "2"
+          ],
+          "Koga": [
+            "00:31",
+            "00:32",
+            "2"
+          ],
+          "Koganei": [
+            "00:52",
+            null,
+            "2"
+          ]
+        }
+      }
+    },
+    "547M": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/100/100231.html",
+        "stops": {
+          "Ueno": [
+            null,
+            "20:50",
+            "16"
+          ],
+          "Omiya": [
+            "21:15",
+            "21:19",
+            "9"
+          ],
+          "Hasuda": [
+            "21:30",
+            "21:30",
+            "1"
+          ],
+          "Shiraoka": [
+            "21:34",
+            "21:35",
+            "1"
+          ],
+          "Kuki": [
+            "21:40",
+            "21:41",
+            "2"
+          ],
+          "Koga": [
+            "21:55",
+            "21:56",
+            "2"
+          ],
+          "Koganei": [
+            "22:17",
+            "22:22",
+            "2"
+          ],
+          "Utsunomiya": [
+            "22:42",
+            null,
+            "7"
+          ]
+        }
+      }
+    }
+  }
+};
+
+// Exact public train plan only. The old direction-based resolve() is retained
+// for compatibility but MUST NOT certify individual train boarding platforms.
+window.PlatformResolver.resolveTrain = function(lineId, number, calendar, serviceDate, station, clock, role) {
+  try {
+    if (!/^2026-11-[0-9]{2}$/.test(String(serviceDate || ''))) return null;
+    var line = window.PLATFORM_TRAIN_PLANS && window.PLATFORM_TRAIN_PLANS[lineId];
+    var cal = String(calendar || '').split(':').pop();
+    var run = line && line[String(number || '')] && line[String(number || '')][cal];
+    var entry = run && run.stops && run.stops[String(station || '')];
+    if (!entry || (role !== 'arrival' && role !== 'departure')) return null;
+    var expected = role === 'arrival' ? entry[0] : entry[1];
+    var actual = String(clock || '').slice(0, 5);
+    function minutes(v) {
+      var m = /^([0-9]{1,2}):([0-9]{2})$/.exec(String(v || ''));
+      return m ? ((Number(m[1]) % 24) * 60 + Number(m[2])) : -1;
+    }
+    return expected && actual && minutes(expected) === minutes(actual) ? entry[2] : null;
+  } catch (_) { return null; }
+};
+
 
 // ===== train-type-defs.js =====
 /**
