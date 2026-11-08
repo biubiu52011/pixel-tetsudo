@@ -44448,28 +44448,19 @@
      "item": "マグロぶつ",
      "price": "500円",
      "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop",
-     "photoReferenceUrl": "https://plaza.rakuten.co.jp/mashimorinotake/diary/202610240010/",
-     "photoReferenceNote": "実際のマグロぶつ・2026-10-24来店記録",
-     "photoReuseStatus": "permission_required"
+     "coverRole": "shop"
     },
     {
      "item": "千寿揚げ",
      "price": "470円",
      "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop",
-     "photoReferenceUrl": "https://san-tatsu.jp/articles/18793/",
-     "photoReferenceNote": "実際の千寿揚げ・取材写真",
-     "photoReuseStatus": "permission_required"
+     "coverRole": "shop"
     },
     {
      "item": "煮込み",
      "price": "630円",
      "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop",
-     "photoReferenceUrl": "https://yashigani.seesaa.net/article/435857537.html",
-     "photoReferenceNote": "実際の煮込み・来店写真",
-     "photoReuseStatus": "permission_required"
+     "coverRole": "shop"
     },
     {
      "item": "ハイボール（ジャンボ）",
@@ -44480,18 +44471,12 @@
     {
      "item": "鶏軟骨つくね焼",
      "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop",
-     "photoReferenceUrl": "https://tabelog.com/tokyo/A1324/A132402/13008737/dtlphotolst/smp2/",
-     "photoReferenceNote": "実際の鶏軟骨つくね焼・利用者投稿写真",
-     "photoReuseStatus": "permission_required"
+     "coverRole": "shop"
     },
     {
      "item": "自家製ポテトサラダ",
      "cover": "../images/観光地/千住の永見.jpg",
-     "coverRole": "shop",
-     "photoReferenceUrl": "https://tabelog.com/tokyo/A1324/A132402/13008737/dtlphotolst/smp2/",
-     "photoReferenceNote": "実際の自家製ポテトサラダ・利用者投稿写真",
-     "photoReuseStatus": "permission_required"
+     "coverRole": "shop"
     },
     {
      "item": "名物・千寿揚げを",
