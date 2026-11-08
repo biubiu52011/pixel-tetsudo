@@ -8,7 +8,9 @@
   const t = window.t || ((k) => k);
   const tLine = (code) => (window.tLine ? window.tLine(code) : code) || code;
   const tOp = (name) => (window.tOp ? window.tOp(name) : name) || name;
-  const tStation = (name) => (window.tStation ? window.tStation(name) : name) || name;
+  // Station display is owned by LineCard/RailwayDB, not an optional text translator.
+  const tStation = (name, lineId) => (window.LineCard && window.LineCard.localizeStationName
+    ? window.LineCard.localizeStationName(name, lineId) : name) || name;
   const getDisplayName = (line) => {
     if (!line) return "";
     // 展示身份规则：统一通过 RailwayDB.resolveLineName 获取线路名称。
@@ -155,9 +157,9 @@
       var allStationRanges = parsedRanges.length > 0 && parsedRanges.every(function (parts) { return parts.length === 2; });
       if (allStationRanges) {
         intervalHtml = parsedRanges.map(function (parts) {
-          return '<span class="rs-station-start">' + escapeHtml(tStation(parts[0])) + '</span>'
+          return '<span class="rs-station-start">' + escapeHtml(tStation(parts[0],lineId)) + '</span>'
             + '<span class="rs-interval-arrow">\u2192</span>'
-            + '<span class="rs-station-end">' + escapeHtml(tStation(parts[1])) + '</span>';
+            + '<span class="rs-station-end">' + escapeHtml(tStation(parts[1],lineId)) + '</span>';
         }).join('<span class="rs-interval-separator">、</span>');
       } else {
         var _int = scopeSummary;
@@ -166,7 +168,8 @@
           intervalHtml = "<span class=\"rs-station-text\">" + escapeHtml(t("status.all_lines")) + "</span>";
         } else {
           // 单端区间（“東京方面”）：按当前语言翻译“方面”后缀。
-          if (window.DataState && typeof window.DataState.localizeInterval === "function") _int = window.DataState.localizeInterval(_int);
+          if (window.LineCard && typeof window.LineCard.localizeInterval === "function")
+            _int = window.LineCard.localizeInterval(_int,lineId);
           intervalHtml = "<span class=\"rs-station-text\">" + escapeHtml(_int) + "</span>";
           _singleEndInterval = true;
         }
@@ -179,7 +182,8 @@
     // 单端/文本兜底区间（如"京急線内"）在非 ja 界面使用离线翻译。
     if (_singleEndInterval && (window.currentLang || "ja") !== "ja") {
       var _intEl = intervalSection.querySelector(".rs-interval-stations .rs-station-text");
-      if (_intEl && _needsJaTranslate(interval) && window.DelayTranslator) {
+      if (_intEl && _intEl.textContent === scopeSummary &&
+          _needsJaTranslate(scopeSummary) && window.DelayTranslator) {
         _intEl.textContent = window.DelayTranslator.translateFragment(interval, window.currentLang);
       }
     }

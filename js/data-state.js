@@ -567,10 +567,66 @@
     return names[window.currentLang || "ja"] || names.ja;
   }
   function t(key) { return typeof window.t==="function" ? window.t(key) : (key||""); }
-  function localizeInterval(str) {
-    if (!str || String(str).indexOf("方面")===-1) return str;
-    var dir=t("status.toward");
-    return String(str).split("方面").join(dir||"方面");
+  // Source-neutral interval display: map official Japanese station names to
+  // canonical station IDs before asking RailwayDB for the selected language.
+  // Keep the original name when an ID is absent or ambiguous.
+  var _affectedStationI18nRef = null, _affectedStationIndex = null;
+  function affectedStationIndex() {
+    var i18n = window.RAILWAY_I18N || {};
+    if (_affectedStationI18nRef === i18n && _affectedStationIndex) return _affectedStationIndex;
+    var index = Object.create(null);
+    Object.keys(i18n).forEach(function(id) {
+      var ja = i18n[id] && i18n[id].ja;
+      if (!ja) return;
+      if (Object.prototype.hasOwnProperty.call(index,ja) && index[ja] !== id)
+        index[ja] = null; // Same Japanese label: require line-scoped evidence.
+      else if (!Object.prototype.hasOwnProperty.call(index,ja))
+        index[ja] = id;
+    });
+    _affectedStationI18nRef = i18n;
+    _affectedStationIndex = index;
+    return index;
+  }
+  function localizeStationName(name, lineId) {
+    var raw = String(name || "").trim();
+    var lang = window.currentLang || "ja";
+    if (!raw || lang === "ja") return raw;
+    var canonical = raw.replace(/駅$/,"");
+    var db = window.RailwayDB;
+    if (!db || typeof db.resolveStationName !== "function") return raw;
+    var lineStations = db.getLineStations && lineId ? db.getLineStations(lineId) : null;
+    var scopedId = null, ambiguous = false;
+    if (Array.isArray(lineStations)) lineStations.forEach(function(id) {
+      if (id === canonical || db.resolveStationName(id,"ja") === canonical) {
+        if (scopedId && scopedId !== id) ambiguous = true;
+        scopedId = id;
+      }
+    });
+    if (ambiguous) return raw;
+    var ids = affectedStationIndex();
+    var id = scopedId || (Object.prototype.hasOwnProperty.call(ids,canonical) ? ids[canonical] : null);
+    if (!id) return raw;
+    var localized = db.resolveStationName(id,lang);
+    return localized && localized !== id ? localized : raw;
+  }
+  function localizeInterval(str,lineId) {
+    if (!str) return str;
+    var lang = window.currentLang || "ja", raw = String(str);
+    if (lang === "ja") return raw;
+    return raw.split(/(、)/).map(function(fragment) {
+      if (fragment === "、") return lang === "en" ? ", " : fragment;
+      var range = fragment.match(/^\s*(.+?)\s*(→|↔|〜|～)\s*(.+?)\s*$/);
+      if (range) return localizeStationName(range[1],lineId) + range[2] +
+        localizeStationName(range[3].replace(/駅間$/,""),lineId);
+      var direction = fragment.match(/^\s*(.+?)方面\s*$/);
+      if (direction) {
+        var station = localizeStationName(direction[1],lineId);
+        var toward = t("status.toward");
+        return lang === "en" ? String(toward || "toward").trim() + " " + station :
+          station + (toward || "方面");
+      }
+      return fragment;
+    }).join("");
   }
   // 没有官方 PNG 路线记号时使用短名称徽章；绝不把内部 lineId 当成线路代码展示。
   function neutralLineBadgeText(name, fallback) {
@@ -789,7 +845,7 @@
     // 区间文本（realtime 模式）。
     var intervalHtml = "";
     if (mode === "realtime" && interval) {
-      intervalHtml = '<div class="rs-line-interval">' + escapeHtml(localizeInterval(interval)) + '</div>';
+      intervalHtml = '<div class="rs-line-interval">' + escapeHtml(localizeInterval(interval,lineId)) + '</div>';
     }
 
     // 状态图标。
@@ -898,6 +954,7 @@
     updateSystem: updateSystem,
     applyColor: applyColor,
     localizeInterval: localizeInterval,
+    localizeStationName: localizeStationName,
     getLineIdentity: getLineIdentity
   };
 })();
