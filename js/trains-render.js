@@ -1987,7 +1987,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       ? window.TrainTrackLayout.resolveAll(positions, stationCoords, geometry, lineId, {
           getDisplayMoveDir: _trainMoveDir,
           fusionBaseIdx: _fusionBaseIdx,
-          laneGap: isLoop ? 9 : 11,
+          // The ordinary map has one painted centreline; do not detach its
+          // train icons into invisible side lanes. Keep loop lanes unchanged.
+          laneGap: isLoop ? 9 : 0,
           stackGap: isLoop ? 7 : 8
         })
       : null;
@@ -3561,7 +3563,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var stackOrdinal = geometry && geometry.isSixShapedLoop && slot.total > 1
       ? stableStackOrdinal(position, index) : 0;
     var stackOffset = stackOrdinal * (opts.stackGap || DEFAULTS.stackGap);
-    var laneGap = opts.laneGap || DEFAULTS.laneGap;
+    // Zero is an explicit centreline request, not an absent option.
+    var laneGap = opts.laneGap == null ? DEFAULTS.laneGap : opts.laneGap;
     var lateral = lane * laneGap + stackOffset;
     var px = base.point.x + normal.x * lateral;
     var py = base.point.y + normal.y * lateral;
