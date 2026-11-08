@@ -3056,6 +3056,68 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // JR-West JR Takarazuka / Fukuchiyama, Osaka–Shinoyamaguchi historical
+  // SQL templates. 357 sources have >=2 timed stops; 26 one-stop sources
+  // remain unrenderable. This is a corridor FLEET REFERENCE ONLY, never
+  // a verified 2026-11 schedule, train-number or actual vehicle assignment.
+  if(lineId==="Fukuchiyama" && /^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:fleet,error:fleetError}=await db
+      .from("published_jrwest_fukuchiyama_2611_source_fleet")
+      .select("source_template_id,source_train_number,calendar_urn,direction_urn,train_type_urn,source_stop_keys,source_stop_count,source_timed_stop_count,candidate_models,candidate_png_paths,fleet_reference_url,source_path,timetable_validity,number_date_verified,reference_only,actual_vehicle_confirmed,authorizes_png")
+      .eq("edition","2611").eq("calendar_urn",selectedCalendar);
+    if(fleetError)throw fleetError;
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"?173:184;
+    const bySource=new Map((fleet||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    if(bySource.size!==expected||(fleet||[]).length!==expected)
+      throw new Error("JRWEST_FUKUCHIYAMA_2611_SOURCE_FLEET_UNAVAILABLE");
+    const acceptedModels="207系|321系|223系6000番台|225系6000番台";
+    for(const run of result){
+      const p:any=bySource.get(Number(run.source_template_id));
+      if(!p)continue;
+      const keys=Array.isArray(run.stops)?run.stops.map((st:any)=>
+        String(st.station_urn||"").split(".").pop()):[];
+      if(run.network_key!=="odpt.Railway:JR-West.Fukuchiyama"||
+        run.train_number!==p.source_train_number||
+        run.rail_direction!==p.direction_urn||
+        run.train_type!==p.train_type_urn||
+        p.calendar_urn!==selectedCalendar||
+        p.source_path!=="data/timetables/Fukuchiyama-manual.js"||
+        p.timetable_validity!=="undated_not_current_verified"||
+        p.number_date_verified!==false||p.reference_only!==true||
+        p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
+        !Array.isArray(p.candidate_models)||
+        p.candidate_models.join("|")!==acceptedModels||
+        !Array.isArray(p.candidate_png_paths)||p.candidate_png_paths.length!==0||
+        !Array.isArray(p.source_stop_keys)||
+        Number(p.source_stop_count)!==keys.length||
+        Number(p.source_timed_stop_count)<2||
+        keys.length<2||
+        keys.some((key:string,i:number)=>key!==p.source_stop_keys[i]))
+        throw new Error("JRWEST_FUKUCHIYAMA_2611_SOURCE_FLEET_CONFLICT");
+      // Do not upgrade mapping_level, vehiclePlan, artwork, real working or
+      // published train-number confidence from these undated source records.
+      run.vehicle_type_candidates=p.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.published_number_fleet_reference={
+        source:"sql-jrwest-fukuchiyama-2611-historical-fleet-reference",
+        lineId,sourceTemplateId:Number(p.source_template_id),
+        sourceTrainId:p.source_train_number,
+        serviceDate,calendar:selectedCalendar,direction:p.direction_urn,
+        trainType:p.train_type_urn,sourceStopKeys:p.source_stop_keys,
+        candidateModels:p.candidate_models,candidateAssets:[],
+        fleetSourceUrl:p.fleet_reference_url,
+        timetableSourcePath:p.source_path,
+        timetableValidity:p.timetable_validity,
+        numberDateVerified:false,referenceOnly:true,
+        actualVehicleConfirmed:false,authorizesPNG:false
+      };
+    }
+  }
+
   // JR-West Kyoto/Kobe through corridor: JR京都線 is Kyoto–Osaka,
   // JR神戸線 is Osaka–Himeji. Imported JR-West TokaidoKansai has 46
   // undated compound-ID trips; SanyoMain carries 20 additional relevant

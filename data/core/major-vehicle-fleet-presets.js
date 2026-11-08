@@ -526,7 +526,9 @@
     {id:'jrwest-gakkentoshi', operator:'JR-West', lineIds:['Gakkentoshi'],
       models:['JR西日本207系','JR西日本321系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
     {id:'jrwest-fukuchiyama', operator:'JR-West', lineIds:['Fukuchiyama'],
-      models:['JR西日本207系','JR西日本321系','JR西日本223系'], sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
+      // Route-wide candidate fleet only; not an individual service/formation.
+      models:['JR西日本207系','JR西日本321系','JR西日本223系','JR西日本225系'],
+      sourceUrl:'https://www.westjr.co.jp/fan/paper/local/'},
     {id:'jrwest-wakayama-sakurai', operator:'JR-West', lineIds:['WakayamaLine','Sakurai'],
       models:['JR西日本227系1000番台'], sourceUrl:'https://www.westjr.co.jp/press/article/2018/03/page_12012.html'},
     {id:'jrwest-kisei', operator:'JR-West', lineIds:['KiseiWest'],
