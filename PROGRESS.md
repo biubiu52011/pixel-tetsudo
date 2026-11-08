@@ -4,6 +4,19 @@
 
 # Pixel Tetsudo 工程进度
 
+### SHINKANSEN-SANYO-PLAN-20261108 — 山阳4趟逐车时刻与计划车型待应用批次（READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 责任源 | 复用既有 `manual_timetable_templates/stops`、`published_train_number_evidence`、`train_timetable_vehicle_mappings`、`published_train_png_number_ranges`；未新增表、页面脚本或平行映射器。 |
+| 官方核验 | JR西日本2026年11月个别列车页逐站核对：871A/872A=N700系计划；873A/877A=700系计划。四份现有Weekday模板的完整有序到发事件与官网一致。 |
+| 安全边界 | 全部为 `official_service_vehicle_plan` 且 `actual_vehicle_confirmed=false`。仅873A/877A使用既有JR西日本700系精确单号PNG；871A/872A不得借用运营者归属不明的N700图。 |
+| 回归 | 新增 `tests/sanyo-2611-kodama-871-877-plan.test.cjs`，3/3通过；新干线线路身份10/10通过。宽几何套件另有本地既有 `data-state.js contains` 环境失败，与本批纯SQL无交集。 |
+| 生产边界 | 迁移已提交 `main`，但尚未应用Supabase。活库仍为827模板、824正式番号、534唯一计划车型、196精确PNG；应用后预期538计划车型、198精确PNG。 |
+| 保留缺口 | 402A存在11月指定日期N700/800换型；当前 `train-runs` 不读取日期车型规则，因此继续保持无单一计划车型，禁止错误静态PNG。 |
+| 提交 | 迁移 `d9c188019b8832f9dde8d54af28f1d34d2a24a9b`；测试 `b593d56fe73ed61a4100fbbc47b51625a18ad6bb`；审计 `de655eb606b23a89a92dd3881fd876b916e47f33`。 |
+
+
 ### SHINKANSEN-LINE-MAPPING-20261108 — 新干线线路身份映射修复（COMPLETE）
 
 | 项目 | 当前状态 |
