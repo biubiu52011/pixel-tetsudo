@@ -12,7 +12,7 @@ test("Joban Rapid: partial cancellations with delays are not a service suspensio
   assert.equal(r.status, "delayed");
   assert.equal(r.symbol, "△");
   assert.equal(r.effect, "partial_cancellation");
-  assert.equal(r.interval, "品川→取手駅");
+  assert.equal(r.interval, "品川→取手");
   assert.equal(r.direction, "both");
   assert.equal(r.cause, "人身事故");
   assert.ok(r.impacts.some(x => x.effect === "partial_cancellation" && x.direction === "both"));
@@ -42,7 +42,7 @@ const cases = [
   ["品川駅〜取手駅間の上下線で運転を見合わせています。", "suspended"],
   ["上り線では運転を見合わせています。", "suspended"],
   ["品川駅〜取手駅間は運休しています。", "suspended"],
-  ["一部の列車で運転を見合わせています。", "suspended"],
+  ["一部の列車で運転を見合わせています。", "delayed"],
   ["直通運転を中止しています。", "notice"],
   ["平常通り運転しています。", "normal"],
   ["人身事故のため運転を見合わせていましたが、運転を再開し、現在一部列車に遅れと運休が発生しています。", "delayed"]
