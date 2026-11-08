@@ -244,8 +244,8 @@
       if (!station || !a || !b) return;
       const key = station + '\u0001' + (a < b ? a : b) + '\u0001' + (a < b ? b : a);
       const current = m.get(key);
-      if (!current || (transfer.type === 'out' && !current.out) || (walkMin(transfer.note) > current.walk)) {
-        m.set(key, { out: transfer.type === 'out' || !!(current && current.out), walk: walkMin(transfer.note) });
+      if (!current || (transfer.type === 'out' && !current.out) || (walkMin(transfer) > current.walk)) {
+        m.set(key, { out: transfer.type === 'out' || !!(current && current.out), walk: walkMin(transfer) });
       }
     }
     for (const lid of Object.keys(lines)) {
@@ -287,11 +287,24 @@
     return m;
   }
 
-  // 从 canonical note 文本（如“徒歩約5分”）中提取步行分钟数。
-  function walkMin(note) {
-    if (!note) return 0;
-    const mt = String(note).match(/徒歩約(\d+)分/);
-    return mt ? parseInt(mt[1], 10) : 0;
+  // Structured transfer minutes take precedence over legacy Japanese notes.
+  // A missing time is NOT zero: keep it unknown for the timetable resolver.
+  function declaredWalkMinutes(transfer) {
+    if (!transfer) return null;
+    if (typeof transfer === 'object') {
+      for (const field of ['walkMinutes', 'walk_minutes', 'walkingDuration']) {
+        if (transfer[field] == null || transfer[field] === '') continue;
+        const minutes = Number(transfer[field]);
+        if (Number.isFinite(minutes) && minutes >= 0) return minutes;
+      }
+      transfer = transfer.note;
+    }
+    const match = String(transfer || '').match(/徒歩(?:約)?\s*(\d+)分/);
+    return match ? Number(match[1]) : null;
+  }
+  function walkMin(transfer) {
+    const minutes = declaredWalkMinutes(transfer);
+    return minutes == null ? 0 : minutes;
   }
 
   // 零换乘直通边只存在于有证据支持的运行边界交接站。
@@ -526,8 +539,8 @@
           const target = window.RailwayDB && window.RailwayDB.getLine ? window.RailwayDB.getLine(nextLid) : null;
           const declaration = ((source && source.transferStations) || []).find(t => t.station === seg.to && t.lineId === nextLid) ||
             ((target && target.transferStations) || []).find(t => t.station === targetFrom && t.lineId === lineId);
-          const walkingDuration = declaration ? walkMin(declaration.note) : null;
-          segments.push({ type: 'transfer', station: seg.to, toStation: targetFrom || seg.to, fromLine: lineId, toLines: [nextLid], walking: declaration ? declaration.type === 'out' : false, walkingDuration: walkingDuration, through: through });
+          const walkingDuration = declaredWalkMinutes(declaration);
+          segments.push({ type: 'transfer', station: seg.to, toStation: targetFrom || seg.to, fromLine: lineId, toLines: [nextLid], walking: declaration ? declaration.type === 'out' : false, walkingDuration: walkingDuration, samePlatform: !!(declaration && declaration.samePlatform === true), through: through });
         }
       }
     }
