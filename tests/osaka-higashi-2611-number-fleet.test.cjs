@@ -19,7 +19,7 @@ test('Osaka Higashi historic sources are not falsely presented as a full dated t
   assert.match(edge, /run\.timetable_date_verified=false/);
   assert.match(edge, /run\.timetable_validity="undated_not_current_verified"/);
   assert.match(edge, /suppressedUnverifiedOsakaHigashiSpecialSources/);
-  assert.match(edge, /new Set\(\["1091M","7092MH","9024MH"\]\)/);
+  assert.match(edge, /new Set\(\["1091M"\]\)/);
 });
 
 test('published 2026 November number/type proof is scoped to six exact source calendars',()=>{
