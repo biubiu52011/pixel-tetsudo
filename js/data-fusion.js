@@ -328,6 +328,7 @@
   // payload 对象；同时序列化前后两个
   // payload 会在数据未变化时使同步工作翻倍。
   var _delayInfoSignatures = {};
+  var _delaySourceSignatures = {};
   var _resolutionLineIdsSource = null;
   var _resolutionLineIds = [];
   var _lastCacheSavedFusionAt = 0;
@@ -819,6 +820,10 @@
       var op = getOperatorForLine(lineId, line.name);
       if (!odptData.delayInfo || !op) return null;
       var norm = _normalizeOperator(op);
+      // Old snapshots cannot be presented as fresh when a provider fails.
+      var health = window.ODPTClient && window.ODPTClient.getRunInfoSourceHealth
+        ? window.ODPTClient.getRunInfoSourceHealth(op) : null;
+      if (health && health.state !== 'ready') return null;
       var raw = odptData.delayInfo[norm] || odptData.delayInfo[op];
       if (!raw) return null;
       // Only exact railway/operator identity or explicit operator-wide evidence applies.
@@ -864,7 +869,8 @@
       var line = window.DataLayer && window.DataLayer.getLine ? window.DataLayer.getLine(lineId) : null;
       if (!line) return null;
       var apiInfo = getApiDelayInfo(line, lineId);
-      var fallbackDelay = { status: "no_odpt", maxDelay: 0, interval: null, cause: null };
+      var apiHealth = null;
+      var fallbackDelay = { status: "no_odpt", maxDelay: null, interval: null, cause: null };
       try {
         var _opLine = window.ODPTClient && window.ODPTClient.LINE_TO_OPERATOR ? (window.ODPTClient.LINE_TO_OPERATOR[lineId] || window.ODPTClient.LINE_TO_OPERATOR[line.name]) : null;
         if (_opLine && window.ODPTClient.supports && window.ODPTClient.supports(_opLine, 'trainInformation')) {
@@ -872,16 +878,23 @@
           // That is a settled "no published line record", not a pending request
           // and not proof of normal (or zero delay) operation.
           var _opKey = _normalizeOperator(_opLine);
+          apiHealth = window.ODPTClient.getRunInfoSourceHealth
+            ? window.ODPTClient.getRunInfoSourceHealth(_opLine) : null;
           var _opState = odptData.delayInfo && _opKey ? odptData.delayInfo[_opKey] : undefined;
-          if (_opState === undefined) {
-            fallbackDelay = { status: "loading", maxDelay: null, interval: null, cause: null };
-          } else if (_opState === null) {
-            fallbackDelay = { status: "no_odpt", maxDelay: null, interval: null, cause: null };
-          } else {
+          if (apiHealth && (apiHealth.state === 'failed' || apiHealth.state === 'stale' || apiHealth.state === 'cached')) {
             fallbackDelay = {
-              status: "no_data", maxDelay: null, interval: null, cause: null,
-              source: "odpt_no_matching_line_record"
+              status: 'no_data', maxDelay: null, interval: null, cause: null,
+              source: apiHealth.state === 'failed' ? 'odpt_request_failed' : 'odpt_feed_stale',
+              sourceHttpStatus: apiHealth.httpStatus || null
             };
+          } else if (_opState === undefined || (apiHealth && apiHealth.state === 'loading')) {
+            fallbackDelay = { status: 'loading', maxDelay: null, interval: null, cause: null };
+          } else if (_opState === null) {
+            fallbackDelay = { status: 'no_data', maxDelay: null, interval: null, cause: null,
+              source: 'odpt_request_unavailable' };
+          } else {
+            fallbackDelay = { status: 'no_data', maxDelay: null, interval: null, cause: null,
+              source: 'odpt_no_matching_line_record' };
           }
         }
       } catch(_e) {}
@@ -893,7 +906,10 @@
           webInfo = window.WebRunInfo.getDelayInfo(lineId, line);
         }
       } catch(_we) {}
-      var _lastGood = getLastGoodDelay(lineId);
+      // A settled empty feed supersedes historical incidents; last-good
+      // remains only a visibly stale fallback when live evidence is absent.
+      var _lastGood = apiHealth && apiHealth.state === 'ready'
+        ? null : getLastGoodDelay(lineId);
       var delayInfo = apiInfo || webInfo || _lastGood || fallbackDelay;
       // Attach running-chain resolution context (transient, not persistent)
 
@@ -2629,11 +2645,20 @@
             }
             if (sa !== sb) dirtyOps[op] = true;
             _delayInfoSignatures[op] = sb;
+            // A failed refresh intentionally retains data; compare health too.
+            var health = window.ODPTClient && window.ODPTClient.getRunInfoSourceHealth
+              ? window.ODPTClient.getRunInfoSourceHealth(op) : null;
+            var phase = health ? health.state : 'untracked';
+            if (_delaySourceSignatures[op] !== phase) dirtyOps[op] = true;
+            _delaySourceSignatures[op] = phase;
           });
           // Drop signatures for operators no longer present so the cache cannot
           // retain stale payload strings indefinitely.
           Object.keys(_delayInfoSignatures).forEach(function(op) {
-            if (!Object.prototype.hasOwnProperty.call(delayData, op)) delete _delayInfoSignatures[op];
+            if (!Object.prototype.hasOwnProperty.call(delayData, op)) {
+              delete _delayInfoSignatures[op];
+              delete _delaySourceSignatures[op];
+            }
           });
           var lines = (window.DataLayer && window.DataLayer.getAllLines) ? window.DataLayer.getAllLines() : {};
           var dirtyLines = [];
