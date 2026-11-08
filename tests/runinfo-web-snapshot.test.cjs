@@ -21,3 +21,11 @@ test("A future construction notice does not become live suspension", () => {
   const r=extractOfficialBlock("<h2>運行状況</h2><p>12月1日から区間運休を実施します。</p>","ChibaUrbanMonorail");
   assert.equal(r.status,"notice");
 });
+
+test("the three live-operation pages allow repository snapshot reads under CSP", () => {
+  const fs=require("node:fs"), path=require("node:path");
+  for (const page of ["home","realtime","trains"]) {
+    const html=fs.readFileSync(path.join(__dirname,"../pages",page+".html"),"utf8");
+    assert.match(html,/connect-src[^"]*https:\/\/raw\.githubusercontent\.com/,page);
+  }
+});
