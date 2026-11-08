@@ -41,7 +41,7 @@ test('Fukuchiyama SQL source roster retains unknown trainset and PNG status', ()
 test('train-runs only attaches source-level fleet candidates to matching JR-West historical stops', () => {
   const edge=read('supabase/functions/train-runs/index.ts');
   const start=edge.indexOf('// JR-West JR Takarazuka / Fukuchiyama, Osaka');
-  const end=edge.indexOf('// Incomplete source rows are preserved',start);
+  const end=edge.indexOf('// Exact-date train NUMBER and 10-stop proof',start);
   assert.ok(start>=0&&end>start);
   const block=edge.slice(start,end);
   assert.match(block,/lineId==="Fukuchiyama"/);
