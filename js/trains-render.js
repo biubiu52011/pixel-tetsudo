@@ -1346,6 +1346,34 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Two Osaka->Shin-Osaka Mahoroba published excerpts are 683-series
+    // three-car specials. The existing 683 PNGs are other liveries and are
+    // deliberately NOT mapped. Neither "安寧" nor "悠久" is a dated carset
+    // assignment based on this source.
+    var special=p.sqlPublishedNumberFleetReference;
+    if(lineId==="OsakaHigashi"&&p.positionLineId===lineId&&
+       p.estimated===true&&p.positionSource==="supabase-train-run"&&
+       p.vehicleIdentityStatus!=="EXACT"&&p.vehicleResolvedUpstream!==true&&
+       /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||""))&&
+       special&&special.source===
+         "sql-jrwest-osaka-higashi-2611-mahoroba-two-stop"&&
+       special.segmentScope==="osaka_shin_osaka_only"&&
+       special.referenceOnly===true&&special.actualVehicleConfirmed===false&&
+       special.authorizesPNG===false&&
+       special.carCount===3&&special.stopClocksVerified===true&&
+       Array.isArray(special.candidateModels)&&
+       special.candidateModels.join("|")==="683系"&&
+       plan&&plan.status==="FLEET_REFERENCE"&&plan.confirmed===false&&
+       Array.isArray(plan.models)&&plan.models.join("|")==="683系"){
+      lang=String(lang||"ja").toLowerCase();
+      return /^zh/.test(lang)
+        ?"特急まほろば：683系（3辆，安寧／悠久实际编组未确认；暂无对应涂装图片）"
+        :lang==="en"
+        ?"Mahoroba limited express: 683 series (3 cars; actual livery/formation unconfirmed; image unavailable)"
+        :lang==="ko"
+        ?"마호로바 특급: 683계 (3량, 실제 도장·편성 미확인, 이미지 없음)"
+        :"特急まほろば：683系（3両、安寧／悠久の実際の編成未確認・専用画像なし）";
+    }
     // Osaka Higashi scheduled 221 series is line-fleet evidence, not an
     // observed N/NA/NB carset. The N library image is a representative
     // 221-series cab, never the formation assigned to this train.
