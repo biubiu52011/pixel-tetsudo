@@ -50,6 +50,10 @@ on:
       - 'tests/kosei-2611-source-fleet.test.cjs'
       - 'tests/jrwest-kosei-2611-verified-clocks-through.test.cjs'
       - 'tests/fukuchiyama-2611-fleet-reference.test.cjs'
+      - 'tests/fukuchiyama-line-stations-2611.test.cjs'
+      - 'data/core/railway_data.json'
+      - 'data/core/station_i18n.json'
+      - 'supabase/migrations/20261108190000_fukuchiyama_full_stations.sql'
       - 'supabase/migrations/20261108173500_jrwest_fukuchiyama_2611_historical_source_fleet_reference.sql'
       - 'supabase/migrations/20261107110000_jrwest_kosei_verified_clock_and_through_number_evidence.sql'
       - 'supabase/functions/train-runs/index.ts'
@@ -159,6 +163,8 @@ jobs:
           node --check data/timetables/jreast-kitakami-2611-number-index.js
           node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
+      - name: Verify JR Takarazuka full 31-station rail topology and generated bundles
+        run: node --test tests/fukuchiyama-line-stations-2611.test.cjs
       - name: Verify JR Takarazuka historical fleet references (unconfirmed, no PNG)
         run: node --test tests/fukuchiyama-2611-fleet-reference.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references

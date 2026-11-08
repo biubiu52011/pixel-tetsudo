@@ -37,7 +37,7 @@ test('Hyogo station names do not steal unrelated railway IDs or global aliases',
 test('core generated JSON and file-mode scripts remain deterministic',()=>{
   for(const [name,varName]of [['railway_data','RAILWAY_DATA'],['station_i18n','RAILWAY_I18N']]){
     const original=fs.readFileSync(root+name+'.json','utf8');
-    const compact=JSON.stringify(JSON.parse(original)).replace(/<\\/script/gi,'<\\\\/script');
+    const compact=JSON.stringify(JSON.parse(original));
     assert.equal(fs.readFileSync(root+name+'.compact.json','utf8'),compact+'\n');
     const fileName=name==='railway_data'?'railway-data.file.js':'station-i18n.file.js';
     assert.equal(fs.readFileSync(root+fileName,'utf8'),'window.'+varName+' = '+compact+';\n');

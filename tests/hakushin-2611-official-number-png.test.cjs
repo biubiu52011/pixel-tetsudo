@@ -179,7 +179,8 @@ function estimateAt(iso,day,numbers,calendar='odpt.Calendar:Weekday'){
     constructor(...args){super(...(args.length?args:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastHakushinNumberIndex202611:idx,
+  const root={RuntimeConfig:{PUBLISHED_JP_HOLIDAYS:{'2026':['11-03','11-23']}},
+    JREastHakushinNumberIndex202611:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{Hakushin:'Hakushin'},
       LINE_TO_OPERATOR:{Hakushin:'JR-East'}}};
   const localCtx=vm.createContext({window:root,Date:FakeDate,console:quiet});
