@@ -4,6 +4,18 @@
 
 # Pixel Tetsudo 工程进度
 
+### SHINKANSEN-LINE-MAPPING-20261108 — 新干线线路身份映射修复（COMPLETE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 根因 | `data/api/odpt-unified.js` 的 `LINE_TO_OPERATOR` 与 `LINE_RAILWAY_CODE` 缺少 10 条规范新干线线路身份，导致线路、站点位置与时刻表融合阶段无法完成线路映射。 |
+| 修复 | 为东海道、东北、上越、北陆、山形、秋田、北海道、山阳、九州、西九州新干线补齐运营商与 ODPT 铁路代码映射；未覆盖其他线路或外部来源。 |
+| 回归守卫 | `tools/shinkansen-line-identity.test.cjs` 对 10/10 条线路执行运营商与铁路代码断言；本地 `node --check`、runtime request/change contract、route/geometry contract 均通过。 |
+| 浏览器验证 | 本地浏览器运行态已验证东海道、山阳、北海道、西九州新干线地图可渲染且无映射错误；未执行 GitHub Pages 生产发布或线上缓存验收。 |
+| 主分支提交 | 修复：`173916639d31f845420b90afb864f14c8db8289a`；回归守卫：`343f94ca4e1a8e99972b48cd55657db654cefe4f`。 |
+
+
+
 
 ### TRAIN-PNG-END-TO-END-20261030 — PNG 判定、SVG 渲染与主分支验证（COMPLETE）
 
