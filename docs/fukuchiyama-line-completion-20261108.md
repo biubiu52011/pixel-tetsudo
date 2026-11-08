@@ -92,3 +92,17 @@
 - 上述 `363` 包含 **357条原本的历史多站记录** 和 **6条官方普通列车样本的日历版本**，不是363条均符合2026年11月实际时刻的承诺；8号、10号是在原357条上更新，不增加来源总数。
 - 北段目前经验证的公开样本：3趟普通（2531M、2528M、2532M）与2趟特急（3008M、3010M）；`MH` 后缀仍是项目的土休日内部表示。
 - 日历、完整性及车型可信度分开；不因少数样本齐备而标记全线 `complete` 或实时运行。
+
+
+### 当晚 SVG 中 277x / 3028 / 7025 车次的实际分类与前端缓存修复
+
+- 已对照 JR 西日本 2026 年 11 月公开列车时刻表纠正原有 SQL 来源，并同步 `published_jrwest_fukuchiyama_2611_source_fleet`，没有创建重复的规范化列车记录：
+  - `2771M/MH`（原 68158／68159）、`2775M/MH`（68170／68172）、`2780M/MH`（68312／68313）从 `Local` 改为 `Rapid`（丹波路快速）；`2773M` 平日来源 68164 从 `Local` 改为 `Rapid`，土休日 2773MH 和 2782MH 原先已正确。
+  - `3028M/MH` 来源 68314／68315 修为 `LimitedExpress`（こうのとり28号），保留原来三田—大阪 4 站时刻、增加北段 3 站，总计福知山—大阪 7 站；官方继续运行至新大阪。
+  - `7025MH` 来源 68168 修为 `LimitedExpress`（こうのとり25号），保留原尼崎—篠山口 6 站时刻，补上大阪及北段 4 站，总计大阪—福知山 11 站；真实列车从新大阪始发。只保留 2026-11-01～11-29 的土、日、节假日白名单；**星期五虽为官网运行日，但该历史 SQL 中不存在对应平日记录，星期五仍属待补覆盖**。
+  - 三条被修正为特急的历史车次，车型候选改为 `287系 / 289系`，并延续既有 `actual_vehicle_confirmed=false`、`authorizes_png=false`、`candidate_png_paths=[]`。车型族有证据不等于当日实车编组有证据。两趟特急的停站可按官网标记日期验证，实际位置仍为计划推算。
+- `data/timetables/train-number-png-ranges.js` 在同一个 `verifyFukuchiyamaSourceFleet` 内复用既有严格来源 ID、日期、站序、运营日和车种检查，允许 7 个已核实特急来源以候选形式显示；并未给 287／289 任意指定实车 PNG。
+- `pages/trains.html` 的懒加载脚本查询版本已使用生成器要求的 Git Blob SHA `2e09e3ef1b76`，防止移动端仍沿用旧的 `train-number-png-ranges.js` 缓存。必须遵守 `scripts/sync-page-scripts.cjs --check`，不要手工写提交 SHA 到版本参数。
+- 数据库迁移：`supabase/migrations/20261108225500_fukuchiyama_correct_evening_rapid_and_kounotori.sql`；Edge Function `train-runs` v355。新增针对车型候选安全性的 CI 测试 `tests/fukuchiyama-2611-evening-mapping.test.cjs`。
+- 真实线上 API 回归已于 2026-11-08 成功检查 2026-11-08、11-09、11-30 和 12-01：土休日接口 187 条，其中 7 条官方日历验证样本；平日 176 条，其中 6 条；7025M 11 月 30 日不出现、11 月的定日期特急在 12 月不出现。
+- 官方来源：`https://timetable.jr-odekake.net/train-timetable/240421?date=20261023`（2771）、`https://timetable.jr-odekake.net/train-timetable/147101?date=20261101`（2775土休日）、`https://timetable.jr-odekake.net/train-timetable/240441?date=20261024`（2780）、`https://timetable.jr-odekake.net/train-timetable/200181?date=20261012`（2773）、`https://timetable.jr-odekake.net/train-timetable/145181?date=20261018`（3028）、`https://timetable.jr-odekake.net/train-timetable/200071?date=20261114`（7025）。
