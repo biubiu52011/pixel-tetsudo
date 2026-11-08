@@ -1,4 +1,21 @@
 {
   "version": 1,
-  "operators": {}
+  "operators": {
+    "ChibaUrbanMonorail": {
+      "status": "normal",
+      "interval": null,
+      "cause": null,
+      "detail": "現在、平常通り運行しております。",
+      "updatedAt": "2026-11-08T07:31:30.517Z",
+      "sourceUrl": "https://chiba-monorail.co.jp/"
+    },
+    "ShonanMonorail": {
+      "status": "normal",
+      "interval": null,
+      "cause": null,
+      "detail": "現在、平常通り運行しております。",
+      "updatedAt": "2026-11-08T07:31:30.517Z",
+      "sourceUrl": "https://www.shonan-monorail.co.jp/"
+    }
+  }
 }
