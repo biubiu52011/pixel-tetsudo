@@ -450,6 +450,16 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
         t.operating_dates.some((day: any) => String(day).slice(0, 10) === serviceDate);
     });
   }
+  // A 2026-11 full-stop official source must never be extrapolated into
+  // another month. Imported historical sources have no date whitelist.
+  if(lineId==="KakogawaLine"){
+    templates=templates.filter((t:any)=>{
+      if(t.source_path!=="official-202611:jrwest-kakogawa-1320s-saturdayholiday")
+        return true;
+      return Array.isArray(t.operating_dates) &&
+        t.operating_dates.some((date:any)=>String(date).slice(0,10)===serviceDate);
+    });
+  }
   // Retain both original SQL imports, but serve one verified itinerary.
   if (lineId === "SaikyoKawagoe") {
     const seen = new Set<string>();
@@ -4793,6 +4803,42 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // Never extrapolate a missing stop or report full coverage for a partial set.
   // At least two observed station clocks are required for estimating a
   // moving train. An untimed boundary stop must never become a made-up ETA.
+  // 2026-11 JR-West official train NUMBER mapping. Historical SQL source
+  // labels often encode SaturdayHoliday with SH; JR publicly displays S.
+  // Number evidence must never upgrade undated stop clocks or PNG models.
+  if(lineId==="KakogawaLine" && /^2026-11-\\d{2}$/.test(serviceDate) &&
+     selectedCalendar==="odpt.Calendar:SaturdayHoliday" && result.length){
+    const sourceIds=result.map((run:any)=>Number(run.source_template_id));
+    const mapRows=await batchedRows(sourceIds,100,async (ids:any[])=>{
+      const {data,error}=await db.from("published_jrwest_kakogawa_2611_public_number_map")
+        .select("source_template_id,calendar_urn,source_train_label,public_train_number,verification_scope,evidence_source_id")
+        .in("source_template_id",ids);
+      if(error)throw error;
+      return data||[];
+    });
+    const known=new Map(mapRows.map((m:any)=>[Number(m.source_template_id),m]));
+    if(known.size!==sourceIds.length)throw new Error("KAKOGAWA_2611_PUBLIC_NUMBER_COVERAGE_DRIFT");
+    const ids=[...new Set(mapRows.map((m:any)=>Number(m.evidence_source_id)))];
+    const {data:proofs,error:proofError}=await db.from("evidence_sources")
+      .select("id,source_url,source_type,evidence_grade").in("id",ids);
+    if(proofError)throw proofError;
+    const evidence=new Map((proofs||[]).map((row:any)=>[Number(row.id),row]));
+    for(const run of result){
+      const mapped:any=known.get(Number(run.source_template_id));
+      const proof:any=evidence.get(Number(mapped?.evidence_source_id));
+      if(!mapped || mapped.calendar_urn!=="odpt.Calendar:SaturdayHoliday" ||
+         mapped.source_train_label!==run.train_number ||
+         mapped.verification_scope!=="public_number_calendar_direction_only" ||
+         !/^[0-9]{2,5}S$/.test(String(mapped.public_train_number||"")) ||
+         proof?.source_type!=="official" || proof?.evidence_grade!=="A" ||
+         !String(proof?.source_url||"").startsWith("https://timetable.jr-odekake.net/"))
+        throw new Error("KAKOGAWA_2611_PUBLIC_NUMBER_EVIDENCE_INVALID");
+      run.source_train_label=run.train_number;
+      run.train_number=mapped.public_train_number;
+      run.train_number_verification="official-2611-number-calendar-direction-only";
+      run.train_number_source_url=proof.source_url;
+    }
+  }
   // Source-owned recurring-date exceptions. The legacy service_exceptions
   // table is deliberately disabled; do not reactivate it for any railway.
   // Keep the cancelled itinerary/number for diagnostics, but the existing
