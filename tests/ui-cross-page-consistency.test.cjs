@@ -265,9 +265,9 @@ test('tourism header shares the approved route-search 3D shell', () => {
 test('tourism hero uses its parent card corner clipping without white corner wedges', () => {
   const css = read('css/tourism-styles.css');
   const core = read('js/tourism-core.js');
-  assert.match(css, /\\.article-content\\s*\\{[^}]*border-radius:\\s*6px;[^}]*overflow:\\s*hidden;/);
-  assert.match(css, /\\.article-hero\\s*\\{[^}]*overflow:\\s*hidden;[^}]*border-radius:\\s*0;/);
+  assert.match(css, /\.article-content\s*\{[^}]*border-radius:\s*6px;[^}]*overflow:\s*hidden;/);
+  assert.match(css, /\.article-hero\s*\{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*0;/);
   assert.match(core, /class="article-content article-content--/);
   assert.match(core, /class="article-hero /);
-  assert.doesNotMatch(css, /\\.article-hero\\s*\\{[^}]*border-radius:\\s*12px 12px 0 0/);
+  assert.doesNotMatch(css, /\.article-hero\s*\{[^}]*border-radius:\s*12px 12px 0 0/);
 });
