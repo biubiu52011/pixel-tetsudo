@@ -43,12 +43,30 @@ jobs:
           const challenge=urls.find(x=>x.includes('api-challenge.odpt.org')&&x.includes('acl:consumerKey='));
           const key=challenge&&challenge.match(/acl:consumerKey=([^&]+)/)?.[1];
           if(!key)throw Error('challenge key unavailable');
-          const base=['https://api-challenge.odpt.org/api/v4/odpt:TrainInformation?odpt:operator=odpt.Operator:jre-is&acl:consumerKey='+key];
+          const base=urls.filter(x=>x.includes('/odpt:TrainInformation?'))
+            .concat('https://api-challenge.odpt.org/api/v4/odpt:TrainInformation?odpt:operator=odpt.Operator:jre-is&acl:consumerKey='+key);
           const alerts=[];
           const results=[];
           const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
           const textOf=x=>{const t=x['odpt:trainInformationText']||x['odpt:text']||'';
             return typeof t==='string'?t:String(t.ja||t['ja-Hrkt']||t.en||'');};
+          const localLines=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
+          const unified=fs.readFileSync('data/api/odpt-unified.js','utf8');
+          function literalPairs(name,next){
+            const a=unified.indexOf('var '+name+' = {');
+            const b=unified.indexOf(next,a+12);
+            if(a<0||b<0)throw Error('Cannot parse canonical '+name);
+            const pairs={};
+            for(const m of unified.slice(a,b).matchAll(/"([^"]+)"\s*:\s*"([^"]+)"/g))pairs[m[1]]=m[2];
+            return pairs;
+          }
+          const aliases=literalPairs('LINE_RAILWAY_CODE','// Canonical railway identity:');
+          const opMap=literalPairs('LINE_TO_OPERATOR','var LINE_RAILWAY_CODE =');
+          function localIdentity(id,line){
+            const op=opMap[id]||line.operator||'';
+            const code=aliases[id]||id;
+            return 'odpt.Railway:'+op+'.'+code;
+          }
           async function probe(url,kind){
             const query=url.split('?')[1]||'';
             const operator=kind==='odpt'?(query.match(/odpt:operator=odpt.Operator:([^&]+)/)?.[1]||'unknown'):
@@ -67,6 +85,27 @@ jobs:
                   item.railwayScoped=rows.filter(x=>!!x['odpt:railway']).length;
                   item.unscoped=rows.length-item.railwayScoped;
                   item.unscopedWithText=rows.filter(x=>!x['odpt:railway']&&textOf(x)).length;
+                  const owner=operator==='jre-is'?'JR-East':operator;
+                  const own=Object.entries(localLines).filter(([id,line])=>
+                    (opMap[id]||line.operator)===owner);
+                  const officialIds=new Set(rows.map(x=>x['odpt:railway']).filter(Boolean));
+                  const localIds=new Set(own.map(([id,line])=>localIdentity(id,line)));
+                  item.localLineCount=own.length;
+                  item.matchedOfficialRecords=rows.filter(x=>localIds.has(x['odpt:railway'])).length;
+                  item.unmatchedOfficialIdentities=[...officialIds].filter(r=>!localIds.has(r)).slice(0,25);
+                  item.localMatchedWithoutOperatorMap=own.filter(([id,line])=>
+                    !opMap[id]&&officialIds.has(localIdentity(id,line))).map(([id])=>id).slice(0,25);
+                  item.activeIncidents=rows.filter(x=>{
+                    const state=evaluator.evaluate({source:'odpt',currentOperationalSource:true,text:textOf(x),
+                      structuredStatus:x['odpt:trainInformationStatus']}).status;
+                    return state==='delayed'||state==='suspended'||state==='notice';
+                  }).slice(0,18).map(x=>({
+                    railway:x['odpt:railway']||null,
+                    matched:localIds.has(x['odpt:railway']),
+                    status:evaluator.evaluate({source:'odpt',currentOperationalSource:true,text:textOf(x),
+                      structuredStatus:x['odpt:trainInformationStatus']}).status,
+                    message:textOf(x).slice(0,110)
+                  }));
                   item.sample=rows.slice(0,3).map(x=>({
                     type:x['@type']||null,operator:x['odpt:operator']||null,
                     railway:x['odpt:railway']||null,
