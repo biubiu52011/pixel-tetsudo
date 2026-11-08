@@ -31,16 +31,22 @@ test('2751MH and 2778MH are retained for audit but never projected as Saturday/H
  assert.match(filter,/String\(date\)\.slice\(0,10\)===serviceDate/);
  assert.doesNotMatch(filter,/const scopedExpress=/);
 });
-test('2779M November 28 partial suspension keeps Osaka-Shinmita but never renders canceled Shinoyamaguchi segment',()=>{
- const a=edge.indexOf('// JR-West November 28 2779M:');
+test('2779M and overnight 2783M on Nov 28 terminate at Shinmita, not the bus leg',()=>{
+ const a=edge.indexOf('// JR-West 2026-11-28: both 2779M and 2783M');
  const b=edge.indexOf('// Incomplete source rows are preserved',a);
  assert.ok(a>=0 && b>a);
  const section=edge.slice(a,b);
  assert.match(section,/serviceDate==="2026-11-28"/);
- assert.match(section,/source_template_id\)===68185/);
- assert.match(section,/run\.train_number!=="2779MH"/);
+ assert.match(section,/id:68185,number:"2779MH"/);
+ assert.match(section,/id:68195,number:"2783MH"/);
+ assert.match(section,/boundary:"00:15"/);
+ assert.match(section,/end:"00:40"/);
+ assert.match(section,/selectedCalendar!=="odpt.Calendar:SaturdayHoliday"/);
+ assert.match(section,/run\.train_number!==notice\.number/);
  assert.match(section,/run\.stops\.length!==expected\.length/);
  assert.match(section,/run\.stops=run\.stops\.slice\(0,9\)/);
+ assert.match(section,/run\.stops\[8\]\.departure_time=null/);
+ assert.match(section,/run\.destination_station=run\.stops\[8\]\.station_urn/);
  assert.match(section,/run\.timetable_validity="partial_service_disruption"/);
  assert.match(section,/vehicle_plan_confirmed=false/);
  assert.match(section,/vehicle_artwork_path=null/);
