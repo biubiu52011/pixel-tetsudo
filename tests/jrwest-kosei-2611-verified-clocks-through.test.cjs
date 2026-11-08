@@ -122,7 +122,8 @@ test('frontend keeps historical matching IDs separate from display numbers',()=>
  const api=fs.readFileSync('data/api/odpt-unified.js','utf8');
  const position=fs.readFileSync('js/train-position-estimator.js','utf8');
  assert.ok(api.includes('"_sqlPublishedTrainNumber":run.timetable_date_verified===true'));
- assert.ok(position.includes('displayTrainNumber:tt._positionSource==="supabase-train-run"'));
+ assert.ok(position.includes('displayTrainNumber:osakaMahorobaDisplayNumber || osakaHigashiDisplayNumber || saganoDisplayNumber || (tt._positionSource==="supabase-train-run"&&'));
+ assert.ok(position.includes('tt._timetableDateVerified===true&&'));
  assert.ok(position.includes('official-2611-kosei-source-stop-clock'));
  assert.ok(position.includes('official-2611-kyoto-kobe-source-stop-clock'));
  assert.ok(position.includes('String(officialJrWestKyotoKobePlan.historicalNumberSuffix||"")'));
