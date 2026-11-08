@@ -1585,8 +1585,11 @@
           }
           // 别名转换（ODPT 拼写差异站 ID → 项目站表 ID）
           // railway 感知别名优先（Oyama=Tojo 大山/Oyama=Utsunomiya 小山 双义），再回退全局
-          if (window.RuntimeConfig.STATION_ALIAS_BY_RAILWAY[railwayName] && window.RuntimeConfig.STATION_ALIAS_BY_RAILWAY[railwayName][stationKey]) {
-            stationKey = window.RuntimeConfig.STATION_ALIAS_BY_RAILWAY[railwayName][stationKey];
+          var _railwayAliasCode = String(railwayName || "").split(".").pop();
+          var _scopedStationAliases = (window.RuntimeConfig.STATION_ALIAS_BY_RAILWAY || {})[railwayName] ||
+            (window.RuntimeConfig.STATION_ALIAS_BY_RAILWAY || {})[_railwayAliasCode];
+          if (_scopedStationAliases && Object.prototype.hasOwnProperty.call(_scopedStationAliases,stationKey)) {
+            stationKey = _scopedStationAliases[stationKey];
           } else if (window.RuntimeConfig.STATION_ALIAS[stationKey]) {
             stationKey = window.RuntimeConfig.STATION_ALIAS[stationKey];
           }
