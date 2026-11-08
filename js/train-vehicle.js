@@ -1283,6 +1283,10 @@ var CANONICAL_VEHICLES = {
   "jr-west-221-n": { displayName: "JR西日本221系（N）", iconName: "JR西日本221系（N）", asset: "../images/列车/JR西日本/JR西日本_221系_N.png", lineIds: ["KansaiMain", "OsakaLoop", "OsakaHigashi"], lineAliases: { KansaiMain: ["221系"], OsakaLoop: ["221系"], OsakaHigashi: ["221系"] }, aliases: [] },
   "jr-west-223-h2": { displayName: "JR西日本223系（H2）", iconName: "JR西日本223系（H2）", asset: "../images/列车/JR西日本/JR西日本_223系_H2.png", lineIds: ["Hanwa"], aliases: [] },
   "jr-west-223-h6": { displayName: "JR西日本223系（H6）", iconName: "JR西日本223系（H6）", asset: "../images/列车/JR西日本/JR西日本_223系_H6.png", lineIds: ["Hanwa"], aliases: [] },
+  // 福知山線南部の6000番台：既存H6アートは参考候補のみ。車番・編成を認定しない。
+  "jr-west-223-6000-fukuchiyama-reference": { displayName: "JR西日本223系6000番台", iconName: "JR西日本223系6000番台", asset: null, plannedAsset: "../images/列车/JR西日本/JR西日本_223系_H6.png", lineIds: ["Fukuchiyama"], aliases: ["223系6000番台"], candidateOnly: true },
+  // 北部の5500番台は独立した実PNG。区間候補と実車運用の判定は別。
+  "jr-west-223-5500-fukuchiyama": { displayName: "JR西日本223系5500番台", iconName: "JR西日本223系5500番台", asset: "../images/列车/JR西日本/JR西日本_223系_5500番台.png", lineIds: ["Fukuchiyama"], lineAliases: { Fukuchiyama: ["223系5500番台"] }, aliases: ["223系5500番台"] },
   "jr-west-223-kah": { displayName: "JR西日本223系（KAH）", iconName: "JR西日本223系（KAH）", asset: "../images/列车/JR西日本/JR西日本_223系_KAH.png", lineIds: ["Hanwa", "KiseiWest"], aliases: [] },
   "jr-west-223-kil": { displayName: "JR西日本223系（KIL）", iconName: "JR西日本223系（KIL）", asset: "../images/列车/JR西日本/JR西日本_223系_KIL.png", lineIds: ["Hanwa", "KiseiWest"], aliases: [] },
   "jr-west-223-mori": { displayName: "JR西日本223系（MORI）", iconName: "JR西日本223系（MORI）", asset: "../images/列车/JR西日本/JR西日本_223系_MORI.png", lineIds: ["Hanwa", "KiseiWest"], aliases: [] },

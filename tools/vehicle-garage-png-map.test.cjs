@@ -116,3 +116,26 @@ assert.equal(marker.planned,true);
 assert.equal(marker.iconSrc,model[0].path);
 console.log('garage map: PASS — '+garage.totalPng+' assets, '+garage.canonicalEntries+
   ' canonical model references, one non-default alternate, scoped published train plan');
+
+{
+  // The user-supplied 5500 PNG is a scoped gallery model, not observed stock
+  // of any numbered train. The preexisting H6 PNG remains canonically Hanwa.
+  const p5500='../images/列车/JR西日本/JR西日本_223系_5500番台.png';
+  const pH6='../images/列车/JR西日本/JR西日本_223系_H6.png';
+  assert.ok(fs.existsSync('images/列车/JR西日本/JR西日本_223系_5500番台.png'));
+  const png=fs.readFileSync('images/列车/JR西日本/JR西日本_223系_5500番台.png');
+  assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+  assert.equal(png.readUInt32BE(16),82);
+  assert.equal(png.readUInt32BE(20),98);
+  assert.ok(garage.matchModelPath('JR西日本223系5500番台',p5500,'Fukuchiyama'));
+  assert.equal(garage.matchModelPath('JR西日本223系5500番台',p5500,'Hanwa'),false);
+  assert.equal(garage.findModel('JR西日本223系5500番台','Fukuchiyama')[0].canonicalImage,true);
+  assert.equal(garage.matchModelPath('JR西日本223系6000番台',pH6,'Fukuchiyama'),true);
+  assert.equal(garage.findModel('JR西日本223系6000番台','Fukuchiyama')[0].canonicalImage,false);
+  assert.equal(garage.matchModelPath('JR西日本223系（H6）',pH6,'Hanwa'),true);
+  assert.equal(garage.matchModelPath('JR西日本223系（H6）',pH6,'Fukuchiyama'),false);
+  assert.equal(root.TrainVehicle.resolveCanonicalVehicle('JR西日本223系5500番台').asset,p5500);
+  const ref6000=root.TrainVehicle.resolveCanonicalVehicle('JR西日本223系6000番台');
+  assert.ok(ref6000 && !ref6000.asset && ref6000.plannedAsset===pH6);
+  assert.equal(ref6000.candidateOnly,true);
+}
