@@ -53,6 +53,7 @@ on:
       - 'tests/jrwest-kosei-2611-verified-clocks-through.test.cjs'
       - 'tests/fukuchiyama-2611-fleet-reference.test.cjs'
       - 'tests/fukuchiyama-1199ch-candidate-marker.test.cjs'
+      - 'tests/fukuchiyama-north-local-fleet-scope.test.cjs'
       - 'tests/fukuchiyama-line-stations-2611.test.cjs'
       - 'tests/support/published-jp-holidays.cjs'
       - 'data/core/railway_data.json'
@@ -173,6 +174,8 @@ jobs:
         run: node --test tests/fukuchiyama-2611-fleet-reference.test.cjs
       - name: Verify JR Takarazuka C-number PNG illustration and M/MO candidate safety
         run: node --test tests/fukuchiyama-1199ch-candidate-marker.test.cjs
+      - name: Verify northern Fukuchiyama local 223-5500 fleet stays line-scoped
+        run: node --test tests/fukuchiyama-north-local-fleet-scope.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
