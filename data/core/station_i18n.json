@@ -29184,5 +29184,161 @@
     "zh": "泷",
     "ko": "다키",
     "en": "Taki"
+  },
+  "Suzurandai": {
+    "ja": "鈴蘭台",
+    "zh": "铃兰台",
+    "ko": "스즈란다이",
+    "en": "Suzurandai"
+  },
+  "Suzurandai-Nishiguchi": {
+    "ja": "鈴蘭台西口",
+    "zh": "铃兰台西口",
+    "ko": "스즈란다이니시구치",
+    "en": "Suzurandai-Nishiguchi"
+  },
+  "Nishi-Suzurandai": {
+    "ja": "西鈴蘭台",
+    "zh": "西铃兰台",
+    "ko": "니시스즈란다이",
+    "en": "Nishi-Suzurandai"
+  },
+  "Aina-Kobe": {
+    "ja": "藍那",
+    "zh": "蓝那",
+    "ko": "아이나",
+    "en": "Aina"
+  },
+  "Kizu-Kobe": {
+    "ja": "木津",
+    "zh": "木津",
+    "ko": "키즈",
+    "en": "Kizu"
+  },
+  "Kobata-Kobe": {
+    "ja": "木幡",
+    "zh": "木幡",
+    "ko": "고바타",
+    "en": "Kobata"
+  },
+  "Sakae-Kobe": {
+    "ja": "栄",
+    "zh": "荣",
+    "ko": "사카에",
+    "en": "Sakae"
+  },
+  "Oshibedani": {
+    "ja": "押部谷",
+    "zh": "押部谷",
+    "ko": "오시베다니",
+    "en": "Oshibedani"
+  },
+  "Midorigaoka-Kobe": {
+    "ja": "緑が丘",
+    "zh": "绿丘",
+    "ko": "미도리가오카",
+    "en": "Midorigaoka"
+  },
+  "Hirono-Golfjo-Mae": {
+    "ja": "広野ゴルフ場前",
+    "zh": "广野高尔夫球场前",
+    "ko": "히로노 골프장 앞",
+    "en": "Hirono Golf-jo-mae"
+  },
+  "Shijimi": {
+    "ja": "志染",
+    "zh": "志染",
+    "ko": "시지미",
+    "en": "Shijimi"
+  },
+  "Ebisu-Kobe": {
+    "ja": "恵比須",
+    "zh": "惠比须",
+    "ko": "에비스",
+    "en": "Ebisu"
+  },
+  "Miki-Uenomaru": {
+    "ja": "三木上の丸",
+    "zh": "三木上之丸",
+    "ko": "미키우에노마루",
+    "en": "Miki-Uenomaru"
+  },
+  "Miki-Kobe": {
+    "ja": "三木",
+    "zh": "三木",
+    "ko": "미키",
+    "en": "Miki"
+  },
+  "Omura-Kobe": {
+    "ja": "大村",
+    "zh": "大村",
+    "ko": "오무라",
+    "en": "Omura"
+  },
+  "Kashiyama": {
+    "ja": "樫山",
+    "zh": "樫山",
+    "ko": "가시야마",
+    "en": "Kashiyama"
+  },
+  "Ichiba-Kobe": {
+    "ja": "市場",
+    "zh": "市场",
+    "ko": "이치바",
+    "en": "Ichiba"
+  },
+  "Ono-Hyogo": {
+    "ja": "小野",
+    "zh": "小野",
+    "ko": "오노",
+    "en": "Ono"
+  },
+  "Hata": {
+    "ja": "葉多",
+    "zh": "叶多",
+    "ko": "하타",
+    "en": "Hata"
+  },
+  "Abiki": {
+    "ja": "網引",
+    "zh": "网引",
+    "ko": "아비키",
+    "en": "Abiki"
+  },
+  "Tahara-Hojo": {
+    "ja": "田原",
+    "zh": "田原",
+    "ko": "타하라",
+    "en": "Tahara"
+  },
+  "Hokkeguchi": {
+    "ja": "法華口",
+    "zh": "法华口",
+    "ko": "홋케구치",
+    "en": "Hokkeguchi"
+  },
+  "Harima-Shimosato": {
+    "ja": "播磨下里",
+    "zh": "播磨下里",
+    "ko": "하리마시모사토",
+    "en": "Harima-Shimosato"
+  },
+  "Osa-Hojo": {
+    "ja": "長",
+    "zh": "长",
+    "ko": "오사",
+    "en": "Osa"
+  },
+  "Harima-Yokota": {
+    "ja": "播磨横田",
+    "zh": "播磨横田",
+    "ko": "하리마요코타",
+    "en": "Harima-Yokota"
+  },
+  "Hojo-Machi": {
+    "ja": "北条町",
+    "zh": "北条町",
+    "ko": "호조마치",
+    "en": "Hojomachi"
   }
 }
