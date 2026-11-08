@@ -444,11 +444,17 @@
           if(mode==='transfers'&&at!==bt)return at-bt;
           if(av&&bv){
             var aa=a.schedule,bb=b.schedule;
-            var ac=arrive?-minutes(aa.departure):minutes(aa.arrival);
-            var bc=arrive?-minutes(bb.departure):minutes(bb.arrival);
+            // Compare arrival clocks only when both are published arrival times.
+            var aExact=aa.arrivalClockConfirmed===true,bExact=bb.arrivalClockConfirmed===true;
+            if(aExact!==bExact)return aExact?-1:1;
+            var ac=arrive?-minutes(aa.departure):
+              aExact?minutes(aa.arrival):(Number(a.route.durationMin)||0);
+            var bc=arrive?-minutes(bb.departure):
+              bExact?minutes(bb.arrival):(Number(b.route.durationMin)||0);
             if(mode==='combo'){ac+=at*5;bc+=bt*5;}
             if(ac!==bc)return ac-bc;
-            if(aa.durationMin!==bb.durationMin)return aa.durationMin-bb.durationMin;
+            if(aa.durationMin!=null&&bb.durationMin!=null&&aa.durationMin!==bb.durationMin)
+              return aa.durationMin-bb.durationMin;
           } else {
             // Static estimates only rank unconfirmed options; never display
             // those minutes as if they came from an operating timetable.
@@ -491,11 +497,11 @@
           self.performSearch();
         });
       });
-      var labels={ja:['経路','件の候補','時刻表一致','時刻未確認'],
-        zh:['方案','个候选','班次已匹配','班次未确认'],
-        en:['Route','options','Timetable matched','Timetable unconfirmed'],
-        ko:['경로','개 후보','시간표 확인','시간표 미확인']}[window.currentLang]||
-        ['Route','options','Timetable matched','Timetable unconfirmed'];
+      var labels={ja:['経路','件の候補','時刻表一致','時刻未確認','到着時刻未確認'],
+        zh:['方案','个候选','班次已匹配','班次未确认','到达时刻未确认'],
+        en:['Route','options','Timetable matched','Timetable unconfirmed','Arrival time unavailable'],
+        ko:['경로','개 후보','시간표 확인','시간표 미확인','도착 시각 미확인']}[window.currentLang]||
+        ['Route','options','Timetable matched','Timetable unconfirmed','Arrival time unavailable'];
       var count=document.createElement('p');
       count.className='journey-options-count';
       count.textContent=entries.length+' '+labels[1];
@@ -512,8 +518,9 @@
         name.textContent=labels[0]+' '+(i+1);
         var status=document.createElement('span');
         var verified=!!entry.schedule.complete;
-        status.className='journey-option-status'+(verified?' is-matched':'');
-        status.textContent=verified?labels[2]:labels[3];
+        var exactArrival=verified&&entry.schedule.arrivalClockConfirmed===true;
+        status.className='journey-option-status'+(exactArrival?' is-matched':'');
+        status.textContent=verified?(exactArrival?labels[2]:labels[4]):labels[3];
         title.appendChild(name);
         title.appendChild(status);
         item.appendChild(title);
@@ -717,10 +724,15 @@
           if (!view || renderGeneration!==_rtSelf._renderGeneration) return;
           var notice=view.querySelector('.journey-schedule');
           if(notice) {
-            notice.textContent=res && res.complete ? res.serviceDate+' · '+t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin)+' · '+t('search.schedule_note') : t('search.schedule_missing');
-            notice.dataset.scheduleStatus = res && res.complete ? 'matched' : 'unconfirmed';
+            var exactArrival=res&&res.complete&&res.arrivalClockConfirmed===true;
+            notice.textContent=res&&res.complete ?
+              res.serviceDate+' · '+(exactArrival ?
+                t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin) :
+                res.departure+' → — · '+t('search.arrival_unconfirmed'))+' · '+t('search.schedule_note') :
+              t('search.schedule_missing');
+            notice.dataset.scheduleStatus=exactArrival?'matched':'unconfirmed';
           }
-          if(res && res.complete) {
+          if(res && res.complete && res.arrivalClockConfirmed===true) {
             var duration=view.querySelector('.journey-duration');
             if(duration) {
               duration.textContent=res.durationMin+' '+t('search.min_unit');
@@ -738,12 +750,11 @@
               _depCell.textContent = _tm.dep;
               _depCell.dataset.timeConfirmed = 'true';
             }
-            if (_arrCell && _tm.arr) {
-              // Many source plans publish only the departure clock at a stop.
-              // Preserve it as a reference, never a confirmed arrival time.
-              _arrCell.textContent = _tm.arrivalClockConfirmed === false ?
-                '≈' + _tm.arr : _tm.arr;
-              _arrCell.dataset.timeConfirmed = _tm.arrivalClockConfirmed === false ? 'false' : 'true';
+            if (_arrCell) {
+              // Display only published arrival clocks, never a station departure proxy.
+              var exactStopArrival=_tm.arr && _tm.arrivalClockConfirmed===true;
+              _arrCell.textContent=exactStopArrival?_tm.arr:'—';
+              _arrCell.dataset.timeConfirmed=exactStopArrival?'true':'false';
             }
             var _arrivalPlatformCell = view.querySelector('[data-seg-arr-platform="' + _ridx + '"]');
             if (_arrivalPlatformCell && _tm.arrivalPlatform) {
