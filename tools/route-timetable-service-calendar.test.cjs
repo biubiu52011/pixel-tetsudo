@@ -128,3 +128,97 @@ test('actual SQL cache preserves special-source quarantine diagnostics without i
     assert.equal(status.recordIntegrity,omitted?'known_omissions':'no_known_omissions');
   }
 });
+
+
+// Timetable-backed route display: no scheduled match on the static best line
+// must not suppress a valid alternative. Keep these tests in the existing
+// service-calendar suite so both route changes and data scripts trigger CI.
+test('route candidates include Yamanote after sparse Saikyo static winner',()=>{
+  const railway=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
+  const lines=railway.lines;
+  const window={
+    UNIFIED_LINES:lines,
+    LINE_STATION_ORDER:railway.lineStationOrder,
+    STATION_COORDS:railway.stations,
+    RuntimeConfig:{TRUNK_MAIN_LINE_IDS:[]},
+    RailwayDB:{
+      getAllLines(){return lines;},
+      getLine(id){return lines[id]||null;},
+      getData(){return {line_types:railway.line_types};},
+      getLineDurations(id){return lines[id]&&lines[id].durations||[];}
+    }
+  };
+  vm.runInContext(fs.readFileSync('js/route-search.js','utf8'),
+    vm.createContext({window,console}),{filename:'js/route-search.js'});
+  const initial=window.RouteSearch.findRoute('Shinjuku','Ikebukuro','combo');
+  assert.equal(initial.routeSegments[0].lineId,'SaikyoKawagoe');
+  const candidates=window.RouteSearch.findRouteCandidates('Shinjuku','Ikebukuro','combo',6);
+  assert.equal(candidates[0].routeSegments[0].lineId,'SaikyoKawagoe');
+  assert.ok(candidates.some(x=>x.routeSegments.length===1&&
+    x.routeSegments[0].lineId==='Yamanote'),'Yamanote direct line remains available');
+  const home=fs.readFileSync('pages/home.html','utf8');
+  assert.ok(home.indexOf('running-chain-resolver.js?v=')<
+    home.indexOf('route-search.js?v=')&&home.indexOf('running-chain-resolver.js?v=')>0,
+    'real through owner must be loaded before route search on home');
+});
+
+test('route timetable never equates published departure-only clock with verified arrival',async()=>{
+  const row={
+    'odpt:trainNumber':'683S','odpt:calendar':'odpt.Calendar:Weekday',
+    'odpt:trainType':'odpt.TrainType:JR-East.CommuterRapid',
+    'odpt:trainTimetableObject':[
+      {'odpt:departureStation':'odpt.Station:JR-East.SaikyoKawagoe.Osaki','odpt:departureTime':'06:51'},
+      {'odpt:departureStation':'odpt.Station:JR-East.SaikyoKawagoe.Omiya','odpt:departureTime':'07:34'}
+    ]
+  };
+  const context=vm.createContext({window:{
+    RuntimeConfig:{},
+    RailwayDB:{getLine:()=>({})},
+    ODPTClient:{getCachedTrainRuns:()=>Promise.resolve([row])}
+  },Date,console});
+  vm.runInContext(runtimeConfig,context,{filename:'data/core/runtime-config.js'});
+  vm.runInContext(script,context,{filename:'js/route-timetable.js'});
+  const res=await context.window.RouteTimetable.enrichSegments([
+    {type:'ride',lineId:'SaikyoKawagoe',fromStation:'Osaki',toStation:'Omiya'}
+  ],{mode:'depart',date:'2026-11-09',time:'06:45'});
+  assert.equal(res.complete,true);
+  assert.equal(res.times[0].train,'683S');
+  assert.equal(res.times[0].trainType,'odpt.TrainType:JR-East.CommuterRapid');
+  assert.equal(res.times[0].arrivalClockConfirmed,false);
+  assert.equal(res.times[0].arr,'07:34','departure time is only a routing reference');
+});
+
+test('short matched through connection is accepted; same-number long layover is not',async()=>{
+  async function run(nextDeparture){
+    const window={
+      RailwayDB:{getLine:()=>({})},
+      RuntimeConfig:{PUBLISHED_JP_HOLIDAYS:{'2026':[]}},
+      ODPTClient:{getCachedTrainRuns:(line)=>Promise.resolve([{
+        'odpt:calendar':'odpt.Calendar:Weekday',
+        'odpt:trainNumber':'683S',
+        'odpt:trainTimetableObject':line==='Rinkai'?
+          [
+            {'odpt:departureStation':'odpt.Station:TWR.Rinkai.ShinKiba','odpt:departureTime':'06:30'},
+            {'odpt:arrivalStation':'odpt.Station:TWR.Rinkai.Osaki','odpt:arrivalTime':'06:49'}
+          ]:[
+            {'odpt:departureStation':'odpt.Station:JR-East.SaikyoKawagoe.Osaki','odpt:departureTime':nextDeparture},
+            {'odpt:arrivalStation':'odpt.Station:JR-East.SaikyoKawagoe.Kawagoe','odpt:arrivalTime':'09:03'}
+          ]
+      }])}
+    };
+    const ctx=vm.createContext({window,Date,console});
+    vm.runInContext(script,ctx,{filename:'js/route-timetable.js'});
+    return window.RouteTimetable.enrichSegments([
+      {type:'ride',lineId:'Rinkai',fromStation:'ShinKiba',toStation:'Osaki'},
+      {type:'transfer',station:'Osaki',through:true},
+      {type:'ride',lineId:'SaikyoKawagoe',fromStation:'Osaki',toStation:'Kawagoe'}
+    ],{date:'2026-11-09',mode:'depart',time:'06:25'});
+  }
+  const good=await run('06:51');
+  assert.equal(good.complete,true);
+  assert.equal(good.connections[1].through,true);
+  const bad=await run('08:00');
+  assert.equal(bad.complete,true);
+  assert.equal(bad.connections[1].through,false);
+  assert.deepEqual(Array.from(bad.downgrade),[1]);
+});

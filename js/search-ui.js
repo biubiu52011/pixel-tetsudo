@@ -546,7 +546,8 @@
               '<div class="journey-seg-stop-clock">' +
               '<span class="journey-seg-stop-time" data-time-confirmed="false" data-seg-arr-time="' + i + '">—</span>' +
               '<span class="journey-seg-stop-label">' + window.escapeHtml(t('search.time_arr')) + '</span></div>' +
-              '<strong class="journey-seg-stop-name">' + window.escapeHtml(toSt) + '</strong></div>';
+              '<strong class="journey-seg-stop-name">' + window.escapeHtml(toSt) + '</strong>' +
+              '<span class="journey-seg-platform" data-seg-arr-platform="' + i + '" hidden></span></div>';
             html += '</div>';
             // Auxiliary metadata is hidden until a backed timetable row supplies it.
             html += '<div class="journey-seg-meta" data-seg-meta="' + i + '" hidden>' +
@@ -617,6 +618,11 @@
               _arrCell.textContent = _tm.arrivalClockConfirmed === false ?
                 '≈' + _tm.arr : _tm.arr;
               _arrCell.dataset.timeConfirmed = _tm.arrivalClockConfirmed === false ? 'false' : 'true';
+            }
+            var _arrivalPlatformCell = _rtSelf.resultsDiv.querySelector('[data-seg-arr-platform="' + _ridx + '"]');
+            if (_arrivalPlatformCell && _tm.arrivalPlatform) {
+              _arrivalPlatformCell.textContent = window.escapeHtml(t('search.platform').replace('{p}', _tm.arrivalPlatform));
+              _arrivalPlatformCell.hidden = false;
             }
             // The platform is supplementary to the train segment, not a time label.
             var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
@@ -706,6 +712,16 @@
                 var matched=reports.filter(function(item){return item && item.schedule.complete;});
                 matched.sort(function(a,b) {
                   var aa=a.schedule,bb=b.schedule;
+                  if (_rtSelf.currentMode==='transfers') {
+                    var aTx=a.route.routeSegments.filter(function(s){return s.type==='transfer'&&!s.through;}).length;
+                    var bTx=b.route.routeSegments.filter(function(s){return s.type==='transfer'&&!s.through;}).length;
+                    if (aTx!==bTx) return aTx-bTx;
+                  }
+                  // Arrive-by: choose the latest feasible departure, not the
+                  // earliest arrival among the candidate routes.
+                  if (result.timeOptions && result.timeOptions.mode==='arrive')
+                    return bb.departure.localeCompare(aa.departure) ||
+                      bb.arrival.localeCompare(aa.arrival);
                   return aa.arrival.localeCompare(bb.arrival) ||
                     aa.departure.localeCompare(bb.departure);
                 });
