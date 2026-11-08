@@ -506,6 +506,450 @@ window.PlatformResolver = {
 // and ARRIVAL/DEPARTURE clock must agree. A blank official platform stays null.
 // Per-train official source URLs are retained for review and November revalidation.
 window.PLATFORM_TRAIN_PLANS = {
+  "SaikyoKawagoe": {
+    "683S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/060/060161.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "06:51",
+            "8"
+          ],
+          "Shinjuku": [
+            null,
+            "07:04",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "07:09",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "07:27",
+            "6"
+          ],
+          "Omiya": [
+            null,
+            "07:34",
+            "21"
+          ],
+          "Kawagoe": [
+            "08:03",
+            null,
+            "4"
+          ]
+        }
+      }
+    },
+    "759K": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/080/081391.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "07:07",
+            "6"
+          ],
+          "Shinjuku": [
+            null,
+            "07:18",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "07:24",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "07:47",
+            "6"
+          ],
+          "Omiya": [
+            "07:59",
+            null,
+            "22"
+          ]
+        }
+      }
+    },
+    "785S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/080/084531.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "08:00",
+            "7"
+          ],
+          "Shinjuku": [
+            null,
+            "08:11",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "08:17",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "08:35",
+            "6"
+          ],
+          "Omiya": [
+            null,
+            "08:42",
+            "21"
+          ],
+          "Kawagoe": [
+            "09:04",
+            null,
+            "3"
+          ]
+        }
+      }
+    },
+    "827S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/060/060181.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "08:53",
+            "8"
+          ],
+          "Shinjuku": [
+            null,
+            "09:04",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "09:12",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "09:29",
+            "6"
+          ],
+          "Omiya": [
+            null,
+            "09:38",
+            "21"
+          ],
+          "Kawagoe": [
+            "09:59",
+            null,
+            "3"
+          ]
+        }
+      }
+    },
+    "813S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/150/152611.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "09:13",
+            "7"
+          ],
+          "Shinjuku": [
+            null,
+            "09:25",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "09:30",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "09:48",
+            "6"
+          ],
+          "Omiya": [
+            null,
+            "09:55",
+            "21"
+          ],
+          "Kawagoe": [
+            "10:16",
+            null,
+            "3"
+          ]
+        }
+      }
+    },
+    "659K": {
+      "SaturdayHoliday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/060/060561.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "06:43",
+            "6"
+          ],
+          "Shinjuku": [
+            null,
+            "06:55",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "07:03",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "07:27",
+            "6"
+          ],
+          "Omiya": [
+            "07:39",
+            null,
+            "22"
+          ]
+        }
+      }
+    },
+    "1537F": {
+      "SaturdayHoliday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/045/049971.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "16:02",
+            "8"
+          ],
+          "Shinjuku": [
+            null,
+            "16:14",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "16:20",
+            "4"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "16:38",
+            "6"
+          ],
+          "Omiya": [
+            null,
+            "16:51",
+            "21"
+          ],
+          "Kawagoe": [
+            "17:14",
+            null,
+            "3"
+          ]
+        }
+      }
+    },
+    "510S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/060/060281.html",
+        "stops": {
+          "Kawagoe": [
+            null,
+            "05:49",
+            "3"
+          ],
+          "Omiya": [
+            null,
+            "06:14",
+            "20"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "06:20",
+            "3"
+          ],
+          "Ikebukuro": [
+            null,
+            "06:37",
+            "1"
+          ],
+          "Shinjuku": [
+            null,
+            "06:43",
+            "1"
+          ],
+          "Osaki": [
+            null,
+            "06:55",
+            "5"
+          ]
+        }
+      }
+    },
+    "622S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/150/153601.html",
+        "stops": {
+          "Kawagoe": [
+            null,
+            "06:36",
+            "5"
+          ],
+          "Omiya": [
+            null,
+            "07:00",
+            "20"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "07:07",
+            "3"
+          ],
+          "Ikebukuro": [
+            null,
+            "07:27",
+            "1"
+          ],
+          "Shinjuku": [
+            null,
+            "07:33",
+            "2"
+          ],
+          "Osaki": [
+            null,
+            "07:45",
+            "5"
+          ]
+        }
+      }
+    },
+    "2026S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/045/045511.html",
+        "stops": {
+          "Kawagoe": [
+            null,
+            "20:05",
+            "3"
+          ],
+          "Omiya": [
+            null,
+            "20:30",
+            "20"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "20:37",
+            "3"
+          ],
+          "Ikebukuro": [
+            null,
+            "20:56",
+            "1"
+          ],
+          "Shinjuku": [
+            null,
+            "21:03",
+            "1"
+          ],
+          "Osaki": [
+            null,
+            "21:14",
+            "6"
+          ]
+        }
+      }
+    },
+    "708K": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/150/153641.html",
+        "stops": {
+          "Omiya": [
+            null,
+            "07:18",
+            "22"
+          ],
+          "Musashi-Urawa": [
+            null,
+            "07:35",
+            "4"
+          ],
+          "Ikebukuro": [
+            null,
+            "08:01",
+            "1"
+          ],
+          "Shinjuku": [
+            null,
+            "08:07",
+            "1"
+          ],
+          "Osaki": [
+            null,
+            "08:22",
+            "6"
+          ]
+        }
+      }
+    }
+  },
+  "Rinkai": {
+    "510S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/060/060281.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "06:55",
+            "5"
+          ]
+        }
+      }
+    },
+    "622S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/150/153601.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "07:45",
+            "5"
+          ]
+        }
+      }
+    },
+    "2026S": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/045/045511.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "21:14",
+            "6"
+          ]
+        }
+      }
+    },
+    "708K": {
+      "Weekday": {
+        "source": "https://timetables.jreast.co.jp/2611/train/150/153641.html",
+        "stops": {
+          "Osaki": [
+            null,
+            "08:22",
+            "6"
+          ]
+        }
+      }
+    }
+  },
   "Fukuchiyama": {
     "3002M": {
       "Weekday": {
