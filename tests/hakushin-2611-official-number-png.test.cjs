@@ -1,3 +1,4 @@
+const PUBLISHED_JP_HOLIDAYS=require('./support/published-jp-holidays.cjs');
 'use strict';
 /* Hakushin 2026 Nov public D/M train numbers, SQL fleet correction,
  * 14 Kairi days and image scope. Service number is not a carset.
@@ -179,7 +180,7 @@ function estimateAt(iso,day,numbers,calendar='odpt.Calendar:Weekday'){
     constructor(...args){super(...(args.length?args:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{PUBLISHED_JP_HOLIDAYS:{'2026':['11-03','11-23']}},
+  const root={RuntimeConfig:{PUBLISHED_JP_HOLIDAYS},
     JREastHakushinNumberIndex202611:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{Hakushin:'Hakushin'},
       LINE_TO_OPERATOR:{Hakushin:'JR-East'}}};

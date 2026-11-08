@@ -1,3 +1,4 @@
+const PUBLISHED_JP_HOLIDAYS=require('./support/published-jp-holidays.cjs');
 /* Regression test for the shared dated-plan vehicle renderer.
  * Run: node --test tests/scheduled-vehicle-mapping.test.cjs
  * No network, server, or third-party packages are required.
@@ -14,7 +15,7 @@ class Tokyo2026Date extends Date {
 }
 const w = {
   TRAIN_OPERATION_EVIDENCE_PROVIDERS: [],
-  RuntimeConfig: { SERVICE_DAY_CALENDAR:{} },
+  RuntimeConfig: { SERVICE_DAY_CALENDAR:{},PUBLISHED_JP_HOLIDAYS },
   ODPTClient: {
     LINE_RAILWAY_CODE:{ UenoTokyo:"UenoTokyo" },
     LINE_TO_OPERATOR:{ UenoTokyo:"JR-East" }

@@ -51,6 +51,7 @@ on:
       - 'tests/jrwest-kosei-2611-verified-clocks-through.test.cjs'
       - 'tests/fukuchiyama-2611-fleet-reference.test.cjs'
       - 'tests/fukuchiyama-line-stations-2611.test.cjs'
+      - 'tests/support/published-jp-holidays.cjs'
       - 'data/core/railway_data.json'
       - 'data/core/station_i18n.json'
       - 'supabase/migrations/20261108190000_fukuchiyama_full_stations.sql'

@@ -1,3 +1,4 @@
+const PUBLISHED_JP_HOLIDAYS=require('./support/published-jp-holidays.cjs');
 'use strict';
 /* Central Main pure timetable trains with no ODPT live position. Historical
  * weekday stop clocks are test fixtures, not confirmation of operation on
@@ -17,7 +18,7 @@ function setup(iso) {
     static now(){return Date.parse(iso)}
   }
   const window={
-    RuntimeConfig:{},ODPTClient:{
+    RuntimeConfig:{PUBLISHED_JP_HOLIDAYS},ODPTClient:{
       LINE_RAILWAY_CODE:{ChuoMain:'ChuoMain'},
       LINE_TO_OPERATOR:{ChuoMain:'JR-East'}
     }

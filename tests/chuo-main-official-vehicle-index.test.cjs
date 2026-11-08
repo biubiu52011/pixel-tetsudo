@@ -1,3 +1,4 @@
+const PUBLISHED_JP_HOLIDAYS=require('./support/published-jp-holidays.cjs');
 'use strict';
 /* JR East 2026-11 train-number -> scheduled-model -> PNG evidence checks.
  * Never upgrade an exact timetable service to observed rolling stock.
@@ -173,7 +174,7 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
     static now(){return Date.parse(base)}
   }
   const w={
-    RuntimeConfig:{SERVICE_DAY_CALENDAR:{}},
+    RuntimeConfig:{SERVICE_DAY_CALENDAR:{},PUBLISHED_JP_HOLIDAYS},
     ODPTClient:{
       LINE_RAILWAY_CODE:{ChuoMain:'Chuo'},
       LINE_TO_OPERATOR:{ChuoMain:'JR-East'}
