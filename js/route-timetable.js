@@ -59,37 +59,73 @@
     return { minute:minute, mode:mode, date:date,
       calendars:calendarsForDate(date) };
   }
-  function candidates(rows, from, to, ctx, lineId) {
-    var out = [];
-    var scopedLine = lineId || (rows && rows[0] && rows[0]._sqlLineId) || '';
-    (rows || []).forEach(function(tt) {
-      if (tt._serviceDate && tt._serviceDate !== ctx.date) return;
+
+  // Indexed once for each immutable SQL/ODPT row snapshot, service date,
+  // calendar and canonical line identity. The ODPT client owns cache expiry;
+  // this WeakMap cannot keep evicted source arrays alive.
+  var _indexes = new WeakMap();
+  var _indexBuilds = 0, _indexReuses = 0;
+  function indexedDepartures(rows, ctx, lineId) {
+    var result = new Map();
+    if (!Array.isArray(rows) || !rows.length) return result;
+    var scope = String(lineId || (rows[0] && rows[0]._sqlLineId) || '');
+    var identity = [scope,ctx.date,ctx.calendars.join(',')].join('|');
+    var cached = _indexes.get(rows);
+    var entry = cached && cached.get(identity);
+    if (entry && entry.size === rows.length) {
+      _indexReuses++;
+      return entry.byStation;
+    }
+    rows.forEach(function(tt) {
+      if (!tt || (tt._serviceDate && tt._serviceDate !== ctx.date)) return;
       var cal = String(tt['odpt:calendar'] || '').split(':').pop();
-      // Dated provider rows are authoritative. Never substitute another calendar.
       if (!tt._serviceDate && (!cal || ctx.calendars.indexOf(cal) < 0)) return;
-      var stops = tt['odpt:trainTimetableObject'] || [], start = -1;
-      for (var i=0;i<stops.length;i++) {
-        var stop = stops[i], station = key(stop['odpt:departureStation'] || stop['odpt:arrivalStation'],scopedLine);
-        if (start < 0 && station === key(from,scopedLine)) start = i;
-        else if (start >= 0 && station === key(to,scopedLine)) {
-          var dep = stops[start]['odpt:departureTime'];
-          var publishedArrival = stop['odpt:arrivalTime'] || null;
-          var arr = publishedArrival || stop['odpt:departureTime'];
-          var d = parseTime(dep), a = parseTime(arr);
-          if (d != null && a != null && a >= d) out.push({
-            dep:dep,arr:arr,depMin:d,arrMin:a,
-            arrivalClockConfirmed:!!publishedArrival,
-            train:tt['odpt:trainNumber'] || '',calendar:cal,
-            trainType:tt['odpt:trainType'] || '',
-            serviceName:tt._sqlServiceName || '',
-            destination:key((tt['odpt:destinationStation'] || [])[0] ||
-              stops[stops.length-1]['odpt:arrivalStation'] ||
-              stops[stops.length-1]['odpt:departureStation'],scopedLine),
-            canonicalId:tt._canonicalTrainTimetableId || null,
-            canonicalEvidence:tt._canonicalGroupEvidence || ''
-          });
-          break;
-        }
+      var stops = tt['odpt:trainTimetableObject'] || [], encountered = new Set();
+      for (var i = 0; i < stops.length; i++) {
+        var stop = stops[i];
+        if (!stop) continue;
+        var station = key(stop['odpt:departureStation'] || stop['odpt:arrivalStation'], scope);
+        if (!station || encountered.has(station)) continue;
+        // The original resolver begins with the FIRST station occurrence,
+        // even when that stop has no departure. Do not silently board later.
+        encountered.add(station);
+        var dep = stop['odpt:departureTime'], depMin = parseTime(dep);
+        if (depMin == null) continue;
+        if (!result.has(station)) result.set(station, []);
+        result.get(station).push({tt:tt,stops:stops,start:i,dep:dep,depMin:depMin,cal:cal});
+      }
+    });
+    if (!cached) { cached = new Map(); _indexes.set(rows,cached); }
+    if (cached.size >= 6) cached.clear();
+    cached.set(identity,{size:rows.length,byStation:result});
+    _indexBuilds++;
+    return result;
+  }
+  function candidates(rows, from, to, ctx, lineId) {
+    var out = [], scope = lineId || (rows && rows[0] && rows[0]._sqlLineId) || '';
+    var departures = indexedDepartures(rows,ctx,scope).get(key(from,scope)) || [];
+    var target = key(to,scope);
+    departures.forEach(function(entry) {
+      var stops=entry.stops, tt=entry.tt;
+      for (var i=entry.start+1;i<stops.length;i++) {
+        var stop=stops[i];
+        if (!stop ||
+            key(stop['odpt:departureStation'] || stop['odpt:arrivalStation'],scope)!==target) continue;
+        var publishedArrival=stop['odpt:arrivalTime'] || null;
+        var arr=publishedArrival || stop['odpt:departureTime'], arrMin=parseTime(arr);
+        if (arrMin != null && arrMin >= entry.depMin) out.push({
+          dep:entry.dep,arr:arr,depMin:entry.depMin,arrMin:arrMin,
+          arrivalClockConfirmed:!!publishedArrival,
+          train:tt['odpt:trainNumber'] || '',calendar:entry.cal,
+          trainType:tt['odpt:trainType'] || '',
+          serviceName:tt._sqlServiceName || '',
+          destination:key((tt['odpt:destinationStation'] || [])[0] ||
+            stops[stops.length-1]['odpt:arrivalStation'] ||
+            stops[stops.length-1]['odpt:departureStation'],scope),
+          canonicalId:tt._canonicalTrainTimetableId || null,
+          canonicalEvidence:tt._canonicalGroupEvidence || ''
+        });
+        break;
       }
     });
     return out;
@@ -192,5 +228,6 @@
       return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:arrivalConfirmed?finalHit.arr:null,arrivalClockConfirmed:arrivalConfirmed,durationMin:arrivalConfirmed?finalHit.arrMin-hits[0].depMin:null,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
     });
   }
-  window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain,getTransferBuffer:buffer};
+  window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain,getTransferBuffer:buffer,
+    getIndexStats:function(){return {builds:_indexBuilds,reuses:_indexReuses};}};
 })();
