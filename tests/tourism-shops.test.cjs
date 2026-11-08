@@ -76,7 +76,9 @@ function renderShop(spot, lang = 'ja') {
         dist: { distMain: '', distText: '', stationName: '' },
       };
     },
-    galleryIndexForMenu(s, index) { return index + 1; },
+    galleryIndexForMenu(s, index) {
+      return (s.image ? 1 : 0) + s.menu.slice(0, index).filter(item => item && item.img).length;
+    },
     distValueHtml() { return ''; },
     observeMap() {},
     bindGallery() {},
@@ -452,11 +454,34 @@ test('mixed menus keep real item photography separate from no-photo text entries
     {item:'Real picture',img:'../images/items/real.jpg',sourceUrl:'https://example.com/real',sourceType:'official'},
     {item:'Text only',cover:'../images/観光地/shop.jpg',coverRole:'shop'}
   ]});
-  assert.match(html, /class="dp-menu-carousel"/);
-  assert.match(html, /class="dp-menu-list"/);
+  assert.match(html, /class="dp-menu-mixed"/);
+  assert.doesNotMatch(html, /class="dp-menu-carousel"|class="dp-menu-list"/);
   assert.ok(html.includes('src="../images/items/real.jpg"'));
   assert.equal(html.includes('src="../images/観光地/shop.jpg"'),false);
   assert.match(html, /公式情報/);
+});
+
+test('interleaved nine-item recommendations preserve order and gallery mapping across expansion', () => {
+  const menu = [
+    ...Array.from({length:5}, (_,i) => ({item:'Photo '+i,img:'../images/p'+i+'.jpg',price:(100+i)+'円'})),
+    {item:'Text A',price:'600円'}, {item:'Text B',price:'700円'},
+    {item:'Photo 7',img:'../images/p7.jpg',price:'800円'},
+    {item:'Text C',price:'900円'}
+  ];
+  const html = renderShop({name:'Mixed nine',image:'../images/store.jpg',tags:['food'],menu});
+  const start = html.indexOf('<section class="dp-card dp-menu"');
+  assert.ok(start >= 0);
+  const section = html.slice(start,html.indexOf('</section>',start));
+  assert.equal((section.match(/class="dp-menu-mixed"/g)||[]).length,2);
+  assert.doesNotMatch(section,/dp-menu-carousel|class="dp-menu-list"|dp-menu-modal/);
+  assert.equal((section.match(/class="dp-dish-img"/g)||[]).length,6);
+  assert.equal((section.match(/class="dp-dish-price"/g)||[]).length,9);
+  assert.deepEqual([...section.matchAll(/class="dp-dish-name">([^<]+)/g)].map(m=>m[1]),
+    menu.map(item=>item.item));
+  assert.deepEqual([...section.matchAll(/data-gallery-idx="([0-9]+)"/g)].map(m=>Number(m[1])),
+    [1,2,3,4,5,6], 'gallery index follows actual photos, not item positions');
+  assert.match(section,/class="dp-menu-more" id="dp-menu-more" hidden/);
+  assert.match(section,/data-hidden-count="3"/);
 });
 
 test('overview elevates hours and price, keeps transit update hooks, and avoids duplicate shop labels', () => {
