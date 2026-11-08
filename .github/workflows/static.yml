@@ -30,10 +30,7 @@ jobs:
       - name: Verify generated static configuration
         run: node data/core/gen-config-bundle.js --check
       - name: Generate ordered page scripts
-        run: |
-          node scripts/sync-page-scripts.cjs
-          git diff -- pages/home.html pages/trains.html pages/realtime.html
-          exit 1
+        run: node scripts/sync-page-scripts.cjs --check
       - name: Test page script manifest
         run: node --test tests/page-scripts.test.cjs
       - name: Exercise line-scoped loader and SQL artwork contract
