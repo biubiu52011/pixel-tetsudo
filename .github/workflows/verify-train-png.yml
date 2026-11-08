@@ -62,6 +62,7 @@ on:
       - 'tests/fukuchiyama-2611-kounotori-family-and-friday.test.cjs'
       - 'tests/fukuchiyama-2611-danbaro-scope.test.cjs'
       - 'supabase/migrations/20261108233500_fukuchiyama_danbaro_eight_numbers_and_holiday_suspensions.sql'
+      - 'supabase/migrations/20261108234500_fukuchiyama_danbaro_four_more_numbers_calendar.sql'
       - 'supabase/migrations/20261108231000_fukuchiyama_kounotori_source_family_50_rows.sql'
       - 'supabase/migrations/20261108232000_fukuchiyama_7025m_friday_official_sample.sql'
       - 'supabase/migrations/20261108225500_fukuchiyama_correct_evening_rapid_and_kounotori.sql'
