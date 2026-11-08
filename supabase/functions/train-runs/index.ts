@@ -4806,7 +4806,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // 2026-11 JR-West official train NUMBER mapping. Historical SQL source
   // labels often encode SaturdayHoliday with SH; JR publicly displays S.
   // Number evidence must never upgrade undated stop clocks or PNG models.
-  if(lineId==="KakogawaLine" && /^2026-11-\\d{2}$/.test(serviceDate) &&
+  if(lineId==="KakogawaLine" && /^2026-11-\d{2}$/.test(serviceDate) &&
      selectedCalendar==="odpt.Calendar:SaturdayHoliday" && result.length){
     const sourceIds=result.map((run:any)=>Number(run.source_template_id));
     const mapRows=await batchedRows(sourceIds,100,async (ids:any[])=>{
