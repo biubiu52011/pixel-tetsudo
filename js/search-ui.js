@@ -278,7 +278,7 @@
     },
 
     _selectSuggestion: function(option, list, input) {
-      input.value = option.textContent;
+      input.value = option.getAttribute('data-station-label') || option.textContent;
       input.setAttribute('data-station-id', option.getAttribute('data-station-id') || '');
       this._hideSuggestions(list, input);
     },
@@ -313,7 +313,9 @@
           const name = station.displayName || station;
           return '<div class="suggestion-item" role="option" id="' +
             listId + '-option-' + i + '" aria-selected="false" data-station-id="' +
-            window.escapeHtml(id) + '">' + window.escapeHtml(name) + '</div>';
+            window.escapeHtml(id) + '" data-station-label="' +
+            window.escapeHtml(name) + '">' + window.escapeHtml(name) +
+            (station.disambiguation ? ' · ' + window.escapeHtml(station.disambiguation) : '') + '</div>';
         }).join('');
       }
       list.innerHTML = this._suggestionCacheDOM[cacheKey];
@@ -331,20 +333,32 @@
     },
 
     performSearch: function() {
-      // Prefer station ID from data-station-id (set by suggestion click); fall back to display name for direct input
-      const rawFrom = (this.fromInput ? (this.fromInput.getAttribute('data-station-id') || this.fromInput.value.trim()) : '');
-      const rawTo = (this.toInput ? (this.toInput.getAttribute('data-station-id') || this.toInput.value.trim()) : '');
-      // 直接输入回退：显示名称必须解析为 canonical 车站 ID（如 Kitasenju → Kita-Senju）。
-      var _resolveId = function(v) {
-        if (!v) return '';
-        if (window.StationResolver) {
-          var r = window.StationResolver.resolve(v);
-          if (r && r.length > 0 && r[0].stationId) return r[0].stationId;
-        }
-        return v;
+      // A selected data-station-id is authoritative; free text may only
+      // resolve to a unique identity and never chooses the first homonym.
+      var ambiguousInputs = [];
+      var _resolveInput = function(input) {
+        if (!input) return '';
+        var selectedId = input.getAttribute('data-station-id');
+        if (selectedId) return selectedId;
+        var raw = input.value.trim();
+        if (!raw || !window.StationResolver) return raw;
+        var matches = window.StationResolver.resolve(raw) || [];
+        var ids = Array.from(new Set(matches.map(function(r) { return r && r.stationId; }).filter(Boolean)));
+        if (ids.length > 1) { ambiguousInputs.push(input); return ''; }
+        return ids.length === 1 ? ids[0] : raw;
       };
-      const from = _resolveId(rawFrom);
-      const to = _resolveId(rawTo);
+      const from = _resolveInput(this.fromInput);
+      const to = _resolveInput(this.toInput);
+      if (ambiguousInputs.length) {
+        var uncertain = ambiguousInputs[0];
+        if (this.resultsDiv) this.resultsDiv.innerHTML =
+          '<div class="search-error" role="alert">' +
+          window.escapeHtml((window.t && window.t('search.ambiguous_station')) ||
+            'Select a station from the suggestions.') + '</div>';
+        uncertain.focus();
+        this.showSuggestions(uncertain.value, uncertain.getAttribute('aria-controls'), uncertain);
+        return;
+      }
       const t = window.t || function(key) { return key; };
 
       this._renderGeneration = (this._renderGeneration || 0) + 1;
