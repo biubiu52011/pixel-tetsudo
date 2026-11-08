@@ -7,6 +7,20 @@ DO $split$
 DECLARE src record; oldno text; nextno text; b int; aclock text; dclock text;
 newsource bigint; newcanonical bigint; continuation text;
 BEGIN
+ -- This migration was applied to production before the repository migration
+ -- history was synchronized. A second application must verify and no-op.
+ IF (SELECT count(*) FROM public.manual_timetable_templates
+     WHERE line_key='KakogawaLine'
+       AND train_number IN ('2329S','1338S')
+       AND source_path='official-202611:jrwest-kakogawa-renumbered-nishiwaki')=4
+    AND (SELECT count(*) FROM public.manual_timetable_templates
+       WHERE line_key='KakogawaLine')=90
+    AND NOT EXISTS(SELECT 1 FROM public.manual_timetable_templates t
+       JOIN public.train_timetable_members m ON m.source_template_id=t.id
+       WHERE t.line_key='KakogawaLine'
+         AND m.last_stop_sequence<>(SELECT max(stop_sequence)
+          FROM public.manual_timetable_template_stops s WHERE s.template_id=t.id))
+ THEN RETURN; END IF;
  IF (SELECT count(*) FROM public.manual_timetable_templates WHERE id IN (4479,4480,4524,4525)
     AND line_key='KakogawaLine' AND train_number IN ('1335S','1335SH','2326S','2326SH'))<>4
  OR EXISTS(SELECT 1 FROM public.manual_timetable_templates
