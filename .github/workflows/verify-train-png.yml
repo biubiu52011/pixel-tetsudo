@@ -54,6 +54,7 @@ on:
       - 'tests/fukuchiyama-2611-fleet-reference.test.cjs'
       - 'tests/fukuchiyama-1199ch-candidate-marker.test.cjs'
       - 'tests/fukuchiyama-north-local-fleet-scope.test.cjs'
+      - 'tests/gakkentoshi-transfer-source-ownership.test.cjs'
       - 'tests/fukuchiyama-line-stations-2611.test.cjs'
       - 'tests/fukuchiyama-2611-official-north-sample.test.cjs'
       - 'tests/fukuchiyama-2611-northbound-official-samples.test.cjs'
@@ -183,6 +184,8 @@ jobs:
           node --check data/timetables/jreast-kitakami-2611-number-index.js
           node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
+      - name: Verify Gakkentoshi–Osaka Higashi transfer ownership and fleet scope
+        run: node --test tests/gakkentoshi-transfer-source-ownership.test.cjs
       - name: Verify JR Takarazuka full 31-station rail topology and generated bundles
         run: node --test tests/fukuchiyama-line-stations-2611.test.cjs
       - name: Verify JR Takarazuka historical fleet references (unconfirmed, no PNG)

@@ -42901,9 +42901,7 @@
         3,
         3
       ],
-      "throughServices": [
-        "Gakkentoshi"
-      ],
+      "throughServices": [],
       "transferStations": [
         {
           "station": "Shin-Osaka",
@@ -42922,22 +42920,23 @@
           "lineId": "TokaidoKansai",
           "type": "in",
           "note": "同站换乘"
+        },
+        {
+          "station": "Hanaten",
+          "lineId": "Gakkentoshi",
+          "type": "in",
+          "note": "同站换乘"
+        },
+        {
+          "station": "Shigino",
+          "lineId": "Gakkentoshi",
+          "type": "in",
+          "note": "同站换乘"
         }
       ],
       "nameZh": "大阪东线",
       "nameKo": "오사카 히가시선",
-      "serviceBoundaries": [
-        {
-          "lineId": "Gakkentoshi",
-          "handoverStations": [
-            "Kyobashi-Osaka"
-          ],
-          "evidence": {
-            "source": "Historical JR-West timetable archive: Gakkentoshi / Osaka Higashi adjacent through-service join",
-            "confidence": "HIGH"
-          }
-        }
-      ],
+      "serviceBoundaries": [],
       "presentation": {
         "nameJa": "おおさか東線",
         "nameZh": "大阪东线",
@@ -43304,9 +43303,7 @@
         3,
         3
       ],
-      "throughServices": [
-        "OsakaHigashi"
-      ],
+      "throughServices": [],
       "transferStations": [
         {
           "station": "Kyobashi-Osaka",
@@ -43319,22 +43316,23 @@
           "lineId": "Nara",
           "type": "in",
           "note": "同站换乘"
+        },
+        {
+          "station": "Hanaten",
+          "lineId": "OsakaHigashi",
+          "type": "in",
+          "note": "同站换乘"
+        },
+        {
+          "station": "Shigino",
+          "lineId": "OsakaHigashi",
+          "type": "in",
+          "note": "同站换乘"
         }
       ],
       "nameZh": "学研都市线(片町线)",
       "nameKo": "가켄토시선(카타마치선)",
-      "serviceBoundaries": [
-        {
-          "lineId": "OsakaHigashi",
-          "handoverStations": [
-            "Kyobashi-Osaka"
-          ],
-          "evidence": {
-            "source": "Historical JR-West timetable archive: Gakkentoshi / Osaka Higashi adjacent through-service join",
-            "confidence": "HIGH"
-          }
-        }
-      ],
+      "serviceBoundaries": [],
       "presentation": {
         "nameJa": "学研都市線（片町線）",
         "nameZh": "学研都市线(片町线)",
