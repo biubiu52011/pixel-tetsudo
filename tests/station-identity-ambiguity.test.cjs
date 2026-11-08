@@ -54,3 +54,31 @@ test('search form requires explicit selection and preserves display labels',()=>
   assert.match(search,/s\.disambiguation = line/);
   assert.match(loader,/StationResolver\.invalidate\(\)/);
 });
+
+test('every repeated localized name preserves all referenced canonical IDs',()=>{
+  const railway=JSON.parse(fs.readFileSync('data/core/railway_data.json','utf8'));
+  const i18n=JSON.parse(fs.readFileSync('data/core/station_i18n.json','utf8'));
+  const used=new Set(Object.values(railway.lines).flatMap(line=>line.stations||[]));
+  const window={
+    RAILWAY_I18N:i18n, STATION_NAME_MAP:railway.name_map,
+    RailwayDB:{getAllLines:()=>railway.lines,resolveStationName:(id,lang)=>i18n[id]?.[lang]||id}
+  };
+  vm.runInNewContext(fs.readFileSync('js/station-resolver.js','utf8'),{window});
+  let count=0;
+  for(const lang of ['ja','zh','en','ko']){
+    const index=new Map();
+    for(const id of used){
+      const label=i18n[id]?.[lang];
+      if(!label)continue;
+      if(!index.has(label))index.set(label,[]);
+      index.get(label).push(id);
+    }
+    for(const [label,ids]of index){
+      if(ids.length<2)continue;
+      count++;
+      const matched=new Set(window.StationResolver.resolve(label).map(c=>c.stationId));
+      for(const id of ids)assert.ok(matched.has(id),lang+' '+label+' missing '+id);
+    }
+  }
+  assert.ok(count>200,'expected substantial real-world multilingual homonym coverage');
+});
