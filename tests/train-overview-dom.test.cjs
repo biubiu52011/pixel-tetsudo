@@ -147,10 +147,16 @@ test('JU icon maps to the canonical JR Utsunomiya line across data and cards', (
   assert.equal(offset, png.length, 'PNG has no truncated or trailing chunks');
   assert.ok(dataParts.length, 'PNG has image data');
   const channels = { 2: 3, 3: 1, 6: 4 }[png[25]];
-  assert.equal(png[24], 8, 'PNG uses 8-bit samples');
+  const bitDepth = png[24];
   assert.ok(channels, 'PNG has a supported color format');
+  // Palette-indexed PNGs are legitimately packed at 1/2/4/8 bits per pixel.
+  // Count packed scanline bytes, not one byte per indexed pixel.
+  if (png[25] === 3) assert.ok([1, 2, 4, 8].includes(bitDepth),
+    'Indexed PNG uses a supported palette bit depth');
+  else assert.equal(bitDepth, 8, 'Truecolor/alpha PNG uses 8-bit samples');
+  const scanlineBytes = Math.ceil(236 * channels * bitDepth / 8);
   assert.equal(zlib.inflateSync(Buffer.concat(dataParts)).length,
-    236 * (1 + 236 * channels), 'PNG scanlines inflate to full image');
+    236 * (1 + scanlineBytes), 'PNG scanlines inflate to full image');
 
   const win = makeView();
   const line = sources[0].lines.UtsunomiyaJR;
