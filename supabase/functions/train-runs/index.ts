@@ -236,10 +236,10 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   if(lineId==="Fukuchiyama"){
     templates=templates.filter((t:any)=>{
       const source=String(t.source_path||"");
-      const expressSqlExample=[68244,68245,68251,68252,68314,68315,68168]
-        .includes(Number(t.id)) &&
+      const number=String(t.train_number||"");
+      const scopedExpress= /^(30|70)[0-9]{2}MH?$/.test(number) &&
         Array.isArray(t.operating_dates);
-      if(!source.startsWith("official-sampled:fukuchiyama:")&&!expressSqlExample)
+      if(!source.startsWith("official-sampled:fukuchiyama:")&&!scopedExpress)
         return true;
       return Array.isArray(t.operating_dates)&&t.operating_dates.some(
         (date:any)=>String(date).slice(0,10)===serviceDate);
@@ -4390,10 +4390,10 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     if(bySource.size!==expected||(fleet||[]).length!==expected)
       throw new Error("JRWEST_FUKUCHIYAMA_2611_SOURCE_FLEET_UNAVAILABLE");
     const acceptedModels="207系|321系|223系6000番台|225系6000番台";
-    // These four legacy SQL rows were wrongly classified as Local;
-    // maintain compatibility while the old and corrected snapshots deploy.
-    // The 287/289 candidates remain an unconfirmed family only.
-    const expressSourceIds=[68244,68245,68251,68252,68314,68315,68168];
+    // The historical 30xx / seasonal 70xx sources are Kounotori
+    // LimitedExpress FAMILIES, not local/commuter stock.
+    // Timetable stop clocks remain historical and unverified except for
+    // separately validated official November samples below.
     for(const run of result){
       const p:any=bySource.get(Number(run.source_template_id));
       if(!p)continue;
@@ -4410,7 +4410,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
         !Array.isArray(p.candidate_models)||
         p.candidate_models.join("|")!==(
-          expressSourceIds.includes(Number(run.source_template_id)) &&
+          /^(30|70)[0-9]{2}MH?$/.test(String(run.train_number||"")) &&
           run.train_type==="odpt.TrainType:JR-West.LimitedExpress"
             ? "287系|289系" : acceptedModels)||
         !Array.isArray(p.candidate_png_paths)||p.candidate_png_paths.length!==0||
