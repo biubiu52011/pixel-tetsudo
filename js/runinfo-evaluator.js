@@ -146,7 +146,16 @@
       events.some(function(e){return e.phase==="resolved";})?"info":
       events.some(function(e){return e.phase==="planned";})?"notice":"info";
     if(evidence.some(function(e){return e.type==="PUBLICATION_POLICY";})&&!events.length)status="unknown";
-    if(threshold!=null&&!live.some(function(e){return e.effect==="normal"||e.effect==="delay"||e.effect==="suspension"||e.effect==="partial_cancellation";}))status="unknown";
+    // A current official "no delays >= N minutes" statement is positive
+    // evidence that the line is within the *operator's reporting threshold*.
+    // It is not proof of zero delay, so preserve the numeric qualification.
+    // Never replace a concurrent suspension, service change or delay.
+    if(threshold!=null&&has("negative")&&live.every(function(e){
+      return e.effect==="negative"||e.effect==="normal";
+    })){
+      status="normal";
+      evidence.push({type:"OFFICIAL_DELAY_THRESHOLD_CLEAR",minutes:threshold});
+    }
     return {status:status,events:events,evidence:evidence,delayUpperBoundMinutes:threshold};
   }
 

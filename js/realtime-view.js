@@ -93,6 +93,21 @@
     }
     var s = window.DataState && window.DataState.STATUS_META && window.DataState.STATUS_META[status] ? window.DataState.STATUS_META[status] : STATUS_META[status] || STATUS_META.no_data;
     var statusText = t("status." + status) || status;
+    // Reporting-threshold clearance is not a guarantee of zero delay.
+    // Show the official threshold beside the neutral ○ rather than a broad
+    // unqualified "normal" claim.
+    var thresholdMinutes = Number(delayInfo.delayUpperBoundMinutes);
+    if (status === "normal" && delayInfo.delayUpperBoundMinutes != null &&
+        Number.isFinite(thresholdMinutes) && thresholdMinutes > 0) {
+      var language = window.currentLang || "ja";
+      var thresholdLabels = {
+        ja: thresholdMinutes + "分以上の遅延なし",
+        zh: "无" + thresholdMinutes + "分钟及以上延误",
+        ko: thresholdMinutes + "분 이상 지연 없음",
+        en: "No delays of " + thresholdMinutes + "+ min"
+      };
+      statusText = thresholdLabels[language] || thresholdLabels.ja;
+    }
     // A few cancelled trains do not amount to a service suspension.
     // Spell out both effects when the official text reports delays + cancellations.
     var hasPartialCancellation = delayInfo.effect === "partial_cancellation" ||

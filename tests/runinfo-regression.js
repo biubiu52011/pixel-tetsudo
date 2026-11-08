@@ -19,12 +19,32 @@ function parse(body,additional){return ev.evaluate(Object.assign({text:body,curr
  ["partial cancellation notice wording","一部運休しています。","delayed"],
  ["resumption with ongoing cancellation","運転を見合わせていましたが、運転を再開し、現在一部列車に遅れと運休が発生しています。","delayed"],
  ["negative suspension and normal","運転見合わせはありません。通常どおり運転しています。","normal"],
- ["threshold is not normal","１５分以上の遅延はありません。","unknown"],
+ ["threshold clearance is official operating-normal","１５分以上の遅延はありません。","normal"],
+ ["current Toei Asakusa wording","現在、１５分以上の遅延はありません。","normal"],
+ ["threshold claim never suppresses concurrent disruption","現在、１５分以上の遅延はありません。上り線では運転を見合わせています。","suspended"],
+ ["threshold claim never suppresses current train delays","１５分以上の遅延はありません。現在、一部列車に遅れが出ています。","delayed"],
  ["publication policy is not incident","5分以上の遅れが発生した場合には運行情報をお知らせします。","unknown"],
  ["historical normal but current delay","平常どおり運転していましたが、現在は一部列車に遅れが出ています。","delayed"],
  ["through-service interruption","直通運転を中止しています。","notice"],
  ["independent current delay and suspension","立川～高尾駅間で運転を見合わせています。東京～立川駅間では遅れが出ています。","suspended"]
 ].forEach(([name,text,want])=>check(name,()=>assert.equal(parse(text).status,want)));
+check("threshold clearance preserves the official threshold instead of claiming zero delay",()=>{
+  const x=parse("現在、１５分以上の遅延はありません。");
+  assert.equal(x.status,"normal");
+  assert.equal(x.delayUpperBoundMinutes,15);
+  assert.equal(x.maxDelay,null);
+  assert.equal(x.symbol,"○");
+  assert.ok(x.evidence.some(v=>v.type==="OFFICIAL_DELAY_THRESHOLD_CLEAR"&&v.minutes===15));
+});
+check("operator reporting threshold works with other minute values",()=>{
+  const x=parse("現在、５分以上の遅れはありません。");
+  assert.equal(x.status,"normal");
+  assert.equal(x.delayUpperBoundMinutes,5);
+});
+check("explicit suspension remains authoritative despite threshold clearance",()=>{
+  const x=parse("１５分以上の遅延はありません。",{structuredStatus:"Suspension"});
+  assert.equal(x.status,"suspended");
+});
 check("generic structured suspension yields to scoped partial cancellation",()=>{
   const r=parse("一部列車に運休があります。",{structuredStatus:"Suspension"});
   assert.equal(r.status,"delayed");
