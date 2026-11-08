@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const sql=fs.readFileSync('supabase/migrations/20261108233500_fukuchiyama_danbaro_eight_numbers_and_holiday_suspensions.sql','utf8');
 const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+const more=fs.readFileSync('supabase/migrations/20261108234500_fukuchiyama_danbaro_four_more_numbers_calendar.sql','utf8');
 const eight=[2751,2753,2765,2772,2777,2778,2779,2786];
 
 test('eight JR-West 2611 verified Tambaji Rapid numbers correct only 16 historical source variants',()=>{
@@ -44,4 +45,16 @@ test('2779M November 28 partial suspension keeps Osaka-Shinmita but never render
  assert.match(section,/vehicle_plan_confirmed=false/);
  assert.match(section,/vehicle_artwork_path=null/);
  assert.doesNotMatch(section,/timetable_date_verified=true|actual_vehicle_confirmed=true/);
+});
+
+test('2759M daily and 2763M/2764M/2766M weekday-only source classifications match official November references',()=>{
+ for(const id of [68123,68125,68133,68134,68285,68286,68287,68288])
+   assert.ok(more.includes(String(id)),String(id));
+ assert.match(more,/source_template_id IN\(68123,68125,68133,68134,68285,68286,68287,68288\)/);
+ assert.match(more,/train_type_urn='odpt.TrainType:JR-West.Rapid'/);
+ assert.match(more,/WHERE id IN\(68134,68286,68288\)/);
+ assert.match(more,/operating_dates=ARRAY\[\]::date\[\]/);
+ assert.match(more,/source_template_id IN\(68123,68125,68133,68134,68285,68286,68287,68288\)\)<>128/);
+ assert.doesNotMatch(more,/\bINSERT INTO public\.manual_timetable_template_stops\b/);
+ assert.doesNotMatch(more,/\bUPDATE public\.train_timetable_stops\b/);
 });
