@@ -5458,6 +5458,19 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // Mahoroba's 683 series has TWO special 2026 liveries (An'nei/Yukyu).
+    // This library contains generic Thunderbird 683 pictures, but NO
+    // certified Mahoroba image. Preserve the 683 family text and a neutral
+    // marker. A verified physical formation from an independent resolver
+    // remains authoritative; the source-only SQL is never that proof.
+    var mahRef=p&&p.sqlPublishedNumberFleetReference;
+    if(p&&!identityConfirmed&&contextLineId==="OsakaHigashi"&&
+       String(p.positionLineId||p.lineId||"")==="OsakaHigashi"&&
+       mahRef&&mahRef.source===
+         "sql-jrwest-osaka-higashi-2611-mahoroba-two-stop")
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false,candidateModels:["683系"],
+        reason:"mahoroba-683-an-nei-yukyu-livery-not-in-gallery"};
     // Osaka Higashi: 2026 timetable's ordinary and direct-rapid services
     // use the JR-West 221 SERIES. Source-only 2611 train clocks and the
     // calendar suffix H cannot identify a physical N/NA/NB carset.
