@@ -94,6 +94,7 @@
         })();
       }
       this.lastRouteResult = null;
+      this.lastRouteOptions = null;
       this.bindEvents();
       this._updateSwapLabel();
       window.onLanguageChange(() => this.refreshUI());
@@ -134,7 +135,9 @@
         }
       }
       // 如果已执行过搜索，则重新渲染路径结果。
-      if (this.lastRouteResult && this.resultsDiv && this.resultsDiv.innerHTML.trim() !== '') {
+      if (this.lastRouteOptions && this.resultsDiv && this.resultsDiv.innerHTML.trim() !== '') {
+        this.renderRouteOptionList(this.lastRouteOptions, t, this._renderGeneration);
+      } else if (this.lastRouteResult && this.resultsDiv && this.resultsDiv.innerHTML.trim() !== '') {
         this.renderResults(this.lastRouteResult, t);
       }
     },
@@ -144,6 +147,7 @@
       // UI invalidation only: a changed form must not display an older route.
       this._renderGeneration = (this._renderGeneration || 0) + 1;
       this.lastRouteResult = null;
+      this.lastRouteOptions = null;
       if (this.resultsDiv) this.resultsDiv.replaceChildren();
     },
 
@@ -345,6 +349,7 @@
 
       this._renderGeneration = (this._renderGeneration || 0) + 1;
       this.lastRouteResult = null;
+      this.lastRouteOptions = null;
       var timeOptions = {
         mode: this.timeMode ? this.timeMode.value : 'now',
         time: this.timeInput ? this.timeInput.value : '',
@@ -377,30 +382,148 @@
         this.resultsDiv.innerHTML = '<div class="rs-loading" role="status"><div class="rs-loading-spinner" aria-hidden="true"></div><span>' + window.escapeHtml(t('status.loading')) + '</span></div>';
       }
 
-      this.currentMode = this.currentMode || 'combo';
-      let result = null;
-      if (window.RouteSearch) {
-        result = window.RouteSearch.findRoute(from, to, this.currentMode);
-        if (this.resultsDiv) {
-          if (result) {
-            result.timeOptions=timeOptions;
-            this.renderResults(result, t);
-            this.lastRouteResult = result;
-            // 将已完成的搜索持久化到 History（History 通过 SearchUI
-            // 公共 API 消费输出；history.js 中旧的 monkey-patch
-            // 包装构造属性但从未触发）。
-            if (window.SearchHistory && window.SearchHistory.saveToHistory) {
-              window.SearchHistory.saveToHistory(from, to, result);
-            }
-          } else {
-            this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' + window.escapeHtml(t('search.no_results')) + '</div>';
-          }
+      this.currentMode=this.currentMode||'combo';
+      var result=null;
+      if(window.RouteSearch) {
+        var options=window.RouteSearch.findRouteCandidates?
+          window.RouteSearch.findRouteCandidates(from,to,this.currentMode,8):[];
+        if(!options.length) {
+          result=window.RouteSearch.findRoute(from,to,this.currentMode);
+          if(result)options=[result];
+        } else result=options[0];
+        if(result) {
+          options.forEach(function(r){r.timeOptions=timeOptions;});
+          this.loadRouteOptions(options,t,timeOptions,this._renderGeneration);
+          if(window.SearchHistory && window.SearchHistory.saveToHistory)
+            window.SearchHistory.saveToHistory(from,to,result);
+        } else if(this.resultsDiv) {
+          this.resultsDiv.innerHTML='<div class="search-error" role="alert">'+
+            window.escapeHtml(t('search.no_results'))+'</div>';
         }
-      } else if (this.resultsDiv) {
-        this.resultsDiv.innerHTML = '<div class="search-error" role="alert">' +
-          window.escapeHtml(t('search.search_unavailable')) + '</div>';
+      } else if(this.resultsDiv) {
+        this.resultsDiv.innerHTML='<div class="search-error" role="alert">'+
+          window.escapeHtml(t('search.search_unavailable'))+'</div>';
       }
       return result;
+    },
+
+
+    loadRouteOptions: function(candidates,t,timeOptions,generation) {
+      var self=this;
+      if(!this.resultsDiv)return Promise.resolve([]);
+      var service=window.RouteTimetable;
+      // A route is not a verified journey until its own train sequence matches.
+      return Promise.all(candidates.map(function(route){
+        if(!service||!service.enrichSegments)
+          return Promise.resolve({route:route,schedule:{complete:false,reason:'no-source'}});
+        return Promise.resolve().then(function(){
+          return service.enrichSegments(route.routeSegments,timeOptions);
+        }).then(function(res){
+          return {route:route,schedule:res||{complete:false}};
+        }).catch(function(){
+          return {route:route,schedule:{complete:false,reason:'source-error'}};
+        });
+      })).then(function(entries){
+        if(generation!==self._renderGeneration)return [];
+        function transfers(entry) {
+          var connections=entry.schedule&&entry.schedule.connections||{};
+          return entry.route.routeSegments.filter(function(seg,i){
+            return seg.type==='transfer' && !(connections[i]?connections[i].through:seg.through);
+          }).length;
+        }
+        function minutes(clock) {
+          var m=String(clock||'').match(/^(\d{1,2}):(\d{2})$/);
+          return m?Number(m[1])*60+Number(m[2]):0;
+        }
+        var mode=self.currentMode,arrive=timeOptions.mode==='arrive';
+        entries.forEach(function(e,i){e._originalRank=i;});
+        entries.sort(function(a,b){
+          var av=!!a.schedule.complete,bv=!!b.schedule.complete;
+          if(av!==bv)return av?-1:1;
+          var at=transfers(a),bt=transfers(b);
+          if(mode==='transfers'&&at!==bt)return at-bt;
+          if(av&&bv){
+            var aa=a.schedule,bb=b.schedule;
+            var ac=arrive?-minutes(aa.departure):minutes(aa.arrival);
+            var bc=arrive?-minutes(bb.departure):minutes(bb.arrival);
+            if(mode==='combo'){ac+=at*5;bc+=bt*5;}
+            if(ac!==bc)return ac-bc;
+            if(aa.durationMin!==bb.durationMin)return aa.durationMin-bb.durationMin;
+          } else {
+            // Static estimates only rank unconfirmed options; never display
+            // those minutes as if they came from an operating timetable.
+            var ad=Number(a.route.durationMin)||0,bd=Number(b.route.durationMin)||0;
+            if(ad!==bd)return ad-bd;
+          }
+          return at-bt||a._originalRank-b._originalRank;
+        });
+        var visible=entries.slice(0,5);
+        self.lastRouteOptions=visible;
+        self.lastRouteResult=visible[0]&&visible[0].route||null;
+        self.renderRouteOptionList(visible,t,generation);
+        return visible;
+      }).catch(function(){
+        if(generation===self._renderGeneration && self.resultsDiv)
+          self.resultsDiv.innerHTML='<div class="search-error" role="alert">'+
+            window.escapeHtml(t('search.schedule_missing'))+'</div>';
+        return [];
+      });
+    },
+
+    renderRouteOptionList: function(entries,t,generation) {
+      if(!this.resultsDiv||generation!==this._renderGeneration)return;
+      var self=this,mode=this.currentMode,container=this.resultsDiv;
+      container.replaceChildren();
+      var toolbar=document.createElement('div');
+      toolbar.className='journey-options-toolbar';
+      toolbar.innerHTML='<div class="journey-mode-label">'+window.escapeHtml(t('search.mode_group'))+'</div>'+
+        '<div class="journey-modes" role="group" aria-label="'+window.escapeHtml(t('search.mode_group'))+'">'+
+        [['combo',t('search.mode.combo')],['duration',t('search.mode.duration')],['transfers',t('search.mode.transfers')]]
+        .map(function(pair){return '<button type="button" class="mode-tab'+
+          (pair[0]===mode?' active':'')+'" aria-pressed="'+(pair[0]===mode?'true':'false')+
+          '" data-mode="'+pair[0]+'">'+window.escapeHtml(pair[1])+'</button>';}).join('')+'</div>';
+      container.appendChild(toolbar);
+      toolbar.querySelectorAll('[data-mode]').forEach(function(button){
+        button.addEventListener('click',function(){
+          var choice=this.getAttribute('data-mode');
+          if(choice===self.currentMode)return;
+          self.currentMode=choice;
+          self.performSearch();
+        });
+      });
+      var labels={ja:['経路','件の候補','時刻表一致','時刻未確認'],
+        zh:['方案','个候选','班次已匹配','班次未确认'],
+        en:['Route','options','Timetable matched','Timetable unconfirmed'],
+        ko:['경로','개 후보','시간표 확인','시간표 미확인']}[window.currentLang]||
+        ['Route','options','Timetable matched','Timetable unconfirmed'];
+      var count=document.createElement('p');
+      count.className='journey-options-count';
+      count.textContent=entries.length+' '+labels[1];
+      container.appendChild(count);
+      var list=document.createElement('div');
+      list.className='journey-options-list';
+      container.appendChild(list);
+      entries.forEach(function(entry,i){
+        var item=document.createElement('section');
+        item.className='journey-option-item';
+        var title=document.createElement('div');
+        title.className='journey-option-heading';
+        var name=document.createElement('strong');
+        name.textContent=labels[0]+' '+(i+1);
+        var status=document.createElement('span');
+        var verified=!!entry.schedule.complete;
+        status.className='journey-option-status'+(verified?' is-matched':'');
+        status.textContent=verified?labels[2]:labels[3];
+        title.appendChild(name);
+        title.appendChild(status);
+        item.appendChild(title);
+        var mount=document.createElement('div');
+        mount.className='journey-option-mount';
+        item.appendChild(mount);
+        list.appendChild(item);
+        // Scope DOM updates to the corresponding journey card only.
+        self.renderResults(entry.route,t,entry.schedule,mount,true);
+      });
     },
 
     getRouteRealtime: function(result) {
@@ -436,9 +559,10 @@
       return '<span class="journey-line-name-fallback">' + window.escapeHtml(nm) + _platChip + '</span>';
     },
 
-    renderResults: function(result, t) {
-      if (!this.resultsDiv) return;
-      var renderGeneration=this._renderGeneration=(this._renderGeneration || 0)+1;
+    renderResults: function(result,t,precomputedSchedule,mount,compact) {
+      var view=mount||view;
+      if(!view)return;
+      var renderGeneration=this._renderGeneration||0;
       var lang = window.currentLang || 'ja';
       var dur = result.durationMin || 0;
       var transfers = 0;
@@ -449,6 +573,7 @@
       var dest = window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(result.path[result.path.length - 1], lang) : (result.path[result.path.length - 1] || '');
 
       var html = '<div class="search-result journey-card">';
+      if(!compact){
       html += '<div class="journey-mode-area">';
       html += '<div class="journey-mode-label">' + window.escapeHtml(t('search.mode_group')) + '</div>';
       // Switch search criterion; the route engine currently returns one path, not a candidate list.
@@ -461,6 +586,7 @@
           '" data-mode="' + _modes[_mi][0] + '">' + window.escapeHtml(_modes[_mi][1]) + '</button>';
       }
       html += '</div></div>';
+      }
       html += '<div class="journey-overview">';
       html += '<div class="journey-summary-route"><span>' + window.escapeHtml(origin) +
         '</span><span class="journey-summary-arrow" aria-hidden="true">→</span><span>' +
@@ -569,33 +695,33 @@
       var destStation = result.path[result.path.length - 1];
       var spotsHtml = '';
       if (destStation && typeof this.renderNearbySpots === 'function') { spotsHtml = this.renderNearbySpots(destStation, t); }
-      this.resultsDiv.innerHTML = html;
+      view.innerHTML = html;
       // 通过 DOM API 应用行程区间边框颜色（符合 CSP；style-src 'self' 会阻止内联 style 属性）。
-      this.resultsDiv.querySelectorAll('.journey-seg').forEach(function(seg) {
+      view.querySelectorAll('.journey-seg').forEach(function(seg) {
         var color = seg.getAttribute('data-seg-color');
         if (color) {
           seg.style.setProperty('border-left-color', color);
           seg.style.setProperty('--journey-line-color', color);
         }
       });
-      if (spotsHtml) { this.resultsDiv.insertAdjacentHTML('beforeend', spotsHtml); }
+      if (spotsHtml) { view.insertAdjacentHTML('beforeend', spotsHtml); }
       // 発着時刻推算（异步回填）——ODPT 时刻表/手动表查询完成后把 "14:05発 14:12着"
       // 注入各乗車段右侧（数据未就绪时不阻塞首屏，查询失败静默降级为无时刻展示）
       if (window.RouteTimetable && result.routeSegments) {
         var _rtSelf = this;
-        var _precomputedSchedule = arguments.length >= 3 ? arguments[2] : null;
+        var _precomputedSchedule=precomputedSchedule||null;
         var _schedulePromise = _precomputedSchedule ?
           Promise.resolve(_precomputedSchedule) :
           window.RouteTimetable.enrichSegments(result.routeSegments, result.timeOptions);
         _schedulePromise.then(function(res) {
-          if (!_rtSelf.resultsDiv || renderGeneration!==_rtSelf._renderGeneration) return;
-          var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
+          if (!view || renderGeneration!==_rtSelf._renderGeneration) return;
+          var notice=view.querySelector('.journey-schedule');
           if(notice) {
             notice.textContent=res && res.complete ? res.serviceDate+' · '+t('search.schedule_summary').replace('{d}',res.departure).replace('{a}',res.arrival).replace('{m}',res.durationMin)+' · '+t('search.schedule_note') : t('search.schedule_missing');
             notice.dataset.scheduleStatus = res && res.complete ? 'matched' : 'unconfirmed';
           }
           if(res && res.complete) {
-            var duration=_rtSelf.resultsDiv.querySelector('.journey-duration');
+            var duration=view.querySelector('.journey-duration');
             if(duration) {
               duration.textContent=res.durationMin+' '+t('search.min_unit');
               duration.dataset.timeStatus='matched';
@@ -606,8 +732,8 @@
           for (var _ridx in _times) {
             if (!res || !res.complete || !_times[_ridx]) continue;
             var _tm = _times[_ridx];
-            var _depCell = _rtSelf.resultsDiv.querySelector('[data-seg-dep-time="' + _ridx + '"]');
-            var _arrCell = _rtSelf.resultsDiv.querySelector('[data-seg-arr-time="' + _ridx + '"]');
+            var _depCell = view.querySelector('[data-seg-dep-time="' + _ridx + '"]');
+            var _arrCell = view.querySelector('[data-seg-arr-time="' + _ridx + '"]');
             if (_depCell && _tm.dep) {
               _depCell.textContent = _tm.dep;
               _depCell.dataset.timeConfirmed = 'true';
@@ -619,14 +745,14 @@
                 '≈' + _tm.arr : _tm.arr;
               _arrCell.dataset.timeConfirmed = _tm.arrivalClockConfirmed === false ? 'false' : 'true';
             }
-            var _arrivalPlatformCell = _rtSelf.resultsDiv.querySelector('[data-seg-arr-platform="' + _ridx + '"]');
+            var _arrivalPlatformCell = view.querySelector('[data-seg-arr-platform="' + _ridx + '"]');
             if (_arrivalPlatformCell && _tm.arrivalPlatform) {
               _arrivalPlatformCell.textContent = window.escapeHtml(t('search.platform').replace('{p}', _tm.arrivalPlatform));
               _arrivalPlatformCell.hidden = false;
             }
             // The platform is supplementary to the train segment, not a time label.
-            var _slot = _rtSelf.resultsDiv.querySelector('[data-seg-times="' + _ridx + '"]');
-            var _meta = _rtSelf.resultsDiv.querySelector('[data-seg-meta="' + _ridx + '"]');
+            var _slot = view.querySelector('[data-seg-times="' + _ridx + '"]');
+            var _meta = view.querySelector('[data-seg-meta="' + _ridx + '"]');
             if (_slot && _meta) {
               var _parts = [];
               if (_tm.train) _parts.push('<span class="journey-seg-train-number">' +
@@ -642,7 +768,7 @@
             }
             // A train's actual type overrides the static line-wide badge.
             // For example, JA Local 759K must not be displayed as Rapid.
-            var _typeCell = _rtSelf.resultsDiv.querySelector('[data-seg-type="' + _ridx + '"]');
+            var _typeCell = view.querySelector('[data-seg-type="' + _ridx + '"]');
             if (_typeCell && _tm.trainType) {
               var _typeName = String(_tm.trainType).split('.').pop();
               var _typeKey = {
@@ -660,7 +786,7 @@
           Object.keys(_connections).forEach(function(_txIdx) {
             var _c = _connections[_txIdx];
             if (!_c || _c.through) return;
-            var _card = _rtSelf.resultsDiv.querySelector('[data-tx-idx="' + _txIdx + '"]');
+            var _card = view.querySelector('[data-tx-idx="' + _txIdx + '"]');
             var _change = _card && _card.querySelector('.journey-platform-change');
             if (!_change) return;
             [['arrival',_c.arrivalPlatform],['departure',_c.departurePlatform]].forEach(function(entry) {
@@ -678,7 +804,7 @@
           // 直通降级：ODPT 分表无贯通车次时，"乗換不要"改回换乘文案并去除直通样式（避免误导）
           var _dg = (res && res.downgrade) || [];
           for (var _d2 = 0; _d2 < _dg.length; _d2++) {
-            var _tr = _rtSelf.resultsDiv.querySelector('[data-tx-idx="' + _dg[_d2] + '"]');
+            var _tr = view.querySelector('[data-tx-idx="' + _dg[_d2] + '"]');
             if (!_tr) continue;
             _tr.classList.remove('journey-transfer--through');
             var _txt = _tr.querySelector('.journey-transfer-text');
@@ -691,13 +817,13 @@
             if (slots) slots.hidden = false;
           }
           if (_dg.length) {
-            var txCount = _rtSelf.resultsDiv.querySelector('.journey-transfers');
+            var txCount = view.querySelector('.journey-transfers');
             if (txCount) txCount.textContent = (transfers + _dg.length) + ' ' + t('search_result.transfer_count');
           }
           // Static best path may have no trains on the selected date.
           // Look for alternate valid itineraries; do not invent platform/time
           // data or label an unverified route as a booked connection.
-          if ((!res || !res.complete) && !_precomputedSchedule &&
+          if ((!res || !res.complete) && !_precomputedSchedule && !compact &&
               window.RouteSearch && window.RouteSearch.findRouteCandidates) {
             var alternatives=window.RouteSearch.findRouteCandidates(
               result.path[0],result.path[result.path.length-1],
@@ -737,14 +863,14 @@
           }
         }).catch(function(){
           if(renderGeneration===_rtSelf._renderGeneration){
-            var notice=_rtSelf.resultsDiv.querySelector('.journey-schedule');
+            var notice=view.querySelector('.journey-schedule');
             if(notice) { notice.textContent=t('search.schedule_missing');notice.dataset.scheduleStatus='unconfirmed'; }
           }
         });
       }
       // 模式标签切换：使用新模式重新搜索（在 innerHTML 提交后绑定）。
       var _self = this;
-      var _modeTabs = this.resultsDiv ? this.resultsDiv.querySelectorAll('.mode-tab') : [];
+      var _modeTabs = !compact && view ? view.querySelectorAll('.mode-tab') : [];
       for (var _ti = 0; _ti < _modeTabs.length; _ti++) {
         _modeTabs[_ti].addEventListener('click', function() {
           _self.currentMode = this.getAttribute('data-mode');

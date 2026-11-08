@@ -259,3 +259,32 @@ test('03:00 JST now-mode continues to the next morning after the previous day ha
   assert.equal(result.nextServiceMorning,true);
   assert.deepEqual(requests,['2026-11-08','2026-11-09']);
 });
+
+
+test('all route modes return several distinct alternatives',()=>{
+  const data=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
+  const lines=data.lines;
+  const window={UNIFIED_LINES:lines,STATION_COORDS:data.stations,
+    LINE_STATION_ORDER:data.lineStationOrder,RuntimeConfig:{TRUNK_MAIN_LINE_IDS:[]},
+    RailwayDB:{getAllLines:()=>lines,getLine:id=>lines[id],
+      getLineDurations:id=>lines[id]?.durations||[],getData:()=>({line_types:data.line_types})}};
+  vm.runInContext(fs.readFileSync('js/route-search.js','utf8'),
+    vm.createContext({window,console}),{filename:'js/route-search.js'});
+  for(const mode of ['combo','duration','transfers']){
+    const routes=window.RouteSearch.findRouteCandidates('Shinjuku','Ikebukuro',mode,8);
+    const names=routes.map(r=>r.routeSegments.map(s=>s.type==='ride'?s.lineId:'tx:'+s.station).join('|'));
+    assert.ok(names.length>=3,mode+': expected alternatives');
+    assert.equal(new Set(names).size,names.length,mode+': no duplicates');
+    assert.ok(names.includes('SaikyoKawagoe')&&names.includes('Yamanote'));
+  }
+});
+test('per-itinerary UI keeps independent schedule and platform slots',()=>{
+  const ui=fs.readFileSync('js/search-ui.js','utf8');
+  assert.match(ui,/loadRouteOptions: function/);
+  assert.match(ui,/renderRouteOptionList: function/);
+  assert.match(ui,/var view=mount\|\|this\.resultsDiv/);
+  assert.match(ui,/self\.renderResults\(entry\.route,t,entry\.schedule,mount,true\)/);
+  assert.match(ui,/view\.querySelector\('\[data-seg-arr-time=/);
+  assert.match(ui,/view\.querySelector\('\[data-seg-meta=/);
+  assert.match(ui,/entry\.schedule\.complete/);
+});

@@ -754,3 +754,15 @@ body[data-page="home"] #searchContainer .journey-seg:not(:has(.journey-seg-stop)
   body[data-page="home"] #searchContainer .journey-seg-stop-time {font-size:18px;}
   body[data-page="home"] #searchContainer .journey-details .journey-seg-name {font-size:14px;}
 }
+
+/* Multi-itinerary route search; shared three-mode toolbar, scoped cards. */
+body[data-page="home"] #searchContainer .journey-options-toolbar{padding:10px 8px 8px;margin-bottom:12px;background:var(--card);border:2px solid var(--border);border-radius:var(--radius);}
+body[data-page="home"] #searchContainer .journey-options-toolbar>.journey-mode-label{font-size:12px;font-weight:700;padding:2px 12px 5px;}
+body[data-page="home"] #searchContainer .journey-options-toolbar .journey-modes{display:flex;flex-wrap:wrap;gap:6px;padding:4px;border:0;background:transparent;}
+body[data-page="home"] #searchContainer .journey-options-count{font-size:12px;color:var(--text-muted);margin:0 0 9px 2px;}
+body[data-page="home"] #searchContainer .journey-options-list{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;}
+body[data-page="home"] #searchContainer .journey-option-item{min-width:0;overflow:hidden;border-radius:var(--radius);}
+body[data-page="home"] #searchContainer .journey-option-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;font-size:13px;background:var(--bg3);border:2px solid var(--border);border-bottom:0;}
+body[data-page="home"] #searchContainer .journey-option-status{font-size:11px;font-weight:500;color:var(--text-muted);text-align:right;}
+body[data-page="home"] #searchContainer .journey-option-status.is-matched{font-weight:700;color:var(--green-dim);}
+body[data-page="home"] #searchContainer .journey-option-mount .journey-card{border-top-left-radius:0;border-top-right-radius:0;}
