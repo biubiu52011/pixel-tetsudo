@@ -34,6 +34,7 @@ INSERT INTO public.manual_timetable_templates(
  id,line_key,calendar_urn,train_number,railway_urn,
  direction_urn,train_type_urn,destination_urns,vehicle_type_label,
  source_path,source_occurrence,source_revision_date,revision_id,operating_dates)
+OVERRIDING SYSTEM VALUE
 SELECT id,'Fukuchiyama',calendar,number,'odpt.Railway:JR-West.Fukuchiyama',
  'odpt.RailDirection:Inbound','odpt.TrainType:JR-West.Local',
  ARRAY['odpt.Station:JR-West.Fukuchiyama.Shinoyamaguchi']::text[],
