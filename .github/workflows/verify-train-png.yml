@@ -49,6 +49,8 @@ on:
       - 'tests/jrwest-kyoto-kobe-2611-source-fleet.test.cjs'
       - 'tests/kosei-2611-source-fleet.test.cjs'
       - 'tests/jrwest-kosei-2611-verified-clocks-through.test.cjs'
+      - 'tests/fukuchiyama-2611-fleet-reference.test.cjs'
+      - 'supabase/migrations/20261108173500_jrwest_fukuchiyama_2611_historical_source_fleet_reference.sql'
       - 'supabase/migrations/20261107110000_jrwest_kosei_verified_clock_and_through_number_evidence.sql'
       - 'supabase/functions/train-runs/index.ts'
       - 'tests/kabe-2611-redwing-number-scope.test.cjs'
@@ -157,6 +159,8 @@ jobs:
           node --check data/timetables/jreast-kitakami-2611-number-index.js
           node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
+      - name: Verify JR Takarazuka historical fleet references (unconfirmed, no PNG)
+        run: node --test tests/fukuchiyama-2611-fleet-reference.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
