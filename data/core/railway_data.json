@@ -11317,12 +11317,12 @@
       "lng": 134.934699
     },
     "Takino": {
-      "lat": 34.825395,
-      "lng": 134.522074
+      "lat": 34.9411467,
+      "lng": 134.9553627
     },
     "Taki": {
-      "lat": 34.85,
-      "lng": 134.95
+      "lat": 34.948737,
+      "lng": 134.9623568
     },
     "Nishiwaki-Shi": {
       "lat": 34.972016,
@@ -14675,6 +14675,10 @@
     "Araki-Fukuoka": {
       "lat": 33.2766777,
       "lng": 130.5026769
+    },
+    "Taki-Tochigi": {
+      "lat": 36.6487217,
+      "lng": 140.1382081
     }
   },
   "lines": {
@@ -28945,7 +28949,7 @@
         "Konoyama",
         "Ogane",
         "Kobana",
-        "Taki",
+        "Taki-Tochigi",
         "Karasuyama"
       ],
       "durations": [
@@ -54954,7 +54958,6 @@
       "Karasuyama"
     ],
     "Taki": [
-      "Karasuyama",
       "KakogawaLine"
     ],
     "Hoshakuji": [
@@ -63592,6 +63595,9 @@
     "Araki-Fukuoka": [
       "KagoshimaMain",
       "KagoshimaMainJB"
+    ],
+    "Taki-Tochigi": [
+      "Karasuyama"
     ]
   },
   "lineStationOrder": {
@@ -65108,8 +65114,8 @@
       "Konoyama": 3,
       "Ogane": 4,
       "Kobana": 5,
-      "Taki": 6,
-      "Karasuyama": 7
+      "Karasuyama": 7,
+      "Taki-Tochigi": 6
     },
     "Kashima": {
       "Sawara": 0,
