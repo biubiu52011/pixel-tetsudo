@@ -40,7 +40,7 @@ test('reused northern express samples preserve the four southern calls and add t
 test('API keeps old historical proof working before migration, verifies only November 2026 express segment after',()=>{
  assert.match(edge,/The historical 30xx \/ seasonal 70xx sources are Kounotori/);
  assert.match(edge,/\? "287系\|289系" : acceptedModels/);
- assert.match(edge,/const scopedExpress= \/\^\(30\|70\)/);
+ assert.match(edge,/const dated=Array\.isArray\(t\.operating_dates\)/);
  const start=edge.indexOf('// Kounotori 8/10:');
  const end=edge.indexOf('// Incomplete source rows are preserved',start);
  assert.ok(start>=0&&end>start);
