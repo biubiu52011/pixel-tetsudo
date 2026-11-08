@@ -59,6 +59,27 @@
       .replace(/[īĪ]/g, 'i'); // ī Ī
   }
 
+  function _addCandidate(index, label, stationId) {
+    if (!label || !stationId) return;
+    if (!index[label]) index[label] = [];
+    if (index[label].indexOf(stationId) < 0) index[label].push(stationId);
+  }
+
+  function _matches(ids, displayName, status) {
+    var unique = Array.from(new Set(ids || []));
+    return unique.map(function(stationId) {
+      return {stationId:stationId, displayName:displayName,
+        status:unique.length > 1 ? "AMBIGUOUS" : status};
+    });
+  }
+
+  function invalidate() {
+    _lineStationIds = null;
+    _jpToEn = {}; _enToJp = {};
+    _enToCanon = {}; _jpToCanon = {};
+    _zhToCanon = {}; _koToCanon = {};
+  }
+
   function _buildIndex() {
     if (_lineStationIds !== null) return;
     _lineStationIds = new Set();
@@ -79,18 +100,16 @@
           // Reverse index: official ja display name -> canonical id (overrides broken name_map targets)
           if (window.RailwayDB && window.RailwayDB.resolveStationName) {
             var _ja = window.RailwayDB.resolveStationName(_sid, 'ja');
-            if (_ja && _ja !== _sid && !_jpToCanon[_ja]) _jpToCanon[_ja] = _sid;
+            if (_ja && _ja !== _sid) _addCandidate(_jpToCanon, _ja, _sid);
           }
           // Chinese / Korean / English reverse index from i18n
           // (station-i18n.file.js → window.RAILWAY_I18N; zh 简体 / ko ハングル / en 表示名)
           var entry = i18n[_sid];
           if (entry) {
-            if (entry.zh && !_zhToCanon[entry.zh]) _zhToCanon[entry.zh] = _sid;
-            if (entry.ko && !_koToCanon[entry.ko]) _koToCanon[entry.ko] = _sid;
-            if (entry.en) {
-              var _enKey = _asciiLower(entry.en);
-              if (!_enToCanon[_enKey]) _enToCanon[_enKey] = _sid;
-            }
+            _addCandidate(_jpToCanon, entry.ja, _sid);
+            _addCandidate(_zhToCanon, entry.zh, _sid);
+            _addCandidate(_koToCanon, entry.ko, _sid);
+            if (entry.en) _addCandidate(_enToCanon, _asciiLower(entry.en), _sid);
           }
         }
       }
@@ -124,7 +143,7 @@
       // Official ja display name reverse lookup first: bypasses broken name_map targets
       // (e.g. 新橋 name_map->"Shinbashi" while the real station is Shimbashi; 北千住->Kitasenju vs Kita-Senju)
       if (_jpToCanon[q]) {
-        return [{ stationId: _jpToCanon[q], displayName: q, status: "EXACT" }];
+        return _matches(_jpToCanon[q], q, "EXACT");
       }
       if (_jpToEn[q]) {
         var normJp = _normalizeId(_jpToEn[q]);
@@ -134,10 +153,10 @@
       // but name_map keys are in Japanese kanji (東京 not 东京).
       // Check zh/ko reverse indexes from i18n before falling through to fuzzy match.
       if (_zhToCanon[q]) {
-        return [{ stationId: _zhToCanon[q], displayName: q, status: "EXACT" }];
+        return _matches(_zhToCanon[q], q, "EXACT");
       }
       if (_koToCanon[q]) {
-        return [{ stationId: _koToCanon[q], displayName: q, status: "EXACT" }];
+        return _matches(_koToCanon[q], q, "EXACT");
       }
       var jpMatches = [];
       var _seen = {};
@@ -149,7 +168,9 @@
       }
       for (var jaKey in _jpToCanon) {
         if (jaKey.indexOf(q) !== -1) {
-          if (!_seen[_jpToCanon[jaKey]]) { _seen[_jpToCanon[jaKey]] = 1; jpMatches.push({ stationId: _jpToCanon[jaKey], displayName: jaKey, status: "ALIAS" }); }
+          _jpToCanon[jaKey].forEach(function(_jid) {
+            if (!_seen[_jid]) { _seen[_jid] = 1; jpMatches.push({ stationId: _jid, displayName: jaKey, status: "ALIAS" }); }
+          });
         }
       }
       // Chinese / Korean fuzzy match: query is simplified Chinese or Hangul,
@@ -157,14 +178,16 @@
       // Search through zh/ko reverse indexes for substring matches.
       for (var zhKey in _zhToCanon) {
         if (zhKey.indexOf(q) !== -1) {
-          var _cid = _zhToCanon[zhKey];
-          if (!_seen[_cid]) { _seen[_cid] = 1; jpMatches.push({ stationId: _cid, displayName: zhKey, status: "ALIAS" }); }
+          _zhToCanon[zhKey].forEach(function(_cid) {
+            if (!_seen[_cid]) { _seen[_cid] = 1; jpMatches.push({ stationId: _cid, displayName: zhKey, status: "ALIAS" }); }
+          });
         }
       }
       for (var koKey in _koToCanon) {
         if (koKey.indexOf(q) !== -1) {
-          var _kid = _koToCanon[koKey];
-          if (!_seen[_kid]) { _seen[_kid] = 1; jpMatches.push({ stationId: _kid, displayName: koKey, status: "ALIAS" }); }
+          _koToCanon[koKey].forEach(function(_kid) {
+            if (!_seen[_kid]) { _seen[_kid] = 1; jpMatches.push({ stationId: _kid, displayName: koKey, status: "ALIAS" }); }
+          });
         }
       }
       if (jpMatches.length > 0) return jpMatches;
@@ -183,12 +206,13 @@
 
     var _arr = Array.from(_lineStationIds);
     var _qAscii = _asciiLower(q);
-    // Exact match over canonical IDs with case/accent normalization
+    // Free text is not an authoritative station ID. Include all matching
+    // translated labels even if the query also equals one canonical key.
+    var _englishExact = (_enToCanon[_qAscii] || []).slice();
     for (var _i = 0; _i < _arr.length; _i++) {
-      if (_asciiLower(_arr[_i]) === _qAscii) {
-        return [{ stationId: _arr[_i], displayName: _arr[_i], status: "EXACT" }];
-      }
+      if (_asciiLower(_arr[_i]) === _qAscii) _englishExact.push(_arr[_i]);
     }
+    if (_englishExact.length) return _matches(_englishExact, q, "EXACT");
     if (_enToJp[qLower]) {
       var jk = _enToJp[qLower];
       var jid = _normalizeId(_jpToEn[jk] || qLower);
@@ -196,19 +220,18 @@
     }
     // English display name reverse lookup from i18n (Kitasenju -> Kita-Senju,
     // Toride -> Toride, ...) — covers en names not present in name_map.
-    if (_enToCanon[qLower]) {
-      return [{ stationId: _enToCanon[qLower], displayName: q, status: "EXACT" }];
-    }
     // Korean input fallback (Hangul doesn't match Japanese regex)
     if (_hasKorean(q)) {
       if (_koToCanon[q]) {
-        return [{ stationId: _koToCanon[q], displayName: q, status: "EXACT" }];
+        return _matches(_koToCanon[q], q, "EXACT");
       }
       // Korean fuzzy match
       var koPartial = [];
       for (var koKey in _koToCanon) {
         if (koKey.indexOf(q) !== -1) {
-          koPartial.push({ stationId: _koToCanon[koKey], displayName: koKey, status: "ALIAS" });
+          _koToCanon[koKey].forEach(function(_kid) {
+            koPartial.push({ stationId: _kid, displayName: koKey, status: "ALIAS" });
+          });
         }
       }
       if (koPartial.length > 0) return koPartial;
@@ -245,7 +268,8 @@
   window.StationResolver = {
     resolve: resolve,
     findStationIds: findStationIds,
-    isKnownStation: isKnownStation
+    isKnownStation: isKnownStation,
+    invalidate: invalidate
   };
 
 })();
