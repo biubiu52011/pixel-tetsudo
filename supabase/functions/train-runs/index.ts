@@ -4793,6 +4793,30 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // Never extrapolate a missing stop or report full coverage for a partial set.
   // At least two observed station clocks are required for estimating a
   // moving train. An untimed boundary stop must never become a made-up ETA.
+  // Source-owned recurring-date exceptions. The legacy service_exceptions
+  // table is deliberately disabled; do not reactivate it for any railway.
+  // Keep the cancelled itinerary/number for diagnostics, but the existing
+  // ODPT adapter refuses to turn operation_status=cancelled into a position.
+  const {data: datedTrainExceptions,error: dateExceptionError}=await db
+    .from("published_railway_date_exceptions")
+    .select("train_number,operation_status,segment_from,segment_to,source_id")
+    .eq("line_key",lineId).eq("service_date",serviceDate);
+  if(dateExceptionError)throw dateExceptionError;
+  const excludedByNumber=new Map<string,any>();
+  for(const row of datedTrainExceptions||[]){
+    if(row.operation_status!=="cancelled"||!row.train_number||!row.source_id||
+       excludedByNumber.has(row.train_number))
+      throw new Error("INVALID_DATED_RAILWAY_EXCEPTION");
+    excludedByNumber.set(row.train_number,row);
+  }
+  for(const run of result){
+    const exception=excludedByNumber.get(String(run.train_number||""));
+    if(!exception)continue;
+    run.operation_status="cancelled";
+    run.operation_evidence_source_id=exception.source_id;
+    run.cancelled_segment_from=exception.segment_from;
+    run.cancelled_segment_to=exception.segment_to;
+  }
   const validRuns = result.filter(r => r.stops.length >= 2 &&
     r.stops.every(s => !!s.station_urn) &&
     r.stops.filter(s => s.arrival_time || s.departure_time).length >= 2);
