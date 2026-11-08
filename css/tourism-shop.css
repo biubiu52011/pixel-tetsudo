@@ -92,7 +92,7 @@
 .article-content--shop .dp-access-value .qi-main { font-weight: 700; }
 .article-content--shop .dp-access-value .qi-sub { color: var(--text-muted); font-size: 12px; }
 
-/* 3. Recommendations: compact text rows for no-photo items, true photos only in carousels. */
+/* 3. Recommendations: photo-only carousel, text-only rows, ordered mixed-media list. */
 .article-content--shop .dp-sec-title {
   margin: 0 0 12px; color: var(--text);
   font-size: 17px; font-weight: 800; line-height: 1.5;
@@ -145,6 +145,33 @@
   font-size: 12px; line-height: 1.4; text-decoration: underline; text-underline-offset: 2px;
 }
 .article-content--shop .dp-menu-list, .dp-menu-modal .dp-menu-list { display: flex; flex-direction: column; min-width: 0; }
+/* Keep photos and text in one ordered list when a menu mixes both. */
+.article-content--shop .dp-menu-mixed, .dp-menu-modal .dp-menu-mixed {
+  display: flex; flex-direction: column; min-width: 0;
+}
+.article-content--shop .dp-menu-mixed > .dp-dish, .dp-menu-modal .dp-menu-mixed > .dp-dish {
+  display: grid; grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: start; column-gap: 12px; flex: none; width: 100%; min-width: 0;
+  padding: 12px 1px; border-bottom: 1px solid var(--border);
+  scroll-snap-align: none;
+}
+.article-content--shop .dp-menu-mixed > .dp-dish .dp-dish-thumb,
+.dp-menu-modal .dp-menu-mixed > .dp-dish .dp-dish-thumb {
+  grid-row: 1 / span 2; width: 72px; height: 72px;
+}
+.article-content--shop .dp-menu-mixed > .dp-dish .dp-dish-name,
+.dp-menu-modal .dp-menu-mixed > .dp-dish .dp-dish-name {
+  min-width: 0; margin-top: 0; font-size: 14px; font-weight: 650;
+}
+.article-content--shop .dp-menu-mixed > .dp-dish .dp-dish-price,
+.dp-menu-modal .dp-menu-mixed > .dp-dish .dp-dish-price {
+  margin-top: 0; text-align: right; font-variant-numeric: tabular-nums;
+}
+.article-content--shop .dp-menu-mixed > .dp-dish .dp-dish-source,
+.dp-menu-modal .dp-menu-mixed > .dp-dish .dp-dish-source { grid-column: 2 / -1; }
+.article-content--shop .dp-menu-mixed > :last-child,
+.dp-menu-modal .dp-menu-mixed > :last-child { border-bottom: 0; }
+
 .article-content--shop .dp-menu-row, .dp-menu-modal .dp-menu-row {
   display: flex; align-items: baseline; justify-content: space-between;
   gap: 12px; min-width: 0; padding: 12px 1px; border-bottom: 1px solid var(--border);
