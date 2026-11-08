@@ -34,6 +34,7 @@ on:
       - 'tests/chuo-main-2611-number-index.test.cjs'
       - 'tests/chuo-sobu-local-2611-source-scope-and-e235-fleet.test.cjs'
       - 'tests/train-number-png-runtime.test.cjs'
+      - 'tests/yokohama-2611-official-number-png.test.cjs'
       - 'tests/joban-main-source-only-vehicle.test.cjs'
       - 'tests/joban-main-north-mixed-fleet.test.cjs'
       - 'tests/gono-2611-number-schedule.test.cjs'
@@ -306,6 +307,8 @@ jobs:
         run: node --test tests/shinonoi-2611-number-fleet.test.cjs tests/shinonoi-2611-edge-scope.test.cjs
       - name: Verify Senzan 2611 E721, SATONO PNG and date-filtered API positions
         run: node --test tests/senzan-2611-number-fleet.test.cjs tests/senzan-2611-edge-calendar.test.cjs
+      - name: Verify Yokohama 2611 official 622 K numbers and E233-6000 SVG reference image
+        run: node --test tests/yokohama-2611-official-number-png.test.cjs
       - name: Verify Ryomo November 2611 exact numbers, 211 fleet and E231/E233 exceptions
         run: node --test tests/ryomo-2611-number-fleet.test.cjs
       - name: Verify Chuo-Sobu local historical 1179 sources, E235 transfer and Tozai isolation

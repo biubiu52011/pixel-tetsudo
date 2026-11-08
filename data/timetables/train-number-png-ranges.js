@@ -1451,6 +1451,11 @@
       sourceRailways:["odpt.Railway:JR-East.Yokohama"],
       numberIndex:"jreast-yokohama-202611",
       validFrom:"2026-11-01",validTo:"2026-11-30",
+      // This is a representative series image only. Never override a
+      // conflicting observed model, SQL plan, or timetable candidate.
+      allowedModelLabels:["E233系6000番台"],
+      requiredCandidateModelPrefix:"E233系6000番台",
+      requireCompatiblePlan:true,rejectAmbiguousPlan:true,
       model:"E233系6000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_6000番台.png"},
     // 2026-11 JR East Yokosuka-Sobu numbered services.
