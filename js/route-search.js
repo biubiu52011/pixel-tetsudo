@@ -628,11 +628,16 @@
   // Enumerate several reasonable topology alternatives with the same route
   // engine. A blocked line is temporary and never changes canonical topology.
   function findRouteCandidates(from,to,mode,limit) {
-    var cap=Math.max(1,Math.min(12,Number(limit)||8));
+    // Deep schedule retries may inspect more topological alternatives than
+    // the initial eight; only the selected routes are rendered.
+    var cap=Math.max(1,Math.min(24,Number(limit)||8));
     var first=findRoute(from,to,mode);
     if(!first||!first.routeSegments)return [];
     var seen=new Set(),routes=[],pending=[],tested=new Set();
-    var maxDuration=Math.max(35,first.durationMin*3,first.durationMin+30);
+    var deep = cap > 12;
+    var maxDuration=deep
+      ? Math.max(90, first.durationMin*4, first.durationMin+90)
+      : Math.max(35, first.durationMin*3, first.durationMin+30);
     function add(route) {
       if(!route||!route.routeSegments||!route.routeSegments.some(function(s){return s.type==='ride';}))return;
       if(route.durationMin>maxDuration)return;
@@ -657,7 +662,7 @@
     });
     direct.sort(function(x,y){return x.durationMin-y.durationMin;}).forEach(add);
     var probes=0;
-    while(pending.length&&routes.length<cap&&probes<12){
+    while(pending.length&&routes.length<cap&&probes<(deep?18:12)){
       var blocked=pending.shift();
       if(tested.has(blocked))continue;
       tested.add(blocked);probes++;
