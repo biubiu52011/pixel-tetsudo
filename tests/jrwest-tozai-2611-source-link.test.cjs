@@ -43,3 +43,30 @@ test('five independently checked Gakkentoshi source IDs are only JR Tozai throug
  assert.doesNotMatch(migration,/UPDATE\s+(?:public\.)?train_timetable_(?:stops|lines|members|vehicle_mappings)/i);
  assert.doesNotMatch(migration,/INSERT INTO\s+public\.train_timetable_(?:stops|lines|members|vehicle_mappings)/i);
 });
+
+
+test('bidirectional canonical source-link migration retains 13 evidence-only services and renumbering',()=>{
+ const sql=read('supabase/migrations/20261109070000_jrwest_tozai_2611_both_direction_source_links.sql');
+ const ids=[41344,41345,41346,41347,41375,41376,41364,41340];
+ for(const id of ids) assert.ok(sql.includes('('+id+'::bigint,'), 'source template '+id);
+ assert.equal(new Set(ids).size,8);
+ for(const number of ['5421M','5421MH','5423M','5423MH','5491M',
+   '5491MH','5953M','5727C','4527C'])
+   assert.ok(sql.includes("'"+number+"'"),'train number '+number);
+ assert.match(sql,/RENAME COLUMN previous_kyobashi_departure TO kyobashi_departure_clock/);
+ assert.match(sql,/RENAME COLUMN junction_station_urn TO source_boundary_station_urn/);
+ assert.match(sql,/RENAME COLUMN junction_arrival_clock TO source_boundary_arrival_clock/);
+ assert.match(sql,/traversal_direction='Gakkentoshi_to_JRTozai'/);
+ assert.match(sql,/continued_as_train_number='4527C'/);
+ assert.match(sql,/s\.stop_sequence=\(SELECT max\(last\.stop_sequence\)/);
+ assert.match(sql,/s\.arrival_clock=p\.kyobashi_arrival/);
+ assert.match(sql,/s\.departure_clock=p\.kyobashi_departure/);
+ assert.match(sql,/m\.calendar_urn=p\.cal/);
+ assert.match(sql,/m\.train_number=p\.source_number/);
+ assert.match(sql,/<>13 THEN/);
+ assert.match(sql,/<>8 THEN/);
+ assert.match(sql,/<>5 THEN/);
+ assert.doesNotMatch(sql, /INSERT INTO\s+public\.train_timetable_(?:stops|lines|members|vehicle_mappings)/i);
+ assert.doesNotMatch(sql, /UPDATE\s+public\.manual_timetable_templates/i);
+ assert.doesNotMatch(sql, /SET\s+actual_vehicle_confirmed\s*=\s*true/i);
+});

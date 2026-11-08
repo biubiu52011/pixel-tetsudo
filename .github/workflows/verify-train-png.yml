@@ -60,6 +60,7 @@ on:
       - 'tests/gakkentoshi-transfer-source-ownership.test.cjs'
       - 'tests/jrwest-tozai-2611-source-link.test.cjs'
       - 'supabase/migrations/20261109061000_jrwest_tozai_2611_junction_fleet_refs.sql'
+      - 'supabase/migrations/20261109070000_jrwest_tozai_2611_both_direction_source_links.sql'
       - 'tests/fukuchiyama-line-stations-2611.test.cjs'
       - 'tests/fukuchiyama-2611-official-north-sample.test.cjs'
       - 'tests/fukuchiyama-2611-northbound-official-samples.test.cjs'

@@ -37,3 +37,27 @@ https://www.jr-odekake.net/railroad/service/train-woman.html
 需要可合法复用的完整2026年11月两向时刻表，以及有日期/车次/运用或实际编组证据的对应车辆记录。仅官方线路车型介绍和车次交界钟点，不足以得出特定车次为207或321，更不足以选207 NK/Y2；不可将缺失当作“0列车”。
 
 JR官网列车时刻表注明禁止未经授权复制、加工时刻表，本次只对已有SQL来源做有限的独立锚点复核，并保存引用，不批量导入第三方时刻表。
+
+
+## 2026-11-09 续查：跨线车次号衔接改为双向、支持京桥改号
+
+原表 `published_jrwest_tozai_2611_source_links` 的「京桥出发／学研都市线首站」三个字段仅适用于向学研都市线方向，无法准确表示从学研都市线进入JR东⻄线的列车。现统一重命名为 `kyobashi_departure_clock`、`source_boundary_station_urn`、`source_boundary_arrival_clock`，新增 `traversal_direction` 和可空的 `continued_as_train_number`。原5条资料自动保留。
+
+迁移 `supabase/migrations/20261109070000_jrwest_tozai_2611_both_direction_source_links.sql` 基于**既有 SQL 模板终点的车站、到时、发时、车次、日历**全部严格吻合，追加以下8条学研都市线→京桥→JR东⻄线的官方交界证据：
+
+| 来源ID | 原始号码 | JR東西線号码 | 日历 | 京桥到/发 | 核对来源 |
+| ---: | --- | --- | --- | --- | --- |
+| 41344 | 5421M | 5421M | 平日 | 06:59 / 07:01 | [官方](https://timetable.jr-odekake.net/train-timetable/323491?date=20261013) |
+| 41345 | 5421MH | 5421M | 土休日 | 07:06 / 07:08 | [官方](https://timetable.jr-odekake.net/train-timetable/323501?date=20261004) |
+| 41346 | 5423M | 5423M | 平日 | 07:22 / 07:24 | [官方](https://timetable.jr-odekake.net/train-timetable/70091?date=20261008) |
+| 41347 | 5423MH | 5423M | 土休日 | 07:19 / 07:22 | [官方](https://timetable.jr-odekake.net/train-timetable/70331?date=20261004) |
+| 41375 | 5491M | 5491M | 平日 | 15:52 / 15:53 | [官方](https://timetable.jr-odekake.net/train-timetable/122361?date=20261007) |
+| 41376 | 5491MH | 5491M | 土休日 | 15:52 / 15:53 | [官方2026-11-14](https://timetable.jr-odekake.net/train-timetable/122511?date=20261114) |
+| 41364 | 5953M | 5953M | 平日 | 11:05 / 11:07 | [官方](https://timetable.jr-odekake.net/train-timetable/200871?date=20261006) |
+| 41340 | 5727C | **4527C** | 平日 | 06:30 / 06:32 | [官方](https://timetable.jr-odekake.net/train-timetable/123341?date=20261027) |
+
+**重要例外**：5727C在京桥结束，之后切为4527C继续通过JR东⻄线，属于同一次直通行程的**不同公开列车号**。不会把5727C这一个号码强行扩展到JR東西线段，`continued_as_train_number`明确记录变化。土休日原SQL末尾H仅供区分日历，不是公开车号。
+
+**现有证据总量：13条来源（原5+新8）；不等于JR東西线真实日班次数。** 源自2026年10月的官方证据可以证明对应日期的跨线及号码，但**不等于已验证11月每一天的全部时刻**；11月14日的5491M另有直接11月页证明。所有来源继续保持`partial_source_only`、`vehicle_type=NULL`、`vehicle_png_path=NULL`、`actual_vehicle_confirmed=false`。不自动生成车次位置，不将207或321分派给具体车次。
+
+生产Edge函数`train-runs`版本与GitHub main源文件有差异；为避免覆盖其他线路未同步的生产逻辑，**本轮只提交和执行证据SQL，不部署Edge、不增加虚构班次**。其余逐站时间需获得明确发布/转载许可或其他合法可复用的数据来源。
