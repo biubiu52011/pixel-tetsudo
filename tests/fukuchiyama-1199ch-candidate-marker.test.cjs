@@ -43,7 +43,7 @@ const position={
  vehiclePlan:null,sqlPublishedNumberFleetReference:proof
 };
 const verify=window.TrainNumberPngRanges.verifyFukuchiyamaSourceFleet;
-const marker=p=>window.TrainVehicle.selectMarkerArtwork(p,false);
+const marker=(p,artworkFailed=false)=>window.TrainVehicle.selectMarkerArtwork(p,artworkFailed);
 test('1199CH maps the 1100-1299 C band to an illustrative 321 image, not an assigned carset',()=>{
  const f=verify(position),png='../images/列车/JR西日本/JR西日本_321系.png';
  assert.ok(f);
