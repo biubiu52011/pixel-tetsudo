@@ -5752,22 +5752,33 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
               return isGalleryPng(normalizeGalleryPngPath(path))&&
                 g.matchModelPath(assetModels[i],path,"Fukuchiyama");
             });
+        var kounotoriExample=
+          fukFleet.numberBand==="kounotori-3000-7000-express-illustration";
+        var classicExample=fukFleet.numberBand==="local-1100-1299-C"||
+          fukFleet.numberBand==="holiday-2774M-2025-207-321-working";
+        var exampleModel=kounotoriExample?"JR西日本287系":"JR西日本321系";
+        var examplePng=kounotoriExample
+          ?"../images/列车/JR西日本/JR西日本_287系.png"
+          :"../images/列车/JR西日本/JR西日本_321系.png";
+        // Two possible Kounotori model FAMILIES. The 287 artwork is
+        // explicitly illustrative and never a specific assigned set.
+        // 321's existing local/2774 duty illustration is unchanged.
         if(artworkFailed!==true&&fukFleet.authorizesIllustration===true&&
-           (fukFleet.numberBand==="local-1100-1299-C"||
-             fukFleet.numberBand==="holiday-2774M-2025-207-321-working")&&approved&&
-           fukFleet.illustrationModel==="JR西日本321系"&&
-           fukFleet.illustrationPng===
-             "../images/列车/JR西日本/JR西日本_321系.png"&&
+           (classicExample||kounotoriExample)&&approved&&
+           fukFleet.illustrationModel===exampleModel&&
+           fukFleet.illustrationPng===examplePng&&
            isGalleryPng(normalizeGalleryPngPath(fukFleet.illustrationPng))&&
            g.matchModelPath(fukFleet.illustrationModel,
              fukFleet.illustrationPng,"Fukuchiyama"))
           return {kind:"vehicle",iconSrc:fukFleet.illustrationPng,
             planned:true,illustrative:true,representativeOnly:true,
             referenceOnly:true,actualVehicleConfirmed:false,
-            illustrationRole:fukFleet.numberBand===
-              "holiday-2774M-2025-207-321-working"
-              ?"fukuchiyama-2774M-2025-historical-207-321-example-only"
-              :"fukuchiyama-207-321-C-local-example-only"};
+            illustrationRole:kounotoriExample
+              ?"fukuchiyama-kounotori-287-of-287-289-example-only"
+              :fukFleet.numberBand===
+                "holiday-2774M-2025-207-321-working"
+                ?"fukuchiyama-2774M-2025-historical-207-321-example-only"
+                :"fukuchiyama-207-321-C-local-example-only"};
         return {kind:"candidate",iconSrc:"",planned:false,
           referenceOnly:true,actualVehicleConfirmed:false,
           candidateModels:fukFleet.candidateModels.slice(),
