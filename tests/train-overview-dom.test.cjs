@@ -176,7 +176,7 @@ test('ChuoMain uses the JR Group fallback, not Chuo Rapid artwork, across all da
     JSON.parse(fs.readFileSync('data/core/railway_data.json', 'utf8')),
     JSON.parse(fs.readFileSync('data/core/railway_data.compact.json', 'utf8')),
     JSON.parse(fs.readFileSync('data/core/railway-data.file.js', 'utf8')
-      .replace(/^window\\.RAILWAY_DATA\\s*=\\s*/, '').replace(/;\\s*$/, ''))
+      .replace(/^window\.RAILWAY_DATA\s*=\s*/, '').replace(/;\s*$/, ''))
   ];
   for (const source of sources) {
     const main = source.lines.ChuoMain;
