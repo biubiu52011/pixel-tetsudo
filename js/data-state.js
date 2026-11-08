@@ -577,6 +577,22 @@
     var text = String(name || fallback || "?").trim();
     return text.slice(0, 4) || "?";
   }
+  // 所有 JR 旅客公司的地方线使用统一的备选线路徽章。
+  // 正式线路记号/图片始终优先；新干线不作为地方线套用。
+  var JR_GROUP_BADGE_IMAGE = "../images/鉄道/JR東日本/JRグループ.png";
+  function isJRRegionalFallback(line, operator, lineId) {
+    line = line || {};
+    var op = String(line.operator || operator || "").replace(/[\s_-]/g, "").toUpperCase();
+    var isJRE = !!(window.TransitConstants && window.TransitConstants.isJRERoute &&
+      window.TransitConstants.isJRERoute(line));
+    if (!isJRE && !/^JR(?:EAST|CENTRAL|WEST|HOKKAIDO|SHIKOKU|KYUSHU)$/.test(op)) return false;
+    var name = [lineId || "", line.name || "", line.nameJa || "", line.nameEn || ""].join(" ");
+    return !/(?:shinkansen|新幹線)/i.test(name);
+  }
+  function jrGroupBadgeHtml() {
+    return '<div class="rs-line-icon-fallback"><img src="' +
+      escapeHtml(JR_GROUP_BADGE_IMAGE) + '" alt="JR" loading="lazy"></div>';
+  }
   // 系统级状态聚合的严重度等级（数值越大越严重）。
   function statusRank(s) {
     if (s === "suspended") return 5;
@@ -694,19 +710,21 @@
       statusHtml = '<span class="rs-status-icon ' + worstS.cls + '" aria-hidden="true">' + worstS.icon + '</span>';
     }
 
-    // 系统有图库图片时使用图片（已在构建期验证存在），否则回退到记号徽章。
+    // 优先使用正式线路图标；JR 各社无正式记号的地方线共享彩色 JR 徽章。
     var iconHtml = "";
     if (sys.icon) {
       if (String(sys.icon).indexOf("JRグループ.png") !== -1) {
-        iconHtml = '<div class="rs-line-icon-fallback"><img src="' + escapeHtml(sys.icon) + '" alt="JR"></div>';
+        iconHtml = '<div class="rs-line-icon-fallback"><img src="' + escapeHtml(sys.icon) + '" alt="JR" loading="lazy"></div>';
       } else {
         iconHtml = '<img class="rs-line-icon" src="' + escapeHtml(sys.icon) + '" alt="" loading="lazy">';
       }
     } else {
       var _firstLine = memberIds.length > 0 ? (linesObj[memberIds[0]] || {}) : {};
-      var _sysOp = _firstLine.operator || sys.operator || "";
-      if (window.TransitConstants && window.TransitConstants.isJRERoute && window.TransitConstants.isJRERoute(_firstLine)) {
-        iconHtml = '<div class="rs-line-icon-fallback"><img src="../images/鉄道/JR東日本/JRグループ.png" alt="JR"></div>';
+      var _firstLineIcon = _firstLine.image && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(_firstLine.image) ? _firstLine.image : "";
+      if (_firstLineIcon) {
+        iconHtml = '<img class="rs-line-icon" src="' + escapeHtml(_firstLineIcon) + '" alt="" loading="lazy">';
+      } else if (isJRRegionalFallback(_firstLine, sys.operator, memberIds[0])) {
+        iconHtml = jrGroupBadgeHtml();
       } else {
         iconHtml = '<div class="rs-system-badge">' + escapeHtml(neutralLineBadgeText(name, code)) + '</div>';
       }
@@ -760,8 +778,8 @@
       }
     } else if (_imgOk) {
       iconHtml = '<img class="rs-line-icon" src="' + escapeHtml(line.image) + '" alt="" loading="lazy">';
-    } else if (line && window.TransitConstants && window.TransitConstants.isJRERoute && window.TransitConstants.isJRERoute(line)) {
-      iconHtml = '<div class="rs-line-icon-fallback"><img src="../images/鉄道/JR東日本/JRグループ.png" alt="JR"></div>';
+    } else if (isJRRegionalFallback(line, "", lineId)) {
+      iconHtml = jrGroupBadgeHtml();
     } else {
       // 无 PNG 时只显示当前语言的短线路名；不把内部 lineId/line.code 冒充官方记号。
       var osCode = (_presentation && _presentation.code) || "";
