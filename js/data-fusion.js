@@ -716,13 +716,15 @@
         rec["pt:gtfsEffectCode"]);
       return !!(recordText(rec)||hasStructured);
     });
-    var seen=Object.create(null);
-    available=available.filter(function(rec){
+    // The same official record may appear as multiple revisions. Keep the
+    // latest revision by ID before severity ranking; do not discard separate IDs.
+    var seen=Object.create(null),unkeyed=[];
+    available.forEach(function(rec){
       var key=String(rec["@id"]||rec["owl:sameAs"]||"");
-      if(!key)return true;
-      if(seen[key])return false;
-      seen[key]=true;return true;
+      if(!key){unkeyed.push(rec);return;}
+      if(!seen[key]||(recordTime(rec)||0)>(recordTime(seen[key])||0))seen[key]=rec;
     });
+    available=unkeyed.concat(Object.keys(seen).map(function(id){return seen[id];}));
     // A later explicit normal snapshot supersedes unbounded historical
     // incidents from the SAME feed. Bounded active GTFS alerts remain valid
     // until their official expiry, even if an ODPT normal snapshot is newer.

@@ -12,6 +12,12 @@ function parse(body,additional){return ev.evaluate(Object.assign({text:body,curr
  ["reduced timetable","通常の２～３割程度で運転となります。","delayed"],
  ["scheduled engineering","12月1日から区間運休を実施します。","notice"],
  ["scheduled announcement","明日の運休を予定しています。","notice"],
+ ["all-day actual suspension","本日終日運転を見合わせます。","suspended"],
+ ["suspension continuing until date","11月10日まで運転を見合わせます。","suspended"],
+ ["all trains cancelled","全列車が運休しています。","suspended"],
+ ["segment is cancelled","品川駅〜取手駅間は運休しています。","suspended"],
+ ["partial cancellation notice wording","一部運休しています。","delayed"],
+ ["resumption with ongoing cancellation","運転を見合わせていましたが、運転を再開し、現在一部列車に遅れと運休が発生しています。","delayed"],
  ["negative suspension and normal","運転見合わせはありません。通常どおり運転しています。","normal"],
  ["threshold is not normal","１５分以上の遅延はありません。","unknown"],
  ["publication policy is not incident","5分以上の遅れが発生した場合には運行情報をお知らせします。","unknown"],
@@ -19,8 +25,13 @@ function parse(body,additional){return ev.evaluate(Object.assign({text:body,curr
  ["through-service interruption","直通運転を中止しています。","notice"],
  ["independent current delay and suspension","立川～高尾駅間で運転を見合わせています。東京～立川駅間では遅れが出ています。","suspended"]
 ].forEach(([name,text,want])=>check(name,()=>assert.equal(parse(text).status,want)));
-check("official structured suspension is not overridden by train cancellation",()=>{
-  assert.equal(parse("一部列車に運休があります。",{structuredStatus:"Suspension"}).status,"suspended");
+check("generic structured suspension yields to scoped partial cancellation",()=>{
+  const r=parse("一部列車に運休があります。",{structuredStatus:"Suspension"});
+  assert.equal(r.status,"delayed");
+  assert.ok(r.evidence.some(x=>x.type==="PARTIAL_CANCELLATION_OVERRIDES_GENERIC_SUSPENSION"));
+});
+check("explicit independent suspension remains authoritative",()=>{
+  assert.equal(parse("一部列車に運休があります。",{structuredStatus:"Suspension",suspension:true}).status,"suspended");
 });
 check("GTFS NO_SERVICE is scoped to trip or stop",()=>{
   for(const scope of ["trip","stop"])assert.equal(parse("一部運休",{alertScope:scope,structuredStatus:"Suspension"}).status,"delayed");
@@ -50,6 +61,12 @@ check("unscoped operator fallback is opt-in only",()=>{
   const yes=rec("good",null,"Delay",{"pt:operatorWide":true});
   const no=rec("bad",null,"Suspension",{"pt:operatorWide":true,"odpt:operator":"odpt.Operator:Toei"});
   assert.equal(f._selectScopedRecords([yes,no],{id:"Ginza",operator:"TokyoMetro"}).length,1);
+});
+check("later revision of same official event replaces old suspension",()=>{
+  const old=rec("same","Ginza","Suspension",{"dc:date":new Date(Date.now()-120000).toISOString()});
+  const latest=rec("same","Ginza","Delay");
+  assert.equal(f._pickRecords([old,latest],{id:"Ginza",operator:"TokyoMetro"}).length,1);
+  assert.equal(f._aggregateStatus([old,latest],{id:"Ginza",operator:"TokyoMetro"}),"delayed");
 });
 check("DataFusion forwards GTFS trip scope",()=>{
   const x=f._evaluateRecord(rec("gtfs","Ginza","Suspension",{"pt:alertScope":"trip","pt:gtfsEffectCode":1}),{id:"Ginza",stations:[]});

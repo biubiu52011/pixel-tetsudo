@@ -85,7 +85,7 @@
     var th=text.match(/([０-９0-9]{1,3})\s*分以上(?:の)?(?:遅延|遅れ)[^。\n]{0,45}(?:ありません|ございません|なし)/);
     if(th){threshold=Number(th[1].replace(/[０-９]/g,function(c){return String(c.charCodeAt(0)-0xff10);}));
       evidence.push({type:"DELAY_THRESHOLD_NEGATIVE",minutes:threshold});}
-    var sentences=text.replace(/が[、，]/g,"。\n").split(/[。\n；;]/).map(function(x){return x.trim();}).filter(Boolean);
+    var sentences=text.replace(/が[、，]/g,"。\n").replace(/(再開し)[、，](?=\s*(?:現在|ただいま|一部))/g,"$1。\n").split(/[。\n；;]/).map(function(x){return x.trim();}).filter(Boolean);
     function parseScope(sentence){
       var ranges=[], re=/([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}A-Za-z0-9々ヶー]{1,14})(?:駅)?\s*[〜～－−-]\s*([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}A-Za-z0-9々ヶー]{1,14})駅(?:間)?/gu;
       var m;
@@ -104,15 +104,20 @@
       var policy=/(?:遅れ|遅延|運休|見合わせ)[^。]{0,80}(?:場合|とき|際)[^。]{0,80}(?:お知らせ|ご案内|掲載)|(?:場合|とき|際)[^。]{0,80}(?:遅れ|遅延|運休|見合わせ)[^。]{0,80}(?:お知らせ|ご案内|掲載)/.test(s)&&
         !/(?:現在|見合わせています|遅れが出ています|運休が出ています)/.test(s);
       if(policy)return {phase:"policy",effect:null};
-      var planned=/(?:明日|翌日|来週|今後|再開後|次回|予定|見込|見込み|可能性|見合わせます|中止します|運休します|運転計画|実施します|実施予定|変更します)/.test(s)&&
-        !/(?:現在|ただいま|見合わせています|見合わせております|遅れが出ています|遅れがでています|運休しています|運休が出ています|運休がでています)/.test(s);
+      // Japanese -ます is not evidence of a future start: 「終日運転を見合わせます」
+      // and 「11月10日まで見合わせます」 describe an ongoing interruption.
+      var currentClaim=/(?:現在|ただいま|本日|今日|終日|当面の間|復旧まで|見合わせています|見合わせております|遅れが出ています|遅れがでています|運休しています|運休が出ています|運休がでています)/.test(s)||
+        /(?:[０-９0-9]{1,2}月[０-９0-9]{1,2}日|明日|来週)[^。]{0,18}まで/.test(s);
+      var futureClaim=/(?:明日|翌日|来週|来月|後日|次回|今後|再開後|予定|見込|見込み|可能性|運転計画|実施予定)/.test(s)||
+        /[０-９0-9]{1,2}月[０-９0-9]{1,2}日から/.test(s);
+      var planned=futureClaim&&!currentClaim;
       var historic=/(?:見合わせていました|見合わせておりました|運休していました|遅れが出ていました|遅れていました|運転を中止していました|見合わせました|平常(?:通り|どおり|運転)でした|通常(?:通り|どおり|運転)していました)/.test(s);
-      var resumed=/(?:運転(?:を)?再開|運行(?:を)?再開)(?:しました|しています|しております|済み|した)|平常運転に戻りました/.test(s);
+      var resumed=/(?:運転(?:を)?再開|運行(?:を)?再開)(?:しました|しています|しております|済み|した|し$)|平常運転に戻りました/.test(s);
       var negative=/(?:運転見合わせ|運休|遅れ|遅延)[^。]{0,12}(?:ありません|ございません|なし|発生していません|出ていません)/.test(s);
       var normal=/平常(?:通り|どおり|運転|運行)|通常(?:通り|どおり|運転|運行)|正常(?:運転|運行)/.test(s);
       var through=/直通(?:運転|運行)[^。]{0,50}(?:中止|取りやめ|見合わせ)|(?:中止|取りやめ|見合わせ)[^。]{0,50}直通(?:運転|運行)/.test(s);
-      var partial=/(?:一部(?:の)?(?:列車|電車)|区間運休)[^。]{0,70}(?:運休|取りやめ|見合わせ)|(?:運休|取りやめ)[^。]{0,50}一部(?:の)?(?:列車|電車)|(?:運休|取りやめ)が(?:出て|でて|発生)/.test(s);
-      var suspended=/運転(?:を)?(?:見合わせ|中止)|運行(?:を)?(?:見合わせ|中止)|運転見合わせ|全線[^。]{0,50}運休/.test(s);
+      var partial=/(?:一部(?:の)?(?:列車|電車)[^。]{0,70}(?:運休|取りやめ|見合わせ)|一部運休|(?:運休|取りやめ)[^。]{0,50}一部(?:の)?(?:列車|電車)|(?:運休|取りやめ)が(?:出て|でて|発生))/.test(s);
+      var suspended=/運転(?:を)?(?:見合わせ|中止)|運行(?:を)?(?:見合わせ|中止)|運転見合わせ|全線[^。]{0,50}運休|全(?:ての|て)?列車[^。]{0,30}運休|区間運休(?:中|しています|しております)|[〜～－−-][^。]{0,45}駅間(?:は|で|の上下線で)[^。]{0,15}運休/.test(s);
       var delayed=/遅れ|遅延|ダイヤ乱れ|ダイヤ(?:が|は|の)?乱れ/.test(s);
       var reduction=/(?:通常の\s*[０-９0-9]+(?:\s*[～〜－−-]\s*[０-９0-9]+)?割程度|運転本数[^。]{0,35}(?:減少|少な)|本数を減らして|減便|間引き運転)/.test(s);
       var change=/折返し運転|折り返し運転|行先変更|行き先変更|運転区間(?:を|の)?変更|列車本数[^。]*減ら/.test(s);
@@ -303,7 +308,17 @@
     var te=evaluateText(input.text||input.statusText||"");
     evidence=evidence.concat(te.evidence||[]);
     var metadata=extractMetadata(input);
-    // A GTFS NO_SERVICE for one trip or stop is not full-line suspension.
+    // An independent explicit suspension signal wins. A generic ODPT
+    // Suspension tag must not turn a textually scoped train cancellation into
+    // a whole-line stoppage. Keep actual simultaneous suspensions intact.
+    var activeEffects=(metadata.events||[]).filter(function(e){return e.phase==="current";}).map(function(e){return e.effect;});
+    if(structured==="suspended"&&input.suspension!==true&&input.signalStatus!=="suspended"&&
+      activeEffects.indexOf("partial_cancellation")>=0&&
+      activeEffects.every(function(e){return e==="partial_cancellation"||e==="delay";})){
+      structured="delayed";
+      evidence.push({type:"PARTIAL_CANCELLATION_OVERRIDES_GENERIC_SUSPENSION"});
+    }
+    // GTFS NO_SERVICE for a trip/stop is not a full-line suspension.
     if((input.alertScope==="trip"||input.alertScope==="stop")&&structured==="suspended"){
       structured="delayed";evidence.push({type:"GTFS_PARTIAL_NO_SERVICE",scope:input.alertScope});
     }
