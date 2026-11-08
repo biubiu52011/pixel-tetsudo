@@ -25,45 +25,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Verify generated static configuration
-        run: node data/core/gen-config-bundle.js --check
-      - name: Generate ordered page scripts
-        run: node scripts/sync-page-scripts.cjs --check
-      - name: Test page script manifest
-        run: node --test tests/page-scripts.test.cjs
-      - name: Exercise line-scoped loader and SQL artwork contract
-        run: node --test tests/train-detail-loader-runtime.test.cjs
-      - name: Verify train overview DOM structure and state
-        run: node --test tests/train-overview-dom.test.cjs
-      - name: Verify geometry reuse only on position snapshots
-        run: node --test tests/trains-geometry-position-snapshot.test.cjs
-      - name: Verify UI content, accessibility and cross-page UX contracts
-        run: |
-          node --test tests/ux-content-clarity.test.cjs
-          node --test tests/ux-accessibility.test.cjs
-          node --test tests/ux-interaction-contract.test.cjs
-          node --test tests/ux-3d-pixel-style.test.cjs
-          node --test tests/ui-cross-page-consistency.test.cjs
-          node --test tests/architecture-ownership.test.cjs
-          node --test tests/rail-service-calendar-ownership.test.cjs
-      - name: Verify train presets before Pages upload
-        run: |
-          node --check js/train-vehicle.js
-          node --check data/core/major-vehicle-fleet-presets.js
-          node tools/train-major-fleet-presets.test.cjs
-          node --test tests/tourism-shops.test.cjs
-          node --test tools/route-timetable-service-calendar.test.cjs
-          node --test tools/hamakawasaki-transfer-badges.test.cjs
-          node --test tools/yamanote-transfer-overflow.test.cjs
-      - name: Verify run-information state handling
-        run: |
-          node --check js/runinfo-evaluator.js
-          node --check js/runinfo-web.js
-          node --test tests/runinfo-evaluator-partial-cancellation.test.cjs tests/runinfo-web-snapshot.test.cjs
-          node tests/runinfo-regression.js
-          node --test tests/runinfo-operator-delivery.test.cjs
       - name: Temporary Seibu ODPT HTTP probe (no credential output)
         run: |
           node <<'NODE'
@@ -103,6 +64,45 @@ jobs:
             networkFailure: error.name, message: error.message
           }))).finally(() => clearTimeout(t));
           NODE
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Verify generated static configuration
+        run: node data/core/gen-config-bundle.js --check
+      - name: Generate ordered page scripts
+        run: node scripts/sync-page-scripts.cjs --check
+      - name: Test page script manifest
+        run: node --test tests/page-scripts.test.cjs
+      - name: Exercise line-scoped loader and SQL artwork contract
+        run: node --test tests/train-detail-loader-runtime.test.cjs
+      - name: Verify train overview DOM structure and state
+        run: node --test tests/train-overview-dom.test.cjs
+      - name: Verify geometry reuse only on position snapshots
+        run: node --test tests/trains-geometry-position-snapshot.test.cjs
+      - name: Verify UI content, accessibility and cross-page UX contracts
+        run: |
+          node --test tests/ux-content-clarity.test.cjs
+          node --test tests/ux-accessibility.test.cjs
+          node --test tests/ux-interaction-contract.test.cjs
+          node --test tests/ux-3d-pixel-style.test.cjs
+          node --test tests/ui-cross-page-consistency.test.cjs
+          node --test tests/architecture-ownership.test.cjs
+          node --test tests/rail-service-calendar-ownership.test.cjs
+      - name: Verify train presets before Pages upload
+        run: |
+          node --check js/train-vehicle.js
+          node --check data/core/major-vehicle-fleet-presets.js
+          node tools/train-major-fleet-presets.test.cjs
+          node --test tests/tourism-shops.test.cjs
+          node --test tools/route-timetable-service-calendar.test.cjs
+          node --test tools/hamakawasaki-transfer-badges.test.cjs
+          node --test tools/yamanote-transfer-overflow.test.cjs
+      - name: Verify run-information state handling
+        run: |
+          node --check js/runinfo-evaluator.js
+          node --check js/runinfo-web.js
+          node --test tests/runinfo-evaluator-partial-cancellation.test.cjs tests/runinfo-web-snapshot.test.cjs
+          node tests/runinfo-regression.js
+          node --test tests/runinfo-operator-delivery.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
