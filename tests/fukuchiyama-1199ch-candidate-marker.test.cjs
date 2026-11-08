@@ -83,7 +83,7 @@ test('1199CH maps the 1100-1299 C band to an illustrative 321 image, not an assi
  assert.doesNotMatch(caption,/223系/);
 });
 test('historical M/MO number bands remain candidates without reusing Hanwa 223/225 PNG',()=>{
- for(const [no,type] of [['2728MH','Rapid'],['3001MH','Local'],
+ for(const [no,type] of [['2728MH','Rapid'],['2521MH','Local'],
   ['5424MH','Rapid'],['2759MOH','Local']]){
   const p={...position,trainNumber:no,
     trainType:'odpt.TrainType:JR-West.'+type,
