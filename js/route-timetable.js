@@ -104,7 +104,17 @@
     // Query the selected journey date, not the train map's current service day.
     return Promise.resolve(client.getCachedTrainRuns(id, serviceDate)).catch(function(){return [];});
   }
-  function buffer(tx) { return Math.max(3, Number(tx && tx.walkingDuration) || 0); }
+  // Timetable feasibility uses the transfer's published walking time when
+  // available. An unknown transfer retains a conservative default, while a
+  // verified same-platform change may explicitly require zero walking.
+  function buffer(tx) {
+    if (!tx) return 3;
+    var raw = tx.walkingDuration;
+    var minutes = raw == null || raw === '' ? NaN : Number(raw);
+    if (Number.isFinite(minutes) && minutes > 0) return minutes;
+    if (minutes === 0 && tx.samePlatform === true) return 0;
+    return tx.walking === true ? 5 : 3;
+  }
   function through(tx,a,b) {
     if (!(tx && tx.through && a && b && a.train && a.train===b.train &&
           a.calendar && a.calendar===b.calendar)) return false;
@@ -182,5 +192,5 @@
       return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:arrivalConfirmed?finalHit.arr:null,arrivalClockConfirmed:arrivalConfirmed,durationMin:arrivalConfirmed?finalHit.arrMin-hits[0].depMin:null,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
     });
   }
-  window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain};
+  window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain,getTransferBuffer:buffer};
 })();
