@@ -14679,6 +14679,110 @@
     "Taki-Tochigi": {
       "lat": 36.6487217,
       "lng": 140.1382081
+    },
+    "Suzurandai": {
+      "lat": 34.723635,
+      "lng": 135.14588
+    },
+    "Suzurandai-Nishiguchi": {
+      "lat": 34.72653,
+      "lng": 135.140765
+    },
+    "Nishi-Suzurandai": {
+      "lat": 34.725825,
+      "lng": 135.135013
+    },
+    "Aina-Kobe": {
+      "lat": 34.73238,
+      "lng": 135.11822
+    },
+    "Kizu-Kobe": {
+      "lat": 34.744062,
+      "lng": 135.088534
+    },
+    "Kobata-Kobe": {
+      "lat": 34.748305,
+      "lng": 135.071385
+    },
+    "Sakae-Kobe": {
+      "lat": 34.75525,
+      "lng": 135.05653
+    },
+    "Oshibedani": {
+      "lat": 34.756577,
+      "lng": 135.03939
+    },
+    "Midorigaoka-Kobe": {
+      "lat": 34.765198,
+      "lng": 135.0258
+    },
+    "Hirono-Golfjo-Mae": {
+      "lat": 34.770045,
+      "lng": 135.02323
+    },
+    "Shijimi": {
+      "lat": 34.782485,
+      "lng": 135.00759
+    },
+    "Ebisu-Kobe": {
+      "lat": 34.797755,
+      "lng": 134.998575
+    },
+    "Miki-Uenomaru": {
+      "lat": 34.799965,
+      "lng": 134.988805
+    },
+    "Miki-Kobe": {
+      "lat": 34.799782,
+      "lng": 134.981884
+    },
+    "Omura-Kobe": {
+      "lat": 34.808645,
+      "lng": 134.97152
+    },
+    "Kashiyama": {
+      "lat": 34.820475,
+      "lng": 134.949805
+    },
+    "Ichiba-Kobe": {
+      "lat": 34.82431,
+      "lng": 134.944565
+    },
+    "Ono-Hyogo": {
+      "lat": 34.843135,
+      "lng": 134.934225
+    },
+    "Hata": {
+      "lat": 34.850125,
+      "lng": 134.91993
+    },
+    "Abiki": {
+      "lat": 34.862035,
+      "lng": 134.878085
+    },
+    "Tahara-Hojo": {
+      "lat": 34.865485,
+      "lng": 134.86684
+    },
+    "Hokkeguchi": {
+      "lat": 34.87527,
+      "lng": 134.856365
+    },
+    "Harima-Shimosato": {
+      "lat": 34.88628,
+      "lng": 134.840215
+    },
+    "Osa-Hojo": {
+      "lat": 34.896415,
+      "lng": 134.825725
+    },
+    "Harima-Yokota": {
+      "lat": 34.910435,
+      "lng": 134.825335
+    },
+    "Hojo-Machi": {
+      "lat": 34.929137,
+      "lng": 134.83217
     }
   },
   "lines": {
@@ -43299,6 +43403,18 @@
           "lineId": "SanyoMain",
           "type": "in",
           "note": "同站换乘"
+        },
+        {
+          "station": "Aou",
+          "lineId": "ShintetsuAo",
+          "type": "in",
+          "note": "同站跨运营商换乘（检票规则请参考官方指引）"
+        },
+        {
+          "station": "Aou",
+          "lineId": "HojoRailway",
+          "type": "in",
+          "note": "同站跨运营商换乘（检票规则请参考官方指引）"
         }
       ],
       "nameZh": "加古川线",
@@ -48100,6 +48216,162 @@
         ],
         "operatorGroup": "JR_WEST"
       }
+    },
+    "ShintetsuAo": {
+      "name": "ShintetsuAo",
+      "nameJa": "神戸電鉄粟生線",
+      "nameZh": "神户电铁粟生线",
+      "nameEn": "Kobe Electric Railway Ao Line",
+      "nameKo": "고베 전철 아오선",
+      "code": "KB",
+      "color": "#C32C42",
+      "operator": "KobeDentetsu",
+      "region": "Hyogo",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 58,
+      "branchOf": null,
+      "stations": [
+        "Suzurandai",
+        "Suzurandai-Nishiguchi",
+        "Nishi-Suzurandai",
+        "Aina-Kobe",
+        "Kizu-Kobe",
+        "Kobata-Kobe",
+        "Sakae-Kobe",
+        "Oshibedani",
+        "Midorigaoka-Kobe",
+        "Hirono-Golfjo-Mae",
+        "Shijimi",
+        "Ebisu-Kobe",
+        "Miki-Uenomaru",
+        "Miki-Kobe",
+        "Omura-Kobe",
+        "Kashiyama",
+        "Ichiba-Kobe",
+        "Ono-Hyogo",
+        "Hata",
+        "Aou"
+      ],
+      "durations": [
+        2,
+        1,
+        4,
+        5,
+        2,
+        3,
+        2,
+        3,
+        2,
+        3,
+        6,
+        2,
+        1,
+        3,
+        4,
+        2,
+        3,
+        8,
+        2
+      ],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Aou",
+          "lineId": "KakogawaLine",
+          "type": "in",
+          "note": "同站跨运营商换乘（检票规则请参考官方指引）"
+        },
+        {
+          "station": "Aou",
+          "lineId": "HojoRailway",
+          "type": "in",
+          "note": "同站跨运营商换乘（检票规则请参考官方指引）"
+        }
+      ],
+      "serviceBoundaries": [],
+      "timetableDataStatus": "station_topology_only",
+      "durationReference": "https://transit.yahoo.co.jp/search/result/%E7%B2%9F%E7%94%9F-%E9%88%B4%E8%98%AD%E5%8F%B0",
+      "presentation": {
+        "code": "KB",
+        "nameJa": "神戸電鉄粟生線",
+        "nameZh": "神户电铁粟生线",
+        "nameEn": "Ao Line",
+        "nameKo": "아오선",
+        "color": "#C32C42",
+        "icon": "",
+        "order": 11,
+        "lineIds": [
+          "ShintetsuAo"
+        ],
+        "operatorGroup": "KOBE_DENTETSU"
+      }
+    },
+    "HojoRailway": {
+      "name": "HojoRailway",
+      "nameJa": "北条鉄道北条線",
+      "nameZh": "北条铁道北条线",
+      "nameEn": "Hojo Railway Hojo Line",
+      "nameKo": "호조 철도 호조선",
+      "code": "HR",
+      "color": "#4F9E46",
+      "operator": "HojoRailway",
+      "region": "Hyogo",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 23,
+      "branchOf": null,
+      "stations": [
+        "Aou",
+        "Abiki",
+        "Tahara-Hojo",
+        "Hokkeguchi",
+        "Harima-Shimosato",
+        "Osa-Hojo",
+        "Harima-Yokota",
+        "Hojo-Machi"
+      ],
+      "durations": [
+        5,
+        3,
+        2,
+        4,
+        3,
+        3,
+        3
+      ],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Aou",
+          "lineId": "KakogawaLine",
+          "type": "in",
+          "note": "同站跨运营商换乘（检票规则请参考官方指引）"
+        },
+        {
+          "station": "Aou",
+          "lineId": "ShintetsuAo",
+          "type": "in",
+          "note": "同站跨运营商换乘（检票规则请参考官方指引）"
+        }
+      ],
+      "serviceBoundaries": [],
+      "timetableDataStatus": "station_topology_only",
+      "durationReference": "https://transit.yahoo.co.jp/search/result/%E5%8C%97%E6%9D%A1%E7%94%BA-%E7%B2%9F%E7%94%9F",
+      "presentation": {
+        "code": "HR",
+        "nameJa": "北条鉄道北条線",
+        "nameZh": "北条铁道北条线",
+        "nameEn": "Hojo Line",
+        "nameKo": "호조선",
+        "color": "#4F9E46",
+        "icon": "",
+        "order": 12,
+        "lineIds": [
+          "HojoRailway"
+        ],
+        "operatorGroup": "HOJO_RAILWAY"
+      }
     }
   },
   "name_map": {
@@ -51134,7 +51406,33 @@
     "市島": "Ichijima",
     "丹波竹田": "Tamba-Takeda",
     "柏原（福知山線）": "Kaibara-Hyogo",
-    "黒井（福知山線）": "Kuroi-Tamba"
+    "黒井（福知山線）": "Kuroi-Tamba",
+    "鈴蘭台": "Suzurandai",
+    "鈴蘭台西口": "Suzurandai-Nishiguchi",
+    "西鈴蘭台": "Nishi-Suzurandai",
+    "藍那": "Aina-Kobe",
+    "木津（神戸電鉄）": "Kizu-Kobe",
+    "木幡（神戸電鉄）": "Kobata-Kobe",
+    "栄": "Sakae-Kobe",
+    "押部谷": "Oshibedani",
+    "緑が丘（神戸電鉄）": "Midorigaoka-Kobe",
+    "広野ゴルフ場前": "Hirono-Golfjo-Mae",
+    "志染": "Shijimi",
+    "恵比須": "Ebisu-Kobe",
+    "三木上の丸": "Miki-Uenomaru",
+    "三木": "Miki-Kobe",
+    "大村（神戸電鉄）": "Omura-Kobe",
+    "樫山": "Kashiyama",
+    "市場（神戸電鉄）": "Ichiba-Kobe",
+    "小野（神戸電鉄）": "Ono-Hyogo",
+    "葉多": "Hata",
+    "網引": "Abiki",
+    "田原": "Tahara-Hojo",
+    "法華口": "Hokkeguchi",
+    "播磨下里": "Harima-Shimosato",
+    "長": "Osa-Hojo",
+    "播磨横田": "Harima-Yokota",
+    "北条町": "Hojo-Machi"
   },
   "stationLines": {
     "Omiya": [
@@ -61191,7 +61489,9 @@
       "KakogawaLine"
     ],
     "Aou": [
-      "KakogawaLine"
+      "KakogawaLine",
+      "ShintetsuAo",
+      "HojoRailway"
     ],
     "Kawai-Nishi": [
       "KakogawaLine"
@@ -63598,6 +63898,84 @@
     ],
     "Taki-Tochigi": [
       "Karasuyama"
+    ],
+    "Suzurandai": [
+      "ShintetsuAo"
+    ],
+    "Suzurandai-Nishiguchi": [
+      "ShintetsuAo"
+    ],
+    "Nishi-Suzurandai": [
+      "ShintetsuAo"
+    ],
+    "Aina-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Kizu-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Kobata-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Sakae-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Oshibedani": [
+      "ShintetsuAo"
+    ],
+    "Midorigaoka-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Hirono-Golfjo-Mae": [
+      "ShintetsuAo"
+    ],
+    "Shijimi": [
+      "ShintetsuAo"
+    ],
+    "Ebisu-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Miki-Uenomaru": [
+      "ShintetsuAo"
+    ],
+    "Miki-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Omura-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Kashiyama": [
+      "ShintetsuAo"
+    ],
+    "Ichiba-Kobe": [
+      "ShintetsuAo"
+    ],
+    "Ono-Hyogo": [
+      "ShintetsuAo"
+    ],
+    "Hata": [
+      "ShintetsuAo"
+    ],
+    "Abiki": [
+      "HojoRailway"
+    ],
+    "Tahara-Hojo": [
+      "HojoRailway"
+    ],
+    "Hokkeguchi": [
+      "HojoRailway"
+    ],
+    "Harima-Shimosato": [
+      "HojoRailway"
+    ],
+    "Osa-Hojo": [
+      "HojoRailway"
+    ],
+    "Harima-Yokota": [
+      "HojoRailway"
+    ],
+    "Hojo-Machi": [
+      "HojoRailway"
     ]
   },
   "lineStationOrder": {
@@ -68743,6 +69121,38 @@
       "Kubiki-Ono": 6,
       "Himekawa": 7,
       "Itoigawa": 8
+    },
+    "ShintetsuAo": {
+      "Suzurandai": 0,
+      "Suzurandai-Nishiguchi": 1,
+      "Nishi-Suzurandai": 2,
+      "Aina-Kobe": 3,
+      "Kizu-Kobe": 4,
+      "Kobata-Kobe": 5,
+      "Sakae-Kobe": 6,
+      "Oshibedani": 7,
+      "Midorigaoka-Kobe": 8,
+      "Hirono-Golfjo-Mae": 9,
+      "Shijimi": 10,
+      "Ebisu-Kobe": 11,
+      "Miki-Uenomaru": 12,
+      "Miki-Kobe": 13,
+      "Omura-Kobe": 14,
+      "Kashiyama": 15,
+      "Ichiba-Kobe": 16,
+      "Ono-Hyogo": 17,
+      "Hata": 18,
+      "Aou": 19
+    },
+    "HojoRailway": {
+      "Aou": 0,
+      "Abiki": 1,
+      "Tahara-Hojo": 2,
+      "Hokkeguchi": 3,
+      "Harima-Shimosato": 4,
+      "Osa-Hojo": 5,
+      "Harima-Yokota": 6,
+      "Hojo-Machi": 7
     }
   },
   "line_types": {
