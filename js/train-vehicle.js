@@ -5719,15 +5719,21 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var fukProof=p&&p.sqlPublishedNumberFleetReference;
     if(p&&!identityConfirmed&&contextLineId==="Fukuchiyama"&&
        String(p.positionLineId||p.lineId||"")==="Fukuchiyama"&&
-       fukProof&&fukProof.source===
-         "sql-jrwest-fukuchiyama-2611-historical-fleet-reference"){
+       fukProof&&[
+         "sql-jrwest-fukuchiyama-2611-historical-fleet-reference",
+         "sql-jrwest-fukuchiyama-2611-official-7025-friday"
+       ].includes(fukProof.source)){
       var fukIndex=window.TrainNumberPngRanges,
+        fridayProof=fukProof.source===
+          "sql-jrwest-fukuchiyama-2611-official-7025-friday",
         fukFleet=fukIndex&&
-          typeof fukIndex.verifyFukuchiyamaSourceFleet==="function"
-            ?fukIndex.verifyFukuchiyamaSourceFleet(p):null,
+          (fridayProof?typeof fukIndex.verifyFukuchiyamaFriday7025==="function"
+            :typeof fukIndex.verifyFukuchiyamaSourceFleet==="function")
+          ?(fridayProof?fukIndex.verifyFukuchiyamaFriday7025(p)
+            :fukIndex.verifyFukuchiyamaSourceFleet(p)):null,
         original=fukFleet&&fukFleet.sourceFleetCandidates||[];
       if(fukFleet&&fukFleet.referenceOnly===true&&
-         fukFleet.numberDateVerified===false&&
+         fukFleet.numberDateVerified===fridayProof&&
          fukFleet.actualVehicleConfirmed===false&&
          fukFleet.authorizesPNG===false&&
          p.vehicleIdentityStatus==="UNKNOWN"&&
