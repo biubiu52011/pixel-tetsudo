@@ -145,6 +145,7 @@ test('October observed 5429M to 5430M displays E723 artwork without claiming Nov
  }
 });
 test('mixed 719/701/E723 unverified train numbers remain honest candidate text, not 701 PNG',()=>{
+ assert.deepEqual(Array.from(idx.candidates),['701系5500番台','719系5000番台','E723系5000番台']);
  for(const n of ['423M','425M','426M','433M','437M','447M','449M','453M',
    '461M','1426M','1427M','1431M','1433M']){
   const x=p(n),proof=idx.verify(x);
@@ -153,7 +154,7 @@ test('mixed 719/701/E723 unverified train numbers remain honest candidate text, 
   const art=root.TrainVehicle.selectMarkerArtwork(x,false);
   assert.equal(art.kind,'candidate',n+' must retain a scoped mixed-fleet candidate');
   assert.equal(art.iconSrc,'',n+' must not inherit the obsolete all-701 SQL label');
-  assert.equal(art.candidateAssets.length,2);
+  assert.equal(art.candidateAssets.length,idx.candidates.length);
  }
 });
 test('every 2611 Yamagata number has an evidence-scoped artwork or fleet candidate',()=>{
@@ -165,7 +166,7 @@ test('every 2611 Yamagata number has an evidence-scoped artwork or fleet candida
    assert.ok(['vehicle','candidate'].includes(art.kind),calendar+' '+n);
    if(art.kind==='candidate'){
     assert.equal(art.iconSrc,'');
-    assert.equal(art.candidateAssets.length,2);
+    assert.equal(art.candidateAssets.length,idx.candidates.length);
     assert.equal(idx.resolve(x),null);
     assert.equal(idx.resolveCandidates({...x,displayLineId:'OuMain'}),null);
    }
