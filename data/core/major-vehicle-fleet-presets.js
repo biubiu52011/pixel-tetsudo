@@ -684,11 +684,29 @@
   // commuter model to a LimitedExpress/liner/special or an unnamed service.
   var ORDINARY = /^(?:Local|Rapid|SpecialRapid|CommuterRapid|SemiExpress|Express|RapidExpress|CommuterExpress|CommuterSemiExpress|ChuoSpecialRapid|OmeSpecialRapid|CommuterSpecialRapid|SectionRapid|SectionExpress|SectionSemiExpress)$/;
 
+  // Optional future dated editions are admitted only on their documented
+  // operating dates. Undated rows remain reference-only and do NOT certify
+  // that any particular train/formation was operated on the queried date.
+  function validServiceDate(date) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+    var parsed = new Date(date + 'T12:00:00Z');
+    return Number.isFinite(parsed.getTime()) &&
+      parsed.toISOString().slice(0,10) === date;
+  }
+  function withinPublishedPeriod(row, day) {
+    var from = row.validFrom || '', to = row.validTo || '';
+    if (!from && !to) return true;
+    return !!day && validServiceDate(day) &&
+      (!from || day >= from) && (!to || day <= to);
+  }
+
   function lookup(lineId, operator, trainType, options) {
     var id = String(lineId || '').trim();
     var op = String(operator || '').trim();
     var type = String(trainType || '').trim();
     if (!id || !op || !type) return null;
+    var day = String(options && options.serviceDate || '').slice(0,10);
+    if (day && !validServiceDate(day)) return null;
     var prefix = 'odpt.TrainType:' + op + '.';
     if (type.indexOf(prefix) !== 0) return null;
     var suffix = type.slice(prefix.length);
@@ -702,7 +720,8 @@
       .replace(/^odpt\.(?:Operator|TrainOwner):/, '');
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
-      if (row.operator !== op || row.lineIds.indexOf(id) < 0) continue;
+      if (row.operator !== op || row.lineIds.indexOf(id) < 0 ||
+          !withinPublishedPeriod(row,day)) continue;
       if (row.shinkansenTypes) {
         if (row.shinkansenTypes.indexOf(suffix) < 0) return null;
       } else if (!ORDINARY.test(suffix)) return null;
@@ -735,6 +754,8 @@
         _fleetReferenceOnly: true,
         planOverride: false,
         sourceUrl: scopedSourceUrl,
+        asOf: '2026-11-03',
+        validFrom: row.validFrom || null, validTo: row.validTo || null,
         presetId: scopedPresetId
       };
     }
@@ -742,7 +763,8 @@
     for (var j = 0; j < throughRows.length; j++) {
       var through = throughRows[j];
       if (through.operator !== op || through.vehicleOwner !== owner ||
-          through.lineIds.indexOf(id) < 0) continue;
+          through.lineIds.indexOf(id) < 0 ||
+          !withinPublishedPeriod(through,day)) continue;
       return {
         operator: op, vehicleOwner: owner,
         vehicleCandidates: through.models.slice(),
@@ -750,6 +772,8 @@
         _fleetReferenceOnly: true,
         planOverride: false,
         sourceUrl: through.sourceUrl,
+        asOf: '2026-11-03',
+        validFrom: through.validFrom || null, validTo: through.validTo || null,
         presetId: 'through-owner-' + op + '-' + id + '-' + owner
       };
     }
@@ -758,6 +782,9 @@
 
   root.MajorVehicleFleetPresets = Object.freeze({
     version: '2026-11-03-kanto',
+    asOf: '2026-11-03',
+    // Validity dates are authored facts; never inferred from train numbers.
+    isValidForDate: withinPublishedPeriod,
     lookup: lookup,
     listThrough: function () {
       return throughRows.map(function(row) {
@@ -773,7 +800,9 @@
           modelsByService:row.modelsByService ? Object.keys(row.modelsByService).reduce(function(o,k) {
             o[k]=row.modelsByService[k].slice(); return o;
           }, {}) : null,
-          shinkansenTypes:row.shinkansenTypes ? row.shinkansenTypes.slice() : null, sourceUrl:row.sourceUrl};
+          shinkansenTypes:row.shinkansenTypes ? row.shinkansenTypes.slice() : null,
+          validFrom:row.validFrom || null, validTo:row.validTo || null,
+          sourceUrl:row.sourceUrl};
       });
     }
   });
