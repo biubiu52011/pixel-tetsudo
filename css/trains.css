@@ -92,3 +92,24 @@
 /* Ito planned fleet alternatives remain readable when the train has no exact PNG. */
 .train-fold-fleet-reference { display:block; margin-top:4px; font-size:.78em; line-height:1.45; opacity:.78; }
 
+
+/* Evidence-only JR West through-service reference; never a train marker. */
+.tp-corridor-evidence {
+  width:100%; min-width:0; box-sizing:border-box;
+  border:2px solid var(--text); border-radius:5px; background:var(--card);
+  padding:12px 14px; margin:8px 0 14px;
+  box-shadow:3px 3px 0 rgba(32,33,38,.25);
+  font-size:13px; line-height:1.55;
+}
+.tp-corridor-evidence[hidden] { display:none !important; }
+.tp-corridor-evidence h3 { font-size:14px; margin:0 0 6px; }
+.tp-corridor-evidence h4 { font-size:13px; margin:12px 0 4px; }
+.tp-corridor-evidence p { margin:4px 0; }
+.tp-evidence-note { color:var(--text-muted); }
+.tp-evidence-fleet { font-weight:600; }
+.tp-evidence-details summary { cursor:pointer; padding:6px 0; text-decoration:underline; }
+.tp-evidence-details summary:focus-visible { outline:3px solid var(--green); outline-offset:2px; }
+.tp-evidence-details ul { margin:4px 0 8px; padding-left:20px; }
+.tp-evidence-details li { padding:6px 0; overflow-wrap:anywhere; }
+.tp-evidence-details a { color:var(--text); text-underline-offset:2px; }
+@media(max-width:640px) { .tp-corridor-evidence { padding:10px; } }

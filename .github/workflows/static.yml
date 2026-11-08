@@ -39,6 +39,8 @@ jobs:
         run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify train overview DOM structure and state
         run: node --test tests/train-overview-dom.test.cjs
+      - name: Verify JR-West JR Tōzai read-only source evidence
+        run: node --test tests/jrwest-tozai-evidence-feed-runtime.test.cjs
       - name: Verify geometry reuse only on position snapshots
         run: node --test tests/trains-geometry-position-snapshot.test.cjs
       - name: Verify UI content, accessibility and cross-page UX contracts

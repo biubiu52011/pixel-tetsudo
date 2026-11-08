@@ -61,3 +61,12 @@ JR官网列车时刻表注明禁止未经授权复制、加工时刻表，本次
 **现有证据总量：13条来源（原5+新8）；不等于JR東西线真实日班次数。** 源自2026年10月的官方证据可以证明对应日期的跨线及号码，但**不等于已验证11月每一天的全部时刻**；11月14日的5491M另有直接11月页证明。所有来源继续保持`partial_source_only`、`vehicle_type=NULL`、`vehicle_png_path=NULL`、`actual_vehicle_confirmed=false`。不自动生成车次位置，不将207或321分派给具体车次。
 
 生产Edge函数`train-runs`版本与GitHub main源文件有差异；为避免覆盖其他线路未同步的生产逻辑，**本轮只提交和执行证据SQL，不部署Edge、不增加虚构班次**。其余逐站时间需获得明确发布/转载许可或其他合法可复用的数据来源。
+
+
+## 2026-11-09 只读在线来源清单
+
+新增数据库迁移 `20261109074500_jrwest_tozai_public_source_feed.sql`：沿用已有13条京桥交界来源，只为 `anon/authenticated` 开放经过严格 RLS 筛选的 **SELECT**，提供 `security_invoker=true` 的只读视图 `published_jrwest_tozai_2611_public_evidence`。视图不包含车型、编组、PNG 或实时位置，也不授予匿名写入权限。
+
+网页侧新增懒加载 `js/train-corridor-evidence.js`；仅进入 `JRTozai` 时请求 Supabase Data API，页面显示平日/土休日来源、跨线方向、京桥交界时刻和对应官方出处（原始来源日可能为10月，不推断11月任何日期均运行）。207系/321系候选继续由 `MajorVehicleFleetPresets` 唯一管理，显示为参考而非实车。
+
+组件独立于 `TrainPositionEstimator`、`TrainVehicle` 和生产 `train-runs`：**不会对JR东西线制造一个位置标记**。断网时明确表示来源不可用，不解释为运行列车0趟。详情切走后异步数据不会污染另一条线路。新项目走现有 page-scripts manifest、CSP已允许的 Supabase 域和只读公钥，未覆盖生产 Edge 函数。

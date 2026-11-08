@@ -94,6 +94,20 @@
     if (titleEl) titleEl.textContent = _title;
   }
 
+  // Public timetable references are metadata, never timetable/position rows.
+  // The line-scoped module fetches only when that route is open.
+  function updateCorridorEvidence(lineId) {
+    var host = document.getElementById("trainsCorridorEvidence");
+    if (!host) return;
+    if (window.TrainCorridorEvidence &&
+        typeof window.TrainCorridorEvidence.show === "function") {
+      window.TrainCorridorEvidence.show(host, lineId);
+    } else {
+      host.hidden = true;
+      host.replaceChildren();
+    }
+  }
+
   var _detailLoadRequestedFor = null;
   var _overviewScrollY = 0;
   function releaseOverviewDom() {
@@ -176,6 +190,7 @@
       if (detailEl) detailEl.classList.remove("hidden");
       releaseOverviewDom();
       updateLineTitle(lineId, fusedLine);
+      updateCorridorEvidence(lineId);
       if (mapEl && window.DataState && window.DataState.setPageStateRetry) {
         window.DataState.setPageStateRetry(mapEl, function() {
           var latest = getLinesData()[lineId];
@@ -222,6 +237,11 @@
 
   function hideLineView() {
     _detailLoadRequestedFor = null;
+    var evidenceHost = document.getElementById("trainsCorridorEvidence");
+    if (window.TrainCorridorEvidence &&
+        typeof window.TrainCorridorEvidence.hide === "function")
+      window.TrainCorridorEvidence.hide(evidenceHost);
+    else if (evidenceHost) { evidenceHost.hidden = true; evidenceHost.replaceChildren(); }
     try {
       disposeTrainMap(mapEl);
       currentLine = null;
@@ -562,6 +582,7 @@
       // 及其滚动/筛选状态，就地刷新卡片/分组。
       if (typeof window.onLanguageChange === "function") {
         window.onLanguageChange(function() {
+          if (currentLine) updateCorridorEvidence(currentLine);
           renderFilterBar(document.getElementById("trainsFilterBar"));
           if (currentLine && detailEl && !detailEl.classList.contains("hidden")) {
             var latest = getLinesData()[currentLine];
