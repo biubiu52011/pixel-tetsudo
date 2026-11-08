@@ -65,6 +65,8 @@ jobs:
           node tests/runinfo-regression.js
           node --test tests/runinfo-operator-delivery.test.cjs
           node --test tests/realtime-affected-section-i18n.test.cjs
+          node --test tests/station-identity-ambiguity.test.cjs
+          node --test tests/station-id-kyushu-2611.test.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
