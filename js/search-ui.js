@@ -480,7 +480,9 @@
         }
         function minutes(clock) {
           var m=String(clock||'').match(/^(\d{1,2}):(\d{2})$/);
-          return m?Number(m[1])*60+Number(m[2]):0;
+          if(!m)return 0;
+          var hour=Number(m[1]);
+          return (hour<4?hour+24:hour)*60+Number(m[2]);
         }
         var mode=self.currentMode,arrive=timeOptions.mode==='arrive';
         entries.forEach(function(e,i){e._originalRank=i;});
@@ -494,10 +496,14 @@
             // Compare arrival clocks only when both are published arrival times.
             var aExact=aa.arrivalClockConfirmed===true,bExact=bb.arrivalClockConfirmed===true;
             if(aExact!==bExact)return aExact?-1:1;
-            var ac=arrive?-minutes(aa.departure):
-              aExact?minutes(aa.arrival):(Number(a.route.durationMin)||0);
-            var bc=arrive?-minutes(bb.departure):
-              bExact?minutes(bb.arrival):(Number(b.route.durationMin)||0);
+            // Clock comparisons use service-day minutes, not wall-clock
+            // ordering (00:05 belongs after 23:55 on the same service day).
+            var ac=arrive?-(aa.departureMinute!=null?aa.departureMinute:minutes(aa.departure)):
+              aExact?(aa.arrivalMinute!=null?aa.arrivalMinute:minutes(aa.arrival)):
+              (Number(aa.durationMin)||Number(a.route.durationMin)||0)+(Number(aa.initialWait)||0);
+            var bc=arrive?-(bb.departureMinute!=null?bb.departureMinute:minutes(bb.departure)):
+              bExact?(bb.arrivalMinute!=null?bb.arrivalMinute:minutes(bb.arrival)):
+              (Number(bb.durationMin)||Number(b.route.durationMin)||0)+(Number(bb.initialWait)||0);
             if(mode==='combo'){ac+=at*5;bc+=bt*5;}
             if(ac!==bc)return ac-bc;
             if(aa.durationMin!=null&&bb.durationMin!=null&&aa.durationMin!==bb.durationMin)
