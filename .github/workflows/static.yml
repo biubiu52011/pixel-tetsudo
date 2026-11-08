@@ -46,6 +46,8 @@ jobs:
             try { json = JSON.parse(body); } catch (_) {}
             const records = Array.isArray(json) ? json : Array.isArray(json?.value) ? json.value : null;
             const sample = records?.slice(0, 3).map(row => ({
+              type: row['@type'] || null,
+              sameAsPresent: !!row['owl:sameAs'],
               operator: row['odpt:operator'] || null,
               railway: row['odpt:railway'] || null,
               status: row['odpt:trainInformationStatus'] || null,
