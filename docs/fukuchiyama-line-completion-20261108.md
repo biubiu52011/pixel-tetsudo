@@ -143,3 +143,32 @@
   - 2026-11-06（周五）**177条**计划记录，**23条**30xx／70xx特急候选，**7条**日期确认来源（其中7025M）；
   - 2026-11-09工作日不会出现临时70xx；2026-12-01不会延用11月期限定期临时70xx。
 - 覆盖状态继续 `partial=true`、`complete=false`；前述187/177条并非全部具备2026年11月实际站时刻或实车确认。
+
+
+## 2026-11-08 再追加：丹波路快速的官方种别、停运日及星期五特急前端适配
+
+> 本节为前面统计的最新增量，**不改变**已验证的50条「こうのとり」历史来源或388条总来源数；旧版“尚未处理星期五7025M”和旧 Edge 版本号只保留作为变更日志。
+
+### 按公开车次校正，不按整个 M 号段推断
+
+- 根据 JR 西日本2026年11月时刻表核实12个丹波路快速公开车次：**2751M、2753M、2759M、2763M、2764M、2765M、2766M、2772M、2777M、2778M、2779M、2786M**。这12个编号的平日／土休日来源共24条，20条旧记录原为 `Local`，4条已经是 `Rapid`；迁移后全部规范化为 `JR-West.Rapid`。
+- 不重写历史 SQL 的站点时刻，不宣称所有原始片段完整或属于当日已验证的时刻表；原本完整列车可能只覆盖大阪—篠山口，官网经篠山口继续向福知山开行的片段不凭空延伸。原357条 `published_jrwest_fukuchiyama_2611_source_fleet` 继续在所属来源中同步改正车种，`authorizes_png=false`。
+- 周六／节假日不运行的 **2751M、2763M、2764M、2766M、2778M**：原数据库仍存有内部 `MH` 模板（用于审计），但在这5条模板上设 `operating_dates=ARRAY[]::date[]`，`train-runs` 必须对**所有**显式运行日数组执行过滤，不再只对特急和已标记官网样本过滤。
+- **2026-11-28 的2779M** 官网宣布新三田—篠山口间运休并由巴士代行。仅此日期对应 `2779MH` 源 68185，后端先核验原16站序，再将对外运行位置片段裁为大阪—新三田**9站**；不是取消整趟车，不把代行巴士当作列车，也不改变其他日期的原来源。此9站片段仍属于历史时刻参考，不因运行日限制有据而获得新的实车或实际位置认证。
+- SQL 迁移：`supabase/migrations/20261108233500_fukuchiyama_danbaro_eight_numbers_and_holiday_suspensions.sql`、`supabase/migrations/20261108234500_fukuchiyama_danbaro_four_more_numbers_calendar.sql`。
+- 验证：`tests/fukuchiyama-2611-danbaro-scope.test.cjs` 以及专门通过公开 Supabase API 的 2026-11-08／11-09／11-28 live smoke 测试：`https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42491319343`。11月8日182条计划来源；11月9日176条；11月28日2779M只到新三田。车型 PNG 仍非实车确认。
+
+### 修复7025M星期五从后端证明到前端选择器的遗漏
+
+- 2026-11-06 的真实 API 返回 `7025M`、source ID `2611087025001`、11站、`candidate="287系 / 289系"`、`vehicle_mapping_level="unresolved"`、`vehicle_plan_confirmed=false`，以及 `published_number_fleet_reference.source="sql-jrwest-fukuchiyama-2611-official-7025-friday"`；真实 API 字段是有的。
+- 之前 `js/train-position-estimator.js` 向 `TrainVehicle.selectMarkerArtwork` 转发 `sqlPublishedNumberFleetReference` 时仅承认旧 `sql-jrwest-fukuchiyama-2611-historical-fleet-reference`，漏掉星期五官方来源。已仅扩展该既有适配条件，接纳这两个精确来源字符串，仍要求福知山线 + Supabase 计划位置，再由 `verifyFukuchiyamaFriday7025` 核对星期五白名单、站序和车种；不向其他线传播证据。
+- `pages/trains.html` 的 `js/train-position-estimator.js` 懒加载版本键已按 `scripts/sync-page-scripts.cjs` 的**Git Blob SHA** 更新，避免旧缓存；追加测试 `tests/fukuchiyama-2611-kounotori-family-and-friday.test.cjs`，防止下次适配器再次丢失星期五车型证据。
+- 上述前端回归与发布在 `https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42491605675` 和 `https://github.com/biubiu52011/pixel-tetsudo/actions/runs/42491605633` 成功。
+- 当前 Edge `train-runs` **v358 ACTIVE**。车辆身份仍为未知；287系列单张 PNG 只是287／289车型族的代表图，并不是当天实际编组、实时列车位置，也不能延用到任何没有官网日期/站序证据的来源。
+
+### 真正仍未解决的车型 PNG
+
+- 丹波路快速通常由**223系6000番台／225系6000番台**担任，存在207／321等特殊运用；当前图库的223／225图片被登记为**阪和线专用外观**，不能将这些 PNG 当成福知山线6000番台的实车图。当前未核实的逐车车底与运营日继续展示车型候选／中性位置标记。
+- 篠山口—福知山北段普通列车的线路级车型候选为**223系5500番台**，已由 `major-vehicle-fleet-presets.js` 严格按照站点区间约束；尚无匹配图库原生 PNG，不可用223系6000、阪和线223或321系替代。
+- 下一步需要与具体系列相符的像素 PNG（含使用许可、车型／涂装核查），再对每种**有车型族证据**的服务开放明确写明“示意”的图标；如需展示**实车**则另须日期、编组和车辆号证据。
+- 代表车型候选图和列车运行状况、官方即时定位严格独立；`partial=true` 不会因图片补齐而自动转为全线时刻表完整。
