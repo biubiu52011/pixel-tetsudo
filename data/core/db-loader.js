@@ -100,7 +100,7 @@
   // http(s) 分支加载由
   // data/core/gen-file-data.js 生成的紧凑单行 JSON 副本，而不是可读源文件，
   // 以减少 GitHub Pages 的下载和解析量。可读源文件仍是唯一事实来源。
-  var DATA_FILE = "../data/core/railway_data.compact.json?v=3bbcd6f98a6";
+  var DATA_FILE = "../data/core/railway_data.compact.json?v=a6ed3e1f0b5";
   var STATION_I18N_FILE = "../data/core/station_i18n.compact.json?v=8541d909f891";
   var TOURISM_DATA_FILE = "../data/core/tourism_data.compact.json";
   var _stationI18n = {};

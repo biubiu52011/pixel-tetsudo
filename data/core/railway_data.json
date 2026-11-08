@@ -43303,7 +43303,7 @@
       "nameEn": "Gakkentoshi Line (Katamachi Line)",
       "nameJa": "学研都市線（片町線）",
       "code": "Gakkentoshi",
-      "color": "#9370db",
+      "color": "#ff1493",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
@@ -43426,7 +43426,7 @@
         "nameZh": "学研都市线(片町线)",
         "nameEn": "Gakkentoshi Line (Katamachi Line)",
         "nameKo": "가켄토시선(카타마치선)",
-        "color": "#9370db",
+        "color": "#ff1493",
         "code": "H",
         "icon": "../images/鉄道/JR西日本/近畿_H.png",
         "order": 8,
@@ -43518,7 +43518,8 @@
         3
       ],
       "throughServices": [
-        "SanyoMain"
+        "SanyoMain",
+        "JRTozai"
       ],
       "transferStations": [
         {
@@ -43586,6 +43587,16 @@
           ],
           "evidence": {
             "source": "JR West continuous Tokaido/Sanyo operation across Kobe",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "JRTozai",
+          "handoverStations": [
+            "Amagasaki"
+          ],
+          "evidence": {
+            "source": "https://www.kr-railway.co.jp/ (route-level connection: JR Tōzai to JR Kobe Line via Amagasaki; individual train continuity requires timetable evidence)",
             "confidence": "HIGH"
           }
         }
@@ -47961,7 +47972,7 @@
       "nameEn": "JR Tōzai Line",
       "nameJa": "JR東西線",
       "code": "JRTozai",
-      "color": "#9370db",
+      "color": "#ff1493",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
@@ -47991,7 +48002,8 @@
       ],
       "throughServices": [
         "Gakkentoshi",
-        "Fukuchiyama"
+        "Fukuchiyama",
+        "TokaidoKansai"
       ],
       "transferStations": [
         {
@@ -48041,6 +48053,16 @@
             "source": "https://www.jr-odekake.net/station/pdf/ubn.pdf; https://timetable.jr-odekake.net/train-timetable/323501?date=20261004 (route-level junction only; not individual-train identity)",
             "confidence": "HIGH"
           }
+        },
+        {
+          "lineId": "TokaidoKansai",
+          "handoverStations": [
+            "Amagasaki"
+          ],
+          "evidence": {
+            "source": "https://www.kr-railway.co.jp/ (route-level connection: JR Tōzai to JR Kobe Line via Amagasaki; individual train continuity requires timetable evidence)",
+            "confidence": "HIGH"
+          }
         }
       ],
       "presentation": {
@@ -48048,7 +48070,7 @@
         "nameZh": "JR东西线",
         "nameEn": "JR Tōzai Line",
         "nameKo": "JR 도자이선",
-        "color": "#9370db",
+        "color": "#ff1493",
         "code": "H",
         "icon": "../images/鉄道/JR西日本/近畿_H.png",
         "order": 9,
