@@ -2734,26 +2734,43 @@
        keys[0]!=="Amagasaki"||
        ["Takarazuka","Shinmita"].indexOf(keys[keys.length-1])<0))
       return null;
-    var galleryModels=isC?["JR西日本207系（NK）",
+    // Exact holiday 2774M: JR-West 2026-11 public timetable confirms
+    // train number, stop order and time. The 2025-03-15 Akashi 207/321
+    // common-duty roster identifies this historical WORKING family only.
+    // No 2026 physical carset or livery is confirmed from that evidence.
+    var holiday2774=num==="2774MH"&&date==="2026-11-08"&&
+      dir==="Inbound"&&type==="Rapid"&&Number(proof.sourceTemplateId)===68302&&
+      keys.join("|")===[
+        "Shinoyamaguchi","Minami-Yashiro","Furuichi","Kusano-Hyogo",
+        "Ranpon","Sou-No","Hirono-Hyogo","Shinmita","Sanda-Hyogo",
+        "Nishinomiya-Najio","Takarazuka","Nakayama-Tera",
+        "Kawanishi-Ikeda","Itami","Amagasaki","Osaka"
+      ].join("|");
+    var is207321=isC||holiday2774;
+    var galleryModels=is207321?["JR西日本207系（NK）",
       "JR西日本207系（Y2）","JR西日本321系"]:[],
-      galleryPaths=isC?[
+      galleryPaths=is207321?[
         "../images/列车/JR西日本/JR西日本_207系_NK.png",
         "../images/列车/JR西日本/JR西日本_207系_Y2.png",
         "../images/列车/JR西日本/JR西日本_321系.png"
-      ]:[],illustration=isC
+      ]:[],illustration=is207321
         ?"../images/列车/JR西日本/JR西日本_321系.png":"";
     return Object.freeze({
       lineId:"Fukuchiyama",sourceTrainNumber:num,
-      sourceTemplateId:Number(proof.sourceTemplateId),numberBand:band[0],
+      sourceTemplateId:Number(proof.sourceTemplateId),numberBand:holiday2774?"holiday-2774M-2025-207-321-working":band[0],
+      publicTrainNumber:holiday2774?"2774M":"",
+      officialTrainSourceUrl:holiday2774
+        ?"https://timetable.jr-odekake.net/train-timetable/101641?date=20261108":"",
       sourceFleetCandidates:Object.freeze(models),
-      candidateModels:Object.freeze(isC?["207系","321系"]:models),
+      candidateModels:Object.freeze(is207321?["207系","321系"]:models),
       candidateGalleryModels:Object.freeze(galleryModels),
       candidateAssets:Object.freeze(galleryPaths),
-      illustrationModel:isC?"JR西日本321系":"",
+      illustrationModel:is207321?"JR西日本321系":"",
       illustrationPng:illustration,
-      illustrationSourceUrl:isC
-        ?"https://www.katano-transport.com/archives/29972598.html":"",
-      authorizesIllustration:isC,
+      illustrationSourceUrl:holiday2774
+        ?"https://ameblo.jp/tc205-37/entry-12906281412.html":
+        isC?"https://www.katano-transport.com/archives/29972598.html":"",
+      authorizesIllustration:is207321,
       referenceOnly:true,numberDateVerified:false,
       actualVehicleConfirmed:false,authorizesPNG:false
     });

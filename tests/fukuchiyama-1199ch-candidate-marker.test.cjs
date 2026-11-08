@@ -140,3 +140,59 @@ test('front-end source adapter forwards the original guarded proof, not a new ca
  assert.match(edge,/sql-jrwest-fukuchiyama-2611-historical-fleet-reference/);
  assert.match(edge,/run\.vehicle_artwork_path=null/);
 });
+
+
+test('2774MH 2026-11-08 holiday rapid maps 2025 common-duty candidates, 321 PNG example only',()=>{
+ const keys=['Shinoyamaguchi','Minami-Yashiro','Furuichi','Kusano-Hyogo',
+   'Ranpon','Sou-No','Hirono-Hyogo','Shinmita','Sanda-Hyogo',
+   'Nishinomiya-Najio','Takarazuka','Nakayama-Tera',
+   'Kawanishi-Ikeda','Itami','Amagasaki','Osaka'];
+ const holidayProof={...proof,sourceTemplateId:68302,sourceTrainId:'2774MH',
+  direction:'odpt.RailDirection:Inbound',trainType:'odpt.TrainType:JR-West.Rapid',
+  sourceStopKeys:keys.slice()};
+ const p={...position,trainNumber:'2774MH',
+  railDirection:'odpt.RailDirection:Inbound',trainType:'odpt.TrainType:JR-West.Rapid',
+  scheduledStopKeys:keys.slice(),sqlPublishedNumberFleetReference:holidayProof};
+ const f=verify(p),png='../images/列车/JR西日本/JR西日本_321系.png';
+ assert.equal(f.publicTrainNumber,'2774M');
+ assert.equal(f.numberBand,'holiday-2774M-2025-207-321-working');
+ assert.equal(f.authorizesIllustration,true);
+ assert.equal(f.authorizesPNG,false);
+ assert.equal(f.numberDateVerified,false);
+ assert.equal(f.actualVehicleConfirmed,false);
+ assert.deepEqual(Array.from(f.candidateModels),['207系','321系']);
+ assert.equal(marker(p).kind,'vehicle');
+ assert.equal(marker(p).iconSrc,png);
+ assert.equal(marker(p).illustrative,true);
+ assert.equal(marker(p).actualVehicleConfirmed,false);
+ assert.equal(marker(p).illustrationRole,
+  'fukuchiyama-2774M-2025-historical-207-321-example-only');
+ const r=fs.readFileSync('js/trains-render.js','utf8');
+ const a=r.indexOf('  function _trainMarkerDomKind(');
+ const b=r.indexOf('  // ODPT location evidence must never',a);
+ vm.runInContext(r.slice(a,b),ctx);
+ const spec=ctx._trainMarkerSpec(p,'planned-trip:2774MH','Fukuchiyama');
+ assert.equal(spec.kind,'vehicle');
+ assert.equal(spec.iconSrc,png);
+ assert.equal(spec.illustrative,true);
+ assert.equal(ctx._trainMarkerDomKind(spec),'planned');
+ const l=r.indexOf('function _trainFleetPlanLabel(');
+ vm.runInContext(r.slice(l,r.indexOf('\n  function ',l)),ctx);
+ const label=ctx._trainFleetPlanLabel(p,'Fukuchiyama','zh');
+ assert.match(label,/2025年/);
+ assert.match(label,/207系 \/ 321系/);
+ assert.equal(marker(p,true).kind,'candidate');
+ for(const change of [
+  {serviceDate:'2026-11-15'},
+  {trainNumber:'2772MH',sqlPublishedNumberFleetReference:{...holidayProof,sourceTrainId:'2772MH'}},
+  {trainType:'odpt.TrainType:JR-West.Local'},
+  {railDirection:'odpt.RailDirection:Outbound'},
+  {scheduledStopKeys:keys.slice(1)},
+  {sqlPublishedNumberFleetReference:{...holidayProof,sourceTemplateId:68301}},
+  {sqlPublishedNumberFleetReference:{...holidayProof,sourceStopKeys:keys.slice(1)}},
+  {positionSource:'realtime-api'},
+  {vehicleIdentityStatus:'EXACT'}
+ ]){
+  assert.notEqual(marker({...p,...change}).kind,'vehicle',JSON.stringify(change));
+ }
+});

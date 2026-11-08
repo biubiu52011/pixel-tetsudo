@@ -1362,6 +1362,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         p.vehicleIdentityStatus!=="EXACT"&&fukIndex&&
         typeof fukIndex.verifyFukuchiyamaSourceFleet==="function"
         ?fukIndex.verifyFukuchiyamaSourceFleet(p):null;
+    if(fukGroup&&fukGroup.numberBand==="holiday-2774M-2025-207-321-working"){
+      lang=String(lang||"ja").toLowerCase();
+      return (/^zh/.test(lang)?"2774M：2025年共通运用参考（2026年实车未确认）：":
+        lang==="en"?"2774M: 2025 shared-duty fleet (2026 actual stock unknown): ":
+        lang==="ko"?"2774M: 2025년 공통운용 참고(2026년 실차 미확인): ":
+        "2774M：2025年共通運用参考（2026年の実車未確認）：")+
+        fukGroup.candidateModels.join(" / ");
+    }
     if(fukGroup&&fukGroup.numberBand==="local-1100-1299-C"){
       lang=String(lang||"ja").toLowerCase();
       return (/^zh/.test(lang)?"普通列车号段候选（非实车确认）：":

@@ -5753,7 +5753,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
                 g.matchModelPath(assetModels[i],path,"Fukuchiyama");
             });
         if(artworkFailed!==true&&fukFleet.authorizesIllustration===true&&
-           fukFleet.numberBand==="local-1100-1299-C"&&approved&&
+           (fukFleet.numberBand==="local-1100-1299-C"||
+             fukFleet.numberBand==="holiday-2774M-2025-207-321-working")&&approved&&
            fukFleet.illustrationModel==="JR西日本321系"&&
            fukFleet.illustrationPng===
              "../images/列车/JR西日本/JR西日本_321系.png"&&
@@ -5763,7 +5764,10 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
           return {kind:"vehicle",iconSrc:fukFleet.illustrationPng,
             planned:true,illustrative:true,representativeOnly:true,
             referenceOnly:true,actualVehicleConfirmed:false,
-            illustrationRole:"fukuchiyama-207-321-C-local-example-only"};
+            illustrationRole:fukFleet.numberBand===
+              "holiday-2774M-2025-207-321-working"
+              ?"fukuchiyama-2774M-2025-historical-207-321-example-only"
+              :"fukuchiyama-207-321-C-local-example-only"};
         return {kind:"candidate",iconSrc:"",planned:false,
           referenceOnly:true,actualVehicleConfirmed:false,
           candidateModels:fukFleet.candidateModels.slice(),
