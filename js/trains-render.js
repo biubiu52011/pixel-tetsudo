@@ -1168,7 +1168,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       p.sqlPublishedNumberFleetReference&&
       p.sqlPublishedNumberFleetReference.source===
         "sql-jrwest-fukuchiyama-2611-historical-fleet-reference";
-    var note = fuk321
+    var fukKounotori=fuk321&&
+      /^(30|70)[0-9]{2}MH?$/.test(String(p.trainNumber||""))&&
+      /(?:\\.|:)LimitedExpress$/.test(String(p.trainType||""));
+    var note = fukKounotori
+      ? (/^zh/.test(lang)?"车辆图片：287系仅是287／289系特急车型候选中的示意，不代表当日实际车辆或编组":
+          lang==="en"?"287-series artwork is only an example of the 287/289 Kounotori fleet; actual trainset unconfirmed":
+          lang==="ko"?"287계 이미지는 287/289계 특급 운용 참고용이며 당일 실제 편성은 미확인":
+          "287系の画像は287・289系『こうのとり』の参考例で、当日の実車形式・編成は未確認")
+      : fuk321
       ? (/^zh/.test(lang)?"车辆图片：321系仅为207／321系共通运用示意，实际车型和编组未确认":
           lang==="en"?"321-series artwork is only an example of the 207/321 fleet; actual stock unconfirmed":
           lang==="ko"?"321계 이미지는 207/321계 운용 참고용이며 실제 편성은 미확인":
