@@ -88,7 +88,7 @@ test('JU icon maps to the canonical JR Utsunomiya line across data and cards', (
     JSON.parse(fs.readFileSync('data/core/railway_data.json', 'utf8')),
     JSON.parse(fs.readFileSync('data/core/railway_data.compact.json', 'utf8')),
     JSON.parse(fs.readFileSync('data/core/railway-data.file.js', 'utf8')
-      .replace(/^window\\.RAILWAY_DATA\\s*=\\s*/, '').replace(/;\\s*$/, ''))
+      .replace(/^window\.RAILWAY_DATA\s*=\s*/, '').replace(/;\s*$/, ''))
   ];
 
   for (const data of sources) {
