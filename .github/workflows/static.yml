@@ -38,8 +38,13 @@ jobs:
           const evaluator=require('./js/runinfo-evaluator.js');
           const configured=new Set(['JR-East','Tobu','Keio','Keikyu','Sotetsu','Tokyu','Seibu',
             'TokyoMetro','Toei','YokohamaMunicipal','TWR','MIR','TamaMonorail','Keisei']);
-          const base=urls.filter(x=>x.includes('/odpt:TrainInformation?'));
-          const alerts=urls.filter(x=>x.includes('/gtfs/realtime/')&&x.split('?')[0].includes('_alert'));
+          // JR East i-Stations is configured through a dynamic Challenge URL,
+          // so it is not listed among the prebuilt 16 TrainInformation links.
+          const challenge=urls.find(x=>x.includes('api-challenge.odpt.org')&&x.includes('acl:consumerKey='));
+          const key=challenge&&challenge.match(/acl:consumerKey=([^&]+)/)?.[1];
+          if(!key)throw Error('challenge key unavailable');
+          const base=['https://api-challenge.odpt.org/api/v4/odpt:TrainInformation?odpt:operator=odpt.Operator:jre-is&acl:consumerKey='+key];
+          const alerts=[];
           const results=[];
           const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
           const textOf=x=>{const t=x['odpt:trainInformationText']||x['odpt:text']||'';
