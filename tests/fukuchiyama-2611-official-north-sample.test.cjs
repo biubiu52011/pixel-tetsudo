@@ -13,7 +13,7 @@ test('2531M and 2531MH reuse canonical one-stop sources and complete the full te
  'Iso-Tamba','Kuroi-Tamba','Ichijima','Tamba-Takeda','Fukuchiyama']){
    assert.ok(sql.includes("'"+stop+"'"),stop);
  }
- assert.match(sql,/08:37/);
+ assert.match(edge,/08:37/);
  assert.match(sql,/09:29/);
  assert.match(sql,/official-sampled:fukuchiyama:2611:2531M/);
  assert.match(sql,/2026-11-01/);
