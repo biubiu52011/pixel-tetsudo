@@ -66,3 +66,29 @@
 参考（JR西日本官方2026年11月时刻表）：
 - https://timetable.jr-odekake.net/train-timetable/240391?date=20261024
 - https://timetable.jr-odekake.net/train-timetable/101631?date=20261023
+
+
+## 2026-11-08 追加：北段 2528M／2532M 与「こうのとり」8・10号修复
+
+### 北段普通：2026年11月官方样本，不等于完整列车时刻表
+- 官网每日运行车次 **2528M** 福知山09:01发→篠山口10:10到，**2532M** 福知山11:07发→篠山口12:04到；两者在本项目中分别按平日／土休日内部存为 `M`／`MH`，不是重复的物理列车。
+- 两趟各10个有据停站，复用 `manual_timetable_templates`、`manual_timetable_template_stops`、`train_timetables`、`train_timetable_members` 和既有自动生成视图；新增来源 IDs `2611082528001/2`、`2611082532001/2`。
+- 仅使用官方2026年11月运营范围，在 Edge 端再校验站序、时间及 source ID。保留非实时、编组未确认、不授权PNG的状态；223系5500番台仍仅是北段普通线路候选。
+- 来源：https://timetable.jr-odekake.net/train-timetable/24391?date=20261103 、https://timetable.jr-odekake.net/train-timetable/24581?date=20261103
+- 迁移：`supabase/migrations/20261108223000_fukuchiyama_northbound_2528_2532_official_samples.sql`。
+
+### 特急「こうのとり」8・10号：修正已有资料而非重复导入
+- 原有SQL记录 `3008M / 3008MH`（来源 68244／68245）与 `3010M / 3010MH`（68251／68252）错写为 `Local`，仅有三田—大阪4个停车站，候选车型又误继承207／321／223／225通勤车族。
+- 官方2026年11月资料核对：**3008M = こうのとり8号**，**3010M = こうのとり10号**，均为 `JR-West.LimitedExpress`，从福知山经篠山口、宝塚、尼崎、大阪开往新大阪。
+- 已在原 SQL 来源和规范化视图中补全福知山—大阪的停站片段：8号9个停车站，10号7个停车站；更正为 `LimitedExpress`，`destination_urns` 保留列车真实终点新大阪。本站线路图不将大阪—新大阪误算为福知山线区间。
+- 原有 `published_jrwest_fukuchiyama_2611_source_fleet` 的357条来源继续保持不变，其中353条为207／321／223-6000／225-6000候选，4条特急改为287／289系车型族参考；不使用289系列的具体涂装PNG去宣称当日实车，`actual_vehicle_confirmed=false`、`authorizes_png=false`。
+- 只在2026年11月标记列车番号与这段时刻已验证；不确认即时位置、当日运休、实车编组或整条线路班次覆盖。数据外的2026年月份不会继续显示这几条样本。
+- 迁移：`supabase/migrations/20261108224000_fukuchiyama_kounotori_3008_3010_correct_type_north_stops.sql`。
+- 来源：https://timetable.jr-odekake.net/train-timetable/91081?date=20261103 、https://timetable.jr-odekake.net/train-timetable/91111?date=20261103 、https://www.jr-odekake.net/railroad/train/kounotori/
+
+### 完成后的计数与限制
+- 福知山线站点：31／31。
+- `manual_timetable_templates` 来源：**387条**，其中有至少两个实际停站时刻的 **363条**，只剩 **24条** 仅有一站的历史残片。
+- 上述 `363` 包含 **357条原本的历史多站记录** 和 **6条官方普通列车样本的日历版本**，不是363条均符合2026年11月实际时刻的承诺；8号、10号是在原357条上更新，不增加来源总数。
+- 北段目前经验证的公开样本：3趟普通（2531M、2528M、2532M）与2趟特急（3008M、3010M）；`MH` 后缀仍是项目的土休日内部表示。
+- 日历、完整性及车型可信度分开；不因少数样本齐备而标记全线 `complete` 或实时运行。
