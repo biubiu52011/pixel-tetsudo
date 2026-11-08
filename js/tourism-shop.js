@@ -123,7 +123,7 @@
       + about + (notesHtml || '') + '</section>';
   }
 
-  // 同一菜单优先使用真实实物照片；没有实物图时改为紧凑的文字价格列表。
+  // 真实照片保留图集能力，无图项目不伪造图片；混排时保留原始顺序。
   function getMenuName(spot, item, index) {
     return (spot.menu_i18n && spot.menu_i18n[index] && spot.menu_i18n[index][C.state.lang])
       || item.item || C.t('detail.i18n_missing');
@@ -165,32 +165,21 @@
   }
 
 
-  function buildMenuItems(spot, entries) {
-    // 顺序与原菜单一致。只有连续的真实图片条目才组成同一图片带。
+  function buildMenuItems(spot, entries, layout) {
     if (!entries.length) return '';
-    var html = '', type = '', current = [];
-    function flush() {
-      if (!current.length) return;
-      if (type === 'photo') {
-        html += '<div class="dp-menu-carousel" aria-label="' + C.escapeHtml(C.t('detail.menu')) + '">';
-        current.forEach(function(entry) { html += buildPhotoItem(spot, entry.item, entry.index); });
-      } else {
-        html += '<div class="dp-menu-list">';
-        current.forEach(function(entry) { html += buildTextItem(spot, entry.item, entry.index); });
-      }
-      html += '</div>';
-      current = [];
-    }
+    // Select layout from the complete menu before splitting preview and expanded items.
+    // Mixed menus stay ordered without creating orphan photo carousels.
+    var wrapper = layout === 'photo' ? 'dp-menu-carousel'
+      : layout === 'mixed' ? 'dp-menu-mixed' : 'dp-menu-list';
+    var html = '<div class="' + wrapper + '"'
+      + (layout === 'photo' ? ' aria-label="' + C.escapeHtml(C.t('detail.menu')) + '"' : '') + '>';
     entries.forEach(function(entry) {
-      var next = isMenuIllustrated(entry.item) ? 'photo' : 'text';
-      if (type && next !== type) flush();
-      type = next;
-      current.push(entry);
+      html += isMenuIllustrated(entry.item)
+        ? buildPhotoItem(spot, entry.item, entry.index)
+        : buildTextItem(spot, entry.item, entry.index);
     });
-    flush();
-    return html;
+    return html + '</div>';
   }
-
 
   // 1–6 全量、7–12 页内展开、13+ 全览弹窗。保留专属弹窗的焦点与关闭行为。
   function buildRecommendationsCard(spot) {
@@ -201,6 +190,9 @@
     if (!items.length) return '';
 
     var total = items.length;
+    var illustratedCount = items.filter(function(entry) { return isMenuIllustrated(entry.item); }).length;
+    var menuLayout = illustratedCount === 0 ? 'text'
+      : illustratedCount === total ? 'photo' : 'mixed';
     var inlineExpand = total > 6 && total <= 12;
     var modalExpand = total > 12;
     var title = C.escapeHtml(C.t('detail.menu'));
@@ -212,10 +204,10 @@
     var html = '<section class="dp-card dp-menu" aria-labelledby="dp-recs-heading"><div class="dp-menu-head">'
       + '<h2 class="dp-sec-title" id="dp-recs-heading">' + title + '</h2>'
       + '<span class="dp-menu-count">' + total + '</span></div>'
-      + buildMenuItems(spot, items.slice(0, 6));
+      + buildMenuItems(spot, items.slice(0, 6), menuLayout);
     if (inlineExpand) {
       html += '<div class="dp-menu-more" id="dp-menu-more" hidden>'
-        + buildMenuItems(spot, items.slice(6)) + '</div>'
+        + buildMenuItems(spot, items.slice(6), menuLayout) + '</div>'
         + '<button type="button" class="dp-menu-inline-toggle" aria-expanded="false"'
         + ' aria-controls="dp-menu-more" data-hidden-count="' + (total - 6) + '">'
         + C.escapeHtml(shopText('seeMore')) + ' (' + (total - 6) + ')</button>';
@@ -233,7 +225,7 @@
       + '<h2 id="dp-menu-modal-title" class="dp-menu-modal-title">' + title + '</h2>'
       + '<button type="button" class="dp-menu-modal-close" aria-label="' + C.escapeHtml(shopText('close'))
       + '">&times;</button></div><div class="dp-menu-modal-grid">'
-      + buildMenuItems(spot, items)
+      + buildMenuItems(spot, items, menuLayout)
       + (unverified ? '<p class="dp-menu-disclaimer">' + C.escapeHtml(C.t('detail.unverified')) + '</p>' : '')
       + '</div></div></div>';
   }
