@@ -23,6 +23,14 @@
   var JR_OTHER = 'https://www.jreast.co.jp/train/local/';
   var TOKYU = 'https://www.tokyu.co.jp/railway/trains/';
 
+  // The north Fukuchiyama local corridor uses distinct 223-5500 stock.
+  // A two-station itinerary is required before this can narrow a reference.
+  var FUKUCHIYAMA_NORTH_KEYS = Object.freeze([
+    'Shinoyamaguchi','Tamba-Oyama','Shimotaki','Tanigawa',
+    'Kaibara-Hyogo','Iso-Tamba','Kuroi-Tamba','Ichijima',
+    'Tamba-Takeda','Fukuchiyama'
+  ]);
+
   // Carefully scoped to operator-owned principal stock, not a promise that
   // *every* train on the line is operated by these families.
   var rows = [
@@ -699,6 +707,23 @@
       if (row.serviceTypes && row.serviceTypes.indexOf(suffix) < 0) return null;
       if (owner && owner !== (row.vehicleOwner || row.operator)) break;
       var models = row.modelsByService ? row.modelsByService[suffix] : row.models;
+      var scopedPresetId = row.id, scopedSourceUrl = row.sourceUrl;
+      // 223-5500 is a north-section LOCAL fleet reference only. Mixed or
+      // unknown routes stay on the broad historical line fleet candidates.
+      // Never use number suffixes or this reference to select a physical set.
+      if (row.id === 'jrwest-fukuchiyama' && suffix === 'Local') {
+        var stationKeys = options && options.stationKeys;
+        if (Array.isArray(stationKeys) && stationKeys.length >= 2 &&
+            new Set(stationKeys).size >= 2 &&
+            stationKeys.every(function(k) {
+              return FUKUCHIYAMA_NORTH_KEYS.indexOf(k) >= 0;
+            }) &&
+            stationKeys.some(function(k) { return k !== 'Shinoyamaguchi'; })) {
+          models = ['JR西日本223系5500番台'];
+          scopedPresetId = 'jrwest-fukuchiyama-north-local';
+          scopedSourceUrl = 'https://express22.xsrv.jp/maintarminal/jr223-5500/';
+        }
+      }
       if (!models || !models.length) return null;
       return {
         operator: row.operator,
@@ -707,8 +732,8 @@
         evidenceRole: 'route-fleet-reference',
         _fleetReferenceOnly: true,
         planOverride: false,
-        sourceUrl: row.sourceUrl,
-        presetId: row.id
+        sourceUrl: scopedSourceUrl,
+        presetId: scopedPresetId
       };
     }
     if (!owner || !ORDINARY.test(suffix)) return null;
