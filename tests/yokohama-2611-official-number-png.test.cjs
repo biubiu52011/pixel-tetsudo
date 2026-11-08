@@ -126,13 +126,13 @@ test('wrong stock, number, calendar, source, service or date cannot take Yokoham
 test('page lazy script hash and migration audit scope are preserved',()=>{
   const file='data/timetables/train-number-png-ranges.js';
   const buf=fs.readFileSync(file);
-  const sha=crypto.createHash('sha1').update('blob '+buf.length+'\\0')
+  const sha=crypto.createHash('sha1').update('blob '+buf.length+'\0')
     .update(buf).digest('hex').slice(0,12);
   const html=fs.readFileSync('pages/trains.html','utf8');
   assert.ok(html.includes('../'+file+'?v='+sha),'trains lazy asset cache key must match Git blob');
   const sql=fs.readFileSync(
     'supabase/migrations/20261108175301_jr_east_yokohama_2611_official_number_evidence.sql','utf8');
   for(const label of ['622','608u1','608d1','608u2','608d2',
-    'train_number_only','train_number_set_only','actual'])
+    'train_number_only','train_number_set_only','carsets'])
     assert.ok(sql.includes(label),label);
 });
