@@ -1,0 +1,67 @@
+name: One-off Fukuchiyama evening live API check
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fukuchiyama-evening-live-check-once.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify public train-runs 2026-11-08 weekday calendar and expiration
+        run: |
+          node <<'JS'
+          const base='https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/train-runs';
+          async function fetchDay(day){
+            const response=await fetch(base+'?line_id=Fukuchiyama&service_date='+day,
+              {headers:{accept:'application/json'},signal:AbortSignal.timeout(50000)});
+            const body=await response.text();
+            if(!response.ok)throw Error(day+' HTTP '+response.status+' '+body.slice(0,1200));
+            const obj=JSON.parse(body);
+            if(obj.ok!==true || !Array.isArray(obj.runs))throw Error(day+' invalid payload '+body.slice(0,1000));
+            return obj;
+          }
+          function one(result,num,type,n,models=null){
+            const rows=result.runs.filter(x=>x.train_number===num);
+            if(rows.length!==1)throw Error(result.service_date+' '+num+' expected one, got '+rows.length);
+            const x=rows[0];
+            if(x.train_type!=='odpt.TrainType:JR-West.'+type ||x.stops.length!==n)
+              throw Error(result.service_date+' '+num+' unexpected kind/stops '+x.train_type+'/'+x.stops.length);
+            if(models){
+              if(x.vehicle_type_candidates!==models||x.vehicle_plan_confirmed!==false||
+                 x.vehicle_artwork_path!==null||x.timetable_date_verified!==true)
+                throw Error(result.service_date+' '+num+' wrong vehicle/date scope '+JSON.stringify(x).slice(0,1500));
+            }
+            return x;
+          }
+          const holiday=await fetchDay('2026-11-08');
+          for(const n of ['2771MH','2773MH','2775MH','2780MH','2782MH'])
+            one(holiday,n,'Rapid',16);
+          const k28=one(holiday,'3028MH','LimitedExpress',7,'287系 / 289系');
+          const k25=one(holiday,'7025MH','LimitedExpress',11,'287系 / 289系');
+          if(k28.stops[0].station_key!=='Fukuchiyama'||k28.stops[0].departure_time!=='20:02')
+            throw Error('3028MH north segment origin incorrect');
+          if(k25.stops[0].station_key!=='Osaka'||k25.stops[10].station_key!=='Fukuchiyama')
+            throw Error('7025MH segment endpoints incorrect');
+          if(holiday.partial!==true||holiday.complete!==false)
+            throw Error('whole line incorrectly marked complete');
+          console.log('2026-11-08 PASS',{runs:holiday.runs.length,dated:holiday.date_verified_runs});
+          const weekday=await fetchDay('2026-11-09');
+          for(const n of ['2771M','2773M','2775M','2780M'])
+            one(weekday,n,'Rapid',16);
+          one(weekday,'3028M','LimitedExpress',7,'287系 / 289系');
+          if(weekday.runs.some(x=>x.train_number==='7025MH'||x.train_number==='7025M'))
+            throw Error('7025M incorrectly present on Monday 2026-11-09');
+          console.log('2026-11-09 PASS',{runs:weekday.runs.length,dated:weekday.date_verified_runs});
+          const late=await fetchDay('2026-11-30');
+          if(late.runs.some(x=>x.train_number==='7025MH'))
+            throw Error('7025M erroneously runs after 2026-11-29');
+          console.log('2026-11-30 PASS no 7025');
+          const outside=await fetchDay('2026-12-01');
+          if(outside.runs.some(x=>['7025MH','3028MH','3028M'].includes(x.train_number)))
+            throw Error('November official examples leaked into December');
+          console.log('2026-12-01 PASS no November-only express');
+          JS
