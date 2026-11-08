@@ -330,11 +330,16 @@ body[data-page="history"] .history-undo-btn:active {
   body[data-page="trains"] .rs-status-icon { animation: none; }
 }
 
-/* JR Group fallback only: 36px Apple-style continuous-corner squircle.
-   Keep the original transparent JR PNG, inner image size and line-color fill.
-   SVG-like path is drawn in the existing 36x36 coordinate space. */
+/* JR Group fallback: matching Apple-style continuous corners on both layers.
+   Outer 36px line-color tile and inner 28px transparent PNG use the same
+   normalized path (28/36 scale). Other operators keep their original icons. */
 body[data-page="realtime"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]),
 body[data-page="trains"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]) {
-  border-radius: 30%; /* rounded-square fallback */
+  border-radius: 30%; /* fallback when clip-path: path() is unavailable */
   clip-path: path("M 15 0 H 21 C 27.5 0 31 1.5 34 5 C 35.5 8 36 11 36 15 V 21 C 36 27.5 34.5 31 31 34 C 28 35.5 25 36 21 36 H 15 C 8.5 36 5 34.5 2 31 C 0.5 28 0 25 0 21 V 15 C 0 8.5 1.5 5 5 2 C 8 0.5 11 0 15 0 Z");
+}
+body[data-page="realtime"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]) > img,
+body[data-page="trains"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]) > img {
+  border-radius: 30%; /* fallback matching outer tile */
+  clip-path: path("M 11.667 0 H 16.333 C 21.389 0 24.111 1.167 26.444 3.889 C 27.611 6.222 28 8.556 28 11.667 V 16.333 C 28 21.389 26.833 24.111 24.111 26.444 C 21.778 27.611 19.444 28 16.333 28 H 11.667 C 6.611 28 3.889 26.833 1.556 24.111 C 0.389 21.778 0 19.444 0 16.333 V 11.667 C 0 6.611 1.167 3.889 3.889 1.556 C 6.222 0.389 8.556 0 11.667 0 Z");
 }
