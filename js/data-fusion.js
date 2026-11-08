@@ -534,12 +534,21 @@
       ['stationIndex','segmentToIndex','segmentProgress','positionSource','estimated','railDirection'].forEach(function(k) {
         if (a[k] !== b[k]) result.position = true;
       });
+      // The PNG matcher also depends on source/calendar, published number,
+      // observed stock and candidate models. A stationary train can gain or
+      // lose its image without changing its physical coordinates.
       ['delayMin','destinationStation','vehicleIconPath','vehicleType','vehicleIdentityStatus',
-        'vehicleFormationId','trainNumber','trainType','typeName','serviceDate'].forEach(function(k) {
+        'vehicleFormationId','trainNumber','trainType','typeName','serviceDate',
+        'sourceRailway','positionLineId','fusionLineId','fusionRole',
+        'calendarType','serviceId','trainOperator','realtimeVehicleType',
+        'realtimeDerivedVehicleType','timetableVehicleType','officialNumberVerified',
+        'plannedVehicleCandidateStatus','plannedVehicleCandidateArtworkPath',
+        'plannedVehicleCandidateArtworkStatus','candidateArtworkConfirmedByDatedRule'
+      ].forEach(function(k) {
         if (a[k] !== b[k]) result.display = true;
       });
       ['vehiclePlan','vehicleFormationCandidates','operationEvidence','vehicleResolution',
-        'operationArtworkCandidates'].forEach(function(k) {
+        'operationArtworkCandidates','plannedVehicleCandidates'].forEach(function(k) {
         if (JSON.stringify(a[k] || null) !== JSON.stringify(b[k] || null)) result.display = true;
       });
       ['vehicleResolvedUpstream','vehicleResolvedFromRealtime','vehicleResolvedFromRealtimeDerived',

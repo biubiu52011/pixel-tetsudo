@@ -34,6 +34,8 @@ on:
       - 'tests/chuo-main-2611-number-index.test.cjs'
       - 'tests/chuo-sobu-local-2611-source-scope-and-e235-fleet.test.cjs'
       - 'tests/train-number-png-runtime.test.cjs'
+      - 'tests/trains-mapping-refresh.test.cjs'
+      - 'js/trains-page.js'
       - 'tests/yokohama-2611-official-number-png.test.cjs'
       - 'tests/joban-main-source-only-vehicle.test.cjs'
       - 'tests/joban-main-north-mixed-fleet.test.cjs'
@@ -225,6 +227,8 @@ jobs:
         run: node tools/train-network-vehicle-audit.test.cjs
       - name: Verify all garage PNG-to-stock maps and official train references
         run: node tools/vehicle-garage-png-map.test.cjs
+      - name: Verify stationary trains refresh when PNG evidence changes
+        run: node --test tests/trains-mapping-refresh.test.cjs
       - name: Verify realtime and SQL number-to-PNG on SVG maps
         run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs
       - name: Verify JobanMain source-only E531 and northern 701/E721 candidate-only SVG rules
