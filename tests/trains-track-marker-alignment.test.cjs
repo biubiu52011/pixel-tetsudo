@@ -1,5 +1,5 @@
 'use strict';
-/* Regression: ordinary train markers stay on the painted track centreline.
+/* Regression: ordinary trains stay in opposite direction lanes around the painted centreline.
  * The same SVG unit still owns the artwork and its destination caption.
  * Run: node --test tests/trains-track-marker-alignment.test.cjs
  */
@@ -27,29 +27,29 @@ function position(from, to, progress, id) {
     railDirection: from < to ? 'odpt.RailDirection:Outbound' : 'odpt.RailDirection:Inbound'
   };
 }
-const opts = {laneGap: 0, stackGap: 8, getDisplayMoveDir: () => null};
+const opts = {laneGap: 11, stackGap: 8, getDisplayMoveDir: () => null};
 function place(p, geometry = {isLoop: false}, override = opts) {
   return layout.resolveAll([p], coords, geometry, 'Example', override)[0];
 }
 
-test('ordinary map passes an explicit zero lane gap to the shared layout resolver', () => {
-  assert.match(source, /laneGap:\s*isLoop\s*\?\s*9\s*:\s*0/);
+test('ordinary map preserves 11-unit up/down side lanes', () => {
+  assert.match(source, /laneGap:\s*isLoop\s*\?\s*9\s*:\s*11/);
   assert.match(source, /opts\.laneGap\s*==\s*null\s*\?\s*DEFAULTS\.laneGap\s*:\s*opts\.laneGap/);
 });
 
-test('both directions keep their icon anchors on the visible vertical track', () => {
+test('up and down run in visually distinct lanes on each side', () => {
   const down = place(position(0, 1, 0.5, 'down'));
   const up = place(position(1, 0, 0.5, 'up'));
-  assert.equal(down.x, 150);
-  assert.equal(up.x, 150);
+  assert.equal(down.x, 139);
+  assert.equal(up.x, 161);
   assert.equal(down.y, 70);
   assert.equal(up.y, 70);
   assert.notEqual(down.lane, up.lane, 'source directions are not rewritten');
 });
 
-test('station clearance remains longitudinal rather than an off-track horizontal shift', () => {
+test('station clearance stays longitudinal within the correct direction lane', () => {
   const train = place(position(0, 1, 0, 'stopped'));
-  assert.equal(train.x, 150);
+  assert.equal(train.x, 139);
   assert.equal(train.y, 58);
 });
 

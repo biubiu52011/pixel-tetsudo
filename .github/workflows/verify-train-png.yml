@@ -216,6 +216,8 @@ jobs:
         run: node tools/train-major-fleet-presets.test.cjs
       - name: Verify visual folding of dense train markers on SVG maps
         run: node tools/train-visual-fold.test.cjs
+      - name: Verify up/down train lanes and Ueno-Tokyo four-stop projection
+        run: node --test tests/trains-track-marker-alignment.test.cjs tests/trains-uenotokyo-map-projection.test.cjs
       - name: Verify Yamanote crowded transfer +N SVG layout
         run: node --test tools/yamanote-transfer-overflow.test.cjs
       - name: Audit all 237 railway routes, 191 fleet scopes and gallery references

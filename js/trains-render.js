@@ -578,17 +578,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var sourceTo = position.segmentToIndex == null ? null : sourceLine.stations[Number(position.segmentToIndex)];
       var fromIndex = displayIndex[sourceFrom];
       var toIndex = sourceTo == null ? null : displayIndex[sourceTo];
-      if (fromIndex == null && toIndex == null) return null;
+      // Only positions in the presented corridor belong on this map.
+      // Never pin approaching trains to Ueno or departed trains to Shinagawa.
+      if (fromIndex == null) return null;
+      if (sourceTo != null && toIndex == null &&
+          Number(position.segmentProgress || 0) > 0) return null;
       var projected = Object.assign({}, position);
-      if (fromIndex == null) {
-        projected.stationIndex = toIndex;
-        projected.segmentToIndex = null;
-        projected.segmentProgress = 0;
-      } else {
-        projected.stationIndex = fromIndex;
-        projected.segmentToIndex = toIndex == null || toIndex === fromIndex ? null : toIndex;
-        if (projected.segmentToIndex == null) projected.segmentProgress = 0;
-      }
+      projected.stationIndex = fromIndex;
+      projected.segmentToIndex = toIndex == null || toIndex === fromIndex ? null : toIndex;
+      if (projected.segmentToIndex == null) projected.segmentProgress = 0;
       return projected;
     }).filter(Boolean);
   }
@@ -1987,9 +1985,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       ? window.TrainTrackLayout.resolveAll(positions, stationCoords, geometry, lineId, {
           getDisplayMoveDir: _trainMoveDir,
           fusionBaseIdx: _fusionBaseIdx,
-          // The ordinary map has one painted centreline; do not detach its
-          // train icons into invisible side lanes. Keep loop lanes unchanged.
-          laneGap: isLoop ? 9 : 0,
+          // Up/down use symmetric side lanes; image, arrow and destination
+          // stay one component when detecting collisions.
+          laneGap: isLoop ? 9 : 11,
           stackGap: isLoop ? 7 : 8
         })
       : null;
@@ -2297,58 +2295,57 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
   }
 
-  // Fold is a DISPLAY-only grouping of different physical services,
-  // not a train-number deduplication or a coupled-formation assertion.
-  // Screen-pixel distances are used so mobile viewBox scaling does not turn
-  // a dense cluster into a collection of overlapping vehicle images.
+  // Visual folding uses the full TrainComponent (vehicle + arrow + caption)
+  // in screen pixels. Overlapping components share one +N UI; identities do not merge.
   function _groupNearbyTrainMarkers(entries, distance) {
-    var limit = Number(distance) || 44;
-    var ordered = (entries || []).filter(function(item) {
-      return item && item.id && isFinite(item.x) && isFinite(item.y);
+    var rows = (entries || []).filter(function(e) {
+      var b = e && e.box;
+      return e && e.id && b && isFinite(b.x) && isFinite(b.y) &&
+        isFinite(b.width) && isFinite(b.height) && b.width > 0 && b.height > 0;
     }).slice().sort(function(a, b) {
-      // Prefer the existing PNG when a grey position dot shares its location.
       return Number(!!b.artwork) - Number(!!a.artwork) ||
         String(a.id).localeCompare(String(b.id));
     });
-    var claimed = Object.create(null), grouped = Object.create(null);
-    ordered.forEach(function(anchor) {
-      if (claimed[anchor.id]) return;
-      claimed[anchor.id] = true;
-      var ids = [anchor.id];
-      ordered.forEach(function(other) {
-        if (claimed[other.id] || anchor.id === other.id) return;
-        var dx = other.x - anchor.x, dy = other.y - anchor.y;
-        var overlap = Math.abs(dx) <= 18 && Math.abs(dy) <= 18;
-        var sameDirection = !!anchor.direction && anchor.direction === other.direction;
-        // No chain clustering: every child must be close to the same anchor,
-        // otherwise trains from different stations could disappear together.
-        if (!overlap && !(sameDirection && dx * dx + dy * dy <= limit * limit)) return;
-        claimed[other.id] = true;
-        ids.push(other.id);
-      });
-      if (ids.length > 1) grouped[anchor.id] = [anchor.id].concat(ids.slice(1).sort());
+    var parent = rows.map(function(_, i) { return i; });
+    function root(i) {
+      while (i !== parent[i]) { parent[i] = parent[parent[i]]; i = parent[i]; }
+      return i;
+    }
+    function overlaps(a, b) {
+      return a.x < b.x + b.width && b.x < a.x + a.width &&
+        a.y < b.y + b.height && b.y < a.y + a.height;
+    }
+    for (var i = 0; i < rows.length; i++)
+      for (var j = i + 1; j < rows.length; j++) {
+        if (!overlaps(rows[i].box, rows[j].box)) continue;
+        var a = root(i), b = root(j);
+        if (a !== b) parent[b] = a;
+      }
+    var clusters = Object.create(null), groups = Object.create(null);
+    rows.forEach(function(e, i) {
+      var key = String(root(i));
+      (clusters[key] = clusters[key] || []).push(e.id);
     });
-    return grouped;
+    Object.keys(clusters).forEach(function(key) {
+      var ids = clusters[key];
+      if (ids.length > 1) groups[ids[0]] = [ids[0]].concat(ids.slice(1).sort());
+    });
+    return groups;
   }
 
   function _resolveTrainLabelCollisions(trainLayer, frameTime) {
     var svg = trainLayer && trainLayer.ownerSVGElement;
-    var layout = window.TrainTrackLayout;
-    if (!svg || !layout || !layout.resolveLabels ||
-        (svg.__geometry && svg.__geometry.isSixShapedLoop)) return;
+    if (!svg) return;
     if (frameTime != null && trainLayer._captionFrameTime === frameTime) return;
     if (frameTime != null) {
-      // 每个标记的 RAF 都会在本帧绘制前运行；只有在最后一个移动标记
-      // 同时更新图标和文字后，才解析整个图层。
-      // 在第一个 RAF 中解析会让后续标记覆盖偏移量。
+      // Measure after every train's animation frame has updated its complete unit.
       if (trainLayer._captionPendingTime !== frameTime) {
         trainLayer._captionPendingTime = frameTime;
         trainLayer._captionPendingCount = 0;
         trainLayer._captionPendingTotal = 0;
         var moving = trainLayer.querySelectorAll('[data-train-id]');
-        for (var a = 0; a < moving.length; a++) {
+        for (var a = 0; a < moving.length; a++)
           if (moving[a]._moveRaf) trainLayer._captionPendingTotal++;
-        }
       }
       trainLayer._captionPendingCount++;
       if (trainLayer._captionPendingCount < trainLayer._captionPendingTotal) return;
@@ -2357,130 +2354,56 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var matrix = svg.getScreenCTM();
     if (!matrix || !matrix.a || !matrix.d) return;
     var oldBadges = trainLayer.querySelectorAll('[data-train-fold-badge]');
-    for (var f=0;f<oldBadges.length;f++) oldBadges[f].parentNode.removeChild(oldBadges[f]);
-    var labels = [], groups = {}, markers = {}, iconEntries = [];
+    for (var f = 0; f < oldBadges.length; f++)
+      oldBadges[f].parentNode.removeChild(oldBadges[f]);
+    var captionById = Object.create(null);
+    var labels = trainLayer.querySelectorAll('[data-train-label-for]');
+    for (var n = 0; n < labels.length; n++) {
+      var label = labels[n];
+      var raw = label.getAttribute('data-label-raw-transform');
+      if (raw != null) label.setAttribute('transform', raw);
+      label.removeAttribute('display');
+      captionById[label.getAttribute('data-train-label-for')] = label;
+    }
+    var markerById = Object.create(null), components = [];
     var icons = trainLayer.querySelectorAll('[data-train-id]');
     for (var m = 0; m < icons.length; m++) {
-      var icon = icons[m];
-      var iconRaw = icon.getAttribute('data-marker-raw-transform') || '';
-      icon.removeAttribute('display');
-      if (iconRaw) icon.setAttribute('transform', iconRaw);
-      else icon.removeAttribute('transform');
-      var id = icon.getAttribute('data-train-id');
+      var icon = icons[m], id = icon.getAttribute('data-train-id');
+      if (!id) continue;
       var unit = _trainUnitContainer(icon);
-      // Restore previous fold members BEFORE measuring their actual positions.
-      // Retained SVG components continue moving while visually folded.
       if (unit && unit.getAttribute('data-train-fold-hidden') === 'true') {
         unit.removeAttribute('visibility');
         unit.removeAttribute('data-train-fold-hidden');
       }
-      markers[id] = icon;
-      var bounds = icon.getBoundingClientRect();
-      if (bounds.width > 0 && bounds.height > 0) {
-        var p = icon._trainPosition || {};
-        iconEntries.push({
-          id: id, x: bounds.x + bounds.width / 2,
-          y: bounds.y + bounds.height / 2,
-          artwork: String(icon.tagName || '').toLowerCase() === 'image',
-          direction: String(p.railDirection || '').split(/[:.]/).pop()
-        });
-      }
+      icon.removeAttribute('display');
+      var rawIcon = icon.getAttribute('data-marker-raw-transform') || '';
+      if (rawIcon) icon.setAttribute('transform', rawIcon);
+      else icon.removeAttribute('transform');
+      markerById[id] = icon;
+      var parts = [icon, captionById[id]].filter(Boolean).map(function(node) {
+        return node.getBoundingClientRect ? node.getBoundingClientRect() : null;
+      }).filter(function(b) {
+        return b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
+          isFinite(b.height) && b.width > 0 && b.height > 0;
+      });
+      if (!parts.length) continue;
+      var left = Math.min.apply(null, parts.map(function(b) { return b.x; }));
+      var top = Math.min.apply(null, parts.map(function(b) { return b.y; }));
+      var right = Math.max.apply(null, parts.map(function(b) { return b.x + b.width; }));
+      var bottom = Math.max.apply(null, parts.map(function(b) { return b.y + b.height; }));
+      components.push({id:id, artwork:String(icon.tagName || '').toLowerCase() === 'image',
+        box:{x:left,y:top,width:right-left,height:bottom-top}});
     }
-    var nearby = _groupNearbyTrainMarkers(iconEntries, 44);
-    var spatialChildren = Object.create(null);
-    Object.keys(nearby).forEach(function(root) {
-      nearby[root].slice(1).forEach(function(id) { spatialChildren[id] = true; });
-    });
-    var nodes = trainLayer.querySelectorAll('[data-train-label-for]');
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      var raw = node.getAttribute('data-label-raw-transform');
-      if (!raw) raw = node.getAttribute('transform') || 'translate(0,0)';
-      node.removeAttribute('display');
-      node.setAttribute('transform', raw);
-      node.setAttribute('data-label-raw-transform', raw);
-      var rect = node.getBoundingClientRect();
-      var id = node.getAttribute('data-train-label-for');
-      var marker = markers[id];
-      if (marker && rect.width && rect.height) {
-        groups[id] = node;
-        // Only the spatial group's representative participates in the
-        // remaining label layout; child labels will live in its fold list.
-        if (spatialChildren[id]) continue;
-        var iconBox = marker.getBoundingClientRect();
-        var left = rect.x, top = rect.y;
-        var pairWidth = rect.width;
-        var foldWidth = 36 * Math.abs(matrix.a);
-        if (pairWidth < foldWidth) left -= (foldWidth - pairWidth) / 2;
-        labels.push({id: id, x: left, y: top,
-          // 位置由列车图标负责，而不是可能被移开的标签。
-          anchorX: iconBox.x + iconBox.width / 2,
-          anchorY: iconBox.y + iconBox.height / 2,
-          minShift: -Infinity,
-          maxShift: Infinity,
-          width: Math.max(pairWidth, foldWidth),
-          // 最后的横向避让必须让标签与它自己的标记
-          // 保持水平相邻。此上限使用测量宽度，而不是
-          // 线路专属常量或整张图的尺寸。
-          maxNearLateralShift: Math.min(40, (pairWidth + iconBox.width) / 2 + 4),
-          // 测量实际方向标签。仅在确实存在 +N 徽标时
-          // 预留折叠徽标空间；给每个标签都加上该空间会使
-          // 短标签不必要地超出严格的近标记限制。
-          height: rect.height,
-          // 如果通常的标签通道被阻挡，使用其自身固定标记的
-          // 空闲侧，不要让标签远离标记。
-          // 箭头和目的地仍属于同一个可见 SVG 组。
-          markerSideYs: [
-            iconBox.y - rect.height - 4,
-            iconBox.y + iconBox.height + 4
-          ],
-          foldKey: String(node.getAttribute('data-dir-sym') || '')});
-        groups[id] = node;
-      }
-    }
-    var obstacles = [];
-    var fixed = svg.querySelectorAll('text, .static-layer image, [data-train-id]');
-    for (var j = 0; j < fixed.length; j++) {
-      if (fixed[j].closest('[data-train-label-for]')) continue;
-      if (spatialChildren[fixed[j].getAttribute('data-train-id') || '']) continue;
-      var box = fixed[j].getBoundingClientRect();
-      if (box.width && box.height) obstacles.push({x: box.x, y: box.y, width: box.width, height: box.height});
-    }
-    var bounds = svg.getBoundingClientRect();
-    // 将方向文字保持在自身列车附近的小屏幕空间半径内。
-    // 相近标签会折叠；绝不把它推向无关车站。
-    var offsets = layout.resolveLabels(labels, obstacles, bounds,
-      {maxShift:24, maxLateralShift:16, maxFoldAnchorDistance:44});
-    var folded = nearby;
-    Object.keys(offsets).forEach(function (id) {
-      var label = groups[id], marker = markers[id], offset = offsets[id];
-      if (offset.collapsedInto) {
-        var root = offset.collapsedInto;
-        var merged = folded[root] || [root];
-        (folded[id] || [id]).forEach(function(member) {
-          if (merged.indexOf(member) < 0) merged.push(member);
-        });
-        folded[root] = merged;
-        if (id !== root) delete folded[id];
-        return;
-      }
-      var shift = 'translate(' + (offset.x / matrix.a) + ',' + (offset.y / matrix.d) + ') ';
-      label.setAttribute('transform', shift + label.getAttribute('data-label-raw-transform'));
-      var rawMarkerTransform = marker.getAttribute('data-marker-raw-transform') || '';
-      marker.setAttribute('transform', rawMarkerTransform);
-    });
-    // Hide only the additional *visual components*. Every train ID,
-    // position, vehicle image and destination remains in the DOM, available
-    // in the fold popover and for the next live/timetable refresh.
+    var folded = _groupNearbyTrainMarkers(components);
     Object.keys(folded).forEach(function(root) {
       folded[root].slice(1).forEach(function(id) {
-        var unit = _trainUnitContainer(markers[id]);
+        var unit = _trainUnitContainer(markerById[id]);
         if (!unit) return;
         unit.setAttribute('visibility', 'hidden');
         unit.setAttribute('data-train-fold-hidden', 'true');
       });
     });
-    _syncTrainFoldBadges(trainLayer, folded, groups, markers, matrix);
+    _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix);
   }
 
   // The SVG badges are rebuilt as collision layout moves. A stable listener
@@ -2990,6 +2913,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var _bsReg = _ovKita.branchStation.regex;
       if (_bsReg && _bsReg.test(dn)) return _ovKita.branchStation.dir;
     }
+    // The source service may extend beyond the four visible Ueno--Shinagawa
+    // stations. Never compare a projected index to the wider source station list.
+    var _mapLine = window.UNIFIED_LINES && window.UNIFIED_LINES[lineId];
+    var _mapStations = _mapLine && _mapLine.presentation && _mapLine.presentation.mapStations;
+    if (!Array.isArray(_mapStations) || _mapStations.length < 2) _mapStations = null;
+    if (_mapStations) {
+      var _fromMap = p.stationIndex == null ? NaN : Number(p.stationIndex);
+      var _toMap = p.segmentToIndex == null ? NaN : Number(p.segmentToIndex);
+      if (isFinite(_fromMap) && isFinite(_toMap) && _fromMap >= 0 &&
+          _toMap >= 0 && _fromMap < _mapStations.length &&
+          _toMap < _mapStations.length && _fromMap !== _toMap)
+        return _toMap > _fromMap ? 'down' : 'up';
+    }
     if (/^(InnerLoop|Inner|OuterLoop|Outer)$/.test(dn)) return null;
     // 统一性——不论方位词是抽象词(Inbound/Northbound…)还是站名，优先用「终点站在本线站表中的
     // index」自动推方向：终点在当前站之后(站表 index 更大)=往站表后方开=down，否则 up。新线自动正确，
@@ -2998,7 +2934,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (_dnDest) {
       var _curD = p.stationIndex != null ? Number(p.stationIndex) : NaN;
       if (!isFinite(_curD) || _curD < 0) return null;
-      var _stsD = (window.UNIFIED_LINES && window.UNIFIED_LINES[lineId]) ? (window.UNIFIED_LINES[lineId].stations || []) : [];
+      var _stsD = _mapStations || ((window.UNIFIED_LINES && window.UNIFIED_LINES[lineId]) ? (window.UNIFIED_LINES[lineId].stations || []) : []);
       var _destN = _stationKey(_dnDest);
       for (var _ddi = 0; _ddi < _stsD.length; _ddi++) {
         if (_stationKey(_stsD[_ddi]) === _destN) {
@@ -3018,7 +2954,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (!dn) return null;
     var cur = p.stationIndex != null ? Number(p.stationIndex) : NaN;
     if (!isFinite(cur) || cur < 0) return null;
-    var sts = (window.UNIFIED_LINES && window.UNIFIED_LINES[lineId]) ? (window.UNIFIED_LINES[lineId].stations || []) : [];
+    var sts = _mapStations || ((window.UNIFIED_LINES && window.UNIFIED_LINES[lineId]) ? (window.UNIFIED_LINES[lineId].stations || []) : []);
     var normTail = _stationKey(dn);
     for (var _di = 0; _di < sts.length; _di++) {
       if (_stationKey(sts[_di]) === normTail) {
