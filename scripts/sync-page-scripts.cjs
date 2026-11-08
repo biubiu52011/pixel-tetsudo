@@ -17,7 +17,10 @@ function expand(items, stack = []) {
 }
 function version(asset) {
   if (!/^(js|data)\/[a-zA-Z0-9_./-]+\.js$/.test(asset) || asset.includes('..')) throw Error('Unsafe asset: ' + asset);
-  const buf = fs.readFileSync(path.join(root, asset));
+  // Git stores these text assets with LF even when core.autocrlf checks them
+  // out as CRLF on Windows. Hash the canonical bytes that will be committed so
+  // generated cache keys remain identical across developer machines and CI.
+  const buf = Buffer.from(fs.readFileSync(path.join(root, asset), 'utf8').replace(/\r\n/g, '\n'), 'utf8');
   return crypto.createHash('sha1').update('blob ' + buf.length + '\0').update(buf).digest('hex').slice(0, 12);
 }
 function tags(assets, phase) {

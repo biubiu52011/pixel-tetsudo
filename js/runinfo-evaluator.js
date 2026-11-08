@@ -129,15 +129,19 @@
       if(!effect&&planned&&/(?:運休|見合わせ|工事|減便|運行変更)/.test(s))effect=/(?:運休|見合わせ)/.test(s)?"partial_cancellation":"service_change";
       return {phase:planned?"planned":"current",effect:effect};
     }
+    var precedingImpactRange=null;
     sentences.forEach(function(s){
       var p=typeOf(s);if(p.phase==="policy"){evidence.push({type:"PUBLICATION_POLICY"});return;}
       if(!p.effect)return;
       var scopes=parseScope(s),impact=scopes.filter(function(x){return !x.incident;}),incident=scopes.filter(function(x){return x.incident;});
       var wholeDirection=/上下線|上下両線/.test(s)?"both":/内回り/.test(s)?"inner":/外回り/.test(s)?"outer":/上り線|上り列車/.test(s)?"up":/下り線|下り列車/.test(s)?"down":null;
-      (impact.length?impact:[{interval:/全線/.test(s)?"全線":null,direction:wholeDirection}]).forEach(function(x){
+      var directionContinuation=/^(?:上下線|上下両線|上り線|上り列車|下り線|下り列車|内回り|外回り)(?:では|は|で)/.test(s);
+      (impact.length?impact:[{interval:/全線/.test(s)?"全線":directionContinuation?precedingImpactRange:null,direction:wholeDirection}]).forEach(function(x){
         events.push({effect:p.effect,phase:p.phase,interval:x.interval,direction:x.direction||wholeDirection,
           incidentLocation:incident.map(function(i){return i.interval;}).join("、")||null});
       });
+      if(impact.length===1)precedingImpactRange=impact[0].interval;
+      else if(impact.length>1||!directionContinuation)precedingImpactRange=null;
       evidence.push({type:"EVENT_"+p.phase.toUpperCase()+"_"+p.effect.toUpperCase()});
     });
     var live=events.filter(function(e){return e.phase==="current";}),has=function(v){return live.some(function(e){return e.effect===v;});};
@@ -199,7 +203,12 @@
     var places=uniq(candidates.map(function(e){return e.interval;}).filter(Boolean));
     var chosen=candidates[0];
     interval=interval||places.join("、")||null;
-    var delayMatches=text.match(/(?:約|およそ)?\s*[０-９0-9]{1,3}\s*(?:分間|分|min)(?!頃|後|以)/gi)||[];
+    var delayMatches=[],delayRe=/(?:約|およそ)?\s*[０-９0-9]{1,3}\s*(?:分間|分|min)(?!頃|後|以)/gi,delayMatch;
+    while((delayMatch=delayRe.exec(text))){
+      var beforeDelay=text.slice(Math.max(0,delayMatch.index-4),delayMatch.index);
+      if(/[０-９0-9]{1,2}\s*時\s*$/.test(beforeDelay))continue;
+      delayMatches.push(delayMatch[0]);
+    }
     var service=text.match(/通常の\s*([０-９0-9]+)(?:\s*[～〜－−-]\s*([０-９0-9]+))?\s*割程度/);
     function n(x){return Number(String(x).replace(/[０-９]/g,function(c){return String(c.charCodeAt(0)-0xff10);}));}
     var textDelayMinutes=delayMatches.length?Math.max.apply(null,delayMatches.map(function(v){
@@ -266,12 +275,11 @@
   function statusSymbol(result) {
     result = result || {};
     if (result.status === "suspended") return "×";
-    if (result.status === "notice") return "!";
     if (result.messageKind === "notice") return "!";
     if (result.messageKind !== "realtime") return null;
     if (result.status === "normal") return "○";
     if (result.status === "info") return "!";
-    if (result.status === "delayed") return "△";
+    if (result.status === "delayed" || result.status === "notice") return "△";
     return null;
   }
 
@@ -327,6 +335,11 @@
       structured="delayed";
       evidence.push({type:"PARTIAL_CANCELLATION_OVERRIDES_GENERIC_SUSPENSION"});
     }
+    if(structured==="suspended"&&input.suspension!==true&&input.signalStatus!=="suspended"&&
+      activeEffects.length>0&&activeEffects.every(function(e){return e==="through_suspension";})){
+      structured="notice";
+      evidence.push({type:"THROUGH_SUSPENSION_OVERRIDES_GENERIC_SUSPENSION"});
+    }
     // GTFS NO_SERVICE for a trip/stop is not a full-line suspension.
     if((input.alertScope==="trip"||input.alertScope==="stop")&&structured==="suspended"){
       structured="delayed";evidence.push({type:"GTFS_PARTIAL_NO_SERVICE",scope:input.alertScope});
@@ -371,5 +384,5 @@
     return { cleanText: clean, links: links };
   }
 
-  return { extractLinks: extractLinks, version: "1.5.4", classifyNotice: classifyNotice, evaluate: evaluate, evaluateText: evaluateText, extractMetadata: extractMetadata, normalizeStructuredStatus: normalizeStructuredStatus, normalizeMessageKind: normalizeMessageKind, inferMessageKind: inferMessageKind, statusSymbol: statusSymbol };
+  return { extractLinks: extractLinks, version: "1.5.5", classifyNotice: classifyNotice, evaluate: evaluate, evaluateText: evaluateText, extractMetadata: extractMetadata, normalizeStructuredStatus: normalizeStructuredStatus, normalizeMessageKind: normalizeMessageKind, inferMessageKind: inferMessageKind, statusSymbol: statusSymbol };
 });

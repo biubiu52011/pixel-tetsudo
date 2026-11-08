@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### RUNINFO-RECONCILIATION-20261108 — 运行情报剩余判定与展示契约收敛（本地完成）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 基线 | 基于 `origin/main` 的 `08d10c2`；复用 `abe8399`、`88c823b`、`7c8377b`、`1e0c211` 已完成的停运/部分运休、区间规范、官方阈值和空源加载修复，不重复覆盖。 |
+| 修复 | 通用结构化 `Suspension` 在正文仅说明直通运行中止时细化为 `notice/△`，独立 `signalStatus` 或 `suspension=true` 仍保持 `suspended/×`；实时 notice 与公告 notice 分开映射符号；延误分钟排除 `18時30分` 等时刻分钟；方向续句继承上一句唯一受影响区间。统一 evaluator 版本升至 `1.5.5`，未新增旁路判断。页面脚本同步器统一按 Git 的 LF 规范字节生成 blob 哈希，避免 Windows CRLF 工作区产生提交后失效的缓存键。 |
+| 回归 | 运行情报专项 21/21、官网快照/运营方交付合计 30/30、综合离线回归 41/41、目标埼京线样本、JS 语法、页面脚本清单和 `git diff --check` 通过；七页脚本内容哈希已重新生成。 |
+| 环境边界 | `ui-cross-page-consistency` 仍有 2 项既有 CSS 测试直接哈希 Windows CRLF 工作区字节，与页面使用的规范 Git blob 哈希不一致；本次脚本同步器已消除同类 JS 缓存键漂移。未执行浏览器、Pages 发布或 Supabase 变更。 |
+
 ### SHINKANSEN-SANYO-PLAN-20261108 — 山阳4趟逐车时刻与计划车型待应用批次（READY）
 
 | 项目 | 当前状态 |

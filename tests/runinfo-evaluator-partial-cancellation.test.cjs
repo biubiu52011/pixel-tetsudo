@@ -29,6 +29,20 @@ test("independent official suspension signal is authoritative", () => {
   assert.equal(r.status, "suspended");
 });
 
+test("through-service interruption refines a generic structured Suspension", () => {
+  const r = evaluator.evaluate({ ...base, text: "直通運転を中止しています。", structuredStatus: "Suspension" });
+  assert.equal(r.status, "notice");
+  assert.equal(r.symbol, "△");
+  assert.ok(r.evidence.some(x => x.type === "THROUGH_SUSPENSION_OVERRIDES_GENERIC_SUSPENSION"));
+});
+
+test("independent suspension remains authoritative during through-service interruption", () => {
+  const r = evaluator.evaluate({ ...base, text: "直通運転を中止しています。", structuredStatus: "Suspension", signalStatus: "suspended" });
+  assert.equal(r.status, "suspended");
+  assert.equal(r.symbol, "×");
+  assert.equal(evaluator.evaluate({ ...base, text: "直通運転を中止しています。", structuredStatus: "Suspension", suspension: true }).status, "suspended");
+});
+
 const cases = [
   ["一部の列車が運休しています。", "delayed"],
   ["品川駅〜取手駅間の上り線の一部列車に運休が発生しています。", "delayed"],
@@ -49,6 +63,8 @@ const cases = [
 ];
 cases.forEach(([message, status]) => {
   test(message, () => {
-    assert.equal(evaluator.evaluate({ ...base, text: message }).status, status);
+    const result = evaluator.evaluate({ ...base, text: message });
+    assert.equal(result.status, status);
+    if (message === "直通運転を中止しています。") assert.equal(result.symbol, "△");
   });
 });

@@ -103,6 +103,17 @@ check("maximum observed delay among multiple published numbers",()=>{
   const x=parse("京急線で遅れ。品川駅８分、京急蒲田駅１３分、京急川崎駅１０分程度の遅れ。");
   assert.equal(x.maxDelay,13);
 });
+check("clock minutes are not reported as delay minutes",()=>{
+  const x=parse("18時30分現在、約10分の遅れが出ています。");
+  assert.equal(x.maxDelay,10);
+});
+check("direction-only continuation inherits the preceding affected range",()=>{
+  const x=parse("A駅〜B駅間の上り線で運転を見合わせています。下り線では遅れが出ています。");
+  assert.deepEqual(x.impacts,[
+    {interval:"A→B",direction:"up",effect:"suspension",phase:"current"},
+    {interval:"A→B",direction:"down",effect:"delay",phase:"current"}
+  ]);
+});
 check("Seibu ODPT loading terminates after a successful empty operator feed",()=>{
   const seibu={id:"Ikebukuro",name:"西武池袋線",operator:"Seibu",stations:["Ikebukuro","Nerima"]};
   w.ODPTClient.LINE_TO_OPERATOR.Ikebukuro="Seibu";
