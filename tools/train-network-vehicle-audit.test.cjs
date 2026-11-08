@@ -71,9 +71,24 @@ for(const entry of entries){
 const byLine=new Set([...linesSeen].map(k=>k.split('|')[1]));
 audit.coveredRoutes=byLine.size;
 audit.notCoveredRoutes=Object.keys(lines).filter(line=>!byLine.has(line)).sort();
-assert.deepEqual(audit.notCoveredRoutes,
+// Transfer-topology-only railway entities are not entitled to a scheduled
+// fleet, vehicle PNG, live position or a fabricated train run. Require an
+// explicit owner status and a real multi-operator transfer before excluding
+// them from the mandatory fleet-source review.
+audit.stationTopologyOnlyRoutes=audit.notCoveredRoutes.filter(id=>{
+  const route=lines[id];
+  return route?.timetableDataStatus==='station_topology_only' &&
+    Array.isArray(route.stations) && route.stations.length>1 &&
+    Array.isArray(route.transferStations) && route.transferStations.some(t=>
+      t.station==='Aou' && t.lineId==='KakogawaLine' &&
+      route.stations.includes(t.station));
+});
+assert.deepEqual(audit.stationTopologyOnlyRoutes,['HojoRailway','ShintetsuAo'],
+  'only independently audited station-topology-only routes may lack fleet evidence');
+assert.deepEqual(audit.notCoveredRoutes.filter(id=>
+    !audit.stationTopologyOnlyRoutes.includes(id)),
   ['HakataMinami','Kesennuma','Ofunato'],
-  'unreviewed route has no fleet reference; audit route type before adding');
+  'unreviewed active route has no fleet reference; audit route type before adding');
 /* Kesennuma and Ofunato are BRT corridors (not railway vehicle stock).
  * HakataMinami is a Shinkansen depot access line where sourced individual
  * train plans are preferable to a guessed route-wide model/livery.
