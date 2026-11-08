@@ -5702,6 +5702,45 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       // express PNG, a separate operator livery or a guessed carset.
       return {kind:"unresolved",iconSrc:""};
     }
+    // Fukuchiyama: 357 source templates have a validated four-family
+    // reference, but NO date-verified number, specific stock or PNG.
+    // Render the existing line-coloured candidate marker instead of a
+    // grey *unmapped* dot; never choose a 207/321/223/225 image at random.
+    var fukProof=p&&p.sqlPublishedNumberFleetReference;
+    if(p&&!identityConfirmed&&contextLineId==="Fukuchiyama"&&
+       String(p.positionLineId||p.lineId||"")==="Fukuchiyama"&&
+       fukProof&&fukProof.source===
+         "sql-jrwest-fukuchiyama-2611-historical-fleet-reference"){
+      var fukIndex=window.TrainNumberPngRanges;
+      var fukFleet=fukIndex&&
+        typeof fukIndex.verifyFukuchiyamaSourceFleet==="function"
+          ?fukIndex.verifyFukuchiyamaSourceFleet(p):null;
+      var fukModels=fukFleet&&fukFleet.candidateModels||[];
+      if(artworkFailed!==true&&fukFleet&&
+         fukFleet.referenceOnly===true&&
+         fukFleet.numberDateVerified===false&&
+         fukFleet.actualVehicleConfirmed===false&&
+         fukFleet.authorizesPNG===false&&
+         p.vehicleIdentityStatus==="UNKNOWN"&&
+         p.vehicleResolvedUpstream!==true&&
+         p.vehicleResolvedFromRealtime!==true&&
+         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+         !(Array.isArray(p.vehicleFormationCandidates)&&
+           p.vehicleFormationCandidates.length)&&
+         ["unresolved","unresolved-mixed-fleet"].includes(
+           String(p.plannedVehicleCandidateStatus||""))&&
+         Array.isArray(p.plannedVehicleCandidates)&&
+         p.plannedVehicleCandidates.join("|")===fukModels.join("|")&&
+         (!vehiclePlan||vehiclePlan.confirmed!==true)&&
+         (!vehiclePlan||!Array.isArray(vehiclePlan.models)||
+           vehiclePlan.models.join("|")===fukModels.join("|"))&&
+         fukFleet.candidateAssets.length===0){
+        return {kind:"candidate",iconSrc:"",planned:false,
+          referenceOnly:true,actualVehicleConfirmed:false,
+          candidateModels:fukModels.slice(),candidateAssets:[]};
+      }
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Kyoto / Kobe (JR-West): the source composite ID, C/T/M number
     // suffix and Local/Rapid class identify a HISTORICAL service family,
     // NOT its exact 2026-11 207/321 or 223/225 physical carset.

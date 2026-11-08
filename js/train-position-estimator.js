@@ -2493,7 +2493,11 @@
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",
             publishedFleetReference:_ouTsugaruFleet||_komiiFleet||_kesennumaFleet||_kashimaFleet||_kitakamiFleet||_kamaishiFleet||_joetsuFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng||_hakushinSpecialFleet||_gonoResortFleet,
-            sqlPublishedNumberFleetReference:(osakaMahorobaScoped||osakaHigashiScoped||saganoScoped||officialKoseiPlan||officialJrWestKyotoKobePlan||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+            sqlPublishedNumberFleetReference:(osakaMahorobaScoped||osakaHigashiScoped||saganoScoped||officialKoseiPlan||officialJrWestKyotoKobePlan||
+              (lineId==="Fukuchiyama"&&tt._positionSource==="supabase-train-run"&&
+               tt._sqlPublishedNumberFleetReference&&
+               tt._sqlPublishedNumberFleetReference.source===
+                 "sql-jrwest-fukuchiyama-2611-historical-fleet-reference")||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",

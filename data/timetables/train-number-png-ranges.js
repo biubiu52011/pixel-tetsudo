@@ -2656,6 +2656,75 @@
     });
   }
 
+  // Historical JR-West Fukuchiyama source fleet, not a certified
+  // 2026-11 train number, actual vehicle or PNG. Keep all four alternatives.
+  // A row rejected by the SQL source/stop boundary must stay unresolved.
+  function verifyFukuchiyamaSourceFleet(p){
+    var proof=p&&p.sqlPublishedNumberFleetReference;
+    if(!p||!proof||
+       proof.source!=="sql-jrwest-fukuchiyama-2611-historical-fleet-reference"||
+       proof.lineId!=="Fukuchiyama"||
+       String(p.positionLineId||p.lineId||"")!=="Fukuchiyama"||
+       (p.displayLineId&&p.displayLineId!=="Fukuchiyama")||
+       p.sourceRailway!=="odpt.Railway:JR-West.Fukuchiyama"||
+       p.positionSource!=="supabase-train-run"||
+       p.estimated!==true||
+       p.timetableDateVerified===true||
+       proof.referenceOnly!==true||
+       proof.numberDateVerified!==false||
+       proof.actualVehicleConfirmed!==false||
+       proof.authorizesPNG!==false||
+       proof.timetableValidity!=="undated_not_current_verified"||
+       proof.timetableSourcePath!=="data/timetables/Fukuchiyama-manual.js")
+      return null;
+    var date=String(p.serviceDate||"").slice(0,10),
+      num=String(p.trainNumber||"").trim(),
+      suffix=/^([0-9]{3,5})(C|MO|M)(H?)$/.exec(num),
+      dir=String(p.railDirection||"").split(/[.:]/).pop(),
+      type=String(p.trainType||"").split(/[.:]/).pop(),
+      models=["207系","321系","223系6000番台","225系6000番台"];
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !suffix||!["Inbound","Outbound"].includes(dir)||
+       !["Local","Rapid","SectionRapid"].includes(type)||
+       (type!=="Local"&&suffix[2]!=="M")||
+       proof.serviceDate!==date||
+       proof.sourceTrainId!==num||
+       proof.direction!=="odpt.RailDirection:"+dir||
+       proof.trainType!=="odpt.TrainType:JR-West."+type||
+       !Number.isSafeInteger(Number(proof.sourceTemplateId))||
+       Number(proof.sourceTemplateId)<=0)
+      return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="JR-West"&&operator!=="odpt.Operator:JR-West")
+      return null;
+    var day=new Date(date+"T12:00:00Z").getUTCDay(),
+      holiday=day===0||day===6||date==="2026-11-03"||
+        date==="2026-11-23";
+    if(suffix[3]!== (holiday?"H":"")||
+       sourceCalendar(p)!==(holiday?"holiday":"weekday")||
+       proof.calendar!=="odpt.Calendar:"+
+         (holiday?"SaturdayHoliday":"Weekday"))
+      return null;
+    var keys=Array.isArray(p.scheduledStopKeys)
+        ?p.scheduledStopKeys.map(function(k){return String(k||"").split(".").pop();})
+        :[],
+      sourceKeys=proof.sourceStopKeys;
+    if(!Array.isArray(sourceKeys)||sourceKeys.length<2||
+       sourceKeys.length!==keys.length||
+       keys.some(function(k,i){return k!==sourceKeys[i];})||
+       !Array.isArray(proof.candidateModels)||
+       proof.candidateModels.join("|")!==models.join("|")||
+       !Array.isArray(proof.candidateAssets)||
+       proof.candidateAssets.length!==0)return null;
+    return Object.freeze({
+      lineId:"Fukuchiyama",sourceTrainNumber:num,
+      sourceTemplateId:Number(proof.sourceTemplateId),
+      candidateModels:Object.freeze(models),candidateAssets:Object.freeze([]),
+      referenceOnly:true,numberDateVerified:false,
+      actualVehicleConfirmed:false,authorizesPNG:false
+    });
+  }
+
   // JR-West Kyoto/Kobe historical source C/T/M suffix: 207/321
   // locals or 223/225 rapid service families. A compound internal
   // number like 500310-1385400-714T is NOT a published 2611 number or
@@ -4328,6 +4397,7 @@
     verifyMitoService:verifyMitoService,
     verifyMiyoService:verifyMiyoService,
     verifyKoseiSourceFleet:verifyKoseiSourceFleet,
+    verifyFukuchiyamaSourceFleet:verifyFukuchiyamaSourceFleet,
     verifyJrWestKyotoKobeSourceFleet:verifyJrWestKyotoKobeSourceFleet,
     verifySotetsuJRService:verifySotetsuJRService,
     verifyOfunatoService:verifyOfunatoService,
