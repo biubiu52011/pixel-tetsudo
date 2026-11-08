@@ -14659,6 +14659,22 @@
     "Kashima-Osaka": {
       "lat": 34.7275806,
       "lng": 135.4539749
+    },
+    "Kanda-Fukuoka": {
+      "lat": 33.785106,
+      "lng": 130.978811
+    },
+    "Kasuga-Fukuoka": {
+      "lat": 33.5347658,
+      "lng": 130.469238
+    },
+    "Koga-Fukuoka": {
+      "lat": 33.7324147,
+      "lng": 130.466831
+    },
+    "Araki-Fukuoka": {
+      "lat": 33.2766777,
+      "lng": 130.5026769
     }
   },
   "lines": {
@@ -43651,7 +43667,7 @@
         "Higashi-Fukuma",
         "Fukuma",
         "Chidori",
-        "Koga",
+        "Koga-Fukuoka",
         "Shishibu",
         "Shingu-Chuo",
         "Fukukodai-Mae",
@@ -43664,7 +43680,7 @@
         "Takeshita",
         "Sasabaru",
         "Minami-Fukuoka",
-        "Kasuga",
+        "Kasuga-Fukuoka",
         "Onojō",
         "Mizuki",
         "Tofurō-Minami",
@@ -43678,7 +43694,7 @@
         "Tosu",
         "Hizen-Asahi",
         "Kurume",
-        "Araki",
+        "Araki-Fukuoka",
         "Nishi-Muta",
         "Hainuzuka",
         "Chikugo-Funagoya",
@@ -44128,7 +44144,7 @@
         "Abeyama-Kōen",
         "Shimosone",
         "Kusami",
-        "Kanda",
+        "Kanda-Fukuoka",
         "Obase-Nishikōdai-Mae",
         "Yukuhashi",
         "Minami-Yukuhashi",
@@ -47537,7 +47553,7 @@
         "Higashi-Fukuma",
         "Fukuma",
         "Chidori",
-        "Koga",
+        "Koga-Fukuoka",
         "Shishibu",
         "Shingu-Chuo",
         "Fukukodai-Mae",
@@ -47618,7 +47634,7 @@
         "Takeshita",
         "Sasabaru",
         "Minami-Fukuoka",
-        "Kasuga",
+        "Kasuga-Fukuoka",
         "Onojō",
         "Mizuki",
         "Tofurō-Minami",
@@ -47632,7 +47648,7 @@
         "Tosu",
         "Hizen-Asahi",
         "Kurume",
-        "Araki",
+        "Araki-Fukuoka",
         "Nishi-Muta",
         "Hainuzuka",
         "Chikugo-Funagoya",
@@ -50441,7 +50457,7 @@
     "東福間": "Higashi-Fukuma",
     "福間": "Fukuma",
     "千鳥": "Chidori",
-    "古賀": "Koga",
+    "古賀": "Koga-Fukuoka",
     "ししぶ": "Shishibu",
     "新宮中央": "Shingu-Chuo",
     "福工大前": "Fukukodai-Mae",
@@ -50465,7 +50481,7 @@
     "田代": "Tashiro",
     "鳥栖": "Tosu",
     "肥前旭": "Hizen-Asahi",
-    "荒木": "Araki",
+    "荒木": "Araki-Fukuoka",
     "西牟田": "Nishi-Muta",
     "羽犬塚": "Hainuzuka",
     "瀬高": "Setaka",
@@ -50540,7 +50556,7 @@
     "安部山公園": "Abeyama-Kōen",
     "下曽根": "Shimosone",
     "朽網": "Kusami",
-    "苅田": "Kanda",
+    "苅田": "Kanda-Fukuoka",
     "小波瀬西工大前": "Obase-Nishikōdai-Mae",
     "行橋": "Yukuhashi",
     "南行橋": "Minami-Yukuhashi",
@@ -51234,8 +51250,7 @@
       "KeihinTohoku",
       "ChuoRapid",
       "Ginza",
-      "Yamanote",
-      "Nippo"
+      "Yamanote"
     ],
     "Tokyo": [
       "KeihinTohoku",
@@ -52459,8 +52474,7 @@
     ],
     "Kasuga": [
       "Mita",
-      "Oedo",
-      "KagoshimaMain"
+      "Oedo"
     ],
     "Hakusan": [
       "Mita"
@@ -56278,8 +56292,7 @@
       "UtsunomiyaJR"
     ],
     "Koga": [
-      "UtsunomiyaJR",
-      "KagoshimaMain"
+      "UtsunomiyaJR"
     ],
     "Tochigi": [
       "Ryomo",
@@ -58973,8 +58986,7 @@
       "NaritaAbikoBranch"
     ],
     "Araki": [
-      "NaritaAbikoBranch",
-      "KagoshimaMain"
+      "NaritaAbikoBranch"
     ],
     "Fusa": [
       "NaritaAbikoBranch"
@@ -63564,6 +63576,21 @@
     ],
     "Tamba-Takeda": [
       "Fukuchiyama"
+    ],
+    "Kanda-Fukuoka": [
+      "Nippo"
+    ],
+    "Kasuga-Fukuoka": [
+      "KagoshimaMain",
+      "KagoshimaMainJB"
+    ],
+    "Koga-Fukuoka": [
+      "KagoshimaMain",
+      "KagoshimaMainJA"
+    ],
+    "Araki-Fukuoka": [
+      "KagoshimaMain",
+      "KagoshimaMainJB"
     ]
   },
   "lineStationOrder": {
@@ -67859,7 +67886,6 @@
       "Higashi-Fukuma": 19,
       "Fukuma": 20,
       "Chidori": 21,
-      "Koga": 22,
       "Shishibu": 23,
       "Shingu-Chuo": 24,
       "Fukukodai-Mae": 25,
@@ -67872,7 +67898,6 @@
       "Takeshita": 32,
       "Sasabaru": 33,
       "Minami-Fukuoka": 34,
-      "Kasuga": 35,
       "Onojō": 36,
       "Mizuki": 37,
       "Tofurō-Minami": 38,
@@ -67886,7 +67911,6 @@
       "Tosu": 46,
       "Hizen-Asahi": 47,
       "Kurume": 48,
-      "Araki": 49,
       "Nishi-Muta": 50,
       "Hainuzuka": 51,
       "Chikugo-Funagoya": 52,
@@ -67932,7 +67956,10 @@
       "Kami-Ijuin": 92,
       "Hiroki": 93,
       "Kagoshima-Chuo": 94,
-      "Kagoshima": 95
+      "Kagoshima": 95,
+      "Kasuga-Fukuoka": 35,
+      "Koga-Fukuoka": 22,
+      "Araki-Fukuoka": 49
     },
     "NagasakiMain": {
       "Tosu": 0,
@@ -67978,7 +68005,6 @@
       "Abeyama-Kōen": 4,
       "Shimosone": 5,
       "Kusami": 6,
-      "Kanda": 7,
       "Obase-Nishikōdai-Mae": 8,
       "Yukuhashi": 9,
       "Minami-Yukuhashi": 10,
@@ -68083,7 +68109,8 @@
       "Ryūgamizu": 109,
       "Sengan-En": 110,
       "Kagoshima": 111,
-      "Kagoshima-Chuo": 112
+      "Kagoshima-Chuo": 112,
+      "Kanda-Fukuoka": 7
     },
     "Kyudai": {
       "Kurume": 0,
