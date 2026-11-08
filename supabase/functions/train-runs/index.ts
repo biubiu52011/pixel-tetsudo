@@ -4436,7 +4436,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // assignment or a real-time location. The public timetable lists 2531M
   // daily in November 2026; MH is our SaturdayHoliday SQL suffix.
   // Historical 252x/253x fragments cannot inherit this certification.
-  if(lineId==="Fukuchiyama" && /^2026-11-\\d{2}$/.test(serviceDate)){
+  if(lineId==="Fukuchiyama" && /^2026-11-\d{2}$/.test(serviceDate)){
     const officialId=selectedCalendar==="odpt.Calendar:Weekday"?68234:68235;
     const officialNumber=selectedCalendar==="odpt.Calendar:Weekday"?"2531M":"2531MH";
     const run=result.find((r:any)=>Number(r.source_template_id)===officialId);
