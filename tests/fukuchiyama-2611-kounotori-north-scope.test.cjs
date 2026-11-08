@@ -38,9 +38,9 @@ test('reused northern express samples preserve the four southern calls and add t
  assert.match(sql,/authorizes_png OR actual_vehicle_confirmed OR number_date_verified/);
 });
 test('API keeps old historical proof working before migration, verifies only November 2026 express segment after',()=>{
- assert.match(edge,/expressSourceIds=\[68244,68245,68251,68252\]/);
+ assert.match(edge,/expressSourceIds=\[68244,68245,68251,68252,68314,68315,68168\]/);
  assert.match(edge,/\? "287系\|289系" : acceptedModels/);
- assert.match(edge,/expressSqlExample=\[68244,68245,68251,68252\]/);
+ assert.match(edge,/expressSqlExample=\[68244,68245,68251,68252,68314,68315,68168\]/);
  const start=edge.indexOf('// Kounotori 8/10:');
  const end=edge.indexOf('// Incomplete source rows are preserved',start);
  assert.ok(start>=0&&end>start);
