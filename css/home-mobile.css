@@ -164,10 +164,10 @@
   }
 }
 
-/* ROUTE SEARCH VISUAL SYSTEM v3 — single presentation owner for both
-   current and legacy route-search markup; css/style.css remains frozen.
-   All components share hard-edged pixel borders, 4px corners and 3px shadows. */
-body[data-page="home"] #searchContainer {
+/* HOME MODULE 3D SHELL — route search is the reference for both home modules.
+   The route-search and tourism content layouts remain independently owned. */
+body[data-page="home"] #searchContainer,
+body[data-page="home"] #smModule {
   padding:0;
   margin-top:0;
   min-width:0;
@@ -177,14 +177,16 @@ body[data-page="home"] #searchContainer {
   background:var(--card);
   box-shadow:4px 4px 0 rgba(32,33,38,.38),inset 2px 2px 0 #fff;
 }
-body[data-page="home"] #searchContainer > .module-title {
+body[data-page="home"] #searchContainer > .module-title,
+body[data-page="home"] #smModule > .module-title {
   margin:0;
   padding:14px 16px;
   background:var(--bg3);
   border-bottom:2px solid var(--text);
   border-radius:3px 3px 0 0;
 }
-body[data-page="home"] #searchContainer > .module-title h2 {
+body[data-page="home"] #searchContainer > .module-title h2,
+body[data-page="home"] #smModule > .module-title h2 {
   font-size:17px;line-height:1.4;color:var(--text);
 }
 body[data-page="home"] #searchContainer > .search-inputs {

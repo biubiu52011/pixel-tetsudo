@@ -242,3 +242,22 @@ test('tourism hero keeps 2660e0d desktop composition and stacks mobile photo, ti
   assert.match(build({ name_ja:'Other', tags:['all'] }, null).tagsHtml, /tag-badge all/);
   assert.deepEqual(fixture.tags, ['all','mall'], 'source filter tags must not change');
 });
+
+test('tourism header shares the approved route-search 3D shell', () => {
+  const css = read('css/home-mobile.css');
+  const html = read('pages/home.html');
+  assert.match(html, /id="searchContainer" class="search-card pixel-card"/);
+  assert.match(html, /id="smModule" class="sm-module pixel-card"/);
+  const updated = css.slice(css.indexOf('/* HOME MODULE 3D SHELL'));
+  assert.ok(updated.length && updated !== css, 'new 3D shell rules are present');
+  const frame = updated.match(/body\[data-page="home"\] #searchContainer,\s*body\[data-page="home"\] #smModule\s*\{([^}]+)\}/);
+  const header = updated.match(/body\[data-page="home"\] #searchContainer > \.module-title,\s*body\[data-page="home"\] #smModule > \.module-title\s*\{([^}]+)\}/);
+  const heading = updated.match(/body\[data-page="home"\] #searchContainer > \.module-title h2,\s*body\[data-page="home"\] #smModule > \.module-title h2\s*\{([^}]+)\}/);
+  assert.ok(frame && header && heading, 'same rules govern both module headers');
+  assert.match(frame[1], /border:2px solid var\(--text\)/);
+  assert.match(frame[1], /box-shadow:4px 4px 0/);
+  assert.match(header[1], /border-bottom:2px solid var\(--text\)/);
+  assert.match(header[1], /border-radius:3px 3px 0 0/);
+  assert.match(heading[1], /font-size:17px/);
+  assert.ok(html.includes('../css/home-mobile.css?v=' + blobVersion(css)), 'CSS cache key is current');
+});
