@@ -56,17 +56,19 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
+  border: 2px solid var(--text);
+  border-radius: 4px;
   background: var(--card);
   color: var(--text);
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
   flex-shrink: 0;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 3px 3px 0 rgba(32,33,38,.38), inset 2px 2px 0 #ffffff;
 }
+.sm-relocate-btn:active { transform: translate(3px,3px); box-shadow: none; }
+
 .sm-relocate-btn:hover {
   border-color: var(--green);
   background: var(--green-pale);
@@ -112,12 +114,12 @@
 .sm-tag-btn {
   font-size: 12px;
   padding: 6px 4px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
+  border: 2px solid var(--text);
+  border-radius: 4px;
   color: var(--text-muted);
   background: var(--bg3);
   cursor: pointer;
-  transition: var(--transition);
+  transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end), border-color 90ms steps(2,end);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -125,7 +127,7 @@
   font-weight: 500;
   font-family: inherit;
   white-space: nowrap;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  box-shadow: 3px 3px 0 rgba(32,33,38,.32), inset 1px 1px 0 #ffffff;
 }
 @media (max-width: 420px) {
   .sm-tag-filters { gap: var(--space-2); padding: 12px 10px; }
@@ -149,8 +151,10 @@
   color: var(--white);
   background: var(--green);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0,168,89,0.3);
+  box-shadow: 3px 3px 0 #173824, inset 1px 1px 0 rgba(255,255,255,.2);
 }
+.sm-tag-btn:active { transform: translate(3px,3px); box-shadow: none; }
+
 .sm-sort-btn.active {
   border-color: var(--green);
   color: var(--green);
@@ -174,21 +178,24 @@
 /* === Card === */
 .sm-card {
   background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
+  border: 2px solid var(--text);
+  border-radius: 5px;
   overflow: hidden;
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
-  transition: var(--transition-slow);
+  box-shadow: 4px 4px 0 rgba(32,33,38,.34), inset 2px 2px 0 #ffffff;
+  transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end), border-color 90ms steps(2,end);
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: inherit;
 }
 .sm-card:hover {
-  box-shadow: var(--shadow-elevated);
-  transform: translateY(-3px);
-  border-color: var(--green-pale);
+  box-shadow: 5px 5px 0 rgba(32,33,38,.5), inset 2px 2px 0 #ffffff;
+  transform: translate(-1px,-1px);
+  border-color: var(--green);
 }
+.sm-card:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 rgba(32,33,38,.45), inset 2px 2px 0 rgba(0,0,0,.08); }
+.sm-card:focus-visible { outline: 3px solid #006b32; outline-offset: 3px; }
+
 
 /* === 4.3.794 活动样式：event 条目（祭り/花火/市集）=== */
 .sm-card--event {
@@ -354,6 +361,12 @@
   padding: 0 0 40px;
 }
 
+.detail-back-btn {
+  min-height: 44px; border: 2px solid var(--text); border-radius: 4px;
+  box-shadow: 3px 3px 0 rgba(32,33,38,.38), inset 2px 2px 0 #ffffff;
+  transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
+}
+.detail-back-btn:active { transform: translate(3px,3px); box-shadow: none; }
 /* === Article hero === */
 .article-hero {
   position: relative;
@@ -413,11 +426,11 @@
 /* === Content wrapper === */
 .article-content {
   background: var(--card);
-  border: 2px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 12px 12px;
+  border: 2px solid var(--text);
+  border-top: 2px solid var(--text);
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 4px 4px 0 rgba(32,33,38,.32), inset 2px 2px 0 #ffffff;
 }
 
 /* === Tags with color coding === */

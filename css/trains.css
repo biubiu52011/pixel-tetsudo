@@ -1,7 +1,8 @@
 /* Pixel Tetsudo - Train Location Styles (detail view only) */
 
 /* 返回按钮：trains-detail 为 flex column 容器，默认 stretch 会把按钮拉成整行巨长条；对齐 tourism 详情页的紧凑按钮（内容宽度） */
-.trains-detail .back-btn { align-self: flex-start; min-height: 44px; }
+.trains-detail .back-btn { align-self: flex-start; min-height: 44px; border: 2px solid var(--text); border-radius: 4px; box-shadow: 3px 3px 0 rgba(32,33,38,.38), inset 2px 2px 0 #ffffff; transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end); }
+.trains-detail .back-btn:active { transform: translate(3px,3px); box-shadow: none; }
 .back-btn:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 @keyframes tpFadeIn {
   from { opacity: 0; transform: translateY(8px); }
@@ -18,8 +19,8 @@
   /* Fixed width; height follows line length */
   width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
   height: auto; min-height: 0; max-height: none;
-  background: var(--bg); border: 2px solid var(--border);
-  border-radius: var(--radius-sm); padding: 14px; overflow-x: auto; overflow-y: visible; flex-shrink: 0;
+  background: var(--bg); border: 2px solid var(--text);
+  border-radius: 5px; box-shadow: 4px 4px 0 rgba(32,33,38,.32), inset 2px 2px 0 #ffffff; padding: 14px; overflow-x: auto; overflow-y: visible; flex-shrink: 0;
 }
 @media (max-width: 640px) { .tp-line-map { padding: 6px; } }
 /* v4.3.546: 线路图完整适配——svg width=100%（viewBox 缩放），wrap 占满容器，

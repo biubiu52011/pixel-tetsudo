@@ -2,7 +2,7 @@
 .type-badge--shop { background: #e8590c; }
 .article-content--shop {
   --dp-accent: #b94b0b;
-  --dp-shadow: 3px 3px 0 rgba(32, 33, 38, .16);
+  --dp-shadow: 4px 4px 0 rgba(32, 33, 38, .34);
   background: var(--bg);
   padding-bottom: 12px;
 }
@@ -17,8 +17,8 @@
 .article-content--shop .dp-head,
 .article-content--shop .dp-card {
   position: relative; min-width: 0; background: var(--card);
-  border: 2px solid var(--border); border-radius: var(--radius, 8px);
-  box-shadow: var(--dp-shadow);
+  border: 2px solid var(--text); border-radius: 5px;
+  box-shadow: var(--dp-shadow), inset 2px 2px 0 #ffffff;
 }
 .article-content--shop .dp-head {
   z-index: 2; margin: 12px 12px 15px; padding: 17px 16px 16px;
@@ -48,8 +48,8 @@
 .article-content--shop .dp-chips.is-expanded .dp-tag-extra { display: inline-flex !important; }
 .article-content--shop .dp-tags-toggle {
   min-width: 44px; min-height: 44px; padding: 8px;
-  border: 2px solid var(--border); border-radius: 4px; background: var(--bg3);
-  color: var(--text); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+  border: 2px solid var(--text); border-radius: 4px; background: var(--bg3);
+  color: var(--text); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 rgba(32,33,38,.36), inset 1px 1px 0 #ffffff; transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
 }
 
 /* The two critical facts are not competing with address, visit tips or transit. */
@@ -166,8 +166,8 @@
 .article-content--shop .dp-menu-inline-toggle, .article-content--shop .dp-menu-viewall {
   display: flex; justify-content: center; align-items: center; width: 100%;
   min-height: 44px; margin-top: 10px; padding: 9px 12px;
-  border: 2px solid var(--border); border-radius: 4px; background: var(--bg3);
-  color: var(--text); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  border: 2px solid var(--text); border-radius: 4px; background: var(--bg3);
+  color: var(--text); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 rgba(32,33,38,.36), inset 1px 1px 0 #ffffff; transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
 }
 .article-content--shop .dp-menu-inline-toggle:hover, .article-content--shop .dp-menu-viewall:hover {
   border-color: var(--dp-accent); color: var(--dp-accent);
@@ -188,9 +188,9 @@
 }
 .article-content--shop .dp-about-toggle {
   display: block; min-height: 44px; margin: 9px auto 0; padding: 9px 16px;
-  border: 2px solid var(--border); border-radius: 4px;
+  border: 2px solid var(--text); border-radius: 4px;
   background: var(--bg3); color: var(--text); font: inherit; font-size: 13px;
-  font-weight: 700; cursor: pointer;
+  font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 rgba(32,33,38,.36), inset 1px 1px 0 #ffffff; transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
 }
 .article-content--shop .dp-visit-notes { margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--border); }
 .article-content--shop .dp-visit-notes-title {
@@ -225,8 +225,8 @@
 .dp-menu-modal-inner {
   display: flex; flex-direction: column; width: 100%; max-width: 650px;
   max-height: min(88dvh, 760px); overflow: hidden;
-  background: var(--card); border: 3px solid var(--border); border-bottom: 0;
-  border-radius: 8px 8px 0 0; box-shadow: 5px 0 0 rgba(0, 0, 0, .25);
+  background: var(--card); border: 3px solid var(--text); border-bottom: 0;
+  border-radius: 8px 8px 0 0; box-shadow: 5px 0 0 rgba(32,33,38,.38);
 }
 .dp-menu-modal-header {
   display: flex; flex: 0 0 auto; align-items: center;
@@ -240,9 +240,9 @@
 .dp-menu-modal-close {
   display: inline-flex; justify-content: center; align-items: center;
   width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-  margin: 8px 12px 8px 0; border: 2px solid var(--border);
+  margin: 8px 12px 8px 0; border: 2px solid var(--text);
   border-radius: 4px; background: var(--card); color: var(--text);
-  font: inherit; font-size: 22px; cursor: pointer;
+  font: inherit; font-size: 22px; cursor: pointer; box-shadow: 3px 3px 0 rgba(32,33,38,.36), inset 1px 1px 0 #ffffff; transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
 }
 .dp-menu-modal-grid {
   display: block; min-height: 0; padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px));
@@ -252,6 +252,11 @@
 .dp-menu-modal .dp-dish-name { display: block; overflow: visible; -webkit-line-clamp: unset; }
 .dp-menu-modal .dp-dish-price { white-space: normal; overflow: visible; }
 
+.article-content--shop .dp-tags-toggle:active,
+.article-content--shop .dp-menu-inline-toggle:active,
+.article-content--shop .dp-menu-viewall:active,
+.article-content--shop .dp-about-toggle:active,
+.dp-menu-modal-close:active { transform: translate(3px,3px); box-shadow: none; }
 /* 7. Focus, small screens and reduced motion. */
 .article-content--shop button:focus-visible,
 .article-content--shop a:focus-visible,

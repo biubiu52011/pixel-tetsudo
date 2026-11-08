@@ -21,12 +21,14 @@
 
 /* 4.3.807 カレンダーに追加 */
 .article-content--event .btn-add-calendar {
-  margin-left: auto; border: 0; cursor: pointer;
-  min-height: 44px; padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
-  background: #FF4500; color: #fff; transition: opacity 0.15s;
+  margin-left: auto; border: 2px solid #ad3600; cursor: pointer;
+  min-height: 44px; padding: 10px 14px; border-radius: 4px; font-size: 12px; font-weight: 700;
+  background: #FF4500; color: #fff; box-shadow: 3px 3px 0 #743300, inset 1px 1px 0 rgba(255,255,255,.28); transition: transform 90ms steps(2,end), box-shadow 90ms steps(2,end);
 }
-.article-content--event .btn-add-calendar:hover { opacity: 0.85; }
-.article-content--event .btn-add-calendar:active { transform: scale(0.97); }
+.article-content--event .btn-add-calendar:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #743300; }
+.article-content--event .btn-add-calendar:active { transform: translate(3px,3px); box-shadow: none; }
+.article-content--event .btn-add-calendar:focus-visible { outline: 3px solid #006b32; outline-offset: 3px; }
+
 
 /* 4.3.805 歴代開催・映像 */
 .article-content--event .edition-list { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 14px; }
