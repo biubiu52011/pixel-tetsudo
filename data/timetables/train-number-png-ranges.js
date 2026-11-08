@@ -2669,11 +2669,11 @@
     ["electric-2500-2599-M","M",2500,2599,""],
     ["electric-2700-2799-M","M",2700,2799,""],
     ["electric-2900-2999-M","M",2900,2999,""],
-    ["electric-3000-3099-M","M",3000,3099,""],
+    ["kounotori-3000-7000-express-illustration","M",3000,3099,"LimitedExpress"],
     ["electric-3700-3799-M","M",3700,3799,""],
     ["electric-3900-3999-M","M",3900,3999,""],
     ["electric-5400-5599-M","M",5400,5599,""],
-    ["electric-7000-7099-M","M",7000,7099,"Local"],
+    ["kounotori-3000-7000-express-illustration","M",7000,7099,"LimitedExpress"],
     ["historical-2750-2799-MO","MO",2750,2799,"Local"]
   ]);
   function verifyFukuchiyamaSourceFleet(p){
@@ -2699,12 +2699,9 @@
       n=/^([0-9]{3,5})(C|MO|M)(H?)$/.exec(num),
       dir=String(p.railDirection||"").split(/[.:]/).pop(),
       type=String(p.trainType||"").split(/[.:]/).pop(),
-      expressPublicBySource={
-        68244:"3008M",68245:"3008MH",68251:"3010M",68252:"3010MH",
-        68314:"3028M",68315:"3028MH",68168:"7025MH"
-      },
-      isExpress=type==="LimitedExpress"&&
-        expressPublicBySource[Number(proof.sourceTemplateId)]===num,
+      // A family reference ONLY. The SQL proof still requires the exact
+      // source template, number, calendar and stop sequence to match.
+      isExpress=type==="LimitedExpress"&&/^(30|70)[0-9]{2}MH?$/.test(num),
       models=isExpress?["287系","289系"]:
         ["207系","321系","223系6000番台","225系6000番台"];
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
@@ -2737,7 +2734,7 @@
        proof.candidateAssets.length!==0)return null;
     var digits=Number(n[1]), band=FUKUCHIYAMA_NUMBER_BANDS.find(function(x){
       return x[1]===n[2]&&digits>=x[2]&&digits<=x[3]&&
-        (isExpress||!x[4]||x[4]===type);
+        (!x[4]||x[4]===type);
     });
     if(!band)return null;
     var isC=band[1]==="C";
@@ -2758,14 +2755,20 @@
         "Kawanishi-Ikeda","Itami","Amagasaki","Osaka"
       ].join("|");
     var is207321=isC||holiday2774;
+    // 287/289 are both Kounotori fleet candidates. A SINGLE generic 287
+    // PNG is displayed only as a clearly identified example; the SQL
+    // source proves neither this train's real type nor physical formation.
     var galleryModels=is207321?["JR西日本207系（NK）",
-      "JR西日本207系（Y2）","JR西日本321系"]:[],
+      "JR西日本207系（Y2）","JR西日本321系"]:
+      isExpress?["JR西日本287系"]:[],
       galleryPaths=is207321?[
         "../images/列车/JR西日本/JR西日本_207系_NK.png",
         "../images/列车/JR西日本/JR西日本_207系_Y2.png",
         "../images/列车/JR西日本/JR西日本_321系.png"
-      ]:[],illustration=is207321
-        ?"../images/列车/JR西日本/JR西日本_321系.png":"";
+      ]:isExpress?["../images/列车/JR西日本/JR西日本_287系.png"]:[],
+      illustration=is207321
+        ?"../images/列车/JR西日本/JR西日本_321系.png":
+        isExpress?"../images/列车/JR西日本/JR西日本_287系.png":"";
     return Object.freeze({
       lineId:"Fukuchiyama",sourceTrainNumber:num,
       sourceTemplateId:Number(proof.sourceTemplateId),numberBand:holiday2774?"holiday-2774M-2025-207-321-working":band[0],
@@ -2776,12 +2779,13 @@
       candidateModels:Object.freeze(is207321?["207系","321系"]:models),
       candidateGalleryModels:Object.freeze(galleryModels),
       candidateAssets:Object.freeze(galleryPaths),
-      illustrationModel:is207321?"JR西日本321系":"",
+      illustrationModel:is207321?"JR西日本321系":isExpress?"JR西日本287系":"",
       illustrationPng:illustration,
       illustrationSourceUrl:holiday2774
         ?"https://ameblo.jp/tc205-37/entry-12906281412.html":
-        isC?"https://www.katano-transport.com/archives/29972598.html":"",
-      authorizesIllustration:is207321,
+        isC?"https://www.katano-transport.com/archives/29972598.html":
+        isExpress?"https://www.jr-odekake.net/railroad/train/kounotori/":"",
+      authorizesIllustration:is207321||isExpress,
       referenceOnly:true,numberDateVerified:false,
       actualVehicleConfirmed:false,authorizesPNG:false
     });
