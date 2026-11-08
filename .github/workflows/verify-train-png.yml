@@ -55,6 +55,8 @@ on:
       - 'tests/fukuchiyama-1199ch-candidate-marker.test.cjs'
       - 'tests/fukuchiyama-north-local-fleet-scope.test.cjs'
       - 'tests/fukuchiyama-line-stations-2611.test.cjs'
+      - 'tests/fukuchiyama-2611-official-north-sample.test.cjs'
+      - 'supabase/migrations/20261108221000_fukuchiyama_november_2531m_official_sample_and_2774m_type.sql'
       - 'tests/support/published-jp-holidays.cjs'
       - 'data/core/railway_data.json'
       - 'data/core/station_i18n.json'
@@ -176,6 +178,8 @@ jobs:
         run: node --test tests/fukuchiyama-1199ch-candidate-marker.test.cjs
       - name: Verify northern Fukuchiyama local 223-5500 fleet stays line-scoped
         run: node --test tests/fukuchiyama-north-local-fleet-scope.test.cjs
+      - name: Verify Fukuchiyama November 2531M official north sample and 2774M type reconciliation
+        run: node --test tests/fukuchiyama-2611-official-north-sample.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
