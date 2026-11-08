@@ -235,7 +235,10 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   // never project its clocks into another month as a recurring timetable.
   if(lineId==="Fukuchiyama"){
     templates=templates.filter((t:any)=>{
-      if(!String(t.source_path||"").startsWith("official-sampled:fukuchiyama:"))
+      const source=String(t.source_path||"");
+      const expressSqlExample=[68244,68245,68251,68252].includes(Number(t.id)) &&
+        Array.isArray(t.operating_dates);
+      if(!source.startsWith("official-sampled:fukuchiyama:")&&!expressSqlExample)
         return true;
       return Array.isArray(t.operating_dates)&&t.operating_dates.some(
         (date:any)=>String(date).slice(0,10)===serviceDate);
@@ -4386,6 +4389,10 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     if(bySource.size!==expected||(fleet||[]).length!==expected)
       throw new Error("JRWEST_FUKUCHIYAMA_2611_SOURCE_FLEET_UNAVAILABLE");
     const acceptedModels="207系|321系|223系6000番台|225系6000番台";
+    // These four legacy SQL rows were wrongly classified as Local;
+    // maintain compatibility while the old and corrected snapshots deploy.
+    // The 287/289 candidates remain an unconfirmed family only.
+    const expressSourceIds=[68244,68245,68251,68252];
     for(const run of result){
       const p:any=bySource.get(Number(run.source_template_id));
       if(!p)continue;
@@ -4401,7 +4408,10 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         p.number_date_verified!==false||p.reference_only!==true||
         p.actual_vehicle_confirmed!==false||p.authorizes_png!==false||
         !Array.isArray(p.candidate_models)||
-        p.candidate_models.join("|")!==acceptedModels||
+        p.candidate_models.join("|")!==(
+          expressSourceIds.includes(Number(run.source_template_id)) &&
+          run.train_type==="odpt.TrainType:JR-West.LimitedExpress"
+            ? "287系|289系" : acceptedModels)||
         !Array.isArray(p.candidate_png_paths)||p.candidate_png_paths.length!==0||
         !Array.isArray(p.source_stop_keys)||
         Number(p.source_stop_count)!==keys.length||
@@ -4497,6 +4507,53 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.train_number_verification="official-2611-northern-number-and-stops";
       run.train_number_source_url=sample.source;
       run.plan_source="jrwest-2611-official-sampled-northern-local-no-live-location";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+    }
+  }
+
+  // Kounotori 8/10: the original SQL contains a four-stop Sanda--Osaka
+  // segment but mislabeled it LOCAL. Corrected SQL preserves those four
+  // clocks and appends the published Fukuchiyama--Shinoyamaguchi prefix.
+  // A partial FUKUCHIYAMA-line segment stops at Osaka; the service itself
+  // continues to Shin-Osaka. No actual set or current position is asserted.
+  if(lineId==="Fukuchiyama" && /^2026-11-\d{2}$/.test(serviceDate)){
+    const holiday=selectedCalendar==="odpt.Calendar:SaturdayHoliday";
+    const express=[
+      {id:holiday?68245:68244,no:holiday?"3008MH":"3008M",
+       keys:["Fukuchiyama","Kuroi-Tamba","Kaibara-Hyogo","Tanigawa",
+         "Shinoyamaguchi","Sanda-Hyogo","Takarazuka","Amagasaki","Osaka"],
+       start:"08:40",end:"10:21",source:
+         "https://timetable.jr-odekake.net/train-timetable/91081?date=20261103"},
+      {id:holiday?68252:68251,no:holiday?"3010MH":"3010M",
+       keys:["Fukuchiyama","Kaibara-Hyogo","Shinoyamaguchi",
+         "Sanda-Hyogo","Takarazuka","Amagasaki","Osaka"],
+       start:"09:50",end:"11:23",source:
+         "https://timetable.jr-odekake.net/train-timetable/91111?date=20261103"}
+    ];
+    for(const sample of express){
+      const run=result.find((r:any)=>Number(r.source_template_id)===sample.id);
+      if(!run||run.train_number!==sample.no||
+         run.network_key!=="odpt.Railway:JR-West.Fukuchiyama"||
+         run.rail_direction!=="odpt.RailDirection:Inbound")
+        throw new Error("JRWEST_FUKUCHIYAMA_KOUNOTORI_SOURCE_MISSING");
+      if(run.train_type!=="odpt.TrainType:JR-West.LimitedExpress"){
+        // Old historical source is explicitly unverified pending SQL patch.
+        if(run.train_type!=="odpt.TrainType:JR-West.Local"||
+           run.stops.length!==4)throw new Error("JRWEST_FUKUCHIYAMA_KOUNOTORI_TRANSITION_CONFLICT");
+        continue;
+      }
+      if(!Array.isArray(run.stops)||run.stops.length!==sample.keys.length||
+         run.stops.some((st:any,i:number)=>st.station_key!==sample.keys[i])||
+         run.stops[0].departure_time!==sample.start||
+         run.stops[run.stops.length-1].arrival_time!==sample.end||
+         run.vehicle_type_candidates!=="287系 / 289系")
+        throw new Error("JRWEST_FUKUCHIYAMA_KOUNOTORI_OFFICIAL_SAMPLE_CONFLICT");
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.train_number_verification="official-2611-kounotori-8-10-line-segment";
+      run.train_number_source_url=sample.source;
+      run.plan_source="jrwest-2611-kounotori-official-sampled-to-osaka-not-live";
       run.vehicle_plan_confirmed=false;
       run.vehicle_artwork_path=null;
     }
