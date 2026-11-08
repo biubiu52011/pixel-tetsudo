@@ -4610,6 +4610,55 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // JR-West's 7025M Friday service is absent from the old weekday SQL.
+  // Its four November dates reuse exactly the verified 11-stop 7025MH
+  // Osaka--Fukuchiyama segment, preserving every original clock.
+  // The final Shin-Osaka leg is outside this line's SVG.
+  if(lineId==="Fukuchiyama" &&
+     ["2026-11-06","2026-11-13","2026-11-20","2026-11-27"]
+       .includes(serviceDate)){
+    const run=result.find((r:any)=>Number(r.source_template_id)===2611087025001);
+    const stations=["Osaka","Amagasaki","Takarazuka","Sanda-Hyogo",
+      "Shinmita","Sou-No","Shinoyamaguchi","Tanigawa",
+      "Kaibara-Hyogo","Kuroi-Tamba","Fukuchiyama"];
+    if(selectedCalendar!=="odpt.Calendar:Weekday"||!run||
+       run.train_number!=="7025M"||
+       run.timetable_provenance!==
+         "official-sampled:fukuchiyama:2611:7025M-friday"||
+       run.network_key!=="odpt.Railway:JR-West.Fukuchiyama"||
+       run.rail_direction!=="odpt.RailDirection:Outbound"||
+       run.train_type!=="odpt.TrainType:JR-West.LimitedExpress"||
+       !Array.isArray(run.stops)||run.stops.length!==11||
+       run.stops.some((st:any,i:number)=>st.station_key!==stations[i])||
+       run.stops[0].departure_time!=="21:10"||
+       run.stops[10].arrival_time!=="23:03")
+      throw new Error("JRWEST_FUKUCHIYAMA_7025M_NOVEMBER_FRIDAY_SOURCE_CONFLICT");
+    run.timetable_validity="date_verified";
+    run.timetable_date_verified=true;
+    run.train_number_verification="official-2611-kounotori-25-friday";
+    run.train_number_source_url=
+      "https://timetable.jr-odekake.net/train-timetable/200071?date=20261114";
+    run.plan_source="jrwest-2611-7025m-friday-source-reuse-no-live-location";
+    run.vehicle_type_candidates="287系 / 289系";
+    run.vehicle_plan_confirmed=false;
+    run.vehicle_artwork_path=null;
+    run.published_number_fleet_reference={
+      source:"sql-jrwest-fukuchiyama-2611-official-7025-friday",
+      lineId,sourceTemplateId:2611087025001,
+      sourceTrainId:"7025M",serviceDate,
+      calendar:selectedCalendar,
+      direction:"odpt.RailDirection:Outbound",
+      trainType:"odpt.TrainType:JR-West.LimitedExpress",
+      sourceStopKeys:stations,
+      candidateModels:["287系","289系"],candidateAssets:[],
+      timetableSourcePath:run.timetable_provenance,
+      timetableValidity:"date_verified",
+      fleetSourceUrl:"https://www.jr-odekake.net/railroad/train/kounotori/",
+      numberDateVerified:true,referenceOnly:true,
+      actualVehicleConfirmed:false,authorizesPNG:false
+    };
+  }
+
   // Incomplete source rows are preserved in SQL for auditing, but must not
   // suppress other source-verified trains for the same railway/calendar.
   // Never extrapolate a missing stop or report full coverage for a partial set.
