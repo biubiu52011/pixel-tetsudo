@@ -352,6 +352,14 @@
     "Komii": { "Misato": "Misato-Koumi", "Komi": "Koumi" },
     "Tojo": { "Oyama": "Ooyama" },
     "NaritaAbikoBranch": { "Kohoku": "Kohoku-Narita" },
+    // Explicitly scoped ID migration: preserve official ODPT stop tokens.
+    "Nippo": { "Kanda": "Kanda-Fukuoka" },
+    "KagoshimaMain": {
+      "Kasuga": "Kasuga-Fukuoka", "Koga": "Koga-Fukuoka",
+      "Araki": "Araki-Fukuoka"
+    },
+    "KagoshimaMainJA": { "Koga": "Koga-Fukuoka" },
+    "KagoshimaMainJB": { "Kasuga": "Kasuga-Fukuoka", "Araki": "Araki-Fukuoka" },
     "Utsunomiya": {
       "Kamasusaka": "Kabasaka",
       "Jichiidai": "Jichi-Ikaidaigaku"
