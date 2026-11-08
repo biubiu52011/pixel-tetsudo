@@ -72,31 +72,14 @@ UPDATE public.train_timetable_members
 SET last_stop_sequence=9
 WHERE source_template_id IN(68234,68235) AND last_stop_sequence=0;
 
-UPDATE public.train_timetable_stops
-SET direction_urn='odpt.RailDirection:Outbound'
-WHERE source_template_id IN(68234,68235) AND stop_sequence=0;
-
-INSERT INTO public.train_timetable_stops(
- timetable_id,stop_sequence,station_urn,arrival_station_urn,
- departure_station_urn,arrival_clock,departure_clock,source_template_id,
- line_key,railway_urn,train_number,direction_urn,train_type_urn,source_revision_date)
-SELECT mem.timetable_id,s.stop_sequence,
- COALESCE(s.departure_station_urn,s.arrival_station_urn),
- s.arrival_station_urn,s.departure_station_urn,s.arrival_clock,s.departure_clock,
- t.id,t.line_key,t.railway_urn,t.train_number,t.direction_urn,t.train_type_urn,t.source_revision_date
-FROM public.manual_timetable_templates t
-JOIN public.train_timetable_members mem ON mem.source_template_id=t.id
-JOIN public.manual_timetable_template_stops s ON s.template_id=t.id AND s.stop_sequence>=1
-WHERE t.id IN (68234,68235);
+-- train_timetable_stops is a VIEW over manual stops and members;
+-- it updates automatically and must not receive direct INSERT or UPDATE.
 
 -- Keep historical source and its published candidate proof consistent.
 -- The public train category is 丹波路快速 for 2774M weekdays.
 UPDATE public.manual_timetable_templates
 SET train_type_urn='odpt.TrainType:JR-West.Rapid'
 WHERE id=68301;
-UPDATE public.train_timetable_stops
-SET train_type_urn='odpt.TrainType:JR-West.Rapid'
-WHERE source_template_id=68301;
 UPDATE public.published_jrwest_fukuchiyama_2611_source_fleet
 SET train_type_urn='odpt.TrainType:JR-West.Rapid'
 WHERE source_template_id=68301;
