@@ -1,4 +1,5 @@
 'use strict';
+const PUBLISHED_JP_HOLIDAYS=require('../tests/support/published-jp-holidays.cjs');
 /* Hamakawasaki branch: JR East H numbers + SQL-only estimation + strict
  * opportunistic ODPT realtime admission. No inferred live carset.
  * Run: node tools/nambu-branch-official-hybrid.test.cjs
@@ -60,7 +61,7 @@ function estimate(iso, trainNumber='2211H', edits={}) {
   }
   const window={
     NambuBranchOfficial202611:official,
-    RuntimeConfig:{},
+    RuntimeConfig:{PUBLISHED_JP_HOLIDAYS},
     ODPTClient:{
       LINE_RAILWAY_CODE:{NambuBranch:'NambuBranch'},
       LINE_TO_OPERATOR:{NambuBranch:'JR-East'}
