@@ -168,7 +168,9 @@
         if(i){var tx=transfers[i-1], same=through(tx && tx.seg,hits[i-1],hit), total=hit.depMin-hits[i-1].arrMin;
           if(tx){connections[tx.idx]={through:same,total:total,walk:same ? 0 : buffer(tx.seg),wait:same ? 0 : total-buffer(tx.seg),arrivalPlatform:!same?(hits[i-1].arrivalPlatform||null):null,departurePlatform:!same?(hit.platform||null):null};if(tx.seg.through && !same) downgrade.push(tx.idx);}}
       });
-      return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:hits[hits.length-1].arr,durationMin:hits[hits.length-1].arrMin-hits[0].depMin,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
+      var finalHit=hits[hits.length-1],arrivalConfirmed=finalHit.arrivalClockConfirmed===true;
+      // The destination's departure clock is a routing bound, not a verified arrival.
+      return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:arrivalConfirmed?finalHit.arr:null,arrivalClockConfirmed:arrivalConfirmed,durationMin:arrivalConfirmed?finalHit.arrMin-hits[0].depMin:null,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
     });
   }
   window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain};
