@@ -186,6 +186,9 @@ test('route timetable never equates published departure-only clock with verified
   assert.equal(res.times[0].trainType,'odpt.TrainType:JR-East.CommuterRapid');
   assert.equal(res.times[0].arrivalClockConfirmed,false);
   assert.equal(res.times[0].arr,'07:34','departure time is only a routing reference');
+  assert.equal(res.arrivalClockConfirmed,false);
+  assert.equal(res.arrival,null,'unpublished arrival must not be an exact arrival');
+  assert.equal(res.durationMin,null,'duration is unavailable without exact arrival');
 });
 
 test('short matched through connection is accepted; same-number long layover is not',async()=>{
@@ -288,4 +291,7 @@ test('per-itinerary UI keeps independent schedule and platform slots',()=>{
   assert.match(ui,/view\.querySelector\('\[data-seg-arr-time=/);
   assert.match(ui,/view\.querySelector\('\[data-seg-meta=/);
   assert.match(ui,/entry\.schedule\.complete/);
+  assert.match(ui,/_tm\.arrivalClockConfirmed===true/);
+  assert.match(ui,/_arrCell\.textContent=exactStopArrival\?_tm\.arr:'—'/);
+  assert.doesNotMatch(ui,/'≈'\s*\+\s*_tm\.arr/);
 });
