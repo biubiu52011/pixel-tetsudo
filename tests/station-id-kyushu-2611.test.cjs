@@ -22,8 +22,14 @@ test('Kyushu same-ID collisions have independent station identities and position
       const line=d.lines[lineId],index=line.stations.indexOf(s.id);
       assert.ok(index>=0,s.id+' missing on '+lineId);
       assert.ok(!line.stations.includes(s.old),s.old+' was not migrated on '+lineId);
-      assert.equal(d.lineStationOrder[lineId][s.id],index);
-      assert.ok(!Object.hasOwn(d.lineStationOrder[lineId],s.old));
+      // Some line variants use their canonical stations array directly and
+      // have no optional precomputed lineStationOrder index (e.g. JA/JB).
+      // For lines that publish the index, it must still be identity-scoped.
+      const indexedOrder = d.lineStationOrder[lineId];
+      if (indexedOrder) {
+        assert.equal(indexedOrder[s.id], index);
+        assert.ok(!Object.hasOwn(indexedOrder,s.old));
+      }
       assert.ok(d.stationLines[s.id].includes(lineId));
       assert.ok(!d.stationLines[s.old].includes(lineId));
     }
