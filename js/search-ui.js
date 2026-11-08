@@ -427,17 +427,50 @@
       if(!this.resultsDiv)return Promise.resolve([]);
       var service=window.RouteTimetable;
       // A route is not a verified journey until its own train sequence matches.
-      return Promise.all(candidates.map(function(route){
-        if(!service||!service.enrichSegments)
-          return Promise.resolve({route:route,schedule:{complete:false,reason:'no-source'}});
-        return Promise.resolve().then(function(){
-          return service.enrichSegments(route.routeSegments,timeOptions);
-        }).then(function(res){
-          return {route:route,schedule:res||{complete:false}};
-        }).catch(function(){
-          return {route:route,schedule:{complete:false,reason:'source-error'}};
-        });
-      })).then(function(entries){
+      function evaluate(routes) {
+        return Promise.all(routes.map(function(route){
+          route.timeOptions=timeOptions;
+          if(!service||!service.enrichSegments)
+            return Promise.resolve({route:route,schedule:{complete:false,reason:'no-source'}});
+          return Promise.resolve().then(function(){
+            return service.enrichSegments(route.routeSegments,timeOptions);
+          }).then(function(res){
+            return {route:route,schedule:res||{complete:false}};
+          }).catch(function(){
+            return {route:route,schedule:{complete:false,reason:'source-error'}};
+          });
+        }));
+      }
+      function routeKey(route) {
+        return (route.routeSegments||[]).map(function(seg){
+          return [seg.type,seg.lineId||seg.fromLine||'',seg.fromStation||seg.station||'',
+            seg.toStation||'',(seg.toLines||[]).join(',')].join(':');
+        }).join('|');
+      }
+      return evaluate(candidates).then(function(entries){
+        // Use the selected service date before rejecting an entire route.
+        // If every fast topology alternative misses the day's timetable,
+        // inspect a wider, bounded set rather than treating eight static
+        // routes as the entire railway network.
+        if(generation!==self._renderGeneration || !service || !service.enrichSegments ||
+            entries.some(function(item){return item.schedule && item.schedule.complete;}))
+          return entries;
+        var first=entries[0]&&entries[0].route;
+        if(!first||!first.path||first.path.length<2||
+            !window.RouteSearch||!window.RouteSearch.findRouteCandidates) return entries;
+        var visited=new Set(entries.map(function(item){return routeKey(item.route);}));
+        var deeper=window.RouteSearch.findRouteCandidates(
+          first.path[0],first.path[first.path.length-1],self.currentMode,20);
+        var extra=(deeper||[]).filter(function(route){
+          var key=routeKey(route);
+          if(visited.has(key))return false;
+          visited.add(key);
+          return true;
+        }).slice(0,12);
+        return extra.length ? evaluate(extra).then(function(next){
+          return entries.concat(next);
+        }) : entries;
+      }).then(function(entries){
         if(generation!==self._renderGeneration)return [];
         function transfers(entry) {
           var connections=entry.schedule&&entry.schedule.connections||{};
