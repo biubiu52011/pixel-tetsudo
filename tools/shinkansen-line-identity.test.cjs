@@ -9,7 +9,7 @@ const sourcePath = path.resolve(__dirname, '..', 'data', 'api', 'odpt-unified.js
 const source = fs.readFileSync(sourcePath, 'utf8');
 
 function extractObjectLiteral(constName) {
-  const declaration = source.indexOf(`const ${constName} =`);
+  const declaration = source.search(new RegExp(`\\b(?:const|var)\\s+${constName}\\s*=`));
   assert.notEqual(declaration, -1, `missing ${constName} declaration`);
 
   const start = source.indexOf('{', declaration);
@@ -95,4 +95,3 @@ for (const [lineId, [operator, railwayCode]] of Object.entries(expected)) {
 }
 
 console.log(`shinkansen-line-identity: PASS (${Object.keys(expected).length})`);
-'

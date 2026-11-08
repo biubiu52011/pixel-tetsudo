@@ -95,6 +95,31 @@ async function loadRevisionRows(db: any, lineId: string) {
   return data || [];
 }
 
+function selectDatedVehiclePlan(rows: any[], context: any) {
+  const scoped = rows.filter((row: any) =>
+    String(row.valid_date || "").slice(0, 10) === context.serviceDate &&
+    row.operator === context.operator &&
+    row.network_key === context.networkKey &&
+    row.train_number === context.trainNumber &&
+    row.service_name === context.serviceName &&
+    row.direction === context.direction);
+  if (scoped.length !== 1) {
+    return { status: scoped.length ? "conflict" : "unmatched" };
+  }
+  const row = scoped[0];
+  const source = Array.isArray(row.evidence_sources)
+    ? row.evidence_sources[0] : row.evidence_sources;
+  if (!row.source_id || !String(row.vehicle_type || "").trim() ||
+      source?.source_type !== "official" ||
+      !["A", "B"].includes(String(source?.evidence_grade || "")) ||
+      !String(source?.source_url || "").startsWith("https://")) {
+    return { status: "invalid" };
+  }
+  return { status: "verified", ...row,
+    vehicle_type: String(row.vehicle_type).trim(),
+    source_url: String(source.source_url) };
+}
+
 function scheduleVehicleType(mapped: any, revision: any) {
   // Train-level planned vehicle evidence is valid across every verified
   // continuation segment. It is a MODEL in the publication plan, not an
@@ -796,6 +821,42 @@ if (/Shinkansen$/.test(lineId) &&
   }
 }
 
+// Exact-date planned stock is independent of the recurring timetable vehicle
+// mapping. Match every identity field and official provenance; an invalid or
+// duplicate rule fails closed for that train. A dated PLAN is never an actual
+// dispatched carset, and a PNG is attached only for one native generic asset
+// owned by the same railway operator and model.
+let datedVehicleRules: any[] = [];
+const datedVehicleArtworkByOwnerModel = new Map<string, string[]>();
+if (/Shinkansen$/.test(lineId) && /^2026-11-\d{2}$/.test(serviceDate) &&
+    publishedShinkansenNumbersBySource.size > 0) {
+  const networkKey = "odpt.Railway:" + officialShinkansenRailwayOwner + "." + lineId;
+  const {data:rules,error:rulesError}=await db.from("train_vehicle_date_rules")
+    .select("id,operator,network_key,train_number,service_name,direction,vehicle_type,valid_date,source_id,evidence_sources(source_url,source_type,evidence_grade)")
+    .eq("valid_date",serviceDate)
+    .eq("operator",officialShinkansenRailwayOwner)
+    .eq("network_key",networkKey);
+  if(rulesError)throw rulesError;
+  datedVehicleRules=rules||[];
+  const models=[...new Set(datedVehicleRules
+    .map((r:any)=>String(r.vehicle_type||"").trim()).filter(Boolean))];
+  for(let first=0;first<models.length;first+=100){
+    const {data:assets,error:assetsError}=await db.from("vehicle_image_assets")
+      .select("operator,vehicle_type,image_path")
+      .eq("operator",officialShinkansenRailwayOwner)
+      .eq("is_generic",true).eq("asset_status","available")
+      .eq("file_format_status","native_png")
+      .in("vehicle_type",models.slice(first,first+100));
+    if(assetsError)throw assetsError;
+    for(const asset of assets||[]){
+      const key=String(asset.operator)+"\u0000"+String(asset.vehicle_type).trim();
+      const paths=datedVehicleArtworkByOwnerModel.get(key)||[];
+      if(asset.image_path&&!paths.includes(asset.image_path))paths.push(asset.image_path);
+      datedVehicleArtworkByOwnerModel.set(key,paths);
+    }
+  }
+}
+
 // Shinkansen reference PNGs are authorized by the EXISTING 2611 SQL
 // exact-number roster, never by the service nickname or a broad model-family
 // gallery match. Duplicated rows for the same number/model/path are harmless;
@@ -1000,7 +1061,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     const candidateImages = mapped.mapping_level === "source_single_type_candidate"
       ? (candidateArtworkByOwnerModel.get(candidateKey) || []) : [];
     const candidateArtwork = candidateImages.length === 1 ? candidateImages[0] : null;
-    const ruleType = scheduleVehicleType(mapped,selectedRevision);
+    const recurringRuleType = scheduleVehicleType(mapped,selectedRevision);
     const publishedPlan = ['official_service_vehicle_plan',
       'published_number_family_plan'].includes(mapped.mapping_level);
     // On a through train the lead source might be the Joban rapid section,
@@ -1015,10 +1076,12 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       mapped.vehicle_source_id && mapped.vehicle_source_url
         ? String(mapped.vehicle_type || '').trim() : '';
     const verifiedBoundaryType = String(boundaryVehicle.get(t.id) || "");
-    const conflict = !!(ruleType && verifiedBoundaryType && ruleType !== verifiedBoundaryType);
-    const exactScheduleType = conflict ? "" : (ruleType || verifiedBoundaryType);
-    const scheduleLevel = conflict ? "conflicting_scheduled_evidence"
-      : ruleType ? mapped.mapping_level
+    const recurringConflict = !!(recurringRuleType && verifiedBoundaryType &&
+      recurringRuleType !== verifiedBoundaryType);
+    const recurringScheduleType = recurringConflict ? "" :
+      (recurringRuleType || verifiedBoundaryType);
+    const recurringScheduleLevel = recurringConflict ? "conflicting_scheduled_evidence"
+      : recurringRuleType ? mapped.mapping_level
       : verifiedBoundaryType ? "verified_scheduled_boundary"
       : mapped.mapping_level || "unresolved";
     const completeStops = mapped.group_evidence === "verified_continuation"
@@ -1034,13 +1097,38 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       status:"official-2611-sql-exact-roster",
       officialUrl:sqlOfficialNumber.url
     } : staticOfficialNumber;
+    const datedVehicleMatch = officialNumber ? selectDatedVehiclePlan(
+      datedVehicleRules, {
+        serviceDate, operator, networkKey:String(t.railway_urn||""),
+        trainNumber:officialNumber.number,
+        serviceName:officialNumber.serviceName,
+        direction:String(t.direction_urn||"")
+      }) : {status:"unmatched"};
+    const datedVehiclePlan = datedVehicleMatch.status === "verified"
+      ? datedVehicleMatch : null;
+    const datedRuleConflict = ["conflict","invalid"].includes(datedVehicleMatch.status);
+    const conflict = datedVehiclePlan ? false : datedRuleConflict || recurringConflict;
+    const ruleType = datedVehiclePlan ? datedVehiclePlan.vehicle_type
+      : datedRuleConflict ? "" : recurringRuleType;
+    const exactScheduleType = datedVehiclePlan ? datedVehiclePlan.vehicle_type
+      : datedRuleConflict ? "" : recurringScheduleType;
+    const scheduleLevel = datedVehiclePlan ? "dated_schedule_rule"
+      : datedRuleConflict ? "conflicting_scheduled_evidence" : recurringScheduleLevel;
+    const ruleSourceId = datedVehiclePlan ? datedVehiclePlan.source_id
+      : mapped.vehicle_source_id;
+    const ruleSourceUrl = datedVehiclePlan ? datedVehiclePlan.source_url
+      : mapped.vehicle_source_url;
+    const datedArtworkPaths = datedVehiclePlan
+      ? (datedVehicleArtworkByOwnerModel.get(operator+"\u0000"+
+          datedVehiclePlan.vehicle_type)||[]) : [];
+    const datedArtwork = datedArtworkPaths.length===1 ? datedArtworkPaths[0] : null;
     // Official train number, single planned model and native operator PNG.
     // This is an illustrative PLAN asset, not an observed physical carset.
     const pngProof=sqlOfficialNumber &&
       publishedShinkansenPngByNumber.get(sqlOfficialNumber.number);
     const pngEvidence=pngProof &&
       vehicleEvidenceById.get(Number(mapped.vehicle_source_id));
-    const verifiedPublishedPng=pngProof &&
+    const verifiedPublishedPng=!datedVehiclePlan && !datedRuleConflict && pngProof &&
       mapped.mapping_level==="official_service_vehicle_plan" &&
       exactScheduleType===pngProof.model && !conflict &&
       pngEvidence?.source_type==="official" &&
@@ -1098,21 +1186,22 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       // Confirmed means this recurring PLAN model is certified by official
       // service/number evidence; it never means actual dispatch confirmation.
       vehicle_plan_confirmed: Boolean(
-        ruleType && !conflict && publishedPlan &&
+        ruleType && !conflict && !datedVehiclePlan && publishedPlan &&
         vehicleEvidenceById.get(Number(mapped.vehicle_source_id))?.source_type === "official" &&
         ["A", "B"].includes(String(
           vehicleEvidenceById.get(Number(mapped.vehicle_source_id))?.evidence_grade || ""
         ))
       ),
       vehicle_evidence_source: ruleType && !conflict
-        ? (publishedPlan ? "database-published-service-plan"
+        ? (datedVehiclePlan ? "database-dated-schedule-rule"
+          : publishedPlan ? "database-published-service-plan"
           : mapped.mapping_level === "dated_operation_owner"
             ? "database-dated-operation-owner" : "database-dated-schedule-rule")
         : verifiedBoundaryType && !conflict ? "verified-scheduled-boundary:Rinkai/Osaki" : null,
-      vehicle_evidence_source_id: ruleType && !conflict ? mapped.vehicle_source_id : null,
-      vehicle_evidence_url: ruleType && !conflict ? mapped.vehicle_source_url : null,
+      vehicle_evidence_source_id: ruleType && !conflict ? ruleSourceId : null,
+      vehicle_evidence_url: ruleType && !conflict ? ruleSourceUrl : null,
       // Only source-dated unique model PNG; never a guessed formation/livery.
-      vehicle_artwork_path: verifiedPublishedPng ||
+      vehicle_artwork_path: datedVehiclePlan ? datedArtwork : verifiedPublishedPng ||
         (ruleType && !conflict && !publishedPlan
           ? (mapped.vehicle_artwork_path || null) : null),
       source_template_id: Number(t.id),
