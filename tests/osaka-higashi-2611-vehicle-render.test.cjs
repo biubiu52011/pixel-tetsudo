@@ -116,8 +116,16 @@ test('estimator does not claim actual stock identity; HTML entrypoint refreshes 
   assert.match(estimatorSrc,/status:"FLEET_REFERENCE",\s*models:osakaHigashiRef\.candidateModels\.slice\(\)/);
   assert.match(estimatorSrc,/var _osakaHigashiScoped=!!osakaHigashiScoped&&\s*vehResult\.identityStatus!=="EXACT"/);
   assert.match(estimatorSrc,/vehicleIconPath: \(_osakaMahorobaScoped\|\|_osakaHigashiScoped\|\|_saganoScoped/);
-  assert.match(html,/vehicle-garage-png-map\.js\?v=41e136e01c89/);
-  assert.match(html,/train-vehicle\.js\?v=1cea5e03d095/);
-  assert.match(html,/train-position-estimator\.js\?v=2a9aa8d46c24/);
-  assert.match(html,/trains-render\.js\?v=1d4ca86bb5f7/);
+  { const asset=fs.readFileSync('data/timetables/vehicle-garage-png-map.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('vehicle-garage-png-map.js?v='+version),'vehicle-garage-png-map cache key matches current content'); }
+  { const asset=fs.readFileSync('js/train-vehicle.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('train-vehicle.js?v='+version),'train-vehicle cache key matches current content'); }
+  { const asset=fs.readFileSync('js/train-position-estimator.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('train-position-estimator.js?v='+version),'train-position-estimator cache key matches current content'); }
+  { const asset=fs.readFileSync('js/trains-render.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('trains-render.js?v='+version),'trains-render cache key matches current content'); }
 });

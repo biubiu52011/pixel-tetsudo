@@ -2166,6 +2166,7 @@
                 dateUnverifiedRuns: Number(body.date_unverified_runs) || 0,
                 omittedIncompleteRuns: knownOmittedRuns,
                 suppressedStationOnlyFragments: Number(body.suppressed_station_only_source_fragments) || 0,
+                suppressedUnverifiedOsakaHigashiSpecialSources: Number(body.suppressed_unverified_osaka_higashi_special_sources) || 0,
                 suppressedClockReversalRuns: Number(body.suppressed_non_midnight_clock_reversal_runs) || 0,
                 auditCoverageStatus: auditStatus,
                 runs: body.runs.length,

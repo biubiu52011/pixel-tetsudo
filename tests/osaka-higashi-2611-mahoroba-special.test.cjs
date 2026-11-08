@@ -10,6 +10,12 @@ const gallery=fs.readFileSync('data/timetables/vehicle-garage-png-map.js','utf8'
 const fleet=fs.readFileSync('data/core/major-vehicle-fleet-presets.js','utf8');
 const render=fs.readFileSync('js/trains-render.js','utf8');
 const html=fs.readFileSync('pages/trains.html','utf8');
+const adapter=fs.readFileSync('data/api/odpt-unified.js','utf8');
+const adapterStart=adapter.indexOf('    function _dbStopClock(');
+const adapterEnd=adapter.indexOf('    // One timetable identity:',adapterStart);
+assert.ok(adapterStart>0&&adapterEnd>adapterStart);
+const adaptRun=new Function('LINE_TO_OPERATOR','LINE_RAILWAY_CODE',
+  adapter.slice(adapterStart,adapterEnd)+'\nreturn _trainRunToTimetable;')({},{});
 let simulatedNow='2026-11-08T01:01:00.000Z';
 class FakeDate extends Date {
   constructor(...args){super(...(args.length?args:[simulatedNow]));}
@@ -43,7 +49,8 @@ function fixture(record,patch) {
     numberDateVerified:true,stopClocksVerified:true,
     carCount:3,candidateModels:['683系'],candidateAssets:[],
     referenceOnly:true,actualVehicleConfirmed:false,authorizesPNG:false,
-    officialStopClockSourceUrl:'https://timetable.jr-odekake.net/train-timetable/279101?date=20261101'
+    officialStopClockSourceUrl:'https://timetable.jr-odekake.net/train-timetable/'+
+      (record.id==='7092MH'?'279101':'275461')+'?date=20261101'
   };
   if(patch) patch(ref);
   return {
@@ -135,6 +142,53 @@ test('Mahoroba requires actual SaturdayHoliday calendar, not a generic M suffix'
   assert.equal(w.TrainPositionEstimator.estimateLinePositions(
     'OsakaHigashi',line,[tt],null,'JR-West').length,0);
 });
+test('v349 wire fields survive the actual SQL adapter, estimator and artwork selector',()=>{
+  for(const row of cases){
+    simulatedNow=row.time;
+    // Minimal fields captured from the real 2026-11-08 v349 GET. Unlike
+    // fixture(), these are server wire fields, not pre-adapted ODPT fields.
+    const proof=fixture(row)._sqlPublishedNumberFleetReference;
+    const wire={
+      id:'canonical-train-timetable:'+row.id,canonical_group_evidence:'source_only',
+      line_id:'OsakaHigashi',operator:'JR-West',
+      network_key:'odpt.Railway:JR-West.OsakaHigashi',service_date:'2026-11-08',
+      calendar_type:'saturday_holiday',train_number:row.id,
+      rail_direction:'odpt.RailDirection:Outbound',
+      train_type:'odpt.TrainType:JR-West.LimitedExpress',service_name:row.name,
+      train_number_verification:'official-2611-osaka-higashi-mahoroba-two-stop',
+      published_train_number:row.display,
+      published_number_scope:'osaka_shinosaka_source_segment_only',
+      timetable_validity:'date_verified_segment_only',timetable_date_verified:true,
+      destination_station:null,vehicle_type_label:null,vehicle_type_candidates:'683系',
+      vehicle_mapping_level:'unresolved',vehicle_plan_confirmed:false,
+      vehicle_artwork_path:null,published_number_fleet_reference:proof,
+      stops:[
+        {station_urn:'odpt.Station:JR-West.OsakaHigashi.Osaka',
+         arrival_time:null,departure_time:row.first},
+        {station_urn:'odpt.Station:JR-West.OsakaHigashi.Shin-Osaka',
+         arrival_time:row.secondArrival,departure_time:row.secondDeparture}
+      ]
+    };
+    const tt=adaptRun(wire);
+    assert.equal(tt['odpt:trainNumber'],row.id,'keep source identity');
+    assert.equal(tt._sqlPublishedTrainNumber,row.display);
+    assert.equal(tt.vehicleType,null,'family proof is not an actual carset');
+    const p=w.TrainPositionEstimator.estimateLinePositions(
+      'OsakaHigashi',line,[tt],null,'JR-West')[0];
+    assert.ok(p,row.id);
+    assert.equal(p.displayTrainNumber,row.display);
+    assert.equal(p.typeName,'特急');
+    assert.equal(p.serviceName,row.name);
+    assert.equal(p.vehiclePlan.status,'FLEET_REFERENCE');
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    assert.equal(p.destinationStation,'','excerpt boundary is not a proved terminal');
+    assert.deepEqual(Array.from(p.scheduledStopKeys),['Osaka','Shin-Osaka']);
+    assert.equal(picture(p).kind,'unresolved');
+    assert.equal(picture(p).iconSrc,'');
+    wire.operation_status='cancelled';
+    assert.equal(adaptRun(wire),null);
+  }
+});
 test('passenger label shows 683 series / three cars with formation and livery explicitly unresolved',()=>{
   const a=render.indexOf('    var special=p.sqlPublishedNumberFleetReference;');
   const b=render.indexOf('    // Osaka Higashi scheduled 221 series',a);
@@ -147,7 +201,13 @@ test('passenger label shows 683 series / three cars with formation and livery ex
     /683系（3両、安寧／悠久の実際の編成未確認/);
 });
 test('page loads the matching new estimator/vehicle/render JS revisions',()=>{
-  assert.match(html,/train-position-estimator\.js\?v=2a9aa8d46c24/);
-  assert.match(html,/train-vehicle\.js\?v=1cea5e03d095/);
-  assert.match(html,/trains-render\.js\?v=1d4ca86bb5f7/);
+  { const asset=fs.readFileSync('js/train-position-estimator.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('train-position-estimator.js?v='+version),'train-position-estimator cache key matches current content'); }
+  { const asset=fs.readFileSync('js/train-vehicle.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('train-vehicle.js?v='+version),'train-vehicle cache key matches current content'); }
+  { const asset=fs.readFileSync('js/trains-render.js');
+    const version=require('node:crypto').createHash('sha1').update('blob '+asset.length+'\0').update(asset).digest('hex').slice(0,12);
+    assert.ok(html.includes('trains-render.js?v='+version),'trains-render cache key matches current content'); }
 });

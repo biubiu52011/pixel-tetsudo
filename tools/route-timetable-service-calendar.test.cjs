@@ -93,3 +93,38 @@ test('source completeness remains separate from confirmed omissions',()=>{
   assert.match(src,/missingTrainCount:null/);
   assert.match(src,/tt\._timetableCoverage=knownOmissions \? "partial" :/);
 });
+
+test('actual SQL cache preserves special-source quarantine diagnostics without inventing missing trains',async()=>{
+  const src=fs.readFileSync('data/api/odpt-unified.js','utf8');
+  const start=src.indexOf('    function getCachedTrainRuns(');
+  const end=src.indexOf('\n    }',start)+6;
+  assert.ok(start>0&&end>start);
+  for(const [specials,omitted] of [[1,47],[0,48],[undefined,0]]){
+    const statuses={};
+    const context=vm.createContext({
+      usesSqlTimetable:()=>true,_serviceDateJst:()=>'2026-11-09',
+      _trainRunCache:{},_trainRunInflight:{},_trainRunLastWarning:{},
+      _trainRunLastStatus:statuses,TRAIN_RUN_CACHE_ENDPOINT:'https://example.invalid',
+      AbortController,Date,console,setTimeout,clearTimeout,
+      fetch:async()=>({ok:true,json:async()=>({
+        ok:true,line_id:'OsakaHigashi',service_date:'2026-11-09',
+        source:'DATABASE_MANUAL_TEMPLATES',complete:false,partial:true,
+        audit_coverage_status:'unverified',omitted_incomplete_runs:omitted,
+        suppressed_station_only_source_fragments:omitted-(specials||0),
+        suppressed_unverified_osaka_higashi_special_sources:specials,
+        runs:[{line_id:'OsakaHigashi',service_date:'2026-11-09',stops:[{},{}]}]
+      })}),
+      _trainRunToTimetable:()=>({})
+    });
+    vm.runInContext(src.slice(start,end),context);
+    const rows=await context.getCachedTrainRuns('OsakaHigashi');
+    assert.equal(rows.length,1);
+    const status=statuses.OsakaHigashi;
+    assert.equal(status.suppressedUnverifiedOsakaHigashiSpecialSources,specials||0);
+    assert.equal(status.suppressedStationOnlyFragments,omitted-(specials||0));
+    assert.equal(status.omittedIncompleteRuns,omitted,'reason counts are already included');
+    assert.equal(status.missingTrainCount,null,'source fragments are not missing trains');
+    assert.equal(status.sourceVerification,'unverified');
+    assert.equal(status.recordIntegrity,omitted?'known_omissions':'no_known_omissions');
+  }
+});
