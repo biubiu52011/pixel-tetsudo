@@ -159,7 +159,9 @@ assert.match(estimatorText, /pos\.runningChainId=pos\.timetableIdentity/);
 assert.match(estimatorText, /pos\.runningChainEvidence="VERIFIED_SQL_CANONICAL"/);
 assert.match(fusionText, /_linkVerifiedCanonicalRealtime\(estimated,\s*posMap\)/);
 assert.match(configText, /VERIFIED_CANONICAL_PLAN_PARTNERS/);
-assert.match(pageText, /getVerifiedCanonicalPartners\(lineId\)/);
+assert.match(pageText, /window\.TrainsDataDependencies\.select\(lineId,\s*currentSystemLineIds,\s*lines\)/);
+const trainSource=fs.readFileSync('js/trains-data.js','utf8');
+assert.match(trainSource, /getVerifiedCanonicalPartners\(lineId\)/);
 assert.match(fusionText, /deps = deps\.concat\(_canonicalPlanPartners\(id\)\)/);
 
 console.log('Joban realtime canonical-train hybrid matching: PASS');
