@@ -564,7 +564,7 @@
       var results = window.StationResolver.resolve(term);
       var lang = window.currentLang || 'en';
       // 过滤 NOT_FOUND/null stationId 结果，防止无 ID 建议项进入渲染层。
-      return results
+      var options = results
         .filter(function(r) { return r && r.stationId && r.status !== 'NOT_FOUND'; })
         .slice(0, 10).map(function(r) {
         var did = r.stationId;
@@ -575,6 +575,18 @@
         }
         return { stationId: did, displayName: dn };
       });
+      var counts = {};
+      options.forEach(function(s) { counts[s.displayName] = (counts[s.displayName] || 0) + 1; });
+      options.forEach(function(s) {
+        if (counts[s.displayName] < 2 || !window.RailwayDB) return;
+        var refs = window.RailwayDB.getStationLines && window.RailwayDB.getStationLines(s.stationId) || [];
+        var lid = refs.length && (typeof refs[0] === 'string' ? refs[0] : refs[0].line_id);
+        var line = lid && window.RailwayDB.getLine && window.RailwayDB.getLine(lid);
+        s.disambiguation = line
+          ? [line.operator, line.nameJa || line.name || lid, line.region].filter(Boolean).join(' · ')
+          : (lid || s.stationId);
+      });
+      return options;
     }
   // 回退：在线路车站 ID 中进行子串匹配。
     const query = term.toLowerCase().trim();
