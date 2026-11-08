@@ -1,0 +1,47 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const sql=fs.readFileSync('supabase/migrations/20261108233500_fukuchiyama_danbaro_eight_numbers_and_holiday_suspensions.sql','utf8');
+const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+const eight=[2751,2753,2765,2772,2777,2778,2779,2786];
+
+test('eight JR-West 2611 verified Tambaji Rapid numbers correct only 16 historical source variants',()=>{
+ for(const n of eight)assert.match(sql,new RegExp(String(n)));
+ assert.match(sql,/source_template_id IN\(68099,68100,68107,68108,68141,68143,68299,68300,68176,68177,68310,68311,68184,68185,68322,68323\)/);
+ assert.match(sql,/train_type_urn='odpt\.TrainType:JR-West\.Rapid'/);
+ assert.match(sql,/published_jrwest_fukuchiyama_2611_source_fleet/);
+ assert.match(sql,/<>15/);
+ assert.match(sql,/<>16/);
+ assert.match(sql,/<>254/);
+ assert.doesNotMatch(sql,/\bINSERT INTO public\.manual_timetable_template_stops\b/);
+ assert.doesNotMatch(sql,/\bUPDATE public\.train_timetable_stops\b/);
+ assert.doesNotMatch(sql,/\bUPDATE public\.train_timetable_lines\b/);
+});
+test('2751MH and 2778MH are retained for audit but never projected as Saturday/Holiday service',()=>{
+ assert.match(sql,/WHERE id IN\(68100,68311\)/);
+ assert.match(sql,/SET operating_dates=ARRAY\[\]::date\[\]/);
+ const a=edge.indexOf('// JR-West\'s published 2531M example is whitelisted');
+ const b=edge.indexOf('// Kabe / 可部線',a);
+ assert.ok(a>=0 && b>a);
+ const filter=edge.slice(a,b);
+ assert.match(filter,/const dated=Array\.isArray\(t\.operating_dates\)/);
+ assert.match(filter,/t\.operating_dates\.some\(/);
+ assert.match(filter,/String\(date\)\.slice\(0,10\)===serviceDate/);
+ assert.doesNotMatch(filter,/const scopedExpress=/);
+});
+test('2779M November 28 partial suspension keeps Osaka-Shinmita but never renders canceled Shinoyamaguchi segment',()=>{
+ const a=edge.indexOf('// JR-West November 28 2779M:');
+ const b=edge.indexOf('// Incomplete source rows are preserved',a);
+ assert.ok(a>=0 && b>a);
+ const section=edge.slice(a,b);
+ assert.match(section,/serviceDate==="2026-11-28"/);
+ assert.match(section,/source_template_id\)===68185/);
+ assert.match(section,/run\.train_number!=="2779MH"/);
+ assert.match(section,/run\.stops\.length!==expected\.length/);
+ assert.match(section,/run\.stops=run\.stops\.slice\(0,9\)/);
+ assert.match(section,/run\.timetable_validity="partial_service_disruption"/);
+ assert.match(section,/vehicle_plan_confirmed=false/);
+ assert.match(section,/vehicle_artwork_path=null/);
+ assert.doesNotMatch(section,/timetable_date_verified=true|actual_vehicle_confirmed=true/);
+});
