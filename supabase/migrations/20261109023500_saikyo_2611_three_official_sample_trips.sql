@@ -22,6 +22,7 @@ BEGIN
     INSERT INTO public.manual_timetable_templates
     (id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,
      source_path,source_revision_date,operating_dates,vehicle_type_label)
+    OVERRIDING SYSTEM VALUE
     VALUES(v_id,item->>'line_key',item->>'calendar_urn',item->>'train_number',
       item->>'railway_urn',item->>'direction_urn',item->>'train_type_urn',
       ARRAY(SELECT jsonb_array_elements_text(item->'destination_urns')),
