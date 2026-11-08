@@ -115,7 +115,7 @@ test('passenger model labels show series and cars, not a fake formation',()=>{
 test('estimator does not claim actual stock identity; HTML entrypoint refreshes asset URLs',()=>{
   assert.match(estimatorSrc,/status:"FLEET_REFERENCE",\s*models:osakaHigashiRef\.candidateModels\.slice\(\)/);
   assert.match(estimatorSrc,/var _osakaHigashiScoped=!!osakaHigashiScoped&&\s*vehResult\.identityStatus!=="EXACT"/);
-  assert.match(estimatorSrc,/vehicleIconPath: \(_osakaHigashiScoped\|\|_saganoScoped/);
+  assert.match(estimatorSrc,/vehicleIconPath: \(_osakaMahorobaScoped\|\|_osakaHigashiScoped\|\|_saganoScoped/);
   assert.match(html,/vehicle-garage-png-map\.js\?v=41e136e01c89/);
   assert.match(html,/train-vehicle\.js\?v=1cea5e03d095/);
   assert.match(html,/train-position-estimator\.js\?v=2a9aa8d46c24/);
