@@ -155,10 +155,18 @@
       + getSourceLink(item) + '</div>';
   }
 
+  // Link to original restaurant photography without copying or hotlinking it.
+  // photoReuseStatus=permission_required is intentionally NOT interpreted as a license.
+  function getPhotoReferenceLink(item) {
+    if (!item || !item.photoReferenceUrl || !/^https:\/\//i.test(item.photoReferenceUrl)) return '';
+    return '<a class="dp-dish-source" href="' + C.escapeHtml(item.photoReferenceUrl)
+      + '" target="_blank" rel="noopener noreferrer">' + C.escapeHtml(C.t('detail.photo_reference')) + '</a>';
+  }
+
   function buildTextItem(spot, item, index) {
     var name = getMenuName(spot, item, index);
     return '<div class="dp-menu-row"><div class="dp-menu-row-main"><div class="dp-dish-name">'
-      + C.escapeHtml(name) + '</div>' + getSourceLink(item) + '</div>'
+      + C.escapeHtml(name) + '</div>' + getSourceLink(item) + getPhotoReferenceLink(item) + '</div>'
       + (item.price != null && item.price !== ''
         ? '<div class="dp-dish-price">' + C.escapeHtml(String(item.price)) + '</div>' : '')
       + '</div>';

@@ -389,6 +389,17 @@ test('shop images cannot impersonate item photography and provenance is explicit
   assert.match(html, /<section class="dp-card dp-menu"/);
 });
 
+test('Nagami dishes never present hand-drawn illustrations as actual restaurant photography', () => {
+  const spot = JSON.parse(source('data/core/tourism_data.json')).spots.find(s => s.name === '千住の永見');
+  assert.ok(spot);
+  assert.ok(spot.menu.slice(0, 6).every(item => item.coverRole === 'shop'));
+  const html = renderShop(spot);
+  assert.doesNotMatch(html, /千住の永見_\\d+_.*?\\.svg/);
+  assert.match(html, /https:\\/\\/san-tatsu\\.jp\\/articles\\/18793\\//);
+  assert.match(html, /https:\\/\\/tabelog\\.com\\/tokyo\\/A1324/);
+  assert.doesNotMatch(html, /class="dp-dish-img"/);
+});
+
 test('missing coordinates do not place a venue at an invented map location', () => {
   const sandbox = { window: { currentLang:'ja', t:key=>key }, document:{}, console };
   execute('js/tourism-core.js', sandbox);
