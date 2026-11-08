@@ -205,3 +205,91 @@ test('schedule search retries deeper topology only when first alternatives have 
   assert.equal(valid.timeOptions,options);
   assert.equal(owner.rendered.length,3);
 });
+
+test('route timetable indexes same-date train snapshots once and rebuilds on new source rows',async()=>{
+  const source=read('js/route-timetable.js');
+  let rows=[{
+    _serviceDate:'2026-11-09','odpt:trainNumber':'A1','odpt:calendar':'odpt.Calendar:Weekday',
+    'odpt:trainTimetableObject':[
+      {'odpt:departureStation':'odpt.Station:JR-East.Example.A','odpt:departureTime':'09:00'},
+      {'odpt:arrivalStation':'odpt.Station:JR-East.Example.B','odpt:arrivalTime':'09:10'},
+      {'odpt:departureStation':'odpt.Station:JR-East.Example.B','odpt:departureTime':'09:11'},
+      {'odpt:arrivalStation':'odpt.Station:JR-East.Example.C','odpt:arrivalTime':'09:25'}
+    ]
+  }];
+  const window={
+    RuntimeConfig:{PUBLISHED_JP_HOLIDAYS:{'2026':[]}},
+    RailwayDB:{getLine:()=>({operator:'JR-East'})},
+    ODPTClient:{getCachedTrainRuns(){return Promise.resolve(rows);}}
+  };
+  vm.runInNewContext(source,{window,console,Date,Promise,Map,Set,WeakMap});
+  const service=window.RouteTimetable;
+  const seg=[{type:'ride',lineId:'Example',fromStation:'A',toStation:'C'}];
+  const opts={mode:'depart',date:'2026-11-09',time:'08:55'};
+  const one=await service.enrichSegments(seg,opts);
+  assert.equal(one.complete,true);
+  assert.equal(one.departure,'09:00');
+  assert.equal(one.arrival,'09:25');
+  assert.equal(service.getIndexStats().builds,1);
+  const two=await service.enrichSegments(seg,opts);
+  assert.equal(two.complete,true);
+  assert.equal(service.getIndexStats().builds,1,'same rows and date must reuse station index');
+  assert.ok(service.getIndexStats().reuses>=1);
+  rows=[{...rows[0],'odpt:trainNumber':'B1','odpt:trainTimetableObject':[
+    {'odpt:departureStation':'odpt.Station:JR-East.Example.A','odpt:departureTime':'09:15'},
+    {'odpt:arrivalStation':'odpt.Station:JR-East.Example.C','odpt:arrivalTime':'09:28'}
+  ]}];
+  const refreshed=await service.enrichSegments(seg,opts);
+  assert.equal(refreshed.departure,'09:15');
+  assert.equal(service.getIndexStats().builds,2,'new source array invalidates index');
+  const differentDay=await service.enrichSegments(seg,{...opts,date:'2026-11-10'});
+  assert.equal(differentDay.complete,false,'dated rows never leak to another service day');
+});
+
+test('schedule options rank confirmed midnight journeys by railway service-day minutes',async()=>{
+  const source=read('js/search-ui.js');
+  const start=source.indexOf('    loadRouteOptions: function(candidates,t,timeOptions,generation) {');
+  const end=source.indexOf('    renderRouteOptionList: function(entries,t,generation) {',start);
+  assert.ok(start>=0&&end>start);
+  function route(id){return {path:['A','B'],durationMin:12,
+    routeSegments:[{type:'ride',lineId:id,fromStation:'A',toStation:'B'}]};}
+  const afterMidnight=route('Night'),beforeMidnight=route('Evening');
+  const window={
+    RouteTimetable:{enrichSegments(segs){
+      return Promise.resolve(segs[0].lineId==='Night'
+        ? {complete:true,arrivalClockConfirmed:true,departure:'23:55',departureMinute:1435,arrival:'00:05',arrivalMinute:1445,durationMin:10}
+        : {complete:true,arrivalClockConfirmed:true,departure:'23:50',departureMinute:1430,arrival:'23:59',arrivalMinute:1439,durationMin:9});
+    }},
+    RouteSearch:{findRouteCandidates(){throw Error('should not retry already complete journey');}}
+  };
+  const ctx={window,Promise,Set};
+  vm.runInNewContext('this.owner={'+source.slice(start,end)+
+    'renderRouteOptionList:function(entries){this.rendered=entries;}};',ctx);
+  const owner=ctx.owner;
+  owner.currentMode='duration';owner._renderGeneration=5;owner.resultsDiv={};
+  const options={mode:'depart',date:'2026-11-09',time:'23:45'};
+  const result=await owner.loadRouteOptions([afterMidnight,beforeMidnight],x=>x,options,5);
+  assert.equal(result[0].route,beforeMidnight);
+  assert.equal(result[1].route,afterMidnight);
+});
+
+test('fleet reference date windows are sourced, not inferred from operation numbers',()=>{
+  const source=read('data/core/major-vehicle-fleet-presets.js');
+  const window={};
+  vm.runInNewContext(source,{window,Date,Set,Map,Number,Object,Array,String,Math});
+  const fleet=window.MajorVehicleFleetPresets;
+  const row={validFrom:'2026-11-01',validTo:'2026-11-15'};
+  assert.equal(fleet.isValidForDate(row,'2026-11-09'),true);
+  assert.equal(fleet.isValidForDate(row,'2026-10-31'),false);
+  assert.equal(fleet.isValidForDate(row,'2026-11-16'),false);
+  assert.equal(fleet.isValidForDate(row,''),false,'dated fleet cannot be used without a date');
+  assert.equal(fleet.isValidForDate({},'2026-11-09'),true,'undated is reference-only');
+  const t='odpt.TrainType:JR-East.Local';
+  const valid=fleet.lookup('Yamanote','JR-East',t,{serviceDate:'2026-11-09'});
+  assert.equal(valid.evidenceRole,'route-fleet-reference');
+  assert.equal(valid.planOverride,false);
+  assert.equal(valid._fleetReferenceOnly,true);
+  assert.equal(valid.asOf,'2026-11-03');
+  assert.equal(fleet.lookup('Yamanote','JR-East',t,{serviceDate:'2026-02-30'}),null);
+  assert.match(read('js/train-vehicle.js'),/serviceDate: tt\._serviceDate \|\| tt\.serviceDate \|\| ''/);
+});
