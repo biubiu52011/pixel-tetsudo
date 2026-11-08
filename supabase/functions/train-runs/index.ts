@@ -413,6 +413,18 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       throw new Error("RIKUTO_EAST_2611_NOV2_SOURCES_NOT_FOUND");
     templates.push(...rapidSources);
   }
+  // The JA 2611 sample is a verified portion of the official timetable,
+  // not an indefinite recurrence or proof of all trains on the line.
+  // Historical SQL remains available for audit but must never be scheduled
+  // outside the source's explicit November 2026 operation-date whitelist.
+  if (lineId === "SaikyoKawagoe") {
+    templates = templates.filter((t: any) => {
+      if (!String(t.source_path || "").startsWith("official-sampled:jreast:2611:SaikyoKawagoe:"))
+        return true;
+      return Array.isArray(t.operating_dates) &&
+        t.operating_dates.some((day: any) => String(day).slice(0, 10) === serviceDate);
+    });
+  }
   // Retain both original SQL imports, but serve one verified itinerary.
   if (lineId === "SaikyoKawagoe") {
     const seen = new Set<string>();
