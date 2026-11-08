@@ -20,3 +20,21 @@
 - https://mapfan.com/spots/SCH%2CJ%2CXK0
 - https://mapfan.com/spots/SCH%2CJ%2CVK0
 - https://mapfan.com/spots/SCH%2CJ%2CBK0
+
+## 北段普通列车车型参考（2026-11-08 追加）
+
+福知山线北段（篠山口—福知山）的普通列车另有 223 系 5500 番台运用，
+不能直接套用大阪—篠山口的四种历史车队候选。现有主要车队预设已经加上
+**实际时刻表站序范围限制**：仅当 `JR-West.Local` 的时刻表明确包含至少两个不同车站，
+且全部停车站均在篠山口—福知山的已登记车站集合内并至少有一个篠山口以北车站时，
+才把其线路车型参考限定为 `JR西日本223系5500番台`。
+
+- 这只是 `route-fleet-reference`，不确认任何单独车次、运营日、实际编组或车辆图片。
+- 路线跨越南北段、站序未知、仅有一个站点，或为快速／特急时，不强制赋予北段车型。
+- 前端沿用 `MajorVehicleFleetPresets` 与 `_officialConventionalServicePlan`；没有新建第二套映射系统。
+- 图库尚无适用于本区间的 223 系 5500 番台 PNG，不借用阪和线 223／225 系贴图。
+- 383 条历史模板、357 条历史车队候选保持不变；没有生成未经核实的北段列车番号或时刻。
+
+参考：
+- https://express22.xsrv.jp/maintarminal/jr223-5500/
+- https://express22.xsrv.jp/maintarminal/jrfukuchiyamalinedia20240316/
