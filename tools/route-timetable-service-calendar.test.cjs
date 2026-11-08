@@ -283,6 +283,7 @@ test('per-itinerary UI keeps independent schedule and platform slots',()=>{
   assert.match(ui,/loadRouteOptions: function/);
   assert.match(ui,/renderRouteOptionList: function/);
   assert.match(ui,/var view=mount\|\|this\.resultsDiv/);
+  assert.doesNotMatch(ui,/var view=mount\|\|view/,'render view must not be undefined');
   assert.match(ui,/self\.renderResults\(entry\.route,t,entry\.schedule,mount,true\)/);
   assert.match(ui,/view\.querySelector\('\[data-seg-arr-time=/);
   assert.match(ui,/view\.querySelector\('\[data-seg-meta=/);

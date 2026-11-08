@@ -560,7 +560,7 @@
     },
 
     renderResults: function(result,t,precomputedSchedule,mount,compact) {
-      var view=mount||view;
+      var view=mount||this.resultsDiv;
       if(!view)return;
       var renderGeneration=this._renderGeneration||0;
       var lang = window.currentLang || 'ja';
