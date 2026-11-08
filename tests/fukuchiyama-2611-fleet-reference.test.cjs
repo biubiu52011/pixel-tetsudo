@@ -14,7 +14,7 @@ test('Fukuchiyama ordinary train types have four JR-West fleet references, not a
     const v=lookup('Fukuchiyama','JR-West','odpt.TrainType:JR-West.'+suffix);
     assert.ok(v, suffix);
     assert.deepEqual(Array.from(v.vehicleCandidates),[
-      'JR西日本207系','JR西日本321系','JR西日本223系','JR西日本225系']);
+      'JR西日本207系','JR西日本321系','JR西日本223系6000番台','JR西日本225系6000番台']);
     assert.equal(v._fleetReferenceOnly,true);
     assert.equal(v.evidenceRole,'route-fleet-reference');
     assert.equal(v.planOverride,false);
