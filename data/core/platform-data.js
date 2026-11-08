@@ -1501,22 +1501,50 @@ window.PLATFORM_TRAIN_PLANS = {
   }
 };
 
-// Exact public train plan only. The old direction-based resolve() is retained
-// for compatibility but MUST NOT certify individual train boarding platforms.
+// Verified train-specific platform tables are versioned by publication period.
+// Future editions can be supplied by data loading without changing the resolver.
+// A dated plan is NOT live platform assignment evidence.
+window.PLATFORM_TRAIN_PLAN_EDITIONS = [{
+  id: "jr-published-2026-11",
+  validFrom: "2026-11-01",
+  validTo: "2026-11-30",
+  plans: window.PLATFORM_TRAIN_PLANS
+}];
+
+// Exact public train plan only. Direction-based resolve() remains a station
+// guide; it MUST NOT certify a particular train's boarding platform.
 window.PlatformResolver.resolveTrain = function(lineId, number, calendar, serviceDate, station, clock, role) {
   try {
-    if (!/^2026-11-[0-9]{2}$/.test(String(serviceDate || ''))) return null;
-    var line = window.PLATFORM_TRAIN_PLANS && window.PLATFORM_TRAIN_PLANS[lineId];
+    var date = String(serviceDate || '');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+        (role !== 'arrival' && role !== 'departure')) return null;
+    var parsed = new Date(date + 'T12:00:00Z');
+    if (!Number.isFinite(parsed.getTime()) ||
+        parsed.toISOString().slice(0, 10) !== date) return null;
     var cal = String(calendar || '').split(':').pop();
-    var run = line && line[String(number || '')] && line[String(number || '')][cal];
-    var entry = run && run.stops && run.stops[String(station || '')];
-    if (!entry || (role !== 'arrival' && role !== 'departure')) return null;
-    var expected = role === 'arrival' ? entry[0] : entry[1];
     var actual = String(clock || '').slice(0, 5);
     function minutes(v) {
       var m = /^([0-9]{1,2}):([0-9]{2})$/.exec(String(v || ''));
       return m ? ((Number(m[1]) % 24) * 60 + Number(m[2])) : -1;
     }
-    return expected && actual && minutes(expected) === minutes(actual) ? entry[2] : null;
+    var platform = null;
+    var editions = window.PLATFORM_TRAIN_PLAN_EDITIONS;
+    if (!Array.isArray(editions)) return null;
+    for (var i = 0; i < editions.length; i++) {
+      var edition = editions[i];
+      if (!edition || !edition.plans || !edition.validFrom || !edition.validTo ||
+          date < edition.validFrom || date > edition.validTo) continue;
+      var line = edition.plans[lineId];
+      var run = line && line[String(number || '')] && line[String(number || '')][cal];
+      var entry = run && run.stops && run.stops[String(station || '')];
+      if (!entry || entry[2] == null) continue;
+      var expected = role === 'arrival' ? entry[0] : entry[1];
+      if (!expected || !actual || minutes(expected) < 0 ||
+          minutes(expected) !== minutes(actual)) continue;
+      // Overlapping editions must agree; do not guess which platform wins.
+      if (platform != null && platform !== entry[2]) return null;
+      platform = entry[2];
+    }
+    return platform;
   } catch (_) { return null; }
 };
