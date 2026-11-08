@@ -116,6 +116,9 @@ function applyData(data, i18n) {
     // 供 StationResolver 使用（它会在 _buildIndex 中读取 window.RAILWAY_I18N）。
     // 这样 home.html 可以移除重复的 506KB station-i18n.file.js <script> 标签。
     window.RAILWAY_I18N = _stationI18n;
+    // The loader may replace cache data with a newer remote snapshot.
+    if (window.StationResolver && window.StationResolver.invalidate)
+      window.StationResolver.invalidate();
     // 一次性构建不区分连字符的查找表，替代
     // 每次 resolveStationName 未命中时执行的 O(n) 线性扫描（StationResolver._buildIndex 约调用 3500 次）。
     _i18nNormMap = {};
