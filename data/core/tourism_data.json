@@ -7,19 +7,23 @@
     139.805038
    ],
    "dist": "0 min walk",
-   "desc": "駅直結で雨に濡れずに買い物できる。ファッションから雑貨（Loftあり）、カフェまで一通り揃っていて、時間つぶしにも困らない。",
+   "desc": "北千住駅の駅ビルにある「ルミネ北千住」は、電車の乗換えついでの買い物から食事、雑貨探しまで楽しめる大型商業施設。公式案内ではJR常磐線・東京メトロ千代田線／日比谷線・東武線につながるB1Fの改札連絡口と、JR・日比谷線・東武線・つくばエクスプレスにつながる3Fの改札連絡口が案内されており、雨の日にも立ち寄りやすい。B1Fは鮮魚・精肉・青果・惣菜・弁当などの食品売場で、崎陽軒やとんかつまい泉、韓国惣菜などもある。1Fには和洋菓子、ベーカリー、紅茶、手土産向けの専門店が集まり、2Fには成城石井・富澤商店・スターバックス・Soup Stock Tokyoなどが入る。3Fはセレクトショップやジュエリー、SHIRO・SABON・Aēsopなどのコスメが充実し、4～6Fもレディスファッション、ビューティー、ライフスタイル雑貨が中心。5Fのロフトは文具・コスメ・キャラクター雑貨探しに、6FのPLAZAは輸入雑貨やコスメ探しにおすすめ。7Fには無印良品やZoff、Afternoon Tea TEAROOMなどがあり、8Fには寿司・とんかつ・タイ料理・ベトナム料理・スンドゥブなどのレストランとブックファーストが並ぶ。9Fは眼科・歯科・カルチャー教室などのサービスフロア。10F屋上は2026年11月から原則土日祝11:00～16:00に開放されるが、雨天や猛暑などで中止されることがある。食品、ショッピング、レストランでは営業時間が異なるため、訪問前に公式情報を確認したい。",
    "tags": [
     "all",
     "mall"
    ],
    "image": "../images/観光地/LUMINE 北千住.jpg",
    "bestTime": "11:00～20:30",
-   "hours": "11:00～20:30（年中無休）",
-   "fee": "無料",
+   "hours": "B1・1F食品 10:00～20:30／3～7Fショッピング 11:00～20:30／8Fレストラン・書籍 11:00～22:00（2Fなど一部店舗は異なる）",
+   "fee": "入館無料（飲食・買い物は別途）",
    "tips": [
-    "駅直結で雨天も安心",
-    "Loftは雑貨フロア",
-    "レストランは混雑時を避けて"
+    "B1F・3Fに駅の改札連絡口があり、乗換えや雨の日にも立ち寄りやすい",
+    "B1Fは鮮魚・精肉・青果・惣菜・弁当、1Fは和洋菓子・手土産の店が充実",
+    "2Fは成城石井・富澤商店・スターバックス・Soup Stock Tokyo（各店で営業時間が異なる）",
+    "3～4Fはセレクトファッション・アクセサリー・コスメ、5Fはロフトの文具・キャラクター雑貨",
+    "6FのPLAZAと7Fの無印良品・Zoff・Afternoon Tea TEAROOMもチェック",
+    "8Fはレストランとブックファースト。寿司・タイ料理・ベトナム料理などを楽しめる",
+    "10F屋上は土日祝11:00～16:00が原則（荒天・猛暑時は中止）。9Fには医療・カルチャー施設"
    ],
    "name_i18n": {
     "ja": "LUMINE 北千住",
@@ -28,22 +32,22 @@
     "ko": "루미네 키타센쥬"
    },
    "desc_i18n": {
-    "ja": "駅直結で雨に濡れずに買い物できる。ファッションから雑貨（Loftあり）、カフェまで一通り揃っていて、時間つぶしにも困らない。",
-    "zh": "车站直结，下雨天也能轻松购物。从潮流服饰到杂货（有Loft）、咖啡厅一应俱全，打发时间也不会无聊。",
-    "en": "Directly connected to the station, so you can shop without getting rained on. Has everything from fashion to sundries (including Loft) and cafes — a solid place to kill time.",
-    "ko": "역과 직결되어 비를 맞지 않고 쇼핑할 수 있어요. 패션부터 잡화(Loft 포함), 카페까지 두루 갖춰져 있어 시간 때우기도 좋아요."
+    "ja": "北千住駅の駅ビルにある「ルミネ北千住」は、電車の乗換えついでの買い物から食事、雑貨探しまで楽しめる大型商業施設。公式案内ではJR常磐線・東京メトロ千代田線／日比谷線・東武線につながるB1Fの改札連絡口と、JR・日比谷線・東武線・つくばエクスプレスにつながる3Fの改札連絡口が案内されており、雨の日にも立ち寄りやすい。B1Fは鮮魚・精肉・青果・惣菜・弁当などの食品売場で、崎陽軒やとんかつまい泉、韓国惣菜などもある。1Fには和洋菓子、ベーカリー、紅茶、手土産向けの専門店が集まり、2Fには成城石井・富澤商店・スターバックス・Soup Stock Tokyoなどが入る。3Fはセレクトショップやジュエリー、SHIRO・SABON・Aēsopなどのコスメが充実し、4～6Fもレディスファッション、ビューティー、ライフスタイル雑貨が中心。5Fのロフトは文具・コスメ・キャラクター雑貨探しに、6FのPLAZAは輸入雑貨やコスメ探しにおすすめ。7Fには無印良品やZoff、Afternoon Tea TEAROOMなどがあり、8Fには寿司・とんかつ・タイ料理・ベトナム料理・スンドゥブなどのレストランとブックファーストが並ぶ。9Fは眼科・歯科・カルチャー教室などのサービスフロア。10F屋上は2026年11月から原則土日祝11:00～16:00に開放されるが、雨天や猛暑などで中止されることがある。食品、ショッピング、レストランでは営業時間が異なるため、訪問前に公式情報を確認したい。",
+    "zh": "LUMINE 北千住是与北千住站相连的大型车站购物中心，适合在换乘、通勤或周末出行时购买食品、逛街与用餐。官方标示B1有连接JR常磐线、东京地铁千代田线／日比谷线及东武线的检票口通道，3楼则有连接JR、日比谷线、东武线与筑波快线的检票口通道，雨天也方便前往。B1为食品专区，汇集鲜鱼、肉类、蔬果、熟食和便当，包括崎阳轩、Maisen炸猪排、韩式熟食等；1楼则适合挑选日西式糕点、面包、红茶和伴手礼。2楼有成城石井超市、富泽商店、星巴克和Soup Stock Tokyo。3楼以精品服饰、珠宝首饰及SHIRO、SABON、Aēsop等美妆品牌为特色，4～6楼主要是女装、美妆与生活杂货。5楼Loft可选购文具、美妆和角色周边，6楼PLAZA适合寻找特色杂货及化妆品；7楼有无印良品、Zoff和Afternoon Tea TEAROOM。8楼集合寿司、炸猪排、泰餐、越南餐、韩式嫩豆腐锅等餐厅，还有Book First书店；9楼是眼科、牙科和文化教室等服务设施。10楼屋顶自2026年11月起原则上于周末及节假日11:00～16:00开放，但雨天或酷暑可能取消。食品区、一般零售和餐厅营业时间不同，建议出发前查看官方公告。",
+    "en": "LUMINE Kitasenju is a large station-connected shopping complex for everyday groceries, fashion, cafés and meals while changing trains or exploring the neighborhood. The official access guide lists ticket-gate connections on B1 to the JR Joban, Tokyo Metro Chiyoda and Hibiya, and Tobu lines, plus connections on 3F to JR, the Hibiya Line, Tobu and Tsukuba Express, making it easy to visit even on rainy days. On B1, browse fresh fish, meat, produce, deli dishes and boxed meals, including Kiyoken, Maisen tonkatsu and Korean prepared foods; 1F concentrates sweets, bakeries, tea and gifts. Floor 2 has Seijo Ishii, Tomiz, Starbucks and Soup Stock Tokyo. Floor 3 features select fashion, jewelry and beauty shops such as SHIRO, SABON and Aēsop, while floors 4–6 offer more womenswear, cosmetics and lifestyle goods. Explore 5F Loft for stationery, beauty and character items, and 6F PLAZA for cosmetics and imported-style lifestyle goods. On 7F are MUJI, Zoff and Afternoon Tea TEAROOM; 8F brings together sushi, tonkatsu, Thai and Vietnamese dishes, Korean sundubu and other restaurants alongside the Book First bookstore. Floor 9 offers eye and dental clinics and cultural classes. Since November 2026, the 10F rooftop is generally open on weekends and holidays from 11:00 to 16:00, weather permitting; rain or extreme heat can cause closure. Food, shopping and restaurant hours differ, so check official updates before your visit.",
+    "ko": "루미네 기타센주는 기타센주역과 직접 연결된 대형 쇼핑시설로, 환승이나 통근 중에 식료품·패션·잡화·카페·식사를 한 번에 즐기기 좋습니다. 공식 교통 안내에 따르면 지하 1층 개찰구 연결 통로는 JR 조반선·도쿄메트로 지요다선/히비야선·도부선으로, 3층 연결 통로는 JR·히비야선·도부선·쓰쿠바 익스프레스로 이어져 비 오는 날에도 편리합니다. 지하 1층 식품 매장에서는 생선·정육·채소·반찬·도시락과 기요켄·마이센 돈카쓰·한식 반찬 등을 구입할 수 있으며, 1층에는 화과자·양과자·빵·홍차와 선물용 디저트가 모여 있습니다. 2층에는 세이조 이시이·도미즈·스타벅스·수프 스톡 도쿄가 있습니다. 3층은 셀렉트 패션·주얼리와 SHIRO·SABON·Aēsop 같은 뷰티 브랜드가 특징이며, 4~6층에는 여성 패션·화장품·생활잡화가 모여 있습니다. 5층 로프트에서는 문구·화장품·캐릭터 굿즈를, 6층 PLAZA에서는 화장품과 다양한 잡화를 살펴보세요. 7층에는 무인양품·Zoff·애프터눈 티 티룸이 있고, 8층에는 초밥·돈카쓰·태국 음식·베트남 음식·순두부 등 여러 음식점과 북퍼스트 서점이 있습니다. 9층은 안과·치과·문화교실 등의 서비스 층입니다. 10층 옥상은 2026년 11월부터 원칙적으로 토·일·공휴일 11:00~16:00에 개방되지만 비나 폭염 등으로 취소될 수 있습니다. 식품·쇼핑·식당 영업시간이 다르므로 방문 전 공식 공지를 확인하세요."
    },
    "hours_i18n": {
-    "ja": "11:00～20:30（年中無休）",
-    "zh": "11:00～20:30（全年无休）",
-    "en": "11:00～20:30（Open year-round）",
-    "ko": "11:00～20:30（연중무휴）"
+    "ja": "B1・1F食品 10:00～20:30／3～7Fショッピング 11:00～20:30／8Fレストラン・書籍 11:00～22:00（2Fなど一部店舗は異なる）",
+    "zh": "B1及1楼食品区 10:00～20:30／3～7楼购物区 11:00～20:30／8楼餐厅和书店 11:00～22:00（2楼等部分店铺不同）",
+    "en": "B1/1F food 10:00–20:30 / 3–7F shopping 11:00–20:30 / 8F dining and books 11:00–22:00 (2F and some shops vary)",
+    "ko": "지하 1층·1층 식품 10:00~20:30 / 3~7층 쇼핑 11:00~20:30 / 8층 식당·서점 11:00~22:00 (2층 등 일부 매장 상이)"
    },
    "fee_i18n": {
-    "ja": "無料",
-    "zh": "免费",
-    "en": "Free",
-    "ko": "무료"
+    "ja": "入館無料（飲食・買い物は別途）",
+    "zh": "免费入场（餐饮、购物另付费）",
+    "en": "Free entry (shopping and dining extra)",
+    "ko": "입장 무료 (식사·쇼핑 별도)"
    },
    "bestTime_i18n": {
     "ja": "11:00～20:30",
@@ -53,24 +57,40 @@
    },
    "tips_i18n": {
     "ja": [
-     "駅直結で雨天も安心",
-     "Loftは雑貨フロア",
-     "レストランは混雑時を避けて"
+     "B1F・3Fに駅の改札連絡口があり、乗換えや雨の日にも立ち寄りやすい",
+     "B1Fは鮮魚・精肉・青果・惣菜・弁当、1Fは和洋菓子・手土産の店が充実",
+     "2Fは成城石井・富澤商店・スターバックス・Soup Stock Tokyo（各店で営業時間が異なる）",
+     "3～4Fはセレクトファッション・アクセサリー・コスメ、5Fはロフトの文具・キャラクター雑貨",
+     "6FのPLAZAと7Fの無印良品・Zoff・Afternoon Tea TEAROOMもチェック",
+     "8Fはレストランとブックファースト。寿司・タイ料理・ベトナム料理などを楽しめる",
+     "10F屋上は土日祝11:00～16:00が原則（荒天・猛暑時は中止）。9Fには医療・カルチャー施設"
     ],
     "zh": [
-     "车站直结，雨天也安心",
-     "Loft在杂货楼层",
-     "餐厅请避开高峰时段"
+     "车站检票口连接通道位于B1和3楼，换乘途中或雨天逛街很方便",
+     "B1购买生鲜、熟食与便当；1楼集中日西式糕点、面包和伴手礼",
+     "2楼有成城石井、富泽商店、星巴克及Soup Stock Tokyo（营业时间各店不同）",
+     "3～4楼逛服饰、首饰和美妆，5楼Loft适合选文具及角色周边",
+     "6楼有PLAZA，7楼有无印良品、Zoff及Afternoon Tea TEAROOM",
+     "8楼有寿司、泰餐、越南餐等餐厅和Book First书店",
+     "10楼屋顶原则上周末、节假日11:00～16:00开放，恶劣天气可能取消；9楼提供医疗和文化服务"
     ],
     "en": [
-     "Direct station access, safe even in rain",
-     "Loft is on the sundries floor",
-     "Avoid peak hours for restaurants"
+     "Station ticket-gate connections on B1 and 3F make rainy-day shopping and transfers easy",
+     "B1 for fresh groceries, deli meals and bento; 1F for sweets, bread and gifts",
+     "2F has Seijo Ishii, Tomiz, Starbucks and Soup Stock Tokyo (individual hours vary)",
+     "Browse fashion, jewelry and beauty on 3–4F, and stationery and character items at 5F Loft",
+     "Visit 6F PLAZA and 7F MUJI, Zoff and Afternoon Tea TEAROOM",
+     "8F offers restaurants, including sushi, Thai and Vietnamese food, plus Book First books",
+     "The 10F rooftop is generally open weekends/holidays 11:00–16:00, weather permitting; 9F hosts clinics and classes"
     ],
     "ko": [
-     "역 직결, 비오는 날도 안심",
-     "Loft는 잡화 플로어",
-     "식당은 혼잡 시간 피하기"
+     "지하 1층과 3층에 역 개찰구 연결 통로가 있어 환승·우천 시에도 편리",
+     "지하 1층은 신선식품·반찬·도시락, 1층은 과자·빵·선물",
+     "2층에는 세이조 이시이·도미즈·스타벅스·수프 스톡 도쿄(매장별 영업시간 상이)",
+     "3~4층은 패션·주얼리·뷰티, 5층 로프트는 문구와 캐릭터 굿즈",
+     "6층 PLAZA, 7층 무인양품·Zoff·애프터눈 티 티룸도 추천",
+     "8층에는 초밥·태국·베트남 음식 등의 레스토랑과 북퍼스트 서점",
+     "10층 옥상은 원칙적으로 주말·공휴일 11:00~16:00 개방(악천후 시 취소); 9층은 의료·문화 서비스"
     ]
    },
    "address": "東京都足立区千住旭町42-2"
