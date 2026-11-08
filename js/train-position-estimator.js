@@ -2496,8 +2496,9 @@
             sqlPublishedNumberFleetReference:(osakaMahorobaScoped||osakaHigashiScoped||saganoScoped||officialKoseiPlan||officialJrWestKyotoKobePlan||
               (lineId==="Fukuchiyama"&&tt._positionSource==="supabase-train-run"&&
                tt._sqlPublishedNumberFleetReference&&
-               tt._sqlPublishedNumberFleetReference.source===
-                 "sql-jrwest-fukuchiyama-2611-historical-fleet-reference")||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+               ["sql-jrwest-fukuchiyama-2611-historical-fleet-reference",
+                "sql-jrwest-fukuchiyama-2611-official-7025-friday"].includes(
+                  tt._sqlPublishedNumberFleetReference.source))||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
