@@ -44,3 +44,23 @@ test('Gakkentoshi fleet remains only ambiguous route-level reference, never vehi
   assert.equal(garage.findModel('JR西日本321系','Gakkentoshi').length,1);
   assert.equal(garage.findModel('JR西日本207系','Gakkentoshi').length,0,'generic 207 cannot choose a formation image');
 });
+
+
+test('Nara→Kizu→Gakkentoshi has sourced through-service boundary, never a universal vehicle assignment',()=>{
+  for(const [lineId,otherId] of [['Nara','Gakkentoshi'],['Gakkentoshi','Nara']]){
+    const line=data.lines[lineId];
+    assert.ok(line.throughServices.includes(otherId));
+    assert.equal(line.serviceBoundaries.filter(b=>b.lineId===otherId).length,1);
+    const boundary=line.serviceBoundaries.find(b=>b.lineId===otherId);
+    assert.deepEqual(boundary.handoverStations,['Kizu']);
+    assert.equal(boundary.evidence.confidence,'HIGH');
+    assert.match(boundary.evidence.source,/timetable\.jr-odekake\.net\/train-timetable\/123201/);
+    assert.ok(!line.serviceBoundaries.some(b=>b.lineId==='OsakaHigashi' && b.handoverStations.includes('Kyobashi-Osaka')));
+  }
+  const fleet=vm.createContext({window:{}});
+  vm.runInContext(read('data/core/major-vehicle-fleet-presets.js'),fleet);
+  const result=fleet.window.MajorVehicleFleetPresets.lookup('Gakkentoshi','JR-West','odpt.TrainType:JR-West.Rapid');
+  assert.deepEqual(Array.from(result.vehicleCandidates),['JR西日本207系','JR西日本321系']);
+  assert.equal(result._fleetReferenceOnly,true);
+  assert.equal(result.vehicleArtworkPath,undefined);
+});

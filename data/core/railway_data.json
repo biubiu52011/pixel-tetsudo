@@ -42189,7 +42189,8 @@
         4
       ],
       "throughServices": [
-        "KansaiMain"
+        "KansaiMain",
+        "Gakkentoshi"
       ],
       "transferStations": [
         {
@@ -42227,6 +42228,16 @@
           ],
           "evidence": {
             "source": "Historical JR-West timetable archive: Kansai Main / Nara adjacent through-service join",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "Gakkentoshi",
+          "handoverStations": [
+            "Kizu"
+          ],
+          "evidence": {
+            "source": "https://timetable.jr-odekake.net/train-timetable/123201?date=20261006 (weekday 5733C: Nara→Kizu→Gakkentoshi); https://timetable.jr-odekake.net/train-timetable/323491?date=20261013 (weekday 5421M); https://timetable.jr-odekake.net/train-timetable/123251?date=20261012 (holiday 5721M)",
             "confidence": "HIGH"
           }
         }
@@ -43303,7 +43314,9 @@
         3,
         3
       ],
-      "throughServices": [],
+      "throughServices": [
+        "Nara"
+      ],
       "transferStations": [
         {
           "station": "Kyobashi-Osaka",
@@ -43332,7 +43345,18 @@
       ],
       "nameZh": "学研都市线(片町线)",
       "nameKo": "가켄토시선(카타마치선)",
-      "serviceBoundaries": [],
+      "serviceBoundaries": [
+        {
+          "lineId": "Nara",
+          "handoverStations": [
+            "Kizu"
+          ],
+          "evidence": {
+            "source": "https://timetable.jr-odekake.net/train-timetable/123201?date=20261006 (weekday 5733C: Nara→Kizu→Gakkentoshi); https://timetable.jr-odekake.net/train-timetable/323491?date=20261013 (weekday 5421M); https://timetable.jr-odekake.net/train-timetable/123251?date=20261012 (holiday 5721M)",
+            "confidence": "HIGH"
+          }
+        }
+      ],
       "presentation": {
         "nameJa": "学研都市線（片町線）",
         "nameZh": "学研都市线(片町线)",
