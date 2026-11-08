@@ -235,4 +235,25 @@ check("official 2026 railway IDs match existing canonical Japanese line names",(
     assert.equal(aliases[id]||id,railway,id+" official railway");
   }
 });
+check("future-dated JR engineering suspension is a notice, not a live stoppage",()=>{
+  const date=new Date(Date.now()+8*86400000+9*3600000);
+  const day=date.getUTCFullYear()+"年"+(date.getUTCMonth()+1)+"月"+date.getUTCDate()+"日";
+  const msg="八高線は、保守工事等のため、"+day+
+    "１１時００分頃から１５時００分頃まで、小川町〜児玉駅間で運転を見合わせます。";
+  const x=parse(msg,{structuredStatus:{ja:"運転見合わせ"}});
+  assert.equal(x.status,"notice");
+  assert.ok(x.events.length>0&&x.events.every(e=>e.phase==="planned"));
+  assert.ok(x.evidence.some(e=>e.type==="OFFICIAL_PLANNED_NOTICE_NOT_LIVE_DISRUPTION"));
+});
+check("forecast risk and maintenance timetable are not present-tense delays",()=>{
+  assert.equal(parse("釜石線は、強風の影響で、終日列車に遅れや運休が発生する可能性があります。").status,"notice");
+  assert.equal(parse("設備メンテナンスのため、２０２７年３月まで日中時間帯の列車に区間運休が発生します。").status,"notice");
+});
+check("outage continuing until a future date is still current",()=>{
+  const date=new Date(Date.now()+8*86400000+9*3600000);
+  const day=(date.getUTCMonth()+1)+"月"+date.getUTCDate()+"日";
+  assert.equal(parse("小海線は落石の影響により、"+day+"まで運転を見合わせます。").status,"suspended");
+  assert.equal(parse("本日終日運転を見合わせます。").status,"suspended");
+  assert.equal(parse("現在、運転を見合わせています。明日の運転再開を見込んでいます。").status,"suspended");
+});
 console.log("PASS",n,"offline runinfo regression checks");

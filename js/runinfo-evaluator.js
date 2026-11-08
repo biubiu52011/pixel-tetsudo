@@ -103,6 +103,21 @@
       });
       return ranges;
     }
+    function hasFutureScheduledDate(s) {
+      // Operational notices may describe a future starting date even when
+      // Japanese wording uses 「見合わせます」, not 「予定しています」.
+      // End dates such as 「11月10日まで見合わせます」 are CURRENT outages.
+      var digits=String(s).replace(/[０-９]/g,function(c){return String(c.charCodeAt(0)-0xff10);});
+      var m=digits.match(/(?:(20[0-9]{2})年)?([0-9]{1,2})月([0-9]{1,2})日/);
+      if(!m)return false;
+      var after=digits.slice(m.index+m[0].length,m.index+m[0].length+14);
+      if(/^\s*(?:（[^）]*）\s*)?まで/.test(after))return false;
+      var now=new Date(Date.now()+9*60*60*1000); // Japanese railway service date
+      var year=m[1]?Number(m[1]):now.getUTCFullYear();
+      var event=year*10000+Number(m[2])*100+Number(m[3]);
+      var today=now.getUTCFullYear()*10000+(now.getUTCMonth()+1)*100+now.getUTCDate();
+      return event>today;
+    }
     function typeOf(s) {
       var policy=/(?:遅れ|遅延|運休|見合わせ)[^。]{0,80}(?:場合|とき|際)[^。]{0,80}(?:お知らせ|ご案内|掲載)|(?:場合|とき|際)[^。]{0,80}(?:遅れ|遅延|運休|見合わせ)[^。]{0,80}(?:お知らせ|ご案内|掲載)/.test(s)&&
         !/(?:現在|見合わせています|遅れが出ています|運休が出ています)/.test(s);
@@ -113,7 +128,13 @@
         /(?:[０-９0-9]{1,2}月[０-９0-9]{1,2}日|明日|来週)[^。]{0,18}まで/.test(s);
       var futureClaim=/(?:明日|翌日|来週|来月|後日|次回|今後|再開後|予定|見込|見込み|可能性|運転計画|実施予定)/.test(s)||
         /[０-９0-9]{1,2}月[０-９0-9]{1,2}日から/.test(s);
-      var planned=futureClaim&&!currentClaim;
+      var explicitlyActive=/(?:現在|ただいま|見合わせています|見合わせております|遅れが出ています|遅れがでています|運休しています|運休が出ています|運休がでています|発生しています)/.test(s);
+      var futureDate=hasFutureScheduledDate(s)&&!explicitlyActive;
+      var forecast=/(?:可能性があります|可能性がある|可能性がございます)/.test(s)&&!explicitlyActive;
+      var maintenanceNotice=/(?:設備メンテナンス|保守工事|昼間集中工事)/.test(s)&&
+        /(?:日中時間帯|[０-９0-9]{1,2}月[０-９0-9]{1,2}日)/.test(s)&&
+        !explicitlyActive&&!/(?:本日|今日)/.test(s);
+      var planned=(futureClaim&&!currentClaim)||futureDate||forecast||maintenanceNotice;
       var historic=/(?:見合わせていました|見合わせておりました|運休していました|遅れが出ていました|遅れていました|運転を中止していました|見合わせました|平常(?:通り|どおり|運転)でした|通常(?:通り|どおり|運転)していました)/.test(s);
       var resumed=/(?:運転(?:を)?再開|運行(?:を)?再開)(?:しました|しています|しております|済み|した|し$)|平常運転に戻りました/.test(s);
       var negative=/(?:運転見合わせ|運休|遅れ|遅延)[^。]{0,12}(?:ありません|ございません|なし|発生していません|出ていません)/.test(s);
@@ -346,6 +367,16 @@
     // GTFS NO_SERVICE for a trip/stop is not a full-line suspension.
     if((input.alertScope==="trip"||input.alertScope==="stop")&&structured==="suspended"){
       structured="delayed";evidence.push({type:"GTFS_PARTIAL_NO_SERVICE",scope:input.alertScope});
+    }
+    // A structured category can describe a FUTURE engineering notice.
+    // Do not turn a scheduled event into a live suspension/delay merely
+    // because the source category says 「運転見合わせ」 or 「遅延」.
+    var plannedOnly=activeEffects.length===0&&
+      (metadata.events||[]).some(function(e){return e.phase==="planned";});
+    if(plannedOnly&&structured&&
+        input.suspension!==true&&!input.signalStatus){
+      structured="notice";
+      evidence.push({type:"OFFICIAL_PLANNED_NOTICE_NOT_LIVE_DISRUPTION"});
     }
     var resolvedStatus=structured||te.status||"unknown";
     if(messageKind==="notice"){resolvedStatus="notice";evidence.push({type:"NOTICE_STATUS_ISOLATION"});}
