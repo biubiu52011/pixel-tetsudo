@@ -24070,14 +24070,14 @@
   "Hioka": {
     "ja": "日岡",
     "zh": "日冈",
-    "ko": "히라오카",
-    "en": "Hiraoka"
+    "ko": "히오카",
+    "en": "Hioka"
   },
   "Kanno": {
     "ja": "神野",
     "zh": "神野",
-    "ko": "코노",
-    "en": "Kōno"
+    "ko": "칸노",
+    "en": "Kanno"
   },
   "Yakujin": {
     "ja": "厄神",
@@ -24154,14 +24154,14 @@
   "Kurodashou": {
     "ja": "黒田庄",
     "zh": "黑田庄",
-    "ko": "쿠로사코",
-    "en": "Kurosakō"
+    "ko": "구로다쇼",
+    "en": "Kurodasho"
   },
   "Motoguro-Ta": {
     "ja": "本黒田",
     "zh": "本黑田",
-    "ko": "무로고",
-    "en": "Murogō"
+    "ko": "혼쿠로다",
+    "en": "Hon-Kuroda"
   },
   "Funamachi-Kuchi": {
     "ja": "船町口",
@@ -29178,5 +29178,11 @@
     "zh": "荒木",
     "ko": "아라키",
     "en": "Araki"
+  },
+  "Taki-Tochigi": {
+    "ja": "滝",
+    "zh": "泷",
+    "ko": "다키",
+    "en": "Taki"
   }
 }
