@@ -4294,7 +4294,17 @@ function _officialConventionalServicePlan(tt, lineId, line) {
           // This is explicit timetable ownership, never derived from train number.
           // Foreign-owned through trains must not silently inherit a route
           // operator's stock (for example Toei Mita vs Sotetsu 21000).
-          trainOwner: normOp(tt['odpt:trainOwner'] || tt.trainOwner || '')
+          trainOwner: normOp(tt['odpt:trainOwner'] || tt.trainOwner || ''),
+          // Reuse timetable stop URNs; train number, destination or line name
+          // alone must not imply the northern 223-5500 local corridor.
+          stationKeys: [].concat(tt['odpt:originStation'] || [])
+            .concat((tt['odpt:trainTimetableObject'] || []).reduce(function(a,s) {
+              return a.concat(s['odpt:arrivalStation'] || [],
+                s['odpt:departureStation'] || []);
+            }, []))
+            .concat(tt['odpt:destinationStation'] || [])
+            .map(function(urn) { return String(urn || '').split('.').pop(); })
+            .filter(Boolean)
         }) : null;
   if (majorPreset) return majorPreset;
   return null;
