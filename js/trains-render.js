@@ -1166,8 +1166,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       p.sqlPublishedNumberFleetReference.candidateModels.join("|")==="221系";
     var fuk321 = lineId==="Fukuchiyama"&&p&&
       p.sqlPublishedNumberFleetReference&&
-      p.sqlPublishedNumberFleetReference.source===
-        "sql-jrwest-fukuchiyama-2611-historical-fleet-reference";
+      ["sql-jrwest-fukuchiyama-2611-historical-fleet-reference",
+       "sql-jrwest-fukuchiyama-2611-official-7025-friday"]
+        .includes(p.sqlPublishedNumberFleetReference.source);
     var fukKounotori=fuk321&&
       /^(30|70)[0-9]{2}MH?$/.test(String(p.trainNumber||""))&&
       /(?:\.|:)LimitedExpress$/.test(String(p.trainType||""));
