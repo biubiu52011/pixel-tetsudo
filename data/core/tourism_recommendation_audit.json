@@ -1,11 +1,11 @@
 {
-  "asOf": "2026-11-03",
+  "asOf": "2026-11-09",
   "methodology": "A menu item is official-source reviewed only when its title and any displayed price are backed by a specific primary-source URL. Old kind=note items are historical visit notes, not confirmed products. Existing items without provenance remain unverified. Cover images alone do not establish product identity or availability.",
   "totals": {
     "shops": 289,
     "notes": 813,
     "verified": 20,
-    "unverified": 375,
+    "unverified": 377,
     "reviewedShops": 7,
     "reportedClosed": 1,
     "noteOnly": 158
@@ -2218,9 +2218,14 @@
       "name": "千住の永見",
       "status": "pending_review",
       "officialItems": 0,
-      "legacyItems": 4,
+      "legacyItems": 6,
       "visitorNotes": 2,
-      "officialUrls": []
+      "officialUrls": [],
+      "referenceUrls": [
+        "https://www.adachikanko.net/spot/%E5%8D%83%E4%BD%8F%E3%81%AE%E6%B0%B8%E8%A6%8B",
+        "https://ameblo.jp/nekonyan190721/entry-12911212783.html"
+      ],
+      "referenceNote": "Local tourism guide and historical diner photos confirm dish names, not current price or an official licensed photo. New assets are original illustrations."
     },
     {
       "name": "定食屋 かあちゃん",

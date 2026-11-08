@@ -237,7 +237,7 @@ test('all merchant data is normalized to spot.menu and generated snapshots remai
       }
     }
   }
-  assert.equal(productPhotoCount + shopPhotoProductCount + illustratedProductCount, 395,
+  assert.equal(productPhotoCount + shopPhotoProductCount + illustratedProductCount, 397,
     'all active source-backed and historical product records have image references');
   assert.equal(sourceBackedCount, 20, 'first seven reviewed shops supply 20 official-source entries');
   assert.equal(productPhotoCount, 75, 'all valid product-specific photos are preserved');

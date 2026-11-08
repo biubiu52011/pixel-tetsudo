@@ -44451,7 +44451,7 @@
      "coverRole": "illustration"
     },
     {
-     "item": "千住あげ",
+     "item": "千寿揚げ",
      "price": "470円",
      "cover": "../images/料理/千住の永見_1_千住あげ.svg",
      "coverRole": "illustration"
@@ -44466,6 +44466,16 @@
      "item": "ハイボール（ジャンボ）",
      "price": "490円",
      "cover": "../images/料理/千住の永見_3_ハイボール（ジャンボ）.svg",
+     "coverRole": "illustration"
+    },
+    {
+     "item": "鶏軟骨つくね焼",
+     "cover": "../images/料理/千住の永見_4_鶏軟骨つくね焼.svg",
+     "coverRole": "illustration"
+    },
+    {
+     "item": "自家製ポテトサラダ",
+     "cover": "../images/料理/千住の永見_5_自家製ポテトサラダ.svg",
      "coverRole": "illustration"
     },
     {
@@ -44489,10 +44499,10 @@
      "ko": "참치 깍둑"
     },
     {
-     "ja": "千住あげ",
-     "zh": "千住炸豆腐",
-     "en": "Senju-age (fried tofu)",
-     "ko": "센주 아게"
+     "ja": "千寿揚げ",
+     "zh": "千寿炸鱼饼",
+     "en": "Senju-age (fried fish cake)",
+     "ko": "센주아게(어묵튀김)"
     },
     {
      "ja": "煮込み",
@@ -44505,6 +44515,18 @@
      "zh": "嗨棒（特大）",
      "en": "Highball (jumbo)",
      "ko": "하이볼(점보)"
+    },
+    {
+     "ja": "鶏軟骨つくね焼",
+     "zh": "鸡软骨烤肉丸串",
+     "en": "Grilled chicken-cartilage tsukune",
+     "ko": "닭 연골 쓰쿠네 구이"
+    },
+    {
+     "ja": "自家製ポテトサラダ",
+     "zh": "自制土豆沙拉",
+     "en": "House-made potato salad",
+     "ko": "수제 감자샐러드"
     },
     {
      "ja": "名物・千寿揚げを",
