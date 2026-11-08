@@ -64,6 +64,43 @@ jobs:
           node --test tests/runinfo-evaluator-partial-cancellation.test.cjs tests/runinfo-web-snapshot.test.cjs
           node tests/runinfo-regression.js
           node --test tests/runinfo-operator-delivery.test.cjs
+      - name: Probe Seibu ODPT TrainInformation once
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const globals = { window: {} };
+          vm.runInNewContext(fs.readFileSync('data/api/odpt-links.js', 'utf8'), globals);
+          const seed = 'PixelTetsudo'.split('').reverse().join('') + '-' + 'ODPT'.split('').reverse().join('') + '-2026';
+          const bytes = Buffer.from(globals.window.ODPT_LINKS_ENC, 'base64');
+          for (let i = 0; i < bytes.length; i++) bytes[i] ^= seed.charCodeAt(i % seed.length);
+          const urls = JSON.parse(bytes.toString('utf8'));
+          const url = urls.find(u => u.includes('/odpt:TrainInformation?odpt:operator=odpt.Operator:Seibu'));
+          if (!url || !url.includes('acl:consumerKey=')) throw Error('Seibu endpoint missing from configured links');
+          (async () => {
+            try {
+              const response = await fetch(url, { headers: { 'Accept': 'application/json' }, signal: AbortSignal.timeout(12000) });
+              const body = await response.text();
+              console.log('Seibu endpoint HTTP status:', response.status);
+              console.log('Response content-type:', response.headers.get('content-type') || 'none');
+              if (response.ok) {
+                try {
+                  const decoded = JSON.parse(body);
+                  const rows = Array.isArray(decoded) ? decoded : Array.isArray(decoded.value) ? decoded.value : null;
+                  console.log('JSON rows:', rows === null ? 'unexpected shape' : rows.length);
+                  if (rows && rows.length) {
+                    const railwayIds = [...new Set(rows.map(x => x['odpt:railway'] || '(operator-wide)').slice(0, 100))];
+                    console.log('Returned railway identities:', JSON.stringify(railwayIds));
+                  }
+                } catch (e) { console.log('Response JSON parse failed:', e.name); }
+              } else {
+                console.log('Non-success response size (bytes):', Buffer.byteLength(body));
+              }
+            } catch (e) {
+              console.log('Seibu endpoint request error:', e.name, e.cause && e.cause.code || '');
+            }
+          })();
+          NODE
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
