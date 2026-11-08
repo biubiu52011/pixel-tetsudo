@@ -4303,6 +4303,9 @@ function _officialConventionalServicePlan(tt, lineId, line) {
           // Foreign-owned through trains must not silently inherit a route
           // operator's stock (for example Toei Mita vs Sotetsu 21000).
           trainOwner: normOp(tt['odpt:trainOwner'] || tt.trainOwner || ''),
+          // Source service date is authoritative for any future dated
+          // fleet-reference edition; never derive it from a train suffix.
+          serviceDate: tt._serviceDate || tt.serviceDate || '',
           // Reuse timetable stop URNs; train number, destination or line name
           // alone must not imply the northern 223-5500 local corridor.
           stationKeys: [].concat(tt['odpt:originStation'] || [])
