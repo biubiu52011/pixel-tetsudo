@@ -607,7 +607,7 @@
     var id = scopedId || (Object.prototype.hasOwnProperty.call(ids,canonical) ? ids[canonical] : null);
     if (!id) return raw;
     var localized = db.resolveStationName(id,lang);
-    return localized && localized !== id ? localized : raw;
+    return localized || raw; // The translated English name may equal the canonical ID.
   }
   function localizeInterval(str,lineId) {
     if (!str) return str;
