@@ -168,3 +168,31 @@ test('JU icon maps to the canonical JR Utsunomiya line across data and cards', (
   assert.match(search, /var _canonicalImg = line && line\.image/);
   assert.match(search, /var img = _canonicalImg \|\|/);
 });
+
+test('ChuoMain uses the JR Group fallback, not Chuo Rapid artwork, across all data sources', () => {
+  const fallback = '../images/鉄道/JR東日本/JRグループ.png';
+  const rapidIcon = '../images/鉄道/JR東日本/中央快速線.png';
+  const sources = [
+    JSON.parse(fs.readFileSync('data/core/railway_data.json', 'utf8')),
+    JSON.parse(fs.readFileSync('data/core/railway_data.compact.json', 'utf8')),
+    JSON.parse(fs.readFileSync('data/core/railway-data.file.js', 'utf8')
+      .replace(/^window\\.RAILWAY_DATA\\s*=\\s*/, '').replace(/;\\s*$/, ''))
+  ];
+  for (const source of sources) {
+    const main = source.lines.ChuoMain;
+    const rapid = source.lines.ChuoRapid;
+    assert.equal(main.image, fallback);
+    assert.equal(main.presentation.icon, fallback);
+    assert.equal(main.presentation.code, 'CO');
+    assert.deepEqual(main.presentation.lineIds, ['ChuoMain']);
+    assert.equal(rapid.image, rapidIcon);
+    assert.equal(rapid.presentation.icon, rapidIcon);
+  }
+  const win = makeView();
+  const main = sources[0].lines.ChuoMain;
+  const card = win.LineCard.renderSystem(main.presentation, ['ChuoMain'],
+    {ChuoMain: main}, {mode: 'trains'});
+  assert.ok(card.includes('rs-line-icon-fallback'), 'list should use JR Group badge wrapper');
+  assert.ok(card.includes('JRグループ.png'), 'list should render fallback icon');
+  assert.ok(!card.includes('中央快速線.png'), 'list must not reuse the rapid icon');
+});

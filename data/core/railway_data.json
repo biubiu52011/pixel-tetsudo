@@ -37678,7 +37678,8 @@
         "lineIds": [
           "ChuoMain"
         ],
-        "operatorGroup": "JR_EAST"
+        "operatorGroup": "JR_EAST",
+        "icon": "../images/鉄道/JR東日本/JRグループ.png"
       },
       "throughServices": [
         "ChuoRapid",
@@ -37717,7 +37718,7 @@
           }
         }
       ],
-      "image": "../images/鉄道/JR東日本/中央快速線.png"
+      "image": "../images/鉄道/JR東日本/JRグループ.png"
     },
     "TokaidoMain": {
       "nameJa": "東海道本線",
