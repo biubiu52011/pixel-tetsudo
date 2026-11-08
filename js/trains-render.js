@@ -1164,7 +1164,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         "sql-jrwest-osaka-higashi-2611-source-family"&&
       p.sqlPublishedNumberFleetReference.candidateModels&&
       p.sqlPublishedNumberFleetReference.candidateModels.join("|")==="221系";
-    var note = osaka221
+    var fuk321 = lineId==="Fukuchiyama"&&p&&
+      p.sqlPublishedNumberFleetReference&&
+      p.sqlPublishedNumberFleetReference.source===
+        "sql-jrwest-fukuchiyama-2611-historical-fleet-reference";
+    var note = fuk321
+      ? (/^zh/.test(lang)?"车辆图片：321系仅为207／321系共通运用示意，实际车型和编组未确认":
+          lang==="en"?"321-series artwork is only an example of the 207/321 fleet; actual stock unconfirmed":
+          lang==="ko"?"321계 이미지는 207/321계 운용 참고용이며 실제 편성은 미확인":
+          "321系の画像は207・321系共通運用の参考例で、実際の形式・編成は未確認")
+      : osaka221
       ? (/^zh/.test(lang)?"车辆图片：221系车型示意，实际编组未确认":
          lang==="en"?"Vehicle artwork: 221 series example; actual set unconfirmed":
          "車両画像：221系の参考図、実際の編成未確認")
@@ -1346,6 +1355,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // Respect the C-number 207/321 subgroup rather than displaying all
+    // four candidates from the historical, route-wide SQL reference.
+    var fukIndex=window.TrainNumberPngRanges,
+      fukGroup=lineId==="Fukuchiyama"&&
+        p.vehicleIdentityStatus!=="EXACT"&&fukIndex&&
+        typeof fukIndex.verifyFukuchiyamaSourceFleet==="function"
+        ?fukIndex.verifyFukuchiyamaSourceFleet(p):null;
+    if(fukGroup&&fukGroup.numberBand==="local-1100-1299-C"){
+      lang=String(lang||"ja").toLowerCase();
+      return (/^zh/.test(lang)?"普通列车号段候选（非实车确认）：":
+        lang==="en"?"Local number-band candidates (unconfirmed): ":
+        lang==="ko"?"보통열차 번호대 후보 차종(실차 미확인): ":
+        "普通列車番号帯の候補車種（実車未確認）：")+
+        fukGroup.candidateModels.join(" / ");
+    }
     // Two Osaka->Shin-Osaka Mahoroba published excerpts are 683-series
     // three-car specials. The existing 683 PNGs are other liveries and are
     // deliberately NOT mapped. Neither "安寧" nor "悠久" is a dated carset

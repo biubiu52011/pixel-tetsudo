@@ -44,30 +44,59 @@ const position={
 };
 const verify=window.TrainNumberPngRanges.verifyFukuchiyamaSourceFleet;
 const marker=p=>window.TrainVehicle.selectMarkerArtwork(p,false);
-test('1199CH 2026-11-08 remains four fleet candidates, not missing map or guessed PNG',()=>{
- const f=verify(position);
+test('1199CH maps the 1100-1299 C band to an illustrative 321 image, not an assigned carset',()=>{
+ const f=verify(position),png='../images/列车/JR西日本/JR西日本_321系.png';
  assert.ok(f);
- assert.equal(f.authorizesPNG,false);
+ assert.equal(f.numberBand,'local-1100-1299-C');
  assert.equal(f.numberDateVerified,false);
- assert.deepEqual(Array.from(f.candidateModels),models);
+ assert.equal(f.authorizesPNG,false);
+ assert.equal(f.actualVehicleConfirmed,false);
+ assert.equal(f.authorizesIllustration,true);
+ assert.deepEqual(Array.from(f.sourceFleetCandidates),models);
+ assert.deepEqual(Array.from(f.candidateModels),['207系','321系']);
+ assert.equal(f.illustrationPng,png);
+ assert.equal(window.VehicleGaragePngMap.matchModelPath('JR西日本321系',png,'Fukuchiyama'),true);
+ assert.equal(window.VehicleGaragePngMap.matchModelPath('JR西日本225系',
+   '../images/列车/JR西日本/JR西日本_225系.png','Fukuchiyama'),false);
  const art=marker(position);
- assert.equal(art.kind,'candidate');
- assert.equal(art.iconSrc,'');
- assert.equal(art.planned,false);
+ assert.equal(art.kind,'vehicle');
+ assert.equal(art.iconSrc,png);
+ assert.equal(art.planned,true);
+ assert.equal(art.illustrative,true);
  assert.equal(art.actualVehicleConfirmed,false);
- assert.deepEqual(Array.from(art.candidateModels),models);
- assert.deepEqual(Array.from(art.candidateAssets),[]);
  const r=fs.readFileSync('js/trains-render.js','utf8');
  const a=r.indexOf('  function _trainMarkerDomKind(');
  const b=r.indexOf('  // ODPT location evidence must never',a);
  assert.ok(a>=0&&b>a);
  vm.runInContext(r.slice(a,b),ctx);
- const render=ctx._trainMarkerSpec(position,'planned-trip:1199CH','Fukuchiyama');
- assert.equal(render.kind,'candidate');
- assert.equal(render.compact,true);
- assert.equal(render.iconSrc,'');
- assert.equal(ctx._trainMarkerDomKind(render),'candidate');
- assert.match(r,/candidateVehicle\s*\?\s*\(color\s*\|\|/);
+ const svg=ctx._trainMarkerSpec(position,'planned-trip:1199CH','Fukuchiyama');
+ assert.equal(svg.kind,'vehicle');
+ assert.equal(svg.iconSrc,png);
+ assert.equal(svg.compact,false);
+ assert.equal(svg.illustrative,true);
+ assert.equal(ctx._trainMarkerDomKind(svg),'planned');
+ assert.equal(marker(position,true).kind,'candidate');
+ const l=r.indexOf('function _trainFleetPlanLabel(');
+ vm.runInContext(r.slice(l,r.indexOf('\n  function ',l)),ctx);
+ const caption=ctx._trainFleetPlanLabel(position,'Fukuchiyama','zh');
+ assert.match(caption,/207系 \/ 321系/);
+ assert.doesNotMatch(caption,/223系/);
+});
+test('historical M/MO number bands remain candidates without reusing Hanwa 223/225 PNG',()=>{
+ for(const [no,type] of [['2728MH','Rapid'],['3001MH','Local'],
+  ['5424MH','Rapid'],['2759MOH','Local']]){
+  const p={...position,trainNumber:no,
+    trainType:'odpt.TrainType:JR-West.'+type,
+    sqlPublishedNumberFleetReference:{...proof,sourceTrainId:no,
+      trainType:'odpt.TrainType:JR-West.'+type}};
+  const f=verify(p);
+  assert.ok(f,no);
+  assert.equal(f.authorizesIllustration,false);
+  assert.equal(f.illustrationPng,'');
+  assert.deepEqual(Array.from(f.candidateModels),models);
+  assert.equal(marker(p).kind,'candidate',no);
+  assert.equal(marker(p).iconSrc,'');
+ }
 });
 test('unknown source, line/date/calendar/train/stop mismatches remain unresolved',()=>{
  for(const change of [
@@ -78,6 +107,9 @@ test('unknown source, line/date/calendar/train/stop mismatches remain unresolved
   {serviceDate:'2026-11-09'},{serviceId:'odpt.Calendar:Weekday',calendarType:'weekday'},
   {serviceDate:'2026-12-08'},{trainNumber:'1198CH'},
   {trainType:'odpt.TrainType:JR-West.LimitedExpress'},
+  {trainNumber:'1301CH',sqlPublishedNumberFleetReference:{...proof,sourceTrainId:'1301CH'}},
+  {trainNumber:'1199MH',sqlPublishedNumberFleetReference:{...proof,sourceTrainId:'1199MH'}},
+  {trainNumber:'1198CH',sqlPublishedNumberFleetReference:{...proof,sourceTrainId:'1198CH'}},
   {railDirection:'odpt.RailDirection:Inbound'},
   {scheduledStopKeys:stops.slice().reverse()},
   {plannedVehicleCandidates:['207系']},

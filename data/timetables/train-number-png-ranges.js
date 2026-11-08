@@ -2659,6 +2659,23 @@
   // Historical JR-West Fukuchiyama source fleet, not a certified
   // 2026-11 train number, actual vehicle or PNG. Keep all four alternatives.
   // A row rejected by the SQL source/stop boundary must stay unresolved.
+  // Fukuchiyama 2611 historical source-number bands. The appended H is
+  // a calendar marker; 1199CH is the source form of public 1199C.
+  // M/MO are recorded for diagnostic lookup, but cannot identify a
+  // specific 223/225-6000 formation or authorize a Hanwa-only PNG.
+  var FUKUCHIYAMA_NUMBER_BANDS=Object.freeze([
+    ["local-1100-1299-C","C",1100,1299,"Local"],
+    ["electric-0500-0599-M","M",500,599,""],
+    ["electric-2500-2599-M","M",2500,2599,""],
+    ["electric-2700-2799-M","M",2700,2799,""],
+    ["electric-2900-2999-M","M",2900,2999,""],
+    ["electric-3000-3099-M","M",3000,3099,""],
+    ["electric-3700-3799-M","M",3700,3799,""],
+    ["electric-3900-3999-M","M",3900,3999,""],
+    ["electric-5400-5599-M","M",5400,5599,""],
+    ["electric-7000-7099-M","M",7000,7099,"Local"],
+    ["historical-2750-2799-MO","MO",2750,2799,"Local"]
+  ]);
   function verifyFukuchiyamaSourceFleet(p){
     var proof=p&&p.sqlPublishedNumberFleetReference;
     if(!p||!proof||
@@ -2668,47 +2685,38 @@
        (p.displayLineId&&p.displayLineId!=="Fukuchiyama")||
        p.sourceRailway!=="odpt.Railway:JR-West.Fukuchiyama"||
        p.positionSource!=="supabase-train-run"||
-       p.estimated!==true||
-       p.timetableDateVerified===true||
-       proof.referenceOnly!==true||
-       proof.numberDateVerified!==false||
-       proof.actualVehicleConfirmed!==false||
-       proof.authorizesPNG!==false||
+       p.estimated!==true||p.timetableDateVerified===true||
+       proof.referenceOnly!==true||proof.numberDateVerified!==false||
+       proof.actualVehicleConfirmed!==false||proof.authorizesPNG!==false||
        proof.timetableValidity!=="undated_not_current_verified"||
        proof.timetableSourcePath!=="data/timetables/Fukuchiyama-manual.js")
       return null;
     var date=String(p.serviceDate||"").slice(0,10),
       num=String(p.trainNumber||"").trim(),
-      suffix=/^([0-9]{3,5})(C|MO|M)(H?)$/.exec(num),
+      n=/^([0-9]{3,5})(C|MO|M)(H?)$/.exec(num),
       dir=String(p.railDirection||"").split(/[.:]/).pop(),
       type=String(p.trainType||"").split(/[.:]/).pop(),
       models=["207系","321系","223系6000番台","225系6000番台"];
     if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
-       !suffix||!["Inbound","Outbound"].includes(dir)||
+       !n||!["Inbound","Outbound"].includes(dir)||
        !["Local","Rapid","SectionRapid"].includes(type)||
-       (type!=="Local"&&suffix[2]!=="M")||
-       proof.serviceDate!==date||
-       proof.sourceTrainId!==num||
+       (type!=="Local"&&n[2]!=="M")||
+       proof.serviceDate!==date||proof.sourceTrainId!==num||
        proof.direction!=="odpt.RailDirection:"+dir||
        proof.trainType!=="odpt.TrainType:JR-West."+type||
        !Number.isSafeInteger(Number(proof.sourceTemplateId))||
-       Number(proof.sourceTemplateId)<=0)
-      return null;
-    var operator=String(p.trainOperator||p.operator||"");
-    if(operator&&operator!=="JR-West"&&operator!=="odpt.Operator:JR-West")
-      return null;
+       Number(proof.sourceTemplateId)<=0)return null;
+    var op=String(p.trainOperator||p.operator||"");
+    if(op&&op!=="JR-West"&&op!=="odpt.Operator:JR-West")return null;
     var day=new Date(date+"T12:00:00Z").getUTCDay(),
-      holiday=day===0||day===6||date==="2026-11-03"||
-        date==="2026-11-23";
-    if(suffix[3]!== (holiday?"H":"")||
+      holiday=day===0||day===6||date==="2026-11-03"||date==="2026-11-23";
+    if(n[3]!== (holiday?"H":"")||
        sourceCalendar(p)!==(holiday?"holiday":"weekday")||
        proof.calendar!=="odpt.Calendar:"+
-         (holiday?"SaturdayHoliday":"Weekday"))
-      return null;
+         (holiday?"SaturdayHoliday":"Weekday"))return null;
     var keys=Array.isArray(p.scheduledStopKeys)
-        ?p.scheduledStopKeys.map(function(k){return String(k||"").split(".").pop();})
-        :[],
-      sourceKeys=proof.sourceStopKeys;
+      ?p.scheduledStopKeys.map(function(k){return String(k||"").split(".").pop();})
+      :[],sourceKeys=proof.sourceStopKeys;
     if(!Array.isArray(sourceKeys)||sourceKeys.length<2||
        sourceKeys.length!==keys.length||
        keys.some(function(k,i){return k!==sourceKeys[i];})||
@@ -2716,10 +2724,36 @@
        proof.candidateModels.join("|")!==models.join("|")||
        !Array.isArray(proof.candidateAssets)||
        proof.candidateAssets.length!==0)return null;
+    var digits=Number(n[1]), band=FUKUCHIYAMA_NUMBER_BANDS.find(function(x){
+      return x[1]===n[2]&&digits>=x[2]&&digits<=x[3]&&
+        (!x[4]||x[4]===type);
+    });
+    if(!band)return null;
+    var isC=band[1]==="C";
+    if(isC&&(dir!=="Outbound"||digits%2!==1||
+       keys[0]!=="Amagasaki"||
+       ["Takarazuka","Shinmita"].indexOf(keys[keys.length-1])<0))
+      return null;
+    var galleryModels=isC?["JR西日本207系（NK）",
+      "JR西日本207系（Y2）","JR西日本321系"]:[],
+      galleryPaths=isC?[
+        "../images/列车/JR西日本/JR西日本_207系_NK.png",
+        "../images/列车/JR西日本/JR西日本_207系_Y2.png",
+        "../images/列车/JR西日本/JR西日本_321系.png"
+      ]:[],illustration=isC
+        ?"../images/列车/JR西日本/JR西日本_321系.png":"";
     return Object.freeze({
       lineId:"Fukuchiyama",sourceTrainNumber:num,
-      sourceTemplateId:Number(proof.sourceTemplateId),
-      candidateModels:Object.freeze(models),candidateAssets:Object.freeze([]),
+      sourceTemplateId:Number(proof.sourceTemplateId),numberBand:band[0],
+      sourceFleetCandidates:Object.freeze(models),
+      candidateModels:Object.freeze(isC?["207系","321系"]:models),
+      candidateGalleryModels:Object.freeze(galleryModels),
+      candidateAssets:Object.freeze(galleryPaths),
+      illustrationModel:isC?"JR西日本321系":"",
+      illustrationPng:illustration,
+      illustrationSourceUrl:isC
+        ?"https://www.katano-transport.com/archives/29972598.html":"",
+      authorizesIllustration:isC,
       referenceOnly:true,numberDateVerified:false,
       actualVehicleConfirmed:false,authorizesPNG:false
     });

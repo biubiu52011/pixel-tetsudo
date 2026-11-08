@@ -1306,7 +1306,7 @@ var CANONICAL_VEHICLES = {
   "jr-west-289-k-kani": { displayName: "JR西日本289系（K-KANI）", iconName: "JR西日本289系（K-KANI）", asset: "../images/列车/JR西日本/JR西日本_289系_KKANI.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
   "jr-west-289-mhr": { displayName: "JR西日本289系（MHR）", iconName: "JR西日本289系（MHR）", asset: "../images/列车/JR西日本/JR西日本_289系_MHR.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
   "jr-west-289-mhs": { displayName: "JR西日本289系（MHS）", iconName: "JR西日本289系（MHS）", asset: "../images/列车/JR西日本/JR西日本_289系_MHS.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
-  "jr-west-321": { displayName: "JR西日本321系", iconName: "JR西日本321系", asset: "../images/列车/JR西日本/JR西日本_321系.png", lineIds: ["TokaidoKansai", "Gakkentoshi", "OsakaHigashi"], aliases: ["321系"] },
+  "jr-west-321": { displayName: "JR西日本321系", iconName: "JR西日本321系", asset: "../images/列车/JR西日本/JR西日本_321系.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "OsakaHigashi"], aliases: ["321系"] },
   "jr-west-323-m": { displayName: "JR西日本323系（M）", iconName: "JR西日本323系（M）", asset: "../images/列车/JR西日本/JR西日本_323系_M.png", lineIds: ["OsakaLoop"], aliases: [] },
   "jr-west-323-or": { displayName: "JR西日本323系（OR）", iconName: "JR西日本323系（OR）", asset: "../images/列车/JR西日本/JR西日本_323系_OR.png", lineIds: ["OsakaLoop"], lineAliases: { OsakaLoop: ["323系"] }, aliases: [] },
   "jr-west-kiha35": { displayName: "JR西日本キハ35系", iconName: "JR西日本キハ35系", asset: "../images/列车/JR西日本/JR西日本_キハ35系.png", aliases: [] },
@@ -5702,22 +5702,21 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       // express PNG, a separate operator livery or a guessed carset.
       return {kind:"unresolved",iconSrc:""};
     }
-    // Fukuchiyama: 357 source templates have a validated four-family
-    // reference, but NO date-verified number, specific stock or PNG.
-    // Render the existing line-coloured candidate marker instead of a
-    // grey *unmapped* dot; never choose a 207/321/223/225 image at random.
+    // Number-band reference only. 1100-1299 C local trains can show
+    // ONE 321-series representative PNG for the 207/321 shared fleet.
+    // M/MO families remain candidates: no verified carset or appropriate
+    // 223/225-6000 PNG has been registered for this line.
     var fukProof=p&&p.sqlPublishedNumberFleetReference;
     if(p&&!identityConfirmed&&contextLineId==="Fukuchiyama"&&
        String(p.positionLineId||p.lineId||"")==="Fukuchiyama"&&
        fukProof&&fukProof.source===
          "sql-jrwest-fukuchiyama-2611-historical-fleet-reference"){
-      var fukIndex=window.TrainNumberPngRanges;
-      var fukFleet=fukIndex&&
-        typeof fukIndex.verifyFukuchiyamaSourceFleet==="function"
-          ?fukIndex.verifyFukuchiyamaSourceFleet(p):null;
-      var fukModels=fukFleet&&fukFleet.candidateModels||[];
-      if(artworkFailed!==true&&fukFleet&&
-         fukFleet.referenceOnly===true&&
+      var fukIndex=window.TrainNumberPngRanges,
+        fukFleet=fukIndex&&
+          typeof fukIndex.verifyFukuchiyamaSourceFleet==="function"
+            ?fukIndex.verifyFukuchiyamaSourceFleet(p):null,
+        original=fukFleet&&fukFleet.sourceFleetCandidates||[];
+      if(fukFleet&&fukFleet.referenceOnly===true&&
          fukFleet.numberDateVerified===false&&
          fukFleet.actualVehicleConfirmed===false&&
          fukFleet.authorizesPNG===false&&
@@ -5730,14 +5729,35 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
          ["unresolved","unresolved-mixed-fleet"].includes(
            String(p.plannedVehicleCandidateStatus||""))&&
          Array.isArray(p.plannedVehicleCandidates)&&
-         p.plannedVehicleCandidates.join("|")===fukModels.join("|")&&
+         p.plannedVehicleCandidates.join("|")===original.join("|")&&
          (!vehiclePlan||vehiclePlan.confirmed!==true)&&
          (!vehiclePlan||!Array.isArray(vehiclePlan.models)||
-           vehiclePlan.models.join("|")===fukModels.join("|"))&&
-         fukFleet.candidateAssets.length===0){
+           vehiclePlan.models.join("|")===original.join("|"))){
+        var g=window.VehicleGaragePngMap,
+          assets=fukFleet.candidateAssets,
+          assetModels=fukFleet.candidateGalleryModels,
+          approved=g&&typeof g.matchModelPath==="function"&&
+            assets.length===assetModels.length&&
+            assets.every(function(path,i){
+              return isGalleryPng(normalizeGalleryPngPath(path))&&
+                g.matchModelPath(assetModels[i],path,"Fukuchiyama");
+            });
+        if(artworkFailed!==true&&fukFleet.authorizesIllustration===true&&
+           fukFleet.numberBand==="local-1100-1299-C"&&approved&&
+           fukFleet.illustrationModel==="JR西日本321系"&&
+           fukFleet.illustrationPng===
+             "../images/列车/JR西日本/JR西日本_321系.png"&&
+           isGalleryPng(normalizeGalleryPngPath(fukFleet.illustrationPng))&&
+           g.matchModelPath(fukFleet.illustrationModel,
+             fukFleet.illustrationPng,"Fukuchiyama"))
+          return {kind:"vehicle",iconSrc:fukFleet.illustrationPng,
+            planned:true,illustrative:true,representativeOnly:true,
+            referenceOnly:true,actualVehicleConfirmed:false,
+            illustrationRole:"fukuchiyama-207-321-C-local-example-only"};
         return {kind:"candidate",iconSrc:"",planned:false,
           referenceOnly:true,actualVehicleConfirmed:false,
-          candidateModels:fukModels.slice(),candidateAssets:[]};
+          candidateModels:fukFleet.candidateModels.slice(),
+          candidateAssets:approved?assets.slice():[]};
       }
       return {kind:"unresolved",iconSrc:""};
     }

@@ -169,7 +169,7 @@ jobs:
         run: node --test tests/fukuchiyama-line-stations-2611.test.cjs
       - name: Verify JR Takarazuka historical fleet references (unconfirmed, no PNG)
         run: node --test tests/fukuchiyama-2611-fleet-reference.test.cjs
-      - name: Verify JR Takarazuka 1199CH candidate marker (no guessed PNG)
+      - name: Verify JR Takarazuka C-number PNG illustration and M/MO candidate safety
         run: node --test tests/fukuchiyama-1199ch-candidate-marker.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
