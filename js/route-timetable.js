@@ -225,7 +225,7 @@
       });
       var finalHit=hits[hits.length-1],arrivalConfirmed=finalHit.arrivalClockConfirmed===true;
       // The destination's departure clock is a routing bound, not a verified arrival.
-      return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,arrival:arrivalConfirmed?finalHit.arr:null,arrivalClockConfirmed:arrivalConfirmed,durationMin:arrivalConfirmed?finalHit.arrMin-hits[0].depMin:null,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
+      return {times:times,connections:connections,downgrade:downgrade,complete:true,serviceDate:ctx.date,departure:hits[0].dep,departureMinute:hits[0].depMin,arrival:arrivalConfirmed?finalHit.arr:null,arrivalMinute:arrivalConfirmed?finalHit.arrMin:null,arrivalClockConfirmed:arrivalConfirmed,durationMin:arrivalConfirmed?finalHit.arrMin-hits[0].depMin:null,initialWait:ctx.mode==='arrive' ? 0 : hits[0].depMin-ctx.minute};
     });
   }
   window.RouteTimetable={enrichSegments:enrichSegments,findNextTrain:findNextTrain,getTransferBuffer:buffer,
