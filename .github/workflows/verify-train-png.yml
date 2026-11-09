@@ -70,6 +70,9 @@ on:
       - 'tests/fukuchiyama-2611-danbaro-scope.test.cjs'
       - 'tests/fukuchiyama-2611-disruption-line-color.test.cjs'
       - 'tests/jr-line-colors-20261109.test.cjs'
+      - 'tests/kakogawa-2611-canonical-source.test.cjs'
+      - 'data/core/runtime-config.js'
+      - 'data/core/data-config-bundle.js'
       - 'supabase/migrations/20261108233500_fukuchiyama_danbaro_eight_numbers_and_holiday_suspensions.sql'
       - 'supabase/migrations/20261108234500_fukuchiyama_danbaro_four_more_numbers_calendar.sql'
       - 'supabase/migrations/20261108231000_fukuchiyama_kounotori_source_family_50_rows.sql'
@@ -218,6 +221,8 @@ jobs:
         run: node --test tests/fukuchiyama-2611-disruption-line-color.test.cjs
       - name: Verify official JR Kinki colors and JR East baseline colors
         run: node --test tests/jr-line-colors-20261109.test.cjs
+      - name: Verify Kakogawa turquoise line, Tanigawa transfer and November SQL provenance
+        run: node --test tests/kakogawa-2611-canonical-source.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
