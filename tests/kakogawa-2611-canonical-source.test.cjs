@@ -102,3 +102,19 @@ test('November SQL position policy excludes historical source clocks',()=>{
   assert.ok(estimator.includes('tt._timetableDateVerified!==true'));
   assert.ok(estimator.includes('tt._positionSource==="supabase-train-run"'));
 });
+
+test('Kakogawa 1324S and 1344S official November sources are date-scoped',()=>{
+  const sql=fs.readFileSync('supabase/migrations/20261109110000_kakogawa_2611_two_more_official_inbound_clocks.sql','utf8');
+  for(const no of ['1324S','1344S'])
+    assert.ok(sql.includes("'"+no+"'"),no);
+  for(const url of ['/65181?date=20261128','/65471?date=20261128'])
+    assert.ok(sql.includes(url),url);
+  assert.ok(sql.includes("NOT IN (98,101)"));
+  assert.ok(sql.includes("timetable_validity"));
+  assert.ok(sql.includes("'date_verified'"));
+  assert.ok(sql.includes("SATURDAY_HOLIDAY_OFFICIAL_NUMBER_GAPS_29"));
+  assert.ok(sql.includes("'public_number_calendar_direction_only'"));
+  assert.ok(sql.includes("'2026-11-03'::date"));
+  assert.ok(sql.includes("'2026-11-23'::date"));
+  assert.ok(!sql.includes("vehicle_plan_confirmed=true"));
+});
