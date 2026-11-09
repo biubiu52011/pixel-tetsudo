@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-11-09",
+  "description": "JR network gap inventory; presence is not service completeness. Unregistered lines must not be simulated.",
+  "officialSources": {
+    "east": "https://www.jreast.co.jp/estation/facility_search.aspx?searchCategoryCd=1",
+    "west": "https://trafficinfo.westjr.co.jp/dat/pdf/areasection.pdf",
+    "hokkaido": "https://www.jrhokkaido.co.jp/corporate/company/com_02.html",
+    "shikoku": "https://www.jr-shikoku.co.jp/01_trainbus/jikoku/",
+    "central": "https://jr-central.co.jp/"
+  },
+  "missingFrontend": [
+    {
+      "operator": "JR-East",
+      "id": "Nikko",
+      "nameJa": "日光線",
+      "from": "Utsunomiya",
+      "to": "Nikko",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-East",
+      "id": "TohokuRifu",
+      "nameJa": "東北本線 利府支線",
+      "from": "Iwakiri",
+      "to": "Rifu",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Kyushu",
+      "id": "Hisatsu",
+      "nameJa": "肥薩線",
+      "from": "Yatsushiro",
+      "to": "Hayato",
+      "status": "partial_service_closure_requires_segment_model",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Kyushu",
+      "id": "ChikuhiWest",
+      "nameJa": "筑肥線（西唐津〜伊万里）",
+      "from": "Nishi-Karatsu",
+      "to": "Imari",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "HakodateMain",
+      "nameJa": "函館本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "NemuroMain",
+      "nameJa": "根室本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Chitose",
+      "nameJa": "千歳線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "MuroranMain",
+      "nameJa": "室蘭本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Sekisho",
+      "nameJa": "石勝線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Furano",
+      "nameJa": "富良野線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "SoyaMain",
+      "nameJa": "宗谷本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "SenmoMain",
+      "nameJa": "釧網本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "SekihokuMain",
+      "nameJa": "石北本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Sassho",
+      "nameJa": "札沼線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "HidakaMain",
+      "nameJa": "日高本線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Yosan",
+      "nameJa": "予讃線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Dosan",
+      "nameJa": "土讃線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Kotoku",
+      "nameJa": "高徳線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Tokushima",
+      "nameJa": "徳島線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Naruto",
+      "nameJa": "鳴門線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Mugi",
+      "nameJa": "牟岐線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Yodo",
+      "nameJa": "予土線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Uchiko",
+      "nameJa": "内子線",
+      "status": "missing_station_sequence",
+      "priority": "P1"
+    }
+  ],
+  "databaseOnlyCentral": [
+    "ChuoCentral",
+    "Gotemba",
+    "Iida",
+    "KansaiCentral",
+    "KiseiCentral",
+    "Meisho",
+    "MinoAkasaka",
+    "Minobu",
+    "Sangu",
+    "Taita",
+    "Takayama",
+    "Taketoyo",
+    "TokaidoCentral"
+  ],
+  "frontendOnlyKnown": [
+    "Yahiko",
+    "Yumesaki",
+    "KansaiAirport",
+    "WakayamaLine",
+    "Sakurai",
+    "KagoshimaMainJA",
+    "KagoshimaMainJB",
+    "Wakamatsu",
+    "Haruda",
+    "Hitahikosan"
+  ],
+  "verifiedTopologyBranches": [
+    "SanyoWadamisaki",
+    "HanwaHagoromo",
+    "SaninSenzaki"
+  ],
+  "safetyNotes": [
+    "Do not create train runs, vehicle PNG, or simulated positions from topology-only routes.",
+    "Database-only route IDs do not imply populated stations or timetables.",
+    "Hokkaido Kaikyo line is not a regular passenger-service corridor; track separately rather than invent trains.",
+    "Miyo and Yahiko are aliases to reconcile, not independent routes."
+  ]
+}
