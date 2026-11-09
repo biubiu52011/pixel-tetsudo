@@ -97,11 +97,31 @@ audit.stationTopologyOnlyRoutes=audit.notCoveredRoutes.filter(id=>{
       t.station===route.stations[0]&&t.lineId===route.branchOf)&&
     route.stations.every(st=>Number.isFinite(railway.stations[st]?.lat)&&
       Number.isFinite(railway.stations[st]?.lng));
-  return legacyAou||newJrBranch;
+  // Verified 2026-11-09 passenger-route topology. Each of these four
+  // has its own station-order/coordinate/transfer regression test, but NO
+  // source-scoped vehicle or date-specific timetable. Do not fabricate fleet.
+  const sourceVerifiedRoutes={
+    Fujikyu:{operator:'FujisanrokuElectricRailway',first:'Otsuki',last:'Kawaguchiko',count:18},
+    Nikko:{operator:'JR-East',first:'Utsunomiya',last:'Nikko',count:7},
+    TohokuRifu:{operator:'JR-East',first:'Iwakiri',last:'Rifu',count:3},
+    ChikuhiWest:{operator:'JR-Kyushu',first:'Nishi-Karatsu',last:'Imari',count:14}
+  };
+  const spec=sourceVerifiedRoutes[id];
+  const verifiedNewCorridor=!!spec&&
+    route.operator===spec.operator&&
+    route.sourceQuality==='topology_verified_times_approximate'&&
+    route.stations.length===spec.count&&
+    route.stations[0]===spec.first&&route.stations.at(-1)===spec.last&&
+    route.durations.length===spec.count-1&&
+    route.transferStations.some(t=>route.stations.includes(t.station)&&lines[t.lineId])&&
+    route.stations.every(st=>Number.isFinite(railway.stations[st]?.lat)&&
+      Number.isFinite(railway.stations[st]?.lng));
+  return legacyAou||newJrBranch||verifiedNewCorridor;
 });
 assert.deepEqual(audit.stationTopologyOnlyRoutes.slice().sort(),
   ['HojoRailway','ShintetsuAo','SanyoWadamisaki',
-   'HanwaHagoromo','SaninSenzaki'].sort(),
+   'HanwaHagoromo','SaninSenzaki','Fujikyu','Nikko',
+   'TohokuRifu','ChikuhiWest'].sort(),
   'only independently audited station-topology-only routes may lack fleet evidence');
 assert.deepEqual(audit.notCoveredRoutes.filter(id=>
     !audit.stationTopologyOnlyRoutes.includes(id)),
