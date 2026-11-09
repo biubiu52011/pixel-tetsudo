@@ -108,6 +108,43 @@
     }
   }
 
+  // Source reference only: do not label a non-integrated JR-West feed as
+  // normal, delayed or realtime. Both Kinki subareas are listed on one page.
+  function updateOfficialRuninfoSource(lineId) {
+    var host = document.getElementById("trainsOfficialRuninfo");
+    if (!host) return;
+    host.replaceChildren();
+    host.hidden = true;
+    if (lineId !== "Fukuchiyama") return;
+    var texts = {
+      ja: ["JR西日本・公式運行情報",
+        "大阪～新三田は京阪神地区、新三田～福知山は北近畿地区をご確認ください。このページでは現在の公式運行状況を自動取得していません。",
+        "JR西日本の運行情報を開く"],
+      zh: ["JR西日本官方运行信息",
+        "大阪—新三田属于京阪神地区，新三田—福知山属于北近畿地区。本站尚未取得可验证的本线路实时运行状况。",
+        "查看JR西日本官方运行信息"],
+      en: ["JR-West official service updates",
+        "Check Keihanshin for Osaka–Shin-Sanda and Northern Kinki for Shin-Sanda–Fukuchiyama. Live official disruption status is not available in this map.",
+        "Open JR-West service updates"],
+      ko: ["JR서일본 공식 운행 정보",
+        "오사카~신산다는 게이한신, 신산다~후쿠치야마는 기타킨키 지역을 확인해 주세요. 이 지도는 공식 실시간 운행 상태를 제공하지 않습니다.",
+        "JR서일본 공식 운행 정보 열기"]
+    };
+    var strings = texts[window.currentLang] || texts.ja;
+    var title = document.createElement("h3");
+    title.textContent = strings[0];
+    var note = document.createElement("p");
+    note.className = "tp-evidence-note";
+    note.textContent = strings[1];
+    var link = document.createElement("a");
+    link.href = "https://trafficinfo.westjr.co.jp/kinki.html";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = strings[2];
+    host.append(title,note,link);
+    host.hidden = false;
+  }
+
   var _detailLoadRequestedFor = null;
   var _overviewScrollY = 0;
   function releaseOverviewDom() {
@@ -191,6 +228,7 @@
       releaseOverviewDom();
       updateLineTitle(lineId, fusedLine);
       updateCorridorEvidence(lineId);
+      updateOfficialRuninfoSource(lineId);
       if (mapEl && window.DataState && window.DataState.setPageStateRetry) {
         window.DataState.setPageStateRetry(mapEl, function() {
           var latest = getLinesData()[lineId];
@@ -236,6 +274,7 @@
   }
 
   function hideLineView() {
+    updateOfficialRuninfoSource(null);
     _detailLoadRequestedFor = null;
     var evidenceHost = document.getElementById("trainsCorridorEvidence");
     if (window.TrainCorridorEvidence &&

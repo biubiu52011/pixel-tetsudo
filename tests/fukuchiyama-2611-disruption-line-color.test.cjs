@@ -90,3 +90,15 @@ test('Nov 28 requires correct source, service calendar and departure clock',()=>
  assert.throws(()=>apply(wrongClock,SAT,'2026-11-28','Fukuchiyama'),
    /2783M_1128_PARTIAL_OPERATION_CONFLICT/);
 });
+
+
+test('Fukuchiyama official status URL is labeled as external and does not fabricate a live state',()=>{
+ const page=fs.readFileSync('pages/trains.html','utf8');
+ const controller=fs.readFileSync('js/trains-page.js','utf8');
+ assert.match(page,/id="trainsOfficialRuninfo"/);
+ assert.match(controller,/lineId !== "Fukuchiyama"/);
+ assert.match(controller,/https:\/\/trafficinfo\.westjr\.co\.jp\/kinki\.html/);
+ assert.match(controller,/updateOfficialRuninfoSource\(lineId\)/);
+ assert.match(controller,/updateOfficialRuninfoSource\(null\)/);
+ assert.match(controller,/本站尚未取得可验证的本线路实时运行状况/);
+});
