@@ -77,13 +77,31 @@ audit.notCoveredRoutes=Object.keys(lines).filter(line=>!byLine.has(line)).sort()
 // them from the mandatory fleet-source review.
 audit.stationTopologyOnlyRoutes=audit.notCoveredRoutes.filter(id=>{
   const route=lines[id];
-  return route?.timetableDataStatus==='station_topology_only' &&
-    Array.isArray(route.stations) && route.stations.length>1 &&
-    Array.isArray(route.transferStations) && route.transferStations.some(t=>
-      t.station==='Aou' && t.lineId==='KakogawaLine' &&
-      route.stations.includes(t.station));
+  if(route?.timetableDataStatus!=='station_topology_only'||
+     !Array.isArray(route.stations)||route.stations.length<=1||
+     !Array.isArray(route.transferStations))return false;
+  // The two already-audited Aou topology carriers remain unchanged.
+  const legacyAou=route.transferStations.some(t=>
+    t.station==='Aou'&&t.lineId==='KakogawaLine'&&
+    route.stations.includes(t.station));
+  // New JR branches have proven rails, but no audited train or vehicle plan.
+  // This is an explicit topology-only exception, not a fleet/Png waiver.
+  const parent=route.branchOf&&lines[route.branchOf];
+  const newJrBranch=['SanyoWadamisaki','HanwaHagoromo','SaninSenzaki'].includes(id)&&
+    route.operator==='JR-West'&&parent?.operator==='JR-West'&&
+    route.type==='branch'&&route.stations.length===2&&
+    route.sourceQuality==='topology_verified_times_approximate'&&
+    parent.stations.includes(route.stations[0])&&
+    !parent.stations.includes(route.stations[1])&&
+    route.transferStations.some(t=>
+      t.station===route.stations[0]&&t.lineId===route.branchOf)&&
+    route.stations.every(st=>Number.isFinite(railway.stations[st]?.lat)&&
+      Number.isFinite(railway.stations[st]?.lng));
+  return legacyAou||newJrBranch;
 });
-assert.deepEqual(audit.stationTopologyOnlyRoutes,['HojoRailway','ShintetsuAo'],
+assert.deepEqual(audit.stationTopologyOnlyRoutes.slice().sort(),
+  ['HojoRailway','ShintetsuAo','SanyoWadamisaki',
+   'HanwaHagoromo','SaninSenzaki'].sort(),
   'only independently audited station-topology-only routes may lack fleet evidence');
 assert.deepEqual(audit.notCoveredRoutes.filter(id=>
     !audit.stationTopologyOnlyRoutes.includes(id)),

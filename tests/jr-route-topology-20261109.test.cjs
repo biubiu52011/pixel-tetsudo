@@ -14,6 +14,7 @@ test('all three branch rails are separate from the real main-line adjacency',()=
    assert.ok(trunk&&side,branch);
    assert.equal(side.operator,'JR-West');
    assert.equal(side.branchOf,parent);
+   assert.equal(side.timetableDataStatus,'station_topology_only');
    assert.deepEqual(side.stations,[junction,terminus]);
    assert.equal(trunk.stations.includes(terminus),false);
    assert.equal(side.durations.length,1);

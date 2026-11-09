@@ -48394,7 +48394,8 @@
           "SanyoWadamisaki"
         ],
         "operatorGroup": "JR_WEST"
-      }
+      },
+      "timetableDataStatus": "station_topology_only"
     },
     "HanwaHagoromo": {
       "name": "HanwaHagoromo",
@@ -48437,7 +48438,8 @@
           "HanwaHagoromo"
         ],
         "operatorGroup": "JR_WEST"
-      }
+      },
+      "timetableDataStatus": "station_topology_only"
     },
     "SaninSenzaki": {
       "name": "SaninSenzaki",
@@ -48480,7 +48482,8 @@
           "SaninSenzaki"
         ],
         "operatorGroup": "JR_WEST"
-      }
+      },
+      "timetableDataStatus": "station_topology_only"
     }
   },
   "name_map": {
