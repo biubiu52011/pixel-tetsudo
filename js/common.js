@@ -88,7 +88,7 @@
       // 新干线运营商（東海道/山陽/九州/北海道新幹線）
       "JR-Central", "JR-Kyushu", "JR-Hokkaido",
       "JR-Shikoku",
-      "Fujikyu",
+      "FujisanrokuElectricRailway",
       "Kintetsu",
       "Hankyu",
       "Hanshin",

@@ -20,7 +20,7 @@ const expected = {
   Sangu: ['JR-Central', 'Sangu', '多気', '鳥羽'],
   Meisho: ['JR-Central', 'Meisho', '松阪', '伊勢奥津'],
   MinoAkasaka: ['JR-Central', 'MinoAkasaka', '大垣', '美濃赤坂'],
-  Fujikyu: ['Fujikyu', 'Fujikyu', '大月', '河口湖＜富士河口湖温泉郷＞']
+  Fujikyu: ['FujisanrokuElectricRailway', 'Fujikyu', '大月', '河口湖']
 };
 
 for (const [lineId, [operator, railwayCode, first, last]] of Object.entries(expected)) {
@@ -29,7 +29,9 @@ for (const [lineId, [operator, railwayCode, first, last]] of Object.entries(expe
   assert.equal(line.operator, operator, `${lineId} operator`);
   assert.equal(i18n[line.stations[0]].ja, first, `${lineId} first station`);
   assert.equal(i18n[line.stations.at(-1)].ja, last, `${lineId} last station`);
-  assert.deepEqual(data.lineStationOrder[lineId], line.stations, `${lineId} order index`);
+  const order = data.lineStationOrder[lineId];
+  const orderedStations = Array.isArray(order) ? order : Object.keys(order).sort((a, b) => order[a] - order[b]);
+  assert.deepEqual(orderedStations, line.stations, `${lineId} order index`);
   for (const station of line.stations) {
     assert.ok(i18n[station], `${lineId} station i18n missing: ${station}`);
     assert.ok(data.stationLines[station].includes(lineId), `${station} missing ${lineId} membership`);

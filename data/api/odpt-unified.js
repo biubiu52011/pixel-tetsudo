@@ -293,7 +293,7 @@
         "Sangu": "JR-Central",
         "Meisho": "JR-Central",
         "MinoAkasaka": "JR-Central",
-        "Fujikyu": "Fujikyu",
+        "Fujikyu": "FujisanrokuElectricRailway",
         "Agatsuma": "JR-East",
         "Arakawa": "Toei",
         "Asakusa": "Toei",

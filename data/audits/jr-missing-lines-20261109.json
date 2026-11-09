@@ -154,6 +154,8 @@
     }
   ],
   "databaseOnlyCentral": [
+  ],
+  "implementedCentralTopology": [
     "ChuoCentral",
     "Gotemba",
     "Iida",
@@ -224,6 +226,149 @@
       "priority": "P1",
       "implementedAt": "2026-11-09",
       "sourceLineId": "ChikuhiWest"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "TokaidoCentral",
+      "nameJa": "東海道本線（JR東海）",
+      "from": "Atami",
+      "to": "Maibara",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "TokaidoCentral"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "ChuoCentral",
+      "nameJa": "中央本線（JR東海）",
+      "from": "Nagoya",
+      "to": "Shiojiri",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "ChuoCentral"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "KansaiCentral",
+      "nameJa": "関西本線（JR東海）",
+      "from": "Nagoya",
+      "to": "Kameyama",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "KansaiCentral"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "KiseiCentral",
+      "nameJa": "紀勢本線（JR東海）",
+      "from": "Kameyama",
+      "to": "Shingu",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "KiseiCentral"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Takayama",
+      "nameJa": "高山本線",
+      "from": "Gifu",
+      "to": "Toyama",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Takayama"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Taketoyo",
+      "nameJa": "武豊線",
+      "from": "Obu",
+      "to": "Taketoyo",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Taketoyo"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Taita",
+      "nameJa": "太多線",
+      "from": "Tajimi",
+      "to": "Mino-Ota",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Taita"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Gotemba",
+      "nameJa": "御殿場線",
+      "from": "Kozu",
+      "to": "Numazu",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Gotemba"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Minobu",
+      "nameJa": "身延線",
+      "from": "Fuji",
+      "to": "Kofu",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Minobu"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Iida",
+      "nameJa": "飯田線",
+      "from": "Toyohashi",
+      "to": "Tatsuno",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Iida"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Sangu",
+      "nameJa": "参宮線",
+      "from": "Taki",
+      "to": "Toba",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Sangu"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "Meisho",
+      "nameJa": "名松線",
+      "from": "Matsusaka",
+      "to": "Ise-Okutsu",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Meisho"
+    },
+    {
+      "operator": "JR-Central",
+      "id": "MinoAkasaka",
+      "nameJa": "美濃赤坂線",
+      "from": "Ogaki",
+      "to": "Mino-Akasaka",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "MinoAkasaka"
     }
   ],
   "newNonJrLines": [

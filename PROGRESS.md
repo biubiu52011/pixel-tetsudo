@@ -9,9 +9,9 @@
 | 项目 | 当前状态 |
 | --- | --- |
 | 范围 | canonical 数据新增 JR-Central 13 条在来线：东海道、中央、关西、纪势、高山、武丰、太多、御殿场、身延、饭田、参宫、名松、美浓赤坂；另新增独立运营商 Fujikyu 的富士急行线。 |
-| 数据同步 | 站点顺序、`stationLines`、`lineStationOrder`、线路类型、站名多语言索引和 ODPT 运营商/铁路代码映射已同步；既有 JR-East 的东海道/中央本线身份保持独立。 |
-| 回归 | `tools/jr-central-fujikyu-line-contract.test.cjs` 通过；`node data/core/generate-all.js --check` 通过；生成数据同步、JS 语法和 `git diff --check` 通过。 |
-| 生产边界 | 已准备直接提交 `main`；尚未执行 GitHub Pages 发布或生产浏览器验收，推送本身不代表生产发布。 |
+| 数据同步 | 站点顺序、`stationLines`、`lineStationOrder`、线路类型、站名多语言索引和 ODPT 运营商/铁路代码映射已同步；既有 JR-East 的东海道/中央本线身份保持独立；远端并发提交的富士急行坐标、时长和拓扑审计未覆盖。 |
+| 回归 | 专项线路合同、远端富士急行/JR拓扑回归、JR线路颜色与身份、常规线路来源、架构、站点身份和路线时刻约束均通过；铁路/站名 compact 与 JS 生成物及页面缓存键已同步。`generate-all --check` 仍报告远端基线中与本批无关的两个 tourism 生成文件过期。 |
+| 生产边界 | 已整合最新远端 `main`，准备直接提交；尚未执行 GitHub Pages 发布或生产浏览器验收，推送本身不代表生产发布。 |
 
 ### SHINKANSEN-KYUSHU-402-DATED-PLAN-20261109 — 九州402A逐日车型与完整时刻待应用批次（READY）
 
