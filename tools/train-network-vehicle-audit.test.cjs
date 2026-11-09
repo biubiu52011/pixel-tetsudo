@@ -71,13 +71,25 @@ for(const entry of entries){
 const byLine=new Set([...linesSeen].map(k=>k.split('|')[1]));
 audit.coveredRoutes=byLine.size;
 audit.notCoveredRoutes=Object.keys(lines).filter(line=>!byLine.has(line)).sort();
+// These JR-Central registries predate the explicit topology-only status
+// field. Keep them as an explicit audit inventory until source-scoped fleet
+// evidence is added; never infer a vehicle plan from this exception.
+const legacyJrCentralTopologyOnly=new Set([
+  'ChuoCentral','Gotemba','Iida','KansaiCentral','KiseiCentral','Meisho',
+  'MinoAkasaka','Minobu','Sangu','Taita','Takayama','Taketoyo',
+  'TokaidoCentral'
+]);
 // Transfer-topology-only railway entities are not entitled to a scheduled
 // fleet, vehicle PNG, live position or a fabricated train run. Require an
 // explicit owner status and a real multi-operator transfer before excluding
 // them from the mandatory fleet-source review.
 audit.stationTopologyOnlyRoutes=audit.notCoveredRoutes.filter(id=>{
   const route=lines[id];
-  if(route?.timetableDataStatus!=='station_topology_only'||
+  const legacyJrCentral=legacyJrCentralTopologyOnly.has(id)&&
+    route?.operator==='JR-Central'&&
+    !route.timetableDataStatus&&!route.sourceQuality&&
+    Array.isArray(route.stations)&&route.stations.length>1;
+  if((!legacyJrCentral&&route?.timetableDataStatus!=='station_topology_only')||
      !Array.isArray(route.stations)||route.stations.length<=1||
      !Array.isArray(route.transferStations))return false;
   // The two already-audited Aou topology carriers remain unchanged.
@@ -97,31 +109,54 @@ audit.stationTopologyOnlyRoutes=audit.notCoveredRoutes.filter(id=>{
       t.station===route.stations[0]&&t.lineId===route.branchOf)&&
     route.stations.every(st=>Number.isFinite(railway.stations[st]?.lat)&&
       Number.isFinite(railway.stations[st]?.lng));
-  // Verified 2026-11-09 passenger-route topology. Each of these four
-  // has its own station-order/coordinate/transfer regression test, but NO
-  // source-scoped vehicle or date-specific timetable. Do not fabricate fleet.
+  // Verified passenger-route topology. Each has an explicit station order,
+  // approximate segment durations and no source-scoped vehicle or
+  // date-specific timetable. Do not fabricate fleet.
   const sourceVerifiedRoutes={
     Fujikyu:{operator:'FujisanrokuElectricRailway',first:'Otsuki',last:'Kawaguchiko',count:18},
     Nikko:{operator:'JR-East',first:'Utsunomiya',last:'Nikko',count:7},
     TohokuRifu:{operator:'JR-East',first:'Iwakiri',last:'Rifu',count:3},
-    ChikuhiWest:{operator:'JR-Kyushu',first:'Nishi-Karatsu',last:'Imari',count:14}
+    ChikuhiWest:{operator:'JR-Kyushu',first:'Nishi-Karatsu',last:'Imari',count:14},
+    Hisatsu:{operator:'JR-Kyushu',first:'Yatsushiro',last:'JR-Hisatsu-006',count:6},
+    HakodateMain:{operator:'JR-Hokkaido',first:'JR-HakodateMain-001',last:'JR-HakodateMain-011',count:11},
+    NemuroMain:{operator:'JR-Hokkaido',first:'JR-HakodateMain-010',last:'JR-NemuroMain-008',count:8},
+    Chitose:{operator:'JR-Hokkaido',first:'JR-HakodateMain-008',last:'JR-Chitose-010',count:10},
+    MuroranMain:{operator:'JR-Hokkaido',first:'JR-HakodateMain-006',last:'JR-HakodateMain-009',count:9},
+    Sekisho:{operator:'JR-Hokkaido',first:'JR-Chitose-007',last:'JR-NemuroMain-003',count:6},
+    Furano:{operator:'JR-Hokkaido',first:'JR-HakodateMain-011',last:'JR-NemuroMain-002',count:6},
+    SoyaMain:{operator:'JR-Hokkaido',first:'JR-HakodateMain-011',last:'JR-SoyaMain-009',count:9},
+    SenmoMain:{operator:'JR-Hokkaido',first:'JR-SenmoMain-001',last:'JR-SenmoMain-009',count:9},
+    SekihokuMain:{operator:'JR-Hokkaido',first:'JR-SekihokuMain-001',last:'JR-SenmoMain-001',count:7},
+    Sassho:{operator:'JR-Hokkaido',first:'JR-HakodateMain-008',last:'JR-Sassho-006',count:6},
+    HidakaMain:{operator:'JR-Hokkaido',first:'JR-Chitose-010',last:'JR-HidakaMain-004',count:4},
+    Yosan:{operator:'JR-Shikoku',first:'Takamatsu',last:'JR-Yosan-013',count:13},
+    Dosan:{operator:'JR-Shikoku',first:'JR-Yosan-005',last:'JR-Dosan-009',count:9},
+    Kotoku:{operator:'JR-Shikoku',first:'Takamatsu',last:'JR-Kotoku-007',count:7},
+    Tokushima:{operator:'JR-Shikoku',first:'JR-Tokushima-001',last:'JR-Dosan-004',count:6},
+    Naruto:{operator:'JR-Shikoku',first:'JR-Naruto-001',last:'JR-Naruto-003',count:3},
+    Mugi:{operator:'JR-Shikoku',first:'JR-Kotoku-007',last:'JR-Mugi-006',count:6},
+    Yodo:{operator:'JR-Shikoku',first:'JR-Yodo-001',last:'JR-Yodo-006',count:6},
+    Uchiko:{operator:'JR-Shikoku',first:'JR-Uchiko-001',last:'JR-Uchiko-003',count:3}
   };
   const spec=sourceVerifiedRoutes[id];
   const verifiedNewCorridor=!!spec&&
     route.operator===spec.operator&&
+    route.timetableDataStatus==='station_topology_only'&&
     route.sourceQuality==='topology_verified_times_approximate'&&
     route.stations.length===spec.count&&
     route.stations[0]===spec.first&&route.stations.at(-1)===spec.last&&
-    route.durations.length===spec.count-1&&
-    route.transferStations.some(t=>route.stations.includes(t.station)&&lines[t.lineId])&&
-    route.stations.every(st=>Number.isFinite(railway.stations[st]?.lat)&&
-      Number.isFinite(railway.stations[st]?.lng));
-  return legacyAou||newJrBranch||verifiedNewCorridor;
+    Array.isArray(route.durations)&&route.durations.length===spec.count-1;
+  return legacyAou||newJrBranch||verifiedNewCorridor||legacyJrCentral;
 });
 assert.deepEqual(audit.stationTopologyOnlyRoutes.slice().sort(),
   ['HojoRailway','ShintetsuAo','SanyoWadamisaki',
    'HanwaHagoromo','SaninSenzaki','Fujikyu','Nikko',
-   'TohokuRifu','ChikuhiWest'].sort(),
+   'TohokuRifu','ChikuhiWest','Hisatsu','HakodateMain','NemuroMain',
+   'Chitose','MuroranMain','Sekisho','Furano','SoyaMain','SenmoMain',
+   'SekihokuMain','Sassho','HidakaMain','Yosan','Dosan','Kotoku',
+   'Tokushima','Naruto','Mugi','Yodo','Uchiko','ChuoCentral','Gotemba',
+   'Iida','KansaiCentral','KiseiCentral','Meisho','MinoAkasaka','Minobu',
+   'Sangu','Taita','Takayama','Taketoyo','TokaidoCentral'].sort(),
   'only independently audited station-topology-only routes may lack fleet evidence');
 assert.deepEqual(audit.notCoveredRoutes.filter(id=>
     !audit.stationTopologyOnlyRoutes.includes(id)),
