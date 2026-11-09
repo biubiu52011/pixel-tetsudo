@@ -43335,7 +43335,7 @@
       "region": "Kansai Area",
       "type": "straight",
       "image": "../images/鉄道/JR西日本/近畿_I.png",
-      "durationTotalMin": 88,
+      "durationTotalMin": 75,
       "branchOf": null,
       "stations": [
         "Kakogawa",
@@ -43361,25 +43361,25 @@
         "Tanigawa"
       ],
       "durations": [
+        4,
         3,
+        3,
+        6,
+        4,
+        5,
         3,
         3,
         5,
-        3,
-        4,
-        3,
-        3,
-        4,
-        4,
-        2,
-        3,
-        2,
-        4,
-        2,
-        3,
-        3,
-        3,
         5,
+        2,
+        3,
+        2,
+        5,
+        2,
+        4,
+        4,
+        3,
+        6,
         3
       ],
       "throughServices": [],
@@ -43425,7 +43425,26 @@
           "KakogawaLine"
         ],
         "operatorGroup": "JR_WEST"
-      }
+      },
+      "durationReference": "https://web.pref.hyogo.lg.jp/area/n_harima/documents/ensenguide2026spring.pdf",
+      "durationReferenceScope": "2026 spring North-Harima official area guide: 25/21/29 minutes approximate per corridor. Inter-station durations are planning-only proportional weights; excludes transfer waits and does not prove train running times or positions.",
+      "durationSections": [
+        {
+          "from": "Kakogawa",
+          "to": "Aou",
+          "approxMinutes": 25
+        },
+        {
+          "from": "Aou",
+          "to": "Nishiwaki-Shi",
+          "approxMinutes": 21
+        },
+        {
+          "from": "Nishiwaki-Shi",
+          "to": "Tanigawa",
+          "approxMinutes": 29
+        }
+      ]
     },
     "Gakkentoshi": {
       "name": "Gakkentoshi",

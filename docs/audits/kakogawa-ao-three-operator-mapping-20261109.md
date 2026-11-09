@@ -51,6 +51,20 @@
 - <https://www.city.nishiwaki.lg.jp/kakukanogoannai/machizukuribu/koutsuuseisakuka/jrkakogawasen/31530.html>
 - 官方时刻表注明未经授权不得整页转载或加工，不能以自动拼凑补满 31 条空缺。
 
+## 2026-11-09 参考时长与官方来源入口（后续修复）
+
+- 兵库县北播磨地区《JR加古川线·神户电铁粟生线·北条铁道 沿线指南 2026春号》列出加古川—粟生约25分钟、粟生—西脇市约21分钟、西脇市—谷川约29分钟。
+- `durations` 当前三段加权为25/21/29分钟，总计75分钟；这些**仅是路径搜索的参考站间权重**，以既有比例重新分摊，**不代表每个车站的JR官方实际行车分数**。
+- 修改 `durationTotalMin` 由88至75，避免此前65分钟的路径搜索权重与88分钟线路配置矛盾。注意全程实际换乘等待可能大幅延长，不能称75分钟为任意日期的完整旅行时间。
+- 来源PDF：https://web.pref.hyogo.lg.jp/area/n_harima/documents/ensenguide2026spring.pdf
+- `trains.html#KakogawaLine` 已增加官方走行位置服务首页与JR西日本上/下行时刻表链接，四语言说明推算位置、部分覆盖和非停运证明。
+
+## 2026-11-09 新增官方列车来源
+
+- 1324S（土休日，西脇市→加古川）：官方单车来源 `65181`。补充1条日期验证的完整13站模板。
+- 1344S（每日，西脇市→加古川）：官方单车来源 `65471`。按平日、节假日拆成2条日期验证的完整13站模板。
+- SQL 现有101条模板，其中11条 `date_verified`、90条 `undated_not_current_verified`；节假日官方车次号码80个，已建立51份本地模板映射，仍缺29份完整停站模板（Inbound22、Outbound7）。不能基于编号相似度推断其他车次的实际到发。
+- `supabase/migrations/20261109110000_kakogawa_2611_two_more_official_inbound_clocks.sql` 已部署至 Supabase，并单独核查新增3条模板均13站、营业日分别11/19/11天。
 ## 验证方式
 
 ```bash

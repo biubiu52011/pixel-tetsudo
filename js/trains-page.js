@@ -156,6 +156,46 @@
       host.hidden = false;
       return;
     }
+    if (lineId === "KakogawaLine") {
+      // Official links only, never a substitute for an integrated live feed.
+      // Historical SQL clocks cannot prove all November 2026 services.
+      var kakogawaTexts = {
+        ja: ["加古川線：公式情報・時刻表",
+          "2026年11月の全列車・停車時刻はまだ検証できていません。地図に列車が表示されないことは運休を意味しません。表示中の列車位置は時刻表からの推定であり、JR西日本のリアルタイム観測ではありません。",
+          "JR西日本 列車走行位置", "公式時刻表（下り・谷川方面）", "公式時刻表（上り・加古川方面）"],
+        zh: ["加古川线：官方信息与时刻表",
+          "本站尚未核实2026年11月全部列车的停站时刻。地图没有列车不代表停运。本站显示的是经过日期核实的时刻表推算位置，并非JR西日本官方实时观测。",
+          "JR西日本列车走行位置", "官方时刻表（下行·谷川方向）", "官方时刻表（上行·加古川方向）"],
+        en: ["Kakogawa Line: official timetable sources",
+          "Not all November 2026 train stops are verified. Missing map markers do not imply cancellation. Any mapped timetable-based positions are estimates, not live JR-West observations.",
+          "JR-West train positions", "Official timetable (toward Tanigawa)", "Official timetable (toward Kakogawa)"],
+        ko: ["가코가와선: 공식 정보·시간표",
+          "2026년 11월 모든 열차의 정차 시각이 아직 검증되지 않았습니다. 지도에 표시되지 않는 것이 운휴를 뜻하지 않습니다. 표시되는 열차 위치는 시간표 기반 추정이며 JR서일본의 실시간 관측이 아닙니다.",
+          "JR서일본 열차 운행 위치", "공식 시간표(다니가와 방면)", "공식 시간표(가코가와 방면)"]
+      };
+      var kk = kakogawaTexts[window.currentLang] || kakogawaTexts.ja;
+      var kkTitle = document.createElement("h3");
+      kkTitle.textContent = kk[0];
+      var kkNote = document.createElement("p");
+      kkNote.className = "tp-evidence-note";
+      kkNote.textContent = kk[1];
+      host.append(kkTitle, kkNote);
+      [
+        ["https://www.train-guide.westjr.co.jp/", kk[2]],
+        ["https://timetable.jr-odekake.net/line-timetable/2455", kk[3]],
+        ["https://timetable.jr-odekake.net/line-timetable/2456", kk[4]]
+      ].forEach(function(entry, index) {
+        if (index) host.append(document.createTextNode(" · "));
+        var kkLink = document.createElement("a");
+        kkLink.href = entry[0];
+        kkLink.target = "_blank";
+        kkLink.rel = "noopener noreferrer";
+        kkLink.textContent = entry[1];
+        host.append(kkLink);
+      });
+      host.hidden = false;
+      return;
+    }
     if (lineId !== "Fukuchiyama") return;
     var texts = {
       ja: ["JR西日本・公式運行情報",

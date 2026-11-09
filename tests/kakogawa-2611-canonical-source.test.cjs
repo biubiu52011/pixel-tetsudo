@@ -118,3 +118,26 @@ test('Kakogawa 1324S and 1344S official November sources are date-scoped',()=>{
   assert.ok(sql.includes("'2026-11-23'::date"));
   assert.ok(!sql.includes("vehicle_plan_confirmed=true"));
 });
+
+test('Kakogawa planner weights match the sourced 2026 North-Harima corridor guide',()=>{
+  assert.equal(kakogawa.durationTotalMin,75);
+  assert.equal(kakogawa.durations.length,20);
+  assert.deepEqual([
+    kakogawa.durations.slice(0,6).reduce((s,v)=>s+v,0),
+    kakogawa.durations.slice(6,12).reduce((s,v)=>s+v,0),
+    kakogawa.durations.slice(12).reduce((s,v)=>s+v,0)
+  ],[25,21,29]);
+  assert.deepEqual(kakogawa.durationSections.map(s=>s.approxMinutes),[25,21,29]);
+  assert.match(kakogawa.durationReference,/web.pref.hyogo.lg.jp/);
+  assert.match(kakogawa.durationReferenceScope,/planning-only/);
+});
+
+test('Kakogawa official timetable links are references, not live API data',()=>{
+  const source=fs.readFileSync('js/trains-page.js','utf8');
+  assert.ok(source.includes('lineId === "KakogawaLine"'));
+  for(const url of ['https://www.train-guide.westjr.co.jp/',
+     'https://timetable.jr-odekake.net/line-timetable/2455',
+     'https://timetable.jr-odekake.net/line-timetable/2456'])
+    assert.ok(source.includes(url));
+  assert.ok(source.includes('未核实2026年11月全部列车'));
+});
