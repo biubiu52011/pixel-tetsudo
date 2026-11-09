@@ -274,7 +274,10 @@
   // current estimated train positions in explicitly scoped months.
   // This is separate from realtime Train observations and SQL storage.
   var SQL_POSITION_VERIFICATION_MONTHS = Object.freeze({
-    KakogawaLine: Object.freeze(["2026-11"])
+    KakogawaLine: Object.freeze(["2026-11"]),
+    // 播但線: legacy SQL has 0 current-date-verified sources and no
+    // inbound electric templates. A star requires date proof in every month.
+    Bantan: Object.freeze(["*"])
   });
 
   // ========== ODPT 站 ID 别名映射 ==========

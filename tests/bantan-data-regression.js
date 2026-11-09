@@ -44,3 +44,27 @@ const sum=segments.reduce((a,b)=>a+b,0);
 assert(segments.every(n=>n>0.3&&n<12), 'A non-local or duplicate station coordinate was introduced');
 assert(sum>55&&sum<65.7, 'Straight-line segment total must be plausible against 65.7km rail length');
 console.log('Bantan PASS: 18 stations, maps, J wine-red, EN, transfer, '+sum.toFixed(2)+'km straight-line total');
+
+// Asterisks on the shared date-verification gate are intentional: unlike
+// 2026-11-only Kakogawa, Bantan's imported sources are undated in every month.
+// No timetable source authorizes a current train position solely by its number.
+const fs = require('node:fs');
+const vm = require('node:vm');
+const root = path.resolve(__dirname, '..');
+const runtimeSource = fs.readFileSync(path.join(root, 'data/core/runtime-config.js'), 'utf8');
+const window = {};
+vm.runInNewContext(runtimeSource, { window, console });
+assert.deepEqual(Array.from(window.RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS.Bantan), ['*']);
+assert.deepEqual(Array.from(window.RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS.KakogawaLine), ['2026-11']);
+const estimator = fs.readFileSync(path.join(root, 'js/train-position-estimator.js'), 'utf8');
+assert.ok(estimator.includes('verifiedSqlMonths.indexOf("*")>=0'));
+assert.ok(estimator.includes('requireSqlDateProof && tt._timetableDateVerified!==true'));
+const page = fs.readFileSync(path.join(root, 'js/trains-page.js'), 'utf8');
+for (const link of [
+  'https://www.train-guide.westjr.co.jp/bantan.html',
+  'https://timetable.jr-odekake.net/line-timetable/2443',
+  'https://timetable.jr-odekake.net/line-timetable/2442'
+]) assert.ok(page.includes(link), 'Missing official Bantan link: '+link);
+for (const key of ['ja:', 'zh:', 'en:', 'ko:'])
+  assert.ok(page.includes(key), 'Bantan official-source notice must be multilingual');
+console.log('Bantan timetable-source PASS: archived SQL is not current-position evidence; official source links exist');

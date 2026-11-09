@@ -27,3 +27,20 @@ Some JR West train-guide segments cannot show exact observed position. Do not pr
 ## Remaining work
 Reconcile `public.stations` SQL geodata to canonical values (matching station IDs only, no other rows).
 For inbound electric services, ingest complete train-stop clock data from a current official source with correct calendar and verified operating rules. Number evidence alone must remain nonpositional. Historical records are NOT automatically certified as November 2026.
+
+## Follow-up: November source safety gate (2026-11-09)
+- Confirmed SQL by joining `manual_timetable_templates` to `train_timetable_source_resolution`: **all 119** Bantan source templates have `timetable_validity='undated_not_current_verified'`. Both inbound calendar sets have **zero** electric `M` trains.
+- JR West's 2026-11-05 published up-direction table lists 5600M, 5602M, 5604M etc., so the legacy SQL is incomplete. This **does not** validate every stop clock, present operating date or formation; never mirror the outbound 5601M etc. into an inbound timetable.
+- The November 2026 JR timetable page expressly forbids unauthorized reproduction/reformatting of its timetable data. No bulk copying of the restricted published clocks into SQL or the static site was performed. A licensed/reuse-permitted machine-readable dataset or permission is required before full ingest.
+- `RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS.Bantan=['*']` now uses the shared `train-position-estimator` date-proof gate. Undated legacy SQL positions are hidden for any month, while independently dated/verified SQL and realtime sources remain eligible. All historical SQL rows remain intact for audit.
+- `trains-page.js` supplies direct outbound/inbound official timetable and official train position links, and expressly states that **no displayed train** does not mean a service cancellation. The JR West guide itself warns that some positions/trains are incomplete or inaccurate.
+- No new paid API, local server, manual train-number guess, unverified train PNG, duplicate route table or PR is introduced.
+
+Official reference URLs:
+- Published upper-direction timetable: https://timetable.jr-odekake.net/line-timetable/2443
+- Published lower-direction timetable: https://timetable.jr-odekake.net/line-timetable/2442
+- JR West train guide: https://www.train-guide.westjr.co.jp/bantan.html
+- Timetable copyright/conditions: https://timetable.jr-odekake.net/train-timetable/240631?date=20261101
+
+### Remaining requirement
+To populate actual two-way time-based map positions, import a dataset for which the site owner has reuse permission or a documented API license, mapping each row to an exact public train number, station order, service calendar, effective date, publication revision and stop arrival/departure. Mark `timetable_date_verified` only when these facts are validated. The current source records do not meet this requirement.

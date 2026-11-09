@@ -72,6 +72,7 @@ jobs:
           node --test tests/station-identity-ambiguity.test.cjs
           node --test tests/station-id-kyushu-2611.test.cjs
           node --test tests/kakogawa-2611-canonical-source.test.cjs
+          node tests/bantan-data-regression.js
           node --test tests/ao-three-railway-transfer-map.test.cjs
           node --test tests/route-timetable-scoped-station-id.test.cjs
       - name: Upload artifact

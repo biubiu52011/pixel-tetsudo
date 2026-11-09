@@ -115,6 +115,47 @@
     if (!host) return;
     host.replaceChildren();
     host.hidden = true;
+    if (lineId === "Bantan") {
+      // The archived SQL has no current-date-verified inbound electric runs.
+      // This is source-only navigation, NEVER an embedded, copied or inferred
+      // realtime feed. JR-West itself warns of incompletely mapped segments.
+      var bantanTexts = {
+        ja: ["播但線：公式データの確認先",
+          "当サイトの旧SQL時刻は2026年11月の全列車・全駅時刻として未検証です。列車が地図に表示されないことは、運休を意味しません。JR西日本の走行位置表示にも、一部の列車や位置が表示されない区間があります。",
+          "公式列車走行位置", "公式時刻表（上り・姫路方面）", "公式時刻表（下り・和田山方面）"],
+        zh: ["播但线：官方数据入口",
+          "本站历史SQL时刻表尚未核实为2026年11月的完整班次。地图不显示列车不代表停运。JR西日本官方走行位置页面本身也有部分列车不显示、部分区间位置不准确的限制。",
+          "查看官方列车走行位置", "官方时刻表（上行·姬路方向）", "官方时刻表（下行·和田山方向）"],
+        en: ["Bantan Line: official sources",
+          "Historical SQL stop times are not verified as the complete November 2026 timetable. A missing map marker does not mean cancellation. JR-West also warns that some trains and segments may not have accurate positions.",
+          "Official train positions", "Official timetable (toward Himeji)", "Official timetable (toward Wadayama)"],
+        ko: ["반탄선: 공식 정보",
+          "기존 SQL 시간표는 2026년 11월의 전체 열차 운행 자료로 검증되지 않았습니다. 지도에 열차가 표시되지 않는 것이 운휴를 뜻하지는 않습니다. JR서일본의 공식 위치 안내에도 일부 미표시·오차 구간이 있습니다.",
+          "공식 열차 운행 위치", "공식 시간표(히메지 방면)", "공식 시간표(와다야마 방면)"]
+      };
+      var labels = bantanTexts[window.currentLang] || bantanTexts.ja;
+      var heading = document.createElement("h3");
+      heading.textContent = labels[0];
+      var warning = document.createElement("p");
+      warning.className = "tp-evidence-note";
+      warning.textContent = labels[1];
+      host.append(heading, warning);
+      [
+        ["https://www.train-guide.westjr.co.jp/bantan.html", labels[2]],
+        ["https://timetable.jr-odekake.net/line-timetable/2443", labels[3]],
+        ["https://timetable.jr-odekake.net/line-timetable/2442", labels[4]]
+      ].forEach(function(entry, index) {
+        if (index) host.append(document.createTextNode(" · "));
+        var link = document.createElement("a");
+        link.href = entry[0];
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = entry[1];
+        host.append(link);
+      });
+      host.hidden = false;
+      return;
+    }
     if (lineId !== "Fukuchiyama") return;
     var texts = {
       ja: ["JR西日本・公式運行情報",

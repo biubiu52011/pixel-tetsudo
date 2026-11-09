@@ -735,10 +735,13 @@
         var verifiedSqlMonths=window.RuntimeConfig &&
           window.RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS &&
           window.RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS[lineId];
+        // "*" means every service month. The historical SQL stops remain
+        // archived, but cannot claim current positions without dated proof.
+        var requireSqlDateProof=Array.isArray(verifiedSqlMonths) &&
+          (verifiedSqlMonths.indexOf("*")>=0 ||
+           verifiedSqlMonths.indexOf(String(serviceDate).slice(0,7))>=0);
         if(tt._positionSource==="supabase-train-run" &&
-           Array.isArray(verifiedSqlMonths) &&
-           verifiedSqlMonths.indexOf(String(serviceDate).slice(0,7))>=0 &&
-           tt._timetableDateVerified!==true) continue;
+           requireSqlDateProof && tt._timetableDateVerified!==true) continue;
         // Yamagata local-only 2611: verify the published ordinary-train
         // number, 35-station scope and calendar before projecting historical
         // SQL clocks. This proves the NUMBER, not current stop times/stock.
