@@ -1273,7 +1273,7 @@ var CANONICAL_VEHICLES = {
   "jr-west-120-kansai-kan": { displayName: "JR西日本キハ120系（関西地区・KAN）", iconName: "JR西日本キハ120系（関西地区・KAN）", asset: "../images/列车/JR西日本/JR西日本_120系_関西地区_KAN.png", lineIds: ["KansaiMain"], lineAliases: { KansaiMain: ["キハ120系"] }, aliases: ["JR西日本120系（関西地区・KAN）", "キハ120系（関西本線）"] },
   "jr-west-122": { displayName: "JR西日本キハ122系", iconName: "JR西日本キハ122系", asset: "../images/列车/JR西日本/JR西日本_122系.png", lineIds: ["HimejiLine"], lineAliases: { HimejiLine: ["キハ122系"] }, aliases: ["JR西日本122系", "キハ122系（姫新線）"] },
   "jr-west-187": { displayName: "JR西日本187系", iconName: "JR西日本187系", asset: "../images/列车/JR西日本/JR西日本_187系.png", lineIds: ["SaninMain"], aliases: ["187系"] },
-  "jr-west-189": { displayName: "JR西日本キハ189系", iconName: "JR西日本キハ189系", asset: "../images/列车/JR西日本/JR西日本_キハ189系.png", lineIds: ["TokaidoKansai", "SaninMain"], aliases: ["キハ189系"] },
+  "jr-west-189": { displayName: "JR西日本キハ189系", iconName: "JR西日本キハ189系", asset: "../images/列车/JR西日本/JR西日本_キハ189系.png", lineIds: ["TokaidoKansai", "SaninMain", "Bantan"], aliases: ["キハ189系"] },
   "jr-west-189-hanaakari": { displayName: "JR西日本キハ189系（はなあかり）", iconName: "JR西日本キハ189系（はなあかり）", asset: "../images/列车/JR西日本/JR西日本_キハ189系_はなあかり.png", lineIds: ["SaninMain"], aliases: [] },
   "jr-west-205-hanwa-hn2": { displayName: "JR西日本205系（阪和線・HN2）", iconName: "JR西日本205系（阪和線・HN2）", asset: "../images/列车/JR西日本/JR西日本_205系_阪和線_HN2.png", lineIds: ["Hanwa"], lineAliases: { Hanwa: ["205系"] }, aliases: [] },
   // 207 model identity does not prove NK/Y2 appearance or physical formation.
@@ -1323,7 +1323,7 @@ var CANONICAL_VEHICLES = {
   "jr-west-kiha40-oog": { displayName: "JR西日本キハ40系（OOG）", iconName: "JR西日本キハ40系（OOG）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_OOG.png", lineIds: ["SaninMain"], aliases: [] },
   "jr-west-kiha40-oor": { displayName: "JR西日本キハ40系（OOR）", iconName: "JR西日本キハ40系（OOR）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_OOR.png", lineIds: ["SaninMain"], aliases: [] },
   "jr-west-kiha40-uym": { displayName: "JR西日本キハ40系（UYM）", iconName: "JR西日本キハ40系（UYM）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_UYM.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha41": { displayName: "JR西日本キハ41系", iconName: "JR西日本キハ41系", asset: "../images/列车/JR西日本/JR西日本_キハ41系.png", lineIds: ["SaninMain"], aliases: [] },
+  "jr-west-kiha41": { displayName: "JR西日本キハ41系", iconName: "JR西日本キハ41系", asset: "../images/列车/JR西日本/JR西日本_キハ41系.png", lineIds: ["SaninMain", "Bantan"], aliases: [] },
   "jr-west-kiha47-sak": { displayName: "JR西日本キハ47系（SAK）", iconName: "JR西日本キハ47系（SAK）", asset: "../images/列车/JR西日本/JR西日本_キハ47系_SAK.png", lineIds: ["SaninMain"], aliases: [] },
   "jr-west-681-ft": { displayName: "JR西日本681系（FT）", iconName: "JR西日本681系（FT）", asset: "../images/列车/JR西日本/JR西日本_681系_FT.png", lineIds: ["TokaidoKansai", "Kosei"], aliases: [] },
   "jr-west-683": { displayName: "JR西日本683系", iconName: "JR西日本683系", asset: "../images/列车/JR西日本/JR西日本_683系.png", lineIds: ["TokaidoKansai", "Kosei"], aliases: ["683系"] },

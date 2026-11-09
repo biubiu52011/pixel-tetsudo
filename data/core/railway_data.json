@@ -11077,12 +11077,12 @@
       "lng": 135.568384
     },
     "Kyou-Kuchi": {
-      "lat": 34.83,
-      "lng": 134.69
+      "lat": 34.834765,
+      "lng": 134.70544
     },
     "Nozato": {
-      "lat": 34.84,
-      "lng": 134.68
+      "lat": 34.8561509,
+      "lng": 134.7113322
     },
     "To-Hori": {
       "lat": 34.866256,
@@ -11113,24 +11113,24 @@
       "lng": 134.754637
     },
     "Shinno": {
-      "lat": 33.846813,
-      "lng": 134.600155
+      "lat": 35.0501972,
+      "lng": 134.7524889
     },
     "Teramae": {
       "lat": 35.065099,
       "lng": 134.742991
     },
     "Hase": {
-      "lat": 34.9,
-      "lng": 134.65
+      "lat": 35.116917,
+      "lng": 134.747944
     },
     "Ikuno": {
       "lat": 35.163301,
       "lng": 134.789208
     },
     "Arai": {
-      "lat": 37.026815,
-      "lng": 138.255485
+      "lat": 35.2365007,
+      "lng": 134.7949974
     },
     "Ao-Kura": {
       "lat": 35.267113,
@@ -43140,12 +43140,12 @@
       "nameEn": "Bantan Line",
       "nameJa": "播但線",
       "code": "Bantan",
-      "color": "#8b4513",
+      "color": "#b1184b",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
       "image": "../images/鉄道/JR西日本/近畿_J.png",
-      "durationTotalMin": 85,
+      "durationTotalMin": 80,
       "branchOf": null,
       "stations": [
         "Himeji",
@@ -43168,23 +43168,23 @@
         "Wadayama"
       ],
       "durations": [
+        3,
+        2,
+        3,
+        3,
+        3,
+        2,
+        4,
+        4,
+        4,
+        3,
+        2,
+        9,
+        11,
+        10,
         5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5,
-        5
+        6,
+        6
       ],
       "throughServices": [],
       "transferStations": [
@@ -43199,6 +43199,18 @@
           "lineId": "SanyoMain",
           "type": "in",
           "note": "同站换乘"
+        },
+        {
+          "station": "Himeji",
+          "lineId": "HimejiLine",
+          "type": "in/out",
+          "note": "姫路駅：姫新線（站内换乘）"
+        },
+        {
+          "station": "Wadayama",
+          "lineId": "SaninMain",
+          "type": "in/out",
+          "note": "和田山駅：山陰本線（站内换乘）"
         }
       ],
       "nameZh": "播但线",
@@ -43209,7 +43221,7 @@
         "nameZh": "播但线",
         "nameEn": "Bantan Line",
         "nameKo": "반탄선",
-        "color": "#8b4513",
+        "color": "#b1184b",
         "code": "J",
         "icon": "../images/鉄道/JR西日本/近畿_J.png",
         "order": 10,
