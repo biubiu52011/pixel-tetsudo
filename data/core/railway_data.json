@@ -43427,6 +43427,12 @@
           "lineId": "HojoRailway",
           "type": "in",
           "note": "同站跨运营商换乘（检票规则请参考官方指引）"
+        },
+        {
+          "station": "Tanigawa",
+          "lineId": "Fukuchiyama",
+          "type": "in/out",
+          "note": "谷川駅：福知山線へ乗換"
         }
       ],
       "nameZh": "加古川线",

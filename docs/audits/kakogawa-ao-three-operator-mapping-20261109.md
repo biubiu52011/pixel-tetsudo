@@ -26,13 +26,30 @@
 - 两条新线的 `timetableDataStatus` 为 `station_topology_only`；SQL `timetable_api_enabled=false`, `realtime_position_api_enabled=false`, `sql_planned_fallback_enabled=false`。没有证据时不补车型，不绘制假列车，也不使用错误图标。
 - 神鉄20站和北条线8站在 Supabase `line_stations` 与 canonical JSON 对齐，新增独立站 ID 26 个。车辆全网审计明确保留其未覆盖车型状态，不放宽其他线路的来源审核。
 
-## JR 西脇市→加古川剩余映射边界
+## JR 加古川线修正与剩余证据边界（2026-11-09）
 
-- 2026-11-07（周六）官方西脇市站发往粟生/加古川方向有18个发车班次；官方核对页：<https://timetable.jr-odekake.net/station-timetable/2947036001?date=20261107>。
-- SQL 当前有两个西脇市起始的列车番号：`1338S`（发往加古川）及 `2329S`（发往谷川），每营业日历各一份。因此该方向有 **1 个已存、17 个缺少完整停站证据**。不能把 `2329S` 当成发往加古川。
-- `published_timetable_coverage_audit` 已记为 `sparse_review`；完整车次时间、现行生效修订日与车辆来源未验证前，不在 `manual_timetable_templates` 创造其余17条行程，更不能以其他旧车次号直接匹配。
-- 先检索现有 `manual_timetable_templates` + `train_timetables` + `train_timetable_source_resolution`；按官方**编号+全部停站时间+营业日**匹配后才能入 SQL。不要一次性复制无授权的完整时刻表到数据库。
-- 同时继续维护此前已核实的西脇市—谷川2026年11月19、20、24、25、26日部分区间停运；千万不可误取消西脇市以南的正常段。
+- 路线记号保持 `I`，canonical `color` 与 `presentation.color` 统一为 `#00A98F`（青绿色/ターコイズ）；依据 JR 西日本近畿官方青绿色配色的网页近似值（非官方精确色票）。
+- `Tanigawa`（谷川）共享同一 canonical 车站 ID，补全加古川线 → 福知山线的显式换乘定义，勿新增假站或站外通路。
+- 修正韩语：厄神 `야쿠진`、新西脇 `신니시와키`、日本へそ公園 `니혼헤소코엔`。
+- 静态 `durationTotalMin=88` 与 20 段 `durations` 之和 65 分钟使用不同参考口径，尚不能直接互换；保留现值，不伪造全线同一班次运行秒表或换乘等待。
+
+### Supabase 实际数据库核查
+
+- `manual_timetable_templates` 有 98 条：平日 Inbound 11/Outbound 38，周末节假日 Inbound 16/Outbound 33；90 条属于 `undated_not_current_verified`、8 条属于 `date_verified`。
+- 2026-11-08 JR 西日本公开节假日两方向共有 80 个车次号码。SQL 对应 49 个号码；剩余 31 个仍缺完整停站模板（Inbound 24，Outbound 7）。**编号映射并不等于全程现行时刻已验证**。
+- 西脇市始发、前往加古川的周末节假日 SQL 模板目前有 8 条，其中 7 条具备当月日期验证、1 条 `1338S` 仅为未核实历史来源。不得将 `2329S`（西脇市→谷川）误算作加古川方向。
+- 新增配置 `RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS`，加古川线限定 2026-11：仅 `_timetableDateVerified===true` 的 SQL 计划允许生成**推算**列车图标；历史 SQL 仍可保留在数据库供来源审计。官方实时位置不由此配置推断。
+- 官方西脇市—谷川施工停运 2026-11-19/20/24/25/26 每天 4 条，数据库现有 `published_railway_date_exceptions` 共 20 行。该规则不能扩大到西脇市以南。
+- 数据库目前加古川线 98 条模板没有已登记的逐车车型证明；103系3550番台与125系为线路车型背景，不能以播但线103系 PNG 代表真实车辆。
+- 旧记录中「仅1个西脇市起始模板、缺17条」是先前快照，现已过期；以上以本次实际数据库查询为准。
+
+### 官方来源
+
+- <https://timetable.jr-odekake.net/line-timetable/2455?date=20261108>
+- <https://timetable.jr-odekake.net/line-timetable/2456?date=20261108>
+- <https://timetable.jr-odekake.net/train-timetable/65411?date=20261128>（1340S 每天运行）
+- <https://www.city.nishiwaki.lg.jp/kakukanogoannai/machizukuribu/koutsuuseisakuka/jrkakogawasen/31530.html>
+- 官方时刻表注明未经授权不得整页转载或加工，不能以自动拼凑补满 31 条空缺。
 
 ## 验证方式
 

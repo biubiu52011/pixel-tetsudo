@@ -270,6 +270,13 @@
      "Nippori_Toneri": true
   });
 
+  // Dated SQL position provenance: reject undated legacy templates as
+  // current estimated train positions in explicitly scoped months.
+  // This is separate from realtime Train observations and SQL storage.
+  var SQL_POSITION_VERIFICATION_MONTHS = Object.freeze({
+    KakogawaLine: Object.freeze(["2026-11"])
+  });
+
   // ========== ODPT 站 ID 别名映射 ==========
 
   /**
@@ -453,6 +460,7 @@
     JR_EAST_TRAIN_LOCATION_SCOPE: JR_EAST_TRAIN_LOCATION_SCOPE,
     REALTIME_POSITION_POLICY: REALTIME_POSITION_POLICY,
     REALTIME_POSITION_API_LINES: REALTIME_POSITION_API_LINES,
+    SQL_POSITION_VERIFICATION_MONTHS: SQL_POSITION_VERIFICATION_MONTHS,
     // ODPT 站 ID 别名
     STATION_ALIAS: STATION_ALIAS,
     STATION_ALIAS_BY_RAILWAY: STATION_ALIAS_BY_RAILWAY,
