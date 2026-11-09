@@ -41,6 +41,8 @@ jobs:
         run: node --test tests/train-overview-dom.test.cjs
       - name: Verify operator filter labels
         run: node --test tests/operator-labels.test.cjs
+      - name: Verify JR East Yamanote official train-number evidence batch
+        run: node --test tests/jreast-yamanote-2611-official-number-evidence.test.cjs
       - name: Verify JR-West JR Tōzai read-only source evidence
         run: node --test tests/jrwest-tozai-evidence-feed-runtime.test.cjs
       - name: Verify geometry reuse only on position snapshots

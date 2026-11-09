@@ -4,6 +4,17 @@
 
 # Pixel Tetsudo 工程进度
 
+### JR-TIMETABLE-COMPLETENESS-20261109 — 计划时刻表完整性审计与山手线官方番号首批补全（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 只读审计 | 对生产 Supabase 的 `railway_lines`、`manual_timetable_templates`、`manual_timetable_template_stops`、`published_train_number_evidence` 做交叉核对。JR东海 14 条注册线中 13 条没有计划模板；JR东日本 90 条中 2 条没有模板（日光、东北本线利府支线）；JR九州 26 条中 6 条没有模板；JR西日本 33 条中 8 条没有模板。JR北海道当前已登记的北海道新干线有计划；JR四国尚未进入生产 runtime `railway_lines` 计划审计范围，继续保持拓扑-only边界。 |
+| 完整性基线 | 山手线 1,037 条模板全部有 4 条以上站点事件，序号从 0 开始、无重复序号、无空时刻或空站点；四个 2026-11 官方 JR East 页面列车番号集合分别为 255/267/255/260 条，和 SQL 模板集合逐组一致。 |
+| 首批补全 | 新增 `20261109113000_jreast_yamanote_2611_official_number_evidence.sql`：为山手线 1,037 条模板登记官方 G 列车番号来源，并写入四组 `timetable_number_verifications`。只登记番号集合证据，不推断运行日、站点时刻、直通关系或实际车底。 |
+| 回归 | 新增山手线批次测试 3/3 通过；402A、山阳 Kodama 和运营商筛选回归 11/11 通过；Edge Function 与相关 JS 语法检查通过。已将山手线测试接入 static CI。 |
+| 生产边界 | Supabase 仅做只读查询，未应用迁移、未部署 Edge、未发布 Pages。待后续逐批核验官方来源后再申请生产写入。 |
+| 下一步 | 依官方可核验程度继续处理 JR-East 常磐/中央等已有完整模板但缺番号证据的线路；对 JR-Central 13 条、JR-West 8 条、JR-Kyushu 6 条空模板线路先分别建立官方源可得性清单，不用服务名或邻线番号猜测。 |
+
 ### JR-HOKKAIDO-SHIKOKU-HISATSU-20261109 — 剩余 JR 线路拓扑与展示色补齐（LOCAL-COMPLETE）
 
 | 项目 | 当前状态 |
