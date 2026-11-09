@@ -52741,7 +52741,8 @@
     "Kozu": [
       "ShonanShinjuku",
       "Tokaido",
-      "TokaidoMain"
+      "TokaidoMain",
+      "Gotemba"
     ],
     "Odawara": [
       "ShonanShinjuku",
@@ -52923,7 +52924,8 @@
       "Tokaido",
       "Ito",
       "TokaidoMain",
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Ayase": [
       "JobanLocal",
@@ -53418,7 +53420,8 @@
       "Oedo"
     ],
     "Kikukawa": [
-      "Shinjuku"
+      "Shinjuku",
+      "TokaidoCentral"
     ],
     "Sumiyoshi": [
       "Shinjuku",
@@ -53534,7 +53537,8 @@
       "Chiyoda"
     ],
     "Akasaka": [
-      "Chiyoda"
+      "Chiyoda",
+      "Fujikyu"
     ],
     "Nijubashimae": [
       "Chiyoda"
@@ -57578,7 +57582,8 @@
     "Shiojiri": [
       "ChuoMain",
       "ChuoTatsuno",
-      "Shinonoi"
+      "Shinonoi",
+      "ChuoCentral"
     ],
     "Hirooka": [
       "Shinonoi"
@@ -59197,7 +59202,8 @@
       "ChuoMain"
     ],
     "Kofu": [
-      "ChuoMain"
+      "ChuoMain",
+      "Minobu"
     ],
     "Shiozaki": [
       "ChuoMain"
@@ -59404,7 +59410,8 @@
       "ChuoTatsuno"
     ],
     "Tatsuno": [
-      "ChuoTatsuno"
+      "ChuoTatsuno",
+      "Iida"
     ],
     "Ono": [
       "ChuoTatsuno"
@@ -59732,7 +59739,8 @@
       "Nikkoku"
     ],
     "Okuwa": [
-      "Nikkoku"
+      "Nikkoku",
+      "ChuoCentral"
     ],
     "Shin-Takatoku": [
       "Nikkoku"
@@ -59862,7 +59870,8 @@
       "Odawara"
     ],
     "Ashigara": [
-      "Odawara"
+      "Odawara",
+      "Gotemba"
     ],
     "Hitoichiba": [
       "Oito"
@@ -60196,7 +60205,8 @@
       "HokurikuShinkansen"
     ],
     "Toyama": [
-      "HokurikuShinkansen"
+      "HokurikuShinkansen",
+      "Takayama"
     ],
     "Shin-Takaoka": [
       "HokurikuShinkansen"
@@ -60235,35 +60245,46 @@
       "HokkaidoShinkansen"
     ],
     "Mishima": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Shin-Fuji": [
       "TokaidoShinkansen"
     ],
     "Shizuoka": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Kakegawa": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Hamamatsu": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Toyohashi": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral",
+      "Iida"
     ],
     "Mikawa-Anjo": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Nagoya": [
       "TokaidoShinkansen",
-      "KansaiMain"
+      "KansaiMain",
+      "TokaidoCentral",
+      "ChuoCentral",
+      "KansaiCentral"
     ],
     "Gifu-Hashima": [
       "TokaidoShinkansen"
     ],
     "Maibara": [
-      "TokaidoShinkansen"
+      "TokaidoShinkansen",
+      "TokaidoCentral"
     ],
     "Kyoto": [
       "TokaidoShinkansen",
@@ -60857,7 +60878,8 @@
       "SanyoMain"
     ],
     "Shimada": [
-      "SanyoMain"
+      "SanyoMain",
+      "TokaidoCentral"
     ],
     "Hikari": [
       "SanyoMain"
@@ -60929,55 +60951,72 @@
       "KagoshimaMain"
     ],
     "Hatta": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Haruda": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Kanie": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Hisakazu": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Yatomi": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Nagashima": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Kuwana": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Asahi-Kansai": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Tomita": [
       "KansaiMain"
     ],
     "Tomita-Hama": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Yokkaichi": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Minami-Yokkaichi": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Kawarada": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Kawano": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Kasa-Tou": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Ida-Kawa": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral"
     ],
     "Kameyama": [
-      "KansaiMain"
+      "KansaiMain",
+      "KansaiCentral",
+      "KiseiCentral"
     ],
     "Kan": [
       "KansaiMain"
@@ -61041,7 +61080,8 @@
       "KansaiMain"
     ],
     "Kashiwara": [
-      "KansaiMain"
+      "KansaiMain",
+      "TokaidoCentral"
     ],
     "Shiki-Kansai": [
       "KansaiMain"
@@ -62288,7 +62328,8 @@
       "KagoshimaMain"
     ],
     "Arao-Kumamoto": [
-      "KagoshimaMain"
+      "KagoshimaMain",
+      "MinoAkasaka"
     ],
     "Minami-Arao": [
       "KagoshimaMain"
@@ -63296,7 +63337,8 @@
       "Ako"
     ],
     "Shingu": [
-      "KiseiWest"
+      "KiseiWest",
+      "KiseiCentral"
     ],
     "Miwasaki": [
       "KiseiWest"
@@ -69956,7 +69998,21 @@
     "Enoshima": "local",
     "Hakodate2": "local",
     "Hakodate5": "local",
-    "OitoWest": "local"
+    "OitoWest": "local",
+    "TokaidoCentral": "local",
+    "ChuoCentral": "local",
+    "KansaiCentral": "local",
+    "KiseiCentral": "local",
+    "Takayama": "local",
+    "Taketoyo": "local",
+    "Taita": "local",
+    "Gotemba": "local",
+    "Minobu": "local",
+    "Iida": "local",
+    "Sangu": "local",
+    "Meisho": "local",
+    "MinoAkasaka": "local",
+    "Fujikyu": "local"
   },
   "through_fallback": {
     "SotetsuDirect": {

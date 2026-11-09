@@ -51,7 +51,7 @@
     "Keio", "Odakyu", "EnoshimaElectric", "Seibu", "Tobu", "Tokyu",
     "Keikyu", "Keisei", "Sotetsu",
     "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
-    "Meitetsu", "Nishitetsu"
+    "Meitetsu", "Nishitetsu", "Fujikyu"
   ];
 
   // ===== 2. 基础分类与排序键 =====
