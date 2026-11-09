@@ -9,152 +9,8 @@
     "shikoku": "https://www.jr-shikoku.co.jp/01_trainbus/jikoku/",
     "central": "https://jr-central.co.jp/"
   },
-  "missingFrontend": [
-    {
-      "operator": "JR-Kyushu",
-      "id": "Hisatsu",
-      "nameJa": "肥薩線",
-      "from": "Yatsushiro",
-      "to": "Hayato",
-      "status": "partial_service_closure_requires_segment_model",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "HakodateMain",
-      "nameJa": "函館本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "NemuroMain",
-      "nameJa": "根室本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "Chitose",
-      "nameJa": "千歳線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "MuroranMain",
-      "nameJa": "室蘭本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "Sekisho",
-      "nameJa": "石勝線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "Furano",
-      "nameJa": "富良野線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "SoyaMain",
-      "nameJa": "宗谷本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "SenmoMain",
-      "nameJa": "釧網本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "SekihokuMain",
-      "nameJa": "石北本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "Sassho",
-      "nameJa": "札沼線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Hokkaido",
-      "id": "HidakaMain",
-      "nameJa": "日高本線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Yosan",
-      "nameJa": "予讃線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Dosan",
-      "nameJa": "土讃線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Kotoku",
-      "nameJa": "高徳線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Tokushima",
-      "nameJa": "徳島線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Naruto",
-      "nameJa": "鳴門線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Mugi",
-      "nameJa": "牟岐線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Yodo",
-      "nameJa": "予土線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Shikoku",
-      "id": "Uchiko",
-      "nameJa": "内子線",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    }
-  ],
-  "databaseOnlyCentral": [
-  ],
+  "missingFrontend": [],
+  "databaseOnlyCentral": [],
   "implementedCentralTopology": [
     "ChuoCentral",
     "Gotemba",
@@ -191,7 +47,9 @@
     "Do not create train runs, vehicle PNG, or simulated positions from topology-only routes.",
     "Database-only route IDs do not imply populated stations or timetables.",
     "Hokkaido Kaikyo line is not a regular passenger-service corridor; track separately rather than invent trains.",
-    "Miyo and Yahiko are aliases to reconcile, not independent routes."
+    "Miyo and Yahiko are aliases to reconcile, not independent routes.",
+    "JR北海道・JR四国の新規路線は駅トポロジーのみ。presentation.color は路線図ベースの近似値で、公式RGB色票の監査対象外。",
+    "肥薩線は operatingSegments で八代〜吉松の不通と吉松〜隼人の運行再開を分離し、全線の列車を生成しない。"
   ],
   "implementedFrontend": [
     {
@@ -369,6 +227,246 @@
       "priority": "P1",
       "implementedAt": "2026-11-09",
       "sourceLineId": "MinoAkasaka"
+    },
+    {
+      "operator": "JR-Kyushu",
+      "id": "Hisatsu",
+      "nameJa": "肥薩線",
+      "from": "Yatsushiro",
+      "to": "Hayato",
+      "status": "station_topology_only_segmented",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Hisatsu",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "HakodateMain",
+      "nameJa": "函館本線",
+      "from": "Hakodate",
+      "to": "Asahikawa",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "HakodateMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "NemuroMain",
+      "nameJa": "根室本線",
+      "from": "Takikawa",
+      "to": "Nemuro",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "NemuroMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Chitose",
+      "nameJa": "千歳線",
+      "from": "Sapporo",
+      "to": "Tomakomai",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Chitose",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "MuroranMain",
+      "nameJa": "室蘭本線",
+      "from": "Oshamambe",
+      "to": "Iwamizawa",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "MuroranMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Sekisho",
+      "nameJa": "石勝線",
+      "from": "Minami-Chitose",
+      "to": "Shintoku",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Sekisho",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Furano",
+      "nameJa": "富良野線",
+      "from": "Asahikawa",
+      "to": "Furano",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Furano",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "SoyaMain",
+      "nameJa": "宗谷本線",
+      "from": "Asahikawa",
+      "to": "Wakkanai",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "SoyaMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "SenmoMain",
+      "nameJa": "釧網本線",
+      "from": "Abashiri",
+      "to": "Higashi-Kushiro",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "SenmoMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "SekihokuMain",
+      "nameJa": "石北本線",
+      "from": "Shin-Asahikawa",
+      "to": "Abashiri",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "SekihokuMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "Sassho",
+      "nameJa": "札沼線（学園都市線）",
+      "from": "Sapporo",
+      "to": "Hokkaido-Iryodaigaku",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Sassho",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Hokkaido",
+      "id": "HidakaMain",
+      "nameJa": "日高本線",
+      "from": "Tomakomai",
+      "to": "Mukawa",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "HidakaMain",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Yosan",
+      "nameJa": "予讃線",
+      "from": "Takamatsu",
+      "to": "Uwajima",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Yosan",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Dosan",
+      "nameJa": "土讃線",
+      "from": "Tadotsu",
+      "to": "Kubokawa",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Dosan",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Kotoku",
+      "nameJa": "高徳線",
+      "from": "Takamatsu",
+      "to": "Tokushima",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Kotoku",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Tokushima",
+      "nameJa": "徳島線",
+      "from": "Sako",
+      "to": "Awa-Ikeda",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Tokushima",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Naruto",
+      "nameJa": "鳴門線",
+      "from": "Ikenotani",
+      "to": "Naruto-Shikoku",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Naruto",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Mugi",
+      "nameJa": "牟岐線",
+      "from": "Tokushima",
+      "to": "Awa-Kainan",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Mugi",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Yodo",
+      "nameJa": "予土線",
+      "from": "Wakai",
+      "to": "Kita-Uwajima",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Yodo",
+      "colorStatus": "approximate_route_map"
+    },
+    {
+      "operator": "JR-Shikoku",
+      "id": "Uchiko",
+      "nameJa": "内子線",
+      "from": "Uchiko",
+      "to": "Shintani",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Uchiko",
+      "colorStatus": "approximate_route_map"
     }
   ],
   "newNonJrLines": [
@@ -382,5 +480,31 @@
       "implementedAt": "2026-11-09",
       "officialSource": "https://www.fujikyu-railway.jp/station/"
     }
+  ],
+  "implementedHokkaidoTopology": [
+    "HakodateMain",
+    "NemuroMain",
+    "Chitose",
+    "MuroranMain",
+    "Sekisho",
+    "Furano",
+    "SoyaMain",
+    "SenmoMain",
+    "SekihokuMain",
+    "Sassho",
+    "HidakaMain"
+  ],
+  "implementedShikokuTopology": [
+    "Yosan",
+    "Dosan",
+    "Kotoku",
+    "Tokushima",
+    "Naruto",
+    "Mugi",
+    "Yodo",
+    "Uchiko"
+  ],
+  "implementedHisatsuTopology": [
+    "Hisatsu"
   ]
 }

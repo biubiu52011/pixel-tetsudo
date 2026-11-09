@@ -15287,7 +15287,124 @@
     "JRC-Meisho-013": {},
     "JRC-Meisho-014": {},
     "JRC-Meisho-015": {},
-    "JRC-MinoAkasaka-003": {}
+    "JRC-MinoAkasaka-003": {},
+    "JR-Hisatsu-002": {},
+    "JR-Hisatsu-004": {},
+    "JR-Hisatsu-005": {},
+    "JR-Hisatsu-006": {},
+    "JR-HakodateMain-001": {},
+    "JR-HakodateMain-002": {},
+    "JR-HakodateMain-004": {},
+    "JR-HakodateMain-005": {},
+    "JR-HakodateMain-006": {},
+    "JR-HakodateMain-007": {},
+    "JR-HakodateMain-008": {},
+    "JR-HakodateMain-009": {},
+    "JR-HakodateMain-010": {},
+    "JR-HakodateMain-011": {},
+    "JR-NemuroMain-002": {},
+    "JR-NemuroMain-003": {},
+    "JR-NemuroMain-004": {},
+    "JR-NemuroMain-006": {},
+    "JR-NemuroMain-007": {},
+    "JR-NemuroMain-008": {},
+    "JR-Chitose-003": {},
+    "JR-Chitose-004": {},
+    "JR-Chitose-005": {},
+    "JR-Chitose-007": {},
+    "JR-Chitose-008": {},
+    "JR-Chitose-009": {},
+    "JR-Chitose-010": {},
+    "JR-MuroranMain-002": {},
+    "JR-MuroranMain-003": {},
+    "JR-MuroranMain-004": {},
+    "JR-MuroranMain-005": {},
+    "JR-MuroranMain-006": {},
+    "JR-Sekisho-003": {},
+    "JR-Sekisho-004": {},
+    "JR-Sekisho-005": {},
+    "JR-Furano-002": {},
+    "JR-Furano-003": {},
+    "JR-Furano-004": {},
+    "JR-Furano-005": {},
+    "JR-SoyaMain-003": {},
+    "JR-SoyaMain-004": {},
+    "JR-SoyaMain-005": {},
+    "JR-SoyaMain-006": {},
+    "JR-SoyaMain-007": {},
+    "JR-SoyaMain-008": {},
+    "JR-SoyaMain-009": {},
+    "JR-SenmoMain-001": {},
+    "JR-SenmoMain-002": {},
+    "JR-SenmoMain-003": {},
+    "JR-SenmoMain-004": {},
+    "JR-SenmoMain-005": {},
+    "JR-SenmoMain-006": {},
+    "JR-SenmoMain-007": {},
+    "JR-SenmoMain-008": {},
+    "JR-SenmoMain-009": {},
+    "JR-SekihokuMain-001": {},
+    "JR-SekihokuMain-002": {},
+    "JR-SekihokuMain-003": {},
+    "JR-SekihokuMain-004": {},
+    "JR-SekihokuMain-005": {},
+    "JR-SekihokuMain-006": {},
+    "JR-Sassho-002": {},
+    "JR-Sassho-003": {},
+    "JR-Sassho-004": {},
+    "JR-Sassho-005": {},
+    "JR-Sassho-006": {},
+    "JR-HidakaMain-002": {},
+    "JR-HidakaMain-003": {},
+    "JR-HidakaMain-004": {},
+    "JR-Yosan-002": {},
+    "JR-Yosan-003": {},
+    "JR-Yosan-004": {},
+    "JR-Yosan-005": {},
+    "JR-Yosan-006": {},
+    "JR-Yosan-007": {},
+    "JR-Yosan-008": {},
+    "JR-Yosan-009": {},
+    "JR-Yosan-010": {},
+    "JR-Yosan-011": {},
+    "JR-Yosan-012": {},
+    "JR-Yosan-013": {},
+    "JR-Dosan-002": {},
+    "JR-Dosan-003": {},
+    "JR-Dosan-004": {},
+    "JR-Dosan-005": {},
+    "JR-Dosan-006": {},
+    "JR-Dosan-007": {},
+    "JR-Dosan-008": {},
+    "JR-Dosan-009": {},
+    "JR-Kotoku-002": {},
+    "JR-Kotoku-003": {},
+    "JR-Kotoku-004": {},
+    "JR-Kotoku-005": {},
+    "JR-Kotoku-006": {},
+    "JR-Kotoku-007": {},
+    "JR-Tokushima-001": {},
+    "JR-Tokushima-002": {},
+    "JR-Tokushima-003": {},
+    "JR-Tokushima-004": {},
+    "JR-Tokushima-005": {},
+    "JR-Naruto-001": {},
+    "JR-Naruto-002": {},
+    "JR-Naruto-003": {},
+    "JR-Mugi-002": {},
+    "JR-Mugi-003": {},
+    "JR-Mugi-004": {},
+    "JR-Mugi-005": {},
+    "JR-Mugi-006": {},
+    "JR-Yodo-001": {},
+    "JR-Yodo-003": {},
+    "JR-Yodo-004": {},
+    "JR-Yodo-005": {},
+    "JR-Yodo-006": {},
+    "JR-Uchiko-001": {},
+    "JR-Uchiko-002": {},
+    "JR-Uchiko-003": {},
+    "JR-NemuroMain-005": {}
   },
   "lines": {
     "KeihinTohoku": {
@@ -49459,7 +49576,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "東海道本線（JR東海）",
+        "nameZh": "東海道本線",
+        "nameEn": "Tokaido Main Line (JR Central)",
+        "nameKo": "Tokaido Main Line (JR Central)",
+        "color": "#f68b1e",
+        "code": "CA",
+        "order": 80,
+        "lineIds": [
+          "TokaidoCentral"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "ChuoCentral": {
       "nameJa": "中央本線（JR東海）",
@@ -49570,7 +49701,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "中央本線（JR東海）",
+        "nameZh": "中央本線",
+        "nameEn": "Chuo Main Line (JR Central)",
+        "nameKo": "Chuo Main Line (JR Central)",
+        "color": "#f68b1e",
+        "code": "CF",
+        "order": 80,
+        "lineIds": [
+          "ChuoCentral"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "KansaiCentral": {
       "nameJa": "関西本線（JR東海）",
@@ -49623,7 +49768,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "関西本線（JR東海）",
+        "nameZh": "関西本線",
+        "nameEn": "Kansai Main Line (JR Central)",
+        "nameKo": "Kansai Main Line (JR Central)",
+        "color": "#f68b1e",
+        "code": "CJ",
+        "order": 80,
+        "lineIds": [
+          "KansaiCentral"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "KiseiCentral": {
       "nameJa": "紀勢本線（JR東海）",
@@ -49699,7 +49858,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "紀勢本線（JR東海）",
+        "nameZh": "紀勢本線",
+        "nameEn": "Kisei Main Line (JR Central)",
+        "nameKo": "Kisei Main Line (JR Central)",
+        "color": "#f68b1e",
+        "code": "紀",
+        "order": 80,
+        "lineIds": [
+          "KiseiCentral"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Takayama": {
       "nameJa": "高山本線",
@@ -49779,7 +49952,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "高山本線",
+        "nameZh": "高山本線",
+        "nameEn": "Takayama Main Line",
+        "nameKo": "Takayama Main Line",
+        "color": "#f68b1e",
+        "code": "CG",
+        "order": 80,
+        "lineIds": [
+          "Takayama"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Taketoyo": {
       "nameJa": "武豊線",
@@ -49812,7 +49999,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "武豊線",
+        "nameZh": "武豊線",
+        "nameEn": "Taketoyo Line",
+        "nameKo": "Taketoyo Line",
+        "color": "#f68b1e",
+        "code": "CE",
+        "order": 80,
+        "lineIds": [
+          "Taketoyo"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Taita": {
       "nameJa": "太多線",
@@ -49855,7 +50056,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "太多線",
+        "nameZh": "太多線",
+        "nameEn": "Taita Line",
+        "nameKo": "Taita Line",
+        "color": "#f68b1e",
+        "code": "CI",
+        "order": 80,
+        "lineIds": [
+          "Taita"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Gotemba": {
       "nameJa": "御殿場線",
@@ -49909,7 +50124,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "御殿場線",
+        "nameZh": "御殿場線",
+        "nameEn": "Gotemba Line",
+        "nameKo": "Gotemba Line",
+        "color": "#f68b1e",
+        "code": "CB",
+        "order": 80,
+        "lineIds": [
+          "Gotemba"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Minobu": {
       "nameJa": "身延線",
@@ -49977,7 +50206,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "身延線",
+        "nameZh": "身延線",
+        "nameEn": "Minobu Line",
+        "nameKo": "Minobu Line",
+        "color": "#f68b1e",
+        "code": "CC",
+        "order": 80,
+        "lineIds": [
+          "Minobu"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Iida": {
       "nameJa": "飯田線",
@@ -50106,7 +50349,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "飯田線",
+        "nameZh": "飯田線",
+        "nameEn": "Iida Line",
+        "nameKo": "Iida Line",
+        "color": "#f68b1e",
+        "code": "CD",
+        "order": 80,
+        "lineIds": [
+          "Iida"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Sangu": {
       "nameJa": "参宮線",
@@ -50146,7 +50403,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "参宮線",
+        "nameZh": "参宮線",
+        "nameEn": "Sangu Line",
+        "nameKo": "Sangu Line",
+        "color": "#f68b1e",
+        "code": "参",
+        "order": 80,
+        "lineIds": [
+          "Sangu"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "Meisho": {
       "nameJa": "名松線",
@@ -50184,7 +50455,21 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "名松線",
+        "nameZh": "名松線",
+        "nameEn": "Meisho Line",
+        "nameKo": "Meisho Line",
+        "color": "#f68b1e",
+        "code": "名",
+        "order": 80,
+        "lineIds": [
+          "Meisho"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
     },
     "MinoAkasaka": {
       "nameJa": "美濃赤坂線",
@@ -50210,7 +50495,1079 @@
         }
       ],
       "throughServices": [],
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "presentation": {
+        "nameJa": "美濃赤坂線",
+        "nameZh": "美濃赤坂線",
+        "nameEn": "Mino-Akasaka Line",
+        "nameKo": "Mino-Akasaka Line",
+        "color": "#f68b1e",
+        "code": "美",
+        "order": 80,
+        "lineIds": [
+          "MinoAkasaka"
+        ],
+        "operatorGroup": "JR_CENTRAL",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Hisatsu": {
+      "nameJa": "肥薩線",
+      "nameEn": "Hisatsu Line",
+      "nameZh": "肥萨线",
+      "nameKo": "Hisatsu Line",
+      "name": "肥薩線",
+      "code": "肥",
+      "color": "#008c95",
+      "operator": "JR-Kyushu",
+      "region": "Kyushu Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 124,
+      "branchOf": null,
+      "stations": [
+        "Yatsushiro",
+        "JR-Hisatsu-002",
+        "Yoshimatsu",
+        "JR-Hisatsu-004",
+        "JR-Hisatsu-005",
+        "JR-Hisatsu-006"
+      ],
+      "durations": [
+        25,
+        25,
+        25,
+        25,
+        24
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "肥薩線",
+        "nameZh": "肥萨线",
+        "nameEn": "Hisatsu Line",
+        "nameKo": "Hisatsu Line",
+        "color": "#008c95",
+        "code": "肥",
+        "order": 90,
+        "lineIds": [
+          "Hisatsu"
+        ],
+        "operatorGroup": "JR_KYUSHU",
+        "colorStatus": "approximate_route_map"
+      },
+      "serviceStatus": "partial",
+      "topologyAudit": {
+        "reason": "八代〜吉松は不通、吉松〜隼人は2026-06-28運行再開。全線の列車データは未接続。",
+        "sourceQuality": "official_route_scope_with_current_service_note"
+      },
+      "operatingSegments": [
+        {
+          "from": "Yatsushiro",
+          "to": "Yoshimatsu",
+          "status": "suspended",
+          "reason": "2020年7月豪雨被災区間・不通"
+        },
+        {
+          "from": "Yoshimatsu",
+          "to": "Hayato",
+          "status": "active",
+          "effectiveFrom": "2026-06-28",
+          "reason": "JR九州発表の運行再開区間"
+        }
+      ]
+    },
+    "HakodateMain": {
+      "nameJa": "函館本線",
+      "nameEn": "Hakodate Main Line",
+      "nameZh": "函馆本线",
+      "nameKo": "Hakodate Main Line",
+      "name": "函館本線",
+      "code": "H",
+      "color": "#0072bc",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 458,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-001",
+        "JR-HakodateMain-002",
+        "Shin-Hakodate-Hokuto",
+        "JR-HakodateMain-004",
+        "JR-HakodateMain-005",
+        "JR-HakodateMain-006",
+        "JR-HakodateMain-007",
+        "JR-HakodateMain-008",
+        "JR-HakodateMain-009",
+        "JR-HakodateMain-010",
+        "JR-HakodateMain-011"
+      ],
+      "durations": [
+        46,
+        46,
+        46,
+        46,
+        46,
+        46,
+        46,
+        46,
+        45,
+        45
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "函館本線",
+        "nameZh": "函馆本线",
+        "nameEn": "Hakodate Main Line",
+        "nameKo": "Hakodate Main Line",
+        "color": "#0072bc",
+        "code": "H",
+        "order": 100,
+        "lineIds": [
+          "HakodateMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "NemuroMain": {
+      "nameJa": "根室本線",
+      "nameEn": "Nemuro Main Line",
+      "nameZh": "根室本线",
+      "nameKo": "Nemuro Main Line",
+      "name": "根室本線",
+      "code": "K",
+      "color": "#a7213a",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 362,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-010",
+        "JR-NemuroMain-002",
+        "JR-NemuroMain-003",
+        "JR-NemuroMain-004",
+        "JR-NemuroMain-005",
+        "JR-NemuroMain-006",
+        "JR-NemuroMain-007",
+        "JR-NemuroMain-008"
+      ],
+      "durations": [
+        52,
+        52,
+        52,
+        52,
+        52,
+        51,
+        51
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "根室本線",
+        "nameZh": "根室本线",
+        "nameEn": "Nemuro Main Line",
+        "nameKo": "Nemuro Main Line",
+        "color": "#a7213a",
+        "code": "K",
+        "order": 101,
+        "lineIds": [
+          "NemuroMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      },
+      "serviceStatus": "partial",
+      "topologyAudit": {
+        "reason": "富良野〜新得は災害による不通区間を含むため、列車運行は未接続。",
+        "sourceQuality": "official_route_scope_with_current_service_note"
+      }
+    },
+    "Chitose": {
+      "nameJa": "千歳線",
+      "nameEn": "Chitose Line",
+      "nameZh": "千岁线",
+      "nameKo": "Chitose Line",
+      "name": "千歳線",
+      "code": "H",
+      "color": "#0072bc",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 59,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-008",
+        "Shiroishi",
+        "JR-Chitose-003",
+        "JR-Chitose-004",
+        "JR-Chitose-005",
+        "Chitose",
+        "JR-Chitose-007",
+        "JR-Chitose-008",
+        "JR-Chitose-009",
+        "JR-Chitose-010"
+      ],
+      "durations": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        6,
+        6,
+        6,
+        6
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "千歳線",
+        "nameZh": "千岁线",
+        "nameEn": "Chitose Line",
+        "nameKo": "Chitose Line",
+        "color": "#0072bc",
+        "code": "H",
+        "order": 102,
+        "lineIds": [
+          "Chitose"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "MuroranMain": {
+      "nameJa": "室蘭本線",
+      "nameEn": "Muroran Main Line",
+      "nameZh": "室兰本线",
+      "nameKo": "Muroran Main Line",
+      "name": "室蘭本線",
+      "code": "M",
+      "color": "#0072bc",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 218,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-006",
+        "JR-MuroranMain-002",
+        "JR-MuroranMain-003",
+        "JR-MuroranMain-004",
+        "JR-MuroranMain-005",
+        "JR-MuroranMain-006",
+        "JR-Chitose-010",
+        "Oiwake",
+        "JR-HakodateMain-009"
+      ],
+      "durations": [
+        28,
+        28,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "室蘭本線",
+        "nameZh": "室兰本线",
+        "nameEn": "Muroran Main Line",
+        "nameKo": "Muroran Main Line",
+        "color": "#0072bc",
+        "code": "M",
+        "order": 103,
+        "lineIds": [
+          "MuroranMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Sekisho": {
+      "nameJa": "石勝線",
+      "nameEn": "Sekisho Line",
+      "nameZh": "石胜线",
+      "nameKo": "Sekisho Line",
+      "name": "石勝線",
+      "code": "K",
+      "color": "#0072bc",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 132,
+      "branchOf": null,
+      "stations": [
+        "JR-Chitose-007",
+        "Oiwake",
+        "JR-Sekisho-003",
+        "JR-Sekisho-004",
+        "JR-Sekisho-005",
+        "JR-NemuroMain-003"
+      ],
+      "durations": [
+        27,
+        27,
+        26,
+        26,
+        26
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "石勝線",
+        "nameZh": "石胜线",
+        "nameEn": "Sekisho Line",
+        "nameKo": "Sekisho Line",
+        "color": "#0072bc",
+        "code": "K",
+        "order": 104,
+        "lineIds": [
+          "Sekisho"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Furano": {
+      "nameJa": "富良野線",
+      "nameEn": "Furano Line",
+      "nameZh": "富良野线",
+      "nameKo": "Furano Line",
+      "name": "富良野線",
+      "code": "F",
+      "color": "#6fba2c",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 55,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-011",
+        "JR-Furano-002",
+        "JR-Furano-003",
+        "JR-Furano-004",
+        "JR-Furano-005",
+        "JR-NemuroMain-002"
+      ],
+      "durations": [
+        11,
+        11,
+        11,
+        11,
+        11
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "富良野線",
+        "nameZh": "富良野线",
+        "nameEn": "Furano Line",
+        "nameKo": "Furano Line",
+        "color": "#6fba2c",
+        "code": "F",
+        "order": 105,
+        "lineIds": [
+          "Furano"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "SoyaMain": {
+      "nameJa": "宗谷本線",
+      "nameEn": "Soya Main Line",
+      "nameZh": "宗谷本线",
+      "nameKo": "Soya Main Line",
+      "name": "宗谷本線",
+      "code": "W",
+      "color": "#00a1e9",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 259,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-011",
+        "Nagayama",
+        "JR-SoyaMain-003",
+        "JR-SoyaMain-004",
+        "JR-SoyaMain-005",
+        "JR-SoyaMain-006",
+        "JR-SoyaMain-007",
+        "JR-SoyaMain-008",
+        "JR-SoyaMain-009"
+      ],
+      "durations": [
+        33,
+        33,
+        33,
+        32,
+        32,
+        32,
+        32,
+        32
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "宗谷本線",
+        "nameZh": "宗谷本线",
+        "nameEn": "Soya Main Line",
+        "nameKo": "Soya Main Line",
+        "color": "#00a1e9",
+        "code": "W",
+        "order": 106,
+        "lineIds": [
+          "SoyaMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "SenmoMain": {
+      "nameJa": "釧網本線",
+      "nameEn": "Senmo Main Line",
+      "nameZh": "钏网本线",
+      "nameKo": "Senmo Main Line",
+      "name": "釧網本線",
+      "code": "B",
+      "color": "#00a884",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 166,
+      "branchOf": null,
+      "stations": [
+        "JR-SenmoMain-001",
+        "JR-SenmoMain-002",
+        "JR-SenmoMain-003",
+        "JR-SenmoMain-004",
+        "JR-SenmoMain-005",
+        "JR-SenmoMain-006",
+        "JR-SenmoMain-007",
+        "JR-SenmoMain-008",
+        "JR-SenmoMain-009"
+      ],
+      "durations": [
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        20,
+        20
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "釧網本線",
+        "nameZh": "钏网本线",
+        "nameEn": "Senmo Main Line",
+        "nameKo": "Senmo Main Line",
+        "color": "#00a884",
+        "code": "B",
+        "order": 107,
+        "lineIds": [
+          "SenmoMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "SekihokuMain": {
+      "nameJa": "石北本線",
+      "nameEn": "Sekihoku Main Line",
+      "nameZh": "石北本线",
+      "nameKo": "Sekihoku Main Line",
+      "name": "石北本線",
+      "code": "A",
+      "color": "#e60012",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 234,
+      "branchOf": null,
+      "stations": [
+        "JR-SekihokuMain-001",
+        "JR-SekihokuMain-002",
+        "JR-SekihokuMain-003",
+        "JR-SekihokuMain-004",
+        "JR-SekihokuMain-005",
+        "JR-SekihokuMain-006",
+        "JR-SenmoMain-001"
+      ],
+      "durations": [
+        39,
+        39,
+        39,
+        39,
+        39,
+        39
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "石北本線",
+        "nameZh": "石北本线",
+        "nameEn": "Sekihoku Main Line",
+        "nameKo": "Sekihoku Main Line",
+        "color": "#e60012",
+        "code": "A",
+        "order": 108,
+        "lineIds": [
+          "SekihokuMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Sassho": {
+      "nameJa": "札沼線（学園都市線）",
+      "nameEn": "Sassho Line (Gakuentoshi Line)",
+      "nameZh": "札沼线（学园都市线）",
+      "nameKo": "Sassho Line (Gakuentoshi Line)",
+      "name": "札沼線（学園都市線）",
+      "code": "G",
+      "color": "#00a1e9",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 29,
+      "branchOf": null,
+      "stations": [
+        "JR-HakodateMain-008",
+        "JR-Sassho-002",
+        "JR-Sassho-003",
+        "JR-Sassho-004",
+        "JR-Sassho-005",
+        "JR-Sassho-006"
+      ],
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        5
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "札沼線（学園都市線）",
+        "nameZh": "札沼线（学园都市线）",
+        "nameEn": "Sassho Line (Gakuentoshi Line)",
+        "nameKo": "Sassho Line (Gakuentoshi Line)",
+        "color": "#00a1e9",
+        "code": "G",
+        "order": 109,
+        "lineIds": [
+          "Sassho"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "HidakaMain": {
+      "nameJa": "日高本線",
+      "nameEn": "Hidaka Main Line",
+      "nameZh": "日高本线",
+      "nameKo": "Hidaka Main Line",
+      "name": "日高本線",
+      "code": "日",
+      "color": "#f39800",
+      "operator": "JR-Hokkaido",
+      "region": "Hokkaido Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 30,
+      "branchOf": null,
+      "stations": [
+        "JR-Chitose-010",
+        "JR-HidakaMain-002",
+        "JR-HidakaMain-003",
+        "JR-HidakaMain-004"
+      ],
+      "durations": [
+        10,
+        10,
+        10
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "日高本線",
+        "nameZh": "日高本线",
+        "nameEn": "Hidaka Main Line",
+        "nameKo": "Hidaka Main Line",
+        "color": "#f39800",
+        "code": "日",
+        "order": 110,
+        "lineIds": [
+          "HidakaMain"
+        ],
+        "operatorGroup": "JR_HOKKAIDO",
+        "colorStatus": "approximate_route_map"
+      },
+      "serviceStatus": "partial",
+      "topologyAudit": {
+        "reason": "2021年4月1日以降は苫小牧〜鵡川のみ。鵡川以東は廃止区間のため含めない。",
+        "sourceQuality": "official_route_scope_with_current_service_note"
+      }
+    },
+    "Yosan": {
+      "nameJa": "予讃線",
+      "nameEn": "Yosan Line",
+      "nameZh": "予讃线",
+      "nameKo": "Yosan Line",
+      "name": "予讃線",
+      "code": "Y",
+      "color": "#0072bc",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 297,
+      "branchOf": null,
+      "stations": [
+        "Takamatsu",
+        "JR-Yosan-002",
+        "JR-Yosan-003",
+        "JR-Yosan-004",
+        "JR-Yosan-005",
+        "JR-Yosan-006",
+        "JR-Yosan-007",
+        "JR-Yosan-008",
+        "JR-Yosan-009",
+        "JR-Yosan-010",
+        "JR-Yosan-011",
+        "JR-Yosan-012",
+        "JR-Yosan-013"
+      ],
+      "durations": [
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        24,
+        24,
+        24
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "予讃線",
+        "nameZh": "予讃线",
+        "nameEn": "Yosan Line",
+        "nameKo": "Yosan Line",
+        "color": "#0072bc",
+        "code": "Y",
+        "order": 120,
+        "lineIds": [
+          "Yosan"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Dosan": {
+      "nameJa": "土讃線",
+      "nameEn": "Dosan Line",
+      "nameZh": "土讃线",
+      "nameKo": "Dosan Line",
+      "name": "土讃線",
+      "code": "D",
+      "color": "#e60012",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 198,
+      "branchOf": null,
+      "stations": [
+        "JR-Yosan-005",
+        "JR-Dosan-002",
+        "JR-Dosan-003",
+        "JR-Dosan-004",
+        "JR-Dosan-005",
+        "JR-Dosan-006",
+        "JR-Dosan-007",
+        "JR-Dosan-008",
+        "JR-Dosan-009"
+      ],
+      "durations": [
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        24,
+        24
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "土讃線",
+        "nameZh": "土讃线",
+        "nameEn": "Dosan Line",
+        "nameKo": "Dosan Line",
+        "color": "#e60012",
+        "code": "D",
+        "order": 121,
+        "lineIds": [
+          "Dosan"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Kotoku": {
+      "nameJa": "高徳線",
+      "nameEn": "Kotoku Line",
+      "nameZh": "高德线",
+      "nameKo": "Kotoku Line",
+      "name": "高徳線",
+      "code": "T",
+      "color": "#00a1e9",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 74,
+      "branchOf": null,
+      "stations": [
+        "Takamatsu",
+        "JR-Kotoku-002",
+        "JR-Kotoku-003",
+        "JR-Kotoku-004",
+        "JR-Kotoku-005",
+        "JR-Kotoku-006",
+        "JR-Kotoku-007"
+      ],
+      "durations": [
+        13,
+        13,
+        12,
+        12,
+        12,
+        12
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "高徳線",
+        "nameZh": "高德线",
+        "nameEn": "Kotoku Line",
+        "nameKo": "Kotoku Line",
+        "color": "#00a1e9",
+        "code": "T",
+        "order": 122,
+        "lineIds": [
+          "Kotoku"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Tokushima": {
+      "nameJa": "徳島線",
+      "nameEn": "Tokushima Line",
+      "nameZh": "德岛线",
+      "nameKo": "Tokushima Line",
+      "name": "徳島線",
+      "code": "B",
+      "color": "#2e8b57",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 67,
+      "branchOf": null,
+      "stations": [
+        "JR-Tokushima-001",
+        "JR-Tokushima-002",
+        "JR-Tokushima-003",
+        "JR-Tokushima-004",
+        "JR-Tokushima-005",
+        "JR-Dosan-004"
+      ],
+      "durations": [
+        14,
+        14,
+        13,
+        13,
+        13
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "徳島線",
+        "nameZh": "德岛线",
+        "nameEn": "Tokushima Line",
+        "nameKo": "Tokushima Line",
+        "color": "#2e8b57",
+        "code": "B",
+        "order": 123,
+        "lineIds": [
+          "Tokushima"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Naruto": {
+      "nameJa": "鳴門線",
+      "nameEn": "Naruto Line",
+      "nameZh": "鸣门线",
+      "nameKo": "Naruto Line",
+      "name": "鳴門線",
+      "code": "N",
+      "color": "#f39800",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 8,
+      "branchOf": null,
+      "stations": [
+        "JR-Naruto-001",
+        "JR-Naruto-002",
+        "JR-Naruto-003"
+      ],
+      "durations": [
+        4,
+        4
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "鳴門線",
+        "nameZh": "鸣门线",
+        "nameEn": "Naruto Line",
+        "nameKo": "Naruto Line",
+        "color": "#f39800",
+        "code": "N",
+        "order": 124,
+        "lineIds": [
+          "Naruto"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Mugi": {
+      "nameJa": "牟岐線",
+      "nameEn": "Mugi Line",
+      "nameZh": "牟岐线",
+      "nameKo": "Mugi Line",
+      "name": "牟岐線",
+      "code": "M",
+      "color": "#a0522d",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 79,
+      "branchOf": null,
+      "stations": [
+        "JR-Kotoku-007",
+        "JR-Mugi-002",
+        "JR-Mugi-003",
+        "JR-Mugi-004",
+        "JR-Mugi-005",
+        "JR-Mugi-006"
+      ],
+      "durations": [
+        16,
+        16,
+        16,
+        16,
+        15
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "牟岐線",
+        "nameZh": "牟岐线",
+        "nameEn": "Mugi Line",
+        "nameKo": "Mugi Line",
+        "color": "#a0522d",
+        "code": "M",
+        "order": 125,
+        "lineIds": [
+          "Mugi"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Yodo": {
+      "nameJa": "予土線",
+      "nameEn": "Yodo Line",
+      "nameZh": "予土线",
+      "nameKo": "Yodo Line",
+      "name": "予土線",
+      "code": "G",
+      "color": "#00a884",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 76,
+      "branchOf": null,
+      "stations": [
+        "JR-Yodo-001",
+        "JR-Dosan-009",
+        "JR-Yodo-003",
+        "JR-Yodo-004",
+        "JR-Yodo-005",
+        "JR-Yodo-006"
+      ],
+      "durations": [
+        16,
+        15,
+        15,
+        15,
+        15
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "予土線",
+        "nameZh": "予土线",
+        "nameEn": "Yodo Line",
+        "nameKo": "Yodo Line",
+        "color": "#00a884",
+        "code": "G",
+        "order": 126,
+        "lineIds": [
+          "Yodo"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
+    },
+    "Uchiko": {
+      "nameJa": "内子線",
+      "nameEn": "Uchiko Line",
+      "nameZh": "内子线",
+      "nameKo": "Uchiko Line",
+      "name": "内子線",
+      "code": "U",
+      "color": "#e60012",
+      "operator": "JR-Shikoku",
+      "region": "Shikoku Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 5,
+      "branchOf": null,
+      "stations": [
+        "JR-Uchiko-001",
+        "JR-Uchiko-002",
+        "JR-Uchiko-003"
+      ],
+      "durations": [
+        3,
+        2
+      ],
+      "throughServices": [],
+      "transferStations": [],
+      "serviceBoundaries": [],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "内子線",
+        "nameZh": "内子线",
+        "nameEn": "Uchiko Line",
+        "nameKo": "Uchiko Line",
+        "color": "#e60012",
+        "code": "U",
+        "order": 127,
+        "lineIds": [
+          "Uchiko"
+        ],
+        "operatorGroup": "JR_SHIKOKU",
+        "colorStatus": "approximate_route_map"
+      }
     }
   },
   "name_map": {
@@ -51896,7 +53253,7 @@
     "大阪": "Osaka",
     "京都": "Kyoto",
     "名古屋": "Nagoya",
-    "札幌": "Sapporo",
+    "札幌": "JR-HakodateMain-008",
     "福岡": "Fukuoka",
     "広島": "Hiroshima",
     "神戸": "Kobe",
@@ -52767,7 +54124,7 @@
     "北永野田": "Kita-Naganoda",
     "霧島神宮": "Kirishima-Jingū",
     "国分": "Kokubu",
-    "隼人": "Hayato",
+    "隼人": "JR-Hisatsu-006",
     "加治木": "Kajiki",
     "錦江": "Kinkō",
     "帖佐": "Chōsa",
@@ -53683,7 +55040,121 @@
     "伊勢八知": "JRC-Meisho-013",
     "比津": "JRC-Meisho-014",
     "伊勢奥津": "JRC-Meisho-015",
-    "美濃赤坂": "JRC-MinoAkasaka-003"
+    "美濃赤坂": "JRC-MinoAkasaka-003",
+    "人吉": "JR-Hisatsu-002",
+    "栗野": "JR-Hisatsu-004",
+    "嘉例川": "JR-Hisatsu-005",
+    "函館": "JR-HakodateMain-001",
+    "五稜郭": "JR-HakodateMain-002",
+    "大沼公園": "JR-HakodateMain-004",
+    "森": "JR-HakodateMain-005",
+    "長万部": "JR-HakodateMain-006",
+    "小樽": "JR-HakodateMain-007",
+    "岩見沢": "JR-HakodateMain-009",
+    "滝川": "JR-HakodateMain-010",
+    "旭川": "JR-HakodateMain-011",
+    "富良野": "JR-NemuroMain-002",
+    "新得": "JR-NemuroMain-003",
+    "帯広": "JR-NemuroMain-004",
+    "釧路": "JR-NemuroMain-006",
+    "厚岸": "JR-NemuroMain-007",
+    "根室": "JR-NemuroMain-008",
+    "新札幌": "JR-Chitose-003",
+    "北広島": "JR-Chitose-004",
+    "恵庭": "JR-Chitose-005",
+    "南千歳": "JR-Chitose-007",
+    "新千歳空港": "JR-Chitose-008",
+    "沼ノ端": "JR-Chitose-009",
+    "苫小牧": "JR-Chitose-010",
+    "洞爺": "JR-MuroranMain-002",
+    "伊達紋別": "JR-MuroranMain-003",
+    "登別": "JR-MuroranMain-004",
+    "東室蘭": "JR-MuroranMain-005",
+    "室蘭": "JR-MuroranMain-006",
+    "新夕張": "JR-Sekisho-003",
+    "占冠": "JR-Sekisho-004",
+    "トマム": "JR-Sekisho-005",
+    "神楽岡": "JR-Furano-002",
+    "美瑛": "JR-Furano-003",
+    "上富良野": "JR-Furano-004",
+    "中富良野": "JR-Furano-005",
+    "士別": "JR-SoyaMain-003",
+    "名寄": "JR-SoyaMain-004",
+    "美深": "JR-SoyaMain-005",
+    "音威子府": "JR-SoyaMain-006",
+    "幌延": "JR-SoyaMain-007",
+    "豊富": "JR-SoyaMain-008",
+    "稚内": "JR-SoyaMain-009",
+    "網走": "JR-SenmoMain-001",
+    "知床斜里": "JR-SenmoMain-002",
+    "緑": "JR-SenmoMain-003",
+    "川湯温泉": "JR-SenmoMain-004",
+    "摩周": "JR-SenmoMain-005",
+    "標茶": "JR-SenmoMain-006",
+    "茅沼": "JR-SenmoMain-007",
+    "釧路湿原": "JR-SenmoMain-008",
+    "東釧路": "JR-SenmoMain-009",
+    "新旭川": "JR-SekihokuMain-001",
+    "上川": "JR-SekihokuMain-002",
+    "白滝": "JR-SekihokuMain-003",
+    "遠軽": "JR-SekihokuMain-004",
+    "北見": "JR-SekihokuMain-005",
+    "美幌": "JR-SekihokuMain-006",
+    "桑園": "JR-Sassho-002",
+    "新琴似": "JR-Sassho-003",
+    "あいの里公園": "JR-Sassho-004",
+    "石狩当別": "JR-Sassho-005",
+    "北海道医療大学": "JR-Sassho-006",
+    "勇払": "JR-HidakaMain-002",
+    "浜厚真": "JR-HidakaMain-003",
+    "鵡川": "JR-HidakaMain-004",
+    "坂出": "JR-Yosan-002",
+    "宇多津": "JR-Yosan-003",
+    "丸亀": "JR-Yosan-004",
+    "多度津": "JR-Yosan-005",
+    "観音寺": "JR-Yosan-006",
+    "伊予西条": "JR-Yosan-007",
+    "今治": "JR-Yosan-008",
+    "松山": "JR-Yosan-009",
+    "伊予市": "JR-Yosan-010",
+    "伊予大洲": "JR-Yosan-011",
+    "八幡浜": "JR-Yosan-012",
+    "宇和島": "JR-Yosan-013",
+    "善通寺": "JR-Dosan-002",
+    "琴平": "JR-Dosan-003",
+    "阿波池田": "JR-Dosan-004",
+    "大歩危": "JR-Dosan-005",
+    "土佐山田": "JR-Dosan-006",
+    "高知": "JR-Dosan-007",
+    "須崎": "JR-Dosan-008",
+    "窪川": "JR-Dosan-009",
+    "栗林": "JR-Kotoku-002",
+    "志度": "JR-Kotoku-003",
+    "三本松": "JR-Kotoku-004",
+    "引田": "JR-Kotoku-005",
+    "板野": "JR-Kotoku-006",
+    "徳島": "JR-Kotoku-007",
+    "佐古": "JR-Tokushima-001",
+    "石井": "JR-Tokushima-002",
+    "鴨島": "JR-Tokushima-003",
+    "穴吹": "JR-Tokushima-004",
+    "貞光": "JR-Tokushima-005",
+    "池谷": "JR-Naruto-001",
+    "板東": "JR-Naruto-002",
+    "鳴門": "JR-Naruto-003",
+    "南小松島": "JR-Mugi-002",
+    "阿南": "JR-Mugi-003",
+    "日和佐": "JR-Mugi-004",
+    "牟岐": "JR-Mugi-005",
+    "阿波海南": "JR-Mugi-006",
+    "若井": "JR-Yodo-001",
+    "江川崎": "JR-Yodo-003",
+    "松丸": "JR-Yodo-004",
+    "近永": "JR-Yodo-005",
+    "北宇和島": "JR-Yodo-006",
+    "内子": "JR-Uchiko-001",
+    "五十崎": "JR-Uchiko-002",
+    "新谷": "JR-Uchiko-003"
   },
   "stationLines": {
     "Omiya": [
@@ -55942,7 +57413,9 @@
       "TamaMonorail"
     ],
     "Takamatsu": [
-      "TamaMonorail"
+      "TamaMonorail",
+      "Yosan",
+      "Kotoku"
     ],
     "Tachikawa-Kita": [
       "TamaMonorail"
@@ -58607,7 +60080,9 @@
     ],
     "Oiwake": [
       "OuMain",
-      "Oga"
+      "Oga",
+      "MuroranMain",
+      "Sekisho"
     ],
     "Ougo": [
       "OuMain"
@@ -59364,7 +60839,8 @@
       "Uchibo"
     ],
     "Chitose": [
-      "Uchibo"
+      "Uchibo",
+      "Chitose"
     ],
     "Minamihara": [
       "Uchibo"
@@ -59555,7 +61031,8 @@
       "TohokuMain"
     ],
     "Shiroishi": [
-      "TohokuMain"
+      "TohokuMain",
+      "Chitose"
     ],
     "Higashi-Shiroishi": [
       "TohokuMain"
@@ -61921,7 +63398,8 @@
       "HokkaidoShinkansen"
     ],
     "Shin-Hakodate-Hokuto": [
-      "HokkaidoShinkansen"
+      "HokkaidoShinkansen",
+      "HakodateMain"
     ],
     "Mishima": [
       "TokaidoShinkansen",
@@ -64072,7 +65550,8 @@
       "KagoshimaMain"
     ],
     "Yatsushiro": [
-      "KagoshimaMain"
+      "KagoshimaMain",
+      "Hisatsu"
     ],
     "Kumanojō": [
       "KagoshimaMain"
@@ -65797,7 +67276,8 @@
       "Kitto"
     ],
     "Yoshimatsu": [
-      "Kitto"
+      "Kitto",
+      "Hisatsu"
     ],
     "ChibaMinato": [
       "ChibaMonorail1"
@@ -67550,6 +69030,378 @@
     ],
     "JRC-MinoAkasaka-003": [
       "MinoAkasaka"
+    ],
+    "JR-Hisatsu-002": [
+      "Hisatsu"
+    ],
+    "JR-Hisatsu-004": [
+      "Hisatsu"
+    ],
+    "JR-Hisatsu-005": [
+      "Hisatsu"
+    ],
+    "JR-Hisatsu-006": [
+      "Hisatsu"
+    ],
+    "JR-HakodateMain-001": [
+      "HakodateMain"
+    ],
+    "JR-HakodateMain-002": [
+      "HakodateMain"
+    ],
+    "JR-HakodateMain-004": [
+      "HakodateMain"
+    ],
+    "JR-HakodateMain-005": [
+      "HakodateMain"
+    ],
+    "JR-HakodateMain-006": [
+      "HakodateMain",
+      "MuroranMain"
+    ],
+    "JR-HakodateMain-007": [
+      "HakodateMain"
+    ],
+    "JR-HakodateMain-008": [
+      "HakodateMain",
+      "Chitose",
+      "Sassho"
+    ],
+    "JR-HakodateMain-009": [
+      "HakodateMain",
+      "MuroranMain"
+    ],
+    "JR-HakodateMain-010": [
+      "HakodateMain",
+      "NemuroMain"
+    ],
+    "JR-HakodateMain-011": [
+      "HakodateMain",
+      "Furano",
+      "SoyaMain"
+    ],
+    "JR-NemuroMain-002": [
+      "NemuroMain",
+      "Furano"
+    ],
+    "JR-NemuroMain-003": [
+      "NemuroMain",
+      "Sekisho"
+    ],
+    "JR-NemuroMain-004": [
+      "NemuroMain"
+    ],
+    "Ikeda": [],
+    "JR-NemuroMain-006": [
+      "NemuroMain"
+    ],
+    "JR-NemuroMain-007": [
+      "NemuroMain"
+    ],
+    "JR-NemuroMain-008": [
+      "NemuroMain"
+    ],
+    "JR-Chitose-003": [
+      "Chitose"
+    ],
+    "JR-Chitose-004": [
+      "Chitose"
+    ],
+    "JR-Chitose-005": [
+      "Chitose"
+    ],
+    "JR-Chitose-007": [
+      "Chitose",
+      "Sekisho"
+    ],
+    "JR-Chitose-008": [
+      "Chitose"
+    ],
+    "JR-Chitose-009": [
+      "Chitose"
+    ],
+    "JR-Chitose-010": [
+      "Chitose",
+      "MuroranMain",
+      "HidakaMain"
+    ],
+    "JR-MuroranMain-002": [
+      "MuroranMain"
+    ],
+    "JR-MuroranMain-003": [
+      "MuroranMain"
+    ],
+    "JR-MuroranMain-004": [
+      "MuroranMain"
+    ],
+    "JR-MuroranMain-005": [
+      "MuroranMain"
+    ],
+    "JR-MuroranMain-006": [
+      "MuroranMain"
+    ],
+    "JR-Sekisho-003": [
+      "Sekisho"
+    ],
+    "JR-Sekisho-004": [
+      "Sekisho"
+    ],
+    "JR-Sekisho-005": [
+      "Sekisho"
+    ],
+    "JR-Furano-002": [
+      "Furano"
+    ],
+    "JR-Furano-003": [
+      "Furano"
+    ],
+    "JR-Furano-004": [
+      "Furano"
+    ],
+    "JR-Furano-005": [
+      "Furano"
+    ],
+    "Nagayama": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-003": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-004": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-005": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-006": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-007": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-008": [
+      "SoyaMain"
+    ],
+    "JR-SoyaMain-009": [
+      "SoyaMain"
+    ],
+    "JR-SenmoMain-001": [
+      "SenmoMain",
+      "SekihokuMain"
+    ],
+    "JR-SenmoMain-002": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-003": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-004": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-005": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-006": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-007": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-008": [
+      "SenmoMain"
+    ],
+    "JR-SenmoMain-009": [
+      "SenmoMain"
+    ],
+    "JR-SekihokuMain-001": [
+      "SekihokuMain"
+    ],
+    "JR-SekihokuMain-002": [
+      "SekihokuMain"
+    ],
+    "JR-SekihokuMain-003": [
+      "SekihokuMain"
+    ],
+    "JR-SekihokuMain-004": [
+      "SekihokuMain"
+    ],
+    "JR-SekihokuMain-005": [
+      "SekihokuMain"
+    ],
+    "JR-SekihokuMain-006": [
+      "SekihokuMain"
+    ],
+    "JR-Sassho-002": [
+      "Sassho"
+    ],
+    "JR-Sassho-003": [
+      "Sassho"
+    ],
+    "JR-Sassho-004": [
+      "Sassho"
+    ],
+    "JR-Sassho-005": [
+      "Sassho"
+    ],
+    "JR-Sassho-006": [
+      "Sassho"
+    ],
+    "JR-HidakaMain-002": [
+      "HidakaMain"
+    ],
+    "JR-HidakaMain-003": [
+      "HidakaMain"
+    ],
+    "JR-HidakaMain-004": [
+      "HidakaMain"
+    ],
+    "JR-Yosan-002": [
+      "Yosan"
+    ],
+    "JR-Yosan-003": [
+      "Yosan"
+    ],
+    "JR-Yosan-004": [
+      "Yosan"
+    ],
+    "JR-Yosan-005": [
+      "Yosan",
+      "Dosan"
+    ],
+    "JR-Yosan-006": [
+      "Yosan"
+    ],
+    "JR-Yosan-007": [
+      "Yosan"
+    ],
+    "JR-Yosan-008": [
+      "Yosan"
+    ],
+    "JR-Yosan-009": [
+      "Yosan"
+    ],
+    "JR-Yosan-010": [
+      "Yosan"
+    ],
+    "JR-Yosan-011": [
+      "Yosan"
+    ],
+    "JR-Yosan-012": [
+      "Yosan"
+    ],
+    "JR-Yosan-013": [
+      "Yosan"
+    ],
+    "JR-Dosan-002": [
+      "Dosan"
+    ],
+    "JR-Dosan-003": [
+      "Dosan"
+    ],
+    "JR-Dosan-004": [
+      "Dosan",
+      "Tokushima"
+    ],
+    "JR-Dosan-005": [
+      "Dosan"
+    ],
+    "JR-Dosan-006": [
+      "Dosan"
+    ],
+    "JR-Dosan-007": [
+      "Dosan"
+    ],
+    "JR-Dosan-008": [
+      "Dosan"
+    ],
+    "JR-Dosan-009": [
+      "Dosan",
+      "Yodo"
+    ],
+    "JR-Kotoku-002": [
+      "Kotoku"
+    ],
+    "JR-Kotoku-003": [
+      "Kotoku"
+    ],
+    "JR-Kotoku-004": [
+      "Kotoku"
+    ],
+    "JR-Kotoku-005": [
+      "Kotoku"
+    ],
+    "JR-Kotoku-006": [
+      "Kotoku"
+    ],
+    "JR-Kotoku-007": [
+      "Kotoku",
+      "Mugi"
+    ],
+    "JR-Tokushima-001": [
+      "Tokushima"
+    ],
+    "JR-Tokushima-002": [
+      "Tokushima"
+    ],
+    "JR-Tokushima-003": [
+      "Tokushima"
+    ],
+    "JR-Tokushima-004": [
+      "Tokushima"
+    ],
+    "JR-Tokushima-005": [
+      "Tokushima"
+    ],
+    "JR-Naruto-001": [
+      "Naruto"
+    ],
+    "JR-Naruto-002": [
+      "Naruto"
+    ],
+    "JR-Naruto-003": [
+      "Naruto"
+    ],
+    "JR-Mugi-002": [
+      "Mugi"
+    ],
+    "JR-Mugi-003": [
+      "Mugi"
+    ],
+    "JR-Mugi-004": [
+      "Mugi"
+    ],
+    "JR-Mugi-005": [
+      "Mugi"
+    ],
+    "JR-Mugi-006": [
+      "Mugi"
+    ],
+    "JR-Yodo-001": [
+      "Yodo"
+    ],
+    "JR-Yodo-003": [
+      "Yodo"
+    ],
+    "JR-Yodo-004": [
+      "Yodo"
+    ],
+    "JR-Yodo-005": [
+      "Yodo"
+    ],
+    "JR-Yodo-006": [
+      "Yodo"
+    ],
+    "JR-Uchiko-001": [
+      "Uchiko"
+    ],
+    "JR-Uchiko-002": [
+      "Uchiko"
+    ],
+    "JR-Uchiko-003": [
+      "Uchiko"
+    ],
+    "JR-NemuroMain-005": [
+      "NemuroMain"
     ]
   },
   "lineStationOrder": {
@@ -73241,7 +75093,191 @@
       "JRC-TokaidoCentral-078",
       "Arao-Kumamoto",
       "JRC-MinoAkasaka-003"
-    ]
+    ],
+    "Hisatsu": {
+      "Yatsushiro": 0,
+      "JR-Hisatsu-002": 1,
+      "Yoshimatsu": 2,
+      "JR-Hisatsu-004": 3,
+      "JR-Hisatsu-005": 4,
+      "JR-Hisatsu-006": 5
+    },
+    "HakodateMain": {
+      "JR-HakodateMain-001": 0,
+      "JR-HakodateMain-002": 1,
+      "Shin-Hakodate-Hokuto": 2,
+      "JR-HakodateMain-004": 3,
+      "JR-HakodateMain-005": 4,
+      "JR-HakodateMain-006": 5,
+      "JR-HakodateMain-007": 6,
+      "JR-HakodateMain-008": 7,
+      "JR-HakodateMain-009": 8,
+      "JR-HakodateMain-010": 9,
+      "JR-HakodateMain-011": 10
+    },
+    "NemuroMain": {
+      "JR-HakodateMain-010": 0,
+      "JR-NemuroMain-002": 1,
+      "JR-NemuroMain-003": 2,
+      "JR-NemuroMain-004": 3,
+      "JR-NemuroMain-005": 4,
+      "JR-NemuroMain-006": 5,
+      "JR-NemuroMain-007": 6,
+      "JR-NemuroMain-008": 7
+    },
+    "Chitose": {
+      "JR-HakodateMain-008": 0,
+      "Shiroishi": 1,
+      "JR-Chitose-003": 2,
+      "JR-Chitose-004": 3,
+      "JR-Chitose-005": 4,
+      "Chitose": 5,
+      "JR-Chitose-007": 6,
+      "JR-Chitose-008": 7,
+      "JR-Chitose-009": 8,
+      "JR-Chitose-010": 9
+    },
+    "MuroranMain": {
+      "JR-HakodateMain-006": 0,
+      "JR-MuroranMain-002": 1,
+      "JR-MuroranMain-003": 2,
+      "JR-MuroranMain-004": 3,
+      "JR-MuroranMain-005": 4,
+      "JR-MuroranMain-006": 5,
+      "JR-Chitose-010": 6,
+      "Oiwake": 7,
+      "JR-HakodateMain-009": 8
+    },
+    "Sekisho": {
+      "JR-Chitose-007": 0,
+      "Oiwake": 1,
+      "JR-Sekisho-003": 2,
+      "JR-Sekisho-004": 3,
+      "JR-Sekisho-005": 4,
+      "JR-NemuroMain-003": 5
+    },
+    "Furano": {
+      "JR-HakodateMain-011": 0,
+      "JR-Furano-002": 1,
+      "JR-Furano-003": 2,
+      "JR-Furano-004": 3,
+      "JR-Furano-005": 4,
+      "JR-NemuroMain-002": 5
+    },
+    "SoyaMain": {
+      "JR-HakodateMain-011": 0,
+      "Nagayama": 1,
+      "JR-SoyaMain-003": 2,
+      "JR-SoyaMain-004": 3,
+      "JR-SoyaMain-005": 4,
+      "JR-SoyaMain-006": 5,
+      "JR-SoyaMain-007": 6,
+      "JR-SoyaMain-008": 7,
+      "JR-SoyaMain-009": 8
+    },
+    "SenmoMain": {
+      "JR-SenmoMain-001": 0,
+      "JR-SenmoMain-002": 1,
+      "JR-SenmoMain-003": 2,
+      "JR-SenmoMain-004": 3,
+      "JR-SenmoMain-005": 4,
+      "JR-SenmoMain-006": 5,
+      "JR-SenmoMain-007": 6,
+      "JR-SenmoMain-008": 7,
+      "JR-SenmoMain-009": 8
+    },
+    "SekihokuMain": {
+      "JR-SekihokuMain-001": 0,
+      "JR-SekihokuMain-002": 1,
+      "JR-SekihokuMain-003": 2,
+      "JR-SekihokuMain-004": 3,
+      "JR-SekihokuMain-005": 4,
+      "JR-SekihokuMain-006": 5,
+      "JR-SenmoMain-001": 6
+    },
+    "Sassho": {
+      "JR-HakodateMain-008": 0,
+      "JR-Sassho-002": 1,
+      "JR-Sassho-003": 2,
+      "JR-Sassho-004": 3,
+      "JR-Sassho-005": 4,
+      "JR-Sassho-006": 5
+    },
+    "HidakaMain": {
+      "JR-Chitose-010": 0,
+      "JR-HidakaMain-002": 1,
+      "JR-HidakaMain-003": 2,
+      "JR-HidakaMain-004": 3
+    },
+    "Yosan": {
+      "Takamatsu": 0,
+      "JR-Yosan-002": 1,
+      "JR-Yosan-003": 2,
+      "JR-Yosan-004": 3,
+      "JR-Yosan-005": 4,
+      "JR-Yosan-006": 5,
+      "JR-Yosan-007": 6,
+      "JR-Yosan-008": 7,
+      "JR-Yosan-009": 8,
+      "JR-Yosan-010": 9,
+      "JR-Yosan-011": 10,
+      "JR-Yosan-012": 11,
+      "JR-Yosan-013": 12
+    },
+    "Dosan": {
+      "JR-Yosan-005": 0,
+      "JR-Dosan-002": 1,
+      "JR-Dosan-003": 2,
+      "JR-Dosan-004": 3,
+      "JR-Dosan-005": 4,
+      "JR-Dosan-006": 5,
+      "JR-Dosan-007": 6,
+      "JR-Dosan-008": 7,
+      "JR-Dosan-009": 8
+    },
+    "Kotoku": {
+      "Takamatsu": 0,
+      "JR-Kotoku-002": 1,
+      "JR-Kotoku-003": 2,
+      "JR-Kotoku-004": 3,
+      "JR-Kotoku-005": 4,
+      "JR-Kotoku-006": 5,
+      "JR-Kotoku-007": 6
+    },
+    "Tokushima": {
+      "JR-Tokushima-001": 0,
+      "JR-Tokushima-002": 1,
+      "JR-Tokushima-003": 2,
+      "JR-Tokushima-004": 3,
+      "JR-Tokushima-005": 4,
+      "JR-Dosan-004": 5
+    },
+    "Naruto": {
+      "JR-Naruto-001": 0,
+      "JR-Naruto-002": 1,
+      "JR-Naruto-003": 2
+    },
+    "Mugi": {
+      "JR-Kotoku-007": 0,
+      "JR-Mugi-002": 1,
+      "JR-Mugi-003": 2,
+      "JR-Mugi-004": 3,
+      "JR-Mugi-005": 4,
+      "JR-Mugi-006": 5
+    },
+    "Yodo": {
+      "JR-Yodo-001": 0,
+      "JR-Dosan-009": 1,
+      "JR-Yodo-003": 2,
+      "JR-Yodo-004": 3,
+      "JR-Yodo-005": 4,
+      "JR-Yodo-006": 5
+    },
+    "Uchiko": {
+      "JR-Uchiko-001": 0,
+      "JR-Uchiko-002": 1,
+      "JR-Uchiko-003": 2
+    }
   },
   "line_types": {
     "ChuoRapid": "rapid",
@@ -73282,7 +75318,27 @@
     "Sangu": "local",
     "Meisho": "local",
     "MinoAkasaka": "local",
-    "Fujikyu": "local"
+    "Fujikyu": "local",
+    "Hisatsu": "local",
+    "HakodateMain": "local",
+    "NemuroMain": "local",
+    "Chitose": "local",
+    "MuroranMain": "local",
+    "Sekisho": "local",
+    "Furano": "local",
+    "SoyaMain": "local",
+    "SenmoMain": "local",
+    "SekihokuMain": "local",
+    "Sassho": "local",
+    "HidakaMain": "local",
+    "Yosan": "local",
+    "Dosan": "local",
+    "Kotoku": "local",
+    "Tokushima": "local",
+    "Naruto": "local",
+    "Mugi": "local",
+    "Yodo": "local",
+    "Uchiko": "local"
   },
   "through_fallback": {
     "SotetsuDirect": {

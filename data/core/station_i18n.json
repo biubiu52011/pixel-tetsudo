@@ -31770,5 +31770,707 @@
     "zh": "美濃赤坂",
     "ko": "美濃赤坂",
     "en": "美濃赤坂"
+  },
+  "JR-Hisatsu-002": {
+    "ja": "人吉",
+    "zh": "人吉",
+    "ko": "人吉",
+    "en": "Hitoyoshi"
+  },
+  "JR-Hisatsu-004": {
+    "ja": "栗野",
+    "zh": "栗野",
+    "ko": "栗野",
+    "en": "Kurino"
+  },
+  "JR-Hisatsu-005": {
+    "ja": "嘉例川",
+    "zh": "嘉例川",
+    "ko": "嘉例川",
+    "en": "Kareigawa"
+  },
+  "JR-Hisatsu-006": {
+    "ja": "隼人",
+    "zh": "隼人",
+    "ko": "隼人",
+    "en": "Hayato"
+  },
+  "JR-HakodateMain-001": {
+    "ja": "函館",
+    "zh": "函館",
+    "ko": "函館",
+    "en": "Hakodate"
+  },
+  "JR-HakodateMain-002": {
+    "ja": "五稜郭",
+    "zh": "五稜郭",
+    "ko": "五稜郭",
+    "en": "Goryokaku"
+  },
+  "JR-HakodateMain-004": {
+    "ja": "大沼公園",
+    "zh": "大沼公園",
+    "ko": "大沼公園",
+    "en": "Onuma-Koen"
+  },
+  "JR-HakodateMain-005": {
+    "ja": "森",
+    "zh": "森",
+    "ko": "森",
+    "en": "Mori-Hokkaido"
+  },
+  "JR-HakodateMain-006": {
+    "ja": "長万部",
+    "zh": "長万部",
+    "ko": "長万部",
+    "en": "Oshamambe"
+  },
+  "JR-HakodateMain-007": {
+    "ja": "小樽",
+    "zh": "小樽",
+    "ko": "小樽",
+    "en": "Otaru"
+  },
+  "JR-HakodateMain-008": {
+    "ja": "札幌",
+    "zh": "札幌",
+    "ko": "札幌",
+    "en": "Sapporo"
+  },
+  "JR-HakodateMain-009": {
+    "ja": "岩見沢",
+    "zh": "岩見沢",
+    "ko": "岩見沢",
+    "en": "Iwamizawa"
+  },
+  "JR-HakodateMain-010": {
+    "ja": "滝川",
+    "zh": "滝川",
+    "ko": "滝川",
+    "en": "Takikawa"
+  },
+  "JR-HakodateMain-011": {
+    "ja": "旭川",
+    "zh": "旭川",
+    "ko": "旭川",
+    "en": "Asahikawa"
+  },
+  "JR-NemuroMain-002": {
+    "ja": "富良野",
+    "zh": "富良野",
+    "ko": "富良野",
+    "en": "Furano"
+  },
+  "JR-NemuroMain-003": {
+    "ja": "新得",
+    "zh": "新得",
+    "ko": "新得",
+    "en": "Shintoku"
+  },
+  "JR-NemuroMain-004": {
+    "ja": "帯広",
+    "zh": "帯広",
+    "ko": "帯広",
+    "en": "Obihiro"
+  },
+  "JR-NemuroMain-006": {
+    "ja": "釧路",
+    "zh": "釧路",
+    "ko": "釧路",
+    "en": "Kushiro"
+  },
+  "JR-NemuroMain-007": {
+    "ja": "厚岸",
+    "zh": "厚岸",
+    "ko": "厚岸",
+    "en": "Akkeshi"
+  },
+  "JR-NemuroMain-008": {
+    "ja": "根室",
+    "zh": "根室",
+    "ko": "根室",
+    "en": "Nemuro"
+  },
+  "JR-Chitose-003": {
+    "ja": "新札幌",
+    "zh": "新札幌",
+    "ko": "新札幌",
+    "en": "Shin-Sapporo"
+  },
+  "JR-Chitose-004": {
+    "ja": "北広島",
+    "zh": "北広島",
+    "ko": "北広島",
+    "en": "Kita-Hiroshima"
+  },
+  "JR-Chitose-005": {
+    "ja": "恵庭",
+    "zh": "恵庭",
+    "ko": "恵庭",
+    "en": "Eniwa"
+  },
+  "JR-Chitose-007": {
+    "ja": "南千歳",
+    "zh": "南千歳",
+    "ko": "南千歳",
+    "en": "Minami-Chitose"
+  },
+  "JR-Chitose-008": {
+    "ja": "新千歳空港",
+    "zh": "新千歳空港",
+    "ko": "新千歳空港",
+    "en": "New-Chitose-Airport"
+  },
+  "JR-Chitose-009": {
+    "ja": "沼ノ端",
+    "zh": "沼ノ端",
+    "ko": "沼ノ端",
+    "en": "Numanohata"
+  },
+  "JR-Chitose-010": {
+    "ja": "苫小牧",
+    "zh": "苫小牧",
+    "ko": "苫小牧",
+    "en": "Tomakomai"
+  },
+  "JR-MuroranMain-002": {
+    "ja": "洞爺",
+    "zh": "洞爺",
+    "ko": "洞爺",
+    "en": "Toya-Hokkaido"
+  },
+  "JR-MuroranMain-003": {
+    "ja": "伊達紋別",
+    "zh": "伊達紋別",
+    "ko": "伊達紋別",
+    "en": "Date-Mombetsu"
+  },
+  "JR-MuroranMain-004": {
+    "ja": "登別",
+    "zh": "登別",
+    "ko": "登別",
+    "en": "Noboribetsu"
+  },
+  "JR-MuroranMain-005": {
+    "ja": "東室蘭",
+    "zh": "東室蘭",
+    "ko": "東室蘭",
+    "en": "Higashi-Muroran"
+  },
+  "JR-MuroranMain-006": {
+    "ja": "室蘭",
+    "zh": "室蘭",
+    "ko": "室蘭",
+    "en": "Muroran"
+  },
+  "JR-Sekisho-003": {
+    "ja": "新夕張",
+    "zh": "新夕張",
+    "ko": "新夕張",
+    "en": "Shin-Yubari"
+  },
+  "JR-Sekisho-004": {
+    "ja": "占冠",
+    "zh": "占冠",
+    "ko": "占冠",
+    "en": "Shimukappu"
+  },
+  "JR-Sekisho-005": {
+    "ja": "トマム",
+    "zh": "トマム",
+    "ko": "トマム",
+    "en": "Tomamu"
+  },
+  "JR-Furano-002": {
+    "ja": "神楽岡",
+    "zh": "神楽岡",
+    "ko": "神楽岡",
+    "en": "Kaguraoka"
+  },
+  "JR-Furano-003": {
+    "ja": "美瑛",
+    "zh": "美瑛",
+    "ko": "美瑛",
+    "en": "Biei"
+  },
+  "JR-Furano-004": {
+    "ja": "上富良野",
+    "zh": "上富良野",
+    "ko": "上富良野",
+    "en": "Kami-Furano"
+  },
+  "JR-Furano-005": {
+    "ja": "中富良野",
+    "zh": "中富良野",
+    "ko": "中富良野",
+    "en": "Naka-Furano"
+  },
+  "JR-SoyaMain-003": {
+    "ja": "士別",
+    "zh": "士別",
+    "ko": "士別",
+    "en": "Shibetsu"
+  },
+  "JR-SoyaMain-004": {
+    "ja": "名寄",
+    "zh": "名寄",
+    "ko": "名寄",
+    "en": "Nayoro"
+  },
+  "JR-SoyaMain-005": {
+    "ja": "美深",
+    "zh": "美深",
+    "ko": "美深",
+    "en": "Bifuka"
+  },
+  "JR-SoyaMain-006": {
+    "ja": "音威子府",
+    "zh": "音威子府",
+    "ko": "音威子府",
+    "en": "Otoineppu"
+  },
+  "JR-SoyaMain-007": {
+    "ja": "幌延",
+    "zh": "幌延",
+    "ko": "幌延",
+    "en": "Horonobe"
+  },
+  "JR-SoyaMain-008": {
+    "ja": "豊富",
+    "zh": "豊富",
+    "ko": "豊富",
+    "en": "Toyotomi"
+  },
+  "JR-SoyaMain-009": {
+    "ja": "稚内",
+    "zh": "稚内",
+    "ko": "稚内",
+    "en": "Wakkanai"
+  },
+  "JR-SenmoMain-001": {
+    "ja": "網走",
+    "zh": "網走",
+    "ko": "網走",
+    "en": "Abashiri"
+  },
+  "JR-SenmoMain-002": {
+    "ja": "知床斜里",
+    "zh": "知床斜里",
+    "ko": "知床斜里",
+    "en": "Shiretoko-Shari"
+  },
+  "JR-SenmoMain-003": {
+    "ja": "緑",
+    "zh": "緑",
+    "ko": "緑",
+    "en": "Midori-Hokkaido"
+  },
+  "JR-SenmoMain-004": {
+    "ja": "川湯温泉",
+    "zh": "川湯温泉",
+    "ko": "川湯温泉",
+    "en": "Kawayu-Onsen"
+  },
+  "JR-SenmoMain-005": {
+    "ja": "摩周",
+    "zh": "摩周",
+    "ko": "摩周",
+    "en": "Mashu"
+  },
+  "JR-SenmoMain-006": {
+    "ja": "標茶",
+    "zh": "標茶",
+    "ko": "標茶",
+    "en": "Shibecha"
+  },
+  "JR-SenmoMain-007": {
+    "ja": "茅沼",
+    "zh": "茅沼",
+    "ko": "茅沼",
+    "en": "Kayanuma"
+  },
+  "JR-SenmoMain-008": {
+    "ja": "釧路湿原",
+    "zh": "釧路湿原",
+    "ko": "釧路湿原",
+    "en": "Kushiroshitsugen"
+  },
+  "JR-SenmoMain-009": {
+    "ja": "東釧路",
+    "zh": "東釧路",
+    "ko": "東釧路",
+    "en": "Higashi-Kushiro"
+  },
+  "JR-SekihokuMain-001": {
+    "ja": "新旭川",
+    "zh": "新旭川",
+    "ko": "新旭川",
+    "en": "Shin-Asahikawa"
+  },
+  "JR-SekihokuMain-002": {
+    "ja": "上川",
+    "zh": "上川",
+    "ko": "上川",
+    "en": "Kamikawa"
+  },
+  "JR-SekihokuMain-003": {
+    "ja": "白滝",
+    "zh": "白滝",
+    "ko": "白滝",
+    "en": "Shirataki"
+  },
+  "JR-SekihokuMain-004": {
+    "ja": "遠軽",
+    "zh": "遠軽",
+    "ko": "遠軽",
+    "en": "Engaru"
+  },
+  "JR-SekihokuMain-005": {
+    "ja": "北見",
+    "zh": "北見",
+    "ko": "北見",
+    "en": "Kitami"
+  },
+  "JR-SekihokuMain-006": {
+    "ja": "美幌",
+    "zh": "美幌",
+    "ko": "美幌",
+    "en": "Bihoro"
+  },
+  "JR-Sassho-002": {
+    "ja": "桑園",
+    "zh": "桑園",
+    "ko": "桑園",
+    "en": "Soen"
+  },
+  "JR-Sassho-003": {
+    "ja": "新琴似",
+    "zh": "新琴似",
+    "ko": "新琴似",
+    "en": "Shin-Kotoni"
+  },
+  "JR-Sassho-004": {
+    "ja": "あいの里公園",
+    "zh": "あいの里公園",
+    "ko": "あいの里公園",
+    "en": "Ainosato-Koen"
+  },
+  "JR-Sassho-005": {
+    "ja": "石狩当別",
+    "zh": "石狩当別",
+    "ko": "石狩当別",
+    "en": "Ishikari-Tobetsu"
+  },
+  "JR-Sassho-006": {
+    "ja": "北海道医療大学",
+    "zh": "北海道医療大学",
+    "ko": "北海道医療大学",
+    "en": "Hokkaido-Iryodaigaku"
+  },
+  "JR-HidakaMain-002": {
+    "ja": "勇払",
+    "zh": "勇払",
+    "ko": "勇払",
+    "en": "Yufutsu"
+  },
+  "JR-HidakaMain-003": {
+    "ja": "浜厚真",
+    "zh": "浜厚真",
+    "ko": "浜厚真",
+    "en": "Hama-Atsuma"
+  },
+  "JR-HidakaMain-004": {
+    "ja": "鵡川",
+    "zh": "鵡川",
+    "ko": "鵡川",
+    "en": "Mukawa"
+  },
+  "JR-Yosan-002": {
+    "ja": "坂出",
+    "zh": "坂出",
+    "ko": "坂出",
+    "en": "Sakaide"
+  },
+  "JR-Yosan-003": {
+    "ja": "宇多津",
+    "zh": "宇多津",
+    "ko": "宇多津",
+    "en": "Utazu"
+  },
+  "JR-Yosan-004": {
+    "ja": "丸亀",
+    "zh": "丸亀",
+    "ko": "丸亀",
+    "en": "Marugame"
+  },
+  "JR-Yosan-005": {
+    "ja": "多度津",
+    "zh": "多度津",
+    "ko": "多度津",
+    "en": "Tadotsu"
+  },
+  "JR-Yosan-006": {
+    "ja": "観音寺",
+    "zh": "観音寺",
+    "ko": "観音寺",
+    "en": "Kanonji"
+  },
+  "JR-Yosan-007": {
+    "ja": "伊予西条",
+    "zh": "伊予西条",
+    "ko": "伊予西条",
+    "en": "Iyo-Saijo"
+  },
+  "JR-Yosan-008": {
+    "ja": "今治",
+    "zh": "今治",
+    "ko": "今治",
+    "en": "Imabari"
+  },
+  "JR-Yosan-009": {
+    "ja": "松山",
+    "zh": "松山",
+    "ko": "松山",
+    "en": "Matsuyama"
+  },
+  "JR-Yosan-010": {
+    "ja": "伊予市",
+    "zh": "伊予市",
+    "ko": "伊予市",
+    "en": "Iyo-shi"
+  },
+  "JR-Yosan-011": {
+    "ja": "伊予大洲",
+    "zh": "伊予大洲",
+    "ko": "伊予大洲",
+    "en": "Iyo-Ozu"
+  },
+  "JR-Yosan-012": {
+    "ja": "八幡浜",
+    "zh": "八幡浜",
+    "ko": "八幡浜",
+    "en": "Yawatahama"
+  },
+  "JR-Yosan-013": {
+    "ja": "宇和島",
+    "zh": "宇和島",
+    "ko": "宇和島",
+    "en": "Uwajima"
+  },
+  "JR-Dosan-002": {
+    "ja": "善通寺",
+    "zh": "善通寺",
+    "ko": "善通寺",
+    "en": "Zentsuji"
+  },
+  "JR-Dosan-003": {
+    "ja": "琴平",
+    "zh": "琴平",
+    "ko": "琴平",
+    "en": "Kotohira"
+  },
+  "JR-Dosan-004": {
+    "ja": "阿波池田",
+    "zh": "阿波池田",
+    "ko": "阿波池田",
+    "en": "Awa-Ikeda"
+  },
+  "JR-Dosan-005": {
+    "ja": "大歩危",
+    "zh": "大歩危",
+    "ko": "大歩危",
+    "en": "Oboke"
+  },
+  "JR-Dosan-006": {
+    "ja": "土佐山田",
+    "zh": "土佐山田",
+    "ko": "土佐山田",
+    "en": "Tosa-Yamada"
+  },
+  "JR-Dosan-007": {
+    "ja": "高知",
+    "zh": "高知",
+    "ko": "高知",
+    "en": "Kochi"
+  },
+  "JR-Dosan-008": {
+    "ja": "須崎",
+    "zh": "須崎",
+    "ko": "須崎",
+    "en": "Susaki"
+  },
+  "JR-Dosan-009": {
+    "ja": "窪川",
+    "zh": "窪川",
+    "ko": "窪川",
+    "en": "Kubokawa"
+  },
+  "JR-Kotoku-002": {
+    "ja": "栗林",
+    "zh": "栗林",
+    "ko": "栗林",
+    "en": "Ritsurin"
+  },
+  "JR-Kotoku-003": {
+    "ja": "志度",
+    "zh": "志度",
+    "ko": "志度",
+    "en": "Shido"
+  },
+  "JR-Kotoku-004": {
+    "ja": "三本松",
+    "zh": "三本松",
+    "ko": "三本松",
+    "en": "Sanbonmatsu"
+  },
+  "JR-Kotoku-005": {
+    "ja": "引田",
+    "zh": "引田",
+    "ko": "引田",
+    "en": "Hiketa"
+  },
+  "JR-Kotoku-006": {
+    "ja": "板野",
+    "zh": "板野",
+    "ko": "板野",
+    "en": "Itano"
+  },
+  "JR-Kotoku-007": {
+    "ja": "徳島",
+    "zh": "徳島",
+    "ko": "徳島",
+    "en": "Tokushima"
+  },
+  "JR-Tokushima-001": {
+    "ja": "佐古",
+    "zh": "佐古",
+    "ko": "佐古",
+    "en": "Sako"
+  },
+  "JR-Tokushima-002": {
+    "ja": "石井",
+    "zh": "石井",
+    "ko": "石井",
+    "en": "Ishii-Tokushima"
+  },
+  "JR-Tokushima-003": {
+    "ja": "鴨島",
+    "zh": "鴨島",
+    "ko": "鴨島",
+    "en": "Kamojima"
+  },
+  "JR-Tokushima-004": {
+    "ja": "穴吹",
+    "zh": "穴吹",
+    "ko": "穴吹",
+    "en": "Anabuki"
+  },
+  "JR-Tokushima-005": {
+    "ja": "貞光",
+    "zh": "貞光",
+    "ko": "貞光",
+    "en": "Sadamitsu"
+  },
+  "JR-Naruto-001": {
+    "ja": "池谷",
+    "zh": "池谷",
+    "ko": "池谷",
+    "en": "Ikenotani"
+  },
+  "JR-Naruto-002": {
+    "ja": "板東",
+    "zh": "板東",
+    "ko": "板東",
+    "en": "Bando"
+  },
+  "JR-Naruto-003": {
+    "ja": "鳴門",
+    "zh": "鳴門",
+    "ko": "鳴門",
+    "en": "Naruto-Shikoku"
+  },
+  "JR-Mugi-002": {
+    "ja": "南小松島",
+    "zh": "南小松島",
+    "ko": "南小松島",
+    "en": "Minami-Komatsushima"
+  },
+  "JR-Mugi-003": {
+    "ja": "阿南",
+    "zh": "阿南",
+    "ko": "阿南",
+    "en": "Anan"
+  },
+  "JR-Mugi-004": {
+    "ja": "日和佐",
+    "zh": "日和佐",
+    "ko": "日和佐",
+    "en": "Hiwasa"
+  },
+  "JR-Mugi-005": {
+    "ja": "牟岐",
+    "zh": "牟岐",
+    "ko": "牟岐",
+    "en": "Mugi"
+  },
+  "JR-Mugi-006": {
+    "ja": "阿波海南",
+    "zh": "阿波海南",
+    "ko": "阿波海南",
+    "en": "Awa-Kainan"
+  },
+  "JR-Yodo-001": {
+    "ja": "若井",
+    "zh": "若井",
+    "ko": "若井",
+    "en": "Wakai"
+  },
+  "JR-Yodo-003": {
+    "ja": "江川崎",
+    "zh": "江川崎",
+    "ko": "江川崎",
+    "en": "Ekawasaki"
+  },
+  "JR-Yodo-004": {
+    "ja": "松丸",
+    "zh": "松丸",
+    "ko": "松丸",
+    "en": "Matsumaru"
+  },
+  "JR-Yodo-005": {
+    "ja": "近永",
+    "zh": "近永",
+    "ko": "近永",
+    "en": "Chikanaga"
+  },
+  "JR-Yodo-006": {
+    "ja": "北宇和島",
+    "zh": "北宇和島",
+    "ko": "北宇和島",
+    "en": "Kita-Uwajima"
+  },
+  "JR-Uchiko-001": {
+    "ja": "内子",
+    "zh": "内子",
+    "ko": "内子",
+    "en": "Uchiko"
+  },
+  "JR-Uchiko-002": {
+    "ja": "五十崎",
+    "zh": "五十崎",
+    "ko": "五十崎",
+    "en": "Ikazaki"
+  },
+  "JR-Uchiko-003": {
+    "ja": "新谷",
+    "zh": "新谷",
+    "ko": "新谷",
+    "en": "Shintani"
+  },
+  "JR-NemuroMain-005": {
+    "ja": "池田",
+    "zh": "池田",
+    "ko": "池田",
+    "en": "Ikeda (Hokkaido)"
   }
 }

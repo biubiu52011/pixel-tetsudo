@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### JR-HOKKAIDO-SHIKOKU-HISATSU-20261109 — 剩余 JR 线路拓扑与展示色补齐（LOCAL-COMPLETE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 范围 | 补齐 JR北海道 11 条、JR四国 8 条和肥萨线；缺口审计的 `missingFrontend` 已清空。所有新增线路标记为 `station_topology_only`，不生成车次、实时位置或车型。 |
+| 运营边界 | 肥萨线用 `operatingSegments` 分离八代—吉松不通与吉松—隼人 2026-06-28 恢复运营；日高本线仅登记苫小牧—鵡川现行区间；根室本线保留受灾服务边界说明。 |
+| 颜色 | 新增线路及既有 JR东海 13 条线路统一补 `presentation.color`、线路代码和运营商展示组；当前新增区域色值标为 `approximate_route_map`，与 `line.color` 一致，尚未宣称官方 RGB 色票审计完成。 |
+| 回归 | 新增 JR北海道/四国/肥萨线契约测试 3/3、缺口审计、生成产物和 JavaScript 语法检查通过；既有 JR 颜色/拓扑断言通过。两项跨页面缓存哈希断言仍受 Windows 工作区 CRLF 与测试按原始字节计算的既有差异影响。 |
+| 生产边界 | 直接提交 `main`；不创建 PR、不执行 Pages 发布、Supabase 写入或 Edge 部署。 |
+
 ### JR-CENTRAL-FUJIKYU-LINES-20261109 — JR东海在来线与富士急行线补齐（LOCAL-COMPLETE）
 
 | 项目 | 当前状态 |
