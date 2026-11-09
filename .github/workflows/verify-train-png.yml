@@ -70,6 +70,7 @@ on:
       - 'tests/fukuchiyama-2611-danbaro-scope.test.cjs'
       - 'tests/fukuchiyama-2611-disruption-line-color.test.cjs'
       - 'tests/jr-line-colors-20261109.test.cjs'
+      - 'tests/jr-route-topology-20261109.test.cjs'
       - 'tests/kakogawa-2611-canonical-source.test.cjs'
       - 'data/core/runtime-config.js'
       - 'data/core/data-config-bundle.js'
@@ -221,6 +222,8 @@ jobs:
         run: node --test tests/fukuchiyama-2611-disruption-line-color.test.cjs
       - name: Verify official JR Kinki colors and JR East baseline colors
         run: node --test tests/jr-line-colors-20261109.test.cjs
+      - name: Verify JR route branch topology, BRT isolation and non-JR gaps
+        run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify Kakogawa turquoise line, Tanigawa transfer and November SQL provenance
         run: node --test tests/kakogawa-2611-canonical-source.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references

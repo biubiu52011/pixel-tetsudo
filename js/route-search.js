@@ -20,6 +20,16 @@
     return ids.indexOf(lineId) >= 0;
   }
 
+  // Canonical station pairs that are not connected by JR rail. Preserve the
+  // source station inventory for SQL provenance, but never build a railway edge.
+  function _isTopologyBreak(line, a, b) {
+    return !!(line && Array.isArray(line.topologyBreaks) &&
+      line.topologyBreaks.some(function(edge) {
+        return (edge.from === a && edge.to === b) ||
+               (edge.from === b && edge.to === a);
+      }));
+  }
+
   function buildStationGraph() {
     if (_graphCache) return _graphCache;
     const graph = new Map();
@@ -36,14 +46,14 @@
         }
         
         // 连接到前一个车站（如果存在）。
-        if (i > 0) {
+        if (i > 0 && !_isTopologyBreak(line, line.stations[i - 1], station)) {
           const prev = line.stations[i - 1];
           graph.get(station).add(prev);
           graph.get(prev).add(station);
         }
         
         // 连接到后一个车站（如果存在）。
-        if (i < line.stations.length - 1) {
+        if (i < line.stations.length - 1 && !_isTopologyBreak(line, station, line.stations[i + 1])) {
           const next = line.stations[i + 1];
           graph.get(station).add(next);
           if (graph.has(next)) { graph.get(next).add(station); }
@@ -207,7 +217,8 @@
         stations: l.stations,
         positions: positions,
         durations: Array.isArray(l.durations) ? l.durations : [],
-        durationTotalMin: Number(l.durationTotalMin)
+        durationTotalMin: Number(l.durationTotalMin),
+        topologyBreaks: Array.isArray(l.topologyBreaks) ? l.topologyBreaks : []
       };
     }
     _layerCache = { stationLines: stationLines, lineMeta: lineMeta, transferPenalty: buildTransferPenalty(lines), aliasTransfers: buildAliasTransfers(lines), stationGeoContexts: stationGeoContexts, stationCoords: sourceCoords };
@@ -219,6 +230,8 @@
   // 始终按两站之间的区间索引，而不是按行驶方向索引。
   function segmentDuration(meta, segmentIndex) {
     if (!meta || segmentIndex == null) return 2;
+    if (Array.isArray(meta.stations) && _isTopologyBreak(meta,meta.stations[segmentIndex],meta.stations[segmentIndex+1]))
+      return Infinity;
     const explicit = Number(meta.durations && meta.durations[segmentIndex]);
     if (Number.isFinite(explicit) && explicit > 0) return explicit;
     const count = Math.max(1, (meta.stations || []).length - 1);
@@ -375,6 +388,7 @@
         const nst = meta.stations[ai];
         const nk = nst + '\u0001' + lid;
         let d = segmentDuration(meta, Math.min(pos, ai));
+        if (!Number.isFinite(d)) continue; // a third-sector or abandoned gap is not a ride
         const nc = cost + d;
         const rc = dist.get(nk);
         if (!rc || nc < rc[0] || (nc === rc[0] && transfers < rc[1])) {
@@ -519,7 +533,8 @@
           duration = durationBetween({
             stations: line && line.stations || Object.keys(o),
             durations: line && line.durations || window.RailwayDB.getLineDurations(lineId) || [],
-            durationTotalMin: line && line.durationTotalMin
+            durationTotalMin: line && line.durationTotalMin,
+            topologyBreaks: line && line.topologyBreaks || []
           }, fi, ti);
         }
       }
@@ -657,7 +672,7 @@
       var l=layer.lineMeta[id],x=l.positions.get(a),y=l.positions.get(b);
       if(x==null||y==null||x===y)return;
       var cost=durationBetween(l,x,y),info=[{from:a,to:b,lines:[id]}];
-      if(cost>0)direct.push({path:[a,b],durationMin:cost,segments:Math.abs(y-x),
+      if(Number.isFinite(cost)&&cost>0)direct.push({path:[a,b],durationMin:cost,segments:Math.abs(y-x),
         lineInfo:info,mode:mode||'combo',routeSegments:buildRouteSegments({lineInfo:info})});
     });
     direct.sort(function(x,y){return x.durationMin-y.durationMin;}).forEach(add);

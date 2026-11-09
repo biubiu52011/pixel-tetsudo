@@ -30219,23 +30219,9 @@
         "Nonodake",
         "Rikuzen-Toyosato",
         "Mitakedo",
-        "Yanagitsu",
-        "Rikuzen-Yokoyama",
-        "Rikuzen-Tokura",
-        "Shizugawa",
-        "Shimizuhama",
-        "Utatsu",
-        "Rikuzen-Minato",
-        "Higashi-Shizugawa",
-        "Rikuzen-Koisumi",
-        "Motoyoshi",
-        "Koganazawa",
-        "Oyakaigan",
-        "Kesennuma"
+        "Yanagitsu"
       ],
       "durations": [
-        2,
-        2,
         2,
         2,
         2,
@@ -30247,12 +30233,6 @@
         {
           "station": "Maeyachi",
           "lineId": "Ishinomaki",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Kesennuma",
-          "lineId": "Ofunato",
           "type": "in",
           "note": ""
         }
@@ -30273,7 +30253,12 @@
         ],
         "operatorGroup": "JR_EAST"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "topologyAudit": {
+        "railEndsAt": "Yanagitsu",
+        "excludedStationCount": 12,
+        "reason": "brt-not-rail-beyond-yanagitsu"
+      }
     },
     "Kiryu": {
       "name": "Kiryu",
@@ -31456,18 +31441,7 @@
         "Yagoshi",
         "Orikabe",
         "Niitsuki",
-        "Kesennuma",
-        "Shishiori-Karakuwa",
-        "Kami-Shishiori",
-        "Rikuzen-Yahagi",
-        "Takekoma",
-        "Rikuzen-Takata",
-        "Wakinosawa",
-        "Otomo",
-        "Hosoura",
-        "Shimo-Funato",
-        "Ofunato",
-        "Sakari"
+        "Kesennuma"
       ],
       "durations": [
         2,
@@ -31515,7 +31489,12 @@
         ],
         "operatorGroup": "JR_EAST"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "topologyAudit": {
+        "railEndsAt": "Kesennuma",
+        "excludedStationCount": 11,
+        "reason": "brt-not-rail-beyond-kesennuma"
+      }
     },
     "Oga": {
       "name": "大船渡线",
@@ -33386,6 +33365,18 @@
             "source": "https://timetables.jreast.co.jp/2610/train/050/051881.html",
             "confidence": "HIGH"
           }
+        }
+      ],
+      "topologyBreaks": [
+        {
+          "from": "Yokokawa",
+          "to": "Shinonoi",
+          "reason": "non-JR-intermediate"
+        },
+        {
+          "from": "Nagano",
+          "to": "Naoetsu",
+          "reason": "third-sector-intermediate"
         }
       ]
     },
@@ -40766,7 +40757,19 @@
       ],
       "nameZh": "北陆新干线",
       "nameKo": "호쿠리쿠 신칸센",
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "operatorSections": [
+        {
+          "operator": "JR-East",
+          "from": "Tokyo",
+          "to": "Joetsu-Myoko"
+        },
+        {
+          "operator": "JR-West",
+          "from": "Joetsu-Myoko",
+          "to": "Tsuruga"
+        }
+      ]
     },
     "YamagataShinkansen": {
       "name": "YamagataShinkansen",
@@ -41593,12 +41596,11 @@
       "region": "Kansai Area",
       "type": "straight",
       "image": "",
-      "durationTotalMin": 508,
+      "durationTotalMin": 504,
       "branchOf": null,
       "stations": [
         "Kobe",
         "Hyougo",
-        "Wada-Misaki",
         "Shinnagata",
         "Takatori",
         "Suma-Kaihin-Kouen",
@@ -41851,7 +41853,6 @@
         4,
         4,
         4,
-        4,
         4
       ],
       "throughServices": [
@@ -41955,7 +41956,7 @@
       "region": "Kansai Area",
       "type": "straight",
       "image": "../images/鉄道/JR西日本/近畿_Q.png",
-      "durationTotalMin": 162,
+      "durationTotalMin": 147,
       "branchOf": null,
       "stations": [
         "Nagoya",
@@ -42007,19 +42008,9 @@
         "Tennoji",
         "Shin-Imamiya",
         "Imamiya",
-        "J-R-Nanba",
-        "Taisho",
-        "Bentencho",
-        "Nishi-Kujo",
-        "Fukushima-Osaka",
-        "Osaka"
+        "J-R-Nanba"
       ],
       "durations": [
-        3,
-        3,
-        3,
-        3,
-        3,
         3,
         3,
         3,
@@ -42076,24 +42067,6 @@
       ],
       "transferStations": [
         {
-          "station": "Osaka",
-          "lineId": "TokaidoKansai",
-          "type": "in/out",
-          "note": "大和路線から京都/神戸線"
-        },
-        {
-          "station": "Osaka",
-          "lineId": "OsakaLoop",
-          "type": "in/out",
-          "note": "大阪環状線"
-        },
-        {
-          "station": "Osaka",
-          "lineId": "Fukuchiyama",
-          "type": "in/out",
-          "note": "JR東西線"
-        },
-        {
           "station": "Tennoji",
           "lineId": "OsakaLoop",
           "type": "in/out",
@@ -42149,6 +42122,11 @@
         ],
         "operatorGroup": "JR_WEST",
         "icon": "../images/鉄道/JR西日本/近畿_Q.png"
+      },
+      "topologyAudit": {
+        "railEndsAt": "J-R-Nanba",
+        "excludedStationCount": 5,
+        "reason": "osaka-loop-through-service-not-kansai-main-track"
       }
     },
     "Hanwa": {
@@ -42161,7 +42139,7 @@
       "region": "Kansai Area",
       "type": "straight",
       "image": "../images/鉄道/JR西日本/近畿_R.png",
-      "durationTotalMin": 105,
+      "durationTotalMin": 102,
       "branchOf": null,
       "stations": [
         "Tennoji",
@@ -42178,7 +42156,6 @@
         "Uenoshiba",
         "Tsuruhara",
         "Otori",
-        "Higashi-Hagoromo",
         "Toki",
         "Kita-Shinoda",
         "Shinodayama",
@@ -42202,7 +42179,6 @@
         "Wakayama"
       ],
       "durations": [
-        3,
         3,
         3,
         3,
@@ -42518,7 +42494,7 @@
       "region": "Kansai Area",
       "type": "straight",
       "image": "../images/鉄道/JR西日本/山陰_E.png",
-      "durationTotalMin": 805,
+      "durationTotalMin": 800,
       "branchOf": null,
       "stations": [
         "Kyoto",
@@ -42660,7 +42636,6 @@
         "Ii",
         "Nagato-Misumi",
         "Nagato-Shi",
-        "Senzaki",
         "Ki-Hato",
         "Nagato-Furuichi",
         "Hitomaro",
@@ -42685,7 +42660,6 @@
         "Shimonoseki"
       ],
       "durations": [
-        5,
         5,
         5,
         5,
@@ -44126,7 +44100,14 @@
         ],
         "operatorGroup": "JR_KYUSHU",
         "code": "JA/JB"
-      }
+      },
+      "topologyBreaks": [
+        {
+          "from": "Yatsushiro",
+          "to": "Satsuma-Sendai",
+          "reason": "hisatsu-orange-railway"
+        }
+      ]
     },
     "NagasakiMain": {
       "name": "NagasakiMain",
@@ -45159,7 +45140,7 @@
       "nameJa": "博多南線",
       "code": "HakataMinami",
       "color": "#9370db",
-      "operator": "JR-Kyushu",
+      "operator": "JR-West",
       "region": "Kyushu Area",
       "type": "straight",
       "image": "",
@@ -45212,7 +45193,7 @@
         "lineIds": [
           "HakataMinami"
         ],
-        "operatorGroup": "JR_KYUSHU"
+        "operatorGroup": "JR_WEST"
       }
     },
     "KashiiLine": {
@@ -47963,7 +47944,7 @@
       "region": "Kyushu Area",
       "type": "local",
       "image": "../images/鉄道/JR九州/九州_JI.png",
-      "durationTotalMin": 72,
+      "durationTotalMin": 45,
       "branchOf": null,
       "stations": [
         "Kokura",
@@ -47981,27 +47962,9 @@
         "JRW-Hitahikosan-1191415",
         "JRW-Hitahikosan-1191416",
         "JRW-Hitahikosan-1191417",
-        "JRW-Hitahikosan-1191418",
-        "JRW-Hitahikosan-1191429",
-        "JRW-Hitahikosan-1191419",
-        "JRW-Hitahikosan-1191420",
-        "JRW-Hitahikosan-1191421",
-        "JRW-Hitahikosan-1191422",
-        "JRW-Hitahikosan-1191423",
-        "JRW-Hitahikosan-1191424",
-        "JRW-Hitahikosan-1191425",
-        "Hita"
+        "JRW-Hitahikosan-1191418"
       ],
       "durations": [
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
         3,
         3,
         3,
@@ -48031,12 +47994,6 @@
           "lineId": "Gotoji",
           "type": "in",
           "note": "田川后藤寺站接续后藤寺线"
-        },
-        {
-          "station": "Hita",
-          "lineId": "Kyudai",
-          "type": "in",
-          "note": "日田站接续久大本线"
         }
       ],
       "nameZh": "日田彦山线",
@@ -48055,6 +48012,11 @@
           "Hitahikosan"
         ],
         "operatorGroup": "JR_KYUSHU"
+      },
+      "topologyAudit": {
+        "railEndsAt": "JRW-Hitahikosan-1191418",
+        "excludedStationCount": 9,
+        "reason": "brt-not-rail-beyond-soeda"
       }
     },
     "OitoWest": {
@@ -48389,6 +48351,135 @@
           "HojoRailway"
         ],
         "operatorGroup": "HOJO_RAILWAY"
+      }
+    },
+    "SanyoWadamisaki": {
+      "name": "SanyoWadamisaki",
+      "nameEn": "Wadamisaki Line",
+      "nameJa": "和田岬線",
+      "nameZh": "和田岬线",
+      "nameKo": "와다미사키선",
+      "code": "SanyoWadamisaki",
+      "color": "#009944",
+      "operator": "JR-West",
+      "region": "Kansai Area",
+      "type": "branch",
+      "branchOf": "SanyoMain",
+      "stations": [
+        "Hyougo",
+        "Wada-Misaki"
+      ],
+      "durations": [
+        4
+      ],
+      "durationTotalMin": 4,
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Hyougo",
+          "lineId": "SanyoMain",
+          "type": "in/out",
+          "note": "同站换乘"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "presentation": {
+        "nameJa": "和田岬線",
+        "nameZh": "和田岬线",
+        "nameEn": "Wadamisaki Line",
+        "nameKo": "와다미사키선",
+        "color": "#009944",
+        "order": 50.1,
+        "lineIds": [
+          "SanyoWadamisaki"
+        ],
+        "operatorGroup": "JR_WEST"
+      }
+    },
+    "HanwaHagoromo": {
+      "name": "HanwaHagoromo",
+      "nameEn": "Hagoromo Branch Line",
+      "nameJa": "羽衣線",
+      "nameZh": "羽衣线",
+      "nameKo": "하고로모선",
+      "code": "HanwaHagoromo",
+      "color": "#f28c00",
+      "operator": "JR-West",
+      "region": "Kansai Area",
+      "type": "branch",
+      "branchOf": "Hanwa",
+      "stations": [
+        "Otori",
+        "Higashi-Hagoromo"
+      ],
+      "durations": [
+        3
+      ],
+      "durationTotalMin": 3,
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Otori",
+          "lineId": "Hanwa",
+          "type": "in/out",
+          "note": "同站换乘"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "presentation": {
+        "nameJa": "羽衣線",
+        "nameZh": "羽衣线",
+        "nameEn": "Hagoromo Branch Line",
+        "nameKo": "하고로모선",
+        "color": "#f28c00",
+        "order": 16.1,
+        "lineIds": [
+          "HanwaHagoromo"
+        ],
+        "operatorGroup": "JR_WEST"
+      }
+    },
+    "SaninSenzaki": {
+      "name": "SaninSenzaki",
+      "nameEn": "Senzaki Branch Line",
+      "nameJa": "山陰本線仙崎支線",
+      "nameZh": "山阴本线仙崎支线",
+      "nameKo": "센자키 지선",
+      "code": "SaninSenzaki",
+      "color": "#8b4513",
+      "operator": "JR-West",
+      "region": "Kansai Area",
+      "type": "branch",
+      "branchOf": "SaninMain",
+      "stations": [
+        "Nagato-Shi",
+        "Senzaki"
+      ],
+      "durations": [
+        5
+      ],
+      "durationTotalMin": 5,
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Nagato-Shi",
+          "lineId": "SaninMain",
+          "type": "in/out",
+          "note": "同站换乘"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "presentation": {
+        "nameJa": "山陰本線仙崎支線",
+        "nameZh": "山阴本线仙崎支线",
+        "nameEn": "Senzaki Branch Line",
+        "nameKo": "센자키 지선",
+        "color": "#8b4513",
+        "order": 5.1,
+        "lineIds": [
+          "SaninSenzaki"
+        ],
+        "operatorGroup": "JR_WEST"
       }
     }
   },
@@ -55595,43 +55686,7 @@
     "Yanagitsu": [
       "Kesennuma"
     ],
-    "Rikuzen-Yokoyama": [
-      "Kesennuma"
-    ],
-    "Rikuzen-Tokura": [
-      "Kesennuma"
-    ],
-    "Shizugawa": [
-      "Kesennuma"
-    ],
-    "Shimizuhama": [
-      "Kesennuma"
-    ],
-    "Utatsu": [
-      "Kesennuma"
-    ],
-    "Rikuzen-Minato": [
-      "Kesennuma",
-      "Ofunato"
-    ],
-    "Higashi-Shizugawa": [
-      "Kesennuma"
-    ],
-    "Rikuzen-Koisumi": [
-      "Kesennuma",
-      "Ofunato"
-    ],
-    "Motoyoshi": [
-      "Kesennuma"
-    ],
-    "Koganazawa": [
-      "Kesennuma"
-    ],
-    "Oyakaigan": [
-      "Kesennuma"
-    ],
     "Kesennuma": [
-      "Kesennuma",
       "Ofunato"
     ],
     "Sanmaibashi": [
@@ -56023,9 +56078,6 @@
     "Hanaizumi": [
       "Ofunato",
       "TohokuMain"
-    ],
-    "Rikuzen-Yahagi": [
-      "Ofunato"
     ],
     "Senmaya": [
       "Ofunato"
@@ -59827,7 +59879,8 @@
     "Kokura": [
       "SanyoShinkansen",
       "KagoshimaMain",
-      "Nippo"
+      "Nippo",
+      "Hitahikosan"
     ],
     "Hakata": [
       "SanyoShinkansen",
@@ -59908,7 +59961,6 @@
     "Osaka": [
       "OsakaLoop",
       "TokaidoKansai",
-      "KansaiMain",
       "Fukuchiyama",
       "OsakaHigashi"
     ],
@@ -59957,23 +60009,19 @@
       "OsakaLoop"
     ],
     "Taisho": [
-      "OsakaLoop",
-      "KansaiMain"
+      "OsakaLoop"
     ],
     "Bentencho": [
-      "OsakaLoop",
-      "KansaiMain"
+      "OsakaLoop"
     ],
     "Nishi-Kujo": [
-      "OsakaLoop",
-      "KansaiMain"
+      "OsakaLoop"
     ],
     "Noda": [
       "OsakaLoop"
     ],
     "Fukushima-Osaka": [
-      "OsakaLoop",
-      "KansaiMain"
+      "OsakaLoop"
     ],
     "Nishiooji": [
       "TokaidoKansai"
@@ -60066,10 +60114,11 @@
       "TokaidoKansai"
     ],
     "Hyougo": [
-      "SanyoMain"
+      "SanyoMain",
+      "SanyoWadamisaki"
     ],
     "Wada-Misaki": [
-      "SanyoMain"
+      "SanyoWadamisaki"
     ],
     "Shinnagata": [
       "SanyoMain"
@@ -60587,10 +60636,11 @@
       "Hanwa"
     ],
     "Otori": [
-      "Hanwa"
+      "Hanwa",
+      "HanwaHagoromo"
     ],
     "Higashi-Hagoromo": [
-      "Hanwa"
+      "HanwaHagoromo"
     ],
     "Toki": [
       "Hanwa"
@@ -61175,10 +61225,11 @@
       "SaninMain"
     ],
     "Nagato-Shi": [
-      "SaninMain"
+      "SaninMain",
+      "SaninSenzaki"
     ],
     "Senzaki": [
-      "SaninMain"
+      "SaninSenzaki"
     ],
     "Ki-Hato": [
       "SaninMain"
@@ -61972,7 +62023,8 @@
       "Nippo"
     ],
     "Jono": [
-      "Nippo"
+      "Nippo",
+      "Hitahikosan"
     ],
     "Abeyama-Kōen": [
       "Nippo"
@@ -63283,7 +63335,8 @@
       "Gotoji"
     ],
     "Tagawa-Gotoji": [
-      "Gotoji"
+      "Gotoji",
+      "Hitahikosan"
     ],
     "Haiki": [
       "Omura"
@@ -63994,6 +64047,75 @@
     ],
     "Hojo-Machi": [
       "HojoRailway"
+    ],
+    "Oji-Nara": [
+      "KansaiMain"
+    ],
+    "Rikuchu-Kanzaki": [
+      "Ofunato"
+    ],
+    "Iwanoshita": [
+      "Ofunato"
+    ],
+    "Rikuchu-Matsukawa": [
+      "Ofunato"
+    ],
+    "Geibikei": [
+      "Ofunato"
+    ],
+    "Shibajuku": [
+      "Ofunato"
+    ],
+    "Surisawa": [
+      "Ofunato"
+    ],
+    "Yagoshi": [
+      "Ofunato"
+    ],
+    "Orikabe": [
+      "Ofunato"
+    ],
+    "Niitsuki": [
+      "Ofunato"
+    ],
+    "JRW-Hitahikosan-1191405": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191406": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191407": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191408": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191409": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191410": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191411": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191412": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191413": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191415": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191416": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191417": [
+      "Hitahikosan"
+    ],
+    "JRW-Hitahikosan-1191418": [
+      "Hitahikosan"
     ]
   },
   "lineStationOrder": {
@@ -65652,19 +65774,7 @@
       "Nonodake": 2,
       "Rikuzen-Toyosato": 3,
       "Mitakedo": 4,
-      "Yanagitsu": 5,
-      "Rikuzen-Yokoyama": 6,
-      "Rikuzen-Tokura": 7,
-      "Shizugawa": 8,
-      "Shimizuhama": 9,
-      "Utatsu": 10,
-      "Rikuzen-Minato": 11,
-      "Higashi-Shizugawa": 12,
-      "Rikuzen-Koisumi": 13,
-      "Motoyoshi": 14,
-      "Koganazawa": 15,
-      "Oyakaigan": 16,
-      "Kesennuma": 17
+      "Yanagitsu": 5
     },
     "Kiryu": {
       "Ota": 0,
@@ -65884,17 +65994,18 @@
     "Ofunato": {
       "Ichinoseki": 0,
       "Mataki": 1,
-      "Rikuzen-Koisumi": 2,
-      "Hanaizumi": 3,
-      "Rikuzen-Yahagi": 4,
-      "Senmaya": 5,
-      "Konashi": 6,
-      "Rikuzen-Ono": 7,
-      "Wakuya": 8,
-      "Rikuzen-Tomiyachi": 9,
-      "Toyoma": 10,
-      "Rikuzen-Minato": 11,
-      "Kesennuma": 12
+      "Rikuchu-Kanzaki": 2,
+      "Iwanoshita": 3,
+      "Rikuchu-Matsukawa": 4,
+      "Geibikei": 5,
+      "Shibajuku": 6,
+      "Surisawa": 7,
+      "Senmaya": 8,
+      "Konashi": 9,
+      "Yagoshi": 10,
+      "Orikabe": 11,
+      "Niitsuki": 12,
+      "Kesennuma": 13
     },
     "Oga": {
       "Detohama": 1,
@@ -67641,132 +67752,131 @@
     "SanyoMain": {
       "Kobe": 0,
       "Hyougo": 1,
-      "Wada-Misaki": 2,
-      "Shinnagata": 3,
-      "Takatori": 4,
-      "Suma-Kaihin-Kouen": 5,
-      "Suma": 6,
-      "Shioya": 7,
-      "Tarumi": 8,
-      "Maiko": 9,
-      "Asagiri": 10,
-      "Akashi": 11,
-      "Nishi-Akashi": 12,
-      "Okubo-Hyogo": 13,
-      "Uozumi": 14,
-      "Tsuchiyama": 15,
-      "Higashi-Kakogawa": 16,
-      "Kakogawa": 17,
-      "Houden": 18,
-      "Sone": 19,
-      "Himeji-Bessho": 20,
-      "O-Chaku": 21,
-      "Higashi-Himeji": 22,
-      "Himeji": 23,
-      "Tegara-Yamahira-Kazuhiro-Sono": 24,
-      "Ei-Ga-Ho": 25,
-      "Harima-Katsuhara": 26,
-      "Amiboshi": 27,
-      "Tatsuno-Kansai": 28,
-      "Aioi-Hyogo": 29,
-      "Une": 30,
-      "Kamigoori": 31,
-      "Mitsuishi": 32,
-      "Yoshinaga": 33,
-      "Waki": 34,
-      "Kumayama": 35,
-      "Mantomi": 36,
-      "Seto": 37,
-      "Joutou": 38,
-      "Toukou-Yama": 39,
-      "Takashima": 40,
-      "Nishikawa-Hara": 41,
-      "Okayama": 42,
-      "Kita-Nagase": 43,
-      "Niwase": 44,
-      "Naka-Shou": 45,
-      "Kurashiki": 46,
-      "Nishi-Achi": 47,
-      "Shin-Kurashiki": 48,
-      "Kanemitsu": 49,
-      "Kamogata": 50,
-      "Satoshou": 51,
-      "Kasaoka": 52,
-      "Daimon-Hiroshima": 53,
-      "Toufuku-Yama": 54,
-      "Fukuyama": 55,
-      "Bingo-Akasaka": 56,
-      "Matsunaga": 57,
-      "Higashio-Michi": 58,
-      "Onomichi": 59,
-      "Itosaki": 60,
-      "Mihara": 61,
-      "Hongou": 62,
-      "Kawauchi": 63,
-      "Irino": 64,
-      "Shiraichi": 65,
-      "Nishikou-Ya": 66,
-      "Saijou": 67,
-      "Jike": 68,
-      "Hachihonmatsu": 69,
-      "Seno": 70,
-      "Nakano-Higashi": 71,
-      "Aki-Nakano": 72,
-      "Umidashi": 73,
-      "Kouyou": 74,
-      "Tenjin-Kawa": 75,
-      "Hiroshima": 76,
-      "Shin-Shiro-Shima": 77,
-      "Yokokawa": 78,
-      "Nishihiro-Shima": 79,
-      "Arai-Kuchi": 80,
-      "Itsukaichi": 81,
-      "Hatsukaichi": 82,
-      "Miyauchi-Kushi-Ko": 83,
-      "Ajina": 84,
-      "Miyajima-Kuchi": 85,
-      "Mae-Sora": 86,
-      "Oono-Ura": 87,
-      "Ku-Nami": 88,
-      "Ootake": 89,
-      "Waki-Kansai": 90,
-      "Iwakuni": 91,
-      "Minami-Iwakuni": 92,
-      "Fujiu": 93,
-      "Toori-Tsu": 94,
-      "Yuu": 95,
-      "Kamishiro": 96,
-      "Oohata": 97,
-      "Yanai-Minato": 98,
-      "Yanai": 99,
-      "Tabuse": 100,
-      "Iwata": 101,
-      "Shimada": 102,
-      "Hikari": 103,
-      "Kudamatsu": 104,
-      "Kushi-Ke-Hama": 105,
-      "Tokuyama": 106,
-      "Shinnanyou": 107,
-      "Fukukawa": 108,
-      "Toda-Yamaguchi": 109,
-      "Tonomi": 110,
-      "Houfu": 111,
-      "Daidou": 112,
-      "Yotsutsuji": 113,
-      "Shin-Yamaguchi": 114,
-      "Ka-Kawa": 115,
-      "Hon-Yura": 116,
-      "Kotou": 117,
-      "Ube": 118,
-      "Onoda": 119,
-      "Asa": 120,
-      "Hanyuu": 121,
-      "Ozuki": 122,
-      "Choufu": 123,
-      "Shin-Shimonoseki": 124,
-      "Hata-Nama": 125,
-      "Shimonoseki": 126,
-      "Moji": 127
+      "Shinnagata": 2,
+      "Takatori": 3,
+      "Suma-Kaihin-Kouen": 4,
+      "Suma": 5,
+      "Shioya": 6,
+      "Tarumi": 7,
+      "Maiko": 8,
+      "Asagiri": 9,
+      "Akashi": 10,
+      "Nishi-Akashi": 11,
+      "Okubo-Hyogo": 12,
+      "Uozumi": 13,
+      "Tsuchiyama": 14,
+      "Higashi-Kakogawa": 15,
+      "Kakogawa": 16,
+      "Houden": 17,
+      "Sone": 18,
+      "Himeji-Bessho": 19,
+      "O-Chaku": 20,
+      "Higashi-Himeji": 21,
+      "Himeji": 22,
+      "Tegara-Yamahira-Kazuhiro-Sono": 23,
+      "Ei-Ga-Ho": 24,
+      "Harima-Katsuhara": 25,
+      "Amiboshi": 26,
+      "Tatsuno-Kansai": 27,
+      "Aioi-Hyogo": 28,
+      "Une": 29,
+      "Kamigoori": 30,
+      "Mitsuishi": 31,
+      "Yoshinaga": 32,
+      "Waki": 33,
+      "Kumayama": 34,
+      "Mantomi": 35,
+      "Seto": 36,
+      "Joutou": 37,
+      "Toukou-Yama": 38,
+      "Takashima": 39,
+      "Nishikawa-Hara": 40,
+      "Okayama": 41,
+      "Kita-Nagase": 42,
+      "Niwase": 43,
+      "Naka-Shou": 44,
+      "Kurashiki": 45,
+      "Nishi-Achi": 46,
+      "Shin-Kurashiki": 47,
+      "Kanemitsu": 48,
+      "Kamogata": 49,
+      "Satoshou": 50,
+      "Kasaoka": 51,
+      "Daimon-Hiroshima": 52,
+      "Toufuku-Yama": 53,
+      "Fukuyama": 54,
+      "Bingo-Akasaka": 55,
+      "Matsunaga": 56,
+      "Higashio-Michi": 57,
+      "Onomichi": 58,
+      "Itosaki": 59,
+      "Mihara": 60,
+      "Hongou": 61,
+      "Kawauchi": 62,
+      "Irino": 63,
+      "Shiraichi": 64,
+      "Nishikou-Ya": 65,
+      "Saijou": 66,
+      "Jike": 67,
+      "Hachihonmatsu": 68,
+      "Seno": 69,
+      "Nakano-Higashi": 70,
+      "Aki-Nakano": 71,
+      "Umidashi": 72,
+      "Kouyou": 73,
+      "Tenjin-Kawa": 74,
+      "Hiroshima": 75,
+      "Shin-Shiro-Shima": 76,
+      "Yokokawa": 77,
+      "Nishihiro-Shima": 78,
+      "Arai-Kuchi": 79,
+      "Itsukaichi": 80,
+      "Hatsukaichi": 81,
+      "Miyauchi-Kushi-Ko": 82,
+      "Ajina": 83,
+      "Miyajima-Kuchi": 84,
+      "Mae-Sora": 85,
+      "Oono-Ura": 86,
+      "Ku-Nami": 87,
+      "Ootake": 88,
+      "Waki-Kansai": 89,
+      "Iwakuni": 90,
+      "Minami-Iwakuni": 91,
+      "Fujiu": 92,
+      "Toori-Tsu": 93,
+      "Yuu": 94,
+      "Kamishiro": 95,
+      "Oohata": 96,
+      "Yanai-Minato": 97,
+      "Yanai": 98,
+      "Tabuse": 99,
+      "Iwata": 100,
+      "Shimada": 101,
+      "Hikari": 102,
+      "Kudamatsu": 103,
+      "Kushi-Ke-Hama": 104,
+      "Tokuyama": 105,
+      "Shinnanyou": 106,
+      "Fukukawa": 107,
+      "Toda-Yamaguchi": 108,
+      "Tonomi": 109,
+      "Houfu": 110,
+      "Daidou": 111,
+      "Yotsutsuji": 112,
+      "Shin-Yamaguchi": 113,
+      "Ka-Kawa": 114,
+      "Hon-Yura": 115,
+      "Kotou": 116,
+      "Ube": 117,
+      "Onoda": 118,
+      "Asa": 119,
+      "Hanyuu": 120,
+      "Ozuki": 121,
+      "Choufu": 122,
+      "Shin-Shimonoseki": 123,
+      "Hata-Nama": 124,
+      "Shimonoseki": 125,
+      "Moji": 126
     },
     "KansaiMain": {
       "Nagoya": 0,
@@ -67804,7 +67914,7 @@
       "Koriyama-Nara": 32,
       "Yamato-Koizumi": 33,
       "Houryuuji": 34,
-      "Oji": 35,
+      "Oji-Nara": 35,
       "Misato-Nara": 36,
       "Kawauchi-Ken-Ue": 37,
       "Takaida": 38,
@@ -67818,12 +67928,7 @@
       "Tennoji": 46,
       "Shin-Imamiya": 47,
       "Imamiya": 48,
-      "J-R-Nanba": 49,
-      "Taisho": 50,
-      "Bentencho": 51,
-      "Nishi-Kujo": 52,
-      "Fukushima-Osaka": 53,
-      "Osaka": 54
+      "J-R-Nanba": 49
     },
     "Hanwa": {
       "Tennoji": 0,
@@ -67840,28 +67945,27 @@
       "Uenoshiba": 11,
       "Tsuruhara": 12,
       "Otori": 13,
-      "Higashi-Hagoromo": 14,
-      "Toki": 15,
-      "Kita-Shinoda": 16,
-      "Shinodayama": 17,
-      "Izumi-Fuchu": 18,
-      "Kumeda": 19,
-      "Kudamatsu": 20,
-      "Higashi-Kishiwada": 21,
-      "Higashi-Kaizuka": 22,
-      "Izumi-Hashimoto": 23,
-      "Higashi-Sano": 24,
-      "Kumatori": 25,
-      "Hineano": 26,
-      "Nagataki": 27,
-      "Shinge": 28,
-      "Izumi-Sunagawa": 29,
-      "Izumi-Tottori": 30,
-      "Yamanakadani": 31,
-      "Kii": 32,
-      "Musota": 33,
-      "Kii-Nakano-shima": 34,
-      "Wakayama": 35
+      "Toki": 14,
+      "Kita-Shinoda": 15,
+      "Shinodayama": 16,
+      "Izumi-Fuchu": 17,
+      "Kumeda": 18,
+      "Kudamatsu": 19,
+      "Higashi-Kishiwada": 20,
+      "Higashi-Kaizuka": 21,
+      "Izumi-Hashimoto": 22,
+      "Higashi-Sano": 23,
+      "Kumatori": 24,
+      "Hineano": 25,
+      "Nagataki": 26,
+      "Shinge": 27,
+      "Izumi-Sunagawa": 28,
+      "Izumi-Tottori": 29,
+      "Yamanakadani": 30,
+      "Kii": 31,
+      "Musota": 32,
+      "Kii-Nakano-shima": 33,
+      "Wakayama": 34
     },
     "Nara": {
       "Kyoto": 0,
@@ -68050,29 +68154,28 @@
       "Ii": 136,
       "Nagato-Misumi": 137,
       "Nagato-Shi": 138,
-      "Senzaki": 139,
-      "Ki-Hato": 140,
-      "Nagato-Furuichi": 141,
-      "Hitomaro": 142,
-      "Igami": 143,
-      "Nagato-Awano": 144,
-      "Agawa": 145,
-      "Kottoi": 146,
-      "Taki-Bu": 147,
-      "Nagato-Futami": 148,
-      "Uga-Hongou": 149,
-      "Yudama": 150,
-      "Ogushi": 151,
-      "Kawatana-Onsen": 152,
-      "Kuroi-Mura": 153,
-      "Ume-Ke-Touge": 154,
-      "Yoshimi": 155,
-      "Fukue": 156,
-      "Yasuoka": 157,
-      "Kaji-Kuri-Sato-Daichi": 158,
-      "Ryoura-Ki": 159,
-      "Hata-Nama": 160,
-      "Shimonoseki": 161
+      "Ki-Hato": 139,
+      "Nagato-Furuichi": 140,
+      "Hitomaro": 141,
+      "Igami": 142,
+      "Nagato-Awano": 143,
+      "Agawa": 144,
+      "Kottoi": 145,
+      "Taki-Bu": 146,
+      "Nagato-Futami": 147,
+      "Uga-Hongou": 148,
+      "Yudama": 149,
+      "Ogushi": 150,
+      "Kawatana-Onsen": 151,
+      "Kuroi-Mura": 152,
+      "Ume-Ke-Touge": 153,
+      "Yoshimi": 154,
+      "Fukue": 155,
+      "Yasuoka": 156,
+      "Kaji-Kuri-Sato-Daichi": 157,
+      "Ryoura-Ki": 158,
+      "Hata-Nama": 159,
+      "Shimonoseki": 160
     },
     "Fukuchiyama": {
       "Osaka": 0,
@@ -69171,6 +69274,36 @@
       "Osa-Hojo": 5,
       "Harima-Yokota": 6,
       "Hojo-Machi": 7
+    },
+    "SanyoWadamisaki": {
+      "Hyougo": 0,
+      "Wada-Misaki": 1
+    },
+    "HanwaHagoromo": {
+      "Otori": 0,
+      "Higashi-Hagoromo": 1
+    },
+    "SaninSenzaki": {
+      "Nagato-Shi": 0,
+      "Senzaki": 1
+    },
+    "Hitahikosan": {
+      "Kokura": 0,
+      "Jono": 1,
+      "JRW-Hitahikosan-1191405": 2,
+      "JRW-Hitahikosan-1191406": 3,
+      "JRW-Hitahikosan-1191407": 4,
+      "JRW-Hitahikosan-1191408": 5,
+      "JRW-Hitahikosan-1191409": 6,
+      "JRW-Hitahikosan-1191410": 7,
+      "JRW-Hitahikosan-1191411": 8,
+      "JRW-Hitahikosan-1191412": 9,
+      "JRW-Hitahikosan-1191413": 10,
+      "Tagawa-Gotoji": 11,
+      "JRW-Hitahikosan-1191415": 12,
+      "JRW-Hitahikosan-1191416": 13,
+      "JRW-Hitahikosan-1191417": 14,
+      "JRW-Hitahikosan-1191418": 15
     }
   },
   "line_types": {

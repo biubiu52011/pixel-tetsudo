@@ -880,6 +880,19 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     return rules && rules.segmentColors || null;
   }
 
+  // Read the same canonical non-JR edges as route-search. These two station
+  // labels may be adjacent in a legacy aggregated list but are not a railway
+  // connection; the SVG must leave a visible break instead of drawing a line.
+  function _isTopologyBreakForMap(lineId, from, to) {
+    var source = window.RailwayDB && window.RailwayDB.getLine
+      ? window.RailwayDB.getLine(lineId) : null;
+    var breaks = source && source.topologyBreaks;
+    return !!(Array.isArray(breaks) && breaks.some(function(gap){
+      return (gap.from===from && gap.to===to) ||
+             (gap.from===to && gap.to===from);
+    }));
+  }
+
   // Segment-level display colors. This affects route rendering only; it does
   // not change line identity, realtime ownership, or running-chain continuity.
   function _segmentDisplayColor(lineId, fromStation, toStation, fallback) {
@@ -1461,6 +1474,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       if (stationCoords.length > 1) {
         for (var _segI = 0; _segI < stationCoords.length - 1; _segI++) {
           var _segA = stationCoords[_segI], _segB = stationCoords[_segI + 1];
+          if (_isTopologyBreakForMap(lineId, _segA.stationId, _segB.stationId)) continue;
           routeElements.push({
             type: 'line',
             attrs: {
