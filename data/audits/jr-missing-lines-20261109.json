@@ -11,39 +11,12 @@
   },
   "missingFrontend": [
     {
-      "operator": "JR-East",
-      "id": "Nikko",
-      "nameJa": "日光線",
-      "from": "Utsunomiya",
-      "to": "Nikko",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-East",
-      "id": "TohokuRifu",
-      "nameJa": "東北本線 利府支線",
-      "from": "Iwakiri",
-      "to": "Rifu",
-      "status": "missing_station_sequence",
-      "priority": "P1"
-    },
-    {
       "operator": "JR-Kyushu",
       "id": "Hisatsu",
       "nameJa": "肥薩線",
       "from": "Yatsushiro",
       "to": "Hayato",
       "status": "partial_service_closure_requires_segment_model",
-      "priority": "P1"
-    },
-    {
-      "operator": "JR-Kyushu",
-      "id": "ChikuhiWest",
-      "nameJa": "筑肥線（西唐津〜伊万里）",
-      "from": "Nishi-Karatsu",
-      "to": "Imari",
-      "status": "missing_station_sequence",
       "priority": "P1"
     },
     {
@@ -217,5 +190,52 @@
     "Database-only route IDs do not imply populated stations or timetables.",
     "Hokkaido Kaikyo line is not a regular passenger-service corridor; track separately rather than invent trains.",
     "Miyo and Yahiko are aliases to reconcile, not independent routes."
+  ],
+  "implementedFrontend": [
+    {
+      "operator": "JR-East",
+      "id": "Nikko",
+      "nameJa": "日光線",
+      "from": "Utsunomiya",
+      "to": "Nikko",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "Nikko"
+    },
+    {
+      "operator": "JR-East",
+      "id": "TohokuRifu",
+      "nameJa": "東北本線 利府支線",
+      "from": "Iwakiri",
+      "to": "Rifu",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "TohokuRifu"
+    },
+    {
+      "operator": "JR-Kyushu",
+      "id": "ChikuhiWest",
+      "nameJa": "筑肥線（西唐津〜伊万里）",
+      "from": "Nishi-Karatsu",
+      "to": "Imari",
+      "status": "station_topology_only",
+      "priority": "P1",
+      "implementedAt": "2026-11-09",
+      "sourceLineId": "ChikuhiWest"
+    }
+  ],
+  "newNonJrLines": [
+    {
+      "operator": "FujisanrokuElectricRailway",
+      "id": "Fujikyu",
+      "nameJa": "富士急行線",
+      "stations": 18,
+      "serviceDistanceKm": 26.6,
+      "status": "station_topology_only",
+      "implementedAt": "2026-11-09",
+      "officialSource": "https://www.fujikyu-railway.jp/station/"
+    }
   ]
 }

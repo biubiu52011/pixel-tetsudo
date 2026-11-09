@@ -1001,8 +1001,8 @@
       "lng": 139.5778
     },
     "Nikko": {
-      "lat": 36.7139,
-      "lng": 139.6986
+      "lat": 36.747192,
+      "lng": 139.622108
     },
     "Utsunomiya": {
       "lat": 36.55975,
@@ -1553,8 +1553,8 @@
       "lng": 140.8694
     },
     "Kawaguchiko": {
-      "lat": 35.5133,
-      "lng": 138.7658
+      "lat": 35.498239,
+      "lng": 138.768624
     },
     "Kiyosumi-Shirakawa": {
       "lat": 35.682119,
@@ -14783,6 +14783,138 @@
     "Hojo-Machi": {
       "lat": 34.929137,
       "lng": 134.83217
+    },
+    "Kami-Otsuki": {
+      "lat": 35.609283,
+      "lng": 138.938008
+    },
+    "Tanokura": {
+      "lat": 35.593151,
+      "lng": 138.931135
+    },
+    "Kasei": {
+      "lat": 35.574942,
+      "lng": 138.929041
+    },
+    "Akasaka-Fujikyu": {
+      "lat": 35.566148,
+      "lng": 138.916229
+    },
+    "Tsuru-shi": {
+      "lat": 35.556821,
+      "lng": 138.907717
+    },
+    "Yamuramachi": {
+      "lat": 35.550583,
+      "lng": 138.904701
+    },
+    "Tsurubunkadaigaku-mae": {
+      "lat": 35.542478,
+      "lng": 138.89648
+    },
+    "Tokaichiba-Fujikyu": {
+      "lat": 35.538909,
+      "lng": 138.887492
+    },
+    "Higashi-Katsura": {
+      "lat": 35.536406,
+      "lng": 138.87108
+    },
+    "Mitsutoge": {
+      "lat": 35.523993,
+      "lng": 138.845275
+    },
+    "Kotobuki": {
+      "lat": 35.508273,
+      "lng": 138.825386
+    },
+    "Yoshiikeonsenmae": {
+      "lat": 35.50194,
+      "lng": 138.812015
+    },
+    "Shimoyoshida": {
+      "lat": 35.49769,
+      "lng": 138.803282
+    },
+    "Gekkoji": {
+      "lat": 35.493207,
+      "lng": 138.798141
+    },
+    "Fujisan": {
+      "lat": 35.483536,
+      "lng": 138.795686
+    },
+    "Fujikyu-Highland": {
+      "lat": 35.489313,
+      "lng": 138.781979
+    },
+    "Tsuruta": {
+      "lat": 36.53828,
+      "lng": 139.857791
+    },
+    "Kanuma": {
+      "lat": 36.570991,
+      "lng": 139.76285
+    },
+    "Fubasami": {
+      "lat": 36.637191,
+      "lng": 139.728009
+    },
+    "Shimotsuke-Osawa": {
+      "lat": 36.686505,
+      "lng": 139.732517
+    },
+    "Imaichi": {
+      "lat": 36.720846,
+      "lng": 139.68692
+    },
+    "Shin-Rifu": {
+      "lat": 38.31725,
+      "lng": 140.9730583
+    },
+    "Rifu": {
+      "lat": 38.3292201,
+      "lng": 140.9846158
+    },
+    "Hizen-Kubo": {
+      "lat": 33.355805,
+      "lng": 130.000429
+    },
+    "Nishi-Ouchi": {
+      "lat": 33.347513,
+      "lng": 129.990466
+    },
+    "Sari": {
+      "lat": 33.337645,
+      "lng": 129.978637
+    },
+    "Komanaki": {
+      "lat": 33.319436,
+      "lng": 129.972346
+    },
+    "Okawano": {
+      "lat": 33.307087,
+      "lng": 129.976058
+    },
+    "Hizen-Nagano": {
+      "lat": 33.295499,
+      "lng": 129.97075
+    },
+    "Momonokawa": {
+      "lat": 33.271812,
+      "lng": 129.956685
+    },
+    "Kanaishihara": {
+      "lat": 33.26511,
+      "lng": 129.934401
+    },
+    "Kami-Imari": {
+      "lat": 33.270183,
+      "lng": 129.892124
+    },
+    "Imari": {
+      "lat": 33.271818,
+      "lng": 129.876697
     }
   },
   "lines": {
@@ -48503,6 +48635,280 @@
         "operatorGroup": "JR_WEST"
       },
       "timetableDataStatus": "station_topology_only"
+    },
+    "Fujikyu": {
+      "name": "Fujikyu",
+      "nameEn": "Fujikyuko Line",
+      "nameJa": "富士急行線",
+      "nameZh": "富士急行线",
+      "nameKo": "후지큐코선",
+      "code": "FJ",
+      "color": "#5d3602",
+      "operator": "FujisanrokuElectricRailway",
+      "region": "Yamanashi Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 56,
+      "branchOf": null,
+      "stations": [
+        "Otsuki",
+        "Kami-Otsuki",
+        "Tanokura",
+        "Kasei",
+        "Akasaka-Fujikyu",
+        "Tsuru-shi",
+        "Yamuramachi",
+        "Tsurubunkadaigaku-mae",
+        "Tokaichiba-Fujikyu",
+        "Higashi-Katsura",
+        "Mitsutoge",
+        "Kotobuki",
+        "Yoshiikeonsenmae",
+        "Shimoyoshida",
+        "Gekkoji",
+        "Fujisan",
+        "Fujikyu-Highland",
+        "Kawaguchiko"
+      ],
+      "durations": [
+        3,
+        3,
+        5,
+        4,
+        3,
+        2,
+        3,
+        2,
+        3,
+        4,
+        6,
+        4,
+        2,
+        2,
+        3,
+        4,
+        3
+      ],
+      "throughServices": [
+        "ChuoMain"
+      ],
+      "transferStations": [
+        {
+          "station": "Otsuki",
+          "lineId": "ChuoMain",
+          "type": "in/out",
+          "note": "JR中央本線（富士回遊などの直通列車は個別の時刻表による）"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "富士急行線",
+        "nameZh": "富士急行线",
+        "nameEn": "Fujikyuko Line",
+        "nameKo": "후지큐코선",
+        "color": "#5d3602",
+        "code": "FJ",
+        "order": 12,
+        "lineIds": [
+          "Fujikyu"
+        ],
+        "operatorGroup": "FUJIKYU"
+      }
+    },
+    "Nikko": {
+      "name": "Nikko",
+      "nameEn": "Nikko Line (JR East)",
+      "nameJa": "日光線",
+      "nameZh": "日光线",
+      "nameKo": "닛코선",
+      "code": "NIK",
+      "color": "#880033",
+      "operator": "JR-East",
+      "region": "Tochigi Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 44,
+      "branchOf": null,
+      "stations": [
+        "Utsunomiya",
+        "Tsuruta",
+        "Kanuma",
+        "Fubasami",
+        "Shimotsuke-Osawa",
+        "Imaichi",
+        "Nikko"
+      ],
+      "durations": [
+        5,
+        9,
+        9,
+        7,
+        6,
+        8
+      ],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Utsunomiya",
+          "lineId": "UtsunomiyaJR",
+          "type": "in/out",
+          "note": "宇都宮駅 宇都宮線"
+        },
+        {
+          "station": "Utsunomiya",
+          "lineId": "TohokuShinkansen",
+          "type": "in/out",
+          "note": "宇都宮駅 東北新幹線"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "日光線",
+        "nameZh": "日光线",
+        "nameEn": "Nikko Line (JR East)",
+        "nameKo": "닛코선",
+        "color": "#880033",
+        "code": "NIK",
+        "order": 94,
+        "lineIds": [
+          "Nikko"
+        ],
+        "operatorGroup": "JR_EAST"
+      }
+    },
+    "TohokuRifu": {
+      "name": "TohokuRifu",
+      "nameEn": "Tohoku Main Line (Rifu Branch)",
+      "nameJa": "東北本線（利府支線）",
+      "nameZh": "东北本线（利府支线）",
+      "nameKo": "도호쿠 본선 리후 지선",
+      "code": "",
+      "color": "#00732f",
+      "operator": "JR-East",
+      "region": "Miyagi Area",
+      "type": "branch",
+      "image": "",
+      "durationTotalMin": 6,
+      "branchOf": "TohokuMain",
+      "stations": [
+        "Iwakiri",
+        "Shin-Rifu",
+        "Rifu"
+      ],
+      "durations": [
+        3,
+        3
+      ],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Iwakiri",
+          "lineId": "TohokuMain",
+          "type": "in/out",
+          "note": "岩切駅 東北本線・仙台方面"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "東北本線（利府支線）",
+        "nameZh": "东北本线（利府支线）",
+        "nameEn": "Tohoku Main Line (Rifu Branch)",
+        "nameKo": "도호쿠 본선 리후 지선",
+        "color": "#00732f",
+        "code": "",
+        "order": 95,
+        "lineIds": [
+          "TohokuRifu"
+        ],
+        "operatorGroup": "JR_EAST"
+      }
+    },
+    "ChikuhiWest": {
+      "name": "ChikuhiWest",
+      "nameEn": "Chikuhi Line (Nishi-Karatsu–Imari)",
+      "nameJa": "筑肥線（西唐津〜伊万里）",
+      "nameZh": "筑肥线（西唐津—伊万里）",
+      "nameKo": "지쿠히선 (니시카라쓰–이마리)",
+      "code": "",
+      "color": "#0070c0",
+      "operator": "JR-Kyushu",
+      "region": "Saga Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 54,
+      "branchOf": null,
+      "stations": [
+        "Nishi-Karatsu",
+        "Karatsu",
+        "Onizuka",
+        "Yamamoto-Saga",
+        "Hizen-Kubo",
+        "Nishi-Ouchi",
+        "Sari",
+        "Komanaki",
+        "Okawano",
+        "Hizen-Nagano",
+        "Momonokawa",
+        "Kanaishihara",
+        "Kami-Imari",
+        "Imari"
+      ],
+      "durations": [
+        3,
+        5,
+        7,
+        6,
+        3,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        6,
+        3
+      ],
+      "throughServices": [
+        "Karatsu"
+      ],
+      "transferStations": [
+        {
+          "station": "Karatsu",
+          "lineId": "Chikuhi",
+          "type": "in/out",
+          "note": "唐津駅 筑肥線（姪浜方面）"
+        },
+        {
+          "station": "Yamamoto-Saga",
+          "lineId": "Karatsu",
+          "type": "in/out",
+          "note": "山本駅 唐津線（佐賀方面）"
+        },
+        {
+          "station": "Nishi-Karatsu",
+          "lineId": "Karatsu",
+          "type": "in/out",
+          "note": "唐津線共用区間"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "presentation": {
+        "nameJa": "筑肥線（西唐津〜伊万里）",
+        "nameZh": "筑肥线（西唐津—伊万里）",
+        "nameEn": "Chikuhi Line (Nishi-Karatsu–Imari)",
+        "nameKo": "지쿠히선 (니시카라쓰–이마리)",
+        "color": "#0070c0",
+        "code": "",
+        "order": 31,
+        "lineIds": [
+          "ChikuhiWest"
+        ],
+        "operatorGroup": "JR_KYUSHU"
+      }
     }
   },
   "name_map": {
@@ -51563,7 +51969,42 @@
     "播磨下里": "Harima-Shimosato",
     "長": "Osa-Hojo",
     "播磨横田": "Harima-Yokota",
-    "北条町": "Hojo-Machi"
+    "北条町": "Hojo-Machi",
+    "上大月": "Kami-Otsuki",
+    "田野倉": "Tanokura",
+    "禾生": "Kasei",
+    "都留市": "Tsuru-shi",
+    "谷村町": "Yamuramachi",
+    "都留文科大学前": "Tsurubunkadaigaku-mae",
+    "東桂": "Higashi-Katsura",
+    "三つ峠": "Mitsutoge",
+    "寿": "Kotobuki",
+    "葭池温泉前": "Yoshiikeonsenmae",
+    "下吉田": "Shimoyoshida",
+    "月江寺": "Gekkoji",
+    "富士山": "Fujisan",
+    "富士急ハイランド": "Fujikyu-Highland",
+    "鶴田": "Tsuruta",
+    "鹿沼": "Kanuma",
+    "文挟": "Fubasami",
+    "下野大沢": "Shimotsuke-Osawa",
+    "今市": "Imaichi",
+    "新利府": "Shin-Rifu",
+    "利府": "Rifu",
+    "肥前久保": "Hizen-Kubo",
+    "西相知": "Nishi-Ouchi",
+    "佐里": "Sari",
+    "駒鳴": "Komanaki",
+    "大川野": "Okawano",
+    "肥前長野": "Hizen-Nagano",
+    "桃川": "Momonokawa",
+    "金石原": "Kanaishihara",
+    "上伊万里": "Kami-Imari",
+    "伊万里": "Imari",
+    "富士急 赤坂": "Akasaka-Fujikyu",
+    "富士急行 赤坂": "Akasaka-Fujikyu",
+    "富士急 十日市場": "Tokaichiba-Fujikyu",
+    "富士急行 十日市場": "Tokaichiba-Fujikyu"
   },
   "stationLines": {
     "Omiya": [
@@ -56891,7 +57332,8 @@
     ],
     "Iwakiri": [
       "SensekiTohoku",
-      "TohokuMain"
+      "TohokuMain",
+      "TohokuRifu"
     ],
     "Rikuchu-Yama": [
       "SensekiTohoku"
@@ -58721,7 +59163,8 @@
       "ChuoMain"
     ],
     "Otsuki": [
-      "ChuoMain"
+      "ChuoMain",
+      "Fujikyu"
     ],
     "Hatsukari": [
       "ChuoMain"
@@ -59504,7 +59947,8 @@
     ],
     "Utsunomiya": [
       "UtsunomiyaJR",
-      "TohokuShinkansen"
+      "TohokuShinkansen",
+      "Nikko"
     ],
     "Utsunomiya-LRT-East": [
       "UtsunomiyaLRT"
@@ -63506,18 +63950,22 @@
       "Karatsu"
     ],
     "Yamamoto-Saga": [
-      "Karatsu"
+      "Karatsu",
+      "ChikuhiWest"
     ],
     "Onizuka": [
-      "Karatsu"
+      "Karatsu",
+      "ChikuhiWest"
     ],
     "Karatsu": [
       "Karatsu",
-      "Chikuhi"
+      "Chikuhi",
+      "ChikuhiWest"
     ],
     "Nishi-Karatsu": [
       "Karatsu",
-      "Chikuhi"
+      "Chikuhi",
+      "ChikuhiWest"
     ],
     "Meinohama": [
       "Chikuhi"
@@ -64138,6 +64586,111 @@
     ],
     "JRW-Hitahikosan-1191418": [
       "Hitahikosan"
+    ],
+    "Kami-Otsuki": [
+      "Fujikyu"
+    ],
+    "Tanokura": [
+      "Fujikyu"
+    ],
+    "Kasei": [
+      "Fujikyu"
+    ],
+    "Akasaka-Fujikyu": [
+      "Fujikyu"
+    ],
+    "Tsuru-shi": [
+      "Fujikyu"
+    ],
+    "Yamuramachi": [
+      "Fujikyu"
+    ],
+    "Tsurubunkadaigaku-mae": [
+      "Fujikyu"
+    ],
+    "Tokaichiba-Fujikyu": [
+      "Fujikyu"
+    ],
+    "Higashi-Katsura": [
+      "Fujikyu"
+    ],
+    "Mitsutoge": [
+      "Fujikyu"
+    ],
+    "Kotobuki": [
+      "Fujikyu"
+    ],
+    "Yoshiikeonsenmae": [
+      "Fujikyu"
+    ],
+    "Shimoyoshida": [
+      "Fujikyu"
+    ],
+    "Gekkoji": [
+      "Fujikyu"
+    ],
+    "Fujisan": [
+      "Fujikyu"
+    ],
+    "Fujikyu-Highland": [
+      "Fujikyu"
+    ],
+    "Kawaguchiko": [
+      "Fujikyu"
+    ],
+    "Tsuruta": [
+      "Nikko"
+    ],
+    "Kanuma": [
+      "Nikko"
+    ],
+    "Fubasami": [
+      "Nikko"
+    ],
+    "Shimotsuke-Osawa": [
+      "Nikko"
+    ],
+    "Imaichi": [
+      "Nikko"
+    ],
+    "Nikko": [
+      "Nikko"
+    ],
+    "Shin-Rifu": [
+      "TohokuRifu"
+    ],
+    "Rifu": [
+      "TohokuRifu"
+    ],
+    "Hizen-Kubo": [
+      "ChikuhiWest"
+    ],
+    "Nishi-Ouchi": [
+      "ChikuhiWest"
+    ],
+    "Sari": [
+      "ChikuhiWest"
+    ],
+    "Komanaki": [
+      "ChikuhiWest"
+    ],
+    "Okawano": [
+      "ChikuhiWest"
+    ],
+    "Hizen-Nagano": [
+      "ChikuhiWest"
+    ],
+    "Momonokawa": [
+      "ChikuhiWest"
+    ],
+    "Kanaishihara": [
+      "ChikuhiWest"
+    ],
+    "Kami-Imari": [
+      "ChikuhiWest"
+    ],
+    "Imari": [
+      "ChikuhiWest"
     ]
   },
   "lineStationOrder": {
@@ -69326,6 +69879,56 @@
       "JRW-Hitahikosan-1191416": 13,
       "JRW-Hitahikosan-1191417": 14,
       "JRW-Hitahikosan-1191418": 15
+    },
+    "Fujikyu": {
+      "Otsuki": 0,
+      "Kami-Otsuki": 1,
+      "Tanokura": 2,
+      "Kasei": 3,
+      "Akasaka-Fujikyu": 4,
+      "Tsuru-shi": 5,
+      "Yamuramachi": 6,
+      "Tsurubunkadaigaku-mae": 7,
+      "Tokaichiba-Fujikyu": 8,
+      "Higashi-Katsura": 9,
+      "Mitsutoge": 10,
+      "Kotobuki": 11,
+      "Yoshiikeonsenmae": 12,
+      "Shimoyoshida": 13,
+      "Gekkoji": 14,
+      "Fujisan": 15,
+      "Fujikyu-Highland": 16,
+      "Kawaguchiko": 17
+    },
+    "Nikko": {
+      "Utsunomiya": 0,
+      "Tsuruta": 1,
+      "Kanuma": 2,
+      "Fubasami": 3,
+      "Shimotsuke-Osawa": 4,
+      "Imaichi": 5,
+      "Nikko": 6
+    },
+    "TohokuRifu": {
+      "Iwakiri": 0,
+      "Shin-Rifu": 1,
+      "Rifu": 2
+    },
+    "ChikuhiWest": {
+      "Nishi-Karatsu": 0,
+      "Karatsu": 1,
+      "Onizuka": 2,
+      "Yamamoto-Saga": 3,
+      "Hizen-Kubo": 4,
+      "Nishi-Ouchi": 5,
+      "Sari": 6,
+      "Komanaki": 7,
+      "Okawano": 8,
+      "Hizen-Nagano": 9,
+      "Momonokawa": 10,
+      "Kanaishihara": 11,
+      "Kami-Imari": 12,
+      "Imari": 13
     }
   },
   "line_types": {

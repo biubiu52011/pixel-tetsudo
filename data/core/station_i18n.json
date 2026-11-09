@@ -29340,5 +29340,203 @@
     "zh": "北条町",
     "ko": "호조마치",
     "en": "Hojomachi"
+  },
+  "Kami-Otsuki": {
+    "ja": "上大月",
+    "zh": "上大月",
+    "ko": "가미오쓰키",
+    "en": "Kami-Otsuki"
+  },
+  "Tanokura": {
+    "ja": "田野倉",
+    "zh": "田野仓",
+    "ko": "다노쿠라",
+    "en": "Tanokura"
+  },
+  "Kasei": {
+    "ja": "禾生",
+    "zh": "禾生",
+    "ko": "가세이",
+    "en": "Kasei"
+  },
+  "Akasaka-Fujikyu": {
+    "ja": "赤坂",
+    "zh": "赤坂",
+    "ko": "아카사카",
+    "en": "Akasaka (Fujikyu)"
+  },
+  "Tsuru-shi": {
+    "ja": "都留市",
+    "zh": "都留市",
+    "ko": "쓰루시",
+    "en": "Tsuru-shi"
+  },
+  "Yamuramachi": {
+    "ja": "谷村町",
+    "zh": "谷村町",
+    "ko": "야무라마치",
+    "en": "Yamuramachi"
+  },
+  "Tsurubunkadaigaku-mae": {
+    "ja": "都留文科大学前",
+    "zh": "都留文科大学前",
+    "ko": "쓰루분카다이가쿠마에",
+    "en": "Tsuru-bunka-daigaku-mae"
+  },
+  "Tokaichiba-Fujikyu": {
+    "ja": "十日市場",
+    "zh": "十日市场",
+    "ko": "도카이치바",
+    "en": "Tokaichiba (Fujikyu)"
+  },
+  "Higashi-Katsura": {
+    "ja": "東桂",
+    "zh": "东桂",
+    "ko": "히가시카쓰라",
+    "en": "Higashi-katsura"
+  },
+  "Mitsutoge": {
+    "ja": "三つ峠",
+    "zh": "三峰",
+    "ko": "미쓰토게",
+    "en": "Mitsutoge"
+  },
+  "Kotobuki": {
+    "ja": "寿",
+    "zh": "寿",
+    "ko": "고토부키",
+    "en": "Kotobuki"
+  },
+  "Yoshiikeonsenmae": {
+    "ja": "葭池温泉前",
+    "zh": "葭池温泉前",
+    "ko": "요시이케온센마에",
+    "en": "Yoshiike-onsen-mae"
+  },
+  "Shimoyoshida": {
+    "ja": "下吉田",
+    "zh": "下吉田",
+    "ko": "시모요시다",
+    "en": "Shimoyoshida"
+  },
+  "Gekkoji": {
+    "ja": "月江寺",
+    "zh": "月江寺",
+    "ko": "겟코지",
+    "en": "Gekkoji"
+  },
+  "Fujisan": {
+    "ja": "富士山",
+    "zh": "富士山",
+    "ko": "후지산",
+    "en": "Mt. Fuji"
+  },
+  "Fujikyu-Highland": {
+    "ja": "富士急ハイランド",
+    "zh": "富士急乐园",
+    "ko": "후지큐 하이랜드",
+    "en": "Fujikyu-Highland"
+  },
+  "Tsuruta": {
+    "ja": "鶴田",
+    "zh": "鹤田",
+    "ko": "쓰루타",
+    "en": "Tsuruta"
+  },
+  "Kanuma": {
+    "ja": "鹿沼",
+    "zh": "鹿沼",
+    "ko": "가누마",
+    "en": "Kanuma"
+  },
+  "Fubasami": {
+    "ja": "文挟",
+    "zh": "文挟",
+    "ko": "후바사미",
+    "en": "Fubasami"
+  },
+  "Shimotsuke-Osawa": {
+    "ja": "下野大沢",
+    "zh": "下野大泽",
+    "ko": "시모쓰케오사와",
+    "en": "Shimotsuke-Osawa"
+  },
+  "Imaichi": {
+    "ja": "今市",
+    "zh": "今市",
+    "ko": "이마이치",
+    "en": "Imaichi"
+  },
+  "Shin-Rifu": {
+    "ja": "新利府",
+    "zh": "新利府",
+    "ko": "신리후",
+    "en": "Shin-Rifu"
+  },
+  "Rifu": {
+    "ja": "利府",
+    "zh": "利府",
+    "ko": "리후",
+    "en": "Rifu"
+  },
+  "Hizen-Kubo": {
+    "ja": "肥前久保",
+    "zh": "肥前久保",
+    "ko": "히젠쿠보",
+    "en": "Hizen-Kubo"
+  },
+  "Nishi-Ouchi": {
+    "ja": "西相知",
+    "zh": "西相知",
+    "ko": "니시오치",
+    "en": "Nishi-Ouchi"
+  },
+  "Sari": {
+    "ja": "佐里",
+    "zh": "佐里",
+    "ko": "사리",
+    "en": "Sari"
+  },
+  "Komanaki": {
+    "ja": "駒鳴",
+    "zh": "驹鸣",
+    "ko": "고마나키",
+    "en": "Komanaki"
+  },
+  "Okawano": {
+    "ja": "大川野",
+    "zh": "大川野",
+    "ko": "오카와노",
+    "en": "Okawano"
+  },
+  "Hizen-Nagano": {
+    "ja": "肥前長野",
+    "zh": "肥前长野",
+    "ko": "히젠나가노",
+    "en": "Hizen-Nagano"
+  },
+  "Momonokawa": {
+    "ja": "桃川",
+    "zh": "桃川",
+    "ko": "모모노카와",
+    "en": "Momonokawa"
+  },
+  "Kanaishihara": {
+    "ja": "金石原",
+    "zh": "金石原",
+    "ko": "가나이시하라",
+    "en": "Kanaishihara"
+  },
+  "Kami-Imari": {
+    "ja": "上伊万里",
+    "zh": "上伊万里",
+    "ko": "가미이마리",
+    "en": "Kami-Imari"
+  },
+  "Imari": {
+    "ja": "伊万里",
+    "zh": "伊万里",
+    "ko": "이마리",
+    "en": "Imari"
   }
 }
