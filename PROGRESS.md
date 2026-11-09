@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### JR-TIMETABLE-COMPLETENESS-20261109B — 只见线官方番号证据补全（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 只读审计 | 生产 Supabase 的只见线共有 37 条模板：平日往返 10/9、土休日往返 9/9；其中 34 条为 2026-11 官方页面可核验的 Local 番号，另有 9423D、9425D、9430D 三条 Rapid 旧数据没有已确认的本月运行日。 |
+| 完整性基线 | 34 条官方 Local 模板均有站点、钟点和从 0 开始且不重复的 stop sequence；四个官方页面 `262d1/262u1/262d2/262u2` 的番号集合分别为 9/9/8/8 条。 |
+| 本批补全 | 新增 `20261109133000_jreast_tadami_2611_official_number_evidence.sql`，登记 34 条官方番号来源并写入四组 `timetable_number_verifications`；三条 Rapid 旧数据被显式保留但不登记为本月官方计划。仅补番号证据，不推断运行日、车辆或实际编组。 |
+| 回归 | 新增只见线批次测试 3/3，并接入 static CI；SQL/数据检查会在迁移执行时阻止模板集合、停站完整性或 Rapid 排除集合漂移。 |
+| 生产边界 | 本批仅修改仓库迁移与测试文件，未应用 Supabase 迁移、未部署 Edge、未发布 Pages。 |
+
 ### JR-TIMETABLE-COMPLETENESS-20261109 — 计划时刻表完整性审计与山手线官方番号首批补全（LOCAL-READY）
 
 | 项目 | 当前状态 |
