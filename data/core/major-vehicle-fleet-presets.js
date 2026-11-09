@@ -584,7 +584,7 @@
     {id:'jrwest-sanin-main', operator:'JR-West', lineIds:['SaninMain'],
       models:['JR西日本221系（嵯峨野線区間）','JR西日本223系5500番台','JR西日本キハ126系','JR西日本キハ120形','JR西日本キハ40系'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
     {id:'jrwest-bantan', operator:'JR-West', lineIds:['Bantan'],
-      models:['JR西日本103系3500番台（姫路～寺前）','JR西日本223系（姫路～寺前・個別列車確認要）','JR西日本キハ40形（寺前～和田山）','JR西日本キハ41形（寺前～和田山）','JR西日本キハ189系（特急はまかぜ・全線）'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
+      models:['JR西日本103系（電化区間）','JR西日本キハ40系（非電化区間）','JR西日本223系（姫路～寺前・個別列車確認要）','JR西日本キハ41形（寺前～和田山）','JR西日本キハ189系（特急はまかぜ・全線）'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
     {id:'jrwest-maizuru', operator:'JR-West', lineIds:['Maizuru'],
       models:['JR西日本125系','JR西日本223系5500番台'], sourceUrl:'https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_15.pdf'},
     {id:'jrwest-yamaguchi', operator:'JR-West', lineIds:['Yamaguchi'],
