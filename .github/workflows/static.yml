@@ -41,6 +41,8 @@ jobs:
         run: node --test tests/train-overview-dom.test.cjs
       - name: Verify operator filter labels
         run: node --test tests/operator-labels.test.cjs
+      - name: Verify history card responsive layout
+        run: node --test tests/history-responsive-layout.test.cjs
       - name: Verify JR East Yamanote official train-number evidence batch
         run: node --test tests/jreast-yamanote-2611-official-number-evidence.test.cjs
       - name: Verify JR East Tadami official train-number evidence batch

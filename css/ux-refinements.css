@@ -257,7 +257,40 @@ body[data-page="trains"] .train-fold-vehicle-placeholder {
   overflow-wrap: anywhere;
 }
 body[data-page="history"] .history-entry { cursor:pointer; }
-body[data-page="history"] .history-route { text-decoration:none; }
+body[data-page="history"] .history-route {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+body[data-page="history"] .history-route > .history-from,
+body[data-page="history"] .history-route > .history-to {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body[data-page="history"] .history-arrow {
+  flex: 0 0 auto;
+}
+body[data-page="history"] .history-meta {
+  min-width: 0;
+}
+body[data-page="history"] .history-meta > .history-duration,
+body[data-page="history"] .history-meta > .history-count,
+body[data-page="history"] .history-meta > .history-time {
+  white-space: nowrap;
+}
+body[data-page="history"] .history-lines {
+  min-width: 0;
+  flex: 1 1 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body[data-page="history"] .history-time {
+  flex: 0 0 auto;
+}
 body[data-page="history"] .history-route:focus-visible {
   outline: 3px solid #006b32;
   outline-offset: 3px;
@@ -274,6 +307,25 @@ body[data-page="history"] .history-delete-btn {
   border-width: 3px;
   border-radius: 3px;
   box-shadow: 3px 3px 0 rgba(32,33,38,.28), inset 1px 1px 0 #ffffff;
+}
+@media (max-width: 380px) {
+  body[data-page="history"] .history-entry {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  body[data-page="history"] .history-route {
+    gap: 6px;
+    padding-right: 50px;
+  }
+  body[data-page="history"] .history-meta {
+    column-gap: 6px;
+    row-gap: 4px;
+  }
+  body[data-page="history"] .history-duration,
+  body[data-page="history"] .history-count {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
 }
 body[data-page="history"] .history-delete-btn:focus-visible,
 body[data-page="history"] .history-clear-btn:focus-visible,

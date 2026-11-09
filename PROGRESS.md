@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### HISTORY-CARD-RESPONSIVE-20261110 — 历史记录窄屏文字布局修复（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 问题 | 历史记录卡片在窄宽度下同时受到右上角删除按钮、路线横排和元信息换行挤压，起终点或线路文字可能折叠/溢出。 |
+| 修复 | 为路线容器和起终点增加可收缩约束、单行省略和箭头固定宽度；线路名称可省略，时间/徽标保持不换行；380px 以下收紧卡片内边距与元信息间距。删除按钮仍保持 44px 触控尺寸。 |
+| 回归 | 新增 `tests/history-responsive-layout.test.cjs` 2/2 通过；历史卡片与 3D CSS 专项结构测试通过，相关页面 `ux-refinements.css` Git blob 缓存键已同步。Windows 工作区的 `lang-bar.css` CRLF 缓存键仍有既有本地差异，未改动无关资源。 |
+| 生产边界 | 仅修改历史页面样式、页面资源版本键、专项测试和 static CI；未发布 Pages。 |
+
 ### JR-TIMETABLE-COMPLETENESS-20261109B — 只见线官方番号证据补全（LOCAL-READY）
 
 | 项目 | 当前状态 |
