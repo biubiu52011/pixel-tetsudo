@@ -35,6 +35,8 @@ jobs:
         run: node --test tests/page-scripts.test.cjs
       - name: Verify Sotetsu-JR published November train clocks, vehicle PNG mapping and date guards
         run: node --test tests/sotetsu-jr-direct-2611-clock-proof.test.cjs tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs
+      - name: Verify full Kawagoe west ODPT timetable and shared fleet boundaries
+        run: node --test tests/kawagoe-2611-odpt-roster.test.cjs
       - name: Verify dynamic platform, transfer, and SVG sizing contracts
         run: node --test tests/dynamic-resolver-contract.test.cjs
       - name: Exercise line-scoped loader and SQL artwork contract
