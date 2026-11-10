@@ -1385,7 +1385,29 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           Array.isArray(kawagoeRef.candidateModels) &&
           kawagoeRef.candidateModels.join("|") === "E231系3000番台|209系3500番台") {
         lang = String(lang || "ja").toLowerCase();
-        if (/^zh/.test(lang)) return "车型候选：E231系3000番台 / 209系3500番台（共通运用，实车未确认）";
+        var kwOp=String(kawagoeRef.workingOperationCode||"");
+        var kwModel=String(kawagoeRef.reportedModel||"");
+        var kwFormation=String(kawagoeRef.reportedFormation||"");
+        var kwReported=kwModel&&
+          ["E231系3000番台","209系3500番台"].indexOf(kwModel)>=0&&
+          kawagoeRef.reportedEvidenceGrade==="C"&&
+          kawagoeRef.reportedIsActual===false&&
+          kawagoeRef.reportedMappingLevel==="dated_volunteer_observed_model"&&
+          kawagoeRef.reportedOperationCode===kwOp&&
+          kawagoeRef.reportedEvidenceUrl===
+            "https://loo-ool.com/rail/W/00/"+
+            String(p.serviceDate||"").replace(/-/g,"")+"/";
+        if(kwReported){
+          if(/^zh/.test(lang))return "运用"+kwOp+" · 当日报告车型："+kwModel+
+            "（"+kwFormation+"，第三方记录，实车未确认）";
+          if(lang==="en")return "Duty "+kwOp+" · reported model: "+kwModel+
+            " ("+kwFormation+"; community report, actual consist unconfirmed)";
+          if(lang==="ko")return "운용 "+kwOp+" · 당일 보고 차종: "+kwModel+
+            " ("+kwFormation+"; 제3자 기록, 실제 편성 미확인)";
+          return "運用"+kwOp+" · 当日報告車種："+kwModel+
+            "（"+kwFormation+"・第三者記録、実車未確認）";
+        }
+        if (/^zh/.test(lang)) return "运用"+kwOp+" · 车型候选：E231系3000番台 / 209系3500番台（共通运用，实车未确认）";
         if (lang === "en") return "Candidate models: E231-3000 / 209-3500 (shared duties; actual consist unconfirmed)";
         if (lang === "ko") return "후보 차종: E231계 3000번대 / 209계 3500번대 (공통 운용, 실제 편성 미확인)";
         return "候補車種：E231系3000番台 / 209系3500番台（共通運用・実車未確認）";
