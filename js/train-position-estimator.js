@@ -2530,11 +2530,17 @@
                   String(publicTrainNumber||"").replace(/H$/,"")))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber),
             officialNumberVerified: Boolean(osakaMahorobaDisplayNumber) || Boolean(osakaHigashiOfficialVerified) ||
-              Boolean(lineId==="TokaidoCentral"&&
+              // The existing JR-Central authorized SQL importer signs the
+              // canonical train number with a dated, source-scoped itinerary.
+              // It does NOT assign a physical vehicle or manufacture a run.
+              Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")&&
               tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
               tt._timetableValidity==="date_verified"&&
-              /^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||""))&&
+              (lineId==="ChuoCentral"
+                ?(tt["odpt:railway"]==="odpt.Railway:JR-Central.Chuo"&&
+                  /^[1-9][0-9]{0,4}M$/.test(String(publicTrainNumber||"")))
+                :/^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||"")))&&
               String(publicTrainNumber||"")===String(run.trainNumber||"")) ||
  Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
