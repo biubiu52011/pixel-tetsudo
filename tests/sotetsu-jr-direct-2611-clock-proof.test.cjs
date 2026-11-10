@@ -42,14 +42,23 @@ test('date exceptions remain limited to explicit JR East 11/07 and 11/22 clocks'
   assert.doesNotMatch(migration, /DATE '2026-12-/);
 });
 
-test('four-language official links are presentation only and offer recovery on load failure', () => {
+test('vehicle maps use existing canonical SQL mapping, not a parallel timetable or official fleet claim', () => {
+  const migration = read('supabase/migrations/20261110170000_sotetsu_jr_2611_published_working_plan_vehicle_mapping.sql');
+  const edge = read('supabase/functions/train-runs/index.ts');
+  assert.match(migration, /INSERT INTO public\.train_timetable_vehicle_mappings/);
+  assert.match(migration, /'source_single_type_candidate'/);
+  assert.match(migration, /'reference','C'/);
+  assert.match(migration, /SOTETSU_JR_2611_VEHICLE_184_MAPPING_INCOMPLETE/);
+  assert.match(edge, /vehicle_source_path,vehicle_source_url/);
+  assert.match(edge, /SOTETSU_JR_2611_PUBLISHED_WORKING_MAPPING_UNAVAILABLE/);
+  assert.match(edge, /plannedModelArtworkPath:pub\.candidate_png_paths\[modelIx\]/);
+  assert.match(edge, /plannedModelIsActual:false/);
+});
+
+test('no unsolicited official-source panel: keep native detail retry', () => {
   const controller = read('js/trains-page.js');
-  assert.match(controller, /if \(lineId === \"SotetsuJRDirect\"\)/);
-  assert.match(controller, /traininfo\.jreast\.co\.jp\/train_info\/line\.aspx/);
-  assert.match(controller, /www\.sotetsu\.co\.jp\/train\/status\//);
-  assert.match(controller, /628d1p\.html/);
-  assert.match(controller, /628u2p\.html/);
-  assert.match(controller, /if \(currentLine\) updateOfficialRuninfoSource\(currentLine\)/);
+  assert.doesNotMatch(controller, /if \(lineId === \"SotetsuJRDirect\"\)/);
+  assert.doesNotMatch(controller, /628d1p\.html/);
   assert.match(controller, /TrainsDetailLoader\.load\(lineId\)/);
   assert.match(controller, /window\.DataState\.setPageStateRetry\(mapEl, function\(\) \{/);
 });
