@@ -22,7 +22,7 @@ test('Kawagoe west 186 six-stop ODPT sources are 2611-edition scoped and source 
  assert.match(mapping,/INSERT INTO train_timetable_operation_evidence/);
  assert.match(mapping,/INSERT INTO operation_vehicle_observations/);
  assert.match(mapping,/KAWAGOE_WORKING_POSTCHECK/);
- assert.match(edge,/reportedMappingLevel:reportedModel\?"dated_volunteer_observed_model":null/);
+ assert.match(edge,/reportedMappingLevel:reportedModel\?"dated_train_number_observation":null/);
 });
 test('Kawagoe SQL positions require dated verification in every month',()=>{
  const host={};
@@ -79,22 +79,21 @@ test('shared working cannot become a single E231 or 209 physical PNG',()=>{
   {sqlPublishedNumberFleetReference:{...p.sqlPublishedNumberFleetReference,
    authorizesPNG:true}}
  ]) assert.equal(root.TrainVehicle.selectMarkerArtwork({...p,...bad},false).iconSrc,'');
-  // The 2026-11-10 61 duty was independently reported as 209-3500/HAE51.
-  // It can display a dated, representative PNG, never an actual-carset claim.
+  // Direct train-number 1060H is reported 209-3500/HAE51 on 2026-11-10.
+  // Source C permits dated illustration but not a certified actual carset.
   const reportedBase={...p,
     plannedVehicleCandidateStatus:'dated-reported-single-model',
     plannedVehicleCandidates:[models[1]],
     sqlPublishedNumberFleetReference:{
       ...p.sqlPublishedNumberFleetReference,
-      workingOperationCode:'61',
       reportedModel:models[1],
       reportedFormation:'ハエ51',
       reportedModelArtworkPath:arts[1],
-      reportedOperationCode:'61',
+      reportedTrainNumber:'1060H',
       reportedEvidenceUrl:'https://loo-ool.com/rail/W/00/20261110/',
       reportedEvidenceGrade:'C',
       reportedIsActual:false,
-      reportedMappingLevel:'dated_volunteer_observed_model'
+      reportedMappingLevel:'dated_train_number_observation'
     }
   };
   const reported=root.TrainVehicle.selectMarkerArtwork(reportedBase,false);
@@ -103,7 +102,7 @@ test('shared working cannot become a single E231 or 209 physical PNG',()=>{
   assert.equal(reported.illustrative,true);
   assert.equal(reported.actualVehicleConfirmed,false);
   assert.equal(reported.reportedFormation,'ハエ51');
-  // The previous day used a different carset and model in the SAME duty.
+  // The SAME train number used a different reported model the previous day.
   const nov9={...reportedBase,serviceDate:'2026-11-09',
     plannedVehicleCandidates:[models[0]],
     sqlPublishedNumberFleetReference:{
@@ -126,7 +125,7 @@ test('shared working cannot become a single E231 or 209 physical PNG',()=>{
     {sqlPublishedNumberFleetReference:{
       ...reportedBase.sqlPublishedNumberFleetReference,reportedEvidenceUrl:'https://loo-ool.com/rail/W/00/20261109/'}},
     {sqlPublishedNumberFleetReference:{
-      ...reportedBase.sqlPublishedNumberFleetReference,reportedOperationCode:'75'}},
+      ...reportedBase.sqlPublishedNumberFleetReference,reportedTrainNumber:'999H'}},
     {plannedVehicleCandidateStatus:'unresolved-mixed-fleet'},
     {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:false}
   ]) {
@@ -140,4 +139,25 @@ test('no new Kawagoe prose panel: candidate label is train-local',()=>{
  assert.match(render,/if \(lineId === "Kawagoe" && p\.timetableDateVerified === true\)/);
  assert.match(render,/共通運用・実車未確認/);
  assert.doesNotMatch(page,/if \(lineId === "Kawagoe"\) \{/);
+});
+
+test('direct date+train-number SQL evidence is the only runtime vehicle selector',()=>{
+ const migration=read('supabase/migrations/20261110195000_kawagoe_2611_dated_train_number_direct_vehicle_observations.sql');
+ const edge=read('supabase/functions/train-runs/index.ts');
+ const est=read('js/train-position-estimator.js');
+ const vehicle=read('js/train-vehicle.js');
+ const renderer=read('js/trains-render.js');
+ assert.match(migration,/INSERT INTO public\\.train_vehicle_observations/);
+ assert.match(migration,/count\\(\\*\\) FROM _kw_direct\\)<>164/);
+ assert.match(migration,/WHERE t\\.line_key='Kawagoe'/);
+ assert.match(migration,/source_key='kw-reported-'/);
+ assert.match(edge,/\\.from\\("train_vehicle_observations"\\)/);
+ assert.match(edge,/observationByNumber\\.get\\(String\\(run\\.train_number/);
+ assert.match(edge,/reportedTrainNumber:reportedModel\\?run\\.train_number:null/);
+ assert.match(edge,/reportedMappingLevel:reportedModel\\?"dated_train_number_observation":null/);
+ assert.match(est,/officialKawagoePlan\\.reportedTrainNumber===run\\.trainNumber/);
+ assert.match(vehicle,/kw\\.reportedTrainNumber===p\\.trainNumber/);
+ assert.match(renderer,/kawagoeRef\\.reportedTrainNumber===kwNo/);
+ const scoped=edge.slice(edge.indexOf('  // Kawagoe WEST (Kawagoe'),edge.indexOf('  // Sotetsu-JR 2611:',edge.indexOf('  // Kawagoe WEST (Kawagoe')));
+ assert.doesNotMatch(scoped,/\\.from\\("operation_vehicle_observations"\\)/);
 });
