@@ -1375,6 +1375,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    if (lineId === "Kawagoe" && p.timetableDateVerified === true) {
+      var kawagoeRef = p.sqlPublishedNumberFleetReference || {};
+      if (kawagoeRef.source === "sql-jreast-kawagoe-2611-shared-fleet" &&
+          kawagoeRef.referenceOnly === true &&
+          kawagoeRef.actualVehicleConfirmed === false &&
+          kawagoeRef.singleModelUnresolved === true &&
+          kawagoeRef.authorizesPNG === false &&
+          Array.isArray(kawagoeRef.candidateModels) &&
+          kawagoeRef.candidateModels.join("|") === "E231系3000番台|209系3500番台") {
+        lang = String(lang || "ja").toLowerCase();
+        if (/^zh/.test(lang)) return "车型候选：E231系3000番台 / 209系3500番台（共通运用，实车未确认）";
+        if (lang === "en") return "Candidate models: E231-3000 / 209-3500 (shared duties; actual consist unconfirmed)";
+        if (lang === "ko") return "후보 차종: E231계 3000번대 / 209계 3500번대 (공통 운용, 실제 편성 미확인)";
+        return "候補車種：E231系3000番台 / 209系3500番台（共通運用・実車未確認）";
+      }
+    }
     if (lineId === "SotetsuJRDirect" &&
         window.JREastSotetsuJRDirectNumbers2611 &&
         typeof window.JREastSotetsuJRDirectNumbers2611.match === "function") {
