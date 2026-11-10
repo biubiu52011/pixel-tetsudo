@@ -94,118 +94,6 @@
     if (titleEl) titleEl.textContent = _title;
   }
 
-  // Public timetable references are metadata, never timetable/position rows.
-  // The line-scoped module fetches only when that route is open.
-  function updateCorridorEvidence(lineId) {
-    var host = document.getElementById("trainsCorridorEvidence");
-    if (!host) return;
-    if (window.TrainCorridorEvidence &&
-        typeof window.TrainCorridorEvidence.show === "function") {
-      window.TrainCorridorEvidence.show(host, lineId);
-    } else {
-      host.hidden = true;
-      host.replaceChildren();
-    }
-  }
-
-  // Line-scoped data-quality notices only. Source URLs belong in the evidence
-  // inventory, never as an outbound fallback in the train-map detail view.
-  function updateOfficialRuninfoSource(lineId) {
-    var host = document.getElementById("trainsOfficialRuninfo");
-    if (!host) return;
-    host.replaceChildren();
-    host.hidden = true;
-    if (lineId === "TokaidoCentral") {
-      // JR-Central Atami–Maibara is topology-only as of the 2026-11-10
-      // SQL acceptance audit (no weekday/holiday train plans).
-      // Missing source data must stay a non-clickable status notice.
-      var centralTexts = {
-        ja: ["東海道本線（JR東海）：時刻表データ未収録",
-          "当サイトでは熱海～米原の平日・土休日の列車時刻、列車番号および編成をまだ登録・検証していません。地図に列車が表示されなくても、運休や列車がないことを意味しません。走行位置はリアルタイムで取得していません。"],
-        zh: ["JR东海东海道本线：计划时刻表尚未收录",
-          "本站尚未导入并核实热海～米原全日平日／土休日列车的时刻、列车番号及编组。地图没有列车不代表停运或无车次。本站未取得该线路的官方实时列车位置。"],
-        en: ["JR Central Tokaido Line: timetable unavailable",
-          "This site has not yet imported and verified weekday or holiday train times, train numbers or formations for Atami–Maibara. No map markers do not imply cancellation or zero service. Official live train positions are not integrated."],
-        ko: ["JR도카이 도카이도 본선: 시간표 미등록",
-          "아타미~마이바라 구간의 평일·휴일 전일 시간표, 열차번호 및 편성을 아직 등록·검증하지 않았습니다. 지도에 열차가 없어도 운휴나 무운행을 뜻하지 않습니다. 공식 실시간 열차 위치 정보는 연동되지 않았습니다."]
-      };
-      var central = centralTexts[window.currentLang] || centralTexts.ja;
-      var centralTitle = document.createElement("h3");
-      centralTitle.textContent = central[0];
-      var centralNote = document.createElement("p");
-      centralNote.className = "tp-evidence-note";
-      centralNote.textContent = central[1];
-      host.append(centralTitle, centralNote);
-      host.hidden = false;
-      return;
-    }
-    if (lineId === "Bantan") {
-      // The archived SQL has no current-date-verified inbound electric runs.
-      // Keep this as a non-clickable data-quality notice.
-      var bantanTexts = {
-        ja: ["播但線：時刻表データの検証待ち",
-          "当サイトの旧SQL時刻は2026年11月の全列車・全駅時刻として未検証です。列車が地図に表示されないことは、運休を意味しません。JR西日本の走行位置表示にも、一部の列車や位置が表示されない区間があります。"],
-        zh: ["播但线：时刻表数据待核实",
-          "本站历史SQL时刻表尚未核实为2026年11月的完整班次。地图不显示列车不代表停运。JR西日本官方走行位置页面本身也有部分列车不显示、部分区间位置不准确的限制。"],
-        en: ["Bantan Line: timetable not yet verified",
-          "Historical SQL stop times are not verified as the complete November 2026 timetable. A missing map marker does not mean cancellation. JR-West also warns that some trains and segments may not have accurate positions."],
-        ko: ["반탄선: 시간표 데이터 확인 중",
-          "기존 SQL 시간표는 2026년 11월의 전체 열차 운행 자료로 검증되지 않았습니다. 지도에 열차가 표시되지 않는 것이 운휴를 뜻하지는 않습니다. JR서일본의 공식 위치 안내에도 일부 미표시·오차 구간이 있습니다."]
-      };
-      var labels = bantanTexts[window.currentLang] || bantanTexts.ja;
-      var heading = document.createElement("h3");
-      heading.textContent = labels[0];
-      var warning = document.createElement("p");
-      warning.className = "tp-evidence-note";
-      warning.textContent = labels[1];
-      host.append(heading, warning);
-      host.hidden = false;
-      return;
-    }
-    if (lineId === "KakogawaLine") {
-      // Historical SQL clocks cannot prove all November 2026 services.
-      // Never substitute external navigation for integrated timetable data.
-      var kakogawaTexts = {
-        ja: ["加古川線：時刻表データの検証待ち",
-          "2026年11月の全列車・停車時刻はまだ検証できていません。地図に列車が表示されないことは運休を意味しません。表示中の列車位置は時刻表からの推定であり、JR西日本のリアルタイム観測ではありません。"],
-        zh: ["加古川线：时刻表数据待核实",
-          "本站尚未核实2026年11月全部列车的停站时刻。地图没有列车不代表停运。本站显示的是经过日期核实的时刻表推算位置，并非JR西日本官方实时观测。"],
-        en: ["Kakogawa Line: timetable verification pending",
-          "Not all November 2026 train stops are verified. Missing map markers do not imply cancellation. Any mapped timetable-based positions are estimates, not live JR-West observations."],
-        ko: ["가코가와선: 시간표 데이터 확인 중",
-          "2026년 11월 모든 열차의 정차 시각이 아직 검증되지 않았습니다. 지도에 표시되지 않는 것이 운휴를 뜻하지 않습니다. 표시되는 열차 위치는 시간표 기반 추정이며 JR서일본의 실시간 관측이 아닙니다."]
-      };
-      var kk = kakogawaTexts[window.currentLang] || kakogawaTexts.ja;
-      var kkTitle = document.createElement("h3");
-      kkTitle.textContent = kk[0];
-      var kkNote = document.createElement("p");
-      kkNote.className = "tp-evidence-note";
-      kkNote.textContent = kk[1];
-      host.append(kkTitle, kkNote);
-      host.hidden = false;
-      return;
-    }
-    if (lineId !== "Fukuchiyama") return;
-    var texts = {
-      ja: ["福知山線：公式運行情報未連携",
-        "大阪～新三田は京阪神地区、新三田～福知山は北近畿地区に区分されます。当サイトは現在の公式運行状況を自動取得していません。"],
-      zh: ["福知山线：官方运行信息尚未接入",
-        "大阪—新三田属于京阪神地区，新三田—福知山属于北近畿地区。本站尚未接入可验证的本线路实时运行状况。"],
-      en: ["Fukuchiyama Line: live updates not integrated",
-        "Osaka–Shin-Sanda belongs to Keihanshin, and Shin-Sanda–Fukuchiyama to Northern Kinki. Official live disruption status is not integrated into this map."],
-      ko: ["후쿠치야마선: 공식 운행정보 미연동",
-        "오사카~신산다는 게이한신, 신산다~후쿠치야마는 기타킨키 지역을 확인해 주세요. 이 지도는 공식 실시간 운행 상태를 제공하지 않습니다."]
-    };
-    var strings = texts[window.currentLang] || texts.ja;
-    var title = document.createElement("h3");
-    title.textContent = strings[0];
-    var note = document.createElement("p");
-    note.className = "tp-evidence-note";
-    note.textContent = strings[1];
-    host.append(title,note);
-    host.hidden = false;
-  }
-
   var _detailLoadRequestedFor = null;
   var _overviewScrollY = 0;
   function releaseOverviewDom() {
@@ -297,8 +185,6 @@
       if (detailEl) detailEl.classList.remove("hidden");
       releaseOverviewDom();
       updateLineTitle(lineId, fusedLine);
-      updateCorridorEvidence(lineId);
-      updateOfficialRuninfoSource(lineId);
       if (mapEl && window.DataState && window.DataState.setPageStateRetry) {
         window.DataState.setPageStateRetry(mapEl, function() {
           var latest = getLinesData()[lineId];
@@ -344,13 +230,7 @@
   }
 
   function hideLineView() {
-    updateOfficialRuninfoSource(null);
     _detailLoadRequestedFor = null;
-    var evidenceHost = document.getElementById("trainsCorridorEvidence");
-    if (window.TrainCorridorEvidence &&
-        typeof window.TrainCorridorEvidence.hide === "function")
-      window.TrainCorridorEvidence.hide(evidenceHost);
-    else if (evidenceHost) { evidenceHost.hidden = true; evidenceHost.replaceChildren(); }
     try {
       disposeTrainMap(mapEl);
       currentLine = null;
@@ -691,7 +571,6 @@
       // 及其滚动/筛选状态，就地刷新卡片/分组。
       if (typeof window.onLanguageChange === "function") {
         window.onLanguageChange(function() {
-          if (currentLine) updateCorridorEvidence(currentLine);
           renderFilterBar(document.getElementById("trainsFilterBar"));
           if (currentLine && detailEl && !detailEl.classList.contains("hidden")) {
             var latest = getLinesData()[currentLine];

@@ -99,7 +99,6 @@
   "lazy": {
     "trains": [
       "data/core/major-vehicle-fleet-presets.js",
-      "js/train-corridor-evidence.js",
       "data/timetables/keiyo-musashino-through-index.js",
       "data/timetables/north-south-through-index.js",
       "data/timetables/north-south-mh-index.js",
@@ -309,9 +308,6 @@
       ],
       "data/timetables/jreast-yamagata-2611-number-index.js": [
         "Yamagata"
-      ],
-      "js/train-corridor-evidence.js": [
-        "JRTozai"
       ]
     }
   }

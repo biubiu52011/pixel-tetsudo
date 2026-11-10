@@ -43,22 +43,15 @@ test('topology routing does not imply a published train plan or verified travel 
   assert.match(ui, /search\.schedule_missing/);
 });
 
-test('line detail accurately discloses unverified weekday/holiday timetable in four languages', () => {
+test('JR-Central timetable source must not create a map disclaimer card', () => {
   const page = fs.readFileSync('js/trains-page.js', 'utf8');
-  assert.match(page, /if \(lineId === "TokaidoCentral"\)/);
-  assert.match(page, /\bja: \["東海道本線（JR東海）：時刻表データ未収録"/);
-  assert.match(page, /\bzh: \["JR东海东海道本线：计划时刻表尚未收录"/);
-  assert.match(page, /\ben: \["JR Central Tokaido Line: timetable unavailable"/);
-  assert.match(page, /\bko: \["JR도카이 도카이도 본선: 시간표 미등록"/);
-  // Do not reintroduce source websites as a fallback for missing SQL plans.
-  const notice = page.split('function updateOfficialRuninfoSource(lineId) {')[1]
-    .split('var _detailLoadRequestedFor = null;')[0];
-  for (const line of ['TokaidoCentral', 'Bantan', 'KakogawaLine']) {
-    assert.ok(notice.includes('lineId === "' + line + '"'), line + ' notice retained');
+  const html = fs.readFileSync('pages/trains.html', 'utf8');
+  for (const marker of ['trainsOfficialRuninfo','updateOfficialRuninfoSource',
+    'trainsCorridorEvidence','TrainCorridorEvidence']) {
+    assert.ok(!page.includes(marker));
+    assert.ok(!html.includes(marker));
   }
-  assert.ok(notice.includes('lineId !== "Fukuchiyama"'), 'Fukuchiyama notice retained');
-  assert.doesNotMatch(notice, /https?:\/\//);
-  assert.doesNotMatch(notice, /document\.createElement\(["']a["']\)|\.href\s*=|\.target\s*=/);
+  assert.match(page, /ensureTimetable\(lineId\)/);
 });
 
 test('existing train-runs endpoint reads exact line key, not the ambiguous Tokaido alias', () => {

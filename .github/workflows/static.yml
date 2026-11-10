@@ -53,6 +53,8 @@ jobs:
         run: node --test tests/jreast-tadami-2611-official-number-evidence.test.cjs
       - name: Verify JR-West JR Tōzai read-only source evidence
         run: node --test tests/jrwest-tozai-evidence-feed-runtime.test.cjs
+      - name: Forbid supplementary information panels in train-map details
+        run: node --test tests/train-detail-no-evidence-panels.test.cjs
       - name: Verify geometry reuse only on position snapshots
         run: node --test tests/trains-geometry-position-snapshot.test.cjs
       - name: Verify UI content, accessibility and cross-page UX contracts
