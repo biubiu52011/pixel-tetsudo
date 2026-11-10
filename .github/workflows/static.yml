@@ -33,8 +33,8 @@ jobs:
         run: node scripts/sync-page-scripts.cjs --check
       - name: Test page script manifest
         run: node --test tests/page-scripts.test.cjs
-      - name: Verify Sotetsu-JR published November train clocks and date guards
-        run: node --test tests/sotetsu-jr-direct-2611-clock-proof.test.cjs
+      - name: Verify Sotetsu-JR published November train clocks, vehicle PNG mapping and date guards
+        run: node --test tests/sotetsu-jr-direct-2611-clock-proof.test.cjs tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs
       - name: Verify dynamic platform, transfer, and SVG sizing contracts
         run: node --test tests/dynamic-resolver-contract.test.cjs
       - name: Exercise line-scoped loader and SQL artwork contract
