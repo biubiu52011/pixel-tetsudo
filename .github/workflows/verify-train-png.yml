@@ -116,6 +116,12 @@ on:
       - 'tests/kitakami-2611-sql-full-roster.test.cjs'
       - 'tests/yamada-2611-official-number-png.test.cjs'
       - 'scripts/page-scripts.json'
+      - 'js/line-presentation-service.js'
+      - 'js/data-state.js'
+      - 'data/core/runtime-config.js'
+      - 'data/core/db-loader.js'
+      - 'tests/line-overview-presentation.test.cjs'
+      - '.github/workflows/verify-train-png.yml'
       - 'tests/yokosuka-sobu-202611-number-png.test.cjs'
       - 'tests/shonan-215-202611-number-families.test.cjs'
       - 'tests/train-coupling.test.cjs'
@@ -183,6 +189,8 @@ jobs:
         run: node scripts/sync-page-scripts.cjs
       - name: Validate generated page script dependencies
         run: node --test tests/page-scripts.test.cjs
+      - name: Verify whole-list line ranks, canonical identities and station symbols
+        run: node --test tests/line-overview-presentation.test.cjs
       - name: Check JavaScript syntax
         run: |
           node --check js/train-vehicle.js
