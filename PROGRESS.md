@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### RECOMMENDATION-LABEL-ACCEPTANCE-20261110 — 推荐区域标题多语言与真实页面验收（DONE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 验收范围 | 沿用 `6927b64` 的通用推荐文案：餐饮与玩乐商户详情页均使用中性推荐标题，不再限定为菜单或商品。 |
+| 四语页面 | 生产 `tourism-shop.html` 实际切换并回读日/中/英/韩，推荐标题分别为「おすすめ / 推荐 / Recommendations / 추천」。 |
+| 卡片与缓存 | 生产餐饮样本「千住の永見」与玩乐样本「ギャラクシティ」均成功渲染推荐卡片；刷新玩乐页后标题仍保持最新文案，未观察到旧浏览器缓存残留。 |
+| 本地回归 | `tests/tourism-shops.test.cjs`、`tests/tourism-fields.test.cjs`、`tests/ui-cross-page-consistency.test.cjs` 合计 37/37 通过，含四语中性标题、餐饮/玩乐布局与页面资源一致性断言。 |
+| 生产边界 | 仅完成验收与进度记录；未触发 Pages、Supabase、Edge Function 或其他生产发布。 |
+
 ### SOTETSU-JR-NUMBER-ICON-20261110 — 相铁 JR 直通图标与官方番号展示（LOCAL-READY）
 
 | 项目 | 当前状态 |
