@@ -3500,11 +3500,11 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       const observedEvidence:any=observedDuty
         ?evidenceById.get(Number(observedDuty.source_id)):null;
       const sourceDeparture=String(run.stops?.[0]?.departure_time||"");
-      const departureMinutes=/^\\d{1,2}:\\d{2}$/.test(sourceDeparture)
+      const departureMinutes=/^\d{1,2}:\d{2}$/.test(sourceDeparture)
         ?Number(sourceDeparture.split(":")[0])*60+Number(sourceDeparture.split(":")[1])
         :null;
       const boundMinutes=(clock:string|null)=>
-        clock&&/^\\d{2}:\\d{2}/.test(clock)
+        clock&&/^\d{2}:\d{2}/.test(clock)
           ?Number(clock.split(":")[0])*60+Number(clock.split(":")[1])
           :null;
       const startBound=observedDuty?boundMinutes(observedDuty.valid_from_time):null;
