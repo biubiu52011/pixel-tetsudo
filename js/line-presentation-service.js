@@ -7,7 +7,7 @@
  *   canonical 元数据）。`presentation.lineIds[0] === lineId` 的记录是主记录；
  *   成员线路（lineIds[1..]）共享主记录的排序位置，不单独占用 UI 位置。
  *
- * 全局类别顺序：JR > Metro（地下铁）> Private（私铁）> Other（其他）。
+ * 全局类别顺序：JR > Private（私铁）> Other（第三部门等）> Metro（地铁）。
  * 同一运营商组内，专属线路图标优先；JRグループ.png 等通用徽章
  * 和无专属图标线路进入后序列。各序列内比较整数
  * presentation.order → 线路符号 → 显示名称 → 稳定原始顺序。
@@ -27,7 +27,7 @@
 
   // ===== 1. 类别与固定顺序 =====
 
-  var CATEGORY_ORDER = ["JR", "Metro", "Private", "Other"];
+  var CATEGORY_ORDER = ["JR", "Private", "Other", "Metro"];
   var JR_OPERATOR_ORDER = [
     "JR-East",
     "JR-Central",
@@ -40,12 +40,12 @@
 
   // 最小类别元数据：以 "JR-" 前缀识别 JR 运营商
   // （JR-East / JR-West / JR-Central / JR-Kyushu / JR-Hokkaido / JR-Shikoku）。
-  // Metro = 公营・地下铁；Private = 大型私铁及准大型/近畿・中部・九州私铁；
-  // 其余运营商（单轨、新交通、AGT、TWR 等）归入 Other。
+  // Metro = 地铁运营商；Private = 私铁与路面电车等；
+  // 其余运营商（第三部门、单轨、新交通、AGT 等）归入 Other，均排在地铁前。
   var METRO_OPS = [
     "TokyoMetro", "Toei", "YokohamaMunicipal",
     "OsakaMetro", "NagoyaMunicipal", "KyotoMunicipal", "KobeMunicipal",
-    "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal", "HiroshimaElectric"
+    "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal"
   ];
   var PRIVATE_OPS = [
     "Keio", "Odakyu", "EnoshimaElectric", "Seibu", "Tobu", "Tokyu",
@@ -53,7 +53,7 @@
     "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
     "Meitetsu", "Nishitetsu", "FujisanrokuElectricRailway",
     "ToyoRapid", "SaitamaRapidRailway", "KobeDentetsu", "HojoRailway",
-    "MinatoMirai", "Rinkai", "TsukubaExpress"
+    "MinatoMirai", "Rinkai", "TsukubaExpress", "HiroshimaElectric"
   ];
 
   // ===== 2. 基础分类与排序键 =====
@@ -139,7 +139,7 @@
   // ===== 3. 运营商与展示实体排序 =====
 
   /**
-   * 按全局类别（JR > Metro > Private > Other）、JR 固定组顺序、
+   * 按全局类别（JR > Private > Other > Metro）、JR 固定组顺序、
    * OP_ORDER（项目 canonical 顺序）和字母顺序排列全部运营商键。
    * 未知运营商不得导致异常。
    */
@@ -230,12 +230,11 @@
     opOrder.forEach(function(op) {
       var list = byOp[op].slice();
       list.sort(function(a, b) {
+        // 所有条目先按实际卡片图标分层。不能让通用徽章/无图标
+        // 的 presentation 卡片压过拥有正式线路图标的 fallback 记录。
+        var aDedicated = hasDedicatedLineIcon(a.line), bDedicated = hasDedicatedLineIcon(b.line);
+        if (aDedicated !== bDedicated) return aDedicated ? -1 : 1;
         if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1; // passenger systems first
-        if (a.isPresentation && b.isPresentation) {
-          // 运营商内部：专属线路图标在前，JR集团通用徽章和无图标线路在后。
-          var aDedicated = hasDedicatedLineIcon(a.line), bDedicated = hasDedicatedLineIcon(b.line);
-          if (aDedicated !== bDedicated) return aDedicated ? -1 : 1;
-        }
         if (!a.isPresentation && categoryOf(op) === "JR") {
           var aShinkansen = isShinkansenLine(a.line);
           var bShinkansen = isShinkansenLine(b.line);
@@ -282,7 +281,10 @@
             if (!candidate || candidate.operator !== line.operator) continue;
             lastOperatorIndex = ci;
             var candidatePres = getPrimaryPresentation(out[ci], allLines);
-            if (candidatePres && Number.isInteger(candidatePres.order) &&
+            // 候选位置也必须在降级序列；仅凭整数编号比较
+            // 会把 JRグループ.png 的走廊重新插到 JA/JB/JC 中间。
+            if (!hasDedicatedLineIcon(candidate) && candidatePres &&
+                Number.isInteger(candidatePres.order) &&
                 candidatePres.order >= presentation.order) {
               insertIndex = ci;
               break;
