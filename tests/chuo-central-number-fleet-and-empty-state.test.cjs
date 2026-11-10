@@ -83,10 +83,10 @@ test('missing timetable is announced from an audited SQL status, not inferred fr
   assert.match(render,/runStatus\.source !== "SOURCE_ERROR"/);
   assert.match(page,/auditedMissingPlan/);
   assert.equal(t.split('"trains.plan_not_imported_note"').length-1,4);
-  assert.equal(t.split('"trains.jrc_official_positions"').length-1,4);
-  assert.match(render,/missingPlan && lineId === "ChuoCentral"/);
-  assert.match(render,/https:\/\/traininfo\.jr-central\.co\.jp\/zairaisen\/index\.html/);
-  assert.match(render,/link\.rel = "noopener noreferrer"/);
+  // An empty train map must be explained onsite, not replaced with an
+  // external journey lookup or fabricated train-position icons.
+  assert.doesNotMatch(render,/tp-official-source-link/);
+  assert.doesNotMatch(t,/"trains.jrc_official_positions"/);
   // No train runs are invented by a gallery, status, or importer migration.
   const sql=fs.readFileSync('supabase/migrations/20261111100000_jr_central_shared_authorized_plan_import.sql','utf8');
   assert.match(sql,/No published 2026-11 trains are created by this schema migration/);
