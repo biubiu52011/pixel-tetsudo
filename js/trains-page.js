@@ -115,6 +115,46 @@
     if (!host) return;
     host.replaceChildren();
     host.hidden = true;
+    if (lineId === "TokaidoCentral") {
+      // JR-Central Atami–Maibara is topology-only as of the 2026-11-10
+      // SQL acceptance audit (no weekday/holiday train plans). Official
+      // source links do not represent integrated or realtime train data.
+      var centralTexts = {
+        ja: ["東海道本線（JR東海）：時刻表データ未収録",
+          "当サイトでは熱海～米原の平日・土休日の列車時刻、列車番号および編成をまだ登録・検証していません。地図に列車が表示されなくても、運休や列車がないことを意味しません。走行位置はリアルタイムで取得していません。",
+          "JR東海・駅別時刻表", "JR東海・在来線運行情報"],
+        zh: ["JR东海东海道本线：计划时刻表尚未收录",
+          "本站尚未导入并核实热海～米原全日平日／土休日列车的时刻、列车番号及编组。地图没有列车不代表停运或无车次。本站未取得该线路的官方实时列车位置。",
+          "JR东海官方车站时刻表", "JR东海官方在来线运行信息"],
+        en: ["JR Central Tokaido Line: timetable unavailable",
+          "This site has not yet imported and verified weekday or holiday train times, train numbers or formations for Atami–Maibara. No map markers do not imply cancellation or zero service. Official live train positions are not integrated.",
+          "JR Central station timetables", "JR Central conventional-line updates"],
+        ko: ["JR도카이 도카이도 본선: 시간표 미등록",
+          "아타미~마이바라 구간의 평일·휴일 전일 시간표, 열차번호 및 편성을 아직 등록·검증하지 않았습니다. 지도에 열차가 없어도 운휴나 무운행을 뜻하지 않습니다. 공식 실시간 열차 위치 정보는 연동되지 않았습니다.",
+          "JR도카이 공식 역별 시간표", "JR도카이 재래선 운행 정보"]
+      };
+      var central = centralTexts[window.currentLang] || centralTexts.ja;
+      var centralTitle = document.createElement("h3");
+      centralTitle.textContent = central[0];
+      var centralNote = document.createElement("p");
+      centralNote.className = "tp-evidence-note";
+      centralNote.textContent = central[1];
+      host.append(centralTitle, centralNote);
+      [
+        ["https://railway.jr-central.co.jp/time-schedule/search/", central[2]],
+        ["https://traininfo.jr-central.co.jp/zairaisen/index.html", central[3]]
+      ].forEach(function(entry, index) {
+        if (index) host.append(document.createTextNode(" · "));
+        var centralLink = document.createElement("a");
+        centralLink.href = entry[0];
+        centralLink.target = "_blank";
+        centralLink.rel = "noopener noreferrer";
+        centralLink.textContent = entry[1];
+        host.append(centralLink);
+      });
+      host.hidden = false;
+      return;
+    }
     if (lineId === "Bantan") {
       // The archived SQL has no current-date-verified inbound electric runs.
       // This is source-only navigation, NEVER an embedded, copied or inferred
