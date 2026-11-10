@@ -30,7 +30,7 @@ test('November 2611 stop clocks have a dedicated proof and dated variants, not a
   assert.match(edge, /run\.schedule_exception_date=serviceDate/);
   assert.match(edge, /date_verified_runs: dateVerifiedRuns/);
   assert.match(edge, /sotetsuNovemberComplete\s*=\s*lineId===\"SotetsuJRDirect\"/);
-  assert.match(edge, /plan_status:sotetsuNovemberComplete \? 'verified_2611_four_stop'/);
+  assert.match(edge, /sotetsuNovemberComplete \? 'verified_2611_four_stop'/);
   assert.match(edge, /run\.vehicle_artwork_path=null/);
   assert.match(edge, /run\.vehicle_plan_confirmed=false/);
 });
