@@ -5478,6 +5478,28 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var iconSrc = identityConfirmed && scopedProjection
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
+    // A live location is not a rolling-stock observation. Only a
+    // unique, source-station-checked live/schedule match from DataFusion
+    // may reuse the plan's already dated C-grade *illustration*.
+    var datedDisplay=p&&p.datedVehicleDisplayReference;
+    if(p&&datedDisplay&&contextLineId==="Kawagoe"&&
+       p.positionLineId==="Kawagoe"&&p.positionSource==="realtime-api"&&
+       p.estimated===false&&p.vehicleIdentityStatus!=="EXACT"&&
+       p.vehicleResolvedFromRealtime!==true&&
+       p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+       !p.vehicleFormationConflict&&
+       p.trainNumber===datedDisplay.trainNumber&&
+       p.serviceDate===datedDisplay.serviceDate&&
+       p.sourceRailway===datedDisplay.sourceRailway&&
+       p.railDirection===datedDisplay.railDirection){
+      var datedArt=selectMarkerArtwork(Object.assign({},datedDisplay,
+        {displayLineId:"Kawagoe"}),artworkFailed);
+      if(datedArt.kind==="vehicle"&&datedArt.illustrative===true&&
+         datedArt.actualVehicleConfirmed===false&&
+         datedArt.illustrationRole===
+           "kawagoe-2026-dated-community-model-not-actual-carset")
+        return datedArt;
+    }
     var vehiclePlan = p && p.vehiclePlan;
     // Kawagoe west: both E231-3000 and 209-3500 share the identical
     // 2026 working. H service-number suffix has NO unique stock mapping.
