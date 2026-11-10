@@ -2276,15 +2276,29 @@
           }
           var _kawagoeScoped=!!officialKawagoePlan&&
             vehResult.identityStatus!=="EXACT";
+          var _kawagoeReportedModel=_kawagoeScoped&&
+            officialKawagoePlan.reportedEvidenceGrade==="C"&&
+            officialKawagoePlan.reportedIsActual===false&&
+            officialKawagoePlan.reportedMappingLevel==="dated_volunteer_observed_model"&&
+            officialKawagoePlan.reportedOperationCode===
+              officialKawagoePlan.workingOperationCode&&
+            ["E231系3000番台","209系3500番台"].indexOf(
+              officialKawagoePlan.reportedModel)>=0
+            ?officialKawagoePlan.reportedModel:null;
           if(_kawagoeScoped){
-            _plannedCandidates=officialKawagoePlan.candidateModels.slice();
-            _visibleCandidates=officialKawagoePlan.candidateModels.slice();
+            _plannedCandidates=_kawagoeReportedModel?
+              [_kawagoeReportedModel]:officialKawagoePlan.candidateModels.slice();
+            _visibleCandidates=_plannedCandidates.slice();
             _publishedVehiclePlan={
-              status:"UNCONFIRMED_FLEET",
-              models:officialKawagoePlan.candidateModels.slice(),
+              status:_kawagoeReportedModel?"REPORTED_MODEL":"UNCONFIRMED_FLEET",
+              models:_plannedCandidates.slice(),
               iconPath:"",representativeModel:"",
-              source:"sql-jreast-kawagoe-2611-shared-fleet",
-              sourceUrl:officialKawagoePlan.fleetSourceUrl||"",
+              source:_kawagoeReportedModel
+                ?"sql-jreast-kawagoe-2611-dated-volunteer-report"
+                :"sql-jreast-kawagoe-2611-shared-fleet",
+              sourceUrl:_kawagoeReportedModel
+                ?officialKawagoePlan.reportedEvidenceUrl
+                :officialKawagoePlan.fleetSourceUrl||"",
               lineId:"Kawagoe",operator:"JR-East",
               confirmed:false,referenceOnly:true
             };
@@ -2620,7 +2634,7 @@
               ?"unresolved-mixed-fleet" : _jrwestKyotoKobeScoped
               ?"unresolved-mixed-fleet" : _sotetsuJrScoped
               ?"unresolved-mixed-fleet" : _kawagoeScoped
-              ?"unresolved-mixed-fleet" : _komiiScoped
+              ?(_kawagoeReportedModel?"dated-reported-single-model":"unresolved-mixed-fleet") : _komiiScoped
               ?(_komiiFleet?"official-service-family-reference":"unresolved-mixed-fleet")
               : _kesennumaFleet
               ?"official-service-family-reference"
