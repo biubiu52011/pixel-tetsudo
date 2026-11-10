@@ -110,6 +110,12 @@ JR-East 两组各 692 个模板，**两者不是 JR-Central 的候选时刻表**
 
 - 按现有 JR East `stations` → `line_stations` 的模式，为 `TokaidoCentral` 建立 84 个顺序正确的 SQL 车站引用，原先其他线路的车站记录不覆盖、不挪用。
 - 修复三处跨线路同名站碰撞：静冈島田 `JRC-TokaidoCentral-025`、静冈菊川 `JRC-TokaidoCentral-027`、滋贺柏原（Kashiwabara）`JRC-TokaidoCentral-081`，保留山阳 `Shimada`、都营新宿线 `Kikukawa` 和关西本线 `Kashiwara` 原 ID。同步更新 canonical 站顺序、反向线路索引及由生成器负责的 compact/file.js 双产物。
-- 三处新坐标参考国土数值信息 N02 衍生站点资料（島田 34.830150,138.173425；菊川 34.761757,138.085572；柏原 35.344595,136.402325）：<https://xn--y8j8gq48f5heu33c.jp/map.php?dn=eki&id=6489&pr=22>、<https://mapfan.com/spots/SCH%2CJ%2C210>、<https://xn--y8j8gq48f5heu33c.jp/map.php?dn=eki&id=4982&pr=25>。其他未获经纬度的车站 SQL 为空，不生成虚假坐标。
+- 三处新坐标参考国土数值信息 N02 衍生站点资料（島田 34.830150,138.173425；菊川 34.761757,138.085572；柏原 35.344595,136.402325）：<https://xn--y8j8gq48f5heu33c.jp/map.php?dn=eki&id=6489&pr=22>、<https://mapfan.com/spots/SCH%2CJ%2C210>、<https://xn--y8j8gq48f5heu33c.jp/map.php?dn=eki&id=4982&pr=25>。无经纬度证据的车站仅通过 `line_stations` 注册顺序；迁移不会向经纬度非空约束的 `stations` 表插入 NULL 或编造坐标。
 - 本次仍**没有可合法且逐车核实的 2026-11 完整时刻表**，所以 `manual_timetable_templates` / `manual_timetable_template_stops` / `train_runs` 保持无该线路计划数据；`published_timetable_full_day_acceptance` 理应仍为 `blocked_no_published_trains`，后续沿用同一 `train-runs` 消费链、逐车来源验收、平日/土休日与上下行核验，不新增替代前端计划生成器。
 - 回归检查：`tests/tokaido-central-station-registry.test.cjs`；数据库迁移：`supabase/migrations/20261110223500_tokaido_central_scoped_station_registry.sql`。
+
+### 本次生产验收（已执行）
+
+- 新迁移已在生产数据库执行，`line_stations` 实际 84 行、唯一站序 84 个（0–83）；三处 scoped IDs 的坐标与 canonical 一致，其他线路原 ID 与坐标未改。
+- `published_timetable_full_day_acceptance` 现为 `registered_station_count=84`，但 `raw_coverage_status=missing_all_plans`、`acceptance_status=blocked_no_published_trains`、`full_day_timetable_acceptance_passed=false`；平日／土休日来源车次数均为 0。
+- `tests/tokaido-central-station-registry.test.cjs` 三项回归已按 GitHub 主分支的实际文件内容检验通过；尚未进行浏览器 DOM、页面性能及完整仓库 Node 测试。
