@@ -83,7 +83,7 @@ function at(iso){
 }
 test('04:55 JST: 461E remains scheduled Hachiko train, not an invented live position',()=>{
   const p=at('2026-11-03T19:55:00Z');
-  assert.deepEqual(p.map(x=>x.trainNumber),['461E']);
+  assert.deepEqual(Array.from(p,x=>x.trainNumber),['461E']);
   assert.equal(railway.stations[p[0].stationIndex],'Komiya');
   assert.equal(railway.stations[p[0].segmentToIndex],'Haijima');
   assert.equal(p[0].positionSource,'supabase-train-run');
@@ -92,7 +92,7 @@ test('04:55 JST: 461E remains scheduled Hachiko train, not an invented live posi
 });
 test('05:40 JST: north HB-E220 220D and south 568E coexist by independent train numbers',()=>{
   const p=at('2026-11-03T20:40:00Z');
-  assert.deepEqual(p.map(x=>x.trainNumber).sort(),['220D','568E']);
+  assert.deepEqual(Array.from(p,x=>x.trainNumber).sort(),['220D','568E']);
   const north=p.find(x=>x.trainNumber==='220D');
   const south=p.find(x=>x.trainNumber==='568E');
   assert.equal(railway.stations[north.stationIndex],'Kita-Fujioka');
@@ -104,7 +104,7 @@ test('05:40 JST: north HB-E220 220D and south 568E coexist by independent train 
 });
 test('05:45 JST: source stop-clocks advance without converting 220D or 568E to operations',()=>{
   const p=at('2026-11-03T20:45:00Z');
-  assert.deepEqual(p.map(x=>x.trainNumber).sort(),['220D','568E']);
+  assert.deepEqual(Array.from(p,x=>x.trainNumber).sort(),['220D','568E']);
   const north=p.find(x=>x.trainNumber==='220D');
   const south=p.find(x=>x.trainNumber==='568E');
   assert.equal(railway.stations[north.stationIndex],'Gumma-Fujioka');

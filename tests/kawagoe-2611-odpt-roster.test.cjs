@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const read=p=>fs.readFileSync(p,'utf8');
+const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
 test('Kawagoe west 186 six-stop ODPT sources are 2611-edition scoped and source protected',()=>{
  const ingestion=read('supabase/migrations/20261110180000_enable_kawagoe_complete_odpt_train_schedule_after_sample_reconciliation.sql');
  const roster=read('supabase/migrations/20261110183000_kawagoe_2611_six_stop_odpt_source_roster_and_shared_fleet.sql');
@@ -28,7 +28,7 @@ test('Kawagoe SQL positions require dated verification in every month',()=>{
  const host={};
  vm.runInNewContext(read('data/core/runtime-config.js'),{window:host,console,Date,Object});
  assert.deepEqual(Array.from(host.RuntimeConfig.SQL_POSITION_VERIFICATION_MONTHS.Kawagoe),['*']);
- assert.equal(read('data/core/data-config-bundle.js'),require('../data/core/gen-config-bundle.js').buildBundle());
+ assert.equal(read('data/core/data-config-bundle.js'),require('../data/core/gen-config-bundle.js').buildBundle().replace(/\r\n/g,'\n'));
  const est=read('js/train-position-estimator.js');
  assert.match(est,/requireSqlDateProof && tt\._timetableDateVerified!==true\) continue/);
  assert.match(est,/officialKawagoePlan/);
