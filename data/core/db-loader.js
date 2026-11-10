@@ -647,7 +647,7 @@ function applyData(data, i18n) {
 
   // file:// 协议：通过 <script> 标签加载生成的数据包。
   var FILE_BUNDLES = [
-    "../data/core/railway-data.file.js?v=d8ed51b31a71",
+    "../data/core/railway-data.file.js?v=67cdc0bce3c0",
     "../data/core/station-i18n.file.js?v=242bd4544ea3",
     "../data/core/tourism-data.file.js"
   ];
