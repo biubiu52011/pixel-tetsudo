@@ -222,11 +222,10 @@ test('BanetsuWest 2611 all 94 scheduled unique M and D stock references are cale
   }
   assert.equal(root.TrainVehicle.selectMarkerArtwork({...sample,displayLineId:'BanetsuWest'},true).kind,'unresolved');
 });
-test('BanetsuWest exact dated 2026-11 named stock: Akabeko, SL C57 and DL DE10',()=>{
+test('BanetsuWest exact dated 2026-11 named stock respects quarantined DL DE10 art',()=>{
   const group=[
     {numbers:['9211D','9212D'],days:["2026-11-01","2026-11-02","2026-11-03","2026-11-07","2026-11-08","2026-11-14","2026-11-15","2026-11-21","2026-11-22","2026-11-23","2026-11-28","2026-11-29"],model:'キハ110系',png:'../images/列车/JR東日本/JR東日本_キハ110系.png',type:'LimitedExpress'},
-    {numbers:['8226','8233'],days:["2026-11-03","2026-11-07","2026-11-14","2026-11-21"],model:'C57形（SLばんえつ物語）',png:'../images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png',type:'Rapid'},
-    {numbers:['9226','9233'],days:["2026-11-01","2026-11-08","2026-11-15"],model:'DE10形（DLばんえつ物語）',png:'../images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png',type:'Rapid'}
+    {numbers:['8226','8233'],days:["2026-11-03","2026-11-07","2026-11-14","2026-11-21"],model:'C57形（SLばんえつ物語）',png:'../images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png',type:'Rapid'}
   ];
   for(const g of group) for(const day of g.days) for(const n of g.numbers){
     const dir=Number(n.match(/^\d+/)[0])%2?'Outbound':'Inbound';
@@ -237,6 +236,18 @@ test('BanetsuWest exact dated 2026-11 named stock: Akabeko, SL C57 and DL DE10',
     assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(pos)?.pngPath,g.png,n+'/'+day);
     assert.equal(marker(pos,'BanetsuWest').iconSrc,g.png,n+'/'+day);
     assert.equal(pos.vehicleIdentityStatus,'UNKNOWN');
+  }
+  const de10='../images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png';
+  assert.equal(root.VehicleGaragePngMap.isQuarantinedPng(de10),true);
+  for(const day of ["2026-11-01","2026-11-08","2026-11-15"]) for(const n of ['9226','9233']){
+    const dir=Number(n)%2?'Outbound':'Inbound';
+    const pos=sql({trainNumber:n,positionLineId:'BanetsuWest',
+      sourceRailway:'odpt.Railway:JR-East.BanetsuWest',trainOperator:'JR-East',
+      railDirection:'odpt.RailDirection:'+dir,trainType:'odpt.TrainType:JR-East.Rapid',
+      calendarType:'holiday',serviceDate:day});
+    assert.equal(root.TrainNumberPngRanges.match(n,'BanetsuWest',pos)?.pngPath,de10,n+'/'+day);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(pos),null,n+'/'+day);
+    assert.equal(marker(pos,'BanetsuWest').kind,'unresolved',n+'/'+day);
   }
   for(const [number,day,type] of [
     ['8216D','2026-11-01','Local'],['8217D','2026-11-01','Rapid'],
@@ -847,7 +858,7 @@ test('ChuoMain 2611 SQL numbers: T/H E233 and M-only 211/E131 illustrated as ONE
     plannedVehicleCandidates:['211系','E233系0番台']});
   assert.equal(marker(foreign,'ChuoRapid').kind,'unresolved');
 });
-test('ChuoTatsuno 159M: branch timetable position on ChuoMain SVG uses E127-100 planned PNG',()=>{
+test('ChuoTatsuno 159M: quarantined E127-100 art stays out of ChuoMain SVG',()=>{
   const png127='../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png';
   const position=sql({
     trainId:'planned-trip:2026-11-05|JR-East|odpt.Railway:JR-East.ChuoTatsuno|ChuoTatsuno|159M|odpt.RailDirection:Outbound|odpt.Station:JR-East.Tatsuno|14:00|odpt.Station:JR-East.Shiojiri',
@@ -866,22 +877,17 @@ test('ChuoTatsuno 159M: branch timetable position on ChuoMain SVG uses E127-100 
   assert.ok(identified);
   assert.equal(identified.model,'E127系100番台');
   assert.equal(identified.pngPath,png127);
-  assert.equal(root.VehicleGaragePngMap.matchModelPath('E127系100番台',png127,'ChuoTatsuno'),true);
-  assert.equal(root.VehicleGaragePngMap.matchModelPath('E127系100番台',png127,'ChuoMain'),true);
-  const mapped=root.TrainVehicle.lookupTrainNumberRangePng({...position,displayLineId:'ChuoMain'});
-  assert.ok(mapped);
-  assert.equal(mapped.lineId,'ChuoTatsuno');
-  assert.equal(mapped.model,'E127系100番台');
-  assert.equal(mapped.pngPath,png127);
+  assert.equal(root.VehicleGaragePngMap.isQuarantinedPng(png127),true);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath('E127系100番台',png127,'ChuoTatsuno'),false);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath('E127系100番台',png127,'ChuoMain'),false);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({...position,displayLineId:'ChuoMain'}),null);
   const spec=marker(position,'ChuoMain');
-  assert.equal(spec.kind,'vehicle');
-  assert.equal(spec.iconSrc,png127);
-  assert.equal(spec.planned,true);
-  assert.equal(spec.compact,false);
+  assert.equal(spec.kind,'unresolved');
+  assert.equal(spec.iconSrc,'');
   assert.equal(position.vehicleIdentityStatus,'UNKNOWN');
   const holiday={...position,serviceDate:'2026-11-07',calendarType:'holiday'};
-  assert.equal(marker(holiday,'ChuoMain').iconSrc,png127);
-  assert.equal(marker(position,'ChuoTatsuno').iconSrc,png127);
+  assert.equal(marker(holiday,'ChuoMain').kind,'unresolved');
+  assert.equal(marker(position,'ChuoTatsuno').kind,'unresolved');
   for(const bad of [
     {trainNumber:'157M'},
     {serviceDate:'2026-12-05'},

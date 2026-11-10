@@ -54,7 +54,7 @@ test('Shinano 1001-1026 uses approved 383 reference, never E353',()=>{
   assert.equal(x.vehicleIdentityStatus,'UNKNOWN');
  }
 });
-test('local mixed fleet uses 211 line illustration; E127 when independently planned',()=>{
+test('local mixed fleet uses 211 line illustration; quarantined E127 stays neutral',()=>{
  const x=p('421M');
  const ref=resolve(x),image=marker(x);
  assert.equal(ref.plannedCandidates.join('|'),'211系（長野地区）|E127系100番台');
@@ -62,7 +62,9 @@ test('local mixed fleet uses 211 line illustration; E127 when independently plan
  assert.equal(image.iconSrc,n211);
  assert.equal(image.illustrative,true);
  const knownE127={...x,vehiclePlan:{status:'PLANNED_MODEL',models:['E127系100番台']}};
- assert.equal(marker(knownE127).iconSrc,e127);
+ assert.equal(w.VehicleGaragePngMap.isQuarantinedPng(e127),true);
+ assert.equal(marker(knownE127).kind,'unresolved');
+ assert.equal(marker(knownE127).iconSrc,'');
  assert.equal(marker(p('2530M','Inbound','Rapid')).iconSrc,n211);
  assert.equal(resolve({...x,vehiclePlan:{status:'PLANNED_MODEL',
   models:['E131系200番台']}}),null,
@@ -89,7 +91,8 @@ test('image authority has Shinonoi scope, and other line adapter survives',()=>{
  assert.equal(g.matchModelPath('383系',shinano,'Shinonoi'),true);
  assert.equal(g.matchModelPath('383系',shinano,'ChuoMain'),false);
  assert.equal(g.matchModelPath('211系（長野地区）',n211,'Shinonoi'),true);
- assert.equal(g.matchModelPath('E127系100番台',e127,'Shinonoi'),true);
+ assert.equal(g.isQuarantinedPng(e127),true);
+ assert.equal(g.matchModelPath('E127系100番台',e127,'Shinonoi'),false);
  const senzan=w.TrainNumberPngRanges.match('1829M','Senzan',{
   trainNumber:'1829M',positionLineId:'Senzan',displayLineId:'Senzan',
   sourceRailway:'odpt.Railway:JR-East.Senzan',
