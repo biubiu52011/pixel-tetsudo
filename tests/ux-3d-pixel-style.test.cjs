@@ -7,8 +7,12 @@ const crypto = require('node:crypto');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const blobVersion = text => crypto.createHash('sha1')
-  .update('blob ' + Buffer.byteLength(text) + '\0' + text).digest('hex').slice(0,12);
+const blobVersion = text => {
+  const canonical = text.replace(/\r\n/g, '\n');
+  return crypto.createHash('sha1')
+    .update('blob ' + Buffer.byteLength(canonical) + '\0' + canonical)
+    .digest('hex').slice(0,12);
+};
 
 test('realtime status and modal blocks retain a raised 3D pixel structure', () => {
   const css = read('css/ux-refinements.css');

@@ -7,8 +7,12 @@ const crypto = require('node:crypto');
 const vm = require('node:vm');
 const root = path.resolve(__dirname,'..');
 const read = file => fs.readFileSync(path.join(root,file),'utf8');
-const blobVersion = source => crypto.createHash('sha1')
-  .update('blob ' + Buffer.byteLength(source) + '\0' + source).digest('hex').slice(0,12);
+const blobVersion = source => {
+  const canonical = source.replace(/\r\n/g, '\n');
+  return crypto.createHash('sha1')
+    .update('blob ' + Buffer.byteLength(canonical) + '\0' + canonical)
+    .digest('hex').slice(0,12);
+};
 const pages = ['home','realtime','trains','history','tourism-spot','tourism-shop','tourism-event'];
 
 test('navigation, basic cards and active tabs have one owner on all seven pages', () => {
