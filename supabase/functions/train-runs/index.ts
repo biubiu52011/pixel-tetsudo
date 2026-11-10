@@ -3418,6 +3418,97 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     }
   }
 
+  // Kawagoe WEST (Kawagoe–Komagawa) 2611: full ODPT six-stop plan,
+  // with all 186 *first departures* crosschecked against the November
+  // JR East four endpoint boards. Source stop minutes remain ODPT data.
+  // H numbers are NOT physical trainset or E231/209 model assignments.
+  if(lineId==="Kawagoe"&&/^2026-11-\d{2}$/.test(serviceDate)){
+    const {data:roster,error:rosterErr}=await db
+      .from("published_kawagoe_2611_source_roster")
+      .select("source_template_id,train_number,calendar_urn,direction_urn,source_stop_signature,source_stop_keys,odpt_source_railway,official_departure_board_url,first_departure_2611_verified,candidate_models,candidate_png_paths,fleet_working_url,fleet_evidence_grade,reference_only,actual_vehicle_confirmed,authorizes_single_model_png")
+      .eq("edition","2611").eq("line_key","Kawagoe")
+      .eq("calendar_urn",selectedCalendar);
+    if(rosterErr||(roster||[]).length!==93)
+      throw new Error("KAWAGOE_2611_SIX_STOP_ROSTER_UNAVAILABLE");
+    const bySource=new Map((roster||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    if(bySource.size!==93||result.length!==93)
+      throw new Error("KAWAGOE_2611_ROSTER_COUNT_CHANGED");
+    const outbound=["Kawagoe","NishiKawagoe","Matoba","Kasahata","MusashiTakahagi","Komagawa"];
+    const weekday=selectedCalendar==="odpt.Calendar:Weekday";
+    const seen=new Set<number>();
+    for(const run of result){
+      const sid=Number(run.source_template_id);
+      const p:any=bySource.get(sid);
+      if(!p||seen.has(sid))throw new Error("KAWAGOE_2611_SOURCE_IDENTITY_CHANGED");
+      seen.add(sid);
+      const dir=String(run.rail_direction||"");
+      const stations=dir==="odpt.RailDirection:Outbound"
+        ?outbound:dir==="odpt.RailDirection:Inbound"
+        ?outbound.slice().reverse():[];
+      const signature=(run.stops||[]).map((st:any)=>
+        String(st.station_key||"")+"|"+
+        String(st.arrival_time||"")+"|"+
+        String(st.departure_time||"")).join(";");
+      const expectedBoard="https://timetables.jreast.co.jp/2611/timetable/"+
+        (dir==="odpt.RailDirection:Outbound"?"tt0525/052501":"tt0711/071101")+
+        (weekday?"0":"1")+".html";
+      const expectedWorking=weekday
+        ?"https://ameblo.jp/tc205-37/entry-12972148726.html"
+        :"https://ameblo.jp/tc205-37/entry-12972148835.html";
+      if(!/^[0-9]{3,4}H$/.test(String(run.train_number||""))||
+         run.network_key!=="odpt.Railway:JR-East.Kawagoe"||
+         run.canonical_group_evidence!=="source_only"||
+         p.train_number!==run.train_number||
+         p.direction_urn!==dir||
+         p.calendar_urn!==selectedCalendar||
+         p.source_stop_signature!==signature||
+         !Array.isArray(p.source_stop_keys)||
+         (run.stops||[]).length!==6||
+         p.source_stop_keys.join("|")!==stations.join("|")||
+         p.odpt_source_railway!==run.network_key||
+         p.official_departure_board_url!==expectedBoard||
+         p.first_departure_2611_verified!==true||
+         p.fleet_working_url!==expectedWorking||
+         p.fleet_evidence_grade!=="C"||
+         !Array.isArray(p.candidate_models)||
+         p.candidate_models.join("|")!=="E231系3000番台|209系3500番台"||
+         !Array.isArray(p.candidate_png_paths)||
+         p.candidate_png_paths.join("|")!==[
+          "../images/列车/JR東日本/JR東日本_E231系_3000番台.png",
+          "../images/列车/JR東日本/JR東日本_209系_3500番台.png"
+         ].join("|")||
+         p.reference_only!==true||
+         p.actual_vehicle_confirmed!==false||
+         p.authorizes_single_model_png!==false)
+        throw new Error("KAWAGOE_2611_SIX_STOP_EVIDENCE_DRIFT");
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source="odpt-jreast-kawagoe-2611-verified-first-departures";
+      run.train_number_verification="odpt-2611-kawagoe-number-with-jreast-departure";
+      run.train_number_source_url=p.official_departure_board_url;
+      run.vehicle_type_label=null;
+      run.vehicle_type_candidates=p.candidate_models.join(" / ");
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=null;
+      run.vehicle_candidate_artwork_path=null;
+      run.vehicle_candidate_artwork_status=null;
+      run.published_number_fleet_reference={
+        source:"sql-jreast-kawagoe-2611-shared-fleet",
+        lineId:"Kawagoe",trainNumber:run.train_number,serviceDate,
+        sourceTemplateId:sid,direction:dir,calendar:selectedCalendar,
+        sourceStopKeys:p.source_stop_keys,
+        candidateModels:p.candidate_models,candidateAssets:p.candidate_png_paths,
+        officialDepartureBoardUrl:p.official_departure_board_url,
+        fleetSourceUrl:p.fleet_working_url,fleetEvidenceGrade:p.fleet_evidence_grade,
+        departure2611Verified:true,
+        referenceOnly:true,actualVehicleConfirmed:false,authorizesPNG:false,
+        singleModelUnresolved:true
+      };
+    }
+    if(seen.size!==93)throw new Error("KAWAGOE_2611_DAILY_SOURCE_INCOMPLETE");
+  }
+
   // Sotetsu-JR 2611: source-bound historical stops (Hazawa–Osaki)
   // certify only E233-7000 / Sotetsu-12000 fleet CANDIDATES.
   // Public 1xxM/2xxM are Sotetsu-side train types, NOT ownership codes.
@@ -5029,9 +5120,14 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     validRuns.length===92&&validRuns.every((r:any)=>
       r.timetable_date_verified===true&&
       r.train_number_verification==="official-2611-sotetsu-jr-four-stop-clock");
+  const kawagoeNovemberComplete=lineId==="Kawagoe"&&
+    /^2026-11-\d{2}$/.test(serviceDate)&&
+    validRuns.length===93&&validRuns.every((r:any)=>
+      r.timetable_date_verified===true&&
+      r.train_number_verification==="odpt-2611-kawagoe-number-with-jreast-departure");
   const independentlyVerifiedCoverage =
     auditStatus === "verified" || auditStatus === "complete" ||
-    sotetsuNovemberComplete;
+    sotetsuNovemberComplete || kawagoeNovemberComplete;
   const complete = validRuns.length > 0 && omittedIncompleteRuns === 0 &&
     !sourceSampleOnly && independentlyVerifiedCoverage;
   const partial = validRuns.length > 0 && !complete;
@@ -5081,7 +5177,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       : independentlyVerifiedCoverage ? "verified-published-calendar"
       : "calendar-source-coverage-unverified",
     audit_coverage_status: auditStatus, audit_issues: auditIssues,
-    revision:selectedRevision,plan_status:sotetsuNovemberComplete ? 'verified_2611_four_stop' :
+    revision:selectedRevision,plan_status:kawagoeNovemberComplete ? 'verified_2611_kawagoe_six_stop' :
+      sotetsuNovemberComplete ? 'verified_2611_four_stop' :
       selectedRevision ? 'published_revision' : 'unverified',
     calendar_status: "selected", selected_calendar: selectedCalendar,
     omitted_incomplete_runs: omittedIncompleteRuns,
