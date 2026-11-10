@@ -77,8 +77,8 @@
       "lng": 139.0711
     },
     "Nagoya": {
-      "lat": 35.1815,
-      "lng": 136.9066
+      "lat": 35.1706431,
+      "lng": 136.8816945
     },
     "Osaka": {
       "lat": 34.6937,
@@ -15416,6 +15416,10 @@
     "JRC-TokaidoCentral-081": {
       "lat": 35.344595,
       "lng": 136.402325
+    },
+    "JRC-ChuoCentral-027": {
+      "lat": 35.6843755,
+      "lng": 137.6643629
     }
   },
   "lines": {
@@ -49661,7 +49665,7 @@
         "JRC-ChuoCentral-024",
         "JRC-ChuoCentral-025",
         "JRC-ChuoCentral-026",
-        "Okuwa",
+        "JRC-ChuoCentral-027",
         "JRC-ChuoCentral-028",
         "JRC-ChuoCentral-029",
         "JRC-ChuoCentral-030",
@@ -49702,18 +49706,6 @@
           "note": ""
         },
         {
-          "station": "JRC-Takayama-008",
-          "lineId": "Takayama",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "JRC-Takayama-008",
-          "lineId": "Taita",
-          "type": "in",
-          "note": ""
-        },
-        {
           "station": "Shiojiri",
           "lineId": "ChuoMain",
           "type": "in",
@@ -49722,12 +49714,6 @@
         {
           "station": "Shiojiri",
           "lineId": "Shinonoi",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Tatsuno",
-          "lineId": "ChuoTatsuno",
           "type": "in",
           "note": ""
         }
@@ -62934,8 +62920,7 @@
       "Nikkoku"
     ],
     "Okuwa": [
-      "Nikkoku",
-      "ChuoCentral"
+      "Nikkoku"
     ],
     "Shin-Takatoku": [
       "Nikkoku"
@@ -69448,6 +69433,9 @@
     ],
     "JRC-TokaidoCentral-081": [
       "TokaidoCentral"
+    ],
+    "JRC-ChuoCentral-027": [
+      "ChuoCentral"
     ]
   },
   "lineStationOrder": {
@@ -74800,7 +74788,7 @@
       "JRC-ChuoCentral-024",
       "JRC-ChuoCentral-025",
       "JRC-ChuoCentral-026",
-      "Okuwa",
+      "JRC-ChuoCentral-027",
       "JRC-ChuoCentral-028",
       "JRC-ChuoCentral-029",
       "JRC-ChuoCentral-030",

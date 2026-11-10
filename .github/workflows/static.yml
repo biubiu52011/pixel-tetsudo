@@ -43,6 +43,8 @@ jobs:
         run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify train overview DOM structure and state
         run: node --test tests/train-overview-dom.test.cjs
+      - name: Verify JR-Central ChuoCentral canonical 40-station SQL route and Okuwa safety
+        run: node --test tests/chuo-central-sql-registry.test.cjs
       - name: Verify operator filter labels
         run: node --test tests/operator-labels.test.cjs
       - name: Verify history card responsive layout
