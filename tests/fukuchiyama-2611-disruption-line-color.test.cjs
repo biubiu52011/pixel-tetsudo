@@ -92,13 +92,13 @@ test('Nov 28 requires correct source, service calendar and departure clock',()=>
 });
 
 
-test('Fukuchiyama official status URL is labeled as external and does not fabricate a live state',()=>{
+test('Fukuchiyama shows internal status instead of outbound URL, without fabricating live data',()=>{
  const page=fs.readFileSync('pages/trains.html','utf8');
  const controller=fs.readFileSync('js/trains-page.js','utf8');
  assert.match(page,/id="trainsOfficialRuninfo"/);
  assert.match(controller,/lineId !== "Fukuchiyama"/);
- assert.match(controller,/https:\/\/trafficinfo\.westjr\.co\.jp\/kinki\.html/);
+ assert.doesNotMatch(controller,/https:\/\/trafficinfo\.westjr\.co\.jp\/kinki\.html/);
  assert.match(controller,/updateOfficialRuninfoSource\(lineId\)/);
  assert.match(controller,/updateOfficialRuninfoSource\(null\)/);
- assert.match(controller,/本站尚未取得可验证的本线路实时运行状况/);
+ assert.match(controller,/本站尚未接入可验证的本线路实时运行状况/);
 });
