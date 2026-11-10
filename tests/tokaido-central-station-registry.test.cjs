@@ -50,7 +50,7 @@ test('compact and script bundles stay exact replicas of canonical JSON',()=>{
   assert.equal(fs.readFileSync('data/core/railway_data.compact.json','utf8'),min+'\n');
   assert.equal(fs.readFileSync('data/core/station_i18n.compact.json','utf8'),imin+'\n');
   assert.equal(fs.readFileSync('data/core/railway-data.file.js','utf8'),
-    'window.RAILWAY_DATA = '+min.replace(/<\\/script/gi,'<\\/script')+';\n');
+    'window.RAILWAY_DATA = '+min+';\n');
   assert.equal(fs.readFileSync('data/core/station-i18n.file.js','utf8'),
-    'window.RAILWAY_I18N = '+imin.replace(/<\\/script/gi,'<\\/script')+';\n');
+    'window.RAILWAY_I18N = '+imin+';\n');
 });
