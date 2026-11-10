@@ -483,10 +483,25 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       .select("calendar_urn").eq("line_key", lineId).limit(1);
     if (otherError) throw otherError;
     const hasOtherCalendar = !!(other && other.length);
+    // The published-plan audit is also needed when there are ZERO rows.
+    // Returning early without it hides an explicitly audited missing plan
+    // from the map and incorrectly displays only a generic no-position note.
+    // Keep missing source, missing service calendar and source errors separate.
+    const { data: emptyPlanAudit, error: emptyPlanAuditError } = await db
+      .from("published_timetable_coverage_audit")
+      .select("coverage_status,issues")
+      .eq("line_key",lineId)
+      .maybeSingle();
+    if (emptyPlanAuditError) throw emptyPlanAuditError;
+    const emptyAuditStatus = String(emptyPlanAudit?.coverage_status || "unverified");
+    const emptyAuditIssues = Array.isArray(emptyPlanAudit?.issues) ? emptyPlanAudit.issues : [];
     return json({ ok: true, complete: false, partial: false, cache: "MISS",
       revision:selectedRevision,plan_status:selectedRevision ? 'revision_without_trains' : 'unverified',
       source: hasOtherCalendar ? "CALENDAR_NOT_VERIFIED" : "NO_API_NO_DATA",
       calendar_status: hasOtherCalendar ? "unverified" : "no_source",
+      audit_coverage_status: emptyAuditStatus, audit_issues: emptyAuditIssues,
+      source_coverage: "no_current_plan_rows", date_verified_runs: 0,
+      date_unverified_runs: 0,
       no_service_confirmed: false, line_id: lineId, service_date: serviceDate, runs: [] });
   }
 
