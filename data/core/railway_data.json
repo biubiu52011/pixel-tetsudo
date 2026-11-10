@@ -16138,7 +16138,7 @@
         "nameKo": "게이힌토호쿠선・네기시선",
         "color": "#00b2e5",
         "icon": "../images/鉄道/JR東日本/京浜東北線.png",
-        "order": 10,
+        "order": 13,
         "displayRules": {
           "directionAxis": {
             "Northbound": -1,
@@ -16493,7 +16493,7 @@
         "nameKo": "요코스카선・소부 쾌속선",
         "color": "#00347a",
         "icon": "../images/鉄道/JR東日本/総武線快速横須賀線.png",
-        "order": 14,
+        "order": 18,
         "lineIds": [
           "Yokosuka",
           "SobuRapid"
@@ -16891,7 +16891,7 @@
         "nameKo": "주오선（쾌속）",
         "color": "#f15a22",
         "icon": "../images/鉄道/JR東日本/中央快速線.png",
-        "order": 3,
+        "order": 5,
         "lineIds": [
           "ChuoRapid"
         ],
@@ -17674,7 +17674,7 @@
         "nameKo": "조반선（쾌속）",
         "color": "#00b261",
         "icon": "../images/鉄道/JR東日本/常磐線快速.png",
-        "order": 9,
+        "order": 11,
         "mapHiddenThroughServices": [
           "UenoTokyo"
         ],
@@ -17891,7 +17891,7 @@
         "nameKo": "게이요선",
         "color": "#c9242f",
         "icon": "../images/鉄道/JR東日本/京葉線.png",
-        "order": 6,
+        "order": 8,
         "lineIds": [
           "Keiyo"
         ],
@@ -18070,7 +18070,7 @@
         "nameKo": "무사시노선",
         "color": "#f15a22",
         "icon": "../images/鉄道/JR東日本/武蔵野線.png",
-        "order": 12,
+        "order": 15,
         "lineIds": [
           "Musashino"
         ],
@@ -18704,7 +18704,7 @@
         "subNameKo": "우쓰노미야・다카사키 ↔ 요코스카・도카이도",
         "color": "#e21f26",
         "icon": "../images/鉄道/JR東日本/湘南新宿ライン.png",
-        "order": 15,
+        "order": 19,
         "displayRules": {
           "directionAxis": {
             "Northbound": -1,
@@ -19071,7 +19071,7 @@
         "nameKo": "타카사키선",
         "color": "#f68b1e",
         "icon": "../images/鉄道/JR東日本/高崎線.png",
-        "order": 17,
+        "order": 22,
         "lineIds": [
           "Takasaki"
         ],
@@ -19178,7 +19178,7 @@
         "nameKo": "츠루미선",
         "color": "#f2d01f",
         "icon": "../images/鉄道/JR東日本/鶴見線.png",
-        "order": 8,
+        "order": 10,
         "lineIds": [
           "Tsurumi"
         ],
@@ -19348,7 +19348,7 @@
         "nameKo": "난부선",
         "color": "#ffd400",
         "icon": "../images/鉄道/JR東日本/南武線.png",
-        "order": 13,
+        "order": 16,
         "lineIds": [
           "Nambu"
         ],
@@ -19796,7 +19796,7 @@
         "nameKo": "도카이도선",
         "color": "#f68b1e",
         "icon": "../images/鉄道/JR東日本/東海道線.png",
-        "order": 16,
+        "order": 21,
         "lineIds": [
           "Tokaido"
         ],
@@ -19969,7 +19969,7 @@
         "subNameKo": "지하철 지요다선 직통",
         "color": "#808080",
         "icon": "../images/鉄道/JR東日本/常磐緩行線.png",
-        "order": 11,
+        "order": 14,
         "lineIds": [
           "JobanLocal"
         ],
@@ -24178,7 +24178,7 @@
         "nameKo": "이세사키선",
         "color": "#0f6cc3",
         "icon": "../images/鉄道/東武鉄道/伊勢崎線 佐野線 桐生線 小泉線 小泉線支線.png",
-        "order": 2.5,
+        "order": 3,
         "lineIds": [
           "TobuIsesaki"
         ],
@@ -25406,7 +25406,7 @@
         "nameKo": "오메선",
         "color": "#f15a22",
         "icon": "../images/鉄道/JR東日本/青梅線.png",
-        "order": 4,
+        "order": 6,
         "lineIds": [
           "Ome"
         ],
@@ -25492,7 +25492,7 @@
         "nameKo": "이츠카이치선",
         "color": "#f15a22",
         "icon": "../images/鉄道/JR東日本/五日市線.png",
-        "order": 5,
+        "order": 7,
         "lineIds": [
           "Itsukaichi"
         ],
@@ -25730,7 +25730,7 @@
         "nameKo": "요코스카선・소부 쾌속선",
         "color": "#00347a",
         "icon": "../images/鉄道/JR東日本/総武線快速横須賀線.png",
-        "order": 14,
+        "order": 17,
         "lineIds": [
           "Yokosuka",
           "SobuRapid"
@@ -27371,7 +27371,7 @@
         "nameKo": "야마노테선",
         "color": "#9acd32",
         "icon": "../images/鉄道/JR東日本/山手線.png",
-        "order": 19,
+        "order": 24,
         "lineIds": [
           "Yamanote"
         ],
@@ -27432,7 +27432,7 @@
         "nameKo": "아가츠마선",
         "color": "#0f5474",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 30,
+        "order": 34,
         "lineIds": [
           "Agatsuma"
         ],
@@ -27668,7 +27668,7 @@
         "nameKo": "반에츠토호쿠선",
         "color": "#c71585",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 31,
+        "order": 35,
         "lineIds": [
           "BanetsuEast"
         ],
@@ -27777,7 +27777,7 @@
         "nameKo": "반에츠사이선",
         "color": "#cb7b35",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 32,
+        "order": 36,
         "lineIds": [
           "BanetsuWest"
         ],
@@ -28241,7 +28241,7 @@
         "nameKo": "주오・소부선（각역정차）",
         "color": "#ffd400",
         "icon": "../images/鉄道/JR東日本/中央・総武線各駅停車.png",
-        "order": 2,
+        "order": 3,
         "displayRules": {
           "directionAxis": {
             "Eastbound": 1,
@@ -28482,7 +28482,7 @@
         "nameKo": "에치고선",
         "color": "#40934d",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 33,
+        "order": 37,
         "lineIds": [
           "Echigo"
         ],
@@ -28618,7 +28618,7 @@
         "nameKo": "고노선",
         "color": "#0a7aab",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 34,
+        "order": 38,
         "lineIds": [
           "Gono"
         ],
@@ -28719,7 +28719,7 @@
         "nameKo": "하치노헤선",
         "color": "#e93920",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 35,
+        "order": 39,
         "lineIds": [
           "Hachinohe"
         ],
@@ -28793,7 +28793,7 @@
         "nameKo": "하쿠신선",
         "color": "#f38b7b",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 36,
+        "order": 40,
         "lineIds": [
           "Hakushin"
         ],
@@ -28969,7 +28969,7 @@
         "nameKo": "이이야마선",
         "color": "#7bc24b",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 37,
+        "order": 41,
         "lineIds": [
           "Iiyama"
         ],
@@ -29218,7 +29218,7 @@
         "nameKo": "이시노마키선",
         "color": "#ed77a4",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 38,
+        "order": 42,
         "lineIds": [
           "Ishinomaki"
         ],
@@ -29279,7 +29279,7 @@
         "nameKo": "이토선",
         "color": "#f68b1e",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 21,
+        "order": 26,
         "lineIds": [
           "Ito"
         ],
@@ -29449,7 +29449,7 @@
         "nameKo": "조에츠선",
         "color": "#00b3e6",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 39,
+        "order": 43,
         "lineIds": [
           "Joetsu"
         ],
@@ -29563,7 +29563,7 @@
         "nameKo": "카마이시선",
         "color": "#0073bf",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 40,
+        "order": 44,
         "lineIds": [
           "Kamaishi"
         ],
@@ -29648,7 +29648,7 @@
         "nameKo": "키타카미선",
         "color": "#851a72",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 41,
+        "order": 45,
         "lineIds": [
           "Kitakami"
         ],
@@ -29706,7 +29706,7 @@
         "nameKo": "카라스야마선",
         "color": "#339966",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 42,
+        "order": 46,
         "lineIds": [
           "Karasuyama"
         ],
@@ -29761,7 +29761,7 @@
         "nameKo": "카시마선",
         "color": "#c56e2e",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 43,
+        "order": 47,
         "lineIds": [
           "Kashima"
         ],
@@ -29829,7 +29829,7 @@
         "nameEn": "Kawagoe Line / Hachiko Line",
         "nameKo": "가와고에선（가와고에〜코마가와）",
         "color": "#00ac47",
-        "order": 22.1,
+        "order": 2,
         "displayRules": {
           "directionAxis": {
             "Southbound": -1
@@ -30868,7 +30868,7 @@
         "nameKo": "케센누마선",
         "color": "#3b459b",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 44,
+        "order": 48,
         "lineIds": [
           "Kesennuma"
         ],
@@ -31193,7 +31193,7 @@
         "nameKo": "고우미선",
         "color": "#41934c",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 45,
+        "order": 49,
         "lineIds": [
           "Komii"
         ],
@@ -31281,7 +31281,7 @@
         "nameKo": "하나와선",
         "color": "#aa1e30",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 46,
+        "order": 50,
         "lineIds": [
           "Kounan"
         ],
@@ -31351,7 +31351,7 @@
         "nameKo": "쿠루리선",
         "color": "#00b5ad",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 47,
+        "order": 51,
         "lineIds": [
           "Kururi"
         ],
@@ -31436,7 +31436,7 @@
         "nameKo": "미토선",
         "color": "#3333ff",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 48,
+        "order": 52,
         "lineIds": [
           "Mito"
         ],
@@ -31495,7 +31495,7 @@
         "nameKo": "야히코선",
         "color": "#922790",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 49,
+        "order": 53,
         "lineIds": [
           "Miyo"
         ],
@@ -31602,7 +31602,7 @@
         "nameKo": "나리타선",
         "color": "#00BB85",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 25,
+        "order": 30,
         "lineIds": [
           "Narita"
         ],
@@ -31656,7 +31656,7 @@
         "nameKo": "키누가와선",
         "color": "#ffa600",
         "icon": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
-        "order": 5,
+        "order": 6,
         "lineIds": [
           "Nikkoku"
         ],
@@ -32104,7 +32104,7 @@
         "nameKo": "오후나토선",
         "color": "#f18e44",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 50,
+        "order": 54,
         "lineIds": [
           "Ofunato"
         ],
@@ -32167,7 +32167,7 @@
         "nameKo": "오가선",
         "color": "#36823e",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 51,
+        "order": 55,
         "lineIds": [
           "Oga"
         ],
@@ -32333,7 +32333,7 @@
         "nameKo": "오이토선",
         "color": "#9370db",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 52,
+        "order": 56,
         "lineIds": [
           "Oito"
         ],
@@ -32389,7 +32389,7 @@
         "nameKo": "오미나토선",
         "color": "#f1aa28",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 53,
+        "order": 57,
         "lineIds": [
           "Ominato"
         ],
@@ -32612,7 +32612,7 @@
         "nameKo": "오우 본선",
         "color": "#ee7b28",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 54,
+        "order": 58,
         "lineIds": [
           "OuMain"
         ],
@@ -32735,7 +32735,7 @@
         "nameKo": "리쿠토토호쿠선",
         "color": "#888888",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 55,
+        "order": 59,
         "lineIds": [
           "RikutoEast"
         ],
@@ -32815,7 +32815,7 @@
         "nameKo": "리쿠토사이선",
         "color": "#6fbf7f",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 56,
+        "order": 60,
         "lineIds": [
           "RikutsuWest"
         ],
@@ -33019,7 +33019,7 @@
         "nameKo": "료모선",
         "color": "#ffd400",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 57,
+        "order": 61,
         "lineIds": [
           "Ryomo"
         ],
@@ -33139,7 +33139,7 @@
         "nameKo": "사가미선",
         "color": "#009793",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 28,
+        "order": 32,
         "lineIds": [
           "Sagami"
         ],
@@ -33290,7 +33290,7 @@
         "nameKo": "야마다선",
         "color": "#cd7a1e",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 58,
+        "order": 62,
         "lineIds": [
           "Yamada"
         ],
@@ -33533,7 +33533,7 @@
         "nameKo": "센세키선",
         "color": "#00aaee",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 59,
+        "order": 63,
         "lineIds": [
           "Senseki"
         ],
@@ -33645,7 +33645,7 @@
         "nameKo": "센세키토호쿠 라인",
         "color": "#3cb371",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 60,
+        "order": 64,
         "lineIds": [
           "SensekiTohoku"
         ],
@@ -33757,7 +33757,7 @@
         "nameKo": "센잔선",
         "color": "#72bc4a",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 61,
+        "order": 65,
         "lineIds": [
           "Senzan"
         ],
@@ -34079,7 +34079,7 @@
         "nameKo": "시노노이선",
         "color": "#d56a29",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 63,
+        "order": 66,
         "lineIds": [
           "Shinonoi"
         ],
@@ -34206,7 +34206,7 @@
         "nameKo": "소토보선",
         "color": "#F22335",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 24,
+        "order": 29,
         "lineIds": [
           "Sotobo"
         ],
@@ -34350,7 +34350,7 @@
         "nameKo": "스이군선",
         "color": "#368c44",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 64,
+        "order": 67,
         "lineIds": [
           "Suigun"
         ],
@@ -34488,7 +34488,7 @@
         "nameKo": "타자와코선",
         "color": "#9d72b0",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 66,
+        "order": 69,
         "lineIds": [
           "Tazawako"
         ],
@@ -34978,7 +34978,7 @@
         "nameKo": "토조선",
         "color": "#000099",
         "icon": "../images/鉄道/東武鉄道/東武東上線.png",
-        "order": 3,
+        "order": 4,
         "lineIds": [
           "Tojo"
         ],
@@ -35151,7 +35151,7 @@
         "nameKo": "츠가루선",
         "color": "#15a2c4",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 67,
+        "order": 70,
         "lineIds": [
           "Tsugaru"
         ],
@@ -35468,7 +35468,7 @@
         "nameKo": "우치보선",
         "color": "#0071C5",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 23,
+        "order": 28,
         "lineIds": [
           "Uchibo"
         ],
@@ -35687,7 +35687,7 @@
         "nameKo": "우에츠 본선",
         "color": "#16c0e9",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 68,
+        "order": 71,
         "lineIds": [
           "Uetsu"
         ],
@@ -35898,7 +35898,7 @@
         "nameKo": "야마가타선",
         "color": "#ee7b28",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 69,
+        "order": 72,
         "lineIds": [
           "Yamagata"
         ],
@@ -36078,7 +36078,7 @@
         "nameKo": "요네자와선",
         "color": "#9b7eb9",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 70,
+        "order": 73,
         "lineIds": [
           "Yonezawa"
         ],
@@ -36648,7 +36648,7 @@
         "nameKo": "닛코선",
         "color": "#ffa600",
         "icon": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
-        "order": 4,
+        "order": 5,
         "lineIds": [
           "TobuNikko"
         ],
@@ -37036,7 +37036,7 @@
         "nameKo": "요코하마선",
         "color": "#9fc21b",
         "icon": "../images/鉄道/JR東日本/横浜線.png",
-        "order": 7,
+        "order": 9,
         "lineIds": [
           "Yokohama"
         ],
@@ -37227,7 +37227,7 @@
         "nameKo": "도큐 메구로선",
         "color": "#009cd2",
         "icon": "../images/鉄道/東急電鉄/目黒線.png",
-        "order": 5,
+        "order": 6,
         "lineIds": [
           "TokyuMeguro"
         ],
@@ -37333,7 +37333,7 @@
         "nameKo": "도큐 이케가미선",
         "color": "#ee86a7",
         "icon": "../images/鉄道/東急電鉄/池上線.png",
-        "order": 6,
+        "order": 7,
         "lineIds": [
           "TokyuIkegami"
         ],
@@ -37380,7 +37380,7 @@
         "nameKo": "도큐 세타가야선",
         "color": "#fcc70d",
         "icon": "../images/鉄道/東急電鉄/世田谷線.png",
-        "order": 7,
+        "order": 8,
         "lineIds": [
           "TokyuSetagaya"
         ],
@@ -37426,7 +37426,7 @@
         "nameKo": "도큐 코도모노쿠니선",
         "color": "#0068b7",
         "icon": "../images/鉄道/東急電鉄/こどもの国線.png",
-        "order": 8,
+        "order": 9,
         "lineIds": [
           "TokyuKodomonokuni"
         ],
@@ -37557,7 +37557,7 @@
         "nameKo": "하치코선",
         "color": "#808080",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 22,
+        "order": 27,
         "lineIds": [
           "Hachiko"
         ],
@@ -38299,7 +38299,7 @@
         "nameKo": "소부 본선",
         "color": "#fcc60d",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 29,
+        "order": 33,
         "lineIds": [
           "SobuMain"
         ],
@@ -38394,7 +38394,7 @@
         "nameEn": "Chuo Main Line",
         "nameKo": "주오 본선",
         "color": "#007ac0",
-        "order": 20,
+        "order": 25,
         "lineIds": [
           "ChuoMain"
         ],
@@ -39111,7 +39111,7 @@
         "nameKo": "타다미선",
         "color": "#008dd1",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 65,
+        "order": 68,
         "lineIds": [
           "Tadami"
         ],
@@ -39450,7 +39450,7 @@
         "nameKo": "우츠노미야선",
         "color": "#f68b1e",
         "icon": "../images/鉄道/JR東日本/宇都宮線.png",
-        "order": 18,
+        "order": 23,
         "lineIds": [
           "UtsunomiyaJR"
         ],
@@ -39786,7 +39786,7 @@
         "nameEn": "Joban Line",
         "nameKo": "조반선",
         "color": "#00a2e1",
-        "order": 9.5,
+        "order": 12,
         "lineIds": [
           "JobanMain"
         ],
@@ -39840,7 +39840,7 @@
         "nameKo": "토가네선",
         "color": "#B31C31",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 26,
+        "order": 31,
         "lineIds": [
           "Togane"
         ],
@@ -40286,7 +40286,7 @@
         "subNameKo": "우쓰노미야・다카사키 ↔ 도카이도 / 조반 → 시나가와",
         "color": "#9358b6",
         "icon": "../images/鉄道/JR東日本/JRグループ.png",
-        "order": 15.5,
+        "order": 20,
         "afterLineId": "ShonanShinjuku",
         "cardInterval": {
           "from": "Ueno",
@@ -40707,7 +40707,7 @@
         "nameEn": "Enoshima Electric Railway Line",
         "nameKo": "에노시마 전철선",
         "color": "#008c83",
-        "order": 3,
+        "order": 1,
         "lineIds": [
           "Enoshima"
         ],
@@ -41971,7 +41971,7 @@
         "color": "#00b2e5",
         "code": "Sanyo",
         "icon": "../images/鉄道/JR西日本/Shinkansen_jrw.png",
-        "order": 100,
+        "order": 33,
         "lineIds": [
           "SanyoShinkansen"
         ],
@@ -42030,7 +42030,7 @@
         "color": "#e60012",
         "code": "Kyushu",
         "icon": "../images/鉄道/JR九州/Shinkansen_jrk.png",
-        "order": 100,
+        "order": 26,
         "lineIds": [
           "KyushuShinkansen"
         ],
@@ -42081,7 +42081,7 @@
         "evidence": {
           "source": "https://www.jrkyushu-timetable.jp/jr-k_time/r_shinkansen2.html"
         },
-        "order": 101,
+        "order": 27,
         "operatorGroup": "JR_KYUSHU"
       }
     },
@@ -42200,7 +42200,7 @@
         "color": "#e93550",
         "code": "O",
         "icon": "../images/鉄道/JR西日本/近畿_O.png",
-        "order": 13,
+        "order": 15,
         "lineIds": [
           "OsakaLoop"
         ],
@@ -42560,7 +42560,7 @@
         "nameEn": "Sanyo Main Line",
         "nameKo": "산요 본선",
         "color": "#009944",
-        "order": 50,
+        "order": 26,
         "lineIds": [
           "SanyoMain"
         ],
@@ -42737,7 +42737,7 @@
         "nameKo": "칸사이 본선(야마토지선)",
         "color": "#ff9500",
         "code": "Q",
-        "order": 15,
+        "order": 17,
         "lineIds": [
           "KansaiMain"
         ],
@@ -42874,7 +42874,7 @@
         "color": "#f28c00",
         "code": "R",
         "icon": "../images/鉄道/JR西日本/近畿_R.png",
-        "order": 16,
+        "order": 18,
         "lineIds": [
           "Hanwa"
         ],
@@ -43627,7 +43627,7 @@
         "color": "#fcc800",
         "code": "G",
         "icon": "../images/鉄道/JR西日本/近畿_G.png",
-        "order": 7,
+        "order": 8,
         "lineIds": [
           "Fukuchiyama"
         ],
@@ -43723,7 +43723,7 @@
         "color": "#47677f",
         "code": "F",
         "icon": "../images/鉄道/JR西日本/近畿_F.png",
-        "order": 6,
+        "order": 7,
         "lineIds": [
           "OsakaHigashi"
         ],
@@ -43819,7 +43819,7 @@
         "color": "#b1184b",
         "code": "J",
         "icon": "../images/鉄道/JR西日本/近畿_J.png",
-        "order": 10,
+        "order": 12,
         "lineIds": [
           "Bantan"
         ],
@@ -43939,7 +43939,7 @@
         "color": "#4682b4",
         "code": "K",
         "icon": "../images/鉄道/JR西日本/近畿_K.png",
-        "order": 11,
+        "order": 13,
         "lineIds": [
           "HimejiLine"
         ],
@@ -44041,7 +44041,7 @@
         "color": "#00a98f",
         "code": "I",
         "icon": "../images/鉄道/JR西日本/近畿_I.png",
-        "order": 9,
+        "order": 11,
         "lineIds": [
           "KakogawaLine"
         ],
@@ -44198,7 +44198,7 @@
         "color": "#ff1493",
         "code": "H",
         "icon": "../images/鉄道/JR西日本/近畿_H.png",
-        "order": 8,
+        "order": 9,
         "lineIds": [
           "Gakkentoshi"
         ],
@@ -45355,7 +45355,7 @@
         "nameEn": "Kyudai Main Line",
         "nameKo": "큐다이 본선",
         "color": "#8b4513",
-        "order": 20,
+        "order": 14,
         "lineIds": [
           "Kyudai"
         ],
@@ -45511,7 +45511,7 @@
         "nameEn": "Hohi Main Line",
         "nameKo": "호히 본선",
         "color": "#4682b4",
-        "order": 21,
+        "order": 15,
         "lineIds": [
           "Hohi"
         ],
@@ -45649,7 +45649,7 @@
         "nameEn": "Misumi Line",
         "nameKo": "미스미 선",
         "color": "#2e8b57",
-        "order": 22,
+        "order": 16,
         "lineIds": [
           "Misumi"
         ],
@@ -45767,7 +45767,7 @@
         "nameEn": "Ibusuki Makurazaki Line",
         "nameKo": "이부스키마쿠라자키 선",
         "color": "#ff9500",
-        "order": 23,
+        "order": 17,
         "lineIds": [
           "IbusukiMakurazaki"
         ],
@@ -45829,7 +45829,7 @@
         "nameEn": "Hakata Minami Line",
         "nameKo": "하카타미나미 선",
         "color": "#9370db",
-        "order": 24,
+        "order": 25,
         "lineIds": [
           "HakataMinami"
         ],
@@ -45983,7 +45983,7 @@
         "nameEn": "Sasebo Line",
         "nameKo": "사세보 선",
         "color": "#008080",
-        "order": 25,
+        "order": 18,
         "lineIds": [
           "Sasebo"
         ],
@@ -46066,7 +46066,7 @@
         "nameEn": "Ako Line",
         "nameKo": "아코선",
         "color": "#009944",
-        "order": 51,
+        "order": 28,
         "lineIds": [
           "Ako"
         ],
@@ -46214,7 +46214,7 @@
         "nameKo": "키세이 본선",
         "color": "#00b1c2",
         "code": "W",
-        "order": 20,
+        "order": 23,
         "lineIds": [
           "KiseiWest"
         ],
@@ -46268,7 +46268,7 @@
         "color": "#e9a500",
         "code": "L",
         "icon": "../images/鉄道/JR西日本/近畿_L.png",
-        "order": 12,
+        "order": 14,
         "lineIds": [
           "Maizuru"
         ],
@@ -46389,7 +46389,7 @@
         "color": "#2e8b57",
         "code": "Y",
         "icon": "../images/鉄道/JR西日本/広島_Y.png",
-        "order": 21,
+        "order": 24,
         "lineIds": [
           "Kure"
         ],
@@ -46561,7 +46561,7 @@
         "nameEn": "Yamaguchi Line",
         "nameKo": "야마구치선",
         "color": "#8b4513",
-        "order": 52,
+        "order": 29,
         "lineIds": [
           "Yamaguchi"
         ],
@@ -46650,7 +46650,7 @@
         "nameEn": "Iwaka Line",
         "nameKo": "이와쿠치선",
         "color": "#8b4513",
-        "order": 53,
+        "order": 30,
         "lineIds": [
           "Iwakado"
         ],
@@ -46737,7 +46737,7 @@
         "nameEn": "Ube Line",
         "nameKo": "우베선",
         "color": "#4682b4",
-        "order": 54,
+        "order": 31,
         "lineIds": [
           "Ube"
         ],
@@ -46956,7 +46956,7 @@
         "nameEn": "Omura Line",
         "nameKo": "오무라 선",
         "color": "#00b0f0",
-        "order": 26,
+        "order": 19,
         "lineIds": [
           "Omura"
         ],
@@ -47052,7 +47052,7 @@
         "nameEn": "Nichinan Line",
         "nameKo": "니치난 선",
         "color": "#00b050",
-        "order": 27,
+        "order": 20,
         "lineIds": [
           "Nichinan"
         ],
@@ -47153,7 +47153,7 @@
         "nameEn": "Karatsu Line",
         "nameKo": "카라츠 선",
         "color": "#00b0a0",
-        "order": 28,
+        "order": 21,
         "lineIds": [
           "Karatsu"
         ],
@@ -47308,7 +47308,7 @@
         "nameEn": "Miyazaki Airport Line",
         "nameKo": "미야자키 공항선",
         "color": "#ed7d31",
-        "order": 29,
+        "order": 22,
         "lineIds": [
           "MiyazakiAirport"
         ],
@@ -47383,7 +47383,7 @@
         "nameEn": "Kitto Line",
         "nameKo": "킷토 선",
         "color": "#bf9000",
-        "order": 30,
+        "order": 23,
         "lineIds": [
           "Kitto"
         ],
@@ -47461,7 +47461,7 @@
         "nameKo": "도큐 신요코하마선",
         "color": "#6F2C91",
         "icon": "../images/鉄道/東急電鉄/東急新横浜線.png",
-        "order": 4,
+        "order": 5,
         "lineIds": [
           "TokyuShinYokohama"
         ],
@@ -47591,7 +47591,7 @@
         "subNameKo": "사이쿄선 접속 구간",
         "color": "#00ac47",
         "icon": "../images/鉄道/JR東日本/埼京線.png",
-        "order": 2,
+        "order": 4,
         "lineIds": [
           "SotetsuJRDirect"
         ],
@@ -48039,7 +48039,7 @@
         "color": "#0a318e",
         "code": "P",
         "icon": "../images/鉄道/JR西日本/近畿_P.png",
-        "order": 14,
+        "order": 16,
         "lineIds": [
           "Yumesaki"
         ],
@@ -48087,7 +48087,7 @@
         "color": "#0072bc",
         "code": "S",
         "icon": "../images/鉄道/JR西日本/近畿_S.png",
-        "order": 17,
+        "order": 20,
         "lineIds": [
           "KansaiAirport"
         ],
@@ -48213,7 +48213,7 @@
         "color": "#f79fba",
         "code": "T",
         "icon": "../images/鉄道/JR西日本/近畿_T.png",
-        "order": 18,
+        "order": 21,
         "lineIds": [
           "WakayamaLine"
         ],
@@ -48289,7 +48289,7 @@
         "color": "#d81e45",
         "code": "U",
         "icon": "../images/鉄道/JR西日本/近畿_U.png",
-        "order": 19,
+        "order": 22,
         "lineIds": [
           "Sakurai"
         ],
@@ -48734,7 +48734,7 @@
         "nameEn": "Oito Line (JR West)",
         "nameKo": "오이토선（JR 서일본）",
         "color": "#E87830",
-        "order": 55,
+        "order": 32,
         "lineIds": [
           "OitoWest"
         ],
@@ -48848,7 +48848,7 @@
         "color": "#ff1493",
         "code": "H",
         "icon": "../images/鉄道/JR西日本/近畿_H.png",
-        "order": 9,
+        "order": 10,
         "lineIds": [
           "JRTozai"
         ],
@@ -48938,7 +48938,7 @@
         "nameKo": "아오선",
         "color": "#C32C42",
         "icon": "",
-        "order": 11,
+        "order": 1,
         "lineIds": [
           "ShintetsuAo"
         ],
@@ -49004,7 +49004,7 @@
         "nameKo": "호조선",
         "color": "#4F9E46",
         "icon": "",
-        "order": 12,
+        "order": 1,
         "lineIds": [
           "HojoRailway"
         ],
@@ -49047,7 +49047,7 @@
         "nameEn": "Wadamisaki Line",
         "nameKo": "와다미사키선",
         "color": "#009944",
-        "order": 50.1,
+        "order": 27,
         "lineIds": [
           "SanyoWadamisaki"
         ],
@@ -49091,7 +49091,7 @@
         "nameEn": "Hagoromo Branch Line",
         "nameKo": "하고로모선",
         "color": "#f28c00",
-        "order": 16.1,
+        "order": 19,
         "lineIds": [
           "HanwaHagoromo"
         ],
@@ -49135,7 +49135,7 @@
         "nameEn": "Senzaki Branch Line",
         "nameKo": "센자키 지선",
         "color": "#8b4513",
-        "order": 5.1,
+        "order": 6,
         "lineIds": [
           "SaninSenzaki"
         ],
@@ -49216,7 +49216,7 @@
         "nameKo": "후지큐코선",
         "color": "#5d3602",
         "code": "FJ",
-        "order": 12,
+        "order": 1,
         "lineIds": [
           "Fujikyu"
         ],
@@ -49278,7 +49278,7 @@
         "nameKo": "닛코선",
         "color": "#880033",
         "code": "NIK",
-        "order": 94,
+        "order": 74,
         "lineIds": [
           "Nikko"
         ],
@@ -49326,7 +49326,7 @@
         "nameKo": "도호쿠 본선 리후 지선",
         "color": "#00732f",
         "code": "",
-        "order": 95,
+        "order": 75,
         "lineIds": [
           "TohokuRifu"
         ],
@@ -49410,7 +49410,7 @@
         "nameKo": "지쿠히선 (니시카라쓰–이마리)",
         "color": "#0070c0",
         "code": "",
-        "order": 31,
+        "order": 24,
         "lineIds": [
           "ChikuhiWest"
         ],
@@ -49602,7 +49602,7 @@
         "nameKo": "Tokaido Main Line (JR Central)",
         "color": "#f68b1e",
         "code": "CA",
-        "order": 80,
+        "order": 5,
         "lineIds": [
           "TokaidoCentral"
         ],
@@ -49728,7 +49728,7 @@
         "nameKo": "Chuo Main Line (JR Central)",
         "color": "#f68b1e",
         "code": "CF",
-        "order": 80,
+        "order": 10,
         "lineIds": [
           "ChuoCentral"
         ],
@@ -49796,7 +49796,7 @@
         "nameKo": "Kansai Main Line (JR Central)",
         "color": "#f68b1e",
         "code": "CJ",
-        "order": 80,
+        "order": 13,
         "lineIds": [
           "KansaiCentral"
         ],
@@ -49887,7 +49887,7 @@
         "nameKo": "Kisei Main Line (JR Central)",
         "color": "#f68b1e",
         "code": "紀",
-        "order": 80,
+        "order": 3,
         "lineIds": [
           "KiseiCentral"
         ],
@@ -49981,7 +49981,7 @@
         "nameKo": "Takayama Main Line",
         "color": "#f68b1e",
         "code": "CG",
-        "order": 80,
+        "order": 11,
         "lineIds": [
           "Takayama"
         ],
@@ -50029,7 +50029,7 @@
         "nameKo": "Taketoyo Line",
         "color": "#f68b1e",
         "code": "CE",
-        "order": 80,
+        "order": 9,
         "lineIds": [
           "Taketoyo"
         ],
@@ -50087,7 +50087,7 @@
         "nameKo": "Taita Line",
         "color": "#f68b1e",
         "code": "CI",
-        "order": 80,
+        "order": 12,
         "lineIds": [
           "Taita"
         ],
@@ -50156,7 +50156,7 @@
         "nameKo": "Gotemba Line",
         "color": "#f68b1e",
         "code": "CB",
-        "order": 80,
+        "order": 6,
         "lineIds": [
           "Gotemba"
         ],
@@ -50239,7 +50239,7 @@
         "nameKo": "Minobu Line",
         "color": "#f68b1e",
         "code": "CC",
-        "order": 80,
+        "order": 7,
         "lineIds": [
           "Minobu"
         ],
@@ -50383,7 +50383,7 @@
         "nameKo": "Iida Line",
         "color": "#f68b1e",
         "code": "CD",
-        "order": 80,
+        "order": 8,
         "lineIds": [
           "Iida"
         ],
@@ -50438,7 +50438,7 @@
         "nameKo": "Sangu Line",
         "color": "#f68b1e",
         "code": "参",
-        "order": 80,
+        "order": 1,
         "lineIds": [
           "Sangu"
         ],
@@ -50490,7 +50490,7 @@
         "nameKo": "Meisho Line",
         "color": "#f68b1e",
         "code": "名",
-        "order": 80,
+        "order": 2,
         "lineIds": [
           "Meisho"
         ],
@@ -50530,7 +50530,7 @@
         "nameKo": "Mino-Akasaka Line",
         "color": "#f68b1e",
         "code": "美",
-        "order": 80,
+        "order": 4,
         "lineIds": [
           "MinoAkasaka"
         ],
@@ -50579,7 +50579,7 @@
         "nameKo": "Hisatsu Line",
         "color": "#008c95",
         "code": "肥",
-        "order": 90,
+        "order": 25,
         "lineIds": [
           "Hisatsu"
         ],
@@ -50658,7 +50658,7 @@
         "nameKo": "Hakodate Main Line",
         "color": "#0072bc",
         "code": "H",
-        "order": 100,
+        "order": 1,
         "lineIds": [
           "HakodateMain"
         ],
@@ -50711,7 +50711,7 @@
         "nameKo": "Nemuro Main Line",
         "color": "#a7213a",
         "code": "K",
-        "order": 101,
+        "order": 2,
         "lineIds": [
           "NemuroMain"
         ],
@@ -50773,7 +50773,7 @@
         "nameKo": "Chitose Line",
         "color": "#0072bc",
         "code": "H",
-        "order": 102,
+        "order": 3,
         "lineIds": [
           "Chitose"
         ],
@@ -50828,7 +50828,7 @@
         "nameKo": "Muroran Main Line",
         "color": "#0072bc",
         "code": "M",
-        "order": 103,
+        "order": 4,
         "lineIds": [
           "MuroranMain"
         ],
@@ -50877,7 +50877,7 @@
         "nameKo": "Sekisho Line",
         "color": "#0072bc",
         "code": "K",
-        "order": 104,
+        "order": 5,
         "lineIds": [
           "Sekisho"
         ],
@@ -50926,7 +50926,7 @@
         "nameKo": "Furano Line",
         "color": "#6fba2c",
         "code": "F",
-        "order": 105,
+        "order": 6,
         "lineIds": [
           "Furano"
         ],
@@ -50981,7 +50981,7 @@
         "nameKo": "Soya Main Line",
         "color": "#00a1e9",
         "code": "W",
-        "order": 106,
+        "order": 7,
         "lineIds": [
           "SoyaMain"
         ],
@@ -51036,7 +51036,7 @@
         "nameKo": "Senmo Main Line",
         "color": "#00a884",
         "code": "B",
-        "order": 107,
+        "order": 8,
         "lineIds": [
           "SenmoMain"
         ],
@@ -51087,7 +51087,7 @@
         "nameKo": "Sekihoku Main Line",
         "color": "#e60012",
         "code": "A",
-        "order": 108,
+        "order": 9,
         "lineIds": [
           "SekihokuMain"
         ],
@@ -51136,7 +51136,7 @@
         "nameKo": "Sassho Line (Gakuentoshi Line)",
         "color": "#00a1e9",
         "code": "G",
-        "order": 109,
+        "order": 10,
         "lineIds": [
           "Sassho"
         ],
@@ -51181,7 +51181,7 @@
         "nameKo": "Hidaka Main Line",
         "color": "#f39800",
         "code": "日",
-        "order": 110,
+        "order": 11,
         "lineIds": [
           "HidakaMain"
         ],
@@ -51249,7 +51249,7 @@
         "nameKo": "Yosan Line",
         "color": "#0072bc",
         "code": "Y",
-        "order": 120,
+        "order": 1,
         "lineIds": [
           "Yosan"
         ],
@@ -51304,7 +51304,7 @@
         "nameKo": "Dosan Line",
         "color": "#e60012",
         "code": "D",
-        "order": 121,
+        "order": 2,
         "lineIds": [
           "Dosan"
         ],
@@ -51355,7 +51355,7 @@
         "nameKo": "Kotoku Line",
         "color": "#00a1e9",
         "code": "T",
-        "order": 122,
+        "order": 3,
         "lineIds": [
           "Kotoku"
         ],
@@ -51404,7 +51404,7 @@
         "nameKo": "Tokushima Line",
         "color": "#2e8b57",
         "code": "B",
-        "order": 123,
+        "order": 4,
         "lineIds": [
           "Tokushima"
         ],
@@ -51447,7 +51447,7 @@
         "nameKo": "Naruto Line",
         "color": "#f39800",
         "code": "N",
-        "order": 124,
+        "order": 5,
         "lineIds": [
           "Naruto"
         ],
@@ -51496,7 +51496,7 @@
         "nameKo": "Mugi Line",
         "color": "#a0522d",
         "code": "M",
-        "order": 125,
+        "order": 6,
         "lineIds": [
           "Mugi"
         ],
@@ -51545,7 +51545,7 @@
         "nameKo": "Yodo Line",
         "color": "#00a884",
         "code": "G",
-        "order": 126,
+        "order": 7,
         "lineIds": [
           "Yodo"
         ],
@@ -51588,7 +51588,7 @@
         "nameKo": "Uchiko Line",
         "color": "#e60012",
         "code": "U",
-        "order": 127,
+        "order": 8,
         "lineIds": [
           "Uchiko"
         ],
