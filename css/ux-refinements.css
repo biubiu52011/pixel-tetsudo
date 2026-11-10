@@ -256,11 +256,21 @@ body[data-page="trains"] .train-fold-vehicle-placeholder {
   text-align: center;
   overflow-wrap: anywhere;
 }
-body[data-page="history"] .history-entry { cursor:pointer; }
+body[data-page="history"] .history-entry {
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-areas:
+    "route delete"
+    "meta meta";
+  column-gap: 8px;
+  row-gap: 6px;
+}
 body[data-page="history"] .history-route {
   min-width: 0;
-  width: 100%;
+  width: auto;
   box-sizing: border-box;
+  grid-area: route;
   text-decoration: none;
 }
 body[data-page="history"] .history-route > .history-from,
@@ -275,6 +285,7 @@ body[data-page="history"] .history-arrow {
 }
 body[data-page="history"] .history-meta {
   min-width: 0;
+  grid-area: meta;
 }
 body[data-page="history"] .history-meta > .history-duration,
 body[data-page="history"] .history-meta > .history-count,
@@ -296,10 +307,12 @@ body[data-page="history"] .history-route:focus-visible {
   outline-offset: 3px;
 }
 body[data-page="history"] .history-delete-btn {
+  position: static;
+  grid-area: delete;
+  justify-self: end;
+  align-self: start;
   min-width: 44px;
   min-height: 44px;
-  top: 8px;
-  right: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -315,7 +328,7 @@ body[data-page="history"] .history-delete-btn {
   }
   body[data-page="history"] .history-route {
     gap: 6px;
-    padding-right: 50px;
+    padding-right: 0;
   }
   body[data-page="history"] .history-meta {
     column-gap: 6px;
