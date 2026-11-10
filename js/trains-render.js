@@ -1169,6 +1169,23 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var title = _trainMarkerTitle(p, lineId);
     if (!spec || spec.illustrative !== true) return title;
     var lang = window.currentLang || "ja";
+    // A dated community report can choose a single REFERENCE picture
+    // on a uniquely joined realtime position, not confirm the real trainset.
+    var kwPlan=p&&p.datedVehicleDisplayReference;
+    var kwReport=kwPlan&&kwPlan.sqlPublishedNumberFleetReference;
+    if(lineId==="Kawagoe"&&p&&p.positionLineId==="Kawagoe"&&
+       p.positionSource==="realtime-api"&&kwReport&&
+       kwReport.reportedMappingLevel==="dated_train_number_observation"&&
+       kwReport.reportedEvidenceGrade==="C"&&
+       kwReport.reportedTrainNumber===p.trainNumber&&
+       kwPlan.serviceDate===p.serviceDate&&kwReport.reportedModel){
+      var kwModel=String(kwReport.reportedModel);
+      var kwNote=/^zh/.test(lang)?"车辆参考图："+kwModel+"（当日第三方C级报告；实车未确认）"
+        :lang==="en"?"Vehicle illustration: "+kwModel+" (dated community report, grade C; actual set unconfirmed)"
+        :lang==="ko"?"차량 참고 이미지: "+kwModel+" (해당일 제3자 C등급 기록, 실제 편성 미확인)"
+        :"車両参考図："+kwModel+"（当日の第三者C級報告、実車未確認）";
+      return title?title+" · "+kwNote:kwNote;
+    }
     var osaka221 = lineId==="OsakaHigashi"&&
       p.sqlPublishedNumberFleetReference&&
       p.sqlPublishedNumberFleetReference.source===
