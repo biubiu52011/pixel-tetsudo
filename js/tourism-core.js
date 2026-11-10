@@ -143,6 +143,34 @@
     return [lat, lng];
   }
 
+  // GeoJSON geometry of the current detail object only ([longitude, latitude]).
+  function getDetailGeometry(spot) {
+    var g = spot && (spot.geometry || spot.mapGeometry);
+    var depths = { Point: 0, MultiPoint: 1, LineString: 1, MultiLineString: 2, Polygon: 2, MultiPolygon: 3 };
+    if (!g || !Object.prototype.hasOwnProperty.call(depths, g.type)) return null;
+    var points = [];
+    function walk(a, d) {
+      if (!Array.isArray(a) || !a.length) return false;
+      if (!d) {
+        var x = Number(a[0]), y = Number(a[1]);
+        if (a.length < 2 || !Number.isFinite(x) || !Number.isFinite(y) || Math.abs(x) > 180 || Math.abs(y) > 90 || (!x && !y)) return false;
+        points.push([x, y]); return true;
+      }
+      return a.every(function(v) { return walk(v, d - 1); });
+    }
+    if (!walk(g.coordinates, depths[g.type])) return null;
+    if (g.type === 'LineString' && points.length < 2) return null;
+    if (g.type === 'Polygon' && points.length < 4) return null;
+    if (g.type === 'MultiLineString' && g.coordinates.some(function(v) { return v.length < 2; })) return null;
+    if (g.type === 'MultiPolygon' && g.coordinates.some(function(v) { return !v.length || v[0].length < 4; })) return null;
+    return { type: g.type, coordinates: g.coordinates, points: points };
+  }
+  function detailBounds(g) {
+    if (!g) return null;
+    var xs = g.points.map(function(p) { return p[0]; }), ys = g.points.map(function(p) { return p[1]; });
+    return [[Math.min.apply(null, xs), Math.min.apply(null, ys)], [Math.max.apply(null, xs), Math.max.apply(null, ys)]];
+  }
+
   function getGradientForTags(tags) {
     if (!tags || tags.length === 0) return THEME_GRADIENTS.default;
     for (var i = 0; i < tags.length; i++) {
@@ -237,8 +265,10 @@
     var tags = spot.tags || ['all'];
     var gradient = getGradientForTags(tags);
     var coord = getValidCoordinates(spot);
-    var mapLat = coord ? coord[0] : null;
-    var mapLng = coord ? coord[1] : null;
+    var mapGeometry = getDetailGeometry(spot);
+    var bounds = detailBounds(mapGeometry);
+    var mapLat = coord ? coord[0] : bounds ? (bounds[0][1] + bounds[1][1]) / 2 : null;
+    var mapLng = coord ? coord[1] : bounds ? (bounds[0][0] + bounds[1][0]) / 2 : null;
     var dist = computeDistance(spot, stationKey);
     var imageHtml = spot.image
       ? '<div class="article-hero-img"><img src="' + escapeHtml(spot.image) + '" alt="' + escapeHtml(spotName) + '" data-gallery="' + escapeHtml(spot.name || '') + '" data-gallery-idx="0"></div>'
@@ -269,14 +299,14 @@
       + '<h3 class="section-heading">' + t('detail.about') + '</h3>'
       + '<p class="article-text">' + escapeHtml(desc) + '</p>'
       + '</div>';
-    var mapSection = coord
+    var mapSection = (coord || mapGeometry)
       ? '<div class="article-section"><h3 class="section-heading">' + t('detail.location')
         + '</h3><div class="map-info"><div id="tourismMap" class="map-container"><div class="map-loading">'
         + t('detail.map_loading') + '</div></div></div></div>'
       : '';
     return {
       spot: spot, spotName: spotName, desc: desc, tags: tags, gradient: gradient,
-      mapLat: mapLat, mapLng: mapLng, dist: dist,
+      mapLat: mapLat, mapLng: mapLng, mapGeometry: mapGeometry, dist: dist,
       imageHtml: imageHtml, tagsHtml: tagsHtml, typeBadge: typeBadge, stationBadge: stationBadge,
       spotHours: spotHours, spotFee: spotFee, spotBestTime: spotBestTime, spotAddress: spotAddress, addressRow: addressRow,
       aboutSection: aboutSection, mapSection: mapSection,
@@ -300,6 +330,8 @@
       + quickInfo
       + '<div class="article-body">' + bodySections + '</div>';
     container.innerHTML = '<div class="article-content article-content--' + getSpotType(ctx.spot) + '">' + html + '</div>';
+    var mapEl = document.getElementById('tourismMap');
+    if (mapEl) mapEl._tdGeometry = ctx.mapGeometry;
     if (ctx.mapLat !== null && ctx.mapLng !== null) observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
     var pageTitle = ctx.spotName + ' | ' + (ctx.dist.stationName || '') + ' | PIXEL TETSUDO';
     if (document.title) document.title = pageTitle;
@@ -584,12 +616,38 @@
       mapEl._tdMap = null;
       _initMapLeaflet(mapEl, lat, lng, name);
     });
-    var dot = document.createElement('div');
-    dot.className = 'td-map-marker-dot';
-    new maplibregl.Marker({ element: dot, anchor: 'center' })
-      .setLngLat([lng, lat])
-      .setPopup(new maplibregl.Popup({ closeButton: false, offset: 14 }).setHTML('<b>' + escapeHtml(name || '') + '</b>'))
-      .addTo(map);
+    var geometry = mapEl._tdGeometry;
+    if (geometry) {
+      map.on('load', function () {
+        if (mapEl._tdMap !== map) return;
+        map.addSource('detail-object', { type: 'geojson', data: { type: 'Feature', properties: {},
+          geometry: { type: geometry.type, coordinates: geometry.coordinates } } });
+        map.addLayer({ id: 'detail-fill', type: 'fill', source: 'detail-object',
+          filter: ['==', ['geometry-type'], 'Polygon'],
+          paint: { 'fill-color': '#0877bc', 'fill-opacity': 0.2 } });
+        map.addLayer({ id: 'detail-outline', type: 'line', source: 'detail-object',
+          filter: ['==', ['geometry-type'], 'Polygon'],
+          paint: { 'line-color': '#0877bc', 'line-width': 3 } });
+        map.addLayer({ id: 'detail-line', type: 'line', source: 'detail-object',
+          filter: ['==', ['geometry-type'], 'LineString'],
+          paint: { 'line-color': '#0877bc', 'line-width': 5 } });
+        map.addLayer({ id: 'detail-point', type: 'circle', source: 'detail-object',
+          filter: ['==', ['geometry-type'], 'Point'],
+          paint: { 'circle-radius': 7, 'circle-color': '#0877bc', 'circle-stroke-width': 2, 'circle-stroke-color': '#fff' } });
+        var b = detailBounds(geometry);
+        if (b) {
+          if (b[0][0] === b[1][0] && b[0][1] === b[1][1]) map.setCenter(b[0]);
+          else map.fitBounds(b, { padding: 40, maxZoom: 16, duration: 0 });
+        }
+      });
+    } else {
+      var dot = document.createElement('div');
+      dot.className = 'td-map-marker-dot';
+      new maplibregl.Marker({ element: dot, anchor: 'center' })
+        .setLngLat([lng, lat])
+        .setPopup(new maplibregl.Popup({ closeButton: false, offset: 14 }).setHTML('<b>' + escapeHtml(name || '') + '</b>'))
+        .addTo(map);
+    }
     setTimeout(function () { if (document.getElementById('tourismMap') === mapEl && mapEl._tdMap === map) map.resize(); }, 120);
   }
 
@@ -628,9 +686,24 @@
         }).addTo(map);
       } catch (e) { /* noop */ }
     });
-    var icon = L.divIcon({ className: 'td-map-marker', html: '<div class="td-map-marker-dot"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
-    L.marker([lat, lng], { icon: icon }).addTo(map).bindPopup('<b>' + escapeHtml(name || '') + '</b>', { closeButton: false });
-    map.setView([lat, lng], 15);
+    var geometry = mapEl._tdGeometry;
+    if (geometry) {
+      var overlay = L.geoJSON({ type: 'Feature', properties: {},
+        geometry: { type: geometry.type, coordinates: geometry.coordinates } }, {
+        style: { color: '#0877bc', weight: 5, fillColor: '#0877bc', fillOpacity: 0.2 },
+        pointToLayer: function(f, p) { return L.circleMarker(p, { radius: 7, color: '#fff', weight: 2, fillColor: '#0877bc', fillOpacity: 1 }); }
+      }).addTo(map);
+      overlay.bindPopup('<b>' + escapeHtml(name || '') + '</b>', { closeButton: false });
+      var b = overlay.getBounds();
+      if (b.isValid()) {
+        if (b.getNorth() === b.getSouth() && b.getEast() === b.getWest()) map.setView(b.getCenter(), 15);
+        else map.fitBounds(b, { padding: [40, 40], maxZoom: 16, animate: false });
+      }
+    } else {
+      var icon = L.divIcon({ className: 'td-map-marker', html: '<div class="td-map-marker-dot"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
+      L.marker([lat, lng], { icon: icon }).addTo(map).bindPopup('<b>' + escapeHtml(name || '') + '</b>', { closeButton: false });
+      map.setView([lat, lng], 15);
+    }
     setTimeout(function () {
       if (document.getElementById('tourismMap') !== mapEl || mapEl._tdLeaflet !== map) return;
       var size = map.getSize();
