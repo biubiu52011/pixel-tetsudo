@@ -15404,7 +15404,19 @@
     "JR-Uchiko-001": {},
     "JR-Uchiko-002": {},
     "JR-Uchiko-003": {},
-    "JR-NemuroMain-005": {}
+    "JR-NemuroMain-005": {},
+    "JRC-TokaidoCentral-025": {
+      "lat": 34.83015,
+      "lng": 138.173425
+    },
+    "JRC-TokaidoCentral-027": {
+      "lat": 34.761757,
+      "lng": 138.085572
+    },
+    "JRC-TokaidoCentral-081": {
+      "lat": 35.344595,
+      "lng": 136.402325
+    }
   },
   "lines": {
     "KeihinTohoku": {
@@ -49453,9 +49465,9 @@
         "JRC-TokaidoCentral-022",
         "JRC-TokaidoCentral-023",
         "JRC-TokaidoCentral-024",
-        "Shimada",
+        "JRC-TokaidoCentral-025",
         "JRC-TokaidoCentral-026",
-        "Kikukawa",
+        "JRC-TokaidoCentral-027",
         "Kakegawa",
         "JRC-TokaidoCentral-029",
         "JRC-TokaidoCentral-030",
@@ -49509,7 +49521,7 @@
         "JRC-TokaidoCentral-078",
         "JRC-TokaidoCentral-079",
         "JRC-TokaidoCentral-080",
-        "Kashiwara",
+        "JRC-TokaidoCentral-081",
         "JRC-TokaidoCentral-082",
         "JRC-TokaidoCentral-083",
         "Maibara"
@@ -56598,8 +56610,7 @@
       "Oedo"
     ],
     "Kikukawa": [
-      "Shinjuku",
-      "TokaidoCentral"
+      "Shinjuku"
     ],
     "Sumiyoshi": [
       "Shinjuku",
@@ -64063,8 +64074,7 @@
       "SanyoMain"
     ],
     "Shimada": [
-      "SanyoMain",
-      "TokaidoCentral"
+      "SanyoMain"
     ],
     "Hikari": [
       "SanyoMain"
@@ -64265,8 +64275,7 @@
       "KansaiMain"
     ],
     "Kashiwara": [
-      "KansaiMain",
-      "TokaidoCentral"
+      "KansaiMain"
     ],
     "Shiki-Kansai": [
       "KansaiMain"
@@ -69430,6 +69439,15 @@
     ],
     "JR-NemuroMain-005": [
       "NemuroMain"
+    ],
+    "JRC-TokaidoCentral-025": [
+      "TokaidoCentral"
+    ],
+    "JRC-TokaidoCentral-027": [
+      "TokaidoCentral"
+    ],
+    "JRC-TokaidoCentral-081": [
+      "TokaidoCentral"
     ]
   },
   "lineStationOrder": {
@@ -74694,9 +74712,9 @@
       "JRC-TokaidoCentral-022",
       "JRC-TokaidoCentral-023",
       "JRC-TokaidoCentral-024",
-      "Shimada",
+      "JRC-TokaidoCentral-025",
       "JRC-TokaidoCentral-026",
-      "Kikukawa",
+      "JRC-TokaidoCentral-027",
       "Kakegawa",
       "JRC-TokaidoCentral-029",
       "JRC-TokaidoCentral-030",
@@ -74750,7 +74768,7 @@
       "JRC-TokaidoCentral-078",
       "JRC-TokaidoCentral-079",
       "JRC-TokaidoCentral-080",
-      "Kashiwara",
+      "JRC-TokaidoCentral-081",
       "JRC-TokaidoCentral-082",
       "JRC-TokaidoCentral-083",
       "Maibara"

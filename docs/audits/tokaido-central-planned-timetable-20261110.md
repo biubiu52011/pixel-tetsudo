@@ -105,3 +105,11 @@ JR-East 两组各 692 个模板，**两者不是 JR-Central 的候选时刻表**
 ### 调查执行边界
 
 本次取得的是可核验的**来源目录、SQL参照、数据身份风险与授权边界**。没有导入列车模板、没有部署 Edge Function、没有宣称线路已通过时刻表验收。第三方 OuDia ZIP 和 N02 全量数据在当前联网环境未能下载；后续实际解析时应记录数据版本 SHA 与核验凭据，不能凭当前网页元数据猜测文件内部车次数量。
+
+## 2026-11-10 实施：沿用 JR 东日本 SQL 站点注册
+
+- 按现有 JR East `stations` → `line_stations` 的模式，为 `TokaidoCentral` 建立 84 个顺序正确的 SQL 车站引用，原先其他线路的车站记录不覆盖、不挪用。
+- 修复三处跨线路同名站碰撞：静冈島田 `JRC-TokaidoCentral-025`、静冈菊川 `JRC-TokaidoCentral-027`、滋贺柏原（Kashiwabara）`JRC-TokaidoCentral-081`，保留山阳 `Shimada`、都营新宿线 `Kikukawa` 和关西本线 `Kashiwara` 原 ID。同步更新 canonical 站顺序、反向线路索引及由生成器负责的 compact/file.js 双产物。
+- 三处新坐标参考国土数值信息 N02 衍生站点资料（島田 34.830150,138.173425；菊川 34.761757,138.085572；柏原 35.344595,136.402325）：<https://xn--y8j8gq48f5heu33c.jp/map.php?dn=eki&id=6489&pr=22>、<https://mapfan.com/spots/SCH%2CJ%2C210>、<https://xn--y8j8gq48f5heu33c.jp/map.php?dn=eki&id=4982&pr=25>。其他未获经纬度的车站 SQL 为空，不生成虚假坐标。
+- 本次仍**没有可合法且逐车核实的 2026-11 完整时刻表**，所以 `manual_timetable_templates` / `manual_timetable_template_stops` / `train_runs` 保持无该线路计划数据；`published_timetable_full_day_acceptance` 理应仍为 `blocked_no_published_trains`，后续沿用同一 `train-runs` 消费链、逐车来源验收、平日/土休日与上下行核验，不新增替代前端计划生成器。
+- 回归检查：`tests/tokaido-central-station-registry.test.cjs`；数据库迁移：`supabase/migrations/20261110223500_tokaido_central_scoped_station_registry.sql`。

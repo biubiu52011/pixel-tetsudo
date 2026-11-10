@@ -32472,5 +32472,23 @@
     "zh": "池田",
     "ko": "池田",
     "en": "Ikeda (Hokkaido)"
+  },
+  "JRC-TokaidoCentral-025": {
+    "ja": "島田",
+    "zh": "岛田",
+    "ko": "시마다",
+    "en": "Shimada"
+  },
+  "JRC-TokaidoCentral-027": {
+    "ja": "菊川",
+    "zh": "菊川",
+    "ko": "키쿠카와",
+    "en": "Kikugawa"
+  },
+  "JRC-TokaidoCentral-081": {
+    "ja": "柏原",
+    "zh": "柏原",
+    "ko": "가시와바라",
+    "en": "Kashiwabara"
   }
 }
