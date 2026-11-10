@@ -278,6 +278,9 @@
     // JR-East 2611 Sotetsu connection: only source-dated verified SQL clocks
     // may project a planned position. A future month needs new proof.
     SotetsuJRDirect: Object.freeze(["*"]),
+    // Kawagoe west: only November 2611 ODPT trains with JR date evidence.
+    // Reverify the official departures for every later calendar edition.
+    Kawagoe: Object.freeze(["*"]),
     // 播但線: legacy SQL has 0 current-date-verified sources and no
     // inbound electric templates. A star requires date proof in every month.
     Bantan: Object.freeze(["*"])
