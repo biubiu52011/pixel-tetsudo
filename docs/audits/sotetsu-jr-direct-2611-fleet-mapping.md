@@ -12,7 +12,7 @@
 
 数据库既有 `manual_timetable_templates` 共 184 条：平日 46 北行 + 46 南行，土休日 46 北行 + 46 南行，共 96 个不同番号。原始来源是固定版本 mini-tokyo-3d `jreast-sotetsudirect.json`，全部车型标签为空，canonical `source_only`，`timetable_validity=undated_not_current_verified`。**不声明这些钟点已经逐条比对官方2026-11时刻表。**
 
-新建并已应用 `supabase/migrations/20261107042000_sotetsu_jr_direct_2611_two_fleet_source_candidates.sql`，只按 184 条源 ID 记录准确四站路线、历法、番号、方向，两种车型与两张已存在的像素 PNG，以及 JR 官方联合车型来源；增加 RLS，保留 `reference_only=true`、`number_date_verified=false`、`authorizes_png=false`、`actual_vehicle_confirmed=false`。原有 `train_timetable_vehicle_mappings` 184 条 unresolved **不提升为某一特定车型**。
+新建并已应用 `supabase/migrations/20261107042000_sotetsu_jr_direct_2611_two_fleet_source_candidates.sql`，只按 184 条源 ID 记录准确四站路线、历法、番号、方向，两种车型与两张已存在的像素 PNG，以及 JR 官方联合车型来源；增加 RLS，保留 `reference_only=true`、`number_date_verified=false`、`authorizes_png=false`、`actual_vehicle_confirmed=false`。当时 `train_timetable_vehicle_mappings` 仍未建立逐车次对应；现已在下方记录 2026-11-10 的后续证据与车型映射。
 
 ## 程序安全与像素列车
 
@@ -46,3 +46,12 @@
 
 - “2026年11月计划时刻表已核实”指四站、184条日历计划时刻及明示日期变更；不包括实际运营状态、列车真实位置、真实车型或羽沢／大崎以外的站时。
 - 对任何其他月份，只保留历史 SQL 供来源审计，绝不能在地图上产生未核验的“当日计划位置”。
+
+## 2026-11-10 后续：Supabase 计划车型映射（不是实车）
+
+- 不新增平行时刻表：继续由 `manual_timetable_templates`、`train_timetables` 和 `train_timetable_vehicle_mappings` 负责车次身份、四站钟点及计划车型。
+- 2026-03-14 相铁12000系与 JR E233系7000番台的**平日/土休日两套完整非官方运用表**分解为逐车次操作；与 2026-11 月四组正式号码及数据库 184 条模板匹配。平日：12000×34 / E233×58；土休日：12000×36 / E233×56。无重号、无遗漏、无车型交叉。
+- 四份资料记为 `evidence_sources` 的 `source_type=reference`、`evidence_grade=C`。184 条映射写入原有 `train_timetable_vehicle_mappings` 的 `source_single_type_candidate`，附真实来源 URL 与参考运用组号。**C 级资料仅能用于计划车型参考，不是官方逐车次确认或当天真实车辆信息；不能生成真实编组号。**
+- Edge `train-runs` 通过原有 `train_timetable_source_resolution` 视图查出映射，逐车次核对四站日期、车型集合、来源 URL、C 级证据和运用组格式。仅在核验通过时将选定计划车型及其对应画廊 PNG 参考传给前端，`vehicle_plan_confirmed=false`、`vehicle_artwork_path=null` 仍保持。
+- 前端 `TrainVehicle.selectMarkerArtwork` 只在 2026年11月、上述完整证据齐备且没有已确认的独立真实车辆解析结果时，显示对应车型的**计划插图**。否则回退中性标记；不会将候选参考提升为真实位置或实际编组。列车详情仅显示简短的“计划车型（实车未确认）”，不加入另设的长说明区。
+- 生产 Edge 回读：平日 `34/58`、土休日 `36/56`，11月7日7条日期特别钟点变更生效；12月10日未核验的92条历史模板不返回任何计划车型映射或虚构实车证据。
