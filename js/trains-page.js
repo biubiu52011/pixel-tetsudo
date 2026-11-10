@@ -115,50 +115,6 @@
     if (!host) return;
     host.replaceChildren();
     host.hidden = true;
-    if (lineId === "SotetsuJRDirect") {
-      // External official source links, not an additional status API.
-      // The 2611 four-stop SQL plan is date-verified for November only;
-      // ordinary timetable locations are estimates, never observed trains.
-      var sotetsuTexts = {
-        ja: ["相鉄線直通（JR接続区間）：公式情報・2026年11月時刻表",
-          "羽沢横浜国大～大崎の4駅について、2026年11月の平日・土休日各46本×上下線の計画時刻を確認済みです。11月7日・22日の公表時刻変更も反映しました。時刻表上の位置は推定であり、実際の運行やE233系／相鉄12000系の編成を保証しません。JR東日本は約30分、相鉄は約10分を目安に遅延を案内します。",
-          "JR東日本 運行情報", "相鉄 運行情報", "平日 羽沢→大崎", "平日 大崎→羽沢", "土休日 羽沢→大崎", "土休日 大崎→羽沢"],
-        zh: ["相铁・JR直通（JR接续区间）：官方信息与2026年11月时刻表",
-          "已核验羽泽横滨国大—大崎4站在2026年11月的平日、土休日双方向各46班计划时刻，并纳入11月7日、22日官方临时变更。按时刻表推算的位置不是实时实车观测，不能据此确认实际开行或E233系／相铁12000系担当编组。JR东日本约30分钟、相铁约10分钟的延误通报标准不同。",
-          "JR东日本运行信息", "相铁运行信息", "平日 羽泽→大崎", "平日 大崎→羽泽", "土休日 羽泽→大崎", "土休日 大崎→羽泽"],
-        en: ["Sotetsu–JR connection: official information and November 2026 schedules",
-          "All 46 trains per calendar/direction on the four Hazawa–Osaki stops are timetable-verified for November 2026; published November 7/22 changes are included. Estimated positions are not live train observations or evidence of an E233/Sotetsu 12000 assignment. JR East generally reports delays from 30 minutes, Sotetsu from 10.",
-          "JR East service updates", "Sotetsu service updates", "Weekday Hazawa→Osaki", "Weekday Osaki→Hazawa", "Holiday Hazawa→Osaki", "Holiday Osaki→Hazawa"],
-        ko: ["소테쓰–JR 직통(JR 접속 구간): 공식 정보와 2026년 11월 시간표",
-          "하자와요코하마코쿠다이～오사키 4개 역의 평일·토휴일 각 방향 46개 열차 시각을 검증하고 11월 7일·22일의 공표된 변경을 반영했습니다. 시간표 추정 위치는 실시간 관측 또는 E233계/소테쓰 12000계 실제 편성의 증거가 아닙니다. JR동일본(약 30분)과 소테쓰(약 10분)의 지연 통보 기준은 다릅니다.",
-          "JR동일본 운행 정보", "소테쓰 운행 정보", "평일 하자와→오사키", "평일 오사키→하자와", "토휴일 하자와→오사키", "토휴일 오사키→하자와"]
-      };
-      var st = sotetsuTexts[window.currentLang] || sotetsuTexts.ja;
-      var stTitle = document.createElement("h3");
-      stTitle.textContent = st[0];
-      var stNote = document.createElement("p");
-      stNote.className = "tp-evidence-note";
-      stNote.textContent = st[1];
-      host.append(stTitle, stNote);
-      [
-        ["https://traininfo.jreast.co.jp/train_info/line.aspx?gid=1&lineid=sotetsuline", st[2]],
-        ["https://www.sotetsu.co.jp/train/status/", st[3]],
-        ["https://timetables.jreast.co.jp/2611/timetable-v/628d1p.html", st[4]],
-        ["https://timetables.jreast.co.jp/2611/timetable-v/628u1p.html", st[5]],
-        ["https://timetables.jreast.co.jp/2611/timetable-v/628d2p.html", st[6]],
-        ["https://timetables.jreast.co.jp/2611/timetable-v/628u2p.html", st[7]]
-      ].forEach(function(entry, index) {
-        if (index) host.append(document.createTextNode(" · "));
-        var stLink = document.createElement("a");
-        stLink.href = entry[0];
-        stLink.target = "_blank";
-        stLink.rel = "noopener noreferrer";
-        stLink.textContent = entry[1];
-        host.append(stLink);
-      });
-      host.hidden = false;
-      return;
-    }
     if (lineId === "Bantan") {
       // The archived SQL has no current-date-verified inbound electric runs.
       // This is source-only navigation, NEVER an embedded, copied or inferred
@@ -756,7 +712,6 @@
       if (typeof window.onLanguageChange === "function") {
         window.onLanguageChange(function() {
           if (currentLine) updateCorridorEvidence(currentLine);
-          if (currentLine) updateOfficialRuninfoSource(currentLine);
           renderFilterBar(document.getElementById("trainsFilterBar"));
           if (currentLine && detailEl && !detailEl.classList.contains("hidden")) {
             var latest = getLinesData()[currentLine];
