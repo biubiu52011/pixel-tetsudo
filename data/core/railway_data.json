@@ -47578,7 +47578,25 @@
             "confidence": "HIGH"
           }
         }
-      ]
+      ],
+      "presentation": {
+        "code": "JS",
+        "nameJa": "相鉄線直通（JR接続区間）",
+        "nameZh": "相铁线直通（JR接续区间）",
+        "nameEn": "Sotetsu Line Through Service (JR Connector)",
+        "nameKo": "소테쓰선 직통 (JR 접속 구간)",
+        "subNameJa": "埼京線接続区間",
+        "subNameZh": "埼京线连接区间",
+        "subNameEn": "Saikyo Line connection section",
+        "subNameKo": "사이쿄선 접속 구간",
+        "color": "#00ac47",
+        "icon": "../images/鉄道/JR東日本/埼京線.png",
+        "order": 2,
+        "lineIds": [
+          "SotetsuJRDirect"
+        ],
+        "operatorGroup": "JR_EAST"
+      }
     },
     "ToyoRapid": {
       "name": "東葉高速線",

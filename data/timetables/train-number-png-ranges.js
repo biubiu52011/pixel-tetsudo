@@ -2545,6 +2545,10 @@
     if(calendar!==(holiday?"holiday":"weekday")||
        proof.calendar!==calendarUrn||
        proof.timetableIndexUrl!==publishedPage)return null;
+    var officialNumberIndex=root.JREastSotetsuJRDirectNumbers2611,
+      officialNumber=officialNumberIndex&&typeof officialNumberIndex.match==="function"
+        ?officialNumberIndex.match(p):null;
+    if(officialNumberIndex&&!officialNumber)return null;
     var north=["HazawaYokohamaKokudai","MusashiKosugi","NishiOi","Osaki"],
       expected=dir==="Northbound"?north:north.slice().reverse(),
       stops=Array.isArray(p.scheduledStopKeys)
@@ -2568,7 +2572,11 @@
       candidateAssets:Object.freeze(paths),
       sourceTemplateId:Number(proof.sourceTemplateId),
       referenceOnly:true,actualVehicleConfirmed:false,
-      authorizesPNG:false,numberDateVerified:false,formationId:null
+      authorizesPNG:false,numberDateVerified:false,formationId:null,
+      publishedNumberOnly:!!officialNumber,
+      officialNumberVerified:!!officialNumber,
+      officialSourceUrl:officialNumber&&officialNumber.officialSourceUrl||"",
+      numberBands:officialNumber&&officialNumber.numberBands||[]
     });
   }
   // JR-West Kosei 179 M/MH source-only services. The weekend H is

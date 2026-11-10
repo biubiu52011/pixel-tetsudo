@@ -126,6 +126,7 @@
       "data/timetables/jreast-rikuto-east-2611-number-index.js",
       "data/timetables/jreast-regional-2611-number-index.js",
       "data/timetables/jreast-ryomo-2611-number-index.js",
+      "data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js",
       "data/timetables/train-number-png-ranges.js",
       "data/timetables/jreast-senzan-2611-number-index.js",
       "data/timetables/jreast-shinonoi-2611-number-index.js",
@@ -283,6 +284,9 @@
       ],
       "data/timetables/jreast-ryomo-2611-number-index.js": [
         "Ryomo"
+      ],
+      "data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js": [
+        "SotetsuJRDirect"
       ],
       "data/timetables/jreast-shinonoi-2611-number-index.js": [
         "Shinonoi"

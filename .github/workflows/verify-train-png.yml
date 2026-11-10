@@ -201,6 +201,7 @@ jobs:
           node --check data/timetables/jreast-kitakami-2611-number-index.js
           node --check data/timetables/jreast-yamada-2611-number-index.js
           node --check data/timetables/jreast-regional-2611-number-index.js
+          node --check data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js
       - name: Verify Gakkentoshi–Osaka Higashi transfer ownership and fleet scope
         run: node --test tests/gakkentoshi-transfer-source-ownership.test.cjs
       - name: Verify JR Takarazuka full 31-station rail topology and generated bundles

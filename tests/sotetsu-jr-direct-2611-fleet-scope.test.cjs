@@ -6,6 +6,7 @@ const root={},ctx=vm.createContext({window:root,Date,
   _isTrainArtworkFailureActive(){return false}});
 for(const f of [
  'data/timetables/vehicle-garage-png-map.js',
+ 'data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js','data/timetables/vehicle-operation-evidence-data.js'
 ])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
@@ -61,6 +62,21 @@ test('120M/220M public train family is never proof of E233 carset',()=>{
    }),null,line+'/'+num);
   }
  }
+});
+test('official 2611 columns expose exact service numbers and bands',()=>{
+ const index=root.JREastSotetsuJRDirectNumbers2611;
+ assert.ok(index);
+ for(const [calendar,direction] of [['weekday','Northbound'],['weekday','Southbound'],['holiday','Northbound'],['holiday','Southbound']]){
+  assert.equal(index.columns[calendar][direction].length,46,calendar+'/'+direction);
+  assert.equal(index.numberBands(calendar,direction).length,2);
+ }
+ assert.equal(index.has('150M','weekday','Northbound'),true);
+ assert.equal(index.has('151M','weekday','Northbound'),false);
+ assert.equal(index.has('287M','holiday','Southbound'),true);
+ assert.equal(index.has('289M','holiday','Southbound'),false);
+ const proof=index.match(position('120M','2026-11-06'));
+ assert.equal(proof.officialSourceUrl,'https://timetables.jreast.co.jp/2611/timetable-v/628d1p.html');
+ assert.deepEqual(Array.from(proof.numberBands),['120–150M','220–278M']);
 });
 test('date-scoped source candidates always produce ONE neutral SVG marker',()=>{
  for(const date of ['2026-11-06','2026-11-07','2026-11-03','2026-11-23']){

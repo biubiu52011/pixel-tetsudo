@@ -1375,6 +1375,26 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    if (lineId === "SotetsuJRDirect" &&
+        window.JREastSotetsuJRDirectNumbers2611 &&
+        typeof window.JREastSotetsuJRDirectNumbers2611.match === "function") {
+      var sotetsuNumber = window.JREastSotetsuJRDirectNumbers2611.match(
+        Object.assign({}, p, {displayLineId: lineId}));
+      if (sotetsuNumber) {
+        lang = String(lang || "ja").toLowerCase();
+        var number = String(sotetsuNumber.trainNumber || p.trainNumber || "");
+        var bands = (sotetsuNumber.numberBands || []).join(" / ");
+        var candidates = "E233系7000番台 / 相鉄12000系";
+        if (/^zh/.test(lang)) return "官方列车号：" + number +
+          "（号段：" + bands + "；车型候选：" + candidates + "，实体车号/编组未确认）";
+        if (lang === "en") return "Official train number: " + number +
+          " (number bands: " + bands + "; candidate models: E233-7000 / Sotetsu 12000; physical car number and formation unconfirmed)";
+        if (lang === "ko") return "공식 열차번호: " + number +
+          " (번호대: " + bands + "; 후보 차종: E233계 7000번대 / 소테쓰 12000계, 실차 번호·편성 미확인)";
+        return "公式列車番号：" + number +
+          "（番号帯：" + bands + "；候補車種：E233系7000番台 / 相鉄12000系、実車番号・編成は未確認）";
+      }
+    }
     // Respect the C-number 207/321 subgroup rather than displaying all
     // four candidates from the historical, route-wide SQL reference.
     var fukIndex=window.TrainNumberPngRanges,
@@ -2720,6 +2740,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           // A numbered Ito local has documented alternative families. Show
           // those names in the fold without implying a single confirmed PNG.
           if (lineId === "Ito" || lineId === "Hachiko" ||
+              lineId === "SotetsuJRDirect" ||
               lineId === "ChuoMain" || lineId === "Yamagata") {
             var fleetText = _trainFleetPlanLabel(p,lineId,lang);
             if (fleetText && (lineId === "ChuoMain" || lineId === "Yamagata" ||

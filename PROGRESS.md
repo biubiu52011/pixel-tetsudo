@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### SOTETSU-JR-NUMBER-ICON-20261110 — 相铁 JR 直通图标与官方番号展示（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 问题 | `SotetsuJRDirect` 缺少线路图标，1xxM/2xxM 只由宽泛正则识别，列车详情看不到官方号段和实际车次。 |
+| 修复 | canonical 线路补齐 `JS` presentation、JR 东日本绿色和埼京线图标；新增 2611 官方四向番号索引，平日/土休日各 46 个北行与南行车次；详情和折叠列表展示官方列车号、号段及两种车型候选。 |
+| 证据边界 | 官方列车号不是实体车号；E233系7000番台与相铁12000系仍为候选，实际车号、当天编组和 PNG 授权继续保持未确认。四站区间与 Supabase 既有 184 条 source-only 模板未扩展。 |
+| 回归 | `tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs` 与 `tests/page-scripts.test.cjs` 共 11/11 通过；canonical JSON/compact/file bundle、页面脚本清单均已同步。 |
+| 生产边界 | 仅本地代码、生成数据、测试与审计文档；本轮 Supabase 只读核对，未执行数据库写入、Edge 部署或 Pages 发布。 |
+
 ### HISTORY-CARD-RESPONSIVE-20261110 — 历史记录窄屏文字布局修复（LOCAL-READY）
 
 | 项目 | 当前状态 |
