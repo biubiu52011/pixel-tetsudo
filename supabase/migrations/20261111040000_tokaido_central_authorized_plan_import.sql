@@ -46,6 +46,11 @@ DECLARE
   v_stops integer := 0;
 BEGIN
   PERFORM pg_advisory_xact_lock(2026111104);
+  -- Existing evidence imports used explicit IDs and left its identity sequence
+  -- below MAX(id). Correct only this sequence before any identity INSERT.
+  PERFORM setval(pg_get_serial_sequence('public.evidence_sources','id'),
+    GREATEST((SELECT coalesce(max(id),1) FROM public.evidence_sources),
+             (SELECT last_value FROM public.evidence_sources_id_seq)),true);
   IF jsonb_typeof(p_document) <> 'object'
      OR jsonb_typeof(p_document->'source') <> 'object'
      OR jsonb_typeof(p_document->'trains') <> 'array'
@@ -109,7 +114,7 @@ BEGIN
     LOOP
       IF v_date !~ '^20[0-9]{2}-[01][0-9]-[0-3][0-9]$'
       THEN RAISE EXCEPTION 'JRC_PLAN_BAD_SERVICE_DATE'; END IF;
-      IF v_date::date < v_edition OR v_date::date > current_date + interval '62 days'
+      IF v_date::date < v_edition OR v_date < '2026-11-01' OR v_date > '2026-11-30'
       THEN RAISE EXCEPTION 'JRC_PLAN_DATE_OUTSIDE_AUTHORIZED_EDITION'; END IF;
       -- Standard 2026 November calendar, including Culture Day and Labor Thanksgiving Day.
       IF v_date BETWEEN '2026-11-01' AND '2026-11-30' AND
@@ -166,13 +171,13 @@ BEGIN
     THEN RAISE EXCEPTION 'JRC_PLAN_LAST_STOP_MUST_ARRIVE'; END IF;
     v_trip_hash := md5(v_train::text||'|'||v_source_key);
     SELECT source_trip_id INTO v_existing_hash FROM public.manual_timetable_templates
-    WHERE line_key='TokaidoCentral' AND source_path=v_source_path
+    WHERE line_key='TokaidoCentral'
       AND train_number=v_number AND calendar_urn=v_calendar
       AND direction_urn=v_direction
       AND operating_dates && v_dates
     LIMIT 1;
     IF FOUND THEN
-      IF v_existing_hash='sha256-equivalent-md5:'||v_trip_hash THEN
+      IF v_existing_hash='md5:'||v_trip_hash THEN
         CONTINUE; -- idempotent re-run of the exact evidence row.
       END IF;
       RAISE EXCEPTION 'JRC_PLAN_CONFLICTING_TRAIN_DATES:%',v_number;
@@ -184,7 +189,7 @@ BEGIN
     VALUES('TokaidoCentral',v_calendar,v_number,'odpt.Railway:JR-Central.TokaidoCentral',
        v_direction,'odpt.TrainType:JR-Central.'||v_type,
        ARRAY['odpt.Station:JR-Central.TokaidoCentral.'||v_last_station]::text[],
-       v_source_path,'sha256-equivalent-md5:'||v_trip_hash,v_edition,v_dates)
+       v_source_path,'md5:'||v_trip_hash,v_edition,v_dates)
     RETURNING id INTO v_template_id;
     v_sequence := 0;
     FOR v_stop IN SELECT value FROM jsonb_array_elements(v_train->'stops')
