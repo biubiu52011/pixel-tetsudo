@@ -51,7 +51,7 @@ test('dated, numbered Nagoya–Nakatsugawa SQL commuter train selects only a ref
 test('number-only, live, other operator, other month, limited express and unknown segments cannot pick 315',()=>{
   const w=loadReferenceMatcher(),p=plannedSqlRun();
   const rejected=[
-    {},{officialNumberVerified:false},{timetableDateVerified:false},
+    {officialNumberVerified:undefined},{officialNumberVerified:false},{timetableDateVerified:false},
     {timetableValidity:'unverified'},{estimated:false},
     {positionSource:'realtime-api'},
     {sourceRailway:'odpt.Railway:JR-East.Chuo'},
