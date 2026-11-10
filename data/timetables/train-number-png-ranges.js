@@ -3388,6 +3388,47 @@
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="TokaidoCentral"){
+      // JR Central is a mixed 313/315/373 stock corridor. The published
+      // train number alone never proves which rolling-stock series operates.
+      // The range is deliberately a syntactic bound, NOT a fleet assignment:
+      // the existing SQL vehicle-plan resolver must also supply a single
+      // independently evidenced model for this exact dated train number.
+      var sql=context||{};
+      var n=number.match(/^([0-9]{1,5})M$/);
+      var source=String(sql.sourceRailway||"");
+      var operator=String(sql.trainOperator||sql.operator||"");
+      var day=String(sql.serviceDate||"").slice(0,10);
+      var plan=sql.vehiclePlan;
+      if(!n||Number(n[1])<1||Number(n[1])>99999||
+         sql.positionSource!=="supabase-train-run"||
+         sql.estimated!==true||sql.officialNumberVerified!==true||
+         sql.vehicleIdentityStatus==="EXACT"||
+         !/^20\\d{2}-\\d{2}-\\d{2}$/.test(day)||
+         source!=="odpt.Railway:JR-Central.Tokaido"||
+         (operator&&operator!=="JR-Central"&&
+           operator!=="odpt.Operator:JR-Central")||
+         !plan||(plan.confirmed!==true&&plan.status!=="PLANNED_MODEL")||
+         !Array.isArray(plan.models)||plan.models.length!==1||
+         !String(plan.sourceUrl||"").startsWith("https://"))return null;
+      var artwork={
+        "313系":"../images/列车/JR東海/c313.png",
+        "315系":"../images/列车/JR東海/c315.png",
+        "373系":"../images/列车/JR東海/c373_inj.png"
+      };
+      var chosen=plan.models[0],png=artwork[chosen];
+      if(!png||[sql.realtimeVehicleType,sql.realtimeDerivedVehicleType]
+           .some(function(v){return v&&String(v).trim()!==chosen;})||
+         (Array.isArray(sql.plannedVehicleCandidates)&&
+          (sql.plannedVehicleCandidates.length!==1||
+           sql.plannedVehicleCandidates[0]!==chosen)))return null;
+      var gallery=root.VehicleGaragePngMap;
+      if(!gallery||typeof gallery.matchModelPath!=="function"||
+         !gallery.matchModelPath(chosen,png,line))return null;
+      return {trainNumber:number,lineId:line,model:chosen,pngPath:png,
+        source:"jrc-sql-number-and-independent-model-evidence",
+        planned:true,representative:true};
+    }
     if(line==="OuMain"){
       var tsugaru=Object.assign({},context||{},{trainNumber:number});
       var model=verifyOuMainTsugaruService(tsugaru);
