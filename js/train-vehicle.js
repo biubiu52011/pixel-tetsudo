@@ -5898,6 +5898,41 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
              sjGarage.matchModelPath(
                sjModels[i],path,"SotetsuJRDirect");
          })){
+        // 184 date-verified SQL plans have a separate four-source working
+        // MODEL crosswalk (2026-03-14). Its C-grade reference may select
+        // a representative gallery picture; it never identifies a physical
+        // formation or overrides independently verified live evidence.
+        var sjWorking=p.sqlPublishedNumberFleetReference||{};
+        var sjModelIx=sjModels.indexOf(sjWorking.plannedModel);
+        var sjCal=sjWorking.calendar==="odpt.Calendar:Weekday"?"weekday":"holiday";
+        var sjFleet=sjModelIx===0?"E233":sjModelIx===1?"Sotetsu12000":"";
+        var sjUrls={
+          "weekday/E233":"https://ameblo.jp/tc205-37/entry-12972145141.html",
+          "holiday/E233":"https://ameblo.jp/tc205-37/entry-12972146396.html",
+          "weekday/Sotetsu12000":"https://ameblo.jp/tc205-37/entry-12972143138.html",
+          "holiday/Sotetsu12000":"https://ameblo.jp/tc205-37/entry-12972143555.html"
+        };
+        var sjOperation=String(sjWorking.plannedOperationCode||"");
+        var sjPng=sjModelIx>=0?sjAssets[sjModelIx]:"";
+        if(p.timetableDateVerified===true&&
+           sjWorking.plannedModelMappingLevel==="source_single_type_candidate"&&
+           sjWorking.plannedModelEvidenceGrade==="C"&&
+           sjWorking.plannedModelIsActual===false&&
+           sjWorking.plannedModelEvidenceUrl===sjUrls[sjCal+"/"+sjFleet]&&
+           sjWorking.plannedModelArtworkPath===sjPng&&
+           /^\d{2}$/.test(sjOperation)&&
+           (sjFleet!=="Sotetsu12000"||["70","71","72","73"].includes(sjOperation))&&
+           (sjFleet!=="E233"||Number(sjOperation)%2===1)&&
+           sjPng&&isGalleryPng(normalizeGalleryPngPath(sjPng))&&
+           sjGarage.matchModelPath(sjWorking.plannedModel,sjPng,"SotetsuJRDirect")){
+          return {kind:"vehicle",iconSrc:normalizeGalleryPngPath(sjPng),
+            planned:true,illustrative:true,representativeOnly:true,
+            actualVehicleConfirmed:false,
+            illustrationRole:"2611-published-working-model-not-actual-formation",
+            plannedModel:sjWorking.plannedModel,
+            plannedOperationCode:sjOperation,
+            sourceUrl:sjWorking.plannedModelEvidenceUrl};
+        }
         return {kind:"candidate",iconSrc:"",planned:false,
           referenceOnly:true,actualVehicleConfirmed:false,
           candidateAssets:sjAssets.slice()};
