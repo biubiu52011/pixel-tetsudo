@@ -496,7 +496,7 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   const sourceResolution = new Map<number, any>();
   const resolutionRows = await batchedRows(templates, 100, async (batch) => {
     const { data, error } = await db.from("train_timetable_source_resolution")
-      .select("source_template_id,timetable_id,member_role,group_evidence,timetable_validity,mapping_level,vehicle_type,vehicle_source_id,vehicle_source_url,vehicle_revision_date,vehicle_artwork_path,operation_code,operation_source_id,operation_revision_date,operation_owner,operation_owner_source_url")
+      .select("source_template_id,timetable_id,member_role,group_evidence,timetable_validity,mapping_level,vehicle_type,vehicle_source_id,vehicle_source_path,vehicle_source_url,vehicle_revision_date,vehicle_artwork_path,operation_code,operation_source_id,operation_revision_date,operation_owner,operation_owner_source_url")
       .in("source_template_id", batch.map((t: any) => t.id));
     if (error) throw error;
     return data || [];
@@ -3526,6 +3526,35 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         }
         run.schedule_exception_date=serviceDate;
       }
+      // Read the canonical train_timetable_vehicle_mappings projection.
+      // The third-party 2026-03-14 working diagram is a C-grade scheduled
+      // MODEL inference, never the actual 2026-11 physical carset.
+      const mapped:any=sourceResolution.get(Number(run.source_template_id));
+      const working=/^fan-2026-03-14-working:(weekday|holiday):(E233|Sotetsu12000):([0-9]{2})$/
+        .exec(String(mapped?.vehicle_source_path||""));
+      const dayType=selectedCalendar==="odpt.Calendar:Weekday"?"weekday":"holiday";
+      const model=working&&working[2]==="E233"
+        ?"E233系7000番台":working&&working[2]==="Sotetsu12000"
+          ?"相鉄12000系":"";
+      const modelIx=pub.candidate_models.indexOf(model);
+      const urls:Record<string,string>={
+        "weekday/E233":"https://ameblo.jp/tc205-37/entry-12972145141.html",
+        "holiday/E233":"https://ameblo.jp/tc205-37/entry-12972146396.html",
+        "weekday/Sotetsu12000":"https://ameblo.jp/tc205-37/entry-12972143138.html",
+        "holiday/Sotetsu12000":"https://ameblo.jp/tc205-37/entry-12972143555.html"
+      };
+      const evidence=vehicleEvidenceById.get(Number(mapped?.vehicle_source_id));
+      const expectedUrl=working?urls[working[1]+"/"+working[2]]:"";
+      if(!working||working[1]!==dayType||!expectedUrl||
+         mapped.mapping_level!=="source_single_type_candidate"||
+         mapped.vehicle_type!==model||
+         mapped.vehicle_source_url!==expectedUrl||
+         !Number.isSafeInteger(Number(mapped.vehicle_source_id))||
+         evidence?.source_type!=="reference"||evidence?.evidence_grade!=="C"||
+         modelIx<0||pub.candidate_png_paths[modelIx]==null||
+         (model==="相鉄12000系"&&!["70","71","72","73"].includes(working[3]))||
+         (model==="E233系7000番台"&&Number(working[3])%2===0))
+        throw new Error("SOTETSU_JR_2611_PUBLISHED_WORKING_MAPPING_UNAVAILABLE");
       run.timetable_validity="date_verified";
       run.timetable_date_verified=true;
       run.plan_source=dated?
@@ -3552,7 +3581,16 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         timetableIndexUrl:pub.timetable_index_url,
         stopClockStatus:pub.stop_clock_status,
         referenceOnly:true,actualVehicleConfirmed:false,
-        numberDateVerified:false,authorizesPNG:false
+        numberDateVerified:false,authorizesPNG:false,
+        // Independent C-grade published working reference:
+        // permit a model illustration on the timetable estimate only.
+        plannedModel:model,
+        plannedOperationCode:working[3],
+        plannedModelEvidenceUrl:expectedUrl,
+        plannedModelArtworkPath:pub.candidate_png_paths[modelIx],
+        plannedModelMappingLevel:"source_single_type_candidate",
+        plannedModelEvidenceGrade:"C",
+        plannedModelIsActual:false
       };
     }
   }
