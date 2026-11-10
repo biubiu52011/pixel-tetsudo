@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### HACHIKO-SINGLE-MARKER-SAFARI-20261110 — 八高线单车标记公开页面复验（PARTIAL）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 代码基线 | 当前 `main` 已包含 `99a3cfd` 之后的八高线南段单图示意、`UNKNOWN` 身份边界和候选详情文案；`trains-render.js` 的候选车辆地图分支只生成一个中性标记，未发现需要追加代码差异。 |
+| 页面回读 | GitHub Pages 公开 `pages/trains.html#Hachiko` 在 Chromium 中成功回读北八王子、拝島、東飯能等八高线地图；列车详情/可访问文本仍保留 `E231系3000番台 / 209系3500番台` 候选说明，地图只出现一个标记。 |
+| 缓存与本地回归 | `node scripts/sync-page-scripts.cjs --check`、`tools/train-png-display-contract.test.cjs` 及 `tests/page-scripts.test.cjs` 合计 6/6 通过；页面缓存键按 Git LF blob 规范保持同步。宽 `train-number-png-runtime` 仍有 4 项既有失败，其中 2 项为 Windows CRLF 工作区按原始字节计算缓存键的环境差异，另 2 项与本任务无关。 |
+| 生产边界 | 未触发 Pages 发布、Supabase/Edge 变更；当前工作区无代码差异、无新提交或推送。 |
+| 未完成与下一步 | 当前 Windows 环境没有 iPhone/Safari 真机，无法取得任务要求的 Safari 截图及部署 SHA；保持 Notion 状态“待验收”，需在 iPhone Safari/GitHub Pages 上复验北八王子、拝島、東飯能与缩放后再关闭任务。 |
+
 ### RECOMMENDATION-LABEL-ACCEPTANCE-20261110 — 推荐区域标题多语言与真实页面验收（DONE）
 
 | 项目 | 当前状态 |
