@@ -53,9 +53,10 @@ test('line detail accurately discloses unverified weekday/holiday timetable in f
   // Do not reintroduce source websites as a fallback for missing SQL plans.
   const notice = page.split('function updateOfficialRuninfoSource(lineId) {')[1]
     .split('var _detailLoadRequestedFor = null;')[0];
-  for (const line of ['TokaidoCentral', 'Bantan', 'KakogawaLine', 'Fukuchiyama']) {
+  for (const line of ['TokaidoCentral', 'Bantan', 'KakogawaLine']) {
     assert.ok(notice.includes('lineId === "' + line + '"'), line + ' notice retained');
   }
+  assert.ok(notice.includes('lineId !== "Fukuchiyama"'), 'Fukuchiyama notice retained');
   assert.doesNotMatch(notice, /https?:\/\//);
   assert.doesNotMatch(notice, /document\.createElement\(["']a["']\)|\.href\s*=|\.target\s*=/);
 });
