@@ -102,6 +102,32 @@ test('shared working cannot become a single E231 or 209 physical PNG',()=>{
   assert.equal(reported.illustrative,true);
   assert.equal(reported.actualVehicleConfirmed,false);
   assert.equal(reported.reportedFormation,'ハエ51');
+  // The same published train can own a *live position* and retain
+  // its independently dated C-grade PNG as a non-physical illustration.
+  const live={trainNumber:'1060H',serviceDate:'2026-11-10',
+    positionLineId:'Kawagoe',displayLineId:'Kawagoe',
+    sourceRailway:'odpt.Railway:JR-East.Kawagoe',
+    railDirection:'Inbound',positionSource:'realtime-api',
+    estimated:false,vehicleIdentityStatus:'UNKNOWN',
+    datedVehicleDisplayReference:{...reportedBase,
+      sourceRailway:'odpt.Railway:JR-East.Kawagoe',
+      railDirection:'Inbound'}};
+  const bridged=root.TrainVehicle.selectMarkerArtwork(live,false);
+  assert.equal(bridged.kind,'vehicle');
+  assert.match(bridged.iconSrc,/209系_3500番台\.png$/);
+  assert.equal(bridged.actualVehicleConfirmed,false);
+  assert.equal(bridged.illustrative,true);
+  for(const bad of [
+    {trainNumber:'1062H'},{serviceDate:'2026-11-09'},
+    {positionLineId:'Hachiko',displayLineId:'Hachiko'},
+    {vehicleIdentityStatus:'EXACT'},{vehicleResolvedFromRealtime:true},
+    {vehicleFormationId:'ハエ51'}, {datedVehicleDisplayReference:null}
+  ]) assert.equal(root.TrainVehicle.selectMarkerArtwork({...live,...bad},false).iconSrc,'');
+  const fusion=read('js/data-fusion.js');
+  assert.match(fusion,/attachKawagoeDatedArtworkToLive/);
+  assert.match(fusion,/matches\.length!==1\|\|liveCount\[k\]!==1/);
+  assert.match(fusion,/sourceFromStation/);
+
   // The SAME train number used a different reported model the previous day.
   const nov9={...reportedBase,serviceDate:'2026-11-09',
     plannedVehicleCandidates:[models[0]],
