@@ -261,7 +261,7 @@
     }
 
     // 使用统一的 LinePresentationService 比较器排序运营商分组
-    // （全局顺序 JR > Metro > Private > Other），未知运营商追加到末尾。
+    // （全局顺序 JR > Private > Other/第三部门 > Metro），未知运营商按统一规则排序。
     if (window.LinePresentationService && typeof window.LinePresentationService.orderOperators === "function") {
       opOrder = window.LinePresentationService.orderOperators(opOrder);
     } else {
