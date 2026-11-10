@@ -524,7 +524,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         note.setAttribute("aria-live", "polite");
         el.insertAdjacentElement('afterend', note);
       }
-      var text = t(hasEstimate ? "trains.estimated_note" :
+      // A missing verified plan is not the same as an empty train map or
+      // a cancelled service. Only a successful, date-scoped SQL response
+      // with an explicit missing-all-plans audit may show this distinction.
+      var runStatus = window.ODPTClient && window.ODPTClient.getTrainRunStatus
+        ? window.ODPTClient.getTrainRunStatus(lineId) : null;
+      var missingPlan = !(positions && positions.length) && runStatus &&
+        runStatus.planAvailability === "unconfirmed" &&
+        runStatus.auditCoverageStatus === "missing_all_plans" &&
+        runStatus.runs === 0 && runStatus.source !== "SOURCE_ERROR";
+      var text = t(missingPlan ? "trains.plan_not_imported_note" :
+        hasEstimate ? "trains.estimated_note" :
         positions && positions.length ? "trains.live_note" : "trains.unavailable_note");
       if (note.textContent !== text) note.textContent = text;
     } catch(e) { /* note is best-effort */ }
