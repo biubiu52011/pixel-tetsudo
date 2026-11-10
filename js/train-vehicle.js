@@ -5521,16 +5521,14 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         var kwReportedIdx=kwModels.indexOf(kwReportedModel);
         var kwReportedAsset=kwReportedIdx>=0?kwAssets[kwReportedIdx]:"";
         var kwReportedFormation=String(kw.reportedFormation||"");
-        var kwOperation=String(kw.workingOperationCode||"");
         var kwReportUrl="https://loo-ool.com/rail/W/00/"+
           String(p.serviceDate).replace(/-/g,"")+"/";
         if(kwReportedIdx>=0&&kwReportedAsset&&
            kw.reportedEvidenceGrade==="C"&&
            kw.reportedIsActual===false&&
-           kw.reportedMappingLevel==="dated_volunteer_observed_model"&&
+           kw.reportedMappingLevel==="dated_train_number_observation"&&
+           kw.reportedTrainNumber===p.trainNumber&&
            kw.reportedEvidenceUrl===kwReportUrl&&
-           kw.reportedOperationCode===kwOperation&&
-           ["61","63","65","67","69","71","73","75","77","79"].indexOf(kwOperation)>=0&&
            (kwReportedIdx===0?/^ハエ4[1-6]$/.test(kwReportedFormation)
             :/^ハエ5[1-5]$/.test(kwReportedFormation))&&
            p.plannedVehicleCandidateStatus==="dated-reported-single-model"&&
@@ -5544,7 +5542,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
             actualVehicleConfirmed:false,
             illustrationRole:"kawagoe-2026-dated-community-model-not-actual-carset",
             reportedModel:kwReportedModel,reportedFormation:kwReportedFormation,
-            reportedOperationCode:kwOperation,sourceUrl:kwReportUrl};
+            reportedTrainNumber:p.trainNumber,sourceUrl:kwReportUrl};
         }
         if(p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
            Array.isArray(p.plannedVehicleCandidates)&&
