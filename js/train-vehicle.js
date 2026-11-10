@@ -5492,7 +5492,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        "../images/列车/JR東日本/JR東日本_E231系_3000番台.png",
        "../images/列车/JR東日本/JR東日本_209系_3500番台.png"];
       var kwGarage=window.VehicleGaragePngMap;
-      if(artworkFailed!==true&&p.estimated===true&&
+      var kwEvidence=artworkFailed!==true&&p.estimated===true&&
          p.timetableDateVerified===true&&
          /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||""))&&
          kw.source==="sql-jreast-kawagoe-2611-shared-fleet"&&
@@ -5505,9 +5505,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
          p.vehicleIdentityStatus==="UNKNOWN"&&
          p.vehicleResolvedUpstream!==true&&p.vehicleResolvedFromRealtime!==true&&
          p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
-         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
-         Array.isArray(p.plannedVehicleCandidates)&&
-         p.plannedVehicleCandidates.join("|")===kwModels.join("|")&&
          Array.isArray(kw.candidateModels)&&
          kw.candidateModels.join("|")===kwModels.join("|")&&
          Array.isArray(kw.candidateAssets)&&
@@ -5516,11 +5513,47 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
          kwAssets.every(function(path,i){
           return isGalleryPng(normalizeGalleryPngPath(path))&&
             kwGarage.matchModelPath(kwModels[i],path,"Kawagoe");
-         })){
-        return {kind:"candidate",iconSrc:"",planned:false,
-          referenceOnly:true,actualVehicleConfirmed:false,
-          candidateModels:kwModels,candidateAssets:kwAssets,
-          illustrationRole:"kawagoe-shared-working-no-single-model"};
+         });
+      if(kwEvidence){
+        // Dated community reports select a REPRESENTATIVE series PNG only.
+        // The map never labels the report a JR-certified physical formation.
+        var kwReportedModel=String(kw.reportedModel||"");
+        var kwReportedIdx=kwModels.indexOf(kwReportedModel);
+        var kwReportedAsset=kwReportedIdx>=0?kwAssets[kwReportedIdx]:"";
+        var kwReportedFormation=String(kw.reportedFormation||"");
+        var kwOperation=String(kw.workingOperationCode||"");
+        var kwReportUrl="https://loo-ool.com/rail/W/00/"+
+          String(p.serviceDate).replace(/-/g,"")+"/";
+        if(kwReportedIdx>=0&&kwReportedAsset&&
+           kw.reportedEvidenceGrade==="C"&&
+           kw.reportedIsActual===false&&
+           kw.reportedMappingLevel==="dated_volunteer_observed_model"&&
+           kw.reportedEvidenceUrl===kwReportUrl&&
+           kw.reportedOperationCode===kwOperation&&
+           ["61","63","65","67","69","71","73","75","77","79"].indexOf(kwOperation)>=0&&
+           (kwReportedIdx===0?/^ハエ4[1-6]$/.test(kwReportedFormation)
+            :/^ハエ5[1-5]$/.test(kwReportedFormation))&&
+           p.plannedVehicleCandidateStatus==="dated-reported-single-model"&&
+           Array.isArray(p.plannedVehicleCandidates)&&
+           p.plannedVehicleCandidates.length===1&&
+           p.plannedVehicleCandidates[0]===kwReportedModel&&
+           kw.reportedModelArtworkPath===kwReportedAsset&&
+           kwGarage.matchModelPath(kwReportedModel,kwReportedAsset,"Kawagoe")){
+          return {kind:"vehicle",iconSrc:normalizeGalleryPngPath(kwReportedAsset),
+            planned:true,illustrative:true,representativeOnly:true,
+            actualVehicleConfirmed:false,
+            illustrationRole:"kawagoe-2026-dated-community-model-not-actual-carset",
+            reportedModel:kwReportedModel,reportedFormation:kwReportedFormation,
+            reportedOperationCode:kwOperation,sourceUrl:kwReportUrl};
+        }
+        if(p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
+           Array.isArray(p.plannedVehicleCandidates)&&
+           p.plannedVehicleCandidates.join("|")===kwModels.join("|")){
+          return {kind:"candidate",iconSrc:"",planned:false,
+            referenceOnly:true,actualVehicleConfirmed:false,
+            candidateModels:kwModels,candidateAssets:kwAssets,
+            illustrationRole:"kawagoe-shared-working-no-single-model"};
+        }
       }
       return {kind:"unresolved",iconSrc:""};
     }
