@@ -2279,9 +2279,8 @@
           var _kawagoeReportedModel=_kawagoeScoped&&
             officialKawagoePlan.reportedEvidenceGrade==="C"&&
             officialKawagoePlan.reportedIsActual===false&&
-            officialKawagoePlan.reportedMappingLevel==="dated_volunteer_observed_model"&&
-            officialKawagoePlan.reportedOperationCode===
-              officialKawagoePlan.workingOperationCode&&
+            officialKawagoePlan.reportedMappingLevel==="dated_train_number_observation"&&
+            officialKawagoePlan.reportedTrainNumber===run.trainNumber&&
             ["E231系3000番台","209系3500番台"].indexOf(
               officialKawagoePlan.reportedModel)>=0
             ?officialKawagoePlan.reportedModel:null;
@@ -2294,7 +2293,7 @@
               models:_plannedCandidates.slice(),
               iconPath:"",representativeModel:"",
               source:_kawagoeReportedModel
-                ?"sql-jreast-kawagoe-2611-dated-volunteer-report"
+                ?"sql-jreast-kawagoe-2611-dated-train-number-report"
                 :"sql-jreast-kawagoe-2611-shared-fleet",
               sourceUrl:_kawagoeReportedModel
                 ?officialKawagoePlan.reportedEvidenceUrl
