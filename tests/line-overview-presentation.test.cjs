@@ -128,3 +128,40 @@ test('official line icons are listed before generic operator logos or missing ic
   assert.ok(order.indexOf('Kawagoe') > order.indexOf('Yamanote'));
   assert.ok(order.indexOf('SotetsuJRDirect') > order.indexOf('Yamanote'));
 });
+
+
+test('operator categories are JR, private/third-sector railways, then subways', () => {
+  const sample = {
+    metro: {operator: 'TokyoMetro'},
+    other: {operator: 'Yurikamome'},
+    private: {operator: 'Keio'},
+    jr: {operator: 'JR-East'}
+  };
+  assert.deepEqual(Array.from(presentation.getOperatorOrder(sample)),
+    ['JR-East', 'Keio', 'Yurikamome', 'TokyoMetro']);
+  assert.equal(presentation.categoryOf('HiroshimaElectric'), 'Private',
+    'tram operators must not be classified as subway');
+});
+
+test('a generic JR badge or missing icon cannot overtake an official icon, including inserted corridors', () => {
+  const jrBadge = '../images/鉄道/JR東日本/JRグループ.png';
+  const example = {
+    Generic: {operator: 'JR-East', image: jrBadge,
+      presentation: {lineIds: ['Generic'], order: 1, icon: jrBadge}},
+    Missing: {operator: 'JR-East', image: '',
+      presentation: {lineIds: ['Missing'], order: 2, icon: ''}},
+    Official: {operator: 'JR-East', image: '../images/JA.png',
+      presentation: {lineIds: ['Official'], order: 3, icon: '../images/JA.png', code: 'JA'}},
+    OfficialRaw: {operator: 'JR-East', image: '../images/JC.png', code: 'JC'},
+    UenoTokyo: {operator: 'JR-East', image: jrBadge,
+      presentation: {order: 1, icon: jrBadge, afterLineId: 'Official'}}
+  };
+  const order = Array.from(presentation.getDisplayOrder(example, {includeServiceCorridors: true}));
+  for (const withIcon of ['Official', 'OfficialRaw']) {
+    for (const withoutOfficialIcon of ['Generic', 'Missing', 'UenoTokyo']) {
+      assert.ok(order.indexOf(withIcon) < order.indexOf(withoutOfficialIcon),
+        withIcon + ' must precede ' + withoutOfficialIcon);
+    }
+  }
+  assert.equal(order.filter(id => id === 'UenoTokyo').length, 1);
+});
