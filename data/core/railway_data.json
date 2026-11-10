@@ -49608,7 +49608,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/東海道本線.svg"
     },
     "ChuoCentral": {
       "nameJa": "中央本線（JR東海）",
@@ -49733,7 +49734,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/中央本線.svg"
     },
     "KansaiCentral": {
       "nameJa": "関西本線（JR東海）",
@@ -49800,7 +49802,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/関西本線.svg"
     },
     "KiseiCentral": {
       "nameJa": "紀勢本線（JR東海）",
@@ -49984,7 +49987,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/高山本線.svg"
     },
     "Taketoyo": {
       "nameJa": "武豊線",
@@ -50031,7 +50035,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/武豊線.svg"
     },
     "Taita": {
       "nameJa": "太多線",
@@ -50088,7 +50093,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/太多線.svg"
     },
     "Gotemba": {
       "nameJa": "御殿場線",
@@ -50156,7 +50162,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/御殿場線.svg"
     },
     "Minobu": {
       "nameJa": "身延線",
@@ -50238,7 +50245,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/身延線.svg"
     },
     "Iida": {
       "nameJa": "飯田線",
@@ -50381,7 +50389,8 @@
         ],
         "operatorGroup": "JR_CENTRAL",
         "colorStatus": "approximate_route_map"
-      }
+      },
+      "image": "../images/鉄道/JR東海/飯田線.svg"
     },
     "Sangu": {
       "nameJa": "参宮線",

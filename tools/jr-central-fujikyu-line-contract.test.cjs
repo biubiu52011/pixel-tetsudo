@@ -46,3 +46,20 @@ for (const [lineId, [, railwayCode]] of Object.entries(expected)) {
 }
 
 console.log('JR Central + Fujikyu canonical line contract passed');
+
+// JR Central route badge assets are resolved through canonical line.image.
+const centralIcons = {
+  "ChuoCentral": "../images/鉄道/JR東海/中央本線.svg",
+  "Gotemba": "../images/鉄道/JR東海/御殿場線.svg",
+  "Iida": "../images/鉄道/JR東海/飯田線.svg",
+  "KansaiCentral": "../images/鉄道/JR東海/関西本線.svg",
+  "Minobu": "../images/鉄道/JR東海/身延線.svg",
+  "Taita": "../images/鉄道/JR東海/太多線.svg",
+  "Takayama": "../images/鉄道/JR東海/高山本線.svg",
+  "Taketoyo": "../images/鉄道/JR東海/武豊線.svg",
+  "TokaidoCentral": "../images/鉄道/JR東海/東海道本線.svg"
+};
+for (const [lineId, iconPath] of Object.entries(centralIcons)) {
+  assert.equal(data.lines[lineId].image, iconPath, `${lineId} line icon mapping`);
+  assert.ok(fs.existsSync(iconPath.replace(/^\.\.\//, '')), `missing JR Central icon: ${iconPath}`);
+}
