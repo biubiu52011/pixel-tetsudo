@@ -87,3 +87,25 @@ test('missing timetable is announced from an audited SQL status, not inferred fr
   const sql=fs.readFileSync('supabase/migrations/20261111100000_jr_central_shared_authorized_plan_import.sql','utf8');
   assert.match(sql,/No published 2026-11 trains are created by this schema migration/);
 });
+
+test('ChuoCentral SQL public numbers are admitted only after date, source, and exact-number checks',()=>{
+  const estimator=fs.readFileSync('js/train-position-estimator.js','utf8');
+  const begin=estimator.indexOf('Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")&&');
+  const end=estimator.indexOf(' ||\\n Boolean(saganoDisplayNumber)'.replace('\\n','\n'),begin);
+  assert.ok(begin>0&&end>begin,'missing canonical JR Central SQL number guard');
+  const predicate=new Function('lineId','tt','publicTrainNumber','run',
+    'return '+estimator.slice(begin,end));
+  const tt={'odpt:railway':'odpt.Railway:JR-Central.Chuo',
+    _positionSource:'supabase-train-run',_timetableDateVerified:true,
+    _timetableValidity:'date_verified'};
+  assert.equal(predicate('ChuoCentral',tt,'801M',{trainNumber:'801M'}),true);
+  assert.equal(predicate('ChuoCentral',tt,'801M',{trainNumber:'801F'}),false);
+  assert.equal(predicate('ChuoCentral',tt,'801F',{trainNumber:'801F'}),false);
+  assert.equal(predicate('ChuoCentral',{...tt,_timetableDateVerified:false},
+    '801M',{trainNumber:'801M'}),false);
+  assert.equal(predicate('ChuoCentral',{...tt,
+    'odpt:railway':'odpt.Railway:JR-East.Chuo'},
+    '801M',{trainNumber:'801M'}),false);
+  assert.equal(predicate('TokaidoCentral',tt,'3201F',{trainNumber:'3201F'}),true,
+    'existing TokaidoCentral F-number rule remains intact');
+});
