@@ -57,9 +57,19 @@ assert.equal(garage.matchModelPath('E257系5500番台',agatsuma257,'Agatsuma'),t
 assert.equal(garage.matchModelPath('E257系5500番台',agatsuma257,'ChuoMain'),false);
 assert.equal(garage.matchModelPath('211系（高崎地区）',agatsuma211,'ChuoMain'),false);
 const e127='../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png';
-assert.equal(garage.matchModelPath('E127系100番台',e127,'ChuoTatsuno'),true);
-assert.equal(garage.matchModelPath('E127系100番台',e127,'ChuoMain'),true);
+assert.equal(garage.matchModelPath('E127系100番台',e127,'ChuoTatsuno'),false);
+assert.equal(garage.matchModelPath('E127系100番台',e127,'ChuoMain'),false);
 assert.equal(garage.matchModelPath('E127系100番台',e127,'Yamanote'),false);
+assert.equal(garage.quarantined.length,9);
+for(const p of garage.quarantined){
+ const rows=garage.findPath(p);
+ assert.ok(garage.isQuarantinedPng(p)&&rows.length&&rows.every(r=>r.quarantined&&!r.canonicalImage));
+ for(const r of rows)assert.equal(garage.matchModelPath(r.model,p,r.lineIds[0]),false);
+}
+assert.equal(root.TrainVehicle.resolveCanonicalVehicle('相鉄21000系').asset,null);
+assert.equal(root.TrainVehicle.resolveCanonicalVehicle('相鉄20000系').asset,null);
+assert.equal(root.TrainVehicle.resolveCanonicalVehicle('E127系100番台').plannedAsset,null);
+
 assert.equal(garage.findModel('211系（長野地区）','Takasaki').length,0);
 assert.equal(garage.findModel('211系（高崎地区）','ChuoMain').length,0);
 const official=root.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES;

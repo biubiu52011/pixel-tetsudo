@@ -2515,6 +2515,15 @@ for (var todenScopeIndex = 0; todenScopeIndex < 15; todenScopeIndex++) {
   var todenScopeRecord = CANONICAL_VEHICLES["toden-arakawa-car-group-" + todenScopeIndex];
   if (todenScopeRecord) todenScopeRecord.lineIds = ["Arakawa"];
 }
+// Preserve model identity but block disputed images when the production garage map is loaded.
+var _vehicleGallery=window.VehicleGaragePngMap;
+if(_vehicleGallery&&typeof _vehicleGallery.isQuarantinedPng==='function'){
+  Object.keys(CANONICAL_VEHICLES).forEach(function(id){
+    var r=CANONICAL_VEHICLES[id];
+    if(_vehicleGallery.isQuarantinedPng(r.asset))r.asset=null;
+    if(_vehicleGallery.isQuarantinedPng(r.plannedAsset))r.plannedAsset=null;
+  });
+}
 var CANONICAL_VEHICLE_ALIAS_INDEX = {};
 var CANONICAL_VEHICLE_ALIAS_CONFLICTS = {};
 var CANONICAL_VEHICLE_PLANNED_ALIAS_INDEX = {};
@@ -2654,10 +2663,7 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-109", displayName: "图库待审・伊豆箱根鉄道・伊豆箱根鉄道_3000系", iconName: "图库待审・伊豆箱根鉄道・伊豆箱根鉄道_3000系", asset: null, plannedAsset: "../images/列车/伊豆箱根鉄道/伊豆箱根鉄道_3000系.png", aliases: [], operatorDirectory: "伊豆箱根鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-110", displayName: "图库待审・伊豆箱根鉄道・伊豆箱根鉄道_5000系", iconName: "图库待审・伊豆箱根鉄道・伊豆箱根鉄道_5000系", asset: null, plannedAsset: "../images/列车/伊豆箱根鉄道/伊豆箱根鉄道_5000系.png", aliases: [], operatorDirectory: "伊豆箱根鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-111", displayName: "图库待审・伊豆箱根鉄道・伊豆箱根鉄道_7000系", iconName: "图库待审・伊豆箱根鉄道・伊豆箱根鉄道_7000系", asset: null, plannedAsset: "../images/列车/伊豆箱根鉄道/伊豆箱根鉄道_7000系.png", aliases: [], operatorDirectory: "伊豆箱根鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-112", displayName: "图库待审・函館市電・toq6001", iconName: "图库待审・函館市電・toq6001", asset: null, plannedAsset: "../images/列车/函館市電/toq6001.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-113", displayName: "图库待审・函館市電・toq6020", iconName: "图库待审・函館市電・toq6020", asset: null, plannedAsset: "../images/列车/函館市電/toq6020.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-114", displayName: "图库待审・函館市電・toq9002or", iconName: "图库待审・函館市電・toq9002or", asset: null, plannedAsset: "../images/列车/函館市電/toq9002or.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-115", displayName: "图库待审・函館市電・toq9003or", iconName: "图库待审・函館市電・toq9003or", asset: null, plannedAsset: "../images/列车/函館市電/toq9003or.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-116", displayName: "图库待审・函館市電・函館市電_710形_広告車", iconName: "图库待审・函館市電・函館市電_710形_広告車", asset: null, plannedAsset: "../images/列车/函館市電/函館市電_710形_広告車.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-117", displayName: "图库待审・函館市電・函館市電_8000形_広告車", iconName: "图库待审・函館市電・函館市電_8000形_広告車", asset: null, plannedAsset: "../images/列车/函館市電/函館市電_8000形_広告車.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-118", displayName: "图库待审・函館市電・函館市電_8100形_広告車", iconName: "图库待审・函館市電・函館市電_8100形_広告車", asset: null, plannedAsset: "../images/列车/函館市電/函館市電_8100形_広告車.png", aliases: [], operatorDirectory: "函館市電", artworkStatus: "pending-source-review", plannedOnly: true },
@@ -2789,6 +2795,10 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-244", displayName: "图库待审・鹿島臨海鉄道・鹿島臨海鉄道_8000形", iconName: "图库待审・鹿島臨海鉄道・鹿島臨海鉄道_8000形", asset: null, plannedAsset: "../images/列车/鹿島臨海鉄道/鹿島臨海鉄道_8000形.png", aliases: [], operatorDirectory: "鹿島臨海鉄道", artworkStatus: "pending-source-review", plannedOnly: true }
 ];
 UNREGISTERED_ARTWORK_CATALOG.forEach(function(record) {
+  if(_vehicleGallery&&_vehicleGallery.isQuarantinedPng(record.plannedAsset)){
+    record.plannedAsset=null;
+    record.artworkStatus='quarantined-pending-source-review';
+  }
   // 资产文件名只作为“时刻表计划输入”的显式标签，不进入实时别名表。
   // 这样可以让 SQL/手工时刻表在明确提供完整运营方+文件标签时使用图片，
   // 同时阻断实时车号、运行号或裸车型名通过素材文件名猜车。
@@ -4989,6 +4999,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (src.indexOf("images/列车/") === 0) src = "../" + src;
     else if (src.indexOf("/images/列车/") === 0) src = ".." + src;
     if (!isGalleryPng(src)) return "";
+    if(window.VehicleGaragePngMap&&typeof window.VehicleGaragePngMap.isQuarantinedPng==='function'&&
+       window.VehicleGaragePngMap.isQuarantinedPng(src))return "";
     var parts = src.split("/");
     return parts[3] !== "." && parts[3] !== ".." &&
       parts[4] !== "." && parts[4] !== ".." &&

@@ -8,6 +8,8 @@ on:
       - 'tests/osaka-higashi-2611-*.test.cjs'
       - 'tools/route-timetable-service-calendar.test.cjs'
       - 'js/train-vehicle.js'
+      - 'data/timetables/vehicle-garage-png-map.js'
+      - 'tools/gallery-integrity-audit.cjs'
       - 'data/core/major-vehicle-fleet-presets.js'
       - 'tools/train-major-fleet-presets.test.cjs'
       - 'tools/train-network-vehicle-audit.test.cjs'
@@ -370,6 +372,8 @@ jobs:
         run: node --test tests/osaka-higashi-2611-*.test.cjs tools/route-timetable-service-calendar.test.cjs
       - name: Verify registered PNG paths and file headers
         run: node tools/train-vehicle-assets.test.cjs
+      - name: Verify train gallery duplicates and quarantined materials
+        run: node tools/gallery-integrity-audit.cjs --strict
       - name: Verify SQL candidate identity boundaries
         run: node tools/train-sql-vehicle-mapping.test.cjs
       - name: Verify Shinkansen service-name and strict run-link boundaries
