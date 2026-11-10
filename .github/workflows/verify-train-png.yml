@@ -79,6 +79,8 @@ on:
       - 'supabase/queries/register_topology_only_lines_20261109.sql'
       - 'data/audits/jr-missing-lines-20261109.json'
       - 'tests/kakogawa-2611-canonical-source.test.cjs'
+      - 'tests/tokaido-central-sql-plan-import.test.cjs'
+      - 'supabase/migrations/20261111040000_tokaido_central_authorized_plan_import.sql'
       - 'data/core/runtime-config.js'
       - 'data/core/data-config-bundle.js'
       - 'supabase/migrations/20261108233500_fukuchiyama_danbaro_eight_numbers_and_holiday_suspensions.sql'
@@ -261,6 +263,8 @@ jobs:
         run: node --test tests/new-rail-registry-20261109.test.cjs
       - name: Verify Kakogawa turquoise line, Tanigawa transfer and November SQL provenance
         run: node --test tests/kakogawa-2611-canonical-source.test.cjs
+      - name: Verify JR-Central SQL import license gates, canonical stops and timetable audit
+        run: node --test tests/tokaido-central-sql-plan-import.test.cjs
       - name: Verify Kosei official 18/21-stop clocks and Kyoto/Kobe through-number references
         run: node --test tests/jrwest-kosei-2611-verified-clocks-through.test.cjs
       - name: Verify train-runs SQL batching and JR canonical identity
