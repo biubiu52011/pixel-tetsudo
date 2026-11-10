@@ -167,17 +167,14 @@
   }
 
   /**
-   * orderOperators(ops)：稳定排列任意运营商子集（筛选栏使用）。
-   * 顺序遵循 getOperatorOrder；当前完整顺序之外的运营商追加到字母序末尾。
+   * orderOperators(ops)：筛选栏和列表共用同一个类别比较器。
+   * 新出现的第三部门铁路也必须在 Metro 前，不能一律追加到末尾。
    */
   function orderOperators(ops) {
     if (!Array.isArray(ops) || ops.length === 0) return ops || [];
-    var full = getOperatorOrder(null);
-    var inFull = [], rest = [];
-    ops.forEach(function(op) { (full.indexOf(op) >= 0 ? inFull : rest).push(op); });
-    inFull.sort(function(a, b) { return full.indexOf(a) - full.indexOf(b); });
-    rest.sort(function(a, b) { return String(a).localeCompare(String(b)); });
-    return inFull.concat(rest);
+    var source = {};
+    ops.forEach(function(op, i) { source[i] = { operator: op }; });
+    return getOperatorOrder(source);
   }
 
   /**
