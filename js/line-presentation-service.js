@@ -8,8 +8,8 @@
  *   成员线路（lineIds[1..]）共享主记录的排序位置，不单独占用 UI 位置。
  *
  * 全局类别顺序：JR > Private（私铁）> Other（第三部门等）> Metro（地铁）。
- * 同一运营商组内，专属线路图标优先；JRグループ.png 等通用徽章
- * 和无专属图标线路进入后序列。各序列内比较整数
+ * 同一 JR 运营商组内，先在来线后新干线；各类别内专属线路图标优先，
+ * JRグループ.png 等通用徽章和无图标线路置后。各序列内比较整数
  * presentation.order → 线路符号 → 显示名称 → 稳定原始顺序。
  *
  * canonical 物理线路仍在 railway_data.json 中独立建模；
@@ -96,10 +96,11 @@
   // 避免 fallback 记录把普通线路插入不同的新干线服务之间。
   function isShinkansenLine(line) {
     if (!line) return false;
-    var id = String(line.name || "");
-    var ja = String(line.nameJa || "");
-    var en = String(line.nameEn || "");
-    return /Shinkansen/i.test(id) || /新幹線/.test(ja) || /Shinkansen/i.test(en);
+    var p = line.presentation || {};
+    return [line.id, line.name, line.nameJa, line.nameEn, line.nameZh,
+      p.nameJa, p.nameEn, p.nameZh].some(function(value) {
+      return /Shinkansen|新幹線/i.test(String(value || ""));
+    });
   }
 
   // 仅专属线路图标进入首序列；JRグループ.png 等运营商徽章不是线路图标。
@@ -227,16 +228,17 @@
     opOrder.forEach(function(op) {
       var list = byOp[op].slice();
       list.sort(function(a, b) {
-        // 所有条目先按实际卡片图标分层。不能让通用徽章/无图标
-        // 的 presentation 卡片压过拥有正式线路图标的 fallback 记录。
+        // JR 组：在来线整体早于新干线，不让专属新干线图标
+        // 跳到 JRグループ.png 等通用徽章的在来线前面。
+        if (categoryOf(op) === "JR") {
+          var aShinkansen = isShinkansenLine(a.line);
+          var bShinkansen = isShinkansenLine(b.line);
+          if (aShinkansen !== bShinkansen) return aShinkansen ? 1 : -1;
+        }
+        // 同类别内才按实际卡片图标分层：专属 > 通用/无图标。
         var aDedicated = hasDedicatedLineIcon(a.line), bDedicated = hasDedicatedLineIcon(b.line);
         if (aDedicated !== bDedicated) return aDedicated ? -1 : 1;
         if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1; // passenger systems first
-        if (!a.isPresentation && categoryOf(op) === "JR") {
-          var aShinkansen = isShinkansenLine(a.line);
-          var bShinkansen = isShinkansenLine(b.line);
-          if (aShinkansen !== bShinkansen) return aShinkansen ? 1 : -1; // conventional fallback, then one Shinkansen block
-        }
         var ka = entitySortKey(a), kb = entitySortKey(b);
         return ka < kb ? -1 : (ka > kb ? 1 : 0);
       });
@@ -277,6 +279,12 @@
             var candidate = allLines[out[ci]];
             if (!candidate || candidate.operator !== line.operator) continue;
             lastOperatorIndex = ci;
+            // 通用徽章的在来线走廊必须在新干线区块之前插入。
+            if (categoryOf(line.operator) === "JR" &&
+                !isShinkansenLine(line) && isShinkansenLine(candidate)) {
+              insertIndex = ci;
+              break;
+            }
             var candidatePres = getPrimaryPresentation(out[ci], allLines);
             // 候选位置也必须在降级序列；仅凭整数编号比较
             // 会把 JRグループ.png 的走廊重新插到 JA/JB/JC 中间。

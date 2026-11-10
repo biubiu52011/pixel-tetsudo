@@ -77,8 +77,8 @@ test('display prefixes use published station numbering, not internal route IDs',
 test('Kagoshima route overview is distinguished from JA and JB section cards', () => {
   const order = ordered();
   immediatelyAfter(order, 'KagoshimaMainJA', 'KagoshimaMainJB');
-  assert.ok(order.indexOf('KagoshimaMain') > order.indexOf('NishiKyushuShinkansen'),
-    'JR九州全线概览无专属图标，不能插入 JA/JB 的有图标序列');
+  assert.ok(order.indexOf('KagoshimaMain') < order.indexOf('NishiKyushuShinkansen'),
+    'JR九州在来线全线概览虽无专属图标，仍须排在新干线之前');
   assert.match(lines.KagoshimaMain.presentation.nameJa, /全線案内/);
   assert.match(lines.KagoshimaMain.presentation.nameZh, /全线总览/);
   assert.equal(lines.KagoshimaMain.presentation.code, '');
@@ -129,6 +129,63 @@ test('official line icons are listed before generic operator logos or missing ic
   assert.ok(order.indexOf('SotetsuJRDirect') > order.indexOf('Yamanote'));
 });
 
+
+
+test('JR grouping places all conventional lines before shinkansen and prefers dedicated icons within each tier', () => {
+  const rank = Array.from(presentation.getPresentationOrder(lines));
+  const isShinkansen = line => {
+    const p = line.presentation || {};
+    return [line.id, line.name, line.nameJa, line.nameEn, line.nameZh, p.nameJa, p.nameEn, p.nameZh]
+      .some(value => /Shinkansen|新幹線/i.test(String(value || '')));
+  };
+  const dedicated = line => {
+    const p = line.presentation || {};
+    const icon = String(p.icon || line.image || '');
+    return !!icon && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(icon);
+  };
+  for (const operator of ['JR-East', 'JR-Central', 'JR-West', 'JR-Hokkaido', 'JR-Shikoku', 'JR-Kyushu']) {
+    const entries = rank.filter(entry => entry.line.operator === operator);
+    let seenShinkansen = false;
+    const seenGeneric = { conventional: false, shinkansen: false };
+    for (const entry of entries) {
+      const shinkansen = isShinkansen(entry.line);
+      const tier = shinkansen ? 'shinkansen' : 'conventional';
+      if (shinkansen) seenShinkansen = true;
+      assert.ok(shinkansen || !seenShinkansen, operator + '/' + entry.id + ' conventional line after shinkansen');
+      if (!dedicated(entry.line)) seenGeneric[tier] = true;
+      else assert.ok(!seenGeneric[tier], operator + '/' + entry.id + ' dedicated icon after generic in ' + tier);
+    }
+  }
+});
+
+test('JR sort tiers include presentation-only shinkansen names and inserted generic corridors', () => {
+  const badge = '../images/鉄道/JR東日本/JRグループ.PNG';
+  const demo = {
+    ShinGeneric: {operator: 'JR-East', image: badge, presentation: {
+      lineIds: ['ShinGeneric'], order: 1, icon: badge, nameEn: 'Sample Shinkansen'}},
+    ShinOfficial: {operator: 'JR-East', image: '../images/Shinkansen.png', presentation: {
+      lineIds: ['ShinOfficial'], order: 2, icon: '../images/Shinkansen.png', nameJa: '架空新幹線'}},
+    LocalMissing: {operator: 'JR-East', image: '', presentation: {
+      lineIds: ['LocalMissing'], order: 3, icon: ''}},
+    LocalGeneric: {operator: 'JR-East', image: badge, presentation: {
+      lineIds: ['LocalGeneric'], order: 4, icon: badge}},
+    LocalOfficial: {operator: 'JR-East', image: '../images/JA.png', presentation: {
+      lineIds: ['LocalOfficial'], order: 5, icon: '../images/JA.png', code: 'JA'}},
+    LocalRaw: {operator: 'JR-East', image: '../images/JC.png', code: 'JC'},
+    UenoTokyo: {operator: 'JR-East', image: badge, presentation: {
+      order: 4, icon: badge, afterLineId: 'LocalGeneric'}}
+  };
+  const sorted = Array.from(presentation.getDisplayOrder(demo, { includeServiceCorridors: true }));
+  for (const conventional of ['LocalOfficial', 'LocalRaw', 'LocalGeneric', 'LocalMissing', 'UenoTokyo']) {
+    for (const shinkansen of ['ShinOfficial', 'ShinGeneric']) {
+      assert.ok(sorted.indexOf(conventional) < sorted.indexOf(shinkansen),
+        conventional + ' must be before ' + shinkansen);
+    }
+  }
+  assert.ok(sorted.indexOf('LocalOfficial') < sorted.indexOf('LocalGeneric'));
+  assert.ok(sorted.indexOf('LocalRaw') < sorted.indexOf('LocalMissing'));
+  assert.ok(sorted.indexOf('ShinOfficial') < sorted.indexOf('ShinGeneric'));
+});
 
 test('operator categories are JR, private/third-sector railways, then subways', () => {
   const sample = {
