@@ -72,3 +72,12 @@ SELECT * FROM public.import_tokaido_central_authorized_plan(
 - 可识别的公开番号语法范围为 `1M`～`99999M`；**这一范围不是车型分配表**，同号段可能混用不同车型。必须同时满足：`supabase-train-run`、估算计划、已核实番号、JR-Central 专属铁路 URN、服务日期、带来源 URL 的单一车型 `PLANNED_MODEL` 或已确认计划、无互相冲突的车型候选，才自动显示相应 PNG。没有 SQL 班次或车型来源则仍无图标。
 - 现有 `manual_timetable_templates` / `train_operation_mappings` 没有新增虚构数据；这是消费者映射接口而非完整时刻表，也不是仅凭列车番号认定车辆。要实现真正的各号段无车型候选也能映射，必须取得**按号码段、日历及区间逐项确认**的独立证据再配置具体号段。
 - 回归代码：`tests/tokaido-central-sql-png-range.test.cjs`。环境未能从 GitHub 克隆代码进行本地 Node 执行，因此此处仅记录已提交的静态测试，**不声称通过**。
+
+
+## 2026-11-11 F/M 番号与 PNG 命名处理
+
+- 沿用 `TrainNumberPngRanges`，让经 SQL 验证的 `TokaidoCentral` 班次匹配计划车系示意，不变更实际车辆 `EXACT` 身份。
+- 正规 PNG 名称：`JR東海_313系.png`、`JR東海_315系.png`、`JR東海_373系.png`，仅改名不改 PNG 内容；其他含义未知的 `c*.png` 未动。
+- 丰桥～滨松 M 号精确集合取自 [平日](https://yoke4000.main.jp/jru/hamaW.html)／[土休日](https://yoke4000.main.jp/jru/hamaH.html) 2026-03 改正参考；大垣～米原土休日 3207–3223 奇数 F、3208–3224 偶数 F、3200F、3303F 为 315；3201–3206F、3226F 为 313，参考 [米原资料](https://yoke4000.main.jp/jru/maibaraH.html)。若 SQL 证据冲突，拒绝显示。
+- 强制检查实际服务日期（2026-11）、国定节假日、日历、方向、运营者、单条 SQL 的日期验证状态、该车真实停站区间；编号范围不是全线实际编组证明。没有相应精确参考的车次仍需独立带来源的单一车型计划。
+- 并未复制民间 OuDia 全日时刻表到 SQL；生产线路计划仍缺逐车到发数据。仅少量编号系列事实被用于计划示意，不能据此宣称真实车组或 11 月全日完备。

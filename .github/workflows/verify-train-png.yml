@@ -80,6 +80,8 @@ on:
       - 'data/audits/jr-missing-lines-20261109.json'
       - 'tests/kakogawa-2611-canonical-source.test.cjs'
       - 'tests/tokaido-central-sql-plan-import.test.cjs'
+      - 'tests/tokaido-central-sql-png-range.test.cjs'
+      - 'js/train-position-estimator.js'
       - 'supabase/migrations/20261111040000_tokaido_central_authorized_plan_import.sql'
       - 'data/core/runtime-config.js'
       - 'data/core/data-config-bundle.js'
@@ -383,6 +385,8 @@ jobs:
           node --test tests/shonan-215-202611-number-families.test.cjs
       - name: Verify dated references, Takao source handover and train split/join rules
         run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/chuo-takao-source-handover.test.cjs tests/chuo-main-timetable-only.test.cjs tests/chuo-main-official-vehicle-index.test.cjs tests/train-coupling.test.cjs
+      - name: Verify JR Central Tokaido 2026 F/M SQL PNG scope
+        run: node --test tests/tokaido-central-sql-png-range.test.cjs
       - name: Verify vehicle PNG decisions and SVG projection
         run: node tools/train-png-display-contract.test.cjs
       - name: Verify Osaka Higashi SQL adapter, Mahoroba scope and quarantine diagnostics

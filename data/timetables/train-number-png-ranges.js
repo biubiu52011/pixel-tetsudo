@@ -3389,45 +3389,75 @@
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
     if(line==="TokaidoCentral"){
-      // JR Central is a mixed 313/315/373 stock corridor. The published
-      // train number alone never proves which rolling-stock series operates.
-      // The range is deliberately a syntactic bound, NOT a fleet assignment:
-      // the existing SQL vehicle-plan resolver must also supply a single
-      // independently evidenced model for this exact dated train number.
-      var sql=context||{};
-      var n=number.match(/^([0-9]{1,5})M$/);
-      var source=String(sql.sourceRailway||"");
-      var operator=String(sql.trainOperator||sql.operator||"");
-      var day=String(sql.serviceDate||"").slice(0,10);
-      var plan=sql.vehiclePlan;
-      if(!n||Number(n[1])<1||Number(n[1])>99999||
-         sql.positionSource!=="supabase-train-run"||
-         sql.estimated!==true||sql.officialNumberVerified!==true||
-         sql.vehicleIdentityStatus==="EXACT"||
-         !/^20\\d{2}-\\d{2}-\\d{2}$/.test(day)||
-         source!=="odpt.Railway:JR-Central.Tokaido"||
-         (operator&&operator!=="JR-Central"&&
-           operator!=="odpt.Operator:JR-Central")||
-         !plan||(plan.confirmed!==true&&plan.status!=="PLANNED_MODEL")||
-         !Array.isArray(plan.models)||plan.models.length!==1||
-         !String(plan.sourceUrl||"").startsWith("https://"))return null;
-      var artwork={
-        "313系":"../images/列车/JR東海/c313.png",
-        "315系":"../images/列车/JR東海/c315.png",
-        "373系":"../images/列车/JR東海/c373_inj.png"
-      };
-      var chosen=plan.models[0],png=artwork[chosen];
-      if(!png||[sql.realtimeVehicleType,sql.realtimeDerivedVehicleType]
-           .some(function(v){return v&&String(v).trim()!==chosen;})||
-         (Array.isArray(sql.plannedVehicleCandidates)&&
-          (sql.plannedVehicleCandidates.length!==1||
-           sql.plannedVehicleCandidates[0]!==chosen)))return null;
-      var gallery=root.VehicleGaragePngMap;
-      if(!gallery||typeof gallery.matchModelPath!=="function"||
-         !gallery.matchModelPath(chosen,png,line))return null;
-      return {trainNumber:number,lineId:line,model:chosen,pngPath:png,
-        source:"jrc-sql-number-and-independent-model-evidence",
-        planned:true,representative:true};
+      // Number->series ILLUSTRATIONS only; never actual carset confirmation.
+      // 2026-03 timetable references: https://yoke4000.main.jp/jru/hamaW.html
+      // https://yoke4000.main.jp/jru/hamaH.html and /maibaraH.html.
+      var p=context||{},m=number.match(/^([1-9][0-9]{0,4})([FM])$/);
+      var date=String(p.serviceDate||"").slice(0,10);
+      var op=String(p.trainOperator||p.operator||"");
+      var calendar=sourceCalendar(p);
+      var direction=String(p.railDirection||p.direction||"").split(/[.:]/).pop();
+      var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
+      if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+         p.positionSource!=="supabase-train-run"||p.estimated!==true||
+         p.timetableDateVerified!==true||p.timetableValidity!=="date_verified"||
+         p.officialNumberVerified!==true||p.vehicleIdentityStatus==="EXACT"||
+         p.sourceRailway!=="odpt.Railway:JR-Central.Tokaido"||
+         (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
+         !["Inbound","Outbound"].includes(direction)||!calendar)return null;
+      var weekday=new Date(date+"T00:00:00Z").getUTCDay();
+      var calendarOnDate=(weekday===0||weekday===6||
+         date==="2026-11-03"||date==="2026-11-23")?"holiday":"weekday";
+      if(calendar!==calendarOnDate)return null;
+      var n=Number(m[1]),suffix=m[2];
+      if((n%2===0)!==(direction==="Inbound"))return null;
+      var stops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[];
+      function route(a,b){return stops.includes(a)&&stops.includes(b);}
+      var model="",url="";
+      if(suffix==="M"&&type==="Local"&&route("Hamamatsu","Toyohashi")){
+        if([920,921,923,924,926,928,930,931,933,938,940,943,945,947].includes(n))model="315系";
+        else if([927,929,934,936,939,941].includes(n))model="313系";
+        else if([922,925,932,937].includes(n))model="373系";
+        if(model)url=calendar==="holiday"
+          ?"https://yoke4000.main.jp/jru/hamaH.html"
+          :"https://yoke4000.main.jp/jru/hamaW.html";
+      }
+      if(suffix==="F"&&calendar==="holiday"&&route("Ogaki","Maibara")){
+        if(type==="Local"){
+          if(n===3200||n===3303||(n>=3207&&n<=3223&&n%2===1)||
+             (n>=3208&&n<=3224&&n%2===0))model="315系";
+          else if([3201,3202,3203,3204,3205,3206,3226].includes(n))model="313系";
+        }else if(["Rapid","SpecialRapid"].includes(type)&&
+           [5100,5101,5103,5107,5108,5109,5110,5111,5126,5128,5130].includes(n))
+          model="313系";
+        if(model)url="https://yoke4000.main.jp/jru/maibaraH.html";
+      }
+      var plan=p.vehiclePlan;
+      if(model){
+        // Independent dated SQL identity evidence vetoes an outdated roster.
+        if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+           (plan.confirmed===true||plan.status==="PLANNED_MODEL")&&
+           (plan.models.length!==1||plan.models[0]!==model))return null;
+      }else{
+        if(!plan||(plan.confirmed!==true&&plan.status!=="PLANNED_MODEL")||
+           !Array.isArray(plan.models)||plan.models.length!==1||
+           !/^https:\/\//.test(String(plan.sourceUrl||"")))return null;
+        model=plan.models[0];url=plan.sourceUrl;
+      }
+      if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
+           return v&&String(v).trim()!==model;})||
+         (Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length&&
+          (p.plannedVehicleCandidates.length!==1||p.plannedVehicleCandidates[0]!==model)))
+        return null;
+      var artwork={"313系":"../images/列车/JR東海/JR東海_313系.png",
+                   "315系":"../images/列车/JR東海/JR東海_315系.png",
+                   "373系":"../images/列车/JR東海/JR東海_373系.png"};
+      var png=artwork[model],gallery=root.VehicleGaragePngMap;
+      if(!png||!gallery||!gallery.matchModelPath(model,png,line))return null;
+      return {trainNumber:number,lineId:line,model:model,pngPath:png,
+        source:"jr-central-sql-number-roster-reference",sourceUrl:url,
+        planned:true,representative:true,referenceOnly:true,
+        illustrative:true,actualVehicleConfirmed:false};
     }
     if(line==="OuMain"){
       var tsugaru=Object.assign({},context||{},{trainNumber:number});

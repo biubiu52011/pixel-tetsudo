@@ -2529,7 +2529,13 @@
                 String(tt._sqlPublishedTrainNumber||"")===
                   String(publicTrainNumber||"").replace(/H$/,"")))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber),
-            officialNumberVerified: Boolean(osakaMahorobaDisplayNumber) || Boolean(osakaHigashiOfficialVerified) || Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
+            officialNumberVerified: Boolean(lineId==="TokaidoCentral"&&
+              tt._positionSource==="supabase-train-run"&&
+              tt._timetableDateVerified===true&&
+              tt._timetableValidity==="date_verified"&&
+              /^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||""))&&
+              String(publicTrainNumber||"")===String(run.trainNumber||"")) ||
+              Boolean(osakaMahorobaDisplayNumber) || Boolean(osakaHigashiOfficialVerified) || Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
               String(publicTrainNumber||"")===String(run.trainNumber||"")&&
               ((lineId==="Kosei"&&officialKoseiPlan&&
