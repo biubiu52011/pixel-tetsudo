@@ -2040,6 +2040,65 @@
                 });
               });
             })();
+            // A unique realtime Kawagoe position may replace a dated
+            // timetable position. Carry ONLY its independently dated C-grade
+            // vehicle illustration; never inherit physical vehicle identity.
+            (function attachKawagoeDatedArtworkToLive() {
+              var lid="Kawagoe", resolver=window.RunningChainResolver;
+              if(!resolver || typeof resolver.sourcePositionMatchKey!=="function")return;
+              var plans=Object.create(null), liveCount=Object.create(null);
+              function key(p){return resolver.sourcePositionMatchKey(lid,p);}
+              function station(v){
+                return String(v||"").split(".").pop().replace(/[-_\s]/g,"").toLowerCase();
+              }
+              (estimated[lid]||[]).forEach(function(p){
+                var proof=p&&p.sqlPublishedNumberFleetReference;
+                if(!p||p.positionLineId!==lid||p.positionSource!=="supabase-train-run"||
+                   p.estimated!==true||p.timetableDateVerified!==true||
+                   p.vehicleIdentityStatus==="EXACT"||
+                   p.plannedVehicleCandidateStatus!=="dated-reported-single-model"||
+                   !proof||proof.source!=="sql-jreast-kawagoe-2611-shared-fleet"||
+                   proof.reportedMappingLevel!=="dated_train_number_observation"||
+                   proof.reportedEvidenceGrade!=="C"||
+                   proof.reportedIsActual!==false||
+                   proof.reportedTrainNumber!==p.trainNumber||
+                   proof.serviceDate!==p.serviceDate||
+                   !Array.isArray(p.scheduledStopKeys)||p.scheduledStopKeys.length!==6)
+                  return;
+                var k=key(p);
+                if(k)(plans[k]||(plans[k]=[])).push(p);
+              });
+              (posMap[lid]||[]).forEach(function(p){
+                if(!p||p.positionSource!=="realtime-api")return;
+                var k=key(p);
+                if(k)liveCount[k]=(liveCount[k]||0)+1;
+              });
+              (posMap[lid]||[]).forEach(function(p){
+                if(!p||p.positionSource!=="realtime-api"||p.estimated!==false||
+                   p.positionLineId!==lid||p.vehicleIdentityStatus==="EXACT"||
+                   p.vehicleResolvedFromRealtime===true||
+                   p.actualVehicleConfirmed===true||
+                   p.vehicleFormationId||p.vehicleFormationConflict)return;
+                var k=key(p), matches=k&&plans[k];
+                if(!matches||matches.length!==1||liveCount[k]!==1)return;
+                var plan=matches[0];
+                if((p.runningChainId&&plan.runningChainId&&
+                    p.runningChainId!==plan.runningChainId)||
+                   p.trainNumber!==plan.trainNumber||
+                   p.serviceDate!==plan.serviceDate||
+                   p.sourceRailway!==plan.sourceRailway||
+                   String(p.trainType||"").split(/[.:]/).pop()!==
+                     String(plan.trainType||"").split(/[.:]/).pop())return;
+                var stops=plan.scheduledStopKeys.map(station);
+                var from=station(p.sourceFromStation);
+                var to=station(p.sourceToStation);
+                var at=stops.indexOf(from), next=to?stops.indexOf(to):at;
+                if(!from||at<0||next<at)return;
+                // Display-only reference from THIS estimation pass; never
+                // set trainClass, vehicleType, formation or vehicleResolution.
+                p.datedVehicleDisplayReference=plan;
+              });
+            })();
             _linkVerifiedCanonicalRealtime(estimated, posMap);
             // Source handover must happen before merging estimated positions
             // so a live Chuo train cannot coexist with its last SQL marker.
