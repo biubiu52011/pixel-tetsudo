@@ -5043,7 +5043,8 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       : independentlyVerifiedCoverage ? "verified-published-calendar"
       : "calendar-source-coverage-unverified",
     audit_coverage_status: auditStatus, audit_issues: auditIssues,
-    revision:selectedRevision,plan_status:selectedRevision ? 'published_revision' : 'unverified',
+    revision:selectedRevision,plan_status:sotetsuNovemberComplete ? 'verified_2611_four_stop' :
+      selectedRevision ? 'published_revision' : 'unverified',
     calendar_status: "selected", selected_calendar: selectedCalendar,
     omitted_incomplete_runs: omittedIncompleteRuns,
     suppressed_station_only_source_fragments: suppressedOsakaStationFragments,
