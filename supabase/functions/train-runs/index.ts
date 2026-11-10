@@ -3434,16 +3434,15 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       [Number(p.source_template_id),p]));
     if(bySource.size!==93||result.length!==93)
       throw new Error("KAWAGOE_2611_ROSTER_COUNT_CHANGED");
-    // Published working-duty numbers are permanent per timetable calendar.
-    // Actual E231 vs 209 family is obtained ONLY from source-dated C-grade
-    // volunteer reports, not from H numbers or an undated duty identity.
-    const [{data:observed,error:observedErr}]=await Promise.all([
-      db.from("operation_vehicle_observations")
-        .select("operation_code,vehicle_type,formation_ids,valid_from_time,valid_to_time,source_id,ambiguity_group")
-        .eq("operator","JR-East")
-        .eq("network_key","odpt.Railway:JR-East.Kawagoe")
-        .eq("service_date",serviceDate)
-    ]);
+    // Read the materialized date-and-number evidence directly. Each entry
+    // is keyed by train_number and service_date; no runtime operation-code
+    // inference or model assignment by H suffix is permitted.
+    const {data:observed,error:observedErr}=await db
+      .from("train_vehicle_observations")
+      .select("train_number,vehicle_type,formation_ids,observed_date,source_id")
+      .eq("operator","JR-East")
+      .eq("network_key","odpt.Railway:JR-East.Kawagoe")
+      .eq("service_date",serviceDate);
     if(observedErr)throw observedErr;
     const sourceIds=[...new Set([
       ...(roster||[]).map((x:any)=>Number(x.working_operation_source_id)),
@@ -3456,11 +3455,14 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       .in("id",sourceIds);
     if(evidenceErr)throw evidenceErr;
     const evidenceById=new Map((evidences||[]).map((x:any)=>[Number(x.id),x]));
-    const observationByDuty=new Map<string,any>();
+    const observationByNumber=new Map<string,any>();
     for(const obs of observed||[]){
-      const op=String(obs.operation_code||"");
-      if(observationByDuty.has(op))throw new Error("KAWAGOE_DATED_DUTY_AMBIGUOUS");
-      observationByDuty.set(op,obs);
+      const number=String(obs.train_number||"");
+      if(!/^[0-9]{3,4}H$/.test(number)||
+         observationByNumber.has(number)||
+         obs.observed_date!==serviceDate)
+        throw new Error("KAWAGOE_DATED_NUMBER_OBSERVATION_AMBIGUOUS");
+      observationByNumber.set(number,obs);
     }
     const expectedObservedUrl="https://loo-ool.com/rail/W/00/"+
       serviceDate.replace(/-/g,"")+"/";
@@ -3496,40 +3498,25 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
          workingSource.evidence_grade!=="C"||
          workingSource.source_url!==expectedWorking)
         throw new Error("KAWAGOE_2611_WORKING_DUTY_PROVENANCE_DRIFT");
-      const observedDuty:any=observationByDuty.get(op)||null;
-      const observedEvidence:any=observedDuty
-        ?evidenceById.get(Number(observedDuty.source_id)):null;
-      const sourceDeparture=String(run.stops?.[0]?.departure_time||"");
-      const departureMinutes=/^\d{1,2}:\d{2}$/.test(sourceDeparture)
-        ?Number(sourceDeparture.split(":")[0])*60+Number(sourceDeparture.split(":")[1])
-        :null;
-      const boundMinutes=(clock:string|null)=>
-        clock&&/^\d{2}:\d{2}/.test(clock)
-          ?Number(clock.split(":")[0])*60+Number(clock.split(":")[1])
-          :null;
-      const startBound=observedDuty?boundMinutes(observedDuty.valid_from_time):null;
-      const endBound=observedDuty?boundMinutes(observedDuty.valid_to_time):null;
-      const applies=!!observedDuty&&departureMinutes!==null&&
-        (startBound===null||departureMinutes>=startBound)&&
-        (endBound===null||departureMinutes<endBound);
-      const observedType=applies?String(observedDuty.vehicle_type||""):"";
+      const observedNumber:any=observationByNumber.get(String(run.train_number||""))||null;
+      const observedEvidence:any=observedNumber
+        ?evidenceById.get(Number(observedNumber.source_id)):null;
+      const observedType=observedNumber?String(observedNumber.vehicle_type||""):"";
       const isE231=observedType==="E231系3000番台",
         is209=observedType==="209系3500番台";
-      const observedFormation=applies&&Array.isArray(observedDuty.formation_ids)&&
-        observedDuty.formation_ids.length===1
-        ?String(observedDuty.formation_ids[0]):"";
-      const sourceValid=!!(observedDuty&&
+      const observedFormation=observedNumber&&Array.isArray(observedNumber.formation_ids)&&
+        observedNumber.formation_ids.length===1
+        ?String(observedNumber.formation_ids[0]):"";
+      const directSourceValid=!!(observedNumber&&
+        observedNumber.train_number===run.train_number&&
+        observedNumber.observed_date===serviceDate&&
         observedEvidence?.source_type==="observation"&&
         observedEvidence?.evidence_grade==="C"&&
+        observedEvidence?.source_key==="kw-reported-"+serviceDate.replace(/-/g,"")&&
         observedEvidence?.source_url===expectedObservedUrl&&
-        observedDuty.ambiguity_group==="crowdsourced-C-unconfirmed"&&
-        (op!=="71"||
-           (startBound===0&&endBound===720))&&
-        (op!=="77"||serviceDate==="2026-11-09"));
-      const reportedModel=sourceValid&&
         (isE231&&/^ハエ4[1-6]$/.test(observedFormation)||
-         is209&&/^ハエ5[1-5]$/.test(observedFormation))
-        ?observedType:null;
+         is209&&/^ハエ5[1-5]$/.test(observedFormation)));
+      const reportedModel=directSourceValid?observedType:null;
       const pngIx=reportedModel===null?-1:isE231?0:1;
       if(!/^[0-9]{3,4}H$/.test(String(run.train_number||""))||
          run.network_key!=="odpt.Railway:JR-East.Kawagoe"||
@@ -3582,11 +3569,11 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
         workingOperationCode:op,workingOperationSourceUrl:workingSource.source_url,
         reportedModel,reportedFormation:reportedModel?observedFormation:null,
         reportedModelArtworkPath:pngIx>=0?p.candidate_png_paths[pngIx]:null,
-        reportedOperationCode:reportedModel?op:null,
+        reportedTrainNumber:reportedModel?run.train_number:null,
         reportedEvidenceUrl:reportedModel?observedEvidence.source_url:null,
         reportedEvidenceGrade:reportedModel?"C":null,
         reportedIsActual:false,
-        reportedMappingLevel:reportedModel?"dated_volunteer_observed_model":null
+        reportedMappingLevel:reportedModel?"dated_train_number_observation":null
       };
     }
     if(seen.size!==93)throw new Error("KAWAGOE_2611_DAILY_SOURCE_INCOMPLETE");
