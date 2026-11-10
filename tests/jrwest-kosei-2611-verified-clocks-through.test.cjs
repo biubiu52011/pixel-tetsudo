@@ -106,7 +106,7 @@ test('five Kyoto/Kobe new-rapid original segments certified; vehicles still unve
   '<>5'
  ])assert.ok(extra.includes(t),t);
  const block=edge.slice(edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo'),
-  edge.indexOf('// Sotetsu-JR 2611:',edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo')));
+ edge.indexOf('// Kawagoe WEST',edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo')));
  for(const t of [
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_COVERAGE_CHANGED',
   'JRWEST_KYOTO_KOBE_2611_CLOCK_PROOF_CONFLICT',
@@ -146,7 +146,7 @@ test('four additional Kyoto-Kobe 7-stop sources join the same evidence owner',()
  assert.ok(extra.includes('h.n=7 AND h.original_hash=e.expected_hash'));
  assert.ok(extra.includes('<>9'));
  const kyoto=edge.slice(edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo'),
-  edge.indexOf('// Sotetsu-JR 2611:'));
+  edge.indexOf('// Kawagoe WEST'));
  assert.ok(kyoto.includes('    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);'));
  assert.ok(kyoto.includes('run.published_train_number=p.official_train_number;'));
  assert.ok(kyoto.includes('run.timetable_date_verified=true;'));
@@ -230,7 +230,7 @@ test('Kyoto/Kobe 8 additional local C sources retain dated clock and candidate b
    "<>17","<>8","<>10","<>7"
  ])assert.ok(m.includes(proof),proof);
  const block=edge.slice(edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo'),
- edge.indexOf('// Sotetsu-JR 2611:'));
+ edge.indexOf('// Kawagoe WEST'));
  for(const proof of [
    '    :(selectedCalendar==="odpt.Calendar:Weekday"?15:16);',
    'const certifiedType=p.train_type_urn==="odpt.TrainType:JR-West.Local"',
@@ -267,7 +267,7 @@ test('four calendar-scoped and two weekday Kyoto-Kobe T rapid sources are finger
   "official_public_train_type='Rapid')<>6"
  ])assert.ok(mig.includes(token),token);
  const from=edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo');
- const to=edge.indexOf('// Sotetsu-JR 2611:',from);
+ const to=edge.indexOf('// Kawagoe WEST',from);
  assert.ok(from>=0&&to>from);
  const block=edge.slice(from,to);
  for(const token of [
@@ -314,7 +314,7 @@ test('Kyoto/Kobe Nov 2026 next 8 C/T verified sources retain original source ide
    "official_calendar_conflict)<>2"
  ])assert.ok(sql.includes(token),token);
  const begin=edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo');
- const end=edge.indexOf('// Sotetsu-JR 2611:',begin);
+ const end=edge.indexOf('// Kawagoe WEST',begin);
  assert.ok(begin>=0 && end>begin);
  const kyoto=edge.slice(begin,end);
  for(const token of [
@@ -357,7 +357,7 @@ test('four JR Kobe Line western SanyoMain C source clocks use one evidence view'
   "WHERE verified_source_match)<>35",
  ])assert.ok(sql.includes(evidence),evidence);
  const start=edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo');
- const end=edge.indexOf('// Sotetsu-JR 2611:',start);
+ const end=edge.indexOf('// Kawagoe WEST',start);
  assert.ok(start>=0&&end>start);
  const b=edge.slice(start,end);
  for(const evidence of [
@@ -377,7 +377,7 @@ test('four JR Kobe Line western SanyoMain C source clocks use one evidence view'
 
 test('six more Kobe-west source C trains remain calendar-specific, not assigned stock',()=>{
  const sql=fs.readFileSync(
-  'supabase/migrations/20261107145000_jrwest_kobe_sanyo_2611_six_local_source_clocks.sql','utf8');
+   'supabase/migrations/20261107145000_jrwest_kobe_sanyo_2611_six_local_source_clocks.sql','utf8').replace(/\r\n/g,'\n');
  const proofs=[
   ['153C','Weekday','80c8f3849686fd9d7bae2b2d8a588bf0'],
   ['189C','Weekday','333ff3c1a8e220566b3bb6ca10003d44'],
@@ -404,7 +404,7 @@ test('six more Kobe-west source C trains remain calendar-specific, not assigned 
    "source_line_key='SanyoMain'\n AND calendar_urn='odpt.Calendar:SaturdayHoliday')<>3"
  ])assert.ok(sql.includes(token),token);
  const start=edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo');
- const end=edge.indexOf('// Sotetsu-JR 2611:',start);
+ const end=edge.indexOf('// Kawagoe WEST',start);
  assert.ok(start>=0&&end>start);
  const js=edge.slice(start,end);
  assert.ok(js.includes('selectedCalendar==="odpt.Calendar:Weekday"?8:6'));
@@ -444,7 +444,7 @@ test('Kobe west special-rapid M and rapid M/T use public type, NOT numeric suffi
   "WHERE actual_vehicle_confirmed OR authorizes_png"
  ])assert.ok(mig.includes(term),term);
  const i=edge.indexOf('// Forty-five JR-West Kyoto/Kobe/Sanyo');
- const end=edge.indexOf('// Sotetsu-JR 2611:',i);
+  const end=edge.indexOf('// Kawagoe WEST',i);
  assert.ok(i>=0&&end>i);
  const edgeBlock=edge.slice(i,end);
  for(const term of [
