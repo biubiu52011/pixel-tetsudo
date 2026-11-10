@@ -1384,6 +1384,24 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         lang = String(lang || "ja").toLowerCase();
         var number = String(sotetsuNumber.trainNumber || p.trainNumber || "");
         var bands = (sotetsuNumber.numberBands || []).join(" / ");
+        var working = p.sqlPublishedNumberFleetReference || {};
+        var workingModel = String(working.plannedModel || "");
+        if (p.timetableDateVerified === true &&
+            working.plannedModelMappingLevel === "source_single_type_candidate" &&
+            working.plannedModelEvidenceGrade === "C" &&
+            working.plannedModelIsActual === false &&
+            (workingModel === "E233系7000番台" || workingModel === "相鉄12000系")) {
+          if (/^zh/.test(lang)) return "官方列车号：" + number +
+            " · 计划车型：" + workingModel + "（运用表参考，实车未确认）";
+          if (lang === "en") return "Official train no. " + number +
+            " · planned model: " + workingModel +
+            " (published working reference; actual consist unconfirmed)";
+          if (lang === "ko") return "공식 열차번호 " + number +
+            " · 예정 차종: " + workingModel +
+            " (운용표 참고, 실제 편성 미확인)";
+          return "公式列車番号：" + number +
+            " · 計画車種：" + workingModel + "（運用表参考・実車未確認）";
+        }
         var candidates = "E233系7000番台 / 相鉄12000系";
         if (/^zh/.test(lang)) return "官方列车号：" + number +
           "（号段：" + bands + "；车型候选：" + candidates + "，实体车号/编组未确认）";
