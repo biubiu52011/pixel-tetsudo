@@ -45,6 +45,8 @@ jobs:
         run: node --test tests/train-overview-dom.test.cjs
       - name: Verify JR-Central ChuoCentral canonical 40-station SQL route and Okuwa safety
         run: node --test tests/chuo-central-sql-registry.test.cjs
+      - name: Verify shared JR-Central licensed SQL timetable importer
+        run: node --test tests/jr-central-shared-plan-import.test.cjs
       - name: Verify operator filter labels
         run: node --test tests/operator-labels.test.cjs
       - name: Verify history card responsive layout
