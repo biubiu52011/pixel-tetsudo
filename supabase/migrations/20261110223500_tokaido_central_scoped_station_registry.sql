@@ -9,7 +9,8 @@
 BEGIN;
 
 INSERT INTO public.stations (id, name, latitude, longitude)
-VALUES
+SELECT v.id, v.name, v.latitude, v.longitude
+FROM (VALUES
   ('Atami', '熱海', 35.0961, 139.0711),
   ('JRC-TokaidoCentral-002', '函南', NULL, NULL),
   ('Mishima', '三島', 35.126028, 138.911831),
@@ -94,6 +95,8 @@ VALUES
   ('JRC-TokaidoCentral-082', '近江長岡', NULL, NULL),
   ('JRC-TokaidoCentral-083', '醒ケ井', NULL, NULL),
   ('Maibara', '米原', 35.314762, 136.289992)
+) AS v(id, name, latitude, longitude)
+WHERE v.latitude IS NOT NULL AND v.longitude IS NOT NULL
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.line_stations (line_id, station_index, station_name)
