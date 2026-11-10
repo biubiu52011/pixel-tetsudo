@@ -35,6 +35,13 @@
     ["jr-east-joban-north-e721-candidate-2611","E721系",
       "JR東日本/JR東日本_E721系_仙台地区.png","JobanMain",0]
   );
+  // Approved as representative planned images on TokaidoCentral only.
+  // Never evidence of a real formation or a train-number-to-stock assignment.
+  table.push(
+    ["jrc-tokaido-central-313-sql-reference","313系","JR東海/c313.png","TokaidoCentral",0],
+    ["jrc-tokaido-central-315-sql-reference","315系","JR東海/c315.png","TokaidoCentral",0],
+    ["jrc-tokaido-central-373-sql-reference","373系","JR東海/c373_inj.png","TokaidoCentral",0]
+  );
   var alternates=[["jr-east-e233-5000-keiyo","E233系5000番台","JR東日本/JR東日本_E233系_5000番台.png","Keiyo|Togane"]];
   var unassigned=[];
   var assets=Object.create(null),byModel=Object.create(null),byPath=Object.create(null);
