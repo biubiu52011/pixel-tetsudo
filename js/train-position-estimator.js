@@ -1159,6 +1159,39 @@
           if(!officialOfunatoPlan)continue;
         }
 
+        // Kawagoe WEST 2611: ODPT six stops, JR November source departures.
+        // E231-3000 / 209-3500 share operations; H is NOT a model ID.
+        var officialKawagoePlan=null;
+        if(lineId==="Kawagoe"&&
+           String(serviceDate).slice(0,7)==="2026-11"){
+          if(tt._positionSource!=="supabase-train-run"||
+             tt._timetableDateVerified!==true)continue;
+          var kw=tt._sqlPublishedNumberFleetReference||null,
+              kwStops=run.stops.map(function(st){return String(st.stationUrn||"").split(".").pop();});
+          var kwOutbound=["Kawagoe","NishiKawagoe","Matoba","Kasahata","MusashiTakahagi","Komagawa"];
+          var kwDir=String(tt["odpt:railDirection"]||"");
+          var kwExpected=kwDir==="odpt.RailDirection:Outbound"?kwOutbound:
+            kwDir==="odpt.RailDirection:Inbound"?kwOutbound.slice().reverse():[];
+          if(kw&&kw.source==="sql-jreast-kawagoe-2611-shared-fleet"&&
+             kw.lineId==="Kawagoe"&&kw.trainNumber===run.trainNumber&&
+             kw.serviceDate===serviceDate&&
+             kw.referenceOnly===true&&kw.actualVehicleConfirmed===false&&
+             kw.authorizesPNG===false&&kw.singleModelUnresolved===true&&
+             kw.departure2611Verified===true&&
+             kw.direction===kwDir&&kw.calendar===tt["odpt:calendar"]&&
+             kwStops.length===6&&kwStops.join("|")===kwExpected.join("|")&&
+             Array.isArray(kw.sourceStopKeys)&&
+             kw.sourceStopKeys.join("|")===kwExpected.join("|")&&
+             Array.isArray(kw.candidateModels)&&
+             kw.candidateModels.join("|")==="E231系3000番台|209系3500番台"&&
+             Array.isArray(kw.candidateAssets)&&
+             kw.candidateAssets.join("|")===
+              "../images/列车/JR東日本/JR東日本_E231系_3000番台.png|"+
+              "../images/列车/JR東日本/JR東日本_209系_3500番台.png")
+            officialKawagoePlan=kw;
+          if(!officialKawagoePlan)continue;
+        }
+
         // Sotetsu/JR 2611: verified historical four-stop source, but
         // neither the 1xx/2xx public number nor the old stop clock
         // certifies the physical E233-7000 vs Sotetsu-12000 assignment.
@@ -2241,6 +2274,21 @@
               confirmed:false,referenceOnly:true
             };
           }
+          var _kawagoeScoped=!!officialKawagoePlan&&
+            vehResult.identityStatus!=="EXACT";
+          if(_kawagoeScoped){
+            _plannedCandidates=officialKawagoePlan.candidateModels.slice();
+            _visibleCandidates=officialKawagoePlan.candidateModels.slice();
+            _publishedVehiclePlan={
+              status:"UNCONFIRMED_FLEET",
+              models:officialKawagoePlan.candidateModels.slice(),
+              iconPath:"",representativeModel:"",
+              source:"sql-jreast-kawagoe-2611-shared-fleet",
+              sourceUrl:officialKawagoePlan.fleetSourceUrl||"",
+              lineId:"Kawagoe",operator:"JR-East",
+              confirmed:false,referenceOnly:true
+            };
+          }
           // SQL candidate set is NOT an E233 single-model authorization.
           // A genuine independently established EXACT formation wins.
           var _sotetsuJrScoped=!!officialSotetsuJRPlan&&
@@ -2402,8 +2450,8 @@
           }
           // 车型身份状态始终来自 TrainVehicle；SQL
           // 历史候选不得将 UNKNOWN 提升为 NARROWED/EXACT。
-          var trainClass = (_osakaMahorobaScoped||_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
-          var _vehicleType = (_osakaMahorobaScoped||_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
+          var trainClass = (_osakaMahorobaScoped||_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_kawagoeScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" : (vehResult.name || '');
+          var _vehicleType = (_osakaMahorobaScoped||_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_kawagoeScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng) ? "" :
             (vehResult.vehicleTypeStr || '');
           // Missing resolver means unresolved identity; timetable data must not
           // bypass the single source-arbitration authority.
@@ -2510,7 +2558,7 @@
                tt._sqlPublishedNumberFleetReference&&
                ["sql-jrwest-fukuchiyama-2611-historical-fleet-reference",
                 "sql-jrwest-fukuchiyama-2611-official-7025-friday"].includes(
-                  tt._sqlPublishedNumberFleetReference.source))||officialSotetsuJRPlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
+                  tt._sqlPublishedNumberFleetReference.source))||officialSotetsuJRPlan||officialKawagoePlan||officialOuMainTsugaruPlan||officialJoetsuPlan||officialKamaishiPlan||officialKitakamiPlan||officialHanawaPlan||officialKururiPlan||officialMitoPlan||officialMiyoPlan||officialOfunatoPlan||officialOgaPlan||officialOitoEastPlan||officialOitoWestPlan||officialKashimaPlan||officialKesennumaRailPlan||officialKomiiPlan)
               ?tt._sqlPublishedNumberFleetReference||null:null,
             publishedHakushinServiceFamily:_hakushinSpecialFleet
               ?officialHakushinPlan.kind:"",
@@ -2571,6 +2619,7 @@
               ?"unresolved-mixed-fleet" : _koseiScoped
               ?"unresolved-mixed-fleet" : _jrwestKyotoKobeScoped
               ?"unresolved-mixed-fleet" : _sotetsuJrScoped
+              ?"unresolved-mixed-fleet" : _kawagoeScoped
               ?"unresolved-mixed-fleet" : _komiiScoped
               ?(_komiiFleet?"official-service-family-reference":"unresolved-mixed-fleet")
               : _kesennumaFleet
@@ -2597,7 +2646,7 @@
             destinationStationUrn: destinationStationUrn,
             trainClass: trainClass,
             vehicleType: _vehicleType,
-            vehicleIconPath: (_osakaMahorobaScoped||_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
+            vehicleIconPath: (_osakaMahorobaScoped||_osakaHigashiScoped||_saganoScoped||_koseiScoped||_jrwestKyotoKobeScoped||_sotetsuJrScoped||_kawagoeScoped||_komiiScoped||_kesennumaFleet||_kashimaScoped||_hakushinSpecialFleet||_joetsuFleet||_kamaishiFleet||_kitakamiFleet||_hanawaFleet||_kururiFleet||_mitoFleet||_miyoFleet||_ofunatoFleet||_ofunatoPokemon||_ogaFleet||_oitoEastFleet||_oitoEastUnknown||_oitoWestNoPng)
               ? "" : (vehResult.iconPath || ''),
             vehiclePlan: _publishedVehiclePlan,
             vehicleSource: vehResult.source || '',
