@@ -42,6 +42,11 @@
     ["jrc-tokaido-central-315-sql-reference","315系","JR東海/JR東海_315系.png","TokaidoCentral",0],
     ["jrc-tokaido-central-373-sql-reference","373系","JR東海/JR東海_373系.png","TokaidoCentral",0]
   );
+  // JR Central 315: approved artwork for ChuoCentral reference display,
+  // not evidence of a particular train number or an actual-day formation.
+  table.push(
+    ["jrc-chuo-central-315-line-fleet-reference","315系","JR東海/JR東海_315系.png","ChuoCentral",0]
+  );
   var alternates=[["jr-east-e233-5000-keiyo","E233系5000番台","JR東日本/JR東日本_E233系_5000番台.png","Keiyo|Togane"]];
   var unassigned=[];
   var assets=Object.create(null),byModel=Object.create(null),byPath=Object.create(null);
@@ -76,7 +81,7 @@
   }
   root.VehicleGaragePngMap=Object.freeze({
     version:"20261110-gallery-source-quarantine",totalPng:580,
-    mappedPng:580,canonicalEntries:600,alternatePng:1,
+    mappedPng:580,canonicalEntries:601,alternatePng:1,
     unassigned:Object.freeze(unassigned.map(function(p){return prefix+p;})),
     alternates:Object.freeze(alternates.map(function(r){return prefix+r[2];})),
     hasPng:function(path){return !!assets[asPath(path)];},
