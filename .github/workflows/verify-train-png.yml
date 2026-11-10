@@ -182,6 +182,19 @@ permissions:
   contents: read
 
 jobs:
+  gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify gallery bytes, model scope and quarantine
+        run: |
+          node --check js/train-vehicle.js
+          node --check data/timetables/vehicle-garage-png-map.js
+          node --check tools/gallery-integrity-audit.cjs
+          node tools/gallery-integrity-audit.cjs --strict
+          node tools/vehicle-garage-png-map.test.cjs
+          node tools/train-vehicle-assets.test.cjs
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 5
