@@ -65,3 +65,10 @@ SELECT * FROM public.import_tokaido_central_authorized_plan(
 执行 `supabase/queries/tokaido_central_plan_status.sql`，检查 `station_count`、`weekday_trains`、`holiday_trains`、`stop_count`、`acceptance_status`。确认各项缺口并逐批补齐，禁止从车站数量推断时刻表完整度。
 
 2026-11-11 已执行事务回滚型写入/关联校验：模拟两站列车只在事务中存在，事务回滚后计划/停站/canonical 均为 0；无授权来源会被拒绝，`anon` / `authenticated` / `service_role` 没有执行权限。
+
+## 2026-11-11：SQL 番号驱动的车辆 PNG 接入
+
+- 在既有 `TrainNumberPngRanges.match` 中接入 `TokaidoCentral`，不添加第二套 resolver；在既有 `VehicleGaragePngMap` 中把当前三张图片登记为本线路**非实车确认的计划示意图**：`c313.png`（313系）、`c315.png`（315系）、`c373_inj.png`（373系）。
+- 可识别的公开番号语法范围为 `1M`～`99999M`；**这一范围不是车型分配表**，同号段可能混用不同车型。必须同时满足：`supabase-train-run`、估算计划、已核实番号、JR-Central 专属铁路 URN、服务日期、带来源 URL 的单一车型 `PLANNED_MODEL` 或已确认计划、无互相冲突的车型候选，才自动显示相应 PNG。没有 SQL 班次或车型来源则仍无图标。
+- 现有 `manual_timetable_templates` / `train_operation_mappings` 没有新增虚构数据；这是消费者映射接口而非完整时刻表，也不是仅凭列车番号认定车辆。要实现真正的各号段无车型候选也能映射，必须取得**按号码段、日历及区间逐项确认**的独立证据再配置具体号段。
+- 回归代码：`tests/tokaido-central-sql-png-range.test.cjs`。环境未能从 GitHub 克隆代码进行本地 Node 执行，因此此处仅记录已提交的静态测试，**不声称通过**。
