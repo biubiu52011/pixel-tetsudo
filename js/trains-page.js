@@ -213,7 +213,16 @@
         }).then(function(changed) {
           // 缓存或缺失的手动数据不执行任何操作。Promise 完成不得
           // 在打开详情后立即造成第二次地图绘制。
-          if (!changed || currentLine !== lineId) return;
+          // A successfully fetched but empty SQL plan changes the source
+          // explanation, not the train geometry. Repaint once so the note
+          // no longer mistakes missing plans for a service suspension.
+          var planStatus = window.ODPTClient && window.ODPTClient.getTrainRunStatus
+            ? window.ODPTClient.getTrainRunStatus(lineId) : null;
+          var auditedMissingPlan = planStatus &&
+            planStatus.planAvailability === "unconfirmed" &&
+            planStatus.auditCoverageStatus === "missing_all_plans" &&
+            planStatus.runs === 0 && planStatus.source !== "SOURCE_ERROR";
+          if ((!changed && !auditedMissingPlan) || currentLine !== lineId) return;
           var fused2 = getLinesData()[lineId];
           if (fused2 && mapEl) {
             _renderTrainMap(mapEl, fused2, lineId);
