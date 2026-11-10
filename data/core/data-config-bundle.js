@@ -1079,6 +1079,9 @@ window.getTransferHint = function(stationId, lang) {
   // This is separate from realtime Train observations and SQL storage.
   var SQL_POSITION_VERIFICATION_MONTHS = Object.freeze({
     KakogawaLine: Object.freeze(["2026-11"]),
+    // JR-East 2611 Sotetsu connection: only source-dated verified SQL clocks
+    // may project a planned position. A future month needs new proof.
+    SotetsuJRDirect: Object.freeze(["*"]),
     // 播但線: legacy SQL has 0 current-date-verified sources and no
     // inbound electric templates. A star requires date proof in every month.
     Bantan: Object.freeze(["*"])
