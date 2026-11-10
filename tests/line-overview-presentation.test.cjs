@@ -43,9 +43,10 @@ test('all primary display ranks are positive, unique, contiguous integers per op
 
 test('JA cards stay together, JR-Sotetsu service does not claim JS', () => {
   const order = ordered();
-  immediatelyAfter(order, 'SaikyoKawagoe', 'Kawagoe');
+  immediatelyAfter(order, 'SaikyoKawagoe', 'ChuoSobuLocal');
+  assert.ok(order.indexOf('Kawagoe') > order.indexOf('Yamanote'),
+    'JRグループ/无图标线路不能穿插在官方线路图标序列里');
   immediatelyAfter(order, 'Kawagoe', 'SotetsuJRDirect');
-  immediatelyAfter(order, 'SotetsuJRDirect', 'ChuoSobuLocal');
   assert.equal(lines.SotetsuJRDirect.presentation.code, '');
   assert.equal(lines.SotetsuJRDirect.code, 'JS', 'internal railway code must not change');
   assert.equal(lines.ShonanShinjuku.presentation.code, 'JS');
@@ -58,7 +59,8 @@ test('aggregated display members have no separate rank; corridor insertion remai
   assert.equal(lines.SobuRapid.presentation.order, undefined);
   const order = ordered();
   immediatelyAfter(order, 'Yokosuka', 'SobuRapid');
-  immediatelyAfter(order, 'ShonanShinjuku', 'UenoTokyo');
+  immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
+  assert.ok(order.indexOf('UenoTokyo') > order.indexOf('Yamanote'));
 });
 
 test('display prefixes use published station numbering, not internal route IDs', () => {
@@ -75,7 +77,8 @@ test('display prefixes use published station numbering, not internal route IDs',
 test('Kagoshima route overview is distinguished from JA and JB section cards', () => {
   const order = ordered();
   immediatelyAfter(order, 'KagoshimaMainJA', 'KagoshimaMainJB');
-  immediatelyAfter(order, 'KagoshimaMainJB', 'KagoshimaMain');
+  assert.ok(order.indexOf('KagoshimaMain') > order.indexOf('NishiKyushuShinkansen'),
+    'JR九州全线概览无专属图标，不能插入 JA/JB 的有图标序列');
   assert.match(lines.KagoshimaMain.presentation.nameJa, /全線案内/);
   assert.match(lines.KagoshimaMain.presentation.nameZh, /全线总览/);
   assert.equal(lines.KagoshimaMain.presentation.code, '');
@@ -84,7 +87,7 @@ test('Kagoshima route overview is distinguished from JA and JB section cards', (
 test('JR Central trunk lines lead the display; Hokkaido recurring symbols are adjacent', () => {
   const order = ordered();
   assert.deepEqual(order.filter(id => lines[id]?.operator === 'JR-Central').slice(0, 4),
-    ['TokaidoCentral', 'MinoAkasaka', 'ChuoCentral', 'KansaiCentral']);
+    ['TokaidoCentral', 'ChuoCentral', 'KansaiCentral', 'Takayama']);
   immediatelyAfter(order, 'HakodateMain', 'Chitose');
   immediatelyAfter(order, 'NemuroMain', 'Sekisho');
 });
@@ -105,4 +108,23 @@ test('operator categories and Hakodate service ranks are stable', () => {
     assert.equal(presentation.categoryOf(op), 'Private', op);
   assert.equal(lines.Hakodate2.presentation.order, 1);
   assert.equal(lines.Hakodate5.presentation.order, 2);
+});
+
+test('official line icons are listed before generic operator logos or missing icons', () => {
+  const groups = {};
+  for (const [id, line] of primaries) (groups[line.operator] ||= []).push({id, line});
+  for (const [op, entries] of Object.entries(groups)) {
+    entries.sort((a, b) => a.line.presentation.order - b.line.presentation.order);
+    let seenFallback = false;
+    for (const {id, line} of entries) {
+      const icon = String(line.presentation.icon || line.image || '');
+      const dedicated = !!icon && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(icon);
+      if (!dedicated) seenFallback = true;
+      assert.ok(!dedicated || !seenFallback, op + '/' + id + ' entered the official icon sequence after fallback');
+    }
+  }
+  const order = ordered();
+  assert.ok(order.indexOf('JobanMain') > order.indexOf('Yamanote'));
+  assert.ok(order.indexOf('Kawagoe') > order.indexOf('Yamanote'));
+  assert.ok(order.indexOf('SotetsuJRDirect') > order.indexOf('Yamanote'));
 });

@@ -8,9 +8,9 @@
  *   成员线路（lineIds[1..]）共享主记录的排序位置，不单独占用 UI 位置。
  *
  * 全局类别顺序：JR > Metro（地下铁）> Private（私铁）> Other（其他）。
- * 同一运营商组内依次比较：
- *   显式 presentation.order → 特殊符号 → A-Z 符号
- *   → 显示名称 → 稳定的原始顺序。
+ * 同一运营商组内，专属线路图标优先；JRグループ.png 等通用徽章
+ * 和无专属图标线路进入后序列。各序列内比较整数
+ * presentation.order → 线路符号 → 显示名称 → 稳定原始顺序。
  *
  * canonical 物理线路仍在 railway_data.json 中独立建模；
  * 本层只负责展示，不合并或改写 canonical 拓扑。
@@ -100,6 +100,15 @@
     var ja = String(line.nameJa || "");
     var en = String(line.nameEn || "");
     return /Shinkansen/i.test(id) || /新幹線/.test(ja) || /Shinkansen/i.test(en);
+  }
+
+  // 仅专属线路图标进入首序列；JRグループ.png 等运营商徽章不是线路图标。
+  // 与卡片渲染使用同一优先级：presentation.icon 优先于 line.image。
+  function hasDedicatedLineIcon(line) {
+    if (!line) return false;
+    var p = line.presentation || {};
+    var icon = String(p.icon || line.image || "");
+    return !!icon && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(icon);
   }
 
   // 生成运营商组内实体的确定性排序键。
@@ -222,6 +231,11 @@
       var list = byOp[op].slice();
       list.sort(function(a, b) {
         if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1; // passenger systems first
+        if (a.isPresentation && b.isPresentation) {
+          // 运营商内部：专属线路图标在前，JR集团通用徽章和无图标线路在后。
+          var aDedicated = hasDedicatedLineIcon(a.line), bDedicated = hasDedicatedLineIcon(b.line);
+          if (aDedicated !== bDedicated) return aDedicated ? -1 : 1;
+        }
         if (!a.isPresentation && categoryOf(op) === "JR") {
           var aShinkansen = isShinkansenLine(a.line);
           var bShinkansen = isShinkansenLine(b.line);
@@ -258,7 +272,29 @@
         if (!line || !(((window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {})[lid])) return;
         var presentation = line.presentation || {};
         var afterLineId = presentation.afterLineId;
-        if (afterLineId && out.indexOf(lid) === -1) {
+        if (out.indexOf(lid) !== -1) return;
+        if (!hasDedicatedLineIcon(line) && Number.isInteger(presentation.order)) {
+          // 通用徽章服务走廊按自己的整数编号插入降级序列，
+          // 不再因 afterLineId 被插进专属图标线路之间。
+          var insertIndex = -1, lastOperatorIndex = -1;
+          for (var ci = 0; ci < out.length; ci++) {
+            var candidate = allLines[out[ci]];
+            if (!candidate || candidate.operator !== line.operator) continue;
+            lastOperatorIndex = ci;
+            var candidatePres = getPrimaryPresentation(out[ci], allLines);
+            if (candidatePres && Number.isInteger(candidatePres.order) &&
+                candidatePres.order >= presentation.order) {
+              insertIndex = ci;
+              break;
+            }
+          }
+          if (insertIndex < 0 && lastOperatorIndex >= 0) insertIndex = lastOperatorIndex + 1;
+          if (insertIndex >= 0) {
+            out.splice(insertIndex, 0, lid);
+            return;
+          }
+        }
+        if (afterLineId) {
           var afterIndex = out.indexOf(afterLineId);
           if (afterIndex >= 0) out.splice(afterIndex + 1, 0, lid);
         }
