@@ -94,6 +94,49 @@ test('date-scoped source candidates always produce ONE neutral SVG marker',()=>{
   }
  }
 });
+test('2611 SQL mapped working chooses one model PNG only as planned illustration',()=>{
+ const sources={
+  '2026-11-06':{model:models[1],asset:pngs[1],op:'72',
+   url:'https://ameblo.jp/tc205-37/entry-12972143138.html'},
+  '2026-11-07':{model:models[0],asset:pngs[0],op:'71',
+   url:'https://ameblo.jp/tc205-37/entry-12972146396.html'}
+ };
+ for(const [date,entry] of Object.entries(sources)){
+  const base=position('120M',date);
+  const mapped={...base,timetableDateVerified:true,
+   sqlPublishedNumberFleetReference:{
+    ...base.sqlPublishedNumberFleetReference,
+    plannedModel:entry.model,plannedOperationCode:entry.op,
+    plannedModelEvidenceUrl:entry.url,plannedModelArtworkPath:entry.asset,
+    plannedModelEvidenceGrade:'C',
+    plannedModelMappingLevel:'source_single_type_candidate',
+    plannedModelIsActual:false
+   }};
+  const art=root.TrainVehicle.selectMarkerArtwork(mapped,false);
+  assert.equal(art.kind,'vehicle',date);
+  assert.equal(art.iconSrc,entry.asset);
+  assert.equal(art.planned,true);
+  assert.equal(art.illustrative,true);
+  assert.equal(art.representativeOnly,true);
+  assert.equal(art.actualVehicleConfirmed,false);
+  assert.equal(art.illustrationRole,'2611-published-working-model-not-actual-formation');
+  for(const diff of [
+   {timetableDateVerified:false},
+   {sqlPublishedNumberFleetReference:{...mapped.sqlPublishedNumberFleetReference,
+     plannedModelEvidenceGrade:'A'}},
+   {sqlPublishedNumberFleetReference:{...mapped.sqlPublishedNumberFleetReference,
+     plannedModelEvidenceUrl:'https://example.invalid/working'}},
+   {sqlPublishedNumberFleetReference:{...mapped.sqlPublishedNumberFleetReference,
+     plannedModelArtworkPath:entry.asset===pngs[0]?pngs[1]:pngs[0]}},
+   {sqlPublishedNumberFleetReference:{...mapped.sqlPublishedNumberFleetReference,
+     plannedModelIsActual:true}}
+  ]){
+   const changed={...mapped,...diff};
+   const nope=root.TrainVehicle.selectMarkerArtwork(changed,false);
+   assert.equal(nope.iconSrc,'',date+':'+Object.keys(diff).join(','));
+  }
+ }
+});
 test('approved gallery paths are line and model scoped',()=>{
  for(let i=0;i<2;i++)
   assert.equal(root.VehicleGaragePngMap.matchModelPath(
