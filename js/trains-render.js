@@ -536,27 +536,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var text = t(missingPlan ? "trains.plan_not_imported_note" :
         hasEstimate ? "trains.estimated_note" :
         positions && positions.length ? "trains.live_note" : "trains.unavailable_note");
-      // When a JR-Central SQL plan is not licensed/imported, provide its
-      // official live-position service instead of inventing SVG train icons.
-      // This is an external link, not an unapproved data feed/proxy.
-      var officialUrl = missingPlan && lineId === "ChuoCentral"
-        ? "https://traininfo.jr-central.co.jp/zairaisen/index.html" : "";
-      var officialLabel = officialUrl ? t("trains.jrc_official_positions") : "";
-      var expectedText = text + (officialLabel ? " " + officialLabel : "");
-      var existingLink = note.querySelector(".tp-official-source-link");
-      if (note.textContent !== expectedText || (!!existingLink !== !!officialUrl)) {
-        note.textContent = text;
-        if (officialUrl) {
-          var link = document.createElement("a");
-          link.className = "tp-official-source-link";
-          link.href = officialUrl;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = officialLabel;
-          note.appendChild(document.createTextNode(" "));
-          note.appendChild(link);
-        }
-      }
+      if (note.textContent !== text) note.textContent = text;
     } catch(e) { /* note is best-effort */ }
   }
 
