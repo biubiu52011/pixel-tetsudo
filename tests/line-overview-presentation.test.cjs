@@ -139,6 +139,10 @@ test('operator categories are JR, private/third-sector railways, then subways', 
   };
   assert.deepEqual(Array.from(presentation.getOperatorOrder(sample)),
     ['JR-East', 'Keio', 'Yurikamome', 'TokyoMetro']);
+  assert.deepEqual(Array.from(presentation.orderOperators(
+    ['TokyoMetro', 'NewThirdRailway', 'JR-East', 'Keio'])),
+    ['JR-East', 'Keio', 'NewThirdRailway', 'TokyoMetro'],
+    'previously unseen third-sector operators cannot be appended behind Metro');
   assert.equal(presentation.categoryOf('HiroshimaElectric'), 'Private',
     'tram operators must not be classified as subway');
 });
