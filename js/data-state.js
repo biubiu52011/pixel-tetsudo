@@ -292,8 +292,8 @@
       html += '<div class="rs-operator-group" data-operator="' + escapeHtml(op) + '"><div class="rs-operator-title">' + escapeHtml(tOp(op)) + '</div>'
         + (flatGroups ? '' : '<div class="rs-cards-container">');
       // 按统一展示顺序精确渲染。主展示实体占用自己的排序位置；
-      // 只有主记录渲染后才抑制成员记录。这样可以保留 Ueno-Tokyo 15.5
-      // 这类分数/系统排序值，不会在单独的第一遍处理中把所有系统移到 fallback 线路之前。
+      // 只有主记录渲染后才抑制成员记录。所有可见主展示实体
+      // 均使用整数排序值，不给被聚合的成员线路单独分配 UI 排名。
       var covered = {};
       for (var k = 0; k < groups[op].length; k++) {
         var g = groups[op][k];

@@ -51,7 +51,9 @@
     "Keio", "Odakyu", "EnoshimaElectric", "Seibu", "Tobu", "Tokyu",
     "Keikyu", "Keisei", "Sotetsu",
     "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
-    "Meitetsu", "Nishitetsu", "FujisanrokuElectricRailway"
+    "Meitetsu", "Nishitetsu", "FujisanrokuElectricRailway",
+    "ToyoRapid", "SaitamaRapidRailway", "KobeDentetsu", "HojoRailway",
+    "MinatoMirai", "Rinkai", "TsukubaExpress"
   ];
 
   // ===== 2. 基础分类与排序键 =====
@@ -103,8 +105,9 @@
   // 生成运营商组内实体的确定性排序键。
   function entitySortKey(entity) {
     var pres = entity.pres;
-    var orderKey = (pres && pres.order != null)
-      ? "1|" + String(("0000" + String(pres.order)).slice(-4))
+    // 仅允许整数展示编号；排序序号与运营商内部身份无关。
+    var orderKey = (pres && Number.isInteger(pres.order) && pres.order >= 0)
+      ? "1|" + String(pres.order).padStart(6, "0")
       : "2|";
     var code = (pres && pres.code) || (entity.line && entity.line.code) || "";
     var symKey = "0|" + symbolSortKey(code);
