@@ -132,12 +132,12 @@ test('Kakogawa planner weights match the sourced 2026 North-Harima corridor guid
   assert.match(kakogawa.durationReferenceScope,/planning-only/);
 });
 
-test('Kakogawa official timetable links are references, not live API data',()=>{
+test('Kakogawa unverified plans remain on-site without an external fallback',()=>{
   const source=fs.readFileSync('js/trains-page.js','utf8');
-  assert.ok(source.includes('lineId === "KakogawaLine"'));
-  for(const url of ['https://www.train-guide.westjr.co.jp/',
-     'https://timetable.jr-odekake.net/line-timetable/2455',
-     'https://timetable.jr-odekake.net/line-timetable/2456'])
-    assert.ok(source.includes(url));
-  assert.ok(source.includes('未核实2026年11月全部列车'));
+  const notice=source.split('if (lineId === "KakogawaLine") {')[1]
+    .split('if (lineId !== "Fukuchiyama")')[0];
+  assert.ok(notice.includes('未核实2026年11月全部列车'));
+  assert.ok(notice.includes('加古川線：時刻表データの検証待ち'));
+  assert.ok(!notice.includes('https://'));
+  assert.ok(!notice.includes('document.createElement("a")'));
 });

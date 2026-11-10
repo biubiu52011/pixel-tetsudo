@@ -60,11 +60,12 @@ const estimator = fs.readFileSync(path.join(root, 'js/train-position-estimator.j
 assert.ok(estimator.includes('verifiedSqlMonths.indexOf("*")>=0'));
 assert.ok(estimator.includes('requireSqlDateProof && tt._timetableDateVerified!==true'));
 const page = fs.readFileSync(path.join(root, 'js/trains-page.js'), 'utf8');
-for (const link of [
-  'https://www.train-guide.westjr.co.jp/bantan.html',
-  'https://timetable.jr-odekake.net/line-timetable/2443',
-  'https://timetable.jr-odekake.net/line-timetable/2442'
-]) assert.ok(page.includes(link), 'Missing official Bantan link: '+link);
+// Keep official URLs in the source inventory, not the train detail UI.
+const bantanNotice = page.split('if (lineId === "Bantan") {')[1]
+  .split('if (lineId === "KakogawaLine") {')[0];
+assert.ok(bantanNotice.includes('播但線：時刻表データの検証待ち'));
+assert.ok(!bantanNotice.includes('https://'));
+assert.ok(!bantanNotice.includes('document.createElement("a")'));
 for (const key of ['ja:', 'zh:', 'en:', 'ko:'])
   assert.ok(page.includes(key), 'Bantan official-source notice must be multilingual');
-console.log('Bantan timetable-source PASS: archived SQL is not current-position evidence; official source links exist');
+console.log('Bantan timetable-source PASS: archived SQL is not current-position evidence; no outbound fallback');

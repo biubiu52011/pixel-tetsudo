@@ -50,8 +50,14 @@ test('line detail accurately discloses unverified weekday/holiday timetable in f
   assert.match(page, /\bzh: \["JR东海东海道本线：计划时刻表尚未收录"/);
   assert.match(page, /\ben: \["JR Central Tokaido Line: timetable unavailable"/);
   assert.match(page, /\bko: \["JR도카이 도카이도 본선: 시간표 미등록"/);
-  assert.match(page, /https:\/\/railway\.jr-central\.co\.jp\/time-schedule\/search\//);
-  assert.match(page, /https:\/\/traininfo\.jr-central\.co\.jp\/zairaisen\/index\.html/);
+  // Do not reintroduce source websites as a fallback for missing SQL plans.
+  const notice = page.split('function updateOfficialRuninfoSource(lineId) {')[1]
+    .split('var _detailLoadRequestedFor = null;')[0];
+  for (const line of ['TokaidoCentral', 'Bantan', 'KakogawaLine', 'Fukuchiyama']) {
+    assert.ok(notice.includes('lineId === "' + line + '"'), line + ' notice retained');
+  }
+  assert.doesNotMatch(notice, /https?:\/\//);
+  assert.doesNotMatch(notice, /document\.createElement\(["']a["']\)|\.href\s*=|\.target\s*=/);
 });
 
 test('existing train-runs endpoint reads exact line key, not the ambiguous Tokaido alias', () => {

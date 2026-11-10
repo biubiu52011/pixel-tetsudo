@@ -119,3 +119,11 @@ JR-East 两组各 692 个模板，**两者不是 JR-Central 的候选时刻表**
 - 新迁移已在生产数据库执行，`line_stations` 实际 84 行、唯一站序 84 个（0–83）；三处 scoped IDs 的坐标与 canonical 一致，其他线路原 ID 与坐标未改。
 - `published_timetable_full_day_acceptance` 现为 `registered_station_count=84`，但 `raw_coverage_status=missing_all_plans`、`acceptance_status=blocked_no_published_trains`、`full_day_timetable_acceptance_passed=false`；平日／土休日来源车次数均为 0。
 - `tests/tokaido-central-station-registry.test.cjs` 三项回归已按 GitHub 主分支的实际文件内容检验通过；尚未进行浏览器 DOM、页面性能及完整仓库 Node 测试。
+
+## 2026-11-11 修正：禁止用外部导航代替站内时刻表
+
+- 2026-11-10 的 `34f7e0d` 在 `js/trains-page.js` 中将 JR 东海官方时刻表和运行信息网址直接做成详情页外链。这不是将时刻表导入 Supabase，也不是原定列车位置显示的替代方案；本次移除这些站内外链，保留四语种「未收录／未验证」说明。
+- 同时清除播但线、加古川线、福知山线同一详情组件中的「缺少资料则跳转官方网页」逻辑。来源仍仅供资料/审计使用，不会据此生成班次或声称实时。
+- 已同步修正原先要求外链存在的回归断言，并为四条线路增加「不得生成外部链接」测试保护。
+- 生产 SQL 已有本线路 84 条 `line_stations`，但 `manual_timetable_templates`、对应 `train_timetables`、`train_runs` 和 `timetable_ingest_jobs` 对 `TokaidoCentral` 均为 0；来源登记仍为 `discovered`，完整时刻表验收仍为 `missing_all_plans`。**本次修复只纠正错误兜底与测试，不宣称时刻表已入库。**
+- 后续入库继续沿用现有 `manual_timetable_templates` → `manual_timetable_template_stops` → `train_timetables` / `train-runs` 链路。由于版本、逐车到发和使用许可尚未核准，不录入推测数据，不把 JR-East 的东海道线记录冒充 JR-Central。
