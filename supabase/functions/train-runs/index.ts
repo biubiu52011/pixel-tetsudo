@@ -3433,6 +3433,26 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     const bySource=new Map(roster.map((r:any)=>[Number(r.source_template_id),r]));
     if(bySource.size!==92)
       throw new Error("SOTETSU_JR_2611_DUPLICATE_SOURCE_ID");
+    // Dated four-stop clock evidence is independent of the fleet candidates.
+    // Keep the source signatures in SQL: no second timetable owner.
+    const [{data:clockRows,error:clockError},{data:datedRows,error:datedError}]=
+      await Promise.all([
+        db.from("published_sotetsu_jr_2611_clock_proof")
+          .select("source_template_id,train_number,calendar_urn,direction_urn,source_stop_signature,official_timetable_url,evidence_scope,actual_vehicle_confirmed")
+          .eq("edition","2611").eq("calendar_urn",selectedCalendar),
+        db.from("published_sotetsu_jr_2611_dated_clock_variation")
+          .select("source_template_id,train_number,service_date,station_times,time_role,official_timetable_url")
+          .eq("service_date",serviceDate)
+      ]);
+    if(clockError||datedError)throw clockError||datedError;
+    if((clockRows||[]).length!==92)
+      throw new Error("SOTETSU_JR_2611_CLOCK_PROOF_UNAVAILABLE");
+    const clocksBySource=new Map((clockRows||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    const datedBySource=new Map((datedRows||[]).map((p:any)=>
+      [Number(p.source_template_id),p]));
+    if(clocksBySource.size!==92||datedBySource.size!==(datedRows||[]).length)
+      throw new Error("SOTETSU_JR_2611_DUPLICATE_CLOCK_PROOF");
     const north=["HazawaYokohamaKokudai","MusashiKosugi","NishiOi","Osaki"];
     const south=north.slice().reverse();
     for(let i=result.length-1;i>=0;i--){
@@ -3464,14 +3484,62 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
           "../images/列车/JR東日本/JR東日本_E233系_7000番台.png|../images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png"){
         result.splice(i,1);continue;
       }
+      const clock:any=clocksBySource.get(Number(run.source_template_id));
+      const signature=run.stops.map((st:any)=>
+        String(st.station_key||"")+"|"+
+        String(st.arrival_time||"")+"|"+
+        String(st.departure_time||"")).join(";");
+      if(!clock||clock.train_number!==number||
+         clock.calendar_urn!==selectedCalendar||
+         clock.direction_urn!==run.rail_direction||
+         clock.source_stop_signature!==signature||
+         clock.official_timetable_url!==pub.timetable_index_url||
+         clock.evidence_scope!=="odpt_four_stops_jreast_2611_base_clock_crosscheck"||
+         clock.actual_vehicle_confirmed!==false)
+        throw new Error("SOTETSU_JR_2611_SOURCE_CLOCK_DRIFT");
+      // JR East publishes date-scoped exceptions on November 7/22.
+      // Apply the four exact public station clocks to the existing SQL
+      // service. Do not infer unpublished intermediate ARRIVAL minutes.
+      const dated:any=datedBySource.get(Number(run.source_template_id));
+      if(dated){
+        if(dated.train_number!==number||
+           String(dated.service_date).slice(0,10)!==serviceDate||
+           dated.time_role!=="four_published_departure_terminal_clocks"||
+           dated.official_timetable_url!==pub.timetable_index_url||
+           !Array.isArray(dated.station_times)||
+           dated.station_times.length!==4||
+           dated.station_times.some((c:any)=>
+             !/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(String(c))))
+          throw new Error("SOTETSU_JR_2611_DATED_CLOCK_CONFLICT");
+        for(let k=0;k<4;k++){
+          const st:any=run.stops[k],publicClock=dated.station_times[k];
+          if(k===3){
+            st.arrival_time=publicClock;
+            st.arrival_minute=minuteOf(publicClock);
+          }else{
+            if(k>0&&st.departure_time!==publicClock){
+              st.arrival_time=null;st.arrival_minute=null;
+            }
+            st.departure_time=publicClock;
+            st.departure_minute=minuteOf(publicClock);
+          }
+        }
+        run.schedule_exception_date=serviceDate;
+      }
+      run.timetable_validity="date_verified";
+      run.timetable_date_verified=true;
+      run.plan_source=dated?
+        "official-2611-sotetsu-jr-dated-four-stop-variation":
+        "official-2611-sotetsu-jr-four-stop-verified";
+      run.train_number_verification="official-2611-sotetsu-jr-four-stop-clock";
+      run.train_number_source_url=pub.timetable_index_url;
+      // Timetable publication does not confirm the physical E233/12000 set.
       run.vehicle_type_label=null;
       run.vehicle_type_candidates=pub.candidate_models.join(" / ");
       run.vehicle_plan_confirmed=false;
       run.vehicle_artwork_path=null;
       run.vehicle_candidate_artwork_path=null;
       run.vehicle_candidate_artwork_status=null;
-      // Do NOT set official train-number verification: source clocks are
-      // historical, and an exact dated 2611 trainset is not established.
       run.published_number_fleet_reference={
         source:"sql-jreast-sotetsu-jr-2611-source-candidate",
         lineId:"SotetsuJRDirect",trainNumber:number,serviceDate,
@@ -4916,8 +4984,16 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   if (planAuditError) throw planAuditError;
   const auditStatus = String(planAudit?.coverage_status || "unverified");
   const auditIssues = Array.isArray(planAudit?.issues) ? planAudit.issues : [];
+  // The generic coverage audit is source-wide, so never upgrade it for
+  // December or another future timetable merely because 2611 was checked.
+  const sotetsuNovemberComplete=lineId==="SotetsuJRDirect"&&
+    /^2026-11-\d{2}$/.test(serviceDate)&&
+    validRuns.length===92&&validRuns.every((r:any)=>
+      r.timetable_date_verified===true&&
+      r.train_number_verification==="official-2611-sotetsu-jr-four-stop-clock");
   const independentlyVerifiedCoverage =
-    auditStatus === "verified" || auditStatus === "complete";
+    auditStatus === "verified" || auditStatus === "complete" ||
+    sotetsuNovemberComplete;
   const complete = validRuns.length > 0 && omittedIncompleteRuns === 0 &&
     !sourceSampleOnly && independentlyVerifiedCoverage;
   const partial = validRuns.length > 0 && !complete;
