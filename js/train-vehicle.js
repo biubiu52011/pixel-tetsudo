@@ -5479,6 +5479,51 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
     var vehiclePlan = p && p.vehiclePlan;
+    // Kawagoe west: both E231-3000 and 209-3500 share the identical
+    // 2026 working. H service-number suffix has NO unique stock mapping.
+    // Keep two gallery assets as candidates, but never draw either as the
+    // single running train. Confirmed physical realtime sources win.
+    if(p&&!identityConfirmed&&contextLineId==="Kawagoe"&&
+       String(p.positionLineId||p.lineId||"")==="Kawagoe"&&
+       p.positionSource==="supabase-train-run"){
+      var kw=p.sqlPublishedNumberFleetReference||{};
+      var kwModels=["E231系3000番台","209系3500番台"];
+      var kwAssets=[
+       "../images/列车/JR東日本/JR東日本_E231系_3000番台.png",
+       "../images/列车/JR東日本/JR東日本_209系_3500番台.png"];
+      var kwGarage=window.VehicleGaragePngMap;
+      if(artworkFailed!==true&&p.estimated===true&&
+         p.timetableDateVerified===true&&
+         /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate||""))&&
+         kw.source==="sql-jreast-kawagoe-2611-shared-fleet"&&
+         kw.lineId==="Kawagoe"&&
+         kw.trainNumber===p.trainNumber&&kw.serviceDate===p.serviceDate&&
+         kw.referenceOnly===true&&kw.actualVehicleConfirmed===false&&
+         kw.authorizesPNG===false&&kw.singleModelUnresolved===true&&
+         kw.departure2611Verified===true&&
+         kw.fleetEvidenceGrade==="C"&&
+         p.vehicleIdentityStatus==="UNKNOWN"&&
+         p.vehicleResolvedUpstream!==true&&p.vehicleResolvedFromRealtime!==true&&
+         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
+         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
+         Array.isArray(p.plannedVehicleCandidates)&&
+         p.plannedVehicleCandidates.join("|")===kwModels.join("|")&&
+         Array.isArray(kw.candidateModels)&&
+         kw.candidateModels.join("|")===kwModels.join("|")&&
+         Array.isArray(kw.candidateAssets)&&
+         kw.candidateAssets.join("|")===kwAssets.join("|")&&
+         kwGarage&&typeof kwGarage.matchModelPath==="function"&&
+         kwAssets.every(function(path,i){
+          return isGalleryPng(normalizeGalleryPngPath(path))&&
+            kwGarage.matchModelPath(kwModels[i],path,"Kawagoe");
+         })){
+        return {kind:"candidate",iconSrc:"",planned:false,
+          referenceOnly:true,actualVehicleConfirmed:false,
+          candidateModels:kwModels,candidateAssets:kwAssets,
+          illustrationRole:"kawagoe-shared-working-no-single-model"};
+      }
+      return {kind:"unresolved",iconSrc:""};
+    }
     // Mahoroba's 683 series has TWO special 2026 liveries (An'nei/Yukyu).
     // This library contains generic Thunderbird 683 pictures, but NO
     // certified Mahoroba image. Preserve the 683 family text and a neutral
