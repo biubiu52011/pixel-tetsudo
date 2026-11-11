@@ -3475,12 +3475,48 @@
       function route(a,b){return stops.includes(a)&&stops.includes(b);}
       var model="",url="";
       if(suffix==="M"&&type==="Local"&&route("Hamamatsu","Toyohashi")){
-        if([920,921,923,924,926,928,930,931,933,938,940,943,945,947].includes(n))model="315系";
-        else if([927,929,934,936,939,941].includes(n))model="313系";
-        else if([922,925,932,937].includes(n))model="373系";
+        // March 2026 Hamamatsu–Toyohashi published-operation references:
+        // exact public numbers per weekday/holiday diagram, not a continuous
+        // numeric range and never an observed November carset.
+        // The Saturday/Holiday 3943M/3944M substitute for weekday 1943M;
+        // weekday 1950M is not the holiday 5522F rapid.
+        // https://yoke4000.main.jp/jru/hamaW.html
+        // https://yoke4000.main.jp/jru/hamaH.html
+        var hamaSeries={
+          "315系":[
+            920,921,923,924,926,928,930,931,933,938,940,942,943,945,947,948,
+            950,952,953,955,957,958,960,961,962,963,965,966,969,970,971,972,
+            973,976,977,978,979,980,981,984,985,986,987,988,989,992,993,994,
+            995,996,1920,1921,1922,1923,1929,1930,1932,1933,1937,1938,
+            1939,1941,1942,1945,1946,1947,1948
+          ],
+          "313系":[
+            927,929,934,936,939,941,944,946,951,956,959,964,967,974,975,
+            982,983,990,991,997,998,999,1924,1925,1927,1928,1934,1936
+          ],
+          "373系":[922,925,932,937]
+        };
+        if(calendar==="weekday"){
+          hamaSeries["313系"].push(1943,1950);
+        }else{
+          hamaSeries["313系"].push(3943,3944);
+        }
+        Object.keys(hamaSeries).forEach(function(series){
+          if(hamaSeries[series].includes(n))model=series;
+        });
         if(model)url=calendar==="holiday"
           ?"https://yoke4000.main.jp/jru/hamaH.html"
           :"https://yoke4000.main.jp/jru/hamaW.html";
+      }
+      // A through rapid is not a Local M service, and its mapped model is
+      // still only a published formation-family reference for this segment.
+      if(suffix==="F"&&route("Hamamatsu","Toyohashi")&&
+         ((calendar==="weekday"&&n===2303&&type==="SpecialRapid")||
+          (calendar==="holiday"&&n===5101&&type==="SpecialRapid")||
+          (calendar==="holiday"&&n===5522&&type==="Rapid"))){
+        model="313系";
+        url=calendar==="holiday"?"https://yoke4000.main.jp/jru/hamaH.html":
+          "https://yoke4000.main.jp/jru/hamaW.html";
       }
       if(suffix==="F"&&calendar==="holiday"&&route("Ogaki","Maibara")){
         if(type==="Local"){
