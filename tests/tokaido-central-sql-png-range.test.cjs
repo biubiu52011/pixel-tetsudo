@@ -13,7 +13,7 @@ const base={positionSource:'supabase-train-run',estimated:true,
  railDirection:'odpt.RailDirection:Outbound',
  trainType:'odpt.TrainType:JR-Central.Local',
  scheduledStopKeys:['Hamamatsu','Toyohashi'],vehiclePlan:null};
-const match=(n,extra={})=>window.TrainNumberPngRanges.match(n,'TokaidoCentral',{...base,...extra});
+const match=(n,extra={})=>window.TrainNumberPngRanges.match(n,'TokaidoCentral',{...base,trainNumber:n,...extra});
 const png=model=>'../images/列车/JR東海/JR東海_'+model+'.png';
 test('M train numbers match indicative Hamamatsu-Toyohashi family only',()=>{
  for(const [num,model] of [['921M','315系'],['923M','315系'],['925M','373系'],
@@ -53,6 +53,7 @@ test('reject incorrect SQL, calendars, lines, trains, candidates and types',()=>
   {plannedVehicleCandidates:['313系']},{realtimeVehicleType:'313系'},
   {vehiclePlan:{status:'PLANNED_MODEL',models:['313系'],sourceUrl:'https://example.org/proof'}}
  ])assert.equal(match('921M',p),null,JSON.stringify(p));
+ assert.equal(match('921M',{trainNumber:'999M'}),null,'source train number must match requested train');
  for(const no of ['0M','100000M','923D','9999M','x'])
   assert.equal(match(no),null,no);
  const h={serviceDate:'2026-11-15',calendarType:'holiday',scheduledStopKeys:['Ogaki','Maibara']};
