@@ -2540,7 +2540,8 @@
               (lineId==="ChuoCentral"
                 ?(tt["odpt:railway"]==="odpt.Railway:JR-Central.Chuo"&&
                   /^[1-9][0-9]{0,4}M$/.test(String(publicTrainNumber||"")))
-                :/^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||"")))&&
+                :(tt["odpt:railway"]==="odpt.Railway:JR-Central.Tokaido"&&
+                  /^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||""))))&&
               String(publicTrainNumber||"")===String(run.trainNumber||"")) ||
  Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
