@@ -8,7 +8,7 @@ const sql=fs.readFileSync('supabase/migrations/20261111110000_jr_central_all_con
 const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
 const png=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
 
-const counts={"TokaidoCentral":84,"ChuoCentral":40,"Gotemba":19,"Minobu":39,"Iida":94,"Takayama":45,"Taita":8,"Taketoyo":10,"KansaiCentral":18,"KiseiCentral":41,"Sangu":11,"Meisho":15,"MinoAkasaka":3};
+const counts={"TokaidoCentral":84,"ChuoCentral":40,"Gotemba":19,"Minobu":39,"Iida":94,"Takayama":45,"Taita":8,"Taketoyo":10,"KansaiCentral":18,"KiseiCentral":41,"Sangu":10,"Meisho":15,"MinoAkasaka":3};
 const suffixes={"TokaidoCentral":"Tokaido","ChuoCentral":"Chuo","Gotemba":"Gotemba","Minobu":"Minobu","Iida":"Iida","Takayama":"Takayama","Taita":"Taita","Taketoyo":"Taketoyo","KansaiCentral":"Kansai","KiseiCentral":"Kisei","Sangu":"Sangu","Meisho":"Meisho","MinoAkasaka":"MinoAkasaka"};
 const lines=Object.keys(counts);
 
@@ -28,14 +28,15 @@ test('every conventional line has complete unique source station order; 11 are b
     assert.equal(actual.stations.length,counts[line],line);
     assert.equal(new Set(actual.stations).size,counts[line],line);
     assert.ok(actual.stations.every(st=>i18n[st]&&i18n[st].ja),line+' names');
-    assert.ok(sql.includes("('"+line+"',"+counts[line]+",'"+suffixes[line]+"')"),line+' importer');
+    assert.ok(sql.includes("('"+line+"',"+(line==='Sangu'?11:counts[line])+",'"+suffixes[line]+"')"),line+' historical importer');
     if(line==='ChuoCentral'||line==='TokaidoCentral') continue;
     additions+=counts[line];
+    if(line==='Sangu') continue; // The forward migration removes the retired stop.
     for(const [index,station] of actual.stations.entries()){
       assert.ok(sql.includes("('"+line+"', "+index+", '"+station+"')"),line+' '+index);
     }
   }
-  assert.equal(additions,303);
+  assert.equal(additions,302);
   assert.match(sql,/CREATE TEMP TABLE _jrc_expected_stations/);
   assert.match(sql,/JRC_ALL_LINES_STATION_BASELINE_CONFLICT/);
   assert.match(sql,/JRC_ALL_LINES_STATION_VERIFY_FAILED/);

@@ -14916,378 +14916,1491 @@
       "lat": 33.271818,
       "lng": 129.876697
     },
-    "JRC-TokaidoCentral-002": {},
-    "JRC-TokaidoCentral-005": {},
-    "JRC-TokaidoCentral-006": {},
-    "JRC-TokaidoCentral-007": {},
-    "JRC-TokaidoCentral-008": {},
-    "JRC-TokaidoCentral-009": {},
-    "JRC-TokaidoCentral-010": {},
-    "JRC-TokaidoCentral-011": {},
-    "JRC-TokaidoCentral-012": {},
-    "JRC-TokaidoCentral-013": {},
-    "JRC-TokaidoCentral-014": {},
-    "JRC-TokaidoCentral-016": {},
-    "JRC-TokaidoCentral-017": {},
-    "JRC-TokaidoCentral-019": {},
-    "JRC-TokaidoCentral-020": {},
-    "JRC-TokaidoCentral-021": {},
-    "JRC-TokaidoCentral-022": {},
-    "JRC-TokaidoCentral-023": {},
-    "JRC-TokaidoCentral-024": {},
-    "JRC-TokaidoCentral-026": {},
-    "JRC-TokaidoCentral-029": {},
-    "JRC-TokaidoCentral-030": {},
-    "JRC-TokaidoCentral-031": {},
-    "JRC-TokaidoCentral-032": {},
-    "JRC-TokaidoCentral-033": {},
-    "JRC-TokaidoCentral-034": {},
-    "JRC-TokaidoCentral-036": {},
-    "JRC-TokaidoCentral-037": {},
-    "JRC-TokaidoCentral-038": {},
-    "JRC-TokaidoCentral-039": {},
-    "JRC-TokaidoCentral-040": {},
-    "JRC-TokaidoCentral-041": {},
-    "JRC-TokaidoCentral-042": {},
-    "JRC-TokaidoCentral-044": {},
-    "JRC-TokaidoCentral-045": {},
-    "JRC-TokaidoCentral-046": {},
-    "JRC-TokaidoCentral-047": {},
-    "JRC-TokaidoCentral-048": {},
-    "JRC-TokaidoCentral-049": {},
-    "JRC-TokaidoCentral-050": {},
-    "JRC-TokaidoCentral-051": {},
-    "JRC-TokaidoCentral-052": {},
-    "JRC-TokaidoCentral-053": {},
-    "JRC-TokaidoCentral-054": {},
-    "JRC-TokaidoCentral-055": {},
-    "JRC-TokaidoCentral-057": {},
-    "JRC-TokaidoCentral-058": {},
-    "JRC-TokaidoCentral-059": {},
-    "JRC-TokaidoCentral-060": {},
-    "JRC-TokaidoCentral-061": {},
-    "JRC-TokaidoCentral-062": {},
-    "JRC-TokaidoCentral-063": {},
-    "JRC-TokaidoCentral-064": {},
-    "JRC-TokaidoCentral-065": {},
-    "JRC-TokaidoCentral-066": {},
-    "JRC-TokaidoCentral-067": {},
-    "JRC-TokaidoCentral-068": {},
-    "JRC-TokaidoCentral-070": {},
-    "JRC-TokaidoCentral-071": {},
-    "JRC-TokaidoCentral-072": {},
-    "JRC-TokaidoCentral-073": {},
-    "JRC-TokaidoCentral-074": {},
-    "JRC-TokaidoCentral-075": {},
-    "JRC-TokaidoCentral-076": {},
-    "JRC-TokaidoCentral-077": {},
-    "JRC-TokaidoCentral-078": {},
-    "JRC-TokaidoCentral-079": {},
-    "JRC-TokaidoCentral-080": {},
-    "JRC-TokaidoCentral-082": {},
-    "JRC-TokaidoCentral-083": {},
-    "JRC-ChuoCentral-003": {},
-    "JRC-ChuoCentral-004": {},
-    "JRC-ChuoCentral-005": {},
-    "JRC-ChuoCentral-006": {},
-    "JRC-ChuoCentral-007": {},
-    "JRC-ChuoCentral-008": {},
-    "JRC-ChuoCentral-009": {},
-    "JRC-ChuoCentral-010": {},
-    "JRC-ChuoCentral-011": {},
-    "JRC-ChuoCentral-012": {},
-    "JRC-ChuoCentral-013": {},
-    "JRC-ChuoCentral-014": {},
-    "JRC-ChuoCentral-015": {},
-    "JRC-ChuoCentral-016": {},
-    "JRC-ChuoCentral-017": {},
-    "JRC-ChuoCentral-018": {},
-    "JRC-ChuoCentral-019": {},
-    "JRC-ChuoCentral-020": {},
-    "JRC-ChuoCentral-021": {},
-    "JRC-ChuoCentral-022": {},
-    "JRC-ChuoCentral-023": {},
-    "JRC-ChuoCentral-024": {},
-    "JRC-ChuoCentral-025": {},
-    "JRC-ChuoCentral-026": {},
-    "JRC-ChuoCentral-028": {},
-    "JRC-ChuoCentral-029": {},
-    "JRC-ChuoCentral-030": {},
-    "JRC-ChuoCentral-031": {},
-    "JRC-ChuoCentral-032": {},
-    "JRC-ChuoCentral-033": {},
-    "JRC-ChuoCentral-034": {},
-    "JRC-ChuoCentral-035": {},
-    "JRC-ChuoCentral-036": {},
-    "JRC-ChuoCentral-037": {},
-    "JRC-ChuoCentral-038": {},
-    "JRC-ChuoCentral-039": {},
-    "JRC-KiseiCentral-002": {},
-    "JRC-KiseiCentral-003": {},
-    "JRC-KiseiCentral-004": {},
-    "JRC-KiseiCentral-005": {},
-    "JRC-KiseiCentral-006": {},
-    "JRC-KiseiCentral-007": {},
-    "JRC-KiseiCentral-008": {},
-    "JRC-KiseiCentral-009": {},
-    "JRC-KiseiCentral-010": {},
-    "JRC-KiseiCentral-011": {},
-    "JRC-KiseiCentral-012": {},
-    "JRC-KiseiCentral-013": {},
-    "JRC-KiseiCentral-014": {},
-    "JRC-KiseiCentral-015": {},
-    "JRC-KiseiCentral-016": {},
-    "JRC-KiseiCentral-017": {},
-    "JRC-KiseiCentral-018": {},
-    "JRC-KiseiCentral-019": {},
-    "JRC-KiseiCentral-020": {},
-    "JRC-KiseiCentral-021": {},
-    "JRC-KiseiCentral-022": {},
-    "JRC-KiseiCentral-023": {},
-    "JRC-KiseiCentral-024": {},
-    "JRC-KiseiCentral-025": {},
-    "JRC-KiseiCentral-026": {},
-    "JRC-KiseiCentral-027": {},
-    "JRC-KiseiCentral-028": {},
-    "JRC-KiseiCentral-029": {},
-    "JRC-KiseiCentral-030": {},
-    "JRC-KiseiCentral-031": {},
-    "JRC-KiseiCentral-032": {},
-    "JRC-KiseiCentral-033": {},
-    "JRC-KiseiCentral-034": {},
-    "JRC-KiseiCentral-035": {},
-    "JRC-KiseiCentral-036": {},
-    "JRC-KiseiCentral-037": {},
-    "JRC-KiseiCentral-038": {},
-    "JRC-KiseiCentral-039": {},
-    "JRC-KiseiCentral-040": {},
-    "JRC-Takayama-002": {},
-    "JRC-Takayama-003": {},
-    "JRC-Takayama-004": {},
-    "JRC-Takayama-005": {},
-    "JRC-Takayama-006": {},
-    "JRC-Takayama-007": {},
-    "JRC-Takayama-008": {},
-    "JRC-Takayama-009": {},
-    "JRC-Takayama-010": {},
-    "JRC-Takayama-011": {},
-    "JRC-Takayama-012": {},
-    "JRC-Takayama-013": {},
-    "JRC-Takayama-014": {},
-    "JRC-Takayama-015": {},
-    "JRC-Takayama-016": {},
-    "JRC-Takayama-017": {},
-    "JRC-Takayama-018": {},
-    "JRC-Takayama-019": {},
-    "JRC-Takayama-020": {},
-    "JRC-Takayama-021": {},
-    "JRC-Takayama-022": {},
-    "JRC-Takayama-023": {},
-    "JRC-Takayama-024": {},
-    "JRC-Takayama-025": {},
-    "JRC-Takayama-026": {},
-    "JRC-Takayama-027": {},
-    "JRC-Takayama-028": {},
-    "JRC-Takayama-029": {},
-    "JRC-Takayama-030": {},
-    "JRC-Takayama-031": {},
-    "JRC-Takayama-032": {},
-    "JRC-Takayama-033": {},
-    "JRC-Takayama-034": {},
-    "JRC-Takayama-035": {},
-    "JRC-Takayama-036": {},
-    "JRC-Takayama-037": {},
-    "JRC-Takayama-038": {},
-    "JRC-Takayama-039": {},
-    "JRC-Takayama-040": {},
-    "JRC-Takayama-041": {},
-    "JRC-Takayama-042": {},
-    "JRC-Takayama-043": {},
-    "JRC-Takayama-044": {},
-    "JRC-Taketoyo-002": {},
-    "JRC-Taketoyo-003": {},
-    "JRC-Taketoyo-004": {},
-    "JRC-Taketoyo-005": {},
-    "JRC-Taketoyo-006": {},
-    "JRC-Taketoyo-007": {},
-    "JRC-Taketoyo-008": {},
-    "JRC-Taketoyo-009": {},
-    "JRC-Taketoyo-010": {},
-    "JRC-Taita-002": {},
-    "JRC-Taita-003": {},
-    "JRC-Taita-004": {},
-    "JRC-Taita-005": {},
-    "JRC-Taita-006": {},
-    "JRC-Taita-007": {},
-    "JRC-Gotemba-002": {},
-    "JRC-Gotemba-003": {},
-    "JRC-Gotemba-004": {},
-    "JRC-Gotemba-005": {},
-    "JRC-Gotemba-006": {},
-    "JRC-Gotemba-007": {},
-    "JRC-Gotemba-008": {},
-    "JRC-Gotemba-009": {},
-    "JRC-Gotemba-011": {},
-    "JRC-Gotemba-012": {},
-    "JRC-Gotemba-013": {},
-    "JRC-Gotemba-014": {},
-    "JRC-Gotemba-015": {},
-    "JRC-Gotemba-016": {},
-    "JRC-Gotemba-017": {},
-    "JRC-Gotemba-018": {},
-    "JRC-Minobu-002": {},
-    "JRC-Minobu-003": {},
-    "JRC-Minobu-004": {},
-    "JRC-Minobu-006": {},
-    "JRC-Minobu-007": {},
-    "JRC-Minobu-008": {},
-    "JRC-Minobu-009": {},
-    "JRC-Minobu-010": {},
-    "JRC-Minobu-011": {},
-    "JRC-Minobu-012": {},
-    "JRC-Minobu-013": {},
-    "JRC-Minobu-014": {},
-    "JRC-Minobu-015": {},
-    "JRC-Minobu-016": {},
-    "JRC-Minobu-017": {},
-    "JRC-Minobu-018": {},
-    "JRC-Minobu-019": {},
-    "JRC-Minobu-020": {},
-    "JRC-Minobu-021": {},
-    "JRC-Minobu-022": {},
-    "JRC-Minobu-023": {},
-    "JRC-Minobu-024": {},
-    "JRC-Minobu-025": {},
-    "JRC-Minobu-026": {},
-    "JRC-Minobu-027": {},
-    "JRC-Minobu-028": {},
-    "JRC-Minobu-029": {},
-    "JRC-Minobu-030": {},
-    "JRC-Minobu-031": {},
-    "JRC-Minobu-032": {},
-    "JRC-Minobu-033": {},
-    "JRC-Minobu-034": {},
-    "JRC-Minobu-035": {},
-    "JRC-Minobu-036": {},
-    "JRC-Minobu-037": {},
-    "JRC-Minobu-038": {},
-    "JRC-Iida-002": {},
-    "JRC-Iida-003": {},
-    "JRC-Iida-004": {},
-    "JRC-Iida-005": {},
-    "JRC-Iida-006": {},
-    "JRC-Iida-007": {},
-    "JRC-Iida-008": {},
-    "JRC-Iida-009": {},
-    "JRC-Iida-010": {},
-    "JRC-Iida-011": {},
-    "JRC-Iida-012": {},
-    "JRC-Iida-013": {},
-    "JRC-Iida-014": {},
-    "JRC-Iida-015": {},
-    "JRC-Iida-016": {},
-    "JRC-Iida-017": {},
-    "JRC-Iida-018": {},
-    "JRC-Iida-019": {},
-    "JRC-Iida-020": {},
-    "JRC-Iida-021": {},
-    "JRC-Iida-022": {},
-    "JRC-Iida-023": {},
-    "JRC-Iida-024": {},
-    "JRC-Iida-025": {},
-    "JRC-Iida-026": {},
-    "JRC-Iida-027": {},
-    "JRC-Iida-028": {},
-    "JRC-Iida-029": {},
-    "JRC-Iida-030": {},
-    "JRC-Iida-031": {},
-    "JRC-Iida-032": {},
-    "JRC-Iida-033": {},
-    "JRC-Iida-034": {},
-    "JRC-Iida-035": {},
-    "JRC-Iida-036": {},
-    "JRC-Iida-037": {},
-    "JRC-Iida-038": {},
-    "JRC-Iida-039": {},
-    "JRC-Iida-040": {},
-    "JRC-Iida-041": {},
-    "JRC-Iida-042": {},
-    "JRC-Iida-043": {},
-    "JRC-Iida-044": {},
-    "JRC-Iida-045": {},
-    "JRC-Iida-046": {},
-    "JRC-Iida-047": {},
-    "JRC-Iida-048": {},
-    "JRC-Iida-049": {},
-    "JRC-Iida-050": {},
-    "JRC-Iida-051": {},
-    "JRC-Iida-052": {},
-    "JRC-Iida-053": {},
-    "JRC-Iida-054": {},
-    "JRC-Iida-055": {},
-    "JRC-Iida-056": {},
-    "JRC-Iida-057": {},
-    "JRC-Iida-058": {},
-    "JRC-Iida-059": {},
-    "JRC-Iida-060": {},
-    "JRC-Iida-061": {},
-    "JRC-Iida-062": {},
-    "JRC-Iida-063": {},
-    "JRC-Iida-064": {},
-    "JRC-Iida-065": {},
-    "JRC-Iida-066": {},
-    "JRC-Iida-067": {},
-    "JRC-Iida-068": {},
-    "JRC-Iida-069": {},
-    "JRC-Iida-070": {},
-    "JRC-Iida-071": {},
-    "JRC-Iida-072": {},
-    "JRC-Iida-073": {},
-    "JRC-Iida-074": {},
-    "JRC-Iida-075": {},
-    "JRC-Iida-076": {},
-    "JRC-Iida-077": {},
-    "JRC-Iida-078": {},
-    "JRC-Iida-079": {},
-    "JRC-Iida-080": {},
-    "JRC-Iida-081": {},
-    "JRC-Iida-082": {},
-    "JRC-Iida-083": {},
-    "JRC-Iida-084": {},
-    "JRC-Iida-085": {},
-    "JRC-Iida-086": {},
-    "JRC-Iida-087": {},
-    "JRC-Iida-088": {},
-    "JRC-Iida-089": {},
-    "JRC-Iida-090": {},
-    "JRC-Iida-091": {},
-    "JRC-Iida-092": {},
-    "JRC-Iida-093": {},
-    "JRC-Sangu-002": {},
-    "JRC-Sangu-003": {},
-    "JRC-Sangu-004": {},
-    "JRC-Sangu-005": {},
-    "JRC-Sangu-006": {},
-    "JRC-Sangu-007": {},
-    "JRC-Sangu-008": {},
-    "JRC-Sangu-009": {},
+    "JRC-TokaidoCentral-002": {
+      "lat": 35.108716,
+      "lng": 138.970984
+    },
+    "JRC-TokaidoCentral-005": {
+      "lat": 35.11837,
+      "lng": 138.818673
+    },
+    "JRC-TokaidoCentral-006": {
+      "lat": 35.124935,
+      "lng": 138.793345
+    },
+    "JRC-TokaidoCentral-007": {
+      "lat": 35.13627,
+      "lng": 138.745485
+    },
+    "JRC-TokaidoCentral-008": {
+      "lat": 35.143885,
+      "lng": 138.70264
+    },
+    "JRC-TokaidoCentral-009": {
+      "lat": 35.15127,
+      "lng": 138.651848
+    },
+    "JRC-TokaidoCentral-010": {
+      "lat": 35.14113,
+      "lng": 138.61871
+    },
+    "JRC-TokaidoCentral-011": {
+      "lat": 35.119414,
+      "lng": 138.608102
+    },
+    "JRC-TokaidoCentral-012": {
+      "lat": 35.114037,
+      "lng": 138.58283
+    },
+    "JRC-TokaidoCentral-013": {
+      "lat": 35.097125,
+      "lng": 138.55282
+    },
+    "JRC-TokaidoCentral-014": {
+      "lat": 35.052515,
+      "lng": 138.521905
+    },
+    "JRC-TokaidoCentral-016": {
+      "lat": 35.002293,
+      "lng": 138.441023
+    },
+    "JRC-TokaidoCentral-017": {
+      "lat": 34.984077,
+      "lng": 138.41292
+    },
+    "JRC-TokaidoCentral-019": {
+      "lat": 34.94121,
+      "lng": 138.3641
+    },
+    "JRC-TokaidoCentral-020": {
+      "lat": 34.921875,
+      "lng": 138.35932
+    },
+    "JRC-TokaidoCentral-021": {
+      "lat": 34.872285,
+      "lng": 138.31848
+    },
+    "JRC-TokaidoCentral-022": {
+      "lat": 34.859805,
+      "lng": 138.285595
+    },
+    "JRC-TokaidoCentral-023": {
+      "lat": 34.84957,
+      "lng": 138.25287
+    },
+    "JRC-TokaidoCentral-024": {
+      "lat": 34.836483,
+      "lng": 138.203843
+    },
+    "JRC-TokaidoCentral-026": {
+      "lat": 34.819235,
+      "lng": 138.125825
+    },
+    "JRC-TokaidoCentral-029": {
+      "lat": 34.752455,
+      "lng": 137.961845
+    },
+    "JRC-TokaidoCentral-030": {
+      "lat": 34.741435,
+      "lng": 137.925995
+    },
+    "JRC-TokaidoCentral-031": {
+      "lat": 34.718659,
+      "lng": 137.885632
+    },
+    "JRC-TokaidoCentral-032": {
+      "lat": 34.710215,
+      "lng": 137.85227
+    },
+    "JRC-TokaidoCentral-033": {
+      "lat": 34.712085,
+      "lng": 137.8198
+    },
+    "JRC-TokaidoCentral-034": {
+      "lat": 34.717065,
+      "lng": 137.779405
+    },
+    "JRC-TokaidoCentral-036": {
+      "lat": 34.690425,
+      "lng": 137.681345
+    },
+    "JRC-TokaidoCentral-037": {
+      "lat": 34.68569,
+      "lng": 137.62633
+    },
+    "JRC-TokaidoCentral-038": {
+      "lat": 34.690012,
+      "lng": 137.603414
+    },
+    "JRC-TokaidoCentral-039": {
+      "lat": 34.694275,
+      "lng": 137.568823
+    },
+    "JRC-TokaidoCentral-040": {
+      "lat": 34.71677,
+      "lng": 137.54619
+    },
+    "JRC-TokaidoCentral-041": {
+      "lat": 34.72326,
+      "lng": 137.484455
+    },
+    "JRC-TokaidoCentral-042": {
+      "lat": 34.725795,
+      "lng": 137.43887
+    },
+    "JRC-TokaidoCentral-044": {
+      "lat": 34.797013,
+      "lng": 137.35273
+    },
+    "JRC-TokaidoCentral-045": {
+      "lat": 34.812585,
+      "lng": 137.316585
+    },
+    "JRC-TokaidoCentral-046": {
+      "lat": 34.815772,
+      "lng": 137.282956
+    },
+    "JRC-TokaidoCentral-047": {
+      "lat": 34.818568,
+      "lng": 137.247753
+    },
+    "JRC-TokaidoCentral-048": {
+      "lat": 34.822736,
+      "lng": 137.227378
+    },
+    "JRC-TokaidoCentral-049": {
+      "lat": 34.825427,
+      "lng": 137.201503
+    },
+    "JRC-TokaidoCentral-050": {
+      "lat": 34.836433,
+      "lng": 137.176548
+    },
+    "JRC-TokaidoCentral-051": {
+      "lat": 34.859653,
+      "lng": 137.164463
+    },
+    "JRC-TokaidoCentral-052": {
+      "lat": 34.888043,
+      "lng": 137.160271
+    },
+    "JRC-TokaidoCentral-053": {
+      "lat": 34.925783,
+      "lng": 137.157233
+    },
+    "JRC-TokaidoCentral-054": {
+      "lat": 34.94662,
+      "lng": 137.123155
+    },
+    "JRC-TokaidoCentral-055": {
+      "lat": 34.96044,
+      "lng": 137.08642
+    },
+    "JRC-TokaidoCentral-057": {
+      "lat": 34.977355,
+      "lng": 137.043635
+    },
+    "JRC-TokaidoCentral-058": {
+      "lat": 34.9835,
+      "lng": 137.028177
+    },
+    "JRC-TokaidoCentral-059": {
+      "lat": 34.990805,
+      "lng": 137.00971
+    },
+    "JRC-TokaidoCentral-060": {
+      "lat": 34.998235,
+      "lng": 136.99054
+    },
+    "JRC-TokaidoCentral-061": {
+      "lat": 35.008695,
+      "lng": 136.961805
+    },
+    "JRC-TokaidoCentral-062": {
+      "lat": 35.035365,
+      "lng": 136.95458
+    },
+    "JRC-TokaidoCentral-063": {
+      "lat": 35.054448,
+      "lng": 136.94872
+    },
+    "JRC-TokaidoCentral-064": {
+      "lat": 35.0691,
+      "lng": 136.94028
+    },
+    "JRC-TokaidoCentral-065": {
+      "lat": 35.095317,
+      "lng": 136.926227
+    },
+    "JRC-TokaidoCentral-066": {
+      "lat": 35.129803,
+      "lng": 136.910675
+    },
+    "JRC-TokaidoCentral-067": {
+      "lat": 35.142773,
+      "lng": 136.900897
+    },
+    "JRC-TokaidoCentral-068": {
+      "lat": 35.147048,
+      "lng": 136.891017
+    },
+    "JRC-TokaidoCentral-070": {
+      "lat": 35.19953,
+      "lng": 136.861463
+    },
+    "JRC-TokaidoCentral-071": {
+      "lat": 35.225477,
+      "lng": 136.83451
+    },
+    "JRC-TokaidoCentral-072": {
+      "lat": 35.253097,
+      "lng": 136.82093
+    },
+    "JRC-TokaidoCentral-073": {
+      "lat": 35.302,
+      "lng": 136.79738
+    },
+    "JRC-TokaidoCentral-074": {
+      "lat": 35.347993,
+      "lng": 136.781163
+    },
+    "JRC-TokaidoCentral-075": {
+      "lat": 35.409533,
+      "lng": 136.75656
+    },
+    "JRC-TokaidoCentral-076": {
+      "lat": 35.404525,
+      "lng": 136.72326
+    },
+    "JRC-TokaidoCentral-077": {
+      "lat": 35.396265,
+      "lng": 136.693635
+    },
+    "JRC-TokaidoCentral-078": {
+      "lat": 35.367105,
+      "lng": 136.617965
+    },
+    "JRC-TokaidoCentral-079": {
+      "lat": 35.369543,
+      "lng": 136.530825
+    },
+    "JRC-TokaidoCentral-080": {
+      "lat": 35.36372,
+      "lng": 136.470137
+    },
+    "JRC-TokaidoCentral-082": {
+      "lat": 35.359077,
+      "lng": 136.374018
+    },
+    "JRC-TokaidoCentral-083": {
+      "lat": 35.327705,
+      "lng": 136.34519
+    },
+    "JRC-ChuoCentral-003": {
+      "lat": 35.156995,
+      "lng": 136.918175
+    },
+    "JRC-ChuoCentral-004": {
+      "lat": 35.170925,
+      "lng": 136.931095
+    },
+    "JRC-ChuoCentral-005": {
+      "lat": 35.18947,
+      "lng": 136.93718
+    },
+    "JRC-ChuoCentral-006": {
+      "lat": 35.20604,
+      "lng": 136.950238
+    },
+    "JRC-ChuoCentral-007": {
+      "lat": 35.2299,
+      "lng": 136.95646
+    },
+    "JRC-ChuoCentral-008": {
+      "lat": 35.242963,
+      "lng": 136.984953
+    },
+    "JRC-ChuoCentral-009": {
+      "lat": 35.256595,
+      "lng": 137.010465
+    },
+    "JRC-ChuoCentral-010": {
+      "lat": 35.2644,
+      "lng": 137.043255
+    },
+    "JRC-ChuoCentral-011": {
+      "lat": 35.27797,
+      "lng": 137.080945
+    },
+    "JRC-ChuoCentral-012": {
+      "lat": 35.303827,
+      "lng": 137.10175
+    },
+    "JRC-ChuoCentral-013": {
+      "lat": 35.334835,
+      "lng": 137.120285
+    },
+    "JRC-ChuoCentral-014": {
+      "lat": 35.359737,
+      "lng": 137.182133
+    },
+    "JRC-ChuoCentral-015": {
+      "lat": 35.369115,
+      "lng": 137.251915
+    },
+    "JRC-ChuoCentral-016": {
+      "lat": 35.411235,
+      "lng": 137.30523
+    },
+    "JRC-ChuoCentral-017": {
+      "lat": 35.43793,
+      "lng": 137.354115
+    },
+    "JRC-ChuoCentral-018": {
+      "lat": 35.45509,
+      "lng": 137.407795
+    },
+    "JRC-ChuoCentral-019": {
+      "lat": 35.479255,
+      "lng": 137.450355
+    },
+    "JRC-ChuoCentral-020": {
+      "lat": 35.500147,
+      "lng": 137.50281
+    },
+    "JRC-ChuoCentral-021": {
+      "lat": 35.52532,
+      "lng": 137.530058
+    },
+    "JRC-ChuoCentral-022": {
+      "lat": 35.574577,
+      "lng": 137.531177
+    },
+    "JRC-ChuoCentral-023": {
+      "lat": 35.588233,
+      "lng": 137.54903
+    },
+    "JRC-ChuoCentral-024": {
+      "lat": 35.599043,
+      "lng": 137.6087
+    },
+    "JRC-ChuoCentral-025": {
+      "lat": 35.645302,
+      "lng": 137.617562
+    },
+    "JRC-ChuoCentral-026": {
+      "lat": 35.67304,
+      "lng": 137.636155
+    },
+    "JRC-ChuoCentral-028": {
+      "lat": 35.69785,
+      "lng": 137.69494
+    },
+    "JRC-ChuoCentral-029": {
+      "lat": 35.73294,
+      "lng": 137.714325
+    },
+    "JRC-ChuoCentral-030": {
+      "lat": 35.784075,
+      "lng": 137.69327
+    },
+    "JRC-ChuoCentral-031": {
+      "lat": 35.843725,
+      "lng": 137.6934
+    },
+    "JRC-ChuoCentral-032": {
+      "lat": 35.871265,
+      "lng": 137.74153
+    },
+    "JRC-ChuoCentral-033": {
+      "lat": 35.888478,
+      "lng": 137.763934
+    },
+    "JRC-ChuoCentral-034": {
+      "lat": 35.929903,
+      "lng": 137.784283
+    },
+    "JRC-ChuoCentral-035": {
+      "lat": 35.96947,
+      "lng": 137.81621
+    },
+    "JRC-ChuoCentral-036": {
+      "lat": 35.979048,
+      "lng": 137.832285
+    },
+    "JRC-ChuoCentral-037": {
+      "lat": 36.013985,
+      "lng": 137.860945
+    },
+    "JRC-ChuoCentral-038": {
+      "lat": 36.04906,
+      "lng": 137.894855
+    },
+    "JRC-ChuoCentral-039": {
+      "lat": 36.08713,
+      "lng": 137.916815
+    },
+    "JRC-KiseiCentral-002": {
+      "lat": 34.814258,
+      "lng": 136.47961
+    },
+    "JRC-KiseiCentral-003": {
+      "lat": 34.762775,
+      "lng": 136.49939
+    },
+    "JRC-KiseiCentral-004": {
+      "lat": 34.734373,
+      "lng": 136.510723
+    },
+    "JRC-KiseiCentral-005": {
+      "lat": 34.703105,
+      "lng": 136.50451
+    },
+    "JRC-KiseiCentral-006": {
+      "lat": 34.66728,
+      "lng": 136.51262
+    },
+    "JRC-KiseiCentral-007": {
+      "lat": 34.617625,
+      "lng": 136.50759
+    },
+    "JRC-KiseiCentral-008": {
+      "lat": 34.57685,
+      "lng": 136.53579
+    },
+    "JRC-KiseiCentral-009": {
+      "lat": 34.55403,
+      "lng": 136.55355
+    },
+    "JRC-KiseiCentral-010": {
+      "lat": 34.515905,
+      "lng": 136.57311
+    },
+    "JRC-KiseiCentral-011": {
+      "lat": 34.50311,
+      "lng": 136.545957
+    },
+    "JRC-KiseiCentral-012": {
+      "lat": 34.478465,
+      "lng": 136.53904
+    },
+    "JRC-KiseiCentral-013": {
+      "lat": 34.444555,
+      "lng": 136.50934
+    },
+    "JRC-KiseiCentral-014": {
+      "lat": 34.41988,
+      "lng": 136.47365
+    },
+    "JRC-KiseiCentral-015": {
+      "lat": 34.39475,
+      "lng": 136.40904
+    },
+    "JRC-KiseiCentral-016": {
+      "lat": 34.360163,
+      "lng": 136.412043
+    },
+    "JRC-KiseiCentral-017": {
+      "lat": 34.331295,
+      "lng": 136.41112
+    },
+    "JRC-KiseiCentral-018": {
+      "lat": 34.299556,
+      "lng": 136.395724
+    },
+    "JRC-KiseiCentral-019": {
+      "lat": 34.278135,
+      "lng": 136.35924
+    },
+    "JRC-KiseiCentral-020": {
+      "lat": 34.258034,
+      "lng": 136.356564
+    },
+    "JRC-KiseiCentral-021": {
+      "lat": 34.20933,
+      "lng": 136.339935
+    },
+    "JRC-KiseiCentral-022": {
+      "lat": 34.16769,
+      "lng": 136.282385
+    },
+    "JRC-KiseiCentral-023": {
+      "lat": 34.142173,
+      "lng": 136.228717
+    },
+    "JRC-KiseiCentral-024": {
+      "lat": 34.11193,
+      "lng": 136.227127
+    },
+    "JRC-KiseiCentral-025": {
+      "lat": 34.07433,
+      "lng": 136.190155
+    },
+    "JRC-KiseiCentral-026": {
+      "lat": 34.061903,
+      "lng": 136.223013
+    },
+    "JRC-KiseiCentral-027": {
+      "lat": 34.01603,
+      "lng": 136.242665
+    },
+    "JRC-KiseiCentral-028": {
+      "lat": 34.001475,
+      "lng": 136.20255
+    },
+    "JRC-KiseiCentral-029": {
+      "lat": 33.97165,
+      "lng": 136.18974
+    },
+    "JRC-KiseiCentral-030": {
+      "lat": 33.939405,
+      "lng": 136.18083
+    },
+    "JRC-KiseiCentral-031": {
+      "lat": 33.927933,
+      "lng": 136.14419
+    },
+    "JRC-KiseiCentral-032": {
+      "lat": 33.910115,
+      "lng": 136.1381
+    },
+    "JRC-KiseiCentral-033": {
+      "lat": 33.90224,
+      "lng": 136.11807
+    },
+    "JRC-KiseiCentral-034": {
+      "lat": 33.889645,
+      "lng": 136.098775
+    },
+    "JRC-KiseiCentral-035": {
+      "lat": 33.876185,
+      "lng": 136.085595
+    },
+    "JRC-KiseiCentral-036": {
+      "lat": 33.83977,
+      "lng": 136.06235
+    },
+    "JRC-KiseiCentral-037": {
+      "lat": 33.82801,
+      "lng": 136.05543
+    },
+    "JRC-KiseiCentral-038": {
+      "lat": 33.80474,
+      "lng": 136.04241
+    },
+    "JRC-KiseiCentral-039": {
+      "lat": 33.75996,
+      "lng": 136.023955
+    },
+    "JRC-KiseiCentral-040": {
+      "lat": 33.736725,
+      "lng": 136.015515
+    },
+    "JRC-Takayama-002": {
+      "lat": 35.402085,
+      "lng": 136.802855
+    },
+    "JRC-Takayama-003": {
+      "lat": 35.400535,
+      "lng": 136.835575
+    },
+    "JRC-Takayama-004": {
+      "lat": 35.403273,
+      "lng": 136.871767
+    },
+    "JRC-Takayama-005": {
+      "lat": 35.40388,
+      "lng": 136.901063
+    },
+    "JRC-Takayama-006": {
+      "lat": 35.39756,
+      "lng": 136.94605
+    },
+    "JRC-Takayama-007": {
+      "lat": 35.426395,
+      "lng": 136.97681
+    },
+    "JRC-Takayama-008": {
+      "lat": 35.445613,
+      "lng": 137.019535
+    },
+    "JRC-Takayama-009": {
+      "lat": 35.457432,
+      "lng": 137.047658
+    },
+    "JRC-Takayama-010": {
+      "lat": 35.48708,
+      "lng": 137.065127
+    },
+    "JRC-Takayama-011": {
+      "lat": 35.514923,
+      "lng": 137.087107
+    },
+    "JRC-Takayama-012": {
+      "lat": 35.541303,
+      "lng": 137.118785
+    },
+    "JRC-Takayama-013": {
+      "lat": 35.579375,
+      "lng": 137.18484
+    },
+    "JRC-Takayama-014": {
+      "lat": 35.63327,
+      "lng": 137.183115
+    },
+    "JRC-Takayama-015": {
+      "lat": 35.662485,
+      "lng": 137.164385
+    },
+    "JRC-Takayama-016": {
+      "lat": 35.725625,
+      "lng": 137.20061
+    },
+    "JRC-Takayama-017": {
+      "lat": 35.806097,
+      "lng": 137.239386
+    },
+    "JRC-Takayama-018": {
+      "lat": 35.849137,
+      "lng": 137.225213
+    },
+    "JRC-Takayama-019": {
+      "lat": 35.874408,
+      "lng": 137.21397
+    },
+    "JRC-Takayama-020": {
+      "lat": 35.910913,
+      "lng": 137.204673
+    },
+    "JRC-Takayama-021": {
+      "lat": 35.928443,
+      "lng": 137.235553
+    },
+    "JRC-Takayama-022": {
+      "lat": 35.950785,
+      "lng": 137.25686
+    },
+    "JRC-Takayama-023": {
+      "lat": 36.001455,
+      "lng": 137.287945
+    },
+    "JRC-Takayama-024": {
+      "lat": 36.05234,
+      "lng": 137.276825
+    },
+    "JRC-Takayama-025": {
+      "lat": 36.088403,
+      "lng": 137.24776
+    },
+    "JRC-Takayama-026": {
+      "lat": 36.14069,
+      "lng": 137.2514
+    },
+    "JRC-Takayama-027": {
+      "lat": 36.180985,
+      "lng": 137.245835
+    },
+    "JRC-Takayama-028": {
+      "lat": 36.21112,
+      "lng": 137.21577
+    },
+    "JRC-Takayama-029": {
+      "lat": 36.236625,
+      "lng": 137.189985
+    },
+    "JRC-Takayama-030": {
+      "lat": 36.249895,
+      "lng": 137.16899
+    },
+    "JRC-Takayama-031": {
+      "lat": 36.261125,
+      "lng": 137.14563
+    },
+    "JRC-Takayama-032": {
+      "lat": 36.299905,
+      "lng": 137.113355
+    },
+    "JRC-Takayama-033": {
+      "lat": 36.327533,
+      "lng": 137.14091
+    },
+    "JRC-Takayama-034": {
+      "lat": 36.383935,
+      "lng": 137.181995
+    },
+    "JRC-Takayama-035": {
+      "lat": 36.415855,
+      "lng": 137.19247
+    },
+    "JRC-Takayama-036": {
+      "lat": 36.471805,
+      "lng": 137.237845
+    },
+    "JRC-Takayama-037": {
+      "lat": 36.529403,
+      "lng": 137.22872
+    },
+    "JRC-Takayama-038": {
+      "lat": 36.561415,
+      "lng": 137.211575
+    },
+    "JRC-Takayama-039": {
+      "lat": 36.589617,
+      "lng": 137.175153
+    },
+    "JRC-Takayama-040": {
+      "lat": 36.5917,
+      "lng": 137.138292
+    },
+    "JRC-Takayama-041": {
+      "lat": 36.634587,
+      "lng": 137.132453
+    },
+    "JRC-Takayama-042": {
+      "lat": 36.664053,
+      "lng": 137.160433
+    },
+    "JRC-Takayama-043": {
+      "lat": 36.677813,
+      "lng": 137.168613
+    },
+    "JRC-Takayama-044": {
+      "lat": 36.69938,
+      "lng": 137.177085
+    },
+    "JRC-Taketoyo-002": {
+      "lat": 34.99388,
+      "lng": 136.97046
+    },
+    "JRC-Taketoyo-003": {
+      "lat": 34.981385,
+      "lng": 136.9719
+    },
+    "JRC-Taketoyo-004": {
+      "lat": 34.967865,
+      "lng": 136.972905
+    },
+    "JRC-Taketoyo-005": {
+      "lat": 34.949595,
+      "lng": 136.9707
+    },
+    "JRC-Taketoyo-006": {
+      "lat": 34.91901,
+      "lng": 136.961105
+    },
+    "JRC-Taketoyo-007": {
+      "lat": 34.903357,
+      "lng": 136.94155
+    },
+    "JRC-Taketoyo-008": {
+      "lat": 34.89411,
+      "lng": 136.93043
+    },
+    "JRC-Taketoyo-009": {
+      "lat": 34.874297,
+      "lng": 136.923493
+    },
+    "JRC-Taketoyo-010": {
+      "lat": 34.85327,
+      "lng": 136.921085
+    },
+    "JRC-Taita-002": {
+      "lat": 35.349155,
+      "lng": 137.10056
+    },
+    "JRC-Taita-003": {
+      "lat": 35.36147,
+      "lng": 137.090145
+    },
+    "JRC-Taita-004": {
+      "lat": 35.382,
+      "lng": 137.072115
+    },
+    "JRC-Taita-005": {
+      "lat": 35.393735,
+      "lng": 137.063715
+    },
+    "JRC-Taita-006": {
+      "lat": 35.42293,
+      "lng": 137.05535
+    },
+    "JRC-Taita-007": {
+      "lat": 35.4441,
+      "lng": 137.045393
+    },
+    "JRC-Gotemba-002": {
+      "lat": 35.30355,
+      "lng": 139.18342
+    },
+    "JRC-Gotemba-003": {
+      "lat": 35.32179,
+      "lng": 139.16363
+    },
+    "JRC-Gotemba-004": {
+      "lat": 35.333883,
+      "lng": 139.150433
+    },
+    "JRC-Gotemba-005": {
+      "lat": 35.346,
+      "lng": 139.139135
+    },
+    "JRC-Gotemba-006": {
+      "lat": 35.35761,
+      "lng": 139.10773
+    },
+    "JRC-Gotemba-007": {
+      "lat": 35.360813,
+      "lng": 139.08077
+    },
+    "JRC-Gotemba-008": {
+      "lat": 35.36647,
+      "lng": 139.038347
+    },
+    "JRC-Gotemba-009": {
+      "lat": 35.35924,
+      "lng": 138.997583
+    },
+    "JRC-Gotemba-011": {
+      "lat": 35.299947,
+      "lng": 138.93422
+    },
+    "JRC-Gotemba-012": {
+      "lat": 35.277227,
+      "lng": 138.925723
+    },
+    "JRC-Gotemba-013": {
+      "lat": 35.254887,
+      "lng": 138.919643
+    },
+    "JRC-Gotemba-014": {
+      "lat": 35.21513,
+      "lng": 138.919258
+    },
+    "JRC-Gotemba-015": {
+      "lat": 35.171327,
+      "lng": 138.90926
+    },
+    "JRC-Gotemba-016": {
+      "lat": 35.147345,
+      "lng": 138.899325
+    },
+    "JRC-Gotemba-017": {
+      "lat": 35.128543,
+      "lng": 138.895105
+    },
+    "JRC-Gotemba-018": {
+      "lat": 35.11604,
+      "lng": 138.881764
+    },
+    "JRC-Minobu-002": {
+      "lat": 35.15731,
+      "lng": 138.63911
+    },
+    "JRC-Minobu-003": {
+      "lat": 35.168065,
+      "lng": 138.64579
+    },
+    "JRC-Minobu-004": {
+      "lat": 35.18835,
+      "lng": 138.647525
+    },
+    "JRC-Minobu-006": {
+      "lat": 35.214485,
+      "lng": 138.62712
+    },
+    "JRC-Minobu-007": {
+      "lat": 35.2212,
+      "lng": 138.615482
+    },
+    "JRC-Minobu-008": {
+      "lat": 35.225451,
+      "lng": 138.602526
+    },
+    "JRC-Minobu-009": {
+      "lat": 35.19929,
+      "lng": 138.58425
+    },
+    "JRC-Minobu-010": {
+      "lat": 35.19725,
+      "lng": 138.56383
+    },
+    "JRC-Minobu-011": {
+      "lat": 35.230535,
+      "lng": 138.536935
+    },
+    "JRC-Minobu-012": {
+      "lat": 35.23019,
+      "lng": 138.515875
+    },
+    "JRC-Minobu-013": {
+      "lat": 35.247455,
+      "lng": 138.490985
+    },
+    "JRC-Minobu-014": {
+      "lat": 35.264835,
+      "lng": 138.474995
+    },
+    "JRC-Minobu-015": {
+      "lat": 35.28221,
+      "lng": 138.46503
+    },
+    "JRC-Minobu-016": {
+      "lat": 35.32817,
+      "lng": 138.45214
+    },
+    "JRC-Minobu-017": {
+      "lat": 35.36145,
+      "lng": 138.45306
+    },
+    "JRC-Minobu-018": {
+      "lat": 35.379675,
+      "lng": 138.4539
+    },
+    "JRC-Minobu-019": {
+      "lat": 35.41851,
+      "lng": 138.459705
+    },
+    "JRC-Minobu-020": {
+      "lat": 35.425785,
+      "lng": 138.47247
+    },
+    "JRC-Minobu-021": {
+      "lat": 35.444685,
+      "lng": 138.47697
+    },
+    "JRC-Minobu-022": {
+      "lat": 35.46234,
+      "lng": 138.482135
+    },
+    "JRC-Minobu-023": {
+      "lat": 35.481495,
+      "lng": 138.46743
+    },
+    "JRC-Minobu-024": {
+      "lat": 35.49251,
+      "lng": 138.463075
+    },
+    "JRC-Minobu-025": {
+      "lat": 35.50358,
+      "lng": 138.471245
+    },
+    "JRC-Minobu-026": {
+      "lat": 35.541415,
+      "lng": 138.47088
+    },
+    "JRC-Minobu-027": {
+      "lat": 35.560465,
+      "lng": 138.493205
+    },
+    "JRC-Minobu-028": {
+      "lat": 35.56063,
+      "lng": 138.50202
+    },
+    "JRC-Minobu-029": {
+      "lat": 35.563075,
+      "lng": 138.511255
+    },
+    "JRC-Minobu-030": {
+      "lat": 35.569577,
+      "lng": 138.520623
+    },
+    "JRC-Minobu-031": {
+      "lat": 35.59485,
+      "lng": 138.527025
+    },
+    "JRC-Minobu-032": {
+      "lat": 35.60453,
+      "lng": 138.528545
+    },
+    "JRC-Minobu-033": {
+      "lat": 35.61704,
+      "lng": 138.533125
+    },
+    "JRC-Minobu-034": {
+      "lat": 35.63056,
+      "lng": 138.55205
+    },
+    "JRC-Minobu-035": {
+      "lat": 35.636595,
+      "lng": 138.56994
+    },
+    "JRC-Minobu-036": {
+      "lat": 35.643793,
+      "lng": 138.578237
+    },
+    "JRC-Minobu-037": {
+      "lat": 35.659835,
+      "lng": 138.589225
+    },
+    "JRC-Minobu-038": {
+      "lat": 35.662215,
+      "lng": 138.57887
+    },
+    "JRC-Iida-002": {
+      "lat": 34.775735,
+      "lng": 137.374065
+    },
+    "JRC-Iida-003": {
+      "lat": 34.780982,
+      "lng": 137.370625
+    },
+    "JRC-Iida-004": {
+      "lat": 34.797602,
+      "lng": 137.363098
+    },
+    "JRC-Iida-005": {
+      "lat": 34.80857,
+      "lng": 137.381715
+    },
+    "JRC-Iida-006": {
+      "lat": 34.82255,
+      "lng": 137.397215
+    },
+    "JRC-Iida-007": {
+      "lat": 34.847947,
+      "lng": 137.414603
+    },
+    "JRC-Iida-008": {
+      "lat": 34.864398,
+      "lng": 137.431353
+    },
+    "JRC-Iida-009": {
+      "lat": 34.86786,
+      "lng": 137.441555
+    },
+    "JRC-Iida-010": {
+      "lat": 34.876157,
+      "lng": 137.455363
+    },
+    "JRC-Iida-011": {
+      "lat": 34.889295,
+      "lng": 137.47789
+    },
+    "JRC-Iida-012": {
+      "lat": 34.90107,
+      "lng": 137.493
+    },
+    "JRC-Iida-013": {
+      "lat": 34.906117,
+      "lng": 137.502977
+    },
+    "JRC-Iida-014": {
+      "lat": 34.910355,
+      "lng": 137.514435
+    },
+    "JRC-Iida-015": {
+      "lat": 34.91224,
+      "lng": 137.527315
+    },
+    "JRC-Iida-016": {
+      "lat": 34.930155,
+      "lng": 137.54901
+    },
+    "JRC-Iida-017": {
+      "lat": 34.920753,
+      "lng": 137.55163
+    },
+    "JRC-Iida-018": {
+      "lat": 34.926047,
+      "lng": 137.565277
+    },
+    "JRC-Iida-019": {
+      "lat": 34.932645,
+      "lng": 137.576738
+    },
+    "JRC-Iida-020": {
+      "lat": 34.95198,
+      "lng": 137.603
+    },
+    "JRC-Iida-021": {
+      "lat": 34.970497,
+      "lng": 137.613027
+    },
+    "JRC-Iida-022": {
+      "lat": 34.98855,
+      "lng": 137.620905
+    },
+    "JRC-Iida-023": {
+      "lat": 34.99052,
+      "lng": 137.644013
+    },
+    "JRC-Iida-024": {
+      "lat": 35.001725,
+      "lng": 137.663995
+    },
+    "JRC-Iida-025": {
+      "lat": 35.02433,
+      "lng": 137.703905
+    },
+    "JRC-Iida-026": {
+      "lat": 35.02897,
+      "lng": 137.713855
+    },
+    "JRC-Iida-027": {
+      "lat": 35.049345,
+      "lng": 137.74425
+    },
+    "JRC-Iida-028": {
+      "lat": 35.050195,
+      "lng": 137.752415
+    },
+    "JRC-Iida-029": {
+      "lat": 35.05634,
+      "lng": 137.76357
+    },
+    "JRC-Iida-030": {
+      "lat": 35.060575,
+      "lng": 137.77509
+    },
+    "JRC-Iida-031": {
+      "lat": 35.06933,
+      "lng": 137.78639
+    },
+    "JRC-Iida-032": {
+      "lat": 35.085315,
+      "lng": 137.802855
+    },
+    "JRC-Iida-033": {
+      "lat": 35.09187,
+      "lng": 137.809725
+    },
+    "JRC-Iida-034": {
+      "lat": 35.11491,
+      "lng": 137.85436
+    },
+    "JRC-Iida-035": {
+      "lat": 35.131585,
+      "lng": 137.862025
+    },
+    "JRC-Iida-036": {
+      "lat": 35.154065,
+      "lng": 137.869455
+    },
+    "JRC-Iida-037": {
+      "lat": 35.163335,
+      "lng": 137.8705
+    },
+    "JRC-Iida-038": {
+      "lat": 35.19046,
+      "lng": 137.81852
+    },
+    "JRC-Iida-039": {
+      "lat": 35.2099,
+      "lng": 137.835995
+    },
+    "JRC-Iida-040": {
+      "lat": 35.23592,
+      "lng": 137.834935
+    },
+    "JRC-Iida-041": {
+      "lat": 35.254095,
+      "lng": 137.83475
+    },
+    "JRC-Iida-042": {
+      "lat": 35.267433,
+      "lng": 137.832667
+    },
+    "JRC-Iida-043": {
+      "lat": 35.27362,
+      "lng": 137.853647
+    },
+    "JRC-Iida-044": {
+      "lat": 35.311754,
+      "lng": 137.848576
+    },
+    "JRC-Iida-045": {
+      "lat": 35.33637,
+      "lng": 137.841447
+    },
+    "JRC-Iida-046": {
+      "lat": 35.348963,
+      "lng": 137.83791
+    },
+    "JRC-Iida-047": {
+      "lat": 35.375355,
+      "lng": 137.81407
+    },
+    "JRC-Iida-048": {
+      "lat": 35.402325,
+      "lng": 137.81021
+    },
+    "JRC-Iida-049": {
+      "lat": 35.41915,
+      "lng": 137.817175
+    },
+    "JRC-Iida-050": {
+      "lat": 35.42921,
+      "lng": 137.81678
+    },
+    "JRC-Iida-051": {
+      "lat": 35.4411,
+      "lng": 137.81734
+    },
+    "JRC-Iida-052": {
+      "lat": 35.45312,
+      "lng": 137.81575
+    },
+    "JRC-Iida-053": {
+      "lat": 35.46404,
+      "lng": 137.827755
+    },
+    "JRC-Iida-054": {
+      "lat": 35.475565,
+      "lng": 137.839815
+    },
+    "JRC-Iida-055": {
+      "lat": 35.48744,
+      "lng": 137.839385
+    },
+    "JRC-Iida-056": {
+      "lat": 35.49675,
+      "lng": 137.841545
+    },
+    "JRC-Iida-057": {
+      "lat": 35.504205,
+      "lng": 137.83974
+    },
+    "JRC-Iida-058": {
+      "lat": 35.506705,
+      "lng": 137.82836
+    },
+    "JRC-Iida-059": {
+      "lat": 35.5124,
+      "lng": 137.809145
+    },
+    "JRC-Iida-060": {
+      "lat": 35.51972,
+      "lng": 137.821265
+    },
+    "JRC-Iida-061": {
+      "lat": 35.52218,
+      "lng": 137.82976
+    },
+    "JRC-Iida-062": {
+      "lat": 35.520175,
+      "lng": 137.83903
+    },
+    "JRC-Iida-063": {
+      "lat": 35.533855,
+      "lng": 137.861425
+    },
+    "JRC-Iida-064": {
+      "lat": 35.544157,
+      "lng": 137.87634
+    },
+    "JRC-Iida-065": {
+      "lat": 35.54935,
+      "lng": 137.88658
+    },
+    "JRC-Iida-066": {
+      "lat": 35.572585,
+      "lng": 137.89591
+    },
+    "JRC-Iida-067": {
+      "lat": 35.577775,
+      "lng": 137.903345
+    },
+    "JRC-Iida-068": {
+      "lat": 35.5957,
+      "lng": 137.913215
+    },
+    "JRC-Iida-069": {
+      "lat": 35.6175,
+      "lng": 137.90407
+    },
+    "JRC-Iida-070": {
+      "lat": 35.627445,
+      "lng": 137.91024
+    },
+    "JRC-Iida-071": {
+      "lat": 35.64463,
+      "lng": 137.900545
+    },
+    "JRC-Iida-072": {
+      "lat": 35.65468,
+      "lng": 137.911375
+    },
+    "JRC-Iida-073": {
+      "lat": 35.665395,
+      "lng": 137.93249
+    },
+    "JRC-Iida-074": {
+      "lat": 35.67759,
+      "lng": 137.928995
+    },
+    "JRC-Iida-075": {
+      "lat": 35.695635,
+      "lng": 137.93306
+    },
+    "JRC-Iida-076": {
+      "lat": 35.71223,
+      "lng": 137.933965
+    },
+    "JRC-Iida-077": {
+      "lat": 35.726775,
+      "lng": 137.93516
+    },
+    "JRC-Iida-078": {
+      "lat": 35.73628,
+      "lng": 137.936855
+    },
+    "JRC-Iida-079": {
+      "lat": 35.748198,
+      "lng": 137.940103
+    },
+    "JRC-Iida-080": {
+      "lat": 35.76727,
+      "lng": 137.938875
+    },
+    "JRC-Iida-081": {
+      "lat": 35.77793,
+      "lng": 137.943955
+    },
+    "JRC-Iida-082": {
+      "lat": 35.80372,
+      "lng": 137.944025
+    },
+    "JRC-Iida-083": {
+      "lat": 35.81318,
+      "lng": 137.940145
+    },
+    "JRC-Iida-084": {
+      "lat": 35.838445,
+      "lng": 137.959255
+    },
+    "JRC-Iida-085": {
+      "lat": 35.845235,
+      "lng": 137.96435
+    },
+    "JRC-Iida-086": {
+      "lat": 35.8608,
+      "lng": 137.977835
+    },
+    "JRC-Iida-087": {
+      "lat": 35.87951,
+      "lng": 137.984065
+    },
+    "JRC-Iida-088": {
+      "lat": 35.90083,
+      "lng": 137.988005
+    },
+    "JRC-Iida-089": {
+      "lat": 35.913845,
+      "lng": 137.988665
+    },
+    "JRC-Iida-090": {
+      "lat": 35.93632,
+      "lng": 137.98546
+    },
+    "JRC-Iida-091": {
+      "lat": 35.953065,
+      "lng": 137.985155
+    },
+    "JRC-Iida-092": {
+      "lat": 35.968785,
+      "lng": 137.984055
+    },
+    "JRC-Iida-093": {
+      "lat": 35.97626,
+      "lng": 137.9905
+    },
+    "JRC-Sangu-002": {
+      "lat": 34.497665,
+      "lng": 136.59666
+    },
+    "JRC-Sangu-003": {
+      "lat": 34.48845,
+      "lng": 136.634005
+    },
+    "JRC-Sangu-004": {
+      "lat": 34.503063,
+      "lng": 136.67187
+    },
+    "JRC-Sangu-005": {
+      "lat": 34.49584,
+      "lng": 136.694286
+    },
+    "JRC-Sangu-006": {
+      "lat": 34.49133,
+      "lng": 136.70966
+    },
+    "JRC-Sangu-007": {
+      "lat": 34.49588,
+      "lng": 136.73984
+    },
+    "JRC-Sangu-008": {
+      "lat": 34.503685,
+      "lng": 136.777688
+    },
+    "JRC-Sangu-009": {
+      "lat": 34.49615,
+      "lng": 136.79924
+    },
     "JRC-Sangu-010": {},
-    "JRC-Sangu-011": {},
-    "JRC-Meisho-002": {},
-    "JRC-Meisho-003": {},
-    "JRC-Meisho-004": {},
-    "JRC-Meisho-005": {},
-    "JRC-Meisho-006": {},
-    "JRC-Meisho-007": {},
-    "JRC-Meisho-008": {},
-    "JRC-Meisho-009": {},
-    "JRC-Meisho-010": {},
-    "JRC-Meisho-011": {},
-    "JRC-Meisho-012": {},
-    "JRC-Meisho-013": {},
-    "JRC-Meisho-014": {},
-    "JRC-Meisho-015": {},
-    "JRC-MinoAkasaka-003": {},
+    "JRC-Sangu-011": {
+      "lat": 34.48707,
+      "lng": 136.84152
+    },
+    "JRC-Meisho-002": {
+      "lat": 34.598,
+      "lng": 136.499325
+    },
+    "JRC-Meisho-003": {
+      "lat": 34.617745,
+      "lng": 136.482115
+    },
+    "JRC-Meisho-004": {
+      "lat": 34.647335,
+      "lng": 136.44701
+    },
+    "JRC-Meisho-005": {
+      "lat": 34.654895,
+      "lng": 136.436095
+    },
+    "JRC-Meisho-006": {
+      "lat": 34.642575,
+      "lng": 136.412785
+    },
+    "JRC-Meisho-007": {
+      "lat": 34.649995,
+      "lng": 136.385175
+    },
+    "JRC-Meisho-008": {
+      "lat": 34.647825,
+      "lng": 136.356745
+    },
+    "JRC-Meisho-009": {
+      "lat": 34.637695,
+      "lng": 136.339605
+    },
+    "JRC-Meisho-010": {
+      "lat": 34.62585,
+      "lng": 136.319225
+    },
+    "JRC-Meisho-011": {
+      "lat": 34.600035,
+      "lng": 136.309215
+    },
+    "JRC-Meisho-012": {
+      "lat": 34.57402,
+      "lng": 136.278375
+    },
+    "JRC-Meisho-013": {
+      "lat": 34.5551,
+      "lng": 136.2638
+    },
+    "JRC-Meisho-014": {
+      "lat": 34.5323,
+      "lng": 136.270815
+    },
+    "JRC-Meisho-015": {
+      "lat": 34.512165,
+      "lng": 136.259995
+    },
+    "JRC-MinoAkasaka-003": {
+      "lat": 35.386605,
+      "lng": 136.582195
+    },
     "JR-Hisatsu-002": {},
     "JR-Hisatsu-004": {},
     "JR-Hisatsu-005": {},
@@ -15420,6 +16533,30 @@
     "JRC-ChuoCentral-027": {
       "lat": 35.6843755,
       "lng": 137.6643629
+    },
+    "Numazu": {
+      "lat": 35.10304,
+      "lng": 138.860477
+    },
+    "Shimizu": {
+      "lat": 35.0234,
+      "lng": 138.4891
+    },
+    "Tomi-da": {
+      "lat": 35.00816,
+      "lng": 136.65316
+    },
+    "JRC-Gotemba-010": {
+      "lat": 35.33207,
+      "lng": 138.981753
+    },
+    "Fujine": {
+      "lat": 35.20527,
+      "lng": 138.63561
+    },
+    "JRC-MinoAkasaka-002": {
+      "lat": 35.373433,
+      "lng": 136.583393
     }
   },
   "lines": {
@@ -50115,7 +51252,7 @@
         "JRC-Gotemba-007",
         "JRC-Gotemba-008",
         "JRC-Gotemba-009",
-        "Ashigara",
+        "JRC-Gotemba-010",
         "JRC-Gotemba-011",
         "JRC-Gotemba-012",
         "JRC-Gotemba-013",
@@ -50411,7 +51548,6 @@
         "JRC-Sangu-007",
         "JRC-Sangu-008",
         "JRC-Sangu-009",
-        "JRC-Sangu-010",
         "JRC-Sangu-011"
       ],
       "transferStations": [
@@ -50509,7 +51645,7 @@
       "type": "straight",
       "stations": [
         "JRC-TokaidoCentral-078",
-        "Arao-Kumamoto",
+        "JRC-MinoAkasaka-002",
         "JRC-MinoAkasaka-003"
       ],
       "transferStations": [
@@ -55050,7 +56186,6 @@
     "五十鈴ケ丘": "JRC-Sangu-007",
     "二見浦": "JRC-Sangu-008",
     "松下": "JRC-Sangu-009",
-    "池の浦シーサイド": "JRC-Sangu-010",
     "鳥羽": "JRC-Sangu-011",
     "上ノ庄": "JRC-Meisho-002",
     "権現前": "JRC-Meisho-003",
@@ -63050,8 +64185,7 @@
       "Odawara"
     ],
     "Ashigara": [
-      "Odawara",
-      "Gotemba"
+      "Odawara"
     ],
     "Hitoichiba": [
       "Oito"
@@ -65507,8 +66641,7 @@
       "KagoshimaMain"
     ],
     "Arao-Kumamoto": [
-      "KagoshimaMain",
-      "MinoAkasaka"
+      "KagoshimaMain"
     ],
     "Minami-Arao": [
       "KagoshimaMain"
@@ -69002,9 +70135,6 @@
     "JRC-Sangu-009": [
       "Sangu"
     ],
-    "JRC-Sangu-010": [
-      "Sangu"
-    ],
     "JRC-Sangu-011": [
       "Sangu"
     ],
@@ -69436,6 +70566,12 @@
     ],
     "JRC-ChuoCentral-027": [
       "ChuoCentral"
+    ],
+    "JRC-Gotemba-010": [
+      "Gotemba"
+    ],
+    "JRC-MinoAkasaka-002": [
+      "MinoAkasaka"
     ]
   },
   "lineStationOrder": {
@@ -74945,7 +76081,7 @@
       "JRC-Gotemba-007",
       "JRC-Gotemba-008",
       "JRC-Gotemba-009",
-      "Ashigara",
+      "JRC-Gotemba-010",
       "JRC-Gotemba-011",
       "JRC-Gotemba-012",
       "JRC-Gotemba-013",
@@ -75103,7 +76239,6 @@
       "JRC-Sangu-007",
       "JRC-Sangu-008",
       "JRC-Sangu-009",
-      "JRC-Sangu-010",
       "JRC-Sangu-011"
     ],
     "Meisho": [
@@ -75125,7 +76260,7 @@
     ],
     "MinoAkasaka": [
       "JRC-TokaidoCentral-078",
-      "Arao-Kumamoto",
+      "JRC-MinoAkasaka-002",
       "JRC-MinoAkasaka-003"
     ],
     "Hisatsu": {
