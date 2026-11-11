@@ -233,13 +233,30 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
       selectedRevision = revision;
       continue;
     }
-    const selected = revision?.unavailable ? [] : await pages((first, last) => {
+    let selected = revision?.unavailable ? [] : await pages((first, last) => {
       let query = db.from("manual_timetable_templates")
       .select("id,line_key,calendar_urn,train_number,railway_urn,direction_urn,train_type_urn,destination_urns,vehicle_type_label,physical_service_key,source_trip_id,previous_timetable_ids,next_timetable_ids,source_path,source_revision_date,operating_dates")
       .eq("line_key", lineId).eq("calendar_urn", calendar);
       query = revision ? query.eq('revision_id',revision.id) : query.is('revision_id',null);
       return query.order("id").range(first,last);
     });
+    // All JR-Central CONVENTIONAL imports are date-specific. A matching
+    // weekday/holiday label alone is not proof that a train operates today.
+    // Check inside the calendar loop so an expired candidate cannot prevent
+    // selecting a later valid calendar. Never apply this to Shinkansen,
+    // whose distinct exact-date and recurring policies remain unchanged.
+    if (timetableOperator === "JR-Central" && lineId !== "TokaidoShinkansen") {
+      const railwayCode = lineId === "TokaidoCentral" ? "Tokaido" :
+        lineId === "ChuoCentral" ? "Chuo" :
+        lineId === "KansaiCentral" ? "Kansai" :
+        lineId === "KiseiCentral" ? "Kisei" : lineId;
+      selected = selected.filter((t: any) =>
+        t.line_key === lineId &&
+        t.railway_urn === "odpt.Railway:JR-Central." + railwayCode &&
+        Array.isArray(t.operating_dates) &&
+        t.operating_dates.some((day: any) =>
+          String(day).slice(0, 10) === serviceDate));
+    }
     // ChiyodaBranch has only KitaAyase-bound alias rows. The 2026
     // opposite-direction train plans already exist under Chiyoda. Reuse
     // those canonical sources for branch display without importing duplicates.

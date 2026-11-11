@@ -3458,7 +3458,8 @@
       var calendar=sourceCalendar(p);
       var direction=String(p.railDirection||p.direction||"").split(/[.:]/).pop();
       var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
-      if(!m||!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+      if(!m||number!==String(p.trainNumber||"").trim().toUpperCase()||
+         !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
          p.timetableDateVerified!==true||p.timetableValidity!=="date_verified"||
          p.officialNumberVerified!==true||p.vehicleIdentityStatus==="EXACT"||
