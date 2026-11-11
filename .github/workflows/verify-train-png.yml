@@ -72,6 +72,9 @@ on:
       - 'tests/fukuchiyama-2611-danbaro-scope.test.cjs'
       - 'tests/fukuchiyama-2611-disruption-line-color.test.cjs'
       - 'tests/jr-line-colors-20261109.test.cjs'
+      - 'supabase/migrations/20261111160000_jr_central_clear_stale_station_audit_flags.sql'
+      - 'supabase/queries/jr_central_all_lines_plan_status.sql'
+      - 'tests/jr-central-current-audit-metadata.test.cjs'
       - 'tests/jr-central-mlit2024-geography.test.cjs'
       - 'supabase/migrations/20261111130000_jr_central_mlit_2024_coordinates_and_station_identity.sql'
       - 'tests/jr-central-all-lines-sql-registry.test.cjs'
@@ -269,6 +272,8 @@ jobs:
         run: node --test tests/jr-central-all-lines-sql-registry.test.cjs tests/jr-central-shared-plan-import.test.cjs
       - name: Verify JR-Central official geography and station-name isolation
         run: node --test tests/jr-central-mlit2024-geography.test.cjs
+      - name: Verify JR Central timetable audit status and source-only metadata correction
+        run: node --test tests/jr-central-current-audit-metadata.test.cjs
       - name: Verify JR missing-line inventory and route boundaries
         run: node --test tests/jr-missing-line-inventory-20261109.test.cjs
       - name: Verify Fujikyu and three JR branch routes from official station orders
