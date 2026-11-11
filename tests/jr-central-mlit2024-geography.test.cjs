@@ -49,3 +49,24 @@ test('Takayama Inotani border requires evidence for stations after index 35',()=
  assert.match(sql,/JRC_PLAN_TAKAYAMA_CROSS_BORDER_OPERATOR_UNVERIFIED/);
  assert.match(sql,/LANGUAGE plpgsql SECURITY INVOKER/);
 });
+
+test('four shared physical stations keep their IDs while using audited MLIT 2024 positions',()=>{
+ const targets={
+  Atami:[35.10379,139.077805],
+  Haruda:[35.14315,136.813385],
+  Hatta:[35.148787,136.852183],
+  Tatsuno:[35.984517,137.997183]
+ };
+ for(const [id,[lat,lng]] of Object.entries(targets)){
+  assert.deepEqual(r.stations[id],{lat,lng},id);
+ }
+ assert.ok(r.lines.TokaidoCentral.stations.includes('Atami'));
+ assert.ok(r.lines.Ito.stations.includes('Atami'));
+ assert.ok(r.lines.KansaiMain.stations.includes('Haruda'));
+ assert.ok(r.lines.KansaiCentral.stations.includes('Hatta'));
+ assert.ok(r.lines.ChuoTatsuno.stations.includes('Tatsuno'));
+ const migration=fs.readFileSync('supabase/migrations/20261111173000_jr_central_n02_shared_station_geometry_reconcile.sql','utf8');
+ assert.match(migration,/JRC_EXISTING_SHARED_STATION_GEOGRAPHY_BASELINE_CHANGED/);
+ assert.match(migration,/JRC_EXISTING_SHARED_STATION_GEOGRAPHY_VERIFY_FAILED/);
+ assert.doesNotMatch(migration,/INSERT INTO public\.manual_timetable_templates/);
+});
