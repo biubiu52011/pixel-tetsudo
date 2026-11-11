@@ -41,7 +41,8 @@ test('every conventional line has complete unique source station order; 11 are b
   assert.match(sql,/JRC_ALL_LINES_STATION_VERIFY_FAILED/);
   assert.match(sql,/ON CONFLICT \(line_key\) DO NOTHING/);
   assert.doesNotMatch(sql,/INSERT INTO public\.stations\b/);
-  assert.doesNotMatch(sql,/INSERT INTO public\.manual_timetable_templates\s*\(/);
+  // The importer function may contain conditional INSERTs, but migration DDL itself must not load trains.
+  assert.doesNotMatch(sql.split('CREATE OR REPLACE FUNCTION')[0],/INSERT INTO public\.manual_timetable_templates\s*\(/);
 });
 test('SQL importer is evidence-scoped, date-validating, invoker-only and cross-operator safe',()=>{
   assert.match(sql,/CREATE OR REPLACE FUNCTION public\.import_jr_central_authorized_plan/);
