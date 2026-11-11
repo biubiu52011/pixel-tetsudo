@@ -1,0 +1,161 @@
+{
+  "schema": "pixel-tetsudo.research.segment-candidates.v1",
+  "lineId": "TokaidoCentral",
+  "evidenceEdition": "2026-03-14",
+  "checkedOn": "2026-11-11",
+  "publicationStatus": "REVIEW_ONLY_NOT_AUTHORIZED_FOR_RUNTIME_OR_SQL",
+  "serviceDateStatus": "2026-11_NOT_VERIFIED",
+  "rightsStatus": "REPUBLICATION_NOT_VERIFIED",
+  "segment": {
+    "from": "Hamamatsu",
+    "to": "Toyohashi",
+    "railway": "odpt.Railway:JR-Central.Tokaido"
+  },
+  "sources": [
+    {
+      "id": "weekday",
+      "url": "https://yoke4000.main.jp/jru/hamaW.html",
+      "type": "independent_observation",
+      "edition": "2026-03-14"
+    },
+    {
+      "id": "holiday",
+      "url": "https://yoke4000.main.jp/jru/hamaH.html",
+      "type": "independent_observation",
+      "edition": "2026-03-14"
+    },
+    {
+      "id": "secondary",
+      "url": "https://www.jorudan.co.jp/time/to/%E6%B5%9C%E6%9D%BE_%E8%B1%8A%E6%A9%8B/?r=%E6%9D%B1%E6%B5%B7%E9%81%93%E6%9C%AC%E7%B7%9A",
+      "type": "crosscheck_station_pair",
+      "edition": "as_displayed"
+    }
+  ],
+  "note": "Small selected historical two-stop facts, NOT an authorized timetable; not a current service-date claim. No automatic publishing, runtime import, client exposure or inferred intermediate stop clocks. Same-number different-calendar facts require independent checking. Do not infer 2026-11 operation.",
+  "rows": [
+    {
+      "calendar": "Weekday",
+      "number": "921M",
+      "direction": "Outbound",
+      "departureStation": "Hamamatsu",
+      "departure": "06:22",
+      "arrivalStation": "Toyohashi",
+      "arrival": "06:56",
+      "trainType": "Local",
+      "candidateModel": "315系",
+      "sources": [
+        "weekday",
+        "secondary"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "Weekday",
+      "number": "925M",
+      "direction": "Outbound",
+      "departureStation": "Hamamatsu",
+      "departure": "07:07",
+      "arrivalStation": "Toyohashi",
+      "arrival": "07:43",
+      "trainType": "Local",
+      "candidateModel": "373系",
+      "sources": [
+        "weekday",
+        "secondary"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "Weekday",
+      "number": "939M",
+      "direction": "Outbound",
+      "departureStation": "Hamamatsu",
+      "departure": "08:50",
+      "arrivalStation": "Toyohashi",
+      "arrival": "09:25",
+      "trainType": "Local",
+      "candidateModel": "313系",
+      "sources": [
+        "weekday",
+        "secondary"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "Weekday",
+      "number": "943M",
+      "direction": "Outbound",
+      "departureStation": "Hamamatsu",
+      "departure": "09:23",
+      "arrivalStation": "Toyohashi",
+      "arrival": "09:58",
+      "trainType": "Local",
+      "candidateModel": "315系",
+      "sources": [
+        "weekday",
+        "secondary"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "SaturdayHoliday",
+      "number": "920M",
+      "direction": "Inbound",
+      "departureStation": "Toyohashi",
+      "departure": "05:37",
+      "arrivalStation": "Hamamatsu",
+      "arrival": "06:10",
+      "trainType": "Local",
+      "candidateModel": "315系",
+      "sources": [
+        "holiday"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "SaturdayHoliday",
+      "number": "922M",
+      "direction": "Inbound",
+      "departureStation": "Toyohashi",
+      "departure": "06:07",
+      "arrivalStation": "Hamamatsu",
+      "arrival": "06:43",
+      "trainType": "Local",
+      "candidateModel": "373系",
+      "sources": [
+        "holiday"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "SaturdayHoliday",
+      "number": "934M",
+      "direction": "Inbound",
+      "departureStation": "Toyohashi",
+      "departure": "08:05",
+      "arrivalStation": "Hamamatsu",
+      "arrival": "08:40",
+      "trainType": "Local",
+      "candidateModel": "313系",
+      "sources": [
+        "holiday"
+      ],
+      "review": "source_date_and_republication_pending"
+    },
+    {
+      "calendar": "SaturdayHoliday",
+      "number": "938M",
+      "direction": "Inbound",
+      "departureStation": "Toyohashi",
+      "departure": "08:41",
+      "arrivalStation": "Hamamatsu",
+      "arrival": "09:15",
+      "trainType": "Local",
+      "candidateModel": "315系",
+      "sources": [
+        "holiday"
+      ],
+      "review": "source_date_and_republication_pending"
+    }
+  ]
+}
