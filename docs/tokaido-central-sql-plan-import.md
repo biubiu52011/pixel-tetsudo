@@ -81,3 +81,15 @@ SELECT * FROM public.import_tokaido_central_authorized_plan(
 - 丰桥～滨松 M 号精确集合取自 [平日](https://yoke4000.main.jp/jru/hamaW.html)／[土休日](https://yoke4000.main.jp/jru/hamaH.html) 2026-03 改正参考；大垣～米原土休日 3207–3223 奇数 F、3208–3224 偶数 F、3200F、3303F 为 315；3201–3206F、3226F 为 313，参考 [米原资料](https://yoke4000.main.jp/jru/maibaraH.html)。若 SQL 证据冲突，拒绝显示。
 - 强制检查实际服务日期（2026-11）、国定节假日、日历、方向、运营者、单条 SQL 的日期验证状态、该车真实停站区间；编号范围不是全线实际编组证明。没有相应精确参考的车次仍需独立带来源的单一车型计划。
 - 并未复制民间 OuDia 全日时刻表到 SQL；生产线路计划仍缺逐车到发数据。仅少量编号系列事实被用于计划示意，不能据此宣称真实车组或 11 月全日完备。
+
+
+## 2026-11-11：第一批部分时刻表候选资料（未上线）
+
+本轮新增 `data/research/tokaido-central-202603-segment-candidates.json`：**8 条抽样的历史区间事实**（平日 4、土休日 4），仅针对浜松～豊橋方向各取四趟，含列车番号、两个已发表到发时间锚点、运营日类别、上下行与来源 URL。抽样数据源为 2026-03-14 改正的 [平日运用参考](https://yoke4000.main.jp/jru/hamaW.html)、[土休日运用参考](https://yoke4000.main.jp/jru/hamaH.html)，部分与 [另一站间时刻查询](https://www.jorudan.co.jp/time/to/%E6%B5%9C%E6%9D%BE_%E8%B1%8A%E6%A9%8B/?r=%E6%9D%B1%E6%B5%B7%E9%81%93%E6%9C%AC%E7%B7%9A) 交叉核对。**这不是完整时刻表，也不是确认适用于 2026-11-11 当天的资料。**
+
+- `evidenceEdition=2026-03-14`，`serviceDateStatus=2026-11_NOT_VERIFIED`，`rightsStatus=REPUBLICATION_NOT_VERIFIED`，`publicationStatus=REVIEW_ONLY_NOT_AUTHORIZED_FOR_RUNTIME_OR_SQL`。仓库仅保存少量供研究、交叉核验的事实，不镜像第三方时刻表文件。
+- 严禁把这一候选数据直接作为 `ODPT_TIMETABLES`、`TrainPositionEstimator.registerManualTimetable`、生产 `manual_timetable_templates` 或默认 2026-11 `operating_dates` 的来源；不能用“3 月改正”自动推断 11 月所有日期或临时改点。
+- 已核实**代码能力**：既有 `DataFusion.ensureTimetable` 接受部分 SQL 班次、`TrainPositionEstimator` 可根据两站的实际时间锚点计算区间进度；中间站停靠与到发时间未由本批证据证明，不能自行补成官方时刻。
+- 只有在取得可验证的 2026-11 运行日/版本证据、核实线路与区间、确认再利用/再发布权限后，才可以将某条候选通过现有 `import_tokaido_central_authorized_plan` 导入。授权证明须真实，不得填示例网址或把自编清单等同原始资料的授权。
+- 后续扩展次序：更多时段和上行／下行、分段的真实站级停站时间、3 月后的修订、合法授权，再逐车导入；不改变 `full_day_timetable_acceptance_passed=false` 的事实，直到正式逐项核验完成。
+- 回归：`tests/tokaido-central-research-candidates.test.cjs`（来源、日期、奇偶方向、时间单调与运行环境隔离）及 `tests/tokaido-central-sparse-estimate.test.cjs`（测试用模拟时间，绝不视为真实时刻表）。
