@@ -3403,14 +3403,10 @@
          number!==String(p.trainNumber||"").trim().toUpperCase()||
          !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
-         p.officialNumberVerified!==true||
-         p.timetableDateVerified!==true||
-         p.timetableValidity!=="date_verified"||
          p.sourceRailway!=="odpt.Railway:JR-Central.Chuo"||
          (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
          !["Local","Rapid","SectionRapid"].includes(type)||
-         !["Inbound","Outbound"].includes(direction)||!calendar||
-         p.vehicleIdentityStatus==="EXACT")return null;
+         !["Inbound","Outbound"].includes(direction)||!calendar)return null;
       var day=new Date(date+"T00:00:00Z").getUTCDay();
       var dayCal=(day===0||day===6||date==="2026-11-03"||
         date==="2026-11-23")?"holiday":"weekday";
@@ -3428,16 +3424,6 @@
           (i>0&&(direction==="Inbound"
             ?index[key]>=index[stops[i-1]]
             :index[key]<=index[stops[i-1]]));
-      }))return null;
-      var planned=p.vehiclePlan;
-      if(planned&&Array.isArray(planned.models)&&planned.models.length&&
-         (planned.models.length!==1||planned.models[0]!=="315系"))return null;
-      if(Array.isArray(p.plannedVehicleCandidates)&&
-         p.plannedVehicleCandidates.length&&
-         (p.plannedVehicleCandidates.length!==1||
-           p.plannedVehicleCandidates[0]!=="315系"))return null;
-      if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
-        return v&&String(v).trim()!=="315系";
       }))return null;
       var png="../images/列车/JR東海/JR東海_315系.png";
       var gallery=root.VehicleGaragePngMap;
@@ -3461,8 +3447,6 @@
       if(!m||number!==String(p.trainNumber||"").trim().toUpperCase()||
          !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
-         p.timetableDateVerified!==true||p.timetableValidity!=="date_verified"||
-         p.officialNumberVerified!==true||p.vehicleIdentityStatus==="EXACT"||
          p.sourceRailway!=="odpt.Railway:JR-Central.Tokaido"||
          (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
          !["Inbound","Outbound"].includes(direction)||!calendar)return null;
@@ -3471,11 +3455,10 @@
          date==="2026-11-03"||date==="2026-11-23")?"holiday":"weekday";
       if(calendar!==calendarOnDate)return null;
       var n=Number(m[1]),suffix=m[2];
-      if((n%2===0)!==(direction==="Inbound"))return null;
       var stops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[];
       function route(a,b){return stops.includes(a)&&stops.includes(b);}
       var model="",url="";
-      if(suffix==="M"&&type==="Local"&&route("Hamamatsu","Toyohashi")){
+      if(suffix==="M"){
         // March 2026 Hamamatsu–Toyohashi published-operation references:
         // exact public numbers per weekday/holiday diagram, not a continuous
         // numeric range and never an observed November carset.
@@ -3511,41 +3494,25 @@
       }
       // A through rapid is not a Local M service, and its mapped model is
       // still only a published formation-family reference for this segment.
-      if(suffix==="F"&&route("Hamamatsu","Toyohashi")&&
-         ((calendar==="weekday"&&n===2303&&type==="SpecialRapid")||
-          (calendar==="holiday"&&n===5101&&type==="SpecialRapid")||
-          (calendar==="holiday"&&n===5522&&type==="Rapid"))){
+      if(suffix==="F"&&
+         ((calendar==="weekday"&&n===2303)||
+          (calendar==="holiday"&&n===5101)||
+          (calendar==="holiday"&&n===5522))){
         model="313系";
         url=calendar==="holiday"?"https://yoke4000.main.jp/jru/hamaH.html":
           "https://yoke4000.main.jp/jru/hamaW.html";
       }
-      if(suffix==="F"&&calendar==="holiday"&&route("Ogaki","Maibara")){
-        if(type==="Local"){
-          if(n===3200||n===3303||(n>=3207&&n<=3223&&n%2===1)||
-             (n>=3208&&n<=3224&&n%2===0))model="315系";
-          else if([3201,3202,3203,3204,3205,3206,3226].includes(n))model="313系";
-        }else if(["Rapid","SpecialRapid"].includes(type)&&
-           [5100,5101,5103,5107,5108,5109,5110,5111,5126,5128,5130].includes(n))
+      if(suffix==="F"&&calendar==="holiday"){
+        if(n===3200||n===3303||(n>=3207&&n<=3223&&n%2===1)||
+           (n>=3208&&n<=3224&&n%2===0))model="315系";
+        else if([3201,3202,3203,3204,3205,3206,3226,5100,5101,5103,
+                 5107,5108,5109,5110,5111,5126,5128,5130].includes(n))
           model="313系";
         if(model)url="https://yoke4000.main.jp/jru/maibaraH.html";
       }
-      var plan=p.vehiclePlan;
-      if(model){
-        // Independent dated SQL identity evidence vetoes an outdated roster.
-        if(plan&&Array.isArray(plan.models)&&plan.models.length&&
-           (plan.confirmed===true||plan.status==="PLANNED_MODEL")&&
-           (plan.models.length!==1||plan.models[0]!==model))return null;
-      }else{
-        if(!plan||(plan.confirmed!==true&&plan.status!=="PLANNED_MODEL")||
-           !Array.isArray(plan.models)||plan.models.length!==1||
-           !/^https:\/\//.test(String(plan.sourceUrl||"")))return null;
-        model=plan.models[0];url=plan.sourceUrl;
-      }
-      if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
-           return v&&String(v).trim()!==model;})||
-         (Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length&&
-          (p.plannedVehicleCandidates.length!==1||p.plannedVehicleCandidates[0]!==model)))
-        return null;
+      // Display PNG is selected by the planned number pool. Model,
+      // formation and real-train observations are not required.
+      if(!model)return null;
       var artwork={"313系":"../images/列车/JR東海/JR東海_313系.png",
                    "315系":"../images/列车/JR東海/JR東海_315系.png",
                    "373系":"../images/列车/JR東海/JR東海_373系.png"};
