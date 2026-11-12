@@ -5223,6 +5223,64 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     run.cancelled_segment_from=exception.segment_from;
     run.cancelled_segment_to=exception.segment_to;
   }
+  // Fujikyu 2611: the imported SQL label carries the official service name
+  // after the number (for example "701 フジサン特急 1号 ..."). Normalize
+  // only the exact named services covered by the SQL PNG ranges. The image is
+  // a representative 8000-series reference; it never confirms the actual
+  // day's formation, vehicle number, or face A/B. Ordinary train 45 is left
+  // unresolved because the source contains no vehicle evidence for it.
+  if(lineId==="Fujikyu" && /^2026-11-\d{2}$/.test(serviceDate) && result.length){
+    const fujikyuExpressSource="https://www.fujikyu-railway.jp/train/fujisan_express.php";
+    const {data:fujikyuRanges,error:fujikyuRangeError}=await db
+      .from("published_train_png_number_ranges")
+      .select("segment_key,min_number,max_number,suffix,vehicle_model,png_reference,source_url,requires_exact_roster,actual_vehicle_confirmed")
+      .eq("edition","2611").eq("line_key","Fujikyu");
+    if(fujikyuRangeError)throw fujikyuRangeError;
+    const ranges=(fujikyuRanges||[]).filter((row:any)=>
+      row.segment_key==="fujisan_express_8000" &&
+      Number.isInteger(Number(row.min_number)) &&
+      Number.isInteger(Number(row.max_number)) &&
+      String(row.suffix||"")==="" &&
+      row.requires_exact_roster===true &&
+      row.actual_vehicle_confirmed===false &&
+      String(row.vehicle_model||"")==="富士急行8000系（フジサン特急・顔A）" &&
+      String(row.png_reference||"")==="../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png" &&
+      String(row.source_url||"")===fujikyuExpressSource);
+    if(ranges.length!==2 ||
+       !ranges.some((row:any)=>Number(row.min_number)===701&&Number(row.max_number)===705) ||
+       !ranges.some((row:any)=>Number(row.min_number)===793&&Number(row.max_number)===794))
+      throw new Error("FUJIKYU_2611_FUJISAN_EXPRESS_PNG_RANGES_UNAVAILABLE");
+    const expected=selectedCalendar==="odpt.Calendar:Weekday"
+      ? ["701","702","704","705","793","794"]
+      : ["701","702","703","704"];
+    const special=result.map((run:any)=>{
+      const label=String(run.train_number||"");
+      const hit=/^(\d{3})\s+フジサン特急\s+\d+号(?:\s|$)/.exec(label);
+      return hit?{run,label,number:hit[1]}:null;
+    }).filter(Boolean) as {run:any;label:string;number:string}[];
+    if(special.map((item)=>item.number).sort().join(",")!==expected.slice().sort().join(","))
+      throw new Error("FUJIKYU_2611_FUJISAN_EXPRESS_SQL_NUMBER_COVERAGE_DRIFT");
+    for(const item of special){
+      const number=Number(item.number);
+      const range=ranges.find((row:any)=>
+        number>=Number(row.min_number)&&number<=Number(row.max_number));
+      if(!range)throw new Error("FUJIKYU_2611_FUJISAN_EXPRESS_NUMBER_OUTSIDE_PNG_RANGE");
+      const sourceLabel=item.label;
+      item.run.source_train_label=sourceLabel;
+      item.run.train_number=item.number;
+      item.run.service_name=sourceLabel.replace(/^\d+\s+/,"");
+      item.run.train_number_verification="official-2611-fujikyu-fujisan-express-number";
+      item.run.train_number_source_url=fujikyuExpressSource;
+      item.run.vehicle_type_label=String(range.vehicle_model);
+      item.run.vehicle_type_candidates=null;
+      item.run.vehicle_mapping_level="published_number_family_plan";
+      item.run.vehicle_plan_confirmed=false;
+      item.run.vehicle_artwork_path=String(range.png_reference);
+      item.run.vehicle_evidence_source="database-published-service-plan";
+      item.run.vehicle_evidence_source_id="fujikyu-fujisan-express-8000-2611";
+      item.run.vehicle_evidence_url=fujikyuExpressSource;
+    }
+  }
   const validRuns = result.filter(r => r.stops.length >= 2 &&
     r.stops.every(s => !!s.station_urn) &&
     r.stops.filter(s => s.arrival_time || s.departure_time).length >= 2);

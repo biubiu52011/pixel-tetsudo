@@ -1798,6 +1798,18 @@
           var publicTrainNumber = _canonicalTrainNumberAtPosition(
             tt, canonicalNumberStop, trainNumber);
           processedTrainIds[timetableIdentity] = true;
+          // Fujikyu's imported SQL stores named Fujisan Express rows with a
+          // clean public number only after the Edge range guard has matched
+          // the exact source label. This is number evidence, not vehicle
+          // identity or a dated formation assignment.
+          var fujikyuOfficialNumberVerified = lineId === "Fujikyu" &&
+            tt._positionSource === "supabase-train-run" &&
+            tt["odpt:railway"] ===
+              "odpt.Railway:FujisanrokuElectricRailway.Fujikyu" &&
+            tt._sqlTrainNumberVerification ===
+              "official-2611-fujikyu-fujisan-express-number" &&
+            /^(?:701|702|703|704|705|793|794)$/.test(
+              String(publicTrainNumber || ""));
           // Osaka Higashi: SQL import appended H to the Saturday/holiday
           // SOURCE train number, not to the published 24xxS/21xxM number.
           // Preserve source identity and never turn a source-only date into
@@ -2530,6 +2542,7 @@
                   String(publicTrainNumber||"").replace(/H$/,"")))
               ?tt._sqlPublishedTrainNumber:publicTrainNumber),
             officialNumberVerified: Boolean(osakaMahorobaDisplayNumber) || Boolean(osakaHigashiOfficialVerified) ||
+              Boolean(fujikyuOfficialNumberVerified) ||
               // The existing JR-Central authorized SQL importer signs the
               // canonical train number with a dated, source-scoped itinerary.
               // It does NOT assign a physical vehicle or manufacture a run.
@@ -2575,7 +2588,7 @@
             historicalSourcePublicNumberSuffix:
               officialJrWestKyotoKobePlan
                 ?officialJrWestKyotoKobePlan.historicalNumberSuffix:"",
-            trainNumberSource: osakaMahorobaDisplayNumber?"official-2611-osaka-higashi-mahoroba-two-stop" : osakaHigashiDisplayNumber?(osakaHigashiOfficialVerified?"official-2611-osaka-higashi-clock":"osaka-higashi-source-calendar-normalized") : saganoDisplayNumber?"official-2611-sagano-segmented-number" : publicTrainNumber !== trainNumber
+            trainNumberSource: osakaMahorobaDisplayNumber?"official-2611-osaka-higashi-mahoroba-two-stop" : osakaHigashiDisplayNumber?(osakaHigashiOfficialVerified?"official-2611-osaka-higashi-clock":"osaka-higashi-source-calendar-normalized") : fujikyuOfficialNumberVerified?"official-2611-fujikyu-fujisan-express-number" : saganoDisplayNumber?"official-2611-sagano-segmented-number" : publicTrainNumber !== trainNumber
               ? "canonical-source-stop" : "timetable-record",
             publishedGonoLivery:_gonoResortFleet
               ?officialGonoPlan.livery:"",

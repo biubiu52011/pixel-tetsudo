@@ -83,6 +83,8 @@ on:
       - 'tests/jr-route-topology-20261109.test.cjs'
       - 'tests/jr-missing-line-inventory-20261109.test.cjs'
       - 'tests/new-rail-lines-fujikyu-20261109.test.cjs'
+      - 'tests/fujikyu-png-number-ranges.test.cjs'
+      - 'supabase/migrations/20261112120000_fujikyu_2611_png_number_ranges.sql'
       - 'tests/new-rail-registry-20261109.test.cjs'
       - 'supabase/queries/register_topology_only_lines_20261109.sql'
       - 'data/audits/jr-missing-lines-20261109.json'
@@ -278,6 +280,8 @@ jobs:
         run: node --test tests/jr-missing-line-inventory-20261109.test.cjs
       - name: Verify Fujikyu and three JR branch routes from official station orders
         run: node --test tests/new-rail-lines-fujikyu-20261109.test.cjs
+      - name: Verify Fujikyu SQL special-service PNG number ranges
+        run: node --test tests/fujikyu-png-number-ranges.test.cjs
       - name: Verify topology-only production route registration is fail-closed
         run: node --test tests/new-rail-registry-20261109.test.cjs
       - name: Verify Kakogawa turquoise line, Tanigawa transfer and November SQL provenance
