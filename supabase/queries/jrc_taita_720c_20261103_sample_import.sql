@@ -1,0 +1,5 @@
+-- Source-checked ONE DATE, 2026-11-03, 720C Taita planned train.
+-- Does NOT extrapolate other November dates, real carsets or intermediate clocks.
+-- Publisher reference and original source-fact selection:
+-- https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-taita-720c-20261103-planned-sample.md
+SELECT * FROM public.import_jr_central_authorized_plan('Taita','{"source":{"url":"https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-taita-720c-20261103-planned-sample.md","authorization":"original_compilation","authorization_evidence_url":"https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-taita-720c-20261103-planned-sample.md","edition_date":"2026-11-01"},"trains":[{"train_number":"720C","calendar_urn":"odpt.Calendar:SaturdayHoliday","direction_urn":"odpt.RailDirection:Outbound","train_type":"Local","operating_dates":["2026-11-03"],"stops":[{"station_id":"JRC-ChuoCentral-013","arrival":null,"departure":"09:53"},{"station_id":"JRC-Takayama-008","arrival":"10:24","departure":null}]}]}'::jsonb);
