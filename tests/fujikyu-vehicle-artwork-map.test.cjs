@@ -27,10 +27,20 @@ const expected = [
   ['富士急行2000系（フジサン特急・顔A・パノラマ車）', 'fujikyu-2000-face-a-panorama'],
   ['富士急行2000系（フジサン特急・顔A・非パノラマ車）', 'fujikyu-2000-face-a-nonpanorama'],
   ['富士急行2000系（フジサン特急・顔B・パノラマ車）', 'fujikyu-2000-face-b-panorama'],
-  ['富士急行2000系（フジサン特急・顔B・非パノラマ車）', 'fujikyu-2000-face-b-nonpanorama']
+  ['富士急行2000系（フジサン特急・顔B・非パノラマ車）', 'fujikyu-2000-face-b-nonpanorama'],
+  ['富士急行8000系（フジサン特急・顔A）', 'fujikyu-8000-face-a'],
+  ['富士急行8000系（フジサン特急・顔B）', 'fujikyu-8000-face-b'],
+  ['富士急行6000系（リサとガスパールトレイン）', 'fujikyu-6000-lisa-gaspard'],
+  ['富士急行6000系（マッターホルン号）', 'fujikyu-6000-matterhorn'],
+  ['富士急行6000系（紫色ラッピング）', 'fujikyu-6000-purple-wrap'],
+  ['富士急行1000系（富士登山電車・別面）', 'fujikyu-1000-tozan-alt-face'],
+  ['富士急行8500系（富士山ビュー特急・赤色）', 'fujikyu-8500-view-express-red'],
+  ['富士急行8500系（富士山ビュー特急・茶色）', 'fujikyu-8500-view-express-brown'],
+  ['富士急行5000形（標準色）', 'fujikyu-5000-standard'],
+  ['富士急行5000形（トーマスランド）', 'fujikyu-5000-thomas-land']
 ];
 
-assert.equal(gallery.lineModels('Fujikyu').filter(name => name.startsWith('富士急行')).length, 10);
+assert.equal(gallery.lineModels('Fujikyu').filter(name => name.startsWith('富士急行')).length, 20);
 for (const [model, id] of expected) {
   const rows = gallery.findModel(model, 'Fujikyu');
   assert.equal(rows.length, 1, model);
@@ -48,4 +58,4 @@ for (const [model, id] of expected) {
 
 assert.equal(root.TrainVehicle.resolveCanonicalVehicle('2001F'), null);
 assert.equal(root.TrainVehicle.resolveCanonicalVehicle('2002F'), null);
-console.log('Fujikyu vehicle artwork map: PASS (10 scoped references; no formation inference)');
+console.log('Fujikyu vehicle artwork map: PASS (20 scoped references; no formation inference)');

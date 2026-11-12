@@ -2905,6 +2905,66 @@ Object.assign(CANONICAL_VEHICLES, {
     asset: "../images/列车/富士急行/富士急行_2000系_フジサン特急_顔B_非パノラマ車.png", lineIds: ["Fujikyu"],
     aliases: ["2000系（フジサン特急・顔B・非パノラマ車）"], artworkStatus: "user-supplied-reference",
     evidenceSource: "https://uraken.net/rail/chiho/fujikyu/2000.html"
+  },
+  "fujikyu-8000-face-a": {
+    displayName: "富士急行8000系（フジサン特急・顔A）", iconName: "富士急行8000系（フジサン特急・顔A）",
+    asset: "../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png", lineIds: ["Fujikyu"],
+    aliases: ["8000系（フジサン特急・顔A）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://s.response.jp/article/2014/07/09/227239.html"
+  },
+  "fujikyu-8000-face-b": {
+    displayName: "富士急行8000系（フジサン特急・顔B）", iconName: "富士急行8000系（フジサン特急・顔B）",
+    asset: "../images/列车/富士急行/富士急行_8000系_フジサン特急_顔B.png", lineIds: ["Fujikyu"],
+    aliases: ["8000系（フジサン特急・顔B）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://s.response.jp/article/2014/07/09/227239.html"
+  },
+  "fujikyu-6000-lisa-gaspard": {
+    displayName: "富士急行6000系（リサとガスパールトレイン）", iconName: "富士急行6000系（リサとガスパールトレイン）",
+    asset: "../images/列车/富士急行/富士急行_6000系_リサとガスパールトレイン.png", lineIds: ["Fujikyu"],
+    aliases: ["6000系（富士急行・リサとガスパール）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.uraken.net/rail/chiho/fujikyu/6000.html"
+  },
+  "fujikyu-6000-matterhorn": {
+    displayName: "富士急行6000系（マッターホルン号）", iconName: "富士急行6000系（マッターホルン号）",
+    asset: "../images/列车/富士急行/富士急行_6000系_マッターホルン号.png", lineIds: ["Fujikyu"],
+    aliases: ["6000系（富士急行・マッターホルン）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.uraken.net/rail/chiho/fujikyu/6000.html"
+  },
+  "fujikyu-6000-purple-wrap": {
+    displayName: "富士急行6000系（紫色ラッピング）", iconName: "富士急行6000系（紫色ラッピング）",
+    asset: "../images/列车/富士急行/富士急行_6000系_紫色ラッピング.png", lineIds: ["Fujikyu"],
+    aliases: ["6000系（富士急行・紫色ラッピング）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.uraken.net/rail/chiho/fujikyu/6000.html"
+  },
+  "fujikyu-1000-tozan-alt-face": {
+    displayName: "富士急行1000系（富士登山電車・別面）", iconName: "富士急行1000系（富士登山電車・別面）",
+    asset: "../images/列车/富士急行/富士急行_1000系_富士登山電車_別面.png", lineIds: ["Fujikyu"],
+    aliases: ["1000系（富士急行・富士登山電車・別面）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://2nd-train.net/topics/article/41770/"
+  },
+  "fujikyu-8500-view-express-red": {
+    displayName: "富士急行8500系（富士山ビュー特急・赤色）", iconName: "富士急行8500系（富士山ビュー特急・赤色）",
+    asset: "../images/列车/富士急行/富士急行_8500系_富士山ビュー特急_赤色.png", lineIds: ["Fujikyu"],
+    aliases: ["8500系（富士山ビュー特急・赤色）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://railf.jp/news/2026/03/23/224500.html"
+  },
+  "fujikyu-8500-view-express-brown": {
+    displayName: "富士急行8500系（富士山ビュー特急・茶色）", iconName: "富士急行8500系（富士山ビュー特急・茶色）",
+    asset: "../images/列车/富士急行/富士急行_8500系_富士山ビュー特急_茶色.png", lineIds: ["Fujikyu"],
+    aliases: ["8500系（富士山ビュー特急・茶色）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://railf.jp/news/2026/03/23/224500.html"
+  },
+  "fujikyu-5000-standard": {
+    displayName: "富士急行5000形（標準色）", iconName: "富士急行5000形（標準色）",
+    asset: "../images/列车/富士急行/富士急行_5000形_標準色.png", lineIds: ["Fujikyu"],
+    aliases: ["5000形（富士急行・標準色）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://netrain.makibisi.net/trainphoto/yamanashi/fujikyu/5000.htm"
+  },
+  "fujikyu-5000-thomas-land": {
+    displayName: "富士急行5000形（トーマスランド）", iconName: "富士急行5000形（トーマスランド）",
+    asset: "../images/列车/富士急行/富士急行_5000形_トーマスランド号.png", lineIds: ["Fujikyu"],
+    aliases: ["5000形（富士急行・トーマスランド）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://2nd-train.net/formations/series/266/5000%E7%B3%BB/"
   }
 });
 

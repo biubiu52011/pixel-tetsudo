@@ -61,7 +61,17 @@
     ["fujikyu-2000-face-a-panorama","富士急行2000系（フジサン特急・顔A・パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔A_パノラマ車.png","Fujikyu",1],
     ["fujikyu-2000-face-a-nonpanorama","富士急行2000系（フジサン特急・顔A・非パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔A_非パノラマ車.png","Fujikyu",1],
     ["fujikyu-2000-face-b-panorama","富士急行2000系（フジサン特急・顔B・パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔B_パノラマ車.png","Fujikyu",1],
-    ["fujikyu-2000-face-b-nonpanorama","富士急行2000系（フジサン特急・顔B・非パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔B_非パノラマ車.png","Fujikyu",1]
+    ["fujikyu-2000-face-b-nonpanorama","富士急行2000系（フジサン特急・顔B・非パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔B_非パノラマ車.png","Fujikyu",1],
+    ["fujikyu-8000-face-a","富士急行8000系（フジサン特急・顔A）","富士急行/富士急行_8000系_フジサン特急_顔A.png","Fujikyu",1],
+    ["fujikyu-8000-face-b","富士急行8000系（フジサン特急・顔B）","富士急行/富士急行_8000系_フジサン特急_顔B.png","Fujikyu",1],
+    ["fujikyu-6000-lisa-gaspard","富士急行6000系（リサとガスパールトレイン）","富士急行/富士急行_6000系_リサとガスパールトレイン.png","Fujikyu",1],
+    ["fujikyu-6000-matterhorn","富士急行6000系（マッターホルン号）","富士急行/富士急行_6000系_マッターホルン号.png","Fujikyu",1],
+    ["fujikyu-6000-purple-wrap","富士急行6000系（紫色ラッピング）","富士急行/富士急行_6000系_紫色ラッピング.png","Fujikyu",1],
+    ["fujikyu-1000-tozan-alt-face","富士急行1000系（富士登山電車・別面）","富士急行/富士急行_1000系_富士登山電車_別面.png","Fujikyu",1],
+    ["fujikyu-8500-view-express-red","富士急行8500系（富士山ビュー特急・赤色）","富士急行/富士急行_8500系_富士山ビュー特急_赤色.png","Fujikyu",1],
+    ["fujikyu-8500-view-express-brown","富士急行8500系（富士山ビュー特急・茶色）","富士急行/富士急行_8500系_富士山ビュー特急_茶色.png","Fujikyu",1],
+    ["fujikyu-5000-standard","富士急行5000形（標準色）","富士急行/富士急行_5000形_標準色.png","Fujikyu",1],
+    ["fujikyu-5000-thomas-land","富士急行5000形（トーマスランド）","富士急行/富士急行_5000形_トーマスランド号.png","Fujikyu",1]
   );
   var alternates=[["jr-east-e233-5000-keiyo","E233系5000番台","JR東日本/JR東日本_E233系_5000番台.png","Keiyo|Togane"]];
   var unassigned=[];
@@ -96,8 +106,8 @@
     return listModel(model,lineId).some(function(r){return !r.alternateOnly && !r.quarantined && r.path===path;});
   }
   root.VehicleGaragePngMap=Object.freeze({
-    version:"20261112-fujikyu-vehicle-gallery",totalPng:590,
-    mappedPng:590,canonicalEntries:611,alternatePng:1,
+    version:"20261112-fujikyu-vehicle-gallery-v2",totalPng:600,
+    mappedPng:600,canonicalEntries:621,alternatePng:1,
     unassigned:Object.freeze(unassigned.map(function(p){return prefix+p;})),
     alternates:Object.freeze(alternates.map(function(r){return prefix+r[2];})),
     hasPng:function(path){return !!assets[asPath(path)];},
