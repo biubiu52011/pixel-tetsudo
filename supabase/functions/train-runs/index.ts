@@ -68,11 +68,21 @@ function stationKey(urn: string) {
 
 // A published revision replaces the whole line/calendar scope, including
 // removed trips. Choosing per train number would resurrect deleted services.
-function selectRevision(rows: any[], serviceDate: string, calendar: string | null) {
+//
+// Static timetable revisions are admitted only for an explicitly configured
+// SQL-plan fallback line. They remain unverified plan data in the response and
+// never imply realtime position capability.
+function selectRevision(
+  rows: any[], serviceDate: string, calendar: string | null,
+  allowStaticTimetableRevision = false,
+) {
   const scope = rows.filter(r => {
     const source = Array.isArray(r.evidence_sources) ? r.evidence_sources[0] : r.evidence_sources;
+    const sourceType = String(source?.source_type || "");
+    const sourceAllowed = sourceType === 'official' ||
+      (allowStaticTimetableRevision && sourceType === 'timetable');
     return r.effective_from && r.source_id && r.version_key &&
-      source?.source_type === 'official' && Boolean(source.source_url) &&
+      sourceAllowed && Boolean(source.source_url) &&
       (!r.calendar_urn || r.calendar_urn === calendar);
   });
   const active = scope.filter(r => r.effective_from <= serviceDate)
@@ -190,7 +200,10 @@ async function linkPlannedOperations(db: any, runs: any[], revision: any) {
  * there is no date-specific run. Calendar variants are alternatives.
  * Page both queries because Supabase Data API defaults to at most 1000 rows.
  */
-async function readManualTemplateRuns(db: any, lineId: string, serviceDate: string, timetableOperator: string | null): Promise<Response> {
+async function readManualTemplateRuns(
+  db: any, lineId: string, serviceDate: string,
+  timetableOperator: string | null, sourceConfig: any = null,
+): Promise<Response> {
   async function pages(makeQuery: (first: number, last: number) => any) {
     const out: any[] = [];
     const size = 700;
@@ -226,7 +239,12 @@ async function readManualTemplateRuns(db: any, lineId: string, serviceDate: stri
   const calendars = serviceCalendars(serviceDate);
   const revisionRows = await loadRevisionRows(db,lineId);
   for (const calendar of calendars) {
-    const revision = selectRevision(revisionRows,serviceDate,calendar);
+    const revision = selectRevision(
+      revisionRows, serviceDate, calendar,
+      sourceConfig?.sql_planned_fallback_enabled === true &&
+      sourceConfig?.timetable_api_enabled !== true &&
+      sourceConfig?.realtime_position_api_enabled !== true,
+    );
     // A future dedicated Holiday diagram cannot hide a currently valid
     // SaturdayHoliday alternative before that dedicated diagram takes effect.
     if (revision?.unavailable && revision.reason === 'not_yet_effective') {
@@ -5332,7 +5350,8 @@ Deno.serve(async (req: Request) => {
 
   const db = createClient(supabaseUrl, secretKey, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data: source, error: sourceError } = await db.from("railway_lines")
-    .select("timetable_operator").eq("id", lineId).maybeSingle();
+    .select("timetable_operator,sql_planned_fallback_enabled,timetable_api_enabled,realtime_position_api_enabled")
+    .eq("id", lineId).maybeSingle();
   if (sourceError) return json({ ok: false, error: "DB_SOURCE_LOOKUP_FAILED" }, 500);
   if (!source) return json({ ok: false, error: "LINE_NOT_REGISTERED" }, 404);
   // Position capability flags cannot prevent reading published service plans.
@@ -5341,7 +5360,7 @@ Deno.serve(async (req: Request) => {
   // selector, not a persisted run date. No day-specific rows are queried.
   try {
     return await readManualTemplateRuns(
-      db, lineId, serviceDate, source?.timetable_operator || null
+      db, lineId, serviceDate, source?.timetable_operator || null, source
     );
   } catch (err) {
     console.error("[train-runs] SQL read failed", lineId, String(err));
