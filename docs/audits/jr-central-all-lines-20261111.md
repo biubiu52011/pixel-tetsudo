@@ -243,3 +243,43 @@ No real-carset tracking, guessed intermediate stop clock, unsupported
 number-PNG mapping or full-day acceptance was introduced. Some plan
 samples are intentionally valid only on historic individual dates and
 should not be interpreted as current-day map-visible trains.
+
+
+## 2026-11-12 JR Odekake 2244 official numbered-line source follow-up
+
+The user supplied https://timetable.jr-odekake.net/line-timetable/2244 .
+The rendered document explicitly names **東海道本線(米原～浜松) 上り**,
+and displays a large official 2026-11 line-specific train-number matrix
+with separate arrival/departure station clock rows, not the 3-station
+`MinoAkasaka` branch. This official source is suitable for validating
+individual scheduled train numbers on `TokaidoCentral` but cannot prove
+MinoAkasaka's 2026-11 numbered trips.
+
+Production import completed:
+- `5102F` 2026-11-07 SaturdayHoliday train;
+  Ogaki (`JRC-TokaidoCentral-078`) 08:09 → Toyohashi 09:37.
+- Exactly one date-scoped SQL template and two original selected stop
+  clock facts, source evidence:
+  `docs/audits/jrc-tokaido-5102f-20261107-official-2244.md`.
+- SQL `supabase/queries/jrc_tokaido_5102f_20261107_official_2244_sample_import.sql`.
+  Source import replay inserted 0 additional trains and 0 stops.
+- Cross-checked 5102F service numbering and the endpoints against an
+  earlier individual JR timetable (2026-08); no older intermediate
+  stop clock times were transplanted to November.
+
+**Current confirmed production snapshot superseding earlier totals:
+12/13 conventional lines, 24 distinct (line_key,train_number),
+44 calendar templates, 213 scheduled stop rows.** MinoAkasaka
+still has zero train-number-backed SQL plan templates.
+
+2026-03 JR-Central branch station posters have valid clock times
+but no actual train NUMBER (e.g.
+https://railway.jr-central.co.jp/time-schedule/srch/_pdf/data/202603/tokaido_Mino-akasaka_B_wh_u.pdf );
+do not create fictional branch train numbers from 2244 mainline
+number columns. Publisher timetable database redistribution is
+restricted: this import represents an independently selected handful
+of published schedule facts, not mirroring the entire provider table.
+
+The TokaidoCentral acceptance status remains
+`blocked_no_weekday_trains`; the small source-sample import
+must not be presented as full-day coverage or a current-date train.
