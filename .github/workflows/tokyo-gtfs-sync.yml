@@ -1,0 +1,36 @@
+name: Merge checksum-locked TokyoGTFS source into SQL quarantine
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tokyo-gtfs-sync.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: tokyo-gtfs-source-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download source snapshot (do not silently accept new revision)
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 3 -o rail.zip "https://mkuran.pl/gtfs/tokyo/rail.zip"
+          echo "bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f  rail.zip" | sha256sum --check -
+      - name: Transfer GTFS in OIDC-authenticated batches to private staging
+        shell: bash
+        run: |
+          python3 -m py_compile scripts/import_tokyo_gtfs_oidc.py
+          python3 scripts/import_tokyo_gtfs_oidc.py rail.zip
+      - name: Staging complete (live SQL and realtime stay unchanged)
+        run: echo "Verified by database row-count guard in the final OIDC batch"
