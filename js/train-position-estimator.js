@@ -2616,6 +2616,13 @@
             delayMin: delayMin,
             estimated: true,
             positionSource: tt._positionSource || "train-timetable",
+            // Only the server's exact public train-number / line-scoped SQL
+            // PNG pool may supply a JR-Central Shinkansen reference image.
+            // This does not confer vehicle identity or observed dispatch.
+            sqlPlannedNumberPngPath: lineId==="TokaidoShinkansen" &&
+              tt._positionSource==="supabase-train-run" &&
+              tt._sqlTrainNumberVerification==="official-2611-sql-exact-roster"
+                ? (tt._sqlVehicleArtworkPath || "") : "",
             // 保留 SQL 来源日期核验供诊断使用；绝不
             // 将未经核验的历史时刻表提升为当前计划。
             timetableValidity: tt._positionSource === "supabase-train-run"
