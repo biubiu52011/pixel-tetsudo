@@ -3,14 +3,14 @@
 -- service dates, five verified stop events per source, no actual train tracking.
 -- Independently authored timetable fact subset/provenance: https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-chuo-1002m-1026m-2611-original-plan-facts.md
 WITH service_days AS (
- SELECT d::date day,
+ SELECT d::date AS service_day,
  CASE WHEN extract(isodow FROM d) IN (6,7) OR d::date IN
    ('2026-11-03'::date,'2026-11-23'::date)
  THEN 'odpt.Calendar:SaturdayHoliday'
  ELSE 'odpt.Calendar:Weekday' END calendar_urn
  FROM generate_series('2026-11-01'::date,'2026-11-30'::date,'1 day'::interval) d
 ), day_groups AS (
- SELECT calendar_urn,jsonb_agg(to_char(day,'YYYY-MM-DD') ORDER BY day) days
+ SELECT calendar_urn,jsonb_agg(to_char(service_day,'YYYY-MM-DD') ORDER BY service_day) days
  FROM service_days GROUP BY calendar_urn
 ), trains AS (
  SELECT sources.train_number,groups.calendar_urn,
