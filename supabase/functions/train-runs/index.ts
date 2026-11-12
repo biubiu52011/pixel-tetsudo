@@ -95,6 +95,12 @@ function selectRevision(
   return choices[0].effective_to && serviceDate > choices[0].effective_to ? { unavailable: true } : choices[0];
 }
 
+function isOfficialRevision(revision: any) {
+  const source = Array.isArray(revision?.evidence_sources)
+    ? revision.evidence_sources[0] : revision?.evidence_sources;
+  return !revision?.unavailable && source?.source_type === "official";
+}
+
 // The revision set is line-scoped, not calendar-scoped: fetch it once per
 // request, then select the appropriate published revision for each calendar.
 async function loadRevisionRows(db: any, lineId: string) {
@@ -1287,7 +1293,10 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       plan_revision: selectedRevision,
       // Stop completeness is not evidence that a historical source is current.
       timetable_validity: selectedRevision ? 'published_revision' : (mapped.timetable_validity || "undated_not_current_verified"),
-      timetable_date_verified: !!selectedRevision || mapped.timetable_validity === "date_verified",
+      // A static timetable revision is usable plan input but is not an
+      // operator-verified current edition. Keep date verification separate.
+      timetable_date_verified: isOfficialRevision(selectedRevision) ||
+        mapped.timetable_validity === "date_verified",
       stops: (completeStops || byTemplate.get(t.id) || []).map((s: any) => {
         const urn = s.station_urn || s.arrival_station_urn || s.departure_station_urn || "";
         return {
@@ -5310,7 +5319,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     audit_coverage_status: auditStatus, audit_issues: auditIssues,
     revision:selectedRevision,plan_status:kawagoeNovemberComplete ? 'verified_2611_kawagoe_six_stop' :
       sotetsuNovemberComplete ? 'verified_2611_four_stop' :
-      selectedRevision ? 'published_revision' : 'unverified',
+      isOfficialRevision(selectedRevision) ? 'published_revision' : 'unverified',
     calendar_status: "selected", selected_calendar: selectedCalendar,
     omitted_incomplete_runs: omittedIncompleteRuns,
     suppressed_station_only_source_fragments: suppressedOsakaStationFragments,
