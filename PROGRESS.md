@@ -4,15 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
-### FUJIKYU-PNG-NUMBER-RANGES-20261112 — 富士急行 SQL 车次号段与参考 PNG（LOCAL-READY）
+### FUJIKYU-PNG-NUMBER-RANGES-20261112 — 富士急行 SQL 车次号段与参考 PNG（SUPABASE-EDGE-DEPLOYED）
 
 | 项目 | 当前状态 |
 | --- | --- |
 | SQL 号段 | 新增 `published_train_png_number_ranges` 的 701–705、793–794 两组 `フジサン特急` 精确范围；按现有 Fujikyu SQL 命名车次匹配并输出干净官方车次号。普通车次 45 不纳入。 |
 | PNG | 采用已映射的富士急行 8000 系（脸 A）作为计划参考图；`requires_exact_roster=true`、`actual_vehicle_confirmed=false`，不代表当天实际编组、车辆号或脸 A/B 实车确认。 |
 | 运行链路 | `train-runs` 对特急命名 SQL 行进行严格范围/历法覆盖校验，输出 `published_number_family_plan`；前端号段解析兼容原始带名称标签，窄化到 Fujikyu 铁路 URN。 |
-| 回归 | 新增富士急行 SQL PNG 号段契约测试；专项回归 13/13 通过，页面脚本缓存指纹已同步。 |
-| 生产边界 | 本批仅新增迁移、Edge 代码、前端号段规则与测试；尚未应用 Supabase 迁移、部署 Edge 或发布 GitHub Pages。 |
+| 回归 | 新增富士急行 SQL PNG 号段契约测试；专项回归 13/13 通过，页面脚本缓存指纹已同步。线上健康顾问无告警。 |
+| 生产部署 | 迁移 `20261112120000_fujikyu_2611_png_number_ranges` 已应用；`train-runs` 已部署远端版本 377（ACTIVE）。线上接口抽样确认 701、793 返回计划参考 PNG，普通 45 仍为 `unresolved` 且无车型/PNG。 |
+| 生产边界 | 8000 系脸 A 仍是号段计划参考图，不代表当天实际编组或车辆号；未发布 GitHub Pages，Pages 公开页面仍需单独发布与验收。 |
 
 ### FUJIKYU-LINE-ICON-20261112 — 富士急行线专属图标补充（LOCAL-READY）
 
