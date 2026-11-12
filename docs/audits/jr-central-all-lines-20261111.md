@@ -156,3 +156,42 @@ number+clock calendar identity.
 No extra runtime data layer, GPS/actual-train tracking, or guessed model/PNG
 rules were added. The existing SQL `train-runs` Edge and browser
 position estimator remain the consuming path.
+
+
+## 2026-11-12 later supplement — four more Shinano 2611 plans
+
+Production Supabase follow-up imported `ChuoCentral` planned-number trains
+`1003M`, `1004M`, `1005M`, `1006M` from the JR-East **official**
+2026-11 2611 per-train pages and Weekday/SaturdayHoliday diagrams:
+- `docs/audits/jrc-chuo-shinano-1003m-1006m-2611-scheduled-stops.md`
+- `supabase/queries/jrc_chuo_1003m_1006m_2611_planned_sample_import.sql`
+- `supabase/queries/jrc_chuo_1003m_1006m_2611_planned_number_383_png.sql`
+
+**Additional 4 distinct planned train numbers, 8 SQL templates, 50 timed
+stop records**, with day-specific 2026-10-31 Agematsu extra-stop events
+excluded from November's normal plan. Every plan is bounded to the
+Nagoya–Shiojiri ChuoCentral line. Re-running the source importer gave
+0 train/stop inserts.
+
+Expanded the existing exact-number 383系 representative
+`published_train_png_number_ranges` on ChuoCentral from 4 to **8**
+single-number rules, `actual_vehicle_confirmed=false`. This SQL
+asset evidence does not verify a real carset. No new generic range or
+new PNG file was generated.
+
+**Current verified production snapshot, superseding all above earlier
+counts: 10/13 JR-Central conventional routes with planned samples,
+21 line-scoped numbered train records, 40 calendar templates
+(19 Weekday, 21 SaturdayHoliday), 199 scheduled stop rows**.
+ChuoCentral now has 8 distinct numbers / 16 calendar templates /
+90 source stop rows. Other 9 already-populated lines are unchanged.
+MinoAkasaka, Sangu, Taita still have 0 templates.
+All 13 full-day acceptances remain false.
+0 date-overlap duplicates and 0 timetable chronology issues on all
+conventional lines, confirmed by production readback.
+
+**Known display limitation to verify**: the SQL PNG number pool is
+populated, but browser display of those new ChuoCentral 383 pictures was
+not checked in a live browser. Current `train-runs` Edge v374 might not
+propagate conventional-rail SQL PNG evidence as it does for Shinkansen;
+do not claim rendered 383 icons until that existing read path is tested.
