@@ -5479,6 +5479,19 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       (p.vehicleResolvedUpstream === true ||
        (p.vehicleResolvedUpstream == null && p.vehicleResolution &&
         p.vehicleResolution.identityStatus === "EXACT")));
+    // JR-Central SQL is a planned timetable map: only the planned train
+    // NUMBER and its scoped PNG pool can select the reference image.
+    if (p && p.estimated === true &&
+        p.positionSource === "supabase-train-run" &&
+        /^odpt\.Railway:JR-Central\./.test(String(p.sourceRailway || "")) &&
+        contextLineId === String(p.positionLineId || p.lineId || "")) {
+      var centralNumberPng = lookupTrainNumberRangePng(p);
+      if (artworkFailed === true || !centralNumberPng)
+        return {kind:"unresolved",iconSrc:""};
+      return {kind:"vehicle",iconSrc:centralNumberPng.pngPath,
+        planned:true,illustrative:true,representativeOnly:true,
+        actualVehicleConfirmed:false};
+    }
     var strongRealtimeEvidence = !!(p && p.vehicleResolvedFromRealtime === true &&
       (resolutionSources.indexOf('official-realtime-car-number') >= 0 ||
        resolutionSources.indexOf('roster-physical-id') >= 0));
