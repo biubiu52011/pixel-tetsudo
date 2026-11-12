@@ -55,7 +55,7 @@ function prepare(source, csv) {
     if(!row.service_key||!/^[0-9]{1,5}[A-Z]{0,2}$/.test(row.train_number)||
        !['odpt.Calendar:Weekday','odpt.Calendar:SaturdayHoliday'].includes(row.calendar_urn)||
        !['odpt.RailDirection:Inbound','odpt.RailDirection:Outbound'].includes(row.direction_urn)||
-       !['Local','Rapid','SpecialRapid','LimitedExpress'].includes(row.train_type)||
+       !['Local','Rapid','SectionRapid','SpecialRapid','LimitedExpress'].includes(row.train_type)||
        !/^\d+$/.test(row.stop_sequence)||!row.station_id||
        !/^(?:[01]\d|2\d):[0-5]\d$|^$/.test(row.arrival)||
        !/^(?:[01]\d|2\d):[0-5]\d$|^$/.test(row.departure)||
