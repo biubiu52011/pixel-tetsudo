@@ -19,7 +19,7 @@ function contextFor(calendarType) {
     estimated: true,
     serviceDate: '2026-11-12',
     calendarType,
-    trainOperator: 'Fujikyu',
+    trainOperator: 'FujisanrokuElectricRailway',
     sourceRailway: 'odpt.Railway:FujisanrokuElectricRailway.Fujikyu',
     railDirection: 'odpt.RailDirection:Outbound',
     trainType: 'odpt.TrainType:FujisanrokuElectricRailway.Local'
@@ -67,6 +67,18 @@ test('Fujikyu number ranges normalize special labels and map ordinary 1-52', () 
   assert.ok(ordinary);
   assert.equal(ordinary.model, '富士急行6000系（標準色）');
   assert.match(ordinary.pngPath, /富士急行_6000系_標準色\.png$/);
+  const ordinaryMarker = root.TrainVehicle.selectMarkerArtwork({
+    ...weekday,
+    trainNumber: '45',
+    positionLineId: 'Fujikyu',
+    displayLineId: 'Fujikyu',
+    vehicleIdentityStatus: 'UNKNOWN',
+    vehicleResolvedUpstream: false,
+    vehicleResolvedFromRealtime: false,
+    actualVehicleConfirmed: false
+  }, false);
+  assert.equal(ordinaryMarker.kind, 'vehicle');
+  assert.match(ordinaryMarker.iconSrc, /富士急行_6000系_標準色\.png$/);
   assert.ok(root.TrainNumberPngRanges.match('1', 'Fujikyu', weekday));
   assert.equal(root.TrainNumberPngRanges.match('53', 'Fujikyu', weekday), null);
 

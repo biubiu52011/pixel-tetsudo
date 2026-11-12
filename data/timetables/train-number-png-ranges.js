@@ -77,7 +77,9 @@
         "31","32","33","34","35","36","37","38","39","40",
         "41","42","43","44","45","46","47","48","49","50",
         "51","52"],
-      operator:"Fujikyu",sourceOperatorFallback:true,
+      // ODPT/railway_data uses the canonical operator ID
+      // FujisanrokuElectricRailway; Fujikyu is the line ID, not the operator.
+      operator:"FujisanrokuElectricRailway",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:FujisanrokuElectricRailway.Fujikyu"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       requireCompatiblePlan:true,referenceOnly:true,illustrative:true,
@@ -93,7 +95,7 @@
       publishedNumbers:["701","702","703","704","705","793","794"],
       weekdayNumbers:["701","702","704","705","793","794"],
       holidayNumbers:["701","702","703","704"],
-      operator:"Fujikyu",sourceOperatorFallback:true,
+      operator:"FujisanrokuElectricRailway",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:FujisanrokuElectricRailway.Fujikyu"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       requireCompatiblePlan:true,referenceOnly:true,illustrative:true,
