@@ -195,3 +195,51 @@ populated, but browser display of those new ChuoCentral 383 pictures was
 not checked in a live browser. Current `train-runs` Edge v374 might not
 propagate conventional-rail SQL PNG evidence as it does for Shinkansen;
 do not claim rendered 383 icons until that existing read path is tested.
+
+
+## 2026-11-12 latest supplement — Sangu 928C and Taita 720C
+
+This **supersedes** all earlier production line/number/stop totals recorded
+above. Current production Supabase project `pnupwfmgbtxqhpzsrhfn` was
+verified with read-only aggregate and integrity queries:
+
+- **12 / 13** JR-Central conventional lines with sampled numbered plans.
+- **23** distinct `(line_key,train_number)`, **43** source calendar templates,
+  **211** scheduled stop rows (20 weekday / 23 SaturdayHoliday templates).
+- No `(line_key,train_number,service_date)` overlaps.
+- No rows in `published_timetable_chronology_issues` for JR-Central
+  conventional routes.
+- **0/13 full-day acceptance passes**: intentionally unverified whole-day
+  timetable coverage.
+- `Sangu`: 1 distinct number, 2 templates, 10 stop rows (planned `928C`
+  鳥羽 13:23 → 伊勢市 13:42; daily 2026-11).
+- `Taita`: 1 distinct number, 1 template, 2 timed endpoint events
+  (`720C`, 多治見 09:53 → 美濃太田 10:24 on **2026-11-03 only**).
+  This one-day example must **not** be expanded into weekdays or other
+  weekends without documented date-specific train-number proof.
+- `MinoAkasaka`: **0** numbered plans. Station timetable clocks for
+  2026-11 appear in the current online timetables, but the publicly found
+  `725F`, `726F`, `3710G` examples were recorded BEFORE the
+  2026-03-14 annual revision, and cannot justify declaring a particular
+  2026-11 train number. Do **not** manufacture one from the generic
+  700F/G number-range policy.
+
+Production additions performed:
+- `supabase/queries/jrc_sangu_928c_2611_sample_import.sql`
+- `supabase/queries/jrc_taita_720c_20261103_sample_import.sql`
+
+Both imports successfully re-ran with **zero additional templates/stops**.
+Source-specific evidence and narrow independently authored timetable facts:
+- `docs/audits/jrc-sangu-928c-2611-planned-train.md`
+- `docs/audits/jrc-taita-720c-20261103-planned-sample.md`
+
+Current public timetable context for the missing branch:
+- https://transit.yahoo.co.jp/search/result/%E7%BE%8E%E6%BF%83%E8%B5%A4%E5%9D%82-%E5%A4%A7%E5%9E%A3
+- https://ekitan.com/timetable/railway/line-station/149-146/d1
+- https://w.atwiki.jp/nomiyajunin/pages/12.html (2025 number-series
+  guideline, **not 2026-11 exact train-number evidence**)
+
+No real-carset tracking, guessed intermediate stop clock, unsupported
+number-PNG mapping or full-day acceptance was introduced. Some plan
+samples are intentionally valid only on historic individual dates and
+should not be interpreted as current-day map-visible trains.
