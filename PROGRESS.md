@@ -13,7 +13,8 @@
 | 运行链路 | `train-runs` 对特急命名 SQL 行进行严格范围/历法覆盖校验，输出 `published_number_family_plan`；前端号段解析兼容原始带名称标签，窄化到 Fujikyu 铁路 URN。 |
 | 回归 | 新增富士急行 SQL PNG 号段契约测试；专项回归 13/13 通过，页面脚本缓存指纹已同步。线上健康顾问无告警。 |
 | 生产部署 | 迁移 `20261112120000_fujikyu_2611_png_number_ranges` 已应用；`train-runs` 已部署远端版本 377（ACTIVE）。线上接口抽样确认 701、793 返回计划参考 PNG，普通 45 仍为 `unresolved` 且无车型/PNG。 |
-| 生产边界 | 8000 系脸 A 仍是号段计划参考图，不代表当天实际编组或车辆号；未发布 GitHub Pages，Pages 公开页面仍需单独发布与验收。 |
+| 生产边界 | 8000 系脸 A 仍是号段计划参考图，不代表当天实际编组或车辆号；GitHub Pages 已由 `Deploy static content to Pages` 成功发布并完成公开回读。 |
+| Pages 验收 | `https://biubiu52011.github.io/pixel-tetsudo/pages/trains.html` 返回 200；富士急行 8000 系 PNG 返回 200（`image/png`）。 |
 
 ### FUJIKYU-LINE-ICON-20261112 — 富士急行线专属图标补充（LOCAL-READY）
 
