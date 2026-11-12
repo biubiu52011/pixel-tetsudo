@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### FUJIKYU-LINE-ICON-20261112 — 富士急行线专属图标补充（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 资源 | 接入用户提供的 `Fujikyu_Railway_Symbol.png`，保留 600×600 RGBA 透明 PNG 原样，路径为 `images/鉄道/富士急行/Fujikyu_Railway_Symbol.png`。 |
+| canonical | `Fujikyu.presentation.icon` 已指向该资源；线路色 `#5d3602`、FJ 代码和富士急行线名称不变。 |
+| 生成与缓存 | 已重建 `railway_data.compact.json`、`railway-data.file.js`，并更新 `db-loader.js` 与页面脚本缓存指纹。 |
+| 回归 | 富士急行图标、计划时刻表和线路拓扑专项断言通过；Windows 本地生成物缓存断言仍会受 CRLF 原始字节计算影响，CI Linux 按 LF blob 校验。 |
+
 ### FUJIKYU-GTFS-SUPABASE-20261112 — 富士急行线计划时刻表补全（SUPABASE-APPLIED）
 
 | 项目 | 当前状态 |

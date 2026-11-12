@@ -50369,6 +50369,7 @@
         "nameEn": "Fujikyuko Line",
         "nameKo": "후지큐코선",
         "color": "#5d3602",
+        "icon": "../images/鉄道/富士急行/Fujikyu_Railway_Symbol.png",
         "code": "FJ",
         "order": 1,
         "lineIds": [

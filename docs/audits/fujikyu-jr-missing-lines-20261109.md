@@ -44,3 +44,7 @@ Fujikyu 是一条旅客运营线路展示ID，实际由大月线（大月—富�
 - `20261112090359_fujikyu_coverage_audit_20261112.sql`：建立富士急行线的 `unverified` 覆盖审计基线。
 
 Supabase 回读结果为模板 152、停站时刻 2304、线路站点 18、canonical timetable/member 各 152、非法钟点 0、车辆字段 0；`sql_planned_fallback_enabled=true`，`timetable_api_enabled=false`，`realtime_position_api_enabled=false`。完整性视图仍保持 `pending_official_full_day_timetable_reconciliation`，不能据此宣称已完成运营公司正式版全日时刻表核验。
+
+## 线路图标补充（2026-11-12）
+
+接入用户提供的 `Fujikyu_Railway_Symbol.png` 作为 `Fujikyu.presentation.icon`，保留原始 600×600 RGBA 透明 PNG，不改变既有线路色 `#5d3602`、线路代码 FJ 或计划/实时能力边界。图标资源路径为 `images/鉄道/富士急行/Fujikyu_Railway_Symbol.png`，并已同步 canonical compact/file 产物和页面缓存指纹。
