@@ -1173,12 +1173,19 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       publishedShinkansenPngByNumber.get(sqlOfficialNumber.number);
     const pngEvidence=pngProof &&
       vehicleEvidenceById.get(Number(mapped.vehicle_source_id));
-    const verifiedPublishedPng=!datedVehiclePlan && !datedRuleConflict && pngProof &&
-      mapped.mapping_level==="official_service_vehicle_plan" &&
-      exactScheduleType===pngProof.model && !conflict &&
-      pngEvidence?.source_type==="official" &&
-      ["A","B"].includes(String(pngEvidence.evidence_grade||""))
-        ? pngProof.path : null;
+    // On JR-Central Tokaido Shinkansen the already-checked, exact public
+    // train NUMBER / line-scoped PNG pool alone selects a REPRESENTATIVE
+    // illustration. The gallery model label is an image category, not
+    // today's actual carset, and need not equal a planned N700S subseries.
+    // Other railways retain their existing unique-model evidence checks.
+    const verifiedPublishedPng=pngProof && (
+      lineId==="TokaidoShinkansen" ||
+      (!datedVehiclePlan && !datedRuleConflict &&
+       mapped.mapping_level==="official_service_vehicle_plan" &&
+       exactScheduleType===pngProof.model && !conflict &&
+       pngEvidence?.source_type==="official" &&
+       ["A","B"].includes(String(pngEvidence.evidence_grade||"")))
+    ) ? pngProof.path : null;
     return {
       // Only SQL-certified identical itineraries share identity across line sources.
       // Keep separate line records/stops; never dedupe by departure time alone.
@@ -1246,7 +1253,11 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       vehicle_evidence_source_id: ruleType && !conflict ? ruleSourceId : null,
       vehicle_evidence_url: ruleType && !conflict ? ruleSourceUrl : null,
       // Only source-dated unique model PNG; never a guessed formation/livery.
-      vehicle_artwork_path: datedVehiclePlan ? datedArtwork : verifiedPublishedPng ||
+      // On JR-Central Shinkansen NEVER bypass the numbered PNG pool via a
+      // scheduled vehicle model/dated formation. This is an illustration.
+      vehicle_artwork_path: lineId==="TokaidoShinkansen"
+        ? verifiedPublishedPng
+        : datedVehiclePlan ? datedArtwork : verifiedPublishedPng ||
         (ruleType && !conflict && !publishedPlan
           ? (mapped.vehicle_artwork_path || null) : null),
       source_template_id: Number(t.id),
