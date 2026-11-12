@@ -93,7 +93,7 @@ test('canonical data and multilingual artifacts share exact generated content',(
  assert.equal(fs.readFileSync('data/core/station_i18n.compact.json','utf8'),translations+'\n');
  assert.equal(fs.readFileSync('data/core/station-i18n.file.js','utf8'),
   'window.RAILWAY_I18N = '+translations.replace(/<\/script/gi,'<\\/script')+';\n');
- const hash=x=>{const b=Buffer.from(x);return crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);};
+ const hash=x=>{const b=Buffer.from(String(x).replace(/\r\n/g,'\n'));return crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);};
  const loader=fs.readFileSync('data/core/db-loader.js','utf8');
  for(const [path,expression]of [
   ['data/core/railway_data.compact.json','railway_data\\.compact\\.json'],

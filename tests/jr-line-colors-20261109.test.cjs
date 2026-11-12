@@ -52,7 +52,7 @@ test('canonical pretty data and generated bundles remain byte-identical',()=>{
 });
 test('cache manifest and each page track actual Git blob versions',()=>{
  const sha=x=>{
-   const b=Buffer.from(x);
+  const b=Buffer.from(String(x).replace(/\r\n/g,'\n'));
    return crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
  };
  assert.match(loader,new RegExp('railway_data\\.compact\\.json\\?v='+sha(compact)));
