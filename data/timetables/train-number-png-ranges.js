@@ -55,6 +55,34 @@
   // https://timetables.jreast.co.jp/2611/timetable-v/671u1.html
   var chuoSobuTozai2611=Object.freeze({"holiday_Eastbound_K":["1202Y","1402Y","1610Y","1702Y","610Y","702Y","706Y","902Y"],"holiday_Eastbound_S":["1016Y","1020Y","1028Y","1122Y","1142Y","1216Y","1320Y","1342Y","1422Y","1516Y","1520Y","1548Y","1622Y","1628Y","1642Y","1644Y","1716Y","1734Y","1736Y","1820Y","1842Y","1848Y","1922Y","716Y","728Y","738Y","820Y","826Y","840A","848Y","858Y","922Y","936Y","944Y"],"holiday_Westbound_K":["1003Y","1303Y","1503Y","1711Y","1803Y","1807Y","803Y","811Y"],"holiday_Westbound_S":["1023Y","1117Y","1121Y","1223Y","1243Y","1317Y","1421Y","1443Y","1523Y","1529Y","1545Y","1617Y","1621Y","1635Y","1637Y","1723Y","1743Y","1749Y","617Y","621Y","627Y","629Y","639Y","723Y","737Y","741Y","749Y","759Y","817Y","845Y","921Y","929Y","943Y","949Y"],"weekday_Eastbound_K":["1602Y","1604Y","1608Y","1710Y","1802Y","1806Y","1904Y","1910Y","506A","602A","604Y","608A","610Y","910Y"],"weekday_Eastbound_S":["1012Y","1068Y","1090Y","1158Y","1180Y","1218Y","1270Y","1368Y","1380Y","1458Y","1470Y","1518Y","1548Y","1568Y","1614A","1622Y","1654Y","1656A","1680Y","1684Y","1712Y","1728A","1738A","1744Y","1764Y","1766Y","1768A","1770A","1774Y","1794A","1818Y","1820Y","1824Y","1848A","1850Y","1860A","1862A","1880A","1882A","1888Y","1914A","1916Y","1932Y","1966Y","2036Y","2082Y","2126Y","2160Y","2170Y","622Y","636A","640Y","644Y","654Y","684A","688Y","718A","728Y","730Y","734Y","764Y","790Y","792A","838Y","842Y","846Y","874A","876Y","878Y","932Y","944Y","958Y","970Y","984Y","988Y","996Y"],"weekday_Westbound_K":["1611Y","1705Y","1809Y","1811Y","1903A","1907A","2005Y","2009Y","2111Y","711A","809A","903Y","905Y"],"weekday_Westbound_S":["1059Y","1071Y","1119Y","1169Y","1259Y","1281Y","1319Y","1371Y","1469Y","1481Y","1513Y","1515Y","1539Y","1555A","1557Y","1567Y","1585Y","1595A","1623Y","1645Y","1665A","1671Y","1675Y","1689Y","1717A","1719Y","1721A","1725Y","1733Y","1749Y","1751Y","1761Y","1781Y","1815A","1829A","1837Y","1839Y","1855Y","1863Y","1867Y","1869Y","1927A","1971Y","1983Y","2061A","485Y","519Y","537Y","591Y","593Y","629Y","631A","639A","641Y","645Y","647Y","665Y","675Y","723Y","733Y","743Y","755Y","759Y","777Y","779Y","785Y","789Y","797A","813A","835A","845Y","849A","871Y","891Y","969Y","981Y"]});
   var rows=[
+    // Fujikyu 2611 SQL: both weekday and SaturdayHoliday publish the
+    // ordinary local number set 1-52. Use the mapped standard 6000-series
+    // artwork as the representative PNG for this complete number range.
+    {lineIds:["Fujikyu"],numberFormat:"bare",from:1,to:52,suffixes:"",
+      publishedNumbers:["1","2","3","4","5","6","7","8","9","10",
+        "11","12","13","14","15","16","17","18","19","20",
+        "21","22","23","24","25","26","27","28","29","30",
+        "31","32","33","34","35","36","37","38","39","40",
+        "41","42","43","44","45","46","47","48","49","50",
+        "51","52"],
+      weekdayNumbers:["1","2","3","4","5","6","7","8","9","10",
+        "11","12","13","14","15","16","17","18","19","20",
+        "21","22","23","24","25","26","27","28","29","30",
+        "31","32","33","34","35","36","37","38","39","40",
+        "41","42","43","44","45","46","47","48","49","50",
+        "51","52"],
+      holidayNumbers:["1","2","3","4","5","6","7","8","9","10",
+        "11","12","13","14","15","16","17","18","19","20",
+        "21","22","23","24","25","26","27","28","29","30",
+        "31","32","33","34","35","36","37","38","39","40",
+        "41","42","43","44","45","46","47","48","49","50",
+        "51","52"],
+      operator:"Fujikyu",sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:FujisanrokuElectricRailway.Fujikyu"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      requireCompatiblePlan:true,referenceOnly:true,illustrative:true,
+      model:"富士急行6000系（標準色）",
+      pngPath:"../images/列车/富士急行/富士急行_6000系_標準色.png"},
     // 富士急行 2611 SQL: the imported special-service labels contain the
     // published number followed by the service name (for example
     // "701 フジサン特急 1号").  Normalize that label only for this exact
@@ -3928,7 +3956,10 @@
     // Include G for Yamanote's full public 3/4-digit G train numbers.
     // Line-scoped matching below prevents G from leaking to other routes.
     var numbered=number.match(/^([0-9]{1,4})([ABCDEKFMSTHYG])$/);
-    var bare=number.match(/^([0-9]{3,4})$/);
+    // Some private railway timetables publish short bare numbers such as
+    // Fujikyu's ordinary 1-52 services; keep the range rule responsible for
+    // deciding whether a short number is valid on its line.
+    var bare=number.match(/^([0-9]{1,4})$/);
     // Metro Tozai timetable: B485S / B711KR / A1758T.
     // The A/B prefix and optional R belong to the full train number.
     var metroNumber=line==="Tozai"

@@ -85,6 +85,7 @@ on:
       - 'tests/new-rail-lines-fujikyu-20261109.test.cjs'
       - 'tests/fujikyu-png-number-ranges.test.cjs'
       - 'supabase/migrations/20261112120000_fujikyu_2611_png_number_ranges.sql'
+      - 'supabase/migrations/20261112150000_fujikyu_2611_local_png_number_range.sql'
       - 'tests/new-rail-registry-20261109.test.cjs'
       - 'supabase/queries/register_topology_only_lines_20261109.sql'
       - 'data/audits/jr-missing-lines-20261109.json'

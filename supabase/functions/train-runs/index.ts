@@ -5246,10 +5246,20 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       String(row.vehicle_model||"")==="富士急行8000系（フジサン特急・顔A）" &&
       String(row.png_reference||"")==="../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png" &&
       String(row.source_url||"")===fujikyuExpressSource);
+    const localRanges=(fujikyuRanges||[]).filter((row:any)=>
+      row.segment_key==="fujikyu_local_6000" &&
+      Number(row.min_number)===1 && Number(row.max_number)===52 &&
+      String(row.suffix||"")==="" &&
+      row.requires_exact_roster===false &&
+      row.actual_vehicle_confirmed===false &&
+      String(row.vehicle_model||"")==="富士急行6000系（標準色）" &&
+      String(row.png_reference||"")==="../images/列车/富士急行/富士急行_6000系_標準色.png");
     if(ranges.length!==2 ||
        !ranges.some((row:any)=>Number(row.min_number)===701&&Number(row.max_number)===705) ||
        !ranges.some((row:any)=>Number(row.min_number)===793&&Number(row.max_number)===794))
       throw new Error("FUJIKYU_2611_FUJISAN_EXPRESS_PNG_RANGES_UNAVAILABLE");
+    if(localRanges.length!==1)
+      throw new Error("FUJIKYU_2611_LOCAL_PNG_RANGE_UNAVAILABLE");
     const expected=selectedCalendar==="odpt.Calendar:Weekday"
       ? ["701","702","704","705","793","794"]
       : ["701","702","703","704"];
@@ -5279,6 +5289,21 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       item.run.vehicle_evidence_source="database-published-service-plan";
       item.run.vehicle_evidence_source_id="fujikyu-fujisan-express-8000-2611";
       item.run.vehicle_evidence_url=fujikyuExpressSource;
+    }
+    const ordinary=result.filter((run:any)=>/^[1-9][0-9]?$/.test(String(run.train_number||"")));
+    const expectedOrdinary=Array.from({length:52},(_,i)=>String(i+1));
+    if(ordinary.map((run:any)=>String(run.train_number)).sort((a,b)=>Number(a)-Number(b)).join(",")!==expectedOrdinary.join(","))
+      throw new Error("FUJIKYU_2611_LOCAL_SQL_NUMBER_COVERAGE_DRIFT");
+    const localRange=localRanges[0];
+    for(const run of ordinary){
+      run.vehicle_type_label=String(localRange.vehicle_model);
+      run.vehicle_type_candidates=null;
+      run.vehicle_mapping_level="published_number_family_plan";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=String(localRange.png_reference);
+      run.vehicle_evidence_source="database-published-number-range";
+      run.vehicle_evidence_source_id="fujikyu-local-6000-2611";
+      run.vehicle_evidence_url=String(localRange.source_url||"") || null;
     }
   }
   const validRuns = result.filter(r => r.stops.length >= 2 &&
