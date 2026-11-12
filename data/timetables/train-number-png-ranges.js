@@ -3458,13 +3458,60 @@
          p.timetableValidity!=="date_verified"||
          p.sourceRailway!=="odpt.Railway:JR-Central.Chuo"||
          (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
-         !["Local","Rapid","SectionRapid","SpecialRapid"].includes(type)||
          !["Inbound","Outbound"].includes(direction)||!calendar||
          p.vehicleIdentityStatus==="EXACT")return null;
       var day=new Date(date+"T00:00:00Z").getUTCDay();
       var dayCal=(day===0||day===6||date==="2026-11-03"||
         date==="2026-11-23")?"holiday":"weekday";
       if(calendar!==dayCal)return null;
+      // The existing SQL range pool contains eight exact 2611 Shinano
+      // services. Keep this finite list source-backed; do not infer a broad
+      // 1000M range from the service name or timetable family.
+      var shinanoSources={
+        "1001M":"https://timetables.jreast.co.jp/2611/train/000/000041.html",
+        "1002M":"https://timetables.jreast.co.jp/2611/train/000/000071.html",
+        "1003M":"https://timetables.jreast.co.jp/2611/train/000/000081.html",
+        "1004M":"https://timetables.jreast.co.jp/2611/train/000/000111.html",
+        "1005M":"https://timetables.jreast.co.jp/2611/train/015/019971.html",
+        "1006M":"https://timetables.jreast.co.jp/2611/train/000/000151.html",
+        "1011M":"https://timetables.jreast.co.jp/2611/train/000/000271.html",
+        "1026M":"https://timetables.jreast.co.jp/2611/train/000/000461.html"
+      };
+      if(type==="LimitedExpress"&&shinanoSources[number]){
+        var shinanoNumber=Number(number.slice(0,-1));
+        if((shinanoNumber%2===0)!==(direction==="Inbound"))return null;
+        var shinanoIndex={Nagoya:0,"JRC-TokaidoCentral-067":1,Shiojiri:39};
+        for(var sj=3;sj<=38;sj++)
+          shinanoIndex["JRC-ChuoCentral-"+String(sj).padStart(3,"0")]=sj-1;
+        var shinanoStops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys.map(function(s){
+          return String(s||"").split(".").pop();
+        }):[];
+        if(shinanoStops.length<2||shinanoStops.some(function(key,i){
+          return !Object.prototype.hasOwnProperty.call(shinanoIndex,key)||
+            (i>0&&(direction==="Inbound"
+              ?shinanoIndex[key]>=shinanoIndex[shinanoStops[i-1]]
+              :shinanoIndex[key]<=shinanoIndex[shinanoStops[i-1]]));
+        })||shinanoStops[0]!==
+          (direction==="Inbound"?"Shiojiri":"Nagoya")||
+          shinanoStops[shinanoStops.length-1]!==
+          (direction==="Inbound"?"Nagoya":"Shiojiri"))return null;
+        var shinanoPlan=p.vehiclePlan;
+        if(shinanoPlan&&Array.isArray(shinanoPlan.models)&&shinanoPlan.models.length&&
+           (shinanoPlan.models.length!==1||shinanoPlan.models[0]!=="383系"))return null;
+        if(Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length&&
+           (p.plannedVehicleCandidates.length!==1||p.plannedVehicleCandidates[0]!=="383系"))return null;
+        if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
+          return v&&String(v).trim()!=="383系";
+        }))return null;
+        var shinanoPng="../images/列车/JR東海/JR東海_383系.png";
+        var shinanoGallery=root.VehicleGaragePngMap;
+        if(!shinanoGallery||!shinanoGallery.matchModelPath("383系",shinanoPng,line))return null;
+        return {trainNumber:number,lineId:line,model:"383系",pngPath:shinanoPng,
+          source:"jr-central-chuo-shinano-2611-exact-number-reference",
+          sourceUrl:shinanoSources[number],planned:true,representative:true,
+          referenceOnly:true,illustrative:true,actualVehicleConfirmed:false};
+      }
+      if(!["Local","Rapid","SectionRapid","SpecialRapid"].includes(type))return null;
       // Restrict to a complete SQL journey contained entirely inside the
       // 20 canonical Nagoya–Nakatsugawa stations. Never use a segment from
       // an extended Shinano or Nakatsugawa–Shiojiri service as proof.

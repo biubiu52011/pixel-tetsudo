@@ -47,6 +47,11 @@
   table.push(
     ["jrc-chuo-central-315-line-fleet-reference","315系","JR東海/JR東海_315系.png","ChuoCentral",0]
   );
+  // Exact 2611 Shinano number references from the existing SQL pool. This is
+  // a planned illustration, not evidence of an actual day's formation.
+  table.push(
+    ["jrc-chuo-central-383-shinano-reference","383系","JR東海/JR東海_383系.png","ChuoCentral",0]
+  );
   // Fujikyu user-supplied artwork, scoped to the Fujikyu railway only.
   // These are series/livery references; they do not identify a dated run,
   // formation number, or physical vehicle. The 2000-series face labels are

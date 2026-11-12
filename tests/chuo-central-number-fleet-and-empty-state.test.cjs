@@ -48,6 +48,26 @@ test('dated, numbered Nagoya–Nakatsugawa SQL commuter train selects only a ref
   const holiday=plannedSqlRun({serviceDate:'2026-11-03',calendarType:'holiday'});
   assert.ok(w.TrainNumberPngRanges.match('801M','ChuoCentral',holiday));
 });
+test('existing 2611 Shinano SQL numbers select the scoped JR Central 383 reference PNG',()=>{
+  const w=loadReferenceMatcher();
+  const png383='../images/列车/JR東海/JR東海_383系.png';
+  for(const n of ['1001M','1002M','1003M','1004M','1005M','1006M','1011M','1026M']){
+    const inbound=Number(n.slice(0,-1))%2===0;
+    const p=plannedSqlRun({
+      trainNumber:n,trainType:'odpt.TrainType:JR-Central.LimitedExpress',
+      railDirection:inbound?'odpt.RailDirection:Inbound':'odpt.RailDirection:Outbound',
+      scheduledStopKeys:inbound
+        ?['Shiojiri','JRC-ChuoCentral-031','JRC-ChuoCentral-020','Nagoya']
+        :['Nagoya','JRC-ChuoCentral-020','JRC-ChuoCentral-031','Shiojiri']
+    });
+    const result=w.TrainNumberPngRanges.match(n,'ChuoCentral',p);
+    assert.equal(result?.model,'383系',n);
+    assert.equal(result?.pngPath,png383,n);
+    assert.equal(result?.referenceOnly,true,n);
+    assert.equal(result?.actualVehicleConfirmed,false,n);
+  }
+  assert.equal(w.VehicleGaragePngMap.matchModelPath('383系',png383,'ChuoCentral'),true);
+});
 test('number-only, live, other operator, other month, limited express and unknown segments cannot pick 315',()=>{
   const w=loadReferenceMatcher(),p=plannedSqlRun();
   const rejected=[
