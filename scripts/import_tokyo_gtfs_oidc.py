@@ -23,6 +23,7 @@ EXISTING = {
  "JR-East.Nikko":"Nikko","Tobu.TobuUrbanPark":"Noda","Toei.Oedo":"Oedo",
  "Tobu.Ogose":"Ogose","Toei.Shinjuku":"Shinjuku","Tobu.TobuSkytree":"TobuSkytree",
  "Tobu.Tojo":"Tojo",
+ "JR-Central.Gotemba":"Gotemba","JR-Central.Tokaido":"TokaidoCentral",
 }
 NEW = set("Chichibu.Chichibu Choshi.Choshi Enoden.Enoden Hitachinaka.Minato Hokuso.Hokuso Isumi.Isumi IzuHakone.Daiyuzan IzuHakone.Sunzu Izukyu.Izukyu Jomo.Jomo Joshin.Joshin KantoRailway.Joso KantoRailway.Ryugasaki KashimaRinkai.OaraiKashima Kominato.Kominato Moka.Moka OdakyuHakone.HakoneTozan Ryutetsu.Nagareyama Shibayama.Shibayama UtsunomiyaLightRail.UtsunomiyaLightRail WataraseKeikoku.WataraseKeikoku Yamaman.Yukarigaoka YokohamaSeaside.KanazawaSeaside".split())
 REVIEW = set("JR-East.NaritaExpress Keisei.HigashiNarita Keisei.Matsudo Keisei.Skyliner Tobu.Kinugawa Tobu.KoizumiBranch".split())
@@ -36,8 +37,8 @@ SCHEMA = {
  "stop_times": ("trip_id","stop_sequence","stop_id","arrival_time","departure_time","shape_dist_traveled"),
  "transfers": ("from_trip_id","to_trip_id","transfer_type"),
 }
-EXPECT = {"routes":165,"stops":707,"calendar":4,"exceptions":48,
-          "trips":18821,"stop_times":276106,"transfers":663}
+EXPECT = {"routes":165,"stops":730,"calendar":4,"exceptions":48,
+          "trips":19358,"stop_times":279607,"transfers":686}
 
 def rows(z,name):
     with z.open(name) as f:
@@ -125,9 +126,9 @@ def main(path):
         if not CANDIDATES<=route_ids:
             raise ValueError("Candidate routes missing: "+repr(CANDIDATES-route_ids))
         trip_ids={x["trip_id"] for x in rows(z,"trips.txt") if x["route_id"] in CANDIDATES}
-        if len(trip_ids)!=18821:raise ValueError("Trip identity/count mismatch")
+        if len(trip_ids)!=19358:raise ValueError("Trip identity/count mismatch")
         station_ids={x["stop_id"] for x in rows(z,"stop_times.txt") if x["trip_id"] in trip_ids}
-        if len(station_ids)!=707:raise ValueError("Station source count mismatch")
+        if len(station_ids)!=730:raise ValueError("Station source count mismatch")
 
         def route_payload():
             for r in route_rows:

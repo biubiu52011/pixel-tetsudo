@@ -9,7 +9,8 @@ EMPTY={
  'Keio.Inokashira':'KeioInokashira','Keio.Keio':'KeioMain','Keio.Takao':'KeioTakao',
  'JR-East.Nikko':'Nikko','Tobu.TobuUrbanPark':'Noda','Toei.Oedo':'Oedo',
  'Tobu.Ogose':'Ogose','Toei.Shinjuku':'Shinjuku','Tobu.TobuSkytree':'TobuSkytree',
- 'Tobu.Tojo':'Tojo'
+ 'Tobu.Tojo':'Tojo',
+ 'JR-Central.Gotemba':'Gotemba','JR-Central.Tokaido':'TokaidoCentral'
 }
 NEW=set('Chichibu.Chichibu Choshi.Choshi Enoden.Enoden Hitachinaka.Minato Hokuso.Hokuso Isumi.Isumi IzuHakone.Daiyuzan IzuHakone.Sunzu Izukyu.Izukyu Jomo.Jomo Joshin.Joshin KantoRailway.Joso KantoRailway.Ryugasaki KashimaRinkai.OaraiKashima Kominato.Kominato Moka.Moka OdakyuHakone.HakoneTozan Ryutetsu.Nagareyama Shibayama.Shibayama UtsunomiyaLightRail.UtsunomiyaLightRail WataraseKeikoku.WataraseKeikoku Yamaman.Yukarigaoka YokohamaSeaside.KanazawaSeaside'.split())
 REVIEW=set('JR-East.NaritaExpress Keisei.HigashiNarita Keisei.Matsudo Keisei.Skyliner Tobu.Kinugawa Tobu.KoizumiBranch'.split())
@@ -77,7 +78,7 @@ def build(input_zip,outdir):
     file.write('\\.\n')
    emit(0,[dict(feed_sha=sha,source_url=info['source'],
     source_label='TokyoGTFS via mini-tokyo-3d',service_start=info['service_from'],
-    service_end=info['service_to'],scope_note='42 route candidates; quarantined source records',
+    service_end=info['service_to'],scope_note='44 route candidates; quarantined source records',
     raw_route_count=len(routes),staged_trip_count=len(trips),staged_stop_time_count=len(times),
     attribution='Schedules: Copyright (c) 2019-2025 Akihiko Kusanagi (MIT); GTFS: Mikołaj Kuranowski')])
    emit(1,(dict(feed_sha=sha,route_id=k,agency_id=r['agency_id'],
