@@ -1,0 +1,55 @@
+name: Stage audited TokyoGTFS railway timetable
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_sha256:
+        description: Expected SHA-256 of audited rail.zip
+        required: true
+        type: string
+        default: bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tokyo-gtfs-stage
+  cancel-in-progress: false
+
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm credential is configured
+        shell: bash
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::Set SUPABASE_DB_URL as Actions secret, never in repository source."
+            exit 1
+          fi
+      - name: Fetch and checksum-lock source
+        shell: bash
+        run: |
+          curl --fail --location --retry 3 --output rail.zip https://mkuran.pl/gtfs/tokyo/rail.zip
+          echo "$EXPECTED_SHA256  rail.zip" | sha256sum --check -
+      - name: Build isolated staging import
+        run: python3 scripts/prepare_tokyo_gtfs_stage.py rail.zip /tmp/tokyo-gtfs
+      - name: Install psql
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y postgresql-client
+      - name: Apply GTFS staging only
+        shell: bash
+        run: |
+          set -o pipefail
+          gunzip -c /tmp/tokyo-gtfs/tokyo-gtfs-priority-stage.sql.gz | psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1
+      - name: Check actual source row counts
+        shell: bash
+        run: |
+          psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c \
+            "SELECT f.feed_sha,f.staged_trip_count,(SELECT count(*) FROM gtfs_stage.trips t WHERE t.feed_sha=f.feed_sha) actual_trips,f.staged_stop_time_count,(SELECT count(*) FROM gtfs_stage.stop_times s WHERE s.feed_sha=f.feed_sha) actual_stop_times FROM gtfs_stage.feed_imports f WHERE feed_sha='$EXPECTED_SHA256';"
