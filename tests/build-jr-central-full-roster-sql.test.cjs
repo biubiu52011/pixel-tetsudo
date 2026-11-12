@@ -36,6 +36,9 @@ test('valid licensed full roster produces existing-SQL-only batches',()=>{
  assert.equal(r.report.source_stop_count,4);
  assert.equal(r.report.sql_batches.length,2);
  assert.equal(r.report.full_day_accepted,false);
+ assert.equal(r.report.conflicting_sample_reconciliation_required,true);
+ assert.match(r.preflightSQL,/SELECT old\.id AS existing_template_id/);
+ assert.doesNotMatch(r.preflightSQL,/DELETE FROM|UPDATE public|TRUNCATE TABLE/);
  assert.ok(r.batches.every(b=>b.sql.includes(
   'public.import_jr_central_authorized_plan')));
  assert.ok(r.batches.every(b=>!b.sql.includes('DROP TABLE')));
