@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### FUJIKYU-GTFS-SUPABASE-20261112 — 富士急行线计划时刻表补全（SUPABASE-APPLIED）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 数据来源 | 从用户提供的 `rail.zip` 解析 `Fujikyu.Fujikyu`：平日 76 条、土休日 76 条，共 152 个计划车次、2304 条停站时刻；来源包 SHA-256 为 `BB1BF605817E7A3A65CAFFBCD019843AA0FFD5CB3B2C9FBB0444C8B3072FF87F`。来源按 TokyoGTFS/mini-tokyo-3d 归档为 timetable、证据等级 C，未把它表述为富士急运营公司当前正式版。 |
+| Supabase | 已应用 `20261112085044_fujikyu_gtfs_rail_20261112` 与 `20261112090359_fujikyu_coverage_audit_20261112`；写入 152 个模板、2304 条停站时刻、152 个 canonical timetable/member、18 个线路站点和 2 个历法 revision。线路审计为 `unverified`，并保留来源版本复核、无实时源等问题标记。 |
+| 能力边界 | 仅打开 `sql_planned_fallback_enabled`；`timetable_api_enabled` 与 `realtime_position_api_enabled` 仍为 false；车辆字段 0 条，不生成实体车号、当天编组、延误或实时位置。官方全日时刻表复核仍未通过，验收状态保持 `pending_official_full_day_timetable_reconciliation`。 |
+| 回归 | 富士急专用迁移契约测试 2/2 通过；已有富士急 canonical 测试中的生成物一致性断言仍有 1 项既有失败，表现为 canonical 数据与多语言生成物字符串不一致，未因本次 Supabase 数据迁移改动。 |
+| 生产边界 | Supabase 迁移已实际应用并完成线上回读；未部署 Edge Function、未开启实时接口、未发布 Pages。工作区中原有 tourism/maplibre 未提交改动保持不变。 |
+
 ### HACHIKO-SINGLE-MARKER-SAFARI-20261110 — 八高线单车标记移动版公开页面复验（DONE）
 
 | 项目 | 当前状态 |

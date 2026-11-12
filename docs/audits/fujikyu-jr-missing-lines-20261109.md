@@ -33,3 +33,14 @@ Fujikyu 是一条旅客运营线路展示ID，实际由大月线（大月—富�
 ## 缺线清单和验收
 `data/audits/jr-missing-lines-20261109.json` 将 Nikko、TohokuRifu、ChikuhiWest 从 `missingFrontend` 移至 `implementedFrontend` 且标注 `station_topology_only`；富士急行线另存 `newNonJrLines`，不错误计入JR线路数。仍缺的 JR北海道/四国/JR西日本/东海线路另行处理，不能因本轮补充宣称完成。
 `tests/new-rail-lines-fujikyu-20261109.test.cjs` 检查站序/连接/车站坐标/ i18n/ ID冲突/ 生成物缓存。GitHub Pages 7页面版本号均取真实Git Blob SHA，避免旧数据缓存。
+
+## Supabase 静态计划时刻表补全（2026-11-12）
+
+用户提供的 `rail.zip` 含 GTFS 静态数据，不含 GTFS-RT VehiclePosition、TripUpdate 或 Alert；因此本批只补计划时刻表，不扩展实时范围。富士急行线筛出 152 个计划车次（平日 76、土休日 76）、2304 条停站时刻，覆盖既有 18 站及往返两个方向。站点冲突继续使用 canonical 的 `Akasaka-Fujikyu`、`Tokaichiba-Fujikyu`，没有覆盖东京 Metro 赤坂站或横滨线十日市场站。
+
+已应用迁移：
+
+- `20261112085044_fujikyu_gtfs_rail_20261112.sql`：登记 GTFS 来源、两个历法 revision、模板/停站/canonical timetable/member、线路站点，并只打开 SQL 计划回退。
+- `20261112090359_fujikyu_coverage_audit_20261112.sql`：建立富士急行线的 `unverified` 覆盖审计基线。
+
+Supabase 回读结果为模板 152、停站时刻 2304、线路站点 18、canonical timetable/member 各 152、非法钟点 0、车辆字段 0；`sql_planned_fallback_enabled=true`，`timetable_api_enabled=false`，`realtime_position_api_enabled=false`。完整性视图仍保持 `pending_official_full_day_timetable_reconciliation`，不能据此宣称已完成运营公司正式版全日时刻表核验。
