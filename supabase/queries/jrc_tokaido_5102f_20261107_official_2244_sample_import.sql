@@ -1,0 +1,5 @@
+-- Narrow independently compiled source facts from JR Odekake 2244, 2026-11-07.
+-- Main Tokaido line only, train number 5102F; no MinoAkasaka branch.
+-- Two verified endpoint clocks only; no actual carsets or invented intermediary stops.
+-- Evidence: https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-tokaido-5102f-20261107-official-2244.md
+select * from public.import_jr_central_authorized_plan('TokaidoCentral','{"source":{"url":"https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-tokaido-5102f-20261107-official-2244.md","authorization":"original_compilation","authorization_evidence_url":"https://github.com/biubiu52011/pixel-tetsudo/blob/main/docs/audits/jrc-tokaido-5102f-20261107-official-2244.md","edition_date":"2026-11-01"},"trains":[{"train_number":"5102F","calendar_urn":"odpt.Calendar:SaturdayHoliday","direction_urn":"odpt.RailDirection:Inbound","train_type":"SpecialRapid","operating_dates":["2026-11-07"],"stops":[{"station_id":"JRC-TokaidoCentral-078","arrival":null,"departure":"08:09"},{"station_id":"Toyohashi","arrival":"09:37","departure":null}]}]}'::jsonb);
