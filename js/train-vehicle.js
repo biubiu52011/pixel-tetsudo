@@ -5486,9 +5486,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         /^odpt\.Railway:JR-Central\./.test(String(p.sourceRailway || "")) &&
         contextLineId === String(p.positionLineId || p.lineId || "")) {
       var centralNumberPng = lookupTrainNumberRangePng(p);
-      if (artworkFailed === true || !centralNumberPng)
+      // Conventional lines use the existing browser number pool. Shinkansen
+      // uses the server's same-number SQL pool, already resolved against the
+      // native JR-Central gallery. Do not select by service name or plan model.
+      var centralPath = centralNumberPng && centralNumberPng.pngPath;
+      if (!centralPath && contextLineId === "TokaidoShinkansen" &&
+          /^[1-9][0-9]{0,4}A$/.test(String(p.trainNumber || "")))
+        centralPath = normalizeGalleryPngPath(p.sqlPlannedNumberPngPath);
+      if (artworkFailed === true || !centralPath)
         return {kind:"unresolved",iconSrc:""};
-      return {kind:"vehicle",iconSrc:centralNumberPng.pngPath,
+      return {kind:"vehicle",iconSrc:centralPath,
         planned:true,illustrative:true,representativeOnly:true,
         actualVehicleConfirmed:false};
     }
