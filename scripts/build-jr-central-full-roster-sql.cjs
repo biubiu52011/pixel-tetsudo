@@ -105,7 +105,38 @@ function makeBatches(source,csv,roster,grant,batchSize=80){
    sql,templates:trips.length,stops:trips.reduce((n,t)=>n+t.stops.length,0),
    sha256:hash(sql)});
  }
+ // Existing production has dated *sample* plans; whole-roster imports must
+ // review overlaps before writing anything. The SQL is SELECT-only.
+ const proposed=JSON.stringify(doc.trains.map(t=>({
+  train_number:t.train_number,calendar_urn:t.calendar_urn,
+  direction_urn:t.direction_urn,operating_dates:t.operating_dates
+ }))).replace(/'/g,"''");
+ const preflightSQL=[
+  '-- READ ONLY: conflicting pre-existing (possibly sampled) SQL plans.',
+  '-- Resolve these source templates before executing any full-roster batch.',
+  'WITH proposed AS (',
+  " SELECT t->>'train_number' AS train_number,",
+  " t->>'calendar_urn' AS calendar_urn,",
+  " t->>'direction_urn' AS direction_urn,",
+  " ARRAY(SELECT jsonb_array_elements_text(t->'operating_dates')::date) AS operating_dates",
+  " FROM jsonb_array_elements('"+proposed+"'::jsonb) AS t",
+  ')',
+  'SELECT old.id AS existing_template_id,old.train_number,',
+  ' old.calendar_urn,old.direction_urn,old.source_path,',
+  ' old.operating_dates AS existing_dates',
+  'FROM public.manual_timetable_templates AS old',
+  'JOIN proposed AS incoming',
+  ' ON old.train_number=incoming.train_number',
+  ' AND old.calendar_urn=incoming.calendar_urn',
+  ' AND old.direction_urn=incoming.direction_urn',
+  ' AND old.operating_dates && incoming.operating_dates',
+  "WHERE old.line_key='"+roster.line_key+"'",
+  'ORDER BY old.train_number,old.id;',
+  ''
+ ].join('\n');
  const report={
+  preflight_sql:'preflight-existing-dated-plans.sql',
+  conflicting_sample_reconciliation_required:true,
   line_key:roster.line_key,
   source_sha256:hash(csv),
   source_edition:source.edition_date,
@@ -120,7 +151,7 @@ function makeBatches(source,csv,roster,grant,batchSize=80){
   note:'Batches are NOT applied. Independently verify all route sections, dates, '+
    'station timing, source license, and production SQL acceptance before declaring complete.'
  };
- return {report,batches};
+ return {report,batches,preflightSQL};
 }
 function cli(){
  const args=process.argv.slice(2);
@@ -138,6 +169,7 @@ function cli(){
   Number(option('--batch-size')||80));
  fs.mkdirSync(output,{recursive:true});
  for(const b of r.batches)fs.writeFileSync(path.join(output,b.file),b.sql);
+ fs.writeFileSync(path.join(output,'preflight-existing-dated-plans.sql'),r.preflightSQL);
  fs.writeFileSync(path.join(output,'validation.json'),
   JSON.stringify(r.report,null,2)+'\n');
  process.stdout.write(JSON.stringify({out:output,...r.report},null,2)+'\n');
