@@ -92,3 +92,67 @@ All 14 canonical JR-Central line entries: 13 conventional lines plus
   dated 2026-11-12, zero conflicting PNG paths; deployed Edge v374 source was
   read back and matched GitHub. Browser/Safari map visual verification and a
   direct HTTP response from the public Edge endpoint were unavailable.
+
+
+## 2026-11-12 production update — scheduled train samples imported
+
+**Supersedes the older zero-conventional-trains snapshot above.** Production
+`pnupwfmgbtxqhpzsrhfn` was read back after importer calls:
+**10 of 13 conventional JR-Central lines now have source-scoped samples,
+17 distinct (line_key,train_number) records, 32 calendar templates and 149
+schedule-stop events** (15 weekday, 17 holiday templates). The number of
+actual trains and formations verified remains **zero, by design**.
+
+| line_key | distinct numbers | templates | scheduled stop rows |
+|---|---:|---:|---:|
+| ChuoCentral | 4 | 8 | 40 |
+| Gotemba | 1 | 2 | 12 |
+| Iida | 2 | 4 | 8 |
+| KansaiCentral | 2 | 4 | 12 |
+| KiseiCentral | 2 | 4 | 24 |
+| Meisho | 1 | 2 | 6 |
+| Minobu | 1 | 2 | 12 |
+| Takayama | 2 | 4 | 24 |
+| Taketoyo | 1 | 1 | 5 |
+| TokaidoCentral | 1 | 1 | 6 |
+| MinoAkasaka / Sangu / Taita | 0 each | 0 each | 0 each |
+
+This day’s importer run's *current* batch added 10 line-number source
+samples / 18 calendar templates / 79 stops beyond the previous 7-number,
+14-template, 70-stop batch. Selected numbered services: Takayama
+`1722C/1728C`; Kisei `3001D/3002D`; Taketoyo `5861F` holiday-only;
+Tokaido `5100F` holiday-only; Kansai `3001D/3002D`; and Iida
+`23M/24M`. For Kisei/Kansai the same 3001D/3002D *planned service
+number* occurs on separate line sections, never interpreted as a
+physical-carset continuity proof.
+
+Reproducible idempotent import SQL (all successfully replayed with
+`inserted_trains=0`, `inserted_stops=0`):
+- `supabase/queries/jrc_takayama_kisei_taketoyo_2611_sample_import.sql`
+- `supabase/queries/jrc_tokaido_5100f_kisei_3001d_2611_sample_import.sql`
+- `supabase/queries/jrc_kansai_3001d_3002d_2611_sample_import.sql`
+- `supabase/queries/jrc_iida_23m_24m_2611_sample_import.sql`
+(The four earlier lines' SQL imports are retained separately.)
+
+Per-trip selected factual times and primary publisher URLs are documented
+in `docs/audits/jrc-*2611-planned-samples.md`. Each source file is a
+narrow project-authored fact selection, **not** a licence to bulk copy any
+publisher's copyrighted complete timetable.
+
+SQL quality checks: 0 duplicate `operating_dates` for any
+`(line_key,train_number,service_date)` and 0 rows in
+`published_timetable_chronology_issues` for all ten active conventional
+lines. Existing `published_timetable_full_day_acceptance` correctly
+rejects **all** 13 lines: source material remains incomplete per day
+and/or direction; even the active ten lines are *sampled*, not a complete
+2026-11 daily timetable.
+
+**Still without scheduled train templates**: `MinoAkasaka` (美濃赤坂),
+`Sangu` (参宮), `Taita` (太多). Continue source and train-number/stop-clock
+verification before a first import on these lines. A third-party schedule
+browse page by itself is not proof of redistribution rights or of 2026-11
+number+clock calendar identity.
+
+No extra runtime data layer, GPS/actual-train tracking, or guessed model/PNG
+rules were added. The existing SQL `train-runs` Edge and browser
+position estimator remain the consuming path.
