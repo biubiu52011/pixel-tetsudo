@@ -47,6 +47,22 @@
   table.push(
     ["jrc-chuo-central-315-line-fleet-reference","315系","JR東海/JR東海_315系.png","ChuoCentral",0]
   );
+  // Fujikyu user-supplied artwork, scoped to the Fujikyu railway only.
+  // These are series/livery references; they do not identify a dated run,
+  // formation number, or physical vehicle. The 2000-series face labels are
+  // artwork variants, not claims about 2001F/2002F.
+  table.push(
+    ["fujikyu-6000-standard","富士急行6000系（標準色）","富士急行/富士急行_6000系_標準色.png","Fujikyu",1],
+    ["fujikyu-6000-red","富士急行6000系（赤色塗装）","富士急行/富士急行_6000系_赤色塗装.png","Fujikyu",1],
+    ["fujikyu-1000-blue","富士急行1000系（青色）","富士急行/富士急行_1000系_青色.png","Fujikyu",1],
+    ["fujikyu-1000-revival-blue","富士急行1000系（旧塗装・水色）","富士急行/富士急行_1000系_旧塗装_水色.png","Fujikyu",1],
+    ["fujikyu-1000-tozan","富士急行1000系（富士登山電車）","富士急行/富士急行_1000系_富士登山電車.png","Fujikyu",1],
+    ["fujikyu-1000-red-white","富士急行1000系（赤白塗装）","富士急行/富士急行_1000系_赤白塗装.png","Fujikyu",1],
+    ["fujikyu-2000-face-a-panorama","富士急行2000系（フジサン特急・顔A・パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔A_パノラマ車.png","Fujikyu",1],
+    ["fujikyu-2000-face-a-nonpanorama","富士急行2000系（フジサン特急・顔A・非パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔A_非パノラマ車.png","Fujikyu",1],
+    ["fujikyu-2000-face-b-panorama","富士急行2000系（フジサン特急・顔B・パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔B_パノラマ車.png","Fujikyu",1],
+    ["fujikyu-2000-face-b-nonpanorama","富士急行2000系（フジサン特急・顔B・非パノラマ車）","富士急行/富士急行_2000系_フジサン特急_顔B_非パノラマ車.png","Fujikyu",1]
+  );
   var alternates=[["jr-east-e233-5000-keiyo","E233系5000番台","JR東日本/JR東日本_E233系_5000番台.png","Keiyo|Togane"]];
   var unassigned=[];
   var assets=Object.create(null),byModel=Object.create(null),byPath=Object.create(null);
@@ -80,8 +96,8 @@
     return listModel(model,lineId).some(function(r){return !r.alternateOnly && !r.quarantined && r.path===path;});
   }
   root.VehicleGaragePngMap=Object.freeze({
-    version:"20261110-gallery-source-quarantine",totalPng:580,
-    mappedPng:580,canonicalEntries:601,alternatePng:1,
+    version:"20261112-fujikyu-vehicle-gallery",totalPng:590,
+    mappedPng:590,canonicalEntries:611,alternatePng:1,
     unassigned:Object.freeze(unassigned.map(function(p){return prefix+p;})),
     alternates:Object.freeze(alternates.map(function(r){return prefix+r[2];})),
     hasPng:function(path){return !!assets[asPath(path)];},

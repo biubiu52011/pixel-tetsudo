@@ -2841,6 +2841,73 @@ Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
   scoped.plannedAsset = null;
 });
 
+// 富士急行のユーザー提供車頭素材。素材は系列・外観の参照図であり、
+// 特定日の運用、編成番号、車両番号を証明するものではない。
+// 2000系の「顔A/顔B」は画像差分を識別するための名称で、2001F/2002F
+// への推定は行わない。全て富士急行線だけに限定する。
+Object.assign(CANONICAL_VEHICLES, {
+  "fujikyu-6000-standard": {
+    displayName: "富士急行6000系（標準色）", iconName: "富士急行6000系（標準色）",
+    asset: "../images/列车/富士急行/富士急行_6000系_標準色.png", lineIds: ["Fujikyu"],
+    aliases: ["6000系（富士急行・標準色）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.fujikyu-railway.jp/news/info.php?no=431"
+  },
+  "fujikyu-6000-red": {
+    displayName: "富士急行6000系（赤色塗装）", iconName: "富士急行6000系（赤色塗装）",
+    asset: "../images/列车/富士急行/富士急行_6000系_赤色塗装.png", lineIds: ["Fujikyu"],
+    aliases: ["6000系（富士急行・赤色塗装）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.fujikyu-railway.jp/news/info.php?no=431"
+  },
+  "fujikyu-1000-blue": {
+    displayName: "富士急行1000系（青色）", iconName: "富士急行1000系（青色）",
+    asset: "../images/列车/富士急行/富士急行_1000系_青色.png", lineIds: ["Fujikyu"],
+    aliases: ["1000系（富士急行・青色）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.tetsudo.com/event/30436/"
+  },
+  "fujikyu-1000-revival-blue": {
+    displayName: "富士急行1000系（旧塗装・水色）", iconName: "富士急行1000系（旧塗装・水色）",
+    asset: "../images/列车/富士急行/富士急行_1000系_旧塗装_水色.png", lineIds: ["Fujikyu"],
+    aliases: ["1000系（富士急行・旧塗装）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://www.masatetsudo.com/entry/fujikyu-1"
+  },
+  "fujikyu-1000-tozan": {
+    displayName: "富士急行1000系（富士登山電車）", iconName: "富士急行1000系（富士登山電車）",
+    asset: "../images/列车/富士急行/富士急行_1000系_富士登山電車.png", lineIds: ["Fujikyu"],
+    aliases: ["1000系（富士急行・富士登山電車）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://2nd-train.net/topics/article/41770/"
+  },
+  "fujikyu-1000-red-white": {
+    displayName: "富士急行1000系（赤白塗装）", iconName: "富士急行1000系（赤白塗装）",
+    asset: "../images/列车/富士急行/富士急行_1000系_赤白塗装.png", lineIds: ["Fujikyu"],
+    aliases: ["1000系（富士急行・赤白塗装）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://prtimes.jp/main/html/rd/p/000000174.000001110.html"
+  },
+  "fujikyu-2000-face-a-panorama": {
+    displayName: "富士急行2000系（フジサン特急・顔A・パノラマ車）", iconName: "富士急行2000系（フジサン特急・顔A・パノラマ車）",
+    asset: "../images/列车/富士急行/富士急行_2000系_フジサン特急_顔A_パノラマ車.png", lineIds: ["Fujikyu"],
+    aliases: ["2000系（フジサン特急・顔A・パノラマ車）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://uraken.net/rail/chiho/fujikyu/2000.html"
+  },
+  "fujikyu-2000-face-a-nonpanorama": {
+    displayName: "富士急行2000系（フジサン特急・顔A・非パノラマ車）", iconName: "富士急行2000系（フジサン特急・顔A・非パノラマ車）",
+    asset: "../images/列车/富士急行/富士急行_2000系_フジサン特急_顔A_非パノラマ車.png", lineIds: ["Fujikyu"],
+    aliases: ["2000系（フジサン特急・顔A・非パノラマ車）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://uraken.net/rail/chiho/fujikyu/2000.html"
+  },
+  "fujikyu-2000-face-b-panorama": {
+    displayName: "富士急行2000系（フジサン特急・顔B・パノラマ車）", iconName: "富士急行2000系（フジサン特急・顔B・パノラマ車）",
+    asset: "../images/列车/富士急行/富士急行_2000系_フジサン特急_顔B_パノラマ車.png", lineIds: ["Fujikyu"],
+    aliases: ["2000系（フジサン特急・顔B・パノラマ車）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://uraken.net/rail/chiho/fujikyu/2000.html"
+  },
+  "fujikyu-2000-face-b-nonpanorama": {
+    displayName: "富士急行2000系（フジサン特急・顔B・非パノラマ車）", iconName: "富士急行2000系（フジサン特急・顔B・非パノラマ車）",
+    asset: "../images/列车/富士急行/富士急行_2000系_フジサン特急_顔B_非パノラマ車.png", lineIds: ["Fujikyu"],
+    aliases: ["2000系（フジサン特急・顔B・非パノラマ車）"], artworkStatus: "user-supplied-reference",
+    evidenceSource: "https://uraken.net/rail/chiho/fujikyu/2000.html"
+  }
+});
+
 // JR九州の公式資料：西九州新幹線はN700S系（6両）。
 // 型式のみの計画証拠。実車の編成番号・塗装は証明しない。
 // この型式専用の原生PNGは現在のリポジトリに存在しないため、
