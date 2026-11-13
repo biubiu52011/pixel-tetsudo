@@ -1,0 +1,47 @@
+name: Verify Tobu Skytree SQL plan runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-tobu-skytree-gtfs-runtime.yml'
+      - 'supabase/functions/train-runs/index.ts'
+      - 'supabase/migrations/20261113183000_tobu_skytree_tokyogtfs_plan_fallback.sql'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Check live GTFS-sourced plan, weekends, and expiry
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.parse
+          import urllib.request
+
+          base='https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/train-runs'
+          prefix='gtfs-stage:TokyoGTFS:bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f:TobuSkytree'
+          for day, expected in [('2026-11-13',909),('2026-11-14',829),('2027-11-03',0)]:
+              qs=urllib.parse.urlencode({'line_id':'TobuSkytree','service_date':day})
+              with urllib.request.urlopen(base+'?'+qs,timeout=90) as resp:
+                  if resp.status!=200: raise RuntimeError('Edge status='+str(resp.status))
+                  obj=json.load(resp)
+              if obj.get('ok') is not True:
+                  raise AssertionError(f'{day}: '+str(obj.get('error')))
+              runs=obj.get('runs')
+              if not isinstance(runs,list) or len(runs)!=expected:
+                  raise AssertionError(f'{day}: expected {expected} runs, received {len(runs) if isinstance(runs,list) else type(runs)}')
+              for run in runs:
+                  assert run.get('timetable_provenance')==prefix, (day,run.get('timetable_provenance'))
+                  assert run.get('source_trip_id','').startswith('Tobu.TobuSkytree.'), day
+                  assert run.get('service_date')==day, day
+                  assert len(run.get('stops') or [])>=2, day
+                  assert not run.get('vehicle_plan_confirmed'), 'GTFS train number is not vehicle evidence'
+              print(day,'verified',len(runs),'scheduled GTFS source-only trips')
+          PY
