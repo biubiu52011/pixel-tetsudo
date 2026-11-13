@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### TOURISM-LOCAL-MAP-20261113 — 观光详情本地地图加载链修复（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 已知样本 / 根因 | 本地观光详情页可能持续显示“地图加载中”。共享加载器误引用不存在的 `js/maplibre/streets-`，仓库缺少 MapLibre CSS；Leaflet 初始化又未移除加载节点。实测 MapTiler 对 `127.0.0.1:8017` 的矢量元数据返回 403，而同源栅格瓦片返回 200；GitHub Pages 来源的矢量元数据返回 200，因此本地与公开页面不能强制走同一主链。 |
+| 修复 | 恢复完整 `streets-v2.style.js` 路径并补入 MapLibre 3.6.2 CSS、许可证和来源记录；地图引擎开始前移除加载/错误节点，加载失败进入明确错误状态。本地 `file:`、localhost、IPv4/IPv6 loopback 直接使用 Leaflet 栅格链，GitHub Pages 等受允许来源继续使用 MapLibre 矢量链并保留 Leaflet 运行时兜底。 |
+| 适用范围 | `TourismDetailCore` 是 event/shop/spot 三类详情页的唯一地图所有者；三页 `tourism-core.js` 缓存指纹已同步，没有复制页面级修复。 |
+| 验证 | `tourism-shops`、`tourism-fields`、`ui-cross-page-consistency`、`page-scripts` 合计 43/43 通过；JS 语法、页面脚本同步和 `git diff --check` 通过。本地 Chrome 157 无界面实测 `127.0.0.1:8017`：北千住丸井栅格底图、定位点及 MapTiler/OpenStreetMap 署名均显示，加载文字不再残留。交互式浏览器连接本轮未能启动，不将无界面截图表述为手工窗口验收。 |
+| Commit / 生产边界 | 实施提交 `331f311`；与本条进度记录同批直接推送 `main`。未执行 Pages 发布、Supabase 写入或 Edge 部署；公开页面仍需后续独立发布与回读。 |
+
 ### FUJIKYU-PNG-NUMBER-RANGES-20261112 — 富士急行 SQL 车次号段与参考 PNG（SUPABASE-EDGE-DEPLOYED）
 
 | 项目 | 当前状态 |
