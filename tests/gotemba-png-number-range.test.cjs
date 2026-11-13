@@ -4,6 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const ranges = fs.readFileSync(
@@ -12,6 +13,14 @@ const ranges = fs.readFileSync(
 );
 const migration = fs.readFileSync(
   path.join(root, 'supabase/migrations/20261113142000_gotemba_2611_png_number_ranges.sql'),
+  'utf8',
+);
+const garage = fs.readFileSync(
+  path.join(root, 'data/timetables/vehicle-garage-png-map.js'),
+  'utf8',
+);
+const vehicle = fs.readFileSync(
+  path.join(root, 'js/train-vehicle.js'),
   'utf8',
 );
 
@@ -32,7 +41,7 @@ const localNumbers = [
 test('Gotemba ordinary roster uses the 315 reference PNG only for imported local numbers', () => {
   const gotemba = ranges.match(/lineIds:\["Gotemba"\][\s\S]*?(?=\n\s*\/\/ Fujikyu)/)?.[0];
   assert.ok(gotemba, 'Gotemba range row must be present');
-  assert.match(gotemba, /model:"315系（御殿場線参考）"/);
+  assert.match(gotemba, /model:"315系"/);
   for (const number of localNumbers) assert.match(gotemba, new RegExp(`"${number}"`));
   for (const number of ['1M', '2M', '3M', '4M', '5M', '6M']) {
     assert.doesNotMatch(gotemba, new RegExp(`"${number}"`));
@@ -48,6 +57,46 @@ test('Gotemba SQL range migration keeps both suffix ranges reference-only', () =
   assert.match(migration, /requires_exact_roster/);
   assert.match(migration, /actual_vehicle_confirmed[\s\S]*?true,false/);
   assert.match(migration, /GOTEMBA_NUMBER_ROSTER_CHANGED/);
+});
+
+test('Gotemba planned local selects the scoped 315 reference marker', () => {
+  const scope = {};
+  const context = vm.createContext({
+    window: scope,
+    console: { debug() {}, warn() {}, log() {}, error() {} },
+  });
+  for (const [name, source] of [
+    ['vehicle-garage-png-map.js', garage],
+    ['train-vehicle.js', vehicle],
+    ['train-number-png-ranges.js', ranges],
+  ]) vm.runInContext(source, context, { filename: name });
+
+  const planned = {
+    trainNumber: '2544M',
+    positionLineId: 'Gotemba',
+    displayLineId: 'Gotemba',
+    positionSource: 'supabase-train-run',
+    estimated: true,
+    serviceDate: '2026-11-13',
+    calendarType: 'weekday',
+    trainOperator: 'JR-Central',
+    sourceRailway: 'odpt.Railway:JR-Central.Gotemba',
+    railDirection: 'odpt.RailDirection:Inbound',
+    trainType: 'odpt.TrainType:JR-Central.Local',
+    vehicleIdentityStatus: 'UNKNOWN',
+    vehicleResolvedUpstream: false,
+    vehicleResolvedFromRealtime: false,
+    actualVehicleConfirmed: false,
+  };
+  const match = scope.TrainNumberPngRanges.match('2544M', 'Gotemba', planned);
+  assert.equal(match?.model, '315系');
+  assert.equal(scope.TrainVehicle.lookupTrainNumberRangePng(planned)?.model,
+    '315系');
+  const marker = scope.TrainVehicle.selectMarkerArtwork(planned, false);
+  assert.equal(marker.kind, 'vehicle');
+  assert.match(marker.iconSrc, /JR東海_315系\.png$/);
+  assert.equal(marker.illustrative, true);
+  assert.equal(marker.actualVehicleConfirmed, false);
 });
 
 console.log('Gotemba PNG number-range contract passed');

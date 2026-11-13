@@ -80,7 +80,9 @@
       sourceRailways:["odpt.Railway:JR-Central.Gotemba"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       referenceOnly:true,illustrative:true,
-      model:"315系（御殿場線参考）",
+      // Keep the canonical gallery model label here so the final asset
+      // authorization can be checked against VehicleGaragePngMap.
+      model:"315系",
       pngPath:"../images/列车/JR東海/JR東海_315系.png"},
     // Fujikyu 2611 SQL: both weekday and SaturdayHoliday publish the
     // ordinary local number set 1-52. Use the mapped standard 6000-series

@@ -47,6 +47,13 @@
   table.push(
     ["jrc-chuo-central-315-line-fleet-reference","315系","JR東海/JR東海_315系.png","ChuoCentral",0]
   );
+  // Gotemba 2611 number ranges use the 315 front as a line-level planned
+  // reference only.  The line also has 313-series workings; this entry
+  // authorizes the already audited PNG for the Gotemba diagram without
+  // asserting the actual day's formation or physical vehicle number.
+  table.push(
+    ["jrc-gotemba-315-line-reference","315系","JR東海/JR東海_315系.png","Gotemba",0]
+  );
   // Exact 2611 Shinano number references from the existing SQL pool. This is
   // a planned illustration, not evidence of an actual day's formation.
   table.push(
