@@ -103,8 +103,13 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
    'top Isesaki chip must fit above northern terminal within SVG viewBox');
  // Changes here may not reverse all through service labels or break the
  // canonical directional meaning of other railway diagrams.
+ const oshiageThrough=(chipMap.Oshiage||[]).find(item=>
+   item.lineId==='Hanzomon'&&item.through===true);
+ assert.ok(oshiageThrough,'Hanzomon through must appear at the Oshiage fork');
+ assert.equal(oshiageThrough.dir,'down',
+   'Hanzomon label follows the visible southern fork endpoint, not the hidden source order');
  assert.equal(window.ThroughChip.dirForStation('TobuSkytree',
-   'Oshiage','Hanzomon'),'middle');
+   'Oshiage','Hanzomon'),'down');
  assert.equal(window.ThroughChip.dirForStation('TobuIsesaki',
    'Tobu-Dobutsu-Koen','TobuSkytree'),'up');
  assert.equal(g.stationCoords.length,line.stations.length);
@@ -148,8 +153,7 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
  assert.equal(edge(1,2),false,'no Tokyo-Skytree to Oshiage fake line');
  assert.ok(g.stationCoords.every(p=>p.x>=0&&p.x<=g.svgW&&p.y>=0&&p.y<=g.svgH));
  const caption=g.routeElements.find(e=>e.attrs&&e.attrs['data-fork-caption']==='oshiage-through');
- assert.ok(caption);
- assert.equal(caption.text,'半蔵門線直通');
+ assert.equal(caption,undefined,'branch track must not duplicate the ThroughChip label');
 });
 
 test('L corner interpolation keeps the vehicle on painted horizontal then vertical legs',()=>{
@@ -173,5 +177,6 @@ test('long station name, Hikifune transfers and through caption use nonoverlappi
  assert.ok(source.includes('_setRows(3);'),'fork badge reflow uses existing rows');
  assert.ok(source.includes('ix0 = Math.max(2, ix0)'),'junction badges never clip left');
  assert.ok(source.includes('_forkHikifune ? sc.y - 16'));
- assert.ok(data.includes("x:stationCoords[2].x+4,y:stationCoords[3].y-16"));
+ assert.ok(!data.includes("'data-fork-caption':'oshiage-through'"),
+   'Hanzomon label is owned by ThroughChip, not a separate track caption');
 });

@@ -2115,6 +2115,12 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         sts2.length > 4 && sts2[0] === "Asakusa" &&
         sts2[3] === "Hikifune" &&
         sts2[sts2.length - 1] === "Tobu-Dobutsu-Koen";
+      // Oshiage is the physical lower endpoint of the right-hand Y spur,
+      // even though it remains index 2 in the canonical train/SQL route.
+      // Its Hanzomon chip belongs BELOW that branch terminal, not beside
+      // the station name as a middle-join arrow.
+      if (reverseSkytreeMap && stationId === "Oshiage" &&
+          targetId === "Hanzomon") return "down";
       if (idx2 === 0) return reverseSkytreeMap ? "down" : "up";
       if (idx2 === sts2.length - 1) return reverseSkytreeMap ? "up" : "down";
       if (isCanonicalJoin || isDisplayAnchor) return "middle";
