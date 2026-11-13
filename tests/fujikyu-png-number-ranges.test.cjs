@@ -102,6 +102,21 @@ test('Fujikyu number ranges normalize special labels and map ordinary/through se
   assert.ok(through);
   assert.equal(through.model, 'E233系0番台');
   assert.match(through.pngPath, /JR東日本_E233系_0番台\.png$/);
+  const throughMarker = root.TrainVehicle.selectMarkerArtwork({
+    ...weekday,
+    trainNumber: '1456M',
+    positionLineId: 'Fujikyu',
+    displayLineId: 'Fujikyu',
+    railDirection: 'odpt.RailDirection:Inbound',
+    trainType: 'odpt.TrainType:FujisanrokuElectricRailway.Local',
+    vehicleIdentityStatus: 'UNKNOWN',
+    vehicleResolvedUpstream: false,
+    vehicleResolvedFromRealtime: false,
+    actualVehicleConfirmed: false
+  }, false);
+  assert.equal(throughMarker.kind, 'vehicle');
+  assert.match(throughMarker.iconSrc, /JR東日本_E233系_0番台\.png$/);
+  assert.equal(throughMarker.planned, true);
   assert.equal(root.TrainNumberPngRanges.match('2726M', 'Fujikyu', {
     ...weekday,
     trainNumber: '2726M',

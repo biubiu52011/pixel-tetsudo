@@ -78,6 +78,14 @@
     ["fujikyu-5000-standard","富士急行5000形（標準色）","富士急行/富士急行_5000形_標準色.png","Fujikyu",1],
     ["fujikyu-5000-thomas-land","富士急行5000形（トーマスランド）","富士急行/富士急行_5000形_トーマスランド号.png","Fujikyu",1]
   );
+  // ChuoMain-through Fujikyu services 1455M/1456M use the JR-East E233
+  // reference artwork on the Fujikyu diagram. This is a narrow planned
+  // through-service scope, not a Fujikyu-wide E233 fleet declaration and not
+  // evidence of the physical formation operating on a particular day.
+  table.push(
+    ["fujikyu-chuo-through-e233-0","E233系0番台",
+      "JR東日本/JR東日本_E233系_0番台.png","Fujikyu",0]
+  );
   var alternates=[["jr-east-e233-5000-keiyo","E233系5000番台","JR東日本/JR東日本_E233系_5000番台.png","Keiyo|Togane"]];
   var unassigned=[];
   var assets=Object.create(null),byModel=Object.create(null),byPath=Object.create(null);
