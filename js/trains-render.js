@@ -308,6 +308,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // junction transfer badges to the left of that track.
         ix0 = o.forkJunction ? o.x - 24 - totalW :
           (o.x + 24 + totalW <= svgW - 2 ? o.x + 24 : o.x - 24 - totalW);
+        if (o.forkJunction && ix0 < 2) {
+          // Reflow icons while maintaining a 24px clear track gutter.
+          // Do not fall back to the ordinary centered junction badge
+          // placement: it overlaps the Hikifune -> Oshiage L turn.
+          _setRows(3);
+          ix0 = o.x - 24 - totalW;
+          if (ix0 < 2) { _setRows(2); ix0 = o.x - 24 - totalW; }
+          ix0 = Math.max(2, ix0);
+        }
       }
       if(o.forkMultiline)iy0=o.y+21;
       if ((side === "left" || side === "dual") && ix0 < 2) {

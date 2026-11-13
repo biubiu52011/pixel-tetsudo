@@ -1479,11 +1479,19 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           // L-shaped spur: Asakusa continues straight; Oshiage forks
           // right at Hikifune before turning down. Canonical order is kept.
           var _forkDx = Math.max(94, Math.min(112, sp + 44));
+          // Normal 45px station spacing cannot fit Hikifune transfers
+          // followed by a two-line Tokyo-Skytree name and its badges.
+          // Reserve full SVG *content* height on BOTH L branches before
+          // placing stops. Keep northern canonical stations untouched.
+          var _forkFirstGap = Math.max(sp, 106,
+            _chipPitch(["Hikifune"]) + 42);
+          var _forkSecondGap = Math.max(sp, 112,
+            _chipPitch(["Tokyo-Skytree"]) + 52);
           var _forkX = mainCx, _forkY = topP + (stations.length - 1 - i) * sp;
           var _forkSide = 'dual';
-          if (i === 0) _forkY = _forkJY + 2 * sp;
-          else if (i === 1) _forkY = _forkJY + sp;
-          else if (i === 2) { _forkX += _forkDx; _forkY = _forkJY + sp; _forkSide = 'right'; }
+          if (i === 0) _forkY = _forkJY + _forkFirstGap + _forkSecondGap;
+          else if (i === 1) _forkY = _forkJY + _forkFirstGap;
+          else if (i === 2) { _forkX += _forkDx; _forkY = _forkJY + _forkFirstGap; _forkSide = 'right'; }
           else if (i === 3) _forkSide = 'top';
           stationCoords.push({x:_forkX,y:_forkY,side:_forkSide,stationId:stations[i]});
         } else {
@@ -1498,6 +1506,14 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         ? stationCoords.reduce(function(max,p){return Math.max(max,p.y);},topP)
         : (stationCoords.length ? stationCoords[stationCoords.length - 1].y : topP)) +
         (_spSeg.length ? _spSeg[_spSeg.length - 1] : sp) + botP;
+      if (isSkytreeYFork) {
+        // Asakusa is now the visible bottom endpoint, not the source
+        // array's last entry. Its transfer badges and through-service
+        // chip must be included in the canvas height.
+        svgH = Math.max(svgH,
+          stationCoords[0].y + _chipPitch(["Asakusa"]) + 20,
+          stationCoords[2].y + _chipPitch(["Oshiage"]) + 20);
+      }
       var y1 = topP, y2 = stationCoords.length ? stationCoords[stationCoords.length - 1].y : (topP + (stations.length - 1) * sp);
       // Draw ordinary main lines by station segment so display color can
       // change exactly at a named boundary station (e.g. Joban at Ueno/Toride).

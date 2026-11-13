@@ -94,6 +94,12 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
  assert.equal(g.stationCoords[0].x,g.stationCoords[3].x);
  assert.ok(g.stationCoords[2].x>g.stationCoords[3].x,'Oshiage branches right');
  assert.equal(g.stationCoords[2].y,g.stationCoords[1].y,'both destinations occupy the same map row');
+ assert.ok(g.stationCoords[1].y-g.stationCoords[3].y>=106,
+   'Hikifune transfers and Tokyo-Skytree name need their own vertical region');
+ assert.ok(g.stationCoords[0].y-g.stationCoords[1].y>=112,
+   'multiline Tokyo-Skytree label and badges need clearance from Asakusa');
+ assert.ok(g.svgH>=g.stationCoords[0].y+65,
+   'Asakusa transfer badges must remain inside the canvas');
  assert.ok(g.svgW>=g.stationCoords[2].x+124,'right name and transfers must fit');
  assert.equal(g.stationCoords[1].side,'dual');
  assert.equal(g.stationCoords[2].side,'right');
@@ -143,6 +149,8 @@ test('long station name, Hikifune transfers and through caption use nonoverlappi
  assert.ok(source.includes('forkJunction: _forkHikifune'));
  assert.ok(source.includes('if(o.forkMultiline)iy0=o.y+21'));
  assert.ok(source.includes('ix0 = o.forkJunction ? o.x - 24 - totalW'));
+ assert.ok(source.includes('_setRows(3);'),'fork badge reflow uses existing rows');
+ assert.ok(source.includes('ix0 = Math.max(2, ix0)'),'junction badges never clip left');
  assert.ok(source.includes('_forkHikifune ? sc.y - 16'));
  assert.ok(data.includes("x:stationCoords[2].x+4,y:stationCoords[3].y-16"));
 });
