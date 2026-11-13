@@ -75,7 +75,7 @@ test('through service owner suffix is a reference, never observed physical carse
  const cases=[
   ['Hibiya','B1016S','TokyoMetro','13000系.png'],
   ['Hibiya','A1009T','Tobu','70000系.png'],
-  ['Hanzomon','A1001K','Tokyu','2020系.png'],
+  ['Hanzomon','A1004K','Tokyu','2020系.png'],
   ['Hanzomon','A1093S','TokyoMetro','18000系.png'],
   ['Hanzomon','A1050T','Tobu','50050型.png']
  ];
