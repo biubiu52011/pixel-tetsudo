@@ -35,8 +35,8 @@ test('ordinary Skytree corridor PNG is scoped to exact source train numbers',()=
   ['2501','SectionExpress','asakusa','東武10030系','10030型_未更新車.png'],
   ['801','Local','asakusa','東武10030系','10030型_未更新車.png'],
   ['A1009T','Local','hibiya','東武70000系','70000系.png'],
-  ['B1016S','Local','hibiya','東武70000系','70000系.png'],
-  ['C1005K','Express','oshiage','東武50050系','50050型.png']
+  ['B1016S','Local','hibiya','東京メトロ13000系','13000系.png'],
+  ['C1005K','Express','oshiage','東急2020系','2020系.png']
  ];
  for(const [num,type,corridor,model,file] of cases){
    const m=ranges.match(num,'TobuSkytree',p(num,type));
@@ -50,6 +50,51 @@ test('ordinary Skytree corridor PNG is scoped to exact source train numbers',()=
  }
  for(const [num,type] of [['2702','SectionExpress'],['950','Local'],['501','Local']])
    assert.equal(ranges.match(num,'TobuSkytree',p(num,type)),null,num+' unknown corridor');
+});
+
+test('through service owner suffix is a reference, never observed physical carset',()=>{
+ const samples=[
+  ['B1016S','Local','TokyoMetro','東京メトロ13000系','13000系.png'],
+  ['A1009T','Local','Tobu','東武70000系','70000系.png'],
+  ['C1005K','Express','Tokyu','東急2020系','2020系.png']
+ ];
+ for(const [num,type,owner,model,file] of samples){
+   const ref=ranges.match(num,'TobuSkytree',p(num,type));
+   assert.ok(ref,num);
+   assert.equal(ref.referenceOwner,owner);
+   assert.equal(ref.model,model);
+   assert.ok(ref.pngPath.endsWith(file),num);
+   assert.equal(ref.referenceOnly,true);
+   assert.equal(ref.actualVehicleConfirmed,false);
+   assert.equal(garage.matchModelPath(model,ref.pngPath,'TobuSkytree'),true);
+ }
+ function metro(line,trainNumber,type='Local'){
+   return {...p(trainNumber,type),positionLineId:line,displayLineId:line,
+     sourceRailway:'odpt.Railway:TokyoMetro.'+line,trainOperator:'TokyoMetro'};
+ }
+ const cases=[
+  ['Hibiya','B1016S','TokyoMetro','13000系.png'],
+  ['Hibiya','A1009T','Tobu','70000系.png'],
+  ['Hanzomon','A1001K','Tokyu','2020系.png'],
+  ['Hanzomon','A1093S','TokyoMetro','18000系.png'],
+  ['Hanzomon','A1050T','Tobu','50050型.png']
+ ];
+ for(const [line,num,owner,file] of cases){
+   const ref=ranges.match(num,line,metro(line,num));
+   assert.ok(ref,line+num);
+   assert.equal(ref.referenceOwner,owner);
+   assert.ok(ref.pngPath.endsWith(file));
+   assert.equal(ref.referenceOnly,true);
+   assert.equal(ref.actualVehicleConfirmed,false);
+   assert.equal(ref.candidateModels.length>0,true);
+   assert.equal(garage.matchModelPath(ref.model,ref.pngPath,line),true);
+ }
+ assert.equal(ranges.match('C1005K','Hanzomon',metro('Hanzomon','C1005K')),null,
+   'different-company number may not be guessed into Metro source roster');
+ assert.equal(ranges.match('B1016S','Hibiya',{...metro('Hibiya','B1016S'),trainOwner:'odpt.Operator:Tobu'}),null);
+ assert.equal(ranges.match('B1016S','Hibiya',{...metro('Hibiya','B1016S'),operationCode:'16T'}),null);
+ assert.equal(ranges.match('B1016S','Hibiya',{...metro('Hibiya','B1016S'),vehicleIdentityStatus:'EXACT'}),null);
+ assert.equal(ranges.match('B1016S','Hibiya',{...metro('Hibiya','B1016S'),serviceDate:'2026-12-01'}),null);
 });
 test('wrong number, date, fleet, line, source and train type fail closed',()=>{
  const bad=[
