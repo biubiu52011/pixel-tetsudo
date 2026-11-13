@@ -244,21 +244,25 @@ async function readManualTemplateRuns(
   let selectedRevision: any = null;
   const calendars = serviceCalendars(serviceDate);
   const revisionRows = await loadRevisionRows(db,lineId);
-  // The TokyoGTFS 2026-11 TobuSkytree source is NOT a day-invariant
-  // timetable. Restrict every returned train to its exact GTFS calendar,
-  // including calendar_dates exceptions, through a private service-role RPC.
-  // Neither the GTFS trip_id nor its train number establishes vehicle stock.
+  // The TokyoGTFS 2026-11 Tobu source is not a day-invariant timetable:
+  // require exact route, service day and feed checksum before projecting plans.
+  // Train numbers and trip IDs never establish actual rolling stock.
+  const tobuGtfsTripPrefixes: Record<string,string> = {
+    TobuSkytree: "Tobu.TobuSkytree.",
+    Noda: "Tobu.TobuUrbanPark.",
+  };
+  const tobuGtfsTripPrefix = tobuGtfsTripPrefixes[lineId] || null;
   const tobuGtfsSource = "gtfs-stage:TokyoGTFS:" +
     "bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f:" +
-    "TobuSkytree";
+    lineId;
   let tobuGtfsActiveTripIds: Set<string> | null = null;
-  if (lineId === "TobuSkytree") {
-    const { data, error } = await db.rpc("tobu_skytree_active_gtfs_trip_ids", {
-      p_service_date: serviceDate
+  if (tobuGtfsTripPrefix) {
+    const { data, error } = await db.rpc("tobu_tokyogtfs_active_trip_ids", {
+      p_line_key: lineId, p_service_date: serviceDate
     });
     if (error || !Array.isArray(data) || data.length > 2000 ||
-        data.some((row:any) => typeof row.trip_id !== "string" || !row.trip_id.startsWith("Tobu.TobuSkytree.")))
-      throw new Error("TOBU_SKYTREE_GTFS_DATE_SCOPE_UNAVAILABLE");
+        data.some((row:any) => typeof row.trip_id !== "string" || !row.trip_id.startsWith(tobuGtfsTripPrefix)))
+      throw new Error("TOBU_GTFS_DATE_SCOPE_UNAVAILABLE");
     tobuGtfsActiveTripIds = new Set(data.map((row:any) => row.trip_id));
   }
   for (const calendar of calendars) {
@@ -281,7 +285,7 @@ async function readManualTemplateRuns(
       query = revision ? query.eq('revision_id',revision.id) : query.is('revision_id',null);
       return query.order("id").range(first,last);
     });
-    if (lineId === "TobuSkytree") {
+    if (tobuGtfsTripPrefix) {
       // Fail closed on unexpected imported revisions / source identifiers.
       // A route-wide fleet list cannot substitute for a GTFS service date.
       selected = selected.filter((t:any) =>

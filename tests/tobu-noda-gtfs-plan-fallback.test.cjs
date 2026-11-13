@@ -1,0 +1,33 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const sql=fs.readFileSync('supabase/migrations/20261113191000_tobu_noda_tokyogtfs_plan_fallback.sql','utf8');
+const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+test('Noda imports exact checksum-locked 1247 source-only trips and 18382 stops',()=>{
+  assert.match(sql,/route_id='Tobu\.TobuUrbanPark'/);
+  assert.match(sql,/<> 1247/);
+  assert.match(sql,/service_id='Weekday'\) <> 652/);
+  assert.match(sql,/service_id='SaturdayHoliday'\) <> 595/);
+  assert.match(sql,/stop_count <> 18382/);
+  assert.match(sql,/stop_id NOT LIKE 'Tobu\.TobuUrbanPark\.%'/);
+  assert.match(sql,/source_only','undated_not_current_verified'/);
+  assert.match(sql,/NULL::text, v_source/);
+  assert.match(sql,/source_occurrence/);
+  assert.match(sql,/sql_planned_fallback_enabled=true/);
+  assert.doesNotMatch(sql,/vehicle_type_label.*?東武60000系/s);
+});
+test('shared date-scoped RPC allowlists both Tobu routes, and stays service-role-only',()=>{
+  assert.match(sql,/tobu_tokyogtfs_active_trip_ids\(/);
+  assert.match(sql,/WHEN 'TobuSkytree' THEN 'Tobu\.TobuSkytree'/);
+  assert.match(sql,/WHEN 'Noda' THEN 'Tobu\.TobuUrbanPark'/);
+  assert.match(sql,/service_exceptions ex/);
+  assert.match(sql,/ex\.exception_type=1/);
+  assert.match(sql,/p_service_date BETWEEN f\.service_start AND f\.service_end/);
+  assert.match(sql,/REVOKE ALL ON FUNCTION public\.tobu_tokyogtfs_active_trip_ids\(text,date\)/);
+  assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.tobu_tokyogtfs_active_trip_ids\(text,date\)\s+TO service_role/);
+  assert.match(edge,/db\.rpc\("tobu_tokyogtfs_active_trip_ids"/);
+  assert.match(edge,/p_line_key: lineId/);
+  assert.match(edge,/Noda: "Tobu\.TobuUrbanPark\."/);
+  assert.match(edge,/t\.source_path === tobuGtfsSource/);
+});

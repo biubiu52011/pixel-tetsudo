@@ -5,6 +5,7 @@ const fs=require('node:fs');
 
 const sql=fs.readFileSync('supabase/migrations/20261113183000_tobu_skytree_tokyogtfs_plan_fallback.sql','utf8');
 const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+const sharedSql=fs.readFileSync('supabase/migrations/20261113191000_tobu_noda_tokyogtfs_plan_fallback.sql','utf8');
 const feed='bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f';
 
 test('TobuSkytree promotion locks exactly 1738 GTFS trips and 20860 stops',()=>{
@@ -25,8 +26,10 @@ test('date-scoped private RPC prevents service calendar and stale-feed leakage',
  assert.match(sql,/p_service_date BETWEEN f\.service_start AND f\.service_end/);
  assert.match(sql,/REVOKE ALL ON FUNCTION public\.tobu_skytree_active_gtfs_trip_ids\(date\)/);
  assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.tobu_skytree_active_gtfs_trip_ids\(date\)\s+TO service_role/);
- assert.match(edge,/db\.rpc\("tobu_skytree_active_gtfs_trip_ids"/);
+ assert.match(edge,/db\.rpc\("tobu_tokyogtfs_active_trip_ids"/);
  assert.match(edge,/tobuGtfsActiveTripIds\?\.has\(String\(t\.source_trip_id\)\)/);
+ assert.match(sharedSql,/tobu_tokyogtfs_active_trip_ids\(/);
+ assert.match(sharedSql,/WHEN 'TobuSkytree' THEN 'Tobu.TobuSkytree'/);
  assert.match(edge,/t\.source_path === tobuGtfsSource/);
  assert.ok(sql.includes(feed) && edge.includes(feed));
 });

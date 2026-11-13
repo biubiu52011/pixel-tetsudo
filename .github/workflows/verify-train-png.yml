@@ -10,7 +10,9 @@ on:
       - 'tests/tobu-noda-2611-number-bands-sql.test.cjs'
       - 'tests/tobu-noda-illustrative-marker-png.test.cjs'
       - 'tests/tobu-skytree-gtfs-plan-fallback.test.cjs'
+      - 'tests/tobu-noda-gtfs-plan-fallback.test.cjs'
       - 'supabase/migrations/20261113183000_tobu_skytree_tokyogtfs_plan_fallback.sql'
+      - 'supabase/migrations/20261113191000_tobu_noda_tokyogtfs_plan_fallback.sql'
       - 'supabase/migrations/20261113170000_tobu_noda_2611_fivecar_png_candidate_bands.sql'
       - 'tests/osaka-higashi-2611-*.test.cjs'
       - 'tools/route-timetable-service-calendar.test.cjs'
@@ -291,7 +293,7 @@ jobs:
       - name: Verify Tobu Noda official A-number bands and 5-car PNG candidate safety
         run: node --test tests/tobu-noda-fivecar-number-png.test.cjs tests/tobu-noda-2611-number-bands-sql.test.cjs tests/tobu-noda-illustrative-marker-png.test.cjs
       - name: Verify Tobu Skytree TokyoGTFS SQL promotion and date-scoped fallback
-        run: node --test tests/tobu-skytree-gtfs-plan-fallback.test.cjs
+        run: node --test tests/tobu-skytree-gtfs-plan-fallback.test.cjs tests/tobu-noda-gtfs-plan-fallback.test.cjs
       - name: Verify Fujikyu SQL special-service PNG number ranges
         run: node --test tests/fujikyu-png-number-ranges.test.cjs
       - name: Verify topology-only production route registration is fail-closed
