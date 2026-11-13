@@ -1504,7 +1504,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           stationCoords.push({ x: mainCx, y: _yAt(i), side: 'dual', stationId: stations[i] });
         }
       }
-      // Reserve Oshiage's label, transfer badges and through caption.
+      // Reserve Oshiage's station name and transfer/through badges.
       if (isSkytreeYFork) svgW = Math.max(svgW, stationCoords[2].x + 124);
       // svgH must be computed AFTER stationCoords is populated (with the
       // per-station 2-row chip compensation) or the viewBox clips the line.
@@ -1559,15 +1559,9 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           'stroke-linecap':'round','stroke-linejoin':'round',opacity:0.6,
           'data-fork-track':'oshiage-l'
         }});
-        // This caption belongs above the horizontal spur, not over
-        // Oshiage's station name or transfer badges.
-        var _forkNames = {ja:"半蔵門線直通",zh:"半藏门线直通",
-          en:"Hanzomon through",ko:"한조몬선 직통"};
-        routeElements.push({type:'text',attrs:{
-          x:stationCoords[2].x+4,y:stationCoords[3].y-16,
-          'font-size':10,'text-anchor':'start',
-          fill:color,opacity:0.9,'data-fork-caption':'oshiage-through'
-        },text:_forkNames[window.currentLang]||_forkNames.ja});
+        // The canonical Hanzomon service boundary at Oshiage is rendered
+        // once by ThroughChip in the station transfer column. Do not add
+        // a separate hard-coded caption on the branch track.
       }
       // .3.422: 融合机制——直通运行系统延伸段几何（如横須賀線・総武快速線）
       // 延伸线接主线端点（東京站）后沿同一垂直方向、同一列继续排布（一条连续线）；
