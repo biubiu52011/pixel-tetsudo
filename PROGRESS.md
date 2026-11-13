@@ -5,6 +5,13 @@
 # Pixel Tetsudo 工程进度
 
 
+### TOBU-SKYTREE-HIKIFUNE-Y-FORK-20261113 — 曳舟双支路 SVG 及列车投影（CI 待验）
+
+- 复用现有 `computeRouteGeometry`、`TrainTrackLayout` 和 SVG 静态层；在 `TobuSkytree` 运行图形成曳舟 Y 字分叉：经とうきょうスカイツリー至浅草，另一端至押上（半蔵門線直通）。
+- canonical 站序仍为 Asakusa / Tokyo-Skytree / Oshiage / Hikifune / ...，完整保留 SQL、ODPT、PNG 和 runningChainId 的索引；**删除不真实的 Tokyo-Skytree→Oshiage 绘制连线**，追加 Tokyo-Skytree→Hikifune 实际连线。
+- 将同源明确的 `segmentToIndex` 沿 Y 图轨道折线插值（包含快车跨站）；缺目的支路证据的曳舟列车驻留在岔点，不猜浅草/押上。禁止在两条南支线之间制造单程直达；视觉方向反转仅限该线路。
+- 不更改已上线的 Tobu/Metro/Tokyu PNG 参考号段或强证据车辆身份规则。真实手机浏览器视觉和长连接实测仍待单独验收。
+
 ### TOBU-METRO-TOKYU-THROUGH-20261113 — 东武／Metro／东急跨线运用参考图（PRODUCTION-TESTED）
 
 - 已复用现有 operation_family_rules 的所属方候选规则及 TrainNumberPngRanges / VehicleGaragePngMap，未另建平行数据表。Hibiya SQL 的 1023 个、Hanzomon SQL 的 994 个日历内完整列车号已纳入前端精确来源白名单；Skytree 继续使用原 1738 GTFS source-only 车次。

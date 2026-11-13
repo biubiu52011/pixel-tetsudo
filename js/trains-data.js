@@ -977,6 +977,14 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     var color = line.color || (window.TrainsColors ? window.TrainsColors.LINE_FALLBACK : "#008803");
     var isLoop = line.type === "loop";
     var isSixShapedLoop = line.isSixShapedLoop === true;
+    // The canonical Tobu station array is shared by SQL, ODPT and train
+    // indexing. It lists Asakusa / Tokyo-Skytree / Oshiage / Hikifune in
+    // source order, NOT a physical Asakusa -> Oshiage segment. Only the
+    // passenger SVG should fork at Hikifune; source indices never change.
+    var isSkytreeYFork = lineId === "TobuSkytree" && stations.length > 4 &&
+      stations[0] === "Asakusa" && stations[1] === "Tokyo-Skytree" &&
+      stations[2] === "Oshiage" && stations[3] === "Hikifune" &&
+      !isSixShapedLoop && !isLoop;
     var throughChipMaxWidth = isLoop ? (_isMobileView() ? 69 : 74) : (_isMobileView() ? 148 : 124);
     // 几何和 SVG 渲染共用 ThroughChip 高度计算。
     // 对未挂载
@@ -1463,17 +1471,38 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       
       // 逐段定距（_yAt）替代旧「均匀 sp + _extraY 补偿」——旧补偿 min(换乘数,8) 与渲染 min(16) 不一致，已废
       for (var i = 0; i < stations.length; i++) {
-        stationCoords.push({ x: mainCx, y: _yAt(i), side: 'dual', stationId: stations[i] });
+        if (isSkytreeYFork) {
+          // Visual order is north-to-south (top to bottom). Source order
+          // stays unchanged; the junction sends one branch to Tokyo-Skytree
+          // and Asakusa and the other to Oshiage / Hanzomon through service.
+          var _forkJY = topP + (stations.length - 4) * sp;
+          var _forkDx = Math.max(54, Math.min(sp, 65));
+          var _forkX = mainCx, _forkY = topP + (stations.length - 1 - i) * sp;
+          var _forkSide = 'dual';
+          if (i === 0) { _forkX -= _forkDx; _forkY = _forkJY + 2 * sp; _forkSide = 'right'; }
+          else if (i === 1) { _forkX -= _forkDx; _forkY = _forkJY + sp; _forkSide = 'right'; }
+          else if (i === 2) { _forkX += _forkDx; _forkY = _forkJY + 1.55 * sp; _forkSide = 'right'; }
+          else if (i === 3) _forkSide = 'top';
+          stationCoords.push({x:_forkX,y:_forkY,side:_forkSide,stationId:stations[i]});
+        } else {
+          stationCoords.push({ x: mainCx, y: _yAt(i), side: 'dual', stationId: stations[i] });
+        }
       }
       // svgH must be computed AFTER stationCoords is populated (with the
       // per-station 2-row chip compensation) or the viewBox clips the line.
-      svgH = (stationCoords.length ? stationCoords[stationCoords.length - 1].y : topP) + (_spSeg.length ? _spSeg[_spSeg.length - 1] : sp) + botP;
+      svgH = (isSkytreeYFork
+        ? stationCoords.reduce(function(max,p){return Math.max(max,p.y);},topP)
+        : (stationCoords.length ? stationCoords[stationCoords.length - 1].y : topP)) +
+        (_spSeg.length ? _spSeg[_spSeg.length - 1] : sp) + botP;
       var y1 = topP, y2 = stationCoords.length ? stationCoords[stationCoords.length - 1].y : (topP + (stations.length - 1) * sp);
       // Draw ordinary main lines by station segment so display color can
       // change exactly at a named boundary station (e.g. Joban at Ueno/Toride).
       if (stationCoords.length > 1) {
         for (var _segI = 0; _segI < stationCoords.length - 1; _segI++) {
           var _segA = stationCoords[_segI], _segB = stationCoords[_segI + 1];
+          // No track between Tokyo-Skytree and Oshiage. They are the two
+          // branches of Hikifune, never consecutive stops on one service.
+          if (isSkytreeYFork && _segI === 1) continue;
           if (_isTopologyBreakForMap(lineId, _segA.stationId, _segB.stationId)) continue;
           routeElements.push({
             type: 'line',
@@ -1489,6 +1518,24 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           type: 'line',
           attrs: { x1: mainCx, y1: y1, x2: mainCx, y2: y2, stroke: color, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6 }
         });
+      }
+      if (isSkytreeYFork) {
+        var _forkA = stationCoords[1], _forkJ = stationCoords[3];
+        routeElements.push({type:'line',attrs:{
+          x1:_forkA.x,y1:_forkA.y,x2:_forkJ.x,y2:_forkJ.y,
+          stroke:color,'stroke-width':5,'stroke-linecap':'round',opacity:0.6,
+          'data-fork-track':'asakusa'
+        }});
+        // The other junction edge (Oshiage 2 -> Hikifune 3) is already
+        // emitted by the ordinary segment loop. Label the continuation,
+        // not a fictitious intermediate station.
+        var _forkNames = {ja:"半蔵門線直通",zh:"半藏门线直通",
+          en:"Hanzomon through",ko:"한조몬선 직통"};
+        routeElements.push({type:'text',attrs:{
+          x:stationCoords[2].x+10,y:stationCoords[2].y+19,
+          'font-size':10,'text-anchor':'start',
+          fill:color,opacity:0.9,'data-fork-caption':'oshiage-through'
+        },text:_forkNames[window.currentLang]||_forkNames.ja});
       }
       // .3.422: 融合机制——直通运行系统延伸段几何（如横須賀線・総武快速線）
       // 延伸线接主线端点（東京站）后沿同一垂直方向、同一列继续排布（一条连续线）；
@@ -1694,7 +1741,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       branchHSp: _branchHSp, // 横排站距（跨函数）
       branchGeom: branchGeom,
       routeElements: routeElements,
-      junctionStation: isSixShapedLoop ? stations[0] : null,
+      // Explicit graph edges for marker interpolation. The forked SVG
+      // never mutates the canonical station indexes or SQL templates.
+      mapFork: isSkytreeYFork ? {
+        kind:"tobu-skytree-hikifune-y",junctionIndex:3,
+        edges:[[0,1],[1,3],[2,3]].concat(stations.slice(3,-1).map(function(_,i){return [i+3,i+4];}))
+      } : null,
+      junctionStation: isSixShapedLoop ? stations[0] : (isSkytreeYFork ? "Hikifune" : null),
       junctionX: isSixShapedLoop ? junctionX : null,
       junctionY: isSixShapedLoop ? junctionY : null, // 左列第 7 位 y（站名方向/紧致 clamp 依据）
       loopRectW: isSixShapedLoop ? loopRectW : null, // 环宽（左列上方站 clamp 到右列圆点前）

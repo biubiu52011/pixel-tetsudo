@@ -11,6 +11,7 @@ on:
       - 'tests/tobu-noda-illustrative-marker-png.test.cjs'
       - 'tests/tobu-skytree-gtfs-plan-fallback.test.cjs'
       - 'tests/tobu-skytree-png-number-bands.test.cjs'
+      - 'tests/tobu-skytree-y-fork.test.cjs'
       - 'supabase/migrations/20261113203000_tobu_skytree_2611_png_number_bands.sql'
       - 'supabase/migrations/20261113215000_tobu_skytree_ordinary_corridor_png_references.sql'
       - 'tests/tobu-noda-gtfs-plan-fallback.test.cjs'
@@ -318,7 +319,7 @@ jobs:
       - name: Verify visual folding of dense train markers on SVG maps
         run: node tools/train-visual-fold.test.cjs
       - name: Verify up/down train lanes and Ueno-Tokyo four-stop projection
-        run: node --test tests/trains-track-marker-alignment.test.cjs tests/trains-uenotokyo-map-projection.test.cjs
+        run: node --test tests/trains-track-marker-alignment.test.cjs tests/trains-uenotokyo-map-projection.test.cjs tests/tobu-skytree-y-fork.test.cjs
       - name: Verify Yamanote crowded transfer +N SVG layout
         run: node --test tools/yamanote-transfer-overflow.test.cjs
       - name: Audit all 237 railway routes, 191 fleet scopes and gallery references

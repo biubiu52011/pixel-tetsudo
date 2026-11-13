@@ -3011,7 +3011,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return false;
   }
 
-  function _trainMoveDir(p, lineId) {
+  function _sourceIndexTrainMoveDir(p, lineId) {
     var dn = String(p.railDirection || '').split(/[:.]/).pop(); // 同时拆冒号和点号（odpt:RailDirection:Waseda 和 TokyoMetro.YoyogiUehara 两种格式）
     // 支线可能从来源的最后一个车站绘制（成田--我孫子）。
     // 标签跟随屏幕上的运行方向，而不是父线路的索引顺序。
@@ -3093,6 +3093,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
     }
     return null;
+  }
+
+  function _trainMoveDir(p,lineId) {
+    var indexDir = _sourceIndexTrainMoveDir(p,lineId);
+    if(lineId==="TobuSkytree"&&window.UNIFIED_LINES&&
+       window.UNIFIED_LINES.TobuSkytree&&
+       (window.UNIFIED_LINES.TobuSkytree.stations||[])[3]==="Hikifune")
+      return indexDir==="up"?"down":indexDir==="down"?"up":indexDir;
+    return indexDir;
   }
 
   // Keep direction (兼容测试截取锚点；说明见下方中文注释)。
@@ -3484,6 +3493,85 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     };
   }
 
+  // Existing canonical Skytree source indices: 0 Asakusa, 1 Tokyo-Skytree,
+  // 2 Oshiage, 3 Hikifune, 4+ northern trunk. A route cannot travel from
+  // one southern branch to the other without reversing at Hikifune.
+  function _skytreeForkBranchEvidence(p) {
+    var names = Array.isArray(p&&p.scheduledStopKeys)
+      ? p.scheduledStopKeys.slice() : [];
+    if(p&&p.destinationStation)names.push(p.destinationStation);
+    if(p&&p.sourceToStation)names.push(p.sourceToStation);
+    var asakusa=false,oshiage=false;
+    names.forEach(function(raw){
+      var s=String(raw||"").split(/[.:]/).pop().replace(/[-_]/g,"").toLowerCase();
+      if(s==="asakusa"||s==="tokyosky tree".replace(/ /g,"")||s==="tokyoskytree")asakusa=true;
+      if(s==="oshiage")oshiage=true;
+    });
+    return asakusa===oshiage?null:(asakusa?1:2);
+  }
+  function _skytreeForkNext(p,idx,screenDir) {
+    // Screen points north while source index grows. Do not use idx +/- 1
+    // across the fake Tokyo-Skytree -> Oshiage edge.
+    var sourceStep=screenDir==="up"?1:screenDir==="down"?-1:0;
+    if(!sourceStep)return idx;
+    if(idx===0)return sourceStep>0?1:0;
+    if(idx===1)return sourceStep>0?3:0;
+    if(idx===2)return sourceStep>0?3:2;
+    if(idx===3&&sourceStep<0)return _skytreeForkBranchEvidence(p)||3;
+    return idx+sourceStep;
+  }
+  function _skytreeForkTravel(points,graph,from,to,progress) {
+    if(!graph||graph.kind!=="tobu-skytree-hikifune-y"||!points[from]||!points[to])return null;
+    // Switching Asakusa ↔ Oshiage within a through train is not a real
+    // direct path. Preserve the station but reject an invalid segment.
+    var left=function(i){return i===0||i===1;};
+    if((left(from)&&to===2)||(from===2&&left(to)))return null;
+    var adj=Object.create(null);
+    (graph.edges||[]).forEach(function(e){
+      if(!e||!points[e[0]]||!points[e[1]])return;
+      (adj[e[0]]||(adj[e[0]]=[])).push(e[1]);
+      (adj[e[1]]||(adj[e[1]]=[])).push(e[0]);
+    });
+    if(from===to){
+      var next=from===0?1:from===1?3:from===2?3:
+        from===3?4:from===points.length-1?from-1:from+1;
+      return {point:{x:points[from].x,y:points[from].y},
+        tangent:tangentAt(points,from,next)};
+    }
+    // Unique path over the fixed railway tree. An express segment may
+    // skip stations but its displayed train must follow painted tracks.
+    var q=[from], parent=Object.create(null);parent[from]=from;
+    for(var h=0;h<q.length&&q.length<=points.length;h++){
+      var u=q[h];
+      (adj[u]||[]).forEach(function(v){
+        if(parent[v]!=null)return;
+        parent[v]=u;q.push(v);
+      });
+    }
+    if(parent[to]==null)return null;
+    var path=[to],cursor=to;
+    while(cursor!==from&&path.length<=points.length){
+      cursor=parent[cursor];path.unshift(cursor);
+    }
+    if(path[0]!==from)return null;
+    var lengths=[],total=0;
+    for(var k=0;k<path.length-1;k++){
+      var a=points[path[k]],b=points[path[k+1]];
+      var len=Math.hypot(b.x-a.x,b.y-a.y);
+      lengths.push(len);total+=len;
+    }
+    var remaining=clamp(progress,0,1)*total;
+    for(var j=0;j<lengths.length;j++){
+      if(j===lengths.length-1||remaining<=lengths[j]){
+        var pt=interpolate(points[path[j]],points[path[j+1]],
+          lengths[j]?remaining/lengths[j]:0);
+        return {point:pt,tangent:tangentAt(points,path[j],path[j+1])};
+      }
+      remaining-=lengths[j];
+    }
+    return null;
+  }
+
   function resolveBase(position, stationCoords, geometry, lineId, opts) {
     opts = opts || {};
     var branchGeom = (geometry && geometry.branchGeom) || null;
@@ -3519,6 +3607,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
     if (toIdx == null) {
       var moveDir = opts.getDisplayMoveDir ? opts.getDisplayMoveDir(position, lineId) : null;
+      if(geometry&&geometry.mapFork&&geometry.mapFork.kind==="tobu-skytree-hikifune-y"&&
+         points===stationCoords&&lineId==="TobuSkytree"){
+        toIdx=_skytreeForkNext(position,idx,moveDir);
+      }
       // 终点换乘支线上的显示方向会反转，而来源
       // 车站索引仍保留公开顺序。应分别推断来源步进
       // （当数据没有提供显式区段终点时）。
@@ -3556,7 +3648,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // Inner/Outer on separate physical lanes.
         var _step = /^(InnerLoop|Inner)$/.test(_loopDirection) ? -1 : 1;
         toIdx = (idx + _step + points.length) % points.length;
-      } else {
+      } else if(toIdx==null) {
         toIdx = moveDir === "up" ? Math.max(0, idx - 1) : Math.min(points.length - 1, idx + 1);
       }
     }
@@ -3564,14 +3656,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var progress = position && position.segmentProgress != null ? clamp(position.segmentProgress, 0, 1) : 0;
     var a = points[idx] || { x: 0, y: 0 };
     var b = points[toIdx] || a;
-    var basePt = progress > 0 && toIdx !== idx ? interpolate(a, b, progress) : { x: a.x, y: a.y };
+    var fork = geometry && geometry.mapFork && points===stationCoords &&
+      lineId==="TobuSkytree" ?
+      _skytreeForkTravel(points,geometry.mapFork,idx,toIdx,progress):undefined;
+    if(fork===null)return null; // Explicitly impossible or disconnected path.
+    var basePt = fork ? fork.point : (progress > 0 && toIdx !== idx ?
+      interpolate(a, b, progress) : { x: a.x, y: a.y });
     var canonicalIdx = Math.min(Math.max(0, idx), Math.max(0, points.length - 2));
-    var t = toIdx === idx ? tangentAt(points, canonicalIdx, canonicalIdx + 1)
-      : tangentAt(points, idx, toIdx);
+    var t = fork ? fork.tangent : (toIdx === idx ? tangentAt(points, canonicalIdx, canonicalIdx + 1)
+      : tangentAt(points, idx, toIdx));
     return { point: basePt, idx: idx, nextIdx: toIdx, tangent: t, points: points };
   }
 
   function resolvedMoveDir(position, base, lineId, opts, geometry) {
+    if(geometry&&geometry.mapFork&&geometry.mapFork.kind==="tobu-skytree-hikifune-y"&&
+       base&&base.idx!==base.nextIdx)
+      return base.points[base.nextIdx].y>base.points[base.idx].y?"down":"up";
     if (geometry && geometry.isSixShapedLoop && base &&
         base.idx >= 0 && base.idx <= geometry.sixTailEndIndex &&
         base.nextIdx >= 0 && base.nextIdx <= geometry.sixTailEndIndex &&
