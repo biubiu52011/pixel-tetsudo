@@ -18,7 +18,7 @@ const examples=[
  ['1310','LimitedExpress','ryomo','東武200型','200型_りょうもう_赤.png'],
  ['1002','LimitedExpress','skytree_liner','東武500系','500系_リバティ.png'],
  ['A4643T','THLiner','th_liner','東武70090型','70090型.png'],
- ['2501','SectionExpress','ordinary','東武50050系','50050型.png']
+ ['2501','SectionExpress','ordinary','東武10030系','10030型_未更新車.png']
 ];
 test('official service-family numbers use gallery-scoped representative PNG, never actual stock',()=>{
  for(const [number,type,family,model,ending] of examples){
@@ -29,6 +29,27 @@ test('official service-family numbers use gallery-scoped representative PNG, nev
   assert.equal(m.actualVehicleConfirmed,false);
   assert.equal(garage.matchModelPath(model,m.pngPath,'TobuSkytree'),true);
  }
+});
+test('ordinary Skytree corridor PNG is scoped to exact source train numbers',()=>{
+ const cases=[
+  ['2501','SectionExpress','asakusa','東武10030系','10030型_未更新車.png'],
+  ['801','Local','asakusa','東武10030系','10030型_未更新車.png'],
+  ['A1009T','Local','hibiya','東武70000系','70000系.png'],
+  ['B1016S','Local','hibiya','東武70000系','70000系.png'],
+  ['C1005K','Express','oshiage','東武50050系','50050型.png']
+ ];
+ for(const [num,type,corridor,model,file] of cases){
+   const m=ranges.match(num,'TobuSkytree',p(num,type));
+   assert.ok(m,num);assert.equal(m.referenceCorridor,corridor);
+   assert.equal(m.model,model);assert.ok(m.pngPath.endsWith(file),num);
+   assert.equal(m.illustrative,true);assert.equal(m.referenceOnly,true);
+   assert.equal(m.actualVehicleConfirmed,false);
+   assert.equal(garage.matchModelPath(model,m.pngPath,'TobuSkytree'),true);
+   const icon=context.window.TrainVehicle&&context.window.TrainVehicle.selectMarkerArtwork;
+   if(icon){const rendered=icon(p(num,type),false);assert.equal(rendered.kind,'vehicle',num);}
+ }
+ for(const [num,type] of [['2702','SectionExpress'],['950','Local'],['501','Local']])
+   assert.equal(ranges.match(num,'TobuSkytree',p(num,type)),null,num+' unknown corridor');
 });
 test('wrong number, date, fleet, line, source and train type fail closed',()=>{
  const bad=[
