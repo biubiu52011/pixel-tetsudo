@@ -45,6 +45,22 @@ test('wrong number, date, fleet, line, source and train type fail closed',()=>{
  ];
  bad.forEach((x,i)=>assert.equal(ranges.match(x.trainNumber,'TobuSkytree',x),null,'bad '+i));
 });
+test('TrainVehicle renders each service-family reference as an illustrative PNG',()=>{
+ vm.runInContext(fs.readFileSync('js/train-vehicle.js','utf8'),context,{filename:'js/train-vehicle.js',timeout:10000});
+ const select=context.window.TrainVehicle.selectMarkerArtwork;
+ assert.equal(typeof select,'function');
+ for(const [number,type,family,model,file] of examples){
+  const image=select(p(number,type),false);
+  assert.equal(image.kind,'vehicle',number);
+  assert.ok(String(image.iconSrc||'').endsWith(file),number);
+  assert.equal(image.illustrative,true);
+  assert.equal(image.representativeOnly,true);
+  assert.equal(image.actualVehicleConfirmed,false);
+ }
+ const weekend=select(p('A4845T','THLiner',{serviceDate:'2026-11-14',calendarType:'holiday'}),false);
+ assert.equal(weekend.kind,'vehicle');
+ assert.ok(weekend.iconSrc.endsWith('70090型.png'));
+});
 test('SQL migration builds grouped exact-date bands, never actual vehicle proof',()=>{
  const sql=fs.readFileSync('supabase/migrations/20261113203000_tobu_skytree_2611_png_number_bands.sql','utf8');
  assert.match(sql,/gtfs_stage\.trips/);
