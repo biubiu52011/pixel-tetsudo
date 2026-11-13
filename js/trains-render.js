@@ -761,6 +761,25 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var stationId = sc.stationId;
         var isJunction = geometry.junctionStation && stationId === geometry.junctionStation;
         var _bJ7 = _isBranchJunction(stationId);
+        // Keep the two lines' labels outside their own track columns.
+        // Local and through station names use existing RailwayDB i18n.
+        var _skytreeFork = !!(geometry.mapFork &&
+          geometry.mapFork.kind === "tobu-skytree-hikifune-y");
+        var _forkHikifune = _skytreeFork && stationId === "Hikifune";
+        var _forkLong = _skytreeFork && stationId === "Tokyo-Skytree";
+        var _forkLines = null;
+        if(_forkLong){
+          var _translated=String(_rS(stationId)),_splitAt=_translated.indexOf("スカイ");
+          if(_splitAt>0)
+            _forkLines=[_translated.slice(0,_splitAt),_translated.slice(_splitAt)];
+          else if(_translated.indexOf(" ")>0){
+            var _wordBreak=_translated.lastIndexOf(" ");
+            _forkLines=[_translated.slice(0,_wordBreak),_translated.slice(_wordBreak+1)];
+          }else if(Array.from(_translated).length>7){
+            var _glyphs=Array.from(_translated),_half=Math.ceil(_glyphs.length/2);
+            _forkLines=[_glyphs.slice(0,_half).join(""),_glyphs.slice(_half).join("")];
+          }
+        }
         // 共线区间站画双色半圆 + 自动判断共线线
         var _sharedColor = '';
         if (window.SharedTrackPairs && window.SharedTrackPairs.isSharedStation && window.SharedTrackPairs.isSharedStation(lineId, stationId)) {
@@ -779,9 +798,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           rS: _rS,
           sharedColor: _sharedColor,
           skipTx: false,
-          tx: _bJ7 ? (geometry.rightBranch ? sc.x : (sc.x + 12)) : undefined, // 有右支线时 junction 站名转圆点上方居中
-          ty: _bJ7 ? (geometry.rightBranch ? (sc.y - 16) : sc.y) : undefined, // 补漏 ty——junction 站名与圆点同行（此前漏传 ty，text y=undefined / 换乘 chip y=NaN）
-          anchor: _bJ7 ? (geometry.rightBranch ? "middle" : "start") : undefined,
+          tx: _forkHikifune ? sc.x :
+            (_forkLines ? sc.x - 20 : (_bJ7 ? (geometry.rightBranch ? sc.x : sc.x + 12) : undefined)),
+          ty: _forkHikifune ? sc.y - 16 :
+            (_forkLines ? sc.y - 9 : (_bJ7 ? (geometry.rightBranch ? sc.y - 16 : sc.y) : undefined)),
+          anchor: _forkHikifune ? "middle" :
+            (_forkLines ? "end" : (_bJ7 ? (geometry.rightBranch ? "middle" : "start") : undefined)),
+          labelLines: _forkLines || undefined,
+          forkMultiline: !!_forkLines,
+          forkJunction: _forkHikifune,
           paintOrder: (_bJ7 && geometry.rightBranch) ? "stroke" : undefined, // 白描边遮主干竖线
           stroke: (_bJ7 && geometry.rightBranch) ? "#ffffff" : undefined,
           strokeWidth: (_bJ7 && geometry.rightBranch) ? 3 : undefined
