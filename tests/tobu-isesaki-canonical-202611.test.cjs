@@ -16,7 +16,7 @@ test('canonical data matches generated compact and file bundle',()=>{
  const canonical=JSON.stringify(d);
  assert.equal(fs.readFileSync('data/core/railway_data.compact.json','utf8'),canonical+'\n');
  assert.equal(fs.readFileSync('data/core/railway-data.file.js','utf8'),
-   'window.RAILWAY_DATA = '+canonical.replace(/<\\/script/gi,'<\\\\/script')+';\n');
+   'window.RAILWAY_DATA = '+canonical.replace(/<\/script/gi,'<\\/script')+';\n');
 });
 test('Goshi is a geolocated Isesaki station',()=>{
  assert.equal(L.TobuIsesaki.stations[23],'Goshi');
