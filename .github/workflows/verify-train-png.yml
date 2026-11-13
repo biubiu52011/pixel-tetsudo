@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/verify-train-png.yml'
+      - 'tests/tobu-noda-fivecar-number-png.test.cjs'
+      - 'tests/tobu-noda-2611-number-bands-sql.test.cjs'
+      - 'supabase/migrations/20261113170000_tobu_noda_2611_fivecar_png_candidate_bands.sql'
       - 'tests/osaka-higashi-2611-*.test.cjs'
       - 'tools/route-timetable-service-calendar.test.cjs'
       - 'js/train-vehicle.js'
@@ -281,6 +285,8 @@ jobs:
         run: node --test tests/jr-missing-line-inventory-20261109.test.cjs
       - name: Verify Fujikyu and three JR branch routes from official station orders
         run: node --test tests/new-rail-lines-fujikyu-20261109.test.cjs
+      - name: Verify Tobu Noda official A-number bands and 5-car PNG candidate safety
+        run: node --test tests/tobu-noda-fivecar-number-png.test.cjs tests/tobu-noda-2611-number-bands-sql.test.cjs
       - name: Verify Fujikyu SQL special-service PNG number ranges
         run: node --test tests/fujikyu-png-number-ranges.test.cjs
       - name: Verify topology-only production route registration is fail-closed
