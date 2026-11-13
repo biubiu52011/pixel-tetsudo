@@ -5227,8 +5227,11 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   // after the number (for example "701 フジサン特急 1号 ..."). Normalize
   // only the exact named services covered by the SQL PNG ranges. The image is
   // a representative 8000-series reference; it never confirms the actual
-  // day's formation, vehicle number, or face A/B. Ordinary train 45 is left
-  // unresolved because the source contains no vehicle evidence for it.
+  // day's formation, vehicle number, or face A/B. Ordinary 45 is covered by
+  // the separate local range, while only the 1455M/1456M through-service
+  // pair has a same-calendar, same-direction ChuoMain SQL counterpart.
+  // Other M-number collisions stay unresolved because the source contains no
+  // vehicle evidence for them.
   if(lineId==="Fujikyu" && /^2026-11-\d{2}$/.test(serviceDate) && result.length){
     const fujikyuExpressSource="https://www.fujikyu-railway.jp/train/fujisan_express.php";
     const {data:fujikyuRanges,error:fujikyuRangeError}=await db
@@ -5250,16 +5253,26 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       row.segment_key==="fujikyu_local_6000" &&
       Number(row.min_number)===1 && Number(row.max_number)===52 &&
       String(row.suffix||"")==="" &&
-      row.requires_exact_roster===false &&
+      row.requires_exact_roster===true &&
       row.actual_vehicle_confirmed===false &&
       String(row.vehicle_model||"")==="富士急行6000系（標準色）" &&
       String(row.png_reference||"")==="../images/列车/富士急行/富士急行_6000系_標準色.png");
+    const throughRanges=(fujikyuRanges||[]).filter((row:any)=>
+      row.segment_key==="fujikyu_chuo_through_e233" &&
+      Number(row.min_number)===1455 && Number(row.max_number)===1456 &&
+      String(row.suffix||"")==="M" &&
+      row.requires_exact_roster===true &&
+      row.actual_vehicle_confirmed===false &&
+      String(row.vehicle_model||"")==="E233系0番台" &&
+      String(row.png_reference||"")==="../images/列车/JR東日本/JR東日本_E233系_0番台.png");
     if(ranges.length!==2 ||
        !ranges.some((row:any)=>Number(row.min_number)===701&&Number(row.max_number)===705) ||
        !ranges.some((row:any)=>Number(row.min_number)===793&&Number(row.max_number)===794))
       throw new Error("FUJIKYU_2611_FUJISAN_EXPRESS_PNG_RANGES_UNAVAILABLE");
     if(localRanges.length!==1)
       throw new Error("FUJIKYU_2611_LOCAL_PNG_RANGE_UNAVAILABLE");
+    if(throughRanges.length!==1)
+      throw new Error("FUJIKYU_2611_CHUO_THROUGH_PNG_RANGE_UNAVAILABLE");
     const expected=selectedCalendar==="odpt.Calendar:Weekday"
       ? ["701","702","704","705","793","794"]
       : ["701","702","703","704"];
@@ -5304,6 +5317,23 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       run.vehicle_evidence_source="database-published-number-range";
       run.vehicle_evidence_source_id="fujikyu-local-6000-2611";
       run.vehicle_evidence_url=String(localRange.source_url||"") || null;
+    }
+    const through=result.filter((run:any)=>
+      run.train_number==="1455M" || run.train_number==="1456M");
+    const expectedThrough=["1455M","1456M"];
+    if(through.map((run:any)=>String(run.train_number)).sort().join(",")!==
+       expectedThrough.join(","))
+      throw new Error("FUJIKYU_2611_CHUO_THROUGH_SQL_NUMBER_COVERAGE_DRIFT");
+    const throughRange=throughRanges[0];
+    for(const run of through){
+      run.vehicle_type_label=String(throughRange.vehicle_model);
+      run.vehicle_type_candidates=null;
+      run.vehicle_mapping_level="published_number_family_plan";
+      run.vehicle_plan_confirmed=false;
+      run.vehicle_artwork_path=String(throughRange.png_reference);
+      run.vehicle_evidence_source="database-published-cross-line-plan";
+      run.vehicle_evidence_source_id="fujikyu-chuo-through-e233-2611";
+      run.vehicle_evidence_url=String(throughRange.source_url||"") || null;
     }
   }
   const validRuns = result.filter(r => r.stops.length >= 2 &&

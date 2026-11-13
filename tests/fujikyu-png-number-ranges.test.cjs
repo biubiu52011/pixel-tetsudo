@@ -11,6 +11,10 @@ const migration = fs.readFileSync(migrationPath, 'utf8');
 const localMigrationPath =
   'supabase/migrations/20261112150000_fujikyu_2611_local_png_number_range.sql';
 const localMigration = fs.readFileSync(localMigrationPath, 'utf8');
+const throughMigration = fs.readFileSync(
+  'supabase/migrations/20261113023257_fujikyu_chuo_through_png_number_range.sql',
+  'utf8'
+);
 const ranges = fs.readFileSync('data/timetables/train-number-png-ranges.js', 'utf8');
 
 function contextFor(calendarType) {
@@ -39,10 +43,18 @@ test('Fujikyu SQL migration defines the complete ordinary 1-52 PNG range', () =>
   assert.match(localMigration, /'2611','Fujikyu','fujikyu_local_6000',1,52/);
   assert.match(localMigration, /富士急行6000系（標準色）/);
   assert.match(localMigration, /富士急行_6000系_標準色\.png/);
-  assert.match(localMigration, /false,false/);
+  assert.match(localMigration, /true,false/);
 });
 
-test('Fujikyu number ranges normalize special labels and map ordinary 1-52', () => {
+test('Fujikyu SQL migration defines only the evidenced ChuoMain through pair', () => {
+  assert.match(throughMigration,
+    /'2611','Fujikyu','fujikyu_chuo_through_e233',1455,1456,'M'/);
+  assert.match(throughMigration, /E233系0番台/);
+  assert.match(throughMigration, /Fujikyu-ChuoMain:1455M-1456M/);
+  assert.match(throughMigration, /true,false/);
+});
+
+test('Fujikyu number ranges normalize special labels and map ordinary/through services', () => {
   const root = {};
   const context = vm.createContext({
     window: root,
@@ -81,6 +93,21 @@ test('Fujikyu number ranges normalize special labels and map ordinary 1-52', () 
   assert.match(ordinaryMarker.iconSrc, /富士急行_6000系_標準色\.png$/);
   assert.ok(root.TrainNumberPngRanges.match('1', 'Fujikyu', weekday));
   assert.equal(root.TrainNumberPngRanges.match('53', 'Fujikyu', weekday), null);
+  const through = root.TrainNumberPngRanges.match('1456M', 'Fujikyu', {
+    ...weekday,
+    trainNumber: '1456M',
+    railDirection: 'odpt.RailDirection:Inbound',
+    trainType: 'odpt.TrainType:FujisanrokuElectricRailway.Local'
+  });
+  assert.ok(through);
+  assert.equal(through.model, 'E233系0番台');
+  assert.match(through.pngPath, /JR東日本_E233系_0番台\.png$/);
+  assert.equal(root.TrainNumberPngRanges.match('2726M', 'Fujikyu', {
+    ...weekday,
+    trainNumber: '2726M',
+    railDirection: 'odpt.RailDirection:Inbound',
+    trainType: 'odpt.TrainType:FujisanrokuElectricRailway.Local'
+  }), null);
 
   const holiday = contextFor('holiday');
   assert.ok(root.TrainNumberPngRanges.match('52', 'Fujikyu', holiday));

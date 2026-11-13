@@ -12,5 +12,5 @@ VALUES
   ('2611','Fujikyu','fujikyu_local_6000',1,52,'',
    '富士急行6000系（標準色）',
    '../images/列车/富士急行/富士急行_6000系_標準色.png',
-   'https://www.fujikyu-railway.jp/station/timetable.php',false,false)
+   'https://www.fujikyu-railway.jp/station/timetable.php',true,false)
 ON CONFLICT DO NOTHING;

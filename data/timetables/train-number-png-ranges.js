@@ -101,6 +101,22 @@
       requireCompatiblePlan:true,referenceOnly:true,illustrative:true,
       model:"富士急行8000系（フジサン特急・顔A）",
       pngPath:"../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png"},
+    // Fujikyu 2611: 1455M/1456M are the only M-numbered Fujikyu
+    // records that have a same-calendar, same-direction ChuoMain SQL
+    // counterpart. The ChuoMain number family is labelled
+    // 211系 / E233系0番台; use the existing E233 representative only as
+    // a through-service plan reference. Do not widen this to the other
+    // M-number collisions in the TokyoGTFS package, which have no
+    // corresponding ChuoMain evidence.
+    {lineIds:["Fujikyu"],numberFormat:"full",from:1455,to:1456,
+      suffixes:"M",trainType:"Local",publishedNumbers:["1455M","1456M"],
+      weekdayNumbers:["1455M","1456M"],holidayNumbers:["1455M","1456M"],
+      directionNumberParity:"inbound-even",
+      sourceRailways:["odpt.Railway:FujisanrokuElectricRailway.Fujikyu"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      referenceOnly:true,illustrative:true,
+      model:"E233系0番台",
+      pngPath:"../images/列车/JR東日本/JR東日本_E233系_0番台.png"},
     // 白新線 2611: 90 numbered E129 locals + 3921M rapid, 14 regular
     // Inaho E653 services, and November 8853D/8854D HB-E300 Kairi.
     // These images represent series/service, NEVER an actual-day carset.
