@@ -86,6 +86,27 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
  vm.runInNewContext(data,ctx,{filename:'trains-data.js',timeout:15000});
  const line=ctx.getLinesData().TobuSkytree;
  const g=ctx.computeRouteGeometry(line,'TobuSkytree');
+ // The physical north end is the last SOURCE station but the first
+ // DISPLAYED station. Isesaki service must be above it, never below it.
+ const northStation=line.stations[line.stations.length-1];
+ assert.equal(northStation,'Tobu-Dobutsu-Koen');
+ const chipMap=ctx._getTransferMap('TobuSkytree',g.staticRevision);
+ const northThrough=(chipMap[northStation]||[]).find(item=>
+   item.lineId==='TobuIsesaki'&&item.through===true);
+ assert.ok(northThrough,'Isesaki through should be attached to Tobu-Dobutsu-Koen');
+ assert.equal(northThrough.dir,'up','top-of-map continuation must point upward');
+ assert.equal(window.ThroughChip.dirForStation('TobuSkytree',
+   northStation,'TobuIsesaki'),'up');
+ const chipHeight=window.ThroughChip.size(northThrough,true,g.throughChipMaxWidth).h;
+ const northY=g.stationCoords[g.stationCoords.length-1].y;
+ assert.ok(northY-18-chipHeight>=2,
+   'top Isesaki chip must fit above northern terminal within SVG viewBox');
+ // Changes here may not reverse all through service labels or break the
+ // canonical directional meaning of other railway diagrams.
+ assert.equal(window.ThroughChip.dirForStation('TobuSkytree',
+   'Oshiage','Hanzomon'),'middle');
+ assert.equal(window.ThroughChip.dirForStation('TobuIsesaki',
+   'Tobu-Dobutsu-Koen','TobuSkytree'),'up');
  assert.equal(g.stationCoords.length,line.stations.length);
  assert.equal(g.stationCoords[3].stationId,'Hikifune');
  assert.ok(g.stationCoords[3].y<g.stationCoords[1].y);

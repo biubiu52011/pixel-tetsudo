@@ -5,6 +5,12 @@
 # Pixel Tetsudo 工程进度
 
 
+### TOBU-SKYTREE-ISESAKI-THROUGH-TOP-20261113 — 伊勢崎線直通标签北端定位
+
+- 根因：TobuSkytree canonical 顺序由 `Asakusa` 开始，末站 `Tobu-Dobutsu-Koen`，但运行图已改为北端在上、浅草在下的 L 状分支显示；旧 ThroughChip 方向仍按原始索引把动物公园判为 `down`，并在画布底端预留该标签空间。
+- 使用原有 `ThroughChip.dirForStation` 与 `computeRouteGeometry`，在确认 `Asakusa / Hikifune / Tobu-Dobutsu-Koen` 站序的 TobuSkytree 地图上交换**端点的显示方向**：动物公园 `up`、浅草 `down`；普通线路与押上内部分界保持原样。同步使用画面真实上下端点预留 SVG 标签高度，防止顶部剪裁。
+- 回归测试从 canonical `TobuIsesaki` 服务边界生成实际 transferMap，核对标签所属站、方向与画布上沿边界；不改动车型 PNG、运行链、L 状分叉轨道。
+
 ### TOBU-SKYTREE-HIKIFUNE-L-LABEL-20261113 — L 状分支标签避让修正
 
 - 沿用已完成的曳舟→押上水平后竖直的 L 形轨道和浅草侧直线，不新建分支/渲染系统。保留来源站序、车号及 PNG/运行链合同。

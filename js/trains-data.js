@@ -1000,8 +1000,14 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     // 起点站上方，∨ 标签位于终点站下方。
     var thrTopPad = 0, thrBotPad = 0;
     if (stations.length > 1 && !isLoop) {
-      thrTopPad = _throughChipHeight(transferMap[stations[0]], _isMobileView(), throughChipMaxWidth, "up");
-      thrBotPad = _throughChipHeight(transferMap[stations[stations.length - 1]], _isMobileView(), throughChipMaxWidth, "down");
+      // The Skytree map is drawn from the northern terminal DOWN toward
+      // Asakusa, opposite its canonical timetable station-array order.
+      // The physical top endpoint (Tobu-Dobutsu-Koen) owns the Isesaki
+      // through chip and must reserve upward headroom on the SVG canvas.
+      var _mapTopTerminal = isSkytreeYFork ? stations[stations.length - 1] : stations[0];
+      var _mapBottomTerminal = isSkytreeYFork ? stations[0] : stations[stations.length - 1];
+      thrTopPad = _throughChipHeight(transferMap[_mapTopTerminal], _isMobileView(), throughChipMaxWidth, "up");
+      thrBotPad = _throughChipHeight(transferMap[_mapBottomTerminal], _isMobileView(), throughChipMaxWidth, "down");
       if (thrTopPad) thrTopPad += 10;
       if (thrBotPad) thrBotPad += 10;
     }
@@ -2106,8 +2112,17 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       var isCanonicalJoin = Array.isArray(joins) && joins.indexOf(stationId) >= 0;
       var isDisplayAnchor = Array.isArray(anchors) && anchors.indexOf(stationId) >= 0;
       if (!isCanonicalJoin && !isDisplayAnchor && tl.stations.indexOf(stationId) < 0) continue;
-      if (idx2 === 0) return "up";
-      if (idx2 === sts2.length - 1) return "down";
+      // Skytree's source array runs Asakusa -> Tobu-Dobutsu-Koen, while
+      // its passenger map deliberately places Tobu-Dobutsu-Koen at the
+      // TOP. Endpoint through arrows must follow the painted map, not the
+      // opposite source-index order; interior Oshiage/Hibiya joins stay
+      // governed by the existing canonical join rule.
+      var reverseSkytreeMap = lineId === "TobuSkytree" &&
+        sts2.length > 4 && sts2[0] === "Asakusa" &&
+        sts2[3] === "Hikifune" &&
+        sts2[sts2.length - 1] === "Tobu-Dobutsu-Koen";
+      if (idx2 === 0) return reverseSkytreeMap ? "down" : "up";
+      if (idx2 === sts2.length - 1) return reverseSkytreeMap ? "up" : "down";
       if (isCanonicalJoin || isDisplayAnchor) return "middle";
       var allAfterOnThrough = true;
       var afterCount = 0;
