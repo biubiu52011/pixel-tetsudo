@@ -16557,6 +16557,10 @@
     "JRC-MinoAkasaka-002": {
       "lat": 35.373433,
       "lng": 136.583393
+    },
+    "Goshi": {
+      "lat": 36.295515,
+      "lng": 139.2238014
     }
   },
   "lines": {
@@ -25209,7 +25213,7 @@
       "region": "Gunma Area",
       "type": "straight",
       "image": "../images/鉄道/東武鉄道/伊勢崎線 佐野線 桐生線 小泉線 小泉線支線.png",
-      "durationTotalMin": 60,
+      "durationTotalMin": 95,
       "branchOf": null,
       "stations": [
         "Tobu-Dobutsu-Koen",
@@ -25240,36 +25244,37 @@
         "Isesaki"
       ],
       "durations": [
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
         2,
+        4,
+        4,
+        4,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        3,
+        3,
+        6,
+        5,
+        4,
+        4,
+        3,
+        5,
+        4,
+        3,
+        5,
+        0
       ],
       "throughServices": [
-        "TobuNikko",
-        "TobuSkytree"
+        "TobuSkytree",
+        "Kiryu",
+        "Sano"
       ],
       "transferStations": [
         {
@@ -25339,22 +25344,32 @@
       },
       "serviceBoundaries": [
         {
-          "lineId": "TobuNikko",
-          "handoverStations": [
-            "Tobu-Dobutsu-Koen"
-          ],
-          "evidence": {
-            "source": "Tobu Railway network/timetable: direct trains continue from the Skytree/Isesaki corridor onto the Nikko Line at Tobu-Dobutsu-Koen",
-            "confidence": "HIGH"
-          }
-        },
-        {
           "lineId": "TobuSkytree",
           "handoverStations": [
             "Tobu-Dobutsu-Koen"
           ],
           "evidence": {
             "source": "Tobu Skytree / Isesaki adjacent through-service join",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "Kiryu",
+          "handoverStations": [
+            "Ota"
+          ],
+          "evidence": {
+            "source": "Tobu Railway 2026 express timetable: Ryomo services run between Asakusa and Akagi via Isesaki and Kiryu lines",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "Sano",
+          "handoverStations": [
+            "Tatebayashi"
+          ],
+          "evidence": {
+            "source": "Tobu Railway 2026 limited express timetable: some Liberty Ryomo services operate Asakusa-Kuzuu via Sano Line",
             "confidence": "HIGH"
           }
         }
@@ -32064,7 +32079,9 @@
         2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "TobuIsesaki"
+      ],
       "transferStations": [
         {
           "station": "Ota",
@@ -32095,7 +32112,18 @@
         ],
         "operatorGroup": "TOBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "TobuIsesaki",
+          "handoverStations": [
+            "Ota"
+          ],
+          "evidence": {
+            "source": "Tobu Railway 2026 limited express Ryomo Asakusa-Akagi via Kiryu Line",
+            "confidence": "HIGH"
+          }
+        }
+      ]
     },
     "Koizumi": {
       "name": "小泉线",
@@ -34347,7 +34375,9 @@
         2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "TobuIsesaki"
+      ],
       "transferStations": [
         {
           "station": "Tatebayashi",
@@ -34384,7 +34414,18 @@
         ],
         "operatorGroup": "TOBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "TobuIsesaki",
+          "handoverStations": [
+            "Tatebayashi"
+          ],
+          "evidence": {
+            "source": "Tobu Railway 2026 limited express Liberty Ryomo Asakusa-Kuzuu via Sano Line",
+            "confidence": "HIGH"
+          }
+        }
+      ]
     },
     "Yamada": {
       "name": "山田线",
@@ -37769,7 +37810,7 @@
         2
       ],
       "throughServices": [
-        "TobuIsesaki"
+        "TobuSkytree"
       ],
       "transferStations": [
         {
@@ -37821,12 +37862,12 @@
       },
       "serviceBoundaries": [
         {
-          "lineId": "TobuIsesaki",
+          "lineId": "TobuSkytree",
           "handoverStations": [
             "Tobu-Dobutsu-Koen"
           ],
           "evidence": {
-            "source": "Tobu Railway network/timetable: direct trains continue from the Skytree/Isesaki corridor onto the Nikko Line at Tobu-Dobutsu-Koen",
+            "source": "Tobu Railway route and 2026 SPACIA X timetable: Skytree Line continues directly into Nikko Line at Tobu-Dobutsu-Koen",
             "confidence": "HIGH"
           }
         }
@@ -37911,7 +37952,8 @@
       "throughServices": [
         "Hanzomon",
         "Hibiya",
-        "TobuIsesaki"
+        "TobuIsesaki",
+        "TobuNikko"
       ],
       "transferStations": [
         {
@@ -38055,6 +38097,16 @@
           ],
           "evidence": {
             "source": "Tobu Skytree / Isesaki adjacent through-service join",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "TobuNikko",
+          "handoverStations": [
+            "Tobu-Dobutsu-Koen"
+          ],
+          "evidence": {
+            "source": "Tobu Railway route and 2026 SPACIA X timetable: Skytree Line continues directly into Nikko Line at Tobu-Dobutsu-Koen",
             "confidence": "HIGH"
           }
         }
