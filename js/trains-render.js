@@ -304,8 +304,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 可用于放置换乘图片。将完整徽章放在两个
       // 方向标记车道之外（11px 车道 + 7px 半标记 + 6px 间距）。
       if (_jTopMode && !o.horizontalBranch) {
-        ix0 = o.x + 24 + totalW <= svgW - 2 ? o.x + 24 : o.x - 24 - totalW;
+        // Hikifune's right-hand L turn is a train lane. Keep the
+        // junction transfer badges to the left of that track.
+        ix0 = o.forkJunction ? o.x - 24 - totalW :
+          (o.x + 24 + totalW <= svgW - 2 ? o.x + 24 : o.x - 24 - totalW);
       }
+      if(o.forkMultiline)iy0=o.y+21;
       if ((side === "left" || side === "dual") && ix0 < 2) {
         _setRows(3);
         ix0 = tx - totalW;
@@ -3554,18 +3558,25 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       cursor=parent[cursor];path.unshift(cursor);
     }
     if(path[0]!==from)return null;
-    var lengths=[],total=0;
+    var nodes=[points[path[0]]];
     for(var k=0;k<path.length-1;k++){
-      var a=points[path[k]],b=points[path[k+1]];
-      var len=Math.hypot(b.x-a.x,b.y-a.y);
+      var u=path[k],v=path[k+1];
+      var edgeKey=Math.min(u,v)+"-"+Math.max(u,v);
+      var elbow=graph.elbows&&graph.elbows[edgeKey];
+      if(elbow)nodes.push(elbow);
+      nodes.push(points[v]);
+    }
+    var lengths=[],total=0;
+    for(var n=0;n<nodes.length-1;n++){
+      var a=nodes[n],b=nodes[n+1],len=Math.hypot(b.x-a.x,b.y-a.y);
       lengths.push(len);total+=len;
     }
     var remaining=clamp(progress,0,1)*total;
     for(var j=0;j<lengths.length;j++){
       if(j===lengths.length-1||remaining<=lengths[j]){
-        var pt=interpolate(points[path[j]],points[path[j+1]],
+        var pt=interpolate(nodes[j],nodes[j+1],
           lengths[j]?remaining/lengths[j]:0);
-        return {point:pt,tangent:tangentAt(points,path[j],path[j+1])};
+        return {point:pt,tangent:tangentAt(nodes,j,j+1)};
       }
       remaining-=lengths[j];
     }

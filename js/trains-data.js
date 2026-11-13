@@ -1476,18 +1476,22 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           // stays unchanged; the junction sends one branch to Tokyo-Skytree
           // and Asakusa and the other to Oshiage / Hanzomon through service.
           var _forkJY = topP + (stations.length - 4) * sp;
-          var _forkDx = Math.max(54, Math.min(sp, 65));
+          // L-shaped spur: Asakusa continues straight; Oshiage forks
+          // right at Hikifune before turning down. Canonical order is kept.
+          var _forkDx = Math.max(94, Math.min(112, sp + 44));
           var _forkX = mainCx, _forkY = topP + (stations.length - 1 - i) * sp;
           var _forkSide = 'dual';
-          if (i === 0) { _forkX -= _forkDx; _forkY = _forkJY + 2 * sp; _forkSide = 'right'; }
-          else if (i === 1) { _forkX -= _forkDx; _forkY = _forkJY + sp; _forkSide = 'right'; }
-          else if (i === 2) { _forkX += _forkDx; _forkY = _forkJY + 1.55 * sp; _forkSide = 'right'; }
+          if (i === 0) _forkY = _forkJY + 2 * sp;
+          else if (i === 1) _forkY = _forkJY + sp;
+          else if (i === 2) { _forkX += _forkDx; _forkY = _forkJY + sp; _forkSide = 'right'; }
           else if (i === 3) _forkSide = 'top';
           stationCoords.push({x:_forkX,y:_forkY,side:_forkSide,stationId:stations[i]});
         } else {
           stationCoords.push({ x: mainCx, y: _yAt(i), side: 'dual', stationId: stations[i] });
         }
       }
+      // Reserve Oshiage's label, transfer badges and through caption.
+      if (isSkytreeYFork) svgW = Math.max(svgW, stationCoords[2].x + 124);
       // svgH must be computed AFTER stationCoords is populated (with the
       // per-station 2-row chip compensation) or the viewBox clips the line.
       svgH = (isSkytreeYFork
@@ -1502,7 +1506,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           var _segA = stationCoords[_segI], _segB = stationCoords[_segI + 1];
           // No track between Tokyo-Skytree and Oshiage. They are the two
           // branches of Hikifune, never consecutive stops on one service.
-          if (isSkytreeYFork && _segI === 1) continue;
+          if (isSkytreeYFork && (_segI === 1 || _segI === 2)) continue;
           if (_isTopologyBreakForMap(lineId, _segA.stationId, _segB.stationId)) continue;
           routeElements.push({
             type: 'line',
@@ -1520,19 +1524,25 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         });
       }
       if (isSkytreeYFork) {
-        var _forkA = stationCoords[1], _forkJ = stationCoords[3];
+        var _forkA = stationCoords[1], _forkO = stationCoords[2],
+            _forkJ = stationCoords[3];
         routeElements.push({type:'line',attrs:{
           x1:_forkA.x,y1:_forkA.y,x2:_forkJ.x,y2:_forkJ.y,
           stroke:color,'stroke-width':5,'stroke-linecap':'round',opacity:0.6,
           'data-fork-track':'asakusa'
         }});
-        // The other junction edge (Oshiage 2 -> Hikifune 3) is already
-        // emitted by the ordinary segment loop. Label the continuation,
-        // not a fictitious intermediate station.
+        routeElements.push({type:'path',attrs:{
+          d:'M '+_forkJ.x+' '+_forkJ.y+' H '+_forkO.x+' V '+_forkO.y,
+          fill:'none',stroke:color,'stroke-width':5,
+          'stroke-linecap':'round','stroke-linejoin':'round',opacity:0.6,
+          'data-fork-track':'oshiage-l'
+        }});
+        // This caption belongs above the horizontal spur, not over
+        // Oshiage's station name or transfer badges.
         var _forkNames = {ja:"半蔵門線直通",zh:"半藏门线直通",
           en:"Hanzomon through",ko:"한조몬선 직통"};
         routeElements.push({type:'text',attrs:{
-          x:stationCoords[2].x+10,y:stationCoords[2].y+19,
+          x:stationCoords[2].x+4,y:stationCoords[3].y-16,
           'font-size':10,'text-anchor':'start',
           fill:color,opacity:0.9,'data-fork-caption':'oshiage-through'
         },text:_forkNames[window.currentLang]||_forkNames.ja});
@@ -1745,7 +1755,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       // never mutates the canonical station indexes or SQL templates.
       mapFork: isSkytreeYFork ? {
         kind:"tobu-skytree-hikifune-y",junctionIndex:3,
-        edges:[[0,1],[1,3],[2,3]].concat(stations.slice(3,-1).map(function(_,i){return [i+3,i+4];}))
+        edges:[[0,1],[1,3],[2,3]].concat(stations.slice(3,-1).map(function(_,i){return [i+3,i+4];})),
+        elbows:{"2-3":{x:stationCoords[2].x,y:stationCoords[3].y}}
       } : null,
       junctionStation: isSixShapedLoop ? stations[0] : (isSkytreeYFork ? "Hikifune" : null),
       junctionX: isSixShapedLoop ? junctionX : null,
