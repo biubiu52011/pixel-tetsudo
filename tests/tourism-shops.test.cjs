@@ -431,7 +431,7 @@ test('tourism map loader references complete local assets and ends its loading s
   assert.match(core, /_tdClearMapMessage\(mapEl\);\s*map = new maplibregl\.Map/);
   assert.match(core, /_tdClearMapMessage\(mapEl\);\s*var map = L\.map/);
   assert.match(core, /else \{\s*_tdShowMapError\(mapEl\);\s*\}/);
-  assert.match(core, /location\.protocol === 'file:'[\s\S]*host === 'localhost'[\s\S]*host === '127\.0\.0\.1'[\s\S]*host === '\[::1\]'/);
+  assert.match(core, /location\.protocol === 'file:'[\s\S]*host === 'biubiu52011\.github\.io'[\s\S]*host === 'localhost'[\s\S]*host === '127\.0\.0\.1'[\s\S]*host === '\[::1\]'/);
   assert.match(core, /_tdEnsureMapLibs\(tryInit, _tdUseLeafletOnly\(\)\)/);
 });
 

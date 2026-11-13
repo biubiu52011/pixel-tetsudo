@@ -29,8 +29,8 @@
     default:  "linear-gradient(135deg, #008803 0%, #006600 100%)"
   };
 
-  // MapTiler 免费 key：GitHub Pages 可读取矢量源；本地来源只允许栅格瓦片，
-  // 因此本地预览直接使用 Leaflet，避免 MapLibre 留下无底图的空画布。
+  // MapTiler 免费 key：当前正式 Pages 与本地预览沿用已验收的 Leaflet 栅格链；
+  // 其他允许来源才尝试 MapLibre，并保留 Leaflet 运行时兜底。
   var MAPTILER_KEY = 'tYRNv4akrEAKTL5ORzUm';
 
   var state = {
@@ -529,7 +529,8 @@
   function _tdUseLeafletOnly() {
     var location = window.location || {};
     var host = (location.hostname || '').toLowerCase();
-    return location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+    return location.protocol === 'file:' || host === 'biubiu52011.github.io'
+      || host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
   }
   function _tdEnsureMapLibs(cb, leafletOnly) {
     if (!leafletOnly && window.maplibregl && window.MAPTILER_STREETS_V2_JSON) { cb(); return; }
