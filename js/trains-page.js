@@ -24,6 +24,7 @@
 
   var _lastPositionsHash = '';
   var _lastDetailStateHash = '';
+  var _renderedOverviewSignatures = Object.create(null);
   var _realtimeExpiryTimer = null;
   var currentSystemLineIds = null;
   var t = window.t || function(k) { return k; };
@@ -316,6 +317,58 @@
     renderFiltered(el, ul);
   }
 
+  function overviewRenderOptions(allLines) {
+    allLines = allLines || {};
+    return {
+      mode: "trains",
+      lineOrder: window.LinePresentationService
+        ? window.LinePresentationService.getDisplayOrder(allLines,
+            { includeServiceCorridors: true }) : [],
+      allLines: allLines,
+      includeServiceCorridors: true,
+      flatGroups: true
+    };
+  }
+
+  function overviewOperatorKey(operator) {
+    return operator || "*";
+  }
+
+  function overviewOperators(allLines) {
+    if (window.OperatorFilterBar &&
+        typeof window.OperatorFilterBar.operatorsFromLines === "function") {
+      return window.OperatorFilterBar.operatorsFromLines(allLines || {});
+    }
+    var found = Object.create(null);
+    Object.keys(allLines || {}).forEach(function(lineId) {
+      var line = allLines[lineId];
+      if (line && line.operator) found[line.operator] = true;
+    });
+    return Object.keys(found).sort();
+  }
+
+  function overviewStructureSignature(allLines, operator) {
+    if (!window.DataState ||
+        typeof window.DataState.lineListStructureSignature !== "function") return "";
+    allLines = allLines || {};
+    var selected = arguments.length > 1 ? operator : _selectedOperator;
+    var visibleLines = window.DataState.filterLinesByOperator(allLines, selected);
+    // The filter buttons are visible even when a specific operator is selected.
+    // Include their structure, but leave another existing operator's hidden card
+    // changes out until the user switches to that operator.
+    return overviewOperators(allLines).join("\u001d") + "\u001c" +
+      window.DataState.lineListStructureSignature(
+        visibleLines, overviewRenderOptions(allLines));
+  }
+
+  function captureOverviewSignatures(allLines) {
+    _renderedOverviewSignatures = Object.create(null);
+    [null].concat(overviewOperators(allLines)).forEach(function(operator) {
+      _renderedOverviewSignatures[overviewOperatorKey(operator)] =
+        overviewStructureSignature(allLines, operator);
+    });
+  }
+
   function init() {
     try {
       listEl = document.getElementById("trainsLineListContent");
@@ -541,10 +594,22 @@
             } catch(e) {}
           }
           var hasLineCards = !!listEl.querySelector(".rs-line-card");
+          var overviewVisible = !detailEl || detailEl.classList.contains("hidden");
+          var overviewStructureChanged = false;
+          // Position notifications can arrive every few seconds but cannot add,
+          // remove or regroup overview cards. Canonical/cache snapshots do not
+          // carry this kind and are compared against the exact DataState model
+          // used by renderList, so rendering and invalidation cannot drift.
+          if (hasLineCards && overviewVisible && !positionSnapshot) {
+            var nextOverviewSignature = overviewStructureSignature(lines);
+            overviewStructureChanged = !!nextOverviewSignature &&
+              nextOverviewSignature !==
+                _renderedOverviewSignatures[overviewOperatorKey(_selectedOperator)];
+          }
           // loading/error 状态同样包含 innerHTML，因此 DOM 长度不能判断
           // 是否已经挂载可用铁路内容。
           // canonical/融合数据延迟到达时自动恢复。
-          if (!hasLineCards && (!detailEl || detailEl.classList.contains("hidden"))) {
+          if (!hasLineCards && overviewVisible) {
             if (_selectedOperator === null) {
               renderList(listEl, lines);
             } else {
@@ -554,6 +619,17 @@
             _lastPositionsHash = posHash;
             _lastDetailStateHash = detailStateHash;
             // 路由恢复在订阅器入口处处理一次。
+          } else if (overviewStructureChanged) {
+            var overviewScrollY = window.scrollY || window.pageYOffset || 0;
+            renderFiltered(listEl, lines);
+            renderFilterBar(filterBarEl);
+            if (overviewScrollY && window.requestAnimationFrame) {
+              window.requestAnimationFrame(function() {
+                window.scrollTo(0, overviewScrollY);
+              });
+            }
+            _lastPositionsHash = posHash;
+            _lastDetailStateHash = detailStateHash;
           } else if (posHash !== _lastPositionsHash || detailStateHash !== _lastDetailStateHash ||
                      displayChanged || staticGeometryChanged) {
             var _positionsChanged = posHash !== _lastPositionsHash;
@@ -591,12 +667,8 @@
           }
           if (listEl && detailEl && detailEl.classList.contains("hidden")) {
             var _scrollY = window.scrollY || window.pageYOffset || 0;
-            var _freshHost = document.createElement("div");
-            var _linesNow = window.DataState.filterLinesByOperator(getLinesData(), _selectedOperator);
-            var _orderNow = (window.LinePresentationService && window.UNIFIED_LINES) ? window.LinePresentationService.getDisplayOrder(window.UNIFIED_LINES, { includeServiceCorridors: true }) : [];
-            window.DataState.renderList(_freshHost, _linesNow, { mode: "trains", lineOrder: _orderNow, includeServiceCorridors: true, flatGroups: true });
-            // 同时渲染共享空态，避免旧卡片在切换语言后残留。
-            listEl.innerHTML = _freshHost.innerHTML;
+            renderFiltered(listEl, getLinesData());
+            renderFilterBar(filterBarEl);
             setFilter(_selectedOperator);
             if (_scrollY) window.scrollTo(0, _scrollY);
           }
@@ -618,17 +690,31 @@
     _selectedOperator = op || null;
     if (_filterBar && _filterBar.getSelected() !== _selectedOperator) _filterBar.setSelected(_selectedOperator, false);
     if (!listEl) return;
+    var allLines = getLinesData() || {};
+    var nextSignature = overviewStructureSignature(allLines);
+    var renderedSignature =
+      _renderedOverviewSignatures[overviewOperatorKey(_selectedOperator)];
+    if (listEl.querySelector(".rs-line-card") && nextSignature &&
+        nextSignature !== renderedSignature) {
+      renderFiltered(listEl, allLines);
+      return;
+    }
     if (!window.DataState.setOperatorVisibility(listEl, _selectedOperator)) {
-      renderFiltered(listEl);
+      renderFiltered(listEl, allLines);
     }
   }
 
   function renderFiltered(el, linesSnapshot) {
     if (!el || !window.DataState) return;
     var allLines = linesSnapshot || getLinesData() || {};
-    var filtered = window.DataState.filterLinesByOperator(allLines, _selectedOperator);
-    var lineOrder = (window.LinePresentationService && window.UNIFIED_LINES) ? window.LinePresentationService.getDisplayOrder(window.UNIFIED_LINES, { includeServiceCorridors: true }) : [];
-    try { window.DataState.renderList(el, filtered, { mode: "trains", lineOrder: lineOrder, includeServiceCorridors: true, flatGroups: true }); }
+    var options = overviewRenderOptions(allLines);
+    try {
+      // Keep all operator groups mounted so filter changes remain a visibility
+      // toggle. The signature still scopes invalidation to the selected group.
+      window.DataState.renderList(el, allLines, options);
+      captureOverviewSignatures(allLines);
+      window.DataState.setOperatorVisibility(el, _selectedOperator);
+    }
     catch(e) { window.DataState.renderPageState(el, "render_error"); }
   }
 

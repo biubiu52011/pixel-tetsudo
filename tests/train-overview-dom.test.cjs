@@ -26,6 +26,18 @@ function makeView() {
   return win;
 }
 
+function makeContainer() {
+  return {
+    innerHTML: '',
+    removeAttribute() {},
+    querySelectorAll() { return []; }
+  };
+}
+
+function cardCount(container) {
+  return (container.innerHTML.match(/rs-line-card rs-system-card/g) || []).length;
+}
+
 test('train overview uses flat operator groups and removes stale loading state', () => {
   const win = makeView();
   const attrs = { 'data-page-state': 'loading', 'data-page-state-key': 'status.loading' };
@@ -68,6 +80,67 @@ test('multi-interval train systems keep the required wrapping layout', () => {
   assert.equal((html.match(/class="rs-sys-chip"/g) || []).length, 2);
 });
 
+test('overview structure signature follows rendered cards, not position churn', () => {
+  const win = makeView();
+  const cached = {
+    One: { operator: 'JR-East', nameJa: 'One', stations: ['a', 'b'] },
+    Two: { operator: 'TokyoMetro', nameJa: 'Two', stations: ['c', 'd'] }
+  };
+  const options = { mode: 'trains', flatGroups: true,
+    includeServiceCorridors: true, lineOrder: ['One', 'Two', 'Three'] };
+  const cachedSignature = win.DataState.lineListStructureSignature(cached, options);
+  const sameStructure = {
+    One: { ...cached.One, status: 'delayed', cachedPositions: [{ trainId: '1' }] },
+    Two: { ...cached.Two, realtimePositions: [{ trainId: '2' }] }
+  };
+  assert.equal(win.DataState.lineListStructureSignature(sameStructure, options),
+    cachedSignature, 'position/status refreshes do not invalidate overview structure');
+
+  const added = { ...sameStructure,
+    Three: { operator: 'JR-East', nameJa: 'Three', stations: ['e', 'f'] } };
+  const addedSignature = win.DataState.lineListStructureSignature(added, options);
+  assert.notEqual(addedSignature, cachedSignature, 'new canonical line changes the card model');
+  const host = makeContainer();
+  win.DataState.renderList(host, cached, options);
+  assert.equal(cardCount(host), 2, 'old cache renders two visible systems');
+  win.DataState.renderList(host, added, options);
+  assert.equal(cardCount(host), 3, 'revalidated snapshot adds the new visible system');
+
+  const removed = { One: added.One };
+  assert.notEqual(win.DataState.lineListStructureSignature(removed, options),
+    addedSignature, 'canonical deletion changes the card model');
+  win.DataState.renderList(host, removed, options);
+  assert.equal(cardCount(host), 1, 'revalidated snapshot removes obsolete cards');
+});
+
+test('cold/offline fallback and operator filtering use the same structure model', () => {
+  const win = makeView();
+  const options = { mode: 'trains', flatGroups: true,
+    includeServiceCorridors: true, lineOrder: ['One', 'Two', 'Three'] };
+  const emptyHost = makeContainer();
+  assert.equal(win.DataState.lineListStructureSignature({}, options), 'empty');
+  win.DataState.renderList(emptyHost, {}, options);
+  assert.match(emptyHost.innerHTML, /rs-empty/, 'cold load has an explicit empty model');
+
+  const fallback = {
+    One: { operator: 'JR-East', nameJa: 'One', stations: ['a', 'b'] },
+    Two: { operator: 'TokyoMetro', nameJa: 'Two', stations: ['c', 'd'] }
+  };
+  const jrOnly = win.DataState.filterLinesByOperator(fallback, 'JR-East');
+  const jrSignature = win.DataState.lineListStructureSignature(jrOnly,
+    { ...options, allLines: fallback });
+  const metroOnlyChange = { ...fallback,
+    Two: { ...fallback.Two, nameJa: 'Two refreshed' } };
+  const jrAfterMetroChange = win.DataState.filterLinesByOperator(metroOnlyChange, 'JR-East');
+  assert.equal(win.DataState.lineListStructureSignature(jrAfterMetroChange,
+    { ...options, allLines: metroOnlyChange }), jrSignature,
+  'selected operator is not rebuilt for an invisible operator-only change');
+
+  const host = makeContainer();
+  win.DataState.renderList(host, jrOnly, { ...options, allLines: fallback });
+  assert.equal(cardCount(host), 1, 'offline fallback respects the selected operator');
+});
+
 test('train detail drops the invisible overview and rebuilds on return', () => {
   const html = fs.readFileSync('pages/trains.html', 'utf8');
   const controller = fs.readFileSync('js/trains-page.js', 'utf8');
@@ -79,7 +152,19 @@ test('train detail drops the invisible overview and rebuilds on return', () => {
   assert.equal((controller.match(/^\s+releaseOverviewDom\(\);$/gm) || []).length, 2,
     'Both cold detail opening and subsequent line navigation release the overview');
   assert.match(controller, /if \(listEl && !listEl\.querySelector\("\.rs-line-card"\)\) \{\s*renderList\(listEl\)/);
-  assert.match(controller, /if \(!hasLineCards && \(!detailEl \|\| detailEl\.classList\.contains\("hidden"\)\)\)/);
+  assert.match(controller, /if \(!hasLineCards && overviewVisible\)/);
+  assert.match(controller, /if \(hasLineCards && overviewVisible && !positionSnapshot\)/,
+    'position-only refreshes must skip overview structure work');
+  assert.match(controller, /else if \(overviewStructureChanged\)/,
+    'canonical structure changes refresh the visible overview');
+  assert.match(controller, /var overviewScrollY = window\.scrollY \|\| window\.pageYOffset \|\| 0/,
+    'structure refresh preserves overview scroll position');
+  assert.match(controller, /window\.DataState\.renderList\(el, allLines, options\)/,
+    'all operator groups stay mounted for later filter changes');
+  assert.match(controller, /captureOverviewSignatures\(allLines\)/,
+    'each rendered snapshot records per-filter card structures');
+  assert.match(controller, /nextSignature !== renderedSignature/,
+    'switching to a filter whose hidden cards became stale forces one refresh');
 });
 
 test('JU icon maps to the canonical JR Utsunomiya line across data and cards', () => {

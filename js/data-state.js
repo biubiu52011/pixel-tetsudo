@@ -217,52 +217,43 @@
     return filtered;
   }
 
-  function renderList(container, linesObj, options) {
-    if (!container) return;
-    if (!linesObj || typeof linesObj !== "object" || Object.keys(linesObj).length === 0) {
-      container.innerHTML = '<div class="rs-empty">' + (typeof window.t === "function" ? window.t("status.no_trains") : "No data") + '</div>';
-      return;
-    }
-    // A real rendered list must not retain the loading/error marker.
-    container.removeAttribute("data-page-state");
-    container.removeAttribute("data-page-state-key");
+  function buildLineListModel(linesObj, options) {
     options = options || {};
+    if (!linesObj || typeof linesObj !== "object" || Object.keys(linesObj).length === 0) {
+      return { empty: true, groups: {}, entitiesByOperator: {}, operatorOrder: [],
+        mode: options.mode || "realtime", flatGroups: options.flatGroups === true };
+    }
     var mode = options.mode || "realtime";
     var flatGroups = options.flatGroups === true;
+    var orderingLines = options.allLines || window.UNIFIED_LINES || linesObj;
     // 服务走廊默认不显示：trains.html 可以显示面向乘客的走廊卡片，
     // realtime.html 则保持来源所有权不变。
-    var lineOrder = options.lineOrder || (window.LinePresentationService ? window.LinePresentationService.getDisplayOrder(window.UNIFIED_LINES, {
-      includeServiceCorridors: options.includeServiceCorridors === true
-    }) : []);
-
+    var lineOrder = options.lineOrder || (window.LinePresentationService
+      ? window.LinePresentationService.getDisplayOrder(orderingLines, {
+          includeServiceCorridors: options.includeServiceCorridors === true
+        }) : []);
     var insertMap = {};
-    for (var i = 0; i < lineOrder.length; i++) { insertMap[lineOrder[i]] = i; }
+    for (var i = 0; i < lineOrder.length; i++) insertMap[lineOrder[i]] = i;
 
     var groups = {};
     var opOrder = [];
-    var ids = Object.keys(linesObj);
-    for (var i = 0; i < ids.length; i++) {
-      var lid = ids[i];
+    Object.keys(linesObj).forEach(function(lid) {
       var line = linesObj[lid];
-      if (!line) continue;
-      if (((window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {})[lid] && !options.includeServiceCorridors) continue;
-      // 只有被正式定义为独立的乘客线路才拥有单独卡片。
-      if (window.LinePresentationService && typeof window.LinePresentationService.isIndependentLine === "function" &&
-          !window.LinePresentationService.isIndependentLine(lid, linesObj)) continue;
-      // 国鉄幹線本名（类比京沪铁路/成渝铁路）不是運行系統：中央本線/東海道本線/東北本線 不进入线路一览，
-      // 数据保留作换乘锚点/支线父线。
-      if (TRUNK_MAIN_LINE_IDS.indexOf(lid) >= 0) continue;
+      if (!line) return;
+      if (((window.RuntimeConfig || {}).SERVICE_CORRIDOR_LINES || {})[lid] &&
+          !options.includeServiceCorridors) return;
+      if (window.LinePresentationService &&
+          typeof window.LinePresentationService.isIndependentLine === "function" &&
+          !window.LinePresentationService.isIndependentLine(lid, linesObj)) return;
+      if (TRUNK_MAIN_LINE_IDS.indexOf(lid) >= 0) return;
       var op = line.operator || "Unknown";
-      if (!groups[op]) {
-        groups[op] = [];
-        opOrder.push(op);
-      }
-      groups[op].push({ id: lid, line: line, sortIdx: insertMap[lid] !== undefined ? insertMap[lid] : 99999 });
-    }
+      if (!groups[op]) { groups[op] = []; opOrder.push(op); }
+      groups[op].push({ id: lid, line: line,
+        sortIdx: insertMap[lid] !== undefined ? insertMap[lid] : 99999 });
+    });
 
-    // 使用统一的 LinePresentationService 比较器排序运营商分组
-    // （全局顺序 JR > Private > Other/第三部门 > Metro），未知运营商按统一规则排序。
-    if (window.LinePresentationService && typeof window.LinePresentationService.orderOperators === "function") {
+    if (window.LinePresentationService &&
+        typeof window.LinePresentationService.orderOperators === "function") {
       opOrder = window.LinePresentationService.orderOperators(opOrder);
     } else {
       var knownOps = (window.TransitConstants && window.TransitConstants.OP_ORDER) || [];
@@ -270,49 +261,91 @@
       opOrder = knownOps.filter(function(op){ return groups[op]; }).concat(unknownOps);
     }
 
-    // 在每个运营商组内按 lineOrder 排序 fallback 线路。
-    var presentationOrderMap = (window.LinePresentationService && window.UNIFIED_LINES)
-      ? window.LinePresentationService.getDisplayOrderMap(window.UNIFIED_LINES) : {};
-    for (var op in groups) {
-      if (groups.hasOwnProperty(op)) {
-        groups[op].sort(function(a, b) {
-          var idxA = a.sortIdx;
-          var idxB = b.sortIdx;
-          if (idxA !== idxB) return idxA - idxB;
-          var pA = presentationOrderMap[a.id] !== undefined ? presentationOrderMap[a.id] : 99999;
-          var pB = presentationOrderMap[b.id] !== undefined ? presentationOrderMap[b.id] : 99999;
-          return pA - pB;
-        });
-      }
-    }
+    var presentationOrderMap = window.LinePresentationService
+      ? window.LinePresentationService.getDisplayOrderMap(orderingLines) : {};
+    Object.keys(groups).forEach(function(op) {
+      groups[op].sort(function(a, b) {
+        if (a.sortIdx !== b.sortIdx) return a.sortIdx - b.sortIdx;
+        var pA = presentationOrderMap[a.id] !== undefined ? presentationOrderMap[a.id] : 99999;
+        var pB = presentationOrderMap[b.id] !== undefined ? presentationOrderMap[b.id] : 99999;
+        return pA - pB;
+      });
+    });
 
-    var html = "";
-    for (var o = 0; o < opOrder.length; o++) {
-      var op = opOrder[o];
-      html += '<div class="rs-operator-group" data-operator="' + escapeHtml(op) + '"><div class="rs-operator-title">' + escapeHtml(tOp(op)) + '</div>'
-        + (flatGroups ? '' : '<div class="rs-cards-container">');
-      // 按统一展示顺序精确渲染。主展示实体占用自己的排序位置；
-      // 只有主记录渲染后才抑制成员记录。所有可见主展示实体
-      // 均使用整数排序值，不给被聚合的成员线路单独分配 UI 排名。
+    // Build the exact entity sequence once. Rendering and structure comparison
+    // must not drift into two definitions of what constitutes a visible card.
+    var entitiesByOperator = {};
+    opOrder.forEach(function(op) {
       var covered = {};
-      for (var k = 0; k < groups[op].length; k++) {
-        var g = groups[op][k];
-        if (covered[g.id]) continue;
-        var pres = (window.LinePresentationService && window.LinePresentationService.getPrimaryPresentation)
-          ? window.LinePresentationService.getPrimaryPresentation(g.id, linesObj)
-          : null;
+      entitiesByOperator[op] = [];
+      groups[op].forEach(function(g) {
+        if (covered[g.id]) return;
+        var pres = (window.LinePresentationService &&
+          window.LinePresentationService.getPrimaryPresentation)
+          ? window.LinePresentationService.getPrimaryPresentation(g.id, linesObj) : null;
         if (pres) {
-          var memberIds = getPresentationStatusMembers(window.LinePresentationService.getPresentationMembers(g.id, linesObj), mode, linesObj, g.id);
+          var memberIds = getPresentationStatusMembers(
+            window.LinePresentationService.getPresentationMembers(g.id, linesObj),
+            mode, linesObj, g.id);
           if (memberIds.length > 0) {
             memberIds.forEach(function(id) { covered[id] = true; });
-            html += window.LineCard.renderSystem(pres, memberIds, linesObj, { mode: mode });
-            continue;
+            entitiesByOperator[op].push({ kind: "system", id: g.id,
+              presentation: pres, memberIds: memberIds });
+            return;
           }
         }
-        html += window.LineCard.render(g.line, g.id, { mode: mode, linesObj: linesObj });
-      }
-      html += flatGroups ? "</div>" : "</div></div>";
+        entitiesByOperator[op].push({ kind: "line", id: g.id, line: g.line });
+      });
+    });
+    return { empty: false, groups: groups, entitiesByOperator: entitiesByOperator,
+      operatorOrder: opOrder, mode: mode, flatGroups: flatGroups };
+  }
+
+  function lineListStructureSignature(linesObj, options) {
+    var model = buildLineListModel(linesObj, options);
+    if (model.empty) return "empty";
+    var rows = [];
+    model.operatorOrder.forEach(function(op) {
+      (model.entitiesByOperator[op] || []).forEach(function(entity) {
+        var line = linesObj[entity.id] || {};
+        var pres = entity.presentation || line.presentation || {};
+        rows.push([
+          op, entity.kind, entity.id,
+          entity.memberIds ? entity.memberIds.join(",") : "",
+          pres.code || line.code || "", pres.icon || line.image || "",
+          pres.nameJa || line.nameJa || "", pres.nameZh || line.nameZh || "",
+          pres.nameEn || line.nameEn || "", pres.nameKo || line.nameKo || "",
+          line.branchOf || ""
+        ].join("\u001f"));
+      });
+    });
+    return rows.join("\u001e");
+  }
+
+  function renderList(container, linesObj, options) {
+    if (!container) return;
+    var model = buildLineListModel(linesObj, options);
+    if (model.empty) {
+      container.innerHTML = '<div class="rs-empty">' + (typeof window.t === "function" ? window.t("status.no_trains") : "No data") + '</div>';
+      return;
     }
+    container.removeAttribute("data-page-state");
+    container.removeAttribute("data-page-state-key");
+    var html = "";
+    model.operatorOrder.forEach(function(op) {
+      html += '<div class="rs-operator-group" data-operator="' + escapeHtml(op) + '"><div class="rs-operator-title">' + escapeHtml(tOp(op)) + '</div>'
+        + (model.flatGroups ? '' : '<div class="rs-cards-container">');
+      (model.entitiesByOperator[op] || []).forEach(function(entity) {
+        if (entity.kind === "system") {
+          html += window.LineCard.renderSystem(entity.presentation, entity.memberIds,
+            linesObj, { mode: model.mode });
+        } else {
+          html += window.LineCard.render(entity.line, entity.id,
+            { mode: model.mode, linesObj: linesObj });
+        }
+      });
+      html += model.flatGroups ? "</div>" : "</div></div>";
+    });
     container.innerHTML = html;
     // 通过 DOM API 应用线路颜色（符合 CSP，不依赖 style-src 白名单）。
     Array.prototype.slice.call(container.querySelectorAll('.rs-line-card')).forEach(window.LineCard.applyColor);
@@ -467,6 +500,7 @@
     STATUS_META: STATUS_META,
     TRUNK_MAIN_LINE_IDS: TRUNK_MAIN_LINE_IDS,
     renderList: renderList,
+    lineListStructureSignature: lineListStructureSignature,
     // 供 LineCard.updateSystem 共用，使异步实时更新使用相同的成员集合。
     getPresentationStatusMembers: getPresentationStatusMembers,
     setOperatorVisibility: setOperatorVisibility,
