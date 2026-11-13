@@ -11,7 +11,7 @@ const crypto=require('node:crypto');
 const vm=require('node:vm');
 
 function hashFor(file) {
-  const bytes=fs.readFileSync(file);
+  const bytes=Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n'),'utf8');
   return crypto.createHash('sha1').update('blob '+bytes.length+'\0')
     .update(bytes).digest('hex').slice(0,12);
 }
@@ -1013,7 +1013,7 @@ test('1461M Takao 13:28 -> Otsuki: realtime-linked planned-trip renders one 211 
     'the same train identifier cannot import ChuoMain PNG to ChuoRapid');
 });
 
-test('ChuoMain missing numbers keep evidence-backed PNGs and unresolved stock remains neutral',()=>{
+test('ChuoMain scoped references keep evidence-backed PNGs and unresolved stock remains neutral',()=>{
   const e353='../images/列车/JR東日本/JR東日本_E353系.png';
   const n211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
   const hbe='../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png';
@@ -1028,7 +1028,9 @@ test('ChuoMain missing numbers keep evidence-backed PNGs and unresolved stock re
   }
   for(const n of ['9592M','9593M']){
     const p=at(n,'Local',['211系','E233系0番台'],'2026-11-07','holiday');
-    assert.equal(marker(p).iconSrc,n211);
+    assert.equal(root.TrainNumberPngRanges.matchChuoMainUnmappedReference(p),null,
+      n+' is absent from the official 2611 number roster');
+    assert.equal(marker(p).kind,'unresolved');
   }
   const rapid=at('2535M','Rapid',['211系','E233系0番台']);
   assert.equal(marker(rapid).iconSrc,n211);

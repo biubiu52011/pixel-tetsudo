@@ -9,9 +9,9 @@
 - 平日下行：https://timetables.jreast.co.jp/2611/timetable-v/223d1.html
 - 土曜・休日下行：https://timetables.jreast.co.jp/2611/timetable-v/223d2.html
 
-本仓库快照：`data/timetables/jreast-chuo-main-2611/*.json`，运行时可用（默认不加载）的只读索引：`data/timetables/jreast-chuo-main-2611-number-index.js`。
+本仓库快照：`data/timetables/jreast-chuo-main-2611/*.json`；只读索引 `data/timetables/jreast-chuo-main-2611-number-index.js` 在选择 `ChuoMain` 时按线路懒加载。
 
-**重要限定**：时刻表出现的号码 != 每个该类日期都实际开行。部分特急／临时列车页面另列 `運転日`；本次未逐条完成特定日期校验。车号也不能证明车辆型号、编组、PNG 或贯通归属。
+**重要限定**：时刻表出现的号码 != 每个该类日期都实际开行。当前 17 条 E353 与 2 条リゾートビュー諏訪湖规则已核对精确 2026-11 运行日；`8170M`、`8193M`、`8194M` 仍只有平日日历级依据。车号与日期规则均不能证明实际编组或实体车号。
 
 ## 与 SQL 时刻表模板逐号对照
 
@@ -69,8 +69,10 @@
 
 1. 只能用官方逐号成员资格加上日历与方向判断某车号是否在这张月度时刻表出现。
 2. `match()` 的输出仅是 `publishedNumberOnly=true`，并明确 `operatingDateVerified=false`、`actualVehicleConfirmed=false`、`authorizesPNG=false`。
-3. SQL 中多出的号码不要直接删除（可能是临时车、不同版次、先前来源）。官方有而 SQL 缺少的号码也不能仅凭车号填充停站时间或车型。
+3. SQL 中多出的号码保留供审计，但 2026-11 的 SQL 计划位置必须先通过官方日历／方向车号准入；当前排除 `9592M`、`9593M`、平日 `8083M` 与平日 `9091M`。官方有而 SQL 缺少的号码也不能仅凭车号填充停站时间或车型。
 4. 等独立核验官方 `運転日` 和停站表后，才可以增加数据库运行日／时刻证据；车头 PNG 必须有额外车型佐证。
+
+2026-11-13 的现行车型／PNG／日期重算见 [`chuo-main-2611-vehicle-png-date-audit-20261113.md`](./chuo-main-2611-vehicle-png-date-audit-20261113.md)。
 
 
 ## 2026-11 有车型来源的新增 PNG 映射

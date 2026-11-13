@@ -112,6 +112,21 @@ test('new 2611 E353 plan references require their published operating dates',()=
       no+' '+date+' must not recover a non-November PNG');
   }
 });
+test('Resort View Suwako date rules authorize only November 7 and no PNG',()=>{
+  assert.equal(data.dateRules.length,2);
+  for(const [number,direction] of [['9580D','Inbound'],['9581D','Outbound']]){
+    const rule=data.dateRules.find(row=>row.trainNumber===number);
+    assert.ok(rule,number);
+    assert.deepEqual(Array.from(rule.operatingDates),['2026-11-07']);
+    assert.equal(rule.calendarType,'holiday');
+    assert.equal(rule.trainType,'Rapid');
+    assert.equal(rule.railDirection,direction);
+    assert.equal(rule.evidenceRole,'official-operating-date-only');
+    assert.equal(rule.authorizesPNG,false);
+    assert.equal(rule.actualVehicleConfirmed,false);
+    assert.match(rule.sourceUrl,/^https:\/\/timetables\.jreast\.co\.jp\/2611\/train\//);
+  }
+});
 test('dated special references occur on an official 2611 train-number page',()=>{
   const pages=[
     'data/timetables/jreast-chuo-main-2611/weekday-up.json',
@@ -184,12 +199,13 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
     window:w,Date:TestDate,console:{log(){},warn(){},debug(){},error(){}}
   });
   for(const file of [
+    'data/timetables/jreast-chuo-main-2611-number-index.js',
     'data/timetables/vehicle-garage-png-map.js',
     'js/train-vehicle.js',
     'data/timetables/vehicle-operation-evidence-data.js',
     'js/train-position-estimator.js'
   ]) vm.runInContext(fs.readFileSync(file,'utf8'),c,{filename:file});
-  function timetable(trainNumber) {
+  function timetable(trainNumber,other={}) {
     return {
       '@id':'test:chuo:'+trainNumber,
       'odpt:trainNumber':trainNumber,
@@ -209,11 +225,15 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
       _serviceDate:'2026-11-03',
       _canonicalGroupEvidence:'source_only',
       _timetableValidity:'undated_not_current_verified',
-      _timetableDateVerified:false
+      _timetableDateVerified:false,
+      ...other
     };
   }
   w.TrainPositionEstimator.registerManualTimetable('ChuoMain',[
-    timetable('8084M'),timetable('9086M'),timetable('8083M')
+    timetable('8084M'),timetable('9086M'),
+    timetable('8083M',{'odpt:railDirection':'odpt.RailDirection:Outbound'}),
+    timetable('9580D',{'odpt:trainType':'odpt.TrainType:JR-East.Rapid'}),
+    timetable('9592M',{'odpt:trainType':'odpt.TrainType:JR-East.Local'})
   ]);
   const positions=w.TrainPositionEstimator.estimateAllPositions(
     {ChuoMain:rail.lines.ChuoMain},{},{},null,{lineIds:['ChuoMain']}).ChuoMain || [];
@@ -225,6 +245,10 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
   assert.equal(excluded,undefined,'9086M has NO published Nov 3 operation');
   assert.equal(positions.find(p=>p.trainNumber==='8083M'),undefined,
     '8083M has NO published Nov 3 operation');
+  assert.equal(positions.find(p=>p.trainNumber==='9580D'),undefined,
+    '9580D operates on Nov 7 only, not every holiday');
+  assert.equal(positions.find(p=>p.trainNumber==='9592M'),undefined,
+    '9592M is absent from the official 2611 number roster');
   assert.equal(allowed.estimated,true);
   assert.equal(allowed.vehicleIdentityStatus,'UNKNOWN');
   assert.equal(allowed.vehiclePlan?.evidenceRole,'official-train-name-and-model');

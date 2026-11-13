@@ -4819,7 +4819,6 @@
       "8194M","8199M","8091M","8092M","9021M","9022M","9071M",
       "9076M","9078M","9081M","9082M","9085M","9086M","9088M",
       "9089M","9091M","9093M","9178M","9181M"]),
-    local:Object.freeze(["9592M","9593M"]),
     rapid211:Object.freeze(["2535M"]),
     resort:Object.freeze(["9580D","9581D"])
   });
@@ -4879,13 +4878,6 @@
       model="E353系";
       png="../images/列车/JR東日本/JR東日本_E353系.png";
       source="sql-e353-family-reference-operation-day-unverified";
-    }else if(type==="Local" && cal==="holiday" &&
-      chuoMissingServiceNumbers.local.indexOf(n)>=0 &&
-      compatible(/^(?:211系(?:（長野地区）)?|E233系0番台|E131系200番台)$/) &&
-      cs.some(function(x){return /^211系/.test(x);})) {
-      model="211系（長野地区）";
-      png="../images/列车/JR東日本/JR東日本_211系_長野色.png";
-      source="sql-extra-local-illustration";
     }else if(type==="Rapid" &&
       chuoMissingServiceNumbers.rapid211.indexOf(n)>=0 &&
       compatible(/^(?:211系(?:（長野地区）)?|E233系0番台|E131系200番台)$/) &&

@@ -1578,6 +1578,26 @@
           continue;
         }
 
+        // Admit November 2026 Chuo Main SQL plans only when the complete
+        // train number exists in the official 2611 calendar/direction list.
+        // Number membership does not verify a running date, stop clock or
+        // vehicle; those stricter checks remain separate below.
+        if (lineId === "ChuoMain" &&
+            tt._positionSource === "supabase-train-run" &&
+            window.JREastChuoMainNumbers2611 &&
+            typeof window.JREastChuoMainNumbers2611.match === "function" &&
+            String(serviceDate).slice(0,7) === "2026-11") {
+          var listedChuoPlan=window.JREastChuoMainNumbers2611.match({
+            serviceDate:serviceDate,lineId:"ChuoMain",
+            calendarType:calendar,
+            railDirection:tt["odpt:railDirection"] || "",
+            trainNumber:run.trainNumber,
+            trainOperator:"JR-East",
+            sourceRailway:tt["odpt:railway"] || ""
+          });
+          if (!listedChuoPlan) continue;
+        }
+
         // A historical Saturday/Holiday template may include a special
         // train which the current JR East monthly timetable runs on ONLY
         // explicitly selected dates. It must not produce a phantom planned
@@ -1587,7 +1607,8 @@
             window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES &&
             String(serviceDate).slice(0,7) ===
               window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES.revision) {
-          var officialRules=window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES.rules || [];
+          var officialRules=(window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES.rules || [])
+            .concat(window.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES.dateRules || []);
           var officialNumber=String(run.trainNumber || "").trim();
           var officialCal=/(?:^|[:.])Weekday$/.test(calendar) ? "weekday" :
             /(?:^|[:.])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(calendar)
@@ -1598,6 +1619,9 @@
             return rule && rule.trainNumber === officialNumber &&
               rule.calendarType === officialCal &&
               rule.trainType === officialType &&
+              (!rule.railDirection ||
+                rule.railDirection ===
+                  String(tt["odpt:railDirection"] || "").split(/[:.]/).pop()) &&
               Array.isArray(rule.sourceRailways) &&
               rule.sourceRailways.indexOf(officialRailway) >= 0 &&
               (!rule.effectiveFrom || serviceDate >= rule.effectiveFrom) &&

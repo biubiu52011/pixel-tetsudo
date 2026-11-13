@@ -82,6 +82,26 @@
     ["8194M","富士回遊94号","weekday",null,
       "https://timetables.jreast.co.jp/2611/train/100/103041.html"]
   ];
+  // These rapid services have exact operating-day evidence but their
+  // vehicle illustration is owned by train-number-png-ranges.js. Keep the
+  // date gate separate so it cannot be mistaken for actual carset proof.
+  var dateOnlyRules=[
+    ["9580D","リゾートビュー諏訪湖","Inbound",
+      "https://timetables.jreast.co.jp/2611/train/185/189211.html"],
+    ["9581D","リゾートビュー諏訪湖","Outbound",
+      "https://timetables.jreast.co.jp/2611/train/185/187801.html"]
+  ].map(function(row){
+    return {
+      trainNumber:row[0],serviceName:row[1],operator:"JR-East",
+      networkKey:"ChuoMain",
+      sourceRailways:["odpt.Railway:JR-East.Chuo","odpt.Railway:JR-East.ChuoMain"],
+      trainType:"Rapid",calendarType:"holiday",railDirection:row[2],
+      effectiveFrom:"2026-11-01",effectiveTo:"2026-11-30",
+      operatingDates:["2026-11-07"],sourceUrl:row[3],
+      evidenceRole:"official-operating-date-only",
+      actualVehicleConfirmed:false,authorizesPNG:false
+    };
+  });
   var mapped=special.map(function(row){
     var days=row[3] ? row[3].map(function(d){return "2026-11-"+d;}) : null;
     return {
@@ -112,6 +132,7 @@
   root.VEHICLE_REFERENCE_RULES=previous.concat(mapped);
   root.CHUO_MAIN_OFFICIAL_VEHICLE_REFERENCES=Object.freeze({
     revision:"2026-11",modelSourceUrl:officialModelUrl,
-    rules:mapped,holidayDates:holidayDates,fleetScope:fleetScope
+    rules:mapped,dateRules:dateOnlyRules,
+    holidayDates:holidayDates,fleetScope:fleetScope
   });
 })(window);
