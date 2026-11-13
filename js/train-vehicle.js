@@ -5591,6 +5591,48 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     } : null;
   }
 
+  // Tobu Urban Park Line has a mixed fleet (60000 / 80000 / legacy sets).
+  // Only an independent, dated SINGLE-model source may map a public A train
+  // number to the actual series; the 2026-11-04 five-car roster cannot.
+  // For otherwise verified Noda train POSITIONS, use the approved 60000
+  // front as an explicitly illustrative line-fleet PNG, as on Hachiko and
+  // Chuo-Sobu. It never asserts the running train is a 60000.
+  // https://www.tobu.co.jp/corporation/rail/vehicles/
+  function lookupNodaFleetIllustration(p) {
+    if (!p || String(p.positionLineId || p.lineId || "") !== "Noda" ||
+        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "Noda" ||
+        ["realtime-api", "supabase-train-run", "train-timetable"].indexOf(p.positionSource) < 0 ||
+        p.vehicleIdentityStatus === "EXACT" ||
+        p.vehicleResolvedUpstream === true ||
+        p.vehicleResolvedFromRealtime === true ||
+        p.actualVehicleConfirmed === true || p.vehicleFormationId ||
+        p.vehicleFormationConflict ||
+        (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length))
+      return null;
+    var op=String(p.trainOperator || p.operator || "");
+    if(op && op !== "Tobu" && op !== "odpt.Operator:Tobu")return null;
+    var railway=String(p.sourceRailway || "");
+    if(railway && railway !== "odpt.Railway:Tobu.TobuUrbanPark")return null;
+    // Empty railway is acceptable only when the normalized operator is
+    // explicitly Tobu; a standalone lineId or user-supplied text is not proof.
+    if(!railway && !op)return null;
+    var number=String(p.trainNumber || "").trim().toUpperCase();
+    if(number && !/^[0-9]{1,5}A$/.test(number))return null;
+    var trainType=String(p.trainType || "").split(/[.:]/).pop();
+    if(trainType && ["Local","Express","SectionExpress","Rapid"].indexOf(trainType)<0)
+      return null;
+    var model="東武60000系";
+    var png=normalizeGalleryPngPath("../images/列车/東武鉄道/東武鉄道_60000系.png");
+    var garage=window.VehicleGaragePngMap;
+    if(!png || !garage || typeof garage.matchModelPath!=="function" ||
+       !garage.matchModelPath(model,png,"Noda"))return null;
+    return {kind:"vehicle",iconSrc:png,planned:true,illustrative:true,
+      representativeOnly:true,referenceOnly:true,actualVehicleConfirmed:false,
+      illustrationRole:"noda-mixed-fleet-reference-not-actual-model",
+      candidateModels:["東武60000系","東武80000系"],
+      illustrationModel:model};
+  }
+
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -6214,6 +6256,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
+    // A valid Noda position must remain visible even when its mixed fleet
+    // cannot be narrowed to one model. Do not pass this fallback through
+    // number-to-actual-model matching; it is a tagged reference image.
+    var nodaIllustration=!identityConfirmed && !iconSrc && !artworkFailed
+      ? lookupNodaFleetIllustration(p) : null;
+    if(nodaIllustration)return nodaIllustration;
     // Northern 701/E721 candidates are metadata for ONE neutral circle.
     // Both types can be physically coupled, so never draw two pixel cabs.
     var northMixed = !identityConfirmed && !artworkFailed &&
