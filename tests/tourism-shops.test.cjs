@@ -416,6 +416,51 @@ test('missing coordinates do not place a venue at an invented map location', () 
   assert.equal(core.escapeHtml(0), '0');
 });
 
+test('detail maps keep point, line and polygon geometry scoped to the current object', () => {
+  const sandbox = { window: { currentLang:'ja', t:key=>key }, document:{}, console };
+  execute('js/tourism-core.js', sandbox);
+  const core = sandbox.window.TourismDetailCore;
+
+  const point = core.buildContext({ name:'Point shop', coord:[35.75, 139.80] }, null);
+  assert.equal(point.mapGeometry, null, 'a point-only object uses its verified coordinate');
+  assert.deepEqual([point.mapLat, point.mapLng], [35.75, 139.80]);
+
+  const lineCoordinates = [[139.79, 35.74], [139.81, 35.76]];
+  const line = core.buildContext({
+    name:'Current shopping street',
+    geometry:{ type:'LineString', coordinates:lineCoordinates }
+  }, null);
+  assert.deepEqual(line.mapGeometry.coordinates, lineCoordinates,
+    'the detail context keeps only the current street geometry');
+  assert.deepEqual([line.mapLat, line.mapLng], [35.75, 139.8]);
+
+  const polygonCoordinates = [[
+    [139.78, 35.73], [139.82, 35.73], [139.82, 35.77],
+    [139.78, 35.77], [139.78, 35.73]
+  ]];
+  const polygon = core.buildContext({
+    name:'Current event area',
+    geometry:{ type:'Polygon', coordinates:polygonCoordinates }
+  }, null);
+  assert.deepEqual(polygon.mapGeometry.coordinates, polygonCoordinates,
+    'the detail context keeps only the current event boundary');
+  assert.deepEqual([polygon.mapLat, polygon.mapLng], [35.75, 139.8]);
+
+  const invalid = core.buildContext({
+    name:'Invalid boundary',
+    geometry:{ type:'LineString', coordinates:[[200, 95], [139.8, 35.7]] }
+  }, null);
+  assert.equal(invalid.mapGeometry, null);
+  assert.equal(invalid.mapSection, '', 'invalid geometry does not create a map');
+
+  const pointFallback = core.buildContext({
+    name:'Verified point only', coord:[35.7, 139.8],
+    geometry:{ type:'Polygon', coordinates:[[[139.8, 35.7]]] }
+  }, null);
+  assert.equal(pointFallback.mapGeometry, null, 'an invalid boundary is never inferred');
+  assert.deepEqual([pointFallback.mapLat, pointFallback.mapLng], [35.7, 139.8]);
+});
+
 test('tourism map loader references complete local assets and ends its loading state', () => {
   const core = source('js/tourism-core.js');
   const localAssets = [...core.matchAll(/_td(?:LoadScript|InjectCss)\('\.\.\/([^']+)'/g)]
