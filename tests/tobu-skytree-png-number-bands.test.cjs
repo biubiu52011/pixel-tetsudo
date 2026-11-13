@@ -91,3 +91,19 @@ test('SQL migration builds grouped exact-date bands, never actual vehicle proof'
  assert.match(sql,/actual_vehicle_confirmed boolean NOT NULL DEFAULT false/);
  assert.match(sql,/REVOKE ALL ON public\.published_tobu_skytree_png_number_bands FROM anon, authenticated/);
 });
+
+test('follow-up SQL migration refuses blanket 50050 and locks GTFS corridor counts',()=>{
+ const sql=fs.readFileSync('supabase/migrations/20261113215000_tobu_skytree_ordinary_corridor_png_references.sql','utf8');
+ assert.match(sql,/ordinary_corridor_references jsonb NOT NULL DEFAULT/);
+ assert.match(sql,/MIXED_ORDINARY_CORRIDOR_GATED/);
+ assert.match(sql,/png_reference = ''/);
+ assert.match(sql,/THEN 'asakusa'/);
+ assert.match(sql,/THEN 'oshiage'/);
+ assert.match(sql,/THEN 'hibiya'/);
+ assert.match(sql,/ELSE 'unresolved'/);
+ assert.match(sql,/train_numbers/);
+ assert.match(sql,/jsonb_array_length\(b\.ordinary_corridor_references->'asakusa'->'train_numbers'\)<>223/);
+ assert.match(sql,/jsonb_array_length\(b\.ordinary_corridor_references->'hibiya'->'train_numbers'\)<>340/);
+ assert.match(sql,/jsonb_array_length\(b\.ordinary_corridor_references->'oshiage'->'train_numbers'\)<>222/);
+ assert.match(sql,/jsonb_array_length\(b\.ordinary_corridor_references->'unresolved'->'train_numbers'\)<>8/);
+});

@@ -12,6 +12,7 @@ on:
       - 'tests/tobu-skytree-gtfs-plan-fallback.test.cjs'
       - 'tests/tobu-skytree-png-number-bands.test.cjs'
       - 'supabase/migrations/20261113203000_tobu_skytree_2611_png_number_bands.sql'
+      - 'supabase/migrations/20261113215000_tobu_skytree_ordinary_corridor_png_references.sql'
       - 'tests/tobu-noda-gtfs-plan-fallback.test.cjs'
       - 'supabase/migrations/20261113183000_tobu_skytree_tokyogtfs_plan_fallback.sql'
       - 'supabase/migrations/20261113191000_tobu_noda_tokyogtfs_plan_fallback.sql'
