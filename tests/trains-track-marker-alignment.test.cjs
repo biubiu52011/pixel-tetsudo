@@ -9,7 +9,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const source = fs.readFileSync(path.join(__dirname, '../js/trains-render.js'), 'utf8');
+const source = fs.readFileSync(path.join(__dirname, '../js/trains-render.js'), 'utf8')
+  .replace(/\r\n/g, '\n');
 const start = source.indexOf('/*\n * TrainTrackLayout');
 assert.ok(start >= 0, 'TrainTrackLayout module must be present');
 const window = {};
@@ -35,6 +36,14 @@ function place(p, geometry = {isLoop: false}, override = opts) {
 test('ordinary map preserves 11-unit up/down side lanes', () => {
   assert.match(source, /laneGap:\s*isLoop\s*\?\s*9\s*:\s*11/);
   assert.match(source, /opts\.laneGap\s*==\s*null\s*\?\s*DEFAULTS\.laneGap\s*:\s*opts\.laneGap/);
+});
+
+test('mobile left-side station labels stay outside the train artwork lane', () => {
+  assert.match(source,
+    /side === "left"\) \{[\s\S]*?tx = o\.x - \(isJunction \? 14 : \(isMobileView \? 20 : 10\)\)/);
+  // lane centre x-11 with 14-unit artwork starts at x-18, so x-20 leaves
+  // visible clearance without hiding labels or shrinking the train marker.
+  assert.ok(20 > 11 + 14 / 2);
 });
 
 test('up and down run in visually distinct lanes on each side', () => {

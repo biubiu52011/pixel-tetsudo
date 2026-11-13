@@ -157,7 +157,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       anchor = "end";
     }
     else if (side === "left" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x + (isJunction ? 14 : 10); ty = o.y; anchor = "start"; }
-    else if (side === "left") { tx = o.x - (isJunction ? 14 : 10); ty = o.y; anchor = "end"; }
+    else if (side === "left") {
+      // Ordinary mobile maps use 11-unit directional train lanes and
+      // 14-unit-wide vehicle artwork. Keep the station-name edge outside
+      // that corridor instead of letting left-lane vehicles cover the final
+      // glyph (notably Komiya and Kaneko on the Hachiko line).
+      tx = o.x - (isJunction ? 14 : (isMobileView ? 20 : 10));
+      ty = o.y;
+      anchor = "end";
+    }
     else if (side === "dual") { tx = o.x - (isJunction ? 16 : 12); ty = o.y; anchor = "end"; }
     else if (side === "right" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x - (isJunction ? 14 : 10); ty = o.y; anchor = "end"; }
     else { tx = o.x + (geometry.isSixShapedLoop ? 16 : (isJunction ? 14 : 10)); ty = o.y; anchor = "start"; }
