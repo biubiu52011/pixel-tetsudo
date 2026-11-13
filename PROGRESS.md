@@ -4,6 +4,21 @@
 
 # Pixel Tetsudo 工程进度
 
+
+### TOBU-GTFS-PLAN-FALLBACK-20261113 — 东武两线计划 SQL 兜底（PRODUCTION-VERIFIED）
+
+| 项目 | 状态 |
+| --- | --- |
+| 来源架构 | 复用已导入 TokyoGTFS 数据 `bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f`、现有 `gtfs_stage`／`manual_timetable_templates`／`train_timetables`／`train-runs`。这是第三方计划资料，并非 GTFS-RT 实时车位或运营商正式实时信息；有效期 2026-11-02 至 2027-11-02。 |
+| 晴空塔线 | 已有 1,738 模板、20,860 停站；工作日 909／土休日 829。 |
+| 野田线 | 新入库 1,247 模板、18,382 停站、35 站；工作日 652／土休日 595。保留实时 API 开关 `true`，开启 SQL 计划回退；未启用不存在的官方 timetable API。 |
+| 日期与安全 | 两线共用新 `tobu_tokyogtfs_active_trip_ids`，按严格线路白名单、来源 SHA、有效日期、calendar/calendar_dates 过滤；仅 service_role 能调用。旧晴空塔专用 RPC 保留供旧客户端兼容。 |
+| PNG 证据 | 野田线 A 番号候选和 60000 系线路示意 PNG 不等于当天实际车型／编成；不将 GTFS 车号当作 `vehicle_plan_confirmed`。 |
+| 部署 | GitHub main `af044f4`（SQL／Edge／契约测试）、`9de7ee0`（生产联调）；Supabase SQL 迁移已执行，train-runs Edge v379 ACTIVE，Pages／PNG 契约 CI 已通过。 |
+| 生产验收 | 2026-11-13：Noda 652／Skytree 909；2026-11-14：Noda 595／Skytree 829；2027-11-03 两线 0。六项生产检查同时验证来源、站序、日期与非实车身份；[Actions](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/43406692653) SUCCESS。 |
+| 仍需验收 | 未独立做真实手机浏览器逐卡 PNG 可见性、实时位置与 SQL 计划融合优先级的交互验收；不要把 API 成功等同于视觉验收。 |
+
+
 ### CHUO-MAIN-2611-VEHICLE-PNG-DATES-20261113 — 中央本線车型／PNG／临时列车日期重算（LOCAL-READY）
 
 | 项目 | 当前状态 |
