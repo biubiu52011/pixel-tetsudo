@@ -3476,9 +3476,118 @@
       model:model,pngPath:png,serviceName:expectedName,
       edition:"2611",referenceOnly:true,actualVehicleConfirmed:false});
   }
+  // 東武アーバンパークライン: official *2026-11-04 only* five-car
+  // morning train NUMBER roster. 38 down and 38 up; membership is exact,
+  // numeric bounds NEVER imply every number in a band ran or was five-car.
+  // Source: https://www.tobu.co.jp/cms-pdf/news/20261103204035MJuKcsv6odNCVl1zTmYjrw.pdf
+  // This official document confirms five CARS, NOT whether an individual
+  // run used a 60000 (including 5-car rebuild) or 80000/80050 series.
+  // Images are permitted ONLY with independent validated single-model
+  // evidence; otherwise preserve a neutral marker and two model candidates.
+  var nodaFiveCarNov4=Object.freeze({
+    date:"2026-11-04",
+    sourceUrl:"https://www.tobu.co.jp/cms-pdf/news/20261103204035MJuKcsv6odNCVl1zTmYjrw.pdf",
+    outbound:Object.freeze("101A 105A 107A 111A 401A 119A 121A 123A 125A 133A 135A 2103A 413A 145A 419A 147A 2105A 423A 149A 427A 2107A 433A 805A 159A 161A 437A 439A 441A 169A 445A 171A 447A 813A 173A 453A 821A 463A 825A".split(" ")),
+    inbound:Object.freeze("806A 404A 706A 104A 406A 108A 110A 818A 710A 822A 116A 118A 122A 418A 2102A 128A 130A 424A 830A 132A 428A 432A 140A 142A 144A 438A 3402A 442A 152A 444A 154A 156A 448A 3404A 158A 164A 2110A 168A".split(" ")),
+    candidateModels:Object.freeze(["東武60000系","東武80000系"]),
+    modelPng:Object.freeze({
+      "東武60000系":"../images/列车/東武鉄道/東武鉄道_60000系.png",
+      "東武80000系":"../images/列车/東武鉄道/東武鉄道_80000系.png"
+    })
+  });
+  function verifyNodaFiveCar20261104(number,ctx){
+    var p=ctx||{},n=String(number||"").trim().toUpperCase();
+    if(!/^([1-9][0-9]{2,3})A$/.test(n)||
+       String(p.serviceDate||"").slice(0,10)!==nodaFiveCarNov4.date ||
+       String(p.sourceRailway||"")!=="odpt.Railway:Tobu.TobuUrbanPark" ||
+       ["realtime-api","supabase-train-run","train-timetable"].indexOf(p.positionSource)<0 ||
+       (p.positionLineId&&p.positionLineId!=="Noda")||
+       (p.displayLineId&&p.displayLineId!=="Noda"))return null;
+    var operator=String(p.trainOperator||p.operator||"");
+    if(operator&&operator!=="Tobu"&&operator!=="odpt.Operator:Tobu")return null;
+    var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
+    if(type&&["Local","Express","SectionExpress"].indexOf(type)<0)return null;
+    var direction=String(p.railDirection||p.directionUrn||p.direction||"").split(/[.:]/).pop();
+    var dir=direction==="Inbound"?"inbound":direction==="Outbound"?"outbound":"";
+    if(direction&&!dir)return null;
+    if(dir&&nodaFiveCarNov4[dir].indexOf(n)<0)return null;
+    if(!dir&&nodaFiveCarNov4.inbound.indexOf(n)<0&&
+       nodaFiveCarNov4.outbound.indexOf(n)<0)return null;
+    // An unrelated GTFS/ODPT identity must never borrow this roster.
+    var trainId=String(p.trainId||"");
+    if(trainId&&!/\.([0-9]{3,4}A)$/.test(trainId))return null;
+    if(trainId&&trainId.slice(-n.length)!==n)return null;
+    var cal=sourceCalendar(p);
+    if(cal&&cal!=="weekday")return null;
+    return {trainNumber:n,serviceDate:nodaFiveCarNov4.date,
+      sourceUrl:nodaFiveCarNov4.sourceUrl,carComposition:5,
+      numberScope:"tobu-noda-official-20261104-five-car-morning",
+      candidateModels:nodaFiveCarNov4.candidateModels.slice(),
+      candidateAssets:[
+        nodaFiveCarNov4.modelPng["東武60000系"],
+        nodaFiveCarNov4.modelPng["東武80000系"]
+      ],
+      authorizesPNG:false,actualVehicleConfirmed:false,referenceOnly:true};
+  }
+  function matchNodaFiveCar20261104(number,ctx){
+    var proof=verifyNodaFiveCar20261104(number,ctx);
+    if(!proof||!ctx)return null;
+    var p=ctx,model="",sources=p.vehicleResolution&&
+      Array.isArray(p.vehicleResolution.sources)?p.vehicleResolution.sources:[];
+    // An untrusted free-text realtimeVehicleType alone is NOT a vehicle
+    // confirmation. Require provenance from the existing exact resolver.
+    var trustedRealtime=p.positionSource==="realtime-api"&&
+      p.vehicleResolvedFromRealtime===true &&
+      p.vehicleIdentityStatus==="EXACT"&&
+      sources.some(function(s){
+        return s==="official-realtime-car-number"||s==="roster-physical-id";
+      });
+    if(trustedRealtime){
+      model=String(p.realtimeVehicleType||
+        p.realtimeDerivedVehicleType||"").trim();
+    }else{
+      // A dated, published SQL timetable with ONE confirmed type may
+      // authorize its planned representative PNG, never a physical carset.
+      var plan=p.vehiclePlan;
+      if(!(p.positionSource==="supabase-train-run"||
+           p.positionSource==="train-timetable")||
+         p.estimated!==true||p.officialNumberVerified!==true||
+         p.timetableDateVerified!==true||p.timetableValidity!=="date_verified"||
+         !plan||plan.confirmed!==true||!Array.isArray(plan.models)||
+         plan.models.length!==1)return null;
+      model=String(plan.models[0]||"").trim();
+    }
+    // Different 80000/80050 production types share the available 80000
+    // front illustration, not an assertion about the set or reused car.
+    if(model==="東武80000型"||model==="東武80050型"||model==="東武80050系")
+      model="東武80000系";
+    if(!nodaFiveCarNov4.modelPng[model])return null;
+    if(Array.isArray(p.plannedVehicleCandidates)&&
+       p.plannedVehicleCandidates.length &&
+       p.plannedVehicleCandidates.some(function(v){
+         return v!==model && !(
+           model==="東武80000系" &&
+           ["東武80000型","東武80050型","東武80050系"].indexOf(v)>=0);
+       }))return null;
+    if(p.vehiclePlan&&Array.isArray(p.vehiclePlan.models)&&
+       p.vehiclePlan.models.length===1&&
+       p.vehiclePlan.models[0]!==model&&!(
+         model==="東武80000系"&&
+         ["東武80000型","東武80050型","東武80050系"].indexOf(
+           p.vehiclePlan.models[0])>=0))return null;
+    var png=nodaFiveCarNov4.modelPng[model];
+    var garage=root.VehicleGaragePngMap;
+    if(!garage||typeof garage.matchModelPath!=="function"||
+       !garage.matchModelPath(model,png,"Noda"))return null;
+    return {trainNumber:proof.trainNumber,lineId:"Noda",
+      model:model,pngPath:png,source:"tobu-noda-fivecar-dated-and-model-verified",
+      planned:true,representative:true,referenceOnly:!trustedRealtime,
+      actualVehicleConfirmed:false};
+  }
   function match(trainNumber,lineId,context){
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if(line==="Noda")return matchNodaFiveCar20261104(number,context);
     if(line==="Fujikyu"){
       var fujikyuLabel=/^(\d{3})\s+フジサン特急(?:\s|$)/.exec(number);
       if(fujikyuLabel)number=fujikyuLabel[1];
@@ -4885,6 +4994,7 @@
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
     matchChuoMainLocalReference:matchChuoMainLocalReference,
-    matchChuoMainUnmappedReference:matchChuoMainUnmappedReference
+    matchChuoMainUnmappedReference:matchChuoMainUnmappedReference,
+    verifyNodaFiveCar20261104:verifyNodaFiveCar20261104
   });
 })(window);
