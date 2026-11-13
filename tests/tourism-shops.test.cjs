@@ -416,6 +416,25 @@ test('missing coordinates do not place a venue at an invented map location', () 
   assert.equal(core.escapeHtml(0), '0');
 });
 
+test('tourism map loader references complete local assets and ends its loading state', () => {
+  const core = source('js/tourism-core.js');
+  const localAssets = [...core.matchAll(/_td(?:LoadScript|InjectCss)\('\.\.\/([^']+)'/g)]
+    .map(match => match[1].split(/[?#]/)[0]);
+  assert.ok(localAssets.includes('js/maplibre/streets-v2.style.js'));
+  assert.ok(localAssets.includes('js/maplibre/maplibre-gl.css'));
+  assert.ok(localAssets.includes('js/maplibre/maplibre-gl.js'));
+  assert.ok(localAssets.includes('js/leaflet/leaflet.min.js'));
+  for (const asset of localAssets) {
+    assert.ok(fs.existsSync(path.resolve(__dirname, '..', asset)), asset + ' is missing');
+  }
+  assert.doesNotMatch(core, /_tdLoadScript\('\.\.\/js\/maplibre\/streets-'/);
+  assert.match(core, /_tdClearMapMessage\(mapEl\);\s*map = new maplibregl\.Map/);
+  assert.match(core, /_tdClearMapMessage\(mapEl\);\s*var map = L\.map/);
+  assert.match(core, /else \{\s*_tdShowMapError\(mapEl\);\s*\}/);
+  assert.match(core, /location\.protocol === 'file:'[\s\S]*host === 'localhost'[\s\S]*host === '127\.0\.0\.1'[\s\S]*host === '\[::1\]'/);
+  assert.match(core, /_tdEnsureMapLibs\(tryInit, _tdUseLeafletOnly\(\)\)/);
+});
+
 test('short menus use compact text rows and remove a redundant all-items dialog', () => {
   const html = renderShop({
     name:'びあマ北千住', tags:['food','drink','shop'],

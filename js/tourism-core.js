@@ -29,7 +29,9 @@
     default:  "linear-gradient(135deg, #008803 0%, #006600 100%)"
   };
 
-  var MAPTILER_KEY = 'tYRNv4akrEAKTL5ORzUm';  // MapTiler 免费 key（origin 白名单：GitHub Pages + 本地开发端口 8017，防盗用）
+  // MapTiler 免费 key：GitHub Pages 可读取矢量源；本地来源只允许栅格瓦片，
+  // 因此本地预览直接使用 Leaflet，避免 MapLibre 留下无底图的空画布。
+  var MAPTILER_KEY = 'tYRNv4akrEAKTL5ORzUm';
 
   var state = {
     currentSpotIndex: 0,
@@ -507,12 +509,27 @@
   }
   function _tdInjectCss(href) {
     var build = document.querySelector('meta[name="pt-build"]');
-    if (build) href += "?build=" + encodeURIComponent(build.content);
+    if (build) href += (href.indexOf('?') === -1 ? '?' : '&') + "build=" + encodeURIComponent(build.content);
     if (document.querySelector('link[href="' + href + '"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
     l.href = href;
     document.head.appendChild(l);
+  }
+  function _tdClearMapMessage(mapEl) {
+    if (!mapEl || !mapEl.querySelector) return;
+    var message = mapEl.querySelector('.map-loading, .map-error');
+    if (message && message.parentNode === mapEl) mapEl.removeChild(message);
+  }
+  function _tdShowMapError(mapEl) {
+    if (!mapEl || document.getElementById('tourismMap') !== mapEl) return;
+    mapEl._tdInitializing = false;
+    mapEl.innerHTML = '<div class="map-error">' + escapeHtml(t('detail.unavailable')) + '</div>';
+  }
+  function _tdUseLeafletOnly() {
+    var location = window.location || {};
+    var host = (location.hostname || '').toLowerCase();
+    return location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
   }
   function _tdEnsureMapLibs(cb, leafletOnly) {
     if (!leafletOnly && window.maplibregl && window.MAPTILER_STREETS_V2_JSON) { cb(); return; }
@@ -541,7 +558,7 @@
       if (mapLibsSettled || !engineReady || !styleReady) return;
       mapLibsSettled = true;
       if (window.maplibregl && window.MAPTILER_STREETS_V2_JSON) {
-        _tdInjectCss('../js/maplibre/maplibre-gl.css');
+        _tdInjectCss('../js/maplibre/maplibre-gl.css?v=731181d400d6');
         settle();
       } else {
         // 引擎或样式脚本失败时使用已有的 Leaflet 回退。
@@ -551,7 +568,7 @@
         });
       }
     }
-    _tdLoadScript('../js/maplibre/streets-', function () {
+    _tdLoadScript('../js/maplibre/streets-v2.style.js', function () {
       styleReady = true;
       finishMapLibs();
     });
@@ -574,10 +591,10 @@
       } else if (typeof L !== 'undefined') {
         _initMapLeaflet(mapEl, lat, lng, name);
       } else {
-        mapEl.innerHTML = '<div class="map-error">' + escapeHtml(t('detail.unavailable')) + '</div>';
+        _tdShowMapError(mapEl);
       }
     }
-    _tdEnsureMapLibs(tryInit);
+    _tdEnsureMapLibs(tryInit, _tdUseLeafletOnly());
   }
 
   function _initMapMaplibre(mapEl, lat, lng, name) {
@@ -590,6 +607,7 @@
     if (!style) { _initMapLeaflet(mapEl, lat, lng, name); return; }
     var map;
     try {
+      _tdClearMapMessage(mapEl);
       map = new maplibregl.Map({
         container: mapEl,
         style: style,
@@ -658,11 +676,12 @@
       _tdEnsureMapLibs(function () {
         if (document.getElementById('tourismMap') !== mapEl) return;
         if (typeof L !== 'undefined') _initMapLeaflet(mapEl, lat, lng, name);
-        else mapEl.innerHTML = '<div class="map-error">' + escapeHtml(t('detail.unavailable')) + '</div>';
+        else _tdShowMapError(mapEl);
       }, true);
       return;
     }
     if (mapEl._tdLeaflet) { mapEl._tdLeaflet.remove(); mapEl._tdLeaflet = null; }
+    _tdClearMapMessage(mapEl);
     var map = L.map(mapEl, { zoomControl: false, scrollWheelZoom: false, attributionControl: true });
     mapEl._tdLeaflet = map;
     var mtLang = { ja: 'ja', zh: 'zh', ko: 'ko', en: 'en' }[window.currentLang] || 'en';
