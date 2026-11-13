@@ -64,3 +64,48 @@ test('source direction arrow reversal applies only to the visual Skytree fork',(
  assert.equal(run({stationIndex:3,segmentToIndex:4,segmentProgress:0.5}).moveDir,'up');
  assert.equal(run({stationIndex:4,segmentToIndex:3,segmentProgress:0.5}).moveDir,'down');
 });
+
+test('canonical Tobu map generates actual SVG Y coordinates from the existing geometry engine',()=>{
+ const all=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
+ const window={
+   currentLang:'ja',innerWidth:420,UNIFIED_LINES:all,
+   TrainsActiveSystemLineIds:[],RuntimeConfig:{},
+   RailwayDB:{getAllLines:()=>all,getLine:id=>all[id],resolveStationName:id=>id},
+   LinePresentationService:{getMapBranchIds:()=>[]}
+ };
+ const document={
+   querySelector:()=>({clientWidth:390}),
+   createElement:()=>({getContext:()=>null}),
+   fonts:{status:'loaded'},body:{}
+ };
+ const ctx={window,document,console,
+   GEOM:{BRANCH_STUB:24,BRANCH_COL_W:96,MAIN_BASE_W_MAX:297,MOBILE_CONTENT_W:297},
+   _isMobileView:()=>true};
+ vm.runInNewContext(data,ctx,{filename:'trains-data.js',timeout:15000});
+ const line=ctx.getLinesData().TobuSkytree;
+ const g=ctx.computeRouteGeometry(line,'TobuSkytree');
+ assert.equal(g.stationCoords.length,line.stations.length);
+ assert.equal(g.stationCoords[3].stationId,'Hikifune');
+ assert.ok(g.stationCoords[3].y<g.stationCoords[1].y);
+ assert.ok(g.stationCoords[3].y<g.stationCoords[2].y);
+ assert.ok(g.stationCoords[1].x<g.stationCoords[3].x);
+ assert.ok(g.stationCoords[2].x>g.stationCoords[3].x);
+ assert.equal(g.junctionStation,'Hikifune');
+ assert.equal(g.mapFork.kind,'tobu-skytree-hikifune-y');
+ const tracks=g.routeElements.filter(e=>e.type==='line');
+ function edge(a,b){
+   const p=g.stationCoords[a],q=g.stationCoords[b];
+   return tracks.some(e=>(e.attrs.x1===p.x&&e.attrs.y1===p.y&&
+     e.attrs.x2===q.x&&e.attrs.y2===q.y)||
+     (e.attrs.x2===p.x&&e.attrs.y2===p.y&&e.attrs.x1===q.x&&e.attrs.y1===q.y));
+ }
+ assert.equal(edge(0,1),true);
+ assert.equal(edge(1,3),true);
+ assert.equal(edge(2,3),true);
+ assert.equal(edge(3,4),true);
+ assert.equal(edge(1,2),false,'no Tokyo-Skytree to Oshiage fake line');
+ assert.ok(g.stationCoords.every(p=>p.x>=0&&p.x<=g.svgW&&p.y>=0&&p.y<=g.svgH));
+ const caption=g.routeElements.find(e=>e.attrs&&e.attrs['data-fork-caption']==='oshiage-through');
+ assert.ok(caption);
+ assert.equal(caption.text,'半蔵門線直通');
+});
