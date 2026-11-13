@@ -127,6 +127,45 @@ test('TrainVehicle renders each service-family reference as an illustrative PNG'
  assert.equal(weekend.kind,'vehicle');
  assert.ok(weekend.iconSrc.endsWith('70090型.png'));
 });
+test('actual SVG artwork selection retains the same owner illustration across supported through segments',()=>{
+ if(!context.window.TrainVehicle)
+   vm.runInContext(fs.readFileSync('js/train-vehicle.js','utf8'),context,{filename:'js/train-vehicle.js',timeout:10000});
+ const select=context.window.TrainVehicle.selectMarkerArtwork;
+ function segment(line,number,type){
+   const x=p(number,type);
+   if(line==='TobuSkytree')return x;
+   return {...x,positionLineId:line,displayLineId:line,
+     sourceRailway:line==='TokyuDenEn'?'odpt.Railway:Tokyu.DenEnToshi':'odpt.Railway:TokyoMetro.'+line,
+     trainOperator:line==='TokyuDenEn'?'Tokyu':'TokyoMetro',
+     positionSource:line==='TokyuDenEn'?'realtime-api':'supabase-train-run',
+     estimated:line!=='TokyuDenEn'};
+ }
+ const cases=[
+   ['TobuSkytree','B1016S','Local','13000系.png'],
+   ['Hibiya','B1016S','Local','13000系.png'],
+   ['TobuSkytree','C1005K','Express','2020系.png'],
+   ['Hanzomon','A1004K','Local','2020系.png'],
+   ['Hanzomon','A1093S','Local','18000系.png'],
+   ['Hanzomon','A1050T','Express','50050型.png'],
+   ['TokyuDenEn','A1004K','Local','2020系.png']
+ ];
+ for(const [line,num,type,imageFile] of cases){
+   const artwork=select(segment(line,num,type),false);
+   assert.equal(artwork.kind,'vehicle',line+num);
+   assert.ok(String(artwork.iconSrc||'').endsWith(imageFile),line+num);
+   assert.equal(artwork.illustrative,true,line+num);
+   assert.equal(artwork.representativeOnly,true,line+num);
+   assert.equal(artwork.actualVehicleConfirmed,false,line+num);
+ }
+ const noCrosswalk=segment('Hanzomon','C1005K','Express');
+ const unresolved=select(noCrosswalk,false);
+ assert.notEqual(String(unresolved.iconSrc||'').endsWith('2020系.png'),true);
+ const conflicting=segment('Hibiya','B1016S','Local');
+ conflicting.trainOwner='odpt.Operator:Tobu';
+ const noAssumed=select(conflicting,false);
+ assert.notEqual(String(noAssumed.iconSrc||'').endsWith('13000系.png'),true);
+});
+
 test('SQL migration builds grouped exact-date bands, never actual vehicle proof',()=>{
  const sql=fs.readFileSync('supabase/migrations/20261113203000_tobu_skytree_2611_png_number_bands.sql','utf8');
  assert.match(sql,/gtfs_stage\.trips/);

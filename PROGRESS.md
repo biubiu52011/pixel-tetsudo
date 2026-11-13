@@ -5,13 +5,21 @@
 # Pixel Tetsudo 工程进度
 
 
+### TOBU-METRO-TOKYU-THROUGH-20261113 — 东武／Metro／东急跨线运用参考图（PRODUCTION-TESTED）
+
+- 已复用现有 operation_family_rules 的所属方候选规则及 TrainNumberPngRanges / VehicleGaragePngMap，未另建平行数据表。Hibiya SQL 的 1023 个、Hanzomon SQL 的 994 个日历内完整列车号已纳入前端精确来源白名单；Skytree 继续使用原 1738 GTFS source-only 车次。
+- 日比谷 `S → Metro13000`、`T → Tobu70000`；41T–49T 运用候选 `70090`（仍只是代表图）。半藏门／押上 `K → Tokyu2020`、`S → Metro18000`、`T → Tobu50050`；实际也可能运行 5000、08、8000、70090 等候选系列，候选不等于已观测。
+- 列车在 TobuSkytree、Hibiya、Hanzomon 和形式匹配的 TokyuDenEn **当前实时记录**上使用同一运用所属方示意 PNG；明示车种、实际车组、sourceRailway、日期及 owner 矛盾时不选该图。静态图像不升级 EXACT，也不修改 RunningChainResolver 运行链 ID。
+- 重要：2026-11 Hanzomon 的手动历史资料与 Skytree TokyoGTFS 没有精确同车次跨线对照（同号交集为 0）。本轮只修正**候选 PNG 视觉一致性**，没有把同属 K/S/T 的不同车次冒充同一实体列车。跨公司物理编组继承与唯一位置去重继续由独立可验证来源管理。
+- 所有变更直接提交 main：`47f0a2e` 功能、`6c4f893` 日历测试与 Pages 缓存；CI PNG 契约及 Pages 构建成功。真实移动浏览器交互尚未人工端到端复验。
+
 ### TOBU-SKYTREE-2611-PNG-NUMBER-BANDS — スカイツリーライン PNG 号段与图库参考（PRODUCTION-VERIFIED）
 
 | 项目 | 状态 |
 | --- | --- |
 | 2026-11 东京 GTFS 车次 | 原有 SQL 1,738 条计划记录（工作日 909，土休日 829）；在此之上复用 `TrainNumberPngRanges.match` 和车辆图库授权逻辑，没有建立第二套渲染系统。 |
 | 号段范围 | `published_tobu_skytree_png_number_bands` 已部署：14 条“平日/土休日 × 7 类服务”分组，1,738 GTFS 行、1,718 个去重的日历内番号。每组包含 min/max 仅作索引，**只允许 exact_train_numbers 白名单匹配**，禁止数字区间间隙自动命中。 |
-| 服务与 PNG | `スペーシアX → N100`、`リバティ／スカイツリーライナー → 500`、`けごん／きぬ → 100`、`りょうもう → 200 型代表图`、`TH ライナー → 70090`；普通／急行／準急按 GTFS 走廊分组：浅草系 `10030`、日比谷线系 `70000`、押上系 `50050` 均为**线路参考图**，不对应当天实车；无法确定走廊的 14 条计划行不选车图。 |
+| 服务与 PNG | `スペーシアX → N100`、`リバティ／スカイツリーライナー → 500`、`けごん／きぬ → 100`、`りょうもう → 200 型代表图`、`TH ライナー → 70090`；普通／急行／準急按 GTFS 走廊和运用号分组：浅草系 `10030`；日比谷系 `S→メトロ13000`、`T→東武70000/70090`；押上系 `K→東急2020`、`S→メトロ18000`、`T→東武50050`，均为**所属方线路参考图**，不对应当天实车；无法确定走廊的 14 条计划行不选车图。 |
 | 安全边界 | 仅 2026-11-02—2026-11-30 有效；强制线路、运营商、source railway、日历、完整列车号、车种、实际车辆身份拦截，严格不把可用车辆照片提升为 `actualVehicleConfirmed`。SQL `reference_only=true`、`actual_vehicle_confirmed=false`；RLS 启用且匿名/普通登录不可读。 |
 | 图片授权与缓存 | 复用 `vehicle-garage-png-map.js`，补齐 500／200／N100 东武晴空塔线图库范围；`aebd985` 按真实 GTFS 站序分流普通系 PNG，并更新 `pages/trains.html` 缓存指纹；对应 CI 全绿。 |
 | 验证部署 | main `78fe980` 号段/图库/缓存、`ae726a7` SQL/测试、`9a62bdd` 渲染器检查、`aebd985` 普通系走廊修复。原号段迁移及 `20261113215000_tobu_skytree_ordinary_corridor_png_references` 均已应用，14 分组/1738 计划行不变，SQL 已回读确认 223/340/222/8（平日）与 222/274/205/6（土休日），内部 RLS 仍限制匿名/登录角色。 |
