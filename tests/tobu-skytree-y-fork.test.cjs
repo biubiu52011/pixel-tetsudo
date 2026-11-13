@@ -59,7 +59,7 @@ test('unknown junction branch stays at Hikifune instead of assuming Oshiage',()=
 });
 test('source direction arrow reversal applies only to the visual Skytree fork',()=>{
  assert.match(source,/function _sourceIndexTrainMoveDir\(/);
- assert.match(source,/function _trainMoveDir\(p,lineId\)/);
+ assert.match(source,/function _trainMoveDir\(p, lineId\)/);
  assert.match(source,/indexDir==="up"\?"down":indexDir==="down"\?"up"/);
  assert.equal(run({stationIndex:3,segmentToIndex:4,segmentProgress:0.5}).moveDir,'up');
  assert.equal(run({stationIndex:4,segmentToIndex:3,segmentProgress:0.5}).moveDir,'down');

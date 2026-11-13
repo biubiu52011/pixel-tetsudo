@@ -3011,6 +3011,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return false;
   }
 
+  function _trainMoveDir(p, lineId) {
+    var indexDir = _sourceIndexTrainMoveDir(p,lineId);
+    if(lineId==="TobuSkytree"&&window.UNIFIED_LINES&&
+       window.UNIFIED_LINES.TobuSkytree&&
+       (window.UNIFIED_LINES.TobuSkytree.stations||[])[3]==="Hikifune")
+      return indexDir==="up"?"down":indexDir==="down"?"up":indexDir;
+    return indexDir;
+  }
+
   function _sourceIndexTrainMoveDir(p, lineId) {
     var dn = String(p.railDirection || '').split(/[:.]/).pop(); // 同时拆冒号和点号（odpt:RailDirection:Waseda 和 TokyoMetro.YoyogiUehara 两种格式）
     // 支线可能从来源的最后一个车站绘制（成田--我孫子）。
@@ -3093,15 +3102,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
     }
     return null;
-  }
-
-  function _trainMoveDir(p,lineId) {
-    var indexDir = _sourceIndexTrainMoveDir(p,lineId);
-    if(lineId==="TobuSkytree"&&window.UNIFIED_LINES&&
-       window.UNIFIED_LINES.TobuSkytree&&
-       (window.UNIFIED_LINES.TobuSkytree.stations||[])[3]==="Hikifune")
-      return indexDir==="up"?"down":indexDir==="down"?"up":indexDir;
-    return indexDir;
   }
 
   // Keep direction (兼容测试截取锚点；说明见下方中文注释)。
