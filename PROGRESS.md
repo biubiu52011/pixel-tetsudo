@@ -5,6 +5,20 @@
 # Pixel Tetsudo 工程进度
 
 
+### TOBU-SKYTREE-2611-PNG-NUMBER-BANDS — スカイツリーライン PNG 号段与图库参考（PRODUCTION-VERIFIED）
+
+| 项目 | 状态 |
+| --- | --- |
+| 2026-11 东京 GTFS 车次 | 原有 SQL 1,738 条计划记录（工作日 909，土休日 829）；在此之上复用 `TrainNumberPngRanges.match` 和车辆图库授权逻辑，没有建立第二套渲染系统。 |
+| 号段范围 | `published_tobu_skytree_png_number_bands` 已部署：14 条“平日/土休日 × 7 类服务”分组，1,738 GTFS 行、1,718 个去重的日历内番号。每组包含 min/max 仅作索引，**只允许 exact_train_numbers 白名单匹配**，禁止数字区间间隙自动命中。 |
+| 服务与 PNG | `スペーシアX → N100`、`リバティ／スカイツリーライナー → 500`、`けごん／きぬ → 100`、`りょうもう → 200 型代表图`、`TH ライナー → 70090`；其余普通／急行／準急是混编线路，仅显示 `50050` **线路示意图**，不对应当天实车。 |
+| 安全边界 | 仅 2026-11-02—2026-11-30 有效；强制线路、运营商、source railway、日历、完整列车号、车种、实际车辆身份拦截，严格不把可用车辆照片提升为 `actualVehicleConfirmed`。SQL `reference_only=true`、`actual_vehicle_confirmed=false`；RLS 启用且匿名/普通登录不可读。 |
+| 图片授权与缓存 | 复用 `vehicle-garage-png-map.js`，补齐 500／200／N100 东武晴空塔线图库范围，站点 `pages/trains.html` 脚本缓存版本已更新。 |
+| 验证部署 | main `78fe980` 号段/画廊/缓存、`ae726a7` SQL 与测试、`9a62bdd` 最终渲染器检查。SQL migration `20261113203000_tobu_skytree_2611_png_number_bands` 已应用；CI 的号段、负例、库映射及 `TrainVehicle.selectMarkerArtwork` 渲染决策均通过。 |
+| 未验证 | 真实手机浏览器上的地图交互、所有图像 CDN 加载与实时/SQL 交替瞬间的视觉表现尚未逐项人工复验；不把单元/契约 CI 等同于端到端视觉验收。 |
+
+
+
 ### TOBU-GTFS-PLAN-FALLBACK-20261113 — 东武两线计划 SQL 兜底（PRODUCTION-VERIFIED）
 
 | 项目 | 状态 |
