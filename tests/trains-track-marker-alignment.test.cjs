@@ -38,9 +38,11 @@ test('ordinary map preserves 11-unit up/down side lanes', () => {
   assert.match(source, /opts\.laneGap\s*==\s*null\s*\?\s*DEFAULTS\.laneGap\s*:\s*opts\.laneGap/);
 });
 
-test('mobile left-side station labels stay outside the train artwork lane', () => {
+test('mobile left and dual station labels stay outside the train artwork lane', () => {
   assert.match(source,
     /side === "left"\) \{[\s\S]*?tx = o\.x - \(isJunction \? 14 : \(isMobileView \? 20 : 10\)\)/);
+  assert.match(source,
+    /side === "dual"\) \{[\s\S]*?tx = o\.x - \(isJunction \? 16 : \(isMobileView \? 20 : 12\)\)/);
   // lane centre x-11 with 14-unit artwork starts at x-18, so x-20 leaves
   // visible clearance without hiding labels or shrinking the train marker.
   assert.ok(20 > 11 + 14 / 2);

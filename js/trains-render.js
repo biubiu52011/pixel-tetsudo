@@ -166,7 +166,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       ty = o.y;
       anchor = "end";
     }
-    else if (side === "dual") { tx = o.x - (isJunction ? 16 : 12); ty = o.y; anchor = "end"; }
+    else if (side === "dual") {
+      // Dual-track station labels share the same left-side marker corridor.
+      // Hachiko uses this side mode, so retain the mobile clearance here too.
+      tx = o.x - (isJunction ? 16 : (isMobileView ? 20 : 12));
+      ty = o.y;
+      anchor = "end";
+    }
     else if (side === "right" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x - (isJunction ? 14 : 10); ty = o.y; anchor = "end"; }
     else { tx = o.x + (geometry.isSixShapedLoop ? 16 : (isJunction ? 14 : 10)); ty = o.y; anchor = "start"; }
 
