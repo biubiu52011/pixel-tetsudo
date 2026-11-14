@@ -25,7 +25,7 @@ SET plan_scope = jsonb_set(
   plan_scope,'{trainTypes}','["TJ-Liner","TJ-LINER"]'::jsonb
 )
 WHERE network_key='Tojo' AND code_pattern='PLAN:OFFICIAL-TJLINER-50090'
-  AND exact_vehicle_type='東武50090型';
+  AND vehicle_candidates @> ARRAY['東武50090型']::text[];
 DO $assert$
 BEGIN
   IF (SELECT count(*) FROM public.published_timetable_coverage_audit
