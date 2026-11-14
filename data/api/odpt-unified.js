@@ -1566,11 +1566,12 @@
             (lineId === "Tobu_Kameido" || lineId === "Daishi_Tobu")) {
             var branchModelLabel = String(vehicleLabel || "") + " " +
                 (/[型系]|series/i.test(String(vehicleId || "")) ? String(vehicleId) : "");
-            if (/(?:^|[^0-9])10030(?:型|系|\s*series)/i.test(branchModelLabel))
-                return "東武10030型";
-            if (/(?:^|[^0-9])10000(?:型|系|\s*series)/i.test(branchModelLabel))
-                return "東武10000型";
-            return "";
+            var is10030 = /(?:^|[^0-9])10030(?:型|系|\s*series)/i.test(branchModelLabel);
+            var is10000 = /(?:^|[^0-9])10000(?:型|系|\s*series)/i.test(branchModelLabel);
+            // A disagreement between vehicle_id and vehicle_label is
+            // contradictory evidence, never a priority ordering.
+            if (is10030 === is10000) return "";
+            return is10030 ? "東武10030型" : "東武10000型";
         }
         // Other Tobu lines retain their established series-only handling.
         // Do not infer a small-branch train's car from a trip number.
