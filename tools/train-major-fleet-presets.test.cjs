@@ -117,8 +117,8 @@ for (const [line,operator,requiredModel] of [
   ['SeibuYamaguchi','Seibu','西武L00系'],
   ['Kokubunji','Seibu','西武8000系（2025年導入）'],
   ['Seibu_Sayama','Seibu','西武7000系（2026年導入）'],
-  ['Daishi_Tobu','Tobu','東武8000系'],
-  ['Tobu_Kameido','Tobu','東武8000系'],
+  ['Daishi_Tobu','Tobu','東武10000型'],
+  ['Tobu_Kameido','Tobu','東武10000型'],
   ['TokyuOimachi','Tokyu','東急6020系（5両・各駅停車）'],
   ['TokyuSetagaya','Tokyu','東急300系'],
   ['Yurikamome','Yurikamome','ゆりかもめ7500系'],
@@ -150,6 +150,18 @@ for (const [line,op,type] of [
 assert.equal(presets.lookup('SeibuYamaguchi','JR-East','odpt.TrainType:JR-East.Local'),null);
 assert.equal(presets.lookup('Yurikamome','TokyoMonorail','odpt.TrainType:TokyoMonorail.Local'),null);
 
+// Tobu Daishi/Kameido: the 8000 series left regular service in July 2025.
+// The current fleet reference has two distinct two-car model families.
+// https://www.tetsudo.com/column/1315/
+for (const line of ['Daishi_Tobu','Tobu_Kameido']) {
+  const entry=presets.lookup(line,'Tobu','odpt.TrainType:Tobu.Local');
+  assert.deepEqual(Array.from(entry.vehicleCandidates),
+    ['東武10000型','東武10030型50番台'],line+': 2026 two-car fleet');
+  assert.ok(!entry.vehicleCandidates.includes('東武8000系'),
+    line+': retired 8000 cannot be a current default model');
+  assert.ok(!entry.vehicleCandidates.includes('東武1000系'),
+    line+': 2027 stock cannot be counted in 2026');
+}
 // Phase 4: sourced regional fleet candidates are reference-only, never identity.
 for (const [line,operator,expected] of [
   ['Echigo','JR-East','E129系'],

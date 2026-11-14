@@ -321,11 +321,9 @@
     // https://www.tobu.co.jp/cms-pdf/releases/202603311157314Fpgmv6VfB8SxpzFBFF5Uw.pdf
     {id:'tobu-daishi', operator:'Tobu', lineIds:['Daishi_Tobu'],
       models:['東武10000型','東武10030型50番台'],
-      validFrom:'2025-07-23',
       sourceUrl:'https://www.tetsudo.com/column/1315/'},
     {id:'tobu-kameido', operator:'Tobu', lineIds:['Tobu_Kameido'],
       models:['東武10000型','東武10030型50番台'],
-      validFrom:'2025-07-23',
       sourceUrl:'https://www.tetsudo.com/column/1315/'},
     {id:'tobu-northern-branches', operator:'Tobu',
       lineIds:['Kiryu','Koizumi','Sano'],
