@@ -61,6 +61,7 @@ test('aggregated display members have no separate rank; corridor insertion remai
   const order = ordered();
   immediatelyAfter(order, 'Yokosuka', 'SobuRapid');
   immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
+  immediatelyAfter(order, 'UenoTokyo', 'ChuoMain');
   assert.ok(order.indexOf('UenoTokyo') > order.indexOf('Yamanote'));
 });
 
@@ -241,6 +242,7 @@ test('JR dedicated public codes outrank manual positions, but non-JR custom orde
   assert.equal(presentation.getLineIconTier(lines.Kawagoe), 2);
   assert.ok(order.indexOf('SotetsuJRDirect') < order.indexOf('Kawagoe'));
   immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
+  immediatelyAfter(order, 'UenoTokyo', 'ChuoMain');
 });
 
 test('public code overrides order only inside the same JR dedicated-icon tier', () => {
@@ -251,7 +253,7 @@ test('public code overrides order only inside the same JR dedicated-icon tier', 
       presentation: {lineIds: ['A'], code: 'CA', order: 3}},
     B: { operator: 'JR-Central', image: '../images/CB.png',
       presentation: {lineIds: ['B'], code: 'CB', order: 2}},
-    NoIcon: { operator: 'JR-Central', image: '',
+    NoIcon: { operator: 'JR-Central', code: 'JS', image: '',
       presentation: {lineIds: ['NoIcon'], code: '', order: 4}},
     GroupIcon: { operator: 'JR-Central', image: '../images/JRグループ.png',
       presentation: {lineIds: ['GroupIcon'], code: '', order: 5}}

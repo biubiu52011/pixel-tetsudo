@@ -11,7 +11,7 @@
  * 同一 JR 运营商组内，先在来线后新干线；图标级别为专属 > 通用徽章 > 无图标。
  * JR 在来线专属图标按正式线路符号排序，同符号线路按 presentation.order；
  * 其他序列按 presentation.order → 显示符号 → 名称 → 稳定原始顺序。
- * 上野东京线是明确保留的服务走廊特例，固定紧随 JobanMain。
+ * 上野东京线是明确保留的服务走廊特例，维持 JobanMain → UenoTokyo → ChuoMain。
  *
  * canonical 物理线路仍在 railway_data.json 中独立建模；
  * 本层只负责展示，不合并或改写 canonical 拓扑。
@@ -272,7 +272,10 @@
    * 返回完整的 lineId 顺序：先放按展示顺序排列的主记录，再放其成员线路。
    * 成员共享主记录的排序位置，UI 聚合层负责去重。
    */
-  var EXPLICIT_CORRIDOR_AFTER = { UenoTokyo: "JobanMain" };
+  // 唯一经明确指定的顺序例外；其邻接线路随本走廊保持一个连续块。
+  var EXPLICIT_CORRIDOR_PLACEMENT = {
+    UenoTokyo: { after: "JobanMain", following: "ChuoMain" }
+  };
 
   function getDisplayOrder(allLines, options) {
     allLines = allLines || {};
@@ -294,10 +297,16 @@
         var presentation = line.presentation || {};
         var afterLineId = presentation.afterLineId;
         if (out.indexOf(lid) !== -1) return;
-        // 仅上野东京线保留明确声明的特例；不受通用图标分层影响。
-        var explicitAfter = EXPLICIT_CORRIDOR_AFTER[lid];
-        if (explicitAfter && out.indexOf(explicitAfter) >= 0) {
-          out.splice(out.indexOf(explicitAfter) + 1, 0, lid);
+        // 上野东京线是明示的例外：保持 JobanMain → UenoTokyo → ChuoMain。
+        // 该连续块不受通用徽章/无图标的通用优先级影响。
+        var placement = EXPLICIT_CORRIDOR_PLACEMENT[lid];
+        if (placement && out.indexOf(placement.after) >= 0) {
+          var companion = placement.following;
+          var companionIndex = companion ? out.indexOf(companion) : -1;
+          if (companionIndex >= 0) out.splice(companionIndex, 1);
+          var anchorIndex = out.indexOf(placement.after);
+          out.splice(anchorIndex + 1, 0, lid);
+          if (companionIndex >= 0) out.splice(anchorIndex + 2, 0, companion);
           return;
         }
         if (!hasDedicatedLineIcon(line) && Number.isInteger(presentation.order)) {
@@ -381,7 +390,7 @@
       key: operator + "::" + lineId,
       internalCode: internalCode,
       internalKey: operator + "::" + internalCode,
-      displayCode: (line.presentation || {}).code || line.code || "",
+      displayCode: passengerSymbolOf(line, line.presentation),
       railwayCode: railwayCode,
       sourceOperator: sourceOperator,
       sourceKey: sourceOperator + "::" + railwayCode,

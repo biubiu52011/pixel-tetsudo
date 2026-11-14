@@ -43,6 +43,8 @@ jobs:
         run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify train overview DOM structure and state
         run: node --test tests/train-overview-dom.test.cjs
+      - name: Verify canonical line sort tiers and explicit Ueno-Tokyo exception
+        run: node --test tests/line-overview-presentation.test.cjs
       - name: Verify JR-Central ChuoCentral canonical 40-station SQL route and Okuwa safety
         run: node --test tests/chuo-central-sql-registry.test.cjs
       - name: Verify Tobu Isesaki official 303E clocks, TI identifiers and Chichibu junction
