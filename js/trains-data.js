@@ -850,28 +850,41 @@ window.StationInfoLayout = (function() {
   function plan(items, stationId, stationName, mobile, maxWidth) {
     var all = prepare(items, stationId, stationName, mobile);
     var cap = maxRows(), widthLimit = Math.max(1, Number(maxWidth) || 1);
-    var planResult = null;
-    for (var columns = 4; columns >= 1; columns--) {
-      var shown = all.slice(0, columns * cap);
-      var rows = Math.ceil(shown.length / columns);
-      var rowWidths = [];
-      for (var row = 0; row < rows; row++) {
-        var rowItems = shown.slice(row * columns, (row + 1) * columns);
-        rowWidths.push(rowItems.reduce(function(sum, entry) {
-          return sum + entry.width;
-        }, 0) + Math.max(0, rowItems.length - 1) * GAP);
+    function pack(entries) {
+      var result = null;
+      for (var columns = 4; columns >= 1; columns--) {
+        var shown = entries.slice(0, columns * cap);
+        var rows = Math.ceil(shown.length / columns);
+        var rowWidths = [];
+        for (var row = 0; row < rows; row++) {
+          var rowItems = shown.slice(row * columns, (row + 1) * columns);
+          rowWidths.push(rowItems.reduce(function(sum, entry) {
+            return sum + entry.width;
+          }, 0) + Math.max(0, rowItems.length - 1) * GAP);
+        }
+        var contentWidth = rowWidths.length ? Math.max.apply(null, rowWidths) : 0;
+        var hidden = entries.length - shown.length;
+        var moreText = hidden ? "+" + hidden : "";
+        var moreWidth = moreText ? measure(moreText, 7) + GAP : 0;
+        result = {shown:shown, perRow:columns, rows:rows,
+          rowWidths:rowWidths, contentWidth:contentWidth,
+          totalWidth:contentWidth + moreWidth, moreText:moreText,
+          height:rows ? rows * PITCH : 0};
+        if (result.totalWidth <= widthLimit || columns === 1) break;
       }
-      var contentWidth = rowWidths.length ? Math.max.apply(null, rowWidths) : 0;
-      var hidden = all.length - shown.length;
-      var moreText = hidden ? "+" + hidden : "";
-      var moreWidth = moreText ? measure(moreText, 7) + GAP : 0;
-      planResult = {shown:shown, perRow:columns, rows:rows,
-        rowWidths:rowWidths, contentWidth:contentWidth,
-        totalWidth:contentWidth + moreWidth, moreText:moreText,
-        height:rows ? rows * PITCH : 0};
-      if (planResult.totalWidth <= widthLimit || columns === 1) break;
+      return result;
     }
-    return planResult;
+    var result = pack(all);
+    // A remote-station suffix is secondary metadata, not permission to draw
+    // across the running track. If a one-column row still cannot fit,
+    // suppress only the suffix visually; each badge keeps its full title.
+    if (result.totalWidth > widthLimit && all.some(function(e) { return !!e.extra; })) {
+      result = pack(all.map(function(e) {
+        return Object.assign({}, e, {extra:"", width:e.badgeWidth});
+      }));
+      result.compactAliases = true;
+    }
+    return result;
   }
   // Reserve the worst case for 2-column fallback, capped at actual maxRows.
   // The SVG may use 4/3/2/1 columns, but never more rows than this cap.
