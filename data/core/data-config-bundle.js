@@ -2916,7 +2916,7 @@ window.TRAIN_TYPE_NAMES = {
   "odpt.TrainType:Tobu.SemiExpress":                { ja: "準急", en: "Semi Express", zh: "准急", ko: "준급" },
   "odpt.TrainType:Tobu.TJ-Liner":                   { ja: "TJライナー", en: "TJ-Liner", zh: "TJ-Liner", ko: "TJ라이너" },
   "odpt.TrainType:Tobu.RapidExpress":                { ja: "快速急行", en: "Rapid Express", zh: "快速急行", ko: "쾌속급행" },
-  "odpt.TrainType:Tobu.KawagoeLimitedExpress":       { ja: "川越線特急", en: "Kawagoe Ltd. Exp.", zh: "川越线特急", ko: "카와고에특급" },
+  "odpt.TrainType:Tobu.KawagoeLimitedExpress":       { ja: "川越特急", en: "Kawagoe Ltd. Exp.", zh: "川越特急", ko: "카와고에특급" },
 
   // ===== 都营 =====
   "odpt.TrainType:Toei.Local":                       { ja: "各駅停車", en: "Local", zh: "各站停车", ko: "각역정차" },
