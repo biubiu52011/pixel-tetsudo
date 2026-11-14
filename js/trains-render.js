@@ -2049,10 +2049,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // a second complete train or detach/reparent its destination caption.
         var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
           {kind:"unresolved", iconSrc:"", className:spec.className,
-            compact:true,unresolvedReason:"image-load-failed"},
+            compact:true},
           marker._displayX, marker._displayY, marker._trainPosition || p,
           lineId, isLoop, color, loc);
         if (neutral) {
+          neutral.setAttribute("data-vehicle-png-reason","image-load-failed");
           neutral._displayStationIdx = marker._displayStationIdx;
           neutral._displayNextStationIdx = marker._displayNextStationIdx;
           neutral._displayRoutePos = marker._displayRoutePos;
