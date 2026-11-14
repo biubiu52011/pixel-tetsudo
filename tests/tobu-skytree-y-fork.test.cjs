@@ -169,14 +169,16 @@ test('L corner interpolation keeps the vehicle on painted horizontal then vertic
  assert.ok(reverse.y<185&&reverse.y>140);
  assert.equal(run({stationIndex:1,segmentToIndex:2,segmentProgress:0.5}),null);
 });
-test('long station name, Hikifune transfers and through caption use nonoverlapping L coordinates',()=>{
+test('long station name, Hikifune transfers and through caption obey shared L3 layout',()=>{
  assert.ok(source.includes('forkMultiline: !!_forkLines'));
  assert.ok(source.includes('forkJunction: _forkHikifune'));
- assert.ok(source.includes('if(o.forkMultiline)iy0=o.y+21'));
- assert.ok(source.includes('ix0 = o.forkJunction ? o.x - 24 - totalW'));
- assert.ok(source.includes('_setRows(3);'),'fork badge reflow uses existing rows');
- assert.ok(source.includes('ix0 = Math.max(2, ix0)'),'junction badges never clip left');
- assert.ok(source.includes('_forkHikifune ? sc.y - 16'));
+ assert.ok(source.includes('if (o.forkMultiline) iy0 = o.y + 21;'));
+ assert.ok(source.includes('var badgePlan = window.StationInfoLayout.plan('));
+ assert.ok(source.includes('var rows = badgePlan.rows;'));
+ assert.ok(source.includes('if (_align === "end" && ix0 < 2) ix0 = 2;'));
+ assert.ok(source.includes('ty: _forkHikifune ? sc.y - 16'));
+ assert.ok(data.includes('window.StationInfoLayout.reservedRows('),
+   'shared geometry must reserve the same badge row height as L3 render');
  assert.ok(!data.includes("'data-fork-caption':'oshiage-through'"),
    'Hanzomon label is owned by ThroughChip, not a separate track caption');
 });
