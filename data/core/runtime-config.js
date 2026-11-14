@@ -152,8 +152,8 @@
       "KeioTakao": { mode: "FULL" },
       "TobuSkytree": { mode: "FULL" },
       "Noda": { mode: "FULL" },
-      "Tojo": { mode: "FULL" },
-      "Ogose": { mode: "FULL" },
+      "Tojo": { mode: "HYBRID" },
+      "Ogose": { mode: "HYBRID" },
       "Daishi_Tobu": { mode: "FULL" },
 
       // 已知为部分/受限来源，但尚未保存经过验证的本地站间覆盖。
