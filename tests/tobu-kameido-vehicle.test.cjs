@@ -228,3 +228,24 @@ test('SVG marker spec publishes the vehicle rejection reason without rewriting l
   assert.equal(spec.illustrationRole, 'tobu-branch-working-fleet-example-not-observed');
   assert.equal(spec.unresolvedReason, '');
 });
+
+
+test('C4 accessible text identifies PNG as a fleet example, not observed rolling stock', () => {
+  const source = read('js/trains-render.js');
+  const start = source.indexOf('function _trainMarkerAccessibleDescription(p, lineId, spec)');
+  const end = source.indexOf('\n  }\n', start);
+  assert.ok(start >= 0 && end > start, 'accessible marker description function must exist');
+  const label = vm.runInNewContext('(' + source.slice(start, end + 5) + ')', {
+    window: {currentLang:'ja'},
+    _trainMarkerTitle: () => '普通 | 曳舟 | 位置情報：ODPT／公式リアルタイム観測'
+  });
+  const text = label(position({trainNumber:'C4',positionSource:'realtime-api',estimated:false}),
+    'Tobu_Kameido', {
+      illustrative:true,
+      illustrationRole:'tobu-branch-working-fleet-example-not-observed',
+      illustrationModel:'東武10000型（亀戸・大師線・2両）'
+    });
+  assert.ok(text.includes('公式リアルタイム観測'), 'live position provenance stays live');
+  assert.ok(text.includes('車両参考図'), 'reference PNG is labelled as illustrative');
+  assert.ok(text.includes('実車編成未確認'), 'actual stock remains unconfirmed');
+});
