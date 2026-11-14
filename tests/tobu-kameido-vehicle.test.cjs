@@ -249,3 +249,83 @@ test('C4 accessible text identifies PNG as a fleet example, not observed rolling
   assert.ok(text.includes('車両参考図'), 'reference PNG is labelled as illustrative');
   assert.ok(text.includes('実車編成未確認'), 'actual stock remains unconfirmed');
 });
+
+
+test('Tobu branch car-number ranges select the existing 10000 / renewed 10030 PNGs', () => {
+  const window = loadVehicleRegistry();
+  const lookup = window.TrainVehicle.lookupTobuBranchVehicleNumberPng;
+  const physical = (number, overrides = {}) => lookup({
+    lineId: 'Tobu_Kameido', railway: 'odpt.Railway:Tobu.Kameido',
+    operator: 'Tobu', positionSource: 'realtime-api',
+    serviceDate: '2026-11-15', _realtimeVehicleResolution: true,
+    realtimeCarNumber: String(number), ...overrides
+  });
+  for (const number of [11201,11202,11203,11204,12201,12202,12203,12204]) {
+    const result = physical(number);
+    assert.ok(result, '10000 must map ' + number);
+    assert.equal(result.model, '東武10000型（亀戸・大師線・2両）');
+    assert.equal(result.pngPath, '../images/列车/東武鉄道/東武鉄道_10000型_更新車.png');
+  }
+  for (const number of [
+    11251,11252,11253,11254,11255,11256,11257,11258,11259,
+    11260,11261,11262,11263,11266,
+    12251,12252,12253,12254,12255,12256,12257,12258,12259,
+    12260,12261,12262,12263,12266
+  ]) {
+    const result = physical(number);
+    assert.ok(result, '10030 must map ' + number);
+    assert.equal(result.model, '東武10030型50番台（亀戸・大師線・2両）');
+    assert.equal(result.pngPath, RENEWED_10030);
+  }
+  for (const number of [11250,11264,11265,11267,11268,11269,12264,12265,12267,12268]) {
+    assert.equal(physical(number), null, 'unapproved / unrenewed ' + number);
+  }
+});
+
+test('number ranges respect date, line, physical evidence and conflicting carsets', () => {
+  const window = loadVehicleRegistry();
+  const lookup = window.TrainVehicle.lookupTobuBranchVehicleNumberPng;
+  const base = {
+    lineId:'Tobu_Kameido', railway:'odpt.Railway:Tobu.Kameido',
+    operator:'Tobu', serviceDate:'2026-11-15',
+    _realtimeVehicleResolution:true, vehicleCarNumber:'12261'
+  };
+  assert.equal(lookup(base).formationId, '11261F');
+  assert.equal(lookup({...base, formationId:'11261F'}).formationId, '11261F');
+  assert.equal(lookup({...base, formationId:'11260F'}), null);
+  assert.equal(lookup({...base, trainNumber:'11201'}).formationId, '11261F');
+  assert.equal(lookup({...base, vehicleCarNumber:'', trainNumber:'11201'}), null,
+    'a public train number alone must not select a car');
+  assert.equal(lookup({...base, vehicleEvidenceKind:'trip-id-only'}), null);
+  assert.equal(lookup({...base, lineId:'Tojo'}), null);
+  assert.equal(lookup({...base, railway:'odpt.Railway:Tobu.Tojo'}), null);
+  assert.equal(lookup({...base, operator:'JR-East'}), null);
+  assert.equal(lookup({...base, serviceDate:'2024-12-31'}), null);
+  assert.equal(lookup({
+    ...base, lineId:'Daishi_Tobu',railway:'odpt.Railway:Tobu.Daishi'
+  }).model,'東武10030型50番台（亀戸・大師線・2両）');
+  const fromFormation=lookup({...base, vehicleCarNumber:'', formationId:'11202F'});
+  assert.equal(fromFormation.model,'東武10000型（亀戸・大師線・2両）');
+});
+
+test('live physical identifiers resolve to PNG without assigning C4 from its train number', () => {
+  const window = loadVehicleRegistry();
+  const base = {
+    lineId:'Tobu_Kameido', railway:'odpt.Railway:Tobu.Kameido',
+    operator:'Tobu', positionSource:'realtime-api',
+    serviceDate:'2026-11-15', trainNumber:'C4'
+  };
+  const exact = window.TrainVehicle.resolveRealtime({
+    ...base, realtimeCarNumber:'11263'
+  });
+  assert.equal(exact.vehicleResult.identityStatus, 'EXACT');
+  assert.equal(exact.vehicleResult.iconPath, RENEWED_10030);
+  const unknown = window.TrainVehicle.resolveRealtime(base);
+  assert.notEqual(unknown.vehicleResult.identityStatus,'EXACT');
+  assert.equal(unknown.vehicleResult.iconPath,'');
+  const conflict = window.TrainVehicle.resolveRealtime({
+    ...base, realtimeCarNumber:'11201', realtimeVehicleType:'東武10030型'
+  });
+  assert.notEqual(conflict.vehicleResult.identityStatus,'EXACT');
+  assert.equal(conflict.vehicleResult.iconPath,'');
+});
