@@ -8572,7 +8572,7 @@
       "lat": 35.70738,
       "lng": 139.8316
     },
-    "Omurai": {
+    "Komurai": {
       "lat": 35.71032,
       "lng": 139.82761
     },
@@ -35923,12 +35923,12 @@
       "nameEn": "Kameido Line",
       "nameJa": "東武亀戸線",
       "code": "TKM",
-      "color": "#FF69B4",
+      "color": "#0f6cc3",
       "operator": "Tobu",
       "region": null,
       "type": "straight",
       "image": "../images/鉄道/東武鉄道/亀戸線.png",
-      "durationTotalMin": null,
+      "durationTotalMin": 8,
       "branchOf": null,
       "stations": [
         "Hikifune",
@@ -35938,14 +35938,19 @@
         "Kameido"
       ],
       "durations": [
-        2,
-        2,
-        2,
+        3,
+        1,
         2,
         2
       ],
       "throughServices": [],
       "transferStations": [
+        {
+          "station": "Hikifune",
+          "lineId": "TobuSkytree",
+          "type": "in",
+          "note": ""
+        },
         {
           "station": "Kameido",
           "lineId": "ChuoSobuLocal",
@@ -35956,7 +35961,7 @@
       "nameZh": "龟户线",
       "nameKo": "카메이도선",
       "presentation": {
-        "code": "TKM",
+        "code": "TS",
         "nameJa": "亀戸線",
         "nameZh": "龟户线",
         "nameEn": "Kameido Line",
