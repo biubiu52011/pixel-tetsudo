@@ -5763,10 +5763,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       /^[A-D][0-9]{1,3}$/i.test(String(p.trainNumber || "").trim());
     if (isTobuBranchWorking) {
       var physicalBranchIdentity = identityConfirmed &&
-        (p.actualVehicleConfirmed === true ||
-         p.vehicleResolvedFromRealtime === true ||
-         resolutionSources.indexOf("roster-physical-id") >= 0 ||
-         resolutionSources.indexOf("official-realtime-car-number") >= 0);
+        (resolutionSources.indexOf("roster-physical-id") >= 0 ||
+         resolutionSources.indexOf("official-realtime-car-number") >= 0 ||
+         (p.vehicleResolvedFromRealtime === true &&
+          resolutionSources.indexOf("realtime") >= 0));
+      // A flattened actualVehicleConfirmed or vehicleResolvedFromRealtime
+      // boolean, without the resolver's source, is not model evidence.
       var certifiedBranchPlan = !!(p.vehiclePlan &&
         _issuedVehiclePlans.has(p.vehiclePlan) &&
         p.vehiclePlan.lineId === contextLineId &&
