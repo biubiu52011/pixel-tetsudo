@@ -13,6 +13,7 @@ on:
       - 'tests/tobu-skytree-png-number-bands.test.cjs'
       - 'tests/tobu-skytree-y-fork.test.cjs'
       - 'tests/tobu-isesaki-canonical-202611.test.cjs'
+      - 'tests/tobu-nikko-2611-number-png.test.cjs'
       - 'tests/tobu-tojo-through-fleet-202611.test.cjs'
       - 'tests/tojo-wakoshi-through-boundary-202611.test.cjs'
       - 'tests/odpt-edge-proxy-security.test.cjs'
@@ -308,6 +309,8 @@ jobs:
         run: node --test tests/tobu-isesaki-canonical-202611.test.cjs
       - name: Verify Tobu Isesaki exact 2611 number PNG reference and red TI color
         run: node --test tests/tobu-isesaki-2611-number-png.test.cjs tests/tobu-isesaki-png-ranges-202611.test.cjs
+      - name: Verify Tobu Nikko canonical Local hop medians, Kinugawa boundary and official-number PNG reference
+        run: node --test tests/tobu-nikko-2611-number-png.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
