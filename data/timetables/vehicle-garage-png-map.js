@@ -41,7 +41,7 @@
     ["tobu-10000-daishi-kameido-2car","東武10000型（亀戸・大師線・2両）",
       "東武鉄道/東武鉄道_10000型_更新車.png","Daishi_Tobu|Tobu_Kameido",1],
     ["tobu-10030-50-daishi-kameido-2car","東武10030型50番台（亀戸・大師線・2両）",
-      "東武鉄道/東武鉄道_10030型_50番台.png","Daishi_Tobu|Tobu_Kameido",1]
+      "東武鉄道/東武鉄道_10030型_50番台_更新車.png","Daishi_Tobu|Tobu_Kameido",1]
   );
   // Approved as representative planned images on TokaidoCentral only.
   // Never evidence of a real formation or a train-number-to-stock assignment.
