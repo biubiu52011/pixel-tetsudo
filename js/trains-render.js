@@ -10,24 +10,6 @@ var _trainArtworkFailureCount = 0;
 var _TRAIN_ARTWORK_FAILURE_MAX = 500;
 var _TRAIN_ARTWORK_FAILURE_RETRY_MS = 45 * 1000;
 
-function _badgeLabel(it) {
-  return String((it && (it.name || it.lineId)) || "").slice(0, 4);
-}
-function _badgeW(it, isMobile) {
-  var label = _badgeLabel(it);
-  var fontSize = isMobile ? 9 : 6.5;
-  // ThroughChip already owns cached SVG text measurement. Reuse that
-  // measurement rather than assuming CJK and Latin glyphs have equal width.
-  var measure = window.ThroughChip && window.ThroughChip.measureWidth;
-  var width = typeof measure === "function" ? Number(measure(label, fontSize)) : NaN;
-  if (!Number.isFinite(width) || width < 0) {
-    width = Array.from(label).reduce(function(sum, char) {
-      return sum + (/[^\u0000-\u007f]/.test(char) ? fontSize : fontSize * 0.65);
-    }, 0);
-  }
-  return Math.ceil(width) + 8;
-}
-
 function _rememberTrainArtworkFailure(trainUid, imagePath) {
   if (!trainUid || !imagePath) return;
   if (!_trainArtworkFailure[String(trainUid)]) _trainArtworkFailureCount++;
@@ -71,7 +53,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
    * @returns {Object} 几何对象，包含 stations、svgW、svgH、isLoop、isSixShapedLoop 等字段
    */
 
-  function _renderStationNode(staticLayer, svgNS, o) {
+  function _renderStationNode(layers, svgNS, o) {
+    var nodeLayer = layers.nodes;
+    var infoLayer = layers.info;
     var color = o.color;
     var isJunction = !!o.isJunction;
     var isMobileView = o.isMobileView;
@@ -113,21 +97,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       _bg.setAttribute("fill", "#fff");
       _bg.setAttribute("stroke", "none");
       _bg.setAttribute("data-station-index", o.si);
-      staticLayer.appendChild(_bg);
+      nodeLayer.appendChild(_bg);
       // 左半弧（金色=有乐町线色，和左边线一致）
       var _arcLeft = document.createElementNS(svgNS, "path");
       _arcLeft.setAttribute("d", "M " + _cx + " " + (_cy - _r) + " A " + _r + " " + _r + " 0 0 0 " + _cx + " " + (_cy + _r));
       _arcLeft.setAttribute("fill", "none");
       _arcLeft.setAttribute("stroke", o.sharedColor);
       _arcLeft.setAttribute("stroke-width", "2");
-      staticLayer.appendChild(_arcLeft);
+      nodeLayer.appendChild(_arcLeft);
       // 右半弧（棕色=副都心线色，和右边线一致）
       var _arcRight = document.createElementNS(svgNS, "path");
       _arcRight.setAttribute("d", "M " + _cx + " " + (_cy - _r) + " A " + _r + " " + _r + " 0 0 1 " + _cx + " " + (_cy + _r));
       _arcRight.setAttribute("fill", "none");
       _arcRight.setAttribute("stroke", color);
       _arcRight.setAttribute("stroke-width", "2");
-      staticLayer.appendChild(_arcRight);
+      nodeLayer.appendChild(_arcRight);
     } else {
       var circle = document.createElementNS(svgNS, "circle");
       circle.setAttribute("cx", o.x);
@@ -140,7 +124,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       circle.setAttribute("stroke", color);
       circle.setAttribute("stroke-width", isJunction ? "3" : "2");
       circle.setAttribute("data-station-index", o.si);
-      staticLayer.appendChild(circle);
+      nodeLayer.appendChild(circle);
     }
 
     // 站名位置（优先使用 o.tx/o.ty/o.anchor，否则根据侧边推导）。
@@ -177,6 +161,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     else { tx = o.x + (geometry.isSixShapedLoop ? 16 : (isJunction ? 14 : 10)); ty = o.y; anchor = "start"; }
 
     if (_labelAlreadyRendered) return;
+    var infoGroup = document.createElementNS(svgNS, "g");
+    infoGroup.setAttribute("class", "station-info");
+    infoGroup.setAttribute("data-station-info", String(o.stationId || ""));
+    infoLayer.appendChild(infoGroup);
     var label = document.createElementNS(svgNS, "text");
     label.setAttribute("x", tx);
     label.setAttribute("y", ty);
@@ -231,221 +219,121 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
     } else { nameTspan.textContent = stationName; label.appendChild(nameTspan); }
     label.setAttribute('data-station-label',o.stationId);
-    staticLayer.appendChild(label);
+    infoGroup.appendChild(label);
 
     // 换乘线路图标（在站名下方圆角背景徽章内分组）。
     if (o.skipTx) return;
     var transferMap = o.transferMap || {};
     var txLines = transferMap[o.stationId] || [];
     if (txLines.length > 0) {
-      var isCompact = (side === "top" || side === "bottom");
-      var ICON = 16; // 换乘图标统一 16px（与站名字号一致，用户尝试）
-      var GAP = 2;
-      var PER_ROW = 4;
-      var MAX_ROWS = (window.RuntimeConfig && window.RuntimeConfig.TRANSFER_MAX_ROWS) || 4; // 2→3 行——JR 大站（东京/新宿）换乘超 8 条，截断致"同一套系统无法区分"
-      var maxShow = PER_ROW * MAX_ROWS;
-      var nonThru = txLines.filter(function(t) { return !t.through; });
-      // 系统级去重：同一运营系统只显示一个徽章——
-      // ①同 icon（视觉身份）：横须贺·总武快速同 JO、東海道線 JT 与干线本名
-      //   TokaidoMain 同 icon → 合并；②无 icon 时按 LOS 系统键（高崎/宇都宮
-      //   icon 不同 → 保留为两条独立线）
-      var seenIcon = {};
-      nonThru = nonThru.filter(function(t) {
-        var key = t.image ? ("I:" + t.image) : (_losGroupKey(t) || ("L:" + t.lineId));
-        if (seenIcon[key]) return false;
-        seenIcon[key] = true;
-        return true;
-      });
-      // JR 东系统内换乘排前（行业惯例：JR 线一组、私铁/地铁另排）——
-      // 同记号系列（JK-JY）连续可辨，跨公司换乘不插队
-      nonThru.sort(function(a, b) {
-        var aj = a.operator === "JR-East" ? 0 : 1;
-        var bj = b.operator === "JR-East" ? 0 : 1;
-        return aj - bj;
-      });
-      var shown = nonThru.slice(0, maxShow);
-      var rows = Math.ceil(shown.length / PER_ROW);
-      var _rowWAt = function(r) {
-        var acc = 0;
-        var from = r * PER_ROW, to = Math.min((r + 1) * PER_ROW, shown.length);
-        for (var k = from; k < to; k++) {
-          var it = shown[k];
-          acc += (it.image ? ICON : _badgeW(it, isMobileView)) + GAP;
-        }
-        return acc > 0 ? acc - GAP : 0;
-      };
-      var maxRowW = 0;
-      for (var rw_ = 0; rw_ < rows; rw_++) maxRowW = Math.max(maxRowW, _rowWAt(rw_));
-      var moreText = nonThru.length > maxShow ? "+" + (nonThru.length - maxShow) : "";
-      var totalW = maxRowW + (moreText ? 12 : 0);
-      var _setRows = function(perRow) {
-        PER_ROW = perRow;
-        shown = nonThru.slice(0, PER_ROW * MAX_ROWS);
-        rows = Math.ceil(shown.length / PER_ROW);
-        maxRowW = 0;
-        for (var rw_2 = 0; rw_2 < rows; rw_2++) maxRowW = Math.max(maxRowW, _rowWAt(rw_2));
-        moreText = nonThru.length > PER_ROW * MAX_ROWS ? "+" + (nonThru.length - PER_ROW * MAX_ROWS) : "";
-        totalW = maxRowW + (moreText ? 12 : 0);
-      };
-      var ix0, iy0;
-      // junction 站名在圆点上方（anchor=middle）时，换乘 chip 仍放圆点下方（ty 已上移，不能再用 ty+9/14）
-      // 判据用 anchor==="middle"（junction top 模式唯一入口；普通站不传 o.anchor）
+      var ICON = window.StationInfoLayout.icon;
+      var GAP = window.StationInfoLayout.gap;
       var _jTopMode = (o.tx != null && o.anchor === "middle" && o.y != null);
-      iy0 = _jTopMode ? (o.y + 14) : ((side === "top") ? (o.y + 14) : (ty + (isJunction ? 14 : 9))); // chip 在站名下方，避让圆点底缘（+2px）
-      if (o.horizontalBranch) iy0 = o.labelAbove ? ty - rows * 18 - 14 : ty + (o.labelLines.length - 1) * 18 + 14;
-      if (iy0 < 2) iy0 = 2;
-      // 对齐规则（用户规定）：换乘图标块必须有一边与站名文字侧边对齐——
-      // 站名在圆点右侧（anchor=start）→ chip 左缘=文字左缘；站名在左侧（anchor=end）→
-      // chip 右缘=文字右缘；顶底站名（anchor=middle）→ chip 居中于文字。
-      if (anchor === "end") { ix0 = tx - totalW; }
-      else if (anchor === "start") { ix0 = tx; }
-      else { ix0 = tx - totalW / 2; }
-      // 居中的接续点标题不会让竖直轨道
-      // 可用于放置换乘图片。将完整徽章放在两个
-      // 方向标记车道之外（11px 车道 + 7px 半标记 + 6px 间距）。
+      // L3 anchor contract: names and transfers use one position decision.
+      // For ordinary stations, icons align with the same side as the name.
+      // A centered junction uses a 24-unit track clearance on either side.
+      var _align = anchor;
+      var _edge = tx;
+      var _available = anchor === "end" ? tx - 2
+        : anchor === "start" ? svgW - 2 - tx
+        : Math.max(1, 2 * Math.min(tx - 2, svgW - 2 - tx));
       if (_jTopMode && !o.horizontalBranch) {
-        // Hikifune's right-hand L turn is a train lane. Keep the
-        // junction transfer badges to the left of that track.
-        ix0 = o.forkJunction ? o.x - 24 - totalW :
-          (o.x + 24 + totalW <= svgW - 2 ? o.x + 24 : o.x - 24 - totalW);
-        if (o.forkJunction && ix0 < 2) {
-          // Reflow icons while maintaining a 24px clear track gutter.
-          // Do not fall back to the ordinary centered junction badge
-          // placement: it overlaps the Hikifune -> Oshiage L turn.
-          _setRows(3);
-          ix0 = o.x - 24 - totalW;
-          if (ix0 < 2) { _setRows(2); ix0 = o.x - 24 - totalW; }
-          ix0 = Math.max(2, ix0);
-        }
+        var _leftRoom = o.x - 26, _rightRoom = svgW - o.x - 26;
+        _align = o.forkJunction || _leftRoom >= _rightRoom ? "end" : "start";
+        _edge = _align === "end" ? o.x - 24 : o.x + 24;
+        _available = Math.max(1, _align === "end" ? _leftRoom : _rightRoom);
       }
-      if(o.forkMultiline)iy0=o.y+21;
-      if ((side === "left" || side === "dual") && ix0 < 2) {
-        _setRows(3);
-        ix0 = tx - totalW;
-        if (ix0 < 2) {
-          _setRows(2);
-          ix0 = tx - totalW;
-        }
-        if (ix0 < 2) ix0 = 2;
-      }
-      if ((side === "right" || side === "dual") && ix0 + totalW > svgW - 2) {
-        _setRows(3);
-        ix0 = tx;
-        if (ix0 + totalW > svgW - 2) {
-          _setRows(2);
-          ix0 = tx;
-        }
-        if (ix0 + totalW > svgW - 2) ix0 = svgW - 2 - totalW;
-      }
-      var bgH = 0;
-      for (var r_ = 0; r_ < rows; r_++) {
-        var _rowImg = false;
-        for (var c_ = r_ * PER_ROW; c_ < Math.min((r_ + 1) * PER_ROW, shown.length); c_++) {
-          if (shown[c_].image) { _rowImg = true; break; }
-        }
-        bgH += (_rowImg ? ICON + 2 : 15);
-      }
-      if (rows > 1) bgH += (rows - 1) * GAP;
-      var bg = document.createElementNS(svgNS, "rect");
-      bg.setAttribute("x", ix0 - 1);
-      bg.setAttribute("y", iy0 - 1);
-      bg.setAttribute("width", totalW + 2);
-      bg.setAttribute("height", bgH);
-      bg.setAttribute("rx", "3");
-      bg.setAttribute("fill", "rgba(255,255,255,0.72)");
-      staticLayer.appendChild(bg);
-      {
-        var _rowCur = null;
-        for (var ti2 = 0; ti2 < shown.length; ti2++) {
-          var txl = shown[ti2];
-          var itemLayer = document.createElementNS(svgNS, "g");
-          staticLayer.appendChild(itemLayer);
-          var row = Math.floor(ti2 / PER_ROW);
-          var col = ti2 % PER_ROW;
-          if (col === 0) _rowCur = ix0;
-          var tix = _rowCur;
-          var tiy = iy0 + row * (ICON + GAP);
-          if (txl.image) {
-            var tImg = document.createElementNS(svgNS, "image");
-            tImg.setAttribute("href", txl.image);
-            tImg.setAttribute("xlink:href", txl.image);
-            tImg.setAttribute("x", tix);
-            tImg.setAttribute("y", tiy);
-            tImg.setAttribute("width", ICON);
-            tImg.setAttribute("height", ICON);
-            tImg.setAttribute("opacity", "0.95");
-            var tTitle = document.createElementNS(svgNS, "title");
-            tTitle.textContent = window.ThroughChip.badgeText(txl);
-            tImg.appendChild(tTitle);
-            itemLayer.appendChild(tImg);
+      var badgePlan = window.StationInfoLayout.plan(
+        txLines, o.stationId, _sName, isMobileView, _available);
+      var rows = badgePlan.rows;
+      var totalW = badgePlan.totalWidth;
+      var ix0 = _align === "end" ? _edge - totalW
+        : _align === "start" ? _edge : _edge - totalW / 2;
+      // If even one badge is wider than a narrow station column, preserve
+      // its anchor and let the shared static viewport include the overflow.
+      // Do not force it across the rail or let it cover another chip.
+      if (_align === "end" && ix0 < 2) ix0 = 2;
+      if (_align === "start" && ix0 + totalW > svgW - 2)
+        ix0 = Math.max(2, svgW - 2 - totalW);
+      var iy0 = _jTopMode ? (o.y + 14)
+        : side === "top" ? (o.y + 14) : (ty + (isJunction ? 14 : 9));
+      if (o.horizontalBranch)
+        iy0 = o.labelAbove
+          ? ty - rows * window.StationInfoLayout.pitch - 14
+          : ty + (o.labelLines.length - 1) * 18 + 14;
+      if (o.forkMultiline) iy0 = o.y + 21;
+      iy0 = Math.max(2, iy0);
+      // The transfer group itself is transparent. White rectangles behind
+      // every station made iOS Smart Invert look like another mini-canvas.
+      if (rows > 0) {
+        var badgeGroup = document.createElementNS(svgNS, "g");
+        badgeGroup.setAttribute("class", "station-transfer-badges");
+        badgeGroup.setAttribute("data-transfer-station", String(o.stationId || ""));
+        infoGroup.appendChild(badgeGroup);
+        var rowCur = ix0;
+        badgePlan.shown.forEach(function(entry, index) {
+          var row = Math.floor(index / badgePlan.perRow);
+          var col = index % badgePlan.perRow;
+          if (col === 0) rowCur = ix0;
+          var bx = rowCur;
+          var by = iy0 + row * window.StationInfoLayout.pitch;
+          var item = entry.item;
+          var itemGroup = document.createElementNS(svgNS, "g");
+          badgeGroup.appendChild(itemGroup);
+          if (item.image) {
+            var img = document.createElementNS(svgNS, "image");
+            img.setAttribute("href", item.image);
+            img.setAttribute("xlink:href", item.image);
+            img.setAttribute("x", bx);
+            img.setAttribute("y", by);
+            img.setAttribute("width", ICON);
+            img.setAttribute("height", ICON);
+            var title = document.createElementNS(svgNS, "title");
+            title.textContent = window.ThroughChip.badgeText(item);
+            img.appendChild(title);
+            itemGroup.appendChild(img);
           } else {
-            // 单行 badge——异名/站外信息放旁边小字，不撑高线路图
-            var _toName = txl.toStation ? (window.RailwayDB && window.RailwayDB.resolveStationName ? window.RailwayDB.resolveStationName(txl.toStation, window.currentLang) : txl.toStation) : "";
-
-            var _lineName = _badgeLabel(txl);
-            var bW = _badgeW(txl, isMobileView);
-            var bH = isMobileView ? 15 : 11;
-            var bRect = document.createElementNS(svgNS, "rect");
-            bRect.setAttribute("x", tix);
-            bRect.setAttribute("y", tiy);
-            bRect.setAttribute("width", bW);
-            bRect.setAttribute("height", bH);
-            bRect.setAttribute("rx", "2");
-            bRect.setAttribute("fill", txl.color || (window.TrainsColors ? window.TrainsColors.LABEL_FALLBACK : "#8a8a8a"));
-            itemLayer.appendChild(bRect);
-            var bTxt = document.createElementNS(svgNS, "text");
-            bTxt.setAttribute("x", tix + bW / 2);
-            bTxt.setAttribute("y", tiy + bH / 2 + (isMobileView ? 3.2 : 2.2));
-            bTxt.setAttribute("text-anchor", "middle");
-            bTxt.setAttribute("font-size", isMobileView ? "9" : "6.5");
-            bTxt.setAttribute("font-weight", "600");
-            bTxt.setAttribute("fill", "#fff");
-            bTxt.textContent = _lineName;
-            itemLayer.appendChild(bTxt);
-
-            // 只有真正的异名/异站换乘才在徽章右侧显示目标站名。
-            // 同一站点或同名站不再重复挂载，避免出现“图标旁又有一个本站名”。
-            var _normalizeStationLabel = function(value) {
-              return String(value || "").replace(/[\s\u30fb・･\-‐‑–—]/g, "").toLowerCase();
-            };
-            var _sameStationId = String(txl.toStation || "").trim() === String(o.stationId || "").trim();
-            var _sameStationName = _normalizeStationLabel(_toName) === _normalizeStationLabel(_sName);
-            // 不同线路经常使用不同的站点 ID，不能只靠字符串判定。
-            // 同一物理换乘点即使名称略有差异，也不应在徽章旁再挂一次站名。
-            var _samePhysicalStation = false;
-            if (!_sameStationId && txl.toStation && o.stationId &&
-                window.RailwayDB && typeof window.RailwayDB.getTransferDistanceKm === "function") {
-              var _transferKm = Number(window.RailwayDB.getTransferDistanceKm(o.stationId, txl.toStation));
-              _samePhysicalStation = isFinite(_transferKm) && _transferKm <= 0.25;
-            }
-            var _sideTxt = (!_sameStationId && !_samePhysicalStation && _toName && !_sameStationName) ? _toName : "";
-            if (_sideTxt) {
-              var sTxt = document.createElementNS(svgNS, "text");
-              sTxt.setAttribute("x", tix + bW + 3);
-              sTxt.setAttribute("y", tiy + bH / 2 + (isMobileView ? 3 : 2));
-              sTxt.setAttribute("font-size", isMobileView ? "7" : "5");
-              sTxt.setAttribute("font-weight", "500");
-              sTxt.setAttribute("fill", "#333");
-              sTxt.textContent = _sideTxt;
-              itemLayer.appendChild(sTxt);
+            var badgeHeight = isMobileView ? 15 : 11;
+            var rect = document.createElementNS(svgNS, "rect");
+            rect.setAttribute("x", bx);
+            rect.setAttribute("y", by);
+            rect.setAttribute("width", entry.badgeWidth);
+            rect.setAttribute("height", badgeHeight);
+            rect.setAttribute("rx", "2");
+            rect.setAttribute("fill", item.color ||
+              (window.TrainsColors ? window.TrainsColors.LABEL_FALLBACK : "#8a8a8a"));
+            itemGroup.appendChild(rect);
+            var nameText = document.createElementNS(svgNS, "text");
+            nameText.setAttribute("x", bx + entry.badgeWidth / 2);
+            nameText.setAttribute("y", by + badgeHeight / 2 + (isMobileView ? 3.2 : 2.2));
+            nameText.setAttribute("text-anchor", "middle");
+            nameText.setAttribute("font-size", isMobileView ? "9" : "6.5");
+            nameText.setAttribute("font-weight", "600");
+            nameText.setAttribute("fill", "#fff");
+            nameText.textContent = entry.label;
+            itemGroup.appendChild(nameText);
+            if (entry.extra) {
+              var extraLabel = document.createElementNS(svgNS, "text");
+              extraLabel.setAttribute("x", bx + entry.badgeWidth + 3);
+              extraLabel.setAttribute("y", by + badgeHeight / 2 + (isMobileView ? 3 : 2));
+              extraLabel.setAttribute("font-size", isMobileView ? "7" : "5");
+              extraLabel.setAttribute("font-weight", "500");
+              extraLabel.setAttribute("fill", "var(--text)");
+              extraLabel.textContent = entry.extra;
+              itemGroup.appendChild(extraLabel);
             }
           }
-          _rowCur += (txl.image ? ICON : _badgeW(txl, isMobileView)) + GAP;
+          rowCur += entry.width + GAP;
+        });
+        if (badgePlan.moreText) {
+          var overflowText = document.createElementNS(svgNS, "text");
+          overflowText.setAttribute("x", ix0 + badgePlan.contentWidth + GAP);
+          overflowText.setAttribute("y", iy0 + 8);
+          overflowText.setAttribute("font-size", "7");
+          overflowText.setAttribute("fill", "var(--text-muted)");
+          overflowText.textContent = badgePlan.moreText;
+          badgeGroup.appendChild(overflowText);
         }
-      }
-      if (moreText) {
-        var more = document.createElementNS(svgNS, "text");
-        // The row widths are recomputed by _setRows() when crowded stations
-        // switch from four badges per row to three or two. Use the final
-        // widest row, not the removed rowW variable (ReferenceError).
-        var moreX = ix0 + maxRowW + GAP;
-        var moreY = iy0 + 8;
-        more.setAttribute("x", moreX);
-        more.setAttribute("y", moreY);
-        more.setAttribute("font-size", "7");
-        more.setAttribute("fill", "#777");
-        more.textContent = moreText;
-        staticLayer.appendChild(more);
       }
 
       // 直通标签保留在所属车站的站名/换乘列中。
@@ -463,7 +351,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var drawGroup = function(items, x, y, align, width) {
         window.ThroughChip.layoutGroup(items, isMobileView, width, x, y, align, bounds).forEach(function(p) {
           p.item._throughSide = align === "end" ? "left" : "right";
-          _renderThroughChip(staticLayer, svgNS, p.x, p.y, p.item, ICON, isMobileView, width);
+          _renderThroughChip(infoGroup, svgNS, p.x, p.y, p.item, ICON, isMobileView, width);
         });
       };
       var belowY = Math.max(ty + 12, iy0 + rows * (ICON + GAP) + 4);
@@ -472,7 +360,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var drawRow = function(items, x, y, align, width) {
         window.ThroughChip.layoutRow(items, isMobileView, width, x, y, align, bounds).forEach(function(p) {
           p.item._throughSide = "right";
-          _renderThroughChip(staticLayer, svgNS, p.x, p.y, p.item, ICON, isMobileView, width);
+          _renderThroughChip(infoGroup, svgNS, p.x, p.y, p.item, ICON, isMobileView, width);
         });
       };
       if (upward.length) {
@@ -702,6 +590,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       viewport: viewport,
       matchesStaticBounds: !!expected && viewport === expectedViewport,
       staticLayers: svg.querySelectorAll(".static-layer").length,
+      trackLayers: svg.querySelectorAll(".route-track-layer").length,
+      stationNodeLayers: svg.querySelectorAll(".station-node-layer").length,
+      stationInfoLayers: svg.querySelectorAll(".station-info-layer").length,
+      stationInfoGroups: svg.querySelectorAll(".station-info").length,
       trainLayers: svg.querySelectorAll(".train-layer").length
     };
   }
@@ -784,6 +676,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // === 静态层：线路、车站、标签（每条线路只构建一次） ===
       var staticLayer = document.createElementNS(svgNS, "g");
       staticLayer.setAttribute("class", "static-layer");
+      // All operators use the same painter order: route -> nodes -> L3 info.
+      // No station or branch may append its own isolated SVG canvas.
+      var trackLayer = document.createElementNS(svgNS, "g");
+      trackLayer.setAttribute("class", "route-track-layer");
+      var stationNodeLayer = document.createElementNS(svgNS, "g");
+      stationNodeLayer.setAttribute("class", "station-node-layer");
+      var stationInfoLayer = document.createElementNS(svgNS, "g");
+      stationInfoLayer.setAttribute("class", "station-info-layer");
+      staticLayer.appendChild(trackLayer);
+      staticLayer.appendChild(stationNodeLayer);
+      staticLayer.appendChild(stationInfoLayer);
+      var stationLayers = {nodes: stationNodeLayer, info: stationInfoLayer};
       
       // 换乘车站图标映射（本线路上的换乘线路）。
       var transferMap = _getTransferMap(lineId, geometry.staticRevision);
@@ -802,7 +706,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           }
         }
         if (routeEl.text) svgEl.textContent = routeEl.text;
-        staticLayer.appendChild(svgEl);
+        trackLayer.appendChild(svgEl);
       }
       
       // 添加车站圆点和标签（主线站与支线站统一由 _renderStationNode 绘制）
@@ -850,7 +754,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             _sharedColor = _allL[_partners[0]].color || '';
           }
         }
-        _renderStationNode(staticLayer, svgNS, {
+        _renderStationNode(stationLayers, svgNS, {
           x: sc.x, y: sc.y, stationId: stationId, isJunction: isJunction,
           color: geometry.stationDisplayColor ? geometry.stationDisplayColor(stationId) : color,
           si: si, side: sc.side || "right", geometry: geometry, isMobileView: isMobileView,
@@ -937,14 +841,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             bHLine.setAttribute("stroke", bColor);
             bHLine.setAttribute("stroke-width", "3");
             bHLine.setAttribute("opacity", "0.5");
-            staticLayer.appendChild(bHLine);
+            trackLayer.appendChild(bHLine);
             // 支线站横排
             for (var bsiH = 0; bsiH < _bHSt.length; bsiH++) {
               var _bHx = (_bSideNow === "left")
                 ? (_bHX0 - (bsiH + 1) * _bHsp)
                 : (_bHX0 + (bsiH + 1) * _bHsp);
               var _bTxH = (_bSideNow === "left") ? (_bHx - 10) : (_bHx + 10);
-              _renderStationNode(staticLayer, svgNS, {
+              _renderStationNode(stationLayers, svgNS, {
                 x: _bHx, y: _bHY0, stationId: _bHSt[bsiH], isJunction: false, color: bColor,
                 si: bsiH, side: _bSideNow, geometry: geometry, isMobileView: isMobileView,
                 svgW: svgW, svgH: svgH, transferMap: transferMap, stationCoords: stationCoords,
@@ -988,7 +892,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             branchLine.setAttribute("stroke-width", "5");
             branchLine.setAttribute("fill", "none");
             branchLine.setAttribute("opacity", "0.6");
-            staticLayer.appendChild(branchLine);
+            trackLayer.appendChild(branchLine);
             
             // 支线竖线。
             var branchSp = geometry.sp || 24;
@@ -1010,7 +914,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           branchVLine.setAttribute("stroke", bColor);
           branchVLine.setAttribute("stroke-width", "5");
           branchVLine.setAttribute("opacity", "0.6");
-          staticLayer.appendChild(branchVLine);
+          trackLayer.appendChild(branchVLine);
           
           // Branch stations（主線と同じ _renderStationNode で統一描画——スタイルは完全に同一）
           if (branch.stations) {
@@ -1025,7 +929,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             for (var bsi = 0; bsi < _rStations.length; bsi++) {
               if (_rStations[bsi] === _jFind7.station) continue;
               var bsy = by + _bK2 * branchSp;
-              _renderStationNode(staticLayer, svgNS, {
+              _renderStationNode(stationLayers, svgNS, {
                 x: bx, y: bsy, stationId: _rStations[bsi], isJunction: false, color: bColor,
                 si: bsi, side: _bSideNow, geometry: geometry, isMobileView: isMobileView,
                 svgW: svgW, svgH: svgH, transferMap: transferMap, stationCoords: stationCoords,
@@ -1057,7 +961,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           _bNameEl.setAttribute("font-weight", "600");
           _bNameEl.setAttribute("font-family", "inherit");
           _bNameEl.textContent = _shortName;
-          staticLayer.appendChild(_bNameEl);
+          stationInfoLayer.appendChild(_bNameEl);
           } // else（竖列现状）闭合
         }
       }
