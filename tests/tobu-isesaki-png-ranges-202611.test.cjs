@@ -228,3 +228,48 @@ test('estimator exports calendarType on every SQL planned position without requi
   assert.match(piece,/calendarType: \/\(\?:\^\|\[:\.\]\)Weekday\$\/i/);
   assert.ok(piece.indexOf('calendarType:')<piece.indexOf('vehiclePlan: _publishedVehiclePlan'));
 });
+
+
+test('346E SaturdayHoliday planned trip maps exact 3-car fleet PNG despite broad unconfirmed fleet candidates',()=>{
+  const p={
+    runningChainId:'planned-trip:2026-11-14|Tobu|odpt.Railway%3ATobu.Isesaki|TobuIsesaki|346E',
+    trainNumber:'346E',positionLineId:'TobuIsesaki',displayLineId:'TobuIsesaki',
+    sourceRailway:'odpt.Railway:Tobu.Isesaki',
+    trainType:'odpt.TrainType:Tobu.Local',positionSource:'supabase-train-run',
+    serviceDate:'2026-11-14',estimated:true,
+    serviceId:'odpt.Calendar:SaturdayHoliday',calendarType:'holiday',
+    vehicleIdentityStatus:'UNKNOWN',vehicleFormationCandidates:[],
+    vehiclePlan:{
+      lineId:'TobuIsesaki',status:'FLEET_REFERENCE',confirmed:false,
+      models:['東武800型','東武8000系','東武10000系','東武10030系',
+        '東武200型','東武500系','東武50050型']
+    }
+  };
+  const ref=w.TrainNumberPngRanges.match('346E','TobuIsesaki',p);
+  assert.ok(ref);
+  assert.equal(ref.scheduledCars,3);
+  assert.deepEqual(Array.from(ref.candidateModels),['東武800型','東武850型']);
+  const icon=w.TrainVehicle.selectMarkerArtwork(p,false);
+  assert.equal(icon.kind,'vehicle');
+  assert.equal(icon.planned,true);
+  assert.equal(icon.illustrative,true);
+  assert.equal(icon.actualVehicleConfirmed,false);
+  assert.ok(icon.iconSrc.endsWith('/東武鉄道_8000型.png'));
+  assert.equal(w.TrainVehicle.diagnoseTobuIsesakiArtwork(p,false),
+    'number-reference-accepted-but-marker-unresolved');
+  // A genuinely blocked source is not rescued by the official number list.
+  assert.equal(w.TrainVehicle.diagnoseTobuIsesakiArtwork({
+    ...p,sourceRailway:'odpt.Railway:Tobu.Sano'
+  },false),'source-railway-mismatch');
+  assert.equal(w.TrainVehicle.diagnoseTobuIsesakiArtwork({
+    ...p,vehicleFormationCandidates:['actual-set-unconfirmed']
+  },false),'formation-evidence-present');
+  assert.equal(w.TrainVehicle.diagnoseTobuIsesakiArtwork(p,true),
+    'image-load-retry-pending');
+});
+test('unresolved train marker exposes scoped diagnostic reason for copied SVG',()=>{
+  const code=fs.readFileSync('js/trains-render.js','utf8');
+  assert.match(code,/data-vehicle-png-reason/);
+  assert.match(code,/diagnoseTobuIsesakiArtwork/);
+  assert.match(code,/image-load-failed/);
+});

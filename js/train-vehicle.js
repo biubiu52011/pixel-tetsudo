@@ -5633,6 +5633,45 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       illustrationModel:model};
   }
 
+  // Explain a neutral marker from the *actual* renderer position. This
+  // reports the gate that blocked the published number reference, without
+  // authorizing another PNG or upgrading physical vehicle identity.
+  function diagnoseTobuIsesakiArtwork(p, artworkFailed) {
+    if (!p || String(p.positionLineId || p.lineId || "") !== "TobuIsesaki") return "";
+    if (artworkFailed === true) return "image-load-retry-pending";
+    if (!window.TobuIsesaki2611Png) return "tobu-number-index-not-loaded";
+    if (!window.TrainNumberPngRanges) return "number-range-index-not-loaded";
+    if (String(p.displayLineId || p.positionLineId || p.lineId) !== "TobuIsesaki")
+      return "display-line-mismatch";
+    if (p.sourceRailway !== "odpt.Railway:Tobu.Isesaki")
+      return "source-railway-mismatch";
+    if (p.positionSource !== "supabase-train-run" &&
+        p.positionSource !== "realtime-api") return "position-source-not-authorized";
+    if (p.positionSource === "supabase-train-run" && p.estimated !== true)
+      return "not-estimated-timetable";
+    if (!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate || "").slice(0,10)))
+      return "service-date-not-in-index";
+    if (!/^(?:weekday|holiday|saturdayholiday|odpt[.]calendar:(?:weekday|saturdayholiday))$/i.test(
+        String(p.calendarType || p.calendar_urn || p.calendarUrn ||
+          p.serviceId || p.timetableCalendar || ""))) return "source-calendar-unrecognized";
+    if (p.vehicleIdentityStatus === "EXACT" || p.vehicleResolvedUpstream === true ||
+        p.vehicleResolvedFromRealtime === true || p.actualVehicleConfirmed === true)
+      return "actual-vehicle-identity-takes-precedence";
+    if (p.vehicleFormationId || p.vehicleFormationConflict ||
+        (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length))
+      return "formation-evidence-present";
+    var number = String(p.trainNumber || "").trim().toUpperCase();
+    var ref = window.TrainNumberPngRanges.match(number,"TobuIsesaki",p);
+    if (!ref) {
+      if (p.vehiclePlan && Array.isArray(p.vehiclePlan.models) &&
+          p.vehiclePlan.models.length === 1) return "single-model-plan-conflict-or-unlisted";
+      if (p.realtimeVehicleType || p.realtimeDerivedVehicleType)
+        return "realtime-model-conflict-or-unlisted";
+      return "number-calendar-or-type-not-listed";
+    }
+    return "number-reference-accepted-but-marker-unresolved";
+  }
+
   function selectMarkerArtwork(p, artworkFailed) {
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
@@ -6436,6 +6475,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     getOperationPngLibrary: getOperationPngLibrary,
     resolveOperationPng: resolveOperationPng,
     selectMarkerArtwork: selectMarkerArtwork,
+    diagnoseTobuIsesakiArtwork: diagnoseTobuIsesakiArtwork,
     registerFormationEvidence: registerFormationEvidence,
     resolveFormationEvidence: resolveFormationEvidence,
     clearFormationEvidenceOtherDates: clearFormationEvidenceOtherDates,

@@ -1219,6 +1219,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // Unverified models retain a neutral position marker; never synthesize
       // a rolling-stock picture from a train number or candidate family.
       compact: !hasImage,
+      // DOM-only rejection reason: makes source/date/formation gate visible
+      // when a valid train still draws a neutral circle.
+      unresolvedReason: !hasImage && window.TrainVehicle &&
+        typeof window.TrainVehicle.diagnoseTobuIsesakiArtwork === "function"
+          ? window.TrainVehicle.diagnoseTobuIsesakiArtwork(selectionPosition,artworkFailed)
+          : "",
       className: hasImage && artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
@@ -2043,7 +2049,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // a second complete train or detach/reparent its destination caption.
         var neutral = _createTrainMarker(trainLayer, svgNS, trainUid,
           {kind:"unresolved", iconSrc:"", className:spec.className,
-            compact:true},
+            compact:true,unresolvedReason:"image-load-failed"},
           marker._displayX, marker._displayY, marker._trainPosition || p,
           lineId, isLoop, color, loc);
         if (neutral) {
@@ -2081,6 +2087,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     _setTrainFormationAttribute(marker, p);
     marker.setAttribute("data-train-id", String(trainUid));
     marker.setAttribute("data-marker-kind", _trainMarkerDomKind(spec));
+    if (spec.unresolvedReason)
+      marker.setAttribute("data-vehicle-png-reason",spec.unresolvedReason);
     if (spec.planned) marker.setAttribute("data-marker-reference-only", "true");
     marker.setAttribute("data-marker-display", compact ? "compact" : "artwork");
     marker.setAttribute("class", spec.className);
@@ -2272,6 +2280,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // 刷新无障碍标签，不要保留过期的列车数据。
         var _freshTitle = _trainMarkerAccessibleDescription(p, lineId, markerSpec);
         _setTrainMarkerAccessibilityLabel(existingIcon, _freshTitle);
+        if (markerSpec.unresolvedReason)
+          existingIcon.setAttribute("data-vehicle-png-reason",markerSpec.unresolvedReason);
+        else existingIcon.removeAttribute("data-vehicle-png-reason");
         _syncTrainMarkerIllustrationStatus(existingIcon, markerSpec);
         _setTrainFormationAttribute(existingIcon, p);
         // Update existing icon position.
