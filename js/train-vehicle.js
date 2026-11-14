@@ -1175,7 +1175,7 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
   "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuNikko","TobuSkytree","ShonanShinjuku","UtsunomiyaJR"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
-  "remaining-fleet-extra-10": {"displayName":"東武500系","iconName":"東武500系","asset":"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png","lineIds":["TobuNikko"],"lineAliases":{"TobuNikko":["500系「リバティ」","500系「リバティ会津」"]},"aliases":["東武500系（リバティ）","東武500系（リバティりょうもう）","500系「リバティ」","500系「リバティ会津」"]},
+  "remaining-fleet-extra-10": {"displayName":"東武500系","iconName":"東武500系","asset":"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png","lineIds":["TobuNikko","TobuSkytree","TobuIsesaki"],"lineAliases":{"TobuNikko":["500系「リバティ」","500系「リバティ会津」"]},"aliases":["東武500系（リバティ）","東武500系（リバティりょうもう）","500系「リバティ」","500系「リバティ会津」"]},
   "remaining-fleet-extra-11": {"displayName":"東武200型","iconName":"東武200型","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png","aliases":["東武200型（りょうもう）","東武200系"]},
   "remaining-fleet-extra-12": {"displayName":"東武250型","iconName":"東武250型","asset":"../images/列车/東武鉄道/東武鉄道_200型_250番台.png","aliases":["東武250系","東武250系（両毛）"]},
   "remaining-fleet-extra-13": {"displayName":"東武80000系","iconName":"東武80000系","asset":"../images/列车/東武鉄道/東武鉄道_80000系.png","aliases":[]},

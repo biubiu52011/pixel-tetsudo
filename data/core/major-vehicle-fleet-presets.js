@@ -175,9 +175,18 @@
 
     // 東武: 都心直通、東上、アーバンパーク、支線の車隊を混同しない。
     // 80000/80050型は野田線の2025/2026年導入車。
-    {id:'tobu-isesaki-sky-tree', operator:'Tobu',
-      lineIds:['TobuSkytree','TobuIsesaki'],
+    {id:'tobu-skytree', operator:'Tobu',
+      lineIds:['TobuSkytree'],
       models:['東武10000型','東武10030型','東武50050型',
+        '東武70000型','東武70090型','東武200型','東武500系'],
+      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    // TI northward / Tatebayashi: not a blanket TS roster. In particular,
+    // 2-car 10000/10030 and 3-car 800/850 are different 2026 service pools.
+    // Fleet lists do NOT prove numbered-train actual carsets.
+    {id:'tobu-isesaki', operator:'Tobu',
+      lineIds:['TobuIsesaki'],
+      models:['東武800型','東武850型','東武10000型','東武10030型',
+        '東武200型','東武500系','東武50050型',
         '東武70000型','東武70090型'],
       sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
     {id:'tobu-tojo', operator:'Tobu', lineIds:['Tojo'],

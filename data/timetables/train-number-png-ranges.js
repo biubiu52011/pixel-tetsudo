@@ -3735,6 +3735,9 @@
       actualVehicleConfirmed:false};
   }
   function match(trainNumber,lineId,context){
+    if(String(lineId||'')==='TobuIsesaki')
+      return root.TobuIsesaki2611Png ?
+        root.TobuIsesaki2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='TobuSkytree')return matchTobuSkytree2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(["Hibiya","Hanzomon","TokyuDenEn"].indexOf(String(lineId||""))>=0)
       return matchTobuMetroThrough2611(String(trainNumber||"").trim().toUpperCase(),String(lineId),context);
