@@ -41,8 +41,8 @@ WITH w AS (
  GROUP BY m.id
 ), st AS (
  SELECT *,CASE WHEN wkseq=first_seq THEN 'first' WHEN wkseq=last_seq THEN 'last' ELSE 'middle' END side,
-   CASE WHEN arr ~ '^\\d\\d:\\d\\d$' THEN split_part(arr,':',1)::int*60+split_part(arr,':',2)::int END arrmin,
-   CASE WHEN dep ~ '^\\d\\d:\\d\\d$' THEN split_part(dep,':',1)::int*60+split_part(dep,':',2)::int END depmin
+   CASE WHEN arr ~ '^[0-9][0-9]:[0-9][0-9]$' THEN split_part(arr,':',1)::int*60+split_part(arr,':',2)::int END arrmin,
+   CASE WHEN dep ~ '^[0-9][0-9]:[0-9][0-9]$' THEN split_part(dep,':',1)::int*60+split_part(dep,':',2)::int END depmin
  FROM w WHERE wkseq IS NOT NULL AND op IS NOT NULL
 ), pair AS (
  SELECT t.id tojo_id,m.id metro_id,t.train_number tojo_number,m.train_number metro_number,
