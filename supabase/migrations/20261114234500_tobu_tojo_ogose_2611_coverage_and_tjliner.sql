@@ -7,7 +7,7 @@ SET template_count = v.templates,
     calendar_count = 2,
     direction_count = 2,
     sampled_count = 0,
-    coverage_status = 'source-only-calendar-scoped',
+    coverage_status = 'unverified',
     issues = ARRAY[
       'TOKYOGTFS_SOURCE_ONLY_NOT_INDEPENDENTLY_OFFICIAL_VERIFIED',
       'GTFS_VALID_DATES_REQUIRE_FEED_CHECKSUM_AND_SERVICE_CALENDAR',
@@ -30,7 +30,7 @@ DO $assert$
 BEGIN
   IF (SELECT count(*) FROM public.published_timetable_coverage_audit
       WHERE line_key IN ('Tojo','Ogose')
-        AND coverage_status='source-only-calendar-scoped')<>2
+        AND coverage_status='unverified')<>2
      OR NOT EXISTS (SELECT 1 FROM public.operation_family_rules
           WHERE network_key='Tojo' AND code_pattern='PLAN:OFFICIAL-TJLINER-50090'
           AND plan_scope->'trainTypes' @> '["TJ-Liner"]'::jsonb)
