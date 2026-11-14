@@ -1558,8 +1558,22 @@
             if (/3000[A-Z]?|YOKOHAMA.*3000/.test(upper)) return "横浜市営地下鉄3000形";
             if (/4000|YOKOHAMA.*4000/.test(upper)) return "横浜市営地下鉄4000形";
         }
-        // 东武 GTFS-RT 只有在 vehicle_id/vehicle_label 明确携带车型族时
-        // 才作实时车型证据；纯数字车号不按区间反推车型。
+        // Tobu Kameido / Daishi share renewed 2-car 10000 and 10030
+        // workings. Only an EXPLICIT series label on the vehicle may select
+        // one of their PNGs. A GTFS trip_id (and bare numeric vehicle ID)
+        // is not evidence of a model, even when its digits look familiar.
+        if (operator === "Tobu" &&
+            (lineId === "Tobu_Kameido" || lineId === "Daishi_Tobu")) {
+            var branchModelLabel = String(vehicleLabel || "") + " " +
+                (/[型系]|series/i.test(String(vehicleId || "")) ? String(vehicleId) : "");
+            if (/(?:^|[^0-9])10030(?:型|系|\\s*series)/i.test(branchModelLabel))
+                return "東武10030型";
+            if (/(?:^|[^0-9])10000(?:型|系|\\s*series)/i.test(branchModelLabel))
+                return "東武10000型";
+            return "";
+        }
+        // Other Tobu lines retain their established series-only handling.
+        // Do not infer a small-branch train's car from a trip number.
         if (operator === "Tobu") {
             if (/50050/.test(upper)) return "東武50050系";
             if (/70090/.test(upper)) return "東武70090型";
