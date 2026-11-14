@@ -1171,6 +1171,8 @@ window.getTransferHint = function(stationId, lang) {
     // Komi is a legacy spelling of the Koumi station identifier.
     "Komii": { "Misato": "Misato-Koumi", "Komi": "Koumi" },
     "Tojo": { "Oyama": "Ooyama" },
+    // JR Kyushu Kashii: 酒殿 is not Tobu Sakado; preserve the ODPT source token.
+    "KashiiLine": { "Sakado": "Sakado-Fukuoka" },
     "NaritaAbikoBranch": { "Kohoku": "Kohoku-Narita" },
     // 烏山線と加古川線には別々の「滝」駅がある。外部URNは保持する。
     "Karasuyama": { "Taki": "Taki-Tochigi" },

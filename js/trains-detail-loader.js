@@ -13,6 +13,8 @@
     Array.prototype.forEach.call(template.content.querySelectorAll("[data-script-src]"), function(node) {
       var scope = node.getAttribute("data-line-scope");
       if (scope && scope.split(",").indexOf(id) < 0) return;
+      var excluded = node.getAttribute("data-line-exclude-scope");
+      if (excluded && excluded.split(",").indexOf(id) >= 0) return;
       var url = node.getAttribute("data-script-src");
       if (!/^\.\.\/(?:js|data)\/[a-zA-Z0-9_./-]+\.js\?v=[a-f0-9]{12}$/.test(url) ||
           url.indexOf("..", 3) !== -1) throw new Error("Invalid train asset URL");

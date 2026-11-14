@@ -39,11 +39,20 @@ for (const [name, items] of Object.entries(spec.pages)) {
   const head = expand(spec.head), body = expand(items);
   const lazy = expand((spec.lazy && spec.lazy[name]) || []);
   const scopes = (spec.lazyScopes && spec.lazyScopes[name]) || {};
+  const excludeScopes = (spec.lazyExcludeScopes && spec.lazyExcludeScopes[name]) || {};
   for (const [asset, lines] of Object.entries(scopes)) {
     if (!lazy.includes(asset) || !Array.isArray(lines) || !lines.length ||
         new Set(lines).size !== lines.length ||
         lines.some(id => !/^[A-Za-z0-9._:-]+$/.test(id))) {
       throw Error('Invalid scoped asset: ' + name + ':' + asset);
+    }
+  }
+  for (const [asset, lines] of Object.entries(excludeScopes)) {
+    if (!lazy.includes(asset) || scopes[asset] ||
+        !Array.isArray(lines) || !lines.length ||
+        new Set(lines).size !== lines.length ||
+        lines.some(id => !/^[A-Za-z0-9._:-]+$/.test(id))) {
+      throw Error('Invalid excluded lazy asset: ' + name + ':' + asset);
     }
   }
   if (new Set(lazy).size !== lazy.length || lazy.some(s => head.includes(s) || body.includes(s))) {
@@ -55,7 +64,8 @@ for (const [name, items] of Object.entries(spec.pages)) {
   if (lazy.length) {
     const inert = '    <template id="pt-trains-detail-assets">\n' +
       lazy.map(s => '      <span data-script-src="../' + s + '?v=' + version(s) + '"' +
-        (scopes[s] ? ' data-line-scope="' + scopes[s].join(',') + '"' : '') + '></span>').join('\n') +
+        (scopes[s] ? ' data-line-scope="' + scopes[s].join(',') + '"' : '') +
+        (excludeScopes[s] ? ' data-line-exclude-scope="' + excludeScopes[s].join(',') + '"' : '') + '></span>').join('\n') +
       '\n    </template>';
     result = region(result, 'lazy', inert, file);
   }

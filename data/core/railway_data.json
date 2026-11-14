@@ -16697,6 +16697,10 @@
     "CR-Shiroku": {
       "lat": 35.958915,
       "lng": 138.99328
+    },
+    "Sakado-Fukuoka": {
+      "lat": 33.602599,
+      "lng": 130.486031
     }
   },
   "lines": {
@@ -33530,13 +33534,12 @@
         "Ippommatsu",
         "Nishi-Oya",
         "Kawa_kaku",
-        "Bushu-Karasawa",
         "Bushu-Nagase",
         "Higashi_Moro",
+        "Bushu-Karasawa",
         "Ogose"
       ],
       "durations": [
-        2,
         2,
         2,
         2,
@@ -36226,8 +36229,6 @@
         2,
         2,
         2,
-        2,
-        2,
         2
       ],
       "throughServices": [
@@ -36305,17 +36306,40 @@
           "station": "Shimo-Akatsuka",
           "lineId": "Yurakucho",
           "toStation": "Chikatetsu-Akatsuka",
-          "note": "Chikatetsu-Akatsuka"
+          "note": "Chikatetsu-Akatsuka",
+          "type": "out"
         },
         {
           "station": "Asakadai",
           "lineId": "Musashino",
           "toStation": "Kita-Asaka",
-          "note": "Kita-Asaka"
+          "note": "Kita-Asaka",
+          "type": "out"
         },
         {
           "station": "Narimasu",
           "lineId": "Yurakucho",
+          "toStation": "Chikatetsu-Narimasu",
+          "note": "Chikatetsu-Narimasu",
+          "type": "out"
+        },
+        {
+          "station": "Sakado",
+          "lineId": "Ogose",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Shimo-Akatsuka",
+          "lineId": "Fukutoshin",
+          "type": "out",
+          "toStation": "Chikatetsu-Akatsuka",
+          "note": "Chikatetsu-Akatsuka"
+        },
+        {
+          "station": "Narimasu",
+          "lineId": "Fukutoshin",
+          "type": "out",
           "toStation": "Chikatetsu-Narimasu",
           "note": "Chikatetsu-Narimasu"
         }
@@ -47223,7 +47247,7 @@
         "Doi",
         "Iga",
         "Chōjabaru",
-        "Sakado",
+        "Sakado-Fukuoka",
         "Sue",
         "Sue-Chūō",
         "Shinbaru",
@@ -55752,7 +55776,7 @@
     "舞松原": "Maibaru",
     "土井": "Doi",
     "伊賀": "Iga",
-    "酒殿": "Sakado",
+    "酒殿": "Sakado-Fukuoka",
     "須恵": "Sue",
     "須恵中央": "Sue-Chūō",
     "新原": "Shinbaru",
@@ -62741,8 +62765,7 @@
     ],
     "Sakado": [
       "Tojo",
-      "Ogose",
-      "KashiiLine"
+      "Ogose"
     ],
     "Kita-Sakado": [
       "Tojo"
@@ -71038,6 +71061,9 @@
     ],
     "CR-Shiroku": [
       "ChichibuMain"
+    ],
+    "Sakado-Fukuoka": [
+      "KashiiLine"
     ]
   },
   "lineStationOrder": {
@@ -72945,9 +72971,9 @@
       "Ippommatsu": 1,
       "Nishi-Oya": 2,
       "Kawa_kaku": 3,
-      "Bushu-Karasawa": 4,
-      "Bushu-Nagase": 5,
-      "Higashi_Moro": 6,
+      "Bushu-Nagase": 4,
+      "Higashi_Moro": 5,
+      "Bushu-Karasawa": 6,
       "Ogose": 7
     },
     "Oito": {
@@ -75701,7 +75727,7 @@
       "Doi": 8,
       "Iga": 9,
       "Chōjabaru": 10,
-      "Sakado": 11,
+      "Sakado-Fukuoka": 11,
       "Sue": 12,
       "Sue-Chūō": 13,
       "Shinbaru": 14,

@@ -318,5 +318,21 @@
         "TobuIsesaki"
       ]
     }
+  },
+  "lazyExcludeScopes": {
+    "trains": {
+      "data/timetables/train-coupling-index.js": [
+        "Tojo",
+        "Ogose"
+      ],
+      "data/timetables/train-number-png-ranges.js": [
+        "Tojo",
+        "Ogose"
+      ],
+      "data/timetables/vehicle-operation-evidence-data.js": [
+        "Tojo",
+        "Ogose"
+      ]
+    }
   }
 }
