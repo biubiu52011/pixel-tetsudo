@@ -491,12 +491,8 @@ function _transferCoordinatesCompatible(fromLine, fromStation, toLine, toStation
 // Both geometry and the SVG renderer use the same spacing rule. Reserve for
 // the narrowest 2-icon rows after the mobile renderer reduces its row width.
 function _branchTerminalCaptionOffset(transferItems) {
-  var ordinary = (transferItems || []).filter(function(item) {
-    return item && !item.through;
-  }).length;
-  if (!ordinary) return 18;
-  var cap = Number(window.RuntimeConfig && window.RuntimeConfig.TRANSFER_MAX_ROWS) || 4;
-  var rows = Math.ceil(Math.min(ordinary, 4 * Math.max(1, cap)) / 2);
+  var rows = window.StationInfoLayout.reservedRows(transferItems);
+  if (!rows) return 18;
   // Badge rows begin at station y + 9; 18px per row. A 10px caption
   // baseline at this offset leaves at least 5px below the image badge.
   return 9 + rows * 18 + 15;
@@ -791,6 +787,102 @@ function _losGroupKey(t) {
 }
 
 /*
+ * Shared L3 station-information layout.
+ * Both geometry reservations and SVG badge placement consume this model.
+ * Railway topology and canonical transfer relationships remain untouched.
+ */
+window.StationInfoLayout = (function() {
+  "use strict";
+  var ICON = 16, GAP = 2, PITCH = 18;
+  function maxRows() {
+    return Math.max(1, Math.min(8,
+      Number(window.RuntimeConfig && window.RuntimeConfig.TRANSFER_MAX_ROWS) || 4));
+  }
+  function list(items) {
+    var seen = Object.create(null);
+    return (items || []).filter(function(item) {
+      if (!item || item.through) return false;
+      var key = item.image ? "I:" + item.image :
+        (_losGroupKey(item) || ("L:" + (item.lineId || item.name || "")));
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).sort(function(a, b) {
+      return (a.operator === "JR-East" ? 0 : 1) -
+        (b.operator === "JR-East" ? 0 : 1);
+    });
+  }
+  function measure(text, fontSize) {
+    var fn = window.ThroughChip && window.ThroughChip.measureWidth;
+    var width = typeof fn === "function" ? Number(fn(text, fontSize)) : NaN;
+    if (!isFinite(width) || width < 0) {
+      width = Array.from(String(text || "")).reduce(function(sum, ch) {
+        return sum + (/[^\\u0000-\\u007f]/.test(ch) ? fontSize : fontSize * 0.65);
+      }, 0);
+    }
+    return Math.ceil(width);
+  }
+  function normalizedName(value) {
+    return String(value || "").replace(/[\\s\\u30fb・･\\-‐‑–—]/g, "").toLowerCase();
+  }
+  function sideName(item, stationId, stationName) {
+    if (!item || !item.toStation || String(item.toStation) === String(stationId)) return "";
+    var dest = window.RailwayDB && window.RailwayDB.resolveStationName
+      ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang) : item.toStation;
+    if (!dest || normalizedName(dest) === normalizedName(stationName)) return "";
+    var distance = window.RailwayDB && window.RailwayDB.getTransferDistanceKm
+      ? window.RailwayDB.getTransferDistanceKm(stationId, item.toStation) : null;
+    // Do not coerce a missing distance (null) into 0km.
+    if (distance != null && distance !== "" && isFinite(Number(distance)) &&
+        Number(distance) <= 0.25) return "";
+    return dest;
+  }
+  function prepare(items, stationId, stationName, mobile) {
+    return list(items).map(function(item) {
+      var label = String(item.name || item.lineId || "").slice(0, 4);
+      var badgeWidth = item.image ? ICON : measure(label, mobile ? 9 : 6.5) + 8;
+      var extra = item.image ? "" : sideName(item, stationId, stationName);
+      var extraWidth = extra ? 3 + measure(extra, mobile ? 7 : 5) : 0;
+      return {item:item, label:label, badgeWidth:badgeWidth,
+        extra:extra, width:badgeWidth + extraWidth};
+    });
+  }
+  function plan(items, stationId, stationName, mobile, maxWidth) {
+    var all = prepare(items, stationId, stationName, mobile);
+    var cap = maxRows(), widthLimit = Math.max(1, Number(maxWidth) || 1);
+    var planResult = null;
+    for (var columns = 4; columns >= 1; columns--) {
+      var shown = all.slice(0, columns * cap);
+      var rows = Math.ceil(shown.length / columns);
+      var rowWidths = [];
+      for (var row = 0; row < rows; row++) {
+        var rowItems = shown.slice(row * columns, (row + 1) * columns);
+        rowWidths.push(rowItems.reduce(function(sum, entry) {
+          return sum + entry.width;
+        }, 0) + Math.max(0, rowItems.length - 1) * GAP);
+      }
+      var contentWidth = rowWidths.length ? Math.max.apply(null, rowWidths) : 0;
+      var hidden = all.length - shown.length;
+      var moreText = hidden ? "+" + hidden : "";
+      var moreWidth = moreText ? measure(moreText, 7) + GAP : 0;
+      planResult = {shown:shown, perRow:columns, rows:rows,
+        rowWidths:rowWidths, contentWidth:contentWidth,
+        totalWidth:contentWidth + moreWidth, moreText:moreText,
+        height:rows ? rows * PITCH : 0};
+      if (planResult.totalWidth <= widthLimit || columns === 1) break;
+    }
+    return planResult;
+  }
+  // Reserve the worst case for 2-column fallback, capped at actual maxRows.
+  // The SVG may use 4/3/2/1 columns, but never more rows than this cap.
+  function reservedRows(items) {
+    return Math.min(maxRows(), Math.ceil(list(items).length / 2));
+  }
+  return {icon:ICON, gap:GAP, pitch:PITCH, maxRows:maxRows,
+    list:list, prepare:prepare, plan:plan, reservedRows:reservedRows};
+})();
+
+/*
  * 列车地图几何和直通展示由列车数据所有者统一维护，
  * 使页面在渲染前只有一个地图内核来源。
  */
@@ -1035,19 +1127,19 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     // 行数上限为 RuntimeConfig.TRANSFER_MAX_ROWS，并与 "+n" 截断保持一致。
     // 站间距 = 全线各站换乘图标的高最大值 + 空隙（移动/桌面统一，
     // 不再按站数分档）；环线双列 _colPitch 同式复用。
-    var ROW_H = 18, TX_TOP = 9, SP_GAP = 6, MIN_SP = 45;
+    var ROW_H = window.StationInfoLayout.pitch, TX_TOP = 14,
+      SP_GAP = 6, MIN_SP = 45;
     var _chipPitch = function(ids) {
       var mx = MIN_SP;
       for (var _cp = 0; _cp < ids.length; _cp++) {
         var _txLines = transferMap[ids[_cp]] || [];
-        var _txN = _txLines.filter(function(t) { return !t.through; }).length;
+        var _rows = window.StationInfoLayout.reservedRows(_txLines);
         var _throughH = _throughChipHeight(_txLines, _isMobileView(), throughChipMaxWidth);
-        var _rows = Math.ceil(Math.min(_txN, 16) / 3); // 4→3（窄列 PER_ROW 降级保守值，防 chip 超高重叠）
-        var _ordinaryExtent = _txN > 0 ? TX_TOP + _rows * ROW_H : 0;
+        var _ordinaryExtent = _rows > 0 ? TX_TOP + _rows * ROW_H : 0;
         var _throughExtent = _throughH > 0 ? _throughH / 2 : 0;
         mx = Math.max(mx, Math.max(_ordinaryExtent, _throughExtent) + SP_GAP);
       }
-      return Math.max(mx, MIN_SP);
+      return mx;
     };
     var sp = _chipPitch(stations);
     var topP = 18 + thrTopPad, botP = 16 + thrBotPad;
@@ -1148,7 +1240,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         var width = Math.max.apply(null, rows.map(function(row) { return _measureRouteText(row,16); }));
         labels[s] = { lines: rows, above: i % 2 === 0, width: width };
         var transferItems = transferMap[s] || [];
-        var transferRows = Math.ceil(Math.min(transferItems.filter(function(t) { return !t.through; }).length,16) / 4);
+        var transferRows = window.StationInfoLayout.reservedRows(transferItems);
         widths.push(width); heights.push(rows.length * 18 + transferRows * 18 +
           _throughChipHeight(transferItems,_isMobileView(),throughChipMaxWidth));
       });
