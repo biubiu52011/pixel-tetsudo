@@ -629,7 +629,17 @@
       var all=typeof window.t==="function"?(window.t("filter.all")||"すべて"):"すべて";
       var optionsSignature=all+"|"+selectedRegion+"|"+REGION_IDS.map(labelRegion).join("|")+
         "|"+ops.map(function(op){return op+":"+operatorLabel(op);}).join("|");
-      if (optionsSignature === lastOptionsSignature) { select(selected, false); return; }
+      // Cached options are valid only while their DOM is still mounted.
+      // A detail-page teardown or external caller may have cleared children;
+      // the previous signature alone cannot prove the controls exist.
+      var regionControlsMounted=!!el.querySelector(".rs-region-level .rs-region-btn");
+      var companyControlsMounted=!selectedRegion ||
+        !!el.querySelector(".rs-company-level .rs-filter-btn");
+      if (optionsSignature === lastOptionsSignature &&
+          regionControlsMounted && companyControlsMounted) {
+        sync();
+        return;
+      }
       lastOptionsSignature=optionsSignature;
       el.classList.add("rs-region-filter");
       var html='<div class="rs-filter-level rs-region-level" role="group" aria-label="地域">'+
