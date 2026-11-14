@@ -5,6 +5,11 @@
 -- train_operation_mappings and must not be inferred from a suffix alone.
 -- Do NOT write published_train_png_number_ranges for these mixed fleets.
 BEGIN;
+-- Historic manually assigned IDs left this owned sequence behind MAX(id).
+-- Realign monotonically before inserting; do not decrease an advanced sequence.
+SELECT setval('public.operation_family_rules_id_seq',
+  GREATEST((SELECT COALESCE(MAX(id),1) FROM public.operation_family_rules),
+           (SELECT last_value FROM public.operation_family_rules_id_seq)),true);
 
 -- Reuse the 2026-03-14 Metro/Fukutoshin working-family source (457), copying
 -- source/effective dates and model candidates instead of inventing new fleet data.
