@@ -5749,6 +5749,36 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       (p.vehicleResolvedUpstream === true ||
        (p.vehicleResolvedUpstream == null && p.vehicleResolution &&
         p.vehicleResolution.identityStatus === "EXACT")));
+    // Tobu's archived small-branch A/B/C/D + digits are timetable working
+    // identifiers, NOT a model, car number, or a stable assignment range.
+    // Different 10000 / renewed 10030 two-car sets share these workings.
+    // A dated independently confirmed physical identity, or a separately
+    // certified published single-model plan, may authorize an image.
+    // Without either, even an upstream timetable-derived EXACT label must
+    // not turn an undated SQL source identifier into a rolling-stock PNG.
+    var isTobuBranchWorking = p &&
+      (contextLineId === "Tobu_Kameido" || contextLineId === "Daishi_Tobu") &&
+      contextLineId === String(p.positionLineId || p.lineId || "") &&
+      p.positionSource === "supabase-train-run" &&
+      /^[A-D][0-9]{1,3}$/i.test(String(p.trainNumber || "").trim());
+    if (isTobuBranchWorking) {
+      var physicalBranchIdentity = identityConfirmed &&
+        (p.actualVehicleConfirmed === true ||
+         p.vehicleResolvedFromRealtime === true ||
+         resolutionSources.indexOf("roster-physical-id") >= 0 ||
+         resolutionSources.indexOf("official-realtime-car-number") >= 0);
+      var certifiedBranchPlan = !!(p.vehiclePlan &&
+        _issuedVehiclePlans.has(p.vehiclePlan) &&
+        p.vehiclePlan.lineId === contextLineId &&
+        p.vehiclePlan.status === "PLANNED_MODEL" &&
+        p.vehiclePlan.source === "database-verified-published-plan" &&
+        p.vehiclePlan.confirmed === true);
+      if (!physicalBranchIdentity && !certifiedBranchPlan)
+        return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+          actualVehicleConfirmed:false,
+          candidateModels:["東武10000型","東武10030型50番台"],
+          reason:"tobu-branch-undated-working-id-not-vehicle"};
+    }
     // JR-Central SQL is a planned timetable map: only the planned train
     // NUMBER and its scoped PNG pool can select the reference image.
     if (p && p.estimated === true &&
