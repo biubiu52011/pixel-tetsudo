@@ -755,7 +755,7 @@ var CANONICAL_VEHICLES = {
   "tobu-10030-50-daishi-kameido-2car": {
     displayName:"東武10030型50番台（亀戸・大師線・2両）",
     iconName:"東武10030型50番台（亀戸・大師線・2両）",
-    asset:"../images/列车/東武鉄道/東武鉄道_10030型_50番台.png",
+    asset:"../images/列车/東武鉄道/東武鉄道_10030型_50番台_更新車.png",
     lineIds:["Daishi_Tobu","Tobu_Kameido"],
     lineAliases:{
       Daishi_Tobu:["東武10030型","東武10030系","東武10030型50番台","東武10050型","東武10050系"],
