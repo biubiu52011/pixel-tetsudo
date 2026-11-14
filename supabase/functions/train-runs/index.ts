@@ -250,6 +250,8 @@ async function readManualTemplateRuns(
   const tobuGtfsTripPrefixes: Record<string,string> = {
     TobuSkytree: "Tobu.TobuSkytree.",
     Noda: "Tobu.TobuUrbanPark.",
+    Tojo: "Tobu.Tojo.",
+    Ogose: "Tobu.Ogose.",
   };
   const tobuGtfsTripPrefix = tobuGtfsTripPrefixes[lineId] || null;
   const tobuGtfsSource = "gtfs-stage:TokyoGTFS:" +
