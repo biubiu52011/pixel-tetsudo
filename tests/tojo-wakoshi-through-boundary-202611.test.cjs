@@ -21,7 +21,7 @@ test('Wakoshi links use BOTH operation and stop-clock evidence, not number only'
   assert.match(sql,/GRANT SELECT ON public\.tojo_wakoshi_through_links TO service_role/);
 });
 test('source-correlated reference cannot become real-time through train or exact carset',()=>{
-  assert.match(sql,/match_level='source_correlated_not_date_verified'/);
+  assert.match(sql,/match_level text NOT NULL DEFAULT 'source_correlated_not_date_verified'/);
   assert.match(sql,/authorizes_position=false/);
   assert.match(sql,/authorizes_vehicle=false/);
   assert.match(edge,/through_boundary_reference=\{/);
