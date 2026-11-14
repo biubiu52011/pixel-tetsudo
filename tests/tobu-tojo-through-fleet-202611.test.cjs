@@ -68,3 +68,38 @@ test('Local fleet families are segment-scoped and do not allocate carsets or aut
     assert.equal(rule.planScope.planOnly,true);
   }
 });
+
+test('through-number normalization feeds the shared evidence resolver without minting a PNG', () => {
+  const context={
+    window: {
+      VEHICLE_FAMILY_RULES: [], TRAIN_OPERATION_EVIDENCE_PROVIDERS: [],
+      RuntimeConfig: {}, ODPTClient: {LINE_TO_OPERATOR:{Tojo:'Tobu'}}
+    },
+    console: {log(){},warn(){},debug(){},error(){}}
+  };
+  vm.runInNewContext(source,context,{filename:asset});
+  vm.runInNewContext(fs.readFileSync('js/train-vehicle.js','utf8'),context,
+    {filename:'js/train-vehicle.js'});
+  const operation=context.window.TrainOperationEvidence;
+  assert.ok(operation && operation.normalizeOperationCode);
+  assert.equal(operation.normalizeOperationCode('1101T',{lineId:'Tojo'}),'01T');
+  assert.equal(operation.normalizeOperationCode('1121S',{lineId:'Tojo'}),'21S');
+  assert.equal(operation.normalizeOperationCode('1151K',{lineId:'Tojo'}),'51K');
+  assert.equal(operation.normalizeOperationCode('1101T',{lineId:'Yamanote'}),'1101T',
+    'the Tojo-only normalization must not rewrite unrelated railways');
+  const ctx={
+    lineId:'Tojo', railway:'odpt.Railway:Tobu.Tojo',
+    serviceDate:'2026-11-14',
+    itineraryStations:['odpt.Station:Tobu.Tojo.Wakoshi']
+  };
+  const hit=operation.resolveEvidence('1101T',ctx,'planned');
+  assert.ok(hit,'must return a scoped working-family candidate');
+  assert.equal(hit.operator,'Tobu');
+  assert.equal(hit.vehicleType,'');
+  assert.equal(hit.allowCandidateArtwork,false);
+  assert.ok(Array.from(hit.vehicleCandidates).includes('東武50070型'));
+  assert.ok(!Array.from(hit.vehicleCandidates).includes('東武90000系'));
+  assert.equal(operation.resolveEvidence('1101T',
+    Object.assign({},ctx,{itineraryStations:['odpt.Station:Tobu.Tojo.Ikebukuro']}),
+    'planned')?.operator,'Tobu');
+});
