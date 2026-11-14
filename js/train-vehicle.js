@@ -1948,8 +1948,8 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東京メトロ17000系",
     "iconName": "東京メトロ17000系",
     "asset": "../images/列车/東京メトロ/東京メトロ_17000系.png",
-    "lineIds": ["Yurakucho", "Fukutoshin"],
-    "lineAliases": { "Yurakucho": ["東京メトロ17000系"], "Fukutoshin": ["東京メトロ17000系"] },
+    "lineIds": ["Yurakucho", "Fukutoshin", "Tojo"],
+    "lineAliases": { "Yurakucho": ["東京メトロ17000系"], "Fukutoshin": ["東京メトロ17000系"], "Tojo": ["東京メトロ17000系"] },
     "aliases": []
   },
   "metro-18000": {
@@ -2059,6 +2059,8 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東急5050系",
     "iconName": "東急5050系",
     "asset": "../images/列车/東急電鉄/東急電鉄_5050系.png",
+    "lineIds": ["TokyuToyoko","Fukutoshin","Yurakucho","Tojo"],
+    "lineAliases": { "Tojo": ["東急5050系"] },
     "aliases": []
   },
   "tokyu-3000-plan": {displayName:"東急3000系",iconName:"東急3000系",asset:null,plannedAsset:"../images/列车/東急電鉄/東急電鉄_3000系_リニューアル車.png",lineAliases:{Mita:["東急3000系"],Namboku:["東急3000系"],TokyuMeguro:["東急3000系"],TokyuShinYokohama:["東急3000系"]},aliases:["東急3000系"]},
@@ -5641,36 +5643,32 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       illustrationModel:model};
   }
 
-  // Tojo: a gallery-approved representative cab for unidentified trains.
-  // This is NOT a train-number-to-formation mapping. Never assert a physical
-  // carset from a published train number or overwrite upstream exact identity.
+  // Tojo/Ogose use ONE concrete, scoped PNG per published train/working
+  // class. The lookup never guesses a physical carset. Independently verified
+  // actual vehicle identities always win before this projection is attempted.
   function lookupTojoFleetIllustration(p) {
-    if (!p || String(p.positionLineId || p.lineId || "") !== "Tojo" ||
-        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "Tojo" ||
-        ["realtime-api", "supabase-train-run", "train-timetable"].indexOf(p.positionSource) < 0 ||
-        p.vehicleIdentityStatus === "EXACT" || p.vehicleResolvedUpstream === true ||
-        p.vehicleResolvedFromRealtime === true || p.actualVehicleConfirmed === true ||
-        p.vehicleFormationId || p.vehicleFormationConflict ||
+    if (!p || p.vehicleIdentityStatus === "EXACT" ||
+        p.vehicleResolvedUpstream === true || p.vehicleResolvedFromRealtime === true ||
+        p.actualVehicleConfirmed === true || p.vehicleFormationId ||
+        p.vehicleFormationConflict ||
         (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length))
       return null;
-    var op = String(p.trainOperator || p.operator || "");
-    if (op && op !== "Tobu" && op !== "odpt.Operator:Tobu") return null;
-    var railway = String(p.sourceRailway || "");
-    if (railway && railway !== "odpt.Railway:Tobu.Tojo") return null;
-    if (!railway && !op) return null;
-    var number = String(p.trainNumber || "").trim();
-    if (!number || !/^[0-9]{1,5}[A-Za-z]?$/.test(number)) return null;
-    var model = "東武50000系";
-    var png = normalizeGalleryPngPath("../images/列车/東武鉄道/東武鉄道_50000型.png");
-    var garage = window.VehicleGaragePngMap;
-    if (!png || !garage || typeof garage.matchModelPath !== "function" ||
-        !garage.matchModelPath(model, png, "Tojo")) return null;
+    var registry=window.TobuTojoFixedPng202611;
+    if(!registry || typeof registry.resolve!=="function")return null;
+    var ref=registry.resolve(p);
+    if(!ref || !ref.illustrationPng || !ref.illustrationModel ||
+       ref.actualVehicleConfirmed!==false || ref.referenceOnly!==true)
+      return null;
+    var png=normalizeGalleryPngPath(ref.illustrationPng);
+    var gallery=window.VehicleGaragePngMap;
+    if(!png || !gallery || typeof gallery.matchModelPath!=="function" ||
+       !gallery.matchModelPath(ref.illustrationModel,png,ref.lineId))
+      return null;
     return {kind:"vehicle",iconSrc:png,planned:true,illustrative:true,
       representativeOnly:true,referenceOnly:true,actualVehicleConfirmed:false,
-      illustrationRole:"tojo-mixed-fleet-reference-not-actual-model",
-      candidateModels:["東武9000系","東武9050系","東武50000系",
-        "東武50070系","東武50090系","東武90000系"],
-      illustrationModel:model};
+      illustrationRole:"tojo-ogose-fixed-png-not-observed-trainset",
+      illustrationModel:ref.illustrationModel,
+      pngRuleId:ref.ruleId,sourceUrl:ref.sourceUrl};
   }
 
   // Explain a neutral marker from the *actual* renderer position. This
