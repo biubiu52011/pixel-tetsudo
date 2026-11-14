@@ -78,7 +78,9 @@
     }
     // 链接库可用即视为已配置（库为内置，恒为 true）
     function keysConfigured() {
-        return getApiLinks().length > 0;
+        // Proxy configured status is checked at the server: clients must not
+        // read, test, or ship the source consumer keys in strict mode.
+        return useStrictOdptProxy() || getApiLinks().length > 0;
     }
 
     // ========== 完整 API URL（按运营商和类型区分） ==========
@@ -229,8 +231,27 @@
         // MinatoMirai（港未来线）：ODPT完全无数据，移除
     };
 
+    // Stageable server-side credentials: strict mode is enabled ONLY after
+    // BOTH required secrets are provisioned and the old static ODPT link
+    // library is removed from every public page and its Git history keys rotated.
+    // Strict mode never falls back to the embedded consumer-key URLs.
+    var ODPT_PROXY_ENDPOINT =
+      "https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/odpt-proxy";
+    function useStrictOdptProxy() {
+        return !!(window.ODPT_USE_EDGE_PROXY === true ||
+          (window.RuntimeConfig && window.RuntimeConfig.ODPT_PROXY_MODE === "strict"));
+    }
+    function proxyUrl(operator, type, railway, calendar) {
+        if (!ODPT_ENDPOINTS[operator] || !ODPT_ENDPOINTS[operator][type]) return null;
+        var params = new URLSearchParams({operator:operator,type:type});
+        if (railway) params.set("railway",railway);
+        if (calendar) params.set("calendar",calendar);
+        return ODPT_PROXY_ENDPOINT + "?" + params.toString();
+    }
+
     // 构建完整URL
     function buildUrl(operator, type) {
+        if (useStrictOdptProxy()) return proxyUrl(operator,type);
         var ep = ODPT_ENDPOINTS[operator];
         if (!ep || !ep[type]) return null;
         // 优先从链接库匹配完整URL（库中含 acl:consumerKey）
@@ -2768,12 +2789,16 @@
             if (!ep || !ep.trainTimetable) {
                 return Promise.reject(new Error("TrainTimetable endpoint unavailable: " + operator));
             }
+            // railway格式: "odpt.Railway:TokyoMetro.Ginza" 或 "Ginza"
+            var railwayParam = railway.indexOf('odpt.Railway:') === 0 ? railway : resolveRailwayCode(operator, railway);
+            if (useStrictOdptProxy()) {
+                return fetchODPT(proxyUrl(operator,'trainTimetable',railwayParam,
+                    opts && opts.calendar || '')).then(extractData);
+            }
             var key = getApiKey(ep.base);
             if (!key) {
                 return Promise.reject(new Error("ODPT API key unavailable for: " + operator));
             }
-            // railway格式: "odpt.Railway:TokyoMetro.Ginza" 或 "Ginza"
-            var railwayParam = railway.indexOf('odpt.Railway:') === 0 ? railway : resolveRailwayCode(operator, railway);
             var url = ep.base + 'odpt:TrainTimetable?odpt:operator=odpt.Operator:' + operator + '&odpt:railway=' + railwayParam + '&acl:consumerKey=' + key;
             if (opts && opts.calendar) url += '&odpt:calendar=' + opts.calendar;
             return fetchODPT(url).then(extractData);
