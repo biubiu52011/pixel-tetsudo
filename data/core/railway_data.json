@@ -32948,15 +32948,15 @@
     },
     "Nikkoku": {
       "name": "鬼怒川线",
-      "nameEn": "Nikkoku Line",
+      "nameEn": "Kinugawa Line",
       "nameJa": "東武鬼怒川線",
-      "code": "TNG",
-      "color": "#006400",
+      "code": "TN",
+      "color": "#ffa600",
       "operator": "Tobu",
       "region": null,
       "type": "straight",
       "image": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
-      "durationTotalMin": null,
+      "durationTotalMin": 31,
       "branchOf": null,
       "stations": [
         "Shimo-Imaichi",
@@ -32970,15 +32970,14 @@
         "Shin-Fujiwara"
       ],
       "durations": [
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        3,
+        5,
+        5,
+        5,
+        1,
+        4,
+        4,
+        4
       ],
       "throughServices": [
         "TobuNikko"
@@ -32987,7 +32986,7 @@
       "nameZh": "鬼怒川线",
       "nameKo": "키누가와선",
       "presentation": {
-        "code": "TK",
+        "code": "TN",
         "nameJa": "鬼怒川線",
         "nameZh": "鬼怒川线",
         "nameEn": "Kinugawa Line",
@@ -33012,7 +33011,37 @@
             "confidence": "HIGH"
           }
         }
-      ]
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "durationDerivation": {
+        "source": "Yahoo! Transit 下今市→新藤原, 2026-11-14 20:06 departure",
+        "url": "https://transit.yahoo.co.jp/search/result/%E4%B8%8B%E4%BB%8A%E5%B8%82-%E6%96%B0%E8%97%A4%E5%8E%9F",
+        "method": "Adjacent scheduled arrival-clock deltas for one ordinary service; dwell-inclusive; representative projection only, not a verified per-train 2026-11 operating edition",
+        "date": "2026-11-14",
+        "officialEditionVerified": false
+      },
+      "topologyAudit": {
+        "officialSource": "https://www.tobu.co.jp/railway/guide/line/kinugawa_line.html",
+        "officialLengthKm": 16.2,
+        "stationCodes": [
+          "TN23",
+          "TN51",
+          "TN52",
+          "TN53",
+          "TN54",
+          "TN55",
+          "TN56",
+          "TN57",
+          "TN58"
+        ],
+        "handoverAt": "Shimo-Imaichi",
+        "externalConnection": {
+          "station": "Shin-Fujiwara",
+          "operator": "野岩鉄道",
+          "lineNameJa": "会津鬼怒川線",
+          "status": "external-line-not-yet-modeled; not an unconditional through service"
+        }
+      }
     },
     "Nippori_Toneri": {
       "name": "Nippori-Toneri Liner",

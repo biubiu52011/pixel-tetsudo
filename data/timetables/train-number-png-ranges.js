@@ -3783,11 +3783,52 @@
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
+  // Kinugawa local fleet image: never an observed physical carset.
+  // An ordinary Tobu Kinugawa SQL estimate can display the documented
+  // 20400 fleet only as a clearly labelled reference (no express inference).
+  function matchTobuKinugawaLocal2611(number,p){
+    p=p||{};
+    var line=String(p.positionLineId||p.lineId||"");
+    var op=String(p.trainOperator||p.operator||"");
+    var date=String(p.serviceDate||"").slice(0,10);
+    var cal=sourceCalendar(p);
+    var typ=String(p.trainType||"").split(/[.:]/).pop();
+    if(line!=="Nikkoku"||String(p.displayLineId||line)!=="Nikkoku"||
+       p.sourceRailway!=="odpt.Railway:Tobu.Kinugawa"||
+       (op&&op!=="Tobu"&&op!=="odpt.Operator:Tobu")||
+       typ!=="Local"||
+       p.positionSource!=="supabase-train-run"||p.estimated!==true||
+       !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||!cal||
+       !/^[0-9]{1,5}$/.test(number)||
+       number!==String(p.trainNumber||"").trim().toUpperCase()||
+       p.vehicleIdentityStatus==="EXACT"||
+       p.vehicleResolvedUpstream===true||p.vehicleResolvedFromRealtime===true||
+       p.actualVehicleConfirmed===true||p.vehicleFormationId||
+       p.vehicleFormationConflict||
+       (Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length))
+      return null;
+    var model="東武20400型";
+    var png="../images/列车/東武鉄道/東武鉄道_20400型.png";
+    if((p.realtimeVehicleType&&p.realtimeVehicleType!==model)||
+       (p.realtimeDerivedVehicleType&&p.realtimeDerivedVehicleType!==model))return null;
+    var plan=p.vehiclePlan;
+    if(plan&&(plan.confirmed===true||
+       (Array.isArray(plan.models)&&plan.models.some(function(v){return v!==model;}))))
+      return null;
+    var gallery=root.VehicleGaragePngMap;
+    if(!gallery||!gallery.matchModelPath(model,png,"Nikkoku"))return null;
+    return {lineId:"Nikkoku",trainNumber:number,model:model,pngPath:png,
+      sourceUrl:"https://www.tobu.co.jp/corporation/rail/vehicles/",
+      source:"tobu-kinugawa-20400-local-fleet-illustration-2611",
+      planned:true,representative:true,referenceOnly:true,illustrative:true,
+      actualVehicleConfirmed:false};
+  }
   function match(trainNumber,lineId,context){
     if(String(lineId||'')==='TobuIsesaki')
       return root.TobuIsesaki2611Png ?
         root.TobuIsesaki2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='TobuNikko')return matchTobuNikko2611(String(trainNumber||'').trim().toUpperCase(),context);
+    if(String(lineId||'')==='Nikkoku')return matchTobuKinugawaLocal2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(String(lineId||'')==='TobuSkytree')return matchTobuSkytree2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(["Hibiya","Hanzomon","TokyuDenEn"].indexOf(String(lineId||""))>=0)
       return matchTobuMetroThrough2611(String(trainNumber||"").trim().toUpperCase(),String(lineId),context);

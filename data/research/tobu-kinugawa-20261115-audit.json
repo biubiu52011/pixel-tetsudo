@@ -1,0 +1,61 @@
+{
+  "lineId": "Nikkoku",
+  "auditedOn": "2026-11-15",
+  "officialNameJa": "東武鬼怒川線",
+  "code": "TN",
+  "operator": "Tobu",
+  "officialLengthKm": 16.2,
+  "stationCount": 9,
+  "stationCodes": [
+    "TN23",
+    "TN51",
+    "TN52",
+    "TN53",
+    "TN54",
+    "TN55",
+    "TN56",
+    "TN57",
+    "TN58"
+  ],
+  "stations": [
+    "Shimo-Imaichi",
+    "Daiyamuko",
+    "Okuwa",
+    "Shin-Takatoku",
+    "Kosagoe",
+    "Tobu-World-Square",
+    "Kinugawa-Onsen",
+    "Kinugawa-Koen",
+    "Shin-Fujiwara"
+  ],
+  "segmentMinutes": [
+    3,
+    5,
+    5,
+    5,
+    1,
+    4,
+    4,
+    4
+  ],
+  "durationTotalMin": 31,
+  "durationStatus": "representative public schedule, not an observed run or fully verified 2026-11 ordinary timetable edition",
+  "officialSource": "https://www.tobu.co.jp/railway/guide/line/kinugawa_line.html",
+  "durationReference": "https://transit.yahoo.co.jp/search/result/%E4%B8%8B%E4%BB%8A%E5%B8%82-%E6%96%B0%E8%97%A4%E5%8E%9F",
+  "localFleetReference": {
+    "model": "東武20400型",
+    "png": "../images/列车/東武鉄道/東武鉄道_20400型.png",
+    "scope": "Tobu Kinugawa sourced 2026-11 ordinary timetable estimates only",
+    "actualVehicleConfirmed": false
+  },
+  "expressReferencePolicy": "N100/100/500/253 PNG gallery permission only; require independent train-specific or verified upstream model evidence, no blanket express assignment",
+  "connections": {
+    "ShimoImaichi": "TobuNikko conditional service boundary",
+    "ShinFujiwara": "Yagan Aizu-Kinugawa external connection: target line not modeled"
+  },
+  "outstanding": [
+    "2026-11 full official ordinary timetable edition remains unverified",
+    "No physical carset inferred from fleet type or train number",
+    "Add Yagan canonical line independently before cross-line UI links"
+  ]
+}

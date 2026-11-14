@@ -196,8 +196,13 @@
     {id:'tobu-urban-park', operator:'Tobu', lineIds:['Noda'],
       models:['東武8000系','東武60000系','東武80000型','東武80050型'],
       sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
-    {id:'tobu-nikko-local', operator:'Tobu', lineIds:['TobuNikko','Nikkoku'],
+    {id:'tobu-nikko-local', operator:'Tobu', lineIds:['TobuNikko'],
       models:['東武20400型','東武10000型','東武10030型'],
+      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+    // Kinugawa local ordinary operations use 20400; do not inherit an
+    // unsupported 10000/10030 ordinary fleet from the broader Nikko group.
+    {id:'tobu-kinugawa-local', operator:'Tobu', lineIds:['Nikkoku'],
+      models:['東武20400型'],
       sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
     {id:'tobu-utsunomiya', operator:'Tobu', lineIds:['TobuUtsunomiya'],
       models:['東武20400型'], sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
