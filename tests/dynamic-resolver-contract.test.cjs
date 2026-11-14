@@ -91,19 +91,33 @@ test('two-minute verified transfer is feasible; unknown walking time is not sile
   assert.equal(unknown.reason,'no-service');
 });
 
-test('SVG fallback transfer badges reuse shared, cached text measurement', () => {
-  const src = read('js/trains-render.js');
-  const begin = src.indexOf('function _badgeLabel(it) {');
-  const end = src.indexOf('function _rememberTrainArtworkFailure(',begin);
-  assert.ok(begin >= 0 && end > begin);
-  const window = {ThroughChip:{measureWidth(label,size){
-    assert.equal(label,'中央本线');
-    assert.equal(size,9);
-    return 54;
-  }}};
-  vm.runInNewContext(src.slice(begin,end) + '\nwindow.badgeWidth = _badgeW;', {window});
-  assert.equal(window.badgeWidth({name:'中央本线'},true),62);
-  assert.match(src,/var _lineName = _badgeLabel\(txl\);/);
+test('SVG fallback transfer badges use the shared StationInfoLayout measurement model', () => {
+  const src = read('js/trains-data.js');
+  const begin = src.indexOf('window.StationInfoLayout = (function() {');
+  const end = src.indexOf('})();', begin);
+  assert.ok(begin >= 0 && end > begin, 'shared L3 layout owns badge sizes');
+  let calls = 0;
+  const window = {
+    RuntimeConfig: {TRANSFER_MAX_ROWS: 4},
+    ThroughChip: {measureWidth(label, size) {
+      assert.equal(label, '中央本线');
+      assert.equal(size, 9);
+      calls++;
+      return 54;
+    }}
+  };
+  vm.runInNewContext(src.slice(begin, end + 5), {
+    window,
+    _losGroupKey() { return ''; }
+  });
+  const badge = {name:'中央本线',lineId:'ChuoMain'};
+  const plan = window.StationInfoLayout.plan([badge],'Tokyo','東京',true,100);
+  assert.equal(plan.shown.length, 1);
+  assert.equal(plan.shown[0].label, '中央本线');
+  assert.equal(plan.shown[0].badgeWidth, 62);
+  assert.equal(plan.totalWidth, 62);
+  assert.equal(calls, 1);
+  assert.match(read('js/trains-render.js'), /window\.StationInfoLayout\.plan\(/);
 });
 
 test('ODPT feed health separates capability, first load, failed refresh, and stale observations', () => {
