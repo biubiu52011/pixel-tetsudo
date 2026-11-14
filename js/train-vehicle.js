@@ -5749,37 +5749,71 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       (p.vehicleResolvedUpstream === true ||
        (p.vehicleResolvedUpstream == null && p.vehicleResolution &&
         p.vehicleResolution.identityStatus === "EXACT")));
-    // Tobu's archived small-branch A/B/C/D + digits are timetable working
-    // identifiers, NOT a model, car number, or a stable assignment range.
-    // Different 10000 / renewed 10030 two-car sets share these workings.
-    // A dated independently confirmed physical identity, or a separately
-    // certified published single-model plan, may authorize an image.
-    // Without either, even an upstream timetable-derived EXACT label must
-    // not turn an undated SQL source identifier into a rolling-stock PNG.
-    var isTobuBranchWorking = p &&
-      (contextLineId === "Tobu_Kameido" || contextLineId === "Daishi_Tobu") &&
-      contextLineId === String(p.positionLineId || p.lineId || "") &&
-      p.positionSource === "supabase-train-run" &&
-      /^[A-D][0-9]{1,3}$/i.test(String(p.trainNumber || "").trim());
+    // The canonical number index owns Tobu small-branch service-number
+    // ranges. A/B/C and nD are rotating WORKINGS, never permanent stock
+    // assignments; their example PNG must remain an explicit illustration.
+    // Real-time physical vehicle evidence and independently certified
+    // one-model timetable plans still take priority over the illustration.
+    var branchRailway = contextLineId === "Tobu_Kameido"
+      ? "odpt.Railway:Tobu.Kameido" :
+      contextLineId === "Daishi_Tobu"
+      ? "odpt.Railway:Tobu.Daishi" : "";
+    var isTobuBranchWorking = !!(p && branchRailway &&
+      String(p.positionLineId || p.lineId || "") === contextLineId &&
+      p.sourceRailway === branchRailway &&
+      (p.positionSource === "realtime-api" ||
+       p.positionSource === "supabase-train-run" ||
+       p.positionSource === "train-timetable") &&
+      (contextLineId === "Tobu_Kameido"
+        ? /^[ABC][1-9][0-9]{0,2}$/i.test(String(p.trainNumber || ""))
+        : /^[1-9][0-9]{0,2}D$/i.test(String(p.trainNumber || ""))));
     if (isTobuBranchWorking) {
       var physicalBranchIdentity = identityConfirmed &&
         (resolutionSources.indexOf("roster-physical-id") >= 0 ||
          resolutionSources.indexOf("official-realtime-car-number") >= 0 ||
          (p.vehicleResolvedFromRealtime === true &&
           resolutionSources.indexOf("realtime") >= 0));
-      // A flattened actualVehicleConfirmed or vehicleResolvedFromRealtime
-      // boolean, without the resolver's source, is not model evidence.
+      // A flattened actualVehicleConfirmed boolean is not physical evidence.
       var certifiedBranchPlan = !!(p.vehiclePlan &&
         _issuedVehiclePlans.has(p.vehiclePlan) &&
         p.vehiclePlan.lineId === contextLineId &&
         p.vehiclePlan.status === "PLANNED_MODEL" &&
         p.vehiclePlan.source === "database-verified-published-plan" &&
         p.vehiclePlan.confirmed === true);
-      if (!physicalBranchIdentity && !certifiedBranchPlan)
+      if (!physicalBranchIdentity && !certifiedBranchPlan) {
+        var branchIndex = window.TrainNumberPngRanges;
+        var branchExample = branchIndex &&
+          typeof branchIndex.matchTobuBranchFleetIllustration === "function"
+          ? branchIndex.matchTobuBranchFleetIllustration(
+              p.trainNumber, contextLineId, p) : null;
+        var branchGarage = window.VehicleGaragePngMap;
+        var branchExamplePng = branchExample &&
+          normalizeGalleryPngPath(branchExample.illustrationPng);
+        if (!artworkFailed && branchExample &&
+            branchExample.referenceOnly === true &&
+            branchExample.authorizesIllustration === true &&
+            branchExample.authorizesPNG === false &&
+            branchExample.actualVehicleConfirmed === false &&
+            branchExample.model === null &&
+            branchExample.formationId === null &&
+            branchExample.status === "UNCONFIRMED_MIXED_FLEET" &&
+            branchExamplePng && branchGarage &&
+            typeof branchGarage.matchModelPath === "function" &&
+            branchGarage.matchModelPath(branchExample.illustrationModel,
+              branchExamplePng, contextLineId)) {
+          return {kind:"vehicle",iconSrc:branchExamplePng,
+            planned:true,illustrative:true,representativeOnly:true,
+            actualVehicleConfirmed:false,referenceOnly:true,
+            illustrationModel:branchExample.illustrationModel,
+            illustrationRole:"tobu-branch-working-fleet-example-not-observed",
+            workingGroup:branchExample.workingGroup,
+            candidateModels:branchExample.candidateModels.slice()};
+        }
         return {kind:"unresolved",iconSrc:"",referenceOnly:true,
           actualVehicleConfirmed:false,
           candidateModels:["東武10000型","東武10030型50番台"],
-          reason:"tobu-branch-undated-working-id-not-vehicle"};
+          reason:"tobu-branch-number-reference-unavailable"};
+      }
     }
     // JR-Central SQL is a planned timetable map: only the planned train
     // NUMBER and its scoped PNG pool can select the reference image.
