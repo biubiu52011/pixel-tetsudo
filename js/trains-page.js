@@ -103,8 +103,10 @@
     // Keep the line cards only in the visible overview; a selected SVG route
     // must not carry 200+ invisible image/card elements in the DOM.
     if (listEl.querySelector(".rs-line-card")) _overviewScrollY = window.scrollY || window.pageYOffset || 0;
+    // Release heavyweight line cards, but keep the small shared filter
+    // mounted: its DOM is owned by OperatorFilterBar, which caches its options
+    // signature and keeps horizontal scroll / keyboard focus state.
     listEl.replaceChildren();
-    if (filterBarEl) filterBarEl.replaceChildren();
   }
   function showLineView(lineId, systemLineIds, expectedIdentity, expectedMemberIdentities) {
     // Map, train-number indexes and vehicle PNG logic are not part of the
@@ -262,11 +264,13 @@
       if (browser) browser.classList.remove("hidden");
       if (listEl && !listEl.querySelector(".rs-line-card")) {
         renderList(listEl);
-        renderFilterBar(filterBarEl);
         if (_overviewScrollY && window.requestAnimationFrame) {
           window.requestAnimationFrame(function() { window.scrollTo(0, _overviewScrollY); });
         }
       }
+      // Always refresh the filter on returning to the overview, independent
+      // of whether asynchronous updates have already restored line cards.
+      renderFilterBar(filterBarEl);
       if (listEl) setFilter(_selectedOperator);
     } catch(e) {}
   }
