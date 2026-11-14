@@ -78,7 +78,7 @@ test('3501–3525 section semi-express: weekday-only 3510,3512,3525',()=>{
 });
 test('corridor reference never overrides proven vehicle, wrong line, date or source',()=>{
   const blocked=[
-    {lineId:'TobuSkytree'}, {displayLineId:'TobuSkytree'},
+    {positionLineId:'TobuSkytree',lineId:'TobuSkytree'}, {displayLineId:'TobuSkytree'},
     {sourceRailway:'odpt.Railway:Tobu.TobuSkytree'},
     {positionSource:'other'}, {estimated:false},
     {serviceDate:'2026-12-01'}, {serviceDate:'2026-10-31'},
