@@ -191,7 +191,7 @@
       sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
     {id:'tobu-tojo', operator:'Tobu', lineIds:['Tojo'],
       models:['東武10000型','東武10030型','東武30000系',
-        '東武50000型','東武50070型','東武50090型'],
+        '東武50000型','東武50070型','東武50090型','東武90000系'],
       sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
     {id:'tobu-urban-park', operator:'Tobu', lineIds:['Noda'],
       models:['東武8000系','東武60000系','東武80000型','東武80050型'],
