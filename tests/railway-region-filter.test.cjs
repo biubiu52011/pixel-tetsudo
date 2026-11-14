@@ -94,6 +94,26 @@ test('filter renders at most two rows, and region switches reset company selecti
   ]);
 });
 
+test('cached filter restores a removed control tree in the lightweight DOM',()=>{
+  const {window,element}=load();
+  const filter=window.OperatorFilterBar.create(element);
+  filter.render(data.lines);
+  filter.setRegion('Kanto',false);
+  filter.setSelected('Tobu',false);
+  assert.equal(filter.getRegion(),'Kanto');
+  assert.equal(filter.getSelected(),'Tobu');
+
+  // This host intentionally does not implement querySelector(), matching
+  // CI's lightweight element and guarding against the prior TypeError.
+  assert.equal(typeof element.querySelector,'undefined');
+  element.innerHTML='';
+  assert.doesNotThrow(()=>filter.render(data.lines));
+  assert.ok(element.innerHTML.includes('data-region="Kanto"'));
+  assert.ok(element.innerHTML.includes('data-operator="Tobu"'));
+  assert.match(element.innerHTML,/class="rs-filter-btn active" data-operator="Tobu"/);
+  assert.equal(filter.getSelected(),'Tobu');
+});
+
 test('both pages consume the shared region and operator filter state',()=>{
   const trains=fs.readFileSync(path.join(root,'js/trains-page.js'),'utf8');
   const realtime=fs.readFileSync(path.join(root,'js/realtime-view.js'),'utf8');
