@@ -74,7 +74,7 @@ function registerEvidenceProvider(provider) {
     // の識別に過ぎず、当日の編成や個別車両の確定証拠ではない。
     // Restrict this syntax to Tojo; generic railway digits MUST NOT be folded.
     if (/Tojo/.test([ctx.lineId,ctx.railway].join('|'))) {
-      var tj = raw.match(/^(?:A|B)?(\d{3,4})([TSK])$/);
+      var tj = raw.match(/^[A-F](\d{2,4})([TSK])$/);
       if (tj) return String(parseInt(tj[1].slice(-2),10)).padStart(2,'0') + tj[2];
     }
     // 直通线路沿用同一套公开的“小时+运行号”编码。
