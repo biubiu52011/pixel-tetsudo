@@ -14,6 +14,10 @@ on:
       - 'tests/tobu-skytree-y-fork.test.cjs'
       - 'tests/tobu-isesaki-canonical-202611.test.cjs'
       - 'tests/tobu-tojo-through-fleet-202611.test.cjs'
+      - 'tests/tojo-wakoshi-through-boundary-202611.test.cjs'
+      - 'tests/odpt-edge-proxy-security.test.cjs'
+      - 'supabase/migrations/20261115110000_tojo_wakoshi_source_correlated_through_links.sql'
+      - 'supabase/functions/odpt-proxy/index.ts'
       - 'tests/tobu-tojo-realtime-policy-202611.test.cjs'
       - 'tests/tobu-tojo-ogose-gtfs-2611-fallback.test.cjs'
       - 'supabase/migrations/20261114232000_tobu_tojo_ogose_tokyogtfs_2611_plan_fallback.sql'
@@ -290,6 +294,12 @@ jobs:
         run: node --test tests/fukuchiyama-2611-disruption-line-color.test.cjs
       - name: Verify official JR Kinki colors and JR East baseline colors
         run: node --test tests/jr-line-colors-20261109.test.cjs
+      - name: Verify source-correlated Wakoshi through-service and ODPT proxy security
+        run: |
+          node --check data/api/odpt-unified.js
+          node --check js/train-position-estimator.js
+          node --check js/trains-render.js
+          node --test tests/tojo-wakoshi-through-boundary-202611.test.cjs tests/odpt-edge-proxy-security.test.cjs
       - name: Verify Tojo/Metro through-operation families and hybrid live audit
         run: |
           node --check data/timetables/tobu-tojo-through-fleet-202611.js
