@@ -1969,24 +1969,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     }
   }
 
-  // "相互直通" alone overstates the ordinary service on the Kiryu/Sano branches.
-  function _throughQualifier(lineObj) {
-    if (!lineObj || lineObj.throughScope !== "selected-limited-express") return "";
-    var lang = window.currentLang || "ja";
-    return lang === "zh" ? "部分特急直通"
-      : lang === "ko" ? "일부 특급 직통"
-      : lang === "en" ? "Select limited express only"
-      : "一部特急列車のみ直通";
-  }
-
   // 短名：去"直通/직통/Through Service"前缀，取括注线路名或主名。
   function _shortName(lineObj, mobile) {
     if (lineObj && lineObj.overflowCount) return "+" + lineObj.overflowCount;
     var nm = String(lineObj.name || lineObj.lineId || "").replace(/直通|직통|Through Service/gi, "").replace(/\s+/g, " ").trim();
     var m = nm.match(/[（(]([^）)]*(?:ライン|路線|路线))[）)]/);
     nm = m ? m[1] : nm.split(/[（(]/)[0].trim();
-    var qualifier = _throughQualifier(lineObj);
-    return qualifier ? nm + " · " + qualifier : nm;
+    return nm;
   }
 
   // 完整文本（含运营公司 / 直通 / 站外换乘注记）。
@@ -1994,9 +1983,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     var opName = (lineObj.operator && window.tOp) ? window.tOp(lineObj.operator) : "";
     var base = (opName ? opName + " " : "") + lineObj.name;
     if (lineObj.through) {
-      var thru = _throughQualifier(lineObj) ||
-        (window.t ? window.t("train.throughService", "相互直通運転") : "相互直通運転");
-      base = base + "（" + thru + "）";
+      // A selected limited-express connection is a route relationship, not
+      // a generic all-trains through-service claim. Keep its label to the
+      // destination line name; the serviceScope remains in canonical data.
+      if (lineObj.throughScope !== "selected-limited-express") {
+        var thru = window.t ? window.t("train.throughService", "相互直通運転") : "相互直通運転";
+        base = base + "（" + thru + "）";
+      }
     } else if (lineObj.type === "out") {
       var outLbl = (window.t ? window.t("train.transferOut", "站外換乘") : "站外換乘");
       var _note = lineObj.note || "";

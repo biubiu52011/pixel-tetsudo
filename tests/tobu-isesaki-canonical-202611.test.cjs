@@ -64,18 +64,25 @@ test('through junctions are reciprocal; Kiryu/Sano are selected express only',()
     'selected-limited-express');
  assert.ok(!L.TobuIsesaki.throughServices.includes('TobuNikko'));
 });
-test('ThroughChip visible label and accessible title qualify selected express',()=>{
+test('ThroughChip shows only destination line names for Kiryu/Sano limited express through',()=>{
  const s=fs.readFileSync('js/trains-data.js','utf8');
  const p=s.indexOf('/* ThroughChip 属于列车地图几何所有者。 */');
  assert.ok(p>0);
  const w={currentLang:'ja'};
  vm.runInNewContext(s.slice(p),{window:w,console});
- const chip={lineId:'Kiryu',name:'桐生線',through:true,
-  throughScope:'selected-limited-express'};
- assert.match(w.ThroughChip.shortName(chip,false),/一部特急列車のみ直通/);
- assert.match(w.ThroughChip.badgeText(chip),/一部特急列車のみ直通/);
- assert.doesNotMatch(w.ThroughChip.badgeText(chip),/相互直通運転/);
- w.currentLang='zh';assert.match(w.ThroughChip.shortName(chip,true),/部分特急直通/);
+ for(const [id,name] of [['Kiryu','東武桐生線'],['Sano','東武佐野線']]){
+  const chip={lineId:id,name,through:true,operator:'',
+   throughScope:'selected-limited-express'};
+  for(const lang of ['ja','zh','ko','en']){
+   w.currentLang=lang;
+   assert.equal(w.ThroughChip.shortName(chip,false),name);
+   assert.equal(w.ThroughChip.shortName(chip,true),name);
+   assert.equal(w.ThroughChip.badgeText(chip),name);
+   assert.doesNotMatch(w.ThroughChip.badgeText(chip),/一部特急|部分特急|Select limited|相互直通/);
+  }
+ }
+ assert.equal(L.TobuIsesaki.serviceBoundaries.find(x=>x.lineId==='Kiryu').serviceScope,
+   'selected-limited-express');
 });
 test('Chichibu Railway 37 official CR stations have names, positions and junctions',()=>{
  const l=L.ChichibuMain;
