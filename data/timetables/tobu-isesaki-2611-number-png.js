@@ -46,6 +46,42 @@
       png:"../images/列车/東武鉄道/東武鉄道_500系_リバティ.png",
       candidates:["東武500系"]}
   };
+  // Kuki–Tatebayashi corridor only. These exact train-number memberships
+  // come from the stored ODPT-source timetable templates (2 calendars) and
+  // the 2026-03-14 timetable listing. Unlike the 301E/200-family roster,
+  // there is NO official per-train car count or physical set assignment.
+  // https://tabinomemo.jp/train/timetable/tobu/11
+  // Tobu 10000 / 10030 family is documented on this corridor, but one
+  // artwork cannot identify the particular 6-/8-car combination:
+  // https://www.tcu-todoroki.ed.jp/wp/wp-content/uploads/2023/11/135a79ccc12d94b7e3764472289ea404-2.pdf
+  var corridorArtwork=Object.freeze({
+    model:"東武10030系",
+    png:"../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png",
+    candidates:["東武10000系","東武10030系"]
+  });
+  function corridorFamily(number,type,cal){
+    if(!/^\d{3,4}$/.test(number))return "";
+    var n=Number(number);
+    // Both calendars: 501–574. Weekend-only: 575,576,578,580.
+    if(type==="Local" &&
+       ((n>=501&&n<=574) ||
+        (cal==="holiday"&&(n===575||n===576||n===578||n===580))))
+      return "local";
+    // 2501–2522 + even 2524–2534; 2532/2534 weekday only.
+    if(type==="SectionExpress" &&
+       ((n>=2501&&n<=2522) ||
+        (n>=2524&&n<=2534&&n%2===0 &&
+         (cal==="weekday"||n<=2530))))
+      return "section-express";
+    // 3501–3513 + odd 3515–3525; 3510/3512/3525 weekday only.
+    if(type==="SectionSemiExpress" &&
+       ((n>=3501&&n<=3513 &&
+         (cal==="weekday"||(n!==3510&&n!==3512))) ||
+        (n>=3515&&n<=3525&&n%2===1 &&
+         (cal==="weekday"||n!==3525))))
+      return "section-semi-express";
+    return "";
+  }
   function calendar(p){
     var c=String(p.calendarType||p.calendar_urn||p.calendarUrn||"").toLowerCase();
     return c==="weekday"||c==="odpt.calendar:weekday"?"weekday":
@@ -78,7 +114,13 @@
     }else if(Object.prototype.hasOwnProperty.call(limited,number)&&type==="LimitedExpress"){
       item=express[limited[number]];family="ryomo-"+limited[number];
       source=(Number(number)%2===0)?"https://www.tobu.co.jp/pdf/timetable/time-table_02_nobori.pdf?202603=":"https://www.tobu.co.jp/pdf/timetable/time-table_02_kudari.pdf?202603=";
-    }else return null;
+    }else{
+      var corridorKind=corridorFamily(number,type,calendar(p));
+      if(!corridorKind)return null;
+      item=corridorArtwork;
+      family="kuki-tatebayashi-"+corridorKind;
+      source="https://tabinomemo.jp/train/timetable/tobu/11";
+    }
     if(!item||!root.VehicleGaragePngMap||
        !root.VehicleGaragePngMap.matchModelPath(item.model,item.png,"TobuIsesaki"))
       return null;
@@ -91,12 +133,13 @@
     return {lineId:"TobuIsesaki",trainNumber:number,serviceFamily:family,
       scheduledCars:carCount,candidateModels:item.candidates.slice(),
       model:item.model,pngPath:item.png,sourceUrl:source,
-      source:"tobu-20260314-official-number-202611-reference",
+      source:item===corridorArtwork?"tobu-202611-corridor-number-fleet-reference-only":
+        "tobu-20260314-official-number-202611-reference",
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
   root.TobuIsesaki2611Png=Object.freeze({
-    version:"20261114-v1",match:match,localNumbers:Object.keys(local).length,
-    limitedNumbers:Object.keys(limited).length
+    version:"20261114-v2",match:match,localNumbers:Object.keys(local).length,
+    limitedNumbers:Object.keys(limited).length,corridorNumbers:125
   });
 })(window);
