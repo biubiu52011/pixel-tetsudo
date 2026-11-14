@@ -66,6 +66,21 @@ function _canonicalJoinStations(lineId, partnerId) {
   return null;
 }
 
+// Passenger-facing scope must be taken from the same canonical boundary as
+// the through chip. A route join alone does not mean ordinary trains through-run.
+function _canonicalThroughScope(lineId, partnerId, stationId) {
+  var line = window.UNIFIED_LINES && window.UNIFIED_LINES[lineId];
+  var boundaries = line && Array.isArray(line.serviceBoundaries) ? line.serviceBoundaries : [];
+  for (var i = 0; i < boundaries.length; i++) {
+    var b = boundaries[i];
+    if (b && b.lineId === partnerId && (!stationId ||
+        (Array.isArray(b.handoverStations) && b.handoverStations.indexOf(stationId) >= 0))) {
+      return b.serviceScope || "";
+    }
+  }
+  return "";
+}
+
 function getLinesData() {
   if (window.DataFusion) {
     var fused = window.DataFusion.getFusedData();
@@ -666,6 +681,7 @@ function _getTransferMap(lineId, staticRevision) {
         lineId: thLineId, image: thImg, name: thName, operator: thLine.operator || "",
         code: thLine.code || "", color: (window.LineOperationSystemsResolveColor && window.LineOperationSystemsResolveColor(thLineId)) || thLine.color || "",
         type: "in", note: "", toStation: "", through: true,
+        throughScope: _canonicalThroughScope(lineId, thLineId, joinStation),
         dir: _throughDirForStation(lineId, joinStation, thLineId) || "middle"
       });
     }
@@ -681,6 +697,7 @@ function _getTransferMap(lineId, staticRevision) {
           var _js = _canonicalJoinStations(lineId, stArr[j2].lineId);
           if (_js === null || _js.indexOf(ownStations[i2]) >= 0) {
             stArr[j2].through = true;
+            stArr[j2].throughScope = _canonicalThroughScope(lineId, stArr[j2].lineId, ownStations[i2]);
             stArr[j2].dir = _throughDirForStation(lineId, ownStations[i2], stArr[j2].lineId) || "middle";
           }
         }
@@ -1952,13 +1969,24 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     }
   }
 
+  // "相互直通" alone overstates the ordinary service on the Kiryu/Sano branches.
+  function _throughQualifier(lineObj) {
+    if (!lineObj || lineObj.throughScope !== "selected-limited-express") return "";
+    var lang = window.currentLang || "ja";
+    return lang === "zh" ? "部分特急直通"
+      : lang === "ko" ? "일부 특급 직통"
+      : lang === "en" ? "Select limited express only"
+      : "一部特急列車のみ直通";
+  }
+
   // 短名：去"直通/직통/Through Service"前缀，取括注线路名或主名。
   function _shortName(lineObj, mobile) {
     if (lineObj && lineObj.overflowCount) return "+" + lineObj.overflowCount;
     var nm = String(lineObj.name || lineObj.lineId || "").replace(/直通|직통|Through Service/gi, "").replace(/\s+/g, " ").trim();
     var m = nm.match(/[（(]([^）)]*(?:ライン|路線|路线))[）)]/);
     nm = m ? m[1] : nm.split(/[（(]/)[0].trim();
-    return nm;
+    var qualifier = _throughQualifier(lineObj);
+    return qualifier ? nm + " · " + qualifier : nm;
   }
 
   // 完整文本（含运营公司 / 直通 / 站外换乘注记）。
@@ -1966,7 +1994,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     var opName = (lineObj.operator && window.tOp) ? window.tOp(lineObj.operator) : "";
     var base = (opName ? opName + " " : "") + lineObj.name;
     if (lineObj.through) {
-      var thru = (window.t ? window.t("train.throughService", "相互直通運転") : "相互直通運転");
+      var thru = _throughQualifier(lineObj) ||
+        (window.t ? window.t("train.throughService", "相互直通運転") : "相互直通運転");
       base = base + "（" + thru + "）";
     } else if (lineObj.type === "out") {
       var outLbl = (window.t ? window.t("train.transferOut", "站外換乘") : "站外換乘");

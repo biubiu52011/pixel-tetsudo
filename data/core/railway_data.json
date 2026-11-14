@@ -16561,6 +16561,142 @@
     "Goshi": {
       "lat": 36.295515,
       "lng": 139.2238014
+    },
+    "CR-Nishi-Hanyu": {
+      "lat": 36.176585,
+      "lng": 139.52446
+    },
+    "CR-Shingo": {
+      "lat": 36.17126,
+      "lng": 139.510495
+    },
+    "CR-Bushu-Araki": {
+      "lat": 36.16253,
+      "lng": 139.48857
+    },
+    "CR-Higashi-Gyoda": {
+      "lat": 36.14733,
+      "lng": 139.468325
+    },
+    "CR-Gyoda-shi": {
+      "lat": 36.14363,
+      "lng": 139.4588
+    },
+    "CR-Mochida": {
+      "lat": 36.137615,
+      "lng": 139.4416
+    },
+    "CR-Socio-Ryutsu-Center": {
+      "lat": 36.136506,
+      "lng": 139.424511
+    },
+    "CR-Kami-Kumagaya": {
+      "lat": 36.14308,
+      "lng": 139.38079
+    },
+    "CR-Ishiwara": {
+      "lat": 36.14756,
+      "lng": 139.369005
+    },
+    "CR-Hirose-Yacho-no-Mori": {
+      "lat": 36.146165,
+      "lng": 139.351865
+    },
+    "CR-Oaso": {
+      "lat": 36.144625,
+      "lng": 139.331905
+    },
+    "CR-Aketo": {
+      "lat": 36.1429,
+      "lng": 139.30329
+    },
+    "CR-Takekawa": {
+      "lat": 36.142195,
+      "lng": 139.28174
+    },
+    "CR-Nagata": {
+      "lat": 36.13538,
+      "lng": 139.25951
+    },
+    "CR-Fukaya-Hanazono": {
+      "lat": 36.130704,
+      "lng": 139.248367
+    },
+    "CR-Omaeda": {
+      "lat": 36.12893,
+      "lng": 139.22239
+    },
+    "CR-Sakurazawa": {
+      "lat": 36.12872,
+      "lng": 139.20824
+    },
+    "CR-Hagure": {
+      "lat": 36.126805,
+      "lng": 139.15812
+    },
+    "CR-Higuchi": {
+      "lat": 36.131075,
+      "lng": 139.12262
+    },
+    "CR-Nogami": {
+      "lat": 36.11161,
+      "lng": 139.11087
+    },
+    "CR-Nagatoro": {
+      "lat": 36.0955,
+      "lng": 139.11231
+    },
+    "CR-Kami-Nagatoro": {
+      "lat": 36.08615,
+      "lng": 139.113289
+    },
+    "CR-Oyahana": {
+      "lat": 36.077615,
+      "lng": 139.10618
+    },
+    "CR-Minano": {
+      "lat": 36.06862,
+      "lng": 139.093995
+    },
+    "CR-Wado-Kuroya": {
+      "lat": 36.04676,
+      "lng": 139.101695
+    },
+    "CR-Onohara": {
+      "lat": 36.018645,
+      "lng": 139.09411
+    },
+    "CR-Chichibu": {
+      "lat": 35.998795,
+      "lng": 139.086025
+    },
+    "CR-Ohanabatake": {
+      "lat": 35.99236,
+      "lng": 139.083645
+    },
+    "CR-Kagemori": {
+      "lat": 35.971995,
+      "lng": 139.068385
+    },
+    "CR-Urayamaguchi": {
+      "lat": 35.96392,
+      "lng": 139.05814
+    },
+    "CR-Bushu-Nakagawa": {
+      "lat": 35.958375,
+      "lng": 139.035435
+    },
+    "CR-Bushu-Hino": {
+      "lat": 35.953865,
+      "lng": 139.022015
+    },
+    "CR-Shiraku": {
+      "lat": 35.958915,
+      "lng": 138.99328
+    },
+    "CR-Mitsumineguchi": {
+      "lat": 35.960175,
+      "lng": 138.97773
     }
   },
   "lines": {
@@ -25267,8 +25403,8 @@
         3,
         5,
         4,
-        3,
-        5,
+        6,
+        2,
         0
       ],
       "throughServices": [
@@ -25324,6 +25460,12 @@
           "lineId": "Ryomo",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Hanyu",
+          "lineId": "ChichibuMain",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "伊势崎线",
@@ -25361,7 +25503,8 @@
           "evidence": {
             "source": "Tobu Railway 2026 express timetable: Ryomo services run between Asakusa and Akagi via Isesaki and Kiryu lines",
             "confidence": "HIGH"
-          }
+          },
+          "serviceScope": "selected-limited-express"
         },
         {
           "lineId": "Sano",
@@ -25371,7 +25514,8 @@
           "evidence": {
             "source": "Tobu Railway 2026 limited express timetable: some Liberty Ryomo services operate Asakusa-Kuzuu via Sano Line",
             "confidence": "HIGH"
-          }
+          },
+          "serviceScope": "selected-limited-express"
         }
       ]
     },
@@ -32052,7 +32196,7 @@
       "name": "Kiryu",
       "nameEn": "Tobu Kiryu Line",
       "nameJa": "東武桐生線",
-      "code": null,
+      "code": "TI",
       "color": "#008000",
       "operator": "Tobu",
       "region": null,
@@ -32099,7 +32243,7 @@
       "nameZh": "桐生线",
       "nameKo": "키류선",
       "presentation": {
-        "code": "KIR",
+        "code": "TI",
         "nameJa": "桐生線",
         "nameZh": "桐生线",
         "nameEn": "Kiryu Line",
@@ -32121,7 +32265,8 @@
           "evidence": {
             "source": "Tobu Railway 2026 limited express Ryomo Asakusa-Akagi via Kiryu Line",
             "confidence": "HIGH"
-          }
+          },
+          "serviceScope": "selected-limited-express"
         }
       ]
     },
@@ -32129,7 +32274,7 @@
       "name": "小泉线",
       "nameEn": "Koizumi Line",
       "nameJa": "東武小泉線",
-      "code": "TQZ",
+      "code": "TI",
       "color": "#32CD32",
       "operator": "Tobu",
       "region": null,
@@ -32189,7 +32334,7 @@
       "nameZh": "小泉线",
       "nameKo": "코이즈미선",
       "presentation": {
-        "code": "TQZ",
+        "code": "TI",
         "nameJa": "小泉線",
         "nameZh": "小泉线",
         "nameEn": "Koizumi Line",
@@ -34344,7 +34489,7 @@
       "name": "Sano",
       "nameEn": "Tobu Sano Line",
       "nameJa": "東武佐野線",
-      "code": null,
+      "code": "TI",
       "color": "#008000",
       "operator": "Tobu",
       "region": null,
@@ -34401,7 +34546,7 @@
       "nameZh": "佐野线",
       "nameKo": "사노선",
       "presentation": {
-        "code": "SAN",
+        "code": "TI",
         "nameJa": "佐野線",
         "nameZh": "佐野线",
         "nameEn": "Sano Line",
@@ -34423,7 +34568,8 @@
           "evidence": {
             "source": "Tobu Railway 2026 limited express Liberty Ryomo Asakusa-Kuzuu via Sano Line",
             "confidence": "HIGH"
-          }
+          },
+          "serviceScope": "selected-limited-express"
         }
       ]
     },
@@ -52796,6 +52942,121 @@
         "operatorGroup": "JR_SHIKOKU",
         "colorStatus": "approximate_route_map"
       }
+    },
+    "ChichibuMain": {
+      "name": "ChichibuMain",
+      "nameJa": "秩父本線",
+      "nameZh": "秩父本线",
+      "nameEn": "Chichibu Main Line",
+      "nameKo": "치치부 본선",
+      "code": "CR",
+      "color": "#005e9a",
+      "operator": "ChichibuRailway",
+      "region": "Saitama",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": null,
+      "branchOf": null,
+      "stations": [
+        "Hanyu",
+        "CR-Nishi-Hanyu",
+        "CR-Shingo",
+        "CR-Bushu-Araki",
+        "CR-Higashi-Gyoda",
+        "CR-Gyoda-shi",
+        "CR-Mochida",
+        "CR-Socio-Ryutsu-Center",
+        "Kumagaya",
+        "CR-Kami-Kumagaya",
+        "CR-Ishiwara",
+        "CR-Hirose-Yacho-no-Mori",
+        "CR-Oaso",
+        "CR-Aketo",
+        "CR-Takekawa",
+        "CR-Nagata",
+        "CR-Fukaya-Hanazono",
+        "CR-Omaeda",
+        "CR-Sakurazawa",
+        "Yorii",
+        "CR-Hagure",
+        "CR-Higuchi",
+        "CR-Nogami",
+        "CR-Nagatoro",
+        "CR-Kami-Nagatoro",
+        "CR-Oyahana",
+        "CR-Minano",
+        "CR-Wado-Kuroya",
+        "CR-Onohara",
+        "CR-Chichibu",
+        "CR-Ohanabatake",
+        "CR-Kagemori",
+        "CR-Urayamaguchi",
+        "CR-Bushu-Nakagawa",
+        "CR-Bushu-Hino",
+        "CR-Shiraku",
+        "CR-Mitsumineguchi"
+      ],
+      "durations": [],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Hanyu",
+          "lineId": "TobuIsesaki",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Kumagaya",
+          "lineId": "Takasaki",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Kumagaya",
+          "lineId": "JoetsuShinkansen",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Kumagaya",
+          "lineId": "HokurikuShinkansen",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Yorii",
+          "lineId": "Tojo",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Yorii",
+          "lineId": "Hachiko",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "CR-Ohanabatake",
+          "lineId": "SeibuChichibu",
+          "type": "out",
+          "note": "徒歩約5分",
+          "toStation": "Seibu-Chichibu"
+        }
+      ],
+      "presentation": {
+        "code": "CR",
+        "nameJa": "秩父本線",
+        "nameZh": "秩父本线",
+        "nameEn": "Chichibu Main Line",
+        "nameKo": "치치부 본선",
+        "color": "#005e9a",
+        "icon": "",
+        "order": 1,
+        "lineIds": [
+          "ChichibuMain"
+        ],
+        "operatorGroup": "CHICHIBU_RAILWAY"
+      }
     }
   },
   "name_map": {
@@ -56381,7 +56642,39 @@
     "北宇和島": "JR-Yodo-006",
     "内子": "JR-Uchiko-001",
     "五十崎": "JR-Uchiko-002",
-    "新谷": "JR-Uchiko-003"
+    "新谷": "JR-Uchiko-003",
+    "西羽生": "CR-Nishi-Hanyu",
+    "新郷": "CR-Shingo",
+    "武州荒木": "CR-Bushu-Araki",
+    "東行田": "CR-Higashi-Gyoda",
+    "行田市": "CR-Gyoda-shi",
+    "持田": "CR-Mochida",
+    "ソシオ流通センター": "CR-Socio-Ryutsu-Center",
+    "上熊谷": "CR-Kami-Kumagaya",
+    "ひろせ野鳥の森": "CR-Hirose-Yacho-no-Mori",
+    "大麻生": "CR-Oaso",
+    "明戸": "CR-Aketo",
+    "武川": "CR-Takekawa",
+    "ふかや花園": "CR-Fukaya-Hanazono",
+    "小前田": "CR-Omaeda",
+    "桜沢": "CR-Sakurazawa",
+    "波久礼": "CR-Hagure",
+    "樋口": "CR-Higuchi",
+    "野上": "CR-Nogami",
+    "長瀞": "CR-Nagatoro",
+    "上長瀞": "CR-Kami-Nagatoro",
+    "親鼻": "CR-Oyahana",
+    "皆野": "CR-Minano",
+    "和銅黒谷": "CR-Wado-Kuroya",
+    "大野原": "CR-Onohara",
+    "秩父": "CR-Chichibu",
+    "御花畑": "CR-Ohanabatake",
+    "影森": "CR-Kagemori",
+    "浦山口": "CR-Urayamaguchi",
+    "武州中川": "CR-Bushu-Nakagawa",
+    "武州日野": "CR-Bushu-Hino",
+    "白久": "CR-Shiraku",
+    "三峰口": "CR-Mitsumineguchi"
   },
   "stationLines": {
     "Omiya": [
@@ -57164,7 +57457,8 @@
     "Kumagaya": [
       "Takasaki",
       "JoetsuShinkansen",
-      "HokurikuShinkansen"
+      "HokurikuShinkansen",
+      "ChichibuMain"
     ],
     "Kagohara": [
       "Takasaki"
@@ -58135,7 +58429,8 @@
       "TobuIsesaki"
     ],
     "Hanyu": [
-      "TobuIsesaki"
+      "TobuIsesaki",
+      "ChichibuMain"
     ],
     "Kawamata": [
       "TobuIsesaki"
@@ -62485,7 +62780,8 @@
     ],
     "Yorii": [
       "Tojo",
-      "Hachiko"
+      "Hachiko",
+      "ChichibuMain"
     ],
     "Numabe": [
       "TokyuTamagawa"
@@ -70638,6 +70934,108 @@
     ],
     "JRC-MinoAkasaka-002": [
       "MinoAkasaka"
+    ],
+    "CR-Nishi-Hanyu": [
+      "ChichibuMain"
+    ],
+    "CR-Shingo": [
+      "ChichibuMain"
+    ],
+    "CR-Bushu-Araki": [
+      "ChichibuMain"
+    ],
+    "CR-Higashi-Gyoda": [
+      "ChichibuMain"
+    ],
+    "CR-Gyoda-shi": [
+      "ChichibuMain"
+    ],
+    "CR-Mochida": [
+      "ChichibuMain"
+    ],
+    "CR-Socio-Ryutsu-Center": [
+      "ChichibuMain"
+    ],
+    "CR-Kami-Kumagaya": [
+      "ChichibuMain"
+    ],
+    "CR-Ishiwara": [
+      "ChichibuMain"
+    ],
+    "CR-Hirose-Yacho-no-Mori": [
+      "ChichibuMain"
+    ],
+    "CR-Oaso": [
+      "ChichibuMain"
+    ],
+    "CR-Aketo": [
+      "ChichibuMain"
+    ],
+    "CR-Takekawa": [
+      "ChichibuMain"
+    ],
+    "CR-Nagata": [
+      "ChichibuMain"
+    ],
+    "CR-Fukaya-Hanazono": [
+      "ChichibuMain"
+    ],
+    "CR-Omaeda": [
+      "ChichibuMain"
+    ],
+    "CR-Sakurazawa": [
+      "ChichibuMain"
+    ],
+    "CR-Hagure": [
+      "ChichibuMain"
+    ],
+    "CR-Higuchi": [
+      "ChichibuMain"
+    ],
+    "CR-Nogami": [
+      "ChichibuMain"
+    ],
+    "CR-Nagatoro": [
+      "ChichibuMain"
+    ],
+    "CR-Kami-Nagatoro": [
+      "ChichibuMain"
+    ],
+    "CR-Oyahana": [
+      "ChichibuMain"
+    ],
+    "CR-Minano": [
+      "ChichibuMain"
+    ],
+    "CR-Wado-Kuroya": [
+      "ChichibuMain"
+    ],
+    "CR-Onohara": [
+      "ChichibuMain"
+    ],
+    "CR-Chichibu": [
+      "ChichibuMain"
+    ],
+    "CR-Ohanabatake": [
+      "ChichibuMain"
+    ],
+    "CR-Kagemori": [
+      "ChichibuMain"
+    ],
+    "CR-Urayamaguchi": [
+      "ChichibuMain"
+    ],
+    "CR-Bushu-Nakagawa": [
+      "ChichibuMain"
+    ],
+    "CR-Bushu-Hino": [
+      "ChichibuMain"
+    ],
+    "CR-Shiraku": [
+      "ChichibuMain"
+    ],
+    "CR-Mitsumineguchi": [
+      "ChichibuMain"
     ]
   },
   "lineStationOrder": {
@@ -76512,6 +76910,45 @@
       "JR-Uchiko-001": 0,
       "JR-Uchiko-002": 1,
       "JR-Uchiko-003": 2
+    },
+    "ChichibuMain": {
+      "Hanyu": 0,
+      "CR-Nishi-Hanyu": 1,
+      "CR-Shingo": 2,
+      "CR-Bushu-Araki": 3,
+      "CR-Higashi-Gyoda": 4,
+      "CR-Gyoda-shi": 5,
+      "CR-Mochida": 6,
+      "CR-Socio-Ryutsu-Center": 7,
+      "Kumagaya": 8,
+      "CR-Kami-Kumagaya": 9,
+      "CR-Ishiwara": 10,
+      "CR-Hirose-Yacho-no-Mori": 11,
+      "CR-Oaso": 12,
+      "CR-Aketo": 13,
+      "CR-Takekawa": 14,
+      "CR-Nagata": 15,
+      "CR-Fukaya-Hanazono": 16,
+      "CR-Omaeda": 17,
+      "CR-Sakurazawa": 18,
+      "Yorii": 19,
+      "CR-Hagure": 20,
+      "CR-Higuchi": 21,
+      "CR-Nogami": 22,
+      "CR-Nagatoro": 23,
+      "CR-Kami-Nagatoro": 24,
+      "CR-Oyahana": 25,
+      "CR-Minano": 26,
+      "CR-Wado-Kuroya": 27,
+      "CR-Onohara": 28,
+      "CR-Chichibu": 29,
+      "CR-Ohanabatake": 30,
+      "CR-Kagemori": 31,
+      "CR-Urayamaguchi": 32,
+      "CR-Bushu-Nakagawa": 33,
+      "CR-Bushu-Hino": 34,
+      "CR-Shiraku": 35,
+      "CR-Mitsumineguchi": 36
     }
   },
   "line_types": {

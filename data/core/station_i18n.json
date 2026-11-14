@@ -4976,8 +4976,8 @@
     "en": "Geshimo"
   },
   "Goshi": {
-    "ja": "五志",
-    "zh": "五志",
+    "ja": "剛志",
+    "zh": "刚志",
     "ko": "고시",
     "en": "Goshi"
   },
@@ -32502,5 +32502,209 @@
     "zh": "荒尾",
     "ko": "아라오",
     "en": "Arao"
+  },
+  "CR-Nishi-Hanyu": {
+    "ja": "西羽生",
+    "zh": "西羽生",
+    "ko": "西羽生",
+    "en": "Nishi Hanyu"
+  },
+  "CR-Shingo": {
+    "ja": "新郷",
+    "zh": "新郷",
+    "ko": "新郷",
+    "en": "Shingo"
+  },
+  "CR-Bushu-Araki": {
+    "ja": "武州荒木",
+    "zh": "武州荒木",
+    "ko": "武州荒木",
+    "en": "Bushu Araki"
+  },
+  "CR-Higashi-Gyoda": {
+    "ja": "東行田",
+    "zh": "東行田",
+    "ko": "東行田",
+    "en": "Higashi Gyoda"
+  },
+  "CR-Gyoda-shi": {
+    "ja": "行田市",
+    "zh": "行田市",
+    "ko": "行田市",
+    "en": "Gyoda shi"
+  },
+  "CR-Mochida": {
+    "ja": "持田",
+    "zh": "持田",
+    "ko": "持田",
+    "en": "Mochida"
+  },
+  "CR-Socio-Ryutsu-Center": {
+    "ja": "ソシオ流通センター",
+    "zh": "ソシオ流通センター",
+    "ko": "ソシオ流通センター",
+    "en": "Socio Ryutsu Center"
+  },
+  "CR-Kami-Kumagaya": {
+    "ja": "上熊谷",
+    "zh": "上熊谷",
+    "ko": "上熊谷",
+    "en": "Kami Kumagaya"
+  },
+  "CR-Ishiwara": {
+    "ja": "石原",
+    "zh": "石原",
+    "ko": "石原",
+    "en": "Ishiwara"
+  },
+  "CR-Hirose-Yacho-no-Mori": {
+    "ja": "ひろせ野鳥の森",
+    "zh": "ひろせ野鳥の森",
+    "ko": "ひろせ野鳥の森",
+    "en": "Hirose Yacho no Mori"
+  },
+  "CR-Oaso": {
+    "ja": "大麻生",
+    "zh": "大麻生",
+    "ko": "大麻生",
+    "en": "Oaso"
+  },
+  "CR-Aketo": {
+    "ja": "明戸",
+    "zh": "明戸",
+    "ko": "明戸",
+    "en": "Aketo"
+  },
+  "CR-Takekawa": {
+    "ja": "武川",
+    "zh": "武川",
+    "ko": "武川",
+    "en": "Takekawa"
+  },
+  "CR-Nagata": {
+    "ja": "永田",
+    "zh": "永田",
+    "ko": "永田",
+    "en": "Nagata"
+  },
+  "CR-Fukaya-Hanazono": {
+    "ja": "ふかや花園",
+    "zh": "ふかや花園",
+    "ko": "ふかや花園",
+    "en": "Fukaya Hanazono"
+  },
+  "CR-Omaeda": {
+    "ja": "小前田",
+    "zh": "小前田",
+    "ko": "小前田",
+    "en": "Omaeda"
+  },
+  "CR-Sakurazawa": {
+    "ja": "桜沢",
+    "zh": "桜沢",
+    "ko": "桜沢",
+    "en": "Sakurazawa"
+  },
+  "CR-Hagure": {
+    "ja": "波久礼",
+    "zh": "波久礼",
+    "ko": "波久礼",
+    "en": "Hagure"
+  },
+  "CR-Higuchi": {
+    "ja": "樋口",
+    "zh": "樋口",
+    "ko": "樋口",
+    "en": "Higuchi"
+  },
+  "CR-Nogami": {
+    "ja": "野上",
+    "zh": "野上",
+    "ko": "野上",
+    "en": "Nogami"
+  },
+  "CR-Nagatoro": {
+    "ja": "長瀞",
+    "zh": "長瀞",
+    "ko": "長瀞",
+    "en": "Nagatoro"
+  },
+  "CR-Kami-Nagatoro": {
+    "ja": "上長瀞",
+    "zh": "上長瀞",
+    "ko": "上長瀞",
+    "en": "Kami Nagatoro"
+  },
+  "CR-Oyahana": {
+    "ja": "親鼻",
+    "zh": "親鼻",
+    "ko": "親鼻",
+    "en": "Oyahana"
+  },
+  "CR-Minano": {
+    "ja": "皆野",
+    "zh": "皆野",
+    "ko": "皆野",
+    "en": "Minano"
+  },
+  "CR-Wado-Kuroya": {
+    "ja": "和銅黒谷",
+    "zh": "和銅黒谷",
+    "ko": "和銅黒谷",
+    "en": "Wado Kuroya"
+  },
+  "CR-Onohara": {
+    "ja": "大野原",
+    "zh": "大野原",
+    "ko": "大野原",
+    "en": "Onohara"
+  },
+  "CR-Chichibu": {
+    "ja": "秩父",
+    "zh": "秩父",
+    "ko": "秩父",
+    "en": "Chichibu"
+  },
+  "CR-Ohanabatake": {
+    "ja": "御花畑",
+    "zh": "御花畑",
+    "ko": "御花畑",
+    "en": "Ohanabatake"
+  },
+  "CR-Kagemori": {
+    "ja": "影森",
+    "zh": "影森",
+    "ko": "影森",
+    "en": "Kagemori"
+  },
+  "CR-Urayamaguchi": {
+    "ja": "浦山口",
+    "zh": "浦山口",
+    "ko": "浦山口",
+    "en": "Urayamaguchi"
+  },
+  "CR-Bushu-Nakagawa": {
+    "ja": "武州中川",
+    "zh": "武州中川",
+    "ko": "武州中川",
+    "en": "Bushu Nakagawa"
+  },
+  "CR-Bushu-Hino": {
+    "ja": "武州日野",
+    "zh": "武州日野",
+    "ko": "武州日野",
+    "en": "Bushu Hino"
+  },
+  "CR-Shiraku": {
+    "ja": "白久",
+    "zh": "白久",
+    "ko": "白久",
+    "en": "Shiraku"
+  },
+  "CR-Mitsumineguchi": {
+    "ja": "三峰口",
+    "zh": "三峰口",
+    "ko": "三峰口",
+    "en": "Mitsumineguchi"
   }
 }

@@ -100,8 +100,8 @@
   // http(s) 分支加载由
   // data/core/gen-file-data.js 生成的紧凑单行 JSON 副本，而不是可读源文件，
   // 以减少 GitHub Pages 的下载和解析量。可读源文件仍是唯一事实来源。
-  var DATA_FILE = "../data/core/railway_data.compact.json?v=0bbaf0daa754";
-  var STATION_I18N_FILE = "../data/core/station_i18n.compact.json?v=180f434fa7eb";
+  var DATA_FILE = "../data/core/railway_data.compact.json?v=cce63f61d3a8";
+  var STATION_I18N_FILE = "../data/core/station_i18n.compact.json?v=2ab36c7cf79c";
   var TOURISM_DATA_FILE = "../data/core/tourism_data.compact.json";
   var _stationI18n = {};
   var _i18nNormMap = null; // hyphen-insensitive lookup cache, built once in applyData
@@ -647,8 +647,8 @@ function applyData(data, i18n) {
 
   // file:// 协议：通过 <script> 标签加载生成的数据包。
   var FILE_BUNDLES = [
-    "../data/core/railway-data.file.js?v=0e2cf150ae00",
-    "../data/core/station-i18n.file.js?v=d13cef4c96ff",
+    "../data/core/railway-data.file.js?v=e352286e04be",
+    "../data/core/station-i18n.file.js?v=934c6989fa25",
     "../data/core/tourism-data.file.js"
   ];
   function loadScript(url) {
