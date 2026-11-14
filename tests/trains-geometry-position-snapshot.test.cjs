@@ -24,7 +24,7 @@ function setup() {
     window, document, GEOM:{BRANCH_COL_W:96},
     _isMobileView:() => true, _geomKey:geomKey, _routeGeometryCache:cache
   });
-  vm.runInContext(extract('  function _computeLineHash(', '  function invalidateRouteGeometryCache(') +
+  vm.runInContext(extract('  function _computeLineHash(', '  // === 统一车站渲染器（主线与支线共用样式） ===') +
     extract('  function _reuseGeometryForPositionSnapshot(', '  function computeRouteGeometry('),
     context);
   const line = {stations:['Tokyo','Kanda'],type:'straight',color:'#f80'};

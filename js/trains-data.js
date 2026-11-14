@@ -1915,22 +1915,6 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       GEOM, typeof document !== 'undefined' && document.fonts ? document.fonts.status : '', window.TrainsActiveSystemLineIds || []]);
   }
   
-  function invalidateRouteGeometryCache(lineId) {
-    if (lineId) {
-      // 缓存的父线路映射也拥有其支线和延伸几何。
-      // 使所有消费该线路的语言/视口缓存条目失效。
-      Object.keys(_routeGeometryCache).forEach(function(key) {
-        var geometry = _routeGeometryCache[key];
-        if (geometry.lineId === lineId ||
-            geometry.branchLines.some(function(branch) { return branch.id === lineId; }) ||
-            geometry.fusionMap && geometry.fusionMap[lineId]) {
-          delete _routeGeometryCache[key];
-        }
-      });
-    } else {
-      _routeGeometryCache = {};
-    }
-  }
   
   // === 统一车站渲染器（主线与支线共用样式） ===
   // 主線/支線の区別は geometry（座標・side・色）のみに残し、駅・ラベル・

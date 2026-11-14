@@ -32,20 +32,6 @@
     _initialized=true;
   }
 
-  function scoreEvidence(a,b){
-    var s=0;
-    var la=(window.UNIFIED_LINES&&window.UNIFIED_LINES[a])||null;
-    var lb=(window.UNIFIED_LINES&&window.UNIFIED_LINES[b])||null;
-    if((_directThrough[a]||[]).indexOf(b)>=0)s+=3;
-    if(la&&lb&&la.code&&lb.code&&la.code===lb.code)s+=(la.operator===lb.operator)?2:-5;
-    var sa=la&&la.stations?la.stations:[];
-    var sb=lb&&lb.stations?lb.stations:[];
-    var set={},sc=0;
-    sa.forEach(function(x){set[x]=true;});
-    sb.forEach(function(x){if(set[x])sc++;});
-    if(sc>0)s+=1;
-    return s;
-  }
 
   function _stationKey(v){var p=String(v||"").split(".");return p[p.length-1]||"";}
   function _servicePatternIds(a,b){

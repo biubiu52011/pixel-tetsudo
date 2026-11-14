@@ -449,24 +449,6 @@
     startFusionPolling();
   });
 
-  // ========== 车站坐标匹配 ==========
-  function findStationIndex(line, lat, lon) {
-    try {
-      if (!line || !line.stations || !window.STATION_COORDS) return 0;
-      var bestIdx = 0;
-      var bestDist = Infinity;
-      for (var i = 0; i < line.stations.length; i++) {
-        var stName = line.stations[i];
-        var coords = window.STATION_COORDS[stName];
-        if (!coords) continue;
-        var dlat = lat - coords[0];
-        var dlon = lon - coords[1];
-        var dist = dlat * dlat + dlon * dlon;
-        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
-      }
-      return bestIdx;
-    } catch(e) { return 0; }
-  }
 
   var LAST_GOOD_KEY = "pt_runinfo_last_good_v1";
   var LAST_GOOD_MAX_AGE_MS = 10 * 60 * 1000;
@@ -789,17 +771,6 @@
   }
 
   // ========== TrainInformation full-record matching ==========
-  // ODPT "odpt.Railway:TokyoMetro.Ginza" -> "Ginza"
-  function extractRailwayShort(rec) {
-    try {
-      var rw = (rec && rec["odpt:railway"]) || "";
-      if (!rw) return "";
-      var parts = String(rw).split(":");
-      if (parts.length < 2) return "";
-      var dots = parts[parts.length - 1].split(".");
-      return dots[dots.length - 1] || "";
-    } catch(e) { return ""; }
-  }
 
   function buildLineIdentity(line, lineId) {
     try {
@@ -1161,16 +1132,6 @@
     return idx;
   }
 
-  // Vehicle identity has one authority. Rendering/icon rules must never infer
-  // a train class back into the operational data model.
-  function resolveTrainClass(vehCtx) {
-    try {
-      if (window.TrainVehicle && typeof window.TrainVehicle.resolve === 'function') {
-        return window.TrainVehicle.resolve(vehCtx).name || '';
-      }
-    } catch(e) {}
-    return '';
-  }
 
   function _uniqueTimetableRailwayForTrain(operatorKey, trainNumber) {
     if (!operatorKey || !trainNumber) return "";

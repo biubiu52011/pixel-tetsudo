@@ -97,10 +97,14 @@ jobs:
           node tests/bantan-data-regression.js
           node --test tests/ao-three-railway-transfer-map.test.cjs
           node --test tests/route-timetable-scoped-station-id.test.cjs
+      - name: Verify Pages runtime artifact manifest
+        run: node --test tests/pages-artifact-contract.test.cjs
+      - name: Build Pages runtime-only artifact
+        run: node scripts/build-pages-site.cjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '.pages-dist'
   # Separate the deployment into a dependent job so Actions finishes
   # indexing the just-uploaded "github-pages" artifact before deploy-pages
   # searches for it. The previous same-job upload/deploy raced metadata

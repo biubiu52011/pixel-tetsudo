@@ -396,22 +396,6 @@
     return t;
   }
 
-  // ---- 摘要模式（无整句模板命中时的结构化兜底）----
-  function _summary(text, cause, status, lineId, lang) {
-    var lineName = lineId ? (window.RailwayDB ? window.RailwayDB.resolveLineName(lineId, lang) : "") : "";
-    var causeTr = cause ? _replaceFragment(cause, lang) : "";
-    var act;
-    if (status === "suspended") act = { zh: "暂停运行", ko: "운전 중단", en: "service suspended" }[lang];
-    else if (status === "delayed") act = { zh: "出现延误", ko: "지연 발생", en: "delays occurring" }[lang];
-    else if (status === "notice") act = { zh: "有运行通知", ko: "운행 안내가 있습니다", en: "service notice in effect" }[lang];
-    else if (status === "info") act = { zh: "有运行情报", ko: "운행 정보가 있습니다", en: "service info in effect" }[lang];
-    else act = { zh: "有运行信息", ko: "운행 정보가 있습니다", en: "service information" }[lang];
-    var prefix = lineName ? lineName + "：" : "";
-    if (causeTr) {
-      return { zh: prefix + "因" + causeTr + "，" + act + "。", ko: prefix + causeTr + "으로 인해 " + act + "。", en: prefix + act + " due to " + causeTr + "." }[lang];
-    }
-    return { zh: prefix + act + "。", ko: prefix + act + "。", en: prefix + act + "." }[lang];
-  }
 
   function _percentText(serviceLevel) {
     if (!serviceLevel || serviceLevel.minPercent == null) return "";
