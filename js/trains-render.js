@@ -331,8 +331,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         });
         if (badgePlan.moreText) {
           var overflowText = document.createElementNS(svgNS, "text");
-          overflowText.setAttribute("x", ix0 + badgePlan.contentWidth + GAP);
-          overflowText.setAttribute("y", iy0 + 8);
+          overflowText.setAttribute("x", ix0 + badgePlan.overflowX);
+          overflowText.setAttribute("y", iy0 + badgePlan.overflowY + 8);
           overflowText.setAttribute("font-size", "7");
           overflowText.setAttribute("fill", "var(--text-muted)");
           overflowText.textContent = badgePlan.moreText;
