@@ -26,7 +26,7 @@ test('Tojo candidate families are scoped, installed before the existing resolver
   const context={window: {VEHICLE_FAMILY_RULES: []}};
   vm.runInNewContext(source,context,{filename: asset});
   vm.runInNewContext(source,context,{filename: asset});
-  assert.equal(context.window.VEHICLE_FAMILY_RULES.length,8);
+  assert.equal(context.window.VEHICLE_FAMILY_RULES.length,9);
 });
 
 test('Wakoshi through-working owners are not mistaken for a confirmed actual carset', () => {
@@ -52,6 +52,12 @@ test('Wakoshi through-working owners are not mistaken for a confirmed actual car
 
 test('Local fleet families are segment-scoped and do not allocate carsets or authorize PNGs', () => {
   const rules=load();
+  const tj=rules.find(x=>x.codePattern==='PLAN:OFFICIAL-TJLINER-50090');
+  assert.ok(tj);
+  assert.equal(tj.exactVehicleType,'');
+  assert.equal(tj.allowCandidateArtwork,false);
+  assert.deepEqual(Array.from(tj.vehicleCandidates),['東武50090型']);
+  assert.deepEqual(Array.from(tj.planScope.trainTypes),['TJ-Liner','TJ-LINER']);
   const ground=rules.find(x=>x.codePattern==='PLAN:TOJO-GROUND-10CAR');
   const west=rules.find(x=>x.codePattern==='PLAN:TOJO-WEST-4CAR');
   const ogose=rules.find(x=>x.codePattern==='PLAN:OGOSE-4CAR');
