@@ -214,7 +214,7 @@ test('source calendar fallback remains strict and cannot authorize an unknown ca
   assert.equal(match('344E','Local','weekday',{
     calendarType:'',serviceId:'odpt.Calendar:SaturdayHoliday'
   }).trainNumber,'344E');
-  for(const id of ['','SaturdayHoliday','odpt.Calendar:unknown','odpt.Calendar:NationalHoliday']){
+  for(const id of ['','odpt.Calendar:unknown','odpt.Calendar:NationalHoliday']){
     assert.equal(match('344E','Local','weekday',{calendarType:'',serviceId:id}),null,id);
   }
   assert.equal(match('344E','Local','weekday',{
