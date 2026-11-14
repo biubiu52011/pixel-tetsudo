@@ -654,6 +654,58 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
   }
 
+  // L1 canvas contract: the HTML .tp-line-map owns the only surface.
+  // The inline SVG is transparent foreground, with one viewport determined
+  // solely by its static railway content (all route shapes share this rule).
+  // Realtime positions must never resize/recenter the complete route canvas.
+  function _commitStaticRouteViewport(svg, staticLayer, geometry) {
+    var width = Math.max(1, Number(geometry && geometry.svgW) || 1);
+    var height = Math.max(1, Number(geometry && geometry.svgH) || 1);
+    var left = 0, top = 0, right = width, bottom = height;
+    try {
+      var box = staticLayer && staticLayer.getBBox && staticLayer.getBBox();
+      if (box && isFinite(box.x) && isFinite(box.y) &&
+          isFinite(box.width) && isFinite(box.height) &&
+          box.width >= 0 && box.height >= 0) {
+        left = Math.min(0, box.x - 28);
+        top = Math.min(0, box.y - 32);
+        right = Math.max(width, box.x + box.width + 28);
+        bottom = Math.max(height, box.y + box.height + 32);
+      }
+    } catch (_ignored) {
+      // Unavailable SVG text metrics: retain the deterministic base geometry.
+    }
+    var bounds = { x:left, y:top, width:right-left, height:bottom-top };
+    svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
+    svg.setAttribute("data-pt-viewport-source", "static-route");
+    if (geometry) geometry.contentBounds = bounds;
+    return bounds;
+  }
+
+  // Read-only contract diagnostic: use it to inspect any operator/line in DevTools.
+  function auditRouteCanvas(el) {
+    var svg = el && el.querySelector && el.querySelector(".tp-map-wrap > svg");
+    if (!svg) return null;
+    var directRects = Array.prototype.filter.call(svg.children || [], function(node) {
+      return String(node.tagName || "").toLowerCase() === "rect";
+    });
+    var viewport = svg.getAttribute("viewBox") || "";
+    var geometry = svg.__geometry || {};
+    var expected = geometry.contentBounds;
+    var expectedViewport = expected
+      ? [expected.x,expected.y,expected.width,expected.height].join(" ") : "";
+    return {
+      lineId: svg.getAttribute("data-line-id") || "",
+      l1Owner: ".tp-line-map",
+      independentSvgBackgrounds: directRects.length,
+      viewportSource: svg.getAttribute("data-pt-viewport-source") || "",
+      viewport: viewport,
+      matchesStaticBounds: !!expected && viewport === expectedViewport,
+      staticLayers: svg.querySelectorAll(".static-layer").length,
+      trainLayers: svg.querySelectorAll(".train-layer").length
+    };
+  }
+
   function renderTrainMap(el, line, lineId, renderOptions) {
     var startedAt = performance.now();
     var renderKind = 'full';
@@ -715,6 +767,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 整图可见、无横向滚动；viewBox 逻辑尺寸（_baseW/_cw6）仍决定内容密度基线。
       svg.style.width = "100%";
       svg.style.height = "auto";
+      svg.style.background = "transparent";
+      svg.setAttribute("data-pt-canvas", "content-only");
       svg.setAttribute("data-line-id", lineId);
       svg.setAttribute("data-lang", _lang);
       // 用于列车定位的支线几何（支线列车渲染在支线列）。
@@ -1078,36 +1132,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         }
       } catch (e2) { /* clamp is a best-effort readability guard */ }
       
-      // 在调整 viewBox 前填充动态层，使其标记和
-      // 字幕边界参与可见画布计算。
+      // Commit one stable viewport after station labels/transfer badges
+      // have their final static sizes. Do NOT include the train-layer:
+      // empty/loaded/timetable/realtime states must share the same L1 bounds.
+      _commitStaticRouteViewport(svg, staticLayer, geometry);
       updateTrainLayer(svg, positions, stationCoords, lineId, displayLine, geometry);
-
-      // 最终画布由实际渲染的文字/图标决定。坐标保持
-      // 不变，使静态轨道和动态位置共用一套几何。
-      if (staticLayer.getBBox) {
-        var _contentBoxes = [staticLayer, trainLayer].map(function(layer) {
-          try { return layer && layer.getBBox ? layer.getBBox() : null; } catch (_e) { return null; }
-        }).filter(function(box) {
-          return box && isFinite(box.x) && isFinite(box.y) && isFinite(box.width) && isFinite(box.height);
-        });
-        var content = _contentBoxes.length ? {
-          x: Math.min.apply(null, _contentBoxes.map(function(box) { return box.x; })),
-          y: Math.min.apply(null, _contentBoxes.map(function(box) { return box.y; })),
-          width: 0,
-          height: 0
-        } : null;
-        if (content) {
-        var contentRight = Math.max.apply(null, _contentBoxes.map(function(box) { return box.x + box.width; }));
-        var contentBottom = Math.max.apply(null, _contentBoxes.map(function(box) { return box.y + box.height; }));
-        content.width = contentRight - content.x;
-        content.height = contentBottom - content.y;
-        var left = Math.min(0,content.x - 28), top = Math.min(0,content.y - 32);
-        var right = Math.max(svgW,contentRight + 28);
-        var bottom = Math.max(svgH,contentBottom + 32);
-        svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));
-        geometry.contentBounds = {x:left,y:top,width:right-left,height:bottom-top};
-        }
-      }
       updateRunningInfo(el, positions);
       updateEstimatedNote(el, lineId, positions);
       
@@ -3481,7 +3510,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     renderTrainMap: typeof renderTrainMap === "function" ? renderTrainMap : null,
     disposeTrainMap: typeof disposeTrainMap === "function" ? disposeTrainMap : null,
     updateTrainLayer: typeof updateTrainLayer === "function" ? updateTrainLayer : null,
-    updateRunningInfo: typeof updateRunningInfo === "function" ? updateRunningInfo : null
+    updateRunningInfo: typeof updateRunningInfo === "function" ? updateRunningInfo : null,
+    auditRouteCanvas: auditRouteCanvas
   };
 
 /* TrainTrackLayout 是渲染器的坐标解析边界。 */
