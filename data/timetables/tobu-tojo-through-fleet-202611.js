@@ -69,7 +69,7 @@
   rules.push({
     networkKey: 'Tojo', codePattern: 'PLAN:OFFICIAL-TJLINER-50090',
     operator: 'Tobu', effectiveFrom: '2026-10-30', grade: 'B',
-    sourceUrl: TOBU, exactVehicleType: '東武50090型',
+    sourceUrl: TOBU, exactVehicleType: '',
     vehicleCandidates: ['東武50090型'], allowCandidateArtwork: false,
     planScope: { lineIds: ['Tojo'], planOnly: true,
       trainTypes: ['TJ-Liner','TJ-LINER'] }
