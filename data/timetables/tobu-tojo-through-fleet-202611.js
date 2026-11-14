@@ -10,13 +10,13 @@
   var METRO='https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html';
   var MF='https://loo-ool.com/rail/MF/32/';
   var assets=Object.freeze({
-    ogose:Object.freeze({model:'東武8000型',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
-    west:Object.freeze({model:'東武8000型',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
-    tj:Object.freeze({model:'東武50090型',png:'../images/列车/東武鉄道/東武鉄道_50090型.png',sourceUrl:TOBU}),
-    tobu:Object.freeze({model:'東武50070型',png:'../images/列车/東武鉄道/東武鉄道_50070型.png',sourceUrl:MF}),
+    ogose:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
+    west:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
+    tj:Object.freeze({model:'東武50090系',png:'../images/列车/東武鉄道/東武鉄道_50090型.png',sourceUrl:TOBU}),
+    tobu:Object.freeze({model:'東武50070系',png:'../images/列车/東武鉄道/東武鉄道_50070型.png',sourceUrl:MF}),
     metro:Object.freeze({model:'東京メトロ17000系',png:'../images/列车/東京メトロ/東京メトロ_17000系.png',sourceUrl:METRO}),
     tokyu:Object.freeze({model:'東急5050系',png:'../images/列车/東急電鉄/東急電鉄_5050系.png',sourceUrl:MF}),
-    ground:Object.freeze({model:'東武50000型',png:'../images/列车/東武鉄道/東武鉄道_50000型.png',sourceUrl:TOBU})
+    ground:Object.freeze({model:'東武50000系',png:'../images/列车/東武鉄道/東武鉄道_50000型.png',sourceUrl:TOBU})
   });
   var westStations=Object.create(null);
   ['Ogawamachi','TobuTakezawa','MinamiYorii','Obusuma','Hachigata','Tamayodo','Yorii'].forEach(function(s){westStations[s]=true;});
