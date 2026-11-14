@@ -1186,7 +1186,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     // 双支线及以上**左右分侧**（用户："成田线现在这样可读性很差"——三条竖线全挤左侧、
     // 空港 2 站也被长支线拖成拐弯竖列）——每条支线独立画法：非 junction 站 ≤4 → 水平直线横排（h），
     // >4 → 竖列（v）；竖列支线放左、横排支线放右（全部横排时保持全左，鹤见线不回归）；
-    // junction 站名在存在右支线时转圆点上方+白描边遮线（两侧都被占，renderTrainMap 实现）。
+    // Junction station label placement is now resolved from branch exits by the shared L3 renderer.
     var _branchModes = []; // 每支线 'h' 横排 / 'v' 竖列
     var _hasVCol = false;
     for (var _bmi = 0; _bmi < branchLines.length; _bmi++) {
@@ -1370,8 +1370,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       // tail 列宽与直线支线同源（GEOM.BRANCH_COL_W × 本图缩放系数）。
       // 移动端容器是 1:1 硬约束，tail 列让位给环（保底 BRANCH_COL_W×1.1 ≈ 现状 105px）。
       // 支线宽度取决于文本最多的那个站（用户指示）——不硬编码 105.6/88，
-      // 动态扫描光丘尾列（stub 前 10 站）与左列上方站名的最大文字宽（字数×16×1.1，与
-      // _pickSixLabelSide 同源）；语言切换/站名变化时 stubX 与 tailCap 自适应。
+      // 动态扫描光丘尾列与左列上方站名的最大文字宽；语言切换时自适应。
       var _sixNameW = function(_id6) {
         var _n6 = (window.RailwayDB && window.RailwayDB.resolveStationName)
           ? (window.RailwayDB.resolveStationName(_id6, window.currentLang) || _id6) : _id6;
@@ -1569,23 +1568,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       var _rightPad = isMobileView ? 24 : 40;
       var mainCx, svgW;
       if (branchLines.length >= 2) {
-        // 多支线全左直排——mainCx ≥ 左侧支线区需求（站名朝左放下），
-        // 右侧仅 junction 站名朝右（岔路）+ 余量；左侧 stub 已避开主干站名带（_branchStubL）。
-        var _jMaxW6 = 0;
-        for (var _jb6 = 0; _jb6 < branchLines.length; _jb6++) {
-          var _bl6 = branchLines[_jb6];
-          var _jst6 = "";
-          if (_bl6.stations && _bl6.stations.length) {
-            var _jf6 = _branchJunctionStation(_bl6.stations, stations);
-            _jst6 = (_jf6 && _jf6.station) || _bl6.stations[0];
-          }
-          var _jn6 = _jst6
-            ? ((window.RailwayDB && window.RailwayDB.resolveStationName)
-              ? (window.RailwayDB.resolveStationName(_jst6, window.currentLang) || _jst6)
-              : _jst6)
-            : "";
-          _jMaxW6 = Math.max(_jMaxW6, (_jn6 || "").length * 16 * 1.1);
-        }
+        // Reserve actual left/right branch geometry; do not allocate an
+        // artificial extra corridor for specially styled junction names.
         // 横排时左需求 = 最长支线横排长 + 最宽站名 + 余量（竖列时走 _leftNeed）
         var _leftNeedH = 0;
         if (_branchH) {
@@ -1599,7 +1583,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         }
         mainCx = Math.max(_baseW / 2, (_branchH ? _leftNeedH : _leftNeed) + 20);
         // 右侧需求含右横排支线（此前仅 junction 名宽）；左需求已含竖列支线
-        svgW = Math.max(_baseW, mainCx + 12 + _jMaxW6 + _rightNeed + _rightPad);
+        svgW = Math.max(_baseW, mainCx + 12 + _rightNeed + _rightPad);
 
       } else {
         // 单支线/无支线：主线中心固定（现状）
@@ -1896,7 +1880,6 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       branchColW: _branchColW, // 左侧列距动态化（跨函数）
       branchH: _branchH, // 短支线线 → 支线水平直线横排（跨函数）
       branchModes: _branchModes, // 每支线画法（h 横排 / v 竖列，跨函数）
-      rightBranch: _rightCols > 0 && branchLines.length >= 2, // 存在右支线（junction 站名转圆点上方+白描边）
       branchLayouts: branchLayouts,
       branchHSp: _branchHSp, // 横排站距（跨函数）
       branchGeom: branchGeom,
@@ -1957,52 +1940,6 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
   // **站名文字带**而非空间/几何：枝干（光丘尾 10 站 + Tochomae junction）站名放某一侧时，
   // 若与主干（环）站的站名文字带重叠（该侧被主干站名占用），则放另一侧；双侧都不重叠
   // → 默认朝右（岔路站名标准）。主干站名带方向按双排固定规则（左列上方朝右、
-  // 左列下方朝左、右列朝右，）。画布边界为硬约束（放不下即占用）。
-  function _pickSixLabelSide(o, geometry, svgW) {
-    var x = o.x, y = o.y;
-    var off = o.isJunction ? 14 : 10;
-    var W = (o.labelLen || 3) * 16 * 1.1; // 当前枝干站全尺寸文字宽
-    var y0 = y - 8, y1 = y + 8;
-    var rightRect = [x + off, x + off + W, y0, y1];
-    var leftRect = [x - off - W, x - off, y0, y1];
-    var rightOccupied = false, leftOccupied = false;
-
-    // 画布边界硬约束（放不下即占用）
-    if (rightRect[1] > svgW - 2) rightOccupied = true;
-    if (leftRect[0] < 0) leftOccupied = true;
-
-    // 主干（环）站名文字带重叠检测
-    var scs = geometry.stationCoords || [];
-    var jx = geometry.junctionX, jy = geometry.junctionY;
-    for (var i = 0; i < scs.length; i++) {
-      var sc = scs[i];
-      if (sc.stationId === o.stationId) continue;      // 跳过自身
-      if (sc.x < jx - 0.5) continue;                   // 跳过枝干光丘尾站（环外）
-      if (Math.abs(sc.x - jx) < 0.5 && sc.stationId === geometry.junctionStation) continue; // 跳过 junction 自身
-      var sName = (window.RailwayDB && window.RailwayDB.resolveStationName)
-        ? (window.RailwayDB.resolveStationName(sc.stationId, window.currentLang) || sc.stationId)
-        : sc.stationId;
-      var sW = (sName || "").length * 16 * 1.1;
-      var soff = (sc.stationId === geometry.junctionStation) ? 14 : 10;
-      var sRect;
-      if (Math.abs(sc.x - jx) < 0.5) {
-        // 左列主干站统一朝左（上方由朝右改朝左，与左列下方一致）
-        sRect = [sc.x - soff - sW, sc.x - soff, sc.y - 8, sc.y + 8];
-      } else {
-        // 右列主干站：朝右
-        sRect = [sc.x + soff, sc.x + soff + sW, sc.y - 8, sc.y + 8];
-      }
-      if (rightRect[0] < sRect[1] && sRect[0] < rightRect[1] &&
-          rightRect[2] < sRect[3] && sRect[2] < rightRect[3]) rightOccupied = true;
-      if (leftRect[0] < sRect[1] && sRect[0] < leftRect[1] &&
-          leftRect[2] < sRect[3] && sRect[2] < leftRect[3]) leftOccupied = true;
-    }
-
-    if (leftOccupied && !rightOccupied) return "right";
-    if (rightOccupied && !leftOccupied) return "left";
-    return "right"; // 双侧同况（都空/都占）→ 默认朝右
-  }
-
   // 暴露共线线路配置表——其他模块自动获取共线线
   window.SharedTrackPairs = {
     getSharedLines:function(lineId){return _sharedSections(lineId).map(function(s){return s.partner;});},
