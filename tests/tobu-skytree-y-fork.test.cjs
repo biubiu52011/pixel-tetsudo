@@ -170,13 +170,14 @@ test('L corner interpolation keeps the vehicle on painted horizontal then vertic
  assert.equal(run({stationIndex:1,segmentToIndex:2,segmentProgress:0.5}),null);
 });
 test('long station name, Hikifune transfers and through caption obey shared L3 layout',()=>{
- assert.ok(source.includes('forkMultiline: !!_forkLines'));
- assert.ok(source.includes('forkJunction: _forkHikifune'));
- assert.ok(source.includes('if (o.forkMultiline) iy0 = o.y + 21;'));
+ // Branch names and junctions now use the same L3 station renderer.
+ assert.ok(source.includes('if (o.labelLines) {'));
+ assert.ok(source.includes('if (o.junctionPlacement) {'));
+ assert.ok(source.includes('if (o.horizontalBranch)'));
+ assert.ok(source.includes('if (o.transferBelowNode)'));
  assert.ok(source.includes('var badgePlan = window.StationInfoLayout.plan('));
  assert.ok(source.includes('var rows = badgePlan.rows;'));
  assert.ok(source.includes('if (_align === "end" && ix0 < 2) ix0 = 2;'));
- assert.ok(source.includes('ty: _forkHikifune ? sc.y - 16'));
  assert.ok(data.includes('window.StationInfoLayout.reservedRows('),
    'shared geometry must reserve the same badge row height as L3 render');
  assert.ok(!data.includes("'data-fork-caption':'oshiage-through'"),

@@ -39,12 +39,11 @@ test('ordinary map preserves 11-unit up/down side lanes', () => {
 });
 
 test('mobile left and dual station labels stay outside the train artwork lane', () => {
-  assert.match(source,
-    /side === "left"\) \{[\s\S]*?tx = o\.x - \(isJunction \? 14 : \(isMobileView \? 20 : 10\)\)/);
-  assert.match(source,
-    /side === "dual"\) \{[\s\S]*?tx = o\.x - \(isJunction \? 16 : \(isMobileView \? 20 : 12\)\)/);
-  // lane centre x-11 with 14-unit artwork starts at x-18, so x-20 leaves
-  // visible clearance without hiding labels or shrinking the train marker.
+  // L3 uses a shared non-junction clearance rule. The mobile label edge
+  // remains beyond the x-11 train lane and half of the 14-unit PNG.
+  assert.match(source, /else if \(side === "left"\) \{[\s\S]*?tx = o\.x - \(isMobileView \? 20 : 10\)/);
+  assert.match(source, /else if \(side === "dual"\) \{[\s\S]*?tx = o\.x - \(isMobileView \? 20 : 12\)/);
+  assert.match(source, /if \(o\.junctionPlacement\) \{[\s\S]*?tx = o\.x \+ \(branchSide === "left" \? -\(isMobileView \? 20 : 12\) : \(isMobileView \? 20 : 12\)\)/);
   assert.ok(20 > 11 + 14 / 2);
 });
 
