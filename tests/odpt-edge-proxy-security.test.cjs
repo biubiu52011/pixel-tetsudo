@@ -5,8 +5,8 @@ const fs=require('node:fs');
 const proxy=fs.readFileSync('supabase/functions/odpt-proxy/index.ts','utf8');
 const client=fs.readFileSync('data/api/odpt-unified.js','utf8');
 test('ODPT Edge proxy has server secrets, fixed origins and source-resource allowlist',()=>{
-  assert.match(proxy,/Deno\\.env\\.get\\(config\\.host/);
-  assert.match(proxy,/ODPT_PRODUCTION_CONSUMER_KEY/);
+  assert.ok(proxy.includes('Deno.env.get(config.host'));
+  assert.ok(proxy.includes('ODPT_CHALLENGE_CONSUMER_KEY') && proxy.includes('ODPT_PRODUCTION_CONSUMER_KEY'));
   assert.match(proxy,/const trustedOrigin="https:\/\/biubiu52011\.github\.io"/);
   assert.match(proxy,/UNSUPPORTED_ODPT_RESOURCE/);
   assert.match(proxy,/UNSUPPORTED_FILTER/);
@@ -15,7 +15,7 @@ test('ODPT Edge proxy has server secrets, fixed origins and source-resource allo
   assert.match(proxy,/ODPT_PROXY_NOT_CONFIGURED/);
   assert.match(proxy,/ORIGIN_NOT_ALLOWED/);
   assert.match(proxy,/RATE_LIMIT/);
-  assert.match(proxy,/binary\\?"application\\/x-protobuf"/);
+  assert.ok(proxy.includes('binary?"application/x-protobuf"'));
   assert.match(proxy,/new Map<string,\{until:number,status:number,body:Uint8Array/);
   assert.ok(!proxy.includes('ODPT_LINKS_ENC'));
   assert.ok(!/console\.[a-z]+\(target\.toString/.test(proxy),'never log upstream URLs with secret keys');
