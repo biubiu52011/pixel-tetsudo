@@ -58,7 +58,7 @@ test('2026 Kameido trains cannot inherit retired or unverified PNGs', () => {
   const gallery=window.VehicleGaragePngMap;
   for(const [model,name] of [
     ['東武10000型（亀戸・大師線・2両）','東武鉄道_10000型_更新車.png'],
-    ['東武10030型50番台（亀戸・大師線・2両）','東武鉄道_10030型_50番台.png']]) {
+    ['東武10030型50番台（亀戸・大師線・2両）','東武鉄道_10030型_50番台_更新車.png']]) {
     const file='images/列车/東武鉄道/'+name;
     const png='../'+file;
     assert.ok(fs.existsSync(file),file);
@@ -70,9 +70,11 @@ test('2026 Kameido trains cannot inherit retired or unverified PNGs', () => {
   assert.equal(gallery.findPath('../'+retired).some(x=>
     x.canonicalImage&&x.lineIds.includes('Tobu_Kameido')),false,
     '8500/8000 is historical, not present-day local stock');
-  const variant='images/列车/東武鉄道/東武鉄道_10030型_50番台_更新車.png';
-  assert.ok(fs.existsSync(variant));
-  assert.equal(gallery.findPath('../'+variant).some(x=>
+  const older='images/列车/東武鉄道/東武鉄道_10030型_50番台.png';
+  assert.ok(fs.existsSync(older));
+  assert.equal(gallery.findPath('../'+older).some(x=>
     x.canonicalImage&&x.lineIds.includes('Tobu_Kameido')),false,
-    'an unverified appearance variant is not evidence of an individual train');
+    'the superseded 10030 artwork must not become the active canonical PNG');
+  // A canonical gallery PNG identifies a model only; it never establishes
+  // which physical formation was assigned to a given train number that day.
 });
