@@ -344,7 +344,9 @@
       var line = allLines[lineId];
       if (line && line.operator) found[line.operator] = true;
     });
-    return Object.keys(found).sort();
+    var ops = Object.keys(found);
+    return window.LinePresentationService && window.LinePresentationService.orderOperators
+      ? window.LinePresentationService.orderOperators(ops) : ops;
   }
 
   function overviewStructureSignature(allLines, operator) {

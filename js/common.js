@@ -48,7 +48,7 @@
 
   // canonical 运营商键规范化：LOS 格式（UNDERSCORE_UPPER）↔ 标准格式（JR-East）。
   var TRANSIT_NORMALIZE = {
-    "JR_EAST": "JR-East", "JR_WEST": "JR West",
+    "JR_EAST": "JR-East", "JR_WEST": "JR-West",
     "TOKYO_METRO": "TokyoMetro", "TOEI": "Toei", "YOKOHAMA_MUNICIPAL": "YokohamaMunicipal",
     "KEIO": "Keio", "ODAKYU": "Odakyu", "SEIBU": "Seibu", "TOBU": "Tobu", "TOKYU": "Tokyu",
     "KEIKYU": "Keikyu", "KEISEI": "Keisei", "SOTETSU": "Sotetsu", "RINKAI": "Rinkai",
@@ -60,7 +60,7 @@
   // 标准数据库运营商键 → LOS 键（NORMALIZE 的反向转换；处理
   // TsukubaExpress → TSUKUBA_EXPRESS 等不规则拼写）。
   var LOS_KEY_MAP = {
-    "JR-East": "JR_EAST", "JR West": "JR_WEST",
+    "JR-East": "JR_EAST", "JR-West": "JR_WEST",
     "TokyoMetro": "TOKYO_METRO", "Toei": "TOEI", "YokohamaMunicipal": "YOKOHAMA_MUNICIPAL",
     "Keio": "KEIO", "Odakyu": "ODAKYU", "Seibu": "SEIBU", "Tobu": "TOBU", "Tokyu": "TOKYU",
     "Keikyu": "KEIKYU", "Keisei": "KEISEI", "Sotetsu": "SOTETSU", "Rinkai": "RINKAI",
@@ -75,35 +75,24 @@
     "EnoshimaElectric": "ENOSHIMA_ELECTRIC"
   };
   window.TransitConstants = {
+    // Canonical operator order: JR -> private and other rail -> metro.
     OP_ORDER: [
-      "JR-East",
-      "TokyoMetro", "Toei", "YokohamaMunicipal",
+      // JR group
+      "JR-East", "JR-Central", "JR-West", "JR-Hokkaido", "JR-Shikoku",
+      "JR-Kyushu", "JR-Freight",
+      // private and private-tier third-sector
       "Keio", "Odakyu", "Seibu", "Tobu", "Tokyu",
-      "Keikyu", "Keisei", "Sotetsu",
-      "TWR", "MinatoMirai", "MIR", "Rinkai",
-      "TsukubaExpress", "Yurikamome", "TamaMonorail",
-      "TokyoMonorail", "SaitamaNewUrbanTransit",
-      // 新增两家单轨运营商（千葉都市モノレール / 湘南モノレール）
-      "ChibaUrbanMonorail", "ShonanMonorail", "EnoshimaElectric", "UtsunomiyaLightRail",
-      // 新干线运营商（東海道/山陽/九州/北海道新幹線）
-      "JR-Central", "JR-Kyushu", "JR-Hokkaido",
-      "JR-Shikoku",
-      "FujisanrokuElectricRailway",
-      "Kintetsu",
-      "Hankyu",
-      "Hanshin",
-      "Keihan",
-      "Nankai",
-      "Meitetsu",
-      "Nishitetsu",
-      "OsakaMetro",
-      "NagoyaMunicipal",
-      "KyotoMunicipal",
-      "KobeMunicipal",
-      "SapporoMunicipal",
-      "SendaiMunicipal",
-      "FukuokaMunicipal",
-      "HiroshimaElectric"
+      "Keikyu", "Keisei", "Sotetsu", "TWR", "MinatoMirai",
+      "MIR", "Rinkai", "TsukubaExpress", "EnoshimaElectric", "FujisanrokuElectricRailway",
+      "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
+      "Meitetsu", "Nishitetsu", "ToyoRapid", "SaitamaRapidRailway", "KobeDentetsu",
+      "HojoRailway", "ChichibuRailway", "HiroshimaElectric",
+      // other rail, monorail and tram
+      "Yurikamome", "TamaMonorail", "TokyoMonorail", "SaitamaNewUrbanTransit", "ChibaUrbanMonorail",
+      "ShonanMonorail", "UtsunomiyaLightRail", "HakodateCity",
+      // subway
+      "TokyoMetro", "Toei", "YokohamaMunicipal", "OsakaMetro", "NagoyaMunicipal",
+      "KyotoMunicipal", "KobeMunicipal", "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal"
     ],
     NORMALIZE: TRANSIT_NORMALIZE,
     // JRE (JR東日本) 白名单：路線記号 JA~JY 全覆盖；無記号の地方線（operator=JR-East）兜底

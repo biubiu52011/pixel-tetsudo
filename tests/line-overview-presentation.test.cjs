@@ -13,6 +13,10 @@ const runtimeSource = fs.readFileSync(path.join(root, 'data/core/runtime-config.
 const runtimeConfig = { SERVICE_CORRIDOR_LINES: { UenoTokyo: true } };
 const window = { UNIFIED_LINES: lines, RuntimeConfig: runtimeConfig };
 vm.runInNewContext(
+  fs.readFileSync(path.join(root, 'js/common.js'), 'utf8'),
+  { window }, { filename: 'common.js' }
+);
+vm.runInNewContext(
   fs.readFileSync(path.join(root, 'js/line-presentation-service.js'), 'utf8'),
   { window }, { filename: 'line-presentation-service.js' }
 );
@@ -270,4 +274,37 @@ test('the final card model consumes one canonical order without a second map sor
   assert.match(src, /return a\.sourceIdx - b\.sourceIdx/);
   const fusion = fs.readFileSync(path.join(root, 'js/data-fusion.js'), 'utf8');
   assert.match(fusion, /lineOrder: window\.LinePresentationService[\s\S]*?getDisplayOrder\(dlLines\)/);
+});
+
+test('canonical operator catalog agrees with visible cards and filter ranks', () => {
+  const known = Array.from(window.TransitConstants.OP_ORDER);
+  const actual = Array.from(new Set(Object.values(lines).map(line => line.operator).filter(Boolean)));
+  assert.equal(new Set(known).size, known.length);
+  for (const op of actual) assert.ok(known.includes(op), op + ' lacks explicit rank');
+  const display = Array.from(presentation.getOperatorOrder(lines));
+  assert.deepEqual(display, known.filter(op => actual.includes(op)));
+  assert.deepEqual(Array.from(presentation.orderOperators(actual.slice().reverse())), display);
+  assert.deepEqual(Array.from(new Set(presentation.getPresentationOrder(lines)
+    .map(entity => entity.line.operator))), display);
+  assert.deepEqual(known.slice(0,7), ['JR-East','JR-Central','JR-West',
+    'JR-Hokkaido','JR-Shikoku','JR-Kyushu','JR-Freight']);
+  const categories = ['JR','Private','Other','Metro'];
+  const tiers = known.map(op => presentation.categoryOf(op));
+  assert.ok(tiers.every((tier,i) => i===0 ||
+    categories.indexOf(tier) >= categories.indexOf(tiers[i-1])));
+});
+
+test('operator aliases and regional railway categories retain canonical priority', () => {
+  assert.equal(window.TransitConstants.normalizeOp('JR_WEST'), 'JR-West');
+  assert.equal(window.TransitConstants.normalizeOp('JR West'), 'JR-West');
+  assert.equal(window.TransitConstants.toLosKey('JR-West'), 'JR_WEST');
+  for (const op of ['JR-West','JR_WEST'])
+    assert.equal(presentation.categoryOf(op), 'JR');
+  for (const op of ['ChichibuRailway','TWR','MIR'])
+    assert.equal(presentation.categoryOf(op), 'Private');
+  assert.equal(presentation.categoryOf('HakodateCity'), 'Other');
+  assert.equal(presentation.categoryOf('TokyoMetro'), 'Metro');
+  assert.deepEqual(Array.from(presentation.orderOperators(
+    ['TokyoMetro','Yurikamome','ChichibuRailway','JR_WEST','JR-East'])),
+    ['JR-East','JR_WEST','ChichibuRailway','Yurikamome','TokyoMetro']);
 });

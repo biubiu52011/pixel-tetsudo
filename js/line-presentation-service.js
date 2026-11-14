@@ -54,16 +54,20 @@
     "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
     "Meitetsu", "Nishitetsu", "FujisanrokuElectricRailway",
     "ToyoRapid", "SaitamaRapidRailway", "KobeDentetsu", "HojoRailway",
-    "MinatoMirai", "Rinkai", "TsukubaExpress", "HiroshimaElectric"
+    "MinatoMirai", "Rinkai", "TsukubaExpress", "HiroshimaElectric",
+    "ChichibuRailway", "TWR", "MIR"
   ];
 
   // ===== 2. 基础分类与排序键 =====
 
   function categoryOf(op) {
     if (!op) return "Other";
-    if (/^JR-/.test(op)) return "JR";
-    if (METRO_OPS.indexOf(op) >= 0) return "Metro";
-    if (PRIVATE_OPS.indexOf(op) >= 0) return "Private";
+    // Classify normalized aliases without mutating the underlying operator key.
+    var canonical = window.TransitConstants && typeof window.TransitConstants.normalizeOp === "function"
+      ? window.TransitConstants.normalizeOp(op) : op;
+    if (/^JR-/.test(canonical)) return "JR";
+    if (METRO_OPS.indexOf(canonical) >= 0) return "Metro";
+    if (PRIVATE_OPS.indexOf(canonical) >= 0) return "Private";
     return "Other";
   }
 
@@ -74,7 +78,9 @@
   }
 
   function jrOperatorIndex(op) {
-    var i = JR_OPERATOR_ORDER.indexOf(op);
+    var canonical = window.TransitConstants && typeof window.TransitConstants.normalizeOp === "function"
+      ? window.TransitConstants.normalizeOp(op) : op;
+    var i = JR_OPERATOR_ORDER.indexOf(canonical);
     return i >= 0 ? i : JR_OPERATOR_ORDER.length;
   }
 

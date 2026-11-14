@@ -390,11 +390,20 @@
   // 运营商筛选属于共享铁路状态层。将其生命周期放在这里，
   // 可以移除页面专属入口，而不与某个列表渲染器耦合。
   function operatorSort(ops) {
-    var fallback = (ops || []).slice().sort();
+    var known = (window.TransitConstants && window.TransitConstants.OP_ORDER) || [];
+    // Use the canonical catalog even if the presentation service has not initialized.
+    var fallback = (ops || []).slice().sort(function(a, b) {
+      var ai = known.indexOf(a), bi = known.indexOf(b);
+      if (ai >= 0 && bi >= 0) return ai - bi;
+      if (ai >= 0) return -1;
+      if (bi >= 0) return 1;
+      return String(a).localeCompare(String(b));
+    });
     try {
       var ordered = window.LinePresentationService && typeof window.LinePresentationService.orderOperators === "function"
         ? window.LinePresentationService.orderOperators(ops) : null;
-      return Array.isArray(ordered) && ordered.length === fallback.length ? ordered : fallback;
+      return Array.isArray(ordered) && ordered.length === fallback.length &&
+        ordered.every(function(op) { return fallback.indexOf(op) !== -1; }) ? ordered : fallback;
     } catch (e) { return fallback; }
   }
 
