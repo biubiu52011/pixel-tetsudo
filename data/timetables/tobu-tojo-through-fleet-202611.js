@@ -48,17 +48,18 @@
       if(type==='TJ-Liner'||type==='TJ-LINER'||type==='TJ-Liner'){
         if(!/^\d{1,3}(?: TJ.*)?$/.test(number)&&!/^[0-9]{1,5}$/.test(number))return null;
         key='tj';confirmation='official-named-service-model';
-      }else if(stops.length>=2 && stops.every(function(s){return westStations[s]===true;})
-        && stops.some(function(s){return s!=='Ogawamachi';})){
+      }else if(/^Y\d{3,4}$/.test(number) ||
+        (stops.length>=2 && stops.every(function(s){return westStations[s]===true;})
+        && stops.some(function(s){return s!=='Ogawamachi';}))){
         // Proven GTFS itinerary is entirely west of Ogawamachi.
         key='west';confirmation='line-single-fleet-model';
       }else{
-        var m=number.match(/^(?:A|B)?(\d{3,4})([TSK])$/);
+        var m=number.match(/^[A-F](\d{2,4})([TSK])$/);
         var run=m?parseInt(m[1].slice(-2),10):-1;
         var owner=m&&m[2];
-        if(owner==='T'&&run>=1&&run<=23&&run%2===1)key='tobu';
-        else if(owner==='S'&&run>=1&&run<=99&&run%2===1)key='metro';
-        else if(owner==='K'&&((run>=1&&run<=35)||(run>=51&&run<=65))&&run%2===1)key='tokyu';
+        if(owner==='T'&&run>=1&&run<=23)key='tobu';
+        else if(owner==='S'&&run>=1&&run<=99)key='metro';
+        else if(owner==='K'&&((run>=1&&run<=35)||(run>=51&&run<=65)))key='tokyu';
         else if(/^(?:\d{1,5}|A\d{3,5}|B\d{3,5})$/.test(number))key='ground';
         else return null;
       }
