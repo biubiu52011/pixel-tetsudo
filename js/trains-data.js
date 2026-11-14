@@ -817,13 +817,13 @@ window.StationInfoLayout = (function() {
     var width = typeof fn === "function" ? Number(fn(text, fontSize)) : NaN;
     if (!isFinite(width) || width < 0) {
       width = Array.from(String(text || "")).reduce(function(sum, ch) {
-        return sum + (/[^\\u0000-\\u007f]/.test(ch) ? fontSize : fontSize * 0.65);
+        return sum + (/[^\u0000-\u007f]/.test(ch) ? fontSize : fontSize * 0.65);
       }, 0);
     }
     return Math.ceil(width);
   }
   function normalizedName(value) {
-    return String(value || "").replace(/[\\s\\u30fb・･\\-‐‑–—]/g, "").toLowerCase();
+    return String(value || "").replace(/[\s\u30fb・･\-‐‑–—]/g, "").toLowerCase();
   }
   function sideName(item, stationId, stationName) {
     if (!item || !item.toStation || String(item.toStation) === String(stationId)) return "";
@@ -853,22 +853,33 @@ window.StationInfoLayout = (function() {
     function pack(entries) {
       var result = null;
       for (var columns = 4; columns >= 1; columns--) {
-        var shown = entries.slice(0, columns * cap);
-        var rows = Math.ceil(shown.length / columns);
-        var rowWidths = [];
-        for (var row = 0; row < rows; row++) {
-          var rowItems = shown.slice(row * columns, (row + 1) * columns);
-          rowWidths.push(rowItems.reduce(function(sum, entry) {
-            return sum + entry.width;
-          }, 0) + Math.max(0, rowItems.length - 1) * GAP);
-        }
-        var contentWidth = rowWidths.length ? Math.max.apply(null, rowWidths) : 0;
+        var capacity = columns * cap;
+        var needOverflow = entries.length > capacity;
+        var shown = entries.slice(0, needOverflow ? capacity - 1 : capacity);
         var hidden = entries.length - shown.length;
         var moreText = hidden ? "+" + hidden : "";
-        var moreWidth = moreText ? measure(moreText, 7) + GAP : 0;
+        var totalSlots = shown.length + (hidden ? 1 : 0);
+        var rows = Math.ceil(totalSlots / columns);
+        var rowWidths = [], overflowX = 0, overflowY = 0;
+        for (var row = 0; row < rows; row++) {
+          var rowItems = shown.slice(row * columns, (row + 1) * columns);
+          var rowWidth = rowItems.reduce(function(sum, entry) {
+            return sum + entry.width;
+          }, 0) + Math.max(0, rowItems.length - 1) * GAP;
+          if (moreText && Math.floor(shown.length / columns) === row) {
+            // +N occupies its own slot in the final row. It never hangs
+            // outside the measured badge block or pushes into the rail.
+            overflowX = rowWidth + (rowItems.length ? GAP : 0);
+            overflowY = row * PITCH;
+            rowWidth = overflowX + measure(moreText, 7);
+          }
+          rowWidths.push(rowWidth);
+        }
+        var contentWidth = rowWidths.length ? Math.max.apply(null, rowWidths) : 0;
         result = {shown:shown, perRow:columns, rows:rows,
           rowWidths:rowWidths, contentWidth:contentWidth,
-          totalWidth:contentWidth + moreWidth, moreText:moreText,
+          totalWidth:contentWidth, moreText:moreText,
+          overflowX:overflowX, overflowY:overflowY,
           height:rows ? rows * PITCH : 0};
         if (result.totalWidth <= widthLimit || columns === 1) break;
       }
