@@ -581,7 +581,7 @@
     opts=opts||{};
     var el=typeof containerOrId==="string"?document.getElementById(containerOrId):containerOrId;
     var selected=opts.selected||null, selectedRegion=opts.region||null;
-    var lastLines={},lastSignature=null;
+    var lastLines={},lastOptionsSignature=null;
     function available(value) {
       if(!el)return;
       el.classList.toggle("hidden",!value);
@@ -611,7 +611,7 @@
     }
     function selectRegion(value,notify){
       var next=REGION_IDS.indexOf(value)>=0?value:null;
-      if(next!==selectedRegion){selectedRegion=next;selected=null;lastSignature=null;}
+      if(next!==selectedRegion){selectedRegion=next;selected=null;lastOptionsSignature=null;}
       render(lastLines);announce(notify);return selectedRegion;
     }
     function render(lines) {
@@ -627,10 +627,10 @@
       var ops=selectedRegion?operatorsFromLines(scoped):[];
       if(selected&&ops.indexOf(selected)<0)selected=null;
       var all=typeof window.t==="function"?(window.t("filter.all")||"すべて"):"すべて";
-      var signature=all+"|"+selectedRegion+"|"+REGION_IDS.map(labelRegion).join("|")+
+      var optionsSignature=all+"|"+selectedRegion+"|"+REGION_IDS.map(labelRegion).join("|")+
         "|"+ops.map(function(op){return op+":"+operatorLabel(op);}).join("|");
-      if(signature===lastSignature){sync();return;}
-      lastSignature=signature;
+      if (optionsSignature === lastOptionsSignature) { select(selected, false); return; }
+      lastOptionsSignature=optionsSignature;
       el.classList.add("rs-region-filter");
       var html='<div class="rs-filter-level rs-region-level" role="group" aria-label="地域">'+
         '<button type="button" class="rs-region-btn'+(!selectedRegion?' active':'')+
