@@ -69,6 +69,14 @@ function registerEvidenceProvider(provider) {
       var mn=raw.match(/^(?:A|B)?[0-9]*([0-9]{2})([KSMTGEHN])(?:[1-5]|[AB])?$/);
       if(mn) return mn[1]+mn[2];
     }
+    // 東上線の地下鉄直通列車: 公開番号に時刻/区間プレフィックスが
+    // 付く場合も末尾2桁+T/S/Kが運用番号となる。これは所有者/候補
+    // の識別に過ぎず、当日の編成や個別車両の確定証拠ではない。
+    // Restrict this syntax to Tojo; generic railway digits MUST NOT be folded.
+    if (/Tojo/.test([ctx.lineId,ctx.railway].join('|'))) {
+      var tj = raw.match(/^(?:A|B)?(\d{3,4})([TSK])$/);
+      if (tj) return String(parseInt(tj[1].slice(-2),10)).padStart(2,'0') + tj[2];
+    }
     // 直通线路沿用同一套公开的“小时+运行号”编码。
     if (/SaitamaRapid|TokyuMeguro|TokyuShinYokohama|TokyuToyoko|MinatoMirai|TokyuDenEn/.test([ctx.lineId,ctx.railway].join('|'))) {
       var through=raw.match(/^(?:A|B)?[0-9]*([0-9]{2})([KSMTGHN])(?:[1-5]|[AB])?$/);
