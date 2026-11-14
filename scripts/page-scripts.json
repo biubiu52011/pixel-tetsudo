@@ -137,6 +137,7 @@
       "data/timetables/jreast-tsugaru-2611-number-index.js",
       "data/timetables/jreast-uetsu-2611-number-index.js",
       "data/timetables/jreast-yamagata-2611-number-index.js",
+      "data/timetables/tobu-tojo-through-fleet-202611.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
       "data/timetables/nambu-branch-official-202611.js",
@@ -316,6 +317,10 @@
       ],
       "data/timetables/tobu-isesaki-2611-number-png.js": [
         "TobuIsesaki"
+      ],
+      "data/timetables/tobu-tojo-through-fleet-202611.js": [
+        "Tojo",
+        "Ogose"
       ]
     }
   },
