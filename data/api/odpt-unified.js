@@ -1566,9 +1566,9 @@
             (lineId === "Tobu_Kameido" || lineId === "Daishi_Tobu")) {
             var branchModelLabel = String(vehicleLabel || "") + " " +
                 (/[型系]|series/i.test(String(vehicleId || "")) ? String(vehicleId) : "");
-            if (/(?:^|[^0-9])10030(?:型|系|\\s*series)/i.test(branchModelLabel))
+            if (/(?:^|[^0-9])10030(?:型|系|\s*series)/i.test(branchModelLabel))
                 return "東武10030型";
-            if (/(?:^|[^0-9])10000(?:型|系|\\s*series)/i.test(branchModelLabel))
+            if (/(?:^|[^0-9])10000(?:型|系|\s*series)/i.test(branchModelLabel))
                 return "東武10000型";
             return "";
         }
