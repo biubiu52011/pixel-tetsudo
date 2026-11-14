@@ -6549,6 +6549,21 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         return { kind: "candidate", iconSrc: "", planned: false,
           candidateAssets: candidateAssets.slice() };
       }
+      // Live Tobu branch coordinates do not reveal which two-car model is
+      // operating. Preserve the valid position but expose the missing-car
+      // evidence as a machine-readable marker diagnostic.
+      var smallBranchRailway = contextLineId === "Tobu_Kameido"
+        ? "odpt.Railway:Tobu.Kameido" : contextLineId === "Daishi_Tobu"
+        ? "odpt.Railway:Tobu.Daishi" : "";
+      if (!iconSrc && artworkFailed !== true && !identityConfirmed &&
+          smallBranchRailway && p && p.positionSource === "realtime-api" &&
+          p.estimated !== true && p.sourceRailway === smallBranchRailway &&
+          String(p.positionLineId || p.lineId || "") === contextLineId) {
+        return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+          actualVehicleConfirmed:false,
+          candidateModels:["東武10000型","東武10030型50番台"],
+          reason:"tobu-branch-live-position-vehicle-unconfirmed"};
+      }
       return { kind: "unresolved", iconSrc: "" };
     }
     // An estimated position is a timetable projection even when its source
