@@ -173,7 +173,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var _pcFs = "16";
     var _lblCompact = (side === "top" || side === "bottom");
     label.setAttribute("font-size", _lblCompact ? (isMobileView ? "16" : _pcFsC) : (isJunction ? (isMobileView ? "16" : _pcFsJ) : (isMobileView ? "16" : _pcFs)));
-    label.setAttribute("fill", isJunction ? color : "#555");
+    label.setAttribute("fill", isJunction ? color : "var(--text-muted)");
     label.setAttribute("font-family", "inherit"); // 站名用像素字体（与全局一致）
     label.setAttribute("font-weight", isJunction ? "700" : "500");
     label.setAttribute("text-anchor", anchor);
@@ -280,6 +280,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var item = entry.item;
           var itemGroup = document.createElementNS(svgNS, "g");
           badgeGroup.appendChild(itemGroup);
+          var badgeTitle = document.createElementNS(svgNS, "title");
+          badgeTitle.textContent = window.ThroughChip.badgeText(item) +
+            (item.toStation ? " → " +
+              (window.RailwayDB && window.RailwayDB.resolveStationName
+                ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang)
+                : item.toStation) : "");
+          itemGroup.appendChild(badgeTitle);
           if (item.image) {
             var img = document.createElementNS(svgNS, "image");
             img.setAttribute("href", item.image);
@@ -288,9 +295,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             img.setAttribute("y", by);
             img.setAttribute("width", ICON);
             img.setAttribute("height", ICON);
-            var title = document.createElementNS(svgNS, "title");
-            title.textContent = window.ThroughChip.badgeText(item);
-            img.appendChild(title);
             itemGroup.appendChild(img);
           } else {
             var badgeHeight = isMobileView ? 15 : 11;
