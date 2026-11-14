@@ -5633,6 +5633,38 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       illustrationModel:model};
   }
 
+  // Tojo: a gallery-approved representative cab for unidentified trains.
+  // This is NOT a train-number-to-formation mapping. Never assert a physical
+  // carset from a published train number or overwrite upstream exact identity.
+  function lookupTojoFleetIllustration(p) {
+    if (!p || String(p.positionLineId || p.lineId || "") !== "Tojo" ||
+        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "Tojo" ||
+        ["realtime-api", "supabase-train-run", "train-timetable"].indexOf(p.positionSource) < 0 ||
+        p.vehicleIdentityStatus === "EXACT" || p.vehicleResolvedUpstream === true ||
+        p.vehicleResolvedFromRealtime === true || p.actualVehicleConfirmed === true ||
+        p.vehicleFormationId || p.vehicleFormationConflict ||
+        (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length))
+      return null;
+    var op = String(p.trainOperator || p.operator || "");
+    if (op && op !== "Tobu" && op !== "odpt.Operator:Tobu") return null;
+    var railway = String(p.sourceRailway || "");
+    if (railway && railway !== "odpt.Railway:Tobu.Tojo") return null;
+    if (!railway && !op) return null;
+    var number = String(p.trainNumber || "").trim();
+    if (!number || !/^[0-9]{1,5}[A-Za-z]?$/.test(number)) return null;
+    var model = "東武50000系";
+    var png = normalizeGalleryPngPath("../images/列车/東武鉄道/東武鉄道_50000型.png");
+    var garage = window.VehicleGaragePngMap;
+    if (!png || !garage || typeof garage.matchModelPath !== "function" ||
+        !garage.matchModelPath(model, png, "Tojo")) return null;
+    return {kind:"vehicle",iconSrc:png,planned:true,illustrative:true,
+      representativeOnly:true,referenceOnly:true,actualVehicleConfirmed:false,
+      illustrationRole:"tojo-mixed-fleet-reference-not-actual-model",
+      candidateModels:["東武9000系","東武9050系","東武50000系",
+        "東武50070系","東武50090系","東武90000系"],
+      illustrationModel:model};
+  }
+
   // Explain a neutral marker from the *actual* renderer position. This
   // reports the gate that blocked the published number reference, without
   // authorizing another PNG or upgrading physical vehicle identity.
@@ -6301,6 +6333,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var nodaIllustration=!identityConfirmed && !iconSrc && !artworkFailed
       ? lookupNodaFleetIllustration(p) : null;
     if(nodaIllustration)return nodaIllustration;
+    var tojoIllustration=!identityConfirmed && !iconSrc && !artworkFailed
+      ? lookupTojoFleetIllustration(p) : null;
+    if(tojoIllustration)return tojoIllustration;
     // Northern 701/E721 candidates are metadata for ONE neutral circle.
     // Both types can be physically coupled, so never draw two pixel cabs.
     var northMixed = !identityConfirmed && !artworkFailed &&
