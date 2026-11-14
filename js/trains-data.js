@@ -886,10 +886,11 @@ window.StationInfoLayout = (function() {
     }
     return result;
   }
-  // Reserve the worst case for 2-column fallback, capped at actual maxRows.
-  // The SVG may use 4/3/2/1 columns, but never more rows than this cap.
+  // Geometry is calculated before per-station horizontal coordinates exist.
+  // Reserve the single-column worst case (bounded by maxRows), ensuring the
+  // actual 4/3/2/1-column L3 layout never intrudes into the next station.
   function reservedRows(items) {
-    return Math.min(maxRows(), Math.ceil(list(items).length / 2));
+    return Math.min(maxRows(), list(items).length);
   }
   return {icon:ICON, gap:GAP, pitch:PITCH, maxRows:maxRows,
     list:list, prepare:prepare, plan:plan, reservedRows:reservedRows};
