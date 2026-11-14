@@ -417,8 +417,26 @@ body[data-page="realtime"] .rs-filter-bar.rs-region-filter {
 }
 .rs-region-filter .rs-filter-level {
   display:flex; flex-wrap:nowrap; width:100%; min-width:0; gap:8px;
+  box-sizing:border-box;
   overflow-x:auto; overflow-y:hidden; padding:2px 4px 6px 2px;
   -webkit-overflow-scrolling:touch;
+}
+/* Region navigation only: let large screens see every area without
+   horizontal scrolling. Operator choices stay one scrollable row. */
+@media (min-width:900px) {
+  .rs-region-filter .rs-region-level {
+    flex-wrap:wrap;
+    overflow:visible;
+  }
+}
+@media (max-width:899.98px) {
+  .rs-region-filter .rs-region-level {
+    scroll-snap-type:x proximity;
+    overscroll-behavior-inline:contain;
+  }
+  .rs-region-filter .rs-region-level > .rs-region-btn {
+    scroll-snap-align:start;
+  }
 }
 .rs-region-filter .rs-region-btn,
 .rs-region-filter .rs-filter-btn {
