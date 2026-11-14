@@ -32980,7 +32980,9 @@
         2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "TobuNikko"
+      ],
       "transferStations": [],
       "nameZh": "鬼怒川线",
       "nameKo": "키누가와선",
@@ -32998,7 +33000,19 @@
         ],
         "operatorGroup": "TOBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "TobuNikko",
+          "handoverStations": [
+            "Shimo-Imaichi"
+          ],
+          "serviceScope": "timetable_verified_trains_only",
+          "evidence": {
+            "source": "https://www.tobu.co.jp/pdf/timetable/time-table_01_kudari.pdf?202603=",
+            "confidence": "HIGH"
+          }
+        }
+      ]
     },
     "Nippori_Toneri": {
       "name": "Nippori-Toneri Liner",
@@ -37935,12 +37949,12 @@
       "nameEn": "Tobu Nikko Line",
       "nameJa": "日光線",
       "code": "TN",
-      "color": "#e46c0a",
+      "color": "#ffa600",
       "operator": "Tobu",
       "region": "Tochigi Area",
       "type": "straight",
       "image": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
-      "durationTotalMin": 50,
+      "durationTotalMin": 93,
       "branchOf": null,
       "stations": [
         "Tobu-Dobutsu-Koen",
@@ -37971,35 +37985,35 @@
         "Tobu-Nikko"
       ],
       "durations": [
+        4,
+        3,
+        4,
+        3,
+        6,
+        3,
         2,
+        3,
+        6,
+        3,
+        4,
+        3,
         2,
+        3,
+        4,
+        5,
+        3,
+        3,
+        3,
+        5,
+        4,
+        3,
+        6,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        6
       ],
       "throughServices": [
-        "TobuSkytree"
+        "TobuSkytree",
+        "Nikkoku"
       ],
       "transferStations": [
         {
@@ -38057,6 +38071,17 @@
           ],
           "evidence": {
             "source": "Tobu Railway route and 2026 SPACIA X timetable: Skytree Line continues directly into Nikko Line at Tobu-Dobutsu-Koen",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "Nikkoku",
+          "handoverStations": [
+            "Shimo-Imaichi"
+          ],
+          "serviceScope": "timetable_verified_trains_only",
+          "evidence": {
+            "source": "https://www.tobu.co.jp/pdf/timetable/time-table_01_kudari.pdf?202603=",
             "confidence": "HIGH"
           }
         }

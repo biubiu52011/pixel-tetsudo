@@ -3734,10 +3734,60 @@
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
+  // Tobu Nikko: reuse ONLY the 2026-11 published express number/family
+  // roster already owned by this canonical number mapper. The separate Nikko
+  // railway URN and service date are mandatory. These are timetable vehicle
+  // illustrations, NEVER observed November trainset or paint-scheme claims.
+  // Tobu's 2026-03-14 down/up express timetable and SPACIA X guide are the
+  // evidence for the N100 / 100 / 500 named service families.
+  function matchTobuNikko2611(number,p){
+    p=p||{};
+    var line=String(p.positionLineId||p.lineId||"");
+    var date=String(p.serviceDate||"").slice(0,10);
+    var cal=sourceCalendar(p);
+    var op=String(p.trainOperator||p.operator||"");
+    if(line!=="TobuNikko"||String(p.displayLineId||line)!=="TobuNikko"||
+       p.sourceRailway!=="odpt.Railway:Tobu.Nikko"||
+       (op&&op!=="Tobu"&&op!=="odpt.Operator:Tobu")||
+       String(p.trainType||"").split(/[.:]/).pop()!=="LimitedExpress"||
+       !["supabase-train-run","realtime-api"].includes(p.positionSource)||
+       (p.positionSource==="supabase-train-run"&&p.estimated!==true)||
+       !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+       !tobuSkytreeNumbers[cal]||
+       p.vehicleIdentityStatus==="EXACT"||
+       p.vehicleResolvedUpstream===true||
+       p.vehicleResolvedFromRealtime===true||
+       p.actualVehicleConfirmed===true||p.vehicleFormationId||
+       p.vehicleFormationConflict||
+       (Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length))
+      return null;
+    var families=["revaty","spacia","spacia_x"],family="";
+    var roster=tobuSkytreeNumbers[cal];
+    for(var i=0;i<families.length;i++){
+      var candidate=families[i];
+      if(roster[candidate]&&roster[candidate].indexOf(number)>=0){
+        if(family)return null;family=candidate;
+      }
+    }
+    if(!family||!/^[0-9]{4}$/.test(number))return null;
+    var item=tobuSkytreeArtwork[family],gallery=root.VehicleGaragePngMap;
+    if(!item||!gallery||!gallery.matchModelPath(item.model,item.png,"TobuNikko"))return null;
+    if((p.realtimeVehicleType&&p.realtimeVehicleType!==item.model)||
+       (p.realtimeDerivedVehicleType&&p.realtimeDerivedVehicleType!==item.model))return null;
+    var plan=p.vehiclePlan;
+    if(plan&&Array.isArray(plan.models)&&plan.models.length===1&&plan.models[0]!==item.model)return null;
+    return {lineId:"TobuNikko",trainNumber:number,serviceFamily:family,
+      candidateModels:[item.model],model:item.model,pngPath:item.png,
+      sourceUrl:"https://www.tobu.co.jp/pdf/timetable/time-table_01_kudari.pdf?202603=",
+      source:"tobu-nikko-20260314-published-express-2611-illustration",
+      planned:true,representative:true,referenceOnly:true,illustrative:true,
+      actualVehicleConfirmed:false};
+  }
   function match(trainNumber,lineId,context){
     if(String(lineId||'')==='TobuIsesaki')
       return root.TobuIsesaki2611Png ?
         root.TobuIsesaki2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
+    if(String(lineId||'')==='TobuNikko')return matchTobuNikko2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(String(lineId||'')==='TobuSkytree')return matchTobuSkytree2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(["Hibiya","Hanzomon","TokyuDenEn"].indexOf(String(lineId||""))>=0)
       return matchTobuMetroThrough2611(String(trainNumber||"").trim().toUpperCase(),String(lineId),context);
