@@ -582,6 +582,18 @@
     var el=typeof containerOrId==="string"?document.getElementById(containerOrId):containerOrId;
     var selected=opts.selected||null, selectedRegion=opts.region||null;
     var lastLines={},lastOptionsSignature=null;
+    // Browser Elements support querySelector; the lightweight CI host only
+    // provides innerHTML/querySelectorAll. Keep DOM liveness checks compatible
+    // with both without weakening recovery after detail-page teardown.
+    function findControl(selector) {
+      return el && typeof el.querySelector==="function"
+        ? el.querySelector(selector) : null;
+    }
+    function hasControls(selector,className) {
+      if(el && typeof el.querySelector==="function")
+        return !!el.querySelector(selector);
+      return String(el && el.innerHTML || "").indexOf('class="'+className)>=0;
+    }
     function available(value) {
       if(!el)return;
       el.classList.toggle("hidden",!value);
@@ -632,9 +644,9 @@
       // Cached options are valid only while their DOM is still mounted.
       // A detail-page teardown or external caller may have cleared children;
       // the previous signature alone cannot prove the controls exist.
-      var regionControlsMounted=!!el.querySelector(".rs-region-level .rs-region-btn");
+      var regionControlsMounted=hasControls(".rs-region-level .rs-region-btn","rs-region-btn");
       var companyControlsMounted=!selectedRegion ||
-        !!el.querySelector(".rs-company-level .rs-filter-btn");
+        hasControls(".rs-company-level .rs-filter-btn","rs-filter-btn");
       if (optionsSignature === lastOptionsSignature &&
           regionControlsMounted && companyControlsMounted) {
         sync();
@@ -665,8 +677,8 @@
       // Rebuilding the operator level must not throw the user back to the
       // first region on mobile, nor discard keyboard focus on the pressed
       // region button. Keep the viewport and focus while replacing the DOM.
-      var oldRegionRow=el.querySelector(".rs-region-level");
-      var oldOperatorRow=el.querySelector(".rs-company-level");
+      var oldRegionRow=findControl(".rs-region-level");
+      var oldOperatorRow=findControl(".rs-company-level");
       var regionScroll=oldRegionRow?oldRegionRow.scrollLeft:0;
       var operatorScroll=oldOperatorRow?oldOperatorRow.scrollLeft:0;
       var focused=document.activeElement;
@@ -685,8 +697,8 @@
       Array.prototype.forEach.call(el.querySelectorAll(".rs-filter-btn"),function(button){
         button.addEventListener("click",function(){select(button.dataset.operator||null,true);});
       });
-      var newRegionRow=el.querySelector(".rs-region-level");
-      var newOperatorRow=el.querySelector(".rs-company-level");
+      var newRegionRow=findControl(".rs-region-level");
+      var newOperatorRow=findControl(".rs-company-level");
       if(newRegionRow)newRegionRow.scrollLeft=regionScroll;
       if(newOperatorRow&&oldOperatorRow&&
          oldOperatorRow.getAttribute("data-filter-region")===String(selectedRegion||""))
