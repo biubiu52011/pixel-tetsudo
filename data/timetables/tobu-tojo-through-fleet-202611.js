@@ -64,6 +64,16 @@
     sourceUrl: TOBU, grade: 'B', allowCandidateArtwork: false,
     planScope: { lineIds: ['Ogose'], planOnly: true }
   });
+  // Officially specified 50090 service family: schedule-only, never a
+  // physical consist/carset claim. The train type must explicitly be TJ-Liner.
+  rules.push({
+    networkKey: 'Tojo', codePattern: 'PLAN:OFFICIAL-TJLINER-50090',
+    operator: 'Tobu', effectiveFrom: '2026-10-30', grade: 'B',
+    sourceUrl: TOBU, exactVehicleType: '東武50090型',
+    vehicleCandidates: ['東武50090型'], allowCandidateArtwork: false,
+    planScope: { lineIds: ['Tojo'], planOnly: true,
+      trainTypes: ['TJ-Liner','TJ-LINER'] }
+  });
   var existing = window.VEHICLE_FAMILY_RULES;
   if (!Array.isArray(existing)) existing = [];
   var keys = Object.create(null);
