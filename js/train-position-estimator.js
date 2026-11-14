@@ -2678,6 +2678,9 @@
             planSource: tt._planSource || "odpt-scheduled-timetable",
             serviceId: tt._serviceId || run.calendar || "",
             sourceRevisionDate: tt._sourceRevisionDate || null,
+            // Correlated source-only timetable boundary, not live position or
+            // verified shared physical running chain.
+            throughBoundaryReference: tt._sqlThroughBoundaryReference || null,
             operationReferences: operation.references,
             segmentToIndex: segmentToIndex,
             segmentProgress: segmentProgress,
