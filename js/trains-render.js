@@ -53,11 +53,83 @@ function _isTrainArtworkFailureActive(trainUid, p) {
    * @returns {Object} 几何对象，包含 stations、svgW、svgH、isLoop、isSixShapedLoop 等字段
    */
 
+
+  // Junctions belong to the track graph; their L3 presentation is ordinary.
+  function _junctionExitDirections(geometry, stationId, point) {
+    if (!geometry || !point) return [];
+    var signs = [], main = geometry.stations || [];
+    (geometry.branchLines || []).forEach(function(branch, i) {
+      var shared = (branch.stations || []).filter(function(id) {
+        return main.indexOf(id) >= 0;
+      })[0];
+      if (shared !== stationId) return;
+      signs.push(geometry.branchSides && geometry.branchSides[i] === "left" ? -1 : 1);
+    });
+    var fork = geometry.mapFork, coords = geometry.stationCoords || [];
+    if (fork && coords[fork.junctionIndex] &&
+        coords[fork.junctionIndex].stationId === stationId) {
+      (fork.edges || []).forEach(function(edge) {
+        if (edge[0] !== fork.junctionIndex && edge[1] !== fork.junctionIndex) return;
+        var other = coords[edge[0] === fork.junctionIndex ? edge[1] : edge[0]];
+        if (other && Math.abs(other.x - point.x) > 5)
+          signs.push(other.x < point.x ? -1 : 1);
+      });
+    }
+    if (geometry.isSixShapedLoop && geometry.junctionStation === stationId) {
+      var tail = coords.filter(function(p) {
+        return p && p.stationId !== stationId && Math.abs(p.x - point.x) > 5;
+      })[0];
+      if (tail) signs.push(tail.x < point.x ? -1 : 1);
+    }
+    return signs;
+  }
+
+  function _junctionInfoPlacement(geometry, point, stationName, mobile) {
+    var exits = _junctionExitDirections(geometry, point.stationId, point);
+    if (!exits.length) return null;
+    var offset = mobile ? 20 : 12, x = point.x, y = point.y;
+    var textSize = Array.from(String(stationName || "")).reduce(function(w, ch) {
+      return w + (/[^\u0000-\u007f]/.test(ch) ? 16 : 10);
+    }, 0);
+    var cols = Object.create(null);
+    (geometry.stationCoords || []).forEach(function(p) {
+      if (!p || !isFinite(p.x) || !isFinite(p.y) ||
+          Math.abs(p.x - x) < 5) return;
+      var key = Number(p.x).toFixed(1);
+      if (!cols[key]) cols[key] = {x:p.x, min:p.y, max:p.y, count:0};
+      cols[key].min = Math.min(cols[key].min,p.y);
+      cols[key].max = Math.max(cols[key].max,p.y);
+      cols[key].count++;
+    });
+    var columns = Object.keys(cols).map(function(k){ return cols[k]; });
+    function candidate(side) {
+      var sign = side === "left" ? -1 : 1;
+      var occupiedExit = exits.indexOf(sign) >= 0;
+      var labelX = x + sign * offset, labelY = y - (occupiedExit ? 20 : 0);
+      var left = sign < 0 ? labelX - textSize : labelX;
+      var right = sign < 0 ? labelX : labelX + textSize;
+      var score = occupiedExit ? 4 : 0;
+      columns.forEach(function(col) {
+        if (col.count >= 2 && col.min - 8 <= labelY &&
+            col.max + 8 >= labelY &&
+            left <= col.x + 5 && right >= col.x - 5) score += 20;
+      });
+      if (left < 2) score += 4;
+      if (right > (Number(geometry.svgW) || 0) - 2) score += 4;
+      return {side:side, elevated:occupiedExit, score:score};
+    }
+    var left = candidate("left"), right = candidate("right");
+    var fallbackSide = point.side === "right" ? "right" : "left";
+    var chosen = left.score < right.score ? left
+      : right.score < left.score ? right
+      : fallbackSide === "right" ? right : left;
+    return {side:chosen.side, elevated:chosen.elevated};
+  }
+
   function _renderStationNode(layers, svgNS, o) {
     var nodeLayer = layers.nodes;
     var infoLayer = layers.info;
     var color = o.color;
-    var isJunction = !!o.isJunction;
     var isMobileView = o.isMobileView;
     var side = o.side || "right";
     var geometry = o.geometry || {};
@@ -86,7 +158,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
 
     // Station circle
-    if (o.sharedColor && !isJunction) {
+    if (o.sharedColor) {
       // 共线区间站——平移到两条线中间，白底圆 + 双色外弧描边
       var _r = 7, _cx = o.x - 3, _cy = o.y; // 左移3px到双线正中间（线间距6px的一半）
       // 白底圆（无描边）
@@ -119,10 +191,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 接续点是结构参考点，不是主要视觉元素。
       // 保持可读，但避免使用过去会与主要车站列车图标竞争的
       // 大型实心圆点。
-      circle.setAttribute("r", isJunction ? "9" : "7");
+      circle.setAttribute("r", "7");
       circle.setAttribute("fill", "#fff");
       circle.setAttribute("stroke", color);
-      circle.setAttribute("stroke-width", isJunction ? "3" : "2");
+      circle.setAttribute("stroke-width", "2");
       circle.setAttribute("data-station-index", o.si);
       nodeLayer.appendChild(circle);
     }
@@ -131,34 +203,41 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var tx, ty, anchor;
     // 站名与圆点同行，垂直居中对齐（dominant-baseline central，ty=圆心）
     if (o.tx != null) { tx = o.tx; ty = o.ty; anchor = o.anchor || "start"; }
-    else if (side === "top") { tx = o.x; ty = o.y - (isJunction ? 14 : 10); anchor = "middle"; }
-    else if (side === "bottom") { tx = o.x; ty = o.y + (isJunction ? 19 : 15); anchor = "middle"; }
+    else if (side === "top") { tx = o.x; ty = o.y - 10; anchor = "middle"; }
+    else if (side === "bottom") { tx = o.x; ty = o.y + 15; anchor = "middle"; }
     // 移动端和桌面端：尾段及环线左侧站名保持在
     // 窄环线外侧，并由几何预留的站名车道彼此分开。
     else if (side === "left" && geometry.isSixShapedLoop && geometry.isDualLoop6) {
-      tx = o.x - (isJunction ? 18 : 12);
-      ty = isJunction ? o.y - 17 : o.y; // Tochomae above its connector
+      tx = o.x - 12;
+      ty = o.y;
       anchor = "end";
     }
-    else if (side === "left" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x + (isJunction ? 14 : 10); ty = o.y; anchor = "start"; }
+    else if (side === "left" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x + 10; ty = o.y; anchor = "start"; }
     else if (side === "left") {
       // Ordinary mobile maps use 11-unit directional train lanes and
       // 14-unit-wide vehicle artwork. Keep the station-name edge outside
       // that corridor instead of letting left-lane vehicles cover the final
       // glyph (notably Komiya and Kaneko on the Hachiko line).
-      tx = o.x - (isJunction ? 14 : (isMobileView ? 20 : 10));
+      tx = o.x - (isMobileView ? 20 : 10);
       ty = o.y;
       anchor = "end";
     }
     else if (side === "dual") {
       // Dual-track station labels share the same left-side marker corridor.
       // Hachiko uses this side mode, so retain the mobile clearance here too.
-      tx = o.x - (isJunction ? 16 : (isMobileView ? 20 : 12));
+      tx = o.x - (isMobileView ? 20 : 12);
       ty = o.y;
       anchor = "end";
     }
-    else if (side === "right" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x - (isJunction ? 14 : 10); ty = o.y; anchor = "end"; }
-    else { tx = o.x + (geometry.isSixShapedLoop ? 16 : (isJunction ? 14 : 10)); ty = o.y; anchor = "start"; }
+    else if (side === "right" && geometry.isSixShapedLoop && !geometry.isDualLoop6) { tx = o.x - 10; ty = o.y; anchor = "end"; }
+    else { tx = o.x + (geometry.isSixShapedLoop ? 16 : 10); ty = o.y; anchor = "start"; }
+
+    if (o.junctionPlacement) {
+      var branchSide = o.junctionPlacement.side;
+      tx = o.x + (branchSide === "left" ? -(isMobileView ? 20 : 12) : (isMobileView ? 20 : 12));
+      ty = o.y - (o.junctionPlacement.elevated ? 20 : 0);
+      anchor = branchSide === "left" ? "end" : "start";
+    }
 
     if (_labelAlreadyRendered) return;
     var infoGroup = document.createElementNS(svgNS, "g");
@@ -168,25 +247,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var label = document.createElementNS(svgNS, "text");
     label.setAttribute("x", tx);
     label.setAttribute("y", ty);
-    var _pcFsC = "16";
-    var _pcFsJ = "16";
-    var _pcFs = "16";
-    var _lblCompact = (side === "top" || side === "bottom");
-    label.setAttribute("font-size", _lblCompact ? (isMobileView ? "16" : _pcFsC) : (isJunction ? (isMobileView ? "16" : _pcFsJ) : (isMobileView ? "16" : _pcFs)));
-    label.setAttribute("fill", isJunction ? color : "var(--text-muted)");
+    label.setAttribute("font-size", "16");
+    label.setAttribute("fill", "var(--text-muted)");
     label.setAttribute("font-family", "inherit"); // 站名用像素字体（与全局一致）
-    label.setAttribute("font-weight", isJunction ? "700" : "500");
+    label.setAttribute("font-weight", "500");
     label.setAttribute("text-anchor", anchor);
     // 左右侧站名垂直居中于圆点（top/bottom 保持基线在圆点上下方）
     if (side !== "top" && side !== "bottom") label.setAttribute("dominant-baseline", "central");
-    // junction 站名转圆点上方时白描边遮线（主干竖线从文字后方穿过）
-    if (o.paintOrder) {
-      label.setAttribute("paint-order", o.paintOrder);
-      if (o.stroke) label.setAttribute("stroke", o.stroke);
-      if (o.strokeWidth) label.setAttribute("stroke-width", o.strokeWidth);
-      label.setAttribute("stroke-linejoin", "round");
-    }
-    // 已命名走廊彼此分离，不需要不透明的白色描边。
+    // Avoid track overlap by placement, never by opaque outlines.
     var _clampAvail = (side === "dual" || side === "left") ? (tx - 4) : ((side === "right") ? (svgW - 2 - tx) : 0);
     if (geometry.isSixShapedLoop) {
       if (geometry.isDualLoop6) {
@@ -228,21 +296,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (txLines.length > 0) {
       var ICON = window.StationInfoLayout.icon;
       var GAP = window.StationInfoLayout.gap;
-      var _jTopMode = (o.tx != null && o.anchor === "middle" && o.y != null);
-      // L3 anchor contract: names and transfers use one position decision.
-      // For ordinary stations, icons align with the same side as the name.
-      // A centered junction uses a 24-unit track clearance on either side.
+      // One L3 badge anchor rule applies to every station.
       var _align = anchor;
       var _edge = tx;
       var _available = anchor === "end" ? tx - 2
         : anchor === "start" ? svgW - 2 - tx
         : Math.max(1, 2 * Math.min(tx - 2, svgW - 2 - tx));
-      if (_jTopMode && !o.horizontalBranch) {
-        var _leftRoom = o.x - 26, _rightRoom = svgW - o.x - 26;
-        _align = o.forkJunction || _leftRoom >= _rightRoom ? "end" : "start";
-        _edge = _align === "end" ? o.x - 24 : o.x + 24;
-        _available = Math.max(1, _align === "end" ? _leftRoom : _rightRoom);
-      }
       var badgePlan = window.StationInfoLayout.plan(
         txLines, o.stationId, _sName, isMobileView, _available);
       var rows = badgePlan.rows;
@@ -255,13 +314,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (_align === "end" && ix0 < 2) ix0 = 2;
       if (_align === "start" && ix0 + totalW > svgW - 2)
         ix0 = Math.max(2, svgW - 2 - totalW);
-      var iy0 = _jTopMode ? (o.y + 14)
-        : side === "top" ? (o.y + 14) : (ty + (isJunction ? 14 : 9));
+      var iy0 = side === "top" ? o.y + 14 : ty + 9;
+      if (o.transferBelowNode) iy0 = Math.max(iy0, o.y + 14);
       if (o.horizontalBranch)
         iy0 = o.labelAbove
           ? ty - rows * window.StationInfoLayout.pitch - 14
           : ty + (o.labelLines.length - 1) * 18 + 14;
-      if (o.forkMultiline) iy0 = o.y + 21;
       iy0 = Math.max(2, iy0);
       // The transfer group itself is transparent. White rectangles behind
       // every station made iOS Smart Invert look like another mini-canvas.
@@ -374,7 +432,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
       if (middle.length) {
         var mH = window.ThroughChip.height(middle, isMobileView, chipWidth);
-        var _dotR = isJunction ? 9 : 7;
+        var _dotR = 7;
         var mX, mAlign, mY;
         if (geometry.isLoop) { mX = tx; mAlign = anchor === "middle" ? "middle" : anchor; mY = belowY; }
         else if (anchor === "end") { mX = o.x + _dotR + 14; mAlign = "start"; mY = o.y - mH / 2; }
@@ -713,42 +771,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         trackLayer.appendChild(svgEl);
       }
       
-      // 添加车站圆点和标签（主线站与支线站统一由 _renderStationNode 绘制）
-      // 支线 junction 站（岔路起点=各支线与主干的接续站）站名朝右（Tochomae 先例）——
-      // 多支线全左直排时左侧水平 stub 不穿 junction 站名带；单支线（右侧）junction 保持朝左（现状）
-      // junction 不再限定 stations[0]——我孫子支线 junction 成田在站表末位也命中
-      var _isBranchJunction = function(_sid7) {
-        if (!geometry.branchLines || geometry.branchLines.length < 2) return false;
-        for (var _bj7 = 0; _bj7 < geometry.branchLines.length; _bj7++) {
-          var _bl7 = geometry.branchLines[_bj7];
-          if (_bl7.stations && _bl7.stations.indexOf(_sid7) >= 0) return true;
-        }
-        return false;
-      };
+      // Junctions share ordinary station styles. Only side clearance
+      // depends on actual branch exit geometry.
       for (var si = 0; si < stationCoords.length; si++) {
         var sc = stationCoords[si];
         var stationId = sc.stationId;
-        var isJunction = geometry.junctionStation && stationId === geometry.junctionStation;
-        var _bJ7 = _isBranchJunction(stationId);
-        // Keep the two lines' labels outside their own track columns.
-        // Local and through station names use existing RailwayDB i18n.
-        var _skytreeFork = !!(geometry.mapFork &&
-          geometry.mapFork.kind === "tobu-skytree-hikifune-y");
-        var _forkHikifune = _skytreeFork && stationId === "Hikifune";
-        var _forkLong = _skytreeFork && stationId === "Tokyo-Skytree";
-        var _forkLines = null;
-        if(_forkLong){
-          var _translated=String(_rS(stationId)),_splitAt=_translated.indexOf("スカイ");
-          if(_splitAt>0)
-            _forkLines=[_translated.slice(0,_splitAt),_translated.slice(_splitAt)];
-          else if(_translated.indexOf(" ")>0){
-            var _wordBreak=_translated.lastIndexOf(" ");
-            _forkLines=[_translated.slice(0,_wordBreak),_translated.slice(_wordBreak+1)];
-          }else if(Array.from(_translated).length>7){
-            var _glyphs=Array.from(_translated),_half=Math.ceil(_glyphs.length/2);
-            _forkLines=[_glyphs.slice(0,_half).join(""),_glyphs.slice(_half).join("")];
-          }
-        }
+        var _junctionPlacement = _junctionInfoPlacement(
+          geometry, sc, String(_rS(stationId) || stationId), isMobileView);
         // 共线区间站画双色半圆 + 自动判断共线线
         var _sharedColor = '';
         if (window.SharedTrackPairs && window.SharedTrackPairs.isSharedStation && window.SharedTrackPairs.isSharedStation(lineId, stationId)) {
@@ -759,26 +788,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           }
         }
         _renderStationNode(stationLayers, svgNS, {
-          x: sc.x, y: sc.y, stationId: stationId, isJunction: isJunction,
+          x: sc.x, y: sc.y, stationId: stationId,
           color: geometry.stationDisplayColor ? geometry.stationDisplayColor(stationId) : color,
           si: si, side: sc.side || "right", geometry: geometry, isMobileView: isMobileView,
           svgW: svgW, svgH: svgH, transferMap: transferMap, stationCoords: stationCoords,
           labelRegistry: stationRenderRegistry,
           rS: _rS,
           sharedColor: _sharedColor,
-          skipTx: false,
-          tx: _forkHikifune ? sc.x :
-            (_forkLines ? sc.x - 20 : (_bJ7 ? (geometry.rightBranch ? sc.x : sc.x + 12) : undefined)),
-          ty: _forkHikifune ? sc.y - 16 :
-            (_forkLines ? sc.y - 9 : (_bJ7 ? (geometry.rightBranch ? sc.y - 16 : sc.y) : undefined)),
-          anchor: _forkHikifune ? "middle" :
-            (_forkLines ? "end" : (_bJ7 ? (geometry.rightBranch ? "middle" : "start") : undefined)),
-          labelLines: _forkLines || undefined,
-          forkMultiline: !!_forkLines,
-          forkJunction: _forkHikifune,
-          paintOrder: (_bJ7 && geometry.rightBranch) ? "stroke" : undefined, // 白描边遮主干竖线
-          stroke: (_bJ7 && geometry.rightBranch) ? "#ffffff" : undefined,
-          strokeWidth: (_bJ7 && geometry.rightBranch) ? 3 : undefined
+          junctionPlacement: _junctionPlacement,
+          transferBelowNode: !!(_junctionPlacement && _junctionPlacement.elevated),
+          skipTx: false
         });
       }
       
