@@ -15,6 +15,9 @@ on:
       - 'tests/tobu-isesaki-canonical-202611.test.cjs'
       - 'tests/tobu-tojo-through-fleet-202611.test.cjs'
       - 'tests/tobu-tojo-realtime-policy-202611.test.cjs'
+      - 'tests/tobu-tojo-ogose-gtfs-2611-fallback.test.cjs'
+      - 'supabase/migrations/20261114232000_tobu_tojo_ogose_tokyogtfs_2611_plan_fallback.sql'
+      - 'supabase/migrations/20261114234500_tobu_tojo_ogose_2611_coverage_and_tjliner.sql'
       - 'supabase/migrations/20261114224500_tobu_tojo_through_operation_fleet_candidates.sql'
       - 'tests/tobu-isesaki-png-ranges-202611.test.cjs'
       - 'supabase/migrations/20261113203000_tobu_skytree_2611_png_number_bands.sql'
@@ -290,7 +293,7 @@ jobs:
       - name: Verify Tojo/Metro through-operation families and hybrid live audit
         run: |
           node --check data/timetables/tobu-tojo-through-fleet-202611.js
-          node --test tests/tobu-tojo-through-fleet-202611.test.cjs tests/tobu-tojo-realtime-policy-202611.test.cjs tests/tobu-tojo-ogose-station-audit.test.cjs
+          node --test tests/tobu-tojo-through-fleet-202611.test.cjs tests/tobu-tojo-realtime-policy-202611.test.cjs tests/tobu-tojo-ogose-station-audit.test.cjs tests/tobu-tojo-ogose-gtfs-2611-fallback.test.cjs
       - name: Verify Tobu Isesaki official 303E, TI symbols and Chichibu 37 stops
         run: node --test tests/tobu-isesaki-canonical-202611.test.cjs
       - name: Verify Tobu Isesaki exact 2611 number PNG reference and red TI color
