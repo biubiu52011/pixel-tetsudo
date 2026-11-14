@@ -5370,6 +5370,43 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
   const validRuns = result.filter(r => r.stops.length >= 2 &&
     r.stops.every(s => !!s.station_urn) &&
     r.stops.filter(s => s.arrival_time || s.departure_time).length >= 2);
+
+  // Source-correlated Wakoshi handover only. These 355 unique boundary clock
+  // pairs are not verified same-day physical continuations; never merge
+  // canonical IDs, extrapolate positions, or infer an actual trainset.
+  if (["Tojo","Yurakucho","Fukutoshin"].includes(lineId) && selectedCalendar) {
+    const relevant = validRuns.filter((r:any) => Number(r.source_template_id)>0);
+    const refs = await batchedRows(relevant, 100, async (group:any[]) => {
+      const ids = group.map((r:any)=>Number(r.source_template_id));
+      const {data,error}=await db.from("tojo_wakoshi_through_links")
+        .select("source_template_id,partner_template_id,source_line_key,partner_line_key,calendar_urn,operation_code,partner_train_number,travel_direction,gap_minutes,match_level,authorizes_position,authorizes_vehicle")
+        .eq("source_line_key",lineId).eq("calendar_urn",selectedCalendar)
+        .in("source_template_id",ids);
+      if(error)throw error;
+      return data||[];
+    });
+    const refById = new Map(refs.map((v:any)=>[Number(v.source_template_id),v]));
+    for(const run of relevant) {
+      const ref:any=refById.get(Number(run.source_template_id));
+      if(!ref)continue;
+      if(ref.source_line_key!==lineId || ref.calendar_urn!==selectedCalendar ||
+         !["Tojo","Yurakucho","Fukutoshin"].includes(ref.partner_line_key) ||
+         ref.match_level!=="source_correlated_not_date_verified" ||
+         ref.authorizes_position!==false || ref.authorizes_vehicle!==false ||
+         !Number.isInteger(ref.gap_minutes) || ref.gap_minutes<0 || ref.gap_minutes>6)
+        throw new Error("TOJO_WAKOSHI_REFERENCE_SCOPE_CONFLICT");
+      run.through_boundary_reference={
+        line_id:lineId,partner_line_id:ref.partner_line_key,
+        operation_code:ref.operation_code,
+        partner_train_number:ref.partner_train_number,
+        transfer_station:"Wakoshi",handover_gap_minutes:ref.gap_minutes,
+        travel_direction:ref.travel_direction,
+        evidence:"calendar_operation_unique_boundary_clock_source_correlated",
+        same_day_continuation_verified:false,actual_vehicle_confirmed:false,
+        authorizes_position:false,authorizes_png:false
+      };
+    }
+  }
   let omittedIncompleteRuns = suppressedOsakaStationFragments + suppressedClockReversalRuns + suppressedUnverifiedOsakaHigashiSpecialSources + result.length - validRuns.length;
   // A source may contain unusable upstream rows intentionally omitted from SQL.
   // Preserve that partial status rather than claiming full line coverage.
