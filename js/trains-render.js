@@ -1204,6 +1204,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var title = _trainMarkerTitle(p, lineId);
     if (!spec || spec.illustrative !== true) return title;
     var lang = window.currentLang || "ja";
+    if(spec.illustrationRole==="tobu-branch-working-fleet-example-not-observed") {
+      // The numbered A/B/C/nD timetable service uses a rotating shared
+      // 10000/10030 fleet. Its representative PNG is NOT today's vehicle.
+      var tobuExample=String(spec.illustrationModel||"");
+      var tobuNote=/^zh/.test(lang)
+        ?"车辆示意："+tobuExample+"（10000／10030型轮换运用；当天车型及编组未确认）"
+        :lang==="en"
+        ?"Fleet illustration: "+tobuExample+" (10000/10030 workings rotate; today's actual carset unknown)"
+        :lang==="ko"
+        ?"차량 참고 그림: "+tobuExample+" (10000/10030형 순환 운용; 당일 실제 편성 미확인)"
+        :"車両参考図："+tobuExample+"（10000・10030型の共通運用・当日の実車編成未確認）";
+      return title ? title+" · "+tobuNote : tobuNote;
+    }
     if((lineId==="Tojo"||lineId==="Ogose") &&
        spec.illustrationRole==="tojo-ogose-fixed-png-not-observed-trainset" &&
        spec.illustrationModel) {
