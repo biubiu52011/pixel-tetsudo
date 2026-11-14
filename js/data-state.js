@@ -649,7 +649,9 @@
         hasControls(".rs-company-level .rs-filter-btn","rs-filter-btn");
       if (optionsSignature === lastOptionsSignature &&
           regionControlsMounted && companyControlsMounted) {
-        sync();
+        // Preserve the original selection contract on unchanged updates:
+        // sync active buttons without rebuilding them or emitting an event.
+        select(selected, false);
         return;
       }
       lastOptionsSignature=optionsSignature;
