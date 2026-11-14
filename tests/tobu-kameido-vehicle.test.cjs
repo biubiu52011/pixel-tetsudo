@@ -130,3 +130,38 @@ test('GTFS recognizes explicit model labels without reading series from a trip I
   assert.equal(classify('Tobu', 'TobuSkytree', 'T50050', '', 'A10'), '東武50050系',
     'unrelated Tobu routes must retain existing behavior');
 });
+
+
+test('C4 live-position retains a neutral icon and explains missing vehicle evidence', () => {
+  const window = loadVehicleRegistry();
+  const p = position({
+    trainNumber: 'C4',
+    positionSource: 'realtime-api',
+    estimated: false,
+    sourceUpdatedAt: '2026-11-15T06:03:00+09:00',
+    vehicleIdentityStatus: 'UNKNOWN'
+  });
+  const art = window.TrainVehicle.selectMarkerArtwork(p, false);
+  assert.equal(art.kind, 'unresolved');
+  assert.equal(art.iconSrc, '');
+  assert.equal(art.reason, 'tobu-branch-live-position-vehicle-unconfirmed');
+  assert.equal(window.TrainVehicle.selectMarkerArtwork({
+    ...p, sourceRailway: 'odpt.Railway:Tobu.Nikko'
+  }, false).reason, undefined, 'never apply Kameido diagnosis on another source railway');
+});
+
+test('SVG marker spec publishes the vehicle rejection reason without rewriting live provenance', () => {
+  const window = loadVehicleRegistry();
+  const source = read('js/trains-render.js');
+  const start = source.indexOf('function _trainMarkerSpec(p, trainUid, lineId)');
+  const end = source.indexOf('function _trainMarkerAccessibleDescription(', start);
+  assert.ok(start >= 0 && end > start, 'marker spec function must exist');
+  const markerSpec = vm.runInNewContext('(' + source.slice(start, end).trim() + ')', {
+    window, _isTrainArtworkFailureActive: () => false
+  });
+  const p = position({trainNumber: 'C4', positionSource: 'realtime-api', estimated: false});
+  const spec = markerSpec(p, 'planned-trip:2026-11-15|Tobu|C4', 'Tobu_Kameido');
+  assert.equal(spec.kind, 'unresolved');
+  assert.equal(spec.compact, true);
+  assert.equal(spec.unresolvedReason, 'tobu-branch-live-position-vehicle-unconfirmed');
+});
