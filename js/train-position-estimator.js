@@ -2650,6 +2650,14 @@
             // 即使车型证据不可用或未确认，位置身份仍属于计划的服务日。
 
             serviceDate: tt._serviceDate || getTokyoServiceDate(),
+            // The SQL timetable's own operating-day calendar is provenance
+            // metadata, not proof of an actual carset or a verified edition.
+            // All estimated positions need it, including those without an
+            // issued publishedVehiclePlan (Tobu 344E is one such service).
+            calendarType: /(?:^|[:.])Weekday$/i.test(String(calendar || ""))
+              ? "weekday"
+              : /(?:^|[:.])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/i.test(
+                  String(calendar || "")) ? "holiday" : "",
             delayMin: delayMin,
             estimated: true,
             positionSource: tt._positionSource || "train-timetable",

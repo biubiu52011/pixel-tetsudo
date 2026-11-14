@@ -63,6 +63,22 @@
     var line=(window.UNIFIED_LINES||{})[lineId];
     return !!(line&&Array.isArray(line.servicePatterns)&&line.servicePatterns.length);
   }
+  function _boundaryServiceScope(fromId,toId){
+    var line=(window.UNIFIED_LINES||{})[fromId]||{};
+    var boundaries=Array.isArray(line.serviceBoundaries)?line.serviceBoundaries:[];
+    for(var i=0;i<boundaries.length;i++){
+      if(boundaries[i]&&boundaries[i].lineId===toId)
+        return String(boundaries[i].serviceScope||"");
+    }
+    return "";
+  }
+  function _isTobuPaidThrough(segment){
+    // This boundary permits certain LIMITED EXPRESS services only.
+    // Two connecting local trains cannot form a through running chain.
+    return /(?:^|[.:])(?:LimitedExpress|SpaciaX|Spacia|Ryomo|Revaty|Liberty)$/.test(
+      String(segment&&segment.trainType||""));
+  }
+
   function _sourceTripKey(v) {
     var s=String(v||"");
     if(s.indexOf("odpt.TrainTimetable:")===0)return s.slice("odpt.TrainTimetable:".length);
@@ -86,7 +102,8 @@
     var previous=Array.isArray(tt._previousTimetableIds)?tt._previousTimetableIds.map(_sourceTripKey):[];
     var next=Array.isArray(tt._nextTimetableIds)?tt._nextTimetableIds.map(_sourceTripKey):[];
     return {lineId:lineId,id:id,sourceId:sourceId,previous:previous,next:next,
-      trainNumber:trainNumber,calendar:calendar,destination:destination,
+      trainNumber:trainNumber,trainType:String(tt["odpt:trainType"]||""),
+      calendar:calendar,destination:destination,
       firstStation:firstStation,lastStation:lastStation,firstTime:firstTime,lastTime:lastTime};
   }
   function _confirmedEdge(a,b,joins){
@@ -162,7 +179,19 @@
       var a=segments[pair.i],b=segments[pair.j];
       if((_directThrough[a.lineId]||[]).indexOf(b.lineId)<0)return;
       var joins=(_boundaryMap[a.lineId]&&_boundaryMap[a.lineId][b.lineId])||[];
+      var scope=_boundaryServiceScope(a.lineId,b.lineId)||
+        _boundaryServiceScope(b.lineId,a.lineId);
+      // e.g. Isesaki <-> Sano/Kiryu: the official service boundary says
+      // "selected-limited-express", not general passenger-train through.
+      // Shared station/time only proves a connection, not one vehicle.
+      if(scope==="selected-limited-express"&&
+         (!_isTobuPaidThrough(a)||!_isTobuPaidThrough(b)))return;
       var ev=_confirmedEdge(a,b,joins); if(!ev||ev.unresolved)return;
+      // A numbered limited express can change numbers at the junction,
+      // but only an explicit timetable source link or a shared timetable
+      // identity can prove that change for this limited-service boundary.
+      if(scope==="selected-limited-express"&&ev.numberChanged&&
+         !ev.sourceLinked&&!ev.sameId)return;
       edgeCandidates.push({a:a,b:b,ev:ev,patternIds:_servicePatternIds(a.lineId,b.lineId)});
     });
     // 部分乘客服务名称对应一组已公布的运行模式，

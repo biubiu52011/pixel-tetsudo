@@ -109,3 +109,47 @@ test('Chichibu Railway 37 official CR stations have names, positions and junctio
  assert.ok(l.transferStations.some(t=>t.station==='CR-Ohanabatake'&&
   t.toStation==='Seibu-Chichibu'&&t.type==='out'));
 });
+
+
+test('344E Isesaki local and 635E Sano local must not become one rc running chain',()=>{
+  const lines={TobuIsesaki:L.TobuIsesaki,Sano:L.Sano};
+  const w={UNIFIED_LINES:lines};
+  vm.runInNewContext(fs.readFileSync('js/running-chain-resolver.js','utf8'),{window:w});
+  const make=(railway,num,typ,first,departure,last,arrival)=>({
+    '@id':'planned-trip:2026-11-14|Tobu|'+railway+'|'+num,
+    'odpt:railway':'odpt.Railway:Tobu.'+railway,
+    'odpt:trainNumber':num,
+    'odpt:calendar':'odpt.Calendar:SaturdayHoliday',
+    'odpt:trainType':'odpt.TrainType:Tobu.'+typ,
+    'odpt:destinationStation':['odpt.Station:Tobu.'+railway+'.'+last],
+    'odpt:trainTimetableObject':[
+      {'odpt:departureStation':'odpt.Station:Tobu.'+railway+'.'+first,
+        'odpt:departureTime':departure},
+      {'odpt:arrivalStation':'odpt.Station:Tobu.'+railway+'.'+last,
+        'odpt:arrivalTime':arrival}
+    ]
+  });
+  const isesaki=make('Isesaki','344E','Local','Isesaki','15:57','Tatebayashi','16:58');
+  const sano=make('Sano','635E','Local','Tatebayashi','16:58','Kuzu','17:36');
+  const resolve=(a,b)=>w.RunningChainResolver.resolveTimetableChain(
+    a,'TobuIsesaki',[{lineId:'Sano',timetable:b}]);
+  const localResult=resolve(isesaki,sano);
+  assert.equal(localResult.runningChainId,isesaki['@id']);
+  assert.equal(localResult.evidence,'NO_CONFIRMED_BOUNDARY');
+  // Even a synthetic source link cannot make ordinary trains into one
+  // through service at a boundary declared "selected-limited-express".
+  isesaki._sourceTripId='odpt.TrainTimetable:344E';
+  sano._sourceTripId='odpt.TrainTimetable:635E';
+  isesaki._nextTimetableIds=['odpt.TrainTimetable:635E'];
+  assert.equal(resolve(isesaki,sano).runningChainId,isesaki['@id']);
+  // The same boundary still supports a genuinely source-linked LIMITED
+  // EXPRESS in the synthetic resolver fixture.
+  const limitedA={...isesaki,'odpt:trainNumber':'1801',
+    'odpt:trainType':'odpt.TrainType:Tobu.LimitedExpress'};
+  const limitedB={...sano,'odpt:trainNumber':'1803',
+    'odpt:trainType':'odpt.TrainType:Tobu.LimitedExpress'};
+  assert.ok(resolve(limitedA,limitedB).runningChainId.startsWith('rc:'));
+  // Train-number changes without a source link are NOT enough.
+  delete limitedA._nextTimetableIds;
+  assert.equal(resolve(limitedA,limitedB).runningChainId,limitedA['@id']);
+});

@@ -171,3 +171,60 @@ test('through-reference whitelist rejects wrong calendar, service, company, rout
   ])assert.equal(match('E1018K','Express','holiday',changes),null,JSON.stringify(changes));
   assert.equal(match('E1018K','Express','holiday',{realtimeVehicleType:'東急2020系'}).model,'東急2020系');
 });
+
+test('344E Isesaki half of a verified 344E -> 635E Sano running chain uses source-calendar PNG',()=>{
+  const chain='rc:planned-trip:2026-11-14|Tobu|odpt.Railway%3ATobu.Isesaki|TobuIsesaki|344E~'+
+    'planned-trip:2026-11-14|Tobu|odpt.Railway%3ATobu.Sano|Sano|635E';
+  // Reproduce the original estimator output, which had serviceId but no
+  // calendarType unless an unrelated planned-model resolver succeeded.
+  const isesaki={
+    runningChainId:chain,trainNumber:'344E',
+    lineId:'TobuIsesaki',positionLineId:'TobuIsesaki',
+    displayLineId:'TobuIsesaki',sourceRailway:'odpt.Railway:Tobu.Isesaki',
+    positionSource:'supabase-train-run',estimated:true,
+    serviceDate:'2026-11-14',serviceId:'odpt.Calendar:SaturdayHoliday',
+    trainType:'odpt.TrainType:Tobu.Local',trainOperator:'Tobu',
+    vehicleIdentityStatus:'UNKNOWN',vehicleFormationCandidates:[]
+  };
+  const ref=w.TrainNumberPngRanges.match('344E','TobuIsesaki',isesaki);
+  assert.ok(ref);
+  assert.equal(ref.scheduledCars,3);
+  assert.equal(ref.referenceOnly,true);
+  assert.equal(ref.actualVehicleConfirmed,false);
+  assert.ok(ref.pngPath.endsWith('東武鉄道_8000型.png'));
+  const icon=w.TrainVehicle.selectMarkerArtwork(isesaki,false);
+  assert.equal(icon.kind,'vehicle');
+  assert.equal(icon.planned,true);
+  assert.equal(icon.representativeOnly,true);
+  assert.ok(icon.iconSrc.endsWith('東武鉄道_8000型.png'));
+  // Shared runningChainId is a service link, NOT permission to reuse
+  // 344E's illustration on the separately sourced Sano 635E segment.
+  const sano={...isesaki,trainNumber:'635E',lineId:'Sano',
+    positionLineId:'Sano',displayLineId:'Sano',
+    sourceRailway:'odpt.Railway:Tobu.Sano'};
+  assert.equal(w.TrainNumberPngRanges.match('635E','Sano',sano),null);
+  assert.equal(w.TrainVehicle.selectMarkerArtwork(sano,false).kind,'unresolved');
+  assert.equal(w.TrainVehicle.selectMarkerArtwork({
+    ...isesaki,displayLineId:'Sano'
+  },false).kind,'unresolved');
+});
+test('source calendar fallback remains strict and cannot authorize an unknown calendar',()=>{
+  const good={calendarType:'',serviceId:'odpt.Calendar:Weekday'};
+  assert.equal(match('344E','Local','weekday',good).trainNumber,'344E');
+  assert.equal(match('344E','Local','weekday',{
+    calendarType:'',serviceId:'odpt.Calendar:SaturdayHoliday'
+  }).trainNumber,'344E');
+  for(const id of ['','SaturdayHoliday','odpt.Calendar:unknown','odpt.Calendar:NationalHoliday']){
+    assert.equal(match('344E','Local','weekday',{calendarType:'',serviceId:id}),null,id);
+  }
+  assert.equal(match('344E','Local','weekday',{
+    calendarType:'INVALID',serviceId:'odpt.Calendar:SaturdayHoliday'
+  }),null);
+});
+test('estimator exports calendarType on every SQL planned position without requiring a vehicle plan',()=>{
+  const source=fs.readFileSync('js/train-position-estimator.js','utf8');
+  const pos=source.indexOf('positions.push({');
+  const piece=source.slice(pos,pos+20000);
+  assert.match(piece,/calendarType: \/\(\?:\^\|\[:\.\]\)Weekday\$\/i/);
+  assert.ok(piece.indexOf('calendarType:')<piece.indexOf('vehiclePlan: _publishedVehiclePlan'));
+});

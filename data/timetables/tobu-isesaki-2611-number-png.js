@@ -115,7 +115,12 @@
     return /^[EF]\d+[KST]$/.test(number) ? number.slice(-1) : "";
   }
   function calendar(p){
-    var c=String(p.calendarType||p.calendar_urn||p.calendarUrn||"").toLowerCase();
+    // Planned SQL positions previously carried serviceId but omitted
+    // calendarType unless a *separate* vehicle plan was issued. Decode the
+    // exact ODPT calendar URN; never guess from the local date or train no.
+    var primary=p.calendarType||p.calendar_urn||p.calendarUrn||"";
+    var raw=primary || p.serviceId || p.timetableCalendar || "";
+    var c=String(raw).toLowerCase();
     return c==="weekday"||c==="odpt.calendar:weekday"?"weekday":
       c==="holiday"||c==="saturdayholiday"||c==="odpt.calendar:saturdayholiday"?"holiday":"";
   }
