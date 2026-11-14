@@ -1544,6 +1544,80 @@ function resolveRosterCar(ctx) {
   return {number:number,name:hit.vehicle_type,formationId:hit.carset_id,sourceUrl:hit.source_url};
 }
 
+// Registered two-car Tobu physical vehicle-number intervals, scoped ONLY to
+// Kameido / Daishi. These are CAR / FORMATION numbers, never A/B/C/D working
+// numbers, timetable trip IDs, or a dated dispatch assignment.
+// Stock: 11201–11204 (+ 12201–12204) = 10000; renewed one-man 10030:
+// 11251–11263 and 11266 (+ their 122xx mates). 11264/65/67/68 are NOT
+// renewed one-man sets and must not take the renewed PNG.
+// https://formation.client.jp/102-formation.html (2026-03-31 roster)
+// https://2nd-train.net/formations/series/30/10030%E5%9E%8B/
+var TOBU_BRANCH_PHYSICAL_NUMBER_RANGES = Object.freeze([
+  Object.freeze({
+    from:11201,to:11204,canonicalId:"tobu-10000-daishi-kameido-2car",
+    fromDate:"2025-01-07",
+    sourceUrl:"https://formation.client.jp/102-formation.html"
+  }),
+  Object.freeze({
+    from:11251,to:11263,canonicalId:"tobu-10030-50-daishi-kameido-2car",
+    fromDate:"2025-01-14",
+    sourceUrl:"https://2nd-train.net/formations/series/30/10030%E5%9E%8B/"
+  }),
+  Object.freeze({
+    from:11266,to:11266,canonicalId:"tobu-10030-50-daishi-kameido-2car",
+    fromDate:"2025-01-14",
+    sourceUrl:"https://2nd-train.net/formations/series/30/10030%E5%9E%8B/"
+  })
+]);
+function lookupTobuBranchVehicleNumberPng(ctx) {
+  ctx = ctx || {};
+  var lineId = String(ctx.lineId || "");
+  var railway = String(ctx.railway || "");
+  var expectedRailway = lineId === "Tobu_Kameido"
+    ? "odpt.Railway:Tobu.Kameido"
+    : lineId === "Daishi_Tobu" ? "odpt.Railway:Tobu.Daishi" : "";
+  if (!expectedRailway || railway !== expectedRailway ||
+      normOp(ctx.trainOwner || ctx.operator) !== "Tobu" ||
+      ctx.vehicleEvidenceKind === "trip-id-only" ||
+      !(ctx._realtimeVehicleResolution === true ||
+        ctx.vehicleEvidenceKind === "verified-physical-formation")) return null;
+  var date = String(ctx.serviceDate || "").slice(0,10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  // A GTFS trip id or trainNumber is NEVER a physical car number. Only
+  // explicit physical-car / formation fields can enter this matcher.
+  var rawCar = String(ctx.realtimeCarNumber || ctx.vehicleCarNumber || "").trim();
+  var rawFormation = String(ctx.formationId || "").trim().toUpperCase();
+  if (!rawCar && !rawFormation) return null;
+  var car = rawCar ? Number(rawCar) : NaN;
+  if (rawCar && !/^(?:112|122)\d{2}$/.test(rawCar)) return null;
+  var formMatch = rawFormation
+    ? rawFormation.match(/^(112\d{2})(?:F|編成)?$/i) : null;
+  if (rawFormation && !formMatch) return null;
+  var root = rawCar ? (car >= 12200 && car <= 12299 ? car - 1000 : car)
+    : Number(formMatch[1]);
+  if (formMatch && root !== Number(formMatch[1])) return null;
+  var matches = TOBU_BRANCH_PHYSICAL_NUMBER_RANGES.filter(function(range) {
+    return root >= range.from && root <= range.to && date >= range.fromDate;
+  });
+  if (matches.length !== 1) return null;
+  var range = matches[0];
+  var canonical = CANONICAL_VEHICLES[range.canonicalId];
+  if (!canonical || !canonical.asset ||
+      !Array.isArray(canonical.lineIds) ||
+      canonical.lineIds.indexOf(lineId) < 0) return null;
+  return {
+    number:rawCar || String(root),
+    name:canonical.displayName,
+    model:canonical.displayName,
+    pngPath:canonical.asset,
+    formationId:String(root) + "F",
+    sourceUrl:range.sourceUrl,
+    source:"physical-car-roster-number-range",
+    lineId:lineId,
+    actualVehicleConfirmed:true
+  };
+}
+
 // 已验证的都营车辆身份及所属方图库图片。
 // 车队来源：东京都交通局车辆图鉴
 // https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/
@@ -3712,7 +3786,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     ctx = ctx || {};
     var assignmentOperator = normOp(ctx.assignmentOperator || ctx.operationOperator || '');
     var tcar = resolveTodenArakawaLiveCar(ctx) || resolveHakodateLiveCar(ctx) ||
-      resolveWataraseWa99Car(ctx) || resolveRosterCar(ctx);
+      resolveWataraseWa99Car(ctx) || resolveRosterCar(ctx) ||
+      lookupTobuBranchVehicleNumberPng(ctx);
     // 物理车号证据可能只携带运营方短车型名（如“71-000形”）；
     // 车号证据本身已限定所属方，必须先投影回规范全名再进入统一仲裁。
     var tcarCanonical = tcar && resolveCanonicalVehicle(tcar.name);
@@ -6618,6 +6693,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     lookupJobanMainNorthMixedCandidates: lookupJobanMainNorthMixedCandidates,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
+    lookupTobuBranchVehicleNumberPng: lookupTobuBranchVehicleNumberPng,
     getOperationPngLibrary: getOperationPngLibrary,
     resolveOperationPng: resolveOperationPng,
     selectMarkerArtwork: selectMarkerArtwork,
