@@ -92,7 +92,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       return w + (/[^\u0000-\u007f]/.test(ch) ? 16 : 10);
     }, 0);
     var cols = Object.create(null);
-    (geometry.stationCoords || []).forEach(function(p) {
+    var allColumnPoints = (geometry.stationCoords || []).slice();
+    Object.keys(geometry.branchGeom || {}).forEach(function(id) {
+      var branchPoints = geometry.branchGeom[id];
+      if (Array.isArray(branchPoints))
+        allColumnPoints = allColumnPoints.concat(branchPoints);
+    });
+    allColumnPoints.forEach(function(p) {
       if (!p || !isFinite(p.x) || !isFinite(p.y) ||
           Math.abs(p.x - x) < 5) return;
       var key = Number(p.x).toFixed(1);
@@ -253,9 +259,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     label.setAttribute("font-weight", "500");
     label.setAttribute("text-anchor", anchor);
     // 左右侧站名垂直居中于圆点（top/bottom 保持基线在圆点上下方）
-    if (side !== "top" && side !== "bottom") label.setAttribute("dominant-baseline", "central");
+    if (o.junctionPlacement || (side !== "top" && side !== "bottom"))
+      label.setAttribute("dominant-baseline", "central");
     // Avoid track overlap by placement, never by opaque outlines.
-    var _clampAvail = (side === "dual" || side === "left") ? (tx - 4) : ((side === "right") ? (svgW - 2 - tx) : 0);
+    var _clampAvail = anchor === "end" ? tx - 4
+      : anchor === "start" ? svgW - 2 - tx : 0;
     if (geometry.isSixShapedLoop) {
       if (geometry.isDualLoop6) {
         // 文字保持在环线外侧；使用通用左右宽度限制。
