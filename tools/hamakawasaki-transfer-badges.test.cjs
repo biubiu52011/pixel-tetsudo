@@ -74,7 +74,8 @@ test('terminal branch caption clears Hama-Kawasaki transfer icon on mobile',()=>
     tag,attrs:{},textContent:'',
     setAttribute(name,value){this.attrs[name]=String(value);}
   });
-  ctx.staticLayer={appendChild(node){drawn.push(node);}};
+  // L3 captions belong to the station-information layer, not the track layer.
+  ctx.stationInfoLayer={appendChild(node){drawn.push(node);}};
   ctx.svgNS='http://www.w3.org/2000/svg';
   ctx.branch={...lines.NambuBranch,id:'NambuBranch'};
   ctx._rStations=lines.NambuBranch.stations.slice().reverse();
