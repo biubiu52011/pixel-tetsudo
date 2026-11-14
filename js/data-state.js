@@ -249,7 +249,8 @@
       var op = line.operator || "Unknown";
       if (!groups[op]) { groups[op] = []; opOrder.push(op); }
       groups[op].push({ id: lid, line: line,
-        sortIdx: insertMap[lid] !== undefined ? insertMap[lid] : 99999 });
+        sortIdx: insertMap[lid] !== undefined ? insertMap[lid] : 99999,
+        sourceIdx: groups[op].length });
     });
 
     if (window.LinePresentationService &&
@@ -261,14 +262,12 @@
       opOrder = knownOps.filter(function(op){ return groups[op]; }).concat(unknownOps);
     }
 
-    var presentationOrderMap = window.LinePresentationService
-      ? window.LinePresentationService.getDisplayOrderMap(orderingLines) : {};
+    // 只消费唯一的 lineOrder；缺失映射时保留原始输入相对顺序。
+    // 禁止通过无 service corridor 的第二份排序表重新调整卡片。
     Object.keys(groups).forEach(function(op) {
       groups[op].sort(function(a, b) {
         if (a.sortIdx !== b.sortIdx) return a.sortIdx - b.sortIdx;
-        var pA = presentationOrderMap[a.id] !== undefined ? presentationOrderMap[a.id] : 99999;
-        var pB = presentationOrderMap[b.id] !== undefined ? presentationOrderMap[b.id] : 99999;
-        return pA - pB;
+        return a.sourceIdx - b.sourceIdx;
       });
     });
 

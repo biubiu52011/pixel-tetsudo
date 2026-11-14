@@ -8,9 +8,10 @@
  *   成员线路（lineIds[1..]）共享主记录的排序位置，不单独占用 UI 位置。
  *
  * 全局类别顺序：JR > Private（私铁）> Other（第三部门等）> Metro（地铁）。
- * 同一 JR 运营商组内，先在来线后新干线；各类别内专属线路图标优先，
- * JRグループ.png 等通用徽章和无图标线路置后。各序列内比较整数
- * presentation.order → 线路符号 → 显示名称 → 稳定原始顺序。
+ * 同一 JR 运营商组内，先在来线后新干线；图标级别为专属 > 通用徽章 > 无图标。
+ * JR 在来线专属图标按正式线路符号排序，同符号线路按 presentation.order；
+ * 其他序列按 presentation.order → 显示符号 → 名称 → 稳定原始顺序。
+ * 上野东京线是明确保留的服务走廊特例，固定紧随 JobanMain。
  *
  * canonical 物理线路仍在 railway_data.json 中独立建模；
  * 本层只负责展示，不合并或改写 canonical 拓扑。
@@ -77,13 +78,12 @@
     return i >= 0 ? i : JR_OPERATOR_ORDER.length;
   }
 
-  // 规范化符号：纯 A-Z 字母按字母排序；其他符号（数字、"-"、混合字符、CJK）
-  // 视为“特殊符号”，排在 A-Z 之前。
+  // 规范化公开线路符号。标准 A-Z 记号在前，特殊记号在后；无记号最后。
   function symbolSortKey(code) {
     var c = String(code || "").toUpperCase();
-    if (!c) return "2|";                    // no symbol -> fallback tier
-    if (/^[A-Z]+$/.test(c)) return "1|" + c; // A-Z tier
-    return "0|" + c;                        // special tier (first)
+    if (!c) return "2|";
+    if (/^[A-Z]+$/.test(c)) return "0|" + c;
+    return "1|" + c;
   }
 
   function displayNameOf(line, pres) {
@@ -103,13 +103,26 @@
     });
   }
 
-  // 仅专属线路图标进入首序列；JRグループ.png 等运营商徽章不是线路图标。
-  // 与卡片渲染使用同一优先级：presentation.icon 优先于 line.image。
-  function hasDedicatedLineIcon(line) {
-    if (!line) return false;
+  // 与卡片一致地选择 icon 来源，但用 0/1/2 三区分专属/通用/缺失。
+  // 这里只分类可见的图标路径；正式标识符不能从内部 line.code 推断。
+  function getLineIconTier(line) {
+    if (!line) return 2;
     var p = line.presentation || {};
     var icon = String(p.icon || line.image || "");
-    return !!icon && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(icon);
+    if (!icon) return 2;
+    return /(グループ|ロゴ|マーク|アイコン|シンボル|(?:^|[/._-])(?:group|logo|mark|symbol|badge)(?:[/._-]|$))/i.test(icon) ? 1 : 0;
+  }
+
+  function hasDedicatedLineIcon(line) {
+    return getLineIconTier(line) === 0;
+  }
+
+  function passengerSymbolOf(line, pres) {
+    // presentation.code="" 表示有意地不展示官方符号，不能回退内部 code。
+    if (pres && Object.prototype.hasOwnProperty.call(pres, "code")) {
+      return String(pres.code || "");
+    }
+    return String((line && line.code) || "");
   }
 
   // 生成运营商组内实体的确定性排序键。
@@ -119,7 +132,7 @@
     var orderKey = (pres && Number.isInteger(pres.order) && pres.order >= 0)
       ? "1|" + String(pres.order).padStart(6, "0")
       : "2|";
-    var code = (pres && pres.code) || (entity.line && entity.line.code) || "";
+    var code = passengerSymbolOf(entity.line, pres);
     var symKey = "0|" + symbolSortKey(code);
     var nameKey = displayNameOf(entity.line, pres);
     var orig = String(("000000" + String(entity.orig)).slice(-6));
@@ -235,10 +248,18 @@
           var bShinkansen = isShinkansenLine(b.line);
           if (aShinkansen !== bShinkansen) return aShinkansen ? 1 : -1;
         }
-        // 同类别内才按实际卡片图标分层：专属 > 通用/无图标。
-        var aDedicated = hasDedicatedLineIcon(a.line), bDedicated = hasDedicatedLineIcon(b.line);
-        if (aDedicated !== bDedicated) return aDedicated ? -1 : 1;
-        if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1; // passenger systems first
+        // 显示图标显式分三级，而不是把通用徽章与缺失合并成一类。
+        var aIconTier = getLineIconTier(a.line), bIconTier = getLineIconTier(b.line);
+        if (aIconTier !== bIconTier) return aIconTier - bIconTier;
+        if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1;
+        // JR 的公开在来线专属记号比人工展示编号更有排序权。
+        // 不改变私铁/地铁及重复符号线路已指定的人工展示顺序。
+        if (categoryOf(op) === "JR" && aIconTier === 0 &&
+            !isShinkansenLine(a.line) && !isShinkansenLine(b.line)) {
+          var ac = symbolSortKey(passengerSymbolOf(a.line, a.pres));
+          var bc = symbolSortKey(passengerSymbolOf(b.line, b.pres));
+          if (ac !== bc) return ac < bc ? -1 : 1;
+        }
         var ka = entitySortKey(a), kb = entitySortKey(b);
         return ka < kb ? -1 : (ka > kb ? 1 : 0);
       });
@@ -251,6 +272,8 @@
    * 返回完整的 lineId 顺序：先放按展示顺序排列的主记录，再放其成员线路。
    * 成员共享主记录的排序位置，UI 聚合层负责去重。
    */
+  var EXPLICIT_CORRIDOR_AFTER = { UenoTokyo: "JobanMain" };
+
   function getDisplayOrder(allLines, options) {
     allLines = allLines || {};
     options = options || {};
@@ -271,6 +294,12 @@
         var presentation = line.presentation || {};
         var afterLineId = presentation.afterLineId;
         if (out.indexOf(lid) !== -1) return;
+        // 仅上野东京线保留明确声明的特例；不受通用图标分层影响。
+        var explicitAfter = EXPLICIT_CORRIDOR_AFTER[lid];
+        if (explicitAfter && out.indexOf(explicitAfter) >= 0) {
+          out.splice(out.indexOf(explicitAfter) + 1, 0, lid);
+          return;
+        }
         if (!hasDedicatedLineIcon(line) && Number.isInteger(presentation.order)) {
           // 通用徽章服务走廊按自己的整数编号插入降级序列，
           // 不再因 afterLineId 被插进专属图标线路之间。
@@ -402,6 +431,7 @@
   window.LinePresentationService = {
     getDisplayOrder: getDisplayOrder,
     getPresentationOrder: getPresentationOrder,
+    getLineIconTier: getLineIconTier,
     getDisplayOrderMap: getDisplayOrderMap,
     getOperatorOrder: getOperatorOrder,
     orderOperators: orderOperators,

@@ -1027,6 +1027,11 @@
       var fusedData = Object.assign({}, _lastFusedData, {
         timestamp: new Date().toISOString(),
         lines: fusedLines,
+        // Incremental metadata changes must not retain a stale overview order.
+        lineOrder: window.LinePresentationService
+          ? window.LinePresentationService.getDisplayOrder(dlLines)
+          : Object.keys(dlLines),
+        totalLines: Object.keys(dlLines).length,
         odptOperatorsLoaded: Object.keys(odptData.delayInfo).length
       });
       emitUpdate(fusedData, arguments[1]);

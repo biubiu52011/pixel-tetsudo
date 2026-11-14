@@ -46,7 +46,8 @@ test('JA cards stay together, JR-Sotetsu service does not claim JS', () => {
   immediatelyAfter(order, 'SaikyoKawagoe', 'ChuoSobuLocal');
   assert.ok(order.indexOf('Kawagoe') > order.indexOf('Yamanote'),
     'JRグループ/无图标线路不能穿插在官方线路图标序列里');
-  immediatelyAfter(order, 'Kawagoe', 'SotetsuJRDirect');
+  assert.ok(order.indexOf('SotetsuJRDirect') < order.indexOf('Kawagoe'),
+    'generic JR group icon must precede missing-icon routes');
   assert.equal(lines.SotetsuJRDirect.presentation.code, '');
   assert.equal(lines.SotetsuJRDirect.code, 'JS', 'internal railway code must not change');
   assert.equal(lines.ShonanShinjuku.presentation.code, 'JS');
@@ -87,7 +88,7 @@ test('Kagoshima route overview is distinguished from JA and JB section cards', (
 test('JR Central trunk lines lead the display; Hokkaido recurring symbols are adjacent', () => {
   const order = ordered();
   assert.deepEqual(order.filter(id => lines[id]?.operator === 'JR-Central').slice(0, 4),
-    ['TokaidoCentral', 'ChuoCentral', 'KansaiCentral', 'Takayama']);
+    ['TokaidoCentral', 'Gotemba', 'Minobu', 'Iida']);
   immediatelyAfter(order, 'HakodateMain', 'Chitose');
   immediatelyAfter(order, 'NemuroMain', 'Sekisho');
 });
@@ -225,4 +226,46 @@ test('a generic JR badge or missing icon cannot overtake an official icon, inclu
     }
   }
   assert.equal(order.filter(id => id === 'UenoTokyo').length, 1);
+});
+
+test('JR dedicated public codes outrank manual positions, but non-JR custom order is preserved', () => {
+  const order = ordered();
+  const central = order.filter(id => lines[id]?.operator === 'JR-Central').slice(0, 9);
+  assert.deepEqual(central,
+    ['TokaidoCentral', 'Gotemba', 'Minobu', 'Iida', 'Taketoyo',
+      'ChuoCentral', 'Takayama', 'Taita', 'KansaiCentral']);
+  assert.ok(order.indexOf('Noda') < order.indexOf('TobuSkytree'));
+  assert.ok(order.indexOf('TobuSkytree') < order.indexOf('TobuIsesaki'));
+  assert.equal(presentation.getLineIconTier(lines.TokaidoCentral), 0);
+  assert.equal(presentation.getLineIconTier(lines.SotetsuJRDirect), 1);
+  assert.equal(presentation.getLineIconTier(lines.Kawagoe), 2);
+  assert.ok(order.indexOf('SotetsuJRDirect') < order.indexOf('Kawagoe'));
+  immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
+});
+
+test('public code overrides order only inside the same JR dedicated-icon tier', () => {
+  const demo = {
+    C: { operator: 'JR-Central', image: '../images/CC.png',
+      presentation: {lineIds: ['C'], code: 'CC', order: 1}},
+    A: { operator: 'JR-Central', image: '../images/CA.png',
+      presentation: {lineIds: ['A'], code: 'CA', order: 3}},
+    B: { operator: 'JR-Central', image: '../images/CB.png',
+      presentation: {lineIds: ['B'], code: 'CB', order: 2}},
+    NoIcon: { operator: 'JR-Central', image: '',
+      presentation: {lineIds: ['NoIcon'], code: '', order: 4}},
+    GroupIcon: { operator: 'JR-Central', image: '../images/JRグループ.png',
+      presentation: {lineIds: ['GroupIcon'], code: '', order: 5}}
+  };
+  assert.deepEqual(Array.from(presentation.getDisplayOrder(demo)),
+    ['A', 'B', 'C', 'GroupIcon', 'NoIcon']);
+  assert.equal(presentation.getLineIdentity('NoIcon', demo).displayCode, '');
+});
+
+test('the final card model consumes one canonical order without a second map sort', () => {
+  const src = fs.readFileSync(path.join(root, 'js/data-state.js'), 'utf8');
+  assert.doesNotMatch(src, /getDisplayOrderMap\(orderingLines\)/);
+  assert.match(src, /sortIdx: insertMap\[lid\]/);
+  assert.match(src, /return a\.sourceIdx - b\.sourceIdx/);
+  const fusion = fs.readFileSync(path.join(root, 'js/data-fusion.js'), 'utf8');
+  assert.match(fusion, /lineOrder: window\.LinePresentationService[\s\S]*?getDisplayOrder\(dlLines\)/);
 });
