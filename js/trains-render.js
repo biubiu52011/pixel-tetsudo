@@ -721,13 +721,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       svg.__branchGeom = geometry.branchGeom || null;
       svg.__geometry = geometry;
       
-      // 背景。
-      var bgRect = document.createElementNS(svgNS, "rect");
-      bgRect.setAttribute("width", svgW);
-      bgRect.setAttribute("height", svgH);
-      bgRect.setAttribute("fill", "var(--bg)");
-      bgRect.setAttribute("rx", "8");
-      svg.appendChild(bgRect);
+      // SVG 只包含线路内容，不绘制独立的底色矩形。
+      // 背景由外层 .tp-line-map (CSS) 统一负责：最终 viewBox 会
+      // 随站名/图标边界扩展，旧的 svgW/svgH 底色会露出错位边缘，
+      // 且 iOS 智能反转可能区别对待 SVG 内的底色与 HTML 背景。
+      // 保持 SVG 透明，不改变任何轨道、车站和列车几何坐标。
       
       // === 静态层：线路、车站、标签（每条线路只构建一次） ===
       var staticLayer = document.createElementNS(svgNS, "g");
