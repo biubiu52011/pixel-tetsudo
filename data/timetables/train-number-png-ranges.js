@@ -5207,6 +5207,81 @@
     };
   }
 
+  // Tobu's Kameido / Daishi A/B/C and nD values are published timetable
+  // SERVICE numbers. The letter denotes an operation working, NOT a fixed
+  // physical train type: B->A->C->D changes the actual two-car formation daily.
+  // These inclusive ranges come from the archived SQL manual timetable:
+  // Kameido weekday A2..A106, B1..B103, C1..C23;
+  // SaturdayHoliday A2..A100, B1..B101, C1..C21;
+  // Daishi weekday 1D..220D, SaturdayHoliday 1D..218D.
+  // 2026-04-17 operation sightings show A/B 10030 and C/D 10000, but
+  // that historical observation MUST NOT be asserted as a 2026-11 formation.
+  // This illustration deliberately uses the sampled group's face ONLY as
+  // a fleet example. Actual stock status remains UNKNOWN, and the picture
+  // is never an exact-number-to-vehicle assignment.
+  // Source: https://loo-ool.com/rail/Ts/00/20230114/
+  // Archived timetable: public.manual_timetable_templates (SQL)
+  function matchTobuBranchFleetIllustration(trainNumber,lineId,p){
+    p=p||{};
+    var key=String(lineId||"");
+    var railway=key==="Tobu_Kameido"?"odpt.Railway:Tobu.Kameido":
+      key==="Daishi_Tobu"?"odpt.Railway:Tobu.Daishi":"";
+    if(!railway || p.sourceRailway!==railway ||
+       String(p.positionLineId||p.lineId||"")!==key ||
+       (p.displayLineId && String(p.displayLineId)!==key) ||
+       (p.positionSource!=="realtime-api" &&
+        p.positionSource!=="supabase-train-run" &&
+        p.positionSource!=="train-timetable") ||
+       (p.positionSource==="realtime-api" && p.estimated===true) ||
+       (p.positionSource!=="realtime-api" && p.estimated!==true))return null;
+    var date=String(p.serviceDate||"").slice(0,10);
+    if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date))return null;
+    var day=new Date(date+"T00:00:00Z").getUTCDay();
+    var dateCalendar=(day===0||day===6||
+      date==="2026-11-03"||date==="2026-11-23")?"holiday":"weekday";
+    var cal=sourceCalendar(p);
+    if(cal && cal!==dateCalendar)return null;
+    var num=String(trainNumber||"").trim().toUpperCase();
+    if(num!==String(p.trainNumber||"").trim().toUpperCase())return null;
+    var group="",serial=0,max=0,match=null;
+    if(key==="Tobu_Kameido"){
+      match=/^([ABC])([1-9][0-9]{0,2})$/.exec(num);
+      if(!match)return null;
+      group=match[1];serial=Number(match[2]);
+      max=({weekday:{A:106,B:103,C:23},
+        holiday:{A:100,B:101,C:21}})[dateCalendar][group];
+      if(serial<(group==="A"?2:1)||serial>max)return null;
+    }else{
+      match=/^([1-9][0-9]{0,2})D$/.exec(num);
+      if(!match)return null;
+      group="D";serial=Number(match[1]);
+      max=dateCalendar==="weekday"?220:218;
+      if(serial>max)return null;
+    }
+    var isAB=group==="A"||group==="B";
+    var model=isAB?"東武10030型50番台（亀戸・大師線・2両）":
+      "東武10000型（亀戸・大師線・2両）";
+    var png=isAB?
+      "../images/列车/東武鉄道/東武鉄道_10030型_50番台_更新車.png":
+      "../images/列车/東武鉄道/東武鉄道_10000型_更新車.png";
+    var garage=root.VehicleGaragePngMap;
+    if(!garage||typeof garage.matchModelPath!=="function"||
+       !garage.matchModelPath(model,png,key))return null;
+    return Object.freeze({
+      lineId:key,trainNumber:num,calendarType:dateCalendar,
+      workingGroup:group,numberMin:group==="A"?2:1,numberMax:max,
+      source:"tobu-kameido-daishi-undated-sql-fleet-example",
+      sourceUrl:"https://loo-ool.com/rail/Ts/00/20230114/",
+      sourceObservationDate:"2026-04-17",
+      illustrationModel:model,illustrationPng:png,
+      candidateModels:["東武10000型（亀戸・大師線・2両）",
+        "東武10030型50番台（亀戸・大師線・2両）"],
+      actualVehicleConfirmed:false,model:null,formationId:null,
+      referenceOnly:true,authorizesPNG:false,authorizesIllustration:true,
+      illustrationOnly:true,status:"UNCONFIRMED_MIXED_FLEET"
+    });
+  }
+
   root.TrainNumberPngRanges=Object.freeze({
     version:"20261105-kashima-sql-2611-v1",match:match,
     verifyJoetsuService:verifyJoetsuService,
@@ -5229,6 +5304,7 @@
     verifyOuMainTsugaruService:verifyOuMainTsugaruService,
     verifyOitoEastService:verifyOitoEastService,
     verifyOitoWestService:verifyOitoWestService,
+    matchTobuBranchFleetIllustration:matchTobuBranchFleetIllustration,
     matchChuoSobuLocalBCLiveNumber:matchChuoSobuLocalBCLiveNumber,
     matchItoFleetCandidates:matchItoFleetCandidates,
     matchHachikoSouthCandidates:matchHachikoSouthCandidates,
