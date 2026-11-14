@@ -154,9 +154,9 @@ test('SVG marker spec publishes the vehicle rejection reason without rewriting l
   const window = loadVehicleRegistry();
   const source = read('js/trains-render.js');
   const start = source.indexOf('function _trainMarkerSpec(p, trainUid, lineId)');
-  const end = source.indexOf('function _trainMarkerAccessibleDescription(', start);
+  const end = source.indexOf('\n  }\n', start);
   assert.ok(start >= 0 && end > start, 'marker spec function must exist');
-  const markerSpec = vm.runInNewContext('(' + source.slice(start, end).trim() + ')', {
+  const markerSpec = vm.runInNewContext('(' + source.slice(start, end + 5) + ')', {
     window, _isTrainArtworkFailureActive: () => false
   });
   const p = position({trainNumber: 'C4', positionSource: 'realtime-api', estimated: false});
