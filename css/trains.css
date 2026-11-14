@@ -25,7 +25,10 @@
 @media (max-width: 640px) { .tp-line-map { padding: 6px; } }
 /* v4.3.546: 线路图完整适配——svg width=100%（viewBox 缩放），wrap 占满容器，
    整图可见、无横向滚动；此前 fit-content/px 部署（4.3.541-545）已废弃 */
-.tp-map-wrap { width: 100%; max-width: none; min-width: 0; }
+/* Global L1 contract (all route geometries): only .tp-line-map paints a
+   surface. The SVG and its wrapper are content-only, never a second canvas. */
+.tp-map-wrap { width: 100%; max-width: none; min-width: 0; background: transparent; }
+.tp-map-wrap > svg { background: transparent; }
 /* v4.3.608: 渲染宽度封顶 + 居中——svg width=100% 在桌面容器（~1000px+）会放大 3-4x+
    （字 50-68px 巨大）；max-width 520px 使桌面倍率 ~1.75x，与移动端 1.51x 字号接近，
    两种尺寸均可读。移动端容器 449px < 520px 时仍是 100% 不变。 */
