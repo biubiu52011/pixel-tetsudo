@@ -3496,6 +3496,41 @@
                         window.ODPT_REALTIME_STATUS = window.ODPT_REALTIME_STATUS || {};
                         window.ODPT_REALTIME_STATUS[op] = { ok: true, count: window.ODPT_TRAIN_POSITIONS[op].length, at: Date.now() };
                         loaded.positions++;
+                        // Tojo/Ogose: observe exact railway identities in the
+                        // existing Tobu operator snapshot. This does not fetch
+                        // extra data and never calls a 0-row result a suspension.
+                        // Keep only bounded aggregate diagnostics, not large raw
+                        // Train arrays or speculative fleet identifications.
+                        if (op === "Tobu" && window.ODPTClient &&
+                            window.ODPTClient.auditRealtimeLine) {
+                            var tojoLines = (_activeRealtimeLineIds && _activeRealtimeLineIds[op]) || [];
+                            var tojoAudit = window.ODPT_TOJO_REALTIME_AUDIT || {};
+                            ["Tojo", "Ogose"].forEach(function(lineId) {
+                                if (tojoLines.indexOf(lineId) < 0) return;
+                                var result = window.ODPTClient.auditRealtimeLine(
+                                    lineId, window.ODPT_TRAIN_POSITIONS[op]);
+                                var sample = {
+                                    lineId: lineId, ok: true, at: Date.now(),
+                                    matchedCount: result.matchedCount || 0,
+                                    locationCoverage: result.locationCoverage || 0,
+                                    trainNumberCoverage: result.trainNumberCoverage || 0,
+                                    directionCounts: result.directionCounts || {},
+                                    probeStatus: result.matchedCount > 0
+                                        ? "exact-railway-rows-observed"
+                                        : "no-exact-railway-rows-in-current-snapshot"
+                                };
+                                var historyKey = lineId + "History";
+                                var history = tojoAudit[historyKey] || [];
+                                history.push(sample);
+                                if (history.length > 10) history.shift();
+                                tojoAudit[lineId] = sample;
+                                tojoAudit[historyKey] = history;
+                                if (window.ODPTClient.assessRealtimeFullCandidate)
+                                    tojoAudit[lineId + "FullCandidate"] =
+                                        window.ODPTClient.assessRealtimeFullCandidate(lineId, history);
+                            });
+                            window.ODPT_TOJO_REALTIME_AUDIT = tojoAudit;
+                        }
                         // Explicit Yamanote baseline probe: record only exact
                         // JR-East.Yamanote rows; never classify other JR-East rows
                         // by station overlap or line length.
