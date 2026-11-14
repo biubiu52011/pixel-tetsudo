@@ -16690,13 +16690,13 @@
       "lat": 35.953865,
       "lng": 139.022015
     },
-    "CR-Shiraku": {
-      "lat": 35.958915,
-      "lng": 138.99328
-    },
     "CR-Mitsumineguchi": {
       "lat": 35.960175,
       "lng": 138.97773
+    },
+    "CR-Shiroku": {
+      "lat": 35.958915,
+      "lng": 138.99328
     }
   },
   "lines": {
@@ -52993,7 +52993,7 @@
         "CR-Urayamaguchi",
         "CR-Bushu-Nakagawa",
         "CR-Bushu-Hino",
-        "CR-Shiraku",
+        "CR-Shiroku",
         "CR-Mitsumineguchi"
       ],
       "durations": [],
@@ -53056,7 +53056,9 @@
           "ChichibuMain"
         ],
         "operatorGroup": "CHICHIBU_RAILWAY"
-      }
+      },
+      "timetableDataStatus": "station_topology_only",
+      "sourceQuality": "official_station_order_mlit2024_coords"
     }
   },
   "name_map": {
@@ -56673,7 +56675,7 @@
     "浦山口": "CR-Urayamaguchi",
     "武州中川": "CR-Bushu-Nakagawa",
     "武州日野": "CR-Bushu-Hino",
-    "白久": "CR-Shiraku",
+    "白久": "CR-Shiroku",
     "三峰口": "CR-Mitsumineguchi"
   },
   "stationLines": {
@@ -71031,10 +71033,10 @@
     "CR-Bushu-Hino": [
       "ChichibuMain"
     ],
-    "CR-Shiraku": [
+    "CR-Mitsumineguchi": [
       "ChichibuMain"
     ],
-    "CR-Mitsumineguchi": [
+    "CR-Shiroku": [
       "ChichibuMain"
     ]
   },
@@ -76947,8 +76949,8 @@
       "CR-Urayamaguchi": 32,
       "CR-Bushu-Nakagawa": 33,
       "CR-Bushu-Hino": 34,
-      "CR-Shiraku": 35,
-      "CR-Mitsumineguchi": 36
+      "CR-Mitsumineguchi": 36,
+      "CR-Shiroku": 35
     }
   },
   "line_types": {

@@ -32695,16 +32695,16 @@
     "ko": "武州日野",
     "en": "Bushu Hino"
   },
-  "CR-Shiraku": {
-    "ja": "白久",
-    "zh": "白久",
-    "ko": "白久",
-    "en": "Shiraku"
-  },
   "CR-Mitsumineguchi": {
     "ja": "三峰口",
     "zh": "三峰口",
     "ko": "三峰口",
     "en": "Mitsumineguchi"
+  },
+  "CR-Shiroku": {
+    "ja": "白久",
+    "zh": "白久",
+    "ko": "白久",
+    "en": "Shiroku"
   }
 }

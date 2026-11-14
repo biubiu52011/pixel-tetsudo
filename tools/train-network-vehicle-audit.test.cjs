@@ -146,7 +146,21 @@ audit.stationTopologyOnlyRoutes=audit.notCoveredRoutes.filter(id=>{
     route.stations.length===spec.count&&
     route.stations[0]===spec.first&&route.stations.at(-1)===spec.last&&
     Array.isArray(route.durations)&&route.durations.length===spec.count-1;
-  return legacyAou||newJrBranch||verifiedNewCorridor||legacyJrCentral;
+  // CR01-CR37 station topology has a published operator station list and MLIT
+  // coordinates, but NO source-scoped timetable or fleet evidence. Keep all
+  // train/PNG dispatch claims disabled until an independently audited source exists.
+  const verifiedChichibu=id==='ChichibuMain'&&
+    route.operator==='ChichibuRailway'&&
+    route.timetableDataStatus==='station_topology_only'&&
+    route.sourceQuality==='official_station_order_mlit2024_coords'&&
+    route.stations.length===37&&route.stations[0]==='Hanyu'&&
+    route.stations.at(-1)==='CR-Mitsumineguchi'&&
+    Array.isArray(route.durations)&&route.durations.length===0&&
+    route.transferStations.some(t=>
+      t.station==='Hanyu'&&t.lineId==='TobuIsesaki')&&
+    route.stations.every(st=>Number.isFinite(railway.stations[st]?.lat)&&
+      Number.isFinite(railway.stations[st]?.lng));
+  return legacyAou||newJrBranch||verifiedNewCorridor||verifiedChichibu||legacyJrCentral;
 });
 assert.deepEqual(audit.stationTopologyOnlyRoutes.slice().sort(),
   ['HojoRailway','ShintetsuAo','SanyoWadamisaki',
@@ -156,7 +170,7 @@ assert.deepEqual(audit.stationTopologyOnlyRoutes.slice().sort(),
    'SekihokuMain','Sassho','HidakaMain','Yosan','Dosan','Kotoku',
    'Tokushima','Naruto','Mugi','Yodo','Uchiko','ChuoCentral','Gotemba',
    'Iida','KansaiCentral','KiseiCentral','Meisho','MinoAkasaka','Minobu',
-   'Sangu','Taita','Takayama','Taketoyo','TokaidoCentral'].sort(),
+   'Sangu','Taita','Takayama','Taketoyo','TokaidoCentral','ChichibuMain'].sort(),
   'only independently audited station-topology-only routes may lack fleet evidence');
 assert.deepEqual(audit.notCoveredRoutes.filter(id=>
     !audit.stationTopologyOnlyRoutes.includes(id)),

@@ -91,6 +91,10 @@ test('Chichibu Railway 37 official CR stations have names, positions and junctio
  assert.equal(l.stations[0],'Hanyu');assert.equal(l.stations[8],'Kumagaya');
  assert.equal(l.stations[19],'Yorii');
  assert.equal(l.stations.at(-1),'CR-Mitsumineguchi');
+ assert.equal(l.stations[35],'CR-Shiroku');
+ assert.equal(i18n['CR-Shiroku'].en,'Shiroku');
+ assert.equal(l.timetableDataStatus,'station_topology_only');
+ assert.equal(l.sourceQuality,'official_station_order_mlit2024_coords');
  assert.equal(l.durations.length,0,'No fictional two-minute timetable');
  assert.ok(d.stationLines.Hanyu.includes('TobuIsesaki'));
  assert.ok(L.TobuIsesaki.transferStations.some(t=>t.station==='Hanyu'&&t.lineId==='ChichibuMain'));
