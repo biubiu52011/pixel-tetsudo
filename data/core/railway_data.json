@@ -33540,12 +33540,12 @@
         "Ogose"
       ],
       "durations": [
+        4,
         2,
         2,
         2,
         2,
-        2,
-        2,
+        1,
         2
       ],
       "throughServices": [],
@@ -33573,7 +33573,13 @@
         ],
         "operatorGroup": "TOBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "durationDerivation": {
+        "source": "TokyoGTFS 2026-11",
+        "feed_sha": "bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f",
+        "method": "median adjacent-stop departure-to-arrival, both directions, nearest integer minute; representative only",
+        "minimumSamples": 290
+      }
     },
     "Oito": {
       "name": "大糸线",
@@ -36193,6 +36199,10 @@
       ],
       "durations": [
         2,
+        1,
+        2,
+        2,
+        1,
         2,
         2,
         2,
@@ -36209,27 +36219,23 @@
         2,
         2,
         2,
+        3,
         2,
         2,
         2,
         2,
+        3,
+        3,
+        3,
+        3,
+        2,
+        7,
+        3,
         2,
         2,
+        3,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        1
       ],
       "throughServices": [
         "Fukutoshin",
@@ -36381,7 +36387,13 @@
             "confidence": "HIGH"
           }
         }
-      ]
+      ],
+      "durationDerivation": {
+        "source": "TokyoGTFS 2026-11",
+        "feed_sha": "bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f",
+        "method": "median adjacent-stop departure-to-arrival, both directions, nearest integer minute; representative only",
+        "minimumSamples": 182
+      }
     },
     "TokyuTamagawa": {
       "name": "TokyuTamagawa",
