@@ -97,7 +97,7 @@ test('corridor reference never overrides proven vehicle, wrong line, date or sou
   assert.equal(match('579','Local','holiday'),null);
   assert.equal(match('2501','Local'),null);
   assert.equal(match('3501','SectionExpress'),null);
-  assert.equal(match('A4845T','TH-LINER'),null);
+  assert.equal(match('A9999T','TH-LINER'),null);
   assert.equal(match('501','Local','weekday',{realtimeVehicleType:'東武10030系'}).model,'東武10030系');
   assert.ok(w.VehicleGaragePngMap.matchModelPath(
     '東武10030系','../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',
@@ -124,7 +124,7 @@ test('through-company source numbers resolve 2026-11 PNG illustration on Isesaki
       positionSource:'supabase-train-run',estimated:true,
       serviceDate:'2026-11-14',calendarType:cal,
       trainType:'odpt.TrainType:Tobu.'+typ,trainNumber:num};
-    const ref=window.TrainNumberPngRanges.match(num,'TobuIsesaki',p);
+    const ref=w.TrainNumberPngRanges.match(num,'TobuIsesaki',p);
     assert.ok(ref,num);
     assert.equal(ref.model,model,num);
     assert.equal(ref.serviceFamily,family,num);
@@ -133,8 +133,8 @@ test('through-company source numbers resolve 2026-11 PNG illustration on Isesaki
     assert.equal(ref.referenceOnly,true,num);
     assert.equal(ref.illustrative,true,num);
     assert.equal(ref.actualVehicleConfirmed,false,num);
-    assert.equal(window.VehicleGaragePngMap.matchModelPath(model,ref.pngPath,'TobuIsesaki'),true,num);
-    const selected=window.TrainVehicle.selectMarkerArtwork(p,false);
+    assert.equal(w.VehicleGaragePngMap.matchModelPath(model,ref.pngPath,'TobuIsesaki'),true,num);
+    const selected=w.TrainVehicle.selectMarkerArtwork(p,false);
     assert.equal(selected.kind,'vehicle',num);
     assert.ok(selected.iconSrc.endsWith(filename),num);
     assert.equal(selected.representativeOnly,true,num);
