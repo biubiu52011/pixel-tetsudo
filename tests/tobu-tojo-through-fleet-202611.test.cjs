@@ -31,18 +31,18 @@ function pos(overrides={}){
  actualVehicleConfirmed:false,...overrides};
 }
 const scenarios=[
- ['ground',pos(),png.ground,'東武50000型'],
- ['TJ',pos({trainNumber:'23',trainType:'odpt.TrainType:Tobu.TJ-Liner'}),png.tj,'東武50090型'],
- ['Y working',pos({trainNumber:'Y1176',scheduledStopKeys:['Yorii','Ogawamachi','ShinrinKoen']}),png.west,'東武8000型'],
- ['west segment',pos({trainNumber:'Y1070',scheduledStopKeys:['Yorii','Tamayodo','Hachigata','Ogawamachi']}),png.west,'東武8000型'],
- ['T working',pos({trainNumber:'C2107T'}),png.tobu,'東武50070型'],
- ['E-prefix T',pos({trainNumber:'E103T'}),png.tobu,'東武50070型'],
+ ['ground',pos(),png.ground ,'東武50000系'],
+ ['TJ',pos({trainNumber:'23',trainType:'odpt.TrainType:Tobu.TJ-Liner'}),png.tj ,'東武50090系'],
+ ['Y working',pos({trainNumber:'Y1176',scheduledStopKeys:['Yorii','Ogawamachi','ShinrinKoen']}),png.west ,'東武8000系'],
+ ['west segment',pos({trainNumber:'Y1070',scheduledStopKeys:['Yorii','Tamayodo','Hachigata','Ogawamachi']}),png.west ,'東武8000系'],
+ ['T working',pos({trainNumber:'C2107T'}),png.tobu ,'東武50070系'],
+ ['E-prefix T',pos({trainNumber:'E103T'}),png.tobu ,'東武50070系'],
  ['S working',pos({trainNumber:'D2159S'}),png.metro,'東京メトロ17000系'],
  ['K working',pos({trainNumber:'C3152K'}),png.tokyu,'東急5050系'],
  ['F-prefix K',pos({trainNumber:'F3162K'}),png.tokyu,'東急5050系'],
  ['Ogose',pos({positionLineId:'Ogose',displayLineId:'Ogose',
  sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',
- scheduledStopKeys:['Sakado','Kawakado','Ogose']}),png.ogose,'東武8000型']
+ scheduledStopKeys:['Sakado','Kawakado','Ogose']}),png.ogose ,'東武8000系']
 ];
 test('all working/service groups resolve exactly one approved PNG',()=>{
  for(const [name,p,expected,model] of scenarios){
