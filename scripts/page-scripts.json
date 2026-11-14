@@ -127,6 +127,7 @@
       "data/timetables/jreast-ryomo-2611-number-index.js",
       "data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js",
       "data/timetables/jreast-chuo-main-2611-number-index.js",
+      "data/timetables/tobu-isesaki-2611-number-png.js",
       "data/timetables/train-number-png-ranges.js",
       "data/timetables/jreast-senzan-2611-number-index.js",
       "data/timetables/jreast-shinonoi-2611-number-index.js",
@@ -312,6 +313,9 @@
       ],
       "data/timetables/jreast-yamagata-2611-number-index.js": [
         "Yamagata"
+      ],
+      "data/timetables/tobu-isesaki-2611-number-png.js": [
+        "TobuIsesaki"
       ]
     }
   }
