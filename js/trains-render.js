@@ -1212,6 +1212,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       illustrative: hasImage && artwork.illustrative === true &&
         artwork.representativeOnly === true &&
         artwork.actualVehicleConfirmed === false,
+      illustrationModel: hasImage && artwork.illustrationModel ? String(artwork.illustrationModel) : "",
+      illustrationRole: hasImage ? String(artwork.illustrationRole || "") : "",
       // For diagnostics/title ONLY. Candidate paths are NEVER drawn as
       // multiple cabs; each train location owns exactly one SVG glyph.
       candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
@@ -1237,6 +1239,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var title = _trainMarkerTitle(p, lineId);
     if (!spec || spec.illustrative !== true) return title;
     var lang = window.currentLang || "ja";
+    if((lineId==="Tojo"||lineId==="Ogose") &&
+       spec.illustrationRole==="tojo-ogose-fixed-png-not-observed-trainset" &&
+       spec.illustrationModel) {
+      var single=String(spec.illustrationModel);
+      var refNote=/^zh/.test(lang)?"显示PNG："+single+"（计划车辆示意；当天实车未确认）":
+        lang==="en"?"Displayed PNG: "+single+" (scheduled fleet illustration; actual carset unconfirmed)":
+        lang==="ko"?"표시 PNG: "+single+" (운행 예시, 실제 편성 미확인)":
+        "表示PNG："+single+"（運行参考図・当日の実車未確認）";
+      return title ? title+" · "+refNote : refNote;
+    }
     // A dated community report can choose a single REFERENCE picture
     // on a uniquely joined realtime position, not confirm the real trainset.
     var kwPlan=p&&p.datedVehicleDisplayReference;
@@ -1459,6 +1471,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
 
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
+    // Fixed Tojo/Ogose PNGs replace all multi-model candidate labels.
+    // Only the verified physical identity or labelled reference PNG is shown.
+    if(lineId==="Tojo"||lineId==="Ogose")return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
     if (lineId === "Kawagoe" && p.timetableDateVerified === true) {
       var kawagoeRef = p.sqlPublishedNumberFleetReference || {};
@@ -1939,6 +1954,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
                 lang === "ko" ? "차종 매핑 참고(실차 미확인): " :
                 "車種対応参考（実車未確認）："));
         tip.push(modelPrefix + canonicalVehicle.displayName);
+      }
+    }
+    if((lineId==="Tojo"||lineId==="Ogose") && p &&
+        vehicle.status!=="EXACT" && window.TobuTojoFixedPng202611 &&
+        typeof window.TobuTojoFixedPng202611.resolve==="function") {
+      var fixedRef=window.TobuTojoFixedPng202611.resolve(
+        Object.assign({},p,{displayLineId:lineId}));
+      if(fixedRef){
+        var refPrefix=/^zh/.test(lang)?"PNG示意（非当日实车）：":
+          lang==="en"?"PNG illustration (not observed stock): ":
+          lang==="ko"?"PNG 예시(실제 편성 아님): ":
+          "PNG参考図（実車確認ではありません）：";
+        tip.push(refPrefix+fixedRef.illustrationModel);
       }
     }
     var _fleetReference =
