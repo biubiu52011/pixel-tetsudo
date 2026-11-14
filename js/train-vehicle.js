@@ -739,6 +739,30 @@ function registerEvidenceProvider(provider) {
   }
 
 var CANONICAL_VEHICLES = {
+  // Audited 2025+ line-specific model-to-PNG bindings for two-car Tobu stock.
+  // Do not select these images from train numbers, direction, or route alone.
+  "tobu-10000-daishi-kameido-2car": {
+    displayName:"東武10000型（亀戸・大師線・2両）",
+    iconName:"東武10000型（亀戸・大師線・2両）",
+    asset:"../images/列车/東武鉄道/東武鉄道_10000型_更新車.png",
+    lineIds:["Daishi_Tobu","Tobu_Kameido"],
+    lineAliases:{
+      Daishi_Tobu:["東武10000型","東武10000系","東武10000型（2両）"],
+      Tobu_Kameido:["東武10000型","東武10000系","東武10000型（2両）"]
+    },
+    aliases:["東武10000型（亀戸・大師線）"]
+  },
+  "tobu-10030-50-daishi-kameido-2car": {
+    displayName:"東武10030型50番台（亀戸・大師線・2両）",
+    iconName:"東武10030型50番台（亀戸・大師線・2両）",
+    asset:"../images/列车/東武鉄道/東武鉄道_10030型_50番台.png",
+    lineIds:["Daishi_Tobu","Tobu_Kameido"],
+    lineAliases:{
+      Daishi_Tobu:["東武10030型","東武10030系","東武10030型50番台","東武10050型","東武10050系"],
+      Tobu_Kameido:["東武10030型","東武10030系","東武10030型50番台","東武10050型","東武10050系"]
+    },
+    aliases:["東武10050型（亀戸・大師線）"]
+  },
   "enoden-1000": {
     displayName: "江ノ島電鉄1000形",
     iconName: "江ノ島電鉄1000形",

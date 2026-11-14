@@ -29644,7 +29644,7 @@
       "nameEn": "Daishi Line (Tobu)",
       "nameJa": "東武大師線",
       "code": "DTB",
-      "color": "#FF6600",
+      "color": "#0f6cc3",
       "operator": "Tobu",
       "region": null,
       "type": "straight",
@@ -29660,7 +29660,14 @@
         2
       ],
       "throughServices": [],
-      "transferStations": [],
+      "transferStations": [
+        {
+          "station": "Nishi-Arai",
+          "lineId": "TobuSkytree",
+          "type": "in",
+          "note": ""
+        }
+      ],
       "nameZh": "大师线",
       "nameKo": "다이시선",
       "presentation": {
@@ -38233,6 +38240,12 @@
           "lineId": "Musashino",
           "toStation": "Minami-Koshigaya",
           "note": "Minami-Koshigaya"
+        },
+        {
+          "station": "Nishi-Arai",
+          "lineId": "Daishi_Tobu",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "东武晴空塔线",

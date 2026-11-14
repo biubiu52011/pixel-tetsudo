@@ -312,12 +312,21 @@
 
     // Tobu's small local branches should not inherit the entire Skytree
     // or Tojo network fleet.
+    // 8000 series left scheduled service on both Daishi and Kameido by 2025-07-22.
+    // The currently shared two-car, one-person fleet is 10000 + 10030 (50 subgroup).
+    // Route fleet is reference-only; it MUST NOT identify a specific train or PNG.
+    // https://www.tetsudo.com/column/1315/
+    // https://railf.jp/news/2025/01/19/165500.html
+    // 1000 series is planned from 2027 onward, not in service in 2026.
+    // https://www.tobu.co.jp/cms-pdf/releases/202603311157314Fpgmv6VfB8SxpzFBFF5Uw.pdf
     {id:'tobu-daishi', operator:'Tobu', lineIds:['Daishi_Tobu'],
-      models:['東武8000系'],
-      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+      models:['東武10000型','東武10030型50番台'],
+      validFrom:'2025-07-23',
+      sourceUrl:'https://www.tetsudo.com/column/1315/'},
     {id:'tobu-kameido', operator:'Tobu', lineIds:['Tobu_Kameido'],
-      models:['東武8000系'],
-      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+      models:['東武10000型','東武10030型50番台'],
+      validFrom:'2025-07-23',
+      sourceUrl:'https://www.tetsudo.com/column/1315/'},
     {id:'tobu-northern-branches', operator:'Tobu',
       lineIds:['Kiryu','Koizumi','Sano'],
       models:['東武8000系'],

@@ -958,7 +958,9 @@ window.getTransferHint = function(stationId, lang) {
       "Noda": { mode: "FULL" },
       "Tojo": { mode: "HYBRID" },
       "Ogose": { mode: "HYBRID" },
-      "Daishi_Tobu": { mode: "FULL" },
+      // Tobu JSON Train is enabled, but complete station-by-station coverage has not been audited.
+      // Preserve the observed live feed without claiming a FULL position source.
+      "Daishi_Tobu": { mode: "HYBRID" },
 
       // 已知为部分/受限来源，但尚未保存经过验证的本地站间覆盖。
       // 在 coveredSegments/excludedSegments 获得来源观测支持前保持 HYBRID；
