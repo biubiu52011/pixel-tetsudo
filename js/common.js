@@ -75,24 +75,25 @@
     "EnoshimaElectric": "ENOSHIMA_ELECTRIC"
   };
   window.TransitConstants = {
-    // Canonical operator order: JR -> private and other rail -> metro.
+    // Canonical operator order: JR -> Metro -> Other / third-sector -> Private.
+    // Passenger-facing list groups and both operator filters share this sequence.
     OP_ORDER: [
-      // JR group
+      // JR
       "JR-East", "JR-Central", "JR-West", "JR-Hokkaido", "JR-Shikoku",
       "JR-Kyushu", "JR-Freight",
-      // private and private-tier third-sector
-      "Keio", "Odakyu", "Seibu", "Tobu", "Tokyu",
-      "Keikyu", "Keisei", "Sotetsu", "TWR", "MinatoMirai",
-      "MIR", "Rinkai", "TsukubaExpress", "EnoshimaElectric", "FujisanrokuElectricRailway",
-      "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
-      "Meitetsu", "Nishitetsu", "ToyoRapid", "SaitamaRapidRailway", "KobeDentetsu",
-      "HojoRailway", "ChichibuRailway", "HiroshimaElectric",
-      // other rail, monorail and tram
-      "Yurikamome", "TamaMonorail", "TokyoMonorail", "SaitamaNewUrbanTransit", "ChibaUrbanMonorail",
-      "ShonanMonorail", "UtsunomiyaLightRail", "HakodateCity",
-      // subway
+      // Metro / Subway
       "TokyoMetro", "Toei", "YokohamaMunicipal", "OsakaMetro", "NagoyaMunicipal",
-      "KyotoMunicipal", "KobeMunicipal", "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal"
+      "KyotoMunicipal", "KobeMunicipal", "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal",
+      // Third-sector and Other rail
+      "MinatoMirai", "Rinkai", "TsukubaExpress", "ToyoRapid", "SaitamaRapidRailway",
+      "HojoRailway", "TWR", "MIR", "Yurikamome", "TamaMonorail",
+      "TokyoMonorail", "SaitamaNewUrbanTransit", "ChibaUrbanMonorail", "ShonanMonorail", "UtsunomiyaLightRail",
+      "HakodateCity",
+      // Private Rail
+      "Keio", "Odakyu", "Seibu", "Tobu", "Tokyu",
+      "Keikyu", "Keisei", "Sotetsu", "EnoshimaElectric", "FujisanrokuElectricRailway",
+      "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
+      "Meitetsu", "Nishitetsu", "KobeDentetsu", "ChichibuRailway", "HiroshimaElectric"
     ],
     NORMALIZE: TRANSIT_NORMALIZE,
     // JRE (JR東日本) 白名单：路線記号 JA~JY 全覆盖；無記号の地方線（operator=JR-East）兜底

@@ -108,9 +108,11 @@ test('special-line hide rules reference valid canonical IDs and are used by the 
   assert.match(dataState, /TRUNK_MAIN_LINE_IDS\.indexOf\(lid\) >= 0/);
 });
 
-test('operator categories and Hakodate service ranks are stable', () => {
-  for (const op of ['ToyoRapid', 'SaitamaRapidRailway', 'KobeDentetsu',
-                    'HojoRailway', 'MinatoMirai', 'Rinkai', 'TsukubaExpress'])
+test('third-sector operators are grouped after metro and before private rail', () => {
+  for (const op of ['ToyoRapid', 'SaitamaRapidRailway', 'HojoRailway',
+                    'MinatoMirai', 'Rinkai', 'TsukubaExpress', 'TWR', 'MIR'])
+    assert.equal(presentation.categoryOf(op), 'Other', op);
+  for (const op of ['KobeDentetsu', 'ChichibuRailway'])
     assert.equal(presentation.categoryOf(op), 'Private', op);
   assert.equal(lines.Hakodate2.presentation.order, 1);
   assert.equal(lines.Hakodate5.presentation.order, 2);
@@ -193,7 +195,7 @@ test('JR sort tiers include presentation-only shinkansen names and inserted gene
   assert.ok(sorted.indexOf('ShinOfficial') < sorted.indexOf('ShinGeneric'));
 });
 
-test('operator categories are JR, private/third-sector railways, then subways', () => {
+test('operator categories are JR, metro, third-sector/other, then private', () => {
   const sample = {
     metro: {operator: 'TokyoMetro'},
     other: {operator: 'Yurikamome'},
@@ -201,11 +203,11 @@ test('operator categories are JR, private/third-sector railways, then subways', 
     jr: {operator: 'JR-East'}
   };
   assert.deepEqual(Array.from(presentation.getOperatorOrder(sample)),
-    ['JR-East', 'Keio', 'Yurikamome', 'TokyoMetro']);
+    ['JR-East', 'TokyoMetro', 'Yurikamome', 'Keio']);
   assert.deepEqual(Array.from(presentation.orderOperators(
     ['TokyoMetro', 'NewThirdRailway', 'JR-East', 'Keio'])),
-    ['JR-East', 'Keio', 'NewThirdRailway', 'TokyoMetro'],
-    'previously unseen third-sector operators cannot be appended behind Metro');
+    ['JR-East', 'TokyoMetro', 'NewThirdRailway', 'Keio'],
+    'previously unseen third-sector operators must be between Metro and Private');
   assert.equal(presentation.categoryOf('HiroshimaElectric'), 'Private',
     'tram operators must not be classified as subway');
 });
@@ -288,7 +290,7 @@ test('canonical operator catalog agrees with visible cards and filter ranks', ()
     .map(entity => entity.line.operator))), display);
   assert.deepEqual(known.slice(0,7), ['JR-East','JR-Central','JR-West',
     'JR-Hokkaido','JR-Shikoku','JR-Kyushu','JR-Freight']);
-  const categories = ['JR','Private','Other','Metro'];
+  const categories = ['JR','Metro','Other','Private'];
   const tiers = known.map(op => presentation.categoryOf(op));
   assert.ok(tiers.every((tier,i) => i===0 ||
     categories.indexOf(tier) >= categories.indexOf(tiers[i-1])));
@@ -300,11 +302,27 @@ test('operator aliases and regional railway categories retain canonical priority
   assert.equal(window.TransitConstants.toLosKey('JR-West'), 'JR_WEST');
   for (const op of ['JR-West','JR_WEST'])
     assert.equal(presentation.categoryOf(op), 'JR');
-  for (const op of ['ChichibuRailway','TWR','MIR'])
-    assert.equal(presentation.categoryOf(op), 'Private');
+  assert.equal(presentation.categoryOf('ChichibuRailway'), 'Private');
+  for (const op of ['TWR','MIR']) assert.equal(presentation.categoryOf(op), 'Other');
   assert.equal(presentation.categoryOf('HakodateCity'), 'Other');
   assert.equal(presentation.categoryOf('TokyoMetro'), 'Metro');
   assert.deepEqual(Array.from(presentation.orderOperators(
     ['TokyoMetro','Yurikamome','ChichibuRailway','JR_WEST','JR-East'])),
-    ['JR-East','JR_WEST','ChichibuRailway','Yurikamome','TokyoMetro']);
+    ['JR-East','JR_WEST','TokyoMetro','Yurikamome','ChichibuRailway']);
+});
+
+test('operator filter DOM and card groups have the same JR-Metro-Other-Private sequence', () => {
+  const actual = Array.from(new Set(Object.values(lines).map(line => line.operator).filter(Boolean)));
+  const expected = Array.from(presentation.orderOperators(actual));
+  const categories = ['JR','Metro','Other','Private'];
+  assert.deepEqual(Array.from(new Set(expected.map(op => presentation.categoryOf(op)))), categories);
+  const byCategory = categories.map(category => expected.filter(op => presentation.categoryOf(op) === category));
+  assert.deepEqual(byCategory.flat(), expected);
+  const entities = presentation.getPresentationOrder(lines);
+  assert.deepEqual(Array.from(new Set(entities.map(e => e.line.operator))), expected);
+  assert.ok(expected.indexOf('TokyoMetro') < expected.indexOf('TsukubaExpress'));
+  assert.ok(expected.indexOf('TsukubaExpress') < expected.indexOf('Keio'));
+  const display = presentation.getDisplayOrder(lines, {includeServiceCorridors:true});
+  assert.equal(display.indexOf('UenoTokyo'), display.indexOf('JobanMain') + 1);
+  assert.equal(display.indexOf('ChuoMain'), display.indexOf('UenoTokyo') + 1);
 });

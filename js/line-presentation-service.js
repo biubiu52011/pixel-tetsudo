@@ -7,7 +7,7 @@
  *   canonical 元数据）。`presentation.lineIds[0] === lineId` 的记录是主记录；
  *   成员线路（lineIds[1..]）共享主记录的排序位置，不单独占用 UI 位置。
  *
- * 全局类别顺序：JR > Private（私铁）> Other（第三部门等）> Metro（地铁）。
+ * 全局类别顺序：JR > Metro（地铁）> Other（第三部门及其他铁路）> Private（私铁）。
  * 同一 JR 运营商组内，先在来线后新干线；图标级别为专属 > 通用徽章 > 无图标。
  * JR 在来线专属图标按正式线路符号排序，同符号线路按 presentation.order；
  * 其他序列按 presentation.order → 显示符号 → 名称 → 稳定原始顺序。
@@ -28,7 +28,7 @@
 
   // ===== 1. 类别与固定顺序 =====
 
-  var CATEGORY_ORDER = ["JR", "Private", "Other", "Metro"];
+  var CATEGORY_ORDER = ["JR", "Metro", "Other", "Private"];
   var JR_OPERATOR_ORDER = [
     "JR-East",
     "JR-Central",
@@ -41,8 +41,8 @@
 
   // 最小类别元数据：以 "JR-" 前缀识别 JR 运营商
   // （JR-East / JR-West / JR-Central / JR-Kyushu / JR-Hokkaido / JR-Shikoku）。
-  // Metro = 地铁运营商；Private = 私铁与路面电车等；
-  // 其余运营商（第三部门、单轨、新交通、AGT 等）归入 Other，均排在地铁前。
+  // Metro = 地铁运营商；Other = 第三部门及其他铁路（含单轨、新交通、AGT 等）；
+  // Private = 私铁。只按运营商类别排序，不改变线路身份和官方图标。
   var METRO_OPS = [
     "TokyoMetro", "Toei", "YokohamaMunicipal",
     "OsakaMetro", "NagoyaMunicipal", "KyotoMunicipal", "KobeMunicipal",
@@ -53,9 +53,8 @@
     "Keikyu", "Keisei", "Sotetsu",
     "Kintetsu", "Hankyu", "Hanshin", "Keihan", "Nankai",
     "Meitetsu", "Nishitetsu", "FujisanrokuElectricRailway",
-    "ToyoRapid", "SaitamaRapidRailway", "KobeDentetsu", "HojoRailway",
-    "MinatoMirai", "Rinkai", "TsukubaExpress", "HiroshimaElectric",
-    "ChichibuRailway", "TWR", "MIR"
+    "KobeDentetsu",
+    "HiroshimaElectric", "ChichibuRailway"
   ];
 
   // ===== 2. 基础分类与排序键 =====
@@ -159,7 +158,7 @@
   // ===== 3. 运营商与展示实体排序 =====
 
   /**
-   * 按全局类别（JR > Private > Other > Metro）、JR 固定组顺序、
+   * 按全局类别（JR > Metro > Other > Private）、JR 固定组顺序、
    * OP_ORDER（项目 canonical 顺序）和字母顺序排列全部运营商键。
    * 未知运营商不得导致异常。
    */
@@ -188,7 +187,7 @@
 
   /**
    * orderOperators(ops)：筛选栏和列表共用同一个类别比较器。
-   * 新出现的第三部门铁路也必须在 Metro 前，不能一律追加到末尾。
+   * 新出现的第三部门铁路也必须在 Metro 后、Private 前，不能一律追加到末尾。
    */
   function orderOperators(ops) {
     if (!Array.isArray(ops) || ops.length === 0) return ops || [];
