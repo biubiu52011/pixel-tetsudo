@@ -620,7 +620,7 @@
       var allOps=operatorsFromLines(lastLines);
       if(!allOps.length){
         if(el.innerHTML)el.innerHTML="";
-        lastSignature=null;available(false);return;
+        lastOptionsSignature=null;available(false);return;
       }
       available(true);
       var scoped=selectedRegion?filterLinesByRegion(lastLines,selectedRegion):{};
@@ -652,6 +652,22 @@
         });
         html+='</div>';
       }
+      // Rebuilding the operator level must not throw the user back to the
+      // first region on mobile, nor discard keyboard focus on the pressed
+      // region button. Keep the viewport and focus while replacing the DOM.
+      var oldRegionRow=el.querySelector(".rs-region-level");
+      var oldOperatorRow=el.querySelector(".rs-company-level");
+      var regionScroll=oldRegionRow?oldRegionRow.scrollLeft:0;
+      var operatorScroll=oldOperatorRow?oldOperatorRow.scrollLeft:0;
+      var focused=document.activeElement;
+      var focusType=null,focusValue="";
+      if(focused&&el.contains(focused)){
+        if(focused.classList.contains("rs-region-btn")){
+          focusType="region";focusValue=focused.dataset.region||"";
+        }else if(focused.classList.contains("rs-filter-btn")){
+          focusType="operator";focusValue=focused.dataset.operator||"";
+        }
+      }
       el.innerHTML=html;
       Array.prototype.forEach.call(el.querySelectorAll(".rs-region-btn"),function(button){
         button.addEventListener("click",function(){selectRegion(button.dataset.region||null,true);});
@@ -659,6 +675,24 @@
       Array.prototype.forEach.call(el.querySelectorAll(".rs-filter-btn"),function(button){
         button.addEventListener("click",function(){select(button.dataset.operator||null,true);});
       });
+      var newRegionRow=el.querySelector(".rs-region-level");
+      var newOperatorRow=el.querySelector(".rs-company-level");
+      if(newRegionRow)newRegionRow.scrollLeft=regionScroll;
+      if(newOperatorRow&&oldOperatorRow&&
+         oldOperatorRow.getAttribute("data-filter-region")===String(selectedRegion||""))
+        newOperatorRow.scrollLeft=operatorScroll;
+      if(newOperatorRow)newOperatorRow.setAttribute("data-filter-region",String(selectedRegion||""));
+      if(focusType){
+        var selector=focusType==="region"?".rs-region-btn":".rs-filter-btn";
+        var attribute=focusType==="region"?"region":"operator";
+        var candidates=el.querySelectorAll(selector);
+        for(var fi=0;fi<candidates.length;fi++){
+          if((candidates[fi].dataset[attribute]||"")!==focusValue)continue;
+          try{candidates[fi].focus({preventScroll:true});}
+          catch(_e){candidates[fi].focus();}
+          break;
+        }
+      }
     }
     return {render:render,setAvailable:available,setSelected:select,setRegion:selectRegion,
       getRegion:function(){return selectedRegion;},
