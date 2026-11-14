@@ -82,6 +82,38 @@
       return "section-semi-express";
     return "";
   }
+  // Imported ODPT-source number roster, used only as a November 2026
+  // working illustration (also on TobuSkytree, same number/calendar).
+  // This is NOT proof of the original timetable edition's effective date.
+  // S/K/T determine the SCHEDULED ownership, not a physical carset
+  // or unique vehicle series (operational substitutions can occur).
+  // https://t-take.com/tobu/tstd_20220312/TSTD_A-S_2022-03-12.pdf
+  // TH-LINER uniquely uses Tobu 70090 (operator's vehicle page):
+  // https://www.tobu.co.jp/corporation/rail/vehicles/
+  var throughRoster=Object.freeze({
+    weekday:Object.freeze({
+      "Express":"E1055S E1111K E1160T E1168T E1212K E1219K E1276T E1358T E1373S E1378T E1406K E1454T E1464T E1502K E1517K E1574T E1622K E1680T E1693S E1765S E1766T E1768T E1807K E1833K E1878T E1935K E1960T E1962T E2002K E2052T E2122K E2177S E670T E941K E980T F1019K F1058T F1078T F1154T F1164T F1173S F1206K F1217K F1274T F1302K F1393S F1422K F1468T F1480T F1507K F1565S F1566T F1633K F1635K F1678T F1708K F1752T F1760T F1762T F1802K F1877S F1925K F1982T F2162T F529K F680T F811K F855S F860T F912K F968T F976T".split(" "),
+      "SemiExpress":"E4003K E4008K E4091S E4225K E4729K F4691S F4703K F4741K F4822K".split(" "),
+      "TH-LINER":"A4643T A4845T B4041T B4143T B4743T B4847T B4945T".split(" "),
+    }),
+    holiday:Object.freeze({
+      "Express":"E1018K E1056T E1071S E1162T E1164T E1180T E1204K E1216K E1268T E1301K E1357S E1374T E1410K E1421K E1476T E1506K E1553S E1575S E1620K E1650T E1669S E1712K E1765S E1766T E1808K E1854T E1878T E1901K E1951S E1976T E2023K E2060T E2075S E2122K E912K F1001K F1004K F1057S F1110K F1174T F1176T F1221K F1253S F1275S F1306K F1350T F1420K F1466T F1469S F1508K F1512K F1565S F1601K F1654T F1676T F1678T F1751S F1760T F1775S F1823K F1966T F612K F771S F818K F862T F864T F916K F968T F980T".split(" "),
+      "SemiExpress":"E4664T F4756T F4922K".split(" "),
+      "TH-LINER":"A4845T A4947T B4045T B4645T B4743T B4841T B4947T".split(" "),
+    }),
+  });
+  var throughArtwork=Object.freeze({
+    T:{model:"東武50050系",png:"../images/列车/東武鉄道/東武鉄道_50050型.png",candidates:["東武50050系"]},
+    S:{model:"東京メトロ18000系",png:"../images/列车/東京メトロ/東京メトロ_18000系.png",candidates:["東京メトロ8000系","東京メトロ08系","東京メトロ18000系"]},
+    K:{model:"東急2020系",png:"../images/列车/東急電鉄/東急電鉄_2020系.png",candidates:["東急5000系","東急2020系"]},
+    liner:{model:"東武70090型",png:"../images/列车/東武鉄道/東武鉄道_70090型.png",candidates:["東武70090型"]}
+  });
+  function throughFamily(number,type,cal){
+    var groups=throughRoster[cal];
+    if(!groups||!Object.prototype.hasOwnProperty.call(groups,type)||groups[type].indexOf(number)<0)return "";
+    if(type==="TH-LINER")return "liner";
+    return /^[EF]\d+[KST]$/.test(number) ? number.slice(-1) : "";
+  }
   function calendar(p){
     var c=String(p.calendarType||p.calendar_urn||p.calendarUrn||"").toLowerCase();
     return c==="weekday"||c==="odpt.calendar:weekday"?"weekday":
@@ -116,10 +148,16 @@
       source=(Number(number)%2===0)?"https://www.tobu.co.jp/pdf/timetable/time-table_02_nobori.pdf?202603=":"https://www.tobu.co.jp/pdf/timetable/time-table_02_kudari.pdf?202603=";
     }else{
       var corridorKind=corridorFamily(number,type,calendar(p));
-      if(!corridorKind)return null;
-      item=corridorArtwork;
-      family="kuki-tatebayashi-"+corridorKind;
-      source="https://tabinomemo.jp/train/timetable/tobu/11";
+      var throughKind=throughFamily(number,type,calendar(p));
+      if(!corridorKind&&!throughKind)return null;
+      item=throughKind?throughArtwork[throughKind]:corridorArtwork;
+      family=throughKind?(throughKind==="liner"?"th-liner-70090":
+        "hanzomon-through-"+throughKind.toLowerCase()+"-owner") :
+        "kuki-tatebayashi-"+corridorKind;
+      source=throughKind?(throughKind==="liner"?
+        "https://www.tobu.co.jp/corporation/rail/vehicles/":
+        "https://t-take.com/tobu/tstd_20220312/TSTD_A-S_2022-03-12.pdf"):
+        "https://tabinomemo.jp/train/timetable/tobu/11";
     }
     if(!item||!root.VehicleGaragePngMap||
        !root.VehicleGaragePngMap.matchModelPath(item.model,item.png,"TobuIsesaki"))
@@ -134,12 +172,15 @@
       scheduledCars:carCount,candidateModels:item.candidates.slice(),
       model:item.model,pngPath:item.png,sourceUrl:source,
       source:item===corridorArtwork?"tobu-202611-corridor-number-fleet-reference-only":
-        "tobu-20260314-official-number-202611-reference",
+        item===throughArtwork.liner?"tobu-th-liner-70090-schedule-reference":
+        (item===throughArtwork.K||item===throughArtwork.S||item===throughArtwork.T)?
+          "tobu-202611-through-owner-model-illustration":
+          "tobu-20260314-official-number-202611-reference",
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
   root.TobuIsesaki2611Png=Object.freeze({
-    version:"20261114-v2",match:match,localNumbers:Object.keys(local).length,
-    limitedNumbers:Object.keys(limited).length,corridorNumbers:125
+    version:"20261114-v3",match:match,localNumbers:Object.keys(local).length,
+    limitedNumbers:Object.keys(limited).length,corridorNumbers:125,throughNumbers:157
   });
 })(window);

@@ -9,6 +9,8 @@ const w={};
 const context=vm.createContext({window:w});
 vm.runInContext(fs.readFileSync('data/timetables/vehicle-garage-png-map.js','utf8'),context);
 vm.runInContext(fs.readFileSync('data/timetables/tobu-isesaki-2611-number-png.js','utf8'),context);
+vm.runInContext(fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8'),context);
+vm.runInContext(fs.readFileSync('js/train-vehicle.js','utf8'),context);
 const ix=w.TobuIsesaki2611Png;
 function match(number,type='Local',cal='weekday',changes={}){
   return ix.match(String(number),{
@@ -100,4 +102,72 @@ test('corridor reference never overrides proven vehicle, wrong line, date or sou
   assert.ok(w.VehicleGaragePngMap.matchModelPath(
     '東武10030系','../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',
     'TobuIsesaki'));
+});
+
+
+test('through-company source numbers resolve 2026-11 PNG illustration on Isesaki',()=>{
+  assert.equal(ix.throughNumbers,157);
+  const examples=[
+    ['E1018K','holiday','Express','東急2020系','東急電鉄_2020系.png','hanzomon-through-k-owner',2],
+    ['F1057S','holiday','Express','東京メトロ18000系','東京メトロ_18000系.png','hanzomon-through-s-owner',3],
+    ['E1056T','holiday','Express','東武50050系','東武鉄道_50050型.png','hanzomon-through-t-owner',1],
+    ['F1206K','weekday','Express','東急2020系','東急電鉄_2020系.png','hanzomon-through-k-owner',2],
+    ['E1055S','weekday','Express','東京メトロ18000系','東京メトロ_18000系.png','hanzomon-through-s-owner',3],
+    ['F1058T','weekday','Express','東武50050系','東武鉄道_50050型.png','hanzomon-through-t-owner',1],
+    ['E4664T','holiday','SemiExpress','東武50050系','東武鉄道_50050型.png','hanzomon-through-t-owner',1],
+    ['A4845T','holiday','TH-LINER','東武70090型','東武鉄道_70090型.png','th-liner-70090',1],
+    ['A4643T','weekday','TH-LINER','東武70090型','東武鉄道_70090型.png','th-liner-70090',1]
+  ];
+  for(const [num,cal,typ,model,filename,family,candidateCount] of examples){
+    const p={positionLineId:'TobuIsesaki',displayLineId:'TobuIsesaki',
+      sourceRailway:'odpt.Railway:Tobu.Isesaki',trainOperator:'Tobu',
+      positionSource:'supabase-train-run',estimated:true,
+      serviceDate:'2026-11-14',calendarType:cal,
+      trainType:'odpt.TrainType:Tobu.'+typ,trainNumber:num};
+    const ref=window.TrainNumberPngRanges.match(num,'TobuIsesaki',p);
+    assert.ok(ref,num);
+    assert.equal(ref.model,model,num);
+    assert.equal(ref.serviceFamily,family,num);
+    assert.ok(ref.pngPath.endsWith(filename),num);
+    assert.equal(ref.candidateModels.length,candidateCount,num);
+    assert.equal(ref.referenceOnly,true,num);
+    assert.equal(ref.illustrative,true,num);
+    assert.equal(ref.actualVehicleConfirmed,false,num);
+    assert.equal(window.VehicleGaragePngMap.matchModelPath(model,ref.pngPath,'TobuIsesaki'),true,num);
+    const selected=window.TrainVehicle.selectMarkerArtwork(p,false);
+    assert.equal(selected.kind,'vehicle',num);
+    assert.ok(selected.iconSrc.endsWith(filename),num);
+    assert.equal(selected.representativeOnly,true,num);
+    assert.equal(selected.actualVehicleConfirmed,false,num);
+  }
+});
+test('through-reference whitelist rejects wrong calendar, service, company, route and known set',()=>{
+  const excluded=[
+    ['E1018K','weekday','Express'],
+    ['E1111K','holiday','Express'],
+    ['A4643T','holiday','TH-LINER'],
+    ['E1018K','holiday','Local'],
+    ['A4845T','holiday','Express'],
+    ['E9999K','holiday','Express'],
+    ['F9999S','weekday','Express'],
+    ['A9999T','holiday','TH-LINER']
+  ];
+  for(const [n,cal,typ] of excluded)
+    assert.equal(match(n,typ,cal),null,n+'/'+cal+'/'+typ);
+  for(const changes of [
+    {positionLineId:'TobuSkytree',lineId:'TobuSkytree'},
+    {displayLineId:'TobuSkytree'},
+    {sourceRailway:'odpt.Railway:Tobu.TobuSkytree'},
+    {trainOperator:'JR-East'},
+    {positionSource:'station-timetable'},
+    {estimated:false},
+    {serviceDate:'2026-12-01'},
+    {vehicleIdentityStatus:'EXACT'},
+    {vehicleFormationId:'confirmed-set'},
+    {vehicleResolvedFromRealtime:true},
+    {actualVehicleConfirmed:true},
+    {realtimeVehicleType:'東武50050系'},
+    {vehiclePlan:{models:['東武50050系']}}
+  ])assert.equal(match('E1018K','Express','holiday',changes),null,JSON.stringify(changes));
+  assert.equal(match('E1018K','Express','holiday',{realtimeVehicleType:'東急2020系'}).model,'東急2020系');
 });
