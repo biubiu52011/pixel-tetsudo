@@ -1185,10 +1185,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       compact: !hasImage,
       // DOM-only rejection reason: makes source/date/formation gate visible
       // when a valid train still draws a neutral circle.
-      unresolvedReason: !hasImage && window.TrainVehicle &&
-        typeof window.TrainVehicle.diagnoseTobuIsesakiArtwork === "function"
-          ? window.TrainVehicle.diagnoseTobuIsesakiArtwork(selectionPosition,artworkFailed)
-          : "",
+      unresolvedReason: !hasImage
+        ? (String(artwork.reason || "") ||
+            (window.TrainVehicle &&
+             typeof window.TrainVehicle.diagnoseTobuIsesakiArtwork === "function"
+              ? window.TrainVehicle.diagnoseTobuIsesakiArtwork(selectionPosition,artworkFailed)
+              : ""))
+        : "",
       className: hasImage && artwork.planned === true ? "train-icon planned" :
         (p && p.estimated === true ? "train-icon estimated" : "train-icon")
     };
