@@ -2070,6 +2070,9 @@
                 run.vehicle_evidence_source_id && run.vehicle_evidence_url &&
                 run.vehicle_type_label
             ) ? String(run.vehicle_evidence_url) : "",
+            // Unique Wakoshi clock/working-code correlation is a schedule
+            // REFERENCE only: distinct operators remain distinct running IDs.
+            "_sqlThroughBoundaryReference":run.through_boundary_reference||null,
             "_sqlCandidateArtworkPath":run.vehicle_candidate_artwork_path||null,
             "_sqlCandidateArtworkStatus":run.vehicle_candidate_artwork_status||null,
             "_vehicleEvidenceSource":run.vehicle_evidence_source||null,
