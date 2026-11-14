@@ -285,6 +285,8 @@ jobs:
         run: node --test tests/jr-line-colors-20261109.test.cjs
       - name: Verify Tobu Isesaki official 303E, TI symbols and Chichibu 37 stops
         run: node --test tests/tobu-isesaki-canonical-202611.test.cjs
+      - name: Verify Tobu Isesaki exact 2611 number PNG reference and red TI color
+        run: node --test tests/tobu-isesaki-2611-number-png.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
