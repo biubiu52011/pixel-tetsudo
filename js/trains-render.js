@@ -1898,6 +1898,34 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var typeText = def ? (def[window.currentLang] || def.ja) : "";
       if (typeText) tip.push(typeText);
     }
+    // Wakoshi: two independently stored source schedules with a unique
+    // boundary-clock match. This is not a confirmed physical continuation;
+    // keep each operator's original train ID and positional source separate.
+    if (p && p.positionSource === "supabase-train-run" &&
+        ["Tojo","Yurakucho","Fukutoshin"].indexOf(lineId) >= 0) {
+      var handover=p.throughBoundaryReference;
+      if (handover && handover.line_id===lineId &&
+          ["Tojo","Yurakucho","Fukutoshin"].indexOf(handover.partner_line_id)>=0 &&
+          handover.partner_line_id!==lineId &&
+          handover.transfer_station==="Wakoshi" &&
+          handover.same_day_continuation_verified===false &&
+          handover.authorizes_position===false &&
+          handover.authorizes_png===false &&
+          /^[0-9]{2}[TSK]$/.test(String(handover.operation_code||"")) &&
+          Number.isInteger(handover.handover_gap_minutes) &&
+          handover.handover_gap_minutes>=0 && handover.handover_gap_minutes<=6) {
+        var partnerNames = {Tojo:{ja:"東武東上線",zh:"东武东上线",en:"Tobu Tojo"},
+          Yurakucho:{ja:"有楽町線",zh:"有乐町线",en:"Yurakucho"},
+          Fukutoshin:{ja:"副都心線",zh:"副都心线",en:"Fukutoshin"}};
+        var local = /^zh/.test(lang)?"zh":lang==="en"?"en":"ja";
+        var partner=(partnerNames[handover.partner_line_id]||{})[local]||handover.partner_line_id;
+        var label=local==="zh"?"和光市直通计划参考（非实时连续验证）：":
+          local==="en"?"Wakoshi through-plan reference (not live-verified): ":
+          "和光市直通計画参考（実際の直通運用は未検証）：";
+        tip.push(label+partner+" · "+handover.operation_code+
+          " · "+String(handover.partner_train_number||"").slice(0,36));
+      }
+    }
     // 让此函数在仅折叠展示的场景下保持自包含，
     // 图片解析仍使用下方的共享投影。
     var vehicle = {
