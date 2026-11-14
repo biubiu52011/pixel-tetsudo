@@ -408,3 +408,37 @@ body[data-page="trains"] .rs-line-icon-fallback:has(> img[src*="JRグループ.p
   border-radius: 30%; /* fallback matching outer tile */
   clip-path: path("M 11.667 0 H 16.333 C 21.389 0 24.111 1.167 26.444 3.889 C 27.611 6.222 28 8.556 28 11.667 V 16.333 C 28 21.389 26.833 24.111 24.111 26.444 C 21.778 27.611 19.444 28 16.333 28 H 11.667 C 6.611 28 3.889 26.833 1.556 24.111 C 0.389 21.778 0 19.444 0 16.333 V 11.667 C 0 6.611 1.167 3.889 3.889 1.556 C 6.222 0.389 8.556 0 11.667 0 Z");
 }
+
+/* Compact shared two-tier railway filter: region -> operator. */
+body[data-page="trains"] .rs-filter-bar.rs-region-filter,
+body[data-page="realtime"] .rs-filter-bar.rs-region-filter {
+  display:flex; flex-direction:column; align-items:stretch; gap:8px;
+  min-width:0; padding:0; margin:0 0 12px;
+}
+.rs-region-filter .rs-filter-level {
+  display:flex; flex-wrap:nowrap; width:100%; min-width:0; gap:8px;
+  overflow-x:auto; overflow-y:hidden; padding:2px 4px 6px 2px;
+  -webkit-overflow-scrolling:touch;
+}
+.rs-region-filter .rs-region-btn,
+.rs-region-filter .rs-filter-btn {
+  flex:0 0 auto; min-height:44px; white-space:nowrap;
+  padding:9px 13px; font-size:13px; font-family:inherit;
+  border:2px solid var(--text); border-radius:4px; cursor:pointer;
+  color:var(--text); background:var(--card);
+  box-shadow:3px 3px 0 rgba(32,33,38,.38), inset 2px 2px 0 rgba(255,255,255,.8);
+}
+.rs-region-filter .rs-region-btn.active,
+.rs-region-filter .rs-filter-btn.active {
+  background:#006b32; border-color:#004c24; color:#fff;
+  box-shadow:3px 3px 0 #173824, inset 2px 2px 0 rgba(255,255,255,.2);
+}
+.rs-region-filter .rs-region-btn:focus-visible,
+.rs-region-filter .rs-filter-btn:focus-visible {outline:3px solid var(--green);outline-offset:2px;}
+.rs-region-filter .rs-region-btn:active,
+.rs-region-filter .rs-filter-btn:active {transform:translate(2px,2px);box-shadow:none;}
+@media(max-width:640px) {
+  .rs-region-filter .rs-filter-level {gap:6px;padding-bottom:5px;}
+  .rs-region-filter .rs-region-btn,
+  .rs-region-filter .rs-filter-btn {padding:9px 11px;}
+}

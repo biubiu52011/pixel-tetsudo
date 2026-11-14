@@ -14,6 +14,7 @@
   var mapEl = null;
   var backBtn = null;
   var _selectedOperator = null;
+  var _selectedRegion = null;
 
   function _renderTrainMap(el, line, lineId, renderOptions) {
     if (!window.TrainsRender || typeof window.TrainsRender.renderTrainMap !== "function") {
@@ -354,11 +355,11 @@
         typeof window.DataState.lineListStructureSignature !== "function") return "";
     allLines = allLines || {};
     var selected = arguments.length > 1 ? operator : _selectedOperator;
-    var visibleLines = window.DataState.filterLinesByOperator(allLines, selected);
+    var visibleLines = window.DataState.filterLinesByRegionAndOperator(allLines, _selectedRegion, selected);
     // The filter buttons are visible even when a specific operator is selected.
     // Include their structure, but leave another existing operator's hidden card
     // changes out until the user switches to that operator.
-    return overviewOperators(allLines).join("\u001d") + "\u001c" +
+    return (_selectedRegion || "*") + "\u001b" + overviewOperators(allLines).join("\u001d") + "\u001c" +
       window.DataState.lineListStructureSignature(
         visibleLines, overviewRenderOptions(allLines));
   }
@@ -400,7 +401,9 @@
       window.addEventListener('pt:railway-ready',refreshVisibleMap);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshVisibleMap);
       filterBarEl = document.getElementById("trainsFilterBar");
-      if (filterBarEl) filterBarEl.addEventListener("pt:operator-filter-change", function(e) { setFilter(e.detail && e.detail.operator); });
+      if (filterBarEl) filterBarEl.addEventListener("pt:operator-filter-change", function(e) {
+        setFilter(e.detail && e.detail.operator, e.detail && e.detail.region);
+      });
       backBtn = document.getElementById("trainsBackBtn");
       if (!listEl) return;
       // canonical 加载器拥有失败事件，但本页面拥有
@@ -688,14 +691,18 @@
     if (_filterBar) _filterBar.render(getLinesData());
   }
 
-  function setFilter(op) {
+  function setFilter(op, region) {
+    var oldRegion = _selectedRegion;
+    if (arguments.length > 1) _selectedRegion = region || null;
     _selectedOperator = op || null;
+    if (_filterBar && _filterBar.getRegion() !== _selectedRegion) _filterBar.setRegion(_selectedRegion, false);
     if (_filterBar && _filterBar.getSelected() !== _selectedOperator) _filterBar.setSelected(_selectedOperator, false);
     if (!listEl) return;
     var allLines = getLinesData() || {};
     var nextSignature = overviewStructureSignature(allLines);
     var renderedSignature =
       _renderedOverviewSignatures[overviewOperatorKey(_selectedOperator)];
+    if (oldRegion !== _selectedRegion) { renderFiltered(listEl, allLines); return; }
     if (listEl.querySelector(".rs-line-card") && nextSignature &&
         nextSignature !== renderedSignature) {
       renderFiltered(listEl, allLines);
@@ -713,7 +720,8 @@
     try {
       // Keep all operator groups mounted so filter changes remain a visibility
       // toggle. The signature still scopes invalidation to the selected group.
-      window.DataState.renderList(el, allLines, options);
+      var scopedLines = window.DataState.filterLinesByRegion(allLines, _selectedRegion);
+      window.DataState.renderList(el, scopedLines, options);
       captureOverviewSignatures(allLines);
       window.DataState.setOperatorVisibility(el, _selectedOperator);
     }

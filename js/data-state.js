@@ -202,6 +202,152 @@
     return true;
   }
 
+
+  // Shared regional membership: route stations can span multiple regions.
+  // Use canonical route hints plus station positions; no extra database copy.
+  var REGION_IDS = ["Hokkaido","Tohoku","Kanto","KoshinHokuriku","Tokai",
+    "Kansai","Chugoku","Shikoku","Kyushu"];
+  var REGION_NAMES = {
+    ja:["北海道","東北","関東","甲信越・北陸","東海","関西","中国","四国","九州"],
+    zh:["北海道","东北","关东","甲信越·北陆","东海","关西","中国地方","四国","九州"],
+    en:["Hokkaido","Tohoku","Kanto","Koshinetsu / Hokuriku","Tokai","Kansai","Chugoku","Shikoku","Kyushu"],
+    ko:["홋카이도","도호쿠","간토","고신에쓰·호쿠리쿠","도카이","간사이","주고쿠","시코쿠","규슈"]
+  };
+  var REGION_HINTS = [
+    [/Hokkaido/i,"Hokkaido"],[/Tohoku|Fukushima|Aomori|Akita|Miyagi|Iwate|Yamagata/i,"Tohoku"],
+    [/Kanto|Tokyo|Saitama|Kanagawa|Chiba|Gunma|Tochigi|Ibaraki/i,"Kanto"],
+    [/Hokuriku|Koshin|Niigata|Nagano|Yamanashi|Toyama|Ishikawa|Fukui/i,"KoshinHokuriku"],
+    [/Tokai|Shizuoka|Aichi|Gifu|Mie/i,"Tokai"],
+    [/Kansai|Kinki|Hyogo|Kyoto|Osaka|Nara|Wakayama|Shiga/i,"Kansai"],
+    [/Chugoku|Hiroshima|Okayama|Tottori|Shimane|Yamaguchi/i,"Chugoku"],
+    [/Shikoku|Kagawa|Tokushima|Ehime|Kochi/i,"Shikoku"],
+    [/Kyushu|Saga|Fukuoka|Nagasaki|Kumamoto|Oita|Miyazaki|Kagoshima/i,"Kyushu"]
+  ];
+  // Broad-area anchors, not prefecture-border polygons. Each located station
+  // contributes a region, allowing Tokyo-Osaka and Osaka-Hakata services to
+  // appear in all regions they actually pass through.
+  var REGION_ANCHORS = {
+    Hokkaido:[[43.06,141.35],[41.77,140.73],[43.80,142.37],[42.92,143.20]],
+    Tohoku:[[40.82,140.74],[39.70,141.15],[38.26,140.88],[37.76,140.47]],
+    Kanto:[[35.68,139.76],[35.46,139.63],[35.61,140.11],[36.39,139.06],[36.55,139.89],[36.37,140.47]],
+    KoshinHokuriku:[[37.92,139.04],[36.65,138.19],[36.56,136.65],[36.70,137.21],[35.67,138.57],[36.07,136.22]],
+    Tokai:[[35.18,136.91],[34.98,138.38],[35.42,136.76],[34.72,136.51],[34.77,137.39]],
+    Kansai:[[34.70,135.50],[35.01,135.77],[34.69,135.20],[34.69,135.83],[35.00,136.01],[34.23,135.17]],
+    Chugoku:[[34.40,132.46],[34.67,133.93],[35.47,133.05],[35.43,134.23],[34.18,131.47]],
+    Shikoku:[[34.34,134.05],[33.84,132.77],[33.57,133.55],[34.06,134.57]],
+    Kyushu:[[33.59,130.40],[32.80,130.70],[31.60,130.56],[33.24,131.61],[32.75,129.88]]
+  };
+  var SINGLE_REGION_OPERATORS = {
+    TokyoMetro:"Kanto",Toei:"Kanto",YokohamaMunicipal:"Kanto",
+    Keio:"Kanto",Odakyu:"Kanto",Seibu:"Kanto",Tobu:"Kanto",Tokyu:"Kanto",
+    Keikyu:"Kanto",Keisei:"Kanto",Sotetsu:"Kanto",TsukubaExpress:"Kanto",
+    Rinkai:"Kanto",MinatoMirai:"Kanto",ChibaUrbanMonorail:"Kanto",
+    TokyoMonorail:"Kanto",SaitamaRapidRailway:"Kanto",Yurikamome:"Kanto",
+    ToyoRapid:"Kanto",TamaMonorail:"Kanto",SaitamaNewUrbanTransit:"Kanto",
+    ShonanMonorail:"Kanto",EnoshimaElectric:"Kanto",UtsunomiyaLightRail:"Kanto",
+    ChichibuRailway:"Kanto",FujisanrokuElectricRailway:"KoshinHokuriku",
+    HojoRailway:"Kansai",KobeDentetsu:"Kansai",HakodateCity:"Hokkaido"
+  };
+  function regionAtCoordinate(coord) {
+    if (!coord) return null;
+    var lat=Number(Array.isArray(coord)?coord[0]:coord.lat);
+    var lng=Number(Array.isArray(coord)?coord[1]:coord.lng);
+    if (!Number.isFinite(lat)||!Number.isFinite(lng)||
+        lat<30||lat>46||lng<128||lng>146) return null;
+    var result=null, min=Infinity;
+    REGION_IDS.forEach(function(region) {
+      REGION_ANCHORS[region].forEach(function(anchor) {
+        var y=lat-anchor[0], x=(lng-anchor[1])*Math.cos(lat*Math.PI/180);
+        var distance=y*y+x*x;
+        if(distance<min){min=distance;result=region;}
+      });
+    });
+    return result;
+  }
+  function getLineRegions(line) {
+    if (!line) return [];
+    var found=Object.create(null), located=0, hint=String(line.region||"");
+    REGION_HINTS.forEach(function(item){if(item[0].test(hint))found[item[1]]=true;});
+    var coords=window.STATION_COORDS||{};
+    var locatedStations=(line.stations||[]).map(function(id){return coords[id];})
+      .filter(function(coord){return !!regionAtCoordinate(coord);});
+    // Some canonical station names currently reuse coordinates of unrelated
+    // same-named stations hundreds of kilometres away. Discard isolated
+    // jumps when their two neighbours remain close to each other.
+    function approxKm(a,b){
+      var lat1=Number(Array.isArray(a)?a[0]:a.lat);
+      var lon1=Number(Array.isArray(a)?a[1]:a.lng);
+      var lat2=Number(Array.isArray(b)?b[0]:b.lat);
+      var lon2=Number(Array.isArray(b)?b[1]:b.lng);
+      var dy=(lat1-lat2)*111;
+      var dx=(lon1-lon2)*111*Math.cos((lat1+lat2)*Math.PI/360);
+      return Math.sqrt(dx*dx+dy*dy);
+    }
+    locatedStations.forEach(function(coord,i){
+      // A few station IDs resolve to distant homonymous stations. A
+      // local 7-station median removes even two consecutive bad matches.
+      var windowCoords=locatedStations.slice(Math.max(0,i-3),i).concat(
+        locatedStations.slice(i+1,i+4));
+      if(windowCoords.length>=4){
+        var xs=windowCoords.map(function(p){return Number(Array.isArray(p)?p[0]:p.lat);}).sort(function(a,b){return a-b;});
+        var ys=windowCoords.map(function(p){return Number(Array.isArray(p)?p[1]:p.lng);}).sort(function(a,b){return a-b;});
+        var mid=Math.floor(xs.length/2),median=[xs[mid],ys[mid]];
+        var neighborsNear=windowCoords.filter(function(p){return approxKm(p,median)<100;}).length;
+        if(neighborsNear>=3&&approxKm(coord,median)>180)return;
+      }
+      var before=locatedStations[i-1],after=locatedStations[i+1];
+      if(before&&after){
+        var left=approxKm(before,coord),right=approxKm(coord,after);
+        var direct=approxKm(before,after);
+        if(left>80&&right>80&&direct<Math.min(left,right)*0.5)return;
+      }
+      var region=regionAtCoordinate(coord);
+      if(region){found[region]=true;located++;}
+    });
+    if(!located&&!Object.keys(found).length&&SINGLE_REGION_OPERATORS[line.operator])
+      found[SINGLE_REGION_OPERATORS[line.operator]]=true;
+    // Operator scope prevents bad shared station coordinates from placing
+    // whole regional railway companies hundreds of kilometres away.
+    var allowed=null;
+    if(SINGLE_REGION_OPERATORS[line.operator] &&
+       line.operator!=="FujisanrokuElectricRailway")
+      allowed=[SINGLE_REGION_OPERATORS[line.operator]];
+    else if(line.operator==="JR-Hokkaido")
+      allowed=/Shinkansen|新幹線/i.test(String(line.nameEn||line.nameJa||line.name||""))
+        ? ["Hokkaido","Tohoku"] : ["Hokkaido"];
+    else if(line.operator==="JR-Shikoku") allowed=["Shikoku"];
+    else if(line.operator==="JR-Kyushu") allowed=["Kyushu"];
+    else if(line.operator==="JR-West")
+      allowed=["KoshinHokuriku","Tokai","Kansai","Chugoku","Kyushu"];
+    else if(line.operator==="JR-Central")
+      allowed=["Kanto","KoshinHokuriku","Tokai","Kansai"];
+    else if(line.operator==="JR-East")
+      allowed=["Tohoku","Kanto","KoshinHokuriku","Tokai"];
+    var regions=REGION_IDS.filter(function(region){
+      return !!found[region]&&(!allowed||allowed.indexOf(region)>=0);
+    });
+    if(!regions.length&&allowed&&allowed.length===1)regions=allowed.slice();
+    return regions;
+  }
+  function filterLinesByRegion(lines, region) {
+    if(!region)return lines||{};
+    if(REGION_IDS.indexOf(region)<0)return {};
+    var result={};
+    Object.keys(lines||{}).forEach(function(id){
+      var line=lines[id];
+      if(line&&getLineRegions(line).indexOf(region)>=0)result[id]=line;
+    });
+    return result;
+  }
+  function filterLinesByRegionAndOperator(lines,region,operator){
+    return filterLinesByOperator(filterLinesByRegion(lines,region),operator);
+  }
+  function labelRegion(region) {
+    var lang=String(window.currentLang||(document.documentElement&&document.documentElement.lang)||"ja").toLowerCase();
+    lang=lang.indexOf("zh")===0?"zh":lang.indexOf("en")===0?"en":lang.indexOf("ko")===0?"ko":"ja";
+    return REGION_NAMES[lang][REGION_IDS.indexOf(region)]||region;
+  }
+
   function filterLinesByOperator(lines, operator) {
     if (!operator) return lines || {};
     var filtered = {};
@@ -429,65 +575,94 @@
     } catch (e) { return op; }
   }
 
+
+  // Exactly two levels: area, then operator. Types are sort tiers, not controls.
   function createOperatorFilter(containerOrId, opts) {
-    opts = opts || {};
-    var el = typeof containerOrId === "string" ? document.getElementById(containerOrId) : containerOrId;
-    var selected = opts.selected || null;
-    var lastOptionsSignature = null;
+    opts=opts||{};
+    var el=typeof containerOrId==="string"?document.getElementById(containerOrId):containerOrId;
+    var selected=opts.selected||null, selectedRegion=opts.region||null;
+    var lastLines={},lastSignature=null;
     function available(value) {
-      if (!el) return;
-      el.classList.toggle("hidden", !value);
-      el.setAttribute("aria-hidden", value ? "false" : "true");
+      if(!el)return;
+      el.classList.toggle("hidden",!value);
+      el.setAttribute("aria-hidden",value?"false":"true");
     }
-    function select(value, notifyChange) {
-      selected = value || null;
-      if (el) {
-        Array.prototype.slice.call(el.querySelectorAll(".rs-filter-btn")).forEach(function(button) {
-          var active = (button.dataset.operator || null) === selected;
-          button.classList.toggle("active", active);
-          button.setAttribute("aria-pressed", active ? "true" : "false");
-        });
-        if (notifyChange !== false) {
-          try {
-            el.dispatchEvent(new CustomEvent("pt:operator-filter-change", { detail: { operator: selected } }));
-          } catch (e) {}
-        }
-      }
-      return selected;
+    function announce(notify) {
+      if(notify===false||!el)return;
+      try{el.dispatchEvent(new CustomEvent("pt:operator-filter-change",{
+        detail:{region:selectedRegion,operator:selected}
+      }));}catch(e){}
+    }
+    function sync() {
+      if(!el)return;
+      Array.prototype.forEach.call(el.querySelectorAll(".rs-region-btn"),function(button){
+        var active=(button.dataset.region||null)===selectedRegion;
+        button.classList.toggle("active",active);
+        button.setAttribute("aria-pressed",active?"true":"false");
+      });
+      Array.prototype.forEach.call(el.querySelectorAll(".rs-filter-btn"),function(button){
+        var active=(button.dataset.operator||null)===selected;
+        button.classList.toggle("active",active);
+        button.setAttribute("aria-pressed",active?"true":"false");
+      });
+    }
+    function select(value,notify){
+      selected=selectedRegion?(value||null):null;sync();announce(notify);return selected;
+    }
+    function selectRegion(value,notify){
+      var next=REGION_IDS.indexOf(value)>=0?value:null;
+      if(next!==selectedRegion){selectedRegion=next;selected=null;lastSignature=null;}
+      render(lastLines);announce(notify);return selectedRegion;
     }
     function render(lines) {
-      if (!el) return;
-      var availableOps = operatorsFromLines(lines);
-      if (!availableOps.length) {
-        if (el.innerHTML) el.innerHTML = "";
-        lastOptionsSignature = null;
-        available(false);
-        return;
+      if(!el)return;
+      lastLines=lines||{};
+      var allOps=operatorsFromLines(lastLines);
+      if(!allOps.length){
+        if(el.innerHTML)el.innerHTML="";
+        lastSignature=null;available(false);return;
       }
       available(true);
-      var optionsSignature = (t("filter.all") || "All") + "\u0001" +
-        availableOps.map(function(op) { return op + "\u0002" + operatorLabel(op); }).join("\u0001");
-      if (optionsSignature === lastOptionsSignature &&
-          el.querySelectorAll(".rs-filter-btn").length === availableOps.length + 1) {
-        select(selected, false);
-        return;
-      }
-      lastOptionsSignature = optionsSignature;
-      var html = '<button type="button" class="rs-filter-btn' + (selected === null ? ' active' : '')
-        + '" data-operator="" aria-pressed="' + (selected === null ? 'true' : 'false') + '">'
-        + (t("filter.all") || "All") + "</button>";
-      availableOps.forEach(function(op) {
-        html += '<button type="button" class="rs-filter-btn' + (selected === op ? ' active' : '')
-          + '" data-operator="' + escapeHtml(op) + '" aria-pressed="' + (selected === op ? 'true' : 'false') + '">'
-          + operatorLabel(op) + "</button>";
+      var scoped=selectedRegion?filterLinesByRegion(lastLines,selectedRegion):{};
+      var ops=selectedRegion?operatorsFromLines(scoped):[];
+      if(selected&&ops.indexOf(selected)<0)selected=null;
+      var all=typeof window.t==="function"?(window.t("filter.all")||"すべて"):"すべて";
+      var signature=all+"|"+selectedRegion+"|"+REGION_IDS.map(labelRegion).join("|")+
+        "|"+ops.map(function(op){return op+":"+operatorLabel(op);}).join("|");
+      if(signature===lastSignature){sync();return;}
+      lastSignature=signature;
+      el.classList.add("rs-region-filter");
+      var html='<div class="rs-filter-level rs-region-level" role="group" aria-label="地域">'+
+        '<button type="button" class="rs-region-btn'+(!selectedRegion?' active':'')+
+        '" data-region="" aria-pressed="'+(!selectedRegion)+'">'+all+'</button>';
+      REGION_IDS.forEach(function(region){
+        html+='<button type="button" class="rs-region-btn'+
+          (selectedRegion===region?' active':'')+'" data-region="'+region+
+          '" aria-pressed="'+(selectedRegion===region)+'">'+labelRegion(region)+'</button>';
       });
-      el.innerHTML = html;
-      Array.prototype.slice.call(el.querySelectorAll(".rs-filter-btn")).forEach(function(button) {
-        button.addEventListener("click", function() { select(button.dataset.operator || null, true); });
+      html+='</div>';
+      if(selectedRegion){
+        html+='<div class="rs-filter-level rs-company-level" role="group" aria-label="鉄道事業者">'+
+          '<button type="button" class="rs-filter-btn'+(!selected?' active':'')+
+          '" data-operator="" aria-pressed="'+(!selected)+'">'+all+'</button>';
+        ops.forEach(function(op){
+          html+='<button type="button" class="rs-filter-btn'+
+            (selected===op?' active':'')+'" data-operator="'+escapeHtml(op)+
+            '" aria-pressed="'+(selected===op)+'">'+operatorLabel(op)+'</button>';
+        });
+        html+='</div>';
+      }
+      el.innerHTML=html;
+      Array.prototype.forEach.call(el.querySelectorAll(".rs-region-btn"),function(button){
+        button.addEventListener("click",function(){selectRegion(button.dataset.region||null,true);});
+      });
+      Array.prototype.forEach.call(el.querySelectorAll(".rs-filter-btn"),function(button){
+        button.addEventListener("click",function(){select(button.dataset.operator||null,true);});
       });
     }
-    return { render: render, setAvailable: available, setSelected: select,
-      getSelected: function() { return selected; }, getElement: function() { return el; } };
+    return {render:render,setAvailable:available,setSelected:select,setRegion:selectRegion,
+      getRegion:function(){return selectedRegion;},
+      getSelected:function(){return selected;},getElement:function(){return el;}};
   }
 
   var operatorFilterMounted = {};
@@ -513,6 +688,10 @@
     getPresentationStatusMembers: getPresentationStatusMembers,
     setOperatorVisibility: setOperatorVisibility,
     filterLinesByOperator: filterLinesByOperator,
+    filterLinesByRegion: filterLinesByRegion,
+    filterLinesByRegionAndOperator: filterLinesByRegionAndOperator,
+    getLineRegions: getLineRegions,
+    getRegions: function(){return REGION_IDS.slice();},
     renderPageState: renderPageState,
     setPageStateRetry: setPageStateRetry,
     setRailwayPageRetry: setRailwayPageRetry,

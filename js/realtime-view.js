@@ -299,6 +299,7 @@
   let _latestLines = null;
   let _latestOrder = null;
   let _selectedOperator = null;
+  let _selectedRegion = null;
   var _filterBar = null;
 
   let _currentModalLine = null;
@@ -360,11 +361,19 @@
     if (_filterBar) _filterBar.render(linesObj);
   }
 
-  function setFilter(operator) {
+  function setFilter(operator, region) {
+    var changedRegion = arguments.length > 1 && _selectedRegion !== (region || null);
+    if (arguments.length > 1) _selectedRegion = region || null;
     _selectedOperator = operator || null;
+    if (_filterBar && _filterBar.getRegion() !== _selectedRegion) _filterBar.setRegion(_selectedRegion, false);
     if (_filterBar && _filterBar.getSelected() !== _selectedOperator) _filterBar.setSelected(_selectedOperator, false);
     var container = document.getElementById("realtimeStatusContainer");
     if (!container) return;
+    if (changedRegion || _selectedRegion) {
+      if (_latestLines) renderFiltered();
+      _renderedStatusSignatures = {};
+      return;
+    }
     if (!window.DataState.setOperatorVisibility(container, _selectedOperator)) {
       if (_latestLines) renderFiltered();
       return;
@@ -375,8 +384,7 @@
 
   function getFilteredLines() {
     if (!_latestLines) return {};
-    if (!_selectedOperator) return _latestLines;
-    return window.DataState.filterLinesByOperator(_latestLines, _selectedOperator);
+    return window.DataState.filterLinesByRegionAndOperator(_latestLines, _selectedRegion, _selectedOperator);
   }
 
   function statusSignature(line) {
@@ -443,7 +451,7 @@
     }
     var changed = [];
     var next = {};
-    var visibleLines = window.DataState.filterLinesByOperator(linesObj, _selectedOperator);
+    var visibleLines = window.DataState.filterLinesByRegionAndOperator(linesObj, _selectedRegion, _selectedOperator);
     Object.keys(visibleLines || {}).forEach(function(id) {
       next[id] = statusSignature(visibleLines[id]);
       if (_renderedStatusSignatures[id] !== next[id]) changed.push(id);
@@ -467,7 +475,7 @@
     // 独立于数据加载生命周期进行订阅。
     var filterElement = document.getElementById("realtimeFilterBar");
     if (filterElement) filterElement.addEventListener("pt:operator-filter-change", function(event) {
-      setFilter(event.detail && event.detail.operator);
+      setFilter(event.detail && event.detail.operator, event.detail && event.detail.region);
     });
 
     renderFilterBar({});
