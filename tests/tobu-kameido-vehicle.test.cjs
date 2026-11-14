@@ -22,6 +22,7 @@ function loadVehicleRegistry() {
   });
   for (const file of [
     'data/timetables/vehicle-garage-png-map.js',
+    'data/timetables/train-number-png-ranges.js',
     'js/train-vehicle.js'
   ]) vm.runInContext(read(file), context, { filename: file });
   return window;
@@ -59,31 +60,88 @@ test('renewed 10030 PNG is the approved gallery asset on both small branches', (
   assert.equal(window.VehicleGaragePngMap.matchModelPath(model, older, 'Tobu_Kameido'), false);
 });
 
-test('undated working numbers never select a car PNG, even if a model was inferred', () => {
+test('Kameido A/B/C and Daishi nD number ranges project examples, not real stock', () => {
   const window = loadVehicleRegistry();
   const paint = window.TrainVehicle.selectMarkerArtwork;
-  for (const trainNumber of ['A2', 'A10', 'A106', 'B1', 'C9', 'D8']) {
+  const cases = [
+    ['A2', RENEWED_10030],
+    ['A100', RENEWED_10030],
+    ['B1', RENEWED_10030],
+    ['B101', RENEWED_10030],
+    ['C4', '../images/列车/東武鉄道/東武鉄道_10000型_更新車.png'],
+    ['C21', '../images/列车/東武鉄道/東武鉄道_10000型_更新車.png']
+  ];
+  for (const [trainNumber, expectedPng] of cases) {
     const result = paint(position({ trainNumber }), false);
-    assert.equal(result.kind, 'unresolved', trainNumber);
-    assert.equal(result.iconSrc, '', trainNumber);
+    assert.equal(result.kind, 'vehicle', trainNumber);
+    assert.equal(result.iconSrc, expectedPng, trainNumber);
+    assert.equal(result.illustrative, true, trainNumber);
+    assert.equal(result.planned, true, trainNumber);
+    assert.equal(result.representativeOnly, true, trainNumber);
+    assert.equal(result.actualVehicleConfirmed, false, trainNumber);
   }
-  const staleExact = position({
-    vehicleIdentityStatus: 'EXACT',
-    vehicleResolvedUpstream: true,
-    vehicleResolutionLineId: 'Tobu_Kameido',
-    vehicleIconPath: RENEWED_10030,
-    actualVehicleConfirmed: true
-  });
-  assert.equal(paint(staleExact, false).kind, 'unresolved',
-    'a flattened actualVehicleConfirmed flag must not authorize PNG without evidence provenance');
-  const daishi = position({
-    lineId: 'Daishi_Tobu',
-    positionLineId: 'Daishi_Tobu',
-    displayLineId: 'Daishi_Tobu',
-    sourceRailway: 'odpt.Railway:Tobu.Daishi',
-    trainNumber: 'D8'
-  });
-  assert.equal(paint(daishi, false).kind, 'unresolved');
+  for (const invalid of ['A1', 'A106', 'B103', 'C23', 'D8', 'C04', 'C999']) {
+    const result = paint(position({trainNumber:invalid}), false);
+    assert.equal(result.kind, 'unresolved', invalid);
+    assert.equal(result.iconSrc, '', invalid);
+  }
+  const daishi = {
+    lineId:'Daishi_Tobu',positionLineId:'Daishi_Tobu',
+    displayLineId:'Daishi_Tobu',sourceRailway:'odpt.Railway:Tobu.Daishi'
+  };
+  for (const number of ['1D', '218D']) {
+    const result = paint(position({...daishi,trainNumber:number}),false);
+    assert.equal(result.kind,'vehicle',number);
+    assert.equal(result.illustrative,true,number);
+  }
+  for (const number of ['219D', '220D', 'D8', '00D']) {
+    assert.equal(paint(position({...daishi,trainNumber:number}),false).kind,'unresolved',number);
+  }
+});
+
+test('weekday maxima, date, calendar, source and route are enforced', () => {
+  const window = loadVehicleRegistry();
+  const paint = window.TrainVehicle.selectMarkerArtwork;
+  const weekday = {serviceDate:'2026-11-16',calendarType:'weekday'};
+  for (const n of ['A106','B103','C23']) {
+    const ref = paint(position({...weekday,trainNumber:n}),false);
+    assert.equal(ref.kind,'vehicle',n);
+    assert.equal(ref.illustrative,true,n);
+  }
+  const daishi = {lineId:'Daishi_Tobu',positionLineId:'Daishi_Tobu',
+    displayLineId:'Daishi_Tobu',sourceRailway:'odpt.Railway:Tobu.Daishi'};
+  assert.equal(paint(position({...daishi,...weekday,trainNumber:'220D'}),false).kind,'vehicle');
+  for (const bad of [
+    {serviceDate:'2026-12-01'},
+    {serviceDate:'2025-11-15'},
+    {calendarType:'weekday'},
+    {sourceRailway:'odpt.Railway:Tobu.Nikko'},
+    {displayLineId:'TobuSkytree'},
+    {positionLineId:'TobuSkytree'},
+    {positionSource:'realtime-api',estimated:true},
+    {positionSource:'supabase-train-run',estimated:false}
+  ]) {
+    assert.equal(paint(position({...bad,trainNumber:'C4'}),false).kind,'unresolved',
+      JSON.stringify(bad));
+  }
+  assert.equal(paint(position({trainNumber:'C4'}),true).kind,'unresolved',
+    'failed image loading must never be silently replaced');
+});
+
+test('unverified flat EXACT flag may not turn the fleet example into actual stock', () => {
+  const window = loadVehicleRegistry();
+  const result = window.TrainVehicle.selectMarkerArtwork(position({
+    trainNumber:'C4',
+    vehicleIdentityStatus:'EXACT',
+    vehicleResolvedUpstream:true,
+    vehicleResolutionLineId:'Tobu_Kameido',
+    vehicleIconPath:RENEWED_10030,
+    actualVehicleConfirmed:true
+  }),false);
+  assert.equal(result.kind,'vehicle');
+  assert.equal(result.illustrative,true);
+  assert.equal(result.actualVehicleConfirmed,false);
+  assert.notEqual(result.iconSrc,RENEWED_10030);
 });
 
 test('only a provenance-backed exact identity may select a branch PNG', () => {
@@ -132,22 +190,25 @@ test('GTFS recognizes explicit model labels without reading series from a trip I
 });
 
 
-test('C4 live-position retains a neutral icon and explains missing vehicle evidence', () => {
+test('C4 live-position displays reference image without asserting a physical carset', () => {
   const window = loadVehicleRegistry();
   const p = position({
-    trainNumber: 'C4',
-    positionSource: 'realtime-api',
-    estimated: false,
-    sourceUpdatedAt: '2026-11-15T06:03:00+09:00',
-    vehicleIdentityStatus: 'UNKNOWN'
+    trainNumber:'C4',
+    positionSource:'realtime-api',
+    estimated:false,
+    calendarType:'holiday',
+    sourceUpdatedAt:'2026-11-15T06:03:00+09:00',
+    vehicleIdentityStatus:'UNKNOWN'
   });
-  const art = window.TrainVehicle.selectMarkerArtwork(p, false);
-  assert.equal(art.kind, 'unresolved');
-  assert.equal(art.iconSrc, '');
-  assert.equal(art.reason, 'tobu-branch-live-position-vehicle-unconfirmed');
+  const art=window.TrainVehicle.selectMarkerArtwork(p,false);
+  assert.equal(art.kind,'vehicle');
+  assert.equal(art.illustrative,true);
+  assert.equal(art.actualVehicleConfirmed,false);
+  assert.equal(art.illustrationRole,'tobu-branch-working-fleet-example-not-observed');
+  assert.equal(art.iconSrc,'../images/列车/東武鉄道/東武鉄道_10000型_更新車.png');
   assert.equal(window.TrainVehicle.selectMarkerArtwork({
-    ...p, sourceRailway: 'odpt.Railway:Tobu.Nikko'
-  }, false).reason, undefined, 'never apply Kameido diagnosis on another source railway');
+    ...p,sourceRailway:'odpt.Railway:Tobu.Nikko'
+  },false).iconSrc,'');
 });
 
 test('SVG marker spec publishes the vehicle rejection reason without rewriting live provenance', () => {
@@ -161,7 +222,9 @@ test('SVG marker spec publishes the vehicle rejection reason without rewriting l
   });
   const p = position({trainNumber: 'C4', positionSource: 'realtime-api', estimated: false});
   const spec = markerSpec(p, 'planned-trip:2026-11-15|Tobu|C4', 'Tobu_Kameido');
-  assert.equal(spec.kind, 'unresolved');
-  assert.equal(spec.compact, true);
-  assert.equal(spec.unresolvedReason, 'tobu-branch-live-position-vehicle-unconfirmed');
+  assert.equal(spec.kind, 'vehicle');
+  assert.equal(spec.compact, false);
+  assert.equal(spec.illustrative, true);
+  assert.equal(spec.illustrationRole, 'tobu-branch-working-fleet-example-not-observed');
+  assert.equal(spec.unresolvedReason, '');
 });
