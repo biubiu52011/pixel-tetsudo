@@ -159,8 +159,10 @@ test('train detail drops the invisible overview and rebuilds on return', () => {
     'canonical structure changes refresh the visible overview');
   assert.match(controller, /var overviewScrollY = window\.scrollY \|\| window\.pageYOffset \|\| 0/,
     'structure refresh preserves overview scroll position');
-  assert.match(controller, /window\.DataState\.renderList\(el, allLines, options\)/,
-    'all operator groups stay mounted for later filter changes');
+  assert.match(controller, /var scopedLines = window\.DataState\.filterLinesByRegion\(allLines, _selectedRegion\)/,
+    'regional selection scopes the displayed cards without altering the canonical lines');
+  assert.match(controller, /window\.DataState\.renderList\(el, scopedLines, options\)/,
+    'all operator groups in the selected region stay mounted for company switching');
   assert.match(controller, /captureOverviewSignatures\(allLines\)/,
     'each rendered snapshot records per-filter card structures');
   assert.match(controller, /nextSignature !== renderedSignature/,
