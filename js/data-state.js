@@ -942,10 +942,35 @@
   function elementFromHtml(html) {
     var wrap=document.createElement("div"); wrap.innerHTML=html||""; return wrap.firstElementChild||null;
   }
+  // Line branding must stay the same color as the PNG route icon when an
+  // external dark-mode recolorer changes CSS colors but leaves images alone.
+  // Draw the 2px rounded frame as a nine-sliced SVG *image*; the regular
+  // --line-color border remains a no-image/CSP fallback. This is shared by
+  // trains.html and realtime.html, not a Tojo-specific patch.
+  var _lineBrandFrameCache = Object.create(null);
+  function lineBrandFrame(color) {
+    if (!/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(color || "")) return "";
+    var key = color.toLowerCase();
+    if (!_lineBrandFrameCache[key]) {
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
+        + '<rect x="1" y="1" width="22" height="22" rx="5" ry="5" '
+        + 'fill="none" stroke="' + key + '" stroke-width="2"/></svg>';
+      _lineBrandFrameCache[key] = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+    }
+    return _lineBrandFrameCache[key];
+  }
   function applyColor(card) {
     if (!card) return;
-    var color=card.getAttribute("data-line-color");
-    if (color) card.style.setProperty("--line-color",color);
+    var color = card.getAttribute("data-line-color");
+    if (!color) return;
+    // Preserve the canonical color token for CSS fallbacks and non-border UI.
+    card.style.setProperty("--line-color", color);
+    var frame = lineBrandFrame(color);
+    if (!frame) return;
+    card.style.borderImageSource = frame;
+    card.style.borderImageSlice = "8";
+    card.style.borderImageWidth = "8px";
+    card.style.borderImageRepeat = "stretch";
   }
   function renderSystemById(primaryId,linesObj,options) {
     var service=window.LinePresentationService;
