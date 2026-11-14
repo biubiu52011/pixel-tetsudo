@@ -83,4 +83,10 @@ WHERE NOT EXISTS (
   WHERE old.network_key=CASE WHEN fr.code_pattern='PLAN:OGOSE-4CAR' THEN 'Ogose' ELSE 'Tojo' END
     AND old.code_pattern=fr.code_pattern
 );
+-- Normalize Tobu vehicle aliases to the gallery's canonical 型 labels.
+-- The original MF 2026 source retained 系 labels; only our Tojo projection
+-- is normalized. Still a fleet candidate, not a dated observed formation.
+UPDATE public.operation_family_rules
+SET vehicle_candidates=ARRAY['東武50070型','東武9000型','東武9050型']::text[]
+WHERE network_key='Tojo' AND code_pattern='PLAN:TOJO-WAKOSHI-TOBU-10';
 COMMIT;
