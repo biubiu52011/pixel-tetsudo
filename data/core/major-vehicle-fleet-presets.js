@@ -308,6 +308,9 @@
     {id:'seibu-sayama', operator:'Seibu', lineIds:['Seibu_Sayama'],
       models:['西武20000系','西武30000系','西武40000系50番台','西武7000系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/7000/'},
+    // 2000系 belongs to a historical (2024) route eligibility record only.
+    // Only these three 8-car model groups are 2026 route candidates; none
+    // provides a public train number, assigned formation or chosen PNG.
     {id:'seibu-toshima', operator:'Seibu', lineIds:['SeibuToshima'],
       models:['西武20000系','西武30000系','西武40000系50番台'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},

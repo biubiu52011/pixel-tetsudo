@@ -187,6 +187,7 @@ on:
       - 'js/data-fusion.js'
       - 'js/train-position-estimator.js'
       - 'tools/train-png-display-contract.test.cjs'
+      - 'tools/seibu-toshima-202611-audit.test.cjs'
       - 'tools/train-vehicle-assets.test.cjs'
       - 'tools/train-sql-vehicle-mapping.test.cjs'
       - 'tools/train-sql-service-reconciliation.test.cjs'
@@ -473,6 +474,8 @@ jobs:
         run: node --test tests/tokaido-central-research-candidates.test.cjs
       - name: Verify vehicle PNG decisions and SVG projection
         run: node tools/train-png-display-contract.test.cjs
+      - name: Verify Seibu Toshima topology and unverified PNG scope
+        run: node tools/seibu-toshima-202611-audit.test.cjs
       - name: Verify Osaka Higashi SQL adapter, Mahoroba scope and quarantine diagnostics
         run: node --test tests/osaka-higashi-2611-*.test.cjs tools/route-timetable-service-calendar.test.cjs
       - name: Verify registered PNG paths and file headers

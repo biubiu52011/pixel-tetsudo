@@ -2881,7 +2881,7 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-222", displayName: "图库待审・西武鉄道・西武鉄道_40000系_トキイロ", iconName: "图库待审・西武鉄道・西武鉄道_40000系_トキイロ", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_トキイロ.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-223", displayName: "图库待审・西武鉄道・西武鉄道_40000系_赤帯", iconName: "图库待审・西武鉄道・西武鉄道_40000系_赤帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_赤帯.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-224", displayName: "图库待审・西武鉄道・西武鉄道_4000系_白塗装", iconName: "图库待审・西武鉄道・西武鉄道_4000系_白塗装", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_4000系_白塗装.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-225", displayName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", iconName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40050系_緑帯.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "artwork-inventory-225", displayName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", iconName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40050系_緑帯.png", aliases: ["西武40000系50番台（8両）"], lineIds: ["SeibuToshima"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/railway/encyclopedia/40000/" },
   { id: "artwork-inventory-226", displayName: "图库待审・西武鉄道・西武鉄道_6000系_標準塗装", iconName: "图库待审・西武鉄道・西武鉄道_6000系_標準塗装", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_6000系_標準塗装.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-227", displayName: "图库待审・西武鉄道・西武鉄道_L00系_第1編成_埼玉西武ライオンズ", iconName: "图库待审・西武鉄道・西武鉄道_L00系_第1編成_埼玉西武ライオンズ", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_L00系_第1編成_埼玉西武ライオンズ.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-228", displayName: "图库待审・都営地下鉄・都営地下鉄_8500形（別）", iconName: "图库待审・都営地下鉄・都営地下鉄_8500形（別）", asset: null, plannedAsset: "../images/列车/都営地下鉄/都営地下鉄_8500形（別）.png", aliases: [], operatorDirectory: "都営地下鉄", artworkStatus: "pending-source-review", plannedOnly: true },
@@ -4511,8 +4511,8 @@ function _officialConventionalServicePlan(tt, lineId, line) {
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       },
       // 西武豊島線：刊行計画の路線車種候補のみ。編成・個別列車は未確定。
-      // 2026 planned fleet scope contains four route-eligible commuter models;
-      // the historical 2000 series is NOT eligible for current service.
+      // Three 2026 8-car route candidates; 2000 series is historical only
+      // (2024 Toshima eligibility, no verified 2026 scheduled train or PNG).
       SeibuToshima: {
         models: ['西武20000系','西武30000系','西武40000系50番台'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'

@@ -30410,7 +30410,8 @@
       ],
       "throughServices": [
         "Yurakucho_Seibu",
-        "SeibuChichibu"
+        "SeibuChichibu",
+        "SeibuToshima"
       ],
       "transferStations": [
         {
@@ -30520,6 +30521,17 @@
           ],
           "evidence": {
             "source": "https://www.seiburailway.jp/railway/station/higashi-agano/",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "SeibuToshima",
+          "handoverStations": [
+            "Nerima"
+          ],
+          "serviceScope": "selected-local",
+          "evidence": {
+            "source": "Seibu official Toshima Line / Ikebukuro Line through service at Nerima: https://seibu.ekitan.com/norikae/timetable/station/233-0/d1?dw=1",
             "confidence": "HIGH"
           }
         }
@@ -34942,13 +34954,13 @@
       "nameEn": "Seibu Toshima Line",
       "nameJa": "西武豊島線",
       "code": "SI",
-      "color": "#FF6600",
+      "color": "#EF7A00",
       "operator": "Seibu",
       "region": "Tokyo Area",
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武豊島線.png",
       "durationTotalMin": 2,
-      "branchOf": null,
+      "branchOf": "Ikebukuro",
       "stations": [
         "Nerima",
         "Toshimaen"
@@ -34957,7 +34969,9 @@
         2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "Ikebukuro"
+      ],
       "transferStations": [
         {
           "station": "Nerima",
@@ -35000,7 +35014,19 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "Ikebukuro",
+          "handoverStations": [
+            "Nerima"
+          ],
+          "serviceScope": "selected-local",
+          "evidence": {
+            "source": "Seibu official Toshimaen/Nerima regular Ikebukuro-bound services: https://seibu.ekitan.com/norikae/timetable/station/233-0/d1?dw=1",
+            "confidence": "HIGH"
+          }
+        }
+      ]
     },
     "Senseki": {
       "name": "仙石线",
