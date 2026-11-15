@@ -68,7 +68,7 @@ test('a regional choice actually filters line cards, keeping the operator order'
     ['JobanMain','UenoTokyo','ChuoMain']);
 });
 
-test('filter renders at most two rows, and region switches reset company selection',()=>{
+test('filter renders at most two levels, and region switches reset company selection',()=>{
   const {window,element,events}=load();
   const filter=window.OperatorFilterBar.create(element);
   filter.render(data.lines);
@@ -123,5 +123,12 @@ test('both pages consume the shared region and operator filter state',()=>{
   }
   const styles=fs.readFileSync(path.join(root,'css/ux-refinements.css'),'utf8');
   assert.match(styles,/\.rs-region-filter \.rs-filter-level/);
-  assert.match(styles,/overflow-x:auto/);
+  const layout=styles.slice(styles.indexOf('/* Compact shared two-tier railway filter: region -> operator. */'));
+  assert.match(layout,/\.rs-region-filter \.rs-filter-level\s*\{[\s\S]*?display:grid;/);
+  assert.match(layout,/grid-template-columns:repeat\(auto-fit,minmax\(min\(100%,112px\),1fr\)\)/);
+  assert.match(layout,/\.rs-region-filter \.rs-company-level\s*\{[\s\S]*?minmax\(min\(100%,140px\),1fr\)/);
+  assert.match(layout,/\.rs-region-filter \.rs-region-level\s*\{[\s\S]*?repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(layout,/\.rs-region-filter \.rs-company-level\s*\{[\s\S]*?repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(layout,/grid-column:1 \/ -1/);
+  assert.doesNotMatch(layout,/overflow-x\s*:\s*auto|scroll-snap|flex-wrap\s*:\s*nowrap/);
 });
