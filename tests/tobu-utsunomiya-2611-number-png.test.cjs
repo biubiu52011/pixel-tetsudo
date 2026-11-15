@@ -26,12 +26,48 @@ test('exact 86 SQL service numbers and no neighboring extrapolation',()=>{
  for(const n of ['400N','487N','0401N','401','401E','401NA','1501N'])
   assert.equal(root.TobuUtsunomiya2611Png.hasPublishedNumber(n),false,n);
 });
+test('number bands are explicit, parity-separated and limited to their own railway',()=>{
+ const reg=root.TobuUtsunomiya2611Png;
+ const ranges=reg.ranges;
+ assert.equal(ranges.length,2);
+ assert.equal(ranges[0].first,'401N');
+ assert.equal(ranges[0].last,'485N');
+ assert.equal(ranges[0].railDirection,'Outbound');
+ assert.equal(ranges[0].origin,'Shin-Tochigi');
+ assert.equal(ranges[0].destination,'Tobu-Utsunomiya');
+ assert.equal(ranges[1].first,'402N');
+ assert.equal(ranges[1].last,'486N');
+ assert.equal(ranges[1].railDirection,'Inbound');
+ assert.equal(ranges[1].origin,'Tobu-Utsunomiya');
+ assert.equal(ranges[1].destination,'Shin-Tochigi');
+ assert.equal(ranges[0].count+ranges[1].count,reg.numbersPerCalendar);
+ assert.ok(Object.isFrozen(ranges));
+ for(const range of ranges){
+  assert.ok(Object.isFrozen(range));
+  assert.equal(range.step,2);
+  assert.equal(range.count,(range.max-range.min)/range.step+1);
+  for(let i=range.min;i<=range.max;i+=range.step){
+   const value=reg.rangeFor(i+'N');
+   assert.equal(value,range,i+'N');
+   assert.equal(reg.hasPublishedNumber(i+'N'),true);
+  }
+ }
+ for(const invalid of ['400N','487N','499N','401D','0401N','401','1N','401NN']){
+  assert.equal(reg.rangeFor(invalid),null,invalid);
+ }
+});
 test('20400 PNG is a reference for all 86 numbers in both source calendars',()=>{
  for(let n=401;n<=486;n++)for(const calendarType of ['weekday','holiday']){
   const number=n+'N';const position=run(number,{calendarType});
   const value=root.TrainNumberPngRanges.match(number,'TobuUtsunomiya',position);
   assert.ok(value,number+'/'+calendarType);
   assert.equal(value.model,'東武20400型');
+  const band=root.TobuUtsunomiya2611Png.rangeFor(number);
+  assert.equal(value.rangeId,band.id);
+  assert.equal(value.rangeFirst,band.first);
+  assert.equal(value.rangeLast,band.last);
+  assert.equal(value.rangeStep,2);
+  assert.equal(value.rangeCount,43);
   assert.equal(value.expectedDirection,n%2?'Outbound':'Inbound');
   assert.equal(value.sourceCalendar,calendarType);
   assert.equal(value.sourceEdition,'historical-undated');
