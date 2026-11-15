@@ -4434,11 +4434,15 @@
       // For the verified month only, match an actual published number on
       // THIS line and THIS timetable calendar, not a plausible bare range.
       if(row.officialMonthNumbers){
-        // Exact official-month roster may not degrade to a broad PNG range
-        // when the date is absent, outside edition, or otherwise unverified.
+        // Strictly scoped official-month roster. A dated context from another
+        // month is never eligible; missing date in a supplied position also
+        // fails closed. Historical no-context callers may inspect the exact
+        // union of official numbers, but NEVER the inclusive numeric band.
+        var monthDate=String(context&&context.serviceDate||"").slice(0,7);
+        var noContext=!context||Object.keys(context).length===0;
         if(!row.officialMonth||
-           String(context&&context.serviceDate||"").slice(0,7)!==row.officialMonth)
-          continue;
+           (monthDate&&monthDate!==row.officialMonth)||
+           (!monthDate&&!noContext))continue;
         var monthSets=row.officialMonthNumbers[line];
         if(!monthSets)continue;
         var monthCal=sourceCalendar(context);
