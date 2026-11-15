@@ -20,7 +20,7 @@
   width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
   height: auto; min-height: 0; max-height: none;
   background: var(--bg); border: 2px solid var(--text);
-  border-radius: 5px; box-shadow: 4px 4px 0 rgba(32,33,38,.32), inset 2px 2px 0 #ffffff; padding: 14px; overflow-x: auto; overflow-y: visible; flex-shrink: 0;
+  border-radius: 5px; box-shadow: 4px 4px 0 rgba(32,33,38,.32), inset 2px 2px 0 #ffffff; padding: 14px; overflow-x: auto; overflow-y: visible; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; flex-shrink: 0;
 }
 @media (max-width: 640px) { .tp-line-map { padding: 6px; } }
 /* v4.3.546: 线路图完整适配——svg width=100%（viewBox 缩放），wrap 占满容器，

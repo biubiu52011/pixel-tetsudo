@@ -1328,7 +1328,6 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         _rightNeed = _branchStubR + 10 + _branchMaxNameW("right") + 2; // 单支线（现状）
       }
     }
-    var branchOffset = branchLines.length > 0 ? GEOM.BRANCH_COL_W * branchLines.length : 0;
     // 支线名称标签位于接续站上方 26px（符合行业
     // 支线标注）。接续站是首站时预留顶部空间。
     if (branchLines.length > 0) {
@@ -1505,7 +1504,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           stroke: color, 
           'stroke-width': 5, 
           fill: 'none', 
-          opacity: 1.0 
+          'stroke-opacity': 0.6 
         }
       });
       
@@ -1521,7 +1520,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
                ' L ' + junctionX + ' ' + junctionY,
             stroke: color, 'stroke-width': 5,
             'stroke-linecap': 'round', 'stroke-linejoin': 'round',
-            fill: 'none', opacity: 1.0
+            fill: 'none', 'stroke-opacity': 0.6
           }
         });
       }
@@ -1581,7 +1580,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       
       routeElements.push({
         type: 'rect',
-        attrs: { x: cx - halfW, y: cy - halfH, width: rectW, height: rectH, rx: 20, ry: 20, stroke: color, 'stroke-width': 5, fill: 'none', opacity: 0.6 }
+        attrs: { x: cx - halfW, y: cy - halfH, width: rectW, height: rectH, rx: 20, ry: 20, stroke: color, 'stroke-width': 5, fill: 'none', 'stroke-opacity': 0.6 }
       });
       
     } else {
@@ -1613,11 +1612,11 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         svgW = Math.max(_baseW, mainCx + 12 + _rightNeed + _rightPad);
 
       } else {
-        // 单支线/无支线：主线中心固定（现状）
+        // 单支线/无支线：固定主干中心，只按真实右侧站名和支线位置预留空间。
+        // 原 branchOffset = 96 × 支线数会让实际站名范围之外再空出一整列，
+        // 在 width:100% 的 SVG 中反而压小主干文字。
         mainCx = _baseW / 2;
-        // 不再把竖列支线名标签宽计入 svgW——标签已移至 HTML 层图注（trains-render.js
-        // .branch-note），viewBox 宽度与主流线一致（297），保持全线路字大小密度统一。
-        svgW = Math.max(_baseW, mainCx + _branchStubR + branchOffset + _rightPad);
+        svgW = Math.max(_baseW, mainCx + 12 + _rightNeed + _rightPad);
       }
       
       // 逐段定距（_yAt）替代旧「均匀 sp + _extraY 补偿」——旧补偿 min(换乘数,8) 与渲染 min(16) 不一致，已废
@@ -1680,14 +1679,14 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
             attrs: {
               x1: _segA.x, y1: _segA.y, x2: _segB.x, y2: _segB.y,
               stroke: _segmentDisplayColor(lineId, _segA.stationId, _segB.stationId, color),
-              'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6
+              'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-opacity': 0.6
             }
           });
         }
       } else {
         routeElements.push({
           type: 'line',
-          attrs: { x1: mainCx, y1: y1, x2: mainCx, y2: y2, stroke: color, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6 }
+          attrs: { x1: mainCx, y1: y1, x2: mainCx, y2: y2, stroke: color, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-opacity': 0.6 }
         });
       }
       if (isSkytreeYFork) {
@@ -1695,13 +1694,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
             _forkJ = stationCoords[3];
         routeElements.push({type:'line',attrs:{
           x1:_forkA.x,y1:_forkA.y,x2:_forkJ.x,y2:_forkJ.y,
-          stroke:color,'stroke-width':5,'stroke-linecap':'round',opacity:0.6,
+          stroke:color,'stroke-width':5,'stroke-linecap':'round','stroke-opacity': 0.6,
           'data-fork-track':'asakusa'
         }});
         routeElements.push({type:'path',attrs:{
           d:'M '+_forkJ.x+' '+_forkJ.y+' H '+_forkO.x+' V '+_forkO.y,
           fill:'none',stroke:color,'stroke-width':5,
-          'stroke-linecap':'round','stroke-linejoin':'round',opacity:0.6,
+          'stroke-linecap':'round','stroke-linejoin':'round','stroke-opacity': 0.6,
           'data-fork-track':'oshiage-l'
         }});
         // The canonical Hanzomon service boundary at Oshiage is rendered
@@ -1735,13 +1734,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           // 连接线：主线端点 → 延伸段第一站（同列时即为垂直连续线）
           var jx = mainCx, jy = exl.joinAtEnd ? yBase : yStartRef;
           var exFirstY = exl.joinAtEnd ? (yBase + sp) : (yStartRef - sp);
-          routeElements.push({ type: 'line', attrs: { x1: jx, y1: jy, x2: mainCx + extOffsetX, y2: jy, stroke: exColor, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6 } });
-          routeElements.push({ type: 'line', attrs: { x1: mainCx + extOffsetX, y1: jy, x2: mainCx + extOffsetX, y2: exFirstY, stroke: exColor, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6 } });
+          routeElements.push({ type: 'line', attrs: { x1: jx, y1: jy, x2: mainCx + extOffsetX, y2: jy, stroke: exColor, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-opacity': 0.6 } });
+          routeElements.push({ type: 'line', attrs: { x1: mainCx + extOffsetX, y1: jy, x2: mainCx + extOffsetX, y2: exFirstY, stroke: exColor, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-opacity': 0.6 } });
           // 延伸段站内连线
           for (var exk2 = 0; exk2 < extStations.length - 1; exk2++) {
             var yA = exl.joinAtEnd ? (extStartY + (exk2 + 1) * sp) : (extStartY - (exk2 + 1) * sp);
             var yB = exl.joinAtEnd ? (extStartY + (exk2 + 2) * sp) : (extStartY - (exk2 + 2) * sp);
-            routeElements.push({ type: 'line', attrs: { x1: mainCx + extOffsetX, y1: yA, x2: mainCx + extOffsetX, y2: yB, stroke: exColor, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6 } });
+            routeElements.push({ type: 'line', attrs: { x1: mainCx + extOffsetX, y1: yA, x2: mainCx + extOffsetX, y2: yB, stroke: exColor, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-opacity': 0.6 } });
           }
           // LOS 系统成员是同级干线区段，不是从属延伸。
           // 只为真正的外部/干线延伸保留标签。
@@ -1766,7 +1765,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         var pColor = (window.LineOperationSystemsResolveColor && window.LineOperationSystemsResolveColor(sseg.partner)) || (allLines[sseg.partner] && allLines[sseg.partner].color) || "#888";
         routeElements.push({
           type: 'line',
-          attrs: { x1: mainCx - 7, y1: _yAt(sseg.start), x2: mainCx - 7, y2: _yAt(sseg.end), stroke: pColor, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.6 }
+          attrs: { x1: mainCx - 7, y1: _yAt(sseg.start), x2: mainCx - 7, y2: _yAt(sseg.end), stroke: pColor, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-opacity': 0.6 }
         });
       }
     }
@@ -1899,7 +1898,6 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         return _segmentDisplayColor(lineId, _prev, _next, color);
       },
       branchLines: branchLines,
-      branchOffset: branchOffset,
       branchSides: (function() { var _ba = []; for (var _bi5 = 0; _bi5 < branchLines.length; _bi5++) _ba.push(_bSide(_bi5)); return _ba; })(), // 每支线分叉侧（跨函数传给 renderTrainMap）
       bCol: _bCol, // 支线列序号（跨函数）
       branchStubL: _branchStubL, // 左侧支线 stub（主干最宽站名+22，跨函数）

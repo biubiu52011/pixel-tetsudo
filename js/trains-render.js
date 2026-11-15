@@ -612,30 +612,37 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
   }
 
-  // L1 canvas contract: the HTML .tp-line-map owns the only surface.
-  // The inline SVG is transparent foreground, with one viewport determined
-  // solely by its static railway content (all route shapes share this rule).
-  // Realtime positions must never resize/recenter the complete route canvas.
+  // L1: the surrounding HTML owns the background. Only static rail content
+  // defines this viewport; a realtime train must never resize or recenter it.
+  // getBBox includes station names/chips, so do not preserve unused geometry
+  // padding when the content itself fits in a smaller rectangle.
   function _commitStaticRouteViewport(svg, staticLayer, geometry) {
     var width = Math.max(1, Number(geometry && geometry.svgW) || 1);
     var height = Math.max(1, Number(geometry && geometry.svgH) || 1);
-    var left = 0, top = 0, right = width, bottom = height;
+    var bounds = { x:0, y:0, width:width, height:height };
     try {
       var box = staticLayer && staticLayer.getBBox && staticLayer.getBBox();
       if (box && isFinite(box.x) && isFinite(box.y) &&
           isFinite(box.width) && isFinite(box.height) &&
-          box.width >= 0 && box.height >= 0) {
-        left = Math.min(0, box.x - 28);
-        top = Math.min(0, box.y - 32);
-        right = Math.max(width, box.x + box.width + 28);
-        bottom = Math.max(height, box.y + box.height + 32);
+          box.width > 0 && box.height > 0) {
+        // Leave clearance for the 5px stroke and train marker side lanes,
+        // but do not take the union with the old generously padded svgW/H.
+        var padX = 24, padY = 28;
+        bounds = { x:box.x-padX, y:box.y-padY,
+          width:box.width+2*padX, height:box.height+2*padY };
       }
     } catch (_ignored) {
-      // Unavailable SVG text metrics: retain the deterministic base geometry.
+      // Unavailable SVG text metrics: keep the deterministic geometry fallback.
     }
-    var bounds = { x:left, y:top, width:right-left, height:bottom-top };
     svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
     svg.setAttribute("data-pt-viewport-source", "static-route");
+    // With wide branches, preserve at least 85% of the coordinate-space size.
+    // The existing .tp-line-map horizontal overflow then takes over instead
+    // of squeezing every station label to fit the narrowest mobile screen.
+    var protectBranchScale = !!(geometry && !geometry.isSixShapedLoop &&
+      geometry.branchLines && geometry.branchLines.length);
+    if (protectBranchScale) svg.style.minWidth = Math.ceil(bounds.width * 0.85) + "px";
+    svg.setAttribute("data-pt-min-scale", protectBranchScale ? "0.85" : "fit");
     if (geometry) geometry.contentBounds = bounds;
     return bounds;
   }
@@ -871,7 +878,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             bHLine.setAttribute("x2", _bHxLast); bHLine.setAttribute("y2", _bHY0);
             bHLine.setAttribute("stroke", bColor);
             bHLine.setAttribute("stroke-width", "3");
-            bHLine.setAttribute("opacity", "0.5");
+            bHLine.setAttribute("stroke-opacity", "0.6");
             trackLayer.appendChild(bHLine);
             // 支线站横排
             for (var bsiH = 0; bsiH < _bHSt.length; bsiH++) {
@@ -922,7 +929,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             branchLine.setAttribute("stroke", bColor);
             branchLine.setAttribute("stroke-width", "5");
             branchLine.setAttribute("fill", "none");
-            branchLine.setAttribute("opacity", "0.6");
+            branchLine.setAttribute("stroke-opacity", "0.6");
             trackLayer.appendChild(branchLine);
             
             // 支线竖线。
@@ -944,7 +951,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           branchVLine.setAttribute("y2", _connY + Math.max(0, _vOwn - 1) * branchSp);
           branchVLine.setAttribute("stroke", bColor);
           branchVLine.setAttribute("stroke-width", "5");
-          branchVLine.setAttribute("opacity", "0.6");
+          branchVLine.setAttribute("stroke-opacity", "0.6");
           trackLayer.appendChild(branchVLine);
           
           // Branch stations（主線と同じ _renderStationNode で統一描画——スタイルは完全に同一）
