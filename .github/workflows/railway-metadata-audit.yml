@@ -1,0 +1,39 @@
+name: Audit railway metadata and PNG identity
+
+# GitHub canonical records + dated Supabase read-only export. The export is
+# NOT a live database connection; never commit Supabase secrets to CI.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/core/railway_data.json'
+      - 'data/core/railway_data.compact.json'
+      - 'data/core/railway-data.file.js'
+      - 'data/audits/railway-metadata-known-gaps-20261116.json'
+      - 'data/audits/supabase-railway-audit-snapshot-20261116.json'
+      - 'data/timetables/train-number-png-ranges.js'
+      - 'data/timetables/vehicle-garage-png-map.js'
+      - 'images/列车/**'
+      - 'images/鉄道/**'
+      - 'tools/railway-metadata-audit.cjs'
+      - 'tests/railway-metadata-audit.test.cjs'
+      - '.github/workflows/railway-metadata-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-railway:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate audit script
+        run: node --check tools/railway-metadata-audit.cjs
+      - name: Inspect all canonical lines, colors, station topology and PNG evidence
+        run: node tools/railway-metadata-audit.cjs --strict
+      - name: Assert known repaired registry contracts
+        run: node --test tests/railway-metadata-audit.test.cjs
+      - name: Verify generated static bundles are synchronized
+        run: node data/core/generate-all.js --check
