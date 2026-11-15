@@ -37285,19 +37285,20 @@
         "Tobu-Utsunomiya"
       ],
       "durations": [
+        3,
+        3,
+        3,
+        4,
+        3,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        4,
+        3,
+        3,
+        3
       ],
-      "throughServices": [],
+      "throughServices": [
+        "TobuNikko"
+      ],
       "transferStations": [
         {
           "station": "Shin-Tochigi",
@@ -37315,7 +37316,44 @@
       ],
       "nameZh": "宇都宫线",
       "nameKo": "우츠노미야선",
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "TobuNikko",
+          "handoverStations": [
+            "Shin-Tochigi"
+          ],
+          "serviceScope": "selected-local-destination-only",
+          "evidence": {
+            "source": "20 of 43 TobuUtsunomiya Inbound historical source services per calendar have MinamiKurihashi destination; as-of-2026-11-15 station timetables support some direct service",
+            "url": "https://roote.ekispert.net/timetable/train/21825/2750",
+            "confidence": "MEDIUM",
+            "timetableDateVerified": false,
+            "physicalContinuationVerified": false
+          }
+        }
+      ],
+      "durationDerivation": {
+        "source": "public.manual_timetable_templates + public.manual_timetable_template_stops, historical TobuUtsunomiya",
+        "method": "median physical-segment departure-to-next-station arrival from 43 outbound and 43 inbound SaturdayHoliday source runs, excluding dwell",
+        "sampleCalendar": "odpt.Calendar:SaturdayHoliday",
+        "sampleCountsBySegment": [
+          86,
+          86,
+          86,
+          86,
+          86,
+          86,
+          86,
+          86,
+          86,
+          86
+        ],
+        "sourceRevisionVerified": false,
+        "timetableDateVerified": false,
+        "verifiedCurrent": false,
+        "externalCrossCheck": "https://roote.ekispert.net/timetable/train/21825/2750",
+        "notes": "Representative geometry only; SQL keeps historical per-train times and does not prove operation on a current date."
+      }
     },
     "Yamagata": {
       "name": "Yamagata",
@@ -38168,7 +38206,8 @@
       ],
       "throughServices": [
         "TobuSkytree",
-        "Nikkoku"
+        "Nikkoku",
+        "TobuUtsunomiya"
       ],
       "transferStations": [
         {
@@ -38238,6 +38277,20 @@
           "evidence": {
             "source": "https://www.tobu.co.jp/pdf/timetable/time-table_01_kudari.pdf?202603=",
             "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "TobuUtsunomiya",
+          "handoverStations": [
+            "Shin-Tochigi"
+          ],
+          "serviceScope": "selected-local-destination-only",
+          "evidence": {
+            "source": "20 of 43 TobuUtsunomiya Inbound historical source services per calendar have MinamiKurihashi destination; as-of-2026-11-15 station timetables support some direct service",
+            "url": "https://roote.ekispert.net/timetable/train/21825/2750",
+            "confidence": "MEDIUM",
+            "timetableDateVerified": false,
+            "physicalContinuationVerified": false
           }
         }
       ]
