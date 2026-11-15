@@ -16080,12 +16080,12 @@
           "東京メトロ15000系",
           "東京メトロ07系"
         ],
-        "excludeTrainType": "LimitedExpress",
-        "sourceOperatorFallback": true,
         "exactModelArtworkMap": {
           "東京メトロ15000系": "../images/列车/東京メトロ/東京メトロ_15000系.png",
           "東京メトロ07系": "../images/列车/東京メトロ/東京メトロ_07系.png"
-        }
+        },
+        "excludeTrainType": "LimitedExpress",
+        "sourceOperatorFallback": true
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
