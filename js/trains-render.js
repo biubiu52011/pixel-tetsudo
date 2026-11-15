@@ -1372,25 +1372,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // Candidate descriptions are informational and must never promote a
   // historical or route-wide fleet list into actual trainset identity.
   function _seibuCommuterCandidatesLabel(p, lineId, lang) {
-    var plan = p && (p.vehiclePlan ||
-      (p.vehicleResolution && p.vehicleResolution.vehiclePlan));
-    var isSeibuLine = /^(?:Ikebukuro|Haijima|Kokubunji|Yurakucho_Seibu|SeibuShinjuku|SeibuTamako|SeibuTamagawa|SeibuChichibu|SeibuEn|SeibuToshima|SeibuYamaguchi|Seibu_Sayama)$/.test(String(lineId || ""));
-    var isCommuterType = /(?:\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
-    var status = p && (p.vehicleIdentityStatus ||
-      (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "";
-    // A Seibu candidate is scoped to the plan's actual line, not to every
-    // line operated by Seibu (e.g. Ikebukuro vs Toshima).
-    if (status === "EXACT" || !isSeibuLine || !isCommuterType ||
-        !plan || String(plan.lineId || "") !== String(lineId || "") ||
-        !Array.isArray(plan.models)) return "";
-    // A certified train plan must use the generic confirmed label, not the
-    // Seibu corridor-candidate helper that otherwise wins title precedence.
-    if (plan.confirmed === true) return "";
-    var models = plan.models.map(function(v) { return String(v || "").trim(); })
-      .filter(Boolean)
-      // 旧資料に混在する特急用 001 / 10000 系は通勤車候補として表示しない。
-      .filter(function(v) { return !/(?:^|西武)(?:001|10000)系|Laview|レッドアロー/i.test(v); });
-    if (!models.length) return "";
+    // The vehicle resolver owns candidate eligibility; SVG only formats text.
+    var models = window.TrainVehicle &&
+      typeof window.TrainVehicle.seibuCommuterCandidateModels === "function"
+      ? window.TrainVehicle.seibuCommuterCandidateModels(p, lineId) : null;
+    if (!Array.isArray(models) || !models.length) return "";
     lang = String(lang || "ja").toLowerCase();
     var prefix = /^zh/.test(lang) ? "计划车型未确认（参考）：" :
       lang === "en" ? "Scheduled model unconfirmed (reference only): " :
@@ -1399,74 +1385,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return prefix + models.join(" / ");
   }
 
-  // Present train-number-matched Shonan-color plan candidates, NOT a live
-  // E231/E233 vehicle identification. No representative PNG is authorized.
   function _shonanFleetCandidatesLabel(p, lineId, lang) {
-    if (!/^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo|Yokosuka|Ito)$/.test(String(lineId || "")) ||
-        !p || p.vehicleIdentityStatus === "EXACT" ||
-        !/(?:[.:])(?:Local|Rapid|SpecialRapid)$/.test(String(p.trainType || ""))) return "";
-    var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
-    // Ito 16xxM/56xxM are Izukyu turnback workings, even when the
-    // legacy SQL candidate label incorrectly says E231/E233.
-    if (lineId === "Ito" && window.TrainNumberPngRanges &&
-        typeof window.TrainNumberPngRanges.matchItoFleetCandidates === "function") {
-      var itoWorking = window.TrainNumberPngRanges.matchItoFleetCandidates(
-        Object.assign({}, p, {displayLineId:lineId}));
-      if (itoWorking && itoWorking.owner === "Izukyu") return "";
-    }
-    // A CURRENT JR East public train number can establish only the shared
-    // Shonan-color corridor fleet (E231-1000 / E233-3000). It cannot choose
-    // one trainset or authorize either PNG. Keep the SOURCE line and CURRENT
-    // displayed line equal; don't relabel an unrelated through projection.
-    var numberIndex = window.JREastShonanMixedNumberIndex202611;
-    var numberedFamily = numberIndex && typeof numberIndex.match === "function"
-      ? numberIndex.match(Object.assign({}, p, {displayLineId:lineId})) : null;
-    if (numberedFamily && numberedFamily.authorizesPNG === false) {
-      var numberLang = String(lang || "ja").toLowerCase();
-      var numberPrefix = /^zh/.test(numberLang) ? "计划车型未确认（湘南色参考）：" :
-        numberLang === "en" ? "Scheduled model unconfirmed (Shonan-color reference): " :
-        numberLang === "ko" ? "계획 차종 미확인(쇼난색 참고): " :
-        "計画車種未確認（湘南色参考）：";
-      return numberPrefix + numberedFamily.models.join(" / ");
-    }
-    // A live record can display a unique train-number-matched timetable
-    // REFERENCE, but that is not the actual vehicle occupying the position.
-    var liveReference = p.positionSource === "realtime-api" &&
-      p.timetableFleetReference &&
-      (p.timetableFleetReference.status === "UNCONFIRMED_PLANNED_FLEET" ||
-       p.timetableFleetReference.status === "UNVERIFIED_ROUTE_FLEET")
-        ? p.timetableFleetReference : null;
-    // Do not spread a timetable/corridor candidate across unrelated
-    // displayed lines merely because they share the same fleet family.
-    if (liveReference) {
-      if (liveReference.lineId &&
-          String(liveReference.lineId) !== String(lineId || "")) return "";
-      if (p.positionLineId &&
-          String(p.positionLineId) !== String(lineId || "")) return "";
-    } else if (!plan || String(plan.lineId || "") !== String(lineId || "")) {
-      return "";
-    }
-    var models = liveReference && Array.isArray(liveReference.models)
-      ? liveReference.models
-      : (p.estimated === true &&
-         p.plannedVehicleCandidateStatus === "source_single_type_candidate" &&
-         plan && plan.evidenceRole === "unverified-source-candidate" &&
-         Array.isArray(plan.models) ? plan.models : []);
-    if (models.length !== 2 ||
-        !models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
-        !models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return "";
+    var models = window.TrainVehicle &&
+      typeof window.TrainVehicle.shonanFleetCandidateModels === "function"
+      ? window.TrainVehicle.shonanFleetCandidateModels(p, lineId) : null;
+    if (!Array.isArray(models) || !models.length) return "";
     lang = String(lang || "ja").toLowerCase();
-    // Most imported Shonan-color timetables are still
-    // undated_not_current_verified. A corridor fleet is useful reference,
-    // but does NOT establish the model of this scheduled/live train.
-    var currentPlanVerified = liveReference
-      ? liveReference.status === "UNCONFIRMED_PLANNED_FLEET"
-      : p.timetableDateVerified === true;
     var prefix = /^zh/.test(lang) ? "计划车型未确认（湘南色参考）：" :
       lang === "en" ? "Scheduled model unconfirmed (Shonan-color reference): " :
       lang === "ko" ? "계획 차종 미확인(쇼난색 참고): " :
       "計画車種未確認（湘南色参考）：";
-    return prefix + "E231系1000番台 / E233系3000番台";
+    return prefix + models.join(" / ");
   }
 
   // Display the timetable fleet mapping as a reference, separate from actual

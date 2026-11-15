@@ -6721,7 +6721,68 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     return { kind: "vehicle", iconSrc: iconSrc, planned: plannedMarker };
   }
 
+  // TrainVehicle is the sole owner of source-scoped fleet candidate decisions.
+  // A candidate label is NEVER physical-carset evidence or PNG authorization.
+  function seibuCommuterCandidateModels(p, lineId) {
+    var plan = p && (p.vehiclePlan ||
+      (p.vehicleResolution && p.vehicleResolution.vehiclePlan));
+    var scopedLine = /^(?:Ikebukuro|Haijima|Kokubunji|Yurakucho_Seibu|SeibuShinjuku|SeibuTamako|SeibuTamagawa|SeibuChichibu|SeibuEn|SeibuToshima|SeibuYamaguchi|Seibu_Sayama)$/.test(String(lineId || ""));
+    var commuter = /(?:\.|:)(?:Local|Express|SemiExpress|Rapid|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner)$/.test(String(p && p.trainType || ""));
+    var status = p && (p.vehicleIdentityStatus ||
+      (p.vehicleResolution && p.vehicleResolution.identityStatus)) || "";
+    if (status === "EXACT" || !scopedLine || !commuter || !plan ||
+        String(plan.lineId || "") !== String(lineId || "") ||
+        !Array.isArray(plan.models) || plan.confirmed === true) return null;
+    var models = plan.models.map(function(v) { return String(v || "").trim(); })
+      .filter(Boolean).filter(function(v) {
+        return !/(?:^|西武)(?:001|10000)系|Laview|レッドアロー/i.test(v);
+      });
+    return models.length ? models : null;
+  }
+
+  function shonanFleetCandidateModels(p, lineId) {
+    if (!/^(?:Tokaido|TokaidoMain|Takasaki|UtsunomiyaJR|ShonanShinjuku|UenoTokyo|Yokosuka|Ito)$/.test(String(lineId || "")) ||
+        !p || p.vehicleIdentityStatus === "EXACT" ||
+        !/(?:[.:])(?:Local|Rapid|SpecialRapid)$/.test(String(p.trainType || ""))) return null;
+    var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // An Izukyu turnback is not a Shonan-color service, even if SQL has
+    // a stale E231/E233 corridor candidate for the same public number.
+    if (lineId === "Ito" && window.TrainNumberPngRanges &&
+        typeof window.TrainNumberPngRanges.matchItoFleetCandidates === "function") {
+      var itoWorking = window.TrainNumberPngRanges.matchItoFleetCandidates(
+        Object.assign({}, p, {displayLineId:lineId}));
+      if (itoWorking && itoWorking.owner === "Izukyu") return null;
+    }
+    var index = window.JREastShonanMixedNumberIndex202611;
+    var numbered = index && typeof index.match === "function"
+      ? index.match(Object.assign({}, p, {displayLineId:lineId})) : null;
+    if (numbered && numbered.authorizesPNG === false)
+      return Array.isArray(numbered.models) && numbered.models.length
+        ? numbered.models.slice() : null;
+    var live = p.positionSource === "realtime-api" && p.timetableFleetReference &&
+      (p.timetableFleetReference.status === "UNCONFIRMED_PLANNED_FLEET" ||
+       p.timetableFleetReference.status === "UNVERIFIED_ROUTE_FLEET")
+      ? p.timetableFleetReference : null;
+    if (live) {
+      if (live.lineId && String(live.lineId) !== String(lineId || "")) return null;
+      if (p.positionLineId && String(p.positionLineId) !== String(lineId || "")) return null;
+    } else if (!plan || String(plan.lineId || "") !== String(lineId || "")) {
+      return null;
+    }
+    var models = live && Array.isArray(live.models) ? live.models :
+      (p.estimated === true &&
+       p.plannedVehicleCandidateStatus === "source_single_type_candidate" &&
+       plan && plan.evidenceRole === "unverified-source-candidate" &&
+       Array.isArray(plan.models) ? plan.models : []);
+    if (models.length !== 2 ||
+        !models.some(function(m) { return /E231系1000番台/.test(String(m)); }) ||
+        !models.some(function(m) { return /E233系3000番台/.test(String(m)); })) return null;
+    return ["E231系1000番台", "E233系3000番台"];
+  }
+
   window.TrainVehicle = {
+    seibuCommuterCandidateModels: seibuCommuterCandidateModels,
+    shonanFleetCandidateModels: shonanFleetCandidateModels,
     resolveRealtime: resolveRealtime,
     resolveTimetableRun: resolveTimetableRun,
     resolvePublishedPositionPlan: resolvePublishedPositionPlan,

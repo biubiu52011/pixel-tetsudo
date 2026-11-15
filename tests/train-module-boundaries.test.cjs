@@ -32,3 +32,16 @@ test('realtime consumes DataState status vocabulary without a second table', () 
   assert.match(view, /const STATUS_META = window\.DataState\.STATUS_META;/);
   assert.doesNotMatch(view, /const STATUS_META = window\.DataState \?/);
 });
+
+test('vehicle candidates are selected only by TrainVehicle and never SVG display', () => {
+  const vehicle = read('js/train-vehicle.js');
+  const render = read('js/trains-render.js');
+  assert.match(vehicle, /function seibuCommuterCandidateModels\(/);
+  assert.match(vehicle, /function shonanFleetCandidateModels\(/);
+  assert.match(render, /window\.TrainVehicle\.seibuCommuterCandidateModels\(p, lineId\)/);
+  assert.match(render, /window\.TrainVehicle\.shonanFleetCandidateModels\(p, lineId\)/);
+  assert.doesNotMatch(render, /window\.JREastShonanMixedNumberIndex202611/);
+  assert.doesNotMatch(render.slice(render.indexOf('  function _shonanFleetCandidatesLabel('),
+    render.indexOf('  \/\/ Display the timetable fleet mapping')),
+    /matchItoFleetCandidates|positionSource|vehicleIdentityStatus/);
+});
