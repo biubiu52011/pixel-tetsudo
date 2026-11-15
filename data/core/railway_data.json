@@ -37873,7 +37873,7 @@
       "region": null,
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武有楽町線.png",
-      "durationTotalMin": null,
+      "durationTotalMin": 4,
       "branchOf": null,
       "stations": [
         "Nerima",
@@ -37881,7 +37881,6 @@
         "Kotake-Mukaihara"
       ],
       "durations": [
-        2,
         2,
         2
       ],
@@ -37974,7 +37973,8 @@
       "routeLengthKm": 2.6,
       "operatingPrefectures": [
         "Tokyo"
-      ]
+      ],
+      "durationBasis": "schematic_not_official_timetable"
     },
     "Odawara": {
       "name": "Odawara",
