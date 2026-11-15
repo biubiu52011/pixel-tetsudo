@@ -945,6 +945,11 @@ window.StationInfoLayout = (function() {
 // 列车页不再有独立的转发/配置外壳。
 window.TrainsConfig = {
   GEOM: {
+    // The sole JS owner of mobile/tablet map thresholds and physical SVG scale.
+    // Keep CSS @media (max-width: 640px) in sync for page padding only.
+    MOBILE_BREAKPOINT: 640,
+    TABLET_BREAKPOINT: 900,
+    MOBILE_RENDER_SCALE: 1.45,
     BRANCH_COL_W: 96,
     BRANCH_STUB: 20,
     MAIN_BASE_W_MOBILE: 410,
@@ -966,10 +971,11 @@ window.TrainsColors = window.TrainsConfig.COLORS;
 // still gets the compact layout. CSS controls page padding independently.
 var _isMobileView = typeof _isMobileView === "function" ? _isMobileView : function() {
   if (typeof window === "undefined") return false;
-  if (window.innerWidth <= 640) return true;
+  var breakpoint = window.TrainsConfig.GEOM.MOBILE_BREAKPOINT;
+  if (window.innerWidth <= breakpoint) return true;
   var screen = window.screen;
   return !!(screen && Number(screen.width) > 0 && Number(screen.height) > 0 &&
-    Math.min(screen.width, screen.height) <= 640);
+    Math.min(screen.width, screen.height) <= breakpoint);
 };
 
 var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {

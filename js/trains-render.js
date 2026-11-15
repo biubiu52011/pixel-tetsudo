@@ -643,19 +643,24 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var protectBranchScale = !!(geometry && !geometry.isSixShapedLoop &&
       geometry.branchLines && geometry.branchLines.length);
     var mobileGeometry = typeof _isMobileView === "function" && _isMobileView();
-    var compactViewport = typeof window !== "undefined" && window.innerWidth <= 900;
+    var compactViewport = typeof window !== "undefined" &&
+      window.innerWidth <= window.TrainsConfig.GEOM.TABLET_BREAKPOINT;
     var minScaleMode = "fit";
-    if (mobileGeometry && !(geometry && geometry.isSixShapedLoop)) {
-      var physicalScale = 1.45;
+    if (geometry && geometry.isSixShapedLoop) {
+      // This template has its own CSS fit policy. No inline width/maxWidth
+      // limits may override the dedicated full-width loop layout.
+    } else if (mobileGeometry) {
+      var physicalScale = window.TrainsConfig.GEOM.MOBILE_RENDER_SCALE;
       svg.style.width = Math.round(bounds.width * physicalScale * 100) / 100 + "px";
-      // Override global width:100% and desktop max-width:520px. Branches may
-      // scroll horizontally but must not shrink their station typography.
+      // Override only the static CSS base sizing for mobile; CSS alone owns
+      // the default SVG width, height and transparent background.
       svg.style.maxWidth = "none";
       svg.style.minWidth = "0px";
       svg.setAttribute("data-pt-render-scale", String(physicalScale));
       minScaleMode = "fixed-mobile";
     } else if (compactViewport) {
-      // Preserve tablet policy and the specially arranged six-shaped loop.
+      // Tablets use the compact sizing policy; six-shaped loops were handled
+      // above by their dedicated CSS template.
       var wrapperWidth = svg.parentNode && svg.parentNode.clientWidth;
       var availableWidth = Math.max(1, Number(wrapperWidth) ||
         Math.max(280, window.innerWidth - 32));
@@ -803,12 +808,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       svg.setAttribute("xmlns", svgNS);
       svg.setAttribute("viewBox", "0 0 " + svgW + " " + svgH);
       svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-      // 像素 ×倍数部署（拓展后尺寸）——图超出容器需横向滚动，体验差。
-      // 显示层改容器适配——svg width=100%，viewBox 按比例缩放完整显示，
-      // 整图可见、无横向滚动；viewBox 逻辑尺寸（_baseW/_cw6）仍决定内容密度基线。
-      svg.style.width = "100%";
-      svg.style.height = "auto";
-      svg.style.background = "transparent";
+      // Static size/background are defined once in trains.css. Only the
+      // committed viewport may override width for the mobile physical scale.
       svg.setAttribute("data-pt-canvas", "content-only");
       svg.setAttribute("data-line-id", lineId);
       svg.setAttribute("data-lang", _lang);
@@ -1089,8 +1090,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // （tp-est-note、下・中央）に置く。
       el.innerHTML = '<div class="tp-map-wrap"></div>';
       var _mapWrap = el.querySelector('.tp-map-wrap');
-      // 六字形和普通图都以可用
-      // 视口宽度的 100% 渲染。不要注入更宽的固有尺寸滚动面。
+      // CSS owns the baseline responsive SVG surface; this wrapper remains
+      // full-width while only truly wide maps may scroll horizontally.
       // 竖列支线名 HTML 图注（SVG 上方，线色着色，多条以 · 分隔）
       if (_branchNoteItems.length) {
         var _bnEl = document.createElement('div');
