@@ -2502,7 +2502,11 @@ test('JR 2611 Tsurumi bare numbers match official timetable calendar and exact b
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
     ...make('Tsurumi','999','weekday','Outbound'),
     serviceDate:'2026-10-04'
-  })?.pngPath,png,'older months retain their existing 2024+ broad fleet fallback');
+  }),null,'the November official roster cannot authorize an October broad range');
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+    ...make('Tsurumi','602','weekday','Inbound'),
+    serviceDate:''
+  }),null,'no service date cannot bypass the official-month evidence guard');
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
     ...make('Tsurumi','602','weekday','Inbound'),
     calendarType:'',serviceId:'odpt.Calendar:Weekday'
