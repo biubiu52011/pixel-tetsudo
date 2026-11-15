@@ -305,9 +305,12 @@
     {id:'seibu-kokubunji', operator:'Seibu', lineIds:['Kokubunji'],
       models:['西武2000系','西武8000系（2025年導入）'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/8000/'},
+    // Seibu official 2026-10-01 roster retains 101, and 7000 begins 2026-06-27.
+    // Candidate families span 4-car locals and 8/10-car event/through trains.
+    // A line name alone does not identify a car count or actual formation.
     {id:'seibu-sayama', operator:'Seibu', lineIds:['Seibu_Sayama'],
-      models:['西武20000系','西武30000系','西武40000系50番台','西武7000系'],
-      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/7000/'},
+      models:['西武101系','西武20000系','西武30000系','西武40000系50番台','西武7000系'],
+      sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
     // 2000系 belongs to a historical (2024) route eligibility record only.
     // Only these three 8-car model groups are 2026 route candidates; none
     // provides a public train number, assigned formation or chosen PNG.
@@ -800,8 +803,27 @@
       // The 7000 series began Sayama service 2026-06-27 and
       // Hanno–Seibu-Chichibu service 2026-09-12. These are candidate fleet
       // references only, never proof of a vehicle for a train number.
-      if (row.id === 'seibu-sayama' && (!day || day < '2026-06-27')) {
-        models = models.filter(function(m){ return m !== '西武7000系'; });
+      if (row.id === 'seibu-sayama') {
+        // Only an explicitly sourced formation length may narrow candidates.
+        // A service name or a legacy SAI/SAO internal key is not that evidence.
+        var cars = options && Number(options.carCount);
+        if (cars === 4) {
+          models = models.filter(function(m) {
+            return m === '西武101系' || m === '西武7000系';
+          });
+          scopedPresetId = 'seibu-sayama-4car-reference';
+        } else if (cars === 8 || cars === 10) {
+          models = models.filter(function(m) {
+            return m === '西武20000系' || m === '西武30000系' ||
+              (cars === 8 && m === '西武40000系50番台');
+          });
+          scopedPresetId = 'seibu-sayama-' + cars + 'car-reference';
+        }
+        // 2026-06-27 is the documented 7000 introduction, not proof
+        // that an undated/historical template used that model.
+        if (!day || day < '2026-06-27') {
+          models = models.filter(function(m){ return m !== '西武7000系'; });
+        }
       }
       if (row.id === 'seibu-chichibu-local' && (!day || day < '2026-09-12')) {
         models = models.filter(function(m){ return m !== '西武7000系'; });
@@ -853,7 +875,7 @@
   }
 
   root.MajorVehicleFleetPresets = Object.freeze({
-    version: '2026-11-16-seibu-yurakucho-through-guard',
+    version: '2026-11-16-seibu-sayama-2026-fleet-scope',
     asOf: '2026-11-16',
     // Validity dates are authored facts; never inferred from train numbers.
     isValidForDate: withinPublishedPeriod,

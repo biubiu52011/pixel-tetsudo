@@ -1198,11 +1198,11 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-64": {"displayName":"東武20400型","iconName":"東武20400型","asset":"../images/列车/東武鉄道/東武鉄道_20400型.png","lineIds":["TobuNikko","TobuUtsunomiya","Nikkoku"],"aliases":["東武20400系"]},
   "planned-stock-library-65": {"displayName":"京成AE形","iconName":"京成AE形","asset":"../images/列车/京成電鉄/京成電鉄_AE形.png","aliases":["京成AE形（スカイライナー）"]},
   "remaining-fleet-extra-0": {"displayName":"西武2000系","iconName":"西武2000系","asset":"../images/列车/西武鉄道/西武鉄道_2000系_黄色塗装.png","lineIds":["SeibuShinjuku"],"lineAliases":{"SeibuToshima":["西武2000系（8両編成・池袋線直通）"]},"aliases":["西武新2000系（2000系）"]},
-  "remaining-fleet-extra-1": {"displayName":"西武101系","iconName":"西武101系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_101系.png","aliases":["西武新101系（ワンマン専用塗装）","西武新101系（ワンマン）"]},
+  "remaining-fleet-extra-1": {"displayName":"西武101系","iconName":"西武101系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_101系.png","lineIds":["Seibu_Sayama","SeibuTamagawa"],"candidateOnly":true,"promotePlannedAsset":false,"aliases":["西武新101系（ワンマン専用塗装）","西武新101系（ワンマン）"]},
   "remaining-fleet-extra-2": {"displayName":"西武4000系","iconName":"西武4000系","asset":"../images/列车/西武鉄道/西武鉄道_4000系_白塗装.png","lineIds":["SeibuChichibu"],"aliases":["西武4000系（通常塗装）"],"evidenceSource":"https://www.seiburailway.jp/newsroom/news/20241108_4000e851/"},
   "remaining-fleet-extra-3": {"displayName":"西武10000系","iconName":"西武10000系","asset":"../images/列车/西武鉄道/西武鉄道_10000系_ニューレッドアロー.png","aliases":["西武10000系（レッドアロー）","10000系（レッドアロー）"]},
   "remaining-fleet-extra-4": {"displayName":"西武8500系","iconName":"西武8500系","asset":"../images/列车/西武鉄道/西武鉄道_8500系_レオライナー.png","aliases":["西武8500系（レオライナー、新型導入中）"]},
-  "remaining-fleet-extra-5": {"displayName":"西武7000系","iconName":"西武7000系","asset":"../images/列车/西武鉄道/西武鉄道_7000系_サステナ車両.png","aliases":["西武7000系（2026年ワンマン化）"]},
+  "remaining-fleet-extra-5": {"displayName":"西武7000系","iconName":"西武7000系","asset":"../images/列车/西武鉄道/西武鉄道_7000系_サステナ車両.png","lineIds":["Seibu_Sayama","Ikebukuro","SeibuChichibu"],"aliases":["西武7000系（2026年ワンマン化）"]},
   "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","lineIds":["SeibuYamaguchi"],"aliases":["L00系（レオライナー）"],"candidateOnly":true,"evidenceSource":"https://www.seiburailway.jp/railway/encyclopedia/L00/"},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
@@ -2508,10 +2508,10 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "yokohama-y500": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho_Seibu", "Ikebukuro"],
   "seibu-6000-fukutoshin": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin"],
   "seibu-40000": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho", "SeibuChichibu", "SeibuShinjuku"],
-  "seibu-20000": ["Ikebukuro", "SeibuShinjuku"],
-  "seibu-30000": ["Ikebukuro", "SeibuShinjuku"],
+  "seibu-20000": ["Ikebukuro", "SeibuShinjuku", "Seibu_Sayama"],
+  "seibu-30000": ["Ikebukuro", "SeibuShinjuku", "Seibu_Sayama"],
   "seibu-9000": ["SeibuTamako"],
-  "seibu-001": ["Ikebukuro", "SeibuChichibu"],
+  "seibu-001": ["Ikebukuro", "SeibuChichibu", "Seibu_Sayama"],
   "saitama-2000": ["SaitamaRapid", "Namboku"],
   "tobu-50000-10": ["Tojo"],
   "tobu-50050-10": ["TobuIsesaki", "TobuSkytree", "Hanzomon"],
@@ -2881,7 +2881,7 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-222", displayName: "图库待审・西武鉄道・西武鉄道_40000系_トキイロ", iconName: "图库待审・西武鉄道・西武鉄道_40000系_トキイロ", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_トキイロ.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-223", displayName: "图库待审・西武鉄道・西武鉄道_40000系_赤帯", iconName: "图库待审・西武鉄道・西武鉄道_40000系_赤帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_赤帯.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-224", displayName: "西武4000系（4017編成・E851復刻塗装）", iconName: "西武4000系（4017編成・E851復刻塗装）", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_4000系_赤白塗装.png", aliases: ["西武4017F（55周年記念塗装）"], lineIds: ["SeibuChichibu"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "formation-specific-unverified", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/newsroom/news/20241108_4000e851/" },
-  { id: "artwork-inventory-225", displayName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", iconName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40050系_緑帯.png", aliases: ["西武40000系50番台（8両）"], lineIds: ["SeibuToshima"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/railway/encyclopedia/40000/" },
+  { id: "artwork-inventory-225", displayName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", iconName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40050系_緑帯.png", aliases: ["西武40000系50番台（8両）"], lineIds: ["SeibuToshima","Seibu_Sayama"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/railway/encyclopedia/40000/" },
   { id: "artwork-inventory-226", displayName: "图库待审・西武鉄道・西武鉄道_6000系_標準塗装", iconName: "图库待审・西武鉄道・西武鉄道_6000系_標準塗装", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_6000系_標準塗装.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-227", displayName: "图库待审・西武鉄道・西武鉄道_L00系_第1編成_埼玉西武ライオンズ", iconName: "图库待审・西武鉄道・西武鉄道_L00系_第1編成_埼玉西武ライオンズ", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_L00系_第1編成_埼玉西武ライオンズ.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-228", displayName: "图库待审・都営地下鉄・都営地下鉄_8500形（別）", iconName: "图库待审・都営地下鉄・都営地下鉄_8500形（別）", asset: null, plannedAsset: "../images/列车/都営地下鉄/都営地下鉄_8500形（別）.png", aliases: [], operatorDirectory: "都営地下鉄", artworkStatus: "pending-source-review", plannedOnly: true },
@@ -4524,13 +4524,9 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       SeibuTamako: {
         models: ['西武9000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/9000/'
-      },
-      // 4-car local services and documented event/through stock. Reference only,
-      // not an exhaustive or train-specific assignment (8/10-car extras differ).
-      Seibu_Sayama: {
-        models: ['西武20000系','西武30000系','西武40000系50番台','西武7000系'],
-        source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       }
+      // Seibu_Sayama intentionally uses MajorVehicleFleetPresets below.
+      // Do not shadow its 101 roster or dated 7000/car-count restrictions.
     }[lineId];
     if (seibuCommuterFleet) {
       return {
@@ -4551,7 +4547,14 @@ function _officialConventionalServicePlan(tt, lineId, line) {
           trainOwner: normOp(tt['odpt:trainOwner'] || tt.trainOwner || ''),
           // Source service date is authoritative for any future dated
           // fleet-reference edition; never derive it from a train suffix.
-          serviceDate: tt._serviceDate || tt.serviceDate || '',
+          serviceDate: lineId === 'Seibu_Sayama' &&
+            tt._positionSource === 'supabase-train-run' &&
+            tt.timetableDateVerified !== true ? '' :
+            (tt._serviceDate || tt.serviceDate || ''),
+          // Car length must be source-verified, not derived from SAI/SAO.
+          carCount: tt._positionSource === 'supabase-train-run' &&
+            tt.timetableDateVerified !== true ? null :
+            (tt['odpt:carCount'] || tt.carCount || null),
           // Reuse timetable stop URNs; train number, destination or line name
           // alone must not imply the northern 223-5500 local corridor.
           stationKeys: [].concat(tt['odpt:originStation'] || [])
@@ -4780,8 +4783,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if(vehResult.identityStatus==='EXACT'&&!vehResult.iconPath){
       vehResult.vehiclePlan=resolveTimetableVehiclePlan(vehResult.name,{lineId:lineId,operator:line.operator,serviceDate:serviceDate,source:'known-model-representative',_plannedArtworkInventory:true});
     } else if(vehResult.identityStatus!=='EXACT'){
-      // Sayama local services have two currently documented fleet families.
-      // The legacy single 7000-series label is not a unique per-train assignment.
+      // Sayama SQL history is undated. Reuse the canonical reference
+      // roster (101 / dated 7000 / 8-10-car event stock), never the old
+      // one-size-fits-all fallback or a numbered vehicle assignment.
       var _sayamaRouteFleet = lineId === 'Seibu_Sayama' &&
         tt._positionSource === 'supabase-train-run' &&
         tt['odpt:trainType'] === 'odpt.TrainType:Seibu.Local'

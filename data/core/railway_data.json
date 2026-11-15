@@ -30433,7 +30433,8 @@
       "throughServices": [
         "Yurakucho_Seibu",
         "SeibuChichibu",
-        "SeibuToshima"
+        "SeibuToshima",
+        "Seibu_Sayama"
       ],
       "transferStations": [
         {
@@ -30570,6 +30571,17 @@
           "serviceScope": "selected-local",
           "evidence": {
             "source": "Seibu official Toshima Line / Ikebukuro Line through service at Nerima: https://seibu.ekitan.com/norikae/timetable/station/233-0/d1?dw=1",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "Seibu_Sayama",
+          "handoverStations": [
+            "Nishi-Tokorozawa"
+          ],
+          "serviceScope": "source-correlated-through-services",
+          "evidence": {
+            "source": "https://www.seiburailway.jp/railway/station/seibukyujo-mae/",
             "confidence": "HIGH"
           }
         }
@@ -34971,7 +34983,7 @@
       "region": null,
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武狭山線.png",
-      "durationTotalMin": null,
+      "durationTotalMin": 4,
       "branchOf": null,
       "stations": [
         "Nishi-Tokorozawa",
@@ -34980,10 +34992,11 @@
       ],
       "durations": [
         2,
-        2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "Ikebukuro"
+      ],
       "transferStations": [
         {
           "station": "Seibu-Kyujou-Mae",
@@ -35014,12 +35027,25 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": [],
+      "serviceBoundaries": [
+        {
+          "lineId": "Ikebukuro",
+          "handoverStations": [
+            "Nishi-Tokorozawa"
+          ],
+          "serviceScope": "source-correlated-through-services",
+          "evidence": {
+            "source": "https://www.seiburailway.jp/railway/station/seibukyujo-mae/",
+            "confidence": "HIGH"
+          }
+        }
+      ],
       "officialLineSymbol": "SI",
       "routeLengthKm": 4.2,
       "operatingPrefectures": [
         "Saitama"
-      ]
+      ],
+      "durationBasis": "schematic_not_official_timetable"
     },
     "SeibuToshima": {
       "name": "SeibuToshima",
