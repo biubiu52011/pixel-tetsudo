@@ -47,6 +47,8 @@ jobs:
         run: node --test tests/line-overview-presentation.test.cjs
       - name: Verify two-tier region and operator filters
         run: node --test tests/railway-region-filter.test.cjs
+      - name: Verify Rinkai line color, station transfers and Saikyo handover
+        run: node --test tests/rinkai-line-audit.test.cjs
       - name: Verify JR-Central ChuoCentral canonical 40-station SQL route and Okuwa safety
         run: node --test tests/chuo-central-sql-registry.test.cjs
       - name: Verify Tobu Isesaki official 303E clocks, TI identifiers and Chichibu junction

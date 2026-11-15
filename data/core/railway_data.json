@@ -34442,12 +34442,11 @@
       "nameEn": "Rinkai Line",
       "nameJa": "東京臨海高速鉄道りんかい線",
       "code": "RL",
-      "color": "#00A0E0",
+      "color": "#00418E",
       "operator": "Rinkai",
       "region": "Tokyo Area",
       "type": "straight",
       "image": "../images/鉄道/東京臨海高速鉄道/臨海線.png",
-      "durationTotalMin": 20,
       "branchOf": null,
       "stations": [
         "Shin-Kiba",
@@ -34458,16 +34457,6 @@
         "Shinagawa-Sea-Side",
         "Oimachi",
         "Osaki"
-      ],
-      "durations": [
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
       ],
       "throughServices": [
         "SaikyoKawagoe"
@@ -34506,8 +34495,34 @@
         {
           "station": "KokusaiTenjijo",
           "lineId": "Yurikamome",
-          "toStation": "Tokyo-Big-Sight",
-          "note": "东京国际展示场"
+          "toStation": "Ariake",
+          "note": "有明駅（徒歩約2分）",
+          "type": "out"
+        },
+        {
+          "station": "Tokyo-Teleport",
+          "lineId": "Yurikamome",
+          "toStation": "Odaiba-kaihinkoen",
+          "type": "out",
+          "note": "お台場海浜公園駅（A出口）"
+        },
+        {
+          "station": "Tennozu Isle",
+          "lineId": "TokyoMonorail",
+          "type": "out",
+          "note": "東京モノレール天王洲アイル駅（A出口・徒歩約5分）"
+        },
+        {
+          "station": "Oimachi",
+          "lineId": "KeihinTohoku",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Oimachi",
+          "lineId": "TokyuOimachi",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "临海线",
@@ -34518,7 +34533,7 @@
         "nameZh": "临海线",
         "nameEn": "Rinkai Line",
         "nameKo": "린카이선",
-        "color": "#009587",
+        "color": "#00418E",
         "icon": "../images/鉄道/東京臨海高速鉄道/臨海線.png",
         "order": 1,
         "lineIds": [
