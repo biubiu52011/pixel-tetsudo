@@ -17,7 +17,7 @@ test('four unverified arts are registered as review, never approved or native-fi
  assert.equal(new Set(c.review.sql_asset_review_required.map(r=>r.png)).size,4);
  for(const r of c.review.sql_asset_review_required){
   assert.equal(r.asset_status,'review');
-  assert.equal(r.file_format_status,null);
+  assert.equal(r.file_format_status,'native_png');
   assert.equal(r.appearance_class,'requires_review');
  }
  const promoted=JSON.parse(JSON.stringify(snapshot));
@@ -37,7 +37,11 @@ test('all SQL overlaps fail closed on candidate band alone',()=>{
  }
 });
 test('front-end broad rules are visible, but cannot become carset confirmations',()=>{
- assert.equal(c.review.frontend_guard_only_rules.length,20);
+ assert.equal(c.review.frontend_guard_only_rules.length,17);
+ assert.equal(c.review.frontend_official_month_rosters.length,2);
+ assert.equal(c.review.frontend_singleton_candidates.length,1);
+ assert.ok(c.review.sql_asset_label_differences.every(r=>
+  r.label_relation!=='unresolved_model_identity'&&r.safe_alias_authorized===false));
  for(const r of c.rules)assert.equal(r.actual_vehicle_confirmed,false);
  const bad=JSON.parse(JSON.stringify(snapshot));
  bad.published_train_png_number_ranges[0].actual_vehicle_confirmed=true;
@@ -61,5 +65,31 @@ test('four inventoried train artwork files are actual PNG byte streams (not enco
   assert.ok(bytes.readUInt32BE(16)>0&&bytes.readUInt32BE(20)>0,file+': empty canvas');
   assert.equal(bytes.readUInt32BE(bytes.length-12),0,file+': IEND length');
   assert.equal(bytes.toString('ascii',bytes.length-8,bytes.length-4),'IEND',file+': missing IEND');
+ }
+});
+
+test('November 2026 exact calendar rosters do not silently fall back to broad number bands',()=>{
+ const fs=require('node:fs'),vm=require('node:vm');
+ const window={},ctx=vm.createContext({window,Date,console:{log(){},warn(){},error(){},debug(){}}});
+ for(const file of ['data/timetables/vehicle-garage-png-map.js',
+                      'data/timetables/train-number-png-ranges.js'])
+  vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
+ const samples=[
+  {id:'js-0059',line:'ChuoRapid',source:'odpt.Railway:JR-East.ChuoRapid',type:'Rapid'},
+  {id:'js-0101',line:'Tsurumi',source:'odpt.Railway:JR-East.Tsurumi',type:'Local'}
+ ];
+ for(const s of samples){
+  const r=c.rules.find(row=>row.id===s.id);
+  const num=r.official_month_numbers[s.line].weekday[0];
+  const pos={serviceDate:'2026-11-05',calendarType:'weekday',
+   trainOperator:'JR-East',sourceRailway:s.source,
+   trainType:'odpt.TrainType:JR-East.'+s.type,
+   railDirection:'odpt.RailDirection:'+(Number(num.match(/^\d+/)[0])%2?'Outbound':'Inbound')};
+  const active=window.TrainNumberPngRanges.match(num,s.line,pos);
+  assert.ok(active,s.id+': official November weekday sample must match');
+  assert.equal(window.TrainNumberPngRanges.match(num,s.line,{...pos,serviceDate:'2026-12-05'}),null,
+    s.id+': outside edition must NOT inherit inclusive range');
+  assert.equal(window.TrainNumberPngRanges.match(num,s.line,{...pos,serviceDate:''}),null,
+    s.id+': missing month must NOT inherit inclusive range');
  }
 });

@@ -17,7 +17,9 @@
     "js_lines": 58,
     "unregistered_sql_png_rules": 0,
     "sql_assets_pending_review": 5,
-    "frontend_guard_only_rules": 20,
+    "frontend_guard_only_rules": 17,
+    "frontend_official_month_rosters": 2,
+    "frontend_singleton_candidates": 1,
     "model_label_differences": 14,
     "overlapping_sql_bands": 6,
     "overlapping_different_model_bands": 3
@@ -11061,7 +11063,7 @@
       ],
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
-      "evidence_kind": "range-with-runtime-guards",
+      "evidence_kind": "official-month-calendar-roster",
       "actual_vehicle_confirmed": false
     },
     {
@@ -14892,7 +14894,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": true,
-      "evidence_kind": "range-with-runtime-guards",
+      "evidence_kind": "singleton-compatible-plan",
       "actual_vehicle_confirmed": false
     },
     {
@@ -15248,7 +15250,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
-      "evidence_kind": "range-with-runtime-guards",
+      "evidence_kind": "official-month-calendar-roster",
       "actual_vehicle_confirmed": false
     },
     {
@@ -15633,7 +15635,7 @@
         "line": "Fujikyu",
         "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
         "asset_status": "review",
-        "file_format_status": null,
+        "file_format_status": "native_png",
         "appearance_class": "requires_review"
       },
       {
@@ -15641,7 +15643,7 @@
         "line": "Fujikyu",
         "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
         "asset_status": "review",
-        "file_format_status": null,
+        "file_format_status": "native_png",
         "appearance_class": "requires_review"
       },
       {
@@ -15649,7 +15651,7 @@
         "line": "Fujikyu",
         "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
         "asset_status": "review",
-        "file_format_status": null,
+        "file_format_status": "native_png",
         "appearance_class": "requires_review"
       },
       {
@@ -15657,7 +15659,7 @@
         "line": "Oito",
         "png": "images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png",
         "asset_status": "review",
-        "file_format_status": null,
+        "file_format_status": "native_png",
         "appearance_class": "requires_review"
       },
       {
@@ -15665,7 +15667,7 @@
         "line": "Oito",
         "png": "images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png",
         "asset_status": "review",
-        "file_format_status": null,
+        "file_format_status": "native_png",
         "appearance_class": "requires_review"
       }
     ],
@@ -15681,7 +15683,10 @@
         "max": 71,
         "suffix": "KFS",
         "format": "tail",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": false,
+        "has_date_window": false
       },
       {
         "rule": "js-0057",
@@ -15693,7 +15698,10 @@
         "max": 79,
         "suffix": "KFS",
         "format": "tail",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": false,
+        "has_date_window": false
       },
       {
         "rule": "js-0058",
@@ -15706,19 +15714,10 @@
         "max": 91,
         "suffix": "KFS",
         "format": "tail",
-        "requires_compatible_plan": false
-      },
-      {
-        "rule": "js-0059",
-        "line_ids": [
-          "ChuoRapid"
-        ],
-        "model": "E233系0番台",
-        "min": 400,
-        "max": 2599,
-        "suffix": "TH",
-        "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": false,
+        "has_date_window": false
       },
       {
         "rule": "js-0079",
@@ -15731,7 +15730,10 @@
         "max": 2599,
         "suffix": "TH",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": false,
+        "has_date_window": false
       },
       {
         "rule": "js-0080",
@@ -15744,7 +15746,10 @@
         "max": 2499,
         "suffix": "",
         "format": "bare",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": false,
+        "has_date_window": false
       },
       {
         "rule": "js-0091",
@@ -15756,7 +15761,10 @@
         "max": 2599,
         "suffix": "S",
         "format": "metro-prefixed",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": false,
+        "has_date_window": true
       },
       {
         "rule": "js-0092",
@@ -15768,7 +15776,10 @@
         "max": 2599,
         "suffix": "K",
         "format": "metro-prefixed",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": false,
+        "has_date_window": true
       },
       {
         "rule": "js-0093",
@@ -15780,7 +15791,10 @@
         "max": 2599,
         "suffix": "T",
         "format": "metro-prefixed",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": false,
+        "has_date_window": true
       },
       {
         "rule": "js-0094",
@@ -15792,7 +15806,10 @@
         "max": 2599,
         "suffix": "K",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
+        "has_date_window": true
       },
       {
         "rule": "js-0095",
@@ -15804,7 +15821,10 @@
         "max": 2599,
         "suffix": "S",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
+        "has_date_window": true
       },
       {
         "rule": "js-0096",
@@ -15816,7 +15836,10 @@
         "max": 2599,
         "suffix": "E",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
+        "has_date_window": true
       },
       {
         "rule": "js-0098",
@@ -15829,7 +15852,10 @@
         "max": 30,
         "suffix": "M",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
+        "has_date_window": true
       },
       {
         "rule": "js-0099",
@@ -15842,34 +15868,10 @@
         "max": 86,
         "suffix": "M",
         "format": "full",
-        "requires_compatible_plan": false
-      },
-      {
-        "rule": "js-0100",
-        "line_ids": [
-          "Joban",
-          "JobanMain"
-        ],
-        "model": "E531系",
-        "min": 1252,
-        "max": 1252,
-        "suffix": "M",
-        "format": "full",
-        "requires_compatible_plan": true
-      },
-      {
-        "rule": "js-0101",
-        "line_ids": [
-          "Tsurumi",
-          "TsurumiUmiShibaura",
-          "TsurumiOkawa"
-        ],
-        "model": "E131系1000番台",
-        "min": 400,
-        "max": 2599,
-        "suffix": "",
-        "format": "bare",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
+        "has_date_window": true
       },
       {
         "rule": "js-0105",
@@ -15882,7 +15884,10 @@
         "max": 60,
         "suffix": "M",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": true,
+        "has_date_window": false
       },
       {
         "rule": "js-0106",
@@ -15895,7 +15900,10 @@
         "max": 2199,
         "suffix": "M",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": true,
+        "has_date_window": false
       },
       {
         "rule": "js-0107",
@@ -15908,7 +15916,10 @@
         "max": 3199,
         "suffix": "M",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": true,
+        "has_date_window": false
       },
       {
         "rule": "js-0108",
@@ -15921,7 +15932,60 @@
         "max": 5099,
         "suffix": "M",
         "format": "full",
-        "requires_compatible_plan": false
+        "requires_compatible_plan": false,
+        "has_source_railway_guard": false,
+        "has_type_guard": true,
+        "has_date_window": false
+      }
+    ],
+    "frontend_official_month_rosters": [
+      {
+        "rule": "js-0059",
+        "line_ids": [
+          "ChuoRapid"
+        ],
+        "official_month": "2026-11",
+        "calendar_counts": {
+          "ChuoRapid": {
+            "weekday": 581,
+            "holiday": 506
+          }
+        }
+      },
+      {
+        "rule": "js-0101",
+        "line_ids": [
+          "Tsurumi",
+          "TsurumiUmiShibaura",
+          "TsurumiOkawa"
+        ],
+        "official_month": "2026-11",
+        "calendar_counts": {
+          "Tsurumi": {
+            "weekday": 131,
+            "holiday": 99
+          },
+          "TsurumiOkawa": {
+            "weekday": 12,
+            "holiday": 4
+          },
+          "TsurumiUmiShibaura": {
+            "weekday": 32,
+            "holiday": 21
+          }
+        }
+      }
+    ],
+    "frontend_singleton_candidates": [
+      {
+        "rule": "js-0100",
+        "line_ids": [
+          "Joban",
+          "JobanMain"
+        ],
+        "number": 1252,
+        "suffix": "M",
+        "requires_compatible_plan": true
       }
     ],
     "sql_asset_label_differences": [
@@ -15930,98 +15994,126 @@
         "line": "Fujikyu",
         "rule_model": "E233系0番台",
         "asset_model": "E233系",
-        "png": "images/列车/JR東日本/JR東日本_E233系_0番台.png"
+        "png": "images/列车/JR東日本/JR東日本_E233系_0番台.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0058",
         "line": "Joetsu",
         "rule_model": "211系（高崎地区）",
         "asset_model": "211系",
-        "png": "images/列车/JR東日本/JR東日本_211系_湘南色.png"
+        "png": "images/列车/JR東日本/JR東日本_211系_湘南色.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0060",
         "line": "Joetsu",
         "rule_model": "キハ40・48形（越乃Shu＊Kura）",
         "asset_model": "キハ40・48形",
-        "png": "images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png"
+        "png": "images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0082",
         "line": "Kamaishi",
         "rule_model": "HB-E300系（ひなび）",
         "asset_model": "HB-E300系",
-        "png": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png"
+        "png": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0083",
         "line": "Kashima",
         "rule_model": "E131系0番台 / 80番台",
         "asset_model": "E131系",
-        "png": "images/列车/JR東日本/JR東日本_E131系_0番台.png"
+        "png": "images/列车/JR東日本/JR東日本_E131系_0番台.png",
+        "label_relation": "multi_subseries_reference_not_exact_identity",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0084",
         "line": "Kashima",
         "rule_model": "E235系1000番台",
         "asset_model": "E235系",
-        "png": "images/列车/JR東日本/JR東日本_E235系_1000番台.png"
+        "png": "images/列车/JR東日本/JR東日本_E235系_1000番台.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0085",
         "line": "Kashima",
         "rule_model": "E131系0番台 / 80番台",
         "asset_model": "E131系",
-        "png": "images/列车/JR東日本/JR東日本_E131系_0番台.png"
+        "png": "images/列车/JR東日本/JR東日本_E131系_0番台.png",
+        "label_relation": "multi_subseries_reference_not_exact_identity",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0086",
         "line": "Kashima",
         "rule_model": "E235系1000番台",
         "asset_model": "E235系",
-        "png": "images/列车/JR東日本/JR東日本_E235系_1000番台.png"
+        "png": "images/列车/JR東日本/JR東日本_E235系_1000番台.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0091",
         "line": "Komii",
         "rule_model": "キハ100・110系（HIGH RAIL 1375）",
         "asset_model": "キハ100・110系",
-        "png": "images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png"
+        "png": "images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0093",
         "line": "Kounan",
         "rule_model": "HB-E300系（ひなび）",
         "asset_model": "HB-E300系",
-        "png": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png"
+        "png": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0095",
         "line": "Kururi",
         "rule_model": "キハE130形100番台",
         "asset_model": "キハE130系100番台",
-        "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png"
+        "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+        "label_relation": "class_label_typographic_variant",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0140",
         "line": "Miyo",
         "rule_model": "HB-E300系（海里）",
         "asset_model": "HB-E300系",
-        "png": "images/列车/JR東日本/JR東日本_HB-E300系_海里.png"
+        "png": "images/列车/JR東日本/JR東日本_HB-E300系_海里.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0141",
         "line": "Ofunato",
         "rule_model": "キハ110系",
         "asset_model": "キハ110系（大船渡線）",
-        "png": "images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png"
+        "png": "images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png",
+        "label_relation": "asset_label_with_more_specific_context",
+        "safe_alias_authorized": false
       },
       {
         "rule": "sql-0144",
         "line": "Oito",
         "rule_model": "211系（長野地区）",
         "asset_model": "211系",
-        "png": "images/列车/JR東日本/JR東日本_211系_長野色.png"
+        "png": "images/列车/JR東日本/JR東日本_211系_長野色.png",
+        "label_relation": "asset_series_with_more_specific_rule_label",
+        "safe_alias_authorized": false
       }
     ],
     "sql_range_overlaps": [

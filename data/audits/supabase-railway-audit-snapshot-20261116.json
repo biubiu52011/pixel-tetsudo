@@ -7886,7 +7886,7 @@
       "vehicle_type": "E127系100番台",
       "asset_status": "review",
       "appearance_class": "requires_review",
-      "file_format_status": null
+      "file_format_status": "native_png"
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E129系.png",
@@ -8518,7 +8518,7 @@
       "vehicle_type": "HB-E300系（リゾートビューふるさと）",
       "asset_status": "review",
       "appearance_class": "requires_review",
-      "file_format_status": null
+      "file_format_status": "native_png"
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_海里.png",
@@ -9558,7 +9558,7 @@
       "vehicle_type": "富士急行6000系（標準色）",
       "asset_status": "review",
       "appearance_class": "requires_review",
-      "file_format_status": null
+      "file_format_status": "native_png"
     },
     {
       "image_path": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
@@ -9566,7 +9566,7 @@
       "vehicle_type": "富士急行8000系（フジサン特急・顔A）",
       "asset_status": "review",
       "appearance_class": "requires_review",
-      "file_format_status": null
+      "file_format_status": "native_png"
     },
     {
       "image_path": "images/列车/小田急箱根/小田急箱根_1000形.png",

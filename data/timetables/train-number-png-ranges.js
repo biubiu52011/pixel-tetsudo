@@ -4433,8 +4433,12 @@
       if(row.publishedNumbers && row.publishedNumbers.indexOf(number)<0)continue;
       // For the verified month only, match an actual published number on
       // THIS line and THIS timetable calendar, not a plausible bare range.
-      if(row.officialMonthNumbers &&
-         String(context&&context.serviceDate||"").slice(0,7)===row.officialMonth){
+      if(row.officialMonthNumbers){
+        // Exact official-month roster may not degrade to a broad PNG range
+        // when the date is absent, outside edition, or otherwise unverified.
+        if(!row.officialMonth||
+           String(context&&context.serviceDate||"").slice(0,7)!==row.officialMonth)
+          continue;
         var monthSets=row.officialMonthNumbers[line];
         if(!monthSets)continue;
         var monthCal=sourceCalendar(context);

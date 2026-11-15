@@ -26,7 +26,7 @@
 
 ## 仍需证据核实
 
-- **20** 条 JS 号段缺少同条目内明确车次列表或外部车次索引，依靠范围与额外运行时条件；本次集中列入 `review.frontend_guard_only_rules`，需按官方时刻表逐条决定是否可以细化。不能用宽号段凭空生成时刻表记录。
+- **17** 条 JS 号段缺少同条目内明确车次列表、官方逐月日历名单或外部车次索引，依靠范围与额外运行时条件；本次集中列入 `review.frontend_guard_only_rules`，需按官方时刻表逐条决定是否可以细化。不能用宽号段凭空生成时刻表记录。
 - 上述 4 张图片需要实际文件签名、车辆外观/脸部、涂装与适用区间证据，审核通过后才可从 review 改为 available；状态修改要同步日期快照与 CI 基线。
 
 ## 再生和验证
@@ -40,3 +40,10 @@ node --test tests/train-number-png-runtime.test.cjs
 ```
 
 数据库源记录发生变化，应先刷新 `data/audits/supabase-railway-audit-snapshot-20261116.json` 对应字段，才再生目录；CI 不直接连接生产数据库或读取密钥。
+
+## 2026-11-16 第三次校对：宽范围收紧与误报消除
+
+- 文件格式已由 GitHub Actions [43763974618](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/43763974618) 检验：4 张待审文件的 PNG 签名、IHDR、非零尺寸及 IEND 均通过；SQL 的 `file_format_status=native_png`，但 `asset_status=review` 与 `appearance_class=requires_review` **保持不变**。二进制格式合格不证明车辆涂装或日常编组。
+- 原报告 20 条前端“仅宽范围”含 3 条误分类：`js-0059`（中央快速）及 `js-0101`（鹤见线三线）有正式的 2026-11 平日/休日完整名单；`js-0100` 为 1252M 单点且要求兼容车辆计划。故真正的纯宽范围候选为 **17** 条，不是 20。均仍属于代表图，不代表实体车。
+- 修复已存在的**跨月名单绕过漏洞**：`row.officialMonthNumbers` 现在要求运行日严格属于对应官方月份；日期为空或跨月时，不能退回整段号段取 PNG。CI 对中央快速与鹤见线执行当月成功、过期拒绝及无日期拒绝测试。
+- 14 条 SQL 车型名称差异按 “系列名 vs 番台/服务名”、“资产标签更加具体”、“形/系文字写法”、“多番台共用代表图” 分类。新目录的 `safe_alias_authorized=false` 明确禁止通过名称修饰自动创建精确车型别名；名称差异不代表实质车辆冲突已解决。

@@ -42,7 +42,10 @@ function buildCatalog(snapshot, rows) {
   direction_number_parity:r.directionNumberParity||null,
   requires_compatible_plan:r.requireCompatiblePlan===true,
   evidence_kind:(r.publishedNumbers||r.weekdayNumbers||r.holidayNumbers)?'exact-list':
-    r.numberIndex?'external-index':'range-with-runtime-guards',
+    r.numberIndex?'external-index':
+    r.officialMonthNumbers?'official-month-calendar-roster':
+    r.from===r.to&&r.requireCompatiblePlan===true?'singleton-compatible-plan':
+    'range-with-runtime-guards',
   actual_vehicle_confirmed:false
  }));
  const index={};
@@ -53,6 +56,13 @@ function buildCatalog(snapshot, rows) {
  const sortedIndex=Object.fromEntries(Object.entries(index).sort((a,b)=>a[0].localeCompare(b[0],'en')));
  const assets=new Map(snapshot.vehicle_image_assets.map(a=>[norm(a.image_path),a]));
  const missing=[],pending=[],labels=[],overlaps=[];
+ const labelKind=(model,assetModel)=>{
+  if(model.includes(' / '))return 'multi_subseries_reference_not_exact_identity';
+  if(model.startsWith(assetModel))return 'asset_series_with_more_specific_rule_label';
+  if(assetModel.startsWith(model))return 'asset_label_with_more_specific_context';
+  if(model.replace('形','系')===assetModel)return 'class_label_typographic_variant';
+  return 'unresolved_model_identity';
+ };
  for(const r of sql){
   const a=assets.get(r.png);
   if(!a)missing.push({rule:r.id,line:r.line_ids[0],segment:r.segment,png:r.png});
@@ -62,7 +72,9 @@ function buildCatalog(snapshot, rows) {
      asset_status:a.asset_status,file_format_status:a.file_format_status,
      appearance_class:a.appearance_class});
    if(a.vehicle_type!==r.model)labels.push({rule:r.id,line:r.line_ids[0],
-    rule_model:r.model,asset_model:a.vehicle_type,png:r.png});
+    rule_model:r.model,asset_model:a.vehicle_type,png:r.png,
+    label_relation:labelKind(r.model,a.vehicle_type),
+    safe_alias_authorized:false});
   }
  }
  for(let i=0;i<sql.length;i++)for(let j=i+1;j<sql.length;j++){
@@ -78,6 +90,16 @@ function buildCatalog(snapshot, rows) {
  const frontendGuardReview=js.filter(r=>r.evidence_kind==='range-with-runtime-guards')
    .map(r=>({rule:r.id,line_ids:r.line_ids,model:r.model,
     min:r.min,max:r.max,suffix:r.suffix,format:r.format,
+    requires_compatible_plan:r.requires_compatible_plan,
+    has_source_railway_guard:Array.isArray(r.source_railways)&&r.source_railways.length>0,
+    has_type_guard:!!(r.train_type||(r.train_types&&r.train_types.length)),
+    has_date_window:!!(r.valid_from&&r.valid_to)}));
+ const frontendMonthRoster=js.filter(r=>r.evidence_kind==='official-month-calendar-roster')
+   .map(r=>({rule:r.id,line_ids:r.line_ids,official_month:r.official_month,
+    calendar_counts:Object.fromEntries(Object.entries(r.official_month_numbers||{})
+      .map(([line,v])=>[line,{weekday:v.weekday.length,holiday:v.holiday.length}]))}));
+ const frontendSingleton=js.filter(r=>r.evidence_kind==='singleton-compatible-plan')
+   .map(r=>({rule:r.id,line_ids:r.line_ids,number:r.min,suffix:r.suffix,
     requires_compatible_plan:r.requires_compatible_plan}));
  return {schema_version:1,edition:'2611',snapshot_date:snapshot.snapshot_date,
   role:'derived read-only catalog; never exact physical formation evidence',
@@ -88,12 +110,17 @@ function buildCatalog(snapshot, rows) {
    sql_lines:new Set(sql.map(r=>r.line_ids[0])).size,
    js_lines:new Set(js.flatMap(r=>r.line_ids)).size,
    unregistered_sql_png_rules:missing.length,sql_assets_pending_review:pending.length,
-   frontend_guard_only_rules:frontendGuardReview.length,model_label_differences:labels.length,
+   frontend_guard_only_rules:frontendGuardReview.length,
+   frontend_official_month_rosters:frontendMonthRoster.length,
+   frontend_singleton_candidates:frontendSingleton.length,
+   model_label_differences:labels.length,
    overlapping_sql_bands:overlaps.length,
    overlapping_different_model_bands:overlaps.filter(x=>!x.same_model_png).length},
   line_index:sortedIndex,rules:sql.concat(js),
   review:{missing_sql_asset_registration:missing,sql_asset_review_required:pending,
    frontend_guard_only_rules:frontendGuardReview,
+   frontend_official_month_rosters:frontendMonthRoster,
+   frontend_singleton_candidates:frontendSingleton,
    sql_asset_label_differences:labels,sql_range_overlaps:overlaps}};
 }
 function audit(c){
@@ -127,14 +154,24 @@ function audit(c){
  for(const r of c.review.sql_asset_review_required){
   reviewCounts.set(r.png,(reviewCounts.get(r.png)||0)+1);
   if(!expectedReview.has(r.png)||r.asset_status!=='review'||
-    r.appearance_class!=='requires_review'||r.file_format_status!==null)
+    r.appearance_class!=='requires_review'||r.file_format_status!=='native_png')
    errors.push('unexpected SQL asset review/promotion '+r.png);
  }
  if(c.review.sql_asset_review_required.length!==5||
   [...expectedReview].some(([p,n])=>reviewCounts.get(p)!==n))
   errors.push('pending assets changed; independently revalidate artwork and update audit');
- if(c.review.frontend_guard_only_rules.length>20)
+ if(c.review.frontend_guard_only_rules.length>17)
   errors.push('new frontend ranges without explicit number set or verifier');
+ if(c.review.frontend_official_month_rosters.length!==2)
+  errors.push('official-month exact rosters changed; reassess month-gated matcher');
+ for(const r of c.rules.filter(x=>x.evidence_kind==='official-month-calendar-roster')){
+  if(r.official_month!=='2026-11'||!r.official_month_numbers||
+    r.line_ids.some(line=>!r.official_month_numbers[line]))
+   errors.push('monthly roster guard corrupted '+r.id);
+ }
+ if(c.review.frontend_singleton_candidates.length!==1||
+   c.review.frontend_singleton_candidates[0].requires_compatible_plan!==true)
+  errors.push('singleton rule requires scoped compatible plan');
  if(c.review.sql_asset_label_differences.length>14)
   errors.push('new model-label inconsistencies');
  const allowed=new Set([
