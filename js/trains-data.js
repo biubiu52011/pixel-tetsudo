@@ -643,6 +643,33 @@ function _getTransferMap(lineId, staticRevision) {
       image:peer.image || "", operator:peer.operator || "", color:peer.color || "", type:"in"});
   });
 
+  // Display-only passenger links: do not create track edges, through-running,
+  // timetable ownership or realtime positions for unregistered lines.
+  var passengerLinks = own && own.presentation && Array.isArray(own.presentation.mapPassengerConnections)
+    ? own.presentation.mapPassengerConnections : [];
+  passengerLinks.forEach(function(spec) {
+    if (!spec || !spec.station || !spec.lineId || ownStations.indexOf(spec.station) < 0) return;
+    var items = map[spec.station] = map[spec.station] || [];
+    if (items.some(function(item) { return item.lineId === spec.lineId; })) return;
+    var peer = src[spec.lineId];
+    if (!peer && !(spec.nameJa && spec.nameZh && spec.nameEn && spec.nameKo)) return;
+    var langSuffix = ({ja:"Ja",zh:"Zh",en:"En",ko:"Ko"})[_langNow] || "Ja";
+    var name = peer && window.RailwayDB && window.RailwayDB.resolveLineName
+      ? window.RailwayDB.resolveLineName(spec.lineId,_langNow)
+      : peer ? (peer.nameJa || peer.name || spec.lineId)
+      : spec["name" + langSuffix];
+    var note = typeof spec.note === "string" ? spec.note :
+      spec.note && (spec.note[_langNow] || spec.note.ja) || "";
+    items.push({
+      lineId:spec.lineId, name:name+(note?"（"+note+"）":""),
+      image:peer ? transferArtwork(spec.lineId) : "",
+      operator:spec.operator || (peer && peer.operator) || "",
+      code:spec.code || (peer && peer.code) || "",
+      color:spec.color || (peer && peer.color) || "",
+      type:"in", note:note, passengerOnly:true
+    });
+  });
+
   var throughLines = _canonicalThroughLines(lineId);
 
   // canonical 直通交接本身就是展示关系。

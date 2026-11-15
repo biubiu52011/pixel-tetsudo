@@ -37858,7 +37858,7 @@
       "region": null,
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武有楽町線.png",
-      "durationTotalMin": 4,
+      "durationTotalMin": null,
       "branchOf": null,
       "stations": [
         "Nerima",
@@ -37866,6 +37866,7 @@
         "Kotake-Mukaihara"
       ],
       "durations": [
+        2,
         2,
         2
       ],
@@ -37958,8 +37959,7 @@
       "routeLengthKm": 2.6,
       "operatingPrefectures": [
         "Tokyo"
-      ],
-      "durationBasis": "schematic_not_official_timetable"
+      ]
     },
     "Odawara": {
       "name": "Odawara",
@@ -49422,7 +49422,7 @@
       "nameEn": "Toyo Rapid Line",
       "nameKo": "도요 고속선",
       "operator": "ToyoRapid",
-      "color": "#3fb5e5",
+      "color": "#3fb036",
       "code": "TR",
       "stations": [
         "Nishi-Funabashi",
@@ -49456,6 +49456,13 @@
           "lineId": "Musashino",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Toyo-Katsutadai",
+          "lineId": "Keisei",
+          "toStation": "Katsutadai",
+          "type": "in",
+          "note": "勝田台駅（京成本線）"
         }
       ],
       "presentation": {
@@ -49464,13 +49471,44 @@
         "nameZh": "东叶高速线",
         "nameEn": "Toyo Rapid Line",
         "nameKo": "도요 고속선",
-        "color": "#3fb5e5",
+        "color": "#3fb036",
         "order": 1,
         "lineIds": [
           "ToyoRapid"
         ],
         "operatorGroup": "TOYO_RAPID",
-        "icon": "../images/鉄道/東葉高速鉄道/東葉高速線.png"
+        "icon": "../images/鉄道/東葉高速鉄道/東葉高速線.png",
+        "mapPassengerConnections": [
+          {
+            "station": "Nishi-Funabashi",
+            "lineId": "Keiyo",
+            "note": {
+              "ja": "武蔵野線の京葉線直通列車",
+              "zh": "武藏野线直通京叶线的列车",
+              "en": "Keiyo-bound trains via the Musashino Line",
+              "ko": "무사시노선 경유 게이요선 직통열차"
+            },
+            "evidence": "https://www.toyokosoku.co.jp/wp/images/No8managementplan.pdf"
+          },
+          {
+            "station": "Kita-Narashino",
+            "lineId": "KeiseiMatsudo",
+            "operator": "Keisei",
+            "code": "KS",
+            "color": "#0054a6",
+            "nameJa": "京成松戸線",
+            "nameZh": "京成松户线",
+            "nameEn": "Keisei Matsudo Line",
+            "nameKo": "게이세이 마쓰도선",
+            "note": {
+              "ja": "北習志野駅で乗り換え",
+              "zh": "北习志野站换乘",
+              "en": "Transfer at Kita-Narashino",
+              "ko": "기타나라시노역 환승"
+            },
+            "evidence": "https://www.keisei.co.jp/news/detail.php?CN=6808"
+          }
+        ]
       },
       "serviceBoundaries": [
         {
@@ -57829,7 +57867,8 @@
     "Nishi-Funabashi": [
       "Musashino",
       "Tozai",
-      "ChuoSobuLocal"
+      "ChuoSobuLocal",
+      "ToyoRapid"
     ],
     "Fujisawa": [
       "ShonanShinjuku",
@@ -71508,6 +71547,30 @@
     ],
     "Akitsu-Kure": [
       "Kure"
+    ],
+    "Higashi-Kaijin": [
+      "ToyoRapid"
+    ],
+    "Hasama": [
+      "ToyoRapid"
+    ],
+    "Kita-Narashino": [
+      "ToyoRapid"
+    ],
+    "Funabashi-Nichidaimae": [
+      "ToyoRapid"
+    ],
+    "Yachiyo-Midorigaoka": [
+      "ToyoRapid"
+    ],
+    "Yachiyo-Chuo": [
+      "ToyoRapid"
+    ],
+    "Murakami-Chiba": [
+      "ToyoRapid"
+    ],
+    "Toyo-Katsutadai": [
+      "ToyoRapid"
     ]
   },
   "lineStationOrder": {
@@ -77429,6 +77492,17 @@
       "CR-Bushu-Hino": 34,
       "CR-Mitsumineguchi": 36,
       "CR-Shiroku": 35
+    },
+    "ToyoRapid": {
+      "Nishi-Funabashi": 0,
+      "Higashi-Kaijin": 1,
+      "Hasama": 2,
+      "Kita-Narashino": 3,
+      "Funabashi-Nichidaimae": 4,
+      "Yachiyo-Midorigaoka": 5,
+      "Yachiyo-Chuo": 6,
+      "Murakami-Chiba": 7,
+      "Toyo-Katsutadai": 8
     }
   },
   "line_types": {
