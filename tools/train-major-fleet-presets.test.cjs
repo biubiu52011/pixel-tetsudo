@@ -37,7 +37,12 @@ entries.forEach(row=>{
     assert.equal(evidence.planOverride,false);
     const expected=(row.modelsByService && !row.shinkansenTypes)
       ? (row.modelsByService.Local || []) : row.models;
-    assert.deepEqual(Array.from(evidence.vehicleCandidates),Array.from(expected));
+    // The 7000 series is not a timeless fleet: undated references must
+    // not claim its 2026 introduction on earlier timetable editions.
+    const undatedExpected=(row.id==='seibu-sayama' ||
+      row.id==='seibu-chichibu-local')
+      ? expected.filter(model=>model!=='西武7000系') : expected;
+    assert.deepEqual(Array.from(evidence.vehicleCandidates),Array.from(undatedExpected));
     assert.ok(!evidence.iconPath && !evidence.vehicleType,
       'fleet reference cannot assign actual vehicle or PNG');
   });
@@ -116,7 +121,7 @@ for (const [line,operator,requiredModel] of [
   ['SeibuTamako','Seibu','西武9000系'],
   ['SeibuYamaguchi','Seibu','西武L00系'],
   ['Kokubunji','Seibu','西武8000系（2025年導入）'],
-  ['Seibu_Sayama','Seibu','西武7000系（2026年導入）'],
+  ['Seibu_Sayama','Seibu','西武7000系'],
   ['Daishi_Tobu','Tobu','東武10000型'],
   ['Tobu_Kameido','Tobu','東武10000型'],
   ['TokyuOimachi','Tokyu','東急6020系（5両・各駅停車）'],
@@ -130,7 +135,8 @@ for (const [line,operator,requiredModel] of [
   ['ToyoRapid','ToyoRapid','東葉高速鉄道2000系'],
   ['UtsunomiyaLRT','UtsunomiyaLightRail','宇都宮ライトレールHU300形']
 ]) {
-  const item=presets.lookup(line,operator,'odpt.TrainType:'+operator+'.Local');
+  const item=presets.lookup(line,operator,'odpt.TrainType:'+operator+'.Local',
+    line==='Seibu_Sayama'?{serviceDate:'2026-11-16'}:undefined);
   assert.ok(item && item.vehicleCandidates.includes(requiredModel),
     line+': missing scoped reference model '+requiredModel);
   assert.equal(item._fleetReferenceOnly,true,line+': must remain fleet-only');
