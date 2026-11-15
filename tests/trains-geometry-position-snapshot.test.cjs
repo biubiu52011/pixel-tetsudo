@@ -1,6 +1,7 @@
 'use strict';
 // Position-only railway notifications may reuse geometry without scanning all
-// lines; structural, language, font or viewport changes must never reuse it.
+// lines; structural, language and font changes invalidate it. CSS viewport
+// changes cannot invalidate a geometry expressed in a fixed SVG viewBox.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -51,7 +52,7 @@ test('position-only refresh reuses the exact geometry object with no global scan
 test('static inputs, layout and invalidation still force the full geometry path', () => {
   const x=setup();
   x.window.currentLang='en'; assert.equal(x.reuse(),null); x.window.currentLang='ja';
-  x.host.clientWidth=320; assert.equal(x.reuse(),null); x.host.clientWidth=390;
+  x.host.clientWidth=320; assert.equal(x.reuse(),x.geometry); x.host.clientWidth=390;
   x.document.fonts.status='loading'; assert.equal(x.reuse(),null);
   x.document.fonts.status='loaded';
   x.line.stations.push('Akihabara'); assert.equal(x.reuse(),null); x.line.stations.pop();
