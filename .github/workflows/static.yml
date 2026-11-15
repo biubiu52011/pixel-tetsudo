@@ -38,7 +38,7 @@ jobs:
       - name: Verify full Kawagoe west ODPT timetable and shared fleet boundaries
         run: node --test tests/kawagoe-2611-odpt-roster.test.cjs
       - name: Verify dynamic platform, transfer, and SVG sizing contracts
-        run: node --test tests/dynamic-resolver-contract.test.cjs
+        run: node --test tests/dynamic-resolver-contract.test.cjs tests/trains-svg-visual-contract.test.cjs
       - name: Exercise line-scoped loader and SQL artwork contract
         run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify train overview DOM structure and state
