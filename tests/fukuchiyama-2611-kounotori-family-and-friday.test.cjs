@@ -68,7 +68,7 @@ function inspect(p,verifier){
  assert.equal(art.illustrative,true);
  assert.equal(art.representativeOnly,true);
  assert.equal(art.actualVehicleConfirmed,false);
- assert.equal(marker(p,true).kind,'candidate');
+ assert.equal(marker(p,true).kind,'unresolved');
  return f;
 }
 test('all 50 historical 30xx/70xx source families become unconfirmed LimitedExpress 287/289 references, not exact PNG',()=>{
