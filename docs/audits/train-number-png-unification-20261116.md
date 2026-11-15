@@ -178,3 +178,16 @@ https://www.twr.co.jp/Default.aspx?TabId=382
 - 新增端到端测试：全部七条新车型规则的完整实时位置 → `lookupTrainNumberRangePng` → `VehicleGaragePngMap` → SVG marker 的代表图必须唯一且未确认实车；空/他社 owner 均禁止。
 - **仍待核验的跨来源问题**：某些公开的都营 ODPT 位置数据使用四位裸数字号码，而 TokyoGTFS 列车时刻表含 T/A/B 等字母；已有的第三方说明见 <https://nkth.info/traffic_info/toei/?line=a>，其记载可能针对旧版，**不应直接视为 2026 年现状**。没有实测快照和官方逐号对照前，绝不通过附加字母、截断或运用号推断来拼接二者。裸数字号码保持未解析。ODPT 官方时刻表还规定大江户线省略末尾 1/2：<https://ckan.odpt.org/dataset/r_train_timetable-toei>。
 - 浅草线 2026-11-21 改点确认：<https://www.kotsu.metro.tokyo.jp/pickup_information/news/subway/2026/sub_p_2026102012843_h.html>，当天以后旧 C 级号段保持禁用，直到替换为经审核的新时刻表。
+
+
+## 第十一次校对：埼京／川越／临海 2611 方向奇偶和月份边界
+
+- 对 `js-0056`、`js-0057`、`js-0058` 的 K/F/S 公开号码族增加上下行奇偶交叉核验：JR 东日本 2026-11 628 上行偶数、下行奇数。来源标记为 Inbound 时不再让奇数番号通过；Outbound 时不再让偶数通过。
+- 0056／0057 新增 `2026-11-01`～`2026-11-30` 日期边界，与既有 0058 一致；过期日期和缺少日期无法继续套用 2611 的尾号展示。仍保留原来的线路来源、车种及冲突模型防护。
+- 这个修正仅对已经提供日期／方向的上下文施加确定性检查，**不补造未收集的官方全日车次名单**，也不认定实体车组。九条尚待逐号查证的规则仍为九条。
+
+官方网站：
+https://timetables.jreast.co.jp/2611/timetable-v/628u1.html
+https://timetables.jreast.co.jp/2611/timetable-v/628u2.html
+https://timetables.jreast.co.jp/2611/timetable-v/628d1.html
+https://timetables.jreast.co.jp/2611/timetable-v/628d2.html

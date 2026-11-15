@@ -10357,15 +10357,15 @@
       "official_month_numbers": null,
       "calendar_type": null,
       "operating_dates": null,
-      "valid_from": null,
-      "valid_to": null,
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
       "operator": null,
       "source_railways": null,
       "source_railways_if_present": [
         "odpt.Railway:JR-East.SaikyoKawagoe",
         "odpt.Railway:TWR.Rinkai"
       ],
-      "direction_number_parity": null,
+      "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
@@ -10402,14 +10402,14 @@
       "official_month_numbers": null,
       "calendar_type": null,
       "operating_dates": null,
-      "valid_from": null,
-      "valid_to": null,
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
       "operator": null,
       "source_railways": null,
       "source_railways_if_present": [
         "odpt.Railway:JR-East.SaikyoKawagoe"
       ],
-      "direction_number_parity": null,
+      "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
@@ -10455,7 +10455,7 @@
         "odpt.Railway:JR-East.SaikyoKawagoe",
         "odpt.Railway:TWR.Rinkai"
       ],
-      "direction_number_parity": null,
+      "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
@@ -30474,7 +30474,7 @@
         "requires_compatible_plan": false,
         "has_source_railway_guard": true,
         "has_type_guard": true,
-        "has_date_window": false
+        "has_date_window": true
       },
       {
         "rule": "js-0057",
@@ -30489,7 +30489,7 @@
         "requires_compatible_plan": false,
         "has_source_railway_guard": true,
         "has_type_guard": true,
-        "has_date_window": false
+        "has_date_window": true
       },
       {
         "rule": "js-0058",

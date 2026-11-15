@@ -410,7 +410,7 @@ test('K/F/S number tails select display PNG by scoped number ranges, without con
     assert.equal(chosen.model,model);
     assert.equal(marker(p,'SaikyoKawagoe').kind,'vehicle');
   }
-  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').trainNumber,'1940K');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).trainNumber,'1940K');
   assert.equal(root.TrainNumberPngRanges.match('1940K','ChuoMain'),null);
 });
 test('unlisted number tails and mismatched display lines remain neutral',()=>{
@@ -456,7 +456,7 @@ test('Sotetsu 1xx/2xx M are public service numbers, NOT E233 vs 12000 carset cod
   }
   assert.equal(root.TrainNumberPngRanges.match('277M','ChuoMain'),null);
   assert.equal(root.TrainNumberPngRanges.match('277M','Rinkai'),null);
-  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,
     'E233系7000番台','independent Saikyo K-series rule remains');
 });
 
@@ -805,7 +805,7 @@ test('2026 ChuoRapid T/H number ranges never leak to other lines or M trains',()
   }
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoMain'),null);
   assert.equal(root.TrainNumberPngRanges.match('1932T','SaikyoKawagoe'),null);
-  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe'),null);
 });
 
@@ -1272,7 +1272,7 @@ test('Ome regular train-number mapping excludes specials and unrelated lines',()
       'a LimitedExpress must not receive an ordinary Ome reference');
   }
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
-  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe'),null);
 });
 
@@ -1395,7 +1395,7 @@ test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind r
   const holidayYokohama = {serviceDate:'2026-11-03',calendarType:'holiday',
     sourceRailway:'odpt.Railway:JR-East.Yokohama',
     trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'};
-  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe').model,'E233系7000番台');
+  assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama',holidayYokohama).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama',holidayYokohama).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe').model,
@@ -3400,4 +3400,32 @@ test('Toei ODPT live owner namespaces select PNG in the full rendering chain',()
     trainNumber:n,positionLineId:'Asakusa',trainOperator:'Toei',
     trainOwner:'Toei',sourceRailway:'odpt.Railway:Toei.Asakusa',
     serviceDate:'2026-11-21',calendarType:'holiday'})),null);
+});
+
+test('Saikyo-Rinkai 2611 public K/F/S parity and edition boundaries are guarded',()=>{
+ const checks=[
+  ['1940K','SaikyoKawagoe','E233系7000番台'],
+  ['1976K','SaikyoKawagoe','相鉄12000系'],
+  ['1984K','SaikyoKawagoe','東京臨海高速鉄道70-000形']
+ ];
+ for(const [num,line,model] of checks){
+  const base={serviceDate:'2026-11-16',calendarType:'weekday',
+    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+    trainType:'odpt.TrainType:JR-East.Local',
+    railDirection:'odpt.RailDirection:Inbound',
+    ...(model.includes('70-000')?{realtimeVehicleType:model}:{})};
+  const good=root.TrainNumberPngRanges.match(num,line,base);
+  assert.ok(good,num+': in-edition inbound even reference');
+  for(const bad of [
+    {railDirection:'odpt.RailDirection:Outbound'},
+    {serviceDate:'2026-10-31'},
+    {serviceDate:'2026-12-01'},
+    {serviceDate:''}
+  ])assert.equal(root.TrainNumberPngRanges.match(num,line,{...base,...bad}),null,
+    num+': rejects '+JSON.stringify(bad));
+ }
+ assert.equal(root.TrainNumberPngRanges.match('1941K','SaikyoKawagoe',{
+  serviceDate:'2026-11-16',
+  railDirection:'odpt.RailDirection:Inbound'}),null,
+  'odd numbers cannot be inbound even-direction trains');
 });
