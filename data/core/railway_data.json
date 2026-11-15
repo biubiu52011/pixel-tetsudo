@@ -25482,7 +25482,7 @@
         "nameKo": "이세사키선",
         "color": "#ff0000",
         "icon": "../images/鉄道/東武鉄道/伊勢崎線 佐野線 桐生線 小泉線 小泉線支線.png",
-        "order": 3,
+        "order": 4,
         "lineIds": [
           "TobuIsesaki"
         ],
@@ -29671,14 +29671,14 @@
       "nameZh": "大师线",
       "nameKo": "다이시선",
       "presentation": {
-        "code": "DTB",
+        "code": "TS",
         "nameJa": "大師線",
         "nameZh": "大师线",
         "nameEn": "Daishi Line",
         "nameKo": "다이시선",
         "color": "#0f6cc3",
         "icon": "../images/鉄道/東武鉄道/大師線.png",
-        "order": 7,
+        "order": 3,
         "lineIds": [
           "Daishi_Tobu"
         ],
@@ -32262,7 +32262,7 @@
         "nameKo": "키류선",
         "color": "#2B8ACD",
         "icon": "../images/鉄道/東武鉄道/伊勢崎線 佐野線 桐生線 小泉線 小泉線支線.png",
-        "order": 12,
+        "order": 7,
         "lineIds": [
           "Kiryu"
         ],
@@ -32383,7 +32383,7 @@
         "nameKo": "코이즈미선",
         "color": "#ff0000",
         "icon": "../images/鉄道/東武鉄道/小泉線.png",
-        "order": 10,
+        "order": 6,
         "lineIds": [
           "Koizumi"
         ],
@@ -33088,7 +33088,7 @@
         "nameKo": "키누가와선",
         "color": "#ffa600",
         "icon": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
-        "order": 6,
+        "order": 10,
         "lineIds": [
           "Nikkoku"
         ],
@@ -33432,7 +33432,7 @@
         "nameKo": "노다선（어반 파크 라인）",
         "color": "#0093d0",
         "icon": "../images/鉄道/東武鉄道/野田線.png",
-        "order": 1,
+        "order": 11,
         "lineIds": [
           "Noda"
         ],
@@ -33718,7 +33718,7 @@
         "nameKo": "오고세선",
         "color": "#F9AB41",
         "icon": "../images/鉄道/東武鉄道/越生線.png",
-        "order": 9,
+        "order": 13,
         "lineIds": [
           "Ogose"
         ],
@@ -34713,7 +34713,7 @@
         "nameKo": "사노선",
         "color": "#ff0000",
         "icon": "../images/鉄道/東武鉄道/伊勢崎線 佐野線 桐生線 小泉線 小泉線支線.png",
-        "order": 11,
+        "order": 5,
         "lineIds": [
           "Sano"
         ],
@@ -36089,7 +36089,7 @@
         "nameKo": "카메이도선",
         "color": "#0f6cc3",
         "icon": "../images/鉄道/東武鉄道/亀戸線.png",
-        "order": 8,
+        "order": 2,
         "lineIds": [
           "Tobu_Kameido"
         ],
@@ -36536,7 +36536,7 @@
         "nameKo": "토조선",
         "color": "#000099",
         "icon": "../images/鉄道/東武鉄道/東武東上線.png",
-        "order": 4,
+        "order": 12,
         "lineIds": [
           "Tojo"
         ],
@@ -37316,6 +37316,20 @@
       ],
       "nameZh": "东武宇都宫线",
       "nameKo": "도부 우츠노미야선",
+      "presentation": {
+        "code": "TN",
+        "nameJa": "宇都宮線",
+        "nameZh": "宇都宫线",
+        "nameEn": "Utsunomiya Line",
+        "nameKo": "우츠노미야선",
+        "color": "#ffa600",
+        "icon": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
+        "order": 9,
+        "lineIds": [
+          "TobuUtsunomiya"
+        ],
+        "operatorGroup": "TOBU"
+      },
       "serviceBoundaries": [
         {
           "lineId": "TobuNikko",
@@ -38251,7 +38265,7 @@
         "nameKo": "닛코선",
         "color": "#ffa600",
         "icon": "../images/鉄道/東武鉄道/日光線 宇都宮線 鬼怒川線.png",
-        "order": 5,
+        "order": 8,
         "lineIds": [
           "TobuNikko"
         ],
@@ -38491,7 +38505,7 @@
         "nameKo": "토부 스카이트리 라인",
         "color": "#0f6cc3",
         "icon": "../images/鉄道/東武鉄道/東武スカイツリーライン.png",
-        "order": 2,
+        "order": 1,
         "lineIds": [
           "TobuSkytree"
         ],

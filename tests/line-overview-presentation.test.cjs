@@ -235,20 +235,53 @@ test('a generic JR badge or missing icon cannot overtake an official icon, inclu
   assert.equal(order.filter(id => id === 'UenoTokyo').length, 1);
 });
 
-test('JR dedicated public codes outrank manual positions, but non-JR custom order is preserved', () => {
+test('JR dedicated public codes outrank manual positions while Tobu follows official symbol groups', () => {
   const order = ordered();
   const central = order.filter(id => lines[id]?.operator === 'JR-Central').slice(0, 9);
   assert.deepEqual(central,
     ['TokaidoCentral', 'Gotemba', 'Minobu', 'Iida', 'Taketoyo',
       'ChuoCentral', 'Takayama', 'Taita', 'KansaiCentral']);
-  assert.ok(order.indexOf('Noda') < order.indexOf('TobuSkytree'));
-  assert.ok(order.indexOf('TobuSkytree') < order.indexOf('TobuIsesaki'));
+  const tobuCards = order.filter(id => lines[id]?.operator === 'Tobu' &&
+    presentation.isIndependentLine(id, lines));
+  assert.deepEqual(tobuCards, [
+    'TobuSkytree', 'Tobu_Kameido', 'Daishi_Tobu',
+    'TobuIsesaki', 'Sano', 'Koizumi', 'Kiryu',
+    'TobuNikko', 'TobuUtsunomiya', 'Nikkoku',
+    'Noda', 'Tojo', 'Ogose'
+  ]);
+  assert.equal(lines.Daishi_Tobu.code, 'DTB', 'internal identity preserved');
+  assert.equal(lines.Daishi_Tobu.presentation.code, 'TS');
+  assert.equal(lines.TobuUtsunomiya.code, null, 'internal source code preserved');
+  assert.equal(lines.TobuUtsunomiya.presentation.code, 'TN');
+  assert.equal(lines.TobuUtsunomiya.presentation.icon, lines.TobuNikko.presentation.icon);
   assert.equal(presentation.getLineIconTier(lines.TokaidoCentral), 0);
   assert.equal(presentation.getLineIconTier(lines.SotetsuJRDirect), 1);
   assert.equal(presentation.getLineIconTier(lines.Kawagoe), 2);
   assert.ok(order.indexOf('SotetsuJRDirect') < order.indexOf('Kawagoe'));
   immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
   immediatelyAfter(order, 'UenoTokyo', 'ChuoMain');
+});
+
+test('Tobu official symbol groups override shuffled manual ranks without changing another operator', () => {
+  const icon = code => '../images/' + code + '.png';
+  const line = (id, code, order, operator = 'Tobu') => ({
+    operator, image: icon(code),
+    presentation: { lineIds: [id], order, code, icon: icon(code) }
+  });
+  const demo = {
+    Tojo: line('Tojo', 'TJ', 1),
+    Nikko: line('Nikko', 'TN', 2),
+    Noda: line('Noda', 'TD', 3),
+    Skytree: line('Skytree', 'TS', 4),
+    Isesaki: line('Isesaki', 'TI', 5),
+    OtherA: line('OtherA', 'AB', 2, 'Keio'),
+    OtherB: line('OtherB', 'AA', 1, 'Keio')
+  };
+  const cards = Array.from(presentation.getDisplayOrder(demo));
+  assert.deepEqual(cards.filter(id => demo[id].operator === 'Tobu'),
+    ['Skytree', 'Isesaki', 'Nikko', 'Noda', 'Tojo']);
+  assert.deepEqual(cards.filter(id => demo[id].operator === 'Keio'),
+    ['OtherB', 'OtherA'], 'other private railways retain their manual order');
 });
 
 test('public code overrides order only inside the same JR dedicated-icon tier', () => {

@@ -9,7 +9,8 @@
  *
  * 全局类别顺序：JR > Metro（地铁）> Other（第三部门及其他铁路）> Private（私铁）。
  * 同一 JR 运营商组内，先在来线后新干线；图标级别为专属 > 通用徽章 > 无图标。
- * JR 在来线专属图标按正式线路符号排序，同符号线路按 presentation.order；
+ * JR 在来线专属图标按正式线路符号排序；東武按 TS → TI → TN → TD → TJ 分组，
+ * 同组线路按 presentation.order 排列；
  * 其他序列按 presentation.order → 显示符号 → 名称 → 稳定原始顺序。
  * 上野东京线是明确保留的服务走廊特例，维持 JobanMain → UenoTokyo → ChuoMain。
  *
@@ -38,6 +39,9 @@
     "JR-Kyushu",
     "JR-Freight"
   ];
+
+  // 東武の公式旅客用ライン記号順。内部 canonical ID は変えない。
+  var TOBU_SYMBOL_ORDER = ["TS", "TI", "TN", "TD", "TJ"];
 
   // 最小类别元数据：以 "JR-" 前缀识别 JR 运营商
   // （JR-East / JR-West / JR-Central / JR-Kyushu / JR-Hokkaido / JR-Shikoku）。
@@ -128,6 +132,12 @@
       return String(pres.code || "");
     }
     return String((line && line.code) || "");
+  }
+
+  function tobuSymbolIndex(entity) {
+    var code = passengerSymbolOf(entity.line, entity.pres).toUpperCase();
+    var index = TOBU_SYMBOL_ORDER.indexOf(code);
+    return index < 0 ? TOBU_SYMBOL_ORDER.length : index;
   }
 
   // 生成运营商组内实体的确定性排序键。
@@ -257,6 +267,12 @@
         var aIconTier = getLineIconTier(a.line), bIconTier = getLineIconTier(b.line);
         if (aIconTier !== bIconTier) return aIconTier - bIconTier;
         if (a.isPresentation !== b.isPresentation) return a.isPresentation ? -1 : 1;
+        // 東武の公式ライン記号を先にまとめ、同一区分は presentation.order に従う。
+        // 先に確認済みの専用アイコン > 共通 > 無し の優先度は維持する。
+        if (op === "Tobu" && aIconTier === 0) {
+          var ta = tobuSymbolIndex(a), tb = tobuSymbolIndex(b);
+          if (ta !== tb) return ta - tb;
+        }
         // JR 的公开在来线专属记号比人工展示编号更有排序权。
         // 不改变私铁/地铁及重复符号线路已指定的人工展示顺序。
         if (categoryOf(op) === "JR" && aIconTier === 0 &&
