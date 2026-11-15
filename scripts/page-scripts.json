@@ -131,6 +131,7 @@
       "data/timetables/tobu-koizumi-2611-number-png.js",
       "data/timetables/tobu-sano-2611-number-png.js",
       "data/timetables/tobu-kiryu-2611-number-png.js",
+      "data/timetables/tobu-utsunomiya-2611-number-png.js",
       "data/timetables/train-number-png-ranges.js",
       "data/timetables/jreast-senzan-2611-number-index.js",
       "data/timetables/jreast-shinonoi-2611-number-index.js",
@@ -333,6 +334,9 @@
       ],
       "data/timetables/tobu-kiryu-2611-number-png.js": [
         "Kiryu"
+      ],
+      "data/timetables/tobu-utsunomiya-2611-number-png.js": [
+        "TobuUtsunomiya"
       ]
     }
   },

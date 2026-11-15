@@ -3824,6 +3824,9 @@
       actualVehicleConfirmed:false};
   }
   function match(trainNumber,lineId,context){
+    if(String(lineId||'')==='TobuUtsunomiya')
+      return root.TobuUtsunomiya2611Png ?
+        root.TobuUtsunomiya2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='Kiryu')
       return root.TobuKiryu2611Png ?
         root.TobuKiryu2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
