@@ -12,7 +12,7 @@
  * JR 在来线专属图标按正式线路符号排序；東武按 TS → TI → TN → TD → TJ 分组，
  * 同组线路按 presentation.order 排列；
  * 其他序列按 presentation.order → 显示符号 → 名称 → 稳定原始顺序。
- * 上野东京线是明确保留的服务走廊特例，维持 JobanMain → UenoTokyo → ChuoMain。
+ * 上野东京线明确绑定线路记号 JS 的湘南新宿线卡片，维持 ShonanShinjuku → UenoTokyo。
  *
  * canonical 物理线路仍在 railway_data.json 中独立建模；
  * 本层只负责展示，不合并或改写 canonical 拓扑。
@@ -293,10 +293,9 @@
    * 返回完整的 lineId 顺序：先放按展示顺序排列的主记录，再放其成员线路。
    * 成员共享主记录的排序位置，UI 聚合层负责去重。
    */
-  // 唯一经明确指定的顺序例外；其邻接线路随本走廊保持一个连续块。
-  var EXPLICIT_CORRIDOR_PLACEMENT = {
-    UenoTokyo: { after: "JobanMain", following: "ChuoMain" }
-  };
+  // 服务走廊的展示特例：由 canonical presentation.afterLineId 指定绑定对象。
+  // 上野东京线跟在 JS（湘南新宿线）之后，不再挪动无关的线路卡片。
+  var CORRIDORS_ATTACHED_TO_HOST = { UenoTokyo: true };
 
   function getDisplayOrder(allLines, options) {
     allLines = allLines || {};
@@ -318,17 +317,14 @@
         var presentation = line.presentation || {};
         var afterLineId = presentation.afterLineId;
         if (out.indexOf(lid) !== -1) return;
-        // 上野东京线是明示的例外：保持 JobanMain → UenoTokyo → ChuoMain。
-        // 该连续块不受通用徽章/无图标的通用优先级影响。
-        var placement = EXPLICIT_CORRIDOR_PLACEMENT[lid];
-        if (placement && out.indexOf(placement.after) >= 0) {
-          var companion = placement.following;
-          var companionIndex = companion ? out.indexOf(companion) : -1;
-          if (companionIndex >= 0) out.splice(companionIndex, 1);
-          var anchorIndex = out.indexOf(placement.after);
-          out.splice(anchorIndex + 1, 0, lid);
-          if (companionIndex >= 0) out.splice(anchorIndex + 2, 0, companion);
-          return;
+        // 上野东京线固定绑定 JS（湘南新宿线）卡片；仅插入自己，不重排其他卡片。
+        // 该明确特例优先于 JRグループ 通用图标的常规降级排序。
+        if (CORRIDORS_ATTACHED_TO_HOST[lid] && afterLineId) {
+          var anchorIndex = out.indexOf(afterLineId);
+          if (anchorIndex >= 0) {
+            out.splice(anchorIndex + 1, 0, lid);
+            return;
+          }
         }
         if (!hasDedicatedLineIcon(line) && Number.isInteger(presentation.order)) {
           // 通用徽章服务走廊按自己的整数编号插入降级序列，

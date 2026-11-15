@@ -55,6 +55,8 @@ test('JA cards stay together, JR-Sotetsu service does not claim JS', () => {
   assert.equal(lines.SotetsuJRDirect.presentation.code, '');
   assert.equal(lines.SotetsuJRDirect.code, 'JS', 'internal railway code must not change');
   assert.equal(lines.ShonanShinjuku.presentation.code, 'JS');
+  assert.equal(lines.UenoTokyo.presentation.afterLineId, 'ShonanShinjuku',
+    'UenoTokyo card is attached to JS/ShonanShinjuku, not Joban or Chuo');
   assert.equal(primaries.filter(([id, line]) => line.operator === 'JR-East' &&
     line.presentation.code === 'JS').length, 1);
 });
@@ -64,8 +66,7 @@ test('aggregated display members have no separate rank; corridor insertion remai
   assert.equal(lines.SobuRapid.presentation.order, undefined);
   const order = ordered();
   immediatelyAfter(order, 'Yokosuka', 'SobuRapid');
-  immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
-  immediatelyAfter(order, 'UenoTokyo', 'ChuoMain');
+  immediatelyAfter(order, 'ShonanShinjuku', 'UenoTokyo');
   assert.ok(order.indexOf('UenoTokyo') > order.indexOf('Yamanote'));
 });
 
@@ -258,8 +259,7 @@ test('JR dedicated public codes outrank manual positions while Tobu follows offi
   assert.equal(presentation.getLineIconTier(lines.SotetsuJRDirect), 1);
   assert.equal(presentation.getLineIconTier(lines.Kawagoe), 2);
   assert.ok(order.indexOf('SotetsuJRDirect') < order.indexOf('Kawagoe'));
-  immediatelyAfter(order, 'JobanMain', 'UenoTokyo');
-  immediatelyAfter(order, 'UenoTokyo', 'ChuoMain');
+  immediatelyAfter(order, 'ShonanShinjuku', 'UenoTokyo');
 });
 
 test('Tobu official symbol groups override shuffled manual ranks without changing another operator', () => {
@@ -356,6 +356,5 @@ test('operator filter DOM and card groups have the same JR-Metro-Other-Private s
   assert.ok(expected.indexOf('TokyoMetro') < expected.indexOf('TsukubaExpress'));
   assert.ok(expected.indexOf('TsukubaExpress') < expected.indexOf('Keio'));
   const display = presentation.getDisplayOrder(lines, {includeServiceCorridors:true});
-  assert.equal(display.indexOf('UenoTokyo'), display.indexOf('JobanMain') + 1);
-  assert.equal(display.indexOf('ChuoMain'), display.indexOf('UenoTokyo') + 1);
+  assert.equal(display.indexOf('UenoTokyo'), display.indexOf('ShonanShinjuku') + 1);
 });
