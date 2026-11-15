@@ -3,9 +3,11 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync('js/trains-render.js','utf8');
 const data=fs.readFileSync('js/trains-data.js','utf8');
-const start=source.indexOf('/*\n * TrainTrackLayout');
-assert.ok(start>0,'existing shared train layout must be used');
-const w={};vm.runInNewContext(source.slice(start),{window:w,console});
+const layoutSource=fs.readFileSync('js/train-track-layout.js','utf8');
+const throughSource=fs.readFileSync('js/through-chip.js','utf8');
+const start=layoutSource.indexOf('/*\n * TrainTrackLayout');
+assert.ok(start>=0,'shared track layout module must be used');
+const w={};vm.runInNewContext(layoutSource.slice(start),{window:w,console});
 const track=w.TrainTrackLayout;
 const points=[
  {stationId:'Asakusa',x:150,y:230},
@@ -84,6 +86,7 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
    GEOM:{BRANCH_STUB:24,BRANCH_COL_W:96,MAIN_BASE_W_MAX:297,MOBILE_CONTENT_W:297},
    _isMobileView:()=>true};
  vm.runInNewContext(data,ctx,{filename:'trains-data.js',timeout:15000});
+ vm.runInNewContext(throughSource,ctx,{filename:'through-chip.js',timeout:15000});
  const line=ctx.getLinesData().TobuSkytree;
  const g=ctx.computeRouteGeometry(line,'TobuSkytree');
  // The physical north end is the last SOURCE station but the first
