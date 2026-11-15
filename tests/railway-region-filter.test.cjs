@@ -157,5 +157,7 @@ test('regional filters retain shared structure and fast operator visibility',()=
   assert.doesNotMatch(trains, /\[null\]\.concat\(overviewOperators\(allLines\)\)/);
   assert.match(realtime,/setOperatorVisibility\(container,_selectedOperator\)/);
   assert.match(realtime,/recordRenderedStatusSignatures\(regionLines\)/);
+  assert.match(realtime,/mountedStatusIds\(cards\)/);
+  assert.match(realtime,/regionKeys!==_renderedRegionKeys/);
   assert.match(realtime,/var regionLines = window\.DataState\.filterLinesByRegion\(linesObj, _selectedRegion\)/);
 });
