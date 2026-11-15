@@ -161,3 +161,11 @@ https://www.twr.co.jp/Default.aspx?TabId=382
 | Shinjuku | 235 | 183 |
 
 资料：原仓库 `docs/tokyo-gtfs-import-20261112.md`、官方 ODPT 数据目录 <https://ckan.odpt.org/dataset/r_train_timetable-toei>（大江户线编号规范）、都营浅草线 2026 年 11 月 21 日改点告知 <https://www.kotsu.metro.tokyo.jp/pickup_information/news/subway/2026/sub_p_2026102012843_h.html>、车型 <https://www.jametro.or.jp/subway/japan/tokyo/guide.html>。
+
+
+## 第十次校对：埼京／临海线尾号跨线路误配防护
+
+- 保留 JS `js-0056`、`js-0057`、`js-0058` 现有 K/F/S 尾号规则；不把 00–71、72–79、80–91 变成“已经逐号证实的车次名册”或实际车辆身份。
+- 在统一号码映射负责人中增加 **仅在已提供来源时生效**的铁路 URN 约束（JR East SaikyoKawagoe／TWR Rinkai）、Local／Rapid／CommuterRapid 类型排除条件。上游来源为常磐、中央线或特急时不再继承埼京／临海 PNG。
+- 为 E233-7000 和相铁 12000 参考图添加与源车型观测及已确认单车型计划的冲突检查；当上游明确报告其他车型时，不再只凭两位尾号绘制旧 PNG。70-000／71-000 仍维持独立确定车型才选择一张图的严格模式。
+- 原始规则 **130 条不变**；仍有 **9 条**缺少完整 2026-11 官方番号名单。附加来源防护覆盖的前端规则数量由 123 增至 125；不改变 SQL 规则及资产审核状态。

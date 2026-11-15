@@ -1038,15 +1038,27 @@
       allowedModelLabels:["E235系0番台","E235系0番台（山手線）"],
       model:"E235系0番台（山手線）",
       pngPath:"../images/列车/JR東日本/JR東日本_E235系_0番台.png"},
+    // 00-71 tail family is not proof of the particular E233 carset.
+    // Reject a supplied foreign source, train type or conflicting model.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:0,to:71,suffixes:"KFS",
+      sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
+      trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
+      allowedModelLabels:["E233系7000番台"],
       model:"E233系7000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_7000番台.png"},
+    // 72-79 tail is a reference family only: supplied independent
+    // vehicle observations must not contradict the Sotetsu 12000 art.
     {lineIds:["SaikyoKawagoe"],from:72,to:79,suffixes:"KFS",
+      sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe"],
+      trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
+      allowedModelLabels:["相鉄12000系"],
       model:"相鉄12000系",
       pngPath:"../images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png"},
     // 70-000 and 71-000 coexist; K/F/S tails do not determine their model.
     // A real source-model observation must select exactly one approved PNG.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:80,to:91,suffixes:"KFS",
+      sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
+      trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       allowedModelLabels:["東京臨海高速鉄道70-000形","東京臨海高速鉄道71-000形"],
       exactModelArtworkMap:{"東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png","東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"},

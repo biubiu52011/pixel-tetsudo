@@ -119,7 +119,7 @@ test('SQL and frontend exact train-number PNG references have no contradictory p
 test('front-end PNG range metadata retains every source-specific guard and qualifier',()=>{
  const owner=getRows();
  const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
- assert.equal(c.summary.frontend_rules_with_additional_source_fields,123);
+ assert.equal(c.summary.frontend_rules_with_additional_source_fields,125);
  assert.equal(c.summary.frontend_additional_source_keys,21);
  assert.equal(owner.length,130);
  owner.forEach((row,i)=>{
@@ -199,4 +199,22 @@ test('Tozai S and TWR 8x tail artwork stays model-evidence gated',()=>{
  assert.equal(metro.evidence_kind,'range-with-runtime-guards');
  assert.equal(twr.actual_vehicle_confirmed,false);
  assert.equal(metro.actual_vehicle_confirmed,false);
+});
+
+test('Saikyo and Rinkai tail families reject conflicting source/type/model observations',()=>{
+ const sources={
+  'js-0056':['odpt.Railway:JR-East.SaikyoKawagoe','odpt.Railway:TWR.Rinkai'],
+  'js-0057':['odpt.Railway:JR-East.SaikyoKawagoe'],
+  'js-0058':['odpt.Railway:JR-East.SaikyoKawagoe','odpt.Railway:TWR.Rinkai']
+ };
+ for(const [id,sourceList] of Object.entries(sources)){
+  const row=c.rules.find(r=>r.id===id);
+  assert.deepEqual(row.source_railways_if_present,sourceList,id);
+  assert.deepEqual(row.runtime_guards.trainTypesIfPresent,
+   ['Local','Rapid','CommuterRapid'],id);
+  assert.ok(row.runtime_guards.allowedModelLabels.length>0,id);
+  assert.equal(row.evidence_kind,'range-with-runtime-guards',id);
+  assert.equal(row.actual_vehicle_confirmed,false,id);
+  assert.ok(c.review.frontend_guard_only_rules.some(r=>r.rule===id),id);
+ }
 });

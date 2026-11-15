@@ -3315,3 +3315,31 @@ test('Toei Asakusa/Shinjuku/Oedo staged numbers only authorize owner-scoped disp
     'official ODPT Oedo numbers omit terminal 1/2; never synthesize suffix');
   assert.equal(root.TrainNumberPngRanges.match(n+'2','Oedo',po),null);
 });
+
+test('Saikyo K/F/S reference numbers fail closed for foreign source and contradictory fleet evidence',()=>{
+ const families=[
+  ['1940K','E233系7000番台','SaikyoKawagoe'],
+  ['1976K','相鉄12000系','SaikyoKawagoe'],
+  ['1984K','東京臨海高速鉄道71-000形','SaikyoKawagoe']
+ ];
+ for(const [number,model,line] of families){
+  const base={trainNumber:number,positionLineId:line,
+   sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+   trainType:'odpt.TrainType:JR-East.Local',serviceDate:'2026-11-16',
+   realtimeVehicleType:model};
+  assert.ok(root.TrainVehicle.lookupTrainNumberRangePng(live(base)),number);
+  for(const invalid of [
+   {sourceRailway:'odpt.Railway:JR-East.JobanLocal'},
+   {trainType:'odpt.TrainType:JR-East.LimitedExpress'},
+   {realtimeVehicleType:'E231系800番台'},
+   {vehiclePlan:{status:'PLANNED_MODEL',models:['E231系800番台']}}
+  ]){
+   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({...base,...invalid})),null,
+    number+': invalid '+JSON.stringify(invalid));
+  }
+ }
+ const twr=live({trainNumber:'1984K',positionLineId:'Rinkai',
+   sourceRailway:'odpt.Railway:TWR.Rinkai',trainType:'odpt.TrainType:TWR.Local',
+   realtimeVehicleType:'東京臨海高速鉄道70-000形',serviceDate:'2026-11-16'});
+ assert.match(root.TrainVehicle.lookupTrainNumberRangePng(twr).pngPath,/70-000形\.png$/);
+});

@@ -138,8 +138,10 @@ function buildCatalog(snapshot, rows) {
    .map(r=>({rule:r.id,line_ids:r.line_ids,model:r.model,
     min:r.min,max:r.max,suffix:r.suffix,format:r.format,
     requires_compatible_plan:r.requires_compatible_plan,
-    has_source_railway_guard:Array.isArray(r.source_railways)&&r.source_railways.length>0,
-    has_type_guard:!!(r.train_type||(r.train_types&&r.train_types.length)),
+    has_source_railway_guard:!!((Array.isArray(r.source_railways)&&r.source_railways.length)||
+      (Array.isArray(r.source_railways_if_present)&&r.source_railways_if_present.length)),
+    has_type_guard:!!(r.train_type||(r.train_types&&r.train_types.length)||
+      (r.runtime_guards.trainTypesIfPresent&&r.runtime_guards.trainTypesIfPresent.length)),
     has_date_window:!!(r.valid_from&&r.valid_to)}));
  const frontendMonthRoster=js.filter(r=>r.evidence_kind==='official-month-calendar-roster')
    .map(r=>({rule:r.id,line_ids:r.line_ids,official_month:r.official_month,

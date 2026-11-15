@@ -22,7 +22,7 @@
     "unregistered_sql_png_rules": 0,
     "sql_assets_pending_review": 5,
     "frontend_guard_only_rules": 9,
-    "frontend_rules_with_additional_source_fields": 123,
+    "frontend_rules_with_additional_source_fields": 125,
     "frontend_additional_source_keys": 21,
     "frontend_official_month_rosters": 4,
     "frontend_singleton_candidates": 1,
@@ -10361,10 +10361,22 @@
       "valid_to": null,
       "operator": null,
       "source_railways": null,
-      "source_railways_if_present": null,
+      "source_railways_if_present": [
+        "odpt.Railway:JR-East.SaikyoKawagoe",
+        "odpt.Railway:TWR.Rinkai"
+      ],
       "direction_number_parity": null,
       "requires_compatible_plan": false,
-      "runtime_guards": {},
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系7000番台"
+        ],
+        "trainTypesIfPresent": [
+          "Local",
+          "Rapid",
+          "CommuterRapid"
+        ]
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -10394,10 +10406,21 @@
       "valid_to": null,
       "operator": null,
       "source_railways": null,
-      "source_railways_if_present": null,
+      "source_railways_if_present": [
+        "odpt.Railway:JR-East.SaikyoKawagoe"
+      ],
       "direction_number_parity": null,
       "requires_compatible_plan": false,
-      "runtime_guards": {},
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "相鉄12000系"
+        ],
+        "trainTypesIfPresent": [
+          "Local",
+          "Rapid",
+          "CommuterRapid"
+        ]
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -10428,7 +10451,10 @@
       "valid_to": "2026-11-30",
       "operator": null,
       "source_railways": null,
-      "source_railways_if_present": null,
+      "source_railways_if_present": [
+        "odpt.Railway:JR-East.SaikyoKawagoe",
+        "odpt.Railway:TWR.Rinkai"
+      ],
       "direction_number_parity": null,
       "requires_compatible_plan": false,
       "runtime_guards": {
@@ -10439,7 +10465,12 @@
         "exactModelArtworkMap": {
           "東京臨海高速鉄道70-000形": "../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png",
           "東京臨海高速鉄道71-000形": "../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"
-        }
+        },
+        "trainTypesIfPresent": [
+          "Local",
+          "Rapid",
+          "CommuterRapid"
+        ]
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
@@ -30441,8 +30472,8 @@
         "suffix": "KFS",
         "format": "tail",
         "requires_compatible_plan": false,
-        "has_source_railway_guard": false,
-        "has_type_guard": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
         "has_date_window": false
       },
       {
@@ -30456,8 +30487,8 @@
         "suffix": "KFS",
         "format": "tail",
         "requires_compatible_plan": false,
-        "has_source_railway_guard": false,
-        "has_type_guard": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
         "has_date_window": false
       },
       {
@@ -30472,8 +30503,8 @@
         "suffix": "KFS",
         "format": "tail",
         "requires_compatible_plan": false,
-        "has_source_railway_guard": false,
-        "has_type_guard": false,
+        "has_source_railway_guard": true,
+        "has_type_guard": true,
         "has_date_window": true
       },
       {
