@@ -23,7 +23,7 @@ test('four unverified arts are registered as review, never approved or native-fi
  const promoted=JSON.parse(JSON.stringify(snapshot));
  const path=c.review.sql_asset_review_required[0].png;
  promoted.vehicle_image_assets.find(a=>a.image_path===path).asset_status='available';
- assert.ok(audit(buildCatalog(promoted,getRows())).some(x=>/pending assets changed/.test(x)));
+ assert.ok(audit(buildCatalog(promoted,getRows())).some(x=>/unexpected SQL asset review\/promotion|pending assets changed/.test(x)));
 });
 test('all SQL overlaps fail closed on candidate band alone',()=>{
  assert.equal(c.review.sql_range_overlaps.length,6);

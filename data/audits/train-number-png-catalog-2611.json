@@ -16,11 +16,11 @@
     "sql_lines": 24,
     "js_lines": 58,
     "unregistered_sql_png_rules": 0,
+    "sql_assets_pending_review": 5,
+    "frontend_guard_only_rules": 20,
     "model_label_differences": 14,
     "overlapping_sql_bands": 6,
-    "overlapping_different_model_bands": 3,
-    "sql_assets_pending_review": 5,
-    "frontend_guard_only_rules": 20
+    "overlapping_different_model_bands": 3
   },
   "line_index": {
     "Agatsuma": {
@@ -846,14 +846,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 3001,
       "max": 3001,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0002",
@@ -863,14 +863,14 @@
       ],
       "segment": "verified_single_service",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/030/033833.html",
       "min": 3001,
       "max": 3001,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/030/033833.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0003",
@@ -880,14 +880,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 3003,
       "max": 3003,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0004",
@@ -897,14 +897,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html",
       "min": 3006,
       "max": 3006,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0005",
@@ -914,14 +914,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3007,
       "max": 3007,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0006",
@@ -931,14 +931,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3009,
       "max": 3009,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0007",
@@ -948,14 +948,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3010,
       "max": 3010,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0008",
@@ -965,14 +965,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3012,
       "max": 3012,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0009",
@@ -982,14 +982,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3014,
       "max": 3014,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0010",
@@ -999,14 +999,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3015,
       "max": 3015,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0011",
@@ -1016,14 +1016,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3016,
       "max": 3016,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0012",
@@ -1033,14 +1033,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3018,
       "max": 3018,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0013",
@@ -1050,14 +1050,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3019,
       "max": 3019,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0014",
@@ -1067,14 +1067,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3020,
       "max": 3020,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0015",
@@ -1084,14 +1084,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3023,
       "max": 3023,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0016",
@@ -1101,14 +1101,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3024,
       "max": 3024,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0017",
@@ -1118,14 +1118,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3025,
       "max": 3025,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0018",
@@ -1135,14 +1135,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 3027,
       "max": 3027,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0019",
@@ -1152,14 +1152,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3028,
       "max": 3028,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0020",
@@ -1169,14 +1169,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 3031,
       "max": 3031,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0021",
@@ -1186,14 +1186,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html",
       "min": 3032,
       "max": 3032,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0022",
@@ -1203,14 +1203,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3033,
       "max": 3033,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0023",
@@ -1220,14 +1220,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3034,
       "max": 3034,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0024",
@@ -1237,14 +1237,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3035,
       "max": 3035,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0025",
@@ -1254,14 +1254,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3036,
       "max": 3036,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0026",
@@ -1271,14 +1271,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3037,
       "max": 3037,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0027",
@@ -1288,14 +1288,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3038,
       "max": 3038,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0028",
@@ -1305,14 +1305,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3039,
       "max": 3039,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0029",
@@ -1322,14 +1322,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062371.html",
       "min": 3041,
       "max": 3041,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062371.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0030",
@@ -1339,14 +1339,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3042,
       "max": 3042,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0031",
@@ -1356,14 +1356,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3044,
       "max": 3044,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0032",
@@ -1373,14 +1373,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 3095,
       "max": 3095,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0033",
@@ -1390,14 +1390,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3096,
       "max": 3096,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0034",
@@ -1407,14 +1407,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 5013,
       "max": 5013,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0035",
@@ -1424,14 +1424,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 5021,
       "max": 5021,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0036",
@@ -1441,14 +1441,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 5026,
       "max": 5026,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0037",
@@ -1458,14 +1458,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 5029,
       "max": 5029,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0038",
@@ -1475,14 +1475,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 5045,
       "max": 5045,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0039",
@@ -1492,14 +1492,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html",
       "min": 5051,
       "max": 5051,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0040",
@@ -1509,14 +1509,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 5059,
       "max": 5059,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0041",
@@ -1526,14 +1526,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 5061,
       "max": 5061,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0042",
@@ -1543,14 +1543,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 5063,
       "max": 5063,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0043",
@@ -1560,14 +1560,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 8062,
       "max": 8062,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0044",
@@ -1577,14 +1577,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 8065,
       "max": 8065,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0045",
@@ -1594,14 +1594,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1p.html",
       "min": 9017,
       "max": 9017,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0046",
@@ -1611,14 +1611,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000041.html",
       "min": 1001,
       "max": 1001,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000041.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0047",
@@ -1628,14 +1628,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000071.html",
       "min": 1002,
       "max": 1002,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000071.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0048",
@@ -1645,14 +1645,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000081.html",
       "min": 1003,
       "max": 1003,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000081.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0049",
@@ -1662,14 +1662,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000111.html",
       "min": 1004,
       "max": 1004,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000111.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0050",
@@ -1679,14 +1679,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/015/019971.html",
       "min": 1005,
       "max": 1005,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/015/019971.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0051",
@@ -1696,14 +1696,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000151.html",
       "min": 1006,
       "max": 1006,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000151.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0052",
@@ -1713,14 +1713,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000271.html",
       "min": 1011,
       "max": 1011,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000271.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0053",
@@ -1730,14 +1730,14 @@
       ],
       "segment": "2611_shinano_exact_planned_number_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000461.html",
       "min": 1026,
       "max": 1026,
       "suffix": "M",
       "model": "383系",
       "png": "images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000461.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0054",
@@ -1747,14 +1747,14 @@
       ],
       "segment": "fujikyu_local_6000",
       "format": "full",
+      "source_url": "https://www.fujikyu-railway.jp/station/timetable.php",
       "min": 1,
       "max": 52,
       "suffix": "",
       "model": "富士急行6000系（標準色）",
       "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.fujikyu-railway.jp/station/timetable.php"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0055",
@@ -1764,14 +1764,14 @@
       ],
       "segment": "fujisan_express_8000",
       "format": "full",
+      "source_url": "https://www.fujikyu-railway.jp/train/fujisan_express.php",
       "min": 701,
       "max": 705,
       "suffix": "",
       "model": "富士急行8000系（フジサン特急・顔A）",
       "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.fujikyu-railway.jp/train/fujisan_express.php"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0056",
@@ -1781,14 +1781,14 @@
       ],
       "segment": "fujisan_express_8000",
       "format": "full",
+      "source_url": "https://www.fujikyu-railway.jp/train/fujisan_express.php",
       "min": 793,
       "max": 794,
       "suffix": "",
       "model": "富士急行8000系（フジサン特急・顔A）",
       "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.fujikyu-railway.jp/train/fujisan_express.php"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0057",
@@ -1798,14 +1798,14 @@
       ],
       "segment": "fujikyu_chuo_through_e233",
       "format": "full",
+      "source_url": "sql:manual_timetable_templates:Fujikyu-ChuoMain:1455M-1456M",
       "min": 1455,
       "max": 1456,
       "suffix": "M",
       "model": "E233系0番台",
       "png": "images/列车/JR東日本/JR東日本_E233系_0番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "sql:manual_timetable_templates:Fujikyu-ChuoMain:1455M-1456M"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0058",
@@ -1815,14 +1815,14 @@
       ],
       "segment": "south",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/238d1.html",
       "min": 520,
       "max": 758,
       "suffix": "M",
       "model": "211系（高崎地区）",
       "png": "images/列车/JR東日本/JR東日本_211系_湘南色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/238d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0059",
@@ -1832,14 +1832,14 @@
       ],
       "segment": "north",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/296d1.html",
       "min": 1720,
       "max": 1752,
       "suffix": "M",
       "model": "E129系",
       "png": "images/列车/JR東日本/JR東日本_E129系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/296d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0060",
@@ -1849,14 +1849,14 @@
       ],
       "segment": "north",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/296d2.html",
       "min": 8124,
       "max": 9783,
       "suffix": "D",
       "model": "キハ40・48形（越乃Shu＊Kura）",
       "png": "images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/296d2.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0061",
@@ -1866,14 +1866,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 302,
       "max": 302,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0062",
@@ -1883,14 +1883,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 306,
       "max": 306,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0063",
@@ -1900,14 +1900,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 316,
       "max": 316,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0064",
@@ -1917,14 +1917,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 331,
       "max": 331,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0065",
@@ -1934,14 +1934,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 333,
       "max": 333,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0066",
@@ -1951,14 +1951,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 342,
       "max": 342,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0067",
@@ -1968,14 +1968,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 345,
       "max": 345,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0068",
@@ -1985,14 +1985,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 346,
       "max": 346,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0069",
@@ -2002,14 +2002,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 401,
       "max": 401,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0070",
@@ -2019,14 +2019,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 405,
       "max": 405,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0071",
@@ -2036,14 +2036,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 414,
       "max": 414,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0072",
@@ -2053,14 +2053,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 1301,
       "max": 1301,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0073",
@@ -2070,14 +2070,14 @@
       ],
       "segment": "verified_single_service",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/035/038221.html",
       "min": 1301,
       "max": 1301,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/035/038221.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0074",
@@ -2087,14 +2087,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 1312,
       "max": 1312,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0075",
@@ -2104,14 +2104,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 1344,
       "max": 1344,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0076",
@@ -2121,14 +2121,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html",
       "min": 2403,
       "max": 2403,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0077",
@@ -2138,14 +2138,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 2408,
       "max": 2408,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0078",
@@ -2155,14 +2155,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html",
       "min": 2410,
       "max": 2410,
       "suffix": "C",
       "model": "E7系",
       "png": "images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0079",
@@ -2172,14 +2172,14 @@
       ],
       "segment": "full",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979d1.html",
       "min": 650,
       "max": 672,
       "suffix": "D",
       "model": "HB-E220系",
       "png": "images/列车/JR東日本/JR東日本_HB-E220系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0080",
@@ -2189,14 +2189,14 @@
       ],
       "segment": "full",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979u1.html",
       "min": 1652,
       "max": 1669,
       "suffix": "D",
       "model": "HB-E220系",
       "png": "images/列车/JR東日本/JR東日本_HB-E220系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0081",
@@ -2206,14 +2206,14 @@
       ],
       "segment": "full",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979d1.html",
       "min": 3657,
       "max": 3666,
       "suffix": "D",
       "model": "HB-E220系",
       "png": "images/列车/JR東日本/JR東日本_HB-E220系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0082",
@@ -2223,14 +2223,14 @@
       ],
       "segment": "full",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/150/154901.html",
       "min": 8621,
       "max": 8622,
       "suffix": "D",
       "model": "HB-E300系（ひなび）",
       "png": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/150/154901.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0083",
@@ -2240,14 +2240,14 @@
       ],
       "segment": "e131_family",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/local/e131.html",
       "min": 523,
       "max": 551,
       "suffix": "M",
       "model": "E131系0番台 / 80番台",
       "png": "images/列车/JR東日本/JR東日本_E131系_0番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/local/e131.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0084",
@@ -2257,14 +2257,14 @@
       ],
       "segment": "e235_through",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/local/e235.html",
       "min": 2520,
       "max": 2545,
       "suffix": "M",
       "model": "E235系1000番台",
       "png": "images/列车/JR東日本/JR東日本_E235系_1000番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/local/e235.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0085",
@@ -2274,14 +2274,14 @@
       ],
       "segment": "e131_family",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/local/e131.html",
       "min": 3521,
       "max": 3547,
       "suffix": "M",
       "model": "E131系0番台 / 80番台",
       "png": "images/列车/JR東日本/JR東日本_E131系_0番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/local/e131.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0086",
@@ -2291,14 +2291,14 @@
       ],
       "segment": "e235_through",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/local/e235.html",
       "min": 9520,
       "max": 9545,
       "suffix": "M",
       "model": "E235系1000番台",
       "png": "images/列车/JR東日本/JR東日本_E235系_1000番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/local/e235.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0087",
@@ -2308,14 +2308,14 @@
       ],
       "segment": "maeyachi_yanagitsu_rail",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/local/kiha110.html",
       "min": 921,
       "max": 935,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/local/kiha110.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0088",
@@ -2325,14 +2325,14 @@
       ],
       "segment": "maeyachi_yanagitsu_rail",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/local/kiha110.html",
       "min": 2926,
       "max": 2938,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/local/kiha110.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0089",
@@ -2342,14 +2342,14 @@
       ],
       "segment": "rail_to_hotto_yuda",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable/tt0564/0564040.html",
       "min": 722,
       "max": 739,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable/tt0564/0564040.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0090",
@@ -2359,14 +2359,14 @@
       ],
       "segment": "rail_to_hotto_yuda",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable/tt0564/0564040.html",
       "min": 3729,
       "max": 3739,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable/tt0564/0564040.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0091",
@@ -2376,14 +2376,14 @@
       ],
       "segment": "highrail1375_official",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/fun/highrail1375.html",
       "min": 8221,
       "max": 8223,
       "suffix": "D",
       "model": "キハ100・110系（HIGH RAIL 1375）",
       "png": "images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/fun/highrail1375.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0092",
@@ -2393,14 +2393,14 @@
       ],
       "segment": "regular",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/274d1.html",
       "min": 921,
       "max": 1940,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/274d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0093",
@@ -2410,14 +2410,14 @@
       ],
       "segment": "hinabi",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/railway/joyful/hinabi.html",
       "min": 9921,
       "max": 9922,
       "suffix": "D",
       "model": "HB-E300系（ひなび）",
       "png": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/railway/joyful/hinabi.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0094",
@@ -2427,14 +2427,14 @@
       ],
       "segment": "maintenance",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/274u1.html",
       "min": 9934,
       "max": 9934,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/274u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0095",
@@ -2444,14 +2444,14 @@
       ],
       "segment": "kisarazu_kururi_rail",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/217d1.html",
       "min": 920,
       "max": 953,
       "suffix": "D",
       "model": "キハE130形100番台",
       "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/217d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0096",
@@ -2461,14 +2461,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352901.html?d=20261104&t=0829100",
       "min": 300,
       "max": 300,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352901.html?d=20261104&t=0829100"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0097",
@@ -2478,14 +2478,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351901.html?d=20261101&t=2898401",
       "min": 301,
       "max": 301,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351901.html?d=20261101&t=2898401"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0098",
@@ -2495,14 +2495,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353001.html?d=20261104&t=0829200",
       "min": 304,
       "max": 304,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353001.html?d=20261104&t=0829200"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0099",
@@ -2512,14 +2512,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351801.html?d=20261106&t=2862601",
       "min": 305,
       "max": 305,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351801.html?d=20261106&t=2862601"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0100",
@@ -2529,14 +2529,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352001.html?d=20261101&t=2814400",
       "min": 306,
       "max": 306,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352001.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0101",
@@ -2546,14 +2546,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352101.html?d=20261103&t=2814400",
       "min": 308,
       "max": 308,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352101.html?d=20261103&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0102",
@@ -2563,14 +2563,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352201.html?d=20261101&t=2814400",
       "min": 310,
       "max": 310,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352201.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0103",
@@ -2580,14 +2580,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353101.html?d=20261101&t=2814400",
       "min": 312,
       "max": 312,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353101.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0104",
@@ -2597,14 +2597,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350101.html?d=20261105&t=2828300",
       "min": 313,
       "max": 313,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350101.html?d=20261105&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0105",
@@ -2614,14 +2614,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353201.html?d=20261105&t=2862600",
       "min": 314,
       "max": 314,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353201.html?d=20261105&t=2862600"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0106",
@@ -2631,14 +2631,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350201.html?d=20261103&t=2828300",
       "min": 315,
       "max": 315,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350201.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0107",
@@ -2648,14 +2648,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353301.html?d=20261101&t=2814400",
       "min": 316,
       "max": 316,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353301.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0108",
@@ -2665,14 +2665,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350301.html?d=20261103&t=2828300",
       "min": 317,
       "max": 317,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350301.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0109",
@@ -2682,14 +2682,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353401.html?d=20261104&t=2862600",
       "min": 318,
       "max": 318,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353401.html?d=20261104&t=2862600"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0110",
@@ -2699,14 +2699,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350401.html?d=20261101&t=2828300",
       "min": 319,
       "max": 319,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350401.html?d=20261101&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0111",
@@ -2716,14 +2716,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353501.html?d=20261101&t=2814400",
       "min": 320,
       "max": 320,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353501.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0112",
@@ -2733,14 +2733,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353601.html?d=20261104&t=2862600",
       "min": 322,
       "max": 322,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353601.html?d=20261104&t=2862600"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0113",
@@ -2750,14 +2750,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350501.html?d=20261103&t=2828300",
       "min": 323,
       "max": 323,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350501.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0114",
@@ -2767,14 +2767,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353801.html?d=20261101&t=2814400",
       "min": 324,
       "max": 324,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353801.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0115",
@@ -2784,14 +2784,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350601.html?d=20261103&t=2828300",
       "min": 325,
       "max": 325,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350601.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0116",
@@ -2801,14 +2801,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353901.html?d=20261101&t=0829200",
       "min": 326,
       "max": 326,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353901.html?d=20261101&t=0829200"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0117",
@@ -2818,14 +2818,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350701.html?d=20261103&t=2828300",
       "min": 327,
       "max": 327,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350701.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0118",
@@ -2835,14 +2835,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352301.html?d=20261104&t=0829200",
       "min": 328,
       "max": 328,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352301.html?d=20261104&t=0829200"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0119",
@@ -2852,14 +2852,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350801.html?d=20261105&t=2828300",
       "min": 329,
       "max": 329,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350801.html?d=20261105&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0120",
@@ -2869,14 +2869,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00354001.html?d=20261104&t=0829200",
       "min": 330,
       "max": 330,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00354001.html?d=20261104&t=0829200"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0121",
@@ -2886,14 +2886,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350901.html?d=20261105&t=2828300",
       "min": 331,
       "max": 331,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350901.html?d=20261105&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0122",
@@ -2903,14 +2903,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353701.html?d=20261101&t=2814400",
       "min": 332,
       "max": 332,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353701.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0123",
@@ -2920,14 +2920,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352401.html?d=20261031&t=2900700",
       "min": 334,
       "max": 334,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352401.html?d=20261031&t=2900700"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0124",
@@ -2937,14 +2937,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351101.html?d=20261103&t=2828300",
       "min": 335,
       "max": 335,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351101.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0125",
@@ -2954,14 +2954,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352501.html?d=20261103&t=2814400",
       "min": 336,
       "max": 336,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352501.html?d=20261103&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0126",
@@ -2971,14 +2971,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351201.html?d=20261103&t=0829301",
       "min": 337,
       "max": 337,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351201.html?d=20261103&t=0829301"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0127",
@@ -2988,14 +2988,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351301.html?d=20261103&t=2828300",
       "min": 339,
       "max": 339,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351301.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0128",
@@ -3005,14 +3005,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351401.html?d=20261103&t=2828300",
       "min": 341,
       "max": 341,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351401.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0129",
@@ -3022,14 +3022,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351501.html?d=20261103&t=2939501",
       "min": 343,
       "max": 343,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351501.html?d=20261103&t=2939501"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0130",
@@ -3039,14 +3039,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351601.html?d=20261103&t=2828300",
       "min": 345,
       "max": 345,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351601.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0131",
@@ -3056,14 +3056,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00348901.html?d=20261101&t=2862601",
       "min": 403,
       "max": 403,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00348901.html?d=20261101&t=2862601"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0132",
@@ -3073,14 +3073,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349001.html?d=20261104&t=2898401",
       "min": 405,
       "max": 405,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349001.html?d=20261104&t=2898401"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0133",
@@ -3090,14 +3090,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349601.html?d=20261101&t=2862600",
       "min": 406,
       "max": 406,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349601.html?d=20261101&t=2862600"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0134",
@@ -3107,14 +3107,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349101.html?d=20261103&t=2828300",
       "min": 407,
       "max": 407,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349101.html?d=20261103&t=2828300"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0135",
@@ -3124,14 +3124,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349201.html?d=20261104&t=2862601",
       "min": 409,
       "max": 409,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349201.html?d=20261104&t=2862601"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0136",
@@ -3141,14 +3141,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349301.html?d=20261104&t=2862601",
       "min": 411,
       "max": 411,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349301.html?d=20261104&t=2862601"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0137",
@@ -3158,14 +3158,14 @@
       ],
       "segment": "holiday_verified_single_number",
       "format": "full",
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0038/00385801.html?d=20261101&t=2814400",
       "min": 7420,
       "max": 7420,
       "suffix": "A",
       "model": "800系",
       "png": "images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0038/00385801.html?d=20261101&t=2814400"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0138",
@@ -3175,14 +3175,14 @@
       ],
       "segment": "mito_regular_local",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/246d1.html",
       "min": 721,
       "max": 2785,
       "suffix": "M",
       "model": "E531系",
       "png": "images/列车/JR東日本/JR東日本_E531系_水戸線.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/246d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0139",
@@ -3192,14 +3192,14 @@
       ],
       "segment": "miyo_e129_regular_seasonal",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/233u2.html",
       "min": 220,
       "max": 9284,
       "suffix": "M",
       "model": "E129系",
       "png": "images/列车/JR東日本/JR東日本_E129系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/233u2.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0140",
@@ -3209,14 +3209,14 @@
       ],
       "segment": "momiji_no_sql_source",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/233d1.html",
       "min": 9278,
       "max": 9279,
       "suffix": "D",
       "model": "HB-E300系（海里）",
       "png": "images/列车/JR東日本/JR東日本_HB-E300系_海里.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/233d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0141",
@@ -3226,14 +3226,14 @@
       ],
       "segment": "ichinoseki_kesennuma_regular_rail",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/269d1.html",
       "min": 321,
       "max": 340,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/269d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0142",
@@ -3243,14 +3243,14 @@
       ],
       "segment": "oiwake_oga_regular_rail",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/259u1.html",
       "min": 1120,
       "max": 1149,
       "suffix": "M",
       "model": "EV-E801系",
       "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/259u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0143",
@@ -3260,14 +3260,14 @@
       ],
       "segment": "east_e353_azusa_hakuba",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d2.html",
       "min": 5,
       "max": 8042,
       "suffix": "M",
       "model": "E353系",
       "png": "images/列车/JR東日本/JR東日本_E353系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d2.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0144",
@@ -3277,14 +3277,14 @@
       ],
       "segment": "east_211_family",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230u1.html",
       "min": 1522,
       "max": 3259,
       "suffix": "M",
       "model": "211系（長野地区）",
       "png": "images/列车/JR東日本/JR東日本_211系_長野色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0145",
@@ -3294,14 +3294,14 @@
       ],
       "segment": "east_e127_100_family",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d1.html",
       "min": 3111,
       "max": 8353,
       "suffix": "M",
       "model": "E127系100番台",
       "png": "images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0146",
@@ -3311,14 +3311,14 @@
       ],
       "segment": "east_hbe300_resort",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d1.html",
       "min": 8361,
       "max": 8362,
       "suffix": "D",
       "model": "HB-E300系（リゾートビューふるさと）",
       "png": "images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0147",
@@ -3328,14 +3328,14 @@
       ],
       "segment": "akita_aomori_super_tsugaru_e751",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/express/tsugaru.html",
       "min": 2021,
       "max": 2022,
       "suffix": "M",
       "model": "E751系",
       "png": "images/列车/JR東日本/JR東日本_E751系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/express/tsugaru.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0148",
@@ -3345,14 +3345,14 @@
       ],
       "segment": "akita_aomori_tsugaru_e751",
       "format": "full",
+      "source_url": "https://www.jreast.co.jp/train/express/tsugaru.html",
       "min": 2041,
       "max": 2044,
       "suffix": "M",
       "model": "E751系",
       "png": "images/列车/JR東日本/JR東日本_E751系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://www.jreast.co.jp/train/express/tsugaru.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0149",
@@ -3362,14 +3362,14 @@
       ],
       "segment": "kogota_naruko_regular",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/268u1.html",
       "min": 1720,
       "max": 5735,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/268u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0150",
@@ -3379,14 +3379,14 @@
       ],
       "segment": "kogota_naruko_omoide_rapid",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/268u2.html",
       "min": 9721,
       "max": 9726,
       "suffix": "D",
       "model": "キハ110系",
       "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/268u2.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0151",
@@ -3396,14 +3396,14 @@
       ],
       "segment": "source_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315371?date=20261108",
       "min": 875,
       "max": 875,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315371?date=20261108"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0152",
@@ -3413,14 +3413,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315601?date=20261119",
       "min": 876,
       "max": 876,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315601?date=20261119"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0153",
@@ -3430,14 +3430,14 @@
       ],
       "segment": "source_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315641?date=20261119",
       "min": 880,
       "max": 880,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315641?date=20261119"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0154",
@@ -3447,14 +3447,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315471?date=20261128",
       "min": 944,
       "max": 944,
       "suffix": "A",
       "model": "500系",
       "png": "images/列车/JR西日本/JR西日本_500系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315471?date=20261128"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0155",
@@ -3464,14 +3464,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315521?date=20261101",
       "min": 954,
       "max": 954,
       "suffix": "A",
       "model": "500系",
       "png": "images/列车/JR西日本/JR西日本_500系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315521?date=20261101"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0156",
@@ -3481,14 +3481,14 @@
       ],
       "segment": "source_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315531?date=20261110",
       "min": 956,
       "max": 956,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315531?date=20261110"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0157",
@@ -3498,14 +3498,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315541?date=20261110",
       "min": 958,
       "max": 958,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315541?date=20261110"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0158",
@@ -3515,14 +3515,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315591?date=20261101",
       "min": 966,
       "max": 966,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315591?date=20261101"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0159",
@@ -3532,14 +3532,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315621?date=20261120",
       "min": 974,
       "max": 974,
       "suffix": "A",
       "model": "500系",
       "png": "images/列车/JR西日本/JR西日本_500系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315621?date=20261120"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0160",
@@ -3549,14 +3549,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315631?date=20261101",
       "min": 976,
       "max": 976,
       "suffix": "A",
       "model": "700系",
       "png": "images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/315631?date=20261101"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0161",
@@ -3566,14 +3566,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 121,
       "max": 121,
       "suffix": "B",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0162",
@@ -3583,14 +3583,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 122,
       "max": 122,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0163",
@@ -3600,14 +3600,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 123,
       "max": 123,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0164",
@@ -3617,14 +3617,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 124,
       "max": 124,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0165",
@@ -3634,14 +3634,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 132,
       "max": 132,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0166",
@@ -3651,14 +3651,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 135,
       "max": 135,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0167",
@@ -3668,14 +3668,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 137,
       "max": 137,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0168",
@@ -3685,14 +3685,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 138,
       "max": 138,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0169",
@@ -3702,14 +3702,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 139,
       "max": 139,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0170",
@@ -3719,14 +3719,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 140,
       "max": 140,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0171",
@@ -3736,14 +3736,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 141,
       "max": 141,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0172",
@@ -3753,14 +3753,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 143,
       "max": 143,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0173",
@@ -3770,14 +3770,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 148,
       "max": 148,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0174",
@@ -3787,14 +3787,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 149,
       "max": 149,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0175",
@@ -3804,14 +3804,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 153,
       "max": 153,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0176",
@@ -3821,14 +3821,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 154,
       "max": 154,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0177",
@@ -3838,14 +3838,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 156,
       "max": 156,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0178",
@@ -3855,14 +3855,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 157,
       "max": 157,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0179",
@@ -3872,14 +3872,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 158,
       "max": 158,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0180",
@@ -3889,14 +3889,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 159,
       "max": 159,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0181",
@@ -3906,14 +3906,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 160,
       "max": 160,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0182",
@@ -3923,14 +3923,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3006,
       "max": 3006,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0183",
@@ -3940,14 +3940,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3010,
       "max": 3010,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0184",
@@ -3957,14 +3957,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3012,
       "max": 3012,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0185",
@@ -3974,14 +3974,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3027,
       "max": 3027,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0186",
@@ -3991,14 +3991,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3031,
       "max": 3031,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0187",
@@ -4008,14 +4008,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3032,
       "max": 3032,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0188",
@@ -4025,14 +4025,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3034,
       "max": 3034,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0189",
@@ -4042,14 +4042,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3035,
       "max": 3035,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0190",
@@ -4059,14 +4059,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3036,
       "max": 3036,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0191",
@@ -4076,14 +4076,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3037,
       "max": 3037,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0192",
@@ -4093,14 +4093,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3039,
       "max": 3039,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0193",
@@ -4110,14 +4110,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html",
       "min": 3041,
       "max": 3041,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0194",
@@ -4127,14 +4127,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3042,
       "max": 3042,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0195",
@@ -4144,14 +4144,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html",
       "min": 3044,
       "max": 3044,
       "suffix": "M",
       "model": "E6系",
       "png": "images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0196",
@@ -4161,14 +4161,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/005/008031.html",
       "min": 1,
       "max": 1,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/005/008031.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0197",
@@ -4178,14 +4178,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html",
       "min": 4,
       "max": 4,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0198",
@@ -4195,14 +4195,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html",
       "min": 7,
       "max": 7,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0199",
@@ -4212,14 +4212,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/1701?date=20261101",
       "min": 10,
       "max": 10,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/1701?date=20261101"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0200",
@@ -4229,14 +4229,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1p.html",
       "min": 11,
       "max": 11,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0201",
@@ -4246,14 +4246,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1p.html",
       "min": 13,
       "max": 13,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0202",
@@ -4263,14 +4263,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html",
       "min": 14,
       "max": 14,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0203",
@@ -4280,14 +4280,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html",
       "min": 15,
       "max": 15,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0204",
@@ -4297,14 +4297,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html",
       "min": 23,
       "max": 23,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0205",
@@ -4314,14 +4314,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html",
       "min": 27,
       "max": 27,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0206",
@@ -4331,14 +4331,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html",
       "min": 28,
       "max": 28,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0207",
@@ -4348,14 +4348,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html",
       "min": 31,
       "max": 31,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0208",
@@ -4365,14 +4365,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69801?date=20261121",
       "min": 34,
       "max": 34,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/69801?date=20261121"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0209",
@@ -4382,14 +4382,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69831?date=20261101",
       "min": 40,
       "max": 40,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/69831?date=20261101"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0210",
@@ -4399,14 +4399,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69721?date=20261120",
       "min": 46,
       "max": 46,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/69721?date=20261120"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0211",
@@ -4416,14 +4416,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69661?date=20261111",
       "min": 50,
       "max": 50,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/69661?date=20261111"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0212",
@@ -4433,14 +4433,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/76211?date=20261105",
       "min": 54,
       "max": 54,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/76211?date=20261105"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0213",
@@ -4450,14 +4450,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/86331?date=20261111",
       "min": 62,
       "max": 62,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/86331?date=20261111"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0214",
@@ -4467,14 +4467,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/230701?date=20261121",
       "min": 74,
       "max": 74,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/230701?date=20261121"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0215",
@@ -4484,14 +4484,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062501.html",
       "min": 634,
       "max": 634,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062501.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0216",
@@ -4501,14 +4501,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027161.html",
       "min": 646,
       "max": 646,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027161.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0217",
@@ -4518,14 +4518,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062671.html",
       "min": 656,
       "max": 656,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062671.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0218",
@@ -4535,14 +4535,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027131.html",
       "min": 658,
       "max": 658,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027131.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0219",
@@ -4552,14 +4552,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062701.html",
       "min": 660,
       "max": 660,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062701.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0220",
@@ -4569,14 +4569,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027111.html",
       "min": 666,
       "max": 666,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027111.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0221",
@@ -4586,14 +4586,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062721.html",
       "min": 668,
       "max": 668,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062721.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0222",
@@ -4603,14 +4603,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128491.html",
       "min": 701,
       "max": 701,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128491.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0223",
@@ -4620,14 +4620,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128721.html",
       "min": 702,
       "max": 702,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128721.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0224",
@@ -4637,14 +4637,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/314151?date=20261117",
       "min": 703,
       "max": 703,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/314151?date=20261117"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0225",
@@ -4654,14 +4654,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/314481?date=20261114",
       "min": 704,
       "max": 704,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/314481?date=20261114"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0226",
@@ -4671,14 +4671,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128741.html",
       "min": 706,
       "max": 706,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128741.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0227",
@@ -4688,14 +4688,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128521.html",
       "min": 707,
       "max": 707,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128521.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0228",
@@ -4705,14 +4705,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128751.html",
       "min": 708,
       "max": 708,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128751.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0229",
@@ -4722,14 +4722,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128531.html",
       "min": 709,
       "max": 709,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128531.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0230",
@@ -4739,14 +4739,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128761.html",
       "min": 710,
       "max": 710,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128761.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0231",
@@ -4756,14 +4756,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128541.html",
       "min": 711,
       "max": 711,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128541.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0232",
@@ -4773,14 +4773,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128771.html",
       "min": 712,
       "max": 712,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128771.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0233",
@@ -4790,14 +4790,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128781.html",
       "min": 714,
       "max": 714,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128781.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0234",
@@ -4807,14 +4807,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128791.html",
       "min": 716,
       "max": 716,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128791.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0235",
@@ -4824,14 +4824,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128571.html",
       "min": 717,
       "max": 717,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128571.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0236",
@@ -4841,14 +4841,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128801.html",
       "min": 718,
       "max": 718,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128801.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0237",
@@ -4858,14 +4858,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128581.html",
       "min": 719,
       "max": 719,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128581.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0238",
@@ -4875,14 +4875,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128811.html",
       "min": 720,
       "max": 720,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128811.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0239",
@@ -4892,14 +4892,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128591.html",
       "min": 721,
       "max": 721,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128591.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0240",
@@ -4909,14 +4909,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128821.html",
       "min": 722,
       "max": 722,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128821.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0241",
@@ -4926,14 +4926,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/314251?date=20261107",
       "min": 731,
       "max": 731,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetable.jr-odekake.net/train-timetable/314251?date=20261107"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0242",
@@ -4943,14 +4943,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129361.html",
       "min": 828,
       "max": 828,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129361.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0243",
@@ -4960,14 +4960,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129391.html",
       "min": 840,
       "max": 840,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129391.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0244",
@@ -4977,14 +4977,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129571.html",
       "min": 850,
       "max": 850,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129571.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0245",
@@ -4994,14 +4994,14 @@
       ],
       "segment": "2611_planned_number_n700_family_reference",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129411.html",
       "min": 852,
       "max": 852,
       "suffix": "A",
       "model": "N700系",
       "png": "images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129411.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0246",
@@ -5011,14 +5011,14 @@
       ],
       "segment": "verified_single_service",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/029831.html",
       "min": 121,
       "max": 121,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/025/029831.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0247",
@@ -5028,14 +5028,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 121,
       "max": 121,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0248",
@@ -5045,14 +5045,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 122,
       "max": 122,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0249",
@@ -5062,14 +5062,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 123,
       "max": 123,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0250",
@@ -5079,14 +5079,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 124,
       "max": 124,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0251",
@@ -5096,14 +5096,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 127,
       "max": 127,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0252",
@@ -5113,14 +5113,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 128,
       "max": 128,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0253",
@@ -5130,14 +5130,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 129,
       "max": 129,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0254",
@@ -5147,14 +5147,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 131,
       "max": 131,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0255",
@@ -5164,14 +5164,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 132,
       "max": 132,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0256",
@@ -5181,14 +5181,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 133,
       "max": 133,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0257",
@@ -5198,14 +5198,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 135,
       "max": 135,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0258",
@@ -5215,14 +5215,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 136,
       "max": 136,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0259",
@@ -5232,14 +5232,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 137,
       "max": 137,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0260",
@@ -5249,14 +5249,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 138,
       "max": 138,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0261",
@@ -5266,14 +5266,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 139,
       "max": 139,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0262",
@@ -5283,14 +5283,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 140,
       "max": 140,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0263",
@@ -5300,14 +5300,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 141,
       "max": 141,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0264",
@@ -5317,14 +5317,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 142,
       "max": 142,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0265",
@@ -5334,14 +5334,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 143,
       "max": 143,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0266",
@@ -5351,14 +5351,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 144,
       "max": 144,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0267",
@@ -5368,14 +5368,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 145,
       "max": 145,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0268",
@@ -5385,14 +5385,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 146,
       "max": 146,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0269",
@@ -5402,14 +5402,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 148,
       "max": 148,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0270",
@@ -5419,14 +5419,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 149,
       "max": 149,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0271",
@@ -5436,14 +5436,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 150,
       "max": 150,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0272",
@@ -5453,14 +5453,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 153,
       "max": 153,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0273",
@@ -5470,14 +5470,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 154,
       "max": 154,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0274",
@@ -5487,14 +5487,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 156,
       "max": 156,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0275",
@@ -5504,14 +5504,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 157,
       "max": 157,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0276",
@@ -5521,14 +5521,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 158,
       "max": 158,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0277",
@@ -5538,14 +5538,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 159,
       "max": 159,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0278",
@@ -5555,14 +5555,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 160,
       "max": 160,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0279",
@@ -5572,14 +5572,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 171,
       "max": 171,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0280",
@@ -5589,14 +5589,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 6094,
       "max": 6094,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0281",
@@ -5606,14 +5606,14 @@
       ],
       "segment": "november_dated_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/020/022661.html",
       "min": 8177,
       "max": 8177,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/020/022661.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0282",
@@ -5623,14 +5623,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 8188,
       "max": 8188,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0283",
@@ -5640,14 +5640,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 8192,
       "max": 8192,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0284",
@@ -5657,14 +5657,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 8195,
       "max": 8195,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0285",
@@ -5674,14 +5674,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html",
       "min": 9086,
       "max": 9086,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0286",
@@ -5691,14 +5691,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 9087,
       "max": 9087,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0287",
@@ -5708,14 +5708,14 @@
       ],
       "segment": "november_dated_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/025641.html",
       "min": 9088,
       "max": 9088,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/025/025641.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0288",
@@ -5725,14 +5725,14 @@
       ],
       "segment": "november_dated_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/train/045/048321.html",
       "min": 9090,
       "max": 9090,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/train/045/048321.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0289",
@@ -5742,14 +5742,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 9091,
       "max": 9091,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0290",
@@ -5759,14 +5759,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 9093,
       "max": 9093,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "sql-0291",
@@ -5776,14 +5776,14 @@
       ],
       "segment": "weekday_verified_single_number",
       "format": "full",
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html",
       "min": 9097,
       "max": 9097,
       "suffix": "M",
       "model": "E8系",
       "png": "images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false,
-      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
+      "actual_vehicle_confirmed": false
     },
     {
       "id": "js-0001",
