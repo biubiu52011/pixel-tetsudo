@@ -130,7 +130,7 @@ test('front-end PNG range metadata retains every source-specific guard and quali
  });
  const tozai=c.rules.find(r=>r.id==='js-0091');
  assert.equal(tozai.runtime_guards.excludeTrainType,'LimitedExpress');
- assert.deepEqual(tozai.runtime_guards.allowedModelLabels,['東京メトロ15000系']);
+ assert.deepEqual(tozai.runtime_guards.allowedModelLabels,['東京メトロ15000系','東京メトロ07系']);
  const kashima=c.rules.find(r=>r.id==='js-0084');
  assert.deepEqual(kashima.runtime_guards.allowedModelLabels,['E235系1000番台']);
 });
