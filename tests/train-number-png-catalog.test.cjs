@@ -46,3 +46,20 @@ test('front-end broad rules are visible, but cannot become carset confirmations'
  bad.published_train_png_number_ranges[0].source_url='';
  assert.ok(audit(buildCatalog(bad,getRows())).some(x=>/missing provenance/.test(x)));
 });
+
+test('four inventoried train artwork files are actual PNG byte streams (not encoded text)',()=>{
+ const fs=require('node:fs');
+ const signature=Buffer.from([137,80,78,71,13,10,26,10]);
+ const paths=[...new Set(c.review.sql_asset_review_required.map(r=>r.png))];
+ assert.equal(paths.length,4);
+ for(const file of paths){
+  const bytes=fs.readFileSync(file);
+  assert.ok(bytes.length>=57,file+': too short for valid PNG chunks');
+  assert.ok(bytes.subarray(0,8).equals(signature),file+': bad PNG signature');
+  assert.equal(bytes.readUInt32BE(8),13,file+': unexpected first chunk size');
+  assert.equal(bytes.toString('ascii',12,16),'IHDR',file+': missing IHDR');
+  assert.ok(bytes.readUInt32BE(16)>0&&bytes.readUInt32BE(20)>0,file+': empty canvas');
+  assert.equal(bytes.readUInt32BE(bytes.length-12),0,file+': IEND length');
+  assert.equal(bytes.toString('ascii',bytes.length-8,bytes.length-4),'IEND',file+': missing IEND');
+ }
+});
