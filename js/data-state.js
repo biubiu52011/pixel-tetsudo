@@ -270,7 +270,7 @@
   var _regionCache = new Map();
   var _regionCacheCoords = null;
   function lineRegionKey(line) {
-    return [line.operator||"",line.region||"",
+    return [line.id||line.lineId||line.line_id||"",line.operator||"",line.region||"",
       line.nameEn||line.nameJa||line.name||"",
       Array.isArray(line.stations)?line.stations.join("\u001f"):""].join("\u001e");
   }
@@ -471,36 +471,25 @@
       operatorOrder: opOrder, mode: mode, flatGroups: flatGroups };
   }
 
-  // Calculate the full overview and all per-operator signatures from one
-  // presentation model. The previous implementation rebuilt that model for
-  // every operator in captureOverviewSignatures().
-  function lineListStructureSignaturesByOperator(linesObj, options) {
-    var model=buildLineListModel(linesObj,options);
-    var signatures=Object.create(null);
-    if(model.empty){signatures["*"]="empty";return signatures;}
-    var allRows=[];
+  function lineListStructureSignature(linesObj, options) {
+    var model = buildLineListModel(linesObj, options);
+    if (model.empty) return "empty";
+    var rows = [];
     model.operatorOrder.forEach(function(op) {
-      var rows=[];
-      (model.entitiesByOperator[op]||[]).forEach(function(entity) {
-        var line=linesObj[entity.id]||{};
-        var pres=entity.presentation||line.presentation||{};
+      (model.entitiesByOperator[op] || []).forEach(function(entity) {
+        var line = linesObj[entity.id] || {};
+        var pres = entity.presentation || line.presentation || {};
         rows.push([
-          op,entity.kind,entity.id,
-          entity.memberIds?entity.memberIds.join(","):"",
-          pres.code||line.code||"",pres.icon||line.image||"",
-          pres.nameJa||line.nameJa||"",pres.nameZh||line.nameZh||"",
-          pres.nameEn||line.nameEn||"",pres.nameKo||line.nameKo||"",
-          line.branchOf||""
+          op, entity.kind, entity.id,
+          entity.memberIds ? entity.memberIds.join(",") : "",
+          pres.code || line.code || "", pres.icon || line.image || "",
+          pres.nameJa || line.nameJa || "", pres.nameZh || line.nameZh || "",
+          pres.nameEn || line.nameEn || "", pres.nameKo || line.nameKo || "",
+          line.branchOf || ""
         ].join("\u001f"));
       });
-      signatures[op]=rows.join("\u001e");
-      Array.prototype.push.apply(allRows,rows);
     });
-    signatures["*"]=allRows.join("\u001e");
-    return signatures;
-  }
-  function lineListStructureSignature(linesObj, options) {
-    return lineListStructureSignaturesByOperator(linesObj,options)["*"];
+    return rows.join("\u001e");
   }
 
   function renderList(container, linesObj, options) {
@@ -808,7 +797,6 @@
     TRUNK_MAIN_LINE_IDS: TRUNK_MAIN_LINE_IDS,
     renderList: renderList,
     lineListStructureSignature: lineListStructureSignature,
-    lineListStructureSignaturesByOperator: lineListStructureSignaturesByOperator,
     // 供 LineCard.updateSystem 共用，使异步实时更新使用相同的成员集合。
     getPresentationStatusMembers: getPresentationStatusMembers,
     setOperatorVisibility: setOperatorVisibility,
