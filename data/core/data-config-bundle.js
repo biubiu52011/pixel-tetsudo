@@ -1180,6 +1180,9 @@ window.getTransferHint = function(stationId, lang) {
     // JR Kyushu Kashii: 酒殿 is not Tobu Sakado; preserve the ODPT source token.
     "KashiiLine": { "Sakado": "Sakado-Fukuoka" },
     "NaritaAbikoBranch": { "Kohoku": "Kohoku-Narita" },
+    // JR-West 呉線 安芸津 is NOT Seibu 池袋線 秋津.
+    // Keep source URNs like odpt.Station:JR-West.Kure.Akitsu unchanged.
+    "Kure": { "Akitsu": "Akitsu-Kure" },
     // 烏山線と加古川線には別々の「滝」駅がある。外部URNは保持する。
     "Karasuyama": { "Taki": "Taki-Tochigi" },
     // Explicitly scoped ID migration: preserve official ODPT stop tokens.
