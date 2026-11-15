@@ -22,8 +22,8 @@
     "unregistered_sql_png_rules": 0,
     "sql_assets_pending_review": 5,
     "frontend_guard_only_rules": 9,
-    "frontend_rules_with_additional_source_fields": 102,
-    "frontend_additional_source_keys": 18,
+    "frontend_rules_with_additional_source_fields": 103,
+    "frontend_additional_source_keys": 19,
     "frontend_official_month_rosters": 4,
     "frontend_singleton_candidates": 1,
     "model_label_differences": 14,
@@ -10344,14 +10344,23 @@
       "official_month_numbers": null,
       "calendar_type": null,
       "operating_dates": null,
-      "valid_from": null,
-      "valid_to": null,
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
       "operator": null,
       "source_railways": null,
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
-      "runtime_guards": {},
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "東京臨海高速鉄道70-000形",
+          "東京臨海高速鉄道71-000形"
+        ],
+        "exactModelArtworkMap": {
+          "東京臨海高速鉄道70-000形": "../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png",
+          "東京臨海高速鉄道71-000形": "../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"
+        }
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -16068,10 +16077,15 @@
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
-          "東京メトロ15000系"
+          "東京メトロ15000系",
+          "東京メトロ07系"
         ],
         "excludeTrainType": "LimitedExpress",
-        "sourceOperatorFallback": true
+        "sourceOperatorFallback": true,
+        "exactModelArtworkMap": {
+          "東京メトロ15000系": "../images/列车/東京メトロ/東京メトロ_15000系.png",
+          "東京メトロ07系": "../images/列车/東京メトロ/東京メトロ_07系.png"
+        }
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
@@ -17706,7 +17720,7 @@
         "requires_compatible_plan": false,
         "has_source_railway_guard": false,
         "has_type_guard": false,
-        "has_date_window": false
+        "has_date_window": true
       },
       {
         "rule": "js-0091",

@@ -107,3 +107,14 @@ Ome.weekday: {"source":332,"retained":331,"unmatched":["6044"]}
 corridor.weekday: {"official":379,"matched":379,"unresolved":[]}
 corridor.holiday: {"official":354,"matched":354,"unresolved":[]}
 ```
+
+
+## 第九次校对：东西线 S、临海线 8x 的混合车型 PNG
+
+- 东京 Metro 官方现役车型将东西线列为 **05、07、15000 系**，所以 `S` 列车番号尾缀不能自动确定唯一的 15000 PNG。原 `js-0091` 现在只在上游明确确认 07／15000 车型且证据不冲突时选对应已授权 PNG；05 系尚无独立核准的具体图库映射，继续保持未解明。
+- 东京临海高速铁道 71-000 形自 2025-10 投入运行、将逐步替换 70-000。原 `js-0058` 的 80–91 K/F/S 号段同样不能据尾号认定为 70-000，现必须由上游明确车型标识选择 70／71 PNG，限定 2611 月度且冲突时返回 null。
+- 两条仍属于不具官方完整逐号名单的范围规则；`frontend_guard_only_rules` **维持 9 条**。唯一 PNG 来自准确车型证据，并非候选图片池或虚构编组。
+
+官方参考：
+https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html
+https://www.twr.co.jp/Default.aspx?TabId=382

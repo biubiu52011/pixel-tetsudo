@@ -1036,9 +1036,12 @@
     {lineIds:["SaikyoKawagoe"],from:72,to:79,suffixes:"KFS",
       model:"相鉄12000系",
       pngPath:"../images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png"},
-    // 70-000 / 71-000 can both work here. The PNG is a DISPLAY DEFAULT,
-    // not a claim about the actual carset or its livery.
+    // 70-000 and 71-000 coexist; K/F/S tails do not determine their model.
+    // A real source-model observation must select exactly one approved PNG.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:80,to:91,suffixes:"KFS",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["東京臨海高速鉄道70-000形","東京臨海高速鉄道71-000形"],
+      exactModelArtworkMap:{"東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png","東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"},
       model:"東京臨海高速鉄道70-000形",
       pngPath:"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png"},
     // Sotetsu-through 1xxM / 2xxM distinguish Sotetsu-side express/local,
@@ -1691,12 +1694,16 @@
     // TokyoMetro Tozai source numbers have an A/B direction prefix and
     // an optional R after the S/K/T ownership suffix (e.g. B711KR).
     // Keep the original full public number; never turn it into an operation ID.
+    // S is Tokyo Metro ownership, not a 15000-series identity. Metro
+    // still uses 05/07/15000 stock; only reviewed 07/15000 illustrations
+    // may be selected when the independent source model is known.
     {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
       suffixes:"S",excludeTrainType:"LimitedExpress",
       operator:"TokyoMetro",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:TokyoMetro.Tozai"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      allowedModelLabels:["東京メトロ15000系"],
+      allowedModelLabels:["東京メトロ15000系","東京メトロ07系"],
+      exactModelArtworkMap:{"東京メトロ15000系":"../images/列车/東京メトロ/東京メトロ_15000系.png","東京メトロ07系":"../images/列车/東京メトロ/東京メトロ_07系.png"},
       model:"東京メトロ15000系",
       pngPath:"../images/列车/東京メトロ/東京メトロ_15000系.png"},
     {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
@@ -4854,8 +4861,35 @@
       if(row.requireCompatiblePlan && context && context.vehiclePlan &&
           Array.isArray(context.vehiclePlan.models) && context.vehiclePlan.models.length &&
           context.vehiclePlan.models.indexOf(row.model)<0)continue;
-      return {trainNumber:number,lineId:line,model:row.model,
-        pngPath:row.pngPath,source:"train-number-range",
+      // Number suffixes identify an operating family, not a unique physical
+      // model. For mixed-fleet groups, require explicit noncontradictory
+      // source-model evidence before selecting an approved single PNG.
+      var selectedModel=row.model,selectedPng=row.pngPath;
+      if(row.exactModelArtworkMap){
+        if(!context)continue;
+        var modelObservations=[context.realtimeVehicleType,
+          context.realtimeDerivedVehicleType].map(function(m){
+            return String(m||"").trim();
+          }).filter(Boolean);
+        var sourcePlan=context.vehiclePlan;
+        var planLabels=sourcePlan&&Array.isArray(sourcePlan.models)?
+          sourcePlan.models:[];
+        var planScoped=sourcePlan&&
+          (sourcePlan.confirmed===true||sourcePlan.status==="PLANNED_MODEL");
+        if(planScoped&&planLabels.length!==1)continue;
+        if(planScoped&&planLabels.length===1){
+          if(modelObservations.length||sourcePlan.confirmed===true)
+            modelObservations.push(String(planLabels[0]));
+        }
+        if(!modelObservations.length||modelObservations.some(function(m){
+          return m!==modelObservations[0];
+        }))continue;
+        selectedModel=modelObservations[0];
+        selectedPng=row.exactModelArtworkMap[selectedModel];
+        if(!selectedPng)continue;
+      }
+      return {trainNumber:number,lineId:line,model:selectedModel,
+        pngPath:selectedPng,source:"train-number-range",
         planned:true,representative:true};
     }
     // Exact rules above win. Only source-scoped SQL estimates can use

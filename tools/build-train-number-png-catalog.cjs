@@ -203,6 +203,19 @@ function audit(c){
     (!Array.isArray(r.runtime_guards.allowedModelLabels)||
      r.runtime_guards.allowedModelLabels.length===0))
    errors.push(r.id+': explicit-model rule missing allowed model labels');
+  if(r.origin==='frontend_js'&&r.runtime_guards?.exactModelArtworkMap){
+   const entries=Object.entries(r.runtime_guards.exactModelArtworkMap);
+   const labels=r.runtime_guards.allowedModelLabels||[];
+   if(!entries.length||!entries.some(([model,png])=>model===r.model&&
+      String(png).replace(/^(\.\.\/|\.\/|\/)+/,'')===r.png))
+    errors.push(r.id+': exact model map missing its primary library identity');
+   for(const [model,png] of entries){
+    const normalized=String(png||'').replace(/^(\.\.\/|\.\/|\/)+/,'');
+    if(!labels.includes(model)||!normalized.startsWith('images/列车/')||
+        !fs.existsSync(path.join(ROOT,normalized)))
+     errors.push(r.id+': unknown exact model or absent PNG '+model);
+   }
+  }
  }
  if(c.review.cross_source_number_png.png_conflicts.length)
   errors.push('SQL/frontend published train-number PNG artwork conflict');

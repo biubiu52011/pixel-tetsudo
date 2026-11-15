@@ -119,8 +119,8 @@ test('SQL and frontend exact train-number PNG references have no contradictory p
 test('front-end PNG range metadata retains every source-specific guard and qualifier',()=>{
  const owner=getRows();
  const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
- assert.equal(c.summary.frontend_rules_with_additional_source_fields,102);
- assert.equal(c.summary.frontend_additional_source_keys,18);
+ assert.equal(c.summary.frontend_rules_with_additional_source_fields,103);
+ assert.equal(c.summary.frontend_additional_source_keys,19);
  assert.equal(owner.length,110);
  owner.forEach((row,i)=>{
   const rule=c.rules.find(r=>r.id==='js-'+String(i+1).padStart(4,'0'));
@@ -188,4 +188,15 @@ test('Ome and Itsukaichi edition rosters are line-scoped; Itsukaichi has no T/H 
  assert.ok(!bare.official_month_numbers.Ome.holiday.includes('2149'));
  assert.ok(bare.official_month_numbers.Itsukaichi.holiday.includes('2149'));
  assert.ok(full.actual_vehicle_confirmed===false&&bare.actual_vehicle_confirmed===false);
+});
+
+test('Tozai S and TWR 8x tail artwork stays model-evidence gated',()=>{
+ const twr=c.rules.find(x=>x.id==='js-0058');
+ const metro=c.rules.find(x=>x.id==='js-0091');
+ assert.deepEqual(twr.runtime_guards.exactModelArtworkMap,{"東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png","東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"});
+ assert.deepEqual(metro.runtime_guards.exactModelArtworkMap,{"東京メトロ15000系":"../images/列车/東京メトロ/東京メトロ_15000系.png","東京メトロ07系":"../images/列车/東京メトロ/東京メトロ_07系.png"});
+ assert.equal(twr.evidence_kind,'range-with-runtime-guards');
+ assert.equal(metro.evidence_kind,'range-with-runtime-guards');
+ assert.equal(twr.actual_vehicle_confirmed,false);
+ assert.equal(metro.actual_vehicle_confirmed,false);
 });

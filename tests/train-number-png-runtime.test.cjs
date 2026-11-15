@@ -401,7 +401,8 @@ test('K/F/S number tails select display PNG by scoped number ranges, without con
   ];
   for(const [number,model] of cases){
     const p=live({trainNumber:number,positionLineId:'SaikyoKawagoe',
-      sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
+      sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+      ...(number==='1984K'?{realtimeVehicleType:model}:{})});
     const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(chosen,number+' must match the published number range');
     assert.equal(chosen.model,model);
@@ -734,7 +735,8 @@ test('Tozai A/B-prefixed complete K/S/T numbers and rapid R keep actual number a
   ]){
     const p=live({trainNumber:num,positionLineId:'Tozai',serviceDate:'2026-11-04',
       sourceRailway:'odpt.Railway:TokyoMetro.Tozai',trainOperator:'TokyoMetro',
-      trainType:'odpt.TrainType:TokyoMetro.Rapid'});
+      trainType:'odpt.TrainType:TokyoMetro.Rapid',
+      ...(num==='B485S'?{realtimeVehicleType:model}:{})});
     const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(chosen,num);
     assert.equal(chosen.trainNumber,num);
@@ -3186,4 +3188,43 @@ test('Ome 2611 calendar-specific membership never widens the publication month',
    const actual=root.TrainVehicle.lookupTrainNumberRangePng(p);
    assert.equal(!!actual,exists,number+'/'+date);
  }
+});
+
+test('mixed Tozai S and Rinkai 8x number tails select only evidence-qualified unique PNGs',()=>{
+ for(const [base,choices] of [
+   [{trainNumber:'B485S',positionLineId:'Tozai',
+     sourceRailway:'odpt.Railway:TokyoMetro.Tozai',trainOperator:'TokyoMetro',
+     serviceDate:'2026-11-04',calendarType:'weekday',
+     trainType:'odpt.TrainType:TokyoMetro.Rapid'},
+    [['東京メトロ15000系','東京メトロ_15000系.png'],
+     ['東京メトロ07系','東京メトロ_07系.png']]],
+   [{trainNumber:'1984K',positionLineId:'SaikyoKawagoe',
+     sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+     serviceDate:'2026-11-04'},
+    [['東京臨海高速鉄道70-000形','東京臨海高速鉄道_70-000形.png'],
+     ['東京臨海高速鉄道71-000形','東京臨海高速鉄道_71-000形.png']]]
+ ]){
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live(base)),null,
+   'an unevidenced number tail cannot select a vehicle PNG');
+  for(const [model,filename] of choices){
+    const p=live({...base,realtimeVehicleType:model});
+    const resolved=root.TrainVehicle.lookupTrainNumberRangePng(p);
+    assert.ok(resolved,model);
+    assert.equal(resolved.model,model);
+    assert.ok(resolved.pngPath.endsWith('/'+filename));
+    assert.equal(marker(p,base.positionLineId).iconSrc,resolved.pngPath);
+    const other=choices.find(x=>x[0]!==model)[0];
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({...base,
+      realtimeVehicleType:model,realtimeDerivedVehicleType:other})),null);
+  }
+ }
+ assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+  trainNumber:'B485S',positionLineId:'Tozai',
+  sourceRailway:'odpt.Railway:TokyoMetro.Tozai',
+  trainOperator:'TokyoMetro',serviceDate:'2026-11-04',
+  realtimeVehicleType:'東京メトロ05系'})),null);
+ assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+  trainNumber:'1984K',positionLineId:'SaikyoKawagoe',
+  sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+  serviceDate:'2026-12-04',realtimeVehicleType:'東京臨海高速鉄道71-000形'})),null);
 });
