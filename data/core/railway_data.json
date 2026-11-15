@@ -34608,15 +34608,15 @@
         "Kuzu"
       ],
       "durations": [
+        3,
+        5,
+        3,
+        3,
+        3,
+        3,
+        3,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        4
       ],
       "throughServices": [
         "TobuIsesaki"
@@ -34669,7 +34669,27 @@
           },
           "serviceScope": "selected-limited-express"
         }
-      ]
+      ],
+      "durationDerivation": {
+        "method": "median of adjacent local-train departure-to-arrival intervals; representative geometry only (dwell excluded)",
+        "source": "public.manual_timetable_templates + public.manual_timetable_template_stops, Sano historical source records",
+        "sampleCalendar": "odpt.Calendar:SaturdayHoliday",
+        "sampleCountsBySegment": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          61,
+          61,
+          61,
+          61
+        ],
+        "sourceRevisionVerified": false,
+        "timetableDateVerified": false,
+        "externalCrossCheck": "https://tabinomemo.jp/train/timetable/tobu/14",
+        "notes": "Undated archive, not an asserted 2026-11 operating timetable. Specific trains use their own stop clocks; do not sum this into a published end-to-end journey time."
+      }
     },
     "Yamada": {
       "name": "山田线",
