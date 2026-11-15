@@ -39,12 +39,9 @@ const scenarios=[
  ['E-prefix T',pos({trainNumber:'E103T'}),png.tobu ,'東武50070系'],
  ['S working',pos({trainNumber:'D2159S'}),png.metro,'東京メトロ17000系'],
  ['K working',pos({trainNumber:'C3152K'}),png.tokyu,'東急5050系'],
- ['F-prefix K',pos({trainNumber:'F3162K'}),png.tokyu,'東急5050系'],
- ['Ogose',pos({positionLineId:'Ogose',displayLineId:'Ogose',
- sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',calendarType:'holiday',
- scheduledStopKeys:['Sakado','Kawakado','Ogose']}),png.ogose ,'東武8000系']
+ ['F-prefix K',pos({trainNumber:'F3162K'}),png.tokyu,'東急5050系']
 ];
-test('all working/service groups resolve exactly one approved PNG',()=>{
+test('Tojo working/service groups resolve exactly one approved PNG',()=>{
  for(const [name,p,expected,model] of scenarios){
   const ref=w.TobuTojoFixedPng202611.resolve(p);
   assert.ok(ref,name);
@@ -68,7 +65,7 @@ function ogosePosition(overrides={}){
   sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',
   calendarType:'holiday',...overrides});
 }
-test('Ogose 8000 PNG is constrained to exact GTFS numbers and service calendars',()=>{
+test('Ogose GTFS numbers expose fleet metadata but never a default brown PNG',()=>{
  const counts={weekday:0,holiday:0};
  const seen=new Set();
  for(const cal of ['weekday','holiday']){
@@ -78,7 +75,9 @@ test('Ogose 8000 PNG is constrained to exact GTFS numbers and service calendars'
     trainNumber,calendarType:cal,serviceDate:cal==='weekday'?'2026-11-16':'2026-11-15'
    }));
    if(!hit)continue;
-   assert.equal(hit.illustrationPng,png.ogose,trainNumber);
+   assert.equal(hit.illustrationPng,null,trainNumber);
+   assert.equal(hit.illustrationModel,'東武8000系',trainNumber);
+   assert.equal(hit.authorizesIllustration,false,trainNumber);
    assert.equal(hit.actualVehicleConfirmed,false,trainNumber);
    counts[cal]++;
    seen.add(trainNumber);
@@ -113,6 +112,41 @@ test('Ogose 8000 PNG is constrained to exact GTFS numbers and service calendars'
   sourcePath:'gtfs-stage:TokyoGTFS:bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f:Ogose'
  })));
 });
+
+test('Ogose 81111F brown artwork needs independently verified physical formation',()=>{
+ const base=ogosePosition();
+ const cfg=w.TobuTojoFixedPng202611.assets.ogose;
+ assert.equal(cfg.png,null);
+ assert.equal(cfg.specialLiveryPng,png.ogose);
+ assert.equal(cfg.specialLiveryFormation,'81111F');
+ for(const override of [
+   {},
+   {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,vehicleFormationId:'81111F'},
+   {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,vehicleFormationId:'8183F',
+    vehicleResolution:{lineId:'Ogose',sources:['official-realtime-car-number']}},
+   {vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:true,vehicleFormationId:'81111F',
+    vehicleResolution:{lineId:'Ogose',sources:['official-realtime-car-number']}},
+   {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,vehicleFormationId:'81111F',
+    vehicleResolution:{lineId:'Ogose',sources:['realtime']}}
+ ]){
+   const art=w.TrainVehicle.selectMarkerArtwork({...base,...override},false);
+   assert.equal(art.kind,'unresolved',JSON.stringify(override));
+   assert.equal(art.iconSrc,'',JSON.stringify(override));
+   assert.equal(art.reason,'ogose-8000-livery-unverified-no-standard-png');
+ }
+ const verified={...base,vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,
+   vehicleFormationId:'81111F',
+   vehicleResolution:{identityStatus:'EXACT',lineId:'Ogose',sources:['official-realtime-car-number']}};
+ const art=w.TrainVehicle.selectMarkerArtwork(verified,false);
+ assert.equal(art.kind,'vehicle');
+ assert.equal(art.iconSrc,png.ogose);
+ assert.equal(art.actualVehicleConfirmed,true);
+ assert.equal(art.illustrationRole,'ogose-verified-81111f-special-livery');
+ assert.equal(w.TrainVehicle.selectMarkerArtwork({...verified,trainNumber:'A9999'},false).kind,'unresolved');
+ assert.equal(w.TrainVehicle.selectMarkerArtwork({...verified,sourceRailway:'odpt.Railway:Tobu.Tojo'},false).kind,'unresolved');
+ assert.equal(w.TrainVehicle.selectMarkerArtwork(verified,true).kind,'unresolved');
+});
+
 test('candidate rules and random PNG rotation are removed',()=>{
  assert.equal(source.includes('vehicleCandidates'),false);
  assert.equal(source.includes('VEHICLE_FAMILY_RULES'),false);

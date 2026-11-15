@@ -1967,12 +1967,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         typeof window.TobuTojoFixedPng202611.resolve==="function") {
       var fixedRef=window.TobuTojoFixedPng202611.resolve(
         Object.assign({},p,{displayLineId:lineId}));
-      if(fixedRef){
+      if(fixedRef && fixedRef.illustrationPng){
         var refPrefix=/^zh/.test(lang)?"PNG示意（非当日实车）：":
           lang==="en"?"PNG illustration (not observed stock): ":
           lang==="ko"?"PNG 예시(실제 편성 아님): ":
           "PNG参考図（実車確認ではありません）：";
         tip.push(refPrefix+fixedRef.illustrationModel);
+      } else if(fixedRef && lineId==="Ogose" &&
+                fixedRef.illustrationModel==="東武8000系"){
+        tip.push(/^zh/.test(lang)
+          ?"东武8000型（实际编组及涂装未确认，不显示纪念涂装PNG）"
+          :lang==="en"?"Tobu 8000 series (actual formation/livery unconfirmed; no special-livery PNG)"
+          :lang==="ko"?"도부 8000계 (실제 편성·도색 미확인, 특별 도색 이미지 제외)"
+          :"東武8000型（実編成・塗装未確認、特別塗装PNGは非表示）");
       }
     }
     var _fleetReference =

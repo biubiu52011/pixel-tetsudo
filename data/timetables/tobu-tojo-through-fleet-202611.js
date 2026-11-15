@@ -1,6 +1,6 @@
-/* Fixed PNG projection for Tobu Tojo and Ogose, effective 2026-11.
- * These are concrete, gallery-approved art ASSETS, not trainset assignment
- * claims. An independently confirmed realtime vehicle takes precedence.
+/* Scoped Tojo train illustrations and Ogose fleet metadata, effective 2026-11.
+ * A rostered Ogose train number proves 8000 series service, not the 81111F
+ * grape-brown commemorative livery. Do not assign that PNG by default. An independently confirmed realtime vehicle takes precedence.
  * The 2026 TokyoGTFS 2026-11-02..2027-11-02 feed proves service numbers /
  * station itineraries, not vehicle formations. No multiple vehicle candidates.
  */
@@ -10,7 +10,11 @@
   var METRO='https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html';
   var MF='https://loo-ool.com/rail/MF/32/';
   var assets=Object.freeze({
-    ogose:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
+    // The existing 8000 PNG depicts 81111F's special brown livery, NOT the
+    // ordinary blue/white 8000. No gallery-certified standard Ogose PNG yet.
+    ogose:Object.freeze({model:'東武8000系',png:null,
+      specialLiveryFormation:'81111F',
+      specialLiveryPng:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
     west:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
     tj:Object.freeze({model:'東武50090系',png:'../images/列车/東武鉄道/東武鉄道_50090型.png',sourceUrl:TOBU}),
     tobu:Object.freeze({model:'東武50070系',png:'../images/列车/東武鉄道/東武鉄道_50070型.png',sourceUrl:MF}),
@@ -95,12 +99,13 @@
       lineId:line,trainNumber:number,serviceDate:date,
       illustrationModel:asset.model,illustrationPng:asset.png,
       sourceUrl:asset.sourceUrl,ruleId:key,
-      referenceOnly:true,illustrative:true,representativeOnly:true,
+      referenceOnly:true,illustrative:!!asset.png,
+      authorizesIllustration:!!asset.png,representativeOnly:true,
       actualVehicleConfirmed:false,authorizesActualVehicle:false,
       evidenceRole:confirmation
     };
   }
   window.TobuTojoFixedPng202611=Object.freeze({
-    version:'2026-11-15', assets:assets, resolve:choose
+    version:'2026-11-15-livery-gated', assets:assets, resolve:choose
   });
 })();

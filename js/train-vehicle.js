@@ -5824,6 +5824,38 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       (p.vehicleResolvedUpstream === true ||
        (p.vehicleResolvedUpstream == null && p.vehicleResolution &&
         p.vehicleResolution.identityStatus === "EXACT")));
+    // Ogose trains use the 8000 series, but the only current gallery 8000 PNG
+    // represents the special brown 81111F livery. A GTFS service number
+    // proves neither formation nor paint. Do not paint EVERY Ogose train
+    // as 81111F, even when an inferred generic 8000 model is labelled EXACT.
+    // Only an independently verified physical 81111F formation may use it.
+    if (p && contextLineId === "Ogose") {
+      var ogoseRoster = window.TobuTojoFixedPng202611;
+      var ogoseAsset = ogoseRoster && ogoseRoster.assets && ogoseRoster.assets.ogose;
+      var ogoseRef = ogoseRoster && typeof ogoseRoster.resolve === "function"
+        ? ogoseRoster.resolve(p) : null;
+      var ogoseFormation = String(p.vehicleFormationId ||
+        (p.vehicleResolution && p.vehicleResolution.formationId) || "")
+        .trim().toUpperCase();
+      var physicalOgoseProof = identityConfirmed &&
+        (resolutionSources.indexOf("official-realtime-car-number") >= 0 ||
+         resolutionSources.indexOf("roster-physical-id") >= 0);
+      var ogoseSpecialPng = ogoseAsset &&
+        normalizeGalleryPngPath(ogoseAsset.specialLiveryPng);
+      var ogoseGallery = window.VehicleGaragePngMap;
+      if (!artworkFailed && ogoseRef && ogoseAsset &&
+          ogoseFormation === ogoseAsset.specialLiveryFormation &&
+          physicalOgoseProof && ogoseSpecialPng && ogoseGallery &&
+          typeof ogoseGallery.matchModelPath === "function" &&
+          ogoseGallery.matchModelPath(ogoseAsset.model,ogoseSpecialPng,"Ogose"))
+        return {kind:"vehicle",iconSrc:ogoseSpecialPng,
+          planned:false,illustrative:false,referenceOnly:false,
+          actualVehicleConfirmed:true,illustrationModel:ogoseAsset.model,
+          illustrationRole:"ogose-verified-81111f-special-livery"};
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false,candidateModels:["東武8000系"],
+        reason:"ogose-8000-livery-unverified-no-standard-png"};
+    }
     // The canonical number index owns Tobu small-branch service-number
     // ranges. A/B/C and nD are rotating WORKINGS, never permanent stock
     // assignments; their example PNG must remain an explicit illustration.
