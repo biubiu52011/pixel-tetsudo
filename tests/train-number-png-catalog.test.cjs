@@ -12,7 +12,7 @@ test('2611 catalog includes both maintained owner rule sets and their SQL proven
  assert.equal(c.summary.unregistered_sql_png_rules,0);
  assert.deepEqual(audit(c),[]);
 });
-test('four unverified arts are registered as review, never approved or native-file verified',()=>{
+test('four native PNG assets remain in review pending vehicle depiction approval',()=>{
  assert.equal(c.review.sql_asset_review_required.length,5);
  assert.equal(new Set(c.review.sql_asset_review_required.map(r=>r.png)).size,4);
  for(const r of c.review.sql_asset_review_required){
