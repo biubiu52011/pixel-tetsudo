@@ -362,24 +362,18 @@
   }
 
   function setFilter(operator, region) {
-    var changedRegion = arguments.length > 1 && _selectedRegion !== (region || null);
-    if (arguments.length > 1) _selectedRegion = region || null;
-    _selectedOperator = operator || null;
-    if (_filterBar && _filterBar.getRegion() !== _selectedRegion) _filterBar.setRegion(_selectedRegion, false);
-    if (_filterBar && _filterBar.getSelected() !== _selectedOperator) _filterBar.setSelected(_selectedOperator, false);
-    var container = document.getElementById("realtimeStatusContainer");
-    if (!container) return;
-    if (changedRegion || _selectedRegion) {
-      if (_latestLines) renderFiltered();
-      _renderedStatusSignatures = {};
-      return;
-    }
-    if (!window.DataState.setOperatorVisibility(container, _selectedOperator)) {
-      if (_latestLines) renderFiltered();
-      return;
-    }
-    // 强制下一次实时快照重新协调刚显示的卡片。
-    _renderedStatusSignatures = {};
+    var changedRegion=arguments.length>1&&_selectedRegion!==(region||null);
+    if(arguments.length>1)_selectedRegion=region||null;
+    _selectedOperator=operator||null;
+    if(_filterBar&&_filterBar.getRegion()!==_selectedRegion)_filterBar.setRegion(_selectedRegion,false);
+    if(_filterBar&&_filterBar.getSelected()!==_selectedOperator)_filterBar.setSelected(_selectedOperator,false);
+    var container=document.getElementById("realtimeStatusContainer");
+    if(!container)return;
+    // Region changes rebuild only the regional cards. Operator changes within
+    // that region toggle already-mounted groups without regenerating HTML.
+    if(changedRegion){if(_latestLines)renderFiltered();return;}
+    if(!window.DataState.setOperatorVisibility(container,_selectedOperator)&&_latestLines)
+      renderFiltered();
   }
 
   function getFilteredLines() {
@@ -432,15 +426,24 @@
 
   function renderFiltered() {
     if (!_latestLines) return;
-    var filtered = getFilteredLines();
-    var container = document.getElementById("realtimeStatusContainer");
-    if (!container) return;
-    window.DataState.renderList(container, filtered, { mode: "realtime", lineOrder: _latestOrder || [] });
-    // 即使当前选择没有线路，也保留完整的运营商选项。
+    var regionLines=window.DataState.filterLinesByRegion(_latestLines,_selectedRegion);
+    var container=document.getElementById("realtimeStatusContainer");
+    if(!container)return;
+    window.DataState.renderList(container,regionLines,{mode:"realtime",lineOrder:_latestOrder||[]});
+    window.DataState.setOperatorVisibility(container,_selectedOperator);
+    recordRenderedStatusSignatures(regionLines);
+    // Even when a company is selected, retain the complete region operator row.
     renderFilterBar(_latestLines);
   }
 
   var _renderedStatusSignatures = {};
+  function recordRenderedStatusSignatures(regionLines) {
+    var signatures={};
+    Object.keys(regionLines||{}).forEach(function(id){
+      signatures[id]=statusSignature(regionLines[id]);
+    });
+    _renderedStatusSignatures=signatures;
+  }
   function reconcileRealtimeList(container, linesObj) {
     var _perfStart = (window.performance && performance.now) ? performance.now() : Date.now();
     var cards = container ? container.querySelectorAll(".rs-line-card") : [];
@@ -451,9 +454,10 @@
     }
     var changed = [];
     var next = {};
-    var visibleLines = window.DataState.filterLinesByRegionAndOperator(linesObj, _selectedRegion, _selectedOperator);
-    Object.keys(visibleLines || {}).forEach(function(id) {
-      next[id] = statusSignature(visibleLines[id]);
+    // Update hidden operator groups too; they must be fresh when revealed.
+    var regionLines = window.DataState.filterLinesByRegion(linesObj, _selectedRegion);
+    Object.keys(regionLines || {}).forEach(function(id) {
+      next[id] = statusSignature(regionLines[id]);
       if (_renderedStatusSignatures[id] !== next[id]) changed.push(id);
     });
     var oldIds = Object.keys(_renderedStatusSignatures);
@@ -480,10 +484,6 @@
 
     renderFilterBar({});
 
-    function renderLinesList(container, linesObj, lineOrderArr) {
-      window.DataState.renderList(container, linesObj, { mode: "realtime", lineOrder: lineOrderArr });
-    }
-
     function getLines() {
       // 优先级 1：DataFusion 融合数据（包含延误信息）。
       if (window.DataFusion) {
@@ -502,9 +502,7 @@
       _latestLines = fused.lines;
       _latestOrder = fused.lineOrder || [];
       try {
-        var visibleLines = getFilteredLines();
-        renderLinesList(container, visibleLines, _latestOrder);
-        renderFilterBar(fused.lines);
+        renderFiltered();
       } catch (e) {
         window.DataState.renderPageState(container, "render_error");
       }
