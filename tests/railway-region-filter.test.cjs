@@ -132,3 +132,30 @@ test('both pages consume the shared region and operator filter state',()=>{
   assert.match(layout,/grid-column:1 \/ -1/);
   assert.doesNotMatch(layout,/overflow-x\s*:\s*auto|scroll-snap|flex-wrap\s*:\s*nowrap/);
 });
+
+test('region membership caches unchanged routes but invalidates coordinate replacement',()=>{
+  const {window}=load();
+  const example={operator:'TestRail',stations:['SampleStop']};
+  window.STATION_COORDS={SampleStop:[35.68,139.76]};
+  assert.deepEqual(Array.from(window.DataState.getLineRegions(example)),['Kanto']);
+  const cached=window.DataState.getLineRegions(example);
+  cached.push('Kyushu');
+  assert.deepEqual(Array.from(window.DataState.getLineRegions({
+    operator:'TestRail',stations:['SampleStop'],status:'delayed'
+  })),['Kanto'],'live status and cloned route objects share membership cache');
+  window.STATION_COORDS={SampleStop:[34.70,135.50]};
+  assert.deepEqual(Array.from(window.DataState.getLineRegions(example)),['Kansai']);
+});
+
+test('regional filters retain shared structure and fast operator visibility',()=>{
+  const state=fs.readFileSync(path.join(root,'js/data-state.js'),'utf8');
+  const trains=fs.readFileSync(path.join(root,'js/trains-page.js'),'utf8');
+  const realtime=fs.readFileSync(path.join(root,'js/realtime-view.js'),'utf8');
+  assert.match(state,/var _regionCache = new Map\(\)/);
+  assert.match(state,/lastRegionLabelsSignature===regionLabelsSignature/);
+  assert.match(trains,/_renderedOverviewSnapshot===allLines/);
+  assert.doesNotMatch(trains, /\[null\]\.concat\(overviewOperators\(allLines\)\)/);
+  assert.match(realtime,/setOperatorVisibility\(container,_selectedOperator\)/);
+  assert.match(realtime,/recordRenderedStatusSignatures\(regionLines\)/);
+  assert.match(realtime,/var regionLines = window\.DataState\.filterLinesByRegion\(linesObj, _selectedRegion\)/);
+});
