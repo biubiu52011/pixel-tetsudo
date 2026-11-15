@@ -305,5 +305,9 @@ test('fleet reference date windows are sourced, not inferred from operation numb
   assert.equal(valid._fleetReferenceOnly,true);
   assert.equal(valid.asOf,'2026-11-03');
   assert.equal(fleet.lookup('Yamanote','JR-East',t,{serviceDate:'2026-02-30'}),null);
-  assert.match(read('js/train-vehicle.js'),/serviceDate: tt\._serviceDate \|\| tt\.serviceDate \|\| ''/);
+  const vehicle=read('js/train-vehicle.js');
+  assert.match(vehicle,/tt\._serviceDate \|\| tt\.serviceDate \|\| ''/,
+    'generic source service date must remain the date input');
+  assert.match(vehicle,/lineId === 'Seibu_Sayama'[\s\S]{0,130}tt\.timetableDateVerified !== true/,
+    'Sayama legacy SQL cannot promote an inferred date to 7000 eligibility');
 });
