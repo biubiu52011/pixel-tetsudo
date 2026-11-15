@@ -636,80 +636,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
     svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
     svg.setAttribute("data-pt-viewport-source", "static-route");
-    // The viewBox is only a crop of static geometry, not an independent zoom.
-    // On mobile, one SVG unit always has the same physical CSS size, so short
-    // lines (Ito) and long lines (ChuoSobuLocal) show equal station circles/text.
-    // The six-shaped loop keeps its separate fixed-screen two-column layout.
-    var protectBranchScale = !!(geometry && !geometry.isSixShapedLoop &&
-      geometry.branchLines && geometry.branchLines.length);
-    var mobileGeometry = typeof _isMobileView === "function" && _isMobileView();
-    var compactViewport = typeof window !== "undefined" &&
-      window.innerWidth <= window.TrainsConfig.GEOM.TABLET_BREAKPOINT;
-    var minScaleMode = "fit";
-    if (geometry && geometry.isSixShapedLoop) {
-      // This template has its own CSS fit policy. No inline width/maxWidth
-      // limits may override the dedicated full-width loop layout.
-    } else if (mobileGeometry) {
-      var physicalScale = window.TrainsConfig.GEOM.MOBILE_RENDER_SCALE;
-      svg.style.width = Math.round(bounds.width * physicalScale * 100) / 100 + "px";
-      // Override only the static CSS base sizing for mobile; CSS alone owns
-      // the default SVG width, height and transparent background.
-      svg.style.maxWidth = "none";
-      svg.style.minWidth = "0px";
-      svg.setAttribute("data-pt-render-scale", String(physicalScale));
-      minScaleMode = "fixed-mobile";
-    } else if (compactViewport) {
-      // Tablets use the compact sizing policy; six-shaped loops were handled
-      // above by their dedicated CSS template.
-      var wrapperWidth = svg.parentNode && svg.parentNode.clientWidth;
-      var availableWidth = Math.max(1, Number(wrapperWidth) ||
-        Math.max(280, window.innerWidth - 32));
-      var overflowCap = Math.ceil(availableWidth * 1.04);
-      var magnificationCap = Math.ceil(bounds.width * 1.18);
-      var maxDisplayWidth = Math.min(overflowCap, magnificationCap);
-      svg.style.maxWidth = maxDisplayWidth + "px";
-      svg.setAttribute("data-pt-max-scale", "1.18");
-      if (protectBranchScale) {
-        svg.style.minWidth = Math.min(overflowCap,
-          Math.ceil(bounds.width * 0.85), maxDisplayWidth) + "px";
-        minScaleMode = "tablet-capped";
-      }
-    } else if (protectBranchScale) {
-      svg.style.minWidth = Math.ceil(bounds.width * 0.85) + "px";
-      minScaleMode = "0.85";
-    }
-    svg.setAttribute("data-pt-min-scale", minScaleMode);
+    // The SVG is a fixed, responsive route surface. Its viewport is
+    // determined only by static station/track bounds, while CSS fits the
+    // entire drawing to the host without pixel-width overrides or panning.
+    svg.setAttribute("data-pt-canvas-fit", "locked-responsive");
     if (geometry) geometry.contentBounds = bounds;
     return bounds;
-  }
-
-  // Scroll is tied to this exact static SVG instance; outdated callbacks
-  // from a rapid line switch cannot recenter the replacement route. Prefer
-  // the main track over the bounding box of far-away branch columns.
-  function _centerStaticRouteScroll(el, svg, geometry) {
-    if (!el || !svg || !geometry || !el.querySelector ||
-        el.querySelector(".tp-map-wrap > svg") !== svg) return;
-    if (geometry.isSixShapedLoop) { el.scrollLeft = 0; return; }
-    var scrollMax = Math.max(0, Number(el.scrollWidth) - Number(el.clientWidth));
-    if (!(scrollMax > 0)) { el.scrollLeft = 0; return; }
-    var scale = Number(svg.getAttribute("data-pt-render-scale"));
-    var bounds = geometry.contentBounds;
-    var points = geometry.stationCoords || [];
-    if (scale > 0 && bounds && points.length) {
-      // Main trunk station x is the modal position; Y forks include one
-      // divergent station and should not drag the whole map toward that arm.
-      var counts = Object.create(null), winner = points[0].x, maxCount = 0;
-      points.forEach(function(point) {
-        if (!point || !isFinite(point.x)) return;
-        var key = String(Math.round(point.x * 10) / 10);
-        counts[key] = (counts[key] || 0) + 1;
-        if (counts[key] > maxCount) { maxCount = counts[key]; winner = point.x; }
-      });
-      var focus = (winner - bounds.x) * scale - el.clientWidth / 2;
-      el.scrollLeft = Math.max(0, Math.min(scrollMax, Math.round(focus)));
-    } else {
-      el.scrollLeft = Math.round(scrollMax / 2);
-    }
   }
 
   // Read-only contract diagnostic: use it to inspect any operator/line in DevTools.
@@ -734,11 +666,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       l1Owner: ".tp-line-map",
       independentSvgBackgrounds: directRects.length,
       viewportSource: svg.getAttribute("data-pt-viewport-source") || "",
+      canvasFit: svg.getAttribute("data-pt-canvas-fit") || "",
+      horizontalOverflowPx: Math.max(0, el.scrollWidth - el.clientWidth),
+      horizontalOffsetPx: el.scrollLeft,
       viewport: viewport,
       matchesStaticBounds: !!expected && viewport === expectedViewport,
       renderedWidthPx: rect ? rect.width : null,
       actualCssPxPerUnit: realScale == null ? null : Math.round(realScale * 1000) / 1000,
-      targetCssPxPerUnit: Number(svg.getAttribute("data-pt-render-scale")) || null,
       stationCircleDiameterPx: circle && realScale != null
         ? Math.round(2 * Number(circle.getAttribute("r")) * realScale * 10) / 10 : null,
       stationLabelFontPx: label && realScale != null
@@ -774,8 +708,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var stationCoords = geometry.stationCoords;
       var svgW = geometry.svgW;
       var svgH = geometry.svgH;
-      // 固定六字形图：只能移动列车，不能移动 SVG 画布。
-      el.classList.toggle("tp-six-fixed-map", !!geometry.isSixShapedLoop);
+      // All layouts, including six-shaped loops, share the same locked SVG canvas.
       var isMobileView = _isMobileView();
       var color = geometry.color;
       
@@ -1106,13 +1039,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         _mapWrap.appendChild(_bnEl);
       }
       _mapWrap.appendChild(svg);
-      // Wait until the committed viewBox has produced final SVG dimensions.
-      // An older animation frame must never move a newly selected line.
-      requestAnimationFrame(function () {
-        try { _centerStaticRouteScroll(el, svg, geometry); }
-        catch (_ignored) { /* scrolling is only presentation */ }
-      });
-
       // 将过长站名限制在可用宽度内（行业做法：
       // 缩小，不裁剪）。挂载后运行以确保 getBBox 准确。
       try {
