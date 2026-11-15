@@ -636,32 +636,40 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
     svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
     svg.setAttribute("data-pt-viewport-source", "static-route");
-    // The static viewBox may be much narrower than the old padded canvas.
-    // A blanket width:100% would then enlarge short routes and labels wildly
-    // on phones. Cap *magnification* for every mobile SVG, not only branches.
-    // Dense branch maps can use a tiny (4%) horizontal pan, never 12%+.
+    // The viewBox is only a crop of static geometry, not an independent zoom.
+    // On mobile, one SVG unit always has the same physical CSS size, so short
+    // lines (Ito) and long lines (ChuoSobuLocal) show equal station circles/text.
+    // The six-shaped loop keeps its separate fixed-screen two-column layout.
     var protectBranchScale = !!(geometry && !geometry.isSixShapedLoop &&
       geometry.branchLines && geometry.branchLines.length);
+    var mobileGeometry = typeof _isMobileView === "function" && _isMobileView();
     var compactViewport = typeof window !== "undefined" && window.innerWidth <= 900;
     var minScaleMode = "fit";
-    if (compactViewport) {
+    if (mobileGeometry && !(geometry && geometry.isSixShapedLoop)) {
+      var physicalScale = 1.45;
+      svg.style.width = Math.round(bounds.width * physicalScale * 100) / 100 + "px";
+      // Override global width:100% and desktop max-width:520px. Branches may
+      // scroll horizontally but must not shrink their station typography.
+      svg.style.maxWidth = "none";
+      svg.style.minWidth = "0px";
+      svg.setAttribute("data-pt-render-scale", String(physicalScale));
+      minScaleMode = "fixed-mobile";
+    } else if (compactViewport) {
+      // Preserve tablet policy and the specially arranged six-shaped loop.
       var wrapperWidth = svg.parentNode && svg.parentNode.clientWidth;
       var availableWidth = Math.max(1, Number(wrapperWidth) ||
         Math.max(280, window.innerWidth - 32));
       var overflowCap = Math.ceil(availableWidth * 1.04);
       var magnificationCap = Math.ceil(bounds.width * 1.18);
-      // The upper limit prevents small viewBoxes (especially short lines)
-      // from becoming giant; the lower limit avoids collapsing dense branches.
       var maxDisplayWidth = Math.min(overflowCap, magnificationCap);
       svg.style.maxWidth = maxDisplayWidth + "px";
       svg.setAttribute("data-pt-max-scale", "1.18");
       if (protectBranchScale) {
         svg.style.minWidth = Math.min(overflowCap,
           Math.ceil(bounds.width * 0.85), maxDisplayWidth) + "px";
-        minScaleMode = "mobile-capped";
+        minScaleMode = "tablet-capped";
       }
     } else if (protectBranchScale) {
-      // Preserve the existing desktop legibility rule.
       svg.style.minWidth = Math.ceil(bounds.width * 0.85) + "px";
       minScaleMode = "0.85";
     }
@@ -682,6 +690,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var expected = geometry.contentBounds;
     var expectedViewport = expected
       ? [expected.x,expected.y,expected.width,expected.height].join(" ") : "";
+    var rect = svg.getBoundingClientRect ? svg.getBoundingClientRect() : null;
+    var realScale = rect && expected && expected.width > 0
+      ? rect.width / expected.width : null;
+    var circle = svg.querySelector(".station-node-layer circle[data-station-index]");
+    var label = svg.querySelector("text[data-station-label]");
     return {
       lineId: svg.getAttribute("data-line-id") || "",
       l1Owner: ".tp-line-map",
@@ -689,6 +702,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       viewportSource: svg.getAttribute("data-pt-viewport-source") || "",
       viewport: viewport,
       matchesStaticBounds: !!expected && viewport === expectedViewport,
+      renderedWidthPx: rect ? rect.width : null,
+      actualCssPxPerUnit: realScale == null ? null : Math.round(realScale * 1000) / 1000,
+      targetCssPxPerUnit: Number(svg.getAttribute("data-pt-render-scale")) || null,
+      stationCircleDiameterPx: circle && realScale != null
+        ? Math.round(2 * Number(circle.getAttribute("r")) * realScale * 10) / 10 : null,
+      stationLabelFontPx: label && realScale != null
+        ? Math.round(Number(label.getAttribute("font-size")) * realScale * 10) / 10 : null,
       staticLayers: svg.querySelectorAll(".static-layer").length,
       trackLayers: svg.querySelectorAll(".route-track-layer").length,
       stationNodeLayers: svg.querySelectorAll(".station-node-layer").length,
@@ -1056,20 +1076,28 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         _mapWrap.appendChild(_bnEl);
       }
       _mapWrap.appendChild(svg);
-      // 其他线路类型保留历史溢出居中。
-      // 六字形图完全包含在固定视口内。
+      // Wide maps open with the main track visible; branches remain pannable.
+      // Realtime/position refreshes never change this static viewport.
       if (geometry.isSixShapedLoop) {
-        // ODPT 刷新/语言切换时不产生横向滚动或布局跳动。
         el.scrollLeft = 0;
       } else {
         requestAnimationFrame(function () {
           try {
             var _scW = el.scrollWidth, _ccW = el.clientWidth;
-            if (_scW > _ccW) el.scrollLeft = Math.round((_scW - _ccW) / 2);
-          } catch (_e) { /* best-effort centering */ }
+            if (_scW <= _ccW) return;
+            var _scale = Number(svg.getAttribute("data-pt-render-scale"));
+            var _bounds = geometry.contentBounds;
+            var _focus = geometry.stationCoords && geometry.stationCoords[0];
+            if (_scale > 0 && _bounds && _focus && isFinite(_focus.x)) {
+              el.scrollLeft = Math.max(0, Math.round(
+                (_focus.x - _bounds.x) * _scale - _ccW / 2));
+            } else {
+              el.scrollLeft = Math.round((_scW - _ccW) / 2);
+            }
+          } catch (_ignored) { /* scroll position is a presentation detail */ }
         });
       }
-      
+
       // 将过长站名限制在可用宽度内（行业做法：
       // 缩小，不裁剪）。挂载后运行以确保 getBBox 准确。
       try {

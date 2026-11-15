@@ -1195,9 +1195,10 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     };
     var sp = _chipPitch(stations);
     var topP = 18 + thrTopPad, botP = 16 + thrBotPad;
-    // 主直线**全线统一**定距（用户：要统一站间距，回退 逐段）——每段 = sp（全线 max）。
+    // The shared baseline is 45 units; only the station that needs extra
+    // transfer/through-chip clearance enlarges its following segment.
     var _spSeg = [];
-    for (var _sr2 = 0; _sr2 < stations.length; _sr2++) _spSeg.push(sp); // 全线统一 sp
+    for (var _sr2 = 0; _sr2 < stations.length; _sr2++) _spSeg.push(_chipPitch([stations[_sr2]]));
     var _yAt = function(i) { var y = topP; for (var _yi = 0; _yi < i && _yi < _spSeg.length; _yi++) y += _spSeg[_yi]; return y; };
     
     // 获取支线。
