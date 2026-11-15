@@ -43,6 +43,14 @@
     ["tobu-10030-50-daishi-kameido-2car","東武10030型50番台（亀戸・大師線・2両）",
       "東武鉄道/東武鉄道_10030型_50番台_更新車.png","Daishi_Tobu|Tobu_Kameido",1]
   );
+  // Koizumi 701E-762E/764E: ONLY historical undated 10000-family proof.
+  // 10030-50 PNG is representative artwork, not this train's verified subtype.
+  // Source bounds and calendar are maintained in published_tobu_koizumi_2611_png_bands.
+  table.push(
+    ["tobu-koizumi-2611-10000-family-illustration",
+      "東武10030型50番台（小泉線代表）",
+      "東武鉄道/東武鉄道_10030型_50番台_更新車.png","Koizumi",0]
+  );
   // Approved as representative planned images on TokaidoCentral only.
   // Never evidence of a real formation or a train-number-to-stock assignment.
   table.push(
@@ -134,8 +142,8 @@
     return listModel(model,lineId).some(function(r){return !r.alternateOnly && !r.quarantined && r.path===path;});
   }
   root.VehicleGaragePngMap=Object.freeze({
-    version:"20261115-tobu-8000-standard-v1",totalPng:601,
-    mappedPng:601,canonicalEntries:622,alternatePng:1,
+    version:"20261115-tobu-koizumi-reference-v1",totalPng:601,
+    mappedPng:601,canonicalEntries:623,alternatePng:1,
     unassigned:Object.freeze(unassigned.map(function(p){return prefix+p;})),
     alternates:Object.freeze(alternates.map(function(r){return prefix+r[2];})),
     hasPng:function(path){return !!assets[asPath(path)];},

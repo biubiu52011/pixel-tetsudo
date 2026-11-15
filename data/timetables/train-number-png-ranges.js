@@ -3824,6 +3824,9 @@
       actualVehicleConfirmed:false};
   }
   function match(trainNumber,lineId,context){
+    if(String(lineId||'')==='Koizumi')
+      return root.TobuKoizumi2611Png ?
+        root.TobuKoizumi2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='TobuIsesaki')
       return root.TobuIsesaki2611Png ?
         root.TobuIsesaki2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
