@@ -83,7 +83,8 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
    fonts:{status:'loaded'},body:{}
  };
  const ctx={window,document,console,
-   GEOM:{BRANCH_STUB:24,BRANCH_COL_W:96,MAIN_BASE_W_MAX:297,MOBILE_CONTENT_W:297},
+   GEOM:{BRANCH_STUB:24,BRANCH_COL_W:96,MAIN_BASE_W_MAX:297,MOBILE_CONTENT_W:297,
+     CANVAS_WIDTH:420,CANVAS_GUTTER:24,CANVAS_MAX_CONTENT_SCALE:1.2},
    _isMobileView:()=>true};
  vm.runInNewContext(data,ctx,{filename:'trains-data.js',timeout:15000});
  vm.runInNewContext(throughSource,ctx,{filename:'through-chip.js',timeout:15000});
