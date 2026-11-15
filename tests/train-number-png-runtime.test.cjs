@@ -3346,3 +3346,58 @@ test('Saikyo K/F/S reference numbers fail closed for foreign source and contradi
    realtimeVehicleType:'東京臨海高速鉄道70-000形',serviceDate:'2026-11-16'});
  assert.match(root.TrainVehicle.lookupTrainNumberRangePng(twr).pngPath,/70-000形\.png$/);
 });
+
+test('Toei ODPT live owner namespaces select PNG in the full rendering chain',()=>{
+  const rr=require('../tools/build-train-number-png-catalog.cjs').getRows()
+    .filter(r=>r.requireRealtimeToeiOwner===true);
+  assert.equal(rr.length,7);
+  for(const row of rr){
+    const line=row.lineIds[0],number=row.weekdayNumbers[0];
+    const raw=live({
+      trainNumber:number,trainId:'odpt.Train:Toei.'+line+'.'+number,
+      positionLineId:line,displayLineId:line,
+      sourceRailway:'odpt.Railway:Toei.'+line,
+      trainOperator:'odpt.Operator:Toei',
+      trainOwner:'odpt.TrainOwner:Toei',
+      serviceDate:'2026-11-16',calendarType:'weekday',
+      realtimeVehicleType:row.requireExplicitModelEvidence?row.model:'',
+      actualVehicleConfirmed:false
+    });
+    const chosen=root.TrainVehicle.lookupTrainNumberRangePng(raw);
+    assert.equal(chosen?.pngPath,row.pngPath,number+' -> scoped source PNG');
+    assert.equal(chosen?.representative,true);
+    const svg=marker(raw,line);
+    assert.equal(svg.kind,'vehicle',line+' SVG marker');
+    assert.equal(svg.iconSrc,row.pngPath);
+    assert.equal(svg.planned,true);
+    assert.equal(raw.trainNumber,number,'never rewrite the public train number');
+    assert.equal(raw.vehicleIdentityStatus,'UNKNOWN','no physical-carset confirmation');
+    for(const owner of ['odpt.Operator:Toei','Toei']){
+      assert.equal(root.TrainNumberPngRanges.match(number,line,
+        {...raw,trainOwner:owner})?.pngPath,row.pngPath);
+    }
+    for(const owner of ['', 'odpt.TrainOwner:Keio','odpt.Operator:Keikyu']){
+      assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+        ...raw,trainOwner:owner}),null,'foreign or missing owner '+line);
+    }
+    // Some legacy Toei realtime APIs provided only a bare numeric code.
+    // It is NOT a source-verified crosswalk to the full GTFS timetable number.
+    const numericCore=number.match(/^\d+/)?.[0];
+    assert.ok(numericCore);
+    assert.equal(root.TrainNumberPngRanges.match(numericCore,line,
+      {...raw,trainNumber:numericCore}),null,
+      'must not synthesize T / A / B or a vehicle from numeric core');
+  }
+  // Variant-specific 10-300 / 12-600 artwork requires sourced exact models.
+  const representative=rr.find(r=>r.lineIds[0]==='Asakusa');
+  const n=representative.weekdayNumbers[0];
+  assert.equal(root.TrainNumberPngRanges.match(n,'Asakusa',live({
+    trainNumber:n,positionLineId:'Asakusa',trainOperator:'Toei',
+    trainOwner:'odpt.TrainOwner:Toei',
+    sourceRailway:'odpt.Railway:Toei.Asakusa',serviceDate:'2026-11-16',
+    calendarType:'weekday',realtimeVehicleType:'都営6500形'})),null);
+  assert.equal(root.TrainNumberPngRanges.match(n,'Asakusa',live({
+    trainNumber:n,positionLineId:'Asakusa',trainOperator:'Toei',
+    trainOwner:'Toei',sourceRailway:'odpt.Railway:Toei.Asakusa',
+    serviceDate:'2026-11-21',calendarType:'holiday'})),null);
+});

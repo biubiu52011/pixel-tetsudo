@@ -169,3 +169,12 @@ https://www.twr.co.jp/Default.aspx?TabId=382
 - 在统一号码映射负责人中增加 **仅在已提供来源时生效**的铁路 URN 约束（JR East SaikyoKawagoe／TWR Rinkai）、Local／Rapid／CommuterRapid 类型排除条件。上游来源为常磐、中央线或特急时不再继承埼京／临海 PNG。
 - 为 E233-7000 和相铁 12000 参考图添加与源车型观测及已确认单车型计划的冲突检查；当上游明确报告其他车型时，不再只凭两位尾号绘制旧 PNG。70-000／71-000 仍维持独立确定车型才选择一张图的严格模式。
 - 原始规则 **130 条不变**；仍有 **9 条**缺少完整 2026-11 官方番号名单。附加来源防护覆盖的前端规则数量由 123 增至 125；不改变 SQL 规则及资产审核状态。
+
+
+## 第十次运行链路与 ODPT 所属方格式审计（2026-11-16）
+
+- 复核负责链路 `js/data-fusion.js`：实时对象原样保留 `odpt:trainNumber`、`odpt:railway`、`odpt:trainOwner`，且标记 `positionSource=realtime-api`；`js/trains-render.js` 的地图标记调用统一 `TrainVehicle.selectMarkerArtwork`。无须新增覆盖数据源的转换脚本。
+- 修复既有 `requireRealtimeToeiOwner` 归一化遗漏：除 `Toei`、`odpt.Operator:Toei` 外，现在也承认 ODPT 所属方命名空间 `odpt.TrainOwner:Toei`。运营路线 `operator=Toei` 仍然**不能替代**实时车辆所有权证据，也不改变原始号码。
+- 新增端到端测试：全部七条新车型规则的完整实时位置 → `lookupTrainNumberRangePng` → `VehicleGaragePngMap` → SVG marker 的代表图必须唯一且未确认实车；空/他社 owner 均禁止。
+- **仍待核验的跨来源问题**：某些公开的都营 ODPT 位置数据使用四位裸数字号码，而 TokyoGTFS 列车时刻表含 T/A/B 等字母；已有的第三方说明见 <https://nkth.info/traffic_info/toei/?line=a>，其记载可能针对旧版，**不应直接视为 2026 年现状**。没有实测快照和官方逐号对照前，绝不通过附加字母、截断或运用号推断来拼接二者。裸数字号码保持未解析。ODPT 官方时刻表还规定大江户线省略末尾 1/2：<https://ckan.odpt.org/dataset/r_train_timetable-toei>。
+- 浅草线 2026-11-21 改点确认：<https://www.kotsu.metro.tokyo.jp/pickup_information/news/subway/2026/sub_p_2026102012843_h.html>，当天以后旧 C 级号段保持禁用，直到替换为经审核的新时刻表。

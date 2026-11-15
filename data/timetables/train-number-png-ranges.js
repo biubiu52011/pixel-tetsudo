@@ -4811,7 +4811,10 @@
         // GTFS-stage trains must NEVER authorize a model by number alone.
         // Require an actual realtime Toei-owned position and source railway.
         var p=context||{};
-        var owner=String(p.trainOwner||"").replace(/^odpt.Operator:/,"");
+        // ODPT owners can use either Operator or TrainOwner vocab namespaces.
+        // A route's operator never substitutes for the vehicle owner.
+        var owner=String(p.trainOwner||"")
+          .replace(/^odpt\.(?:Operator|TrainOwner):/,"");
         if(p.positionSource!=="realtime-api"||p.estimated===true||
            owner!=="Toei"||p.sourceRailway!=="odpt.Railway:Toei."+line)continue;
       }
