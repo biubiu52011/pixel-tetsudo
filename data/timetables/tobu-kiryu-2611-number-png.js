@@ -3,7 +3,10 @@
  * 50 numbered local + 32 limited express per calendar. All undated and
  * multi-model: neither 2026-11 operation nor actual formation is proven.
  * The example 10030-50 artwork must NOT imply a 10030 is the real car.
- * The exact 32 Ryomo number->200/500 series allocations come from Tobu's\n * official March 14 2026 revised timetable; NOT proof of the actual formation.\n * https://www.tobu.co.jp/pdf/timetable/time-table_02_kudari.pdf?202603=\n * https://www.tobu.co.jp/pdf/timetable/time-table_02_nobori.pdf?202603=
+ * The exact 32 Ryomo number->200/500 series allocations come from Tobu's
+ * official March 14 2026 revised timetable; NOT proof of the actual formation.
+ * https://www.tobu.co.jp/pdf/timetable/time-table_02_kudari.pdf?202603=
+ * https://www.tobu.co.jp/pdf/timetable/time-table_02_nobori.pdf?202603=
  * No train positions are generated here.
  * https://www.tobu.co.jp/railway/guide/line/kiryu_line.html
  * https://4gousya.net/line/8224.php
