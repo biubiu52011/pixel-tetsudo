@@ -1086,7 +1086,7 @@ test('ChuoMain renderer never substitutes a synthetic front for missing or faile
 });
 test('regular 2026 Chuo special expresses map by whole M train number and LimitedExpress type',()=>{
   const cases=[
-    ['1M','あずさ1号'],['27M','かいじ／あずさ'],
+    ['1M','あずさ1号'],['29M','かいじ／あずさ'],
     ['2107M','富士回遊7号'],['3107M','かいじ7号'],
     ['5003M','あずさ3号'],['5050M','あずさ50号']
   ];
@@ -1132,7 +1132,7 @@ test('Chuo M regulars, numbered non-expresses and date-gated extras never become
   assert.equal(root.TrainNumberPngRanges.match('3107M','ChuoMain'),null,
     'the range alone without LimitedExpress context is insufficient');
   assert.equal(root.TrainNumberPngRanges.match('3107M','ChuoMain',
-    {trainType:'odpt.TrainType:JR-East.LimitedExpress'}).model,'E353系');
+    live({trainNumber:'3107M',trainType:'odpt.TrainType:JR-East.LimitedExpress'})).model,'E353系');
 });
 
 test('2026-11 ChuoMain published M numbers map to representative PNGs without operating-number conversion',()=>{
