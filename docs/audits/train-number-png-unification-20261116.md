@@ -141,3 +141,23 @@ https://www.twr.co.jp/Default.aspx?TabId=382
 | Mita | 319 | 278 |
 
 官方车型索引：<https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html>；<https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/>。车次来源仅为既有导入 SQL，修订日期尚待证实。
+
+
+## 第九次校对：都营浅草／新宿／大江户线号段（2026-11-16）
+
+- 首先检查现有 `data/timetables/train-number-png-ranges.js`、`vehicle-garage-png-map.js` 和 SQL。正式 `manual_timetable_templates` 三线目前是 **0**；唯一可用的逐号完整来源是隔离表 `gtfs_stage.trips`，源文件 `https://mkuran.pl/gtfs/tokyo/rail.zip`，SHA-256 `bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f`，本次**不变更数据库或计划时刻表**。
+- 根据隔离 SQL 原样保留**完整公开列车番号**（不变成运用号），使用 `Weekday`／`SaturdayHoliday` 精确白名单。特别保留浅草 `1008Ta`／`1008Tb`，将输入统一大写后仅比较同一完整番号，不折叠尾部 a/b。
+- **7 条新 PNG 规则**：浅草线 T 号→都营 5500 形代表 PNG；新宿线 T 号→10-300 形 1・2 次车／3 次车以后 PNG（仅有明确车型证据时出图）；大江户线 A/B 号→12-000 形（4 次车）／12-600 形（1 次车／前期车／后期车）（均须明确车型）。
+- 由于 TokyoGTFS 为**非官方来源、隔离区 C 级资料**，必须在原始号码白名单之外再满足：`positionSource=realtime-api`、`trainOwner=Toei`、`estimated=false`、原始 ODPT 来源为 `odpt.Railway:Toei.<line>`、本线路日历及日期。未经证实的 SQL 计划推算、他社车或错误车型**不能激活 PNG**。
+- **有效期**：2026-11-02 起。都营浅草线官方将于 **2026-11-21 改点**，旧号段最高只开放至 11 月 20 日，之后保持未解析，必须重新核对新数据；新宿／大江户暂限 11 月 30 日（仅表示静态展示窗口，不证明每日开行）。2026-11-01 不在 TokyoGTFS 声称日历覆盖范围，不硬补车次。
+- **ODPT 官方大江户线番号**会省略末尾的 1／2（例如 1001A1 → 1001A），不能把未省略的号码自动生成或伪装成相同列车；本次只按来源确实存在的 1001A 等编号匹配。
+- 号段只绑定**代表图片**；`actual_vehicle_confirmed=false`，不证明当天车组及特定外观版次。其它公司浅草 H/K/N 或新宿 K 留待各自可信车型映射，不错误绘制都营车。
+- 静态规则 123→130，索引线路键 85→88；数据库原 291 条 SQL 不动，不新增重叠号段冲突。CI 增加来源、运营方、日历、车型、改点边界和 A/B 后缀测试。
+
+| Line key | 平日精确可列车号 | 土休日精确可列车号 |
+| --- | ---: | ---: |
+| Asakusa | 199 | 202 |
+| Oedo | 452 | 387 |
+| Shinjuku | 235 | 183 |
+
+资料：原仓库 `docs/tokyo-gtfs-import-20261112.md`、官方 ODPT 数据目录 <https://ckan.odpt.org/dataset/r_train_timetable-toei>（大江户线编号规范）、都营浅草线 2026 年 11 月 21 日改点告知 <https://www.kotsu.metro.tokyo.jp/pickup_information/news/subway/2026/sub_p_2026102012843_h.html>、车型 <https://www.jametro.or.jp/subway/japan/tokyo/guide.html>。

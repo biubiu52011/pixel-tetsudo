@@ -3259,3 +3259,52 @@ test('Tokyo Metro / Toei number rosters and PNG models fail closed outside sourc
        sourceRailway:'odpt.Railway:Toei.'+line,trainOperator:'Toei',
        serviceDate:'2026-11-05',calendarType:'weekday'})),null);
 });
+
+test('Toei Asakusa/Shinjuku/Oedo staged numbers only authorize owner-scoped display PNGs',()=>{
+  const {getRows}=require('../tools/build-train-number-png-catalog.cjs');
+  const rr=getRows().slice(-7);
+  assert.equal(rr.length,7);
+  for(const r of rr){
+    const line=r.lineIds[0],n=r.weekdayNumbers[0];
+    const p=live({positionLineId:line,displayLineId:line,trainNumber:n,
+      sourceRailway:r.sourceRailways[0],trainOwner:'odpt.Operator:Toei',
+      trainOperator:'Toei',positionSource:'realtime-api',estimated:false,
+      serviceDate:'2026-11-16',calendarType:'weekday',
+      realtimeVehicleType:r.requireExplicitModelEvidence?r.model:''});
+    assert.equal(root.TrainNumberPngRanges.match(n,line,p)?.pngPath,r.pngPath,line);
+    assert.equal(root.VehicleGaragePngMap.matchModelPath(r.model,r.pngPath,line),true);
+    for(const bad of [{trainOwner:'Keio'}, {trainOwner:''},
+      {sourceRailway:'odpt.Railway:Toei.Mita'},
+      {positionSource:'supabase-train-run',estimated:true},
+      {serviceDate:'2026-12-01'}]){
+      assert.equal(root.TrainNumberPngRanges.match(n,line,{...p,...bad}),null,
+        'owner/date/source leak '+line);
+    }
+    if(r.requireExplicitModelEvidence){
+      assert.equal(root.TrainNumberPngRanges.match(n,line,{
+        ...p,realtimeVehicleType:'',vehiclePlan:null}),null,'unknown type '+line);
+      assert.equal(root.TrainNumberPngRanges.match(n,line,{
+        ...p,realtimeVehicleType:'other stock'}),null,'different model '+line);
+    }
+    const weekdayOnly=r.weekdayNumbers.find(x=>!r.holidayNumbers.includes(x));
+    if(weekdayOnly)assert.equal(root.TrainNumberPngRanges.match(weekdayOnly,line,
+      {...p,calendarType:'holiday',serviceDate:'2026-11-15'}),null,
+      'non-listed holiday number '+line);
+  }
+  const a=rr.find(x=>x.lineIds[0]==='Asakusa'),split=a.holidayNumbers.find(x=>/TA$|TB$/.test(x));
+  assert.ok(split,'A/B letter variants retained as distinct published numbers');
+  const pa=live({positionLineId:'Asakusa',trainNumber:split,
+    trainOwner:'Toei',sourceRailway:'odpt.Railway:Toei.Asakusa',
+    trainOperator:'Toei',serviceDate:'2026-11-15',calendarType:'holiday'});
+  assert.equal(root.TrainNumberPngRanges.match(split,'Asakusa',pa)?.model,'都営5500形');
+  assert.equal(root.TrainNumberPngRanges.match(split,'Asakusa',
+    {...pa,serviceDate:'2026-11-21'}),null,'new Asakusa timetable quarantine');
+  const o=rr.find(x=>x.lineIds[0]==='Oedo'),n=o.weekdayNumbers[0];
+  const po=live({positionLineId:'Oedo',trainNumber:n,
+    trainOwner:'Toei',sourceRailway:'odpt.Railway:Toei.Oedo',
+    trainOperator:'Toei',serviceDate:'2026-11-16',
+    calendarType:'weekday',realtimeVehicleType:o.model});
+  assert.equal(root.TrainNumberPngRanges.match(n+'1','Oedo',po),null,
+    'official ODPT Oedo numbers omit terminal 1/2; never synthesize suffix');
+  assert.equal(root.TrainNumberPngRanges.match(n+'2','Oedo',po),null);
+});
