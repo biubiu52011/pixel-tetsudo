@@ -1,6 +1,6 @@
 # Deploy only committed main-branch content. Merges and direct pushes to main
 # publish automatically after preflight checks; manual dispatch remains available.
-name: Deploy static content to Pages
+name: CI/CD - Pages
 
 on:
   push:
@@ -20,6 +20,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  train-contracts:
+    name: Verify train and PNG contracts
+    uses: ./.github/workflows/verify-train-png.yml
+    permissions:
+      contents: read
   build:
     runs-on: ubuntu-latest
     steps:
@@ -123,7 +128,8 @@ jobs:
   # searches for it. The previous same-job upload/deploy raced metadata
   # propagation and repeatedly reported 0 artifacts despite successful upload.
   deploy:
-    needs: build
+    needs: [build, train-contracts]
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
