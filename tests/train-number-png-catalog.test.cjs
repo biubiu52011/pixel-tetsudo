@@ -150,7 +150,7 @@ test('Chuo 2611 E353 PNG rules use published calendar rosters, not inclusive num
   assert.ok(row);
   for(const [calendar,field] of [['weekday','weekday_numbers'],['holiday','holiday_numbers']]){
    const expected=sort([...official[calendar].Inbound,...official[calendar].Outbound]
-    .filter(n=>/^\\d+M$/.test(n)&&Number(n.slice(0,-1))>=min&&Number(n.slice(0,-1))<=max));
+    .filter(n=>/^\d+M$/.test(n)&&Number(n.slice(0,-1))>=min&&Number(n.slice(0,-1))<=max));
    assert.deepEqual(row[field],expected,row.id+'/'+calendar);
   }
   assert.equal(row.evidence_kind,'exact-list');
@@ -162,7 +162,7 @@ test('Chuo 2611 E353 PNG rules use published calendar rosters, not inclusive num
   serviceDate:'2026-11-12',calendarType:'weekday',
   sourceRailway:'odpt.Railway:JR-East.ChuoMain',trainOperator:'JR-East'};
  const match=(n,p={})=>root.TrainNumberPngRanges.match(n,'ChuoMain',{...base,...p});
- assert.match(match('1M',{railDirection:'odpt.RailDirection:Outbound'}).pngPath,/E353系\\.png$/);
+ assert.match(match('1M',{railDirection:'odpt.RailDirection:Outbound'}).pngPath,/E353系\.png$/);
  assert.equal(match('1M',{railDirection:'odpt.RailDirection:Inbound'}),null);
  assert.equal(match('2M'),null,'unpublished number cannot inherit 1–60 band');
  assert.equal(match('2101M'),null,'unpublished number cannot inherit 21xx band');
