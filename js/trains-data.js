@@ -949,7 +949,11 @@ window.TrainsConfig = {
     // Keep CSS @media (max-width: 640px) in sync for page padding only.
     MOBILE_BREAKPOINT: 640,
     TABLET_BREAKPOINT: 900,
-    MOBILE_RENDER_SCALE: 1.45,
+    // The SVG viewBox is always 0 0 CANVAS_WIDTH <route-height>.
+    // All other widths are private layout coordinates, not viewport widths.
+    CANVAS_WIDTH: 420,
+    CANVAS_GUTTER: 24,
+    CANVAS_MAX_CONTENT_SCALE: 1.2,
     BRANCH_COL_W: 96,
     BRANCH_STUB: 20,
     MAIN_BASE_W_MOBILE: 410,
@@ -1366,16 +1370,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       var loopStations = [stations[0]].concat(stations.slice(hikarigaokaIdx + 1));
       
       // ============ 尺寸计算 ===========
-      // 桌面画布基准固定（820）——环宽恒定（viewBox 内容密度基线，显示层 容器适配）。
-      // 移动端画布=容器内容宽（1:1 密度基线，无横向滚动）。
-      var _cw6;
-      if (_isMobileView()) {
-        var _mcw6 = ((typeof document !== "undefined" && document.querySelector("#trainsMapContainer")) || {}).clientWidth || 360;
-        _cw6 = Math.max(_mcw6 - 16, 320);
-      } else {
-        _cw6 = GEOM.MAIN_BASE_W_MAX;
-      }
-      var _cw6Content = _cw6;
+      // Six-shaped routes own their interior coordinates only. Canvas width
+      // is defined once for every railway by GEOM.CANVAS_WIDTH.
       // 缩放系数对齐山手线 loopScale（移动 1.5 / 桌面 1.6）。
       // 用户裁定环线标准宽度——六形环圆环部分与山手线统一（48 基准，移动 72px/桌面 76.8px）。
       var scale6 = _isMobileView() ? 1.5 : 1.6;
@@ -1876,6 +1872,22 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       if (h) svgH = Math.max(svgH, p.y + h + 64);
     });
 
+    // Fixed SVG viewport contract: only its height depends on the railway
+    // geometry. Layout coordinates retain their original local space so
+    // track geometry, branch connections and moving train markers agree.
+    // One static transform fits BOTH SVG layers into a single fixed frame.
+    var layoutWidth = Math.max(1, Number(svgW) || 1);
+    var layoutHeight = Math.max(1, Number(svgH) || 1);
+    var canvasInnerWidth = GEOM.CANVAS_WIDTH - GEOM.CANVAS_GUTTER * 2;
+    var contentScale = Math.min(GEOM.CANVAS_MAX_CONTENT_SCALE,
+      canvasInnerWidth / layoutWidth);
+    var contentOffsetX = (GEOM.CANVAS_WIDTH - layoutWidth * contentScale) / 2;
+    var contentOffsetY = GEOM.CANVAS_GUTTER;
+    svgW = GEOM.CANVAS_WIDTH;
+    svgH = Math.ceil(layoutHeight * contentScale + GEOM.CANVAS_GUTTER * 2);
+    var canvasTransform = "translate(" + contentOffsetX + " " +
+      contentOffsetY + ") scale(" + contentScale + ")";
+
     // 构建几何对象。
     var geometry = {
       lineId: lineId,
@@ -1885,6 +1897,12 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       stationCoords: stationCoords,
       svgW: svgW,
       svgH: svgH,
+      layoutWidth: layoutWidth,
+      layoutHeight: layoutHeight,
+      canvasScale: contentScale,
+      canvasOffsetX: contentOffsetX,
+      canvasOffsetY: contentOffsetY,
+      canvasTransform: canvasTransform,
       isLoop: isLoop,
       throughChipMaxWidth: throughChipMaxWidth,
       isSixShapedLoop: isSixShapedLoop,
@@ -1944,13 +1962,11 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
   }
   
   function _computeLineHash(line, lineId, staticRevision) {
-    var host = typeof document !== 'undefined' && document.querySelector
-      ? document.querySelector('#trainsMapContainer') : null;
     return JSON.stringify([lineId, line.stations, line.type, line.color,
       line.isSixShapedLoop, line.isDoubleColumnLoop, line.loopJunction,
       line.trackLayout || null,
       staticRevision != null ? staticRevision : (typeof _staticNetworkSignature === 'function' ? _staticNetworkSignature() : getLinesData()),
-      window.currentLang || 'ja', _isMobileView(), host ? host.clientWidth : window.innerWidth,
+      window.currentLang || 'ja', _isMobileView(),
       GEOM, typeof document !== 'undefined' && document.fonts ? document.fonts.status : '', window.TrainsActiveSystemLineIds || []]);
   }
   
