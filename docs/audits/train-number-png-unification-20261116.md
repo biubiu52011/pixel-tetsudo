@@ -1,25 +1,42 @@
-# 列车号段与 PNG 映射目录（2026-11-16）
+# 列车号段与 PNG 映射统一审计（2026-11-16，第二次整理）
 
-## 建立的统一索引
+## 已统一的索引与来源
 
-data/audits/train-number-png-catalog-2611.json 是现有前端 JS + Supabase 日期快照的派生目录；它不是新的运行时真值表，也不能证明某日实体编组。
+- `data/audits/train-number-png-catalog-2611.json` 从既有前端 JS 和 Supabase 2026-11-16 只读快照派生，不参与运行时决策，不是第三份真值表。
+- 当前 SQL 仍为 **291** 条、24 条线路；前端 JS 为 **108** 条（136 个线路关联，58 条线路）；并集覆盖 **76** 个线路键。
+- SQL 号段现同时保留原始 `source_url`，前端保留日历、方向、完整号/尾两位、外部车次索引等约束。CI 禁止丢失 SQL 证据出处。
+- 所有 SQL 条目 `requires_exact_roster=true`，任何号段均不得作为实体编组认定依据。`actual_vehicle_confirmed` 必须为 false。
 
-- SQL: 291 条规则，覆盖 24 条线路，所有规则必须要求精确车次表，不能依靠宽号段直接选择车辆。
-- JS: 108 条规则、136 个线路关联、58 条线路，保留前端原有的末两位/完整车次、日历、方向、线路、特殊车次验证器等条件。
-- 每条记录有 sql-xxxx 或 js-xxxx 编号；line_index 将线路映射到既有两类规则 ID。
+## 已补登记、但仍禁止自动确认为已审核资产
 
-## 现有未解决差异
+4 个数据库原缺失图片现登记到 `public.vehicle_image_assets`，覆盖原先 **5** 条 SQL 规则引用：
+1. 富士急 6000 系标准色；
+2. 富士急 8000 系「フジサン特急」脸 A（被两条号段引用）；
+3. JR 东日本 E127 系 100 番台长野色；
+4. JR 东日本 HB-E300 系「リゾートビューふるさと」。
 
-- SQL 5 条号段规则引用的 4 个图片路径未登记于 vehicle_image_assets：富士急 6000、富士急 8000（2 条）、E127 100 番台、HB-E300 Resort View。文件存在不等于数据库审核通过。
-- 14 条 SQL 号段车型标签与图片资产的大系列名称不完全一致，多属番台、涂装或专门服务车型。禁止简单覆盖成大系列；先核实实际身份。
-- 同线路同后缀 6 对数字区间相交：3 对新干线是相同车型与图片的重复；3 对大糸线分别涉及 211、E127、E353，不可以按数字区间选第一个候选。
+它们均是 `asset_status=review`、`asset_scope=review`、`appearance_class=requires_review`，原始字节头与外观特征尚未核实，`file_format_status=null`。**数据库已登记不等于图片可用、车次已证实或实体车号已证实。** CI 明确要求该状态不能在缺乏独立审核时被意外升级。
 
-## 同步与 CI
+## 已澄清重叠
 
+- **3 对新干线同车次/同模型/同图片重叠**：是 `weekday_verified_single_number` 与 `verified_single_service` 的独立证据来源。现有 Edge Function 明确允许此类重复；**保留两份来源**，不误删。
+- **大糸线 3 对跨车型的宽区间重叠**：依旧不能单凭数字号段推断车型。2026-11-16 通过数据库实查 `published_oito_east_2611_number_roster`：共 **141** 条日历/方向车次记录、**73** 个不同车次号，`(train_number,calendar_urn,direction_urn)` 下没有多车型冲突，实体编组确认数为 **0**。应先以精确车次+日历+方向查实际表，要求车型和图片同时匹配；不存在的车次一律不匹配。
+- 生成目录将重叠分类为 `same_artwork_separate_source_evidence` 与 `cross_model_candidate_bands_require_exact_roster`，统一 `may_select_by_band_alone=false`。
+- **14** 条 SQL 车型标签与资产标签文字不完全相同，多为车型子系列、主题或运行地区表述。没有证据证明它们是错误车型，因此既不覆盖原字段，也不自动创建可用于精确车辆认定的别名。
+
+## 仍需证据核实
+
+- **20** 条 JS 号段缺少同条目内明确车次列表或外部车次索引，依靠范围与额外运行时条件；本次集中列入 `review.frontend_guard_only_rules`，需按官方时刻表逐条决定是否可以细化。不能用宽号段凭空生成时刻表记录。
+- 上述 4 张图片需要实际文件签名、车辆外观/脸部、涂装与适用区间证据，审核通过后才可从 review 改为 available；状态修改要同步日期快照与 CI 基线。
+
+## 再生和验证
+
+```bash
 node tools/build-train-number-png-catalog.cjs --write
 node tools/build-train-number-png-catalog.cjs --check --strict
+node --test tests/train-number-png-catalog.test.cjs
 node tools/railway-metadata-audit.cjs --strict
 node --test tests/train-number-png-runtime.test.cjs
+```
 
-GitHub Actions 的 railway-metadata-audit 在现有源文件变化时检查索引是否过时、文件是否真实存在以及新增的未登记资产、错误模型和不受保护重叠。
-修复只改现有负责的 SQL/JS/图库来源，刷新日期快照再重建目录；禁止推算实体编组号、扩大无证据车次范围，或用这个派生目录直接覆盖生产规则。
+数据库源记录发生变化，应先刷新 `data/audits/supabase-railway-audit-snapshot-20261116.json` 对应字段，才再生目录；CI 不直接连接生产数据库或读取密钥。

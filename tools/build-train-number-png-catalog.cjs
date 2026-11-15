@@ -20,7 +20,7 @@ function buildCatalog(snapshot, rows) {
  const norm = p => String(p||'').replace(/^(\.\.\/|\.\/|\/)+/,'');
  const sql=(snapshot.published_train_png_number_ranges||[]).map((r,i)=>({
   id:'sql-'+String(i+1).padStart(4,'0'),origin:'sql_snapshot',
-  line_ids:[r.line_key],segment:r.segment_key,format:'full',
+  line_ids:[r.line_key],segment:r.segment_key,format:'full',source_url:r.source_url||null,
   min:r.min_number,max:r.max_number,suffix:r.suffix||'',
   model:r.vehicle_model,png:norm(r.png_reference),
   requires_exact_roster:r.requires_exact_roster===true,
@@ -52,11 +52,18 @@ function buildCatalog(snapshot, rows) {
  }
  const sortedIndex=Object.fromEntries(Object.entries(index).sort((a,b)=>a[0].localeCompare(b[0],'en')));
  const assets=new Map(snapshot.vehicle_image_assets.map(a=>[norm(a.image_path),a]));
- const missing=[],labels=[],overlaps=[];
+ const missing=[],pending=[],labels=[],overlaps=[];
  for(const r of sql){
   const a=assets.get(r.png);
   if(!a)missing.push({rule:r.id,line:r.line_ids[0],segment:r.segment,png:r.png});
-  else if(a.vehicle_type!==r.model)labels.push({rule:r.id,line:r.line_ids[0],rule_model:r.model,asset_model:a.vehicle_type,png:r.png});
+  else {
+   if(a.asset_status!=='available'||a.file_format_status!=='native_png'||a.appearance_class==='requires_review')
+    pending.push({rule:r.id,line:r.line_ids[0],png:r.png,
+     asset_status:a.asset_status,file_format_status:a.file_format_status,
+     appearance_class:a.appearance_class});
+   if(a.vehicle_type!==r.model)labels.push({rule:r.id,line:r.line_ids[0],
+    rule_model:r.model,asset_model:a.vehicle_type,png:r.png});
+  }
  }
  for(let i=0;i<sql.length;i++)for(let j=i+1;j<sql.length;j++){
   const a=sql[i],b=sql[j];
@@ -64,8 +71,14 @@ function buildCatalog(snapshot, rows) {
   overlaps.push({a:a.id,b:b.id,line:a.line_ids[0],
    segment_a:a.segment,segment_b:b.segment,
    min:Math.max(a.min,b.min),max:Math.min(a.max,b.max),
-   same_model_png:a.model===b.model&&a.png===b.png});
+   same_model_png:a.model===b.model&&a.png===b.png,
+   classification:a.model===b.model&&a.png===b.png?'same_artwork_separate_source_evidence':'cross_model_candidate_bands_require_exact_roster',
+   may_select_by_band_alone:false});
  }
+ const frontendGuardReview=js.filter(r=>r.evidence_kind==='range-with-runtime-guards')
+   .map(r=>({rule:r.id,line_ids:r.line_ids,model:r.model,
+    min:r.min,max:r.max,suffix:r.suffix,format:r.format,
+    requires_compatible_plan:r.requires_compatible_plan}));
  return {schema_version:1,edition:'2611',snapshot_date:snapshot.snapshot_date,
   role:'derived read-only catalog; never exact physical formation evidence',
   sources:['data/timetables/train-number-png-ranges.js','data/audits/supabase-railway-audit-snapshot-20261116.json',
@@ -74,11 +87,14 @@ function buildCatalog(snapshot, rows) {
    total_line_keys:Object.keys(sortedIndex).length,
    sql_lines:new Set(sql.map(r=>r.line_ids[0])).size,
    js_lines:new Set(js.flatMap(r=>r.line_ids)).size,
-   unregistered_sql_png_rules:missing.length,model_label_differences:labels.length,
+   unregistered_sql_png_rules:missing.length,sql_assets_pending_review:pending.length,
+   frontend_guard_only_rules:frontendGuardReview.length,model_label_differences:labels.length,
    overlapping_sql_bands:overlaps.length,
    overlapping_different_model_bands:overlaps.filter(x=>!x.same_model_png).length},
   line_index:sortedIndex,rules:sql.concat(js),
-  review:{missing_sql_asset_registration:missing,sql_asset_label_differences:labels,sql_range_overlaps:overlaps}};
+  review:{missing_sql_asset_registration:missing,sql_asset_review_required:pending,
+   frontend_guard_only_rules:frontendGuardReview,
+   sql_asset_label_differences:labels,sql_range_overlaps:overlaps}};
 }
 function audit(c){
  const errors=[];
@@ -95,17 +111,30 @@ function audit(c){
    errors.push(r.id+': number range must not assert actual car');
   if(r.origin==='sql_snapshot'&&!r.requires_exact_roster)
    errors.push(r.id+': number range missing exact-roster guard');
+  if(r.origin==='sql_snapshot'&&!r.source_url)
+   errors.push(r.id+': SQL rule missing provenance source');
  }
- const knownMissing=new Set([
-  'images/列车/富士急行/富士急行_6000系_標準色.png',
-  'images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png',
-  'images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png',
-  'images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png'
+ // Newly inventoried art is REVIEW ONLY; presence never validates file bytes, face or carset.
+ if(c.review.missing_sql_asset_registration.length)
+  errors.push('SQL range references unregistered PNG assets');
+ const expectedReview=new Map([
+  ['images/列车/富士急行/富士急行_6000系_標準色.png',1],
+  ['images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png',2],
+  ['images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png',1],
+  ['images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png',1]
  ]);
- for(const r of c.review.missing_sql_asset_registration)
-  if(!knownMissing.has(r.png))errors.push('new unregistered SQL artwork '+r.png);
- if(c.review.missing_sql_asset_registration.length>5)
-  errors.push('new SQL artwork registry gaps');
+ const reviewCounts=new Map();
+ for(const r of c.review.sql_asset_review_required){
+  reviewCounts.set(r.png,(reviewCounts.get(r.png)||0)+1);
+  if(!expectedReview.has(r.png)||r.asset_status!=='review'||
+    r.appearance_class!=='requires_review'||r.file_format_status!==null)
+   errors.push('unexpected SQL asset review/promotion '+r.png);
+ }
+ if(c.review.sql_asset_review_required.length!==5||
+  [...expectedReview].some(([p,n])=>reviewCounts.get(p)!==n))
+  errors.push('pending assets changed; independently revalidate artwork and update audit');
+ if(c.review.frontend_guard_only_rules.length>20)
+  errors.push('new frontend ranges without explicit number set or verifier');
  if(c.review.sql_asset_label_differences.length>14)
   errors.push('new model-label inconsistencies');
  const allowed=new Set([
@@ -114,6 +143,10 @@ function audit(c){
   'east_e127_100_family|east_e353_azusa_hakuba'
  ]);
  for(const r of c.review.sql_range_overlaps){
+  if(r.may_select_by_band_alone!==false)errors.push('overlap must not auto-select artwork');
+  const a=c.rules.find(x=>x.id===r.a),b=c.rules.find(x=>x.id===r.b);
+  if(!a?.requires_exact_roster||!b?.requires_exact_roster)
+   errors.push('overlap without exact-roster guards');
   if(r.same_model_png)continue;
   if(r.line!=='Oito'||(!allowed.has(r.segment_a+'|'+r.segment_b)&&
     !allowed.has(r.segment_b+'|'+r.segment_a)))

@@ -7881,6 +7881,14 @@
       "file_format_status": "native_png"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png",
+      "operator": "JR-East",
+      "vehicle_type": "E127系100番台",
+      "asset_status": "review",
+      "appearance_class": "requires_review",
+      "file_format_status": null
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E129系.png",
       "operator": "JR-East",
       "vehicle_type": "E129系",
@@ -8503,6 +8511,14 @@
       "asset_status": "available",
       "appearance_class": "dedicated_vehicle_identity",
       "file_format_status": "native_png"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png",
+      "operator": "JR-East",
+      "vehicle_type": "HB-E300系（リゾートビューふるさと）",
+      "asset_status": "review",
+      "appearance_class": "requires_review",
+      "file_format_status": null
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_海里.png",
@@ -9535,6 +9551,22 @@
       "asset_status": "available",
       "appearance_class": null,
       "file_format_status": "native_png"
+    },
+    {
+      "image_path": "images/列车/富士急行/富士急行_6000系_標準色.png",
+      "operator": "FujisanrokuElectricRailway",
+      "vehicle_type": "富士急行6000系（標準色）",
+      "asset_status": "review",
+      "appearance_class": "requires_review",
+      "file_format_status": null
+    },
+    {
+      "image_path": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+      "operator": "FujisanrokuElectricRailway",
+      "vehicle_type": "富士急行8000系（フジサン特急・顔A）",
+      "asset_status": "review",
+      "appearance_class": "requires_review",
+      "file_format_status": null
     },
     {
       "image_path": "images/列车/小田急箱根/小田急箱根_1000形.png",
@@ -11515,7 +11547,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11526,7 +11559,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/030/033833.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11537,7 +11571,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11548,7 +11583,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11559,7 +11595,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11570,7 +11607,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11581,7 +11619,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11592,7 +11631,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11603,7 +11643,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11614,7 +11655,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11625,7 +11667,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11636,7 +11679,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11647,7 +11691,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11658,7 +11703,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11669,7 +11715,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11680,7 +11727,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11691,7 +11739,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11702,7 +11751,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11713,7 +11763,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11724,7 +11775,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11735,7 +11787,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11746,7 +11799,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11757,7 +11811,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11768,7 +11823,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11779,7 +11835,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11790,7 +11847,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11801,7 +11859,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11812,7 +11871,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11823,7 +11883,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062371.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11834,7 +11895,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11845,7 +11907,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11856,7 +11919,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11867,7 +11931,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11878,7 +11943,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11889,7 +11955,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11900,7 +11967,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11911,7 +11979,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11922,7 +11991,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11933,7 +12003,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11944,7 +12015,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11955,7 +12027,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11966,7 +12039,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11977,7 +12051,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11988,7 +12063,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "AkitaShinkansen",
@@ -11999,7 +12075,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1p.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12010,7 +12087,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000041.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12021,7 +12099,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000071.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12032,7 +12111,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000081.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12043,7 +12123,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000111.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12054,7 +12135,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/015/019971.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12065,7 +12147,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000151.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12076,7 +12159,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000271.html"
     },
     {
       "line_key": "ChuoCentral",
@@ -12087,7 +12171,8 @@
       "vehicle_model": "383系",
       "png_reference": "../images/列车/JR東海/JR東海_383系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/000/000461.html"
     },
     {
       "line_key": "Fujikyu",
@@ -12098,7 +12183,8 @@
       "vehicle_model": "富士急行6000系（標準色）",
       "png_reference": "../images/列车/富士急行/富士急行_6000系_標準色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.fujikyu-railway.jp/station/timetable.php"
     },
     {
       "line_key": "Fujikyu",
@@ -12109,7 +12195,8 @@
       "vehicle_model": "富士急行8000系（フジサン特急・顔A）",
       "png_reference": "../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.fujikyu-railway.jp/train/fujisan_express.php"
     },
     {
       "line_key": "Fujikyu",
@@ -12120,7 +12207,8 @@
       "vehicle_model": "富士急行8000系（フジサン特急・顔A）",
       "png_reference": "../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.fujikyu-railway.jp/train/fujisan_express.php"
     },
     {
       "line_key": "Fujikyu",
@@ -12131,7 +12219,8 @@
       "vehicle_model": "E233系0番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_E233系_0番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "sql:manual_timetable_templates:Fujikyu-ChuoMain:1455M-1456M"
     },
     {
       "line_key": "Joetsu",
@@ -12142,7 +12231,8 @@
       "vehicle_model": "211系（高崎地区）",
       "png_reference": "../images/列车/JR東日本/JR東日本_211系_湘南色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/238d1.html"
     },
     {
       "line_key": "Joetsu",
@@ -12153,7 +12243,8 @@
       "vehicle_model": "E129系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E129系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/296d1.html"
     },
     {
       "line_key": "Joetsu",
@@ -12164,7 +12255,8 @@
       "vehicle_model": "キハ40・48形（越乃Shu＊Kura）",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/296d2.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12175,7 +12267,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12186,7 +12279,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12197,7 +12291,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12208,7 +12303,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12219,7 +12315,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12230,7 +12327,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12241,7 +12339,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12252,7 +12351,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12263,7 +12363,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12274,7 +12375,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12285,7 +12387,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12296,7 +12399,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12307,7 +12411,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/035/038221.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12318,7 +12423,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12329,7 +12435,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12340,7 +12447,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004d1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12351,7 +12459,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "JoetsuShinkansen",
@@ -12362,7 +12471,8 @@
       "vehicle_model": "E7系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E7系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/004u1.html"
     },
     {
       "line_key": "Kamaishi",
@@ -12373,7 +12483,8 @@
       "vehicle_model": "HB-E220系",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E220系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979d1.html"
     },
     {
       "line_key": "Kamaishi",
@@ -12384,7 +12495,8 @@
       "vehicle_model": "HB-E220系",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E220系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979u1.html"
     },
     {
       "line_key": "Kamaishi",
@@ -12395,7 +12507,8 @@
       "vehicle_model": "HB-E220系",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E220系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/979d1.html"
     },
     {
       "line_key": "Kamaishi",
@@ -12406,7 +12519,8 @@
       "vehicle_model": "HB-E300系（ひなび）",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/150/154901.html"
     },
     {
       "line_key": "Kashima",
@@ -12417,7 +12531,8 @@
       "vehicle_model": "E131系0番台 / 80番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_E131系_0番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/local/e131.html"
     },
     {
       "line_key": "Kashima",
@@ -12428,7 +12543,8 @@
       "vehicle_model": "E235系1000番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_E235系_1000番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/local/e235.html"
     },
     {
       "line_key": "Kashima",
@@ -12439,7 +12555,8 @@
       "vehicle_model": "E131系0番台 / 80番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_E131系_0番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/local/e131.html"
     },
     {
       "line_key": "Kashima",
@@ -12450,7 +12567,8 @@
       "vehicle_model": "E235系1000番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_E235系_1000番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/local/e235.html"
     },
     {
       "line_key": "Kesennuma",
@@ -12461,7 +12579,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/local/kiha110.html"
     },
     {
       "line_key": "Kesennuma",
@@ -12472,7 +12591,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/local/kiha110.html"
     },
     {
       "line_key": "Kitakami",
@@ -12483,7 +12603,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable/tt0564/0564040.html"
     },
     {
       "line_key": "Kitakami",
@@ -12494,7 +12615,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable/tt0564/0564040.html"
     },
     {
       "line_key": "Komii",
@@ -12505,7 +12627,8 @@
       "vehicle_model": "キハ100・110系（HIGH RAIL 1375）",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/fun/highrail1375.html"
     },
     {
       "line_key": "Kounan",
@@ -12516,7 +12639,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/274d1.html"
     },
     {
       "line_key": "Kounan",
@@ -12527,7 +12651,8 @@
       "vehicle_model": "HB-E300系（ひなび）",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/railway/joyful/hinabi.html"
     },
     {
       "line_key": "Kounan",
@@ -12538,7 +12663,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/274u1.html"
     },
     {
       "line_key": "Kururi",
@@ -12549,7 +12675,8 @@
       "vehicle_model": "キハE130形100番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハE130系100番台.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/217d1.html"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12560,7 +12687,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352901.html?d=20261104&t=0829100"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12571,7 +12699,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351901.html?d=20261101&t=2898401"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12582,7 +12711,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353001.html?d=20261104&t=0829200"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12593,7 +12723,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351801.html?d=20261106&t=2862601"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12604,7 +12735,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352001.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12615,7 +12747,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352101.html?d=20261103&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12626,7 +12759,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352201.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12637,7 +12771,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353101.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12648,7 +12783,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350101.html?d=20261105&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12659,7 +12795,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353201.html?d=20261105&t=2862600"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12670,7 +12807,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350201.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12681,7 +12819,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353301.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12692,7 +12831,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350301.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12703,7 +12843,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353401.html?d=20261104&t=2862600"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12714,7 +12855,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350401.html?d=20261101&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12725,7 +12867,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353501.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12736,7 +12879,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353601.html?d=20261104&t=2862600"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12747,7 +12891,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350501.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12758,7 +12903,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353801.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12769,7 +12915,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350601.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12780,7 +12927,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353901.html?d=20261101&t=0829200"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12791,7 +12939,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350701.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12802,7 +12951,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352301.html?d=20261104&t=0829200"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12813,7 +12963,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350801.html?d=20261105&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12824,7 +12975,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00354001.html?d=20261104&t=0829200"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12835,7 +12987,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00350901.html?d=20261105&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12846,7 +12999,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00353701.html?d=20261101&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12857,7 +13011,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352401.html?d=20261031&t=2900700"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12868,7 +13023,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351101.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12879,7 +13035,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00352501.html?d=20261103&t=2814400"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12890,7 +13047,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351201.html?d=20261103&t=0829301"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12901,7 +13059,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351301.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12912,7 +13071,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351401.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12923,7 +13083,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351501.html?d=20261103&t=2939501"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12934,7 +13095,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0035/00351601.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12945,7 +13107,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00348901.html?d=20261101&t=2862601"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12956,7 +13119,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349001.html?d=20261104&t=2898401"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12967,7 +13131,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349601.html?d=20261101&t=2862600"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12978,7 +13143,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349101.html?d=20261103&t=2828300"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -12989,7 +13155,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349201.html?d=20261104&t=2862601"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -13000,7 +13167,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0034/00349301.html?d=20261104&t=2862601"
     },
     {
       "line_key": "KyushuShinkansen",
@@ -13011,7 +13179,8 @@
       "vehicle_model": "800系",
       "png_reference": "../images/列车/JR九州/JR九州_800系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jrkyushu-timetable.jp/sp/2611/0038/00385801.html?d=20261101&t=2814400"
     },
     {
       "line_key": "Mito",
@@ -13022,7 +13191,8 @@
       "vehicle_model": "E531系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E531系_水戸線.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/246d1.html"
     },
     {
       "line_key": "Miyo",
@@ -13033,7 +13203,8 @@
       "vehicle_model": "E129系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E129系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/233u2.html"
     },
     {
       "line_key": "Miyo",
@@ -13044,7 +13215,8 @@
       "vehicle_model": "HB-E300系（海里）",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E300系_海里.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/233d1.html"
     },
     {
       "line_key": "Ofunato",
@@ -13055,7 +13227,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/269d1.html"
     },
     {
       "line_key": "Oga",
@@ -13066,7 +13239,8 @@
       "vehicle_model": "EV-E801系",
       "png_reference": "../images/列车/JR東日本/JR東日本_EV-E801系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/259u1.html"
     },
     {
       "line_key": "Oito",
@@ -13077,7 +13251,8 @@
       "vehicle_model": "E353系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E353系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d2.html"
     },
     {
       "line_key": "Oito",
@@ -13088,7 +13263,8 @@
       "vehicle_model": "211系（長野地区）",
       "png_reference": "../images/列车/JR東日本/JR東日本_211系_長野色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230u1.html"
     },
     {
       "line_key": "Oito",
@@ -13099,7 +13275,8 @@
       "vehicle_model": "E127系100番台",
       "png_reference": "../images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d1.html"
     },
     {
       "line_key": "Oito",
@@ -13110,7 +13287,8 @@
       "vehicle_model": "HB-E300系（リゾートビューふるさと）",
       "png_reference": "../images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/230d1.html"
     },
     {
       "line_key": "OuMain",
@@ -13121,7 +13299,8 @@
       "vehicle_model": "E751系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E751系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/express/tsugaru.html"
     },
     {
       "line_key": "OuMain",
@@ -13132,7 +13311,8 @@
       "vehicle_model": "E751系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E751系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://www.jreast.co.jp/train/express/tsugaru.html"
     },
     {
       "line_key": "RikutoEast",
@@ -13143,7 +13323,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/268u1.html"
     },
     {
       "line_key": "RikutoEast",
@@ -13154,7 +13335,8 @@
       "vehicle_model": "キハ110系",
       "png_reference": "../images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/268u2.html"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13165,7 +13347,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315371?date=20261108"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13176,7 +13359,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315601?date=20261119"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13187,7 +13371,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315641?date=20261119"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13198,7 +13383,8 @@
       "vehicle_model": "500系",
       "png_reference": "../images/列车/JR西日本/JR西日本_500系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315471?date=20261128"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13209,7 +13395,8 @@
       "vehicle_model": "500系",
       "png_reference": "../images/列车/JR西日本/JR西日本_500系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315521?date=20261101"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13220,7 +13407,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315531?date=20261110"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13231,7 +13419,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315541?date=20261110"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13242,7 +13431,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315591?date=20261101"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13253,7 +13443,8 @@
       "vehicle_model": "500系",
       "png_reference": "../images/列车/JR西日本/JR西日本_500系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315621?date=20261120"
     },
     {
       "line_key": "SanyoShinkansen",
@@ -13264,7 +13455,8 @@
       "vehicle_model": "700系",
       "png_reference": "../images/列车/JR西日本/JR西日本_700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/315631?date=20261101"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13275,7 +13467,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13286,7 +13479,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13297,7 +13491,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13308,7 +13503,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13319,7 +13515,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13330,7 +13527,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13341,7 +13539,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13352,7 +13551,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13363,7 +13563,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13374,7 +13575,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13385,7 +13587,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13396,7 +13599,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13407,7 +13611,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13418,7 +13623,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13429,7 +13635,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13440,7 +13647,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13451,7 +13659,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13462,7 +13671,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13473,7 +13683,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13484,7 +13695,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13495,7 +13707,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13506,7 +13719,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13517,7 +13731,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13528,7 +13743,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13539,7 +13755,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13550,7 +13767,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13561,7 +13779,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13572,7 +13791,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13583,7 +13803,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13594,7 +13815,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13605,7 +13827,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13616,7 +13839,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13627,7 +13851,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003d1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13638,7 +13863,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TohokuShinkansen",
@@ -13649,7 +13875,8 @@
       "vehicle_model": "E6系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E6系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/003u1.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13660,7 +13887,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/005/008031.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13671,7 +13899,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13682,7 +13911,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13693,7 +13923,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/1701?date=20261101"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13704,7 +13935,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1p.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13715,7 +13947,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1p.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13726,7 +13959,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13737,7 +13971,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13748,7 +13983,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13759,7 +13995,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13770,7 +14007,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001u1p.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13781,7 +14019,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/001d1.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13792,7 +14031,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69801?date=20261121"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13803,7 +14043,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69831?date=20261101"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13814,7 +14055,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69721?date=20261120"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13825,7 +14067,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/69661?date=20261111"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13836,7 +14079,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/76211?date=20261105"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13847,7 +14091,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/86331?date=20261111"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13858,7 +14103,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/230701?date=20261121"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13869,7 +14115,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062501.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13880,7 +14127,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027161.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13891,7 +14139,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062671.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13902,7 +14151,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027131.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13913,7 +14163,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062701.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13924,7 +14175,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/027111.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13935,7 +14187,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/060/062721.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13946,7 +14199,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128491.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13957,7 +14211,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128721.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13968,7 +14223,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/314151?date=20261117"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13979,7 +14235,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/314481?date=20261114"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -13990,7 +14247,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128741.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14001,7 +14259,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128521.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14012,7 +14271,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128751.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14023,7 +14283,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128531.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14034,7 +14295,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128761.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14045,7 +14307,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128541.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14056,7 +14319,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128771.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14067,7 +14331,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128781.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14078,7 +14343,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128791.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14089,7 +14355,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128571.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14100,7 +14367,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128801.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14111,7 +14379,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128581.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14122,7 +14391,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128811.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14133,7 +14403,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128591.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14144,7 +14415,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/128821.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14155,7 +14427,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetable.jr-odekake.net/train-timetable/314251?date=20261107"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14166,7 +14439,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129361.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14177,7 +14451,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129391.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14188,7 +14463,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129571.html"
     },
     {
       "line_key": "TokaidoShinkansen",
@@ -14199,7 +14475,8 @@
       "vehicle_model": "N700系",
       "png_reference": "../images/列车/JR東海/JR東海_N700系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/125/129411.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14210,7 +14487,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/029831.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14221,7 +14499,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14232,7 +14511,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14243,7 +14523,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14254,7 +14535,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14265,7 +14547,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14276,7 +14559,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14287,7 +14571,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14298,7 +14583,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14309,7 +14595,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14320,7 +14607,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14331,7 +14619,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14342,7 +14631,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14353,7 +14643,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14364,7 +14655,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14375,7 +14667,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14386,7 +14679,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14397,7 +14691,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14408,7 +14703,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14419,7 +14715,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14430,7 +14727,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14441,7 +14739,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14452,7 +14751,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14463,7 +14763,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14474,7 +14775,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14485,7 +14787,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14496,7 +14799,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14507,7 +14811,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14518,7 +14823,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14529,7 +14835,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14540,7 +14847,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14551,7 +14859,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14562,7 +14871,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14573,7 +14883,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14584,7 +14895,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14595,7 +14907,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/020/022661.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14606,7 +14919,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14617,7 +14931,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14628,7 +14943,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14639,7 +14955,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249u1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14650,7 +14967,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14661,7 +14979,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/025/025641.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14672,7 +14991,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/train/045/048321.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14683,7 +15003,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14694,7 +15015,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     },
     {
       "line_key": "YamagataShinkansen",
@@ -14705,7 +15027,8 @@
       "vehicle_model": "E8系",
       "png_reference": "../images/列车/JR東日本/JR東日本_E8系.png",
       "requires_exact_roster": true,
-      "actual_vehicle_confirmed": false
+      "actual_vehicle_confirmed": false,
+      "source_url": "https://timetables.jreast.co.jp/2611/timetable-v/249d1.html"
     }
   ]
 }

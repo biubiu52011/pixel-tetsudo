@@ -14,6 +14,7 @@ on:
       - 'data/timetables/train-number-png-ranges.js'
       - 'data/audits/train-number-png-catalog-2611.json'
       - 'tools/build-train-number-png-catalog.cjs'
+      - 'tests/train-number-png-catalog.test.cjs'
       - 'data/timetables/vehicle-garage-png-map.js'
       - 'images/列车/**'
       - 'images/鉄道/**'
@@ -37,6 +38,8 @@ jobs:
         run: node tools/railway-metadata-audit.cjs --strict
       - name: Assert known repaired registry contracts
         run: node --test tests/railway-metadata-audit.test.cjs
+      - name: Test number-to-PNG catalog audit invariants
+        run: node --test tests/train-number-png-catalog.test.cjs
       - name: Verify normalized number-to-PNG catalog and mapping safety
         run: node tools/build-train-number-png-catalog.cjs --check --strict
       - name: Verify generated static bundles are synchronized
