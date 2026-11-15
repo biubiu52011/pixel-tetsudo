@@ -2030,8 +2030,8 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東京メトロ10000系",
     "iconName": "東京メトロ10000系",
     "asset": "../images/列车/東京メトロ/東京メトロ_10000系.png",
-    "lineIds": ["Yurakucho", "Fukutoshin"],
-    "lineAliases": { "Yurakucho": ["東京メトロ10000系"], "Fukutoshin": ["東京メトロ10000系"] },
+    "lineIds": ["Yurakucho", "Fukutoshin", "Yurakucho_Seibu", "Ikebukuro"],
+    "lineAliases": { "Yurakucho": ["東京メトロ10000系"], "Fukutoshin": ["東京メトロ10000系"], "Yurakucho_Seibu": ["東京メトロ10000系"], "Ikebukuro": ["東京メトロ10000系"] },
     "aliases": []
   },
   "metro-13000": {
@@ -2046,8 +2046,8 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東京メトロ17000系",
     "iconName": "東京メトロ17000系",
     "asset": "../images/列车/東京メトロ/東京メトロ_17000系.png",
-    "lineIds": ["Yurakucho", "Fukutoshin", "Tojo"],
-    "lineAliases": { "Yurakucho": ["東京メトロ17000系"], "Fukutoshin": ["東京メトロ17000系"], "Tojo": ["東京メトロ17000系"] },
+    "lineIds": ["Yurakucho", "Fukutoshin", "Tojo", "Yurakucho_Seibu", "Ikebukuro"],
+    "lineAliases": { "Yurakucho": ["東京メトロ17000系"], "Fukutoshin": ["東京メトロ17000系"], "Tojo": ["東京メトロ17000系"], "Yurakucho_Seibu": ["東京メトロ17000系"], "Ikebukuro": ["東京メトロ17000系"] },
     "aliases": []
   },
   "metro-18000": {
@@ -2157,7 +2157,7 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東急5050系",
     "iconName": "東急5050系",
     "asset": "../images/列车/東急電鉄/東急電鉄_5050系.png",
-    "lineIds": ["TokyuToyoko","Fukutoshin","Yurakucho","Tojo"],
+    "lineIds": ["TokyuToyoko","Fukutoshin","Yurakucho","Tojo","Yurakucho_Seibu","Ikebukuro"],
     "lineAliases": { "Tojo": ["東急5050系"] },
     "aliases": []
   },
@@ -2502,10 +2502,10 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "tokyu-1000-1500-plan": ["TokyuIkegami", "TokyuTamagawa"],
   "tokyu-1000-plan": ["TokyuIkegami", "TokyuTamagawa"],
   "tokyu-5000": ["TokyuToyoko", "TokyuDenEn"],
-  "tokyu-5050": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho"],
+  "tokyu-5050": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho", "Yurakucho_Seibu", "Ikebukuro"],
   "tokyu-3000-plan": ["TokyuMeguro", "TokyuShinYokohama", "Mita", "Namboku"],
   "tokyu-3020": ["TokyuMeguro", "TokyuShinYokohama"],
-  "yokohama-y500": ["TokyuToyoko", "MinatoMirai", "Fukutoshin"],
+  "yokohama-y500": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho_Seibu", "Ikebukuro"],
   "seibu-6000-fukutoshin": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin"],
   "seibu-40000": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho", "SeibuChichibu", "SeibuShinjuku"],
   "seibu-20000": ["Ikebukuro", "SeibuShinjuku"],

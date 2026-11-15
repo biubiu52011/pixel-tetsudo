@@ -664,6 +664,18 @@
   // when the upstream timetable explicitly supplies a different trainOwner.
   // Network presence or a suffix on the public train number alone is not proof.
   var throughRows = [
+    // Only a source-provided trainOwner admits cross-company rolling stock.
+    // Route-level candidates cannot identify an actual run, formation or PNG.
+    // Tobu 50070/9000/9050 is not eligible on the Seibu Yurakucho corridor.
+    {operator:'Seibu', lineIds:['Yurakucho_Seibu','Ikebukuro'], vehicleOwner:'TokyoMetro',
+      models:['東京メトロ10000系','東京メトロ17000系'],
+      sourceUrl:'https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html'},
+    {operator:'Seibu', lineIds:['Yurakucho_Seibu','Ikebukuro'], vehicleOwner:'Tokyu',
+      models:['東急5050系','東急5050系4000番台'],
+      sourceUrl:'https://www.tokyu.co.jp/railway/'},
+    {operator:'Seibu', lineIds:['Yurakucho_Seibu','Ikebukuro'], vehicleOwner:'MinatoMirai',
+      models:['横浜高速鉄道Y500系'],
+      sourceUrl:'https://www.jametro.or.jp/subway/japan/yokohama-kousoku/guide.html'},
     // Only when upstream supplies the explicit vehicle owner. A route name,
     // train suffix or fleet preset alone never confirms a train's physical stock.
     {operator:'JR-East', lineIds:['SaikyoKawagoe'], vehicleOwner:'TWR',
@@ -719,7 +731,7 @@
 
   // Only commuter/passenger stopping patterns. In particular do NOT assign a
   // commuter model to a LimitedExpress/liner/special or an unnamed service.
-  var ORDINARY = /^(?:Local|Rapid|SpecialRapid|CommuterRapid|SemiExpress|Express|RapidExpress|CommuterExpress|CommuterSemiExpress|ChuoSpecialRapid|OmeSpecialRapid|CommuterSpecialRapid|SectionRapid|SectionExpress|SectionSemiExpress)$/;
+  var ORDINARY = /^(?:Local|Rapid|SpecialRapid|CommuterRapid|SemiExpress|Express|RapidExpress|CommuterExpress|CommuterSemiExpress|F-Liner|ChuoSpecialRapid|OmeSpecialRapid|CommuterSpecialRapid|SectionRapid|SectionExpress|SectionSemiExpress)$/;
 
   // Optional future dated editions are admitted only on their documented
   // operating dates. Undated rows remain reference-only and do NOT certify
@@ -841,7 +853,7 @@
   }
 
   root.MajorVehicleFleetPresets = Object.freeze({
-    version: '2026-11-16-seibu-scope',
+    version: '2026-11-16-seibu-yurakucho-through-guard',
     asOf: '2026-11-16',
     // Validity dates are authored facts; never inferred from train numbers.
     isValidForDate: withinPublishedPeriod,
