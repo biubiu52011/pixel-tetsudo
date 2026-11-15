@@ -285,7 +285,10 @@
     Kawagoe: Object.freeze(["*"]),
     // 播但線: legacy SQL has 0 current-date-verified sources and no
     // inbound electric templates. A star requires date proof in every month.
-    Bantan: Object.freeze(["*"])
+    Bantan: Object.freeze(["*"]),
+    // 172 Utsunomiya historical SQL templates have no dated full-stop
+    // revision proof. Keep the SQL archive but do NOT project ghost trains.
+    TobuUtsunomiya: Object.freeze(["*"])
   });
 
   // ========== ODPT 站 ID 别名映射 ==========

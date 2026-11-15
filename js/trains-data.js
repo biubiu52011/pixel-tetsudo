@@ -2024,7 +2024,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       // A selected limited-express connection is a route relationship, not
       // a generic all-trains through-service claim. Keep its label to the
       // destination line name; the serviceScope remains in canonical data.
-      if (lineObj.throughScope !== "selected-limited-express") {
+      if (lineObj.throughScope !== "selected-limited-express" &&
+          lineObj.throughScope !== "selected-local-destination-only") {
         var thru = window.t ? window.t("train.throughService", "相互直通運転") : "相互直通運転";
         base = base + "（" + thru + "）";
       }
