@@ -2496,7 +2496,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     trainLayer._captionFrameTime = frameTime;
     // Train markers live in a static scaled layout group; screen-space
     // collision and folded badges must use that group's CTM.
-    var matrix = trainLayer.getScreenCTM();
+    var matrix = typeof trainLayer.getScreenCTM === 'function'
+      ? trainLayer.getScreenCTM() : svg.getScreenCTM();
     if (!matrix || !matrix.a || !matrix.d) return;
     var oldBadges = trainLayer.querySelectorAll('[data-train-fold-badge]');
     for (var f = 0; f < oldBadges.length; f++)
