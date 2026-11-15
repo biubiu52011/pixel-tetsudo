@@ -409,38 +409,31 @@ body[data-page="trains"] .rs-line-icon-fallback:has(> img[src*="JRグループ.p
   clip-path: path("M 11.667 0 H 16.333 C 21.389 0 24.111 1.167 26.444 3.889 C 27.611 6.222 28 8.556 28 11.667 V 16.333 C 28 21.389 26.833 24.111 24.111 26.444 C 21.778 27.611 19.444 28 16.333 28 H 11.667 C 6.611 28 3.889 26.833 1.556 24.111 C 0.389 21.778 0 19.444 0 16.333 V 11.667 C 0 6.611 1.167 3.889 3.889 1.556 C 6.222 0.389 8.556 0 11.667 0 Z");
 }
 
-/* Compact shared two-tier railway filter: region -> operator. */
+/* Compact shared two-tier railway filter: region -> operator.
+   Restore the older equal-width Grid layout without changing pixel buttons.
+   Both rows wrap vertically; neither row scrolls horizontally. */
 body[data-page="trains"] .rs-filter-bar.rs-region-filter,
 body[data-page="realtime"] .rs-filter-bar.rs-region-filter {
   display:flex; flex-direction:column; align-items:stretch; gap:8px;
   min-width:0; padding:0; margin:0 0 12px;
 }
 .rs-region-filter .rs-filter-level {
-  display:flex; flex-wrap:nowrap; width:100%; min-width:0; gap:8px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,112px),1fr));
+  align-items:stretch;
+  width:100%; min-width:0; gap:8px;
   box-sizing:border-box;
-  overflow-x:auto; overflow-y:hidden; padding:2px 4px 6px 2px;
-  -webkit-overflow-scrolling:touch;
+  overflow:visible;
+  padding:2px 4px 6px 2px;
 }
-/* Region navigation only: let large screens see every area without
-   horizontal scrolling. Operator choices stay one scrollable row. */
-@media (min-width:900px) {
-  .rs-region-filter .rs-region-level {
-    flex-wrap:wrap;
-    overflow:visible;
-  }
-}
-@media (max-width:899.98px) {
-  .rs-region-filter .rs-region-level {
-    scroll-snap-type:x proximity;
-    overscroll-behavior-inline:contain;
-  }
-  .rs-region-filter .rs-region-level > .rs-region-btn {
-    scroll-snap-align:start;
-  }
+.rs-region-filter .rs-company-level {
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));
 }
 .rs-region-filter .rs-region-btn,
 .rs-region-filter .rs-filter-btn {
-  flex:0 0 auto; min-height:44px; white-space:nowrap;
+  display:flex; align-items:center; justify-content:center;
+  width:100%; min-width:0; max-width:100%; min-height:44px;
+  white-space:normal; overflow-wrap:anywhere; text-align:center;
   padding:9px 13px; font-size:13px; font-family:inherit;
   border:2px solid var(--text); border-radius:4px; cursor:pointer;
   color:var(--text); background:var(--card);
@@ -455,8 +448,18 @@ body[data-page="realtime"] .rs-filter-bar.rs-region-filter {
 .rs-region-filter .rs-filter-btn:focus-visible {outline:3px solid var(--green);outline-offset:2px;}
 .rs-region-filter .rs-region-btn:active,
 .rs-region-filter .rs-filter-btn:active {transform:translate(2px,2px);box-shadow:none;}
-@media(max-width:640px) {
+@media (max-width:640px) {
+  /* Three compact region columns and two readable operator columns. */
+  .rs-region-filter .rs-region-level {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .rs-region-filter .rs-company-level {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .rs-region-filter .rs-region-level > .rs-region-btn[data-region=""] {
+    grid-column:1 / -1;
+  }
   .rs-region-filter .rs-filter-level {gap:6px;padding-bottom:5px;}
   .rs-region-filter .rs-region-btn,
-  .rs-region-filter .rs-filter-btn {padding:9px 11px;}
+  .rs-region-filter .rs-filter-btn {padding:9px 8px;}
 }
