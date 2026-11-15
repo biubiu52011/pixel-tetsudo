@@ -1201,9 +1201,11 @@ test('ChuoMain local M families stay source, month, model and train-number scope
   assert.equal(root.TrainNumberPngRanges.match('640M','Joban',base),null);
 });
 test('2026 Ome official plain train numbers map directly to E233-0 PNG',()=>{
-  const numbers=['509','843','1103','1705','2348'];
-  for(const trainNumber of numbers){
-    const p=live({trainNumber,positionLineId:'Ome',
+  const numbers=[['509','holiday','2026-11-03'],['843','holiday','2026-11-03'],
+    ['1103','holiday','2026-11-03'],['1705','holiday','2026-11-03'],
+    ['2348','weekday','2026-11-16']];
+  for(const [trainNumber,calendarType,serviceDate] of numbers){
+    const p=live({trainNumber,calendarType,serviceDate,positionLineId:'Ome',
       trainId:'odpt.Train:JR-East.Ome.'+trainNumber,
       sourceRailway:'odpt.Railway:JR-East.Ome',
       trainType:'odpt.TrainType:JR-East.Local'});
@@ -1219,6 +1221,11 @@ test('2026 Ome official plain train numbers map directly to E233-0 PNG',()=>{
     assert.equal(spec.iconSrc,mapped.pngPath);
     assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
   }
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+    trainNumber:'2348',serviceDate:'2026-11-15',calendarType:'holiday',
+    positionLineId:'Ome',sourceRailway:'odpt.Railway:JR-East.Ome',
+    trainType:'odpt.TrainType:JR-East.Local'})),null,
+    '2348 must not inherit the weekday Ome identity on holidays');
 });
 test('2026 Ome official T and H suffix numbers map directly to E233-0 PNG',()=>{
   for(const trainNumber of ['434T','405H','1378T','1906H','2386T']){
