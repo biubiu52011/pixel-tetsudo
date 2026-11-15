@@ -22,15 +22,8 @@
   };
 
 
-  // STATUS_META 定义在 data-state.js 中；使用 window.DataState.STATUS_META。
-  const STATUS_META = window.DataState ? window.DataState.STATUS_META : {
-    normal:    { icon: "\u25cb", color: "green"  },
-    notice:    { icon: "\uff01", color: "yellow" },
-    delayed:   { icon: "\u25b3", color: "orange" },
-    suspended: { icon: "\u00d7", color: "red"  },
-    no_data:   { icon: "\u25cc", color: "gray"   },
-    no_odpt:   { icon: "\u25cc", color: "gray"   },
-  };
+  // Status vocabulary belongs only to DataState (loaded first by the manifest).
+  const STATUS_META = window.DataState.STATUS_META;
 
   function _impactLabels() {
     var lang = window.currentLang || "ja";

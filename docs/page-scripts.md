@@ -9,6 +9,12 @@
 脚本 URL 使用文件内容 Git blob 哈希前 12 位作为 `?v=`，同一脚本在不同页面共享缓存，文件更新时自动刷新。不依赖服务器端动态打包，也没有额外运行时请求。性能改进属静态分析结果，尚未完成实际浏览器网络基准测试。
 
 
+## 分层模块的职责
+
+`trains-data.js` 仍负责线路数据选择、几何计算、站点布局与共线关系。直通列车的换乘标签组件已分离为 `js/through-chip.js`，保留 `window.ThroughChip` 入口；该组件在列车页常驻脚本中、`trains-data.js` 之后加载，提供尺寸测量与 SVG 绘制。没有改变站点/时刻表数据源。
+
+列车轨道内的方向车道、坐标和标签避让由 `js/train-track-layout.js` 单独提供，并在 `js/trains-render.js` 之前按线路惰性加载。渲染器只消费布局结果，负责实际 SVG DOM 生命周期。`realtime-view.js` 直接复用 `DataState.STATUS_META`，不再维护不一致的状态备份。
+
 ## 冷启动与列车详情按需加载
 
 `pages/trains.html` 一览页不再立即下载、解析车型 PNG 映射、车次号段与 SVG 地图渲染模块。清单 `lazy.trains` 里的资源由生成器写入惰性 `<template id="pt-trains-detail-assets">`，不会在首屏请求。打开 `trains.html#线路ID` 时，`js/trains-detail-loader.js` 分批并保序加载。初次打开详情显示加载态，加载失败显示错误，不以虚构的车次或车型替代；返回一览后，同一页面不重复加载。新文件仍受 `script-src 'self'` 限制。

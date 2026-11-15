@@ -61,6 +61,7 @@
       "js/data-fusion.js",
       "@railway-shell",
       "js/trains-data.js",
+      "js/through-chip.js",
       "js/trains-detail-loader.js",
       "js/trains-page.js"
     ],
@@ -146,6 +147,7 @@
       "data/timetables/vehicle-operation-evidence-data.js",
       "data/timetables/nambu-branch-official-202611.js",
       "js/train-position-estimator.js",
+      "js/train-track-layout.js",
       "js/trains-render.js"
     ]
   },

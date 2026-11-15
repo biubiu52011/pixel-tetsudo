@@ -48,6 +48,10 @@ test('train detail assets are inert and preserve dependency order', () => {
   assert.deepEqual(sources.map(x => x[1]), lazy, 'source order matches manifest');
   assert.ok(lazy.indexOf('data/timetables/train-number-png-ranges.js') < lazy.indexOf('js/train-vehicle.js'));
   assert.ok(lazy.indexOf('js/train-vehicle.js') < lazy.indexOf('js/trains-render.js'));
+  assert.ok(lazy.indexOf('js/train-track-layout.js') < lazy.indexOf('js/trains-render.js'),
+    'track layout must be defined before the renderer executes');
+  assert.ok(eager.indexOf('js/trains-data.js') < eager.indexOf('js/through-chip.js'),
+    'through-service layout must be mounted after its source data helpers');
   const source = fs.readFileSync(path.join(root, 'js/trains-detail-loader.js'), 'utf8');
   assert.match(source, /script\.async = false/, 'dynamic classic scripts must remain ordered');
   assert.match(source, /Math\.min\(from \+ 4, urls\.length\)/, 'limit in-flight detail assets');

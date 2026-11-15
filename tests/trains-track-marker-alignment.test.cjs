@@ -11,10 +11,11 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '../js/trains-render.js'), 'utf8')
   .replace(/\r\n/g, '\n');
-const start = source.indexOf('/*\n * TrainTrackLayout');
+const layoutSource = fs.readFileSync(path.join(__dirname, '../js/train-track-layout.js'), 'utf8').replace(/\r\n/g, '\n');
+const start = layoutSource.indexOf('/*\n * TrainTrackLayout');
 assert.ok(start >= 0, 'TrainTrackLayout module must be present');
 const window = {};
-vm.runInNewContext(source.slice(start), {window, console}, {filename: 'trains-render-layout.js'});
+vm.runInNewContext(layoutSource.slice(start), {window, console}, {filename: 'train-track-layout.js'});
 const layout = window.TrainTrackLayout;
 assert.ok(layout && typeof layout.resolveAll === 'function');
 
@@ -35,7 +36,7 @@ function place(p, geometry = {isLoop: false}, override = opts) {
 
 test('ordinary map preserves 11-unit up/down side lanes', () => {
   assert.match(source, /laneGap:\s*isLoop\s*\?\s*9\s*:\s*11/);
-  assert.match(source, /opts\.laneGap\s*==\s*null\s*\?\s*DEFAULTS\.laneGap\s*:\s*opts\.laneGap/);
+  assert.match(layoutSource, /opts\.laneGap\s*==\s*null\s*\?\s*DEFAULTS\.laneGap\s*:\s*opts\.laneGap/);
 });
 
 test('mobile left and dual station labels stay outside the train artwork lane', () => {
