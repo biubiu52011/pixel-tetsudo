@@ -389,7 +389,8 @@ test('1940K: ODPT train NUMBER range -> E233-7000 PNG on SaikyoKawagoe SVG',()=>
 });
 test('the same direct train-number range works for estimated SQL positions',()=>{
   const p=sql({trainNumber:'1940K',positionLineId:'SaikyoKawagoe',
-    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'});
+    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+    trainType:'odpt.TrainType:JR-East.Local'});
   assert.match(marker(p,'SaikyoKawagoe').iconSrc,/E233系_7000番台\.png$/);
 });
 test('K/F/S number tails select display PNG by scoped number ranges, without converting to operation IDs',()=>{
@@ -402,6 +403,7 @@ test('K/F/S number tails select display PNG by scoped number ranges, without con
   for(const [number,model] of cases){
     const p=live({trainNumber:number,positionLineId:'SaikyoKawagoe',
       sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+      trainType:'odpt.TrainType:JR-East.Local',
       ...(number==='1984K'?{realtimeVehicleType:model}:{})});
     const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(chosen,number+' must match the published number range');
@@ -3200,6 +3202,7 @@ test('mixed Tozai S and Rinkai 8x number tails select only evidence-qualified un
      ['東京メトロ07系','東京メトロ_07系.png']]],
    [{trainNumber:'1984K',positionLineId:'SaikyoKawagoe',
      sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+     trainType:'odpt.TrainType:JR-East.Local',
      serviceDate:'2026-11-04'},
     [['東京臨海高速鉄道70-000形','東京臨海高速鉄道_70-000形.png'],
      ['東京臨海高速鉄道71-000形','東京臨海高速鉄道_71-000形.png']]]
