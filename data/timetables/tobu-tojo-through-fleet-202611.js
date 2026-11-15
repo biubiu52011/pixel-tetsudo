@@ -10,12 +10,12 @@
   var METRO='https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html';
   var MF='https://loo-ool.com/rail/MF/32/';
   var assets=Object.freeze({
-    // The existing 8000 PNG depicts 81111F's special brown livery, NOT the
-    // ordinary blue/white 8000. No gallery-certified standard Ogose PNG yet.
-    ogose:Object.freeze({model:'東武8000系',png:null,
+    // Normal blue/white 8000 artwork supplied by the project owner. It is
+    // an illustrative SERIES reference, never proof of a dated carset.
+    ogose:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png',
       specialLiveryFormation:'81111F',
       specialLiveryPng:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
-    west:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型.png',sourceUrl:TOBU}),
+    west:Object.freeze({model:'東武8000系',png:'../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png',sourceUrl:TOBU}),
     tj:Object.freeze({model:'東武50090系',png:'../images/列车/東武鉄道/東武鉄道_50090型.png',sourceUrl:TOBU}),
     tobu:Object.freeze({model:'東武50070系',png:'../images/列车/東武鉄道/東武鉄道_50070型.png',sourceUrl:MF}),
     metro:Object.freeze({model:'東京メトロ17000系',png:'../images/列车/東京メトロ/東京メトロ_17000系.png',sourceUrl:METRO}),
@@ -106,6 +106,6 @@
     };
   }
   window.TobuTojoFixedPng202611=Object.freeze({
-    version:'2026-11-15-livery-gated', assets:assets, resolve:choose
+    version:'2026-11-15-standard-8000-reference', assets:assets, resolve:choose
   });
 })();

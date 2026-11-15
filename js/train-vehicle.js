@@ -1191,7 +1191,7 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-60": {"displayName":"相鉄11000系","iconName":"相鉄11000系","asset":null,"plannedAsset":"../images/列车/相模鉄道/相模鉄道_11000系_相鉄グループカラー.png","aliases":[]},
   // Loo-ool 的东武编成附加信息页确认这些系列属于东武本线网；
   // 这里仅补齐规范车型、线路作用域和已有 PNG，不把编成资料当成实时列车号映射。
-  "planned-stock-library-61": {"displayName":"東武8000系","iconName":"東武8000系","asset":"../images/列车/東武鉄道/東武鉄道_8000型.png","lineIds":["Ogose","TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"Ogose":["8000系"],"TobuIsesaki":["東武8000系","東武850系"],"TobuSkytree":["東武8000系","東武850系"],"TobuNikko":["東武8000系","東武850系"],"Tojo":["東武8000系","東武8000型"]},"aliases":["東武8000型","東武8000系","東武850型","東武850系"]},
+  "planned-stock-library-61": {"displayName":"東武8000系","iconName":"東武8000系","asset":"../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png","lineIds":["Ogose","TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"Ogose":["8000系"],"TobuIsesaki":["東武8000系","東武850系"],"TobuSkytree":["東武8000系","東武850系"],"TobuNikko":["東武8000系","東武850系"],"Tojo":["東武8000系","東武8000型"]},"aliases":["東武8000型","東武8000系","東武850型","東武850系"]},
   "planned-stock-library-62": {"displayName":"東武10000系","iconName":"東武10000系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_10000型_未更新車.png","lineIds":["TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"TobuIsesaki":["東武10000系","東武10000型"],"TobuSkytree":["東武10000系","東武10000型"],"TobuNikko":["東武10000系","東武10000型"],"Tojo":["東武10000系","東武10000型"]},"aliases":["東武10000型","東武10000系","10000系10050型","東武10000系10050型"]},
   "planned-stock-library-63": {"displayName":"東武10030系","iconName":"東武10030系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png","lineIds":["TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"TobuIsesaki":["東武10030系","東武10030型"],"TobuSkytree":["東武10030系","東武10030型"],"TobuNikko":["東武10030系","東武10030型"],"Tojo":["東武10030系","東武10030型"]},"aliases":["東武10030型","東武10030系"]},
   "planned-stock-library-66": {"displayName":"東武90000系","iconName":"東武90000系","asset":"../images/列车/東武鉄道/東武鉄道_90000系.png","lineIds":["Tojo"],"lineAliases":{"Tojo":["東武90000系","東武90000型"]},"aliases":["東武90000型","東武90000系"]},
@@ -5824,11 +5824,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       (p.vehicleResolvedUpstream === true ||
        (p.vehicleResolvedUpstream == null && p.vehicleResolution &&
         p.vehicleResolution.identityStatus === "EXACT")));
-    // Ogose trains use the 8000 series, but the only current gallery 8000 PNG
-    // represents the special brown 81111F livery. A GTFS service number
-    // proves neither formation nor paint. Do not paint EVERY Ogose train
-    // as 81111F, even when an inferred generic 8000 model is labelled EXACT.
-    // Only an independently verified physical 81111F formation may use it.
+    // GTFS numbers prove a service, not its particular paint or formation.
+    // Show the ordinary 8000 PNG only as a labelled series illustration.
+    // 81111F grape-brown remains reserved for independently proven 81111F.
     if (p && contextLineId === "Ogose") {
       var ogoseRoster = window.TobuTojoFixedPng202611;
       var ogoseAsset = ogoseRoster && ogoseRoster.assets && ogoseRoster.assets.ogose;
@@ -5852,9 +5850,14 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
           planned:false,illustrative:false,referenceOnly:false,
           actualVehicleConfirmed:true,illustrationModel:ogoseAsset.model,
           illustrationRole:"ogose-verified-81111f-special-livery"};
+      // Never pass generic EXACT or unresolved formation evidence into the
+      // illustrative normal-livery choice. Distinct special paints exist.
+      var ordinaryOgose = !identityConfirmed && !artworkFailed
+        ? lookupTojoFleetIllustration(p) : null;
+      if (ordinaryOgose) return ordinaryOgose;
       return {kind:"unresolved",iconSrc:"",referenceOnly:true,
         actualVehicleConfirmed:false,candidateModels:["東武8000系"],
-        reason:"ogose-8000-livery-unverified-no-standard-png"};
+        reason:"ogose-8000-formation-unresolved"};
     }
     // The canonical number index owns Tobu small-branch service-number
     // ranges. A/B/C and nD are rotating WORKINGS, never permanent stock

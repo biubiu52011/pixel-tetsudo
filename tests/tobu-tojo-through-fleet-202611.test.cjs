@@ -12,8 +12,9 @@ for(const file of ['data/timetables/vehicle-garage-png-map.js',asset,'js/train-v
   vm.runInContext(fs.readFileSync(file,'utf8'),sandbox,{filename:file,timeout:10000});
 const dir='../images/列车/';
 const png={
- ogose:dir+'東武鉄道/東武鉄道_8000型.png',
- west:dir+'東武鉄道/東武鉄道_8000型.png',
+ ogose:dir+'東武鉄道/東武鉄道_8000型_標準塗装.png',
+ brown:dir+'東武鉄道/東武鉄道_8000型.png',
+ west:dir+'東武鉄道/東武鉄道_8000型_標準塗装.png',
  tj:dir+'東武鉄道/東武鉄道_50090型.png',
  tobu:dir+'東武鉄道/東武鉄道_50070型.png',
  metro:dir+'東京メトロ/東京メトロ_17000系.png',
@@ -65,7 +66,7 @@ function ogosePosition(overrides={}){
   sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',
   calendarType:'holiday',...overrides});
 }
-test('Ogose GTFS numbers expose fleet metadata but never a default brown PNG',()=>{
+test('Ogose GTFS number roster grants a standard-blue-white reference, never the brown 81111F',()=>{
  const counts={weekday:0,holiday:0};
  const seen=new Set();
  for(const cal of ['weekday','holiday']){
@@ -75,9 +76,10 @@ test('Ogose GTFS numbers expose fleet metadata but never a default brown PNG',()
     trainNumber,calendarType:cal,serviceDate:cal==='weekday'?'2026-11-16':'2026-11-15'
    }));
    if(!hit)continue;
-   assert.equal(hit.illustrationPng,null,trainNumber);
+   assert.equal(hit.illustrationPng,png.ogose,trainNumber);
    assert.equal(hit.illustrationModel,'東武8000系',trainNumber);
-   assert.equal(hit.authorizesIllustration,false,trainNumber);
+   assert.equal(hit.authorizesIllustration,true,trainNumber);
+   assert.equal(hit.actualVehicleConfirmed,false,trainNumber);
    assert.equal(hit.actualVehicleConfirmed,false,trainNumber);
    counts[cal]++;
    seen.add(trainNumber);
@@ -113,14 +115,22 @@ test('Ogose GTFS numbers expose fleet metadata but never a default brown PNG',()
  })));
 });
 
-test('Ogose 81111F brown artwork needs independently verified physical formation',()=>{
+test('Ogose uses blue-white illustration by default, brown only with 81111F physical proof',()=>{
  const base=ogosePosition();
  const cfg=w.TobuTojoFixedPng202611.assets.ogose;
- assert.equal(cfg.png,null);
- assert.equal(cfg.specialLiveryPng,png.ogose);
+ assert.equal(cfg.png,png.ogose);
+ assert.equal(cfg.specialLiveryPng,png.brown);
  assert.equal(cfg.specialLiveryFormation,'81111F');
+ assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.ogose,'Ogose'),true);
+ assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.brown,'Ogose'),true);
+ const ordinary=w.TrainVehicle.selectMarkerArtwork(base,false);
+ assert.equal(ordinary.kind,'vehicle');
+ assert.equal(ordinary.iconSrc,png.ogose);
+ assert.equal(ordinary.referenceOnly,true);
+ assert.equal(ordinary.actualVehicleConfirmed,false);
+ assert.equal(ordinary.illustrative,true);
+ assert.notEqual(ordinary.iconSrc,png.brown);
  for(const override of [
-   {},
    {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,vehicleFormationId:'81111F'},
    {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,vehicleFormationId:'8183F',
     vehicleResolution:{lineId:'Ogose',sources:['official-realtime-car-number']}},
@@ -132,19 +142,29 @@ test('Ogose 81111F brown artwork needs independently verified physical formation
    const art=w.TrainVehicle.selectMarkerArtwork({...base,...override},false);
    assert.equal(art.kind,'unresolved',JSON.stringify(override));
    assert.equal(art.iconSrc,'',JSON.stringify(override));
-   assert.equal(art.reason,'ogose-8000-livery-unverified-no-standard-png');
+   assert.equal(art.reason,'ogose-8000-formation-unresolved');
  }
  const verified={...base,vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,
    vehicleFormationId:'81111F',
    vehicleResolution:{identityStatus:'EXACT',lineId:'Ogose',sources:['official-realtime-car-number']}};
- const art=w.TrainVehicle.selectMarkerArtwork(verified,false);
- assert.equal(art.kind,'vehicle');
- assert.equal(art.iconSrc,png.ogose);
- assert.equal(art.actualVehicleConfirmed,true);
- assert.equal(art.illustrationRole,'ogose-verified-81111f-special-livery');
+ const special=w.TrainVehicle.selectMarkerArtwork(verified,false);
+ assert.equal(special.kind,'vehicle');
+ assert.equal(special.iconSrc,png.brown);
+ assert.equal(special.actualVehicleConfirmed,true);
+ assert.equal(special.illustrationRole,'ogose-verified-81111f-special-livery');
  assert.equal(w.TrainVehicle.selectMarkerArtwork({...verified,trainNumber:'A9999'},false).kind,'unresolved');
  assert.equal(w.TrainVehicle.selectMarkerArtwork({...verified,sourceRailway:'odpt.Railway:Tobu.Tojo'},false).kind,'unresolved');
  assert.equal(w.TrainVehicle.selectMarkerArtwork(verified,true).kind,'unresolved');
+});
+test('Tojo west service uses standard 8000 PNG and never defaults to brown',()=>{
+ const west=pos({trainNumber:'Y1176',scheduledStopKeys:['Yorii','Ogawamachi','ShinrinKoen']});
+ const ref=w.TobuTojoFixedPng202611.resolve(west);
+ assert.equal(ref.illustrationPng,png.west);
+ assert.notEqual(ref.illustrationPng,png.brown);
+ const art=w.TrainVehicle.selectMarkerArtwork(west,false);
+ assert.equal(art.iconSrc,png.west);
+ assert.equal(art.referenceOnly,true);
+ assert.equal(art.actualVehicleConfirmed,false);
 });
 
 test('candidate rules and random PNG rotation are removed',()=>{
