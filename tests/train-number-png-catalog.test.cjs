@@ -37,7 +37,7 @@ test('all SQL overlaps fail closed on candidate band alone',()=>{
  }
 });
 test('front-end broad rules are visible, but cannot become carset confirmations',()=>{
- assert.equal(c.review.frontend_guard_only_rules.length,17);
+ assert.equal(c.review.frontend_guard_only_rules.length,13);
  assert.equal(c.review.frontend_official_month_rosters.length,2);
  assert.equal(c.review.frontend_singleton_candidates.length,1);
  assert.ok(c.review.sql_asset_label_differences.every(r=>
@@ -133,4 +133,42 @@ test('front-end PNG range metadata retains every source-specific guard and quali
  assert.deepEqual(tozai.runtime_guards.allowedModelLabels,['東京メトロ15000系']);
  const kashima=c.rules.find(r=>r.id==='js-0084');
  assert.deepEqual(kashima.runtime_guards.allowedModelLabels,['E235系1000番台']);
+});
+
+test('Chuo 2611 E353 PNG rules use published calendar rosters, not inclusive number bands',()=>{
+ const fs=require('node:fs'),vm=require('node:vm');
+ const root={};const context=vm.createContext({window:root,Date,console:{log(){},warn(){},error(){},debug(){}}});
+ for(const path of [
+  'data/timetables/jreast-chuo-main-2611-number-index.js',
+  'data/timetables/train-number-png-ranges.js'
+ ])vm.runInContext(fs.readFileSync(path,'utf8'),context,{filename:path});
+ const official=root.JREastChuoMainNumbers2611.columns;
+ const ranges=[[1,60],[2101,2199],[3101,3199],[5001,5099]];
+ const sort=arr=>[...new Set(arr)].sort((a,b)=>Number(a.slice(0,-1))-Number(b.slice(0,-1)));
+ for(let i=0;i<ranges.length;i++){
+  const [min,max]=ranges[i],row=c.rules.find(r=>r.id==='js-'+String(105+i).padStart(4,'0'));
+  assert.ok(row);
+  for(const [calendar,field] of [['weekday','weekday_numbers'],['holiday','holiday_numbers']]){
+   const expected=sort([...official[calendar].Inbound,...official[calendar].Outbound]
+    .filter(n=>/^\\d+M$/.test(n)&&Number(n.slice(0,-1))>=min&&Number(n.slice(0,-1))<=max));
+   assert.deepEqual(row[field],expected,row.id+'/'+calendar);
+  }
+  assert.equal(row.evidence_kind,'exact-list');
+  assert.equal(row.direction_number_parity,'inbound-even');
+  assert.equal(row.valid_from,'2026-11-01');
+  assert.equal(row.valid_to,'2026-11-30');
+ }
+ const base={trainType:'odpt.TrainType:JR-East.LimitedExpress',
+  serviceDate:'2026-11-12',calendarType:'weekday',
+  sourceRailway:'odpt.Railway:JR-East.ChuoMain',trainOperator:'JR-East'};
+ const match=(n,p={})=>root.TrainNumberPngRanges.match(n,'ChuoMain',{...base,...p});
+ assert.match(match('1M',{railDirection:'odpt.RailDirection:Outbound'}).pngPath,/E353系\\.png$/);
+ assert.equal(match('1M',{railDirection:'odpt.RailDirection:Inbound'}),null);
+ assert.equal(match('2M'),null,'unpublished number cannot inherit 1–60 band');
+ assert.equal(match('2101M'),null,'unpublished number cannot inherit 21xx band');
+ assert.equal(match('3101M'),null,'unpublished number cannot inherit 31xx band');
+ assert.equal(match('5001M'),null,'unpublished number cannot inherit 50xx band');
+ assert.equal(match('1M',{serviceDate:'2026-12-01'}),null,'edition must not bleed into December');
+ assert.equal(match('1M',{serviceDate:''}),null,'missing service date must not select artwork');
+ assert.equal(match('1M',{trainType:'odpt.TrainType:JR-East.Local'}),null,'local M service cannot select E353');
 });
