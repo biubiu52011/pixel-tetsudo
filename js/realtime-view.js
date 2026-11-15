@@ -437,11 +437,26 @@
   }
 
   var _renderedStatusSignatures = {};
+  var _renderedRegionKeys = "";
+  function mountedStatusIds(cards) {
+    var ids=Object.create(null);
+    Array.prototype.forEach.call(cards||[],function(card) {
+      if(!card.dataset)return;
+      if(card.dataset.line)ids[card.dataset.line]=true;
+      (card.dataset.lines||"").split(",").forEach(function(id){
+        if(id)ids[id]=true;
+      });
+    });
+    return Object.keys(ids);
+  }
   function recordRenderedStatusSignatures(regionLines) {
     var signatures={};
-    Object.keys(regionLines||{}).forEach(function(id){
-      signatures[id]=statusSignature(regionLines[id]);
+    var container=document.getElementById("realtimeStatusContainer");
+    var cards=container?container.querySelectorAll(".rs-line-card"):[];
+    mountedStatusIds(cards).forEach(function(id){
+      if(regionLines[id])signatures[id]=statusSignature(regionLines[id]);
     });
+    _renderedRegionKeys=Object.keys(regionLines||{}).join("\u001e");
     _renderedStatusSignatures=signatures;
   }
   function reconcileRealtimeList(container, linesObj) {
@@ -449,21 +464,27 @@
     var cards = container ? container.querySelectorAll(".rs-line-card") : [];
     if (!cards || cards.length === 0) {
       renderFiltered();
-      _renderedStatusSignatures = {};
       return;
     }
     var changed = [];
     var next = {};
-    // Update hidden operator groups too; they must be fresh when revealed.
+    // Track only mounted cards and their system members. The canonical
+    // snapshot also contains aliases/trunks that intentionally render no card.
     var regionLines = window.DataState.filterLinesByRegion(linesObj, _selectedRegion);
-    Object.keys(regionLines || {}).forEach(function(id) {
-      next[id] = statusSignature(regionLines[id]);
-      if (_renderedStatusSignatures[id] !== next[id]) changed.push(id);
+    var regionKeys=Object.keys(regionLines).join("\u001e");
+    mountedStatusIds(cards).forEach(function(id) {
+      if(!regionLines[id])return;
+      next[id]=statusSignature(regionLines[id]);
+      if(_renderedStatusSignatures[id]!==next[id])changed.push(id);
     });
     var oldIds = Object.keys(_renderedStatusSignatures);
-    var structureChanged = oldIds.length !== Object.keys(next).length || oldIds.some(function(id) { return !next.hasOwnProperty(id); });
-    if (structureChanged || !patchRealtimeCards(container, linesObj, changed)) renderFiltered();
-    _renderedStatusSignatures = next;
+    var structureChanged = regionKeys!==_renderedRegionKeys ||
+      oldIds.length !== Object.keys(next).length ||
+      oldIds.some(function(id) { return !Object.prototype.hasOwnProperty.call(next,id); });
+    if (structureChanged || !patchRealtimeCards(container, linesObj, changed))
+      renderFiltered();
+    else
+      _renderedStatusSignatures = next;
     var _perfMs = (((window.performance && performance.now) ? performance.now() : Date.now()) - _perfStart);
     if (_perfMs >= 50 && window.console && console.warn) {
       console.warn("[PixelPerf] realtimeReconcile", Math.round(_perfMs * 10) / 10 + "ms", { changed: changed.length, structureChanged: structureChanged });
