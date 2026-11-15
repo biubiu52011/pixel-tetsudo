@@ -25455,7 +25455,7 @@
         },
         {
           "station": "Ota",
-          "lineId": "Koizumi",
+          "lineId": "KoizumiBranch",
           "type": "in",
           "note": ""
         },
@@ -32246,7 +32246,7 @@
         },
         {
           "station": "Ota",
-          "lineId": "Koizumi",
+          "lineId": "KoizumiBranch",
           "type": "in",
           "note": ""
         }
@@ -32298,21 +32298,16 @@
         "Narushima",
         "Hon_Nakano",
         "Shinozuka",
+        "Higashi_Koizumi",
         "Koizumicho",
-        "Nishi_Koizumi",
-        "Ota",
-        "Ryumai",
-        "Higashi_Koizumi"
+        "Nishi_Koizumi"
       ],
       "durations": [
+        3,
+        5,
+        3,
         2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
+        1,
         2
       ],
       "throughServices": [],
@@ -32326,18 +32321,6 @@
         {
           "station": "Tatebayashi",
           "lineId": "Sano",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Ota",
-          "lineId": "TobuIsesaki",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Ota",
-          "lineId": "Kiryu",
           "type": "in",
           "note": ""
         }
@@ -32358,7 +32341,57 @@
         ],
         "operatorGroup": "TOBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "durationDerivation": {
+        "source": "Supabase historical manual_timetable_templates, Tobu.Koizumi, Weekday and SaturdayHoliday",
+        "method": "representative rounded adjacent-stop times, no current operating-date verification",
+        "verifiedCurrent": false
+      }
+    },
+    "KoizumiBranch": {
+      "name": "小泉線（太田－東小泉）",
+      "nameJa": "小泉線（太田－東小泉）",
+      "nameZh": "小泉线（太田－东小泉）",
+      "nameEn": "Koizumi Line (Ota–Higashi-Koizumi)",
+      "nameKo": "고이즈미선（오타~히가시코이즈미）",
+      "code": "TI",
+      "color": "#ff0000",
+      "operator": "Tobu",
+      "region": null,
+      "type": "branch",
+      "image": "../images/鉄道/東武鉄道/小泉線.png",
+      "durationTotalMin": null,
+      "branchOf": "Koizumi",
+      "stations": [
+        "Higashi_Koizumi",
+        "Ryumai",
+        "Ota"
+      ],
+      "durations": [
+        2,
+        2
+      ],
+      "throughServices": [],
+      "transferStations": [
+        {
+          "station": "Ota",
+          "lineId": "TobuIsesaki",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Ota",
+          "lineId": "Kiryu",
+          "type": "in",
+          "note": ""
+        }
+      ],
+      "serviceBoundaries": [],
+      "durationDerivation": {
+        "source": "legacy representative two-minute estimates",
+        "method": "not verified for current date, no inferred trains without a published plan",
+        "verifiedCurrent": false
+      }
     },
     "Kokubunji": {
       "name": "Kokubunji Line",
@@ -58582,7 +58615,7 @@
     ],
     "Ota": [
       "TobuIsesaki",
-      "Koizumi",
+      "KoizumiBranch",
       "Kiryu"
     ],
     "Hosoya": [
@@ -60973,7 +61006,8 @@
       "Koizumi"
     ],
     "Higashi_Koizumi": [
-      "Koizumi"
+      "Koizumi",
+      "KoizumiBranch"
     ],
     "Koizumicho": [
       "Koizumi"
@@ -60982,7 +61016,7 @@
       "Koizumi"
     ],
     "Ryumai": [
-      "Koizumi"
+      "KoizumiBranch"
     ],
     "Koigakubo": [
       "Kokubunji"
@@ -72829,11 +72863,14 @@
       "Narushima": 1,
       "Hon_Nakano": 2,
       "Shinozuka": 3,
-      "Koizumicho": 4,
-      "Nishi_Koizumi": 5,
-      "Ota": 6,
-      "Ryumai": 7,
-      "Higashi_Koizumi": 8
+      "Higashi_Koizumi": 4,
+      "Koizumicho": 5,
+      "Nishi_Koizumi": 6
+    },
+    "KoizumiBranch": {
+      "Higashi_Koizumi": 0,
+      "Ryumai": 1,
+      "Ota": 2
     },
     "Kokubunji": {
       "Kokubunji": 0,

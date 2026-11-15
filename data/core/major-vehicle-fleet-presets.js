@@ -331,8 +331,10 @@
       models:['東武10000型','東武10030型50番台'],
       sourceUrl:'https://www.tetsudo.com/column/1315/'},
     {id:'tobu-northern-branches', operator:'Tobu',
-      lineIds:['Kiryu','Koizumi','Sano'],
-      models:['東武8000系'],
+      lineIds:['Kiryu','Koizumi','KoizumiBranch','Sano'],
+      // Route-level candidates only during 8000-to-10000 replacement.
+      // No per-train vehicle series or formation is established here.
+      models:['東武10000型','東武10030型50番台','東武8000系'],
       sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
 
     // Tokyu Oimachi Line currently mixes older local stock with new
