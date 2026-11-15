@@ -85,3 +85,18 @@ test('Tojo skips irrelevant dated JR and number mapping assets without altering 
     assert.match(row,/data-line-exclude-scope="Tojo,Ogose"/);
   }
 });
+
+// Official reading: 川角（かわかど / Kawakado）, not かわかく.
+test('Ogose Kawakado translation retains its official reading across languages', () => {
+  assert.equal(d.lines.Ogose.stations[3], 'Kawa_kaku');
+  assert.deepEqual(names.Kawa_kaku, {
+    ja: '川角',
+    zh: '川角',
+    ko: '카와카도',
+    en: 'Kawakado'
+  });
+  const compact = JSON.parse(fs.readFileSync('data/core/station_i18n.compact.json', 'utf8'));
+  assert.deepEqual(compact.Kawa_kaku, names.Kawa_kaku);
+  const bundled = fs.readFileSync('data/core/station-i18n.file.js', 'utf8');
+  assert.ok(bundled.includes('"Kawa_kaku":{"ja":"川角","zh":"川角","ko":"카와카도","en":"Kawakado"}'));
+});
