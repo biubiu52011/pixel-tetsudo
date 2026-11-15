@@ -61,11 +61,12 @@ test('a regional choice actually filters line cards, keeping the operator order'
   assert.ok(Object.values(tobukanto).every(line=>line.operator==='Tobu'));
   assert.deepEqual(Array.from(state.getRegions()),['Hokkaido','Tohoku','Kanto',
     'KoshinHokuriku','Tokai','Kansai','Chugoku','Shikoku','Kyushu']);
-  assert.deepEqual(Array.from(window.LinePresentationService.getDisplayOrder(data.lines,
-    {includeServiceCorridors:true})).slice(
-      window.LinePresentationService.getDisplayOrder(data.lines,{includeServiceCorridors:true}).indexOf('JobanMain'),
-      window.LinePresentationService.getDisplayOrder(data.lines,{includeServiceCorridors:true}).indexOf('JobanMain')+3),
-    ['JobanMain','UenoTokyo','ChuoMain']);
+  const ordered = Array.from(window.LinePresentationService.getDisplayOrder(data.lines,
+    {includeServiceCorridors:true}));
+  const jsIndex = ordered.indexOf('ShonanShinjuku');
+  assert.ok(jsIndex >= 0, 'official JS/Shonan-Shinjuku card is included');
+  assert.deepEqual(ordered.slice(jsIndex,jsIndex+2),['ShonanShinjuku','UenoTokyo'],
+    'Ueno-Tokyo must be attached to the JS card, not JobanMain or ChuoMain');
 });
 
 test('filter renders at most two levels, and region switches reset company selection',()=>{
