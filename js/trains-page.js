@@ -26,6 +26,7 @@
   var _lastPositionsHash = '';
   var _lastDetailStateHash = '';
   var _renderedOverviewSignatures = Object.create(null);
+  var _renderedOverviewSnapshot = null;
   var _realtimeExpiryTimer = null;
   var currentSystemLineIds = null;
   var t = window.t || function(k) { return k; };
@@ -335,45 +336,22 @@
     };
   }
 
-  function overviewOperatorKey(operator) {
-    return operator || "*";
-  }
-
-  function overviewOperators(allLines) {
-    if (window.OperatorFilterBar &&
-        typeof window.OperatorFilterBar.operatorsFromLines === "function") {
-      return window.OperatorFilterBar.operatorsFromLines(allLines || {});
-    }
-    var found = Object.create(null);
-    Object.keys(allLines || {}).forEach(function(lineId) {
-      var line = allLines[lineId];
-      if (line && line.operator) found[line.operator] = true;
-    });
-    var ops = Object.keys(found);
-    return window.LinePresentationService && window.LinePresentationService.orderOperators
-      ? window.LinePresentationService.orderOperators(ops) : ops;
-  }
-
-  function overviewStructureSignature(allLines, operator) {
+  // The mounted overview contains every operator in the selected region.
+  // A single full-region signature is sufficient to check its structure;
+  // recomputing one entire network presentation per operator was redundant.
+  function overviewStructureSignature(allLines) {
     if (!window.DataState ||
         typeof window.DataState.lineListStructureSignature !== "function") return "";
-    allLines = allLines || {};
-    var selected = arguments.length > 1 ? operator : _selectedOperator;
-    var visibleLines = window.DataState.filterLinesByRegionAndOperator(allLines, _selectedRegion, selected);
-    // The filter buttons are visible even when a specific operator is selected.
-    // Include their structure, but leave another existing operator's hidden card
-    // changes out until the user switches to that operator.
-    return (_selectedRegion || "*") + "\u001b" + overviewOperators(allLines).join("\u001d") + "\u001c" +
-      window.DataState.lineListStructureSignature(
-        visibleLines, overviewRenderOptions(allLines));
+    allLines=allLines||{};
+    var scopedLines=window.DataState.filterLinesByRegion(allLines,_selectedRegion);
+    return (_selectedRegion||"*")+"\u001b"+
+      window.DataState.lineListStructureSignature(scopedLines,overviewRenderOptions(allLines));
   }
 
   function captureOverviewSignatures(allLines) {
-    _renderedOverviewSignatures = Object.create(null);
-    [null].concat(overviewOperators(allLines)).forEach(function(operator) {
-      _renderedOverviewSignatures[overviewOperatorKey(operator)] =
-        overviewStructureSignature(allLines, operator);
-    });
+    _renderedOverviewSignatures=Object.create(null);
+    _renderedOverviewSignatures["*"]=overviewStructureSignature(allLines);
+    _renderedOverviewSnapshot=allLines;
   }
 
   function init() {
@@ -613,7 +591,7 @@
             var nextOverviewSignature = overviewStructureSignature(lines);
             overviewStructureChanged = !!nextOverviewSignature &&
               nextOverviewSignature !==
-                _renderedOverviewSignatures[overviewOperatorKey(_selectedOperator)];
+                _renderedOverviewSignatures["*"];
           }
           // loading/error 状态同样包含 innerHTML，因此 DOM 长度不能判断
           // 是否已经挂载可用铁路内容。
@@ -703,9 +681,11 @@
     if (_filterBar && _filterBar.getSelected() !== _selectedOperator) _filterBar.setSelected(_selectedOperator, false);
     if (!listEl) return;
     var allLines = getLinesData() || {};
-    var nextSignature = overviewStructureSignature(allLines);
-    var renderedSignature =
-      _renderedOverviewSignatures[overviewOperatorKey(_selectedOperator)];
+    // The subscription already validated the mounted snapshot. Common filter
+    // clicks should not recompute its network presentation at all.
+    var nextSignature = _renderedOverviewSnapshot===allLines
+      ? _renderedOverviewSignatures["*"] : overviewStructureSignature(allLines);
+    var renderedSignature = _renderedOverviewSignatures["*"];
     if (oldRegion !== _selectedRegion) { renderFiltered(listEl, allLines); return; }
     if (listEl.querySelector(".rs-line-card") && nextSignature &&
         nextSignature !== renderedSignature) {
