@@ -148,7 +148,7 @@ assert.equal(toshimaPlan.planOverride, false);
 assert.equal(toshimaPlan.vehicleType, undefined,
   'route candidates cannot become a confirmed exact vehicle');
 assert.deepEqual(Array.from(toshimaPlan.vehicleCandidates),
-  ['西武2000系', '西武20000系', '西武30000系', '西武40000系50番台']);
+  ['西武20000系', '西武30000系', '西武40000系50番台']);
 assert.equal(fleetPlanVm._officialConventionalServicePlan({
   ...seibuToshimaTemplate, 'odpt:trainType': 'odpt.TrainType:Seibu.LimitedExpress'
 }, 'SeibuToshima', { operator: 'Seibu' }), null,
