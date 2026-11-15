@@ -67,7 +67,8 @@ test('aggregated display members have no separate rank; corridor insertion remai
   const order = ordered();
   immediatelyAfter(order, 'Yokosuka', 'SobuRapid');
   immediatelyAfter(order, 'ShonanShinjuku', 'UenoTokyo');
-  assert.ok(order.indexOf('UenoTokyo') > order.indexOf('Yamanote'));
+  assert.ok(order.indexOf('UenoTokyo') < order.indexOf('Yamanote'),
+    'JS-bound UenoTokyo precedes JY/Yamanote');
 });
 
 test('display prefixes use published station numbering, not internal route IDs', () => {

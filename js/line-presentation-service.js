@@ -295,7 +295,7 @@
    */
   // 服务走廊的展示特例：由 canonical presentation.afterLineId 指定绑定对象。
   // 上野东京线跟在 JS（湘南新宿线）之后，不再挪动无关的线路卡片。
-  var CORRIDORS_ATTACHED_TO_HOST = { UenoTokyo: true };
+  var CORRIDORS_ATTACHED_TO_HOST = { UenoTokyo: "ShonanShinjuku" };
 
   function getDisplayOrder(allLines, options) {
     allLines = allLines || {};
@@ -319,7 +319,7 @@
         if (out.indexOf(lid) !== -1) return;
         // 上野东京线固定绑定 JS（湘南新宿线）卡片；仅插入自己，不重排其他卡片。
         // 该明确特例优先于 JRグループ 通用图标的常规降级排序。
-        if (CORRIDORS_ATTACHED_TO_HOST[lid] && afterLineId) {
+        if (CORRIDORS_ATTACHED_TO_HOST[lid] === afterLineId) {
           var anchorIndex = out.indexOf(afterLineId);
           if (anchorIndex >= 0) {
             out.splice(anchorIndex + 1, 0, lid);
