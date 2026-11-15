@@ -22,13 +22,15 @@ test('eight JR-West 2611 verified Tambaji Rapid numbers correct only 16 historic
 test('2751MH and 2778MH are retained for audit but never projected as Saturday/Holiday service',()=>{
  assert.match(sql,/WHERE id IN\(68100,68311\)/);
  assert.match(sql,/SET operating_dates=ARRAY\[\]::date\[\]/);
- const a=edge.indexOf('// JR-West\'s published 2531M example is whitelisted');
- const b=edge.indexOf('// Kabe / 可部線',a);
+ const a=edge.indexOf('function filterDateScopedTemplates(');
+ const b=edge.indexOf('function selectRevision(',a);
  assert.ok(a>=0 && b>a);
  const filter=edge.slice(a,b);
- assert.match(filter,/const dated=Array\.isArray\(t\.operating_dates\)/);
- assert.match(filter,/t\.operating_dates\.some\(/);
- assert.match(filter,/String\(date\)\.slice\(0,10\)===serviceDate/);
+ assert.match(filter,/lineId === "Fukuchiyama"/);
+ assert.match(filter,/Array\.isArray\(row\.operating_dates\)/);
+ assert.match(filter,/row\.operating_dates\.some\(/);
+ assert.match(filter,/String\(date\)\.slice\(0, 10\) === serviceDate/);
+ assert.match(edge,/templates = filterDateScopedTemplates\(templates, lineId, serviceDate\)/);
  assert.doesNotMatch(filter,/const scopedExpress=/);
 });
 test('2779M and overnight 2783M on Nov 28 terminate at Shinmita, not the bus leg',()=>{
