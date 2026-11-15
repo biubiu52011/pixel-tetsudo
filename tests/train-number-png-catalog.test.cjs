@@ -37,8 +37,8 @@ test('all SQL overlaps fail closed on candidate band alone',()=>{
  }
 });
 test('front-end broad rules are visible, but cannot become carset confirmations',()=>{
- assert.equal(c.review.frontend_guard_only_rules.length,11);
- assert.equal(c.review.frontend_official_month_rosters.length,2);
+ assert.equal(c.review.frontend_guard_only_rules.length,9);
+ assert.equal(c.review.frontend_official_month_rosters.length,4);
  assert.equal(c.review.frontend_singleton_candidates.length,1);
  assert.ok(c.review.sql_asset_label_differences.every(r=>
   r.label_relation!=='unresolved_model_identity'&&r.safe_alias_authorized===false));
@@ -171,4 +171,21 @@ test('Chuo 2611 E353 PNG rules use published calendar rosters, not inclusive num
  assert.equal(match('1M',{serviceDate:'2026-12-01'}),null,'edition must not bleed into December');
  assert.equal(match('1M',{serviceDate:''}),null,'missing service date must not select artwork');
  assert.equal(match('1M',{trainType:'odpt.TrainType:JR-East.Local'}),null,'local M service cannot select E353');
+});
+
+test('Ome and Itsukaichi edition rosters are line-scoped; Itsukaichi has no T/H source family',()=>{
+ const full=c.rules.find(r=>r.id==='js-0079');
+ const bare=c.rules.find(r=>r.id==='js-0080');
+ assert.deepEqual(full.line_ids,['Ome']);
+ assert.deepEqual(bare.line_ids,['Ome','Itsukaichi']);
+ assert.equal(full.evidence_kind,'official-month-calendar-roster');
+ assert.equal(bare.evidence_kind,'official-month-calendar-roster');
+ assert.equal(full.official_month,'2026-11');
+ assert.equal(full.official_month_numbers.Ome.weekday.length,153);
+ assert.equal(full.official_month_numbers.Ome.holiday.length,134);
+ assert.equal(bare.official_month_numbers.Itsukaichi.weekday.length,102);
+ assert.equal(bare.official_month_numbers.Itsukaichi.holiday.length,89);
+ assert.ok(!bare.official_month_numbers.Ome.holiday.includes('2149'));
+ assert.ok(bare.official_month_numbers.Itsukaichi.holiday.includes('2149'));
+ assert.ok(full.actual_vehicle_confirmed===false&&bare.actual_vehicle_confirmed===false);
 });

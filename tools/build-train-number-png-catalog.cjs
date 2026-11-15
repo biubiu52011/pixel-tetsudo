@@ -229,7 +229,7 @@ function audit(c){
   errors.push('pending assets changed; independently revalidate artwork and update audit');
  if(c.review.frontend_guard_only_rules.length>17)
   errors.push('new frontend ranges without explicit number set or verifier');
- if(c.review.frontend_official_month_rosters.length!==2)
+ if(c.review.frontend_official_month_rosters.length!==4)
   errors.push('official-month exact rosters changed; reassess month-gated matcher');
  for(const r of c.rules.filter(x=>x.evidence_kind==='official-month-calendar-roster')){
   if(r.official_month!=='2026-11'||!r.official_month_numbers||

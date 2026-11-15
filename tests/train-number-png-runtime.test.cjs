@@ -1221,7 +1221,7 @@ test('2026 Ome official plain train numbers map directly to E233-0 PNG',()=>{
   }
 });
 test('2026 Ome official T and H suffix numbers map directly to E233-0 PNG',()=>{
-  for(const trainNumber of ['434T','405H','1378T','1926H','2386T']){
+  for(const trainNumber of ['434T','405H','1378T','1906H','2386T']){
     const p=live({trainNumber,positionLineId:'Ome',
       trainId:'odpt.Train:JR-East.Ome.'+trainNumber,
       sourceRailway:'odpt.Railway:JR-East.Ome',
@@ -1304,29 +1304,31 @@ test('Itsukaichi 2149 SQL planned-trip and other confirmed plain numbers share t
     assert.equal(marker(p,'Itsukaichi').iconSrc,mapped.pngPath);
   }
 });
-test('Itsukaichi keeps T/H commuter number range and excludes specials or unrelated railways',()=>{
-  for(const n of ['434T','813H','1926H']){
-    const p=live({
-      trainNumber:n,positionLineId:'Itsukaichi',
-      trainType:'odpt.TrainType:JR-East.Local'
-    });
-    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p).model,'E233系0番台');
+test('Itsukaichi 2611 month and railway scope exclude Ome-only T/H train numbers',()=>{
+  const base={serviceDate:'2026-11-03',calendarType:'holiday',
+    sourceRailway:'odpt.Railway:JR-East.Itsukaichi',trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.Local',
+    positionLineId:'Itsukaichi'};
+  for(const n of ['434T','813H','1906H','1926H']){
+    const p=live({...base,trainNumber:n});
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,
+      'Itsukaichi source has no evidenced T/H fleet: '+n);
   }
   for(const n of ['7741','9270M','9351M','399','2500','2600T','2149M']){
-    const p=live({
-      trainNumber:n,positionLineId:'Itsukaichi',
-      trainType:'odpt.TrainType:JR-East.Local'
-    });
-    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p),null,n);
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({...base,trainNumber:n})),null,n);
   }
   assert.equal(root.TrainNumberPngRanges.match('2149','ChuoRapid'),null);
   assert.equal(root.TrainNumberPngRanges.match('2149','SaikyoKawagoe'),null);
-  assert.equal(root.TrainNumberPngRanges.match('2149','Ome').model,'E233系0番台');
+  assert.equal(root.TrainNumberPngRanges.match('2149','Ome',{
+    ...base,sourceRailway:'odpt.Railway:JR-East.Ome'}),null);
   assert.equal(root.TrainNumberPngRanges.match('1932T','ChuoRapid').model,'E233系0番台');
   assert.equal(root.TrainNumberPngRanges.match('277M','SaikyoKawagoe'),null);
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
-    trainNumber:'2149',positionLineId:'Itsukaichi',
-    trainType:'odpt.TrainType:JR-East.LimitedExpress'})),null);
+    ...base,trainNumber:'2149',trainType:'odpt.TrainType:JR-East.LimitedExpress'})),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+    ...base,trainNumber:'2149',serviceDate:'2026-12-03'})),null);
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({
+    ...base,trainNumber:'2149',sourceRailway:'odpt.Railway:JR-East.Joban'})),null);
 });
 
 test('2026 Yokohama 2221K matches full JR train number -> E233-6000 SVG PNG',()=>{
@@ -3167,4 +3169,14 @@ test('Joban E657 official 2611 full numbers and dated Tokiwa exceptions resolve 
     assert.equal(resolve('1M',extra),null,JSON.stringify(extra));
   }
   assert.equal(ctx.vehicleIdentityStatus,'UNKNOWN');
+});
+
+test('Ome 2611 calendar-specific membership never widens the publication month',()=>{
+ for(const [number,date,calendar,exists] of [["843","2026-11-16","weekday",false],["843","2026-11-15","holiday",true],["1926H","2026-11-16","weekday",true],["1926H","2026-11-15","holiday",false]]){
+   const p=live({trainNumber:number,serviceDate:date,calendarType:calendar,
+     positionLineId:'Ome',sourceRailway:'odpt.Railway:JR-East.Ome',
+     trainOperator:'JR-East',trainType:'odpt.TrainType:JR-East.Local'});
+   const actual=root.TrainVehicle.lookupTrainNumberRangePng(p);
+   assert.equal(!!actual,exists,number+'/'+date);
+ }
 });

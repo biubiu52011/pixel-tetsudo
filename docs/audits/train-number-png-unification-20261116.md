@@ -81,3 +81,29 @@ node --test tests/train-number-png-runtime.test.cjs
 - 代表 E657 系 PNG **不能证明**当日实体编组、特定车组或纪念涂装。既有图库隔离和同线路／同来源约束均保留，不依赖候选图片池。
 
 来源：JR 东日本 2026-11 官方 `https://timetables.jreast.co.jp/2611/timetable-v/240u1p.html`、`240d1p.html`、`240u2p.html`、`240d2p.html`；原有 Supabase `manual_timetable_templates` 的常磐特急号段枚举用于交叉确认，不升级其未知来源月份的实际运行日可信度。
+
+
+## 第八次校对：青梅／五日市 2611 官方号码与分线路来源交集
+
+- JR 东日本 652 四张官网时刻表中，排除 9xxx 临时号、超范围号后，工作日合并 **379** 个普通 T/H／无后缀号码、土休日合并 **354** 个。这些是两线路的合并列，并非每个车次同时属于两线路。
+- 既有 SQL `manual_timetable_templates` 的 `Ome`／`Itsukaichi` 历史线路、日历番号来源只用作**分线交叉证据**；与官方 2611 列表取交集才可进入前端 PNG 名单。历史 SQL 不被提升为 2026-11 的实际运行日或实体编组证明。
+- `js-0079` 的 T/H 源证据仅属于 `Ome`：平日 **153**、土休日 **134**；从 `Itsukaichi` 移除这条宽号段继承关系。
+- `js-0080` 的无后缀号码按 `Ome`／`Itsukaichi` 分开保存官方月度名单，与源 URN、运营商、上下行奇偶配合准入。丢弃任意连续号段推断。
+- 索引为独立审计结果；不能表示车辆编组、绿车编成、区间实际停站或每天开行。特殊 9xxx 与跨月一律不由这些规则出图。
+- 前端规则总数 **110** 不变；待核验宽号段从 **11 减为 9**。
+
+官方网页：
+https://timetables.jreast.co.jp/2611/timetable-v/652u1.html
+https://timetables.jreast.co.jp/2611/timetable-v/652u2.html
+https://timetables.jreast.co.jp/2611/timetable-v/652d1.html
+https://timetables.jreast.co.jp/2611/timetable-v/652d2.html
+
+分线交集校验（旧 SQL 不在官方列上的列车番号保持未确认）：
+```text
+Itsukaichi.holiday: {"source":92,"retained":89,"unmatched":["6643","6849","6949"]}
+Itsukaichi.weekday: {"source":104,"retained":102,"unmatched":["6044","6342"]}
+Ome.holiday: {"source":298,"retained":291,"unmatched":["7047","7540","7640","7646","7741","7847","7941"]}
+Ome.weekday: {"source":332,"retained":331,"unmatched":["6044"]}
+corridor.weekday: {"official":379,"matched":379,"unresolved":[]}
+corridor.holiday: {"official":354,"matched":354,"unresolved":[]}
+```
