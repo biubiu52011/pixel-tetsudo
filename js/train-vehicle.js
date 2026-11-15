@@ -1197,7 +1197,7 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-66": {"displayName":"東武90000系","iconName":"東武90000系","asset":"../images/列车/東武鉄道/東武鉄道_90000系.png","lineIds":["Tojo"],"lineAliases":{"Tojo":["東武90000系","東武90000型"]},"aliases":["東武90000型","東武90000系"]},
   "planned-stock-library-64": {"displayName":"東武20400型","iconName":"東武20400型","asset":"../images/列车/東武鉄道/東武鉄道_20400型.png","lineIds":["TobuNikko","TobuUtsunomiya","Nikkoku"],"aliases":["東武20400系"]},
   "planned-stock-library-65": {"displayName":"京成AE形","iconName":"京成AE形","asset":"../images/列车/京成電鉄/京成電鉄_AE形.png","aliases":["京成AE形（スカイライナー）"]},
-  "remaining-fleet-extra-0": {"displayName":"西武2000系","iconName":"西武2000系","asset":"../images/列车/西武鉄道/西武鉄道_2000系_黄色塗装.png","lineIds":["Ikebukuro","SeibuShinjuku","SeibuToshima"],"lineAliases":{"SeibuToshima":["西武2000系（8両編成・池袋線直通）"]},"aliases":["西武新2000系（2000系）"]},
+  "remaining-fleet-extra-0": {"displayName":"西武2000系","iconName":"西武2000系","asset":"../images/列车/西武鉄道/西武鉄道_2000系_黄色塗装.png","lineIds":["SeibuShinjuku"],"lineAliases":{"SeibuToshima":["西武2000系（8両編成・池袋線直通）"]},"aliases":["西武新2000系（2000系）"]},
   "remaining-fleet-extra-1": {"displayName":"西武101系","iconName":"西武101系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_101系.png","aliases":["西武新101系（ワンマン専用塗装）","西武新101系（ワンマン）"]},
   "remaining-fleet-extra-2": {"displayName":"西武4000系","iconName":"西武4000系","asset":"../images/列车/西武鉄道/西武鉄道_4000系_赤白塗装.png","aliases":[]},
   "remaining-fleet-extra-3": {"displayName":"西武10000系","iconName":"西武10000系","asset":"../images/列车/西武鉄道/西武鉄道_10000系_ニューレッドアロー.png","aliases":["西武10000系（レッドアロー）","10000系（レッドアロー）"]},
@@ -2510,7 +2510,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "seibu-40000": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho", "SeibuChichibu", "SeibuShinjuku"],
   "seibu-20000": ["Ikebukuro", "SeibuShinjuku"],
   "seibu-30000": ["Ikebukuro", "SeibuShinjuku"],
-  "seibu-9000": ["Ikebukuro", "SeibuShinjuku"],
+  "seibu-9000": ["SeibuTamako"],
   "seibu-001": ["Ikebukuro", "SeibuChichibu"],
   "saitama-2000": ["SaitamaRapid", "Namboku"],
   "tobu-50000-10": ["Tojo"],
@@ -2601,7 +2601,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "odakyu-30000-EXEα": ["Odawara", "OdakyuEnoshima"],
   "odakyu-60000": ["Odawara", "OdakyuEnoshima", "Chiyoda"],
   "odakyu-70000": ["Odawara", "OdakyuEnoshima"],
-  "remaining-fleet-extra-0": ["SeibuShinjuku", "Ikebukuro", "SeibuToshima"],
+  "remaining-fleet-extra-0": ["SeibuShinjuku"],
   "remaining-fleet-extra-2": ["SeibuChichibu"],
   "remaining-fleet-extra-3": ["SeibuShinjuku"],
   "remaining-fleet-extra-4": ["SeibuYamaguchi"],
@@ -4512,9 +4512,9 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       },
       // 西武豊島線：刊行計画の路線車種候補のみ。編成・個別列車は未確定。
       // 2026 planned fleet scope contains four route-eligible commuter models;
-      // the historical 2000 series remains explicitly unverified for 2026 runs.
+      // the historical 2000 series is NOT eligible for current service.
       SeibuToshima: {
-        models: ['西武2000系','西武20000系','西武30000系','西武40000系50番台'],
+        models: ['西武20000系','西武30000系','西武40000系50番台'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       },
       SeibuTamagawa: {
@@ -4528,7 +4528,7 @@ function _officialConventionalServicePlan(tt, lineId, line) {
       // 4-car local services and documented event/through stock. Reference only,
       // not an exhaustive or train-specific assignment (8/10-car extras differ).
       Seibu_Sayama: {
-        models: ['西武101系','西武7000系','西武40000系'],
+        models: ['西武20000系','西武30000系','西武40000系50番台','西武7000系'],
         source: 'https://www.seiburailway.jp/railway/encyclopedia/'
       }
     }[lineId];

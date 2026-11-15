@@ -32706,5 +32706,23 @@
     "zh": "酒殿",
     "ko": "사카도",
     "en": "Sakado"
+  },
+  "Koma-Seibu": {
+    "ja": "高麗",
+    "zh": "高丽",
+    "ko": "코마",
+    "en": "Koma"
+  },
+  "Musashi-Yokote": {
+    "ja": "武蔵横手",
+    "zh": "武藏横手",
+    "ko": "무사시요코테",
+    "en": "Musashi-Yokote"
+  },
+  "Higashi-Agano": {
+    "ja": "東吾野",
+    "zh": "东吾野",
+    "ko": "히가시아가노",
+    "en": "Higashi-Agano"
   }
 }

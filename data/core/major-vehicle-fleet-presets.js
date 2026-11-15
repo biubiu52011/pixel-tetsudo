@@ -220,7 +220,7 @@
       sourceUrl:'https://www.sotetsu.co.jp/life/gallery/train/'},
 
     {id:'seibu-ikebukuro', operator:'Seibu', lineIds:['Ikebukuro'],
-      models:['西武2000系','西武6000系','西武20000系','西武30000系','西武40000系'],
+      models:['西武6000系','西武20000系','西武30000系','西武40000系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
     {id:'seibu-haijima', operator:'Seibu', lineIds:['Haijima'],
       models:['西武2000系','西武20000系','西武30000系','西武40000系'],
@@ -294,7 +294,7 @@
       models:['西武2000系','西武20000系','西武30000系','西武40000系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
     {id:'seibu-chichibu-local', operator:'Seibu', lineIds:['SeibuChichibu'],
-      models:['西武4000系','西武40000系'],
+      models:['西武4000系','西武40000系','西武7000系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
     {id:'seibu-tamako', operator:'Seibu', lineIds:['SeibuTamako'],
       models:['西武9000系'],
@@ -306,10 +306,10 @@
       models:['西武2000系','西武8000系（2025年導入）'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/8000/'},
     {id:'seibu-sayama', operator:'Seibu', lineIds:['Seibu_Sayama'],
-      models:['西武2000系','西武7000系（2026年導入）'],
+      models:['西武20000系','西武30000系','西武40000系50番台','西武7000系'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/7000/'},
     {id:'seibu-toshima', operator:'Seibu', lineIds:['SeibuToshima'],
-      models:['西武2000系','西武30000系'],
+      models:['西武20000系','西武30000系','西武40000系50番台'],
       sourceUrl:'https://www.seiburailway.jp/railway/encyclopedia/'},
     {id:'seibu-tamagawa', operator:'Seibu', lineIds:['SeibuTamagawa'],
       models:['西武101系'],
@@ -782,6 +782,26 @@
           scopedSourceUrl = 'https://express22.xsrv.jp/maintarminal/jr223-5500/';
         }
       }
+      // The 7000 series began Sayama service 2026-06-27 and
+      // Hanno–Seibu-Chichibu service 2026-09-12. These are candidate fleet
+      // references only, never proof of a vehicle for a train number.
+      if (row.id === 'seibu-sayama' && (!day || day < '2026-06-27')) {
+        models = models.filter(function(m){ return m !== '西武7000系'; });
+      }
+      if (row.id === 'seibu-chichibu-local' && (!day || day < '2026-09-12')) {
+        models = models.filter(function(m){ return m !== '西武7000系'; });
+      }
+      if (row.id === 'seibu-ikebukuro' && suffix === 'Local' && day >= '2026-09-12') {
+        var western = ['Hanno','Higashi-Hanno','Koma-Seibu',
+          'Musashi-Yokote','Higashi-Agano','Agano'];
+        var stationKeys = options && options.stationKeys;
+        if (Array.isArray(stationKeys) && new Set(stationKeys).size >= 2 &&
+            stationKeys.every(function(k){ return western.indexOf(k) >= 0; })) {
+          models = ['西武4000系','西武7000系'];
+          scopedPresetId = 'seibu-ikebukuro-western-local';
+          scopedSourceUrl = 'https://www.seiburailway.jp/railway/encyclopedia/7000/';
+        }
+      }
       if (!models || !models.length) return null;
       return {
         operator: row.operator,
@@ -818,8 +838,8 @@
   }
 
   root.MajorVehicleFleetPresets = Object.freeze({
-    version: '2026-11-03-kanto',
-    asOf: '2026-11-03',
+    version: '2026-11-16-seibu-scope',
+    asOf: '2026-11-16',
     // Validity dates are authored facts; never inferred from train numbers.
     isValidForDate: withinPublishedPeriod,
     lookup: lookup,

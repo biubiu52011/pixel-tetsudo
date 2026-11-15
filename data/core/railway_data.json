@@ -549,8 +549,8 @@
       "lng": 139.6639
     },
     "Hanno": {
-      "lat": 35.8528,
-      "lng": 139.4231
+      "lat": 35.85101,
+      "lng": 139.31906
     },
     "Sakado": {
       "lat": 35.9572,
@@ -16701,6 +16701,18 @@
     "Sakado-Fukuoka": {
       "lat": 33.602599,
       "lng": 130.486031
+    },
+    "Koma-Seibu": {
+      "lat": 35.8819,
+      "lng": 139.3043
+    },
+    "Musashi-Yokote": {
+      "lat": 35.8855,
+      "lng": 139.2808
+    },
+    "Higashi-Agano": {
+      "lat": 35.8925,
+      "lng": 139.2604
     }
   },
   "lines": {
@@ -26325,8 +26337,17 @@
         2,
         2
       ],
-      "throughServices": [],
-      "transferStations": [],
+      "throughServices": [
+        "Ikebukuro"
+      ],
+      "transferStations": [
+        {
+          "station": "Agano",
+          "lineId": "Ikebukuro",
+          "type": "in",
+          "note": ""
+        }
+      ],
       "nameZh": "秩父线",
       "nameKo": "치치부선",
       "presentation": {
@@ -26343,7 +26364,18 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "Ikebukuro",
+          "handoverStations": [
+            "Agano"
+          ],
+          "evidence": {
+            "source": "https://www.seiburailway.jp/railway/station/higashi-agano/",
+            "confidence": "HIGH"
+          }
+        }
+      ]
     },
     "SeibuTamako": {
       "name": "SeibuTamako",
@@ -30309,7 +30341,7 @@
       "region": "Saitama Area",
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武池袋線.png",
-      "durationTotalMin": 55,
+      "durationTotalMin": 77,
       "branchOf": null,
       "stations": [
         "Ikebukuro",
@@ -30337,7 +30369,12 @@
         "Irumashi",
         "Bushi",
         "Motokaji",
-        "Hanno"
+        "Hanno",
+        "Higashi-Hanno",
+        "Koma-Seibu",
+        "Musashi-Yokote",
+        "Higashi-Agano",
+        "Agano"
       ],
       "durations": [
         2,
@@ -30365,10 +30402,15 @@
         2,
         2,
         2,
-        2
+        2,
+        6,
+        4,
+        6,
+        4
       ],
       "throughServices": [
-        "Yurakucho_Seibu"
+        "Yurakucho_Seibu",
+        "SeibuChichibu"
       ],
       "transferStations": [
         {
@@ -30436,6 +30478,12 @@
           "lineId": "SeibuShinjuku",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Higashi-Hanno",
+          "lineId": "Hachiko",
+          "type": "out",
+          "note": "JR Hachiko Line: separate gates"
         }
       ],
       "nameZh": "池袋线",
@@ -30462,6 +30510,16 @@
           ],
           "evidence": {
             "source": "Seibu Yurakucho Line connects Kotake-mukaihara to Nerima and through trains continue onto Seibu Ikebukuro corridor",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "SeibuChichibu",
+          "handoverStations": [
+            "Agano"
+          ],
+          "evidence": {
+            "source": "https://www.seiburailway.jp/railway/station/higashi-agano/",
             "confidence": "HIGH"
           }
         }
@@ -39200,6 +39258,12 @@
           "lineId": "Shinetsu",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Higashi-Hanno",
+          "lineId": "Ikebukuro",
+          "type": "out",
+          "note": "Seibu Ikebukuro Line: separate gates"
         }
       ],
       "nameZh": "八高线",
@@ -54827,7 +54891,7 @@
     "高輪ゲートウェイ": "Takanawa-Gateway",
     "高輪台": "Takanawadai",
     "高野": "Koya",
-    "高麗": "Koma",
+    "高麗": "Koma-Seibu",
     "高麗川": "Komagawa",
     "鬼子母神前": "Kishibojimmae",
     "鬼怒川公園": "Kinugawa-Koen",
@@ -59076,7 +59140,8 @@
       "NaritaSkyAccess"
     ],
     "Agano": [
-      "SeibuChichibu"
+      "SeibuChichibu",
+      "Ikebukuro"
     ],
     "Nishi-Agano": [
       "SeibuChichibu"
@@ -63908,7 +63973,8 @@
       "Hachiko"
     ],
     "Higashi-Hanno": [
-      "Hachiko"
+      "Hachiko",
+      "Ikebukuro"
     ],
     "Moro": [
       "Hachiko"
@@ -71337,6 +71403,15 @@
     ],
     "Sakado-Fukuoka": [
       "KashiiLine"
+    ],
+    "Koma-Seibu": [
+      "Ikebukuro"
+    ],
+    "Musashi-Yokote": [
+      "Ikebukuro"
+    ],
+    "Higashi-Agano": [
+      "Ikebukuro"
     ]
   },
   "lineStationOrder": {
@@ -72736,7 +72811,12 @@
       "Irumashi": 22,
       "Bushi": 23,
       "Motokaji": 24,
-      "Hanno": 25
+      "Hanno": 25,
+      "Higashi-Hanno": 26,
+      "Koma-Seibu": 27,
+      "Musashi-Yokote": 28,
+      "Higashi-Agano": 29,
+      "Agano": 30
     },
     "Ishinomaki": {
       "Kogota": 0,
