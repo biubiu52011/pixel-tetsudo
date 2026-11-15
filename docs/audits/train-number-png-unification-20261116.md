@@ -15,7 +15,7 @@
 3. JR 东日本 E127 系 100 番台长野色；
 4. JR 东日本 HB-E300 系「リゾートビューふるさと」。
 
-它们均是 `asset_status=review`、`asset_scope=review`、`appearance_class=requires_review`，原始字节头与外观特征尚未核实，`file_format_status=null`。**数据库已登记不等于图片可用、车次已证实或实体车号已证实。** CI 明确要求该状态不能在缺乏独立审核时被意外升级。
+它们均是 `asset_status=review`、`asset_scope=review`、`appearance_class=requires_review`，文件格式已由 Actions 校验为有效 PNG，`file_format_status=native_png`；但车辆外观特征与实体身份仍未独立核实。**数据库已登记不等于图片可用、车次已证实或实体车号已证实。** CI 明确要求该状态不能在缺乏独立审核时被意外升级。
 
 ## 已澄清重叠
 
@@ -47,3 +47,10 @@ node --test tests/train-number-png-runtime.test.cjs
 - 原报告 20 条前端“仅宽范围”含 3 条误分类：`js-0059`（中央快速）及 `js-0101`（鹤见线三线）有正式的 2026-11 平日/休日完整名单；`js-0100` 为 1252M 单点且要求兼容车辆计划。故真正的纯宽范围候选为 **17** 条，不是 20。均仍属于代表图，不代表实体车。
 - 修复已存在的**跨月名单绕过漏洞**：`row.officialMonthNumbers` 现在要求运行日严格属于对应官方月份；日期为空或跨月时，不能退回整段号段取 PNG。CI 对中央快速与鹤见线执行当月成功、过期拒绝及无日期拒绝测试。
 - 14 条 SQL 车型名称差异按 “系列名 vs 番台/服务名”、“资产标签更加具体”、“形/系文字写法”、“多番台共用代表图” 分类。新目录的 `safe_alias_authorized=false` 明确禁止通过名称修饰自动创建精确车型别名；名称差异不代表实质车辆冲突已解决。
+
+## 第四次校对：前端与 SQL 车次 PNG 一致性
+
+- 两侧共有 **6 条**具有 SQL/JS 号段来源的线路：Fujikyu、Kashima、Kitakami、Kururi、Oga、RikutoEast。
+- 只对 **JS 明确列出的公开列车番号**执行相同线路、相同号码与后缀、SQL 区间内的 PNG 比较，当前 **180 对一致，0 对图片冲突**。这些记录在 `review.cross_source_number_png.verified_same_png` 中逐项可追溯；CI 对新增冲突直接失败。
+- Kashima 的 JS 规则没有同条目的明确公开列车号名单，当前 1 条记录保持 `unverified_js_rules`，不能由宽范围推出“两侧完全一致”的结论。
+- 此项核对只是静态来源间的 PNG 指向一致性；运营日、方向、列车种别及实体编组仍由既有各条线路的运行时核验约束，**不授予实际车辆身份**。

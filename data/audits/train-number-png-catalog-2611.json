@@ -15,6 +15,10 @@
     "total_line_keys": 76,
     "sql_lines": 24,
     "js_lines": 58,
+    "shared_sql_frontend_lines": 6,
+    "cross_source_same_png_number_matches": 180,
+    "cross_source_png_conflicts": 0,
+    "cross_source_untested_js_rules": 1,
     "unregistered_sql_png_rules": 0,
     "sql_assets_pending_review": 5,
     "frontend_guard_only_rules": 17,
@@ -16189,6 +16193,1468 @@
         "classification": "same_artwork_separate_source_evidence",
         "may_select_by_band_alone": false
       }
-    ]
+    ],
+    "cross_source_number_png": {
+      "shared_lines": [
+        "Fujikyu",
+        "Kashima",
+        "Kitakami",
+        "Kururi",
+        "Oga",
+        "RikutoEast"
+      ],
+      "verified_same_png": [
+        {
+          "line": "Fujikyu",
+          "train_number": "1",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "2",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "3",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "4",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "5",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "6",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "7",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "8",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "9",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "10",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "11",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "12",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "13",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "14",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "15",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "16",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "17",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "18",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "19",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "20",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "21",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "22",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "23",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "24",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "25",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "26",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "27",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "28",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "29",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "30",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "31",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "32",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "33",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "34",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "35",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "36",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "37",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "38",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "39",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "40",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "41",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "42",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "43",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "44",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "45",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "46",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "47",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "48",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "49",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "50",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "51",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "52",
+          "sql_rule": "sql-0054",
+          "js_rule": "js-0002",
+          "png": "images/列车/富士急行/富士急行_6000系_標準色.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "701",
+          "sql_rule": "sql-0055",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "702",
+          "sql_rule": "sql-0055",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "703",
+          "sql_rule": "sql-0055",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "704",
+          "sql_rule": "sql-0055",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "705",
+          "sql_rule": "sql-0055",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "793",
+          "sql_rule": "sql-0056",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "794",
+          "sql_rule": "sql-0056",
+          "js_rule": "js-0003",
+          "png": "images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "1455M",
+          "sql_rule": "sql-0057",
+          "js_rule": "js-0004",
+          "png": "images/列车/JR東日本/JR東日本_E233系_0番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Fujikyu",
+          "train_number": "1456M",
+          "sql_rule": "sql-0057",
+          "js_rule": "js-0004",
+          "png": "images/列车/JR東日本/JR東日本_E233系_0番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kitakami",
+          "train_number": "722D",
+          "sql_rule": "sql-0089",
+          "js_rule": "js-0009",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kitakami",
+          "train_number": "724D",
+          "sql_rule": "sql-0089",
+          "js_rule": "js-0009",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kitakami",
+          "train_number": "736D",
+          "sql_rule": "sql-0089",
+          "js_rule": "js-0009",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kitakami",
+          "train_number": "725D",
+          "sql_rule": "sql-0089",
+          "js_rule": "js-0009",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kitakami",
+          "train_number": "735D",
+          "sql_rule": "sql-0089",
+          "js_rule": "js-0009",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "920D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "922D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "924D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "926D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "928D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "930D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "932D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "934D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "936D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "938D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "940D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "942D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "944D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "946D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "948D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "950D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "952D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "921D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "923D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "925D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "927D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "929D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "931D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "933D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "935D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "937D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "939D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "941D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "943D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "945D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "947D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "949D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "951D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Kururi",
+          "train_number": "953D",
+          "sql_rule": "sql-0095",
+          "js_rule": "js-0016",
+          "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1120M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1122M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1124M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1126M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1128M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1130M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1132M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1134M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1136M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1138M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1140M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1142M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1144M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1146M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1148M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1123M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1125M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1127M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1129M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1131M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1133M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1135M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1137M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1139M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1141M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1143M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1145M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1147M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "Oga",
+          "train_number": "1149M",
+          "sql_rule": "sql-0142",
+          "js_rule": "js-0021",
+          "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5720D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1720D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5722D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1722D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1724D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5724D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5726D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1726D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1728D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "4730D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1732D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "4734D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5728D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1736D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5730D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1738D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5732D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1740D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5734D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1742D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1744D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1746D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5721D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1721D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5723D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1723D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "2725D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5725D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "4725D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1727D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "4729D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1731D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "4733D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5727D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1735D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5729D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1737D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5731D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1739D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5733D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1741D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1743D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1745D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "1747D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "5735D",
+          "sql_rule": "sql-0149",
+          "js_rule": "js-0014",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "9721D",
+          "sql_rule": "sql-0150",
+          "js_rule": "js-0015",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "9722D",
+          "sql_rule": "sql-0150",
+          "js_rule": "js-0015",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "9723D",
+          "sql_rule": "sql-0150",
+          "js_rule": "js-0015",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "9724D",
+          "sql_rule": "sql-0150",
+          "js_rule": "js-0015",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "9725D",
+          "sql_rule": "sql-0150",
+          "js_rule": "js-0015",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
+          "same_model_label": true
+        },
+        {
+          "line": "RikutoEast",
+          "train_number": "9726D",
+          "sql_rule": "sql-0150",
+          "js_rule": "js-0015",
+          "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
+          "same_model_label": true
+        }
+      ],
+      "png_conflicts": [],
+      "unverified_js_rules": [
+        {
+          "line": "Kashima",
+          "js_rule": "js-0084",
+          "reason": "no_explicit_number_list",
+          "note": "do not infer shared PNG compatibility from broad bands"
+        }
+      ],
+      "meaning": "comparison of declared number/PNG references only, not operating-date or actual-carset proof"
+    }
   }
 }

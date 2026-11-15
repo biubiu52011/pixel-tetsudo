@@ -16,6 +16,50 @@ function getRows(){
   context,{filename:JS,timeout:15000});
  return JSON.parse(JSON.stringify(context.window.__auditRows));
 }
+
+/**
+ * Compare only explicit, published JS train numbers against SQL intervals on
+ * shared lines.  A range alone NEVER adds a train or permits a model choice.
+ * The union of weekday/holiday lists is for audit comparison, NOT proof that
+ * an individual number operates on both calendars.
+ */
+function crossSourceNumberAudit(sql,js){
+ const sqlLines=new Set(sql.flatMap(r=>r.line_ids));
+ const sharedLines=[...sqlLines].filter(line=>
+   js.some(r=>r.line_ids.includes(line))).sort((a,b)=>a.localeCompare(b,'en'));
+ const checked=[],conflicts=[],untested=[];
+ for(const line of sharedLines){
+  const sqlRules=sql.filter(r=>r.line_ids.includes(line));
+  for(const j of js.filter(r=>r.line_ids.includes(line))){
+   const names=[...new Set([...(j.published_numbers||[]),
+     ...(j.weekday_numbers||[]),...(j.holiday_numbers||[])])];
+   if(!names.length){
+    untested.push({line,js_rule:j.id,reason:'no_explicit_number_list',
+      note:'do not infer shared PNG compatibility from broad bands'});
+    continue;
+   }
+   for(const number of names){
+    // The literal source number, not an operation code or a suffix-less
+    // transformation, is the only comparable cross-database identity.
+    const m=/^(\d+)([A-Z]*)$/.exec(String(number));
+    if(!m)continue;
+    const value=Number(m[1]),suffix=m[2];
+    for(const s of sqlRules){
+     if(s.suffix!==suffix||value<s.min||value>s.max)continue;
+     const common={line,train_number:number,sql_rule:s.id,js_rule:j.id};
+     if(s.png===j.png)
+      checked.push({...common,png:s.png,same_model_label:s.model===j.model});
+     else conflicts.push({...common,sql_png:s.png,js_png:j.png,
+       sql_model:s.model,js_model:j.model});
+    }
+   }
+  }
+ }
+ return {shared_lines:sharedLines,verified_same_png:checked,
+  png_conflicts:conflicts,unverified_js_rules:untested,
+  meaning:'comparison of declared number/PNG references only, not operating-date or actual-carset proof'};
+}
+
 function buildCatalog(snapshot, rows) {
  const norm = p => String(p||'').replace(/^(\.\.\/|\.\/|\/)+/,'');
  const sql=(snapshot.published_train_png_number_ranges||[]).map((r,i)=>({
@@ -101,6 +145,7 @@ function buildCatalog(snapshot, rows) {
  const frontendSingleton=js.filter(r=>r.evidence_kind==='singleton-compatible-plan')
    .map(r=>({rule:r.id,line_ids:r.line_ids,number:r.min,suffix:r.suffix,
     requires_compatible_plan:r.requires_compatible_plan}));
+ const crossSource=crossSourceNumberAudit(sql,js);
  return {schema_version:1,edition:'2611',snapshot_date:snapshot.snapshot_date,
   role:'derived read-only catalog; never exact physical formation evidence',
   sources:['data/timetables/train-number-png-ranges.js','data/audits/supabase-railway-audit-snapshot-20261116.json',
@@ -109,6 +154,10 @@ function buildCatalog(snapshot, rows) {
    total_line_keys:Object.keys(sortedIndex).length,
    sql_lines:new Set(sql.map(r=>r.line_ids[0])).size,
    js_lines:new Set(js.flatMap(r=>r.line_ids)).size,
+   shared_sql_frontend_lines:crossSource.shared_lines.length,
+   cross_source_same_png_number_matches:crossSource.verified_same_png.length,
+   cross_source_png_conflicts:crossSource.png_conflicts.length,
+   cross_source_untested_js_rules:crossSource.unverified_js_rules.length,
    unregistered_sql_png_rules:missing.length,sql_assets_pending_review:pending.length,
    frontend_guard_only_rules:frontendGuardReview.length,
    frontend_official_month_rosters:frontendMonthRoster.length,
@@ -121,7 +170,8 @@ function buildCatalog(snapshot, rows) {
    frontend_guard_only_rules:frontendGuardReview,
    frontend_official_month_rosters:frontendMonthRoster,
    frontend_singleton_candidates:frontendSingleton,
-   sql_asset_label_differences:labels,sql_range_overlaps:overlaps}};
+   sql_asset_label_differences:labels,sql_range_overlaps:overlaps,
+   cross_source_number_png:crossSource}};
 }
 function audit(c){
  const errors=[];
@@ -141,7 +191,11 @@ function audit(c){
   if(r.origin==='sql_snapshot'&&!r.source_url)
    errors.push(r.id+': SQL rule missing provenance source');
  }
- // Newly inventoried art is REVIEW ONLY; presence never validates file bytes, face or carset.
+ if(c.review.cross_source_number_png.png_conflicts.length)
+  errors.push('SQL/frontend published train-number PNG artwork conflict');
+ if(c.review.cross_source_number_png.verified_same_png.length<180)
+  errors.push('previously reconciled exact-number artwork mappings regressed');
+ // Newly inventoried art is REVIEW ONLY; native PNG does not prove face or carset.
  if(c.review.missing_sql_asset_registration.length)
   errors.push('SQL range references unregistered PNG assets');
  const expectedReview=new Map([
@@ -203,4 +257,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,audit,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,audit,run};

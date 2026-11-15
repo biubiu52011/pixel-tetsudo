@@ -93,3 +93,25 @@ test('November 2026 exact calendar rosters do not silently fall back to broad nu
     s.id+': missing month must NOT inherit inclusive range');
  }
 });
+
+test('SQL and frontend exact train-number PNG references have no contradictory paths',()=>{
+ const r=c.review.cross_source_number_png;
+ assert.equal(c.summary.shared_sql_frontend_lines,6);
+ assert.equal(c.summary.cross_source_same_png_number_matches,180);
+ assert.equal(c.summary.cross_source_png_conflicts,0);
+ assert.equal(c.summary.cross_source_untested_js_rules,1);
+ assert.equal(r.verified_same_png.length,180);
+ assert.equal(r.png_conflicts.length,0);
+ assert.equal(r.unverified_js_rules.length,1);
+ assert.ok(r.verified_same_png.every(x=>
+   c.line_index[x.line].sql.includes(x.sql_rule)&&
+   c.line_index[x.line].js.includes(x.js_rule)));
+ const changed=JSON.parse(JSON.stringify(snapshot));
+ const wrong=changed.published_train_png_number_ranges.find(x=>
+   x.line_key==='Fujikyu'&&x.segment_key==='fujikyu_local_6000');
+ assert.ok(wrong);
+ wrong.png_reference='../images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png';
+ const bad=buildCatalog(changed,getRows());
+ assert.ok(bad.review.cross_source_number_png.png_conflicts.length>0);
+ assert.ok(audit(bad).some(e=>/SQL\/frontend published train-number PNG artwork conflict/.test(e)));
+});
