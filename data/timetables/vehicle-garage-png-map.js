@@ -64,6 +64,14 @@
       "東武10030型50番台（桐生線代表）",
       "東武鉄道/東武鉄道_10030型_50番台_更新車.png","Kiryu",0]
   );
+  // Kiryu Ryomo 2026-03-14 official train number -> planned 200/500 series.
+  // These gallery rows authorize representative art, not special liveries or sets.
+  table.push(
+    ["tobu-kiryu-ryomo-200-official-number-reference","東武200型",
+      "東武鉄道/東武鉄道_200型_りょうもう_赤.png","Kiryu",0],
+    ["tobu-kiryu-ryomo-500-official-number-reference","東武500系",
+      "東武鉄道/東武鉄道_500系_リバティ.png","Kiryu",0]
+  );
   // Approved as representative planned images on TokaidoCentral only.
   // Never evidence of a real formation or a train-number-to-stock assignment.
   table.push(
