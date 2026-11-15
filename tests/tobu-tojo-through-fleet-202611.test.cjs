@@ -41,7 +41,7 @@ const scenarios=[
  ['K working',pos({trainNumber:'C3152K'}),png.tokyu,'東急5050系'],
  ['F-prefix K',pos({trainNumber:'F3162K'}),png.tokyu,'東急5050系'],
  ['Ogose',pos({positionLineId:'Ogose',displayLineId:'Ogose',
- sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',
+ sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',calendarType:'holiday',
  scheduledStopKeys:['Sakado','Kawakado','Ogose']}),png.ogose ,'東武8000系']
 ];
 test('all working/service groups resolve exactly one approved PNG',()=>{
@@ -62,6 +62,56 @@ test('all working/service groups resolve exactly one approved PNG',()=>{
   assert.equal(art.representativeOnly,true,name);
   assert.equal(art.actualVehicleConfirmed,false,name);
  }
+});
+function ogosePosition(overrides={}){
+ return pos({positionLineId:'Ogose',displayLineId:'Ogose',
+  sourceRailway:'odpt.Railway:Tobu.Ogose',trainNumber:'A1080',
+  calendarType:'holiday',...overrides});
+}
+test('Ogose 8000 PNG is constrained to exact GTFS numbers and service calendars',()=>{
+ const counts={weekday:0,holiday:0};
+ const seen=new Set();
+ for(const cal of ['weekday','holiday']){
+  for(let n=0;n<=5400;n++){
+   const trainNumber='A'+n;
+   const hit=w.TobuTojoFixedPng202611.resolve(ogosePosition({
+    trainNumber,calendarType:cal,serviceDate:cal==='weekday'?'2026-11-16':'2026-11-15'
+   }));
+   if(!hit)continue;
+   assert.equal(hit.illustrationPng,png.ogose,trainNumber);
+   assert.equal(hit.actualVehicleConfirmed,false,trainNumber);
+   counts[cal]++;
+   seen.add(trainNumber);
+  }
+ }
+ assert.deepEqual(counts,{weekday:146,holiday:144});
+ assert.equal(seen.size,150);
+ for(const number of ['A685','A1782','A2387','A3780','A3980']){
+  assert.ok(w.TobuTojoFixedPng202611.resolve(ogosePosition({
+   trainNumber:number,calendarType:'weekday',serviceDate:'2026-11-16'
+  })),number+' weekday');
+  assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition({trainNumber:number})),null,number+' holiday');
+ }
+ for(const number of ['A880','A3687','A5180','A5385']){
+  assert.ok(w.TobuTojoFixedPng202611.resolve(ogosePosition({trainNumber:number})),number+' holiday');
+  assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition({
+   trainNumber:number,calendarType:'weekday',serviceDate:'2026-11-16'
+  })),null,number+' weekday');
+ }
+ for(const number of ['A9999','A1088','A2382','A580']){
+  assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition({trainNumber:number})),null,number+' absent');
+ }
+ for(const bad of [
+  {calendarType:''},{calendarType:'unknown'},
+  {trainType:'odpt.TrainType:Tobu.Express'},
+  {sourceTripId:'Tobu.Ogose.A1080.Weekday'},
+  {sourceTripId:'Tobu.Tojo.A1080.SaturdayHoliday'},
+  {sourcePath:'gtfs-stage:TokyoGTFS:unrelated:Ogose'}
+ ])assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition(bad)),null,JSON.stringify(bad));
+ assert.ok(w.TobuTojoFixedPng202611.resolve(ogosePosition({
+  sourceTripId:'Tobu.Ogose.A1080.SaturdayHoliday',
+  sourcePath:'gtfs-stage:TokyoGTFS:bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f:Ogose'
+ })));
 });
 test('candidate rules and random PNG rotation are removed',()=>{
  assert.equal(source.includes('vehicleCandidates'),false);
