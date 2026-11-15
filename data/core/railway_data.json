@@ -553,8 +553,8 @@
       "lng": 139.4231
     },
     "Sakado": {
-      "lat": 35.9231,
-      "lng": 139.4069
+      "lat": 35.9572,
+      "lng": 139.39402
     },
     "Iruma": {
       "lat": 35.9444,
@@ -33572,7 +33572,7 @@
       "nameEn": "Ogose Line",
       "nameJa": "東武越生線",
       "code": "TOG",
-      "color": "#4169E1",
+      "color": "#F9AB41",
       "operator": "Tobu",
       "region": null,
       "type": "straight",
@@ -33601,6 +33601,12 @@
       "throughServices": [],
       "transferStations": [
         {
+          "station": "Sakado",
+          "lineId": "Tojo",
+          "type": "in",
+          "note": ""
+        },
+        {
           "station": "Ogose",
           "lineId": "Hachiko",
           "type": "in",
@@ -33610,12 +33616,12 @@
       "nameZh": "越生线",
       "nameKo": "오고세선",
       "presentation": {
-        "code": "TOG",
+        "code": "TJ",
         "nameJa": "越生線",
         "nameZh": "越生线",
         "nameEn": "Ogose Line",
         "nameKo": "오고세선",
-        "color": "#000099",
+        "color": "#F9AB41",
         "icon": "../images/鉄道/東武鉄道/越生線.png",
         "order": 9,
         "lineIds": [

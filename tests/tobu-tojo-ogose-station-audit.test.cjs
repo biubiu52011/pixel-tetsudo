@@ -49,6 +49,26 @@ test('Tobu transfers describe both Metro corridors and Ogose line', () => {
   }
   assert.equal(find('Asakadai','Musashino').type,'out');
 });
+test('Ogose orange map line, TJ identity, Sakado coordinates and reciprocal transfers', () => {
+  const ogose=d.lines.Ogose;
+  // https://www.tobu.co.jp/pdf/guide/tobumap.pdf ; printed orange is approximate HEX.
+  assert.equal(ogose.color, '#F9AB41');
+  assert.equal(ogose.presentation.color, '#F9AB41');
+  assert.equal(ogose.presentation.code, 'TJ');
+  assert.equal(ogose.code, 'TOG', 'retain unique internal route token');
+  assert.equal(d.lines.Tojo.presentation.code, 'TJ');
+  assert.equal(d.lines.Tojo.presentation.color, '#000099');
+  assert.ok(Math.abs(d.stations.Sakado.lat - 35.9572) < 0.0005);
+  assert.ok(Math.abs(d.stations.Sakado.lng - 139.39402) < 0.0005);
+  assert.equal(ogose.transferStations.filter(t =>
+    t.station === 'Sakado' && t.lineId === 'Tojo' && t.type === 'in').length, 1);
+  assert.equal(ogose.transferStations.filter(t =>
+    t.station === 'Ogose' && t.lineId === 'Hachiko' && t.type === 'in').length, 1);
+  assert.deepEqual(ogose.stations, [
+    'Sakado','Ippommatsu','Nishi-Oya','Kawa_kaku',
+    'Bushu-Nagase','Higashi_Moro','Bushu-Karasawa','Ogose'
+  ]);
+});
 test('Tojo skips irrelevant dated JR and number mapping assets without altering other lines', () => {
   const excluded=manifest.lazyExcludeScopes.trains;
   for (const path of Object.keys(excluded)) {
