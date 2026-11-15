@@ -32,16 +32,18 @@ test('single branch width uses content needs, never an artificial 96px per branc
   assert.match(geometrySource, /branchGeom:\s*branchGeom/);
 });
 
-function createViewport() {
+function createViewport(innerWidth) {
   const start = rendererSource.indexOf('  function _commitStaticRouteViewport(');
   const end = rendererSource.indexOf('  // Read-only contract diagnostic:', start);
   assert.ok(start >= 0 && end > start);
-  const context = vm.createContext({});
+  const context = vm.createContext(innerWidth == null ? {} : {window:{innerWidth}});
   vm.runInContext(rendererSource.slice(start, end), context);
   return context._commitStaticRouteViewport;
 }
-function createSvg() {
-  return {attrs:{},style:{},setAttribute(name,value){this.attrs[name]=value;}};
+function createSvg(wrapperWidth) {
+  return {attrs:{},style:{},
+    parentNode:wrapperWidth == null ? null : {clientWidth:wrapperWidth},
+    setAttribute(name,value){this.attrs[name]=value;}};
 }
 
 test('viewport trims unused geometry while retaining static label bounds', () => {
@@ -54,6 +56,31 @@ test('viewport trims unused geometry while retaining static label bounds', () =>
   assert.equal(svg.style.minWidth,'228px');
   assert.equal(bounds.width,268);
   assert.equal(bounds,geometry.contentBounds);
+});
+
+test('portrait mobile caps wide-branch scrolling to 12% of available width', () => {
+  const commit = createViewport(393), svg = createSvg(344);
+  const geom = {svgW:1100,svgH:1800,branchLines:[{id:'BranchA'},{id:'BranchB'}]};
+  const bounds = commit(svg,{getBBox(){return {x:0,y:10,width:900,height:700};}},geom);
+  assert.equal(bounds.width,948);
+  assert.equal(svg.style.minWidth,'386px');
+  assert.equal(svg.attrs['data-pt-min-scale'],'mobile-capped');
+  assert.equal(svg.attrs.viewBox,'-24 -18 948 756');
+});
+
+test('mobile landscape uses the same small overflow cap', () => {
+  const commit = createViewport(840), svg = createSvg(760);
+  commit(svg,{getBBox(){return {x:0,y:0,width:1200,height:800};}},
+    {svgW:1300,svgH:900,branchLines:[{id:'Branch'}]});
+  assert.equal(svg.style.minWidth,'852px');
+});
+
+test('desktop keeps the readable 85% branch minimum', () => {
+  const commit = createViewport(1200), svg = createSvg(900);
+  commit(svg,{getBBox(){return {x:0,y:0,width:1200,height:800};}},
+    {svgW:1300,svgH:900,branchLines:[{id:'Branch'}]});
+  assert.equal(svg.style.minWidth,'1061px');
+  assert.equal(svg.attrs['data-pt-min-scale'],'0.85');
 });
 
 test('non-branch maps stay fully responsive and invalid metrics use geometry fallback', () => {

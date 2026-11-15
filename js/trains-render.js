@@ -636,13 +636,27 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
     svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
     svg.setAttribute("data-pt-viewport-source", "static-route");
-    // With wide branches, preserve at least 85% of the coordinate-space size.
-    // The existing .tp-line-map horizontal overflow then takes over instead
-    // of squeezing every station label to fit the narrowest mobile screen.
+    // Protect readable labels on desktop, but never force mobile users to
+    // scroll through a huge branch canvas just to see the main line.
+    // Mobile/tablet can pan a little (at most 12% of the available width).
     var protectBranchScale = !!(geometry && !geometry.isSixShapedLoop &&
       geometry.branchLines && geometry.branchLines.length);
-    if (protectBranchScale) svg.style.minWidth = Math.ceil(bounds.width * 0.85) + "px";
-    svg.setAttribute("data-pt-min-scale", protectBranchScale ? "0.85" : "fit");
+    var compactViewport = typeof window !== "undefined" && window.innerWidth <= 900;
+    var minScaleMode = "fit";
+    if (protectBranchScale) {
+      var minWidth = Math.ceil(bounds.width * 0.85);
+      if (compactViewport) {
+        var wrapperWidth = svg.parentNode && svg.parentNode.clientWidth;
+        var availableWidth = Math.max(1, Number(wrapperWidth) ||
+          Math.max(280, window.innerWidth - 32));
+        minWidth = Math.min(minWidth, Math.ceil(availableWidth * 1.12));
+        minScaleMode = "mobile-capped";
+      } else {
+        minScaleMode = "0.85";
+      }
+      svg.style.minWidth = minWidth + "px";
+    }
+    svg.setAttribute("data-pt-min-scale", minScaleMode);
     if (geometry) geometry.contentBounds = bounds;
     return bounds;
   }
