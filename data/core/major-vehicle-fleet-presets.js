@@ -333,13 +333,16 @@
     // Kiryu ordinary: 10000/10030 two-car workings plus possible 800/850
     // three-car relief, NOT the 8000 two-car stock retired on Daishi/Kameido.
     // These line-level candidates cannot establish any individual formation.
-    {id:'tobu-kiryu-ordinary', operator:'Tobu', lineIds:['Kiryu'],
-      serviceTypes:['Local'],
-      models:['東武10000型','東武10030型50番台','東武800・850型（3両・代走候補）'],
+    {id:'tobu-kiryu', operator:'Tobu', lineIds:['Kiryu'],
+      serviceTypes:['Local','LimitedExpress'],
+      // Both pools are references, never a physical train number/formation.
+      models:['東武10000型','東武10030型50番台','東武800・850型（3両・代走候補）',
+        '東武200型','東武500系'],
+      modelsByService:{
+        Local:['東武10000型','東武10030型50番台','東武800・850型（3両・代走候補）'],
+        LimitedExpress:['東武200型','東武500系']
+      },
       sourceUrl:'https://4gousya.net/line/8224.php'},
-    {id:'tobu-kiryu-express', operator:'Tobu', lineIds:['Kiryu'],
-      serviceTypes:['LimitedExpress'], models:['東武200型','東武500系'],
-      sourceUrl:'https://www.tobu.co.jp/railway/special_express/timetable/'},
     {id:'tobu-northern-branches', operator:'Tobu',
       lineIds:['Koizumi','KoizumiBranch','Sano'],
       models:['東武10000型','東武10030型50番台','東武800・850型（3両・代走候補）'],
@@ -741,8 +744,11 @@
     var prefix = 'odpt.TrainType:' + op + '.';
     if (type.indexOf(prefix) !== 0) return null;
     var suffix = type.slice(prefix.length);
+    // Only Kiryu's documented Ryomo expresses may use limited-express
+    // candidate fleets. Not an observed formation or artwork license.
+    var kiryuLimited = id==="Kiryu" && op==="Tobu" && suffix==="LimitedExpress";
     // Conventional services and explicitly scoped Shinkansen named services.
-    if (!ORDINARY.test(suffix) && !/^Shinkansen$/.test(suffix) &&
+    if (!ORDINARY.test(suffix) && !kiryuLimited && !/^Shinkansen$/.test(suffix) &&
         !/^(?:Hayabusa|Hayate|Yamabiko|Nasuno|Komachi|Tsubasa|Toki|Tanigawa|Kagayaki|Hakutaka|Asama|Nozomi|Hikari|Kodama|Mizuho|Sakura|Tsubame|Kamome)$/.test(suffix)) return null;
     // An observed ODPT trainOwner is not always the operating line's company.
     // No trainOwner -> line fleet only. Known other owner -> explicit through
@@ -755,7 +761,7 @@
           !withinPublishedPeriod(row,day)) continue;
       if (row.shinkansenTypes) {
         if (row.shinkansenTypes.indexOf(suffix) < 0) return null;
-      } else if (!ORDINARY.test(suffix)) return null;
+      } else if (!ORDINARY.test(suffix) && !kiryuLimited) return null;
       if (row.serviceTypes && row.serviceTypes.indexOf(suffix) < 0) return null;
       if (owner && owner !== (row.vehicleOwner || row.operator)) break;
       var models = row.modelsByService ? row.modelsByService[suffix] : row.models;

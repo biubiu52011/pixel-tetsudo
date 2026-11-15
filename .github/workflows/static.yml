@@ -78,6 +78,8 @@ jobs:
           node --test tests/rail-service-calendar-ownership.test.cjs
       - name: Verify Tobu Sano 2026-11 representative hop clocks and scoped PNG references
         run: node --test tests/tobu-sano-2611-number-png.test.cjs
+      - name: Verify Tobu Kiryu historical local PNG and canonical route
+        run: node --test tests/tobu-kiryu-2611-number-png.test.cjs
       - name: Verify Tobu Kameido official stations and train PNG boundaries
         run: node --test tests/tobu-kameido-line-assets.test.cjs
       - name: Verify train presets before Pages upload

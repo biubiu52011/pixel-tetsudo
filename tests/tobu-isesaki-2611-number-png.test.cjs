@@ -18,7 +18,7 @@ function p(num,type='Local',changes={}) {
 }
 test('TI and TS have distinct official station-number presentation colors',()=>{
  const d=JSON.parse(fs.readFileSync('data/core/railway_data.json','utf8'));
- for(const line of ['TobuIsesaki','Sano','Kiryu','Koizumi']){
+ for(const line of ['TobuIsesaki','Sano','Koizumi']){
   assert.equal(d.lines[line].code,'TI');
   assert.equal(d.lines[line].color.toLowerCase(),'#ff0000');
   assert.equal(d.lines[line].presentation.color.toLowerCase(),'#ff0000');
