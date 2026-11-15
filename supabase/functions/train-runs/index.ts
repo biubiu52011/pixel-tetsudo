@@ -72,6 +72,34 @@ function stationKey(urn: string) {
 // Static timetable revisions are admitted only for an explicitly configured
 // SQL-plan fallback line. They remain unverified plan data in the response and
 // never imply realtime position capability.
+// Unified ownership for source-date eligibility. This is a guard on the
+// provenance of existing SQL rows, not a new timetable or trainset source.
+// Every line retains its original NULL/[] behavior and source prefix scope.
+function filterDateScopedTemplates(templates: any[], lineId: string, serviceDate: string): any[] {
+  const operatesOnDate = (row: any) =>
+    Array.isArray(row.operating_dates) &&
+    row.operating_dates.some((date: any) => String(date).slice(0, 10) === serviceDate);
+  return templates.filter((row: any) => {
+    const source = String(row.source_path || "");
+    // A finite 2026-11 sampled diagram must not recur in another month.
+    // Fukuchiyama explicit [] also retires obsolete historical sources.
+    if (lineId === "Fukuchiyama" &&
+        (source.startsWith("official-sampled:fukuchiyama:") ||
+         Array.isArray(row.operating_dates))) return operatesOnDate(row);
+    if (/Shinkansen$/.test(lineId) && row.operating_dates != null)
+      return operatesOnDate(row);
+    if (lineId === "SaikyoKawagoe" &&
+        source.startsWith("official-sampled:jreast:2611:SaikyoKawagoe:"))
+      return operatesOnDate(row);
+    // Kakogawa legacy NULL is intentionally historical; only official
+    // entries with explicit date arrays are restricted.
+    if (lineId === "KakogawaLine" &&
+        source.startsWith("official-202611:jrwest-kakogawa-") &&
+        Array.isArray(row.operating_dates)) return operatesOnDate(row);
+    return true;
+  });
+}
+
 function selectRevision(
   rows: any[], serviceDate: string, calendar: string | null,
   allowStaticTimetableRevision = false,
@@ -327,22 +355,6 @@ async function readManualTemplateRuns(
     }
     if (selected.length || revision) { templates = selected; selectedCalendar = calendar; selectedRevision = revision; break; }
   }
-  // JR-West's published 2531M example is whitelisted to its November
-  // issue. SQL may retain this source for provenance after the issue ends;
-  // never project its clocks into another month as a recurring timetable.
-  if(lineId==="Fukuchiyama"){
-    templates=templates.filter((t:any)=>{
-      const source=String(t.source_path||"");
-      // Respect every explicit service-date whitelist, not only 30xx/70xx.
-      // Empty date[] means a preserved historical source does not operate
-      // in any projected date (e.g. 2751/2778 SatHoliday legacy copies).
-      const dated=Array.isArray(t.operating_dates);
-      if(!source.startsWith("official-sampled:fukuchiyama:")&&!dated)
-        return true;
-      return Array.isArray(t.operating_dates)&&t.operating_dates.some(
-        (date:any)=>String(date).slice(0,10)===serviceDate);
-    });
-  }
   // Kabe / 可部線: 87 synthetic 12-stop Yokokawa-Kabe legacy grids
   // (10 x four-minute gaps, then three) must NEVER become November 2026
   // Hiroshima–Aki-Kameyama train positions. JR West's official issue
@@ -471,17 +483,6 @@ async function readManualTemplateRuns(
       }
     }
   }
-  // Apply the verified exact-date whitelist to the existing template
-  // source at the point of selection, before canonical identity, stop
-  // fetching and vehicle evidence. This also excludes historical
-  // source templates with [] from the Nov 2026 train map; unrelated
-  // trains keep NULL and follow their existing calendar/revision.
-  if (/Shinkansen$/.test(lineId)) {
-    templates=templates.filter((t:any)=>
-      t.operating_dates==null ||
-      (Array.isArray(t.operating_dates) &&
-        t.operating_dates.some((d:any)=>String(d).slice(0,10)===serviceDate)));
-  }
   // 2026-11-02 is a WEEKDAY, yet JR East explicitly runs all six
   // "おもいで湯けむり" rapid D trains on the HOLIDAY source timetable.
   // Enroll only the six source IDs certified by the existing SQL roster,
@@ -510,31 +511,8 @@ async function readManualTemplateRuns(
       throw new Error("RIKUTO_EAST_2611_NOV2_SOURCES_NOT_FOUND");
     templates.push(...rapidSources);
   }
-  // The JA 2611 sample is a verified portion of the official timetable,
-  // not an indefinite recurrence or proof of all trains on the line.
-  // Historical SQL remains available for audit but must never be scheduled
-  // outside the source's explicit November 2026 operation-date whitelist.
-  if (lineId === "SaikyoKawagoe") {
-    templates = templates.filter((t: any) => {
-      if (!String(t.source_path || "").startsWith("official-sampled:jreast:2611:SaikyoKawagoe:"))
-        return true;
-      return Array.isArray(t.operating_dates) &&
-        t.operating_dates.some((day: any) => String(day).slice(0, 10) === serviceDate);
-    });
-  }
-  // A 2026-11 full-stop official source must never be extrapolated into
-  // another month. Imported historical sources have no date whitelist.
-  if(lineId==="KakogawaLine"){
-    templates=templates.filter((t:any)=>{
-      // Only date-whitelisted official sources are restricted. In particular,
-      // the previously split 1335S/2329S and 2326S/1338S legacy sources
-      // have null operating_dates and must retain their historical coverage.
-      if(!String(t.source_path||"").startsWith("official-202611:jrwest-kakogawa-") ||
-         !Array.isArray(t.operating_dates))return true;
-      return t.operating_dates.some((date:any)=>
-        String(date).slice(0,10)===serviceDate);
-    });
-  }
+  // Apply all approved source-date gates once, after dated overrides.
+  templates = filterDateScopedTemplates(templates, lineId, serviceDate);
   // Retain both original SQL imports, but serve one verified itinerary.
   if (lineId === "SaikyoKawagoe") {
     const seen = new Set<string>();
