@@ -3229,8 +3229,9 @@ test('mixed Tozai S and Rinkai 8x number tails select only evidence-qualified un
   serviceDate:'2026-12-04',realtimeVehicleType:'東京臨海高速鉄道71-000形'})),null);
 });
 
-test('Tokyo Metro / Toei number rosters and PNG models fail closed outside source',()=>{
- const rows=require('../tools/build-train-number-png-catalog.cjs').getRows().slice(-13);
+test('Tokyo Metro / Mita source-number rosters stay independent of staged Toei lines',()=>{
+ // Previous 13 Metro/Mita rules precede the seven new Toei staged rules.
+ const rows=require('../tools/build-train-number-png-catalog.cjs').getRows().slice(-20,-7);
  assert.equal(rows.length,13);
  for(const r of rows){
    const line=r.lineIds[0],num=r.weekdayNumbers[0];
