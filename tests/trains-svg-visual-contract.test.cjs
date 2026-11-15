@@ -194,7 +194,8 @@ test('one canonical JS layout configuration owns mobile breakpoints and SVG scal
   assert.ok(dataConfig);
   for(const [token,count] of [['MOBILE_BREAKPOINT',640],['TABLET_BREAKPOINT',900],['MOBILE_RENDER_SCALE',1.45]]){
     assert.match(dataConfig[0],new RegExp('\\b'+token+':\\s*'+String(count).replace('.','\\.')+'\\b'));
-    assert.match(rendererSource,new RegExp('TrainsConfig\\.GEOM\\.'+token));
+    const consumer=token==='MOBILE_BREAKPOINT' ? geometrySource : rendererSource;
+    assert.match(consumer,new RegExp('TrainsConfig\\.GEOM\\.'+token));
   }
   assert.equal((geometrySource.match(/window\.TrainsConfig\s*=/g)||[]).length,1);
   assert.equal((rendererSource.match(/\bvar physicalScale\s*=/g)||[]).length,1);
