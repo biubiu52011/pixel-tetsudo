@@ -40,7 +40,11 @@ test('reused northern express samples preserve the four southern calls and add t
 test('API keeps old historical proof working before migration, verifies only November 2026 express segment after',()=>{
  assert.match(edge,/The historical 30xx \/ seasonal 70xx sources are Kounotori/);
  assert.match(edge,/\? "287系\|289系" : acceptedModels/);
- assert.match(edge,/const dated=Array\.isArray\(t\.operating_dates\)/);
+ // Dated source filtering is now performed in the shared policy owner.
+ assert.match(edge,/function filterDateScopedTemplates\(/);
+ assert.match(edge,/lineId === "Fukuchiyama"/);
+ assert.match(edge,/Array\.isArray\(row\.operating_dates\)/);
+ assert.match(edge,/templates = filterDateScopedTemplates\(templates, lineId, serviceDate\)/);
  const start=edge.indexOf('// Kounotori 8/10:');
  const end=edge.indexOf('// Incomplete source rows are preserved',start);
  assert.ok(start>=0&&end>start);
