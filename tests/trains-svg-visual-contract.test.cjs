@@ -122,7 +122,7 @@ test('runtime audit exposes measured scale and effective station sizes',()=>{
   assert.match(rendererSource,/targetCssPxPerUnit/);
   assert.match(rendererSource,/stationCircleDiameterPx/);
   assert.match(rendererSource,/stationLabelFontPx/);
-  assert.match(rendererSource,/_focus.x - _bounds.x/);
+  assert.match(rendererSource,/winner - bounds\.x/);
 });
 
 
