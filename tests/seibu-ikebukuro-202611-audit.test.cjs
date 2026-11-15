@@ -70,3 +70,83 @@ test('no retired Seibu 2000 or 9000 Ikebukuro PNG alias survives',()=>{
  const num=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
  assert.doesNotMatch(num,/lineId:\s*["']Ikebukuro["']/,'no invented train number -> PNG ranges');
 });
+
+
+test('all five Ikebukuro-family routes use passenger SI and one orange palette',()=>{
+  const ids=['Ikebukuro','SeibuChichibu','Yurakucho_Seibu','SeibuToshima','Seibu_Sayama'];
+  const km={Ikebukuro:57.8,SeibuChichibu:19,
+    Yurakucho_Seibu:2.6,SeibuToshima:1,Seibu_Sayama:4.2};
+  for(const id of ids){
+    const l=d.lines[id];
+    assert.equal(l.operator,'Seibu',id);
+    assert.equal(l.code,'SI',id);
+    assert.equal(l.presentation.code,'SI',id);
+    assert.equal(l.officialLineSymbol,'SI',id);
+    assert.equal(l.color,'#EF7A00',id);
+    assert.equal(l.presentation.color,'#EF7A00',id);
+    assert.equal(l.routeLengthKm,km[id],id);
+    assert.ok(Array.isArray(l.operatingPrefectures)&&l.operatingPrefectures.length,id);
+  }
+  // The five branches must keep their own canonical identity and source stops.
+  assert.equal(new Set(ids).size,5);
+  assert.equal(d.lines.Ikebukuro.stations[0],'Ikebukuro');
+  assert.equal(d.lines.SeibuChichibu.stations[0],'Agano');
+  assert.equal(d.lines.Yurakucho_Seibu.stations[0],'Nerima');
+  assert.equal(d.lines.SeibuToshima.stations[0],'Nerima');
+  assert.equal(d.lines.Seibu_Sayama.stations[0],'Nishi-Tokorozawa');
+});
+test('Seibu colors and line symbols match the six official route families',()=>{
+  const expected={
+    Ikebukuro:'SI',SeibuChichibu:'SI',Yurakucho_Seibu:'SI',
+    SeibuToshima:'SI',Seibu_Sayama:'SI',
+    SeibuShinjuku:'SS',Haijima:'SS',
+    Kokubunji:'SK',SeibuEn:'SK',SeibuTamako:'ST',
+    SeibuYamaguchi:'SY',SeibuTamagawa:'SW'
+  };
+  const lines=Object.entries(d.lines).filter(([,l])=>l.operator==='Seibu');
+  assert.equal(lines.length,Object.keys(expected).length);
+  for(const [id,l] of lines) {
+    assert.equal(l.code,expected[id],id);
+    assert.equal(l.presentation.code,expected[id],id);
+    assert.equal(l.officialLineSymbol,expected[id],id);
+    assert.equal(l.color,l.presentation.color,id);
+  }
+});
+test('Seibu Akitsu and JR-West Kure Akitsu never share a physical identity',()=>{
+  assert.equal(d.lines.Ikebukuro.stations[15],'Akitsu');
+  assert.equal(d.lines.Kure.stations[8],'Akitsu-Kure');
+  assert.equal(d.lineStationOrder.Kure['Akitsu-Kure'],8);
+  assert.equal(d.lineStationOrder.Kure.Akitsu,undefined);
+  assert.equal(d.name_map['秋津'],'Akitsu');
+  assert.equal(d.name_map['安芸津'],'Akitsu-Kure');
+  assert.deepEqual(d.stationLines.Akitsu,['Ikebukuro']);
+  assert.deepEqual(d.stationLines['Akitsu-Kure'],['Kure']);
+  assert.equal(names.Akitsu.ja,'秋津');
+  assert.equal(names['Akitsu-Kure'].ja,'安芸津');
+  assert.ok(d.stations.Akitsu.lat>35.7 && d.stations.Akitsu.lng>139);
+  assert.ok(d.stations['Akitsu-Kure'].lat>34.2 && d.stations['Akitsu-Kure'].lat<34.4);
+  assert.ok(d.stations['Akitsu-Kure'].lng>132.7 && d.stations['Akitsu-Kure'].lng<133);
+});
+test('Akitsu - Shin-Akitsu is an outdoor walking interchange, not shared station',()=>{
+  assert.equal(d.stationLines['Shin-Akitsu'].includes('Ikebukuro'),false);
+  const check=(src,station,line,to)=>{
+    const t=d.lines[src].transferStations.find(t=>t.station===station&&t.lineId===line);
+    assert.ok(t,src+' -> '+line);
+    assert.equal(t.type,'out');
+    assert.equal(t.toStation,to);
+    assert.equal(t.walkMinutesApprox,8);
+    assert.equal(t.gateDistanceMetersApprox,400);
+    assert.match(t.evidenceUrl,/jreast\.co\.jp/);
+  };
+  check('Ikebukuro','Akitsu','Musashino','Shin-Akitsu');
+  check('Musashino','Shin-Akitsu','Ikebukuro','Akitsu');
+  for(const [src,target] of [['Ikebukuro','Seibu_Sayama'],['Seibu_Sayama','Ikebukuro']]){
+    assert.ok(d.lines[src].transferStations.some(t=>t.station==='Nishi-Tokorozawa'&&t.lineId===target));
+  }
+});
+test('Ikebukuro duration is explicitly schematic and internally additive',()=>{
+  assert.equal(loc.durations.length,loc.stations.length-1);
+  assert.equal(loc.durationTotalMin,loc.durations.reduce((sum,n)=>sum+n,0));
+  assert.equal(loc.durationBasis,'schematic_not_official_timetable');
+  assert.deepEqual(loc.operatingPrefectures,['Tokyo','Saitama']);
+});

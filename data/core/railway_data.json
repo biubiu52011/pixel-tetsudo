@@ -16713,6 +16713,10 @@
     "Higashi-Agano": {
       "lat": 35.8925,
       "lng": 139.2604
+    },
+    "Akitsu-Kure": {
+      "lat": 34.3181105,
+      "lng": 132.8185988
     }
   },
   "lines": {
@@ -19367,6 +19371,16 @@
           "lineId": "TobuSkytree",
           "toStation": "Shin-Koshigaya",
           "note": "Shin-Koshigaya"
+        },
+        {
+          "station": "Shin-Akitsu",
+          "lineId": "Ikebukuro",
+          "type": "out",
+          "note": "",
+          "toStation": "Akitsu",
+          "walkMinutesApprox": 8,
+          "gateDistanceMetersApprox": 400,
+          "evidenceUrl": "https://www.jreast.co.jp/press/2026/20260519_ho01.pdf"
         }
       ],
       "nameZh": "武藏野线",
@@ -25148,7 +25162,7 @@
       "name": "SeibuShinjuku",
       "nameEn": "Seibu Shinjuku Line",
       "nameJa": "西武新宿線",
-      "code": "SN",
+      "code": "SS",
       "color": "#01A6BF",
       "operator": "Seibu",
       "region": "Saitama Area",
@@ -25353,7 +25367,8 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SS"
     },
     "TobuIsesaki": {
       "name": "TobuIsesaki",
@@ -26312,7 +26327,7 @@
       "name": "SeibuChichibu",
       "nameEn": "Seibu Chichibu Line",
       "nameJa": "西武秩父線",
-      "code": "SC",
+      "code": "SI",
       "color": "#EF7A00",
       "operator": "Seibu",
       "region": "Saitama Area",
@@ -26351,7 +26366,7 @@
       "nameZh": "秩父线",
       "nameKo": "치치부선",
       "presentation": {
-        "code": "SCH",
+        "code": "SI",
         "nameJa": "秩父線",
         "nameZh": "秩父线",
         "nameEn": "Chichibu Line",
@@ -26375,6 +26390,11 @@
             "confidence": "HIGH"
           }
         }
+      ],
+      "officialLineSymbol": "SI",
+      "routeLengthKm": 19,
+      "operatingPrefectures": [
+        "Saitama"
       ]
     },
     "SeibuTamako": {
@@ -26382,7 +26402,7 @@
       "nameEn": "Tamako Line",
       "nameJa": "西武多摩湖線",
       "code": "ST",
-      "color": "#EF7A00",
+      "color": "#F7AF0E",
       "operator": "Seibu",
       "region": "Saitama Area",
       "type": "straight",
@@ -26438,7 +26458,8 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "ST"
     },
     "OdakyuEnoshima": {
       "name": "OdakyuEnoshima",
@@ -27962,14 +27983,15 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SY"
     },
     "SeibuEn": {
       "name": "SeibuEn",
       "nameEn": "Seibu-en Line",
       "nameJa": "西武園線",
-      "code": "SE",
-      "color": "#F7AF0E",
+      "code": "SK",
+      "color": "#1EAD4C",
       "operator": "Seibu",
       "region": "Saitama Area",
       "type": "straight",
@@ -28010,7 +28032,7 @@
       "nameZh": "西武园线",
       "nameKo": "세이부엔선",
       "presentation": {
-        "code": "SEN",
+        "code": "SK",
         "nameJa": "西武園線",
         "nameZh": "西武园线",
         "nameEn": "Seibu-en Line",
@@ -28023,7 +28045,8 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SK"
     },
     "Yamanote": {
       "name": "Yamanote",
@@ -30159,8 +30182,8 @@
       "name": "拜岛线",
       "nameEn": "Haijima Line",
       "nameJa": "西武拝島線",
-      "code": "SHM",
-      "color": "#8B4513",
+      "code": "SS",
+      "color": "#01A6BF",
       "operator": "Seibu",
       "region": null,
       "type": "straight",
@@ -30211,7 +30234,7 @@
       "nameZh": "拜岛线",
       "nameKo": "하이지마선",
       "presentation": {
-        "code": "SHM",
+        "code": "SS",
         "nameJa": "拝島線",
         "nameZh": "拜岛线",
         "nameEn": "Haijima Line",
@@ -30224,7 +30247,8 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SS"
     },
     "Iiyama": {
       "name": "飯山線",
@@ -30336,12 +30360,12 @@
       "nameEn": "Ikebukuro Line",
       "nameJa": "西武池袋線",
       "code": "SI",
-      "color": "#4da72a",
+      "color": "#EF7A00",
       "operator": "Seibu",
       "region": "Saitama Area",
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武池袋線.png",
-      "durationTotalMin": 77,
+      "durationTotalMin": 72,
       "branchOf": null,
       "stations": [
         "Ikebukuro",
@@ -30485,6 +30509,22 @@
           "lineId": "Hachiko",
           "type": "out",
           "note": "JR Hachiko Line: separate gates"
+        },
+        {
+          "station": "Akitsu",
+          "lineId": "Musashino",
+          "type": "out",
+          "note": "",
+          "toStation": "Shin-Akitsu",
+          "walkMinutesApprox": 8,
+          "gateDistanceMetersApprox": 400,
+          "evidenceUrl": "https://www.jreast.co.jp/press/2026/20260519_ho01.pdf"
+        },
+        {
+          "station": "Nishi-Tokorozawa",
+          "lineId": "Seibu_Sayama",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "池袋线",
@@ -30535,6 +30575,13 @@
             "confidence": "HIGH"
           }
         }
+      ],
+      "officialLineSymbol": "SI",
+      "durationBasis": "schematic_not_official_timetable",
+      "routeLengthKm": 57.8,
+      "operatingPrefectures": [
+        "Tokyo",
+        "Saitama"
       ]
     },
     "Ishinomaki": {
@@ -32529,8 +32576,8 @@
       "name": "Kokubunji Line",
       "nameEn": "Kokubunji Line",
       "nameJa": "西武国分寺線",
-      "code": "SKK",
-      "color": "#4da72a",
+      "code": "SK",
+      "color": "#1EAD4C",
       "operator": "Seibu",
       "region": null,
       "type": "straight",
@@ -32594,7 +32641,8 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SK"
     },
     "Komii": {
       "name": "小海線",
@@ -34904,8 +34952,8 @@
       "name": "狭山线",
       "nameEn": "Sayama Line",
       "nameJa": "西武狭山線",
-      "code": "SS",
-      "color": "#0066CC",
+      "code": "SI",
+      "color": "#EF7A00",
       "operator": "Seibu",
       "region": null,
       "type": "straight",
@@ -34929,12 +34977,18 @@
           "lineId": "SeibuYamaguchi",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Nishi-Tokorozawa",
+          "lineId": "Ikebukuro",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "狭山线",
       "nameKo": "사야마선",
       "presentation": {
-        "code": "SSA",
+        "code": "SI",
         "nameJa": "狭山線",
         "nameZh": "狭山线",
         "nameEn": "Sayama Line",
@@ -34947,7 +35001,12 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SI",
+      "routeLengthKm": 4.2,
+      "operatingPrefectures": [
+        "Saitama"
+      ]
     },
     "SeibuToshima": {
       "name": "SeibuToshima",
@@ -35001,7 +35060,7 @@
       "nameZh": "丰岛线",
       "nameKo": "토시마선",
       "presentation": {
-        "code": "STO",
+        "code": "SI",
         "nameJa": "豊島線",
         "nameZh": "丰岛线",
         "nameEn": "Toshima Line",
@@ -35026,6 +35085,11 @@
             "confidence": "HIGH"
           }
         }
+      ],
+      "officialLineSymbol": "SI",
+      "routeLengthKm": 1,
+      "operatingPrefectures": [
+        "Tokyo"
       ]
     },
     "Senseki": {
@@ -37790,8 +37854,8 @@
       "name": "有乐町线",
       "nameEn": "Yurakucho Line (Seibu)",
       "nameJa": "西武有楽町線",
-      "code": "YS",
-      "color": "#C6C6C6",
+      "code": "SI",
+      "color": "#EF7A00",
       "operator": "Seibu",
       "region": null,
       "type": "straight",
@@ -37848,7 +37912,7 @@
       "nameZh": "西武有乐町线",
       "nameKo": "세이부 유라쿠초선",
       "presentation": {
-        "code": "SYU",
+        "code": "SI",
         "nameJa": "西武有楽町線",
         "nameZh": "西武有乐町线",
         "nameEn": "Seibu Yurakucho Line",
@@ -37892,6 +37956,11 @@
             "confidence": "HIGH"
           }
         }
+      ],
+      "officialLineSymbol": "SI",
+      "routeLengthKm": 2.6,
+      "operatingPrefectures": [
+        "Tokyo"
       ]
     },
     "Odawara": {
@@ -38188,7 +38257,7 @@
       "nameEn": "Tamagawa Line",
       "nameJa": "多摩川線",
       "code": "SW",
-      "color": "#4da72a",
+      "color": "#EF7A00",
       "operator": "Seibu",
       "region": "Tokyo Area",
       "type": "straight",
@@ -38233,7 +38302,8 @@
         ],
         "operatorGroup": "SEIBU"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [],
+      "officialLineSymbol": "SW"
     },
     "TobuNikko": {
       "name": "TobuNikko",
@@ -48044,7 +48114,7 @@
         "Joge",
         "Takehara",
         "Yoshina",
-        "Akitsu",
+        "Akitsu-Kure",
         "Kazahaya",
         "Yasuura",
         "Ando",
@@ -56238,7 +56308,7 @@
     "大乗": "Joge",
     "竹原": "Takehara",
     "吉名": "Yoshina",
-    "安芸津": "Akitsu",
+    "安芸津": "Akitsu-Kure",
     "風早": "Kazahaya",
     "安浦": "Yasuura",
     "安登": "Ando",
@@ -60580,8 +60650,7 @@
       "Ikebukuro"
     ],
     "Akitsu": [
-      "Ikebukuro",
-      "Kure"
+      "Ikebukuro"
     ],
     "Nishi-Tokorozawa": [
       "Ikebukuro",
@@ -71438,6 +71507,9 @@
     ],
     "Higashi-Agano": [
       "Ikebukuro"
+    ],
+    "Akitsu-Kure": [
+      "Kure"
     ]
   },
   "lineStationOrder": {
@@ -76225,7 +76297,6 @@
       "Joge": 5,
       "Takehara": 6,
       "Yoshina": 7,
-      "Akitsu": 8,
       "Kazahaya": 9,
       "Yasuura": 10,
       "Ando": 11,
@@ -76247,7 +76318,8 @@
       "Shin-Hiro": 27,
       "Kouyou": 28,
       "Tenjin-Kawa": 29,
-      "Hiroshima": 30
+      "Hiroshima": 30,
+      "Akitsu-Kure": 8
     },
     "Kabe": {
       "Yokokawa": 0,
