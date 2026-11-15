@@ -264,11 +264,33 @@
     });
     return result;
   }
+  // Cache immutable geographic membership independently of realtime train/status
+  // snapshots. Fusion may replace line objects while their route remains unchanged.
+  // A new station-coordinate registry or railway-ready event invalidates entries.
+  var _regionCache = new Map();
+  var _regionCacheCoords = null;
+  function lineRegionKey(line) {
+    return [line.operator||"",line.region||"",
+      line.nameEn||line.nameJa||line.name||"",
+      Array.isArray(line.stations)?line.stations.join("\u001f"):""].join("\u001e");
+  }
+  if (window.addEventListener) {
+    window.addEventListener("pt:railway-ready",function() {
+      _regionCache.clear();
+      _regionCacheCoords=null;
+    });
+  }
   function getLineRegions(line) {
     if (!line) return [];
+    var coords=window.STATION_COORDS||{};
+    if (coords!==_regionCacheCoords) {
+      _regionCache.clear();
+      _regionCacheCoords=coords;
+    }
+    var cacheKey=lineRegionKey(line);
+    if (_regionCache.has(cacheKey)) return _regionCache.get(cacheKey).slice();
     var found=Object.create(null), located=0, hint=String(line.region||"");
     REGION_HINTS.forEach(function(item){if(item[0].test(hint))found[item[1]]=true;});
-    var coords=window.STATION_COORDS||{};
     var locatedStations=(line.stations||[]).map(function(id){return coords[id];})
       .filter(function(coord){return !!regionAtCoordinate(coord);});
     // Some canonical station names currently reuse coordinates of unrelated
@@ -327,7 +349,10 @@
       return !!found[region]&&(!allowed||allowed.indexOf(region)>=0);
     });
     if(!regions.length&&allowed&&allowed.length===1)regions=allowed.slice();
-    return regions;
+    // Bound the cache if dynamically loaded line definitions change repeatedly.
+    if (_regionCache.size>=4096) _regionCache.clear();
+    _regionCache.set(cacheKey,regions);
+    return regions.slice();
   }
   function filterLinesByRegion(lines, region) {
     if(!region)return lines||{};
@@ -446,25 +471,36 @@
       operatorOrder: opOrder, mode: mode, flatGroups: flatGroups };
   }
 
-  function lineListStructureSignature(linesObj, options) {
-    var model = buildLineListModel(linesObj, options);
-    if (model.empty) return "empty";
-    var rows = [];
+  // Calculate the full overview and all per-operator signatures from one
+  // presentation model. The previous implementation rebuilt that model for
+  // every operator in captureOverviewSignatures().
+  function lineListStructureSignaturesByOperator(linesObj, options) {
+    var model=buildLineListModel(linesObj,options);
+    var signatures=Object.create(null);
+    if(model.empty){signatures["*"]="empty";return signatures;}
+    var allRows=[];
     model.operatorOrder.forEach(function(op) {
-      (model.entitiesByOperator[op] || []).forEach(function(entity) {
-        var line = linesObj[entity.id] || {};
-        var pres = entity.presentation || line.presentation || {};
+      var rows=[];
+      (model.entitiesByOperator[op]||[]).forEach(function(entity) {
+        var line=linesObj[entity.id]||{};
+        var pres=entity.presentation||line.presentation||{};
         rows.push([
-          op, entity.kind, entity.id,
-          entity.memberIds ? entity.memberIds.join(",") : "",
-          pres.code || line.code || "", pres.icon || line.image || "",
-          pres.nameJa || line.nameJa || "", pres.nameZh || line.nameZh || "",
-          pres.nameEn || line.nameEn || "", pres.nameKo || line.nameKo || "",
-          line.branchOf || ""
+          op,entity.kind,entity.id,
+          entity.memberIds?entity.memberIds.join(","):"",
+          pres.code||line.code||"",pres.icon||line.image||"",
+          pres.nameJa||line.nameJa||"",pres.nameZh||line.nameZh||"",
+          pres.nameEn||line.nameEn||"",pres.nameKo||line.nameKo||"",
+          line.branchOf||""
         ].join("\u001f"));
       });
+      signatures[op]=rows.join("\u001e");
+      Array.prototype.push.apply(allRows,rows);
     });
-    return rows.join("\u001e");
+    signatures["*"]=allRows.join("\u001e");
+    return signatures;
+  }
+  function lineListStructureSignature(linesObj, options) {
+    return lineListStructureSignaturesByOperator(linesObj,options)["*"];
   }
 
   function renderList(container, linesObj, options) {
@@ -581,7 +617,7 @@
     opts=opts||{};
     var el=typeof containerOrId==="string"?document.getElementById(containerOrId):containerOrId;
     var selected=opts.selected||null, selectedRegion=opts.region||null;
-    var lastLines={},lastOptionsSignature=null;
+    var lastLines={},lastOptionsSignature=null,lastRegionLabelsSignature=null;
     // Browser Elements support querySelector; the lightweight CI host only
     // provides innerHTML/querySelectorAll. Keep DOM liveness checks compatible
     // with both without weakening recovery after detail-page teardown.
@@ -639,7 +675,8 @@
       var ops=selectedRegion?operatorsFromLines(scoped):[];
       if(selected&&ops.indexOf(selected)<0)selected=null;
       var all=typeof window.t==="function"?(window.t("filter.all")||"すべて"):"すべて";
-      var optionsSignature=all+"|"+selectedRegion+"|"+REGION_IDS.map(labelRegion).join("|")+
+      var regionLabelsSignature=all+"|"+REGION_IDS.map(labelRegion).join("|");
+      var optionsSignature=regionLabelsSignature+"|"+selectedRegion+
         "|"+ops.map(function(op){return op+":"+operatorLabel(op);}).join("|");
       // Cached options are valid only while their DOM is still mounted.
       // A detail-page teardown or external caller may have cleared children;
@@ -665,6 +702,7 @@
           '" aria-pressed="'+(selectedRegion===region)+'">'+labelRegion(region)+'</button>';
       });
       html+='</div>';
+      var regionHtml=html;
       if(selectedRegion){
         html+='<div class="rs-filter-level rs-company-level" role="group" aria-label="鉄道事業者">'+
           '<button type="button" class="rs-filter-btn'+(!selected?' active':'')+
@@ -676,6 +714,34 @@
         });
         html+='</div>';
       }
+      var companyHtml=html.slice(regionHtml.length);
+      var regionRow=findControl(".rs-region-level");
+      // On a region change, preserve the existing region-button DOM (and focus).
+      // Only the operator row needs new buttons. CI's minimal host uses the
+      // full-rebuild fallback below because it lacks native DOM insertion.
+      if(regionRow && lastRegionLabelsSignature===regionLabelsSignature &&
+         typeof el.insertAdjacentHTML==="function"){
+        var oldCompany=findControl(".rs-company-level");
+        var active=document.activeElement;
+        var focusedOperator=active&&el.contains(active)&&
+          active.classList.contains("rs-filter-btn")?(active.dataset.operator||""):null;
+        if(oldCompany) oldCompany.remove();
+        if(companyHtml) el.insertAdjacentHTML("beforeend",companyHtml);
+        Array.prototype.forEach.call(el.querySelectorAll(".rs-filter-btn"),function(button){
+          button.addEventListener("click",function(){select(button.dataset.operator||null,true);});
+        });
+        sync();
+        if(focusedOperator!==null){
+          Array.prototype.some.call(el.querySelectorAll(".rs-filter-btn"),function(button){
+            if((button.dataset.operator||"")!==focusedOperator)return false;
+            try{button.focus({preventScroll:true});}catch(_e){button.focus();}
+            return true;
+          });
+        }
+        lastRegionLabelsSignature=regionLabelsSignature;
+        return;
+      }
+      lastRegionLabelsSignature=regionLabelsSignature;
       // Rebuilding the operator level must not throw the user back to the
       // first region on mobile, nor discard keyboard focus on the pressed
       // region button. Keep the viewport and focus while replacing the DOM.
@@ -742,6 +808,7 @@
     TRUNK_MAIN_LINE_IDS: TRUNK_MAIN_LINE_IDS,
     renderList: renderList,
     lineListStructureSignature: lineListStructureSignature,
+    lineListStructureSignaturesByOperator: lineListStructureSignaturesByOperator,
     // 供 LineCard.updateSystem 共用，使异步实时更新使用相同的成员集合。
     getPresentationStatusMembers: getPresentationStatusMembers,
     setOperatorVisibility: setOperatorVisibility,
