@@ -143,7 +143,7 @@ test('date proof gate for current SQL projections and conservative through label
  assert.match(config,/TobuUtsunomiya:\s*Object\.freeze\(\["\*"\]\)/);
  const estimator=fs.readFileSync('js/train-position-estimator.js','utf8');
  assert.match(estimator,/requireSqlDateProof\s*&&\s*tt\._timetableDateVerified!==true/);
- const through=fs.readFileSync('js/trains-data.js','utf8');
+ const through=fs.readFileSync('js/through-chip.js','utf8');
  assert.match(through,/throughScope\s*!==\s*"selected-local-destination-only"/);
 });
 test('PNG mapper is lazy-loaded before central matcher and page hashes match',()=>{
