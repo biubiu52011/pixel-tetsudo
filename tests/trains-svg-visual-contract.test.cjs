@@ -46,8 +46,8 @@ function svg(wrapperWidth=344) {
   return {style:{},attrs:{},parentNode:{clientWidth:wrapperWidth},
     setAttribute(name,v){this.attrs[name]=v;}};
 }
-function runViewport(commit,width,branchLines=[]) {
-  const el=svg(),geometry={svgW:1200,svgH:900,branchLines};
+function runViewport(commit,width,branchLines=[],wrapperWidth=344) {
+  const el=svg(wrapperWidth),geometry={svgW:1200,svgH:900,branchLines};
   const bounds=commit(el,{getBBox(){return {x:15,y:10,width,height:700};}},geometry);
   return {el,bounds,geometry};
 }
@@ -59,8 +59,8 @@ test('Ito and ChuoSobuLocal have the same final physical mobile pixel scale',()=
   const commit=createViewport(393),a=runViewport(commit,205),b=runViewport(commit,315);
   const x=parseFloat(a.el.style.width)/a.bounds.width;
   const y=parseFloat(b.el.style.width)/b.bounds.width;
-  assert.equal(x,1.45);
-  assert.equal(y,1.45);
+  assert.ok(Math.abs(x-1.45) < 1e-9);
+  assert.ok(Math.abs(y-1.45) < 1e-9);
   assert.equal(a.el.style.maxWidth,'none');
   assert.equal(b.el.style.maxWidth,'none');
   assert.equal(a.el.attrs['data-pt-render-scale'],'1.45');
@@ -76,7 +76,7 @@ test('mobile branch does not shrink its stations to fit the whole map',()=>{
   assert.equal(a.el.attrs['data-pt-min-scale'],'fixed-mobile');
 });
 test('tablet and desktop branch display retain their existing guards',()=>{
-  const tablet=runViewport(createViewport(840),1200,[{id:'A'}]);
+  const tablet=runViewport(createViewport(840),1200,[{id:'A'}],760);
   assert.equal(tablet.el.style.minWidth,'791px');
   assert.equal(tablet.el.style.maxWidth,'791px');
   const desktop=runViewport(createViewport(1200),1200,[{id:'A'}]);
