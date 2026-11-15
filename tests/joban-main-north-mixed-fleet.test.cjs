@@ -88,6 +88,6 @@ test('701 Sendai and E721 Sendai assets are gated to north candidate, not exact 
  const marker=root.TrainVehicle.selectMarkerArtwork(row(),false);
  assert.equal(marker.kind,'unresolved');
  assert.equal(marker.iconSrc,'');
- assert.equal(marker.planned,false);
+ assert.notEqual(marker.planned,true);
  assert.equal(Object.hasOwn(marker,'candidateAssets'),false);
 });

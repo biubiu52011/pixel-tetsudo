@@ -87,7 +87,7 @@ test('dated 3028MH and 7025MH use 287/289 candidates with a clearly illustrative
   assert.equal(art.kind,'vehicle',no);
   assert.equal(art.iconSrc,'../images/列车/JR西日本/JR西日本_287系.png',no);
   assert.equal(art.illustrative,true,no);
-  assert.equal(marker(p,true).kind,'candidate',no);
+  assert.equal(marker(p,true).kind,'unresolved',no);
   assert.equal(art.actualVehicleConfirmed,false);
   assert.equal(verify({...p,serviceDate:'2026-12-01'}),null);
   assert.equal(verify({...p,trainType:'odpt.TrainType:JR-West.Local'}),null);

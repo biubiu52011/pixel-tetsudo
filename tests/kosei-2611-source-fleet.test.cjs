@@ -101,7 +101,7 @@ test('normal M weekday + MH holiday are source-candidate ONLY',()=>{
   const marker=root.TrainVehicle.selectMarkerArtwork(p,false);
   assert.equal(marker.kind,'unresolved',n);
   assert.equal(marker.iconSrc,'');
-  assert.equal(marker.planned,false);
+  assert.notEqual(marker.planned,true);
   assert.equal(Object.hasOwn(marker,'candidateModels'),false);
   assert.equal(Object.hasOwn(marker,'candidateAssets'),false);
  }

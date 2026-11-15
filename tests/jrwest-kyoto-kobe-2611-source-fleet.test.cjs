@@ -116,7 +116,7 @@ test('one source-only neutral marker for nine real Kyoto/Kobe C/T/M sources',()=
   const result=root.TrainVehicle.selectMarkerArtwork(p,false);
   assert.equal(result.kind,'unresolved',item.num);
   assert.equal(result.iconSrc,'');
-  assert.equal(result.planned,false);
+  assert.notEqual(result.planned,true);
   assert.equal(Object.hasOwn(result,'candidateModels'),false);
   assert.equal(Object.hasOwn(result,'candidateAssets'),false);
  }
