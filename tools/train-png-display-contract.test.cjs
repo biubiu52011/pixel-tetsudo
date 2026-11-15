@@ -90,15 +90,16 @@ const narrowed = {
   vehicleIdentityStatus: 'NARROWED',
   operationArtworkCandidates: candidates,
 };
-assert.equal(choose(narrowed).kind, 'candidate');
-assert.equal(choose(narrowed).candidateAssets.length, 2);
+assert.equal(choose(narrowed).kind, 'unresolved');
+assert.equal(Object.hasOwn(choose(narrowed), 'candidateAssets'), false,
+  'unmapped number must not return a candidate PNG pool');
 assert.equal(choose({ ...narrowed, operationArtworkCandidates: [candidates[0]],
-  candidateArtworkConfirmedByDatedRule: true }).kind, 'candidate',
+  candidateArtworkConfirmedByDatedRule: true }).kind, 'unresolved',
   'one available candidate image is not vehicle confirmation');
 assert.equal(choose({ ...narrowed, operationArtworkCandidates: [candidates[0]],
   vehicleIdentityStatus: 'EXACT', vehicleResolvedUpstream: true,
   vehicleType: 'E231系0番台', candidateArtworkConfirmedByDatedRule: true }).kind,
-  'candidate', 'dated candidate image must match the exact identity, not another generation');
+  'unresolved', 'dated candidate evidence cannot select a PNG without a number mapping');
 
 const singlePlan = {
   status: 'PLANNED_MODEL', lineId: 'Keiyo', models: ['JR E233系5000番台'],
@@ -598,12 +599,19 @@ const renderVm = vm.createContext({
 vm.runInContext(extract(renderSource,
   '  function _trainMarkerDomKind(spec) {',
   '  // Public identification boundary:'), renderVm);
-renderVm.artwork = { kind: 'candidate', iconSrc: '', candidateAssets: [genericPng] };
-const candidateSpec = renderVm._trainMarkerSpec(narrowed, 't1', 'Keiyo');
+renderVm.artwork = { kind: 'unresolved', iconSrc: '' };
+const neutralSpec = renderVm._trainMarkerSpec(narrowed, 't1', 'Keiyo');
 assert.equal(renderVm.captured.displayLineId, 'Keiyo');
-assert.equal(candidateSpec.kind, 'candidate');
-assert.equal(candidateSpec.compact, true);
-assert.equal(renderVm._trainMarkerDomKind(candidateSpec), 'candidate');
+assert.equal(neutralSpec.kind, 'unresolved');
+assert.equal(neutralSpec.compact, true);
+assert.equal(renderVm._trainMarkerDomKind(neutralSpec), 'unresolved');
+assert.equal(Object.hasOwn(neutralSpec,'candidateAssets'),false);
+// A stale/foreign selector result cannot reintroduce a candidate status.
+renderVm.artwork = { kind:'candidate',iconSrc:'',candidateAssets:[genericPng] };
+const rejectedLegacySpec = renderVm._trainMarkerSpec(narrowed,'legacy','Keiyo');
+assert.equal(rejectedLegacySpec.kind,'unresolved');
+assert.equal(rejectedLegacySpec.iconSrc,'');
+assert.equal(Object.hasOwn(rejectedLegacySpec,'candidateAssets'),false);
 renderVm.artwork = { kind: 'vehicle', iconSrc: genericPng, planned: true };
 const plannedSpec = renderVm._trainMarkerSpec(unknownEstimate, 't2', 'Keiyo');
 assert.equal(renderVm._trainMarkerDomKind(plannedSpec), 'planned');
@@ -611,6 +619,10 @@ assert.match(renderSource, /getAttribute\("data-marker-kind"\) !== _trainMarkerD
   'planned PNG must not be removed and reloaded on every refresh');
 assert.match(renderSource, /setAttribute\("data-train-artwork", spec\.iconSrc\)/,
   'image DOM must retain its catalog provenance');
+assert.doesNotMatch(vehicleSource,/return\s*\{\s*kind:\s*["']candidate["']/,
+  'the canonical vehicle selector must never return a candidate state');
+assert.doesNotMatch(renderSource,/data-vehicle-candidate|candidateAssets/,
+  'the renderer must not expose a candidate option or PNG pool');
 // Cross-line / stale tooltip labels cannot claim a physical model when PNG is withheld.
 const tooltipContext = vm.createContext({
   window: {
@@ -1019,47 +1031,46 @@ assert.equal(renderedImage.getAttribute('aria-label'), 'Train 611Y');
 const circlePosition = { ...narrowed,
   railDirection:'odpt.RailDirection:Outbound',
   destinationStation:'odpt.Station:JR-East.Uchibo.Kimitsu' };
-const candidateMarker = markerContext._createTrainComponent(
-  markerLayer, svgNS, 't1', candidateSpec, 80, 90,
+const neutralMarker = markerContext._createTrainComponent(
+  markerLayer, svgNS, 't1', neutralSpec, 80, 90,
   circlePosition, 'Keiyo', false, '#008803', null,
 );
-assert.equal(candidateMarker.tagName, 'circle');
-assert.equal(candidateMarker.getAttribute('data-marker-kind'), 'candidate');
-assert.equal(candidateMarker.getAttribute('data-vehicle-candidate'), 'true');
-assert.ok(!candidateMarker.getAttribute('href'), 'candidate must not carry an image URL');
-const candidateUnit = candidateMarker.parentNode;
-assert.equal(candidateUnit.getAttribute('data-train-unit-id'), 't1',
+assert.equal(neutralMarker.tagName, 'circle');
+assert.equal(neutralMarker.getAttribute('data-marker-kind'), 'unresolved');
+assert.equal(neutralMarker.getAttribute('data-vehicle-candidate'), null);
+assert.ok(!neutralMarker.getAttribute('href'), 'candidate must not carry an image URL');
+const neutralUnit = neutralMarker.parentNode;
+assert.equal(neutralUnit.getAttribute('data-train-unit-id'), 't1',
   'unverified vehicle candidates must also render within one SVG unit');
-assert.equal(candidateMarker.getAttribute('cx'), '0');
-assert.equal(candidateMarker.getAttribute('cy'), '0');
-assert.equal(candidateUnit.getAttribute('data-train-component-id'),'t1');
-const candidateLabel = candidateUnit.querySelector('[data-train-label-for="t1"]');
-assert.ok(candidateLabel, 'candidate/neutral circle and destination have one parent');
-markerContext._moveTrainComponent(candidateMarker,markerLayer,'t1',
+assert.equal(neutralMarker.getAttribute('cx'), '0');
+assert.equal(neutralMarker.getAttribute('cy'), '0');
+assert.equal(neutralUnit.getAttribute('data-train-component-id'),'t1');
+const neutralLabel = neutralUnit.querySelector('[data-train-label-for="t1"]');
+assert.ok(neutralLabel, 'candidate/neutral circle and destination have one parent');
+markerContext._moveTrainComponent(neutralMarker,markerLayer,'t1',
   120,175,circlePosition,'Uchibo',false);
-assert.equal(candidateUnit.getAttribute('transform'),'translate(120,175)');
-assert.equal(candidateMarker.getAttribute('cx'),'0');
-assert.equal(candidateMarker.getAttribute('cy'),'0');
-assert.equal(candidateLabel.querySelector('.train-label-dir').getAttribute('y'),'21');
-assert.equal(candidateLabel.parentNode,candidateMarker.parentNode,
+assert.equal(neutralUnit.getAttribute('transform'),'translate(120,175)');
+assert.equal(neutralMarker.getAttribute('cx'),'0');
+assert.equal(neutralMarker.getAttribute('cy'),'0');
+assert.equal(neutralLabel.querySelector('.train-label-dir').getAttribute('y'),'21');
+assert.equal(neutralLabel.parentNode,neutralMarker.parentNode,
   '177M-style neutral circle and its arrow/君津 must never be sibling train-layer elements');
 
-// Regression for iPhone Hachiko screenshots: candidateAssets are two
-// ALTERNATIVE car models, not two physical cabs on the same train.
-renderVm.artwork = {kind:'candidate',iconSrc:'',planned:true,
-  candidateAssets:[genericPng,otherPng]};
+// Regression for iPhone Hachiko: an unmapped train has one neutral marker,
+// never two alternate vehicle images or a guessed first candidate.
+renderVm.artwork = {kind:'unresolved',iconSrc:'',planned:false};
 const dualFleetSpec = renderVm._trainMarkerSpec(narrowed,'hachiko-461E','Hachiko');
-assert.equal(dualFleetSpec.kind,'candidate');
+assert.equal(dualFleetSpec.kind,'unresolved');
 assert.equal(dualFleetSpec.compact,true,
   'a pair of potential vehicle images must NEVER request a wide marker');
 assert.equal(dualFleetSpec.planned,false,
-  'two candidate models do not certify a single planned rolling-stock type');
+  'unresolved number must not claim any planned vehicle PNG');
 const dualFleetMarker=markerContext._createTrainComponent(
   markerLayer,svgNS,'hachiko-461E',dualFleetSpec,90,110,
   {...circlePosition,trainNumber:'461E'},'Hachiko',false,'#008803',null);
 assert.equal(dualFleetMarker.tagName,'circle',
-  'candidate pairs must render as ONE circle, never a double-headed SVG group');
-assert.equal(dualFleetMarker.getAttribute('data-vehicle-candidate'),'true');
+  'unresolved number must render as ONE circle, never a double-headed SVG group');
+assert.equal(dualFleetMarker.getAttribute('data-vehicle-candidate'),null);
 assert.equal(dualFleetMarker.children.filter(node=>node.tagName==='image').length,0,
   'a train location may not contain paired candidate cab images');
 assert.equal(dualFleetMarker.parentNode.getAttribute('data-train-unit-id'),'hachiko-461E');
@@ -1161,7 +1172,7 @@ for (let i = 0; i < globalSampleLines.length; i++) {
     railDirection:'odpt.RailDirection:Outbound',
     destinationStation:'odpt.Station:JR-East.Uchibo.Kimitsu' };
   const icon = markerContext._createTrainComponent(
-    layer,svgNS,uid,candidateSpec,100,160,
+    layer,svgNS,uid,neutralSpec,100,160,
     position,lineId,lineId==='Oedo','#008803',null);
   const root = icon.parentNode;
   assert.equal(layer.children.length,1,
@@ -1183,7 +1194,7 @@ for (let i = 0; i < globalSampleLines.length; i++) {
 // duplicate train component after a PNG failure or route refresh.
 const globalOrphans = svgNode('g');
 const healthyIcon = markerContext._createTrainComponent(
-  globalOrphans,svgNS,'healthy',candidateSpec,100,180,
+  globalOrphans,svgNS,'healthy',neutralSpec,100,180,
   {railDirection:'odpt.RailDirection:Outbound',
     destinationStation:'odpt.Station:JR-East.Uchibo.Kimitsu'},
   'Uchibo',false,'#008803',null);

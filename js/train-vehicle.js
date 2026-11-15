@@ -5553,95 +5553,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   // https://www.jreast.co.jp/train/local/701.html
   // https://www.jreast.co.jp/train/local/e721.html
   // Combined service: https://2nd-train.net/topics/article/63722/
-  function lookupJobanMainNorthMixedCandidates(p) {
-    if (!p || p.positionSource !== "supabase-train-run" ||
-        p.estimated !== true ||
-        String(p.positionLineId || p.lineId || "") !== "JobanMain" ||
-        String(p.displayLineId || p.positionLineId || p.lineId || "") !== "JobanMain" ||
-        p.sourceRailway !== "odpt.Railway:JR-East.Joban" ||
-        p.canonicalGroupEvidence !== "source_only" ||
-        !Array.isArray(p.canonicalLineIds) || p.canonicalLineIds.length ||
-        p.timetableValidity !== "undated_not_current_verified" ||
-        p.timetableDateVerified !== false ||
-        p.vehicleIdentityStatus !== "UNKNOWN" ||
-        p.vehicleResolvedUpstream === true ||
-        p.vehicleResolvedFromRealtime === true ||
-        p.actualVehicleConfirmed === true || p.vehicleFormationId ||
-        (Array.isArray(p.vehicleFormationCandidates) &&
-         p.vehicleFormationCandidates.length) ||
-        p.realtimeVehicleType || p.realtimeDerivedVehicleType ||
-        p.vehicleIconPath ||
-        (p.vehicleResolution && p.vehicleResolution.identityStatus === "EXACT") ||
-        (p.vehiclePlan && (p.vehiclePlan.confirmed === true ||
-         p.vehiclePlan.status === "PLANNED_MODEL"))) return null;
-    var op=String(p.trainOperator || p.operator || "");
-    if (op && op !== "JR-East" && op !== "odpt.Operator:JR-East") return null;
-    var num=String(p.trainNumber || "").trim().toUpperCase();
-    var date=String(p.serviceDate || "").slice(0,10);
-    var tid=String(p.canonicalTimetableId || "");
-    if (!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date) ||
-        !/^[0-9]{3}M$/.test(num) ||
-        !/^[0-9]+$/.test(tid) ||
-        p.runningChainId !== "canonical-sql-trip:" + date + ":" + tid ||
-        !/^22[235-8]M$|^2[3-6][0-9]M$|^27[0-3]M$/.test(num) ||
-        // 224M and 229M are absent from the historical 50-number roster.
-        num === "224M" || num === "229M" ||
-        String(p.trainType || "").split(/[.:]/).pop() !== "Local" ||
-        p.plannedVehicleCandidateStatus !== "unresolved" ||
-        !Array.isArray(p.plannedVehicleCandidates) ||
-        p.plannedVehicleCandidates.length !== 2 ||
-        !p.plannedVehicleCandidates.includes("701系") ||
-        !p.plannedVehicleCandidates.includes("E721系")) return null;
-    var d=String(p.railDirection || "").split(/[.:]/).pop();
-    if (d !== "Inbound" && d !== "Outbound") return null;
-    if (Number(num.slice(0,-1)) % 2 !== (d === "Inbound" ? 0 : 1))
-      return null;
-    var c=String(p.calendarType || "");
-    if (c !== "weekday" && c !== "holiday") {
-      var raw=String(p.serviceId || p.timetableCalendar || "");
-      c=/(?:^|[.:])Weekday$/.test(raw) ? "weekday" :
-        /(?:^|[.:])(?:SaturdayHoliday|Saturday|Holiday|Sunday)$/.test(raw)
-          ? "holiday" : "";
-    }
-    var dow=new Date(date+"T12:00:00Z").getUTCDay();
-    var holiday=dow===0 || dow===6 ||
-      date==="2026-11-03" || date==="2026-11-23";
-    if (c !== (holiday ? "holiday" : "weekday")) return null;
-    var stops=Array.isArray(p.scheduledStopKeys)
-      ? p.scheduledStopKeys.map(function(v) {
-          return String(v || "").split(".").pop();
-        }) : [];
-    var north=["Sakamoto","Shinchi","Komagamine","Soma",
-      "Nittaki","Kashima","Haranomachi"];
-    var path=d==="Inbound" ? north : north.slice().reverse();
-    // The import contains either all seven stops, or a two-stop Sakamoto
-    // to Shinchi shuttle. Never authorize a complete Sendai itinerary.
-    var expected=(num==="250M" || num==="270M")
-      ?["Sakamoto","Shinchi"]
-      :(num==="255M" || num==="271M")
-        ?["Shinchi","Sakamoto"] : path;
-    if (stops.length !== expected.length ||
-        stops.some(function(v,i) { return v !== expected[i]; }))
-      return null;
-    var assets=[
-      ["701系","../images/列车/JR東日本/JR東日本_701系_仙台地区.png"],
-      ["E721系","../images/列车/JR東日本/JR東日本_E721系_仙台地区.png"]
-    ];
-    var gallery=window.VehicleGaragePngMap;
-    if (!gallery || typeof gallery.matchModelPath !== "function" ||
-        assets.some(function(a) {
-          return !gallery.matchModelPath(a[0],a[1],"JobanMain");
-        })) return null;
-    return {
-      lineId:"JobanMain",trainNumber:num,kind:"mixed-source-candidates",
-      candidateModels:assets.map(function(a) {return a[0];}),
-      candidateAssets:assets.map(function(a) {return a[1];}),
-      source:"historical-sql-joban-north-partial-uncertain",
-      referenceOnly:true,actualVehicleConfirmed:false,
-      authorizesPNG:false,formationId:null,possibleCoupling:true
-    };
-  }
-
   // One approved E233-3000 PNG serves as an ILLUSTRATIVE placeholder
   // for the E231-1000 / E233-3000 mixed fleet. It is neither an actual
   // vehicle assignment nor a pair of coupled trains; the accessible
@@ -5954,9 +5865,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        resolutionSources.indexOf('roster-physical-id') >= 0));
     var scopedProjection = !contextLineId ||
       (resolutionLineId && resolutionLineId === contextLineId) || strongRealtimeEvidence;
-    // 多车型运用号候选只在位置线路与解析线路一致时保留诊断元数据。
-    var candidateScopedProjection = !!contextLineId && !!resolutionLineId &&
-      resolutionLineId === contextLineId;
     var iconSrc = identityConfirmed && scopedProjection
       ? normalizeGalleryPngPath(p.vehicleIconPath ||
           (p.vehicleResolution && p.vehicleResolution.iconPath) || "") : "";
@@ -6047,14 +5955,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
             illustrationRole:"kawagoe-2026-dated-community-model-not-actual-carset",
             reportedModel:kwReportedModel,reportedFormation:kwReportedFormation,
             reportedTrainNumber:p.trainNumber,sourceUrl:kwReportUrl};
-        }
-        if(p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
-           Array.isArray(p.plannedVehicleCandidates)&&
-           p.plannedVehicleCandidates.join("|")===kwModels.join("|")){
-          return {kind:"candidate",iconSrc:"",planned:false,
-            referenceOnly:true,actualVehicleConfirmed:false,
-            candidateModels:kwModels,candidateAssets:kwAssets,
-            illustrationRole:"kawagoe-shared-working-no-single-model"};
         }
       }
       return {kind:"unresolved",iconSrc:""};
@@ -6213,23 +6113,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
              actualVehicleConfirmed:false,
              illustrationRole:"yamagata-2026-observed-service-not-november-consist"};
         }
-        // A roster-verified but multi-model working is a mapped fleet
-        // candidate, not an unidentified train. Keep one neutral marker;
-        // its line colour and candidate metadata distinguish it from a
-        // genuinely missing number, without assigning a false PNG.
-        var yamCandidates=typeof yamIndex.resolveCandidates==="function"
-          ?yamIndex.resolveCandidates(p):null;
-        if(yamCandidates&&yamCandidates.referenceOnly===true&&
-            yamCandidates.actualVehicleConfirmed===false&&
-            yamGallery&&typeof yamGallery.matchModelPath==="function"){
-          var validated=(yamCandidates.candidateAssets||[]).filter(function(path,i){
-            return isGalleryPng(normalizeGalleryPngPath(path))&&
-              yamGallery.matchModelPath(yamCandidates.assetModels[i],path,"Yamagata");
-          });
-          if(validated.length)return {kind:"candidate",iconSrc:"",
-            candidateAssets:validated,planned:false,
-            actualVehicleConfirmed:false};
-        }
         return {kind:"unresolved",iconSrc:""};
       }
     }
@@ -6270,37 +6153,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        String(p.positionLineId||p.lineId||"")==="Kosei"&&
        koseiProof&&
        koseiProof.source==="sql-jrwest-kosei-2611-source-family"){
-      var koseiIndex=window.TrainNumberPngRanges;
-      var koseiFleet=koseiIndex&&
-        typeof koseiIndex.verifyKoseiSourceFleet==="function"
-          ?koseiIndex.verifyKoseiSourceFleet(p):null;
-      var koseiModels=koseiFleet&&koseiFleet.candidateModels||[];
-      if(artworkFailed!==true&&koseiFleet&&
-         p.estimated===true&&koseiFleet.referenceOnly===true&&
-         koseiFleet.authorizesPNG===false&&
-         koseiFleet.actualVehicleConfirmed===false&&
-         koseiFleet.numberDateVerified===false&&
-         p.vehicleIdentityStatus==="UNKNOWN"&&
-         p.vehicleResolvedUpstream!==true&&
-         p.vehicleResolvedFromRealtime!==true&&
-         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
-         !(Array.isArray(p.vehicleFormationCandidates)&&
-           p.vehicleFormationCandidates.length)&&
-         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
-         Array.isArray(p.plannedVehicleCandidates)&&
-         p.plannedVehicleCandidates.join("|")===koseiModels.join("|")&&
-         (!p.vehiclePlan||p.vehiclePlan.confirmed!==true)&&
-         (!p.vehiclePlan||!Array.isArray(p.vehiclePlan.models)||
-           p.vehiclePlan.models.join("|")===koseiModels.join("|"))&&
-         koseiFleet.candidateAssets.length===0){
-        return {kind:"candidate",iconSrc:"",planned:false,
-          referenceOnly:true,actualVehicleConfirmed:false,
-          candidateModels:koseiModels.slice(),candidateAssets:[],
-          sourceHistoricalNumber:koseiFleet.historicalNumber,
-          corridorSegment:koseiFleet.corridorSegment};
-      }
-      // A stale/forged source proof never inherits a default 681/683
-      // express PNG, a separate operator livery or a guessed carset.
       return {kind:"unresolved",iconSrc:""};
     }
     // Number-band reference only. 1100-1299 C local trains can show
@@ -6376,10 +6228,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
                 "holiday-2774M-2025-207-321-working"
                 ?"fukuchiyama-2774M-2025-historical-207-321-example-only"
                 :"fukuchiyama-207-321-C-local-example-only"};
-        return {kind:"candidate",iconSrc:"",planned:false,
-          referenceOnly:true,actualVehicleConfirmed:false,
-          candidateModels:fukFleet.candidateModels.slice(),
-          candidateAssets:approved?assets.slice():[]};
+        return {kind:"unresolved",iconSrc:""};
       }
       return {kind:"unresolved",iconSrc:""};
     }
@@ -6396,47 +6245,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        String(p.positionLineId||p.lineId||"")===contextLineId&&
        jrWestProof&&
        jrWestProof.source==="sql-jrwest-kyoto-kobe-2611-source-family"){
-      var jrWestRange=window.TrainNumberPngRanges;
-      var jrWestFleet=jrWestRange&&
-        typeof jrWestRange.verifyJrWestKyotoKobeSourceFleet==="function"
-          ?jrWestRange.verifyJrWestKyotoKobeSourceFleet(p):null;
-      var jrWestAssets=jrWestFleet&&jrWestFleet.candidateAssets||[];
-      var jrWestModels=jrWestFleet&&jrWestFleet.candidateModels||[];
-      var jrWestAssetModels=jrWestFleet&&
-        jrWestFleet.candidateGalleryModels||[];
-      var jrWestGallery=window.VehicleGaragePngMap;
-      if(artworkFailed!==true&&p.estimated===true&&jrWestFleet&&
-         jrWestFleet.referenceOnly===true&&
-         jrWestFleet.actualVehicleConfirmed===false&&
-         jrWestFleet.authorizesPNG===false&&
-         jrWestFleet.numberDateVerified===false&&
-         p.vehicleIdentityStatus==="UNKNOWN"&&
-         p.vehicleResolvedUpstream!==true&&
-         p.vehicleResolvedFromRealtime!==true&&
-         p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
-         !(Array.isArray(p.vehicleFormationCandidates)&&
-           p.vehicleFormationCandidates.length)&&
-         p.plannedVehicleCandidateStatus==="unresolved-mixed-fleet"&&
-         Array.isArray(p.plannedVehicleCandidates)&&
-         p.plannedVehicleCandidates.join("|")===jrWestModels.join("|")&&
-         (!p.vehiclePlan||p.vehiclePlan.confirmed!==true)&&
-         (!p.vehiclePlan||!Array.isArray(p.vehiclePlan.models)||
-           p.vehiclePlan.models.join("|")===jrWestModels.join("|"))&&
-         jrWestAssets.length===jrWestAssetModels.length&&
-         (jrWestAssets.length===0||
-           (jrWestGallery&&
-            typeof jrWestGallery.matchModelPath==="function"&&
-            jrWestAssets.every(function(path,i){
-              return isGalleryPng(normalizeGalleryPngPath(path))&&
-                jrWestGallery.matchModelPath(
-                  jrWestAssetModels[i],path,contextLineId);
-            })))){
-        return {kind:"candidate",iconSrc:"",planned:false,
-          referenceOnly:true,actualVehicleConfirmed:false,
-          candidateModels:jrWestModels.slice(),
-          candidateAssets:jrWestAssets.slice(),
-          sourceNumberSuffix:jrWestFleet.historicalNumberSuffix};
-      }
       // A dated roster, actual formation or valid line-specific PNG
       // must be independently proven; never guess from legacy T/C/M.
       return {kind:"unresolved",iconSrc:""};
@@ -6513,9 +6321,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
             plannedOperationCode:sjOperation,
             sourceUrl:sjWorking.plannedModelEvidenceUrl};
         }
-        return {kind:"candidate",iconSrc:"",planned:false,
-          referenceOnly:true,actualVehicleConfirmed:false,
-          candidateAssets:sjAssets.slice()};
+        return {kind:"unresolved",iconSrc:""};
       }
       // A missing SQL, date, route, exact carset or image proof never
       // falls through to an unverified legacy generic E233 marker.
@@ -6546,15 +6352,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var tojoIllustration=!identityConfirmed && !iconSrc && !artworkFailed
       ? lookupTojoFleetIllustration(p) : null;
     if(tojoIllustration)return tojoIllustration;
-    // Northern 701/E721 candidates are metadata for ONE neutral circle.
-    // Both types can be physically coupled, so never draw two pixel cabs.
-    var northMixed = !identityConfirmed && !artworkFailed &&
-      lookupJobanMainNorthMixedCandidates(p);
-    if (northMixed && northMixed.authorizesPNG === false) {
-      return {kind:"candidate",iconSrc:"",planned:false,
-        referenceOnly:true,actualVehicleConfirmed:false,
-        candidateAssets:northMixed.candidateAssets.slice()};
-    }
     // Ryomo 2611: exact official public number/calendar/direction selects a
     // fleet REFERENCE image, not a physical carset. 211 local M trains
     // and E231/E233 green-car through trains must not be conflated.
@@ -6652,31 +6449,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       iconSrc = normalizeGalleryPngPath(resolveArtworkForIdentity(
         p.vehicleType || p.vehicleResolution.name, "", p.serviceDate, false));
     }
-    // 候选图片只能核对出处，不能因为 PNG 只有一张就变成具体实车。
-    var candidateAssets = [];
-    var candidateArtwork = p && candidateScopedProjection && (p.operationArtworkCandidates ||
-      (p.vehicleResolution && p.vehicleResolution.operationArtworkCandidates) || []);
-    if (!iconSrc && Array.isArray(candidateArtwork)) {
-      for (var cai = 0; cai < candidateArtwork.length; cai++) {
-        var candidateAsset = normalizeGalleryPngPath(
-          candidateArtwork[cai] && candidateArtwork[cai].asset);
-        if (candidateAsset && candidateAssets.indexOf(candidateAsset) < 0) {
-          candidateAssets.push(candidateAsset);
-        }
-      }
-      // 日期规则只能为已经独立确认的同一 canonical 车型补回原生 PNG，
-      // 不能给 UNKNOWN/NARROWED 挑代表图，也不能跨车型、跨线路借图。
-      var exactModel = identityConfirmed && scopedProjection &&
-        resolveCanonicalVehicle(p.vehicleType ||
-          (p.vehicleResolution && p.vehicleResolution.name) || "");
-      var candidateModel = candidateArtwork.length === 1 &&
-        resolveCanonicalVehicle(candidateArtwork[0].vehicleType || "");
-      if (candidateAssets.length === 1 && p.candidateArtworkConfirmedByDatedRule === true &&
-          exactModel && candidateModel === exactModel) {
-        iconSrc = candidateAssets[0];
-        plannedMarker = true;
-      }
-    }
     var planMatchesLine = !contextLineId || (vehiclePlan &&
       String(vehiclePlan.lineId || "") === contextLineId);
     // 单车型、由共享计划解析器签发的时刻表位置可显示计划参考图；
@@ -6688,15 +6460,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       plannedMarker = !!iconSrc;
     }
     if (artworkFailed === true || !isGalleryPng(iconSrc)) {
-      if (!iconSrc && candidateAssets.length) {
-        // Generic candidates must not restore the misleading pair on
-        // the two affected north Shonan lines.
-        if (contextLineId === "Takasaki" ||
-            contextLineId === "UtsunomiyaJR")
-          return {kind:"unresolved",iconSrc:""};
-        return { kind: "candidate", iconSrc: "", planned: false,
-          candidateAssets: candidateAssets.slice() };
-      }
       // Live Tobu branch coordinates do not reveal which two-car model is
       // operating. Preserve the valid position but expose the missing-car
       // evidence as a machine-readable marker diagnostic.
@@ -6709,7 +6472,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
           String(p.positionLineId || p.lineId || "") === contextLineId) {
         return {kind:"unresolved",iconSrc:"",referenceOnly:true,
           actualVehicleConfirmed:false,
-          candidateModels:["東武10000型","東武10030型50番台"],
           reason:"tobu-branch-live-position-vehicle-unconfirmed"};
       }
       return { kind: "unresolved", iconSrc: "" };
@@ -6790,7 +6552,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     lookupTrainNumberRangePng: lookupTrainNumberRangePng,
     lookupVerifiedJobanCanonicalE531Png: lookupVerifiedJobanCanonicalE531Png,
     lookupJobanMainSourceOnlyE531Illustration: lookupJobanMainSourceOnlyE531Illustration,
-    lookupJobanMainNorthMixedCandidates: lookupJobanMainNorthMixedCandidates,
     resolve: resolve,
     resolveCanonicalVehicle: resolveCanonicalVehicle,
     lookupTobuBranchVehicleNumberPng: lookupTobuBranchVehicleNumberPng,

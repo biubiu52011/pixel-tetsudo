@@ -28,9 +28,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   if (!failure) return false;
   var current = window.TrainVehicle && window.TrainVehicle.selectMarkerArtwork
     ? window.TrainVehicle.selectMarkerArtwork(p, false) : null;
-  var samePath = current && ((current.iconSrc && current.iconSrc === failure.path) ||
-    (current.kind === "candidate" && Array.isArray(current.candidateAssets) &&
-     current.candidateAssets.indexOf(failure.path) >= 0));
+  var samePath = current && current.kind === "vehicle" &&
+    current.iconSrc && current.iconSrc === failure.path;
   var active = samePath && Date.now() - failure.at < _TRAIN_ARTWORK_FAILURE_RETRY_MS;
   if (!active) {
     delete _trainArtworkFailure[key];
@@ -1163,8 +1162,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   }
 
   function _trainMarkerDomKind(spec) {
-    return spec && spec.planned === true ? "planned" :
-      (spec && spec.kind || "unresolved");
+    return spec && spec.kind === "vehicle"
+      ? (spec.planned === true ? "planned" : "vehicle") : "unresolved";
   }
 
   function _trainMarkerSpec(p, trainUid, lineId) {
@@ -1181,7 +1180,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       : { kind: "unresolved", iconSrc: "" };
     var hasImage = artwork.kind === "vehicle" && !!artwork.iconSrc;
     return {
-      kind: hasImage ? "vehicle" : (artwork.kind === "candidate" ? "candidate" : "unresolved"),
+      kind: hasImage ? "vehicle" : "unresolved",
       iconSrc: hasImage ? artwork.iconSrc : "",
       planned: hasImage && artwork.planned === true,
       illustrative: hasImage && artwork.illustrative === true &&
@@ -1189,10 +1188,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         artwork.actualVehicleConfirmed === false,
       illustrationModel: hasImage && artwork.illustrationModel ? String(artwork.illustrationModel) : "",
       illustrationRole: hasImage ? String(artwork.illustrationRole || "") : "",
-      // For diagnostics/title ONLY. Candidate paths are NEVER drawn as
-      // multiple cabs; each train location owns exactly one SVG glyph.
-      candidateAssets: artwork.kind === "candidate" && Array.isArray(artwork.candidateAssets)
-        ? artwork.candidateAssets.slice() : [],
       // Unverified models retain a neutral position marker; never synthesize
       // a rolling-stock picture from a train number or candidate family.
       compact: !hasImage,
@@ -1997,11 +1992,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _createTrainMarker(trainLayer, svgNS, trainUid, spec, px, py, p, lineId, isLoop, color, loc) {
     if (!spec) return null;
     var knownVehicle = spec.kind === "vehicle" && !!spec.iconSrc;
-    var candidateVehicle = spec.kind === "candidate";
-    // A multi-model candidate is ONE location with unresolved stock,
-    // not a consist of two cars. Render one circle even when callers
-    // accidentally pass two candidateAssets or compact:false.
-    var compact = spec.compact === true || candidateVehicle;
+    // An unrecognized/missing artwork selection is always one neutral circle.
+    var compact = spec.compact === true || !knownVehicle;
     var marker = document.createElementNS(svgNS,
       knownVehicle && !compact ? "image" : "circle");
     if (knownVehicle && !compact) {
@@ -2047,7 +2039,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
     } else {
       marker.setAttribute("r", "4.5");
-      marker.setAttribute("fill", candidateVehicle ? (color || "#7c3aed") : "#666");
+      marker.setAttribute("fill", "#666");
       marker.setAttribute("stroke", "#fff");
       marker.setAttribute("stroke-width", "1.5");
       if (!knownVehicle) {
@@ -2059,10 +2051,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           /realtime|odpt/i.test(String(p.positionSource || ""))
         ));
         if (!_hasRealtimePosition) marker.setAttribute("data-position-unresolved", "true");
-      }
-      if (candidateVehicle) {
-        marker.setAttribute("data-vehicle-candidate", "true");
-        marker.setAttribute("data-vehicle-candidate-assets", (spec.candidateAssets || []).join("|"));
       }
     }
     var titleText = _trainMarkerAccessibleDescription(p, lineId, spec);
@@ -2230,11 +2218,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           String(existingIcon.tagName || "").toLowerCase() !== expectedTag)) {
         existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
       }
-      if (existingIcon && markerSpec.kind === "candidate" && !markerSpec.compact &&
-          existingIcon.getAttribute("data-vehicle-candidate-assets") !==
-          markerSpec.candidateAssets.join("|")) {
-        existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
-      }
       if (existingIcon && existingIcon.getAttribute("data-marker-display") !==
           (markerSpec.compact ? "compact" : "artwork")) {
         existingIcon = _discardTrainMarker(markerById, trainUid, existingIcon);
@@ -2256,9 +2239,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           existingIcon.setAttributeNS("http://www.w3.org/1999/xlink", "href", markerSpec.iconSrc);
           existingIcon.setAttribute("data-train-artwork", markerSpec.iconSrc);
           existingIcon.setAttribute("visibility", "visible");
-        }
-        if (markerSpec.kind === "candidate") {
-          existingIcon.setAttribute("data-vehicle-candidate-assets", markerSpec.candidateAssets.join("|"));
         }
         // SVG 标记会跨轮询保留，但其已验证编组可能发生变化。
         // 刷新无障碍标签，不要保留过期的列车数据。
