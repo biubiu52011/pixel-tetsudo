@@ -3230,8 +3230,14 @@ test('mixed Tozai S and Rinkai 8x number tails select only evidence-qualified un
 });
 
 test('Tokyo Metro / Mita source-number rosters stay independent of staged Toei lines',()=>{
- // Previous 13 Metro/Mita rules precede the seven new Toei staged rules.
- const rows=require('../tools/build-train-number-png-catalog.cjs').getRows().slice(-20,-7);
+ // Identify the responsible source-scoped rules, not their insertion order.
+ const lines=new Set(['Ginza','Marunouchi','MarunouchiBranch','Chiyoda',
+   'ChiyodaBranch','Namboku','Yurakucho','Fukutoshin','Mita']);
+ const rows=require('../tools/build-train-number-png-catalog.cjs').getRows().filter(r=>
+   r.lineIds.length===1&&lines.has(r.lineIds[0])&&
+   r.weekdayNumbers&&r.holidayNumbers&&r.validFrom==='2026-11-01'&&
+   r.sourceRailways&&r.sourceRailways.some(x=>
+     /^odpt\.Railway:(?:TokyoMetro|Toei)\./.test(x)));
  assert.equal(rows.length,13);
  for(const r of rows){
    const line=r.lineIds[0],num=r.weekdayNumbers[0];
