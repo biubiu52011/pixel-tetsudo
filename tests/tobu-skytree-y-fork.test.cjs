@@ -127,9 +127,10 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
    'Hikifune transfers and Tokyo-Skytree name need their own vertical region');
  assert.ok(g.stationCoords[0].y-g.stationCoords[1].y>=112,
    'multiline Tokyo-Skytree label and badges need clearance from Asakusa');
- assert.ok(g.svgH>=g.stationCoords[0].y+65,
-   'Asakusa transfer badges must remain inside the canvas');
- assert.ok(g.svgW>=g.stationCoords[2].x+124,'right name and transfers must fit');
+ assert.ok(g.layoutHeight>=g.stationCoords[0].y+65,
+   'Asakusa transfer badges must remain inside the local route layout');
+ assert.ok(g.layoutWidth>=g.stationCoords[2].x+124,'right name and transfers must fit local layout');
+ assert.equal(g.svgW,420,'the public SVG frame has one fixed width');
  assert.equal(g.stationCoords[1].side,'dual');
  assert.equal(g.stationCoords[2].side,'right');
  assert.equal(g.stationCoords[3].side,'top');
@@ -154,7 +155,13 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
  assert.equal(g.mapFork.elbows['2-3'].x,g.stationCoords[2].x);
  assert.equal(g.mapFork.elbows['2-3'].y,g.stationCoords[3].y);
  assert.equal(edge(1,2),false,'no Tokyo-Skytree to Oshiage fake line');
- assert.ok(g.stationCoords.every(p=>p.x>=0&&p.x<=g.svgW&&p.y>=0&&p.y<=g.svgH));
+ assert.ok(g.stationCoords.every(p=>p.x>=0&&p.x<=g.layoutWidth&&p.y>=0&&p.y<=g.layoutHeight));
+ assert.ok(g.stationCoords.every(p=>
+   g.canvasOffsetX+p.x*g.canvasScale>=0 &&
+   g.canvasOffsetX+p.x*g.canvasScale<=g.svgW &&
+   g.canvasOffsetY+p.y*g.canvasScale>=0 &&
+   g.canvasOffsetY+p.y*g.canvasScale<=g.svgH),
+   'transformed stops stay inside the fixed-width public SVG frame');
  const caption=g.routeElements.find(e=>e.attrs&&e.attrs['data-fork-caption']==='oshiage-through');
  assert.equal(caption,undefined,'branch track must not duplicate the ThroughChip label');
 });
