@@ -636,25 +636,34 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     }
     svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
     svg.setAttribute("data-pt-viewport-source", "static-route");
-    // Protect readable labels on desktop, but never force mobile users to
-    // scroll through a huge branch canvas just to see the main line.
-    // Mobile/tablet can pan a little (at most 12% of the available width).
+    // The static viewBox may be much narrower than the old padded canvas.
+    // A blanket width:100% would then enlarge short routes and labels wildly
+    // on phones. Cap *magnification* for every mobile SVG, not only branches.
+    // Dense branch maps can use a tiny (4%) horizontal pan, never 12%+.
     var protectBranchScale = !!(geometry && !geometry.isSixShapedLoop &&
       geometry.branchLines && geometry.branchLines.length);
     var compactViewport = typeof window !== "undefined" && window.innerWidth <= 900;
     var minScaleMode = "fit";
-    if (protectBranchScale) {
-      var minWidth = Math.ceil(bounds.width * 0.85);
-      if (compactViewport) {
-        var wrapperWidth = svg.parentNode && svg.parentNode.clientWidth;
-        var availableWidth = Math.max(1, Number(wrapperWidth) ||
-          Math.max(280, window.innerWidth - 32));
-        minWidth = Math.min(minWidth, Math.ceil(availableWidth * 1.12));
+    if (compactViewport) {
+      var wrapperWidth = svg.parentNode && svg.parentNode.clientWidth;
+      var availableWidth = Math.max(1, Number(wrapperWidth) ||
+        Math.max(280, window.innerWidth - 32));
+      var overflowCap = Math.ceil(availableWidth * 1.04);
+      var magnificationCap = Math.ceil(bounds.width * 1.18);
+      // The upper limit prevents small viewBoxes (especially short lines)
+      // from becoming giant; the lower limit avoids collapsing dense branches.
+      var maxDisplayWidth = Math.min(overflowCap, magnificationCap);
+      svg.style.maxWidth = maxDisplayWidth + "px";
+      svg.setAttribute("data-pt-max-scale", "1.18");
+      if (protectBranchScale) {
+        svg.style.minWidth = Math.min(overflowCap,
+          Math.ceil(bounds.width * 0.85), maxDisplayWidth) + "px";
         minScaleMode = "mobile-capped";
-      } else {
-        minScaleMode = "0.85";
       }
-      svg.style.minWidth = minWidth + "px";
+    } else if (protectBranchScale) {
+      // Preserve the existing desktop legibility rule.
+      svg.style.minWidth = Math.ceil(bounds.width * 0.85) + "px";
+      minScaleMode = "0.85";
     }
     svg.setAttribute("data-pt-min-scale", minScaleMode);
     if (geometry) geometry.contentBounds = bounds;

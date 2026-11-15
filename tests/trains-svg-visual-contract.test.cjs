@@ -58,12 +58,14 @@ test('viewport trims unused geometry while retaining static label bounds', () =>
   assert.equal(bounds,geometry.contentBounds);
 });
 
-test('portrait mobile caps wide-branch scrolling to 12% of available width', () => {
+test('portrait mobile caps wide-branch scrolling to 4% of available width', () => {
   const commit = createViewport(393), svg = createSvg(344);
   const geom = {svgW:1100,svgH:1800,branchLines:[{id:'BranchA'},{id:'BranchB'}]};
   const bounds = commit(svg,{getBBox(){return {x:0,y:10,width:900,height:700};}},geom);
   assert.equal(bounds.width,948);
-  assert.equal(svg.style.minWidth,'386px');
+  assert.equal(svg.style.minWidth,'358px');
+  assert.equal(svg.style.maxWidth,'358px');
+  assert.equal(svg.attrs['data-pt-max-scale'],'1.18');
   assert.equal(svg.attrs['data-pt-min-scale'],'mobile-capped');
   assert.equal(svg.attrs.viewBox,'-24 -18 948 756');
 });
@@ -72,7 +74,29 @@ test('mobile landscape uses the same small overflow cap', () => {
   const commit = createViewport(840), svg = createSvg(760);
   commit(svg,{getBBox(){return {x:0,y:0,width:1200,height:800};}},
     {svgW:1300,svgH:900,branchLines:[{id:'Branch'}]});
-  assert.equal(svg.style.minWidth,'852px');
+  assert.equal(svg.style.minWidth,'791px');
+  assert.equal(svg.style.maxWidth,'791px');
+});
+
+test('mobile narrow routes never expand to fill the whole phone', () => {
+  const commit = createViewport(393), svg = createSvg(344);
+  const geom = {svgW:297,svgH:800,branchLines:[]};
+  const bounds = commit(svg, {getBBox(){
+    return {x:40,y:10,width:180,height:500};
+  }}, geom);
+  assert.equal(bounds.width,228);
+  assert.equal(svg.style.maxWidth,'270px');
+  assert.equal(svg.style.minWidth,undefined);
+  assert.equal(svg.attrs['data-pt-max-scale'],'1.18');
+  assert.equal(svg.attrs['data-pt-min-scale'],'fit');
+});
+
+test('a normal 297-unit phone map stays proportionate, not excessively reduced', () => {
+  const commit = createViewport(393), svg = createSvg(344);
+  commit(svg,{getBBox(){return {x:0,y:0,width:297,height:500};}},
+    {svgW:297,svgH:600,branchLines:[]});
+  assert.equal(svg.style.maxWidth,'358px');
+  assert.equal(svg.style.minWidth,undefined);
 });
 
 test('desktop keeps the readable 85% branch minimum', () => {
@@ -80,6 +104,7 @@ test('desktop keeps the readable 85% branch minimum', () => {
   commit(svg,{getBBox(){return {x:0,y:0,width:1200,height:800};}},
     {svgW:1300,svgH:900,branchLines:[{id:'Branch'}]});
   assert.equal(svg.style.minWidth,'1061px');
+  assert.equal(svg.style.maxWidth,undefined);
   assert.equal(svg.attrs['data-pt-min-scale'],'0.85');
 });
 
