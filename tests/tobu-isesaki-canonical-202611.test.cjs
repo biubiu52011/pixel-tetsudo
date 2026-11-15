@@ -65,11 +65,10 @@ test('through junctions are reciprocal; Kiryu/Sano are selected express only',()
  assert.ok(!L.TobuIsesaki.throughServices.includes('TobuNikko'));
 });
 test('ThroughChip shows only destination line names for Kiryu/Sano limited express through',()=>{
- const s=fs.readFileSync('js/trains-data.js','utf8');
- const p=s.indexOf('/* ThroughChip 属于列车地图几何所有者。 */');
- assert.ok(p>0);
+ // ThroughChip now has its own classic script and retains the same API.
+ const s=fs.readFileSync('js/through-chip.js','utf8');
  const w={currentLang:'ja'};
- vm.runInNewContext(s.slice(p),{window:w,console});
+ vm.runInNewContext(s,{window:w,console});
  for(const [id,name] of [['Kiryu','東武桐生線'],['Sano','東武佐野線']]){
   const chip={lineId:id,name,through:true,operator:'',
    throughScope:'selected-limited-express'};
