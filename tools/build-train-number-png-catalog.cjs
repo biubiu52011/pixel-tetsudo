@@ -70,6 +70,7 @@ function buildCatalog(snapshot, rows) {
   requires_exact_roster:r.requires_exact_roster===true,
   actual_vehicle_confirmed:r.actual_vehicle_confirmed===true
  }));
+ const representedJsKeys=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
  const js=rows.map((r,i)=>({
   id:'js-'+String(i+1).padStart(4,'0'),origin:'frontend_js',
   line_ids:r.lineIds,format:r.numberFormat||'tail',
@@ -85,6 +86,8 @@ function buildCatalog(snapshot, rows) {
   source_railways_if_present:r.sourceRailwaysIfPresent||null,
   direction_number_parity:r.directionNumberParity||null,
   requires_compatible_plan:r.requireCompatiblePlan===true,
+  runtime_guards:Object.fromEntries(Object.keys(r)
+   .filter(k=>!representedJsKeys.has(k)).sort().map(k=>[k,r[k]])),
   evidence_kind:(r.publishedNumbers||r.weekdayNumbers||r.holidayNumbers)?'exact-list':
     r.numberIndex?'external-index':
     r.officialMonthNumbers?'official-month-calendar-roster':
@@ -160,6 +163,9 @@ function buildCatalog(snapshot, rows) {
    cross_source_untested_js_rules:crossSource.unverified_js_rules.length,
    unregistered_sql_png_rules:missing.length,sql_assets_pending_review:pending.length,
    frontend_guard_only_rules:frontendGuardReview.length,
+   frontend_rules_with_additional_source_fields:js.filter(r=>
+    Object.keys(r.runtime_guards).length>0).length,
+   frontend_additional_source_keys:new Set(js.flatMap(r=>Object.keys(r.runtime_guards))).size,
    frontend_official_month_rosters:frontendMonthRoster.length,
    frontend_singleton_candidates:frontendSingleton.length,
    model_label_differences:labels.length,
@@ -190,6 +196,13 @@ function audit(c){
    errors.push(r.id+': number range missing exact-roster guard');
   if(r.origin==='sql_snapshot'&&!r.source_url)
    errors.push(r.id+': SQL rule missing provenance source');
+  if(r.origin==='frontend_js'&&(!r.runtime_guards||
+     typeof r.runtime_guards!=='object'||Array.isArray(r.runtime_guards)))
+   errors.push(r.id+': missing source-specific runtime qualifiers');
+  if(r.origin==='frontend_js'&&r.runtime_guards?.requireExplicitModelEvidence===true&&
+    (!Array.isArray(r.runtime_guards.allowedModelLabels)||
+     r.runtime_guards.allowedModelLabels.length===0))
+   errors.push(r.id+': explicit-model rule missing allowed model labels');
  }
  if(c.review.cross_source_number_png.png_conflicts.length)
   errors.push('SQL/frontend published train-number PNG artwork conflict');

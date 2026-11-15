@@ -22,6 +22,8 @@
     "unregistered_sql_png_rules": 0,
     "sql_assets_pending_review": 5,
     "frontend_guard_only_rules": 17,
+    "frontend_rules_with_additional_source_fields": 100,
+    "frontend_additional_source_keys": 17,
     "frontend_official_month_rosters": 2,
     "frontend_singleton_candidates": 1,
     "model_label_differences": 14,
@@ -5911,6 +5913,11 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "illustrative": true,
+        "referenceOnly": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6104,6 +6111,11 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": true,
+      "runtime_guards": {
+        "illustrative": true,
+        "referenceOnly": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6158,6 +6170,11 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": true,
+      "runtime_guards": {
+        "illustrative": true,
+        "referenceOnly": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6201,6 +6218,10 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "illustrative": true,
+        "referenceOnly": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6328,6 +6349,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E129系"
+        ],
+        "hakushinKind": "local",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "E129系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6366,6 +6396,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E129系"
+        ],
+        "hakushinKind": "rapid",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "E129系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6417,6 +6456,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E653系（いなほ）"
+        ],
+        "hakushinKind": "inaho",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "E653系（いなほ）",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6471,6 +6519,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "HB-E300系（海里）"
+        ],
+        "hakushinKind": "kairi",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "HB-E300系（海里）",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6513,6 +6570,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6569,6 +6634,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6660,6 +6733,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6713,6 +6794,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "rikutsuKind": "regular",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6752,6 +6842,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "rikutsuKind": "rapid",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6834,6 +6933,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "rikutoKind": "regular",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6877,6 +6985,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "rikutoKind": "rapid",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -6954,6 +7071,16 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハE130形100番台",
+          "キハE130系100番台"
+        ],
+        "regionalKind": "regular",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハE130形100番台",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7018,6 +7145,16 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "EV-E301系",
+          "EV-E301系（ACCUM）"
+        ],
+        "regionalKind": "regular",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "EV-E301系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7096,6 +7233,16 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハE130形500番台",
+          "キハE130系500番台"
+        ],
+        "regionalKind": "regular",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハE130形500番台",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7135,6 +7282,16 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハE130形500番台",
+          "キハE130系500番台"
+        ],
+        "regionalKind": "special",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハE130形500番台",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7173,6 +7330,16 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハE130形500番台",
+          "キハE130系500番台"
+        ],
+        "regionalKind": "special",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハE130形500番台",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7239,6 +7406,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "EV-E801系",
+          "EV-E801系（ACCUM）"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "EV-E801系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7313,6 +7489,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "ishinomakiKind": "regular",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7352,6 +7537,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "HB-E210系"
+        ],
+        "ishinomakiKind": "through",
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "HB-E210系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7494,6 +7688,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "キハ110系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7553,6 +7755,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E721系"
+        ],
+        "requiredCandidateModelPrefix": "E721系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7604,6 +7813,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E721系"
+        ],
+        "requiredCandidateModelPrefix": "E721系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7680,6 +7896,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "GV-E400系"
+        ],
+        "requiredCandidateModelPrefix": "GV-E400系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7718,6 +7941,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "GV-E400系"
+        ],
+        "requiredCandidateModelPrefix": "GV-E400系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7780,6 +8010,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "GV-E400系"
+        ],
+        "requiredCandidateModelPrefix": "GV-E400系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7835,6 +8072,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "requiredCandidateModelPrefix": "キハ110系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7887,6 +8131,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7932,6 +8182,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "C57形（SLばんえつ物語）"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -7976,6 +8232,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "DE10形（DLばんえつ物語）"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8150,6 +8412,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "GV-E400系"
+        ],
+        "requiredCandidateModelPrefix": "GV-E400系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8195,6 +8464,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "GV-E400系"
+        ],
+        "requiredCandidateModelPrefix": "GV-E400系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8423,6 +8699,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E131系800番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8489,6 +8771,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "HB-E210系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8689,6 +8977,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E131系500番台",
+          "E131系580番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8847,6 +9142,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E129系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8913,6 +9214,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "HB-E210系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -8969,6 +9276,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E129系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9015,6 +9328,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E129系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9213,6 +9532,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "211系（高崎地区）",
+          "211系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9334,6 +9661,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "211系（高崎地区）",
+          "211系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requireCandidateOverlap": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9373,6 +9709,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9410,6 +9752,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9453,6 +9801,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9496,6 +9850,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9538,6 +9898,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9577,6 +9943,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9614,6 +9986,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9658,6 +10036,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系5500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9771,6 +10155,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E131系600番台",
+          "E131系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9807,6 +10199,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E131系600番台",
+          "E131系"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -9841,6 +10241,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E235系0番台",
+          "E235系0番台（山手線）"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -9874,6 +10281,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -9906,6 +10314,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -9939,6 +10348,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -11067,6 +11477,18 @@
       ],
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "excludeTrainType": "LimitedExpress",
+        "operatorIfPresent": "JR-East",
+        "trainTypesIfPresent": [
+          "Rapid",
+          "ChuoSpecialRapid",
+          "OmeSpecialRapid",
+          "CommuterRapid",
+          "SpecialRapid",
+          "CommuterSpecialRapid"
+        ]
+      },
       "evidence_kind": "official-month-calendar-roster",
       "actual_vehicle_confirmed": false
     },
@@ -11174,6 +11596,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系0番台"
+        ],
+        "excludeTrainType": "LimitedExpress",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11214,6 +11643,15 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E127系",
+          "E127系100番台",
+          "E127系100番台（長野色）"
+        ],
+        "requiredCandidateModelPrefix": "E127系",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11334,6 +11772,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系0番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11375,6 +11819,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "211系",
+          "211系（長野地区）"
+        ],
+        "requireCandidateOverlap": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11416,6 +11868,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "211系",
+          "211系（長野地区）"
+        ],
+        "requireCandidateOverlap": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11499,6 +11959,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "211系（長野地区）"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11537,6 +12004,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系1000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -11575,6 +12048,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系6000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -11612,6 +12091,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E261系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11655,6 +12140,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系2000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11698,6 +12189,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系2000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11734,6 +12231,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系2500番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -11823,6 +12326,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "HB-E220系",
+          "HB-E220系（八高線）"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12006,6 +12517,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E231系3000番台"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requireExplicitModelEvidence": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12053,6 +12572,18 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "209系",
+          "209系2000番台",
+          "209系2100番台",
+          "209系2000番台 / 2100番台",
+          "209系（8両所定・計画車種／実際の代走は別）",
+          "209系（4両所定・計画車種／番台・実車未確定）"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12100,6 +12631,17 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "209系",
+          "209系2000番台",
+          "209系2100番台",
+          "209系2000番台 / 2100番台",
+          "209系（8両所定・計画車種／実際の代走は別）"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12139,6 +12681,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系5000番台"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12176,6 +12725,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系5000番台"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12291,6 +12847,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E231系0番台"
+        ],
+        "rejectAmbiguousPlan": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -12324,6 +12887,9 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "excludeTrainType": "LimitedExpress"
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -12357,6 +12923,9 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "excludeTrainType": "LimitedExpress"
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -12929,6 +13498,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E231系0番台（武蔵野線）",
+          "E231系0番台"
+        ],
+        "requireExplicitModelEvidence": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -13501,6 +14078,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "209系500番台（武蔵野線）",
+          "209系500番台"
+        ],
+        "requireExplicitModelEvidence": true,
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -13538,6 +14123,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": true,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系6000番台"
+        ],
+        "rejectAmbiguousPlan": true,
+        "requiredCandidateModelPrefix": "E233系6000番台",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -13589,6 +14182,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E235系1000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -13631,6 +14230,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E259系",
+          "E259系（成田エクスプレス）",
+          "E259系（しおさい）"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -13673,6 +14280,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E257系500番台",
+          "E257系500番台（わかしお・さざなみ）"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -13707,6 +14321,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E127系0番台（南武支線）",
+          "E127系0番台",
+          "E127系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -14479,6 +15101,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系8000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -14513,6 +15141,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "東京メトロ15000系"
+        ],
+        "sourceOperatorFallback": true,
+        "throughOwner": "S"
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -14547,6 +15182,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E231系800番台",
+          "E231系800番台（東西線直通）"
+        ],
+        "sourceOperatorFallback": true,
+        "throughOwner": "K"
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -14581,6 +15224,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "東京メトロ15000系"
+        ],
+        "excludeTrainType": "LimitedExpress",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14615,6 +15265,14 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E231系800番台",
+          "E231系800番台（東西線直通）"
+        ],
+        "excludeTrainType": "LimitedExpress",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14649,6 +15307,13 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "東葉高速2000系"
+        ],
+        "excludeTrainType": "LimitedExpress",
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14683,6 +15348,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E233系2000番台"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14717,6 +15388,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "東京メトロ16000系"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14751,6 +15428,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "小田急4000形"
+        ],
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14787,6 +15470,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E231系0番台",
+          "E231系0番台（常磐快速線・LED）"
+        ]
+      },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
     },
@@ -14823,6 +15512,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E657系",
+          "E657系（ひたち・ときわ）"
+        ]
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14859,6 +15554,12 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E657系",
+          "E657系（ひたち・ときわ）"
+        ]
+      },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -14898,6 +15599,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": true,
+      "runtime_guards": {},
       "evidence_kind": "singleton-compatible-plan",
       "actual_vehicle_confirmed": false
     },
@@ -15254,6 +15956,9 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "official-month-calendar-roster",
       "actual_vehicle_confirmed": false
     },
@@ -15386,6 +16091,9 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -15451,6 +16159,9 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -15495,6 +16206,9 @@
       "source_railways_if_present": null,
       "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
+      "runtime_guards": {
+        "sourceOperatorFallback": true
+      },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
@@ -15528,6 +16242,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -15561,6 +16276,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -15594,6 +16310,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     },
@@ -15627,6 +16344,7 @@
       "source_railways_if_present": null,
       "direction_number_parity": null,
       "requires_compatible_plan": false,
+      "runtime_guards": {},
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
     }

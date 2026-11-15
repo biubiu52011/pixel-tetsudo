@@ -115,3 +115,22 @@ test('SQL and frontend exact train-number PNG references have no contradictory p
  assert.ok(bad.review.cross_source_number_png.png_conflicts.length>0);
  assert.ok(audit(bad).some(e=>/SQL\/frontend published train-number PNG artwork conflict/.test(e)));
 });
+
+test('front-end PNG range metadata retains every source-specific guard and qualifier',()=>{
+ const owner=getRows();
+ const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
+ assert.equal(c.summary.frontend_rules_with_additional_source_fields,100);
+ assert.equal(c.summary.frontend_additional_source_keys,17);
+ assert.equal(owner.length,108);
+ owner.forEach((row,i)=>{
+  const rule=c.rules.find(r=>r.id==='js-'+String(i+1).padStart(4,'0'));
+  const remaining=Object.fromEntries(Object.keys(row)
+   .filter(k=>!represented.has(k)).sort().map(k=>[k,row[k]]));
+  assert.deepEqual(rule.runtime_guards,remaining,rule.id);
+ });
+ const tozai=c.rules.find(r=>r.id==='js-0091');
+ assert.equal(tozai.runtime_guards.excludeTrainType,'LimitedExpress');
+ assert.deepEqual(tozai.runtime_guards.allowedModelLabels,['東京メトロ15000系']);
+ const kashima=c.rules.find(r=>r.id==='js-0084');
+ assert.deepEqual(kashima.runtime_guards.allowedModelLabels,['E235系1000番台']);
+});

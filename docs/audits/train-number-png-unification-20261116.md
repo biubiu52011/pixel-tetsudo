@@ -54,3 +54,9 @@ node --test tests/train-number-png-runtime.test.cjs
 - 只对 **JS 明确列出的公开列车番号**执行相同线路、相同号码与后缀、SQL 区间内的 PNG 比较，当前 **180 对一致，0 对图片冲突**。这些记录在 `review.cross_source_number_png.verified_same_png` 中逐项可追溯；CI 对新增冲突直接失败。
 - Kashima 的 JS 规则没有同条目的明确公开列车号名单，当前 1 条记录保持 `unverified_js_rules`，不能由宽范围推出“两侧完全一致”的结论。
 - 此项核对只是静态来源间的 PNG 指向一致性；运营日、方向、列车种别及实体编组仍由既有各条线路的运行时核验约束，**不授予实际车辆身份**。
+
+## 第五次校对：保留完整运行时附加约束
+
+- 原先统一目录会列出号段、车种、日历等主要条件，但没有导出所有原生 JS 条目的附加约束。现将其以 `runtime_guards` 原样保存，**不新增或替换运行时映射权威**。
+- 108 条前端规则中，**100** 条含至少一个额外来源字段，共 **17** 种原字段键：包括 `allowedModelLabels`、`excludeTrainType`、`sourceOperatorFallback`、`trainTypesIfPresent`、`requireExplicitModelEvidence` 等。CI 检查这些字段与原始负责脚本逐项一致，不能被整理过程遗漏。
+- 鹿岛线 JS 通用区间虽然缺少同条目的明确列车号数组，但实际运行时另有 `verifyKashimaService`，专门依赖 SQL 签发的车次、日历、方向、沿途六站及车型证据。跨源比较中的 1 条 `unverified_js_rules` 指**无法直接比较两份静态号码表**，不是称鹿岛线缺少 SQL 精确核验。
