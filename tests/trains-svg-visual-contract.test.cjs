@@ -33,73 +33,40 @@ test('single branch width uses content needs, never an artificial 96px per branc
 });
 
 
-function createViewport(width) {
+function commitViewport(geometry, box={x:20,y:10,width:400,height:600}) {
   const start=rendererSource.indexOf('  function _commitStaticRouteViewport(');
   const end=rendererSource.indexOf('  // Read-only contract diagnostic:',start);
-  assert.ok(start>=0 && end>start);
-  const context=vm.createContext({window:{
-      innerWidth:width,TrainsConfig:{GEOM:{
-        MOBILE_BREAKPOINT:640,TABLET_BREAKPOINT:900,MOBILE_RENDER_SCALE:1.45
-      }}
-    },_isMobileView:()=>width<=640});
-  vm.runInContext(rendererSource.slice(start,end),context);
-  return context._commitStaticRouteViewport;
+  assert.ok(start>=0&&end>start);
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(start,end),env);
+  const svg={attrs:{},style:{},setAttribute(k,v){this.attrs[k]=v;}};
+  const bounds=env._commitStaticRouteViewport(svg,{getBBox(){return box;}},geometry);
+  return {svg,bounds,geometry};
 }
-function svg(wrapperWidth=344) {
-  return {style:{},attrs:{},parentNode:{clientWidth:wrapperWidth},
-    setAttribute(name,v){this.attrs[name]=v;}};
-}
-function runViewport(commit,width,branchLines=[],wrapperWidth=344) {
-  const el=svg(wrapperWidth),geometry={svgW:1200,svgH:900,branchLines};
-  const bounds=commit(el,{getBBox(){return {x:15,y:10,width,height:700};}},geometry);
-  return {el,bounds,geometry};
-}
-test('Ito and ChuoSobuLocal have the same final physical mobile pixel scale',()=>{
-  const lines=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
-  assert.equal(lines.Ito.stations.length,6);
-  assert.equal(lines.ChuoSobuLocal.stations.length,39);
-  assert.equal(lines.Ito.type,lines.ChuoSobuLocal.type);
-  const commit=createViewport(393),a=runViewport(commit,205),b=runViewport(commit,315);
-  const x=parseFloat(a.el.style.width)/a.bounds.width;
-  const y=parseFloat(b.el.style.width)/b.bounds.width;
-  assert.ok(Math.abs(x-1.45) < 1e-9);
-  assert.ok(Math.abs(y-1.45) < 1e-9);
-  assert.equal(a.el.style.maxWidth,'none');
-  assert.equal(b.el.style.maxWidth,'none');
-  assert.equal(a.el.attrs['data-pt-render-scale'],'1.45');
-  assert.equal(b.el.attrs['data-pt-render-scale'],'1.45');
-  assert.equal(Math.round(14*x*10)/10,20.3);
-  assert.equal(Math.round(16*y*10)/10,23.2);
+test('viewBox has a fixed width and origin; only route height may change',()=>{
+  const a=commitViewport({svgW:420,svgH:700,canvasScale:0.8,canvasOffsetX:24,canvasOffsetY:24});
+  const b=commitViewport({svgW:420,svgH:2200,canvasScale:0.8,canvasOffsetX:24,canvasOffsetY:24},
+    {x:-300,y:-80,width:1500,height:2400});
+  assert.equal(a.svg.attrs.viewBox,'0 0 420 700');
+  assert.equal(b.svg.attrs.viewBox,'0 0 420 2200');
+  assert.ok(b.geometry.canvasOverflow.left>0);
+  assert.ok(b.geometry.canvasOverflow.right>0);
+  assert.equal(a.svg.attrs['data-pt-canvas-fit'],'fixed-width-route-height');
+  assert.equal(a.svg.style.width,undefined);
+  assert.equal(b.svg.style.minWidth,undefined);
 });
-test('mobile branch does not shrink its stations to fit the whole map',()=>{
-  const a=runViewport(createViewport(393),900,[{id:'A'},{id:'B'}]);
-  assert.equal(a.bounds.width,948);
-  assert.equal(a.el.style.width,'1374.6px');
-  assert.equal(a.el.style.maxWidth,'none');
-  assert.equal(a.el.attrs['data-pt-min-scale'],'fixed-mobile');
-});
-test('tablet and desktop branch display retain their existing guards',()=>{
-  const tablet=runViewport(createViewport(840),1200,[{id:'A'}],760);
-  assert.equal(tablet.el.style.minWidth,'791px');
-  assert.equal(tablet.el.style.maxWidth,'791px');
-  const desktop=runViewport(createViewport(1200),1200,[{id:'A'}]);
-  assert.equal(desktop.el.style.minWidth,'1061px');
-  assert.equal(desktop.el.attrs['data-pt-min-scale'],'0.85');
-});
-test('six-shaped loop retains full-screen mode',()=>{
-  const e=svg(),g={svgW:400,svgH:700,isSixShapedLoop:true,branchLines:[{id:'B'}]};
-  createViewport(393)(e,{getBBox(){return {x:0,y:0,width:500,height:600};}},g);
-  assert.equal(e.attrs['data-pt-min-scale'],'fit');
-  assert.equal(e.style.width,undefined);
-  assert.equal(e.style.maxWidth,undefined);
-  assert.equal(e.style.minWidth,undefined);
-});
-test('invalid font metrics use stable fallback geometry and mobile scale',()=>{
-  const el=svg(),g={svgW:297,svgH:700,branchLines:[]};
-  createViewport(393)(el,{getBBox(){throw Error('font pending');}},g);
-  assert.equal(el.attrs.viewBox,'0 0 297 700');
-  assert.equal(el.style.width,'430.65px');
-  assert.match(cssSource,/overflow-x: auto/);
+test('six-shaped loop uses the same static canvas even when font metrics are unavailable',()=>{
+  const route={svgW:420,svgH:2300,isSixShapedLoop:true};
+  const result=commitViewport(route,{x:0,y:0,width:300,height:1800});
+  assert.equal(result.svg.attrs.viewBox,'0 0 420 2300');
+  const a=rendererSource.indexOf('  function _commitStaticRouteViewport(');
+  const b=rendererSource.indexOf('  // Read-only contract diagnostic:',a);
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(a,b),env);
+  const svg={attrs:{},setAttribute(k,v){this.attrs[k]=v;}};
+  env._commitStaticRouteViewport(svg,{getBBox(){throw Error('font pending');}},route);
+  assert.equal(svg.attrs.viewBox,'0 0 420 2300');
+  assert.equal(route.canvasOverflow,null);
 });
 test('ordinary segments share 45-unit spacing and local transfer exceptions',()=>{
   const lines=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
@@ -122,14 +89,14 @@ test('ordinary segments share 45-unit spacing and local transfer exceptions',()=
     assert.equal(context.yAt(2)-context.yAt(1),45);
   }
 });
-test('runtime audit exposes measured scale and effective station sizes',()=>{
+test('SVG audit reports fixed frame, CSS scale and overflow',()=>{
+  assert.match(rendererSource,/fixedCanvasWidth/);
   assert.match(rendererSource,/actualCssPxPerUnit/);
-  assert.match(rendererSource,/targetCssPxPerUnit/);
+  assert.match(rendererSource,/staticCanvasOverflow/);
   assert.match(rendererSource,/stationCircleDiameterPx/);
   assert.match(rendererSource,/stationLabelFontPx/);
-  assert.match(rendererSource,/winner - bounds\.x/);
+  assert.doesNotMatch(rendererSource,/winner - bounds\.x/);
 });
-
 
 function realMobilePredicate(width, screenWidth, screenHeight) {
   const begin=geometrySource.indexOf('var _isMobileView = typeof _isMobileView');
@@ -151,75 +118,28 @@ test('portrait, landscape and narrow desktop share one phone geometry mode',()=>
   assert.equal(realMobilePredicate(1200,1200,800),false);
   assert.match(cssSource,/@media \(max-width: 640px\)/);
 });
-function scrollHelper() {
-  const begin=rendererSource.indexOf('  function _centerStaticRouteScroll(');
-  const end=rendererSource.indexOf('  // Read-only contract diagnostic:',begin);
-  assert.ok(begin>=0 && end>begin);
-  const context=vm.createContext({});
-  vm.runInContext(rendererSource.slice(begin,end),context);
-  return context._centerStaticRouteScroll;
-}
-test('rapid line switch never lets an outdated SVG animation frame pan the new map',()=>{
-  const center=scrollHelper();
-  const active={getAttribute(){return '1.45';}};
-  const stale={getAttribute(){return '1.45';}};
-  const el={scrollWidth:1200,clientWidth:344,scrollLeft:127,
-    querySelector(){return active;}};
-  const geom={stationCoords:[{x:400}],contentBounds:{x:0,width:900}};
-  center(el,stale,geom);
-  assert.equal(el.scrollLeft,127);
-  center(el,active,geom);
-  assert.equal(el.scrollLeft,Math.round(400*1.45-344/2));
+test('static train and route layers always use the same layout transform',()=>{
+  assert.ok(rendererSource.includes('staticLayer.setAttribute("transform", geometry.canvasTransform)'));
+  assert.ok(rendererSource.includes('trainLayer.setAttribute("transform", geometry.canvasTransform)'));
+  assert.ok(rendererSource.includes('trainLayer.getScreenCTM()'));
+  assert.doesNotMatch(rendererSource,/_centerStaticRouteScroll/);
+  assert.doesNotMatch(rendererSource,/el\.scrollLeft\s*=/);
 });
-test('branch map pans to its trunk rather than centering unrelated branch columns',()=>{
-  const center=scrollHelper();
-  const active={getAttribute(){return '1.45';}};
-  const el={scrollWidth:1500,clientWidth:344,scrollLeft:0,querySelector(){return active;}};
-  const geom={stationCoords:[{x:240},{x:240},{x:240},{x:110},{x:380}],
-    contentBounds:{x:-350,width:1030}};
-  center(el,active,geom);
-  assert.equal(el.scrollLeft,Math.round((240+350)*1.45-344/2));
-  geom.isSixShapedLoop=true;
-  center(el,active,geom);
-  assert.equal(el.scrollLeft,0);
-  geom.isSixShapedLoop=false;
-  el.scrollWidth=el.clientWidth;
-  center(el,active,geom);
-  assert.equal(el.scrollLeft,0);
-});
-
-
-test('one canonical JS layout configuration owns mobile breakpoints and SVG scale',()=>{
-  const dataConfig=geometrySource.match(/window\.TrainsConfig\s*=\s*\{[\s\S]*?\n\};/);
-  assert.ok(dataConfig);
-  for(const [token,count] of [['MOBILE_BREAKPOINT',640],['TABLET_BREAKPOINT',900],['MOBILE_RENDER_SCALE',1.45]]){
-    assert.match(dataConfig[0],new RegExp('\\b'+token+':\\s*'+String(count).replace('.','\\.')+'\\b'));
-    const consumer=token==='MOBILE_BREAKPOINT' ? geometrySource : rendererSource;
-    assert.match(consumer,new RegExp('TrainsConfig\\.GEOM\\.'+token));
-  }
+test('one geometry config owns the fixed viewBox width and route-derived height',()=>{
+  assert.match(geometrySource,/CANVAS_WIDTH:\s*420/);
+  assert.match(geometrySource,/CANVAS_GUTTER:\s*24/);
+  assert.match(geometrySource,/CANVAS_MAX_CONTENT_SCALE:\s*1\.2/);
+  assert.ok(geometrySource.includes('svgW = GEOM.CANVAS_WIDTH'));
+  assert.ok(geometrySource.includes('svgH = Math.ceil(layoutHeight * contentScale'));
+  assert.ok(geometrySource.includes('canvasTransform: canvasTransform'));
+  assert.doesNotMatch(geometrySource,/MOBILE_RENDER_SCALE/);
   assert.equal((geometrySource.match(/window\.TrainsConfig\s*=/g)||[]).length,1);
-  assert.equal((rendererSource.match(/\bvar physicalScale\s*=/g)||[]).length,1);
-  assert.doesNotMatch(rendererSource,/var physicalScale\s*=\s*1\.45\b/);
-  assert.match(cssSource,/@media \(max-width: 640px\)/);
 });
-
-test('static SVG dimensions have one CSS owner and conditional mobile JS override',()=>{
-  assert.equal((cssSource.match(/\.tp-map-wrap\s*>\s*svg\s*\{/g)||[]).length,2,
-    'base SVG and six-shaped override selectors');
-  assert.doesNotMatch(cssSource,/\.tp-map-wrap svg\s*\{/);
-  assert.equal((cssSource.match(/padding:\s*6px;/g)||[]).length,1,
-    'single mobile map padding declaration');
-  assert.doesNotMatch(rendererSource,/svg\.style\.height\s*=/);
-  assert.doesNotMatch(rendererSource,/svg\.style\.background\s*=/);
-  assert.doesNotMatch(rendererSource,/svg\.style\.width\s*=\s*["']100%["']/);
+test('responsive CSS fits fixed frame; no horizontal pan or JS width override',()=>{
+  assert.equal((cssSource.match(/\.tp-map-wrap\s*>\s*svg\s*\{/g)||[]).length,1);
+  assert.doesNotMatch(cssSource,/overflow-x:\s*auto/);
+  assert.match(cssSource,/overflow-x:\s*clip/);
+  assert.match(cssSource,/touch-action:\s*pan-y/);
   assert.match(cssSource,/\.tp-map-wrap\s*>\s*svg\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;/);
-});
-
-test('six-shaped loop cannot receive tablet width cap over its CSS fit template',()=>{
-  const el=svg(344),geom={svgW:400,svgH:900,isSixShapedLoop:true,branchLines:[{id:'A'}]};
-  createViewport(393)(el,{getBBox(){return{x:0,y:0,width:500,height:700};}},geom);
-  assert.equal(el.style.width,undefined);
-  assert.equal(el.style.maxWidth,undefined);
-  assert.equal(el.style.minWidth,undefined);
-  assert.equal(el.attrs['data-pt-max-scale'],undefined);
+  assert.doesNotMatch(rendererSource,/svg\.style\.(?:height|width|minWidth|maxWidth)\s*=/);
 });
