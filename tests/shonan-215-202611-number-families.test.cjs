@@ -235,7 +235,8 @@ test('one train SVG component renders one reference image, never a tandem candid
   assert.equal(spec.iconSrc,img);
   assert.equal(spec.planned,true);
   assert.equal(spec.compact,false,'one illustrated fleet SVG image');
-  assert.equal(spec.candidateAssets.length,0,'no extra vehicle images');
+  assert.equal(Object.hasOwn(spec,'candidateAssets'),false,
+    'resolved one-image markers do not carry retired candidate asset pools');
   const start=render.indexOf('  function _createTrainMarker(');
   const end=render.indexOf('  // TrainComponent is the sole public lifecycle',start);
   assert.ok(start>=0&&end>start);
