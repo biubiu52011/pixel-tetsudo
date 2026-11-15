@@ -155,6 +155,7 @@ function inspect(root = path.resolve(__dirname, '..')) {
       errors.push('JS number->PNG path not found: ' + match[1]);
 
   const png = listPng(root), hashGroups = new Map();
+  if (!png.length) errors.push('Train PNG library is empty or unavailable');
   for (const file of png) {
     const sha = crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex');
     if (!hashGroups.has(sha)) hashGroups.set(sha, []);
