@@ -678,6 +678,35 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return bounds;
   }
 
+  // Scroll is tied to this exact static SVG instance; outdated callbacks
+  // from a rapid line switch cannot recenter the replacement route. Prefer
+  // the main track over the bounding box of far-away branch columns.
+  function _centerStaticRouteScroll(el, svg, geometry) {
+    if (!el || !svg || !geometry || !el.querySelector ||
+        el.querySelector(".tp-map-wrap > svg") !== svg) return;
+    if (geometry.isSixShapedLoop) { el.scrollLeft = 0; return; }
+    var scrollMax = Math.max(0, Number(el.scrollWidth) - Number(el.clientWidth));
+    if (!(scrollMax > 0)) { el.scrollLeft = 0; return; }
+    var scale = Number(svg.getAttribute("data-pt-render-scale"));
+    var bounds = geometry.contentBounds;
+    var points = geometry.stationCoords || [];
+    if (scale > 0 && bounds && points.length) {
+      // Main trunk station x is the modal position; Y forks include one
+      // divergent station and should not drag the whole map toward that arm.
+      var counts = Object.create(null), winner = points[0].x, maxCount = 0;
+      points.forEach(function(point) {
+        if (!point || !isFinite(point.x)) return;
+        var key = String(Math.round(point.x * 10) / 10);
+        counts[key] = (counts[key] || 0) + 1;
+        if (counts[key] > maxCount) { maxCount = counts[key]; winner = point.x; }
+      });
+      var focus = (winner - bounds.x) * scale - el.clientWidth / 2;
+      el.scrollLeft = Math.max(0, Math.min(scrollMax, Math.round(focus)));
+    } else {
+      el.scrollLeft = Math.round(scrollMax / 2);
+    }
+  }
+
   // Read-only contract diagnostic: use it to inspect any operator/line in DevTools.
   function auditRouteCanvas(el) {
     var svg = el && el.querySelector && el.querySelector(".tp-map-wrap > svg");
@@ -1076,27 +1105,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         _mapWrap.appendChild(_bnEl);
       }
       _mapWrap.appendChild(svg);
-      // Wide maps open with the main track visible; branches remain pannable.
-      // Realtime/position refreshes never change this static viewport.
-      if (geometry.isSixShapedLoop) {
-        el.scrollLeft = 0;
-      } else {
-        requestAnimationFrame(function () {
-          try {
-            var _scW = el.scrollWidth, _ccW = el.clientWidth;
-            if (_scW <= _ccW) return;
-            var _scale = Number(svg.getAttribute("data-pt-render-scale"));
-            var _bounds = geometry.contentBounds;
-            var _focus = geometry.stationCoords && geometry.stationCoords[0];
-            if (_scale > 0 && _bounds && _focus && isFinite(_focus.x)) {
-              el.scrollLeft = Math.max(0, Math.round(
-                (_focus.x - _bounds.x) * _scale - _ccW / 2));
-            } else {
-              el.scrollLeft = Math.round((_scW - _ccW) / 2);
-            }
-          } catch (_ignored) { /* scroll position is a presentation detail */ }
-        });
-      }
+      // Wait until the committed viewBox has produced final SVG dimensions.
+      // An older animation frame must never move a newly selected line.
+      requestAnimationFrame(function () {
+        try { _centerStaticRouteScroll(el, svg, geometry); }
+        catch (_ignored) { /* scrolling is only presentation */ }
+      });
 
       // 将过长站名限制在可用宽度内（行业做法：
       // 缩小，不裁剪）。挂载后运行以确保 getBBox 准确。

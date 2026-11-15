@@ -961,8 +961,15 @@ window.TrainsConfig = {
 window.GEOM = window.TrainsConfig.GEOM;
 window.TrainsColors = window.TrainsConfig.COLORS;
 
+// One mobile geometry predicate is shared by the data layer and SVG renderer.
+// A phone stays a phone after landscape rotation; a narrow desktop window
+// still gets the compact layout. CSS controls page padding independently.
 var _isMobileView = typeof _isMobileView === "function" ? _isMobileView : function() {
-  return typeof window !== "undefined" && window.innerWidth < 600;
+  if (typeof window === "undefined") return false;
+  if (window.innerWidth <= 640) return true;
+  var screen = window.screen;
+  return !!(screen && Number(screen.width) > 0 && Number(screen.height) > 0 &&
+    Math.min(screen.width, screen.height) <= 640);
 };
 
 var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {

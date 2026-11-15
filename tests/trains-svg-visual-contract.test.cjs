@@ -38,7 +38,7 @@ function createViewport(width) {
   const end=rendererSource.indexOf('  // Read-only contract diagnostic:',start);
   assert.ok(start>=0 && end>start);
   const context=vm.createContext({window:{innerWidth:width},
-    _isMobileView:()=>width<600});
+    _isMobileView:()=>width<=640});
   vm.runInContext(rendererSource.slice(start,end),context);
   return context._commitStaticRouteViewport;
 }
@@ -123,4 +123,62 @@ test('runtime audit exposes measured scale and effective station sizes',()=>{
   assert.match(rendererSource,/stationCircleDiameterPx/);
   assert.match(rendererSource,/stationLabelFontPx/);
   assert.match(rendererSource,/_focus.x - _bounds.x/);
+});
+
+
+function realMobilePredicate(width, screenWidth, screenHeight) {
+  const begin=geometrySource.indexOf('var _isMobileView = typeof _isMobileView');
+  const end=geometrySource.indexOf('var _geomKey =',begin);
+  assert.ok(begin >= 0 && end > begin);
+  const win={innerWidth:width};
+  if (screenWidth != null) win.screen={width:screenWidth,height:screenHeight};
+  const context=vm.createContext({window:win});
+  vm.runInContext(geometrySource.slice(begin,end),context);
+  return context._isMobileView();
+}
+test('portrait, landscape and narrow desktop share one phone geometry mode',()=>{
+  assert.equal(realMobilePredicate(393,393,852),true);
+  assert.equal(realMobilePredicate(844,393,852),true);
+  assert.equal(realMobilePredicate(932,430,932),true);
+  assert.equal(realMobilePredicate(640,1440,900),true);
+  assert.equal(realMobilePredicate(641,1440,900),false);
+  assert.equal(realMobilePredicate(820,820,1180),false);
+  assert.equal(realMobilePredicate(1200,1200,800),false);
+  assert.match(cssSource,/@media \(max-width: 640px\)/);
+});
+function scrollHelper() {
+  const begin=rendererSource.indexOf('  function _centerStaticRouteScroll(');
+  const end=rendererSource.indexOf('  // Read-only contract diagnostic:',begin);
+  assert.ok(begin>=0 && end>begin);
+  const context=vm.createContext({});
+  vm.runInContext(rendererSource.slice(begin,end),context);
+  return context._centerStaticRouteScroll;
+}
+test('rapid line switch never lets an outdated SVG animation frame pan the new map',()=>{
+  const center=scrollHelper();
+  const active={getAttribute(){return '1.45';}};
+  const stale={getAttribute(){return '1.45';}};
+  const el={scrollWidth:1200,clientWidth:344,scrollLeft:127,
+    querySelector(){return active;}};
+  const geom={stationCoords:[{x:400}],contentBounds:{x:0,width:900}};
+  center(el,stale,geom);
+  assert.equal(el.scrollLeft,127);
+  center(el,active,geom);
+  assert.equal(el.scrollLeft,Math.round(400*1.45-344/2));
+});
+test('branch map pans to its trunk rather than centering unrelated branch columns',()=>{
+  const center=scrollHelper();
+  const active={getAttribute(){return '1.45';}};
+  const el={scrollWidth:1500,clientWidth:344,scrollLeft:0,querySelector(){return active;}};
+  const geom={stationCoords:[{x:240},{x:240},{x:240},{x:110},{x:380}],
+    contentBounds:{x:-350,width:1030}};
+  center(el,active,geom);
+  assert.equal(el.scrollLeft,Math.round((240+350)*1.45-344/2));
+  geom.isSixShapedLoop=true;
+  center(el,active,geom);
+  assert.equal(el.scrollLeft,0);
+  geom.isSixShapedLoop=false;
+  el.scrollWidth=el.clientWidth;
+  center(el,active,geom);
+  assert.equal(el.scrollLeft,0);
 });
