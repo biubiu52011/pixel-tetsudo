@@ -121,7 +121,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             left <= col.x + 5 && right >= col.x - 5) score += 20;
       });
       if (left < 2) score += 4;
-      if (right > (Number(geometry.svgW) || 0) - 2) score += 4;
+      if (right > (Number(geometry.layoutWidth) || 0) - 2) score += 4;
       return {side:side, elevated:occupiedExit, score:score};
     }
     var left = candidate("left"), right = candidate("right");
@@ -612,35 +612,40 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
   }
 
-  // L1: the surrounding HTML owns the background. Only static rail content
-  // defines this viewport; a realtime train must never resize or recenter it.
-  // getBBox includes station names/chips, so do not preserve unused geometry
-  // padding when the content itself fits in a smaller rectangle.
+  // The SVG is a static frame, not a camera. Geometry owns its fixed
+  // width and route-derived height; getBBox is diagnostic ONLY and cannot
+  // change x, y, width, height or reposition the SVG.
   function _commitStaticRouteViewport(svg, staticLayer, geometry) {
-    var width = Math.max(1, Number(geometry && geometry.svgW) || 1);
-    var height = Math.max(1, Number(geometry && geometry.svgH) || 1);
-    var bounds = { x:0, y:0, width:width, height:height };
+    var bounds = {
+      x: 0, y: 0,
+      width: Number(geometry.svgW),
+      height: Number(geometry.svgH)
+    };
+    if (!(bounds.width > 0) || !(bounds.height > 0))
+      throw new Error("Invalid fixed train canvas geometry");
+    svg.setAttribute("viewBox", "0 0 " + bounds.width + " " + bounds.height);
+    svg.setAttribute("data-pt-viewport-source", "route-geometry");
+    svg.setAttribute("data-pt-canvas-fit", "fixed-width-route-height");
+    geometry.contentBounds = bounds;
+
+    // Audit the transformed drawing against the nonmoving viewBox.
+    // The result is exposed to DevTools; it does NOT resize or recenter.
+    geometry.canvasOverflow = null;
     try {
-      var box = staticLayer && staticLayer.getBBox && staticLayer.getBBox();
+      var box = staticLayer.getBBox();
       if (box && isFinite(box.x) && isFinite(box.y) &&
-          isFinite(box.width) && isFinite(box.height) &&
-          box.width > 0 && box.height > 0) {
-        // Leave clearance for the 5px stroke and train marker side lanes,
-        // but do not take the union with the old generously padded svgW/H.
-        var padX = 24, padY = 28;
-        bounds = { x:box.x-padX, y:box.y-padY,
-          width:box.width+2*padX, height:box.height+2*padY };
+          isFinite(box.width) && isFinite(box.height)) {
+        var k = Number(geometry.canvasScale) || 1;
+        var x = (Number(geometry.canvasOffsetX) || 0) + box.x * k;
+        var y = (Number(geometry.canvasOffsetY) || 0) + box.y * k;
+        geometry.canvasOverflow = {
+          left: Math.max(0, -x),
+          top: Math.max(0, -y),
+          right: Math.max(0, x + box.width * k - bounds.width),
+          bottom: Math.max(0, y + box.height * k - bounds.height)
+        };
       }
-    } catch (_ignored) {
-      // Unavailable SVG text metrics: keep the deterministic geometry fallback.
-    }
-    svg.setAttribute("viewBox", [bounds.x,bounds.y,bounds.width,bounds.height].join(" "));
-    svg.setAttribute("data-pt-viewport-source", "static-route");
-    // The SVG is a fixed, responsive route surface. Its viewport is
-    // determined only by static station/track bounds, while CSS fits the
-    // entire drawing to the host without pixel-width overrides or panning.
-    svg.setAttribute("data-pt-canvas-fit", "locked-responsive");
-    if (geometry) geometry.contentBounds = bounds;
+    } catch (_ignored) { /* SVG text measurements are not guaranteed. */ }
     return bounds;
   }
 
@@ -672,11 +677,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       viewport: viewport,
       matchesStaticBounds: !!expected && viewport === expectedViewport,
       renderedWidthPx: rect ? rect.width : null,
-      actualCssPxPerUnit: realScale == null ? null : Math.round(realScale * 1000) / 1000,
+      actualCssPxPerUnit: realScale == null ? null :
+        Math.round(realScale * (Number(geometry.canvasScale) || 1) * 1000) / 1000,
+      fixedCanvasWidth: Number(geometry.svgW) || null,
+      layoutWidth: Number(geometry.layoutWidth) || null,
+      layoutHeight: Number(geometry.layoutHeight) || null,
+      staticCanvasOverflow: geometry.canvasOverflow || null,
       stationCircleDiameterPx: circle && realScale != null
-        ? Math.round(2 * Number(circle.getAttribute("r")) * realScale * 10) / 10 : null,
+        ? Math.round(2 * Number(circle.getAttribute("r")) * realScale *
+          (Number(geometry.canvasScale) || 1) * 10) / 10 : null,
       stationLabelFontPx: label && realScale != null
-        ? Math.round(Number(label.getAttribute("font-size")) * realScale * 10) / 10 : null,
+        ? Math.round(Number(label.getAttribute("font-size")) * realScale *
+          (Number(geometry.canvasScale) || 1) * 10) / 10 : null,
       staticLayers: svg.querySelectorAll(".static-layer").length,
       trackLayers: svg.querySelectorAll(".route-track-layer").length,
       stationNodeLayers: svg.querySelectorAll(".station-node-layer").length,
@@ -706,8 +718,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         ? existingSvg.__geometry : null;
       var geometry = computeRouteGeometry(displayLine, lineId, positionGeometry);
       var stationCoords = geometry.stationCoords;
-      var svgW = geometry.svgW;
-      var svgH = geometry.svgH;
+      // Local layout units differ from the public, fixed-width viewBox.
+      var svgW = geometry.layoutWidth;
+      var svgH = geometry.layoutHeight;
       // All layouts, including six-shaped loops, share the same locked SVG canvas.
       var isMobileView = _isMobileView();
       var color = geometry.color;
@@ -739,7 +752,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var svgNS = "http://www.w3.org/2000/svg";
       var svg = document.createElementNS(svgNS, "svg");
       svg.setAttribute("xmlns", svgNS);
-      svg.setAttribute("viewBox", "0 0 " + svgW + " " + svgH);
+      svg.setAttribute("viewBox", "0 0 " + geometry.svgW + " " + geometry.svgH);
       svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
       // Static size/background are defined once in trains.css. Only the
       // committed viewport may override width for the mobile physical scale.
@@ -759,6 +772,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // === 静态层：线路、车站、标签（每条线路只构建一次） ===
       var staticLayer = document.createElementNS(svgNS, "g");
       staticLayer.setAttribute("class", "static-layer");
+      staticLayer.setAttribute("transform", geometry.canvasTransform);
       // All operators use the same painter order: route -> nodes -> L3 info.
       // No station or branch may append its own isolated SVG canvas.
       var trackLayer = document.createElementNS(svgNS, "g");
@@ -1015,6 +1029,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // === 列车层 ===
       var trainLayer = document.createElementNS(svgNS, "g");
       trainLayer.setAttribute("class", "train-layer");
+      trainLayer.setAttribute("transform", geometry.canvasTransform);
       svg.appendChild(trainLayer);
       
       // 替换内容。
@@ -1023,8 +1038,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // （tp-est-note、下・中央）に置く。
       el.innerHTML = '<div class="tp-map-wrap"></div>';
       var _mapWrap = el.querySelector('.tp-map-wrap');
-      // CSS owns the baseline responsive SVG surface; this wrapper remains
-      // full-width while only truly wide maps may scroll horizontally.
+      // The entire route fits a fixed-width SVG frame; it never pans.
       // 竖列支线名 HTML 图注（SVG 上方，线色着色，多条以 · 分隔）
       if (_branchNoteItems.length) {
         var _bnEl = document.createElement('div');
@@ -2500,7 +2514,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (trainLayer._captionPendingCount < trainLayer._captionPendingTotal) return;
     }
     trainLayer._captionFrameTime = frameTime;
-    var matrix = svg.getScreenCTM();
+    // Train markers live in a static scaled layout group; screen-space
+    // collision and folded badges must use that group's CTM.
+    var matrix = trainLayer.getScreenCTM();
     if (!matrix || !matrix.a || !matrix.d) return;
     var oldBadges = trainLayer.querySelectorAll('[data-train-fold-badge]');
     for (var f = 0; f < oldBadges.length; f++)
