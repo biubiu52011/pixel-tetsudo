@@ -12,6 +12,8 @@ on:
       - 'data/audits/railway-metadata-known-gaps-20261116.json'
       - 'data/audits/supabase-railway-audit-snapshot-20261116.json'
       - 'data/timetables/train-number-png-ranges.js'
+      - 'data/audits/train-number-png-catalog-2611.json'
+      - 'tools/build-train-number-png-catalog.cjs'
       - 'data/timetables/vehicle-garage-png-map.js'
       - 'images/列车/**'
       - 'images/鉄道/**'
@@ -35,5 +37,7 @@ jobs:
         run: node tools/railway-metadata-audit.cjs --strict
       - name: Assert known repaired registry contracts
         run: node --test tests/railway-metadata-audit.test.cjs
+      - name: Verify normalized number-to-PNG catalog and mapping safety
+        run: node tools/build-train-number-png-catalog.cjs --check --strict
       - name: Verify generated static bundles are synchronized
         run: node data/core/generate-all.js --check
