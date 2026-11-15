@@ -118,3 +118,26 @@ corridor.holiday: {"official":354,"matched":354,"unresolved":[]}
 官方参考：
 https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html
 https://www.twr.co.jp/Default.aspx?TabId=382
+
+
+## 第八次校对：东京 Metro／都营地下铁源番号 PNG（2026-11-16）
+
+- 复用现有 JavaScript 号段负责人，新增 **13** 条完整车次号白名单规则：银座 1000、丸之内本线 2000、丸之内支线 2000（需车型证据）、千代田 16000、千代田支线 16000／05（需车型证据）、南北 9000、有乐町与副都心 17000／10000（需车型证据）、都营三田 6300／6500（需车型证据）。同时增加 A/B 前缀 3～5 位号码及字母后缀解析，保留旧东西线、日比谷、半藏门的专门负责人。
+- 数据从当前 `public.manual_timetable_templates` 按平日／休日去重，保留完整番号 A/B + 数字 + 运营公司字母。**不进行运用编号转换**；min/max 只是快速过滤，必须满足精确号名单、线路、源铁路、服务日历及所需车型证据，才返回参考图。
+- SQL `source_revision_date` 仍未核实，不能宣称名单已得到 2026-11 官方逐日验证。2026-11-01～30 只是保守展示授权窗口；**PNG 不是实际运营编组证据**。
+- 既有都营浅草／新宿／大江户线没有精确导入列车番号来源，故不杜撰号段，不把跨公司车辆一律映射成一个车型。三田线 K/G 他社车保持未解析。没有新增数据库表或车号候选池。
+- JS 110→123，线路键 76→85，SQL 仍 291，新增 SQL/JS 图片冲突 0，纯宽段待核 9。
+
+| Line key | 平日完整番号 | 休日完整番号 |
+| --- | ---: | ---: |
+| Ginza | 728 | 618 |
+| Marunouchi | 686 | 503 |
+| MarunouchiBranch | 366 | 292 |
+| Chiyoda | 294 | 223 |
+| ChiyodaBranch | 36 | 37 |
+| Namboku | 201 | 195 |
+| Yurakucho | 282 | 261 |
+| Fukutoshin | 150 | 170 |
+| Mita | 319 | 278 |
+
+官方车型索引：<https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html>；<https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/>。车次来源仅为既有导入 SQL，修订日期尚待证实。

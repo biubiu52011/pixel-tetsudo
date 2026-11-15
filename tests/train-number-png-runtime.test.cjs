@@ -3228,3 +3228,34 @@ test('mixed Tozai S and Rinkai 8x number tails select only evidence-qualified un
   sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
   serviceDate:'2026-12-04',realtimeVehicleType:'東京臨海高速鉄道71-000形'})),null);
 });
+
+test('Tokyo Metro / Toei number rosters and PNG models fail closed outside source',()=>{
+ const rows=require('../tools/build-train-number-png-catalog.cjs').getRows().slice(-13);
+ assert.equal(rows.length,13);
+ for(const r of rows){
+   const line=r.lineIds[0],num=r.weekdayNumbers[0];
+   const p=live({trainNumber:num,positionLineId:line,displayLineId:line,
+     sourceRailway:r.sourceRailways[0],trainOperator:r.operator,
+     calendarType:'weekday',serviceDate:'2026-11-05',
+     realtimeVehicleType:r.requireExplicitModelEvidence?r.model:''});
+   assert.equal(root.TrainNumberPngRanges.match(num,line,p)?.model,r.model,line);
+   assert.equal(root.VehicleGaragePngMap.matchModelPath(r.model,r.pngPath,line),true);
+   assert.equal(root.TrainNumberPngRanges.match(num,line,{...p,serviceDate:'2026-12-05'}),null,line);
+   assert.equal(root.TrainNumberPngRanges.match(num,line,{
+     ...p,sourceRailway:'odpt.Railway:TokyoMetro.Tozai'}),null,line);
+   if(r.requireExplicitModelEvidence){
+     assert.equal(root.TrainNumberPngRanges.match(num,line,{
+       ...p,realtimeVehicleType:'',vehiclePlan:null}),null,line);
+     assert.equal(root.TrainNumberPngRanges.match(num,line,{
+       ...p,realtimeVehicleType:'UNKNOWN_UNKNOWN'}),null,line);
+   }
+   const distinctWeekday=r.weekdayNumbers.find(n=>!r.holidayNumbers.includes(n));
+   if(distinctWeekday)assert.equal(root.TrainNumberPngRanges.match(distinctWeekday,line,{
+     ...p,calendarType:'holiday',serviceDate:'2026-11-07'}),null,line);
+ }
+ for(const line of ['Asakusa','Shinjuku','Oedo'])
+   assert.equal(root.TrainNumberPngRanges.match('A1001',line,
+     live({trainNumber:'A1001',positionLineId:line,
+       sourceRailway:'odpt.Railway:Toei.'+line,trainOperator:'Toei',
+       serviceDate:'2026-11-05',calendarType:'weekday'})),null);
+});
