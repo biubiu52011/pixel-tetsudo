@@ -26333,8 +26333,8 @@
       "region": "Saitama Area",
       "type": "straight",
       "image": "../images/鉄道/西武鉄道/西武秩父線.png",
-      "durationTotalMin": 14,
-      "branchOf": null,
+      "durationTotalMin": 24,
+      "branchOf": "Ikebukuro",
       "stations": [
         "Agano",
         "Nishi-Agano",
@@ -26344,13 +26344,11 @@
         "Seibu-Chichibu"
       ],
       "durations": [
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        5,
+        4,
+        6,
+        4,
+        5
       ],
       "throughServices": [
         "Ikebukuro"
