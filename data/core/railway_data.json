@@ -37261,7 +37261,7 @@
     },
     "TobuUtsunomiya": {
       "name": "TobuUtsunomiya",
-      "nameEn": "Utsunomiya Line",
+      "nameEn": "Tobu Utsunomiya Line",
       "nameJa": "東武宇都宮線",
       "code": null,
       "color": "#FF8C00",
@@ -37310,12 +37310,12 @@
           "station": "Tobu-Utsunomiya",
           "lineId": "UtsunomiyaJR",
           "type": "out",
-          "note": "Utsunomiya",
+          "note": "徒歩約25分",
           "toStation": "Utsunomiya"
         }
       ],
-      "nameZh": "宇都宫线",
-      "nameKo": "우츠노미야선",
+      "nameZh": "东武宇都宫线",
+      "nameKo": "도부 우츠노미야선",
       "serviceBoundaries": [
         {
           "lineId": "TobuNikko",

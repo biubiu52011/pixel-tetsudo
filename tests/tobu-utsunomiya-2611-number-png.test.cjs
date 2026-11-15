@@ -86,6 +86,16 @@ test('canonical geometry and conditional boundary are synchronized across format
   assert.equal(b.serviceScope,'selected-local-destination-only');
   assert.equal(b.evidence.physicalContinuationVerified,false);
  }
+ assert.equal(u.nameJa,'東武宇都宮線');
+ assert.equal(u.nameZh,'东武宇都宫线');
+ assert.equal(u.nameEn,'Tobu Utsunomiya Line');
+ assert.equal(u.nameKo,'도부 우츠노미야선');
+ assert.equal(raw.lines.UtsunomiyaJR.nameZh,'宇都宫线');
+ const outside=u.transferStations.find(t=>t.station==='Tobu-Utsunomiya'&&t.lineId==='UtsunomiyaJR');
+ assert.ok(outside);
+ assert.equal(outside.type,'out');
+ assert.equal(outside.toStation,'Utsunomiya');
+ assert.equal(outside.note,'徒歩約25分');
  assert.deepEqual(compact.lines.TobuUtsunomiya,u);
  assert.deepEqual(compact.lines.TobuNikko,n);
  const bytes=JSON.stringify(raw).replace(/<\/script/gi,'<\\/script');
