@@ -664,6 +664,16 @@ assert.match(tooltipContext._trainMarkerTitle({
   },
 }, 'Yamanote'), /E233/, 'physical car proof may support a through-service label');
 
+// Load the *real* candidate selectors from their TrainVehicle owner into the
+// isolated tooltip VM. Do not reimplement or mock the selection policy here.
+vm.runInContext(extract(vehicleSource,
+  '  function seibuCommuterCandidateModels(p, lineId) {',
+  '  window.TrainVehicle = {'), tooltipContext);
+tooltipContext.window.TrainVehicle.seibuCommuterCandidateModels =
+  tooltipContext.seibuCommuterCandidateModels;
+tooltipContext.window.TrainVehicle.shonanFleetCandidateModels =
+  tooltipContext.shonanFleetCandidateModels;
+
 // Load the route-specific label helpers as well as the generic projection.
 // A tooltip-only source extraction must still work without these helpers.
 vm.runInContext(extract(renderSource,

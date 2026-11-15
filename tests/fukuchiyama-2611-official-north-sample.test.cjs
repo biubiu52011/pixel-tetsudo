@@ -24,14 +24,16 @@ test('2531M and 2531MH reuse canonical one-stop sources and complete the full te
 });
 
 test('source sample is date-filtered and never upgrades fleet confirmation',()=>{
- const start=edge.indexOf('// JR-West\'s published 2531M example is whitelisted');
- const end=edge.indexOf('// Kabe / 可部線:',start);
+ const start=edge.indexOf('function filterDateScopedTemplates(');
+ const end=edge.indexOf('function selectRevision(',start);
  assert.ok(start>=0&&end>start);
  const scoped=edge.slice(start,end);
- assert.match(scoped,/lineId==="Fukuchiyama"/);
+ assert.match(scoped,/lineId === "Fukuchiyama"/);
  assert.match(scoped,/official-sampled:fukuchiyama:/);
  assert.match(scoped,/operating_dates/);
- assert.match(scoped,/===serviceDate/);
+ assert.match(scoped,/operatesOnDate\(row\)/);
+ assert.match(scoped,/=== serviceDate/);
+ assert.match(edge,/templates = filterDateScopedTemplates\(templates, lineId, serviceDate\)/);
  const begin=edge.indexOf('// Exact-date train NUMBER and 10-stop proof');
  const finish=edge.indexOf('// Incomplete source rows are preserved',begin);
  assert.ok(begin>=0&&finish>begin);
