@@ -58,6 +58,12 @@
       "東武10030型50番台（佐野線代表）",
       "東武鉄道/東武鉄道_10030型_50番台_更新車.png","Sano",0]
   );
+  // Kiryu local 801E-850E: 10030 front illustration, NOT observed stock.
+  table.push(
+    ["tobu-kiryu-2611-10000-family-illustration",
+      "東武10030型50番台（桐生線代表）",
+      "東武鉄道/東武鉄道_10030型_50番台_更新車.png","Kiryu",0]
+  );
   // Approved as representative planned images on TokaidoCentral only.
   // Never evidence of a real formation or a train-number-to-stock assignment.
   table.push(

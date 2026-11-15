@@ -32208,7 +32208,7 @@
       "nameEn": "Tobu Kiryu Line",
       "nameJa": "東武桐生線",
       "code": "TI",
-      "color": "#ff0000",
+      "color": "#2B8ACD",
       "operator": "Tobu",
       "region": null,
       "type": "straight",
@@ -32226,16 +32226,17 @@
         "Akagi"
       ],
       "durations": [
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        4,
+        4,
+        4,
+        4,
+        3,
+        5,
+        4
       ],
       "throughServices": [
-        "TobuIsesaki"
+        "TobuIsesaki",
+        "KoizumiBranch"
       ],
       "transferStations": [
         {
@@ -32259,7 +32260,7 @@
         "nameZh": "桐生线",
         "nameEn": "Kiryu Line",
         "nameKo": "키류선",
-        "color": "#ff0000",
+        "color": "#2B8ACD",
         "icon": "../images/鉄道/東武鉄道/伊勢崎線 佐野線 桐生線 小泉線 小泉線支線.png",
         "order": 12,
         "lineIds": [
@@ -32278,6 +32279,53 @@
             "confidence": "HIGH"
           },
           "serviceScope": "selected-limited-express"
+        },
+        {
+          "lineId": "KoizumiBranch",
+          "handoverStations": [
+            "Ota"
+          ],
+          "serviceScope": "selected-local",
+          "evidence": {
+            "source": "Tobu Kiryu ordinary services via Ota to Higashi-Koizumi, 2026 timetable",
+            "confidence": "HIGH"
+          }
+        }
+      ],
+      "durationDerivation": {
+        "source": "public.manual_timetable_templates Kiryu undated historical local station clocks",
+        "method": "outbound median of 50 historical local source templates (weekday and holiday), departure to next station departure; final segment to terminal arrival",
+        "sampleCountsBySegment": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "timetableDateVerified": false,
+        "sourceRevisionVerified": false,
+        "verifiedCurrent": false
+      },
+      "externalTransfers": [
+        {
+          "station": "Aioi",
+          "operator": "WataraseKeikoku",
+          "lineNameJa": "わたらせ渓谷鐵道線",
+          "lineNameZh": "渡良濑溪谷铁道",
+          "sourceUrl": "https://www.tobu.co.jp/railway/guide/station/info/2909/",
+          "referenceOnly": true,
+          "routeEdge": false
+        },
+        {
+          "station": "Akagi",
+          "operator": "Jomo",
+          "lineNameJa": "上毛電気鉄道線",
+          "lineNameZh": "上毛电气铁道",
+          "sourceUrl": "https://www.tobu.co.jp/railway/guide/station/info/2912/",
+          "referenceOnly": true,
+          "routeEdge": false
         }
       ]
     },
@@ -32371,7 +32419,9 @@
         2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "Kiryu"
+      ],
       "transferStations": [
         {
           "station": "Ota",
@@ -32386,7 +32436,19 @@
           "note": ""
         }
       ],
-      "serviceBoundaries": [],
+      "serviceBoundaries": [
+        {
+          "lineId": "Kiryu",
+          "handoverStations": [
+            "Ota"
+          ],
+          "serviceScope": "selected-local",
+          "evidence": {
+            "source": "Tobu Kiryu local services connect to Koizumi spur at Ota",
+            "confidence": "HIGH"
+          }
+        }
+      ],
       "durationDerivation": {
         "source": "legacy representative two-minute estimates",
         "method": "not verified for current date, no inferred trains without a published plan",

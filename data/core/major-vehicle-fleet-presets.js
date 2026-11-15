@@ -330,12 +330,20 @@
     {id:'tobu-kameido', operator:'Tobu', lineIds:['Tobu_Kameido'],
       models:['東武10000型','東武10030型50番台'],
       sourceUrl:'https://www.tetsudo.com/column/1315/'},
+    // Kiryu ordinary: 10000/10030 two-car workings plus possible 800/850
+    // three-car relief, NOT the 8000 two-car stock retired on Daishi/Kameido.
+    // These line-level candidates cannot establish any individual formation.
+    {id:'tobu-kiryu-ordinary', operator:'Tobu', lineIds:['Kiryu'],
+      serviceTypes:['Local'],
+      models:['東武10000型','東武10030型50番台','東武800・850型（3両・代走候補）'],
+      sourceUrl:'https://4gousya.net/line/8224.php'},
+    {id:'tobu-kiryu-express', operator:'Tobu', lineIds:['Kiryu'],
+      serviceTypes:['LimitedExpress'], models:['東武200型','東武500系'],
+      sourceUrl:'https://www.tobu.co.jp/railway/special_express/timetable/'},
     {id:'tobu-northern-branches', operator:'Tobu',
-      lineIds:['Kiryu','Koizumi','KoizumiBranch','Sano'],
-      // Route-level candidates only during 8000-to-10000 replacement.
-      // No per-train vehicle series or formation is established here.
-      models:['東武10000型','東武10030型50番台','東武8000系'],
-      sourceUrl:'https://www.tobu.co.jp/corporation/rail/vehicles/'},
+      lineIds:['Koizumi','KoizumiBranch','Sano'],
+      models:['東武10000型','東武10030型50番台','東武800・850型（3両・代走候補）'],
+      sourceUrl:'https://4gousya.net/line/8224.php'},
 
     // Tokyu Oimachi Line currently mixes older local stock with new
     // 5-car 6020 and 7-car express 6020 sets; the route alone is insufficient
