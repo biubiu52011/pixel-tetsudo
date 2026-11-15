@@ -17,6 +17,7 @@ test('the known unresolved routes and presentation colors are tracked as pending
   assert.equal(report.summary.line_color_differences, Object.keys(known.palette_differences).length);
   assert.ok(report.summary.canonical_lines > report.summary.snapshot_sql_lines);
   assert.ok(report.summary.sql_train_number_png_rules > 0);
+  assert.ok(report.summary.source_png_files > 0);
 });
 test('review-locked artwork stays quarantined from automatic SQL model-artwork selection', () => {
   for (const p of known.review_required_asset_paths) {
