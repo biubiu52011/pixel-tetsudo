@@ -32,14 +32,21 @@ BEGIN
   END IF;
 END $audit$;
 
--- Entries quarantined by data/timetables/vehicle-garage-png-map.js must not
--- remain 'available' through alternate database-only rendering paths.
--- Retain original path/vehicle metadata and the review explanation.
+-- This repository has an immutable reviewed-identity baseline trigger on
+-- vehicle_image_assets. Do NOT change protected asset_status, image_path,
+-- vehicle_type, operator, or baseline rows to bypass it.
+-- Instead quarantine automatic model artwork resolution via appearance_class:
+-- public.train_timetable_vehicle_artwork only accepts standard_or_fixed_livery.
+-- The underlying reviewed file identity stays intact for manual re-inspection.
 UPDATE public.vehicle_image_assets
-   SET asset_status='review',
-       review_note=concat_ws(' | ', nullif(review_note,''),
-         '2026-11-16 GitHub VehicleGaragePngMap quarantine: duplicate bytes / conflicting identity; do not authorize as train PNG without independent artwork review')
- WHERE asset_status='available' AND image_path IN (
+   SET appearance_class='requires_review',
+       review_note=CASE
+         WHEN coalesce(review_note,'') LIKE '%2026-11-16: GitHub PNG quarantine%'
+           THEN review_note
+         ELSE concat_ws(' | ',nullif(review_note,''),
+           '2026-11-16: GitHub PNG quarantine, byte-identical art with conflicting model labels; reject automatic train assignment until artwork reviewed')
+       END
+ WHERE image_path IN (
   'images/列车/JR東日本/JR東日本_12系客車_SLばんえつ物語_展望車.png',
   'images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.png',
   'images/列车/わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-510形.png',
@@ -47,12 +54,13 @@ UPDATE public.vehicle_image_assets
   'images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png',
   'images/列车/相模鉄道/相模鉄道_21000系.png'
  );
--- Record 405 points to an absent file; a different subseries artwork is not
--- an automatic replacement.
 UPDATE public.vehicle_image_assets
-   SET asset_status='review',
-       review_note=concat_ws(' | ',nullif(review_note,''),
-         '2026-11-16 GitHub main: referenced image path is absent; verify correct 8000 series artwork before re-enabling')
- WHERE asset_status='available'
-   AND image_path='images/列车/伊豆急行/伊豆急行_8000系.png';
+   SET appearance_class='requires_review',
+       review_note=CASE
+         WHEN coalesce(review_note,'') LIKE '%2026-11-16: missing GitHub artwork%'
+           THEN review_note
+         ELSE concat_ws(' | ',nullif(review_note,''),
+           '2026-11-16: missing GitHub artwork; the specific 8000-series PNG path does not exist in main; do not silently replace with a subseries')
+       END
+ WHERE image_path='images/列车/伊豆急行/伊豆急行_8000系.png';
 COMMIT;
