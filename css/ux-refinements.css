@@ -409,8 +409,8 @@ body[data-page="trains"] .rs-line-icon-fallback:has(> img[src*="JRグループ.p
   clip-path: path("M 11.667 0 H 16.333 C 21.389 0 24.111 1.167 26.444 3.889 C 27.611 6.222 28 8.556 28 11.667 V 16.333 C 28 21.389 26.833 24.111 24.111 26.444 C 21.778 27.611 19.444 28 16.333 28 H 11.667 C 6.611 28 3.889 26.833 1.556 24.111 C 0.389 21.778 0 19.444 0 16.333 V 11.667 C 0 6.611 1.167 3.889 3.889 1.556 C 6.222 0.389 8.556 0 11.667 0 Z");
 }
 
-/* Compact shared two-tier railway filter: region -> operator.
-   Restore the older equal-width Grid layout without changing pixel buttons.
+/* Compact shared two-tier railway filter: region -> operator. */
+/* Restore the older equal-width Grid layout without changing pixel buttons.
    Both rows wrap vertically; neither row scrolls horizontally. */
 body[data-page="trains"] .rs-filter-bar.rs-region-filter,
 body[data-page="realtime"] .rs-filter-bar.rs-region-filter {
