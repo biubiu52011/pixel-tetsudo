@@ -87,10 +87,10 @@ test('date-scoped source candidates always produce ONE neutral SVG marker',()=>{
    assert.equal(proof.authorizesPNG,false);
    assert.deepEqual(Array.from(proof.candidateModels),models);
    const marker=root.TrainVehicle.selectMarkerArtwork(p,false);
-   assert.equal(marker.kind,'candidate',num+'/'+date);
+   assert.equal(marker.kind,'unresolved',num+'/'+date);
    assert.equal(marker.iconSrc,'');
    assert.equal(marker.planned,false);
-   assert.deepEqual(Array.from(marker.candidateAssets),pngs);
+   assert.equal(Object.hasOwn(marker,'candidateAssets'),false);
   }
  }
 });

@@ -152,9 +152,9 @@ test('mixed 719/701/E723 unverified train numbers remain honest candidate text, 
   assert.ok(proof);
   assert.equal(idx.resolve(x),null,n+' has no 2026 independent single-model evidence');
   const art=root.TrainVehicle.selectMarkerArtwork(x,false);
-  assert.equal(art.kind,'candidate',n+' must retain a scoped mixed-fleet candidate');
+  assert.equal(art.kind,'unresolved',n+' has no unique mapped PNG');
   assert.equal(art.iconSrc,'',n+' must not inherit the obsolete all-701 SQL label');
-  assert.equal(art.candidateAssets.length,idx.candidates.length);
+  assert.equal(Object.hasOwn(art,'candidateAssets'),false);
  }
 });
 test('every 2611 Yamagata number has an evidence-scoped artwork or fleet candidate',()=>{
@@ -163,17 +163,17 @@ test('every 2611 Yamagata number has an evidence-scoped artwork or fleet candida
    serviceDate:'2026-11-07',serviceId:'odpt.Calendar:SaturdayHoliday'};
   for(const n of Object.keys(roster)){
    const x=p(n,opts),art=root.TrainVehicle.selectMarkerArtwork(x,false);
-   assert.ok(['vehicle','candidate'].includes(art.kind),calendar+' '+n);
-   if(art.kind==='candidate'){
+   assert.ok(['vehicle','unresolved'].includes(art.kind),calendar+' '+n);
+   if(art.kind==='unresolved'){
     assert.equal(art.iconSrc,'');
-    assert.equal(art.candidateAssets.length,idx.candidates.length);
+    assert.equal(Object.hasOwn(art,'candidateAssets'),false);
     assert.equal(idx.resolve(x),null);
     assert.equal(idx.resolveCandidates({...x,displayLineId:'OuMain'}),null);
    }
   }
  }
  const x=p('5427M');
- assert.equal(root.TrainVehicle.selectMarkerArtwork(x,false).kind,'candidate');
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(x,false).kind,'unresolved');
  assert.equal(idx.resolveCandidates({...x,trainNumber:'9455M'}),null);
  assert.equal(idx.resolveCandidates({...x,estimated:false}),null);
  assert.equal(idx.resolveCandidates({...x,actualVehicleConfirmed:true}),null);

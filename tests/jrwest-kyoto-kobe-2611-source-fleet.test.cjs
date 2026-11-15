@@ -114,14 +114,11 @@ test('one source-only neutral marker for nine real Kyoto/Kobe C/T/M sources',()=
   assert.equal(f.actualVehicleConfirmed,false);
   assert.equal(f.historicalNumberSuffix,item.num.split('-').pop());
   const result=root.TrainVehicle.selectMarkerArtwork(p,false);
-  assert.equal(result.kind,'candidate',item.num);
+  assert.equal(result.kind,'unresolved',item.num);
   assert.equal(result.iconSrc,'');
   assert.equal(result.planned,false);
-  assert.equal(result.sourceNumberSuffix,f.historicalNumberSuffix);
-  assert.deepEqual(Array.from(result.candidateModels),
-    item.family==='local_c'?['207系','321系']:['223系','225系']);
-  assert.deepEqual(Array.from(result.candidateAssets),
-    item.line==='TokaidoKansai'&&item.family==='local_c'?assets:[]);
+  assert.equal(Object.hasOwn(result,'candidateModels'),false);
+  assert.equal(Object.hasOwn(result,'candidateAssets'),false);
  }
 });
 test('local asset references are truly registered, but rapid Hanwa artwork is not reused',()=>{

@@ -18,7 +18,8 @@ for(const f of [
  'js/train-vehicle.js',
  'data/timetables/vehicle-operation-evidence-data.js'
 ])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
-const N=root.TrainVehicle.lookupJobanMainNorthMixedCandidates;
+assert.equal(root.TrainVehicle.lookupJobanMainNorthMixedCandidates,undefined,
+ 'candidate-only fleet lookup must not be exported');
 const up=['Sakamoto','Shinchi','Komagamine','Soma','Nittaki','Kashima','Haranomachi'];
 function row(extra={}){
  return {
@@ -49,12 +50,8 @@ test('all 50 historical north numbers in two calendars yield candidate-only meta
    const p=row({trainNumber:n+'M',serviceDate:date,calendarType:calendar,
      runningChainId:'canonical-sql-trip:'+date+':49700',
      railDirection:'odpt.RailDirection:'+direction,scheduledStopKeys:short});
-   const matched=N(p);
-   assert.ok(matched,JSON.stringify({n,date,direction,short}));
-   assert.equal(matched.authorizesPNG,false);
-   assert.equal(matched.actualVehicleConfirmed,false);
-   assert.equal(matched.candidateModels.join('|'),'701系|E721系');
-   assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).kind,'candidate');
+   assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).kind,'unresolved');
+   assert.equal(Object.hasOwn(root.TrainVehicle.selectMarkerArtwork(p,false),'candidateAssets'),false);
    assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).iconSrc,'');
    count++;
   }
@@ -76,7 +73,9 @@ test('source mismatch and false carset evidence cannot authorize northern candid
   {vehicleFormationId:'F28'},{vehicleResolvedFromRealtime:true},
   {positionSource:'realtime-api'},{runningChainId:'bad'}
  ]){
-  assert.equal(N(row(delta)),null,JSON.stringify(delta));
+  const result=root.TrainVehicle.selectMarkerArtwork(row(delta),false);
+  assert.notEqual(result.kind,'candidate',JSON.stringify(delta));
+  assert.equal(result.iconSrc,'',JSON.stringify(delta));
  }
 });
 test('701 Sendai and E721 Sendai assets are gated to north candidate, not exact image',()=>{
@@ -87,9 +86,8 @@ test('701 Sendai and E721 Sendai assets are gated to north candidate, not exact 
  assert.equal(root.VehicleGaragePngMap.matchModelPath('701系',p1,'Joban'),false);
  assert.equal(root.VehicleGaragePngMap.matchModelPath('E721系',p2,'JobanLocal'),false);
  const marker=root.TrainVehicle.selectMarkerArtwork(row(),false);
- assert.equal(marker.kind,'candidate');
+ assert.equal(marker.kind,'unresolved');
  assert.equal(marker.iconSrc,'');
  assert.equal(marker.planned,false);
- assert.equal(marker.actualVehicleConfirmed,false);
- assert.deepEqual(Array.from(marker.candidateAssets),[p1,p2]);
+ assert.equal(Object.hasOwn(marker,'candidateAssets'),false);
 });

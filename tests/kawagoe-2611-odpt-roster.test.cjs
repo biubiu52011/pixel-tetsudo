@@ -64,11 +64,10 @@ test('shared working cannot become a single E231 or 209 physical PNG',()=>{
    };
  }
  const p=position(),art=root.TrainVehicle.selectMarkerArtwork(p,false);
- assert.equal(art.kind,'candidate');
+ assert.equal(art.kind,'unresolved');
  assert.equal(art.iconSrc,'');
- assert.equal(art.actualVehicleConfirmed,false);
- assert.deepEqual(Array.from(art.candidateModels),models);
- assert.deepEqual(Array.from(art.candidateAssets),arts);
+ assert.equal(Object.hasOwn(art,'candidateModels'),false);
+ assert.equal(Object.hasOwn(art,'candidateAssets'),false);
  for(const bad of [
   {timetableDateVerified:false},
   {serviceDate:'2026-12-10'},

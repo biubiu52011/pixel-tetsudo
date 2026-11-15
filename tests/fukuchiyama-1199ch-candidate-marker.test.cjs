@@ -75,7 +75,7 @@ test('1199CH maps the 1100-1299 C band to an illustrative 321 image, not an assi
  assert.equal(svg.compact,false);
  assert.equal(svg.illustrative,true);
  assert.equal(ctx._trainMarkerDomKind(svg),'planned');
- assert.equal(marker(position,true).kind,'candidate');
+ assert.equal(marker(position,true).kind,'unresolved');
  const l=r.indexOf('function _trainFleetPlanLabel(');
  vm.runInContext(r.slice(l,r.indexOf('\n  function ',l)),ctx);
  const caption=ctx._trainFleetPlanLabel(position,'Fukuchiyama','zh');
@@ -94,7 +94,8 @@ test('historical M/MO number bands remain candidates without reusing Hanwa 223/2
   assert.equal(f.authorizesIllustration,false);
   assert.equal(f.illustrationPng,'');
   assert.deepEqual(Array.from(f.candidateModels),models);
-  assert.equal(marker(p).kind,'candidate',no);
+  assert.equal(marker(p).kind,'unresolved',no);
+  assert.equal(Object.hasOwn(marker(p),'candidateAssets'),false);
   assert.equal(marker(p).iconSrc,'');
  }
 });
@@ -181,7 +182,7 @@ test('2774MH 2026-11-08 holiday rapid maps 2025 common-duty candidates, 321 PNG 
  const label=ctx._trainFleetPlanLabel(p,'Fukuchiyama','zh');
  assert.match(label,/2025年/);
  assert.match(label,/207系 \/ 321系/);
- assert.equal(marker(p,true).kind,'candidate');
+ assert.equal(marker(p,true).kind,'unresolved');
  for(const change of [
   {serviceDate:'2026-11-15'},
   {trainNumber:'2772MH',sqlPublishedNumberFleetReference:{...holidayProof,sourceTrainId:'2772MH'}},

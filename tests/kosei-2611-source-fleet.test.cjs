@@ -99,11 +99,11 @@ test('normal M weekday + MH holiday are source-candidate ONLY',()=>{
   assert.equal(proven.actualVehicleConfirmed,false);
   assert.equal(proven.numberDateVerified,false);
   const marker=root.TrainVehicle.selectMarkerArtwork(p,false);
-  assert.equal(marker.kind,'candidate',n);
+  assert.equal(marker.kind,'unresolved',n);
   assert.equal(marker.iconSrc,'');
   assert.equal(marker.planned,false);
-  assert.equal(marker.candidateModels.join('|'),fleet);
-  assert.equal(marker.candidateAssets.length,0);
+  assert.equal(Object.hasOwn(marker,'candidateModels'),false);
+  assert.equal(Object.hasOwn(marker,'candidateAssets'),false);
  }
 });
 test('9017DH (historical seasonal special) must not be a Local or Thunderbird PNG',()=>{
