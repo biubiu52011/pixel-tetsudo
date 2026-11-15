@@ -1755,6 +1755,10 @@
     // https://www.jreast.co.jp/train/express/hitachi_tokiwa.html
     // https://timetables.jreast.co.jp/2611/timetable-v/240u1p.html
     {lineIds:["Joban","JobanMain"],numberFormat:"full",from:1,to:30,
+      publishedNumbers:["1M","2M","3M","4M","5M","6M","7M","8M","9M","10M","11M","12M","13M","14M","15M","16M","17M","18M","19M","20M","21M","22M","23M","24M","25M","26M","27M","28M","29M","30M"],
+      weekdayNumbers:["1M","2M","3M","4M","5M","6M","7M","8M","9M","10M","11M","12M","13M","14M","15M","16M","17M","18M","19M","20M","21M","22M","23M","24M","25M","26M","27M","28M","29M","30M"],
+      holidayNumbers:["1M","2M","3M","4M","5M","6M","7M","8M","9M","10M","11M","12M","13M","14M","15M","16M","17M","18M","19M","20M","21M","22M","23M","24M","25M","26M","27M","28M","29M","30M"],
+      directionNumberParity:"inbound-even",
       suffixes:"M",operator:"JR-East",trainType:"LimitedExpress",
       sourceRailways:["odpt.Railway:JR-East.Joban",
         "odpt.Railway:JR-East.JobanRapid"],
@@ -1763,10 +1767,15 @@
       model:"E657系",
       pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
     {lineIds:["Joban","JobanMain"],numberFormat:"full",from:51,to:86,
+      publishedNumbers:["51M","52M","53M","54M","55M","56M","57M","58M","59M","60M","61M","62M","63M","64M","65M","66M","67M","68M","69M","70M","71M","72M","73M","74M","75M","76M","77M","78M","79M","80M","81M","82M","83M","84M","85M","86M"],
+      weekdayNumbers:["51M","52M","53M","54M","55M","56M","57M","58M","59M","60M","61M","62M","63M","64M","65M","66M","67M","68M","69M","70M","71M","72M","73M","74M","75M","76M","77M","78M","79M","80M","81M","82M","83M","84M","85M","86M"],
+      holidayNumbers:["51M","52M","53M","54M","55M","56M","57M","58M","59M","60M","61M","62M","63M","64M","65M","66M","67M","68M","69M","70M","71M","72M","73M","74M","75M","76M","77M","78M","79M","80M","81M","82M","83M","84M","85M","86M"],
+      directionNumberParity:"inbound-even",
       suffixes:"M",operator:"JR-East",trainType:"LimitedExpress",
       sourceRailways:["odpt.Railway:JR-East.Joban",
         "odpt.Railway:JR-East.JobanRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
+      excludedServiceDatesByNumber:{"86M":["2026-11-25"]},
       allowedModelLabels:["E657系","E657系（ひたち・ときわ）"],
       model:"E657系",
       pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
@@ -1882,7 +1891,29 @@
       directionNumberParity:"inbound-even",
       validFrom:"2026-11-01",validTo:"2026-11-30",
       model:"E353系",
-      pngPath:"../images/列车/JR東日本/JR東日本_E353系.png"}
+      pngPath:"../images/列车/JR東日本/JR東日本_E353系.png"},
+    // JR East 2611 240d2p.html: Tokiwa 9037M operates 2026-11-15 only.
+    // Representative E657 PNG only; not a physical formation identity.
+    {lineIds:["Joban","JobanMain"],numberFormat:"full",from:9037,to:9037,
+      suffixes:"M",trainType:"LimitedExpress",operator:"JR-East",
+      publishedNumbers:["9037M"],calendarType:"holiday",
+      operatingDates:["2026-11-15"],directionNumberParity:"inbound-even",
+      sourceRailways:["odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E657系","E657系（ひたち・ときわ）"],
+      model:"E657系",pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"},
+    // JR East 2611 240u1p.html: Tokiwa 9086M operates 2026-11-25 only.
+    // Representative E657 PNG only; not a physical formation identity.
+    {lineIds:["Joban","JobanMain"],numberFormat:"full",from:9086,to:9086,
+      suffixes:"M",trainType:"LimitedExpress",operator:"JR-East",
+      publishedNumbers:["9086M"],calendarType:"weekday",
+      operatingDates:["2026-11-25"],directionNumberParity:"inbound-even",
+      sourceRailways:["odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["E657系","E657系（ひたち・ときわ）"],
+      model:"E657系",pngPath:"../images/列车/JR東日本/JR東日本_E657系.png"}
   ];
   rows.forEach(function(row){
     Object.freeze(row.lineIds);
@@ -4537,6 +4568,11 @@
         if(!/^\d{4}-\d{2}-\d{2}$/.test(serviceDate)||serviceDate<row.validFrom)continue;
       }
       if(row.validTo && String(context&&context.serviceDate||"").slice(0,10)>row.validTo)continue;
+      if(row.excludedServiceDatesByNumber){
+        var excluded= row.excludedServiceDatesByNumber[number];
+        if(Array.isArray(excluded) && excluded.indexOf(
+          String(context&&context.serviceDate||"").slice(0,10))>=0)continue;
+      }
       if(row.operatingDates && row.operatingDates.indexOf(
           String(context&&context.serviceDate||"").slice(0,10))<0)continue;
       if(row.calendarType && sourceCalendar(context)!==row.calendarType)continue;

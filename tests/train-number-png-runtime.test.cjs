@@ -3122,3 +3122,49 @@ test('Takasaki 3002M Kusatsu-Shima 2 runs with one E257-5500 reference PNG, not 
     positionSource:'realtime-api',estimated:false
   },false).kind,'unresolved','do not project a Takasaki-only E257 onto a foreign map');
 });
+
+test('Joban E657 official 2611 full numbers and dated Tokiwa exceptions resolve to one PNG only',()=>{
+  const e657='../images/列车/JR東日本/JR東日本_E657系.png';
+  const ctx={positionLineId:'Joban',displayLineId:'Joban',
+    sourceRailway:'odpt.Railway:JR-East.Joban',trainOperator:'JR-East',
+    trainType:'odpt.TrainType:JR-East.LimitedExpress',
+    serviceDate:'2026-11-16',calendarType:'weekday',
+    railDirection:'odpt.RailDirection:Outbound',
+    positionSource:'realtime-api',estimated:false,
+    vehicleIdentityStatus:'UNKNOWN'};
+  const resolve=(number,details={})=>root.TrainVehicle.lookupTrainNumberRangePng({
+    ...ctx,trainNumber:number,...details
+  });
+  const regular=[...Array.from({length:30},(_,i)=>i+1),
+   ...Array.from({length:36},(_,i)=>i+51)];
+  for(const n of regular){
+    const num=n+'M';
+    const dir=n%2===0?'Inbound':'Outbound';
+    for(const [day,cal] of [['2026-11-16','weekday'],['2026-11-15','holiday']]){
+      assert.equal(resolve(num,{serviceDate:day,calendarType:cal,
+        railDirection:'odpt.RailDirection:'+dir})?.pngPath,e657,num+'/'+cal);
+      assert.equal(resolve(num,{serviceDate:day,calendarType:cal,
+        railDirection:'odpt.RailDirection:'+(dir==='Inbound'?'Outbound':'Inbound')}),null,
+        num+': direction must not authorize E657');
+    }
+  }
+  assert.equal(resolve('86M',{serviceDate:'2026-11-25',
+    railDirection:'odpt.RailDirection:Inbound'}),null,
+    'ordinary 86M is suspended on November 25');
+  assert.equal(resolve('9086M',{serviceDate:'2026-11-25',
+    railDirection:'odpt.RailDirection:Inbound'})?.pngPath,e657);
+  assert.equal(resolve('9086M',{serviceDate:'2026-11-24',
+    railDirection:'odpt.RailDirection:Inbound'}),null);
+  assert.equal(resolve('9037M',{serviceDate:'2026-11-15',calendarType:'holiday'})?.pngPath,e657);
+  assert.equal(resolve('9037M',{serviceDate:'2026-11-16',calendarType:'weekday'}),null);
+  for(const n of ['31M','50M','87M','9033M','9067M']){
+    assert.equal(resolve(n),null,n+': absent from verified 2611 E657 mappings');
+  }
+  for(const extra of [{serviceDate:'2026-12-01'},{serviceDate:''},
+   {trainType:'odpt.TrainType:JR-East.Local'},
+   {sourceRailway:'odpt.Railway:JR-East.JobanLocal'},
+   {trainOperator:'TokyoMetro'}]){
+    assert.equal(resolve('1M',extra),null,JSON.stringify(extra));
+  }
+  assert.equal(ctx.vehicleIdentityStatus,'UNKNOWN');
+});

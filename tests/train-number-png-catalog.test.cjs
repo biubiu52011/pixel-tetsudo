@@ -6,7 +6,7 @@ const snapshot=require('../data/audits/supabase-railway-audit-snapshot-20261116.
 const c=buildCatalog(snapshot,getRows());
 test('2611 catalog includes both maintained owner rule sets and their SQL provenance',()=>{
  assert.equal(c.summary.sql_rules,291);
- assert.equal(c.summary.js_rules,108);
+ assert.equal(c.summary.js_rules,110);
  assert.equal(c.summary.total_line_keys,76);
  assert.equal(c.rules.filter(r=>r.origin==='sql_snapshot'&&!r.source_url).length,0);
  assert.equal(c.summary.unregistered_sql_png_rules,0);
@@ -37,7 +37,7 @@ test('all SQL overlaps fail closed on candidate band alone',()=>{
  }
 });
 test('front-end broad rules are visible, but cannot become carset confirmations',()=>{
- assert.equal(c.review.frontend_guard_only_rules.length,13);
+ assert.equal(c.review.frontend_guard_only_rules.length,11);
  assert.equal(c.review.frontend_official_month_rosters.length,2);
  assert.equal(c.review.frontend_singleton_candidates.length,1);
  assert.ok(c.review.sql_asset_label_differences.every(r=>
@@ -119,9 +119,9 @@ test('SQL and frontend exact train-number PNG references have no contradictory p
 test('front-end PNG range metadata retains every source-specific guard and qualifier',()=>{
  const owner=getRows();
  const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
- assert.equal(c.summary.frontend_rules_with_additional_source_fields,100);
- assert.equal(c.summary.frontend_additional_source_keys,17);
- assert.equal(owner.length,108);
+ assert.equal(c.summary.frontend_rules_with_additional_source_fields,102);
+ assert.equal(c.summary.frontend_additional_source_keys,18);
+ assert.equal(owner.length,110);
  owner.forEach((row,i)=>{
   const rule=c.rules.find(r=>r.id==='js-'+String(i+1).padStart(4,'0'));
   const remaining=Object.fromEntries(Object.keys(row)

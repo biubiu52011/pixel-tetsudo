@@ -10,8 +10,8 @@
   ],
   "summary": {
     "sql_rules": 291,
-    "js_rules": 108,
-    "js_line_assignments": 136,
+    "js_rules": 110,
+    "js_line_assignments": 140,
     "total_line_keys": 76,
     "sql_lines": 24,
     "js_lines": 58,
@@ -21,9 +21,9 @@
     "cross_source_untested_js_rules": 1,
     "unregistered_sql_png_rules": 0,
     "sql_assets_pending_review": 5,
-    "frontend_guard_only_rules": 13,
-    "frontend_rules_with_additional_source_fields": 100,
-    "frontend_additional_source_keys": 17,
+    "frontend_guard_only_rules": 11,
+    "frontend_rules_with_additional_source_fields": 102,
+    "frontend_additional_source_keys": 18,
     "frontend_official_month_rosters": 2,
     "frontend_singleton_candidates": 1,
     "model_label_differences": 14,
@@ -253,7 +253,9 @@
         "js-0097",
         "js-0098",
         "js-0099",
-        "js-0100"
+        "js-0100",
+        "js-0109",
+        "js-0110"
       ]
     },
     "JobanLocal": {
@@ -269,7 +271,9 @@
       "js": [
         "js-0098",
         "js-0099",
-        "js-0100"
+        "js-0100",
+        "js-0109",
+        "js-0110"
       ]
     },
     "Joetsu": {
@@ -15495,9 +15499,102 @@
       "train_type": "LimitedExpress",
       "train_types": null,
       "number_index": null,
-      "published_numbers": null,
-      "weekday_numbers": null,
-      "holiday_numbers": null,
+      "published_numbers": [
+        "1M",
+        "2M",
+        "3M",
+        "4M",
+        "5M",
+        "6M",
+        "7M",
+        "8M",
+        "9M",
+        "10M",
+        "11M",
+        "12M",
+        "13M",
+        "14M",
+        "15M",
+        "16M",
+        "17M",
+        "18M",
+        "19M",
+        "20M",
+        "21M",
+        "22M",
+        "23M",
+        "24M",
+        "25M",
+        "26M",
+        "27M",
+        "28M",
+        "29M",
+        "30M"
+      ],
+      "weekday_numbers": [
+        "1M",
+        "2M",
+        "3M",
+        "4M",
+        "5M",
+        "6M",
+        "7M",
+        "8M",
+        "9M",
+        "10M",
+        "11M",
+        "12M",
+        "13M",
+        "14M",
+        "15M",
+        "16M",
+        "17M",
+        "18M",
+        "19M",
+        "20M",
+        "21M",
+        "22M",
+        "23M",
+        "24M",
+        "25M",
+        "26M",
+        "27M",
+        "28M",
+        "29M",
+        "30M"
+      ],
+      "holiday_numbers": [
+        "1M",
+        "2M",
+        "3M",
+        "4M",
+        "5M",
+        "6M",
+        "7M",
+        "8M",
+        "9M",
+        "10M",
+        "11M",
+        "12M",
+        "13M",
+        "14M",
+        "15M",
+        "16M",
+        "17M",
+        "18M",
+        "19M",
+        "20M",
+        "21M",
+        "22M",
+        "23M",
+        "24M",
+        "25M",
+        "26M",
+        "27M",
+        "28M",
+        "29M",
+        "30M"
+      ],
       "official_month": null,
       "official_month_numbers": null,
       "calendar_type": null,
@@ -15510,7 +15607,7 @@
         "odpt.Railway:JR-East.JobanRapid"
       ],
       "source_railways_if_present": null,
-      "direction_number_parity": null,
+      "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
@@ -15518,7 +15615,7 @@
           "E657系（ひたち・ときわ）"
         ]
       },
-      "evidence_kind": "range-with-runtime-guards",
+      "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
     {
@@ -15537,9 +15634,120 @@
       "train_type": "LimitedExpress",
       "train_types": null,
       "number_index": null,
-      "published_numbers": null,
-      "weekday_numbers": null,
-      "holiday_numbers": null,
+      "published_numbers": [
+        "51M",
+        "52M",
+        "53M",
+        "54M",
+        "55M",
+        "56M",
+        "57M",
+        "58M",
+        "59M",
+        "60M",
+        "61M",
+        "62M",
+        "63M",
+        "64M",
+        "65M",
+        "66M",
+        "67M",
+        "68M",
+        "69M",
+        "70M",
+        "71M",
+        "72M",
+        "73M",
+        "74M",
+        "75M",
+        "76M",
+        "77M",
+        "78M",
+        "79M",
+        "80M",
+        "81M",
+        "82M",
+        "83M",
+        "84M",
+        "85M",
+        "86M"
+      ],
+      "weekday_numbers": [
+        "51M",
+        "52M",
+        "53M",
+        "54M",
+        "55M",
+        "56M",
+        "57M",
+        "58M",
+        "59M",
+        "60M",
+        "61M",
+        "62M",
+        "63M",
+        "64M",
+        "65M",
+        "66M",
+        "67M",
+        "68M",
+        "69M",
+        "70M",
+        "71M",
+        "72M",
+        "73M",
+        "74M",
+        "75M",
+        "76M",
+        "77M",
+        "78M",
+        "79M",
+        "80M",
+        "81M",
+        "82M",
+        "83M",
+        "84M",
+        "85M",
+        "86M"
+      ],
+      "holiday_numbers": [
+        "51M",
+        "52M",
+        "53M",
+        "54M",
+        "55M",
+        "56M",
+        "57M",
+        "58M",
+        "59M",
+        "60M",
+        "61M",
+        "62M",
+        "63M",
+        "64M",
+        "65M",
+        "66M",
+        "67M",
+        "68M",
+        "69M",
+        "70M",
+        "71M",
+        "72M",
+        "73M",
+        "74M",
+        "75M",
+        "76M",
+        "77M",
+        "78M",
+        "79M",
+        "80M",
+        "81M",
+        "82M",
+        "83M",
+        "84M",
+        "85M",
+        "86M"
+      ],
       "official_month": null,
       "official_month_numbers": null,
       "calendar_type": null,
@@ -15552,15 +15760,20 @@
         "odpt.Railway:JR-East.JobanRapid"
       ],
       "source_railways_if_present": null,
-      "direction_number_parity": null,
+      "direction_number_parity": "inbound-even",
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
           "E657系",
           "E657系（ひたち・ときわ）"
-        ]
+        ],
+        "excludedServiceDatesByNumber": {
+          "86M": [
+            "2026-11-25"
+          ]
+        }
       },
-      "evidence_kind": "range-with-runtime-guards",
+      "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
     },
     {
@@ -16471,6 +16684,98 @@
       "runtime_guards": {},
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
+    },
+    {
+      "id": "js-0109",
+      "origin": "frontend_js",
+      "line_ids": [
+        "Joban",
+        "JobanMain"
+      ],
+      "format": "full",
+      "min": 9037,
+      "max": 9037,
+      "suffix": "M",
+      "model": "E657系",
+      "png": "images/列车/JR東日本/JR東日本_E657系.png",
+      "train_type": "LimitedExpress",
+      "train_types": null,
+      "number_index": null,
+      "published_numbers": [
+        "9037M"
+      ],
+      "weekday_numbers": null,
+      "holiday_numbers": null,
+      "official_month": null,
+      "official_month_numbers": null,
+      "calendar_type": "holiday",
+      "operating_dates": [
+        "2026-11-15"
+      ],
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
+      "operator": "JR-East",
+      "source_railways": [
+        "odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"
+      ],
+      "source_railways_if_present": null,
+      "direction_number_parity": "inbound-even",
+      "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E657系",
+          "E657系（ひたち・ときわ）"
+        ]
+      },
+      "evidence_kind": "exact-list",
+      "actual_vehicle_confirmed": false
+    },
+    {
+      "id": "js-0110",
+      "origin": "frontend_js",
+      "line_ids": [
+        "Joban",
+        "JobanMain"
+      ],
+      "format": "full",
+      "min": 9086,
+      "max": 9086,
+      "suffix": "M",
+      "model": "E657系",
+      "png": "images/列车/JR東日本/JR東日本_E657系.png",
+      "train_type": "LimitedExpress",
+      "train_types": null,
+      "number_index": null,
+      "published_numbers": [
+        "9086M"
+      ],
+      "weekday_numbers": null,
+      "holiday_numbers": null,
+      "official_month": null,
+      "official_month_numbers": null,
+      "calendar_type": "weekday",
+      "operating_dates": [
+        "2026-11-25"
+      ],
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
+      "operator": "JR-East",
+      "source_railways": [
+        "odpt.Railway:JR-East.Joban",
+        "odpt.Railway:JR-East.JobanRapid"
+      ],
+      "source_railways_if_present": null,
+      "direction_number_parity": "inbound-even",
+      "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "E657系",
+          "E657系（ひたち・ときわ）"
+        ]
+      },
+      "evidence_kind": "exact-list",
+      "actual_vehicle_confirmed": false
     }
   ],
   "review": {
@@ -16681,38 +16986,6 @@
         "min": 400,
         "max": 2599,
         "suffix": "E",
-        "format": "full",
-        "requires_compatible_plan": false,
-        "has_source_railway_guard": true,
-        "has_type_guard": true,
-        "has_date_window": true
-      },
-      {
-        "rule": "js-0098",
-        "line_ids": [
-          "Joban",
-          "JobanMain"
-        ],
-        "model": "E657系",
-        "min": 1,
-        "max": 30,
-        "suffix": "M",
-        "format": "full",
-        "requires_compatible_plan": false,
-        "has_source_railway_guard": true,
-        "has_type_guard": true,
-        "has_date_window": true
-      },
-      {
-        "rule": "js-0099",
-        "line_ids": [
-          "Joban",
-          "JobanMain"
-        ],
-        "model": "E657系",
-        "min": 51,
-        "max": 86,
-        "suffix": "M",
         "format": "full",
         "requires_compatible_plan": false,
         "has_source_railway_guard": true,
