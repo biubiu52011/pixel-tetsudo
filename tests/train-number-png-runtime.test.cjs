@@ -519,7 +519,7 @@ test('JobanLocal PNG family excludes other lines, operators, dates, types and co
   }
   assert.equal(root.TrainNumberPngRanges.match('1948E','Joban'),null);
   assert.equal(root.TrainNumberPngRanges.match('1948E','JobanMain'),null);
-  assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe').model,
+  assert.equal(root.TrainNumberPngRanges.match('400K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,
     'E233系7000番台','existing Saikyo K-tail mapping must remain unchanged');
 });
 test('Karasuyama and Senseki-Tohoku public number PNG: published 2026-11 service only',()=>{
@@ -1398,9 +1398,9 @@ test('K suffix is line-scoped: Saikyo tail, Yokohama full and Negishi no blind r
   assert.equal(root.TrainNumberPngRanges.match('1940K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,'E233系7000番台');
   assert.equal(root.TrainNumberPngRanges.match('1940K','Yokohama',holidayYokohama).model,'E233系6000番台');
   assert.equal(root.TrainNumberPngRanges.match('2221K','Yokohama',holidayYokohama).model,'E233系6000番台');
-  assert.equal(root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe').model,
+  assert.equal(root.TrainNumberPngRanges.match('2221K','SaikyoKawagoe',{serviceDate:'2026-11-03'}).model,
     'E233系7000番台','the Saikyo tail interpretation is unchanged');
-  assert.equal(root.TrainNumberPngRanges.match('2221K','Rinkai').model,
+  assert.equal(root.TrainNumberPngRanges.match('2221K','Rinkai',{serviceDate:'2026-11-03'}).model,
     'E233系7000番台','the Rinkai tail rule is unchanged');
   for(const line of ['KeihinTohoku','KeihinTohokuNegishi','ChuoRapid']){
     assert.equal(root.TrainNumberPngRanges.match('2221K',line),null,
