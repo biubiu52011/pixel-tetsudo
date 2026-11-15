@@ -376,11 +376,6 @@
       renderFiltered();
   }
 
-  function getFilteredLines() {
-    if (!_latestLines) return {};
-    return window.DataState.filterLinesByRegionAndOperator(_latestLines, _selectedRegion, _selectedOperator);
-  }
-
   function statusSignature(line) {
     var d = getDelayInfo(line) || {};
     return [d.status || "loading", d.interval || "", JSON.stringify(d.impacts || []), d.cause || "", d.detail || "", d.source || ""].join("|");
