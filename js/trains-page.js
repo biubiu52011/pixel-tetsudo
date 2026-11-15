@@ -681,12 +681,14 @@
     if (_filterBar && _filterBar.getSelected() !== _selectedOperator) _filterBar.setSelected(_selectedOperator, false);
     if (!listEl) return;
     var allLines = getLinesData() || {};
+    // Changing regions always needs a new regional list. Do not calculate the
+    // soon-to-be-invalid previous-region signature before rebuilding it.
+    if (oldRegion !== _selectedRegion) { renderFiltered(listEl, allLines); return; }
     // The subscription already validated the mounted snapshot. Common filter
     // clicks should not recompute its network presentation at all.
     var nextSignature = _renderedOverviewSnapshot===allLines
       ? _renderedOverviewSignatures["*"] : overviewStructureSignature(allLines);
     var renderedSignature = _renderedOverviewSignatures["*"];
-    if (oldRegion !== _selectedRegion) { renderFiltered(listEl, allLines); return; }
     if (listEl.querySelector(".rs-line-card") && nextSignature &&
         nextSignature !== renderedSignature) {
       renderFiltered(listEl, allLines);
