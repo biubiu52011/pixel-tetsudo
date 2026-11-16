@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "as_of": "2026-11-17",
-  "canonical_blob_sha": "b7ca07a1546502fc0feb0b7aa17f4ea23ac5ea85",
-  "notes": "Unresolved as of 2026-11-17. Eight Tokyu palette differences resolved by aligning base colors to existing passenger display palette. Exact HEX are site presentation values, not official Tokyu CSS specifications. The 2026-11-16 historical baseline remains unchanged. Minatomirai: align canonical line base color with existing site deep-blue passenger palette (#003399); MM railway operator identity and Tokyu-operated Kodomonokuni stay separate. JR-West 2026-11-17 region palette review: ten site color corrections, four station-anchored multi-region presentation sets; unclassified segments use neutral gray. Canonical owner/SQL/timetable unchanged. Details: docs/audits/jrwest-line-colors-20261117.md",
+  "canonical_blob_sha": "58439a3d752e94f294128abd042352029351e00b",
+  "notes": "Unresolved as of 2026-11-17. Eight Tokyu palette differences resolved by aligning base colors to existing passenger display palette. Exact HEX are site presentation values, not official Tokyu CSS specifications. The 2026-11-16 historical baseline remains unchanged. Minatomirai: align canonical line base color with existing site deep-blue passenger palette (#003399); MM railway operator identity and Tokyu-operated Kodomonokuni stay separate. JR-West 2026-11-17 region palette review: ten site color corrections, four station-anchored multi-region presentation sets; unclassified segments use neutral gray. Canonical owner/SQL/timetable unchanged. Details: docs/audits/jrwest-line-colors-20261117.md JR-Central 2026-11-17 review: 12 base/display conflicts resolved by matching 9 existing numbered-route SVG colors and assigning neutral display to 4 unnumbered lines; CJ Nagoya–Kameyama segment aligned. See docs/audits/jr-central-line-colors-20261117.md.",
   "palette_differences": {
     "OdakyuEnoshima": {
       "base": "#0078C1",
@@ -71,54 +71,6 @@
     "TokyoMonorail": {
       "base": "#006fc0",
       "display": "#0b70b8"
-    },
-    "ChuoCentral": {
-      "base": "#0073bf",
-      "display": "#f68b1e"
-    },
-    "KansaiCentral": {
-      "base": "#f15a24",
-      "display": "#f68b1e"
-    },
-    "KiseiCentral": {
-      "base": "#0066cc",
-      "display": "#f68b1e"
-    },
-    "Takayama": {
-      "base": "#b85c00",
-      "display": "#f68b1e"
-    },
-    "Taketoyo": {
-      "base": "#e66b1f",
-      "display": "#f68b1e"
-    },
-    "Taita": {
-      "base": "#7b3f98",
-      "display": "#f68b1e"
-    },
-    "Gotemba": {
-      "base": "#2e8b57",
-      "display": "#f68b1e"
-    },
-    "Minobu": {
-      "base": "#d88b00",
-      "display": "#f68b1e"
-    },
-    "Iida": {
-      "base": "#d33c6e",
-      "display": "#f68b1e"
-    },
-    "Sangu": {
-      "base": "#0066cc",
-      "display": "#f68b1e"
-    },
-    "Meisho": {
-      "base": "#777777",
-      "display": "#f68b1e"
-    },
-    "MinoAkasaka": {
-      "base": "#777777",
-      "display": "#f68b1e"
     }
   },
   "pending_sql_registration": [
