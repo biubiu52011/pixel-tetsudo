@@ -298,3 +298,27 @@ test('cross-PNG number intersections are audited as candidates, never as runtime
  assert.equal(synthetic[0].start,7);
  assert.equal(synthetic[0].end,8);
 });
+
+
+test('generic bands notify final source selection when no PNG can be chosen',()=>{
+ const fs=require('node:fs'),vm=require('node:vm');
+ const source=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+ const fixture='  Object.freeze(rows);';
+ const rows=[
+  {lineIds:['FixtureConflict'],numberFormat:'full',from:200,to:400,suffixes:'M',
+   model:'A',pngPath:'../images/列车/Test/A.png'},
+  {lineIds:['FixtureConflict'],numberFormat:'full',from:300,to:500,suffixes:'M',
+   model:'B',pngPath:'../images/列车/Test/B.png'}
+ ];
+ const instrumented=source.replace(fixture,
+  rows.map(r=>'rows.push('+JSON.stringify(r)+');').join('\n')+'\n'+fixture);
+ const root={};vm.runInNewContext(instrumented,{window:root,Date,
+  console:{log(){},warn(){},debug(){},error(){}}});
+ let conflict=null;
+ assert.equal(root.TrainNumberPngRanges.match('350M','FixtureConflict',{
+  onNumberPngConflict:function(info){conflict=info;}
+ }),null);
+ assert.equal(conflict?.lineId,'FixtureConflict');
+ assert.equal(conflict?.trainNumber,'350M');
+ assert.equal(conflict?.pngPaths?.length,2);
+});

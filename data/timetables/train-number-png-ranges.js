@@ -5168,6 +5168,11 @@
     }
     var matchedPaths=Object.keys(matchedByPng);
     if(matchedPaths.length>1){
+      // Surface a rejected generic match to the final number-source
+      // reconciler. Never mutate a live train position as a side channel.
+      if(context&&typeof context.onNumberPngConflict==="function")
+        context.onNumberPngConflict({lineId:line,trainNumber:number,
+          pngPaths:matchedPaths.slice()});
       var conflictKey=line+"|"+number;
       if(!warnedNumberBandConflicts[conflictKey] &&
          warnedNumberBandConflictCount<100){

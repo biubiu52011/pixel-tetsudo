@@ -3485,3 +3485,29 @@ test('last-mile number PNG candidates deduplicate identical paths and reject mix
  assert.equal(choose([b,a]).conflict,true,'reversing source order cannot resolve a conflict');
  assert.equal(choose([a,b]).conflict,choose([b,a]).conflict);
 });
+
+
+test('generic band conflict survives other-number-source reconciliation',()=>{
+ const original=root.TrainNumberPngRanges.match;
+ try {
+  root.TrainNumberPngRanges.match=function(number,line,scope){
+   if(typeof scope.onNumberPngConflict==='function')
+    scope.onNumberPngConflict({lineId:line,trainNumber:number,pngPaths:['A','B']});
+   return null;
+  };
+  const pos=live({trainNumber:'1940K',positionLineId:'SaikyoKawagoe',
+   sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
+   trainType:'odpt.TrainType:JR-East.Local',
+   railDirection:'odpt.RailDirection:Inbound',serviceDate:'2026-11-16'});
+  const status={};
+  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(pos,status),null);
+  assert.equal(status.conflict,true);
+  const other={pngPath:'../images/列车/JR東日本/JR東日本_E353系.png'};
+  const combined=root.TrainVehicle.chooseUniqueNumberPng([other],status.conflict);
+  assert.equal(combined.candidate,null,'separate number picture cannot hide generic collision');
+  assert.equal(combined.conflict,true);
+  assert.equal(marker(pos,'SaikyoKawagoe').kind,'unresolved');
+ }finally{
+  root.TrainNumberPngRanges.match=original;
+ }
+});

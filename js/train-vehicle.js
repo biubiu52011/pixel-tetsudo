@@ -5318,7 +5318,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
 
   // A direct ODPT/SQL train NUMBER range is a display-image reference.
   // Do not transform it into an operating number or assert a live carset.
-  function lookupTrainNumberRangePng(p) {
+  function lookupTrainNumberRangePng(p,numberBandStatus) {
     if (!p || !p.trainNumber ||
         !(p.positionSource === "realtime-api" ||
           p.positionSource === "supabase-train-run" ||
@@ -5377,7 +5377,14 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         !scopedChuoTatsunoBranchMap) return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
-    var match = rules.match(p.trainNumber, lineId, p);
+    var matchContext=p;
+    if(numberBandStatus&&typeof numberBandStatus==="object"){
+      matchContext=Object.assign({},p,{onNumberPngConflict:function(detail){
+        numberBandStatus.conflict=true;
+        numberBandStatus.detail=detail;
+      }});
+    }
+    var match = rules.match(p.trainNumber, lineId, matchContext);
     if (!match) return null;
     var png = normalizeGalleryPngPath(match.pngPath);
     var garage = window.VehicleGaragePngMap;
@@ -5396,7 +5403,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   // Display references do not override real confirmed physical vehicle proof.
   // A null result represents no candidate; a separate conflict flag prevents
   // mixed-source disputes from falling into an unrelated fleet illustration.
-  function chooseUniqueNumberPng(candidates) {
+  function chooseUniqueNumberPng(candidates,numberBandConflict) {
     var byPng=Object.create(null);
     var count=0,first=null;
     for(var i=0;i<candidates.length;i++){
@@ -5410,6 +5417,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         if(count===1)first=candidate;
       }
     }
+    if(numberBandConflict===true)
+      return {candidate:null,conflict:true};
     return count===1?{candidate:first,conflict:false}:
       {candidate:null,conflict:count>1};
   }
@@ -6352,11 +6361,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // Last-mile lookup handles raw ODPT/SQL positions that carry the train
     // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
     // its actual-car status, or the original train-number identity.
+    var numberBandStatus={};
     var numberChoices = !identityConfirmed ? chooseUniqueNumberPng([
-      lookupTrainNumberPng(p),lookupTrainNumberRangePng(p),
+      lookupTrainNumberPng(p),lookupTrainNumberRangePng(p,numberBandStatus),
       lookupVerifiedJobanCanonicalE531Png(p),
       lookupJobanMainSourceOnlyE531Illustration(p)
-    ]) : {candidate:null,conflict:false};
+    ],numberBandStatus.conflict===true) : {candidate:null,conflict:false};
     if(numberChoices.conflict){
       // No source priority and no fall-through to a generic number picture.
       // Physical EXACT identity has already been considered above.
