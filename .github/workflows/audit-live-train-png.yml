@@ -34,6 +34,6 @@ jobs:
         run: |
           node tools/audit-edge-train-runs-runtime.cjs \
             --date=2026-11-16 \
-            --lines=SaikyoKawagoe,Gotemba,ChuoCentral \
+            --lines=SaikyoKawagoe,Gotemba,ChuoCentral,TokaidoShinkansen,JoetsuShinkansen,AkitaShinkansen \
             --strict > /tmp/train-png-live.json
           node -e "const r=require('/tmp/train-png-live.json');console.log(JSON.stringify(r));"
