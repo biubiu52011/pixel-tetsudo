@@ -253,3 +253,27 @@ test('PNG-first bands return one deduplicated PNG without order priority',()=>{
  assert.equal(match([a,different],'105M')?.pngPath,different.pngPath,
   'non-overlap portion is selectable without rank');
 });
+
+
+test('PNG-first all-gallery report is deterministic and keeps unmatched files blank',()=>{
+ const fs=require('node:fs'),m=require('../tools/build-train-number-png-catalog.cjs');
+ assert.equal(m.galleryPngPaths().length,601);
+ const csv=m.pngFirstInventoryCsv(m.galleryPngPaths(),c);
+ assert.equal(csv,fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8'));
+ assert.ok(csv.includes('无号段')&&csv.includes('原有条件约束'));
+});
+test('new SQL pure PNG bands do not invent a source, stock model or carset',()=>{
+ const copy=JSON.parse(JSON.stringify(snapshot));
+ const png=c.rules.find(x=>x.origin==='sql_snapshot'&&x.line_ids[0]==='AkitaShinkansen').png;
+ copy.published_train_png_number_ranges.push({
+  edition:'2611',line_key:'AkitaShinkansen',segment_key:'png_band/test',
+  min_number:90000,max_number:90010,suffix:'M',png_reference:'../'+png,
+  vehicle_model:null,source_url:null,requires_exact_roster:false,actual_vehicle_confirmed:false
+ });
+ const fresh=buildCatalog(copy,getRows());
+ const row=fresh.rules.find(x=>x.segment==='png_band/test');
+ assert.equal(row.pure_number_band,true);
+ assert.deepEqual(audit(fresh),[]);
+ row.actual_vehicle_confirmed=true;
+ assert.ok(audit(fresh).some(x=>x.includes('must not assert actual car')));
+});

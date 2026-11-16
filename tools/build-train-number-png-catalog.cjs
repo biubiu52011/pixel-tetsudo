@@ -7,6 +7,7 @@ const ROOT=path.resolve(__dirname,'..');
 const JS='data/timetables/train-number-png-ranges.js';
 const SNAP='data/audits/supabase-railway-audit-snapshot-20261116.json';
 const OUT='data/audits/train-number-png-catalog-2611.json';
+const PNG_INVENTORY='data/audits/png-first-number-band-inventory-20261117.csv';
 const read=p=>fs.readFileSync(path.join(ROOT,p),'utf8');
 function getRows(){
  const src=read(JS),marker='  Object.freeze(rows);';
@@ -68,7 +69,8 @@ function buildCatalog(snapshot, rows) {
   min:r.min_number,max:r.max_number,suffix:r.suffix||'',
   model:r.vehicle_model,png:norm(r.png_reference),
   requires_exact_roster:r.requires_exact_roster===true,
-  actual_vehicle_confirmed:r.actual_vehicle_confirmed===true
+  actual_vehicle_confirmed:r.actual_vehicle_confirmed===true,
+  ...(String(r.segment_key||'').startsWith('png_band/')?{pure_number_band:true}:{})
  }));
  const representedJsKeys=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
  const js=rows.map((r,i)=>({
@@ -118,7 +120,7 @@ function buildCatalog(snapshot, rows) {
     pending.push({rule:r.id,line:r.line_ids[0],png:r.png,
      asset_status:a.asset_status,file_format_status:a.file_format_status,
      appearance_class:a.appearance_class});
-   if(a.vehicle_type!==r.model)labels.push({rule:r.id,line:r.line_ids[0],
+   if(!r.pure_number_band&&a.vehicle_type!==r.model)labels.push({rule:r.id,line:r.line_ids[0],
     rule_model:r.model,asset_model:a.vehicle_type,png:r.png,
     label_relation:labelKind(r.model,a.vehicle_type),
     safe_alias_authorized:false});
@@ -189,15 +191,19 @@ function audit(c){
    errors.push(r.id+': missing canonical line');
   if(!Number.isInteger(r.min)||!Number.isInteger(r.max)||r.min<0||r.min>r.max)
    errors.push(r.id+': invalid interval');
-  if(!r.model||!r.png.startsWith('images/列车/')||
+  if((!r.model&&!r.pure_number_band)||!r.png.startsWith('images/列车/')||
      !fs.existsSync(path.join(ROOT,r.png)))
    errors.push(r.id+': missing model or physical PNG '+r.png);
   if(r.actual_vehicle_confirmed)
    errors.push(r.id+': number range must not assert actual car');
-  if(r.origin==='sql_snapshot'&&!r.requires_exact_roster)
-   errors.push(r.id+': number range missing exact-roster guard');
-  if(r.origin==='sql_snapshot'&&!r.source_url)
-   errors.push(r.id+': SQL rule missing provenance source');
+  if(r.origin==='sql_snapshot'&&r.pure_number_band){
+   if(r.model!=null||r.source_url!=null||r.requires_exact_roster||
+      r.actual_vehicle_confirmed)
+    errors.push(r.id+': pure PNG band cannot claim model/source/identity');
+  }else if(r.origin==='sql_snapshot'){
+   if(!r.requires_exact_roster)errors.push(r.id+': number range missing exact-roster guard');
+   if(!r.source_url)errors.push(r.id+': SQL rule missing provenance source');
+  }
   if(r.origin==='frontend_js'&&(!r.runtime_guards||
      typeof r.runtime_guards!=='object'||Array.isArray(r.runtime_guards)))
    errors.push(r.id+': missing source-specific runtime qualifiers');
@@ -271,21 +277,82 @@ function audit(c){
  ]);
  for(const r of c.review.sql_range_overlaps){
   if(r.may_select_by_band_alone!==false)errors.push('overlap must not auto-select artwork');
-  const a=c.rules.find(x=>x.id===r.a),b=c.rules.find(x=>x.id===r.b);
-  if(!a?.requires_exact_roster||!b?.requires_exact_roster)
+  const first=c.rules.find(x=>x.id===r.a),second=c.rules.find(x=>x.id===r.b);
+  if(first?.pure_number_band||second?.pure_number_band){
+   if(first.png!==second.png)
+    errors.push('conflicting pure PNG band '+r.line+'/'+r.segment_a+'/'+r.segment_b);
+   continue;
+  }
+  if(!first?.requires_exact_roster||!second?.requires_exact_roster)
    errors.push('overlap without exact-roster guards');
   if(r.same_model_png)continue;
   if(r.line!=='Oito'||(!allowed.has(r.segment_a+'|'+r.segment_b)&&
     !allowed.has(r.segment_b+'|'+r.segment_a)))
    errors.push('new cross-model number conflict '+r.line+'/'+r.segment_a+'/'+r.segment_b);
  }
- if(c.review.sql_range_overlaps.length>6)errors.push('new overlapping SQL bands');
+ const oldOverlaps=c.review.sql_range_overlaps.filter(r=>
+  !c.rules.find(x=>x.id===r.a)?.pure_number_band&&
+  !c.rules.find(x=>x.id===r.b)?.pure_number_band);
+ if(oldOverlaps.length>6)errors.push('new overlapping legacy SQL bands');
  return errors;
+}
+function pngFirstInventoryCsv(paths,c){
+ const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
+ const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
+ const third=new Set(['東京臨海高速鉄道','埼玉高速鉄道','東葉高速鉄道','首都圏新都市鉄道','北総鉄道','横浜高速鉄道','埼玉新都市交通','鹿島臨海鉄道','真岡鐵道','いすみ鉄道','わたらせ渓谷鉄道','ひたちなか海浜鉄道']);
+ const other=new Set(['函館市電','東京モノレール','千葉都市モノレール','多摩都市モノレール','湘南モノレール','ゆりかもめ','山万','宇都宮ライトレール']);
+ const operator=p=>p.split('/')[2];
+ const category=op=>/^JR/.test(op)?'JR':metro.has(op)?'地铁':third.has(op)?'第三部门铁道':other.has(op)?'其他铁路':'私铁';
+ const order=['JR','地铁','第三部门铁道','私铁','其他铁路'];
+ const byPng=new Map(uniq.map(p=>[p,[]]));
+ for(const r of c.rules){
+  const variants=[{path:r.png,conditional:false}];
+  for(const extra of Object.values(r.runtime_guards?.exactModelArtworkMap||{}))
+   variants.push({path:String(extra).replace(/^(\.\.\/|\.\/|\/)+/,''),conditional:true});
+  for(const v of variants){
+   if(!byPng.has(v.path))continue;
+   const status=v.conditional&&v.path!==r.png?'额外车型条件':
+     r.pure_number_band?'纯号段':'原有条件约束';
+   for(const line of r.line_ids)byPng.get(v.path).push([
+    line,String(r.min).padStart(4,'0'),String(r.max).padStart(4,'0'),
+    String(r.suffix||''),String(r.format||'full'),status]);
+  }
+ }
+ const records=[['分类','运营方目录','PNG路径','线路','起始番号','结束番号','后缀','号码格式','状态']];
+ uniq.sort((a,b)=>order.indexOf(category(operator(a)))-order.indexOf(category(operator(b)))||
+  (a<b?-1:a>b?1:0));
+ for(const png of uniq){
+  const op=operator(png);
+  const bands=[...new Map(byPng.get(png).map(x=>[x.join('|'),x])).values()]
+   .sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:Number(a[1])-Number(b[1]));
+  if(!bands.length)records.push([category(op),op,png,'','','','','','无号段']);
+  for(const band of bands)records.push([category(op),op,png,...band]);
+ }
+ const quote=v=>{const s=String(v??'');return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+ return records.map(r=>r.map(quote).join(',')).join('\n')+'\n';
+}
+function galleryPngPaths(){
+ const result=[];
+ function traverse(dir){
+  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+   const absolute=path.join(dir,entry.name);
+   if(entry.isDirectory())traverse(absolute);
+   else if(entry.isFile()&&/\.png$/i.test(entry.name))
+    result.push(path.relative(ROOT,absolute).split(path.sep).join('/'));
+  }
+ }
+ traverse(path.join(ROOT,'images','列车'));return result;
 }
 function run(args){
  const catalog=buildCatalog(JSON.parse(read(SNAP)),getRows());
  const errors=audit(catalog),output=JSON.stringify(catalog,null,2)+'\n';
  if(args.includes('--write'))fs.writeFileSync(path.join(ROOT,OUT),output);
+ if(args.includes('--write-inventory')||args.includes('--check-inventory')){
+  const text=pngFirstInventoryCsv(galleryPngPaths(),catalog);
+  if(args.includes('--write-inventory'))fs.writeFileSync(path.join(ROOT,PNG_INVENTORY),text);
+  if(args.includes('--check-inventory')&&(!fs.existsSync(path.join(ROOT,PNG_INVENTORY))||
+    read(PNG_INVENTORY)!==text))errors.push('stale PNG-first inventory');
+ }
  if(args.includes('--check')&&(!fs.existsSync(path.join(ROOT,OUT))||read(OUT)!==output))
   errors.push('stale catalog: regenerate with --write');
  console.log(JSON.stringify({catalog:OUT,summary:catalog.summary,errors},null,2));
@@ -293,4 +360,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,audit,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,audit,pngFirstInventoryCsv,galleryPngPaths,run};
