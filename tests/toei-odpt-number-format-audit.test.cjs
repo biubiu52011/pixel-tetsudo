@@ -2,10 +2,10 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {owner,format,inspect,summary}=require('../tools/audit-toei-odpt-live.cjs');
 const rows=[
- {lineIds:['Asakusa'],requireRealtimeToeiOwner:true,weekdayNumbers:['1008T','1702TA'],holidayNumbers:['1008T']},
- {lineIds:['Shinjuku'],requireRealtimeToeiOwner:true,weekdayNumbers:['1031T'],holidayNumbers:[]},
- {lineIds:['Oedo'],requireRealtimeToeiOwner:true,weekdayNumbers:['1001A'],holidayNumbers:[]},
- {lineIds:['Mita'],requireRealtimeToeiOwner:false,weekdayNumbers:['1202T'],holidayNumbers:[]}
+ {lineIds:['Asakusa'],sourceRailways:['odpt.Railway:Toei.Asakusa'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1008T','1702TA'],holidayNumbers:['1008T']},
+ {lineIds:['Shinjuku'],sourceRailways:['odpt.Railway:Toei.Shinjuku'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1031T'],holidayNumbers:[]},
+ {lineIds:['Oedo'],sourceRailways:['odpt.Railway:Toei.Oedo'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1001A'],holidayNumbers:[]},
+ {lineIds:['Mita'],sourceRailways:['odpt.Railway:Toei.Mita'],operator:'Toei',requireRealtimeToeiOwner:false,weekdayNumbers:['1202T'],holidayNumbers:[]}
 ];
 const record=(line,number,own)=>({'odpt:railway':'odpt.Railway:Toei.'+line,
  'odpt:trainNumber':number,'odpt:trainOwner':own});
@@ -41,7 +41,8 @@ test('source railway, raw number and actual train owner must remain independent'
  assert.equal(result.lines.Shinjuku.ownedOverlap,0);
  assert.equal(result.lines.Oedo.overlap,1);
  assert.equal(result.lines.Oedo.formats.other,1);
- assert.equal(result.lines.Mita.overlap,0);
+ assert.equal(result.lines.Oedo.providedVehicleType,0);
+ assert.equal(result.lines.Mita.overlap,1);
  assert.match(summary(result),/DOES NOT prove an official train-number crosswalk/);
 });
 test('unavailable official response cannot be silently treated as an empty verified feed',()=>{
