@@ -418,3 +418,35 @@ test('production SQL seeded PNG-first number intervals are reference-only and co
  assert.ok(!rows.some(x=>x.png.includes('E127系_100番台_長野色')),
   'artwork in SQL asset review must not be auto-published');
 });
+
+
+test('second JR SQL migration keeps sourced bands without authorizing runtime stock',()=>{
+ const fs=require('node:fs');
+ const path='supabase/migrations/20261116183142_seed_png_first_jr_scoped_reference_bands_2611.sql';
+ const sql=fs.readFileSync(path,'utf8');
+ assert.ok(sql.includes('Suigun 9821D/9822D'));
+ const m=require('../tools/build-train-number-png-catalog.cjs');
+ const bands=m.jrScopedSqlSeedBands();
+ assert.equal(bands.length,20);
+ assert.equal(new Set(bands.map(x=>x.line)).size,5);
+ assert.equal(new Set(bands.map(x=>x.png)).size,5);
+ assert.ok(bands.every(x=>x.status.includes('JR专用原始条件保留')));
+ assert.ok(bands.every(x=>Number(x.from)<=Number(x.to)));
+ const desired=new Set(['Shinonoi','Suigun','SuigunBranch','Tsugaru','Yonezawa']);
+ assert.deepEqual(new Set(bands.map(x=>x.line)),desired);
+ assert.ok(bands.some(x=>x.line==='Tsugaru'&&x.from==='0324'&&x.to==='0339'));
+ assert.ok(bands.some(x=>x.line==='Yonezawa'&&x.from==='7142'&&x.to==='7159'));
+ assert.ok(!bands.some(x=>x.line==='Suigun'&&Number(x.from)<=9821&&Number(x.to)>=9821));
+ assert.ok(!bands.some(x=>x.line==='Shinonoi'&&x.png.includes('E127系')));
+ const csv=m.pngFirstInventoryCsv(m.galleryPngPaths(),c);
+ for(const band of bands){
+  const line=['JR',band.png.split('/')[2],band.png,band.line,band.from,band.to,band.suffix,band.format,band.status].join(',');
+  assert.ok(csv.includes(line),line);
+ }
+ for(let i=0;i<bands.length;i++)for(let j=i+1;j<bands.length;j++){
+  const a=bands[i],b=bands[j];
+  if(a.line!==b.line||a.suffix!==b.suffix||a.png===b.png)continue;
+  assert.ok(Number(a.from)>Number(b.to)||Number(b.from)>Number(a.to),
+   'conflicting same-line different PNGs cannot enter the SQL seed');
+ }
+});

@@ -486,6 +486,20 @@ function jrEastAdditionalNumberBands(){
  }
  return records;
 }
+// Derive the gallery audit from the already applied SQL seed. The source
+// modules still own the guards; this is NOT an extra runtime mapping table.
+const JR_SCOPED_SQL_MIGRATION='supabase/migrations/20261116183142_seed_png_first_jr_scoped_reference_bands_2611.sql';
+function jrScopedSqlSeedBands(){
+ const src=read(JR_SCOPED_SQL_MIGRATION);
+ const pattern=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'([A-Z])',NULL,'\\.\\.\\/(images\\/列车\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==20)throw Error('JR SQL number bands do not match reviewed migration');
+ return matches.map((m)=>({
+  line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
+  to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
+  status:'纯号段（JR专用原始条件保留）'
+ }));
+}
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -512,6 +526,10 @@ function pngFirstInventoryCsv(paths,c){
  // existing modules; these rows do NOT authorize otherwise unsupported trips.
  for(const ref of jrEastScopedNumberBands().concat(jrEastAdditionalNumberBands())){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
+  byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
+ }
+ for(const ref of jrScopedSqlSeedBands()){
+  if(!byPng.has(ref.png))throw Error('JR SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
  const records=[['分类','运营方目录','PNG路径','线路','起始番号','结束番号','后缀','号码格式','状态']];
@@ -558,4 +576,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};

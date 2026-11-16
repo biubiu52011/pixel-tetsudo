@@ -50,6 +50,10 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMa
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,0439,0439,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,1461,1461,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Oito,1522,3259,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2530,2530,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2535,2535,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2537,2537,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,3526,3526,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_253系_1000番台.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_701系_100番台.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_701系_5000番台.png,Tazawako,0822,0827,M,full,既有JR专用示意守卫(SaturdayHoliday)
@@ -82,7 +86,9 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_701系_5500番台.png,Yamag
 JR,JR東日本,images/列车/JR東日本/JR東日本_701系_5500番台.png,Yamagata,1457,1457,M,full,既有JR专用示意守卫(Weekday)
 JR,JR東日本,images/列车/JR東日本/JR東日本_701系_仙台地区.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_701系_盛岡地区.png,,,,,,无号段
-JR,JR東日本,images/列车/JR東日本/JR東日本_701系_秋田地区.png,,,,,,无号段
+JR,JR東日本,images/列车/JR東日本/JR東日本_701系_秋田地区.png,Tsugaru,0322,0322,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_701系_秋田地区.png,Tsugaru,0324,0339,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_701系_秋田地区.png,Tsugaru,0341,0341,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_719系_5000番台.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png,BanetsuWest,8226,8233,,bare,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png,BanetsuWest,9226,9233,,bare,原有条件约束
@@ -429,6 +435,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,RikutoEast
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,RikutsuWest,0150,0165,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,RikutsuWest,3131,3132,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Yamada,0631,9642,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Yonezawa,7142,7159,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png,RikutoEast,9721,9726,D,full,原有条件约束
@@ -442,7 +449,17 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系（陸羽東・
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系（陸羽東・左沢）.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png,Joetsu,8124,9783,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE120形_只見線色.png,,,,,,无号段
-JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,,,,,,无号段
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,SuigunBranch,0920,0949,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,0320,0325,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,0327,0330,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,0332,0339,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,0341,0341,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,0820,0848,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,0920,0949,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,8325,8326,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,9324,9324,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,9329,9329,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,9841,9841,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,0920,2952,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,Hachinohe,0424,1463,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,Hachinohe,8471,8471,D,full,原有条件约束
@@ -455,6 +472,7 @@ JR,JR東海,images/列车/JR東海/JR東海_373系.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1001,1006,M,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1011,1011,M,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1026,1026,M,full,原有条件约束
+JR,JR東海,images/列车/JR東海/JR東海_383系.png,Shinonoi,1001,1026,M,full,纯号段（JR专用原始条件保留）
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0001,0001,A,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0004,0004,A,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0007,0007,A,full,原有条件约束
