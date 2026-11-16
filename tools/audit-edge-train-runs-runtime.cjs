@@ -54,6 +54,10 @@ if(typeof adapter._trainRunToTimetable!=='function')
 // module (which in turn loads the production JS files once).
 const runtime=require('./audit-train-number-png-runtime.cjs');
 const garage=runtime.window.VehicleGaragePngMap;
+const originalSnapshot=JSON.parse(fs.readFileSync(path.join(root,
+  'data/audits/train-number-png-runtime-sample-20261116.json'),'utf8'));
+if(originalSnapshot.serviceDate!==day)
+  throw Error('Comparison snapshot service date differs; pass 2026-11-16');
 assert.equal(typeof runtime.replay,'function');
 assert.equal(typeof garage.isQuarantinedPng,'function');
 
@@ -121,7 +125,9 @@ async function fetchLine(line){
     sourceConfirmedPlan:0,sourceDateVerified:0,sourceCandidate:0,
     sourcePng:0,clientPng:0,complete:false,partial:false,
     completeReason:'',sourceCoverage:'',responseCalendar:'',
-    pngPaths:[],wrongLineImages:0,missingRailwayImages:0};
+    pngPaths:[],wrongLineImages:0,missingRailwayImages:0,
+    sourceTemplateIdsSeen:0,sourceTemplatesNotEmitted:[],
+    numberVerificationStatuses:{},timetableValidities:{}};
   report.byLine[line]=result;
   let body;
   try {
@@ -151,8 +157,17 @@ async function fetchLine(line){
     return;
   }
 
+  const liveTemplateIds=new Set();
   for(const run of body.runs){
     const number=String(run?.train_number||'');
+    if(run && run.source_template_id!=null)
+      liveTemplateIds.add(String(run.source_template_id));
+    const verification=String(run?.train_number_verification||'unknown');
+    const validity=String(run?.timetable_validity||'unknown');
+    result.numberVerificationStatuses[verification]=
+      (result.numberVerificationStatuses[verification]||0)+1;
+    result.timetableValidities[validity]=
+      (result.timetableValidities[validity]||0)+1;
     if(!run || run.line_id!==line || run.service_date!==day){
       minorIssue(line,'edge_row_identity_mismatch',number);continue;
     }
@@ -204,6 +219,13 @@ async function fetchLine(line){
       if(noSource.kind==='vehicle')++result.missingRailwayImages;
     }else {++result.neutral;++report.neutralTotal;}
   }
+  result.sourceTemplateIdsSeen=liveTemplateIds.size;
+  // This is a provenance comparison, not a count of missing trains:
+  // a separate source duplicate may be superseded by a higher-quality row.
+  result.sourceTemplatesNotEmitted=originalSnapshot.rows
+    .filter(x=>x.line_key===line && !liveTemplateIds.has(String(x.source_id)))
+    .map(x=>({sourceId:String(x.source_id),trainNumber:String(x.train_number)}))
+    .slice(0,20);
   if(result.wrongLineImages>0)minorIssue(line,'cross_line_artwork',result.wrongLineImages);
   if(result.missingRailwayImages>0)minorIssue(line,'source_free_artwork',result.missingRailwayImages);
 }
