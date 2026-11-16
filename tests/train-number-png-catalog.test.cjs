@@ -342,3 +342,27 @@ test('range inventory compacts consecutive existing numbers but never fills miss
  assert.ok(!compact.some(x=>x[1]==='0001'&&x[2]==='0012'),'6 and 7 were never supported');
  assert.ok(compact.some(x=>x[3]==='D')&&compact.some(x=>x[4]==='tail'));
 });
+
+
+test('JR Yamagata/Tazawako qualified special PNG numbers join one library inventory',()=>{
+ const m=require('../tools/build-train-number-png-catalog.cjs');
+ const band=m.jrEastScopedNumberBands();
+ const images=new Set(band.map(x=>x.png));
+ assert.equal(band.length,119);
+ assert.equal(images.size,3);
+ assert.equal(band.filter(x=>x.line==='Yamagata').length,54);
+ assert.equal(band.filter(x=>x.line==='Tazawako').length,65);
+ assert.ok(band.every(x=>x.status.startsWith('既有JR专用示意守卫(')));
+ assert.ok(band.every(x=>x.from===x.to&&x.suffix==='M'));
+ assert.ok(!band.some(x=>x.png.includes('719系_5000番台')),
+  'unverified Yamagata 719 candidates must remain unmapped');
+ const csv=m.pngFirstInventoryCsv(m.galleryPngPaths(),c);
+ for(const png of images){
+  const lines=csv.split('\n').filter(x=>x.includes(png));
+  assert.ok(lines.some(x=>x.includes('既有JR专用示意守卫')),png);
+  assert.ok(!lines.some(x=>x.endsWith(',无号段')),png);
+ }
+ assert.ok(csv.includes('JR東日本_E723系_5000番台.png,Yamagata,0420,0420,M,full'));
+ assert.ok(csv.includes('JR東日本_701系_5000番台.png,Tazawako,0822,0822,M,full'));
+ assert.ok(!csv.includes('JR東日本_719系_5000番台.png,Yamagata,'));
+});

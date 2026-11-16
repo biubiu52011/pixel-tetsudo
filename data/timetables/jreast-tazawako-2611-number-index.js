@@ -93,7 +93,7 @@ function resolve(p){
    officialUrl:proof.officialUrl};
 }
 root.JREastTazawakoNumberIndex202611=Object.freeze({
- source:source,verify:verify,resolve:resolve
+ source:source,stops:stops,image:image,verify:verify,resolve:resolve
 });
 var ranges=root.TrainNumberPngRanges;
 if(ranges&&typeof ranges.match==="function"){

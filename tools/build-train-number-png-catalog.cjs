@@ -343,6 +343,72 @@ function compactNumberBands(input){
  }
  return reduced;
 }
+// Audit-only reuse of existing JR East numbered illustration resolvers.
+function jrEastScopedNumberBands(){
+ const root={},context={window:root,Date,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const script of [
+  'data/timetables/jreast-yamagata-2611-number-index.js',
+  'data/timetables/jreast-tazawako-2611-number-index.js'
+ ])vm.runInNewContext(read(script),context,{filename:script,timeout:15000});
+ const yam=root.JREastYamagataNumberIndex202611,taz=root.JREastTazawakoNumberIndex202611;
+ if(!yam||!taz||!taz.image||!Array.isArray(taz.stops))
+  throw Error('Missing JR East source-number audit exports');
+ const calendars={Weekday:'2026-11-05',SaturdayHoliday:'2026-11-07'},refs=[];
+ function add(png,line,number,cal){
+  const m=/^([0-9]{1,5})([A-Z])$/.exec(number);
+  if(!m)throw Error('Unexpected JR published number: '+number);
+  const path=String(png||'').replace(/^(?:\.\.\/|\.\/|\/)+/,'');
+  if(!path.startsWith('images/列车/'))throw Error('Invalid JR PNG path: '+png);
+  refs.push({png:path,line,from:m[1].padStart(4,'0'),
+   to:m[1].padStart(4,'0'),suffix:m[2],format:'full',
+   status:'既有JR专用示意守卫('+cal+')'});
+ }
+ for(const [model,numbers] of Object.entries(yam.observed)){
+  if(!yam.image[model])throw Error('Yamagata observed model has no PNG');
+  for(const number of numbers)for(const [cal,date] of Object.entries(calendars)){
+   const trip=yam.roster[cal]?.[number];
+   if(!trip)continue;
+   const p={positionLineId:'Yamagata',displayLineId:'Yamagata',
+    sourceRailway:'odpt.Railway:JR-East.Yamagata',
+    positionSource:'supabase-train-run',estimated:true,
+    trainOperator:'JR-East',serviceDate:date,calendarType:cal,
+    trainNumber:number,trainType:'odpt.TrainType:JR-East.Local',
+    railDirection:'odpt.RailDirection:'+trip[0],
+    scheduledStopKeys:trip[1].map(i=>yam.stops[i]),
+    vehicleIdentityStatus:'UNKNOWN'};
+   const approved=yam.resolve(p);
+   if(!approved||approved.illustrationPng!==yam.image[model]||
+      approved.actualVehicleConfirmed!==false)
+    throw Error('Yamagata illustrated number not verified: '+number+'/'+cal);
+   add(approved.illustrationPng,'Yamagata',number,cal);
+  }
+ }
+ for(const [cal,directions] of Object.entries(taz.source)){
+  const date=calendars[cal];
+  if(!date)throw Error('Unexpected Tazawako calendar: '+cal);
+  for(const [direction,numbers] of Object.entries(directions))
+   for(const [number,record] of Object.entries(numbers)){
+    const a=taz.stops.indexOf(record[1]),b=taz.stops.indexOf(record[2]);
+    if(a<0||b<0)throw Error('Tazawako roster station missing');
+    const step=a<=b?1:-1,stopKeys=[];
+    for(let i=a;step>0?i<=b:i>=b;i+=step)stopKeys.push(taz.stops[i]);
+    if(stopKeys.length!==record[0])throw Error('Tazawako noncanonical route: '+number);
+    const p={positionLineId:'Tazawako',displayLineId:'Tazawako',
+     sourceRailway:'odpt.Railway:JR-East.Tazawako',
+     positionSource:'supabase-train-run',estimated:true,
+     trainOperator:'JR-East',serviceDate:date,calendarType:cal,
+     trainNumber:number,trainType:'odpt.TrainType:JR-East.Local',
+     railDirection:'odpt.RailDirection:'+direction,
+     scheduledStopKeys:stopKeys,vehicleIdentityStatus:'UNKNOWN'};
+    const approved=taz.resolve(p);
+    if(!approved||approved.illustrationPng!==taz.image||
+       approved.actualVehicleConfirmed!==false)
+     throw Error('Tazawako illustrated number not verified: '+number+'/'+cal);
+    add(approved.illustrationPng,'Tazawako',number,cal);
+   }
+ }
+ return refs;
+}
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -364,6 +430,12 @@ function pngFirstInventoryCsv(paths,c){
     line,String(r.min).padStart(4,'0'),String(r.max).padStart(4,'0'),
     String(r.suffix||''),String(r.format||'full'),status]);
   }
+ }
+ // Special JR illustrated numbers are strictly date/line/source-gated in the
+ // existing modules; these rows do NOT authorize otherwise unsupported trips.
+ for(const ref of jrEastScopedNumberBands()){
+  if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
+  byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
  const records=[['分类','运营方目录','PNG路径','线路','起始番号','结束番号','后缀','号码格式','状态']];
  uniq.sort((a,b)=>order.indexOf(category(operator(a)))-order.indexOf(category(operator(b)))||
@@ -409,4 +481,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,pngFirstInventoryCsv,galleryPngPaths,run};
