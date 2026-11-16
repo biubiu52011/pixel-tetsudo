@@ -5392,6 +5392,28 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       illustrative:match.illustrative===true};
   }
 
+  // All independently eligible NUMBER-based PNG paths must agree.
+  // Display references do not override real confirmed physical vehicle proof.
+  // A null result represents no candidate; a separate conflict flag prevents
+  // mixed-source disputes from falling into an unrelated fleet illustration.
+  function chooseUniqueNumberPng(candidates) {
+    var byPng=Object.create(null);
+    var count=0,first=null;
+    for(var i=0;i<candidates.length;i++){
+      var candidate=candidates[i];
+      if(!candidate||!candidate.pngPath)continue;
+      var normalized=normalizeGalleryPngPath(candidate.pngPath);
+      if(!normalized)continue;
+      if(!Object.prototype.hasOwnProperty.call(byPng,normalized)){
+        byPng[normalized]=candidate;
+        count++;
+        if(count===1)first=candidate;
+      }
+    }
+    return count===1?{candidate:first,conflict:false}:
+      {candidate:null,conflict:count>1};
+  }
+
   // A SOURCE-ONLY E531 label normally cannot authorize an icon. Exception:
   // one two-segment Joban <-> JobanMain canonical SQL service, with its
   // reciprocal continuity verified and (for live positions) independently
@@ -6330,10 +6352,19 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // Last-mile lookup handles raw ODPT/SQL positions that carry the train
     // NUMBER but no preattached vehiclePlan. Do not mutate the live position,
     // its actual-car status, or the original train-number identity.
-    var numberPng = !identityConfirmed ?
-      (lookupTrainNumberPng(p) || lookupTrainNumberRangePng(p) ||
-       lookupVerifiedJobanCanonicalE531Png(p) ||
-       lookupJobanMainSourceOnlyE531Illustration(p)) : null;
+    var numberChoices = !identityConfirmed ? chooseUniqueNumberPng([
+      lookupTrainNumberPng(p),lookupTrainNumberRangePng(p),
+      lookupVerifiedJobanCanonicalE531Png(p),
+      lookupJobanMainSourceOnlyE531Illustration(p)
+    ]) : {candidate:null,conflict:false};
+    if(numberChoices.conflict){
+      // No source priority and no fall-through to a generic number picture.
+      // Physical EXACT identity has already been considered above.
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false,
+        reason:"conflicting-number-png-sources"};
+    }
+    var numberPng=numberChoices.candidate;
     if (numberPng) {
       if (artworkFailed !== true) {
         if (numberPng.referenceOnly===true && numberPng.illustrative===true)
@@ -6550,6 +6581,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     resolvePublishedPositionPlan: resolvePublishedPositionPlan,
     lookupTrainNumberPng: lookupTrainNumberPng,
     lookupTrainNumberRangePng: lookupTrainNumberRangePng,
+    chooseUniqueNumberPng: chooseUniqueNumberPng,
     lookupVerifiedJobanCanonicalE531Png: lookupVerifiedJobanCanonicalE531Png,
     lookupJobanMainSourceOnlyE531Illustration: lookupJobanMainSourceOnlyE531Illustration,
     resolve: resolve,

@@ -3468,3 +3468,20 @@ test('2026-11-16 Oedo without trainOwner is source-owned, not model-confirmed',(
       ...position,...bad}),null,'invalid standalone Oedo evidence');
   }
 });
+
+
+test('last-mile number PNG candidates deduplicate identical paths and reject mixed-source alternatives',()=>{
+ const choose=root.TrainVehicle.chooseUniqueNumberPng;
+ const a={pngPath:'../images/列车/JR東日本/JR東日本_E353系.png',source:'published-number'};
+ const same={pngPath:a.pngPath,source:'sql-number-reference'};
+ const b={pngPath:'../images/列车/JR東日本/JR東日本_E233系.png',source:'number-band'};
+ assert.equal(choose([]).candidate,null);
+ assert.equal(choose([null,null]).conflict,false);
+ assert.equal(choose([a]).candidate,a);
+ assert.equal(choose([a,same]).candidate,a);
+ assert.equal(choose([a,same]).conflict,false,'a duplicate path is not a conflict');
+ assert.equal(choose([a,b]).candidate,null);
+ assert.equal(choose([a,b]).conflict,true);
+ assert.equal(choose([b,a]).conflict,true,'reversing source order cannot resolve a conflict');
+ assert.equal(choose([a,b]).conflict,choose([b,a]).conflict);
+});
