@@ -110,6 +110,14 @@
   root.JREastShonanMixedNumberIndex202611=Object.freeze({
     version:"20261104-shonan-number-candidates-v2",rows:rows.length,
     counts:Object.freeze(counts),models:models,match:match,
+    // Diagnostic/reverse-index API only: returns copies of original exact
+    // public timetable number rows, NOT E231/E233 physical assignments.
+    listNumberScopes:function(){
+      return rows.map(function(r){return {
+        lineId:r[0],sourceRailway:r[1],calendar:r[2],
+        trainType:r[3],exactNumbers:String(r[4]||"").split(",")
+      };});
+    },
     historical215:historical215,archive215:archive
   });
 })(window);
