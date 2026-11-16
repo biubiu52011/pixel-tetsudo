@@ -217,7 +217,7 @@ test('HTML, source-scoped lazy manifest, PNG versions and fold model label wired
  assert.match(estimator,/yamIndex\.verify\(/);
  const vehicle=fs.readFileSync('js/train-vehicle.js','utf8');
  assert.ok(vehicle.indexOf('contextLineId==="Yamagata"')<
-   vehicle.indexOf('var numberPng = !identityConfirmed'),'Yamagata gate precedes old universal PNG fallback');
+   vehicle.indexOf('var numberChoices = !identityConfirmed'),'Yamagata gate precedes shared unique PNG selection');
  const renderer=fs.readFileSync('js/trains-render.js','utf8');
  assert.match(renderer,/lineId==="Yamagata" && window\.JREastYamagataNumberIndex202611/);
  assert.match(renderer,/lineId === "ChuoMain" \|\| lineId === "Yamagata"/);
