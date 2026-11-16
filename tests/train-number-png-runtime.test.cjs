@@ -3287,6 +3287,8 @@ test('Toei Asakusa/Shinjuku/Oedo staged numbers only authorize owner-scoped disp
       {sourceRailway:'odpt.Railway:Toei.Mita'},
       {positionSource:'supabase-train-run',estimated:true},
       {serviceDate:'2026-12-01'}]){
+      if(line==='Oedo'&&Object.prototype.hasOwnProperty.call(bad,'trainOwner')&&
+         bad.trainOwner==='')continue; // source-only owner for standalone Oedo
       assert.equal(root.TrainNumberPngRanges.match(n,line,{...p,...bad}),null,
         'owner/date/source leak '+line);
     }
@@ -3377,6 +3379,7 @@ test('Toei ODPT live owner namespaces select PNG in the full rendering chain',()
         {...raw,trainOwner:owner})?.pngPath,row.pngPath);
     }
     for(const owner of ['', 'odpt.TrainOwner:Keio','odpt.Operator:Keikyu']){
+      if(line==='Oedo'&&owner==='')continue;
       assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
         ...raw,trainOwner:owner}),null,'foreign or missing owner '+line);
     }
@@ -3428,4 +3431,38 @@ test('Saikyo-Rinkai 2611 public K/F/S parity and edition boundaries are guarded'
   serviceDate:'2026-11-16',
   railDirection:'odpt.RailDirection:Inbound'}),null,
   'odd numbers cannot be inbound even-direction trains');
+});
+
+test('2026-11-16 Oedo without trainOwner is source-owned, not model-confirmed',()=>{
+  // Source: official ODPT observation at 2026-11-16T00:07:43Z:
+  // 48/48 full numbers observed, 48/48 without trainOwner or vehicleType.
+  // Oedo has no foreign through service (Japanese Private Railway Association).
+  const rules=require('../tools/build-train-number-png-catalog.cjs').getRows()
+   .filter(x=>x.requireRealtimeToeiOwner&&x.lineIds[0]==='Oedo');
+  assert.equal(rules.length,4);
+  for(const row of rules){
+    const n=row.weekdayNumbers[0];
+    const position=live({trainNumber:n,positionLineId:'Oedo',displayLineId:'Oedo',
+      sourceRailway:'odpt.Railway:Toei.Oedo',trainOperator:'odpt.Operator:Toei',
+      trainOwner:'',serviceDate:'2026-11-16',calendarType:'weekday',
+      realtimeVehicleType:row.model,actualVehicleConfirmed:false});
+    const selected=root.TrainVehicle.lookupTrainNumberRangePng(position);
+    assert.equal(selected?.pngPath,row.pngPath,'separate model evidence exists');
+    assert.equal(marker(position,'Oedo').kind,'vehicle');
+    assert.equal(position.vehicleIdentityStatus,'UNKNOWN');
+    // In the REAL feed, model evidence is absent: one A/B train number
+    // must not pick an arbitrary 12-000/12-600 PNG from the common pool.
+    assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+      ...position,realtimeVehicleType:'',vehiclePlan:null}),null);
+    assert.equal(root.TrainNumberPngRanges.match(n,'Oedo',{
+      ...position,realtimeVehicleType:'',vehiclePlan:null}),null);
+    for(const bad of [
+      {trainOperator:'',trainOwner:''},
+      {trainOperator:'Keio',trainOwner:''},
+      {trainOwner:'odpt.TrainOwner:Keio'},
+      {sourceRailway:'odpt.Railway:Toei.Asakusa'},
+      {positionSource:'supabase-train-run',estimated:true}
+    ])assert.equal(root.TrainVehicle.lookupTrainNumberRangePng({
+      ...position,...bad}),null,'invalid standalone Oedo evidence');
+  }
 });
