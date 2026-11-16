@@ -320,28 +320,29 @@
 
 静态规则总计 **3 条引用、2 张不同的隔离 PNG**。这不是 3 条已确认运行时误绘制：`tests/train-number-png-runtime.test.cjs` 已对 DE10 与 E127 做了隔离/不出图断言；本次没有执行完整浏览器回放。Supabase 当前 `train_timetable_vehicle_resolution` 中直接非空的 200 条 `vehicle_artwork_path`，查得 **0 条**指向上述 DE10 或 E127-100 文件。不能据此放宽或删除隔离。
 
-### 4. 未进入统一号段目录的高量线路：有多少车型证据？
+### 4. 未进入统一静态号段目录的高量线路：源模板 → 规范解析（**已修正关联键**）
 
-同日只读 SQL，按 `manual_timetable_templates.line_key` 与 `train_timetable_vehicle_resolution.timetable_id` 左连接。车型标签仅表示来源字段**非空**，不能单独授予 PNG 权限。修订日期非空也不等于“已核实 2026-11 有效”。
+**2026-11-16 后续校对发现一个审计查询错误**：此前直接使用 `train_timetable_vehicle_resolution.timetable_id = manual_timetable_templates.id`，但两者主键属于**不同表**，因此旧版列表中的“解析记录 / unresolved / 直接 PNG”列全部失效。旧数据不得复用，本表使用项目已有的**真正源模板级视图** `public.train_timetable_source_resolution`，按 `s.source_template_id = m.id` 关联。这个源视图已经考虑 `train_timetable_members` 多线路／同车连续区间，比使用 `train_timetables.lead_source_template_id` 更完整。
 
-| 线路 | 时刻表模板 | 非空车型标签 | 解析视图记录 | 解析视图 unresolved | 解析视图直接 PNG |
+| 线路 | 时刻表源模板 | 非空车型原始标签 | 解析 unresolved | 解析车型/候选 | 源解析直接 PNG |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Keikyu | 2,782 | 2,782 | 2,778 | 2,506 | 0 |
-| Odawara | 2,117 | 0 | 0 | — | 0 |
-| Ikebukuro（西武） | 2,088 | 2,083 | 1,894 | 1,324 | 0 |
-| Tojo | 1,760 | 0 | 0 | — | 0 |
-| TobuSkytree | 1,738 | 0 | 0 | — | 0 |
-| SotetsuMain | 1,457 | 1,457 | 1,457 | 1,338 | 0 |
-| Keisei | 1,413 | 0 | 0 | — | 0 |
-| TokyuToyoko | 1,397 | 0 | 0 | — | 0 |
-| SeibuShinjuku | 1,147 | 0 | 0 | — | 0 |
-| OsakaLoop | 1,057 | 0 | 1,057 | 956 | 0 |
+| Keikyu | 2,782 | 2,782 | 2,782 | 0 | 0 |
+| Odawara | 2,117 | 0 | 1,778 | 339 | 198 |
+| Ikebukuro（西武） | 2,088 | 2,083 | 1,923 | 165 | 0 |
+| Tojo | 1,760 | 0 | 1,760 | 0 | 0 |
+| TobuSkytree | 1,738 | 0 | 1,738 | 0 | 0 |
+| SotetsuMain | 1,457 | 1,457 | 1,457 | 0 | 0 |
+| Keisei | 1,413 | 0 | 1,251 | 162 | 0 |
+| TokyuToyoko | 1,397 | 0 | 1,328 | 69 | 0 |
+| SeibuShinjuku | 1,147 | 0 | 1,132 | 15 | 0 |
+| OsakaLoop | 1,057 | 0 | 1,057 | 0 | 0 |
 
 解释：
 
-1. **Keikyu、Ikebukuro、SotetsuMain**：大量模板虽带标签，但解析仍不确定；要核对的是来源证据、模型歧义、有效日期和授权规则，不是缺哪张图。
-2. **Odawara、Tojo、TobuSkytree、Keisei、TokyuToyoko**：未进入目前这个车辆解析视图、模板车型标签未填；需要追查既有来源/运行时 resolver，而不是断言网页一定显示失败。比如东武 Skytree 已有单独号段校验负责人。
-3. **OsakaLoop**：即便 PNG 在图库中存在，现有解析视图仍大量 unresolved；需要独立车次和车型来源，不能从图库库存逆推“该线全车次出图”。
+1. **京急／西武池袋／相铁**：原始车种字段可能表示多种车型组成的候选集合（例如京急“新1000／1500／600”），**不能选第一种 PNG 代替车次证据**。从本次源解析看，京急和相铁模板均未确定型号。
+2. **小田急小田原线**：历史模板中有 **198 条具直接 SQL PNG 路径**，多数依靠带时刻表或运用来源的专门规则，**并非**“小田急零号段映射”或“当前日 198 个实车已证实”。
+3. **东武 Skytree**：规范源解析仍 unresolved，但同仓库另有 `TrainNumberPngRanges` 专用官方/来源匹配规则。不能据此断言网页全线无法出图。
+4. **大阪环状线与多条旧数据线路**：仍需查相应官方列车号、服务日期、车型数据和已有负责人。静态图库本身不能补实车身份。
 
 ### 5. 下一步完成“实际覆盖率”的必要条件
 
@@ -350,3 +351,30 @@
 对每个存在的服务，复用既有最终 `TrainVehicle` / `TrainNumberPngRanges` 判定，输出互斥状态：`confirmed_formation`、`source_scoped_representative`、`candidate_or_planned_only`、`blocked_by_quarantine`、`missing_source_or_guard`。只对来自独立权威证据、且运行条件完整的服务计算“代表 PNG 适用率”；`confirmed_formation` 另列，不与展示参考图混计。
 
 **本次补充不修改运行时规则、数据库和 PNG 素材**，也不从图片目录批量生成补全号段。优先顺序：先查已有负责人 → 独立官方逐号名单 → 车型证据 → 图库状态 → 最终 resolver 回放与测试。
+
+
+### 6. 2026-11-16 明确日期子集实测（已独立复核）
+
+此处不按自增 ID 错误连接，直接使用现有 `public.train_timetable_source_resolution` 视图与 `manual_timetable_templates.id` 关联；文件 `supabase/queries/train_number_png_service_date_coverage_readonly.sql` 提供可复用、只读的完整 SQL。
+
+| 统计对象 | 查询结果 | 不能推断的内容 |
+| --- | ---: | --- |
+| 全部源时刻表模板 | **98,510** | 不是当日运行列车总数 |
+| 明确填写 `operating_dates` 的源模板 | **309** | 其余 98,201 条不表示停运，而是需其他日历判定 |
+| `operating_dates` 包含 2026-11-16 | **174** 行 | 仅本子集，不代表全网当日班次 |
+| 该子集按线路/铁路/日历/方向/完整番号去重 | **173** 组 | 多来源同号须保留来源证据 |
+| 该子集处于 `unresolved` | **126** 行 | 不能推断当天一定无可用前端代表图 |
+| 该子集已有非空车型标签 | **48** 行 | 车型/计划的存在不表示实车身份 |
+| 该子集有直接 SQL PNG 路径 | **2** 行 | 网页另有前端 renderer/matcher，不能当作展示成功率 |
+| 该子集在本月有非空修订日期 | **114** 行 | 日期非空只是一个元数据，不是充分的官方验证 |
+| 同一车次同日实际编组确认 | **0** 行 | 保持 `actual_vehicle_confirmed=false` |
+
+两条有 SQL 图片路径的当日明确日期源记录是埼京线 `510S`、`759K`，使用 E233系7000番台代表图；仍需独立核对当天车辆与图片，不能提升为精确实车。
+
+唯一重复的同日服务联合键为御殿场线 `2570M`（Weekday、Inbound），两份源记录来自不同的 `authorized-sql:jrcentral` 和 TokyoGTFS 文件；两条**来源**不能被当成两列车，也不能因重复直接判定车型冲突。
+
+**数据库关系审计的修正与保护**：`train_timetable_vehicle_resolution.timetable_id` 引用的是 `train_timetables.id`，不是 `manual_timetable_templates.id`。并且规范时刻表的 `lead_source_template_id` 可能不同于车型映射选择的 `source_template_id`：全库有 **380** 个此类记录，其车辆来源属于同一 `train_timetable_members` 组，不属于错误主键关联。按真正 membership 核对，源解析 98,510 行及已有车型映射 24,118 行的 **nonmember 都为 0**。
+
+**运营日历语义**：部分 `Weekday` / `SaturdayHoliday` 标签与显式 `operating_dates` 横跨的实际日期不一致，先前若直接称为错误将造成误报。`tools/route-timetable-service-calendar.test.cjs` 已明确要求“带日期 SQL 计划的服务日授权优先于日历标签”，因此这一点仅保留为来源语义复核，不自动删除有效列车、也不强制统一日期类别。
+
+**当前可验证结论**：174 条可显式指定当日的原始计划中，只有两条直接在 SQL 中挂载 PNG。这不是全网站实际显示率。真正的全网车次号 PNG 适用率仍要求回放最终 `TrainVehicle` 及 `TrainNumberPngRanges`，并对覆盖其余 98,201 条源模板的周历与运营日证据进行核验。
