@@ -16,6 +16,8 @@ function build(index,current,sources){
  const tadami=load(sources.tadami).JREastTadamiNumberIndex202611;
  const yamagata=load(sources.yamagata).JREastYamagataNumberIndex202611;
  const shonan=load(sources.shonan).JREastShonanMixedNumberIndex202611;
+ const uetsu=load(sources.uetsu).JREastUetsuNumberIndex202611;
+ const tsugaru=load(sources.tsugaru).JREastTsugaruNumberIndex202611;
  const isHoliday=d=>{
   const wd=new Date(d+'T12:00:00Z').getUTCDay();
   return wd===0||wd===6||d==='2026-11-03'||d==='2026-11-23';
@@ -114,6 +116,43 @@ function build(index,current,sources){
   const fmt=(id,dir,cal,withP=false)=>
    'https://timetables.jreast.co.jp/2611/timetable-v/'+id+
     (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+(withP?'p':'')+'.html';
+  if(name==='JR東日本_E653系_1000番台_いなほ色.png'){
+   for(const cal of ['Weekday','SaturdayHoliday']){
+    for(const [number,row] of Object.entries(uetsu.roster[cal])){
+     if(row[4]!=='LimitedExpress'||!/^(?:[1-9]|1[0-4])M$/.test(number))continue;
+     const dir=row[3];
+     add('Uetsu',cal,dir,number,
+      'https://timetables.jreast.co.jp/2611/timetable-v/255'+
+        (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+'.html',
+      'Existing Uetsu runtime checks 2026 date, source railway, station itinerary, direction and LimitedExpress type; E653 Inaho livery only illustrative');
+    }
+   }
+  }
+  if(name==='JR東日本_701系_秋田地区.png'){
+   for(const cal of ['Weekday','SaturdayHoliday'])
+   for(const dir of ['Inbound','Outbound']){
+    for(const number of Object.keys(tsugaru.board[dir])){
+     const dates=[];
+     for(let day=1;day<=30;day++){
+      const date='2026-11-'+String(day).padStart(2,'0');
+      if((isHoliday(date)?'SaturdayHoliday':'Weekday')!==cal)continue;
+      const sequence=dir==='Inbound'?tsugaru.openStations.slice().reverse():tsugaru.openStations.slice();
+      const p={positionLineId:'Tsugaru',displayLineId:'Tsugaru',
+       sourceRailway:'odpt.Railway:JR-East.Tsugaru',positionSource:'supabase-train-run',
+       estimated:true,serviceDate:date,calendarType:cal,trainType:'Local',
+       railDirection:dir,trainNumber:number,trainOperator:'JR-East',
+       scheduledStopKeys:sequence};
+      const admitted=tsugaru.verify(p);
+      if(admitted&&admitted.trainNumber===number)dates.push(date);
+     }
+     if(dates.length)add('Tsugaru',cal,dir,number,
+       'https://timetables.jreast.co.jp/2611/timetable-v/280'+
+       (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+'.html',
+       'Original Tsugaru 2611 runtime verifies line/calendar and Aomori-Kanita 11-stop sequence; 324M is NOT Sunday/national holiday',
+       dates);
+    }
+   }
+  }
   if(name==='JR東日本_701系_5000番台.png'){
    for(const cal of ['Weekday','SaturdayHoliday'])for(const dir of ['Inbound','Outbound']){
     for(const number of Object.keys(tazawako.source[cal][dir])){
@@ -297,7 +336,9 @@ function build(index,current,sources){
     'data/timetables/jreast-suigun-2611-number-index.js',
     'data/timetables/jreast-tadami-2611-number-index.js',
     'data/timetables/jreast-yamagata-2611-number-index.js',
-    'data/timetables/jreast-shonan-mixed-number-index-202611.js'],
+    'data/timetables/jreast-shonan-mixed-number-index-202611.js',
+    'data/timetables/jreast-uetsu-2611-number-index.js',
+    'data/timetables/jreast-tsugaru-2611-number-index.js'],
   summary,records};
 }
 function csvOf(a){
@@ -343,7 +384,9 @@ if(require.main===module){
     suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
     tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
     yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
-    shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js')});
+    shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js'),
+    uetsu:read('data/timetables/jreast-uetsu-2611-number-index.js'),
+    tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js')});
  const jsonPath='data/audits/jr-east-png-folder-number-map-2611.json',
    csvPath='data/audits/jr-east-png-folder-number-map-2611.csv';
  const j=JSON.stringify(report,null,2)+'\n',c=csvOf(report);
