@@ -393,3 +393,28 @@ test('JR Senzan and Ryomo source-number artwork remains strictly illustration-on
   assert.ok(!csv.split('\n').some(x=>x.includes(model)&&x.endsWith(',无号段')));
  }
 });
+
+
+test('production SQL seeded PNG-first number intervals are reference-only and conflict-free',()=>{
+ const fs=require('node:fs');
+ const sql=fs.readFileSync('supabase/migrations/20261116180740_enable_and_seed_png_first_jr_reference_bands_2611.sql','utf8');
+ assert.match(sql,/DROP CONSTRAINT published_train_png_number_ranges_requires_exact_roster_check/);
+ assert.match(sql,/segment_key LIKE 'png_band\/%'/);
+ const rows=sql.split('\n').filter(x=>/^  \('2611',/.test(x)).map(x=>{
+  const m=/^  \('2611','([^']+)','([^']+)',(\d+),(\d+),'([A-Z])',NULL,'([^']+)',NULL,FALSE,FALSE\)/.exec(x);
+  assert.ok(m,'unexpected SQL seed row '+x);
+  return {line:m[1],segment:m[2],start:Number(m[3]),end:Number(m[4]),suffix:m[5],png:m[6]};
+ });
+ assert.equal(rows.length,97);
+ assert.equal(new Set(rows.map(x=>x.line)).size,21);
+ assert.equal(new Set(rows.map(x=>x.png)).size,19);
+ assert.ok(rows.every(x=>x.start>=0&&x.end>=x.start&&x.segment.startsWith('png_band/')));
+ for(let i=0;i<rows.length;i++)for(let j=i+1;j<rows.length;j++){
+  const a=rows[i],b=rows[j];
+  assert.ok(a.line!==b.line||a.suffix!==b.suffix||a.png===b.png||
+    a.start>b.end||b.start>a.end,
+    'different PNGs must not overlap the same pure line/suffix/number');
+ }
+ assert.ok(!rows.some(x=>x.png.includes('E127系_100番台_長野色')),
+  'artwork in SQL asset review must not be auto-published');
+});

@@ -17,3 +17,10 @@
 - Universal last-mile selector `TrainVehicle.chooseUniqueNumberPng` gathers all four independently eligible number PNG paths and rejects different-path matches without source priority. Confirmed actual-vehicle identities stay protected. Commit 477770e; old Yamagata assertion adapted in 156933d.
 - Existing catalog audit now reports **39 potential different-PNG numeric interval intersections on 20 line keys** (3 SQL–SQL, 2 SQL–JS, 34 JS–JS). This is **candidate intersection only**; calendar, source, train type, model and published-number guards can mean no runtime conflict. Report entries do not authorize a PNG and do not overwrite rules.
 - No physical vehicle records or inferred number bands were added.
+
+## 已应用正式数据库纯号段（2026-11-17）
+- Supabase 迁移 `20261116180740_enable_and_seed_png_first_jr_reference_bands_2611` 已成功执行；同名迁移文件位于 `supabase/migrations/20261116180740_enable_and_seed_png_first_jr_reference_bands_2611.sql`。
+- 此前残存的数据库 `CHECK (requires_exact_roster)` 会阻止所有纯号段写入：现已改为两分支约束，旧来源/车型/精确名单必须保持完整，`png_band/%` 必须车型与来源均为 NULL，`requires_exact_roster=false`，不得声明实际编组。
+- 从现有 JR 已有号码规则（线路内 PNG 唯一、无旧 SQL 行并有发布号码清单）以及山形、田泽湖、仙山、两毛专用守卫导出的 CSV 整理出 **97 条真正保存的 PNG→番号范围**，涉及 **21 条线路 / 19 张 PNG**。入库前排除 SQL 素材状态为 review/需复核 的 PNG。纯号段之间同线同后缀跨 PNG 重叠 **0**。
+- 数据库验证：**总行数 388 = 旧 291 + 新 97**；`invalid_pure=0`、`invalid_legacy=0`。没有更改任何旧记录。数据是**只读参考号段**，并不证明任意区间内的列车当日实际运行，也不能绕过既有前端独立认证的日历、方向和实际车辆身份约束；未启用自动的全客户端绘图授权。
+- 未覆盖的其余图库 PNG 不填写猜测区间。后续分类应以此真实 SQL 表为持久编号映射源，不新建同类权威表。
