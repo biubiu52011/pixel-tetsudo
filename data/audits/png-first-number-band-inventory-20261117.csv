@@ -103,6 +103,11 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Echigo,8132,863
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Echigo,9630,9630,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,0623,1951,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,3921,3921,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,0623,0681,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,0920,0950,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,1620,1682,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,1924,1951,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,3921,3921,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Joetsu,1720,1752,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Miyo,0220,9284,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,0523,0551,M,full,原有条件约束
@@ -169,11 +174,14 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_3000番台.png,,,,,
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_5000番台.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,KeihinTohoku,0400,4999,K,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,0400,4999,K,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,0408,2446,K,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,3840,4747,K,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_7000番台.png,Rinkai,0000,0071,KFS,tail,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_7000番台.png,SaikyoKawagoe,0000,0071,KFS,tail,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_8000番台.png,Nambu,0400,4999,F,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_房総地区_改造車.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_0番台.png,Yamanote,0301,2433,G,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_0番台.png,Yamanote,0301,2433,G,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_0番台_B31編成_中央・総武線.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,0400,5999,FSMH,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,2520,2545,M,full,原有条件约束
@@ -231,6 +239,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E653系_1000番台_いな�
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系_1000番台_ハマナス色.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系_1000番台_瑠璃色.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系（いなほ）.png,Hakushin,0001,0014,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E653系（いなほ）.png,Hakushin,0001,0014,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系（水戸地区）.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E655系_なごみ_和.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E657系.png,JobanMain,0001,0030,M,full,原有条件约束
@@ -409,6 +418,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Ishinomaki,5
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,SensekiTohoku,5500,5599,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5500,5599,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,0220,2294,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,0220,0249,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,2223,2294,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,0650,0672,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,1652,1669,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,3657,3666,D,full,原有条件约束
@@ -422,6 +433,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_リゾートし�
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_リゾートしらかみ「橅」_HB-E302-5.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png,Oito,8361,8362,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_海里.png,Hakushin,8853,8854,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_海里.png,Hakushin,8853,8854,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_海里.png,Miyo,9278,9279,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png,Komii,8221,8223,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,BanetsuEast,0720,1756,D,full,原有条件约束
