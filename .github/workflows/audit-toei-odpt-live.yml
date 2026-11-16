@@ -1,0 +1,32 @@
+name: Audit official Toei realtime train-number formats
+
+# Read-only public ODPT response, not an authorized timetable or PNG update.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/audit-toei-odpt-live.yml'
+      - 'tools/audit-toei-odpt-live.cjs'
+      - 'tests/toei-odpt-number-format-audit.test.cjs'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject unsupported source-number conversions
+        run: node --test tests/toei-odpt-number-format-audit.test.cjs
+      - name: Observe one public ODPT snapshot
+        run: node tools/audit-toei-odpt-live.cjs --output /tmp/toei-odpt-observation.json --summary "$GITHUB_STEP_SUMMARY"
+      - name: Retain aggregated snapshot for seven days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: toei-odpt-number-observation
+          path: /tmp/toei-odpt-observation.json
+          if-no-files-found: warn
+          retention-days: 7
