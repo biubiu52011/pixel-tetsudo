@@ -174,7 +174,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_1000番台.png,Keih
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_1000番台.png,KeihinTohoku,0460,2481,C,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_2000番台.png,JobanLocal,0400,2599,K,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_3000番台.png,,,,,,无号段
-JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_5000番台.png,,,,,,无号段
+JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_5000番台.png,Keiyo,0680,0680,Y,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_5000番台.png,Keiyo,1883,1883,Y,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,KeihinTohoku,0400,4999,K,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,0400,4999,K,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,0408,2446,K,full,纯号段（JR专用原始条件保留）
@@ -600,7 +601,7 @@ JR,JR西日本,images/列车/JR西日本/JR西日本_273系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_281系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_283系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_283系_K.png,,,,,,无号段
-JR,JR西日本,images/列车/JR西日本/JR西日本_285系_サンライズエクスプレス.png,,,,,,无号段
+JR,JR西日本,images/列车/JR西日本/JR西日本_285系_サンライズエクスプレス.png,TokaidoMain,5031,5032,M,full,纯号段（JR专用原始条件保留）
 JR,JR西日本,images/列车/JR西日本/JR西日本_287系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_287系_K.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_287系_KRM.png,,,,,,无号段
