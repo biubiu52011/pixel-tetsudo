@@ -15,6 +15,7 @@ function build(index,current,sources){
  const suigun=load(sources.suigun).JREastSuigunNumberIndex202611;
  const tadami=load(sources.tadami).JREastTadamiNumberIndex202611;
  const yamagata=load(sources.yamagata).JREastYamagataNumberIndex202611;
+ const shonan=load(sources.shonan).JREastShonanMixedNumberIndex202611;
  const isHoliday=d=>{
   const wd=new Date(d+'T12:00:00Z').getUTCDay();
   return wd===0||wd===6||d==='2026-11-03'||d==='2026-11-23';
@@ -45,6 +46,27 @@ function build(index,current,sources){
   for(let n=1;n<=30;n++){
    const date='2026-11-'+String(n).padStart(2,'0');
    const cal=isHoliday(date)?'SaturdayHoliday':'Weekday';
+   if(name==='JR東日本_253系_1000番台.png'){
+    // 2026-11 JR East 699d/u1/2 exact train numbers. The 100-series
+    // Spacia Nikko 1091M/1094M and Dec-only 5111M/5112M are excluded.
+    const day=Number(date.slice(-2));
+    const nikko21=day<=9||(day>=12&&day<=23)||(day>=27&&day<=29);
+    const nikko22=(day===21||day===22);
+    const refs=[
+     ['1083M','Outbound','きぬがわ3号',true],
+     ['1082M','Inbound','きぬがわ2号',true],
+     ['5021M','Outbound','日光21号',nikko21],
+     ['5022M','Inbound','日光22号',nikko22],
+     ['5113M','Outbound','きぬがわ13号',nikko22]
+    ];
+    for(const [number,dir,service,operating] of refs){
+      if(!operating)continue;
+      const url='https://timetables.jreast.co.jp/2611/timetable-v/699'+
+        (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+'.html';
+      add('TobuNikko',number,dir,date,url,service,
+        'published_2611_253_family_service_not_confirmed_real_carset');
+    }
+   }
    if(name.startsWith('JR東日本_HB-E300系_リゾートしらかみ「橅」_')){
     for(const [number,dir] of [['8521D','Outbound'],['8522D','Inbound'],['8524D','Inbound'],['8525D','Outbound']]){
      const x=gono.verify(number,'odpt.Railway:JR-East.Gono',dir,'Rapid',cal,date);
@@ -160,6 +182,35 @@ function build(index,current,sources){
   });
  }
 
+ function shonanNumberCandidatesFor(name){
+   // The authoritative exact row membership remains in the existing
+   // 202611 Shonan mixed-fleet adapter. Two physical PNGs share these
+   // numbers as CANDIDATES; public E/Y/M suffix cannot identify fleet.
+   if(name!=='JR東日本_E231系_1000番台.png'&&
+      name!=='JR東日本_E233系3000番台.png')return [];
+   return shonan.listNumberScopes().map(row=>({
+    lineId:row.lineId,sourceRailway:row.sourceRailway,
+    calendar:row.calendar,trainType:row.trainType,
+    exactSourceNumbers:row.exactNumbers.slice(),
+    possibleModels:shonan.models.slice(),
+    status:'SHARED_SOURCE_NUMBER_NOT_MODEL_IDENTIFICATION',
+    guard:'date+line+sourceRailway+calendar+trainType+sourceNumber; block known conflicting vehicle evidence',
+    sourceUrl:'https://timetables.jreast.co.jp/2611/',
+    referenceOnly:true,authorizesRuntimePNG:false,actualVehicleConfirmed:false
+   }));
+ }
+ function unnumbered2026ServiceFor(name){
+   if(name!=='JR東日本_E501系_E501_SAKIGAKE.png')return [];
+   return [{
+    serviceDate:'2026-11-14',name:'E501 SAKIGAKE -3rd Anniversary-',
+    route:'水戸～結城～水戸',publicTrainNumber:null,
+    namedVehicle:'E501系K754編成',sourceStatus:'JR-East event+post-event report',
+    sourceUrl:'https://event.jreast.co.jp/activity/detail/a007/a007-279',
+    postEventUrl:'https://2nd-train.net/topics/article/79980/',
+    referenceOnly:true,authorizesRuntimePNG:false,
+    explanation:'Confirmed special service and vehicle, but no public train number in these sources'
+   }];
+ }
  const records=images.map(a=>{
   const name=a.path.split('/').pop(),fleet=byProof.get(a.path)||null;
   const rules=a.directNumberRules.filter(r=>r.actualVehicleConfirmed===false&&
@@ -167,6 +218,8 @@ function build(index,current,sources){
     (!r.validTo||r.validTo>='2026-11-16'));
   const rosters=a.runtimeNumberRosters.filter(r=>r.actualVehicleConfirmed===false);
   const dated=datedFor(a.path),adapter=adapterRefs(name),
+   shonanCandidates=shonanNumberCandidatesFor(name),
+   unnumberedNamed=unnumbered2026ServiceFor(name),
    mixed=mixedYamagataCandidates(name),observed=datedYamagataObservation(name),
    hasNumbers=!!(rules.length+rosters.length+dated.length+adapter.length+observed.length);
   const status=a.quarantined?'quarantined':
@@ -202,6 +255,8 @@ function build(index,current,sources){
    existingAdapterExactNumberRefs:adapter,
    ambiguousYamagataLineNumberCandidates:mixed,
    thirdPartyOneDateObservedRefs:observed,
+   sharedShonanMixedFleetNumberScopes:shonanCandidates,
+   datedNamedServicesWithoutPublicNumber:unnumberedNamed,
    actualVehicleConfirmed:false,allowSelectByBandAlone:false};
  });
  const count=s=>records.filter(r=>r.status===s).length;
@@ -219,7 +274,10 @@ function build(index,current,sources){
    pngsRecoveredFromExistingRuntimeAdapter:records.filter(x=>x.existingAdapterExactNumberRefs.length).length,
    sourceAdapterNumberRows:records.reduce((n,x)=>n+x.existingAdapterExactNumberRefs.length,0),
    pngsWithMixedYamagataCandidates:records.filter(x=>x.ambiguousYamagataLineNumberCandidates.length).length,
-   datedE723EyewitnessNumberRows:records.reduce((n,x)=>n+x.thirdPartyOneDateObservedRefs.length,0)};
+   datedE723EyewitnessNumberRows:records.reduce((n,x)=>n+x.thirdPartyOneDateObservedRefs.length,0),
+   pngsWithShonanMixedFleetCandidates:records.filter(x=>x.sharedShonanMixedFleetNumberScopes.length).length,
+   ShonanExactNumberScopeRows:records.reduce((n,x)=>n+x.sharedShonanMixedFleetNumberScopes.length,0),
+   datedNamedServicesWithoutNumbers:records.reduce((n,x)=>n+x.datedNamedServicesWithoutPublicNumber.length,0)};
  if(summary.totalPng!==131||summary.activeWithNumberReference+
    summary.activeWithoutNumberReference+summary.priorNumberRefNeedsCurrentVerification+
    summary.historical+summary.nonPassenger+summary.quarantined+
@@ -238,13 +296,15 @@ function build(index,current,sources){
     'data/timetables/jreast-tazawako-2611-number-index.js',
     'data/timetables/jreast-suigun-2611-number-index.js',
     'data/timetables/jreast-tadami-2611-number-index.js',
-    'data/timetables/jreast-yamagata-2611-number-index.js'],
+    'data/timetables/jreast-yamagata-2611-number-index.js',
+    'data/timetables/jreast-shonan-mixed-number-index-202611.js'],
   summary,records};
 }
 function csvOf(a){
  const rows=[['png','status','models','lines','ruleCount','originalNumberRanges',
    'datedSpecialNumbers','datedSpecialOperatingDays','existingAdapterExactNumberRefs',
-   'ambiguousYamagataLineCandidates','oneDateObservedNumbers','note','fleetEvidenceUrl','observedCarset']];
+   'ambiguousYamagataLineCandidates','oneDateObservedNumbers','shonanSharedNumberScopes',
+   'unnumberedSpecialServices','note','fleetEvidenceUrl','observedCarset']];
  const esc=x=>{const s=String(x==null?'':x);
    return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
  for(const r of a.records){
@@ -263,6 +323,9 @@ function csvOf(a){
     (x.operatingDates.length?' ['+x.operatingDates.join(';')+']':'')).join(' | '),
    r.ambiguousYamagataLineNumberCandidates.map(x=>x.trainNumber+'/'+x.calendar).join(' | '),
    r.thirdPartyOneDateObservedRefs.map(x=>x.trainNumber+'@'+x.serviceDate).join(' | '),
+   r.sharedShonanMixedFleetNumberScopes.map(x=>x.lineId+'/'+x.calendar+'/'+x.trainType+':'+
+     x.exactSourceNumbers.join(';')).join(' | '),
+   r.datedNamedServicesWithoutPublicNumber.map(x=>x.name+'@'+x.serviceDate+' [NUMBER UNKNOWN]').join(' | '),
    r.note,r.fleetEvidence?.sourceUrl||'','no']);
  }
  return '\ufeff'+rows.map(r=>r.map(esc).join(',')).join('\n')+'\n';
@@ -279,7 +342,8 @@ if(require.main===module){
     tazawako:read('data/timetables/jreast-tazawako-2611-number-index.js'),
     suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
     tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
-    yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js')});
+    yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
+    shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js')});
  const jsonPath='data/audits/jr-east-png-folder-number-map-2611.json',
    csvPath='data/audits/jr-east-png-folder-number-map-2611.csv';
  const j=JSON.stringify(report,null,2)+'\n',c=csvOf(report);
