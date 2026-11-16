@@ -452,6 +452,35 @@
     return !!(line && line.branchOf);
   }
 
+  // Regional station-to-station line colors. Passenger presentation only:
+  // never changes canonical ownership, vehicle identity or timetable routing.
+  // Ranges are anchored to named station IDs, not fragile numeric positions.
+  function resolveSegmentPresentation(lineId, fromStation, toStation, allLines) {
+    allLines = allLines || window.UNIFIED_LINES || {};
+    var line = allLines[lineId];
+    var rules = line && line.presentation && line.presentation.displayRules &&
+      line.presentation.displayRules.segmentColors;
+    if (!rules || !Array.isArray(rules.ranges) || !Array.isArray(line.stations)) return null;
+    var stations = line.stations;
+    var fromIndex = stations.indexOf(fromStation), toIndex = stations.indexOf(toStation);
+    // Never infer a color for nonadjacent or unknown stations.
+    if (fromIndex < 0 || toIndex < 0 || Math.abs(fromIndex - toIndex) !== 1) return null;
+    var left = Math.min(fromIndex, toIndex), right = Math.max(fromIndex, toIndex);
+    for (var i = 0; i < rules.ranges.length; i++) {
+      var part = rules.ranges[i];
+      var first = stations.indexOf(part.from), last = stations.indexOf(part.to);
+      if (first < 0 || last <= first) continue;
+      if (left >= first && right <= last && /^#[0-9a-f]{6}$/i.test(part.color || "")) {
+        return { color: part.color, code: part.code || "",
+          operator: part.operator || line.operator, classified: true };
+      }
+    }
+    // Outside verified regional symbols the map uses a neutral presentation
+    // instead of applying the Kinki/Okayama/Hiroshima color to the whole line.
+    return { color: /^#[0-9a-f]{6}$/i.test(rules.unknownColor || "")
+      ? rules.unknownColor : "#80868b", code: "", operator: line.operator, classified: false };
+  }
+
   // ===== 5. 对外导出 =====
 
   window.LinePresentationService = {
@@ -469,6 +498,7 @@
     getStatusMembers: getStatusMembers,
     getMapBranchIds: getMapBranchIds,
     isIndependentLine: isIndependentLine,
-    isBranch: isBranch
+    isBranch: isBranch,
+    resolveSegmentPresentation: resolveSegmentPresentation
   };
 })();

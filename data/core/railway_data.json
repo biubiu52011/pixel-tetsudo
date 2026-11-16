@@ -44058,7 +44058,7 @@
       "nameEn": "Sanyo Main Line",
       "nameJa": "山陽本線",
       "code": "SanyoMain",
-      "color": "#009944",
+      "color": "#007ac0",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
@@ -44405,12 +44405,62 @@
         "nameZh": "山阳本线",
         "nameEn": "Sanyo Main Line",
         "nameKo": "산요 본선",
-        "color": "#009944",
+        "color": "#007ac0",
         "order": 27,
         "lineIds": [
           "SanyoMain"
         ],
-        "operatorGroup": "JR_WEST"
+        "operatorGroup": "JR_WEST",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Kobe",
+                "to": "Kamigoori",
+                "code": "A",
+                "color": "#007ac0",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Kamigoori",
+                "to": "Okayama",
+                "code": "S",
+                "color": "#a2c63a",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Okayama",
+                "to": "Fukuyama",
+                "code": "W",
+                "color": "#f39800",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Fukuyama",
+                "to": "Itosaki",
+                "code": "X",
+                "color": "#00a6d8",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Itosaki",
+                "to": "Hiroshima",
+                "code": "G",
+                "color": "#56a83d",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Hiroshima",
+                "to": "Iwakuni",
+                "code": "R",
+                "color": "#e5434f",
+                "operator": "JR-West"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        },
+        "code": ""
       }
     },
     "KansaiMain": {
@@ -44418,7 +44468,7 @@
       "nameEn": "Kansai Main Line (Yamatoji Line)",
       "nameJa": "関西本線（大和路線）",
       "code": "KansaiMain",
-      "color": "#ff9500",
+      "color": "#00a65a",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
@@ -44581,14 +44631,42 @@
         "nameZh": "关西本线(大和路线)",
         "nameEn": "Kansai Main Line (Yamatoji Line)",
         "nameKo": "칸사이 본선(야마토지선)",
-        "color": "#ff9500",
+        "color": "#00a65a",
         "code": "Q",
         "order": 16,
         "lineIds": [
           "KansaiMain"
         ],
         "operatorGroup": "JR_WEST",
-        "icon": "../images/鉄道/JR西日本/近畿_Q.png"
+        "icon": "../images/鉄道/JR西日本/近畿_Q.png",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Nagoya",
+                "to": "Kameyama",
+                "code": "CJ",
+                "color": "#00a88f",
+                "operator": "JR-Central"
+              },
+              {
+                "from": "Kameyama",
+                "to": "Kamo",
+                "code": "V",
+                "color": "#8263b1",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Kamo",
+                "to": "J-R-Nanba",
+                "code": "Q",
+                "color": "#00a65a",
+                "operator": "JR-West"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       },
       "topologyAudit": {
         "railEndsAt": "J-R-Nanba",
@@ -44956,7 +45034,7 @@
       "nameEn": "Sanin Main Line (Sagano Line)",
       "nameJa": "山陰本線（嵯峨野線）",
       "code": "SaninMain",
-      "color": "#8b4513",
+      "color": "#8360a8",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
@@ -45329,14 +45407,42 @@
         "nameZh": "山阴本线(嵯峨野线)",
         "nameEn": "Sanin Main Line (Sagano Line)",
         "nameKo": "산인 본선(사가노선)",
-        "color": "#8b4513",
+        "color": "#8360a8",
         "code": "E",
         "icon": "../images/鉄道/JR西日本/山陰_E.png",
         "order": 5,
         "lineIds": [
           "SaninMain"
         ],
-        "operatorGroup": "JR_WEST"
+        "operatorGroup": "JR_WEST",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Kyoto",
+                "to": "Fukuchiyama",
+                "code": "E",
+                "color": "#8360a8",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Tottori",
+                "to": "Yonago",
+                "code": "A",
+                "color": "#89b14b",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Yonago",
+                "to": "Masuda",
+                "code": "D",
+                "color": "#ec6935",
+                "operator": "JR-West"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       }
     },
     "Fukuchiyama": {
@@ -45677,7 +45783,7 @@
       "nameEn": "Kishin Line",
       "nameJa": "姫新線",
       "code": "HimejiLine",
-      "color": "#4682b4",
+      "color": "#f15a24",
       "operator": "JR-West",
       "region": "Kansai Area",
       "type": "straight",
@@ -45782,7 +45888,7 @@
         "nameZh": "姬新线",
         "nameEn": "Kishin Line",
         "nameKo": "기신선",
-        "color": "#4682b4",
+        "color": "#f15a24",
         "code": "K",
         "icon": "../images/鉄道/JR西日本/近畿_K.png",
         "order": 12,
@@ -47841,7 +47947,7 @@
       "nameEn": "Ako Line",
       "nameJa": "赤穂線",
       "code": "Ako",
-      "color": "#009944",
+      "color": "#007ac0",
       "operator": "JR-West",
       "region": "Chugoku Area",
       "type": "local",
@@ -47911,12 +48017,34 @@
         "nameZh": "赤穗线",
         "nameEn": "Ako Line",
         "nameKo": "아코선",
-        "color": "#009944",
+        "color": "#007ac0",
         "order": 29,
         "lineIds": [
           "Ako"
         ],
-        "operatorGroup": "JR_WEST"
+        "operatorGroup": "JR_WEST",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Aioi-Hyogo",
+                "to": "Banshu-Ako",
+                "code": "A",
+                "color": "#007ac0",
+                "operator": "JR-West"
+              },
+              {
+                "from": "Banshu-Ako",
+                "to": "Toukou-Yama",
+                "code": "N",
+                "color": "#e63555",
+                "operator": "JR-West"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        },
+        "code": ""
       }
     },
     "KiseiWest": {
@@ -48126,7 +48254,7 @@
       "nameEn": "Kure Line",
       "nameJa": "呉線",
       "code": "Kure",
-      "color": "#2e8b57",
+      "color": "#f6ac00",
       "operator": "JR-West",
       "region": "Chugoku Area",
       "type": "local",
@@ -48232,7 +48360,7 @@
         "nameZh": "吴线",
         "nameEn": "Kure Line",
         "nameKo": "쿠레선",
-        "color": "#2e8b57",
+        "color": "#f6ac00",
         "code": "Y",
         "icon": "../images/鉄道/JR西日本/広島_Y.png",
         "order": 22,
@@ -48247,7 +48375,7 @@
       "nameEn": "Kabe Line",
       "nameJa": "可部線",
       "code": "Kabe",
-      "color": "#4682b4",
+      "color": "#00a9be",
       "operator": "JR-West",
       "region": "Chugoku Area",
       "type": "local",
@@ -48297,7 +48425,7 @@
         "nameZh": "可部线",
         "nameEn": "Kabe Line",
         "nameKo": "카베선",
-        "color": "#4682b4",
+        "color": "#00a9be",
         "code": "B",
         "icon": "../images/鉄道/JR西日本/広島_B.png",
         "order": 3,
@@ -48312,7 +48440,7 @@
       "nameEn": "Yamaguchi Line",
       "nameJa": "山口線",
       "code": "Yamaguchi",
-      "color": "#8b4513",
+      "color": "#ed6945",
       "operator": "JR-West",
       "region": "Chugoku Area",
       "type": "local",
@@ -48406,7 +48534,7 @@
         "nameZh": "山口线",
         "nameEn": "Yamaguchi Line",
         "nameKo": "야마구치선",
-        "color": "#8b4513",
+        "color": "#ed6945",
         "order": 30,
         "lineIds": [
           "Yamaguchi"
@@ -48419,7 +48547,7 @@
       "nameEn": "Iwaka Line",
       "nameJa": "岩徳線",
       "code": "Iwakado",
-      "color": "#8b4513",
+      "color": "#009c9a",
       "operator": "JR-West",
       "region": "Chugoku Area",
       "type": "local",
@@ -48495,7 +48623,7 @@
         "nameZh": "岩德线",
         "nameEn": "Iwaka Line",
         "nameKo": "이와쿠치선",
-        "color": "#8b4513",
+        "color": "#009c9a",
         "order": 31,
         "lineIds": [
           "Iwakado"
@@ -48508,7 +48636,7 @@
       "nameEn": "Ube Line",
       "nameJa": "宇部線",
       "code": "Ube",
-      "color": "#4682b4",
+      "color": "#d5287d",
       "operator": "JR-West",
       "region": "Chugoku Area",
       "type": "local",
@@ -48582,7 +48710,7 @@
         "nameZh": "宇部线",
         "nameEn": "Ube Line",
         "nameKo": "우베선",
-        "color": "#4682b4",
+        "color": "#d5287d",
         "order": 32,
         "lineIds": [
           "Ube"

@@ -76,8 +76,8 @@ jobs:
         run: node --test tests/fukuchiyama-2611-danbaro-scope.test.cjs
       - name: Verify Fukuchiyama G color and both November 28 late service cutbacks
         run: node --test tests/fukuchiyama-2611-disruption-line-color.test.cjs
-      - name: Verify official JR Kinki colors and JR East baseline colors
-        run: node --test tests/jr-line-colors-20261109.test.cjs tests/jreast-line-colors-20261116.test.cjs
+      - name: Verify JR-West regional line colors and JR East baseline colors
+        run: node --test tests/jr-line-colors-20261109.test.cjs tests/jreast-line-colors-20261116.test.cjs tests/jrwest-line-colors-20261117.test.cjs
       - name: Verify source-correlated Wakoshi through-service and ODPT proxy security
         run: |
           node --check data/api/odpt-unified.js

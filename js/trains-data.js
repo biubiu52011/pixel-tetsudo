@@ -1074,6 +1074,11 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
   // Segment-level display colors. This affects route rendering only; it does
   // not change line identity, realtime ownership, or running-chain continuity.
   function _segmentDisplayColor(lineId, fromStation, toStation, fallback) {
+    // Shared, station-anchored rules cover multi-region JR-West corridors.
+    var presentation = window.LinePresentationService;
+    var regional = presentation && presentation.resolveSegmentPresentation &&
+      presentation.resolveSegmentPresentation(lineId, fromStation, toStation);
+    if (regional && regional.color) return regional.color;
     var rules = _lineSegmentDisplayRules(lineId);
     if (!rules) return fallback;
     var all = (window.RailwayDB && window.RailwayDB.getAllLines) ? window.RailwayDB.getAllLines() : {};
@@ -1920,6 +1925,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         if (_idx < 0) return color;
         var _next = _idx < stations.length - 1 ? stations[_idx + 1] : stationId;
         var _prev = _idx > 0 ? stations[_idx - 1] : stationId;
+        // Multi-region station markers inherit the next visible track edge;
+        // the final station uses its preceding edge instead.
+        if (Array.isArray(rules.ranges)) {
+          return _idx < stations.length - 1
+            ? _segmentDisplayColor(lineId, stationId, _next, color)
+            : _segmentDisplayColor(lineId, _prev, stationId, color);
+        }
         // 边界车站采用进入其后的区段颜色。
         if (rules.before && stationId === rules.before.station && rules.before.stationMode === "next") {
           return _segmentDisplayColor(lineId, stationId, _next, color);
