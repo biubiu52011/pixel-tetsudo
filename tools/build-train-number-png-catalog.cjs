@@ -491,7 +491,7 @@ function jrEastAdditionalNumberBands(){
 const JR_SCOPED_SQL_MIGRATION='supabase/migrations/20261116183142_seed_png_first_jr_scoped_reference_bands_2611.sql';
 function jrScopedSqlSeedBands(){
  const src=read(JR_SCOPED_SQL_MIGRATION);
- const pattern=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'([A-Z])',NULL,'\\.\\.\\/(images\\/列车\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const matches=[...src.matchAll(pattern)];
  if(matches.length!==20)throw Error('JR SQL number bands do not match reviewed migration');
  return matches.map((m)=>({
