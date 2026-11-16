@@ -31,7 +31,7 @@ test('Kita-Senju has exactly four unique passenger options in all six line diagr
   for(const [id,targets] of Object.entries(expected)){
     const badges=transferMap(id)['Kita-Senju']||[];
     assert.equal(badges.length,4,id+' has duplicate or missing connections');
-    assert.deepEqual(badges.map(t=>t.lineId).sort(),targets.slice().sort(),id);
+    assert.deepEqual(Array.from(badges,t=>t.lineId).sort(),targets.slice().sort(),id);
     assert.equal(badges.some(t=>t.lineId==='JobanLocal'),false,id+' repeats the Chiyoda platform service');
     if(id==='JobanLocal')assert.equal(badges.some(t=>t.lineId==='Chiyoda'),false,'JL does not require a platform change at Kita-Senju');
   }
