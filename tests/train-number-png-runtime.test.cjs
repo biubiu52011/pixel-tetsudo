@@ -3488,13 +3488,13 @@ test('last-mile number PNG candidates deduplicate identical paths and reject mix
 
 
 test('generic band conflict survives other-number-source reconciliation',()=>{
- const original=root.TrainNumberPngRanges.match;
+ const original=root.TrainNumberPngRanges;
  try {
-  root.TrainNumberPngRanges.match=function(number,line,scope){
+  root.TrainNumberPngRanges={...original,match:function(number,line,scope){
    if(typeof scope.onNumberPngConflict==='function')
     scope.onNumberPngConflict({lineId:line,trainNumber:number,pngPaths:['A','B']});
    return null;
-  };
+  }};
   const pos=live({trainNumber:'1940K',positionLineId:'SaikyoKawagoe',
    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
    trainType:'odpt.TrainType:JR-East.Local',
@@ -3508,6 +3508,6 @@ test('generic band conflict survives other-number-source reconciliation',()=>{
   assert.equal(combined.conflict,true);
   assert.equal(marker(pos,'SaikyoKawagoe').kind,'unresolved');
  }finally{
-  root.TrainNumberPngRanges.match=original;
+  root.TrainNumberPngRanges=original;
  }
 });
