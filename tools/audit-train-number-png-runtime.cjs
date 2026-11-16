@@ -115,6 +115,11 @@ function probe(p,kind){
   return replay(q,target);
 }
 
+// Reuse the same production module loader from the live Edge audit; do not
+// introduce a separate PNG selector or a second train-number authority.
+module.exports={position,replay,calendarOf,window};
+
+if(require.main===module){
 const report={
   schemaVersion:1,serviceDate:date,
   scope:'explicit operating_dates source templates ONLY; reconstructed minimal SQL position; not total daily services, not live browser rendering',
@@ -187,3 +192,4 @@ for(const kind of ['wrong-display-line','missing-source-railway','future-service
 }
 console.log(JSON.stringify(report,null,2));
 if(strict && report.safetyIssues.length)process.exitCode=1;
+}
