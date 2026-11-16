@@ -6,7 +6,7 @@
       "interval": null,
       "cause": null,
       "detail": "現在、平常通り運行しております。",
-      "updatedAt": "2026-11-16T11:47:47.731Z",
+      "updatedAt": "2026-11-16T21:20:37.663Z",
       "sourceUrl": "https://chiba-monorail.co.jp/"
     },
     "ShonanMonorail": {
@@ -14,7 +14,7 @@
       "interval": null,
       "cause": null,
       "detail": "現在、平常通り運行しております。",
-      "updatedAt": "2026-11-16T11:47:47.731Z",
+      "updatedAt": "2026-11-16T21:20:37.664Z",
       "sourceUrl": "https://www.shonan-monorail.co.jp/"
     }
   }
