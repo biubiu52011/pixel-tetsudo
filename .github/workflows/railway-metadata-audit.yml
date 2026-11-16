@@ -39,6 +39,8 @@ jobs:
         run: node tools/railway-metadata-audit.cjs --strict
       - name: Assert known repaired registry contracts
         run: node --test tests/railway-metadata-audit.test.cjs
+      - name: Verify JR Central line colors and passenger symbols
+        run: node --test tests/jr-central-line-colors-20261117.test.cjs
       - name: Test number-to-PNG catalog audit invariants
         run: node --test tests/train-number-png-catalog.test.cjs
       - name: Verify normalized number-to-PNG catalog and mapping safety

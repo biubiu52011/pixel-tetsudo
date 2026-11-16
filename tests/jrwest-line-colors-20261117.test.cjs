@@ -35,7 +35,7 @@ test('regional color lookup uses adjacent named station edges in both directions
     ['SanyoMain','Hiroshima','Shin-Shiro-Shima','R','#e5434f'],
     ['Ako','Aioi-Hyogo','Nishi-Aioi','A','#007ac0'],
     ['Ako','Banshu-Ako','Tewa','N','#e63555'],
-    ['KansaiMain','Nagoya','Hatta','CJ','#00a88f'],
+    ['KansaiMain','Nagoya','Hatta','CJ','#16b68f'],
     ['KansaiMain','Kameyama','Kan','V','#8263b1'],
     ['KansaiMain','Kamo','Kizu','Q','#00a65a'],
     ['SaninMain','Kyoto','Umekouji-Kyouto-Nishi','E','#8360a8'],

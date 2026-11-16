@@ -44646,7 +44646,7 @@
                 "from": "Nagoya",
                 "to": "Kameyama",
                 "code": "CJ",
-                "color": "#00a88f",
+                "color": "#16b68f",
                 "operator": "JR-Central"
               },
               {
@@ -51439,7 +51439,7 @@
       "nameKo": "Tokaido Main Line (JR Central)",
       "name": "東海道本線（JR東海）",
       "operator": "JR-Central",
-      "color": "#f68b1e",
+      "color": "#f6861f",
       "code": "CA",
       "type": "straight",
       "stations": [
@@ -51615,7 +51615,7 @@
         "nameZh": "東海道本線",
         "nameEn": "Tokaido Main Line (JR Central)",
         "nameKo": "Tokaido Main Line (JR Central)",
-        "color": "#f68b1e",
+        "color": "#f6861f",
         "code": "CA",
         "order": 1,
         "lineIds": [
@@ -51633,7 +51633,7 @@
       "nameKo": "Chuo Main Line (JR Central)",
       "name": "中央本線（JR東海）",
       "operator": "JR-Central",
-      "color": "#0073bf",
+      "color": "#327198",
       "code": "CF",
       "type": "straight",
       "stations": [
@@ -51723,7 +51723,7 @@
         "nameZh": "中央本線",
         "nameEn": "Chuo Main Line (JR Central)",
         "nameKo": "Chuo Main Line (JR Central)",
-        "color": "#f68b1e",
+        "color": "#327198",
         "code": "CF",
         "order": 2,
         "lineIds": [
@@ -51741,7 +51741,7 @@
       "nameKo": "Kansai Main Line (JR Central)",
       "name": "関西本線（JR東海）",
       "operator": "JR-Central",
-      "color": "#f15a24",
+      "color": "#16b68f",
       "code": "CJ",
       "type": "straight",
       "stations": [
@@ -51791,7 +51791,7 @@
         "nameZh": "関西本線",
         "nameEn": "Kansai Main Line (JR Central)",
         "nameKo": "Kansai Main Line (JR Central)",
-        "color": "#f68b1e",
+        "color": "#16b68f",
         "code": "CJ",
         "order": 3,
         "lineIds": [
@@ -51809,7 +51809,7 @@
       "nameKo": "Kisei Main Line (JR Central)",
       "name": "紀勢本線（JR東海）",
       "operator": "JR-Central",
-      "color": "#0066cc",
+      "color": "#80868b",
       "code": "Kisei",
       "type": "straight",
       "stations": [
@@ -51882,8 +51882,8 @@
         "nameZh": "紀勢本線",
         "nameEn": "Kisei Main Line (JR Central)",
         "nameKo": "Kisei Main Line (JR Central)",
-        "color": "#f68b1e",
-        "code": "紀",
+        "color": "#80868b",
+        "code": "",
         "order": 11,
         "lineIds": [
           "KiseiCentral"
@@ -51899,7 +51899,7 @@
       "nameKo": "Takayama Main Line",
       "name": "高山本線",
       "operator": "JR-Central",
-      "color": "#b85c00",
+      "color": "#9e1813",
       "code": "Takayama",
       "type": "straight",
       "stations": [
@@ -51976,7 +51976,7 @@
         "nameZh": "高山本線",
         "nameEn": "Takayama Main Line",
         "nameKo": "Takayama Main Line",
-        "color": "#f68b1e",
+        "color": "#9e1813",
         "code": "CG",
         "order": 4,
         "lineIds": [
@@ -51994,7 +51994,7 @@
       "nameKo": "Taketoyo Line",
       "name": "武豊線",
       "operator": "JR-Central",
-      "color": "#e66b1f",
+      "color": "#8c5a38",
       "code": "Taketoyo",
       "type": "straight",
       "stations": [
@@ -52024,7 +52024,7 @@
         "nameZh": "武豊線",
         "nameEn": "Taketoyo Line",
         "nameKo": "Taketoyo Line",
-        "color": "#f68b1e",
+        "color": "#8c5a38",
         "code": "CE",
         "order": 8,
         "lineIds": [
@@ -52042,7 +52042,7 @@
       "nameKo": "Taita Line",
       "name": "太多線",
       "operator": "JR-Central",
-      "color": "#7b3f98",
+      "color": "#c8ba45",
       "code": "Taita",
       "type": "straight",
       "stations": [
@@ -52082,7 +52082,7 @@
         "nameZh": "太多線",
         "nameEn": "Taita Line",
         "nameKo": "Taita Line",
-        "color": "#f68b1e",
+        "color": "#c8ba45",
         "code": "CI",
         "order": 9,
         "lineIds": [
@@ -52100,7 +52100,7 @@
       "nameKo": "Gotemba Line",
       "name": "御殿場線",
       "operator": "JR-Central",
-      "color": "#2e8b57",
+      "color": "#477543",
       "code": "CB",
       "type": "straight",
       "stations": [
@@ -52151,7 +52151,7 @@
         "nameZh": "御殿場線",
         "nameEn": "Gotemba Line",
         "nameKo": "Gotemba Line",
-        "color": "#f68b1e",
+        "color": "#477543",
         "code": "CB",
         "order": 6,
         "lineIds": [
@@ -52169,7 +52169,7 @@
       "nameKo": "Minobu Line",
       "name": "身延線",
       "operator": "JR-Central",
-      "color": "#d88b00",
+      "color": "#773c97",
       "code": "CC",
       "type": "straight",
       "stations": [
@@ -52234,7 +52234,7 @@
         "nameZh": "身延線",
         "nameEn": "Minobu Line",
         "nameKo": "Minobu Line",
-        "color": "#f68b1e",
+        "color": "#773c97",
         "code": "CC",
         "order": 7,
         "lineIds": [
@@ -52252,7 +52252,7 @@
       "nameKo": "Iida Line",
       "name": "飯田線",
       "operator": "JR-Central",
-      "color": "#d33c6e",
+      "color": "#6fa3d7",
       "code": "CD",
       "type": "straight",
       "stations": [
@@ -52378,7 +52378,7 @@
         "nameZh": "飯田線",
         "nameEn": "Iida Line",
         "nameKo": "Iida Line",
-        "color": "#f68b1e",
+        "color": "#6fa3d7",
         "code": "CD",
         "order": 5,
         "lineIds": [
@@ -52396,7 +52396,7 @@
       "nameKo": "Sangu Line",
       "name": "参宮線",
       "operator": "JR-Central",
-      "color": "#0066cc",
+      "color": "#80868b",
       "code": "Sangu",
       "type": "straight",
       "stations": [
@@ -52432,8 +52432,8 @@
         "nameZh": "参宮線",
         "nameEn": "Sangu Line",
         "nameKo": "Sangu Line",
-        "color": "#f68b1e",
-        "code": "参",
+        "color": "#80868b",
+        "code": "",
         "order": 12,
         "lineIds": [
           "Sangu"
@@ -52449,7 +52449,7 @@
       "nameKo": "Meisho Line",
       "name": "名松線",
       "operator": "JR-Central",
-      "color": "#777777",
+      "color": "#80868b",
       "code": "Meisho",
       "type": "straight",
       "stations": [
@@ -52484,8 +52484,8 @@
         "nameZh": "名松線",
         "nameEn": "Meisho Line",
         "nameKo": "Meisho Line",
-        "color": "#f68b1e",
-        "code": "名",
+        "color": "#80868b",
+        "code": "",
         "order": 13,
         "lineIds": [
           "Meisho"
@@ -52501,7 +52501,7 @@
       "nameKo": "Mino-Akasaka Line",
       "name": "美濃赤坂線",
       "operator": "JR-Central",
-      "color": "#777777",
+      "color": "#80868b",
       "code": "MinoAkasaka",
       "type": "straight",
       "stations": [
@@ -52524,8 +52524,8 @@
         "nameZh": "美濃赤坂線",
         "nameEn": "Mino-Akasaka Line",
         "nameKo": "Mino-Akasaka Line",
-        "color": "#f68b1e",
-        "code": "美",
+        "color": "#80868b",
+        "code": "",
         "order": 10,
         "lineIds": [
           "MinoAkasaka"
