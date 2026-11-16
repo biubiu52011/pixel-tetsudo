@@ -76,7 +76,7 @@ const shinkansenPathFromEstimator=new Function('lineId','tt',
 const centralStart=estimatorSource.indexOf(
   'Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")');
 const centralEnd=estimatorSource.indexOf(
-  ' ||\\n Boolean(saganoDisplayNumber)',centralStart);
+  ' ||\n Boolean(saganoDisplayNumber)',centralStart);
 if(centralStart<0 || centralEnd<=centralStart)
   throw Error('Estimator JR-Central official number gate moved');
 const centralNumberFromEstimator=new Function('lineId','tt',
