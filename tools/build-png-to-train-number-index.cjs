@@ -29,7 +29,7 @@ function buildIndex(input) {
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
-    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers;');
+    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
   const prefix='images/列车/';
   const normalized=(p)=>String(p||'').replace(/^(?:\.\.\/|\.\/|\/)+/,'');
@@ -164,6 +164,48 @@ function buildIndex(input) {
       }
     }
   }
+  // Separate exact service-number rosters already used by the same
+  // front-end through-service matcher for Hibiya and Hanzomon. The Tokyu
+  // DenEnToshi branch is excluded: its matcher explicitly lacks a certified
+  // Tokyu-Metro exact timetable crosswalk and requires realtime input.
+  for(const lineId of ['Hibiya','Hanzomon']){
+    const groups=win.__pngIndexMetroThrough[lineId]||{};
+    for(const calendar of ['weekday','holiday']){
+      for(const number of groups[calendar]||[]){
+        const rail=lineId==='Hibiya'
+          ?'odpt.Railway:TokyoMetro.Hibiya':'odpt.Railway:TokyoMetro.Hanzomon';
+        const result=win.TrainNumberPngRanges.match(number,lineId,{
+          trainNumber:number,positionLineId:lineId,displayLineId:lineId,
+          sourceRailway:rail,trainOperator:'TokyoMetro',
+          trainType:'odpt.TrainType:TokyoMetro.Local',
+          calendarType:calendar,serviceDate:tobuCalendarDates[calendar],
+          positionSource:'supabase-train-run',estimated:true,
+          vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
+          vehicleResolvedFromRealtime:false,actualVehicleConfirmed:false
+        });
+        if(!result||!result.pngPath)continue;
+        const asset=get(result.pngPath,'runtime-metro-through-'+lineId);
+        if(!asset||asset.quarantined)continue;
+        if(result.planned!==true||result.actualVehicleConfirmed!==false)
+          throw Error('Existing through matcher roles changed');
+        ++tobuAccepted;
+        const key=[asset.path,lineId,calendar,'through',result.referenceCorridor||''].join('|');
+        let group=rosterGroups.get(key);
+        if(!group){
+          group={authority:'existing_frontend_helper',lineId,
+            calendarType:calendar,numberFamily:'through',
+            corridor:result.referenceCorridor||null,
+            model:result.model||null,sourceUrl:result.sourceUrl||null,
+            validFrom:'2026-11-02',validTo:'2026-11-30',
+            numberFormat:'full_exact',numbers:[],
+            referenceOnly:true,illustrative:true,actualVehicleConfirmed:false,
+            guardDescription:'Existing through matcher enforces owner suffix, source railway, service date, operator, train type, image/model compatibility'};
+          rosterGroups.set(key,group);asset.runtimeNumberRosters.push(group);
+        }
+        group.numbers.push(number);
+      }
+    }
+  }
   // Historic SOURCE-level SQL vehicle evidence: keep its original number,
   // operator, calendar, direction and revision, never promote a July source
   // to an authorized November carset or a broad train number range.
@@ -190,6 +232,54 @@ function buildIndex(input) {
     if(!g.sourceNumbers.includes(source.train_number))g.sourceNumbers.push(source.train_number);
     if(source.listed_on_2026_11_16===true)
       g.dateVerifiedServiceNumbers.push(source.train_number);
+  }
+  // Compact ONLY CONSECUTIVE already-present explicit numbers. The
+  // resulting bands do not fill gaps and retain alpha prefix/suffix.
+  function exactBands(numbers){
+    const groups=new Map();
+    for(const number of new Set(numbers)){
+      const m=/^([A-Z]*)([0-9]+)([A-Z]*)$/.exec(String(number).toUpperCase());
+      if(!m)continue;
+      const width=m[2].length;
+      const key=m[1]+'|'+m[3]+'|'+width;
+      const list=groups.get(key)||[];
+      list.push({n:Number(m[2]),name:number});groups.set(key,list);
+    }
+    const bands=[];
+    for(const list of groups.values()){
+      list.sort((a,b)=>a.n-b.n);
+      let start=list[0],last=start;
+      for(let i=1;i<=list.length;i++){
+        const next=list[i];
+        if(next && next.n===last.n+1){last=next;continue;}
+        bands.push({from:start.name,to:last.name,
+          count:last.n-start.n+1});
+        start=next;last=next;
+      }
+    }
+    return bands.sort((a,b)=>a.from.localeCompare(b.from));
+  }
+  for(const asset of byPath.values()){
+    for(const rule of asset.directNumberRules){
+      const known=new Set();
+      for(const source of Object.values(rule.explicitNumbers||{})){
+        if(Array.isArray(source))source.forEach(n=>known.add(String(n)));
+        else if(source&&typeof source==='object')
+          for(const nested of Object.values(source)){
+            if(Array.isArray(nested))nested.forEach(n=>known.add(String(n)));
+            else if(nested&&typeof nested==='object')
+              Object.values(nested).forEach(value=>{
+                if(Array.isArray(value))value.forEach(n=>known.add(String(n)));
+              });
+          }
+      }
+      if(rule.exactSingleNumber)known.add(rule.exactSingleNumber);
+      rule.exactContiguousBands=exactBands([...known]);
+    }
+    for(const roster of asset.runtimeNumberRosters)
+      roster.exactContiguousBands=exactBands(roster.numbers);
+    for(const group of asset.historicalNumberedSources)
+      group.exactContiguousBands=exactBands(group.sourceNumbers);
   }
   const assets=[...byPath.values()].sort((a,b)=>a.path.localeCompare(b.path));
   let direct=0,runtime=0,historical=0,any=0,none=0,quarantined=0;
