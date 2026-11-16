@@ -16,17 +16,17 @@ test('active family filter is derived only from 601 gallery PNGs and official fl
  assert.equal(csvOf(rebuilt),csv);
  assert.equal(saved.date,'2026-11-16');
  assert.equal(saved.summary.physicalPng,601);
- assert.equal(saved.summary.fleetFamilyVerified,86);
- assert.equal(saved.summary.activeFamilyWithExistingNumberScope,83);
- assert.equal(saved.summary.activeFamilyWithoutNumberScope,3);
- assert.equal(saved.summary.currentFleetStatusNotVerified,506);
- assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,13);
+ assert.equal(saved.summary.fleetFamilyVerified,117);
+ assert.equal(saved.summary.activeFamilyWithExistingNumberScope,84);
+ assert.equal(saved.summary.activeFamilyWithoutNumberScope,33);
+ assert.equal(saved.summary.currentFleetStatusNotVerified,475);
+ assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,12);
  assert.equal(saved.summary.quarantinedArtwork,9);
  assert.equal(saved.summary.exactPhysicalCarsetsVerified,0);
 });
 test('a verified operating fleet is not an authorization for any arbitrary train number',()=>{
  const proof=new Map(sources.verified_fleet_artworks.map(x=>[x.image_path,x]));
- assert.equal(proof.size,86);
+ assert.equal(proof.size,117);
  const src=new Map(origin.pngIndex.map(x=>[x.path,x]));
  for(const a of [...saved.mapped,...saved.activeWithoutNumber]){
    assert.ok(proof.has(a.png),'a current operating model family needs an explicit source');
@@ -66,7 +66,7 @@ test('new Rinkai 71-000 is active yet intentionally NOT assigned unsupported pub
  assert.ok(old,'70-000 family remains operating during replacement overlap');
 });
 test('unknown is not retired; quarantined artwork never eligible for current vehicle PNG mapping',()=>{
- assert.equal(saved.pendingStatus.length,506);
+ assert.equal(saved.pendingStatus.length,475);
  assert.ok(saved.pendingStatus.every(x=>x.reason));
  assert.ok(saved.quarantine.every(x=>!saved.mapped.some(m=>m.png===x.png)));
  assert.equal(new Set([...saved.mapped,...saved.activeWithoutNumber,...saved.pendingStatus,...saved.quarantine].map(x=>x.png)).size,601);

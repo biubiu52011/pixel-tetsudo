@@ -13,6 +13,38 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR西日本/JR西日本_500系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.westjr.co.jp/press/article/2026/06/22/page_30749.html",
+      "verification_date": "2026-11-16",
+      "note": "In service as of 2026-11-16; scheduled regular-service retirement 2027-01-13"
+    },
+    {
+      "image_path": "images/列车/JR東海/JR東海_315系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://railway.jr-central.co.jp/315s/index.html",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東海/JR東海_383系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://company.jr-central.co.jp/sustainability/social/conventional-line/",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東海/JR東海_N700系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://smart-ex.jp/en/beginner/equipment/n700/",
+      "verification_date": "2026-11-16",
+      "note": "N700-family representative image only, not distinguishing N700A/N700S or a physical carset"
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_209系_2000・2100番台_房総地区.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -45,12 +77,84 @@
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_253系_1000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/express/kinugawa.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_701系_100番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/701.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_701系_5000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/701.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_701系_5500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/press/2025/20251126_ho03.pdf",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_701系_秋田地区.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/701.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_701系_盛岡地区.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/701.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_701系_仙台地区.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/701.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_719系_5000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/719.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_named_service",
       "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
       "verification_date": "2026-11-16",
       "note": "Special heritage-service type operating, not a specific date's working"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E001形_TRAIN_SUITE四季島.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E129系.png",
@@ -117,12 +221,28 @@
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_1000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E231系_3000番台.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
       "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
       "verification_date": "2026-11-16",
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_500番台_中央・総武線各駅停車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E231系_800番台.png",
@@ -157,6 +277,14 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E233系_3000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e233.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E233系_6000番台.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -179,6 +307,14 @@
       "evidence_source_url": "https://www.jreast.co.jp/train/local/e233.html",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E233系3000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e233.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E233系5000番台.png",
@@ -261,6 +397,30 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.kampai.online/ja/articles/e501-sakigake-sake-train-2026/",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E501系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e501.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E531系_3000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e531.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E531系_水戸線.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -275,6 +435,22 @@
       "evidence_source_url": "https://www.jreast.co.jp/train/local/e531.html",
       "verification_date": "2026-11-16",
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E5系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/shinkan/e5.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E653系_1000番台_いなほ色.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/express/inaho_shirayuki.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E653系（いなほ）.png",
@@ -301,12 +477,28 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E721系_0番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e721.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E721系_仙台地区.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
       "evidence_source_url": "https://www.jreast.co.jp/train/local/e721.html",
       "verification_date": "2026-11-16",
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E723系_5000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://railf.jp/news/2026/09/23/000000.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E751系.png",
@@ -365,6 +557,14 @@
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E220系_八高線.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/hb_e220.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_HB-E220系.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -373,12 +573,44 @@
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_SATONO_1号車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/multi/joyful/satono_timetable.html",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_SATONO_2号車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/multi/joyful/satono_timetable.html",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_named_service",
       "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_リゾートしらかみ「橅」_HB-E301-5.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/railway/joyful/shirakami.html",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_リゾートしらかみ「橅」_HB-E302-5.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/railway/joyful/shirakami.html",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_リゾートビューふるさと.png",
@@ -395,6 +627,30 @@
       "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/train/fun/highrail1375.html",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_named_service",
+      "evidence_source_url": "https://www.jreast.co.jp/railway/joyful/oykot.html",
+      "verification_date": "2026-11-16",
+      "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_キハ110系.png",
@@ -421,6 +677,22 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_キハE120形_只見線色.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha_e130.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハE130系0番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha_e130.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -437,36 +709,84 @@
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
-      "image_path": "images/列车/JR東海/JR東海_315系.png",
+      "image_path": "images/列车/JR東日本/JR東日本_キハE200系（小海線）.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://railway.jr-central.co.jp/315s/index.html",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha_e200.html",
+      "verification_date": "2026-11-16",
+      "note": "Source confirms an operating model family, not the individual numbered working, subtype-specific dispatch, livery, or actual physical formation."
+    },
+    {
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_10-300形_1・2次車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
-      "image_path": "images/列车/JR東海/JR東海_383系.png",
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_10-300形_3次車以降.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://company.jr-central.co.jp/sustainability/social/conventional-line/",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
-      "image_path": "images/列车/JR東海/JR東海_N700系.png",
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-000形_4次車.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://smart-ex.jp/en/beginner/equipment/n700/",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
       "verification_date": "2026-11-16",
-      "note": "N700-family representative image only, not distinguishing N700A/N700S or a physical carset"
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
-      "image_path": "images/列车/JR西日本/JR西日本_500系.png",
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-600形_1次車.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.westjr.co.jp/press/article/2026/06/22/page_30749.html",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
       "verification_date": "2026-11-16",
-      "note": "In service as of 2026-11-16; scheduled regular-service retirement 2027-01-13"
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-600形_後期車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-600形_前期車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_5500形.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_6300形_3次車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/都営地下鉄/都営地下鉄_6500形.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
+      "verification_date": "2026-11-16",
+      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
       "image_path": "images/列车/東京メトロ/東京メトロ_05系_区間列車車両.png",
@@ -617,78 +937,6 @@
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
       "evidence_source_url": "https://www.tobu.co.jp/corporation/rail/vehicles/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_10-300形_1・2次車.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_10-300形_3次車以降.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-000形_4次車.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-600形_1次車.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-600形_前期車.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_12-600形_後期車.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_5500形.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_6300形_3次車.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
-      "verification_date": "2026-11-16",
-      "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
-    },
-    {
-      "image_path": "images/列车/都営地下鉄/都営地下鉄_6500形.png",
-      "service_status": "verified_current_fleet_family",
-      "evidence_scope": "operating_model_family",
-      "evidence_source_url": "https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     }
