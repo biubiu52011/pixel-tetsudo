@@ -4108,6 +4108,9 @@
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
+  // Diagnostic keys are bounded so repeated live-position refreshes do not flood logs.
+  var warnedNumberBandConflicts=Object.create(null);
+  var warnedNumberBandConflictCount=0;
   function match(trainNumber,lineId,context){
     if(String(lineId||'')==='TobuUtsunomiya')
       return root.TobuUtsunomiya2611Png ?
@@ -4725,6 +4728,9 @@
       (context.positionSource==="realtime-api"||
        context.positionSource==="supabase-train-run"||
        context.estimated===true));
+    // PNG-first contract: collect every eligible rule, never use its position
+    // in the array, range width or insertion order as artwork priority.
+    var matchedByPng=Object.create(null);
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
@@ -5154,11 +5160,28 @@
         selectedPng=row.exactModelArtworkMap[selectedModel];
         if(!selectedPng)continue;
       }
-      return {trainNumber:number,lineId:line,model:selectedModel,
+      var pngKey=String(selectedPng||"").replace(/^(?:\.\.\/)+/,"");
+      if(!pngKey)continue;
+      matchedByPng[pngKey]={trainNumber:number,lineId:line,model:selectedModel,
         pngPath:selectedPng,source:"train-number-range",
         planned:true,representative:true};
     }
-    // Exact rules above win. Only source-scoped SQL estimates can use
+    var matchedPaths=Object.keys(matchedByPng);
+    if(matchedPaths.length>1){
+      var conflictKey=line+"|"+number;
+      if(!warnedNumberBandConflicts[conflictKey] &&
+         warnedNumberBandConflictCount<100){
+        warnedNumberBandConflicts[conflictKey]=true;
+        warnedNumberBandConflictCount++;
+        if(typeof console!=="undefined"&&typeof console.warn==="function")
+          console.warn("[TrainNumberPngRanges] conflicting PNG bands",{
+            lineId:line,trainNumber:number,pngPaths:matchedPaths
+          });
+      }
+      return null;
+    }
+    if(matchedPaths.length===1)return matchedByPng[matchedPaths[0]];
+    // Fallback illustrations are considered only if no number band matched. Only source-scoped SQL estimates can use
     // these fallback service-family illustrations.
     if(line==="ChuoMain" && context){
       var ref=matchChuoMainUnmappedReference(context);

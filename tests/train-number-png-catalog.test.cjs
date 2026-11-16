@@ -218,3 +218,38 @@ test('Saikyo and Rinkai tail families reject conflicting source/type/model obser
   assert.ok(c.review.frontend_guard_only_rules.some(r=>r.rule===id),id);
  }
 });
+
+
+test('PNG-first bands return one deduplicated PNG without order priority',()=>{
+ const fs=require('node:fs'),vm=require('node:vm');
+ const original=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+ const anchor='  Object.freeze(rows);';
+ assert.equal(original.split(anchor).length,2,'cannot locate current rule owner');
+ const a={lineIds:['PngBandFixture'],numberFormat:'full',from:88,to:100,
+  suffixes:'M',model:'Fixture A',pngPath:'../images/列车/Fixture/A.png'};
+ const same={...a,from:90,to:110};
+ const different={...same,model:'Fixture B',pngPath:'../images/列车/Fixture/B.png'};
+ const otherLine={...different,lineIds:['OtherBandFixture']};
+ const match=(rules,number,line='PngBandFixture')=>{
+  const added=rules.map(x=>'rows.push('+JSON.stringify(x)+');').join('\n');
+  const window={};
+  const sandbox=vm.createContext({window,Date,
+   console:{log(){},warn(){},debug(){},error(){}}});
+  vm.runInContext(original.replace(anchor,added+'\n'+anchor),
+   sandbox,{filename:'train-number-png-ranges.fixture.js'});
+  return window.TrainNumberPngRanges.match(number,line,{});
+ };
+ assert.equal(match([a],'88M')?.pngPath,a.pngPath,'lower bound inclusive');
+ assert.equal(match([a],'100M')?.pngPath,a.pngPath,'upper bound inclusive');
+ assert.equal(match([a],'101M'),null,'out-of-range number remains unmatched');
+ assert.equal(match([a,same],'90M')?.pngPath,a.pngPath,
+  'overlapping bands for the same PNG count once');
+ assert.equal(match([a,different],'90M'),null,
+  'different eligible PNGs are a conflict, not a first hit');
+ assert.equal(match([different,a],'90M'),null,
+  'reversing rule order does not resolve a conflict');
+ assert.equal(match([a,otherLine],'90M')?.pngPath,a.pngPath,
+  'same number may be used on a separate line');
+ assert.equal(match([a,different],'105M')?.pngPath,different.pngPath,
+  'non-overlap portion is selectable without rank');
+});
