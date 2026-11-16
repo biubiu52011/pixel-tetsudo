@@ -391,3 +391,47 @@
 | SaikyoKawagoe E233系7000番台 | 2 | `JR東日本_E233系_7000番台.png` | 2026-11-01 | `510S`、`759K` 当日有明确日期名单；仍是参考图 |
 
 200 条均标记为 `dated_schedule_rule`，不等于 200 列实车或全网成功显示 PNG。小田急来源参考 `yozakura-room.net` 的 2026 年运用表，埼京来源参考 `ameblo.jp` 的带日期运用记录；即使有 URL 也不等于当日官方实车验明。现有正式图像路径与实体身份的保护层应继续保留。
+
+
+### 8. 前端真实选择器的明确日期样本回放（174 条）
+
+此次不再仅根据 SQL 字段“猜测是否显示 PNG”，而是加载 \`data/timetables/vehicle-garage-png-map.js\`、各个既有官方番号索引、\`data/timetables/train-number-png-ranges.js\`、\`js/train-vehicle.js\`、证据模块及 \`js/trains-render.js\` 的真实 \`_trainMarkerSpec\` 选择段，对相同来源的 SQL 显式日期样本逐行运行。
+
+- 输入快照：[\`data/audits/train-number-png-runtime-sample-20261116.json\`](../../data/audits/train-number-png-runtime-sample-20261116.json)，来自 \`manual_timetable_templates\` 与 \`train_timetable_source_resolution\` 的真实来源关联，仅取 \`'2026-11-16'::date = ANY(operating_dates)\`，含完整原始列车番号、运营方线路、源日历、方向、车种和证据等级；**没有凭 PNG 文件名推导任何车辆身份**。
+- 可重跑程序：[\`tools/audit-train-number-png-runtime.cjs\`](../../tools/audit-train-number-png-runtime.cjs)，使用生产模块的 \`TrainVehicle\` 和 SVG 标记选择器，无需连接 Supabase 或发出网络请求，打印按线路和负向守卫分类的 JSON 结果。运行 \`node tools/audit-train-number-png-runtime.cjs --strict\`。
+- 输入由源元数据构造**最小计划位置**：\`positionSource='supabase-train-run'\`、\`estimated=true\`、\`vehicleIdentityStatus='UNKNOWN'\`、\`vehicleResolvedUpstream=false\`、原始完整车次号码／线路／日期／铁路 URN／车种；\`timetableDateVerified\` **仅在原规范 \`timetable_validity='date_verified'\` 时为真**；\`officialNumberVerified=false\`，防止凭空制造官方身份授权。不伪造 \`vehiclePlan\`、编组、实际运营观察。
+- \`_isTrainArtworkFailureActive\` 固定为 \`false\`，因此**未做浏览器图像加载、缓存和网络失败模拟**；但会检查源图片路径在图库和仓库中存在，且不属于现有隔离 PNG。
+- 这仅是**最小 SQL 位置源输入的 selector 回放**。真实 DataFusion/ODPT/Edge Function 的完整适配器可能附带其他已核实字段或独立颁发 \`vehiclePlan\`，允许其他合规图片。不得把返回中性圆点理解成真实页面已证实不能出图。
+
+| 2026-11-16 明确日期样本 | 源模板条数 | SVG 返回参考 PNG | 中性标记 | 车型证明 |
+| --- | ---: | ---: | ---: | --- |
+| Gotemba | 92 | **86** | 6 | 315系**仅作** 313/315 混用线路的示意车型，禁止推断 86 列真实使用 315 |
+| SaikyoKawagoe | 3 | **2** | 1 | \`510S\` 和 \`759K\` 输出 E233系7000番台计划参考图，不确认编组 |
+| 其他 15 条线合计 | 79 | **0** | 79 | 最小输入不满足现有专用授权；必须核对实际适配器字段 |
+| **总计** | **174** | **88** | **86** | **88 条全部是 \`planned=true\`，实车编组 0** |
+
+- **174 条源行 → 173 个按线路／铁路／日历／方向／完整番号去重的联合键；88 条参考图记录 → 87 个不同联合键。** 唯一重复来自 Gotemba \`2570M\` 的授权 SQL 与 GTFS 双来源。数量**不是** 2026-11-16 全网实际班次／实车图片覆盖率。
+- 88 条参考图片实际只使用 **2 张 PNG**：\`JR東海/JR東海_315系.png\` 和 \`JR東日本/JR東日本_E233系_7000番台.png\`。其中 Gotemba **86 条**返回 \`planned=true, illustrative=true\`；Saikyo 两条 \`planned=true\`，未报告实际车组。
+- 这解释了为何上一阶段数据库只返回 **2 条直接 PNG**，但前端最小 selector 能返回 **88 条**：Gotemba 的 86 条图片是**已有 \`TrainNumberPngRanges\` 精确车次白名单的线路示意图**，不是数据库直接车型／PNG 判定。
+- 此次 GitHub 源码中的 Gotemba 规则有 \`publishedNumbers\` 明示名单、\`validFrom='2026-11-01'\` 至 \`validTo='2026-11-30'\` 的日期限制、来源铁路限制，并明确 \`referenceOnly:true, illustrative:true\`；图片 315系不等于完整型号或真实车组。
+- **需要另查可信度**：Gotemba 的 92 条显式日期样本中，源解析仍有 91 条 \`timetable_validity='undated_not_current_verified'\`。这些列车在图面展示时仍然可能使用线路示意 PNG；要把示意升级为已核验的计划车型，必须独立验证来源与各车次，不得自动利用同一张 315 图片提高实际型号覆盖率。
+
+#### 运行时边界负向回放
+
+对上述 **88 条实际有图片**的样本，分别只修改一个输入条件（图面线路、源铁路、未来服务日期、方向、时刻表有效性标签），再运行相同的真实 \`_trainMarkerSpec\`。在本次样本中：
+
+| 修改项 | 仍返回图片 | 解释 |
+| --- | ---: | --- |
+| 改在不相干的 Yamanote 图面显示 | **0/88** | 图面来源线路隔离有效 |
+| 清除 \`sourceRailway\` | **0/88** | 源铁路匹配检查有效 |
+| 将日期改为 2027-11-16 | **0/88** | 有效期检查有效 |
+| 将方向 Inbound/Outbound 对调 | **86/88** | Gotemba 代表图白名单当前按完整番号、来源及日期检查，但**未以方向字段作为独立阻断条件**；需对照原始运营方向后再考虑收紧 |
+| 移除 \`timetableValidity\` 和核验旗标 | **88/88** | 当前示意号段不依赖这些字段，不能将其宣传为已经通过官方日历或实车审核 |
+
+这些仅是**抗篡改边界诊断**，不直接宣称 86 次现实中的方向误绘制。更严格的方向/日历验证需要原始时刻表和实际适配器一起参与，不应无证据按奇偶号批量推断方向或涂装。
+
+#### 可重复执行和后续范围
+
+审计工具仅加载已存在的脚本，不增加第三套号段映射权威；在 [\`.github/workflows/verify-train-png.yml\`](../../.github/workflows/verify-train-png.yml) 中增加了只读 replay 的安全检查，阻止跨不相干线路、缺少来源铁路或超过有效期的参考图片越权；方向及日历标签差异仍作为诊断输出，**不擅自修改生产映射**。
+
+真正的全网覆盖率下一步必须先经**线上实际 train-runs 适配器**生成 2026-11-16 的全网规范运行位置，携带受信任的车型计划和官方逐号名单，再用该脚本相同的最终 SVG 选择入口复核；同时独立统计“有图片”“参考车型”“唯一车型”“实车编组确认”，不得合并成一个百分比。
