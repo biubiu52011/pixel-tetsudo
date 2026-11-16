@@ -61,6 +61,31 @@ function crossSourceNumberAudit(sql,js){
   meaning:'comparison of declared number/PNG references only, not operating-date or actual-carset proof'};
 }
 
+function collectCandidateOverlaps(rules) {
+ const byLine=new Map();
+ for(const r of rules)for(const line of new Set(r.line_ids)){
+  if(!byLine.has(line))byLine.set(line,[]);
+  byLine.get(line).push(r);
+ }
+ const found=[];
+ for(const [line,rows] of byLine){
+  for(let i=0;i<rows.length;i++)for(let j=i+1;j<rows.length;j++){
+   const a=rows[i],b=rows[j];
+   if(a.png===b.png||a.format!==b.format||
+      a.min>b.max||b.min>a.max)continue;
+   const suffixes=[...new Set(String(a.suffix).split(''))]
+     .filter(s=>String(b.suffix).includes(s));
+   if(!suffixes.length)continue;
+   found.push({line,rule_a:a.id,rule_b:b.id,
+    start:Math.max(a.min,b.min),end:Math.min(a.max,b.max),
+    suffix:suffixes.join(''),number_format:a.format,
+    png_a:a.png,png_b:b.png,
+    origin_a:a.origin,origin_b:b.origin,
+    status:'potential_overlap_only; context guards may disambiguate'});
+  }
+ }
+ return found;
+}
 function buildCatalog(snapshot, rows) {
  const norm = p => String(p||'').replace(/^(\.\.\/|\.\/|\/)+/,'');
  const sql=(snapshot.published_train_png_number_ranges||[]).map((r,i)=>({
@@ -153,6 +178,7 @@ function buildCatalog(snapshot, rows) {
    .map(r=>({rule:r.id,line_ids:r.line_ids,number:r.min,suffix:r.suffix,
     requires_compatible_plan:r.requires_compatible_plan}));
  const crossSource=crossSourceNumberAudit(sql,js);
+ const candidateOverlaps=collectCandidateOverlaps(sql.concat(js));
  return {schema_version:1,edition:'2611',snapshot_date:snapshot.snapshot_date,
   role:'derived read-only catalog; never exact physical formation evidence',
   sources:['data/timetables/train-number-png-ranges.js','data/audits/supabase-railway-audit-snapshot-20261116.json',
@@ -174,14 +200,16 @@ function buildCatalog(snapshot, rows) {
    frontend_singleton_candidates:frontendSingleton.length,
    model_label_differences:labels.length,
    overlapping_sql_bands:overlaps.length,
-   overlapping_different_model_bands:overlaps.filter(x=>!x.same_model_png).length},
+   overlapping_different_model_bands:overlaps.filter(x=>!x.same_model_png).length,
+   potential_cross_png_band_intersections:candidateOverlaps.length},
   line_index:sortedIndex,rules:sql.concat(js),
   review:{missing_sql_asset_registration:missing,sql_asset_review_required:pending,
    frontend_guard_only_rules:frontendGuardReview,
    frontend_official_month_rosters:frontendMonthRoster,
    frontend_singleton_candidates:frontendSingleton,
    sql_asset_label_differences:labels,sql_range_overlaps:overlaps,
-   cross_source_number_png:crossSource}};
+   cross_source_number_png:crossSource,
+   candidate_range_overlaps:candidateOverlaps}};
 }
 function audit(c){
  const errors=[];
@@ -360,4 +388,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,audit,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,pngFirstInventoryCsv,galleryPngPaths,run};

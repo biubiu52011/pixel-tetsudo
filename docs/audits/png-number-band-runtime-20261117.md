@@ -12,3 +12,8 @@
 2. 统一特殊线路独立匹配器与多来源最终返回点的冲突处理；在其完成前，不得允许不同来源的互斥 PNG 靠优先级覆盖。
 3. 先 JR，再地铁、第三部门铁道、私铁、其他。没有可用区间的 PNG 保持无号段。
 4. 复用 `tools/build-train-number-png-catalog.cjs` 和现有 Actions 审计；不创建第三套映射真值表。
+
+## 2026-11-17 continued: multi-source overlaps
+- Universal last-mile selector `TrainVehicle.chooseUniqueNumberPng` gathers all four independently eligible number PNG paths and rejects different-path matches without source priority. Confirmed actual-vehicle identities stay protected. Commit 477770e; old Yamagata assertion adapted in 156933d.
+- Existing catalog audit now reports **39 potential different-PNG numeric interval intersections on 20 line keys** (3 SQL–SQL, 2 SQL–JS, 34 JS–JS). This is **candidate intersection only**; calendar, source, train type, model and published-number guards can mean no runtime conflict. Report entries do not authorize a PNG and do not overwrite rules.
+- No physical vehicle records or inferred number bands were added.

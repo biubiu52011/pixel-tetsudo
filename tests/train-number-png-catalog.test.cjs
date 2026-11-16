@@ -277,3 +277,24 @@ test('new SQL pure PNG bands do not invent a source, stock model or carset',()=>
  row.actual_vehicle_confirmed=true;
  assert.ok(audit(fresh).some(x=>x.includes('must not assert actual car')));
 });
+
+
+test('cross-PNG number intersections are audited as candidates, never as runtime proof',()=>{
+ const {collectCandidateOverlaps}=require('../tools/build-train-number-png-catalog.cjs');
+ const hits=collectCandidateOverlaps(c.rules);
+ assert.equal(hits.length,39);
+ assert.equal(new Set(hits.map(x=>x.line)).size,20);
+ assert.equal(hits.filter(x=>x.origin_a==='sql_snapshot'&&x.origin_b==='sql_snapshot').length,3);
+ assert.ok(hits.every(x=>x.start<=x.end&&x.png_a!==x.png_b));
+ assert.ok(hits.every(x=>x.status.includes('potential_overlap_only')));
+ const base={line_ids:['Sample'],format:'full',min:1,max:8,suffix:'M',png:'images/列车/A.png',origin:'frontend_js'};
+ const fixture=[{...base,id:'a'},
+  {...base,id:'b',min:7,max:10,png:'images/列车/B.png'},
+  {...base,id:'c',min:3,max:6,png:'images/列车/A.png'},
+  {...base,id:'d',min:5,max:8,png:'images/列车/C.png',line_ids:['Other']},
+  {...base,id:'e',min:5,max:8,png:'images/列车/D.png',suffix:'D'}];
+ const synthetic=collectCandidateOverlaps(fixture);
+ assert.equal(synthetic.length,1);
+ assert.equal(synthetic[0].start,7);
+ assert.equal(synthetic[0].end,8);
+});
