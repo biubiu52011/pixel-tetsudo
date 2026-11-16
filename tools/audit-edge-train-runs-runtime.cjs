@@ -60,6 +60,16 @@ if(originalSnapshot.serviceDate!==day)
   throw Error('Comparison snapshot service date differs; pass 2026-11-16');
 assert.equal(typeof runtime.replay,'function');
 assert.equal(typeof garage.isQuarantinedPng,'function');
+assert.equal(typeof runtime.window.TrainVehicle.resolveTimetableRun,'function');
+// Reuse exactly the existing TrainPositionEstimator SQL-number PNG projection
+// expression, rather than creating another train-number mapping policy.
+const estimatorSource=fs.readFileSync(path.join(root,
+  'js/train-position-estimator.js'),'utf8');
+const estimatorMatch=estimatorSource.match(
+  /sqlPlannedNumberPngPath:\s*([\s\S]*?)\s*,\s*\/\/ 保留 SQL 来源/);
+if(!estimatorMatch)throw Error('Estimator Shinkansen path boundary moved');
+const shinkansenPathFromEstimator=new Function('lineId','tt',
+  'return ('+estimatorMatch[1]+');');
 
 const report={
   serviceDate:day,probeType:'public-live-edge-browser-adapter-minimum-position',
@@ -68,6 +78,8 @@ const report={
   checkedLines:lines.slice(),receivedLines:0,sourceTotal:0,
   adapterAcceptedTotal:0,referencePngTotal:0,neutralTotal:0,
   plannedPngTotal:0,uniquePngPaths:[],trustIssues:[],
+  resolverAssistedPngTotal:0,resolverAssistedPlannedPngTotal:0,
+  resolverAssistedNeutralTotal:0,resolverAssistedErrors:[],
   byLine:{},requestErrors:[]
 };
 const seenPng=new Set();
@@ -126,6 +138,8 @@ async function fetchLine(line){
     sourcePng:0,clientPng:0,complete:false,partial:false,
     completeReason:'',sourceCoverage:'',responseCalendar:'',
     pngPaths:[],wrongLineImages:0,missingRailwayImages:0,
+    resolverAssistedPng:0,resolverAssistedNeutral:0,resolverAssistedPlanned:0,
+    resolverAssistedImages:[],
     sourceTemplateIdsSeen:0,sourceTemplatesNotEmitted:[],
     numberVerificationStatuses:{},timetableValidities:{}};
   report.byLine[line]=result;
@@ -218,6 +232,56 @@ async function fetchLine(line){
       const noSource=runtime.replay({...p,sourceRailway:''});
       if(noSource.kind==='vehicle')++result.missingRailwayImages;
     }else {++result.neutral;++report.neutralTotal;}
+
+    // Second pass: call the REAL published timetable model resolver, which
+    // issues signed (in-process) vehiclePlan references. This approximates
+    // the estimator's evidence-projection stage without guessing carsets.
+    // The public Edge result + real browser timetable adapter are still the
+    // only vehicle evidence inputs.
+    try{
+      const scheduled={
+        trainNumber:p.trainNumber,
+        trainType:p.trainType,
+        railDirection:p.railDirection,
+        calendar:String(tt['odpt:calendar']||''),
+        destinationStationUrn:(tt['odpt:destinationStation']||[])[0]||'',
+        timetableObjectId:tt['@id'],
+        timetableIdentity:tt['@id']
+      };
+      const identity=runtime.window.TrainVehicle.resolveTimetableRun(
+        scheduled,tt,line,{operator:run.operator||''},day);
+      const veh=identity&&identity.vehicleResult||{};
+      const scoped={...p,
+        vehiclePlan:veh.vehiclePlan||null,
+        vehicleIconPath:veh.iconPath||'',
+        vehicleIdentityStatus:veh.identityStatus||'UNKNOWN',
+        vehicleResolvedUpstream:veh.identityStatus==='EXACT',
+        vehicleResolution:veh,vehicleResolutionLineId:line,
+        sqlPlannedNumberPngPath:shinkansenPathFromEstimator(line,tt)
+      };
+      const projected=runtime.replay(scoped);
+      if(projected.kind==='vehicle'&&projected.iconSrc){
+        ++result.resolverAssistedPng;++report.resolverAssistedPngTotal;
+        if(projected.planned===true){
+          ++result.resolverAssistedPlanned;
+          ++report.resolverAssistedPlannedPngTotal;
+        }else minorIssue(line,'resolver_projected_unplanned_artwork',number);
+        if(garage.isQuarantinedPng(projected.iconSrc))
+          minorIssue(line,'resolver_projected_quarantined_artwork',number);
+        if(!fs.existsSync(path.resolve(root,'pages',projected.iconSrc)))
+          minorIssue(line,'resolver_projected_missing_image',number);
+        if(result.resolverAssistedImages.length<15 &&
+            !result.resolverAssistedImages.includes(projected.iconSrc))
+          result.resolverAssistedImages.push(projected.iconSrc);
+      }else{
+        ++result.resolverAssistedNeutral;
+        ++report.resolverAssistedNeutralTotal;
+      }
+    }catch(err){
+      if(report.resolverAssistedErrors.length<15)
+        report.resolverAssistedErrors.push({line,number,
+          error:String(err&&err.message||err).slice(0,160)});
+    }
   }
   result.sourceTemplateIdsSeen=liveTemplateIds.size;
   // This is a provenance comparison, not a count of missing trains:
@@ -234,5 +298,6 @@ async function fetchLine(line){
   report.uniquePngPaths=[...seenPng].sort();
   console.log(JSON.stringify(report,null,2));
   if(strict&&(report.requestErrors.length || report.trustIssues.length ||
+    report.resolverAssistedErrors.length ||
     report.receivedLines!==lines.length))process.exitCode=1;
 })().catch(e=>{console.error('AUDIT_FATAL',String(e));process.exitCode=1;});
