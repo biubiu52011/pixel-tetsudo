@@ -67,7 +67,13 @@ function resolve(p){
    sourceUrl:"https://timetables.jreast.co.jp/2611/timetable-v/243"+
      (dir==="Inbound"?"u":"d")+(cal==="Weekday"?"1":"2")+".html"};
 }
-root.JREastSuigunNumberIndex202611=Object.freeze({resolve:resolve});
+root.JREastSuigunNumberIndex202611=Object.freeze({resolve:resolve,
+ listNumbers:function(line,calendar,direction){
+  var block=source[String(line||"")]&&source[String(line||"")][String(calendar||"")];
+  var row=block&&block[String(direction||"")];
+  return Array.isArray(row)?row.slice():[];
+ }
+});
 var ranges=root.TrainNumberPngRanges;
 if(ranges&&typeof ranges.match==="function"){
  var previous=ranges.match;

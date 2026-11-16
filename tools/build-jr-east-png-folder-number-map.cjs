@@ -11,6 +11,10 @@ function build(index,current,sources){
  const gono=load(sources.gono).JREastGonoNumberIndex202611;
  const iiyama=load(sources.iiyama).JREastIiyamaNumberIndex202611;
  const senzan=load(sources.senzan).JREastSenzanNumberIndex202611;
+ const tazawako=load(sources.tazawako).JREastTazawakoNumberIndex202611;
+ const suigun=load(sources.suigun).JREastSuigunNumberIndex202611;
+ const tadami=load(sources.tadami).JREastTadamiNumberIndex202611;
+ const yamagata=load(sources.yamagata).JREastYamagataNumberIndex202611;
  const isHoliday=d=>{
   const wd=new Date(d+'T12:00:00Z').getUTCDay();
   return wd===0||wd===6||d==='2026-11-03'||d==='2026-11-23';
@@ -76,13 +80,95 @@ function build(index,current,sources){
   }
   return [...groups.values()].sort((a,b)=>a.trainNumber.localeCompare(b.trainNumber));
  }
+
+ // These items are derived from existing runtime source validators, not new live mappings.
+ function adapterRefs(name){
+  const out=[];
+  const add=(line,cal,dir,num,url,guard,dates)=>{
+   out.push({lineId:line,calendar:cal,direction:dir,trainNumber:num,
+    sourceUrl:url,requiredGuards:guard,operatingDates:dates||[],
+    referenceOnly:true,actualVehicleConfirmed:false,authorizesRuntimePNG:false});
+  };
+  const fmt=(id,dir,cal,withP=false)=>
+   'https://timetables.jreast.co.jp/2611/timetable-v/'+id+
+    (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+(withP?'p':'')+'.html';
+  if(name==='JR東日本_701系_5000番台.png'){
+   for(const cal of ['Weekday','SaturdayHoliday'])for(const dir of ['Inbound','Outbound']){
+    for(const number of Object.keys(tazawako.source[cal][dir])){
+     add('Tazawako',cal,dir,number,fmt('258',dir,cal,true),
+      'Official 8xxM number + exact stops, date, railway and calendar verified by original runtime adapter');
+    }
+   }
+  }
+  if(name==='JR東日本_キハE130系0番台.png'){
+   for(const line of ['Suigun','SuigunBranch'])
+   for(const cal of ['Weekday','SaturdayHoliday'])for(const dir of ['Inbound','Outbound']){
+    for(const number of suigun.listNumbers(line,cal,dir)){
+     let sourceUrl='';const days=[];
+     for(let day=1;day<=30;day++){
+      const date='2026-11-'+String(day).padStart(2,'0');
+      if((isHoliday(date)?'SaturdayHoliday':'Weekday')!==cal)continue;
+      const p={positionLineId:line,displayLineId:line,
+       sourceRailway:'odpt.Railway:JR-East.'+line,positionSource:'supabase-train-run',
+       estimated:true,serviceDate:date,calendarType:'odpt.Calendar:'+cal,
+       railDirection:dir,trainNumber:number,trainType:'Local',trainOperator:'JR-East',
+       vehicleIdentityStatus:'UNRESOLVED'};
+      const ref=suigun.resolve(p);
+      if(ref&&ref.illustrationPng.endsWith('/'+name)){days.push(date);sourceUrl=ref.sourceUrl;}
+     }
+     if(days.length)add(line,cal,dir,number,sourceUrl,
+      'Exact source line, calendar, day, direction, service kind, non-Kazekko and vehicle identity guards',
+      days);
+    }
+   }
+  }
+  if(name==='JR東日本_キハE120形_只見線色.png'||name==='JR東日本_キハ110系（只見線）.png'){
+   for(const cal of ['Weekday','SaturdayHoliday'])for(const dir of ['Inbound','Outbound']){
+    for(const number of tadami.regular[cal][dir]){
+     add('Tadami',cal,dir,number,fmt('262',dir,cal),
+      'Original Tadami adapter requires exact timetable stops plus segment position and east/west image territory');
+    }
+   }
+  }
+  return out.sort((a,b)=>a.lineId.localeCompare(b.lineId)||a.trainNumber.localeCompare(b.trainNumber)||a.calendar.localeCompare(b.calendar));
+ }
+ function mixedYamagataCandidates(name){
+  if(!['JR東日本_701系_5500番台.png','JR東日本_719系_5000番台.png',
+    'JR東日本_E723系_5000番台.png'].includes(name))return [];
+  const rows=[];
+  for(const cal of ['Weekday','SaturdayHoliday'])
+   for(const [number,rec] of Object.entries(yamagata.roster[cal])){
+    rows.push({lineId:'Yamagata',calendar:cal,trainNumber:number,direction:rec[0],
+      possibleModels:yamagata.candidates.slice(),sourceUrl:
+       'https://timetables.jreast.co.jp/2611/timetable-v/249'+
+       (rec[0]==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+'.html',
+      evidenceGrade:'mixed_fleet_line_number_only_NOT_model_assignment',
+      referenceOnly:true,authorizesRuntimePNG:false,actualVehicleConfirmed:false});
+   }
+  return rows.sort((a,b)=>a.trainNumber.localeCompare(b.trainNumber)||a.calendar.localeCompare(b.calendar));
+ }
+ function datedYamagataObservation(name){
+  if(name!=='JR東日本_E723系_5000番台.png')return [];
+  return ['1426M','424M'].map(number=>{
+   const rec=yamagata.roster.Weekday[number];
+   if(!rec)throw Error('Missing dated Yamagata number in official 2611 index: '+number);
+   return {lineId:'Yamagata',trainNumber:number,serviceDate:'2026-11-13',
+    direction:rec[0],calendar:'Weekday',sourceUrl:'https://4gousya.net/forums/post/137048',
+    sourceKind:'third_party_eyewitness_report_NOT_JR_official_formation_confirmation',
+    reportDetail:number==='1426M'?'B-4+B-2 reported':'B-3 reported',
+    referenceOnly:true,authorizesRuntimePNG:false,actualVehicleConfirmed:false};
+  });
+ }
+
  const records=images.map(a=>{
   const name=a.path.split('/').pop(),fleet=byProof.get(a.path)||null;
   const rules=a.directNumberRules.filter(r=>r.actualVehicleConfirmed===false&&
     (!r.validFrom||r.validFrom<='2026-11-16')&&
     (!r.validTo||r.validTo>='2026-11-16'));
   const rosters=a.runtimeNumberRosters.filter(r=>r.actualVehicleConfirmed===false);
-  const dated=datedFor(a.path),hasNumbers=!!(rules.length+rosters.length+dated.length);
+  const dated=datedFor(a.path),adapter=adapterRefs(name),
+   mixed=mixedYamagataCandidates(name),observed=datedYamagataObservation(name),
+   hasNumbers=!!(rules.length+rosters.length+dated.length+adapter.length+observed.length);
   const status=a.quarantined?'quarantined':
     historic.has(name)?'historic_not_2026_service':
     nonPassenger.has(name)?'non_passenger_stock':
@@ -113,6 +199,9 @@ function build(index,current,sources){
      exactContiguousBands:r.exactContiguousBands,sourceUrl:r.sourceUrl,
      validFrom:r.validFrom,validTo:r.validTo,actualVehicleConfirmed:false})),
    datedNamedServiceNumbers:dated,
+   existingAdapterExactNumberRefs:adapter,
+   ambiguousYamagataLineNumberCandidates:mixed,
+   thirdPartyOneDateObservedRefs:observed,
    actualVehicleConfirmed:false,allowSelectByBandAlone:false};
  });
  const count=s=>records.filter(r=>r.status===s).length;
@@ -126,7 +215,11 @@ function build(index,current,sources){
    remainingUnverified:count('no_qualified_number_mapping'),
    withSpecificDatedNamedService:records.filter(x=>x.datedNamedServiceNumbers.length).length,
    datedNumberServiceGroups:records.reduce((n,r)=>n+r.datedNamedServiceNumbers.length,0),
-   observedPhysicalCarsets:0};
+   observedPhysicalCarsets:0,
+   pngsRecoveredFromExistingRuntimeAdapter:records.filter(x=>x.existingAdapterExactNumberRefs.length).length,
+   sourceAdapterNumberRows:records.reduce((n,x)=>n+x.existingAdapterExactNumberRefs.length,0),
+   pngsWithMixedYamagataCandidates:records.filter(x=>x.ambiguousYamagataLineNumberCandidates.length).length,
+   datedE723EyewitnessNumberRows:records.reduce((n,x)=>n+x.thirdPartyOneDateObservedRefs.length,0)};
  if(summary.totalPng!==131||summary.activeWithNumberReference+
    summary.activeWithoutNumberReference+summary.priorNumberRefNeedsCurrentVerification+
    summary.historical+summary.nonPassenger+summary.quarantined+
@@ -141,12 +234,17 @@ function build(index,current,sources){
     'data/audits/png-current-service-number-map-20261116.json',
     'data/timetables/jreast-gono-2611-number-index.js',
     'data/timetables/jreast-senzan-2611-number-index.js',
-    'data/timetables/jreast-iiyama-2611-number-index.js'],
+    'data/timetables/jreast-iiyama-2611-number-index.js',
+    'data/timetables/jreast-tazawako-2611-number-index.js',
+    'data/timetables/jreast-suigun-2611-number-index.js',
+    'data/timetables/jreast-tadami-2611-number-index.js',
+    'data/timetables/jreast-yamagata-2611-number-index.js'],
   summary,records};
 }
 function csvOf(a){
  const rows=[['png','status','models','lines','ruleCount','originalNumberRanges',
-   'datedSpecialNumbers','datedSpecialOperatingDays','note','fleetEvidenceUrl','observedCarset']];
+   'datedSpecialNumbers','datedSpecialOperatingDays','existingAdapterExactNumberRefs',
+   'ambiguousYamagataLineCandidates','oneDateObservedNumbers','note','fleetEvidenceUrl','observedCarset']];
  const esc=x=>{const s=String(x==null?'':x);
    return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
  for(const r of a.records){
@@ -155,10 +253,16 @@ function csvOf(a){
     String(x.minNumber)+'~'+String(x.maxNumber))+(x.suffix||''))+'@'+x.lineIds.join('/'));
   const owner=r.originalRuntimeNumberRosters.map(x=>x.numberFamily+'@'+x.lineId+'('+x.calendarType+')');
   rows.push([r.png,r.status,r.models.join(' | '),r.lineScopes.join(' | '),
-   r.originalNumberRules.length+r.originalRuntimeNumberRosters.length+r.datedNamedServiceNumbers.length,
+   r.originalNumberRules.length+r.originalRuntimeNumberRosters.length+
+    r.datedNamedServiceNumbers.length+r.existingAdapterExactNumberRefs.length+
+    r.thirdPartyOneDateObservedRefs.length,
    ranges.concat(owner).join(' | '),
    r.datedNamedServiceNumbers.map(x=>x.trainNumber+'@'+x.lineId).join(' | '),
    r.datedNamedServiceNumbers.map(x=>x.trainNumber+':'+x.operatingDates.join(';')).join(' | '),
+   r.existingAdapterExactNumberRefs.map(x=>x.trainNumber+'@'+x.lineId+'/'+x.calendar+
+    (x.operatingDates.length?' ['+x.operatingDates.join(';')+']':'')).join(' | '),
+   r.ambiguousYamagataLineNumberCandidates.map(x=>x.trainNumber+'/'+x.calendar).join(' | '),
+   r.thirdPartyOneDateObservedRefs.map(x=>x.trainNumber+'@'+x.serviceDate).join(' | '),
    r.note,r.fleetEvidence?.sourceUrl||'','no']);
  }
  return '\ufeff'+rows.map(r=>r.map(esc).join(',')).join('\n')+'\n';
@@ -171,7 +275,11 @@ if(require.main===module){
    JSON.parse(read('data/audits/png-current-service-number-map-20261116.json')),
    {gono:read('data/timetables/jreast-gono-2611-number-index.js'),
     iiyama:read('data/timetables/jreast-iiyama-2611-number-index.js'),
-    senzan:read('data/timetables/jreast-senzan-2611-number-index.js')});
+    senzan:read('data/timetables/jreast-senzan-2611-number-index.js'),
+    tazawako:read('data/timetables/jreast-tazawako-2611-number-index.js'),
+    suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
+    tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
+    yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js')});
  const jsonPath='data/audits/jr-east-png-folder-number-map-2611.json',
    csvPath='data/audits/jr-east-png-folder-number-map-2611.csv';
  const j=JSON.stringify(report,null,2)+'\n',c=csvOf(report);
