@@ -7,7 +7,11 @@ const index=JSON.parse(read('data/audits/png-to-train-number-index-2611.json'));
 const current=JSON.parse(read('data/audits/png-current-service-number-map-20261116.json'));
 const sources={gono:read('data/timetables/jreast-gono-2611-number-index.js'),
  iiyama:read('data/timetables/jreast-iiyama-2611-number-index.js'),
- senzan:read('data/timetables/jreast-senzan-2611-number-index.js')};
+ senzan:read('data/timetables/jreast-senzan-2611-number-index.js'),
+ tazawako:read('data/timetables/jreast-tazawako-2611-number-index.js'),
+ suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
+ tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
+ yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js')};
 const find=name=>report.records.find(x=>x.name===name);
 test('all 131 JR-East PNGs appear once, with generated artifacts synchronized',()=>{
  assert.deepEqual(report,build(index,current,sources));
@@ -57,4 +61,45 @@ test('retired service scope and non-revenue images do not gain current service n
    assert.equal(find(n).status,'historic_not_2026_service');
  for(const n of ['JR東日本_E926形_East-i.png','JR東日本_FV-E991系_HYBARI.png'])
    assert.equal(find(n).status,'non_passenger_stock');
+});
+
+test('Tazawako 701-5000 recovers the original official 8xxM adapter only',()=>{
+ const refs=find('JR東日本_701系_5000番台.png').existingAdapterExactNumberRefs;
+ assert.ok(refs.length>=60);
+ assert.ok(refs.every(r=>r.lineId==='Tazawako'&&/^8\d\dM$/.test(r.trainNumber)));
+ assert.ok(refs.every(r=>!r.authorizesRuntimePNG&&!r.actualVehicleConfirmed));
+});
+test('Suigun 0-series replays the existing adapter and excludes Kazekko',()=>{
+ const refs=find('JR東日本_キハE130系0番台.png').existingAdapterExactNumberRefs;
+ assert.ok(refs.length>50);
+ assert.ok(refs.some(r=>r.trainNumber==='320D'&&r.lineId==='Suigun'));
+ assert.ok(refs.some(r=>r.trainNumber==='920D'&&r.lineId==='SuigunBranch'));
+ assert.ok(!refs.some(r=>r.trainNumber==='9821D'||r.trainNumber==='9822D'));
+ assert.ok(refs.every(r=>r.operatingDates.length>0));
+});
+test('Tadami KiHa E120 and KiHa110 reuse number with position guards only',()=>{
+ const e120=find('JR東日本_キハE120形_只見線色.png').existingAdapterExactNumberRefs;
+ const kiha=find('JR東日本_キハ110系（只見線）.png').existingAdapterExactNumberRefs;
+ assert.ok(e120.length>=32);
+ assert.deepEqual(e120,kiha);
+ assert.ok(e120.every(x=>x.requiredGuards.includes('segment position')));
+});
+test('Yamagata all mixed fleet candidates remain conditional; E723 November 13 only',()=>{
+ for(const n of ['JR東日本_701系_5500番台.png','JR東日本_719系_5000番台.png','JR東日本_E723系_5000番台.png']){
+  const refs=find(n).ambiguousYamagataLineNumberCandidates;
+  assert.ok(refs.length>100);
+  assert.ok(refs.every(x=>x.evidenceGrade.includes('NOT_model_assignment')&&!x.authorizesRuntimePNG));
+  assert.ok(refs.some(x=>x.trainNumber==='1426M'));
+ }
+ const observed=find('JR東日本_E723系_5000番台.png').thirdPartyOneDateObservedRefs;
+ assert.deepEqual(observed.map(x=>x.trainNumber),['1426M','424M']);
+ assert.ok(observed.every(x=>x.serviceDate==='2026-11-13'&&!x.actualVehicleConfirmed));
+});
+test('B31 and 209-3500/E231-0 do not inherit passenger train numbers without proof',()=>{
+ assert.equal(find('JR東日本_E235系_0番台_B31編成_中央・総武線.png').status,'no_qualified_number_mapping');
+ for(const name of ['JR東日本_209系_3500番台.png','JR東日本_E231系_0番台_中央・総武線各駅停車.png']){
+  const row=find(name);
+  assert.equal(row.status,'active_family_without_number_reference');
+  assert.equal(row.existingAdapterExactNumberRefs.length,0);
+ }
 });
