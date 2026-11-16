@@ -1,5 +1,7 @@
 # 列车图库 PNG → 列车番号号段映射（2611）
 
+> **现役车系映射请优先使用新版筛选：**[现役 PNG → 番号 CSV](../../data/audits/png-current-service-number-map-20261116.csv) · [现役 JSON](../../data/audits/png-current-service-number-map-20261116.json) · [验证说明](png-current-service-number-map-20261116.md)。旧的 601 图全量索引包含未证实现役、历史及隔离图片，仅用作原始证据归档，不能一概作为当日运营车的车图映射。
+
 > **这是号码证据的反向索引，不是凭 PNG 名称推算的车组分配表。**
 > 可查询某张 PNG 涉及哪些线路、哪个有出处的完整列车番号或号码区间，以及
 > 工作日/休息日、时间范围、来源和审批条件。生产页面仍以既有
