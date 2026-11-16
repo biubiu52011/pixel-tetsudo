@@ -363,6 +363,11 @@ test('JR Yamagata/Tazawako qualified special PNG numbers join one library invent
   assert.ok(!lines.some(x=>x.endsWith(',无号段')),png);
  }
  assert.ok(csv.includes('JR東日本_E723系_5000番台.png,Yamagata,0420,0420,M,full'));
- assert.ok(csv.includes('JR東日本_701系_5000番台.png,Tazawako,0822,0822,M,full'));
+ const tazRanges=csv.split('\n').filter(line=>
+  line.includes('JR東日本_701系_5000番台.png,Tazawako,'));
+ assert.ok(tazRanges.some(line=>{
+  const parts=line.split(',');
+  return Number(parts[4])<=822&&Number(parts[5])>=822&&parts[6]==='M';
+ }), 'the documented 822M survives safe contiguous-band compaction');
  assert.ok(!csv.includes('JR東日本_719系_5000番台.png,Yamagata,'));
 });
