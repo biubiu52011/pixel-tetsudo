@@ -13,12 +13,124 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_209系_2000・2100番台_房総地区.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/209.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_209系_500番台_武藏野線.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/209.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_211系_湘南色.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/211.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_211系_長野色.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/211.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_C57形_180号機_SLばんえつ物語.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_named_service",
       "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
       "verification_date": "2026-11-16",
       "note": "Special heritage-service type operating, not a specific date's working"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E129系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e129.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E131系_0番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e131.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E131系_1000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e131.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E131系_500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e131.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E131系_600番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e131.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E131系_800番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e131.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_0番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_3000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_800番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E233系_0番台.png",
@@ -93,6 +205,38 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E257系_2000番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/multi/traininformation/odoriko/index.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E257系_2500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/multi/traininformation/odoriko/index.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E257系_500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/express/wakashio_sazanami.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E257系_5500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/express/akagi.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E259系.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -117,6 +261,30 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_E531系_水戸線.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e531.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E531系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e531.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E653系（いなほ）.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/express/inaho_shirayuki.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_E657系.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -131,6 +299,22 @@
       "evidence_source_url": "https://www.jreast.co.jp/train/shinkan/e6.html",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E721系_仙台地区.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/e721.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E751系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/express/tsugaru.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E7系.png",
@@ -149,12 +333,44 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_EV-E301系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/ev_e301.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_EV-E801系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/ev_e801.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_GV-E400系.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
       "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E210系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/hb_e210.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_HB-E220系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/hb_e220.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_HB-E300系_ひなび_陽旅.png",
@@ -181,12 +397,44 @@
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_キハ110系.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha110.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハ110系（大船渡線）.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha110.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_named_service",
       "evidence_source_url": "https://www.jreast.co.jp/railway/train/",
       "verification_date": "2026-11-16",
       "note": "Operator confirms an operating model family, not any train-number-to-carset identity"
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha_e130.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハE130系500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha_e130.html",
+      "verification_date": "2026-11-16",
+      "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
       "image_path": "images/列车/JR東海/JR東海_315系.png",
