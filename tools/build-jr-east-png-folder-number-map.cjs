@@ -18,6 +18,7 @@ function build(index,current,sources){
  const shonan=load(sources.shonan).JREastShonanMixedNumberIndex202611;
  const uetsu=load(sources.uetsu).JREastUetsuNumberIndex202611;
  const tsugaru=load(sources.tsugaru).JREastTsugaruNumberIndex202611;
+ const hachiko=load(sources.hachiko).JREastHachikoNonElectrified2611;
  const isHoliday=d=>{
   const wd=new Date(d+'T12:00:00Z').getUTCDay();
   return wd===0||wd===6||d==='2026-11-03'||d==='2026-11-23';
@@ -150,6 +151,28 @@ function build(index,current,sources){
        (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+'.html',
        'Original Tsugaru 2611 runtime verifies line/calendar and Aomori-Kanita 11-stop sequence; 324M is NOT Sunday/national holiday',
        dates);
+    }
+   }
+  }
+  if(name==='JR東日本_HB-E220系_八高線.png'){
+   for(const cal of ['Weekday','SaturdayHoliday'])
+   for(const [dir,ns] of [['Inbound',hachiko.inward],['Outbound',hachiko.outward]]){
+    for(const number of ns){
+     const days=[];
+     for(let day=1;day<=30;day++){
+      const date='2026-11-'+String(day).padStart(2,'0');
+      if(hachiko.calendar(date)!==cal)continue;
+      const p={positionLineId:'Hachiko',sourceRailway:hachiko.sourceRailway,
+       serviceDate:date,calendarType:cal,railDirection:dir,
+       trainNumber:number,trainType:'Local',trainOperator:'JR-East'};
+      const confirmed=hachiko.verify(p);
+      if(confirmed)days.push(date);
+     }
+     if(days.length)add('Hachiko',cal,dir,number,
+      'https://timetables.jreast.co.jp/2611/timetable-v/705'+
+       (dir==='Inbound'?'u':'d')+(cal==='Weekday'?'1':'2')+'.html',
+      '2026-11 published exact D-number; Komagawa–Takasaki non-electrified HB-E220 fleet only; actual trainset not certified',
+      days);
     }
    }
   }
@@ -338,7 +361,8 @@ function build(index,current,sources){
     'data/timetables/jreast-yamagata-2611-number-index.js',
     'data/timetables/jreast-shonan-mixed-number-index-202611.js',
     'data/timetables/jreast-uetsu-2611-number-index.js',
-    'data/timetables/jreast-tsugaru-2611-number-index.js'],
+    'data/timetables/jreast-tsugaru-2611-number-index.js',
+    'data/timetables/jreast-hachiko-non-electrified-2611-number-index.js'],
   summary,records};
 }
 function csvOf(a){
@@ -386,7 +410,8 @@ if(require.main===module){
     yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
     shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js'),
     uetsu:read('data/timetables/jreast-uetsu-2611-number-index.js'),
-    tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js')});
+    tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js'),
+    hachiko:read('data/timetables/jreast-hachiko-non-electrified-2611-number-index.js')});
  const jsonPath='data/audits/jr-east-png-folder-number-map-2611.json',
    csvPath='data/audits/jr-east-png-folder-number-map-2611.csv';
  const j=JSON.stringify(report,null,2)+'\n',c=csvOf(report);
