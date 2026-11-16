@@ -274,12 +274,24 @@ function buildIndex(input) {
           }
       }
       if(rule.exactSingleNumber)known.add(rule.exactSingleNumber);
-      rule.exactContiguousBands=exactBands([...known]);
+      // The original unified source catalog owns large calendar-specific
+      // exact lists. Keep an in-index preview for short lists only, so the
+      // 601-image index remains small and cannot become a second authority.
+      rule.explicitDocumentedNumberCount=known.size;
+      if(known.size>0 && known.size<=20)
+        rule.explicitShortNumberList=[...known].sort();
+      rule.exactRosterSourceRuleId=rule.ruleId;
+      delete rule.explicitNumbers;
     }
-    for(const roster of asset.runtimeNumberRosters)
+    for(const roster of asset.runtimeNumberRosters){
+      roster.explicitDocumentedNumberCount=roster.numbers.length;
       roster.exactContiguousBands=exactBands(roster.numbers);
-    for(const group of asset.historicalNumberedSources)
-      group.exactContiguousBands=exactBands(group.sourceNumbers);
+      delete roster.numbers;
+    }
+    for(const group of asset.historicalNumberedSources){
+      group.explicitDocumentedNumberCount=group.sourceNumbers.length;
+      group.explicitServiceDateNumberCount=group.dateVerifiedServiceNumbers.length;
+    }
   }
   const assets=[...byPath.values()].sort((a,b)=>a.path.localeCompare(b.path));
   let direct=0,runtime=0,historical=0,any=0,none=0,quarantined=0;
@@ -341,7 +353,7 @@ if(typeof require==='function' && require.main===module){
   });
   const args=process.argv.slice(2);
   const target='data/audits/png-to-train-number-index-2611.json';
-  const out=JSON.stringify(index,null,2)+'\n';
+  const out=JSON.stringify(index)+'\n';
   if(args.includes('--write'))fs.writeFileSync(path.join(root,target),out);
   if(args.includes('--check')&&(!fs.existsSync(path.join(root,target))||
       get(target)!==out))throw Error('Generated PNG->number index is stale');
