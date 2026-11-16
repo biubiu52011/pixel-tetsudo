@@ -12,7 +12,9 @@ const sources={gono:read('data/timetables/jreast-gono-2611-number-index.js'),
  suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
  tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
  yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
- shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js')};
+ shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js'),
+ uetsu:read('data/timetables/jreast-uetsu-2611-number-index.js'),
+ tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js')};
 const find=name=>report.records.find(x=>x.name===name);
 test('all 131 JR-East PNGs appear once, with generated artifacts synchronized',()=>{
  assert.deepEqual(report,build(index,current,sources));
@@ -132,4 +134,22 @@ test('E501 SAKIGAKE Nov14 service has no fabricated public train number',()=>{
  assert.equal(x[0].publicTrainNumber,null);
  assert.equal(x[0].authorizesRuntimePNG,false);
  assert.equal(find('JR東日本_E501系_E501_SAKIGAKE.png').status,'active_family_without_number_reference');
+});
+
+test('Uetsu Inaho 1M-14M reference uses only LimitedExpress E653 color family',()=>{
+ const rows=find('JR東日本_E653系_1000番台_いなほ色.png').existingAdapterExactNumberRefs;
+ assert.equal(rows.length,28);
+ assert.ok(rows.every(x=>x.lineId==='Uetsu'&&
+    /^(?:[1-9]|1[0-4])M$/.test(x.trainNumber)&&
+    x.requiredGuards.includes('LimitedExpress')&&!x.authorizesRuntimePNG));
+ assert.ok(!rows.some(x=>x.trainNumber==='8853D'||x.trainNumber==='225M'));
+});
+test('Tsugaru Akita 701 verifies current open railway and Sat-only 324M',()=>{
+ const rows=find('JR東日本_701系_秋田地区.png').existingAdapterExactNumberRefs;
+ assert.ok(rows.length>=35);
+ assert.ok(rows.every(x=>x.lineId==='Tsugaru'&&!x.authorizesRuntimePNG&&x.operatingDates.length));
+ const special=rows.filter(x=>x.trainNumber==='324M');
+ assert.ok(special.length>=1);
+ assert.ok(special.every(x=>x.operatingDates.every(d=>new Date(d+'T12:00:00Z').getUTCDay()===6)));
+ assert.ok(rows.every(x=>x.requiredGuards.includes('Aomori-Kanita')));
 });
