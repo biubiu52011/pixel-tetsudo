@@ -4822,8 +4822,19 @@
         // A route's operator never substitutes for the vehicle owner.
         var owner=String(p.trainOwner||"")
           .replace(/^odpt\.(?:Operator|TrainOwner):/,"");
+        // Oedo is the one Toei line without foreign through workings.
+        // The official ODPT realtime feed may omit its trainOwner; a
+        // LIVE Toei-operated Oedo source can establish LINE ownership only.
+        // This never establishes 12-000 vs 12-600 (the mixed-fleet model
+        // evidence gate below remains mandatory). Explicit foreign owner
+        // is still a hard rejection, even on this self-contained line.
+        // Source: https://www.mintetsu.or.jp/knowledge/term/16403.html
+        var oedoOwnerOmitted=line==="Oedo"&&!owner&&
+          (p.trainOperator==="Toei"||p.trainOperator==="odpt.Operator:Toei")&&
+          p.sourceRailway==="odpt.Railway:Toei.Oedo";
         if(p.positionSource!=="realtime-api"||p.estimated===true||
-           owner!=="Toei"||p.sourceRailway!=="odpt.Railway:Toei."+line)continue;
+           (owner!=="Toei"&&!oedoOwnerOmitted)||
+           p.sourceRailway!=="odpt.Railway:Toei."+line)continue;
       }
       if(row.validFrom){
         var serviceDate=String(context&&context.serviceDate||"").slice(0,10);
