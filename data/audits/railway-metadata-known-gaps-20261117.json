@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-17",
+  "canonical_blob_sha": "512a2ef7caf9be6f885305c193b97415e44feff4",
+  "notes": "Unresolved as of 2026-11-17. Eight Tokyu palette differences resolved by aligning base colors to existing passenger display palette. Exact HEX are site presentation values, not official Tokyu CSS specifications. The 2026-11-16 historical baseline remains unchanged.",
+  "palette_differences": {
+    "OdakyuEnoshima": {
+      "base": "#0078C1",
+      "display": "#2288cc"
+    },
+    "TamaMonorail": {
+      "base": "#ff9900",
+      "display": "#ff6633"
+    },
+    "MinatoMirai": {
+      "base": "#00B6C7",
+      "display": "#003399"
+    },
+    "Daishi_Keikyu": {
+      "base": "#00A0E8",
+      "display": "#e60012"
+    },
+    "KeikyuKurihama": {
+      "base": "#00A0DC",
+      "display": "#e60012"
+    },
+    "KeikyuZushi": {
+      "base": "#00A0DC",
+      "display": "#e60012"
+    },
+    "KeioInokashira": {
+      "base": "#00a0e9",
+      "display": "#000088"
+    },
+    "KeioKeibajo": {
+      "base": "#8C1C8E",
+      "display": "#dd0076"
+    },
+    "KeioMain": {
+      "base": "#dd057c",
+      "display": "#dd0076"
+    },
+    "KeioSagami": {
+      "base": "#9C27B0",
+      "display": "#dd0076"
+    },
+    "KeioShin": {
+      "base": "#dd057c",
+      "display": "#dd0076"
+    },
+    "KeioTakao": {
+      "base": "#9C27B0",
+      "display": "#dd0076"
+    },
+    "KeioZoo": {
+      "base": "#8C1C8E",
+      "display": "#dd0076"
+    },
+    "OdakyuTama": {
+      "base": "#8B0000",
+      "display": "#2288cc"
+    },
+    "Tojo": {
+      "base": "#002d62",
+      "display": "#000099"
+    },
+    "TobuUtsunomiya": {
+      "base": "#FF8C00",
+      "display": "#ffa600"
+    },
+    "Odawara": {
+      "base": "#0067b0",
+      "display": "#2288cc"
+    },
+    "TokyoMonorail": {
+      "base": "#006fc0",
+      "display": "#0b70b8"
+    },
+    "ChuoCentral": {
+      "base": "#0073bf",
+      "display": "#f68b1e"
+    },
+    "KansaiCentral": {
+      "base": "#f15a24",
+      "display": "#f68b1e"
+    },
+    "KiseiCentral": {
+      "base": "#0066cc",
+      "display": "#f68b1e"
+    },
+    "Takayama": {
+      "base": "#b85c00",
+      "display": "#f68b1e"
+    },
+    "Taketoyo": {
+      "base": "#e66b1f",
+      "display": "#f68b1e"
+    },
+    "Taita": {
+      "base": "#7b3f98",
+      "display": "#f68b1e"
+    },
+    "Gotemba": {
+      "base": "#2e8b57",
+      "display": "#f68b1e"
+    },
+    "Minobu": {
+      "base": "#d88b00",
+      "display": "#f68b1e"
+    },
+    "Iida": {
+      "base": "#d33c6e",
+      "display": "#f68b1e"
+    },
+    "Sangu": {
+      "base": "#0066cc",
+      "display": "#f68b1e"
+    },
+    "Meisho": {
+      "base": "#777777",
+      "display": "#f68b1e"
+    },
+    "MinoAkasaka": {
+      "base": "#777777",
+      "display": "#f68b1e"
+    }
+  },
+  "pending_sql_registration": [
+    {
+      "id": "Yahiko",
+      "operator": "JR-East",
+      "stations": 8,
+      "missing_coordinates": 5,
+      "placeholder_station_keys": 0,
+      "review_type": "duplicate_historical_line_identity"
+    },
+    {
+      "id": "Hakodate2",
+      "operator": "HakodateCity",
+      "stations": 23,
+      "missing_coordinates": 20,
+      "placeholder_station_keys": 0,
+      "review_type": "unresolved_coordinates"
+    },
+    {
+      "id": "Hakodate5",
+      "operator": "HakodateCity",
+      "stations": 23,
+      "missing_coordinates": 23,
+      "placeholder_station_keys": 0,
+      "review_type": "unresolved_coordinates"
+    },
+    {
+      "id": "Hisatsu",
+      "operator": "JR-Kyushu",
+      "stations": 6,
+      "missing_coordinates": 4,
+      "placeholder_station_keys": 4,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "HakodateMain",
+      "operator": "JR-Hokkaido",
+      "stations": 11,
+      "missing_coordinates": 10,
+      "placeholder_station_keys": 10,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "NemuroMain",
+      "operator": "JR-Hokkaido",
+      "stations": 8,
+      "missing_coordinates": 8,
+      "placeholder_station_keys": 8,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Chitose",
+      "operator": "JR-Hokkaido",
+      "stations": 10,
+      "missing_coordinates": 9,
+      "placeholder_station_keys": 8,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "MuroranMain",
+      "operator": "JR-Hokkaido",
+      "stations": 9,
+      "missing_coordinates": 8,
+      "placeholder_station_keys": 8,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Sekisho",
+      "operator": "JR-Hokkaido",
+      "stations": 6,
+      "missing_coordinates": 5,
+      "placeholder_station_keys": 5,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Furano",
+      "operator": "JR-Hokkaido",
+      "stations": 6,
+      "missing_coordinates": 6,
+      "placeholder_station_keys": 6,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "SoyaMain",
+      "operator": "JR-Hokkaido",
+      "stations": 9,
+      "missing_coordinates": 9,
+      "placeholder_station_keys": 8,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "SenmoMain",
+      "operator": "JR-Hokkaido",
+      "stations": 9,
+      "missing_coordinates": 9,
+      "placeholder_station_keys": 9,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "SekihokuMain",
+      "operator": "JR-Hokkaido",
+      "stations": 7,
+      "missing_coordinates": 7,
+      "placeholder_station_keys": 7,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Sassho",
+      "operator": "JR-Hokkaido",
+      "stations": 6,
+      "missing_coordinates": 6,
+      "placeholder_station_keys": 6,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "HidakaMain",
+      "operator": "JR-Hokkaido",
+      "stations": 4,
+      "missing_coordinates": 4,
+      "placeholder_station_keys": 4,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Yosan",
+      "operator": "JR-Shikoku",
+      "stations": 13,
+      "missing_coordinates": 12,
+      "placeholder_station_keys": 12,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Dosan",
+      "operator": "JR-Shikoku",
+      "stations": 9,
+      "missing_coordinates": 9,
+      "placeholder_station_keys": 9,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Kotoku",
+      "operator": "JR-Shikoku",
+      "stations": 7,
+      "missing_coordinates": 6,
+      "placeholder_station_keys": 6,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Tokushima",
+      "operator": "JR-Shikoku",
+      "stations": 6,
+      "missing_coordinates": 6,
+      "placeholder_station_keys": 6,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Naruto",
+      "operator": "JR-Shikoku",
+      "stations": 3,
+      "missing_coordinates": 3,
+      "placeholder_station_keys": 3,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Mugi",
+      "operator": "JR-Shikoku",
+      "stations": 6,
+      "missing_coordinates": 6,
+      "placeholder_station_keys": 6,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Yodo",
+      "operator": "JR-Shikoku",
+      "stations": 6,
+      "missing_coordinates": 6,
+      "placeholder_station_keys": 6,
+      "review_type": "placeholder_station_topology"
+    },
+    {
+      "id": "Uchiko",
+      "operator": "JR-Shikoku",
+      "stations": 3,
+      "missing_coordinates": 3,
+      "placeholder_station_keys": 3,
+      "review_type": "placeholder_station_topology"
+    }
+  ],
+  "lines_with_incomplete_static_coordinates": [
+    "BanetsuEast",
+    "BanetsuWest",
+    "Chitose",
+    "Dosan",
+    "Echigo",
+    "Furano",
+    "Gono",
+    "Hachinohe",
+    "Hakodate2",
+    "Hakodate5",
+    "HakodateMain",
+    "Hakushin",
+    "HidakaMain",
+    "Hisatsu",
+    "Iiyama",
+    "Ishinomaki",
+    "Kamaishi",
+    "Keisei",
+    "KeiseiChiba",
+    "KeiseiChihara",
+    "KeiseiKanamachi",
+    "KeiseiOshiage",
+    "Kesennuma",
+    "Kitakami",
+    "Kitto",
+    "Kokubunji",
+    "Komii",
+    "Kotoku",
+    "Kounan",
+    "MarunouchiBranch",
+    "Mito",
+    "Miyo",
+    "Mugi",
+    "MuroranMain",
+    "NaritaSkyAccess",
+    "Naruto",
+    "NemuroMain",
+    "NewShuttle",
+    "OdakyuTama",
+    "Ofunato",
+    "Oito",
+    "Ominato",
+    "OuMain",
+    "RikutoEast",
+    "RikutsuWest",
+    "Ryomo",
+    "Sassho",
+    "SekihokuMain",
+    "Sekisho",
+    "SenmoMain",
+    "Senseki",
+    "SensekiTohoku",
+    "Senzan",
+    "Shinetsu",
+    "Shinonoi",
+    "SoyaMain",
+    "Suigun",
+    "SuigunBranch",
+    "Tadami",
+    "Tazawako",
+    "TobuNikko",
+    "TobuSkytree",
+    "TohokuMain",
+    "Tokushima",
+    "TokyoMonorail",
+    "TsukubaExpress",
+    "Uchiko",
+    "Uetsu",
+    "Yahiko",
+    "Yamada",
+    "Yamagata",
+    "Yodo",
+    "Yonezawa",
+    "Yosan"
+  ],
+  "lines_without_own_icon": [
+    "Ako",
+    "ChichibuMain",
+    "ChikuhiWest",
+    "Chikuho",
+    "Chitose",
+    "Dosan",
+    "Furano",
+    "HakataMinami",
+    "Hakodate2",
+    "Hakodate5",
+    "HakodateMain",
+    "HanwaHagoromo",
+    "HidakaMain",
+    "Hisatsu",
+    "Hohi",
+    "HojoRailway",
+    "IbusukiMakurazaki",
+    "Iwakado",
+    "JobanMain",
+    "KagoshimaMain",
+    "Karatsu",
+    "Kawagoe",
+    "KiseiCentral",
+    "Kitto",
+    "Kotoku",
+    "Kyudai",
+    "Meisho",
+    "MinoAkasaka",
+    "Misumi",
+    "MiyazakiAirport",
+    "Mugi",
+    "MuroranMain",
+    "NambuBranch",
+    "NaritaAbikoBranch",
+    "NaritaAirportBranch",
+    "Naruto",
+    "NemuroMain",
+    "Nichinan",
+    "Nikko",
+    "OitoWest",
+    "Omura",
+    "Sangu",
+    "SaninSenzaki",
+    "SanyoMain",
+    "SanyoWadamisaki",
+    "Sasebo",
+    "Sassho",
+    "SekihokuMain",
+    "Sekisho",
+    "SenmoMain",
+    "Shinetsu",
+    "ShintetsuAo",
+    "SoyaMain",
+    "SuigunBranch",
+    "TohokuMain",
+    "TohokuRifu",
+    "Tokushima",
+    "Ube",
+    "Uchiko",
+    "Yahiko",
+    "Yamaguchi",
+    "Yodo",
+    "Yosan"
+  ],
+  "known_sql_station_drift_ids": [
+    "BanetsuWest",
+    "Hachiko",
+    "Hanwa",
+    "KagoshimaMain",
+    "KansaiMain",
+    "KashiiLine",
+    "Kesennuma",
+    "Komii",
+    "Nippo",
+    "Ofunato",
+    "Oito",
+    "SaninMain",
+    "SanyoMain",
+    "Yamagata"
+  ],
+  "known_duplicate_png_groups": [
+    [
+      "images/列车/JR東日本/JR東日本_12系客車_SLばんえつ物語_展望車.png",
+      "images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png"
+    ],
+    [
+      "images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.png",
+      "images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png"
+    ],
+    [
+      "images/列车/わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-510形.png",
+      "images/列车/わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-520形.png"
+    ],
+    [
+      "images/列车/東急電鉄/東急電鉄_6020系.png",
+      "images/列车/東急電鉄/東急電鉄_6020系_追加.png"
+    ],
+    [
+      "images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png",
+      "images/列车/相模鉄道/相模鉄道_21000系.png"
+    ],
+    [
+      "images/列车/都営地下鉄/都営地下鉄_8500形_8501号車_山吹色.png",
+      "images/列车/都営地下鉄/都営地下鉄_8500形（別）.png"
+    ]
+  ],
+  "review_required_asset_paths": [
+    "images/列车/JR東日本/JR東日本_12系客車_SLばんえつ物語_展望車.png",
+    "images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.png",
+    "images/列车/わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-510形.png",
+    "images/列车/わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-520形.png",
+    "images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png",
+    "images/列车/相模鉄道/相模鉄道_21000系.png",
+    "images/列车/伊豆急行/伊豆急行_8000系.png"
+  ]
+}

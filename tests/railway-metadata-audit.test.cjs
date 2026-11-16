@@ -7,7 +7,7 @@ const report = inspect();
 const snapshot = JSON.parse(fs.readFileSync(
   'data/audits/supabase-railway-audit-snapshot-20261116.json','utf8'));
 const known = JSON.parse(fs.readFileSync(
-  'data/audits/railway-metadata-known-gaps-20261116.json','utf8'));
+  'data/audits/railway-metadata-known-gaps-20261117.json','utf8'));
 
 test('all configured railway base/display colors, icons, stations and vehicle PNGs obey current audited contracts', () => {
   assert.deepEqual(report.errors, [], JSON.stringify(report, null, 2));

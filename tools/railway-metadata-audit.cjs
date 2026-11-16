@@ -38,7 +38,7 @@ function fileExists(root, image) {
 }
 function inspect(root = path.resolve(__dirname, '..')) {
   const canonical = readJson(root, 'data/core/railway_data.json');
-  const gaps = readJson(root, 'data/audits/railway-metadata-known-gaps-20261116.json');
+  const gaps = readJson(root, 'data/audits/railway-metadata-known-gaps-20261117.json');
   const snapshot = readJson(root, 'data/audits/supabase-railway-audit-snapshot-20261116.json');
   const ids = Object.keys(canonical.lines || {});
   const errors = [], warnings = [];
