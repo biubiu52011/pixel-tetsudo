@@ -9,7 +9,7 @@ on:
       - 'data/core/railway_data.json'
       - 'data/core/railway_data.compact.json'
       - 'data/core/railway-data.file.js'
-      - 'data/audits/railway-metadata-known-gaps-20261116.json'
+      - 'data/audits/railway-metadata-known-gaps-20261117.json'
       - 'data/audits/supabase-railway-audit-snapshot-20261116.json'
       - 'data/timetables/train-number-png-ranges.js'
       - 'data/audits/train-number-png-catalog-2611.json'
