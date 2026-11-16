@@ -21,10 +21,14 @@ function inspect(records,rows=getRows(),date=new Date().toISOString()){
  const sets={};
  for(const line of LINES){
   sets[line]=new Set();
-  for(const r of rows)if(r.requireRealtimeToeiOwner===true&&r.lineIds.length===1&&r.lineIds[0]===line)
+  for(const r of rows)if(r.lineIds.length===1&&r.lineIds[0]===line&&
+   r.operator==='Toei'&&Array.isArray(r.sourceRailways)&&
+   r.sourceRailways.includes('odpt.Railway:Toei.'+line)&&
+   Array.isArray(r.weekdayNumbers)&&Array.isArray(r.holidayNumbers))
    for(const n of (r.weekdayNumbers||[]).concat(r.holidayNumbers||[]))
     sets[line].add(String(n).toUpperCase());
-  result.lines[line]={count:0,ownerMissing:0,numeric:0,overlap:0,ownedOverlap:0,formats:{},owners:{},examples:[]};
+  result.lines[line]={count:0,ownerMissing:0,numeric:0,overlap:0,ownedOverlap:0,
+   providedVehicleType:0,formats:{},owners:{},examples:[]};
  }
  for(const r of records){
   if(!r||typeof r!=='object')continue;
@@ -36,20 +40,22 @@ function inspect(records,rows=getRows(),date=new Date().toISOString()){
   out.owners[o||'(missing)']=(out.owners[o||'(missing)']||0)+1;
   if(!o)out.ownerMissing++;
   if(f==='numeric')out.numeric++;
+  if(String(r['odpt:vehicleType']||'').trim())out.providedVehicleType++;
   if(hit)out.overlap++;
   if(hit&&o==='Toei')out.ownedOverlap++;
-  if(out.examples.length<5)out.examples.push({rawNumber:n,owner:o,format:f,stagedUnionMatch:hit});
+  if(out.examples.length<5)out.examples.push({rawNumber:n,owner:o,format:f,
+    stagedUnionMatch:hit,hasVehicleType:!!String(r['odpt:vehicleType']||'').trim()});
  }
  return result;
 }
 function summary(r){
  let s='# Toei ODPT source-number observation\n\nStatus: **'+r.status+'**\n\n';
  if(r.status!=='observed')return s+'**INCONCLUSIVE**: '+(r.error||'source unavailable')+'\n';
- s+='| Line | Trains | Numeric | Staged number overlap | Overlap + Toei owner | Missing owner |\n';
- s+='|---|---:|---:|---:|---:|---:|\n';
+ s+='| Line | Trains | Numeric | Registered number overlap | Overlap + Toei owner | Missing owner | Vehicle type provided |\n';
+ s+='|---|---:|---:|---:|---:|---:|---:|\n';
  for(const [name,v] of Object.entries(r.lines))
-  s+='| '+name+' | '+v.count+' | '+v.numeric+' | '+v.overlap+' | '+v.ownedOverlap+' | '+v.ownerMissing+' |\n';
- return s+'\nNo conversion is performed. Staged number overlap DOES NOT prove an official train-number crosswalk, a confirmed model or actual carset.\n\nCredit: 東京都交通局・公共交通オープンデータ協議会 (CC BY 4.0).\n';
+  s+='| '+name+' | '+v.count+' | '+v.numeric+' | '+v.overlap+' | '+v.ownedOverlap+' | '+v.ownerMissing+' | '+v.providedVehicleType+' |\n';
+ return s+'\nNo conversion is performed. Registered number overlap DOES NOT prove an official train-number crosswalk, a confirmed model or actual carset.\n\nCredit: 東京都交通局・公共交通オープンデータ協議会 (CC BY 4.0).\n';
 }
 async function fetchOfficial(fetcher=globalThis.fetch){
  const c=new AbortController(),timer=setTimeout(()=>c.abort(),12000);
