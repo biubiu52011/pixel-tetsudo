@@ -505,7 +505,7 @@ function jrScopedSqlSeedBands(){
 const JR_THIRD_SQL_MIGRATION='supabase/migrations/20261116194249_seed_png_first_jr_oga_ishinomaki_kitakami_bands_2611.sql';
 function jrThirdSqlSeedBands(){
  const src=read(JR_THIRD_SQL_MIGRATION);
- const pattern=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'([A-Z])',NULL,'\\.\\.\\/(images\\/列车\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const matches=[...src.matchAll(pattern)];
  if(matches.length!==20)throw Error('JR third SQL number bands do not match applied migration');
  return matches.map(m=>({line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
