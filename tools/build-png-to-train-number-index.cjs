@@ -25,7 +25,7 @@ function buildIndex(input) {
   const win={},silence={log(){},warn(){},debug(){},error(){}};
   const garageCode=instrument(garageSource,
     'root.VehicleGaragePngMap=Object.freeze({',
-    'root.__pngIndexGarageRows=table.slice(); root.__pngIndexQuarantine=Object.keys(quarantinedPng);');
+    'root.__pngIndexGarageRows=table.slice(); root.__pngIndexGarageAlternates=alternates.slice(); root.__pngIndexQuarantine=Object.keys(quarantinedPng);');
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
@@ -53,6 +53,21 @@ function buildIndex(input) {
     if(!asset.canonicalModels.includes(row[1]))asset.canonicalModels.push(row[1]);
     for(const line of String(row[3]||'').split('|').filter(Boolean))
       if(!asset.lineScopes.includes(line))asset.lineScopes.push(line);
+  }
+  // The original gallery also declares one alternate-only physical file
+  // outside the canonical entries. Keep it in the 601 PNG inventory but
+  // NEVER treat its alternate-only alias as display authorization.
+  for(const row of (win.__pngIndexGarageAlternates||[])){
+    const physical=prefix+row[2];
+    if(byPath.has(physical))continue;
+    byPath.set(physical,{path:physical,
+      operatorDirectory:String(row[2]).split('/')[0],
+      canonicalModels:[String(row[1])],
+      lineScopes:String(row[3]||'').split('|').filter(Boolean),
+      galleryIds:[String(row[0])],alternateOnly:true,
+      quarantined:quarantine.has(physical),
+      status:'no_verified_number_mapping',
+      directNumberRules:[],runtimeNumberRosters:[],historicalNumberedSources:[]});
   }
   if(byPath.size!==601)
     throw Error('Physical gallery inventory changed: expected 601, got '+byPath.size);
