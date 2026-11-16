@@ -53,6 +53,14 @@
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
     },
     {
+      "image_path": "images/列车/JR東日本/JR東日本_209系_3500番台.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://railf.jp/event/2026/11/04/120500.html",
+      "verification_date": "2026-11-16",
+      "note": "JR-East backed November 2026 event confirms 209-3500 Hachiko/Kawagoe fleet; numbered workings/formation not verified"
+    },
+    {
       "image_path": "images/列车/JR東日本/JR東日本_209系_500番台_武藏野線.png",
       "service_status": "verified_current_fleet_family",
       "evidence_scope": "operating_model_family",
@@ -211,6 +219,14 @@
       "evidence_source_url": "https://www.jreast.co.jp/train/local/e231.html",
       "verification_date": "2026-11-16",
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_E231系_0番台_中央・総武線各駅停車.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://4gousya.net/line/8108.php",
+      "verification_date": "2026-11-16",
+      "note": "Latest Chuo-Sobu local fleet lists six E231-0 sets; does not identify any individual B/C train-number assignment"
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_E231系_0番台.png",
@@ -667,6 +683,14 @@
       "evidence_source_url": "https://www.jreast.co.jp/train/local/kiha110.html",
       "verification_date": "2026-11-16",
       "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
+    },
+    {
+      "image_path": "images/列车/JR東日本/JR東日本_キハ110系（只見線）.png",
+      "service_status": "verified_current_fleet_family",
+      "evidence_scope": "operating_model_family",
+      "evidence_source_url": "https://www.jreast.co.jp/press/2026/niigata/20260515_ni01.pdf",
+      "verification_date": "2026-11-16",
+      "note": "JR-East 2026 Tadami notice explicitly lists KiHa110 alongside KiHa E120; actual individual set, livery and assigned number remain unverified"
     },
     {
       "image_path": "images/列车/JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png",
