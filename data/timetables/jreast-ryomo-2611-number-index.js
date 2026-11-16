@@ -63,5 +63,5 @@
       actualVehicleConfirmed:false,authorizesPNG:false,
       model:null,formationId:null};
  }
- root.JREastRyomoNumberIndex202611=Object.freeze({resolve:resolve});
+ root.JREastRyomoNumberIndex202611=Object.freeze({resolve:resolve,groups:groups});
 })(window);

@@ -371,3 +371,25 @@ test('JR Yamagata/Tazawako qualified special PNG numbers join one library invent
  }), 'the documented 822M survives safe contiguous-band compaction');
  assert.ok(!csv.includes('JR東日本_719系_5000番台.png,Yamagata,'));
 });
+
+
+test('JR Senzan and Ryomo source-number artwork remains strictly illustration-only',()=>{
+ const m=require('../tools/build-train-number-png-catalog.cjs');
+ const bands=m.jrEastAdditionalNumberBands();
+ assert.equal(bands.filter(x=>x.line==='Senzan').length,212);
+ assert.equal(bands.filter(x=>x.line==='Ryomo').length,227);
+ assert.equal(bands.length,439);
+ assert.equal(new Set(bands.map(x=>x.png)).size,4);
+ assert.ok(bands.every(x=>x.status.includes('既有JR专用示意守卫(')));
+ assert.ok(bands.some(x=>x.line==='Senzan'&&x.from==='8821'&&x.suffix==='D'&&
+   x.status.includes('限定日期')));
+ assert.ok(!bands.some(x=>x.from==='9821'&&x.suffix==='D'),
+  'December special must not be added to November number inventory');
+ assert.ok(bands.some(x=>x.png.includes('JR東日本_E233系3000番台.png')));
+ const csv=m.pngFirstInventoryCsv(m.galleryPngPaths(),c);
+ for(const model of ['JR東日本_HB-E300系_SATONO_1号車.png',
+  'JR東日本_E233系3000番台.png']){
+  assert.ok(csv.split('\n').some(x=>x.includes(model)&&x.includes('既有JR专用示意守卫')));
+  assert.ok(!csv.split('\n').some(x=>x.includes(model)&&x.endsWith(',无号段')));
+ }
+});

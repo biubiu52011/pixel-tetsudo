@@ -56,7 +56,7 @@ function resolve(p){
   sourceUrl:url,illustrative:true,referenceOnly:true,authorizesPNG:false,
   actualVehicleConfirmed:false,model:null,formationId:null,planned:true};
 }
-root.JREastSenzanNumberIndex202611=Object.freeze({resolve:resolve});
+root.JREastSenzanNumberIndex202611=Object.freeze({resolve:resolve,regularNumbers:regular,specialDates:dates});
 // Adapter for TrainVehicle's existing single number-to-artwork authority.
 // The upstream resolver stays intact for every other line; this edition
 // authorizes only a PLANNED reference PNG and never a physical formation.

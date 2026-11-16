@@ -409,6 +409,83 @@ function jrEastScopedNumberBands(){
  }
  return refs;
 }
+// Extra JR existing line-source number rosters, audit-only; not runtime authority.
+function jrEastAdditionalNumberBands(){
+ const root={},context={window:root,Date,
+  console:{log(){},warn(){},debug(){},error(){}}};
+ for(const script of ['data/timetables/jreast-senzan-2611-number-index.js',
+                       'data/timetables/jreast-ryomo-2611-number-index.js'])
+  vm.runInNewContext(read(script),context,{filename:script,timeout:15000});
+ const senz=root.JREastSenzanNumberIndex202611,
+  ryomo=root.JREastRyomoNumberIndex202611;
+ if(!senz||!senz.regularNumbers||!senz.specialDates||
+    !ryomo||!Array.isArray(ryomo.groups))
+  throw Error('Missing JR numbered illustration registry');
+ const calendars={Weekday:'2026-11-16',SaturdayHoliday:'2026-11-07'};
+ const records=[];
+ function add(entry,line,cal,special){
+  const m=/^([0-9]{1,5})([A-Z])$/.exec(entry.trainNumber);
+  if(!m||!entry.illustrationPng||entry.actualVehicleConfirmed!==false||
+     entry.authorizesPNG!==false)
+   throw Error('Invalid non-physical numbered JR illustration');
+  const png=String(entry.illustrationPng).replace(/^(?:\.\.\/|\.\/|\/)+/,'');
+  if(!png.startsWith('images/列车/'))throw Error('Invalid JR gallery path: '+png);
+  records.push({png,line,from:m[1].padStart(4,'0'),
+   to:m[1].padStart(4,'0'),suffix:m[2],format:'full',
+   status:'既有JR专用示意守卫('+cal+(special?';限定日期':'')+')'});
+ }
+ for(const [cal,date] of Object.entries(calendars)){
+  for(const [direction,types] of Object.entries(senz.regularNumbers))
+   for(const [type,numbers] of Object.entries(types))
+    for(const number of numbers){
+     const p={positionLineId:'Senzan',displayLineId:'Senzan',
+      sourceRailway:'odpt.Railway:JR-East.Senzan',
+      positionSource:'supabase-train-run',estimated:true,
+      trainOperator:'JR-East',calendarType:cal==='Weekday'?'weekday':'holiday',
+      serviceDate:date,trainNumber:number,railDirection:'odpt.RailDirection:'+direction,
+      trainType:'odpt.TrainType:JR-East.'+type,vehicleIdentityStatus:'UNKNOWN'};
+     const approved=senz.resolve(p);
+     if(!approved||approved.illustrationModel!=='E721系')
+      throw Error('Senzan regular source rule no longer qualifies: '+number+'/'+cal);
+     add(approved,'Senzan',cal,false);
+    }
+  if(!senz.specialDates.includes(date))
+   throw Error('Senzan reference date missing special operation');
+  for(const [direction,number] of [['Outbound','8821D'],['Inbound','8822D']]){
+   const p={positionLineId:'Senzan',displayLineId:'Senzan',
+    sourceRailway:'odpt.Railway:JR-East.Senzan',
+    positionSource:'supabase-train-run',estimated:true,
+    trainOperator:'JR-East',calendarType:cal==='Weekday'?'weekday':'holiday',
+    serviceDate:date,trainNumber:number,
+    railDirection:'odpt.RailDirection:'+direction,
+    trainType:'odpt.TrainType:JR-East.Rapid',vehicleIdentityStatus:'UNKNOWN'};
+   const approved=senz.resolve(p);
+   if(!approved||approved.serviceKind!=='satono')
+    throw Error('Senzan dated special no longer qualifies: '+number+'/'+cal);
+   add(approved,'Senzan',cal,true);
+  }
+ }
+ for(const [cal,direction,kind,numbers] of ryomo.groups){
+  const date=calendars[cal];
+  if(!date)throw Error('Unexpected Ryomo calendar');
+  for(const number of numbers.split(',')){
+   const type=number.endsWith('Y')?'Rapid':'Local';
+   const p={positionLineId:'Ryomo',displayLineId:'Ryomo',
+    sourceRailway:'odpt.Railway:JR-East.Ryomo',
+    positionSource:'supabase-train-run',estimated:true,
+    trainOperator:'JR-East',calendarType:cal==='Weekday'?'weekday':'holiday',
+    serviceDate:date,trainNumber:number,
+    railDirection:'odpt.RailDirection:'+direction,
+    trainType:'odpt.TrainType:JR-East.'+type,
+    vehicleIdentityStatus:'UNKNOWN'};
+   const approved=ryomo.resolve(p);
+   if(!approved||approved.kind!==kind)
+    throw Error('Ryomo numbered source rule not unique: '+number+'/'+cal+'/'+direction);
+   add(approved,'Ryomo',cal,false);
+  }
+ }
+ return records;
+}
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -433,7 +510,7 @@ function pngFirstInventoryCsv(paths,c){
  }
  // Special JR illustrated numbers are strictly date/line/source-gated in the
  // existing modules; these rows do NOT authorize otherwise unsupported trips.
- for(const ref of jrEastScopedNumberBands()){
+ for(const ref of jrEastScopedNumberBands().concat(jrEastAdditionalNumberBands())){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
@@ -481,4 +558,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,pngFirstInventoryCsv,galleryPngPaths,run};
