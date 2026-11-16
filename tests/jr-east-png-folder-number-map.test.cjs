@@ -149,7 +149,12 @@ test('Tsugaru Akita 701 verifies current open railway and Sat-only 324M',()=>{
  assert.ok(rows.length>=35);
  assert.ok(rows.every(x=>x.lineId==='Tsugaru'&&!x.authorizesRuntimePNG&&x.operatingDates.length));
  const special=rows.filter(x=>x.trainNumber==='324M');
- assert.ok(special.length>=1);
- assert.ok(special.every(x=>x.operatingDates.every(d=>new Date(d+'T12:00:00Z').getUTCDay()===6)));
+ assert.equal(special.length,2);
+ const holiday=special.find(x=>x.calendar==='SaturdayHoliday');
+ const weekday=special.find(x=>x.calendar==='Weekday');
+ assert.ok(holiday&&weekday);
+ assert.deepEqual(holiday.operatingDates,['2026-11-07','2026-11-14','2026-11-21','2026-11-28']);
+ assert.ok(weekday.operatingDates.length>10);
+ assert.ok(weekday.operatingDates.every(d=>[1,2,3,4,5].includes(new Date(d+'T12:00:00Z').getUTCDay())));
  assert.ok(rows.every(x=>x.requiredGuards.includes('Aomori-Kanita')));
 });
