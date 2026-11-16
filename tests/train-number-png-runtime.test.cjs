@@ -370,7 +370,7 @@ test('renderer always queries the unified number-to-PNG selector on the displaye
 test('1940K: ODPT train NUMBER range -> E233-7000 PNG on SaikyoKawagoe SVG',()=>{
   const p=live({trainNumber:'1940K',trainId:'odpt.Train:JR-East.SaikyoKawagoe.1940K',
     positionLineId:'SaikyoKawagoe',sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
-    trainType:'odpt.TrainType:JR-East.Local'});
+    trainType:'odpt.TrainType:JR-East.Local',railDirection:'odpt.RailDirection:Inbound'});
   assert.equal(root.TrainVehicle.lookupTrainNumberPng(p),null,
     'no exact published vehicle should be fabricated for 1940K');
   const selected=root.TrainVehicle.lookupTrainNumberRangePng(p);
@@ -390,7 +390,7 @@ test('1940K: ODPT train NUMBER range -> E233-7000 PNG on SaikyoKawagoe SVG',()=>
 test('the same direct train-number range works for estimated SQL positions',()=>{
   const p=sql({trainNumber:'1940K',positionLineId:'SaikyoKawagoe',
     sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
-    trainType:'odpt.TrainType:JR-East.Local'});
+    trainType:'odpt.TrainType:JR-East.Local',railDirection:'odpt.RailDirection:Inbound'});
   assert.match(marker(p,'SaikyoKawagoe').iconSrc,/E233系_7000番台\.png$/);
 });
 test('K/F/S number tails select display PNG by scoped number ranges, without converting to operation IDs',()=>{
@@ -404,6 +404,7 @@ test('K/F/S number tails select display PNG by scoped number ranges, without con
     const p=live({trainNumber:number,positionLineId:'SaikyoKawagoe',
       sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
       trainType:'odpt.TrainType:JR-East.Local',
+      railDirection:'odpt.RailDirection:Inbound',
       ...(number==='1984K'?{realtimeVehicleType:model}:{})});
     const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(chosen,number+' must match the published number range');
@@ -772,7 +773,7 @@ test('Tozai through representative PNG rejects wrong JR segment numbers, directi
 test('1932T: ChuoRapid ODPT live number -> scoped E233-0 SVG PNG',()=>{
   const p=live({trainNumber:'1932T',trainId:'odpt.Train:JR-East.ChuoRapid.1932T',
     positionLineId:'ChuoRapid',sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
-    trainType:'odpt.TrainType:JR-East.Rapid'});
+    trainType:'odpt.TrainType:JR-East.Rapid',railDirection:'odpt.RailDirection:Inbound'});
   const mapped=root.TrainVehicle.lookupTrainNumberRangePng(p);
   assert.ok(mapped);
   assert.equal(mapped.trainNumber,'1932T');
@@ -790,7 +791,7 @@ test('1932T: SQL planned-trip reuses the same ChuoRapid direct-number PNG',()=>{
   const p=sql({trainNumber:'1932T',
     trainId:'planned-trip:2026-11-03|JR-East|ChuoRapid|1932T',
     positionLineId:'ChuoRapid',sourceRailway:'odpt.Railway:JR-East.ChuoRapid',
-    trainType:'odpt.TrainType:JR-East.Rapid'});
+    trainType:'odpt.TrainType:JR-East.Rapid',railDirection:'odpt.RailDirection:Inbound'});
   assert.match(marker(p,'ChuoRapid').iconSrc,/JR東日本_E233系_0番台\.png$/);
 });
 test('2026 ChuoRapid T/H number ranges never leak to other lines or M trains',()=>{
@@ -3203,7 +3204,7 @@ test('mixed Tozai S and Rinkai 8x number tails select only evidence-qualified un
    [{trainNumber:'1984K',positionLineId:'SaikyoKawagoe',
      sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
      trainType:'odpt.TrainType:JR-East.Local',
-     serviceDate:'2026-11-04'},
+     railDirection:'odpt.RailDirection:Inbound',serviceDate:'2026-11-04'},
     [['東京臨海高速鉄道70-000形','東京臨海高速鉄道_70-000形.png'],
      ['東京臨海高速鉄道71-000形','東京臨海高速鉄道_71-000形.png']]]
  ]){
@@ -3330,8 +3331,8 @@ test('Saikyo K/F/S reference numbers fail closed for foreign source and contradi
  for(const [number,model,line] of families){
   const base={trainNumber:number,positionLineId:line,
    sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
-   trainType:'odpt.TrainType:JR-East.Local',serviceDate:'2026-11-16',
-   realtimeVehicleType:model};
+   trainType:'odpt.TrainType:JR-East.Local',railDirection:'odpt.RailDirection:Inbound',
+   serviceDate:'2026-11-16',realtimeVehicleType:model};
   assert.ok(root.TrainVehicle.lookupTrainNumberRangePng(live(base)),number);
   for(const invalid of [
    {sourceRailway:'odpt.Railway:JR-East.JobanLocal'},
@@ -3345,7 +3346,8 @@ test('Saikyo K/F/S reference numbers fail closed for foreign source and contradi
  }
  const twr=live({trainNumber:'1984K',positionLineId:'Rinkai',
    sourceRailway:'odpt.Railway:TWR.Rinkai',trainType:'odpt.TrainType:TWR.Local',
-   realtimeVehicleType:'東京臨海高速鉄道70-000形',serviceDate:'2026-11-16'});
+   realtimeVehicleType:'東京臨海高速鉄道70-000形',railDirection:'odpt.RailDirection:Inbound',
+   serviceDate:'2026-11-16'});
  assert.match(root.TrainVehicle.lookupTrainNumberRangePng(twr).pngPath,/70-000形\.png$/);
 });
 
