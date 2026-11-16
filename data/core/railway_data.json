@@ -21224,12 +21224,6 @@
           "note": ""
         },
         {
-          "station": "Kita-Senju",
-          "lineId": "Chiyoda",
-          "type": "in",
-          "note": ""
-        },
-        {
           "station": "Matsudo",
           "lineId": "Joban",
           "type": "in",
@@ -21296,7 +21290,25 @@
         "lineIds": [
           "JobanLocal"
         ],
-        "operatorGroup": "JR_EAST"
+        "operatorGroup": "JR_EAST",
+        "mapPassengerConnections": [
+          {
+            "station": "Kita-Senju",
+            "lineId": "Joban"
+          },
+          {
+            "station": "Kita-Senju",
+            "lineId": "Hibiya"
+          },
+          {
+            "station": "Kita-Senju",
+            "lineId": "TobuSkytree"
+          },
+          {
+            "station": "Kita-Senju",
+            "lineId": "TsukubaExpress"
+          }
+        ]
       },
       "serviceBoundaries": [
         {
@@ -22231,12 +22243,6 @@
         {
           "station": "Kita-Senju",
           "lineId": "Joban",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Kita-Senju",
-          "lineId": "JobanLocal",
           "type": "in",
           "note": ""
         },
@@ -24137,12 +24143,6 @@
         {
           "station": "Kita-Senju",
           "lineId": "Joban",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Kita-Senju",
-          "lineId": "JobanLocal",
           "type": "in",
           "note": ""
         },
@@ -37036,12 +37036,6 @@
         },
         {
           "station": "Kita-Senju",
-          "lineId": "JobanLocal",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Kita-Senju",
           "lineId": "Hibiya",
           "type": "in",
           "note": ""
@@ -38624,12 +38618,6 @@
         {
           "station": "Kita-Senju",
           "lineId": "Joban",
-          "type": "in",
-          "note": ""
-        },
-        {
-          "station": "Kita-Senju",
-          "lineId": "JobanLocal",
           "type": "in",
           "note": ""
         },
