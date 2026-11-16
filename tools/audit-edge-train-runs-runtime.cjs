@@ -70,6 +70,18 @@ const estimatorMatch=estimatorSource.match(
 if(!estimatorMatch)throw Error('Estimator Shinkansen path boundary moved');
 const shinkansenPathFromEstimator=new Function('lineId','tt',
   'return ('+estimatorMatch[1]+');');
+// Also evaluate the real estimator's JR-Central *source-dated NUMBER* guard.
+// This gives ChuoCentral's 383-series gallery rule its actual boolean, with
+// NO new train numbers, no physical vehicle claim and no fallback inference.
+const centralStart=estimatorSource.indexOf(
+  'Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")');
+const centralEnd=estimatorSource.indexOf(
+  ' ||\\n Boolean(saganoDisplayNumber)',centralStart);
+if(centralStart<0 || centralEnd<=centralStart)
+  throw Error('Estimator JR-Central official number gate moved');
+const centralNumberFromEstimator=new Function('lineId','tt',
+  'publicTrainNumber','run',
+  'return '+estimatorSource.slice(centralStart,centralEnd).trim()+';');
 
 const report={
   serviceDate:day,probeType:'public-live-edge-browser-adapter-minimum-position',
@@ -257,7 +269,9 @@ async function fetchLine(line){
         vehicleIdentityStatus:veh.identityStatus||'UNKNOWN',
         vehicleResolvedUpstream:veh.identityStatus==='EXACT',
         vehicleResolution:veh,vehicleResolutionLineId:line,
-        sqlPlannedNumberPngPath:shinkansenPathFromEstimator(line,tt)
+        sqlPlannedNumberPngPath:shinkansenPathFromEstimator(line,tt),
+        officialNumberVerified:centralNumberFromEstimator(
+          line,tt,p.trainNumber,scheduled)
       };
       const projected=runtime.replay(scoped);
       if(projected.kind==='vehicle'&&projected.iconSrc){
