@@ -271,7 +271,10 @@ async function fetchLine(line){
         vehicleResolution:veh,vehicleResolutionLineId:line,
         sqlPlannedNumberPngPath:shinkansenPathFromEstimator(line,tt),
         officialNumberVerified:centralNumberFromEstimator(
-          line,tt,p.trainNumber,scheduled)
+          line,tt,p.trainNumber,scheduled),
+        // The compiled estimator gets the same station order from its
+        // timetable stop objects. Do not synthesize or reorder source stops.
+        scheduledStopKeys:run.stops.map(stop=>String(stop.station_urn||''))
       };
       const projected=runtime.replay(scoped);
       if(projected.kind==='vehicle'&&projected.iconSrc){
