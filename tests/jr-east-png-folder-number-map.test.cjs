@@ -11,7 +11,8 @@ const sources={gono:read('data/timetables/jreast-gono-2611-number-index.js'),
  tazawako:read('data/timetables/jreast-tazawako-2611-number-index.js'),
  suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
  tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
- yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js')};
+ yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
+ shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js')};
 const find=name=>report.records.find(x=>x.name===name);
 test('all 131 JR-East PNGs appear once, with generated artifacts synchronized',()=>{
  assert.deepEqual(report,build(index,current,sources));
@@ -102,4 +103,33 @@ test('B31 and 209-3500/E231-0 do not inherit passenger train numbers without pro
   assert.equal(row.status,'active_family_without_number_reference');
   assert.equal(row.existingAdapterExactNumberRefs.length,0);
  }
+});
+
+test('Nikko 253-1000 maps only eligible 2026-11 numbers, never Tobu 100 Spacia',()=>{
+ const x=find('JR東日本_253系_1000番台.png').datedNamedServiceNumbers;
+ assert.deepEqual(x.map(q=>q.trainNumber),['1082M','1083M','5021M','5022M','5113M']);
+ assert.equal(x.find(q=>q.trainNumber==='1082M').operatingDates.length,30);
+ assert.equal(x.find(q=>q.trainNumber==='1083M').operatingDates.length,30);
+ assert.equal(x.find(q=>q.trainNumber==='5021M').operatingDates.length,24);
+ assert.deepEqual(x.find(q=>q.trainNumber==='5022M').operatingDates,['2026-11-21','2026-11-22']);
+ assert.deepEqual(x.find(q=>q.trainNumber==='5113M').operatingDates,['2026-11-21','2026-11-22']);
+ assert.ok(x.every(q=>q.lineId==='TobuNikko'&&!q.actualVehicleConfirmed&&!q.authorizesRuntimePNG));
+ assert.ok(!x.some(q=>['1091M','1094M','5111M','5112M'].includes(q.trainNumber)));
+});
+test('E231-1000 and E233-3000 get only shared source-number candidates',()=>{
+ const a=find('JR東日本_E231系_1000番台.png').sharedShonanMixedFleetNumberScopes;
+ const b=find('JR東日本_E233系3000番台.png').sharedShonanMixedFleetNumberScopes;
+ assert.equal(a.length,38);assert.deepEqual(a,b);
+ assert.equal(a.reduce((n,x)=>n+x.exactSourceNumbers.length,0),3053);
+ assert.ok(a.every(x=>x.possibleModels.length===2&&x.referenceOnly&&
+    !x.authorizesRuntimePNG&&!x.actualVehicleConfirmed));
+ assert.equal(find('JR東日本_E233系_3000番台.png').sharedShonanMixedFleetNumberScopes.length,0);
+});
+test('E501 SAKIGAKE Nov14 service has no fabricated public train number',()=>{
+ const x=find('JR東日本_E501系_E501_SAKIGAKE.png').datedNamedServicesWithoutPublicNumber;
+ assert.equal(x.length,1);
+ assert.equal(x[0].serviceDate,'2026-11-14');
+ assert.equal(x[0].publicTrainNumber,null);
+ assert.equal(x[0].authorizesRuntimePNG,false);
+ assert.equal(find('JR東日本_E501系_E501_SAKIGAKE.png').status,'active_family_without_number_reference');
 });
