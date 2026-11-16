@@ -153,7 +153,7 @@ jobs:
       - name: Verify stationary trains refresh when PNG evidence changes
         run: node --test tests/trains-mapping-refresh.test.cjs
       - name: Verify realtime and SQL number-to-PNG on SVG maps
-        run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs
+        run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs tests/guard-only-number-png-source.test.cjs
       - name: Verify JobanMain source-only E531 and northern 701/E721 candidate-only SVG rules
         run: node --test tests/joban-main-source-only-vehicle.test.cjs tests/joban-main-north-mixed-fleet.test.cjs
       - name: Verify regional 2611 Ishinomaki / Oga official numbers and PNG guards

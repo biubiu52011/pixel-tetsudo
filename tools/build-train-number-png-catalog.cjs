@@ -242,7 +242,15 @@ function audit(c){
  if(c.review.sql_asset_review_required.length!==5||
   [...expectedReview].some(([p,n])=>reviewCounts.get(p)!==n))
   errors.push('pending assets changed; independently revalidate artwork and update audit');
- if(c.review.frontend_guard_only_rules.length>17)
+ // Current unresolved number families form an exact approved audit baseline.
+ // New broad bands must fail even when another older band is removed.
+ const approvedGuardOnly=new Set(["SaikyoKawagoe,Rinkai|0|71|KFS|tail|E233系7000番台","SaikyoKawagoe|72|79|KFS|tail|相鉄12000系","SaikyoKawagoe,Rinkai|80|91|KFS|tail|東京臨海高速鉄道70-000形","Tozai|400|2599|S|metro-prefixed|東京メトロ15000系","Tozai|400|2599|K|metro-prefixed|E231系800番台（東西線直通）","Tozai|400|2599|T|metro-prefixed|東葉高速2000系","JobanLocal|400|2599|K|full|E233系2000番台","JobanLocal|400|2599|S|full|東京メトロ16000系","JobanLocal|400|2599|E|full|小田急4000形"]);
+ for(const r of c.review.frontend_guard_only_rules){
+  const key=[r.line_ids.join(','),r.min,r.max,r.suffix,r.format,r.model].join('|');
+  if(!approvedGuardOnly.has(key))
+   errors.push('new unreviewed guard-only number range: '+key);
+ }
+ if(c.review.frontend_guard_only_rules.length>9)
   errors.push('new frontend ranges without explicit number set or verifier');
  if(c.review.frontend_official_month_rosters.length!==4)
   errors.push('official-month exact rosters changed; reassess month-gated matcher');

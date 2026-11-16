@@ -191,3 +191,11 @@ https://timetables.jreast.co.jp/2611/timetable-v/628u1.html
 https://timetables.jreast.co.jp/2611/timetable-v/628u2.html
 https://timetables.jreast.co.jp/2611/timetable-v/628d1.html
 https://timetables.jreast.co.jp/2611/timetable-v/628d2.html
+
+
+## 第十二次校对：K/F/S 宽号段缺失来源时禁止实际地图出图
+
+- 当前仍有 **9 条**需官方完整逐号查证的受约束前端号段；不根据宽号段杜撰车次、不晋升为具体实车编组。
+- 在生产 `realtime-api`、`supabase-train-run`、`estimated=true` 位置中，埼京／临海的可选来源线路、车种与上下行奇偶所需的方向改为严格检查：缺失或来源不符则不再用号码末两位生成 PNG。既有完整资料的参考图保持可用。
+- 统一目录校验新增 9 条允许键白名单，禁止用「删一条旧规则、加一条新宽段」绕过原来上限 17 的检查；新增 `tests/guard-only-number-png-source.test.cjs` 并接入 Train/PNG CI。
+- 不修改缺少最新修订证据的 SQL 时刻表、未经验证的运用映射、待审核的图库。它们只有获得原始官方资料后才能升级。

@@ -4719,6 +4719,12 @@
     var metroBare=["Ginza","Marunouchi","MarunouchiBranch"].indexOf(line)>=0
       ? number.match(/^[AB]([0-9]{3,5})$/) : null;
     if((!regular&&!numbered&&!bare&&!metroNumber&&!metroBare&&!toeiAsakusaNumber)||!line)return null;
+    // Real positions must not inherit reference PNGs from incomplete
+    // K/F/S-tail metadata; offline catalogue inspection stays unchanged.
+    var isRuntimePosition=!!(context&&
+      (context.positionSource==="realtime-api"||
+       context.positionSource==="supabase-train-run"||
+       context.estimated===true));
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
@@ -4783,6 +4789,8 @@
         var numberDirection=String(context&&
           (context.railDirection||context.directionUrn||context.direction)||"")
           .split(/[.:]/).pop();
+        if(row.sourceRailwaysIfPresent&&isRuntimePosition&&
+           numberDirection!=="Inbound"&&numberDirection!=="Outbound")continue;
         if((numberDirection==="Inbound" && numberValue%2!==0)||
            (numberDirection==="Outbound" && numberValue%2!==1))continue;
       }
@@ -4857,9 +4865,12 @@
           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))<0)continue;
       // A supplied railway must belong to the same ChuoRapid source line.
       // No-context legacy lookups remain supported.
-      if(row.sourceRailwaysIfPresent &&
-          String(context&&context.sourceRailway||"") &&
-          row.sourceRailwaysIfPresent.indexOf(String(context.sourceRailway))<0)continue;
+      if(row.sourceRailwaysIfPresent){
+        var suppliedSource=String(context&&context.sourceRailway||"");
+        if((isRuntimePosition&&!suppliedSource)||
+           (suppliedSource&&row.sourceRailwaysIfPresent.indexOf(suppliedSource)<0))
+          continue;
+      }
       // Optional guards preserve legacy no-context train-number lookups,
       // but a supplied foreign operator or noncommuter train type cannot
       // inherit the ChuoRapid representative E233 PNG.
@@ -4871,7 +4882,8 @@
       if(row.trainTypesIfPresent){
         var scopedType=String(context&&(context.trainType||context.typeName)||"")
           .split(/[.:]/).pop();
-        if(scopedType && row.trainTypesIfPresent.indexOf(scopedType)<0)continue;
+        if((isRuntimePosition&&!scopedType)||
+           (scopedType&&row.trainTypesIfPresent.indexOf(scopedType)<0))continue;
       }
       if(row.numberIndex==="chuo-sobu-tozai-2611"){
         var rawCal=String(context&&(context.calendarType||context.serviceId||
