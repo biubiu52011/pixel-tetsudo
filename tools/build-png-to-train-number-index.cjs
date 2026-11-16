@@ -340,7 +340,64 @@ function buildIndex(input) {
     pngIndex:assets
   };
 }
-if(typeof module!=='undefined')module.exports={buildIndex};
+function csvIndex(index){
+  const header=[
+    'png','operatorDirectory','galleryModel','mappingStatus',
+    'lineId','mappingSource','ruleOrFamily','numberRangeBounds',
+    'documentedExactNumberCount','calendar','validFrom','validTo',
+    'runtimeProofRequired','sourceUrl'
+  ];
+  const all=[header];
+  const encode=s=>{
+    const t=String(s==null?'':s);
+    return /[,"\n\r]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t;
+  };
+  for(const asset of index.pngIndex){
+    const base=[asset.path,asset.operatorDirectory,
+      asset.canonicalModels.join(' | '),asset.status];
+    const emitted=[];
+    for(const rule of asset.directNumberRules){
+      const from=rule.minNumber==null?'':String(rule.minNumber)+(rule.suffix||'');
+      const to=rule.maxNumber==null?'':String(rule.maxNumber)+(rule.suffix||'');
+      for(const line of rule.lineIds.length?rule.lineIds:['']){
+        emitted.push([...base,line,rule.authority,rule.ruleId,
+          from===to?from:from+' ~ '+to,
+          rule.explicitDocumentedNumberCount,
+          'see canonical roster',
+          rule.validFrom,rule.validTo,
+          rule.grade==='guarded_number_bounds_only'?'yes - bounds only':'yes - dated source/identity',
+          rule.sourceUrl]);
+      }
+    }
+    for(const roster of asset.runtimeNumberRosters){
+      const bounds=roster.exactContiguousBands.map(b=>
+        b.from===b.to?b.from:b.from+' ~ '+b.to);
+      // The canonical JSON retains ALL exact islands; CSV is for scanning.
+      const preview=bounds.slice(0,12).join(' | ')+
+        (bounds.length>12?' | ... '+(bounds.length-12)+' more exact islands':'');
+      emitted.push([...base,roster.lineId,roster.authority,
+        roster.numberFamily+(roster.corridor?'/'+roster.corridor:''),
+        preview,roster.explicitDocumentedNumberCount,
+        roster.calendarType,roster.validFrom,roster.validTo,
+        'yes - exact roster + runtime guards',roster.sourceUrl]);
+    }
+    for(const group of asset.historicalNumberedSources){
+      const numberPreview=group.sourceNumbers.slice(0,12).join(' | ')+
+        (group.sourceNumbers.length>12?' | ...':'');
+      emitted.push([...base,group.lineId,group.authority,
+        group.sourceRole,numberPreview,
+        group.explicitDocumentedNumberCount,group.calendarUrn,
+        group.sourceRevisionDate,'',
+        'yes - historic source; current service not verified',
+        group.sourceUrl]);
+    }
+    if(!emitted.length)emitted.push([...base,'','none','','',0,
+      '','','','no number evidence','']);
+    all.push(...emitted);
+  }
+  return '\ufeff'+all.map(row=>row.map(encode).join(',')).join('\n')+'\n';
+}
+if(typeof module!=='undefined')module.exports={buildIndex,csvIndex};
 if(typeof require==='function' && require.main===module){
   const fs=require('node:fs'),path=require('node:path');
   const root=path.resolve(__dirname,'..');
@@ -353,10 +410,19 @@ if(typeof require==='function' && require.main===module){
   });
   const args=process.argv.slice(2);
   const target='data/audits/png-to-train-number-index-2611.json';
+  const csvTarget='data/audits/png-to-train-number-index-2611.csv';
   const out=JSON.stringify(index)+'\n';
-  if(args.includes('--write'))fs.writeFileSync(path.join(root,target),out);
-  if(args.includes('--check')&&(!fs.existsSync(path.join(root,target))||
-      get(target)!==out))throw Error('Generated PNG->number index is stale');
+  const csv=csvIndex(index);
+  if(args.includes('--write')){
+    fs.writeFileSync(path.join(root,target),out);
+    fs.writeFileSync(path.join(root,csvTarget),csv);
+  }
+  if(args.includes('--check')){
+    if(!fs.existsSync(path.join(root,target))||get(target)!==out)
+      throw Error('Generated PNG->number JSON index is stale');
+    if(!fs.existsSync(path.join(root,csvTarget))||get(csvTarget)!==csv)
+      throw Error('Generated PNG->number CSV index is stale');
+  }
   const lookupArg=args.find(s=>s.startsWith('--lookup='));
   if(lookupArg){
     const query=lookupArg.slice('--lookup='.length);
