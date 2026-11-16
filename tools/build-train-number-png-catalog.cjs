@@ -324,6 +324,25 @@ function audit(c){
  if(oldOverlaps.length>6)errors.push('new overlapping legacy SQL bands');
  return errors;
 }
+function compactNumberBands(input){
+ const source=[...new Map(input.map(b=>[b.join('|'),b])).values()];
+ source.sort((a,b)=>{
+  const group=x=>[x[0],x[3],x[4],x[5]].join('|');
+  const ka=group(a),kb=group(b);
+  return ka<kb?-1:ka>kb?1:Number(a[1])-Number(b[1])||Number(a[2])-Number(b[2]);
+ });
+ const reduced=[];
+ for(const next of source){
+  const last=reduced[reduced.length-1];
+  const same=last&&last[0]===next[0]&&
+   last[3]===next[3]&&last[4]===next[4]&&last[5]===next[5];
+  if(same&&Number(next[1])<=Number(last[2])+1){
+   const end=Math.max(Number(last[2]),Number(next[2]));
+   last[2]=String(end).padStart(4,'0');
+  }else reduced.push(next.slice());
+ }
+ return reduced;
+}
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -351,8 +370,10 @@ function pngFirstInventoryCsv(paths,c){
   (a<b?-1:a>b?1:0));
  for(const png of uniq){
   const op=operator(png);
-  const bands=[...new Map(byPng.get(png).map(x=>[x.join('|'),x])).values()]
-   .sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:Number(a[1])-Number(b[1]));
+  // Compact ONLY adjacent/overlapping documented intervals with identical
+  // line, suffix, number interpretation and guard category. Gaps stay gaps.
+  // This is a read-only inventory; source evidence must still be enforced.
+  const bands=compactNumberBands(byPng.get(png));
   if(!bands.length)records.push([category(op),op,png,'','','','','','无号段']);
   for(const band of bands)records.push([category(op),op,png,...band]);
  }
@@ -388,4 +409,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,pngFirstInventoryCsv,galleryPngPaths,run};

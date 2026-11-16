@@ -322,3 +322,23 @@ test('generic bands notify final source selection when no PNG can be chosen',()=
  assert.equal(conflict?.trainNumber,'350M');
  assert.equal(conflict?.pngPaths?.length,2);
 });
+
+
+test('range inventory compacts consecutive existing numbers but never fills missing numbers',()=>{
+ const {compactNumberBands}=require('../tools/build-train-number-png-catalog.cjs');
+ const rows=[
+  ['Sample','0001','0001','M','full','原有条件约束'],
+  ['Sample','0003','0005','M','full','原有条件约束'],
+  ['Sample','0002','0002','M','full','原有条件约束'],
+  ['Sample','0008','0010','M','full','原有条件约束'],
+  ['Sample','0009','0012','M','full','原有条件约束'],
+  ['Sample','0005','0008','D','full','原有条件约束'],
+  ['Sample','0005','0008','M','tail','原有条件约束']
+ ];
+ const compact=compactNumberBands(rows);
+ assert.equal(compact.length,4);
+ assert.ok(compact.some(x=>x[1]==='0001'&&x[2]==='0005'&&x[3]==='M'));
+ assert.ok(compact.some(x=>x[1]==='0008'&&x[2]==='0012'&&x[3]==='M'&&x[4]==='full'));
+ assert.ok(!compact.some(x=>x[1]==='0001'&&x[2]==='0012'),'6 and 7 were never supported');
+ assert.ok(compact.some(x=>x[3]==='D')&&compact.some(x=>x[4]==='tail'));
+});
