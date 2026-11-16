@@ -276,3 +276,77 @@
 - 报告锚定此前 main SHA：`430ea142ce5f3855be2eecef17f419ddcc766f8a`
 
 **不做自动批量号段补齐**：静态资产缺口与可据官方证据映射的列车番号缺口是两类不同问题。尤其历史车、涂装、特殊编组、单日临时号不可因图片存在直接绑定整段。
+
+
+## 2026-11-16 补充审计：运行时图库与静态号段反向引用
+
+> 方法：直接检视 `data/timetables/vehicle-garage-png-map.js`、`js/train-vehicle.js`、`data/timetables/train-number-png-ranges.js`、已有回归测试，以及同日 Supabase 只读查询。**不把素材登记或声明范围等同于逐车次、逐日允许出图。**
+
+### 1. 先纠正 514 张的口径
+
+`VehicleGaragePngMap` 现声明 `totalPng=601`、`mappedPng=601`、`unassigned=[]`，说明所有物理 PNG 已有**仓库侧图片路径登记**（含待审、备用、图库和不可用项），不能将“无直接号码规则”解读为“图库从未登记”。这里的库内图库登记与 Supabase `vehicle_image_assets` 的 478 条是不同概念，不要混算。
+
+另外，`js/train-vehicle.js` 中有 **599 个不同的静态 PNG 路径字面量**，其中对于前述 **514 张未被静态号段直接引用的 PNG，有 512 张出现在此文件中**。剩余两张仍可在 `VehicleGaragePngMap` 找到索引：JR 东日本 E233 系 5000 番台的备用路径及东武 8000 型的另一素材。静态路径字面量的出现只说明源码登记或候选引用，**不能证明该文件可用于某次实际列车**。
+
+通过现有 `VehicleGaragePngMap` 源表的逐路径分类（同一图片可能有多条条目，按“隔离 > canonical > 有线路范围的候选 > 待审核素材 > 其他 > 备用”的优先级做互斥计数），前述 514 张可区分为：
+
+| 既有图库声明状态（非当日实车判断） | PNG 数量 | 建议处置 |
+| --- | ---: | --- |
+| 有 canonical 图库模型引用、且未列入隔离 | **241** | 交叉验证具体车型、线路与服务日，不能无证据绑定完整号码 |
+| 有线路范围的非 canonical 候选或参考引用 | **49** | 对照来源逐号名单与车型证据；仅代表候选 |
+| `artwork-inventory` 待审图库、无直接线路范围 | **213** | 先查车型、历史/现役、涂装与来源，禁止按路径推断号码 |
+| 图片身份冲突或重复字节隔离（未直接出现在 87 路径内） | **7** | 不得自动解封；逐图核实实际内容 |
+| 其他无线路范围的非 canonical 引用 | **3** | 核查独立 verifiers 的适用场景 |
+| 仅在 `alternates` 备用引用（E233 5000 番台） | **1** | 不可视为精确车号/车组证据 |
+| **总数** | **514** | 与前述静态直接号段差集完全相符 |
+
+图库中 9 张 PNG 被现有 `VehicleGaragePngMap` 标记为 `quarantined`。`js/train-vehicle.js` 已在规范车型、待审素材和展示路径层面检查隔离，`VehicleGaragePngMap.matchModelPath` 也不放行隔离图。**有这样的运行时防护并不意味着静态审计应忽略隔离关联。**
+
+### 2. 静态号段之外仍有号码校验器引用其他 PNG
+
+`train-number-png-ranges.js` 除派生的 421 条 SQL/JS 号段规则外，还含 `verifyFukuchiyamaSourceFleet`、`verifyNodaFiveCar20261104`、东武 Skytree/直通线路来源匹配、`matchChuoSobuLocalBCLiveNumber`、`matchTobuBranchFleetIllustration` 等专门逻辑及特殊车型分派。
+
+- 同一 JS 模块中，除了 87 个统一号段目录 PNG 路径之外，还有 **29 个不同的 PNG 路径字面量**。有些属于 `exactModelArtworkMap` 的受限车型分支，有些属于多车型候选列表或服务名匹配；**29 不等于 29 张已具有官方完整车次映射**。
+- 这些路径包括东武 60000/80000、50050、N100 等；东京 Metro 13000、18000、07；JR 西日本 207/321/287；JR 东海 313/373；伊豆急 8000/3000/2100 等。部分需要实时来源、具体车型、运营方或月份与原始车号同时一致才能出图。
+- **不能把 87+29 直接当成可证实的车次号覆盖率分子**；需要依据每个独立 matcher 的输入、日历、来源及排除条件测试。尤其福知山 207/321 图片可以同属一个候选集合，但不能仅凭已知线路自动挑图。
+
+### 3. 静态规则引用了被隔离的 PNG（需保留为审计风险）
+
+| 规则 | 线路 | PNG | 判断 |
+| --- | --- | --- | --- |
+| `sql-0145` | Oito | `JR東日本_E127系_100番台_長野色.png` | 数据库 `review`，图库隔离 |
+| `js-0061` | ChuoTatsuno | 同上 | 运行时应拒绝展示隔离图片 |
+| `js-0033` | BanetsuWest | `JR東日本_DE10形_DLばんえつ物語.png` | 与客车图字节重复、车型标签冲突 |
+
+静态规则总计 **3 条引用、2 张不同的隔离 PNG**。这不是 3 条已确认运行时误绘制：`tests/train-number-png-runtime.test.cjs` 已对 DE10 与 E127 做了隔离/不出图断言；本次没有执行完整浏览器回放。Supabase 当前 `train_timetable_vehicle_resolution` 中直接非空的 200 条 `vehicle_artwork_path`，查得 **0 条**指向上述 DE10 或 E127-100 文件。不能据此放宽或删除隔离。
+
+### 4. 未进入统一号段目录的高量线路：有多少车型证据？
+
+同日只读 SQL，按 `manual_timetable_templates.line_key` 与 `train_timetable_vehicle_resolution.timetable_id` 左连接。车型标签仅表示来源字段**非空**，不能单独授予 PNG 权限。修订日期非空也不等于“已核实 2026-11 有效”。
+
+| 线路 | 时刻表模板 | 非空车型标签 | 解析视图记录 | 解析视图 unresolved | 解析视图直接 PNG |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Keikyu | 2,782 | 2,782 | 2,778 | 2,506 | 0 |
+| Odawara | 2,117 | 0 | 0 | — | 0 |
+| Ikebukuro（西武） | 2,088 | 2,083 | 1,894 | 1,324 | 0 |
+| Tojo | 1,760 | 0 | 0 | — | 0 |
+| TobuSkytree | 1,738 | 0 | 0 | — | 0 |
+| SotetsuMain | 1,457 | 1,457 | 1,457 | 1,338 | 0 |
+| Keisei | 1,413 | 0 | 0 | — | 0 |
+| TokyuToyoko | 1,397 | 0 | 0 | — | 0 |
+| SeibuShinjuku | 1,147 | 0 | 0 | — | 0 |
+| OsakaLoop | 1,057 | 0 | 1,057 | 956 | 0 |
+
+解释：
+
+1. **Keikyu、Ikebukuro、SotetsuMain**：大量模板虽带标签，但解析仍不确定；要核对的是来源证据、模型歧义、有效日期和授权规则，不是缺哪张图。
+2. **Odawara、Tojo、TobuSkytree、Keisei、TokyuToyoko**：未进入目前这个车辆解析视图、模板车型标签未填；需要追查既有来源/运行时 resolver，而不是断言网页一定显示失败。比如东武 Skytree 已有单独号段校验负责人。
+3. **OsakaLoop**：即便 PNG 在图库中存在，现有解析视图仍大量 unresolved；需要独立车次和车型来源，不能从图库库存逆推“该线全车次出图”。
+
+### 5. 下一步完成“实际覆盖率”的必要条件
+
+只读统计应采用服务主键 `(line_key, operator/railway_urn, calendar_urn, service_date, direction_urn, original_full_train_number)`，必要时加入站点时刻和来源版本区分同号复用。不要把 **98,510 个模板行**当作 2026-11 每日真实开行分母。来源不含 `operating_dates` 或修订月份未核实的模板必须单列 `unknown_calendar_scope`。
+
+对每个存在的服务，复用既有最终 `TrainVehicle` / `TrainNumberPngRanges` 判定，输出互斥状态：`confirmed_formation`、`source_scoped_representative`、`candidate_or_planned_only`、`blocked_by_quarantine`、`missing_source_or_guard`。只对来自独立权威证据、且运行条件完整的服务计算“代表 PNG 适用率”；`confirmed_formation` 另列，不与展示参考图混计。
+
+**本次补充不修改运行时规则、数据库和 PNG 素材**，也不从图片目录批量生成补全号段。优先顺序：先查已有负责人 → 独立官方逐号名单 → 车型证据 → 图库状态 → 最终 resolver 回放与测试。
