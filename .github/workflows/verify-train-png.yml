@@ -154,6 +154,12 @@ jobs:
         run: node --test tests/trains-mapping-refresh.test.cjs
       - name: Verify realtime and SQL number-to-PNG on SVG maps
         run: node --test tests/train-number-png-runtime.test.cjs tests/yokosuka-sobu-202611-number-png.test.cjs tests/guard-only-number-png-source.test.cjs
+      - name: Verify current in-service family PNG-to-number subset
+        run: |
+          node --check tools/build-current-service-png-number-map.cjs
+          node tools/build-current-service-png-number-map.cjs --check
+          node --test tests/png-current-service-number-map.test.cjs
+
       - name: Verify all gallery PNG-to-number source mappings
         run: |
           node --check tools/build-png-to-train-number-index.cjs
