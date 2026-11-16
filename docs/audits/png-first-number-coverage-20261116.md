@@ -439,41 +439,41 @@
 
 ### 9. 线上 Edge v381 → 浏览器适配器 → 计划 resolver → SVG PNG 的六线路回放
 
-**本轮已实际请求线上 Supabase Edge Function \`train-runs\`（ACTIVE v381，\`verify_jwt=false\`），不是将数据库记录假装为接口输出**。读取方式是 GitHub Actions 独立只读任务，对 \`2026-11-16\` 六条线路分别执行 GET；没有使用或上传 service-role 密钥，不保存完整响应，只发布汇总诊断。仓库工具 [\`tools/audit-edge-train-runs-runtime.cjs\`](../../tools/audit-edge-train-runs-runtime.cjs) 复用真实浏览器 \`_trainRunToTimetable()\`、现有 \`TrainVehicle.resolveTimetableRun()\`、\`_trainMarkerSpec()\`、\`TrainNumberPngRanges\`，并直接提取 \`TrainPositionEstimator\` 中现有的 JR-Central 编号日期守卫与 JR-Central 新干线 SQL 图片投影表达式；站序来自真实接口停站序列，未猜测车型或增设号段权威。
+**本轮已实际请求线上 Supabase Edge Function `train-runs`（ACTIVE v381，`verify_jwt=false`），不是将数据库记录假装为接口输出**。读取方式是 GitHub Actions 独立只读任务，对 `2026-11-16` 六条线路分别执行 GET；没有使用或上传 service-role 密钥，不保存完整响应，只发布汇总诊断。仓库工具 [`tools/audit-edge-train-runs-runtime.cjs`](../../tools/audit-edge-train-runs-runtime.cjs) 复用真实浏览器 `_trainRunToTimetable()`、现有 `TrainVehicle.resolveTimetableRun()`、`_trainMarkerSpec()`、`TrainNumberPngRanges`，并直接提取 `TrainPositionEstimator` 中现有的 JR-Central 编号日期守卫与 JR-Central 新干线 SQL 图片投影表达式；站序来自真实接口停站序列，未猜测车型或增设号段权威。
 
-- 线上部署元数据：\`train-runs\` **v381**（与 GitHub \`main\` 的 Edge 源码**不完全相同**，仓库版本已集中 \`filterDateScopedTemplates()\`；此轮不擅自重部署服务端）。
+- 线上部署元数据：`train-runs` **v381**（与 GitHub `main` 的 Edge 源码**不完全相同**，仓库版本已集中 `filterDateScopedTemplates()`；此轮不擅自重部署服务端）。
 - 线上所有六条线路接口请求成功，**294 条**真实接口计划记录均通过实际浏览器时刻表适配器，无 API 错误、无浏览器字段契约丢失、无测试中直接越权的 PNG 或隔离图片，无解析异常。
-- 仅构建“最小输入位置”并直接进入 SVG：**87 条参考 PNG、207 条中性标记**。这不是最终统计，因为大量 SQL 计划图需要原有 \`resolveTimetableRun\` 签发授权并由 \`TrainPositionEstimator\` 投影。
-- 加入已有车型计划 resolver、JR-Central 官方编号旗标和真实停站序列校验后，**207 条计划参考 PNG、87 条中性标记（六线样本约 70.4%）**。**207 条全部是 \`planned=true\`，实际物理编组确认仍为 0**。只有 7 种不同 PNG 路径，不能称作 207 张独立图库素材。
+- 仅构建“最小输入位置”并直接进入 SVG：**87 条参考 PNG、207 条中性标记**。这不是最终统计，因为大量 SQL 计划图需要原有 `resolveTimetableRun` 签发授权并由 `TrainPositionEstimator` 投影。
+- 加入已有车型计划 resolver、JR-Central 官方编号旗标和真实停站序列校验后，**207 条计划参考 PNG、87 条中性标记（六线样本约 70.4%）**。**207 条全部是 `planned=true`，实际物理编组确认仍为 0**。只有 7 种不同 PNG 路径，不能称作 207 张独立图库素材。
 
 | 线上线路 / 2026-11-16 | Edge 返回计划 | 最小输入 PNG | 现有计划 resolver + 估算器字段投影 PNG | 中性标记 | 核验结论 |
 | --- | ---: | ---: | ---: | ---: | --- |
 | SaikyoKawagoe | **3** | 2 | **3** | 0 | 两条 E233系7000 + 一条 Rinkai 70-000 计划参考 |
 | Gotemba | **91** | 85 | **85** | 6 | 315系用于 313/315 混用线路**示意**，非 85 列实车 |
-| ChuoCentral | **8** | 0 | **8** | 0 | 现有官方列车番号 + 站序检查通过，参考 \`JR東海_383系.png\` |
-| TokaidoShinkansen | **131** | 0 | **50** | 81 | 50 条官方号码对应 SQL 原生 \`JR東海_N700系.png\` 参考图；不能推断 N700S 子系列 |
-| JoetsuShinkansen | **17** | 0 | **17** | 0 | 现有官方计划车型证据通过，\`JR東日本_E7系.png\` |
-| AkitaShinkansen | **44** | 0 | **44** | 0 | 现有官方计划车型证据通过，\`JR東日本_E6系.png\` |
+| ChuoCentral | **8** | 0 | **8** | 0 | 现有官方列车番号 + 站序检查通过，参考 `JR東海_383系.png` |
+| TokaidoShinkansen | **131** | 0 | **50** | 81 | 50 条官方号码对应 SQL 原生 `JR東海_N700系.png` 参考图；不能推断 N700S 子系列 |
+| JoetsuShinkansen | **17** | 0 | **17** | 0 | 现有官方计划车型证据通过，`JR東日本_E7系.png` |
+| AkitaShinkansen | **44** | 0 | **44** | 0 | 现有官方计划车型证据通过，`JR東日本_E6系.png` |
 | **合计** | **294** | **87** | **207** | **87** | **计划图片，不是实车图片** |
 
-**数据库证据并未丢失**：东海道新干线已有 50 条直接 SQL PNG，其他已核对的新干线中，上越 17 条、秋田 44 条；最小位置选择器不能单凭 SQL 路径生成图，因为必须经过已存在的编号、模型与来源授权。此轮第二级 resolver/估算器证明，这些来源能在允许条件下转换成 \`planned\` PNG。中央线另外 8 条依赖\`scheduledStopKeys\`的有序来源站序，以及 \`officialNumberVerified\` 的现有日期条件；此前 0/8 是**审计输入缺字段导致的低估**，不是 383 图在网页代码中失效。
+**数据库证据并未丢失**：东海道新干线已有 50 条直接 SQL PNG，其他已核对的新干线中，上越 17 条、秋田 44 条；最小位置选择器不能单凭 SQL 路径生成图，因为必须经过已存在的编号、模型与来源授权。此轮第二级 resolver/估算器证明，这些来源能在允许条件下转换成 `planned` PNG。中央线另外 8 条依赖`scheduledStopKeys`的有序来源站序，以及 `officialNumberVerified` 的现有日期条件；此前 0/8 是**审计输入缺字段导致的低估**，不是 383 图在网页代码中失效。
 
-**唯一源模板差额**：此前显式 \`operating_dates\` 的 Gotemba 为 92 条，而真实 Edge 仅提供 **91 条**。真实输出缺源模板 **129762 / 2570M**，原因已由数据库证实**不是直接按车次或规范 ID 去重**，而是选择了当前生效的\`timetable_revisions.id=13\`（TokyoGTFS，2026-11-02 起生效，来源等级 C、\`source_type=timetable\`），保留 GTFS 的 \`2570M\`、未选中无修订号的 2026-11-01 \`authorized-sql\` 版本。\`published_revision\`状态不等于当天官方列车、车组或车型确认。
+**唯一源模板差额**：此前显式 `operating_dates` 的 Gotemba 为 92 条，而真实 Edge 仅提供 **91 条**。真实输出缺源模板 **129762 / 2570M**，原因已由数据库证实**不是直接按车次或规范 ID 去重**，而是选择了当前生效的`timetable_revisions.id=13`（TokyoGTFS，2026-11-02 起生效，来源等级 C、`source_type=timetable`），保留 GTFS 的 `2570M`、未选中无修订号的 2026-11-01 `authorized-sql` 版本。`published_revision`状态不等于当天官方列车、车组或车型确认。
 
 **必须保留的边界**：
 
-1. Edge 的 \`date_verified_runs\` 是时刻表来源核验，不是实际车辆观测。此轮六条线路中只有 **ChuoCentral 的 8 条**由线上接口标记日期已核验；其他线路仍有不同程度的来源完整性/日历核验限制。
-2. 新干线 50/17/44 的 \`vehicle_plan_confirmed\` 只确认**公布的计划车型及编号素材适用性**，不能误写成 \`actual_vehicle_confirmed\`。
-3. 线上六个线路响应均为 \`partial=true\`，不能外推成全网当日全部列车数、最终页面真实 PNG 加载成功率或覆盖完整性。
+1. Edge 的 `date_verified_runs` 是时刻表来源核验，不是实际车辆观测。此轮六条线路中只有 **ChuoCentral 的 8 条**由线上接口标记日期已核验；其他线路仍有不同程度的来源完整性/日历核验限制。
+2. 新干线 50/17/44 的 `vehicle_plan_confirmed` 只确认**公布的计划车型及编号素材适用性**，不能误写成 `actual_vehicle_confirmed`。
+3. 线上六个线路响应均为 `partial=true`，不能外推成全网当日全部列车数、最终页面真实 PNG 加载成功率或覆盖完整性。
 4. 本轮使用了真实线上 Edge 正文、真实浏览器适配与真实车型计划选择器，但**没有实例化整个 TrainPositionEstimator 的时间/车站几何过程、ODPT 实时车辆观测、DataFusion 多线映射以及浏览器网络图片加载**。这是逐列车的保守计划图**选择阶段回放**，而不是网页截图/实车测量。
 
 复现命令（Node >= 20，在仓库根目录）：
 
-\`\`\`bash
+```bash
 node tools/audit-train-number-png-runtime.cjs --strict
 node tools/audit-edge-train-runs-runtime.cjs --date=2026-11-16 --lines=SaikyoKawagoe,Gotemba,ChuoCentral,TokaidoShinkansen,JoetsuShinkansen,AkitaShinkansen --strict
-\`\`\`
+```
 
-独立 CI [\`.github/workflows/audit-live-train-png.yml\`](../../.github/workflows/audit-live-train-png.yml) 负责线上只读端点、适配器与 SVG 选择器的来源/隔离安全探测，**不阻塞 Pages 部署**。2026-11-16 此轮通过的线上证据：<https://github.com/biubiu52011/pixel-tetsudo/actions/runs/43794731347>。
+独立 CI [`.github/workflows/audit-live-train-png.yml`](../../.github/workflows/audit-live-train-png.yml) 负责线上只读端点、适配器与 SVG 选择器的来源/隔离安全探测，**不阻塞 Pages 部署**。2026-11-16 此轮通过的线上证据：<https://github.com/biubiu52011/pixel-tetsudo/actions/runs/43794731347>。
 
 **下一项可持续工作**：逐线路扩展独立回放（尤其有大量 unresolved 的京急、东武等），再用浏览器画面与网络 PNG 加载事件评估“最终显示”；在得到有日期和编号证据前，不批量给未知车型挂图，也不改生产车型映射。
