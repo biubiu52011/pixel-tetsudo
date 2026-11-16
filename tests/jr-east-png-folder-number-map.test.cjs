@@ -14,7 +14,8 @@ const sources={gono:read('data/timetables/jreast-gono-2611-number-index.js'),
  yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
  shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js'),
  uetsu:read('data/timetables/jreast-uetsu-2611-number-index.js'),
- tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js')};
+ tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js'),
+ hachiko:read('data/timetables/jreast-hachiko-non-electrified-2611-number-index.js')};
 const find=name=>report.records.find(x=>x.name===name);
 test('all 131 JR-East PNGs appear once, with generated artifacts synchronized',()=>{
  assert.deepEqual(report,build(index,current,sources));
@@ -157,4 +158,17 @@ test('Tsugaru Akita 701 verifies current open railway and Sat-only 324M',()=>{
  assert.ok(weekday.operatingDates.length>10);
  assert.ok(weekday.operatingDates.every(d=>[1,2,3,4,5].includes(new Date(d+'T12:00:00Z').getUTCDay())));
  assert.ok(rows.every(x=>x.requiredGuards.includes('Aomori-Kanita')));
+});
+
+test('Hachiko HB-E220 uses the official November 705 D train-number roster only',()=>{
+ const item=find('JR東日本_HB-E220系_八高線.png');
+ assert.equal(item.status,'active_family_with_number_reference');
+ const n=item.existingAdapterExactNumberRefs;
+ assert.equal(n.length,108);
+ assert.equal(new Set(n.map(x=>x.trainNumber)).size,54);
+ assert.ok(n.every(x=>x.lineId==='Hachiko'&&/^\d{3,4}D$/.test(x.trainNumber)&&
+   x.requiredGuards.includes('Komagawa')&&x.operatingDates.length>0&&
+   !x.actualVehicleConfirmed&&!x.authorizesRuntimePNG));
+ assert.ok(!n.some(x=>/^9\d{3}D$/.test(x.trainNumber)||/[MFG]$/.test(x.trainNumber)));
+ assert.ok(n.every(x=>x.operatingDates.every(day=>/^2026-11-/.test(day))));
 });

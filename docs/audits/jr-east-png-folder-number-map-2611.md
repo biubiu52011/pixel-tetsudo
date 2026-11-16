@@ -10,8 +10,8 @@
 
 | 分类 | PNG 张数 |
 | --- | ---: |
-| 现役车系有号码线索（含日期限定的只读参考） | **67** |
-| 现役车系无合规号码线索 | **20** |
+| 现役车系有号码线索（含日期限定的只读参考） | **68** |
+| 现役车系无合规号码线索 | **19** |
 | 号码来源已有但需核对现役图片 | **2** |
 | 原运行区间已历史化 | **3** |
 | 非定期旅客列车：检测／实验车辆 | **2** |
@@ -74,3 +74,11 @@ node --test tests/jr-east-png-folder-number-map.test.cjs
 - **E653系1000番台 いなほ色**：原有 `jreast-uetsu-2611-number-index.js` 已明示 `1M–14M` **14 个具体特急车次**，重建为工作日／节假日共 **28 条校验引用**。要求原有的停站个数与端点、线路/方向/列车种别以及 2026-11 日期全部匹配；该 PNG **仅代表在羽越本线运行的 E653 车系**，不能辨认实际是哪种涂装。不能按纯数字区间将日常普通电车或 `海里` 归到 E653。
 - **701系 秋田地区**：原有 `jreast-tsugaru-2611-number-index.js` 的 11 站「青森—蟹田」区间，恢复 **36 条号码／日历引用**。针对 `324M`，回放 2026 年 11 月各天 `verify`，确认它在**平日正常运行；土曜／休日类别中仅周六运行**，不在周日或法定节假日运行。蟹田以北停运段/代替巴士一律不生成列车 PNG。
 - 以上均标记 `authorizesRuntimePNG:false`、`actualVehicleConfirmed:false`，不会代替原有线路解析器，也不会将 PNG 图片外观说成实体编组确认。
+
+## 第五轮：HB-E220 八高线非电化段的 2026 年 11 月车次
+
+[JR 东日本 HB-E220 官方车型](https://www.jreast.co.jp/train/local/hb_e220.html)和[八高线 キハ110 营业结束公告](https://media.jreast.co.jp/articles/5917)确认高丽川—高崎非电化段的 2026 年运营车系替换。本次增补 [Hachiko 2611 独立时刻表号码索引](../../data/timetables/jreast-hachiko-non-electrified-2611-number-index.js)，将 [705d1](https://timetables.jreast.co.jp/2611/timetable-v/705d1.html)、[705d2](https://timetables.jreast.co.jp/2611/timetable-v/705d2.html)、[705u1](https://timetables.jreast.co.jp/2611/timetable-v/705u1.html)、[705u2](https://timetables.jreast.co.jp/2611/timetable-v/705u2.html) 的 **54 个互异 2026-11 D 车次番号**作为 `HB-E220系_八高線.png` 车型候选，按工作日／节假日拆分为 **108 条来源引用**。
+
+- 严格限于 `Hachiko` 的非电化段、D 后缀、`Local`、2026 年 11 月和匹配的日历及方向。
+- 排除官表里只在 **12 月 1 日**运行的 `923xD/927xD` 维修临时车次；不包含电化段 `209系3500`、`E231系3000` 的 M 号码。
+- 所有映射为 `referenceOnly:true`、`authorizesRuntimePNG:false`、`actualVehicleConfirmed:false`：匹配该车型家族，不代表确认实际物理车组。未经独立身份认证，运行时仍不直接按本表指认编组。
