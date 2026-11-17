@@ -3488,6 +3488,48 @@ test('last-mile number PNG candidates deduplicate identical paths and reject mix
 });
 
 
+test('JR-Central Shinkansen number sources reconcile by PNG without priority',()=>{
+ const original=root.TrainNumberPngRanges;
+ const centralPng='../images/列车/JR東海/JR東海_N700系.png';
+ const westPng='../images/列车/JR西日本/JR西日本_N700系.png';
+ const base=sql({
+  trainId:'planned-trip:2026-11-03|JR-Central|TokaidoShinkansen|1A',
+  trainNumber:'1A',positionLineId:'TokaidoShinkansen',
+  sourceRailway:'odpt.Railway:JR-Central.TokaidoShinkansen',
+  trainOperator:'JR-Central',serviceDate:'2026-11-03',
+  calendarType:'holiday',
+  trainType:'odpt.TrainType:JR-Central.Nozomi',
+  sqlPlannedNumberPngPath:centralPng
+ });
+ const range=(model,pngPath)=>({
+  ...original,match(){return {trainNumber:'1A',lineId:'TokaidoShinkansen',
+   model,pngPath,source:'browser-number-band',
+   planned:true,representative:true};}
+ });
+ try {
+  root.TrainNumberPngRanges={...original,match(){return null;}};
+  assert.equal(marker(base,'TokaidoShinkansen').iconSrc,centralPng,
+   'the SQL-only path remains available');
+  root.TrainNumberPngRanges=range('N700系（JR東海）',centralPng);
+  assert.equal(marker(base,'TokaidoShinkansen').iconSrc,centralPng,
+   'the same PNG from browser and SQL sources deduplicates');
+  root.TrainNumberPngRanges=range('N700系（JR西日本）',westPng);
+  const conflict=marker(base,'TokaidoShinkansen');
+  assert.equal(conflict.kind,'unresolved');
+  assert.equal(conflict.iconSrc,'');
+  assert.equal(conflict.reason,'conflicting-number-png-sources');
+  root.TrainNumberPngRanges=range('N700系（JR東海）',centralPng);
+  const reversed=marker({...base,sqlPlannedNumberPngPath:westPng},
+   'TokaidoShinkansen');
+  assert.equal(reversed.kind,'unresolved',
+   'swapping which source carries each PNG cannot create a winner');
+  assert.equal(reversed.reason,'conflicting-number-png-sources');
+ }finally{
+  root.TrainNumberPngRanges=original;
+ }
+});
+
+
 test('generic band conflict survives other-number-source reconciliation',()=>{
  const original=root.TrainNumberPngRanges;
  try {

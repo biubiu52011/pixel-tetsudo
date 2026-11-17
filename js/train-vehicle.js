@@ -5877,14 +5877,30 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         p.positionSource === "supabase-train-run" &&
         /^odpt\.Railway:JR-Central\./.test(String(p.sourceRailway || "")) &&
         contextLineId === String(p.positionLineId || p.lineId || "")) {
-      var centralNumberPng = lookupTrainNumberRangePng(p);
+      var centralBandStatus = {};
+      var centralRangePng = lookupTrainNumberRangePng(p,centralBandStatus);
       // Conventional lines use the existing browser number pool. Shinkansen
-      // uses the server's same-number SQL pool, already resolved against the
-      // native JR-Central gallery. Do not select by service name or plan model.
+      // also receives the server's same-number SQL pool. Treat both as equal
+      // candidates: identical PNGs deduplicate, while different PNGs fail
+      // closed instead of letting the browser range win by source order.
+      var centralSqlPng = null;
+      if (contextLineId === "TokaidoShinkansen" &&
+          /^[1-9][0-9]{0,4}A$/.test(String(p.trainNumber || ""))) {
+        var centralSqlPath =
+          normalizeGalleryPngPath(p.sqlPlannedNumberPngPath);
+        if (centralSqlPath)
+          centralSqlPng = {pngPath:centralSqlPath,
+            source:"sql-planned-number-png"};
+      }
+      var centralNumberChoices = chooseUniqueNumberPng(
+        [centralRangePng,centralSqlPng],
+        centralBandStatus.conflict===true);
+      if (centralNumberChoices.conflict)
+        return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+          actualVehicleConfirmed:false,
+          reason:"conflicting-number-png-sources"};
+      var centralNumberPng = centralNumberChoices.candidate;
       var centralPath = centralNumberPng && centralNumberPng.pngPath;
-      if (!centralPath && contextLineId === "TokaidoShinkansen" &&
-          /^[1-9][0-9]{0,4}A$/.test(String(p.trainNumber || "")))
-        centralPath = normalizeGalleryPngPath(p.sqlPlannedNumberPngPath);
       if (artworkFailed === true || !centralPath)
         return {kind:"unresolved",iconSrc:""};
       return {kind:"vehicle",iconSrc:centralPath,
