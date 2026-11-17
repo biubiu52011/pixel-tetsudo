@@ -1001,10 +1001,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           
           // 竖列支线名放回 SVG 层，显示在支线远端旁边（短名，去掉主线名前缀）
           var _fullName = (window.RailwayDB && typeof window.RailwayDB.resolveLineName === "function") ? window.RailwayDB.resolveLineName(branch.id, window.currentLang) : (branch.nameJa || branch.name);
-          // 提取括号里的短名：丸ノ内線（方南町支線）→ 方南町支線
+          // 支线名称已不含括号，优先用所属主线的名称提取短标题。
+          // 兼容旧式括号名称，避免缩窄 SVG 内的支线文字空间。
           var _shortName = _fullName;
           var _m = _fullName.match(/[（(](.+?)[）)]/);
-          if (_m) _shortName = _m[1];
+          if (_m) {
+            _shortName = _m[1];
+          } else if (branch.branchOf && window.RailwayDB && typeof window.RailwayDB.resolveLineName === "function") {
+            var _parentLineName = window.RailwayDB.resolveLineName(branch.branchOf, window.currentLang) || "";
+            if (_parentLineName && _fullName.indexOf(_parentLineName) === 0) {
+              var _suffixName = _fullName.slice(_parentLineName.length).replace(/^[・·\s]+/, "");
+              if (_suffixName) _shortName = _suffixName;
+            }
+          }
           var _bNameEl = document.createElementNS(svgNS, "text");
           _bNameEl.setAttribute("x", bx);
           var _branchEndStation = (_rStations || []).filter(function(station) {
