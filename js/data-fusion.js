@@ -178,42 +178,75 @@
       String(p.positionLineId || railway) : "";
   }
 
-  // The existing canonical running chain supplies identity; a number alone
-  // never joins trains. Check existing source-scoped PNG decisions only when
-  // that chain, date and public train number agree across source railways.
+  // Ephemeral illustration history for the EXISTING canonical running chain.
+  // This never certifies a physical carset or creates a second PNG number map.
+  var _throughArtworkHistory=Object.create(null);
+  var _THROUGH_ARTWORK_TTL_MS=30*60*1000;
+  function _strongPhysicalArtwork(p){
+    var r=p&&p.vehicleResolution;
+    var sources=r&&Array.isArray(r.sources)?r.sources:[];
+    return !!(p&&p.vehicleIdentityStatus==="EXACT"&&
+      p.vehicleResolvedFromRealtime===true&&
+      (sources.indexOf("official-realtime-car-number")>=0||
+       sources.indexOf("roster-physical-id")>=0));
+  }
   function _markThroughArtworkConflicts(positionsByLine) {
     var owner=window.TrainVehicle;
-    if (!owner || typeof owner.selectMarkerArtwork!=="function") return 0;
-    var groups=Object.create(null), rejected=0;
-    Object.keys(positionsByLine || {}).forEach(function(lineId) {
-      (positionsByLine[lineId] || []).forEach(function(p) {
-        if (!p || !p.runningChainId || !p.trainNumber || !p.sourceRailway ||
-            !/^\d{4}-\d{2}-\d{2}$/.test(String(p.serviceDate || "")) ||
-            !p.positionLineId) return;
-        // Each new snapshot is evaluated afresh; no inherited stale flag.
+    if(!owner||typeof owner.selectMarkerArtwork!=="function")return 0;
+    var now=Date.now(),groups=Object.create(null),rejected=0;
+    Object.keys(_throughArtworkHistory).forEach(function(key){
+      var r=_throughArtworkHistory[key];
+      if(!r||now-r.lastSeenAt>_THROUGH_ARTWORK_TTL_MS)
+        delete _throughArtworkHistory[key];
+    });
+    Object.keys(positionsByLine||{}).forEach(function(lineId){
+      (positionsByLine[lineId]||[]).forEach(function(p){
+        if(!p)return;
         p.vehicleArtworkConflict=false;
-        var key=[p.runningChainId,p.serviceDate,p.trainNumber].join("|");
-        (groups[key] || (groups[key]=[])).push({lineId:lineId,p:p});
+        if(!p.runningChainId||!p.trainNumber||!p.sourceRailway||
+           !p.positionLineId||
+           !/^\d{4}-\d{2}-\d{2}$/.test(String(p.serviceDate||"")))return;
+        var key=JSON.stringify([p.runningChainId,p.serviceDate,p.trainNumber]);
+        (groups[key]||(groups[key]=[])).push({lineId:lineId,p:p});
       });
     });
-    Object.keys(groups).forEach(function(key) {
-      var entries=groups[key];
-      if (entries.length<2) return;
-      var railways=Object.create(null);
-      entries.forEach(function(x) {
-        railways[x.p.sourceRailway+"|"+x.p.positionLineId]=true;
-      });
-      if (Object.keys(railways).length<2) return;
-      var pngs=Object.create(null);
-      entries.forEach(function(x) {
+    Object.keys(groups).forEach(function(key){
+      var entries=groups[key],previous=_throughArtworkHistory[key],choices=[];
+      entries.forEach(function(x){
         var spec=owner.selectMarkerArtwork(
           Object.assign({},x.p,{displayLineId:x.lineId}),false);
-        if (spec && spec.kind==="vehicle" && spec.iconSrc)
-          pngs[String(spec.iconSrc)]=true;
+        if(spec&&spec.kind==="vehicle"&&spec.iconSrc&&!spec.compact)
+          choices.push({png:String(spec.iconSrc),railway:x.p.sourceRailway,
+            lineId:x.p.positionLineId,physical:_strongPhysicalArtwork(x.p)});
       });
-      if (Object.keys(pngs).length<2) return;
-      entries.forEach(function(x) { x.p.vehicleArtworkConflict=true; });
-      rejected++;
+      var conflict=!!(previous&&previous.conflict);
+      for(var i=0;i<choices.length;i++){
+        var c=choices[i];
+        if(previous&&previous.png&&previous.png!==c.png&&
+           (previous.railway!==c.railway||previous.lineId!==c.lineId)&&
+           !(c.physical&&!previous.physical&&!previous.conflict))
+          conflict=true;
+        for(var j=i+1;j<choices.length;j++){
+          var d=choices[j];
+          if(c.png!==d.png&&(c.railway!==d.railway||c.lineId!==d.lineId))
+            conflict=true;
+        }
+      }
+      if(conflict){
+        entries.forEach(function(x){x.p.vehicleArtworkConflict=true;});
+        var retained=previous||choices[0]||{};
+        _throughArtworkHistory[key]={png:retained.png||"",
+          railway:retained.railway||"",lineId:retained.lineId||"",
+          physical:!!retained.physical,conflict:true,lastSeenAt:now};
+        rejected++;
+      }else if(choices.length){
+        var latest=choices[choices.length-1];
+        _throughArtworkHistory[key]={png:latest.png,railway:latest.railway,
+          lineId:latest.lineId,physical:latest.physical,
+          conflict:false,lastSeenAt:now};
+      }else if(previous){
+        previous.lastSeenAt=now;
+      }
     });
     return rejected;
   }
