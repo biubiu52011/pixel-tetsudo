@@ -1,0 +1,76 @@
+-- Tobu Skytree source-only train-number to PNG reference bands, 2026-11.
+-- Reuses the already-deployed matchTobuSkytree2611 original family rosters:
+--   - tobuSkytreeOrdinaryCorridors[calendar].asakusa (10030 unrefurbished)
+--   - tobuSkytreeNumbers[calendar].ryomo (200 red).
+-- Pure numeric train numbers only; never vehicle, car or formation numbers.
+-- Compact numbers only when adjacent for the SAME PNG, preserving gaps.
+-- The current JS source still decides 2026-11-02..30, weekday/holiday,
+-- railway/operator, service type and physical stock conflicts.
+-- Both assets remain review-only; reference intervals authorize no new PNG.
+-- No priority, inferred actual consist or livery confirmation.
+INSERT INTO public.published_train_png_number_ranges
+ (edition,line_key,segment_key,min_number,max_number,suffix,vehicle_model,
+  png_reference,source_url,requires_exact_roster,actual_vehicle_confirmed)
+VALUES
+  ('2611','TobuSkytree','png_band/TobuSkytree/0801-0946',801,946,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0948-0948',948,948,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0950-0950',950,950,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0952-0952',952,952,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0954-0954',954,954,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0956-0956',956,956,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0958-0958',958,958,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/0962-0962',962,962,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2501-2522',2501,2522,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2524-2524',2524,2524,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2526-2526',2526,2526,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2528-2528',2528,2528,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2530-2530',2530,2530,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2532-2532',2532,2532,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2534-2534',2534,2534,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2601-2606',2601,2606,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/2701-2701',2701,2701,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3501-3513',3501,3513,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3515-3515',3515,3515,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3517-3517',3517,3517,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3519-3519',3519,3519,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3521-3521',3521,3521,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3523-3523',3523,3523,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3525-3525',3525,3525,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3601-3603',3601,3603,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3605-3605',3605,3605,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3607-3607',3607,3607,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3609-3609',3609,3609,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3611-3611',3611,3611,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3613-3613',3613,3613,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3615-3615',3615,3615,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3701-3706',3701,3706,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3708-3708',3708,3708,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3710-3710',3710,3710,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3712-3712',3712,3712,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3714-3714',3714,3714,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3716-3716',3716,3716,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3801-3807',3801,3807,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3809-3809',3809,3809,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3811-3811',3811,3811,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3813-3813',3813,3813,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3815-3815',3815,3815,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3817-3817',3817,3817,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3819-3819',3819,3819,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/3821-3821',3821,3821,'',NULL,'../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1310-1310',1310,1310,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1404-1404',1404,1404,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1421-1421',1421,1421,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1433-1433',1433,1433,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1436-1436',1436,1436,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1447-1448',1447,1448,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1803-1803',1803,1803,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1805-1807',1805,1807,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1811-1811',1811,1811,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1816-1817',1816,1817,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1819-1820',1819,1820,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1822-1824',1822,1824,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1826-1826',1826,1826,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1834-1835',1834,1835,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1837-1838',1837,1838,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE),
+  ('2611','TobuSkytree','png_band/TobuSkytree/1841-1842',1841,1842,'',NULL,'../images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',NULL,FALSE,FALSE)
+ON CONFLICT (edition,line_key,segment_key,min_number,max_number,suffix) DO NOTHING;
