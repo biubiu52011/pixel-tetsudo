@@ -27,17 +27,15 @@
    exposing a draggable horizontal scroll surface. */
 .tp-map-wrap {
   width: 100%; max-width: 100%; min-width: 0;
-  background: transparent; touch-action: pan-y;
+  background: transparent; touch-action: auto;
 }
 .tp-map-wrap > svg {
   width: 100%; height: auto; display: block; max-width: 520px;
   min-width: 0; margin-left: auto; margin-right: auto;
-  background: transparent; touch-action: pan-y; cursor: grab;
+  background: transparent; touch-action: auto;
   -webkit-user-select: none; user-select: none;
 }
-/* Zoomed maps own both pan directions; at 1x a vertical swipe still scrolls the page. */
-.tp-map-wrap > svg.tp-gesture-zoomed { touch-action: none; }
-.tp-map-wrap > svg:active { cursor: grabbing; }
+/* Let the browser handle native page scrolling and pinch zoom even over the SVG. */
 /* v4.3.938: 竖列支线名 HTML 图注（SVG 上方，线色着色，正常字号自动换行不裁切——viewBox 不撑宽） */
 .branch-note { text-align: center; font-size: 14px; font-weight: 600; font-family: var(--pixel-font, "Fusion Pixel"), "Courier New", monospace; padding: 2px 8px 6px; line-height: 1.3; }
 .tp-no-data { text-align: center; color: var(--text-muted); font-size: 13px; padding: 16px; }

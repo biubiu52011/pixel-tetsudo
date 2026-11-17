@@ -118,11 +118,14 @@ test('portrait, landscape and narrow desktop share one phone geometry mode',()=>
   assert.equal(realMobilePredicate(1200,1200,800),false);
   assert.match(cssSource,/@media \(max-width: 640px\)/);
 });
-test('camera gestures are loaded before renderer and never alter route geometry',()=>{
+test('browser owns native pinch zoom over the map, not an SVG camera',()=>{
   const html=fs.readFileSync('pages/trains.html', 'utf8');
-  assert.ok(html.indexOf('train-map-gestures.js') < html.indexOf('trains-render.js'));
-  assert.ok(rendererSource.includes('window.TrainMapGestures.attach(svg)'));
-  assert.ok(rendererSource.includes('mapSvg._disposeTrainMapGestures()'));
+  assert.match(html, /name="viewport"[\s\S]*?content="width=device-width, initial-scale=1\.0, viewport-fit=cover"/);
+  assert.doesNotMatch(html, /user-scalable=no|maximum-scale=1|train-map-gestures\.js/i);
+  assert.doesNotMatch(rendererSource, /TrainMapGestures|_disposeTrainMapGestures/);
+  assert.match(cssSource, /\.tp-map-wrap\s*\{[^}]*touch-action:\s*auto/);
+  assert.match(cssSource, /\.tp-map-wrap\s*>\s*svg\s*\{[^}]*touch-action:\s*auto/);
+  assert.doesNotMatch(cssSource, /touch-action:\s*(?:none|pan-y)/);
 });
 test('static train and route layers always use the same layout transform',()=>{
   assert.ok(rendererSource.includes('staticLayer.setAttribute("transform", geometry.canvasTransform)'));
@@ -145,7 +148,7 @@ test('responsive CSS fits fixed frame; no horizontal pan or JS width override',(
   assert.equal((cssSource.match(/\.tp-map-wrap\s*>\s*svg\s*\{/g)||[]).length,1);
   assert.doesNotMatch(cssSource,/overflow-x:\s*auto/);
   assert.match(cssSource,/overflow-x:\s*clip/);
-  assert.match(cssSource,/touch-action:\s*pan-y/);
+  assert.match(cssSource,/touch-action:\s*auto/);
   assert.match(cssSource,/\.tp-map-wrap\s*>\s*svg\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;/);
   assert.doesNotMatch(rendererSource,/svg\.style\.(?:height|width|minWidth|maxWidth)\s*=/);
 });
