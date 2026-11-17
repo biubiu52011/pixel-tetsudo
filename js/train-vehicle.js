@@ -3779,6 +3779,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       ctx.vehicleLabel, ctx.gtfsVehicleLabel, gtfsVehicleId,
       ctx.realtimeCarNumber, ctx.vehicleCarNumber];
     var labels = getRealtimeLabelIndex();
+    var matchedNames = Object.create(null);
     for (var i = 0; i < values.length; i++) {
       var raw = String(values[i] || '').trim();
       if (!raw) continue;
@@ -3789,15 +3790,22 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       var exact = canonical && (!ctx.lineId || _canonicalVehicleMatchesLine(canonical, ctx.lineId) ||
         _canonicalVehicleMatchesItinerary(canonical, ctx))
         ? canonical : null;
-      if (exact) return exact.displayName;
+      if (exact) {
+        matchedNames[exact.displayName] = true;
+        continue;
+      }
+      // A GTFS label may contain several similar series or livery names.
+      // Collect all eligible identities instead of accepting the first
+      // substring match in catalogue order.
       for (var j = 0; j < labels.length; j++) {
         var candidate = labels[j];
         if (raw.indexOf(candidate.label) < 0) continue;
         var scoped = resolveCanonicalVehicleForPlan(candidate.label, ctx);
-        if (scoped) return scoped.displayName;
+        if (scoped) matchedNames[scoped.displayName] = true;
       }
     }
-    return '';
+    var uniqueNames = Object.keys(matchedNames);
+    return uniqueNames.length === 1 ? uniqueNames[0] : '';
   }
 
   function splitCandidates(str) {
