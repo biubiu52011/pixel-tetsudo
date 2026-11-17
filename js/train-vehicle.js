@@ -1938,6 +1938,7 @@ function resolveOperationPng(ctx) {
   // must fail closed instead of allowing the first vehicleType to win.
   var mappings = [];
   var seenMappings = Object.create(null);
+  var unresolvedLabels = [];
   matches.forEach(function(row) {
     (row.mappings || []).forEach(function(mapping) {
       var canonical = resolveCanonicalVehicle(mapping.vehicleType);
@@ -1945,7 +1946,15 @@ function resolveOperationPng(ctx) {
         String(mapping.vehicleType || "").trim();
       var asset = normalizeGalleryPngPath(mapping.asset ||
         canonical && (canonical.asset || canonical.plannedAsset) || "");
-      if (!vehicleType || !asset) return;
+      if (!vehicleType) return;
+      // A newly quarantined generic/livery alias is still a candidate:
+      // losing its PNG must never turn the remaining specific variant
+      // into an EXACT physical-model decision.
+      if (!asset) {
+        if (unresolvedLabels.indexOf(vehicleType) < 0)
+          unresolvedLabels.push(vehicleType);
+        return;
+      }
       var key = vehicleType + "\u0000" + asset;
       if (seenMappings[key]) return;
       seenMappings[key] = true;
@@ -1965,12 +1974,23 @@ function resolveOperationPng(ctx) {
   }).filter(function(vehicleType, i, all) {
     return all.indexOf(vehicleType) === i;
   });
-  var candidateOnly = matches.some(function(row) { return row.candidateOnly === true; });
+  // Distinct candidate models without eligible artwork still constrain the
+  // result. Only a generic parent of the remaining pictured subseries may
+  // retain that one reference PNG as NARROWED; other conflicts fail closed.
+  var distinctUnpictured = unresolvedLabels.filter(function(v) {
+    return vehicleTypes.indexOf(v) < 0;
+  });
+  if (distinctUnpictured.length && (vehicleTypes.length !== 1 ||
+      !distinctUnpictured.every(function(v) {
+        return vehicleTypes[0].indexOf(v + "（") === 0;
+      }))) return null;
+  var candidateOnly = matches.some(function(row) { return row.candidateOnly === true; }) ||
+    distinctUnpictured.length > 0;
   return {
     status: !candidateOnly && vehicleTypes.length === 1 ? "EXACT" : "NARROWED",
     operationCode: code,
     mappings: mappings,
-    vehicleType: vehicleTypes.length === 1 ? vehicleTypes[0] : "",
+    vehicleType: !candidateOnly && vehicleTypes.length === 1 ? vehicleTypes[0] : "",
     asset: assets[0],
     sourceUrls: matches.map(function(row) { return row.sourceUrl || ""; }).filter(function(v, i, a) {
       return v && a.indexOf(v) === i;
