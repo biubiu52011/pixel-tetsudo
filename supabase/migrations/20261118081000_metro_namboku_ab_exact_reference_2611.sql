@@ -1,0 +1,31 @@
+-- Tokyo Metro Namboku, original js-0117, Nov 2026 weekday/holiday public A/B-prefixed train numbers.
+-- 327 distinct raw A/B service numbers -> 276 distinct numeric parts -> 276 no-gap reference bands.
+-- Numeric-only SQL is a reference; original JS retains A/B identity, timetable calendar and source/model checks.
+-- ReferenceOnly and illustrative remain true. Do not treat this data as actual carset/livery evidence.
+BEGIN;
+DO $check$
+BEGIN
+ IF NOT EXISTS(SELECT 1 FROM public.vehicle_image_assets WHERE image_path='images/列车/東京メトロ/東京メトロ_9000系.png' AND asset_status='available' AND file_format_status='native_png') THEN RAISE EXCEPTION 'Namboku: PNG missing'; END IF;
+ IF (SELECT count(*) FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Namboku' AND segment_key='png_band/Namboku/0530-2456S' AND min_number=530 AND max_number=2456 AND suffix='S' AND png_reference='../images/列车/東京メトロ/東京メトロ_9000系.png' AND vehicle_model IS NULL AND source_url IS NULL AND requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE)<>1 THEN RAISE EXCEPTION 'Namboku: original broad SQL source changed'; END IF;
+ IF EXISTS(SELECT 1 FROM unnest(ARRAY[530,536,538,540,550,552,560,562,632,636,640,642,644,650,654,656,660,662,664,730,732,736,738,740,742,744,746,748,752,754,756,760,762,766,768,830,832,834,838,840,842,846,848,850,852,854,858,862,864,866,868,870,932,934,936,940,944,946,948,950,952,954,956,958,960,964,966,968,970,1030,1032,1036,1038,1040,1042,1044,1046,1050,1052,1054,1056,1062,1064,1068,1132,1136,1138,1140,1142,1144,1150,1154,1156,1160,1162,1164,1166,1168,1170,1230,1232,1236,1238,1240,1242,1244,1246,1250,1252,1254,1256,1260,1262,1270,1330,1332,1336,1338,1342,1346,1350,1352,1354,1356,1360,1364,1366,1368,1370,1430,1432,1440,1442,1444,1446,1448,1450,1452,1460,1462,1464,1466,1468,1470,1530,1536,1538,1540,1542,1544,1546,1550,1552,1554,1556,1560,1562,1564,1566,1568,1570,1630,1632,1638,1640,1642,1644,1648,1650,1652,1654,1656,1660,1662,1664,1666,1670,1734,1736,1738,1740,1744,1746,1748,1750,1756,1758,1760,1762,1764,1766,1770,1830,1832,1836,1840,1842,1844,1848,1850,1852,1854,1856,1858,1860,1864,1866,1868,1870,1930,1934,1936,1938,1942,1946,1948,1950,1954,1956,1960,1962,1964,1966,1968,1970,2030,2036,2038,2040,2042,2044,2046,2048,2050,2052,2054,2056,2060,2062,2064,2066,2068,2070,2138,2146,2148,2150,2152,2154,2156,2164,2166,2168,2236,2238,2242,2244,2246,2250,2252,2256,2260,2262,2268,2270,2344,2346,2348,2350,2352,2356,2362,2364,2366,2442,2456]::int[]) AS n(num)
+   JOIN public.published_train_png_number_ranges q ON q.edition='2611' AND q.line_key='Namboku' AND q.suffix='S' AND q.segment_key LIKE 'png_band/%' AND q.png_reference<>'../images/列车/東京メトロ/東京メトロ_9000系.png' AND n.num BETWEEN q.min_number AND q.max_number) THEN RAISE EXCEPTION 'Namboku: another PNG covers a proposed number'; END IF;
+END;
+$check$;
+DELETE FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Namboku' AND segment_key='png_band/Namboku/0530-2456S' AND min_number=530 AND max_number=2456 AND suffix='S' AND png_reference='../images/列车/東京メトロ/東京メトロ_9000系.png' AND vehicle_model IS NULL AND source_url IS NULL AND requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE;
+WITH original_numbers(num) AS (SELECT unnest(ARRAY[530,536,538,540,550,552,560,562,632,636,640,642,644,650,654,656,660,662,664,730,732,736,738,740,742,744,746,748,752,754,756,760,762,766,768,830,832,834,838,840,842,846,848,850,852,854,858,862,864,866,868,870,932,934,936,940,944,946,948,950,952,954,956,958,960,964,966,968,970,1030,1032,1036,1038,1040,1042,1044,1046,1050,1052,1054,1056,1062,1064,1068,1132,1136,1138,1140,1142,1144,1150,1154,1156,1160,1162,1164,1166,1168,1170,1230,1232,1236,1238,1240,1242,1244,1246,1250,1252,1254,1256,1260,1262,1270,1330,1332,1336,1338,1342,1346,1350,1352,1354,1356,1360,1364,1366,1368,1370,1430,1432,1440,1442,1444,1446,1448,1450,1452,1460,1462,1464,1466,1468,1470,1530,1536,1538,1540,1542,1544,1546,1550,1552,1554,1556,1560,1562,1564,1566,1568,1570,1630,1632,1638,1640,1642,1644,1648,1650,1652,1654,1656,1660,1662,1664,1666,1670,1734,1736,1738,1740,1744,1746,1748,1750,1756,1758,1760,1762,1764,1766,1770,1830,1832,1836,1840,1842,1844,1848,1850,1852,1854,1856,1858,1860,1864,1866,1868,1870,1930,1934,1936,1938,1942,1946,1948,1950,1954,1956,1960,1962,1964,1966,1968,1970,2030,2036,2038,2040,2042,2044,2046,2048,2050,2052,2054,2056,2060,2062,2064,2066,2068,2070,2138,2146,2148,2150,2152,2154,2156,2164,2166,2168,2236,2238,2242,2244,2246,2250,2252,2256,2260,2262,2268,2270,2344,2346,2348,2350,2352,2356,2362,2364,2366,2442,2456]::int[])),
+ distinct_numbers AS (SELECT DISTINCT num FROM original_numbers),
+ tagged AS (SELECT num,num-ROW_NUMBER() OVER(ORDER BY num)::int AS island FROM distinct_numbers),
+ islands AS (SELECT min(num) AS first_no,max(num) AS last_no FROM tagged GROUP BY island)
+INSERT INTO public.published_train_png_number_ranges
+ (edition,line_key,segment_key,min_number,max_number,suffix,vehicle_model,png_reference,source_url,requires_exact_roster,actual_vehicle_confirmed)
+SELECT '2611','Namboku', 'png_band/Namboku/'||lpad(first_no::text,4,'0')||'-'||lpad(last_no::text,4,'0')||'S',
+ first_no,last_no,'S',NULL,'../images/列车/東京メトロ/東京メトロ_9000系.png',NULL,FALSE,FALSE
+FROM islands;
+DO $verify$
+BEGIN
+ IF (SELECT count(*) FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Namboku' AND segment_key LIKE 'png_band/Namboku/%' AND suffix='S' AND png_reference='../images/列车/東京メトロ/東京メトロ_9000系.png' AND vehicle_model IS NULL AND source_url IS NULL AND requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE)<>276 THEN RAISE EXCEPTION 'Namboku: grouped SQL band count mismatch'; END IF;
+ IF (SELECT coalesce(sum(max_number-min_number+1),0) FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Namboku' AND segment_key LIKE 'png_band/Namboku/%' AND suffix='S' AND png_reference='../images/列车/東京メトロ/東京メトロ_9000系.png')<>276 THEN RAISE EXCEPTION 'Namboku: numeric-only reference coverage mismatch'; END IF;
+ IF EXISTS(SELECT 1 FROM public.published_train_png_number_ranges WHERE edition='2611' AND segment_key='png_band/Namboku/0530-2456S') THEN RAISE EXCEPTION 'Namboku: historical broad row remains'; END IF;
+END;
+$verify$;
+COMMIT;
