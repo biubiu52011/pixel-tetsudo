@@ -769,6 +769,78 @@ function jrE233Saikyo315GotembaSqlSeedBands(c){
   status:'纯号段（JR原有号码条件保留；不代表编组）'}));
 }
 
+// JR twenty-second batch: only connected islands of the full published
+// service-number list. Do not fill gaps or use unconfirmed review artwork.
+const JR_HACHIKO_DE10_EXACT_SQL_MIGRATION='supabase/migrations/20261118014500_seed_jr_hachiko_e231_3000_de10_banetsu_exact_png_bands_2611.sql';
+function jrHachikoE231AndDe10ExactSqlSeedBands(c){
+ const expected=[];
+ const specs=[
+  {id:'js-0073',line:'Hachiko',png:'images/列车/JR東日本/JR東日本_E231系_3000番台.png',
+   count:148,bandCount:90,format:'full',suffix:'E'},
+  {id:'js-0033',line:'BanetsuWest',png:'images/列车/JR東日本/JR東日本_DE10形_DLばんえつ物語.png',
+   count:2,bandCount:2,format:'bare',suffix:''}
+ ];
+ for(const spec of specs){
+  const rule=c.rules.find(r=>r.id===spec.id);
+  if(!rule||rule.origin!=='frontend_js'||rule.png!==spec.png||
+    rule.line_ids.join()!==spec.line||rule.operator!=='JR-East'||
+    rule.valid_from!=='2026-11-01'||rule.valid_to!=='2026-11-30'||
+    rule.evidence_kind!=='exact-list'||rule.format!==spec.format||
+    rule.suffix!==spec.suffix||rule.published_numbers?.length!==spec.count||
+    rule.actual_vehicle_confirmed!==false||
+    new Set(rule.published_numbers).size!==spec.count)
+   throw Error('JR E231/DE10 original exact-number roster changed: '+spec.id);
+  if(spec.id==='js-0073'&&
+    (rule.train_type!=='Local'||rule.min!==461||rule.max!==4778||
+     rule.runtime_guards?.requireExplicitModelEvidence!==true||
+     rule.runtime_guards?.rejectAmbiguousPlan!==true||
+     rule.runtime_guards?.allowedModelLabels?.join()!=='E231系3000番台'))
+   throw Error('JR Hachiko model/line/roster conditions changed');
+  if(spec.id==='js-0033'&&
+    (rule.published_numbers.join()!=='9226,9233'||
+     rule.operating_dates?.join()!=='2026-11-01,2026-11-08,2026-11-15'||
+     rule.train_types?.join()!=='Rapid,SLRapid'||
+     rule.runtime_guards?.allowedModelLabels?.join()!=='DE10形（DLばんえつ物語）'))
+   throw Error('JR DE10 dated-train conditions changed');
+  const parsed=rule.published_numbers.map(n=>{
+    const m=/^(\d{2,5})([A-Z]?)$/.exec(n);
+    if(!m||m[2]!==spec.suffix||+m[1]<rule.min||+m[1]>rule.max)
+     throw Error('JR Hachiko / DL number is not from original roster: '+n);
+    return +m[1];
+  }).sort((a,b)=>a-b);
+  const ranges=[];
+  for(const n of parsed){
+    const last=ranges[ranges.length-1];
+    if(last&&last.to+1===n)last.to=n;
+    else ranges.push({from:n,to:n});
+  }
+  if(ranges.length!==spec.bandCount||
+     ranges.reduce((sum,r)=>sum+(r.to-r.from+1),0)!==spec.count)
+   throw Error('JR exact-number islands were expanded beyond known services');
+  for(const island of ranges){
+    const a=String(island.from).padStart(4,'0');
+    const b=String(island.to).padStart(4,'0');
+    expected.push({line:spec.line,
+      segment:'png_band/'+spec.line+'/'+a+'-'+b+spec.suffix,
+      from:a,to:b,suffix:spec.suffix,format:spec.format,png:spec.png,
+      status:'纯号段（JR明示番号；车型及资产仍待复核）'});
+  }
+ }
+ const sql=read(JR_HACHIKO_DE10_EXACT_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]*)',NULL,'\.\.\/(images\/列车\/JR東日本\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...sql.matchAll(pattern)];
+ if(found.length!==92||expected.length!==92)
+  throw Error('JR Hachiko/DE10 exact-number SQL row count changed');
+ for(let i=0;i<expected.length;i++){
+   const row=found[i],item=expected[i];
+   if(row[1]!==item.line||row[2]!==item.segment||
+     +row[3]!==Number(item.from)||+row[4]!==Number(item.to)||
+     row[5]!==item.suffix||row[6]!==item.png)
+    throw Error('JR Hachiko/DE10 SQL differs from original-number islands: '+item.segment);
+ }
+ return expected;
+}
+
 // JR reference PNG batch: persist only the original *listed* 2611
 // SL Banetsu C57 and Boso Local 209 service numbers. Wide JS min/max are
 // deliberately not copied: their interior gaps are not evidenced and
@@ -1248,7 +1320,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
