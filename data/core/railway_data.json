@@ -17796,14 +17796,14 @@
           "note": ""
         }
       ],
-      "nameZh": "横须贺线・总武快速线",
-      "nameKo": "요코스카선・소부 쾌속선",
+      "nameZh": "横须贺线",
+      "nameKo": "요코스카선",
       "presentation": {
         "code": "JO",
         "nameJa": "横須賀線・総武線快速",
-        "nameZh": "横须贺线・总武线快速",
-        "nameEn": "Yokosuka Line / Sobu Line (Rapid)",
-        "nameKo": "요코스카선・소부 쾌속선",
+        "nameZh": "横须贺线·总武快速线",
+        "nameEn": "Yokosuka Line / Sobu Rapid Line",
+        "nameKo": "요코스카선·소부 쾌속선",
         "color": "#00347a",
         "icon": "../images/鉄道/JR東日本/総武線快速横須賀線.png",
         "order": 14,
@@ -18194,14 +18194,14 @@
           "note": ""
         }
       ],
-      "nameZh": "中央线（快速）",
-      "nameKo": "주오선（쾌속）",
+      "nameZh": "中央快速线",
+      "nameKo": "주오 쾌속선",
       "presentation": {
         "code": "JC",
-        "nameJa": "中央線（快速）",
-        "nameZh": "中央线（快速）",
-        "nameEn": "Chuo Line (Rapid)",
-        "nameKo": "주오선（쾌속）",
+        "nameJa": "中央線快速",
+        "nameZh": "中央快速线",
+        "nameEn": "Chuo Rapid Line",
+        "nameKo": "주오 쾌속선",
         "color": "#f15a22",
         "icon": "../images/鉄道/JR東日本/中央快速線.png",
         "order": 3,
@@ -18976,15 +18976,15 @@
           "note": ""
         }
       ],
-      "nameZh": "常磐线（快速）",
-      "nameKo": "조반선（쾌속）",
+      "nameZh": "常磐快速线",
+      "nameKo": "조반 쾌속선",
       "presentation": {
         "code": "JJ",
         "nameJa": "常磐線快速",
         "originStation": "Ueno",
-        "nameZh": "常磐线快速",
-        "nameEn": "Joban Line (Rapid Service)",
-        "nameKo": "조반선（쾌속）",
+        "nameZh": "常磐快速线",
+        "nameEn": "Joban Rapid Line",
+        "nameKo": "조반 쾌속선",
         "color": "#00b261",
         "icon": "../images/鉄道/JR東日本/常磐線快速.png",
         "order": 9,
@@ -21272,14 +21272,14 @@
           "note": ""
         }
       ],
-      "nameZh": "常磐线（各站停车）",
-      "nameKo": "조반선（각역정차）",
+      "nameZh": "常磐缓行线",
+      "nameKo": "조반 완행선",
       "presentation": {
         "code": "JL",
         "nameJa": "常磐線各駅停車",
-        "nameZh": "常磐线各站停车",
-        "nameEn": "Joban Line (Local Train)",
-        "nameKo": "조반선（각역정차）",
+        "nameZh": "常磐缓行线",
+        "nameEn": "Joban Local Line",
+        "nameKo": "조반 완행선",
         "subNameJa": "地下鉄千代田線直通",
         "subNameZh": "地铁千代田线直通",
         "subNameEn": "Through service to Chiyoda Subway Line",
@@ -27065,8 +27065,8 @@
           "note": "Keisei-Funabashi"
         }
       ],
-      "nameZh": "横须贺线・总武快速线",
-      "nameKo": "요코스카선・소부 쾌속선",
+      "nameZh": "总武快速线",
+      "nameKo": "소부 쾌속선",
       "serviceBoundaries": [
         {
           "lineId": "Yokosuka",
@@ -27092,9 +27092,9 @@
       "presentation": {
         "code": "JO",
         "nameJa": "横須賀線・総武線快速",
-        "nameZh": "横须贺线・总武线快速",
-        "nameEn": "Yokosuka Line / Sobu Line (Rapid)",
-        "nameKo": "요코스카선・소부 쾌속선",
+        "nameZh": "横须贺线·总武快速线",
+        "nameEn": "Yokosuka Line / Sobu Rapid Line",
+        "nameKo": "요코스카선·소부 쾌속선",
         "color": "#00347a",
         "icon": "../images/鉄道/JR東日本/総武線快速横須賀線.png",
         "lineIds": [
@@ -29599,14 +29599,14 @@
           "note": ""
         }
       ],
-      "nameZh": "中央・总武线（各站停车）",
-      "nameKo": "주오・소부선（각역정차）",
+      "nameZh": "中央·总武缓行线",
+      "nameKo": "주오·소부 완행선",
       "presentation": {
         "code": "JB",
-        "nameJa": "中央線・総武線各駅停車",
-        "nameZh": "中央线・总武线各站停车",
-        "nameEn": "Chuo Line / Sobu Line (Local Train)",
-        "nameKo": "주오・소부선（각역정차）",
+        "nameJa": "中央・総武線各駅停車",
+        "nameZh": "中央·总武缓行线",
+        "nameEn": "Chuo-Sobu Local Line",
+        "nameKo": "주오·소부 완행선",
         "color": "#ffd400",
         "icon": "../images/鉄道/JR東日本/中央・総武線各駅停車.png",
         "order": 2,
@@ -29635,8 +29635,8 @@
       ]
     },
     "Daishi_Keikyu": {
-      "name": "大师线（京急）",
-      "nameEn": "Daishi Line (Keikyu)",
+      "name": "京急大师线",
+      "nameEn": "Keikyu Daishi Line",
       "nameJa": "京急大師線",
       "code": "DK",
       "color": "#00A0E8",
@@ -29674,14 +29674,14 @@
           "toStation": "Keikyu-Kawasaki"
         }
       ],
-      "nameZh": "大师线",
-      "nameKo": "다이시선",
+      "nameZh": "京急大师线",
+      "nameKo": "게이큐 다이시선",
       "presentation": {
         "code": "KK",
-        "nameJa": "大師線",
-        "nameZh": "大师线",
-        "nameEn": "Daishi Line",
-        "nameKo": "다이시선",
+        "nameJa": "京急大師線",
+        "nameZh": "京急大师线",
+        "nameEn": "Keikyu Daishi Line",
+        "nameKo": "게이큐 다이시선",
         "color": "#e60012",
         "icon": "../images/鉄道/京急電鉄/大師線.png",
         "order": 5,
@@ -29693,8 +29693,8 @@
       "serviceBoundaries": []
     },
     "Daishi_Tobu": {
-      "name": "大师线（东武）",
-      "nameEn": "Daishi Line (Tobu)",
+      "name": "东武大师线",
+      "nameEn": "Tobu Daishi Line",
       "nameJa": "東武大師線",
       "code": "DTB",
       "color": "#0f6cc3",
@@ -29721,14 +29721,14 @@
           "note": ""
         }
       ],
-      "nameZh": "大师线",
-      "nameKo": "다이시선",
+      "nameZh": "东武大师线",
+      "nameKo": "도부 다이시선",
       "presentation": {
         "code": "TS",
-        "nameJa": "大師線",
-        "nameZh": "大师线",
-        "nameEn": "Daishi Line",
-        "nameKo": "다이시선",
+        "nameJa": "東武大師線",
+        "nameZh": "东武大师线",
+        "nameEn": "Tobu Daishi Line",
+        "nameKo": "도부 다이시선",
         "color": "#0f6cc3",
         "icon": "../images/鉄道/東武鉄道/大師線.png",
         "order": 3,
@@ -31220,7 +31220,7 @@
     },
     "Kawagoe": {
       "name": "Kawagoe",
-      "nameEn": "Kawagoe Line (Kawagoe–Komagawa)",
+      "nameEn": "Kawagoe Line",
       "nameJa": "川越線",
       "code": "",
       "color": "#808080",
@@ -31269,14 +31269,14 @@
           "note": ""
         }
       ],
-      "nameZh": "川越线（川越～高丽川）",
-      "nameKo": "가와고에선（가와고에〜코마가와）",
+      "nameZh": "川越线",
+      "nameKo": "가와고에선",
       "presentation": {
         "code": "",
         "nameJa": "川越線・八高線",
-        "nameZh": "川越线・八高线",
+        "nameZh": "川越·八高线",
         "nameEn": "Kawagoe Line / Hachiko Line",
-        "nameKo": "가와고에선（가와고에〜코마가와）",
+        "nameKo": "가와고에·하치코선",
         "color": "#808080",
         "order": 20,
         "displayRules": {
@@ -32524,11 +32524,11 @@
       }
     },
     "KoizumiBranch": {
-      "name": "小泉線（太田－東小泉）",
-      "nameJa": "小泉線（太田－東小泉）",
-      "nameZh": "小泉线（太田－东小泉）",
-      "nameEn": "Koizumi Line (Ota–Higashi-Koizumi)",
-      "nameKo": "고이즈미선（오타~히가시코이즈미）",
+      "name": "東武小泉線太田区間",
+      "nameJa": "東武小泉線太田区間",
+      "nameZh": "东武小泉线太田段",
+      "nameEn": "Tobu Koizumi Line Ota Section",
+      "nameKo": "도부 고이즈미선 오타 구간",
       "code": "TI",
       "color": "#ff0000",
       "operator": "Tobu",
@@ -33379,7 +33379,7 @@
     },
     "Noda": {
       "name": "野田线",
-      "nameEn": "Noda Line",
+      "nameEn": "Tobu Urban Park Line",
       "nameJa": "東武アーバンパークライン",
       "code": "TD",
       "color": "#0093d0",
@@ -33550,14 +33550,14 @@
           "note": ""
         }
       ],
-      "nameZh": "野田线（都市公园线）",
-      "nameKo": "노다선（어반 파크 라인）",
+      "nameZh": "东武都市公园线",
+      "nameKo": "도부 어반 파크 라인",
       "presentation": {
         "code": "TD",
-        "nameJa": "野田線（アーバンパークライン）",
-        "nameZh": "野田线（都市公园线）",
-        "nameEn": "Noda Line (Urban Park Line)",
-        "nameKo": "노다선（어반 파크 라인）",
+        "nameJa": "東武アーバンパークライン",
+        "nameZh": "东武都市公园线",
+        "nameEn": "Tobu Urban Park Line",
+        "nameKo": "도부 어반 파크 라인",
         "color": "#0093d0",
         "icon": "../images/鉄道/東武鉄道/野田線.png",
         "order": 11,
@@ -37884,8 +37884,8 @@
       "serviceBoundaries": []
     },
     "Yurakucho_Seibu": {
-      "name": "有乐町线",
-      "nameEn": "Yurakucho Line (Seibu)",
+      "name": "西武有乐町线",
+      "nameEn": "Seibu Yurakucho Line",
       "nameJa": "西武有楽町線",
       "code": "SI",
       "color": "#EF7A00",
@@ -38499,7 +38499,7 @@
     "TobuSkytree": {
       "name": "TobuSkytree",
       "nameEn": "Tobu Skytree Line",
-      "nameJa": "伊勢崎線（スカイツリーライン）",
+      "nameJa": "東武スカイツリーライン",
       "code": "TS",
       "color": "#0f6cc3",
       "operator": "Tobu",
@@ -39897,8 +39897,8 @@
       "image": "../images/鉄道/相鉄/相鉄新横浜線.png"
     },
     "NewShuttle": {
-      "nameJa": "埼玉新都市交通伊奈線（ニューシャトル）",
-      "nameEn": "Saitama New Urban Transit Ina Line (New Shuttle)",
+      "nameJa": "伊奈線",
+      "nameEn": "Ina Line",
       "operator": "SaitamaNewUrbanTransit",
       "color": "#ea5504",
       "code": "NS",
@@ -39961,15 +39961,15 @@
           "note": ""
         }
       ],
-      "nameZh": "埼玉新都市交通伊奈线（新穿梭）",
-      "nameKo": "사이타마 신도시 교통 이나선（뉴 셔틀）",
+      "nameZh": "伊奈线",
+      "nameKo": "이나선",
       "name": "ニューシャトル",
       "presentation": {
         "code": "NS",
-        "nameJa": "埼玉新都市交通伊奈線（ニューシャトル）",
-        "nameZh": "埼玉新都市交通伊奈线（新穿梭）",
-        "nameEn": "Saitama New Urban Transit Ina Line (New Shuttle)",
-        "nameKo": "사이타마 신도시 교통 이나선（뉴 셔틀）",
+        "nameJa": "伊奈線",
+        "nameZh": "伊奈线",
+        "nameEn": "Ina Line",
+        "nameKo": "이나선",
         "color": "#ea5504",
         "icon": "../images/鉄道/埼玉新都市交通/伊奈線.png",
         "order": 1,
@@ -41328,8 +41328,8 @@
     },
     "MarunouchiBranch": {
       "name": "MarunouchiBranch",
-      "nameJa": "丸ノ内線（方南町支線）",
-      "nameEn": "Marunouchi Line (Honancho Branch)",
+      "nameJa": "丸ノ内線方南町支線",
+      "nameEn": "Marunouchi Line Honancho Branch",
       "code": "Mb",
       "color": "#f31630",
       "operator": "TokyoMetro",
@@ -41345,14 +41345,14 @@
       ],
       "throughServices": [],
       "transferStations": [],
-      "nameZh": "丸之内线（方南町支线）",
-      "nameKo": "마루노우치선（호난초 지선）",
+      "nameZh": "丸之内线方南町支线",
+      "nameKo": "마루노우치선 호난초 지선",
       "serviceBoundaries": []
     },
     "ChiyodaBranch": {
       "name": "ChiyodaBranch",
-      "nameJa": "千代田線（北綾瀬支線）",
-      "nameEn": "Chiyoda Line (Kita-Ayase Branch)",
+      "nameJa": "千代田線北綾瀬支線",
+      "nameEn": "Chiyoda Line Kita-Ayase Branch",
       "code": "C-b",
       "color": "#009944",
       "operator": "TokyoMetro",
@@ -41383,14 +41383,14 @@
           "note": ""
         }
       ],
-      "nameZh": "千代田线（北绫濑支线）",
-      "nameKo": "치요다선（키타아야세 지선）",
+      "nameZh": "千代田线北绫濑支线",
+      "nameKo": "치요다선 기타아야세 지선",
       "serviceBoundaries": []
     },
     "ChuoTatsuno": {
       "name": "ChuoTatsuno",
-      "nameJa": "中央本線（辰野支線）",
-      "nameEn": "Chuo Main Line (Tatsuno Branch)",
+      "nameJa": "中央本線辰野支線",
+      "nameEn": "Chuo Main Line Tatsuno Branch",
       "code": "CHU",
       "color": "#0073bf",
       "operator": "JR-East",
@@ -41416,8 +41416,8 @@
         "ChuoMain"
       ],
       "transferStations": [],
-      "nameZh": "中央本线（辰野支线）",
-      "nameKo": "주오 본선（타츠노 지선）",
+      "nameZh": "中央本线辰野支线",
+      "nameKo": "주오 본선 다쓰노 지선",
       "serviceBoundaries": [
         {
           "lineId": "ChuoMain",
@@ -41433,8 +41433,8 @@
     },
     "TsurumiUmiShibaura": {
       "name": "TsurumiUmiShibaura",
-      "nameJa": "鶴見線（海芝浦支線）",
-      "nameEn": "Tsurumi Line (Umi-Shibaura Branch)",
+      "nameJa": "鶴見線海芝浦支線",
+      "nameEn": "Tsurumi Line Umi-Shibaura Branch",
       "code": "JI-U",
       "color": "#ffd400",
       "operator": "JR-East",
@@ -41454,14 +41454,14 @@
       ],
       "throughServices": [],
       "transferStations": [],
-      "nameZh": "鹤见线",
-      "nameKo": "츠루미선",
+      "nameZh": "鹤见线海芝浦支线",
+      "nameKo": "쓰루미선 우미시바우라 지선",
       "serviceBoundaries": []
     },
     "TsurumiOkawa": {
       "name": "TsurumiOkawa",
-      "nameJa": "鶴見線（大川支線）",
-      "nameEn": "Tsurumi Line (Okawa Branch)",
+      "nameJa": "鶴見線大川支線",
+      "nameEn": "Tsurumi Line Okawa Branch",
       "code": "JI-O",
       "color": "#ffd400",
       "operator": "JR-East",
@@ -41479,8 +41479,8 @@
       ],
       "throughServices": [],
       "transferStations": [],
-      "nameZh": "鹤见线",
-      "nameKo": "츠루미선",
+      "nameZh": "鹤见线大川支线",
+      "nameKo": "쓰루미선 오카와 지선",
       "serviceBoundaries": []
     },
     "JobanMain": {
@@ -41707,10 +41707,10 @@
     },
     "NaritaAbikoBranch": {
       "name": "NaritaAbikoBranch",
-      "nameEn": "Narita-Abiko Branch Line",
-      "nameJa": "成田線（我孫子支線）",
-      "nameZh": "成田线（我孙子支线）",
-      "nameKo": "나리타선（아비코 지선）",
+      "nameEn": "Narita Line Abiko Branch",
+      "nameJa": "成田線我孫子支線",
+      "nameZh": "成田线我孙子支线",
+      "nameKo": "나리타선 아비코 지선",
       "code": null,
       "color": "#00BB85",
       "operator": "JR-East",
@@ -41779,10 +41779,10 @@
     },
     "NaritaAirportBranch": {
       "name": "NaritaAirportBranch",
-      "nameEn": "Narita Airport Branch Line",
-      "nameJa": "成田線（空港支線）",
-      "nameZh": "成田线（机场支线）",
-      "nameKo": "나리타선（공항 지선）",
+      "nameEn": "Narita Line Airport Branch",
+      "nameJa": "成田線空港支線",
+      "nameZh": "成田线机场支线",
+      "nameKo": "나리타선 공항 지선",
       "code": null,
       "color": "#00BB85",
       "operator": "JR-East",
@@ -41824,10 +41824,10 @@
     },
     "NambuBranch": {
       "name": "NambuBranch",
-      "nameEn": "Nambu Branch Line",
-      "nameJa": "南武線（浜川崎支線）",
-      "nameZh": "南武线（滨川崎支线）",
-      "nameKo": "난부선（하마카와사키 지선）",
+      "nameEn": "Nambu Line Hamakawasaki Branch",
+      "nameJa": "南武線浜川崎支線",
+      "nameZh": "南武线滨川崎支线",
+      "nameKo": "난부선 하마카와사키 지선",
       "code": null,
       "color": "#FFE400",
       "operator": "JR-East",
@@ -49550,11 +49550,11 @@
       ]
     },
     "SotetsuJRDirect": {
-      "name": "相鉄線直通（JR接続区間）",
-      "nameJa": "相鉄線直通（JR接続区間）",
-      "nameZh": "相铁线直通（JR接续区间）",
-      "nameEn": "Sotetsu Line Through Service (JR Connector)",
-      "nameKo": "소테쓰선 직통 (JR 접속 구간)",
+      "name": "相鉄・JR直通線",
+      "nameJa": "相鉄・JR直通線",
+      "nameZh": "相铁·JR直通线",
+      "nameEn": "Sotetsu-JR Through Line",
+      "nameKo": "소테쓰·JR 직통선",
       "operator": "JR-East",
       "color": "#00ac9a",
       "code": "JS",
@@ -49630,10 +49630,10 @@
       ],
       "presentation": {
         "code": "",
-        "nameJa": "相鉄線直通（JR接続区間）",
-        "nameZh": "相铁线直通（JR接续区间）",
-        "nameEn": "Sotetsu Line Through Service (JR Connector)",
-        "nameKo": "소테쓰선 직통 (JR 접속 구간)",
+        "nameJa": "相鉄・JR直通線",
+        "nameZh": "相铁·JR直通线",
+        "nameEn": "Sotetsu-JR Through Line",
+        "nameKo": "소테쓰·JR 직통선",
         "subNameJa": "埼京線接続区間",
         "subNameZh": "埼京线连接区间",
         "subNameEn": "Saikyo Line connection section",
@@ -49758,8 +49758,8 @@
     },
     "SaitamaRapid": {
       "name": "埼玉高速鉄道線",
-      "nameJa": "埼玉高速鉄道線（埼玉スタジアム線）",
-      "nameZh": "埼玉高速铁道线（埼玉体育场线）",
+      "nameJa": "埼玉高速鉄道線",
+      "nameZh": "埼玉高速铁道线",
       "nameEn": "Saitama Rapid Railway Line",
       "nameKo": "사이타마 고속철도선",
       "operator": "SaitamaRapidRailway",
@@ -50780,7 +50780,7 @@
       }
     },
     "OitoWest": {
-      "name": "大糸线（JR西日本）",
+      "name": "大糸线",
       "nameEn": "Oito Line",
       "nameJa": "大糸線",
       "nameZh": "大糸线",
@@ -51328,7 +51328,7 @@
     },
     "Nikko": {
       "name": "Nikko",
-      "nameEn": "Nikko Line (JR East)",
+      "nameEn": "Nikko Line",
       "nameJa": "日光線",
       "nameZh": "日光线",
       "nameKo": "닛코선",
@@ -51377,7 +51377,7 @@
       "presentation": {
         "nameJa": "日光線",
         "nameZh": "日光线",
-        "nameEn": "Nikko Line (JR East)",
+        "nameEn": "Nikko Line",
         "nameKo": "닛코선",
         "color": "#880033",
         "code": "NIK",
@@ -51390,9 +51390,9 @@
     },
     "TohokuRifu": {
       "name": "TohokuRifu",
-      "nameEn": "Tohoku Main Line (Rifu Branch)",
-      "nameJa": "東北本線（利府支線）",
-      "nameZh": "东北本线（利府支线）",
+      "nameEn": "Tohoku Main Line Rifu Branch",
+      "nameJa": "東北本線利府支線",
+      "nameZh": "东北本线利府支线",
       "nameKo": "도호쿠 본선 리후 지선",
       "code": "",
       "color": "#00732f",
@@ -51423,9 +51423,9 @@
       "sourceQuality": "topology_verified_times_approximate",
       "timetableDataStatus": "station_topology_only",
       "presentation": {
-        "nameJa": "東北本線（利府支線）",
-        "nameZh": "东北本线（利府支线）",
-        "nameEn": "Tohoku Main Line (Rifu Branch)",
+        "nameJa": "東北本線利府支線",
+        "nameZh": "东北本线利府支线",
+        "nameEn": "Tohoku Main Line Rifu Branch",
         "nameKo": "도호쿠 본선 리후 지선",
         "color": "#00732f",
         "code": "",
@@ -51539,7 +51539,7 @@
       "nameEn": "Tokaido Main Line",
       "nameZh": "东海道本线",
       "nameKo": "도카이도 본선",
-      "name": "東海道本線（JR東海）",
+      "name": "東海道本線",
       "operator": "JR-Central",
       "color": "#f6861f",
       "code": "CA",
@@ -51733,7 +51733,7 @@
       "nameEn": "Chuo Main Line",
       "nameZh": "中央本线",
       "nameKo": "주오 본선",
-      "name": "中央本線（JR東海）",
+      "name": "中央本線",
       "operator": "JR-Central",
       "color": "#327198",
       "code": "CF",
@@ -51841,7 +51841,7 @@
       "nameEn": "Kansai Main Line",
       "nameZh": "关西本线",
       "nameKo": "간사이 본선",
-      "name": "関西本線（JR東海）",
+      "name": "関西本線",
       "operator": "JR-Central",
       "color": "#16b68f",
       "code": "CJ",
@@ -51909,7 +51909,7 @@
       "nameEn": "Kisei Main Line",
       "nameZh": "纪势本线",
       "nameKo": "기세이 본선",
-      "name": "紀勢本線（JR東海）",
+      "name": "紀勢本線",
       "operator": "JR-Central",
       "color": "#80868b",
       "code": "Kisei",
