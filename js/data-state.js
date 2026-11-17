@@ -1143,6 +1143,10 @@
   // stretches whose official regional symbol is not yet verified.
   function segmentBandHtml(lineId, linesObj) {
     var line = linesObj && linesObj[lineId];
+    // Kyushu overview cards show one representative color. Regional numbering
+    // remains scoped to the detailed map; gray/partial strips here incorrectly
+    // suggested that the rest of a physical railway was missing.
+    if (line && line.operator === "JR-Kyushu") return "";
     var rules = line && line.presentation && line.presentation.displayRules &&
       line.presentation.displayRules.segmentColors;
     var resolver = window.LinePresentationService &&

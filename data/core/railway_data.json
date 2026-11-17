@@ -46710,7 +46710,7 @@
                 "operator": "JR-Kyushu"
               }
             ],
-            "unknownColor": "#80868b"
+            "unknownColor": "#ed1c24"
           }
         }
       },
@@ -46849,7 +46849,6 @@
         "nameKo": "나가사키 본선",
         "color": "#f3ad19",
         "code": "",
-        "icon": "../images/鉄道/JR九州/九州_JH.png",
         "order": 8,
         "lineIds": [
           "NagasakiMain"
@@ -46866,7 +46865,7 @@
                 "operator": "JR-Kyushu"
               }
             ],
-            "unknownColor": "#80868b"
+            "unknownColor": "#f3ad19"
           }
         }
       }
@@ -47196,7 +47195,6 @@
         "nameKo": "닛포 본선",
         "color": "#00b2e5",
         "code": "",
-        "icon": "../images/鉄道/JR九州/九州_JF.png",
         "order": 6,
         "lineIds": [
           "Nippo"
@@ -47213,7 +47211,7 @@
                 "operator": "JR-Kyushu"
               }
             ],
-            "unknownColor": "#80868b"
+            "unknownColor": "#00b2e5"
           }
         }
       }
@@ -48885,7 +48883,7 @@
                 "operator": "JR-Kyushu"
               }
             ],
-            "unknownColor": "#80868b"
+            "unknownColor": "#f5b000"
           }
         }
       }
@@ -50755,7 +50753,6 @@
         "nameKo": "日田彦山線",
         "color": "#b6712f",
         "code": "",
-        "icon": "../images/鉄道/JR九州/九州_JI.png",
         "order": 9,
         "lineIds": [
           "Hitahikosan"
@@ -50772,7 +50769,7 @@
                 "operator": "JR-Kyushu"
               }
             ],
-            "unknownColor": "#80868b"
+            "unknownColor": "#b6712f"
           }
         }
       },
@@ -51532,7 +51529,7 @@
                 "operator": "JR-Kyushu"
               }
             ],
-            "unknownColor": "#80868b"
+            "unknownColor": "#0070c0"
           }
         }
       }

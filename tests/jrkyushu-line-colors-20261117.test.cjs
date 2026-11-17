@@ -39,6 +39,7 @@ test('long routes never advertise a limited-area official symbol as their full-l
   }
   for (const id of ['NagasakiMain','Nippo','Hitahikosan']) {
     assert.equal(data.lines[id].image,'',id + ': no whole-line icon');
+    assert.equal(data.lines[id].presentation.icon,undefined,id + ': no presentation.icon override');
   }
   assert.equal(data.lines.Hisatsu.presentation.code,'');
   assert.equal(data.lines.Hisatsu.code,'肥'); // historical internal key preserved
@@ -77,7 +78,7 @@ test('out-of-scope stations remain neutral and do not inherit a partial symbol',
     const s=segment(id,from,to);
     assert.ok(s,id);
     assert.equal(s.code,'',id);
-    assert.equal(s.color,'#80868b',id);
+    assert.equal(s.color,data.lines[id].color,id + ': unnumbered section has representative site color');
     assert.equal(s.classified,false,id);
   }
   assert.equal(segment('Nippo','Kokura','Yukuhashi'),null);

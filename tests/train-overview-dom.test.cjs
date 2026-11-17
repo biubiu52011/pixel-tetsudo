@@ -285,34 +285,48 @@ test('ChuoMain uses the JR Group fallback, not Chuo Rapid artwork, across all da
 });
 
 
-test('single-range JR-Kyushu corridors render their verified section band and neutral tail', () => {
+test('JR-Kyushu overview stays clean while the detailed segment resolver remains available', () => {
   const win = makeView();
-  win.LinePresentationService.resolveSegmentPresentation = (id, from, to, allLines) => {
-    const line = allLines[id];
-    const rule = line.presentation.displayRules.segmentColors.ranges[0];
-    const stations = line.stations;
-    const left = Math.min(stations.indexOf(from), stations.indexOf(to));
-    const start = stations.indexOf(rule.from), end = stations.indexOf(rule.to);
-    return left >= start && left < end
-      ? { color: rule.color, code: rule.code, classified: true }
-      : { color: '#80868b', code: '', classified: false };
-  };
+  const canonical = JSON.parse(fs.readFileSync('data/core/railway_data.json', 'utf8'));
+  const lines = canonical.lines;
+  for (const [id, code] of [['NagasakiMain','JH'], ['Nippo','JF'], ['Hitahikosan','JI']]) {
+    const line = lines[id];
+    assert.equal(line.image, '', id);
+    assert.ok(!line.presentation.icon, id + ' cannot carry a whole-line icon');
+    assert.equal(line.presentation.code, '', id);
+    const card = win.LineCard.renderSystem(line.presentation, [id], lines, { mode: 'trains' });
+    assert.ok(!card.includes('rs-line-segment-band'), id + ' has no misleading partial coverage bar');
+    assert.ok(!card.includes('九州_' + code + '.png'), id + ' must not show regional code as a whole-line badge');
+    assert.ok(card.includes('JRグループ.png'), id + ' uses the JR fallback mark');
+  }
+  for (const id of ['KagoshimaMain','Chikuho','ChikuhiWest']) {
+    const line = lines[id];
+    assert.ok(!win.LineCard.renderSystem(line.presentation, [id], lines, {mode:'trains'})
+      .includes('rs-line-segment-band'), id);
+  }
+  const css = fs.readFileSync('css/ux-refinements.css','utf8');
+  assert.match(css, /data-operator="JR-Kyushu"[^\n]*rs-line-icon-fallback/);
+  assert.match(css, /clip-path: none;/);
+});
+
+test('JR-West still renders meaningful mixed-region color swatches', () => {
+  const win = makeView();
+  win.LinePresentationService.resolveSegmentPresentation = (_id, from, to) =>
+    from === 'A' && to === 'B'
+      ? { color: '#f39800', classified:true }
+      : { color: '#007ac0', classified:true };
   const lines = {
-    NagasakiMain: {
-      operator: 'JR-Kyushu', nameJa: '長崎本線', color: '#f3ad19',
-      stations: ['Tosu','Shin-Tosu','Saga','Nabeshima'],
-      presentation: { code: '', color: '#f3ad19', displayRules: { segmentColors: {
-        ranges: [{ from: 'Tosu', to: 'Saga', code: 'JH', color: '#f3ad19' }],
-        unknownColor: '#80868b'
-      } } }
+    SanyoMain: {
+      operator: 'JR-West', nameJa: '山陽本線', color:'#007ac0',
+      stations:['A','B','C'],
+      presentation:{ nameJa:'山陽本線', color:'#007ac0', displayRules:{segmentColors:{
+        ranges:[{from:'A',to:'B',code:'W',color:'#f39800'},{from:'B',to:'C',code:'A',color:'#007ac0'}],
+        unknownColor:'#80868b'
+      }}}
     }
   };
-  const html = win.LineCard.renderSystem(
-    { nameJa: '長崎本線', code: '', color: '#f3ad19' },
-    ['NagasakiMain'], lines, { mode: 'trains' });
-  assert.match(html, /rs-line-segment-band/,
-    'a single numbered range plus an unknown tail needs a color band');
-  assert.match(html, /data:image\/svg\+xml/);
+  const html = win.LineCard.renderSystem(lines.SanyoMain.presentation,['SanyoMain'],lines,{mode:'trains'});
+  assert.match(html,/rs-line-segment-band/);
 });
 
 test('line list fingerprint respects an intentionally blank passenger code and palette changes', () => {

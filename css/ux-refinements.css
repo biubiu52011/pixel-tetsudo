@@ -463,3 +463,17 @@ body[data-page="realtime"] .rs-filter-bar.rs-region-filter {
   .rs-region-filter .rs-region-btn,
   .rs-region-filter .rs-filter-btn {padding:9px 8px;}
 }
+
+/* JR-Kyushu: its unnumbered lines use the shared JR fallback artwork,
+   but keep the same square tile silhouette as the official J-series icons.
+   This is only an icon-shape normalization; no unofficial letter is added. */
+body[data-page="trains"] .rs-operator-group[data-operator="JR-Kyushu"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]),
+body[data-page="realtime"] .rs-operator-group[data-operator="JR-Kyushu"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]) {
+  clip-path: none;
+  border-radius: 5px;
+}
+body[data-page="trains"] .rs-operator-group[data-operator="JR-Kyushu"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]) > img,
+body[data-page="realtime"] .rs-operator-group[data-operator="JR-Kyushu"] .rs-line-icon-fallback:has(> img[src*="JRグループ.png"]) > img {
+  clip-path: none;
+  border-radius: 3px;
+}
