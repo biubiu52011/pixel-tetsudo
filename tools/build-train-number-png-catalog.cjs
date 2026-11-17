@@ -626,6 +626,17 @@ function jrTwelfthSqlSeedBands(){
   to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
   status:'纯号段（JR专用原始条件保留）'}));
 }
+// Thirteenth JR batch: SQL audit reference only; retain original source guards.
+const JR_THIRTEENTH_SQL_MIGRATION='supabase/migrations/20261117052143_seed_png_first_thirteenth_jr_hinabi_ofunato_n700_sanyo_2611.sql';
+function jrThirteenthSqlSeedBands(){
+ const src=read(JR_THIRTEENTH_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==43)throw Error('JR thirteenth SQL number bands do not match applied migration');
+ return matches.map(m=>({line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
+  to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
+  status:'纯号段（JR专用原始条件保留）'}));
+}
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -654,7 +665,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('JR SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
