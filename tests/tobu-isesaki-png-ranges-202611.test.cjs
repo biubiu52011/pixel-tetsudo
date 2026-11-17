@@ -191,12 +191,12 @@ test('344E Isesaki half of a verified 344E -> 635E Sano running chain uses sourc
   assert.equal(ref.scheduledCars,3);
   assert.equal(ref.referenceOnly,true);
   assert.equal(ref.actualVehicleConfirmed,false);
-  assert.ok(ref.pngPath.endsWith('東武鉄道_8000型.png'));
+  assert.ok(ref.pngPath.endsWith('東武鉄道_8000型_標準塗装.png'));
   const icon=w.TrainVehicle.selectMarkerArtwork(isesaki,false);
   assert.equal(icon.kind,'vehicle');
   assert.equal(icon.planned,true);
   assert.equal(icon.representativeOnly,true);
-  assert.ok(icon.iconSrc.endsWith('東武鉄道_8000型.png'));
+  assert.ok(icon.iconSrc.endsWith('東武鉄道_8000型_標準塗装.png'));
   // Shared runningChainId is a service link, NOT permission to reuse
   // 344E's illustration on the separately sourced Sano 635E segment.
   const sano={...isesaki,trainNumber:'635E',lineId:'Sano',
@@ -254,7 +254,7 @@ test('346E SaturdayHoliday planned trip maps exact 3-car fleet PNG despite broad
   assert.equal(icon.planned,true);
   assert.equal(icon.illustrative,true);
   assert.equal(icon.actualVehicleConfirmed,false);
-  assert.ok(icon.iconSrc.endsWith('/東武鉄道_8000型.png'));
+  assert.ok(icon.iconSrc.endsWith('/東武鉄道_8000型_標準塗装.png'));
   assert.equal(w.TrainVehicle.diagnoseTobuIsesakiArtwork(p,false),
     'number-reference-accepted-but-marker-unresolved');
   // A genuinely blocked source is not rescued by the official number list.

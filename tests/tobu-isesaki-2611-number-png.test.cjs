@@ -33,9 +33,9 @@ test('2026 official roster indexes 95 local trains and 50 Ryomo expresses',()=>{
 test('2/3-car numbers are exact, image selection is only family illustration',()=>{
  for(const [num,cars,file,model] of [
  ['305E',2,'10030型_未更新車.png','東武10030系'],
- ['303E',3,'8000型.png','東武8000系'],
+ ['303E',3,'8000型_標準塗装.png','東武8000系'],
  ['402E',2,'10030型_未更新車.png','東武10030系'],
- ['302E',3,'8000型.png','東武8000系'],
+ ['302E',3,'8000型_標準塗装.png','東武8000系'],
  ['419E',2,'10030型_未更新車.png','東武10030系']]){
    const row=window.TrainNumberPngRanges.match(num,'TobuIsesaki',p(num));
    assert.ok(row,num);assert.equal(row.scheduledCars,cars);
