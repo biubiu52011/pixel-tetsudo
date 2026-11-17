@@ -2006,6 +2006,30 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // 列车图标是嵌入既有铁路
   // 图中的图库 PNG。图本身可以是 SVG；列车绝不通过 SVG
   // 基元绘制，也不通过另一套渲染器映射选择。
+  // Compare the SAME canonical train's prior displayed SVG image to the
+  // next source railway without treating train number alone as an identity.
+  function _guardThroughArtworkTransition(existingIcon,p,markerSpec) {
+    if (!existingIcon || !p || !p.runningChainId || markerSpec.kind !== "vehicle")
+      return markerSpec;
+    var earlier=existingIcon._trainPosition;
+    var previousArt=existingIcon.getAttribute("data-train-artwork") || "";
+    var strongSources=p.vehicleResolution && Array.isArray(p.vehicleResolution.sources)
+      ? p.vehicleResolution.sources : [];
+    var newlyPhysical=p.vehicleIdentityStatus === "EXACT" &&
+      p.vehicleResolvedFromRealtime === true &&
+      (strongSources.indexOf("official-realtime-car-number")>=0 ||
+       strongSources.indexOf("roster-physical-id")>=0);
+    if (earlier && earlier.runningChainId === p.runningChainId &&
+        earlier.serviceDate === p.serviceDate &&
+        earlier.trainNumber === p.trainNumber &&
+        earlier.sourceRailway && p.sourceRailway &&
+        earlier.sourceRailway !== p.sourceRailway &&
+        previousArt && previousArt !== markerSpec.iconSrc && !newlyPhysical)
+      return {kind:"unresolved",iconSrc:"",compact:true,planned:false,
+        illustrative:false,unresolvedReason:"through-livery-conflict"};
+    return markerSpec;
+  }
+
   function _createTrainMarker(trainLayer, svgNS, trainUid, spec, px, py, p, lineId, isLoop, color, loc) {
     if (!spec) return null;
     var knownVehicle = spec.kind === "vehicle" && !!spec.iconSrc;
@@ -2224,26 +2248,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 中性圆点仍参与现有布局/标签/动画。
       updatedIds[trainUid] = true;
       var existingIcon = markerById[String(trainUid)] || null;
-      // The same canonical train crossing a source railway is not repainted
-      // from an unproven, display-line-specific illustration.
-      if (existingIcon && p && p.runningChainId && markerSpec.kind === "vehicle") {
-        var earlier=existingIcon._trainPosition;
-        var previousArt=existingIcon.getAttribute("data-train-artwork") || "";
-        var strongSources=p.vehicleResolution && Array.isArray(p.vehicleResolution.sources)
-          ? p.vehicleResolution.sources : [];
-        var newlyPhysical=p.vehicleResolvedFromRealtime === true &&
-          (strongSources.indexOf("official-realtime-car-number")>=0 ||
-           strongSources.indexOf("roster-physical-id")>=0);
-        if (earlier && earlier.runningChainId === p.runningChainId &&
-            earlier.serviceDate === p.serviceDate &&
-            earlier.trainNumber === p.trainNumber &&
-            earlier.sourceRailway && p.sourceRailway &&
-            earlier.sourceRailway !== p.sourceRailway &&
-            previousArt && previousArt !== markerSpec.iconSrc && !newlyPhysical) {
-          markerSpec={kind:"unresolved",iconSrc:"",compact:true,planned:false,
-            illustrative:false,unresolvedReason:"through-livery-conflict"};
-        }
-      }
+      markerSpec=_guardThroughArtworkTransition(existingIcon,p,markerSpec);
       var expectedTag = markerSpec.kind === "vehicle" && !markerSpec.compact ? "image" : "circle";
       // Upgrade DOM made by an earlier renderer without carrying over its
       // world-space caption coordinates. Rebuild as a single SVG unit.
