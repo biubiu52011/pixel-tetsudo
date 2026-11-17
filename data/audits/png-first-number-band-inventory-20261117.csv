@@ -291,7 +291,9 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yoko
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,0408,2446,K,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_6000番台.png,Yokohama,3840,4747,K,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_7000番台.png,Rinkai,0000,0071,KFS,tail,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_7000番台.png,Rinkai,0000,0071,KFS,tail,纯号段（JR原有号码条件保留；不代表编组）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_7000番台.png,SaikyoKawagoe,0000,0071,KFS,tail,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_7000番台.png,SaikyoKawagoe,0000,0071,KFS,tail,纯号段（JR原有号码条件保留；不代表编组）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_8000番台.png,Nambu,0400,4999,F,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_8000番台.png,Nambu,0400,4999,F,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E233系_房総地区_改造車.png,,,,,,无号段
@@ -788,6 +790,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハE200系（小海線�
 JR,JR東日本,images/列车/JR東日本/e211na1n.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_313系.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2226,5550,MG,full,原有条件约束
+JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2226,5550,MG,full,纯号段（JR原有号码条件保留；不代表编组）
 JR,JR東海,images/列车/JR東海/JR東海_373系.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1001,1006,M,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1011,1011,M,full,原有条件约束
