@@ -3618,7 +3618,7 @@ test('operation-number PNG library preserves independently scoped rows before se
    .filter(x=>x.lineId==='OperationPngScopeContract');
   assert.equal(rows.length,2,
    'different calendar scopes must reach the final candidate selector');
-  assert.deepEqual(rows.map(x=>x.operator),['Toei','Toei'],
+  assert.equal(rows.map(x=>x.operator).join(','),'Toei,Toei',
    'family-rule operator guards must be retained');
   assert.ok(resolve('weekday'));
   assert.ok(resolve('holiday'),
