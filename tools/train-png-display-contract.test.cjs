@@ -925,6 +925,8 @@ const markerContext = vm.createContext({
   _setTrainMarkerAccessibilityLabel: (node, text) => node.setAttribute('aria-label', text),
   _setTrainFormationAttribute: () => {},
   _rememberTrainArtworkFailure: () => {},
+  // Isolated marker VM: the network URL helper is not part of its extracted block.
+  _trainArtworkRequestUrl: (path) => String(path || ''),
   _resolveTrainLabelCollisions: () => {},
   _trainMoveDir: () => 'up',
   _isLoopDirName: () => false,
