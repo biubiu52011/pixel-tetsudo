@@ -877,7 +877,7 @@ function privateFourthSqlSeedBands(){
 const PRIVATE_NIKKO_SQL_MIGRATION='supabase/migrations/20261117200000_seed_private_tobu_nikko_express_png_bands_2611.sql';
 function privateNikkoSqlSeedBands(){
  const rosterSource=read('data/timetables/train-number-png-ranges.js');
- const match=rosterSource.match(/tobuSkytreeNumbers=(\\{[^;]+\\});/);
+ const match=rosterSource.match(/tobuSkytreeNumbers=(\{[^;]+\});/);
  if(!match)throw Error('Tobu Nikko 2611 family roster missing');
  const rosters=JSON.parse(match[1]);
  const groups=[
@@ -899,7 +899,7 @@ function privateNikkoSqlSeedBands(){
   }
  }
  const migration=read(PRIVATE_NIKKO_SQL_MIGRATION);
- const pattern=/^  \\('2611','TobuNikko','(png_band\\/TobuNikko\\/\\d{4}-\\d{4})',(\\d+),(\\d+),'',NULL,'\\.\\.\\/(images\\/列车\\/東武鉄道\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const pattern=/^  \('2611','TobuNikko','(png_band\/TobuNikko\/\d{4}-\d{4})',(\d+),(\d+),'',NULL,'\.\.\/(images\/列车\/東武鉄道\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const rows=[...migration.matchAll(pattern)];
  if(rows.length!==expected.length||rows.length!==62)
   throw Error('Tobu Nikko PNG band SQL record count changed');
