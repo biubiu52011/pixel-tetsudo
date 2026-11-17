@@ -44465,8 +44465,8 @@
     },
     "KansaiMain": {
       "name": "KansaiMain",
-      "nameEn": "Kansai Main Line (Yamatoji Line)",
-      "nameJa": "関西本線（大和路線）",
+      "nameEn": "Kansai Main Line",
+      "nameJa": "関西本線",
       "code": "KansaiMain",
       "color": "#00a65a",
       "operator": "JR-West",
@@ -44602,8 +44602,8 @@
           "note": "奈良駅 奈良線(関西本線と和歌山方面)"
         }
       ],
-      "nameZh": "关西本线(大和路线)",
-      "nameKo": "칸사이 본선(야마토지선)",
+      "nameZh": "关西本线",
+      "nameKo": "칸사이 본선",
       "serviceBoundaries": [
         {
           "lineId": "OsakaLoop",
@@ -44627,10 +44627,10 @@
         }
       ],
       "presentation": {
-        "nameJa": "関西本線（大和路線）",
-        "nameZh": "关西本线(大和路线)",
-        "nameEn": "Kansai Main Line (Yamatoji Line)",
-        "nameKo": "칸사이 본선(야마토지선)",
+        "nameJa": "関西本線",
+        "nameZh": "关西本线",
+        "nameEn": "Kansai Main Line",
+        "nameKo": "칸사이 본선",
         "color": "#00a65a",
         "code": "Q",
         "order": 16,
@@ -45031,8 +45031,8 @@
     },
     "SaninMain": {
       "name": "SaninMain",
-      "nameEn": "Sanin Main Line (Sagano Line)",
-      "nameJa": "山陰本線（嵯峨野線）",
+      "nameEn": "Sanin Main Line",
+      "nameJa": "山陰本線",
       "code": "SaninMain",
       "color": "#8360a8",
       "operator": "JR-West",
@@ -45399,14 +45399,14 @@
           "note": "福知山駅 福知山線(宝塚線)・丹波縦断"
         }
       ],
-      "nameZh": "山阴本线(嵯峨野线)",
-      "nameKo": "산인 본선(사가노선)",
+      "nameZh": "山阴本线",
+      "nameKo": "산인 본선",
       "serviceBoundaries": [],
       "presentation": {
-        "nameJa": "山陰本線（嵯峨野線）",
-        "nameZh": "山阴本线(嵯峨野线)",
-        "nameEn": "Sanin Main Line (Sagano Line)",
-        "nameKo": "산인 본선(사가노선)",
+        "nameJa": "山陰本線",
+        "nameZh": "山阴本线",
+        "nameEn": "Sanin Main Line",
+        "nameKo": "산인 본선",
         "color": "#8360a8",
         "code": "E",
         "icon": "../images/鉄道/JR西日本/山陰_E.png",
@@ -45447,8 +45447,8 @@
     },
     "Fukuchiyama": {
       "name": "Fukuchiyama",
-      "nameEn": "Fukuchiyama Line (JR Takarazuka Line)",
-      "nameJa": "福知山線（JR宝塚線）",
+      "nameEn": "Fukuchiyama Line",
+      "nameJa": "福知山線",
       "code": "Fukuchiyama",
       "color": "#fcc800",
       "operator": "JR-West",
@@ -45557,8 +45557,8 @@
           "note": "同站换乘"
         }
       ],
-      "nameZh": "福知山线(JR宝塚线)",
-      "nameKo": "후쿠치야마선(JR 다카라즈카선)",
+      "nameZh": "福知山线",
+      "nameKo": "후쿠치야마선",
       "serviceBoundaries": [
         {
           "lineId": "JRTozai",
@@ -45572,10 +45572,10 @@
         }
       ],
       "presentation": {
-        "nameJa": "福知山線（JR宝塚線）",
-        "nameZh": "福知山线(JR宝塚线)",
-        "nameEn": "Fukuchiyama Line (JR Takarazuka Line)",
-        "nameKo": "후쿠치야마선(JR 다카라즈카선)",
+        "nameJa": "福知山線",
+        "nameZh": "福知山线",
+        "nameEn": "Fukuchiyama Line",
+        "nameKo": "후쿠치야마선",
         "color": "#fcc800",
         "code": "G",
         "icon": "../images/鉄道/JR西日本/近畿_G.png",
@@ -46021,8 +46021,8 @@
     },
     "Gakkentoshi": {
       "name": "Gakkentoshi",
-      "nameEn": "Gakkentoshi Line (Katamachi Line)",
-      "nameJa": "学研都市線（片町線）",
+      "nameEn": "Gakkentoshi Line",
+      "nameJa": "学研都市線",
       "code": "Gakkentoshi",
       "color": "#ff1493",
       "operator": "JR-West",
@@ -46118,8 +46118,8 @@
           "note": "同站换乘"
         }
       ],
-      "nameZh": "学研都市线(片町线)",
-      "nameKo": "가켄토시선(카타마치선)",
+      "nameZh": "学研都市线",
+      "nameKo": "가켄토시선",
       "serviceBoundaries": [
         {
           "lineId": "Nara",
@@ -46143,10 +46143,10 @@
         }
       ],
       "presentation": {
-        "nameJa": "学研都市線（片町線）",
-        "nameZh": "学研都市线(片町线)",
-        "nameEn": "Gakkentoshi Line (Katamachi Line)",
-        "nameKo": "가켄토시선(카타마치선)",
+        "nameJa": "学研都市線",
+        "nameZh": "学研都市线",
+        "nameEn": "Gakkentoshi Line",
+        "nameKo": "가켄토시선",
         "color": "#ff1493",
         "code": "H",
         "icon": "../images/鉄道/JR西日本/近畿_H.png",
@@ -46159,8 +46159,8 @@
     },
     "TokaidoKansai": {
       "name": "TokaidoKansai",
-      "nameEn": "Tokaido Main Line (Kansai)",
-      "nameJa": "東海道本線（JR京都線・JR神戸線）",
+      "nameEn": "Tokaido Main Line",
+      "nameJa": "東海道本線",
       "code": "TokaidoKansai",
       "color": "#007ac0",
       "operator": "JR-West",
@@ -46298,8 +46298,8 @@
           "note": "神戸駅 山陽本線へ直通/乗換"
         }
       ],
-      "nameZh": "东海道本线(JR京都线/JR神户线)",
-      "nameKo": "도카이도 본선(JR 교토선/JR 고베선)",
+      "nameZh": "东海道本线",
+      "nameKo": "도카이도 본선",
       "serviceBoundaries": [
         {
           "lineId": "SanyoMain",
@@ -46323,10 +46323,10 @@
         }
       ],
       "presentation": {
-        "nameJa": "東海道本線（JR京都線・JR神戸線）",
-        "nameZh": "东海道本线(JR京都线/JR神户线)",
-        "nameEn": "Tokaido Main Line (Kansai)",
-        "nameKo": "도카이도 본선(JR 교토선/JR 고베선)",
+        "nameJa": "東海道本線",
+        "nameZh": "东海道本线",
+        "nameEn": "Tokaido Main Line",
+        "nameKo": "도카이도 본선",
         "color": "#007ac0",
         "code": "A",
         "icon": "../images/鉄道/JR西日本/近畿_A.png",
@@ -48096,8 +48096,8 @@
     },
     "KiseiWest": {
       "name": "KiseiWest",
-      "nameEn": "Kisei Main Line (Kinokuni Line)",
-      "nameJa": "紀勢本線（きのくに線）",
+      "nameEn": "Kisei Main Line",
+      "nameJa": "紀勢本線",
       "code": "KiseiWest",
       "color": "#00b1c2",
       "operator": "JR-West",
@@ -48225,13 +48225,13 @@
           "note": "阪和線接続"
         }
       ],
-      "nameZh": "纪势本线（纪伊国线）",
+      "nameZh": "纪势本线",
       "nameKo": "키세이 본선",
       "serviceBoundaries": [],
       "presentation": {
-        "nameJa": "紀勢本線（きのくに線）",
-        "nameZh": "纪势本线（纪伊国线）",
-        "nameEn": "Kisei Main Line (Kinokuni Line)",
+        "nameJa": "紀勢本線",
+        "nameZh": "纪势本线",
+        "nameEn": "Kisei Main Line",
         "nameKo": "키세이 본선",
         "color": "#00b1c2",
         "code": "W",
@@ -50088,7 +50088,7 @@
     "Yumesaki": {
       "name": "Yumesaki",
       "nameEn": "JR Yumesaki Line",
-      "nameJa": "JRゆめ咲線（桜島線）",
+      "nameJa": "JRゆめ咲線",
       "code": "Yumesaki",
       "color": "#0a318e",
       "operator": "JR-West",
@@ -50117,14 +50117,14 @@
           "note": "西九条站接续大阪环状线"
         }
       ],
-      "nameZh": "JR 梦咲线（樱岛线）",
-      "nameKo": "JRゆめ咲線（桜島線）",
+      "nameZh": "JR 梦咲线",
+      "nameKo": "JR 유메사키선",
       "serviceBoundaries": [],
       "presentation": {
-        "nameJa": "JRゆめ咲線（桜島線）",
-        "nameZh": "JR 梦咲线（樱岛线）",
+        "nameJa": "JRゆめ咲線",
+        "nameZh": "JR 梦咲线",
         "nameEn": "JR Yumesaki Line",
-        "nameKo": "JRゆめ咲線（桜島線）",
+        "nameKo": "JR 유메사키선",
         "color": "#0a318e",
         "code": "P",
         "icon": "../images/鉄道/JR西日本/近畿_P.png",
@@ -50311,8 +50311,8 @@
     },
     "Sakurai": {
       "name": "Sakurai",
-      "nameEn": "Sakurai Line (Manyo Mahoroba Line)",
-      "nameJa": "桜井線（万葉まほろば線）",
+      "nameEn": "Sakurai Line",
+      "nameJa": "桜井線",
       "code": "Sakurai",
       "color": "#d81e45",
       "operator": "JR-West",
@@ -50367,14 +50367,14 @@
           "note": "大和高田站接续和歌山线"
         }
       ],
-      "nameZh": "樱井线（万叶真秀吕场线）",
-      "nameKo": "桜井線（万葉まほろば線）",
+      "nameZh": "樱井线",
+      "nameKo": "사쿠라이선",
       "serviceBoundaries": [],
       "presentation": {
-        "nameJa": "桜井線（万葉まほろば線）",
-        "nameZh": "樱井线（万叶真秀吕场线）",
-        "nameEn": "Sakurai Line (Manyo Mahoroba Line)",
-        "nameKo": "桜井線（万葉まほろば線）",
+        "nameJa": "桜井線",
+        "nameZh": "樱井线",
+        "nameEn": "Sakurai Line",
+        "nameKo": "사쿠라이선",
         "color": "#d81e45",
         "code": "U",
         "icon": "../images/鉄道/JR西日本/近畿_U.png",
@@ -50781,10 +50781,10 @@
     },
     "OitoWest": {
       "name": "大糸线（JR西日本）",
-      "nameEn": "Oito Line (JR West)",
-      "nameJa": "大糸線（JR西日本）",
-      "nameZh": "大糸线（JR西日本）",
-      "nameKo": "오이토선（JR 서일본）",
+      "nameEn": "Oito Line",
+      "nameJa": "大糸線",
+      "nameZh": "大糸线",
+      "nameKo": "오이토선",
       "code": "OITW",
       "color": "#E87830",
       "operator": "JR-West",
@@ -50831,10 +50831,10 @@
       ],
       "presentation": {
         "code": "OITW",
-        "nameJa": "大糸線（JR西日本）",
-        "nameZh": "大糸线（JR西日本）",
-        "nameEn": "Oito Line (JR West)",
-        "nameKo": "오이토선（JR 서일본）",
+        "nameJa": "大糸線",
+        "nameZh": "大糸线",
+        "nameEn": "Oito Line",
+        "nameKo": "오이토선",
         "color": "#E87830",
         "order": 33,
         "lineIds": [

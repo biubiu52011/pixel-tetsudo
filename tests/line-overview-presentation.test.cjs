@@ -96,6 +96,19 @@ test('Kagoshima route overview is distinguished from JA and JB section cards', (
   assert.equal(lines.KagoshimaMain.presentation.code, '');
 });
 
+test('JR West display names have no parenthesized alias or ownership notes', () => {
+  const expected = {"KansaiMain":["関西本線","关西本线","Kansai Main Line","칸사이 본선"],"SaninMain":["山陰本線","山阴本线","Sanin Main Line","산인 본선"],"Fukuchiyama":["福知山線","福知山线","Fukuchiyama Line","후쿠치야마선"],"Gakkentoshi":["学研都市線","学研都市线","Gakkentoshi Line","가켄토시선"],"TokaidoKansai":["東海道本線","东海道本线","Tokaido Main Line","도카이도 본선"],"KiseiWest":["紀勢本線","纪势本线","Kisei Main Line","키세이 본선"],"Yumesaki":["JRゆめ咲線","JR 梦咲线","JR Yumesaki Line","JR 유메사키선"],"Sakurai":["桜井線","樱井线","Sakurai Line","사쿠라이선"],"OitoWest":["大糸線","大糸线","Oito Line","오이토선"]};
+  for (const [id, translations] of Object.entries(expected)) {
+    const line = lines[id];
+    assert.equal(line.operator, 'JR-West', id);
+    assert.ok(line.stations && line.stations.length > 0, id + ' keeps its stations');
+    for (const [index, key] of ['nameJa', 'nameZh', 'nameEn', 'nameKo'].entries()) {
+      assert.equal(line[key], translations[index], id + '/' + key);
+      assert.equal(line.presentation[key], translations[index], id + '/presentation.' + key);
+    }
+  }
+});
+
 test('JR Central trunk lines lead the display; Hokkaido recurring symbols are adjacent', () => {
   const order = ordered();
   assert.deepEqual(order.filter(id => lines[id]?.operator === 'JR-Central').slice(0, 4),
