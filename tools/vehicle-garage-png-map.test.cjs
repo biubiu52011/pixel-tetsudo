@@ -140,12 +140,12 @@ console.log('garage map: PASS — '+garage.totalPng+' assets, '+garage.canonical
   assert.ok(garage.matchModelPath('JR西日本223系5500番台',p5500,'Fukuchiyama'));
   assert.equal(garage.matchModelPath('JR西日本223系5500番台',p5500,'Hanwa'),false);
   assert.equal(garage.findModel('JR西日本223系5500番台','Fukuchiyama')[0].canonicalImage,true);
-  assert.equal(garage.matchModelPath('JR西日本223系6000番台',pH6,'Fukuchiyama'),true);
+  assert.equal(garage.matchModelPath('JR西日本223系6000番台',pH6,'Fukuchiyama'),false);
   assert.equal(garage.findModel('JR西日本223系6000番台','Fukuchiyama')[0].canonicalImage,false);
   assert.equal(garage.matchModelPath('JR西日本223系（H6）',pH6,'Hanwa'),true);
   assert.equal(garage.matchModelPath('JR西日本223系（H6）',pH6,'Fukuchiyama'),false);
   assert.equal(root.TrainVehicle.resolveCanonicalVehicle('JR西日本223系5500番台').asset,p5500);
   const ref6000=root.TrainVehicle.resolveCanonicalVehicle('JR西日本223系6000番台');
-  assert.ok(ref6000 && !ref6000.asset && ref6000.plannedAsset===pH6);
+  assert.ok(ref6000 && !ref6000.asset && ref6000.plannedAsset===null);
   assert.equal(ref6000.candidateOnly,true);
 }
