@@ -1874,7 +1874,11 @@ function getOperationPngLibrary() {
     var mappings = sourceNames.map(function(name) {
       var canonical = resolveCanonicalVehicle(name);
       var asset = canonical && (canonical.asset || canonical.plannedAsset);
-      return asset ? { vehicleType: name, asset: asset, representative: !canonical.asset } : null;
+      // Preserve known but artwork-unapproved candidate labels; otherwise
+      // removing a generic picture can manufacture a false EXACT model from
+      // the only remaining pictured sibling.
+      return canonical ? { vehicleType: name, asset: asset || "",
+        representative: !canonical.asset } : null;
     }).filter(Boolean);
     if (!mappings.length) return;
     add({
