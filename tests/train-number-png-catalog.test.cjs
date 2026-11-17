@@ -6,7 +6,7 @@ const snapshot=require('../data/audits/supabase-railway-audit-snapshot-20261116.
 const c=buildCatalog(snapshot,getRows());
 test('2611 catalog includes both maintained owner rule sets and their SQL provenance',()=>{
  assert.equal(c.summary.sql_rules,291);
- assert.equal(c.summary.js_rules,130);
+ assert.equal(c.summary.js_rules,131);
  assert.equal(c.summary.total_line_keys,88);
  assert.equal(c.rules.filter(r=>r.origin==='sql_snapshot'&&!r.source_url).length,0);
  assert.equal(c.summary.unregistered_sql_png_rules,0);
@@ -119,9 +119,9 @@ test('SQL and frontend exact train-number PNG references have no contradictory p
 test('front-end PNG range metadata retains every source-specific guard and qualifier',()=>{
  const owner=getRows();
  const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
- assert.equal(c.summary.frontend_rules_with_additional_source_fields,125);
- assert.equal(c.summary.frontend_additional_source_keys,21);
- assert.equal(owner.length,130);
+ assert.equal(c.summary.frontend_rules_with_additional_source_fields,126);
+ assert.equal(c.summary.frontend_additional_source_keys,22);
+ assert.equal(owner.length,131);
  owner.forEach((row,i)=>{
   const rule=c.rules.find(r=>r.id==='js-'+String(i+1).padStart(4,'0'));
   const remaining=Object.fromEntries(Object.keys(row)
