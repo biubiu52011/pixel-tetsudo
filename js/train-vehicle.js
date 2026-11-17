@@ -5116,7 +5116,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var fields = [currentRevision, ctx.lineId, ctx.positionLineId, ctx.fusionLineId,
       ctx.operator, ctx.trainOwner, ctx.assignmentOperator, ctx.operationOperator, ctx.railway,
       ctx.trainNumber, ctx.operationCode, ctx.railDirection, ctx.serviceDate, ctx.serviceTime,
-      ctx.calendarType, ctx.formationId, ctx.realtimeVehicleType, ctx.realtimeVehicleLabel,
+      ctx.calendarType, ctx.formationId, ctx.realtimeVehicleType, ctx.realtimeDerivedVehicleType,
+      ctx.realtimeVehicleLabel, ctx.vehicleLabel, ctx.gtfsVehicleLabel,
       ctx.vehicleEvidenceKind, ctx.gtfsVehicleId, ctx.realtimeCarNumber, ctx.vehicleCarNumber, ctx.trainType,
       ctx.carComposition, formationCandidates, ctx.destinationStation, ctx.fromStation, ctx.toStation];
     return fields.map(function(value) {
