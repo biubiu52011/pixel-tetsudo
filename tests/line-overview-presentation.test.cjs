@@ -109,6 +109,19 @@ test('JR West display names have no parenthesized alias or ownership notes', () 
   }
 });
 
+test('JR Central display names omit ownership notes while preserving line identity', () => {
+  const expected = {"TokaidoCentral":["東海道本線","东海道本线","Tokaido Main Line","도카이도 본선"],"ChuoCentral":["中央本線","中央本线","Chuo Main Line","주오 본선"],"KansaiCentral":["関西本線","关西本线","Kansai Main Line","간사이 본선"],"KiseiCentral":["紀勢本線","纪势本线","Kisei Main Line","기세이 본선"]};
+  for (const [id, translations] of Object.entries(expected)) {
+    const line = lines[id];
+    assert.equal(line.operator, 'JR-Central', id);
+    assert.ok(line.stations && line.stations.length > 0, id + ' keeps its route');
+    for (const [index, key] of ['nameJa', 'nameZh', 'nameEn', 'nameKo'].entries()) {
+      assert.equal(line[key], translations[index], id + '/' + key);
+      assert.equal(line.presentation[key], translations[index], id + '/presentation.' + key);
+    }
+  }
+});
+
 test('JR Central trunk lines lead the display; Hokkaido recurring symbols are adjacent', () => {
   const order = ordered();
   assert.deepEqual(order.filter(id => lines[id]?.operator === 'JR-Central').slice(0, 4),
