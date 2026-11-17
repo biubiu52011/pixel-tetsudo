@@ -114,6 +114,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMa
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,1461,1461,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,0320,0365,M,full,纯号段（JR原始车型及候选条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,0367,0367,M,full,纯号段（JR原始车型及候选条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,0439,0439,M,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,1461,1461,M,full,纯号段（JR既有原号码与车型守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Oito,1522,3259,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2530,2530,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2535,2535,M,full,纯号段（JR专用原始条件保留）
@@ -970,6 +972,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,BanetsuWest,
 JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,BanetsuWest,2249,2249,D,full,纯号段（JR原始车型与日期条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,BanetsuWest,2252,2252,D,full,纯号段（JR原始车型与日期条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,BanetsuWest,4252,4253,D,full,纯号段（JR原始车型与日期条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,BanetsuWest,2225,2225,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,BanetsuWest,2229,2229,D,full,纯号段（JR既有原号码与车型守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,Gono,0122,2839,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,Gono,3524,3526,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_GV-E400系.png,Gono,0122,2839,D,full,纯号段（JR专用原始条件保留）
@@ -981,6 +985,12 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Ishinomaki,5
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,SensekiTohoku,5500,5599,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,SensekiTohoku,5500,5599,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5500,5599,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5520,5521,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5530,5539,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5541,5541,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5543,5543,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5560,5572,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E210系.png,Senseki,5574,5574,D,full,纯号段（JR既有原号码与车型守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,0220,2294,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,0220,0249,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,2223,2294,D,full,纯号段（JR专用原始条件保留）
@@ -1085,6 +1095,11 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Su
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系0番台.png,Suigun,9841,9841,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,0920,2952,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,0920,0953,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,2941,2941,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,2943,2944,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,2946,2946,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,2949,2949,D,full,纯号段（JR既有原号码与车型守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系100番台.png,Kururi,2952,2952,D,full,纯号段（JR既有原号码与车型守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,Hachinohe,0424,1463,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,Hachinohe,8471,8471,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,Hachinohe,9445,9446,D,full,原有条件约束
