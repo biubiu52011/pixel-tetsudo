@@ -556,11 +556,11 @@ function jrSeventhSqlSeedBands(){
   to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
   status:'纯号段（JR专用原始条件保留）'}));
 }
-// Eighth JR batch: SQL audit reference only; source guards remain in the existing SQL/JS.
+ // Eighth JR batch: SQL audit reference only; retain original source guards.
 const JR_EIGHTH_SQL_MIGRATION='supabase/migrations/20261117043056_seed_png_first_eighth_jr_kyushu_800_senseki_e131_bands_2611.sql';
 function jrEighthSqlSeedBands(){
  const src=read(JR_EIGHTH_SQL_MIGRATION);
- const pattern=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'([A-Z])',NULL,'\\.\\.\\/(images\\/列车\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const matches=[...src.matchAll(pattern)];
  if(matches.length!==17)throw Error('JR eighth SQL number bands do not match applied migration');
  return matches.map(m=>({line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
