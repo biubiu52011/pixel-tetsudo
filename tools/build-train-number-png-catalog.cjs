@@ -843,6 +843,34 @@ function privateThirdSqlSeedBands(){
  });
 }
 
+
+// Private fifth batch: Tobu 50050 on Hanzomon with numbered 2611
+// weekday/holiday helper sources; source exact roster is authoritative.
+const PRIVATE_FOURTH_SQL_MIGRATION='supabase/migrations/20261117164500_seed_private_tobu_50050_hanzomon_T_2611.sql';
+function privateFourthSqlSeedBands(){
+ const src=read(PRIVATE_FOURTH_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==1)throw Error('Tobu 50050 original envelope SQL count changed');
+ const m=matches[0],png='images/列车/東武鉄道/東武鉄道_50050型.png';
+ if(m[1]!=='Hanzomon'||m[2]!=='png_band/Hanzomon/0452-2282T'||
+    +m[3]!==452||+m[4]!==2282||m[5]!=='T'||m[6]!==png)
+  throw Error('Tobu 50050 Hanzomon SQL source changed');
+ const entry=JSON.parse(read('data/audits/png-to-train-number-index-2611.json')).pngIndex.find(x=>x.path===png);
+ if(!entry)throw Error('Tobu 50050 original PNG source index missing');
+ const rosters=entry.runtimeNumberRosters.filter(x=>x.lineId==='Hanzomon'&&
+  x.validFrom==='2026-11-02'&&x.validTo==='2026-11-30'&&
+  x.numberFormat==='full_exact'&&x.referenceOnly===true&&x.actualVehicleConfirmed===false);
+ const ends=rosters.flatMap(x=>x.exactContiguousBands.flatMap(y=>[y.from,y.to]));
+ const nums=ends.map(s=>Number(s.match(/^[A-Z](\d+)T$/)?.[1]));
+ if(rosters.length!==2||rosters.reduce((n,x)=>n+x.explicitDocumentedNumberCount,0)!==253||
+    nums.some(n=>!Number.isFinite(n))||Math.min(...nums)!==452||Math.max(...nums)!==2282)
+  throw Error('Tobu 50050 exact November source numbers changed');
+ return [{line:'Hanzomon',segment:m[2],from:'0452',to:'2282',
+  suffix:'T',format:'metro-prefixed',png,
+  status:'纯号段（东武50050原精确车次和日期车型守卫保留）'}];
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -871,7 +899,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
