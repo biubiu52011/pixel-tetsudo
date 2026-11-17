@@ -87,8 +87,12 @@ test('Kagoshima route overview is distinguished from JA and JB section cards', (
   immediatelyAfter(order, 'KagoshimaMainJA', 'KagoshimaMainJB');
   assert.ok(order.indexOf('KagoshimaMain') < order.indexOf('NishiKyushuShinkansen'),
     'JR九州在来线全线概览虽无专属图标，仍须排在新干线之前');
-  assert.match(lines.KagoshimaMain.presentation.nameJa, /全線案内/);
-  assert.match(lines.KagoshimaMain.presentation.nameZh, /全线总览/);
+  assert.equal(lines.KagoshimaMain.presentation.nameJa, '鹿児島本線');
+  assert.equal(lines.KagoshimaMain.presentation.nameZh, '鹿儿岛本线');
+  assert.equal(lines.KagoshimaMainJA.presentation.nameJa, '鹿児島本線');
+  assert.equal(lines.KagoshimaMainJB.presentation.nameJa, '鹿児島本線');
+  assert.equal(lines.KagoshimaMainJA.branchOf, 'KagoshimaMain');
+  assert.equal(lines.KagoshimaMainJB.branchOf, 'KagoshimaMain');
   assert.equal(lines.KagoshimaMain.presentation.code, '');
 });
 
