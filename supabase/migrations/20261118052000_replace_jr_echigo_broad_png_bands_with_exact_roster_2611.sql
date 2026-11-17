@@ -84,7 +84,7 @@ DECLARE expected_rows integer; total_numbers integer;
 BEGIN
  SELECT count(*),COALESCE(sum(max_number-min_number+1),0) INTO expected_rows,total_numbers FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Echigo' AND segment_key LIKE 'png_band/Echigo/%' AND png_reference='../images/列车/JR東日本/JR東日本_E129系.png' AND suffix='M' AND vehicle_model IS NULL AND source_url IS NULL AND requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE;
  IF expected_rows <> 31 OR total_numbers <> 126 THEN RAISE EXCEPTION 'Echigo: expected 31 bands/126 numbers, got %/%',expected_rows,total_numbers; END IF;
- IF EXISTS(SELECT 1 FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Echigo' AND ( segment_key='png_band/Echigo/0120-1999M' OR segment_key='png_band/Echigo/8132-8637M' OR segment_key='png_band/Echigo/9630-9630M' )) THEN RAISE EXCEPTION 'Echigo: retired broad row still present'; END IF;
+ IF EXISTS(SELECT 1 FROM public.published_train_png_number_ranges WHERE edition='2611' AND line_key='Echigo' AND ( segment_key='png_band/Echigo/0120-1999M' OR segment_key='png_band/Echigo/8132-8637M' )) THEN RAISE EXCEPTION 'Echigo: retired non-exact broad row still present'; END IF;
 END;
 $verify$;
 COMMIT;
