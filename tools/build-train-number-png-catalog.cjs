@@ -1991,6 +1991,45 @@ function jr42to47ExactSqlSeedBands(c){
  return result;
 }
 
+
+// JR48: both E257-5500 PNG candidates advertise 4031M/4034M only.
+// The previously broad 4031-4034M cannot be presented as an exact number band.
+function jr48ExactSqlSeedBands(c){
+ const png='images/列车/JR東日本/JR東日本_E257系_5500番台.png';
+ const lines=[['Agatsuma','js-0046'],['Takasaki','js-0051']];
+ const expected=[];
+ for(const [line,id] of lines){
+  const r=c.rules.find(x=>x.id===id);
+  if(!r||r.origin!=='frontend_js'||r.line_ids.join()!==line||
+    r.png!==png||r.operator!=='JR-East'||r.suffix!=='M'||r.format!=='full'||
+    r.min!==4031||r.max!==4034||r.train_type!=='LimitedExpress'||
+    r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+    r.actual_vehicle_confirmed!==false||
+    r.runtime_guards?.sourceOperatorFallback!==true)
+   throw Error('JR48 original guarded number source changed: '+id);
+  const names=[...new Set([...(r.published_numbers||[]),
+   ...(r.weekday_numbers||[]),...(r.holiday_numbers||[])])].sort();
+  if(names.join()!=='4031M,4034M')
+   throw Error('JR48 original train-number list changed: '+id);
+  for(const number of names){
+   const s=number.slice(0,-1);
+   expected.push({line,png,from:s,to:s,suffix:'M',format:'full',
+    segment:'png_band/'+line+'/'+s+'-'+s+'M',
+    status:'纯号段（JR专用原始条件保留）'});
+  }
+ }
+ const sql=read('supabase/migrations/20261118075000_jr48_agatsuma_takasaki_e257_5500_exact_4031_4034_2611.sql');
+ const found=[...sql.matchAll(/^ \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'M',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,|;)?$/gm)];
+ if(found.length!==expected.length)throw Error('JR48 migration row count changed');
+ expected.forEach((x,i)=>{
+  const m=found[i];
+  if(m[1]!==x.line||m[2]!==x.segment||
+    +m[3]!==+x.from||+m[4]!==+x.to||m[5]!==x.png)
+   throw Error('JR48 JS/SQL mismatch: '+x.segment);
+ });
+ return expected;
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -2019,7 +2058,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().filter(x=>!(x.line==='Yamada'&&x.segment==='png_band/Yamada/0631-9642D')).concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrGotemba315ExactReplacementSqlBands(c),jrYamadaExactReplacementSqlBands(c),jr32to35ExactSqlSeedBands(c),jr36to41ExactSqlSeedBands(c),jr42to47ExactSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c)).filter(x=>!["png_band/Gono/0122-2839D","png_band/Gono/3524-3526D","png_band/Echigo/0120-1999M","png_band/Echigo/8132-8637M","png_band/Sagami/0400-2599F","png_band/Nambu/0400-4999F","png_band/Senseki/0400-2599S","png_band/Tsurumi/0400-2599B","png_band/TsurumiUmiShibaura/0400-2599B","png_band/TsurumiOkawa/0400-2599B","png_band/Iiyama/0120-1123D","png_band/Hachinohe/0424-1463D","png_band/BanetsuEast/0720-1756D","png_band/SensekiTohoku/5500-5599D","png_band/Hachiko/0220-0249D","png_band/Hachiko/2223-2294D","png_band/UtsunomiyaJR/0620-0699M","png_band/Hakushin/0623-0681M","png_band/Hakushin/0920-0950M","png_band/Hakushin/1620-1682M","png_band/Hakushin/1924-1951M","png_band/Sotobo/3680-5983Y","png_band/Togane/5680-5983Y","png_band/Ito/3021-3031M","png_band/Tokaido/3021-3031M","png_band/RikutoEast/1720-1747D","png_band/RikutoEast/4725-4734D"].includes(x.segment))){
+ for(const ref of jrFirstSqlSeedBands().filter(x=>!(x.line==='Yamada'&&x.segment==='png_band/Yamada/0631-9642D')).concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrGotemba315ExactReplacementSqlBands(c),jrYamadaExactReplacementSqlBands(c),jr32to35ExactSqlSeedBands(c),jr36to41ExactSqlSeedBands(c),jr42to47ExactSqlSeedBands(c),jr48ExactSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c)).filter(x=>!["png_band/Gono/0122-2839D","png_band/Gono/3524-3526D","png_band/Echigo/0120-1999M","png_band/Echigo/8132-8637M","png_band/Sagami/0400-2599F","png_band/Nambu/0400-4999F","png_band/Senseki/0400-2599S","png_band/Tsurumi/0400-2599B","png_band/TsurumiUmiShibaura/0400-2599B","png_band/TsurumiOkawa/0400-2599B","png_band/Iiyama/0120-1123D","png_band/Hachinohe/0424-1463D","png_band/BanetsuEast/0720-1756D","png_band/SensekiTohoku/5500-5599D","png_band/Hachiko/0220-0249D","png_band/Hachiko/2223-2294D","png_band/UtsunomiyaJR/0620-0699M","png_band/Hakushin/0623-0681M","png_band/Hakushin/0920-0950M","png_band/Hakushin/1620-1682M","png_band/Hakushin/1924-1951M","png_band/Sotobo/3680-5983Y","png_band/Togane/5680-5983Y","png_band/Ito/3021-3031M","png_band/Tokaido/3021-3031M","png_band/RikutoEast/1720-1747D","png_band/RikutoEast/4725-4734D","png_band/Agatsuma/4031-4034M","png_band/Takasaki/4031-4034M"].includes(x.segment))){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
