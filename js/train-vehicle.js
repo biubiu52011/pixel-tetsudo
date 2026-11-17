@@ -1946,6 +1946,12 @@ function resolveOperationPng(ctx) {
         String(mapping.vehicleType || "").trim();
       var asset = normalizeGalleryPngPath(mapping.asset ||
         canonical && (canonical.asset || canonical.plannedAsset) || "");
+      // Source operation rows may embed an old path even after its generic
+      // canonical model was deliberately de-authorized as a lookalike.
+      // A candidate-only model with no approved art remains unresolved;
+      // an embedded legacy path cannot turn its sibling into EXACT.
+      if (canonical && canonical.candidateOnly === true &&
+          !canonical.asset && !canonical.plannedAsset) asset = "";
       if (!vehicleType) return;
       // A newly quarantined generic/livery alias is still a candidate:
       // losing its PNG must never turn the remaining specific variant
