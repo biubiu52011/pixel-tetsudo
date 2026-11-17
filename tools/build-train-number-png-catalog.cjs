@@ -714,6 +714,61 @@ function metro13000And18000SqlSeedBands(){
  });
 }
 
+// JR source number-envelope batch: preserve the original E233 00..71
+// K/F/S last-two-digit family and Gotemba 315 listed 88 full M/G numbers.
+// Both are reference-only; the runtime must still check all original
+// operator, route, date, train type and actual-model/identity requirements.
+const JR_E233_315_SQL_MIGRATION='supabase/migrations/20261118013000_seed_jr_saikyo_e233_gotemba_315_number_bands_2611.sql';
+function jrE233Saikyo315GotembaSqlSeedBands(c){
+ const rules=c.rules.filter(r=>r.origin==='frontend_js'&&
+  ['images/列车/JR東日本/JR東日本_E233系_7000番台.png',
+   'images/列车/JR東海/JR東海_315系.png'].includes(r.png));
+ if(rules.length!==2)throw Error('JR E233/315 original source catalog changed');
+ const e233=rules.find(r=>r.png.endsWith('/JR東日本_E233系_7000番台.png'));
+ const g315=rules.find(r=>r.png.endsWith('/JR東海_315系.png'));
+ if(!e233||!g315||
+    e233.min!==0||e233.max!==71||e233.suffix!=='KFS'||
+    e233.format!=='tail'||e233.valid_from!=='2026-11-01'||
+    e233.valid_to!=='2026-11-30'||
+    e233.line_ids.join('|')!=='SaikyoKawagoe|Rinkai'||
+    e233.direction_number_parity!=='inbound-even'||
+    e233.runtime_guards?.allowedModelLabels?.join()!=='E233系7000番台'||
+    e233.runtime_guards?.trainTypesIfPresent?.length!==3||
+    e233.source_railways_if_present?.length!==2||
+    g315.min!==2226||g315.max!==5550||g315.suffix!=='MG'||
+    g315.format!=='full'||g315.train_type!=='Local'||
+    g315.line_ids.join()!=='Gotemba'||
+    g315.valid_from!=='2026-11-01'||g315.valid_to!=='2026-11-30'||
+    g315.operator!=='JR-Central'||
+    g315.source_railways?.join()!=='odpt.Railway:JR-Central.Gotemba'||
+    g315.published_numbers?.length!==88||
+    g315.published_numbers?.some(n=>!/^\d{4}[MG]$/.test(n))||
+    Math.min(...g315.published_numbers.map(n=>+n.slice(0,-1)))!==2226||
+    Math.max(...g315.published_numbers.map(n=>+n.slice(0,-1)))!==5550)
+  throw Error('JR E233/315 number provenance or original runtime guards changed');
+ const expected=[
+  {line:'SaikyoKawagoe',from:0,to:71,suffix:'KFS',format:'tail',png:e233.png},
+  {line:'Rinkai',from:0,to:71,suffix:'KFS',format:'tail',png:e233.png},
+  {line:'Gotemba',from:2226,to:5550,suffix:'MG',format:'full',png:g315.png}
+ ];
+ const sql=read(JR_E233_315_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...sql.matchAll(pattern)];
+ if(found.length!==3)throw Error('JR E233/315 SQL number bands missing/altered');
+ for(const item of expected){
+  const from=String(item.from).padStart(4,'0');
+  const to=String(item.to).padStart(4,'0');
+  const segment='png_band/'+item.line+'/'+from+'-'+to+item.suffix;
+  const row=found.find(m=>m[1]===item.line);
+  if(!row||row[2]!==segment||+row[3]!==item.from||
+      +row[4]!==item.to||row[5]!==item.suffix||row[6]!==item.png)
+   throw Error('JR E233/315 SQL does not match source JS: '+segment);
+ }
+ return expected.map(x=>({line:x.line,from:String(x.from).padStart(4,'0'),
+  to:String(x.to).padStart(4,'0'),suffix:x.suffix,format:x.format,png:x.png,
+  status:'纯号段（JR原有号码条件保留；不代表编组）'}));
+}
+
 // JR reference PNG batch: persist only the original *listed* 2611
 // SL Banetsu C57 and Boso Local 209 service numbers. Wide JS min/max are
 // deliberately not copied: their interior gaps are not evidenced and
@@ -1193,7 +1248,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
