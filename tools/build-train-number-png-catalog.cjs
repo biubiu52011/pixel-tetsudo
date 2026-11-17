@@ -807,6 +807,42 @@ function privateSecondSqlSeedBands(){
  });
 }
 
+
+// Private fourth batch: Tokyu 2020 original exact 2026-11 frontend rosters.
+// The SQL/CSV stores only a reference envelope; runtime remains exact and
+// source/route/date/model guarded. K stock suffix alone is NOT proof of 2020.
+const PRIVATE_THIRD_SQL_MIGRATION='supabase/migrations/20261117154000_seed_private_tokyu_2020_oshigage_K_bands_2611.sql';
+function privateThirdSqlSeedBands(){
+ const src=read(PRIVATE_THIRD_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==2)throw Error('Tokyu 2020 source-band SQL count changed');
+ const png='images/列车/東急電鉄/東急電鉄_2020系.png';
+ const entry=JSON.parse(read('data/audits/png-to-train-number-index-2611.json')).pngIndex.find(x=>x.path===png);
+ if(!entry||entry.runtimeNumberRosters.length!==4)throw Error('Tokyu exact roster source changed');
+ const expected=new Map([
+   ['Hanzomon',{min:501,max:2333,count:478,segment:'png_band/Hanzomon/0501-2333K'}],
+   ['TobuSkytree',{min:503,max:4934,count:182,segment:'png_band/TobuSkytree/0503-4934K'}]
+ ]);
+ return matches.map(m=>{
+   const e=expected.get(m[1]);
+   if(!e||m[2]!==e.segment||+m[3]!==e.min||+m[4]!==e.max||m[5]!=='K'||m[6]!==png)
+     throw Error('Tokyu 2020 K reference SQL boundaries changed');
+   const sources=entry.runtimeNumberRosters.filter(x=>x.lineId===m[1]&&
+     x.validFrom==='2026-11-02'&&x.validTo==='2026-11-30'&&
+     x.referenceOnly===true&&x.actualVehicleConfirmed===false);
+   const ends=sources.flatMap(x=>x.exactContiguousBands.flatMap(y=>[y.from,y.to]));
+   const nums=ends.map(x=>Number(x.match(/^[A-Z](\d+)K$/)?.[1]));
+   if(sources.length!==2||sources.reduce((n,x)=>n+x.explicitDocumentedNumberCount,0)!==e.count||
+     nums.some(n=>!Number.isFinite(n))||Math.min(...nums)!==e.min||Math.max(...nums)!==e.max)
+       throw Error('Tokyu 2020 documented November number roster changed');
+   return {line:m[1],segment:m[2],from:String(e.min).padStart(4,'0'),
+     to:String(e.max).padStart(4,'0'),suffix:'K',
+     format:'metro-prefixed',png,
+     status:'纯号段（东急2020原有精确名单与日期车型守卫保留）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -835,7 +871,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
