@@ -871,6 +871,51 @@ function privateFourthSqlSeedBands(){
   status:'纯号段（东武50050原精确车次和日期车型守卫保留）'}];
 }
 
+// Private sixth number batch: reuse the already-active 2026-11 Tobu Nikko
+// express train-number rosters for three distinct gallery PNGs. This adds
+// audit/reference ranges, not an alternate runtime selector or livery proof.
+const PRIVATE_NIKKO_SQL_MIGRATION='supabase/migrations/20261117200000_seed_private_tobu_nikko_express_png_bands_2611.sql';
+function privateNikkoSqlSeedBands(){
+ const rosterSource=read('data/timetables/train-number-png-ranges.js');
+ const match=rosterSource.match(/tobuSkytreeNumbers=(\\{[^;]+\\});/);
+ if(!match)throw Error('Tobu Nikko 2611 family roster missing');
+ const rosters=JSON.parse(match[1]);
+ const groups=[
+  ['spacia_x','images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png'],
+  ['spacia','images/列车/東武鉄道/東武鉄道_100系_原色.png'],
+  ['revaty','images/列车/東武鉄道/東武鉄道_500系_リバティ.png']
+ ];
+ const expected=[],seen=new Map();
+ for(const [family,png] of groups){
+  const source=[...(rosters.weekday[family]||[]),...(rosters.holiday[family]||[])];
+  const nums=[...new Set(source)].map(Number).sort((a,b)=>a-b);
+  for(const n of nums){
+   if(seen.has(n)&&seen.get(n)!==png)
+    throw Error('Tobu Nikko different-PNG number conflict: '+n);
+   seen.set(n,png);
+   const prior=expected[expected.length-1];
+   if(prior&&prior.png===png&&prior.end+1===n)prior.end=n;
+   else expected.push({png,start:n,end:n});
+  }
+ }
+ const migration=read(PRIVATE_NIKKO_SQL_MIGRATION);
+ const pattern=/^  \\('2611','TobuNikko','(png_band\\/TobuNikko\\/\\d{4}-\\d{4})',(\\d+),(\\d+),'',NULL,'\\.\\.\\/(images\\/列车\\/東武鉄道\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const rows=[...migration.matchAll(pattern)];
+ if(rows.length!==expected.length||rows.length!==62)
+  throw Error('Tobu Nikko PNG band SQL record count changed');
+ return expected.map((v,i)=>{
+  const row=rows[i];
+  const start=String(v.start).padStart(4,'0');
+  const end=String(v.end).padStart(4,'0');
+  if(row[1]!==`png_band/TobuNikko/${start}-${end}`||
+     +row[2]!==v.start||+row[3]!==v.end||row[4]!==v.png)
+   throw Error('Tobu Nikko SQL and existing number roster disagree at '+start);
+  return {line:'TobuNikko',segment:row[1],from:start,to:end,
+   suffix:'',format:'full',png:v.png,
+   status:'纯号段（东武日光既有时刻表号码守卫保留；PNG仅供复核）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -899,7 +944,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
@@ -947,4 +992,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,privateNikkoSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};
