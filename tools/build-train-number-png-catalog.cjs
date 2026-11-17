@@ -1542,6 +1542,37 @@ function jrBanetsuWestSqlSeedBands(c){
  return expected;
 }
 
+
+// JR batch 27: original ChuoTatsuno E127 number 159M, image remains REVIEW.
+// This is a number reference, never a checked livery or an actual trainset.
+const JR_E127_CHUO_TATSUNO_SQL_MIGRATION=
+ 'supabase/migrations/20261118030000_seed_jr_chuo_tatsuno_e127_review_png_band_2611.sql';
+function jrChuoTatsunoE127ReviewSqlSeedBands(c){
+ const png='images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png';
+ const r=c.rules.find(x=>x.id==='js-0061');
+ if(!r||r.origin!=='frontend_js'||r.png!==png||
+    r.line_ids.join()!=='ChuoTatsuno'||r.format!=='full'||
+    r.min!==159||r.max!==159||r.suffix!=='M'||
+    r.train_type!=='Local'||r.operator!=='JR-East'||
+    r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+    r.actual_vehicle_confirmed!==false||
+    r.direction_number_parity!=='inbound-even'||
+    r.runtime_guards?.requiredCandidateModelPrefix!=='E127系'||
+    r.runtime_guards?.sourceOperatorFallback!==true||
+    r.published_numbers?.join()!=='159M'||
+    r.weekday_numbers?.join()!=='159M'||
+    r.holiday_numbers?.join()!=='159M')
+  throw Error('JR E127 ChuoTatsuno original source or guards drift');
+ const sql=read(JR_E127_CHUO_TATSUNO_SQL_MIGRATION);
+ const pattern=/^  \('2611','ChuoTatsuno','png_band\/ChuoTatsuno\/0159-0159M',159,159,'M',NULL,'\.\.\/images\/列车\/JR東日本\/JR東日本_E127系_100番台_長野色\.png',NULL,FALSE,FALSE\)$/gm;
+ if([...sql.matchAll(pattern)].length!==1||
+    !sql.includes("AND asset_status='review'")||
+    !sql.includes("AND asset_scope='review'"))
+  throw Error('JR E127 original reference SQL/asset review mismatch');
+ return [{line:'ChuoTatsuno',png,from:'0159',to:'0159',suffix:'M',
+  format:'full',status:'纯号段（PNG待审查・原有候选条件保留）'}];
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1570,7 +1601,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
