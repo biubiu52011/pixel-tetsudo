@@ -933,7 +933,7 @@ JR,JR西日本,images/列车/JR西日本/JR西日本_キハ87系.png,,,,,,无号
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_10000系_8両編成.png,,,,,,无号段
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_1000系.png,Ginza,0501,6152,,metro-bare,原有条件约束
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_1000系.png,Ginza,0501,6152,,metro-bare,纯号段（地铁原有条件保留）
-地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_13000系.png,,,,,,无号段
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_13000系.png,Hibiya,0502,2468,S,metro-prefixed,纯号段（既有完整番号名单及日期运营方守卫保留）
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_15000系.png,ChuoSobuLocal,0400,2599,YA,full,原有条件约束
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_15000系.png,Tozai,0400,2599,S,metro-prefixed,原有条件约束
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_16000系.png,ChiyodaBranch,0709,2305,S,metro-prefixed,原有条件约束
@@ -943,7 +943,7 @@ JR,JR西日本,images/列车/JR西日本/JR西日本_キハ87系.png,,,,,,无号
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_16000系.png,JobanLocal,0400,2599,S,full,纯号段（地铁原有条件保留）
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_17000系.png,Fukutoshin,0403,2361,S,metro-prefixed,原有条件约束
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_17000系.png,Yurakucho,0521,2429,S,metro-prefixed,原有条件约束
-地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_18000系.png,,,,,,无号段
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_18000系.png,Hanzomon,0551,2491,S,metro-prefixed,纯号段（既有完整番号名单及日期运营方守卫保留）
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_2000系.png,MarunouchiBranch,0543,23632,,metro-bare,原有条件约束
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_2000系.png,MarunouchiBranch,0543,23632,,metro-bare,纯号段（地铁原有条件保留）
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_2000系.png,Marunouchi,0427,21153,,metro-bare,原有条件约束
