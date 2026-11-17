@@ -23,14 +23,17 @@ test('distinct 9020, KiHa101 and Tadami revival artwork cannot borrow similar PN
     '../images/列车/東急電鉄/東急電鉄_9000系.png','TokyuOimachi'),true);
 });
 const fusion=fs.readFileSync('js/data-fusion.js','utf8');
-const start=fusion.indexOf('  function _markThroughArtworkConflicts(');
+const start=fusion.indexOf('  // Ephemeral illustration history for the EXISTING canonical running chain.');
 const end=fusion.indexOf('  function _rememberChainVehicle(',start);
 assert.ok(start>=0&&end>start,'existing through-artwork gate missing');
-const host={window:{TrainVehicle:{selectMarkerArtwork(p){
-  return p.probePng?{kind:'vehicle',iconSrc:p.probePng}:{kind:'unresolved',iconSrc:''};
-}}}};
-vm.runInNewContext(fusion.slice(start,end)+'\nthis.check=_markThroughArtworkConflicts;',host);
-const check=host.check;
+function newChecker(initialTime=Date.now()){
+  let now=initialTime;
+  const host={Date:{now:()=>now},window:{TrainVehicle:{selectMarkerArtwork(p){
+    return p.probePng?{kind:'vehicle',iconSrc:p.probePng}:{kind:'unresolved',iconSrc:''};
+  }}}};
+  vm.runInNewContext(fusion.slice(start,end)+'\nthis.check=_markThroughArtworkConflicts;',host);
+  return {check:host.check,advance(ms){now+=ms}};
+}
 function pos(rail,png,extras={}){
   return {runningChainId:'canonical-sql-trip:2026-11-17:42',
     trainNumber:'1234M',serviceDate:'2026-11-17',
@@ -38,6 +41,7 @@ function pos(rail,png,extras={}){
     probePng:png,...extras};
 }
 test('through service number unchanged, different PNG => both neutral-gated',()=>{
+  const {check}=newChecker();
   const a=pos('A','../images/列车/A.png');
   const b=pos('B','../images/列车/B.png');
   assert.equal(check({A:[a],B:[b]}),1);
@@ -48,6 +52,7 @@ test('through service number unchanged, different PNG => both neutral-gated',()=
   assert.equal(rendered.reason,'through-livery-conflict');
 });
 test('same through PNG, unrelated chains, distinct dates or missing art never fake conflict',()=>{
+  const {check}=newChecker();
   const a=pos('A','same.png'),b=pos('B','same.png');
   assert.equal(check({A:[a],B:[b]}),0);
   assert.equal(a.vehicleArtworkConflict,false);
@@ -66,4 +71,67 @@ test('display redraw and SVG identity retain the same canonical scope',()=>{
   assert.match(render,/earlier\.trainNumber === p\.trainNumber/);
   assert.match(render,/earlier\.serviceDate === p\.serviceDate/);
   assert.match(render,/earlier\.sourceRailway !== p\.sourceRailway/);
+});
+
+test('successive polls of one canonical through train never swap unverified PNG',()=>{
+  const {check}=newChecker();
+  const first=pos('A','../images/列车/A.png');
+  assert.equal(check({A:[first]}),0);
+  const next=pos('B','../images/列车/B.png');
+  assert.equal(check({B:[next]}),1);
+  assert.equal(next.vehicleArtworkConflict,true);
+  assert.equal(win.TrainVehicle.selectMarkerArtwork(next,false).kind,'unresolved');
+  const again=pos('B','../images/列车/B.png');
+  assert.equal(check({B:[again]}),1);
+  assert.equal(again.vehicleArtworkConflict,true);
+});
+test('through PNG history requires same chain, service date and full public number',()=>{
+  const {check}=newChecker();
+  assert.equal(check({A:[pos('A','A.png')]}),0);
+  for(const [title,extra] of [
+    ['chain',{runningChainId:'a-different-chain'}],
+    ['date',{serviceDate:'2026-11-18'}],
+    ['number',{trainNumber:'5678M'}]
+  ]){
+    const other=pos('B','B.png',extra);
+    assert.equal(check({B:[other]}),0,title);
+    assert.equal(other.vehicleArtworkConflict,false,title);
+  }
+});
+test('same artwork through two railways and verified physical stock updates are safe',()=>{
+  const {check}=newChecker();
+  assert.equal(check({A:[pos('A','A.png')]}),0);
+  const same=pos('B','A.png');
+  assert.equal(check({B:[same]}),0);
+  const observed=pos('B','B.png',{
+    vehicleIdentityStatus:'EXACT',vehicleResolvedFromRealtime:true,
+    vehicleResolution:{sources:['official-realtime-car-number']}
+  });
+  assert.equal(check({B:[observed]}),0);
+  assert.equal(observed.vehicleArtworkConflict,false);
+});
+test('expired visual history cannot contaminate a recycled train chain',()=>{
+  const {check,advance}=newChecker(1000);
+  assert.equal(check({A:[pos('A','A.png')]}),0);
+  advance(31*60*1000);
+  const recycled=pos('B','B.png');
+  assert.equal(check({B:[recycled]}),0);
+  assert.equal(recycled.vehicleArtworkConflict,false);
+});
+test('generic model names no longer authorize a specific variant or livery',()=>{
+  const examples=[
+    ['JR西日本223系6000番台','JR西日本/JR西日本_223系_H6.png','Fukuchiyama'],
+    ['横浜市営3000形','横浜市交通局/横浜市交通局_3000V形.png','YokohamaBlue'],
+    ['埼玉新都市交通2000系','埼玉新都市交通/埼玉新都市交通_2000系_01編成_レッドパープル.png','NewShuttle'],
+    ['小田急30000形','小田急電鉄/小田急電鉄_30000形_EXEα.png','Odawara'],
+    ['都電9000形','都営地下鉄/都営地下鉄_9000形_9001号車_赤色.png','Arakawa']
+  ];
+  for(const [name,png,line] of examples){
+    assert.equal(win.TrainVehicle.resolveCanonicalVehicle(name)?.plannedAsset||null,null);
+    assert.equal(win.VehicleGaragePngMap.matchModelPath(name,'../images/列车/'+png,line),false);
+  }
+  assert.equal(win.VehicleGaragePngMap.matchModelPath('小田急30000形（EXEα）',
+    '../images/列车/小田急電鉄/小田急電鉄_30000形_EXEα.png','Odawara'),true);
+  assert.equal(win.VehicleGaragePngMap.matchModelPath('埼玉新都市交通2000系（01編成）',
+    '../images/列车/埼玉新都市交通/埼玉新都市交通_2000系_01編成_レッドパープル.png','NewShuttle'),true);
 });
