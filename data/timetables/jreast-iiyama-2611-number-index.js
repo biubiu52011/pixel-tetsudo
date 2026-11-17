@@ -74,7 +74,8 @@
     return Object.freeze({number:n,kind:kind,trainType:special?"Rapid":"Local",
       model:model,serviceName:serviceName,edition:"2611",
       referenceOnly:true,actualVehicleConfirmed:false,
-      pngAvailable:!special,
+      // OyKot now has a unique approved gallery PNG; Shu*Kura still does not.
+      pngAvailable:!special||kind==="oykot",
       holidayTemplateOnWeekday:specialHolidayTemplateOnWeekday});
   }
   root.JREastIiyamaNumberIndex202611=Object.freeze({
