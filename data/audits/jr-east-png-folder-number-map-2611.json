@@ -31130,9 +31130,11 @@
       "png": "images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png",
       "name": "JR東日本_キハ110系_おいこっと.png",
       "models": [
-        "图库待审・JR東日本・JR東日本_キハ110系_おいこっと"
+        "キハ110系（おいこっと）"
       ],
-      "lineScopes": [],
+      "lineScopes": [
+        "Iiyama"
+      ],
       "status": "active_family_with_number_reference",
       "note": "Number association is reference-only, not an observed physical set",
       "fleetEvidence": {
