@@ -119,7 +119,7 @@ test('portrait, landscape and narrow desktop share one phone geometry mode',()=>
   assert.match(cssSource,/@media \(max-width: 640px\)/);
 });
 test('camera gestures are loaded before renderer and never alter route geometry',()=>{
-  const html=read('pages/trains.html');
+  const html=fs.readFileSync('pages/trains.html', 'utf8');
   assert.ok(html.indexOf('train-map-gestures.js') < html.indexOf('trains-render.js'));
   assert.ok(rendererSource.includes('window.TrainMapGestures.attach(svg)'));
   assert.ok(rendererSource.includes('mapSvg._disposeTrainMapGestures()'));
