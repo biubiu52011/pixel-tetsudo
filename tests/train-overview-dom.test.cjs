@@ -377,3 +377,19 @@ test('line list fingerprint respects an intentionally blank passenger code and p
   assert.equal(initial, signature({ Hisatsu: resegmented }),
     'detail-only section colors must not invalidate the overview card fingerprint');
 });
+
+test('deprecated segment progress bars stay hidden even with stale browser markup', () => {
+  const state = fs.readFileSync('js/data-state.js','utf8');
+  const css = fs.readFileSync('css/ux-refinements.css','utf8');
+  const detail = fs.readFileSync('js/trains-data.js','utf8');
+  assert.doesNotMatch(state,/rs-line-segment-band|segmentBandHtml/,
+    'shared overview renderer must never emit the progress-like segment bar');
+  assert.match(css,/\.rs-line-segment-band\s*\{\s*display:\s*none\s*!important\s*;/,
+    'CSS must suppress stale bar markup during a cached browser session');
+  for(const page of ['trains','realtime']) {
+    const html = fs.readFileSync('pages/'+page+'.html','utf8');
+    assert.match(html,/ux-refinements\.css\?v=6478d285421d/);
+  }
+  assert.match(detail,/resolveSegmentPresentation\(lineId, fromStation, toStation\)/,
+    'detailed track colors are preserved independently of removed card swatches');
+});

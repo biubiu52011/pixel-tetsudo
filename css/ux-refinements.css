@@ -477,3 +477,9 @@ body[data-page="realtime"] .rs-operator-group[data-operator="JR-Kyushu"] .rs-lin
   clip-path: none;
   border-radius: 3px;
 }
+
+/* No old progress-like segment swatches on cards, including stale cached
+   renderers. Detail railway map segments remain colored individually. */
+.rs-line-segment-band {
+  display: none !important;
+}
