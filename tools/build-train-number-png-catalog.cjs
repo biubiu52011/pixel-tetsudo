@@ -488,6 +488,21 @@ function jrEastAdditionalNumberBands(){
 }
 // Derive the gallery audit from the already applied SQL seed. The source
 // modules still own the guards; this is NOT an extra runtime mapping table.
+// Include the 97 initial PNG-first SQL bands in the read-only gallery audit.
+// Original JS guards still determine actual applicability.
+const JR_FIRST_SQL_MIGRATION='supabase/migrations/20261116180740_enable_and_seed_png_first_jr_reference_bands_2611.sql';
+function jrFirstSqlSeedBands(){
+ const src=read(JR_FIRST_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==97)throw Error('JR SQL number bands do not match initial applied migration');
+ return matches.map((m)=>({
+  line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
+  to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
+  status:'纯号段（JR专用原始条件保留）'
+ }));
+}
+
 const JR_SCOPED_SQL_MIGRATION='supabase/migrations/20261116183142_seed_png_first_jr_scoped_reference_bands_2611.sql';
 function jrScopedSqlSeedBands(){
  const src=read(JR_SCOPED_SQL_MIGRATION);
@@ -628,7 +643,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrScopedSqlSeedBands().concat(jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('JR SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
