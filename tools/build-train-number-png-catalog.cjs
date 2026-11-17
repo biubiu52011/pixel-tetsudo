@@ -694,6 +694,26 @@ function jrEighteenthSqlSeedBands(){
  });
 }
 
+
+// JR West Yakumo: published 1001M..1030M reference-only numbers.
+// The 273-series artwork remains review-only, NOT runtime selectable.
+const JR_NINETEENTH_SQL_MIGRATION='supabase/migrations/20261117081500_seed_jr_west_273_yakumo_review_reference_bands_2611.sql';
+function jrNineteenthSqlSeedBands(){
+ const src=read(JR_NINETEENTH_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==2)throw Error('JR Yakumo review-only SQL number-band count changed');
+ const allowed=new Set(['SanyoMain','SaninMain']);
+ return matches.map(m=>{
+  if(!allowed.has(m[1])||m[3]!=='1001'||m[4]!=='1030'||
+    m[5]!=='M'||m[6]!=='images/列车/JR西日本/JR西日本_273系.png')
+   throw Error('Yakumo review-only number-band source changed unexpectedly');
+  return {line:m[1],segment:m[2],
+   from:'1001',to:'1030',suffix:'M',format:'full',png:m[6],
+   status:'纯号段（JR官方番号；资产review不可选图）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -722,7 +742,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
