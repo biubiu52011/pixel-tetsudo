@@ -5573,9 +5573,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         (models.length !== 1 || models[0] !== "E531系")) return null;
     // A conflicting explicit ODPT vehicle model must win over a historical
     // SQL candidate; never paint a different observed vehicle as E531.
-    var realtimeModel=String(p.realtimeVehicleType ||
-      p.realtimeDerivedVehicleType || "");
-    if (realtimeModel && realtimeModel !== "E531系") return null;
+    // Both independent realtime labels must agree with the SQL candidate.
+    // Do not let an agreeing first field mask a conflicting second one.
+    var realtimeModels=[p.realtimeVehicleType,p.realtimeDerivedVehicleType];
+    if (realtimeModels.some(function(value){
+      return value && String(value) !== "E531系";
+    })) return null;
     var png=normalizeGalleryPngPath(
       "../images/列车/JR東日本/JR東日本_E531系.png");
     var garage=window.VehicleGaragePngMap;
