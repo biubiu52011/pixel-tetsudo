@@ -714,6 +714,24 @@ function jrNineteenthSqlSeedBands(){
  });
 }
 
+
+// Third-sector ToyoRapid 2000 Tozai: mirrors one JS guarded number family.
+// Metro-prefixed interpretation and source/date/model checks stay with JS.
+const THIRD_FIRST_SQL_MIGRATION='supabase/migrations/20261117084000_seed_png_first_third_toyorapid_2000_tozai_2611.sql';
+function thirdFirstSqlSeedBands(){
+ const src=read(THIRD_FIRST_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==1)throw Error('ToyoRapid band SQL migration mismatches audit');
+ return matches.map(m=>{
+  if(m[1]!=='Tozai'||m[3]!=='400'||m[4]!=='2599'||m[5]!=='T'||
+    m[6]!=='images/列车/東葉高速鉄道/東葉高速鉄道_2000系.png')
+   throw Error('ToyoRapid 2000 number-band scope unexpectedly changed');
+  return {line:m[1],segment:m[2],from:'0400',to:'2599',suffix:'T',
+   format:'metro-prefixed',png:m[6],status:'纯号段（第三部门铁道原有条件保留）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -742,7 +760,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
