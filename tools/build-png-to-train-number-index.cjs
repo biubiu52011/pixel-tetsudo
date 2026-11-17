@@ -78,7 +78,7 @@ function buildIndex(input) {
     if(!record){unknownPaths.push({path:normalizedPath,ruleId});return null;}
     return record;
   };
-  // 421 SQL/JS rules from the EXISTING shared verified source catalog.
+  // 422 SQL/JS rules from the EXISTING shared verified source catalog.
   // Preserve explicit-number rosters and numeric bounds as distinct fields.
   for(const rule of catalog.rules){
     const asset=get(rule.png,rule.id);if(!asset)continue;
@@ -306,7 +306,7 @@ function buildIndex(input) {
       ++any;asset.status='historical_source_number_only_not_current_verified';
     }else{++none;asset.status='no_verified_number_mapping';}
   }
-  if(catalog.rules.length!==421||datedSource.rows.length!==200)
+  if(catalog.rules.length!==422||datedSource.rows.length!==200)
     throw Error('Source evidence counts changed; refresh and reassess');
   // Quarantined paths may still have suspicious legacy rules; keep them
   // visible for remediation but never declare them authorized for display.
