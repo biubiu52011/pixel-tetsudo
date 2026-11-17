@@ -10,6 +10,14 @@ var _trainArtworkFailureCount = 0;
 var _TRAIN_ARTWORK_FAILURE_MAX = 500;
 var _TRAIN_ARTWORK_FAILURE_RETRY_MS = 45 * 1000;
 
+// Keep garage/model identity paths unchanged; only refresh the network URL
+// for the corrected Tobu 10030 main-line livery artwork.
+function _trainArtworkRequestUrl(path) {
+  var src = String(path || "");
+  return /\/東武鉄道_10030型_未更新車\.png$/.test(src)
+    ? src + "?v=6899455dea19" : src;
+}
+
 function _rememberTrainArtworkFailure(trainUid, imagePath) {
   if (!trainUid || !imagePath) return;
   if (!_trainArtworkFailure[String(trainUid)]) _trainArtworkFailureCount++;
@@ -2008,11 +2016,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (knownVehicle && !compact) {
       marker.setAttribute("width", "14");
       marker.setAttribute("height", "18");
-      marker.setAttribute("href", spec.iconSrc);
+      marker.setAttribute("href", _trainArtworkRequestUrl(spec.iconSrc));
       marker.setAttribute("data-train-artwork", spec.iconSrc);
       // Safari/iOS SVG <image> 兼容性：保持 SVG2 与 XLink
       // 引用一致；此处不进行新的车辆或资产选择。
-      marker.setAttributeNS("http://www.w3.org/1999/xlink", "href", spec.iconSrc);
+      marker.setAttributeNS("http://www.w3.org/1999/xlink", "href", _trainArtworkRequestUrl(spec.iconSrc));
       marker.setAttribute("preserveAspectRatio", "xMidYMid meet");
       marker.addEventListener("load", function () {
         // SVG <image> may become measurable after the initial caption pass.
@@ -2023,7 +2031,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       marker.addEventListener("error", function () {
         if (!trainLayer || !trainLayer.isConnected || !marker.isConnected) return;
         var uid = marker.getAttribute("data-train-id") || "";
-        if (uid) _rememberTrainArtworkFailure(uid, marker.getAttribute("href"));
+        if (uid) _rememberTrainArtworkFailure(uid, spec.iconSrc);
         marker.setAttribute("visibility", "hidden");
         // 立即保留这列已知列车的已验证位置，
         // 不必等待图片/网络错误后的下一次 ODPT 轮询。
@@ -2243,9 +2251,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         // 同一列车和标记类型可以切换到另一张认证 PNG，而不必
         // 重建标记，也不保留过期的 SVG/PNG 图片。
         if (markerSpec.kind === "vehicle" && !markerSpec.compact &&
-            existingIcon.getAttribute("href") !== markerSpec.iconSrc) {
-          existingIcon.setAttribute("href", markerSpec.iconSrc);
-          existingIcon.setAttributeNS("http://www.w3.org/1999/xlink", "href", markerSpec.iconSrc);
+            existingIcon.getAttribute("href") !== _trainArtworkRequestUrl(markerSpec.iconSrc)) {
+          existingIcon.setAttribute("href", _trainArtworkRequestUrl(markerSpec.iconSrc));
+          existingIcon.setAttributeNS("http://www.w3.org/1999/xlink", "href", _trainArtworkRequestUrl(markerSpec.iconSrc));
           existingIcon.setAttribute("data-train-artwork", markerSpec.iconSrc);
           existingIcon.setAttribute("visibility", "visible");
         }
@@ -2795,7 +2803,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var modelName=_trainFoldModelName(fleetText);
           var icon=document.createElement('img');
           icon.className='train-fold-vehicle-image';
-          icon.src=markerSpec.iconSrc;
+          icon.src=_trainArtworkRequestUrl(markerSpec.iconSrc);
           icon.alt=modelName||(lang==='en'?'Train model icon':/^zh/.test(lang)?'车型图标':lang==='ko'?'차량 아이콘':'車両アイコン');
           icon.loading='lazy';
           if(fleetText) {
