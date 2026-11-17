@@ -60,7 +60,7 @@ const expectedReferencedPngs = [
 ].sort();
 
 test('private railway category fixes the 246-PNG inventory and 230 unresolved gaps', () => {
-  assert.equal(rows.length, 580, 'review duplicate range rows when the inventory changes');
+  assert.equal(rows.length, 583, 'review duplicate range rows when the inventory changes');
   assert.equal(rowsByPng.size, 246);
   const counts = {};
   const missing = [];
