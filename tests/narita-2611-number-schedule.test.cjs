@@ -12,7 +12,7 @@ const source=p=>fs.readFileSync(p,'utf8');
 const log={debug(){},log(){},warn(){},error(){}};
 const doc={currentScript:{src:'https://example.test/runtime-config.js'}};
 const root={};
-const picture='../images/列车/JR東日本/JR東日本_E231系_0番台.png';
+const picture='../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png';
 const ctx=vm.createContext({window:root,document:doc,Date,console:log,
   _isTrainArtworkFailureActive(){return false}});
 for(const file of [

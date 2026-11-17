@@ -1512,7 +1512,7 @@
       allowedModelLabels:["E231系0番台"],
       rejectAmbiguousPlan:true,
       model:"E231系0番台",
-      pngPath:"../images/列车/JR東日本/JR東日本_E231系_0番台.png"},
+      pngPath:"../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png"},
     // Ome uses both T/H-numbered Chuo through trains (e.g. 434T, 405H,
     // 1378T, 1926H) and suffixless local numbers (e.g. 509, 843, 1103,
     // 1705, 2348). They are FULL public numbers, not operation-number tails.
