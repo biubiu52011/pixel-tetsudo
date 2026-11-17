@@ -9542,10 +9542,12 @@
       "png": "images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png",
       "name": "JR東日本_E231系_0番台_常磐快速線.png",
       "models": [
+        "E231系0番台",
         "E231系0番台（常磐快速線・LED）"
       ],
       "lineScopes": [
         "Joban",
+        "NaritaAbikoBranch",
         "JobanRapid",
         "UenoTokyo"
       ],
@@ -9557,6 +9559,28 @@
         "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
       },
       "originalNumberRules": [
+        {
+          "ruleId": "js-0078",
+          "authority": "frontend_js",
+          "grade": "explicit_number_roster",
+          "lineIds": [
+            "NaritaAbikoBranch"
+          ],
+          "model": "E231系0番台",
+          "numberFormat": "full",
+          "minNumber": 820,
+          "maxNumber": 899,
+          "suffix": "M",
+          "exactSingleNumber": null,
+          "explicitDocumentedNumberCount": 80,
+          "explicitShortNumberList": [],
+          "sourceUrl": null,
+          "validFrom": "2026-11-01",
+          "validTo": "2026-11-30",
+          "requiresExactRoster": false,
+          "requiresCompatiblePlan": false,
+          "actualVehicleConfirmed": false
+        },
         {
           "ruleId": "js-0097",
           "authority": "frontend_js",
@@ -9594,12 +9618,9 @@
       "png": "images/列车/JR東日本/JR東日本_E231系_0番台.png",
       "name": "JR東日本_E231系_0番台.png",
       "models": [
-        "E231系0番台",
         "E231系0番台（武蔵野線）"
       ],
       "lineScopes": [
-        "Joban",
-        "NaritaAbikoBranch",
         "Musashino",
         "Keiyo"
       ],
@@ -9611,28 +9632,6 @@
         "note": "Official operator page documents this operating model family and corridor; variant/livery and individual numbered service remain unconfirmed. Original train-number/runtime guards still apply."
       },
       "originalNumberRules": [
-        {
-          "ruleId": "js-0078",
-          "authority": "frontend_js",
-          "grade": "explicit_number_roster",
-          "lineIds": [
-            "NaritaAbikoBranch"
-          ],
-          "model": "E231系0番台",
-          "numberFormat": "full",
-          "minNumber": 820,
-          "maxNumber": 899,
-          "suffix": "M",
-          "exactSingleNumber": null,
-          "explicitDocumentedNumberCount": 80,
-          "explicitShortNumberList": [],
-          "sourceUrl": null,
-          "validFrom": "2026-11-01",
-          "validTo": "2026-11-30",
-          "requiresExactRoster": false,
-          "requiresCompatiblePlan": false,
-          "actualVehicleConfirmed": false
-        },
         {
           "ruleId": "js-0081",
           "authority": "frontend_js",
