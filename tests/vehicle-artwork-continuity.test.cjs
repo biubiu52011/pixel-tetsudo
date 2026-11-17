@@ -57,10 +57,12 @@ test('same through PNG, unrelated chains, distinct dates or missing art never fa
   assert.equal(check({A:[a],B:[b]}),0);
   assert.equal(a.vehicleArtworkConflict,false);
   assert.equal(b.vehicleArtworkConflict,false);
-  assert.equal(check({A:[pos('A','A.png')],B:[pos('B','B.png',{runningChainId:'another'})]}),0);
-  assert.equal(check({A:[pos('A','A.png')],B:[pos('B','B.png',{serviceDate:'2026-11-18'})]}),0);
-  assert.equal(check({A:[pos('A','A.png')],B:[pos('B','')]}),0);
-  assert.equal(check({A:[pos('A','A.png')],B:[pos('A','B.png')]}),0);
+  // Negative scenarios must not inherit the deliberately different art
+  // from the prior test poll; each is a fresh, unrelated snapshot.
+  assert.equal(newChecker().check({A:[pos('A','A.png')],B:[pos('B','B.png',{runningChainId:'another'})]}),0);
+  assert.equal(newChecker().check({A:[pos('A','A.png')],B:[pos('B','B.png',{serviceDate:'2026-11-18'})]}),0);
+  assert.equal(newChecker().check({A:[pos('A','A.png')],B:[pos('B','')]}),0);
+  assert.equal(newChecker().check({A:[pos('A','A.png')],B:[pos('A','B.png')]}),0);
 });
 test('display redraw and SVG identity retain the same canonical scope',()=>{
   assert.match(fusion,/vehicleArtworkConflict','trainNumber'/);
