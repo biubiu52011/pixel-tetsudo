@@ -35,12 +35,12 @@
     "Agatsuma": {
       "sql": [],
       "js": [
+        "js-0044",
         "js-0045",
         "js-0046",
         "js-0047",
         "js-0048",
-        "js-0049",
-        "js-0050"
+        "js-0049"
       ]
     },
     "AkitaShinkansen": {
@@ -96,18 +96,19 @@
     "Asakusa": {
       "sql": [],
       "js": [
-        "js-0125"
+        "js-0124"
       ]
     },
     "BanetsuEast": {
       "sql": [],
       "js": [
-        "js-0025"
+        "js-0024"
       ]
     },
     "BanetsuWest": {
       "sql": [],
       "js": [
+        "js-0025",
         "js-0026",
         "js-0027",
         "js-0028",
@@ -115,21 +116,20 @@
         "js-0030",
         "js-0031",
         "js-0032",
-        "js-0033",
-        "js-0034"
+        "js-0033"
       ]
     },
     "Chiyoda": {
       "sql": [],
       "js": [
-        "js-0115"
+        "js-0114"
       ]
     },
     "ChiyodaBranch": {
       "sql": [],
       "js": [
-        "js-0116",
-        "js-0117"
+        "js-0115",
+        "js-0116"
       ]
     },
     "ChuoCentral": {
@@ -148,46 +148,46 @@
     "ChuoMain": {
       "sql": [],
       "js": [
-        "js-0061",
+        "js-0060",
+        "js-0062",
         "js-0063",
         "js-0064",
         "js-0065",
-        "js-0066",
+        "js-0105",
         "js-0106",
         "js-0107",
-        "js-0108",
-        "js-0109"
+        "js-0108"
       ]
     },
     "ChuoRapid": {
       "sql": [],
       "js": [
-        "js-0060",
+        "js-0059",
+        "js-0105",
         "js-0106",
         "js-0107",
-        "js-0108",
-        "js-0109"
+        "js-0108"
       ]
     },
     "ChuoSobuLocal": {
       "sql": [],
       "js": [
-        "js-0090",
-        "js-0091"
+        "js-0089",
+        "js-0090"
       ]
     },
     "ChuoTatsuno": {
       "sql": [],
       "js": [
-        "js-0062"
+        "js-0061"
       ]
     },
     "Echigo": {
       "sql": [],
       "js": [
-        "js-0040",
-        "js-0042",
-        "js-0043"
+        "js-0039",
+        "js-0041",
+        "js-0042"
       ]
     },
     "Fujikyu": {
@@ -206,21 +206,21 @@
     "Fukutoshin": {
       "sql": [],
       "js": [
-        "js-0121",
-        "js-0122"
+        "js-0120",
+        "js-0121"
       ]
     },
     "Ginza": {
       "sql": [],
       "js": [
-        "js-0112"
+        "js-0111"
       ]
     },
     "Gono": {
       "sql": [],
       "js": [
-        "js-0035",
-        "js-0036"
+        "js-0034",
+        "js-0035"
       ]
     },
     "Gotemba": {
@@ -232,16 +232,16 @@
     "Hachiko": {
       "sql": [],
       "js": [
-        "js-0073",
-        "js-0074"
+        "js-0072",
+        "js-0073"
       ]
     },
     "Hachinohe": {
       "sql": [],
       "js": [
+        "js-0018",
         "js-0019",
-        "js-0020",
-        "js-0021"
+        "js-0020"
       ]
     },
     "Hakushin": {
@@ -257,56 +257,56 @@
       "sql": [],
       "js": [
         "js-0011",
-        "js-0012"
+        "js-0131"
       ]
     },
     "Ishinomaki": {
       "sql": [],
       "js": [
-        "js-0023",
-        "js-0024"
+        "js-0022",
+        "js-0023"
       ]
     },
     "Ito": {
       "sql": [],
       "js": [
-        "js-0069",
-        "js-0070"
+        "js-0068",
+        "js-0069"
       ]
     },
     "Itsukaichi": {
       "sql": [],
       "js": [
-        "js-0081"
+        "js-0080"
       ]
     },
     "Joban": {
       "sql": [],
       "js": [
+        "js-0097",
         "js-0098",
         "js-0099",
         "js-0100",
-        "js-0101",
-        "js-0110",
-        "js-0111"
+        "js-0109",
+        "js-0110"
       ]
     },
     "JobanLocal": {
       "sql": [],
       "js": [
+        "js-0094",
         "js-0095",
-        "js-0096",
-        "js-0097"
+        "js-0096"
       ]
     },
     "JobanMain": {
       "sql": [],
       "js": [
+        "js-0098",
         "js-0099",
         "js-0100",
-        "js-0101",
-        "js-0110",
-        "js-0111"
+        "js-0109",
+        "js-0110"
       ]
     },
     "Joetsu": {
@@ -352,7 +352,7 @@
     "Karasuyama": {
       "sql": [],
       "js": [
-        "js-0018"
+        "js-0017"
       ]
     },
     "Kashima": {
@@ -363,20 +363,20 @@
         "sql-0086"
       ],
       "js": [
-        "js-0085"
+        "js-0084"
       ]
     },
     "KeihinTohoku": {
       "sql": [],
       "js": [
-        "js-0067",
-        "js-0068"
+        "js-0066",
+        "js-0067"
       ]
     },
     "Keiyo": {
       "sql": [],
       "js": [
-        "js-0087"
+        "js-0086"
       ]
     },
     "Kesennuma": {
@@ -414,7 +414,7 @@
         "sql-0095"
       ],
       "js": [
-        "js-0017"
+        "js-0016"
       ]
     },
     "KyushuShinkansen": {
@@ -467,20 +467,20 @@
     "Marunouchi": {
       "sql": [],
       "js": [
-        "js-0113"
+        "js-0112"
       ]
     },
     "MarunouchiBranch": {
       "sql": [],
       "js": [
-        "js-0114"
+        "js-0113"
       ]
     },
     "Mita": {
       "sql": [],
       "js": [
-        "js-0123",
-        "js-0124"
+        "js-0122",
+        "js-0123"
       ]
     },
     "Mito": {
@@ -499,55 +499,55 @@
     "Musashino": {
       "sql": [],
       "js": [
-        "js-0082",
-        "js-0083"
+        "js-0081",
+        "js-0082"
       ]
     },
     "Namboku": {
       "sql": [],
       "js": [
-        "js-0118"
+        "js-0117"
       ]
     },
     "Nambu": {
       "sql": [],
       "js": [
-        "js-0089"
+        "js-0088"
       ]
     },
     "NambuBranch": {
       "sql": [],
       "js": [
-        "js-0088"
+        "js-0087"
       ]
     },
     "Narita": {
       "sql": [],
       "js": [
-        "js-0085",
-        "js-0086"
+        "js-0084",
+        "js-0085"
       ]
     },
     "NaritaAbikoBranch": {
       "sql": [],
       "js": [
-        "js-0079"
+        "js-0078"
       ]
     },
     "NaritaAirportBranch": {
       "sql": [],
       "js": [
-        "js-0085",
-        "js-0086"
+        "js-0084",
+        "js-0085"
       ]
     },
     "Oedo": {
       "sql": [],
       "js": [
+        "js-0127",
         "js-0128",
         "js-0129",
-        "js-0130",
-        "js-0131"
+        "js-0130"
       ]
     },
     "Ofunato": {
@@ -561,7 +561,7 @@
         "sql-0142"
       ],
       "js": [
-        "js-0022"
+        "js-0021"
       ]
     },
     "Oito": {
@@ -576,8 +576,8 @@
     "Ome": {
       "sql": [],
       "js": [
-        "js-0080",
-        "js-0081"
+        "js-0079",
+        "js-0080"
       ]
     },
     "OuMain": {
@@ -593,36 +593,36 @@
         "sql-0150"
       ],
       "js": [
-        "js-0015",
-        "js-0016"
+        "js-0014",
+        "js-0015"
       ]
     },
     "RikutsuWest": {
       "sql": [],
       "js": [
-        "js-0013",
-        "js-0014"
+        "js-0012",
+        "js-0013"
       ]
     },
     "Rinkai": {
       "sql": [],
       "js": [
-        "js-0057",
-        "js-0059"
+        "js-0056",
+        "js-0058"
       ]
     },
     "Sagami": {
       "sql": [],
       "js": [
-        "js-0039"
+        "js-0038"
       ]
     },
     "SaikyoKawagoe": {
       "sql": [],
       "js": [
+        "js-0056",
         "js-0057",
-        "js-0058",
-        "js-0059"
+        "js-0058"
       ]
     },
     "SanyoShinkansen": {
@@ -643,61 +643,61 @@
     "Senseki": {
       "sql": [],
       "js": [
-        "js-0037",
-        "js-0038"
+        "js-0036",
+        "js-0037"
       ]
     },
     "SensekiTohoku": {
       "sql": [],
       "js": [
-        "js-0041"
+        "js-0040"
       ]
     },
     "Shinjuku": {
       "sql": [],
       "js": [
-        "js-0126",
-        "js-0127"
+        "js-0125",
+        "js-0126"
       ]
     },
     "SobuMain": {
       "sql": [],
       "js": [
+        "js-0084",
         "js-0085",
-        "js-0086",
-        "js-0087"
+        "js-0086"
       ]
     },
     "SobuRapid": {
       "sql": [],
       "js": [
+        "js-0084",
         "js-0085",
-        "js-0086",
-        "js-0087"
+        "js-0086"
       ]
     },
     "Sotobo": {
       "sql": [],
       "js": [
+        "js-0075",
         "js-0076",
-        "js-0077",
-        "js-0085",
-        "js-0087"
+        "js-0084",
+        "js-0086"
       ]
     },
     "Takasaki": {
       "sql": [],
       "js": [
-        "js-0044",
+        "js-0043",
+        "js-0050",
         "js-0051",
-        "js-0052",
-        "js-0053"
+        "js-0052"
       ]
     },
     "Togane": {
       "sql": [],
       "js": [
-        "js-0078"
+        "js-0077"
       ]
     },
     "TohokuShinkansen": {
@@ -743,8 +743,8 @@
     "Tokaido": {
       "sql": [],
       "js": [
-        "js-0071",
-        "js-0072"
+        "js-0070",
+        "js-0071"
       ]
     },
     "TokaidoShinkansen": {
@@ -805,45 +805,45 @@
     "Tozai": {
       "sql": [],
       "js": [
+        "js-0091",
         "js-0092",
-        "js-0093",
-        "js-0094"
+        "js-0093"
       ]
     },
     "Tsurumi": {
       "sql": [],
       "js": [
-        "js-0102",
-        "js-0103"
+        "js-0101",
+        "js-0102"
       ]
     },
     "TsurumiOkawa": {
       "sql": [],
       "js": [
-        "js-0102",
-        "js-0105"
+        "js-0101",
+        "js-0104"
       ]
     },
     "TsurumiUmiShibaura": {
       "sql": [],
       "js": [
-        "js-0102",
-        "js-0104"
+        "js-0101",
+        "js-0103"
       ]
     },
     "Uchibo": {
       "sql": [],
       "js": [
-        "js-0075",
-        "js-0085",
-        "js-0087"
+        "js-0074",
+        "js-0084",
+        "js-0086"
       ]
     },
     "UtsunomiyaJR": {
       "sql": [],
       "js": [
-        "js-0054",
-        "js-0055"
+        "js-0053",
+        "js-0054"
       ]
     },
     "Yamada": {
@@ -906,27 +906,27 @@
     "Yamanote": {
       "sql": [],
       "js": [
-        "js-0056"
+        "js-0055"
       ]
     },
     "Yokohama": {
       "sql": [],
       "js": [
-        "js-0084"
+        "js-0083"
       ]
     },
     "Yokosuka": {
       "sql": [],
       "js": [
-        "js-0085",
-        "js-0086"
+        "js-0084",
+        "js-0085"
       ]
     },
     "Yurakucho": {
       "sql": [],
       "js": [
-        "js-0119",
-        "js-0120"
+        "js-0118",
+        "js-0119"
       ]
     }
   },
@@ -6833,52 +6833,6 @@
       "id": "js-0012",
       "origin": "frontend_js",
       "line_ids": [
-        "Iiyama"
-      ],
-      "format": "full",
-      "min": 8140,
-      "max": 8141,
-      "suffix": "D",
-      "model": "キハ110系（おいこっと）",
-      "png": "images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png",
-      "train_type": null,
-      "train_types": [
-        "Rapid"
-      ],
-      "number_index": "jreast-iiyama-2611",
-      "published_numbers": [
-        "8140D",
-        "8141D"
-      ],
-      "weekday_numbers": null,
-      "holiday_numbers": null,
-      "official_month": null,
-      "official_month_numbers": null,
-      "calendar_type": null,
-      "operating_dates": null,
-      "valid_from": "2026-11-01",
-      "valid_to": "2026-11-30",
-      "operator": "JR-East",
-      "source_railways": [
-        "odpt.Railway:JR-East.Iiyama"
-      ],
-      "source_railways_if_present": null,
-      "direction_number_parity": "inbound-even",
-      "requires_compatible_plan": false,
-      "runtime_guards": {
-        "allowedModelLabels": [
-          "キハ110系（おいこっと）"
-        ],
-        "iiyamaKind": "oykot",
-        "sourceOperatorFallback": true
-      },
-      "evidence_kind": "exact-list",
-      "actual_vehicle_confirmed": false
-    },
-    {
-      "id": "js-0013",
-      "origin": "frontend_js",
-      "line_ids": [
         "RikutsuWest"
       ],
       "format": "full",
@@ -6938,7 +6892,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0014",
+      "id": "js-0013",
       "origin": "frontend_js",
       "line_ids": [
         "RikutsuWest"
@@ -6986,7 +6940,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0015",
+      "id": "js-0014",
       "origin": "frontend_js",
       "line_ids": [
         "RikutoEast"
@@ -7077,7 +7031,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0016",
+      "id": "js-0015",
       "origin": "frontend_js",
       "line_ids": [
         "RikutoEast"
@@ -7129,7 +7083,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0017",
+      "id": "js-0016",
       "origin": "frontend_js",
       "line_ids": [
         "Kururi"
@@ -7216,7 +7170,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0018",
+      "id": "js-0017",
       "origin": "frontend_js",
       "line_ids": [
         "Karasuyama"
@@ -7290,7 +7244,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0019",
+      "id": "js-0018",
       "origin": "frontend_js",
       "line_ids": [
         "Hachinohe"
@@ -7378,7 +7332,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0020",
+      "id": "js-0019",
       "origin": "frontend_js",
       "line_ids": [
         "Hachinohe"
@@ -7427,7 +7381,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0021",
+      "id": "js-0020",
       "origin": "frontend_js",
       "line_ids": [
         "Hachinohe"
@@ -7475,7 +7429,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0022",
+      "id": "js-0021",
       "origin": "frontend_js",
       "line_ids": [
         "Oga"
@@ -7550,7 +7504,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0023",
+      "id": "js-0022",
       "origin": "frontend_js",
       "line_ids": [
         "Ishinomaki"
@@ -7633,7 +7587,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0024",
+      "id": "js-0023",
       "origin": "frontend_js",
       "line_ids": [
         "Ishinomaki"
@@ -7681,7 +7635,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0025",
+      "id": "js-0024",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuEast"
@@ -7831,7 +7785,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0026",
+      "id": "js-0025",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -7897,7 +7851,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0027",
+      "id": "js-0026",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -7955,7 +7909,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0028",
+      "id": "js-0027",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8038,7 +7992,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0029",
+      "id": "js-0028",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8083,7 +8037,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0030",
+      "id": "js-0029",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8152,7 +8106,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0031",
+      "id": "js-0030",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8214,7 +8168,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0032",
+      "id": "js-0031",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8272,7 +8226,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0033",
+      "id": "js-0032",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8323,7 +8277,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0034",
+      "id": "js-0033",
       "origin": "frontend_js",
       "line_ids": [
         "BanetsuWest"
@@ -8373,7 +8327,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0035",
+      "id": "js-0034",
       "origin": "frontend_js",
       "line_ids": [
         "Gono"
@@ -8554,7 +8508,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0036",
+      "id": "js-0035",
       "origin": "frontend_js",
       "line_ids": [
         "Gono"
@@ -8606,7 +8560,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0037",
+      "id": "js-0036",
       "origin": "frontend_js",
       "line_ids": [
         "Senseki"
@@ -8840,7 +8794,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0038",
+      "id": "js-0037",
       "origin": "frontend_js",
       "line_ids": [
         "Senseki"
@@ -8912,7 +8866,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0039",
+      "id": "js-0038",
       "origin": "frontend_js",
       "line_ids": [
         "Sagami"
@@ -9119,7 +9073,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0040",
+      "id": "js-0039",
       "origin": "frontend_js",
       "line_ids": [
         "Echigo"
@@ -9283,7 +9237,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0041",
+      "id": "js-0040",
       "origin": "frontend_js",
       "line_ids": [
         "SensekiTohoku"
@@ -9355,7 +9309,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0042",
+      "id": "js-0041",
       "origin": "frontend_js",
       "line_ids": [
         "Echigo"
@@ -9417,7 +9371,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0043",
+      "id": "js-0042",
       "origin": "frontend_js",
       "line_ids": [
         "Echigo"
@@ -9469,7 +9423,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0044",
+      "id": "js-0043",
       "origin": "frontend_js",
       "line_ids": [
         "Takasaki"
@@ -9675,7 +9629,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0045",
+      "id": "js-0044",
       "origin": "frontend_js",
       "line_ids": [
         "Agatsuma"
@@ -9805,7 +9759,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0046",
+      "id": "js-0045",
       "origin": "frontend_js",
       "line_ids": [
         "Agatsuma"
@@ -9850,7 +9804,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0047",
+      "id": "js-0046",
       "origin": "frontend_js",
       "line_ids": [
         "Agatsuma"
@@ -9893,7 +9847,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0048",
+      "id": "js-0047",
       "origin": "frontend_js",
       "line_ids": [
         "Agatsuma"
@@ -9942,7 +9896,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0049",
+      "id": "js-0048",
       "origin": "frontend_js",
       "line_ids": [
         "Agatsuma"
@@ -9991,7 +9945,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0050",
+      "id": "js-0049",
       "origin": "frontend_js",
       "line_ids": [
         "Agatsuma"
@@ -10039,7 +9993,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0051",
+      "id": "js-0050",
       "origin": "frontend_js",
       "line_ids": [
         "Takasaki"
@@ -10084,7 +10038,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0052",
+      "id": "js-0051",
       "origin": "frontend_js",
       "line_ids": [
         "Takasaki"
@@ -10127,7 +10081,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0053",
+      "id": "js-0052",
       "origin": "frontend_js",
       "line_ids": [
         "Takasaki"
@@ -10177,7 +10131,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0054",
+      "id": "js-0053",
       "origin": "frontend_js",
       "line_ids": [
         "UtsunomiyaJR"
@@ -10298,7 +10252,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0055",
+      "id": "js-0054",
       "origin": "frontend_js",
       "line_ids": [
         "UtsunomiyaJR"
@@ -10342,7 +10296,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0056",
+      "id": "js-0055",
       "origin": "frontend_js",
       "line_ids": [
         "Yamanote"
@@ -10383,7 +10337,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0057",
+      "id": "js-0056",
       "origin": "frontend_js",
       "line_ids": [
         "SaikyoKawagoe",
@@ -10429,7 +10383,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0058",
+      "id": "js-0057",
       "origin": "frontend_js",
       "line_ids": [
         "SaikyoKawagoe"
@@ -10473,7 +10427,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0059",
+      "id": "js-0058",
       "origin": "frontend_js",
       "line_ids": [
         "SaikyoKawagoe",
@@ -10524,7 +10478,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0060",
+      "id": "js-0059",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoRapid"
@@ -11664,7 +11618,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0061",
+      "id": "js-0060",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoMain"
@@ -11778,7 +11732,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0062",
+      "id": "js-0061",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoTatsuno"
@@ -11827,7 +11781,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0063",
+      "id": "js-0062",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoMain"
@@ -11953,7 +11907,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0064",
+      "id": "js-0063",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoMain"
@@ -12002,7 +11956,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0065",
+      "id": "js-0064",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoMain"
@@ -12051,7 +12005,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0066",
+      "id": "js-0065",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoMain"
@@ -12141,7 +12095,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0067",
+      "id": "js-0066",
       "origin": "frontend_js",
       "line_ids": [
         "KeihinTohoku"
@@ -12185,7 +12139,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0068",
+      "id": "js-0067",
       "origin": "frontend_js",
       "line_ids": [
         "KeihinTohoku"
@@ -12229,7 +12183,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0069",
+      "id": "js-0068",
       "origin": "frontend_js",
       "line_ids": [
         "Ito"
@@ -12272,7 +12226,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0070",
+      "id": "js-0069",
       "origin": "frontend_js",
       "line_ids": [
         "Ito"
@@ -12321,7 +12275,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0071",
+      "id": "js-0070",
       "origin": "frontend_js",
       "line_ids": [
         "Tokaido"
@@ -12370,7 +12324,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0072",
+      "id": "js-0071",
       "origin": "frontend_js",
       "line_ids": [
         "Tokaido"
@@ -12412,7 +12366,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0073",
+      "id": "js-0072",
       "origin": "frontend_js",
       "line_ids": [
         "Hachiko"
@@ -12509,7 +12463,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0074",
+      "id": "js-0073",
       "origin": "frontend_js",
       "line_ids": [
         "Hachiko"
@@ -12700,7 +12654,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0075",
+      "id": "js-0074",
       "origin": "frontend_js",
       "line_ids": [
         "Uchibo"
@@ -12759,7 +12713,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0076",
+      "id": "js-0075",
       "origin": "frontend_js",
       "line_ids": [
         "Sotobo"
@@ -12817,7 +12771,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0077",
+      "id": "js-0076",
       "origin": "frontend_js",
       "line_ids": [
         "Sotobo"
@@ -12863,7 +12817,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0078",
+      "id": "js-0077",
       "origin": "frontend_js",
       "line_ids": [
         "Togane"
@@ -12907,7 +12861,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0079",
+      "id": "js-0078",
       "origin": "frontend_js",
       "line_ids": [
         "NaritaAbikoBranch"
@@ -13029,7 +12983,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0080",
+      "id": "js-0079",
       "origin": "frontend_js",
       "line_ids": [
         "Ome"
@@ -13361,7 +13315,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0081",
+      "id": "js-0080",
       "origin": "frontend_js",
       "line_ids": [
         "Ome",
@@ -13940,7 +13894,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0082",
+      "id": "js-0081",
       "origin": "frontend_js",
       "line_ids": [
         "Musashino"
@@ -14520,7 +14474,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0083",
+      "id": "js-0082",
       "origin": "frontend_js",
       "line_ids": [
         "Musashino"
@@ -15100,7 +15054,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0084",
+      "id": "js-0083",
       "origin": "frontend_js",
       "line_ids": [
         "Yokohama"
@@ -15145,7 +15099,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0085",
+      "id": "js-0084",
       "origin": "frontend_js",
       "line_ids": [
         "Yokosuka",
@@ -15202,7 +15156,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0086",
+      "id": "js-0085",
       "origin": "frontend_js",
       "line_ids": [
         "Yokosuka",
@@ -15252,7 +15206,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0087",
+      "id": "js-0086",
       "origin": "frontend_js",
       "line_ids": [
         "Keiyo",
@@ -15301,7 +15255,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0088",
+      "id": "js-0087",
       "origin": "frontend_js",
       "line_ids": [
         "NambuBranch"
@@ -15343,7 +15297,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0089",
+      "id": "js-0088",
       "origin": "frontend_js",
       "line_ids": [
         "Nambu"
@@ -16121,7 +16075,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0090",
+      "id": "js-0089",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoSobuLocal"
@@ -16162,7 +16116,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0091",
+      "id": "js-0090",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoSobuLocal"
@@ -16204,7 +16158,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0092",
+      "id": "js-0091",
       "origin": "frontend_js",
       "line_ids": [
         "Tozai"
@@ -16250,7 +16204,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0093",
+      "id": "js-0092",
       "origin": "frontend_js",
       "line_ids": [
         "Tozai"
@@ -16292,7 +16246,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0094",
+      "id": "js-0093",
       "origin": "frontend_js",
       "line_ids": [
         "Tozai"
@@ -16333,7 +16287,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0095",
+      "id": "js-0094",
       "origin": "frontend_js",
       "line_ids": [
         "JobanLocal"
@@ -16373,7 +16327,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0096",
+      "id": "js-0095",
       "origin": "frontend_js",
       "line_ids": [
         "JobanLocal"
@@ -16413,7 +16367,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0097",
+      "id": "js-0096",
       "origin": "frontend_js",
       "line_ids": [
         "JobanLocal"
@@ -16453,7 +16407,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0098",
+      "id": "js-0097",
       "origin": "frontend_js",
       "line_ids": [
         "Joban"
@@ -16495,7 +16449,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0099",
+      "id": "js-0098",
       "origin": "frontend_js",
       "line_ids": [
         "Joban",
@@ -16630,7 +16584,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0100",
+      "id": "js-0099",
       "origin": "frontend_js",
       "line_ids": [
         "Joban",
@@ -16788,7 +16742,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0101",
+      "id": "js-0100",
       "origin": "frontend_js",
       "line_ids": [
         "Joban",
@@ -16828,7 +16782,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0102",
+      "id": "js-0101",
       "origin": "frontend_js",
       "line_ids": [
         "Tsurumi",
@@ -17187,7 +17141,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0103",
+      "id": "js-0102",
       "origin": "frontend_js",
       "line_ids": [
         "Tsurumi"
@@ -17322,7 +17276,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0104",
+      "id": "js-0103",
       "origin": "frontend_js",
       "line_ids": [
         "TsurumiUmiShibaura"
@@ -17390,7 +17344,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0105",
+      "id": "js-0104",
       "origin": "frontend_js",
       "line_ids": [
         "TsurumiOkawa"
@@ -17437,7 +17391,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0106",
+      "id": "js-0105",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoRapid",
@@ -17515,7 +17469,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0107",
+      "id": "js-0106",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoRapid",
@@ -17569,7 +17523,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0108",
+      "id": "js-0107",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoRapid",
@@ -17639,7 +17593,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0109",
+      "id": "js-0108",
       "origin": "frontend_js",
       "line_ids": [
         "ChuoRapid",
@@ -17697,7 +17651,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0110",
+      "id": "js-0109",
       "origin": "frontend_js",
       "line_ids": [
         "Joban",
@@ -17743,7 +17697,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0111",
+      "id": "js-0110",
       "origin": "frontend_js",
       "line_ids": [
         "Joban",
@@ -17789,7 +17743,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0112",
+      "id": "js-0111",
       "origin": "frontend_js",
       "line_ids": [
         "Ginza"
@@ -19179,7 +19133,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0113",
+      "id": "js-0112",
       "origin": "frontend_js",
       "line_ids": [
         "Marunouchi"
@@ -20412,7 +20366,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0114",
+      "id": "js-0113",
       "origin": "frontend_js",
       "line_ids": [
         "MarunouchiBranch"
@@ -21115,7 +21069,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0115",
+      "id": "js-0114",
       "origin": "frontend_js",
       "line_ids": [
         "Chiyoda"
@@ -21676,7 +21630,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0116",
+      "id": "js-0115",
       "origin": "frontend_js",
       "line_ids": [
         "ChiyodaBranch"
@@ -21794,7 +21748,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0117",
+      "id": "js-0116",
       "origin": "frontend_js",
       "line_ids": [
         "ChiyodaBranch"
@@ -21912,7 +21866,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0118",
+      "id": "js-0117",
       "origin": "frontend_js",
       "line_ids": [
         "Namboku"
@@ -22352,7 +22306,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0119",
+      "id": "js-0118",
       "origin": "frontend_js",
       "line_ids": [
         "Yurakucho"
@@ -22940,7 +22894,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0120",
+      "id": "js-0119",
       "origin": "frontend_js",
       "line_ids": [
         "Yurakucho"
@@ -23518,6 +23472,371 @@
       "runtime_guards": {
         "allowedModelLabels": [
           "東京メトロ10000系"
+        ],
+        "illustrative": true,
+        "referenceOnly": true,
+        "requireExplicitModelEvidence": true,
+        "sourceOperatorFallback": true
+      },
+      "evidence_kind": "exact-list",
+      "actual_vehicle_confirmed": false
+    },
+    {
+      "id": "js-0120",
+      "origin": "frontend_js",
+      "line_ids": [
+        "Fukutoshin"
+      ],
+      "format": "metro-prefixed",
+      "min": 403,
+      "max": 2361,
+      "suffix": "S",
+      "model": "東京メトロ17000系",
+      "png": "images/列车/東京メトロ/東京メトロ_17000系.png",
+      "train_type": null,
+      "train_types": null,
+      "number_index": null,
+      "published_numbers": null,
+      "weekday_numbers": [
+        "A1002S",
+        "A1009S",
+        "A1047S",
+        "A1087S",
+        "A1111S",
+        "A1115S",
+        "A1129S",
+        "A1179S",
+        "A1204S",
+        "A1213S",
+        "A1271S",
+        "A1285S",
+        "A1289S",
+        "A1302S",
+        "A1303S",
+        "A1309S",
+        "A1387S",
+        "A1411S",
+        "A1447S",
+        "A1513S",
+        "A1515S",
+        "A1529S",
+        "A1567S",
+        "A1571S",
+        "A1675S",
+        "A1685S",
+        "A1689S",
+        "A1711S",
+        "A1753S",
+        "A1767S",
+        "A1781S",
+        "A1809S",
+        "A1813S",
+        "A1815S",
+        "A1819S",
+        "A1823S",
+        "A1863S",
+        "A1877S",
+        "A1903S",
+        "A1905S",
+        "A1931S",
+        "A1975S",
+        "A1987S",
+        "A1991S",
+        "A2007S",
+        "A2033S",
+        "A2067S",
+        "A2085S",
+        "A2113S",
+        "A2189S",
+        "A403S",
+        "A504S",
+        "A505S",
+        "A507S",
+        "A509S",
+        "A511S",
+        "A601S",
+        "A641S",
+        "A687S",
+        "A702S",
+        "A717S",
+        "A723S",
+        "A725S",
+        "A745S",
+        "A804S",
+        "A811S",
+        "A813S",
+        "A815S",
+        "A833S",
+        "A879S",
+        "A885S",
+        "A889S",
+        "A903S",
+        "A907S",
+        "A971S",
+        "B1004S",
+        "B1013S",
+        "B1015S",
+        "B1071S",
+        "B1079S",
+        "B1085S",
+        "B1089S",
+        "B1103S",
+        "B1202S",
+        "B1209S",
+        "B1211S",
+        "B1247S",
+        "B1287S",
+        "B1304S",
+        "B1315S",
+        "B1329S",
+        "B1371S",
+        "B1379S",
+        "B1413S",
+        "B1485S",
+        "B1489S",
+        "B1502S",
+        "B1587S",
+        "B1611S",
+        "B1615S",
+        "B1647S",
+        "B1667S",
+        "B1671S",
+        "B1703S",
+        "B1709S",
+        "B1713S",
+        "B1729S",
+        "B1805S",
+        "B1875S",
+        "B1881S",
+        "B1885S",
+        "B1889S",
+        "B1907S",
+        "B1953S",
+        "B1963S",
+        "B1967S",
+        "B2013S",
+        "B2023S",
+        "B2031S",
+        "B2077S",
+        "B2091S",
+        "B2105S",
+        "B2167S",
+        "B2175S",
+        "B2209S",
+        "B2219S",
+        "B2233S",
+        "B2289S",
+        "B2303S",
+        "B2313S",
+        "B501S",
+        "B604S",
+        "B607S",
+        "B617S",
+        "B701S",
+        "B709S",
+        "B711S",
+        "B719S",
+        "B789S",
+        "B791S",
+        "B802S",
+        "B803S",
+        "B817S",
+        "B823S",
+        "B825S",
+        "B841S",
+        "B845S",
+        "B887S",
+        "B911S",
+        "B933S"
+      ],
+      "holiday_numbers": [
+        "A1007S",
+        "A1011S",
+        "A1025S",
+        "A1055S",
+        "A1091S",
+        "A1104S",
+        "A1119S",
+        "A1143S",
+        "A1153S",
+        "A1202S",
+        "A1209S",
+        "A1223S",
+        "A1267S",
+        "A1307S",
+        "A1311S",
+        "A1313S",
+        "A1325S",
+        "A1361S",
+        "A1389S",
+        "A1391S",
+        "A1404S",
+        "A1419S",
+        "A1433S",
+        "A1453S",
+        "A1455S",
+        "A1509S",
+        "A1543S",
+        "A1567S",
+        "A1602S",
+        "A1607S",
+        "A1613S",
+        "A1617S",
+        "A1623S",
+        "A1685S",
+        "A1691S",
+        "A1704S",
+        "A1711S",
+        "A1733S",
+        "A1749S",
+        "A1787S",
+        "A1789S",
+        "A1829S",
+        "A1843S",
+        "A1875S",
+        "A1902S",
+        "A1909S",
+        "A1913S",
+        "A1919S",
+        "A1957S",
+        "A1987S",
+        "A2011S",
+        "A2043S",
+        "A2047S",
+        "A2049S",
+        "A2085S",
+        "A2117S",
+        "A2133S",
+        "A2161S",
+        "A2245S",
+        "A403S",
+        "A501S",
+        "A504S",
+        "A505S",
+        "A507S",
+        "A509S",
+        "A529S",
+        "A631S",
+        "A633S",
+        "A655S",
+        "A702S",
+        "A711S",
+        "A713S",
+        "A739S",
+        "A743S",
+        "A801S",
+        "A823S",
+        "A829S",
+        "A831S",
+        "A853S",
+        "A873S",
+        "A889S",
+        "A909S",
+        "A933S",
+        "A961S",
+        "A967S",
+        "B1002S",
+        "B1004S",
+        "B1023S",
+        "B1029S",
+        "B1053S",
+        "B1107S",
+        "B1109S",
+        "B1113S",
+        "B1161S",
+        "B1167S",
+        "B1189S",
+        "B1191S",
+        "B1211S",
+        "B1219S",
+        "B1225S",
+        "B1233S",
+        "B1255S",
+        "B1304S",
+        "B1343S",
+        "B1353S",
+        "B1402S",
+        "B1409S",
+        "B1413S",
+        "B1423S",
+        "B1467S",
+        "B1491S",
+        "B1507S",
+        "B1511S",
+        "B1525S",
+        "B1561S",
+        "B1589S",
+        "B1604S",
+        "B1633S",
+        "B1653S",
+        "B1655S",
+        "B1701S",
+        "B1702S",
+        "B1709S",
+        "B1713S",
+        "B1743S",
+        "B1791S",
+        "B1811S",
+        "B1819S",
+        "B1823S",
+        "B1849S",
+        "B1867S",
+        "B1885S",
+        "B1887S",
+        "B1917S",
+        "B1929S",
+        "B1933S",
+        "B1943S",
+        "B1975S",
+        "B1989S",
+        "B2057S",
+        "B2104S",
+        "B2147S",
+        "B2149S",
+        "B2187S",
+        "B2211S",
+        "B2243S",
+        "B2285S",
+        "B2302S",
+        "B2317S",
+        "B2319S",
+        "B2361S",
+        "B501S",
+        "B605S",
+        "B617S",
+        "B629S",
+        "B689S",
+        "B701S",
+        "B703S",
+        "B709S",
+        "B731S",
+        "B733S",
+        "B791S",
+        "B807S",
+        "B811S",
+        "B839S",
+        "B855S",
+        "B919S",
+        "B931S",
+        "B943S",
+        "B973S"
+      ],
+      "official_month": null,
+      "official_month_numbers": null,
+      "calendar_type": null,
+      "operating_dates": null,
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
+      "operator": "TokyoMetro",
+      "source_railways": [
+        "odpt.Railway:TokyoMetro.Fukutoshin"
+      ],
+      "source_railways_if_present": null,
+      "direction_number_parity": null,
+      "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "東京メトロ17000系"
         ],
         "illustrative": true,
         "referenceOnly": true,
@@ -23537,371 +23856,6 @@
       "min": 403,
       "max": 2361,
       "suffix": "S",
-      "model": "東京メトロ17000系",
-      "png": "images/列车/東京メトロ/東京メトロ_17000系.png",
-      "train_type": null,
-      "train_types": null,
-      "number_index": null,
-      "published_numbers": null,
-      "weekday_numbers": [
-        "A1002S",
-        "A1009S",
-        "A1047S",
-        "A1087S",
-        "A1111S",
-        "A1115S",
-        "A1129S",
-        "A1179S",
-        "A1204S",
-        "A1213S",
-        "A1271S",
-        "A1285S",
-        "A1289S",
-        "A1302S",
-        "A1303S",
-        "A1309S",
-        "A1387S",
-        "A1411S",
-        "A1447S",
-        "A1513S",
-        "A1515S",
-        "A1529S",
-        "A1567S",
-        "A1571S",
-        "A1675S",
-        "A1685S",
-        "A1689S",
-        "A1711S",
-        "A1753S",
-        "A1767S",
-        "A1781S",
-        "A1809S",
-        "A1813S",
-        "A1815S",
-        "A1819S",
-        "A1823S",
-        "A1863S",
-        "A1877S",
-        "A1903S",
-        "A1905S",
-        "A1931S",
-        "A1975S",
-        "A1987S",
-        "A1991S",
-        "A2007S",
-        "A2033S",
-        "A2067S",
-        "A2085S",
-        "A2113S",
-        "A2189S",
-        "A403S",
-        "A504S",
-        "A505S",
-        "A507S",
-        "A509S",
-        "A511S",
-        "A601S",
-        "A641S",
-        "A687S",
-        "A702S",
-        "A717S",
-        "A723S",
-        "A725S",
-        "A745S",
-        "A804S",
-        "A811S",
-        "A813S",
-        "A815S",
-        "A833S",
-        "A879S",
-        "A885S",
-        "A889S",
-        "A903S",
-        "A907S",
-        "A971S",
-        "B1004S",
-        "B1013S",
-        "B1015S",
-        "B1071S",
-        "B1079S",
-        "B1085S",
-        "B1089S",
-        "B1103S",
-        "B1202S",
-        "B1209S",
-        "B1211S",
-        "B1247S",
-        "B1287S",
-        "B1304S",
-        "B1315S",
-        "B1329S",
-        "B1371S",
-        "B1379S",
-        "B1413S",
-        "B1485S",
-        "B1489S",
-        "B1502S",
-        "B1587S",
-        "B1611S",
-        "B1615S",
-        "B1647S",
-        "B1667S",
-        "B1671S",
-        "B1703S",
-        "B1709S",
-        "B1713S",
-        "B1729S",
-        "B1805S",
-        "B1875S",
-        "B1881S",
-        "B1885S",
-        "B1889S",
-        "B1907S",
-        "B1953S",
-        "B1963S",
-        "B1967S",
-        "B2013S",
-        "B2023S",
-        "B2031S",
-        "B2077S",
-        "B2091S",
-        "B2105S",
-        "B2167S",
-        "B2175S",
-        "B2209S",
-        "B2219S",
-        "B2233S",
-        "B2289S",
-        "B2303S",
-        "B2313S",
-        "B501S",
-        "B604S",
-        "B607S",
-        "B617S",
-        "B701S",
-        "B709S",
-        "B711S",
-        "B719S",
-        "B789S",
-        "B791S",
-        "B802S",
-        "B803S",
-        "B817S",
-        "B823S",
-        "B825S",
-        "B841S",
-        "B845S",
-        "B887S",
-        "B911S",
-        "B933S"
-      ],
-      "holiday_numbers": [
-        "A1007S",
-        "A1011S",
-        "A1025S",
-        "A1055S",
-        "A1091S",
-        "A1104S",
-        "A1119S",
-        "A1143S",
-        "A1153S",
-        "A1202S",
-        "A1209S",
-        "A1223S",
-        "A1267S",
-        "A1307S",
-        "A1311S",
-        "A1313S",
-        "A1325S",
-        "A1361S",
-        "A1389S",
-        "A1391S",
-        "A1404S",
-        "A1419S",
-        "A1433S",
-        "A1453S",
-        "A1455S",
-        "A1509S",
-        "A1543S",
-        "A1567S",
-        "A1602S",
-        "A1607S",
-        "A1613S",
-        "A1617S",
-        "A1623S",
-        "A1685S",
-        "A1691S",
-        "A1704S",
-        "A1711S",
-        "A1733S",
-        "A1749S",
-        "A1787S",
-        "A1789S",
-        "A1829S",
-        "A1843S",
-        "A1875S",
-        "A1902S",
-        "A1909S",
-        "A1913S",
-        "A1919S",
-        "A1957S",
-        "A1987S",
-        "A2011S",
-        "A2043S",
-        "A2047S",
-        "A2049S",
-        "A2085S",
-        "A2117S",
-        "A2133S",
-        "A2161S",
-        "A2245S",
-        "A403S",
-        "A501S",
-        "A504S",
-        "A505S",
-        "A507S",
-        "A509S",
-        "A529S",
-        "A631S",
-        "A633S",
-        "A655S",
-        "A702S",
-        "A711S",
-        "A713S",
-        "A739S",
-        "A743S",
-        "A801S",
-        "A823S",
-        "A829S",
-        "A831S",
-        "A853S",
-        "A873S",
-        "A889S",
-        "A909S",
-        "A933S",
-        "A961S",
-        "A967S",
-        "B1002S",
-        "B1004S",
-        "B1023S",
-        "B1029S",
-        "B1053S",
-        "B1107S",
-        "B1109S",
-        "B1113S",
-        "B1161S",
-        "B1167S",
-        "B1189S",
-        "B1191S",
-        "B1211S",
-        "B1219S",
-        "B1225S",
-        "B1233S",
-        "B1255S",
-        "B1304S",
-        "B1343S",
-        "B1353S",
-        "B1402S",
-        "B1409S",
-        "B1413S",
-        "B1423S",
-        "B1467S",
-        "B1491S",
-        "B1507S",
-        "B1511S",
-        "B1525S",
-        "B1561S",
-        "B1589S",
-        "B1604S",
-        "B1633S",
-        "B1653S",
-        "B1655S",
-        "B1701S",
-        "B1702S",
-        "B1709S",
-        "B1713S",
-        "B1743S",
-        "B1791S",
-        "B1811S",
-        "B1819S",
-        "B1823S",
-        "B1849S",
-        "B1867S",
-        "B1885S",
-        "B1887S",
-        "B1917S",
-        "B1929S",
-        "B1933S",
-        "B1943S",
-        "B1975S",
-        "B1989S",
-        "B2057S",
-        "B2104S",
-        "B2147S",
-        "B2149S",
-        "B2187S",
-        "B2211S",
-        "B2243S",
-        "B2285S",
-        "B2302S",
-        "B2317S",
-        "B2319S",
-        "B2361S",
-        "B501S",
-        "B605S",
-        "B617S",
-        "B629S",
-        "B689S",
-        "B701S",
-        "B703S",
-        "B709S",
-        "B731S",
-        "B733S",
-        "B791S",
-        "B807S",
-        "B811S",
-        "B839S",
-        "B855S",
-        "B919S",
-        "B931S",
-        "B943S",
-        "B973S"
-      ],
-      "official_month": null,
-      "official_month_numbers": null,
-      "calendar_type": null,
-      "operating_dates": null,
-      "valid_from": "2026-11-01",
-      "valid_to": "2026-11-30",
-      "operator": "TokyoMetro",
-      "source_railways": [
-        "odpt.Railway:TokyoMetro.Fukutoshin"
-      ],
-      "source_railways_if_present": null,
-      "direction_number_parity": null,
-      "requires_compatible_plan": false,
-      "runtime_guards": {
-        "allowedModelLabels": [
-          "東京メトロ17000系"
-        ],
-        "illustrative": true,
-        "referenceOnly": true,
-        "requireExplicitModelEvidence": true,
-        "sourceOperatorFallback": true
-      },
-      "evidence_kind": "exact-list",
-      "actual_vehicle_confirmed": false
-    },
-    {
-      "id": "js-0122",
-      "origin": "frontend_js",
-      "line_ids": [
-        "Fukutoshin"
-      ],
-      "format": "metro-prefixed",
-      "min": 403,
-      "max": 2361,
-      "suffix": "S",
       "model": "東京メトロ10000系",
       "png": "images/列车/東京メトロ/東京メトロ_10000系.png",
       "train_type": null,
@@ -24258,7 +24212,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0123",
+      "id": "js-0122",
       "origin": "frontend_js",
       "line_ids": [
         "Mita"
@@ -24900,7 +24854,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0124",
+      "id": "js-0123",
       "origin": "frontend_js",
       "line_ids": [
         "Mita"
@@ -25542,7 +25496,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0125",
+      "id": "js-0124",
       "origin": "frontend_js",
       "line_ids": [
         "Asakusa"
@@ -25989,7 +25943,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0126",
+      "id": "js-0125",
       "origin": "frontend_js",
       "line_ids": [
         "Shinjuku"
@@ -26454,7 +26408,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0127",
+      "id": "js-0126",
       "origin": "frontend_js",
       "line_ids": [
         "Shinjuku"
@@ -26919,7 +26873,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0128",
+      "id": "js-0127",
       "origin": "frontend_js",
       "line_ids": [
         "Oedo"
@@ -27805,7 +27759,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0129",
+      "id": "js-0128",
       "origin": "frontend_js",
       "line_ids": [
         "Oedo"
@@ -28691,7 +28645,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0130",
+      "id": "js-0129",
       "origin": "frontend_js",
       "line_ids": [
         "Oedo"
@@ -29577,7 +29531,7 @@
       "actual_vehicle_confirmed": false
     },
     {
-      "id": "js-0131",
+      "id": "js-0130",
       "origin": "frontend_js",
       "line_ids": [
         "Oedo"
@@ -30461,6 +30415,52 @@
       },
       "evidence_kind": "exact-list",
       "actual_vehicle_confirmed": false
+    },
+    {
+      "id": "js-0131",
+      "origin": "frontend_js",
+      "line_ids": [
+        "Iiyama"
+      ],
+      "format": "full",
+      "min": 8140,
+      "max": 8141,
+      "suffix": "D",
+      "model": "キハ110系（おいこっと）",
+      "png": "images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png",
+      "train_type": null,
+      "train_types": [
+        "Rapid"
+      ],
+      "number_index": "jreast-iiyama-2611",
+      "published_numbers": [
+        "8140D",
+        "8141D"
+      ],
+      "weekday_numbers": null,
+      "holiday_numbers": null,
+      "official_month": null,
+      "official_month_numbers": null,
+      "calendar_type": null,
+      "operating_dates": null,
+      "valid_from": "2026-11-01",
+      "valid_to": "2026-11-30",
+      "operator": "JR-East",
+      "source_railways": [
+        "odpt.Railway:JR-East.Iiyama"
+      ],
+      "source_railways_if_present": null,
+      "direction_number_parity": "inbound-even",
+      "requires_compatible_plan": false,
+      "runtime_guards": {
+        "allowedModelLabels": [
+          "キハ110系（おいこっと）"
+        ],
+        "iiyamaKind": "oykot",
+        "sourceOperatorFallback": true
+      },
+      "evidence_kind": "exact-list",
+      "actual_vehicle_confirmed": false
     }
   ],
   "review": {
@@ -30509,7 +30509,7 @@
     ],
     "frontend_guard_only_rules": [
       {
-        "rule": "js-0057",
+        "rule": "js-0056",
         "line_ids": [
           "SaikyoKawagoe",
           "Rinkai"
@@ -30525,7 +30525,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0058",
+        "rule": "js-0057",
         "line_ids": [
           "SaikyoKawagoe"
         ],
@@ -30540,7 +30540,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0059",
+        "rule": "js-0058",
         "line_ids": [
           "SaikyoKawagoe",
           "Rinkai"
@@ -30556,7 +30556,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0092",
+        "rule": "js-0091",
         "line_ids": [
           "Tozai"
         ],
@@ -30571,7 +30571,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0093",
+        "rule": "js-0092",
         "line_ids": [
           "Tozai"
         ],
@@ -30586,7 +30586,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0094",
+        "rule": "js-0093",
         "line_ids": [
           "Tozai"
         ],
@@ -30601,7 +30601,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0095",
+        "rule": "js-0094",
         "line_ids": [
           "JobanLocal"
         ],
@@ -30616,7 +30616,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0096",
+        "rule": "js-0095",
         "line_ids": [
           "JobanLocal"
         ],
@@ -30631,7 +30631,7 @@
         "has_date_window": true
       },
       {
-        "rule": "js-0097",
+        "rule": "js-0096",
         "line_ids": [
           "JobanLocal"
         ],
@@ -30648,7 +30648,7 @@
     ],
     "frontend_official_month_rosters": [
       {
-        "rule": "js-0060",
+        "rule": "js-0059",
         "line_ids": [
           "ChuoRapid"
         ],
@@ -30661,7 +30661,7 @@
         }
       },
       {
-        "rule": "js-0080",
+        "rule": "js-0079",
         "line_ids": [
           "Ome"
         ],
@@ -30674,7 +30674,7 @@
         }
       },
       {
-        "rule": "js-0081",
+        "rule": "js-0080",
         "line_ids": [
           "Ome",
           "Itsukaichi"
@@ -30692,7 +30692,7 @@
         }
       },
       {
-        "rule": "js-0102",
+        "rule": "js-0101",
         "line_ids": [
           "Tsurumi",
           "TsurumiUmiShibaura",
@@ -30717,7 +30717,7 @@
     ],
     "frontend_singleton_candidates": [
       {
-        "rule": "js-0101",
+        "rule": "js-0100",
         "line_ids": [
           "Joban",
           "JobanMain"
@@ -31471,7 +31471,7 @@
           "line": "Kururi",
           "train_number": "920D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31479,7 +31479,7 @@
           "line": "Kururi",
           "train_number": "922D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31487,7 +31487,7 @@
           "line": "Kururi",
           "train_number": "924D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31495,7 +31495,7 @@
           "line": "Kururi",
           "train_number": "926D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31503,7 +31503,7 @@
           "line": "Kururi",
           "train_number": "928D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31511,7 +31511,7 @@
           "line": "Kururi",
           "train_number": "930D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31519,7 +31519,7 @@
           "line": "Kururi",
           "train_number": "932D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31527,7 +31527,7 @@
           "line": "Kururi",
           "train_number": "934D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31535,7 +31535,7 @@
           "line": "Kururi",
           "train_number": "936D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31543,7 +31543,7 @@
           "line": "Kururi",
           "train_number": "938D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31551,7 +31551,7 @@
           "line": "Kururi",
           "train_number": "940D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31559,7 +31559,7 @@
           "line": "Kururi",
           "train_number": "942D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31567,7 +31567,7 @@
           "line": "Kururi",
           "train_number": "944D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31575,7 +31575,7 @@
           "line": "Kururi",
           "train_number": "946D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31583,7 +31583,7 @@
           "line": "Kururi",
           "train_number": "948D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31591,7 +31591,7 @@
           "line": "Kururi",
           "train_number": "950D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31599,7 +31599,7 @@
           "line": "Kururi",
           "train_number": "952D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31607,7 +31607,7 @@
           "line": "Kururi",
           "train_number": "921D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31615,7 +31615,7 @@
           "line": "Kururi",
           "train_number": "923D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31623,7 +31623,7 @@
           "line": "Kururi",
           "train_number": "925D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31631,7 +31631,7 @@
           "line": "Kururi",
           "train_number": "927D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31639,7 +31639,7 @@
           "line": "Kururi",
           "train_number": "929D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31647,7 +31647,7 @@
           "line": "Kururi",
           "train_number": "931D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31655,7 +31655,7 @@
           "line": "Kururi",
           "train_number": "933D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31663,7 +31663,7 @@
           "line": "Kururi",
           "train_number": "935D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31671,7 +31671,7 @@
           "line": "Kururi",
           "train_number": "937D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31679,7 +31679,7 @@
           "line": "Kururi",
           "train_number": "939D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31687,7 +31687,7 @@
           "line": "Kururi",
           "train_number": "941D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31695,7 +31695,7 @@
           "line": "Kururi",
           "train_number": "943D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31703,7 +31703,7 @@
           "line": "Kururi",
           "train_number": "945D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31711,7 +31711,7 @@
           "line": "Kururi",
           "train_number": "947D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31719,7 +31719,7 @@
           "line": "Kururi",
           "train_number": "949D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31727,7 +31727,7 @@
           "line": "Kururi",
           "train_number": "951D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31735,7 +31735,7 @@
           "line": "Kururi",
           "train_number": "953D",
           "sql_rule": "sql-0095",
-          "js_rule": "js-0017",
+          "js_rule": "js-0016",
           "png": "images/列车/JR東日本/JR東日本_キハE130系100番台.png",
           "same_model_label": true
         },
@@ -31743,7 +31743,7 @@
           "line": "Oga",
           "train_number": "1120M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31751,7 +31751,7 @@
           "line": "Oga",
           "train_number": "1122M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31759,7 +31759,7 @@
           "line": "Oga",
           "train_number": "1124M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31767,7 +31767,7 @@
           "line": "Oga",
           "train_number": "1126M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31775,7 +31775,7 @@
           "line": "Oga",
           "train_number": "1128M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31783,7 +31783,7 @@
           "line": "Oga",
           "train_number": "1130M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31791,7 +31791,7 @@
           "line": "Oga",
           "train_number": "1132M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31799,7 +31799,7 @@
           "line": "Oga",
           "train_number": "1134M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31807,7 +31807,7 @@
           "line": "Oga",
           "train_number": "1136M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31815,7 +31815,7 @@
           "line": "Oga",
           "train_number": "1138M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31823,7 +31823,7 @@
           "line": "Oga",
           "train_number": "1140M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31831,7 +31831,7 @@
           "line": "Oga",
           "train_number": "1142M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31839,7 +31839,7 @@
           "line": "Oga",
           "train_number": "1144M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31847,7 +31847,7 @@
           "line": "Oga",
           "train_number": "1146M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31855,7 +31855,7 @@
           "line": "Oga",
           "train_number": "1148M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31863,7 +31863,7 @@
           "line": "Oga",
           "train_number": "1123M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31871,7 +31871,7 @@
           "line": "Oga",
           "train_number": "1125M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31879,7 +31879,7 @@
           "line": "Oga",
           "train_number": "1127M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31887,7 +31887,7 @@
           "line": "Oga",
           "train_number": "1129M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31895,7 +31895,7 @@
           "line": "Oga",
           "train_number": "1131M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31903,7 +31903,7 @@
           "line": "Oga",
           "train_number": "1133M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31911,7 +31911,7 @@
           "line": "Oga",
           "train_number": "1135M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31919,7 +31919,7 @@
           "line": "Oga",
           "train_number": "1137M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31927,7 +31927,7 @@
           "line": "Oga",
           "train_number": "1139M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31935,7 +31935,7 @@
           "line": "Oga",
           "train_number": "1141M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31943,7 +31943,7 @@
           "line": "Oga",
           "train_number": "1143M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31951,7 +31951,7 @@
           "line": "Oga",
           "train_number": "1145M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31959,7 +31959,7 @@
           "line": "Oga",
           "train_number": "1147M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31967,7 +31967,7 @@
           "line": "Oga",
           "train_number": "1149M",
           "sql_rule": "sql-0142",
-          "js_rule": "js-0022",
+          "js_rule": "js-0021",
           "png": "images/列车/JR東日本/JR東日本_EV-E801系.png",
           "same_model_label": true
         },
@@ -31975,7 +31975,7 @@
           "line": "RikutoEast",
           "train_number": "5720D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -31983,7 +31983,7 @@
           "line": "RikutoEast",
           "train_number": "1720D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -31991,7 +31991,7 @@
           "line": "RikutoEast",
           "train_number": "5722D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -31999,7 +31999,7 @@
           "line": "RikutoEast",
           "train_number": "1722D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32007,7 +32007,7 @@
           "line": "RikutoEast",
           "train_number": "1724D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32015,7 +32015,7 @@
           "line": "RikutoEast",
           "train_number": "5724D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32023,7 +32023,7 @@
           "line": "RikutoEast",
           "train_number": "5726D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32031,7 +32031,7 @@
           "line": "RikutoEast",
           "train_number": "1726D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32039,7 +32039,7 @@
           "line": "RikutoEast",
           "train_number": "1728D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32047,7 +32047,7 @@
           "line": "RikutoEast",
           "train_number": "4730D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32055,7 +32055,7 @@
           "line": "RikutoEast",
           "train_number": "1732D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32063,7 +32063,7 @@
           "line": "RikutoEast",
           "train_number": "4734D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32071,7 +32071,7 @@
           "line": "RikutoEast",
           "train_number": "5728D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32079,7 +32079,7 @@
           "line": "RikutoEast",
           "train_number": "1736D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32087,7 +32087,7 @@
           "line": "RikutoEast",
           "train_number": "5730D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32095,7 +32095,7 @@
           "line": "RikutoEast",
           "train_number": "1738D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32103,7 +32103,7 @@
           "line": "RikutoEast",
           "train_number": "5732D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32111,7 +32111,7 @@
           "line": "RikutoEast",
           "train_number": "1740D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32119,7 +32119,7 @@
           "line": "RikutoEast",
           "train_number": "5734D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32127,7 +32127,7 @@
           "line": "RikutoEast",
           "train_number": "1742D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32135,7 +32135,7 @@
           "line": "RikutoEast",
           "train_number": "1744D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32143,7 +32143,7 @@
           "line": "RikutoEast",
           "train_number": "1746D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32151,7 +32151,7 @@
           "line": "RikutoEast",
           "train_number": "5721D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32159,7 +32159,7 @@
           "line": "RikutoEast",
           "train_number": "1721D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32167,7 +32167,7 @@
           "line": "RikutoEast",
           "train_number": "5723D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32175,7 +32175,7 @@
           "line": "RikutoEast",
           "train_number": "1723D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32183,7 +32183,7 @@
           "line": "RikutoEast",
           "train_number": "2725D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32191,7 +32191,7 @@
           "line": "RikutoEast",
           "train_number": "5725D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32199,7 +32199,7 @@
           "line": "RikutoEast",
           "train_number": "4725D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32207,7 +32207,7 @@
           "line": "RikutoEast",
           "train_number": "1727D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32215,7 +32215,7 @@
           "line": "RikutoEast",
           "train_number": "4729D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32223,7 +32223,7 @@
           "line": "RikutoEast",
           "train_number": "1731D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32231,7 +32231,7 @@
           "line": "RikutoEast",
           "train_number": "4733D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32239,7 +32239,7 @@
           "line": "RikutoEast",
           "train_number": "5727D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32247,7 +32247,7 @@
           "line": "RikutoEast",
           "train_number": "1735D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32255,7 +32255,7 @@
           "line": "RikutoEast",
           "train_number": "5729D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32263,7 +32263,7 @@
           "line": "RikutoEast",
           "train_number": "1737D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32271,7 +32271,7 @@
           "line": "RikutoEast",
           "train_number": "5731D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32279,7 +32279,7 @@
           "line": "RikutoEast",
           "train_number": "1739D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32287,7 +32287,7 @@
           "line": "RikutoEast",
           "train_number": "5733D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32295,7 +32295,7 @@
           "line": "RikutoEast",
           "train_number": "1741D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32303,7 +32303,7 @@
           "line": "RikutoEast",
           "train_number": "1743D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32311,7 +32311,7 @@
           "line": "RikutoEast",
           "train_number": "1745D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32319,7 +32319,7 @@
           "line": "RikutoEast",
           "train_number": "1747D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32327,7 +32327,7 @@
           "line": "RikutoEast",
           "train_number": "5735D",
           "sql_rule": "sql-0149",
-          "js_rule": "js-0015",
+          "js_rule": "js-0014",
           "png": "images/列车/JR東日本/JR東日本_キハ110系.png",
           "same_model_label": true
         },
@@ -32335,7 +32335,7 @@
           "line": "RikutoEast",
           "train_number": "9721D",
           "sql_rule": "sql-0150",
-          "js_rule": "js-0016",
+          "js_rule": "js-0015",
           "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
           "same_model_label": true
         },
@@ -32343,7 +32343,7 @@
           "line": "RikutoEast",
           "train_number": "9722D",
           "sql_rule": "sql-0150",
-          "js_rule": "js-0016",
+          "js_rule": "js-0015",
           "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
           "same_model_label": true
         },
@@ -32351,7 +32351,7 @@
           "line": "RikutoEast",
           "train_number": "9723D",
           "sql_rule": "sql-0150",
-          "js_rule": "js-0016",
+          "js_rule": "js-0015",
           "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
           "same_model_label": true
         },
@@ -32359,7 +32359,7 @@
           "line": "RikutoEast",
           "train_number": "9724D",
           "sql_rule": "sql-0150",
-          "js_rule": "js-0016",
+          "js_rule": "js-0015",
           "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
           "same_model_label": true
         },
@@ -32367,7 +32367,7 @@
           "line": "RikutoEast",
           "train_number": "9725D",
           "sql_rule": "sql-0150",
-          "js_rule": "js-0016",
+          "js_rule": "js-0015",
           "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
           "same_model_label": true
         },
@@ -32375,7 +32375,7 @@
           "line": "RikutoEast",
           "train_number": "9726D",
           "sql_rule": "sql-0150",
-          "js_rule": "js-0016",
+          "js_rule": "js-0015",
           "png": "images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png",
           "same_model_label": true
         }
@@ -32384,7 +32384,7 @@
       "unverified_js_rules": [
         {
           "line": "Kashima",
-          "js_rule": "js-0085",
+          "js_rule": "js-0084",
           "reason": "no_explicit_number_list",
           "note": "do not infer shared PNG compatibility from broad bands"
         }
@@ -32395,7 +32395,7 @@
       {
         "line": "Kashima",
         "rule_a": "sql-0083",
-        "rule_b": "js-0085",
+        "rule_b": "js-0084",
         "start": 523,
         "end": 551,
         "suffix": "M",
@@ -32409,7 +32409,7 @@
       {
         "line": "Kashima",
         "rule_a": "sql-0085",
-        "rule_b": "js-0085",
+        "rule_b": "js-0084",
         "start": 3521,
         "end": 3547,
         "suffix": "M",
@@ -32464,8 +32464,8 @@
       },
       {
         "line": "Ishinomaki",
-        "rule_a": "js-0023",
-        "rule_b": "js-0024",
+        "rule_a": "js-0022",
+        "rule_b": "js-0023",
         "start": 5530,
         "end": 5543,
         "suffix": "D",
@@ -32478,8 +32478,8 @@
       },
       {
         "line": "BanetsuWest",
-        "rule_a": "js-0028",
-        "rule_b": "js-0031",
+        "rule_a": "js-0027",
+        "rule_b": "js-0030",
         "start": 222,
         "end": 4253,
         "suffix": "D",
@@ -32492,8 +32492,8 @@
       },
       {
         "line": "BanetsuWest",
-        "rule_a": "js-0029",
-        "rule_b": "js-0031",
+        "rule_a": "js-0028",
+        "rule_b": "js-0030",
         "start": 2229,
         "end": 2229,
         "suffix": "D",
@@ -32506,8 +32506,8 @@
       },
       {
         "line": "BanetsuWest",
-        "rule_a": "js-0030",
-        "rule_b": "js-0031",
+        "rule_a": "js-0029",
+        "rule_b": "js-0030",
         "start": 2225,
         "end": 2225,
         "suffix": "D",
@@ -32520,8 +32520,8 @@
       },
       {
         "line": "ChuoMain",
-        "rule_a": "js-0061",
-        "rule_b": "js-0065",
+        "rule_a": "js-0060",
+        "rule_b": "js-0064",
         "start": 1461,
         "end": 1461,
         "suffix": "M",
@@ -32534,8 +32534,8 @@
       },
       {
         "line": "ChuoMain",
-        "rule_a": "js-0061",
-        "rule_b": "js-0107",
+        "rule_a": "js-0060",
+        "rule_b": "js-0106",
         "start": 2101,
         "end": 2199,
         "suffix": "M",
@@ -32548,8 +32548,8 @@
       },
       {
         "line": "Uchibo",
-        "rule_a": "js-0075",
-        "rule_b": "js-0085",
+        "rule_a": "js-0074",
+        "rule_b": "js-0084",
         "start": 400,
         "end": 1135,
         "suffix": "M",
@@ -32562,8 +32562,8 @@
       },
       {
         "line": "Uchibo",
-        "rule_a": "js-0075",
-        "rule_b": "js-0087",
+        "rule_a": "js-0074",
+        "rule_b": "js-0086",
         "start": 1001,
         "end": 1135,
         "suffix": "M",
@@ -32576,8 +32576,8 @@
       },
       {
         "line": "Uchibo",
-        "rule_a": "js-0085",
-        "rule_b": "js-0087",
+        "rule_a": "js-0084",
+        "rule_b": "js-0086",
         "start": 1001,
         "end": 4011,
         "suffix": "M",
@@ -32590,8 +32590,8 @@
       },
       {
         "line": "Sotobo",
-        "rule_a": "js-0076",
-        "rule_b": "js-0085",
+        "rule_a": "js-0075",
+        "rule_b": "js-0084",
         "start": 400,
         "end": 1226,
         "suffix": "M",
@@ -32604,8 +32604,8 @@
       },
       {
         "line": "Sotobo",
-        "rule_a": "js-0076",
-        "rule_b": "js-0087",
+        "rule_a": "js-0075",
+        "rule_b": "js-0086",
         "start": 1001,
         "end": 1226,
         "suffix": "M",
@@ -32618,8 +32618,8 @@
       },
       {
         "line": "Sotobo",
-        "rule_a": "js-0085",
-        "rule_b": "js-0087",
+        "rule_a": "js-0084",
+        "rule_b": "js-0086",
         "start": 1001,
         "end": 4011,
         "suffix": "M",
@@ -32632,8 +32632,8 @@
       },
       {
         "line": "Musashino",
-        "rule_a": "js-0082",
-        "rule_b": "js-0083",
+        "rule_a": "js-0081",
+        "rule_b": "js-0082",
         "start": 400,
         "end": 2499,
         "suffix": "E",
@@ -32646,8 +32646,8 @@
       },
       {
         "line": "Yokosuka",
-        "rule_a": "js-0085",
-        "rule_b": "js-0086",
+        "rule_a": "js-0084",
+        "rule_b": "js-0085",
         "start": 2001,
         "end": 4014,
         "suffix": "M",
@@ -32660,8 +32660,8 @@
       },
       {
         "line": "SobuRapid",
-        "rule_a": "js-0085",
-        "rule_b": "js-0086",
+        "rule_a": "js-0084",
+        "rule_b": "js-0085",
         "start": 2001,
         "end": 4014,
         "suffix": "M",
@@ -32674,8 +32674,8 @@
       },
       {
         "line": "SobuRapid",
-        "rule_a": "js-0085",
-        "rule_b": "js-0087",
+        "rule_a": "js-0084",
+        "rule_b": "js-0086",
         "start": 1001,
         "end": 4011,
         "suffix": "M",
@@ -32688,8 +32688,8 @@
       },
       {
         "line": "SobuRapid",
-        "rule_a": "js-0086",
-        "rule_b": "js-0087",
+        "rule_a": "js-0085",
+        "rule_b": "js-0086",
         "start": 2001,
         "end": 4011,
         "suffix": "M",
@@ -32702,8 +32702,8 @@
       },
       {
         "line": "SobuMain",
-        "rule_a": "js-0085",
-        "rule_b": "js-0086",
+        "rule_a": "js-0084",
+        "rule_b": "js-0085",
         "start": 2001,
         "end": 4014,
         "suffix": "M",
@@ -32716,8 +32716,8 @@
       },
       {
         "line": "SobuMain",
-        "rule_a": "js-0085",
-        "rule_b": "js-0087",
+        "rule_a": "js-0084",
+        "rule_b": "js-0086",
         "start": 1001,
         "end": 4011,
         "suffix": "M",
@@ -32730,8 +32730,8 @@
       },
       {
         "line": "SobuMain",
-        "rule_a": "js-0086",
-        "rule_b": "js-0087",
+        "rule_a": "js-0085",
+        "rule_b": "js-0086",
         "start": 2001,
         "end": 4011,
         "suffix": "M",
@@ -32744,8 +32744,8 @@
       },
       {
         "line": "Narita",
-        "rule_a": "js-0085",
-        "rule_b": "js-0086",
+        "rule_a": "js-0084",
+        "rule_b": "js-0085",
         "start": 2001,
         "end": 4014,
         "suffix": "M",
@@ -32758,8 +32758,8 @@
       },
       {
         "line": "NaritaAirportBranch",
-        "rule_a": "js-0085",
-        "rule_b": "js-0086",
+        "rule_a": "js-0084",
+        "rule_b": "js-0085",
         "start": 2001,
         "end": 4014,
         "suffix": "M",
@@ -32772,8 +32772,8 @@
       },
       {
         "line": "ChuoSobuLocal",
-        "rule_a": "js-0090",
-        "rule_b": "js-0091",
+        "rule_a": "js-0089",
+        "rule_b": "js-0090",
         "start": 400,
         "end": 2599,
         "suffix": "YA",
@@ -32786,8 +32786,8 @@
       },
       {
         "line": "ChiyodaBranch",
-        "rule_a": "js-0116",
-        "rule_b": "js-0117",
+        "rule_a": "js-0115",
+        "rule_b": "js-0116",
         "start": 709,
         "end": 2305,
         "suffix": "S",
@@ -32800,8 +32800,8 @@
       },
       {
         "line": "Yurakucho",
-        "rule_a": "js-0119",
-        "rule_b": "js-0120",
+        "rule_a": "js-0118",
+        "rule_b": "js-0119",
         "start": 521,
         "end": 2429,
         "suffix": "S",
@@ -32814,8 +32814,8 @@
       },
       {
         "line": "Fukutoshin",
-        "rule_a": "js-0121",
-        "rule_b": "js-0122",
+        "rule_a": "js-0120",
+        "rule_b": "js-0121",
         "start": 403,
         "end": 2361,
         "suffix": "S",
@@ -32828,8 +32828,8 @@
       },
       {
         "line": "Mita",
-        "rule_a": "js-0123",
-        "rule_b": "js-0124",
+        "rule_a": "js-0122",
+        "rule_b": "js-0123",
         "start": 521,
         "end": 2381,
         "suffix": "T",
@@ -32842,8 +32842,8 @@
       },
       {
         "line": "Shinjuku",
-        "rule_a": "js-0126",
-        "rule_b": "js-0127",
+        "rule_a": "js-0125",
+        "rule_b": "js-0126",
         "start": 500,
         "end": 2467,
         "suffix": "T",
@@ -32856,8 +32856,8 @@
       },
       {
         "line": "Oedo",
-        "rule_a": "js-0128",
-        "rule_b": "js-0129",
+        "rule_a": "js-0127",
+        "rule_b": "js-0128",
         "start": 501,
         "end": 2461,
         "suffix": "AB",
@@ -32870,8 +32870,8 @@
       },
       {
         "line": "Oedo",
-        "rule_a": "js-0128",
-        "rule_b": "js-0130",
+        "rule_a": "js-0127",
+        "rule_b": "js-0129",
         "start": 501,
         "end": 2461,
         "suffix": "AB",
@@ -32884,8 +32884,8 @@
       },
       {
         "line": "Oedo",
-        "rule_a": "js-0128",
-        "rule_b": "js-0131",
+        "rule_a": "js-0127",
+        "rule_b": "js-0130",
         "start": 501,
         "end": 2461,
         "suffix": "AB",
@@ -32898,8 +32898,8 @@
       },
       {
         "line": "Oedo",
-        "rule_a": "js-0129",
-        "rule_b": "js-0130",
+        "rule_a": "js-0128",
+        "rule_b": "js-0129",
         "start": 501,
         "end": 2461,
         "suffix": "AB",
@@ -32912,8 +32912,8 @@
       },
       {
         "line": "Oedo",
-        "rule_a": "js-0129",
-        "rule_b": "js-0131",
+        "rule_a": "js-0128",
+        "rule_b": "js-0130",
         "start": 501,
         "end": 2461,
         "suffix": "AB",
@@ -32926,8 +32926,8 @@
       },
       {
         "line": "Oedo",
-        "rule_a": "js-0130",
-        "rule_b": "js-0131",
+        "rule_a": "js-0129",
+        "rule_b": "js-0130",
         "start": 501,
         "end": 2461,
         "suffix": "AB",
