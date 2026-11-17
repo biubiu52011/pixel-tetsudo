@@ -13,6 +13,11 @@ for(const file of [
   'data/timetables/vehicle-operation-evidence-data.js'
 ])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
 const garage=root.VehicleGaragePngMap;
+const kiha101=garage.findModel('キハ101形（左沢線）','Aterazawa');
+assert.equal(kiha101.length,1);
+assert.equal(kiha101[0].canonicalImage,false,'a KiHa110 image must not approve KiHa101');
+assert.equal(garage.matchModelPath('キハ101形（左沢線）',kiha101[0].path,'Aterazawa'),false);
+
 function filesIn(folder,prefix,out){
   for(const d of fs.readdirSync(folder,{withFileTypes:true})){
     const rel=prefix+'/'+d.name;
