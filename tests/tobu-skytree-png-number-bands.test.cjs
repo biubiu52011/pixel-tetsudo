@@ -191,3 +191,52 @@ test('follow-up SQL migration refuses blanket 50050 and locks GTFS corridor coun
  assert.match(sql,/jsonb_array_length\(b\.ordinary_corridor_references->'oshiage'->'train_numbers'\)<>222/);
  assert.match(sql,/jsonb_array_length\(b\.ordinary_corridor_references->'unresolved'->'train_numbers'\)<>8/);
 });
+
+
+test('private eighth-batch Tobu Skytree SQL bands preserve every original source number',()=>{
+ const {privateSkytreeSqlSeedBands}=require('../tools/build-train-number-png-catalog.cjs');
+ const bands=privateSkytreeSqlSeedBands();
+ assert.equal(bands.length,61);
+ const expected=new Map([
+  ['images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',45],
+  ['images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',16]
+ ]);
+ const counts=new Map(),taken=new Map(),csv=fs.readFileSync(
+  'data/audits/png-first-number-band-inventory-20261117.csv','utf8');
+ let totalNumbers=0;
+ for(const band of bands){
+  assert.equal(band.line,'TobuSkytree');
+  assert.equal(band.format,'full');
+  assert.equal(band.suffix,'');
+  assert.ok(+band.from<=+band.to);
+  counts.set(band.png,(counts.get(band.png)||0)+1);
+  assert.ok(csv.includes(['私铁','東武鉄道',band.png,band.line,
+   band.from,band.to,band.suffix,band.format,band.status].join(',')));
+  const type=band.png.includes('りょうもう')?'LimitedExpress':'Local';
+  for(let n=+band.from;n<=+band.to;n++){
+   const num=String(n);
+   assert.equal(taken.has(num),false,'one number cannot select different PNGs: '+num);
+   taken.set(num,band.png);totalNumbers++;
+   const matches=[
+    {calendarType:'weekday',serviceDate:'2026-11-13'},
+    {calendarType:'holiday',serviceDate:'2026-11-14'}
+   ].map(mod=>ranges.match(num,'TobuSkytree',p(num,type,mod))).filter(Boolean);
+   assert.ok(matches.length,'at least one documented calendar must accept '+num);
+   for(const m of matches){
+    assert.equal(m.pngPath.replace(/^\.\.\//,''),band.png,
+     'original day-specific resolver and SQL must agree on final PNG');
+    assert.equal(m.referenceOnly,true);
+    assert.equal(m.actualVehicleConfirmed,false);
+   }
+  }
+ }
+ assert.deepEqual([...counts].sort(),[...expected].sort());
+ assert.equal(totalNumbers,267,'241 Asakusa + 26 Ryomo original train numbers');
+ assert.equal(taken.has('947'),false,'do not fill unknown gaps');
+ for(const sample of [
+  p('801','Local',{sourceRailway:'odpt.Railway:Tobu.Nikko'}),
+  p('1310','Local'),
+  p('1310','LimitedExpress',{serviceDate:'2026-12-01'}),
+  p('2501','Local',{vehicleIdentityStatus:'EXACT'})
+ ])assert.equal(ranges.match(sample.trainNumber,'TobuSkytree',sample),null);
+});
