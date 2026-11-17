@@ -1907,22 +1907,47 @@ function resolveOperationPng(ctx) {
     });
   });
   if (!matches.length) return null;
+  // Reconcile by the final PNG, never by rule order or raw alias text.
+  // Several aliases may describe one canonical vehicle and several vehicle
+  // labels may intentionally share one representative PNG. Both cases still
+  // have exactly one display image. Different valid PNGs are a conflict and
+  // must fail closed instead of allowing the first vehicleType to win.
   var mappings = [];
+  var seenMappings = Object.create(null);
   matches.forEach(function(row) {
     (row.mappings || []).forEach(function(mapping) {
-      if (!mappings.some(function(existing) { return existing.vehicleType === mapping.vehicleType; })) {
-        mappings.push(Object.assign({}, mapping, { sourceUrl: mapping.sourceUrl || row.sourceUrl || "" }));
-      }
+      var canonical = resolveCanonicalVehicle(mapping.vehicleType);
+      var vehicleType = canonical && canonical.displayName ||
+        String(mapping.vehicleType || "").trim();
+      var asset = normalizeGalleryPngPath(mapping.asset ||
+        canonical && (canonical.asset || canonical.plannedAsset) || "");
+      if (!vehicleType || !asset) return;
+      var key = vehicleType + "\u0000" + asset;
+      if (seenMappings[key]) return;
+      seenMappings[key] = true;
+      mappings.push(Object.assign({}, mapping, {
+        vehicleType: vehicleType,
+        asset: asset,
+        sourceUrl: mapping.sourceUrl || row.sourceUrl || ""
+      }));
     });
   });
   if (!mappings.length) return null;
+  var assets = mappings.map(function(mapping) { return mapping.asset; })
+    .filter(function(asset, i, all) { return all.indexOf(asset) === i; });
+  if (assets.length !== 1) return null;
+  var vehicleTypes = mappings.map(function(mapping) {
+    return mapping.vehicleType;
+  }).filter(function(vehicleType, i, all) {
+    return all.indexOf(vehicleType) === i;
+  });
   var candidateOnly = matches.some(function(row) { return row.candidateOnly === true; });
   return {
-    status: !candidateOnly && mappings.length === 1 ? "EXACT" : "NARROWED",
+    status: !candidateOnly && vehicleTypes.length === 1 ? "EXACT" : "NARROWED",
     operationCode: code,
     mappings: mappings,
-    vehicleType: mappings.length === 1 ? mappings[0].vehicleType : "",
-    asset: mappings.length === 1 ? mappings[0].asset : "",
+    vehicleType: vehicleTypes.length === 1 ? vehicleTypes[0] : "",
+    asset: assets[0],
     sourceUrls: matches.map(function(row) { return row.sourceUrl || ""; }).filter(function(v, i, a) {
       return v && a.indexOf(v) === i;
     })

@@ -3471,6 +3471,47 @@ test('2026-11-16 Oedo without trainOwner is source-owned, not model-confirmed',(
 });
 
 
+test('operation-number PNG candidates deduplicate by final path and reject conflicts',()=>{
+ const originalRules=root.VEHICLE_FAMILY_RULES;
+ const ctx={lineId:'OperationPngContract',operationCode:'01T'};
+ const rule=vehicleType=>({
+  networkKey:'OperationPngContract',codePattern:'01T',
+  exactVehicleType:vehicleType,
+  sourceUrl:'https://example.invalid/operation-png-contract'
+ });
+ const resolve=types=>{
+  root.VEHICLE_FAMILY_RULES=types.map(rule);
+  return root.TrainVehicle.resolveOperationPng(ctx);
+ };
+ try {
+  const aliases=resolve(['都営5500形','東京都交通局5500形']);
+  assert.ok(aliases);
+  assert.equal(aliases.status,'EXACT');
+  assert.equal(aliases.vehicleType,'都営5500形');
+  assert.equal(aliases.asset,
+   '../images/列车/都営地下鉄/都営地下鉄_5500形.png');
+  assert.equal(aliases.mappings.length,1,
+   'canonical aliases must not duplicate one PNG');
+
+  const shared=resolve(['都営10-300形','都営10-300形（3次車以降）']);
+  assert.ok(shared);
+  assert.equal(shared.status,'NARROWED',
+   'one PNG does not prove which of two distinct vehicle labels operated');
+  assert.equal(shared.vehicleType,'');
+  assert.equal(shared.asset,
+   '../images/列车/都営地下鉄/都営地下鉄_10-300形_3次車以降.png');
+  assert.equal(new Set(shared.mappings.map(x=>x.asset)).size,1);
+
+  assert.equal(resolve(['都営5500形','都営10-300形']),null,
+   'different eligible PNGs must fail closed');
+  assert.equal(resolve(['都営10-300形','都営5500形']),null,
+   'reversing rule order must not select a winner');
+ }finally{
+  root.VEHICLE_FAMILY_RULES=originalRules;
+ }
+});
+
+
 test('last-mile number PNG candidates deduplicate identical paths and reject mixed-source alternatives',()=>{
  const choose=root.TrainVehicle.chooseUniqueNumberPng;
  const a={pngPath:'../images/列车/JR東日本/JR東日本_E353系.png',source:'published-number'};
