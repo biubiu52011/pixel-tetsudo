@@ -118,6 +118,12 @@ test('portrait, landscape and narrow desktop share one phone geometry mode',()=>
   assert.equal(realMobilePredicate(1200,1200,800),false);
   assert.match(cssSource,/@media \(max-width: 640px\)/);
 });
+test('camera gestures are loaded before renderer and never alter route geometry',()=>{
+  const html=read('pages/trains.html');
+  assert.ok(html.indexOf('train-map-gestures.js') < html.indexOf('trains-render.js'));
+  assert.ok(rendererSource.includes('window.TrainMapGestures.attach(svg)'));
+  assert.ok(rendererSource.includes('mapSvg._disposeTrainMapGestures()'));
+});
 test('static train and route layers always use the same layout transform',()=>{
   assert.ok(rendererSource.includes('staticLayer.setAttribute("transform", geometry.canvasTransform)'));
   assert.ok(rendererSource.includes('trainLayer.setAttribute("transform", geometry.canvasTransform)'));

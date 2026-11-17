@@ -606,6 +606,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (marker._moveRaf) cancelAnimationFrame(marker._moveRaf);
       marker._moveRaf = 0;
     });
+    var mapSvg = el.querySelector('.tp-map-wrap > svg');
+    if (mapSvg && typeof mapSvg._disposeTrainMapGestures === 'function') mapSvg._disposeTrainMapGestures();
     var layer = el.querySelector('.train-layer');
     if (layer && typeof layer._cancelTrainFoldGesture === 'function') layer._cancelTrainFoldGesture();
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
@@ -1046,7 +1048,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // （tp-est-note、下・中央）に置く。
       el.innerHTML = '<div class="tp-map-wrap"></div>';
       var _mapWrap = el.querySelector('.tp-map-wrap');
-      // The entire route fits a fixed-width SVG frame; it never pans.
+      // Geometry stays fixed; user gestures transform only the nested camera.
       // 竖列支线名 HTML 图注（SVG 上方，线色着色，多条以 · 分隔）
       if (_branchNoteItems.length) {
         var _bnEl = document.createElement('div');
@@ -1092,6 +1094,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // have their final static sizes. Do NOT include the train-layer:
       // empty/loaded/timetable/realtime states must share the same L1 bounds.
       _commitStaticRouteViewport(svg, staticLayer, geometry);
+      if (window.TrainMapGestures) window.TrainMapGestures.attach(svg);
       updateTrainLayer(svg, positions, stationCoords, lineId, displayLine, geometry);
       updateRunningInfo(el, positions);
       updateEstimatedNote(el, lineId, positions);
