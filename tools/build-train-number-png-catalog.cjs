@@ -1573,6 +1573,65 @@ function jrChuoTatsunoE127ReviewSqlSeedBands(c){
   format:'full',status:'纯号段（PNG待审查・原有候选条件保留）'}];
 }
 
+
+const METRO_TOEI_ASAKUSA_5500_MIGRATION='supabase/migrations/20261118031500_seed_metro_asakusa_5500_reference_train_number_bands_2611.sql';
+function metroAsakusa5500StagedSqlSeedBands(c){
+ const r=c.rules.find(x=>x.id==='js-0124');
+ const png='images/列车/都営地下鉄/都営地下鉄_5500形.png';
+ if(!r||r.origin!=='frontend_js'||r.png!==png||
+    r.line_ids.join()!=='Asakusa'||r.format!=='toei-asakusa'||
+    r.operator!=='Toei'||r.suffix!=='T'||
+    r.runtime_guards?.sourceEvidence!=='staged-tokyo-gtfs-20261112-unverified'||
+    r.runtime_guards?.allowedModelLabels?.join()!=='都営5500形'||
+    r.runtime_guards?.requireRealtimeToeiOwner!==true||
+    r.runtime_guards?.illustrative!==true||
+    r.runtime_guards?.referenceOnly!==true||
+    r.runtime_guards?.sourceOperatorFallback!==true||
+    r.valid_from!=='2026-11-02'||r.valid_to!=='2026-11-20'||
+    r.actual_vehicle_confirmed!==false)
+   throw Error('Toei Asakusa 5500 staged number/guard source changed');
+ const original=[...new Set([...(r.published_numbers||[]),
+   ...(r.weekday_numbers||[]),...(r.holiday_numbers||[])])];
+ if(original.length!==370||original.some(x=>!/^\d+(T|TA|TB)$/.test(x)))
+   throw Error('Toei Asakusa 5500 original roster changed');
+ const expected=[];
+ for(const suffix of ['T','TA','TB']){
+  const values=[...new Set(original.filter(n=>n.endsWith(suffix))
+   .map(n=>+n.slice(0,-suffix.length)))].sort((a,b)=>a-b);
+  const islands=[];
+  for(const n of values){
+   const last=islands[islands.length-1];
+   if(last&&last.end+1===n)last.end=n;
+   else islands.push({start:n,end:n});
+  }
+  for(const b of islands){
+   const from=String(b.start).padStart(4,'0');
+   const to=String(b.end).padStart(4,'0');
+   expected.push({png,line:'Asakusa',from,to,suffix,
+    segment:'png_band/Asakusa/'+from+'-'+to+suffix,
+    format:'toei-asakusa',
+    status:'纯号段（都营归属与车型限制保留・来源待复核）'});
+  }
+ }
+ if(expected.length!==277||
+    expected.filter(x=>x.suffix==='T').length!==206||
+    expected.filter(x=>x.suffix==='TA').length!==36||
+    expected.filter(x=>x.suffix==='TB').length!==35||
+    expected.reduce((a,b)=>a+Number(b.to)-Number(b.from)+1,0)!==370)
+  throw Error('Toei Asakusa 5500 documented islands count changed');
+ const sql=read(METRO_TOEI_ASAKUSA_5500_MIGRATION);
+ const re=/^  \('2611','Asakusa','(png_band\/Asakusa\/[^']+)',(\d+),(\d+),'(T|TA|TB)',NULL,'\.\.\/(images\/列车\/都営地下鉄\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...sql.matchAll(re)];
+ if(found.length!==277)throw Error('Toei Asakusa SQL count drift');
+ for(let i=0;i<277;i++){
+  const a=found[i],b=expected[i];
+  if(a[1]!==b.segment||+a[2]!==+b.from||
+     +a[3]!==+b.to||a[4]!==b.suffix||a[5]!==b.png)
+   throw Error('Toei Asakusa staged SQL row mismatch '+b.segment);
+ }
+ return expected;
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1601,7 +1660,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
