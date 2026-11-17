@@ -3273,7 +3273,8 @@ test('Tokyo Metro / Mita source-number rosters stay independent of staged Toei l
 
 test('Toei Asakusa/Shinjuku/Oedo staged numbers only authorize owner-scoped display PNGs',()=>{
   const {getRows}=require('../tools/build-train-number-png-catalog.cjs');
-  const rr=getRows().slice(-7);
+  const rr=getRows().filter(r=>r.sourceEvidence==='staged-tokyo-gtfs-20261112-unverified'&&
+    ['Asakusa','Shinjuku','Oedo'].includes(r.lineIds[0]));
   assert.equal(rr.length,7);
   for(const r of rr){
     const line=r.lineIds[0],n=r.weekdayNumbers[0];
