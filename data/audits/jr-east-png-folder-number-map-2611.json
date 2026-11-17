@@ -31140,7 +31140,33 @@
         "scope": "operating_named_service",
         "note": "Named service has documented current availability/operating period; pictured end, precise livery assignment and actual formation must still be confirmed separately."
       },
-      "originalNumberRules": [],
+      "originalNumberRules": [
+        {
+          "ruleId": "js-0131",
+          "authority": "frontend_js",
+          "grade": "explicit_number_roster",
+          "lineIds": [
+            "Iiyama"
+          ],
+          "model": "キハ110系（おいこっと）",
+          "numberFormat": "full",
+          "minNumber": 8140,
+          "maxNumber": 8141,
+          "suffix": "D",
+          "exactSingleNumber": null,
+          "explicitDocumentedNumberCount": 2,
+          "explicitShortNumberList": [
+            "8140D",
+            "8141D"
+          ],
+          "sourceUrl": null,
+          "validFrom": "2026-11-01",
+          "validTo": "2026-11-30",
+          "requiresExactRoster": false,
+          "requiresCompatiblePlan": false,
+          "actualVehicleConfirmed": false
+        }
+      ],
       "originalRuntimeNumberRosters": [],
       "datedNamedServiceNumbers": [
         {
