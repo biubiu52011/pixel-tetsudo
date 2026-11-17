@@ -124,3 +124,47 @@ test('Kinugawa number-to-PNG rule fails closed outside own source, date and trai
  ];
  cases.forEach((p,i)=>assert.equal(root.TrainNumberPngRanges.match(p.trainNumber,'Nikkoku',p),null,'case '+i));
 });
+
+
+test('Tobu Nikko private PNG reference bands exactly follow existing service-number rosters',()=>{
+ const {privateNikkoSqlSeedBands}=require('../tools/build-train-number-png-catalog.cjs');
+ const bands=privateNikkoSqlSeedBands();
+ assert.equal(bands.length,62,'62 distinct non-overlapping source bands');
+ const images=new Map();
+ const taken=new Map();
+ let numbered=0;
+ for(const row of bands){
+  assert.equal(row.line,'TobuNikko');
+  assert.equal(row.format,'full');
+  assert.equal(row.suffix,'');
+  assert.ok(+row.from<=+row.to);
+  images.set(row.png,(images.get(row.png)||0)+1);
+  for(let n=+row.from;n<=+row.to;n++){
+   const raw=String(n).padStart(4,'0');
+   assert.equal(taken.has(raw),false,'number cannot select two different Tobu PNGs: '+raw);
+   taken.set(raw,row.png);numbered++;
+   const matching=['weekday','holiday'].map(calendarType=>
+    root.TrainNumberPngRanges.match(raw,'TobuNikko',
+     sample(raw,{calendarType}))).filter(Boolean);
+   assert.ok(matching.length,'source guard must accept '+raw+' on at least one calendar');
+   for(const match of matching){
+    assert.equal(match.pngPath.replace(/^\.\.\//,''),row.png,
+     'SQL reference and current resolver must agree on one PNG');
+    assert.equal(match.referenceOnly,true);
+    assert.equal(match.actualVehicleConfirmed,false);
+   }
+  }
+ }
+ assert.equal(images.size,3);
+ assert.equal(images.get('images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png'),12);
+ assert.equal(images.get('images/列车/東武鉄道/東武鉄道_100系_原色.png'),13);
+ assert.equal(images.get('images/列车/東武鉄道/東武鉄道_500系_リバティ.png'),37);
+ assert.equal(numbered,76,'contiguous numbers are compacted without filling gaps');
+ assert.equal(taken.has('1016'),false,'do not widen into unproven numbers');
+ const csv=fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8');
+ for(const row of bands){
+  const line=['私铁','東武鉄道',row.png,row.line,row.from,row.to,
+   row.suffix,row.format,row.status].join(',');
+  assert.ok(csv.includes(line),'single inventory must include '+row.segment);
+ }
+});
