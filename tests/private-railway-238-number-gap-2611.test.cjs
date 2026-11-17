@@ -1,5 +1,5 @@
 'use strict';
-// Private-railway PNG mapping baseline, 2026-11-17.
+// Private-railway PNG mapping baseline, 2026-11-17 (after seventh number batch).
 // Uses the existing single CSV and derived gallery index; creates no mapping
 // authority and never turns a carset, livery, or formation number into a train
 // service number.
@@ -46,13 +46,16 @@ const expectedReferencedPngs = [
   'images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png',
   'images/列车/東急電鉄/東急電鉄_2020系.png',
   'images/列车/東武鉄道/東武鉄道_10030型_50番台_更新車.png',
+  'images/列车/東武鉄道/東武鉄道_100系_原色.png',
+  'images/列车/東武鉄道/東武鉄道_500系_リバティ.png',
+  'images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png',
   'images/列车/東武鉄道/東武鉄道_50050型.png',
   'images/列车/東武鉄道/東武鉄道_70090型.png',
   'images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png',
 ].sort();
 
-test('private railway category fixes the 246-PNG inventory and 238 unresolved gaps', () => {
-  assert.equal(rows.length, 252, 'review duplicate range rows when the inventory changes');
+test('private railway category fixes the 246-PNG inventory and 235 unresolved gaps', () => {
+  assert.equal(rows.length, 311, 'review duplicate range rows when the inventory changes');
   assert.equal(rowsByPng.size, 246);
   const counts = {};
   const missing = [];
@@ -78,7 +81,7 @@ test('private railway category fixes the 246-PNG inventory and 238 unresolved ga
     }
   }
   assert.deepEqual(counts, expectedOperators);
-  assert.equal(missing.length, 238);
+  assert.equal(missing.length, 235);
   assert.deepEqual(referenced.sort(), expectedReferencedPngs);
 });
 
@@ -89,7 +92,7 @@ test('private gaps stay separated into scoped and unscoped evidence without prio
   const scoped = missing.filter(png => (byPng.get(png).lineScopes || []).length);
   const unscoped = missing.filter(png => !(byPng.get(png).lineScopes || []).length);
   const quarantined = missing.filter(png => byPng.get(png).quarantined);
-  assert.equal(scoped.length, 116);
+  assert.equal(scoped.length, 113);
   assert.equal(unscoped.length, 122);
   assert.equal(quarantined.length, 2);
   assert.equal(scoped.length + unscoped.length, missing.length);
