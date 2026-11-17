@@ -3636,3 +3636,39 @@ test('operation-number PNG library preserves independently scoped rows before se
   root.VEHICLE_FAMILY_RULES=originalRules;
  }
 });
+
+
+test('GTFS labels with multiple eligible PNG series fail closed regardless of source order',()=>{
+ const base={
+  lineId:'ShonanShinjuku',
+  railway:'odpt.Railway:JR-East.ShonanShinjuku',
+  operator:'JR-East',trainNumber:'AMBIGUOUS-LABEL',
+  serviceDate:'2026-11-17',vehicleEvidenceKind:'vehicle-label'
+ };
+ const fromLabel=label=>root.TrainVehicle.resolveRealtime({
+  ...base,realtimeVehicleLabel:label
+ }).vehicleResult;
+ const e231=fromLabel('E231系1000番台');
+ const e233=fromLabel('E233系3000番台');
+ assert.equal(e231.name,'E231系1000番台');
+ assert.equal(e233.name,'E233系3000番台');
+ assert.notEqual(e231.iconPath,e233.iconPath,
+  'both identities refer to different PNG artworks');
+ for(const label of [
+  'E231系1000番台 / E233系3000番台',
+  'E233系3000番台 / E231系1000番台'
+ ]) {
+  const ambiguous=fromLabel(label);
+  assert.equal(ambiguous.name,'',
+   'multiple matched series cannot choose the first catalogue item');
+  assert.equal(ambiguous.iconPath,'',
+   'ambiguous labels cannot leak either vehicle PNG');
+ }
+ const separate=root.TrainVehicle.resolveRealtime({
+  ...base,realtimeVehicleLabel:'E231系1000番台',
+  gtfsVehicleLabel:'E233系3000番台'
+ }).vehicleResult;
+ assert.equal(separate.name,'',
+  'conflicting label fields cannot be decided by field order');
+ assert.equal(separate.iconPath,'');
+});
