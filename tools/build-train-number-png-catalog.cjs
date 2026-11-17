@@ -764,7 +764,7 @@ function jrE233Saikyo315GotembaSqlSeedBands(c){
       +row[4]!==item.to||row[5]!==item.suffix||row[6]!==item.png)
    throw Error('JR E233/315 SQL does not match source JS: '+segment);
  }
- return expected.map(x=>({line:x.line,from:String(x.from).padStart(4,'0'),
+ return expected.filter(x=>x.line!=='Gotemba').map(x=>({line:x.line,from:String(x.from).padStart(4,'0'),
   to:String(x.to).padStart(4,'0'),suffix:x.suffix,format:x.format,png:x.png,
   status:'纯号段（JR原有号码条件保留；不代表编组）'}));
 }
@@ -1772,7 +1772,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c))){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrGotemba315ExactReplacementSqlBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c))){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
@@ -1874,4 +1874,55 @@ function jrResidualTwentyEighthSqlSeedBands(c){
  for(const [id,,, , , ,covered] of cfg)if((counts.get(id)||0)!==covered)
   throw Error('JR28 incomplete documented source '+id);
  return result;
+}
+
+
+// JR29 correction: historical Gotemba 2226-5550MG filled gaps and mixed
+// alternate suffixes; only 88 original JS service numbers may be referenced.
+function jrGotemba315ExactReplacementSqlBands(c){
+ const png='images/列车/JR東海/JR東海_315系.png',r=c.rules.find(x=>x.id==='js-0001');
+ if(!r||r.origin!=='frontend_js'||r.png!==png||
+ r.line_ids.join()!=='Gotemba'||r.suffix!=='MG'||r.format!=='full'||
+ r.operator!=='JR-Central'||r.train_type!=='Local'||
+ r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+ r.actual_vehicle_confirmed!==false||
+ r.runtime_guards?.illustrative!==true||
+ r.runtime_guards?.referenceOnly!==true||
+ r.runtime_guards?.sourceOperatorFallback!==true||
+ r.published_numbers?.length!==88)
+ throw Error('Gotemba 315 source/guard drift');
+ const roster=[...new Set([...(r.published_numbers||[]),
+ ...(r.weekday_numbers||[]),...(r.holiday_numbers||[])])];
+ if(roster.length!==88||roster.some(x=>!/^\d{4}[MG]$/.test(x)))
+ throw Error('Gotemba 315 roster drift');
+ const expected=[];
+ for(const suffix of ['M','G']){
+  const ns=[...new Set(roster.filter(x=>x.endsWith(suffix))
+   .map(x=>+x.slice(0,-1)))].sort((a,b)=>a-b),runs=[];
+  for(const n of ns){const last=runs[runs.length-1];
+   if(last&&last.to+1===n)last.to=n;else runs.push({from:n,to:n});}
+  for(const b of runs){
+   const from=String(b.from).padStart(4,'0'),to=String(b.to).padStart(4,'0');
+   expected.push({line:'Gotemba',png,from,to,suffix,format:'full',
+    segment:'png_band/Gotemba/'+from+'-'+to+suffix,
+    status:'纯号段（御殿场线原始号码与日期守卫保留）'});
+  }
+ }
+ if(expected.length!==35||
+ expected.filter(x=>x.suffix==='M').length!==23||
+ expected.filter(x=>x.suffix==='G').length!==12||
+ expected.reduce((n,x)=>n+Number(x.to)-Number(x.from)+1,0)!==88)
+ throw Error('Gotemba 315 no-gap source groups drift');
+ const sql=read('supabase/migrations/20261118040000_replace_jr_gotemba_315_broad_mg_with_exact_number_bands_2611.sql');
+ if(!sql.includes("DELETE FROM public.published_train_png_number_ranges")||
+ !sql.includes("segment_key='png_band/Gotemba/2226-5550MG'"))
+ throw Error('Gotemba broad legacy row not retired');
+ const re=/^  \('2611','Gotemba','(png_band\/Gotemba\/[^']+)',(\d+),(\d+),'([MG])',NULL,'\.\.\/(images\/列车\/JR東海\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...sql.matchAll(re)];
+ if(found.length!==35)throw Error('Gotemba 315 SQL rows drift');
+ for(let i=0;i<35;i++){const a=found[i],b=expected[i];
+  if(a[1]!==b.segment||+a[2]!==+b.from||
+   +a[3]!==+b.to||a[4]!==b.suffix||a[5]!==b.png)
+   throw Error('Gotemba 315 exact source SQL mismatch '+b.segment);}
+ return expected;
 }
