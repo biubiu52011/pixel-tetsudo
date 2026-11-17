@@ -916,6 +916,67 @@ function privateNikkoSqlSeedBands(){
  });
 }
 
+// Private eighth batch: exact 2026-11 Tobu Skytree Asakusa / Ryomo
+// source rosters. All SQL references stay audit-only; the existing date,
+// calendar, operator, type and actual-vehicle checks retain full authority.
+const PRIVATE_SKYTREE_SQL_MIGRATION='supabase/migrations/20261117211500_seed_private_tobu_skytree_asakusa_ryomo_png_bands_2611.sql';
+function privateSkytreeSqlSeedBands(){
+ const source=read('data/timetables/train-number-png-ranges.js');
+ const a=source.match(/tobuSkytreeOrdinaryCorridors=(\{[^;]+\});/);
+ const b=source.match(/tobuSkytreeNumbers=(\{[^;]+\});/);
+ if(!a||!b)throw Error('Original Tobu Skytree rosters missing');
+ const corridor=JSON.parse(a[1]),families=JSON.parse(b[1]);
+ const groups=[
+  {id:'asakusa',png:'images/列车/東武鉄道/東武鉄道_10030型_未更新車.png',
+   weekday:corridor.weekday.asakusa,holiday:corridor.holiday.asakusa},
+  {id:'ryomo',png:'images/列车/東武鉄道/東武鉄道_200型_りょうもう_赤.png',
+   weekday:families.weekday.ryomo,holiday:families.holiday.ryomo}
+ ];
+ const expected=[],seen=new Map();
+ for(const group of groups){
+  const nums=[...new Set([...group.weekday,...group.holiday])].map(Number).sort((x,y)=>x-y);
+  if((group.id==='asakusa'&&
+      (group.weekday.length!==223||group.holiday.length!==222||nums.length!==241))||
+     (group.id==='ryomo'&&
+      (group.weekday.length!==26||group.holiday.length!==26||nums.length!==26)))
+   throw Error('Original Tobu Skytree source number count changed: '+group.id);
+  for(const n of nums){
+   const raw=String(n);
+   if(!Number.isSafeInteger(n)||n<0||n>9999)
+    throw Error('Unsupported Tobu Skytree source number: '+raw);
+   if(seen.has(n)&&seen.get(n)!==group.png)
+    throw Error('Tobu Skytree number mapped to two PNGs: '+raw);
+   seen.set(n,group.png);
+   const prev=expected[expected.length-1];
+   if(prev&&prev.png===group.png&&prev.end+1===n)prev.end=n;
+   else expected.push({png:group.png,start:n,end:n});
+  }
+ }
+ // Other named express families must never inherit this new source band.
+ for(const cal of ['weekday','holiday'])for(const [family,nums] of Object.entries(families[cal])){
+  if(family==='ordinary'||family==='ryomo')continue;
+  for(const raw of nums){
+   if(/^\d+$/.test(raw)&&seen.has(+raw))
+    throw Error('Conflicting Tobu Skytree number across source families: '+raw);
+  }
+ }
+ const sql=read(PRIVATE_SKYTREE_SQL_MIGRATION);
+ const pattern=/^  \('2611','TobuSkytree','(png_band\/TobuSkytree\/\d{4}-\d{4})',(\d+),(\d+),'',NULL,'\.\.\/(images\/列车\/東武鉄道\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const rows=[...sql.matchAll(pattern)];
+ if(rows.length!==61||rows.length!==expected.length)
+  throw Error('Tobu Skytree original-roster SQL band count changed');
+ return expected.map((item,i)=>{
+  const row=rows[i],from=String(item.start).padStart(4,'0');
+  const to=String(item.end).padStart(4,'0');
+  if(row[1]!=='png_band/TobuSkytree/'+from+'-'+to||
+     +row[2]!==item.start||+row[3]!==item.end||row[4]!==item.png)
+   throw Error('SQL mismatch with Tobu Skytree source at '+from);
+  return {line:'TobuSkytree',segment:row[1],from,to,suffix:'',
+   format:'full',png:item.png,
+   status:'纯号段（东武晴空塔既有车次／浅草区段守卫保留；PNG仅供复核）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -944,7 +1005,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
@@ -992,4 +1053,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,privateNikkoSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,privateNikkoSqlSeedBands,privateSkytreeSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};
