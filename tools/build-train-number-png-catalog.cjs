@@ -1793,6 +1793,68 @@ function jrYamadaExactReplacementSqlBands(c){
  return expected;
 }
 
+
+// JR32-35: audit-only reuse of existing official-number lists and SQL.
+function jr32to35ExactSqlSeedBands(c){
+ const defs=[
+  {line:'Gono',ids:['js-0034','js-0035'],old:[[122,2839],[3524,3526]],
+   suffix:'D',png:'images/列车/JR東日本/JR東日本_GV-E400系.png',
+   count:47,bands:26,file:'20261118051000_replace_jr_gono_broad_png_bands_with_exact_roster_2611.sql'},
+  {line:'Echigo',ids:['js-0039','js-0041','js-0042'],old:[[120,1999],[8132,8637],[9630,9630]],
+   suffix:'M',png:'images/列车/JR東日本/JR東日本_E129系.png',
+   count:126,bands:31,file:'20261118052000_replace_jr_echigo_broad_png_bands_with_exact_roster_2611.sql'},
+  {line:'Sagami',ids:['js-0038'],old:[[400,2599]],
+   suffix:'F',png:'images/列车/JR東日本/JR東日本_E131系_500番台.png',
+   count:165,bands:121,file:'20261118053000_replace_jr_sagami_broad_f_with_exact_png_numbers_2611.sql'},
+  {line:'Nambu',ids:['js-0088'],old:[[400,4999]],
+   suffix:'F',png:'images/列车/JR東日本/JR東日本_E233系_8000番台.png',
+   count:628,bands:380,file:'20261118054000_replace_jr_nambu_broad_f_with_exact_png_numbers_2611.sql'}
+ ];
+ const output=[];
+ for(const d of defs){
+  const rules=d.ids.map(id=>c.rules.find(x=>x.id===id));
+  rules.forEach((r,i)=>{
+   if(!r||r.origin!=='frontend_js'||r.line_ids.join()!==d.line||
+      r.png!==d.png||r.min!==d.old[i][0]||r.max!==d.old[i][1]||
+      r.suffix!==d.suffix||r.format!=='full'||r.operator!=='JR-East'||
+      r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+      r.actual_vehicle_confirmed!==false||
+      r.runtime_guards?.sourceOperatorFallback!==true)
+    throw Error('JR32-35 source scope/guard drift: '+d.line);
+  });
+  const names=[...new Set(rules.flatMap(r=>[...(r.published_numbers||[]),
+   ...(r.weekday_numbers||[]),...(r.holiday_numbers||[])]))];
+  if(names.length!==d.count||
+     names.some(n=>!new RegExp('^\\d{3,4}'+d.suffix+'$').test(n)))
+   throw Error('JR32-35 exact-number roster drift: '+d.line);
+  const numbers=names.map(n=>parseInt(n,10)).sort((a,b)=>a-b),bands=[];
+  for(const n of numbers){
+   const last=bands[bands.length-1];
+   if(last&&last.to+1===n)last.to=n;else bands.push({from:n,to:n});
+  }
+  if(bands.length!==d.bands||
+     bands.reduce((n,b)=>n+b.to-b.from+1,0)!==d.count)
+   throw Error('JR32-35 grouped islands drift: '+d.line);
+  const expected=bands.map(({from,to})=>{
+   const a=String(from).padStart(4,'0'),b=String(to).padStart(4,'0');
+   return {line:d.line,png:d.png,from:a,to:b,suffix:d.suffix,format:'full',
+    segment:'png_band/'+d.line+'/'+a+'-'+b+d.suffix,
+    status:'纯号段（JR专用原始条件保留）'};
+  });
+  const sql=read('supabase/migrations/'+d.file);
+  const rows=[...sql.matchAll(/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,|;)?$/gm)];
+  if(rows.length!==d.bands)throw Error('JR32-35 SQL row count changed: '+d.line);
+  expected.forEach((x,i)=>{
+   const m=rows[i];
+   if(m[1]!==x.line||m[2]!==x.segment||+m[3]!==+x.from||
+      +m[4]!==+x.to||m[5]!==x.suffix||m[6]!==x.png)
+    throw Error('JR32-35 SQL/JS mismatch: '+x.segment);
+  });
+  output.push(...expected);
+ }
+ return output;
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1821,7 +1883,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().filter(x=>!(x.line==='Yamada'&&x.segment==='png_band/Yamada/0631-9642D')).concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrGotemba315ExactReplacementSqlBands(c),jrYamadaExactReplacementSqlBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c))){
+ for(const ref of jrFirstSqlSeedBands().filter(x=>!(x.line==='Yamada'&&x.segment==='png_band/Yamada/0631-9642D')).concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrGotemba315ExactReplacementSqlBands(c),jrYamadaExactReplacementSqlBands(c),jr32to35ExactSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c)).filter(x=>!["png_band/Gono/0122-2839D","png_band/Gono/3524-3526D","png_band/Echigo/0120-1999M","png_band/Echigo/8132-8637M","png_band/Sagami/0400-2599F","png_band/Nambu/0400-4999F"].includes(x.segment))){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
