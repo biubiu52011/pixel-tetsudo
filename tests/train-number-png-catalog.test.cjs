@@ -450,3 +450,15 @@ test('second JR SQL migration keeps sourced bands without authorizing runtime st
    'conflicting same-line different PNGs cannot enter the SQL seed');
  }
 });
+
+test('Narita-Abiko corrected SQL reference uses Joban livery without real-car claim',()=>{
+ const fs=require('node:fs');
+ const csv=fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8');
+ const old='images/列车/JR東日本/JR東日本_E231系_0番台.png,NaritaAbikoBranch,0820,0899,M,full,';
+ const green='images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png,NaritaAbikoBranch,0820,0899,M,full,';
+ assert.equal(csv.split('\n').filter(r=>r.includes(old)).length,0);
+ assert.equal(csv.split('\n').filter(r=>r.includes(green)).length,2);
+ const source=fs.readFileSync('supabase/migrations/20261117230000_fix_narita_abiko_e231_livery_reference_2611.sql','utf8');
+ assert.match(source,/UPDATE public\.published_train_png_number_ranges/);
+ assert.match(source,/actual_vehicle_confirmed=FALSE/);
+});

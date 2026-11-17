@@ -496,11 +496,25 @@ function jrFirstSqlSeedBands(){
  const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const matches=[...src.matchAll(pattern)];
  if(matches.length!==97)throw Error('JR SQL number bands do not match initial applied migration');
- return matches.map((m)=>({
+ var records=matches.map((m)=>({
   line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
   to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
   status:'纯号段（JR专用原始条件保留）'
  }));
+ // The original migration remains immutable. Apply the later effective
+ // reference-only one-row correction to this read-only audit projection.
+ const correction=read('supabase/migrations/20261117230000_fix_narita_abiko_e231_livery_reference_2611.sql');
+ if(!correction.includes("SET png_reference='../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png'") ||
+    !correction.includes("segment_key='png_band/NaritaAbikoBranch/0820-0899M'") ||
+    !correction.includes("AND png_reference='../images/列车/JR東日本/JR東日本_E231系_0番台.png'"))
+   throw Error('Narita-Abiko correction migration contract changed');
+ const patched=records.filter(r=>r.line==='NaritaAbikoBranch'&&
+   r.segment==='png_band/NaritaAbikoBranch/0820-0899M'&&
+   r.from==='0820'&&r.to==='0899'&&r.suffix==='M'&&
+   r.png==='images/列车/JR東日本/JR東日本_E231系_0番台.png');
+ if(patched.length!==1)throw Error('Narita-Abiko legacy band not unique');
+ patched[0].png='images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png';
+ return records;
 }
 
 const JR_SCOPED_SQL_MIGRATION='supabase/migrations/20261116183142_seed_png_first_jr_scoped_reference_bands_2611.sql';
