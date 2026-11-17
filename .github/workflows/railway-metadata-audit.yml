@@ -21,6 +21,7 @@ on:
       - 'images/鉄道/**'
       - 'tools/railway-metadata-audit.cjs'
       - 'tests/railway-metadata-audit.test.cjs'
+      - 'tests/jrkyushu-line-colors-20261117.test.cjs'
       - '.github/workflows/railway-metadata-audit.yml'
   workflow_dispatch:
 
@@ -41,6 +42,8 @@ jobs:
         run: node --test tests/railway-metadata-audit.test.cjs
       - name: Verify JR Central line colors and passenger symbols
         run: node --test tests/jr-central-line-colors-20261117.test.cjs
+      - name: Verify JR Kyushu numbered line colors and regional scopes
+        run: node --test tests/jrkyushu-line-colors-20261117.test.cjs
       - name: Test number-to-PNG catalog audit invariants
         run: node --test tests/train-number-png-catalog.test.cjs
       - name: Verify normalized number-to-PNG catalog and mapping safety

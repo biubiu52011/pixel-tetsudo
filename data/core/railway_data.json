@@ -46342,7 +46342,7 @@
       "nameEn": "Kagoshima Main Line",
       "nameJa": "鹿児島本線",
       "code": "KagoshimaMain",
-      "color": "#009944",
+      "color": "#ed1c24",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
@@ -46685,13 +46685,34 @@
         "nameZh": "鹿儿岛本线（全线总览）",
         "nameEn": "Kagoshima Main Line (Full Route Overview)",
         "nameKo": "가고시마 본선（전 구간 안내）",
-        "color": "#009944",
+        "color": "#ed1c24",
         "order": 14,
         "lineIds": [
           "KagoshimaMain"
         ],
         "operatorGroup": "JR_KYUSHU",
-        "code": ""
+        "code": "",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Moji-Ko",
+                "to": "Hakata",
+                "code": "JA",
+                "color": "#ed1c24",
+                "operator": "JR-Kyushu"
+              },
+              {
+                "from": "Hakata",
+                "to": "Arao-Kumamoto",
+                "code": "JB",
+                "color": "#ed1c24",
+                "operator": "JR-Kyushu"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       },
       "topologyBreaks": [
         {
@@ -46706,11 +46727,11 @@
       "nameEn": "Nagasaki Main Line",
       "nameJa": "長崎本線",
       "code": "NagasakiMain",
-      "color": "#ff6600",
+      "color": "#f3ad19",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
-      "image": "../images/鉄道/JR九州/九州_JH.png",
+      "image": "",
       "durationTotalMin": 120,
       "branchOf": null,
       "stations": [
@@ -46826,14 +46847,28 @@
         "nameZh": "长崎本线",
         "nameEn": "Nagasaki Main Line",
         "nameKo": "나가사키 본선",
-        "color": "#ff6600",
-        "code": "JH",
+        "color": "#f3ad19",
+        "code": "",
         "icon": "../images/鉄道/JR九州/九州_JH.png",
         "order": 8,
         "lineIds": [
           "NagasakiMain"
         ],
-        "operatorGroup": "JR_KYUSHU"
+        "operatorGroup": "JR_KYUSHU",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Tosu",
+                "to": "Saga",
+                "code": "JH",
+                "color": "#f3ad19",
+                "operator": "JR-Kyushu"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       }
     },
     "Nippo": {
@@ -46845,7 +46880,7 @@
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
-      "image": "../images/鉄道/JR九州/九州_JF.png",
+      "image": "",
       "durationTotalMin": 300,
       "branchOf": null,
       "stations": [
@@ -47160,13 +47195,27 @@
         "nameEn": "Nippo Main Line",
         "nameKo": "닛포 본선",
         "color": "#00b2e5",
-        "code": "JF",
+        "code": "",
         "icon": "../images/鉄道/JR九州/九州_JF.png",
         "order": 6,
         "lineIds": [
           "Nippo"
         ],
-        "operatorGroup": "JR_KYUSHU"
+        "operatorGroup": "JR_KYUSHU",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Kokura",
+                "to": "Yukuhashi",
+                "code": "JF",
+                "color": "#00b2e5",
+                "operator": "JR-Kyushu"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       }
     },
     "Kyudai": {
@@ -47475,7 +47524,7 @@
       "nameEn": "Sasaguri Line",
       "nameJa": "篠栗線",
       "code": "Sasaguri",
-      "color": "#d64541",
+      "color": "#f5b000",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
@@ -47532,7 +47581,7 @@
         "nameZh": "篠栗线",
         "nameEn": "Sasaguri Line",
         "nameKo": "사사구리 선",
-        "color": "#d64541",
+        "color": "#f5b000",
         "code": "JC",
         "icon": "../images/鉄道/JR九州/九州_JC.png",
         "order": 3,
@@ -47793,7 +47842,7 @@
       "nameEn": "Kashii Line",
       "nameJa": "香椎線",
       "code": "KashiiLine",
-      "color": "#daa520",
+      "color": "#009cda",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
@@ -47858,7 +47907,7 @@
         "nameZh": "香椎线",
         "nameEn": "Kashii Line",
         "nameKo": "카시이 선",
-        "color": "#daa520",
+        "color": "#009cda",
         "code": "JD",
         "icon": "../images/鉄道/JR九州/九州_JD.png",
         "order": 4,
@@ -48723,7 +48772,7 @@
       "nameEn": "Chikuho Main Line",
       "nameJa": "筑豊本線",
       "code": "Chikuho",
-      "color": "#0070c0",
+      "color": "#f5b000",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
@@ -48804,13 +48853,41 @@
         "nameZh": "筑丰本线",
         "nameEn": "Chikuho Main Line",
         "nameKo": "치쿠호 본선",
-        "color": "#0070c0",
+        "color": "#f5b000",
         "order": 15,
         "lineIds": [
           "Chikuho"
         ],
         "operatorGroup": "JR_KYUSHU",
-        "code": "JC/JE/JG"
+        "code": "",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Wakamatsu",
+                "to": "Orio",
+                "code": "JE",
+                "color": "#1485c5",
+                "operator": "JR-Kyushu"
+              },
+              {
+                "from": "Orio",
+                "to": "Katsuragawa",
+                "code": "JC",
+                "color": "#f5b000",
+                "operator": "JR-Kyushu"
+              },
+              {
+                "from": "Katsuragawa",
+                "to": "Harada-Fukuoka",
+                "code": "JG",
+                "color": "#22ad4f",
+                "operator": "JR-Kyushu"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       }
     },
     "Gotoji": {
@@ -49139,7 +49216,7 @@
       "nameEn": "Chikuhi Line",
       "nameJa": "筑肥線",
       "code": "Chikuhi",
-      "color": "#0070c0",
+      "color": "#863b99",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "straight",
@@ -49227,7 +49304,7 @@
         "nameZh": "筑肥线",
         "nameEn": "Chikuhi Line",
         "nameKo": "치쿠히 선",
-        "color": "#0070c0",
+        "color": "#863b99",
         "code": "JK",
         "icon": "../images/鉄道/JR九州/九州_JK.png",
         "order": 11,
@@ -50611,11 +50688,11 @@
       "nameEn": "Hitahikosan Line",
       "nameJa": "日田彦山線",
       "code": "Hitahikosan",
-      "color": "#c2781a",
+      "color": "#b6712f",
       "operator": "JR-Kyushu",
       "region": "Kyushu Area",
       "type": "local",
-      "image": "../images/鉄道/JR九州/九州_JI.png",
+      "image": "",
       "durationTotalMin": 45,
       "branchOf": null,
       "stations": [
@@ -50676,14 +50753,28 @@
         "nameZh": "日田彦山线",
         "nameEn": "Hitahikosan Line",
         "nameKo": "日田彦山線",
-        "color": "#c2781a",
-        "code": "JI",
+        "color": "#b6712f",
+        "code": "",
         "icon": "../images/鉄道/JR九州/九州_JI.png",
         "order": 9,
         "lineIds": [
           "Hitahikosan"
         ],
-        "operatorGroup": "JR_KYUSHU"
+        "operatorGroup": "JR_KYUSHU",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Kokura",
+                "to": "Tagawa-Gotoji",
+                "code": "JI",
+                "color": "#b6712f",
+                "operator": "JR-Kyushu"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       },
       "topologyAudit": {
         "railEndsAt": "JRW-Hitahikosan-1191418",
@@ -51429,7 +51520,21 @@
         "lineIds": [
           "ChikuhiWest"
         ],
-        "operatorGroup": "JR_KYUSHU"
+        "operatorGroup": "JR_KYUSHU",
+        "displayRules": {
+          "segmentColors": {
+            "ranges": [
+              {
+                "from": "Nishi-Karatsu",
+                "to": "Karatsu",
+                "code": "JK",
+                "color": "#863b99",
+                "operator": "JR-Kyushu"
+              }
+            ],
+            "unknownColor": "#80868b"
+          }
+        }
       }
     },
     "TokaidoCentral": {
@@ -52574,7 +52679,7 @@
         "nameEn": "Hisatsu Line",
         "nameKo": "Hisatsu Line",
         "color": "#008c95",
-        "code": "肥",
+        "code": "",
         "order": 27,
         "lineIds": [
           "Hisatsu"
