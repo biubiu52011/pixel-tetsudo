@@ -578,6 +578,17 @@ function jrNinthSqlSeedBands(){
   to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
   status:'纯号段（JR专用原始条件保留）'}));
 }
+// Tenth JR batch: SQL audit reference only; retain original source guards.
+const JR_TENTH_SQL_MIGRATION='supabase/migrations/20261117044055_seed_png_first_tenth_jr_kashima_odoriko_oumain_bands_2611.sql';
+function jrTenthSqlSeedBands(){
+ const src=read(JR_TENTH_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==6)throw Error('JR tenth SQL number bands do not match applied migration');
+ return matches.map(m=>({line:m[1],segment:m[2],from:String(m[3]).padStart(4,'0'),
+  to:String(m[4]).padStart(4,'0'),suffix:m[5],format:'full',png:m[6],
+  status:'纯号段（JR专用原始条件保留）'}));
+}
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -606,7 +617,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrScopedSqlSeedBands().concat(jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands())){
+ for(const ref of jrScopedSqlSeedBands().concat(jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('JR SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
