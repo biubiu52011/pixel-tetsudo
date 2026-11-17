@@ -17,8 +17,8 @@ test('active family filter is derived only from 601 gallery PNGs and official fl
  assert.equal(saved.date,'2026-11-16');
  assert.equal(saved.summary.physicalPng,601);
  assert.equal(saved.summary.fleetFamilyVerified,120);
- assert.equal(saved.summary.activeFamilyWithExistingNumberScope,84);
- assert.equal(saved.summary.activeFamilyWithoutNumberScope,36);
+ assert.equal(saved.summary.activeFamilyWithExistingNumberScope,85);
+ assert.equal(saved.summary.activeFamilyWithoutNumberScope,35);
  assert.equal(saved.summary.currentFleetStatusNotVerified,472);
  assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,12);
  assert.equal(saved.summary.quarantinedArtwork,9);
