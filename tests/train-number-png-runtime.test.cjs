@@ -3514,16 +3514,20 @@ test('JR-Central Shinkansen number sources reconcile by PNG without priority',()
   assert.equal(marker(base,'TokaidoShinkansen').iconSrc,centralPng,
    'the same PNG from browser and SQL sources deduplicates');
   root.TrainNumberPngRanges=range('N700系（JR西日本）',westPng);
+  const selectedConflict=
+   root.TrainVehicle.selectMarkerArtwork(base,false);
+  assert.equal(selectedConflict.reason,'conflicting-number-png-sources');
   const conflict=marker(base,'TokaidoShinkansen');
   assert.equal(conflict.kind,'unresolved');
   assert.equal(conflict.iconSrc,'');
-  assert.equal(conflict.reason,'conflicting-number-png-sources');
   root.TrainNumberPngRanges=range('N700系（JR東海）',centralPng);
-  const reversed=marker({...base,sqlPlannedNumberPngPath:westPng},
-   'TokaidoShinkansen');
+  const reversedInput={...base,sqlPlannedNumberPngPath:westPng};
+  const reversedSelection=
+   root.TrainVehicle.selectMarkerArtwork(reversedInput,false);
+  assert.equal(reversedSelection.reason,'conflicting-number-png-sources');
+  const reversed=marker(reversedInput,'TokaidoShinkansen');
   assert.equal(reversed.kind,'unresolved',
    'swapping which source carries each PNG cannot create a winner');
-  assert.equal(reversed.reason,'conflicting-number-png-sources');
  }finally{
   root.TrainNumberPngRanges=original;
  }
