@@ -977,6 +977,80 @@ function privateSkytreeSqlSeedBands(){
  });
 }
 
+// Private ninth batch: 20400 and 70000 number PNGs use the existing Tobu
+// Utsunomiya and Skytree source rosters, never an independent mapping source.
+const PRIVATE_NINTH_SQL_MIGRATION='supabase/migrations/20261117224000_seed_private_tobu_utsunomiya_20400_skytree_70000_2611.sql';
+function privateNinthSqlSeedBands(){
+ const image20400='images/列车/東武鉄道/東武鉄道_20400型.png';
+ const image70000='images/列车/東武鉄道/東武鉄道_70000系.png';
+ const context={window:{}};
+ vm.runInNewContext(read('data/timetables/tobu-utsunomiya-2611-number-png.js'),
+  context,{filename:'tobu-utsunomiya-2611-number-png.js',timeout:15000});
+ const u=context.window.TobuUtsunomiya2611Png;
+ if(!u||!Array.isArray(u.ranges)||u.ranges.length!==2||
+    u.numbersPerCalendar!==86||u.sourceTemplates!==172)
+  throw Error('Tobu Utsunomiya source number bands changed');
+ const numbered=new Set();
+ for(const band of u.ranges){
+  if(band.step!==2||!String(band.pngPath).endsWith('/東武鉄道_20400型.png'))
+   throw Error('Tobu Utsunomiya source scope changed');
+  for(let n=band.min;n<=band.max;n+=band.step)
+   numbered.add(n);
+ }
+ if(numbered.size!==86||Math.min(...numbered)!==401||
+    Math.max(...numbered)!==486)
+  throw Error('Tobu Utsunomiya sourced bounds changed');
+ for(let n=401;n<=486;n++)if(!numbered.has(n))
+  throw Error('Tobu Utsunomiya source has an undocumented number gap');
+ const expected=[{line:'TobuUtsunomiya',start:401,end:486,
+   suffix:'N',png:image20400,format:'full',
+   status:'纯号段（东武宇都宫原奇偶方向与历史时刻表限制保留）'}];
+ const source=read('data/timetables/train-number-png-ranges.js');
+ const match=source.match(/tobuSkytreeOrdinaryCorridors=(\{[^;]+\});/);
+ const familyMatch=source.match(/tobuSkytreeNumbers=(\{[^;]+\});/);
+ if(!match||!familyMatch)throw Error('Tobu Skytree original source missing');
+ const corridor=JSON.parse(match[1]),families=JSON.parse(familyMatch[1]);
+ const byNumeric=new Map();
+ for(const cal of ['weekday','holiday']){
+  const hibiya=corridor[cal].hibiya;
+  const ordinary=new Set(families[cal].ordinary);
+  for(const number of hibiya){
+   const m=/^[AB](\d{3,4})T$/.exec(number);
+   if(!m)continue;
+   const operation=Number(number.slice(-3,-1));
+   if(operation>=41&&operation<=49)continue;
+   if(!ordinary.has(number))
+    throw Error('Tobu 70000 number outside original ordinary roster: '+number);
+   const numeric=+m[1],was=byNumeric.get(numeric)||new Set();
+   was.add(number);byNumeric.set(numeric,was);
+  }
+ }
+ const nums=[...byNumeric.keys()].sort((a,b)=>a-b);
+ if(nums.length!==186||nums[0]!==405||nums[nums.length-1]!==2331)
+  throw Error('Tobu Skytree 70000 exact original number list changed');
+ for(const n of nums){
+  expected.push({line:'TobuSkytree',start:n,end:n,suffix:'T',
+   png:image70000,format:'metro-prefixed',
+   status:'纯号段（东武70000原日比谷直通运营号和车型条件保留）'});
+ }
+ const sql=read(PRIVATE_NINTH_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/東武鉄道\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...sql.matchAll(pattern)];
+ if(found.length!==187||found.length!==expected.length)
+  throw Error('Tobu ninth source-only SQL row count changed');
+ return expected.map((value,i)=>{
+  const item=found[i],from=String(value.start).padStart(4,'0');
+  const to=String(value.end).padStart(4,'0');
+  const segment='png_band/'+value.line+'/'+from+'-'+to+value.suffix;
+  if(item[1]!==value.line||item[2]!==segment||
+    +item[3]!==value.start||+item[4]!==value.end||
+    item[5]!==value.suffix||item[6]!==value.png)
+   throw Error('Tobu ninth source/SQL mismatch: '+segment);
+  return {line:value.line,segment,from,to,suffix:value.suffix,
+   format:value.format,png:value.png,status:value.status};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1005,7 +1079,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
@@ -1053,4 +1127,4 @@ function run(args){
  return {catalog,errors};
 }
 if(require.main===module)run(process.argv.slice(2));
-module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,privateNikkoSqlSeedBands,privateSkytreeSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};
+module.exports={getRows,buildCatalog,crossSourceNumberAudit,collectCandidateOverlaps,audit,compactNumberBands,jrEastScopedNumberBands,jrEastAdditionalNumberBands,jrScopedSqlSeedBands,privateNikkoSqlSeedBands,privateSkytreeSqlSeedBands,privateNinthSqlSeedBands,pngFirstInventoryCsv,galleryPngPaths,run};
