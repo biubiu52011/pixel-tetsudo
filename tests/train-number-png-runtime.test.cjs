@@ -1585,6 +1585,23 @@ test('1257M verified Joban canonical model candidate renders a PLANNED E531 PNG'
   assert.equal(liveTrain.vehicleIdentityStatus,'UNKNOWN',
     'source candidate must not become physical stock');
   assert.equal(liveTrain.vehicleResolvedUpstream,false);
+  // The same canonical through-train must not borrow the E531 front when
+  // two realtime labels disagree. Previously the first non-empty field won.
+  assert.equal(root.TrainVehicle.lookupVerifiedJobanCanonicalE531Png({
+    ...liveTrain,realtimeVehicleType:'E531系',
+    realtimeDerivedVehicleType:'E531系'
+  }).pngPath,icon,'agreeing independent labels preserve the E531 reference');
+  for(const inconsistent of [
+    {realtimeVehicleType:'E531系',realtimeDerivedVehicleType:'E231系0番台'},
+    {realtimeVehicleType:'E231系0番台',realtimeDerivedVehicleType:'E531系'},
+    {realtimeDerivedVehicleType:'E231系0番台'}
+  ]){
+    const conflicting={...liveTrain,...inconsistent};
+    assert.equal(root.TrainVehicle.lookupVerifiedJobanCanonicalE531Png(
+      conflicting),null,'conflicting realtime labels: '+JSON.stringify(inconsistent));
+    assert.equal(marker(conflicting,'Joban').kind,'unresolved',
+      'conflicting realtime labels cannot render the E531 PNG');
+  }
 
   for(const invalid of [
     {trainNumber:'1258M'},
