@@ -484,8 +484,6 @@
           entity.memberIds ? entity.memberIds.join(",") : "",
           Object.prototype.hasOwnProperty.call(pres, "code") ? (pres.code || "") : (line.code || ""),
           pres.icon || line.image || "", pres.color || line.color || "",
-          pres.displayRules && pres.displayRules.segmentColors ?
-            JSON.stringify(pres.displayRules.segmentColors) : "",
           pres.nameJa || line.nameJa || "", pres.nameZh || line.nameZh || "",
           pres.nameEn || line.nameEn || "", pres.nameKo || line.nameKo || "",
           line.branchOf || ""
@@ -1131,51 +1129,10 @@
       + iconHtml
       + '<div class="rs-line-info">'
       + '<div class="rs-line-name">' + escapeHtml(name) + '</div>'
-      + segmentBandHtml(firstId, linesObj)
       + (mode === "trains" ? rangeHtml : '')
       + '</div>'
       + statusHtml
       + '</div>';
-  }
-
-  // Compact multi-region swatch. A single card border represents the primary
-  // corridor; this strip shows actual station-segment colors, including neutral
-  // stretches whose official regional symbol is not yet verified.
-  function segmentBandHtml(lineId, linesObj) {
-    var line = linesObj && linesObj[lineId];
-    // Kyushu overview cards show one representative color. Regional numbering
-    // remains scoped to the detailed map; gray/partial strips here incorrectly
-    // suggested that the rest of a physical railway was missing.
-    if (line && line.operator === "JR-Kyushu") return "";
-    var rules = line && line.presentation && line.presentation.displayRules &&
-      line.presentation.displayRules.segmentColors;
-    var resolver = window.LinePresentationService &&
-      window.LinePresentationService.resolveSegmentPresentation;
-    if (!rules || !Array.isArray(rules.ranges) || rules.ranges.length < 1 ||
-        !Array.isArray(line.stations) || !resolver) return "";
-    var swatches = [], stations = line.stations;
-    for (var i = 0; i < stations.length - 1; i++) {
-      var seg = resolver(lineId, stations[i], stations[i + 1], linesObj);
-      var c = seg && seg.color;
-      if (!/^#[0-9a-f]{6}$/i.test(c || "")) c = "#80868b";
-      if (swatches.length && swatches[swatches.length - 1].color === c)
-        swatches[swatches.length - 1].count++;
-      else swatches.push({color:c,count:1});
-    }
-    if (!swatches.length) return "";
-    var total = stations.length - 1, left = 0, rects = "";
-    for (var j = 0; j < swatches.length; j++) {
-      var right = j === swatches.length - 1 ? 120 :
-        Math.round(left + swatches[j].count / total * 120);
-      // Scale by actual station-edge coverage, not by number of regions.
-      rects += '<rect x="' + left + '" y="0" width="' + (right-left) +
-        '" height="5" fill="' + swatches[j].color + '"/>';
-      left = right;
-    }
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="5" viewBox="0 0 120 5">' +
-      rects + '</svg>';
-    return '<img class="rs-line-segment-band" src="data:image/svg+xml,' +
-      encodeURIComponent(svg) + '" width="120" height="5" alt="" aria-hidden="true">';
   }
 
   /**
@@ -1267,7 +1224,6 @@
       + iconHtml
       + '<div class="rs-line-info">'
       + '<div class="rs-line-name">' + escapeHtml(displayName) + '</div>'
-      + segmentBandHtml(lineId, linesObj)
       + subHtml
       + intervalHtml
       + '</div>'

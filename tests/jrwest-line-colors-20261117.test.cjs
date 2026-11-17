@@ -80,12 +80,13 @@ test('no region color changes railway ownership or canonical railway codes', () 
   assert.equal(data.lines.Fukuchiyama.color,'#fcc800');
 });
 
-test('map and list cards consume the same station-segment resolver without touching Joban exceptions', () => {
+test('only the detail map resolves segment colors; shared list cards keep one color', () => {
   const maps=fs.readFileSync('js/trains-data.js','utf8');
   const cards=fs.readFileSync('js/data-state.js','utf8');
   assert.match(maps,/resolveSegmentPresentation\(lineId, fromStation, toStation\)/);
   assert.match(maps,/Array\.isArray\(rules\.ranges\)/);
   assert.match(maps,/beforeRule = rules\.before/);
-  assert.match(cards,/segmentBandHtml\(firstId, linesObj\)/);
-  assert.match(cards,/segmentBandHtml\(lineId, linesObj\)/);
+  assert.doesNotMatch(cards,/segmentBandHtml|rs-line-segment-band/,
+    'neither trains nor realtime overview should render region swatches');
+  assert.match(cards,/data-line-color/, 'overview still has one representative line color');
 });

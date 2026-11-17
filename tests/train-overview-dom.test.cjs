@@ -309,24 +309,47 @@ test('JR-Kyushu overview stays clean while the detailed segment resolver remains
   assert.match(css, /clip-path: none;/);
 });
 
-test('JR-West still renders meaningful mixed-region color swatches', () => {
+test('every mixed-line overview uses only its one representative color; details retain segment colors', () => {
   const win = makeView();
-  win.LinePresentationService.resolveSegmentPresentation = (_id, from, to) =>
-    from === 'A' && to === 'B'
-      ? { color: '#f39800', classified:true }
-      : { color: '#007ac0', classified:true };
   const lines = {
     SanyoMain: {
-      operator: 'JR-West', nameJa: '山陽本線', color:'#007ac0',
+      operator: 'JR-West', nameJa: '山陽本線', color: '#007ac0',
+      stations: ['A','B','C'],
+      presentation: {nameJa:'山陽本線', color:'#007ac0', code:'',
+        displayRules:{segmentColors:{
+          ranges:[{from:'A',to:'B',code:'W',color:'#f39800'},
+                  {from:'B',to:'C',code:'A',color:'#007ac0'}],
+          unknownColor:'#80868b'
+        }}
+      }
+    },
+    Nippo: {
+      operator: 'JR-Kyushu', nameJa:'日豊本線', color:'#00b2e5',
       stations:['A','B','C'],
-      presentation:{ nameJa:'山陽本線', color:'#007ac0', displayRules:{segmentColors:{
-        ranges:[{from:'A',to:'B',code:'W',color:'#f39800'},{from:'B',to:'C',code:'A',color:'#007ac0'}],
-        unknownColor:'#80868b'
-      }}}
+      presentation:{nameJa:'日豊本線',color:'#00b2e5',code:'',
+        displayRules:{segmentColors:{
+          ranges:[{from:'A',to:'B',code:'JF',color:'#00b2e5'}],
+          unknownColor:'#00b2e5'
+        }}
+      }
     }
   };
-  const html = win.LineCard.renderSystem(lines.SanyoMain.presentation,['SanyoMain'],lines,{mode:'trains'});
-  assert.match(html,/rs-line-segment-band/);
+  for (const id of Object.keys(lines)) {
+    const line = lines[id];
+    for (const mode of ['trains','realtime']) {
+      const system = win.LineCard.renderSystem(line.presentation,[id],lines,{mode});
+      const plain = win.LineCard.render(line,id,{mode,linesObj:lines});
+      for (const html of [system,plain]) {
+        assert.ok(!html.includes('rs-line-segment-band'),id + '/' + mode + ' must not show a color band');
+        assert.match(html, new RegExp('data-line-color="' + line.color + '"'),id + '/' + mode);
+      }
+    }
+    assert.ok(line.presentation.displayRules.segmentColors.ranges.length,
+      id + ' still stores exact section presentation for the detail map');
+  }
+  const detail = fs.readFileSync('js/trains-data.js','utf8');
+  assert.match(detail, /resolveSegmentPresentation\(lineId, fromStation, toStation\)/,
+    'the detailed SVG map must keep segment-specific colors');
 });
 
 test('line list fingerprint respects an intentionally blank passenger code and palette changes', () => {
@@ -351,6 +374,6 @@ test('line list fingerprint respects an intentionally blank passenger code and p
     'a palette change must invalidate the visible list fingerprint');
   const resegmented = { ...line, presentation: { ...line.presentation,
     displayRules: { segmentColors: { ranges: [], unknownColor: '#80868b' } } } };
-  assert.notEqual(initial, signature({ Hisatsu: resegmented }),
-    'section color changes must invalidate the visible list fingerprint');
+  assert.equal(initial, signature({ Hisatsu: resegmented }),
+    'detail-only section colors must not invalidate the overview card fingerprint');
 });
