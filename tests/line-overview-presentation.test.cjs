@@ -124,13 +124,23 @@ test('official line icons are listed before generic operator logos or missing ic
   const groups = {};
   for (const [id, line] of primaries) (groups[line.operator] ||= []).push({id, line});
   for (const [op, entries] of Object.entries(groups)) {
-    entries.sort((a, b) => a.line.presentation.order - b.line.presentation.order);
-    let seenFallback = false;
+    // Presentation order is the rendered order. Stale manual order fields can
+    // place a former JF/JH/JI whole-line icon after a real fallback line.
+    // Keep Shinkansen in its separate late tier within each JR operator.
+    const ranks = new Map(presentation.getPresentationOrder(lines).map((entity, index) => [entity.id, index]));
+    entries.sort((a, b) => (ranks.get(a.id) ?? Infinity) - (ranks.get(b.id) ?? Infinity));
+    const seenFallback = { conventional: false, shinkansen: false };
     for (const {id, line} of entries) {
-      const icon = String(line.presentation.icon || line.image || '');
+      const p = line.presentation || {};
+      const icon = String(p.icon || line.image || '');
       const dedicated = !!icon && !/(グループ|ロゴ|マーク|アイコン|シンボル)/.test(icon);
-      if (!dedicated) seenFallback = true;
-      assert.ok(!dedicated || !seenFallback, op + '/' + id + ' entered the official icon sequence after fallback');
+      const isShinkansen = /Shinkansen|新幹線/i.test([
+        line.nameJa, line.nameEn, line.nameZh, p.nameJa, p.nameEn, p.nameZh, id
+      ].join(' '));
+      const tier = isShinkansen ? 'shinkansen' : 'conventional';
+      if (!dedicated) seenFallback[tier] = true;
+      assert.ok(!dedicated || !seenFallback[tier], op + '/' + id +
+        ' entered the official icon sequence after fallback in ' + tier);
     }
   }
   const order = ordered();
