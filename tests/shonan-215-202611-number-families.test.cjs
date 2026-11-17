@@ -262,6 +262,9 @@ test('one train SVG component renders one reference image, never a tandem candid
     function _setTrainIconPosition(marker,x,y){marker.parentNode.setAttribute('transform','translate('+x+','+y+')');}
     function _resolveTrainLabelCollisions(){}
     function _rememberTrainArtworkFailure(){}
+    // This isolated SVG fixture is intentionally missing the renderer's
+    // network URL helper; its JR reference PNG should keep its local path.
+    function _trainArtworkRequestUrl(path){return String(path||'');}
   `+render.slice(start,end)+'\nthis.makeSingleReferenceMarker=_createTrainMarker;',ctx);
   const marker=ctx.makeSingleReferenceMarker({isConnected:true},
     'http://www.w3.org/2000/svg','planned-trip-826M',spec,159.5,245,
