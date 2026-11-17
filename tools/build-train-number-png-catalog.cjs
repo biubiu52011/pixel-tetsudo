@@ -1691,6 +1691,59 @@ function privateFujikyuReviewSqlSeedBands(c){
  return expected;
 }
 
+
+const JR29_E233_M_MIGRATION="supabase/migrations/20261118040000_seed_jr_chuo_e233_m_unambiguous_number_bands_2611.sql";
+function jr29ChuoE233UnambiguousMBands(c){
+ const png="images/列车/JR東日本/JR東日本_E233系_0番台.png";
+ const r=c.rules.find(x=>x.id==="js-0060");
+ if(!r||r.origin!=="frontend_js"||r.png!==png||
+    r.line_ids.join()!=="ChuoMain"||r.operator!=="JR-East"||
+    r.min!==600||r.max!==2399||r.suffix!=="M"||r.format!=="full"||
+    r.train_type!==null||r.train_types!==null||
+    r.evidence_kind!=="exact-list"||
+    r.actual_vehicle_confirmed!==false||
+    r.valid_from!=="2026-11-01"||r.valid_to!=="2026-11-30"||
+    r.runtime_guards?.allowedModelLabels?.join()!=="E233系0番台"||
+    r.runtime_guards?.excludeTrainType!=="LimitedExpress"||
+    r.runtime_guards?.sourceOperatorFallback!==true)
+   throw Error("JR29 E233 ChuoMain original guard changed");
+ const source=[...new Set(r.published_numbers||[])];
+ if(source.length!==71||
+    source.some(n=>!n.endsWith("M")||!Number.isInteger(Number(n.slice(0,-1))))||
+    !source.includes("2152M")||!source.includes("2166M"))
+   throw Error("JR29 original published roster drift");
+ // 2152M and 2166M collide with E353 LimitedExpress reference bands.
+ const excluded=new Set(["2152M","2166M"]);
+ const numbers=source.filter(n=>!excluded.has(n)).map(n=>Number(n.slice(0,-1)))
+  .sort((a,b)=>a-b);
+ const islands=[];
+ for(const n of numbers){
+  const b=islands[islands.length-1];
+  if(b&&b.end+1===n)b.end=n;
+  else islands.push({start:n,end:n});
+ }
+ if(numbers.length!==69||islands.length!==65||
+    islands.reduce((n,b)=>n+b.end-b.start+1,0)!==69)
+   throw Error("JR29 E233 documented no-gap bands drift");
+ const expected=islands.map(b=>{
+  const from=String(b.start).padStart(4,"0");
+  const to=String(b.end).padStart(4,"0");
+  return {png,line:"ChuoMain",from,to,suffix:"M",format:"full",
+   segment:"png_band/ChuoMain/"+from+"-"+to+"M",
+   status:"纯号段（JR原始车型与列车类别守卫保留）"};
+ });
+ const sql=read(JR29_E233_M_MIGRATION);
+ const inserted=sql.split("\n").filter(x=>x.startsWith("  ('2611',"));
+ if(inserted.length!==65)throw Error("JR29 migration row count drift");
+ for(let i=0;i<65;i++){
+  const b=expected[i];
+  const row="  ('2611','ChuoMain','"+b.segment+"',"+Number(b.from)+","+Number(b.to)+
+    ",'M',NULL,'../"+png+"',NULL,FALSE,FALSE)"+(i===64?"":",");
+  if(inserted[i]!==row)throw Error("JR29 source/SQL row mismatch "+b.segment);
+ }
+ return expected;
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1719,7 +1772,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c))){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrResidualTwentyEighthSqlSeedBands(c),jr29ChuoE233UnambiguousMBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c))){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
