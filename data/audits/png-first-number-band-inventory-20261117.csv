@@ -129,6 +129,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Joetsu,1720,175
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Miyo,0220,9284,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,0523,0551,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,3521,3547,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,0523,0551,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,3521,3547,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_1000番台.png,TsurumiOkawa,0400,2599,B,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_1000番台.png,TsurumiOkawa,0400,2599,,bare,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_1000番台.png,TsurumiUmiShibaura,0400,2599,B,full,原有条件约束
@@ -230,6 +232,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Yoko
 JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_2000番台.png,Ito,3021,3031,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_2000番台.png,Tokaido,3021,3031,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_2500番台.png,Tokaido,4024,4024,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_2500番台.png,Tokaido,4024,4024,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_500番台.png,Keiyo,1001,4011,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_500番台.png,Keiyo,1001,1071,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E257系_500番台.png,SobuMain,1001,4011,M,full,原有条件约束
@@ -256,6 +259,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E259系.png,SobuRapid,2001,
 JR,JR東日本,images/列车/JR東日本/JR東日本_E259系.png,Yokosuka,2001,4014,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E259系.png,Yokosuka,2001,2249,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E261系_サフィール踊り子.png,Ito,3001,3002,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E261系_サフィール踊り子.png,Ito,3001,3002,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoMain,0001,0060,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoMain,2101,2199,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoMain,3101,3199,M,full,原有条件约束
@@ -403,6 +407,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E723系_5000番台.png,Yama
 JR,JR東日本,images/列车/JR東日本/JR東日本_E723系_5000番台.png,Yamagata,5429,5430,M,full,既有JR专用示意守卫(Weekday)
 JR,JR東日本,images/列车/JR東日本/JR東日本_E751系.png,OuMain,2021,2022,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E751系.png,OuMain,2041,2044,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E751系.png,OuMain,2021,2022,M,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E751系.png,OuMain,2041,2044,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E7系.png,JoetsuShinkansen,0302,0302,C,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E7系.png,JoetsuShinkansen,0306,0306,C,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E7系.png,JoetsuShinkansen,0316,0316,C,full,原有条件约束
