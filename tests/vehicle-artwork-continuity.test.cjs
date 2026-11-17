@@ -135,3 +135,55 @@ test('generic model names no longer authorize a specific variant or livery',()=>
   assert.equal(win.VehicleGaragePngMap.matchModelPath('埼玉新都市交通2000系（01編成）',
     '../images/列车/埼玉新都市交通/埼玉新都市交通_2000系_01編成_レッドパープル.png','NewShuttle'),true);
 });
+
+
+test('actual SVG image node becomes a neutral circle, never the other PNG, on a through boundary',()=>{
+  const renderer=fs.readFileSync('js/trains-render.js','utf8');
+  const a=renderer.indexOf('  function _guardThroughArtworkTransition(');
+  const b=renderer.indexOf('  // TrainComponent is the sole public lifecycle',a);
+  assert.ok(a>=0&&b>a,'SVG icon lifecycle moved');
+  const node=tag=>{
+    const attrs=Object.create(null);
+    return {tagName:tag,children:[],attrs,parentNode:null,
+      getAttribute:k=>attrs[k]??null,
+      setAttribute(k,v){attrs[k]=String(v)},
+      setAttributeNS(_ns,k,v){attrs[k]=String(v)},
+      removeAttribute(k){delete attrs[k]},
+      addEventListener(){},
+      appendChild(child){this.children.push(child);child.parentNode=this}};
+  };
+  const host={document:{createElementNS:(_ns,tag)=>node(tag)},
+    _trainArtworkRequestUrl:path=>path,
+    _trainMarkerAccessibleDescription:()=>"",
+    _setTrainMarkerAccessibilityLabel(){},
+    _syncTrainMarkerIllustrationStatus(){},
+    _setTrainFormationAttribute(){},
+    _trainMarkerDomKind:spec=>spec.kind,
+    _setTrainIconPosition(){},
+    console:{debug(){}}
+  };
+  vm.runInNewContext(renderer.slice(a,b)+
+    '\nthis.guard=_guardThroughArtworkTransition;this.create=_createTrainMarker;',host);
+  const uid='canonical-service-2026-11-17';
+  const before=pos('A','A.png'),after=pos('B','B.png');
+  const first=host.create({},'http://www.w3.org/2000/svg',uid,
+    {kind:'vehicle',iconSrc:'A.png'},10,10,before,'A',false,'',null);
+  assert.equal(first.tagName,'image');
+  assert.equal(first.getAttribute('href'),'A.png');
+  const guarded=host.guard(first,after,{kind:'vehicle',iconSrc:'B.png'});
+  assert.equal(guarded.kind,'unresolved');
+  assert.equal(guarded.unresolvedReason,'through-livery-conflict');
+  const second=host.create({},'http://www.w3.org/2000/svg',uid,
+    guarded,20,10,after,'B',false,'',null);
+  assert.equal(second.tagName,'circle');
+  assert.equal(second.getAttribute('href'),null);
+  assert.equal(first.getAttribute('href'),'A.png','must never repaint existing image to the wrong PNG');
+  assert.equal(first.getAttribute('data-train-id'),second.getAttribute('data-train-id'));
+  const observed={...after,vehicleIdentityStatus:'EXACT',
+    vehicleResolvedFromRealtime:true,
+    vehicleResolution:{sources:['roster-physical-id']}};
+  assert.equal(host.guard(first,observed,{kind:'vehicle',iconSrc:'B.png'}).kind,'vehicle');
+  assert.equal(host.guard(first,{...after,trainNumber:'9012M'},
+    {kind:'vehicle',iconSrc:'B.png'}).kind,'vehicle',
+    'a different public train number is not the same physical service');
+});
