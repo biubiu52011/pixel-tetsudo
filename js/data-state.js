@@ -482,7 +482,10 @@
         rows.push([
           op, entity.kind, entity.id,
           entity.memberIds ? entity.memberIds.join(",") : "",
-          pres.code || line.code || "", pres.icon || line.image || "",
+          Object.prototype.hasOwnProperty.call(pres, "code") ? (pres.code || "") : (line.code || ""),
+          pres.icon || line.image || "", pres.color || line.color || "",
+          pres.displayRules && pres.displayRules.segmentColors ?
+            JSON.stringify(pres.displayRules.segmentColors) : "",
           pres.nameJa || line.nameJa || "", pres.nameZh || line.nameZh || "",
           pres.nameEn || line.nameEn || "", pres.nameKo || line.nameKo || "",
           line.branchOf || ""
@@ -1144,7 +1147,7 @@
       line.presentation.displayRules.segmentColors;
     var resolver = window.LinePresentationService &&
       window.LinePresentationService.resolveSegmentPresentation;
-    if (!rules || !Array.isArray(rules.ranges) || rules.ranges.length < 2 ||
+    if (!rules || !Array.isArray(rules.ranges) || rules.ranges.length < 1 ||
         !Array.isArray(line.stations) || !resolver) return "";
     var swatches = [], stations = line.stations;
     for (var i = 0; i < stations.length - 1; i++) {

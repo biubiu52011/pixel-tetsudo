@@ -32,7 +32,7 @@ jobs:
       - name: Validate generated page script dependencies
         run: node --test tests/page-scripts.test.cjs
       - name: Verify whole-list line ranks, canonical identities and station symbols
-        run: node --test tests/line-overview-presentation.test.cjs
+        run: node --test tests/line-overview-presentation.test.cjs tests/train-overview-dom.test.cjs
       - name: Check JavaScript syntax
         run: |
           node --check js/train-vehicle.js

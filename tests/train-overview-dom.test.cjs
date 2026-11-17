@@ -283,3 +283,60 @@ test('ChuoMain uses the JR Group fallback, not Chuo Rapid artwork, across all da
   assert.ok(card.includes('JRグループ.png'), 'list should render fallback icon');
   assert.ok(!card.includes('中央快速線.png'), 'list must not reuse the rapid icon');
 });
+
+
+test('single-range JR-Kyushu corridors render their verified section band and neutral tail', () => {
+  const win = makeView();
+  win.LinePresentationService.resolveSegmentPresentation = (id, from, to, allLines) => {
+    const line = allLines[id];
+    const rule = line.presentation.displayRules.segmentColors.ranges[0];
+    const stations = line.stations;
+    const left = Math.min(stations.indexOf(from), stations.indexOf(to));
+    const start = stations.indexOf(rule.from), end = stations.indexOf(rule.to);
+    return left >= start && left < end
+      ? { color: rule.color, code: rule.code, classified: true }
+      : { color: '#80868b', code: '', classified: false };
+  };
+  const lines = {
+    NagasakiMain: {
+      operator: 'JR-Kyushu', nameJa: '長崎本線', color: '#f3ad19',
+      stations: ['Tosu','Shin-Tosu','Saga','Nabeshima'],
+      presentation: { code: '', color: '#f3ad19', displayRules: { segmentColors: {
+        ranges: [{ from: 'Tosu', to: 'Saga', code: 'JH', color: '#f3ad19' }],
+        unknownColor: '#80868b'
+      } } }
+    }
+  };
+  const html = win.LineCard.renderSystem(
+    { nameJa: '長崎本線', code: '', color: '#f3ad19' },
+    ['NagasakiMain'], lines, { mode: 'trains' });
+  assert.match(html, /rs-line-segment-band/,
+    'a single numbered range plus an unknown tail needs a color band');
+  assert.match(html, /data:image\/svg\+xml/);
+});
+
+test('line list fingerprint respects an intentionally blank passenger code and palette changes', () => {
+  const win = makeView();
+  win.LinePresentationService.getStatusMembers = () => [];
+  const options = { mode: 'trains', flatGroups: true };
+  const line = {
+    operator: 'JR-Kyushu', nameJa: '肥薩線', code: '肥',
+    stations: ['Yatsushiro','Yoshimatsu'],
+    presentation: { code: '', color: '#80868b', nameJa: '肥薩線',
+      lineIds: ['Hisatsu'], displayRules: { segmentColors: {
+        ranges: [{ from: 'Yatsushiro', to: 'Yoshimatsu', code: '', color: '#80868b' }],
+        unknownColor: '#80868b'
+      } } }
+  };
+  const signature = lines => win.DataState.lineListStructureSignature(lines, options);
+  const initial = signature({ Hisatsu: line });
+  assert.equal(initial, signature({ Hisatsu: { ...line, code: 'internal-code-changed' } }),
+    'the internal line.code must not leak through an intentionally empty presentation.code');
+  const recolored = { ...line, presentation: { ...line.presentation, color: '#898989' } };
+  assert.notEqual(initial, signature({ Hisatsu: recolored }),
+    'a palette change must invalidate the visible list fingerprint');
+  const resegmented = { ...line, presentation: { ...line.presentation,
+    displayRules: { segmentColors: { ranges: [], unknownColor: '#80868b' } } } };
+  assert.notEqual(initial, signature({ Hisatsu: resegmented }),
+    'section color changes must invalidate the visible list fingerprint');
+});
