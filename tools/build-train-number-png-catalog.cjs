@@ -684,7 +684,7 @@ function metro13000And18000SqlSeedBands(){
    weekday:151,holiday:112}
  ];
  const src=read(METRO_13000_18000_SQL_MIGRATION);
- const pattern=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'S',NULL,'\\.\\.\\/(images\\/列车\\/東京メトロ\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'S',NULL,'\.\.\/(images\/列车\/東京メトロ\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const rows=[...src.matchAll(pattern)];
  if(rows.length!==2)throw Error('Metro 13000/18000 SQL reference count changed');
  return expected.map(x=>{
@@ -699,7 +699,7 @@ function metro13000And18000SqlSeedBands(){
     rosters.find(r=>r.calendarType==='holiday')?.explicitDocumentedNumberCount!==x.holiday)
    throw Error('Metro original full service rosters changed: '+x.line);
   const bounds=rosters.flatMap(r=>r.exactContiguousBands.flatMap(b=>[b.from,b.to]))
-   .map(str=>Number(str.match(/^[AB](\\d+)S$/)?.[1]));
+   .map(str=>Number(str.match(/^[AB](\d+)S$/)?.[1]));
   if(bounds.some(n=>!Number.isFinite(n))||Math.min(...bounds)!==x.from||
      Math.max(...bounds)!==x.to)
    throw Error('Metro documented number bounds changed: '+x.line);
