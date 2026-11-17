@@ -1632,6 +1632,65 @@ function metroAsakusa5500StagedSqlSeedBands(c){
  return expected;
 }
 
+
+// Private-railway batch 10, two Fujikyu REVIEW PNG assets.
+// These bare train numbers are original illustrative/plan-gated references,
+// not proof of the exact wrap, face panel or physical rolling stock.
+const FUJIKYU_PRIVATE_REVIEW_BANDS_MIGRATION='supabase/migrations/20261118033000_seed_private_fujikyu_6000_8000_bare_number_png_bands_2611.sql';
+function privateFujikyuReviewSqlSeedBands(c){
+ const specs=[
+  {id:'js-0002',png:'images/列车/富士急行/富士急行_6000系_標準色.png',count:52,bands:1},
+  {id:'js-0003',png:'images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png',count:7,bands:2}
+ ];
+ const expected=[];
+ for(const s of specs){
+  const r=c.rules.find(x=>x.id===s.id);
+  if(!r||r.png!==s.png||r.origin!=='frontend_js'||
+    r.line_ids.join()!=='Fujikyu'||r.format!=='bare'||
+    r.operator!=='FujisanrokuElectricRailway'||r.suffix!==''||
+    r.requires_compatible_plan!==true||
+    r.runtime_guards?.referenceOnly!==true||
+    r.runtime_guards?.illustrative!==true||
+    r.runtime_guards?.sourceOperatorFallback!==true||
+    r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+    r.actual_vehicle_confirmed!==false)
+   throw Error('Fujikyu original bare-number guard changed '+s.id);
+  const names=[...new Set([...(r.published_numbers||[]),
+   ...(r.weekday_numbers||[]),...(r.holiday_numbers||[])])];
+  if(names.length!==s.count||names.some(n=>!/^\d+$/.test(n)))
+   throw Error('Fujikyu published numbers changed '+s.id);
+  const nums=names.map(Number).sort((a,b)=>a-b),bands=[];
+  for(const n of nums){
+   const last=bands[bands.length-1];
+   if(last&&last.end+1===n)last.end=n;
+   else bands.push({start:n,end:n});
+  }
+  if(bands.length!==s.bands||
+   bands.reduce((a,b)=>a+b.end-b.start+1,0)!==s.count)
+   throw Error('Fujikyu no-gap count invalid '+s.id);
+  for(const b of bands){
+   const from=String(b.start).padStart(4,'0');
+   const to=String(b.end).padStart(4,'0');
+   expected.push({line:'Fujikyu',png:s.png,from,to,suffix:'',
+    segment:'png_band/Fujikyu/'+from+'-'+to,format:'bare',
+    status:'纯号段（PNG待审查・原条件保留）'});
+  }
+ }
+ const sql=read(FUJIKYU_PRIVATE_REVIEW_BANDS_MIGRATION);
+ const re=/^  \('2611','Fujikyu','(png_band\/Fujikyu\/[^']+)',(\d+),(\d+),'',NULL,'\.\.\/(images\/列车\/富士急行\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...sql.matchAll(re)];
+ if(found.length!==3||expected.length!==3||
+    !sql.includes("AND asset_status='review'"))
+   throw Error('Fujikyu original review image migration drift');
+ for(let i=0;i<3;i++){
+  const a=found[i],b=expected[i];
+  if(a[1]!==b.segment||+a[2]!==+b.from||+a[3]!==+b.to||
+    a[4]!==b.png)
+   throw Error('Fujikyu original number SQL mismatch '+b.segment);
+ }
+ return expected;
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1660,7 +1719,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),metroAsakusa5500StagedSqlSeedBands(c),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrChuoTatsunoE127ReviewSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands(),privateFujikyuReviewSqlSeedBands(c))){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
