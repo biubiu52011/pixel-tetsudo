@@ -751,6 +751,30 @@ function thirdSecondSqlSeedBands(){
  });
 }
 
+
+// Private first number-batch: two already guarded JS ranges for Odakyu and
+// Sotetsu. The pure SQL rows are references ONLY and never skip JS guards.
+const PRIVATE_FIRST_SQL_MIGRATION='supabase/migrations/20261117131000_seed_private_odakyu_4000_sotetsu_12000_source_bands_2611.sql';
+function privateFirstSqlSeedBands(){
+ const src=read(PRIVATE_FIRST_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==2)throw Error('Private first SQL source-band migration mismatch');
+ const expected=new Map([
+  ['JobanLocal',{from:'0400',to:'2599',min:400,max:2599,suffix:'E',
+    format:'full',png:'images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png'}],
+  ['SaikyoKawagoe',{from:'0072',to:'0079',min:72,max:79,suffix:'KFS',
+    format:'tail',png:'images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png'}]
+ ]);
+ return matches.map(m=>{
+  const e=expected.get(m[1]);
+  if(!e||+m[3]!==e.min||+m[4]!==e.max||m[5]!==e.suffix||m[6]!==e.png)
+   throw Error('Unexpected private source-number band');
+  return {line:m[1],segment:m[2],from:e.from,to:e.to,suffix:e.suffix,
+   format:e.format,png:e.png,status:'纯号段（私铁原有JS条件保留）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -779,7 +803,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
