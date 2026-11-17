@@ -670,6 +670,50 @@ function metroSecondSqlSeedBands(){
 }
 
 
+// Metro next batch: original full-exact November S-owner rosters permit
+// one 13000 PNG on Hibiya and one 18000 PNG on Hanzomon. Never generalize
+// this numeric-only SQL audit to TobuSkytree, where distinct S-prefix train
+// owners share overlapping numeric envelopes.
+const METRO_13000_18000_SQL_MIGRATION='supabase/migrations/20261118003000_seed_metro_13000_hibiya_18000_hanzomon_png_bands_2611.sql';
+function metro13000And18000SqlSeedBands(){
+ const inventory=JSON.parse(read('data/audits/png-to-train-number-index-2611.json')).pngIndex;
+ const expected=[
+  {line:'Hibiya',from:502,to:2468,png:'images/列车/東京メトロ/東京メトロ_13000系.png',
+   weekday:370,holiday:222},
+  {line:'Hanzomon',from:551,to:2491,png:'images/列车/東京メトロ/東京メトロ_18000系.png',
+   weekday:151,holiday:112}
+ ];
+ const src=read(METRO_13000_18000_SQL_MIGRATION);
+ const pattern=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'S',NULL,'\\.\\.\\/(images\\/列车\\/東京メトロ\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const rows=[...src.matchAll(pattern)];
+ if(rows.length!==2)throw Error('Metro 13000/18000 SQL reference count changed');
+ return expected.map(x=>{
+  const meta=inventory.find(item=>item.path===x.png);
+  if(!meta||meta.quarantined)throw Error('Metro PNG missing or quarantined: '+x.png);
+  const rosters=meta.runtimeNumberRosters.filter(r=>
+   r.lineId===x.line&&r.numberFormat==='full_exact'&&
+   r.validFrom==='2026-11-02'&&r.validTo==='2026-11-30'&&
+   r.referenceOnly===true&&r.actualVehicleConfirmed===false);
+  if(rosters.length!==2||
+    rosters.find(r=>r.calendarType==='weekday')?.explicitDocumentedNumberCount!==x.weekday||
+    rosters.find(r=>r.calendarType==='holiday')?.explicitDocumentedNumberCount!==x.holiday)
+   throw Error('Metro original full service rosters changed: '+x.line);
+  const bounds=rosters.flatMap(r=>r.exactContiguousBands.flatMap(b=>[b.from,b.to]))
+   .map(str=>Number(str.match(/^[AB](\\d+)S$/)?.[1]));
+  if(bounds.some(n=>!Number.isFinite(n))||Math.min(...bounds)!==x.from||
+     Math.max(...bounds)!==x.to)
+   throw Error('Metro documented number bounds changed: '+x.line);
+  const found=rows.filter(row=>row[1]===x.line&&row[5]===x.png);
+  const from=String(x.from).padStart(4,'0'),to=String(x.to).padStart(4,'0');
+  if(found.length!==1||found[0][2]!=='png_band/'+x.line+'/'+from+'-'+to+'S'||
+     +found[0][3]!==x.from||+found[0][4]!==x.to)
+   throw Error('Metro SQL/JS service roster bounds disagree: '+x.line);
+  return {line:x.line,segment:found[0][2],from,to,suffix:'S',
+   format:'metro-prefixed',png:x.png,
+   status:'纯号段（既有完整番号名单及日期运营方守卫保留）'};
+ });
+}
+
 // JR seventeenth batch: only existing JR East official 2611 named train
 // reference numbers for 253-series Nikko/Kinugawa. A source number band
 // NEVER establishes calendar, operating date or physical trainset.
@@ -1093,7 +1137,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
