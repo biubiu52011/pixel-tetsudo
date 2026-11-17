@@ -655,6 +655,27 @@ function metroSecondSqlSeedBands(){
  });
 }
 
+
+// JR seventeenth batch: only existing JR East official 2611 named train
+// reference numbers for 253-series Nikko/Kinugawa. A source number band
+// NEVER establishes calendar, operating date or physical trainset.
+const JR_SEVENTEENTH_SQL_MIGRATION='supabase/migrations/20261117071000_seed_jr_253_nikko_kinugawa_png_bands_2611.sql';
+function jrSeventeenthSqlSeedBands(){
+ const src=read(JR_SEVENTEENTH_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==10)throw Error('JR seventeenth SQL band migration mismatch');
+ const allowed=new Set(['UtsunomiyaJR','TobuNikko','Nikkoku']);
+ return matches.map(m=>{
+  if(!allowed.has(m[1])||m[5]!=='M'||!m[6].endsWith('JR東日本_253系_1000番台.png'))
+   throw Error('Unexpected JR 253 PNG number-band scope');
+  return {line:m[1],segment:m[2],
+   from:String(m[3]).padStart(4,'0'),to:String(m[4]).padStart(4,'0'),
+   suffix:m[5],format:'full',png:m[6],
+   status:'纯号段（JR专用原始条件保留）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -683,7 +704,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
