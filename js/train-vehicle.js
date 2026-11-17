@@ -1820,24 +1820,46 @@ function getOperationPngLibrary() {
   var seen = Object.create(null);
   function add(row) {
     if (!row || !row.lineId || !row.operationPatterns || !row.mappings || !row.mappings.length) return;
-    var key = [String(row.lineId).toLowerCase(), row.operationPatterns.join(","), row.mappings.map(function(m){return m.vehicleType;}).join(",")].join("|");
+    var normalizedMappings = row.mappings.map(function(m){
+      var canonical = resolveCanonicalVehicle(m.vehicleType);
+      return Object.assign({}, m, {
+        asset: m.asset || (canonical && (canonical.asset || canonical.plannedAsset)) || ""
+      });
+    });
+    var scope = row.realtimeScope || null;
+    // Only merge semantically identical rows. Operator/date/calendar/realtime
+    // scopes must survive until resolveOperationPng filters the candidates;
+    // otherwise the first row can silently erase another eligible source.
+    var key = [
+      String(row.lineId).toLowerCase(),
+      normOp(row.operator || ""),
+      row.operationPatterns.slice().sort().join(","),
+      normalizedMappings.map(function(m) {
+        return String(m.vehicleType || "").trim() + "=>" +
+          normalizeGalleryPngPath(m.asset || "");
+      }).sort().join(","),
+      row.effectiveFrom || "",
+      row.effectiveTo || "",
+      String(row.calendarType || "").toLowerCase(),
+      scope && Array.isArray(scope.trainTypes)
+        ? scope.trainTypes.slice().sort().join(",") : "",
+      scope && Array.isArray(scope.carCompositions)
+        ? scope.carCompositions.slice().sort(function(a, b) { return Number(a) - Number(b); }).join(",") : "",
+      row.candidateOnly === true ? "candidate" : "exact",
+      row.planOnly === true ? "plan" : "realtime"
+    ].join("|");
     if (seen[key]) return;
     seen[key] = true;
     rows.push({
       lineId: row.lineId,
-      operator: row.operator || "",
+      operator: normOp(row.operator || ""),
       operationPatterns: row.operationPatterns.slice(),
-      mappings: row.mappings.map(function(m){
-        var canonical = resolveCanonicalVehicle(m.vehicleType);
-        return Object.assign({}, m, {
-          asset: m.asset || (canonical && (canonical.asset || canonical.plannedAsset)) || ""
-        });
-      }),
+      mappings: normalizedMappings,
       sourceUrl: row.sourceUrl || "",
       effectiveFrom: row.effectiveFrom || "",
       effectiveTo: row.effectiveTo || "",
       calendarType: row.calendarType || "",
-      realtimeScope: row.realtimeScope || null,
+      realtimeScope: scope,
       candidateOnly: row.candidateOnly === true,
       planOnly: row.planOnly === true
     });
@@ -1856,6 +1878,7 @@ function getOperationPngLibrary() {
     if (!mappings.length) return;
     add({
       lineId: rule.networkKey,
+      operator: rule.operator || "",
       operationPatterns: [rule.codePattern],
       mappings: mappings,
       sourceUrl: rule.sourceUrl || "",

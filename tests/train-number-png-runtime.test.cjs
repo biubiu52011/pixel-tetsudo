@@ -3599,3 +3599,40 @@ test('generic band conflict survives other-number-source reconciliation',()=>{
   root.TrainNumberPngRanges=original;
  }
 });
+
+
+test('operation-number PNG library preserves independently scoped rows before selection',()=>{
+ const originalRules=root.VEHICLE_FAMILY_RULES;
+ const rule=calendarType=>({
+  networkKey:'OperationPngScopeContract',codePattern:'01T',
+  operator:'Toei',exactVehicleType:'都営5500形',calendarType,
+  sourceUrl:'https://example.invalid/operation-png-scope/'+calendarType
+ });
+ const resolve=calendarType=>root.TrainVehicle.resolveOperationPng({
+  lineId:'OperationPngScopeContract',operationCode:'01T',
+  operator:'Toei',calendarType
+ });
+ try {
+  root.VEHICLE_FAMILY_RULES=[rule('weekday'),rule('holiday')];
+  const rows=root.TrainVehicle.getOperationPngLibrary()
+   .filter(x=>x.lineId==='OperationPngScopeContract');
+  assert.equal(rows.length,2,
+   'different calendar scopes must reach the final candidate selector');
+  assert.deepEqual(rows.map(x=>x.operator),['Toei','Toei'],
+   'family-rule operator guards must be retained');
+  assert.ok(resolve('weekday'));
+  assert.ok(resolve('holiday'),
+   'a later holiday row cannot be erased by an earlier weekday row');
+  assert.equal(root.TrainVehicle.resolveOperationPng({
+   lineId:'OperationPngScopeContract',operationCode:'01T',
+   operator:'Keio',calendarType:'weekday'
+  }),null,'the retained operator guard rejects another operator');
+
+  root.VEHICLE_FAMILY_RULES=[rule('holiday'),rule('weekday')];
+  assert.ok(resolve('weekday'));
+  assert.ok(resolve('holiday'),
+   'reversing scoped rule order cannot change availability');
+ }finally{
+  root.VEHICLE_FAMILY_RULES=originalRules;
+ }
+});
