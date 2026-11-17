@@ -775,6 +775,38 @@ function privateFirstSqlSeedBands(){
  });
 }
 
+
+// Tobu third private batch: original Koizumi (historical-undated)
+// and TH LINER date-scoped illustrations. Reference-only; JS/source guards
+// remain authoritative. TH overlap on the SAME PNG compacts to one band.
+const PRIVATE_SECOND_SQL_MIGRATION='supabase/migrations/20261117143000_seed_private_tobu_koizumi_thliner_png_bands_2611.sql';
+function privateSecondSqlSeedBands(){
+ const src=read(PRIVATE_SECOND_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z]+)',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==3)throw Error('Tobu Koizumi/TH source-band SQL count mismatch');
+ const expected=new Map([
+  ['png_band/Koizumi/0701-0764E',{line:'Koizumi',from:701,to:764,
+   suffix:'E',format:'full',png:'images/列车/東武鉄道/東武鉄道_10030型_50番台_更新車.png',
+   status:'纯号段（东武小泉线历史参考；日期车型条件保留）'}],
+  ['png_band/TobuSkytree/4041-4945T',{line:'TobuSkytree',from:4041,to:4945,
+   suffix:'T',format:'metro-prefixed',png:'images/列车/東武鉄道/東武鉄道_70090型.png',
+   status:'纯号段（东武TH LINER；服务类型条件保留）'}],
+  ['png_band/TobuSkytree/4045-4947T',{line:'TobuSkytree',from:4045,to:4947,
+   suffix:'T',format:'metro-prefixed',png:'images/列车/東武鉄道/東武鉄道_70090型.png',
+   status:'纯号段（东武TH LINER；服务类型条件保留）'}]
+ ]);
+ return matches.map(m=>{
+  const e=expected.get(m[2]);
+  if(!e||m[1]!==e.line||+m[3]!==e.from||+m[4]!==e.to||
+     m[5]!==e.suffix||m[6]!==e.png)
+   throw Error('Tobu source number-band reference changed unexpectedly');
+  return {line:e.line,segment:m[2],from:String(e.from).padStart(4,'0'),
+   to:String(e.to).padStart(4,'0'),suffix:e.suffix,format:e.format,
+   png:e.png,status:e.status};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -803,7 +835,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
