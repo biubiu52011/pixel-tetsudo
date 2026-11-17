@@ -369,3 +369,25 @@ test('operator filter DOM and card groups have the same JR-Metro-Other-Private s
   const display = presentation.getDisplayOrder(lines, {includeServiceCorridors:true});
   assert.equal(display.indexOf('UenoTokyo'), display.indexOf('ShonanShinjuku') + 1);
 });
+
+test('JR Kyushu duplicate full-line cards are hidden without altering canonical or operational sections', () => {
+  const match = runtimeSource.match(/var TRUNK_MAIN_LINE_IDS = (\[[^\]]+\]);/);
+  assert.ok(match);
+  const hidden = JSON.parse(match[1]);
+  for (const id of ['KagoshimaMain', 'Chikuho']) {
+    assert.ok(hidden.includes(id), id + ' is a physical full-route overview, not a separate operator card');
+    assert.ok(lines[id].stations.length > 20, id + ' topology remains intact');
+    assert.equal(lines[id].operator, 'JR-Kyushu');
+  }
+  for (const id of ['KagoshimaMainJA', 'KagoshimaMainJB', 'Wakamatsu', 'Haruda', 'Sasaguri',
+                    'Nippo', 'NagasakiMain', 'Hitahikosan']) {
+    assert.ok(!hidden.includes(id), id + ' remains selectable');
+    assert.ok(lines[id] && lines[id].presentation, id + ' still exists');
+  }
+  const bundle = fs.readFileSync(path.join(root, 'data/core/data-config-bundle.js'),'utf8');
+  assert.ok(bundle.includes('var TRUNK_MAIN_LINE_IDS = ' + JSON.stringify(hidden) + ';'),
+    'bundled live configuration must match the source hide list');
+  const list = fs.readFileSync(path.join(root, 'js/data-state.js'),'utf8');
+  assert.match(list,/TRUNK_MAIN_LINE_IDS\.indexOf\(lid\) >= 0/,
+    'existing shared list renderer must own the hiding rule');
+});
