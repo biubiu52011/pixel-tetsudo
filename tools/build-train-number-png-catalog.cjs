@@ -732,6 +732,25 @@ function thirdFirstSqlSeedBands(){
  });
 }
 
+
+// Third-sector second batch: SaitamaRapid 2000 operator-identity 80M..98M.
+// 'tail' is essential: A1082M/A680M match 82M/80M, never numeric full.
+const THIRD_SECOND_SQL_MIGRATION='supabase/migrations/20261117093000_seed_png_first_saitama_2000_operator_M_tail_2611.sql';
+function thirdSecondSqlSeedBands(){
+ const src=read(THIRD_SECOND_SQL_MIGRATION);
+ const pattern=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'([A-Z])',NULL,'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const matches=[...src.matchAll(pattern)];
+ if(matches.length!==2)throw Error('SaitamaRapid 2000 SQL reference band mismatch');
+ const allowed=new Set(['Namboku','SaitamaRapid']);
+ return matches.map(m=>{
+  if(!allowed.has(m[1])||m[3]!=='80'||m[4]!=='98'||
+     m[5]!=='M'||m[6]!=='images/列车/埼玉高速鉄道/埼玉高速鉄道_2000系.png')
+   throw Error('Unexpected SaitamaRapid M-tail source');
+  return {line:m[1],segment:m[2],from:'0080',to:'0098',suffix:'M',
+    format:'tail',png:m[6],status:'纯号段（第三部门M后两位；来源条件保留）'};
+ });
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -760,7 +779,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
