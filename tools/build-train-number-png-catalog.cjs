@@ -1472,6 +1472,76 @@ function jr211ShonanNaganoSqlSeedBands(c){
  return expected;
 }
 
+
+// JR batch 26: BanetsuWest original JS train numbers only, with no gaps
+// invented and no assertion of actual vehicle identity or confirmed livery.
+const JR_BANETSU_WEST_SQL_MIGRATION=
+ 'supabase/migrations/20261118024500_seed_jr_banetsu_west_reference_number_bands_2611.sql';
+function jrBanetsuWestSqlSeedBands(c){
+ const specs=[
+  {id:'js-0025',count:22,bands:2,type:'Local',suffix:'M',
+   png:'images/列车/JR東日本/JR東日本_E721系_仙台地区.png'},
+  {id:'js-0026',count:14,bands:1,type:'Rapid',suffix:'M',
+   png:'images/列车/JR東日本/JR東日本_E721系_仙台地区.png'},
+  {id:'js-0027',count:39,bands:16,type:'Local',suffix:'D',
+   png:'images/列车/JR東日本/JR東日本_GV-E400系.png'},
+  {id:'js-0030',count:18,bands:11,type:'Local',suffix:'D',
+   png:'images/列车/JR東日本/JR東日本_キハ110系.png'},
+  {id:'js-0031',count:2,bands:1,type:'LimitedExpress',suffix:'D',
+   png:'images/列车/JR東日本/JR東日本_キハ110系.png'}
+ ];
+ const expected=[];
+ for(const spec of specs){
+  const r=c.rules.find(x=>x.id===spec.id);
+  if(!r||r.origin!=='frontend_js'||r.png!==spec.png||
+     r.line_ids.join()!=='BanetsuWest'||r.format!=='full'||
+     r.suffix!==spec.suffix||r.train_type!==null||
+     r.operator!=='JR-East'||r.train_types?.join()!==spec.type||
+     r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+     r.actual_vehicle_confirmed!==false||
+     !r.runtime_guards?.sourceOperatorFallback||
+     !r.runtime_guards?.allowedModelLabels?.length||
+     (spec.id!=='js-0031'&&!r.runtime_guards?.requiredCandidateModelPrefix))
+   throw Error('BanetsuWest source rule changed: '+spec.id);
+  const names=[...new Set([...(r.published_numbers||[]),
+   ...(r.weekday_numbers||[]),...(r.holiday_numbers||[])])];
+  if(names.length!==spec.count||
+     names.some(n=>!/^\d+[MD]$/.test(n)||!n.endsWith(spec.suffix)))
+   throw Error('BanetsuWest original train numbers changed: '+spec.id);
+  const numbers=names.map(n=>+n.slice(0,-1)).sort((a,b)=>a-b);
+  const bands=[];
+  for(const n of numbers){
+   const last=bands[bands.length-1];
+   if(last&&last.end+1===n)last.end=n;
+   else bands.push({start:n,end:n});
+  }
+  if(bands.length!==spec.bands||
+     bands.reduce((n,b)=>n+b.end-b.start+1,0)!==spec.count)
+   throw Error('BanetsuWest number gap check failed: '+spec.id);
+  for(const b of bands){
+   const from=String(b.start).padStart(4,'0');
+   const to=String(b.end).padStart(4,'0');
+   expected.push({line:'BanetsuWest',png:spec.png,
+    segment:'png_band/BanetsuWest/'+from+'-'+to+spec.suffix,
+    from,to,suffix:spec.suffix,format:'full',
+    status:'纯号段（JR原始车型与日期条件保留）'});
+  }
+ }
+ const source=read(JR_BANETSU_WEST_SQL_MIGRATION);
+ const pattern=/^  \('2611','BanetsuWest','(png_band\/BanetsuWest\/[^']+)',(\d+),(\d+),'([MD])',NULL,'\.\.\/(images\/列车\/JR東日本\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const found=[...source.matchAll(pattern)];
+ if(found.length!==31||expected.length!==31)
+  throw Error('BanetsuWest SQL row count drift');
+ for(let i=0;i<31;i++){
+  const row=found[i],item=expected[i];
+  if(row[1]!==item.segment||+row[2]!==+item.from||
+     +row[3]!==+item.to||row[4]!==item.suffix||
+     row[5]!==item.png)
+   throw Error('BanetsuWest source/SQL difference: '+item.segment);
+ }
+ return expected;
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -1500,7 +1570,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('JR source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
- for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
+ for(const ref of jrFirstSqlSeedBands().concat(jrScopedSqlSeedBands(),jrThirdSqlSeedBands(),jrFourthSqlSeedBands(),jrFifthSqlSeedBands(),jrSixthSqlSeedBands(),jrSeventhSqlSeedBands(),jrEighthSqlSeedBands(),jrNinthSqlSeedBands(),jrTenthSqlSeedBands(),jrEleventhSqlSeedBands(),jrTwelfthSqlSeedBands(),jrThirteenthSqlSeedBands(),metroSecondSqlSeedBands(),metro13000And18000SqlSeedBands(),jrBoso209BanetsuC57SqlSeedBands(c),jrE233Saikyo315GotembaSqlSeedBands(c),jrHachikoE231AndDe10ExactSqlSeedBands(c),jrChuoE353SqlSeedBands(c),jrChuoE233ThFujikyuSqlSeedBands(c),jr211ShonanNaganoSqlSeedBands(c),jrBanetsuWestSqlSeedBands(c),jrSeventeenthSqlSeedBands(),jrEighteenthSqlSeedBands(),jrNineteenthSqlSeedBands(),thirdFirstSqlSeedBands(),thirdSecondSqlSeedBands(),privateFirstSqlSeedBands(),privateSecondSqlSeedBands(),privateThirdSqlSeedBands(),privateFourthSqlSeedBands(),privateNikkoSqlSeedBands(),privateSkytreeSqlSeedBands(),privateNinthSqlSeedBands())){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
