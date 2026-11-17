@@ -50,26 +50,33 @@ test('54 exact Iiyama ordinary D train numbers render scoped approved KiHa110 ma
       assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
     }
 });
-test('OyKot 8140/8141 admit 12 November dates but have no approved livery PNG',()=>{
+test('OyKot 8140/8141 use only approved special PNG on 12 dated November services',()=>{
+  const oykotPng='../images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png';
+  const model='キハ110系（おいこっと）';
   assert.equal(index.oykotDays.length,12);
   for(const [n,dir] of [['8140D','Inbound'],['8141D','Outbound']]){
     for(const date of index.oykotDays){
       const cal=date==='2026-11-02'?'weekday':'holiday';
-      const p=position(n,dir,'Rapid',date,cal);
+      const p=position(n,dir,'Rapid',date,cal,{
+        plannedVehicleCandidates:[model]
+      });
       const admitted=verify(p);
       assert.equal(admitted.kind,'oykot');
       assert.equal(admitted.serviceName,'おいこっと');
-      assert.equal(admitted.pngAvailable,false);
-      assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(p),null);
-      assert.equal(ctx._trainMarkerSpec(p,n,'Iiyama').kind,'unresolved');
+      assert.equal(admitted.pngAvailable,true);
+      const image=win.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.equal(image?.pngPath,oykotPng,n+'/'+date);
+      assert.equal(ctx._trainMarkerSpec(p,n,'Iiyama').kind,'vehicle',n+'/'+date);
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
     }
     const monday=position(n,dir,'Rapid','2026-11-02','holiday');
     assert.equal(verify(monday).holidayTemplateOnWeekday,true);
     for(const [date,cal] of [
       ['2026-11-04','weekday'],['2026-11-06','weekday'],
       ['2026-11-09','weekday'],['2026-11-30','weekday']]){
-      const p=position(n,dir,'Rapid',date,cal);
+      const p=position(n,dir,'Rapid',date,cal,{plannedVehicleCandidates:[model]});
       assert.equal(verify(p),false);
+      assert.equal(win.TrainVehicle.lookupTrainNumberRangePng(p),null);
     }
   }
 });
