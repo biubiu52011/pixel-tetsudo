@@ -287,21 +287,6 @@
       model:"キハ110系",
       pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
 
-    // 飯山線おいこっと: one approved PNG, two public train numbers.
-    // The existing Iiyama verifier owns the complete 2611 operation dates,
-    // calendar, direction and Rapid service checks; no extra priority.
-    {lineIds:["Iiyama"],numberFormat:"full",from:8140,to:8141,
-      suffixes:"D",trainTypes:["Rapid"],
-      numberIndex:"jreast-iiyama-2611",iiyamaKind:"oykot",
-      publishedNumbers:["8140D","8141D"],
-      directionNumberParity:"inbound-even",operator:"JR-East",
-      sourceOperatorFallback:true,
-      sourceRailways:["odpt.Railway:JR-East.Iiyama"],
-      validFrom:"2026-11-01",validTo:"2026-11-30",
-      allowedModelLabels:["キハ110系（おいこっと）"],
-      model:"キハ110系（おいこっと）",
-      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png"},
-
     // 陸羽西線 2611: 16 ordinary KiHa110 D numbers; two true 313xD
     // Mogamigawa Rapid numbers (SQL incorrectly marks them Local).
     // Exclude historical holiday 9166D; not on 2611 public roster.
@@ -2166,7 +2151,22 @@
       sourceEvidence:"staged-tokyo-gtfs-20261112-unverified",
       allowedModelLabels:["都営12-600形（後期車）"],
       referenceOnly:true,illustrative:true,
-      model:"都営12-600形（後期車）",pngPath:"../images/列车/都営地下鉄/都営地下鉄_12-600形_後期車.png"}
+      model:"都営12-600形（後期車）",pngPath:"../images/列车/都営地下鉄/都営地下鉄_12-600形_後期車.png"},
+
+    // 飯山線おいこっと: one approved PNG, two public train numbers.
+    // The existing Iiyama verifier owns the complete 2611 operation dates,
+    // calendar, direction and Rapid service checks; no extra priority.
+    {lineIds:["Iiyama"],numberFormat:"full",from:8140,to:8141,
+      suffixes:"D",trainTypes:["Rapid"],
+      numberIndex:"jreast-iiyama-2611",iiyamaKind:"oykot",
+      publishedNumbers:["8140D","8141D"],
+      directionNumberParity:"inbound-even",operator:"JR-East",
+      sourceOperatorFallback:true,
+      sourceRailways:["odpt.Railway:JR-East.Iiyama"],
+      validFrom:"2026-11-01",validTo:"2026-11-30",
+      allowedModelLabels:["キハ110系（おいこっと）"],
+      model:"キハ110系（おいこっと）",
+      pngPath:"../images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png"}
   ];
   rows.forEach(function(row){
     Object.freeze(row.lineIds);
