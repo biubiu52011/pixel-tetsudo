@@ -158,9 +158,19 @@
     var list=byModel[String(name||"")]||[];
     return list.filter(function(row){return !lineId||row.lineIds.indexOf(String(lineId))>=0;}).slice();
   }
+  // Inventory is retained, but a lookalike is not licensed as the actual
+  // model or special livery. No new positive mapping source is introduced.
+  var rejectedCrossModelIds=Object.freeze({
+    "tokyu-9020-plan":true,
+    "jr-east-kiha101-aterazawa-illustration":true,
+    "jr-east-kiha110-tadami-kiha40-livery-illustration":true
+  });
   function matches(model,path,lineId){
     path=asPath(path);
-    return listModel(model,lineId).some(function(r){return !r.alternateOnly && !r.quarantined && r.path===path;});
+    return listModel(model,lineId).some(function(r){
+      return !r.alternateOnly && !r.quarantined &&
+        !rejectedCrossModelIds[r.id] && r.path===path;
+    });
   }
   root.VehicleGaragePngMap=Object.freeze({
     version:"20261115-tobu-koizumi-reference-v1",totalPng:601,

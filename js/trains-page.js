@@ -520,6 +520,7 @@
                   + (_tp.plannedVehicleCandidateArtworkStatus || "") + ":"
                   + (_tp.candidateArtworkConfirmedByDatedRule === true ? "candidate-art" : "") + ":"
                   + (_tp.vehicleIconPath || "") + ":"
+                  + (_tp.vehicleArtworkConflict === true ? "through-png-conflict" : "") + ":"
                   + (_tp.vehicleResolvedUpstream === true ? "resolved-upstream" : "") + ":"
                   + (_tp.vehicleResolvedFromRealtime === true ? "resolved-live" : "") + ":"
                   + (_tp.vehicleResolvedFromRealtimeDerived === true ? "resolved-derived" : "") + ":"

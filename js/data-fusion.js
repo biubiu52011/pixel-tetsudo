@@ -178,6 +178,46 @@
       String(p.positionLineId || railway) : "";
   }
 
+  // The existing canonical running chain supplies identity; a number alone
+  // never joins trains. Check existing source-scoped PNG decisions only when
+  // that chain, date and public train number agree across source railways.
+  function _markThroughArtworkConflicts(positionsByLine) {
+    var owner=window.TrainVehicle;
+    if (!owner || typeof owner.selectMarkerArtwork!=="function") return 0;
+    var groups=Object.create(null), rejected=0;
+    Object.keys(positionsByLine || {}).forEach(function(lineId) {
+      (positionsByLine[lineId] || []).forEach(function(p) {
+        if (!p || !p.runningChainId || !p.trainNumber || !p.sourceRailway ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(String(p.serviceDate || "")) ||
+            !p.positionLineId) return;
+        // Each new snapshot is evaluated afresh; no inherited stale flag.
+        p.vehicleArtworkConflict=false;
+        var key=[p.runningChainId,p.serviceDate,p.trainNumber].join("|");
+        (groups[key] || (groups[key]=[])).push({lineId:lineId,p:p});
+      });
+    });
+    Object.keys(groups).forEach(function(key) {
+      var entries=groups[key];
+      if (entries.length<2) return;
+      var railways=Object.create(null);
+      entries.forEach(function(x) {
+        railways[x.p.sourceRailway+"|"+x.p.positionLineId]=true;
+      });
+      if (Object.keys(railways).length<2) return;
+      var pngs=Object.create(null);
+      entries.forEach(function(x) {
+        var spec=owner.selectMarkerArtwork(
+          Object.assign({},x.p,{displayLineId:x.lineId}),false);
+        if (spec && spec.kind==="vehicle" && spec.iconSrc)
+          pngs[String(spec.iconSrc)]=true;
+      });
+      if (Object.keys(pngs).length<2) return;
+      entries.forEach(function(x) { x.p.vehicleArtworkConflict=true; });
+      rejected++;
+    });
+    return rejected;
+  }
+
   function _rememberChainVehicle(p) {
     if (!p || !p.runningChainId) return;
     var resolution = p.vehicleResolution || null;
@@ -521,7 +561,7 @@
       // observed stock and candidate models. A stationary train can gain or
       // lose its image without changing its physical coordinates.
       ['delayMin','destinationStation','vehicleIconPath','vehicleType','vehicleIdentityStatus',
-        'vehicleFormationId','trainNumber','trainType','typeName','serviceDate',
+        'vehicleFormationId','vehicleArtworkConflict','trainNumber','trainType','typeName','serviceDate',
         'sourceRailway','positionLineId','fusionLineId','fusionRole',
         'calendarType','serviceId','trainOperator','realtimeVehicleType',
         'realtimeDerivedVehicleType','timetableVehicleType','officialNumberVerified',
@@ -2376,6 +2416,10 @@
                 if (match && match.destinationStation) p.destinationStation = match.destinationStation;
               });
             });
+            var throughArtworkConflicts=_markThroughArtworkConflicts(posMap);
+            if (throughArtworkConflicts>0)
+              console.debug("[DataFusion] neutral markers for",throughArtworkConflicts,
+                "through-chain PNG conflicts");
             if (estCount > 0) {
               console.debug("[DataFusion] Estimated", estCount, "train positions for", Object.keys(estimated).length, "lines");
             }

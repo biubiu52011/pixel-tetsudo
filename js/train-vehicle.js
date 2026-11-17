@@ -929,7 +929,8 @@ var CANONICAL_VEHICLES = {
   "tokyu-6020": { displayName: "東急6020系", iconName: "東急6020系", asset: "../images/列车/東急電鉄/東急電鉄_6020系.png", aliases: ["東急6020系(5両)","東急6020系(7両)","東急6020系"] },
   "tokyu-6000": { displayName: "東急6000系", iconName: "東急6000系", asset: "../images/列车/東急電鉄/東急電鉄_6000系.png", lineIds: ["TokyuOimachi"], aliases: ["東急6000系"] },
   "tokyu-9000": { displayName: "東急9000系", iconName: "東急9000系", asset: "../images/列车/東急電鉄/東急電鉄_9000系.png", lineIds: ["TokyuOimachi"], aliases: ["東急9000系"] },
-  "tokyu-9020-plan": { displayName: "東急9020系", iconName: "東急9020系", asset: null, plannedAsset: "../images/列车/東急電鉄/東急電鉄_9000系.png", lineIds: ["TokyuOimachi"], aliases: ["東急9020系"] },
+  // Do not illustrate 9020 with a different 9000-series front.
+  "tokyu-9020-plan": { displayName: "東急9020系", iconName: "東急9020系", asset: null, plannedAsset: null, lineIds: ["TokyuOimachi"], aliases: ["東急9020系"] },
   "tokyu-7000": { displayName: "東急7000系", iconName: "東急7000系", asset: "../images/列车/東急電鉄/東急電鉄_7000系.png", aliases: ["東急7000系"] },
   "tokyu-1000-1500-plan": { displayName: "東急1000系1500番台", iconName: "東急1000系1500番台", asset: null, plannedAsset: "../images/列车/東急電鉄/東急電鉄_1000系_1500番台_1504F.png", aliases: ["東急1000系1500番台"] },
   "tobu-50000-10": { displayName: "東武50000系", iconName: "東武50000系", asset: "../images/列车/東武鉄道/東武鉄道_50000型.png", lineIds: ["Tojo"], aliases: ["東武50000系(10両)","東武50000系"] },
@@ -1130,8 +1131,8 @@ var CANONICAL_VEHICLES = {
   // it as a candidate for the present-day E131-operated train diagram.
   "jr-east-205-1100-tsurumi-legacy": {"displayName":"205系1100番台（鶴見線）","iconName":"205系1100番台（鶴見線）","asset":"../images/列车/JR東日本/JR東日本_205系_1100番台_鶴見線.png","lineIds":[],"historicLineIds":["Tsurumi","TsurumiUmiShibaura","TsurumiOkawa"],"historicalOnly":true,"aliases":["JR東日本205系1100番台","205系1100番台","205系（鶴見線）"]},
   "jr-east-kiha110-rikuu-regional-illustration": {"displayName":"キハ110系（陸羽東・西線）","iconName":"キハ110系（陸羽東・西線）","asset":"../images/列车/JR東日本/JR東日本_キハ110系（陸羽東・左沢・別）.png","lineIds":["RikutoEast","RikutsuWest"],"lineAliases":{"RikutoEast":["キハ110系（陸羽東線）"],"RikutsuWest":["キハ110系（陸羽西線）"]},"aliases":["JR東日本キハ110系（陸羽東・西線）"],"referenceOnly":true,"illustrativeOnly":true,"sourceUrl":"https://www.jreast.co.jp/train/local/kiha110.html"},
-  "jr-east-kiha101-aterazawa-illustration": {"displayName":"キハ101形（左沢線）","iconName":"キハ101形","asset":"../images/列车/JR東日本/JR東日本_キハ110系（陸羽東・左沢）.png","lineIds":["Aterazawa"],"lineAliases":{"Aterazawa":["キハ101形","キハ101系"]},"aliases":["JR東日本キハ101形","キハ101系（左沢線）"],"referenceOnly":true,"illustrativeOnly":true,"sourceUrl":"https://event.jreast.co.jp/activity/detail/a010/a010-azw-004"},
-  "jr-east-kiha110-tadami-kiha40-livery-illustration": {"displayName":"キハ110系（只見線・キハ40系カラー）","iconName":"キハ110系（只見線・復刻色）","asset":"../images/列车/JR東日本/JR東日本_キハ110系（只見線）.png","lineIds":["Tadami"],"lineAliases":{"Tadami":["キハ110系（只見線・キハ40系カラー）"]},"aliases":["キハ110系（只見線復刻色）","キハ110-223（キハ40系カラー）"],"referenceOnly":true,"illustrativeOnly":true,"sourceUrl":"https://www.jreast.co.jp/press/2023/sendai/20230825_s01.pdf"},
+  "jr-east-kiha101-aterazawa-illustration": {"displayName":"キハ101形（左沢線）","iconName":"キハ101形","asset":null,"lineIds":["Aterazawa"],"lineAliases":{"Aterazawa":["キハ101形","キハ101系"]},"aliases":["JR東日本キハ101形","キハ101系（左沢線）"],"referenceOnly":true,"illustrativeOnly":true,"sourceUrl":"https://event.jreast.co.jp/activity/detail/a010/a010-azw-004"},
+  "jr-east-kiha110-tadami-kiha40-livery-illustration": {"displayName":"キハ110系（只見線・キハ40系カラー）","iconName":"キハ110系（只見線・復刻色）","asset":null,"lineIds":["Tadami"],"lineAliases":{"Tadami":["キハ110系（只見線・キハ40系カラー）"]},"aliases":["キハ110系（只見線復刻色）","キハ110-223（キハ40系カラー）"],"referenceOnly":true,"illustrativeOnly":true,"sourceUrl":"https://www.jreast.co.jp/press/2023/sendai/20230825_s01.pdf"},
   "jr-yamagata-2026-e723-family-reference": {"displayName":"E723系5000番台","iconName":"E723系5000番台","asset":"../images/列车/JR東日本/JR東日本_E723系_5000番台.png","lineIds":["Yamagata"],"lineAliases":{"Yamagata":["E723系5000番台"]},"aliases":["JR東日本E723系5000番台","JR E723系5000番台"]},
   "planned-stock-library-10": {"displayName":"キハ110系","iconName":"キハ110系","asset":"../images/列车/JR東日本/JR東日本_キハ110系.png","aliases":["JR東日本キハ110系","JR キハ110系","キハ110系0番台（快速南三陸）","JR東日本キハ110系0番台（快速南三陸）"]},
   "jr-east-e131-0-plan": {"displayName":"E131系0番台","iconName":"E131系0番台","asset":null,"plannedAsset":"../images/列车/JR東日本/JR東日本_E131系_0番台.png","aliases":["JR東日本E131系0番台"]},
@@ -5813,6 +5814,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   }
 
   function selectMarkerArtwork(p, artworkFailed) {
+    // A source-verified through chain cannot select different series/liveries
+    // for the same public number. Keep its location, not a false cab image.
+    if (p && p.vehicleArtworkConflict === true)
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false,reason:"through-livery-conflict"};
     // 当前图面线路也属于素材授权范围；不能只根据来源记录自身的线路显示图像。
     var contextLineId = String(p && (p.displayLineId || p.lineId || p.positionLineId) || "").trim();
     var resolutionLineId = String(p && (p.vehicleResolutionLineId ||
