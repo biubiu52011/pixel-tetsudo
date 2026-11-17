@@ -385,7 +385,9 @@ test('JR Kyushu duplicate full-line cards are hidden without altering canonical 
     assert.ok(lines[id] && lines[id].presentation, id + ' still exists');
   }
   const bundle = fs.readFileSync(path.join(root, 'data/core/data-config-bundle.js'),'utf8');
-  assert.ok(bundle.includes('var TRUNK_MAIN_LINE_IDS = ' + JSON.stringify(hidden) + ';'),
+  const bundleMatch = bundle.match(/var TRUNK_MAIN_LINE_IDS = (\[[^\]]+\]);/);
+  assert.ok(bundleMatch, 'bundled runtime hide-rule array missing');
+  assert.deepEqual(JSON.parse(bundleMatch[1]), hidden,
     'bundled live configuration must match the source hide list');
   const list = fs.readFileSync(path.join(root, 'js/data-state.js'),'utf8');
   assert.match(list,/TRUNK_MAIN_LINE_IDS\.indexOf\(lid\) >= 0/,
