@@ -172,6 +172,7 @@ jobs:
           node --test tests/png-unmapped-source-triage-20261118.test.cjs
           node --test tests/jr49-shinetsu-shirayuki-reference-2611.test.cjs
           node --test tests/jr50-tokaido-fujikawa-373-reference-2611.test.cjs
+          node --test tests/private-odakyu-gse-nov2026-bands.test.cjs
 
       - name: Replay dated SQL source train PNG and enforce cross-line safety
         run: |
