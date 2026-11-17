@@ -160,3 +160,31 @@ test('PNG mapper is lazy-loaded before central matcher and page hashes match',()
  }
  assert.match(html,/tobu-utsunomiya-2611-number-png\.js\?v=[a-f0-9]{12}" data-line-scope="TobuUtsunomiya"/);
 });
+
+
+test('private ninth batch writes one 0401-0486N source-number band, not an actual formation',()=>{
+ const {privateNinthSqlSeedBands}=require('../tools/build-train-number-png-catalog.cjs');
+ const match=privateNinthSqlSeedBands().filter(row=>row.line==='TobuUtsunomiya');
+ assert.equal(match.length,1,'all 86 published 401N-486N numbers have one gallery PNG');
+ const band=match[0];
+ assert.equal(band.from,'0401');assert.equal(band.to,'0486');
+ assert.equal(band.suffix,'N');assert.equal(band.format,'full');
+ assert.equal(band.png,'images/列车/東武鉄道/東武鉄道_20400型.png');
+ const csv=fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8');
+ assert.ok(csv.includes(['私铁','東武鉄道',band.png,band.line,band.from,
+  band.to,band.suffix,band.format,band.status].join(',')));
+ for(let n=401;n<=486;n++){
+  const number=n+'N',source=root.TobuUtsunomiya2611Png.rangeFor(number);
+  assert.ok(source,number);
+  for(const calendarType of ['weekday','holiday']){
+   const match=root.TrainNumberPngRanges.match(number,'TobuUtsunomiya',run(number,{calendarType}));
+   assert.ok(match,number);
+   assert.equal(match.pngPath.replace(/^\.\.\//,''),band.png);
+   assert.equal(match.referenceOnly,true);
+   assert.equal(match.authorizesDatedService,false);
+   assert.equal(match.actualVehicleConfirmed,false);
+  }
+ }
+ for(const number of ['400N','487N','0401N','401D'])
+  assert.equal(root.TobuUtsunomiya2611Png.rangeFor(number),null);
+});
