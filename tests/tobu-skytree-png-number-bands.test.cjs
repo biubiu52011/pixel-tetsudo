@@ -240,3 +240,58 @@ test('private eighth-batch Tobu Skytree SQL bands preserve every original source
   p('2501','Local',{vehicleIdentityStatus:'EXACT'})
  ])assert.equal(ranges.match(sample.trainNumber,'TobuSkytree',sample),null);
 });
+
+
+test('private ninth batch Skytree 70000 PNG bands include only original T-owner Hibiya numbers',()=>{
+ const {privateNinthSqlSeedBands}=require('../tools/build-train-number-png-catalog.cjs');
+ const all=privateNinthSqlSeedBands(),bands=all.filter(row=>row.line==='TobuSkytree');
+ assert.equal(all.length,187);
+ assert.equal(bands.length,186);
+ const ids=new Set(),csv=fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8');
+ for(const band of bands){
+  assert.equal(band.png,'images/列车/東武鉄道/東武鉄道_70000系.png');
+  assert.equal(band.suffix,'T');
+  assert.equal(band.format,'metro-prefixed');
+  assert.equal(band.from,band.to,'do not include unrelated/interleaved T-owner numbers');
+  assert.equal(ids.has(+band.from),false);
+  ids.add(+band.from);
+  assert.ok(csv.includes(['私铁','東武鉄道',band.png,band.line,
+   band.from,band.to,band.suffix,band.format,band.status].join(',')));
+ }
+ const source=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+ const m=source.match(/tobuSkytreeOrdinaryCorridors=(\{[^;]+\});/);
+ assert.ok(m);
+ const corridors=JSON.parse(m[1]);
+ const seen=new Set();
+ for(const [calendarType,serviceDate] of [
+  ['weekday','2026-11-13'],['holiday','2026-11-14']
+ ]){
+  for(const number of corridors[calendarType].hibiya){
+   const mm=/^[AB](\d{3,4})T$/.exec(number);
+   if(!mm)continue;
+   const is70090=+number.slice(-3,-1)>=41&&+number.slice(-3,-1)<=49;
+   const actual=ranges.match(number,'TobuSkytree',
+    p(number,'Local',{calendarType,serviceDate}));
+   assert.ok(actual,'original source selector must recognize '+number);
+   if(is70090){
+    assert.ok(actual.pngPath.endsWith('70090型.png'),number);
+    assert.equal(ids.has(+mm[1]),false,'70090 source must not enter 70000 band: '+number);
+    continue;
+   }
+   assert.equal(actual.pngPath.replace(/^\.\.\//,''),
+    'images/列车/東武鉄道/東武鉄道_70000系.png',number);
+   assert.equal(actual.referenceOnly,true);
+   assert.equal(actual.actualVehicleConfirmed,false);
+   assert.equal(ids.has(+mm[1]),true);
+   seen.add(+mm[1]);
+  }
+ }
+ assert.equal(seen.size,186);
+ assert.deepEqual([...seen].sort((a,b)=>a-b),[...ids].sort((a,b)=>a-b));
+ // The reference SQL must never authorize another prefix, operator or calendar.
+ for(const ctx of [
+  p('A1009T','Local',{serviceDate:'2026-12-01'}),
+  p('A1009T','Local',{sourceRailway:'odpt.Railway:Tobu.Nikko'}),
+  p('A1009T','Local',{vehicleIdentityStatus:'EXACT'})
+ ])assert.equal(ranges.match(ctx.trainNumber,'TobuSkytree',ctx),null);
+});
