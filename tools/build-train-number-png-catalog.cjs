@@ -1313,7 +1313,7 @@ function jrChuoE353SqlSeedBands(c){
   throw Error('E233 ordinary-train exclusion no longer protects E353 references');
  const names=[...new Set(rules.flatMap(r=>
    r.weekday_numbers.concat(r.holiday_numbers)))];
- if(names.length!==59||names.some(n=>!/^\\d{1,4}M$/.test(n)))
+ if(names.length!==59||names.some(n=>!/^\d{1,4}M$/.test(n)))
   throw Error('E353 original published-number list changed');
  const values=names.map(n=>Number(n.slice(0,-1))).sort((a,b)=>a-b);
  const islands=[];
@@ -1332,7 +1332,7 @@ function jrChuoE353SqlSeedBands(c){
    status:'纯号段（JR特急原车次及车型条件保留）'};
  }));
  const source=read(JR_CHUO_E353_SQL_MIGRATION);
- const rx=/^  \\('2611','([^']+)','(png_band\\/[^']+)',(\\d+),(\\d+),'M',NULL,'\\.\\.\\/(images\\/列车\\/JR東日本\\/[^']+\\.png)',NULL,FALSE,FALSE\\)(?:,)?$/gm;
+ const rx=/^  \('2611','([^']+)','(png_band\/[^']+)',(\d+),(\d+),'M',NULL,'\.\.\/(images\/列车\/JR東日本\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
  const saved=[...source.matchAll(rx)];
  if(saved.length!==94||expected.length!==94)
   throw Error('E353 SQL entry count changed');
