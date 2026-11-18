@@ -29,7 +29,8 @@ jobs:
         run: |
           node tools/audit-tobu-odpt-number-bands.cjs \
             --output=/tmp/tobu-odpt-number-audit.json \
-            --summary="$GITHUB_STEP_SUMMARY"
+            --summary="$GITHUB_STEP_SUMMARY" \
+            --require-observation
       - name: Retain number-only comparison snapshot for seven days
         if: always()
         uses: actions/upload-artifact@v4
