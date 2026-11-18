@@ -2127,6 +2127,7 @@ function lateVerifiedSourceSqlSeedBands(){
   ['20261118183000_jr55_sanin_kiha187_superoki_3001_3002_reference.sql',1,'JR西日本/JR西日本_187系.png','纯号段（JR西日本2026年10・11月官方スーパーおき3001D/3002D参考；PNG仍为review且实际车辆未经确认）'],
   ['20261118190000_jr56_bantan_kiha189_hamakaze_1_2_official_reference.sql',1,'JR西日本/JR西日本_キハ189系.png','纯号段（JR西日本2026年11月官方はまかぜ1D・2D播但线参考；PNG仍review、非当日实车确认）'],
   ['20261118194500_private23_chichibu_c58_paleo_5001_5002_official_historical_reference.sql',1,'秩父鉄道/秩父鉄道_C58形_363号機.png','纯号段（秩父铁道2025年官方SL番号5001/5002与2026年C58运营交叉参考；不得混淆5000系编组号或确认今日实车）'],
+  ['20261118201300_private24_tobu_sl_taiju_c11_1_8_official_number_reference.sql',1,'東武鉄道/東武鉄道_C11形_SL大樹.png','纯号段（东武2026年3月官方SL大樹1-8番号与11月SL/DL轮换参考；实际机车及运行日不可由号码单独确定，PNG仅review）'],
   ['20261118201000_jr57_283_ocean_arrow_three_official_numbers_four_corridors.sql',4,'JR西日本/JR西日本_283系.png','纯号段（2026年11月JR西日本官方283系オーシャンアロー：2052M・2085M・6055M；按阪和／纪势途经线路入库，PNG仍review，非当日实车）'],
   ['20261118085000_private12_seibu_laview_2026_official_chichibu_number_references.sql',8,'西武鉄道/西武鉄道_001系_Laview.png','纯号段（官方ちちぶ公开号数／实际车次及运行日待核）'],
   ['20261118092000_private13_seibu_shinjuku_nra_koedo_number_references.sql',5,'西武鉄道/西武鉄道_10000系_ニューレッドアロー.png','纯号段（2026小江户服务与2025列车番号交叉参考／运行日待核）']
@@ -2157,7 +2158,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==120)throw Error('Late sourced SQL bands must total 120 rows');
+ if(refs.length!==121)throw Error('Late sourced SQL bands must total 121 rows');
  return refs;
 }
 

@@ -60,6 +60,7 @@ const expectedReferencedPngs = [
   'images/列车/東武鉄道/東武鉄道_20400型.png',
   'images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png',
   'images/列车/東武鉄道/東武鉄道_50050型.png',
+  'images/列车/東武鉄道/東武鉄道_C11形_SL大樹.png',
   'images/列车/東武鉄道/東武鉄道_50090型.png',
   'images/列车/東武鉄道/東武鉄道_634型_スカイツリートレイン.png',
   'images/列车/東武鉄道/東武鉄道_70090型.png',
@@ -97,7 +98,7 @@ test('private railway category fixes the 246-PNG inventory and 219 unresolved ga
     }
   }
   assert.deepEqual(counts, expectedOperators);
-  assert.equal(missing.length, 219);
+  assert.equal(missing.length, 218);
   assert.deepEqual(referenced.sort(), expectedReferencedPngs);
 });
 
@@ -109,7 +110,7 @@ test('private gaps stay separated into scoped and unscoped evidence without prio
   const unscoped = missing.filter(png => !(byPng.get(png).lineScopes || []).length);
   const quarantined = missing.filter(png => byPng.get(png).quarantined);
   assert.equal(scoped.length, 98);
-  assert.equal(unscoped.length, 121);
+  assert.equal(unscoped.length, 120);
   assert.equal(quarantined.length, 2);
   assert.equal(scoped.length + unscoped.length, missing.length);
   const carOrFormationLabels = missing.filter(png =>
