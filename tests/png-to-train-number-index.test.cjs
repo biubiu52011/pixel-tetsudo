@@ -45,7 +45,7 @@ test('catalog numeric bounds never claim every intervening service number',()=>{
    assert.ok(source,'missing original rule '+r.ruleId);
    const approvedPaths=[source.png,...Object.values(
      source.runtime_guards?.exactModelArtworkMap||{}).map(p=>
-       String(p).replace(/^(?:\\.\\.\\/|\\.\\/|\\/)+/,''))];
+       String(p).replace(/^(?:\.\.\/|\.\/|\/)+/,''))];
    assert.ok(approvedPaths.includes(asset.path),
      'index path is not part of the source rule model artwork map: '+asset.path);
    assert.equal(r.minNumber,source.min);
