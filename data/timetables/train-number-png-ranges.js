@@ -4836,6 +4836,16 @@
         var numberDirection=String(context&&
           (context.railDirection||context.directionUrn||context.direction)||"")
           .split(/[.:]/).pop();
+        // JR-East's live Saikyo/Kawagoe Train feed publishes
+        // Northbound (odd: e.g. 1263K) and Southbound (even: 1236K),
+        // not Inbound/Outbound. Normalize ONLY this proven provider/line
+        // at the PNG direction guard; preserve the raw ODPT direction,
+        // original public number and every other railway's conventions.
+        if(line==="SaikyoKawagoe" && context &&
+           context.sourceRailway==="odpt.Railway:JR-East.SaikyoKawagoe"){
+          if(numberDirection==="Northbound")numberDirection="Outbound";
+          else if(numberDirection==="Southbound")numberDirection="Inbound";
+        }
         if(row.sourceRailwaysIfPresent&&isRuntimePosition&&
            numberDirection!=="Inbound"&&numberDirection!=="Outbound")continue;
         if((numberDirection==="Inbound" && numberValue%2!==0)||
