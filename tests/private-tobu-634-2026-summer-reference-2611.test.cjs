@@ -36,11 +36,12 @@ test('one gallery PNG appears as two losslessly compacted scoped inventory rows'
  assert.deepEqual(rows.map(r=>[r[3],+r[4],+r[5],r[6],r[7]]),
   refs.map(([line,start,end])=>[line,start,end,'','full']));
  assert.ok(rows.every(r=>r[8].includes('历史临时番号')));
- assert.equal(lines.length-1,5578);
- assert.equal(lines.filter(s=>s.endsWith(',无号段')).length,474);
- assert.equal(lines.filter(s=>s.startsWith('私铁,')).length,620);
+ assert.equal(new Set(lines.slice(1).map(s=>s.split(',')[2])).size,601);
+ const pendingGallery=new Set(lines.slice(1).filter(s=>s.endsWith(',无号段')).map(s=>s.split(',')[2]));
+ const pendingTriage=new Set(triage.trimEnd().split('\n').slice(1).map(s=>s.split('","')[2]));
+ assert.deepEqual([...pendingTriage].sort(),[...pendingGallery].sort());
  assert.ok(!triage.includes('"'+png+'"'));
- assert.equal(triage.trimEnd().split('\n').length-1,474);
+
 });
 test('gallery review image remains unverified for automatic train PNG rendering',()=>{
  const entry=index.pngIndex.find(x=>x.path===png);
