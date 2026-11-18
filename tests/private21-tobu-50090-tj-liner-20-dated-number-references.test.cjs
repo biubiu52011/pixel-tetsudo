@@ -25,14 +25,16 @@ test('historical train number 50090 crosswalk cites two evidence classes',()=>{
  assert.match(sql,/requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE/);
  assert.match(sql,/source_url IS NULL/);
 });
-test('Tojo contains 20 distinct singleton rows (five up, fifteen down)',()=>{
+test('Tojo CSV losslessly compacts 20 source-backed singleton numbers into ten bands',()=>{
  const all=csv.trimEnd().split('\n').slice(1);
  assert.equal(new Set(all.map(s=>s.split(',')[2])).size,601);
  const rows=all.filter(s=>s.startsWith('私铁,東武鉄道,'+png+',')).map(s=>s.split(','));
- assert.equal(rows.length,20);
- assert.deepEqual(rows.map(r=>Number(r[4])),expected);
+ assert.equal(rows.length,10);
+ assert.deepEqual(rows.map(r=>[Number(r[4]),Number(r[5])]),[
+   [1,11],...Array.from({length:9},(_,i)=>[13+i*2,13+i*2])
+ ]);
  assert.ok(rows.every(r=>r.length===9 && r[3]==='Tojo'
-  && r[4]===r[5] && r[6]==='' && r[7]==='full'
+  && r[6]==='' && r[7]==='full'
   && r[8].includes('2024年') && r[8].includes('历史参考')));
  const sqlNumbers=[...sql.matchAll(
   /\('2611','Tojo','png_band\/Tojo\/(\d{4})-\d{4}',(\d+),(\d+),'',NULL/g
@@ -41,7 +43,9 @@ test('Tojo contains 20 distinct singleton rows (five up, fifteen down)',()=>{
  assert.deepEqual(sqlNumbers.map(x=>x.number),expected);
  assert.ok(sqlNumbers.every(r=>r.number===r.end
    && r.tag===String(r.number).padStart(4,'0')));
- const actual=new Set(rows.map(r=>Number(r[4])));
+ const actual=new Set(rows.flatMap(r=>Array.from(
+  {length:Number(r[5])-Number(r[4])+1},(_,i)=>Number(r[4])+i)));
+ assert.deepEqual([...actual].sort((a,b)=>a-b),expected);
  for(const unsupported of [12,14,16,18,20,22,24,26,28,30,50,51,54,70,72,74,76])
   assert.ok(!actual.has(unsupported),'unsafe inferred train '+unsupported);
  assert.ok(!triage.includes('"'+png+'"'));
