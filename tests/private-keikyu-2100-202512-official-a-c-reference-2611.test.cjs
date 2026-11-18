@@ -49,7 +49,7 @@ test('official operator sources anchor 322/323 rosters but do NOT verify a live 
  assert.match(sql,/valid through 2026-11-20/);
  assert.match(sql,/2026-11-21/);
  assert.match(sql,/2026-11-24/);
- assert.match(sql,/NOT a.*actually observed carset/);
+ assert.match(sql,/reference-only from the old 322\/323 diagram, NOT a\s*\n-- 2026-11-18 actually observed carset/);
  assert.match(sql,/vehicle_model IS NULL AND source_url IS NULL/);
  assert.match(sql,/requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE/);
  const inserted=[...sql.matchAll(/\('2611','Keikyu(?:Kurihama)?','png_band\/Keikyu[^']+',\d+,\d+,'[AC]',NULL,'\.\.\/images\/列车\/京浜急行電鉄\/京浜急行電鉄_2100形\.png',NULL,FALSE,FALSE\)/g)];
