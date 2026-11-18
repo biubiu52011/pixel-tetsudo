@@ -2123,6 +2123,7 @@ function lateVerifiedSourceSqlSeedBands(){
   ['20261118164000_jr51_hachinohe_tohoku_emotion_8421_8422_historical_refs.sql',1,'JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png','纯号段（2026年6月TOHOKU EMOTION 8421D/8422D历史参考；不是2026年11月当日车辆确认）'],
   ['20261118171000_jr52_sanyo_westexpress_ginga_8076_8079_official_reference.sql',2,'JR西日本/JR西日本_117系_WEST_EXPRESS銀河.png','纯号段（JR西日本2026年11月官方山阳银河8076M与8079M；PNG尚待外观验收，不代表当日实车）'],
   ['20261118173000_jr53_sanyo_hanaakari_9510_9511_dated_reference.sql',1,'JR西日本/JR西日本_キハ189系_はなあかり.png','纯号段（JR西日本2026年秋山阳本线はなあかり9510D・9511D；PNG仍需素材审计且不等于当日实车）'],
+  ['20261118180500_jr54_takasaki_shikishima_e001_8011m_historical_reference.sql',1,'JR東日本/JR東日本_E001形_TRAIN_SUITE四季島.png','纯号段（2026年9月5日・26日四季島8011M高崎线历史目击参考；并非运营方公布的正式号表，非当日编组）'],
   ['20261118085000_private12_seibu_laview_2026_official_chichibu_number_references.sql',8,'西武鉄道/西武鉄道_001系_Laview.png','纯号段（官方ちちぶ公开号数／实际车次及运行日待核）'],
   ['20261118092000_private13_seibu_shinjuku_nra_koedo_number_references.sql',5,'西武鉄道/西武鉄道_10000系_ニューレッドアロー.png','纯号段（2026小江户服务与2025列车番号交叉参考／运行日待核）']
  ];
@@ -2152,7 +2153,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==112)throw Error('Late sourced SQL bands must total 112 rows');
+ if(refs.length!==113)throw Error('Late sourced SQL bands must total 113 rows');
  return refs;
 }
 
