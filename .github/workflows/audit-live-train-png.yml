@@ -30,6 +30,8 @@ jobs:
           node --check tools/audit-edge-train-runs-runtime.cjs
           node tools/audit-train-number-png-runtime.cjs --strict > /tmp/train-png-offline.json
           node -e "const r=require('/tmp/train-png-offline.json');if(r.sampleRows!==174||r.returnVehicleRows!==88||r.safetyIssues.length)process.exit(1);console.log(JSON.stringify({sourceRows:r.sampleRows,svgPng:r.returnVehicleRows,neutral:r.returnNeutralRows}));"
+      - name: Observe TWR ODPT TrainTimetable number families (read-only)
+        run: node tools/audit-twr-odpt-train-timetable.cjs
       - name: Probe live Edge (read-only) through actual browser adapter and SVG selector
         run: |
           node tools/audit-edge-train-runs-runtime.cjs \
