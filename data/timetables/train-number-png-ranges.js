@@ -2168,6 +2168,32 @@
       model:"キハ110系（おいこっと）",
       pngPath:"../images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png"}
   ];
+
+  // Rinkai-only T-number reference: TWR-local services do not use K/F/S.
+  // Existing SQL-imported Rinkai manual: weekday 53 / holiday 54 distinct
+  // full train codes, 76 union. The original source_revision_date is NULL,
+  // so this is NOT a certified November daily or formation assignment.
+  // Both 70-000 and 71-000 share 81-91 workings; an independent consistent
+  // exact vehicle model is mandatory to choose ONE physical gallery PNG.
+  // Official model introduction: https://www.twr.co.jp/route/tabid/144/Default.aspx
+  // Historic 2026-03-14 working diagrams (not actual 2026-11 carsets):
+  // https://ameblo.jp/tc205-37/entry-12972142190.html
+  // https://ameblo.jp/tc205-37/entry-12972142687.html
+  rows.push({lineIds:["Rinkai"],from:80,to:91,suffixes:"T",
+    directionNumberParity:"inbound-even",
+    sourceRailways:["odpt.Railway:TWR.Rinkai"],
+    trainTypesIfPresent:["Local"],
+    validFrom:"2026-11-01",validTo:"2026-11-30",
+    weekdayNumbers:["1088T","1089T","1489T","1588T","1589T","1638T","1640T","1688T","1689T","1690T","1691T","1788T","1789T","1790T","1791T","1880T","1881T","1890T","1891T","1980T","1981T","1983T","2082T","2189T","2191T","2283T","2381T","2387T","2480T","2486T","580T","581T","582T","583T","584T","585T","636T","680T","681T","682T","684T","685T","686T","687T","688T","689T","738T","780T","781T","784T","788T","789T","991T"],
+    holidayNumbers:["1088T","1089T","1091T","1188T","1189T","1289T","1388T","1389T","1488T","1489T","1588T","1589T","1688T","1689T","1788T","1789T","1888T","1889T","1988T","1989T","2080T","2081T","2088T","2089T","2180T","2181T","2188T","2189T","2280T","2281T","2288T","2289T","2381T","2387T","2480T","2486T","580T","581T","582T","583T","584T","585T","636T","680T","681T","682T","684T","685T","686T","687T","688T","784T","990T","991T"],
+    allowedModelLabels:["東京臨海高速鉄道70-000形","東京臨海高速鉄道71-000形"],
+    exactModelArtworkMap:{
+      "東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png",
+      "東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"
+    },
+    model:"東京臨海高速鉄道70-000形",
+    pngPath:"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png"
+  });
   rows.forEach(function(row){
     Object.freeze(row.lineIds);
     if(row.sourceRailwaysIfPresent)Object.freeze(row.sourceRailwaysIfPresent);
@@ -4717,7 +4743,7 @@
     // interpretation: 1940K -> 40 on Saikyo, 1940K -> 1940 on Yokohama.
     // Determine the interpretation FROM THE LINE RULE, not from the suffix.
     // This is never a train number -> operation number conversion.
-    var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFS])$/);
+    var regular=number.match(/^[0-9]{1,2}([0-9]{2})([KFST])$/);
     // Include G for Yamanote's full public 3/4-digit G train numbers.
     // Line-scoped matching below prevents G from leaking to other routes.
     var numbered=number.match(/^([0-9]{1,4})([ABCDEKFMSTHYG])$/);
