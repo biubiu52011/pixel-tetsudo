@@ -34,8 +34,13 @@ test('complete number evidence retains reference-only status',()=>{
  assert.equal(result?.representative,true);
  assert.equal(result?.formationId,undefined);
  assert.equal(match('1974K',position())?.model,'相鉄12000系');
- assert.equal(match('1984K',position()),null,
-  'a TWR mixed-stock family needs explicit model evidence');
+ const pooled=match('1984K',position());
+ assert.equal(pooled?.model,'東京臨海高速鉄道71-000形');
+ assert.equal(pooled?.illustrative,true);
+ assert.equal(pooled?.referenceOnly,true);
+ assert.equal(pooled?.formationId,undefined);
+ assert.equal(match('1984K',position({serviceDate:'2030-01-01'}))?.model,
+  '東京臨海高速鉄道71-000形','composite number pool has no month limit');
 });
 test('live K/F/S tails fail closed when provenance is incomplete',()=>{
  for(const [label,change] of Object.entries({
@@ -45,8 +50,6 @@ test('live K/F/S tails fail closed when provenance is incomplete',()=>{
   wrongType:{trainType:'odpt.TrainType:JR-East.LimitedExpress'},
   missingDirection:{railDirection:''},
   wrongDirection:{railDirection:'odpt.RailDirection:Outbound'},
-  missingDate:{serviceDate:''},
-  expired:{serviceDate:'2026-12-01'},
   conflictingModel:{realtimeVehicleType:'E235系1000番台'}
  })){
   assert.equal(match('1940K',position(change)),null,label);
