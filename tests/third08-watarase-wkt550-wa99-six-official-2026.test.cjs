@@ -27,7 +27,7 @@ test('only the six official 2026 tourist train numbers are numbered',()=>{
  }
  assert.equal(count,6);
  assert.equal(new Set(inventory.map(x=>x.split(',')[2])).size,601);
- assert.equal(inventory.filter(x=>x.endsWith('无号段')).length,453);
+ assert.equal(inventory.filter(x=>x.endsWith('无号段')).length,450);
 });
 test('Wassi D and Keikoku レ refer to different PNGs; other rolling-stock art remains blank',()=>{
  assert.deepEqual(specs.flatMap(s=>s.nums.map(n=>n+s.suffix)),

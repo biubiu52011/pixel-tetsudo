@@ -2109,6 +2109,9 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql',1,'JR東日本/JR東日本_E501系.png','纯号段（2026-10-11照片记录E501系K702担当562M；仅号码历史参考，不能推定其他日期车辆）'],
+  ['20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql',1,'JR東日本/JR東日本_E655系_なごみ_和.png','纯号段（2026-11-01照片记录E655系なごみ担当9022M；仅编号历史参考，不能推定其他日期车辆）'],
+  ['20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql',1,'JR東日本/JR東日本_キハE200系（小海線）.png','纯号段（2026-09-05乘车记录キハE200-1担当136D；仅历史参考，不能推定其他日期车辆）'],
   ['20261119030000_jr59_yamaguchi_sl_c57_8521_8522_reference.sql',1,'JR西日本/JR西日本_C57形_SLやまぐち.png','纯号段（SLやまぐち8521–8522官方参考；D51／DD51可能共用番号，C57仅review，不判定实车）'],
   ['20261118080000_jr49_shinetsu_shirayuki_e653_51_58_reference_2611.sql',1,'JR東日本/JR東日本_E653系.png','纯号段（官方番号参考/日期及实车守卫保留）'],
   ['20261118081000_jr50_tokaido_fujikawa_373_4001_4014_reference_2611.sql',1,'JR東海/JR東海_373系.png','纯号段（特急ふじかわ/原运行条件保留）'],
@@ -2149,7 +2152,7 @@ function lateVerifiedSourceSqlSeedBands(){
  for(const [file,expected,partialPng,defaultStatus] of specs){
   const sql=read('supabase/migrations/'+file);
   const png='images/列车/'+partialPng;
-  const hits=[...sql.matchAll(re)];
+  const hits=[...sql.matchAll(re)].filter(m=>m[6]===png);
   if(hits.length!==expected)
    throw Error('Changed SQL source band count in '+file+': '+hits.length+' vs '+expected);
   for(const m of hits){
@@ -2167,7 +2170,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==137)throw Error('Late sourced SQL bands must total 137 rows');
+ if(refs.length!==140)throw Error('Late sourced SQL bands must total 140 rows');
  return refs;
 }
 
