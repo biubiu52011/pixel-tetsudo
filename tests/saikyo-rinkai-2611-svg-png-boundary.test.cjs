@@ -208,3 +208,40 @@ test('Rinkai T number display defaults preserve both existing illustrations',()=
     railDirection:'odpt.RailDirection:Inbound',serviceDate:'2026-12-01'
   }),'Rinkai').kind,'unresolved','old edition must not leak forward');
 });
+
+test('dated TWR 70-000/71-000 observations accept full K/F/S/T numbers and both parity halves',()=>{
+ const p=root.TRAIN_OPERATION_EVIDENCE_PROVIDERS.find(x=>
+  x.id==='loo-ool-saikyo-dated-formations');
+ assert.ok(p,'existing dated Saikyo/Rinkai roster provider');
+ const expected=[
+  ['580T','81','Z2',model70],['581T','81','Z2',model70],
+  ['682S','83','Z7',model70],['683S','83','Z7',model70],
+  ['1084F','85','Z12',model71],['1085F','85','Z12',model71],
+  ['1984K','85','Z12',model71],['1985K','85','Z12',model71],
+  ['1888T','89','Z11',model71],['1889T','89','Z11',model71],
+  ['990T','91','Z3',model70],['991T','91','Z3',model70]
+ ];
+ for(const date of ['2026-04-03','2026-04-04']){
+  const ctx={lineId:'Rinkai',operator:'TWR',
+   railway:'odpt.Railway:TWR.Rinkai',serviceDate:date};
+  for(const [number,operation,formation,model] of expected){
+   const e=root.TrainOperationEvidence.resolveEvidence(number,ctx,'fallback');
+   assert.ok(e,date+' '+number);
+   assert.equal(e.vehicleType,model,date+' '+number);
+   assert.equal(e.operationCode,operation,date+' '+number);
+   assert.equal(e.formationId,formation,date+' '+number);
+   assert.equal(e.observedDate,date);
+   assert.equal(e.grade,'C','dated observation, not a permanent carset rule');
+  }
+ }
+ for(const number of ['636T','1985M','1080T','1977M','1985X']){
+  assert.equal(p.resolveEvidence(number,{
+   lineId:'Rinkai',serviceDate:'2026-04-03'}),null,
+   'no unrelated/unverified full train number: '+number);
+ }
+ for(const date of ['2026-04-02','2026-04-05','2026-11-18']){
+  assert.equal(p.resolveEvidence('1985K',{
+   lineId:'Rinkai',serviceDate:date}),null,
+   'the April carset must not leak into another operating date');
+ }
+});
