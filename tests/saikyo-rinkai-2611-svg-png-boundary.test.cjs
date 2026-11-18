@@ -155,3 +155,56 @@ test('arbitrary cross-line reuse, absent type/direction and unsupported formatio
  assert.equal(mark(saikyo('1984K'),'SaikyoKawagoe').unresolvedReason,
   'rinkai-70-000-71-000-model-unverified');
 });
+
+test('short TWR 70-000/71-000 labels select correct PNG end-to-end',()=>{
+  for(const [number,shortLabel,fullLabel,png] of [
+    ['683S','70-000形',model70,twr70],
+    ['1984K','71-000形',model71,twr71],
+    ['584T','71-000形',model71,twr71],
+    ['1088T','70-000形',model70,twr70]
+  ]){
+    const direction=/[02468][KFST]$/.test(number)?'Inbound':'Outbound';
+    const base=rinkai(number,{
+      realtimeVehicleType:shortLabel,
+      railDirection:'odpt.RailDirection:'+direction
+    });
+    assert.equal(root.TrainNumberPngRanges.match(number,'Rinkai',base)?.model,
+      fullLabel,'short model must resolve canonically: '+number);
+    const spec=mark(base,'Rinkai');
+    assert.equal(spec.kind,'vehicle',number);
+    assert.equal(spec.iconSrc,png,number);
+    assert.equal(spec.planned,true,number);
+    const consistent=mark({...base,realtimeDerivedVehicleType:fullLabel},'Rinkai');
+    assert.equal(consistent.iconSrc,png,'short/full names are same model');
+    const conflicting=mark({...base,realtimeDerivedVehicleType:
+      fullLabel===model70?model71:model70},'Rinkai');
+    assert.equal(conflicting.kind,'unresolved',
+      'different models must not select an arbitrary PNG');
+    assert.equal(mark({...base,sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'},
+      'Rinkai').kind,'unresolved','TWR source scope is mandatory');
+  }
+});
+
+test('Rinkai T number display defaults preserve both existing illustrations',()=>{
+  for(const [number,png,direction] of [
+    ['584T',twr70,'Inbound'],['1088T',twr71,'Inbound'],
+    ['583T',twr70,'Outbound'],['1689T',twr71,'Outbound']
+  ]){
+    const p=rinkai(number,{
+      realtimeVehicleType:'',railDirection:'odpt.RailDirection:'+direction
+    });
+    const spec=mark(p,'Rinkai');
+    assert.equal(spec.kind,'vehicle',number);
+    assert.equal(spec.iconSrc,png,number);
+    assert.equal(spec.planned,true,number);
+    assert.equal(spec.illustrative,true,number);
+    assert.equal(p.vehicleIdentityStatus,'UNKNOWN',number);
+  }
+  const missing=rinkai('1080T',{railDirection:'odpt.RailDirection:Inbound'});
+  assert.equal(mark(missing,'Rinkai').kind,'unresolved');
+  assert.equal(root.TrainVehicle.diagnoseSaikyoRinkaiArtwork(
+    missing,'Rinkai'),'rinkai-t-number-calendar-type-or-model-unresolved');
+  assert.equal(mark(rinkai('1088T',{
+    railDirection:'odpt.RailDirection:Inbound',serviceDate:'2026-12-01'
+  }),'Rinkai').kind,'unresolved','old edition must not leak forward');
+});
