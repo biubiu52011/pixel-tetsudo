@@ -45,7 +45,9 @@ function tally(rows, index) {
   return result;
 }
 
-// JR51: one existing available/R3 PNG (TOHOKU EMOTION) now has one documented\n// historical pure reference band, so all missing totals decrease by one.\ntest('triage covers exactly every unmapped gallery PNG, with no invented band', () => {
+// JR51: one existing available/R3 PNG (TOHOKU EMOTION) now has one documented
+// historical pure reference band, so all missing totals decrease by one.
+test('triage covers exactly every unmapped gallery PNG, with no invented band', () => {
   assert.equal(inventory[0].length, 9);
   assert.equal(triage[0].length, 13);
   assert.ok(inventoryRows.every(row => row.length === 9));
