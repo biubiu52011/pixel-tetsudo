@@ -16,7 +16,7 @@ const url=links.find(u=>/^https:\/\/api-challenge\.odpt\.org\/api\/v4\/odpt:Trai
 async function sample(target,label){
  if(!target){console.log('[Saikyo probe]',label,'URL unavailable');return;}
  try{
-  const response=await fetch(target,{signal:AbortSignal.timeout(18000)});
+  const response=await fetch(target,{signal:AbortSignal.timeout(18000),\n    headers:{Origin:'https://biubiu52011.github.io'}});
   if(!response.ok){
    console.log('[Saikyo probe]',label,'HTTP',response.status);
    return;
