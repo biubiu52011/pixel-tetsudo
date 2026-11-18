@@ -35,11 +35,13 @@ test('TWR Rinkai internal T suffix is separately documented for weekday/holiday,
  assert.deepEqual(t.line_ids,['Rinkai']);
  assert.equal(t.suffix,'T');
  assert.equal(t.format,'tail');
- assert.equal(t.min,80);
+ assert.equal(t.min,36);
  assert.equal(t.max,91);
  assert.equal(t.weekday_numbers.length,53);
  assert.equal(t.holiday_numbers.length,54);
  assert.equal(new Set([...t.weekday_numbers,...t.holiday_numbers]).size,76);
+ for(const no of ['636T','738T','1638T','1640T'])
+  assert.ok(t.weekday_numbers.includes(no),'historical weekday T whitelist missing '+no);
  assert.equal(t.runtime_guards.directionNumberParity,undefined);
  assert.equal(t.direction_number_parity,'inbound-even');
  assert.deepEqual(t.source_railways,['odpt.Railway:TWR.Rinkai']);
@@ -55,7 +57,7 @@ test('TWR Rinkai internal T suffix is separately documented for weekday/holiday,
   assert.ok(asset.directNumberRules.some(x=>x.ruleId==='js-0132'));
   assert.ok(asset.directNumberRules.some(x=>x.ruleId==='js-0058'));
   assert.ok(asset.directNumberRules.every(x=>x.actualVehicleConfirmed===false));
-  assert.ok(csv.includes(png+',Rinkai,0080,0091,T,tail,'));
+  assert.ok(csv.includes(png+',Rinkai,0036,0091,T,tail,'));
  }
  assert.equal(index.summary.galleryPng,601);
  assert.equal(index.summary.catalogRules,423);
@@ -64,6 +66,12 @@ test('TWR Rinkai internal T suffix is separately documented for weekday/holiday,
 test('70-000 and 71-000 T services select one PNG only with independent, consistent model evidence',()=>{
  const pairs=[
   ['1088T',model71,png71,{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  // These four full train numbers exist in the historical source calendar;
+  // model here is an independent simulated observation, NOT a 2611 carset claim.
+  ['636T',model70,png70,{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['738T',model71,png71,{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['1638T',model71,png71,{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['1640T',model70,png70,{calendarType:'weekday',serviceDate:'2026-11-18'}],
   ['1091T',model70,png70,{calendarType:'holiday',serviceDate:'2026-11-15'}],
   ['580T',model70,png70,{calendarType:'weekday',serviceDate:'2026-11-18'}]
  ];
@@ -86,7 +94,7 @@ test('70-000 and 71-000 T services select one PNG only with independent, consist
 
 test('T train-number whitelist does not fill gaps or allow 70/71 by operation ID',()=>{
  const good=base('1088T',model71);
- for(const number of ['1080T','1082T','888T','89T']){
+ for(const number of ['1080T','1082T','888T','89T','637T','739T','1639T','1641T','936T']){
   assert.equal(root.TrainNumberPngRanges.match(number,'Rinkai',{...good,trainNumber:number}),null,
    'unsupported TWR T sample must not become a 70/71 mapping: '+number);
  }

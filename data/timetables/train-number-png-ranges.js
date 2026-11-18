@@ -2179,7 +2179,11 @@
   // Historic 2026-03-14 working diagrams (not actual 2026-11 carsets):
   // https://ameblo.jp/tc205-37/entry-12972142190.html
   // https://ameblo.jp/tc205-37/entry-12972142687.html
-  rows.push({lineIds:["Rinkai"],from:80,to:91,suffixes:"T",
+  // The imported TWR source has exactly four listed T trains with 36/38/40
+  // tails (636T, 738T, 1638T, 1640T). The explicit weekday/holiday
+  // full-number whitelist below is the authority: 36-91 is only its guard,
+  // NOT proof that unlisted trains run or that a 70-000/71-000 carset is known.
+  rows.push({lineIds:["Rinkai"],from:36,to:91,suffixes:"T",
     directionNumberParity:"inbound-even",
     sourceRailways:["odpt.Railway:TWR.Rinkai"],
     trainTypesIfPresent:["Local"],
