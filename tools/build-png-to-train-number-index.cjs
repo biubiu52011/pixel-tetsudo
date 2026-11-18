@@ -78,10 +78,21 @@ function buildIndex(input) {
     if(!record){unknownPaths.push({path:normalizedPath,ruleId});return null;}
     return record;
   };
-  // 422 SQL/JS rules from the EXISTING shared verified source catalog.
+  // 423 SQL/JS rules from the EXISTING shared verified source catalog.
   // Preserve explicit-number rosters and numeric bounds as distinct fields.
   for(const rule of catalog.rules){
-    const asset=get(rule.png,rule.id);if(!asset)continue;
+    // Also project every explicit exact-model PNG choice into the READ-ONLY
+    // evidence index. This is not permission to render either model from a
+    // shared operating-number family; the runtime still requires corroboration.
+    const variants=[{path:rule.png,model:rule.model||''}];
+    for(const [model,path] of Object.entries(rule.runtime_guards?.exactModelArtworkMap||{})){
+      const normalizedPath=normalized(path);
+      if(!variants.some(v=>v.path===normalizedPath))
+        variants.push({path:normalizedPath,model});
+    }
+    const targets=variants.map(v=>({asset:get(v.path,rule.id),model:v.model}))
+      .filter(v=>!!v.asset);
+    if(!targets.length)continue;
     const explicit={};
     for(const key of ['published_numbers','weekday_numbers',
       'holiday_numbers','official_month_numbers']){
@@ -95,9 +106,9 @@ function buildIndex(input) {
       (rule.official_month_numbers&&Object.keys(rule.official_month_numbers).length));
     const grade=hasRoster?'explicit_number_roster' :
       exact?'single_number_bounds' : 'guarded_number_bounds_only';
-    asset.directNumberRules.push({
+    for(const {asset,model} of targets)asset.directNumberRules.push({
       ruleId:rule.id,authority:rule.origin,grade,
-      lineIds:rule.line_ids||[],model:rule.model||'',
+      lineIds:rule.line_ids||[],model,
       numberFormat:rule.format||'full',
       minNumber:rule.min,maxNumber:rule.max,suffix:rule.suffix||'',
       exactSingleNumber:exact,
@@ -306,7 +317,7 @@ function buildIndex(input) {
       ++any;asset.status='historical_source_number_only_not_current_verified';
     }else{++none;asset.status='no_verified_number_mapping';}
   }
-  if(catalog.rules.length!==422||datedSource.rows.length!==200)
+  if(catalog.rules.length!==423||datedSource.rows.length!==200)
     throw Error('Source evidence counts changed; refresh and reassess');
   // Quarantined paths may still have suspicious legacy rules; keep them
   // visible for remediation but never declare them authorized for display.
