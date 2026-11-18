@@ -3439,13 +3439,18 @@ test('Saikyo-Rinkai 2611 public K/F/S parity and edition boundaries are guarded'
     ...(model.includes('70-000')?{realtimeVehicleType:model}:{})};
   const good=root.TrainNumberPngRanges.match(num,line,base);
   assert.ok(good,num+': in-edition inbound even reference');
-  for(const bad of [
+  // E233 and Sotetsu 2026-11 service-family references are month-gated.
+  // A separately observed 70/71 model label may illustrate a K/F/S
+  // full number across months, but not identify the physical formation.
+  const rejected=[
     {railDirection:'odpt.RailDirection:Outbound'},
-    {serviceDate:'2026-10-31'},
-    {serviceDate:'2026-12-01'},
     {serviceDate:''}
-  ])assert.equal(root.TrainNumberPngRanges.match(num,line,{...base,...bad}),null,
-    num+': rejects '+JSON.stringify(bad));
+  ];
+  if(!model.includes('70-000'))rejected.push(
+    {serviceDate:'2026-10-31'},{serviceDate:'2026-12-01'});
+  for(const bad of rejected)
+    assert.equal(root.TrainNumberPngRanges.match(num,line,{...base,...bad}),null,
+      num+': rejects '+JSON.stringify(bad));
  }
  assert.equal(root.TrainNumberPngRanges.match('1941K','SaikyoKawagoe',{
   serviceDate:'2026-11-16',
