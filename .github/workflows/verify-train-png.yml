@@ -122,6 +122,8 @@ jobs:
         run: node --test tests/jr56-bantan-kiha189-hamakaze-1d-2d-official-reference.test.cjs
       - name: Verify Private23 Chichibu C58 363 historical 5001-5002 without competing carriage art
         run: node --test tests/private23-chichibu-c58-paleo-5001-5002-historical-reference.test.cjs
+      - name: Verify Third07 Hitachinaka KiHa11 136D and KiHa100 238D exact eyewitness date references
+        run: node --test tests/third07-hitachinaka-kiha11-136d-kiha100-238d-historical.test.cjs
       - name: Verify Third06 Moka C12 6001-6002 and Isumi 350 5D historical-only source keys
         run: node --test tests/third06-moka-c12-isumi350-historical-number-refs.test.cjs
       - name: Verify Private25 Keio 2000 2701F debut-only 6707/4708 exact historical references
