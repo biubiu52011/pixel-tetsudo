@@ -120,7 +120,7 @@ test('front-end PNG range metadata retains every source-specific guard and quali
  const owner=getRows();
  const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
  assert.equal(c.summary.frontend_rules_with_additional_source_fields,127);
- assert.equal(c.summary.frontend_additional_source_keys,22);
+ assert.equal(c.summary.frontend_additional_source_keys,23);
  assert.equal(owner.length,132);
  owner.forEach((row,i)=>{
   const rule=c.rules.find(r=>r.id==='js-'+String(i+1).padStart(4,'0'));
