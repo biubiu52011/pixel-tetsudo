@@ -2153,7 +2153,10 @@ JR,JR西日本,images/列车/JR西日本/JR西日本_271系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_273系.png,SaninMain,1001,1030,M,full,纯号段（JR官方番号；资产review不可选图）
 JR,JR西日本,images/列车/JR西日本/JR西日本_273系.png,SanyoMain,1001,1030,M,full,纯号段（JR官方番号；资产review不可选图）
 JR,JR西日本,images/列车/JR西日本/JR西日本_281系.png,,,,,,无号段
-JR,JR西日本,images/列车/JR西日本/JR西日本_283系.png,,,,,,无号段
+JR,JR西日本,images/列车/JR西日本/JR西日本_283系.png,Hanwa,2052,2052,M,full,纯号段（2026年11月JR西日本官方283系オーシャンアロー：2052M・2085M・6055M；按阪和／纪势途经线路入库，PNG仍review，非当日实车）
+JR,JR西日本,images/列车/JR西日本/JR西日本_283系.png,Hanwa,2085,2085,M,full,纯号段（2026年11月JR西日本官方283系オーシャンアロー：2052M・2085M・6055M；按阪和／纪势途经线路入库，PNG仍review，非当日实车）
+JR,JR西日本,images/列车/JR西日本/JR西日本_283系.png,Hanwa,6055,6055,M,full,纯号段（2026年11月JR西日本官方283系オーシャンアロー：2052M・2085M・6055M；按阪和／纪势途经线路入库，PNG仍review，非当日实车）
+JR,JR西日本,images/列车/JR西日本/JR西日本_283系.png,KiseiWest,6055,6055,M,full,纯号段（2026年11月JR西日本官方283系オーシャンアロー：2052M・2085M・6055M；按阪和／纪势途经线路入库，PNG仍review，非当日实车）
 JR,JR西日本,images/列车/JR西日本/JR西日本_283系_K.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_285系_サンライズエクスプレス.png,TokaidoMain,5031,5032,M,full,纯号段（JR专用原始条件保留）
 JR,JR西日本,images/列车/JR西日本/JR西日本_287系.png,,,,,,无号段
