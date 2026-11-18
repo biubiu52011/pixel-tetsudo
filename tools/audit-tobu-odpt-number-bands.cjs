@@ -1,0 +1,138 @@
+'use strict';
+/**
+ * Tobu 2026 Challenge ODPT timetable -> existing gallery-reference envelope AUDIT.
+ * Uses the pre-existing protected Edge ODPT proxy, never API credentials in Git.
+ * Read-only: NEVER creates train-to-vehicle mappings or claims an actual carset.
+ * node tools/audit-tobu-odpt-number-bands.cjs --output /tmp/tobu-audit.json --summary /tmp/summary.md
+ */
+const fs=require('node:fs');
+const ORIGIN='https://biubiu52011.github.io';
+const PROXY='https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/odpt-proxy';
+const TIMETABLE='https://ckan.odpt.org/dataset/tobu__r_train_timetable';
+const CSV='data/audits/png-first-number-band-inventory-20261117.csv';
+const SCOPES=[
+ 'TobuSkytree','Isesaki','Nikko','Kinugawa','Tojo','Ogose','Noda',
+ 'Utsunomiya','Koizumi','Sano','Kiryu','Kameido','Daishi'
+];
+// This index is for comparison only. Never turn "in envelope" into actual train stock.
+const WATCH=[
+ {model:'50050',png:'東武鉄道_50050型.png',line:'Hanzomon'},
+ {model:'20400',png:'東武鉄道_20400型.png',line:'TobuUtsunomiya'},
+ {model:'10030-50',png:'東武鉄道_10030型_50番台_更新車.png',line:'Koizumi'}
+];
+const tail=s=>String(s||'').split(':').pop();
+function parseNumber(value){
+ const str=String(value??'').trim().toUpperCase();
+ const match=/^(\d{1,6})([A-Z]{0,2})$/.exec(str);
+ return match?{code:str,number:Number(match[1]),suffix:match[2]}:null;
+}
+function getEnvelopes(csvText){
+ const lines=csvText.trimEnd().split(/\r?\n/).slice(1),out=[];
+ for(const line of lines){
+  // The first eight columns contain no quoted commas in the 3 tracked PNGs.
+  for(const watch of WATCH){
+   if(!line.startsWith('私铁,東武鉄道,')||!line.includes('/'+watch.png+','))continue;
+   const x=line.split(',');
+   if(x.length!==9||!x[3]||!/^\d+$/.test(x[4])||!/^\d+$/.test(x[5]))
+    throw Error('Malformed monitored PNG band: '+watch.model);
+   if(x[3]!==watch.line)throw Error('Unexpected line scope for '+watch.model);
+   const a=Number(x[4]),b=Number(x[5]);if(b<a)throw Error('Reversed range');
+   out.push({...watch,min:a,max:b,suffix:x[6],format:x[7]});
+  }
+ }
+ if(out.length!==WATCH.length)throw Error('Expected exactly 3 existing Tobu wide PNG references; got '+out.length);
+ return out;
+}
+function inspect(records,sourceInfo={},envelopes=getEnvelopes(fs.readFileSync(CSV,'utf8'))){
+ if(!Array.isArray(records))throw TypeError('Expected an ODPT timetable array');
+ const unique=new Set(),lines=new Map(),all=new Map(),issues={noNumber:0,badNumber:0,missingRailway:0},stamps=new Set();
+ for(const r of records){
+  if(!r||typeof r!=='object')continue;
+  const raw=r['odpt:trainNumber'];if(raw==null||String(raw).trim()===''){issues.noNumber++;continue;}
+  const num=parseNumber(raw);if(!num){issues.badNumber++;continue;}
+  const railway=tail(r['odpt:railway']),calendar=tail(r['odpt:calendar']);
+  const dir=tail(r['odpt:railDirection']),type=tail(r['odpt:trainType']);
+  if(!railway)issues.missingRailway++;
+  for(const stamp of [r['dc:date'],r['dct:issued']])if(stamp)stamps.add(String(stamp).slice(0,10));
+  const key=[railway,calendar,dir,type,num.code].join('|');if(unique.has(key))continue;unique.add(key);
+  const group=[railway,calendar,dir,type].join('|');
+  const bag=lines.get(group)||new Set();bag.add(num.code);lines.set(group,bag);
+  const where=all.get(num.code)||new Set();where.add([railway,calendar,dir].join('|'));all.set(num.code,where);
+ }
+ const summaries=[...lines].sort((a,b)=>a[0].localeCompare(b[0])).map(([scope,codes])=>{
+  const suffixCounts={};for(const c of codes){const n=parseNumber(c);suffixCounts[n.suffix||'(none)']=(suffixCounts[n.suffix||'(none)']||0)+1;}
+  return {scope,count:codes.size,suffixCounts,firstExamples:[...codes].sort((a,b)=>parseNumber(a).number-parseNumber(b).number).slice(0,5)};
+ });
+ const matches=envelopes.map(e=>{
+  const matched=[...all.keys()].filter(x=>{const n=parseNumber(x);return n.suffix===e.suffix&&n.number>=e.min&&n.number<=e.max;})
+   .sort((a,b)=>parseNumber(a).number-parseNumber(b).number||a.localeCompare(b));
+  const railways=[...new Set(matched.flatMap(x=>[...all.get(x)].map(s=>s.split('|')[0])))].sort();
+  // No automatic inference from a service's number or railway to its artwork.
+  return {model:e.model,png:e.png,referenceLine:e.line,referenceEnvelope:`${e.min}-${e.max}${e.suffix}`,
+   matchedPublishedCodes:matched.length,codeExamples:matched.slice(0,24),observedRailways:railways,
+   verifiedTrainToPng:0,modelFieldCrosswalkVerified:false,sourceComplete:!!sourceInfo.complete};
+ });
+ return {status:records.length?'observed':'empty',source:TIMETABLE,route:'existing-protected-ODPT-proxy',
+  challengeLimitedLicense:true,ingestedRecords:records.length,uniqueTimetableRows:unique.size,
+  uniqueNumbers:all.size,observedStamps:[...stamps].sort(),groups:summaries,watched:matches,
+  failures:sourceInfo.failures||[],complete:!!sourceInfo.complete,issues,
+  trainToPngAuthorized:0,qualification:'Number-presence only. Calendar, route, actual formation, livery and physical PNG identity remain unverified.'};
+}
+function summary(data){
+ let s='# Tobu ODPT TrainTimetable: read-only number/reference comparison\n\n';
+ s+='Source: '+TIMETABLE+' (Challenge 2026 limited license; no credentials or full timetable stored).\n\n';
+ s+='Status: **'+data.status+'**; input rows: '+(data.ingestedRecords||0)+
+  '; unique numbers: '+(data.uniqueNumbers||0)+'; coverage: **'+(data.complete?'complete':'partial/unconfirmed')+'**.\n\n';
+ s+='The following counts are **observed number-only candidates**, not PNG mappings.\n\n';
+ s+='| Existing PNG | Wide reference envelope | Observed distinct matching codes | ODPT railway values | Confirmed vehicle IDs |\n|---|---|---:|---|---:|\n';
+ for(const x of data.watched||[])s+='| '+x.model+' | '+x.referenceEnvelope+' | '+x.matchedPublishedCodes+
+  ' | '+(x.observedRailways.join(', ')||'none')+' | 0 |\n';
+ s+='\nGroups (railway / calendar / direction / trainType):\n\n';
+ for(const g of data.groups||[])s+='- '+g.scope+': '+g.count+' unique; suffixes '+JSON.stringify(g.suffixCounts)+'\n';
+ if(data.failures?.length)s+='\nUnretrieved scopes: '+JSON.stringify(data.failures)+'\n';
+ s+='\n**Do not** shrink a range, publish a new mapping, or infer any specific PNG solely from these counts. Incomplete query coverage cannot prove absence of a train number.\n';
+ return s;
+}
+async function fetchScoped(fetcher=globalThis.fetch){
+ const failures=[];let records=[];let complete=false;
+ const make=async(params)=>{
+  const url=new URL(PROXY);for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);
+  const response=await fetcher(url.toString(),{headers:{Origin:ORIGIN,Accept:'application/json'},
+   signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw Error('HTTP '+response.status);
+  const body=await response.json();
+  const data=Array.isArray(body)?body:Array.isArray(body?.data)?body.data:null;
+  if(!data)throw Error('Non-array timetable response');
+  return data;
+ };
+ try{
+  records=await make({operator:'Tobu',type:'trainTimetable'});complete=true;
+ }catch(e){
+  failures.push({scope:'all',reason:String(e?.message||'unknown').slice(0,75)});
+  for(const scope of SCOPES){
+   const railway='odpt.Railway:Tobu.'+scope;
+   try{records.push(...await make({operator:'Tobu',type:'trainTimetable',railway}));}
+   catch(e){failures.push({scope,reason:String(e?.message||'unknown').slice(0,55)});}
+  }
+ }
+ return {records,complete,failures};
+}
+async function main(argv=process.argv.slice(2)){
+ const flag=f=>{const v=argv.find(x=>x.startsWith(f+'='));return v?v.slice(f.length+1):null;};
+ let data;
+ try{
+  const input=flag('--file')?{records:JSON.parse(fs.readFileSync(flag('--file'),'utf8')),
+     complete:true,failures:[]}:await fetchScoped();
+  data=inspect(input.records,input);
+ }catch(e){
+  data={status:'source-unavailable',complete:false,ingestedRecords:0,uniqueNumbers:0,
+   watched:[],groups:[],failures:[{scope:'audit',reason:String(e?.message||'unavailable').slice(0,100)}],
+   trainToPngAuthorized:0};
+ }
+ const out=flag('--output');if(out)fs.writeFileSync(out,JSON.stringify(data,null,2)+'\n');
+ const text=summary(data);const md=flag('--summary');if(md)fs.appendFileSync(md,text);
+ console.log(text);
+ return data;
+}
+if(require.main===module)main().catch(e=>{console.error('Tobu audit error',e?.message);process.exitCode=1;});
+module.exports={ORIGIN,PROXY,TIMETABLE,SCOPES,WATCH,parseNumber,getEnvelopes,inspect,summary,fetchScoped,main};
