@@ -2120,7 +2120,7 @@ function lateVerifiedSourceSqlSeedBands(){
   ['20261118152000_private20_odakyu_mse_official_20260314_7_exact_numbers.sql',5,'小田急電鉄/小田急電鉄_60000形_MSE.png','纯号段（小田急2026年3月14日官方MSE参考；素材仍review且非当日实车）'],
   ['20261118082500_private11_odakyu_gse_2611_exact_november_number_bands.sql',26,'小田急電鉄/小田急電鉄_70000形_GSE.png','纯号段（官方2026年11月GSE参考／日期条件另核）'],
   ['20261118155500_private21_tobu_tojo_50090_tjliner_20_dated_reference_numbers.sql',20,'東武鉄道/東武鉄道_50090型.png','纯号段（2024年50090运用+东武2025年TJ时刻表历史参考；非当日实车）'],
-  ['20261118164000_jr51_hachinohe_tohoku_emotion_8421_8422_historical_refs.sql',2,'JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png','纯号段（2026年6月TOHOKU EMOTION 8421D/8422D历史参考；不是2026年11月当日车辆确认）'],
+  ['20261118164000_jr51_hachinohe_tohoku_emotion_8421_8422_historical_refs.sql',1,'JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png','纯号段（2026年6月TOHOKU EMOTION 8421D/8422D历史参考；不是2026年11月当日车辆确认）'],
   ['20261118085000_private12_seibu_laview_2026_official_chichibu_number_references.sql',8,'西武鉄道/西武鉄道_001系_Laview.png','纯号段（官方ちちぶ公开号数／实际车次及运行日待核）'],
   ['20261118092000_private13_seibu_shinjuku_nra_koedo_number_references.sql',5,'西武鉄道/西武鉄道_10000系_ニューレッドアロー.png','纯号段（2026小江户服务与2025列车番号交叉参考／运行日待核）']
  ];
@@ -2150,7 +2150,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==110)throw Error('Late sourced SQL bands must total 110 rows');
+ if(refs.length!==109)throw Error('Late sourced SQL bands must total 109 rows');
  return refs;
 }
 
