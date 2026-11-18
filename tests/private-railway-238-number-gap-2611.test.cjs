@@ -64,8 +64,8 @@ const expectedReferencedPngs = [
   'images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png',
 ].sort();
 
-test('private railway category fixes the 246-PNG inventory and 225 unresolved gaps', () => {
-  assert.equal(rows.length, 600, 'review duplicate range rows when the inventory changes');
+test('private railway category fixes the 246-PNG inventory and 224 unresolved gaps', () => {
+  assert.equal(rows.length, 619, 'review duplicate range rows when the inventory changes');
   assert.equal(rowsByPng.size, 246);
   const counts = {};
   const missing = [];
@@ -91,7 +91,7 @@ test('private railway category fixes the 246-PNG inventory and 225 unresolved ga
     }
   }
   assert.deepEqual(counts, expectedOperators);
-  assert.equal(missing.length, 225);
+  assert.equal(missing.length, 224);
   assert.deepEqual(referenced.sort(), expectedReferencedPngs);
 });
 
@@ -102,7 +102,7 @@ test('private gaps stay separated into scoped and unscoped evidence without prio
   const scoped = missing.filter(png => (byPng.get(png).lineScopes || []).length);
   const unscoped = missing.filter(png => !(byPng.get(png).lineScopes || []).length);
   const quarantined = missing.filter(png => byPng.get(png).quarantined);
-  assert.equal(scoped.length, 103);
+  assert.equal(scoped.length, 102);
   assert.equal(unscoped.length, 122);
   assert.equal(quarantined.length, 2);
   assert.equal(scoped.length + unscoped.length, missing.length);
