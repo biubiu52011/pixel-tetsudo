@@ -54,7 +54,7 @@ test('unverified daily service and vehicle identities never unlock automatic 500
 
 test('single gallery and unresolved triage stay synchronized',()=>{
  const rowsAll=csv.trimEnd().split('\n').slice(1);
- assert.equal(rowsAll.length,5549);
+ assert.equal(rowsAll.length,5551);
  assert.equal(new Set(rowsAll.map(row=>row.split(',')[2])).size,601);
  assert.equal(rowsAll.filter(row=>row.endsWith(',无号段')).length,477);
  assert.equal(triage.trimEnd().split('\n').length-1,477);
