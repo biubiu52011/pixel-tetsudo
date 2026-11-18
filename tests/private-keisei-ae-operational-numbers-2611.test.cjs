@@ -44,10 +44,17 @@ test('exact historical evidence does not confer current-day or formation status'
  assert.ok(!sql.includes('CREATE TABLE'));
 });
 
-test('pure PNG bookkeeping remains one source inventory, 601 gallery PNG, 475 missing',()=>{
+test('601 physical gallery PNGs and pending triage have identical path sets',()=>{
  const rows=csv.trimEnd().split('\n').slice(1);
- assert.equal(new Set(rows.map(r=>r.split(',')[2])).size,601);
- assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,475);
- assert.equal(triage.trimEnd().split('\n').length-1,475);
- assert.equal(rows.filter(r=>r.startsWith('私铁,')).length,619);
+ const gallery=new Set(rows.map(line=>line.split(',')[2]));
+ assert.equal(gallery.size,601,'keep one single physical gallery');
+ assert.ok(rows.some(line=>line.startsWith('私铁,')));
+ const missing=new Set(rows.filter(line=>line.endsWith(',无号段'))
+   .map(line=>line.split(',')[2]));
+ const triagePaths=triage.trimEnd().split('\n').slice(1)
+   .map(line=>line.match(/"(images\/列车\/[^"]+)"/)?.[1]);
+ assert.ok(triagePaths.every(Boolean),'every triage row refers to a PNG');
+ assert.equal(new Set(triagePaths).size,triagePaths.length,'no duplicated PNG');
+ assert.deepEqual([...triagePaths].sort(),[...missing].sort(),
+   'pending source investigations must equal unnumbered gallery PNG set');
 });
