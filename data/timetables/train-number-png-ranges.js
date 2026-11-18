@@ -2175,8 +2175,8 @@
   // so this is NOT a certified November daily or formation assignment.
   // Both 70-000 and 71-000 share 81-91 workings; an independent consistent
   // exact vehicle model is mandatory to identify a physical gallery PNG.
-  // Display preference only: four-numeric-digit T trains without vehicle
-  // evidence use 71-000 illustrative art; three-digit T trains are unchanged.
+  // Display preference only: official three-digit T numbers without carset
+  // evidence show 70-000 art; four-digit T numbers show 71-000 art.
   // Official model introduction: https://www.twr.co.jp/route/tabid/144/Default.aspx
   // Historic 2026-03-14 working diagrams (not actual 2026-11 carsets):
   // https://ameblo.jp/tc205-37/entry-12972142190.html
@@ -5194,7 +5194,7 @@
       // model. For mixed-fleet groups, require explicit noncontradictory
       // source-model evidence before selecting an approved single PNG.
       var selectedModel=row.model,selectedPng=row.pngPath;
-      var rinkaiFourDigitTDisplayDefault=false;
+      var rinkaiTDisplayDefault="";
       if(row.exactModelArtworkMap){
         if(!context)continue;
         var modelObservations=[context.realtimeVehicleType,
@@ -5215,11 +5215,16 @@
           return m!==modelObservations[0];
         }))continue;
         if(!modelObservations.length && line==="Rinkai" &&
-           row.suffixes==="T" && /^[0-9]{4}T$/.test(number)){
-          // User-selected display fallback; this is not an observed carset.
-          selectedModel="東京臨海高速鉄道71-000形";
+           row.suffixes==="T" && /^[0-9]{3,4}T$/.test(number)){
+          // User-selected illustrative art; never assert a physical carset.
+          var threeDigitT=/^[0-9]{3}T$/.test(number);
+          selectedModel=threeDigitT
+            ?"東京臨海高速鉄道70-000形"
+            :"東京臨海高速鉄道71-000形";
           selectedPng=row.exactModelArtworkMap[selectedModel];
-          rinkaiFourDigitTDisplayDefault=true;
+          rinkaiTDisplayDefault=threeDigitT
+            ?"rinkai-three-digit-t-display-default"
+            :"rinkai-four-digit-t-display-default";
         }else{
           if(!modelObservations.length)continue;
           selectedModel=modelObservations[0];
@@ -5232,8 +5237,8 @@
       var pngMatch={trainNumber:number,lineId:line,model:selectedModel,
         pngPath:selectedPng,source:"train-number-range",
         planned:true,representative:true};
-      if(rinkaiFourDigitTDisplayDefault){
-        pngMatch.source="rinkai-four-digit-t-display-default";
+      if(rinkaiTDisplayDefault){
+        pngMatch.source=rinkaiTDisplayDefault;
         pngMatch.illustrative=true;
         pngMatch.displayDefault=true;
       }

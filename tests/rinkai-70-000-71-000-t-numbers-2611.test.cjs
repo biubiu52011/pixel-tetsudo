@@ -1,8 +1,8 @@
 'use strict';
 // Rinkai 70-000 / 71-000 coexist in the same 81-91 operating family.
 // An exact source train number is NOT the physical stock model.
-// Four-digit T numbers may show illustrative 71-000 art without observations;
-// a physical carset claim still requires independent model evidence.
+// Three-digit T numbers may show illustrative 70-000 art and four-digit
+// T numbers 71-000 art; physical carsets still need independent evidence.
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -83,14 +83,15 @@ test('70-000 and 71-000 T services select one PNG only with independent, consist
   assert.equal(evidence.pngPath,'../'+png);
   assert.equal(evidence.planned,true,'no actual carset asserted');
   const noModel=match(number,'',calendar);
-  if(/^[0-9]{4}T$/.test(number)){
-   assert.equal(noModel?.model,model71,'four-digit T defaults to representative 71-000');
-   assert.equal(noModel?.pngPath,'../'+png71);
-   assert.equal(noModel?.source,'rinkai-four-digit-t-display-default');
-   assert.equal(noModel?.illustrative,true,'default must not claim an actual formation');
-  }else{
-   assert.equal(noModel,null,'three-digit T without model stays unresolved');
-  }
+  const threeDigit=/^[0-9]{3}T$/.test(number);
+  const defaultModel=threeDigit?model70:model71;
+  const defaultPng=threeDigit?png70:png71;
+  assert.equal(noModel?.model,defaultModel,'T number length chooses representative artwork');
+  assert.equal(noModel?.pngPath,'../'+defaultPng);
+  assert.equal(noModel?.source,threeDigit
+   ?'rinkai-three-digit-t-display-default'
+   :'rinkai-four-digit-t-display-default');
+  assert.equal(noModel?.illustrative,true,'default must not claim an actual formation');
   const other=model===model70?model71:model70;
   assert.equal(match(number,model,{...calendar,realtimeDerivedVehicleType:other}),null,
    'conflicting model evidence fails closed');
@@ -101,16 +102,23 @@ test('70-000 and 71-000 T services select one PNG only with independent, consist
  }
 });
 
-test('Rinkai four-digit T illustration defaults to 71-000 only without independent model evidence',()=>{
+test('Rinkai T illustration defaults by three/four numeric digits only without independent model evidence',()=>{
  for(const [number,calendar] of [
   ['1689T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
   ['1088T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
-  ['2480T',{calendarType:'holiday',serviceDate:'2026-11-15'}]
+  ['2480T',{calendarType:'holiday',serviceDate:'2026-11-15'}],
+  ['580T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['584T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['991T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['990T',{calendarType:'holiday',serviceDate:'2026-11-15'}]
  ]){
   const shown=match(number,'',calendar);
-  assert.equal(shown?.model,model71);
-  assert.equal(shown?.pngPath,'../'+png71);
-  assert.equal(shown?.source,'rinkai-four-digit-t-display-default');
+  const threeDigit=/^[0-9]{3}T$/.test(number);
+  assert.equal(shown?.model,threeDigit?model70:model71);
+  assert.equal(shown?.pngPath,'../'+(threeDigit?png70:png71));
+  assert.equal(shown?.source,threeDigit
+   ?'rinkai-three-digit-t-display-default'
+   :'rinkai-four-digit-t-display-default');
   assert.equal(shown?.illustrative,true);
   assert.equal(shown?.displayDefault,true);
   assert.equal(shown?.planned,true);
@@ -123,8 +131,13 @@ test('Rinkai four-digit T illustration defaults to 71-000 only without independe
  assert.equal(match('1689T',model71)?.pngPath,'../'+png71);
  assert.equal(match('1689T',model70,{realtimeDerivedVehicleType:model71}),null,
   'conflicting model sources remain unresolved');
- assert.equal(match('584T',''),null,'three-digit T is unchanged');
- assert.equal(match('991T',''),null,'three-digit T remains unresolved');
+ assert.equal(match('584T','')?.model,model70,'three-digit T defaults to representative 70-000');
+ assert.equal(match('991T','')?.model,model70,'three-digit T defaults to representative 70-000');
+ assert.equal(match('584T',model71)?.pngPath,'../'+png71,
+  'explicit 71-000 model evidence overrides three-digit display preference');
+ assert.equal(match('584T',model70)?.pngPath,'../'+png70);
+ assert.equal(match('584T',model71,{realtimeDerivedVehicleType:model70}),null,
+  'conflicting model evidence overrides neither default');
  assert.equal(match('1080T',''),null,'unlisted four-digit T must not be fabricated');
  assert.equal(match('1640T','',{calendarType:'holiday',serviceDate:'2026-11-15'}),
   null,'weekday-only T does not leak into holiday');
@@ -196,18 +209,22 @@ test('Official ODPT 2026-03-16 public number snapshot covers T and K/F/S without
     sourceRailway:group.railway,trainType:group.trainType,
     railDirection:group.railDirection,calendarType:calendar,
     serviceDate:calendar==='weekday'?'2026-11-18':'2026-11-15'};
-   // This ODPT endpoint provides neither the 70-000/71-000 type nor a
-   // physical formation. A T or 80–91 K/F/S train must remain neutral.
+   // ODPT gives no actual carset: T digits select illustrative artwork only.
+   // K/F/S tails 80-91 still require independently supplied model evidence.
    if(suffix==='T'||tail>=80)ambiguous++;
-   if(suffix==='T'&&/^[0-9]{4}T$/.test(number)){
+   if(suffix==='T'&&/^[0-9]{3,4}T$/.test(number)){
     const fallback=root.TrainNumberPngRanges.match(number,'Rinkai',sample);
-    assert.equal(fallback?.model,model71,
-     'four-digit T source number permits user-selected illustrative art: '+number);
+    const threeDigit=/^[0-9]{3}T$/.test(number);
+    assert.equal(fallback?.model,threeDigit?model70:model71,
+     'T source number permits user-selected illustrative art: '+number);
+    assert.equal(fallback?.source,threeDigit
+     ?'rinkai-three-digit-t-display-default'
+     :'rinkai-four-digit-t-display-default');
     assert.equal(fallback?.illustrative,true);
     assert.equal(fallback?.displayDefault,true);
    }else if(suffix==='T'||tail>=80){
     assert.equal(root.TrainNumberPngRanges.match(number,'Rinkai',sample),null,
-     'T three-digit or K/F/S 80-91 needs source model evidence: '+number);
+     'unlisted T or K/F/S 80-91 needs source model evidence: '+number);
    }else{
     const matched=root.TrainNumberPngRanges.match(number,'Rinkai',sample);
     assert.equal(matched?.model,'E233系7000番台',
