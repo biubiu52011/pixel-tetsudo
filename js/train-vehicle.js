@@ -7109,7 +7109,7 @@ registerEvidenceProvider({id:"denentoshi-dated-formations",grade:"C",resolveEvid
   // source may be resolved here. Never turn arbitrary *80T into group 81.
   var observedFullNumbers=Object.freeze({
     "580T":"81","581T":"81",
-    "682S":"83","683S":"83",
+    "682S":"83","683S":"83","1983K":"83",
     "1084F":"85","1085F":"85",
     "1984K":"85","1985K":"85",
     "1888T":"89","1889T":"89",

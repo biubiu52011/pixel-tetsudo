@@ -1064,7 +1064,8 @@
     // A real source-model observation must select exactly one approved PNG.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:80,to:91,suffixes:"KFS",
       directionNumberParity:"inbound-even",
-      validFrom:"2026-11-01",validTo:"2026-11-30",
+      // Cross-month PNG is allowed only with a separate verified model.
+      // No operation-number conversion or physical carset assertion.
       sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
       trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
       // An independently supplied exact model remains mapped to its OWN
@@ -5217,6 +5218,11 @@
       var rinkaiTDisplayDefault="";
       if(row.exactModelArtworkMap){
         if(!context)continue;
+        // Source-independent 70/71 model illustration may span months,
+        // but requires a dated input plus one nonconflicting model label.
+        if(row.suffixes==="KFS" && row.from===80 && row.to===91 &&
+           !/^\d{4}-\d{2}-\d{2}$/.test(String(context.serviceDate||"")))
+          continue;
         var modelObservations=[context.realtimeVehicleType,
           context.realtimeDerivedVehicleType].map(function(m){
             return canonicalRinkaiMixedModelLabel(m,row);
