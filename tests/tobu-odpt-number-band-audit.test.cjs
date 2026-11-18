@@ -57,3 +57,30 @@ test('existing live proxy is used; no client-exposed challenge credential',()=>{
  assert.ok(!audit.PROXY.includes('api-challenge.odpt.org'));
  assert.equal(audit.ORIGIN,'https://biubiu52011.github.io');
 });
+
+test('unconfigured Challenge secret fails closed before requesting any train numbers',async()=>{
+ let calls=0;
+ const fake=async(url)=>{
+  calls++;assert.match(url,/\?health=1$/);
+  return {ok:true,json:async()=>({ok:true,challengeConfigured:false,credentialValuesExposed:false})};
+ };
+ const observation=await audit.fetchScoped(fake);
+ assert.equal(calls,1);
+ assert.equal(observation.records.length,0);
+ assert.equal(observation.complete,false);
+ assert.match(observation.failures[0].reason,/not configured/);
+});
+test('configured health permits only existing proxy calls, not a consumer key query',async()=>{
+ let calls=0;
+ const fake=async(url)=>{
+  calls++;assert.ok(!url.includes('consumerKey'));
+  if(url.includes('?health=1'))return {ok:true,json:async()=>({challengeConfigured:true})};
+  assert.ok(url.includes('operator=Tobu'));
+  return {ok:true,json:async()=>[train('0452T','Isesaki')]};
+ };
+ const observation=await audit.fetchScoped(fake);
+ assert.equal(calls,2);
+ assert.equal(observation.records.length,1);
+ assert.equal(observation.complete,true);
+ assert.equal(observation.failures.length,0);
+});
