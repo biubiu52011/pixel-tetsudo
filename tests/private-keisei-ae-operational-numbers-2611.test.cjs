@@ -18,8 +18,9 @@ test('Keisei AE references exactly the full native 9AE06 and 10AE04 codes',()=>{
  assert.equal(records.length,2);
  assert.ok(records.every(r=>r.length===9&&r[3]==='NaritaSkyAccess'
      &&r[4]===r[5]&&r[7]==='full'));
- assert.deepEqual(records.map(r=>String(Number(r[4]))+r[6]),['9AE06','10AE04']);
- assert.deepEqual(records.map(r=>r[6]),['AE06','AE04']);
+ assert.deepEqual(records.map(r=>String(Number(r[4]))+r[6]).sort(),
+  ['9AE06','10AE04'].sort(),'compare exact codes regardless of CSV display order');
+ assert.deepEqual(records.map(r=>r[6]).sort(),['AE06','AE04'].sort());
  assert.ok(records.every(r=>r[8].includes('当期日期守卫保留')));
  assert.ok(!triage.includes('"'+png+'"'));
  assert.match(sql,/train_number IN \('9AE06','10AE04'\)/);
