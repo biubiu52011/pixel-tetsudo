@@ -1066,7 +1066,14 @@
       directionNumberParity:"inbound-even",
       sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
       trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
-      validFrom:"2026-11-01",validTo:"2026-11-30",
+      // An independently supplied exact model remains mapped to its OWN
+      // gallery PNG across timetable months; no static dated train roster is
+      // carried forward. Model-less 80-91 K/F/S remains unresolved.
+      // 70-000/71-000 coexist (2026-03-14 shared 81-91 workings);
+      // 70-000 Z7 retired in 2026-10/11, proving daily Z-assignments
+      // cannot be reused without their observed date.
+      // https://www.twr.co.jp/route/tabid/144/Default.aspx
+      // https://4gousya.net/pu_e/5991.php
       allowedModelLabels:["東京臨海高速鉄道70-000形","東京臨海高速鉄道71-000形"],
       exactModelArtworkMap:{"東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png","東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"},
       model:"東京臨海高速鉄道70-000形",
