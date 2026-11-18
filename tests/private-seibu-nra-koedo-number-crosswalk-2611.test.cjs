@@ -47,10 +47,10 @@ test('NRA review status, original scope and canonical 2025 source preflight rema
  assert.ok(sql.includes('NULL,FALSE,FALSE)'));
 });
 
-test('full gallery remains 601 and 477 PNGs have no source number references',()=>{
+test('full gallery remains 601 and 476 PNGs have no source number references',()=>{
  const rows=csv.trimEnd().split('\n').slice(1);
  assert.equal(new Set(rows.map(r=>r.split(',')[2])).size,601);
- assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,477);
- assert.equal(triage.trimEnd().split('\n').length-1,477);
+ assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,476);
+ assert.equal(triage.trimEnd().split('\n').length-1,476);
  assert.equal(rows.filter(r=>r.startsWith('私铁,')).length,600);
 });
