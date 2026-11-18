@@ -63,11 +63,18 @@ test('new data-only source key is not JR Kashima or runtime stock authorization'
   'historical source-only SQL does not silently grant runtime vehicle authority');
 });
 
-test('gallery and evidence triage contain 601 PNG with 474 remaining missing',()=>{
- assert.equal(records.length,5578);
+test('gallery has 601 assets and triage exactly tracks current unmapped PNG paths',()=>{
+ // Other railway mappings add CSV rows over time. Assert the same physical
+ // PNG set, not a frozen historical global row/triage count.
  assert.equal(new Set(records.map(x=>x.split(',')[2])).size,601);
- assert.equal(records.filter(x=>x.endsWith(',无号段')).length,474);
- assert.equal(triage.trimEnd().split('\n').length-1,475);
+ const unmapped=new Set(records.filter(x=>x.endsWith(',无号段'))
+   .map(x=>x.split(',')[2]));
+ const triagePaths=triage.trimEnd().split('\n').slice(1)
+   .map(row=>row.match(/"(images\/列车\/[^"]+)"/)?.[1]);
+ assert.ok(triagePaths.every(Boolean),'triage CSV has one PNG path per row');
+ assert.equal(new Set(triagePaths).size,triagePaths.length,'duplicate triage PNG');
+ assert.deepEqual([...triagePaths].sort(),[...unmapped].sort(),
+   'triage must contain exactly unmapped gallery images');
  assert.ok(!triage.includes('"'+png+'"'));
  for(const color of ['鹿島臨海鉄道_6000形_新塗装.png','鹿島臨海鉄道_6000形_標準色.png']){
   assert.ok(triage.includes(color),'unproven livery stays unmapped');
