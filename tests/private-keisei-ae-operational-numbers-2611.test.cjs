@@ -36,7 +36,7 @@ test('exact historical evidence does not confer current-day or formation status'
  assert.equal(asset.directNumberRules.length,0);
  assert.match(sql,/asset_scope='generic'/);
  assert.match(sql,/is_generic=TRUE/);
- assert.match(sql,/DO NOT/);
+ assert.match(sql,/Never unconditionally display from these/);
  assert.match(sql,/timetable revision/);
  assert.match(sql,/date, line and/);
  assert.match(sql,/vehicle_model IS NULL AND source_url IS NULL/);
