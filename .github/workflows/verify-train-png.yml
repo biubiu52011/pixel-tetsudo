@@ -120,6 +120,8 @@ jobs:
         run: node --test tests/jr55-sanin-kiha187-superoki-3001-3002-official-number-reference.test.cjs
       - name: Verify JR56 KiHa189 Hamakaze exact official 1D-2D Bantan numbers, still review-only
         run: node --test tests/jr56-bantan-kiha189-hamakaze-1d-2d-official-reference.test.cjs
+      - name: Verify Private23 Chichibu C58 363 historical 5001-5002 without competing carriage art
+        run: node --test tests/private23-chichibu-c58-paleo-5001-5002-historical-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
