@@ -112,6 +112,8 @@ jobs:
         run: node --test tests/jr51-tohoku-emotion-8421-8422-historical-number-reference.test.cjs
       - name: Verify JR52 WEST EXPRESS Ginga two official Sanyo train numbers and review-only image
         run: node --test tests/jr52-westexpress-ginga-sanyo-8076-8079-official-reference.test.cjs
+      - name: Verify JR53 Hanaakari exact 9510D-9511D numbers and keep PNG review-only
+        run: node --test tests/jr53-hanaakari-2026-autumn-9510-9511-sanyo-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
