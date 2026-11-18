@@ -45,7 +45,7 @@ test('JR50 promotes exactly one numbered gallery CSV row without a second truth 
    '373 already has a sourced reference and cannot remain in no-number triage');
  // All unnumbered PNGs must have exactly one pending source-investigation row.
  assert.equal(rows.filter(row=>row.endsWith(',无号段')).length,
-   triage.trimEnd().split('\\n').length-1);
+   triage.trimEnd().split('\n').length-1);
  assert.ok(sql.includes('INSERT INTO public.published_train_png_number_ranges'));
  assert.ok(!sql.includes('CREATE TABLE'));
 });
