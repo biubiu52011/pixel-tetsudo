@@ -34,17 +34,16 @@ INSERT INTO public.published_train_png_number_ranges
  (edition,line_key,segment_key,min_number,max_number,suffix,
   vehicle_model,png_reference,source_url,requires_exact_roster,actual_vehicle_confirmed)
 VALUES
- ('2611','Hachinohe','png_band/Hachinohe/8421-8421D',8421,8421,'D',NULL,'../images/列车/JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png',NULL,FALSE,FALSE),
- ('2611','Hachinohe','png_band/Hachinohe/8422-8422D',8422,8422,'D',NULL,'../images/列车/JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png',NULL,FALSE,FALSE);
+ ('2611','Hachinohe','png_band/Hachinohe/8421-8422D',8421,8422,'D',NULL,'../images/列车/JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png',NULL,FALSE,FALSE);
 DO $verify$
 BEGIN
  IF (SELECT count(*) FROM public.published_train_png_number_ranges
    WHERE edition='2611' AND line_key='Hachinohe' AND suffix='D'
      AND png_reference='../images/列车/JR東日本/JR東日本_キハ110系_TOHOKU_EMOTION.png'
-     AND segment_key IN ('png_band/Hachinohe/8421-8421D','png_band/Hachinohe/8422-8422D')
-     AND min_number=max_number
+     AND segment_key='png_band/Hachinohe/8421-8422D'
+     AND min_number=8421 AND max_number=8422
      AND vehicle_model IS NULL AND source_url IS NULL
-     AND requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE)<>2
+     AND requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE)<>1
  THEN RAISE EXCEPTION 'JR51: historical reference verification failed'; END IF;
 END;
 $verify$;
