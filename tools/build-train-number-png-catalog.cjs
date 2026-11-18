@@ -2114,6 +2114,7 @@ function lateVerifiedSourceSqlSeedBands(){
   ['20261118122000_third05_oarai_kashima_8000_official_normal_service_refs.sql',8,'鹿島臨海鉄道/鹿島臨海鉄道_8000形.png','纯号段（官网常用8000形；可能临时改用6000形，不等于实车确认）'],
   ['20261118101000_private14_keisei_ae_9ae06_10ae04_exact_train_number_references.sql',2,'京成電鉄/京成電鉄_AE形.png',''],
   ['20261118125500_private17_keikyu_2100_10_exact_A_C_numbers_two_corridors.sql',20,'京浜急行電鉄/京浜急行電鉄_2100形.png','纯号段（京急官方322・323行路；实际运转日期和编组待核）'],
+  ['20261118232000_private25_keio_2000_2701_6707_4708_debut_historical.sql',2,'京王電鉄/京王電鉄_2000系.png','纯号段（2026年1月31日京王2000系2701F首日6707/4708历史参考；京王官方时刻＋当日实拍；非2026年11月固定运用）'],
   ['20261118112500_private16_keio_5000_7732_7736_number_references.sql',2,'京王電鉄/京王電鉄_5000系.png','纯号段（历史完整番号参考；当期日期及实车待核）'],
   ['20261118104000_private15_izukyu_resort21_ito_official_2611_number_refs.sql',5,'伊豆急行/伊豆急行_2100系.png','纯号段（伊豆急官方2026年11月A・B行路／8000系代行日须排除）'],
   ['20261118140000_private19_izukyu_aloha_3000_exact_timetable_references.sql',5,'伊豆急行/伊豆急行_3000系.png','纯号段（伊豆急2026年3月14日时刻表・アロハ电车；素材仍review、实际车辆未确认）'],
@@ -2159,7 +2160,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==124)throw Error('Late sourced SQL bands must total 124 rows');
+ if(refs.length!==126)throw Error('Late sourced SQL bands must total 126 rows');
  return refs;
 }
 
