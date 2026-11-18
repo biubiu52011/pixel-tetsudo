@@ -7100,10 +7100,21 @@ registerEvidenceProvider({id:"denentoshi-dated-formations",grade:"C",resolveEvid
       [ctx.lineId,ctx.operator,ctx.railway,ctx.destinationStation].join("|"));
   }
   function code(n){
-    var raw=String(n||"").toUpperCase();
-    var m=raw.match(/(?:^|[^0-9])(\d{2})(?:K|M)?$/);
-    if(m)return m[1];
-    return "";
+    var raw=String(n||"").trim().toUpperCase();
+    // This observed roster stores the ODD operating group (81, 83, ...).
+    // A full public train number has 3/4 numeric digits and K/F/S/T;
+    // the inbound EVEN number is the same working as the next odd tail
+    // (e.g. 1984K -> 85, 580T -> 81). Never interpret the full train's
+    // final two characters as a standalone source operation code.
+    // Observations are restricted below to their exact 2026-04-03/04 dates:
+    // the 70-000 / 71-000 dispatch changes and is NOT a 2611 assignment.
+    if(/^\d{2}(?:[KM])?$/.test(raw))
+      return raw.slice(0,2);
+    var match=raw.match(/^\d{1,2}(\d{2})[KFST]$/);
+    if(!match)return "";
+    var tail=Number(match[1]);
+    if(tail<80||tail>91)return "";
+    return String(tail%2===0?tail+1:tail).padStart(2,"0");
   }
   function resolveEvidence(trainNumber,ctx){
     ctx=ctx||{}; var date=String(ctx.serviceDate||"").slice(0,10);
