@@ -2174,29 +2174,20 @@
       pngPath:"../images/列车/JR東日本/JR東日本_キハ110系_おいこっと.png"}
   ];
 
-  // TWR local T numbers: 80-91 share the undated number band;
-  // only 636T/738T/1638T/1640T use the separate low-tail fallback.
-  // These are gallery illustrations, not confirmations of today's Z set.
-  rows.push(
-    {lineIds:["Rinkai"],from:36,to:40,suffixes:"T",
-      directionNumberParity:"inbound-even",
-      sourceRailways:["odpt.Railway:TWR.Rinkai"],
-      trainTypesIfPresent:["Local"],
-      publishedNumbers:["636T","738T","1638T","1640T"],
-      allowedModelLabels:Object.keys(twrCompositeArtworkMap),
-      exactModelArtworkMap:twrCompositeArtworkMap,
-      model:"東京臨海高速鉄道70-000形",
-      pngPath:"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png"},
-    {lineIds:["Rinkai"],from:80,to:91,suffixes:"T",
-      directionNumberParity:"inbound-even",
-      sourceRailways:["odpt.Railway:TWR.Rinkai"],
-      trainTypesIfPresent:["Local"],
-      allowedModelLabels:Object.keys(twrCompositeArtworkMap),
-      exactModelArtworkMap:twrCompositeArtworkMap,
-      pooledOperationModels:twrCompositeWorkingModels,
-      model:"東京臨海高速鉄道70-000形",
-      pngPath:"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png"}
-  );
+  // TWR local T comprehensive pool, no date/month/day/calendar gate.
+  // Audited low-tail public-number exceptions are exact; the 80-91
+  // operation family is a reusable number band, never today's Z formation.
+  rows.push({lineIds:["Rinkai"],from:36,to:91,suffixes:"T",
+    directionNumberParity:"inbound-even",
+    sourceRailways:["odpt.Railway:TWR.Rinkai"],
+    trainTypesIfPresent:["Local"],
+    lowTailPublishedNumbers:["636T","738T","1638T","1640T"],
+    allowedModelLabels:Object.keys(twrCompositeArtworkMap),
+    exactModelArtworkMap:twrCompositeArtworkMap,
+    pooledOperationModels:twrCompositeWorkingModels,
+    model:"東京臨海高速鉄道70-000形",
+    pngPath:"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png"
+  });
   rows.forEach(function(row){
     Object.freeze(row.lineIds);
     if(row.sourceRailwaysIfPresent)Object.freeze(row.sourceRailwaysIfPresent);
@@ -4843,6 +4834,10 @@
       }else continue;
       if(numberValue<row.from||numberValue>row.to||
           row.suffixes.indexOf(suffix)<0)continue;
+      // TWR 36/38/40 are exceptional published full-number services;
+      // only 80-91 is a complete reusable operation-number family.
+      if(row.lowTailPublishedNumbers && numberValue<80 &&
+         row.lowTailPublishedNumbers.indexOf(number)<0)continue;
       // JR East 2611 Nambu F and Tsurumi B public numbers:
       // even numbers run upstream (上り), odd downstream (下り).
       // Only check directions supplied by realtime or the timetable.
@@ -5229,7 +5224,7 @@
            String(context.sourceRailway||"") !== (line==="Rinkai"
              ? "odpt.Railway:TWR.Rinkai"
              : "odpt.Railway:JR-East.SaikyoKawagoe"))continue;
-        if(!modelObservations.length && row.pooledOperationModels){
+        if(!modelObservations.length && row.pooledOperationModels && numberValue>=80){
           var workingTail=numberValue%2===0?numberValue+1:numberValue;
           selectedModel=row.pooledOperationModels[String(workingTail)]||"";
           selectedPng=row.exactModelArtworkMap[selectedModel];
