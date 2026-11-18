@@ -35,7 +35,10 @@ test('one source-scoped Odawara PNG has 5 bands for exactly 7 published services
  const matches=rows.filter(s=>s.startsWith('私铁,小田急電鉄,'+png+','));
  assert.equal(matches.length,5);
  const f=matches.map(s=>s.split(','));
- assert.deepEqual(f.map(r=>[r[4],r[5],r[6]]),expected);
+ // The canonical inventory groups by line and suffix before numeric order.
+ // Compare the precise source tuple set, not incidental display ordering.
+ const byStart=(a,b)=>Number(a[0])-Number(b[0])||a[2].localeCompare(b[2]);
+ assert.deepEqual(f.map(r=>[r[4],r[5],r[6]]).sort(byStart),expected.slice().sort(byStart));
  assert.ok(f.every(r=>r.length===9 && r[3]==='Odawara' && r[7]==='full'));
  assert.ok(f.every(r=>r[8].includes('review') && r[8].includes('官方')));
  const actual=new Set(f.flatMap(r=>Array.from(
