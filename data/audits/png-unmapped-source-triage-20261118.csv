@@ -11,7 +11,6 @@
 "JR","JR東日本","images/列车/JR東日本/JR東日本_701系_仙台地区.png","available","native_png","theme","否","","","R3_子型号/涂装需证据","先核实车型/涂装对应编组，再取该编组运行日的实际番号","https://timetables.jreast.co.jp/",""
 "JR","JR東日本","images/列车/JR東日本/JR東日本_701系_盛岡地区.png","available","native_png","theme","否","","","R3_子型号/涂装需证据","先核实车型/涂装对应编组，再取该编组运行日的实际番号","https://timetables.jreast.co.jp/",""
 "JR","JR東日本","images/列车/JR東日本/JR東日本_719系_5000番台.png","review","","review","否","","","R0_先验PNG文件与实车状态","验证PNG字节、车型/涂装、运营年代；不得因文件名推定车辆","https://timetables.jreast.co.jp/",""
-"JR","JR東日本","images/列车/JR東日本/JR東日本_E001形_TRAIN_SUITE四季島.png","available","native_png","theme","否","","","R3_子型号/涂装需证据","先核实车型/涂装对应编组，再取该编组运行日的实际番号","https://timetables.jreast.co.jp/",""
 "JR","JR東日本","images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.png","available","native_png","theme","否","","","R3_子型号/涂装需证据","先核实车型/涂装对应编组，再取该编组运行日的实际番号","https://timetables.jreast.co.jp/",""
 "JR","JR東日本","images/列车/JR東日本/JR東日本_E127系_100番台_長野色_幌付.png","review","","review","否","","","R0_先验PNG文件与实车状态","验证PNG字节、车型/涂装、运营年代；不得因文件名推定车辆","https://timetables.jreast.co.jp/",""
 "JR","JR東日本","images/列车/JR東日本/JR東日本_E131系_長野地区.png","available","native_png","subseries","否","","","R3_子型号/涂装需证据","先核实车型/涂装对应编组，再取该编组运行日的实际番号","https://timetables.jreast.co.jp/",""
