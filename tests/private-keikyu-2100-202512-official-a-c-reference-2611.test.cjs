@@ -22,7 +22,8 @@ test('10 unique official complete train numbers on each of two traversed Keikyu 
  for(const line of lineKeys){
   const scoped=rows.filter(r=>r[3]===line);
   assert.equal(scoped.length,10);
-  assert.deepEqual(scoped.map(r=>Number(r[4])+r[6]),codes);
+  assert.deepEqual(scoped.map(r=>Number(r[4])+r[6]).sort(),codes.slice().sort(),
+   'compare exact service-number membership without CSV display-order dependence');
   for(const row of scoped){
    assert.equal(row.length,9);
    assert.equal(row[4],row[5],'exact source number only');
