@@ -62,6 +62,42 @@ test('native Saikyo train numbers 510S / 759K / 1974K draw the scoped planned PN
  assert.equal(mark(sql,'SaikyoKawagoe').iconSrc,e233);
 });
 
+test('actual JR-East ODPT Saikyo feed uses Northbound/Southbound, not Inbound/Outbound',()=>{
+ // Real field shapes observed from JR-East odpt:Train on 2026-11-18:
+ // 1263K/1233F head north; 1236K/1264F head south.
+ // Only the Saikyo source direction vocabulary is adapted.
+ for(const [number,direction,trainType] of [
+  ['1263K','Northbound','Local'],
+  ['1233F','Northbound','Rapid'],
+  ['1236K','Southbound','Local'],
+  ['1264F','Southbound','Rapid']
+ ]){
+  const p=saikyo(number,{
+   railDirection:'odpt.RailDirection:'+direction,
+   trainType:'odpt.TrainType:JR-East.'+trainType
+  });
+  const sourceMatch=root.TrainNumberPngRanges.match(number,'SaikyoKawagoe',p);
+  assert.equal(sourceMatch?.pngPath,e233,number+' ODPT range');
+  assert.equal(mark(p,'SaikyoKawagoe').iconSrc,e233,
+   number+' must reach the production SVG selector');
+  assert.equal(mark({...p,railDirection:direction},'SaikyoKawagoe').iconSrc,e233,
+   'DataFusion removes the ODPT direction prefix');
+  const opposite=direction==='Northbound'?'Southbound':'Northbound';
+  assert.equal(mark({...p,railDirection:opposite},'SaikyoKawagoe').kind,
+   'unresolved','reversed route direction must not pass');
+  assert.equal(mark({...p,sourceRailway:'odpt.Railway:JR-East.JobanRapid'},
+   'SaikyoKawagoe').kind,'unresolved',
+   'source-provenance boundary stays enforced');
+ }
+ // Public operation number 87 by itself cannot identify 70-000 vs 71-000.
+ const mixed=saikyo('1287K',{railDirection:'Northbound'});
+ assert.equal(mark(mixed,'SaikyoKawagoe').kind,'unresolved',
+  'mixed 80-91 family requires model evidence');
+ // TWR's separate source direction convention is never silently rewritten.
+ const twr=rinkai('1263K',{railDirection:'Northbound'});
+ assert.equal(mark(twr,'Rinkai').kind,'unresolved');
+});
+
 test('TWR 683S / 1984K chooses 70-000 or 71-000 only with an explicit source model',()=>{
  for(const [number,model,png] of [
   ['683S',model70,twr70],['1984K',model71,twr71]
