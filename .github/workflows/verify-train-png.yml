@@ -102,6 +102,8 @@ jobs:
         run: node --test tests/tobu-nikko-2611-number-png.test.cjs
       - name: Verify Tobu 634 summer historical numbers and no stock-identity authorization
         run: node --test tests/private-tobu-634-2026-summer-reference-2611.test.cjs
+      - name: Verify Izukyu 3000 Aloha exact 2026 published numbers without auto stock identity
+        run: node --test tests/private-izukyu-aloha-3000-20260314-official-number-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
