@@ -5512,14 +5512,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var rinkaiLocalT = source === "Rinkai" && /^[0-9]{3,4}T$/.test(no);
     if (!rinkaiLocalT && !/^[0-9]{3,4}[KFS]$/.test(no))
       return "number-not-saikyo-kfs-family";
-    var tail = Number(no.slice(-3,-1));
-    var exactRinkaiKfsBand = /^[0-9]{3,4}[KFS]$/.test(no) &&
-      tail >= 80 && tail <= 91;
-    // The explicit-model 80-91 K/F/S PNG rule is month-independent.
-    // Only the archival T / generic Saikyo 2611 number references expire.
-    if (!exactRinkaiKfsBand &&
-        !/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "").slice(0,10)))
-      return "service-date-outside-2611";
+    var tail=Number(no.slice(-3,-1));
+    // The audited K/F/S and T number-band pool has no date or calendar gate.
     if (!p.sourceRailway) return "missing-source-railway";
     var expected = source === "Rinkai" ? "odpt.Railway:TWR.Rinkai"
       : source === "SaikyoKawagoe" ? "odpt.Railway:JR-East.SaikyoKawagoe" : "";
@@ -5533,12 +5527,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (!p.trainType && !p.typeName) return "missing-published-train-type";
     if (!p.railDirection && !p.direction && !p.directionUrn)
       return "missing-source-rail-direction";
-    if (!rinkaiLocalT && tail >= 80 && tail <= 91 &&
-        !p.realtimeVehicleType && !p.realtimeDerivedVehicleType &&
-        !(p.vehiclePlan && Array.isArray(p.vehiclePlan.models) &&
-          p.vehiclePlan.models.length === 1))
-      return "rinkai-70-000-71-000-model-unverified";
-    if (rinkaiLocalT) return "rinkai-t-number-calendar-type-or-model-unresolved";
+    if (rinkaiLocalT) return "rinkai-t-number-or-source-not-in-composite-pool";
     return "number-source-or-model-rule-unresolved";
   }
 
@@ -7078,63 +7067,28 @@ registerEvidenceProvider({id:"denentoshi-dated-formations",grade:"C",resolveEvid
   registerEvidenceProvider(provider);
 })();
 
+// TWR's 81-91 observed Z formations are archived in Supabase, but
+// must not be projected as time-dependent physical carsets. The audited
+// all-date family mapping now has one owner: TrainNumberPngRanges.
+// Keep the unrelated, dated Sotetsu 77 source observation unchanged.
 (function(){
   "use strict";
   var BASE="https://www.loo-ool.com/rail/A/00/";
-  var rows={
-    "2026-04-03":{
-      "77":{vehicleType:"相鉄12000系",formationId:"12104F"},
-      "81":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z2"},
-      "83":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z7"},
-      "85":{vehicleType:"東京臨海高速鉄道71-000形",formationId:"Z12"},
-      "87":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z1"},
-      "89":{vehicleType:"東京臨海高速鉄道71-000形",formationId:"Z11"},
-      "91":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z3"}
-    },
-    "2026-04-04":{
-      "81":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z2"},
-      "83":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z7"},
-      "85":{vehicleType:"東京臨海高速鉄道71-000形",formationId:"Z12"},
-      "87":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z1"},
-      "89":{vehicleType:"東京臨海高速鉄道71-000形",formationId:"Z11"},
-      "91":{vehicleType:"東京臨海高速鉄道70-000形",formationId:"Z3"}
-    }
-  };
-  function network(ctx){
-    return /Saikyo|Kawagoe|Rinkai|Sotetsu|埼京|川越|りんかい|相鉄/i.test(
-      [ctx.lineId,ctx.operator,ctx.railway,ctx.destinationStation].join("|"));
-  }
-  // A dated operating-group observation is NOT a complete public train
-  // roster. Only the explicit full-number examples supported by the dated
-  // source may be resolved here. Never turn arbitrary *80T into group 81.
-  var observedFullNumbers=Object.freeze({
-    "580T":"81","581T":"81",
-    "682S":"83","683S":"83","1983K":"83",
-    "1084F":"85","1085F":"85",
-    "1984K":"85","1985K":"85",
-    "1888T":"89","1889T":"89",
-    "990T":"91","991T":"91"
-  });
-  function code(n){
-    var raw=String(n||"").trim().toUpperCase();
-    // Existing owner/operation tokens are accepted as raw source codes.
-    if(/^\d{2}(?:[KM])?$/.test(raw))return raw.slice(0,2);
-    // A public K/F/S/T train is never inferred from its final two digits.
-    return Object.prototype.hasOwnProperty.call(observedFullNumbers,raw)
-      ? observedFullNumbers[raw] : "";
-  }
   function resolveEvidence(trainNumber,ctx){
-    ctx=ctx||{}; var date=String(ctx.serviceDate||"").slice(0,10);
-    if(!network(ctx)||!rows[date])return null;
-    var c=code(trainNumber),rec=rows[date][c]; if(!rec)return null;
-    var owner=/12000/.test(rec.vehicleType)?"Sotetsu":"TWR";
-    return {operator:owner,vehicleType:rec.vehicleType,formationId:rec.formationId,grade:"C",
-      sourceUrl:BASE+date.replace(/-/g,"")+"/",
-      provenance:"loo-ool dated Saikyo/Rinkai/Sotetsu operation observation",
-      observedDate:date,operationCode:c};
+    ctx=ctx||{};
+    var day=String(ctx.serviceDate||"").slice(0,10);
+    if(day!=="2026-04-03" ||
+       !/^(?:77|77K|77M)$/.test(String(trainNumber||"").trim().toUpperCase()) ||
+       !/Saikyo|Kawagoe|Rinkai|Sotetsu|埼京|川越|りんかい|相鉄/i.test(
+         [ctx.lineId,ctx.operator,ctx.railway,ctx.destinationStation].join("|")))
+      return null;
+    return {operator:"Sotetsu",vehicleType:"相鉄12000系",
+      formationId:"12104F",grade:"C",sourceUrl:BASE+"20260403/",
+      provenance:"loo-ool dated Sotetsu 77 working observation",
+      observedDate:day,operationCode:"77"};
   }
-  var provider={id:"loo-ool-saikyo-dated-formations",grade:"C",sourceUrl:BASE,resolveEvidence:resolveEvidence};
-  registerEvidenceProvider(provider);
+  registerEvidenceProvider({id:"loo-ool-saikyo-dated-formations",
+    grade:"C",sourceUrl:BASE,resolveEvidence:resolveEvidence});
 })();
 
 (function(){
