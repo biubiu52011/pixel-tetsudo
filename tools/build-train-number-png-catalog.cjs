@@ -2111,6 +2111,8 @@ function lateVerifiedSourceSqlSeedBands(){
  const specs=[
   ['20261118080000_jr49_shinetsu_shirayuki_e653_51_58_reference_2611.sql',1,'JR東日本/JR東日本_E653系.png','纯号段（官方番号参考/日期及实车守卫保留）'],
   ['20261118081000_jr50_tokaido_fujikawa_373_4001_4014_reference_2611.sql',1,'JR東海/JR東海_373系.png','纯号段（特急ふじかわ/原运行条件保留）'],
+  ['20261118235000_third06_isumi350_20241004_5d_official_historical.sql',1,'いすみ鉄道/いすみ鉄道_いすみ350型.png','纯号段（2024年10月4日官方事故公告确认いすみ350形351・352担当5D；线路已停运至今，仅历史参考）'],
+  ['20261118235100_third06_moka_c12_6001_6002_official_historical.sql',1,'真岡鐵道/真岡鐵道_C12形_C1266_SLもおか.png','纯号段（真冈铁道官方SLもおか6001・6002列车及C12 66历史参考；2026年度全面停运、PNG仍review）'],
   ['20261118122000_third05_oarai_kashima_8000_official_normal_service_refs.sql',8,'鹿島臨海鉄道/鹿島臨海鉄道_8000形.png','纯号段（官网常用8000形；可能临时改用6000形，不等于实车确认）'],
   ['20261118101000_private14_keisei_ae_9ae06_10ae04_exact_train_number_references.sql',2,'京成電鉄/京成電鉄_AE形.png',''],
   ['20261118125500_private17_keikyu_2100_10_exact_A_C_numbers_two_corridors.sql',20,'京浜急行電鉄/京浜急行電鉄_2100形.png','纯号段（京急官方322・323行路；实际运转日期和编组待核）'],
@@ -2160,7 +2162,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==126)throw Error('Late sourced SQL bands must total 126 rows');
+ if(refs.length!==128)throw Error('Late sourced SQL bands must total 128 rows');
  return refs;
 }
 
