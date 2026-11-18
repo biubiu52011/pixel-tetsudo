@@ -146,11 +146,16 @@ test('historic ODPT audit is preserved as evidence of public numbers, not carset
   }
  }
  assert.equal(covered,564);
- const catalog=JSON.parse(fs.readFileSync(
-  'data/audits/train-number-png-catalog-2611.json','utf8'));
- const oldT=catalog.rules.find(x=>x.id==='js-0132');
- assert.ok(oldT);
- assert.equal(oldT.weekday_numbers.length,53);
- assert.equal(oldT.holiday_numbers.length,54);
- // The historical catalogue is intentionally not the all-date runtime gate.
+ // Historical public T numbers live in the original ODPT archive, NOT
+ // in the undated composite runtime-number rules. Keep the two separate.
+ const archived={weekday:new Set(),holiday:new Set()};
+ for(const group of snapshot.groups){
+  const calendar=group.calendar.endsWith(':Weekday')?'weekday':'holiday';
+  for(const number of group.numbers){
+   if(number.endsWith('T'))archived[calendar].add(number);
+  }
+ }
+ assert.equal(archived.weekday.size,53);
+ assert.equal(archived.holiday.size,54);
+ // This historical roster does not authorize current physical carsets.
 });
