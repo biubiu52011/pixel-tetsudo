@@ -177,6 +177,7 @@ jobs:
           node --test tests/private-seibu-nra-koedo-number-crosswalk-2611.test.cjs
           node --test tests/private-keisei-ae-operational-numbers-2611.test.cjs
           node --test tests/private-izukyu-resort21-2611-ito-numbers.test.cjs
+          node --test tests/private-keio-5000-7732-7736-reference-2611.test.cjs
 
       - name: Replay dated SQL source train PNG and enforce cross-line safety
         run: |
