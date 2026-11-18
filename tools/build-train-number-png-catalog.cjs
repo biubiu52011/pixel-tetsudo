@@ -2109,6 +2109,7 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119030000_jr59_yamaguchi_sl_c57_8521_8522_reference.sql',1,'JR西日本/JR西日本_C57形_SLやまぐち.png','纯号段（SLやまぐち8521–8522官方参考；D51／DD51可能共用番号，C57仅review，不判定实车）'],
   ['20261118080000_jr49_shinetsu_shirayuki_e653_51_58_reference_2611.sql',1,'JR東日本/JR東日本_E653系.png','纯号段（官方番号参考/日期及实车守卫保留）'],
   ['20261118081000_jr50_tokaido_fujikawa_373_4001_4014_reference_2611.sql',1,'JR東海/JR東海_373系.png','纯号段（特急ふじかわ/原运行条件保留）'],
   ['20261119002000_third08_watarase_wassi_wkt550_four_2026_official.sql',4,'わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-550形_わっしー.png','纯号段（渡良瀬2026年4至11月官方わっしー四个D番号；仅运行日有效，WKT-550素材review）'],
@@ -2166,7 +2167,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==136)throw Error('Late sourced SQL bands must total 136 rows');
+ if(refs.length!==137)throw Error('Late sourced SQL bands must total 137 rows');
  return refs;
 }
 

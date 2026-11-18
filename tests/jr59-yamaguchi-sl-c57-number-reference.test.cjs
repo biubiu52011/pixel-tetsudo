@@ -1,0 +1,22 @@
+'use strict';
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const png="images/列车/JR西日本/JR西日本_C57形_SLやまぐち.png";
+const sql=fs.readFileSync("supabase/migrations/20261119030000_jr59_yamaguchi_sl_c57_8521_8522_reference.sql",'utf8');
+const rows=fs.readFileSync("data/audits/png-first-number-band-inventory-20261117.csv",'utf8').trimEnd().split('\n');
+const triage=fs.readFileSync("data/audits/png-unmapped-source-triage-20261118.csv",'utf8');
+test('JR59 has one review-only reference range, not a real-car identity',()=>{
+ const expected="JR,JR西日本,images/列车/JR西日本/JR西日本_C57形_SLやまぐち.png,Yamaguchi,8521,8522,,full,纯号段（SLやまぐち8521–8522官方参考；D51／DD51可能共用番号，C57仅review，不判定实车）";
+ assert.ok(rows.includes(expected));
+ assert.equal(rows.filter(x=>x.startsWith('JR,JR西日本,'+png+',')).length,1);
+ assert.ok(!triage.includes('"'+png+'"'));
+ assert.ok(sql.includes("'2611','Yamaguchi','png_band/Yamaguchi/8521-8522',8521,8522,'',NULL,'../images/列车/JR西日本/JR西日本_C57形_SLやまぐち.png',NULL,FALSE,FALSE"));
+ assert.ok(sql.includes("asset_status='review' AND asset_scope='review'"));
+ assert.ok(sql.includes("COALESCE(suffix,'')"));
+ assert.ok(sql.includes('D51, C57 or diesel substitute'));
+ assert.ok(sql.includes('DATA-ONLY Yamaguchi'));
+ assert.ok(!sql.includes('CREATE TABLE'));
+ assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));
+ assert.equal(rows.filter(x=>x.endsWith('无号段')).length,453);
+});
