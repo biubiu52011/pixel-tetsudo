@@ -110,6 +110,8 @@ jobs:
         run: node --test tests/private21-tobu-50090-tj-liner-20-dated-number-references.test.cjs
       - name: Verify JR51 historical TOHOKU EMOTION 8421D-8422D and no automatic vehicle authorization
         run: node --test tests/jr51-tohoku-emotion-8421-8422-historical-number-reference.test.cjs
+      - name: Verify JR52 WEST EXPRESS Ginga two official Sanyo train numbers and review-only image
+        run: node --test tests/jr52-westexpress-ginga-sanyo-8076-8079-official-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
