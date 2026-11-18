@@ -2091,7 +2091,7 @@ function privateTobu634HistoricalSqlSeedBands(){
  if(!sql.includes('July 18/20, August 8/11/15, 2026')||
     !sql.includes('Not Nov 2026 or a live consist.'))
    throw Error('Tobu 634 historic date scope missing');
- const re=/\\('2611','(TobuNikko|TobuSkytree)','(png_band\\/[^']+)',(\\d+),(\\d+),'',NULL,'\\.\\.\\/(images\\/列车\\/東武鉄道\\/東武鉄道_634型_スカイツリートレイン\\.png)',NULL,FALSE,FALSE\\)/g;
+ const re=/\('2611','(TobuNikko|TobuSkytree)','(png_band\/[^']+)',(\d+),(\d+),'',NULL,'\.\.\/(images\/列车\/東武鉄道\/東武鉄道_634型_スカイツリートレイン\.png)',NULL,FALSE,FALSE\)/g;
  const matches=[...sql.matchAll(re)];
  const expected=[['TobuNikko',5181,5181],['TobuNikko',5182,5182],['TobuSkytree',5182,5182]];
  if(matches.length!==expected.length ||
