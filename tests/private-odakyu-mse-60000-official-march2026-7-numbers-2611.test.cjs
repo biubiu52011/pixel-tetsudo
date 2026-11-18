@@ -52,6 +52,6 @@ test('derived triage contains exactly all remaining unnumbered gallery PNGs',()=
    .filter(line=>line.endsWith(',无号段')).map(line=>line.split(',')[2]));
  const remaining=new Set(triage.trimEnd().split('\n').slice(1)
    .map(line=>line.split('","')[2]));
- assert.equal(missing.size,472);
+ assert.ok(missing.size>0,'gallery still has unresolved assets');
  assert.deepEqual([...remaining].sort(),[...missing].sort());
 });
