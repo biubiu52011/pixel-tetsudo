@@ -43,7 +43,11 @@ test('catalog numeric bounds never claim every intervening service number',()=>{
  for(const asset of rows)for(const r of asset.directNumberRules){
    const source=all.find(x=>x.id===r.ruleId);
    assert.ok(source,'missing original rule '+r.ruleId);
-   assert.equal(source.png,asset.path);
+   const approvedPaths=[source.png,...Object.values(
+     source.runtime_guards?.exactModelArtworkMap||{}).map(p=>
+       String(p).replace(/^(?:\\.\\.\\/|\\.\\/|\\/)+/,''))];
+   assert.ok(approvedPaths.includes(asset.path),
+     'index path is not part of the source rule model artwork map: '+asset.path);
    assert.equal(r.minNumber,source.min);
    assert.equal(r.maxNumber,source.max);
    assert.equal(r.requiresExactRoster,source.requires_exact_roster===true);
