@@ -104,6 +104,8 @@ jobs:
         run: node --test tests/private-tobu-634-2026-summer-reference-2611.test.cjs
       - name: Verify Izukyu 3000 Aloha exact 2026 published numbers without auto stock identity
         run: node --test tests/private-izukyu-aloha-3000-20260314-official-number-reference.test.cjs
+      - name: Verify official Odakyu MSE seven March-2026 train numbers without review-PNG release
+        run: node --test tests/private-odakyu-mse-60000-official-march2026-7-numbers-2611.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
