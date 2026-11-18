@@ -56,7 +56,7 @@ test('do not imply 2100-series ran during substitute 8000 dates or on Izukyu-onl
 
 test('gallery and missing source inventory remain synchronized',()=>{
  const gallery=csv.trimEnd().split('\n').slice(1);
- assert.equal(gallery.length,5549);
+ assert.equal(gallery.length,5551);
  assert.equal(new Set(gallery.map(line=>line.split(',')[2])).size,601);
  assert.equal(gallery.filter(line=>line.endsWith(',无号段')).length,477);
  assert.equal(triage.trimEnd().split('\n').length-1,477);
