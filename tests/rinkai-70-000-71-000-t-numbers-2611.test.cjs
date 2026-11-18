@@ -1,7 +1,8 @@
 'use strict';
 // Rinkai 70-000 / 71-000 coexist in the same 81-91 operating family.
-// An exact source train number is NOT the physical stock model; neither
-// of these PNGs may be selected from an operation tail or SQL wide range.
+// An exact source train number is NOT the physical stock model.
+// Four-digit T numbers may show illustrative 71-000 art without observations;
+// a physical carset claim still requires independent model evidence.
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -81,7 +82,15 @@ test('70-000 and 71-000 T services select one PNG only with independent, consist
   assert.equal(evidence.model,model);
   assert.equal(evidence.pngPath,'../'+png);
   assert.equal(evidence.planned,true,'no actual carset asserted');
-  assert.equal(match(number,'',calendar),null,'unknown model fails closed');
+  const noModel=match(number,'',calendar);
+  if(/^[0-9]{4}T$/.test(number)){
+   assert.equal(noModel?.model,model71,'four-digit T defaults to representative 71-000');
+   assert.equal(noModel?.pngPath,'../'+png71);
+   assert.equal(noModel?.source,'rinkai-four-digit-t-display-default');
+   assert.equal(noModel?.illustrative,true,'default must not claim an actual formation');
+  }else{
+   assert.equal(noModel,null,'three-digit T without model stays unresolved');
+  }
   const other=model===model70?model71:model70;
   assert.equal(match(number,model,{...calendar,realtimeDerivedVehicleType:other}),null,
    'conflicting model evidence fails closed');
@@ -90,6 +99,39 @@ test('70-000 and 71-000 T services select one PNG only with independent, consist
   assert.equal(match(number,model,{...calendar,serviceDate:'2026-12-01'}),null,
    'edition guard preserved');
  }
+});
+
+test('Rinkai four-digit T illustration defaults to 71-000 only without independent model evidence',()=>{
+ for(const [number,calendar] of [
+  ['1689T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['1088T',{calendarType:'weekday',serviceDate:'2026-11-18'}],
+  ['2480T',{calendarType:'holiday',serviceDate:'2026-11-15'}]
+ ]){
+  const shown=match(number,'',calendar);
+  assert.equal(shown?.model,model71);
+  assert.equal(shown?.pngPath,'../'+png71);
+  assert.equal(shown?.source,'rinkai-four-digit-t-display-default');
+  assert.equal(shown?.illustrative,true);
+  assert.equal(shown?.displayDefault,true);
+  assert.equal(shown?.planned,true);
+ }
+ assert.equal(match('1689T','',{
+  vehiclePlan:{status:'PLANNED_MODEL',models:[model70]}
+ })?.model,model71,'unconfirmed SQL plan must not override display preference');
+ assert.equal(match('1689T',model70)?.pngPath,'../'+png70,
+  'explicit 70-000 model evidence overrides display preference');
+ assert.equal(match('1689T',model71)?.pngPath,'../'+png71);
+ assert.equal(match('1689T',model70,{realtimeDerivedVehicleType:model71}),null,
+  'conflicting model sources remain unresolved');
+ assert.equal(match('584T',''),null,'three-digit T is unchanged');
+ assert.equal(match('991T',''),null,'three-digit T remains unresolved');
+ assert.equal(match('1080T',''),null,'unlisted four-digit T must not be fabricated');
+ assert.equal(match('1640T','',{calendarType:'holiday',serviceDate:'2026-11-15'}),
+  null,'weekday-only T does not leak into holiday');
+ assert.equal(match('1689T','',{sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe'}),
+  null,'JR Saikyo may not use this TWR fallback');
+ assert.equal(match('1689T','',{serviceDate:'2026-12-01'}),null,
+  'edition guard is preserved');
 });
 
 test('T train-number whitelist does not fill gaps or allow 70/71 by operation ID',()=>{
@@ -156,10 +198,16 @@ test('Official ODPT 2026-03-16 public number snapshot covers T and K/F/S without
     serviceDate:calendar==='weekday'?'2026-11-18':'2026-11-15'};
    // This ODPT endpoint provides neither the 70-000/71-000 type nor a
    // physical formation. A T or 80–91 K/F/S train must remain neutral.
-   if(suffix==='T'||tail>=80){
-    ambiguous++;
+   if(suffix==='T'||tail>=80)ambiguous++;
+   if(suffix==='T'&&/^[0-9]{4}T$/.test(number)){
+    const fallback=root.TrainNumberPngRanges.match(number,'Rinkai',sample);
+    assert.equal(fallback?.model,model71,
+     'four-digit T source number permits user-selected illustrative art: '+number);
+    assert.equal(fallback?.illustrative,true);
+    assert.equal(fallback?.displayDefault,true);
+   }else if(suffix==='T'||tail>=80){
     assert.equal(root.TrainNumberPngRanges.match(number,'Rinkai',sample),null,
-     'ODPT train number is NOT a current 70-000/71-000 identity: '+number);
+     'T three-digit or K/F/S 80-91 needs source model evidence: '+number);
    }else{
     const matched=root.TrainNumberPngRanges.match(number,'Rinkai',sample);
     assert.equal(matched?.model,'E233系7000番台',
