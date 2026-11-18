@@ -124,6 +124,8 @@ jobs:
         run: node --test tests/private23-chichibu-c58-paleo-5001-5002-historical-reference.test.cjs
       - name: Verify Private24 Tobu SL Taiju 1-8 numbers without authorizing dated C11 artwork
         run: node --test tests/private24-tobu-sl-taiju-c11-1-8-number-reference.test.cjs
+      - name: Verify JR58 E501 K754 Oct-2026 historical 9621M / 9725M single-PNG references
+        run: node --test tests/jr58-e501-sakigake-k754-9621-9725-20261003-reference.test.cjs
       - name: Verify JR57 three official Ocean Arrow 283 train numbers and four strict corridor references
         run: node --test tests/jr57-ocean-arrow-283-2026-official-numbers-corridors.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps

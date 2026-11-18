@@ -1462,7 +1462,9 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoRapid,5053,
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoRapid,5055,5055,M,full,纯号段（JR特急原车次及车型条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,Oito,0005,8042,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E501系.png,,,,,,无号段
-JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png,,,,,,无号段
+JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png,JobanMain,9621,9621,M,full,纯号段（2026年10月3日E501 SAKIGAKE K754历史运行：9621M・9725M，官网活动＋当日影像核实；不证明2026年11月实车）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png,JobanMain,9725,9725,M,full,纯号段（2026年10月3日E501 SAKIGAKE K754历史运行：9621M・9725M，官网活动＋当日影像核实；不证明2026年11月实车）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png,Mito,9621,9621,M,full,纯号段（2026年10月3日E501 SAKIGAKE K754历史运行：9621M・9725M，官网活动＋当日影像核实；不证明2026年11月实车）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_さきがけ.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E531系.png,JobanMain,1252,1252,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E531系.png,JobanMain,1252,1252,M,full,纯号段（JR专用原始条件保留）
