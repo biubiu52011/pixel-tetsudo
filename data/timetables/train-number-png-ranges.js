@@ -4156,6 +4156,17 @@
       actualVehicleConfirmed:false};
   }
   // Diagnostic keys are bounded so repeated live-position refreshes do not flood logs.
+  // TWR's canonical catalogue also registers these exact short model
+  // aliases. This is a spelling normalization, NOT an operation-to-carset
+  // inference; mixed or unknown source labels remain unresolved.
+  function canonicalRinkaiMixedModelLabel(label,row){
+    var raw=String(label||"").trim();
+    if(!row||!row.exactModelArtworkMap||
+       row.lineIds.indexOf("Rinkai")<0)return raw;
+    if(raw==="70-000形")return "東京臨海高速鉄道70-000形";
+    if(raw==="71-000形")return "東京臨海高速鉄道71-000形";
+    return raw;
+  }
   var warnedNumberBandConflicts=Object.create(null);
   var warnedNumberBandConflictCount=0;
   function match(trainNumber,lineId,context){
@@ -5160,16 +5171,17 @@
         if(row.requireCompatiblePlan &&
            [context.realtimeVehicleType,context.realtimeDerivedVehicleType]
              .some(function(model){
-               var label=String(model||"").trim();
+               var label=canonicalRinkaiMixedModelLabel(model,row);
                return label && row.allowedModelLabels.indexOf(label)<0;
              }))continue;
-        var observed=String(context.realtimeVehicleType ||
-          context.realtimeDerivedVehicleType || "").trim();
+        var observed=canonicalRinkaiMixedModelLabel(context.realtimeVehicleType ||
+          context.realtimeDerivedVehicleType || "",row);
         if(observed && row.allowedModelLabels.indexOf(observed)<0)continue;
         var plan=context.vehiclePlan;
         if(plan && (plan.confirmed===true || plan.status==="PLANNED_MODEL") &&
             Array.isArray(plan.models) && plan.models.length &&
-            plan.models.some(function(m){return row.allowedModelLabels.indexOf(m)<0;}))
+            plan.models.some(function(m){return row.allowedModelLabels.indexOf(
+              canonicalRinkaiMixedModelLabel(m,row))<0;}))
           continue;
       }
       // A mixed-stock railway cannot assign a physical model from an E
@@ -5199,7 +5211,7 @@
         if(!context)continue;
         var modelObservations=[context.realtimeVehicleType,
           context.realtimeDerivedVehicleType].map(function(m){
-            return String(m||"").trim();
+            return canonicalRinkaiMixedModelLabel(m,row);
           }).filter(Boolean);
         var sourcePlan=context.vehiclePlan;
         var planLabels=sourcePlan&&Array.isArray(sourcePlan.models)?
@@ -5209,7 +5221,8 @@
         if(planScoped&&planLabels.length!==1)continue;
         if(planScoped&&planLabels.length===1){
           if(modelObservations.length||sourcePlan.confirmed===true)
-            modelObservations.push(String(planLabels[0]));
+            modelObservations.push(
+              canonicalRinkaiMixedModelLabel(planLabels[0],row));
         }
         if(modelObservations.some(function(m){
           return m!==modelObservations[0];
