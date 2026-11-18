@@ -70,11 +70,11 @@ test('existing gallery artwork has no new runtime auto-image authority',()=>{
  assert.equal(item.runtimeNumberRosters.length,0);
  assert.equal(item.historicalNumberedSources.length,0);
 });
-test('single PNG inventory has 601 physical entries, 475 unresolved and 619 private rows',()=>{
- assert.equal(all.length,5577);
+test('single PNG inventory has 601 physical entries, 474 unresolved and 620 private rows',()=>{
+ assert.equal(all.length,5578);
  assert.equal(new Set(all.map(s=>s.split(',')[2])).size,601);
- assert.equal(all.filter(s=>s.endsWith(',无号段')).length,475);
- assert.equal(all.filter(s=>s.startsWith('私铁,')).length,619);
+ assert.equal(all.filter(s=>s.endsWith(',无号段')).length,474);
+ assert.equal(all.filter(s=>s.startsWith('私铁,')).length,620);
  assert.equal(triage.trimEnd().split('\n').length-1,475);
  assert.ok(!triage.includes('"'+png+'"'));
 });
