@@ -5509,7 +5509,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var source = String(p.positionLineId || p.lineId || "");
     if (!p.trainNumber) return "missing-public-train-number";
     var no = String(p.trainNumber).trim().toUpperCase();
-    if (!/^[0-9]{3,4}[KFS]$/.test(no)) return "number-not-saikyo-kfs-family";
+    var rinkaiLocalT = source === "Rinkai" && /^[0-9]{3,4}T$/.test(no);
+    if (!rinkaiLocalT && !/^[0-9]{3,4}[KFS]$/.test(no))
+      return "number-not-saikyo-kfs-family";
     if (!/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "").slice(0,10)))
       return "service-date-outside-2611";
     if (!p.sourceRailway) return "missing-source-railway";
@@ -5526,11 +5528,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (!p.railDirection && !p.direction && !p.directionUrn)
       return "missing-source-rail-direction";
     var tail = Number(no.slice(-3,-1));
-    if (tail >= 80 && tail <= 91 &&
+    if (!rinkaiLocalT && tail >= 80 && tail <= 91 &&
         !p.realtimeVehicleType && !p.realtimeDerivedVehicleType &&
         !(p.vehiclePlan && Array.isArray(p.vehiclePlan.models) &&
           p.vehiclePlan.models.length === 1))
       return "rinkai-70-000-71-000-model-unverified";
+    if (rinkaiLocalT) return "rinkai-t-number-calendar-type-or-model-unresolved";
     return "number-source-or-model-rule-unresolved";
   }
 
