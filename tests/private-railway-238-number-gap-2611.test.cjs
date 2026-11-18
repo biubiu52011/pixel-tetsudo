@@ -56,12 +56,13 @@ const expectedReferencedPngs = [
   'images/列车/東武鉄道/東武鉄道_50050型.png',
   'images/列车/東武鉄道/東武鉄道_70090型.png',
   'images/列车/東武鉄道/東武鉄道_70000系.png',
+  'images/列车/西武鉄道/西武鉄道_10000系_ニューレッドアロー.png',
   'images/列车/西武鉄道/西武鉄道_001系_Laview.png',
   'images/列车/相模鉄道/相模鉄道_12000系_YOKOHAMA_NAVYBLUE.png',
 ].sort();
 
-test('private railway category fixes the 246-PNG inventory and 229 unresolved gaps', () => {
-  assert.equal(rows.length, 590, 'review duplicate range rows when the inventory changes');
+test('private railway category fixes the 246-PNG inventory and 228 unresolved gaps', () => {
+  assert.equal(rows.length, 594, 'review duplicate range rows when the inventory changes');
   assert.equal(rowsByPng.size, 246);
   const counts = {};
   const missing = [];
@@ -87,7 +88,7 @@ test('private railway category fixes the 246-PNG inventory and 229 unresolved ga
     }
   }
   assert.deepEqual(counts, expectedOperators);
-  assert.equal(missing.length, 229);
+  assert.equal(missing.length, 228);
   assert.deepEqual(referenced.sort(), expectedReferencedPngs);
 });
 
@@ -98,7 +99,7 @@ test('private gaps stay separated into scoped and unscoped evidence without prio
   const scoped = missing.filter(png => (byPng.get(png).lineScopes || []).length);
   const unscoped = missing.filter(png => !(byPng.get(png).lineScopes || []).length);
   const quarantined = missing.filter(png => byPng.get(png).quarantined);
-  assert.equal(scoped.length, 107);
+  assert.equal(scoped.length, 106);
   assert.equal(unscoped.length, 122);
   assert.equal(quarantined.length, 2);
   assert.equal(scoped.length + unscoped.length, missing.length);
