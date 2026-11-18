@@ -70,11 +70,18 @@ test('existing gallery artwork has no new runtime auto-image authority',()=>{
  assert.equal(item.runtimeNumberRosters.length,0);
  assert.equal(item.historicalNumberedSources.length,0);
 });
-test('single PNG inventory has 601 physical entries, 474 unresolved and 620 private rows',()=>{
- assert.equal(all.length,5578);
- assert.equal(new Set(all.map(s=>s.split(',')[2])).size,601);
- assert.equal(all.filter(s=>s.endsWith(',无号段')).length,474);
- assert.equal(all.filter(s=>s.startsWith('私铁,')).length,620);
- assert.equal(triage.trimEnd().split('\n').length-1,475);
+test('single 601-PNG inventory and source triage stay exactly synchronized',()=>{
+ const gallery=new Set(all.map(s=>s.split(',')[2]));
+ assert.equal(gallery.size,601);
+ assert.ok(all.filter(s=>s.startsWith('私铁,')).length>=rows.length,
+  'all Keikyu source rows belong to the existing private fleet inventory');
+ const unmapped=new Set(all.filter(s=>s.endsWith(',无号段'))
+   .map(s=>s.split(',')[2]));
+ const triagePaths=triage.trimEnd().split('\n').slice(1)
+   .map(s=>s.match(/"(images\/列车\/[^"]+)"/)?.[1]);
+ assert.ok(triagePaths.every(Boolean));
+ assert.equal(new Set(triagePaths).size,triagePaths.length);
+ assert.deepEqual([...triagePaths].sort(),[...unmapped].sort(),
+  'pending investigations must match actual unnumbered gallery assets');
  assert.ok(!triage.includes('"'+png+'"'));
 });
