@@ -5897,6 +5897,17 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   }
 
   function selectMarkerArtwork(p, artworkFailed) {
+    // Rinkai realtime positions owned by TWR require the TWR Rinkai
+    // railway provenance. Otherwise a K/F/S range borrowed from JR's
+    // through-service inventory can silently return a valid-looking
+    // 70-000/71-000 image for a foreign-source record. Osaki handovers
+    // retain their authentic source railway and are checked separately.
+    if (p && String(p.positionLineId || p.lineId || "") === "Rinkai" &&
+        ["TWR","odpt.Operator:TWR"].indexOf(
+          String(p.trainOperator || p.operator || "")) >= 0 &&
+        String(p.sourceRailway || "") !== "odpt.Railway:TWR.Rinkai")
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false,reason:"rinkai-twr-source-mismatch"};
     // A source-verified through chain cannot select different series/liveries
     // for the same public number. Keep its location, not a false cab image.
     if (p && p.vehicleArtworkConflict === true)

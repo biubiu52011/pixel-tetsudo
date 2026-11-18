@@ -5251,8 +5251,12 @@
         pngPath:selectedPng,source:"train-number-range",
         planned:true,representative:true};
       if(rinkaiTDisplayDefault){
+        // The 3-/4-digit T artwork is a chosen display illustration, not
+        // an observed 70-000 / 71-000 physical formation. Keep this flag
+        // through TrainVehicle.selectMarkerArtwork and SVG aria labels.
         pngMatch.source=rinkaiTDisplayDefault;
         pngMatch.illustrative=true;
+        pngMatch.referenceOnly=true;
         pngMatch.displayDefault=true;
       }
       matchedByPng[pngKey]=pngMatch;
