@@ -108,6 +108,8 @@ jobs:
         run: node --test tests/private-odakyu-mse-60000-official-march2026-7-numbers-2611.test.cjs
       - name: Verify Tobu 50090 twenty dated TJ Liner numbers without inferred intervals
         run: node --test tests/private21-tobu-50090-tj-liner-20-dated-number-references.test.cjs
+      - name: Verify JR51 historical TOHOKU EMOTION 8421D-8422D and no automatic vehicle authorization
+        run: node --test tests/jr51-tohoku-emotion-8421-8422-historical-number-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
