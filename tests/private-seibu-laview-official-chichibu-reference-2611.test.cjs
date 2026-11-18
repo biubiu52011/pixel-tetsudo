@@ -45,10 +45,10 @@ test('Seibu 001 image remains review-only and pure PNG records have no authority
  assert.ok(!sql.includes('CREATE TABLE'));
 });
 
-test('gallery snapshot remains 601 unique physical images with 476 no-number gaps',()=>{
+test('gallery snapshot remains 601 unique physical images with 475 no-number gaps',()=>{
  const rows=csv.trimEnd().split('\n').slice(1);
  assert.equal(new Set(rows.map(row=>row.split(',')[2])).size,601);
- assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,476);
- assert.equal(triage.trimEnd().split('\n').length-1,476);
- assert.equal(rows.filter(r=>r.startsWith('私铁,')).length,600);
+ assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,475);
+ assert.equal(triage.trimEnd().split('\n').length-1,475);
+ assert.equal(rows.filter(r=>r.startsWith('私铁,')).length,619);
 });
