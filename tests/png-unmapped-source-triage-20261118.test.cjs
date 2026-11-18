@@ -45,19 +45,19 @@ function tally(rows, index) {
   return result;
 }
 
-// JR51 added a dated available/R3 source; JR52 and JR53 added dated
-// review/R0 official number references (Ginga and Hanaakari respectively).
-// None of these changes assert actual trainset identity or enable the PNG.
+// JR51 added an available/R3 reference; JR52 and JR53 added reviewed/R0
+// operator-number references. JR54 adds a dated eyewitness-based available/R3
+// Shiki-shima reference. None grant actual live trainset or automatic PNG authority.
 test('triage covers exactly every unmapped gallery PNG, with no invented band', () => {
   assert.equal(inventory[0].length, 9);
   assert.equal(triage[0].length, 13);
   assert.ok(inventoryRows.every(row => row.length === 9));
   assert.ok(triageRows.every(row => row.length === 13));
   assert.equal(new Set(inventoryRows.map(row => row[2])).size, 601);
-  assert.equal(missingRows.length, 468);
-  assert.equal(groupedMissing.size, 468);
-  assert.equal(triageRows.length, 468);
-  assert.equal(groupedTriage.size, 468);
+  assert.equal(missingRows.length, 467);
+  assert.equal(groupedMissing.size, 467);
+  assert.equal(triageRows.length, 467);
+  assert.equal(groupedTriage.size, 467);
   assert.deepEqual([...groupedTriage.keys()].sort(), [...groupedMissing.keys()].sort());
   for (const [path, row] of groupedTriage) {
     const source = groupedMissing.get(path);
@@ -71,16 +71,16 @@ test('triage covers exactly every unmapped gallery PNG, with no invented band', 
 
 test('unmapped evidence groups remain qualified and never become proof of a PNG mapping', () => {
   assert.deepEqual(tally(triageRows, 0), {
-    JR: 134, 地铁: 33, 第三部门铁道: 40, 私铁: 220, 其他铁路: 41,
+    JR: 133, 地铁: 33, 第三部门铁道: 40, 私铁: 220, 其他铁路: 41,
   });
-  assert.deepEqual(tally(triageRows, 3), { available: 350, review: 118 });
+  assert.deepEqual(tally(triageRows, 3), { available: 349, review: 118 });
   const groups = tally(triageRows, 9);
   assert.equal(Object.keys(groups).length, 5);
   assert.equal((groups['R0_先验PNG文件与实车状态'] || 0) +
     (groups['R0_先核实未来/历史运营资格'] || 0), 118);
   assert.equal(groups['R1_官方番号+车型唯一性'], 111);
   assert.equal(groups['R2_编组车辆运行日'], 77);
-  assert.equal(groups['R3_子型号/涂装需证据'], 162);
+  assert.equal(groups['R3_子型号/涂装需证据'], 161);
   for (const row of triageRows) {
     assert.ok(['available', 'review'].includes(row[3]));
     assert.ok(['是', '否'].includes(row[6]));
