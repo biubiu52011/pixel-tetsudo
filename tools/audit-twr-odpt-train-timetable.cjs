@@ -2,7 +2,6 @@
 // Read-only snapshot audit against this site's existing production-key Edge proxy.
 // No ODPT consumer key is read, printed, stored or committed here.
 const url='https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/odpt-proxy?operator=TWR&type=trainTimetable';
-const today='2026-11-18';
 (async()=>{
   const response=await fetch(url,{headers:{Origin:'https://biubiu52011.github.io',Accept:'application/json'},signal:AbortSignal.timeout(22000)});
   console.log('[TWR ODPT] HTTP',response.status,'content-type',response.headers.get('content-type'));
@@ -30,7 +29,7 @@ const today='2026-11-18';
     for(const code of sorted){
       const suffix=code.match(/[a-zA-Z]+$/)?.[0]||'?';
       counts[suffix]=(counts[suffix]||0)+1;
-      const m=code.match(/^(\\d+)([A-Z])$/);
+      const m=code.match(/^([0-9]+)([A-Z])$/);
       if(m){const tail=Number(m[1])%100;const set=tails[suffix]||new Set();set.add(tail);tails[suffix]=set;}
     }
     console.log('[TWR ODPT] group',group,'unique',sorted.length,
