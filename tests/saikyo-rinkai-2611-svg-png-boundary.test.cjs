@@ -141,8 +141,7 @@ test('arbitrary cross-line reuse, absent type/direction and unsupported formatio
   {fusionLineId:'SaikyoKawagoe'},{stationId:'Oimachi'},
   {sourceRailway:'odpt.Railway:JR-East.Joban'},
   {trainType:''},{railDirection:''},
-  {realtimeVehicleType:'東京臨海高速鉄道72-000形'},
-  {serviceDate:'2026-12-01'}
+  {realtimeVehicleType:'東京臨海高速鉄道72-000形'}
  ]){
   assert.equal(mark({...valid,...change},'SaikyoKawagoe').kind,'unresolved',
    JSON.stringify(change));
@@ -278,4 +277,52 @@ test('dated TWR number evidence reaches the canonical timetable vehicle PNG reso
  const november=resolved('1985K','2026-11-18');
  assert.notEqual(november.iconPath,twr71,
   'April observation must not become an unverified November trainset');
+});
+
+test('explicit 70-000/71-000 KFS model maps across months, not daily Z formations',()=>{
+ for(const date of [
+  '2025-10-01','2026-04-03','2026-11-18','2026-12-01','2027-04-01'
+ ]){
+  for(const [model,png] of [[model70,twr70],[model71,twr71]]){
+   for(const line of ['Rinkai','SaikyoKawagoe']){
+    const pos=(line==='Rinkai'?rinkai:saikyo)('1984K',{
+     serviceDate:date,realtimeVehicleType:model
+    });
+    assert.equal(root.TrainNumberPngRanges.match('1984K',line,pos)?.pngPath,
+     png,'independent model identity: '+date+' '+line+' '+model);
+    assert.equal(mark(pos,line).iconSrc,png,
+     'render independent model: '+date+' '+line+' '+model);
+   }
+  }
+  const noModel=rinkai('1984K',{serviceDate:date});
+  assert.equal(mark(noModel,'Rinkai').kind,'unresolved',
+   'a number alone does not reveal its actual model: '+date);
+  assert.equal(root.TrainVehicle.diagnoseSaikyoRinkaiArtwork(
+   noModel,'Rinkai'),'rinkai-70-000-71-000-model-unverified');
+  const conflicting=rinkai('1984K',{serviceDate:date,
+   realtimeVehicleType:model70,realtimeDerivedVehicleType:model71});
+  assert.equal(mark(conflicting,'Rinkai').kind,'unresolved',
+   'conflicting independent models must not pick a PNG: '+date);
+ }
+ const outside=rinkai('1088T',{
+  railDirection:'odpt.RailDirection:Inbound',
+  serviceDate:'2026-12-01'
+ });
+ assert.equal(mark(outside,'Rinkai').kind,'unresolved',
+  'historical T-number fallback does not reuse the old 2611 timetable');
+});
+
+test('April Z7 operation is not reusable after fleet withdrawal in October-November',()=>{
+ const provider=root.TRAIN_OPERATION_EVIDENCE_PROVIDERS.find(p=>
+  p.id==='loo-ool-saikyo-dated-formations');
+ assert.ok(provider);
+ const april=provider.resolveEvidence('1983K',{
+  lineId:'Rinkai',serviceDate:'2026-04-03'});
+ assert.equal(april?.formationId,'Z7');
+ assert.equal(april?.vehicleType,model70);
+ for(const date of ['2026-09-29','2026-11-07','2026-11-19','2026-12-01']){
+  const value=provider.resolveEvidence('1983K',{
+   lineId:'Rinkai',serviceDate:date});
+  assert.equal(value,null,'do not reuse April Z7 onto '+date);
+ }
 });
