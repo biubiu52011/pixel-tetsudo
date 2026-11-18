@@ -44,10 +44,10 @@ test('exact historical evidence does not confer current-day or formation status'
  assert.ok(!sql.includes('CREATE TABLE'));
 });
 
-test('pure PNG bookkeeping remains one source inventory, 601 gallery PNG, 476 missing',()=>{
+test('pure PNG bookkeeping remains one source inventory, 601 gallery PNG, 475 missing',()=>{
  const rows=csv.trimEnd().split('\n').slice(1);
  assert.equal(new Set(rows.map(r=>r.split(',')[2])).size,601);
- assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,476);
- assert.equal(triage.trimEnd().split('\n').length-1,476);
- assert.equal(rows.filter(r=>r.startsWith('私铁,')).length,600);
+ assert.equal(rows.filter(r=>r.endsWith(',无号段')).length,475);
+ assert.equal(triage.trimEnd().split('\n').length-1,475);
+ assert.equal(rows.filter(r=>r.startsWith('私铁,')).length,619);
 });
