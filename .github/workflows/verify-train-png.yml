@@ -116,6 +116,8 @@ jobs:
         run: node --test tests/jr53-hanaakari-2026-autumn-9510-9511-sanyo-reference.test.cjs
       - name: Verify JR54 Shiki-shima historical Takasaki 8011M without automatic live-stock identity
         run: node --test tests/jr54-shikishima-takasaki-8011m-historical-reference.test.cjs
+      - name: Verify JR55 JR West Super Oki 3001D-3002D exact official timetable numbers and review-only PNG
+        run: node --test tests/jr55-sanin-kiha187-superoki-3001-3002-official-number-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
