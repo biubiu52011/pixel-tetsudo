@@ -1782,7 +1782,7 @@ function jrYamadaExactReplacementSqlBands(c){
  if(!sql.includes("segment_key='png_band/Yamada/0631-9642D'")||
  !sql.includes('DELETE FROM public.published_train_png_number_ranges'))
  throw Error('JR31 Yamada old broad SQL band not retired');
- const re=/^  \('2611','Yamada','(png_band\/Yamada\/[^']+)',(\d+),(\d+),'D',NULL,'\.\.\/(images\/列车\/JR東日本\/[^']+\.png)',NULL,FALSE,FALSE\)(?:,)?$/gm;
+ const re=/^  \('2611','Yamada','(png_band\/Yamada\/[^']+)',(\d+),(\d+),'D',NULL,'\.\.\/(images\/列车\/JR東日本\/[^']+\.png)',NULL,FALSE,FALSE\)(?:[,;])?$/gm;
  const found=[...sql.matchAll(re)];
  if(found.length!==12)throw Error('JR31 Yamada SQL band count mismatch');
  for(let i=0;i<12;i++){
