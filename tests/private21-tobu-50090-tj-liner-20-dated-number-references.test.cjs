@@ -55,5 +55,7 @@ test('remaining no-number PNG set matches single triage source',()=>{
   .filter(s=>s.endsWith(',无号段')).map(s=>s.split(',')[2]));
  const pending=new Set(triage.trimEnd().split('\n').slice(1).map(s=>s.split('","')[2]));
  assert.deepEqual([...pending].sort(),[...old].sort());
- assert.equal(pending.size,471);
+ // The pending count changes when independent later batches verify a PNG.
+ assert.equal(pending.size,old.size);
+ assert.ok(pending.size>0 && pending.size<601);
 });
