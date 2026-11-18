@@ -245,3 +245,37 @@ test('dated TWR 70-000/71-000 observations accept full K/F/S/T numbers and both 
    'the April carset must not leak into another operating date');
  }
 });
+
+test('dated TWR number evidence reaches the canonical timetable vehicle PNG resolver',()=>{
+ function resolved(number,date){
+  const run={trainNumber:number,timetableIdentity:'test:'+number+':'+date,
+   destinationStationUrn:'odpt.Station:TWR.Rinkai.Shin-Kiba',
+   railDirection:'odpt.RailDirection:Inbound',
+   trainType:'odpt.TrainType:TWR.Local',calendar:'odpt.Calendar:Weekday'};
+  const tt={'odpt:operator':'odpt.Operator:TWR',
+   'odpt:railway':'odpt.Railway:TWR.Rinkai',
+   'odpt:trainType':'odpt.TrainType:TWR.Local',
+   'odpt:calendar':'odpt.Calendar:Weekday',
+   'odpt:trainTimetableObject':[],
+   'odpt:originStation':['odpt.Station:TWR.Rinkai.Osaki'],
+   'odpt:destinationStation':['odpt.Station:TWR.Rinkai.Shin-Kiba'],
+   _positionSource:'train-timetable',_serviceDate:date};
+  return root.TrainVehicle.resolveTimetableRun(run,tt,'Rinkai',
+   {operator:'TWR'}).vehicleResult;
+ }
+ for(const date of ['2026-04-03','2026-04-04']){
+  for(const [no,name,png] of [
+   ['580T',model70,twr70],['1985K',model71,twr71],
+   ['1984K',model71,twr71],['1889T',model71,twr71],
+   ['991T',model70,twr70]
+  ]){
+   const r=resolved(no,date);
+   assert.equal(r.identityStatus,'EXACT',date+' '+no);
+   assert.equal(r.name,name,date+' '+no);
+   assert.equal(r.iconPath,png,date+' '+no);
+  }
+ }
+ const november=resolved('1985K','2026-11-18');
+ assert.notEqual(november.iconPath,twr71,
+  'April observation must not become an unverified November trainset');
+});
