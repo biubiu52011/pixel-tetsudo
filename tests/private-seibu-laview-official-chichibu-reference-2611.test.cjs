@@ -38,7 +38,7 @@ test('Seibu 001 image remains review-only and pure PNG records have no authority
  assert.ok(asset.canonicalModels.includes('西武001系'));
  assert.match(sql,/asset_scope='review'/);
  assert.match(sql,/is_generic=FALSE/);
- assert.match(sql,/NOT a certified operator operational train number or carset identity/);
+ assert.match(sql,/not a certified operator operational train number or carset identity/i);
  assert.match(sql,/source-owned trainNumber & serviceDate matching remains final/);
  assert.match(sql,/NULL,FALSE,FALSE\)/);
  assert.ok(!triage.includes('"'+png+'"'));
