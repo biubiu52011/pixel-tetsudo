@@ -728,8 +728,8 @@ function jrE233Saikyo315GotembaSqlSeedBands(c){
  const g315=rules.find(r=>r.png.endsWith('/JR東海_315系.png'));
  if(!e233||!g315||
     e233.min!==0||e233.max!==71||e233.suffix!=='KFS'||
-    e233.format!=='tail'||e233.valid_from!=='2026-11-01'||
-    e233.valid_to!=='2026-11-30'||
+    e233.format!=='tail'||e233.valid_from!==null||
+    e233.valid_to!==null||
     e233.line_ids.join('|')!=='SaikyoKawagoe|Rinkai'||
     e233.direction_number_parity!=='inbound-even'||
     e233.runtime_guards?.allowedModelLabels?.join()!=='E233系7000番台'||
