@@ -2136,7 +2136,7 @@ function lateVerifiedSourceSqlSeedBands(){
  if(!correction.includes("SET segment_key='png_band/Ito/5652-5652M',max_number=5652"))
   throw Error('Aloha 5653M revocation is missing; re-audit before publishing CSV');
  const refs=[];
- const re=/\('2611','([^']+)','(png_band\/[^']+)',\s*(\d+),\s*(\d+),'([^']*)',NULL,\s*'\.\.\/(images\/列车\/[^']+\.png)',NULL,FALSE,FALSE\)/g;
+ const re=/\('2611','([^']+)','(png_band\/[^']+)',\s*(\d+),\s*(\d+),'([^']*)',\s*NULL,\s*'\.\.\/(images\/列车\/[^']+\.png)',\s*NULL,\s*FALSE,\s*FALSE\)/g;
  for(const [file,expected,partialPng,defaultStatus] of specs){
   const sql=read('supabase/migrations/'+file);
   const png='images/列车/'+partialPng;
