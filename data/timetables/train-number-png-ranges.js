@@ -2181,7 +2181,8 @@
     directionNumberParity:"inbound-even",
     sourceRailways:["odpt.Railway:TWR.Rinkai"],
     trainTypesIfPresent:["Local"],
-    lowTailPublishedNumbers:["636T","738T","1638T","1640T"],
+    // Four low-tail exact exceptions; 80-91 is a complete pooled band.
+    publishedNumbers:["636T","738T","1638T","1640T"],
     allowedModelLabels:Object.keys(twrCompositeArtworkMap),
     exactModelArtworkMap:twrCompositeArtworkMap,
     pooledOperationModels:twrCompositeWorkingModels,
@@ -4780,7 +4781,15 @@
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
-      if(row.publishedNumbers && row.publishedNumbers.indexOf(number)<0)continue;
+      if(row.publishedNumbers && row.publishedNumbers.indexOf(number)<0){
+        // The audited Rinkai T family is a complete 80-91 suffix band,
+        // alongside four exact low-tail exceptions. Its archival list
+        // never constrains the pooled 80-91 services by date or calendar.
+        var broadT=row.pooledOperationModels && line==="Rinkai" &&
+          row.suffixes==="T" && /^[0-9]{3,4}T$/.test(number);
+        var broadTail=broadT?Number(number.slice(-3,-1)):-1;
+        if(!broadT||broadTail<80||broadTail>91)continue;
+      }
       // For the verified month only, match an actual published number on
       // THIS line and THIS timetable calendar, not a plausible bare range.
       if(row.officialMonthNumbers){
@@ -4834,10 +4843,6 @@
       }else continue;
       if(numberValue<row.from||numberValue>row.to||
           row.suffixes.indexOf(suffix)<0)continue;
-      // TWR 36/38/40 are exceptional published full-number services;
-      // only 80-91 is a complete reusable operation-number family.
-      if(row.lowTailPublishedNumbers && numberValue<80 &&
-         row.lowTailPublishedNumbers.indexOf(number)<0)continue;
       // JR East 2611 Nambu F and Tsurumi B public numbers:
       // even numbers run upstream (上り), odd downstream (下り).
       // Only check directions supplied by realtime or the timetable.
