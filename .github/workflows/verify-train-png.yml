@@ -118,6 +118,8 @@ jobs:
         run: node --test tests/jr54-shikishima-takasaki-8011m-historical-reference.test.cjs
       - name: Verify JR55 JR West Super Oki 3001D-3002D exact official timetable numbers and review-only PNG
         run: node --test tests/jr55-sanin-kiha187-superoki-3001-3002-official-number-reference.test.cjs
+      - name: Verify JR56 KiHa189 Hamakaze exact official 1D-2D Bantan numbers, still review-only
+        run: node --test tests/jr56-bantan-kiha189-hamakaze-1d-2d-official-reference.test.cjs
       - name: Verify JR route branch topology, BRT isolation and non-JR gaps
         run: node --test tests/jr-route-topology-20261109.test.cjs
       - name: Verify all 13 JR Central conventional SQL station and date-scoped import contracts
