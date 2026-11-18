@@ -38,7 +38,7 @@ test('NRA review status, original scope and canonical 2025 source preflight rema
  assert.match(sql,/asset_scope='review'/);
  assert.match(sql,/is_generic=FALSE/);
  assert.match(sql,/source_revision_date=DATE '2025-03-15'/);
- assert.match(sql,/source_path/);
+ assert.match(sql,/mini-tokyo-3d:seibu-shinjuku\.json@504d01f44b2e4c/);
  assert.match(sql,/20260407_NRABeer/);
  assert.match(sql,/20260805_NRAtanashi/);
  assert.match(sql,/Historical 2025 revision is NOT 2026-11 full train/);
