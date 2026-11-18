@@ -5460,9 +5460,22 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        p.positionSource === "train-timetable") &&
       String(p.sourceRailway || "") ===
         "odpt.Railway:JR-East.ChuoTatsuno";
+    // Rinkai <-> Saikyo trains cross the single verified Osaki boundary.
+    // DataFusion supplies this tag only for a source position projected at
+    // an existing handover station. Keep the source railway and the original
+    // train number; never choose stock from a through-service label alone.
+    var scopedSaikyoRinkaiBoundary = displayLineId !== lineId &&
+      p.fusionRole === "through-boundary" &&
+      String(p.fusionLineId || "") === lineId &&
+      String(p.stationId || "").split(".").pop() === "Osaki" &&
+      ((lineId === "Rinkai" && displayLineId === "SaikyoKawagoe" &&
+        p.sourceRailway === "odpt.Railway:TWR.Rinkai") ||
+       (lineId === "SaikyoKawagoe" && displayLineId === "Rinkai" &&
+        p.sourceRailway === "odpt.Railway:JR-East.SaikyoKawagoe"));
     if (displayLineId !== lineId && !scopedYokosukaSobuExtension &&
         !scopedNambuBranchMap && !scopedSuigunBranchMap &&
-        !scopedChuoTatsunoBranchMap) return null;
+        !scopedChuoTatsunoBranchMap && !scopedSaikyoRinkaiBoundary)
+      return null;
     var rules = window.TrainNumberPngRanges;
     if (!rules || typeof rules.match !== "function") return null;
     var matchContext=p;
@@ -5477,7 +5490,8 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var png = normalizeGalleryPngPath(match.pngPath);
     var garage = window.VehicleGaragePngMap;
     if (!png || !garage || !garage.matchModelPath(match.model, png, lineId) ||
-        ((scopedYokosukaSobuExtension || scopedChuoTatsunoBranchMap) &&
+        ((scopedYokosukaSobuExtension || scopedChuoTatsunoBranchMap ||
+          scopedSaikyoRinkaiBoundary) &&
          !garage.matchModelPath(match.model, png, displayLineId)))
       return null;
     return {trainNumber:String(p.trainNumber).trim(),lineId:lineId,
@@ -5485,6 +5499,39 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       planned:true,representative:true,
       referenceOnly:match.referenceOnly===true,
       illustrative:match.illustrative===true};
+  }
+
+  // Report why a Saikyo/Rinkai live train remained a neutral marker.
+  // Diagnostics do not license any artwork and never change actual-car status.
+  function diagnoseSaikyoRinkaiArtwork(p, displayLineId) {
+    if (!p || ["SaikyoKawagoe", "Rinkai"].indexOf(String(displayLineId || "")) < 0)
+      return "";
+    var source = String(p.positionLineId || p.lineId || "");
+    if (!p.trainNumber) return "missing-public-train-number";
+    var no = String(p.trainNumber).trim().toUpperCase();
+    if (!/^[0-9]{3,4}[KFS]$/.test(no)) return "number-not-saikyo-kfs-family";
+    if (!/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "").slice(0,10)))
+      return "service-date-outside-2611";
+    if (!p.sourceRailway) return "missing-source-railway";
+    var expected = source === "Rinkai" ? "odpt.Railway:TWR.Rinkai"
+      : source === "SaikyoKawagoe" ? "odpt.Railway:JR-East.SaikyoKawagoe" : "";
+    if (!expected || p.sourceRailway !== expected)
+      return "source-railway-not-saikyo-rinkai";
+    if (source !== displayLineId &&
+        !(p.fusionRole === "through-boundary" &&
+          p.fusionLineId === source &&
+          String(p.stationId || "").split(".").pop() === "Osaki"))
+      return "unverified-through-boundary";
+    if (!p.trainType && !p.typeName) return "missing-published-train-type";
+    if (!p.railDirection && !p.direction && !p.directionUrn)
+      return "missing-source-rail-direction";
+    var tail = Number(no.slice(-3,-1));
+    if (tail >= 80 && tail <= 91 &&
+        !p.realtimeVehicleType && !p.realtimeDerivedVehicleType &&
+        !(p.vehiclePlan && Array.isArray(p.vehiclePlan.models) &&
+          p.vehiclePlan.models.length === 1))
+      return "rinkai-70-000-71-000-model-unverified";
+    return "number-source-or-model-rule-unresolved";
   }
 
   // All independently eligible NUMBER-based PNG paths must agree.
@@ -6496,6 +6543,15 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       }
       return {kind:"unresolved",iconSrc:""};
     }
+    // Preserve a machine-readable cause for missing Saikyo/Rinkai PNGs.
+    // A missing source/type/direction is NOT grounds to guess an E233 or TWR
+    // formation; the neutral marker remains the correct safe fallback.
+    if (!identityConfirmed && !iconSrc &&
+        (contextLineId === "SaikyoKawagoe" || contextLineId === "Rinkai")) {
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false,
+        reason:diagnoseSaikyoRinkaiArtwork(p,contextLineId)};
+    }
     // A valid Noda position must remain visible even when its mixed fleet
     // cannot be narrowed to one model. Do not pass this fallback through
     // number-to-actual-model matching; it is a tagged reference image.
@@ -6713,6 +6769,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     resolveOperationPng: resolveOperationPng,
     selectMarkerArtwork: selectMarkerArtwork,
     diagnoseTobuIsesakiArtwork: diagnoseTobuIsesakiArtwork,
+    diagnoseSaikyoRinkaiArtwork: diagnoseSaikyoRinkaiArtwork,
     registerFormationEvidence: registerFormationEvidence,
     resolveFormationEvidence: resolveFormationEvidence,
     clearFormationEvidenceOtherDates: clearFormationEvidenceOtherDates,
