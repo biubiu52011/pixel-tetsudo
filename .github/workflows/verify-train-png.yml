@@ -27,6 +27,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - name: Diagnose actual JR-East Saikyo ODPT record shape (non-blocking, read-only)
+        run: node tools/probe-saikyo-live-source.cjs
       - name: Synchronize page script versions before train runtime checks
         run: node scripts/sync-page-scripts.cjs
       - name: Validate generated page script dependencies
