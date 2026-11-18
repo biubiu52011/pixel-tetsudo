@@ -43,7 +43,7 @@ test('JR50 promotes exactly one numbered gallery CSV row without a second truth 
  assert.equal(rows.filter(row=>row.startsWith('JR,JR東海,'+path+',')).length,1);
  assert.ok(!triage.includes('"'+path+'"'),
    '373 already has a sourced reference and cannot remain in no-number triage');
- assert.equal(rows.filter(row=>row.endsWith(',无号段')).length,478);
+ assert.equal(rows.filter(row=>row.endsWith(',无号段')).length,477);
  assert.ok(sql.includes('INSERT INTO public.published_train_png_number_ranges'));
  assert.ok(!sql.includes('CREATE TABLE'));
 });
