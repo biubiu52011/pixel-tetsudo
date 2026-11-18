@@ -63,11 +63,11 @@ test('new data-only source key is not JR Kashima or runtime stock authorization'
   'historical source-only SQL does not silently grant runtime vehicle authority');
 });
 
-test('gallery and evidence triage contain 601 PNG with 476 remaining missing',()=>{
- assert.equal(records.length,5558);
+test('gallery and evidence triage contain 601 PNG with 475 remaining missing',()=>{
+ assert.equal(records.length,5577);
  assert.equal(new Set(records.map(x=>x.split(',')[2])).size,601);
- assert.equal(records.filter(x=>x.endsWith(',无号段')).length,476);
- assert.equal(triage.trimEnd().split('\n').length-1,476);
+ assert.equal(records.filter(x=>x.endsWith(',无号段')).length,475);
+ assert.equal(triage.trimEnd().split('\n').length-1,475);
  assert.ok(!triage.includes('"'+png+'"'));
  for(const color of ['鹿島臨海鉄道_6000形_新塗装.png','鹿島臨海鉄道_6000形_標準色.png']){
   assert.ok(triage.includes(color),'unproven livery stays unmapped');
