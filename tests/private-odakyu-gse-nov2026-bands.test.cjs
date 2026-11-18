@@ -58,9 +58,9 @@ test('Source PDF, gallery ownership and review-only guard cannot silently change
  assert.ok(!triage.includes('"'+asset+'"'));
 });
 
-test('Gallery remains 601 PNG files and unresolved gaps count is 476',()=>{
+test('Gallery remains 601 PNG files and unresolved gaps count is 475',()=>{
  const all=csv.trimEnd().split('\n').slice(1);
  assert.equal(new Set(all.map(line=>line.split(',')[2])).size,601);
- assert.equal(all.filter(line=>line.endsWith(',无号段')).length,476);
- assert.equal(triage.trimEnd().split('\n').length-1,476);
+ assert.equal(all.filter(line=>line.endsWith(',无号段')).length,475);
+ assert.equal(triage.trimEnd().split('\n').length-1,475);
 });
