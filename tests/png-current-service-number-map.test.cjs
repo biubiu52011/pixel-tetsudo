@@ -17,10 +17,10 @@ test('active family filter is derived only from 601 gallery PNGs and official fl
  assert.equal(saved.date,'2026-11-16');
  assert.equal(saved.summary.physicalPng,601);
  assert.equal(saved.summary.fleetFamilyVerified,120);
- assert.equal(saved.summary.activeFamilyWithExistingNumberScope,85);
- assert.equal(saved.summary.activeFamilyWithoutNumberScope,35);
+ assert.equal(saved.summary.activeFamilyWithExistingNumberScope,86);
+ assert.equal(saved.summary.activeFamilyWithoutNumberScope,34);
  assert.equal(saved.summary.currentFleetStatusNotVerified,472);
- assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,12);
+ assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,13);
  assert.equal(saved.summary.quarantinedArtwork,9);
  assert.equal(saved.summary.exactPhysicalCarsetsVerified,0);
 });
@@ -57,13 +57,24 @@ test('retirement schedule does not equal retirement already: JR West 500 still a
  assert.ok(a.fleetEvidence.evidence_source_url.includes('westjr.co.jp'));
  assert.ok(a.fleetEvidence.note.includes('2027-01-13'));
 });
-test('new Rinkai 71-000 is active yet intentionally NOT assigned unsupported public train-number bands',()=>{
- const t=saved.activeWithoutNumber.find(x=>x.png==='images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png');
- assert.ok(t);
- assert.equal(t.numberRules.length,0);
- assert.equal(t.runtimeNumberRosters.length,0);
- const old=saved.mapped.find(x=>x.png==='images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png');
- assert.ok(old,'70-000 family remains operating during replacement overlap');
+test('Rinkai 70-000 and 71-000 share source-number candidates, never an actual stock assignment',()=>{
+ const paths=[
+  'images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png',
+  'images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png'
+ ];
+ for(const png of paths){
+  const item=saved.mapped.find(x=>x.png===png);
+  assert.ok(item,'both TWR fleet families remain operating during replacement');
+  assert.equal(item.actuallyObservedCarset,false);
+  assert.equal(item.numberedServiceRequiresRuntimeGuards,true);
+  const ids=item.numberRules.map(x=>x.ruleId);
+  assert.ok(ids.includes('js-0058'),'existing shared K/F/S tail remains referenced');
+  assert.ok(ids.includes('js-0132'),'Rinkai-only 53/54-day T roster is referenced');
+  assert.ok(item.numberRules.every(x=>x.actualVehicleConfirmed===false));
+  assert.ok(item.numberRules.every(x=>x.runtimeGuards?.exactModelArtworkMap),
+   'the operation number itself cannot choose the exact PNG');
+ }
+ assert.equal(saved.summary.exactPhysicalCarsetsVerified,0);
 });
 test('unknown is not retired; quarantined artwork never eligible for current vehicle PNG mapping',()=>{
  assert.equal(saved.pendingStatus.length,472);
