@@ -41,5 +41,5 @@ test('both references are source-only and must not create runtime or broad bands
  const pngs=new Set(rows.map(x=>x.split(',')[2]));
  assert.equal(pngs.size,601);
  const missing=rows.filter(x=>x.endsWith('无号段'));
- assert.equal(missing.length,456);
+ assert.equal(missing.length,454);
 });

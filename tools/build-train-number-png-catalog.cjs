@@ -2111,6 +2111,8 @@ function lateVerifiedSourceSqlSeedBands(){
  const specs=[
   ['20261118080000_jr49_shinetsu_shirayuki_e653_51_58_reference_2611.sql',1,'JR東日本/JR東日本_E653系.png','纯号段（官方番号参考/日期及实车守卫保留）'],
   ['20261118081000_jr50_tokaido_fujikawa_373_4001_4014_reference_2611.sql',1,'JR東海/JR東海_373系.png','纯号段（特急ふじかわ/原运行条件保留）'],
+  ['20261119002000_third08_watarase_wassi_wkt550_four_2026_official.sql',4,'わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-550形_わっしー.png','纯号段（渡良瀬2026年4至11月官方わっしー四个D番号；仅运行日有效，WKT-550素材review）'],
+  ['20261119002100_third08_watarase_wa99_two_re_2026_official.sql',2,'わたらせ渓谷鉄道/わたらせ渓谷鉄道_わ99形.png','纯号段（渡良瀬2026年3至11月官方渓谷号8717レ及8722レ；DE10两种机车不得推定）'],
   ['20261118235500_third07_hitachinaka_kiha11_136d_20251126.sql',1,'ひたちなか海浜鉄道/ひたちなか海浜鉄道_キハ11形.png','纯号段（2025-11-26现场记录キハ11-6担当136D；仅该日湊线历史参考，非每日固定车辆）'],
   ['20261118235600_third07_hitachinaka_kiha100_238d_20251126.sql',1,'ひたちなか海浜鉄道/ひたちなか海浜鉄道_キハ100形.png','纯号段（2025-11-26现场记录キハ100-39担当238D，运营方确认2025-11营业开始；非每日固定车辆）'],
   ['20261118235000_third06_isumi350_20241004_5d_official_historical.sql',1,'いすみ鉄道/いすみ鉄道_いすみ350型.png','纯号段（2024年10月4日官方事故公告确认いすみ350形351・352担当5D；线路已停运至今，仅历史参考）'],
@@ -2164,7 +2166,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==130)throw Error('Late sourced SQL bands must total 130 rows');
+ if(refs.length!==136)throw Error('Late sourced SQL bands must total 136 rows');
  return refs;
 }
 
