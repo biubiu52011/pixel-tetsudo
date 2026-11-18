@@ -69,7 +69,8 @@ test('all audited TWR 80-91 K/F/S/T bands map on SVG without any date',()=>{
      const m=assertPng(number,line,png,{serviceDate:date});
      assert.equal(m.planned,true,number);
      assert.equal(m.illustrative,true,number);
-     assert.equal(m.representativeOnly,true,number);
+     assert.notEqual(m.actualVehicleConfirmed,true,
+      'number pool cannot claim a physical carset: '+number);
     }
    }
   }
