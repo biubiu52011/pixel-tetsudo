@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/rebuild-rinkai-audits-20261118.yml'
+      - 'tools/build-train-number-png-catalog.cjs'
 permissions:
   contents: write
 jobs:
