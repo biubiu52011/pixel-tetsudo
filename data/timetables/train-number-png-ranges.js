@@ -1064,6 +1064,7 @@
     // A real source-model observation must select exactly one approved PNG.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:80,to:91,suffixes:"KFS",
       directionNumberParity:"inbound-even",
+      validFrom:"2026-11-01",validTo:"2026-11-30",
       sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
       trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
       // An independently supplied exact model remains mapped to its OWN
