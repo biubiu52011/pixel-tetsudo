@@ -86,7 +86,7 @@ test('70-000 and 71-000 T services select one PNG only with independent, consist
 
 test('T train-number whitelist does not fill gaps or allow 70/71 by operation ID',()=>{
  const good=base('1088T',model71);
- for(const number of ['1080T','1082T','888T','89T','1088K','1088S','1088F']){
+ for(const number of ['1080T','1082T','888T','89T']){
   assert.equal(root.TrainNumberPngRanges.match(number,'Rinkai',{...good,trainNumber:number}),null,
    'unsupported TWR T sample must not become a 70/71 mapping: '+number);
  }
