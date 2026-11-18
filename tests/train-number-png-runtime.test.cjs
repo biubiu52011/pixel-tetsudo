@@ -404,8 +404,8 @@ test('K/F/S number tails select display PNG by scoped number ranges, without con
     const p=live({trainNumber:number,positionLineId:'SaikyoKawagoe',
       sourceRailway:'odpt.Railway:JR-East.SaikyoKawagoe',
       trainType:'odpt.TrainType:JR-East.Local',
-      railDirection:'odpt.RailDirection:Inbound',
-      // The audited 80-91 reference works without explicit model evidence.});
+      railDirection:'odpt.RailDirection:Inbound'
+    });
     const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(chosen,number+' must match the published number range');
     assert.equal(chosen.model,model);
