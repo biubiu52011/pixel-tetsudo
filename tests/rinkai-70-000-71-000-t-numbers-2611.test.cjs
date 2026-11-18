@@ -115,3 +115,67 @@ test('T train-number whitelist does not fill gaps or allow 70/71 by operation ID
   railDirection:'odpt.RailDirection:Inbound',realtimeVehicleType:model70
  })?.pngPath,'../'+png70,'existing K/F/S reference still works');
 });
+
+test('Official ODPT 2026-03-16 public number snapshot covers T and K/F/S without inferring a 70/71 carset',()=>{
+ const snapshot=JSON.parse(fs.readFileSync(
+  'data/audits/twr-odpt-traintimetable-20260316-number-roster.json','utf8'));
+ assert.equal(snapshot.source,'ODPT odpt:TrainTimetable (TWR)');
+ assert.equal(snapshot.providerDcDate,'2026-03-16');
+ assert.equal(snapshot.recordCount,564);
+ assert.equal(snapshot.uniquePublicNumbers,516);
+ assert.equal(snapshot.trainVehicleTypeEvidenceCount,0);
+ assert.equal(snapshot.groups.length,7);
+ const numbersByCalendar={weekday:new Set(),holiday:new Set()};
+ let seen=0, kfs=0, ambiguous=0, lowT=0;
+ for(const group of snapshot.groups){
+  assert.equal(group.railway,'odpt.Railway:TWR.Rinkai');
+  const calendar=group.calendar.endsWith(':Weekday')?'weekday':'holiday';
+  assert.ok(group.calendar.endsWith(':Weekday')||
+   group.calendar.endsWith(':SaturdayHoliday'));
+  const direction=group.railDirection.split(':').pop();
+  assert.ok(['Inbound','Outbound'].includes(direction));
+  for(const number of group.numbers){
+   seen++;
+   assert.match(number,/^\\d+[KFST]$/);
+   assert.equal(parseInt(number,10)%2,direction==='Inbound'?0:1,
+    'ODPT source public train number parity: '+number);
+   const tail=parseInt(number,10)%100,suffix=number.slice(-1);
+   if(suffix==='T'){
+    assert.ok(tail===36||tail===38||tail===40||
+     (tail>=80&&tail<=91),'full official T number in approved split band: '+number);
+    if(tail<80)lowT++;
+    numbersByCalendar[calendar].add(number);
+   }else{
+    kfs++;
+    assert.ok(tail<=71||(tail>=80&&tail<=91),
+     'official K/F/S number stays in documented source-number bands: '+number);
+   }
+   const sample={trainNumber:number,positionLineId:'Rinkai',
+    sourceRailway:group.railway,trainType:group.trainType,
+    railDirection:group.railDirection,calendarType:calendar,
+    serviceDate:calendar==='weekday'?'2026-11-18':'2026-11-15'};
+   // This ODPT endpoint provides neither the 70-000/71-000 type nor a
+   // physical formation. A T or 80–91 K/F/S train must remain neutral.
+   if(suffix==='T'||tail>=80){
+    ambiguous++;
+    assert.equal(root.TrainNumberPngRanges.match(number,'Rinkai',sample),null,
+     'ODPT train number is NOT a current 70-000/71-000 identity: '+number);
+   }else{
+    const matched=root.TrainNumberPngRanges.match(number,'Rinkai',sample);
+    assert.equal(matched?.model,'E233系7000番台',
+     '00–71 K/F/S is a generic E233 number reference, not a physical carset: '+number);
+    assert.equal(matched?.planned,true);
+   }
+  }
+ }
+ assert.equal(seen,564);
+ assert.equal(kfs,457);
+ assert.equal(ambiguous,Array.from(snapshot.groups).reduce((n,g)=>n+
+  g.numbers.filter(no=>no.endsWith('T')||parseInt(no,10)%100>=80).length,0));
+ assert.equal(lowT,5);
+ const t=catalog.rules.find(x=>x.id==='js-0132');
+ for(const [calendar,prop] of [['weekday','weekday_numbers'],['holiday','holiday_numbers']]){
+  assert.deepEqual([...numbersByCalendar[calendar]].sort(),
+   [...t[prop]].sort(),'complete T roster equals official ODPT '+calendar);
+ }
+});
