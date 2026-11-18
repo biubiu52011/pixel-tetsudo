@@ -44,6 +44,7 @@ const expectedReferencedPngs = [
   'images/列车/富士急行/富士急行_6000系_標準色.png',
   'images/列车/富士急行/富士急行_8000系_フジサン特急_顔A.png',
   'images/列车/京成電鉄/京成電鉄_AE形.png',
+  'images/列车/京浜急行電鉄/京浜急行電鉄_2100形.png',
   'images/列车/京王電鉄/京王電鉄_5000系.png',
   'images/列车/伊豆急行/伊豆急行_2100系.png',
   'images/列车/小田急電鉄/小田急電鉄_70000形_GSE.png',
