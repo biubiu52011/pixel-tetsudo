@@ -95,6 +95,19 @@ function summary(data){
 }
 async function fetchScoped(fetcher=globalThis.fetch){
  const failures=[];let records=[];let complete=false;
+ // Health probe reports only whether a secret is configured; never its value.
+ // Missing challenge configuration must NOT be mistaken for empty timetables.
+ try{
+  const health=await fetcher(PROXY+'?health=1',{headers:{Origin:ORIGIN,Accept:'application/json'},
+    signal:AbortSignal.timeout(10000)});
+  if(!health.ok)throw Error('proxy health HTTP '+health.status);
+  const info=await health.json();
+  if(info?.challengeConfigured!==true){
+   return {records,complete,failures:[{scope:'proxy-health',reason:'challenge consumer key not configured in Supabase Edge secrets'}]};
+  }
+ }catch(e){
+  return {records,complete,failures:[{scope:'proxy-health',reason:String(e?.message||'unavailable').slice(0,95)}]};
+ }
  const make=async(params)=>{
   const url=new URL(PROXY);for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);
   const response=await fetcher(url.toString(),{headers:{Origin:ORIGIN,Accept:'application/json'},
