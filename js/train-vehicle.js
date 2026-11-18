@@ -5512,7 +5512,13 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var rinkaiLocalT = source === "Rinkai" && /^[0-9]{3,4}T$/.test(no);
     if (!rinkaiLocalT && !/^[0-9]{3,4}[KFS]$/.test(no))
       return "number-not-saikyo-kfs-family";
-    if (!/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "").slice(0,10)))
+    var tail = Number(no.slice(-3,-1));
+    var exactRinkaiKfsBand = /^[0-9]{3,4}[KFS]$/.test(no) &&
+      tail >= 80 && tail <= 91;
+    // The explicit-model 80-91 K/F/S PNG rule is month-independent.
+    // Only the archival T / generic Saikyo 2611 number references expire.
+    if (!exactRinkaiKfsBand &&
+        !/^2026-11-[0-3][0-9]$/.test(String(p.serviceDate || "").slice(0,10)))
       return "service-date-outside-2611";
     if (!p.sourceRailway) return "missing-source-railway";
     var expected = source === "Rinkai" ? "odpt.Railway:TWR.Rinkai"
@@ -5527,7 +5533,6 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (!p.trainType && !p.typeName) return "missing-published-train-type";
     if (!p.railDirection && !p.direction && !p.directionUrn)
       return "missing-source-rail-direction";
-    var tail = Number(no.slice(-3,-1));
     if (!rinkaiLocalT && tail >= 80 && tail <= 91 &&
         !p.realtimeVehicleType && !p.realtimeDerivedVehicleType &&
         !(p.vehiclePlan && Array.isArray(p.vehiclePlan.models) &&
