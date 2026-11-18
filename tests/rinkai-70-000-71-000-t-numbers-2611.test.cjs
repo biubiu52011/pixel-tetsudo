@@ -136,7 +136,7 @@ test('Official ODPT 2026-03-16 public number snapshot covers T and K/F/S without
   assert.ok(['Inbound','Outbound'].includes(direction));
   for(const number of group.numbers){
    seen++;
-   assert.match(number,/^\\d+[KFST]$/);
+   assert.match(number,/^\d+[KFST]$/);
    assert.equal(parseInt(number,10)%2,direction==='Inbound'?0:1,
     'ODPT source public train number parity: '+number);
    const tail=parseInt(number,10)%100,suffix=number.slice(-1);
