@@ -1,0 +1,40 @@
+name: Audit Tobu official timetable number bands (read-only)
+
+# ODPT Challenge 2026 limited-license: use existing Edge proxy only.
+# Persist no raw train timetable, user-supplied API keys, or train-to-PNG rules.
+# Observations are kept in short-lived GitHub Actions artifacts, not the repository.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-tobu-odpt-number-bands.yml'
+      - 'tools/audit-tobu-odpt-number-bands.cjs'
+      - 'tests/tobu-odpt-number-band-audit.test.cjs'
+
+permissions:
+  contents: read
+
+jobs:
+  audit-tobu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate read-only number parser and identity barriers
+        run: |
+          node --check tools/audit-tobu-odpt-number-bands.cjs
+          node --test tests/tobu-odpt-number-band-audit.test.cjs
+      - name: Observe operator-published Tobu numbers through existing protected proxy
+        run: |
+          node tools/audit-tobu-odpt-number-bands.cjs \
+            --output=/tmp/tobu-odpt-number-audit.json \
+            --summary="$GITHUB_STEP_SUMMARY"
+      - name: Retain number-only comparison snapshot for seven days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tobu-number-reference-observation
+          path: /tmp/tobu-odpt-number-audit.json
+          retention-days: 7
+          if-no-files-found: warn
