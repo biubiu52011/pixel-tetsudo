@@ -132,6 +132,11 @@ async function main(argv=process.argv.slice(2)){
  const out=flag('--output');if(out)fs.writeFileSync(out,JSON.stringify(data,null,2)+'\n');
  const text=summary(data);const md=flag('--summary');if(md)fs.appendFileSync(md,text);
  console.log(text);
+ // A green workflow with 0 ODPT records is NOT a successful source audit.
+ if(argv.includes('--require-observation') && !(data.status==='observed' && data.ingestedRecords>0 && data.uniqueNumbers>0)){
+  console.error('[Tobu ODPT] SOURCE_UNAVAILABLE: no verified timetable records; do not treat 0 matches as actual train gaps.');
+  process.exitCode=2;
+ }
  return data;
 }
 if(require.main===module)main().catch(e=>{console.error('Tobu audit error',e?.message);process.exitCode=1;});
