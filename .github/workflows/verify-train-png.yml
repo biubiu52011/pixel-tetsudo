@@ -168,6 +168,7 @@ jobs:
           node --check tools/build-png-to-train-number-index.cjs
           node tools/build-png-to-train-number-index.cjs --check
           node --test tests/png-to-train-number-index.test.cjs
+          node --test tests/rinkai-70-000-71-000-t-numbers-2611.test.cjs
           node --test tests/other-hakodate-17-review-assets-2611.test.cjs tests/other-railway-41-number-gap-2611.test.cjs tests/private-railway-238-number-gap-2611.test.cjs
           node --test tests/png-unmapped-source-triage-20261118.test.cjs
           node --test tests/jr49-shinetsu-shirayuki-reference-2611.test.cjs
