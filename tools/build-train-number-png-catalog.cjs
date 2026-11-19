@@ -2109,6 +2109,8 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119090000_jr64_kamaishi_hbe220_joetsu_e129_source_bands_2611.sql',3,'JR東日本/JR東日本_HB-E220系.png','纯号段（JR原有釜石线HB-E220系范围参考；区间内具体车次仍须精确校验）'],
+  ['20261119090000_jr64_kamaishi_hbe220_joetsu_e129_source_bands_2611.sql',1,'JR東日本/JR東日本_E129系.png','纯号段（JR原有上越线北段E129系番号边界；不推定区间内每个车次实存）'],
   ['20261119080000_jr63_chuo_shinano_383_kounan_9934_exact_bands_2611.sql',3,'JR東海/JR東海_383系.png','纯号段（JR原有しなの383系8个确切番号；运行日车型候选条件保留）'],
   ['20261119080000_jr63_chuo_shinano_383_kounan_9934_exact_bands_2611.sql',1,'JR東日本/JR東日本_キハ110系.png','纯号段（JR原有Kounan维护列车9934D单号码；非每日实车确认）'],
   ['20261119070000_jr62_existing_koumi_miyo_oito_special_number_bands_2611.sql',1,'JR東日本/JR東日本_キハ100・110系_HIGH_RAIL_1375.png','纯号段（JR原有HIGH RAIL 1375号码与运行日守卫保留；非实车确认）'],
@@ -2182,7 +2184,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==167)throw Error('Late sourced SQL bands must total 167 rows');
+ if(refs.length!==171)throw Error('Late sourced SQL bands must total 171 rows');
  return refs;
 }
 
