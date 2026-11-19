@@ -68,7 +68,7 @@ test('SQL keeps 3028/7025 original southern stop clocks and appends official nor
  assert.match(sql,/source_template_id IN\(68314,68315\)\)<>14/);
  assert.match(sql,/source_template_id=68168\)<>11/);
 });
-test('dated 3028MH and 7025MH use 287/289 candidates with a clearly illustrative 287 reference PNG',()=>{
+test('dated 3028MH and 7025MH preserve 287/289 candidates but neutralize review-only 287 illustration',()=>{
  for(const [id,no,stops,dir] of [
   [68315,'3028MH',['Fukuchiyama','Kaibara-Hyogo','Shinoyamaguchi',
     'Sanda-Hyogo','Takarazuka','Amagasaki','Osaka'],'Inbound'],
@@ -84,9 +84,9 @@ test('dated 3028MH and 7025MH use 287/289 candidates with a clearly illustrative
   assert.equal(proof.authorizesIllustration,true);
   assert.equal(proof.illustrationPng,'../images/列车/JR西日本/JR西日本_287系.png');
   const art=marker(p);
-  assert.equal(art.kind,'vehicle',no);
-  assert.equal(art.iconSrc,'../images/列车/JR西日本/JR西日本_287系.png',no);
-  assert.equal(art.illustrative,true,no);
+  assert.equal(art.kind,'unresolved',no);
+  assert.equal(art.iconSrc||'','',no);
+  assert.equal(art.actualVehicleConfirmed||false,false,no);
   assert.equal(marker(p,true).kind,'unresolved',no);
   assert.equal(art.actualVehicleConfirmed,false);
   assert.equal(verify({...p,serviceDate:'2026-12-01'}),null);
@@ -96,13 +96,13 @@ test('dated 3028MH and 7025MH use 287/289 candidates with a clearly illustrative
     sourceTemplateId:71234}}),null);
  }
 });
-test('existing 3008/3010 date-verified LimitedExpress family now has 287 illustrative artwork',()=>{
+test('existing 3008/3010 source family retains mixed candidate models and neutral review-only 287',()=>{
  const p=sample({id:68245,no:'3008MH',
   stops:['Fukuchiyama','Kuroi-Tamba','Kaibara-Hyogo','Tanigawa',
     'Shinoyamaguchi','Sanda-Hyogo','Takarazuka','Amagasaki','Osaka'],
   dir:'Inbound'});
  assert.deepEqual(Array.from(verify(p).candidateModels),officialModels);
- assert.equal(marker(p).kind,'vehicle');
+ assert.equal(marker(p).kind,'unresolved');
  assert.equal(marker(p).actualVehicleConfirmed,false);
  assert.match(index,/kounotori-3000-7000-express-illustration/);
  assert.match(edge,/The historical 30xx \/ seasonal 70xx sources are Kounotori/);
