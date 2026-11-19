@@ -1154,7 +1154,7 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-23": {"displayName":"H5系","iconName":"H5系","asset":"../images/列车/JR北海道/JR北海道_H5系.png","aliases":[]},
   "planned-stock-library-24": {"displayName":"N700系（JR東海）","iconName":"N700系（JR東海）","asset":null,"plannedAsset":"../images/列车/JR東海/JR東海_N700系.png","lineIds":["TokaidoShinkansen"],"aliases":["JR東海N700系"]},
   "planned-stock-library-25": {"displayName":"N700系（JR西日本）","iconName":"N700系（JR西日本）","asset":null,"plannedAsset":"../images/列车/JR西日本/JR西日本_N700系.png","lineIds":["TokaidoShinkansen","SanyoShinkansen"],"aliases":["JR西日本N700系"]},
-  "planned-stock-library-26": {"displayName":"N700系7000番台（JR西日本）","iconName":"N700系7000番台（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_N700系_7000番台.png","lineIds":["SanyoShinkansen","KyushuShinkansen"],"aliases":["JR西日本N700系7000番台"]},
+  "planned-stock-library-26": {"displayName":"N700系7000番台（JR西日本）","iconName":"N700系7000番台（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_N700系_7000番台.png","lineIds":["SanyoShinkansen","KyushuShinkansen"],"artworkReviewRequired":true,"aliases":["JR西日本N700系7000番台"]},
   "planned-stock-library-27": {"displayName":"500系（JR西日本）","iconName":"500系（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_500系.png","lineIds":["SanyoShinkansen"],"aliases":["JR西日本500系"]},
   "planned-stock-library-jrwest-700": {"displayName":"700系（JR西日本）","iconName":"700系（JR西日本）","asset":"../images/列车/JR西日本/JR西日本_700系.png","lineIds":["SanyoShinkansen"],"aliases":["JR西日本700系"]},
   "planned-stock-library-28": {"displayName":"800系（JR九州）","iconName":"800系（JR九州）","asset":"../images/列车/JR九州/JR九州_800系.png","lineIds":["KyushuShinkansen"],"aliases":["JR九州800系"]},
@@ -1348,23 +1348,23 @@ var CANONICAL_VEHICLES = {
   "jr-west-321": { displayName: "JR西日本321系", iconName: "JR西日本321系", asset: "../images/列车/JR西日本/JR西日本_321系.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], aliases: ["321系"] },
   "jr-west-323-m": { displayName: "JR西日本323系（M）", iconName: "JR西日本323系（M）", asset: "../images/列车/JR西日本/JR西日本_323系_M.png", lineIds: ["OsakaLoop"], artworkReviewRequired: true, aliases: [] },
   "jr-west-323-or": { displayName: "JR西日本323系（OR）", iconName: "JR西日本323系（OR）", asset: "../images/列车/JR西日本/JR西日本_323系_OR.png", lineIds: ["OsakaLoop"], artworkReviewRequired: true, aliases: [] },
-  "jr-west-kiha35": { displayName: "JR西日本キハ35系", iconName: "JR西日本キハ35系", asset: "../images/列车/JR西日本/JR西日本_キハ35系.png", aliases: [] },
-  "jr-west-kiha40-amtc": { displayName: "JR西日本キハ40系（AMTC）", iconName: "JR西日本キハ40系（AMTC）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_AMTC.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha40-ets": { displayName: "JR西日本キハ40系（ETS）", iconName: "JR西日本キハ40系（ETS）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_ETS.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha40-jbel": { displayName: "JR西日本キハ40系（JBEL）", iconName: "JR西日本キハ40系（JBEL）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_JBEL.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha40-jnrn": { displayName: "JR西日本キハ40系（JNRN）", iconName: "JR西日本キハ40系（JNRN）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_JNRN.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha40-oog": { displayName: "JR西日本キハ40系（OOG）", iconName: "JR西日本キハ40系（OOG）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_OOG.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha40-oor": { displayName: "JR西日本キハ40系（OOR）", iconName: "JR西日本キハ40系（OOR）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_OOR.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha40-uym": { displayName: "JR西日本キハ40系（UYM）", iconName: "JR西日本キハ40系（UYM）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_UYM.png", lineIds: ["SaninMain"], aliases: [] },
-  "jr-west-kiha41": { displayName: "JR西日本キハ41系", iconName: "JR西日本キハ41系", asset: "../images/列车/JR西日本/JR西日本_キハ41系.png", lineIds: ["SaninMain", "Bantan"], aliases: [] },
-  "jr-west-kiha47-sak": { displayName: "JR西日本キハ47系（SAK）", iconName: "JR西日本キハ47系（SAK）", asset: "../images/列车/JR西日本/JR西日本_キハ47系_SAK.png", lineIds: ["SaninMain"], aliases: [] },
+  "jr-west-kiha35": { displayName: "JR西日本キハ35系", iconName: "JR西日本キハ35系", asset: "../images/列车/JR西日本/JR西日本_キハ35系.png", artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-amtc": { displayName: "JR西日本キハ40系（AMTC）", iconName: "JR西日本キハ40系（AMTC）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_AMTC.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-ets": { displayName: "JR西日本キハ40系（ETS）", iconName: "JR西日本キハ40系（ETS）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_ETS.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-jbel": { displayName: "JR西日本キハ40系（JBEL）", iconName: "JR西日本キハ40系（JBEL）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_JBEL.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-jnrn": { displayName: "JR西日本キハ40系（JNRN）", iconName: "JR西日本キハ40系（JNRN）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_JNRN.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-oog": { displayName: "JR西日本キハ40系（OOG）", iconName: "JR西日本キハ40系（OOG）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_OOG.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-oor": { displayName: "JR西日本キハ40系（OOR）", iconName: "JR西日本キハ40系（OOR）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_OOR.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha40-uym": { displayName: "JR西日本キハ40系（UYM）", iconName: "JR西日本キハ40系（UYM）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_UYM.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha41": { displayName: "JR西日本キハ41系", iconName: "JR西日本キハ41系", asset: "../images/列车/JR西日本/JR西日本_キハ41系.png", lineIds: ["SaninMain", "Bantan"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-kiha47-sak": { displayName: "JR西日本キハ47系（SAK）", iconName: "JR西日本キハ47系（SAK）", asset: "../images/列车/JR西日本/JR西日本_キハ47系_SAK.png", lineIds: ["SaninMain"], artworkReviewRequired: true, aliases: [] },
   "jr-west-681-ft": { displayName: "JR西日本681系（FT）", iconName: "JR西日本681系（FT）", asset: "../images/列车/JR西日本/JR西日本_681系_FT.png", lineIds: ["TokaidoKansai", "Kosei"], artworkReviewRequired: true, aliases: [] },
-  "jr-west-683": { displayName: "JR西日本683系", iconName: "JR西日本683系", asset: "../images/列车/JR西日本/JR西日本_683系.png", lineIds: ["TokaidoKansai", "Kosei"], aliases: ["683系"] },
+  "jr-west-683": { displayName: "JR西日本683系", iconName: "JR西日本683系", asset: "../images/列车/JR西日本/JR西日本_683系.png", lineIds: ["TokaidoKansai", "Kosei"], artworkReviewRequired: true, aliases: ["683系"] },
   "jr-west-683-k": { displayName: "JR西日本683系（K）", iconName: "JR西日本683系（K）", asset: "../images/列车/JR西日本/JR西日本_683系_K.png", lineIds: ["TokaidoKansai", "Kosei"], artworkReviewRequired: true, aliases: [] },
   "jr-west-683-k4": { displayName: "JR西日本683系（K4）", iconName: "JR西日本683系（K4）", asset: "../images/列车/JR西日本/JR西日本_683系_K4.png", lineIds: ["TokaidoKansai", "Kosei"], artworkReviewRequired: true, aliases: [] },
   "jr-west-683-n": { displayName: "JR西日本683系（N）", iconName: "JR西日本683系（N）", asset: "../images/列车/JR西日本/JR西日本_683系_N.png", lineIds: ["TokaidoKansai", "Kosei"], artworkReviewRequired: true, aliases: [] },
   "jr-west-683-srn": { displayName: "JR西日本683系（SRN）", iconName: "JR西日本683系（SRN）", asset: "../images/列车/JR西日本/JR西日本_683系_SRN.png", lineIds: ["TokaidoKansai", "Kosei"], artworkReviewRequired: true, aliases: [] },
-  "jr-west-kiha87": { displayName: "JR西日本キハ87系", iconName: "JR西日本キハ87系", asset: "../images/列车/JR西日本/JR西日本_キハ87系.png", lineIds: ["TokaidoKansai", "SanyoMain", "SaninMain"], aliases: [] },
+  "jr-west-kiha87": { displayName: "JR西日本キハ87系", iconName: "JR西日本キハ87系", asset: "../images/列车/JR西日本/JR西日本_キハ87系.png", lineIds: ["TokaidoKansai", "SanyoMain", "SaninMain"], artworkReviewRequired: true, aliases: [] },
   // わ99形は一个固定四辆客车编成，不按单一来源车辆外形拆成
   // 12系或京王5000系；PNG 仍待精确像素源，不能复用わたらせ710形。
   "watarase-wa99": {
@@ -3355,7 +3355,7 @@ function resolveCanonicalVehicleForPlan(name, ctx) {
   ) ? direct : null;
 }
 
-// Derive the JR-06 review-only PNG gate from the canonical catalogue.
+// Derive the JR-06/JR-07/JR-08 review-only PNG gate from the existing canonical catalogue.
  // This is artwork eligibility, not a number->PNG truth or a selector.
  // The image files and model names remain indexed; no unreviewed file is
  // promoted just because an upstream timetable supplies its variant label.
