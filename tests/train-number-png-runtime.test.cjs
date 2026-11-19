@@ -3977,6 +3977,8 @@ test('JR-07 generic 681 model cannot borrow FT or 683 review-only art on Kosei a
    assert.equal(generic.displayName,'JR西日本681系');
    assert.equal(generic.candidateOnly,true);
    assert.equal(generic.asset||null,null);
+   assert.equal(generic.evidenceSource,
+     'https://www.westjr.co.jp/company/business/material/pdf/list_rolling_stock.pdf');
    for(const name of ['JR西日本681系（FT）','JR西日本683系','JR西日本683系（K）',
        'JR西日本683系（K4）','JR西日本683系（N）','JR西日本683系（SRN）']){
      const r=root.TrainVehicle.resolve({

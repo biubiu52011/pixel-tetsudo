@@ -3280,7 +3280,7 @@ CANONICAL_VEHICLES["jr-west-681-series-plan"] = {
   lineIds: ["TokaidoKansai", "Kosei"],
   aliases: ["681系"],
   candidateOnly: true, artworkStatus: "missing-native-asset",
-  evidenceSource: "https://www.jr-odekake.net/railroad/train/"
+  evidenceSource: "https://www.westjr.co.jp/company/business/material/pdf/list_rolling_stock.pdf"
 };
 
 Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
