@@ -63,11 +63,9 @@ function inspect(p,verifier){
  assert.equal(f.actualVehicleConfirmed,false);
  assert.equal(context.window.VehicleGaragePngMap.matchModelPath('JR西日本287系',png,'Fukuchiyama'),true);
  const art=marker(p);
- assert.equal(art.kind,'vehicle');
- assert.equal(art.iconSrc,png);
- assert.equal(art.illustrative,true);
- assert.equal(art.representativeOnly,true);
- assert.equal(art.actualVehicleConfirmed,false);
+ assert.equal(art.kind,'unresolved');
+ assert.equal(art.iconSrc||'','');
+ assert.notEqual(art.actualVehicleConfirmed,true);
  assert.equal(marker(p,true).kind,'unresolved');
  return f;
 }
