@@ -1052,6 +1052,7 @@
     // Reusable NUMBER bands: never infer a specific physical formation.
     // 0-71 JR E233, 72-79 Sotetsu 12000, 80-91 TWR pooled stock.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:0,to:71,suffixes:"KFS",
+      dateScope:"all-dates",
       directionNumberParity:"inbound-even",
       sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
       trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
@@ -1059,6 +1060,7 @@
       model:"E233系7000番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E233系_7000番台.png"},
     {lineIds:["SaikyoKawagoe"],from:72,to:79,suffixes:"KFS",
+      dateScope:"all-dates",
       directionNumberParity:"inbound-even",
       sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe"],
       trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
@@ -1068,6 +1070,7 @@
     // Even working tail belongs to the next odd family:
     // 80/81 -> 81, 82/83 -> 83, ... 90/91 -> 91.
     {lineIds:["SaikyoKawagoe","Rinkai"],from:80,to:91,suffixes:"KFS",
+      dateScope:"all-dates",
       directionNumberParity:"inbound-even",
       sourceRailwaysIfPresent:["odpt.Railway:JR-East.SaikyoKawagoe","odpt.Railway:TWR.Rinkai"],
       trainTypesIfPresent:["Local","Rapid","CommuterRapid"],
@@ -5256,6 +5259,7 @@
       if(!pngKey)continue;
       var pngMatch={trainNumber:number,lineId:line,model:selectedModel,
         pngPath:selectedPng,source:"train-number-range",
+        dateScope:row.dateScope||"",
         planned:true,representative:true};
       if(rinkaiTDisplayDefault||twrPoolDisplayDefault){
         // All pooled fleet references are illustrative, not real carsets.

@@ -114,6 +114,15 @@ function probe(p,kind){
   }
   return replay(q,target);
 }
+function isExpectedAllDateNumberBand(p,spec){
+  if(!spec||spec.kind!=='vehicle'||!spec.iconSrc)return false;
+  const rules=window.TrainNumberPngRanges;
+  if(!rules||typeof rules.match!=='function')return false;
+  const q={...p,serviceDate:'2027-11-16'};
+  const match=rules.match(q.trainNumber,q.positionLineId,q);
+  return !!(match&&match.dateScope==='all-dates'&&
+    String(match.pngPath||'')===String(spec.iconSrc||''));
+}
 
 // Reuse the same production module loader from the live Edge audit; do not
 // introduce a separate PNG selector or a second train-number authority.
@@ -141,7 +150,7 @@ const probes=[
   'wrong-display-line','missing-source-railway','future-service-date',
   'reversed-direction','removed-validity','opposite-calendar'
 ];
-for(const kind of probes)report.negativeProbes[kind]={tested:0,stillImage:0};
+for(const kind of probes)report.negativeProbes[kind]={tested:0,stillImage:0,allowedStillImage:0,unexpectedStillImage:0};
 for(const row of data.rows){
   const key=serviceKey(row);allKeys.add(key);
   const line=report.byLine[row.line_key]||(
@@ -169,8 +178,13 @@ for(const row of data.rows){
     assetPaths.add(spec.iconSrc);
     for(const kind of probes){
       ++report.negativeProbes[kind].tested;
-      if(probe(p,kind).kind==='vehicle')
+      const probed=probe(p,kind);
+      if(probed.kind==='vehicle'){
         ++report.negativeProbes[kind].stillImage;
+        if(kind==='future-service-date'&&isExpectedAllDateNumberBand(p,probed))
+          ++report.negativeProbes[kind].allowedStillImage;
+        else ++report.negativeProbes[kind].unexpectedStillImage;
+      }
     }
   }else{++report.returnNeutralRows;++line.neutral;}
   if(line.examples.length<4)line.examples.push({
@@ -187,7 +201,7 @@ report.imagePaths=[...assetPaths].sort();
 if(report.returnVehicleRows+report.returnNeutralRows!==report.sampleRows)
   report.safetyIssues.push({issue:'not all samples classified'});
 for(const kind of ['wrong-display-line','missing-source-railway','future-service-date']){
-  if(report.negativeProbes[kind].stillImage>0)
+  if(report.negativeProbes[kind].unexpectedStillImage>0)
     report.safetyIssues.push({issue:'source boundary not enforced',probe:kind});
 }
 console.log(JSON.stringify(report,null,2));

@@ -173,3 +173,15 @@ test('timetable estimates use pool as illustration, not actual carset',()=>{
  assert.equal(m.illustrative,true);
  assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
 });
+
+test('all-date K/F/S bands expose their intentional audit scope',()=>{
+ for(const [number,line] of [
+  ['510S','SaikyoKawagoe'],['1974K','SaikyoKawagoe'],
+  ['1984K','SaikyoKawagoe'],['1984K','Rinkai']
+ ]){
+  const p=pos(number,line,{serviceDate:'2031-01-01'});
+  const result=root.TrainNumberPngRanges.match(number,line,p);
+  assert.ok(result,number+' '+line);
+  assert.equal(result.dateScope,'all-dates',number+' '+line);
+ }
+});
