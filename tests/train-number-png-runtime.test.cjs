@@ -3709,3 +3709,37 @@ test('physical-car resolvers collect conflicts instead of accepting the first so
   root.VEHICLE_CARSETS=originalRoster;
  }
 });
+test('JR-06 Kuroshio 2069M cannot infer either 287 anniversary PNG from a bare public number',()=>{
+  const special=[
+    '../images/列车/JR西日本/JR西日本_287系_KRM.png',
+    '../images/列车/JR西日本/JR西日本_287系_SKR.png'
+  ];
+  // Aug sightings are deliberately historical and mutually non-stationary.
+  // A future service day or a second railway must not re-use them as carset evidence.
+  for(const [date,calendarType] of [
+    ['2026-08-22','holiday'],['2026-08-30','holiday'],
+    ['2026-11-19','weekday'],['2027-08-30','weekday']
+  ]) {
+    for(const lineId of ['KiseiWest','Hanwa']) {
+      const p=sql({
+        trainNumber:'2069M',trainId:'planned-trip:'+date+'|JR-West|'+lineId+'|2069M',
+        serviceDate:date,calendarType,
+        positionLineId:lineId,displayLineId:lineId,
+        sourceRailway:'odpt.Railway:JR-West.'+lineId,
+        trainOperator:'JR-West',
+        trainType:'odpt.TrainType:JR-West.LimitedExpress',
+        railDirection:'odpt.RailDirection:Outbound',
+        vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
+        vehicleResolvedFromRealtime:false,actualVehicleConfirmed:false,
+        vehicleFormationId:'',vehicleFormationCandidates:[],
+        plannedVehicleCandidates:['287系']
+      });
+      const byNum=root.TrainVehicle.lookupTrainNumberRangePng(p);
+      assert.equal(byNum,null,lineId+'/'+date+': no trusted static anniversary PNG range');
+      const rendered=marker(p,lineId);
+      assert.equal(rendered.kind,'unresolved',lineId+'/'+date+': must show neutral marker');
+      assert.ok(!special.includes(rendered.iconSrc||''));
+      assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
+    }
+  }
+});

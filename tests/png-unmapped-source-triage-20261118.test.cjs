@@ -93,3 +93,82 @@ test('unmapped evidence groups remain qualified and never become proof of a PNG 
     }
   }
 });
+// JR-06 is blocked on train-number-to-unique-artwork evidence, NOT PNG bytes.
+// Keep the original source tables and inventories as the only mapping truth.
+const JR06_NAMES = [
+ '223系_H2','223系_H6','223系_KAH','223系_KIL','223系_MORI',
+ '225系_V1','225系','227系_WK','271系','281系','283系_K',
+ '287系_K','287系_KRM','287系_SKR','287系_V1'
+];
+const JR06_PATHS = JR06_NAMES.map(n =>
+ 'images/列车/JR西日本/JR西日本_' + n + '.png');
+
+function crc32(bytes,from,to) {
+ let crc = 0xffffffff;
+ for(let i=from;i<to;i++) {
+   crc ^= bytes[i];
+   for(let j=0;j<8;j++)
+     crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+ }
+ return (crc ^ 0xffffffff) >>> 0;
+}
+test('JR-06 all 15 review PNG byte streams stay valid and remain numberless', () => {
+ assert.equal(new Set(JR06_PATHS).size,15);
+ const signature=Buffer.from([137,80,78,71,13,10,26,10]);
+ for(const path of JR06_PATHS) {
+   const inventory=groupedMissing.get(path),source=groupedTriage.get(path);
+   assert.ok(inventory,path+': was accidentally promoted to pure-number PNG');
+   assert.ok(source,path+': missing review triage record');
+   assert.equal(inventory[8],'无号段');
+   assert.equal(source[3],'review',path+': vehicle/paint is NOT approved');
+   assert.equal(source[4],'native_png',path+': byte verification regressed');
+   assert.equal(source[5],'review');
+   assert.equal(source[6],'否');
+   assert.equal(source[7],'');
+   assert.equal(source[8],'');
+   assert.ok(source[9].startsWith('R0_'),path+': still requires vehicle evidence');
+   const bytes=fs.readFileSync(path);
+   assert.ok(bytes.subarray(0,8).equals(signature),path+': bad PNG signature');
+   assert.equal(bytes.readUInt32BE(8),13,path+': non-standard IHDR');
+   assert.equal(bytes.toString('ascii',12,16),'IHDR',path+': no IHDR');
+   assert.equal(bytes.readUInt32BE(16),82,path+': unexpected width');
+   assert.equal(bytes.readUInt32BE(20),98,path+': unexpected height');
+   let pos=8,last='';
+   while(pos<bytes.length) {
+     assert.ok(pos+12<=bytes.length,path+': truncated chunk header');
+     const size=bytes.readUInt32BE(pos),end=pos+size+12;
+     assert.ok(size<=bytes.length&&end<=bytes.length,path+': truncated PNG chunk');
+     const checksum=bytes.readUInt32BE(end-4);
+     assert.equal(crc32(bytes,pos+4,end-4),checksum,path+': invalid CRC');
+     last=bytes.toString('ascii',pos+4,pos+8);
+     pos=end;
+   }
+   assert.equal(last,'IEND',path+': missing IEND');
+   assert.equal(pos,bytes.length,path+': trailing bytes');
+ }
+});
+
+test('JR-06 287 anniversary 2069M conflict stays a historical review, not a static PNG choice', () => {
+ const names=['287系_KRM','287系_SKR'];
+ const no='2069M';
+ const candidates=names.map(n=>'images/列车/JR西日本/JR西日本_'+n+'.png');
+ for(const p of candidates) {
+   const row=groupedTriage.get(p);
+   assert.ok(row&&row[9].startsWith('R0_'));
+   assert.equal(groupedMissing.get(p)[8],'无号段',
+     p+': a dated observation cannot become all-date train-number mapping');
+ }
+ const source=fs.readFileSync(
+   'supabase/migrations/20261119220000_jr06_287_wrap_candidates_2069m_conflict_notes_only.sql',
+   'utf8');
+ assert.match(source,/2026-08-22\s+HC603/);
+ assert.match(source,/2026-08-30\s+HC602/);
+ assert.match(source,/2069M/);
+ assert.doesNotMatch(source,/INSERT\s+INTO\s+public\.published_train_png_number_ranges/i);
+ const frontend=require('../tools/build-train-number-png-catalog.cjs').getRows();
+ assert.ok(frontend.every(x=>!candidates.some(p=>
+   String(x.pngPath||'').endsWith(p))), 'frontend number rules must not claim either review PNG');
+ // In particular, the generic 287 gallery and these two liveries are
+ // different assets; a single public service number is not a stable carset.
+ assert.equal(no,'2069M');
+});
