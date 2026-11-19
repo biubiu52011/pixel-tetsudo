@@ -118,6 +118,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMa
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,0439,0439,M,full,纯号段（JR既有原号码与车型守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,ChuoMain,1461,1461,M,full,纯号段（JR既有原号码与车型守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Oito,1522,3259,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Oito,3220,3220,M,full,纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2530,2530,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2535,2535,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_長野色.png,Shinonoi,2537,2537,M,full,纯号段（JR专用原始条件保留）
@@ -194,6 +195,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_0番台_新潟色.p
 JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png,ChuoTatsuno,0159,0159,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png,ChuoTatsuno,0159,0159,M,full,纯号段（PNG待审查・原有候选条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png,Oito,3111,8353,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png,Oito,5356,5356,M,full,纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_100番台_長野色.png,Oito,8352,8353,M,full,纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E127系_100番台_長野色_幌付.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Echigo,0120,1999,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Echigo,8132,8637,M,full,原有条件约束
@@ -1465,6 +1468,9 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoRapid,5049,
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoRapid,5053,5053,M,full,纯号段（JR特急原车次及车型条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,ChuoRapid,5055,5055,M,full,纯号段（JR特急原车次及车型条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,Oito,0005,8042,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,Oito,0005,0005,M,full,纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,Oito,0038,0038,M,full,纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E353系.png,Oito,8041,8042,M,full,纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E501系.png,JobanMain,0562,0562,M,full,纯号段（2026-10-11照片记录E501系K702担当562M；仅号码历史参考，不能推定其他日期车辆）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png,JobanMain,9621,9621,M,full,纯号段（2026年10月3日E501 SAKIGAKE K754历史运行：9621M・9725M，官网活动＋当日影像核实；不证明2026年11月实车）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E501系_E501_SAKIGAKE.png,JobanMain,9725,9725,M,full,纯号段（2026年10月3日E501 SAKIGAKE K754历史运行：9621M・9725M，官网活动＋当日影像核实；不证明2026年11月实车）
