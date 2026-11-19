@@ -2109,6 +2109,7 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119130000_jr68_joetsu_shukura_ten_official_number_bands.sql',7,'JR東日本/JR東日本_キハ40・48形_越乃Shu＊Kura.png','纯号段（JR68越乃Shu＊Kura系列官方2611十个列车号；PNG仍review，日期及实车须原守卫）'],
   ['20261119120000_jr67_hanawa_21_official_regular_number_bands_2611.sql',9,'JR東日本/JR東日本_キハ110系.png','纯号段（JR67花輪線2026年11月官方21个列车番号；运行日／车组仍须原守卫）'],
   ['20261119110000_jr66_kashima_e235_kitakami_kiha110_five_official_numbers.sql',2,'JR東日本/JR東日本_E235系_1000番台.png','纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）'],
   ['20261119110000_jr66_kashima_e235_kitakami_kiha110_five_official_numbers.sql',3,'JR東日本/JR東日本_キハ110系.png','纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）'],
@@ -2189,7 +2190,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==189)throw Error('Late sourced SQL bands must total 189 rows');
+ if(refs.length!==196)throw Error('Late sourced SQL bands must total 196 rows');
  return refs;
 }
 
