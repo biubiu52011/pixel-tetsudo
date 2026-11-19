@@ -217,3 +217,42 @@ test('JR-07 all 15 original review PNG files are valid native 82x98 PNGs but no 
    assert.equal(last,'IEND');assert.equal(offset,b.length);
  }
 });
+
+test('JR-08 native PNG audit preserves 14 unmapped assets and 12 review statuses', () => {
+ const names=["683系","N700系_7000番台","N700系","キハ35系","キハ40系_AMTC","キハ40系_ETS","キハ40系_JBEL","キハ40系_JNRN","キハ40系_OOG","キハ40系_OOR","キハ40系_UYM","キハ41系","キハ47系_SAK","キハ87系"];
+ assert.equal(names.length,14);
+ const signature=Buffer.from([137,80,78,71,13,10,26,10]);
+ const crc32=(b,start,end)=>{
+   let value=0xffffffff;
+   for(let i=start;i<end;i++){
+     value^=b[i];
+     for(let k=0;k<8;k++)value=(value>>>1)^((value&1)?0xedb88320:0);
+   }
+   return (value^0xffffffff)>>>0;
+ };
+ for(const name of names){
+   const path='images/列车/JR西日本/JR西日本_'+name+'.png';
+   const inv=groupedMissing.get(path),row=groupedTriage.get(path);
+   assert.ok(inv&&row,path+': must remain in existing audit');
+   assert.equal(inv[8],'无号段',path+': no invented numbering');
+   assert.equal(row[4],'native_png',path+': audited native format');
+   if(!name.startsWith('N700系')){
+     assert.equal(row[3],'review',path);
+     assert.equal(row[5],'review',path);
+   }
+   const b=fs.readFileSync(path);
+   assert.ok(b.subarray(0,8).equals(signature),path+': signature');
+   assert.equal(b.readUInt32BE(16),82,path+': width');
+   assert.equal(b.readUInt32BE(20),98,path+': height');
+   let pos=8,last='';
+   while(pos<b.length){
+     assert.ok(pos+12<=b.length,path+': chunk header');
+     const size=b.readUInt32BE(pos),end=pos+12+size;
+     assert.ok(end<=b.length,path+': truncated PNG');
+     assert.equal(crc32(b,pos+4,end-4),b.readUInt32BE(end-4),path+': bad CRC');
+     last=b.toString('ascii',pos+4,pos+8);pos=end;
+   }
+   assert.equal(last,'IEND',path+': missing end');
+   assert.equal(pos,b.length,path+': trailing bytes');
+ }
+});
