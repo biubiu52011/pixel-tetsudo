@@ -1930,6 +1930,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0735,0736,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kounan,0921,1940,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kounan,9934,9934,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kounan,9934,9934,D,full,纯号段（JR原有Kounan维护列车9934D单号码；非每日实车确认）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,RikutoEast,1720,5735,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,RikutoEast,1720,1724,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,RikutoEast,1726,1728,D,full,纯号段（JR专用原始条件保留）
@@ -2066,6 +2067,9 @@ JR,JR東海,images/列车/JR東海/JR東海_373系.png,TokaidoCentral,4001,4014,
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1001,1006,M,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1011,1011,M,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1026,1026,M,full,原有条件约束
+JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1001,1006,M,full,纯号段（JR原有しなの383系8个确切番号；运行日车型候选条件保留）
+JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1011,1011,M,full,纯号段（JR原有しなの383系8个确切番号；运行日车型候选条件保留）
+JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1026,1026,M,full,纯号段（JR原有しなの383系8个确切番号；运行日车型候选条件保留）
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,Shinonoi,1001,1026,M,full,纯号段（JR专用原始条件保留）
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0001,0001,A,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0004,0004,A,full,原有条件约束
