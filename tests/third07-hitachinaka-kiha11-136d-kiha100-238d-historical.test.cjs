@@ -4,6 +4,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const currentPendingPngCount=fs.readFileSync('data/audits/png-unmapped-source-triage-20261118.csv','utf8').trimEnd().split('\n').length-1;
 const read=path=>fs.readFileSync(path,'utf8');
 const inventory=read('data/audits/png-first-number-band-inventory-20261117.csv').trimEnd().split('\n').slice(1);
 const triage=read('data/audits/png-unmapped-source-triage-20261118.csv');
@@ -28,7 +29,7 @@ test('two 2025-11-26 historical vehicle/number pairs survive on one DATA-ONLY Mi
  }
  assert.deepEqual(actual,[136,238]);
  assert.equal(new Set(inventory.map(s=>s.split(',')[2])).size,601);
- assert.equal(inventory.filter(s=>s.endsWith('无号段')).length,443);
+ assert.equal(inventory.filter(s=>s.endsWith('无号段')).length,currentPendingPngCount);
 });
 test('unique roster identity is not claimed, and Hoshiimo 100-40 artwork remains unnumbered',()=>{
  const alt='images/列车/ひたちなか海浜鉄道/ひたちなか海浜鉄道_キハ100形_キハ100-40_ほしいも列車.png';

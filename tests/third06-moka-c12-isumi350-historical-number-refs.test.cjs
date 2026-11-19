@@ -4,6 +4,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const currentPendingPngCount=fs.readFileSync('data/audits/png-unmapped-source-triage-20261118.csv','utf8').trimEnd().split('\n').length-1;
 const read=p=>fs.readFileSync(p,'utf8');
 const isumi=read('supabase/migrations/20261118235000_third06_isumi350_20241004_5d_official_historical.sql');
 const moka=read('supabase/migrations/20261118235100_third06_moka_c12_6001_6002_official_historical.sql');
@@ -41,5 +42,5 @@ test('both references are source-only and must not create runtime or broad bands
  const pngs=new Set(rows.map(x=>x.split(',')[2]));
  assert.equal(pngs.size,601);
  const missing=rows.filter(x=>x.endsWith('无号段'));
- assert.equal(missing.length,443);
+ assert.equal(missing.length,currentPendingPngCount);
 });

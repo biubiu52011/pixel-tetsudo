@@ -2,6 +2,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const currentPendingPngCount=fs.readFileSync('data/audits/png-unmapped-source-triage-20261118.csv','utf8').trimEnd().split('\n').length-1;
 const png="images/列车/JR西日本/JR西日本_C57形_SLやまぐち.png";
 const sql=fs.readFileSync("supabase/migrations/20261119030000_jr59_yamaguchi_sl_c57_8521_8522_reference.sql",'utf8');
 const rows=fs.readFileSync("data/audits/png-first-number-band-inventory-20261117.csv",'utf8').trimEnd().split('\n');
@@ -18,5 +19,5 @@ test('JR59 has one review-only reference range, not a real-car identity',()=>{
  assert.ok(sql.includes('DATA-ONLY Yamaguchi'));
  assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));
- assert.equal(rows.filter(x=>x.endsWith('无号段')).length,443);
+ assert.equal(rows.filter(x=>x.endsWith('无号段')).length,currentPendingPngCount);
 });

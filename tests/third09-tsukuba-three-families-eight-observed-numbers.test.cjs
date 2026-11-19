@@ -2,6 +2,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const currentPendingPngCount=fs.readFileSync('data/audits/png-unmapped-source-triage-20261118.csv','utf8').trimEnd().split('\n').length-1;
 const sql=fs.readFileSync("supabase/migrations/20261119050000_third09_tsukuba_8_observed_photo_numbers.sql",'utf8');
 const rows=fs.readFileSync("data/audits/png-first-number-band-inventory-20261117.csv",'utf8').trimEnd().split('\n');
 const triage=fs.readFileSync("data/audits/png-unmapped-source-triage-20261118.csv",'utf8');
@@ -21,7 +22,7 @@ test('Third09 stores eight exact historically observed passenger-number interval
    assert.ok(sql.includes("'2611','TsukubaExpress','png_band/TsukubaExpress/"+code+'-'+code+"',"+n.n+','+n.n+",'',NULL,'../"+g.png+"',NULL,FALSE,FALSE"));
   }
  }
- assert.equal(rows.filter(s=>s.endsWith('无号段')).length,443);
+ assert.equal(rows.filter(s=>s.endsWith('无号段')).length,currentPendingPngCount);
  assert.equal(new Set(rows.slice(1).map(x=>x.split(',')[2])).size,601);
  assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));

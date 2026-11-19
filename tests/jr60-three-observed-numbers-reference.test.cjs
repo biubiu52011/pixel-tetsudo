@@ -2,6 +2,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const currentPendingPngCount=fs.readFileSync('data/audits/png-unmapped-source-triage-20261118.csv','utf8').trimEnd().split('\n').length-1;
 const sql=fs.readFileSync("supabase/migrations/20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql",'utf8');
 const rows=fs.readFileSync("data/audits/png-first-number-band-inventory-20261117.csv",'utf8').trimEnd().split('\n');
 const triage=fs.readFileSync("data/audits/png-unmapped-source-triage-20261118.csv",'utf8');
@@ -18,6 +19,6 @@ test('JR60 three observed-number gallery references remain source-only and date-
  assert.ok(sql.includes('E501 562M is on JobanMain'));
  assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));
- assert.equal(rows.filter(x=>x.endsWith('无号段')).length,443);
+ assert.equal(rows.filter(x=>x.endsWith('无号段')).length,currentPendingPngCount);
  assert.equal(new Set(rows.slice(1).map(x=>x.split(',')[2])).size,601);
 });
