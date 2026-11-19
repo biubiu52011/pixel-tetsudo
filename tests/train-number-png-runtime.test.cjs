@@ -3671,3 +3671,41 @@ test('GTFS labels with multiple eligible PNG series fail closed regardless of so
   'conflicting label fields cannot be decided by field order');
  assert.equal(separate.iconPath,'');
 });
+
+
+test('physical-car resolvers collect conflicts instead of accepting the first source',()=>{
+ const originalRoster=root.VEHICLE_CARSETS;
+ const context={
+  operator:'HakodateCity',lineId:'Hakodate2',
+  railway:'odpt.Railway:HakodateCity.Hakodate2',
+  realtimeCarNumber:'3001',serviceDate:'2026-11-19',
+  _realtimeVehicleResolution:true
+ };
+ const roster=vehicleType=>[{
+  operator:'HakodateCity',vehicle_type:vehicleType,
+  carset_id:'3001F',cars:['3001'],snapshot_date:'2026-11-01',
+  source_url:'https://example.invalid/hakodate-roster',status:'運用中'
+ }];
+ try {
+  root.VEHICLE_CARSETS=roster('函館市電9600形');
+  const conflict=root.TrainVehicle.resolve(context);
+  assert.equal(conflict.name,'');
+  assert.equal(conflict.identityStatus,'NARROWED');
+  assert.equal(conflict.identityReason,'conflicting-physical-car-evidence');
+  assert.equal(conflict.iconPath,'');
+  assert.equal(conflict.physicalCarEvidenceConflict,true);
+  assert.deepEqual(Array.from(conflict.physicalCarEvidenceCandidates).sort(),
+   ['函館市電3000形（3001号車）','函館市電9600形'].sort(),
+   'live-car and roster identities must both reach arbitration');
+
+  root.VEHICLE_CARSETS=roster('函館市電3000形（3001号車）');
+  const converged=root.TrainVehicle.resolve(context);
+  assert.equal(converged.identityStatus,'EXACT');
+  assert.equal(converged.physicalCarEvidenceConflict,false);
+  assert.equal(converged.name,'函館市電3000形（3001号車）');
+  assert.equal(converged.iconPath,
+   '../images/列车/函館市電/函館市電_3000形_3001号車.png');
+ }finally{
+  root.VEHICLE_CARSETS=originalRoster;
+ }
+});

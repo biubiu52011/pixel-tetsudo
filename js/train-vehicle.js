@@ -1619,6 +1619,62 @@ function lookupTobuBranchVehicleNumberPng(ctx) {
   };
 }
 
+// Reconcile every independently eligible physical-car resolver before
+// admitting a vehicle identity. No resolver order may hide a conflicting
+// car/formation record from another source.
+function resolvePhysicalCarEvidence(ctx) {
+  var rows = [
+    resolveTodenArakawaLiveCar(ctx),
+    resolveHakodateLiveCar(ctx),
+    resolveWataraseWa99Car(ctx),
+    resolveRosterCar(ctx),
+    lookupTobuBranchVehicleNumberPng(ctx)
+  ].filter(Boolean);
+  if (!rows.length) return { record: null, conflict: false, candidates: [] };
+
+  var identities = Object.create(null);
+  var numbers = Object.create(null);
+  var formations = Object.create(null);
+  var sourceUrls = Object.create(null);
+  rows.forEach(function(row) {
+    var canonical = resolveCanonicalVehicle(row.name);
+    var label = canonical && canonical.displayName ||
+      String(row.name || "").trim();
+    if (label) identities[label] = true;
+    var number = String(row.number || "").trim();
+    if (number) numbers[number] = true;
+    var formation = String(row.formationId || "").trim();
+    if (formation) formations[formation] = true;
+    var sourceUrl = String(row.sourceUrl || "").trim();
+    if (sourceUrl) sourceUrls[sourceUrl] = true;
+  });
+
+  var candidates = Object.keys(identities).sort();
+  var numberKeys = Object.keys(numbers).sort();
+  var formationKeys = Object.keys(formations).sort();
+  var conflict = candidates.length !== 1 ||
+    numberKeys.length > 1 || formationKeys.length > 1;
+  if (conflict) {
+    return {
+      record: null,
+      conflict: true,
+      candidates: candidates,
+      records: rows.slice()
+    };
+  }
+  return {
+    record: {
+      number: numberKeys[0] || "",
+      name: candidates[0],
+      formationId: formationKeys[0] || "",
+      sourceUrl: Object.keys(sourceUrls).sort().join(" | ")
+    },
+    conflict: false,
+    candidates: candidates,
+    records: rows.slice()
+  };
+}
+
 // 已验证的都营车辆身份及所属方图库图片。
 // 车队来源：东京都交通局车辆图鉴
 // https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/
@@ -3872,9 +3928,9 @@ function _canonicalVehicleIconPath(name, serviceDate) {
   function resolve(ctx) {
     ctx = ctx || {};
     var assignmentOperator = normOp(ctx.assignmentOperator || ctx.operationOperator || '');
-    var tcar = resolveTodenArakawaLiveCar(ctx) || resolveHakodateLiveCar(ctx) ||
-      resolveWataraseWa99Car(ctx) || resolveRosterCar(ctx) ||
-      lookupTobuBranchVehicleNumberPng(ctx);
+    var physicalCarEvidence = resolvePhysicalCarEvidence(ctx);
+    var tcar = physicalCarEvidence.record;
+    var physicalCarConflict = physicalCarEvidence.conflict === true;
     // 物理车号证据可能只携带运营方短车型名（如“71-000形”）；
     // 车号证据本身已限定所属方，必须先投影回规范全名再进入统一仲裁。
     var tcarCanonical = tcar && resolveCanonicalVehicle(tcar.name);
@@ -3883,7 +3939,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     // 对没有车型证据的列车才保留后者（绝不创造变体）。
     var hasExplicitVehicle = !!(String(ctx.realtimeVehicleType || '').trim() ||
       String(ctx.realtimeDerivedVehicleType || '').trim() ||
-      String(ctx.timetableVehicleType || '').trim() || tcar);
+      String(ctx.timetableVehicleType || '').trim() || tcar ||
+      physicalCarConflict);
     var realtimeCandidateLabels = Array.isArray(ctx.realtimeVehicleCandidates)
       ? ctx.realtimeVehicleCandidates.join(' / ') : '';
     var toeiFleet = hasExplicitVehicle ? null : resolveToeiOwnerSingleFleet(ctx);
@@ -3937,6 +3994,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
           String(ctx.verifiedTimetableModel || '') === String(ctx.timetableVehicleType || ''))
           ? ctx.verifiedTimetableModel : '' },
       { source: tcar && tcar.sourceUrl ? 'roster-physical-id' : 'official-realtime-car-number', value: tcarLabel },
+      { source: 'conflicting-physical-car-evidence',
+        value: physicalCarConflict ? physicalCarEvidence.candidates.join(' / ') : '' },
       { source: 'official-train-owner-single-fleet', value: toeiFleet },
       { source: 'official-realtime-owner-fleet-candidates', value: toeiFleetCandidates.join(' / ') }
     ].forEach(function(group) {
@@ -3956,7 +4015,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     // 一个已验证身份可以由多个来源共同携带；相互冲突的
     // 身份保持未解析；来源顺序或图片是否存在
     // 都不能成为选出胜者的理由。
-    var chosen = orderArr.length === 1 ? orderArr[0] : '';
+    var chosen = !physicalCarConflict && orderArr.length === 1
+      ? orderArr[0] : '';
     var chosenSrc = chosen ? pool[chosen].sources.join('+') : '';
 
     var confidence = chosen ? 'high' : 'none';
@@ -4022,7 +4082,10 @@ function _canonicalVehicleIconPath(name, serviceDate) {
     var identityStatus = 'UNKNOWN';
     var identityReason = 'no-vehicle-evidence';
     var effectiveCandidates = orderArr.slice();
-    if (chosen) {
+    if (physicalCarConflict) {
+      identityStatus = effectiveCandidates.length ? 'NARROWED' : 'UNKNOWN';
+      identityReason = 'conflicting-physical-car-evidence';
+    } else if (chosen) {
       identityStatus = 'EXACT';
       // 时刻表推导出的精确车型保留时刻表身份原因，
       // 便于下游诊断区分证据通道。
@@ -4065,6 +4128,8 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       source: chosenSrc,                             // decision source; empty when unresolved
       confidence: confidence,
       iconPath: iconPath,
+      physicalCarEvidenceConflict: physicalCarConflict,
+      physicalCarEvidenceCandidates: physicalCarEvidence.candidates.slice(),
       // 多车型号段的图片集合仅用于诊断/详情层核对；不泄漏到主标记。
       operationArtworkCandidates: operationArtworkCandidates.map(function(m) {
         return { vehicleType: m.vehicleType, asset: m.asset, sourceUrl: m.sourceUrl || '' };
