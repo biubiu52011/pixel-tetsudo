@@ -2109,6 +2109,7 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119193000_jr04_komii_221_232_kiha110_historical_references.sql',2,'JR東日本/JR東日本_キハ110系（小海線）.png','纯号段（JR-04小海線2026年1月3日221D实拍和6月21日232D乘车记录；2026年11月JR官网番号确认；限历史车型参考且不证明当日实车）'],
   ['20261119190000_jr03_uetsu_hamanasu_8052m_dated_historical.sql',1,'JR東日本/JR東日本_E653系_1000番台_ハマナス色.png','纯号段（JR-03羽越本线2026-08-14いなほ52号8052M哈马纳斯色U107历史摄影；PNG只作单号参考，不保证2026-11/其他日期实车）'],
   ['20261119180000_jr02_sotobo_1235m_e233_boso_historical_reference.sql',1,'JR東日本/JR東日本_E233系_房総地区_改造車.png','纯号段（JR-02外房线2026年10月13日1235M房総E233系C1实车记录＋2026年11月官方番号；PNG仍review、不得认定当日实车或跨日编组）'],
   ['20261119170000_jr01_tozai_e231_800_eleven_official_k_numbers.sql',11,'JR東日本/JR東日本_E231系_800番台.png','纯号段（JR-01東西線2026年11月JR公式K后缀11个精确列车番号；E231系800番台仅参考，车型与运行日须原JS守卫核实）'],
@@ -2198,7 +2199,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==233)throw Error('Late sourced SQL bands must total 202 rows');
+ if(refs.length!==235)throw Error('Late sourced SQL bands must total 202 rows');
  return refs;
 }
 
