@@ -18,7 +18,8 @@ test('JR61 12 source-observed singletons across four images are strictly referen
    assert.ok(sql.includes("'2611','"+g.line+"','"+seg+"',"+n+","+n+",'"+s+"',NULL,'../"+g.png+"',NULL,FALSE,FALSE"));
   }
  }
- assert.equal(inventory.filter(row=>row.endsWith('无号段')).length,443);
+ assert.equal(inventory.filter(row=>row.endsWith('无号段')).length,triage.trimEnd().split('\n').length-1,
+  'unmapped CSV and source-triage must have the same count after later batches');
  assert.equal(new Set(inventory.slice(1).map(x=>x.split(',')[2])).size,601);
  assert.ok(sql.includes('historical')); assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));
