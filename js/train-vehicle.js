@@ -6486,9 +6486,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         var examplePng=kounotoriExample
           ?"../images/列车/JR西日本/JR西日本_287系.png"
           :"../images/列车/JR西日本/JR西日本_321系.png";
-        // Two possible Kounotori model FAMILIES. The 287 artwork is
-        // explicitly illustrative and never a specific assigned set.
-        // 321's existing local/2774 duty illustration is unchanged.
+        // Kounotori has two candidate model families but no approved
+        // review-only 287 illustration. The 321 local/2774 illustration
+        // remains eligible when its independent proof matches.
         if(artworkFailed!==true&&fukFleet.authorizesIllustration===true&&
            (classicExample||kounotoriExample)&&approved&&
            fukFleet.illustrationModel===exampleModel&&
@@ -6505,7 +6505,12 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
                 "holiday-2774M-2025-207-321-working"
                 ?"fukuchiyama-2774M-2025-historical-207-321-example-only"
                 :"fukuchiyama-207-321-C-local-example-only"};
-        return {kind:"unresolved",iconSrc:""};
+        return kounotoriExample
+          ? {kind:"unresolved",iconSrc:"",referenceOnly:true,
+             actualVehicleConfirmed:false,
+             reason:"fukuchiyama-287-289-mixed-review-only-artwork",
+             candidateModels:fukFleet.candidateModels.slice()}
+          : {kind:"unresolved",iconSrc:""};
       }
       return {kind:"unresolved",iconSrc:""};
     }

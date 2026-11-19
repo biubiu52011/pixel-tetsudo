@@ -1284,10 +1284,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       /^(30|70)[0-9]{2}MH?$/.test(String(p.trainNumber||""))&&
       /(?:\.|:)LimitedExpress$/.test(String(p.trainType||""));
     var note = fukKounotori
-      ? (/^zh/.test(lang)?"车辆图片：287系仅是287／289系特急车型候选中的示意，不代表当日实际车辆或编组":
-          lang==="en"?"287-series artwork is only an example of the 287/289 Kounotori fleet; actual trainset unconfirmed":
-          lang==="ko"?"287계 이미지는 287/289계 특급 운용 참고용이며 당일 실제 편성은 미확인":
-          "287系の画像は287・289系『こうのとり』の参考例で、当日の実車形式・編成は未確認")
+      ? (/^zh/.test(lang)?"车辆候选：287系／289系；当日实际编组未确认，相关287系图库仍待审核，因此显示中性标记":
+          lang==="en"?"Fleet candidates: 287/289 series; no verified formation or approved 287 artwork, so a neutral marker is shown":
+          lang==="ko"?"차량 후보: 287/289계. 당일 편성 및 287계 이미지 승인 미확인으로 중립 표시":
+          "車両候補は287・289系。実際の編成と287系画像の承認は未確認のため中立表示")
       : fuk321
       ? (/^zh/.test(lang)?"车辆图片：321系仅为207／321系共通运用示意，实际车型和编组未确认":
           lang==="en"?"321-series artwork is only an example of the 207/321 fleet; actual stock unconfirmed":

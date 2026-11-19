@@ -3183,20 +3183,20 @@
         "Kawanishi-Ikeda","Itami","Amagasaki","Osaka"
       ].join("|");
     var is207321=isC||holiday2774;
-    // 287/289 are both Kounotori fleet candidates. A SINGLE generic 287
-    // PNG is displayed only as a clearly identified example; the SQL
-    // source proves neither this train's real type nor physical formation.
+    // Kounotori 287/289 are fleet candidates, not a carset.
+    // The generic 287 PNG is still review-only (JR-07), so historical
+    // timetable evidence cannot authorize it even as representative art.
+    // Keep service number, calendar, stop order and both fleet candidates.
     var galleryModels=is207321?["JR西日本207系（NK）",
       "JR西日本207系（Y2）","JR西日本321系"]:
-      isExpress?["JR西日本287系"]:[],
+      isExpress?[]:[],
       galleryPaths=is207321?[
         "../images/列车/JR西日本/JR西日本_207系_NK.png",
         "../images/列车/JR西日本/JR西日本_207系_Y2.png",
         "../images/列车/JR西日本/JR西日本_321系.png"
-      ]:isExpress?["../images/列车/JR西日本/JR西日本_287系.png"]:[],
+      ]:[],
       illustration=is207321
-        ?"../images/列车/JR西日本/JR西日本_321系.png":
-        isExpress?"../images/列车/JR西日本/JR西日本_287系.png":"";
+        ?"../images/列车/JR西日本/JR西日本_321系.png":"";
     return Object.freeze({
       lineId:"Fukuchiyama",sourceTrainNumber:num,
       sourceTemplateId:Number(proof.sourceTemplateId),numberBand:holiday2774?"holiday-2774M-2025-207-321-working":band[0],
@@ -3207,13 +3207,15 @@
       candidateModels:Object.freeze(is207321?["207系","321系"]:models),
       candidateGalleryModels:Object.freeze(galleryModels),
       candidateAssets:Object.freeze(galleryPaths),
-      illustrationModel:is207321?"JR西日本321系":isExpress?"JR西日本287系":"",
+      illustrationModel:is207321?"JR西日本321系":"",
       illustrationPng:illustration,
       illustrationSourceUrl:holiday2774
         ?"https://ameblo.jp/tc205-37/entry-12906281412.html":
         isC?"https://www.katano-transport.com/archives/29972598.html":
-        isExpress?"https://www.jr-odekake.net/railroad/train/kounotori/":"",
-      authorizesIllustration:is207321||isExpress,
+        "",
+      fleetSourceUrl:isExpress
+        ?"https://www.jr-odekake.net/railroad/train/kounotori/":"",
+      authorizesIllustration:is207321,
       referenceOnly:true,numberDateVerified:false,
       actualVehicleConfirmed:false,authorizesPNG:false
     });
@@ -3267,19 +3269,20 @@
        proof.candidateAssets.length!==0||
        p.vehicleIdentityStatus==="EXACT"||
        p.vehicleResolvedFromRealtime===true)return null;
-    var png="../images/列车/JR西日本/JR西日本_287系.png";
+    // Verified Friday service is NOT an approved 287 formation or PNG.
     return Object.freeze({
       lineId:"Fukuchiyama",sourceTrainNumber:"7025M",
       sourceTemplateId:2611087025001,
       numberBand:"kounotori-3000-7000-express-illustration",
       sourceFleetCandidates:Object.freeze(models),
       candidateModels:Object.freeze(models),
-      candidateGalleryModels:Object.freeze(["JR西日本287系"]),
-      candidateAssets:Object.freeze([png]),
-      illustrationModel:"JR西日本287系",
-      illustrationPng:png,
-      illustrationSourceUrl:"https://www.jr-odekake.net/railroad/train/kounotori/",
-      authorizesIllustration:true,referenceOnly:true,
+      candidateGalleryModels:Object.freeze([]),
+      candidateAssets:Object.freeze([]),
+      illustrationModel:"",
+      illustrationPng:"",
+      illustrationSourceUrl:"",
+      fleetSourceUrl:"https://www.jr-odekake.net/railroad/train/kounotori/",
+      authorizesIllustration:false,referenceOnly:true,
       numberDateVerified:true,actualVehicleConfirmed:false,
       authorizesPNG:false
     });

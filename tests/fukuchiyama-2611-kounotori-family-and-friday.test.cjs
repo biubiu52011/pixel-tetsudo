@@ -56,15 +56,19 @@ function inspect(p,verifier){
  const f=verifier(p);
  assert.ok(f,p.trainNumber+' verified scoped reference');
  assert.deepEqual(Array.from(f.candidateModels),models);
- assert.equal(f.illustrationModel,'JR西日本287系');
- assert.equal(f.illustrationPng,png);
- assert.equal(f.authorizesIllustration,true);
+ assert.equal(f.illustrationModel,'');
+ assert.equal(f.illustrationPng,'');
+ assert.equal(f.authorizesIllustration,false);
+ assert.deepEqual(Array.from(f.candidateGalleryModels),[]);
+ assert.deepEqual(Array.from(f.candidateAssets),[]);
  assert.equal(f.authorizesPNG,false);
  assert.equal(f.actualVehicleConfirmed,false);
  assert.equal(context.window.VehicleGaragePngMap.matchModelPath('JR西日本287系',png,'Fukuchiyama'),true);
  const art=marker(p);
  assert.equal(art.kind,'unresolved');
  assert.equal(art.iconSrc||'','');
+ assert.equal(art.reason,'fukuchiyama-287-289-mixed-review-only-artwork');
+ assert.deepEqual(Array.from(art.candidateModels),models);
  assert.notEqual(art.actualVehicleConfirmed,true);
  assert.equal(marker(p,true).kind,'unresolved');
  return f;
@@ -108,8 +112,8 @@ test('Friday 7025M clones the exact 11-stop known segment on four published Nove
  }
 });
 test('marker accessible text distinguishes representative 287 Kounotori from 321 local',()=>{
- assert.match(render,/车辆图片：287系仅是287／289系特急车型候选中的示意/);
- assert.match(render,/287系の画像は287・289系/);
+ assert.match(render,/车辆候选：287系／289系；当日实际编组未确认/);
+ assert.match(render,/車両候補は287・289系。実際の編成/);
  assert.match(render,/fukKounotori/);
  assert.match(render,/车辆图片：321系仅为207／321系共通运用示意/);
 });

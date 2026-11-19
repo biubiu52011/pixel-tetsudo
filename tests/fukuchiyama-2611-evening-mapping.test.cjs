@@ -81,11 +81,16 @@ test('dated 3028MH and 7025MH preserve 287/289 candidates but neutralize review-
   assert.ok(proof,no);
   assert.deepEqual(Array.from(proof.candidateModels),officialModels,no);
   assert.equal(proof.authorizesPNG,false);
-  assert.equal(proof.authorizesIllustration,true);
-  assert.equal(proof.illustrationPng,'../images/列车/JR西日本/JR西日本_287系.png');
+  assert.equal(proof.authorizesIllustration,false);
+  assert.equal(proof.illustrationPng,'');
+  assert.equal(proof.illustrationModel,'');
+  assert.deepEqual(Array.from(proof.candidateGalleryModels),[]);
+  assert.deepEqual(Array.from(proof.candidateAssets),[]);
   const art=marker(p);
   assert.equal(art.kind,'unresolved',no);
   assert.equal(art.iconSrc||'','',no);
+  assert.equal(art.reason,'fukuchiyama-287-289-mixed-review-only-artwork',no);
+  assert.deepEqual(Array.from(art.candidateModels),officialModels,no);
   assert.equal(art.actualVehicleConfirmed||false,false,no);
   assert.equal(marker(p,true).kind,'unresolved',no);
   assert.notEqual(art.actualVehicleConfirmed,true);
