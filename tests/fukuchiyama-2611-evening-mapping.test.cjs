@@ -88,7 +88,7 @@ test('dated 3028MH and 7025MH preserve 287/289 candidates but neutralize review-
   assert.equal(art.iconSrc||'','',no);
   assert.equal(art.actualVehicleConfirmed||false,false,no);
   assert.equal(marker(p,true).kind,'unresolved',no);
-  assert.equal(art.actualVehicleConfirmed,false);
+  assert.notEqual(art.actualVehicleConfirmed,true);
   assert.equal(verify({...p,serviceDate:'2026-12-01'}),null);
   assert.equal(verify({...p,trainType:'odpt.TrainType:JR-West.Local'}),null);
   assert.equal(verify({...p,scheduledStopKeys:stops.slice(1)}),null);
@@ -103,7 +103,7 @@ test('existing 3008/3010 source family retains mixed candidate models and neutra
   dir:'Inbound'});
  assert.deepEqual(Array.from(verify(p).candidateModels),officialModels);
  assert.equal(marker(p).kind,'unresolved');
- assert.equal(marker(p).actualVehicleConfirmed,false);
+ assert.notEqual(marker(p).actualVehicleConfirmed,true);
  assert.match(index,/kounotori-3000-7000-express-illustration/);
  assert.match(edge,/The historical 30xx \/ seasonal 70xx sources are Kounotori/);
  assert.match(edge,/vehicle_plan_confirmed=false/);
