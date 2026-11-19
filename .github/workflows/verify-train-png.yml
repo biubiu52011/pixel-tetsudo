@@ -126,6 +126,8 @@ jobs:
         run: node --test tests/jr60-three-observed-numbers-reference.test.cjs
       - name: Verify JR59 Yamaguchi 8521–8522 C57 reference-only band
         run: node --test tests/jr59-yamaguchi-sl-c57-number-reference.test.cjs
+      - name: Verify Third09 Tsukuba Express eight photo-observed passenger numbers
+        run: node --test tests/third09-tsukuba-three-families-eight-observed-numbers.test.cjs
       - name: Verify Third08 Watarase WKT550 and wa99 six official 2026 train numbers
         run: node --test tests/third08-watarase-wkt550-wa99-six-official-2026.test.cjs
       - name: Verify Third07 Hitachinaka KiHa11 136D and KiHa100 238D exact eyewitness date references

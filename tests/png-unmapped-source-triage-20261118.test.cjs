@@ -54,10 +54,10 @@ test('triage covers exactly every unmapped gallery PNG, with no invented band', 
   assert.ok(inventoryRows.every(row => row.length === 9));
   assert.ok(triageRows.every(row => row.length === 13));
   assert.equal(new Set(inventoryRows.map(row => row[2])).size, 601);
-  assert.equal(missingRows.length, 450);
-  assert.equal(groupedMissing.size, 450);
-  assert.equal(triageRows.length, 450);
-  assert.equal(groupedTriage.size, 450);
+  assert.equal(missingRows.length, 447);
+  assert.equal(groupedMissing.size, 447);
+  assert.equal(triageRows.length, 447);
+  assert.equal(groupedTriage.size, 447);
   assert.deepEqual([...groupedTriage.keys()].sort(), [...groupedMissing.keys()].sort());
   for (const [path, row] of groupedTriage) {
     const source = groupedMissing.get(path);
@@ -71,14 +71,14 @@ test('triage covers exactly every unmapped gallery PNG, with no invented band', 
 
 test('unmapped evidence groups remain qualified and never become proof of a PNG mapping', () => {
   assert.deepEqual(tally(triageRows, 0), {
-    JR: 125, 地铁: 33, 第三部门铁道: 34, 私铁: 217, 其他铁路: 41,
+    JR: 125, 地铁: 33, 第三部门铁道: 31, 私铁: 217, 其他铁路: 41,
   });
-  assert.deepEqual(tally(triageRows, 3), { available: 336, review: 114 });
+  assert.deepEqual(tally(triageRows, 3), { available: 333, review: 114 });
   const groups = tally(triageRows, 9);
   assert.equal(Object.keys(groups).length, 5);
   assert.equal((groups['R0_先验PNG文件与实车状态'] || 0) +
     (groups['R0_先核实未来/历史运营资格'] || 0), 114);
-  assert.equal(groups['R1_官方番号+车型唯一性'], 104);
+  assert.equal(groups['R1_官方番号+车型唯一性'], 101);
   assert.equal(groups['R2_编组车辆运行日'], 76);
   assert.equal(groups['R3_子型号/涂装需证据'], 156);
   for (const row of triageRows) {

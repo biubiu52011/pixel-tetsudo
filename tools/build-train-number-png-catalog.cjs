@@ -2109,6 +2109,9 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119050000_third09_tsukuba_8_observed_photo_numbers.sql',3,'首都圏新都市鉄道/首都圏新都市鉄道_TX-1000系.png','纯号段（TX-1000系2025年实拍3个客运番号；仅历史参考，不推定每日实车）'],
+  ['20261119050000_third09_tsukuba_8_observed_photo_numbers.sql',3,'首都圏新都市鉄道/首都圏新都市鉄道_TX-2000系.png','纯号段（TX-2000系2025年实拍3个客运番号；仅历史参考，不推定每日实车）'],
+  ['20261119050000_third09_tsukuba_8_observed_photo_numbers.sql',2,'首都圏新都市鉄道/首都圏新都市鉄道_TX-3000系.png','纯号段（TX-3000系2025年实拍2个客运番号；仅历史参考，不推定每日实车）'],
   ['20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql',1,'JR東日本/JR東日本_E501系.png','纯号段（2026-10-11照片记录E501系K702担当562M；仅号码历史参考，不能推定其他日期车辆）'],
   ['20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql',1,'JR東日本/JR東日本_E655系_なごみ_和.png','纯号段（2026-11-01照片记录E655系なごみ担当9022M；仅编号历史参考，不能推定其他日期车辆）'],
   ['20261119040000_jr60_e501_e655_kihae200_historical_numbers.sql',1,'JR東日本/JR東日本_キハE200系（小海線）.png','纯号段（2026-09-05乘车记录キハE200-1担当136D；仅历史参考，不能推定其他日期车辆）'],
@@ -2170,7 +2173,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==140)throw Error('Late sourced SQL bands must total 140 rows');
+ if(refs.length!==148)throw Error('Late sourced SQL bands must total 148 rows');
  return refs;
 }
 
