@@ -3743,3 +3743,70 @@ test('JR-06 Kuroshio 2069M cannot infer either 287 anniversary PNG from a bare p
     }
   }
 });
+
+test('JR-06 review-only canonical model labels never authorize a PNG or a false 2026 carset',()=>{
+ const reviewed = [
+  ['JR西日本223系（H2）','Hanwa','223系_H2'],
+  ['JR西日本223系（H6）','Hanwa','223系_H6'],
+  ['JR西日本223系（KAH）','Hanwa','223系_KAH'],
+  ['JR西日本223系（KIL）','Hanwa','223系_KIL'],
+  ['JR西日本223系（MORI）','Hanwa','223系_MORI'],
+  ['JR西日本225系（V1）','Hanwa','225系_V1'],
+  ['JR西日本225系','Hanwa','225系'],
+  ['JR西日本227系（WK）','Hanwa','227系_WK'],
+  ['JR西日本271系','Hanwa','271系'],
+  ['JR西日本281系','Hanwa','281系'],
+  ['JR西日本283系（K）','KiseiWest','283系_K'],
+  ['JR西日本287系（K）','KiseiWest','287系_K'],
+  ['JR西日本287系（KRM）','KiseiWest','287系_KRM'],
+  ['JR西日本287系（SKR）','KiseiWest','287系_SKR'],
+  ['JR西日本287系（V1）','KiseiWest','287系_V1']
+ ];
+ assert.equal(reviewed.length,15);
+ for(const [name,line,filename] of reviewed){
+   const png='../images/列车/JR西日本/JR西日本_'+filename+'.png';
+   const identity=root.TrainVehicle.resolveCanonicalVehicle(name);
+   assert.ok(identity,name+': model label remains searchable');
+   assert.equal(identity.artworkReviewRequired,true,name+': review state retained');
+   assert.equal(root.TrainIcons.resolveVehicleArtwork(name,'2026-11-19'),null,
+     name+': exact model label alone must not authorize review image');
+   const result=root.TrainVehicle.resolve({
+     lineId:line,operator:'JR-West',trainNumber:'2069M',
+     timetableVehicleType:name,serviceDate:'2026-11-19'
+   });
+   assert.equal(result.identityStatus,'EXACT',name+': known model name retained');
+   assert.equal(result.iconPath,'',name+': no review artwork');
+   for(const source of ['realtime-api','supabase-train-run']){
+     const p={
+       trainNumber:'2069M',trainId:'jr06-review-'+filename,
+       serviceDate:'2026-11-19',calendarType:'weekday',
+       sourceRailway:'odpt.Railway:JR-West.'+line,
+       positionLineId:line,displayLineId:line,trainOperator:'JR-West',
+       positionSource:source,estimated:source!=='realtime-api',
+       trainType:'odpt.TrainType:JR-West.LimitedExpress',
+       vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,
+       vehicleType:name,vehicleIconPath:png,
+       vehicleResolution:{identityStatus:'EXACT',lineId:line,name,
+         iconPath:png,sources:['timetable']}
+     };
+     const art=marker(p,line);
+     assert.equal(art.kind,'unresolved',name+'/'+source+
+       ': even a flattened upstream icon cannot bypass review');
+     assert.equal(art.iconSrc||'','');
+   }
+ }
+ // Approved art outside this batch must continue to resolve unchanged.
+ assert.equal(root.TrainIcons.resolveVehicleArtwork('E353系','2026-11-19'),
+   '../images/列车/JR東日本/JR東日本_E353系.png');
+});
+
+test('JR-06 review rows cannot be elevated by SQL artwork hydration',()=>{
+ const name='JR西日本287系（KRM）';
+ const p='images/列车/JR西日本/JR西日本_287系_KRM.png';
+ root.TrainIcons.hydrateVerifiedArtworkCatalog([
+   {image_path:p,vehicle_type:'287系',formation_id:'HC603',
+    asset_status:'review',livery:'くろしお60周年'}
+ ]);
+ assert.equal(root.TrainIcons.resolveVehicleArtwork(name,'2026-11-19'),null);
+ assert.equal(root.TrainIcons.resolveVehicleArtwork('JR西日本287系（HC603編成）','2026-11-19'),null);
+});

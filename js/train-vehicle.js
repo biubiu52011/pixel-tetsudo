@@ -1316,28 +1316,28 @@ var CANONICAL_VEHICLES = {
   "jr-west-213-w": { displayName: "JR西日本213系（W）", iconName: "JR西日本213系（W）", asset: "../images/列车/JR西日本/JR西日本_213系_W.png", lineIds: ["SanyoMain", "Ako"], lineAliases: { SanyoMain: ["213系"], Ako: ["213系"] }, aliases: [] },
   "jr-west-221-cha": { displayName: "JR西日本221系（CHA）", iconName: "JR西日本221系（CHA）", asset: "../images/列车/JR西日本/JR西日本_221系_CHA.png", lineIds: ["KansaiMain", "OsakaLoop"], lineAliases: { KansaiMain: ["221系"], OsakaLoop: ["221系"] }, aliases: [] },
   "jr-west-221-n": { displayName: "JR西日本221系（N）", iconName: "JR西日本221系（N）", asset: "../images/列车/JR西日本/JR西日本_221系_N.png", lineIds: ["KansaiMain", "OsakaLoop", "OsakaHigashi"], lineAliases: { KansaiMain: ["221系"], OsakaLoop: ["221系"], OsakaHigashi: ["221系"] }, aliases: [] },
-  "jr-west-223-h2": { displayName: "JR西日本223系（H2）", iconName: "JR西日本223系（H2）", asset: "../images/列车/JR西日本/JR西日本_223系_H2.png", lineIds: ["Hanwa"], aliases: [] },
-  "jr-west-223-h6": { displayName: "JR西日本223系（H6）", iconName: "JR西日本223系（H6）", asset: "../images/列车/JR西日本/JR西日本_223系_H6.png", lineIds: ["Hanwa"], aliases: [] },
+  "jr-west-223-h2": { displayName: "JR西日本223系（H2）", iconName: "JR西日本223系（H2）", asset: "../images/列车/JR西日本/JR西日本_223系_H2.png", lineIds: ["Hanwa"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-223-h6": { displayName: "JR西日本223系（H6）", iconName: "JR西日本223系（H6）", asset: "../images/列车/JR西日本/JR西日本_223系_H6.png", lineIds: ["Hanwa"], artworkReviewRequired: true, aliases: [] },
   // 福知山線南部の6000番台：既存H6アートは参考候補のみ。車番・編成を認定しない。
   "jr-west-223-6000-fukuchiyama-reference": { displayName: "JR西日本223系6000番台", iconName: "JR西日本223系6000番台", asset: null, plannedAsset: null, lineIds: ["Fukuchiyama"], aliases: ["223系6000番台"], candidateOnly: true },
   // 北部の5500番台は独立した実PNG。区間候補と実車運用の判定は別。
   "jr-west-223-5500-fukuchiyama": { displayName: "JR西日本223系5500番台", iconName: "JR西日本223系5500番台", asset: "../images/列车/JR西日本/JR西日本_223系_5500番台.png", lineIds: ["Fukuchiyama"], lineAliases: { Fukuchiyama: ["223系5500番台"] }, aliases: ["223系5500番台"] },
-  "jr-west-223-kah": { displayName: "JR西日本223系（KAH）", iconName: "JR西日本223系（KAH）", asset: "../images/列车/JR西日本/JR西日本_223系_KAH.png", lineIds: ["Hanwa", "KiseiWest"], aliases: [] },
-  "jr-west-223-kil": { displayName: "JR西日本223系（KIL）", iconName: "JR西日本223系（KIL）", asset: "../images/列车/JR西日本/JR西日本_223系_KIL.png", lineIds: ["Hanwa", "KiseiWest"], aliases: [] },
-  "jr-west-223-mori": { displayName: "JR西日本223系（MORI）", iconName: "JR西日本223系（MORI）", asset: "../images/列车/JR西日本/JR西日本_223系_MORI.png", lineIds: ["Hanwa", "KiseiWest"], aliases: [] },
-  "jr-west-225": { displayName: "JR西日本225系", iconName: "JR西日本225系", asset: "../images/列车/JR西日本/JR西日本_225系.png", lineIds: ["Hanwa"], aliases: ["225系"] },
-  "jr-west-225-v1": { displayName: "JR西日本225系（V1）", iconName: "JR西日本225系（V1）", asset: "../images/列车/JR西日本/JR西日本_225系_V1.png", lineIds: ["Hanwa"], aliases: [] },
-  "jr-west-227-wakayama": { displayName: "JR西日本227系（WK）", iconName: "JR西日本227系（WK）", asset: "../images/列车/JR西日本/JR西日本_227系_WK.png", lineIds: ["Hanwa", "KiseiWest"], lineAliases: { Hanwa: ["227系"], KiseiWest: ["227系"] }, aliases: [] },
-  "jr-west-271": { displayName: "JR西日本271系", iconName: "JR西日本271系", asset: "../images/列车/JR西日本/JR西日本_271系.png", lineIds: ["TokaidoKansai", "Hanwa"], aliases: ["271系"] },
+  "jr-west-223-kah": { displayName: "JR西日本223系（KAH）", iconName: "JR西日本223系（KAH）", asset: "../images/列车/JR西日本/JR西日本_223系_KAH.png", lineIds: ["Hanwa", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-223-kil": { displayName: "JR西日本223系（KIL）", iconName: "JR西日本223系（KIL）", asset: "../images/列车/JR西日本/JR西日本_223系_KIL.png", lineIds: ["Hanwa", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-223-mori": { displayName: "JR西日本223系（MORI）", iconName: "JR西日本223系（MORI）", asset: "../images/列车/JR西日本/JR西日本_223系_MORI.png", lineIds: ["Hanwa", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-225": { displayName: "JR西日本225系", iconName: "JR西日本225系", asset: "../images/列车/JR西日本/JR西日本_225系.png", lineIds: ["Hanwa"], artworkReviewRequired: true, aliases: ["225系"] },
+  "jr-west-225-v1": { displayName: "JR西日本225系（V1）", iconName: "JR西日本225系（V1）", asset: "../images/列车/JR西日本/JR西日本_225系_V1.png", lineIds: ["Hanwa"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-227-wakayama": { displayName: "JR西日本227系（WK）", iconName: "JR西日本227系（WK）", asset: "../images/列车/JR西日本/JR西日本_227系_WK.png", lineIds: ["Hanwa", "KiseiWest"], lineAliases: { Hanwa: ["227系"], KiseiWest: ["227系"] }, artworkReviewRequired: true, aliases: [] },
+  "jr-west-271": { displayName: "JR西日本271系", iconName: "JR西日本271系", asset: "../images/列车/JR西日本/JR西日本_271系.png", lineIds: ["TokaidoKansai", "Hanwa"], artworkReviewRequired: true, aliases: ["271系"] },
   "jr-west-273": { displayName: "JR西日本273系", iconName: "JR西日本273系", asset: "../images/列车/JR西日本/JR西日本_273系.png", lineIds: ["SanyoMain", "SaninMain"], aliases: [] },
-  "jr-west-281": { displayName: "JR西日本281系", iconName: "JR西日本281系", asset: "../images/列车/JR西日本/JR西日本_281系.png", lineIds: ["TokaidoKansai", "Hanwa"], aliases: ["281系"] },
+  "jr-west-281": { displayName: "JR西日本281系", iconName: "JR西日本281系", asset: "../images/列车/JR西日本/JR西日本_281系.png", lineIds: ["TokaidoKansai", "Hanwa"], artworkReviewRequired: true, aliases: ["281系"] },
   "jr-west-283": { displayName: "JR西日本283系", iconName: "JR西日本283系", asset: "../images/列车/JR西日本/JR西日本_283系.png", lineIds: ["KiseiWest"], aliases: [] },
-  "jr-west-283-k": { displayName: "JR西日本283系（K）", iconName: "JR西日本283系（K）", asset: "../images/列车/JR西日本/JR西日本_283系_K.png", lineIds: ["KiseiWest"], aliases: [] },
+  "jr-west-283-k": { displayName: "JR西日本283系（K）", iconName: "JR西日本283系（K）", asset: "../images/列车/JR西日本/JR西日本_283系_K.png", lineIds: ["KiseiWest"], artworkReviewRequired: true, aliases: [] },
   "jr-west-287": { displayName: "JR西日本287系", iconName: "JR西日本287系", asset: "../images/列车/JR西日本/JR西日本_287系.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: ["287系"] },
-  "jr-west-287-k": { displayName: "JR西日本287系（K）", iconName: "JR西日本287系（K）", asset: "../images/列车/JR西日本/JR西日本_287系_K.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
-  "jr-west-287-krm": { displayName: "JR西日本287系（KRM）", iconName: "JR西日本287系（KRM）", asset: "../images/列车/JR西日本/JR西日本_287系_KRM.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
-  "jr-west-287-skr": { displayName: "JR西日本287系（SKR）", iconName: "JR西日本287系（SKR）", asset: "../images/列车/JR西日本/JR西日本_287系_SKR.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
-  "jr-west-287-v1": { displayName: "JR西日本287系（V1）", iconName: "JR西日本287系（V1）", asset: "../images/列车/JR西日本/JR西日本_287系_V1.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
+  "jr-west-287-k": { displayName: "JR西日本287系（K）", iconName: "JR西日本287系（K）", asset: "../images/列车/JR西日本/JR西日本_287系_K.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-287-krm": { displayName: "JR西日本287系（KRM）", iconName: "JR西日本287系（KRM）", asset: "../images/列车/JR西日本/JR西日本_287系_KRM.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-287-skr": { displayName: "JR西日本287系（SKR）", iconName: "JR西日本287系（SKR）", asset: "../images/列车/JR西日本/JR西日本_287系_SKR.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
+  "jr-west-287-v1": { displayName: "JR西日本287系（V1）", iconName: "JR西日本287系（V1）", asset: "../images/列车/JR西日本/JR西日本_287系_V1.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
   "jr-west-289-g": { displayName: "JR西日本289系（G）", iconName: "JR西日本289系（G）", asset: "../images/列车/JR西日本/JR西日本_289系_G.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
   "jr-west-289-k-ins": { displayName: "JR西日本289系（K-INS）", iconName: "JR西日本289系（K-INS）", asset: "../images/列车/JR西日本/JR西日本_289系_K_INS.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
   "jr-west-289-kani": { displayName: "JR西日本289系（KANI）", iconName: "JR西日本289系（KANI）", asset: "../images/列车/JR西日本/JR西日本_289系_KANI.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], aliases: [] },
@@ -3342,6 +3342,17 @@ function resolveCanonicalVehicleForPlan(name, ctx) {
   ) ? direct : null;
 }
 
+// Derive the JR-06 review-only PNG gate from the canonical catalogue.
+ // This is artwork eligibility, not a number->PNG truth or a selector.
+ // The image files and model names remain indexed; no unreviewed file is
+ // promoted just because an upstream timetable supplies its variant label.
+var REVIEW_REQUIRED_CANONICAL_PNG = Object.create(null);
+Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
+  var vehicle = CANONICAL_VEHICLES[id];
+  if (vehicle && vehicle.artworkReviewRequired === true && vehicle.asset)
+    REVIEW_REQUIRED_CANONICAL_PNG[vehicle.asset] = true;
+});
+
 // 可选的预验证内存目录可以扩展内置图片。
 // 规范身份解析器仍然是
 // 唯一的车型选择器：目录行不能猜测列车车型。
@@ -3357,6 +3368,8 @@ function hydrateVerifiedArtworkCatalog(rows) {
     var path = row && String(row.image_path || "");
     if (!(path.startsWith("images/列车/") && path.endsWith(".png") && path.split("/").length === 4)) return;
     var artwork = "../" + path;
+    if (row.asset_status === 'review' ||
+        REVIEW_REQUIRED_CANONICAL_PNG[artwork]) return;
     paths[artwork] = true;
     // 显式编组证据可以识别已验证的变体；必须要求
     // 带运营方限定的车型与精确编组，绝不能从裸系列名推断。
@@ -3754,7 +3767,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
   var n = String(name || "").trim();
   if (!n) return null;
   var rec = resolveCanonicalVehicle(n);
-  if (!rec) return null;
+  if (!rec || rec.artworkReviewRequired === true) return null;
   if (rec.validFrom || rec.validTo) {
     var d = String(serviceDate || "").slice(0, 10);
     if (!d) return null;
@@ -4063,6 +4076,7 @@ function _canonicalVehicleIconPath(name, serviceDate) {
         var dbArt = String(ctx.verifiedTimetableArtworkPath || '');
         var dbModel = admittedIdentity(ctx.verifiedTimetableModel, 'verified-timetable-artwork');
         if (!iconPath && chosen === dbModel &&
+            !REVIEW_REQUIRED_CANONICAL_PNG['../' + dbArt] &&
             /^images\/列车\/[^/.][^/]*\/[^/.][^/]*\.png$/.test(dbArt) &&
             dbArt.indexOf('..') < 0) {
           iconPath = '../' + dbArt;
@@ -5391,7 +5405,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var src = String(path || "").trim();
     if (src.indexOf("images/列车/") === 0) src = "../" + src;
     else if (src.indexOf("/images/列车/") === 0) src = ".." + src;
-    if (!isGalleryPng(src)) return "";
+    if (!isGalleryPng(src) || REVIEW_REQUIRED_CANONICAL_PNG[src]) return "";
     if(window.VehicleGaragePngMap&&typeof window.VehicleGaragePngMap.isQuarantinedPng==='function'&&
        window.VehicleGaragePngMap.isQuarantinedPng(src))return "";
     var parts = src.split("/");
