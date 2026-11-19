@@ -1347,7 +1347,7 @@ var CANONICAL_VEHICLES = {
   "jr-west-289-mhs": { displayName: "JR西日本289系（MHS）", iconName: "JR西日本289系（MHS）", asset: "../images/列车/JR西日本/JR西日本_289系_MHS.png", lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"], artworkReviewRequired: true, aliases: [] },
   "jr-west-321": { displayName: "JR西日本321系", iconName: "JR西日本321系", asset: "../images/列车/JR西日本/JR西日本_321系.png", lineIds: ["TokaidoKansai", "Fukuchiyama", "Gakkentoshi", "JRTozai", "OsakaHigashi"], aliases: ["321系"] },
   "jr-west-323-m": { displayName: "JR西日本323系（M）", iconName: "JR西日本323系（M）", asset: "../images/列车/JR西日本/JR西日本_323系_M.png", lineIds: ["OsakaLoop"], artworkReviewRequired: true, aliases: [] },
-  "jr-west-323-or": { displayName: "JR西日本323系（OR）", iconName: "JR西日本323系（OR）", asset: "../images/列车/JR西日本/JR西日本_323系_OR.png", lineIds: ["OsakaLoop"], lineAliases: { OsakaLoop: ["323系"] }, artworkReviewRequired: true, aliases: [] },
+  "jr-west-323-or": { displayName: "JR西日本323系（OR）", iconName: "JR西日本323系（OR）", asset: "../images/列车/JR西日本/JR西日本_323系_OR.png", lineIds: ["OsakaLoop"], artworkReviewRequired: true, aliases: [] },
   "jr-west-kiha35": { displayName: "JR西日本キハ35系", iconName: "JR西日本キハ35系", asset: "../images/列车/JR西日本/JR西日本_キハ35系.png", aliases: [] },
   "jr-west-kiha40-amtc": { displayName: "JR西日本キハ40系（AMTC）", iconName: "JR西日本キハ40系（AMTC）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_AMTC.png", lineIds: ["SaninMain"], aliases: [] },
   "jr-west-kiha40-ets": { displayName: "JR西日本キハ40系（ETS）", iconName: "JR西日本キハ40系（ETS）", asset: "../images/列车/JR西日本/JR西日本_キハ40系_ETS.png", lineIds: ["SaninMain"], aliases: [] },
@@ -3252,7 +3252,7 @@ CANONICAL_VEHICLES["jr-west-323-local-plan"] = {
   iconName: "JR西日本323系",
   asset: null, plannedAsset: null,
   lineIds: ["OsakaLoop", "Yumesaki"],
-  aliases: ["323系（大阪環状線）"],
+  aliases: ["323系", "323系（大阪環状線）"],
   candidateOnly: true, artworkStatus: "missing-native-asset",
   evidenceSource: "https://www.jr-odekake.net/railroad/service/train-woman.html"
 };

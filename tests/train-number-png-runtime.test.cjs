@@ -3855,3 +3855,38 @@ test('JR-07 review-only identity cannot select any of 15 West Japan PNGs by exac
   assert.equal(root.TrainIcons.resolveVehicleArtwork('E353系','2026-11-19'),
     '../images/列车/JR東日本/JR東日本_E353系.png');
 });
+test('JR-07 generic 323-series evidence remains generic, never coerced into OR or M variant',()=>{
+ const normal=['323系','323系（大阪環状線）','JR西日本323系'];
+ const variants=['JR西日本323系（M）','JR西日本323系（OR）'];
+ for(const line of ['OsakaLoop','Yumesaki']){
+   for(const name of normal){
+     const p=root.TrainVehicle.resolve({
+       lineId:line,operator:'JR-West',trainNumber:'1710',
+       serviceDate:'2026-11-20',timetableVehicleType:name
+     });
+     assert.equal(p.identityStatus,'EXACT',line+': '+name);
+     assert.equal(p.name,'JR西日本323系',line+': generic must stay generic');
+     assert.equal(p.iconPath,'',line+': no unauthorized M/OR artwork');
+     const rec=root.TrainVehicle.resolveCanonicalVehicle('JR西日本323系');
+     assert.ok(rec&&rec.candidateOnly===true);
+     assert.equal(rec.asset||null,null);
+   }
+ }
+ for(const name of variants){
+   const p=root.TrainVehicle.resolve({
+     lineId:'OsakaLoop',operator:'JR-West',trainNumber:'1710',
+     serviceDate:'2026-11-20',timetableVehicleType:name
+   });
+   assert.equal(p.identityStatus,'EXACT');
+   assert.equal(p.name,name);
+   assert.equal(p.iconPath,'',name+': explicit review-only variant still lacks approved art');
+ }
+ for(const name of [...normal,...variants]){
+   const p=root.TrainVehicle.resolve({
+     lineId:'Hanwa',operator:'JR-West',trainNumber:'1710',
+     serviceDate:'2026-11-20',timetableVehicleType:name
+   });
+   assert.equal(p.identityStatus,'UNKNOWN',name+': Osaka fleet cannot leak into Hanwa');
+   assert.equal(p.iconPath,'');
+ }
+});
