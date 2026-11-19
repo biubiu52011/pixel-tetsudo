@@ -1297,6 +1297,8 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_0番台_B31編成_�
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,0400,5999,FSMH,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,2520,2545,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,9520,9545,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,9520,9520,M,full,纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,9545,9545,M,full,纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,Kashima,2520,2545,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,NaritaAirportBranch,0400,5999,FSMH,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E235系_1000番台.png,NaritaAirportBranch,2627,5364,F,full,纯号段（JR专用原始条件保留）
@@ -1932,6 +1934,9 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kesennuma,
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kesennuma,2926,2938,D,full,纯号段（JR原有キハ110来源区间；具体车次仍须独立验证，不代表每个整数实存）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0722,0739,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,3729,3739,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0723,0723,D,full,纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0727,0727,D,full,纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0733,0733,D,full,纯号段（JR66官方2611列车单号参考；车型及实际运行日守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0722,0722,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0724,0725,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0735,0736,D,full,纯号段（JR专用原始条件保留）
