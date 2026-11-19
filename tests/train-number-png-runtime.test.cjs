@@ -3890,3 +3890,51 @@ test('JR-07 generic 323-series evidence remains generic, never coerced into OR o
    assert.equal(p.iconPath,'');
  }
 });
+
+test('JR-07 generic 289 model never selects one of seven review-only paint variants',()=>{
+ const variants=['G','K-INS','KANI','KG','K-KANI','MHR','MHS'];
+ const generic=root.TrainVehicle.resolveCanonicalVehicle('289系');
+ assert.ok(generic&&generic.candidateOnly===true);
+ assert.equal(generic.displayName,'JR西日本289系');
+ assert.equal(generic.asset||null,null);
+ for(const line of ['Fukuchiyama','SaninMain','KiseiWest']){
+   for(const name of ['289系','JR西日本289系']){
+     const result=root.TrainVehicle.resolve({
+       lineId:line,operator:'JR-West',timetableVehicleType:name,
+       serviceDate:'2026-11-20',trainNumber:'3028M'
+     });
+     assert.equal(result.identityStatus,'EXACT',line+'/'+name);
+     assert.equal(result.name,'JR西日本289系');
+     assert.equal(result.iconPath,'');
+   }
+   for(const type of variants){
+     const name='JR西日本289系（'+type+'）';
+     const result=root.TrainVehicle.resolve({
+       lineId:line,operator:'JR-West',timetableVehicleType:name,
+       serviceDate:'2026-11-20',trainNumber:'3028M'
+     });
+     assert.equal(result.name,name);
+     assert.equal(result.iconPath,'',name+' must remain review-only');
+   }
+ }
+ for(const name of ['289系','JR西日本289系']){
+   const result=root.TrainVehicle.resolve({
+     lineId:'OsakaLoop',operator:'JR-West',timetableVehicleType:name,
+     serviceDate:'2026-11-20',trainNumber:'3028M'
+   });
+   assert.equal(result.identityStatus,'UNKNOWN');
+   assert.equal(result.iconPath,'');
+ }
+});
+
+test('all trains.html lazy script attributes stay quoted and TrainVehicle cache key matches blob',()=>{
+ const html=fs.readFileSync('pages/trains.html','utf8');
+ const lazy=html.split('\n').filter(line=>line.includes('data-script-src='));
+ assert.ok(lazy.length>0);
+ for(const line of lazy)
+   assert.match(line,/data-script-src="[^"]+"(?:\s|>)/,line);
+ const matches=lazy.filter(line=>line.includes('../js/train-vehicle.js?v='));
+ assert.equal(matches.length,1);
+ assert.match(matches[0],new RegExp('data-script-src="../js/train-vehicle\\.js\\?v='+
+   hashFor('js/train-vehicle.js')+'"'));
+});

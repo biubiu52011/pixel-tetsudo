@@ -3256,6 +3256,19 @@ CANONICAL_VEHICLES["jr-west-323-local-plan"] = {
   candidateOnly: true, artworkStatus: "missing-native-asset",
   evidenceSource: "https://www.jr-odekake.net/railroad/service/train-woman.html"
 };
+ 
+// JR-07: a published 289-series model is NOT one of the seven
+// distinct G/KANI/MHR/etc. artwork versions or physical formations.
+// Preserve the model name as text while each review-only PNG stays blocked.
+CANONICAL_VEHICLES["jr-west-289-series-plan"] = {
+  displayName: "JR西日本289系",
+  iconName: "JR西日本289系",
+  asset: null, plannedAsset: null,
+  lineIds: ["Fukuchiyama", "SaninMain", "KiseiWest"],
+  aliases: ["289系"],
+  candidateOnly: true, artworkStatus: "missing-native-asset",
+  evidenceSource: "https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_10.pdf"
+};
 
 Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
   var rec = CANONICAL_VEHICLES[id];
