@@ -3270,6 +3270,19 @@ CANONICAL_VEHICLES["jr-west-289-series-plan"] = {
   evidenceSource: "https://www.westjr.co.jp/company/info/issue/data/pdf/data2025_10.pdf"
 };
 
+// JR-07 681-series: a timetable label for the SERIES does not identify
+// the FT artwork, any physical carset, or a contemporary paint scheme.
+// This record is text-only; the FT PNG remains reviewed separately.
+CANONICAL_VEHICLES["jr-west-681-series-plan"] = {
+  displayName: "JR西日本681系",
+  iconName: "JR西日本681系",
+  asset: null, plannedAsset: null,
+  lineIds: ["TokaidoKansai", "Kosei"],
+  aliases: ["681系"],
+  candidateOnly: true, artworkStatus: "missing-native-asset",
+  evidenceSource: "https://www.jr-odekake.net/railroad/train/"
+};
+
 Object.keys(CANONICAL_VEHICLES).forEach(function(id) {
   var rec = CANONICAL_VEHICLES[id];
   rec.id = id;

@@ -3962,3 +3962,40 @@ test('JR-08 canonical review gate rejects 13 not-yet-authorized JR-West artwork 
    }
  }
 });
+test('JR-07 generic 681 model cannot borrow FT or 683 review-only art on Kosei and Kyoto lines',()=>{
+ for(const line of ['Kosei','TokaidoKansai']){
+   for(const name of ['681系','JR西日本681系']){
+     const r=root.TrainVehicle.resolve({
+       lineId:line,operator:'JR-West',trainNumber:'4050M',
+       timetableVehicleType:name,serviceDate:'2026-11-20'
+     });
+     assert.equal(r.identityStatus,'EXACT',name+'/'+line);
+     assert.equal(r.name,'JR西日本681系',name+'/'+line);
+     assert.equal(r.iconPath,'',name+'/'+line);
+   }
+   const generic=root.TrainVehicle.resolveCanonicalVehicle('681系');
+   assert.equal(generic.displayName,'JR西日本681系');
+   assert.equal(generic.candidateOnly,true);
+   assert.equal(generic.asset||null,null);
+   for(const name of ['JR西日本681系（FT）','JR西日本683系','JR西日本683系（K）',
+       'JR西日本683系（K4）','JR西日本683系（N）','JR西日本683系（SRN）']){
+     const r=root.TrainVehicle.resolve({
+       lineId:line,operator:'JR-West',trainNumber:'4050M',
+       timetableVehicleType:name,serviceDate:'2026-11-20'
+     });
+     assert.equal(r.identityStatus,'EXACT',name+'/'+line);
+     assert.equal(r.name,name,'model and special variant names are distinct');
+     assert.equal(r.iconPath,'',name+' currently has no approved artwork');
+   }
+ }
+ for(const line of ['Fukuchiyama','OsakaLoop','Hanwa']){
+   for(const name of ['681系','JR西日本681系','JR西日本681系（FT）']){
+     const r=root.TrainVehicle.resolve({
+       lineId:line,operator:'JR-West',trainNumber:'4050M',
+       timetableVehicleType:name,serviceDate:'2026-11-20'
+     });
+     assert.equal(r.identityStatus,'UNKNOWN',name+'/'+line);
+     assert.equal(r.iconPath,'');
+   }
+ }
+});
