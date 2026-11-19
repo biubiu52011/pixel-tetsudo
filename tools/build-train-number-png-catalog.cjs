@@ -2109,6 +2109,7 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119160000_jr71_miyo_11_seasonal_number_references.sql',11,'JR東日本/JR東日本_E129系.png','纯号段（JR71弥彦线2026年11月官方11个季节/临时M番号；不证明实际编组，保留季节运行日及车型守卫）'],
   ['20261119150000_jr70_miyo_e129_40_regular_official_numbers.sql',7,'JR東日本/JR東日本_E129系.png','纯号段（JR70弥彦线2026年11月官方普通列车40番号；车型须原SQL名册与运行日核实，非实车确认）'],
   ['20261119140000_jr69_oito_e353_211_e127_eight_verified_numbers.sql',3,'JR東日本/JR東日本_E353系.png','纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）'],
   ['20261119140000_jr69_oito_e353_211_e127_eight_verified_numbers.sql',1,'JR東日本/JR東日本_211系_長野色.png','纯号段（JR69大糸线2611官方8号码；车型须原SQL名册核实，限定日期与E127素材review保留）'],
@@ -2194,7 +2195,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==209)throw Error('Late sourced SQL bands must total 202 rows');
+ if(refs.length!==220)throw Error('Late sourced SQL bands must total 202 rows');
  return refs;
 }
 
