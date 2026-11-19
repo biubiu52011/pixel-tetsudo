@@ -71,6 +71,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_209系_500番台_武藏野�
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Agatsuma,0520,0547,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Agatsuma,0520,0547,M,full,纯号段（JR原始车型及候选条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Joetsu,0520,0758,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Joetsu,0520,0758,M,full,纯号段（JR原有上越线南段211系号段边界；湘南色theme身份守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Ryomo,0420,0484,M,full,既有JR专用示意守卫(SaturdayHoliday)
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Ryomo,0620,0622,M,full,既有JR专用示意守卫(SaturdayHoliday)
 JR,JR東日本,images/列车/JR東日本/JR東日本_211系_湘南色.png,Ryomo,0624,0630,M,full,既有JR专用示意守卫(SaturdayHoliday)
@@ -1927,11 +1928,14 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Ishinomaki
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Ishinomaki,5651,5651,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kesennuma,0921,0935,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kesennuma,2926,2938,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kesennuma,0921,0935,D,full,纯号段（JR原有キハ110来源区间；具体车次仍须独立验证，不代表每个整数实存）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kesennuma,2926,2938,D,full,纯号段（JR原有キハ110来源区间；具体车次仍须独立验证，不代表每个整数实存）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0722,0739,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,3729,3739,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0722,0722,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0724,0725,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,0735,0736,D,full,纯号段（JR专用原始条件保留）
+JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kitakami,3729,3739,D,full,纯号段（JR原有キハ110来源区间；具体车次仍须独立验证，不代表每个整数实存）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kounan,0921,1940,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kounan,9934,9934,D,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハ110系.png,Kounan,9934,9934,D,full,纯号段（JR原有Kounan维护列车9934D单号码；非每日实车确认）
