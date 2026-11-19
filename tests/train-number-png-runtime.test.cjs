@@ -3938,3 +3938,27 @@ test('all trains.html lazy script attributes stay quoted and TrainVehicle cache 
  assert.match(matches[0],new RegExp('data-script-src="../js/train-vehicle\\.js\\?v='+
    hashFor('js/train-vehicle.js')+'"'));
 });
+
+test('JR-08 canonical review gate rejects 13 not-yet-authorized JR-West artwork paths',()=>{
+ const cases=[["N700系7000番台（JR西日本）","SanyoShinkansen","N700系_7000番台"],["JR西日本683系","Kosei","683系"],["JR西日本キハ35系","SaninMain","キハ35系"],["JR西日本キハ40系（AMTC）","SaninMain","キハ40系_AMTC"],["JR西日本キハ40系（ETS）","SaninMain","キハ40系_ETS"],["JR西日本キハ40系（JBEL）","SaninMain","キハ40系_JBEL"],["JR西日本キハ40系（JNRN）","SaninMain","キハ40系_JNRN"],["JR西日本キハ40系（OOG）","SaninMain","キハ40系_OOG"],["JR西日本キハ40系（OOR）","SaninMain","キハ40系_OOR"],["JR西日本キハ40系（UYM）","SaninMain","キハ40系_UYM"],["JR西日本キハ41系","Bantan","キハ41系"],["JR西日本キハ47系（SAK）","SaninMain","キハ47系_SAK"],["JR西日本キハ87系","SaninMain","キハ87系"]];
+ assert.equal(cases.length,13);
+ for(const [name,line,stem] of cases){
+   const record=root.TrainVehicle.resolveCanonicalVehicle(name);
+   assert.ok(record&&record.artworkReviewRequired===true,name+': preserve review gate');
+   const path='../images/列车/JR西日本/JR西日本_'+stem+'.png';
+   assert.equal(root.TrainIcons.resolveVehicleArtwork(name,'2026-11-20'),null,
+     name+': model name without image/formation evidence must not authorize PNG');
+   for(const src of ['realtime-api','supabase-train-run']){
+     const p={trainNumber:'9999M',serviceDate:'2026-11-20',
+       calendarType:'weekday',positionLineId:line,displayLineId:line,
+       sourceRailway:'odpt.Railway:JR-West.'+line,
+       trainOperator:'JR-West',positionSource:src,estimated:src!=='realtime-api',
+       vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,
+       vehicleType:name,vehicleIconPath:path,
+       vehicleResolution:{identityStatus:'EXACT',lineId:line,name,
+         iconPath:path,sources:['timetable']}};
+     const actual=marker(p,line);
+     assert.notEqual(actual.iconSrc,path,name+'/'+src+': pending image cannot bypass gate');
+   }
+ }
+});
