@@ -31,6 +31,9 @@ const vehicleVm = vm.createContext({
   // provide its window object even when no route index is loaded.
   window: { TrainNumberPngRanges: null, VehicleGaragePngMap: null },
   _issuedVehiclePlans: issued,
+  // This isolated selector VM omits the full canonical registry;
+  // production derives this path gate from artworkReviewRequired flags.
+  REVIEW_REQUIRED_CANONICAL_PNG: Object.create(null),
   isGalleryPng: src => typeof src === 'string' &&
     src.startsWith('../images/列车/') && src.endsWith('.png') &&
     src.split('/').length === 5,
@@ -52,6 +55,11 @@ const exact = {
   vehicleIconPath: genericPng,
   estimated: false,
 };
+const reviewOnlyPng='../images/列车/JR西日本/JR西日本_287系_KRM.png';
+vehicleVm.REVIEW_REQUIRED_CANONICAL_PNG[reviewOnlyPng]=true;
+assert.equal(choose({...exact,vehicleIconPath:reviewOnlyPng,
+  vehicleType:'',vehicleResolution:null}).kind,'unresolved',
+  'review-only artwork path cannot be injected through flattened upstream result');
 assert.equal(choose(exact).kind, 'vehicle', 'confirmed identity must show PNG');
 assert.equal(choose(exact).planned, false,
   'a genuinely observed train PNG must not be labelled a timetable projection');
