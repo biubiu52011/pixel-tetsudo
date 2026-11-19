@@ -122,6 +122,8 @@ jobs:
         run: node --test tests/jr56-bantan-kiha189-hamakaze-1d-2d-official-reference.test.cjs
       - name: Verify Private23 Chichibu C58 363 historical 5001-5002 without competing carriage art
         run: node --test tests/private23-chichibu-c58-paleo-5001-5002-historical-reference.test.cjs
+      - name: Verify JR61 H5 E5 313 321 twelve observed number references
+        run: node --test tests/jr61-h5-e5-313-321-twelve-number-references.test.cjs
       - name: Verify JR60 three observed single-number PNG references
         run: node --test tests/jr60-three-observed-numbers-reference.test.cjs
       - name: Verify JR59 Yamaguchi 8521–8522 C57 reference-only band

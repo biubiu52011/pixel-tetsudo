@@ -28,7 +28,7 @@ test('two 2025-11-26 historical vehicle/number pairs survive on one DATA-ONLY Mi
  }
  assert.deepEqual(actual,[136,238]);
  assert.equal(new Set(inventory.map(s=>s.split(',')[2])).size,601);
- assert.equal(inventory.filter(s=>s.endsWith('无号段')).length,447);
+ assert.equal(inventory.filter(s=>s.endsWith('无号段')).length,443);
 });
 test('unique roster identity is not claimed, and Hoshiimo 100-40 artwork remains unnumbered',()=>{
  const alt='images/列车/ひたちなか海浜鉄道/ひたちなか海浜鉄道_キハ100形_キハ100-40_ほしいも列車.png';

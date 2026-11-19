@@ -21,7 +21,7 @@ test('Third09 stores eight exact historically observed passenger-number interval
    assert.ok(sql.includes("'2611','TsukubaExpress','png_band/TsukubaExpress/"+code+'-'+code+"',"+n.n+','+n.n+",'',NULL,'../"+g.png+"',NULL,FALSE,FALSE"));
   }
  }
- assert.equal(rows.filter(s=>s.endsWith('无号段')).length,447);
+ assert.equal(rows.filter(s=>s.endsWith('无号段')).length,443);
  assert.equal(new Set(rows.slice(1).map(x=>x.split(',')[2])).size,601);
  assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));

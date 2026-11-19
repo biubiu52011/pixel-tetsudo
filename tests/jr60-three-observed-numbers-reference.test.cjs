@@ -18,6 +18,6 @@ test('JR60 three observed-number gallery references remain source-only and date-
  assert.ok(sql.includes('E501 562M is on JobanMain'));
  assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));
- assert.equal(rows.filter(x=>x.endsWith('无号段')).length,447);
+ assert.equal(rows.filter(x=>x.endsWith('无号段')).length,443);
  assert.equal(new Set(rows.slice(1).map(x=>x.split(',')[2])).size,601);
 });

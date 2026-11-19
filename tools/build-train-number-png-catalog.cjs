@@ -2109,6 +2109,10 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119062000_jr61_h5_e5_313_321_twelve_observed_numbers.sql',1,'JR北海道/JR北海道_H5系.png','纯号段（JR北海道H5系2026年9月3日3023B乘车观察；车型历史参考，非现时列车编组）'],
+  ['20261119062000_jr61_h5_e5_313_321_twelve_observed_numbers.sql',4,'JR東日本/JR東日本_E5系.png','纯号段（JR東日本E5系2026年实拍或乘车4个B番号；不推定其他日期和编组）'],
+  ['20261119062000_jr61_h5_e5_313_321_twelve_observed_numbers.sql',6,'JR東海/JR東海_313系.png','纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）'],
+  ['20261119062000_jr61_h5_e5_313_321_twelve_observed_numbers.sql',1,'JR西日本/JR西日本_321系.png','纯号段（JR西日本321系2026年10月16日神户线531C乘车观察；仅历史参考、不推定每日实车）'],
   ['20261119050000_third09_tsukuba_8_observed_photo_numbers.sql',3,'首都圏新都市鉄道/首都圏新都市鉄道_TX-1000系.png','纯号段（TX-1000系2025年实拍3个客运番号；仅历史参考，不推定每日实车）'],
   ['20261119050000_third09_tsukuba_8_observed_photo_numbers.sql',3,'首都圏新都市鉄道/首都圏新都市鉄道_TX-2000系.png','纯号段（TX-2000系2025年实拍3个客运番号；仅历史参考，不推定每日实车）'],
   ['20261119050000_third09_tsukuba_8_observed_photo_numbers.sql',2,'首都圏新都市鉄道/首都圏新都市鉄道_TX-3000系.png','纯号段（TX-3000系2025年实拍2个客运番号；仅历史参考，不推定每日实车）'],
@@ -2173,7 +2177,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==148)throw Error('Late sourced SQL bands must total 148 rows');
+ if(refs.length!==160)throw Error('Late sourced SQL bands must total 160 rows');
  return refs;
 }
 

@@ -18,5 +18,5 @@ test('JR59 has one review-only reference range, not a real-car identity',()=>{
  assert.ok(sql.includes('DATA-ONLY Yamaguchi'));
  assert.ok(!sql.includes('CREATE TABLE'));
  assert.ok(!sql.includes('UPDATE public.vehicle_image_assets'));
- assert.equal(rows.filter(x=>x.endsWith('无号段')).length,447);
+ assert.equal(rows.filter(x=>x.endsWith('无号段')).length,443);
 });

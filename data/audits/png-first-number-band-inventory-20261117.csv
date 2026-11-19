@@ -33,7 +33,7 @@ JR,JR九州,images/列车/JR九州/JR九州_800系.png,KyushuShinkansen,0411,041
 JR,JR九州,images/列车/JR九州/JR九州_800系.png,KyushuShinkansen,7420,7420,A,full,纯号段（JR专用原始条件保留）
 JR,JR北海道,images/列车/JR北海道/JR北海道_733系_1000代_はこだてライナー.png,HakodateMain,1321,1368,M,full,纯号段（JR专用原始条件保留）
 JR,JR北海道,images/列车/JR北海道/JR北海道_733系_1000代_はこだてライナー.png,HakodateMain,3323,3362,M,full,纯号段（JR专用原始条件保留）
-JR,JR北海道,images/列车/JR北海道/JR北海道_H5系.png,,,,,,无号段
+JR,JR北海道,images/列车/JR北海道/JR北海道_H5系.png,TohokuShinkansen,3023,3023,B,full,纯号段（JR北海道H5系2026年9月3日3023B乘车观察；车型历史参考，非现时列车编组）
 JR,JR東日本,images/列车/JR東日本/JR東日本_12系客車_SLばんえつ物語_オコジョ展望車.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_12系客車_SLばんえつ物語_展望車.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_205系_1100番台_鶴見線.png,,,,,,无号段
@@ -1474,7 +1474,10 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E531系_3000番台.png,,,,,
 JR,JR東日本,images/列车/JR東日本/JR東日本_E531系_水戸線.png,Mito,0721,2785,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E531系_水戸線.png,Mito,0721,2785,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E531系_赤電.png,,,,,,无号段
-JR,JR東日本,images/列车/JR東日本/JR東日本_E5系.png,,,,,,无号段
+JR,JR東日本,images/列车/JR東日本/JR東日本_E5系.png,TohokuShinkansen,0017,0017,B,full,纯号段（JR東日本E5系2026年实拍或乘车4个B番号；不推定其他日期和编组）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E5系.png,TohokuShinkansen,0154,0154,B,full,纯号段（JR東日本E5系2026年实拍或乘车4个B番号；不推定其他日期和编组）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E5系.png,TohokuShinkansen,0203,0203,B,full,纯号段（JR東日本E5系2026年实拍或乘车4个B番号；不推定其他日期和编组）
+JR,JR東日本,images/列车/JR東日本/JR東日本_E5系.png,TohokuShinkansen,6129,6129,B,full,纯号段（JR東日本E5系2026年实拍或乘车4个B番号；不推定其他日期和编组）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系.png,Shinetsu,0051,0058,M,full,纯号段（官方番号参考/日期及实车守卫保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系_1000番台.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_E653系_1000番台_U101編成_583系カラー.png,,,,,,无号段
@@ -2014,7 +2017,12 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE130系500番台.png,Hachinohe,9445,9446,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_キハE200系（小海線）.png,Komii,0136,0136,D,full,纯号段（2026-09-05乘车记录キハE200-1担当136D；仅历史参考，不能推定其他日期车辆）
 JR,JR東日本,images/列车/JR東日本/e211na1n.png,,,,,,无号段
-JR,JR東海,images/列车/JR東海/JR東海_313系.png,,,,,,无号段
+JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,0437,0437,M,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
+JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,0490,0490,M,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
+JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,1424,1424,M,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
+JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,2311,2311,F,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
+JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,5512,5512,F,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
+JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,5517,5517,F,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2533,2533,G,full,纯号段（御殿场线原始号码与日期守卫保留）
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2538,2538,G,full,纯号段（御殿场线原始号码与日期守卫保留）
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2540,2543,G,full,纯号段（御殿场线原始号码与日期守卫保留）
@@ -2173,7 +2181,7 @@ JR,JR西日本,images/列车/JR西日本/JR西日本_289系_KKANI.png,,,,,,无�
 JR,JR西日本,images/列车/JR西日本/JR西日本_289系_K_INS.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_289系_MHR.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_289系_MHS.png,,,,,,无号段
-JR,JR西日本,images/列车/JR西日本/JR西日本_321系.png,,,,,,无号段
+JR,JR西日本,images/列车/JR西日本/JR西日本_321系.png,SanyoMain,0531,0531,C,full,纯号段（JR西日本321系2026年10月16日神户线531C乘车观察；仅历史参考、不推定每日实车）
 JR,JR西日本,images/列车/JR西日本/JR西日本_323系_M.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_323系_OR.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_500系.png,SanyoShinkansen,0944,0944,A,full,原有条件约束
