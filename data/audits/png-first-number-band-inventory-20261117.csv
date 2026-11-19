@@ -273,6 +273,7 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,1946,1
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,1951,1951,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Hakushin,3921,3921,M,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Joetsu,1720,1752,M,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Joetsu,1720,1752,M,full,纯号段（JR原有上越线北段E129系番号边界；不推定区间内每个车次实存）
 JR,JR東日本,images/列车/JR東日本/JR東日本_E129系.png,Miyo,0220,9284,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,0523,0551,M,full,原有条件约束
 JR,JR東日本,images/列车/JR東日本/JR東日本_E131系_0番台.png,Kashima,3521,3547,M,full,原有条件约束
@@ -1852,8 +1853,11 @@ JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,2281
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,2286,2286,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Hachiko,2288,2294,D,full,纯号段（JR专用原始条件保留）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,0650,0672,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,0650,0672,D,full,纯号段（JR原有釜石线HB-E220系范围参考；区间内具体车次仍须精确校验）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,1652,1669,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,1652,1669,D,full,纯号段（JR原有釜石线HB-E220系范围参考；区间内具体车次仍须精确校验）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,3657,3666,D,full,原有条件约束
+JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系.png,Kamaishi,3657,3666,D,full,纯号段（JR原有釜石线HB-E220系范围参考；区间内具体车次仍须精确校验）
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E220系_八高線.png,,,,,,无号段
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_SATONO_1号車.png,Senzan,8821,8822,D,full,既有JR专用示意守卫(SaturdayHoliday;限定日期)
 JR,JR東日本,images/列车/JR東日本/JR東日本_HB-E300系_SATONO_1号車.png,Senzan,8821,8822,D,full,既有JR专用示意守卫(Weekday;限定日期)
