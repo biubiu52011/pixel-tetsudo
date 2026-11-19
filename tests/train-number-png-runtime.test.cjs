@@ -3810,3 +3810,48 @@ test('JR-06 review rows cannot be elevated by SQL artwork hydration',()=>{
  assert.equal(root.TrainIcons.resolveVehicleArtwork(name,'2026-11-19'),null);
  assert.equal(root.TrainIcons.resolveVehicleArtwork('JR西日本287系（HC603編成）','2026-11-19'),null);
 });
+
+
+test('JR-07 review-only identity cannot select any of 15 West Japan PNGs by exact model text or injected icon',()=>{
+  const cases=[
+    ["JR西日本287系","Fukuchiyama","287系"],
+    ["JR西日本289系（G）","Fukuchiyama","289系_G"],
+    ["JR西日本289系（K-INS）","Fukuchiyama","289系_K_INS"],
+    ["JR西日本289系（KANI）","Fukuchiyama","289系_KANI"],
+    ["JR西日本289系（KG）","Fukuchiyama","289系_KG"],
+    ["JR西日本289系（K-KANI）","Fukuchiyama","289系_KKANI"],
+    ["JR西日本289系（MHR）","Fukuchiyama","289系_MHR"],
+    ["JR西日本289系（MHS）","Fukuchiyama","289系_MHS"],
+    ["JR西日本323系（M）","OsakaLoop","323系_M"],
+    ["JR西日本323系（OR）","OsakaLoop","323系_OR"],
+    ["JR西日本681系（FT）","Kosei","681系_FT"],
+    ["JR西日本683系（K）","Kosei","683系_K"],
+    ["JR西日本683系（K4）","Kosei","683系_K4"],
+    ["JR西日本683系（N）","Kosei","683系_N"],
+    ["JR西日本683系（SRN）","Kosei","683系_SRN"]
+  ];
+  assert.equal(cases.length,15);
+  for(const [name,line,stem] of cases){
+    const record=root.TrainVehicle.resolveCanonicalVehicle(name);
+    assert.ok(record&&record.artworkReviewRequired===true,name+' review flag');
+    const file='../images/列车/JR西日本/JR西日本_'+stem+'.png';
+    assert.equal(root.TrainIcons.resolveVehicleArtwork(name,'2026-11-19'),null,name);
+    const resolved=root.TrainVehicle.resolve({lineId:line,operator:'JR-West',
+      timetableVehicleType:name,serviceDate:'2026-11-19',trainNumber:'2069M'});
+    assert.equal(resolved.identityStatus,'EXACT',name+': retain model identity');
+    assert.equal(resolved.iconPath,'',name+': no review-only art');
+    for(const source of ['realtime-api','supabase-train-run']){
+      const p={trainNumber:'2069M',serviceDate:'2026-11-19',calendarType:'weekday',
+        positionLineId:line,displayLineId:line,sourceRailway:'odpt.Railway:JR-West.'+line,
+        trainOperator:'JR-West',positionSource:source,estimated:source!=='realtime-api',
+        vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,
+        vehicleType:name,vehicleIconPath:file,
+        vehicleResolution:{identityStatus:'EXACT',lineId:line,name,iconPath:file,sources:['timetable']}};
+      const actual=marker(p,line);
+      assert.equal(actual.kind,'unresolved',name+'/'+source+': review-only PNG was exposed');
+      assert.equal(actual.iconSrc||'','');
+    }
+  }
+  assert.equal(root.TrainIcons.resolveVehicleArtwork('E353系','2026-11-19'),
+    '../images/列车/JR東日本/JR東日本_E353系.png');
+});

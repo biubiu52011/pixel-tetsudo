@@ -172,3 +172,48 @@ test('JR-06 287 anniversary 2069M conflict stays a historical review, not a stat
  // different assets; a single public service number is not a stable carset.
  assert.equal(no,'2069M');
 });
+
+// JR-07 static-artwork integrity: every listed source remains numbered-service review-only.
+test('JR-07 all 15 original review PNG files are valid native 82x98 PNGs but no number has been invented',()=>{
+ const paths=[
+  "images/列车/JR西日本/JR西日本_287系.png",
+  "images/列车/JR西日本/JR西日本_289系_G.png",
+  "images/列车/JR西日本/JR西日本_289系_K_INS.png",
+  "images/列车/JR西日本/JR西日本_289系_KANI.png",
+  "images/列车/JR西日本/JR西日本_289系_KG.png",
+  "images/列车/JR西日本/JR西日本_289系_KKANI.png",
+  "images/列车/JR西日本/JR西日本_289系_MHR.png",
+  "images/列车/JR西日本/JR西日本_289系_MHS.png",
+  "images/列车/JR西日本/JR西日本_323系_M.png",
+  "images/列车/JR西日本/JR西日本_323系_OR.png",
+  "images/列车/JR西日本/JR西日本_681系_FT.png",
+  "images/列车/JR西日本/JR西日本_683系_K.png",
+  "images/列车/JR西日本/JR西日本_683系_K4.png",
+  "images/列车/JR西日本/JR西日本_683系_N.png",
+  "images/列车/JR西日本/JR西日本_683系_SRN.png"
+];
+ assert.equal(new Set(paths).size,15);
+ const sig=Buffer.from([137,80,78,71,13,10,26,10]);
+ function crc32(b,i,j){let n=0xffffffff;for(let k=i;k<j;k++){n^=b[k];for(let a=0;a<8;a++)n=(n>>>1)^((n&1)?0xedb88320:0)}return(n^0xffffffff)>>>0}
+ for(const path of paths){
+   const inv=groupedMissing.get(path),review=groupedTriage.get(path);
+   assert.ok(inv&&review,path+': must stay in existing missing-band inventories');
+   assert.equal(inv[8],'无号段');
+   assert.equal(review[3],'review');
+   assert.equal(review[4],'native_png');
+   assert.equal(review[5],'review');
+   assert.equal(review[7],''); assert.equal(review[8],'');
+   const b=fs.readFileSync(path);
+   assert.ok(b.subarray(0,8).equals(sig),path+': bad PNG');
+   assert.equal(b.readUInt32BE(16),82);assert.equal(b.readUInt32BE(20),98);
+   let offset=8,last='';
+   while(offset<b.length){
+     assert.ok(offset+12<=b.length,path+': cut chunk header');
+     const size=b.readUInt32BE(offset),end=offset+size+12;
+     assert.ok(size<=b.length&&end<=b.length,path+': cut chunk');
+     assert.equal(crc32(b,offset+4,end-4),b.readUInt32BE(end-4),path+': CRC');
+     last=b.toString('ascii',offset+4,offset+8);offset=end;
+   }
+   assert.equal(last,'IEND');assert.equal(offset,b.length);
+ }
+});
