@@ -2109,6 +2109,7 @@ function privateTobu634HistoricalSqlSeedBands(){
 // These are REFERENCE records only: do not infer live formations/service days.
 function lateVerifiedSourceSqlSeedBands(){
  const specs=[
+  ['20261119180000_jr02_sotobo_1235m_e233_boso_historical_reference.sql',1,'JR東日本/JR東日本_E233系_房総地区_改造車.png','纯号段（JR-02外房线2026年10月13日1235M房総E233系C1实车记录＋2026年11月官方番号；PNG仍review、不得认定当日实车或跨日编组）'],
   ['20261119170000_jr01_tozai_e231_800_eleven_official_k_numbers.sql',11,'JR東日本/JR東日本_E231系_800番台.png','纯号段（JR-01東西線2026年11月JR公式K后缀11个精确列车番号；E231系800番台仅参考，车型与运行日须原JS守卫核实）'],
   ['20261119160000_jr71_miyo_11_seasonal_number_references.sql',11,'JR東日本/JR東日本_E129系.png','纯号段（JR71弥彦线2026年11月官方11个季节/临时M番号；不证明实际编组，保留季节运行日及车型守卫）'],
   ['20261119150000_jr70_miyo_e129_40_regular_official_numbers.sql',7,'JR東日本/JR東日本_E129系.png','纯号段（JR70弥彦线2026年11月官方普通列车40番号；车型须原SQL名册与运行日核实，非实车确认）'],
@@ -2196,7 +2197,7 @@ function lateVerifiedSourceSqlSeedBands(){
      to:String(actualTo).padStart(4,'0'),suffix,png,format:'full',status});
   }
  }
- if(refs.length!==231)throw Error('Late sourced SQL bands must total 202 rows');
+ if(refs.length!==232)throw Error('Late sourced SQL bands must total 202 rows');
  return refs;
 }
 
