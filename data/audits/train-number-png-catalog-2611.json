@@ -23,7 +23,7 @@
     "sql_assets_pending_review": 5,
     "frontend_guard_only_rules": 9,
     "frontend_rules_with_additional_source_fields": 127,
-    "frontend_additional_source_keys": 23,
+    "frontend_additional_source_keys": 24,
     "frontend_official_month_rosters": 4,
     "frontend_singleton_candidates": 1,
     "model_label_differences": 14,
@@ -10378,7 +10378,8 @@
           "Local",
           "Rapid",
           "CommuterRapid"
-        ]
+        ],
+        "dateScope": "all-dates"
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
@@ -10422,7 +10423,8 @@
           "Local",
           "Rapid",
           "CommuterRapid"
-        ]
+        ],
+        "dateScope": "all-dates"
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
@@ -10481,7 +10483,8 @@
           "Local",
           "Rapid",
           "CommuterRapid"
-        ]
+        ],
+        "dateScope": "all-dates"
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
