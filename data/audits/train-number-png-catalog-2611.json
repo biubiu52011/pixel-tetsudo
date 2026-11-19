@@ -10374,12 +10374,12 @@
         "allowedModelLabels": [
           "E233系7000番台"
         ],
+        "dateScope": "all-dates",
         "trainTypesIfPresent": [
           "Local",
           "Rapid",
           "CommuterRapid"
-        ],
-        "dateScope": "all-dates"
+        ]
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
@@ -10419,12 +10419,12 @@
         "allowedModelLabels": [
           "相鉄12000系"
         ],
+        "dateScope": "all-dates",
         "trainTypesIfPresent": [
           "Local",
           "Rapid",
           "CommuterRapid"
-        ],
-        "dateScope": "all-dates"
+        ]
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
@@ -10467,6 +10467,7 @@
           "東京臨海高速鉄道70-000形",
           "東京臨海高速鉄道71-000形"
         ],
+        "dateScope": "all-dates",
         "exactModelArtworkMap": {
           "東京臨海高速鉄道70-000形": "../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png",
           "東京臨海高速鉄道71-000形": "../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"
@@ -10483,8 +10484,7 @@
           "Local",
           "Rapid",
           "CommuterRapid"
-        ],
-        "dateScope": "all-dates"
+        ]
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false
