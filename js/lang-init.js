@@ -108,6 +108,13 @@
                 el.setAttribute("aria-label", translated);
             }
         });
+        document.querySelectorAll("[data-i18n-title]").forEach(function(el) {
+            var key = el.getAttribute("data-i18n-title");
+            var translated = window.t(key, el.getAttribute("title"));
+            if (translated !== el.getAttribute("title")) {
+                el.setAttribute("title", translated);
+            }
+        });
     }
 
 
