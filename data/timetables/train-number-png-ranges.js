@@ -5248,6 +5248,12 @@
         if(modelObservations.some(function(m){
           return m!==modelObservations[0];
         }))continue;
+        // An undated SQL/manual single-model annotation is NOT a sourced
+        // rolling-stock plan. Once a weaker candidate is attached, do not
+        // override it with the number-only Rinkai T/KFS display default.
+        // Keep a neutral marker until real model evidence can arbitrate.
+        if(row.pooledOperationModels && sourcePlan && !planScoped &&
+           !modelObservations.length)continue;
         if(row.pooledOperationModels && context &&
            String(context.sourceRailway||"") !== (line==="Rinkai"
              ? "odpt.Railway:TWR.Rinkai"
