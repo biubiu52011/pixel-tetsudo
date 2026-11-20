@@ -1,0 +1,37 @@
+// Run with: node --test tests/station-i18n-completeness.test.cjs
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = path.resolve(__dirname, '..');
+const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
+
+test('station names have four nonempty languages and generated copies match', () => {
+  const compact = read('data/core/station_i18n.compact.json');
+  const stations = JSON.parse(compact);
+  assert.deepEqual(JSON.parse(read('data/core/station_i18n.json')), stations);
+  assert.equal(read('data/core/station-i18n.file.js').trim(),
+    'window.RAILWAY_I18N = ' + compact.trim() + ';');
+  for (const [id, station] of Object.entries(stations)) {
+    for (const lang of ['ja', 'zh', 'ko', 'en']) {
+      assert.ok(typeof station[lang] === 'string' && station[lang].trim(),
+        id + ': missing ' + lang);
+    }
+    assert.match(station.ko, /[\uac00-\ud7af]/, id + ': Korean station name missing');
+  }
+});
+
+test('all railway lines have four language names and generated copies match', () => {
+  const compact = read('data/core/railway_data.compact.json');
+  const railway = JSON.parse(compact);
+  assert.deepEqual(JSON.parse(read('data/core/railway_data.json')), railway);
+  assert.equal(read('data/core/railway-data.file.js').trim(),
+    'window.RAILWAY_DATA = ' + compact.trim() + ';');
+  for (const [id, line] of Object.entries(railway.lines)) {
+    for (const key of ['nameJa', 'nameZh', 'nameKo', 'nameEn']) {
+      assert.ok(typeof line[key] === 'string' && line[key].trim(),
+        id + ': missing ' + key);
+    }
+  }
+});
