@@ -2089,6 +2089,7 @@ JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,5517,5517,
 JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,0437,0437,M,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
 JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,0490,0490,M,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
 JR,JR東海,images/列车/JR東海/JR東海_313系.png,TokaidoCentral,1424,1424,M,full,纯号段（JR東海313系2026年实拍或乘车6个普通列车番号；多编组车型参考、不推定固定实车）
+JR,JR東海,images/列车/JR東海/JR東海_313系_前面差分_仕様未確認.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2533,2533,G,full,纯号段（御殿场线原始号码与日期守卫保留）
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2538,2538,G,full,纯号段（御殿场线原始号码与日期守卫保留）
 JR,JR東海,images/列车/JR東海/JR東海_315系.png,Gotemba,2540,2543,G,full,纯号段（御殿场线原始号码与日期守卫保留）
@@ -2133,6 +2134,9 @@ JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1001,1006,M,f
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1011,1011,M,full,纯号段（JR原有しなの383系8个确切番号；运行日车型候选条件保留）
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,ChuoCentral,1026,1026,M,full,纯号段（JR原有しなの383系8个确切番号；运行日车型候选条件保留）
 JR,JR東海,images/列车/JR東海/JR東海_383系.png,Shinonoi,1001,1026,M,full,纯号段（JR专用原始条件保留）
+JR,JR東海,images/列车/JR東海/JR東海_385系_量産先行車.png,,,,,,无号段
+JR,JR東海,images/列车/JR東海/JR東海_HC35形_外観イメージ.png,,,,,,无号段
+JR,JR東海,images/列车/JR東海/JR東海_HC85系.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0001,0001,A,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0004,0004,A,full,原有条件约束
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0007,0007,A,full,原有条件约束
@@ -2197,11 +2201,7 @@ JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0850,0
 JR,JR東海,images/列车/JR東海/JR東海_N700系.png,TokaidoShinkansen,0852,0852,A,full,纯号段（JR专用原始条件保留）
 JR,JR東海,images/列车/JR東海/JR東海_キハ11形_仕様未確認.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_キハ25形_仕様未確認.png,,,,,,无号段
-JR,JR東海,images/列车/JR東海/JR東海_313系_前面差分_仕様未確認.png,,,,,,无号段
-JR,JR東海,images/列车/JR東海/JR東海_HC35形_外観イメージ.png,,,,,,无号段
-JR,JR東海,images/列车/JR東海/JR東海_385系_量産先行車.png,,,,,,无号段
 JR,JR東海,images/列车/JR東海/JR東海_キハ75形_仕様未確認.png,,,,,,无号段
-JR,JR東海,images/列车/JR東海/JR東海_HC85系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_103系_播但線_BA-G1.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_103系_播但線_BA-G2.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_103系_播但線_BA-G3.png,,,,,,无号段
