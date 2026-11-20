@@ -19,8 +19,11 @@ test('distinct 9020, KiHa101 and Tadami revival artwork cannot borrow similar PN
     assert.equal(ref.plannedAsset||null,null);
     assert.equal(win.VehicleGaragePngMap.matchModelPath(model,'../images/列车/'+asset,line),false);
   }
+  // P-02: 9000 artwork remains an asset under review, not an approved
+  // visual reference merely because the genuine model is known.
   assert.equal(win.VehicleGaragePngMap.matchModelPath('東急9000系',
-    '../images/列车/東急電鉄/東急電鉄_9000系.png','TokyuOimachi'),true);
+    '../images/列车/東急電鉄/東急電鉄_9000系.png','TokyuOimachi'),false);
+  assert.equal(win.TrainVehicle.resolveCanonicalVehicle('東急9000系').artworkReviewRequired,true);
 });
 const fusion=fs.readFileSync('js/data-fusion.js','utf8');
 const start=fusion.indexOf('  // Ephemeral illustration history for the EXISTING canonical running chain.');
