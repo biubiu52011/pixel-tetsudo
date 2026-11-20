@@ -42,7 +42,7 @@ const scenarios=[
  ['K working',pos({trainNumber:'C3152K'}),png.tokyu,'東急5050系'],
  ['F-prefix K',pos({trainNumber:'F3162K'}),png.tokyu,'東急5050系']
 ];
-test('Tojo workings retain source references but review-only PNGs stay neutral',()=>{
+test('Tojo working/service groups resolve exactly one approved PNG',()=>{
  for(const [name,p,expected,model] of scenarios){
   const ref=w.TobuTojoFixedPng202611.resolve(p);
   assert.ok(ref,name);
@@ -50,15 +50,8 @@ test('Tojo workings retain source references but review-only PNGs stay neutral',
   assert.equal(ref.illustrationModel,model,name);
   assert.equal(ref.actualVehicleConfirmed,false,name);
   assert.equal(ref.referenceOnly,true,name);
-  const reviewOnly=name==='Y working'||name==='west segment';
-  assert.equal(w.VehicleGaragePngMap.matchModelPath(model,expected,p.positionLineId),!reviewOnly,
-    name+' gallery scope');
+  assert.equal(w.VehicleGaragePngMap.matchModelPath(model,expected,p.positionLineId),true,name+' gallery scope');
   const art=w.TrainVehicle.selectMarkerArtwork(p,false);
-  if(reviewOnly){
-    assert.equal(art.kind,'unresolved',name+': review-only 8000 image must not display');
-    assert.equal(art.iconSrc,'',name);
-    continue;
-  }
   assert.equal(art.kind,'vehicle',name);
   assert.equal(art.iconSrc,expected,name);
   assert.equal(art.illustrationModel,model,name);
@@ -122,17 +115,20 @@ test('Ogose GTFS number roster grants a standard-blue-white reference, never the
  })));
 });
 
-test('Ogose keeps its dated roster but review-only blue-white art renders neutral',()=>{
+test('Ogose uses blue-white illustration by default, brown only with 81111F physical proof',()=>{
  const base=ogosePosition();
  const cfg=w.TobuTojoFixedPng202611.assets.ogose;
  assert.equal(cfg.png,png.ogose);
  assert.equal(cfg.specialLiveryPng,png.brown);
  assert.equal(cfg.specialLiveryFormation,'81111F');
- assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.ogose,'Ogose'),false,'SQL review state prevails');
+ assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.ogose,'Ogose'),true);
  assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.brown,'Ogose'),true);
  const ordinary=w.TrainVehicle.selectMarkerArtwork(base,false);
- assert.equal(ordinary.kind,'unresolved');
- assert.equal(ordinary.iconSrc,'');
+ assert.equal(ordinary.kind,'vehicle');
+ assert.equal(ordinary.iconSrc,png.ogose);
+ assert.equal(ordinary.referenceOnly,true);
+ assert.equal(ordinary.actualVehicleConfirmed,false);
+ assert.equal(ordinary.illustrative,true);
  assert.notEqual(ordinary.iconSrc,png.brown);
  for(const override of [
    {vehicleIdentityStatus:'EXACT',vehicleResolvedUpstream:true,vehicleFormationId:'81111F'},
@@ -160,14 +156,15 @@ test('Ogose keeps its dated roster but review-only blue-white art renders neutra
  assert.equal(w.TrainVehicle.selectMarkerArtwork({...verified,sourceRailway:'odpt.Railway:Tobu.Tojo'},false).kind,'unresolved');
  assert.equal(w.TrainVehicle.selectMarkerArtwork(verified,true).kind,'unresolved');
 });
-test('Tojo west source records retain 8000 candidate but never show a review-only PNG',()=>{
+test('Tojo west service uses standard 8000 PNG and never defaults to brown',()=>{
  const west=pos({trainNumber:'Y1176',scheduledStopKeys:['Yorii','Ogawamachi','ShinrinKoen']});
  const ref=w.TobuTojoFixedPng202611.resolve(west);
  assert.equal(ref.illustrationPng,png.west);
  assert.notEqual(ref.illustrationPng,png.brown);
  const art=w.TrainVehicle.selectMarkerArtwork(west,false);
- assert.equal(art.kind,'unresolved');
- assert.equal(art.iconSrc,'');
+ assert.equal(art.iconSrc,png.west);
+ assert.equal(art.referenceOnly,true);
+ assert.equal(art.actualVehicleConfirmed,false);
 });
 
 test('candidate rules and random PNG rotation are removed',()=>{
