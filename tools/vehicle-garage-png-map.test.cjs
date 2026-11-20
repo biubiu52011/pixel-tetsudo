@@ -65,7 +65,10 @@ const e127='../images/列车/JR東日本/JR東日本_E127系_100番台_長野色
 assert.equal(garage.matchModelPath('E127系100番台',e127,'ChuoTatsuno'),false);
 assert.equal(garage.matchModelPath('E127系100番台',e127,'ChuoMain'),false);
 assert.equal(garage.matchModelPath('E127系100番台',e127,'Yamanote'),false);
-assert.equal(garage.quarantined.length,9);
+assert.equal(garage.quarantined.length,11);
+for (const name of ['都営地下鉄_8500形（別）.png', '都営地下鉄_8500形_8501号車_山吹色.png']) {
+  assert.ok(garage.quarantined.some(p => p.endsWith(name)), 'missing reviewed Toei duplicate quarantine: ' + name);
+}
 for(const p of garage.quarantined){
  const rows=garage.findPath(p);
  assert.ok(garage.isQuarantinedPng(p)&&rows.length&&rows.every(r=>r.quarantined&&!r.canonicalImage));
