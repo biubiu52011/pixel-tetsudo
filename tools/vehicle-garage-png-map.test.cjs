@@ -157,3 +157,20 @@ console.log('garage map: PASS — '+garage.totalPng+' assets, '+garage.canonical
   assert.ok(ref6000 && !ref6000.asset && ref6000.plannedAsset===null);
   assert.equal(ref6000.candidateOnly,true);
 }
+
+{
+  // P-02: available/review and review/review PNGs cannot become gallery
+  // selections solely from a model label; the 6020 extra copy is an alias.
+  for(const [model,name,line] of [
+    ['東急5000系','東急電鉄_5000系_従来デザイン.png','TokyuDenEn'],
+    ['图库待审・東急電鉄・東急電鉄_5000系_リニューアル車','東急電鉄_5000系_リニューアル車.png','TokyuDenEn'],
+    ['東急6000系','東急電鉄_6000系.png','TokyuOimachi'],
+    ['東急9000系','東急電鉄_9000系.png','TokyuOimachi'],
+    ['图库待审・東急電鉄・東急電鉄_6020系_追加','東急電鉄_6020系_追加.png','TokyuOimachi']
+  ]){
+    const p='../images/列车/東急電鉄/'+name;
+    assert.equal(garage.hasPng(p),true);
+    assert.equal(garage.matchModelPath(model,p,line),false,'review-only '+name);
+  }
+  assert.equal(garage.matchModelPath('東急6020系','../images/列车/東急電鉄/東急電鉄_6020系.png','TokyuOimachi'),true);
+}

@@ -4001,3 +4001,35 @@ test('JR-07 generic 681 model cannot borrow FT or 683 review-only art on Kosei a
    }
  }
 });
+
+test('P-02 Tokyu review-only images stay unselectable while approved 6020 stays available',()=>{
+  const review=[
+    ['東急5000系','東急5000系','東急電鉄_5000系_従来デザイン.png','TokyuDenEn'],
+    ['東急6000系','東急6000系','東急電鉄_6000系.png','TokyuOimachi'],
+    ['東急9000系','東急9000系','東急電鉄_9000系.png','TokyuOimachi']
+  ];
+  const map=root.VehicleGaragePngMap;
+  for(const [identity,model,file,line] of review){
+    const rec=root.TrainVehicle.resolveCanonicalVehicle(identity);
+    assert.ok(rec,identity+': canonical model identity retained');
+    assert.equal(rec.artworkReviewRequired,true,identity+': review gate');
+    assert.equal(root.TrainIcons.resolveVehicleArtwork(identity,'2026-11-21'),null,
+      identity+': model label alone cannot publish review PNG');
+    const path='../images/列车/東急電鉄/'+file;
+    assert.equal(map.hasPng(path),true);
+    assert.equal(map.matchModelPath(model,path,line),false,
+      identity+': garage cannot bypass review gate');
+  }
+  const other=[
+    ['東急5000系','東急電鉄_5000系_リニューアル車.png','TokyuDenEn'],
+    ['图库待审・東急電鉄・東急電鉄_6020系_追加','東急電鉄_6020系_追加.png','TokyuOimachi']
+  ];
+  for(const [model,file,line] of other){
+    const path='../images/列车/東急電鉄/'+file;
+    assert.equal(map.hasPng(path),true);
+    assert.equal(map.matchModelPath(model,path,line),false);
+  }
+  assert.equal(map.matchModelPath('東急6020系',
+    '../images/列车/東急電鉄/東急電鉄_6020系.png','TokyuOimachi'),true,
+    'approved base artwork must remain accessible');
+});

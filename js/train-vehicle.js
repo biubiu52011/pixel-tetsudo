@@ -927,8 +927,8 @@ var CANONICAL_VEHICLES = {
   "tokyu-2020-10": { displayName: "東急2020系", iconName: "東急2020系", asset: "../images/列车/東急電鉄/東急電鉄_2020系.png", aliases: ["東急2020系(10両)","東急2020系"] },
   "tokyu-5080": { displayName: "東急5080系", iconName: "東急5080系", asset: "../images/列车/東急電鉄/東急電鉄_5080系.png", aliases: ["東急5080系"] },
   "tokyu-6020": { displayName: "東急6020系", iconName: "東急6020系", asset: "../images/列车/東急電鉄/東急電鉄_6020系.png", aliases: ["東急6020系(5両)","東急6020系(7両)","東急6020系"] },
-  "tokyu-6000": { displayName: "東急6000系", iconName: "東急6000系", asset: "../images/列车/東急電鉄/東急電鉄_6000系.png", lineIds: ["TokyuOimachi"], aliases: ["東急6000系"] },
-  "tokyu-9000": { displayName: "東急9000系", iconName: "東急9000系", asset: "../images/列车/東急電鉄/東急電鉄_9000系.png", lineIds: ["TokyuOimachi"], aliases: ["東急9000系"] },
+  "tokyu-6000": { displayName: "東急6000系", iconName: "東急6000系", asset: "../images/列车/東急電鉄/東急電鉄_6000系.png", artworkReviewRequired: true, lineIds: ["TokyuOimachi"], aliases: ["東急6000系"] },
+  "tokyu-9000": { displayName: "東急9000系", iconName: "東急9000系", asset: "../images/列车/東急電鉄/東急電鉄_9000系.png", artworkReviewRequired: true, lineIds: ["TokyuOimachi"], aliases: ["東急9000系"] },
   // Do not illustrate 9020 with a different 9000-series front.
   "tokyu-9020-plan": { displayName: "東急9020系", iconName: "東急9020系", asset: null, plannedAsset: null, lineIds: ["TokyuOimachi"], aliases: ["東急9020系"] },
   "tokyu-7000": { displayName: "東急7000系", iconName: "東急7000系", asset: "../images/列车/東急電鉄/東急電鉄_7000系.png", aliases: ["東急7000系"] },
@@ -2239,6 +2239,7 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東急5000系",
     "iconName": "東急5000系",
     "asset": "../images/列车/東急電鉄/東急電鉄_5000系_従来デザイン.png",
+    "artworkReviewRequired": true,
     "aliases": ["東急5000系(10両)", "東急5000系（10両）"]
   },
   "yokohama-y500": {
