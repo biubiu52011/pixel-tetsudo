@@ -174,3 +174,13 @@ console.log('garage map: PASS — '+garage.totalPng+' assets, '+garage.canonical
   }
   assert.equal(garage.matchModelPath('東急6020系','../images/列车/東急電鉄/東急電鉄_6020系.png','TokyuOimachi'),true);
 }
+
+{
+  // The P-03 250-series-specific image is still registered for inventory
+  // and model text, but SQL scopes it as review-only.
+  const p='../images/列车/東武鉄道/東武鉄道_200型_250番台.png';
+  assert.equal(garage.hasPng(p),true);
+  assert.equal(garage.matchModelPath('東武250型',p,'TobuIsesaki'),false);
+  const rec=root.TrainVehicle.resolveCanonicalVehicle('東武250型');
+  assert.ok(rec && rec.artworkReviewRequired===true);
+}

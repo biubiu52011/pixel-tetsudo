@@ -4033,3 +4033,14 @@ test('P-02 Tokyu review-only images stay unselectable while approved 6020 stays 
     '../images/列车/東急電鉄/東急電鉄_6020系.png','TokyuOimachi'),true,
     'approved base artwork must remain accessible');
 });
+
+test('P-03 Tobu 250 artwork in review scope cannot be selected from model label',()=>{
+  const model='東武250型';
+  const p='../images/列车/東武鉄道/東武鉄道_200型_250番台.png';
+  const rec=root.TrainVehicle.resolveCanonicalVehicle(model);
+  assert.ok(rec,'Tobu 250 identity preserved');
+  assert.equal(rec.artworkReviewRequired,true);
+  assert.equal(root.TrainIcons.resolveVehicleArtwork(model,'2026-11-21'),null);
+  assert.equal(root.VehicleGaragePngMap.hasPng(p),true);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath(model,p,'TobuIsesaki'),false);
+});
