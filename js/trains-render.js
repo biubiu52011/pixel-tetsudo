@@ -507,8 +507,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     try {
       var oldNotes = el.parentNode ? el.parentNode.querySelectorAll('.tp-est-note') : [];
       for (var i = 1; i < oldNotes.length; i++) oldNotes[i].remove();
-      var hasEstimate = (positions || []).some(function(p) { return p && p.estimated === true; });
+      var list = positions || [];
+      var hasRealtime = list.some(function(p) {
+        return p && (p.positionSource === "realtime-api" || p.estimated === false);
+      });
+      var hasEstimate = list.some(function(p) {
+        return p && !((p.positionSource === "realtime-api") || p.estimated === false) &&
+          (p.estimated === true || p.positionSource === "supabase-train-run" ||
+           p.positionSource === "train-timetable" || p.positionSource === "station-timetable");
+      });
       var note = oldNotes[0];
+      // Real-time positions suppress the note entirely, including mixed-source lines.
+      if (hasRealtime) {
+        if (note) note.remove();
+        return;
+      }
       if (!note) {
         note = document.createElement("div");
         note.className = "tp-est-note";
@@ -516,19 +529,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         note.setAttribute("aria-live", "polite");
         el.insertAdjacentElement('afterend', note);
       }
-      // A missing verified plan is not the same as an empty train map or
-      // a cancelled service. Only a successful, date-scoped SQL response
-      // with an explicit missing-all-plans audit may show this distinction.
-      var runStatus = window.ODPTClient && window.ODPTClient.getTrainRunStatus
-        ? window.ODPTClient.getTrainRunStatus(lineId) : null;
-      var missingPlan = !(positions && positions.length) && runStatus &&
-        runStatus.planAvailability === "unconfirmed" &&
-        runStatus.auditCoverageStatus === "missing_all_plans" &&
-        runStatus.runs === 0 && runStatus.source !== "SOURCE_ERROR";
-      var text = t(missingPlan ? "trains.plan_not_imported_note" :
-        hasEstimate ? "trains.estimated_note" :
-        positions && positions.length ? "trains.live_note" : "trains.unavailable_note");
-      if (note.textContent !== text) note.textContent = text;
+      var message = t(hasEstimate ? "trains.estimated_note" : "trains.unavailable_note");
+      if (note.textContent !== message) note.textContent = message;
     } catch(e) { /* note is best-effort */ }
   }
 
