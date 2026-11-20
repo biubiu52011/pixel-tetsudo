@@ -2745,7 +2745,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var header=document.createElement('div');header.className='rs-modal-header';
     var heading=document.createElement('h2');heading.className='rs-modal-title';
     var close=document.createElement('button');close.className='rs-modal-close';close.textContent='×';
-    close.setAttribute('aria-label',/^zh/.test(lang)?'关闭':lang==='en'?'Close':'閉じる');
+    close.setAttribute('aria-label',t('detail.close'));
     var list=document.createElement('div');list.className='rs-modal-body train-fold-list';list.setAttribute('role','list');
     header.appendChild(heading);header.appendChild(close);content.appendChild(header);content.appendChild(list);panel.appendChild(content);
     function dismiss(focus){
