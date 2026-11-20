@@ -4044,3 +4044,13 @@ test('P-03 Tobu 250 artwork in review scope cannot be selected from model label'
   assert.equal(root.VehicleGaragePngMap.hasPng(p),true);
   assert.equal(root.VehicleGaragePngMap.matchModelPath(model,p,'TobuIsesaki'),false);
 });
+
+test('P-04 review-scoped Tobu 8000 standard livery does not bypass artwork approval',()=>{
+  const model='東武8000系',p='../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png';
+  const rec=root.TrainVehicle.resolveCanonicalVehicle(model);
+  assert.ok(rec,'Tobu 8000 identity retained');
+  assert.equal(rec.artworkReviewRequired,true);
+  assert.equal(root.TrainIcons.resolveVehicleArtwork(model,'2026-11-21'),null);
+  assert.equal(root.VehicleGaragePngMap.hasPng(p),true);
+  assert.equal(root.VehicleGaragePngMap.matchModelPath(model,p,'Tojo'),false);
+});

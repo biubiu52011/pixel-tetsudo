@@ -184,3 +184,12 @@ console.log('garage map: PASS — '+garage.totalPng+' assets, '+garage.canonical
   const rec=root.TrainVehicle.resolveCanonicalVehicle('東武250型');
   assert.ok(rec && rec.artworkReviewRequired===true);
 }
+
+{
+  const p='../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png';
+  assert.equal(garage.hasPng(p),true);
+  assert.equal(garage.matchModelPath('東武8000系',p,'Tojo'),false,
+    'P-04 SQL review-scoped 8000 standard artwork not authorized');
+  const rec=root.TrainVehicle.resolveCanonicalVehicle('東武8000系');
+  assert.ok(rec && rec.artworkReviewRequired===true);
+}
