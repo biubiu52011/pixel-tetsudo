@@ -19,6 +19,8 @@
     "わたらせ渓谷鉄道/わたらせ渓谷鉄道_WKT-520形.png":"identical bytes: WKT-510-labelled file",
     "相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png":"identical bytes: Sotetsu-21000-labelled file",
     "相模鉄道/相模鉄道_21000系.png":"identical bytes: Sotetsu-20000-labelled file",
+    "都営地下鉄/都営地下鉄_8500形（別）.png":"identical Git blob to 8501 Yamabuki; duplicate review-only alias",
+    "都営地下鉄/都営地下鉄_8500形_8501号車_山吹色.png":"review-only 8501 Yamabuki image; no unique train-number authority",
     "函館市電/toq9002or.png":"unverified Tokyu-looking material in Hakodate directory"
   });
   table.forEach(function(r){if(quarantinedPng[r[2]])r[4]=0;});
