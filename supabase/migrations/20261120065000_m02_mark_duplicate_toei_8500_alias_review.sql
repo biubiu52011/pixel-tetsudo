@@ -3,7 +3,10 @@
 --   都営地下鉄_8500形_8501号車_山吹色.png
 -- Blob: b599af3f0168687b5c278b25c4ea0be8511372c0.
 -- Preserve both existing gallery paths. The generic "（別）" alias must not
--- advertise an independently reviewed/available train identity.
+-- be treated as an independently verified train identity. The asset basic
+-- identity (including status/scope/generic flag) is protected by the
+-- existing immutable review baseline. Therefore this migration updates ONLY
+-- the permitted review indicator and note, without disabling the guard.
 -- No train-number range is added or changed.
 DO $m02$
 BEGIN
@@ -23,20 +26,19 @@ BEGIN
     RAISE EXCEPTION 'M-02: duplicate 8500 images have number ranges; manual review required';
   END IF;
   UPDATE public.vehicle_image_assets
-  SET asset_status='review', asset_scope='review', is_generic=false,
-      appearance_class='requires_review',
-      review_note='Git blob b599af3f0168687b5c278b25c4ea0be8511372c0 is identical to 都営地下鉄_8500形_8501号車_山吹色.png. This alternate filename is a review-only duplicate, not an independently approved generic PNG and not train-number evidence. Keep original path until deliberate gallery deduplication.'
+  SET appearance_class='requires_review',
+      review_note='REQUIRES_REVIEW: Git blob b599af3f0168687b5c278b25c4ea0be8511372c0 is identical to 都営地下鉄_8500形_8501号車_山吹色.png. Existing immutable baseline protects historical available/generic status; do not treat this alias as independently authorized for numbered services. Gallery registry artwork-inventory-228 remains non-canonical (flag 0). Preserve original path, no number mapping.'
   WHERE image_path='images/列车/都営地下鉄/都営地下鉄_8500形（別）.png'
     AND asset_status='available' AND asset_scope='generic'
     AND is_generic=true AND file_format_status='native_png';
   IF NOT EXISTS (
     SELECT 1 FROM public.vehicle_image_assets
     WHERE image_path='images/列车/都営地下鉄/都営地下鉄_8500形（別）.png'
-      AND asset_status='review' AND asset_scope='review'
-      AND is_generic=false AND appearance_class='requires_review'
+      AND asset_status='available' AND asset_scope='generic'
+      AND is_generic=true AND appearance_class='requires_review'
       AND file_format_status='native_png'
   ) THEN
-    RAISE EXCEPTION 'M-02: duplicate 8500 alias review-only check failed';
+    RAISE EXCEPTION 'M-02: duplicate 8500 alias requires_review metadata check failed';
   END IF;
 END
 $m02$;
