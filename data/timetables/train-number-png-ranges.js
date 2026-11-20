@@ -5238,9 +5238,12 @@
           (sourcePlan.confirmed===true||sourcePlan.status==="PLANNED_MODEL");
         if(planScoped&&planLabels.length!==1)continue;
         if(planScoped&&planLabels.length===1){
-          if(modelObservations.length||sourcePlan.confirmed===true)
-            modelObservations.push(
-              canonicalRinkaiMixedModelLabel(planLabels[0],row));
+          // A scoped, single-model PLANNED_MODEL is evidence for the
+          // representative model choice, even without a realtime label.
+          // Do not fall through to a 3/4-digit T display default that
+          // contradicts the independently supplied plan.
+          modelObservations.push(
+            canonicalRinkaiMixedModelLabel(planLabels[0],row));
         }
         if(modelObservations.some(function(m){
           return m!==modelObservations[0];
