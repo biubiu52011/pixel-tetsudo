@@ -49850,7 +49850,9 @@
         3
       ],
       "throughServices": [],
-      "transferStations": []
+      "transferStations": [],
+      "nameZh": "弥彦线",
+      "nameKo": "야히코선"
     },
     "UtsunomiyaLRT": {
       "name": "Utsunomiya Haga Light Rail",
