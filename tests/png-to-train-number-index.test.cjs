@@ -35,7 +35,7 @@ test('every indexed PNG is physical, quarantine remains blocked',()=>{
    assert.ok(asset.historicalNumberedSources.every(r=>
      r.referenceOnly===true && r.actualVehicleConfirmed===false));
  }
- assert.equal(rows.filter(x=>x.quarantined).length,9);
+ assert.equal(rows.filter(x=>x.quarantined).length,11);
 });
 test('catalog numeric bounds never claim every intervening service number',()=>{
  const catalog=JSON.parse(read('data/audits/train-number-png-catalog-2611.json'));
@@ -83,4 +83,16 @@ test('historical dated schedule sources are not turned into current-number bands
  const saikyo=get('JR東日本_E233系_7000番台.png');
  assert.ok(saikyo.historicalNumberedSources.some(x=>
    x.explicitServiceDateNumberCount===2));
+});
+test('Toei 8500 alternative and 8501 Yamabuki share no numbered artwork authorization',()=>{
+ for(const name of [
+   '都営地下鉄_8500形（別）.png',
+   '都営地下鉄_8500形_8501号車_山吹色.png'
+ ]){
+   const a=get(name);
+   assert.ok(a?.quarantined,'duplicate Toei image must be quarantined');
+   assert.equal(a.status,'quarantined_visual_identity');
+   assert.equal(a.directNumberRules.length,0);
+   assert.equal(a.runtimeNumberRosters.length,0);
+ }
 });
