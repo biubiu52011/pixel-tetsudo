@@ -5192,15 +5192,29 @@
       // single-model plan is required before drawing either reference PNG.
       if(row.requireExplicitModelEvidence){
         if(!context || !Array.isArray(row.allowedModelLabels))continue;
+        // The primary realtime label authorizes a candidate, but a second
+        // independently derived label must not contradict it. Likewise, a
+        // confirmed single-model plan must agree with both observations.
+        // A train number alone never chooses a model in mixed-stock service.
+        var realtimeLabels=[
+          context.realtimeVehicleType,context.realtimeDerivedVehicleType
+        ].map(function(m){return String(m||"").trim();}).filter(Boolean);
+        if(realtimeLabels.some(function(m){
+          return row.allowedModelLabels.indexOf(m)<0 ||
+            m!==realtimeLabels[0];
+        }))continue;
         var explicitLabel=String(context.realtimeVehicleType||"").trim();
         var explicitPlan=context.vehiclePlan;
-        var sourcedPlan=explicitPlan &&
-          (explicitPlan.confirmed===true || explicitPlan.status==="PLANNED_MODEL") &&
+        var planScoped=explicitPlan &&
+          (explicitPlan.confirmed===true ||
+           explicitPlan.status==="PLANNED_MODEL");
+        var sourcedPlan=planScoped &&
           Array.isArray(explicitPlan.models) && explicitPlan.models.length===1 &&
           row.allowedModelLabels.indexOf(explicitPlan.models[0])>=0;
-        if(explicitLabel
-           ? row.allowedModelLabels.indexOf(explicitLabel)<0
-           : !sourcedPlan)continue;
+        if(planScoped && !sourcedPlan)continue;
+        if(sourcedPlan && realtimeLabels.length &&
+           explicitPlan.models[0]!==realtimeLabels[0])continue;
+        if(!explicitLabel && !sourcedPlan)continue;
       }
       if(row.requireCompatiblePlan && context && context.vehiclePlan &&
           Array.isArray(context.vehiclePlan.models) && context.vehiclePlan.models.length &&
