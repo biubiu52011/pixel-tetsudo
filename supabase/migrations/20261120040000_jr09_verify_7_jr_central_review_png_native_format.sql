@@ -31,7 +31,7 @@ BEGIN
 
   IF EXISTS (
     SELECT 1 FROM public.published_train_png_number_ranges AS r
-    WHERE regexp_replace(r.png_reference, '^(\\.\\./|/)+', '') = ANY(target_paths)
+    WHERE replace(r.png_reference, '../', '') = ANY(target_paths)
   ) THEN
     RAISE EXCEPTION 'JR09 review-only images unexpectedly have published number bands';
   END IF;
