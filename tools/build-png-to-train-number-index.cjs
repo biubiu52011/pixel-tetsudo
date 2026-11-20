@@ -31,6 +31,35 @@ function buildIndex(input) {
     'root.TrainNumberPngRanges=Object.freeze({',
     'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
+  // 2611 M-03 guard fixtures: not claims that a train used these cars.
+  // A shared S train number is insufficient if vehicle sources disagree.
+  const metroContext={
+    serviceDate:'2026-11-20',calendarType:'weekday',
+    trainOperator:'TokyoMetro',
+    sourceRailway:'odpt.Railway:TokyoMetro.Yurakucho'
+  };
+  const metroMatch=more=>win.TrainNumberPngRanges.match(
+    'A1023S','Yurakucho',Object.assign({},metroContext,more));
+  const m10000=metroMatch({realtimeVehicleType:'東京メトロ10000系'});
+  const m17000=metroMatch({realtimeVehicleType:'東京メトロ17000系'});
+  if(!m10000||!m10000.pngPath.endsWith('/東京メトロ_10000系.png')||
+     !m17000||!m17000.pngPath.endsWith('/東京メトロ_17000系.png'))
+    throw Error('M-03: explicit Metro model reference regressed');
+  if(metroMatch({realtimeVehicleType:'東京メトロ10000系',
+      realtimeDerivedVehicleType:'東京メトロ17000系'}) ||
+     metroMatch({realtimeVehicleType:'東京メトロ10000系',
+      vehiclePlan:{confirmed:true,models:['東京メトロ17000系']}}) ||
+     metroMatch({vehiclePlan:{status:'PLANNED_MODEL',
+      models:['東京メトロ10000系','東京メトロ17000系']}}))
+    throw Error('M-03: contradictory Metro evidence must yield null');
+  // M-01/M-02: two inventory paths share one Git blob. Keep both
+  // quarantined, with no train-number authorization.
+  const duplicateToei=[
+    '../images/列车/都営地下鉄/都営地下鉄_8500形（別）.png',
+    '../images/列车/都営地下鉄/都営地下鉄_8500形_8501号車_山吹色.png'
+  ];
+  if(duplicateToei.some(p=>!win.VehicleGaragePngMap.isQuarantinedPng(p)))
+    throw Error('M-02: duplicate Toei PNG quarantine regressed');
   const prefix='images/列车/';
   const normalized=(p)=>String(p||'').replace(/^(?:\.\.\/|\.\/|\/)+/,'');
   const rows=win.__pngIndexGarageRows;
