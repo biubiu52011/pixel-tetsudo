@@ -75,6 +75,30 @@ function buildIndex(input) {
      rinkaiMatch({vehiclePlan:{status:'PLANNED_MODEL',
        models:['東京臨海高速鉄道70-000形','東京臨海高速鉄道71-000形']}}))
     throw Error('T-01: TWR scoped model-plan or conflict regression');
+  // T-01 provenance regression. SQL manual annotations are candidates,
+  // not an independently verified single-model dispatch. A candidate must
+  // suppress conflicting 3/4-digit T reference defaults, never authorize
+  // a vehicle image. Realtime/confirmed plan examples are tested above.
+  const rinkaiWeakSource={source:'sql-timetable-plan',
+    evidenceRole:'unverified-source-candidate',
+    status:'PLANNED_CANDIDATES'};
+  const weak70=rinkaiMatch({vehiclePlan:Object.assign({},rinkaiWeakSource,
+    {models:['東京臨海高速鉄道70-000形']})});
+  const weak71=rinkaiMatch({vehiclePlan:Object.assign({},rinkaiWeakSource,
+    {models:['東京臨海高速鉄道71-000形']})});
+  const weakMixed=rinkaiMatch({vehiclePlan:Object.assign({},rinkaiWeakSource,
+    {models:['東京臨海高速鉄道70-000形','東京臨海高速鉄道71-000形']})});
+  const trusted70=rinkaiMatch({vehiclePlan:{
+    status:'PLANNED_MODEL',models:['東京臨海高速鉄道70-000形'],
+    source:'database-verified-published-plan',confirmed:true}});
+  const weakAndRealtime=rinkaiMatch({
+    realtimeVehicleType:'東京臨海高速鉄道70-000形',
+    vehiclePlan:Object.assign({},rinkaiWeakSource,
+      {models:['東京臨海高速鉄道71-000形']})});
+  if(weak70||weak71||weakMixed ||
+     !trusted70 || trusted70.model!=='東京臨海高速鉄道70-000形' ||
+     !weakAndRealtime || weakAndRealtime.model!=='東京臨海高速鉄道70-000形')
+    throw Error('T-01: undated SQL fleet candidate must not become a number PNG');
   // M-01/M-02: two inventory paths share one Git blob. Keep both
   // quarantined, with no train-number authorization.
   const duplicateToei=[
