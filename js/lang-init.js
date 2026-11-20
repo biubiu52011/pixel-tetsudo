@@ -101,6 +101,13 @@
             var translated = window.t(key, el.placeholder);
             if (translated !== el.placeholder) el.placeholder = translated;
         });
+        document.querySelectorAll("[data-i18n-aria-label]").forEach(function(el) {
+            var key = el.getAttribute("data-i18n-aria-label");
+            var translated = window.t(key, el.getAttribute("aria-label"));
+            if (translated !== el.getAttribute("aria-label")) {
+                el.setAttribute("aria-label", translated);
+            }
+        });
     }
 
 
