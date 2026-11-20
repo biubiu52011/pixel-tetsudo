@@ -5,6 +5,7 @@
   "use strict";
   var translations = {
     en: {
+      "search.swap_stations": "Swap departure and destination stations",
       "search.results_heading": "Route search results",
       "search.search_unavailable": "Route search is not available. Please try again later.",
       "search.mode_group": "Search priority",
@@ -341,6 +342,7 @@
       "train.transferOut": "out-of-station transfer",
     },
     zh: {
+      "search.swap_stations": "交换出发站与到达站",
       "search.results_heading": "路线搜索结果",
       "search.search_unavailable": "路线搜索暂时不可用，请稍后重试。",
       "search.mode_group": "搜索偏好",
@@ -677,6 +679,7 @@
       "train.transferOut": "站外换乘",
     },
     ja: {
+      "search.swap_stations": "出発駅と到着駅を入れ替える",
       "search.results_heading": "経路検索結果",
       "search.search_unavailable": "経路検索を利用できません。しばらくしてからお試しください。",
       "search.mode_group": "検索条件",
@@ -1013,6 +1016,7 @@
       "train.transferOut": "駅外乗換",
     },
     ko: {
+      "search.swap_stations": "출발역과 도착역 바꾸기",
       "search.results_heading": "경로 검색 결과",
       "search.search_unavailable": "현재 경로 검색을 이용할 수 없습니다. 잠시 후 다시 시도하세요.",
       "search.mode_group": "검색 우선순위",
