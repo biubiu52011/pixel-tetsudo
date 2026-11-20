@@ -19,6 +19,8 @@ test('station names have four nonempty languages and generated copies match', ()
         id + ': missing ' + lang);
     }
     assert.match(station.ko, /[\uac00-\ud7af]/, id + ': Korean station name missing');
+    assert.doesNotMatch(station.zh, /[\u3040-\u309f\u30a1-\u30fa\u30fd-\u30ff]/, id + ': untranslated Japanese kana in Chinese name');
+    assert.doesNotMatch(station.ko, /[\u3040-\u309f\u30a1-\u30fa\u30fd-\u30ff]/, id + ': untranslated Japanese kana in Korean name');
   }
 });
 
