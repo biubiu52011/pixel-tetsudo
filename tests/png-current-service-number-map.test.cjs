@@ -19,9 +19,9 @@ test('active family filter is derived only from 601 gallery PNGs and official fl
  assert.equal(saved.summary.fleetFamilyVerified,120);
  assert.equal(saved.summary.activeFamilyWithExistingNumberScope,86);
  assert.equal(saved.summary.activeFamilyWithoutNumberScope,34);
- assert.equal(saved.summary.currentFleetStatusNotVerified,472);
+ assert.equal(saved.summary.currentFleetStatusNotVerified,470);
  assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,13);
- assert.equal(saved.summary.quarantinedArtwork,9);
+ assert.equal(saved.summary.quarantinedArtwork,11);
  assert.equal(saved.summary.exactPhysicalCarsetsVerified,0);
 });
 test('a verified operating fleet is not an authorization for any arbitrary train number',()=>{
@@ -77,8 +77,20 @@ test('Rinkai 70-000 and 71-000 share source-number candidates, never an actual s
  assert.equal(saved.summary.exactPhysicalCarsetsVerified,0);
 });
 test('unknown is not retired; quarantined artwork never eligible for current vehicle PNG mapping',()=>{
- assert.equal(saved.pendingStatus.length,472);
+ assert.equal(saved.pendingStatus.length,470);
  assert.ok(saved.pendingStatus.every(x=>x.reason));
  assert.ok(saved.quarantine.every(x=>!saved.mapped.some(m=>m.png===x.png)));
  assert.equal(new Set([...saved.mapped,...saved.activeWithoutNumber,...saved.pendingStatus,...saved.quarantine].map(x=>x.png)).size,601);
+});
+test('Toei 8500 duplicate paths remain quarantined, never selected for current service',()=>{
+ const paths=[
+  'images/列车/都営地下鉄/都営地下鉄_8500形（別）.png',
+  'images/列车/都営地下鉄/都営地下鉄_8500形_8501号車_山吹色.png'
+ ];
+ for(const png of paths){
+  assert.ok(origin.pngIndex.some(x=>x.path===png&&x.quarantined));
+  assert.ok(saved.quarantine.some(x=>x.png===png));
+  assert.ok(!saved.pendingStatus.some(x=>x.png===png));
+  assert.ok(!saved.mapped.some(x=>x.png===png));
+ }
 });
