@@ -52,6 +52,29 @@ function buildIndex(input) {
      metroMatch({vehiclePlan:{status:'PLANNED_MODEL',
       models:['東京メトロ10000系','東京メトロ17000系']}}))
     throw Error('M-03: contradictory Metro evidence must yield null');
+  // T-01: a planned, single-model TWR reference must outrank the
+  // optional 3/4-digit T display default. Distinct model sources must agree.
+  // Fixture train numbers are synthetic guard checks, not live car assignments.
+  const rinkaiContext={
+    serviceDate:'2026-11-20',calendarType:'weekday',
+    sourceRailway:'odpt.Railway:TWR.Rinkai',trainType:'Local',
+    positionSource:'realtime-api',railDirection:'Inbound'
+  };
+  const rinkaiMatch=more=>win.TrainNumberPngRanges.match(
+    '1638T','Rinkai',Object.assign({},rinkaiContext,more));
+  const plan70={status:'PLANNED_MODEL',
+    models:['東京臨海高速鉄道70-000形']};
+  const plan71={status:'PLANNED_MODEL',
+    models:['東京臨海高速鉄道71-000形']};
+  const from70=rinkaiMatch({vehiclePlan:plan70});
+  const from71=rinkaiMatch({vehiclePlan:plan71});
+  if(!from70||from70.model!=='東京臨海高速鉄道70-000形' ||
+     !from71||from71.model!=='東京臨海高速鉄道71-000形' ||
+     rinkaiMatch({realtimeVehicleType:'東京臨海高速鉄道70-000形',
+       vehiclePlan:plan71}) ||
+     rinkaiMatch({vehiclePlan:{status:'PLANNED_MODEL',
+       models:['東京臨海高速鉄道70-000形','東京臨海高速鉄道71-000形']}}))
+    throw Error('T-01: TWR scoped model-plan or conflict regression');
   // M-01/M-02: two inventory paths share one Git blob. Keep both
   // quarantined, with no train-number authorization.
   const duplicateToei=[
