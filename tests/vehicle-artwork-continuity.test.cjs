@@ -245,3 +245,23 @@ test('byte-identical Sotetsu model aliases stay quarantined from number-to-PNG m
     assert.ok(source.includes(name),name+' must remain registered');
   }
 });
+
+test('Sotetsu livery and formation artwork require explicit number evidence',()=>{
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const names=[
+    '相模鉄道_9000系_YOKOHAMA_NAVYBLUE.png',
+    '相模鉄道_9000系_旧塗装.png',
+    '相模鉄道_相模鉄道8000系（sote8006）.png'
+  ];
+  for(const name of names)
+    assert.equal(ranges.includes(name),false,name+' has no verified train-number mapping');
+
+  const ybn=win.TrainVehicle.resolveCanonicalVehicle('相鉄9000系');
+  assert.equal(ybn?.asset||null,null,'planned fleet artwork is not actual vehicle proof');
+  assert.equal(ybn?.plannedAsset,
+    '../images/列车/相模鉄道/相模鉄道_9000系_YOKOHAMA_NAVYBLUE.png');
+  assert.equal(win.VehicleGaragePngMap.matchModelPath('相鉄9000系',
+    '../images/列车/相模鉄道/相模鉄道_9000系_旧塗装.png','SotetsuMain'),false);
+  assert.equal(win.VehicleGaragePngMap.matchModelPath('相鉄8000系',
+    '../images/列车/相模鉄道/相模鉄道_相模鉄道8000系（sote8006）.png','SotetsuMain'),false);
+});
