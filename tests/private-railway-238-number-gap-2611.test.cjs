@@ -110,8 +110,8 @@ test('private gaps stay separated into scoped and unscoped evidence without prio
   const scoped = missing.filter(png => (byPng.get(png).lineScopes || []).length);
   const unscoped = missing.filter(png => !(byPng.get(png).lineScopes || []).length);
   const quarantined = missing.filter(png => byPng.get(png).quarantined);
-  assert.equal(scoped.length, 98);
-  assert.equal(unscoped.length, 119);
+  assert.equal(scoped.length, 100);
+  assert.equal(unscoped.length, 117);
   assert.equal(quarantined.length, 2);
   assert.equal(scoped.length + unscoped.length, missing.length);
   const carOrFormationLabels = missing.filter(png =>
