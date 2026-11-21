@@ -1,5 +1,8 @@
 # PNG-first 番号区间实施记录（2026-11-17）
 
+> Notion 项目入口、现行 42 批、旧编号历史和离线同步口径见
+> [PNG 番号号段项目结构与离线索引](png-number-band-project-structure-20261122.md)。
+
 ## 本次落地
 - 基于 Notion「全图库 PNG 番号号段映射｜操作手册（仅保存号段）」执行；暂不改变车型调查规则、时刻表或实际编组身份。
 - 通用 `data/timetables/train-number-png-ranges.js` 的 `rows` 解析从 **首个命中立即返回** 改为 **收集所有生效规则 → 按规范化 PNG 路径去重 → 仅一张返回**。
