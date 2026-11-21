@@ -44,7 +44,9 @@
     var hasDOM = typeof document !== "undefined" && !!document.body;
     var family = hasDOM && typeof getComputedStyle === "function"
       ? getComputedStyle(document.body).fontFamily : "";
-    var lang = hasDOM ? (document.documentElement.lang || window.currentLang || "ja") : "";
+    var lang = hasDOM
+      ? ((document.documentElement && document.documentElement.lang) || window.currentLang || "ja")
+      : "";
     var fontStatus = hasDOM && document.fonts ? document.fonts.status : "";
     var signature = lang + "|" + family + "|" + fontStatus + "|" + hasDOM;
     if (signature !== _fontCacheSignature) {
