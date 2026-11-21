@@ -192,3 +192,56 @@ test('actual SVG image node becomes a neutral circle, never the other PNG, on a 
     {kind:'vehicle',iconSrc:'B.png'}).kind,'vehicle',
     'a different public train number is not the same physical service');
 });
+// Durable guard tests for reviewed artwork; audit results live in Notion,
+// not in a separate dated script for each PNG batch.
+test('unverified Seibu special liveries and L00 formations cannot become generic defaults',()=>{
+  const gallery=fs.readFileSync('js/train-vehicle.js','utf8');
+  const garage=fs.readFileSync('data/timetables/vehicle-garage-png-map.js','utf8');
+  const tok=gallery.match(/\{ id: "artwork-inventory-222"[^\n]+/);
+  const twoTone=gallery.match(/\{ id: "artwork-inventory-220"[^\n]+/);
+  const l00=gallery.match(/"remaining-fleet-extra-6": \{[^\n]+/);
+  const first=gallery.match(/\{ id: "artwork-inventory-227"[^\n]+/);
+  const second=gallery.match(/\{ id: "seibu-l00-second-formation-review"[^\n]+/);
+  for(const [entry,label] of [[tok,'Tokiiro'],[twoTone,'Seibu two-tone'],
+    [l00,'L00 generic'],[first,'L00 first formation'],[second,'L00 second formation']])
+    assert.ok(entry?.[0],label+' missing');
+  assert.match(tok[0],/future-model-unverified/);
+  assert.match(tok[0],/asset: null/);
+  assert.match(twoTone[0],/model-label-conflict/);
+  assert.match(twoTone[0],/asset: null/);
+  assert.match(l00[0],/"asset":null/);
+  assert.match(l00[0],/"plannedAsset":null/);
+  assert.match(first[0],/formation-specific-review/);
+  assert.match(second[0],/future-formation-specific-review/);
+  for(const file of ['西武鉄道_L00系_れおけい.png',
+    '西武鉄道_L00系_第1編成_埼玉西武ライオンズ.png']){
+    const png='../images/列车/西武鉄道/'+file;
+    assert.equal(win.VehicleGaragePngMap.matchModelPath('西武L00系',png,'SeibuYamaguchi'),false);
+  }
+  assert.match(garage,/"artwork-inventory-222":true/);
+  assert.match(garage,/"artwork-inventory-220":true/);
+  assert.match(garage,/"seibu-l00-second-formation-review":true/);
+});
+
+test('Fujikyu number references do not infer alternate vehicle faces or liveries',()=>{
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  for(const file of ['富士急行_8000系_フジサン特急_顔B.png',
+    '富士急行_8500系_富士山ビュー特急_赤色.png',
+    '富士急行_8500系_富士山ビュー特急_茶色.png']){
+    assert.equal(ranges.includes(file),false,file+' is not numbered-livery proof');
+  }
+  assert.match(ranges,/does not select face A\/B, a formation number, or today's actual car/);
+});
+
+test('byte-identical Sotetsu model aliases stay quarantined from number-to-PNG matching',()=>{
+  const crypto=require('node:crypto');
+  const names=['相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png','相模鉄道_21000系.png'];
+  const bytes=names.map(n=>fs.readFileSync('images/列车/相模鉄道/'+n));
+  const hashes=bytes.map(b=>crypto.createHash('sha256').update(b).digest('hex'));
+  assert.equal(hashes[0],hashes[1],'duplicate model aliases unexpectedly diverged');
+  const source=fs.readFileSync('data/timetables/vehicle-garage-png-map.js','utf8');
+  for(const name of names){
+    assert.equal(win.VehicleGaragePngMap.isQuarantinedPng('../images/列车/相模鉄道/'+name),true,name);
+    assert.ok(source.includes(name),name+' must remain registered');
+  }
+});

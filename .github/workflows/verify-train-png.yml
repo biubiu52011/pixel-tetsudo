@@ -27,6 +27,38 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # New timetable data belongs in existing Supabase tables, not new dated JS.
+      # Batched PNG audits belong in existing regression suites and Notion logs.
+      - name: Reject newly added dated scripts and per-batch audit files
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          base="${BEFORE_SHA:-}"
+          if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
+            base="$(git rev-parse HEAD^ 2>/dev/null || true)"
+          fi
+          if [[ -z "$base" ]]; then
+            echo "No previous commit for added-file guard"; exit 0
+          fi
+          git diff --diff-filter=A --name-only "$base" HEAD > /tmp/added-train-project-files.txt
+          node <<'NODE'
+          const fs=require('node:fs');
+          const names=fs.readFileSync('/tmp/added-train-project-files.txt','utf8').split(/\r?\n/).filter(Boolean);
+          const dated=/(?:20\d{2}[-_]?(?:0[1-9]|1[0-2])|(?:^|[-_])\d{2}(?:0[1-9]|1[0-2])(?=[._-]))/;
+          const runtime=/^(?:data\/timetables\/|data\/api\/|js\/|scripts\/|tools\/|supabase\/functions\/).*\.(?:js|cjs|mjs|ts)$/;
+          const batchTest=/^tests\/.*(?:^|[-_])(?:p|jr|private|metro|third|other)[-_]?\d{2}[-_].*\.test\.(?:js|cjs|mjs)$/i;
+          const batchReport=/^docs\/audits\/.*(?:^|[-_])(?:p|jr|m|t|o)[-_]?\d{2}[-_].*\.md$/i;
+          const forbidden=names.filter(p=>(runtime.test(p)&&dated.test(p))||batchTest.test(p)||batchReport.test(p));
+          if(forbidden.length){
+            console.error('New date-specific scripts or redundant per-batch audit files are prohibited:');
+            forbidden.forEach(p=>console.error('  '+p));
+            console.error('Edit existing owner scripts/tests; store dated schedules in existing data and batch logs in Notion.');
+            process.exitCode=1;
+          }else console.log('PASS: no new time-limited runtime scripts or per-batch audit files');
+          NODE
       - name: Synchronize page script versions before train runtime checks
         run: node scripts/sync-page-scripts.cjs
       - name: Validate generated page script dependencies
