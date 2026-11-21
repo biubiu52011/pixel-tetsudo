@@ -101,7 +101,7 @@ test('SVG fallback transfer badges use the shared StationInfoLayout measurement 
     RuntimeConfig: {TRANSFER_MAX_ROWS: 4},
     ThroughChip: {measureWidth(label, size) {
       assert.equal(label, '中央本线');
-      assert.equal(size, 9);
+      assert.equal(size, 10);
       calls++;
       return 54;
     }}

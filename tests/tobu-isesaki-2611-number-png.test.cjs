@@ -42,7 +42,11 @@ test('2/3-car numbers are exact, image selection is only family illustration',()
    assert.equal(row.model,model);assert.ok(row.pngPath.endsWith(file),num);
    assert.equal(row.referenceOnly,true);assert.equal(row.illustrative,true);
    assert.equal(row.actualVehicleConfirmed,false);
-   assert.equal(window.VehicleGaragePngMap.matchModelPath(model,row.pngPath,'TobuIsesaki'),true);
+   const approved=cars===3
+     ? window.VehicleGaragePngMap.matchScopedReferencePath(
+       model,row.pngPath,'TobuIsesaki','tobu-isesaki-2611-8000-reference')
+     : window.VehicleGaragePngMap.matchModelPath(model,row.pngPath,'TobuIsesaki');
+   assert.equal(approved,true);
    const mark=window.TrainVehicle.selectMarkerArtwork(p(num),false);
    assert.equal(mark.kind,'vehicle',num);
    assert.equal(mark.actualVehicleConfirmed,false,num);
