@@ -27,6 +27,12 @@ test('Tobu Isesaki PNG: official north-end and Ryomo numbers stay authoritative'
   assert.equal(ix.limitedNumbers,50);
   assert.equal(ix.corridorNumbers,125);
   assert.equal(match('303E').scheduledCars,3);
+  assert.equal(w.VehicleGaragePngMap.matchModelPath(
+    '東武8000系','../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png',
+    'TobuIsesaki'),false);
+  assert.equal(w.VehicleGaragePngMap.matchScopedReferencePath(
+    '東武8000系','../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png',
+    'TobuIsesaki','tobu-isesaki-2611-8000-reference'),true);
   assert.equal(match('305E').scheduledCars,2);
   assert.equal(match('1801','LimitedExpress').model,'東武500系');
   assert.equal(match('1803','LimitedExpress').model,'東武200型');

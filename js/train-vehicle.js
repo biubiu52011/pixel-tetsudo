@@ -1192,7 +1192,7 @@ var CANONICAL_VEHICLES = {
   "planned-stock-library-60": {"displayName":"相鉄11000系","iconName":"相鉄11000系","asset":null,"plannedAsset":"../images/列车/相模鉄道/相模鉄道_11000系_相鉄グループカラー.png","aliases":[]},
   // Loo-ool 的东武编成附加信息页确认这些系列属于东武本线网；
   // 这里仅补齐规范车型、线路作用域和已有 PNG，不把编成资料当成实时列车号映射。
-  "planned-stock-library-61": {"displayName":"東武8000系","iconName":"東武8000系","asset":"../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png","lineIds":["Ogose","TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"Ogose":["8000系"],"TobuIsesaki":["東武8000系","東武850系"],"TobuSkytree":["東武8000系","東武850系"],"TobuNikko":["東武8000系","東武850系"],"Tojo":["東武8000系","東武8000型"]},"aliases":["東武8000型","東武8000系","東武850型","東武850系"]},
+  "planned-stock-library-61": {"displayName":"東武8000系","iconName":"東武8000系","asset":"../images/列车/東武鉄道/東武鉄道_8000型_標準塗装.png","artworkReviewRequired":true,"lineIds":["Ogose","TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"Ogose":["8000系"],"TobuIsesaki":["東武8000系","東武850系"],"TobuSkytree":["東武8000系","東武850系"],"TobuNikko":["東武8000系","東武850系"],"Tojo":["東武8000系","東武8000型"]},"aliases":["東武8000型","東武8000系","東武850型","東武850系"]},
   "planned-stock-library-62": {"displayName":"東武10000系","iconName":"東武10000系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_10000型_未更新車.png","lineIds":["TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"TobuIsesaki":["東武10000系","東武10000型"],"TobuSkytree":["東武10000系","東武10000型"],"TobuNikko":["東武10000系","東武10000型"],"Tojo":["東武10000系","東武10000型"]},"aliases":["東武10000型","東武10000系","10000系10050型","東武10000系10050型"]},
   "planned-stock-library-63": {"displayName":"東武10030系","iconName":"東武10030系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_10030型_未更新車.png","lineIds":["TobuIsesaki","TobuSkytree","TobuNikko","Tojo"],"lineAliases":{"TobuIsesaki":["東武10030系","東武10030型"],"TobuSkytree":["東武10030系","東武10030型"],"TobuNikko":["東武10030系","東武10030型"],"Tojo":["東武10030系","東武10030型"]},"aliases":["東武10030型","東武10030系"]},
   "planned-stock-library-66": {"displayName":"東武90000系","iconName":"東武90000系","asset":"../images/列车/東武鉄道/東武鉄道_90000系.png","lineIds":["Tojo"],"lineAliases":{"Tojo":["東武90000系","東武90000型"]},"aliases":["東武90000型","東武90000系"]},
@@ -1204,7 +1204,10 @@ var CANONICAL_VEHICLES = {
   "remaining-fleet-extra-3": {"displayName":"西武10000系","iconName":"西武10000系","asset":"../images/列车/西武鉄道/西武鉄道_10000系_ニューレッドアロー.png","aliases":["西武10000系（レッドアロー）","10000系（レッドアロー）"]},
   "remaining-fleet-extra-4": {"displayName":"西武8500系","iconName":"西武8500系","asset":"../images/列车/西武鉄道/西武鉄道_8500系_レオライナー.png","aliases":["西武8500系（レオライナー、新型導入中）"]},
   "remaining-fleet-extra-5": {"displayName":"西武7000系","iconName":"西武7000系","asset":"../images/列车/西武鉄道/西武鉄道_7000系_サステナ車両.png","lineIds":["Seibu_Sayama","Ikebukuro","SeibuChichibu"],"aliases":["西武7000系（2026年ワンマン化）"]},
-  "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":"../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png","lineIds":["SeibuYamaguchi"],"aliases":["L00系（レオライナー）"],"candidateOnly":true,"evidenceSource":"https://www.seiburailway.jp/railway/encyclopedia/L00/"},
+  // The generic L00 identity has no default artwork. The two repository PNGs
+  // depict different formation-specific liveries and must not be selected from
+  // a bare model label.
+  "remaining-fleet-extra-6": {"displayName":"西武L00系","iconName":"西武L00系","asset":null,"plannedAsset":null,"lineIds":["SeibuYamaguchi"],"aliases":["L00系（レオライナー）"],"candidateOnly":true,"promotePlannedAsset":false,"artworkStatus":"generic-model-no-default-artwork","evidenceSource":"https://www.seiburailway.jp/railway/encyclopedia/L00/"},
   "remaining-fleet-extra-7": {"displayName":"東武50090系","iconName":"東武50090系","asset":"../images/列车/東武鉄道/東武鉄道_50090型.png","aliases":["東武50090系（TJライナー専用）","東武50090型"]},
   "remaining-fleet-extra-8": {"displayName":"東武N100系","iconName":"東武N100系","asset":"../images/列车/東武鉄道/東武鉄道_N100系_SPACIA_X.png","aliases":["東武N100系（スペーシアX）"]},
   "remaining-fleet-extra-9": {"displayName":"東武100系","iconName":"東武100系","asset":null,"plannedAsset":"../images/列车/東武鉄道/東武鉄道_100系_原色.png","lineIds":["TobuNikko","TobuSkytree","ShonanShinjuku","UtsunomiyaJR"],"aliases":["東武100系（スペーシア）","東武100系（きぬ）"]},
@@ -3012,14 +3015,15 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-217", displayName: "图库待审・秩父鉄道・秩父鉄道_デキ502", iconName: "图库待审・秩父鉄道・秩父鉄道_デキ502", asset: null, plannedAsset: "../images/列车/秩父鉄道/秩父鉄道_デキ502.png", aliases: [], operatorDirectory: "秩父鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-218", displayName: "图库待审・秩父鉄道・秩父鉄道_デキ504", iconName: "图库待审・秩父鉄道・秩父鉄道_デキ504", asset: null, plannedAsset: "../images/列车/秩父鉄道/秩父鉄道_デキ504.png", aliases: [], operatorDirectory: "秩父鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-219", displayName: "图库待审・西武鉄道・西武鉄道_10000系_レッドアロークラシック", iconName: "图库待审・西武鉄道・西武鉄道_10000系_レッドアロークラシック", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_10000系_レッドアロークラシック.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-220", displayName: "图库待审・西武鉄道・西武鉄道_2000系_ツートンカラー", iconName: "图库待审・西武鉄道・西武鉄道_2000系_ツートンカラー", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_2000系_ツートンカラー.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "artwork-inventory-220", displayName: "图库待审・西武鉄道・2000系ツートン表記（车型未确认）", iconName: "图库待审・西武鉄道・2000系ツートン表記（车型未确认）", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_2000系_ツートンカラー.png", aliases: [], operatorDirectory: "西武鉄道", candidateOnly: true, promotePlannedAsset: false, artworkStatus: "model-label-conflict", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/railway/encyclopedia/designtrain/" },
   { id: "artwork-inventory-221", displayName: "图库待审・西武鉄道・西武鉄道_2000系_西武鉄道創立110周年記念トレイン", iconName: "图库待审・西武鉄道・西武鉄道_2000系_西武鉄道創立110周年記念トレイン", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_2000系_西武鉄道創立110周年記念トレイン.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-222", displayName: "图库待审・西武鉄道・西武鉄道_40000系_トキイロ", iconName: "图库待审・西武鉄道・西武鉄道_40000系_トキイロ", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_トキイロ.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "artwork-inventory-222", displayName: "西武トキイロ（形式未公表・2027年春予定）", iconName: "西武トキイロ（形式未公表・2027年春予定）", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_トキイロ.png", aliases: ["トキイロ","トキイロエクスプレス"], lineIds: ["SeibuShinjuku"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "future-model-unverified", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/newsroom/news/20260219_TOKIIRO/" },
   { id: "artwork-inventory-223", displayName: "图库待审・西武鉄道・西武鉄道_40000系_赤帯", iconName: "图库待审・西武鉄道・西武鉄道_40000系_赤帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40000系_赤帯.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-224", displayName: "西武4000系（4017編成・E851復刻塗装）", iconName: "西武4000系（4017編成・E851復刻塗装）", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_4000系_赤白塗装.png", aliases: ["西武4017F（55周年記念塗装）"], lineIds: ["SeibuChichibu"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "formation-specific-unverified", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/newsroom/news/20241108_4000e851/" },
   { id: "artwork-inventory-225", displayName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", iconName: "图库待审・西武鉄道・西武鉄道_40050系_緑帯", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_40050系_緑帯.png", aliases: ["西武40000系50番台（8両）"], lineIds: ["SeibuToshima","Seibu_Sayama"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/railway/encyclopedia/40000/" },
   { id: "artwork-inventory-226", displayName: "图库待审・西武鉄道・西武鉄道_6000系_標準塗装", iconName: "图库待审・西武鉄道・西武鉄道_6000系_標準塗装", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_6000系_標準塗装.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-227", displayName: "图库待审・西武鉄道・西武鉄道_L00系_第1編成_埼玉西武ライオンズ", iconName: "图库待审・西武鉄道・西武鉄道_L00系_第1編成_埼玉西武ライオンズ", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_L00系_第1編成_埼玉西武ライオンズ.png", aliases: [], operatorDirectory: "西武鉄道", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "seibu-l00-second-formation-review", displayName: "西武L00系（第2編成・西武園ゆうえんちデザイン・2026年度導入予定）", iconName: "西武L00系（第2編成・西武園ゆうえんちデザイン・2026年度導入予定）", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_L00系_れおけい.png", aliases: ["西武L00系（第2編成・西武園ゆうえんちデザイン）"], lineIds: ["SeibuYamaguchi"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "future-formation-specific-review", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/newsroom/news/20260305_LEOLINER/" },
+  { id: "artwork-inventory-227", displayName: "西武L00系（第1編成・埼玉西武ライオンズ）", iconName: "西武L00系（第1編成・埼玉西武ライオンズ）", asset: null, plannedAsset: "../images/列车/西武鉄道/西武鉄道_L00系_第1編成_埼玉西武ライオンズ.png", aliases: ["西武L00系第1編成"], lineIds: ["SeibuYamaguchi"], candidateOnly: true, promotePlannedAsset: false, operatorDirectory: "西武鉄道", artworkStatus: "formation-specific-review", plannedOnly: true, evidenceSource: "https://www.seiburailway.jp/newsroom/news/20260327_LEOLINER/" },
   { id: "artwork-inventory-228", displayName: "图库待审・都営地下鉄・都営地下鉄_8500形（別）", iconName: "图库待审・都営地下鉄・都営地下鉄_8500形（別）", asset: null, plannedAsset: "../images/列车/都営地下鉄/都営地下鉄_8500形（別）.png", aliases: [], operatorDirectory: "都営地下鉄", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-229", displayName: "图库待审・都営地下鉄・都営地下鉄_E5000形", iconName: "图库待审・都営地下鉄・都営地下鉄_E5000形", asset: null, plannedAsset: "../images/列车/都営地下鉄/都営地下鉄_E5000形.png", aliases: [], operatorDirectory: "都営地下鉄", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-230", displayName: "图库待审・都営地下鉄・都営地下鉄_都電9000形", iconName: "图库待审・都営地下鉄・都営地下鉄_都電9000形", asset: null, plannedAsset: "../images/列车/都営地下鉄/都営地下鉄_都電9000形.png", aliases: [], operatorDirectory: "都営地下鉄", artworkStatus: "pending-source-review", plannedOnly: true },
@@ -5440,6 +5444,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       parts[4] !== "." && parts[4] !== ".." &&
       parts[4].indexOf("?") < 0 && parts[4].indexOf("#") < 0 ? src : "";
   }
+  function normalizeScopedReferencePngPath(path,model,lineId,scope) {
+    var src=String(path||"").trim();
+    if(src.indexOf("images/列车/")===0)src="../"+src;
+    else if(src.indexOf("/images/列车/")===0)src=".."+src;
+    var garage=window.VehicleGaragePngMap;
+    if(!isGalleryPng(src)||!garage||
+       typeof garage.matchScopedReferencePath!=="function"||
+       !garage.matchScopedReferencePath(model,src,lineId,scope))return "";
+    return src;
+  }
   // Map-final number -> scoped PNG resolution.
   // Call chain: ODPT realtime / Supabase SQL position.trainNumber
   //   -> dated, railway-scoped published number / already verified SQL plan
@@ -5593,9 +5607,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     }
     var match = rules.match(p.trainNumber, lineId, matchContext);
     if (!match) return null;
-    var png = normalizeGalleryPngPath(match.pngPath);
+    var png = normalizeGalleryPngPath(match.pngPath) ||
+      normalizeScopedReferencePngPath(match.pngPath,match.model,lineId,
+        "tobu-isesaki-2611-8000-reference");
     var garage = window.VehicleGaragePngMap;
-    if (!png || !garage || !garage.matchModelPath(match.model, png, lineId) ||
+    var scopedReviewReference = garage &&
+      typeof garage.matchScopedReferencePath === "function" &&
+      garage.matchScopedReferencePath(match.model,png,lineId,
+        "tobu-isesaki-2611-8000-reference");
+    if (!png || !garage ||
+        (!garage.matchModelPath(match.model, png, lineId) && !scopedReviewReference) ||
         ((scopedYokosukaSobuExtension || scopedChuoTatsunoBranchMap ||
           scopedSaikyoRinkaiBoundary) &&
          !garage.matchModelPath(match.model, png, displayLineId)))
@@ -5647,7 +5668,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     for(var i=0;i<candidates.length;i++){
       var candidate=candidates[i];
       if(!candidate||!candidate.pngPath)continue;
-      var normalized=normalizeGalleryPngPath(candidate.pngPath);
+      var normalized=normalizeGalleryPngPath(candidate.pngPath) ||
+        normalizeScopedReferencePngPath(candidate.pngPath,candidate.model,
+          candidate.lineId,"tobu-isesaki-2611-8000-reference");
       if(!normalized)continue;
       if(!Object.prototype.hasOwnProperty.call(byPng,normalized)){
         byPng[normalized]=candidate;
@@ -5945,10 +5968,16 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if(!ref || !ref.illustrationPng || !ref.illustrationModel ||
        ref.actualVehicleConfirmed!==false || ref.referenceOnly!==true)
       return null;
-    var png=normalizeGalleryPngPath(ref.illustrationPng);
+    var png=normalizeGalleryPngPath(ref.illustrationPng) ||
+      normalizeScopedReferencePngPath(ref.illustrationPng,
+        ref.illustrationModel,ref.lineId,"tobu-tojo-fixed-8000-reference");
     var gallery=window.VehicleGaragePngMap;
-    if(!png || !gallery || typeof gallery.matchModelPath!=="function" ||
-       !gallery.matchModelPath(ref.illustrationModel,png,ref.lineId))
+    var ordinaryApproved=gallery && typeof gallery.matchModelPath==="function" &&
+      gallery.matchModelPath(ref.illustrationModel,png,ref.lineId);
+    var scopedApproved=gallery && typeof gallery.matchScopedReferencePath==="function" &&
+      gallery.matchScopedReferencePath(ref.illustrationModel,png,ref.lineId,
+        "tobu-tojo-fixed-8000-reference");
+    if(!png || (!ordinaryApproved&&!scopedApproved))
       return null;
     return {kind:"vehicle",iconSrc:png,planned:true,illustrative:true,
       representativeOnly:true,referenceOnly:true,actualVehicleConfirmed:false,

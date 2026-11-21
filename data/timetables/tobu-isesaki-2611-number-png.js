@@ -164,9 +164,15 @@
         "https://t-take.com/tobu/tstd_20220312/TSTD_A-S_2022-03-12.pdf"):
         "https://tabinomemo.jp/train/timetable/tobu/11";
     }
-    if(!item||!root.VehicleGaragePngMap||
-       !root.VehicleGaragePngMap.matchModelPath(item.model,item.png,"TobuIsesaki"))
+    if(!item||!root.VehicleGaragePngMap)
       return null;
+    var garage=root.VehicleGaragePngMap;
+    var approved=item===cars[3]
+      ? typeof garage.matchScopedReferencePath==="function" &&
+        garage.matchScopedReferencePath(item.model,item.png,"TobuIsesaki",
+          "tobu-isesaki-2611-8000-reference")
+      : garage.matchModelPath(item.model,item.png,"TobuIsesaki");
+    if(!approved)return null;
     if(p.realtimeVehicleType&&p.realtimeVehicleType!==item.model)return null;
     if(p.realtimeDerivedVehicleType&&p.realtimeDerivedVehicleType!==item.model)return null;
     // A planned model from a stronger source beats a family illustration.

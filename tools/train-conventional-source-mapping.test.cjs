@@ -55,7 +55,8 @@ assert.equal(l00.asset,null);
 assert.equal(l00.candidateOnly,true);
 const singleL00=plan('西武L00系',{operator:'Seibu',lineId:'SeibuYamaguchi'});
 assert.equal(singleL00.status,'PLANNED_MODEL');
-assert.match(singleL00.iconPath,/L00系_れおけい\.png$/);
+assert.equal(singleL00.iconPath,'',
+ 'generic L00 plan cannot choose the first- or second-formation livery');
 const mixed=plan('西武8500系 / 西武L00系',
  {operator:'Seibu',lineId:'SeibuYamaguchi'});
 assert.equal(mixed.status,'PLANNED_CANDIDATES');

@@ -50,7 +50,10 @@ test('Tojo working/service groups resolve exactly one approved PNG',()=>{
   assert.equal(ref.illustrationModel,model,name);
   assert.equal(ref.actualVehicleConfirmed,false,name);
   assert.equal(ref.referenceOnly,true,name);
-  assert.equal(w.VehicleGaragePngMap.matchModelPath(model,expected,p.positionLineId),true,name+' gallery scope');
+  const generic=w.VehicleGaragePngMap.matchModelPath(model,expected,p.positionLineId);
+  const scoped=w.VehicleGaragePngMap.matchScopedReferencePath(
+    model,expected,p.positionLineId,'tobu-tojo-fixed-8000-reference');
+  assert.equal(generic||scoped,true,name+' gallery scope');
   const art=w.TrainVehicle.selectMarkerArtwork(p,false);
   assert.equal(art.kind,'vehicle',name);
   assert.equal(art.iconSrc,expected,name);
@@ -121,7 +124,9 @@ test('Ogose uses blue-white illustration by default, brown only with 81111F phys
  assert.equal(cfg.png,png.ogose);
  assert.equal(cfg.specialLiveryPng,png.brown);
  assert.equal(cfg.specialLiveryFormation,'81111F');
- assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.ogose,'Ogose'),true);
+  assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.ogose,'Ogose'),false);
+  assert.equal(w.VehicleGaragePngMap.matchScopedReferencePath(
+    cfg.model,png.ogose,'Ogose','tobu-tojo-fixed-8000-reference'),true);
  assert.equal(w.VehicleGaragePngMap.matchModelPath(cfg.model,png.brown,'Ogose'),true);
  const ordinary=w.TrainVehicle.selectMarkerArtwork(base,false);
  assert.equal(ordinary.kind,'vehicle');
