@@ -821,6 +821,35 @@ function _losGroupKey(t) {
 window.StationInfoLayout = (function() {
   "use strict";
   var ICON = 16, GAP = 2, PITCH = 18;
+  // One font-size contract for badge geometry and SVG painting. Values are
+  // layout units; the containing SVG can scale again on narrow screens.
+  var FONT = Object.freeze({
+    badge: Object.freeze({desktop: 9, mobile: 10}),
+    extra: Object.freeze({desktop: 8, mobile: 9}),
+    overflow: 9
+  });
+  // Select the higher-contrast text for solid operator/line badge colors.
+  function textColor(fill) {
+    var color = String(fill || "").trim();
+    var hex = color.match(/^#([a-f\d]{3}|[a-f\d]{6})$/i);
+    var channels = null;
+    if (hex) {
+      var h = hex[1];
+      if (h.length === 3) h = h.split("").map(function(c) { return c + c; }).join("");
+      channels = [0, 2, 4].map(function(i) { return parseInt(h.slice(i, i + 2), 16); });
+    } else {
+      var rgb = color.match(/^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,[^)]*)?\)$/i);
+      if (rgb) channels = [1, 2, 3].map(function(i) { return Math.min(255, Number(rgb[i])); });
+    }
+    if (!channels) return "#1d1d1f";
+    var linear = channels.map(function(channel) {
+      var c = channel / 255;
+      return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    var luminosity = linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+    // The WCAG midpoint between white and near-black foreground contrast.
+    return luminosity > 0.18 ? "#1d1d1f" : "#ffffff";
+  }
   function maxRows() {
     return Math.max(1, Math.min(8,
       Number(window.RuntimeConfig && window.RuntimeConfig.TRANSFER_MAX_ROWS) || 4));
@@ -841,7 +870,7 @@ window.StationInfoLayout = (function() {
   }
   function measure(text, fontSize) {
     var fn = window.ThroughChip && window.ThroughChip.measureWidth;
-    var width = typeof fn === "function" ? Number(fn(text, fontSize)) : NaN;
+    var width = typeof fn === "function" ? Number(fn(text, fontSize, 400)) : NaN;
     if (!isFinite(width) || width < 0) {
       width = Array.from(String(text || "")).reduce(function(sum, ch) {
         return sum + (/[^\u0000-\u007f]/.test(ch) ? fontSize : fontSize * 0.65);
@@ -867,9 +896,9 @@ window.StationInfoLayout = (function() {
   function prepare(items, stationId, stationName, mobile) {
     return list(items).map(function(item) {
       var label = String(item.name || item.lineId || "").slice(0, 4);
-      var badgeWidth = item.image ? ICON : measure(label, mobile ? 9 : 6.5) + 8;
+      var badgeWidth = item.image ? ICON : measure(label, mobile ? FONT.badge.mobile : FONT.badge.desktop) + 8;
       var extra = item.image ? "" : sideName(item, stationId, stationName);
-      var extraWidth = extra ? 3 + measure(extra, mobile ? 7 : 5) : 0;
+      var extraWidth = extra ? 3 + measure(extra, mobile ? FONT.extra.mobile : FONT.extra.desktop) : 0;
       return {item:item, label:label, badgeWidth:badgeWidth,
         extra:extra, width:badgeWidth + extraWidth};
     });
@@ -898,7 +927,7 @@ window.StationInfoLayout = (function() {
             // outside the measured badge block or pushes into the rail.
             overflowX = rowWidth + (rowItems.length ? GAP : 0);
             overflowY = row * PITCH;
-            rowWidth = overflowX + measure(moreText, 7);
+            rowWidth = overflowX + measure(moreText, FONT.overflow);
           }
           rowWidths.push(rowWidth);
         }
@@ -930,8 +959,8 @@ window.StationInfoLayout = (function() {
   function reservedRows(items) {
     return Math.min(maxRows(), list(items).length);
   }
-  return {icon:ICON, gap:GAP, pitch:PITCH, maxRows:maxRows,
-    list:list, prepare:prepare, plan:plan, reservedRows:reservedRows};
+  return {icon:ICON, gap:GAP, pitch:PITCH, fontSizes:FONT, textColor:textColor,
+    maxRows:maxRows, list:list, prepare:prepare, plan:plan, reservedRows:reservedRows};
 })();
 
 /*

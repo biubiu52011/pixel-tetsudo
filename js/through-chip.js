@@ -23,7 +23,8 @@
 (function () {
   "use strict";
 
-  var _measureCache = {};
+  var _measureCache = Object.create(null);
+  var _fontCacheSignature = "";
 
   function _estimateWidth(label, fontSize) {
     var w = 0;
@@ -38,37 +39,48 @@
   }
 
   // SVG 隐藏探针测量（带缓存）；DOM 不可用时回退估算。
-  function _measureWidth(label, fontSize) {
-    var key = fontSize + "|" + label;
+  function _measureWidth(label, fontSize, fontWeight) {
+    var weight = Number(fontWeight) || 400;
+    var hasDOM = typeof document !== "undefined" && !!document.body;
+    var family = hasDOM && typeof getComputedStyle === "function"
+      ? getComputedStyle(document.body).fontFamily : "";
+    var lang = hasDOM ? (document.documentElement.lang || window.currentLang || "ja") : "";
+    var fontStatus = hasDOM && document.fonts ? document.fonts.status : "";
+    var signature = lang + "|" + family + "|" + fontStatus + "|" + hasDOM;
+    if (signature !== _fontCacheSignature) {
+      _measureCache = Object.create(null);
+      _fontCacheSignature = signature;
+    }
+    var key = fontSize + "|" + weight + "|" + label;
     if (_measureCache[key] != null) return _measureCache[key];
     var fallback = _estimateWidth(label, fontSize);
+    if (!hasDOM) return fallback;
+    var svg = null;
     try {
-      if (typeof document === "undefined" || !document.body) {
-        _measureCache[key] = fallback;
-        return fallback;
-      }
       var ns = "http://www.w3.org/2000/svg";
-      var svg = document.createElementNS(ns, "svg");
-      var text = document.createElementNS(ns, "text");
+      svg = document.createElementNS(ns, "svg");
+      var node = document.createElementNS(ns, "text");
       svg.setAttribute("width", "0");
       svg.setAttribute("height", "0");
       svg.style.position = "absolute";
       svg.style.left = "-9999px";
       svg.style.top = "-9999px";
       svg.style.visibility = "hidden";
-      text.setAttribute("font-family", "inherit");
-      text.setAttribute("font-size", fontSize);
-      text.setAttribute("font-weight", "700");
-      text.textContent = label;
-      svg.appendChild(text);
+      svg.style.fontFamily = family;
+      node.setAttribute("font-family", "inherit");
+      node.setAttribute("font-size", fontSize);
+      node.setAttribute("font-weight", String(weight));
+      node.style.fontSynthesis = "none";
+      node.textContent = label;
+      svg.appendChild(node);
       document.body.appendChild(svg);
-      var measured = Math.ceil(text.getComputedTextLength ? text.getComputedTextLength() : fallback);
-      document.body.removeChild(svg);
-      _measureCache[key] = measured || fallback;
+      var measured = Math.ceil(node.getComputedTextLength ? node.getComputedTextLength() : fallback);
+      _measureCache[key] = measured > 0 ? measured : fallback;
       return _measureCache[key];
     } catch (e) {
-      _measureCache[key] = fallback;
       return fallback;
+    } finally {
+      if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
     }
   }
 
@@ -326,8 +338,8 @@
     txt.setAttribute("x", sz.textX || 14);
     txt.setAttribute("y", h / 2);
     txt.setAttribute("font-size", sz.fontSize || (mobile ? 11 : 9));
-    txt.setAttribute("fill", lc);
-    txt.setAttribute("font-weight", "700");
+    txt.setAttribute("fill", "var(--text)");
+    txt.setAttribute("font-weight", "400");
     txt.setAttribute("dominant-baseline", "central");
     // 文本块垂直中心 = chip 中心 h/2（与箭头 _ay=h/2 同一中线）。
     var _nLines = sz.lines.length;

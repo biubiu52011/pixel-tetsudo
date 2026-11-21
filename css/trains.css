@@ -89,6 +89,9 @@
 
 /* SVG route labels inherit the same language-specific pixel family as the page. */
 .tp-line-map svg { font-family: var(--pixel-font, 'Fusion Pixel'), 'Courier New', monospace; }
+/* The bundled pixel font has a regular face only: don't synthesize bold glyphs
+   inside the moving, scaled SVG coordinate system. */
+.tp-line-map svg text { font-synthesis: none; }
 
 /* Ito planned fleet alternatives remain readable when the train has no exact PNG. */
 .train-fold-fleet-reference { display:block; margin-top:4px; font-size:.78em; line-height:1.45; opacity:.78; }

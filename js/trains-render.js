@@ -263,7 +263,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     label.setAttribute("font-size", "16");
     label.setAttribute("fill", "var(--text-muted)");
     label.setAttribute("font-family", "inherit"); // 站名用像素字体（与全局一致）
-    label.setAttribute("font-weight", "500");
+    label.setAttribute("font-weight", "400");
     label.setAttribute("text-anchor", anchor);
     // 左右侧站名垂直居中于圆点（top/bottom 保持基线在圆点上下方）
     if (o.junctionPlacement || (side !== "top" && side !== "bottom"))
@@ -370,31 +370,38 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             img.setAttribute("height", ICON);
             itemGroup.appendChild(img);
           } else {
-            var badgeHeight = isMobileView ? 15 : 11;
+            var badgeHeight = isMobileView ? 16 : 15;
             var rect = document.createElementNS(svgNS, "rect");
             rect.setAttribute("x", bx);
             rect.setAttribute("y", by);
             rect.setAttribute("width", entry.badgeWidth);
             rect.setAttribute("height", badgeHeight);
             rect.setAttribute("rx", "2");
-            rect.setAttribute("fill", item.color ||
-              (window.TrainsColors ? window.TrainsColors.LABEL_FALLBACK : "#8a8a8a"));
+            var badgeFill = item.color ||
+              (window.TrainsColors ? window.TrainsColors.LABEL_FALLBACK : "#8a8a8a");
+            rect.setAttribute("fill", badgeFill);
             itemGroup.appendChild(rect);
             var nameText = document.createElementNS(svgNS, "text");
             nameText.setAttribute("x", bx + entry.badgeWidth / 2);
-            nameText.setAttribute("y", by + badgeHeight / 2 + (isMobileView ? 3.2 : 2.2));
+            nameText.setAttribute("y", by + badgeHeight / 2);
             nameText.setAttribute("text-anchor", "middle");
-            nameText.setAttribute("font-size", isMobileView ? "9" : "6.5");
-            nameText.setAttribute("font-weight", "600");
-            nameText.setAttribute("fill", "#fff");
+            nameText.setAttribute("dominant-baseline", "central");
+            nameText.setAttribute("font-size", isMobileView
+              ? window.StationInfoLayout.fontSizes.badge.mobile
+              : window.StationInfoLayout.fontSizes.badge.desktop);
+            nameText.setAttribute("font-weight", "400");
+            nameText.setAttribute("fill", window.StationInfoLayout.textColor(badgeFill));
             nameText.textContent = entry.label;
             itemGroup.appendChild(nameText);
             if (entry.extra) {
               var extraLabel = document.createElementNS(svgNS, "text");
               extraLabel.setAttribute("x", bx + entry.badgeWidth + 3);
-              extraLabel.setAttribute("y", by + badgeHeight / 2 + (isMobileView ? 3 : 2));
-              extraLabel.setAttribute("font-size", isMobileView ? "7" : "5");
-              extraLabel.setAttribute("font-weight", "500");
+              extraLabel.setAttribute("y", by + badgeHeight / 2);
+              extraLabel.setAttribute("dominant-baseline", "central");
+              extraLabel.setAttribute("font-size", isMobileView
+                ? window.StationInfoLayout.fontSizes.extra.mobile
+                : window.StationInfoLayout.fontSizes.extra.desktop);
+              extraLabel.setAttribute("font-weight", "400");
               extraLabel.setAttribute("fill", "var(--text)");
               extraLabel.textContent = entry.extra;
               itemGroup.appendChild(extraLabel);
@@ -405,8 +412,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         if (badgePlan.moreText) {
           var overflowText = document.createElementNS(svgNS, "text");
           overflowText.setAttribute("x", ix0 + badgePlan.overflowX);
-          overflowText.setAttribute("y", iy0 + badgePlan.overflowY + 8);
-          overflowText.setAttribute("font-size", "7");
+          overflowText.setAttribute("y", iy0 + badgePlan.overflowY + window.StationInfoLayout.pitch / 2);
+          overflowText.setAttribute("dominant-baseline", "central");
+          overflowText.setAttribute("font-size", window.StationInfoLayout.fontSizes.overflow);
+          overflowText.setAttribute("font-weight", "400");
           overflowText.setAttribute("fill", "var(--text-muted)");
           overflowText.textContent = badgePlan.moreText;
           badgeGroup.appendChild(overflowText);
@@ -737,7 +746,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // 检查需要完整重建（线路变化）还是只更新列车层。
       // 语言属于静态层身份：切换语言必须
       // 触发完整重建（站名/换乘标题属于 i18n）。
+      var _fontState = document.fonts ? document.fonts.status : "";
       var isSameLine = existingSvg && existingSvg.getAttribute('data-line-id') === lineId
+        && existingSvg.getAttribute('data-font-state') === _fontState
         && existingSvg.getAttribute('data-lang') === _lang
         && existingSvg.__geometry && existingSvg.__geometry.lineHash === geometry.lineHash;
       
@@ -768,6 +779,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       svg.setAttribute("data-pt-canvas", "content-only");
       svg.setAttribute("data-line-id", lineId);
       svg.setAttribute("data-lang", _lang);
+      svg.setAttribute("data-font-state", _fontState);
       // 用于列车定位的支线几何（支线列车渲染在支线列）。
       svg.__branchGeom = geometry.branchGeom || null;
       svg.__geometry = geometry;
@@ -1034,7 +1046,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           _bNameEl.setAttribute("text-anchor", "middle");
           _bNameEl.setAttribute("font-size", "10");
           _bNameEl.setAttribute("fill", bColor);
-          _bNameEl.setAttribute("font-weight", "600");
+          _bNameEl.setAttribute("font-weight", "400");
           _bNameEl.setAttribute("font-family", "inherit");
           _bNameEl.textContent = _shortName;
           stationInfoLayer.appendChild(_bNameEl);
@@ -1079,22 +1091,35 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var _ct = _clampTexts[_cI];
           var _av = parseFloat(_ct.getAttribute("data-clamp-avail"));
           var _f = parseFloat(_ct.getAttribute("font-size"));
-          var _t = _ct.textContent || "";
-          var _cjkN = (_t.match(/[\u4e00-\u9fff\u3040-\u30ff]/g) || []).length;
-          var _othN = _t.length - _cjkN;
-          var _estW = (_cjkN * 1.1 + _othN * 0.55) * _f;
-          var _bb = _ct.getBBox();
-          // 只有 getBBox 与估算一致时才信任它；否则
-          // 字体可能尚未加载，测量宽度不可靠。
-          var _useW = (_bb.width > 0 && Math.abs(_bb.width - _estW) < _estW * 0.5) ? _bb.width : _estW;
-          if (_useW > _av) {
-            // 下限 12→10——六形环左列上方站名（环段尾，朝环内）在 58px 环内窄空间
-            // 需 10px 才能完整放下（5 字=55px，恰好贴右列圆点左缘不重叠）。
-            // 左列上方已改朝左（不再走该窄空间）；下限 10px 仍对光丘尾避让后
-            // 与左列站名带重叠的站有效（落合南長崎 5 字≈11.5px）。
-            var _nf = Math.max(10, _f * _av / _useW);
+          if (!(_av > 0 && _f > 0)) continue;
+          var _spans = _ct.querySelectorAll("tspan");
+          var _estW = 0;
+          // Estimate each line separately; concatenating multi-line labels
+          // incorrectly shrinks already-fitted names.
+          Array.prototype.forEach.call(_spans, function(span) {
+            var row = span.textContent || "";
+            var cjk = (row.match(/[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]/g) || []).length;
+            _estW = Math.max(_estW, (cjk * 1.1 + (row.length - cjk) * 0.55) * _f);
+          });
+          try {
+            var _bb = _ct.getBBox();
+            var _fontsReady = !document.fonts || document.fonts.status === "loaded";
+            var _useW = _fontsReady && _bb.width > 0 ? _bb.width : _estW;
+            if (_useW <= _av) continue;
+            // Preserve readable glyph height. When a tight terminal label
+            // still exceeds its lane, compress only the horizontal text extent
+            // rather than clipping text or moving it into the train track.
+            var _nf = Math.min(_f, Math.max(12, _f * _av / _useW));
             _ct.setAttribute("font-size", String(Math.round(_nf * 10) / 10));
-          }
+            Array.prototype.forEach.call(_spans, function(span) {
+              var rowWidth = span.getComputedTextLength ? span.getComputedTextLength() : 0;
+              if (rowWidth > _av + 0.5) {
+                span.setAttribute("textLength", String(Math.floor(_av)));
+                span.setAttribute("lengthAdjust", "spacingAndGlyphs");
+                _ct.setAttribute("data-text-fit", "horizontal");
+              }
+            });
+          } catch (_labelFitError) { /* other station labels can still fit */ }
         }
       } catch (e2) { /* clamp is a best-effort readability guard */ }
       
@@ -2725,7 +2750,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var labelText=document.createElementNS(ns,'text');
       labelText.setAttribute('x',0);labelText.setAttribute('y',4);
       labelText.setAttribute('text-anchor','middle');labelText.setAttribute('font-size','12');
-      labelText.setAttribute('font-weight','bold');
+      labelText.setAttribute('font-weight','400');
       labelText.setAttribute('fill','#334155');
       labelText.textContent='+'+(ids.length-1);
       badge.appendChild(labelText);
@@ -3311,8 +3336,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     ldir.setAttribute("x", "8");
     ldir.setAttribute("y", String(_labelY));
     ldir.setAttribute("text-anchor", "start");
-    ldir.setAttribute("font-size", _sixLane ? "9" : "8");
-    ldir.setAttribute("fill", "#666");
+    ldir.setAttribute("font-size", _sixLane ? "10" : "11");
+    ldir.setAttribute("font-weight", "400");
+    ldir.setAttribute("dominant-baseline", "central");
+    ldir.setAttribute("fill", "#555");
     ldir.setAttribute("class", "train-label-dir");
     ldir.textContent = labelText;
     labelGroup.appendChild(ldir);
