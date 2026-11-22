@@ -35,7 +35,12 @@ function region(html, phase, text, filename) {
 let stale = 0;
 for (const [name, items] of Object.entries(spec.pages)) {
   if (!/^[a-z-]+$/.test(name)) throw Error('Unsafe page name: ' + name);
-  const file = path.join(root, 'pages', name + '.html'), original = fs.readFileSync(file, 'utf8');
+  const file = path.join(root, 'pages', name + '.html');
+  const source = fs.readFileSync(file, 'utf8');
+  const eol = source.includes('\r\n') ? '\r\n' : '\n';
+  // Work with Git's canonical LF form so a Windows CRLF checkout does not make
+  // every page look stale. Preserve the checkout's newline style when writing.
+  const original = source.replace(/\r\n/g, '\n');
   const head = expand(spec.head), body = expand(items);
   const lazy = expand((spec.lazy && spec.lazy[name]) || []);
   const scopes = (spec.lazyScopes && spec.lazyScopes[name]) || {};
@@ -72,7 +77,7 @@ for (const [name, items] of Object.entries(spec.pages)) {
   if ((result.match(/<script\b/gi) || []).length !== head.length + body.length) throw Error('Unexpected script outside manifest: ' + name);
   if (result !== original) {
     stale++;
-    if (!check) fs.writeFileSync(file, result);
+    if (!check) fs.writeFileSync(file, eol === '\n' ? result : result.replace(/\n/g, '\r\n'));
     console.log((check ? 'STALE ' : 'SYNC ') + path.relative(root, file));
   }
 }
