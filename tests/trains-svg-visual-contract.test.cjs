@@ -168,3 +168,23 @@ test('responsive CSS fits fixed frame; no horizontal pan or JS width override',(
   assert.match(cssSource,/\.tp-map-wrap\s*>\s*svg\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;/);
   assert.doesNotMatch(rendererSource,/svg\.style\.(?:height|width|minWidth|maxWidth)\s*=/);
 });
+
+test('walking-transfer arrows point outside the SVG railway on all four sides',()=>{
+  const a=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const b=rendererSource.indexOf('  function _renderStationNode(',a);
+  assert.ok(a>=0&&b>a,'outward walking arrow helper exists');
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(a,b),env);
+  const arrow=env._outwardWalkTransferArrow;
+  assert.equal(arrow('end','dual',128,160),'←','left-side walking transfer');
+  assert.equal(arrow('start','right',190,160),'→','right-side walking transfer');
+  assert.equal(arrow('middle','top',160,160),'↑','upper-side walking transfer');
+  assert.equal(arrow('middle','bottom',160,160),'↓','lower-side walking transfer');
+  assert.equal(arrow('middle','dual',150,160),'←','middle-aligned left fallback');
+  assert.equal(arrow('middle','dual',170,160),'→','middle-aligned right fallback');
+  assert.match(rendererSource,/var isWalk = parts\.some\(function\(p\) \{ return p\.item\.type === "out"; \}\)/);
+  assert.match(rendererSource,/extraLabel\.textContent = isWalk\s*\? entry\.extra\.replace\(/);
+  // No change to canonical destination, badge width or transfer listing:
+  // only the rendered leading arrow may change.
+  assert.match(geometrySource,/var extra = group\.dest \? "→ " \+ group\.dest : ""/);
+});

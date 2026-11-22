@@ -139,6 +139,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     return {side:chosen.side, elevated:chosen.elevated};
   }
 
+  // A walking transfer leads away from the painted railway, not along it.
+  // Determine the arrow from the station label's side (not train direction).
+  function _outwardWalkTransferArrow(anchor, side, labelX, stationX) {
+    if (side === "top") return "↑";
+    if (side === "bottom") return "↓";
+    if (anchor === "end") return "←";
+    if (anchor === "start") return "→";
+    return Number(labelX) < Number(stationX) ? "←" : "→";
+  }
+
   function _renderStationNode(layers, svgNS, o) {
     var nodeLayer = layers.nodes;
     var infoLayer = layers.info;
@@ -352,10 +362,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var by = iy0 + row * window.StationInfoLayout.pitch;
           var item = entry.item;
           var parts = entry.badges || [{item:item,label:entry.label,badgeWidth:entry.badgeWidth}];
+          var isWalk = parts.some(function(p) { return p.item.type === "out"; });
           var itemGroup = document.createElementNS(svgNS, "g");
           if (item.toStation) itemGroup.setAttribute("data-to-station", item.toStation);
-          if (parts.some(function(p) { return p.item.type === "out"; }))
-            itemGroup.setAttribute("data-transfer-mode", "walk");
+          if (isWalk) itemGroup.setAttribute("data-transfer-mode", "walk");
           itemGroup.setAttribute("role", "img");
           badgeGroup.appendChild(itemGroup);
           var badgeTitle = document.createElementNS(svgNS, "title");
@@ -421,7 +431,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
               : window.StationInfoLayout.fontSizes.extra.desktop);
             extraLabel.setAttribute("font-weight", "400");
             extraLabel.setAttribute("fill", "var(--text)");
-            extraLabel.textContent = entry.extra;
+            // The shared badge model stores a neutral right arrow. Only a
+            // station-exit walking transfer changes it to point outward.
+            // Ordinary interchange links and train directions are unchanged.
+            extraLabel.textContent = isWalk
+              ? entry.extra.replace(/^→(?=\s)/, _outwardWalkTransferArrow(anchor, side, tx, o.x))
+              : entry.extra;
             itemGroup.appendChild(extraLabel);
           }
           rowCur += entry.width + GAP;
