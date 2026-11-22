@@ -91,7 +91,7 @@
         updateTranslations();
         updateOperatorNames();
         _updatePageTitle();
-        triggerLanguageChange();
+        window.triggerLanguageChange();
         // Subscribers may synchronously replace tourism/report DOM nodes.
         if (window.SiteAutoTranslate) window.SiteAutoTranslate.scan(document);
         return true;
@@ -278,13 +278,25 @@
             var lang = window.currentLang || DEFAULT_LANG;
             var revision = (el._ptTranslationRevision || 0) + 1;
             el._ptTranslationRevision = revision;
-            if (lang === "ja") { el.textContent = source; return; }
+            if (lang === "ja") {
+                el.textContent = source;
+                el.setAttribute("lang", "ja");
+                return;
+            }
+            el.textContent = source;
+            el.setAttribute("lang", "ja");
             // Do not erase the original when no on-device translator exists.
             autoTranslateText(source, lang).then(function(translation) {
                 if (translation && el.isConnected !== false &&
                     el._ptTranslationRevision === revision && window.currentLang === lang) {
                     el.textContent = translation;
                     el.setAttribute("lang", lang);
+                    // A successful translation should not still say "unavailable".
+                    var wrapper = el.parentNode;
+                    if (wrapper && wrapper.classList && wrapper.classList.contains("rs-cause-untranslated")) {
+                        var note = wrapper.querySelector(".rs-text-muted");
+                        if (note) note.hidden = true;
+                    }
                 }
             });
         });
