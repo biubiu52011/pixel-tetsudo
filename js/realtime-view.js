@@ -215,6 +215,7 @@
     var _bodyTextEl = causeSection.querySelector(".rs-cause-text");
     if (_bodyTextEl) {
       _bodyTextEl.innerHTML = causeHtml;
+      if (window.SiteAutoTranslate) window.SiteAutoTranslate.scan(_bodyTextEl);
     }
     // 非官网来源的 URL 渲染为可点击链接行（正文保持纯文字）。
     var previousLinks = causeSection.querySelector(".rs-cause-links");
@@ -326,9 +327,13 @@
     };
   }
 
-  function _untranslatedOfficialText() {
+  function _untranslatedOfficialText(text) {
+    // A missing translation must never hide the operator's original alert.
+    // Opt in to the on-device translator where available, retaining the
+    // official text as a visible fallback on unsupported browsers.
     return '<div class="rs-cause-untranslated">'
       + '<div class="rs-text-muted">' + escapeHtml(t("status.translation_unavailable") || t("status.no_data")) + '</div>'
+      + '<div data-auto-translate="ja">' + escapeHtml(text || '') + '</div>'
       + '</div>';
   }
 
