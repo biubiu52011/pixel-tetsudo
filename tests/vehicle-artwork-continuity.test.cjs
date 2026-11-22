@@ -359,3 +359,60 @@ test('Keikyu owner codes and consist length never select a fleet PNG',()=>{
     assert.equal(ref?.asset,expected,model+' remains a valid canonical image');
   }
 });
+
+test('Enoden and Izu timetable numbers stay separate from vehicle PNG evidence',()=>{
+  const names=[
+    '江ノ島電鉄/江ノ島電鉄_1000形.png','江ノ島電鉄/江ノ島電鉄_10形.png',
+    '江ノ島電鉄/江ノ島電鉄_2000形.png','江ノ島電鉄/江ノ島電鉄_20形.png',
+    '江ノ島電鉄/江ノ島電鉄_300形.png','江ノ島電鉄/江ノ島電鉄_500形.png',
+    '江ノ島電鉄/江ノ島電鉄_700形.png','伊豆箱根鉄道/伊豆箱根鉄道_1300系.png',
+    '伊豆箱根鉄道/伊豆箱根鉄道_3000系.png','伊豆箱根鉄道/伊豆箱根鉄道_5000系.png',
+    '伊豆箱根鉄道/伊豆箱根鉄道_7000系.png','伊豆急行/伊豆急行_8000系_黒排障器.png'
+  ];
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const name of names){
+    const entry=byPath.get('images/列车/'+name);
+    assert.ok(entry,name+' must remain in the audit index');
+    assert.equal(entry.status,'no_verified_number_mapping',name);
+    assert.deepEqual(entry.directNumberRules,[],name);
+    assert.deepEqual(entry.runtimeNumberRosters,[],name);
+    assert.deepEqual(entry.historicalNumberedSources,[],name);
+  }
+
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const rangeWin={};
+  vm.runInNewContext(ranges,{window:rangeWin,console:quiet},{
+    filename:'data/timetables/train-number-png-ranges.js'
+  });
+  const candidate=rangeWin.TrainNumberPngRanges.matchItoFleetCandidates({
+    positionSource:'supabase-train-run',estimated:true,
+    positionLineId:'Ito',displayLineId:'Ito',
+    sourceRailway:'odpt.Railway:JR-East.Ito',serviceDate:'2026-11-22',
+    trainType:'odpt.TrainType:Local',trainNumber:'1621M',
+    vehicleResolvedFromRealtime:false,vehicleIdentityStatus:'UNKNOWN'
+  });
+  assert.equal(candidate.status,'UNCONFIRMED_PLANNED_FLEET');
+  assert.equal(candidate.confirmed,false);
+  assert.equal(candidate.source,'independent-20260314-working-reference');
+  assert.equal(candidate.referencePng,
+    '../images/列车/伊豆急行/伊豆急行_8000系_黒排障器.png');
+  assert.equal(rangeWin.TrainNumberPngRanges.matchItoFleetCandidates({
+    positionSource:'supabase-train-run',estimated:true,
+    positionLineId:'Ito',displayLineId:'Ito',
+    sourceRailway:'odpt.Railway:JR-East.Ito',serviceDate:'2026-12-01',
+    trainType:'odpt.TrainType:Local',trainNumber:'1621M'
+  }),null,'the March working reference cannot authorize another service month');
+
+  for(const file of names.slice(7,11)){
+    const path='../images/列车/'+file;
+    const refs=win.VehicleGaragePngMap.findPath(path);
+    assert.equal(refs.length,1,file+' must remain inventory-visible');
+    assert.equal(refs[0].lineIds.length,0,file+' has no canonical runtime line scope');
+  }
+  const izukyu=win.TrainVehicle.resolveCanonicalVehicle('伊豆急行8000系');
+  assert.equal(izukyu?.asset||null,null,'planned black-plow artwork is not physical vehicle proof');
+  assert.equal(izukyu?.plannedAsset,
+    '../images/列车/伊豆急行/伊豆急行_8000系_黒排障器.png');
+});
