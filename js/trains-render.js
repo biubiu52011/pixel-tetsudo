@@ -331,10 +331,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         txLines, o.stationId, _sName, isMobileView, _available);
       var rows = badgePlan.rows;
       var gridW = badgePlan.gridWidth;
-      // The printed station name and the rail-facing edge of its transfer
-      // icon grid have ONE alignment reference. Extra captions grow outward.
-      // On a left-labelled route: icon grid RIGHT edge = station label END.
-      // On a right-labelled route: icon grid LEFT edge = station label START.
+      // 町屋 SVG: left '町屋駅前 ← [SA][C]', right '[SA][C] → 町屋駅前'.
+      // The main-station label is on the first row; the icon grid below.
+      // Left station-name right edge = icons' right edge.
+      // Right station-name left edge = icons' left edge.
+      // Alias name and outward arrow extend beyond the icon block.
       var ix0 = _align === "end" ? _edge - gridW
         : _align === "start" ? _edge : _edge - gridW / 2;
       // If even one badge is wider than a narrow station column, preserve
@@ -343,7 +344,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (_align === "end" && ix0 < 2) ix0 = 2;
       if (_align === "start" && ix0 + gridW > svgW - 2)
         ix0 = Math.max(2, svgW - 2 - gridW);
-      var iy0 = side === "top" ? o.y + 14 : ty + 9;
+      // Geometry reserves 14 units for the first-row station name.
+      var iy0 = side === "top" ? o.y + 14 : ty + 14;
       if (o.transferBelowNode) iy0 = Math.max(iy0, o.y + 14);
       if (o.horizontalBranch)
         iy0 = o.labelAbove
@@ -366,12 +368,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         };
         var badgeX = function(slot) {
           var col = physicalCol(slot);
-          // Anchor the last painted left-side icon, not the theoretical
-          // width of its column, to the SAME edge as the main station name.
-          // Preserve the viewport safety clamp where the full grid cannot fit.
-          if (leftGrid && col === 3 && ix0 === _edge - gridW)
-            return _edge - slot.part.badgeWidth;
-          return ix0 + badgePlan.colOffsets[col];
+          // Each left-side icon is aligned to the right edge of its real
+          // column. This works for wide fallback badges as well as PNGs,
+          // retaining an exact, shared baseline with the main station name.
+          return ix0 + badgePlan.colOffsets[col] +
+            (leftGrid ? badgePlan.colWidths[col] - slot.part.badgeWidth : 0);
         };
         badgePlan.shown.forEach(function(entry) {
           var slots = entry.slots || [];

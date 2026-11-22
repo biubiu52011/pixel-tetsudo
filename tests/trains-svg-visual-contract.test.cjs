@@ -208,7 +208,8 @@ test('unlike-name transfers render outer destination, arrow, then inside badges'
         fontSizes:{badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}},
         textColor:()=> '#fff',
         plan:()=>({shown:[entry],rows:1,gridWidth:70,perRow:4,
-          rowUsed:[1,0,0,0],colOffsets:[0,18,36,54]})},
+          rowUsed:[1,0,0,0],colOffsets:[0,18,36,54],
+          colWidths:[16,16,16,16]})},
       ThroughChip:{badgeText:()=> 'JK',normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]},
       RailwayDB:{resolveStationName:name=>name}};
     const document={createElementNS:(_ns,tag)=>makeNode(tag)};
@@ -273,7 +274,7 @@ test('station name and near-track icon edge share the same outer annotation base
         badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}
       },textColor:()=> '#fff',
       plan:()=>({shown:[entry],rows:Math.ceil(count/4),gridWidth:70,
-        colOffsets:[0,18,36,54],rowUsed,perRow:4})},
+        colOffsets:[0,18,36,54],colWidths:[16,16,16,16],rowUsed,perRow:4})},
       ThroughChip:{badgeText:()=> 'X',normalize:()=>[],layoutRow:()=>[],layoutGroup:()=>[]},
       RailwayDB:{resolveStationName:id=>id}};
     const context=vm.createContext({window,document:{createElementNS:(_ns,tag)=>create(tag)}});
@@ -312,5 +313,53 @@ test('station name and near-track icon edge share the same outer annotation base
   for(const count of [1,2,7]){
     paint('left',count);
     paint('right',count);
+  }
+});
+
+test('Machiya station and Machiya-Ekimae icons mirror on separate aligned rows',()=>{
+  const start=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const end=rendererSource.indexOf('  function _isRealtimePositionFresh(',start);
+  const ls=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const le=geometrySource.indexOf('})();',ls);
+  assert.ok(start>=0&&end>start&&ls>=0&&le>ls);
+  function node(tag){return {tag,attrs:{},children:[],textContent:'',
+    setAttribute(k,v){this.attrs[k]=String(v);},
+    appendChild(child){this.children.push(child);return child;}};}
+  const flatten=n=>[n,...n.children.flatMap(flatten)];
+  const lines=['SA','C'].map(name=>({lineId:name,name,image:name+'.png',
+    toStation:'Machiya-Ekimae',type:'in'}));
+  for(const side of ['left','right']){
+    const root=node('g');
+    const window={currentLang:'ja',
+      RailwayDB:{resolveStationName:s=>s==='Machiya-Ekimae'?'町屋駅前':s},
+      ThroughChip:{badgeText:p=>p.name,measureWidth:(s,f)=>String(s).length*f,
+        normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]}};
+    const ctx=vm.createContext({window,document:{createElementNS:(_n,tag)=>node(tag)},
+      _losGroupKey:()=>''});
+    vm.runInContext(geometrySource.slice(ls,le+5)+
+      '\n'+rendererSource.slice(start,end),ctx);
+    ctx._renderStationNode({info:root,nodes:node('g')},'svg',{
+      stationId:'Machiya',x:220,y:100,side,si:0,color:'#378',geometry:{},
+      svgW:440,svgH:600,isMobileView:true,
+      transferMap:{Machiya:lines},rS:()=> '町屋'
+    });
+    const all=flatten(root);
+    const name=all.find(n=>n.attrs['data-station-label']==='Machiya');
+    const icons=all.filter(n=>n.tag==='image');
+    const destination=all.find(n=>n.tag==='text'&&n.textContent.includes('町屋駅前'));
+    assert.ok(name&&destination);assert.equal(icons.length,2);
+    assert.equal(icons[0].attrs.y,icons[1].attrs.y);
+    assert.equal(Number(icons[0].attrs.y)-Number(name.attrs.y),14);
+    const edge=side==='left'
+      ? Math.max(...icons.map(n=>Number(n.attrs.x)+Number(n.attrs.width)))
+      : Math.min(...icons.map(n=>Number(n.attrs.x)));
+    assert.equal(edge,Number(name.attrs.x),'main name/icon block align');
+    const other=side==='left'
+      ? Math.min(...icons.map(n=>Number(n.attrs.x)))
+      : Math.max(...icons.map(n=>Number(n.attrs.x)+Number(n.attrs.width)));
+    assert.equal(Math.abs(other-Number(destination.attrs.x)),3);
+    assert.equal(destination.textContent,side==='left'?'町屋駅前 ←':'→ 町屋駅前');
+    assert.equal(destination.attrs['text-anchor'],side==='left'?'end':'start');
+    assert.equal(Number(destination.attrs.y)-Number(icons[0].attrs.y),8);
   }
 });
