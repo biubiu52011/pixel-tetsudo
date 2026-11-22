@@ -853,10 +853,8 @@ window.StationInfoLayout = (function() {
     // The WCAG midpoint between white and near-black foreground contrast.
     return luminosity > 0.18 ? "#1d1d1f" : "#ffffff";
   }
-  function maxRows() {
-    return Math.max(1, Math.min(8,
-      Number(window.RuntimeConfig && window.RuntimeConfig.TRANSFER_MAX_ROWS) || 4));
-  }
+  // Fixed 4-by-4 grid: no adaptive 3/2/1-column packing.
+  function maxRows() { return 4; }
   function list(items) {
     var seen = Object.create(null);
     return (items || []).filter(function(item) {
@@ -925,50 +923,62 @@ window.StationInfoLayout = (function() {
     });
   }
   function plan(items, stationId, stationName, mobile, maxWidth) {
-    var all = prepare(items, stationId, stationName, mobile);
-    var cap = maxRows(), widthLimit = Math.max(1, Number(maxWidth) || 1);
-    function pack(entries) {
-      var result = null;
-      for (var columns = 4; columns >= 1; columns--) {
-        var capacity = columns * cap;
-        var needOverflow = entries.length > capacity;
-        var shown = entries.slice(0, needOverflow ? capacity - 1 : capacity);
-        var hidden = entries.length - shown.length;
-        var moreText = hidden ? "+" + hidden : "";
-        var totalSlots = shown.length + (hidden ? 1 : 0);
-        var rows = Math.ceil(totalSlots / columns);
-        var rowWidths = [], overflowX = 0, overflowY = 0;
-        for (var row = 0; row < rows; row++) {
-          var rowItems = shown.slice(row * columns, (row + 1) * columns);
-          var rowWidth = rowItems.reduce(function(sum, entry) {
-            return sum + entry.width;
-          }, 0) + Math.max(0, rowItems.length - 1) * GAP;
-          if (moreText && Math.floor(shown.length / columns) === row) {
-            // +N occupies its own slot in the final row. It never hangs
-            // outside the measured badge block or pushes into the rail.
-            overflowX = rowWidth + (rowItems.length ? GAP : 0);
-            overflowY = row * PITCH;
-            rowWidth = overflowX + measure(moreText, FONT.overflow);
-          }
-          rowWidths.push(rowWidth);
-        }
-        var contentWidth = rowWidths.length ? Math.max.apply(null, rowWidths) : 0;
-        result = {shown:shown, perRow:columns, rows:rows,
-          rowWidths:rowWidths, contentWidth:contentWidth,
-          totalWidth:contentWidth, moreText:moreText,
-          overflowX:overflowX, overflowY:overflowY,
-          height:rows ? rows * PITCH : 0};
-        if (result.totalWidth <= widthLimit || columns === 1) break;
-      }
-      return result;
+    var entries = prepare(items, stationId, stationName, mobile);
+    var columns = 4, cap = maxRows(), row = 0, col = 0;
+    // Reserve actual badge cells, not destination groups. One named target
+    // retains one outside label while its icons wrap 4 per row.
+    var planned = entries.map(function(entry) {
+      if (entry.extra && col > 0) { row++; col = 0; }
+      var slots = entry.badges.map(function(part) {
+        var slot = {part:part, row:row, col:col};
+        col++;
+        if (col === columns) { row++; col = 0; }
+        return slot;
+      });
+      if (entry.extra && col > 0) { row++; col = 0; }
+      return Object.assign({}, entry, {slots:slots});
+    });
+    var allSlots = [].concat.apply([], planned.map(function(entry) { return entry.slots; }));
+    var visible = allSlots.filter(function(slot) { return slot.row < cap; });
+    var hidden = allSlots.length - visible.length, overflowSlot = null;
+    if (hidden && visible.length) { overflowSlot = visible.pop(); hidden++; }
+    var shownSet = new Set(visible);
+    var shown = planned.map(function(entry) {
+      return Object.assign({}, entry, {slots:entry.slots.filter(function(slot) { return shownSet.has(slot); })});
+    }).filter(function(entry) { return entry.slots.length > 0; });
+    var rowUsed = Array(cap).fill(0);
+    visible.forEach(function(slot) { rowUsed[slot.row] = Math.max(rowUsed[slot.row], slot.col + 1); });
+    if (overflowSlot) rowUsed[overflowSlot.row] = Math.max(rowUsed[overflowSlot.row], overflowSlot.col + 1);
+    // Reserve space for either standard or right-aligned (left-side) cell
+    // coordinates; fallback text badges must not overlap neighboring badges.
+    var colWidth = Array(columns).fill(ICON);
+    visible.concat(overflowSlot ? [overflowSlot] : []).forEach(function(slot) {
+      var w = slot === overflowSlot ? measure("+" + hidden, FONT.overflow) : slot.part.badgeWidth;
+      colWidth[slot.col] = Math.max(colWidth[slot.col], w);
+      colWidth[slot.col + columns - rowUsed[slot.row]] =
+        Math.max(colWidth[slot.col + columns - rowUsed[slot.row]], w);
+    });
+    var colOffsets = [], gridWidth = 0;
+    for (var i = 0; i < columns; i++) {
+      colOffsets[i] = gridWidth;
+      gridWidth += colWidth[i] + (i === columns - 1 ? 0 : GAP);
     }
-    var result = pack(all);
-    // A physical interchange name is navigational data; do not hide it for width.
-    return result;
+    var labelWidth = shown.reduce(function(mx, entry) {
+      return Math.max(mx, entry.extra ? measure(entry.extra, mobile ? FONT.extra.mobile : FONT.extra.desktop) : 0);
+    }, 0);
+    var finalRow = -1;
+    visible.forEach(function(slot) { finalRow = Math.max(finalRow, slot.row); });
+    if (overflowSlot) finalRow = Math.max(finalRow, overflowSlot.row);
+    return {shown:shown, perRow:columns, rows:finalRow+1, rowUsed:rowUsed,
+      colWidths:colWidth, colOffsets:colOffsets, gridWidth:gridWidth,
+      totalWidth:gridWidth+(labelWidth ? labelWidth+3 : 0), contentWidth:gridWidth,
+      moreText:hidden ? "+"+hidden : "",
+      overflowRow:overflowSlot ? overflowSlot.row : 0,
+      overflowCol:overflowSlot ? overflowSlot.col : 0,
+      height:(finalRow+1)*PITCH};
   }
-  // Geometry is calculated before per-station horizontal coordinates exist.
-  // Reserve the single-column worst case (bounded by maxRows), ensuring the
-  // actual 4/3/2/1-column L3 layout never intrudes into the next station.
+  // Geometry reserves at most four rows for the shared 4x4 icon grid.
+  // Named transfer destinations are laid out outside the grid.
   function reservedRows(items) {
     return Math.min(maxRows(), list(items).length);
   }

@@ -330,15 +330,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var badgePlan = window.StationInfoLayout.plan(
         txLines, o.stationId, _sName, isMobileView, _available);
       var rows = badgePlan.rows;
-      var totalW = badgePlan.totalWidth;
-      var ix0 = _align === "end" ? _edge - totalW
-        : _align === "start" ? _edge : _edge - totalW / 2;
+      var gridW = badgePlan.gridWidth;
+      var ix0 = _align === "end" ? _edge - gridW
+        : _align === "start" ? _edge : _edge - gridW / 2;
       // If even one badge is wider than a narrow station column, preserve
       // its anchor and let the shared static viewport include the overflow.
       // Do not force it across the rail or let it cover another chip.
       if (_align === "end" && ix0 < 2) ix0 = 2;
-      if (_align === "start" && ix0 + totalW > svgW - 2)
-        ix0 = Math.max(2, svgW - 2 - totalW);
+      if (_align === "start" && ix0 + gridW > svgW - 2)
+        ix0 = Math.max(2, svgW - 2 - gridW);
       var iy0 = side === "top" ? o.y + 14 : ty + 9;
       if (o.transferBelowNode) iy0 = Math.max(iy0, o.y + 14);
       if (o.horizontalBranch)
@@ -352,16 +352,20 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         var badgeGroup = document.createElementNS(svgNS, "g");
         badgeGroup.setAttribute("class", "station-transfer-badges");
         badgeGroup.setAttribute("data-transfer-station", String(o.stationId || ""));
+        badgeGroup.setAttribute("data-badge-grid", "4x4");
         infoGroup.appendChild(badgeGroup);
-        var rowCur = ix0;
-        badgePlan.shown.forEach(function(entry, index) {
-          var row = Math.floor(index / badgePlan.perRow);
-          var col = index % badgePlan.perRow;
-          if (col === 0) rowCur = ix0;
-          var bx = rowCur;
-          var by = iy0 + row * window.StationInfoLayout.pitch;
+        var leftGrid = anchor === "end" && side !== "top" && side !== "bottom";
+        var physicalCol = function(slot) {
+          return leftGrid ? slot.col + 4 - badgePlan.rowUsed[slot.row] : slot.col;
+        };
+        var badgeX = function(slot) {
+          return ix0 + badgePlan.colOffsets[physicalCol(slot)];
+        };
+        badgePlan.shown.forEach(function(entry) {
+          var slots = entry.slots || [];
+          if (!slots.length) return;
           var item = entry.item;
-          var parts = entry.badges || [{item:item,label:entry.label,badgeWidth:entry.badgeWidth}];
+          var parts = slots.map(function(s) { return s.part; });
           var isWalk = parts.some(function(p) { return p.item.type === "out"; });
           var itemGroup = document.createElementNS(svgNS, "g");
           if (item.toStation) itemGroup.setAttribute("data-to-station", item.toStation);
@@ -381,15 +385,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           // A shared baseline is required even if the badge uses an image.
           // Previously an image left badgeHeight undefined (SVG y=NaN).
           var badgeHeight = isMobileView ? 16 : 15;
-          // A left-side transfer reads outside → inside as
-          // destination name, outward arrow, railway badges. Reserve the
-          // SAME measured entry width but paint the badges at the inner end.
-          // Other sides retain badges, arrow, destination (inside → outside).
-          var labelOutside = !!entry.extra && anchor === "end" &&
-            side !== "top" && side !== "bottom";
-          var partX = bx + (labelOutside ? entry.width - entry.badgeWidth : 0);
-          parts.forEach(function(part,index) {
-            var line = part.item;
+          slots.forEach(function(slot) {
+            var part = slot.part, line = part.item;
+            var partX = badgeX(slot);
+            var by = iy0 + slot.row * window.StationInfoLayout.pitch;
             var glyph = document.createElementNS(svgNS, "g");
             itemGroup.appendChild(glyph);
             if (line.image) {
@@ -425,12 +424,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
               nameText.textContent = part.label;
               glyph.appendChild(nameText);
             }
-            partX += part.badgeWidth + (index+1<parts.length ? GAP : 0);
           });
           if (entry.extra) {
             var extraLabel = document.createElementNS(svgNS, "text");
-            extraLabel.setAttribute("x", labelOutside ? bx : bx + entry.badgeWidth + 3);
-            extraLabel.setAttribute("y", by + badgeHeight / 2);
+            extraLabel.setAttribute("x", leftGrid ? ix0 - 3 : ix0 + gridW + 3);
+            var firstRow = slots[0].row, lastRow = slots[slots.length - 1].row;
+            extraLabel.setAttribute("y", iy0 +
+              (firstRow + lastRow) * window.StationInfoLayout.pitch / 2 + badgeHeight / 2);
+            extraLabel.setAttribute("text-anchor", leftGrid ? "end" : "start");
             extraLabel.setAttribute("dominant-baseline", "central");
             extraLabel.setAttribute("font-size", isMobileView
               ? window.StationInfoLayout.fontSizes.extra.mobile
@@ -442,17 +443,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             // 'destination · walk ← [badges]' without changing content or
             // semantic station links; the opposite side remains mirrored.
             var exitArrow = _outwardWalkTransferArrow(anchor, side, tx, o.x);
-            extraLabel.textContent = labelOutside
+            extraLabel.textContent = leftGrid
               ? entry.extra.replace(/^→\s*/, "") + " " + exitArrow
               : entry.extra.replace(/^→(?=\s)/, exitArrow);
             itemGroup.appendChild(extraLabel);
           }
-          rowCur += entry.width + GAP;
         });
         if (badgePlan.moreText) {
           var overflowText = document.createElementNS(svgNS, "text");
-          overflowText.setAttribute("x", ix0 + badgePlan.overflowX);
-          overflowText.setAttribute("y", iy0 + badgePlan.overflowY + window.StationInfoLayout.pitch / 2);
+          overflowText.setAttribute("x", badgeX({row:badgePlan.overflowRow,col:badgePlan.overflowCol}));
+          overflowText.setAttribute("y", iy0 +
+            badgePlan.overflowRow * window.StationInfoLayout.pitch + window.StationInfoLayout.pitch / 2);
           overflowText.setAttribute("dominant-baseline", "central");
           overflowText.setAttribute("font-size", window.StationInfoLayout.fontSizes.overflow);
           overflowText.setAttribute("font-weight", "400");

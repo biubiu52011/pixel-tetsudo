@@ -183,7 +183,7 @@ test('walking-transfer arrows point outside the SVG railway on all four sides',(
   assert.equal(arrow('middle','dual',150,160),'←','middle-aligned left fallback');
   assert.equal(arrow('middle','dual',170,160),'→','middle-aligned right fallback');
   assert.match(rendererSource,/var isWalk = parts\.some\(function\(p\) \{ return p\.item\.type === "out"; \}\)/);
-  assert.match(rendererSource,/extraLabel\.textContent = labelOutside\s*\? entry\.extra\.replace\(/);
+  assert.match(rendererSource,/extraLabel\.textContent = leftGrid\s*\? entry\.extra\.replace\(/);
   // Neither station identity nor the measured total width changes.
   // Direction and visual order are presentation-only.
   assert.match(geometrySource,/var extra = group\.dest \? "→ " \+ group\.dest : ""/);
@@ -201,12 +201,14 @@ test('unlike-name transfers render outer destination, arrow, then inside badges'
     const node=makeNode('g'), info=makeNode('g');
     const item={type:mode,toStation:'Ueno',name:'JK',color:'#478',lineId:'Test'};
     const parts=[{item,label:'JK',badgeWidth:16}];
-    const entry={item,badges:parts,badgeWidth:16,extra,width:114};
+    const entry={item,badges:parts,badgeWidth:16,extra,width:114,
+      slots:[{part:parts[0],row:0,col:0}]};
     const window={currentLang:'zh',
       StationInfoLayout:{icon:16,gap:2,pitch:18,
         fontSizes:{badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}},
         textColor:()=> '#fff',
-        plan:()=>({shown:[entry],rows:1,totalWidth:114,perRow:1})},
+        plan:()=>({shown:[entry],rows:1,gridWidth:70,perRow:4,
+          rowUsed:[1,0,0,0],colOffsets:[0,18,36,54]})},
       ThroughChip:{badgeText:()=> 'JK',normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]},
       RailwayDB:{resolveStationName:name=>name}};
     const document={createElementNS:(_ns,tag)=>makeNode(tag)};
@@ -236,4 +238,11 @@ test('unlike-name transfers render outer destination, arrow, then inside badges'
   assert.equal(right.texts.find(n=>n.textContent.includes('牛田')).textContent,'→ 牛田 · 步行');
   assert.ok(Number(right.rects[0].attrs.x)<Number(right.texts.find(n=>n.textContent.includes('牛田')).attrs.x),
     'right side mirrors icon → destination');
+});
+
+test('the physical transfer grid has four columns and four rows',()=>{
+  assert.match(geometrySource,/var columns = 4, cap = maxRows\(\)/);
+  assert.match(geometrySource,/function maxRows\(\) \{ return 4; \}/);
+  assert.match(rendererSource,/data-badge-grid", "4x4"/);
+  assert.match(rendererSource,/var by = iy0 \+ slot\.row \* window\.StationInfoLayout\.pitch/);
 });
