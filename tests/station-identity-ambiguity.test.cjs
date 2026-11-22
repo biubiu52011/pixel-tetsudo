@@ -146,7 +146,8 @@ test('SVG unlike-name transfers group destination icons and keep names on mobile
   }
   const render=fs.readFileSync('js/trains-render.js','utf8');
   assert.match(render,/var badgeHeight = isMobileView \? 16 : 15;/);
-  assert.match(render,/var parts = entry\.badges/);
+  assert.match(render,/var parts = slots\.map\(function\(s\) \{ return s\.part; \}\)/);
+  assert.match(render,/data-badge-grid", "4x4"/);
   assert.match(render,/data-transfer-mode/);
   assert.match(render,/itemGroup\.setAttribute\("aria-label", badgeTitle\.textContent\)/);
 });
