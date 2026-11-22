@@ -8,13 +8,29 @@
     var STORAGE_KEY = "i18n_lang";
     var SUPPORTED = ["ja", "zh", "ko", "en"];
     var DEFAULT_LANG = "ja";
-    // This existing script runs before stylesheets, so saved-language pages do
-    // not first download a different language's full font.
-    try {
-        var fontLang = localStorage.getItem(STORAGE_KEY);
-        window.currentLang = SUPPORTED.indexOf(fontLang) >= 0 ? fontLang : DEFAULT_LANG;
-        document.documentElement.lang = window.currentLang;
-    } catch (e) { document.documentElement.lang = DEFAULT_LANG; }
+    // Select the browser language on the first visit, preserving explicit choices.
+    // Run in <head> to prevent a flash of the wrong language/font.
+    function preferredLanguage() {
+        var locales = [];
+        try {
+            if (navigator.languages) locales = Array.prototype.slice.call(navigator.languages);
+            if (navigator.language) locales.push(navigator.language);
+        } catch (e) { /* embedded browsers may block language access */ }
+        for (var i = 0; i < locales.length; i++) {
+            var code = String(locales[i] || "").toLowerCase().split(/[-_]/)[0];
+            if (SUPPORTED.indexOf(code) >= 0) return code;
+        }
+        return DEFAULT_LANG;
+    }
+    function savedOrPreferredLanguage() {
+        try {
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (SUPPORTED.indexOf(saved) >= 0) return saved;
+        } catch (e) { /* private browsing may block storage */ }
+        return preferredLanguage();
+    }
+    window.currentLang = savedOrPreferredLanguage();
+    document.documentElement.lang = window.currentLang;
 
     // 供其他脚本使用的公共 API。
     var listeners = [];
@@ -76,6 +92,8 @@
         updateOperatorNames();
         _updatePageTitle();
         triggerLanguageChange();
+        // Subscribers may synchronously replace tourism/report DOM nodes.
+        if (window.SiteAutoTranslate) window.SiteAutoTranslate.scan(document);
         return true;
     }
 
@@ -183,7 +201,7 @@
     function selectLanguage(lang) {
         if (SUPPORTED.indexOf(lang) === -1) return;
         applyLang(lang);
-        localStorage.setItem(STORAGE_KEY, lang);
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
         closeSwitcher();
     }
 
@@ -193,15 +211,96 @@
         if (!toggleBtn || !switcher) return;
 
         // SiteShell 重新挂载时只替换控件，不改变语言或其订阅者。
-        var savedLang = localStorage.getItem(STORAGE_KEY);
-        var currentLang = SUPPORTED.indexOf(savedLang) !== -1 ? savedLang : DEFAULT_LANG;
+        var currentLang = window.currentLang || savedOrPreferredLanguage();
         window.currentLang = currentLang;
         updateSwitcherUI(currentLang);
         updateSwitcherAccessibility(currentLang);
         updateTranslations();
         updateOperatorNames();
         _updatePageTitle();
+        if (window.SiteAutoTranslate) window.SiteAutoTranslate.scan(document);
     }
+
+
+    // In-site translation for opt-in Japanese free-text content.
+    // Static interface copy, official station names, coordinates and train IDs
+    // always use the existing dictionaries/railway resolvers instead.
+    // Browser on-device Translator is a progressive enhancement: no unofficial
+    // translation endpoint, key, cross-origin request or large model dependency.
+    var autoCache = new Map();
+    var translatorCache = new Map();
+    function onDeviceTranslator(lang) {
+        var target = lang === "zh" ? "zh-Hans" : lang;
+        if (translatorCache.has(target)) return translatorCache.get(target);
+        var api = window.Translator;
+        if (!api || typeof api.create !== "function" || typeof api.availability !== "function") {
+            return Promise.resolve(null);
+        }
+        var options = { sourceLanguage: "ja", targetLanguage: target };
+        var promise = Promise.resolve().then(function() {
+            return api.availability(options);
+        }).then(function(availability) {
+            // Never implicitly download a model (particularly on mobile data).
+            if (availability !== "available") return null;
+            return api.create(options);
+        }).catch(function() { return null; });
+        translatorCache.set(target, promise);
+        return promise;
+    }
+    function autoTranslateText(text, lang) {
+        var source = String(text == null ? "" : text);
+        lang = lang || window.currentLang || DEFAULT_LANG;
+        if (!source.trim() || lang === "ja") return Promise.resolve(source);
+        if (SUPPORTED.indexOf(lang) < 0) return Promise.resolve(null);
+        var key = lang + "\n" + source;
+        if (autoCache.has(key)) return autoCache.get(key);
+        var task = onDeviceTranslator(lang).then(function(translator) {
+            if (!translator || typeof translator.translate !== "function") return null;
+            return translator.translate(source);
+        }).then(function(result) {
+            return typeof result === "string" && result.trim() ? result : null;
+        }).catch(function() { return null; });
+        autoCache.set(key, task);
+        if (autoCache.size > 200) autoCache.delete(autoCache.keys().next().value);
+        return task;
+    }
+    function scanAutoTranslations(root) {
+        root = root || document;
+        if (!root || typeof root.querySelectorAll !== "function") return;
+        var nodes = [];
+        if (root.matches && root.matches("[data-auto-translate]")) nodes.push(root);
+        root.querySelectorAll("[data-auto-translate]").forEach(function(el) { nodes.push(el); });
+        nodes.forEach(function(el) {
+            // Only Japanese source paragraphs explicitly marked by their owner.
+            if (el.getAttribute("data-auto-translate") !== "ja") return;
+            if (typeof el._ptOriginalText !== "string") el._ptOriginalText = el.textContent;
+            var source = el._ptOriginalText;
+            var lang = window.currentLang || DEFAULT_LANG;
+            var revision = (el._ptTranslationRevision || 0) + 1;
+            el._ptTranslationRevision = revision;
+            if (lang === "ja") { el.textContent = source; return; }
+            // Do not erase the original when no on-device translator exists.
+            autoTranslateText(source, lang).then(function(translation) {
+                if (translation && el.isConnected !== false &&
+                    el._ptTranslationRevision === revision && window.currentLang === lang) {
+                    el.textContent = translation;
+                    el.setAttribute("lang", lang);
+                }
+            });
+        });
+    }
+    window.SiteAutoTranslate = {
+        scan: scanAutoTranslations,
+        translateText: autoTranslateText,
+        available: function() { return !!(window.Translator &&
+            typeof window.Translator.create === "function"); }
+    };
+    window.setSiteLanguage = function(lang) {
+        if (SUPPORTED.indexOf(lang) < 0) return false;
+        if (!applyLang(lang)) return false;
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+        return true;
+    };
 
     // 只在 document 上绑定一次，使 SiteShell.render 可以替换自身标记。
     document.addEventListener("click", function(e) {
