@@ -76,5 +76,7 @@ test('train estimator displays Sagano published numbers only with dated SQL proo
   assert.match(estimator, /officialNumberVerified: Boolean\(osakaMahorobaDisplayNumber\)/);
   assert.match(estimator, /Boolean\(saganoDisplayNumber\)/);
   assert.match(estimator, /var _saganoScoped=!!saganoScoped&&vehResult\.identityStatus!=="EXACT"/);
-  assert.match(estimator, /vehicleIconPath: \(_saganoScoped\|\|_koseiScoped/);
+  // Added Osaka Mahoroba/Higashi safety scopes precede Sagano but none may
+  // produce a guessed physical-vehicle PNG.
+  assert.match(estimator, /vehicleIconPath: \(_osakaMahorobaScoped\|\|_osakaHigashiScoped\|\|_saganoScoped\|\|_koseiScoped/);
 });
