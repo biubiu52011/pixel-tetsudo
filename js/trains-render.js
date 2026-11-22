@@ -331,6 +331,10 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         txLines, o.stationId, _sName, isMobileView, _available);
       var rows = badgePlan.rows;
       var gridW = badgePlan.gridWidth;
+      // The printed station name and the rail-facing edge of its transfer
+      // icon grid have ONE alignment reference. Extra captions grow outward.
+      // On a left-labelled route: icon grid RIGHT edge = station label END.
+      // On a right-labelled route: icon grid LEFT edge = station label START.
       var ix0 = _align === "end" ? _edge - gridW
         : _align === "start" ? _edge : _edge - gridW / 2;
       // If even one badge is wider than a narrow station column, preserve
@@ -353,13 +357,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         badgeGroup.setAttribute("class", "station-transfer-badges");
         badgeGroup.setAttribute("data-transfer-station", String(o.stationId || ""));
         badgeGroup.setAttribute("data-badge-grid", "4x4");
+        badgeGroup.setAttribute("data-alignment-reference", "station-label-edge");
+        badgeGroup.setAttribute("data-reference-x", String(_edge));
         infoGroup.appendChild(badgeGroup);
         var leftGrid = anchor === "end" && side !== "top" && side !== "bottom";
         var physicalCol = function(slot) {
           return leftGrid ? slot.col + 4 - badgePlan.rowUsed[slot.row] : slot.col;
         };
         var badgeX = function(slot) {
-          return ix0 + badgePlan.colOffsets[physicalCol(slot)];
+          var col = physicalCol(slot);
+          // Anchor the last painted left-side icon, not the theoretical
+          // width of its column, to the SAME edge as the main station name.
+          // Preserve the viewport safety clamp where the full grid cannot fit.
+          if (leftGrid && col === 3 && ix0 === _edge - gridW)
+            return _edge - slot.part.badgeWidth;
+          return ix0 + badgePlan.colOffsets[col];
         };
         badgePlan.shown.forEach(function(entry) {
           var slots = entry.slots || [];

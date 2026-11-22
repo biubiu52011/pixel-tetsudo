@@ -249,3 +249,68 @@ test('the physical transfer grid has four columns and four rows',()=>{
   assert.match(rendererSource,/data-badge-grid", "4x4"/);
   assert.match(rendererSource,/var by = iy0 \+ slot\.row \* window\.StationInfoLayout\.pitch/);
 });
+
+test('station name and near-track icon edge share the same outer annotation baseline',()=>{
+  const start=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const end=rendererSource.indexOf('  function _isRealtimePositionFresh(',start);
+  assert.ok(start>=0&&end>start);
+  const create=tag=>({tag,attrs:{},children:[],textContent:'',
+    setAttribute(k,v){this.attrs[k]=String(v);},
+    appendChild(child){this.children.push(child);return child;}});
+  const flatten=n=>[n,...n.children.flatMap(flatten)];
+  function paint(side,count){
+    const info=create('g'),nodes=create('g');
+    const icons=Array.from({length:count},(_,i)=>{
+      const item={lineId:'X'+i,name:'X'+i,image:'x'+i+'.png',
+        type:'out',toStation:'Ueno'};
+      return {item,label:'X'+i,badgeWidth:i===count-1?16:16};
+    });
+    const slots=icons.map((part,i)=>({part,row:Math.floor(i/4),col:i%4}));
+    const rowUsed=[Math.min(count,4),Math.max(0,count-4),0,0];
+    const entry={item:icons[0].item,badges:icons,slots,extra:'→ 上野 · 步行'};
+    const window={currentLang:'zh',
+      StationInfoLayout:{icon:16,gap:2,pitch:18,fontSizes:{
+        badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}
+      },textColor:()=> '#fff',
+      plan:()=>({shown:[entry],rows:Math.ceil(count/4),gridWidth:70,
+        colOffsets:[0,18,36,54],rowUsed,perRow:4})},
+      ThroughChip:{badgeText:()=> 'X',normalize:()=>[],layoutRow:()=>[],layoutGroup:()=>[]},
+      RailwayDB:{resolveStationName:id=>id}};
+    const context=vm.createContext({window,document:{createElementNS:(_ns,tag)=>create(tag)}});
+    vm.runInContext(rendererSource.slice(start,end),context);
+    context._renderStationNode({nodes,info},'svg',{
+      stationId:'Keisei-Ueno',x:200,y:120,side,
+      color:'#369',svgW:420,svgH:500,isMobileView:true,geometry:{},
+      transferMap:{'Keisei-Ueno':[icons[0].item]},
+      rS:()=> '京成上野',si:0
+    });
+    const all=flatten(info),name=all.find(n=>n.attrs['data-station-label']==='Keisei-Ueno');
+    const group=all.find(n=>n.attrs['data-badge-grid']==='4x4');
+    const badges=all.filter(n=>n.tag==='image');
+    const caption=all.find(n=>n.tag==='text'&&n.textContent.includes('上野'));
+    assert.ok(name&&group&&caption);
+    assert.equal(group.attrs['data-alignment-reference'],'station-label-edge');
+    assert.equal(Number(group.attrs['data-reference-x']),Number(name.attrs.x));
+    assert.equal(badges.length,count);
+    const nameEdge=Number(name.attrs.x);
+    if(side==='left'){
+      const nearestEdge=Math.max(...badges.map(n=>Number(n.attrs.x)+Number(n.attrs.width)));
+      const outEdge=Math.min(...badges.map(n=>Number(n.attrs.x)));
+      assert.equal(nearestEdge,nameEdge,'left-side icons align with station-name right edge');
+      assert.equal(outEdge-Number(caption.attrs.x),3,'caption touches actual outermost icon');
+      assert.equal(caption.attrs['text-anchor'],'end');
+      assert.equal(caption.textContent,'上野 · 步行 ←');
+    } else {
+      const nearestEdge=Math.min(...badges.map(n=>Number(n.attrs.x)));
+      const outEdge=Math.max(...badges.map(n=>Number(n.attrs.x)+Number(n.attrs.width)));
+      assert.equal(nearestEdge,nameEdge,'right-side icons align with station-name left edge');
+      assert.equal(Number(caption.attrs.x)-outEdge,3,'caption touches actual outermost icon');
+      assert.equal(caption.attrs['text-anchor'],'start');
+      assert.equal(caption.textContent,'→ 上野 · 步行');
+    }
+  }
+  for(const count of [1,2,7]){
+    paint('left',count);
+    paint('right',count);
+  }
+});
