@@ -292,3 +292,36 @@ test('Keisei and Chiba New Town fleet artwork never implies an operating number'
     assert.equal(ref?.plannedAsset,'../images/列车/京成電鉄/'+file);
   }
 });
+
+test('Odakyu and Hakone artwork require service-scoped vehicle evidence',()=>{
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const names=[
+    '小田急電鉄_1000形_標準色.png','小田急電鉄_2000形_標準色.png',
+    '小田急電鉄_30000形_EXE.png','小田急電鉄_30000形_EXEα.png',
+    '小田急電鉄_3000形_標準色.png','小田急電鉄_5000形_標準色.png',
+    '小田急電鉄_8000形_標準色_更新車.png','小田急電鉄_8000形_標準色_未更新車.png',
+    '小田急箱根_1000形.png','小田急箱根_2000形.png','小田急箱根_3000・3100形.png'
+  ];
+  for(const name of names)
+    assert.equal(ranges.includes(name),false,name+' has no verified train-number mapping');
+
+  // The public Romancecar code E covers both EXE variants, so it cannot
+  // select either distinct image without service-date vehicle evidence.
+  const exe=win.TrainVehicle.resolveCanonicalVehicle('小田急30000形（EXE）');
+  const exea=win.TrainVehicle.resolveCanonicalVehicle('小田急30000形（EXEα）');
+  assert.notEqual(exe?.asset,exea?.asset);
+
+  const odakyu8000=win.TrainVehicle.resolveCanonicalVehicle('小田急8000形');
+  assert.equal(odakyu8000?.asset||null,null,'planned updated artwork is not actual livery proof');
+  assert.equal(odakyu8000?.plannedAsset,
+    '../images/列车/小田急電鉄/小田急電鉄_8000形_標準色_更新車.png');
+  assert.equal(win.VehicleGaragePngMap.matchModelPath('小田急8000形',
+    '../images/列车/小田急電鉄/小田急電鉄_8000形_標準色_未更新車.png','Odawara'),false);
+
+  for(const name of ['小田急箱根_1000形.png','小田急箱根_2000形.png','小田急箱根_3000・3100形.png']){
+    const path='../images/列车/小田急箱根/'+name;
+    const refs=win.VehicleGaragePngMap.findPath(path);
+    assert.equal(refs.length,1,name+' must remain inventory-visible');
+    assert.equal(refs[0].lineIds.length,0,name+' must remain outside runtime line scope');
+  }
+});
