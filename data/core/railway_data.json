@@ -16717,6 +16717,30 @@
     "Akitsu-Kure": {
       "lat": 34.3181105,
       "lng": 132.8185988
+    },
+    "Monorail-Hamamatsucho": {
+      "lat": 35.6555417,
+      "lng": 139.7566597
+    },
+    "Haneda Airport Terminal 1": {
+      "lat": 35.549083,
+      "lng": 139.784597
+    },
+    "Haneda Airport Terminal 2": {
+      "lat": 35.5508733,
+      "lng": 139.7878392
+    },
+    "Haneda Airport Terminal 3": {
+      "lat": 35.544361,
+      "lng": 139.768167
+    },
+    "Keisei-Chiba": {
+      "lat": 35.6117062,
+      "lng": 140.1143052
+    },
+    "Miyakonojo": {
+      "lat": 31.52167,
+      "lng": 131.06167
     }
   },
   "lines": {
@@ -17408,7 +17432,8 @@
           "lineId": "TokyoMonorail",
           "toStation": "Monorail-Hamamatsucho",
           "type": "out",
-          "note": "モノレール浜松町，徒歩約2分"
+          "note": "モノレール浜松町，徒歩約2分",
+          "walkMinutes": 2
         },
         {
           "station": "Shin-Koyasu",
@@ -19363,8 +19388,9 @@
         {
           "station": "Kita-Asaka",
           "lineId": "Tojo",
-          "toStation": "Asaka",
-          "note": "Asaka"
+          "toStation": "Asakadai",
+          "note": "Asakadai",
+          "type": "out"
         },
         {
           "station": "Minami-Koshigaya",
@@ -24970,8 +24996,9 @@
         {
           "station": "Zoshigaya",
           "lineId": "Arakawa",
-          "toStation": "Toei_Zoshigaya",
-          "note": "Toei_Zoshigaya"
+          "toStation": "Onishimogami_Mae",
+          "note": "Onishimogami_Mae",
+          "type": "out"
         },
         {
           "station": "Shinjuku-Sanchome",
@@ -28719,7 +28746,8 @@
           "lineId": "TokyoMonorail",
           "toStation": "Monorail-Hamamatsucho",
           "type": "out",
-          "note": "モノレール浜松町，徒歩約2分"
+          "note": "モノレール浜松町，徒歩約2分",
+          "walkMinutes": 2
         },
         {
           "station": "Otsuka",
@@ -28917,7 +28945,8 @@
           "station": "Onishimogami_Mae",
           "lineId": "Fukutoshin",
           "toStation": "Zoshigaya",
-          "note": "Zoshigaya"
+          "note": "Zoshigaya",
+          "type": "out"
         },
         {
           "station": "Oji_Eki_Mae",
@@ -31364,16 +31393,26 @@
         {
           "station": "Haneda-Kuko-T1T2",
           "lineId": "TokyoMonorail",
+          "toStation": "Haneda Airport Terminal 1",
+          "type": "out",
+          "note": "東京モノレール羽田空港第1ターミナル，徒歩約5分",
+          "walkMinutes": 5
+        },
+        {
+          "station": "Haneda-Kuko-T1T2",
+          "lineId": "TokyoMonorail",
           "toStation": "Haneda Airport Terminal 2",
           "type": "out",
-          "note": "東京モノレール羽田空港第2ターミナル，徒歩約3分"
+          "note": "東京モノレール羽田空港第2ターミナル，徒歩約3分",
+          "walkMinutes": 3
         },
         {
           "station": "Haneda-Kuko-T3",
           "lineId": "TokyoMonorail",
           "toStation": "Haneda Airport Terminal 3",
           "type": "out",
-          "note": "東京モノレール羽田空港第3ターミナル，徒歩約4分"
+          "note": "東京モノレール羽田空港第3ターミナル，徒歩約4分",
+          "walkMinutes": 4
         }
       ],
       "nameZh": "机场线",
@@ -32012,8 +32051,9 @@
         {
           "station": "Keio-Nagayama",
           "lineId": "OdakyuTama",
-          "toStation": "Odakyu-Nagayama",
-          "note": "Odakyu-Nagayama"
+          "toStation": "Odakyu-Ei-Zan",
+          "note": "Odakyu-Ei-Zan",
+          "type": "out"
         },
         {
           "station": "Keio-Tama-Center",
@@ -33608,7 +33648,8 @@
           "station": "Odakyu-Ei-Zan",
           "lineId": "KeioSagami",
           "toStation": "Keio-Nagayama",
-          "note": "Keio-Nagayama"
+          "note": "Keio-Nagayama",
+          "type": "out"
         },
         {
           "station": "Odakyu-Tama-Center",
@@ -40007,14 +40048,16 @@
           "lineId": "Yamanote",
           "toStation": "Hamamatsucho",
           "type": "out",
-          "note": "JR浜松町，徒歩約2分"
+          "note": "JR浜松町，徒歩約2分",
+          "walkMinutes": 2
         },
         {
           "station": "Monorail-Hamamatsucho",
           "lineId": "KeihinTohoku",
           "toStation": "Hamamatsucho",
           "type": "out",
-          "note": "JR浜松町，徒歩約2分"
+          "note": "JR浜松町，徒歩約2分",
+          "walkMinutes": 2
         },
         {
           "station": "Tenku-Bashi",
@@ -40028,21 +40071,24 @@
           "lineId": "KeikyuAirport",
           "toStation": "Haneda-Kuko-T1T2",
           "type": "out",
-          "note": "京急羽田空港第1・第2ターミナル，徒歩約5分"
+          "note": "京急羽田空港第1・第2ターミナル，徒歩約5分",
+          "walkMinutes": 5
         },
         {
           "station": "Haneda Airport Terminal 2",
           "lineId": "KeikyuAirport",
           "toStation": "Haneda-Kuko-T1T2",
           "type": "out",
-          "note": "京急羽田空港第1・第2ターミナル，徒歩約3分"
+          "note": "京急羽田空港第1・第2ターミナル，徒歩約3分",
+          "walkMinutes": 3
         },
         {
           "station": "Haneda Airport Terminal 3",
           "lineId": "KeikyuAirport",
           "toStation": "Haneda-Kuko-T3",
           "type": "out",
-          "note": "京急羽田空港第3ターミナル，徒歩約4分"
+          "note": "京急羽田空港第3ターミナル，徒歩約4分",
+          "walkMinutes": 4
         }
       ],
       "nameZh": "东京单轨电车羽田机场线",

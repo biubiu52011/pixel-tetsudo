@@ -91,3 +91,49 @@ test('mobile and no-overflow paths use the same unified L3 planner',()=>{
   assert.equal(b.extra,undefined);
   assert.equal(b.images.length,4);
 });
+
+test('SVG image badges show a single named target for same-station line transfers',()=>{
+  const layer=node('g');
+  const window={
+    currentLang:'ja',RuntimeConfig:{TRANSFER_MAX_ROWS:4},
+    RailwayDB:{resolveStationName:id=>({Kasuga:'春日',Korakuen:'後楽園'})[id]||id},
+    ThroughChip:{
+      badgeText:it=>it.lineId,
+      measureWidth:(s,size)=>String(s).length*size,
+      normalize:it=>it,
+      layoutGroup(){throw Error('Unexpected through-service badge');}
+    }
+  };
+  const ctx=vm.createContext({window,document:{createElementNS(_ns,tag){return node(tag);}},
+    _losGroupKey(){return '';}})
+  vm.runInContext(code,ctx,{filename:'alias SVG station renderer'});
+  const transfers=[
+    {lineId:'Mita',image:'mita.png',toStation:'Kasuga',type:'in'},
+    {lineId:'Oedo',image:'oedo.png',toStation:'Kasuga',type:'in'}
+  ];
+  const o={stationId:'Korakuen',si:0,x:180,y:120,color:'#c00',
+    isJunction:false,isMobileView:true,geometry:{isLoop:false},
+    svgW:420,svgH:400,side:'right',
+    transferMap:{Korakuen:transfers},rS:s=>s==='Korakuen'?'後楽園':s};
+  ctx.drawStation({nodes:layer,info:layer},'http://www.w3.org/2000/svg',o);
+  const painted=descend(layer);
+  assert.equal(painted.filter(x=>x.tag==='image').length,2);
+  const labels=painted.filter(x=>x.tag==='text'&&String(x.textContent).includes('春日'));
+  assert.equal(labels.length,1,'only one destination label for two icons');
+  assert.match(labels[0].textContent,/→/);
+  assert.equal(painted.filter(x=>x.attrs['data-to-station']==='Kasuga').length,2);
+});
+test('the L3 planner retains two destinations of one line and never hides names on short walks',()=>{
+  const window={currentLang:'ja',RuntimeConfig:{TRANSFER_MAX_ROWS:4},
+    RailwayDB:{resolveStationName:id=>({T1:'羽田空港第1ターミナル',T2:'羽田空港第2ターミナル'})[id]||id},
+    ThroughChip:{measureWidth:(s,size)=>String(s).length*size}};
+  const ctx=vm.createContext({window,_losGroupKey(){return '';}});
+  vm.runInContext(geometry.slice(layoutBegin,layoutEnd+5),ctx);
+  const items=[
+    {lineId:'Monorail',image:'monorail.png',toStation:'T1',type:'out'},
+    {lineId:'Monorail',image:'monorail.png',toStation:'T2',type:'out'}];
+  const plan=window.StationInfoLayout.plan(items,'T1T2','羽田第1・第2',true,300);
+  assert.equal(plan.shown.length,2);
+  assert.ok(plan.shown.every(x=>x.extra.includes('→')));
+  assert.ok(plan.shown.every(x=>x.extra.includes('駅外')));
+});

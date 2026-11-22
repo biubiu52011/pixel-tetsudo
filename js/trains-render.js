@@ -352,6 +352,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var by = iy0 + row * window.StationInfoLayout.pitch;
           var item = entry.item;
           var itemGroup = document.createElementNS(svgNS, "g");
+          if (item.toStation) itemGroup.setAttribute("data-to-station", item.toStation);
           badgeGroup.appendChild(itemGroup);
           var badgeTitle = document.createElementNS(svgNS, "title");
           badgeTitle.textContent = window.ThroughChip.badgeText(item) +
@@ -393,7 +394,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             nameText.setAttribute("fill", window.StationInfoLayout.textColor(badgeFill));
             nameText.textContent = entry.label;
             itemGroup.appendChild(nameText);
-            if (entry.extra) {
+          }
+          // The same alias label works beside an icon and a fallback text badge.
+          if (entry.extra) {
               var extraLabel = document.createElementNS(svgNS, "text");
               extraLabel.setAttribute("x", bx + entry.badgeWidth + 3);
               extraLabel.setAttribute("y", by + badgeHeight / 2);
@@ -405,7 +408,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
               extraLabel.setAttribute("fill", "var(--text)");
               extraLabel.textContent = entry.extra;
               itemGroup.appendChild(extraLabel);
-            }
           }
           rowCur += entry.width + GAP;
         });

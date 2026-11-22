@@ -543,6 +543,7 @@ function _getTransferMap(lineId, staticRevision) {
     if (!map[t.station]) map[t.station] = [];
     var tl = src[t.lineId];
     if (!tl) continue;
+    if (t.toStation && (!Array.isArray(tl.stations) || tl.stations.indexOf(t.toStation) < 0)) continue;
     if (!_transferCoordinatesCompatible(lineId, t.station, t.lineId, t.toStation || t.station, src)) continue;
     var img = transferArtwork(t.lineId);
     var nm = (window.RailwayDB && window.RailwayDB.resolveLineName) ? window.RailwayDB.resolveLineName(t.lineId, window.currentLang) : (tl.name || t.lineId);
@@ -576,7 +577,9 @@ function _getTransferMap(lineId, staticRevision) {
       if (window.SharedTrackPairs && window.SharedTrackPairs.isSharedStation &&
           window.SharedTrackPairs.isSharedStation(lineId, targetStation, sourceId)) return;
       if (!_transferCoordinatesCompatible(sourceId, t.station, lineId, targetStation, src)) return;
-      if (map[targetStation] && map[targetStation].some(function(it) { return it.lineId === sourceId; })) return;
+      if (map[targetStation] && map[targetStation].some(function(it) {
+        return it.lineId === sourceId && (it.toStation || targetStation) === t.station;
+      })) return;
       var sourceImg = transferArtwork(sourceId);
       var sourceName = (window.RailwayDB && window.RailwayDB.resolveLineName) ? window.RailwayDB.resolveLineName(sourceId, window.currentLang) : (sourceLine.name || sourceId);
       if (!map[targetStation]) map[targetStation] = [];
@@ -858,8 +861,9 @@ window.StationInfoLayout = (function() {
     var seen = Object.create(null);
     return (items || []).filter(function(item) {
       if (!item || item.through) return false;
-      var key = item.image ? "I:" + item.image :
-        (_losGroupKey(item) || ("L:" + (item.lineId || item.name || "")));
+      var key = (item.image ? "I:" + item.image :
+        (_losGroupKey(item) || ("L:" + (item.lineId || item.name || ""))))
+        + (item.toStation ? "|S:" + item.toStation : "");
       if (seen[key]) return false;
       seen[key] = true;
       return true;
@@ -885,19 +889,25 @@ window.StationInfoLayout = (function() {
     if (!item || !item.toStation || String(item.toStation) === String(stationId)) return "";
     var dest = window.RailwayDB && window.RailwayDB.resolveStationName
       ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang) : item.toStation;
-    if (!dest || normalizedName(dest) === normalizedName(stationName)) return "";
-    var distance = window.RailwayDB && window.RailwayDB.getTransferDistanceKm
-      ? window.RailwayDB.getTransferDistanceKm(stationId, item.toStation) : null;
-    // Do not coerce a missing distance (null) into 0km.
-    if (distance != null && distance !== "" && isFinite(Number(distance)) &&
-        Number(distance) <= 0.25) return "";
-    return dest;
+    return dest && normalizedName(dest) !== normalizedName(stationName) ? String(dest) : "";
+  }
+  function compactStationName(name, mobile) {
+    var arr = Array.from(String(name)), limit = mobile ? 14 : 20;
+    return arr.length <= limit ? name : arr.slice(0, limit - 3).join("") + "…" + arr.slice(-2).join("");
   }
   function prepare(items, stationId, stationName, mobile) {
-    return list(items).map(function(item) {
+    var entries = list(items), named = Object.create(null);
+    var outside = ({ja:"駅外",zh:"站外",en:"outside",ko:"역외"})[window.currentLang || "ja"] || "駅外";
+    return entries.map(function(item) {
       var label = String(item.name || item.lineId || "").slice(0, 4);
       var badgeWidth = item.image ? ICON : measure(label, mobile ? FONT.badge.mobile : FONT.badge.desktop) + 8;
-      var extra = item.image ? "" : sideName(item, stationId, stationName);
+      var dest = sideName(item, stationId, stationName), extra = "";
+      if (dest && !named[item.toStation]) {
+        named[item.toStation] = true;
+        extra = "→ " + compactStationName(dest, mobile);
+        if (entries.some(function(other) { return other.toStation === item.toStation && other.type === "out"; }))
+          extra += " · " + outside;
+      }
       var extraWidth = extra ? 3 + measure(extra, mobile ? FONT.extra.mobile : FONT.extra.desktop) : 0;
       return {item:item, label:label, badgeWidth:badgeWidth,
         extra:extra, width:badgeWidth + extraWidth};
@@ -942,15 +952,7 @@ window.StationInfoLayout = (function() {
       return result;
     }
     var result = pack(all);
-    // A remote-station suffix is secondary metadata, not permission to draw
-    // across the running track. If a one-column row still cannot fit,
-    // suppress only the suffix visually; each badge keeps its full title.
-    if (result.totalWidth > widthLimit && all.some(function(e) { return !!e.extra; })) {
-      result = pack(all.map(function(e) {
-        return Object.assign({}, e, {extra:"", width:e.badgeWidth});
-      }));
-      result.compactAliases = true;
-    }
+    // A physical interchange name is navigational data; do not hide it for width.
     return result;
   }
   // Geometry is calculated before per-station horizontal coordinates exist.

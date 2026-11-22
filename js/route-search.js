@@ -280,21 +280,30 @@
   // （JR 原宿 Harajuku ↔ 千代田线 明治神宫前 Meiji-Jingumae）。
   // 返回 Map<"fromStation\u0001fromLine", Map<toLineId, toStation>>。
   function buildAliasTransfers(lines) {
+    // Target line -> multiple destination stations, each with its own walking rule.
     const m = new Map();
+    function add(st, fromLine, toLine, toStation, transfer) {
+      const key = st + String.fromCharCode(1) + fromLine;
+      if (!m.has(key)) m.set(key, new Map());
+      const byLine = m.get(key);
+      if (!byLine.has(toLine)) byLine.set(toLine, new Map());
+      const stops = byLine.get(toLine), previous = stops.get(toStation);
+      stops.set(toStation, {
+        out: transfer.type === 'out' || !!(previous && previous.out),
+        walk: Math.max(walkMin(transfer), previous ? previous.walk : 0)
+      });
+    }
     for (const lid of Object.keys(lines)) {
-      const l = lines[lid];
-      if (!l || !Array.isArray(l.transferStations)) continue;
-      for (const t of l.transferStations) {
-        if (!t || !t.station || !t.lineId || !t.toStation) continue;
-        const tl = lines[t.lineId];
-        if (!tl || !Array.isArray(tl.stations) || tl.stations.indexOf(t.toStation) < 0) continue;
-        const key = t.station + '\u0001' + lid;
-        if (!m.has(key)) m.set(key, new Map());
-        m.get(key).set(t.lineId, t.toStation);
-        // 当路径从目标线路出发、再在别名车站换回来源线路时，需要反向查找。
-        const reverseKey = t.toStation + '\u0001' + t.lineId;
-        if (!m.has(reverseKey)) m.set(reverseKey, new Map());
-        m.get(reverseKey).set(lid, t.station);
+      const line = lines[lid];
+      if (!line || !Array.isArray(line.stations) || !Array.isArray(line.transferStations)) continue;
+      for (const t of line.transferStations) {
+        if (!t || !t.station || !t.lineId || !t.toStation ||
+            line.stations.indexOf(t.station) < 0) continue;
+        const target = lines[t.lineId];
+        if (!target || !Array.isArray(target.stations) ||
+            target.stations.indexOf(t.toStation) < 0) continue;
+        add(t.station, lid, t.lineId, t.toStation, t);
+        add(t.toStation, t.lineId, lid, t.station, t);
       }
     }
     return m;
@@ -403,34 +412,41 @@
       const otherLines = stationLines.get(st) || new Set();
       // 异名换乘：transferStations[].toStation 将本站连接到目标线路上 ID 不同的车站，
       // 例如 JR 原宿 Harajuku ↔ 千代田线 明治神宫前〈原宿〉 Meiji-Jingumae。
-      const aliasMap = (layer.aliasTransfers && layer.aliasTransfers.get(st + '\u0001' + lid)) || null;
+      const aliasMap = (layer.aliasTransfers &&
+        layer.aliasTransfers.get(st + String.fromCharCode(1) + lid)) || null;
       const txTargets = new Set(otherLines);
-      if (aliasMap) { for (const ol of aliasMap.keys()) { if (ol !== lid) txTargets.add(ol); } }
+      if (aliasMap) for (const ol of aliasMap.keys()) if (ol !== lid) txTargets.add(ol);
       for (const ol of txTargets) {
-        if (ol === lid || (excluded&&excluded.has(ol))) continue;
-        const txSt = (aliasMap && aliasMap.has(ol)) ? aliasMap.get(ol) : st;
-        // 名称相同本身从不构成跨地区换乘依据。
-        if (!_plausibleTransfer(layer,st,lid,txSt,ol)) continue;
-        const nk = txSt + '\u0001' + ol;
-        // through 惩罚仅限声明接续站（大船/大宮/東京 等）；非接续共站按普通换乘
-        const isAlias = txSt !== st;
-        const through = !isAlias && isThroughAtStation(lid, ol, st);
-        let txCost = through ? pen.through : pen.transfer;
-        // 站外换乘：加入 transferStations 声明的实际步行分钟数
-        // （用户规则：“不是线路经过就可以换乘”）。
-        if (!through && layer.transferPenalty) {
-          const pk = st + '\u0001' + (lid < ol ? lid : ol) + '\u0001' + (lid < ol ? ol : lid);
-          const p = layer.transferPenalty.get(pk);
-          if (p && p.out) txCost += (p.walk || 0);
-        }
-        const nc = cost + txCost;
-        const nt = transfers + 1;
-        const tc = dist.get(nk);
-        if (!tc || nc < tc[0] || (nc === tc[0] && nt < tc[1])) {
-          dist.set(nk, [nc, nt]);
-          rideDur.set(nk, rideDur.get(key) || 0);
-          prev.set(nk, { key: key, station: st, line: lid });
-          heap.push([nc, nt, nk]);
+        if (ol === lid || (excluded && excluded.has(ol))) continue;
+        const aliases = aliasMap && aliasMap.get(ol);
+        const destinations = new Set(otherLines.has(ol) ? [st] : []);
+        if (aliases) for (const targetStation of aliases.keys()) destinations.add(targetStation);
+        for (const txSt of destinations) {
+          if (!layer.lineMeta[ol] || !layer.lineMeta[ol].positions.has(txSt)) continue;
+          if (!_plausibleTransfer(layer, st, lid, txSt, ol)) continue;
+          const nk = txSt + String.fromCharCode(1) + ol;
+          const isAlias = txSt !== st;
+          const through = !isAlias && isThroughAtStation(lid, ol, st);
+          let txCost = through ? pen.through : pen.transfer;
+          if (!through) {
+            if (isAlias && aliases && aliases.has(txSt)) {
+              const rule = aliases.get(txSt);
+              if (rule.out) txCost += rule.walk;
+            } else if (layer.transferPenalty) {
+              const pk = st + String.fromCharCode(1) +
+                (lid < ol ? lid : ol) + String.fromCharCode(1) + (lid < ol ? ol : lid);
+              const p = layer.transferPenalty.get(pk);
+              if (p && p.out) txCost += (p.walk || 0);
+            }
+          }
+          const nc = cost + txCost, nt = transfers + 1;
+          const tc = dist.get(nk);
+          if (!tc || nc < tc[0] || (nc === tc[0] && nt < tc[1])) {
+            dist.set(nk, [nc, nt]);
+            rideDur.set(nk, rideDur.get(key) || 0);
+            prev.set(nk, { key: key, station: st, line: lid });
+            heap.push([nc, nt, nk]);
+          }
         }
       }
     }
@@ -552,8 +568,10 @@
           const through = !!(lineId && nextLid && targetFrom === seg.to && isThroughAtStation(lineId, nextLid, seg.to));
           const source = window.RailwayDB && window.RailwayDB.getLine ? window.RailwayDB.getLine(lineId) : null;
           const target = window.RailwayDB && window.RailwayDB.getLine ? window.RailwayDB.getLine(nextLid) : null;
-          const declaration = ((source && source.transferStations) || []).find(t => t.station === seg.to && t.lineId === nextLid) ||
-            ((target && target.transferStations) || []).find(t => t.station === targetFrom && t.lineId === lineId);
+          const declaration = ((source && source.transferStations) || []).find(t =>
+              t.station === seg.to && t.lineId === nextLid && (!t.toStation || t.toStation === targetFrom)) ||
+            ((target && target.transferStations) || []).find(t =>
+              t.station === targetFrom && t.lineId === lineId && (!t.toStation || t.toStation === seg.to));
           const walkingDuration = declaredWalkMinutes(declaration);
           segments.push({ type: 'transfer', station: seg.to, toStation: targetFrom || seg.to, fromLine: lineId, toLines: [nextLid], walking: declaration ? declaration.type === 'out' : false, walkingDuration: walkingDuration, samePlatform: !!(declaration && declaration.samePlatform === true), through: through });
         }

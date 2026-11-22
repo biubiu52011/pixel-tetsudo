@@ -82,3 +82,42 @@ test('every repeated localized name preserves all referenced canonical IDs',()=>
   }
   assert.ok(count>200,'expected substantial real-world multilingual homonym coverage');
 });
+
+test('one railway may connect to two distinct alias stations with exact walking minutes',()=>{
+  const lines={
+    A:{stations:['Hub'],transferStations:[
+      {station:'Hub',lineId:'B',toStation:'T1',type:'out',walkMinutes:5},
+      {station:'Hub',lineId:'B',toStation:'T2',type:'out',walkMinutes:3}]},
+    B:{stations:['T1','T2'],transferStations:[]}
+  };
+  const window={UNIFIED_LINES:lines,STATION_COORDS:{
+    Hub:[35.55,139.7865],T1:[35.549,139.7846],T2:[35.5508,139.7878]},
+    RuntimeConfig:{TRUNK_MAIN_LINE_IDS:[]},
+    LINE_STATION_ORDER:{A:{Hub:0},B:{T1:0,T2:1}},
+    RailwayDB:{getAllLines:()=>lines,getLine:id=>lines[id],getLineDurations:()=>[],
+      getData:()=>({line_types:{}})}};
+  vm.runInNewContext(fs.readFileSync('js/route-search.js','utf8'),{window});
+  for(const [dest,minutes] of [['T1',5],['T2',3]]){
+    const result=window.RouteSearch.findRoute('Hub',dest,'combo');
+    assert.ok(result,dest+' must be reachable');
+    const transfer=result.routeSegments.find(x=>x.type==='transfer');
+    assert.equal(transfer.toStation,dest);
+    assert.equal(transfer.walking,true);
+    assert.equal(transfer.walkingDuration,minutes);
+  }
+});
+test('canonical alias targets exist on the destination line',()=>{
+  const data=JSON.parse(fs.readFileSync('data/core/railway_data.json','utf8'));
+  for(const [id,line] of Object.entries(data.lines)){
+    for(const t of line.transferStations||[]){
+      if(!t.toStation||t.toStation===t.station)continue;
+      assert.ok(data.lines[t.lineId]?.stations?.includes(t.toStation),
+        id+'/'+t.station+' -> '+t.lineId+'/'+t.toStation);
+    }
+  }
+  assert.ok(data.lines.Musashino.transferStations.some(t=>
+    t.station==='Kita-Asaka'&&t.toStation==='Asakadai'));
+  assert.ok(data.lines.Fukutoshin.transferStations.some(t=>
+    t.station==='Zoshigaya'&&t.toStation==='Onishimogami_Mae'));
+  assert.ok(data.stations['Monorail-Hamamatsucho']);
+});
