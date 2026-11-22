@@ -24,8 +24,18 @@ test('three formal JR pure bands duplicate only the original scoped JS rules',()
    r.min===x.min&&r.max===x.max&&r.suffix===x.suffix&&r.format===x.format);
   assert.equal(rule.length,1,x.line+' original owner rule');
   assert.equal(rule[0].actual_vehicle_confirmed,false);
-  assert.equal(rule[0].valid_from,'2026-11-01');
-  assert.equal(rule[0].valid_to,'2026-11-30');
+  if(x.line==='Gotemba') {
+    assert.equal(rule[0].valid_from,'2026-11-01');
+    assert.equal(rule[0].valid_to,'2026-11-30');
+  } else {
+    // JR through-service K/F/S is not an invented dated formation: its
+    // all-date range still needs a compatible model and railway provenance.
+    assert.equal(rule[0].valid_from,null);
+    assert.equal(rule[0].valid_to,null);
+    assert.equal(rule[0].runtime_guards.dateScope,'all-dates');
+    assert.ok(rule[0].runtime_guards.allowedModelLabels.length>0);
+    assert.ok(rule[0].source_railways_if_present.includes('odpt.Railway:TWR.Rinkai'));
+  }
   const source=saved.filter(r=>r.line===x.line&&r.png===x.png);
   assert.equal(source.length,1);
   assert.equal(source[0].segment,
@@ -57,7 +67,8 @@ test('00..71 KFS is a last-two-digit family, not a whole train-number or carset'
  assert.equal(rule.format,'tail');
  assert.deepEqual(rule.runtime_guards.allowedModelLabels,['E233系7000番台']);
  assert.ok(rule.source_railways_if_present.includes('odpt.Railway:TWR.Rinkai'));
- assert.equal(rule.requires_exact_roster,false);
+ assert.equal(rule.requires_compatible_plan,false);
+ assert.equal(rule.runtime_guards.dateScope,'all-dates');
 });
 test('Gotemba 315 envelope matches precisely the 88 pre-existing November public numbers',()=>{
  const rule=rules.find(x=>x.origin==='frontend_js'&&x.png===g315);

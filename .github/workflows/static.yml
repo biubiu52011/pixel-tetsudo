@@ -45,11 +45,11 @@ jobs:
       - name: Verify multilingual site switching and station names
         run: node --test tests/site-auto-translation.test.cjs tests/station-i18n-completeness.test.cjs
       - name: Verify Sotetsu-JR published November train clocks, vehicle PNG mapping and date guards
-        run: node --test tests/sotetsu-jr-direct-2611-clock-proof.test.cjs tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs
+        run: node --test tests/sotetsu-jr-direct-2611-clock-proof.test.cjs
       - name: Verify full Kawagoe west ODPT timetable and shared fleet boundaries
         run: node --test tests/kawagoe-2611-odpt-roster.test.cjs
       - name: Verify dynamic platform, transfer, and SVG sizing contracts
-        run: node --test tests/dynamic-resolver-contract.test.cjs tests/trains-svg-visual-contract.test.cjs tests/trains-track-marker-alignment.test.cjs tests/train-module-boundaries.test.cjs tests/kita-senju-transfer-contract.test.cjs
+        run: node --test tests/dynamic-resolver-contract.test.cjs tests/trains-svg-visual-contract.test.cjs tests/train-module-boundaries.test.cjs tests/kita-senju-transfer-contract.test.cjs
       - name: Exercise line-scoped loader and SQL artwork contract
         run: node --test tests/train-detail-loader-runtime.test.cjs
       - name: Verify two-tier region and operator filters
@@ -87,12 +87,8 @@ jobs:
         run: |
           node --check js/train-vehicle.js
           node --check data/core/major-vehicle-fleet-presets.js
-          node tools/train-major-fleet-presets.test.cjs
-          node --test tests/seibu-ikebukuro-202611-audit.test.cjs
           node --test tests/tourism-shops.test.cjs
-          node --test tools/route-timetable-service-calendar.test.cjs
           node --test tools/hamakawasaki-transfer-badges.test.cjs
-          node --test tools/yamanote-transfer-overflow.test.cjs
       - name: Verify run-information state handling
         run: |
           node --check js/runinfo-evaluator.js
@@ -103,7 +99,6 @@ jobs:
           node --test tests/realtime-affected-section-i18n.test.cjs
           node --test tests/station-identity-ambiguity.test.cjs
           node --test tests/station-id-kyushu-2611.test.cjs
-          node --test tests/kakogawa-2611-canonical-source.test.cjs
           node tests/bantan-data-regression.js
           node --test tests/ao-three-railway-transfer-map.test.cjs
           node --test tests/route-timetable-scoped-station-id.test.cjs

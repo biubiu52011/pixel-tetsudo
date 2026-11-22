@@ -21,7 +21,19 @@ test('2 private source-backed PNG bands mirror JS and cannot waive guards',()=>{
     x.max===e.max&&x.suffix===e.suffix&&x.format===e.format);
   assert.equal(frontend.length,1);
   assert.ok(frontend[0].runtime_guards.allowedModelLabels.length>0);
-  assert.ok(frontend[0].valid_from&&frontend[0].valid_to);
+  if(e.line==='JobanLocal') {
+    assert.equal(frontend[0].valid_from,'2026-11-01');
+    assert.equal(frontend[0].valid_to,'2026-11-30');
+    assert.deepEqual(frontend[0].source_railways,['odpt.Railway:JR-East.JobanLocal']);
+  } else {
+    // Sotetsu K/F/S interval is a model/railway-scoped reference with no
+    // month guarantee, and may never infer an actual vehicle.
+    assert.equal(frontend[0].valid_from,null);
+    assert.equal(frontend[0].valid_to,null);
+    assert.equal(frontend[0].runtime_guards.dateScope,'all-dates');
+    assert.equal(frontend[0].direction_number_parity,'inbound-even');
+  }
+  assert.equal(frontend[0].actual_vehicle_confirmed,false);
   const expected=['私铁',e.op,e.png,e.line,String(e.min).padStart(4,'0'),
     String(e.max).padStart(4,'0'),e.suffix,e.format,'纯号段（私铁原有JS条件保留）'].join(',');
   assert.ok(csv.includes(expected));

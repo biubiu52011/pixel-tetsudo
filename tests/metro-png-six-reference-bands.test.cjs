@@ -19,7 +19,10 @@ test('six guarded metro bands are an exact copy of one JS source, not guesswork'
   assert.equal(old[0].actual_vehicle_confirmed,false);
   assert.equal(cat.rules.filter(x=>x.line_ids.includes(r.line)&&x.png!==r.png&&x.suffix===r.suffix&&x.min<=r.max&&x.max>=r.min).length,0,r.line+' conflicting PNG');
   assert.ok(fs.existsSync(r.png));
-  const csvRow=['地铁','東京メトロ',r.png,r.line,String(r.min).padStart(4,'0'),String(r.max).padStart(4,'0'),r.suffix,fmt[r.line],'纯号段（地铁原有条件保留）'].join(',');
+  // The inventory retains the original broad guarded JS source row, then
+  // enumerates smaller number-only evidence rows separately. The broad
+  // interval is not a fleet/formation grant.
+  const csvRow=['地铁','東京メトロ',r.png,r.line,String(r.min).padStart(4,'0'),String(r.max).padStart(4,'0'),r.suffix,fmt[r.line],'原有条件约束'].join(',');
   assert.ok(csv.split('\n').includes(csvRow),r.line+' missing inventory row');
  }
 });

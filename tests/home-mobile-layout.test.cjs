@@ -73,15 +73,13 @@ test('route search uses historical pixel edges and shadows without changing form
   assert.match(html, /id="searchTo"/);
   assert.match(html, /id="searchTimeMode"/);
   assert.doesNotMatch(html, /class="station-pair"/);
-  const block = selector => {
-    const start = css.indexOf(selector + ' {');
-    assert.ok(start >= 0, selector + ' is missing');
-    return css.slice(start, css.indexOf('}', start) + 1);
-  };
-  assert.match(block('body[data-page="home"] #searchContainer'), /border-radius: 5px/);
-  assert.match(block('body[data-page="home"] #searchContainer'), /box-shadow: 4px 4px 0/);
-  assert.match(block('body[data-page="home"] #searchContainer .search-input'), /border-radius: 4px/);
-  assert.match(block('body[data-page="home"] #searchContainer .swap-btn'), /box-shadow: 3px 3px 0/);
-  assert.match(block('body[data-page="home"] #searchContainer .search-btn'), /background: var\(--green\)/);
+  // The 3D shell is deliberately shared with tourism and appears AFTER the
+  // initial mobile spacing block. Validate the effective source of styling,
+  // not the first selector block in the stylesheet.
+  const skin = css.slice(css.indexOf('/* HOME MODULE 3D SHELL'));
+  assert.match(skin, /body\[data-page="home"\] #searchContainer,\s*body\[data-page="home"\] #smModule \{[^}]*border-radius:5px;[^}]*box-shadow:4px 4px 0/);
+  assert.match(skin, /#searchContainer \.search-input \{[^}]*border-radius:4px;[^}]*box-shadow:2px 2px 0/);
+  assert.match(skin, /#searchContainer #swapBtn \{[^}]*box-shadow:3px 3px 0/);
+  assert.match(skin, /#searchContainer #searchBtn \{[^}]*background:var\(--green\)/);
   assert.doesNotMatch(css, /station-pair|#eef7fc|#b5c9d7/);
 });

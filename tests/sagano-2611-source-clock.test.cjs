@@ -69,7 +69,8 @@ test('train estimator displays Sagano published numbers only with dated SQL proo
   assert.match(estimator, /tt\._sqlTrainNumberVerification==="official-2611-sagano-original-source-stop-clock"/);
   assert.match(estimator, /saganoRef\.stopClocksVerified===true/);
   assert.match(estimator, /saganoDisplayNumber=afterSonobe\?"2133M":"2217M"/);
-  assert.match(estimator, /displayTrainNumber:saganoDisplayNumber \|\|/);
+  // The public-number chain now includes OsakaMahoroba/OsakaHigashi before Sagano.
+  assert.match(estimator, /displayTrainNumber:osakaMahorobaDisplayNumber \|\| osakaHigashiDisplayNumber \|\| saganoDisplayNumber \|\|/);
   assert.match(estimator, /officialNumberVerified: Boolean\(saganoDisplayNumber\)/);
   assert.match(estimator, /var _saganoScoped=!!saganoScoped&&vehResult\.identityStatus!=="EXACT"/);
   assert.match(estimator, /vehicleIconPath: \(_saganoScoped\|\|_koseiScoped/);
