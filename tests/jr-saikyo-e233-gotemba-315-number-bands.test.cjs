@@ -43,10 +43,25 @@ test('three formal JR pure bands duplicate only the original scoped JS rules',()
   assert.equal(source[0].min,x.min);
   assert.equal(source[0].max,x.max);
   assert.equal(source[0].suffix,x.suffix);
-  const row=['JR',x.operator,x.png,x.line,
-   String(x.min).padStart(4,'0'),String(x.max).padStart(4,'0'),
-   x.suffix,x.format,'纯号段（JR原有号码条件保留；不代表编组）'].join(',');
-  assert.equal(csv.filter(s=>s===row).length,1,x.line+' audit CSV');
+  if(x.line==='Gotemba') {
+   // The inventory enumerates verified G/M number intervals, not one broad
+   // mixed "MG" interval; a wide range would imply unverified services.
+   const prefix=['JR',x.operator,x.png,x.line].join(',')+',';
+   const entries=csv.filter(s=>s.startsWith(prefix)&&
+     s.endsWith(',纯号段（御殿场线原始号码与日期守卫保留）'));
+   assert.ok(entries.length>0,'Gotemba exact-number inventory must exist');
+   for(const entry of entries) {
+     const cells=entry.split(',');
+     assert.ok(+cells[4]>=x.min && +cells[5]<=x.max && +cells[4]<=+cells[5]);
+     assert.ok(['G','M'].includes(cells[6]));
+     assert.equal(cells[7],'full');
+   }
+  } else {
+   const row=['JR',x.operator,x.png,x.line,
+     String(x.min).padStart(4,'0'),String(x.max).padStart(4,'0'),
+     x.suffix,x.format,'纯号段（JR原有号码条件保留；不代表编组）'].join(',');
+   assert.equal(csv.filter(s=>s===row).length,1,x.line+' audit CSV');
+  }
   const foreign=rules.filter(r=>r.origin==='frontend_js'&&r.png!==x.png&&
    r.line_ids.includes(x.line)&&r.suffix===x.suffix&&
    r.min<=x.max&&r.max>=x.min);

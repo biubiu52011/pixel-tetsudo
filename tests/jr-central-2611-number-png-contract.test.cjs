@@ -47,16 +47,22 @@ assert.equal(serverCtx.selectServerPng('TokaidoShinkansen',null,plan,
 // nickname のぞみ1 may NOT be used in place of the numbered 1A train.
 assert.match(estimator,/sqlPlannedNumberPngPath: lineId==="TokaidoShinkansen"/);
 assert.match(estimator,/tt\._sqlTrainNumberVerification==="official-2611-sql-exact-roster"/);
+const uniqueNumberPng=section(vehicle,
+  '  function chooseUniqueNumberPng(candidates,numberBandConflict) {',
+  '\n  // A SOURCE-ONLY E531 label');
 const selector=section(vehicle,
   '  function selectMarkerArtwork(p, artworkFailed) {',
   '\n  window.TrainVehicle = {');
 const ctx=vm.createContext({
   lookupTrainNumberRangePng:()=>null,
+  normalizeScopedReferencePngPath:()=>'', // separate branch, never authorizes the SQL path
   normalizeGalleryPngPath:p=>
     typeof p==='string'&&p.startsWith('../images/列车/')&&
     p.endsWith('.png')&&p.split('/').length===5 ? p : ''
 });
-vm.runInContext(selector,ctx);
+// Exercise both production functions, rather than duplicating the selector
+// and accidentally omitting its unique-candidate conflict guard.
+vm.runInContext(uniqueNumberPng + '\n' + selector,ctx);
 const base={
   positionLineId:'TokaidoShinkansen',
   displayLineId:'TokaidoShinkansen',

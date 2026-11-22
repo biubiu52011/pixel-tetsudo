@@ -98,9 +98,14 @@ test('missing timetable is announced from an audited SQL status, not inferred fr
   const render=fs.readFileSync('js/trains-render.js','utf8');
   const page=fs.readFileSync('js/trains-page.js','utf8');
   const t=fs.readFileSync('js/translations.js','utf8');
-  assert.match(render,/runStatus\.auditCoverageStatus === "missing_all_plans"/);
-  assert.match(render,/runStatus\.planAvailability === "unconfirmed"/);
-  assert.match(render,/runStatus\.source !== "SOURCE_ERROR"/);
+  // Train-page owns the audited SQL coverage state; train-render owns only
+  // the on-screen real-time / estimated / unavailable presentation.
+  assert.match(page,/planStatus\.auditCoverageStatus === "missing_all_plans"/);
+  assert.match(page,/planStatus\.planAvailability === "unconfirmed"/);
+  assert.match(page,/planStatus\.runs === 0/);
+  assert.match(page,/planStatus\.source !== "SOURCE_ERROR"/);
+  assert.match(render,/t\(hasEstimate \? "trains\.estimated_note" : "trains\.unavailable_note"\)/);
+  assert.match(render,/if \(hasRealtime\) \{/);
   assert.match(page,/auditedMissingPlan/);
   assert.equal(t.split('"trains.plan_not_imported_note"').length-1,4);
   // An empty train map must be explained onsite, not replaced with an
@@ -130,6 +135,10 @@ test('ChuoCentral SQL public numbers are admitted only after date, source, and e
   assert.equal(predicate('ChuoCentral',{...tt,
     'odpt:railway':'odpt.Railway:JR-East.Chuo'},
     '801M',{trainNumber:'801M'}),false);
-  assert.equal(predicate('TokaidoCentral',tt,'3201F',{trainNumber:'3201F'}),true,
-    'existing TokaidoCentral F-number rule remains intact');
+  assert.equal(predicate('TokaidoCentral',tt,'3201F',{trainNumber:'3201F'}),false,
+    'the Chuo source cannot authorize a Tokaido train number');
+  assert.equal(predicate('TokaidoCentral',
+    {...tt,'odpt:railway':'odpt.Railway:JR-Central.Tokaido'},
+    '3201F',{trainNumber:'3201F'}),true,
+    'source-correct dated TokaidoCentral F-number rule remains intact');
 });
