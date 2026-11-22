@@ -59,6 +59,32 @@ jobs:
             process.exitCode=1;
           }else console.log('PASS: no new time-limited runtime scripts or per-batch audit files');
           NODE
+      - name: Validate Supabase migration version names
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const files = fs.readdirSync('supabase/migrations').filter(name => name.endsWith('.sql'));
+          const seen = new Map();
+          const issues = [];
+          for (const name of files) {
+            const match = /^(\d{14})_.+\.sql$/.exec(name);
+            if (!match) { issues.push('Invalid migration filename: ' + name); continue; }
+            const version = match[1];
+            const n = (a, b) => Number(version.slice(a, b));
+            const date = new Date(Date.UTC(n(0,4), n(4,6)-1, n(6,8), n(8,10), n(10,12), n(12,14)));
+            if (date.toISOString().replace(/\D/g, '').slice(0, 14) !== version)
+              issues.push('Invalid migration timestamp: ' + name);
+            if (seen.has(version))
+              issues.push('Duplicate migration version: ' + version + ' [' + seen.get(version) + ', ' + name + ']');
+            seen.set(version, name);
+          }
+          if (issues.length) {
+            for (const issue of issues) console.error(issue);
+            process.exitCode = 1;
+          } else {
+            console.log('PASS: ' + files.length + ' migration files have unique, valid 14-digit versions');
+          }
+          NODE
       - name: Synchronize page script versions before train runtime checks
         run: node scripts/sync-page-scripts.cjs
       - name: Validate generated page script dependencies
