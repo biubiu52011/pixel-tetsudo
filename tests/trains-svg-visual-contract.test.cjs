@@ -455,3 +455,47 @@ test('horizontal left and right branches keep name first and icons below with ou
       'center anchored branch uses measured station-name edge rather than center');
   }
 });
+
+test('long outward aliases compress horizontally without changing station-center pitch',()=>{
+  const start=rendererSource.indexOf('  function _fitStaticRouteContent(');
+  const end=rendererSource.indexOf('  // The SVG is a static frame',start);
+  assert.ok(start>=0&&end>start);
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(start,end),env);
+  const node=attrs=>({attrs:{...attrs},getAttribute(k){return this.attrs[k]??null;},
+    setAttribute(k,v){this.attrs[k]=String(v);}});
+  const left=node({x:'35','text-anchor':'end'});
+  const right=node({x:'250','text-anchor':'start'});
+  const labelWidth=label=>Number(label.getAttribute('textLength'))||
+    (label===left?75:70);
+  left.getBBox=()=>({x:35-labelWidth(left),y:60,width:labelWidth(left),height:12});
+  right.getBBox=()=>({x:250,y:90,width:labelWidth(right),height:12});
+  const layer=node({});
+  layer.querySelectorAll=()=>[left,right];
+  layer.getBBox=()=>{
+    const l=left.getBBox(),r=right.getBBox();
+    const x=Math.min(20,l.x,r.x),endX=Math.max(280,l.x+l.width,r.x+r.width);
+    return {x,y:0,width:endX-x,height:700};
+  };
+  const svg=node({}),trains=node({});
+  const geom={svgW:420,svgH:900,layoutWidth:297,layoutHeight:700,
+    canvasScale:1.2,baseCanvasScale:1.2,canvasOffsetX:31.8,canvasOffsetY:24};
+  env._fitStaticRouteContent(svg,layer,trains,geom);
+  assert.equal(geom.canvasScale,1.2,'long aliases cannot zoom the whole route');
+  assert.equal(geom.canvasFitReason,'stable-pitch');
+  assert.equal(layer.attrs.transform,trains.attrs.transform);
+  assert.ok(Number(left.attrs.textLength)<75||Number(right.attrs.textLength)<70,
+    'shrink only outer alias glyph width; keep full station name and arrow');
+  const original=geom.canvasScale;
+  env._fitStaticRouteContent(svg,layer,trains,geom);
+  assert.equal(geom.canvasScale,original,'repeated redraws do not accumulate shrink');
+  assert.equal(svg.attrs.viewBox,'0 0 420 '+geom.svgH);
+});
+
+test('uniform route scale is an immutable geometry input and viewport fit reports fallback',()=>{
+  assert.match(geometrySource,/baseCanvasScale: contentScale/);
+  assert.match(rendererSource,/geometry\.baseCanvasScale \|\| geometry\.canvasScale/);
+  assert.match(rendererSource,/text\.station-transfer-destination/);
+  assert.match(rendererSource,/lengthAdjust", "spacingAndGlyphs"/);
+  assert.match(rendererSource,/canvasFitReason: geometry\.canvasFitReason/);
+});

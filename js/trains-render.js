@@ -463,6 +463,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           });
           if (entry.extra) {
             var extraLabel = document.createElementNS(svgNS, "text");
+            extraLabel.setAttribute("class", "station-transfer-destination");
             // The 4x4 grid may right-align one or two icons in its last
             // columns. Anchor this destination to the actual painted badge
             // edges, never to the empty outer cells of the full grid.
@@ -716,42 +717,94 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
   }
 
-  // Once fonts and the static station SVG exist, fit its actual painted
-  // content (including outward transfer names) into the fixed-width canvas.
-  // Reuse ONE transform for the static railway and moving trains; never move
-  // an annotation independently to hide overflow or change the fixed viewBox.
+  // Stable station density: the same route must not change vertical scale
+  // when a long (possibly translated) alias is attached to a transfer icon.
+  // Prefer compressing only extreme alias text (without abbreviation) over
+  // zooming the railway, its 4x4 badge grid, and all train markers.
   function _fitStaticRouteContent(svg, staticLayer, trainLayer, geometry) {
     if (!staticLayer || typeof staticLayer.getBBox !== "function") return false;
-    var box;
-    try { box = staticLayer.getBBox(); } catch (_e) { return false; }
-    if (!box || ![box.x, box.y, box.width, box.height].every(isFinite) ||
-        box.width <= 0 || box.height <= 0) return false;
-    var canvasWidth = Number(geometry.svgW), oldScale = Number(geometry.canvasScale);
-    if (!(canvasWidth > 0) || !(oldScale > 0)) return false;
+    var canvasWidth = Number(geometry.svgW);
+    var originalScale = Number(geometry.baseCanvasScale || geometry.canvasScale);
+    if (!(canvasWidth > 0) || !(originalScale > 0)) return false;
     var gutter = Math.max(10, Math.min(24, Number(geometry.canvasOffsetY) || 24));
-    var minX = Math.min(0, box.x), maxX = Math.max(Number(geometry.layoutWidth), box.x + box.width);
-    var minY = Math.min(0, box.y), maxY = Math.max(Number(geometry.layoutHeight), box.y + box.height);
-    var spanX = maxX - minX;
-    if (!(spanX > 0)) return false;
-    var scale = Math.min(oldScale, (canvasWidth - gutter * 2) / spanX);
-    var offsetX = (canvasWidth - spanX * scale) / 2 - minX * scale;
-    var offsetY = gutter - minY * scale;
-    var height = Math.ceil((maxY - minY) * scale + gutter * 2);
-    var changed = Math.abs(oldScale - scale) > 0.000001 ||
-      Math.abs(Number(geometry.canvasOffsetX) - offsetX) > 0.01 ||
-      Math.abs(Number(geometry.canvasOffsetY) - offsetY) > 0.01 ||
-      Number(geometry.svgH) !== height;
-    if (!changed) return false;
+    var available = (canvasWidth - 2 * gutter) / originalScale;
+    var measure = function() {
+      try {
+        var b = staticLayer.getBBox();
+        return b && [b.x,b.y,b.width,b.height].every(isFinite) &&
+          b.width > 0 && b.height > 0 ? b : null;
+      } catch (_e) { return null; }
+    };
+    var box = measure();
+    if (!box) return false;
+    var bounds = function(b) {
+      var lo = Math.min(0, b.x);
+      var hi = Math.max(Number(geometry.layoutWidth) || 0, b.x + b.width);
+      return {min:lo,max:hi,span:hi-lo};
+    };
+    var outer = bounds(box);
+    var destinations = staticLayer.querySelectorAll
+      ? Array.prototype.slice.call(staticLayer.querySelectorAll(
+        "text.station-transfer-destination")) : [];
+    // Fit just the outermost alias strings; keep icon dimensions and the
+    // route's physical station intervals intact. No name is abbreviated.
+    for (var pass=0; pass<12 && outer.span>available+0.1; pass++) {
+      var excess = outer.span - available;
+      var choices = [];
+      destinations.forEach(function(label) {
+        if (!label || typeof label.getBBox !== "function") return;
+        var bb;
+        try { bb=label.getBBox(); } catch (_e) { return; }
+        if (!(bb && bb.width > 32)) return;
+        var onLeft = bb.x <= outer.min + 3;
+        var onRight = bb.x + bb.width >= outer.max - 3;
+        if (onLeft || onRight) choices.push({label:label,bbox:bb});
+      });
+      if (!choices.length) break;
+      var needed = excess / choices.length;
+      var changedText = false;
+      choices.forEach(function(entry) {
+        var current = entry.bbox.width;
+        var original = Number(entry.label.getAttribute &&
+          entry.label.getAttribute("textLength")) || current;
+        var desired = Math.max(32, current-needed-1);
+        if (desired >= current-0.1 || desired >= original) return;
+        entry.label.setAttribute("textLength", String(desired));
+        entry.label.setAttribute("lengthAdjust", "spacingAndGlyphs");
+        changedText = true;
+      });
+      if (!changedText) break;
+      var refreshed = measure();
+      if (!refreshed) break;
+      if (Math.abs(bounds(refreshed).span-outer.span)<0.1) break;
+      box = refreshed;
+      outer = bounds(box);
+    }
+    // If a dense four-column icon block itself is too wide, a last-resort
+    // uniform scale is necessary for edge safety. Do not let a name alone
+    // force that scale when local text compression can solve the problem.
+    var scale = Math.min(originalScale, (canvasWidth-2*gutter)/outer.span);
+    var offsetX = (canvasWidth - outer.span*scale)/2 - outer.min*scale;
+    var minY = Math.min(0,box.y), maxY = Math.max(Number(geometry.layoutHeight)||0,
+      box.y+box.height);
+    var offsetY = gutter-minY*scale;
+    var height = Math.ceil((maxY-minY)*scale+2*gutter);
+    var changed = Math.abs(Number(geometry.canvasScale)-scale)>0.000001 ||
+      Math.abs(Number(geometry.canvasOffsetX)-offsetX)>0.01 ||
+      Math.abs(Number(geometry.canvasOffsetY)-offsetY)>0.01 ||
+      Number(geometry.svgH)!==height;
+    geometry.canvasFitReason = scale < originalScale-0.00001
+      ? "unavoidable-grid-overflow" : "stable-pitch";
     geometry.canvasScale = scale;
     geometry.canvasOffsetX = offsetX;
     geometry.canvasOffsetY = offsetY;
     geometry.svgH = height;
-    geometry.canvasTransform = "translate(" + offsetX + " " + offsetY +
-      ") scale(" + scale + ")";
-    staticLayer.setAttribute("transform", geometry.canvasTransform);
-    trainLayer.setAttribute("transform", geometry.canvasTransform);
-    svg.setAttribute("viewBox", "0 0 " + canvasWidth + " " + height);
-    return true;
+    geometry.canvasTransform = "translate("+offsetX+" "+offsetY+
+      ") scale("+scale+")";
+    staticLayer.setAttribute("transform",geometry.canvasTransform);
+    trainLayer.setAttribute("transform",geometry.canvasTransform);
+    svg.setAttribute("viewBox","0 0 "+canvasWidth+" "+height);
+    return changed;
   }
 
   // The SVG is a static frame, not a camera. Geometry owns its fixed
@@ -819,6 +872,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       viewport: viewport,
       matchesStaticBounds: !!expected && viewport === expectedViewport,
       renderedWidthPx: rect ? rect.width : null,
+      canvasFitReason: geometry.canvasFitReason || null,
+      routeScale: Number(geometry.baseCanvasScale || geometry.canvasScale) || null,
       actualCssPxPerUnit: realScale == null ? null :
         Math.round(realScale * (Number(geometry.canvasScale) || 1) * 1000) / 1000,
       fixedCanvasWidth: Number(geometry.svgW) || null,

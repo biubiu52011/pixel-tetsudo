@@ -1971,6 +1971,9 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       layoutWidth: layoutWidth,
       layoutHeight: layoutHeight,
       canvasScale: contentScale,
+      // Immutable route-derived scale. Text must not repeatedly re-zoom the
+      // same cached geometry on full redraws or live-position refreshes.
+      baseCanvasScale: contentScale,
       canvasOffsetX: contentOffsetX,
       canvasOffsetY: contentOffsetY,
       canvasTransform: canvasTransform,
