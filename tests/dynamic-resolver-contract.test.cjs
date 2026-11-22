@@ -115,7 +115,12 @@ test('SVG fallback transfer badges use the shared StationInfoLayout measurement 
   assert.equal(plan.shown.length, 1);
   assert.equal(plan.shown[0].label, '中央本线');
   assert.equal(plan.shown[0].badgeWidth, 62);
-  assert.equal(plan.totalWidth, 62);
+  assert.equal(plan.perRow, 4, 'all SVG transfer grids use four columns');
+  assert.equal(plan.rows, 1);
+  assert.equal(plan.gridWidth, plan.colWidths.reduce((sum, width) => sum + width, 0) + 3 * 2);
+  assert.equal(plan.totalWidth, plan.gridWidth, 'no extra destination label for same-name transfer');
+  assert.ok(plan.gridWidth >= plan.shown[0].badgeWidth,
+    'the shared width reserves four columns and the measured fallback badge');
   assert.equal(calls, 1);
   assert.match(read('js/trains-render.js'), /window\.StationInfoLayout\.plan\(/);
 });
