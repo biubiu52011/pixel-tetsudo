@@ -340,7 +340,7 @@
     txt.setAttribute("x", sz.textX || 14);
     txt.setAttribute("y", h / 2);
     txt.setAttribute("font-size", sz.fontSize || (mobile ? 11 : 9));
-    txt.setAttribute("fill", "var(--text)");
+    txt.setAttribute("fill", lc);
     txt.setAttribute("font-weight", "400");
     txt.setAttribute("dominant-baseline", "central");
     // 文本块垂直中心 = chip 中心 h/2（与箭头 _ay=h/2 同一中线）。
