@@ -124,6 +124,16 @@ test('canonical Tobu map generates actual SVG Y coordinates from the existing ge
  assert.equal(g.stationCoords[0].x,g.stationCoords[3].x);
  assert.ok(g.stationCoords[2].x>g.stationCoords[3].x,'Oshiage branches right');
  assert.equal(g.stationCoords[2].y,g.stationCoords[1].y,'both destinations occupy the same map row');
+ assert.ok(g.sp>=112,'route pitch must reserve both Skytree transfer regions');
+ assert.equal(g.stationCoords[1].y-g.stationCoords[3].y,g.sp,
+   'Hikifune to Tokyo-Skytree uses the same station pitch as the trunk');
+ assert.equal(g.stationCoords[0].y-g.stationCoords[1].y,g.sp,
+   'Tokyo-Skytree to Asakusa no longer has a different segment length');
+ assert.equal(g.stationCoords[2].x-g.stationCoords[3].x,g.sp,
+   'Oshiage fork horizontal offset shares the route pitch');
+ for(let i=4;i<g.stationCoords.length;i++)
+   assert.equal(g.stationCoords[i-1].y-g.stationCoords[i].y,g.sp,
+     'northern Skytree trunk segment '+i+' must be equal');
  assert.ok(g.stationCoords[1].y-g.stationCoords[3].y>=106,
    'Hikifune transfers and Tokyo-Skytree name need their own vertical region');
  assert.ok(g.stationCoords[0].y-g.stationCoords[1].y>=112,

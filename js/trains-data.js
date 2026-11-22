@@ -1241,8 +1241,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     // 普通线的换乘块从站点中心下方 9px 开始；每行按 ICON16+GAP2 计 18px。
     // 渲染层每行最多 4 个图标，但这里按 3 个估算，给窄列/文字徽章留出保守空间。
     // 行数上限为 RuntimeConfig.TRANSFER_MAX_ROWS，并与 "+n" 截断保持一致。
-    // 站间距 = 全线各站换乘图标的高最大值 + 空隙（移动/桌面统一，
-    // 不再按站数分档）；环线双列 _colPitch 同式复用。
+    // 全线按所需的最大换乘/直通徽章高度统一站距，不再逐段加空白。
+    // 支线的额外留白需求在下方合并到统一的 sp。
     var ROW_H = window.StationInfoLayout.pitch, TX_TOP = 14,
       SP_GAP = 6, MIN_SP = 45;
     var _chipPitch = function(ids) {
@@ -1258,12 +1258,14 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       return mx;
     };
     var sp = _chipPitch(stations);
+    // Hikifune and Tokyo-Skytree need 106/112 units of label clearance.
+    // Enlarge the whole route's pitch, not just the two lower segments.
+    if (isSkytreeYFork) sp = Math.max(sp, 112,
+      _chipPitch(["Hikifune"]) + 42, _chipPitch(["Tokyo-Skytree"]) + 52);
     var topP = 18 + thrTopPad, botP = 16 + thrBotPad;
-    // The shared baseline is 45 units; only the station that needs extra
-    // transfer/through-chip clearance enlarges its following segment.
-    var _spSeg = [];
-    for (var _sr2 = 0; _sr2 < stations.length; _sr2++) _spSeg.push(_chipPitch([stations[_sr2]]));
-    var _yAt = function(i) { var y = topP; for (var _yi = 0; _yi < i && _yi < _spSeg.length; _yi++) y += _spSeg[_yi]; return y; };
+    // This function reads the final sp after embedded branches have been
+    // measured. Station coordinates, track edges and train markers agree.
+    var _yAt = function(i) { return topP + i * sp; };
     
     // 获取支线。
     var allLines = getLinesData();
@@ -1370,11 +1372,18 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       pitch = Math.max(pitch, (widths[0] || 0) / 2 + 30);
       branchLayouts[branch.id] = { pitch: Math.ceil(pitch), labels: labels,
         endWidth: widths[widths.length-1] || 0 };
-      var ji = junction ? stations.indexOf(junction.station) : -1;
+      // A horizontal junction's text needs clearance, but only enlarging
+      // the adjacent two main segments would destroy uniform station pitch.
       var clearance = Math.max.apply(null,[76].concat(heights.map(function(h) { return h + 58; })));
-      if (ji > 0) _spSeg[ji-1] = Math.max(_spSeg[ji-1],clearance);
-      if (ji >= 0 && ji < _spSeg.length) _spSeg[ji] = Math.max(_spSeg[ji],clearance);
+      sp = Math.max(sp, clearance, Math.ceil(pitch));
     });
+    // Vertical branches also carry transfer and through-service badges.
+    branchLines.forEach(function(branch) { sp = Math.max(sp, _chipPitch(branch.stations || [])); });
+    // The junction-to-branch distance and horizontal branch stops use the
+    // same route-wide pitch as the ordinary main line.
+    Object.keys(branchLayouts).forEach(function(id) { branchLayouts[id].pitch = sp; });
+    _branchStubR = Math.max(GEOM.BRANCH_STUB, sp);
+    if (_leftCols > 0) _branchStubL = Math.max(_branchStubL, sp);
     var _branchHSp = 0; // Deprecated scalar: geometry consumers use each branch's pitch.
     var _leftNeed = _leftCols > 0 ? (_branchStubL + (_leftCols - 1) * _branchColW + 10 + _branchMaxNameW("left") + 2) : 0;
     var _rightNeed = 0;
@@ -1441,9 +1450,10 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       var _rightStart = 1 + (_halfN - 1 - _juncIdx6); // 8 → S18
       for (var _s6c = 0; _s6c < _halfN; _s6c++) _rightIds6.push(loopStations[_rightStart + _s6c]); // S18..S31
       var _pitch6 = Math.max(_colPitch6(_leftIds6), _colPitch6(_rightIds6));
-      // 左右列各 14 站（站距 rectH/14），与 站距密度一致。
-      var _needH6 = _pitch6 * (_halfN - 1);
-      if (_needH6 > loopRectH) loopRectH = _needH6;
+      // The ring columns and open tail use one vertical station pitch.
+      var _uniform6Step = Math.max(56, _pitch6,
+        _chipPitch(hikarigaokaStations), loopRectH / _halfN);
+      loopRectH = _uniform6Step * _halfN;
       
       var leftMargin = _isMobileView() ? 12 : 12.8;
       // 已确认的窄六字形环线需要为站名
@@ -1479,10 +1489,8 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       // Tail 高度先算（依赖 loopRectH），svgH 须同时容纳环（垂直居中）与向上伸出的光丘尾。
       // junction 在左列第 7 位（中点偏上 0.5/14×rectH），tail 顶 = loopCy−juncOff−tailTotalHeight ≥ 边距
       var tailCount = hikarigaokaStations.length - 1;
-      // tail 站距 = 环线站距 / 2（支线紧凑，不撑高全图）
-      // Open tail has its own major transfer stations; reserve enough rows.
-      var _tailPitch6 = _chipPitch(hikarigaokaStations.slice(1));
-      var tailStep = tailCount > 0 ? Math.max(56, Math.ceil(_tailPitch6 * 0.8)) : 0;
+      // Equal to the pitch used by both sides of the ring.
+      var tailStep = tailCount > 0 ? _uniform6Step : 0;
       var tailTotalHeight = tailCount > 0 ? tailCount * tailStep + 32 : 0;
       var _juncOff6 = loopRectH * Math.abs(0.5 - (_juncIdx6 + 0.5) / _halfN); // 0.5/14×rectH ≈ 36px
       svgH = Math.max(loopRectH + marginTopBot * 2,
@@ -1613,20 +1621,21 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       }
       var _pitch = Math.max(_chipPitch(_rightSeq.map(function(si) { return stations[si]; })),
         _chipPitch(_leftSeq.map(function(si) { return stations[si]; })));
-      var _needH = _pitch * Math.max(_rightCount, _leftCount);
-      if (_needH > loopRectH) {
-        rectH = _needH;
-        halfH = rectH / 2;
+      var _columnCount = Math.max(_rightCount, _leftCount);
+      var _loopStep = Math.max(_pitch, loopRectH / _columnCount);
+      rectH = _loopStep * _columnCount;
+      halfH = rectH / 2;
+      if (rectH > loopRectH) {
         svgH = rectH + (_isMobileView() ? 150 : 160);
         cy = svgH / 2;
       }
       for (var ri = 0; ri < _rightSeq.length; ri++) {
-        var _tR = (ri + 0.5) / _rightSeq.length;
+        var _tR = (ri + 0.5 + (_columnCount - _rightCount) / 2) / _columnCount;
         var _sourceRi = _rightSeq[ri];
         loopPts[_sourceRi] = { x: cx + halfW, y: cy - halfH + _tR * rectH, side: "right", stationId: stations[_sourceRi], _loopPos: rectW + _tR * rectH };
       }
       for (var li = 0; li < _leftSeq.length; li++) {
-        var _tL = (li + 0.5) / _leftSeq.length;
+        var _tL = (li + 0.5 + (_columnCount - _leftCount) / 2) / _columnCount;
         var _sourceLi = _leftSeq[li];
         loopPts[_sourceLi] = { x: cx - halfW, y: cy - halfH + _tL * rectH, side: "left", stationId: stations[_sourceLi], _loopPos: 2 * rectW + rectH + (1 - _tL) * rectH };
       }
@@ -1676,7 +1685,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         svgW = Math.max(_baseW, mainCx + 12 + _rightNeed + _rightPad);
       }
       
-      // 逐段定距（_yAt）替代旧「均匀 sp + _extraY 补偿」——旧补偿 min(换乘数,8) 与渲染 min(16) 不一致，已废
+      // 全线按统一 sp 定位车站，换乘和支线预留不再单独拉长个别区间。
       for (var i = 0; i < stations.length; i++) {
         if (isSkytreeYFork) {
           // Visual order is north-to-south (top to bottom). Source order
@@ -1685,15 +1694,13 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
           var _forkJY = topP + (stations.length - 4) * sp;
           // L-shaped spur: Asakusa continues straight; Oshiage forks
           // right at Hikifune before turning down. Canonical order is kept.
-          var _forkDx = Math.max(94, Math.min(112, sp + 44));
+          var _forkDx = sp;
           // Normal 45px station spacing cannot fit Hikifune transfers
           // followed by a two-line Tokyo-Skytree name and its badges.
           // Reserve full SVG *content* height on BOTH L branches before
           // placing stops. Keep northern canonical stations untouched.
-          var _forkFirstGap = Math.max(sp, 106,
-            _chipPitch(["Hikifune"]) + 42);
-          var _forkSecondGap = Math.max(sp, 112,
-            _chipPitch(["Tokyo-Skytree"]) + 52);
+          var _forkFirstGap = sp;
+          var _forkSecondGap = sp;
           var _forkX = mainCx, _forkY = topP + (stations.length - 1 - i) * sp;
           var _forkSide = 'dual';
           if (i === 0) _forkY = _forkJY + _forkFirstGap + _forkSecondGap;
@@ -1707,12 +1714,12 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       }
       // Reserve Oshiage's station name and transfer/through badges.
       if (isSkytreeYFork) svgW = Math.max(svgW, stationCoords[2].x + 124);
-      // svgH must be computed AFTER stationCoords is populated (with the
-      // per-station 2-row chip compensation) or the viewBox clips the line.
+      // Determine canvas height from the final station positions and shared
+      // pitch, so none of the route or terminal badges gets clipped.
       svgH = (isSkytreeYFork
         ? stationCoords.reduce(function(max,p){return Math.max(max,p.y);},topP)
         : (stationCoords.length ? stationCoords[stationCoords.length - 1].y : topP)) +
-        (_spSeg.length ? _spSeg[_spSeg.length - 1] : sp) + botP;
+        sp + botP;
       if (isSkytreeYFork) {
         // Asakusa is now the visible bottom endpoint, not the source
         // array's last entry. Its transfer badges and through-service

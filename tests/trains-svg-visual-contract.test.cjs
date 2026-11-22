@@ -68,7 +68,7 @@ test('six-shaped loop uses the same static canvas even when font metrics are una
   assert.equal(svg.attrs.viewBox,'0 0 420 2300');
   assert.equal(route.canvasOverflow,null);
 });
-test('ordinary segments share 45-unit spacing and local transfer exceptions',()=>{
+test('ordinary routes use one safe spacing value, even after transfer-heavy stations',()=>{
   const lines=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
   const start=geometrySource.indexOf('    var ROW_H = window.StationInfoLayout.pitch');
   const end=geometrySource.indexOf('    // 获取支线。',start);
@@ -78,16 +78,32 @@ test('ordinary segments share 45-unit spacing and local transfer exceptions',()=
     const transferMap={[stations[0]]:[{id:'busy'}]};
     const context=vm.createContext({
       stations,transferMap,throughChipMaxWidth:148,thrTopPad:0,thrBotPad:0,
+      isSkytreeYFork:false,
       _isMobileView:()=>true,_throughChipHeight:()=>0,
       window:{StationInfoLayout:{pitch:18,reservedRows:items=>items.length?3:0}}
     });
     vm.runInContext(geometrySource.slice(start,end)+
-      '\nthis.spacing=_spSeg;this.yAt=_yAt;',context);
-    assert.equal(context.spacing[0],74);
-    assert.equal(context.spacing[1],45);
-    assert.equal(context.spacing[2],45);
-    assert.equal(context.yAt(2)-context.yAt(1),45);
+      '\nthis.spacing=sp;this.yAt=_yAt;',context);
+    assert.equal(context.spacing,74);
+    for(let i=1;i<stations.length;i++){
+      assert.equal(context.yAt(i)-context.yAt(i-1),74,id+' interval '+i);
+    }
   }
+});
+test('branch clearance is shared globally, not inserted beside the junction',()=>{
+  assert.doesNotMatch(geometrySource,/_spSeg/);
+  assert.match(geometrySource,/sp = Math.max\(sp, clearance, Math.ceil\(pitch\)\)/);
+  assert.match(geometrySource,/branchLayouts\[id\]\.pitch = sp/);
+  assert.match(geometrySource,/_branchStubR = Math.max\(GEOM.BRANCH_STUB, sp\)/);
+  assert.match(geometrySource,/var _forkFirstGap = sp/);
+  assert.match(geometrySource,/var _forkSecondGap = sp/);
+});
+test('two-column loops and Oedo tail reuse a shared vertical station step',()=>{
+  assert.match(geometrySource,/var _columnCount = Math.max\(_rightCount, _leftCount\)/);
+  assert.match(geometrySource,/\(_columnCount - _rightCount\) \/ 2/);
+  assert.match(geometrySource,/\(_columnCount - _leftCount\) \/ 2/);
+  assert.match(geometrySource,/loopRectH = _uniform6Step \* _halfN/);
+  assert.match(geometrySource,/var tailStep = tailCount > 0 \? _uniform6Step : 0/);
 });
 test('SVG audit reports fixed frame, CSS scale and overflow',()=>{
   assert.match(rendererSource,/fixedCanvasWidth/);
