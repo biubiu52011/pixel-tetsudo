@@ -335,7 +335,9 @@
     return {
       lineId: lineId,
       status: status,
-      cause: source.cause || source.text || "",
+      // Do not mistake the entire untranslated official report for a
+      // dictionary-verified cause.
+      cause: source.cause || "",
       interval: source.interval || null,
       direction: source.direction || null,
       effect: source.effect || null,

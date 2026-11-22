@@ -59,3 +59,51 @@ test('unverified translations never render as official full text',()=>{
   assert.match(realtime,/rs-translation-summary-note/);
   assert.match(realtime,/\\u3400-\\u9FFF/);
 });
+
+test('Saikyo/Kawagoe screenshot: official upbound delay falls back to localized factual summary',()=>{
+  const d=boot(),source='埼京線は、上り線の一部の列車に遅れが出ております。';
+  const fields={lineId:'SaikyoKawagoe',status:'delayed',
+    interval:'上り',direction:'up',cause:'列車に遅れが出ております。'};
+  for(const lang of ['zh','en','ko']){
+    const r=d.translate(source,fields,lang);
+    assert.equal(r.matched,true);
+    assert.equal(r.structured,true);
+    assert.equal(r.complete,false);
+    assert.doesNotMatch(r.translated,/遅れが出て|上り線/);
+  }
+  assert.match(d.translate(source,fields,'zh').translated,/上行列车出现延误/);
+  assert.match(d.translate(source,fields,'en').translated,/upbound trains are delayed/);
+});
+test('future, resolved and announcement data never becomes a claimed current delay',()=>{
+  const d=boot(),source='現在の運行に関するお知らせです。';
+  assert.equal(d.translate(source,{status:'notice',direction:'up'},'zh').matched,false);
+  assert.equal(d.translate(source,{status:'delayed',impacts:[
+    {phase:'planned',direction:'up',effect:'delay'}]},'zh').matched,false);
+  assert.equal(d.translate(source,{status:'delayed',impacts:[
+    {phase:'resolved',direction:'up',effect:'delay'}]},'en').matched,false);
+  assert.equal(d.translate('遅延が発生する可能性があります。',{
+    status:'delayed',direction:'up'},'zh').matched,false);
+  const r=d.translate(source,{status:'delayed',direction:'up'},'zh');
+  assert.equal(r.matched,true);
+  assert.equal(r.complete,false);
+  assert.match(r.translated,/上行列车出现延误/);
+});
+test('modal displays a scoped summary instead of translation-unavailable placeholder',()=>{
+  const delay=boot();
+  const code=source('js/realtime-view.js');
+  const start=code.indexOf('  function _untranslatedOfficialText(');
+  const end=code.indexOf('  function renderFilterBar(',start);
+  assert.ok(start>0&&end>start);
+  const context={
+    window:{DelayTranslator:delay},
+    t:key=>key==='status.translation_summary'?'已确认运行影响摘要（非全文翻译）：':'无法翻译',
+    escapeHtml:x=>String(x).replace(/</g,'&lt;'),
+    _needsJaTranslate:()=>true
+  };
+  vm.runInNewContext(code.slice(start,end)+'\nthis.renderTranslated=_translatedText;',context);
+  const html=context.renderTranslated('埼京線は、上り線の一部の列車に遅れが出ております。',
+    'zh',{lineId:'SaikyoKawagoe',status:'delayed',direction:'up'});
+  assert.match(html,/已确认运行影响摘要/);
+  assert.match(html,/上行列车出现延误/);
+  assert.doesNotMatch(html,/rs-cause-untranslated|无法翻译/);
+});

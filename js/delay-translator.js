@@ -431,21 +431,42 @@
   function _scopeText(item, lang) {
     if (!item) return "";
     var parts = [];
-    if (item.interval) parts.push(_replaceFragment(String(item.interval).replace(/→/g, "〜"), lang));
+    var interval = String(item.interval || "").trim();
+    var directionFromInterval = /^(?:上り|上り線)$/.test(interval) ? "up"
+      : /^(?:下り|下り線)$/.test(interval) ? "down"
+      : /^(?:上下|上下線)$/.test(interval) ? "both"
+      : interval === "内回り" ? "inner" : interval === "外回り" ? "outer" : "";
+    if (interval) parts.push(directionFromInterval
+      ? _directionLabel(directionFromInterval, lang)
+      : _replaceFragment(interval.replace(/→/g, "〜"), lang));
     var dir = _directionLabel(item.direction, lang);
-    if (dir) parts.push(dir);
+    if (dir && (parts.length === 0 || parts[0] !== dir)) parts.push(dir);
     return parts.join(lang === "en" ? ", " : "・");
   }
 
   function _structuredSummary(opts, lang) {
     opts = opts || {};
     var status = opts.status || "";
-    var lineName = opts.lineId && window.RailwayDB ? (window.RailwayDB.resolveLineName(opts.lineId, lang) || "") : "";
-    var cause = opts.cause ? _replaceFragment(opts.cause, lang) : "";
-    var impacts = Array.isArray(opts.impacts) ? opts.impacts.filter(function(x){ return x && (x.interval || x.direction || x.effect); }) : [];
+    // The displayed current status is itself a verified runinfo fact.
+    // Ignore planned/resolved-only events; never elevate them into a live alert.
+    if (status !== "delayed" && status !== "suspended") return null;
+    var supplied = Array.isArray(opts.impacts) ? opts.impacts.filter(Boolean) : [];
+    if (supplied.length && supplied.every(function(x) {
+      return x.phase && x.phase !== "current";
+    })) return null;
+    var impacts = supplied.filter(function(x) {
+      return (!x.phase || x.phase === "current") && (x.interval || x.direction || x.effect);
+    });
+    // A cause must be an exact known railway term. Unparsed text is NOT
+    // a cause and must not leak Japanese fragments into another language.
+    var causeJa = String(opts.cause || "").trim();
+    var cause = Object.prototype.hasOwnProperty.call(CAUSES, causeJa)
+      ? (_langOf(CAUSES[causeJa], lang) || "") : "";
+    var lineName = opts.lineId && window.RailwayDB
+      ? (window.RailwayDB.resolveLineName(opts.lineId, lang) || "") : "";
+    if (lineName === opts.lineId || /[\u3041-\u3096\u30A1-\u30FA]/.test(lineName))
+      lineName = "";
     var serviceLevel = _percentText(opts.serviceLevel);
-    var hasStructured = impacts.length || opts.interval || opts.direction || opts.effect || serviceLevel || opts.resume || (cause && (status === "delayed" || status === "suspended" || status === "notice" || status === "info"));
-    if (!hasStructured) return null;
 
     var prefix = lineName ? lineName + (lang === "en" ? ": " : "：") : "";
     var pieces = [];
@@ -469,7 +490,13 @@
       var scopeOnly = _scopeText({ interval: opts.interval, direction: opts.direction }, lang);
       var effectOnly = _effectPhrase(opts.effect, status, lang);
       if (effectOnly) {
-        if (lang === "en") pieces.push(scopeOnly ? scopeOnly + ": " + effectOnly : effectOnly);
+        var directionOnly = !!scopeOnly && (!opts.interval ||
+          /^(?:上り|下り|上下線|内回り|外回り|上り線|下り線)$/.test(opts.interval));
+        if (directionOnly && status === "delayed" && !opts.effect) {
+          if (lang === "zh") pieces.push(scopeOnly + "列车出现延误");
+          else if (lang === "ko") pieces.push(scopeOnly + " 열차가 지연되고 있습니다");
+          else pieces.push(scopeOnly + " trains are delayed");
+        } else if (lang === "en") pieces.push(scopeOnly ? scopeOnly + ": " + effectOnly : effectOnly);
         else pieces.push((scopeOnly ? scopeOnly + "：" : "") + effectOnly);
       }
     }
@@ -549,8 +576,8 @@
     }
     if(pieces.length)return {translated:pieces.join(lang==="en"?" ":""),
       matched:true,complete:true,composed:true,provider:"offline"};
-    var risky=/可能性があります|見込|予定|おそれ|していましたが/.test(source);
-    if(!risky&&(opts.effect||opts.serviceLevel||opts.resume||(opts.impacts&&opts.impacts.length))){
+    var risky=/可能性|見込|予定|おそれ|していましたが|見合わせていましたが/.test(source);
+    if (!risky && (opts.status === "delayed" || opts.status === "suspended")) {
       var sum=_structuredSummary(opts,lang);
       if(sum&&!/[ぁ-ゟァ-ヿ駅]/.test(sum))
         return {translated:sum,matched:true,complete:false,structured:true,provider:"offline"};
