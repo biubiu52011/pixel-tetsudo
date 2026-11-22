@@ -416,3 +416,39 @@ test('Enoden and Izu timetable numbers stay separate from vehicle PNG evidence',
   assert.equal(izukyu?.plannedAsset,
     '../images/列车/伊豆急行/伊豆急行_8000系_黒排障器.png');
 });
+
+test('Keio line scope and live car-type display never become persistent number bands',()=>{
+  const names=[
+    '京王電鉄_1000系.png','京王電鉄_7000系.png',
+    '京王電鉄_8000系.png','京王電鉄_9000系.png'
+  ];
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const name of names){
+    assert.equal(ranges.includes(name),false,name+' has no persistent number band');
+    const entry=byPath.get('images/列车/京王電鉄/'+name);
+    assert.ok(entry,name+' must remain in the audit index');
+    assert.equal(entry.status,'no_verified_number_mapping',name);
+    assert.deepEqual(entry.directNumberRules,[],name);
+    assert.deepEqual(entry.runtimeNumberRosters,[],name);
+    assert.deepEqual(entry.historicalNumberedSources,[],name);
+  }
+
+  // The official fleet guide limits 1000 series to Inokashira, but a line
+  // identity alone cannot turn a current app car-type display into a reusable
+  // service-number rule.
+  const keio1000=win.TrainVehicle.resolveCanonicalVehicle('京王1000系');
+  assert.equal(keio1000?.asset||null,null,'1000-series artwork remains planned-only');
+  assert.equal(keio1000?.plannedAsset,
+    '../images/列车/京王電鉄/京王電鉄_1000系.png');
+
+  for(const [model,file] of [['京王7000系','京王電鉄_7000系.png'],
+    ['京王8000系','京王電鉄_8000系.png'],
+    ['京王9000系','京王電鉄_9000系.png']]){
+    const ref=win.TrainVehicle.resolveCanonicalVehicle(model);
+    assert.equal(ref?.asset,'../images/列车/京王電鉄/'+file,
+      model+' stays a gallery identity, not number evidence');
+  }
+});
