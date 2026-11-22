@@ -77,7 +77,7 @@ test('Yamanote Shinjuku 19 transfers safely reserve an inline +N slot',()=>{
   assert.equal(plan.shown.length+Number(!!plan.moreText),16);
 });
 test('Yamanote left-side retains 4 columns without crossing the track',()=>{
-  const {images,extra,plan}=fixture({side:'left'});
+  const {all,images,extra,plan}=fixture({side:'left'});
   assert.ok(images.length<=15);
   assert.equal(plan.perRow,4);
   assert.equal(plan.rows,4);
