@@ -15,7 +15,7 @@
 
 window.TRANSFER_HINTS = {
   // 站名不一致的换乘站
-  "Akasaka-Mitsuke": {
+  "Akasaka-mitsuke": {
     type: "name_mismatch",
     note: {
       ja: "（永田町駅連絡）",
@@ -33,28 +33,17 @@ window.TRANSFER_HINTS = {
       en: "(Connects to Akasaka-Mitsuke)",
       ko: "（아카사카미츠케역 연결）"
     },
-    connects: ["Akasaka-Mitsuke"]
-  },
-  "Omotesando": {
-    type: "name_mismatch",
-    note: {
-      ja: "（明治神宮前駅連絡・要出站）",
-      zh: "（连络明治神宫前站・需出站）",
-      en: "(Connects to Meiji-Jingumae, outside transfer)",
-      ko: "（메이지진구마에역 연결・역외 환승）"
-    },
-    connects: ["Meiji-Jingumae"],
-    outside: true
+    connects: ["Akasaka-mitsuke"]
   },
   "Meiji-Jingumae": {
     type: "name_mismatch",
     note: {
-      ja: "（表参道駅連絡・要出站／JR原宿駅連絡）",
-      zh: "（连络表参道站・需出站／连络JR原宿站）",
-      en: "(Connects to Omotesando, outside transfer / Harajuku JR)",
-      ko: "（오모테산도역 연결・역외 환승／JR하라주쿠역 연결）"
+      ja: "（JR原宿駅連絡・改札外）",
+      zh: "（连络JR原宿站・站外换乘）",
+      en: "(Connects to JR Harajuku, outside transfer)",
+      ko: "（JR하라주쿠역 연결・역외 환승）"
     },
-    connects: ["Omotesando", "Harajuku"],
+    connects: ["Harajuku"],
     outside: true
   },
   "Harajuku": {
@@ -87,28 +76,6 @@ window.TRANSFER_HINTS = {
       ko: "（니시신주쿠역 연결・역외 환승）"
     },
     connects: ["Nishi-Shinjuku"],
-    outside: true
-  },
-  "Tochomae": {
-    type: "name_mismatch",
-    note: {
-      ja: "（新宿三丁目駅連絡・要出站）",
-      zh: "（连络新宿三丁目站・需出站）",
-      en: "(Connects to Shinjuku-Sanchome, outside transfer)",
-      ko: "（신주쿠산초메역 연결・역외 환승）"
-    },
-    connects: ["Shinjuku-Sanchome"],
-    outside: true
-  },
-  "Shinjuku-Sanchome": {
-    type: "name_mismatch",
-    note: {
-      ja: "（都庁前駅連絡・要出站）",
-      zh: "（连络都厅前站・需出站）",
-      en: "(Connects to Tochomae, outside transfer)",
-      ko: "（토쵸마에역 연결・역외 환승）"
-    },
-    connects: ["Tochomae"],
     outside: true
   },
   "Kodemmacho": {
