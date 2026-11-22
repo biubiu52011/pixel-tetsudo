@@ -452,3 +452,42 @@ test('Keio line scope and live car-type display never become persistent number b
       model+' stays a gallery identity, not number evidence');
   }
 });
+
+test('Ryutetsu and Choshi staged trip numbers never select a formation or livery PNG',()=>{
+  const names=[
+    '流鉄株式会社/流鉄株式会社_5000形_5001編成_さくら.png',
+    '流鉄株式会社/流鉄株式会社_5000形_5002編成_流星.png',
+    '流鉄株式会社/流鉄株式会社_5000形_5004編成_若葉.png',
+    '流鉄株式会社/流鉄株式会社_5000形_5005編成_なの花.png',
+    '銚子電鉄/銚子電鉄_2000形_2002編成_青色.png',
+    '銚子電鉄/銚子電鉄_2000形_2002編成_銚電旧色復刻カラー_クハ2502側.png',
+    '銚子電鉄/銚子電鉄_2000形_2002編成_銚電旧色復刻カラー.png',
+    '銚子電鉄/銚子電鉄_2000形_2002編成_緑色.png',
+    '銚子電鉄/銚子電鉄_22000形_22005編成_次郎右衛門.png',
+    '銚子電鉄/銚子電鉄_22000形_22007編成_銚電グリーン.png',
+    '銚子電鉄/銚子電鉄_3000形_3001編成_澪つくしカラー_クハ3501側.png',
+    '銚子電鉄/銚子電鉄_3000形_3001編成_澪つくしカラー_デハ3001側.png',
+    '銚子電鉄/銚子電鉄_3000形_3001編成_澪つくしカラー.png',
+    '銚子電鉄/銚子電鉄_デキ3_黒色.png',
+    '銚子電鉄/銚子電鉄_デキ3_赤色.png'
+  ];
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const name of names){
+    assert.equal(ranges.includes(name.split('/').at(-1)),false,
+      name+' has no persistent number band');
+    const entry=byPath.get('images/列车/'+name);
+    assert.ok(entry,name+' must remain in the audit index');
+    assert.equal(entry.status,'no_verified_number_mapping',name);
+    assert.deepEqual(entry.directNumberRules,[],name);
+    assert.deepEqual(entry.runtimeNumberRosters,[],name);
+    assert.deepEqual(entry.historicalNumberedSources,[],name);
+
+    const refs=win.VehicleGaragePngMap.findPath('../images/列车/'+name);
+    assert.equal(refs.length,1,name+' must remain inventory-visible');
+    assert.equal(refs[0].canonicalImage,false,name+' stays review-only');
+    assert.equal(refs[0].lineIds.length,0,name+' has no runtime line scope');
+  }
+});
