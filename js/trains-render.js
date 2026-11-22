@@ -368,11 +368,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         };
         var badgeX = function(slot) {
           var col = physicalCol(slot);
-          // Each left-side icon is aligned to the right edge of its real
-          // column. This works for wide fallback badges as well as PNGs,
-          // retaining an exact, shared baseline with the main station name.
+          // Ordinary icons and the +N overflow cell share the same grid.
+          // +N has no part object; its reserved column width is its slot.
+          var partWidth = slot.part ? slot.part.badgeWidth : badgePlan.colWidths[col];
+          // Right-align the actual badge within every left-side grid cell.
           return ix0 + badgePlan.colOffsets[col] +
-            (leftGrid ? badgePlan.colWidths[col] - slot.part.badgeWidth : 0);
+            (leftGrid ? badgePlan.colWidths[col] - partWidth : 0);
         };
         badgePlan.shown.forEach(function(entry) {
           var slots = entry.slots || [];
