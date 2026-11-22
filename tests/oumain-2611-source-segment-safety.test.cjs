@@ -45,7 +45,7 @@ test('shared Shinkansen/resort and unusable source segments cannot pose as ordin
 
 test('dated YOKOTE festival and 9463M sources do not become daily trains',()=>{
  const dates=fs.readFileSync('supabase/migrations/'+
-  '20261106151000_oumain_2611_official_feb_snow_and_nov_9463_date_filter.sql','utf8');
+  '20261106151001_oumain_2611_official_feb_snow_and_nov_9463_date_filter.sql','utf8');
  const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
  for(const term of ['9459M','9463M','2026-11-02','2026-11-03',
   '2026-11-04','190611.html','187971.html',

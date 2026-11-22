@@ -164,7 +164,7 @@ test('canonical manifest, relative page script, SHA-12 and migration safety',()=
    .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+file+'?v='+hash),'stale '+file);
  }
- const sql=fs.readFileSync('supabase/migrations/20261106223000_suigun_2611_fleet_dates_scope.sql','utf8');
+ const sql=fs.readFileSync('supabase/migrations/20261106223001_suigun_2611_fleet_dates_scope.sql','utf8');
  for(const part of ['published_suigun_2611_fleet_scope','9821D','9822D',
   'source_occurrence=1','215','218','kazekko_excursion_no_png',
   'actual_vehicle_confirmed'])assert.ok(sql.includes(part),part);

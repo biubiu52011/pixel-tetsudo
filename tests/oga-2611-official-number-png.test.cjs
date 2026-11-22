@@ -146,7 +146,7 @@ test('wrong weekdays, dates, station order, identity and source are rejected',()
 });
 test('SQL source registry, server admission and diagram use one proof',()=>{
  const sql=fs.readFileSync('supabase/migrations/'+
-  '20261106053000_oga_2611_exact_e801_sql_number_calendar_roster.sql','utf8');
+  '20261106053001_oga_2611_exact_e801_sql_number_calendar_roster.sql','utf8');
  const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
  const est=fs.readFileSync('js/train-position-estimator.js','utf8');
  for(const k of ['published_oga_2611_number_roster',

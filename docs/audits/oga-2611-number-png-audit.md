@@ -43,7 +43,7 @@ Supabase 原始 `manual_timetable_templates` 有 **52 条历史模板**：
 
 缺少的平日 6 个 SQL 来源为：`1130M,1132M,1134M`（上行），`1131M,1133M,1135M`（下行）。它们**除了 11/5 以外在官方平日表中是正常班次**，但当前 SQL **没有逐站可查询模板**。不能用周末模板冒充平日运行或从其他时刻插值创造新的位置。
 
-新增 migration `supabase/migrations/20261106053000_oga_2611_exact_e801_sql_number_calendar_roster.sql`，创建启用 RLS 的 `published_oga_2611_number_roster`：
+新增 migration `supabase/migrations/20261106053001_oga_2611_exact_e801_sql_number_calendar_roster.sql`，创建启用 RLS 的 `published_oga_2611_number_roster`：
 - 58 条官方号码/日历数据（`calendar_scope='sql_rail_service'` **52 条**；`published_number_no_sql_source` **6 条**）。
 - 每条有来源的 SQL 记录与 **source_template_id + 9 个真实来源站点 key** 一一关联；无源则 `source_template_id=NULL`、无来源站序，前端禁止估算。
 - `published_train_number_evidence` 新增 **52** 条可关联 SQL 原始模板的证据；`published_train_png_number_ranges` 新增一条严格依赖精确 roster 的 `1120~1149 M` EV-E801 系 PNG 范围。范围只用于辅助，不单独授予 PNG 权限。

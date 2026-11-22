@@ -343,7 +343,7 @@ Supabase live DB 检查：
 
 ### 车种参考PNG与校验
 
-原模板725/728/729的`train_timetable_vehicle_mappings`已独立关联JR东日本官方B级`evidence_sources`，且`vehicle_type=E8系`、`mapping_level=official_service_vehicle_plan`、`actual_vehicle_confirmed=false`。图库 `vehicle_image_assets`存在唯一`JR-East / E8系 / available / native_png / generic` 素材；因此在[同一既有精确PNG表](../../supabase/migrations/20261107006000_2611_yamagata_three_dated_e8_single_number_png.sql)新增**8177M、9088M、9090M**三个来源约束的E8参考图规则（`min=max`、`suffix=M`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`），不声称实车编组。**E7/W7、N700A/S、E5/H5混用仍不猜图。**
+原模板725/728/729的`train_timetable_vehicle_mappings`已独立关联JR东日本官方B级`evidence_sources`，且`vehicle_type=E8系`、`mapping_level=official_service_vehicle_plan`、`actual_vehicle_confirmed=false`。图库 `vehicle_image_assets`存在唯一`JR-East / E8系 / available / native_png / generic` 素材；因此在[同一既有精确PNG表](../../supabase/migrations/20261107010000_2611_yamagata_three_dated_e8_single_number_png.sql)新增**8177M、9088M、9090M**三个来源约束的E8参考图规则（`min=max`、`suffix=M`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`），不声称实车编组。**E7/W7、N700A/S、E5/H5混用仍不猜图。**
 
 **SQL只读最终验收：** 2026年11月30天四种日期白名单合计**22个列车-日**、覆盖**16个不同日期**；3个历史禁用来源均为`[]`且无2611番号；4条新来源`date_verified`和正式番号均存在。四份新时刻源行数与派生VIEW完全一致（**25/25、28/28、28/28、20/20**）。**826份历史模板中已有823份2611完整番号（99.6%），511份唯一计划车型（61.9%），196条单号PNG（23.7%）**。PNG宽号段／非exact／假实车标记均为**0**；余3份是未被证明2026-11运行的历史来源，不应按“缺3个常规班次”追补。
 
@@ -377,7 +377,7 @@ Supabase live DB 检查：
 
 **起始快照：815／826条正式番号、510／826条唯一计划车型、193／826条精确原生PNG；本次新增4条2611官方完整番号（704A、553E、559E、600E）、1条唯一N700系计划车型，PNG无新增**。全部变更提交在现有 GitHub `main`，现有Supabase事务执行并回读，无新表、脚本、PR或服务器。新干线只按计划列车时刻表展示，不判定当天物理车底。
 
-1. [东海道最后一趟「ひかり704」704A](../../supabase/migrations/20261106163000_tokaido_hikari704_2611_jrwest_full_stops.sql)：找到此前未获核验的 [JR西日本 2026-11-14 逐车页](https://timetable.jr-odekake.net/train-timetable/314481?date=20261114)，确认新大阪**10:48出发**、东京**13:42到**、N700系列计划。旧模板9267错误使用**10:46新大阪到站**作为东海道出发、遗漏滨松12:13/12:17、静冈12:37/12:41、热海13:04/13:05等站并写错部分到发时刻。迁移在断言原路线、线路、运营者、Weekday、方向、source-only成员后，重建现有 `manual_timetable_template_stops` **16个逐站发到事件**，同步成员范围，`train_timetable_stops`视图逐站回读。只绑定官方**N700系家族计划**，无N700A/N700S子型或PNG推断。**东海道正式番号132/132完整覆盖**，计划车型39/132。
+1. [东海道最后一趟「ひかり704」704A](../../supabase/migrations/20261106163001_tokaido_hikari704_2611_jrwest_full_stops.sql)：找到此前未获核验的 [JR西日本 2026-11-14 逐车页](https://timetable.jr-odekake.net/train-timetable/314481?date=20261114)，确认新大阪**10:48出发**、东京**13:42到**、N700系列计划。旧模板9267错误使用**10:46新大阪到站**作为东海道出发、遗漏滨松12:13/12:17、静冈12:37/12:41、热海13:04/13:05等站并写错部分到发时刻。迁移在断言原路线、线路、运营者、Weekday、方向、source-only成员后，重建现有 `manual_timetable_template_stops` **16个逐站发到事件**，同步成员范围，`train_timetable_stops`视图逐站回读。只绑定官方**N700系家族计划**，无N700A/N700S子型或PNG推断。**东海道正式番号132/132完整覆盖**，计划车型39/132。
 2. [北陆线名实错误：妙高高原≠上越妙高](../../supabase/migrations/20261107001000_hokuriku_fix_joetsu_myoko_station_identity.sql)：原 `line_stations` 的北陆新干线第12号站错误写 `Myoko-Kogen`（妙高高原：另一条在来线的真实车站），30份北陆原始模板也错记这个URI。根据 [MapFan北陆新干线上越妙高站](https://mapfan.com/spots/SCH%2CJ%2CXKF)，在**已有** `stations` 表新增正确 `Joetsu-Myoko`（37.0812454,138.2484185），更新已有线路站序中唯一此站及30份模板的原站URI，`train_timetable_stops`派生视图复核；**保留**在来线真实 `Myoko-Kogen` 站，不误删、误改。由于之后两趟的到发事件补全，上越妙高现有SQL共32条源事件，错误残留为0。
 3. [北陆平日「はくたか553」「559」](../../supabase/migrations/20261107002000_hokuriku_hakutaka553_559_2611_weekday_stop_rebuild.sql)：依据JR东日本2611版官网逐车 [553E](https://timetables.jreast.co.jp/2611/train/035/038621.html)、[559E](https://timetables.jreast.co.jp/2611/train/035/038651.html)，修复既有模板1955、1958错误增停安中榛名/佐久平及过时到发时间，恢复东京07:52→金泽11:01 **28个到发事件**、东京10:33→金泽13:36 **26个到发事件**，均逐站核对只读view。**仅映射源模板的Weekday平日常规车**：553在11月23日等另有5553E、559在若干周日／节日延长至敦贺时变成5559E，不将日别变号冒充全天候唯一番号。车型E7/W7未逐车排除另一候选，仍不填单车型计划或PNG。
 4. [历史「あさま400」更新为现行「あさま600／600E」时刻槽](../../supabase/migrations/20261107003000_hokuriku_replace_legacy_asama400_with_600E.sql)：源模板1995为旧版06:00→07:40的400号，官网2611当前该早班时刻是 [600E（长野06:02→东京07:40）](https://timetables.jreast.co.jp/2611/train/035/038992.html)，**不在安中榛名停靠**，因此将这份现存、无其他600模板冲突的source-only计划改作 **あさま600**，更新canonical车名、14条逐站发到事件及成员末站。明确是**当前班次时刻槽替换，不是断言与旧400实车同一**，历史源`source_path`不改。2611官方另有上野时刻相差1分钟的600E页（038991）；本静态源按038992记，仍须运行日级时变处理才能标记所有日期完全核实。第一次事务PL/pgSQL局部变量`stations`与同名现有表冲突而自动回滚，修正变量名后同一迁移完整执行成功；没有部分写入。无E7/W7唯一车型或PNG推断。
@@ -422,7 +422,7 @@ Supabase live DB 检查：
 
 ### 东海道新干线新增两条正式番号与车型
 
-- [ひかり634=634A、ひかり701=701A](../../supabase/migrations/20261106230000_tokaido_hikari634_701_2611_rebuild_official_stops.sql)：采用 [JR东日本2611官方634A全站](https://timetables.jreast.co.jp/2611/train/060/062501.html) 与 [701A全站](https://timetables.jreast.co.jp/2611/train/125/128491.html)，对现存模板9251、9239的**每条旧停站和时刻先做完整断言**。原634少滨松、静冈并错误记录部分到发时刻，现重建为**18条发到事件**（新大阪06:11→东京09:09）；原701遗漏静冈、滨松且名古屋等站时刻错误，现重建为**14条发到事件**（东京07:03→新大阪09:57），只更新既有源停站与成员边界，并用只读 `train_timetable_stops` 逐事件验收。两车独立添加正式番号与 **N700系计划家族**官方证据；不能据此判别N700A/S、运营公司车底或加未证实的PNG。
+- [ひかり634=634A、ひかり701=701A](../../supabase/migrations/20261106230001_tokaido_hikari634_701_2611_rebuild_official_stops.sql)：采用 [JR东日本2611官方634A全站](https://timetables.jreast.co.jp/2611/train/060/062501.html) 与 [701A全站](https://timetables.jreast.co.jp/2611/train/125/128491.html)，对现存模板9251、9239的**每条旧停站和时刻先做完整断言**。原634少滨松、静冈并错误记录部分到发时刻，现重建为**18条发到事件**（新大阪06:11→东京09:09）；原701遗漏静冈、滨松且名古屋等站时刻错误，现重建为**14条发到事件**（东京07:03→新大阪09:57），只更新既有源停站与成员边界，并用只读 `train_timetable_stops` 逐事件验收。两车独立添加正式番号与 **N700系计划家族**官方证据；不能据此判别N700A/S、运营公司车底或加未证实的PNG。
 
 **最新真实活库快照：826份模板，791条官方完整番号（95.8%；剩35），486条唯一计划车型（58.8%；剩340），193条有来源的精确PNG白名单（23.4%）。** 九州正式番号 **159/159**、唯一计划车型 **158/159**（`さくら402`日期换型，不应静态选800/N700）、JR九州原生800系PNG **42** 条；东海道完整番号 **107/132**、唯一计划车型 **14/132**。全部193条PNG仍是 `min_number=max_number`、`requires_exact_roster=true`、`actual_vehicle_confirmed=false`，宽号段/假实际车底标记均为0。
 
@@ -668,7 +668,7 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 更新迁移均已提交 main 且执行到已有 Supabase 项目：
 
 - [北陆：65 条 2611 平日官方番号](../../supabase/migrations/20261106035000_hokuriku_shinkansen_2611_65_weekday_official_numbers_no_fleet_guess.sql)，另有既有休日1条；遇到 553E/5553E 等候选号不强行指定。
-- [东北与北海道：80+25 条 2611 平日官方番号，东北35条 E6/E8 PNG](../../supabase/migrations/20261106041500_tohoku_hokkaido_2611_105_official_numbers_35_e6_e8_png.sql)。
+- [东北与北海道：80+25 条 2611 平日官方番号，东北35条 E6/E8 PNG](../../supabase/migrations/20261106041501_tohoku_hokkaido_2611_105_official_numbers_35_e6_e8_png.sql)。
 - [秋田：另外33条正式 M 番号及 E6 PNG](../../supabase/migrations/20261106051000_akita_shinkansen_2611_complete_33_remaining_m_numbers_e6_png.sql)，现为45/45。
 - [北海道休日：はやて91 正式91B](../../supabase/migrations/20261106053000_hokkaido_shinkansen_2611_hayate91_holiday_official_number.sql)，根据[官方个别列车时刻表](https://timetables.jreast.co.jp/2611/train/040/044991.html)核对新青森06:33发车；不同日期06:39的变体不混用。
 
@@ -831,6 +831,6 @@ SQL迁移： [20261105152500_joetsu_shinkansen_2611_weekday_17_official_train_nu
 | ひかり704 | 704A | 9338 | 冈山09:36 → 新大阪10:46 | N700系（计划家族） | 未绑定 |
 | ひかり720 | 720A | 9363 | 冈山17:36 → 新大阪18:46 | N700系（计划家族） | 未绑定 |
 
-直接main迁移：[20261106064000_sanyo_three_hikari_2611_exact_numbers_n700_plan.sql](../../supabase/migrations/20261106064000_sanyo_three_hikari_2611_exact_numbers_n700_plan.sql)，已在现有Supabase执行并读回3条精确官方番号和 `official_service_vehicle_plan`。**最新总数684/826正式番号，442/826唯一计划车型，171/826 PNG；另有142条编号和384条计划车型未补。** 现有171 PNG的宽范围=0、非exact=0、假实车标记=0。没有新增SQL表、PNG路径、脚本src、PR或本地服务器。
+直接main迁移：[20261106064001_sanyo_three_hikari_2611_exact_numbers_n700_plan.sql](../../supabase/migrations/20261106064001_sanyo_three_hikari_2611_exact_numbers_n700_plan.sql)，已在现有Supabase执行并读回3条精确官方番号和 `official_service_vehicle_plan`。**最新总数684/826正式番号，442/826唯一计划车型，171/826 PNG；另有142条编号和384条计划车型未补。** 现有171 PNG的宽范围=0、非exact=0、假实车标记=0。没有新增SQL表、PNG路径、脚本src、PR或本地服务器。
 
 剩余问题：山阳のぞみ34/40/46等原始SQL存储“新大阪发车时刻”作为山阳段末到时刻（官网真实到站早2分钟），东海道部分ひかり同样存在首发时刻与官网版次差异。此类原始时刻错误必须先查清源脚本与SQL责任归属再同步修复，**不能为了提高番号数量忽略站时一致性**。真实Pages/Safari图像逐车验收未进行，因此仍为“进行中”。
