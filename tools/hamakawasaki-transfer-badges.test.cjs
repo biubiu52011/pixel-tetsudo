@@ -60,8 +60,8 @@ test('terminal branch caption clears Hama-Kawasaki transfer icon on mobile',()=>
   const map=getMap('Nambu');
   const offset=vm.runInContext('_branchTerminalCaptionOffset',ctx);
   assert.equal(offset([]),18,'ordinary branch ends keep their former baseline');
-  assert.equal(offset(map['Hama-Kawasaki']),42,
-    'single icon requires a caption lower than the previous 18px');
+  assert.equal(offset(map['Hama-Kawasaki'],'Hama-Kawasaki'),45,
+    'caption reserve equals y+14 icon row + 16 badge height + 15 clearance');
 
   // Execute the actual SVG branch-caption drawing block with the canonical
   // NambuBranch station order (remote terminus first, parent junction last).
@@ -89,9 +89,9 @@ test('terminal branch caption clears Hama-Kawasaki transfer icon on mobile',()=>
   vm.runInContext(source.slice(a,b),ctx);
   const caption=drawn.find(n=>n.tag==='text'&&n.textContent==='浜川崎支線');
   assert.ok(caption,'the branch caption must still be visible');
-  assert.equal(Number(caption.attrs.y),100+3*45+42);
+  assert.equal(Number(caption.attrs.y),100+3*45+45);
   const lastStopY=100+3*45;
-  const iconBottom=lastStopY+9+16;
+  const iconBottom=lastStopY+14+16;
   const captionTop=Number(caption.attrs.y)-10;
   assert.ok(captionTop-iconBottom>=5,
     'branch name may not overlap the bottom of the reciprocal transfer icon');

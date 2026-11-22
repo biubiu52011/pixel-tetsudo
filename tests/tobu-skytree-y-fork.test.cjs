@@ -198,7 +198,10 @@ test('long station name, Hikifune transfers and through caption obey shared L3 l
  assert.ok(source.includes('if (o.transferBelowNode)'));
  assert.ok(source.includes('var badgePlan = window.StationInfoLayout.plan('));
  assert.ok(source.includes('var rows = badgePlan.rows;'));
- assert.ok(source.includes('if (_align === "end" && ix0 < 2) ix0 = 2;'));
+ assert.ok(source.includes('_fitStaticRouteContent(svg, staticLayer, trainLayer, geometry)'),
+   'outward station names are fitted with the same transform as moving trains');
+ assert.ok(!source.includes('if (_align === "end" && ix0 < 2) ix0 = 2;'),
+   'clamping the badge independently would break its station-name baseline');
  assert.ok(data.includes('window.StationInfoLayout.reservedRows('),
    'shared geometry must reserve the same badge row height as L3 render');
  assert.ok(!data.includes("'data-fork-caption':'oshiage-through'"),
