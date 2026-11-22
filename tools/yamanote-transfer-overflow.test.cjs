@@ -124,6 +124,25 @@ test('SVG image badges show a single named target for same-station line transfer
   assert.match(labels[0].textContent,/→/);
   assert.equal(painted.filter(x=>x.attrs['data-to-station']==='Kasuga').length,1,
     'one grouped transfer label must own both image icons');
+  const rightIcons=painted.filter(x=>x.tag==='image');
+  assert.equal(Number(labels[0].attrs.x)-
+    Math.max(...rightIcons.map(x=>Number(x.attrs.x)+Number(x.attrs.width))),3,
+    'two right-side icons: caption begins immediately after the rightmost painted icon');
+
+  // The same transfer on a left-labelled line uses the final two grid
+  // columns. The outer text must not remain three empty columns away.
+  const leftLayer=node('g');
+  const leftStation=Object.assign({},o,{side:'left'});
+  ctx.drawStation({nodes:leftLayer,info:leftLayer},
+    'http://www.w3.org/2000/svg',leftStation);
+  const leftPainted=descend(leftLayer);
+  const leftIcons=leftPainted.filter(x=>x.tag==='image');
+  const leftLabel=leftPainted.find(x=>x.tag==='text'&&String(x.textContent).includes('春日'));
+  assert.equal(leftIcons.length,2);
+  assert.ok(leftLabel,'left-side alias destination must remain visible');
+  assert.equal(Math.min(...leftIcons.map(x=>Number(x.attrs.x)))-Number(leftLabel.attrs.x),3,
+    'two left-side icons: caption ends 3 units before the nearest icon');
+  assert.equal(leftLabel.attrs['text-anchor'],'end');
 });
 test('the L3 planner retains two destinations of one line and never hides names on short walks',()=>{
   const window={currentLang:'ja',RuntimeConfig:{TRANSFER_MAX_ROWS:4},

@@ -427,7 +427,16 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           });
           if (entry.extra) {
             var extraLabel = document.createElementNS(svgNS, "text");
-            extraLabel.setAttribute("x", leftGrid ? ix0 - 3 : ix0 + gridW + 3);
+            // The 4x4 grid may right-align one or two icons in its last
+            // columns. Anchor this destination to the actual painted badge
+            // edges, never to the empty outer cells of the full grid.
+            var outerBadgeEdge = slots.reduce(function(edge, slot) {
+              var x = badgeX(slot);
+              return leftGrid
+                ? Math.min(edge, x)
+                : Math.max(edge, x + slot.part.badgeWidth);
+            }, leftGrid ? Infinity : -Infinity);
+            extraLabel.setAttribute("x", outerBadgeEdge + (leftGrid ? -3 : 3));
             var firstRow = slots[0].row, lastRow = slots[slots.length - 1].row;
             extraLabel.setAttribute("y", iy0 +
               (firstRow + lastRow) * window.StationInfoLayout.pitch / 2 + badgeHeight / 2);

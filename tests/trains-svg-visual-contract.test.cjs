@@ -227,17 +227,20 @@ test('unlike-name transfers render outer destination, arrow, then inside badges'
   const leftLabel=left.texts.find(n=>n.textContent.includes('上野'));
   const leftBadge=left.rects[0];
   assert.equal(leftLabel.textContent,'上野 · 步行 ←');
-  assert.ok(Number(leftLabel.attrs.x)<Number(leftBadge.attrs.x),'station name must be outside icon on left');
+  assert.equal(Number(leftBadge.attrs.x)-Number(leftLabel.attrs.x),3,
+    'one left-side icon: the arrow must be exactly 3 layout units from the badge, not four empty columns away');
   assert.ok(Number(leftBadge.attrs.x)<200,'icon remains on the railway-facing side');
   assert.ok(left.all.some(n=>n.attrs['data-transfer-mode']==='walk'));
   const nonWalk=render('left','in','→ 町屋站前','end');
   assert.equal(nonWalk.texts.find(n=>n.textContent.includes('町屋')).textContent,'町屋站前 ←',
     'different named station still points outward when source says in');
-  assert.ok(Number(nonWalk.texts.find(n=>n.textContent.includes('町屋')).attrs.x)<Number(nonWalk.rects[0].attrs.x));
+  assert.equal(Number(nonWalk.rects[0].attrs.x)-
+    Number(nonWalk.texts.find(n=>n.textContent.includes('町屋')).attrs.x),3);
   const right=render('right','out','→ 牛田 · 步行','start');
   assert.equal(right.texts.find(n=>n.textContent.includes('牛田')).textContent,'→ 牛田 · 步行');
-  assert.ok(Number(right.rects[0].attrs.x)<Number(right.texts.find(n=>n.textContent.includes('牛田')).attrs.x),
-    'right side mirrors icon → destination');
+  assert.equal(Number(right.texts.find(n=>n.textContent.includes('牛田')).attrs.x)-
+    Number(right.rects[0].attrs.x)-16,3,
+    'one right-side icon: the arrow must sit just 3 units beyond the icon');
 });
 
 test('the physical transfer grid has four columns and four rows',()=>{
