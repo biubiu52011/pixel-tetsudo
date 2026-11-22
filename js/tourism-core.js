@@ -263,7 +263,10 @@
   // 公共上下文：字段/徽章/章节/坐标（类型 JS 基于它构建专属部分）
   function buildContext(spot, stationKey) {
     var spotName = getSpotName(spot);
-    var desc = (spot.desc_i18n && spot.desc_i18n[state.lang]) || spot['desc_' + state.lang] || spot.desc || '';
+    var localizedDesc = (spot.desc_i18n && spot.desc_i18n[state.lang]) || spot['desc_' + state.lang];
+    var desc = localizedDesc || spot.desc || (spot.desc_i18n && spot.desc_i18n.ja) || '';
+    // Machine-translate only missing descriptions; do not override reviewed copy.
+    var autoDesc = state.lang !== 'ja' && !localizedDesc && !!desc;
     var tags = spot.tags || ['all'];
     var gradient = getGradientForTags(tags);
     var coord = getValidCoordinates(spot);
@@ -299,7 +302,7 @@
       : '';
     var aboutSection = '<div class="article-section">'
       + '<h3 class="section-heading">' + t('detail.about') + '</h3>'
-      + '<p class="article-text">' + escapeHtml(desc) + '</p>'
+      + '<p class="article-text"' + (autoDesc ? ' data-auto-translate="ja"' : '') + '>' + escapeHtml(desc) + '</p>'
       + '</div>';
     var mapSection = (coord || mapGeometry)
       ? '<div class="article-section"><h3 class="section-heading">' + t('detail.location')
@@ -332,6 +335,7 @@
       + quickInfo
       + '<div class="article-body">' + bodySections + '</div>';
     container.innerHTML = '<div class="article-content article-content--' + getSpotType(ctx.spot) + '">' + html + '</div>';
+    if (window.SiteAutoTranslate) window.SiteAutoTranslate.scan(container);
     var mapEl = document.getElementById('tourismMap');
     if (mapEl) mapEl._tdGeometry = ctx.mapGeometry;
     if (ctx.mapLat !== null && ctx.mapLng !== null) observeMap(ctx.mapLat, ctx.mapLng, ctx.spotName);
@@ -349,7 +353,9 @@
       for (var ti = 0; ti < spot.tips.length; ti++) {
       var tipText = (spot.tips_i18n && spot.tips_i18n[state.lang] && spot.tips_i18n[state.lang][ti])
           || spot.tips[ti] || t('detail.i18n_missing');
-        html += '<li>' + escapeHtml(tipText) + '</li>';
+        var localizedTip = spot.tips_i18n && spot.tips_i18n[state.lang] && spot.tips_i18n[state.lang][ti];
+        var autoTip = state.lang !== 'ja' && !localizedTip && !!spot.tips[ti];
+        html += '<li' + (autoTip ? ' data-auto-translate="ja"' : '') + '>' + escapeHtml(tipText) + '</li>';
       }
     }
     return html + '</ul></div>';
