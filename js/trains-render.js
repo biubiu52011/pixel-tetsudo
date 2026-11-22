@@ -381,7 +381,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           // A shared baseline is required even if the badge uses an image.
           // Previously an image left badgeHeight undefined (SVG y=NaN).
           var badgeHeight = isMobileView ? 16 : 15;
-          var partX = bx;
+          // A left-side transfer reads outside → inside as
+          // destination name, outward arrow, railway badges. Reserve the
+          // SAME measured entry width but paint the badges at the inner end.
+          // Other sides retain badges, arrow, destination (inside → outside).
+          var labelOutside = !!entry.extra && anchor === "end" &&
+            side !== "top" && side !== "bottom";
+          var partX = bx + (labelOutside ? entry.width - entry.badgeWidth : 0);
           parts.forEach(function(part,index) {
             var line = part.item;
             var glyph = document.createElementNS(svgNS, "g");
@@ -423,7 +429,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           });
           if (entry.extra) {
             var extraLabel = document.createElementNS(svgNS, "text");
-            extraLabel.setAttribute("x", bx + entry.badgeWidth + 3);
+            extraLabel.setAttribute("x", labelOutside ? bx : bx + entry.badgeWidth + 3);
             extraLabel.setAttribute("y", by + badgeHeight / 2);
             extraLabel.setAttribute("dominant-baseline", "central");
             extraLabel.setAttribute("font-size", isMobileView
@@ -431,12 +437,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
               : window.StationInfoLayout.fontSizes.extra.desktop);
             extraLabel.setAttribute("font-weight", "400");
             extraLabel.setAttribute("fill", "var(--text)");
-            // The shared badge model stores a neutral right arrow. Only a
-            // station-exit walking transfer changes it to point outward.
-            // Ordinary interchange links and train directions are unchanged.
-            extraLabel.textContent = isWalk
-              ? entry.extra.replace(/^→(?=\s)/, _outwardWalkTransferArrow(anchor, side, tx, o.x))
-              : entry.extra;
+            // Unlike-name transfers (including walking transfers) use an
+            // outward arrow. A left label reverses visual order as
+            // 'destination · walk ← [badges]' without changing content or
+            // semantic station links; the opposite side remains mirrored.
+            var exitArrow = _outwardWalkTransferArrow(anchor, side, tx, o.x);
+            extraLabel.textContent = labelOutside
+              ? entry.extra.replace(/^→\s*/, "") + " " + exitArrow
+              : entry.extra.replace(/^→(?=\s)/, exitArrow);
             itemGroup.appendChild(extraLabel);
           }
           rowCur += entry.width + GAP;

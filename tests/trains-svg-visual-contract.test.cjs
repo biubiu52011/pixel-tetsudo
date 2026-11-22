@@ -183,8 +183,57 @@ test('walking-transfer arrows point outside the SVG railway on all four sides',(
   assert.equal(arrow('middle','dual',150,160),'←','middle-aligned left fallback');
   assert.equal(arrow('middle','dual',170,160),'→','middle-aligned right fallback');
   assert.match(rendererSource,/var isWalk = parts\.some\(function\(p\) \{ return p\.item\.type === "out"; \}\)/);
-  assert.match(rendererSource,/extraLabel\.textContent = isWalk\s*\? entry\.extra\.replace\(/);
-  // No change to canonical destination, badge width or transfer listing:
-  // only the rendered leading arrow may change.
+  assert.match(rendererSource,/extraLabel\.textContent = labelOutside\s*\? entry\.extra\.replace\(/);
+  // Neither station identity nor the measured total width changes.
+  // Direction and visual order are presentation-only.
   assert.match(geometrySource,/var extra = group\.dest \? "→ " \+ group\.dest : ""/);
+});
+
+test('unlike-name transfers render outer destination, arrow, then inside badges',()=>{
+  const start=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const end=rendererSource.indexOf('  function _isRealtimePositionFresh(',start);
+  assert.ok(start>=0&&end>start);
+  function makeNode(tag){
+    return {tag,attrs:{},children:[],setAttribute(k,v){this.attrs[k]=String(v);},
+      appendChild(child){this.children.push(child);return child;},textContent:''};
+  }
+  function render(side,mode,extra,anchor) {
+    const node=makeNode('g'), info=makeNode('g');
+    const item={type:mode,toStation:'Ueno',name:'JK',color:'#478',lineId:'Test'};
+    const parts=[{item,label:'JK',badgeWidth:16}];
+    const entry={item,badges:parts,badgeWidth:16,extra,width:114};
+    const window={currentLang:'zh',
+      StationInfoLayout:{icon:16,gap:2,pitch:18,
+        fontSizes:{badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}},
+        textColor:()=> '#fff',
+        plan:()=>({shown:[entry],rows:1,totalWidth:114,perRow:1})},
+      ThroughChip:{badgeText:()=> 'JK',normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]},
+      RailwayDB:{resolveStationName:name=>name}};
+    const document={createElementNS:(_ns,tag)=>makeNode(tag)};
+    const env=vm.createContext({window,document});
+    vm.runInContext(rendererSource.slice(start,end),env);
+    env._renderStationNode({nodes:node,info},'http://www.w3.org/2000/svg',
+      {stationId:'Keisei-Ueno',x:200,y:90,side,color:'#369',
+       svgW:460,svgH:600,isMobileView:true,geometry:{},transferMap:{'Keisei-Ueno':[item]},
+       rS:()=> '京成上野',tx:side==='left'?180:220,ty:90,
+       anchor,labelRegistry:null,si:0});
+    const flat=(n)=>[n,...n.children.flatMap(flat)];
+    const all=flat(info);
+    return {texts:all.filter(n=>n.tag==='text'),rects:all.filter(n=>n.tag==='rect'),all};
+  }
+  const left=render('left','out','→ 上野 · 步行','end');
+  const leftLabel=left.texts.find(n=>n.textContent.includes('上野'));
+  const leftBadge=left.rects[0];
+  assert.equal(leftLabel.textContent,'上野 · 步行 ←');
+  assert.ok(Number(leftLabel.attrs.x)<Number(leftBadge.attrs.x),'station name must be outside icon on left');
+  assert.ok(Number(leftBadge.attrs.x)<200,'icon remains on the railway-facing side');
+  assert.ok(left.all.some(n=>n.attrs['data-transfer-mode']==='walk'));
+  const nonWalk=render('left','in','→ 町屋站前','end');
+  assert.equal(nonWalk.texts.find(n=>n.textContent.includes('町屋')).textContent,'町屋站前 ←',
+    'different named station still points outward when source says in');
+  assert.ok(Number(nonWalk.texts.find(n=>n.textContent.includes('町屋')).attrs.x)<Number(nonWalk.rects[0].attrs.x));
+  const right=render('right','out','→ 牛田 · 步行','start');
+  assert.equal(right.texts.find(n=>n.textContent.includes('牛田')).textContent,'→ 牛田 · 步行');
+  assert.ok(Number(right.rects[0].attrs.x)<Number(right.texts.find(n=>n.textContent.includes('牛田')).attrs.x),
+    'right side mirrors icon → destination');
 });
