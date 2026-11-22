@@ -81,7 +81,13 @@ test('Yamanote left-side retains 4 columns without crossing the track',()=>{
   assert.ok(images.length<=15);
   assert.equal(plan.perRow,4);
   assert.equal(plan.rows,4);
-  assert.ok(Number(images[0].attrs.x)>=2,'left-side badges are clamped inside SVG view');
+  // Icons retain the same station-name edge even if local x becomes
+  // negative. The shared post-mount canvas fit brings *all* painted SVG
+  // content back within view without moving just the badges.
+  const name=all.find(x=>x.attrs['data-station-label']==='Shinjuku');
+  assert.ok(name);
+  assert.equal(Math.max(...images.map(x=>Number(x.attrs.x)+Number(x.attrs.width))),
+    Number(name.attrs.x),'4x4 group shares exact left-side main-station edge');
   assert.ok(extra&&/^\+\d+$/.test(extra.textContent));
 });
 test('mobile and no-overflow paths use the same unified L3 planner',()=>{

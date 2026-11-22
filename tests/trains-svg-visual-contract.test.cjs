@@ -363,3 +363,95 @@ test('Machiya station and Machiya-Ekimae icons mirror on separate aligned rows',
     assert.equal(Number(destination.attrs.y)-Number(icons[0].attrs.y),8);
   }
 });
+
+test('four-wide grouping, named destinations and overflow share one spacing model',()=>{
+  const begin=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const end=geometrySource.indexOf('})();',begin);
+  const context=vm.createContext({window:{currentLang:'ja',
+    RailwayDB:{resolveStationName:id=>({Other:'乗換先'})[id]||id},
+    ThroughChip:{measureWidth:(s,f)=>String(s).length*f}},_losGroupKey:()=>null});
+  vm.runInContext(geometrySource.slice(begin,end+5),context);
+  const model=context.window.StationInfoLayout;
+  for(const count of [0,1,2,3,4,5,7,12,16,19]){
+    const items=Array.from({length:count},(_,i)=>({
+      lineId:'L'+i,image:'img'+i+'.svg',name:'L'+i}));
+    const actual=model.plan(items,'Test','テスト',true).rows;
+    const reserve=model.reservedRows(items,'Test','テスト',true);
+    assert.equal(reserve,actual,'same 4x4 layout for '+count+' badge items');
+  }
+  const four=Array.from({length:4},(_,i)=>({lineId:'X'+i,image:'X'+i+'.svg'}));
+  assert.equal(model.reservedRows(four,'Test','テスト',true),1,
+    'four badges share one row instead of four station-pitch rows');
+  const named=[{lineId:'A',image:'A.png',toStation:'Other',type:'out'},
+    {lineId:'B',image:'B.png',toStation:'Other',type:'out'}];
+  assert.equal(model.reservedRows(named,'Test','テスト',true),1);
+});
+
+test('post-render content fit contains long left and right alias labels and moves trains together',()=>{
+  const start=rendererSource.indexOf('  function _fitStaticRouteContent(');
+  const end=rendererSource.indexOf('  // The SVG is a static frame',start);
+  assert.ok(start>=0&&end>start);
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(start,end),env);
+  function object(){return {attrs:{},setAttribute(k,v){this.attrs[k]=String(v);}};}
+  const svg=object(),rail=object(),trains=object();
+  rail.getBBox=()=>({x:-140,y:-12,width:660,height:1130});
+  const geometry={svgW:420,svgH:1250,layoutWidth:225,layoutHeight:1000,
+    canvasScale:1.2,canvasOffsetX:75,canvasOffsetY:24,
+    canvasTransform:'translate(75 24) scale(1.2)'};
+  assert.equal(env._fitStaticRouteContent(svg,rail,trains,geometry),true);
+  assert.equal(rail.attrs.transform,trains.attrs.transform,
+    'train positions follow the same transform as the static railway');
+  assert.equal(svg.attrs.viewBox,'0 0 420 '+geometry.svgH);
+  const left=geometry.canvasOffsetX-140*geometry.canvasScale;
+  const right=geometry.canvasOffsetX+520*geometry.canvasScale;
+  assert.ok(left>=23.9&&right<=396.1,'both sides fit within the 24-unit gutter');
+  assert.ok(geometry.canvasScale<1.2);
+  assert.ok(geometry.svgH>=geometry.canvasOffsetY+(1118)*geometry.canvasScale);
+});
+
+test('horizontal left and right branches keep name first and icons below with outward aliases',()=>{
+  const begin=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const end=rendererSource.indexOf('  function _isRealtimePositionFresh(',begin);
+  const lBegin=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const lEnd=geometrySource.indexOf('})();',lBegin);
+  assert.ok(begin>=0&&end>begin&&lBegin>=0&&lEnd>lBegin);
+  function node(tag){return {tag,attrs:{},children:[],textContent:'',
+    setAttribute(k,v){this.attrs[k]=String(v);},
+    appendChild(c){this.children.push(c);return c;}};}
+  const flat=n=>[n,...n.children.flatMap(flat)];
+  for(const side of ['left','right']){
+    const root=node('g'),window={currentLang:'zh',
+      RailwayDB:{resolveStationName:s=>s==='Target'?'换乘站':s},
+      ThroughChip:{badgeText:x=>x.name,measureWidth:(s,font)=>String(s).length*font,
+        normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]}};
+    const ctx=vm.createContext({window,document:{createElementNS:(_ns,t)=>node(t)},
+      _losGroupKey:()=>null});
+    vm.runInContext(geometrySource.slice(lBegin,lEnd+5)+
+      '\n'+rendererSource.slice(begin,end),ctx);
+    ctx._renderStationNode({info:root,nodes:node('g')},'svg',{
+      stationId:'Test',si:0,x:200,y:100,side,geometry:{},
+      svgW:420,svgH:600,color:'#777',isMobileView:true,
+      labelLines:['主站名'],horizontalBranch:true,labelAbove:true,
+      tx:200,ty:60,anchor:'middle',rS:()=> '主站名',
+      transferMap:{Test:[{lineId:'M',name:'M',image:'M.png',
+        toStation:'Target',type:'out'}]}});
+    const painted=flat(root);
+    const main=painted.find(x=>x.attrs['data-station-label']==='Test');
+    const img=painted.find(x=>x.tag==='image');
+    const text=painted.find(x=>x.tag==='text'&&x.textContent.includes('换乘站'));
+    const title=painted.find(x=>x.tag==='title');
+    assert.ok(main&&img&&text&&title);
+    assert.equal(Number(img.attrs.y)-Number(main.attrs.y),14);
+    assert.equal(Number(img.attrs.y)+16<100,true,
+      'horizontal branch title and icons remain above the track');
+    assert.equal(text.textContent,side==='left'?'换乘站 · 步行 ←':'→ 换乘站 · 步行');
+    assert.match(title.textContent,/步行/,'accessible title follows current language');
+    assert.ok(title.textContent.includes(side==='left'?'←':'→'));
+    const textEdge=side==='left'
+      ? Number(img.attrs.x)+Number(img.attrs.width)
+      : Number(img.attrs.x);
+    assert.ok(Math.abs(textEdge-Number(main.attrs.x))>1,
+      'center anchored branch uses measured station-name edge rather than center');
+  }
+});

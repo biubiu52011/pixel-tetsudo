@@ -144,8 +144,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _outwardWalkTransferArrow(anchor, side, labelX, stationX) {
     if (side === "top") return "↑";
     if (side === "bottom") return "↓";
-    if (anchor === "end") return "←";
-    if (anchor === "start") return "→";
+    if (anchor === "end" || (anchor === "middle" && side === "left")) return "←";
+    if (anchor === "start" || (anchor === "middle" && side === "right")) return "→";
     return Number(labelX) < Number(stationX) ? "←" : "→";
   }
 
@@ -321,9 +321,20 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     if (txLines.length > 0) {
       var ICON = window.StationInfoLayout.icon;
       var GAP = window.StationInfoLayout.gap;
-      // One L3 badge anchor rule applies to every station.
-      var _align = anchor;
-      var _edge = tx;
+      // Normal stations use their text anchor. Horizontal branch names are
+      // centered on a horizontal track point: calculate the *visible* label
+      // edge and choose the proper left/right mirrored icon alignment.
+      var _align = o.horizontalBranch
+        ? (side === "left" ? "end" : "start") : anchor;
+      var _horizontalNameWidth = o.horizontalBranch && o.labelLines
+        ? o.labelLines.reduce(function(w, str) {
+            return Math.max(w, Array.from(String(str)).reduce(function(n, c) {
+              return n + (/[^\u0000-\u007f]/.test(c) ? 16 : 9.6);
+            }, 0));
+          }, 0) : 0;
+      var _edge = o.horizontalBranch
+        ? tx + (side === "left" ? 1 : -1) * _horizontalNameWidth / 2
+        : tx;
       var _available = anchor === "end" ? tx - 2
         : anchor === "start" ? svgW - 2 - tx
         : Math.max(1, 2 * Math.min(tx - 2, svgW - 2 - tx));
@@ -338,19 +349,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // Alias name and outward arrow extend beyond the icon block.
       var ix0 = _align === "end" ? _edge - gridW
         : _align === "start" ? _edge : _edge - gridW / 2;
-      // If even one badge is wider than a narrow station column, preserve
-      // its anchor and let the shared static viewport include the overflow.
-      // Do not force it across the rail or let it cover another chip.
-      if (_align === "end" && ix0 < 2) ix0 = 2;
-      if (_align === "start" && ix0 + gridW > svgW - 2)
-        ix0 = Math.max(2, svgW - 2 - gridW);
+      // Keep the station-name edge EXACT even if x becomes negative or
+      // exceeds layoutWidth. The unified post-render content-fit keeps all
+      // labels inside the fixed viewport without breaking alignment.
       // Geometry reserves 14 units for the first-row station name.
       var iy0 = side === "top" ? o.y + 14 : ty + 14;
       if (o.transferBelowNode) iy0 = Math.max(iy0, o.y + 14);
-      if (o.horizontalBranch)
-        iy0 = o.labelAbove
-          ? ty - rows * window.StationInfoLayout.pitch - 14
-          : ty + (o.labelLines.length - 1) * 18 + 14;
+      if (o.horizontalBranch) {
+        // Place the two-row station label above the icon grid even when the
+        // branch title itself is above the horizontal rail. Shift both rows
+        // together upward to retain the original track clearance.
+        if (o.labelAbove && rows > 0) {
+          ty -= rows * window.StationInfoLayout.pitch;
+          label.setAttribute("y", ty);
+        }
+        iy0 = ty + (o.labelLines.length - 1) * 18 + 14;
+      }
       iy0 = Math.max(2, iy0);
       // The transfer group itself is transparent. White rectangles behind
       // every station made iOS Smart Invert look like another mini-canvas.
@@ -362,7 +376,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         badgeGroup.setAttribute("data-alignment-reference", "station-label-edge");
         badgeGroup.setAttribute("data-reference-x", String(_edge));
         infoGroup.appendChild(badgeGroup);
-        var leftGrid = anchor === "end" && side !== "top" && side !== "bottom";
+        var leftGrid = _align === "end" && side !== "top" && side !== "bottom";
         var physicalCol = function(slot) {
           return leftGrid ? slot.col + 4 - badgePlan.rowUsed[slot.row] : slot.col;
         };
@@ -387,13 +401,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           itemGroup.setAttribute("role", "img");
           badgeGroup.appendChild(itemGroup);
           var badgeTitle = document.createElementNS(svgNS, "title");
-          badgeTitle.textContent = parts.map(function(p) {
+          var iconNames = parts.map(function(p) {
             return window.ThroughChip.badgeText(p.item);
-          }).join("、") + (item.toStation ? " → " +
-            (window.RailwayDB && window.RailwayDB.resolveStationName
+          }).join("、");
+          var targetName = item.toStation
+            ? (window.RailwayDB && window.RailwayDB.resolveStationName
               ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang)
-              : item.toStation) : "") +
-            (parts.some(function(p) { return p.item.type === "out"; }) ? " · 徒歩" : "");
+              : item.toStation) : "";
+          var arrowText = _outwardWalkTransferArrow(_align, side, tx, o.x);
+          badgeTitle.textContent = targetName
+            ? (leftGrid ? targetName + " " + arrowText + " " + iconNames
+              : iconNames + " " + arrowText + " " + targetName)
+            : iconNames;
+          if (isWalk) badgeTitle.textContent += " · " +
+            (({ja:"徒歩",zh:"步行",en:"walk",ko:"도보"})[
+              window.currentLang || "ja"] || "徒歩");
           itemGroup.appendChild(badgeTitle);
           itemGroup.setAttribute("aria-label", badgeTitle.textContent);
           // A shared baseline is required even if the badge uses an image.
@@ -465,7 +487,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             // outward arrow. A left label reverses visual order as
             // 'destination · walk ← [badges]' without changing content or
             // semantic station links; the opposite side remains mirrored.
-            var exitArrow = _outwardWalkTransferArrow(anchor, side, tx, o.x);
+            var exitArrow = _outwardWalkTransferArrow(_align, side, tx, o.x);
             extraLabel.textContent = leftGrid
               ? entry.extra.replace(/^→\s*/, "") + " " + exitArrow
               : entry.extra.replace(/^→(?=\s)/, exitArrow);
@@ -692,6 +714,44 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var layer = el.querySelector('.train-layer');
     if (layer && typeof layer._cancelTrainFoldGesture === 'function') layer._cancelTrainFoldGesture();
     if (layer && typeof layer._closeTrainFoldPopover === 'function') layer._closeTrainFoldPopover(false);
+  }
+
+  // Once fonts and the static station SVG exist, fit its actual painted
+  // content (including outward transfer names) into the fixed-width canvas.
+  // Reuse ONE transform for the static railway and moving trains; never move
+  // an annotation independently to hide overflow or change the fixed viewBox.
+  function _fitStaticRouteContent(svg, staticLayer, trainLayer, geometry) {
+    if (!staticLayer || typeof staticLayer.getBBox !== "function") return false;
+    var box;
+    try { box = staticLayer.getBBox(); } catch (_e) { return false; }
+    if (!box || ![box.x, box.y, box.width, box.height].every(isFinite) ||
+        box.width <= 0 || box.height <= 0) return false;
+    var canvasWidth = Number(geometry.svgW), oldScale = Number(geometry.canvasScale);
+    if (!(canvasWidth > 0) || !(oldScale > 0)) return false;
+    var gutter = Math.max(10, Math.min(24, Number(geometry.canvasOffsetY) || 24));
+    var minX = Math.min(0, box.x), maxX = Math.max(Number(geometry.layoutWidth), box.x + box.width);
+    var minY = Math.min(0, box.y), maxY = Math.max(Number(geometry.layoutHeight), box.y + box.height);
+    var spanX = maxX - minX;
+    if (!(spanX > 0)) return false;
+    var scale = Math.min(oldScale, (canvasWidth - gutter * 2) / spanX);
+    var offsetX = (canvasWidth - spanX * scale) / 2 - minX * scale;
+    var offsetY = gutter - minY * scale;
+    var height = Math.ceil((maxY - minY) * scale + gutter * 2);
+    var changed = Math.abs(oldScale - scale) > 0.000001 ||
+      Math.abs(Number(geometry.canvasOffsetX) - offsetX) > 0.01 ||
+      Math.abs(Number(geometry.canvasOffsetY) - offsetY) > 0.01 ||
+      Number(geometry.svgH) !== height;
+    if (!changed) return false;
+    geometry.canvasScale = scale;
+    geometry.canvasOffsetX = offsetX;
+    geometry.canvasOffsetY = offsetY;
+    geometry.svgH = height;
+    geometry.canvasTransform = "translate(" + offsetX + " " + offsetY +
+      ") scale(" + scale + ")";
+    staticLayer.setAttribute("transform", geometry.canvasTransform);
+    trainLayer.setAttribute("transform", geometry.canvasTransform);
+    svg.setAttribute("viewBox", "0 0 " + canvasWidth + " " + height);
+    return true;
   }
 
   // The SVG is a static frame, not a camera. Geometry owns its fixed
@@ -1190,6 +1250,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // Commit one stable viewport after station labels/transfer badges
       // have their final static sizes. Do NOT include the train-layer:
       // empty/loaded/timetable/realtime states must share the same L1 bounds.
+      // Resize by a common transform only after actual multilingual text is
+      // measured; both the static track and dynamic train markers stay aligned.
+      _fitStaticRouteContent(svg, staticLayer, trainLayer, geometry);
       _commitStaticRouteViewport(svg, staticLayer, geometry);
       updateTrainLayer(svg, positions, stationCoords, lineId, displayLine, geometry);
       updateRunningInfo(el, positions);
