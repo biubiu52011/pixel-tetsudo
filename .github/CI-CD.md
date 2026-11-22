@@ -10,9 +10,12 @@ Build and the reusable verify-train-png.yml suite must both pass before deploy.
 - Shared UI, translation, and page presentation tests run in Pages build.
   Train/SQL/PNG/canonical metadata tests are owned by the reusable train suite.
 - The CI test registry (scripts/ci-test-registry.cjs) checks every test file.
-  Historical gaps are explicitly listed in scripts/ci-test-legacy.json; new
-  tests with no YAML owner are automatically executed in Pages CI.
-  Gradually migrate historical gaps into the responsible test suites.
+  In scripts/ci-test-legacy.json, 42 previously unregistered, verified tests
+  now run as a REQUIRED release gate. Seven historical failing test files remain
+  explicitly quarantined with reasons and are separately rechecked as advisory
+  until their assertions are reconciled with the current canonical runtime.
+  New tests with no YAML owner automatically become REQUIRED CI tests.
+  Do not remove failing assertions solely to get a green check.
 - Older build jobs can be canceled when a new push arrives. Only deploy
   holds the serial Pages deployment lock, never canceling an active deploy.
 - The deployment job alone receives pages:write and id-token:write.
