@@ -95,6 +95,13 @@ jobs:
           }
           NODE
       # Page script hashes and presentation checks run once in Pages build.
+      - name: Validate canonical railway metadata, PNG catalog and generated data
+        run: |
+          node --check tools/railway-metadata-audit.cjs
+          node tools/railway-metadata-audit.cjs --strict
+          node --test tests/railway-metadata-audit.test.cjs tests/train-number-png-catalog.test.cjs
+          node tools/build-train-number-png-catalog.cjs --check --check-inventory --strict
+          node data/core/generate-all.js --check
       - name: Check JavaScript syntax
         run: |
           node --check js/train-vehicle.js

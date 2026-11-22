@@ -35,6 +35,8 @@ jobs:
         run: node scripts/sync-page-scripts.cjs --check
       - name: Test page script manifest
         run: node --test tests/page-scripts.test.cjs
+      - name: Verify canonical line ordering and train overview
+        run: node --test tests/line-overview-presentation.test.cjs tests/train-overview-dom.test.cjs
       - name: Verify CI test inventory and execute new unlisted tests
         run: node scripts/ci-test-registry.cjs
       - name: Verify multilingual site switching and station names

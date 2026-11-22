@@ -1,52 +1,50 @@
 # Pixel Tetsudo CI/CD
 
-## Main branch: direct commit, gated deploy
+## Single Pages deployment entrypoint
 
-Direct pushes to `main` trigger `.github/workflows/static.yml` (CI/CD - Pages).
-No pull request is required and the workflow never creates one.
+Commit directly to main (no PR). Only static.yml deploys GitHub Pages.
+Build and the reusable verify-train-png.yml suite must both pass before deploy.
 
-The workflow runs two independent validation jobs in parallel:
+- Build validates generated static bundles and the canonical page-script hashes.
+  Never silently rewrite generated HTML during CI to hide stale committed data.
+- Shared UI, translation, and page presentation tests run in Pages build.
+  Train/SQL/PNG/canonical metadata tests are owned by the reusable train suite.
+- The CI test registry (scripts/ci-test-registry.cjs) checks every test file.
+  Historical gaps are explicitly listed in scripts/ci-test-legacy.json; new
+  tests with no YAML owner are automatically executed in Pages CI.
+  Gradually migrate historical gaps into the responsible test suites.
+- Older build jobs can be canceled when a new push arrives. Only deploy
+  holds the serial Pages deployment lock, never canceling an active deploy.
+- The deployment job alone receives pages:write and id-token:write.
 
-- `build`: verify generated static bundles and page-script hashes, run UI/data/runtime tests,
-  validate the published-asset contract, then build/upload only `.pages-dist`.
-- `train-contracts`: call `verify-train-png.yml` via `workflow_call`, running its
-  gallery and train/PNG/SQL contract tests.
+## Other workflows
 
-`deploy` requires **both** jobs to succeed and runs only for `refs/heads/main`.
-A failed check therefore blocks GitHub Pages deployment, even when the other job passes.
-The Pages concurrency group intentionally queues deployment instead of cancelling a
-deployment in progress (to avoid Pages deployment locks).
+| Workflow | Trigger | Responsibility |
+| --- | --- | --- |
+| static.yml | Every push to main; manual | Single CI/CD + Pages publication |
+| verify-train-png.yml | Reusable call; manual | Rail metadata, train/SQL/PNG and canonical contract checks |
+| audit-external-rail.yml | Relevant file push; manual selection | Read-only external observations for live trains, Tobu, Toei and dated GTFS |
+| runinfo-snapshot.yml | Schedule; relevant source changes; manual | Refresh verified official monorail status snapshot |
+| tokyo-gtfs-stage.yml | Manual | SHA-256 locked, credentialed SQL staging |
+| tokyo-gtfs-sync.yml | Manual | SHA-256 locked, OIDC-protected SQL quarantine |
 
-## Actions menu / manual operation
+The runinfo snapshot bot commit contains [skip ci] to avoid ordinary push
+trigger loops. Since GITHUB_TOKEN pushes do not start other push workflows,
+runinfo-snapshot.yml explicitly dispatches static.yml only AFTER a changed
+snapshot was successfully pushed. GITHUB_TOKEN requires actions:write only
+in this updater; Pages build and external probes remain read-only.
 
-| Workflow | Purpose | Automatic trigger | Manual |
-| --- | --- | --- | --- |
-| CI/CD - Pages (`static.yml`) | Validate + publish production Pages | Push to `main` | Yes; non-`main` dispatch validates but does not deploy |
-| CI - Train/PNG contracts (`verify-train-png.yml`) | Reusable complete train-related CI gate | Called by Pages CI/CD | Yes; verification only |
-| Refresh official monorail run information (`runinfo-snapshot.yml`) | Refresh source-backed monorail status JSON | Scheduled, selected source changes | Yes |
-| Stage audited TokyoGTFS railway timetable (`tokyo-gtfs-stage.yml`) | Manually checksum-lock and stage feed with DB credential | None | Yes |
-| Merge checksum-locked TokyoGTFS source into SQL quarantine (`tokyo-gtfs-sync.yml`) | Checksum-locked OIDC import to restricted SQL staging | Changes to its own workflow file | Yes |
-| Verify Tobu dated SQL plan runtime (`verify-tobu-skytree-gtfs-runtime.yml`) | Check deployed Edge Function / dated SQL fixtures | Relevant files changed | Yes |
+External API reachability must not block normal Pages releases. The two GTFS
+import workflows keep different authentication and staging semantics, and
+must not silently promote staged trip numbers or PNG mappings into live data.
 
-These data and runtime-monitoring workflows **do not** publish Pages themselves.
-Do not merge the two TokyoGTFS import workflows without confirming their different
-authentication and staging semantics.
+## Maintenance
 
-## Maintenance rules
-
-1. Modify the responsible source, script, or manifest before adding another
-   specialized CI patch or test.
-2. When script dependencies change, run
-   `node scripts/sync-page-scripts.cjs` and commit the generated `pages/*.html`
-   alongside the source; CI checks with `--check` and fails on stale hashes.
-3. When generated data bundles change, regenerate them using their owning
-   scripts and commit the updated artifacts before deploying.
-4. Add train/PNG contract steps to `verify-train-png.yml`; do not add file-by-file
-   `push.paths` entries. Every production push now executes this complete suite.
-5. Keep runtime-only Pages packaging in `scripts/build-pages-site.cjs`, with
-   `tests/pages-artifact-contract.test.cjs` guarding included/excluded assets.
-6. The GitHub Actions `schedule` trigger is best-effort, **not** a 15-minute
-   freshness SLA. The site rejects expired run-info snapshots; investigate a
-   dedicated scheduler if a more reliable update interval is required.
-7. Only the run-info workflow writes its snapshot back to `main`. GTFS jobs
-   target quarantine/staging and must not silently alter live timetables.
+1. Modify the owner script or data table, not duplicate patches in workflows.
+2. After JS edits, run node scripts/sync-page-scripts.cjs and commit all
+   generated pages/*.html version changes. Pages CI checks with --check.
+3. Regenerate canonical data bundles before publishing any data changes.
+4. Add all train/PNG/SQL regression commands to verify-train-png.yml.
+5. Keep the Pages asset whitelist in scripts/build-pages-site.cjs and its tests.
+6. GitHub schedule is best effort and cannot guarantee 15-minute freshness.
+7. Never commit database credentials. GTFS imports remain manual and isolated.
