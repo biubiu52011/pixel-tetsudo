@@ -37,11 +37,8 @@ jobs:
         run: node --test tests/page-scripts.test.cjs
       - name: Verify canonical line ordering and train overview
         run: node --test tests/line-overview-presentation.test.cjs tests/train-overview-dom.test.cjs
-      - name: Verify CI test inventory and execute new unlisted tests
+      - name: Verify CI test registry and mandatory extended regressions
         run: node scripts/ci-test-registry.cjs
-      - name: Recheck seven quarantined historical test files (advisory)
-        continue-on-error: true
-        run: node scripts/ci-test-registry.cjs --quarantine-sweep
       - name: Verify multilingual site switching and station names
         run: node --test tests/site-auto-translation.test.cjs tests/station-i18n-completeness.test.cjs
       - name: Verify Sotetsu-JR published November train clocks, vehicle PNG mapping and date guards
