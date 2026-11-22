@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const csv = fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8');
 const index = JSON.parse(fs.readFileSync('data/audits/png-to-train-number-index-2611.json','utf8'));
 const byPng = new Map(index.pngIndex.map(entry => [entry.path,entry]));
-const items = csv.trimEnd().split('\n').slice(1)
+const items = csv.trimEnd().split(/\r?\n/).slice(1)
   .filter(row => row.startsWith('其他铁路,')).map(row => row.split(','));
 
 test('other railway category covers 41 distinct existing PNGs without assigning unsupported number bands',()=>{

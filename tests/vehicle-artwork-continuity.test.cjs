@@ -491,3 +491,70 @@ test('Ryutetsu and Choshi staged trip numbers never select a formation or livery
     assert.equal(refs[0].lineIds.length,0,name+' has no runtime line scope');
   }
 });
+
+test('Hakodate tram car numbers never become persistent service-number bands',()=>{
+  const names=[
+    'toq9002or.png',
+    '函館市電_3000形_3001号車.png',
+    '函館市電_3000形_3002号車.png',
+    '函館市電_3000形.png',
+    '函館市電_30形_39号車.png',
+    '函館市電_500形.png',
+    '函館市電_7000形.png',
+    '函館市電_710形_広告車.png',
+    '函館市電_710形.png',
+    '函館市電_8000形_広告車.png'
+  ];
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const name of names){
+    assert.equal(ranges.includes(name),false,name+' has no persistent number band');
+    const entry=byPath.get('images/列车/函館市電/'+name);
+    assert.ok(entry,name+' must remain in the audit index');
+    assert.equal(entry.status,name==='toq9002or.png'
+      ? 'quarantined_visual_identity' : 'no_verified_number_mapping',name);
+    assert.deepEqual(entry.directNumberRules,[],name);
+    assert.deepEqual(entry.runtimeNumberRosters,[],name);
+    assert.deepEqual(entry.historicalNumberedSources,[],name);
+  }
+
+  const quarantined='../images/列车/函館市電/toq9002or.png';
+  assert.equal(win.VehicleGaragePngMap.isQuarantinedPng(quarantined),true);
+  const unknownRefs=win.VehicleGaragePngMap.findPath(quarantined);
+  assert.equal(unknownRefs.length,1);
+  assert.equal(unknownRefs[0].lineIds.length,0);
+
+  for(const name of ['函館市電_710形_広告車.png','函館市電_8000形_広告車.png']){
+    const refs=win.VehicleGaragePngMap.findPath('../images/列车/函館市電/'+name);
+    assert.equal(refs.length,1,name+' must remain inventory-visible');
+    assert.equal(refs[0].canonicalImage,false,name+' stays review-only');
+    assert.equal(refs[0].lineIds.length,0,name+' has no exact car identity or runtime line scope');
+  }
+
+  // Hakodate GTFS-RT vehicle_id is physical-car evidence. It can select an
+  // exact car image transiently, but the same digits in trainNumber cannot.
+  for(const [car,model,file] of [
+    ['3001','函館市電3000形（3001号車）','函館市電_3000形_3001号車.png'],
+    ['3002','函館市電3000形（3002号車）','函館市電_3000形_3002号車.png'],
+    ['39','函館市電30形（39号車）','函館市電_30形_39号車.png']
+  ]){
+    const result=win.TrainVehicle.resolve({
+      operator:'HakodateCity',lineId:'Hakodate2',
+      railway:'odpt.Railway:HakodateCity.Hakodate2',
+      realtimeCarNumber:car,serviceDate:'2026-11-23',
+      _realtimeVehicleResolution:true
+    });
+    assert.equal(result.identityStatus,'EXACT',car);
+    assert.equal(result.name,model,car);
+    assert.equal(result.iconPath,'../images/列车/函館市電/'+file,car);
+  }
+  const serviceNumberOnly=win.TrainVehicle.resolve({
+    operator:'HakodateCity',lineId:'Hakodate2',
+    railway:'odpt.Railway:HakodateCity.Hakodate2',
+    trainNumber:'3001',serviceDate:'2026-11-23'
+  });
+  assert.equal(serviceNumberOnly.identityStatus,'UNKNOWN');
+  assert.equal(serviceNumberOnly.iconPath,'');
+});
