@@ -325,3 +325,37 @@ test('Odakyu and Hakone artwork require service-scoped vehicle evidence',()=>{
     assert.equal(refs[0].lineIds.length,0,name+' must remain outside runtime line scope');
   }
 });
+
+test('Keikyu owner codes and consist length never select a fleet PNG',()=>{
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const names=[
+    '京浜急行電鉄_1000形_1200番台.png','京浜急行電鉄_1000形_1300番台.png',
+    '京浜急行電鉄_1000形_1500番台.png','京浜急行電鉄_1000形_1800番台.png',
+    '京浜急行電鉄_1500形.png','京浜急行電鉄_600形.png'
+  ];
+  for(const name of names)
+    assert.equal(ranges.includes(name),false,name+' has no verified train-number mapping');
+
+  // A Keikyu H operation code and a 4/6/8-car timetable entry identify
+  // neither the exact model nor the 1000-series sub-type shown by the PNG.
+  const keikyu1000=win.TrainVehicle.resolveCanonicalVehicle('京急1000形');
+  assert.equal(keikyu1000?.asset||null,null,'planned 1200 artwork is not actual sub-type proof');
+  assert.equal(keikyu1000?.plannedAsset,
+    '../images/列车/京浜急行電鉄/京浜急行電鉄_1000形_1200番台.png');
+
+  for(const name of ['京浜急行電鉄_1000形_1300番台.png',
+    '京浜急行電鉄_1000形_1500番台.png','京浜急行電鉄_1000形_1800番台.png']){
+    const path='../images/列车/京浜急行電鉄/'+name;
+    const refs=win.VehicleGaragePngMap.findPath(path);
+    assert.equal(refs.length,1,name+' must remain inventory-visible');
+    assert.equal(refs[0].lineIds.length,0,name+' must remain outside runtime line scope');
+    assert.equal(win.VehicleGaragePngMap.matchModelPath('京急1000形',path,'Keikyu'),false);
+  }
+
+  for(const [model,file] of [['京急1500形','京浜急行電鉄_1500形.png'],
+    ['京急600形','京浜急行電鉄_600形.png']]){
+    const ref=win.TrainVehicle.resolveCanonicalVehicle(model);
+    const expected='../images/列车/京浜急行電鉄/'+file;
+    assert.equal(ref?.asset,expected,model+' remains a valid canonical image');
+  }
+});
