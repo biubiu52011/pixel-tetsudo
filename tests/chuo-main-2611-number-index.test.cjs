@@ -4,8 +4,8 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const w={};
-vm.runInNewContext(fs.readFileSync('data/timetables/jreast-chuo-main-2611-number-index.js','utf8'),{window:w});
-const idx=w.JREastChuoMainNumbers2611;
+vm.runInNewContext(fs.readFileSync('data/timetables/jreast-chuo-main-number-index.js','utf8'),{window:w});
+const idx=w.JREastChuoMainNumbers;
 const ground={
   weekday:{Inbound:201,Outbound:203},
   holiday:{Inbound:216,Outbound:219}

@@ -7,10 +7,10 @@ const root={},context=vm.createContext({window:root,Date,console:{debug(){},warn
 for(const path of [
  'data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-tazawako-2611-number-index.js',
+ 'data/timetables/jreast-tazawako-number-index.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),context,{filename:path});
-const index=root.JREastTazawakoNumberIndex202611;
+const index=root.JREastTazawakoNumberIndex;
 const png='../images/列车/JR東日本/JR東日本_701系_5000番台.png';
 const line=['Morioka','Maegata','Okama','Koiwai','Shizukuishi',
  'Harukiba','Akabuchi','Tazawako','Sashimaki','Jindai',
@@ -132,18 +132,18 @@ test('Tazawako 701 photo is permitted representative only, never physical consis
 });
 test('lazy asset/manifest and estimator source guard shipped with exact SHA',()=>{
  const manifest=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const path='data/timetables/jreast-tazawako-2611-number-index.js';
+ const path='data/timetables/jreast-tazawako-number-index.js';
  assert.deepEqual(manifest.lazyScopes.trains[path],['Tazawako']);
  assert.equal(manifest.lazy.trains.filter(p=>p===path).length,1);
  assert.equal(manifest.lazy.trains.indexOf(path),
-  manifest.lazy.trains.indexOf('data/timetables/jreast-tadami-2611-number-index.js')+1);
+  manifest.lazy.trains.indexOf('data/timetables/jreast-tadami-number-index.js')+1);
  const page=fs.readFileSync('pages/trains.html','utf8');
- assert.match(page,/jreast-tazawako-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tazawako"/);
+ assert.match(page,/jreast-tazawako-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tazawako"/);
  for(const path of [
-  'data/timetables/jreast-tazawako-2611-number-index.js',
+  'data/timetables/jreast-tazawako-number-index.js',
   'js/train-position-estimator.js'
  ]){
-  const data=fs.readFileSync(path),sha=crypto.createHash('sha1')
+  const data=Buffer.from(fs.readFileSync(path,'utf8').replace(/\r\n/g,'\n')),sha=crypto.createHash('sha1')
    .update('blob '+data.length+'\0').update(data).digest('hex').slice(0,12);
   assert.ok(page.includes('../'+path+'?v='+sha),path+' correct blob fingerprint');
  }

@@ -8,9 +8,9 @@ const root={},ctx=vm.createContext({window:root,Date,console:{
 for(const path of [
  'data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-senzan-2611-number-index.js',
- 'data/timetables/jreast-shinonoi-2611-number-index.js',
- 'data/timetables/jreast-suigun-2611-number-index.js',
+ 'data/timetables/jreast-senzan-number-index.js',
+ 'data/timetables/jreast-shinonoi-number-index.js',
+ 'data/timetables/jreast-suigun-number-index.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),ctx,{filename:path});
 const png='../images/列车/JR東日本/JR東日本_キハE130系0番台.png';
@@ -22,7 +22,7 @@ function p(number,line='Suigun',calendar='weekday',dir='Inbound',date='2026-11-0
   trainType:'odpt.TrainType:JR-East.Local',
   vehicleIdentityStatus:'UNKNOWN'};
 }
-const resolve=x=>root.JREastSuigunNumberIndex202611.resolve(x);
+const resolve=x=>root.JREastSuigunNumberIndex.resolve(x);
 const icon=x=>root.TrainVehicle.selectMarkerArtwork(x,false);
 test('both separately scoped railways use planned KiHa E130 0 without claimed carset',()=>{
  for(const x of [p('820D'),p('920D','SuigunBranch'),p('920D','Suigun')]){
@@ -145,22 +145,22 @@ test('existing Senzan/Shinonoi match adapters survive the new nested adapter',()
 });
 test('canonical manifest, relative page script, SHA-12 and migration safety',()=>{
  const m=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const path='data/timetables/jreast-suigun-2611-number-index.js';
+ const path='data/timetables/jreast-suigun-number-index.js';
  assert.equal(m.lazy.trains.filter(x=>x===path).length,1);
  assert.equal(m.lazyScopes.trains[path].join('|'),'Suigun|SuigunBranch');
 
  assert.equal(m.lazy.trains.indexOf(path),
-  m.lazy.trains.indexOf('data/timetables/jreast-shinonoi-2611-number-index.js')+1);
+  m.lazy.trains.indexOf('data/timetables/jreast-shinonoi-number-index.js')+1);
  const html=fs.readFileSync('pages/trains.html','utf8');
  // The cold loader splits data-line-scope on COMMAS (not pipes).
  // Before this regression fix both the main and branch skipped this
  // script, silently replacing certified art with an unresolved dot.
  const detail=fs.readFileSync('js/trains-detail-loader.js','utf8');
  assert.match(detail,/scope\.split\(","\)\.indexOf\(id\)/);
- assert.match(html,/jreast-suigun-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Suigun,SuigunBranch"/);
+ assert.match(html,/jreast-suigun-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Suigun,SuigunBranch"/);
  assert.doesNotMatch(html,/data-line-scope="Suigun\|SuigunBranch"/);
  for(const file of [path,'js/train-vehicle.js','data/timetables/vehicle-garage-png-map.js']){
-  const b=fs.readFileSync(file),hash=crypto.createHash('sha1')
+  const b=Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')),hash=crypto.createHash('sha1')
    .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+file+'?v='+hash),'stale '+file);
  }

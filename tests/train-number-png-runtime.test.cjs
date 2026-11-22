@@ -21,12 +21,12 @@ const root={},ctx=vm.createContext({
 });
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/nambu-branch-official-202611.js',
-  'data/timetables/joban-e231-h-202611-index.js',
-  'data/timetables/jreast-keihin-2611-number-index.js',
-  'data/timetables/jreast-yokohama-2611-number-index.js',
-  'data/timetables/jreast-yamanote-2611-number-index.js',
-  'data/timetables/jreast-regional-2611-number-index.js',
+  'data/timetables/nambu-branch-official.js',
+  'data/timetables/joban-e231-h-index.js',
+  'data/timetables/jreast-keihin-number-index.js',
+  'data/timetables/jreast-yokohama-number-index.js',
+  'data/timetables/jreast-yamanote-number-index.js',
+  'data/timetables/jreast-regional-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -1721,11 +1721,11 @@ test('Joban 2026-11 E231 H / E657 Hitachi-Tokiwa M official-number artwork',()=>
   assert.equal(root.TrainVehicle.selectMarkerArtwork({...express('1M'),
     displayLineId:'Joban'},true).kind,'unresolved');
   const html=fs.readFileSync('pages/trains.html','utf8');
-  const index=fs.readFileSync('data/timetables/joban-e231-h-202611-index.js','utf8');
+  const index=fs.readFileSync('data/timetables/joban-e231-h-index.js','utf8');
   const indexVersion=index.match(/version:"([^"]+)"/);
   assert.ok(indexVersion,'snapshot must expose cache version');
-  assert.ok(html.includes('joban-e231-h-202611-index.js?v='+hashFor('data/timetables/joban-e231-h-202611-index.js')));
-  assert.ok(html.indexOf('joban-e231-h-202611-index.js') <
+  assert.ok(html.includes('joban-e231-h-index.js?v='+hashFor('data/timetables/joban-e231-h-index.js')));
+  assert.ok(html.indexOf('joban-e231-h-index.js') <
     html.indexOf('train-number-png-ranges.js'),
     'H set must load before the PNG selector');
 });
@@ -1794,7 +1794,7 @@ test('Nambu 2319F official holiday train renders representative E233 PNG',()=>{
 
 
 test('JR East 2611 Keihin-Tohoku official index matches all four source calendars/directions',()=>{
-  const index=root.JREastKeihin202611NumberIndex;
+  const index=root.JREastKeihinNumberIndex;
   assert.ok(index);
   const expected={
     'Weekday|Northbound':343,'Weekday|Southbound':343,
@@ -2058,7 +2058,7 @@ test('Hachiko south E retains E231/209 mixed-fleet evidence and excludes Kawagoe
     {...north,displayLineId:'Hachiko'},true).kind,'unresolved');
 });
 test('JR 2611 Yamanote exact official G numbers by calendar and loop',()=>{
-  const index=root.JREastYamanote202611NumberIndex;
+  const index=root.JREastYamanoteNumberIndex;
   assert.ok(index,'official Yamanote 2611 index is loaded');
   for(const [k,count] of Object.entries({
     'Weekday|InnerLoop':255,
@@ -2736,7 +2736,7 @@ test('JR 2611 NambuBranch H-number positions use an official line-scoped E127 re
     railDirection:'odpt.RailDirection:Inbound',
     vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false
   };
-  const index=root.NambuBranchOfficial202611;
+  const index=root.NambuBranchOfficial;
   assert.equal(index.inboundCount,39);
   assert.equal(index.outboundCount,41);
   for(const [number,direction] of [

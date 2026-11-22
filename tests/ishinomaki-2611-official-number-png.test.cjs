@@ -14,7 +14,7 @@ const ctx=vm.createContext({window:win,Date,console:{
 },_isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-ishinomaki-2611-number-index.js',
+  'data/timetables/jreast-ishinomaki-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -24,7 +24,7 @@ const markerStart=renderer.indexOf('  function _trainMarkerDomKind(');
 const markerEnd=renderer.indexOf('  // Public identification boundary:',markerStart);
 assert.ok(markerStart>=0&&markerEnd>markerStart);
 vm.runInContext(renderer.slice(markerStart,markerEnd),ctx,{filename:'js/trains-render.js:marker'});
-const index=win.JREastIshinomakiNumberIndex202611;
+const index=win.JREastIshinomakiNumberIndex;
 const normalPng='../images/列车/JR東日本/JR東日本_キハ110系.png';
 const hybridPng='../images/列车/JR東日本/JR東日本_HB-E210系.png';
 const position=(number,direction,type,model,extra={})=>({
@@ -116,7 +116,7 @@ test('estimator keeps official SQL number but drops historical phantom timetable
     static now(){return Date.parse(dateIso);}
   }
   const railwayLine={stations:['Kogota','Maeyachi','Ishinomaki','Onagawa'],operator:'JR-East'};
-  const root={RuntimeConfig:{},JREastIshinomakiNumberIndex202611:index,
+  const root={RuntimeConfig:{},JREastIshinomakiNumberIndex:index,
     ODPTClient:{LINE_RAILWAY_CODE:{Ishinomaki:'Ishinomaki'},
       LINE_TO_OPERATOR:{Ishinomaki:'JR-East'}}};
   const c=vm.createContext({window:root,Date:FixedDate,console:{

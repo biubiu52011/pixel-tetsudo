@@ -41,7 +41,7 @@ test('shared working cannot become a single E231 or 209 physical PNG',()=>{
   _isTrainArtworkFailureActive(){return false}});
  for(const path of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js',
+  'data/timetables/jreast-sotetsu-jr-direct-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js','data/timetables/vehicle-operation-evidence-data.js'
  ])vm.runInContext(read(path),ctx,{filename:path});

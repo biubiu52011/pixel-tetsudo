@@ -105,47 +105,47 @@
       "data/timetables/north-south-mh-index.js",
       "data/timetables/train-coupling-index.js",
       "data/timetables/vehicle-garage-png-map.js",
-      "data/timetables/joban-e231-h-202611-index.js",
-      "data/timetables/jreast-sobu-yokosuka-202611-number-index.js",
-      "data/timetables/jreast-chiba-number-index-202611.js",
-      "data/timetables/jreast-togane-number-index-202611.js",
-      "data/timetables/jreast-narita-abiko-number-index-202611.js",
-      "data/timetables/jreast-shonan-mixed-number-index-202611.js",
-      "data/timetables/jreast-yamanote-2611-number-index.js",
-      "data/timetables/jreast-yokohama-2611-number-index.js",
-      "data/timetables/jreast-keihin-2611-number-index.js",
-      "data/timetables/jreast-hakushin-2611-number-index.js",
-      "data/timetables/jreast-gono-2611-number-index.js",
-      "data/timetables/jreast-oga-2611-number-index.js",
-      "data/timetables/jreast-ishinomaki-2611-number-index.js",
-      "data/timetables/jreast-kitakami-2611-number-index.js",
-      "data/timetables/jreast-yamada-2611-number-index.js",
-      "data/timetables/jreast-iiyama-2611-number-index.js",
-      "data/timetables/jreast-ominato-2611-number-index.js",
-      "data/timetables/jreast-rikutsu-west-2611-number-index.js",
-      "data/timetables/jreast-rikuto-east-2611-number-index.js",
-      "data/timetables/jreast-regional-2611-number-index.js",
-      "data/timetables/jreast-ryomo-2611-number-index.js",
-      "data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js",
-      "data/timetables/jreast-chuo-main-2611-number-index.js",
-      "data/timetables/tobu-isesaki-2611-number-png.js",
-      "data/timetables/tobu-koizumi-2611-number-png.js",
-      "data/timetables/tobu-sano-2611-number-png.js",
-      "data/timetables/tobu-kiryu-2611-number-png.js",
-      "data/timetables/tobu-utsunomiya-2611-number-png.js",
+      "data/timetables/joban-e231-h-index.js",
+      "data/timetables/jreast-sobu-yokosuka-number-index.js",
+      "data/timetables/jreast-chiba-number-index.js",
+      "data/timetables/jreast-togane-number-index.js",
+      "data/timetables/jreast-narita-abiko-number-index.js",
+      "data/timetables/jreast-shonan-mixed-number-index.js",
+      "data/timetables/jreast-yamanote-number-index.js",
+      "data/timetables/jreast-yokohama-number-index.js",
+      "data/timetables/jreast-keihin-number-index.js",
+      "data/timetables/jreast-hakushin-number-index.js",
+      "data/timetables/jreast-gono-number-index.js",
+      "data/timetables/jreast-oga-number-index.js",
+      "data/timetables/jreast-ishinomaki-number-index.js",
+      "data/timetables/jreast-kitakami-number-index.js",
+      "data/timetables/jreast-yamada-number-index.js",
+      "data/timetables/jreast-iiyama-number-index.js",
+      "data/timetables/jreast-ominato-number-index.js",
+      "data/timetables/jreast-rikutsu-west-number-index.js",
+      "data/timetables/jreast-rikuto-east-number-index.js",
+      "data/timetables/jreast-regional-number-index.js",
+      "data/timetables/jreast-ryomo-number-index.js",
+      "data/timetables/jreast-sotetsu-jr-direct-number-index.js",
+      "data/timetables/jreast-chuo-main-number-index.js",
+      "data/timetables/tobu-isesaki-number-png.js",
+      "data/timetables/tobu-koizumi-number-png.js",
+      "data/timetables/tobu-sano-number-png.js",
+      "data/timetables/tobu-kiryu-number-png.js",
+      "data/timetables/tobu-utsunomiya-number-png.js",
       "data/timetables/train-number-png-ranges.js",
-      "data/timetables/jreast-senzan-2611-number-index.js",
-      "data/timetables/jreast-shinonoi-2611-number-index.js",
-      "data/timetables/jreast-suigun-2611-number-index.js",
-      "data/timetables/jreast-tadami-2611-number-index.js",
-      "data/timetables/jreast-tazawako-2611-number-index.js",
-      "data/timetables/jreast-tsugaru-2611-number-index.js",
-      "data/timetables/jreast-uetsu-2611-number-index.js",
-      "data/timetables/jreast-yamagata-2611-number-index.js",
-      "data/timetables/tobu-tojo-through-fleet-202611.js",
+      "data/timetables/jreast-senzan-number-index.js",
+      "data/timetables/jreast-shinonoi-number-index.js",
+      "data/timetables/jreast-suigun-number-index.js",
+      "data/timetables/jreast-tadami-number-index.js",
+      "data/timetables/jreast-tazawako-number-index.js",
+      "data/timetables/jreast-tsugaru-number-index.js",
+      "data/timetables/jreast-uetsu-number-index.js",
+      "data/timetables/jreast-yamagata-number-index.js",
+      "data/timetables/tobu-tojo-through-fleet.js",
       "js/train-vehicle.js",
       "data/timetables/vehicle-operation-evidence-data.js",
-      "data/timetables/nambu-branch-official-202611.js",
+      "data/timetables/nambu-branch-official.js",
       "js/train-position-estimator.js",
       "js/train-track-layout.js",
       "js/trains-render.js"
@@ -195,11 +195,11 @@
         "Kawagoe",
         "SaikyoKawagoe"
       ],
-      "data/timetables/joban-e231-h-202611-index.js": [
+      "data/timetables/joban-e231-h-index.js": [
         "Joban",
         "JobanMain"
       ],
-      "data/timetables/jreast-sobu-yokosuka-202611-number-index.js": [
+      "data/timetables/jreast-sobu-yokosuka-number-index.js": [
         "Yokosuka",
         "SobuRapid",
         "SobuMain",
@@ -210,7 +210,7 @@
         "Kashima",
         "Keiyo"
       ],
-      "data/timetables/jreast-chiba-number-index-202611.js": [
+      "data/timetables/jreast-chiba-number-index.js": [
         "Yokosuka",
         "SobuRapid",
         "SobuMain",
@@ -221,123 +221,123 @@
         "Kashima",
         "Keiyo"
       ],
-      "data/timetables/jreast-togane-number-index-202611.js": [
+      "data/timetables/jreast-togane-number-index.js": [
         "Togane",
         "Keiyo",
         "Sotobo"
       ],
-      "data/timetables/jreast-narita-abiko-number-index-202611.js": [
+      "data/timetables/jreast-narita-abiko-number-index.js": [
         "NaritaAbikoBranch",
         "Narita",
         "Joban",
         "JobanMain"
       ],
-      "data/timetables/jreast-shonan-mixed-number-index-202611.js": [
+      "data/timetables/jreast-shonan-mixed-number-index.js": [
         "Takasaki",
         "UtsunomiyaJR",
         "ShonanShinjuku",
         "UenoTokyo",
         "Tokaido"
       ],
-      "data/timetables/jreast-yamanote-2611-number-index.js": [
+      "data/timetables/jreast-yamanote-number-index.js": [
         "Yamanote"
       ],
-      "data/timetables/jreast-yokohama-2611-number-index.js": [
+      "data/timetables/jreast-yokohama-number-index.js": [
         "Yokohama"
       ],
-      "data/timetables/jreast-keihin-2611-number-index.js": [
+      "data/timetables/jreast-keihin-number-index.js": [
         "KeihinTohoku"
       ],
-      "data/timetables/nambu-branch-official-202611.js": [
+      "data/timetables/nambu-branch-official.js": [
         "NambuBranch",
         "Nambu"
       ],
-      "data/timetables/jreast-gono-2611-number-index.js": [
+      "data/timetables/jreast-gono-number-index.js": [
         "Gono"
       ],
-      "data/timetables/jreast-oga-2611-number-index.js": [
+      "data/timetables/jreast-oga-number-index.js": [
         "Oga"
       ],
-      "data/timetables/jreast-ishinomaki-2611-number-index.js": [
+      "data/timetables/jreast-ishinomaki-number-index.js": [
         "Ishinomaki"
       ],
-      "data/timetables/jreast-kitakami-2611-number-index.js": [
+      "data/timetables/jreast-kitakami-number-index.js": [
         "Kitakami"
       ],
-      "data/timetables/jreast-yamada-2611-number-index.js": [
+      "data/timetables/jreast-yamada-number-index.js": [
         "Yamada"
       ],
-      "data/timetables/jreast-iiyama-2611-number-index.js": [
+      "data/timetables/jreast-iiyama-number-index.js": [
         "Iiyama"
       ],
-      "data/timetables/jreast-ominato-2611-number-index.js": [
+      "data/timetables/jreast-ominato-number-index.js": [
         "Ominato"
       ],
-      "data/timetables/jreast-rikutsu-west-2611-number-index.js": [
+      "data/timetables/jreast-rikutsu-west-number-index.js": [
         "RikutsuWest"
       ],
-      "data/timetables/jreast-rikuto-east-2611-number-index.js": [
+      "data/timetables/jreast-rikuto-east-number-index.js": [
         "RikutoEast"
       ],
-      "data/timetables/jreast-regional-2611-number-index.js": [
+      "data/timetables/jreast-regional-number-index.js": [
         "Kururi",
         "Karasuyama",
         "Hachinohe"
       ],
-      "data/timetables/jreast-hakushin-2611-number-index.js": [
+      "data/timetables/jreast-hakushin-number-index.js": [
         "Hakushin"
       ],
-      "data/timetables/jreast-senzan-2611-number-index.js": [
+      "data/timetables/jreast-senzan-number-index.js": [
         "Senzan"
       ],
-      "data/timetables/jreast-ryomo-2611-number-index.js": [
+      "data/timetables/jreast-ryomo-number-index.js": [
         "Ryomo"
       ],
-      "data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js": [
+      "data/timetables/jreast-sotetsu-jr-direct-number-index.js": [
         "SotetsuJRDirect"
       ],
-      "data/timetables/jreast-chuo-main-2611-number-index.js": [
+      "data/timetables/jreast-chuo-main-number-index.js": [
         "ChuoMain"
       ],
-      "data/timetables/jreast-shinonoi-2611-number-index.js": [
+      "data/timetables/jreast-shinonoi-number-index.js": [
         "Shinonoi"
       ],
-      "data/timetables/jreast-suigun-2611-number-index.js": [
+      "data/timetables/jreast-suigun-number-index.js": [
         "Suigun",
         "SuigunBranch"
       ],
-      "data/timetables/jreast-tadami-2611-number-index.js": [
+      "data/timetables/jreast-tadami-number-index.js": [
         "Tadami"
       ],
-      "data/timetables/jreast-tazawako-2611-number-index.js": [
+      "data/timetables/jreast-tazawako-number-index.js": [
         "Tazawako"
       ],
-      "data/timetables/jreast-tsugaru-2611-number-index.js": [
+      "data/timetables/jreast-tsugaru-number-index.js": [
         "Tsugaru"
       ],
-      "data/timetables/jreast-uetsu-2611-number-index.js": [
+      "data/timetables/jreast-uetsu-number-index.js": [
         "Uetsu"
       ],
-      "data/timetables/jreast-yamagata-2611-number-index.js": [
+      "data/timetables/jreast-yamagata-number-index.js": [
         "Yamagata"
       ],
-      "data/timetables/tobu-isesaki-2611-number-png.js": [
+      "data/timetables/tobu-isesaki-number-png.js": [
         "TobuIsesaki"
       ],
-      "data/timetables/tobu-koizumi-2611-number-png.js": [
+      "data/timetables/tobu-koizumi-number-png.js": [
         "Koizumi"
       ],
-      "data/timetables/tobu-sano-2611-number-png.js": [
+      "data/timetables/tobu-sano-number-png.js": [
         "Sano"
       ],
-      "data/timetables/tobu-tojo-through-fleet-202611.js": [
+      "data/timetables/tobu-tojo-through-fleet.js": [
         "Tojo",
         "Ogose"
       ],
-      "data/timetables/tobu-kiryu-2611-number-png.js": [
+      "data/timetables/tobu-kiryu-number-png.js": [
         "Kiryu"
       ],
-      "data/timetables/tobu-utsunomiya-2611-number-png.js": [
+      "data/timetables/tobu-utsunomiya-number-png.js": [
         "TobuUtsunomiya"
       ]
     }

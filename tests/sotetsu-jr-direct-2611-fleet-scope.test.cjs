@@ -6,7 +6,7 @@ const root={},ctx=vm.createContext({window:root,Date,
   _isTrainArtworkFailureActive(){return false}});
 for(const f of [
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js',
+ 'data/timetables/jreast-sotetsu-jr-direct-number-index.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js','data/timetables/vehicle-operation-evidence-data.js'
 ])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
@@ -64,7 +64,7 @@ test('120M/220M public train family is never proof of E233 carset',()=>{
  }
 });
 test('official 2611 columns expose exact service numbers and bands',()=>{
- const index=root.JREastSotetsuJRDirectNumbers2611;
+ const index=root.JREastSotetsuJRDirectNumbers;
  assert.ok(index);
  for(const [calendar,direction] of [['weekday','Northbound'],['weekday','Southbound'],['holiday','Northbound'],['holiday','Southbound']]){
   assert.equal(index.columns[calendar][direction].length,46,calendar+'/'+direction);

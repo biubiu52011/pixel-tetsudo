@@ -6,9 +6,9 @@ const fs=require("node:fs"),path=require("node:path"),vm=require("node:vm"),cryp
 const root=path.resolve(__dirname,".."),read=p=>fs.readFileSync(path.join(root,p),"utf8");
 const window={};
 const context=vm.createContext({window});
-for(const file of ["data/timetables/vehicle-garage-png-map.js","data/timetables/jreast-yonezawa-2611-number-index.js"])
+for(const file of ["data/timetables/vehicle-garage-png-map.js","data/timetables/jreast-yonezawa-number-index.js"])
  vm.runInContext(read(file),context,{filename:file,timeout:2000});
-const g=window.VehicleGaragePngMap,v=window.JREastYonezawaNumberIndex202611;
+const g=window.VehicleGaragePngMap,v=window.JREastYonezawaNumberIndex;
 assert.ok(g&&v);
 assert.equal(v.railStations.length,8);
 assert.equal(v.allStations.length,20);
@@ -56,7 +56,7 @@ assert.ok(v.verify(fixture("7143D","2026-11-23","holiday","Outbound")));
 const page=read("pages/trains.html");
 for(const [file,rel] of [
  ["data/timetables/vehicle-garage-png-map.js","../data/timetables/vehicle-garage-png-map.js"],
- ["data/timetables/jreast-yonezawa-2611-number-index.js","../data/timetables/jreast-yonezawa-2611-number-index.js"],
+ ["data/timetables/jreast-yonezawa-number-index.js","../data/timetables/jreast-yonezawa-number-index.js"],
  ["js/train-vehicle.js","../js/train-vehicle.js"],
  ["js/train-position-estimator.js","../js/train-position-estimator.js"],
  ["js/trains-render.js","../js/trains-render.js"]]){
@@ -66,7 +66,7 @@ for(const [file,rel] of [
  assert.ok(page.includes(rel+"?v="+hash),"Stale script: "+file);
 }
 assert.ok(page.includes('data-line-scope="Yonezawa"'));
-assert.ok(page.indexOf("jreast-yonezawa-2611-number-index.js")<page.indexOf("train-vehicle.js"));
+assert.ok(page.indexOf("jreast-yonezawa-number-index.js")<page.indexOf("train-vehicle.js"));
 const server=read("supabase/functions/train-runs/index.ts");
 assert.ok(server.includes('if(lineId==="Yonezawa"&&/^2026-11-'));
 assert.ok(server.includes('const maintenanceTrains=new Set(["7149D","7150D","7151D","7152D"])'));

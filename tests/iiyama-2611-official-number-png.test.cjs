@@ -9,7 +9,7 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-iiyama-2611-number-index.js',
+  'data/timetables/jreast-iiyama-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -19,7 +19,7 @@ const a=render.indexOf('  function _trainMarkerDomKind(');
 const b=render.indexOf('  // Public identification boundary:',a);
 assert.ok(a>=0&&b>a);
 vm.runInContext(render.slice(a,b),ctx);
-const index=win.JREastIiyamaNumberIndex202611,
+const index=win.JREastIiyamaNumberIndex,
   source=index.railway,png='../images/列车/JR東日本/JR東日本_キハ110系.png';
 function position(number,dir,type='Local',date='2026-11-05',cal='weekday',extra={}){
   return {trainNumber:number,positionLineId:'Iiyama',sourceRailway:source,
@@ -120,7 +120,7 @@ function estimateAt(iso,serviceDate,numbers){
     constructor(...args){super(...(args.length?args:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastIiyamaNumberIndex202611:index,
+  const root={RuntimeConfig:{},JREastIiyamaNumberIndex:index,
     ODPTClient:{LINE_RAILWAY_CODE:{Iiyama:'Iiyama'},
       LINE_TO_OPERATOR:{Iiyama:'JR-East'}}};
   const local=vm.createContext({window:root,Date:FixedDate,console:quiet});

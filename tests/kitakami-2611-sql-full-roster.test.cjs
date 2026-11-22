@@ -9,11 +9,11 @@ const root={},quiet={log(){},warn(){},error(){},debug(){}};
 const ctx=vm.createContext({window:root,console:quiet,Date});
 for(const path of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-kitakami-2611-number-index.js',
+  'data/timetables/jreast-kitakami-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),ctx,{filename:path});
-const idx=root.JREastKitakamiNumberIndex202611;
+const idx=root.JREastKitakamiNumberIndex;
 const image='../images/列车/JR東日本/JR東日本_キハ110系.png';
 const forward=['Kitakami','Yanagihara','Ezuriko','Fujine',
   'Tatekawame','Yokokawame','Iwasawa','Waka-Sennin',

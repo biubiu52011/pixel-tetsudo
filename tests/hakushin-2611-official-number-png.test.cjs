@@ -10,7 +10,7 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-hakushin-2611-number-index.js',
+  'data/timetables/jreast-hakushin-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -20,7 +20,7 @@ const a=render.indexOf('  function _trainMarkerDomKind(');
 const b=render.indexOf('  // Public identification boundary:',a);
 assert.ok(a>=0&&b>a);
 vm.runInContext(render.slice(a,b),ctx);
-const idx=win.JREastHakushinNumberIndex202611;
+const idx=win.JREastHakushinNumberIndex;
 const png='../images/列车/JR東日本/JR東日本_E129系.png';
 const G='odpt.Railway:JR-East.Hakushin';
 const urn=k=>'odpt.Station:JR-East.'+k;
@@ -181,7 +181,7 @@ function estimateAt(iso,day,numbers,calendar='odpt.Calendar:Weekday'){
     static now(){return Date.parse(iso);}
   }
   const root={RuntimeConfig:{PUBLISHED_JP_HOLIDAYS},
-    JREastHakushinNumberIndex202611:idx,
+    JREastHakushinNumberIndex:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{Hakushin:'Hakushin'},
       LINE_TO_OPERATOR:{Hakushin:'JR-East'}}};
   const localCtx=vm.createContext({window:root,Date:FakeDate,console:quiet});
@@ -251,10 +251,10 @@ test('No Friday Kairi on Thursday and none on November 23 despite holiday',()=>{
 });
 test('Hakushin index remains lazy and exclusively scoped to Hakushin',()=>{
   const spec=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
-  const path='data/timetables/jreast-hakushin-2611-number-index.js';
+  const path='data/timetables/jreast-hakushin-number-index.js';
   assert.equal(spec.lazy.trains.includes(path),true);
   assert.deepEqual(Array.from(spec.lazyScopes.trains[path]),['Hakushin']);
   const html=fs.readFileSync('pages/trains.html','utf8');
   assert.match(html,
-    /data-script-src="\.\.\/data\/timetables\/jreast-hakushin-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Hakushin"/);
+    /data-script-src="\.\.\/data\/timetables\/jreast-hakushin-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Hakushin"/);
 });

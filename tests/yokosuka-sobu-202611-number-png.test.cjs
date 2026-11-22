@@ -7,18 +7,18 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 
 function hashFor(file) {
-  const bytes=fs.readFileSync(file);
+  const bytes=Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n'));
   return crypto.createHash('sha1').update('blob '+bytes.length+'\0')
     .update(bytes).digest('hex').slice(0,12);
 }
 const root={};
 const ctx=vm.createContext({window:root,Date,console:{debug(){},warn(){},log(){},error(){}},
   _isTrainArtworkFailureActive(){return false}});
-const indexFile='data/timetables/jreast-sobu-yokosuka-202611-number-index.js';
+const indexFile='data/timetables/jreast-sobu-yokosuka-number-index.js';
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
   indexFile,
-  'data/timetables/jreast-chiba-number-index-202611.js',
+  'data/timetables/jreast-chiba-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
@@ -236,9 +236,9 @@ test('source railway, operator, train type, date, approved model and page cache 
   const index=fs.readFileSync(indexFile,'utf8');
   const version=index.match(/version:"([^"]+)"/);
   assert.ok(version);
-  assert.ok(html.includes('jreast-sobu-yokosuka-202611-number-index.js?v='+hashFor(indexFile)));
+  assert.ok(html.includes('jreast-sobu-yokosuka-number-index.js?v='+hashFor(indexFile)));
   const gallery=html.indexOf('vehicle-garage-png-map.js');
-  const indexAt=html.indexOf('jreast-sobu-yokosuka-202611-number-index.js');
+  const indexAt=html.indexOf('jreast-sobu-yokosuka-number-index.js');
   const numberRules=html.indexOf('train-number-png-ranges.js');
   const vehicle=html.indexOf('js/train-vehicle.js');
   assert.ok(gallery>=0&&gallery<indexAt&&indexAt<numberRules&&numberRules<vehicle,
@@ -247,8 +247,8 @@ test('source railway, operator, train type, date, approved model and page cache 
 
 
 test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
-  assert.ok(root.JREastChibaNumberIndex202611);
-  assert.equal(root.JREastChibaNumberIndex202611.rows,35);
+  assert.ok(root.JREastChibaNumberIndex);
+  assert.equal(root.JREastChibaNumberIndex.rows,35);
   const p235='../images/列车/JR東日本/JR東日本_E235系_1000番台.png';
   const p259='../images/列车/JR東日本/JR東日本_E259系.png';
   const p257='../images/列车/JR東日本/JR東日本_E257系_500番台.png';
@@ -282,7 +282,7 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
   // generic provider URN and published Chiba number are NOT enough
   // without the SQL calendar, route, date and 11/7 replacement proof.
   assert.equal(choose(position('Kashima','2520M','Local','holiday')),null);
-  const index=root.JREastChibaNumberIndex202611;
+  const index=root.JREastChibaNumberIndex;
   const looksSimilar=[
     position('SobuMain','4001M','LimitedExpress','holiday',{
       sourceRailway:'odpt.Railway:JR-East.SobuMain'}),
@@ -313,11 +313,11 @@ test('all sourced Boso through services use provider URNs, not UI aliases',()=>{
       'Sep 21 E257-5000 observation never proves Nov service or PNG');
   }
   const html=fs.readFileSync('pages/trains.html','utf8');
-  const src=fs.readFileSync('data/timetables/jreast-chiba-number-index-202611.js','utf8');
+  const src=fs.readFileSync('data/timetables/jreast-chiba-number-index.js','utf8');
   const version=src.match(/version:"([^"]+)"/);
   assert.ok(version);
-  assert.ok(html.includes('jreast-chiba-number-index-202611.js?v='+hashFor('data/timetables/jreast-chiba-number-index-202611.js')));
-  assert.ok(html.indexOf('jreast-chiba-number-index-202611.js') <
+  assert.ok(html.includes('jreast-chiba-number-index.js?v='+hashFor('data/timetables/jreast-chiba-number-index.js')));
+  assert.ok(html.indexOf('jreast-chiba-number-index.js') <
     html.indexOf('train-number-png-ranges.js'));
 });
 

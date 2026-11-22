@@ -9,7 +9,7 @@ const context=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-rikuto-east-2611-number-index.js',
+  'data/timetables/jreast-rikuto-east-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -19,7 +19,7 @@ const start=render.indexOf('  function _trainMarkerDomKind(');
 const end=render.indexOf('  // Public identification boundary:',start);
 assert.ok(start>=0&&end>start);
 vm.runInContext(render.slice(start,end),context,{filename:'js/trains-render.js:marker'});
-const idx=win.JREastRikutoEastNumberIndex202611;
+const idx=win.JREastRikutoEastNumberIndex;
 const src='odpt.Railway:JR-East.RikutoEast';
 const png='../images/列车/JR東日本/JR東日本_キハ110系.png';
 const omoidePng='../images/列车/JR東日本/JR東日本_キハ110系_おもいで車両.png';
@@ -136,7 +136,7 @@ function estimateAt(iso,serviceDate,entries){
     constructor(...a){super(...(a.length?a:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastRikutoEastNumberIndex202611:idx,
+  const root={RuntimeConfig:{},JREastRikutoEastNumberIndex:idx,
     TrainNumberPngRanges:win.TrainNumberPngRanges,
     ODPTClient:{LINE_RAILWAY_CODE:{RikutoEast:'RikutoEast'},
       LINE_TO_OPERATOR:{RikutoEast:'JR-East'}}};

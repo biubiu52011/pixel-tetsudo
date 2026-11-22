@@ -5861,7 +5861,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     var line = String(p.positionLineId || p.lineId || "");
     if ((line !== "Takasaki" && line !== "UtsunomiyaJR") ||
         String(p.displayLineId || line) !== line) return null;
-    var index = window.JREastShonanMixedNumberIndex202611;
+    var index = window.JREastShonanMixedNumberIndex;
     if (!index || typeof index.match !== "function") return null;
     var evidence = index.match(p);
     if (!evidence || evidence.status !== "UNCONFIRMED_PLANNED_FLEET" ||
@@ -5962,7 +5962,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         p.vehicleFormationConflict ||
         (Array.isArray(p.vehicleFormationCandidates) && p.vehicleFormationCandidates.length))
       return null;
-    var registry=window.TobuTojoFixedPng202611;
+    var registry=window.TobuTojoFixedPng;
     if(!registry || typeof registry.resolve!=="function")return null;
     var ref=registry.resolve(p);
     if(!ref || !ref.illustrationPng || !ref.illustrationModel ||
@@ -5992,7 +5992,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   function diagnoseTobuIsesakiArtwork(p, artworkFailed) {
     if (!p || String(p.positionLineId || p.lineId || "") !== "TobuIsesaki") return "";
     if (artworkFailed === true) return "image-load-retry-pending";
-    if (!window.TobuIsesaki2611Png) return "tobu-number-index-not-loaded";
+    if (!window.TobuIsesakiPng) return "tobu-number-index-not-loaded";
     if (!window.TrainNumberPngRanges) return "number-range-index-not-loaded";
     if (String(p.displayLineId || p.positionLineId || p.lineId) !== "TobuIsesaki")
       return "display-line-mismatch";
@@ -6060,7 +6060,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // Show the ordinary 8000 PNG only as a labelled series illustration.
     // 81111F grape-brown remains reserved for independently proven 81111F.
     if (p && contextLineId === "Ogose") {
-      var ogoseRoster = window.TobuTojoFixedPng202611;
+      var ogoseRoster = window.TobuTojoFixedPng;
       var ogoseAsset = ogoseRoster && ogoseRoster.assets && ogoseRoster.assets.ogose;
       var ogoseRef = ogoseRoster && typeof ogoseRoster.resolve === "function"
         ? ogoseRoster.resolve(p) : null;
@@ -6390,7 +6390,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
        p.actualVehicleConfirmed!==true&&!p.vehicleFormationId&&
        !(Array.isArray(p.vehicleFormationCandidates)&&
          p.vehicleFormationCandidates.length)){
-      var yIndex=window.JREastYonezawaNumberIndex202611;
+      var yIndex=window.JREastYonezawaNumberIndex;
       var yProof=yIndex&&typeof yIndex.verify==="function"
         ?yIndex.verify(p):null;
       var yRef=yProof&&typeof yIndex.resolve==="function"
@@ -6422,7 +6422,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     if (p && contextLineId==="Yamagata" && p.positionLineId==="Yamagata" &&
         p.estimated===true && p.positionSource==="supabase-train-run" &&
         String(p.serviceDate||"").slice(0,7)==="2026-11") {
-      var yamIndex=window.JREastYamagataNumberIndex202611;
+      var yamIndex=window.JREastYamagataNumberIndex;
       var yamProof=yamIndex&&typeof yamIndex.verify==="function"
         ?yamIndex.verify(p):null;
       if(yamProof && !strongRealtimeEvidence &&
@@ -6456,9 +6456,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // provide an illustrative PNG. Never suppress true physical evidence
     // or expand the exact model identity on this position.
     var exactUetsuInaho = p && !isGalleryPng(iconSrc) &&
-      window.JREastUetsuNumberIndex202611 &&
-      typeof window.JREastUetsuNumberIndex202611.resolvePlannedExactInaho === "function"
-        ? window.JREastUetsuNumberIndex202611.resolvePlannedExactInaho(p) : null;
+      window.JREastUetsuNumberIndex &&
+      typeof window.JREastUetsuNumberIndex.resolvePlannedExactInaho === "function"
+        ? window.JREastUetsuNumberIndex.resolvePlannedExactInaho(p) : null;
     if (exactUetsuInaho) {
       var inahoGallery = window.VehicleGaragePngMap;
       var inahoImage = normalizeGalleryPngPath(exactUetsuInaho.illustrationPng);
@@ -6712,9 +6712,9 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
     // Ryomo 2611: exact official public number/calendar/direction selects a
     // fleet REFERENCE image, not a physical carset. 211 local M trains
     // and E231/E233 green-car through trains must not be conflated.
-    var ryomoFleet = !identityConfirmed && window.JREastRyomoNumberIndex202611 &&
-      typeof window.JREastRyomoNumberIndex202611.resolve === "function"
-      ? window.JREastRyomoNumberIndex202611.resolve(p) : null;
+    var ryomoFleet = !identityConfirmed && window.JREastRyomoNumberIndex &&
+      typeof window.JREastRyomoNumberIndex.resolve === "function"
+      ? window.JREastRyomoNumberIndex.resolve(p) : null;
     if (ryomoFleet) {
       var ryomoGarage = window.VehicleGaragePngMap;
       var ryomoPng = normalizeGalleryPngPath(ryomoFleet.illustrationPng);
@@ -6872,7 +6872,7 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         Object.assign({}, p, {displayLineId:lineId}));
       if (itoWorking && itoWorking.owner === "Izukyu") return null;
     }
-    var index = window.JREastShonanMixedNumberIndex202611;
+    var index = window.JREastShonanMixedNumberIndex;
     var numbered = index && typeof index.match === "function"
       ? index.match(Object.assign({}, p, {displayLineId:lineId})) : null;
     if (numbered && numbered.authorizesPNG === false)

@@ -8,17 +8,17 @@ function build(index,current,sources){
  if(images.length!==131)throw Error('JR East PNG inventory changed');
  const byProof=new Map([...current.mapped,...current.activeWithoutNumber].map(x=>[x.png,x.fleetEvidence]));
  const load=src=>{const root={};new Function('window',src)(root);return root;};
- const gono=load(sources.gono).JREastGonoNumberIndex202611;
- const iiyama=load(sources.iiyama).JREastIiyamaNumberIndex202611;
- const senzan=load(sources.senzan).JREastSenzanNumberIndex202611;
- const tazawako=load(sources.tazawako).JREastTazawakoNumberIndex202611;
- const suigun=load(sources.suigun).JREastSuigunNumberIndex202611;
- const tadami=load(sources.tadami).JREastTadamiNumberIndex202611;
- const yamagata=load(sources.yamagata).JREastYamagataNumberIndex202611;
- const shonan=load(sources.shonan).JREastShonanMixedNumberIndex202611;
- const uetsu=load(sources.uetsu).JREastUetsuNumberIndex202611;
- const tsugaru=load(sources.tsugaru).JREastTsugaruNumberIndex202611;
- const hachiko=load(sources.hachiko).JREastHachikoNonElectrified2611;
+ const gono=load(sources.gono).JREastGonoNumberIndex;
+ const iiyama=load(sources.iiyama).JREastIiyamaNumberIndex;
+ const senzan=load(sources.senzan).JREastSenzanNumberIndex;
+ const tazawako=load(sources.tazawako).JREastTazawakoNumberIndex;
+ const suigun=load(sources.suigun).JREastSuigunNumberIndex;
+ const tadami=load(sources.tadami).JREastTadamiNumberIndex;
+ const yamagata=load(sources.yamagata).JREastYamagataNumberIndex;
+ const shonan=load(sources.shonan).JREastShonanMixedNumberIndex;
+ const uetsu=load(sources.uetsu).JREastUetsuNumberIndex;
+ const tsugaru=load(sources.tsugaru).JREastTsugaruNumberIndex;
+ const hachiko=load(sources.hachiko).JREastHachikoNonElectrified;
  const isHoliday=d=>{
   const wd=new Date(d+'T12:00:00Z').getUTCDay();
   return wd===0||wd===6||d==='2026-11-03'||d==='2026-11-23';
@@ -352,17 +352,17 @@ function build(index,current,sources){
     'Shirakami Buna end-A vs end-B image choice not established by train number'],
   sources:['data/audits/png-to-train-number-index-2611.json',
     'data/audits/png-current-service-number-map-20261116.json',
-    'data/timetables/jreast-gono-2611-number-index.js',
-    'data/timetables/jreast-senzan-2611-number-index.js',
-    'data/timetables/jreast-iiyama-2611-number-index.js',
-    'data/timetables/jreast-tazawako-2611-number-index.js',
-    'data/timetables/jreast-suigun-2611-number-index.js',
-    'data/timetables/jreast-tadami-2611-number-index.js',
-    'data/timetables/jreast-yamagata-2611-number-index.js',
-    'data/timetables/jreast-shonan-mixed-number-index-202611.js',
-    'data/timetables/jreast-uetsu-2611-number-index.js',
-    'data/timetables/jreast-tsugaru-2611-number-index.js',
-    'data/timetables/jreast-hachiko-non-electrified-2611-number-index.js'],
+    'data/timetables/jreast-gono-number-index.js',
+    'data/timetables/jreast-senzan-number-index.js',
+    'data/timetables/jreast-iiyama-number-index.js',
+    'data/timetables/jreast-tazawako-number-index.js',
+    'data/timetables/jreast-suigun-number-index.js',
+    'data/timetables/jreast-tadami-number-index.js',
+    'data/timetables/jreast-yamagata-number-index.js',
+    'data/timetables/jreast-shonan-mixed-number-index.js',
+    'data/timetables/jreast-uetsu-number-index.js',
+    'data/timetables/jreast-tsugaru-number-index.js',
+    'data/timetables/jreast-hachiko-non-electrified-number-index.js'],
   summary,records};
 }
 function csvOf(a){
@@ -401,17 +401,17 @@ if(require.main===module){
  const read=p=>fs.readFileSync(path.join(root,p),'utf8');
  const report=build(JSON.parse(read('data/audits/png-to-train-number-index-2611.json')),
    JSON.parse(read('data/audits/png-current-service-number-map-20261116.json')),
-   {gono:read('data/timetables/jreast-gono-2611-number-index.js'),
-    iiyama:read('data/timetables/jreast-iiyama-2611-number-index.js'),
-    senzan:read('data/timetables/jreast-senzan-2611-number-index.js'),
-    tazawako:read('data/timetables/jreast-tazawako-2611-number-index.js'),
-    suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
-    tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
-    yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
-    shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js'),
-    uetsu:read('data/timetables/jreast-uetsu-2611-number-index.js'),
-    tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js'),
-    hachiko:read('data/timetables/jreast-hachiko-non-electrified-2611-number-index.js')});
+   {gono:read('data/timetables/jreast-gono-number-index.js'),
+    iiyama:read('data/timetables/jreast-iiyama-number-index.js'),
+    senzan:read('data/timetables/jreast-senzan-number-index.js'),
+    tazawako:read('data/timetables/jreast-tazawako-number-index.js'),
+    suigun:read('data/timetables/jreast-suigun-number-index.js'),
+    tadami:read('data/timetables/jreast-tadami-number-index.js'),
+    yamagata:read('data/timetables/jreast-yamagata-number-index.js'),
+    shonan:read('data/timetables/jreast-shonan-mixed-number-index.js'),
+    uetsu:read('data/timetables/jreast-uetsu-number-index.js'),
+    tsugaru:read('data/timetables/jreast-tsugaru-number-index.js'),
+    hachiko:read('data/timetables/jreast-hachiko-non-electrified-number-index.js')});
  const jsonPath='data/audits/jr-east-png-folder-number-map-2611.json',
    csvPath='data/audits/jr-east-png-folder-number-map-2611.csv';
  const j=JSON.stringify(report,null,2)+'\n',c=csvOf(report);

@@ -6327,7 +6327,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-hakushin-2611",
+      "number_index": "jreast-hakushin",
       "published_numbers": [
         "1620M",
         "1622M",
@@ -6463,7 +6463,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-hakushin-2611",
+      "number_index": "jreast-hakushin",
       "published_numbers": [
         "3921M"
       ],
@@ -6510,7 +6510,7 @@
       "train_types": [
         "LimitedExpress"
       ],
-      "number_index": "jreast-hakushin-2611",
+      "number_index": "jreast-hakushin",
       "published_numbers": [
         "1M",
         "2M",
@@ -6570,7 +6570,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-hakushin-2611",
+      "number_index": "jreast-hakushin",
       "published_numbers": [
         "8853D",
         "8854D"
@@ -6633,7 +6633,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-kitakami-2611",
+      "number_index": "jreast-kitakami",
       "published_numbers": [
         "722D",
         "724D",
@@ -6683,7 +6683,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-yamada-2611",
+      "number_index": "jreast-yamada",
       "published_numbers": [
         "2632D",
         "2634D",
@@ -6747,7 +6747,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-iiyama-2611",
+      "number_index": "jreast-iiyama",
       "published_numbers": [
         "1120D",
         "1122D",
@@ -6846,7 +6846,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-rikutsu-west-2611",
+      "number_index": "jreast-rikutsu-west",
       "published_numbers": [
         "150D",
         "152D",
@@ -6908,7 +6908,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-rikutsu-west-2611",
+      "number_index": "jreast-rikutsu-west",
       "published_numbers": [
         "3131D",
         "3132D"
@@ -6956,7 +6956,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-rikuto-east-2611",
+      "number_index": "jreast-rikuto-east",
       "published_numbers": [
         "5720D",
         "1720D",
@@ -7047,7 +7047,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-rikuto-east-2611",
+      "number_index": "jreast-rikuto-east",
       "published_numbers": [
         "9721D",
         "9722D",
@@ -7099,7 +7099,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-regional-2611",
+      "number_index": "jreast-regional",
       "published_numbers": [
         "920D",
         "922D",
@@ -7186,7 +7186,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-regional-2611",
+      "number_index": "jreast-regional",
       "published_numbers": [
         "322M",
         "324M",
@@ -7260,7 +7260,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-regional-2611",
+      "number_index": "jreast-regional",
       "published_numbers": [
         "1422D",
         "424D",
@@ -7348,7 +7348,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-regional-2611",
+      "number_index": "jreast-regional",
       "published_numbers": [
         "9445D",
         "9446D"
@@ -7397,7 +7397,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-regional-2611",
+      "number_index": "jreast-regional",
       "published_numbers": [
         "8471D"
       ],
@@ -7445,7 +7445,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-oga-2611",
+      "number_index": "jreast-oga",
       "published_numbers": [
         "1120M",
         "1122M",
@@ -7520,7 +7520,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-ishinomaki-2611",
+      "number_index": "jreast-ishinomaki",
       "published_numbers": [
         "5620D",
         "2622D",
@@ -7603,7 +7603,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-ishinomaki-2611",
+      "number_index": "jreast-ishinomaki",
       "published_numbers": [
         "5530D",
         "5543D"
@@ -8343,7 +8343,7 @@
       "train_types": [
         "Local"
       ],
-      "number_index": "jreast-gono-2611",
+      "number_index": "jreast-gono",
       "published_numbers": [
         "122D",
         "124D",
@@ -8524,7 +8524,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-gono-2611",
+      "number_index": "jreast-gono",
       "published_numbers": [
         "3524D",
         "3526D"
@@ -10310,7 +10310,7 @@
       "png": "images/列车/JR東日本/JR東日本_E235系_0番台.png",
       "train_type": "Local",
       "train_types": null,
-      "number_index": "jreast-yamanote-202611",
+      "number_index": "jreast-yamanote",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -12123,7 +12123,7 @@
         "Local",
         "Rapid"
       ],
-      "number_index": "jreast-keihin-202611",
+      "number_index": "jreast-keihin",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -12167,7 +12167,7 @@
         "Local",
         "Rapid"
       ],
-      "number_index": "jreast-keihin-202611",
+      "number_index": "jreast-keihin",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -12842,7 +12842,7 @@
       "png": "images/列车/JR東日本/JR東日本_E233系5000番台.png",
       "train_type": "Local",
       "train_types": null,
-      "number_index": "jreast-togane-202611",
+      "number_index": "jreast-togane",
       "published_numbers": [
         "5680Y",
         "5983Y"
@@ -12886,7 +12886,7 @@
       "png": "images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png",
       "train_type": "Local",
       "train_types": null,
-      "number_index": "jreast-narita-abiko-202611",
+      "number_index": "jreast-narita-abiko",
       "published_numbers": [
         "820M",
         "821M",
@@ -15082,7 +15082,7 @@
         "Local",
         "Rapid"
       ],
-      "number_index": "jreast-yokohama-202611",
+      "number_index": "jreast-yokohama",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -15134,7 +15134,7 @@
         "Local",
         "Rapid"
       ],
-      "number_index": "jreast-sobu-yokosuka-202611",
+      "number_index": "jreast-sobu-yokosuka",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -15185,7 +15185,7 @@
       "png": "images/列车/JR東日本/JR東日本_E259系.png",
       "train_type": "LimitedExpress",
       "train_types": null,
-      "number_index": "jreast-sobu-yokosuka-202611",
+      "number_index": "jreast-sobu-yokosuka",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -15235,7 +15235,7 @@
       "png": "images/列车/JR東日本/JR東日本_E257系_500番台.png",
       "train_type": "LimitedExpress",
       "train_types": null,
-      "number_index": "jreast-sobu-yokosuka-202611",
+      "number_index": "jreast-sobu-yokosuka",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -15280,7 +15280,7 @@
       "png": "images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png",
       "train_type": "Local",
       "train_types": null,
-      "number_index": "nambu-branch-official-202611",
+      "number_index": "nambu-branch-official",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -16100,7 +16100,7 @@
       "png": "images/列车/東京メトロ/東京メトロ_15000系.png",
       "train_type": "Local",
       "train_types": null,
-      "number_index": "chuo-sobu-tozai-2611",
+      "number_index": "chuo-sobu-tozai",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -16141,7 +16141,7 @@
       "png": "images/列车/JR東日本/JR東日本_E231系_800番台.png",
       "train_type": "Local",
       "train_types": null,
-      "number_index": "chuo-sobu-tozai-2611",
+      "number_index": "chuo-sobu-tozai",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -16434,7 +16434,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "joban-e231-h-202611",
+      "number_index": "joban-e231-h",
       "published_numbers": null,
       "weekday_numbers": null,
       "holiday_numbers": null,
@@ -30444,7 +30444,7 @@
       "train_types": [
         "Rapid"
       ],
-      "number_index": "jreast-iiyama-2611",
+      "number_index": "jreast-iiyama",
       "published_numbers": [
         "8140D",
         "8141D"

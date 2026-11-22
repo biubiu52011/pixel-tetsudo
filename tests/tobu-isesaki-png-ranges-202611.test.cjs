@@ -8,10 +8,10 @@ const fs=require('node:fs'),vm=require('node:vm');
 const w={};
 const context=vm.createContext({window:w});
 vm.runInContext(fs.readFileSync('data/timetables/vehicle-garage-png-map.js','utf8'),context);
-vm.runInContext(fs.readFileSync('data/timetables/tobu-isesaki-2611-number-png.js','utf8'),context);
+vm.runInContext(fs.readFileSync('data/timetables/tobu-isesaki-number-png.js','utf8'),context);
 vm.runInContext(fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8'),context);
 vm.runInContext(fs.readFileSync('js/train-vehicle.js','utf8'),context);
-const ix=w.TobuIsesaki2611Png;
+const ix=w.TobuIsesakiPng;
 function match(number,type='Local',cal='weekday',changes={}){
   return ix.match(String(number),{
     lineId:'TobuIsesaki',displayLineId:'TobuIsesaki',

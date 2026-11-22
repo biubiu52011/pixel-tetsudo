@@ -5,21 +5,21 @@ const read=p=>fs.readFileSync(p,'utf8');
 const report=JSON.parse(read('data/audits/jr-east-png-folder-number-map-2611.json'));
 const index=JSON.parse(read('data/audits/png-to-train-number-index-2611.json'));
 const current=JSON.parse(read('data/audits/png-current-service-number-map-20261116.json'));
-const sources={gono:read('data/timetables/jreast-gono-2611-number-index.js'),
- iiyama:read('data/timetables/jreast-iiyama-2611-number-index.js'),
- senzan:read('data/timetables/jreast-senzan-2611-number-index.js'),
- tazawako:read('data/timetables/jreast-tazawako-2611-number-index.js'),
- suigun:read('data/timetables/jreast-suigun-2611-number-index.js'),
- tadami:read('data/timetables/jreast-tadami-2611-number-index.js'),
- yamagata:read('data/timetables/jreast-yamagata-2611-number-index.js'),
- shonan:read('data/timetables/jreast-shonan-mixed-number-index-202611.js'),
- uetsu:read('data/timetables/jreast-uetsu-2611-number-index.js'),
- tsugaru:read('data/timetables/jreast-tsugaru-2611-number-index.js'),
- hachiko:read('data/timetables/jreast-hachiko-non-electrified-2611-number-index.js')};
+const sources={gono:read('data/timetables/jreast-gono-number-index.js'),
+ iiyama:read('data/timetables/jreast-iiyama-number-index.js'),
+ senzan:read('data/timetables/jreast-senzan-number-index.js'),
+ tazawako:read('data/timetables/jreast-tazawako-number-index.js'),
+ suigun:read('data/timetables/jreast-suigun-number-index.js'),
+ tadami:read('data/timetables/jreast-tadami-number-index.js'),
+ yamagata:read('data/timetables/jreast-yamagata-number-index.js'),
+ shonan:read('data/timetables/jreast-shonan-mixed-number-index.js'),
+ uetsu:read('data/timetables/jreast-uetsu-number-index.js'),
+ tsugaru:read('data/timetables/jreast-tsugaru-number-index.js'),
+ hachiko:read('data/timetables/jreast-hachiko-non-electrified-number-index.js')};
 const find=name=>report.records.find(x=>x.name===name);
 test('all 131 JR-East PNGs appear once, with generated artifacts synchronized',()=>{
  assert.deepEqual(report,build(index,current,sources));
- assert.equal(csvOf(report),read('data/audits/jr-east-png-folder-number-map-2611.csv'));
+ assert.equal(csvOf(report),read('data/audits/jr-east-png-folder-number-map-2611.csv').replace(/\r\n/g,'\n'));
  assert.equal(report.summary.totalPng,131);
  assert.equal(report.summary.quarantined,4);
  assert.equal(report.summary.observedPhysicalCarsets,0);

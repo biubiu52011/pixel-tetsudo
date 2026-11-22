@@ -749,7 +749,7 @@
         var officialYamagataNumberProof=null;
         if(lineId==="Yamagata"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var yamIndex=window.JREastYamagataNumberIndex202611;
+          var yamIndex=window.JREastYamagataNumberIndex;
           if(!yamIndex||typeof yamIndex.verify!=="function")continue;
           officialYamagataNumberProof=yamIndex.verify({
             trainNumber:run.trainNumber,positionLineId:"Yamagata",
@@ -765,7 +765,7 @@
         }
         if(lineId==="Uetsu" && tt._positionSource==="supabase-train-run" &&
            String(serviceDate).startsWith("2026-11")){
-          var uetsu=window.JREastUetsuNumberIndex202611;
+          var uetsu=window.JREastUetsuNumberIndex;
           if(!uetsu||!uetsu.verify({
             trainNumber:run.trainNumber,positionLineId:"Uetsu",
             sourceRailway:tt["odpt:railway"]||"",
@@ -784,7 +784,7 @@
         // Kanita–Minmaya replacement buses must never produce train icons.
         if(lineId==="Tsugaru"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var tsugaruIndex=window.JREastTsugaruNumberIndex202611;
+          var tsugaruIndex=window.JREastTsugaruNumberIndex;
           var tsugaruStops=run.stops||[];
           var firstTsugaru=tsugaruStops[0],lastTsugaru=tsugaruStops[tsugaruStops.length-1];
           if(!tsugaruIndex||typeof tsugaruIndex.verify!=="function"||
@@ -812,7 +812,7 @@
         // This does not change separately observed realtime positions.
         if(lineId==="Tazawako"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var tazawakoIndex=window.JREastTazawakoNumberIndex202611;
+          var tazawakoIndex=window.JREastTazawakoNumberIndex;
           if(!tazawakoIndex||typeof tazawakoIndex.verify!=="function"||
              !tazawakoIndex.verify({
                trainNumber:run.trainNumber,positionLineId:"Tazawako",
@@ -833,7 +833,7 @@
         // This guard never applies to independently observed ODPT trains.
         if(lineId==="Tadami"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var tadamiIndex=window.JREastTadamiNumberIndex202611;
+          var tadamiIndex=window.JREastTadamiNumberIndex;
           if(!tadamiIndex||typeof tadamiIndex.verify!=="function"||
              !tadamiIndex.verify({
                trainNumber:run.trainNumber,positionLineId:"Tadami",
@@ -855,7 +855,7 @@
         var officialHakushinPlan=null;
         if(lineId==="Hakushin"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var hakushinIdx=window.JREastHakushinNumberIndex202611;
+          var hakushinIdx=window.JREastHakushinNumberIndex;
           if(!hakushinIdx||typeof hakushinIdx.verify!=="function")continue;
           officialHakushinPlan=hakushinIdx.verify(
             run.trainNumber,tt["odpt:railway"]||"",
@@ -967,7 +967,7 @@
            String(serviceDate).slice(0,7)==="2026-11"){
           // Strict fail-closed: without this lazy-loaded official roster,
           // do not show old SQL 852x resort cars as local GV-E400 trains.
-          var gonoIndex=window.JREastGonoNumberIndex202611;
+          var gonoIndex=window.JREastGonoNumberIndex;
           if(!gonoIndex||typeof gonoIndex.verify!=="function")continue;
           officialGonoPlan=gonoIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
@@ -982,9 +982,9 @@
         var officialIshinomakiPlan = null;
         if(lineId==="Ishinomaki" && tt._positionSource==="supabase-train-run" &&
            String(serviceDate).slice(0,7)==="2026-11" &&
-           window.JREastIshinomakiNumberIndex202611 &&
-           typeof window.JREastIshinomakiNumberIndex202611.verify==="function"){
-          officialIshinomakiPlan=window.JREastIshinomakiNumberIndex202611.verify(
+           window.JREastIshinomakiNumberIndex &&
+           typeof window.JREastIshinomakiNumberIndex.verify==="function"){
+          officialIshinomakiPlan=window.JREastIshinomakiNumberIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
             tt["odpt:trainType"]||"",run.calendar,serviceDate);
           if(officialIshinomakiPlan===false)continue;
@@ -1103,9 +1103,9 @@
         if(["Kururi","Karasuyama","Hachinohe"].indexOf(lineId)>=0 &&
            tt._positionSource==="supabase-train-run" &&
            String(serviceDate).slice(0,7)==="2026-11" &&
-           window.JREastRegionalNumberIndex202611 &&
-           typeof window.JREastRegionalNumberIndex202611.verify==="function"){
-          var officialRegionalPlan=window.JREastRegionalNumberIndex202611.verify(
+           window.JREastRegionalNumberIndex &&
+           typeof window.JREastRegionalNumberIndex.verify==="function"){
+          var officialRegionalPlan=window.JREastRegionalNumberIndex.verify(
             lineId,run.trainNumber,tt["odpt:railway"]||"",
             tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
             run.calendar,serviceDate);
@@ -1340,9 +1340,9 @@
         var officialRikutoEastPlan=null;
         if(lineId==="RikutoEast"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"&&
-           window.JREastRikutoEastNumberIndex202611&&
-           typeof window.JREastRikutoEastNumberIndex202611.verify==="function"){
-          officialRikutoEastPlan=window.JREastRikutoEastNumberIndex202611.verify(
+           window.JREastRikutoEastNumberIndex&&
+           typeof window.JREastRikutoEastNumberIndex.verify==="function"){
+          officialRikutoEastPlan=window.JREastRikutoEastNumberIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
             tt["odpt:trainType"]||"",run.calendar,serviceDate);
           if(officialRikutoEastPlan===false)continue;
@@ -1386,7 +1386,7 @@
         var officialYonesakaPlan=null;
         if(lineId==="Yonezawa"&&String(serviceDate).slice(0,7)==="2026-11"){
           if(tt._positionSource!=="supabase-train-run")continue;
-          var yoneIndex=window.JREastYonezawaNumberIndex202611;
+          var yoneIndex=window.JREastYonezawaNumberIndex;
           if(!yoneIndex||typeof yoneIndex.verify!=="function")continue;
           officialYonesakaPlan=yoneIndex.verify({
             trainNumber:run.trainNumber,positionLineId:"Yonezawa",
@@ -1408,9 +1408,9 @@
         var officialRikutsuWestPlan=null;
         if(lineId==="RikutsuWest"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"&&
-           window.JREastRikutsuWestNumberIndex202611&&
-           typeof window.JREastRikutsuWestNumberIndex202611.verify==="function"){
-          officialRikutsuWestPlan=window.JREastRikutsuWestNumberIndex202611.verify(
+           window.JREastRikutsuWestNumberIndex&&
+           typeof window.JREastRikutsuWestNumberIndex.verify==="function"){
+          officialRikutsuWestPlan=window.JREastRikutsuWestNumberIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
             tt["odpt:trainType"]||"",run.calendar,serviceDate);
           if(officialRikutsuWestPlan===false)continue;
@@ -1423,9 +1423,9 @@
         var officialOminatoPlan=null;
         if(lineId==="Ominato"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"&&
-           window.JREastOminatoNumberIndex202611&&
-           typeof window.JREastOminatoNumberIndex202611.verify==="function"){
-          officialOminatoPlan=window.JREastOminatoNumberIndex202611.verify(
+           window.JREastOminatoNumberIndex&&
+           typeof window.JREastOminatoNumberIndex.verify==="function"){
+          officialOminatoPlan=window.JREastOminatoNumberIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",
             tt["odpt:railDirection"]||"",tt["odpt:trainType"]||"",
             run.calendar,serviceDate);
@@ -1438,9 +1438,9 @@
         var officialIiyamaPlan=null;
         if(lineId==="Iiyama"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"&&
-           window.JREastIiyamaNumberIndex202611&&
-           typeof window.JREastIiyamaNumberIndex202611.verify==="function"){
-          officialIiyamaPlan=window.JREastIiyamaNumberIndex202611.verify(
+           window.JREastIiyamaNumberIndex&&
+           typeof window.JREastIiyamaNumberIndex.verify==="function"){
+          officialIiyamaPlan=window.JREastIiyamaNumberIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",tt["odpt:railDirection"]||"",
             tt["odpt:trainType"]||"",run.calendar,serviceDate);
           if(officialIiyamaPlan===false)continue;
@@ -1472,7 +1472,7 @@
         var officialKitakamiPlan=null;
         if(lineId==="Kitakami"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var kiIndex=window.JREastKitakamiNumberIndex202611;
+          var kiIndex=window.JREastKitakamiNumberIndex;
           if(!kiIndex||typeof kiIndex.verifySqlProof!=="function")continue;
           officialKitakamiPlan=kiIndex.verifySqlProof({
             trainNumber:run.trainNumber,positionLineId:"Kitakami",
@@ -1496,7 +1496,7 @@
         var officialYamadaPlan=null;
         if(lineId==="Yamada"&&tt._positionSource==="supabase-train-run"&&
            String(serviceDate).slice(0,7)==="2026-11"){
-          var yaIndex=window.JREastYamadaNumberIndex202611;
+          var yaIndex=window.JREastYamadaNumberIndex;
           if(!yaIndex||typeof yaIndex.verify!=="function")continue;
           officialYamadaPlan=yaIndex.verify(
             run.trainNumber,tt["odpt:railway"]||"",
@@ -1584,10 +1584,10 @@
         // vehicle; those stricter checks remain separate below.
         if (lineId === "ChuoMain" &&
             tt._positionSource === "supabase-train-run" &&
-            window.JREastChuoMainNumbers2611 &&
-            typeof window.JREastChuoMainNumbers2611.match === "function" &&
+            window.JREastChuoMainNumbers &&
+            typeof window.JREastChuoMainNumbers.match === "function" &&
             String(serviceDate).slice(0,7) === "2026-11") {
-          var listedChuoPlan=window.JREastChuoMainNumbers2611.match({
+          var listedChuoPlan=window.JREastChuoMainNumbers.match({
             serviceDate:serviceDate,lineId:"ChuoMain",
             calendarType:calendar,
             railDirection:tt["odpt:railDirection"] || "",
@@ -1638,9 +1638,9 @@
         // operation number. Do not block ODPT / independent timetables.
         if (lineId === "NaritaAbikoBranch" &&
             tt._positionSource === "supabase-train-run" &&
-            window.JREastNaritaAbikoNumberIndex202611 &&
-            typeof window.JREastNaritaAbikoNumberIndex202611.verify === "function") {
-          var listedAbiko = window.JREastNaritaAbikoNumberIndex202611.verify(
+            window.JREastNaritaAbikoNumberIndex &&
+            typeof window.JREastNaritaAbikoNumberIndex.verify === "function") {
+          var listedAbiko = window.JREastNaritaAbikoNumberIndex.verify(
             run.trainNumber, tt["odpt:railway"] || "",
             tt["odpt:railDirection"] || "",
             tt["odpt:trainType"] || "",
@@ -1656,9 +1656,9 @@
         // editions before imposing the same number list.
         if (lineId === "Togane" &&
             tt._positionSource === "supabase-train-run" &&
-            window.JREastToganeNumberIndex202611 &&
-            typeof window.JREastToganeNumberIndex202611.verify === "function") {
-          var publishedTogane = window.JREastToganeNumberIndex202611.verify(
+            window.JREastToganeNumberIndex &&
+            typeof window.JREastToganeNumberIndex.verify === "function") {
+          var publishedTogane = window.JREastToganeNumberIndex.verify(
             run.trainNumber, tt["odpt:railway"] || "",
             tt["odpt:railDirection"] || "",
             tt["odpt:trainType"] || "",
@@ -1674,9 +1674,9 @@
         // The separate realtime channel is never filtered by this plan index.
         if (lineId === "NambuBranch" &&
             tt._positionSource === "supabase-train-run" &&
-            window.NambuBranchOfficial202611 &&
-            typeof window.NambuBranchOfficial202611.verify === "function") {
-          var officiallyListed = window.NambuBranchOfficial202611.verify(
+            window.NambuBranchOfficial &&
+            typeof window.NambuBranchOfficial.verify === "function") {
+          var officiallyListed = window.NambuBranchOfficial.verify(
             run.trainNumber, tt["odpt:railway"] || "",
             tt["odpt:railDirection"] || "",
             tt["odpt:trainType"] || "",

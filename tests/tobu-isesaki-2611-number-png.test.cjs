@@ -3,7 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const context=vm.createContext({window:{}});
 for(const file of [
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/tobu-isesaki-2611-number-png.js',
+ 'data/timetables/tobu-isesaki-number-png.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js'])
   vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file,timeout:10000});
@@ -27,8 +27,8 @@ test('TI and TS have distinct official station-number presentation colors',()=>{
  assert.equal(d.lines.TobuSkytree.presentation.color.toLowerCase(),'#0f6cc3');
 });
 test('2026 official roster indexes 95 local trains and 50 Ryomo expresses',()=>{
- assert.equal(window.TobuIsesaki2611Png.localNumbers,95);
- assert.equal(window.TobuIsesaki2611Png.limitedNumbers,50);
+ assert.equal(window.TobuIsesakiPng.localNumbers,95);
+ assert.equal(window.TobuIsesakiPng.limitedNumbers,50);
 });
 test('2/3-car numbers are exact, image selection is only family illustration',()=>{
  for(const [num,cars,file,model] of [

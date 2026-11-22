@@ -10,7 +10,7 @@ const win={},ctx=vm.createContext({window:win,Date,console:{
 });
 for(const f of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-ryomo-2611-number-index.js',
+  'data/timetables/jreast-ryomo-number-index.js',
   'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
 const home='../images/列车/JR東日本/JR東日本_211系_湘南色.png';
@@ -25,7 +25,7 @@ function pos(n,cal,dir,type='Local'){
   vehicleIdentityStatus:'UNKNOWN'};
 }
 test('four official timetable source groups cover 101 two-direction 211 numbers in each calendar',()=>{
- const map=win.JREastRyomoNumberIndex202611;
+ const map=win.JREastRyomoNumberIndex;
  let c=0;
  for(const cal of ['weekday','holiday'])
   for(const dir of ['Inbound','Outbound'])
@@ -38,7 +38,7 @@ test('four official timetable source groups cover 101 two-direction 211 numbers 
  assert.equal(c,130);
 });
 test('101 distinct planned 211 M numbers per calendar; never infer every integer M',()=>{
- const index=win.JREastRyomoNumberIndex202611;
+ const index=win.JREastRyomoNumberIndex;
  for(const cal of ['weekday','holiday']){
   let accepted=0;
   for(const dir of ['Inbound','Outbound'])
@@ -54,7 +54,7 @@ test('101 distinct planned 211 M numbers per calendar; never infer every integer
 test('211 gallery is a planned illustration, not a confirmed carset',()=>{
  for(const n of ['420M','422M','620M','652M']){
   const p=pos(n,'weekday','Outbound');
-  const info=win.JREastRyomoNumberIndex202611.resolve(p);
+  const info=win.JREastRyomoNumberIndex.resolve(p);
   assert.equal(info.illustrationModel,'211系（高崎地区）');
   assert.equal(info.authorizesPNG,false);
   const svg=win.TrainVehicle.selectMarkerArtwork(p,false);
@@ -75,7 +75,7 @@ test('E/Y through and green-car M exceptions never become 211',()=>{
   ['2856Y','weekday','Inbound','Rapid']
  ]){
   const p=pos(n,cal,dir,type);
-  const info=win.JREastRyomoNumberIndex202611.resolve(p);
+  const info=win.JREastRyomoNumberIndex.resolve(p);
   assert.equal(info.kind,'mixed',n);
   assert.equal(info.models.length,2,n);
   assert.equal(info.actualVehicleConfirmed,false,n);
@@ -99,11 +99,11 @@ test('bad calendar, source, direction, type, date, or known actual car is reject
   {vehicleFormationId:'C3'}, {realtimeVehicleType:'E231系1000番台'}
  ];
  for(const bad of wrong)
-  assert.equal(win.JREastRyomoNumberIndex202611.resolve({...p,...bad}),null,JSON.stringify(bad));
+  assert.equal(win.JREastRyomoNumberIndex.resolve({...p,...bad}),null,JSON.stringify(bad));
  assert.equal(win.TrainVehicle.selectMarkerArtwork(p,true).kind,'unresolved');
  for(const n of ['9482M','9484M','9486M','9046M','9049M','662B'])
-  assert.equal(win.JREastRyomoNumberIndex202611.resolve({...p,trainNumber:n}),null,n);
- assert.equal(win.JREastRyomoNumberIndex202611.resolve(pos('832M','holiday','Outbound')),null);
+  assert.equal(win.JREastRyomoNumberIndex.resolve({...p,trainNumber:n}),null,n);
+ assert.equal(win.JREastRyomoNumberIndex.resolve(pos('832M','holiday','Outbound')),null);
 });
 test('existing approved garage assets and lazy page fingerprints are current',()=>{
  const g=win.VehicleGaragePngMap;
@@ -112,9 +112,9 @@ test('existing approved garage assets and lazy page fingerprints are current',()
  assert.equal(g.matchModelPath('211系（高崎地区）',home,'SobuRapid'),false);
  const html=fs.readFileSync('pages/trains.html','utf8');
  for(const f of [
-  'data/timetables/jreast-ryomo-2611-number-index.js',
+  'data/timetables/jreast-ryomo-number-index.js',
   'data/timetables/vehicle-garage-png-map.js','js/train-vehicle.js']){
-  const b=fs.readFileSync(f);
+  const b=Buffer.from(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n'));
   const hash=crypto.createHash('sha1').update('blob '+b.length+'\0')
     .update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+f+'?v='+hash),'stale '+f);

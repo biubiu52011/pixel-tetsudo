@@ -7,10 +7,10 @@ const root={},ctx=vm.createContext({window:root,Date,Set,console:{
 for(const file of [
  'data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-uetsu-2611-number-index.js',
+ 'data/timetables/jreast-uetsu-number-index.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
-const idx=root.JREastUetsuNumberIndex202611,route=idx.stations;
+const idx=root.JREastUetsuNumberIndex,route=idx.stations;
 function p(n,opts={}){
  const day=opts.serviceDate||'2026-11-06',cal=opts.calendarType||'weekday',
  calendar=cal==='weekday'?'Weekday':'SaturdayHoliday';
@@ -304,7 +304,7 @@ test('unconfirmed stale SQL 701/E721 candidate never overrides a source-checked 
     'independently confirmed contradicting model must not be overridden');
  }
  const renderer=fs.readFileSync('js/trains-render.js','utf8');
- assert.match(renderer,/lineId==="Uetsu" && window\.JREastUetsuNumberIndex202611/);
+ assert.match(renderer,/lineId==="Uetsu" && window\.JREastUetsuNumberIndex/);
  assert.match(renderer,/if \(lineId === "Uetsu" && fleetText\)/);
  assert.match(renderer,/caption\.appendChild\(uetsuNote\)/);
 });
@@ -330,16 +330,16 @@ test('folded Uetsu list derives source-verified terminus even with no SVG direct
 });
 test('lazy HTML version and estimator guard are synchronized with Git blob SHAs',()=>{
  const m=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const file='data/timetables/jreast-uetsu-2611-number-index.js';
+ const file='data/timetables/jreast-uetsu-number-index.js';
  assert.deepEqual(m.lazyScopes.trains[file],['Uetsu']);
  assert.equal(m.lazy.trains.filter(x=>x===file).length,1);
  assert.equal(m.lazy.trains.indexOf(file),
-  m.lazy.trains.indexOf('data/timetables/jreast-tsugaru-2611-number-index.js')+1);
+  m.lazy.trains.indexOf('data/timetables/jreast-tsugaru-number-index.js')+1);
  const html=fs.readFileSync('pages/trains.html','utf8');
- assert.match(html,/jreast-uetsu-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Uetsu"/);
+ assert.match(html,/jreast-uetsu-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Uetsu"/);
  for(const f of [file,'data/timetables/vehicle-garage-png-map.js',
   'js/train-position-estimator.js','js/trains-render.js']){
-  const content=fs.readFileSync(f),sha=crypto.createHash('sha1')
+  const content=Buffer.from(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')),sha=crypto.createHash('sha1')
    .update('blob '+content.length+'\0').update(content).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+f+'?v='+sha),f+' stale cache hash');
  }

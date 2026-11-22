@@ -3,8 +3,8 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 const ctx=vm.createContext({window:{},console});
 for(const f of ['data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/tobu-isesaki-2611-number-png.js',
-  'data/timetables/tobu-kiryu-2611-number-png.js',
+  'data/timetables/tobu-isesaki-number-png.js',
+  'data/timetables/tobu-kiryu-number-png.js',
   'data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])
   vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f,timeout:15000});
 const w=ctx.window;
@@ -17,15 +17,15 @@ function p(n,ex={}){
  serviceDate:'2026-11-15',vehicleIdentityStatus:'UNKNOWN',...ex};
 }
 test('Kiryu SQL has 50 locals + 32 Ryomo services with official planned series',()=>{
- assert.equal(w.TobuKiryu2611Png.sourceTemplates,164);
- assert.equal(w.TobuKiryu2611Png.localNumbersPerCalendar,50);
+ assert.equal(w.TobuKiryuPng.sourceTemplates,164);
+ assert.equal(w.TobuKiryuPng.localNumbersPerCalendar,50);
  for(let n=795;n<=855;n++)
-  assert.equal(w.TobuKiryu2611Png.hasPublishedNumber(n+'E'),n>=801&&n<=850);
- assert.equal(w.TobuKiryu2611Png.limitedExpressNumbersPerCalendar,32);
+  assert.equal(w.TobuKiryuPng.hasPublishedNumber(n+'E'),n>=801&&n<=850);
+ assert.equal(w.TobuKiryuPng.limitedExpressNumbersPerCalendar,32);
  for(const n of ["1801","1803","1805","1806","1807","1808","1811","1813","1814","1815","1816","1817","1818","1819","1820","1822","1823","1824","1826","1827","1828","1830","1831","1834","1835","1837","1838","1841","1842","1845","1846","1850"])
-  assert.equal(w.TobuKiryu2611Png.hasPublishedNumber(n),true,n);
+  assert.equal(w.TobuKiryuPng.hasPublishedNumber(n),true,n);
  for(const n of ['800E','851E','1802','1836','1851','1409','1612','801','801A'])
-  assert.equal(w.TobuKiryu2611Png.hasPublishedNumber(n),false,n);
+  assert.equal(w.TobuKiryuPng.hasPublishedNumber(n),false,n);
 });
 test('local PNG is always a Kiryu-scoped reference, not a physical train',()=>{
  for(const n of ['801E','802E','839E','850E']){
@@ -84,7 +84,7 @@ test('Official 2026-03-14 Ryomo numbers match Kiryu and existing Isesaki 200/500
    const marker=w.TrainVehicle.selectMarkerArtwork(v,false);
    assert.equal(marker.kind,'vehicle',number);
    assert.equal(marker.iconSrc,hit.pngPath,number);
-   const i=w.TobuIsesaki2611Png.match(number,{
+   const i=w.TobuIsesakiPng.match(number,{
      ...v,positionLineId:'TobuIsesaki',displayLineId:'TobuIsesaki',
      sourceRailway:'odpt.Railway:Tobu.Isesaki'
    });
@@ -121,9 +121,9 @@ test('canonical line and generated mirrors, source-only through boundary, spelli
  assert.equal(JSON.parse(fs.readFileSync('data/core/station_i18n.json','utf8'))['Jiromaru-bashi'].en,'Jiroembashi');
 });
 test('Kiryu index is lazily loaded before central number matcher with git blob hash',()=>{
- const manifest=require('../scripts/page-scripts.json'),a='data/timetables/tobu-kiryu-2611-number-png.js';
+ const manifest=require('../scripts/page-scripts.json'),a='data/timetables/tobu-kiryu-number-png.js';
  const ix=manifest.lazy.trains.indexOf(a);
- assert.ok(ix>manifest.lazy.trains.indexOf('data/timetables/tobu-sano-2611-number-png.js'));
+ assert.ok(ix>manifest.lazy.trains.indexOf('data/timetables/tobu-sano-number-png.js'));
  assert.ok(ix<manifest.lazy.trains.indexOf('data/timetables/train-number-png-ranges.js'));
  assert.deepEqual(manifest.lazyScopes.trains[a],['Kiryu']);
  const html=fs.readFileSync('pages/trains.html','utf8');

@@ -7,14 +7,14 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 const indexSource = fs.readFileSync(
-  'data/timetables/jreast-tadami-2611-number-index.js', 'utf8');
+  'data/timetables/jreast-tadami-number-index.js', 'utf8');
 const migration = fs.readFileSync(
   'supabase/migrations/20261109133000_jreast_tadami_2611_official_number_evidence.sql',
   'utf8');
 
 const window = {};
 vm.runInNewContext(indexSource, { window });
-const regular = window.JREastTadamiNumberIndex202611.regular;
+const regular = window.JREastTadamiNumberIndex.regular;
 
 const specs = [
   ['Weekday', 'Outbound', '262d1'],

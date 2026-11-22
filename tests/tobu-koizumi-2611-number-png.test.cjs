@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const ctx=vm.createContext({window:{},console});
 for(const file of [
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/tobu-koizumi-2611-number-png.js',
+ 'data/timetables/tobu-koizumi-number-png.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js'])
  vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file,timeout:15000});
@@ -27,11 +27,11 @@ test('historical 126 SQL source templates define exactly 63 whitelisted numbers 
  const sql=fs.readFileSync('supabase/migrations/20261115170000_tobu_koizumi_2611_png_reference_bands.sql','utf8');
  assert.match(sql,/manual_timetable_templates/);
  assert.match(sql,/count\(\*\).*126|<>126/);
- for(let n=701;n<=762;n++) assert.equal(root.TobuKoizumi2611Png.hasPublishedNumber(n+'E'),true,n);
- assert.equal(root.TobuKoizumi2611Png.hasPublishedNumber('764E'),true);
+ for(let n=701;n<=762;n++) assert.equal(root.TobuKoizumiPng.hasPublishedNumber(n+'E'),true,n);
+ assert.equal(root.TobuKoizumiPng.hasPublishedNumber('764E'),true);
  for(const number of ['700E','763E','765E','803E','902E','701','701A','7010E','1701E'])
-  assert.equal(root.TobuKoizumi2611Png.hasPublishedNumber(number),false,number);
- assert.equal(root.TobuKoizumi2611Png.numbersPerCalendar,63);
+  assert.equal(root.TobuKoizumiPng.hasPublishedNumber(number),false,number);
+ assert.equal(root.TobuKoizumiPng.numbersPerCalendar,63);
 });
 test('listed 701E and 764E use only approved 10000-family illustration',()=>{
  for(const number of ['701E','702E','731E','762E','764E']){

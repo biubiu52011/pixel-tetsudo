@@ -9,7 +9,7 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const p of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-yamada-2611-number-index.js',
+  'data/timetables/jreast-yamada-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -19,7 +19,7 @@ const a=render.indexOf('  function _trainMarkerDomKind(');
 const b=render.indexOf('  // Public identification boundary:',a);
 assert.ok(a>=0&&b>a);
 vm.runInContext(render.slice(a,b),ctx);
-const idx=win.JREastYamadaNumberIndex202611;
+const idx=win.JREastYamadaNumberIndex;
 const png='../images/列车/JR東日本/JR東日本_キハ110系.png';
 const urn=k=>'odpt.Station:JR-East.'+k;
 function stops(from,to,start='06:30',end='07:30',extras=[]){
@@ -153,7 +153,7 @@ function estimateAt(iso,serviceDate,records){
     constructor(...a){super(...(a.length?a:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastYamadaNumberIndex202611:idx,
+  const root={RuntimeConfig:{},JREastYamadaNumberIndex:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{Yamada:'Yamada'},
       LINE_TO_OPERATOR:{Yamada:'JR-East'}}};
   const runtime=vm.createContext({window:root,Date:Clock,console:quiet});

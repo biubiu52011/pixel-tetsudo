@@ -8,10 +8,10 @@ const root={},ctx=vm.createContext({window:root,Date,console:{
 for(const path of [
  'data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-tsugaru-2611-number-index.js',
+ 'data/timetables/jreast-tsugaru-number-index.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),ctx,{filename:path});
-const idx=root.JREastTsugaruNumberIndex202611;
+const idx=root.JREastTsugaruNumberIndex;
 const image='../images/列车/JR東日本/JR東日本_701系_秋田地区.png';
 function p(number,options={}){
  const day=options.serviceDate||'2026-11-06';
@@ -133,16 +133,16 @@ test('existing 701 Akita picture is illustrative, never an EXACT physical consis
 });
 test('cold lazy loader, source dates and HTML version fingerprints stay coherent',()=>{
  const manifest=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const path='data/timetables/jreast-tsugaru-2611-number-index.js';
+ const path='data/timetables/jreast-tsugaru-number-index.js';
  assert.deepEqual(manifest.lazyScopes.trains[path],['Tsugaru']);
  assert.equal(manifest.lazy.trains.filter(s=>s===path).length,1);
  assert.equal(manifest.lazy.trains.indexOf(path),
-  manifest.lazy.trains.indexOf('data/timetables/jreast-tazawako-2611-number-index.js')+1);
+  manifest.lazy.trains.indexOf('data/timetables/jreast-tazawako-number-index.js')+1);
  const html=fs.readFileSync('pages/trains.html','utf8');
- assert.match(html,/jreast-tsugaru-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tsugaru"/);
+ assert.match(html,/jreast-tsugaru-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tsugaru"/);
  for(const f of [path,'js/train-position-estimator.js',
   'data/timetables/vehicle-garage-png-map.js']){
-  const b=fs.readFileSync(f),hash=crypto.createHash('sha1')
+  const b=Buffer.from(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')),hash=crypto.createHash('sha1')
     .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+f+'?v='+hash),f+' correct SHA');
  }

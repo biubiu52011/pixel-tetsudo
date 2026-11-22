@@ -17,7 +17,7 @@ const ctx=vm.createContext({
 });
 const files=[
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-chiba-number-index-202611.js',
+  'data/timetables/jreast-chiba-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'

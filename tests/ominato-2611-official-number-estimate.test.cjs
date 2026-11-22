@@ -9,7 +9,7 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-ominato-2611-number-index.js',
+  'data/timetables/jreast-ominato-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -19,7 +19,7 @@ const a=render.indexOf('  function _trainMarkerDomKind(');
 const b=render.indexOf('  // Public identification boundary:',a);
 assert.ok(a>=0&&b>a);
 vm.runInContext(render.slice(a,b),ctx);
-const idx=win.JREastOminatoNumberIndex202611,source=idx.railway;
+const idx=win.JREastOminatoNumberIndex,source=idx.railway;
 function make(n,dir,type='Local',date='2026-11-05',cal='weekday',extra={}){
   return {trainNumber:n,positionLineId:'Ominato',sourceRailway:source,
     trainOperator:'JR-East',railDirection:'odpt.RailDirection:'+dir,
@@ -94,7 +94,7 @@ function estimate(iso,serviceDate,numbers){
     constructor(...a){super(...(a.length?a:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastOminatoNumberIndex202611:idx,
+  const root={RuntimeConfig:{},JREastOminatoNumberIndex:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{Ominato:'Ominato'},
       LINE_TO_OPERATOR:{Ominato:'JR-East'}}};
   const con=vm.createContext({window:root,Date:Clock,console:quiet});

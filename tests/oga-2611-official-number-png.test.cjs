@@ -9,7 +9,7 @@ const win={},ctx=vm.createContext({window:win,Date,console:{
 },_isTrainArtworkFailureActive(){return false}});
 for(const file of [
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/jreast-oga-2611-number-index.js',
+ 'data/timetables/jreast-oga-number-index.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js',
  'data/timetables/vehicle-operation-evidence-data.js'
@@ -24,7 +24,7 @@ const src='odpt.Railway:JR-East.Oga',
  out=['Oiwake','Detohama','Kamifutada','Futada','Tenno',
   'Funakoshi','Wakimoto','Hadachi','Oga'];
 const unavailable=new Set(['1130M','1132M','1134M','1131M','1133M','1135M']);
-const index=win.JREastOgaNumberIndex202611;
+const index=win.JREastOgaNumberIndex;
 function holiday(date){
  const dow=new Date(date+'T12:00:00Z').getUTCDay();
  return dow===0||dow===6||date==='2026-11-03'||date==='2026-11-23';

@@ -10,8 +10,8 @@ const w={},ctx=vm.createContext({window:w,Date,console:{
 for(const path of [
  'data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-senzan-2611-number-index.js',
- 'data/timetables/jreast-shinonoi-2611-number-index.js',
+ 'data/timetables/jreast-senzan-number-index.js',
+ 'data/timetables/jreast-shinonoi-number-index.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),ctx,{filename:path});
 const n211='../images/列车/JR東日本/JR東日本_211系_長野色.png';
@@ -26,7 +26,7 @@ function p(number,dir='Outbound',type='Local',calendar='weekday'){
   positionSource:'supabase-train-run',estimated:true,
   vehicleIdentityStatus:'UNKNOWN'};
 }
-const resolve=p=>w.JREastShinonoiNumberIndex202611.resolve(p);
+const resolve=p=>w.JREastShinonoiNumberIndex.resolve(p);
 const marker=p=>w.TrainVehicle.selectMarkerArtwork(p,false);
 test('144 distinct source numbers per calendar, including 26 official 383 Shinano plans',()=>{
  for(const cal of ['weekday','holiday']){
@@ -104,14 +104,14 @@ test('image authority has Shinonoi scope, and other line adapter survives',()=>{
 });
 test('manifest, gallery and index SHA-12 references stay synchronized',()=>{
  const conf=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const index='data/timetables/jreast-shinonoi-2611-number-index.js';
+ const index='data/timetables/jreast-shinonoi-number-index.js';
  assert.equal(conf.lazy.trains.filter(x=>x===index).length,1);
  assert.equal(conf.lazyScopes.trains[index][0],'Shinonoi');
  assert.equal(conf.lazy.trains.indexOf(index),
-   conf.lazy.trains.indexOf('data/timetables/jreast-senzan-2611-number-index.js')+1);
+   conf.lazy.trains.indexOf('data/timetables/jreast-senzan-number-index.js')+1);
  const html=fs.readFileSync('pages/trains.html','utf8');
  for(const path of [index,'data/timetables/vehicle-garage-png-map.js','js/train-vehicle.js']){
-  const b=fs.readFileSync(path),sha=crypto.createHash('sha1')
+  const b=Buffer.from(fs.readFileSync(path,'utf8').replace(/\r\n/g,'\n')),sha=crypto.createHash('sha1')
    .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+path+'?v='+sha),'stale '+path);
  }

@@ -52,7 +52,7 @@ test('canonical API scopes all 30 Weekday and 30 Holiday branch trains',()=>{
  assert.match(branch,/run\.timetable_date_verified=false/);
 });
 test('main line special train PNG/date guard remains intact',()=>{
- const script=fs.readFileSync('data/timetables/jreast-suigun-2611-number-index.js','utf8');
+ const script=fs.readFileSync('data/timetables/jreast-suigun-number-index.js','utf8');
  assert.ok(script.includes('n==="9821D"||n==="9822D"'));
  assert.ok(script.includes('n==="9329D"'));
  assert.ok(script.includes('var source='));

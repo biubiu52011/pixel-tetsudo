@@ -12,17 +12,17 @@
   "sources": [
     "data/audits/png-to-train-number-index-2611.json",
     "data/audits/png-current-service-number-map-20261116.json",
-    "data/timetables/jreast-gono-2611-number-index.js",
-    "data/timetables/jreast-senzan-2611-number-index.js",
-    "data/timetables/jreast-iiyama-2611-number-index.js",
-    "data/timetables/jreast-tazawako-2611-number-index.js",
-    "data/timetables/jreast-suigun-2611-number-index.js",
-    "data/timetables/jreast-tadami-2611-number-index.js",
-    "data/timetables/jreast-yamagata-2611-number-index.js",
-    "data/timetables/jreast-shonan-mixed-number-index-202611.js",
-    "data/timetables/jreast-uetsu-2611-number-index.js",
-    "data/timetables/jreast-tsugaru-2611-number-index.js",
-    "data/timetables/jreast-hachiko-non-electrified-2611-number-index.js"
+    "data/timetables/jreast-gono-number-index.js",
+    "data/timetables/jreast-senzan-number-index.js",
+    "data/timetables/jreast-iiyama-number-index.js",
+    "data/timetables/jreast-tazawako-number-index.js",
+    "data/timetables/jreast-suigun-number-index.js",
+    "data/timetables/jreast-tadami-number-index.js",
+    "data/timetables/jreast-yamagata-number-index.js",
+    "data/timetables/jreast-shonan-mixed-number-index.js",
+    "data/timetables/jreast-uetsu-number-index.js",
+    "data/timetables/jreast-tsugaru-number-index.js",
+    "data/timetables/jreast-hachiko-non-electrified-number-index.js"
   ],
   "summary": {
     "totalPng": 131,

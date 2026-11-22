@@ -12,8 +12,8 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const files=[
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-chiba-number-index-202611.js',
-  'data/timetables/jreast-togane-number-index-202611.js',
+  'data/timetables/jreast-chiba-number-index.js',
+  'data/timetables/jreast-togane-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -30,7 +30,7 @@ const start=render.indexOf('  function _trainMarkerDomKind(');
 const end=render.indexOf('  // Public identification boundary:',start);
 assert.ok(start>=0&&end>start);
 vm.runInContext(render.slice(start,end),ctx,{filename:'trains-render:marker'});
-const index=root.JREastToganeNumberIndex202611;
+const index=root.JREastToganeNumberIndex;
 const image='../images/列车/JR東日本/JR東日本_E233系5000番台.png';
 function p(number,source='supabase-train-run',extra={}){
   return {
@@ -189,7 +189,7 @@ function estimateAt(utc,{source='supabase-train-run',fakeNumber=false}={}){
   const context=vm.createContext({window,Date:FakeDate,
     console:{debug(){},log(){},error(){},warn(){}}});
   vm.runInContext(fs.readFileSync(
-    'data/timetables/jreast-togane-number-index-202611.js','utf8'),context);
+    'data/timetables/jreast-togane-number-index.js','utf8'),context);
   vm.runInContext(estimator,context,{filename:'js/train-position-estimator.js'});
   const templates=rows(source,'2026-11-04');
   if(fakeNumber) {

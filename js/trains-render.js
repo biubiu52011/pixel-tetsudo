@@ -1490,9 +1490,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
     }
     if (lineId === "SotetsuJRDirect" &&
-        window.JREastSotetsuJRDirectNumbers2611 &&
-        typeof window.JREastSotetsuJRDirectNumbers2611.match === "function") {
-      var sotetsuNumber = window.JREastSotetsuJRDirectNumbers2611.match(
+        window.JREastSotetsuJRDirectNumbers &&
+        typeof window.JREastSotetsuJRDirectNumbers.match === "function") {
+      var sotetsuNumber = window.JREastSotetsuJRDirectNumbers.match(
         Object.assign({}, p, {displayLineId: lineId}));
       if (sotetsuNumber) {
         lang = String(lang || "ja").toLowerCase();
@@ -1608,8 +1608,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 米坂線: image is a KiHa110 family example only after JR 2611
     // rail-number/station/date proof. Never label a replacement bus or
     // unverified physical trainset with a railway formation.
-    if(lineId==="Yonezawa"&&window.JREastYonezawaNumberIndex202611){
-      var yone=window.JREastYonezawaNumberIndex202611;
+    if(lineId==="Yonezawa"&&window.JREastYonezawaNumberIndex){
+      var yone=window.JREastYonezawaNumberIndex;
       var yoneRef=yone.resolve(Object.assign({},p,{displayLineId:lineId}));
       if(yoneRef){
         lang=String(lang||"ja").toLowerCase();
@@ -1624,8 +1624,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // scheduled physical consist. Remaining 701/719/E723 mixed workings
     // have no independently verified dated model; show candidates in text
     // but do not choose a speculative image.
-    if(lineId==="Yamagata" && window.JREastYamagataNumberIndex202611){
-      var yam=window.JREastYamagataNumberIndex202611;
+    if(lineId==="Yamagata" && window.JREastYamagataNumberIndex){
+      var yam=window.JREastYamagataNumberIndex;
       var yProof=yam.verify(Object.assign({},p,{displayLineId:lineId}));
       if(yProof){
         var yIllustration=yam.resolve(Object.assign({},p,{displayLineId:lineId}));
@@ -1647,9 +1647,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     // 羽越本線: the estimator emits an UNCONFIRMED physical car identity,
     // but the source-number + planned route can authorize an illustrative
     // model. Keep the distinction visible in the folded passenger list.
-    if(lineId==="Uetsu" && window.JREastUetsuNumberIndex202611 &&
-       typeof window.JREastUetsuNumberIndex202611.resolve==="function"){
-      var uetsuIllustration=window.JREastUetsuNumberIndex202611.resolve(
+    if(lineId==="Uetsu" && window.JREastUetsuNumberIndex &&
+       typeof window.JREastUetsuNumberIndex.resolve==="function"){
+      var uetsuIllustration=window.JREastUetsuNumberIndex.resolve(
         Object.assign({},p,{displayLineId:lineId}));
       if(uetsuIllustration){
         lang=String(lang||"ja").toLowerCase();
@@ -1826,7 +1826,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _uetsuFoldDestinationCaption(p, lineId, lang) {
     if (lineId !== "Uetsu" || !p || p.estimated !== true ||
         p.positionSource !== "supabase-train-run") return "";
-    var index = window.JREastUetsuNumberIndex202611;
+    var index = window.JREastUetsuNumberIndex;
     if (!index || typeof index.verify !== "function") return "";
     var proof = index.verify(Object.assign({}, p, {displayLineId:lineId}));
     if (!proof || !proof.terminus) return "";
@@ -1961,9 +1961,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       }
     }
     if((lineId==="Tojo"||lineId==="Ogose") && p &&
-        vehicle.status!=="EXACT" && window.TobuTojoFixedPng202611 &&
-        typeof window.TobuTojoFixedPng202611.resolve==="function") {
-      var fixedRef=window.TobuTojoFixedPng202611.resolve(
+        vehicle.status!=="EXACT" && window.TobuTojoFixedPng &&
+        typeof window.TobuTojoFixedPng.resolve==="function") {
+      var fixedRef=window.TobuTojoFixedPng.resolve(
         Object.assign({},p,{displayLineId:lineId}));
       if(fixedRef && fixedRef.illustrationPng){
         var refPrefix=/^zh/.test(lang)?"PNG示意（非当日实车）：":

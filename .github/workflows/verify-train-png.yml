@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0
       # New timetable data belongs in existing Supabase tables, not new dated JS.
       # Batched PNG audits belong in existing regression suites and Notion logs.
-      - name: Reject newly added dated scripts and per-batch audit files
+      - name: Reject dated runtime entrypoints and per-batch audit files
         env:
           BEFORE_SHA: ${{ github.event.before }}
         run: |
@@ -44,20 +44,29 @@ jobs:
             echo "No previous commit for added-file guard"; exit 0
           fi
           git diff --diff-filter=A --name-only "$base" HEAD > /tmp/added-train-project-files.txt
+          git ls-files data/timetables data/api js supabase/functions > /tmp/active-train-runtime-files.txt
           node <<'NODE'
           const fs=require('node:fs');
-          const names=fs.readFileSync('/tmp/added-train-project-files.txt','utf8').split(/\r?\n/).filter(Boolean);
+          const added=fs.readFileSync('/tmp/added-train-project-files.txt','utf8').split(/\r?\n/).filter(Boolean);
+          const active=fs.readFileSync('/tmp/active-train-runtime-files.txt','utf8').split(/\r?\n/).filter(Boolean);
           const dated=/(?:20\d{2}[-_]?(?:0[1-9]|1[0-2])|(?:^|[-_])\d{2}(?:0[1-9]|1[0-2])(?=[._-]))/;
           const runtime=/^(?:data\/timetables\/|data\/api\/|js\/|scripts\/|tools\/|supabase\/functions\/).*\.(?:js|cjs|mjs|ts)$/;
+          const activeRuntime=/^(?:data\/timetables\/|data\/api\/|js\/|supabase\/functions\/).*\.(?:js|cjs|mjs|ts)$/;
           const batchTest=/^tests\/.*(?:^|[-_])(?:p|jr|private|metro|third|other)[-_]?\d{2}[-_].*\.test\.(?:js|cjs|mjs)$/i;
           const batchReport=/^docs\/audits\/.*(?:^|[-_])(?:p|jr|m|t|o)[-_]?\d{2}[-_].*\.md$/i;
-          const forbidden=names.filter(p=>(runtime.test(p)&&dated.test(p))||batchTest.test(p)||batchReport.test(p));
+          const datedGlobal=/(?:root|window|globalThis)\.[A-Za-z0-9_]*(?:20\d{2}(?:0[1-9]|1[0-2])|\d{2}(?:0[1-9]|1[0-2]))[A-Za-z0-9_]*\s*=/;
+          const datedDispatch=/numberIndex\s*:\s*["'][^"']*(?:20\d{2}(?:0[1-9]|1[0-2])|[-_]\d{2}(?:0[1-9]|1[0-2]))[^"']*["']/;
+          const addedForbidden=added.filter(p=>(runtime.test(p)&&dated.test(p))||batchTest.test(p)||batchReport.test(p));
+          const activeForbidden=active.filter(p=>activeRuntime.test(p)&&dated.test(p));
+          const datedExports=active.filter(p=>activeRuntime.test(p)&&datedGlobal.test(fs.readFileSync(p,'utf8')));
+          const datedDispatches=active.filter(p=>activeRuntime.test(p)&&datedDispatch.test(fs.readFileSync(p,'utf8')));
+          const forbidden=[...new Set([...addedForbidden,...activeForbidden,...datedExports,...datedDispatches])];
           if(forbidden.length){
-            console.error('New date-specific scripts or redundant per-batch audit files are prohibited:');
+            console.error('Date-specific runtime entrypoints/exports or redundant per-batch audit files are prohibited:');
             forbidden.forEach(p=>console.error('  '+p));
-            console.error('Edit existing owner scripts/tests; store dated schedules in existing data and batch logs in Notion.');
+            console.error('Keep editions and validity windows in data fields; edit existing owner scripts/tests and keep batch logs in Notion.');
             process.exitCode=1;
-          }else console.log('PASS: no new time-limited runtime scripts or per-batch audit files');
+          }else console.log('PASS: active runtime entrypoints are timeless and no redundant per-batch files were added');
           NODE
       - name: Validate Supabase migration version names
         run: |
@@ -99,17 +108,17 @@ jobs:
           node --check js/trains-render.js
           node --check js/data-fusion.js
           node --check js/train-position-estimator.js
-          node --check data/timetables/jreast-ishinomaki-2611-number-index.js
-          node --check data/timetables/jreast-oga-2611-number-index.js
-          node --check data/timetables/jreast-rikuto-east-2611-number-index.js
-          node --check data/timetables/jreast-rikutsu-west-2611-number-index.js
-          node --check data/timetables/jreast-ominato-2611-number-index.js
-          node --check data/timetables/jreast-iiyama-2611-number-index.js
-          node --check data/timetables/jreast-hakushin-2611-number-index.js
-          node --check data/timetables/jreast-kitakami-2611-number-index.js
-          node --check data/timetables/jreast-yamada-2611-number-index.js
-          node --check data/timetables/jreast-regional-2611-number-index.js
-          node --check data/timetables/jreast-sotetsu-jr-direct-2611-number-index.js
+          node --check data/timetables/jreast-ishinomaki-number-index.js
+          node --check data/timetables/jreast-oga-number-index.js
+          node --check data/timetables/jreast-rikuto-east-number-index.js
+          node --check data/timetables/jreast-rikutsu-west-number-index.js
+          node --check data/timetables/jreast-ominato-number-index.js
+          node --check data/timetables/jreast-iiyama-number-index.js
+          node --check data/timetables/jreast-hakushin-number-index.js
+          node --check data/timetables/jreast-kitakami-number-index.js
+          node --check data/timetables/jreast-yamada-number-index.js
+          node --check data/timetables/jreast-regional-number-index.js
+          node --check data/timetables/jreast-sotetsu-jr-direct-number-index.js
       - name: Verify Gakkentoshi–Osaka Higashi transfer ownership and fleet scope
         run: node --test tests/gakkentoshi-transfer-source-ownership.test.cjs
       - name: Verify JR Takarazuka full 31-station rail topology and generated bundles
@@ -144,7 +153,7 @@ jobs:
           node --test tests/tojo-wakoshi-through-boundary-202611.test.cjs tests/odpt-edge-proxy-security.test.cjs
       - name: Verify Tojo/Metro through-operation families and hybrid live audit
         run: |
-          node --check data/timetables/tobu-tojo-through-fleet-202611.js
+          node --check data/timetables/tobu-tojo-through-fleet.js
           node --test tests/tobu-tojo-through-fleet-202611.test.cjs tests/tobu-tojo-realtime-policy-202611.test.cjs tests/tobu-tojo-ogose-station-audit.test.cjs tests/tobu-tojo-ogose-gtfs-2611-fallback.test.cjs
       - name: Verify Tobu Isesaki official 303E, TI symbols and Chichibu 37 stops
         run: node --test tests/tobu-isesaki-canonical-202611.test.cjs
@@ -309,7 +318,7 @@ jobs:
       - name: Verify Rikuto East Nov 2026 numbers, special rapids and flood closure
         run: node --test tests/rikuto-east-2611-official-number-png.test.cjs
       - name: Verify regional 2611 Kururi Karasuyama Hachinohe official numbers and exceptions
-        run: node --test tests/jreast-regional-2611-number-png.test.cjs
+        run: node --test tests/jreast-regional-number-png.test.cjs
       - name: Verify 2611 Hakushin 91 E129 trains, 7 Inaho, Kairi dates and no wrong art
         run: node --test tests/hakushin-2611-official-number-png.test.cjs
       - name: Verify Joetsu 2611 train-number, northern/southern fleets and Shu*Kura calendar
@@ -352,23 +361,23 @@ jobs:
         run: node --test tests/suigun-2611-number-fleet.test.cjs tests/suigun-2611-edge-calendar.test.cjs tests/suigun-branch-2611-completeness.test.cjs tests/suigun-branch-2611-through-continuity.test.cjs
       - name: Verify Tadami 2611 base numbers, source-scope, holiday rules and gallery PNG
         run: |
-          node --check data/timetables/jreast-tadami-2611-number-index.js
+          node --check data/timetables/jreast-tadami-number-index.js
           node --test tests/tadami-2611-number-map.test.cjs
       - name: Verify Tazawako 2611 regular 8xx locals without Komachi contamination or short duplicate
         run: |
-          node --check data/timetables/jreast-tazawako-2611-number-index.js
+          node --check data/timetables/jreast-tazawako-number-index.js
           node --test tests/tazawako-2611-conventional-map.test.cjs
       - name: Verify Tsugaru 2611 open Aomori-Kanita 701 locals and 324M Saturday-only exception
         run: |
-          node --check data/timetables/jreast-tsugaru-2611-number-index.js
+          node --check data/timetables/jreast-tsugaru-number-index.js
           node --test tests/tsugaru-2611-number-map.test.cjs
       - name: Verify Uetsu 2611 cross-regional train numbers, timetable dates and PNG family scope
         run: |
-          node --check data/timetables/jreast-uetsu-2611-number-index.js
+          node --check data/timetables/jreast-uetsu-number-index.js
           node --test tests/uetsu-2611-number-fleet-map.test.cjs
       - name: Verify Yamagata 2611 regional M-only calendar and mixed 701 719 E723 stock boundaries
         run: |
-          node --check data/timetables/jreast-yamagata-2611-number-index.js
+          node --check data/timetables/jreast-yamagata-number-index.js
           node --test tests/yamagata-2611-mixed-vehicle-index.test.cjs
       - name: Verify Shinonoi 2611 383 Shinano, mixed locals and SQL scope
         run: node --test tests/shinonoi-2611-number-fleet.test.cjs tests/shinonoi-2611-edge-scope.test.cjs
@@ -384,7 +393,7 @@ jobs:
         run: node --test tests/chuo-main-2611-number-index.test.cjs
       - name: Verify E233/E231 numbered mixed-fleet references and archived 215 trains
         run: |
-          node --check data/timetables/jreast-shonan-mixed-number-index-202611.js
+          node --check data/timetables/jreast-shonan-mixed-number-index.js
           node --test tests/shonan-215-202611-number-families.test.cjs
       - name: Verify dated references, Takao source handover and train split/join rules
         run: node --test tests/scheduled-vehicle-mapping.test.cjs tests/chuo-takao-source-handover.test.cjs tests/chuo-main-timetable-only.test.cjs tests/chuo-main-official-vehicle-index.test.cjs tests/train-coupling.test.cjs
@@ -424,7 +433,7 @@ jobs:
         run: node tools/train-railfan-official-corroboration.test.cjs
       - name: Verify official Hamakawasaki branch timetable and exact live isolation
         run: |
-          node --check data/timetables/nambu-branch-official-202611.js
+          node --check data/timetables/nambu-branch-official.js
           node tools/nambu-branch-official-hybrid.test.cjs
       - name: Verify cross-line canonical identity and realtime hybrid boundaries
         run: |

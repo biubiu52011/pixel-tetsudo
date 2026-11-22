@@ -8,12 +8,12 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const f of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-regional-2611-number-index.js',
+  'data/timetables/jreast-regional-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
 ])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
-const idx=win.JREastRegionalNumberIndex202611;
+const idx=win.JREastRegionalNumberIndex;
 const model='キハE130形100番台';
 const png='../images/列车/JR東日本/JR東日本_キハE130系100番台.png';
 const down=['Kisarazu','Gion','KazusaKiyokawa','HigashiKiyokawa',

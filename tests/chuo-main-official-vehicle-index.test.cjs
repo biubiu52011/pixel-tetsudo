@@ -199,7 +199,7 @@ test('SQL timetable-only 8084M renders a planned E353 PNG through the complete e
     window:w,Date:TestDate,console:{log(){},warn(){},debug(){},error(){}}
   });
   for(const file of [
-    'data/timetables/jreast-chuo-main-2611-number-index.js',
+    'data/timetables/jreast-chuo-main-number-index.js',
     'data/timetables/vehicle-garage-png-map.js',
     'js/train-vehicle.js',
     'data/timetables/vehicle-operation-evidence-data.js',

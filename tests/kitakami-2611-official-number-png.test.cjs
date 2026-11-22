@@ -10,7 +10,7 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const p of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-kitakami-2611-number-index.js',
+  'data/timetables/jreast-kitakami-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -20,7 +20,7 @@ const a=render.indexOf('  function _trainMarkerDomKind(');
 const b=render.indexOf('  // Public identification boundary:',a);
 assert.ok(a>=0&&b>a);
 vm.runInContext(render.slice(a,b),ctx);
-const idx=win.JREastKitakamiNumberIndex202611;
+const idx=win.JREastKitakamiNumberIndex;
 const png='../images/列车/JR東日本/JR東日本_キハ110系.png';
 const urn=k=>'odpt.Station:JR-East.'+k;
 function sqlProof(n,dir,date){
@@ -128,7 +128,7 @@ test('estimator drops October special and impossible route; verifies public trai
     constructor(...a){super(...(a.length?a:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastKitakamiNumberIndex202611:idx,
+  const root={RuntimeConfig:{},JREastKitakamiNumberIndex:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{Kitakami:'Kitakami'},
       LINE_TO_OPERATOR:{Kitakami:'JR-East'}}};
   const runtime=vm.createContext({window:root,Date:FixedDate,console:quiet});

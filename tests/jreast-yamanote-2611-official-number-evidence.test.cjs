@@ -7,14 +7,14 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 const indexSource = fs.readFileSync(
-  'data/timetables/jreast-yamanote-2611-number-index.js', 'utf8');
+  'data/timetables/jreast-yamanote-number-index.js', 'utf8');
 const migration = fs.readFileSync(
   'supabase/migrations/20261109113000_jreast_yamanote_2611_official_number_evidence.sql',
   'utf8');
 
 const window = {};
 vm.runInNewContext(indexSource, { window });
-const lists = window.JREastYamanote202611NumberIndex.lists;
+const lists = window.JREastYamanoteNumberIndex.lists;
 
 const specs = [
   ['Weekday', 'InnerLoop', '630u1'],

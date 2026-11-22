@@ -5,7 +5,7 @@ const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 const ctx=vm.createContext({window:{},console});
 const files=[
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/tobu-sano-2611-number-png.js',
+ 'data/timetables/tobu-sano-number-png.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js'
 ];
@@ -25,7 +25,7 @@ function p(number,opts={}){
    vehicleIdentityStatus:'UNKNOWN',...opts};
 }
 test('Sano historical source permits only 61 locals + 2 Liberty numbers per calendar',()=>{
- const index=root.TobuSano2611Png;
+ const index=root.TobuSanoPng;
  assert.equal(index.numbersPerCalendar,63);
  assert.equal(index.sourceTemplates,126);
  let seen=0;
@@ -108,15 +108,15 @@ test('Sano representative geometry uses SQL-station hop medians, not 2-minute pl
  const compact=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
  assert.deepEqual(compact.lines.Sano,line);
  const bytes=JSON.stringify(d).replace(/<\/script/gi,'<\\/script');
- assert.equal(fs.readFileSync('data/core/railway-data.file.js','utf8'),'window.RAILWAY_DATA = '+bytes+';\n');
+ assert.equal(fs.readFileSync('data/core/railway-data.file.js','utf8').replace(/\r\n/g,'\n'),'window.RAILWAY_DATA = '+bytes+';\n');
 });
 test('Sano lazy registry precedes central PNG matcher with line scope and matching page hashes',()=>{
  const manifest=require('../scripts/page-scripts.json');
- const asset='data/timetables/tobu-sano-2611-number-png.js';
+ const asset='data/timetables/tobu-sano-number-png.js';
  const assets=['data/timetables/vehicle-garage-png-map.js',asset,
  'data/timetables/train-number-png-ranges.js'];
  const order=manifest.lazy.trains;
- assert.ok(order.indexOf(asset)>order.indexOf('data/timetables/tobu-koizumi-2611-number-png.js'));
+ assert.ok(order.indexOf(asset)>order.indexOf('data/timetables/tobu-koizumi-number-png.js'));
  assert.ok(order.indexOf(asset)<order.indexOf('data/timetables/train-number-png-ranges.js'));
  assert.deepEqual(manifest.lazyScopes.trains[asset],['Sano']);
  const html=fs.readFileSync('pages/trains.html','utf8');
@@ -126,5 +126,5 @@ test('Sano lazy registry precedes central PNG matcher with line scope and matchi
   const sha=crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+item+'?v='+sha),item);
  }
- assert.match(html,/tobu-sano-2611-number-png\.js\?v=[a-f0-9]{12}" data-line-scope="Sano"/);
+ assert.match(html,/tobu-sano-number-png\.js\?v=[a-f0-9]{12}" data-line-scope="Sano"/);
 });

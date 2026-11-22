@@ -8,12 +8,12 @@ const root={},ctx=vm.createContext({window:root,Date,
   _isTrainArtworkFailureActive(){return false}});
 for(const f of [
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/nambu-branch-official-202611.js',
- 'data/timetables/joban-e231-h-202611-index.js',
- 'data/timetables/jreast-keihin-2611-number-index.js',
- 'data/timetables/jreast-yokohama-2611-number-index.js',
- 'data/timetables/jreast-yamanote-2611-number-index.js',
- 'data/timetables/jreast-regional-2611-number-index.js',
+ 'data/timetables/nambu-branch-official.js',
+ 'data/timetables/joban-e231-h-index.js',
+ 'data/timetables/jreast-keihin-number-index.js',
+ 'data/timetables/jreast-yokohama-number-index.js',
+ 'data/timetables/jreast-yamanote-number-index.js',
+ 'data/timetables/jreast-regional-number-index.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js',
  'data/timetables/vehicle-operation-evidence-data.js'

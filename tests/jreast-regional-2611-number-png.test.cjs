@@ -11,7 +11,7 @@ const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-regional-2611-number-index.js',
+  'data/timetables/jreast-regional-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -21,7 +21,7 @@ const start=render.indexOf('  function _trainMarkerDomKind(');
 const end=render.indexOf('  // Public identification boundary:',start);
 assert.ok(start>=0&&end>start);
 vm.runInContext(render.slice(start,end),ctx,{filename:'js/trains-render.js:marker'});
-const index=win.JREastRegionalNumberIndex202611;
+const index=win.JREastRegionalNumberIndex;
 const fleets={
   Kururi:['キハE130形100番台',
     '../images/列车/JR東日本/JR東日本_キハE130系100番台.png'],
@@ -183,7 +183,7 @@ test('planned estimator uses official numbers but cannot resurrect dated cancell
     constructor(...x){super(...(x.length?x:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastRegionalNumberIndex202611:index,
+  const root={RuntimeConfig:{},JREastRegionalNumberIndex:index,
     ODPTClient:{LINE_RAILWAY_CODE:{Karasuyama:'Karasuyama'},
       LINE_TO_OPERATOR:{Karasuyama:'JR-East'}}};
   const sandbox=vm.createContext({window:root,Date:FixedDate,console:quiet});

@@ -6,7 +6,7 @@ const w={},ctx=vm.createContext({window:w,Date,console:{
 },_isTrainArtworkFailureActive(){return false}});
 for(const file of ['data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-senzan-2611-number-index.js','js/train-vehicle.js'])
+ 'data/timetables/jreast-senzan-number-index.js','js/train-vehicle.js'])
  vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
 const mk=(n,cal='weekday',dir='Outbound',type='Local',date='2026-11-06')=>({
  trainNumber:n,calendarType:cal,railDirection:'odpt.RailDirection:'+dir,
@@ -14,7 +14,7 @@ const mk=(n,cal='weekday',dir='Outbound',type='Local',date='2026-11-06')=>({
  positionLineId:'Senzan',displayLineId:'Senzan',
  sourceRailway:'odpt.Railway:JR-East.Senzan',
  positionSource:'supabase-train-run',estimated:true,vehicleIdentityStatus:'UNKNOWN'});
-const resolve=p=>w.JREastSenzanNumberIndex202611.resolve(p);
+const resolve=p=>w.JREastSenzanNumberIndex.resolve(p);
 const art=p=>w.TrainVehicle.selectMarkerArtwork(p,false);
 test('104 official M numbers per calendar, 52 each direction',()=>{
  const rapid=new Set(['3820M','3830M','3834M','3838M','3827M','3831M','3835M']);
@@ -65,13 +65,13 @@ test('source and vehicle boundaries cannot manufacture PNG',()=>{
 });
 test('manifest and gallery are consistent with generated HTML',()=>{
  const m=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const path='data/timetables/jreast-senzan-2611-number-index.js';
+ const path='data/timetables/jreast-senzan-number-index.js';
  assert.equal(m.lazy.trains.filter(x=>x===path).length,1);
  assert.equal(m.lazy.trains.indexOf(path),m.lazy.trains.indexOf('data/timetables/train-number-png-ranges.js')+1);
  assert.equal(m.lazyScopes.trains[path][0],'Senzan');
  const html=fs.readFileSync('pages/trains.html','utf8');
  for(const f of [path,'data/timetables/vehicle-garage-png-map.js']){
-  const b=fs.readFileSync(f),hash=crypto.createHash('sha1')
+  const b=Buffer.from(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')),hash=crypto.createHash('sha1')
    .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+f+'?v='+hash),'stale '+f);
  }

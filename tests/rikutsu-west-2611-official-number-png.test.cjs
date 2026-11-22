@@ -8,7 +8,7 @@ const win={},quiet={log(){},warn(){},error(){},debug(){}};
 const ctx=vm.createContext({window:win,Date,console:quiet,
   _isTrainArtworkFailureActive(){return false}});
 for(const f of ['data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-rikutsu-west-2611-number-index.js',
+  'data/timetables/jreast-rikutsu-west-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js']){
@@ -19,7 +19,7 @@ const a=render.indexOf('  function _trainMarkerDomKind(');
 const b=render.indexOf('  // Public identification boundary:',a);
 assert.ok(a>=0&&b>a);
 vm.runInContext(render.slice(a,b),ctx,{filename:'js/trains-render.js:marker'});
-const idx=win.JREastRikutsuWestNumberIndex202611;
+const idx=win.JREastRikutsuWestNumberIndex;
 const source=idx.railway,png='../images/列车/JR東日本/JR東日本_キハ110系.png';
 function position(number,direction,type='Local',date='2026-11-05',cal='weekday',extra={}){
   return {trainNumber:number,positionLineId:'RikutsuWest',trainOperator:'JR-East',
@@ -89,7 +89,7 @@ test('SQL estimated position retains official number and restores Mogamigawa Rap
     constructor(...args){super(...(args.length?args:[iso]));}
     static now(){return Date.parse(iso);}
   }
-  const root={RuntimeConfig:{},JREastRikutsuWestNumberIndex202611:idx,
+  const root={RuntimeConfig:{},JREastRikutsuWestNumberIndex:idx,
     ODPTClient:{LINE_RAILWAY_CODE:{RikutsuWest:'RikutsuWest'},
       LINE_TO_OPERATOR:{RikutsuWest:'JR-East'}}};
   const c=vm.createContext({window:root,Date:FixedDate,console:quiet});

@@ -172,7 +172,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/255d1.html
     {lineIds:["Hakushin"],numberFormat:"full",from:623,to:1951,
       suffixes:"M",trainTypes:["Local"],
-      numberIndex:"jreast-hakushin-2611",hakushinKind:"local",
+      numberIndex:"jreast-hakushin",hakushinKind:"local",
       publishedNumbers:[
         "1620M","1622M","1630M","1632M","1636M","1646M","1648M",
         "1660M","1664M","1666M","1676M","1680M","1682M",
@@ -199,7 +199,7 @@
       pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
     {lineIds:["Hakushin"],numberFormat:"full",from:3921,to:3921,
       suffixes:"M",trainTypes:["Rapid"],
-      numberIndex:"jreast-hakushin-2611",hakushinKind:"rapid",
+      numberIndex:"jreast-hakushin",hakushinKind:"rapid",
       publishedNumbers:["3921M"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -210,7 +210,7 @@
       pngPath:"../images/列车/JR東日本/JR東日本_E129系.png"},
     {lineIds:["Hakushin"],numberFormat:"full",from:1,to:14,
       suffixes:"M",trainTypes:["LimitedExpress"],
-      numberIndex:"jreast-hakushin-2611",hakushinKind:"inaho",
+      numberIndex:"jreast-hakushin",hakushinKind:"inaho",
       publishedNumbers:["1M","2M","3M","4M","5M","6M","7M",
         "8M","9M","10M","11M","12M","13M","14M"],
       directionNumberParity:"inbound-even",
@@ -223,7 +223,7 @@
       pngPath:"../images/列车/JR東日本/JR東日本_E653系（いなほ）.png"},
     {lineIds:["Hakushin"],numberFormat:"full",from:8853,to:8854,
       suffixes:"D",trainTypes:["Rapid"],
-      numberIndex:"jreast-hakushin-2611",hakushinKind:"kairi",
+      numberIndex:"jreast-hakushin",hakushinKind:"kairi",
       publishedNumbers:["8853D","8854D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -244,7 +244,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/251d2.html
     {lineIds:["Kitakami"],numberFormat:"full",from:722,to:736,
       suffixes:"D",trainTypes:["Local"],
-      numberIndex:"jreast-kitakami-2611",
+      numberIndex:"jreast-kitakami",
       publishedNumbers:["722D","724D","736D","725D","735D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -261,7 +261,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/980d1.html
     {lineIds:["Yamada"],numberFormat:"full",from:631,to:9642,
       suffixes:"D",trainTypes:["Local"],
-      numberIndex:"jreast-yamada-2611",
+      numberIndex:"jreast-yamada",
       publishedNumbers:["2632D","2634D","2636D","2638D","9636D",
         "9642D","9631D","2633D","2635D","9637D","9639D","2639D",
         "2641D","632D","644D","646D","631D","9633D","641D"],
@@ -279,7 +279,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/229d1.html
     {lineIds:["Iiyama"],numberFormat:"full",from:120,to:1123,
       suffixes:"D",trainTypes:["Local"],
-      numberIndex:"jreast-iiyama-2611",
+      numberIndex:"jreast-iiyama",
       publishedNumbers:["1120D","1122D","120D","122D","124D",
         "126D","128D","130D","132D","134D","136D",
         "138D","140D","142D","144D","146D","150D",
@@ -307,7 +307,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/256d2.html
     {lineIds:["RikutsuWest"],numberFormat:"full",from:150,to:165,
       suffixes:"D",trainTypes:["Local"],
-      numberIndex:"jreast-rikutsu-west-2611",rikutsuKind:"regular",
+      numberIndex:"jreast-rikutsu-west",rikutsuKind:"regular",
       publishedNumbers:["150D","152D","154D","156D","158D","160D",
         "162D","164D","151D","153D","155D","157D","159D","161D",
         "163D","165D"],
@@ -321,7 +321,7 @@
       pngPath:"../images/列车/JR東日本/JR東日本_キハ110系.png"},
     {lineIds:["RikutsuWest"],numberFormat:"full",from:3131,to:3132,
       suffixes:"D",trainTypes:["Rapid"],
-      numberIndex:"jreast-rikutsu-west-2611",rikutsuKind:"rapid",
+      numberIndex:"jreast-rikutsu-west",rikutsuKind:"rapid",
       publishedNumbers:["3131D","3132D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -341,7 +341,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/268d2.html
     {lineIds:["RikutoEast"],numberFormat:"full",from:1720,to:5735,
       suffixes:"D",trainTypes:["Local"],
-      numberIndex:"jreast-rikuto-east-2611",rikutoKind:"regular",
+      numberIndex:"jreast-rikuto-east",rikutoKind:"regular",
       publishedNumbers:["5720D","1720D","5722D","1722D","1724D",
         "5724D","5726D","1726D","1728D","4730D","1732D",
         "4734D","5728D","1736D","5730D","1738D","5732D",
@@ -365,7 +365,7 @@
     // https://railf.jp/news/2026/04/28/000000.html
     {lineIds:["RikutoEast"],numberFormat:"full",from:9721,to:9726,
       suffixes:"D",trainTypes:["Rapid"],
-      numberIndex:"jreast-rikuto-east-2611",rikutoKind:"rapid",
+      numberIndex:"jreast-rikuto-east",rikutoKind:"rapid",
       publishedNumbers:["9721D","9722D","9723D","9724D","9725D","9726D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -383,7 +383,7 @@
     // Kururi 217u1/u2/d1/d2: 40 regular Local.
     {lineIds:["Kururi"],numberFormat:"full",
       from:920,to:2952,suffixes:"D",
-      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      trainTypes:["Local"],numberIndex:"jreast-regional",
       regionalKind:"regular",publishedNumbers:["920D","922D","924D","926D","928D","930D","932D","934D","936D","938D","940D","942D","2944D","944D","2946D","946D","948D","950D","2952D","952D","921D","923D","925D","927D","929D","931D","933D","935D","937D","939D","941D","2941D","943D","2943D","945D","947D","949D","2949D","951D","953D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -396,7 +396,7 @@
     // Karasuyama 242u1/u2/d1/d2: 27 regular Local.
     {lineIds:["Karasuyama"],numberFormat:"full",
       from:321,to:347,suffixes:"M",
-      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      trainTypes:["Local"],numberIndex:"jreast-regional",
       regionalKind:"regular",publishedNumbers:["322M","324M","326M","328M","330M","332M","334M","336M","338M","340M","342M","344M","346M","321M","323M","325M","327M","329M","331M","333M","335M","337M","339M","341M","343M","345M","347M"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -409,7 +409,7 @@
     // Hachinohe 277u1/u2/d1/d2: 41 regular Local.
     {lineIds:["Hachinohe"],numberFormat:"full",
       from:424,to:1463,suffixes:"D",
-      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      trainTypes:["Local"],numberIndex:"jreast-regional",
       regionalKind:"regular",publishedNumbers:["1422D","424D","426D","1428D","1430D","432D","1434D","436D","1438D","1440D","442D","1444D","446D","1448D","1450D","1452D","454D","1456D","458D","1460D","462D","425D","1427D","429D","1431D","1433D","435D","1437D","1439D","441D","1443D","445D","1447D","449D","1451D","1453D","1455D","457D","1459D","461D","1463D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -422,7 +422,7 @@
     // Hachinohe 277u1/d1: 2 special Local.
     {lineIds:["Hachinohe"],numberFormat:"full",
       from:9445,to:9446,suffixes:"D",
-      trainTypes:["Local"],numberIndex:"jreast-regional-2611",
+      trainTypes:["Local"],numberIndex:"jreast-regional",
       regionalKind:"special",publishedNumbers:["9445D","9446D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -435,7 +435,7 @@
     // Hachinohe 277d2: 1 special Rapid.
     {lineIds:["Hachinohe"],numberFormat:"full",
       from:8471,to:8471,suffixes:"D",
-      trainTypes:["Rapid"],numberIndex:"jreast-regional-2611",
+      trainTypes:["Rapid"],numberIndex:"jreast-regional",
       regionalKind:"special",publishedNumbers:["8471D"],
       directionNumberParity:"inbound-even",
       operator:"JR-East",sourceOperatorFallback:true,
@@ -456,7 +456,7 @@
     // https://www.jreast.co.jp/train/local/ev_e801.html
     {lineIds:["Oga"],numberFormat:"full",from:1120,to:1149,
       suffixes:"M",trainType:"Local",trainTypes:["Local"],
-      numberIndex:"jreast-oga-2611",
+      numberIndex:"jreast-oga",
       publishedNumbers:["1120M","1122M","1124M","1126M","1128M",
         "1130M","1132M","1134M","1136M","1138M","1140M","1142M",
         "1144M","1146M","1148M","1123M","1125M","1127M","1129M",
@@ -484,7 +484,7 @@
     // https://w.atwiki.jp/train-boundfor/pages/92.html
     {lineIds:["Ishinomaki"],numberFormat:"full",
       from:640,to:5651,suffixes:"D",trainType:"Local",
-      trainTypes:["Local"],numberIndex:"jreast-ishinomaki-2611",
+      trainTypes:["Local"],numberIndex:"jreast-ishinomaki",
       ishinomakiKind:"regular",
       publishedNumbers:["5620D","2622D","5624D","1626D","1628D",
         "2926D","1630D","1632D","2930D","1634D","1636D","1638D",
@@ -507,7 +507,7 @@
     // Cross-checked number/working: https://w.atwiki.jp/train-boundfor/pages/92.html
     {lineIds:["Ishinomaki"],numberFormat:"full",
       from:5530,to:5543,suffixes:"D",
-      trainTypes:["Rapid"],numberIndex:"jreast-ishinomaki-2611",
+      trainTypes:["Rapid"],numberIndex:"jreast-ishinomaki",
       ishinomakiKind:"through",
       publishedNumbers:["5530D","5543D"],
       directionNumberParity:"inbound-even",
@@ -726,7 +726,7 @@
     // https://timetables.jreast.co.jp/2611/timetable-v/275d1.html
     // https://timetables.jreast.co.jp/2611/timetable-v/275d2.html
     {lineIds:["Gono"],numberFormat:"full",from:122,to:2839,
-      suffixes:"D",trainTypes:["Local"],numberIndex:"jreast-gono-2611",
+      suffixes:"D",trainTypes:["Local"],numberIndex:"jreast-gono",
       publishedNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
       weekdayNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
       holidayNumbers:["122D","124D","320D","126D","128D","620D","322D","822D","224D","326D","2826D","2828D","130D","132D","134D","2830D","328D","832D","2834D","836D","838D","821D","2823D","825D","321D","623D","827D","123D","125D","2525D","2529D","127D","2531D","2533D","223D","2835D","837D","323D","2839D","131D","325D","133D","225D","135D","137D"],
@@ -738,7 +738,7 @@
       requiredCandidateModelPrefix:"GV-E400系",
       model:"GV-E400系",pngPath:"../images/列车/JR東日本/JR東日本_GV-E400系.png"},
     {lineIds:["Gono"],numberFormat:"full",from:3524,to:3526,
-      suffixes:"D",trainTypes:["Rapid"],numberIndex:"jreast-gono-2611",
+      suffixes:"D",trainTypes:["Rapid"],numberIndex:"jreast-gono",
       publishedNumbers:["3524D","3526D"],
       weekdayNumbers:["3524D","3526D"],
       holidayNumbers:["3524D","3526D"],
@@ -1042,7 +1042,7 @@
     // This is an illustrative same-line stock image, not a confirmed set.
     {lineIds:["Yamanote"],numberFormat:"full",
       from:301,to:2433,suffixes:"G",trainType:"Local",
-      numberIndex:"jreast-yamanote-202611",
+      numberIndex:"jreast-yamanote",
       operator:"JR-East",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Yamanote"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
@@ -1264,7 +1264,7 @@
     // https://www.jreast.co.jp/train/local/e233.html
     {lineIds:["KeihinTohoku"],numberFormat:"full",
       from:400,to:2499,suffixes:"ABC",operator:"JR-East",
-      numberIndex:"jreast-keihin-202611",
+      numberIndex:"jreast-keihin",
       sourceOperatorFallback:true,trainTypes:["Local","Rapid"],
       sourceRailways:["odpt.Railway:JR-East.KeihinTohokuNegishi",
         "odpt.Railway:JR-East.KeihinTohoku"],
@@ -1282,7 +1282,7 @@
     // https://media.jreast.co.jp/articles/1710
     {lineIds:["KeihinTohoku"],numberFormat:"full",
       from:400,to:4999,suffixes:"K",operator:"JR-East",
-      numberIndex:"jreast-keihin-202611",
+      numberIndex:"jreast-keihin",
       sourceOperatorFallback:true,trainTypes:["Local","Rapid"],
       sourceRailways:["odpt.Railway:JR-East.KeihinTohokuNegishi",
         "odpt.Railway:JR-East.KeihinTohoku"],
@@ -1485,7 +1485,7 @@
       suffixes:"Y",trainType:"Local",operator:"JR-East",
       sourceOperatorFallback:true,
       publishedNumbers:["5680Y","5983Y"],
-      numberIndex:"jreast-togane-202611",
+      numberIndex:"jreast-togane",
       sourceRailways:["odpt.Railway:JR-East.Togane"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       allowedModelLabels:["E233系5000番台"],
@@ -1501,7 +1501,7 @@
     // https://www.jreast.co.jp/train/local/e231.html
     {lineIds:["NaritaAbikoBranch"],numberFormat:"full",
       from:820,to:899,suffixes:"M",trainType:"Local",
-      numberIndex:"jreast-narita-abiko-202611",
+      numberIndex:"jreast-narita-abiko",
       operator:"JR-East",sourceOperatorFallback:true,
       publishedNumbers:[
         "820M","821M","822M","823M","824M","825M","826M","827M",
@@ -1590,7 +1590,7 @@
       from:400,to:4999,suffixes:"K",trainTypes:["Local","Rapid"],
       operator:"JR-East",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.Yokohama"],
-      numberIndex:"jreast-yokohama-202611",
+      numberIndex:"jreast-yokohama",
       validFrom:"2026-11-01",validTo:"2026-11-30",
       // This is a representative series image only. Never override a
       // conflicting observed model, SQL plan, or timetable candidate.
@@ -1621,7 +1621,7 @@
         "odpt.Railway:JR-East.Uchibo","odpt.Railway:JR-East.Sotobo",
         "odpt.Railway:JR-East.Kashima"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"jreast-sobu-yokosuka-202611",
+      numberIndex:"jreast-sobu-yokosuka",
       // The published regular S/F and through local M-number assignments
       // are even inbound, odd outbound in the source timetables. The
       // number index alone does not check a supplied travel direction.
@@ -1644,7 +1644,7 @@
         "odpt.Railway:JR-East.SobuRapid","odpt.Railway:JR-East.Sobu",
         "odpt.Railway:JR-East.Narita","odpt.Railway:JR-East.NaritaAirportBranch"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"jreast-sobu-yokosuka-202611",
+      numberIndex:"jreast-sobu-yokosuka",
       allowedModelLabels:["E259系","E259系（成田エクスプレス）","E259系（しおさい）"],
       model:"E259系",
       pngPath:"../images/列车/JR東日本/JR東日本_E259系.png"},
@@ -1662,7 +1662,7 @@
         "odpt.Railway:JR-East.Sotobo","odpt.Railway:JR-East.Uchibo",
         "odpt.Railway:JR-East.Sobu","odpt.Railway:JR-East.SobuRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"jreast-sobu-yokosuka-202611",
+      numberIndex:"jreast-sobu-yokosuka",
       allowedModelLabels:["E257系500番台","E257系500番台（わかしお・さざなみ）"],
       model:"E257系500番台",
       pngPath:"../images/列车/JR東日本/JR東日本_E257系_500番台.png"},
@@ -1679,7 +1679,7 @@
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.NambuBranch"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"nambu-branch-official-202611",
+      numberIndex:"nambu-branch-official",
       allowedModelLabels:["E127系0番台（南武支線）","E127系0番台","E127系"],
       model:"E127系0番台（南武支線）",
       pngPath:"../images/列车/JR東日本/JR東日本_E127系_0番台_南武支線.png"},
@@ -1713,7 +1713,7 @@
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.ChuoSobuLocal"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"chuo-sobu-tozai-2611",throughOwner:"S",
+      numberIndex:"chuo-sobu-tozai",throughOwner:"S",
       allowedModelLabels:["東京メトロ15000系"],
       model:"東京メトロ15000系",
       pngPath:"../images/列车/東京メトロ/東京メトロ_15000系.png"},
@@ -1722,7 +1722,7 @@
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.ChuoSobuLocal"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"chuo-sobu-tozai-2611",throughOwner:"K",
+      numberIndex:"chuo-sobu-tozai",throughOwner:"K",
       allowedModelLabels:["E231系800番台","E231系800番台（東西線直通）"],
       model:"E231系800番台（東西線直通）",
       pngPath:"../images/列车/JR東日本/JR東日本_E231系_800番台.png"},
@@ -1799,7 +1799,7 @@
       suffixes:"H",operator:"JR-East",trainTypes:["Rapid"],
       sourceRailways:["odpt.Railway:JR-East.JobanRapid"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      numberIndex:"joban-e231-h-202611",
+      numberIndex:"joban-e231-h",
       allowedModelLabels:["E231系0番台","E231系0番台（常磐快速線・LED）"],
       model:"E231系0番台（常磐快速線・LED）",
       pngPath:"../images/列车/JR東日本/JR東日本_E231系_0番台_常磐快速線.png"},
@@ -2166,7 +2166,7 @@
     // calendar, direction and Rapid service checks; no extra priority.
     {lineIds:["Iiyama"],numberFormat:"full",from:8140,to:8141,
       suffixes:"D",trainTypes:["Rapid"],
-      numberIndex:"jreast-iiyama-2611",iiyamaKind:"oykot",
+      numberIndex:"jreast-iiyama",iiyamaKind:"oykot",
       publishedNumbers:["8140D","8141D"],
       directionNumberParity:"inbound-even",operator:"JR-East",
       sourceOperatorFallback:true,
@@ -2789,7 +2789,7 @@
        !["Inbound","Outbound"].includes(dir)||
        String(proof.direction||"").split(/[.:]/).pop()!==dir||
        (Number(m[1])%2)!==(dir==="Inbound"?0:1))return null;
-    var official=root.JREastOgaNumberIndex202611;
+    var official=root.JREastOgaNumberIndex;
     if(!official||typeof official.verify!=="function"||
        !official.verify(n,p.sourceRailway,p.railDirection,
          p.trainType,sourceCalendar(p),date))return null;
@@ -2960,7 +2960,7 @@
     if(calendar!==(holiday?"holiday":"weekday")||
        proof.calendar!==calendarUrn||
        proof.timetableIndexUrl!==publishedPage)return null;
-    var officialNumberIndex=root.JREastSotetsuJRDirectNumbers2611,
+    var officialNumberIndex=root.JREastSotetsuJRDirectNumbers,
       officialNumber=officialNumberIndex&&typeof officialNumberIndex.match==="function"
         ?officialNumberIndex.match(p):null;
     if(officialNumberIndex&&!officialNumber)return null;
@@ -3566,7 +3566,7 @@
          String(proof.officialSourceUrl||"")))return null;
     var dir=String(p.railDirection||"").split(/[.:]/).pop(),
       type=String(p.trainType||"").split(/[.:]/).pop(),
-      official=root.JREastRegionalNumberIndex202611;
+      official=root.JREastRegionalNumberIndex;
     if(!official||typeof official.verify!=="function")return null;
     var permitted=official.verify("Kururi",number,p.sourceRailway,
       p.railDirection,p.trainType,sourceCalendar(p),date);
@@ -3770,7 +3770,7 @@
       expectedType=rapid?"Rapid":"Local",
       expectedName=rapid?"おもいで湯けむり"+num.slice(-2,-1)+"号":"",
       dates=Array.isArray(proof.validDates)?proof.validDates:[],
-      officialIndex=root.JREastRikutoEastNumberIndex202611,
+      officialIndex=root.JREastRikutoEastNumberIndex,
       officialResult=officialIndex&&typeof officialIndex.verify==="function"?
         officialIndex.verify(num,p.sourceRailway,p.railDirection,p.trainType,cal,date):null;
     if(ty!==expectedType||proof.trainType!=="odpt.TrainType:JR-East."+expectedType||
@@ -4166,20 +4166,20 @@
   var warnedNumberBandConflictCount=0;
   function match(trainNumber,lineId,context){
     if(String(lineId||'')==='TobuUtsunomiya')
-      return root.TobuUtsunomiya2611Png ?
-        root.TobuUtsunomiya2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
+      return root.TobuUtsunomiyaPng ?
+        root.TobuUtsunomiyaPng.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='Kiryu')
-      return root.TobuKiryu2611Png ?
-        root.TobuKiryu2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
+      return root.TobuKiryuPng ?
+        root.TobuKiryuPng.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='Sano')
-      return root.TobuSano2611Png ?
-        root.TobuSano2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
+      return root.TobuSanoPng ?
+        root.TobuSanoPng.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='Koizumi')
-      return root.TobuKoizumi2611Png ?
-        root.TobuKoizumi2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
+      return root.TobuKoizumiPng ?
+        root.TobuKoizumiPng.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='TobuIsesaki')
-      return root.TobuIsesaki2611Png ?
-        root.TobuIsesaki2611Png.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
+      return root.TobuIsesakiPng ?
+        root.TobuIsesakiPng.match(String(trainNumber||'').trim().toUpperCase(),context) : null;
     if(String(lineId||'')==='TobuNikko')return matchTobuNikko2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(String(lineId||'')==='Nikkoku')return matchTobuKinugawaLocal2611(String(trainNumber||'').trim().toUpperCase(),context);
     if(String(lineId||'')==='TobuSkytree')return matchTobuSkytree2611(String(trainNumber||'').trim().toUpperCase(),context);
@@ -4591,7 +4591,7 @@
       // earlier five-number JS-only 2611 guard remains for legacy audits,
       // but can no longer independently authorize a new public PNG.
       var contextSource=Object.assign({},context||{},{trainNumber:number});
-      var ki=root.JREastKitakamiNumberIndex202611;
+      var ki=root.JREastKitakamiNumberIndex;
       var verified=ki&&typeof ki.verifySqlProof==="function"
         ?ki.verifySqlProof(contextSource):null;
       if(!verified||contextSource.estimated!==true||
@@ -4962,7 +4962,7 @@
         if((isRuntimePosition&&!scopedType)||
            (scopedType&&row.trainTypesIfPresent.indexOf(scopedType)<0))continue;
       }
-      if(row.numberIndex==="chuo-sobu-tozai-2611"){
+      if(row.numberIndex==="chuo-sobu-tozai"){
         var rawCal=String(context&&(context.calendarType||context.serviceId||
           context.timetableCalendar)||"");
         var cal=rawCal==="weekday"||/(?:^|[.:])Weekday$/.test(rawCal) ? "weekday" :
@@ -4973,8 +4973,8 @@
         var indexed=chuoSobuTozai2611[cal+"_"+direction+"_"+row.throughOwner];
         if(!indexed||indexed.indexOf(number)<0)continue;
       }
-      if(row.numberIndex==="nambu-branch-official-202611"){
-        var branchIdx=root.NambuBranchOfficial202611;
+      if(row.numberIndex==="nambu-branch-official"){
+        var branchIdx=root.NambuBranchOfficial;
         if(!branchIdx || typeof branchIdx.verify!=="function")continue;
         var branchRawCal=String(context&&(context.calendarType||
           context.serviceId||context.timetableCalendar)||"");
@@ -4995,8 +4995,8 @@
             "odpt.TrainType:JR-East.Local",cal,branchDate)===true;
         }))continue;
       }
-      if(row.numberIndex==="jreast-hakushin-2611"){
-        var hakushinIndex=root.JREastHakushinNumberIndex202611;
+      if(row.numberIndex==="jreast-hakushin"){
+        var hakushinIndex=root.JREastHakushinNumberIndex;
         var hakushinResult=hakushinIndex&&typeof hakushinIndex.verify==="function"
           ?hakushinIndex.verify(number,context&&context.sourceRailway,
             context&&(context.railDirection||context.directionUrn||context.direction),
@@ -5006,8 +5006,8 @@
            hakushinResult.model!==row.model||
            hakushinResult.pngAvailable!==true)continue;
       }
-      if(row.numberIndex==="jreast-gono-2611"){
-        var gonoIndex=root.JREastGonoNumberIndex202611;
+      if(row.numberIndex==="jreast-gono"){
+        var gonoIndex=root.JREastGonoNumberIndex;
         var gonoMatched=gonoIndex&&typeof gonoIndex.verify==="function"
           ?gonoIndex.verify(number,context&&context.sourceRailway,
             context&&(context.railDirection||context.directionUrn||context.direction),
@@ -5016,8 +5016,8 @@
         if(!gonoMatched||gonoMatched.kind!=="regular"||
            gonoMatched.model!==row.model)continue;
       }
-      if(row.numberIndex==="jreast-kitakami-2611"){
-        var kitakamiIdx=root.JREastKitakamiNumberIndex202611;
+      if(row.numberIndex==="jreast-kitakami"){
+        var kitakamiIdx=root.JREastKitakamiNumberIndex;
         // Estimator already checks RAW stop path. Matcher independently
         // rechecks exact 2611 direction / date / operator calendar.
         if(!kitakamiIdx||typeof kitakamiIdx.verifyNumber!=="function"||
@@ -5028,8 +5028,8 @@
              context.trainType||context.typeName,
              sourceCalendar(context),context.serviceDate)!==true)continue;
       }
-      if(row.numberIndex==="jreast-yamada-2611"){
-        var yamadaIdx=root.JREastYamadaNumberIndex202611;
+      if(row.numberIndex==="jreast-yamada"){
+        var yamadaIdx=root.JREastYamadaNumberIndex;
         if(!yamadaIdx||typeof yamadaIdx.verifyNumber!=="function"||
            !context||context.officialNumberVerified!==true||
            context.positionSource!=="supabase-train-run"||
@@ -5038,8 +5038,8 @@
              context.trainType||context.typeName,
              sourceCalendar(context),context.serviceDate)!==true)continue;
       }
-      if(row.numberIndex==="jreast-iiyama-2611"){
-        var iiyamaIdx=root.JREastIiyamaNumberIndex202611;
+      if(row.numberIndex==="jreast-iiyama"){
+        var iiyamaIdx=root.JREastIiyamaNumberIndex;
         var iiyamaResult=iiyamaIdx&&typeof iiyamaIdx.verify==="function"
           ?iiyamaIdx.verify(number,context&&context.sourceRailway,
             context&&(context.railDirection||context.directionUrn||context.direction),
@@ -5049,8 +5049,8 @@
            iiyamaResult.model!==row.model||iiyamaResult.pngAvailable!==true)
           continue;
       }
-      if(row.numberIndex==="jreast-rikutsu-west-2611"){
-        var westIdx=root.JREastRikutsuWestNumberIndex202611;
+      if(row.numberIndex==="jreast-rikutsu-west"){
+        var westIdx=root.JREastRikutsuWestNumberIndex;
         var westResult=westIdx&&typeof westIdx.verify==="function"
           ?westIdx.verify(number,context&&context.sourceRailway,
             context&&(context.railDirection||context.directionUrn||context.direction),
@@ -5059,14 +5059,14 @@
         if(!westResult||westResult.kind!==row.rikutsuKind||
            westResult.model!==row.model)continue;
       }
-      if(row.numberIndex==="jreast-rikuto-east-2611"){
+      if(row.numberIndex==="jreast-rikuto-east"){
         var rkProof=verifyRikutoEastService(
           Object.assign({},context||{},{trainNumber:number}));
         if(!rkProof||rkProof.kind!==row.rikutoKind||
            rkProof.model!==row.model||rkProof.pngPath!==row.pngPath)continue;
       }
-      if(row.numberIndex==="jreast-regional-2611"){
-        var regionalIndex=root.JREastRegionalNumberIndex202611;
+      if(row.numberIndex==="jreast-regional"){
+        var regionalIndex=root.JREastRegionalNumberIndex;
         var officialRegional=regionalIndex&&typeof regionalIndex.verify==="function"
           ?regionalIndex.verify(line,number,
             context&&context.sourceRailway,
@@ -5076,8 +5076,8 @@
         if(!officialRegional||officialRegional.model!==row.model||
            officialRegional.kind!==row.regionalKind)continue;
       }
-      if(row.numberIndex==="jreast-oga-2611"){
-        var ogaIndex=root.JREastOgaNumberIndex202611;
+      if(row.numberIndex==="jreast-oga"){
+        var ogaIndex=root.JREastOgaNumberIndex;
         var officialOga=ogaIndex&&typeof ogaIndex.verify==="function"
           ?ogaIndex.verify(number,context&&context.sourceRailway,
             context&&(context.railDirection||context.directionUrn||context.direction),
@@ -5085,8 +5085,8 @@
             sourceCalendar(context),context&&context.serviceDate):null;
         if(!officialOga||officialOga.model!==row.model)continue;
       }
-      if(row.numberIndex==="jreast-ishinomaki-2611"){
-        var ishIndex=root.JREastIshinomakiNumberIndex202611;
+      if(row.numberIndex==="jreast-ishinomaki"){
+        var ishIndex=root.JREastIshinomakiNumberIndex;
         var ishSource=ishIndex && typeof ishIndex.verify==="function"
           ?ishIndex.verify(number,context&&context.sourceRailway,
             context&&(context.railDirection||context.directionUrn||context.direction),
@@ -5095,30 +5095,30 @@
         if(!ishSource || ishSource.model!==row.model ||
            ishSource.kind!==row.ishinomakiKind)continue;
       }
-      if(row.numberIndex==="jreast-yokohama-202611"){
-        var yokohamaIndex=root.JREastYokohama202611NumberIndex;
+      if(row.numberIndex==="jreast-yokohama"){
+        var yokohamaIndex=root.JREastYokohamaNumberIndex;
         if(!yokohamaIndex || typeof yokohamaIndex.contains!=="function" ||
             !yokohamaIndex.contains(number,context))continue;
       }
-      if(row.numberIndex==="jreast-yamanote-202611"){
-        var yamanoteIndex=root.JREastYamanote202611NumberIndex;
+      if(row.numberIndex==="jreast-yamanote"){
+        var yamanoteIndex=root.JREastYamanoteNumberIndex;
         if(!yamanoteIndex || typeof yamanoteIndex.contains!=="function" ||
             !yamanoteIndex.contains(number,context))continue;
       }
-      if(row.numberIndex==="jreast-keihin-202611"){
-        var keihinIndex=root.JREastKeihin202611NumberIndex;
+      if(row.numberIndex==="jreast-keihin"){
+        var keihinIndex=root.JREastKeihinNumberIndex;
         if(!keihinIndex || typeof keihinIndex.contains!=="function" ||
             !keihinIndex.contains(number,context))continue;
       }
-      if(row.numberIndex==="jreast-sobu-yokosuka-202611"){
+      if(row.numberIndex==="jreast-sobu-yokosuka"){
         // Prefer the complete typed, real-railway-URN source index. Old
         // snapshots used the UI key SobuMain where the provider uses Sobu
         // and omitted Boso through segments and Shiosai mixed workings.
-        var newIndex=root.JREastChibaNumberIndex202611;
+        var newIndex=root.JREastChibaNumberIndex;
         if(newIndex && typeof newIndex.match==="function"){
           if(newIndex.match(number,line,context)!==row.model)continue;
         }else{
-          var officialIndex=root.JREastSobuYokosuka202611NumberIndex;
+          var officialIndex=root.JREastSobuYokosukaNumberIndex;
           if(!officialIndex || typeof officialIndex.match!=="function" ||
               !officialIndex.match(row.model,number,line,context))continue;
         }
@@ -5127,11 +5127,11 @@
       // that direction with the existing official 2611 number index.
       // Legacy exact-number records without direction retain the
       // published-number fallback, not a guessed directional assignment.
-      if(row.numberIndex==="jreast-togane-202611" ||
-         row.numberIndex==="jreast-narita-abiko-202611"){
-        var officialNumberIndex=row.numberIndex==="jreast-togane-202611"
-          ?root.JREastToganeNumberIndex202611
-          :root.JREastNaritaAbikoNumberIndex202611;
+      if(row.numberIndex==="jreast-togane" ||
+         row.numberIndex==="jreast-narita-abiko"){
+        var officialNumberIndex=row.numberIndex==="jreast-togane"
+          ?root.JREastToganeNumberIndex
+          :root.JREastNaritaAbikoNumberIndex;
         var publishedDirection=String(context&&
           (context.railDirection||context.directionUrn||context.direction)||"");
         var publishedCalendar=sourceCalendar(context);
@@ -5140,7 +5140,7 @@
             officialNumberIndex.verify(number,context.sourceRailway,publishedDirection,
               actualType,publishedCalendar,context.serviceDate)!==true))continue;
       }
-      if(row.numberIndex==="joban-e231-h-202611"){
+      if(row.numberIndex==="joban-e231-h"){
         var idx=root.JobanE231RapidNumberIndex;
         if(!idx || typeof idx.match!=="function" ||
             !idx.match(number,sourceCalendar(context),

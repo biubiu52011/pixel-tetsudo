@@ -8,10 +8,10 @@ const root={},ctx=vm.createContext({window:root,Date,console:{
 for(const path of [
  'data/timetables/vehicle-garage-png-map.js',
  'data/timetables/train-number-png-ranges.js',
- 'data/timetables/jreast-tadami-2611-number-index.js',
+ 'data/timetables/jreast-tadami-number-index.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),ctx,{filename:path});
-const roster=root.JREastTadamiNumberIndex202611;
+const roster=root.JREastTadamiNumberIndex;
 const east='../images/列车/JR東日本/JR東日本_キハE120形_只見線色.png';
 const west='../images/列车/JR東日本/JR東日本_キハ110系（只見線）.png';
 const endpoints={
@@ -97,7 +97,7 @@ test('illustrative E120 east and KiHa110 west; never actual confirmed consist',(
   assert.equal(art.illustrative,true);
   assert.equal(art.representativeOnly,true);
   assert.equal(art.actualVehicleConfirmed,false);
-  assert.equal(root.JREastTadamiNumberIndex202611.resolve(sample).authorizesPNG,false);
+  assert.equal(root.JREastTadamiNumberIndex.resolve(sample).authorizesPNG,false);
  }
 });
 test('no fake fleet for undated specials, foreign line, exact car or failed PNG',()=>{
@@ -115,17 +115,17 @@ test('no fake fleet for undated specials, foreign line, exact car or failed PNG'
 });
 test('static manifest, cold loader and SHA asset revisions are complete',()=>{
  const manifest=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const path='data/timetables/jreast-tadami-2611-number-index.js';
+ const path='data/timetables/jreast-tadami-number-index.js';
  assert.equal(manifest.lazy.trains.filter(x=>x===path).length,1);
  assert.deepEqual(manifest.lazyScopes.trains[path],['Tadami']);
  assert.equal(manifest.lazy.trains.indexOf(path),
-  manifest.lazy.trains.indexOf('data/timetables/jreast-suigun-2611-number-index.js')+1);
+  manifest.lazy.trains.indexOf('data/timetables/jreast-suigun-number-index.js')+1);
  const page=fs.readFileSync('pages/trains.html','utf8');
- assert.match(page,/jreast-tadami-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tadami"/);
+ assert.match(page,/jreast-tadami-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tadami"/);
  assert.match(fs.readFileSync('js/trains-detail-loader.js','utf8'),
   /scope\.split\(","\)\.indexOf\(id\)/);
  for(const asset of [path,'data/timetables/vehicle-garage-png-map.js','js/train-position-estimator.js']){
-  const b=fs.readFileSync(asset),sha=crypto.createHash('sha1')
+  const b=Buffer.from(fs.readFileSync(asset,'utf8').replace(/\r\n/g,'\n')),sha=crypto.createHash('sha1')
    .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(page.includes('../'+asset+'?v='+sha),asset);
  }

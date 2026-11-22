@@ -70,7 +70,7 @@ test('existing JR 659 / Metro 671 Y/A crosswalk is not converted to B/C model ma
  assert.ok(map.includes('chuoSobuTozai2611'));
  assert.ok(map.includes('throughOwner:"S"'));
  assert.ok(map.includes('throughOwner:"K"'));
- assert.ok(map.includes('numberIndex:"chuo-sobu-tozai-2611"'));
+ assert.ok(map.includes('numberIndex:"chuo-sobu-tozai"'));
  assert.ok(map.includes('E231系800番台（東西線直通）'));
  assert.ok(!map.includes('numberIndex:"chuo-sobu-2611-e235-bc"'));
 });
@@ -193,7 +193,7 @@ test('trains page points to the current PNG selector, renderer and fleet scripts
   'data/timetables/train-number-png-ranges.js',
   'data/core/major-vehicle-fleet-presets.js'
  ]){
-  const buf=fs.readFileSync(asset);
+  const buf=Buffer.from(fs.readFileSync(asset,'utf8').replace(/\r\n/g,'\n'));
   const sha=crypto.createHash('sha1').update('blob '+buf.length)
     .update(Buffer.from([0])).update(buf).digest('hex').slice(0,12);
   // Git's blob SHA uniquely fingerprints the browser-loaded asset.

@@ -6,19 +6,19 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 function hashFor(file) {
-  const bytes=fs.readFileSync(file);
+  const bytes=Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n'));
   return crypto.createHash('sha1').update('blob '+bytes.length+'\0')
     .update(bytes).digest('hex').slice(0,12);
 }
 const root={};
 const ctx=vm.createContext({window:root,Date,console:{debug(){},warn(){},log(){},error(){}},
   _isTrainArtworkFailureActive(){return false}});
-const sourceFile='data/timetables/jreast-shonan-mixed-number-index-202611.js';
+const sourceFile='data/timetables/jreast-shonan-mixed-number-index.js';
 for(const f of [
   'data/timetables/vehicle-garage-png-map.js',sourceFile,
   'data/timetables/train-number-png-ranges.js','js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
-const index=root.JREastShonanMixedNumberIndex202611;
+const index=root.JREastShonanMixedNumberIndex;
 assert.ok(index);
 function p(line,number,kind,calendar='weekday',change={}){
   const railway=line==='TokaidoMain'?'Tokaido':
@@ -133,8 +133,8 @@ test('SVG titles explain mixed fleet but do not hand out a fabricated PNG',()=>{
   assert.equal(art.kind,'unresolved',
     'candidate text alone does not authorize an E233 PNG');
   const html=fs.readFileSync('pages/trains.html','utf8');
-  assert.ok(html.includes('jreast-shonan-mixed-number-index-202611.js?v='+hashFor(sourceFile)));
-  assert.ok(html.indexOf('jreast-shonan-mixed-number-index-202611.js')<
+  assert.ok(html.includes('jreast-shonan-mixed-number-index.js?v='+hashFor(sourceFile)));
+  assert.ok(html.indexOf('jreast-shonan-mixed-number-index.js')<
     html.indexOf('js/trains-render.js'));
   // Renderer cache versions advance independently of the Shonan fleet
   // index: any dated asset version is valid, as long as it loads AFTER

@@ -5,7 +5,7 @@ const fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 const ctx=vm.createContext({window:{},console});
 for(const file of [
  'data/timetables/vehicle-garage-png-map.js',
- 'data/timetables/tobu-utsunomiya-2611-number-png.js',
+ 'data/timetables/tobu-utsunomiya-number-png.js',
  'data/timetables/train-number-png-ranges.js',
  'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file,timeout:15000});
@@ -19,15 +19,15 @@ function run(n,ex={}){
   calendarType:'holiday',serviceDate:'2026-11-15',vehicleIdentityStatus:'UNKNOWN',...ex};
 }
 test('exact 86 SQL service numbers and no neighboring extrapolation',()=>{
- assert.equal(root.TobuUtsunomiya2611Png.numbersPerCalendar,86);
- assert.equal(root.TobuUtsunomiya2611Png.sourceTemplates,172);
+ assert.equal(root.TobuUtsunomiyaPng.numbersPerCalendar,86);
+ assert.equal(root.TobuUtsunomiyaPng.sourceTemplates,172);
  for(let n=395;n<=491;n++)
-  assert.equal(root.TobuUtsunomiya2611Png.hasPublishedNumber(n+'N'),n>=401&&n<=486,n);
+  assert.equal(root.TobuUtsunomiyaPng.hasPublishedNumber(n+'N'),n>=401&&n<=486,n);
  for(const n of ['400N','487N','0401N','401','401E','401NA','1501N'])
-  assert.equal(root.TobuUtsunomiya2611Png.hasPublishedNumber(n),false,n);
+  assert.equal(root.TobuUtsunomiyaPng.hasPublishedNumber(n),false,n);
 });
 test('number bands are explicit, parity-separated and limited to their own railway',()=>{
- const reg=root.TobuUtsunomiya2611Png;
+ const reg=root.TobuUtsunomiyaPng;
  const ranges=reg.ranges;
  assert.equal(ranges.length,2);
  assert.equal(ranges[0].first,'401N');
@@ -62,7 +62,7 @@ test('20400 PNG is a reference for all 86 numbers in both source calendars',()=>
   const value=root.TrainNumberPngRanges.match(number,'TobuUtsunomiya',position);
   assert.ok(value,number+'/'+calendarType);
   assert.equal(value.model,'東武20400型');
-  const band=root.TobuUtsunomiya2611Png.rangeFor(number);
+  const band=root.TobuUtsunomiyaPng.rangeFor(number);
   assert.equal(value.rangeId,band.id);
   assert.equal(value.rangeFirst,band.first);
   assert.equal(value.rangeLast,band.last);
@@ -135,7 +135,7 @@ test('canonical geometry and conditional boundary are synchronized across format
  assert.deepEqual(compact.lines.TobuUtsunomiya,u);
  assert.deepEqual(compact.lines.TobuNikko,n);
  const bytes=JSON.stringify(raw).replace(/<\/script/gi,'<\\/script');
- assert.equal(fs.readFileSync('data/core/railway-data.file.js','utf8'),
+ assert.equal(fs.readFileSync('data/core/railway-data.file.js','utf8').replace(/\r\n/g,'\n'),
   'window.RAILWAY_DATA = '+bytes+';\n');
 });
 test('date proof gate for current SQL projections and conservative through label',()=>{
@@ -148,7 +148,7 @@ test('date proof gate for current SQL projections and conservative through label
 });
 test('PNG mapper is lazy-loaded before central matcher and page hashes match',()=>{
  const manifest=require('../scripts/page-scripts.json');
- const asset='data/timetables/tobu-utsunomiya-2611-number-png.js';
+ const asset='data/timetables/tobu-utsunomiya-number-png.js';
  const matcher='data/timetables/train-number-png-ranges.js';
  assert.ok(manifest.lazy.trains.indexOf(asset)<manifest.lazy.trains.indexOf(matcher));
  assert.deepEqual(manifest.lazyScopes.trains[asset],['TobuUtsunomiya']);
@@ -158,7 +158,7 @@ test('PNG mapper is lazy-loaded before central matcher and page hashes match',()
   const sha=crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+path+'?v='+sha),path);
  }
- assert.match(html,/tobu-utsunomiya-2611-number-png\.js\?v=[a-f0-9]{12}" data-line-scope="TobuUtsunomiya"/);
+ assert.match(html,/tobu-utsunomiya-number-png\.js\?v=[a-f0-9]{12}" data-line-scope="TobuUtsunomiya"/);
 });
 
 
@@ -174,7 +174,7 @@ test('private ninth batch writes one 0401-0486N source-number band, not an actua
  assert.ok(csv.includes(['私铁','東武鉄道',band.png,band.line,band.from,
   band.to,band.suffix,band.format,band.status].join(',')));
  for(let n=401;n<=486;n++){
-  const number=n+'N',source=root.TobuUtsunomiya2611Png.rangeFor(number);
+  const number=n+'N',source=root.TobuUtsunomiyaPng.rangeFor(number);
   assert.ok(source,number);
   for(const calendarType of ['weekday','holiday']){
    const match=root.TrainNumberPngRanges.match(number,'TobuUtsunomiya',run(number,{calendarType}));
@@ -186,5 +186,5 @@ test('private ninth batch writes one 0401-0486N source-number band, not an actua
   }
  }
  for(const number of ['400N','487N','0401N','401D'])
-  assert.equal(root.TobuUtsunomiya2611Png.rangeFor(number),null);
+  assert.equal(root.TobuUtsunomiyaPng.rangeFor(number),null);
 });

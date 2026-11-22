@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const crypto=require('node:crypto');
-const asset='data/timetables/tobu-tojo-through-fleet-202611.js';
+const asset='data/timetables/tobu-tojo-through-fleet.js';
 const source=fs.readFileSync(asset,'utf8');
 const w={};
 const sandbox=vm.createContext({window:w});
@@ -44,7 +44,7 @@ const scenarios=[
 ];
 test('Tojo working/service groups resolve exactly one approved PNG',()=>{
  for(const [name,p,expected,model] of scenarios){
-  const ref=w.TobuTojoFixedPng202611.resolve(p);
+  const ref=w.TobuTojoFixedPng.resolve(p);
   assert.ok(ref,name);
   assert.equal(ref.illustrationPng,expected,name);
   assert.equal(ref.illustrationModel,model,name);
@@ -75,7 +75,7 @@ test('Ogose GTFS number roster grants a standard-blue-white reference, never the
  for(const cal of ['weekday','holiday']){
   for(let n=0;n<=5400;n++){
    const trainNumber='A'+n;
-   const hit=w.TobuTojoFixedPng202611.resolve(ogosePosition({
+   const hit=w.TobuTojoFixedPng.resolve(ogosePosition({
     trainNumber,calendarType:cal,serviceDate:cal==='weekday'?'2026-11-16':'2026-11-15'
    }));
    if(!hit)continue;
@@ -91,19 +91,19 @@ test('Ogose GTFS number roster grants a standard-blue-white reference, never the
  assert.deepEqual(counts,{weekday:146,holiday:144});
  assert.equal(seen.size,150);
  for(const number of ['A685','A1782','A2387','A3780','A3980']){
-  assert.ok(w.TobuTojoFixedPng202611.resolve(ogosePosition({
+  assert.ok(w.TobuTojoFixedPng.resolve(ogosePosition({
    trainNumber:number,calendarType:'weekday',serviceDate:'2026-11-16'
   })),number+' weekday');
-  assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition({trainNumber:number})),null,number+' holiday');
+  assert.equal(w.TobuTojoFixedPng.resolve(ogosePosition({trainNumber:number})),null,number+' holiday');
  }
  for(const number of ['A880','A3687','A5180','A5385']){
-  assert.ok(w.TobuTojoFixedPng202611.resolve(ogosePosition({trainNumber:number})),number+' holiday');
-  assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition({
+  assert.ok(w.TobuTojoFixedPng.resolve(ogosePosition({trainNumber:number})),number+' holiday');
+  assert.equal(w.TobuTojoFixedPng.resolve(ogosePosition({
    trainNumber:number,calendarType:'weekday',serviceDate:'2026-11-16'
   })),null,number+' weekday');
  }
  for(const number of ['A9999','A1088','A2382','A580']){
-  assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition({trainNumber:number})),null,number+' absent');
+  assert.equal(w.TobuTojoFixedPng.resolve(ogosePosition({trainNumber:number})),null,number+' absent');
  }
  for(const bad of [
   {calendarType:''},{calendarType:'unknown'},
@@ -111,8 +111,8 @@ test('Ogose GTFS number roster grants a standard-blue-white reference, never the
   {sourceTripId:'Tobu.Ogose.A1080.Weekday'},
   {sourceTripId:'Tobu.Tojo.A1080.SaturdayHoliday'},
   {sourcePath:'gtfs-stage:TokyoGTFS:unrelated:Ogose'}
- ])assert.equal(w.TobuTojoFixedPng202611.resolve(ogosePosition(bad)),null,JSON.stringify(bad));
- assert.ok(w.TobuTojoFixedPng202611.resolve(ogosePosition({
+ ])assert.equal(w.TobuTojoFixedPng.resolve(ogosePosition(bad)),null,JSON.stringify(bad));
+ assert.ok(w.TobuTojoFixedPng.resolve(ogosePosition({
   sourceTripId:'Tobu.Ogose.A1080.SaturdayHoliday',
   sourcePath:'gtfs-stage:TokyoGTFS:bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f:Ogose'
  })));
@@ -120,7 +120,7 @@ test('Ogose GTFS number roster grants a standard-blue-white reference, never the
 
 test('Ogose uses blue-white illustration by default, brown only with 81111F physical proof',()=>{
  const base=ogosePosition();
- const cfg=w.TobuTojoFixedPng202611.assets.ogose;
+ const cfg=w.TobuTojoFixedPng.assets.ogose;
  assert.equal(cfg.png,png.ogose);
  assert.equal(cfg.specialLiveryPng,png.brown);
  assert.equal(cfg.specialLiveryFormation,'81111F');
@@ -163,7 +163,7 @@ test('Ogose uses blue-white illustration by default, brown only with 81111F phys
 });
 test('Tojo west service uses standard 8000 PNG and never defaults to brown',()=>{
  const west=pos({trainNumber:'Y1176',scheduledStopKeys:['Yorii','Ogawamachi','ShinrinKoen']});
- const ref=w.TobuTojoFixedPng202611.resolve(west);
+ const ref=w.TobuTojoFixedPng.resolve(west);
  assert.equal(ref.illustrationPng,png.west);
  assert.notEqual(ref.illustrationPng,png.brown);
  const art=w.TrainVehicle.selectMarkerArtwork(west,false);
@@ -176,7 +176,7 @@ test('candidate rules and random PNG rotation are removed',()=>{
  assert.equal(source.includes('vehicleCandidates'),false);
  assert.equal(source.includes('VEHICLE_FAMILY_RULES'),false);
  assert.equal(source.includes('Math.random'),false);
- assert.equal(Object.keys(w.TobuTojoFixedPng202611.assets).length,7);
+ assert.equal(Object.keys(w.TobuTojoFixedPng.assets).length,7);
 });
 test('public A-F through-service prefixes resolve owner workings',()=>{
  const code=w.TrainOperationEvidence.normalizeOperationCode;

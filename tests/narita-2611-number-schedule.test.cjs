@@ -18,8 +18,8 @@ const ctx=vm.createContext({window:root,document:doc,Date,console:log,
 for(const file of [
   'data/core/runtime-config.js',
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/joban-e231-h-202611-index.js',
-  'data/timetables/jreast-narita-abiko-number-index-202611.js',
+  'data/timetables/joban-e231-h-index.js',
+  'data/timetables/jreast-narita-abiko-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -30,7 +30,7 @@ const markerEnd=markerSource.indexOf('  // Public identification boundary:',mark
 assert.ok(markerStart>=0&&markerEnd>markerStart);
 vm.runInContext(markerSource.slice(markerStart,markerEnd),ctx,
   {filename:'js/trains-render.js:marker'});
-const index=root.JREastNaritaAbikoNumberIndex202611;
+const index=root.JREastNaritaAbikoNumberIndex;
 const lineData=JSON.parse(source('data/core/railway_data.compact.json')).lines;
 const estimator=source('js/train-position-estimator.js');
 function p(number,sourceName='supabase-train-run',extra={}){
@@ -190,7 +190,7 @@ function estimate(utc,override){
     }
   };
   vm.runInContext(source(
-    'data/timetables/jreast-narita-abiko-number-index-202611.js'),browser);
+    'data/timetables/jreast-narita-abiko-number-index.js'),browser);
   vm.runInContext(estimator,browser);
   const copy=Object.fromEntries(Object.entries(byLine).map(
     ([k,v])=>[k,v.slice()]));

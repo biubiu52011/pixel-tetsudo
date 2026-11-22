@@ -139,10 +139,10 @@ test('Chuo 2611 E353 PNG rules use published calendar rosters, not inclusive num
  const fs=require('node:fs'),vm=require('node:vm');
  const root={};const context=vm.createContext({window:root,Date,console:{log(){},warn(){},error(){},debug(){}}});
  for(const path of [
-  'data/timetables/jreast-chuo-main-2611-number-index.js',
+  'data/timetables/jreast-chuo-main-number-index.js',
   'data/timetables/train-number-png-ranges.js'
  ])vm.runInContext(fs.readFileSync(path,'utf8'),context,{filename:path});
- const official=root.JREastChuoMainNumbers2611.columns;
+ const official=root.JREastChuoMainNumbers.columns;
  const ranges=[[1,60],[2101,2199],[3101,3199],[5001,5099]];
  const sort=arr=>[...new Set(arr)].sort((a,b)=>Number(a.slice(0,-1))-Number(b.slice(0,-1)));
  for(let i=0;i<ranges.length;i++){
@@ -259,7 +259,9 @@ test('PNG-first all-gallery report is deterministic and keeps unmatched files bl
  const fs=require('node:fs'),m=require('../tools/build-train-number-png-catalog.cjs');
  assert.equal(m.galleryPngPaths().length,601);
  const csv=m.pngFirstInventoryCsv(m.galleryPngPaths(),c);
- assert.equal(csv,fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8'));
+ const expected=fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8')
+  .replace(/\r\n/g,'\n');
+ assert.equal(csv,expected);
  assert.ok(csv.includes('无号段')&&csv.includes('原有条件约束'));
 });
 test('new SQL pure PNG bands do not invent a source, stock model or carset',()=>{

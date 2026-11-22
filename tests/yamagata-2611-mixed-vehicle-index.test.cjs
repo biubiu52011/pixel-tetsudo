@@ -7,10 +7,10 @@ const root={};const ctx=vm.createContext({window:root,Date,Set,console:{
 for(const path of [
   'data/timetables/vehicle-garage-png-map.js',
   'data/timetables/train-number-png-ranges.js',
-  'data/timetables/jreast-yamagata-2611-number-index.js',
+  'data/timetables/jreast-yamagata-number-index.js',
   'js/train-vehicle.js'
 ])vm.runInContext(fs.readFileSync(path,'utf8'),ctx,{filename:path});
-const idx=root.JREastYamagataNumberIndex202611;
+const idx=root.JREastYamagataNumberIndex;
 function p(n,opts={}){
  const date=opts.serviceDate||'2026-11-06';
  const cal=opts.serviceId||'odpt.Calendar:Weekday';
@@ -199,16 +199,16 @@ test('no false physical car from EXACT SQL or through-line fallback',()=>{
 });
 test('HTML, source-scoped lazy manifest, PNG versions and fold model label wired',()=>{
  const manifest=JSON.parse(fs.readFileSync('scripts/page-scripts.json','utf8'));
- const path='data/timetables/jreast-yamagata-2611-number-index.js';
+ const path='data/timetables/jreast-yamagata-number-index.js';
  assert.deepEqual(manifest.lazyScopes.trains[path],['Yamagata']);
  assert.equal(manifest.lazy.trains.filter(x=>x===path).length,1);
  assert.equal(manifest.lazy.trains.indexOf(path),
-   manifest.lazy.trains.indexOf('data/timetables/jreast-uetsu-2611-number-index.js')+1);
+   manifest.lazy.trains.indexOf('data/timetables/jreast-uetsu-number-index.js')+1);
  const html=fs.readFileSync('pages/trains.html','utf8');
- assert.match(html,/jreast-yamagata-2611-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Yamagata"/);
+ assert.match(html,/jreast-yamagata-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Yamagata"/);
  for(const file of [path,'data/timetables/vehicle-garage-png-map.js',
    'js/train-vehicle.js','js/train-position-estimator.js','js/trains-render.js']){
-  const bytes=fs.readFileSync(file),hash=crypto.createHash('sha1')
+  const bytes=Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')),hash=crypto.createHash('sha1')
    .update('blob '+bytes.length+'\0').update(bytes).digest('hex').slice(0,12);
   assert.ok(html.includes('../'+file+'?v='+hash),file+' outdated cache fingerprint');
  }
@@ -219,6 +219,6 @@ test('HTML, source-scoped lazy manifest, PNG versions and fold model label wired
  assert.ok(vehicle.indexOf('contextLineId==="Yamagata"')<
    vehicle.indexOf('var numberChoices = !identityConfirmed'),'Yamagata gate precedes shared unique PNG selection');
  const renderer=fs.readFileSync('js/trains-render.js','utf8');
- assert.match(renderer,/lineId==="Yamagata" && window\.JREastYamagataNumberIndex202611/);
+ assert.match(renderer,/lineId==="Yamagata" && window\.JREastYamagataNumberIndex/);
  assert.match(renderer,/lineId === "ChuoMain" \|\| lineId === "Yamagata"/);
 });

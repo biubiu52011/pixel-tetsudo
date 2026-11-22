@@ -12,11 +12,11 @@ const window = {};
 const context = vm.createContext({window});
 for (const name of [
   "data/timetables/vehicle-garage-png-map.js",
-  "data/timetables/jreast-yamagata-2611-number-index.js"
+  "data/timetables/jreast-yamagata-number-index.js"
 ]) vm.runInContext(read(name), context, {filename:name, timeout:2500});
 
 const garage = window.VehicleGaragePngMap;
-const index = window.JREastYamagataNumberIndex202611;
+const index = window.JREastYamagataNumberIndex;
 assert.ok(garage && index);
 assert.equal(index.stops.length, 35);
 assert.equal(index.stops[0], "Fukushima");
@@ -126,9 +126,9 @@ assertCache("data/timetables/vehicle-garage-png-map.js",
   "../data/timetables/vehicle-garage-png-map.js");
 assertCache("js/train-vehicle.js","../js/train-vehicle.js");
 assertCache("js/train-position-estimator.js","../js/train-position-estimator.js");
-assertCache("data/timetables/jreast-yamagata-2611-number-index.js",
-  "../data/timetables/jreast-yamagata-2611-number-index.js");
-assert.ok(html.indexOf("jreast-yamagata-2611-number-index.js")<
+assertCache("data/timetables/jreast-yamagata-number-index.js",
+  "../data/timetables/jreast-yamagata-number-index.js");
+assert.ok(html.indexOf("jreast-yamagata-number-index.js")<
   html.indexOf("train-vehicle.js"));
 assert.ok(html.includes('data-line-scope="Yamagata"'));
 console.log("Yamagata 2611 passed: "+total+" roster cases, "+

@@ -347,10 +347,10 @@ function compactNumberBands(input){
 function jrEastScopedNumberBands(){
  const root={},context={window:root,Date,console:{log(){},warn(){},debug(){},error(){}}};
  for(const script of [
-  'data/timetables/jreast-yamagata-2611-number-index.js',
-  'data/timetables/jreast-tazawako-2611-number-index.js'
+  'data/timetables/jreast-yamagata-number-index.js',
+  'data/timetables/jreast-tazawako-number-index.js'
  ])vm.runInNewContext(read(script),context,{filename:script,timeout:15000});
- const yam=root.JREastYamagataNumberIndex202611,taz=root.JREastTazawakoNumberIndex202611;
+ const yam=root.JREastYamagataNumberIndex,taz=root.JREastTazawakoNumberIndex;
  if(!yam||!taz||!taz.image||!Array.isArray(taz.stops))
   throw Error('Missing JR East source-number audit exports');
  const calendars={Weekday:'2026-11-05',SaturdayHoliday:'2026-11-07'},refs=[];
@@ -413,11 +413,11 @@ function jrEastScopedNumberBands(){
 function jrEastAdditionalNumberBands(){
  const root={},context={window:root,Date,
   console:{log(){},warn(){},debug(){},error(){}}};
- for(const script of ['data/timetables/jreast-senzan-2611-number-index.js',
-                       'data/timetables/jreast-ryomo-2611-number-index.js'])
+ for(const script of ['data/timetables/jreast-senzan-number-index.js',
+                       'data/timetables/jreast-ryomo-number-index.js'])
   vm.runInNewContext(read(script),context,{filename:script,timeout:15000});
- const senz=root.JREastSenzanNumberIndex202611,
-  ryomo=root.JREastRyomoNumberIndex202611;
+ const senz=root.JREastSenzanNumberIndex,
+  ryomo=root.JREastRyomoNumberIndex;
  if(!senz||!senz.regularNumbers||!senz.specialDates||
     !ryomo||!Array.isArray(ryomo.groups))
   throw Error('Missing JR numbered illustration registry');
@@ -1225,9 +1225,9 @@ function privateNinthSqlSeedBands(){
  const image20400='images/列车/東武鉄道/東武鉄道_20400型.png';
  const image70000='images/列车/東武鉄道/東武鉄道_70000系.png';
  const context={window:{}};
- vm.runInNewContext(read('data/timetables/tobu-utsunomiya-2611-number-png.js'),
-  context,{filename:'tobu-utsunomiya-2611-number-png.js',timeout:15000});
- const u=context.window.TobuUtsunomiya2611Png;
+ vm.runInNewContext(read('data/timetables/tobu-utsunomiya-number-png.js'),
+  context,{filename:'tobu-utsunomiya-number-png.js',timeout:15000});
+ const u=context.window.TobuUtsunomiyaPng;
  if(!u||!Array.isArray(u.ranges)||u.ranges.length!==2||
     u.numbersPerCalendar!==86||u.sourceTemplates!==172)
   throw Error('Tobu Utsunomiya source number bands changed');
@@ -1692,7 +1692,7 @@ function privateFujikyuReviewSqlSeedBands(c){
 }
 
 
-const JR29_E233_M_MIGRATION="supabase/migrations/20261118040000_seed_jr_chuo_e233_m_unambiguous_number_bands_2611.sql";
+const JR29_E233_M_MIGRATION="supabase/migrations/20261118040001_seed_jr_chuo_e233_m_unambiguous_number_bands_2611.sql";
 function jr29ChuoE233UnambiguousMBands(c){
  const png="images/列车/JR東日本/JR東日本_E233系_0番台.png";
  const r=c.rules.find(x=>x.id==="js-0060");
@@ -1733,7 +1733,7 @@ function jr29ChuoE233UnambiguousMBands(c){
    status:"纯号段（JR原始车型与列车类别守卫保留）"};
  });
  const sql=read(JR29_E233_M_MIGRATION);
- const inserted=sql.split("\n").filter(x=>x.startsWith("  ('2611',"));
+ const inserted=sql.split(/\r?\n/).filter(x=>x.startsWith("  ('2611',"));
  if(inserted.length!==65)throw Error("JR29 migration row count drift");
  for(let i=0;i<65;i++){
   const b=expected[i];
@@ -1752,7 +1752,7 @@ function jrYamadaExactReplacementSqlBands(c){
  if(!r||r.origin!=='frontend_js'||r.png!==png||
  r.line_ids.join()!=='Yamada'||r.format!=='full'||
  r.suffix!=='D'||r.min!==631||r.max!==9642||
- r.number_index!=='jreast-yamada-2611'||
+ r.number_index!=='jreast-yamada'||
  r.operator!=='JR-East'||r.valid_from!=='2026-11-01'||
  r.valid_to!=='2026-11-30'||
  r.runtime_guards?.rejectAmbiguousPlan!==true||
@@ -2036,8 +2036,8 @@ function jr48ExactSqlSeedBands(c){
 // operator/model requirements, reference-only and illustrative conditions.
 function metroABExactSqlSeedBands(c){
  const specs=[
-  ['js-0114','Chiyoda','東京メトロ_16000系.png','S','metro-prefixed',501,2496,469,399,388,'20261118080000_metro_chiyoda_ab_exact_reference_2611.sql'],
-  ['js-0117','Namboku','東京メトロ_9000系.png','S','metro-prefixed',530,2456,327,276,276,'20261118081000_metro_namboku_ab_exact_reference_2611.sql'],
+  ['js-0114','Chiyoda','東京メトロ_16000系.png','S','metro-prefixed',501,2496,469,399,388,'20261118080001_metro_chiyoda_ab_exact_reference_2611.sql'],
+  ['js-0117','Namboku','東京メトロ_9000系.png','S','metro-prefixed',530,2456,327,276,276,'20261118081001_metro_namboku_ab_exact_reference_2611.sql'],
   ['js-0111','Ginza','東京メトロ_1000系.png','','metro-bare',501,6152,1009,598,596,'20261118082000_metro_ginza_ab_exact_reference_2611.sql'],
   ['js-0112','Marunouchi','東京メトロ_2000系.png','','metro-bare',427,21153,1003,775,770,'20261118083000_metro_marunouchi_ab_exact_reference_2611.sql'],
   ['js-0113','MarunouchiBranch','東京メトロ_2000系.png','','metro-bare',543,23632,612,414,281,'20261118084000_metro_marunouchi_branch_ab_exact_reference_2611.sql']

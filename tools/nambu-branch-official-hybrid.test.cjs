@@ -9,16 +9,16 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
 
-const indexFile = 'data/timetables/nambu-branch-official-202611.js';
+const indexFile = 'data/timetables/nambu-branch-official.js';
 function cacheVersion(file) {
-  const bytes = fs.readFileSync(file);
+  const bytes = Buffer.from(fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
   return crypto.createHash('sha1').update('blob ' + bytes.length + '\0')
     .update(bytes).digest('hex').slice(0, 12);
 }
 const indexText = fs.readFileSync(indexFile,'utf8');
 const win = {};
 vm.runInNewContext(indexText,{window:win},{filename:indexFile});
-const official = win.NambuBranchOfficial202611;
+const official = win.NambuBranchOfficial;
 assert.ok(official);
 assert.equal(official.inboundCount,39);
 assert.equal(official.outboundCount,41);
@@ -60,7 +60,7 @@ function estimate(iso, trainNumber='2211H', edits={}) {
     static now(){return Date.parse(iso);}
   }
   const window={
-    NambuBranchOfficial202611:official,
+    NambuBranchOfficial:official,
     RuntimeConfig:{PUBLISHED_JP_HOLIDAYS},
     ODPTClient:{
       LINE_RAILWAY_CODE:{NambuBranch:'NambuBranch'},
@@ -159,8 +159,8 @@ assert.match(fs.readFileSync('js/data-fusion.js','utf8'),
   'fusion must block train-number/station inferred live branch positions');
 
 const page=fs.readFileSync('pages/trains.html','utf8');
-assert.ok(page.includes('nambu-branch-official-202611.js?v='+cacheVersion(indexFile)));
-assert.ok(page.indexOf('nambu-branch-official-202611.js')<
+assert.ok(page.includes('nambu-branch-official.js?v='+cacheVersion(indexFile)));
+assert.ok(page.indexOf('nambu-branch-official.js')<
   page.indexOf('train-position-estimator.js'),
   'official month-number source loads before the estimator');
 console.log('NambuBranch 2026-11 official H timetable + opportunistic live isolation: PASS');

@@ -11,8 +11,8 @@ const ctx=vm.createContext({window:win,Date,console:{
 },_isTrainArtworkFailureActive(){return false}});
 for(const file of [
   'data/timetables/vehicle-garage-png-map.js',
-  'data/timetables/jreast-yokohama-2611-number-index.js',
-  'data/timetables/jreast-keihin-2611-number-index.js',
+  'data/timetables/jreast-yokohama-number-index.js',
+  'data/timetables/jreast-keihin-number-index.js',
   'data/timetables/train-number-png-ranges.js',
   'js/train-vehicle.js',
   'data/timetables/vehicle-operation-evidence-data.js'
@@ -22,7 +22,7 @@ const start=render.indexOf('  function _trainMarkerDomKind(');
 const end=render.indexOf('  // Public identification boundary:',start);
 assert.ok(start>=0&&end>start,'existing SVG marker contract missing');
 vm.runInContext(render.slice(start,end),ctx);
-const idx=win.JREastYokohama202611NumberIndex;
+const idx=win.JREastYokohamaNumberIndex;
 const img='../images/列车/JR東日本/JR東日本_E233系_6000番台.png';
 const src='odpt.Railway:JR-East.Yokohama';
 function pos(trainNumber,cal='weekday',dir='Inbound',extra={}){
@@ -129,7 +129,7 @@ test('wrong stock, number, calendar, source, service or date cannot take Yokoham
 });
 test('page lazy script hash and migration audit scope are preserved',()=>{
   const file='data/timetables/train-number-png-ranges.js';
-  const buf=fs.readFileSync(file);
+  const buf=Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n'));
   const sha=crypto.createHash('sha1').update('blob '+buf.length+'\0')
     .update(buf).digest('hex').slice(0,12);
   const html=fs.readFileSync('pages/trains.html','utf8');
