@@ -351,63 +351,78 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var bx = rowCur;
           var by = iy0 + row * window.StationInfoLayout.pitch;
           var item = entry.item;
+          var parts = entry.badges || [{item:item,label:entry.label,badgeWidth:entry.badgeWidth}];
           var itemGroup = document.createElementNS(svgNS, "g");
           if (item.toStation) itemGroup.setAttribute("data-to-station", item.toStation);
+          if (parts.some(function(p) { return p.item.type === "out"; }))
+            itemGroup.setAttribute("data-transfer-mode", "walk");
+          itemGroup.setAttribute("role", "img");
           badgeGroup.appendChild(itemGroup);
           var badgeTitle = document.createElementNS(svgNS, "title");
-          badgeTitle.textContent = window.ThroughChip.badgeText(item) +
-            (item.toStation ? " → " +
-              (window.RailwayDB && window.RailwayDB.resolveStationName
-                ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang)
-                : item.toStation) : "");
+          badgeTitle.textContent = parts.map(function(p) {
+            return window.ThroughChip.badgeText(p.item);
+          }).join("、") + (item.toStation ? " → " +
+            (window.RailwayDB && window.RailwayDB.resolveStationName
+              ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang)
+              : item.toStation) : "") +
+            (parts.some(function(p) { return p.item.type === "out"; }) ? " · 徒歩" : "");
           itemGroup.appendChild(badgeTitle);
-          if (item.image) {
-            var img = document.createElementNS(svgNS, "image");
-            img.setAttribute("href", item.image);
-            img.setAttribute("xlink:href", item.image);
-            img.setAttribute("x", bx);
-            img.setAttribute("y", by);
-            img.setAttribute("width", ICON);
-            img.setAttribute("height", ICON);
-            itemGroup.appendChild(img);
-          } else {
-            var badgeHeight = isMobileView ? 16 : 15;
-            var rect = document.createElementNS(svgNS, "rect");
-            rect.setAttribute("x", bx);
-            rect.setAttribute("y", by);
-            rect.setAttribute("width", entry.badgeWidth);
-            rect.setAttribute("height", badgeHeight);
-            rect.setAttribute("rx", "2");
-            var badgeFill = item.color ||
-              (window.TrainsColors ? window.TrainsColors.LABEL_FALLBACK : "#8a8a8a");
-            rect.setAttribute("fill", badgeFill);
-            itemGroup.appendChild(rect);
-            var nameText = document.createElementNS(svgNS, "text");
-            nameText.setAttribute("x", bx + entry.badgeWidth / 2);
-            nameText.setAttribute("y", by + badgeHeight / 2);
-            nameText.setAttribute("text-anchor", "middle");
-            nameText.setAttribute("dominant-baseline", "central");
-            nameText.setAttribute("font-size", isMobileView
-              ? window.StationInfoLayout.fontSizes.badge.mobile
-              : window.StationInfoLayout.fontSizes.badge.desktop);
-            nameText.setAttribute("font-weight", "400");
-            nameText.setAttribute("fill", window.StationInfoLayout.textColor(badgeFill));
-            nameText.textContent = entry.label;
-            itemGroup.appendChild(nameText);
-          }
-          // The same alias label works beside an icon and a fallback text badge.
+          itemGroup.setAttribute("aria-label", badgeTitle.textContent);
+          // A shared baseline is required even if the badge uses an image.
+          // Previously an image left badgeHeight undefined (SVG y=NaN).
+          var badgeHeight = isMobileView ? 16 : 15;
+          var partX = bx;
+          parts.forEach(function(part,index) {
+            var line = part.item;
+            var glyph = document.createElementNS(svgNS, "g");
+            itemGroup.appendChild(glyph);
+            if (line.image) {
+              var img = document.createElementNS(svgNS, "image");
+              img.setAttribute("href", line.image);
+              img.setAttribute("xlink:href", line.image);
+              img.setAttribute("x", partX);
+              img.setAttribute("y", by);
+              img.setAttribute("width", ICON);
+              img.setAttribute("height", ICON);
+              glyph.appendChild(img);
+            } else {
+              var rect = document.createElementNS(svgNS, "rect");
+              rect.setAttribute("x", partX);
+              rect.setAttribute("y", by);
+              rect.setAttribute("width", part.badgeWidth);
+              rect.setAttribute("height", badgeHeight);
+              rect.setAttribute("rx", "2");
+              var badgeFill = line.color ||
+                (window.TrainsColors ? window.TrainsColors.LABEL_FALLBACK : "#8a8a8a");
+              rect.setAttribute("fill", badgeFill);
+              glyph.appendChild(rect);
+              var nameText = document.createElementNS(svgNS, "text");
+              nameText.setAttribute("x", partX + part.badgeWidth / 2);
+              nameText.setAttribute("y", by + badgeHeight / 2);
+              nameText.setAttribute("text-anchor", "middle");
+              nameText.setAttribute("dominant-baseline", "central");
+              nameText.setAttribute("font-size", isMobileView
+                ? window.StationInfoLayout.fontSizes.badge.mobile
+                : window.StationInfoLayout.fontSizes.badge.desktop);
+              nameText.setAttribute("font-weight", "400");
+              nameText.setAttribute("fill", window.StationInfoLayout.textColor(badgeFill));
+              nameText.textContent = part.label;
+              glyph.appendChild(nameText);
+            }
+            partX += part.badgeWidth + (index+1<parts.length ? GAP : 0);
+          });
           if (entry.extra) {
-              var extraLabel = document.createElementNS(svgNS, "text");
-              extraLabel.setAttribute("x", bx + entry.badgeWidth + 3);
-              extraLabel.setAttribute("y", by + badgeHeight / 2);
-              extraLabel.setAttribute("dominant-baseline", "central");
-              extraLabel.setAttribute("font-size", isMobileView
-                ? window.StationInfoLayout.fontSizes.extra.mobile
-                : window.StationInfoLayout.fontSizes.extra.desktop);
-              extraLabel.setAttribute("font-weight", "400");
-              extraLabel.setAttribute("fill", "var(--text)");
-              extraLabel.textContent = entry.extra;
-              itemGroup.appendChild(extraLabel);
+            var extraLabel = document.createElementNS(svgNS, "text");
+            extraLabel.setAttribute("x", bx + entry.badgeWidth + 3);
+            extraLabel.setAttribute("y", by + badgeHeight / 2);
+            extraLabel.setAttribute("dominant-baseline", "central");
+            extraLabel.setAttribute("font-size", isMobileView
+              ? window.StationInfoLayout.fontSizes.extra.mobile
+              : window.StationInfoLayout.fontSizes.extra.desktop);
+            extraLabel.setAttribute("font-weight", "400");
+            extraLabel.setAttribute("fill", "var(--text)");
+            extraLabel.textContent = entry.extra;
+            itemGroup.appendChild(extraLabel);
           }
           rowCur += entry.width + GAP;
         });

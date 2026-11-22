@@ -128,7 +128,7 @@
   // 换乘是车站位置之间的实际步行，不是名称匹配。
   // canonical 换乘声明包含站外连接；已支持的最大步行距离仍在此边界内。
   // 坐标缺失时保持未确认，不得静默创建全国范围的同名站边。
-  const TRANSFER_MAX_DISTANCE_KM = 3;
+  const TRANSFER_MAX_DISTANCE_KM = 1.8;
   const SHARED_ID_MAX_DISTANCE_KM = 170;
 
   function _medianGeoNumber(values) {
@@ -314,7 +314,7 @@
   function declaredWalkMinutes(transfer) {
     if (!transfer) return null;
     if (typeof transfer === 'object') {
-      for (const field of ['walkMinutes', 'walk_minutes', 'walkingDuration']) {
+      for (const field of ['walkMinutes', 'walk_minutes', 'walkingDuration', 'walkMinutesApprox']) {
         if (transfer[field] == null || transfer[field] === '') continue;
         const minutes = Number(transfer[field]);
         if (Number.isFinite(minutes) && minutes >= 0) return minutes;

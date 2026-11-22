@@ -121,3 +121,51 @@ test('canonical alias targets exist on the destination line',()=>{
     t.station==='Zoshigaya'&&t.toStation==='Onishimogami_Mae'));
   assert.ok(data.stations['Monorail-Hamamatsucho']);
 });
+test('SVG unlike-name transfers group destination icons and keep names on mobile',()=>{
+  const js=fs.readFileSync('js/trains-data.js','utf8');
+  const start=js.indexOf('window.StationInfoLayout = (function() {');
+  const end=js.indexOf('})();',start);
+  assert.ok(start>=0&&end>start);
+  const window={currentLang:'ja',RuntimeConfig:{TRANSFER_MAX_ROWS:4},
+    RailwayDB:{resolveStationName:id=>({Kasuga:'春日','Toranomon-Hills':'虎ノ門ヒルズ'}[id]||id)},
+    ThroughChip:{measureWidth:(s,size)=>String(s).length*size}};
+  vm.runInNewContext(js.slice(start,end+5),{window,_losGroupKey:()=>null});
+  for(const mobile of [true,false]){
+    const result=window.StationInfoLayout.plan([
+      {lineId:'Mita',image:'mita.svg',name:'三田線',toStation:'Kasuga',type:'in'},
+      {lineId:'Oedo',image:'oedo.svg',name:'大江戸線',toStation:'Kasuga',type:'in'}],
+      'Korakuen','後楽園',mobile,270);
+    assert.equal(result.shown.length,1);
+    assert.equal(result.shown[0].badges.length,2);
+    assert.equal(result.shown[0].extra,'→ 春日');
+    const walking=window.StationInfoLayout.plan([
+      {lineId:'Ginza',image:'ginza.svg',name:'銀座線',
+        toStation:'Toranomon-Hills',type:'out'}],
+      'Toranomon','虎ノ門',mobile,270);
+    assert.equal(walking.shown[0].extra,'→ 虎ノ門ヒルズ · 徒歩');
+  }
+  const render=fs.readFileSync('js/trains-render.js','utf8');
+  assert.match(render,/var badgeHeight = isMobileView \? 16 : 15;/);
+  assert.match(render,/var parts = entry\.badges/);
+  assert.match(render,/data-transfer-mode/);
+  assert.match(render,/itemGroup\.setAttribute\("aria-label", badgeTitle\.textContent\)/);
+});
+test('verified canonical unlike-name interchanges are bidirectional and safely bounded',()=>{
+  const d=JSON.parse(fs.readFileSync('data/core/railway_data.json','utf8'));
+  for(const [a,b,la,lb] of [
+    ['Akasaka-mitsuke','Nagatacho','Ginza','Yurakucho'],
+    ['Tameike-Sanno','Kokkai-Gijidomae','Ginza','Chiyoda'],
+    ['Ginza','Ginza-Itchome','Ginza','Yurakucho'],
+    ['Toranomon','Toranomon-Hills','Ginza','Hibiya'],
+    ['Ningyocho','Suitengumae','Hibiya','Hanzomon'],
+    ['Hibiya','Yurakucho','Chiyoda','Yurakucho'],
+    ['Akihabara','Iwamotocho','Hibiya','Shinjuku'],
+    ['Mita','Tamachi','Asakusa','Yamanote']
+  ]){
+    assert.ok(d.lines[la].transferStations.some(t=>t.station===a&&t.lineId===lb&&t.toStation===b),a+'=>'+b);
+    assert.ok(d.lines[lb].transferStations.some(t=>t.station===b&&t.lineId===la&&t.toStation===a),b+'=>'+a);
+  }
+  assert.ok(!d.lines.Musashino.transferStations.some(t=>t.station==='Kita-Asaka'&&t.toStation==='Asaka'));
+  assert.match(fs.readFileSync('js/trains-data.js','utf8'),/var maxDistance = sameId \? 170 : 1\.8/);
+  assert.match(fs.readFileSync('js/route-search.js','utf8'),/TRANSFER_MAX_DISTANCE_KM = 1\.8/);
+});

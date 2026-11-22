@@ -17464,6 +17464,20 @@
           "lineId": "Keikyu",
           "toStation": "Keikyu-Tsurumi",
           "note": "Keikyu-Tsurumi"
+        },
+        {
+          "station": "Tamachi",
+          "lineId": "Asakusa",
+          "toStation": "Mita",
+          "type": "out",
+          "note": ""
+        },
+        {
+          "station": "Tamachi",
+          "lineId": "Mita",
+          "toStation": "Mita",
+          "type": "out",
+          "note": ""
         }
       ],
       "nameZh": "京滨东北线・根岸线",
@@ -21633,6 +21647,85 @@
           "type": "out",
           "note": "京成上野，徒歩約3分",
           "toStation": "Keisei-Ueno"
+        },
+        {
+          "station": "Akasaka-mitsuke",
+          "lineId": "Yurakucho",
+          "toStation": "Nagatacho",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Akasaka-mitsuke",
+          "lineId": "Hanzomon",
+          "toStation": "Nagatacho",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Akasaka-mitsuke",
+          "lineId": "Namboku",
+          "toStation": "Nagatacho",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Tameike-Sanno",
+          "lineId": "Marunouchi",
+          "toStation": "Kokkai-Gijidomae",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Tameike-Sanno",
+          "lineId": "Chiyoda",
+          "toStation": "Kokkai-Gijidomae",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Ginza",
+          "lineId": "Yurakucho",
+          "toStation": "Ginza-Itchome",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Toranomon",
+          "lineId": "Hibiya",
+          "toStation": "Toranomon-Hills",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Ueno-Hirokoji",
+          "lineId": "Oedo",
+          "toStation": "Ueno-Okachimachi",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/ueno-hirokoji/index.html"
+        },
+        {
+          "station": "Ueno-Hirokoji",
+          "lineId": "Hibiya",
+          "toStation": "Naka-Okachimachi",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/ueno-hirokoji/index.html"
+        },
+        {
+          "station": "Mitsukoshimae",
+          "lineId": "SobuRapid",
+          "toStation": "Shin-Nihonbashi",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "银座线",
@@ -22026,6 +22119,62 @@
           "lineId": "Oedo",
           "toStation": "Kasuga",
           "note": "春日"
+        },
+        {
+          "station": "Akasaka-mitsuke",
+          "lineId": "Yurakucho",
+          "toStation": "Nagatacho",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Akasaka-mitsuke",
+          "lineId": "Hanzomon",
+          "toStation": "Nagatacho",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Akasaka-mitsuke",
+          "lineId": "Namboku",
+          "toStation": "Nagatacho",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Kokkai-Gijidomae",
+          "lineId": "Ginza",
+          "toStation": "Tameike-Sanno",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Kokkai-Gijidomae",
+          "lineId": "Namboku",
+          "toStation": "Tameike-Sanno",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Awajicho",
+          "lineId": "Chiyoda",
+          "toStation": "Shin-Ochanomizu",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Ginza",
+          "lineId": "Yurakucho",
+          "toStation": "Ginza-Itchome",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
         }
       ],
       "branches": [
@@ -22302,6 +22451,62 @@
           "lineId": "Oedo",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Ningyocho",
+          "lineId": "Hanzomon",
+          "toStation": "Suitengumae",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Ginza",
+          "lineId": "Yurakucho",
+          "toStation": "Ginza-Itchome",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Toranomon-Hills",
+          "lineId": "Ginza",
+          "toStation": "Toranomon",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Naka-Okachimachi",
+          "lineId": "Oedo",
+          "toStation": "Ueno-Okachimachi",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/naka-okachimachi/index.html"
+        },
+        {
+          "station": "Naka-Okachimachi",
+          "lineId": "Ginza",
+          "toStation": "Ueno-Hirokoji",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/ueno-hirokoji/index.html"
+        },
+        {
+          "station": "Hibiya",
+          "lineId": "Yurakucho",
+          "toStation": "Yurakucho",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Akihabara",
+          "lineId": "Shinjuku",
+          "toStation": "Iwamotocho",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/support/guide/operation/pdf/information_20240801.pdf"
         }
       ],
       "nameZh": "日比谷线",
@@ -22602,6 +22807,62 @@
           "lineId": "Tojo",
           "toStation": "Narimasu",
           "note": "Narimasu"
+        },
+        {
+          "station": "Nagatacho",
+          "lineId": "Ginza",
+          "toStation": "Akasaka-mitsuke",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Nagatacho",
+          "lineId": "Marunouchi",
+          "toStation": "Akasaka-mitsuke",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Ginza-Itchome",
+          "lineId": "Ginza",
+          "toStation": "Ginza",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Ginza-Itchome",
+          "lineId": "Marunouchi",
+          "toStation": "Ginza",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Ginza-Itchome",
+          "lineId": "Hibiya",
+          "toStation": "Ginza",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/news/2020/207641.html"
+        },
+        {
+          "station": "Yurakucho",
+          "lineId": "Hibiya",
+          "toStation": "Hibiya",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Yurakucho",
+          "lineId": "Chiyoda",
+          "toStation": "Hibiya",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
         }
       ],
       "nameZh": "有乐町线",
@@ -23101,6 +23362,34 @@
           "lineId": "KeihinTohoku",
           "toStation": "Takanawa-Gateway",
           "note": "Takanawa-Gateway"
+        },
+        {
+          "station": "Higashi-Nihombashi",
+          "lineId": "SobuRapid",
+          "toStation": "Bakurocho",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Mita",
+          "lineId": "KeihinTohoku",
+          "toStation": "Tamachi",
+          "type": "out",
+          "note": ""
+        },
+        {
+          "station": "Mita",
+          "lineId": "Yamanote",
+          "toStation": "Tamachi",
+          "type": "out",
+          "note": ""
+        },
+        {
+          "station": "Togoshi",
+          "lineId": "TokyuIkegami",
+          "toStation": "Togoshi-ginza",
+          "type": "out",
+          "note": ""
         }
       ],
       "nameZh": "浅草线",
@@ -23335,6 +23624,20 @@
           "lineId": "Namboku",
           "toStation": "Korakuen",
           "note": "後楽園"
+        },
+        {
+          "station": "Mita",
+          "lineId": "KeihinTohoku",
+          "toStation": "Tamachi",
+          "type": "out",
+          "note": ""
+        },
+        {
+          "station": "Mita",
+          "lineId": "Yamanote",
+          "toStation": "Tamachi",
+          "type": "out",
+          "note": ""
         }
       ],
       "nameZh": "三田线",
@@ -23602,6 +23905,22 @@
           "lineId": "Oedo",
           "toStation": "Shinjuku-Nishiguchi",
           "note": "Shinjuku-Nishiguchi"
+        },
+        {
+          "station": "Ogawamachi",
+          "lineId": "Chiyoda",
+          "toStation": "Shin-Ochanomizu",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/lang_tcn/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Iwamotocho",
+          "lineId": "Hibiya",
+          "toStation": "Akihabara",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/support/guide/operation/pdf/information_20240801.pdf"
         }
       ],
       "nameZh": "新宿线",
@@ -23981,6 +24300,22 @@
           "lineId": "Namboku",
           "toStation": "Korakuen",
           "note": "後楽園"
+        },
+        {
+          "station": "Ueno-Okachimachi",
+          "lineId": "Ginza",
+          "toStation": "Ueno-Hirokoji",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/ueno-hirokoji/index.html"
+        },
+        {
+          "station": "Ueno-Okachimachi",
+          "lineId": "Hibiya",
+          "toStation": "Naka-Okachimachi",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/naka-okachimachi/index.html"
         }
       ],
       "isSixShapedLoop": true,
@@ -24220,6 +24555,46 @@
           "lineId": "Odawara",
           "toStation": "Yoyogi-Hachiman",
           "note": "Yoyogi-Hachiman"
+        },
+        {
+          "station": "Kokkai-Gijidomae",
+          "lineId": "Ginza",
+          "toStation": "Tameike-Sanno",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Kokkai-Gijidomae",
+          "lineId": "Namboku",
+          "toStation": "Tameike-Sanno",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Shin-Ochanomizu",
+          "lineId": "Marunouchi",
+          "toStation": "Awajicho",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Shin-Ochanomizu",
+          "lineId": "Shinjuku",
+          "toStation": "Ogawamachi",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/lang_tcn/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Hibiya",
+          "lineId": "Yurakucho",
+          "toStation": "Yurakucho",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
         }
       ],
       "branches": [
@@ -24492,6 +24867,37 @@
           "lineId": "KeiseiOshiage",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Nagatacho",
+          "lineId": "Ginza",
+          "toStation": "Akasaka-mitsuke",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Nagatacho",
+          "lineId": "Marunouchi",
+          "toStation": "Akasaka-mitsuke",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Suitengumae",
+          "lineId": "Hibiya",
+          "toStation": "Ningyocho",
+          "type": "out",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/ticket/guide/transfertime/index.html"
+        },
+        {
+          "station": "Mitsukoshimae",
+          "lineId": "SobuRapid",
+          "toStation": "Shin-Nihonbashi",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "半藏门线",
@@ -24723,6 +25129,38 @@
           "lineId": "SaitamaRapid",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Nagatacho",
+          "lineId": "Ginza",
+          "toStation": "Akasaka-mitsuke",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Nagatacho",
+          "lineId": "Marunouchi",
+          "toStation": "Akasaka-mitsuke",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Tameike-Sanno",
+          "lineId": "Marunouchi",
+          "toStation": "Kokkai-Gijidomae",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
+        },
+        {
+          "station": "Tameike-Sanno",
+          "lineId": "Chiyoda",
+          "toStation": "Kokkai-Gijidomae",
+          "type": "in",
+          "note": "",
+          "evidenceUrl": "https://www.tokyometro.jp/station/line_ginza/index.html"
         }
       ],
       "nameZh": "南北线",
@@ -27090,6 +27528,27 @@
           "lineId": "Keisei",
           "toStation": "Keisei-Funabashi",
           "note": "Keisei-Funabashi"
+        },
+        {
+          "station": "Bakurocho",
+          "lineId": "Asakusa",
+          "toStation": "Higashi-Nihombashi",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Shin-Nihonbashi",
+          "lineId": "Ginza",
+          "toStation": "Mitsukoshimae",
+          "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Shin-Nihonbashi",
+          "lineId": "Hanzomon",
+          "toStation": "Mitsukoshimae",
+          "type": "in",
+          "note": ""
         }
       ],
       "nameZh": "总武快速线",
@@ -28754,6 +29213,20 @@
           "lineId": "Arakawa",
           "toStation": "Otsuka_Eki_Mae",
           "note": "Otsuka_Eki_Mae"
+        },
+        {
+          "station": "Tamachi",
+          "lineId": "Asakusa",
+          "toStation": "Mita",
+          "type": "out",
+          "note": ""
+        },
+        {
+          "station": "Tamachi",
+          "lineId": "Mita",
+          "toStation": "Mita",
+          "type": "out",
+          "note": ""
         }
       ],
       "isDoubleColumnLoop": true,
@@ -39200,6 +39673,13 @@
           "station": "Kamata",
           "lineId": "TokyuTamagawa",
           "type": "in",
+          "note": ""
+        },
+        {
+          "station": "Togoshi-ginza",
+          "lineId": "Asakusa",
+          "toStation": "Togoshi",
+          "type": "out",
           "note": ""
         }
       ],

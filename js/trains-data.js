@@ -462,7 +462,7 @@ function _transferCoordinatesCompatible(fromLine, fromStation, toLine, toStation
     var coords = window.STATION_COORDS || {};
     var directA = _transferPoint(coords[fromStation]), directB = _transferPoint(coords[toStation]);
     var sameId = fromStation === toStation;
-    var maxDistance = sameId ? 170 : 3;
+    var maxDistance = sameId ? 170 : 1.8;
     if (!sameId && directA && directB) return _transferDistanceKm(directA, directB) <= maxDistance;
     var a = _transferNeighborhood(lines, fromLine, fromStation, coords);
     var b = _transferNeighborhood(lines, toLine, toStation, coords);
@@ -891,26 +891,37 @@ window.StationInfoLayout = (function() {
       ? window.RailwayDB.resolveStationName(item.toStation, window.currentLang) : item.toStation;
     return dest && normalizedName(dest) !== normalizedName(stationName) ? String(dest) : "";
   }
-  function compactStationName(name, mobile) {
-    var arr = Array.from(String(name)), limit = mobile ? 14 : 20;
-    return arr.length <= limit ? name : arr.slice(0, limit - 3).join("") + "…" + arr.slice(-2).join("");
-  }
+  // Unified passenger interchange group: all icons for the same destination
+  // keep ONE visible unlike-name label, with no distance or image suppression.
   function prepare(items, stationId, stationName, mobile) {
-    var entries = list(items), named = Object.create(null);
-    var outside = ({ja:"駅外",zh:"站外",en:"outside",ko:"역외"})[window.currentLang || "ja"] || "駅外";
-    return entries.map(function(item) {
-      var label = String(item.name || item.lineId || "").slice(0, 4);
-      var badgeWidth = item.image ? ICON : measure(label, mobile ? FONT.badge.mobile : FONT.badge.desktop) + 8;
-      var dest = sideName(item, stationId, stationName), extra = "";
-      if (dest && !named[item.toStation]) {
-        named[item.toStation] = true;
-        extra = "→ " + compactStationName(dest, mobile);
-        if (entries.some(function(other) { return other.toStation === item.toStation && other.type === "out"; }))
-          extra += " · " + outside;
-      }
-      var extraWidth = extra ? 3 + measure(extra, mobile ? FONT.extra.mobile : FONT.extra.desktop) : 0;
-      return {item:item, label:label, badgeWidth:badgeWidth,
-        extra:extra, width:badgeWidth + extraWidth};
+    var entries = list(items), groups = [], byTarget = Object.create(null);
+    var walk = ({ja:"徒歩",zh:"步行",en:"walk",ko:"도보"})[window.currentLang || "ja"] || "徒歩";
+    entries.forEach(function(item) {
+      var dest = sideName(item, stationId, stationName);
+      var key = dest ? "S:" + item.toStation : "";
+      if (key && byTarget[key]) { byTarget[key].items.push(item); return; }
+      var group = {items:[item], dest:dest};
+      groups.push(group);
+      if (key) byTarget[key] = group;
+    });
+    // Prefer unlike-name transfer groups when the station runs out of rows.
+    groups.sort(function(a,b) { return Number(!!b.dest) - Number(!!a.dest); });
+    return groups.map(function(group) {
+      var badges = group.items.map(function(item) {
+        var label = String(item.name || item.lineId || "").slice(0,4);
+        var badgeWidth = item.image ? ICON :
+          measure(label, mobile ? FONT.badge.mobile : FONT.badge.desktop) + 8;
+        return {item:item,label:label,badgeWidth:badgeWidth};
+      });
+      var badgeWidth = badges.reduce(function(n,b) { return n+b.badgeWidth; },0)
+        + Math.max(0,badges.length-1)*GAP;
+      // Never abbreviate the destination: it is navigational information.
+      var extra = group.dest ? "→ " + group.dest : "";
+      if (extra && group.items.some(function(it) { return it.type === "out"; }))
+        extra += " · " + walk;
+      var extraWidth = extra ? 3 + measure(extra,mobile ? FONT.extra.mobile : FONT.extra.desktop) : 0;
+      return {item:group.items[0],badges:badges,label:badges[0].label,
+        badgeWidth:badgeWidth,extra:extra,width:badgeWidth+extraWidth};
     });
   }
   function plan(items, stationId, stationName, mobile, maxWidth) {

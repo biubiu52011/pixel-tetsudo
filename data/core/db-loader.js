@@ -100,7 +100,7 @@
   // http(s) 分支加载由
   // data/core/gen-file-data.js 生成的紧凑单行 JSON 副本，而不是可读源文件，
   // 以减少 GitHub Pages 的下载和解析量。可读源文件仍是唯一事实来源。
-  var DATA_FILE = "../data/core/railway_data.compact.json?v=8bc4d460d0c9";
+  var DATA_FILE = "../data/core/railway_data.compact.json?v=f34d1be77fee";
   var STATION_I18N_FILE = "../data/core/station_i18n.compact.json?v=7ee3871ce15d";
   var TOURISM_DATA_FILE = "../data/core/tourism_data.compact.json";
   var _stationI18n = {};
@@ -647,7 +647,7 @@ function applyData(data, i18n) {
 
   // file:// 协议：通过 <script> 标签加载生成的数据包。
   var FILE_BUNDLES = [
-    "../data/core/railway-data.file.js?v=597287cf892f",
+    "../data/core/railway-data.file.js?v=e2da28b49eef",
     "../data/core/station-i18n.file.js?v=4468280b3360",
     "../data/core/tourism-data.file.js"
   ];
