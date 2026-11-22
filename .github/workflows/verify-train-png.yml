@@ -318,7 +318,7 @@ jobs:
       - name: Verify Rikuto East Nov 2026 numbers, special rapids and flood closure
         run: node --test tests/rikuto-east-2611-official-number-png.test.cjs
       - name: Verify regional 2611 Kururi Karasuyama Hachinohe official numbers and exceptions
-        run: node --test tests/jreast-regional-number-png.test.cjs
+        run: node --test tests/jreast-regional-2611-number-png.test.cjs
       - name: Verify 2611 Hakushin 91 E129 trains, 7 Inaho, Kairi dates and no wrong art
         run: node --test tests/hakushin-2611-official-number-png.test.cjs
       - name: Verify Joetsu 2611 train-number, northern/southern fleets and Shu*Kura calendar

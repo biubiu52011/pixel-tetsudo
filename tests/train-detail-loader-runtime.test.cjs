@@ -50,9 +50,9 @@ test('first open only loads indexes for selected line and preserves manifest ord
   await f.loader.load('Yamanote');
   assert.deepEqual(f.append, urls('Yamanote'));
   assert.equal(f.loader.isReady('Yamanote'), true);
-  assert.ok(f.append.some(url => url.includes('jreast-yamanote-2611-number-index')));
-  assert.ok(!f.append.some(url => url.includes('jreast-keihin-2611-number-index')));
-  assert.ok(!f.append.some(url => url.includes('jreast-yokohama-2611-number-index')));
+  assert.ok(f.append.some(url => url.includes('jreast-yamanote-number-index')));
+  assert.ok(!f.append.some(url => url.includes('jreast-keihin-number-index')));
+  assert.ok(!f.append.some(url => url.includes('jreast-yokohama-number-index')));
 });
 
 test('switching lines fetches missing modules once and supports concurrent routes', async () => {
@@ -69,7 +69,7 @@ test('switching lines fetches missing modules once and supports concurrent route
   assert.equal(f.append.length, prev, 'reopen uses already loaded scripts');
   await f.loader.load('Yokohama');
   assert.equal(new Set(f.append).size, f.append.length);
-  assert.ok(f.append.some(url => url.includes('jreast-yokohama-2611-number-index')));
+  assert.ok(f.append.some(url => url.includes('jreast-yokohama-number-index')));
 });
 
 test('missing or malicious route ID never injects network scripts', async () => {
