@@ -39,6 +39,9 @@ jobs:
         run: node --test tests/line-overview-presentation.test.cjs tests/train-overview-dom.test.cjs
       - name: Verify CI test inventory and execute new unlisted tests
         run: node scripts/ci-test-registry.cjs
+      - name: Audit historical unregistered tests (advisory)
+        continue-on-error: true
+        run: node scripts/ci-test-registry.cjs --legacy-sweep
       - name: Verify multilingual site switching and station names
         run: node --test tests/site-auto-translation.test.cjs tests/station-i18n-completeness.test.cjs
       - name: Verify Sotetsu-JR published November train clocks, vehicle PNG mapping and date guards

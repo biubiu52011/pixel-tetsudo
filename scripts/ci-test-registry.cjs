@@ -35,6 +35,14 @@ if (stale.length) {
   console.error('Prune resolved legacy test exclusions:\n' + stale.join('\n'));
   process.exit(1);
 }
+if (process.argv.includes('--legacy-sweep')) {
+  console.log('Running historical CI coverage gaps:', baseline.legacyUngated.length);
+  const child = spawnSync(process.execPath,
+    ['--test', '--test-concurrency=3', ...baseline.legacyUngated],
+    { cwd: root, stdio: 'inherit' });
+  if (child.error) throw child.error;
+  process.exit(child.status || 0);
+}
 const newTests = tests.filter(file => !legacy.has(file) && !covered(file));
 console.log('Test inventory:', tests.length, 'files;', tests.length - legacy.size - newTests.length,
   'declared;', legacy.size, 'legacy gaps;', newTests.length, 'new auto-discovered tests.');
