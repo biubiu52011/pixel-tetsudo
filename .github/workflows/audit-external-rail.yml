@@ -40,10 +40,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:
-      live: \${{ steps.scope.outputs.live }}
-      tobu: \${{ steps.scope.outputs.tobu }}
-      toei: \${{ steps.scope.outputs.toei }}
-      gtfs: \${{ steps.scope.outputs.gtfs }}
+      live: ${{ steps.scope.outputs.live }}
+      tobu: ${{ steps.scope.outputs.tobu }}
+      toei: ${{ steps.scope.outputs.toei }}
+      gtfs: ${{ steps.scope.outputs.gtfs }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,9 +52,9 @@ jobs:
         id: scope
         shell: bash
         env:
-          EVENT: \${{ github.event_name }}
-          SCOPE: \${{ inputs.scope }}
-          BEFORE: \${{ github.event.before }}
+          EVENT: ${{ github.event_name }}
+          SCOPE: ${{ inputs.scope }}
+          BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
           live=0; tobu=0; toei=0; gtfs=0
