@@ -265,3 +265,30 @@ test('Sotetsu livery and formation artwork require explicit number evidence',()=
   assert.equal(win.VehicleGaragePngMap.matchModelPath('相鉄8000系',
     '../images/列车/相模鉄道/相模鉄道_相模鉄道8000系（sote8006）.png','SotetsuMain'),false);
 });
+
+test('Keisei and Chiba New Town fleet artwork never implies an operating number',()=>{
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const names=[
+    '京成電鉄_3000形.png','京成電鉄_3100形.png','京成電鉄_3200形.png',
+    '京成電鉄_3400形.png','京成電鉄_3500形更新車.png','京成電鉄_3600形.png',
+    '京成電鉄_3700形.png','京成電鉄_80000形.png','京成電鉄_8800形.png',
+    '京成電鉄_8900形.png','千葉ニュータウン鉄道_9100形.png',
+    '千葉ニュータウン鉄道_9200形.png','千葉ニュータウン鉄道_9800形.png'
+  ];
+  for(const name of names)
+    assert.equal(ranges.includes(name),false,name+' has no verified train-number mapping');
+
+  const plannedOnly=[
+    ['京成3200形','京成電鉄_3200形.png'],
+    ['京成3500形（更新車）','京成電鉄_3500形更新車.png'],
+    ['京成3600形','京成電鉄_3600形.png'],
+    ['京成80000形','京成電鉄_80000形.png'],
+    ['京成8800形','京成電鉄_8800形.png'],
+    ['京成8900形','京成電鉄_8900形.png']
+  ];
+  for(const [model,file] of plannedOnly){
+    const ref=win.TrainVehicle.resolveCanonicalVehicle(model);
+    assert.equal(ref?.asset||null,null,model+' is not physical vehicle proof');
+    assert.equal(ref?.plannedAsset,'../images/列车/京成電鉄/'+file);
+  }
+});
