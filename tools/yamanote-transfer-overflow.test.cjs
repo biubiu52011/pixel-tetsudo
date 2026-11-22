@@ -121,7 +121,8 @@ test('SVG image badges show a single named target for same-station line transfer
   const labels=painted.filter(x=>x.tag==='text'&&String(x.textContent).includes('春日'));
   assert.equal(labels.length,1,'only one destination label for two icons');
   assert.match(labels[0].textContent,/→/);
-  assert.equal(painted.filter(x=>x.attrs['data-to-station']==='Kasuga').length,2);
+  assert.equal(painted.filter(x=>x.attrs['data-to-station']==='Kasuga').length,1,
+    'one grouped transfer label must own both image icons');
 });
 test('the L3 planner retains two destinations of one line and never hides names on short walks',()=>{
   const window={currentLang:'ja',RuntimeConfig:{TRANSFER_MAX_ROWS:4},
@@ -135,5 +136,5 @@ test('the L3 planner retains two destinations of one line and never hides names 
   const plan=window.StationInfoLayout.plan(items,'T1T2','羽田第1・第2',true,300);
   assert.equal(plan.shown.length,2);
   assert.ok(plan.shown.every(x=>x.extra.includes('→')));
-  assert.ok(plan.shown.every(x=>x.extra.includes('駅外')));
+  assert.ok(plan.shown.every(x=>x.extra.includes('徒歩')));
 });

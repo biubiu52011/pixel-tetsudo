@@ -8,7 +8,9 @@
  * Transfer Station Hints Database
  * 换乘站提示数据库
  * 
- * 记录站外换乘和换乘站名不一致的情况
+ * 记录站外换乘和换乘站名不一致的情况（仅提示，不能自动变成有效换乘边）。
+ * SVG 线路图与路线搜索统一使用 railway_data.lines[].transferStations 的已核实站对；
+ * 不得根据坐标接近就直接将提示中的站对升级为真实换乘关系。
  * type: "outside" = 站外换乘, "name_mismatch" = 站名不一致
  * note: 具体说明文字（多语言）
  */
