@@ -68,13 +68,18 @@
     return spot.name || '';
   }
 
-  // 获取 i18n 字段值并按优先级回退。
-  function getI18nField(spot, field) {
-    if (!spot) return '';
-    var i18nField = field + '_i18n';
-    if (spot[i18nField] && spot[i18nField][state.lang]) return spot[i18nField][state.lang];
-    if (spot[i18nField] && spot[i18nField].ja) return spot[i18nField].ja;
-    return spot[field] || '';
+  // Fixed tourism prose uses complete reviewed translations, not word joins.
+  function getFixedTranslation(spot,field){
+    if(!spot)return '';
+    var lang=state.lang||window.currentLang||'ja',group=spot[field+'_i18n'];
+    var saved=group&&group[lang];
+    if(typeof saved==='string'&&saved.trim())return saved;
+    var flat=spot[field+'_'+lang];
+    return typeof flat==='string'&&flat.trim()?flat:'';
+  }
+  function getI18nField(spot,field){
+    if(!spot)return '';
+    return getFixedTranslation(spot,field)||(spot[field+'_i18n']&&spot[field+'_i18n'].ja)||spot[field]||'';
   }
 
   // 翻译营业时间/费用字段中的常见日文词语。
@@ -263,7 +268,7 @@
   // 公共上下文：字段/徽章/章节/坐标（类型 JS 基于它构建专属部分）
   function buildContext(spot, stationKey) {
     var spotName = getSpotName(spot);
-    var localizedDesc = (spot.desc_i18n && spot.desc_i18n[state.lang]) || spot['desc_' + state.lang];
+    var localizedDesc = getFixedTranslation(spot, 'desc');
     var desc = localizedDesc || spot.desc || (spot.desc_i18n && spot.desc_i18n.ja) || '';
     // Machine-translate only missing descriptions; do not override reviewed copy.
     var autoDesc = state.lang !== 'ja' && !localizedDesc && !!desc;
@@ -918,6 +923,7 @@
     escapeHtml: escapeHtml,
     getSpotName: getSpotName,
     getI18nField: getI18nField,
+    getFixedTranslation: getFixedTranslation,
     translateCommonTerms: translateCommonTerms,
     getStationLabel: getStationLabel,
     getGradientForTags: getGradientForTags,

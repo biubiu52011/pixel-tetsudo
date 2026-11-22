@@ -324,9 +324,10 @@
 
   // 判断文本是否含日文特征（假名/駅/線内）——只对动态日文原文做翻译，
   // 已按语言融合的站名/线路名不进入该路径（防止站名被二次翻译改写）
-  function _needsJaTranslate(s) {
-    if (!s) return false;
-    return /[\u3041-\u3096\u30A1-\u30FA\u30FC]/.test(s) || /[駅]/.test(s) || /線内/.test(s);
+  function _needsJaTranslate(s){
+    if(!s)return false;
+    // Pure-kanji official terms such as 遅延 also need translation.
+    return /[\u3041-\u3096\u30A1-\u30FA\u30FC\u3400-\u9FFF]/.test(s);
   }
 
   function _translationOpts(lineId, status, source) {
@@ -360,10 +361,12 @@
     if (!window.DelayTranslator) return _untranslatedOfficialText(text);
     var r = window.DelayTranslator.translate(text, opts || {}, lang);
     var tr = r && r.translated ? r.translated : "";
-    if (!tr || _needsJaTranslate(tr)) {
+    if(!r||r.matched!==true||!tr||/[\u3041-\u3096\u30A1-\u30FA\u30FC]/.test(tr))
       return _untranslatedOfficialText(text);
-    }
-    return '<div class="rs-cause-translated">' + escapeHtml(tr) + '</div>';
+    var note=r.structured&&r.complete===false
+      ? '<div class="rs-text-muted rs-translation-summary-note">'
+          + escapeHtml(t("status.translation_summary"))+'</div>' : '';
+    return '<div class="rs-cause-translated">'+note+escapeHtml(tr)+'</div>';
   }
 
   function renderFilterBar(linesObj) {

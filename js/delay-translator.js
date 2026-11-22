@@ -237,7 +237,12 @@
     Object.keys(CAUSES).forEach(function (k) { var v = _langOf(CAUSES[k], lang); if (v !== null && v !== undefined) push(k, v); });
     Object.keys(TERMS).forEach(function (k) { var v = _langOf(TERMS[k], lang); if (v !== null && v !== undefined) push(k, v); });
     Object.keys(PARTICLES).forEach(function (k) { var v = _langOf(PARTICLES[k], lang); if (v !== null && v !== undefined) push(k, v); });
-    Object.keys(st).forEach(function (k) { if (k.indexOf("|" + lang) > 0) push(k.split("|")[0], st[k]); });
+    Object.keys(st).forEach(function(k) {
+      if(k.indexOf("|"+lang)<=0)return;
+      var ja=k.split("|")[0],name=st[k];
+      if(ja.slice(-1)!=="駅")push(ja+"駅",name+({zh:"站",ko:"역",en:" Station"}[lang]||""));
+      push(ja,name);
+    });
     Object.keys(ln).forEach(function (k) { if (k.indexOf("|" + lang) > 0) push(k.split("|")[0], ln[k]); });
     // 在原文上收集所有出现位置，长词优先、重叠去重
     var occ = [];
@@ -257,8 +262,7 @@
     // 从右到左替换（保持左侧索引有效）
     picked.sort(function (a, b) { return b.s - a.s; });
     picked.forEach(function (o) { out = out.slice(0, o.s) + o.tr + out.slice(o.e); });
-    // 清理孤立残留"駅"（站名替换后）
-    out = out.replace(/駅/g, "");
+    // Unknown stations must remain intact; never erase 駅 globally.
     return out;
   }
 
@@ -486,74 +490,77 @@
     return prefix + body.replace(/。+/g, "。") + (lang === "en" ? "." : "。");
   }
 
-  // ---- 主入口 ----
-  function translate(text, opts, lang) {
-    lang = (lang || window.currentLang || "ja").toLowerCase();
-    opts = opts || {};
-    if (!text || lang === "ja") return { translated: text, matched: false };
-    // 正常状态文本不翻译（弹窗对 normal 已有统一状态显示；但"平常運転"仍翻译以保持正文一致）
-    var t = String(text);
-    // 1) 整句式模板
-    for (var i = 0; i < TEMPLATES.length; i++) {
-      var m = TEMPLATES[i].re.exec(t);
-      if (m) {
-        var lineName = opts.lineId ? (window.RailwayDB ? window.RailwayDB.resolveLineName(opts.lineId, lang) : "") : "";
-        var out = TEMPLATES[i].build(m, lang, lineName);
-        if (out) return { translated: out, matched: true };
-      }
-    }
-    var structured = _structuredSummary(opts, lang);
-    if (structured) return { translated: structured, matched: true, structured: true };
-    // 2) Full-text fallback. Never replace the official body with a generic
-    // status summary ("有运行情报" etc.). Translate every known fragment in
-    // place and preserve all unmatched source text so no operational detail is
-    // discarded. This keeps the official Japanese body as the factual source.
-    var full = _replaceFragment(t, lang);
-    return { translated: full, matched: full !== t, fullText: true };
-  }
 
-  var _remoteCache = {};
-  // Public Lingva instances: no registration / API key required.
-  // Try in order; local railway-aware translation remains the final fallback.
-  var REMOTE_BASES = [
-    "https://lingva.ml",
-    "https://translate.igna.wtf",
-    "https://translate.plausibility.cloud",
-    "https://lingva.lunar.icu",
-    "https://translate.projectsegfau.lt",
-    "https://translate.dr460nf1r3.org",
-    "https://lingva.garudalinux.org",
-    "https://translate.jae.fi"
-  ];
-  function translateRemote(text, opts, lang) {
-    lang = (lang || window.currentLang || "ja").toLowerCase();
-    opts = opts || {};
-    if (!text || lang === "ja") return Promise.resolve({ translated: text, matched: false, provider: "local" });
-    var target = lang === "zh" ? "zh" : lang;
-    var key = target + "\n" + text;
-    if (_remoteCache[key]) return Promise.resolve(_remoteCache[key]);
-    var fallback = translate(text, opts, lang);
-    if (typeof fetch !== "function") return Promise.resolve(fallback);
-    var i = 0;
-    function attempt() {
-      if (i >= REMOTE_BASES.length) return Promise.resolve(fallback);
-      var base = REMOTE_BASES[i++];
-      var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-      var timer = controller ? setTimeout(function(){ controller.abort(); }, 3500) : null;
-      var url = base + "/api//" + encodeURIComponent(target) + "/" + encodeURIComponent(String(text));
-      return fetch(url, { method:"GET", mode:"cors", signal: controller ? controller.signal : undefined })
-        .then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-        .then(function(data){
-          if (timer) clearTimeout(timer);
-          if (!data || !data.translation) throw new Error("empty translation");
-          var out = { translated:String(data.translation), matched:true, fullText:true, provider:"lingva", endpoint:base };
-          _remoteCache[key] = out;
-          return out;
-        })
-        .catch(function(){ if (timer) clearTimeout(timer); return attempt(); });
+  // Exact semantic composition: never discard an unknown clause or infer a
+  // real disruption from a warning, negation or future risk announcement.
+  function _composeRailSentence(raw,lang) {
+    var s=String(raw||"").trim().replace(/[。．.!！]$/,"").trim();
+    if(!s||/可能性|見込|予定|おそれ|していましたが/.test(s))return null;
+    var m=/^(?:(.+?線)は[、,]\s*)?(?:(.+?)(?:のため|の影響で|により)[、,]\s*)?(?:(.+?線)の)?(?:(上下線|上り線|下り線|内回り|外回り|全線)(?:の|で)?)?(?:(一部の列車|一部列車|全ての列車|すべての列車|全列車)(?:に|で)?)?(遅れが出ています|遅延しています|運転を見合わせています|運転を見合わせます|運休しています|運休します)$/.exec(s);
+    if(!m||(m[1]&&m[3]&&m[1]!==m[3]))return null;
+    var lineJa=m[1]||m[3]||"",cause=m[2]||"",dirJa=m[4]||"",q=m[5]||"";
+    if(cause&&!Object.prototype.hasOwnProperty.call(CAUSES,cause))return null;
+    var line=lineJa?_replaceFragment(lineJa,lang):"";
+    if(lineJa&&(line===lineJa||/[ぁ-ゟァ-ヿ]/.test(line)))return null;
+    var why=cause?CAUSES[cause][lang]:"",dir=dirJa?_langOf(TERMS[dirJa],lang):"";
+    if(cause&&!why||dirJa&&!dir)return null;
+    var part=/^一部/.test(q),all=!!q&&!part;
+    var kind=/遅れ|遅延/.test(m[6])?"delay":/見合わせ/.test(m[6])?"suspend":"cancel";
+    var future=/見合わせます|運休します/.test(m[6]);
+    if(lang==="zh") {
+      var subj=line+(dir||"")+(part?"部分列车":all?"全部列车":"列车");
+      var verb=kind==="delay"?"出现延误":kind==="cancel"?(future?"将停运":"停运"):(future?"将暂停运行":"暂停运行");
+      return (why?"因"+why+"，":"")+subj+verb+"。";
     }
-    return attempt();
+    if(lang==="ko") {
+      var subjKo=(line?line+" ":"")+(dir?dir+" ":"")+(part?"일부 열차":all?"모든 열차":"열차");
+      var verbKo=kind==="delay"?"지연되고 있습니다":kind==="cancel"?(future?"운휴할 예정입니다":"운휴하고 있습니다"):(future?"운전을 중단할 예정입니다":"운전을 중단하고 있습니다");
+      return (why?why+" 때문에 ":"")+subjKo+(kind==="delay"?"가 ":"는 ")+verbKo+".";
+    }
+    if(lang==="en"){
+      var subjEn=part?"Some trains":all?"All trains":"Train services";
+      var where=line?" on "+(/^the /i.test(line)?line:"the "+line):"";
+      var verbEn=kind==="delay"?" are delayed":kind==="cancel"?(future?" will be cancelled":" are cancelled"):(future?" will be suspended":" are suspended");
+      return subjEn+where+(dir?" ("+dir+")":"")+verbEn+(why?" due to "+why:"")+".";
+    }
+    return null;
   }
+  function _wholeTemplate(sentence,lang,opts) {
+    var s=sentence.trim().replace(/[。．.!！]$/,"").trim();
+    for(var i=0;i<TEMPLATES.length;i++){
+      var m=TEMPLATES[i].re.exec(s);
+      if(!m||m.index!==0||m[0].length!==s.length)continue;
+      var name=opts.lineId&&window.RailwayDB&&window.RailwayDB.resolveLineName(opts.lineId,lang)||"";
+      var v=TEMPLATES[i].build(m,lang,name);
+      if(v&&!/[ぁ-ゟァ-ヿ]/.test(v))return v;
+    }
+    return null;
+  }
+  // ---- 主入口 ----
+  function translate(text,opts,lang) {
+    lang=(lang||window.currentLang||"ja").toLowerCase();opts=opts||{};
+    if(!text||lang==="ja"||["zh","ko","en"].indexOf(lang)<0)return {translated:text,matched:false};
+    var source=String(text).trim();
+    if(!source)return {translated:text,matched:false};
+    var clauses=source.split(/(?<=[。！？!?])\s*/).filter(Boolean),pieces=[];
+    for(var i=0;i<clauses.length;i++){
+      var p=_composeRailSentence(clauses[i],lang)||_wholeTemplate(clauses[i],lang,opts);
+      if(!p){pieces=[];break;}pieces.push(p);
+    }
+    if(pieces.length)return {translated:pieces.join(lang==="en"?" ":""),
+      matched:true,complete:true,composed:true,provider:"offline"};
+    var risky=/可能性があります|見込|予定|おそれ|していましたが/.test(source);
+    if(!risky&&(opts.effect||opts.serviceLevel||opts.resume||(opts.impacts&&opts.impacts.length))){
+      var sum=_structuredSummary(opts,lang);
+      if(sum&&!/[ぁ-ゟァ-ヿ駅]/.test(sum))
+        return {translated:sum,matched:true,complete:false,structured:true,provider:"offline"};
+    }
+    var exact=CAUSES[source]||TERMS[source];
+    if(exact&&exact[lang])return {translated:exact[lang],matched:true,complete:true,provider:"offline"};
+    return {translated:text,matched:false,complete:false,provider:"offline"};
+  }
+  // Preserve the old async API without transmitting official data to proxies.
+  function translateRemote(text,opts,lang){return Promise.resolve(translate(text,opts,lang));}
 
   window.DelayTranslator = {
     translate: translate,
