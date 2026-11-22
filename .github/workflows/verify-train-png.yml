@@ -94,12 +94,7 @@ jobs:
             console.log('PASS: ' + files.length + ' migration files have unique, valid 14-digit versions');
           }
           NODE
-      - name: Synchronize page script versions before train runtime checks
-        run: node scripts/sync-page-scripts.cjs
-      - name: Validate generated page script dependencies
-        run: node --test tests/page-scripts.test.cjs
-      - name: Verify whole-list line ranks, canonical identities and station symbols
-        run: node --test tests/line-overview-presentation.test.cjs tests/train-overview-dom.test.cjs
+      # Page script hashes and presentation checks run once in Pages build.
       - name: Check JavaScript syntax
         run: |
           node --check js/train-vehicle.js

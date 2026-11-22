@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: runinfo-snapshot-main
@@ -34,7 +35,9 @@ jobs:
       - name: Fetch official homepage status
         run: node tools/refresh-runinfo-web.cjs
       - name: Publish fresh snapshot only when available
+        id: publish
         run: |
+          set -euo pipefail
           if git diff --quiet -- data/runinfo-web-snapshot.json; then
             echo "No verified changes to publish"
             exit 0
@@ -45,3 +48,10 @@ jobs:
           git commit -m "chore(runinfo): refresh official status snapshot [skip ci]"
           git pull --rebase origin main
           git push origin HEAD:main
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+      - name: Dispatch Pages CI/CD after updated snapshot commit
+        # GITHUB_TOKEN pushes do not trigger another push workflow, but dispatch does.
+        if: ${{ steps.publish.outputs.updated == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run static.yml --ref main

@@ -1,10 +1,7 @@
 name: Merge checksum-locked TokyoGTFS source into SQL quarantine
 
+# SQL staging writes require deliberate manual triggering.
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tokyo-gtfs-sync.yml'
   workflow_dispatch:
 
 permissions:

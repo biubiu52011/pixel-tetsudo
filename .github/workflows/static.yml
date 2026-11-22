@@ -9,15 +9,8 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# GitHub Pages can retain a deployment lock after an interrupted run.
-# Keep commits queued instead of cancelling a Pages upload/deployment;
-# otherwise back-to-back main commits can produce HTTP 400 deployment locks.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+# CI may supersede older builds; Pages deployments remain serial.
 
 jobs:
   train-contracts:
@@ -27,6 +20,10 @@ jobs:
       contents: read
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: pages-ci-build-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,6 +35,10 @@ jobs:
         run: node scripts/sync-page-scripts.cjs --check
       - name: Test page script manifest
         run: node --test tests/page-scripts.test.cjs
+      - name: Verify CI test inventory and execute new unlisted tests
+        run: node scripts/ci-test-registry.cjs
+      - name: Verify multilingual site switching and station names
+        run: node --test tests/site-auto-translation.test.cjs tests/station-i18n-completeness.test.cjs
       - name: Verify Sotetsu-JR published November train clocks, vehicle PNG mapping and date guards
         run: node --test tests/sotetsu-jr-direct-2611-clock-proof.test.cjs tests/sotetsu-jr-direct-2611-fleet-scope.test.cjs
       - name: Verify full Kawagoe west ODPT timetable and shared fleet boundaries
@@ -46,20 +47,12 @@ jobs:
         run: node --test tests/dynamic-resolver-contract.test.cjs tests/trains-svg-visual-contract.test.cjs tests/trains-track-marker-alignment.test.cjs tests/train-module-boundaries.test.cjs tests/kita-senju-transfer-contract.test.cjs
       - name: Exercise line-scoped loader and SQL artwork contract
         run: node --test tests/train-detail-loader-runtime.test.cjs
-      - name: Verify train overview DOM structure and state
-        run: node --test tests/train-overview-dom.test.cjs
-      - name: Verify canonical line sort tiers and explicit Ueno-Tokyo exception
-        run: node --test tests/line-overview-presentation.test.cjs
       - name: Verify two-tier region and operator filters
         run: node --test tests/railway-region-filter.test.cjs
       - name: Verify Rinkai line color, station transfers and Saikyo handover
         run: node --test tests/rinkai-line-audit.test.cjs
       - name: Verify JR-Central ChuoCentral canonical 40-station SQL route and Okuwa safety
         run: node --test tests/chuo-central-sql-registry.test.cjs
-      - name: Verify Tobu Isesaki official 303E clocks, TI identifiers and Chichibu junction
-        run: node --test tests/tobu-isesaki-canonical-202611.test.cjs tests/tobu-isesaki-png-ranges-202611.test.cjs
-      - name: Verify shared JR-Central licensed SQL timetable importer
-        run: node --test tests/jr-central-shared-plan-import.test.cjs
       - name: Verify operator filter labels
         run: node --test tests/operator-labels.test.cjs
       - name: Verify history card responsive layout
@@ -83,12 +76,6 @@ jobs:
           node --test tests/ui-cross-page-consistency.test.cjs
           node --test tests/architecture-ownership.test.cjs
           node --test tests/rail-service-calendar-ownership.test.cjs
-      - name: Verify Tobu Sano 2026-11 representative hop clocks and scoped PNG references
-        run: node --test tests/tobu-sano-2611-number-png.test.cjs
-      - name: Verify Tobu Utsunomiya exact 401N-486N 20400 reference, geometry and current-date quarantine
-        run: node --test tests/tobu-utsunomiya-2611-number-png.test.cjs
-      - name: Verify Tobu Kiryu historical local PNG and canonical route
-        run: node --test tests/tobu-kiryu-2611-number-png.test.cjs
       - name: Verify Tobu Kameido official stations and train PNG boundaries
         run: node --test tests/tobu-kameido-line-assets.test.cjs
       - name: Verify train presets before Pages upload
@@ -131,6 +118,13 @@ jobs:
     needs: [build, train-contracts]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
