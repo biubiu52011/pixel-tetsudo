@@ -214,8 +214,25 @@
     causeSection.classList.toggle("hidden", status !== "normal" && !(_cleanSrc && ["loading", "no_data", "no_odpt"].indexOf(status) < 0));
     var _bodyTextEl = causeSection.querySelector(".rs-cause-text");
     if (_bodyTextEl) {
+      // Invalidate an older asynchronous translation whenever this dialog is
+      // rendered again (language, line, or live-report updates).
+      var _translationRevision = (_bodyTextEl._ptTranslationRevision || 0) + 1;
+      _bodyTextEl._ptTranslationRevision = _translationRevision;
       _bodyTextEl.innerHTML = causeHtml;
-      if (window.SiteAutoTranslate) window.SiteAutoTranslate.scan(_bodyTextEl);
+      if (_transSource && window.SiteAutoTranslate &&
+          (window.currentLang || "ja") !== "ja" &&
+          _bodyTextEl.querySelector(".rs-cause-untranslated")) {
+        (function(target, source, targetLang, revision) {
+          window.SiteAutoTranslate.translateText(source, targetLang).then(function(translated) {
+            if (!translated || target._ptTranslationRevision !== revision ||
+                window.currentLang !== targetLang || !target.isConnected) return;
+            var placeholder = target.querySelector(".rs-cause-untranslated");
+            if (!placeholder) return;
+            placeholder.textContent = translated;
+            placeholder.setAttribute("lang", targetLang);
+          }).catch(function() { /* retain the localized unavailable message */ });
+        })(_bodyTextEl, _transSource, window.currentLang, _translationRevision);
+      }
     }
     // 非官网来源的 URL 渲染为可点击链接行（正文保持纯文字）。
     var previousLinks = causeSection.querySelector(".rs-cause-links");
@@ -327,13 +344,11 @@
     };
   }
 
-  function _untranslatedOfficialText(text) {
-    // A missing translation must never hide the operator's original alert.
-    // Opt in to the on-device translator where available, retaining the
-    // official text as a visible fallback on unsupported browsers.
+  function _untranslatedOfficialText() {
+    // The visible UI follows the selected locale. Keep the Japanese report
+    // in _transSource for an optional on-device translation, not in the DOM.
     return '<div class="rs-cause-untranslated">'
       + '<div class="rs-text-muted">' + escapeHtml(t("status.translation_unavailable") || t("status.no_data")) + '</div>'
-      + '<div data-auto-translate="ja">' + escapeHtml(text || '') + '</div>'
       + '</div>';
   }
 
