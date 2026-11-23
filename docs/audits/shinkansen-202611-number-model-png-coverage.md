@@ -4,6 +4,28 @@
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
+## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
+
+用户指定统一入口：[JR东日本东京站](https://timetables.jreast.co.jp/timetable/list1039.html) 的「デジタル時刻表」。北陆与上越共用总表，必须按完整站序/列车名称区分，不能仅凭 E/C 后缀判定线路。
+
+2611 基准： [下行平日](https://timetables.jreast.co.jp/2611/timetable-v/004d1.html) / [下行土休日](https://timetables.jreast.co.jp/2611/timetable-v/004d2.html) / [上行平日](https://timetables.jreast.co.jp/2611/timetable-v/004u1.html) / [上行土休日](https://timetables.jreast.co.jp/2611/timetable-v/004u2.html)。链接中的出版年月必须与运行日期范围一致。当前入口抓取缓存指向2608；2611部分索引可读但四张完整表均未成功取得。严禁以2608或2612填充2611。
+
+生产库回读：
+
+| 车种 | 平日上行 | 平日下行 | 土休日上行 | 土休日下行 |
+|---|---:|---:|---:|---:|
+| かがやき | 10 | 9 | 3 | 5 |
+| はくたか | 16 | 15 | 1 | 0 |
+| あさま | 12 | 11 | 0 | 0 |
+| つるぎ | 5 | 6 | 5 | 6 |
+| 合计 | 43 | 41 | 9 | 11 |
+
+104模板，102份番号证据，41份有非空明确日期、61份日期未核实、2份空日期数组已排除；40份 official-sampled。平日下行官方索引 E 尾缀122列、112个不同番号（10列重复）；与库内41个正式番号精确交集36、索引侧76个待筛查候选、库侧5个待复核。该统计不是全线班次数或确切缺失数：包含临时运行、日期变体、重复列以及合并线路中待区分的列车。库内4个355xxE疑似多写一位数字，另一条为日期限定列车；未核实完整运行日/停站前不批量替换。
+
+实施规则：以总表四分类为对照单位，保留列车番号、完整方向、到发站序和日期变体的关联；单独详情仅用于解决「時変」、停运、重复番号及跨线疑义。写入仍使用既有 manual_timetable_templates / manual_timetable_template_stops / train_timetables / train_timetable_members / published_train_number_evidence，复查 train_timetable_stops 及运行日期互斥。车型与PNG独立验证，不以番号尾缀推断。已确认[时刻表首页使用条件](https://timetables.jreast.co.jp/index.html)限制未经许可的转载、复制及加工；在取得相应授权或可再利用数据源之前，本轮仅保存汇总审计结果与来源链接，不复制整张总表至公开仓库或生产数据库。既有数据保持不变，审计状态 sparse_review。尚未验收线上 SVG。
+
+前四批 SQL： [01](../../supabase/queries/hokuriku_2611_verified_501_tsurugi_initial_batch_20261124.sql)、[02](../../supabase/queries/hokuriku_2611_verified_tsurugi_batch02_20261124.sql)、[03](../../supabase/queries/hokuriku_2611_verified_kagayaki_hakutaka_batch03_20261124.sql)、[04](../../supabase/queries/hokuriku_2611_verified_kagayaki_batch04_20261124.sql)。
+
 ## 2026-11-08 待应用批次：山阳こだま871A／872A／873A／877A时刻与计划车型
 
 本批遵循 Notion 的“官网完整番号和逐站时刻先验、唯一计划车型独立判断、计划不冒充实际”口径。只读回查生产库确认新干线当前仍为 **827份模板、824份2611正式番号、534份唯一官方计划车型、196条精确PNG**；下列迁移文件已提交 `main`，但尚未获得生产 Supabase 应用授权，因此本节不把预期增量写成活库事实。
