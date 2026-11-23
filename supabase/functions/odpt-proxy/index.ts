@@ -102,7 +102,10 @@ Deno.serve(async(req:Request)=>{
    });
    if(!upstream.ok){
      // No upstream response body or URL is forwarded: either may contain key.
-     return json(upstream.status===429?429:502,{ok:false,error:"ODPT_UPSTREAM_UNAVAILABLE"},
+     // The numeric status is safe diagnostic metadata and distinguishes an
+     // authorization failure from an upstream outage without exposing either.
+     return json(upstream.status===429?429:502,{ok:false,error:"ODPT_UPSTREAM_UNAVAILABLE",
+       upstreamStatus:upstream.status},
        origin,{"Cache-Control":"no-store"});
    }
    const buffer=new Uint8Array(await upstream.arrayBuffer());

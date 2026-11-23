@@ -15,9 +15,11 @@ test('ODPT Edge proxy has server secrets, fixed origins and source-resource allo
   assert.match(proxy,/ODPT_PROXY_NOT_CONFIGURED/);
   assert.match(proxy,/ORIGIN_NOT_ALLOWED/);
   assert.match(proxy,/RATE_LIMIT/);
+  assert.match(proxy,/upstreamStatus:upstream\.status/);
   assert.ok(proxy.includes('binary?"application/x-protobuf"'));
   assert.match(proxy,/new Map<string,\{until:number,status:number,body:Uint8Array/);
   assert.ok(!proxy.includes('ODPT_LINKS_ENC'));
+  assert.ok(!/await upstream\.(?:json|text)\(/.test(proxy),'never forward an upstream body that could contain credential-bearing details');
   assert.ok(!/console\.[a-z]+\(target\.toString/.test(proxy),'never log upstream URLs with secret keys');
 });
 test('strict client proxy mode bypasses key decoder and cannot fall back to plaintext ODPT',()=>{
