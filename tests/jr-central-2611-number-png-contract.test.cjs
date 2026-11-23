@@ -45,7 +45,16 @@ assert.equal(serverCtx.selectServerPng('TokaidoShinkansen',null,plan,
 // Test production front-end selector (not a duplicate substitute):
 // SQL 1A resolves the already-validated pool path; the visible service
 // nickname のぞみ1 may NOT be used in place of the numbered 1A train.
-assert.match(estimator,/sqlPlannedNumberPngPath: lineId==="TokaidoShinkansen"/);
+const estimatorProjection=estimator.match(/sqlPlannedNumberPngPath:\s*([\s\S]*?)\s*,\s*\/\/ 保留 SQL 来源/);
+assert.ok(estimatorProjection,'missing existing SQL number artwork projection');
+const projectPng=new Function('lineId','tt','return ('+estimatorProjection[1]+');');
+const proof={_positionSource:'supabase-train-run',_sqlTrainNumberVerification:'official-2611-sql-exact-roster',_sqlVehicleArtworkPath:gallery};
+assert.equal(projectPng('TokaidoShinkansen',proof),gallery);
+const hokurikuPng='../images/列车/JR東日本/JR東日本_E7系.png';
+assert.equal(projectPng('HokurikuShinkansen',{...proof,_sqlVehicleArtworkPath:hokurikuPng}),hokurikuPng);
+assert.equal(projectPng('HokurikuShinkansen',{...proof,_sqlTrainNumberVerification:'unverified-service-name'}),'');
+assert.equal(projectPng('HokurikuShinkansen',{...proof,_positionSource:'realtime-api'}),'');
+assert.equal(projectPng('JoetsuShinkansen',proof),'');
 assert.match(estimator,/tt\._sqlTrainNumberVerification==="official-2611-sql-exact-roster"/);
 const uniqueNumberPng=section(vehicle,
   '  function chooseUniqueNumberPng(candidates,numberBandConflict) {',
