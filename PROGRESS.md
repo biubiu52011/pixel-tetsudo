@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### PNG-P04-TOBU-ARTWORK-ACCEPTANCE-20261123 — 东武 P-04 图片权限验收（DONE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 已知遗留 | Notion P-04 仍引用未进入当前仓库的临时提交 `e211e347`，并停在“待验收”；实际修复已随整合提交 `8e7a8a2cbb3d501c8e52bfb23a6af3f65bd65365` 进入 `main`，当前 HEAD 是其后继。 |
+| 责任边界 | `planned-stock-library-61` 继续保留 `artworkReviewRequired=true`，普通车型／图库匹配不得使用处于 review 的东武 8000 标准图；只有既有伊势崎 2026-11 番号规则及东上／越生的线路、日期、车次约束规则可通过 `matchScopedReferencePath` 将同一路径作为参考示意，结果仍为 `referenceOnly=true`、`actualVehicleConfirmed=false`。 |
+| 番号结论 | P-04 原定 9 张 PNG 仍没有番号到单图的可靠唯一对应；新增 PNG 0、纯号段 0、线路 0，9 张均保留无纯号段。官方车辆目录只能证明车型存在，SL 大树现行日历也不能证明 DE10 蓝雷机车对应具体班次。 |
+| 当前验收 | `tobu-isesaki-png-ranges-202611` 12/12、`tobu-tojo-through-fleet-202611` 8/8、传统线来源／禁止猜测契约及 `vehicle-artwork-continuity` 24/24 均通过；当前 `main` 与 `origin/main` 为 0/0，HEAD `1c167b62` 的 CI/CD - Pages `45130453492` completed/success。未执行 Supabase 写入、迁移、Edge 部署或另行生产发布。 |
+
 ### TIMELESS-TIMETABLE-RUNTIME-ENTRYPOINTS — 时效数据与长期运行入口分离（LOCAL-READY）
 
 - 将 40 个仍以 `2611`／`202611` 命名的活动时刻表运行模块迁移为长期文件名；同步移除 38 个全局导出名和 19 个 `numberIndex` 调度键中的批次日期。页面懒加载、运行时消费者、生成目录与测试均切换到新入口。
