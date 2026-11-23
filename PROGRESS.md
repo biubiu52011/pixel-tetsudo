@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### PNG-LEGACY-JR59-JR61-THIRD09-ACCEPTANCE-20261123 — 四个旧编号号段批次验收（DONE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 已知卡点 | JR 第59／60／61批与第三部门第9批均已在 2026-11-19 完成迁移和行级回读，但当时被并行的日期化运行时审计／铁路元数据审计失败挡在“待验收”。当前两项全局门禁已经修复；Windows checkout 仍因四个专项测试用 `split('\n')` 读取 CRLF CSV 而产生精确行匹配假失败。 |
+| 根因修正 | 四个专项测试统一改用 `split(/\r?\n/)`，只修跨平台换行解析；不修改号段 CSV、迁移、运行时匹配或生产数据。四批专项测试 4/4、铁路元数据审计 5/5 通过；日期化运行时审计回放 174 行／173 个服务键，89 张图、85 个中性结果、0 安全问题。 |
+| 生产回读 | Supabase 只读核对确认 `jr59_yamaguchi_sl_c57_8521_8522_reference`、`jr60_e501_e655_kihae200_historical_numbers`、`third09_tsukuba_8_observed_photo_numbers`、`jr61_h5_e5_313_321_twelve_observed_numbers` 均已登记；预期 1／3／8／12 条（合计24条）全部存在，0 契约偏差，仍为历史参考号段而非每日实车身份。未执行数据库写入。 |
+| 交付 | 修正提交 `a707add6` 已直接进入 `main`；CI/CD - Pages `45136449045` 的 verify、gallery、build、deploy 均 completed/success。旧编号历史现为已完成113、待验收0、受阻1；唯一未结束项是东武 ODPT TrainTimetable 密钥缺失阻塞。 |
+
 ### PNG-P09-P10-SEIBU-METADATA-ACCEPTANCE-20261123 — 西武 P-09／P-10 受保护素材验收（DONE）
 
 | 项目 | 当前状态 |
