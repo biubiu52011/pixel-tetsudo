@@ -119,3 +119,60 @@ test('Hokuriku official number evidence accepts both JR operators without broade
   assert.equal(valid('JoetsuShinkansen','1E',west),false);
   assert.equal(valid('JoetsuShinkansen','301C',east),true);
 });
+
+test('Hokuriku SQL adapter -> estimator -> actual gallery selector preserves reference-only artwork',()=>{
+  // Synthetic two-stop schedule fixture; not a new timetable publication.
+  const line='HokurikuShinkansen',day='2026-11-24';
+  const railway='odpt.Railway:JR-East.'+line;
+  const station=n=>'odpt.Station:JR-East.'+line+'.'+n;
+  const png='../images/列车/JR東日本/JR東日本_E7系.png';
+  const adapterSource=fs.readFileSync('data/api/odpt-unified.js','utf8');
+  const a=adapterSource.indexOf('    function _dbStopClock(');
+  const b=adapterSource.indexOf('    function getTimetableIdentity(',a);
+  assert.ok(a>=0&&b>a);
+  const adapt=new Function('LINE_TO_OPERATOR','LINE_RAILWAY_CODE',
+    adapterSource.slice(a,b)+'\nreturn _trainRunToTimetable;')(
+      {[line]:'JR-East'},{[line]:line});
+  const iso='2026-11-24T00:10:00Z';
+  class FakeDate extends Date {
+    constructor(...args){super(...(args.length?args:[iso]));}
+    static now(){return Date.parse(iso);}
+  }
+  const root={RuntimeConfig:{},TrainVehicle:tv,VehicleGaragePngMap:garage,
+    ODPTClient:{LINE_RAILWAY_CODE:{[line]:line},LINE_TO_OPERATOR:{[line]:'JR-East'}}};
+  const local=vm.createContext({window:root,console:quiet,Date:FakeDate});
+  vm.runInContext(fs.readFileSync('js/train-position-estimator.js','utf8'),local);
+  const row=(n,id,art)=>adapt({
+    id:'canonical-train-timetable:'+id,trip_id:'canonical-train-timetable:'+id,
+    canonical_timetable_id:id,canonical_group_evidence:'source_only',
+    line_id:line,service_date:day,calendar_type:'weekday',service_id:'odpt.Calendar:Weekday',
+    operator:'JR-East',network_key:railway,train_number:n,
+    train_number_verification:'official-2611-sql-exact-roster',
+    rail_direction:'odpt.RailDirection:Outbound',
+    train_type:'odpt.TrainType:JR-East.Shinkansen',
+    destination_station:station('Omiya'),
+    vehicle_mapping_level:'official_model_family_plan',
+    vehicle_type_candidates:'E7系・W7系',vehicle_artwork_path:art,
+    vehicle_plan_confirmed:false,timetable_date_verified:false,
+    stops:[{station_urn:station('Tokyo'),departure_time:'09:00'},
+      {station_urn:station('Omiya'),arrival_time:'09:30'}]
+  });
+  root.TrainPositionEstimator.registerManualTimetable(line,[
+    row('3501E',100,png),row('3503E',101,null)
+  ]);
+  const positions=root.TrainPositionEstimator.estimateAllPositions(
+    {[line]:{stations:['Tokyo','Ueno','Omiya'],operator:'JR-East'}},
+    {},{},null,{lineIds:[line]})[line]||[];
+  assert.equal(positions.length,2);
+  const yes=positions.find(p=>p.trainNumber==='3501E');
+  const no=positions.find(p=>p.trainNumber==='3503E');
+  assert.equal(yes.sqlPlannedNumberPngPath,png);
+  const result=tv.selectMarkerArtwork({...yes,displayLineId:line},false);
+  assert.equal(result.iconSrc,png);
+  assert.equal(result.referenceOnly,true);
+  assert.equal(result.actualVehicleConfirmed,false);
+  assert.equal(yes.timetableDateVerified,false);
+  assert.equal(tv.selectMarkerArtwork({...no,displayLineId:line},false).kind,'unresolved');
+  assert.equal(tv.selectMarkerArtwork({...yes,displayLineId:line,serviceDate:'2026-12-01'},false).kind,'unresolved');
+  assert.equal(tv.selectMarkerArtwork({...yes,displayLineId:line},true).kind,'unresolved');
+});
