@@ -2662,9 +2662,9 @@
             estimated: true,
             positionSource: tt._positionSource || "train-timetable",
             // Only the server's exact public train-number / line-scoped SQL
-            // PNG pool may supply a JR-Central Shinkansen reference image.
+            // PNG pool may supply a Tokaido/Hokuriku Shinkansen reference image.
             // This does not confer vehicle identity or observed dispatch.
-            sqlPlannedNumberPngPath: lineId==="TokaidoShinkansen" &&
+            sqlPlannedNumberPngPath: ["TokaidoShinkansen","HokurikuShinkansen"].includes(lineId) &&
               tt._positionSource==="supabase-train-run" &&
               tt._sqlTrainNumberVerification==="official-2611-sql-exact-roster"
                 ? (tt._sqlVehicleArtworkPath || "") : "",
