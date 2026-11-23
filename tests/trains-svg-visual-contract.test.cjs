@@ -84,9 +84,9 @@ test('ordinary routes use one safe spacing value, even after transfer-heavy stat
     });
     vm.runInContext(geometrySource.slice(start,end)+
       '\nthis.spacing=sp;this.yAt=_yAt;',context);
-    assert.equal(context.spacing,74);
+    assert.equal(context.spacing,85);
     for(let i=1;i<stations.length;i++){
-      assert.equal(context.yAt(i)-context.yAt(i-1),74,id+' interval '+i);
+      assert.equal(context.yAt(i)-context.yAt(i-1),85,id+' interval '+i);
     }
   }
 });
@@ -498,4 +498,58 @@ test('uniform route scale is an immutable geometry input and viewport fit report
   assert.match(rendererSource,/text\.station-transfer-destination/);
   assert.match(rendererSource,/lengthAdjust", "spacingAndGlyphs"/);
   assert.match(rendererSource,/canvasFitReason: geometry\.canvasFitReason/);
+});
+
+test('Keisei-Ueno 4x4 interchange and Machiya have safe uniform station pitch',()=>{
+  const start=geometrySource.indexOf('    var ROW_H = window.StationInfoLayout.pitch');
+  const end=geometrySource.indexOf('    // 获取支线。',start);
+  assert.ok(start>=0&&end>start);
+  const stations=['Keisei-Ueno','Nippori','Shin-Mikawashima','Machiya',
+    'Senju-Ohashi','Keisei-Sekiya'];
+  for(const rows of [1,2,3,4]){
+    const map={'Keisei-Ueno':Array.from({length:rows*4},
+      (_,i)=>({lineId:'T'+i}))};
+    const context=vm.createContext({
+      stations,transferMap:map,throughChipMaxWidth:148,thrTopPad:0,thrBotPad:0,
+      isSkytreeYFork:false,
+      _isMobileView:()=>true,_throughChipHeight:()=>0,
+      window:{StationInfoLayout:{pitch:18,reservedRows:items=>
+        items.length?Math.ceil(items.length/4):0}}
+    });
+    vm.runInContext(geometrySource.slice(start,end)+
+      '\nthis.spacing=sp;this.yAt=_yAt;',context);
+    const iconBottom=14+(rows-1)*18+16;
+    const nextNameTop=context.spacing-9;
+    assert.ok(nextNameTop-iconBottom>=9.9,
+      '4x4 badge row '+rows+' must clear next station name by at least 10 units');
+    for(let i=1;i<stations.length;i++)
+      assert.equal(context.yAt(i)-context.yAt(i-1),context.spacing);
+  }
+});
+
+test('moving train captions yield to permanent names and interchange badges',()=>{
+  const start=rendererSource.indexOf('  function _protectStaticStationInfoFromTrainCaptions(');
+  const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
+  assert.ok(start>=0&&end>start);
+  const ctx=vm.createContext({});
+  vm.runInContext(rendererSource.slice(start,end),ctx);
+  const protectedText={getBoundingClientRect:()=>({
+    x:100,y:100,width:80,height:24})};
+  const stationLayer={querySelectorAll:()=>[protectedText]};
+  const svg={getAttribute:()=> 'loaded',
+    getBoundingClientRect:()=>({x:0,y:0,width:420,height:800}),
+    querySelector:s=>s==='.station-info-layer'?stationLayer:null};
+  const train={ownerSVGElement:svg};
+  const near={attrs:{},getBoundingClientRect:()=>({
+    x:140,y:110,width:60,height:16}),
+    setAttribute(k,v){this.attrs[k]=v;}};
+  const far={attrs:{},getBoundingClientRect:()=>({
+    x:250,y:200,width:40,height:16}),
+    setAttribute(k,v){this.attrs[k]=v;}};
+  assert.equal(ctx._protectStaticStationInfoFromTrainCaptions(train,[near,far]),1);
+  assert.equal(near.attrs.display,'none');
+  assert.equal(far.attrs.display,undefined);
+  assert.equal(ctx._protectStaticStationInfoFromTrainCaptions(train,[near,far]),1,
+    'reuse static glyph bounds in the unchanged viewport');
+  assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels\)/);
 });

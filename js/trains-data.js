@@ -1259,19 +1259,31 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     // 全线按所需的最大换乘/直通徽章高度统一站距，不再逐段加空白。
     // 支线的额外留白需求在下方合并到统一的 sp。
     var ROW_H = window.StationInfoLayout.pitch, TX_TOP = 14,
-      SP_GAP = 6, MIN_SP = 45;
+      SP_GAP = 10, MIN_SP = 45, NAME_HALF_H = 9, ICON_H = 16;
     var _chipPitch = function(ids) {
-      var mx = MIN_SP;
+      // All stations on one painted line use one pitch. Measure each
+      // station's full vertical occupation, not only the 4x4 grid height:
+      // icons are BELOW the current station name, while the NEXT name
+      // extends upward from its station centre. The old formula omitted
+      // that next name and produced Keisei-Ueno/Nippori and
+      // Machiya/Senju-Ohashi text-icon collisions.
+      var below = NAME_HALF_H, above = NAME_HALF_H;
       for (var _cp = 0; _cp < ids.length; _cp++) {
         var _txLines = transferMap[ids[_cp]] || [];
         var _rows = window.StationInfoLayout.reservedRows(
           _txLines, ids[_cp], null, _isMobileView());
-        var _throughH = _throughChipHeight(_txLines, _isMobileView(), throughChipMaxWidth);
-        var _ordinaryExtent = _rows > 0 ? TX_TOP + _rows * ROW_H : 0;
-        var _throughExtent = _throughH > 0 ? _throughH / 2 : 0;
-        mx = Math.max(mx, Math.max(_ordinaryExtent, _throughExtent) + SP_GAP);
+        var _ordinaryBottom = _rows > 0
+          ? TX_TOP + (_rows - 1) * ROW_H + ICON_H : NAME_HALF_H;
+        // Middle through-service chips straddle the station centre on the
+        // opposite side of the railway. Their top/bottom footprint is shared
+        // with the icon/label pitch reservation.
+        var _throughH = _throughChipHeight(_txLines, _isMobileView(),
+          throughChipMaxWidth, "middle");
+        var _throughHalf = _throughH > 0 ? _throughH / 2 : 0;
+        below = Math.max(below, _ordinaryBottom, _throughHalf);
+        above = Math.max(above, NAME_HALF_H, _throughHalf);
       }
-      return mx;
+      return Math.max(MIN_SP, below + above + SP_GAP);
     };
     var sp = _chipPitch(stations);
     // Hikifune and Tokyo-Skytree need 106/112 units of label clearance.

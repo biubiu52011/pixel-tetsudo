@@ -2801,6 +2801,55 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
     });
     _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix);
+    // Train destination captions have lower visual priority than permanent
+    // railway station names and interchange icons. A train marker and its
+    // accessible label remain present even when its caption cannot fit.
+    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels);
+  }
+
+  // Reuse the station glyph bounds while the frame stays at the same viewport
+  // position. Rebuilding every text/image rect on each train animation frame
+  // caused layout thrashing on long Japanese commuter routes.
+  function _protectStaticStationInfoFromTrainCaptions(trainLayer, labels) {
+    if (!labels || !labels.length) return 0;
+    var svg = trainLayer && trainLayer.ownerSVGElement;
+    if (!svg || !svg.querySelector || !svg.getBoundingClientRect) return 0;
+    var staticInfo = svg.querySelector(".station-info-layer");
+    if (!staticInfo || !staticInfo.querySelectorAll) return 0;
+    var screen = svg.getBoundingClientRect();
+    var key = [screen.x,screen.y,screen.width,screen.height,
+      svg.getAttribute && svg.getAttribute("data-font-state")].join("|");
+    var cache = trainLayer._stationInfoScreenBounds;
+    if (!cache || cache.key !== key || cache.staticInfo !== staticInfo) {
+      var protectedNodes = staticInfo.querySelectorAll("text, image, rect");
+      var bounds = [];
+      for (var i=0;i<protectedNodes.length;i++) {
+        if (!protectedNodes[i].getBoundingClientRect) continue;
+        var b = protectedNodes[i].getBoundingClientRect();
+        if (b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
+            isFinite(b.height) && b.width > 0 && b.height > 0)
+          bounds.push({x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height});
+      }
+      cache = {key:key,staticInfo:staticInfo,bounds:bounds};
+      trainLayer._stationInfoScreenBounds = cache;
+    }
+    var hidden=0;
+    for (var c=0;c<labels.length;c++) {
+      var label=labels[c];
+      if (!label || !label.getBoundingClientRect) continue;
+      var box=label.getBoundingClientRect();
+      if (!box || !(box.width > 0 && box.height > 0)) continue;
+      var intersects=cache.bounds.some(function(b) {
+        // Two screen pixels of visual separation between train and station.
+        return box.x < b.right+2 && box.x+box.width > b.x-2 &&
+          box.y < b.bottom+2 && box.y+box.height > b.y-2;
+      });
+      if (intersects) {
+        label.setAttribute("display","none");
+        hidden++;
+      }
+    }
+    return hidden;
   }
 
   // The SVG badges are rebuilt as collision layout moves. A stable listener
