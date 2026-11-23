@@ -79,7 +79,10 @@ Deno.serve(async(req:Request)=>{
  if(!quota||quota.until<now)quotas.set(limitKey,{until:now+60000,used:1});
  else if(quota.used++>=90)return json(429,{ok:false,error:"RATE_LIMIT"},origin,{"Retry-After":"30"});
  if(quotas.size>5000)quotas.clear();
- const target=new URL(config.endpoints[type],config.host==="challenge"
+ // A leading `odpt:` resource name is an API path, not a URL scheme.
+ // Prefix every allowlisted endpoint with `./` so URL resolution stays on
+ // the selected ODPT HTTPS host for both JSON and GTFS resources.
+ const target=new URL("./"+config.endpoints[type],config.host==="challenge"
    ?"https://api-challenge.odpt.org/api/v4/"
    :"https://api.odpt.org/api/v4/");
  if(railway)target.searchParams.set("odpt:railway",railway);

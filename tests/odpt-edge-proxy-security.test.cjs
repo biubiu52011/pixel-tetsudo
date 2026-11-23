@@ -15,6 +15,8 @@ test('ODPT Edge proxy has server secrets, fixed origins and source-resource allo
   assert.match(proxy,/ODPT_PROXY_NOT_CONFIGURED/);
   assert.match(proxy,/ORIGIN_NOT_ALLOWED/);
   assert.match(proxy,/RATE_LIMIT/);
+  assert.match(proxy,/new URL\("\.\/"\+config\.endpoints\[type\]/,
+    'ODPT JSON resource names must resolve as HTTPS paths, never as an odpt: URL scheme');
   assert.match(proxy,/upstreamStatus:upstream\.status/);
   assert.ok(proxy.includes('binary?"application/x-protobuf"'));
   assert.match(proxy,/new Map<string,\{until:number,status:number,body:Uint8Array/);
