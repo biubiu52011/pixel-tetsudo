@@ -8,10 +8,12 @@
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 线上回读 | 2026-11-24 JST 只读请求现有 `odpt-proxy?health=1`：`ok=true`、`challengeConfigured=false`、`productionConfigured=false`、`credentialValuesExposed=false`。代理未泄露任何密钥值，但仍无法取得东武 Challenge TrainTimetable。 |
-| 安全结论 | 继续保持失败关闭：0 条响应不能证明任何列车番号缺失，也不能授权新增、缩减或扩张 PNG 号段。未向 Supabase、Edge secrets、号段 CSV 或运行时执行写入。 |
+| 线上配置 | 2026-11-24 JST 已在 Supabase Edge Functions Secrets 配置 `ODPT_CHALLENGE_CONSUMER_KEY`；只读健康回读为 `ok=true`、`challengeConfigured=true`、`productionConfigured=false`、`credentialValuesExposed=false`。现役 `odpt-proxy` v2 为 `ACTIVE`，线上入口与本地 `index.ts` 仅差文件末尾空行；Supabase 当前契约为 Secret 保存后立即供函数使用，无需因本次配置重部署函数代码。 |
+| 实时源回读 | 东武 `gtfsTripUpdate`、`gtfsAlert`、`gtfsVehicle` 均经现有代理返回 HTTP 200 与 `application/x-protobuf`；本次响应分别为 2355、15、315 字节，均为当次只读快照，不代表固定记录数或长期可用性。 |
+| TrainTimetable 复核 | 同一 Secret 下，东武 `train`、`trainInformation`、`trainTimetable` 仍返回代理 HTTP 502；专项审计对全量和 13 个线路作用域均未取得记录，`--require-observation` 按设计失败。官方目录仍列出 Challenge 2026 的 Tobu TrainTimetable JSON 资源，因此不能把实时 GTFS-RT 成功替代为 TrainTimetable 已完成。 |
+| 安全结论 | 继续保持失败关闭：0 条 TrainTimetable 响应不能证明任何列车番号缺失，也不能授权新增、缩减或扩张 PNG 号段。未修改号段 CSV、车型映射、运行时或生产数据库；密钥值未回读、未写入仓库。 |
 | 现役入口 | 当前 `main` 保留 `tools/audit-tobu-odpt-number-bands.cjs` 与 `tests/tobu-odpt-number-band-audit.test.cjs`；旧 Notion 记录所链接的独立 workflow 文件已不在当前 `main`，不能把历史 Actions 入口当作现役执行器。专项边界测试 6/6 通过。 |
-| 下一步 | 仍需项目管理员在 Supabase Edge Functions Secrets 安全配置获授权的 `ODPT_CHALLENGE_CONSUMER_KEY`。配置后先用现有代理只读重取并核对完整来源，再独立证明番号与车型／编组／涂装；此前状态保持 BLOCKED。 |
+| 下一步 | 需要在 ODPT Challenge 侧核对该 consumer key 是否同时获准访问 JSON TrainTimetable，或确认上游当前故障；取得至少 1 条可验证 TrainTimetable 记录后再完成号段比较，并独立证明番号与车型／编组／涂装。此前状态保持 BLOCKED。 |
 
 ### PNG-LEGACY-JR59-JR61-THIRD09-ACCEPTANCE-20261123 — 四个旧编号号段批次验收（DONE）
 
