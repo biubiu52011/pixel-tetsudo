@@ -6,6 +6,12 @@
 
 ## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
 
+### 第五批后续：つるぎ14 日期变体纠正（生产已应用）
+
+JR西日本 [1014E休日](https://timetable.jr-odekake.net/train-timetable/249391?date=20261101) 和 [8014E](https://timetable.jr-odekake.net/train-timetable/385411?date=20261107)、[11/21再次确认](https://timetable.jr-odekake.net/train-timetable/380371?date=20261121) 表明，普通金泽终到计划在11月7/14/21/28日改为富山终到计划，而不是爱称服务整体停运。原休日模板移除7/14日，新增同爱称的8014E独立日期变体，保留原平日和休日1014E模板。事务检查30天每天仅1份可用计划、canonical停站视图5条。未改车型/PNG。SQL记录 [6c44ce6](../../supabase/queries/hokuriku_2611_tsurugi14_date_variant_20261124.sql)。现有模板105、正式番号证据103、休日模板21，仍未全量覆盖。
+
+HTTP直连受限（网页工具不可访问，容器DNS解析失败，Browser连接无当前浏览器上下文）；不得宣称线上SVG或HTTP已通过。现有11月打印总表四个入口仍未取得完整HTML。数据库日期模拟表明61个旧模板仍未核实日期，12月不能依靠11月有限日期模板作为新版本依据。
+
 ### 第五批后续：北陆共同运营官方番号证据兼容（2026-11-24）
 
 生产 Edge v382 的番号来源正则拒绝北陆 JR West 官方URL（38条）及 JR East 英文URL（1条），任一不匹配会抛出 INVALID_SHINKANSEN_OFFICIAL_NUMBER_EVIDENCE，使整个请求进入 DB_QUERY_FAILED。此问题独立于停站覆盖率。保留各记录的来源日历、方向、线路、证据类型核验。
