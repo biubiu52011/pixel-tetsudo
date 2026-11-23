@@ -6,6 +6,14 @@
 
 ## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
 
+### 北陆映射发布后错误排查（2026-11-24）
+
+生产 v384 于08:32 JST部署，08:54:35 JST北陆 train-runs 当日请求返回 HTTP 200（此前500为旧番号冲突及来源校验）。本轮未发现新的后端500，也没有取得用户浏览器实际异常栈，因此不能把缓存版本问题断言为唯一报错根因。已确认上一轮修改估算器及车辆脚本后未更新 trains.html 的 Git blob 版本键；本轮更新为 train-vehicle.js?v=63bcd033674a、train-position-estimator.js?v=5d4ebc2f3af8，并回读确认与当前blob一致。
+
+从生产SQL读取81条2026-11-24可用模板（含61条未核实运行日期的旧模板），按现有接口契约构造回放输入并经过真实 _trainRunToTimetable、estimateAllPositions、selectMarkerArtwork 与真实图库。08:54、10:54、13:54、18:54、21:54分别17/17、14/14、5/5、11/11、10/10位置选择到代表PNG，无异常。此回放不是实时车辆、实际HTTP响应正文或DOM/SVG浏览器实测。无生产SQL或Edge逻辑变更。修复已有测试中仅接受东海道单线路字面值的过时断言，改为执行实际投影表达式；追加合成数据适配器到估算器到图片选择器的回归，包含无PNG、非本月、图片失败等反例。现有Shinkansen测试7/7和JR-Central契约测试通过（隔离JS执行，非完整CI）。没有新增脚本。
+
+提交：[版本键 7cac0d2](https://github.com/biubiu52011/pixel-tetsudo/commit/7cac0d2ce437f3ff2f8e42942a58842567fc965d)、[契约测试 e0c14be](https://github.com/biubiu52011/pixel-tetsudo/commit/e0c14bea7b45341bc7076f2dd6f52a3589aeb609)、[完整链路回归 daee185](https://github.com/biubiu52011/pixel-tetsudo/commit/daee185ab1fc4ffd865ca4ee25cc1ae19ecabc2d)。实际网页重新部署后的Safari/浏览器视觉验收待确认。
+
 ### 北陆番号 → E7/W7共用车族 → 代表PNG（2026-11-24，生产已应用）
 
 官方依据：[JR East JRE Media 北陆新干线介绍](https://media.jreast.co.jp/articles/4850)、[JR West E7系・W7系](https://www.jr-odekake.net/train/e7_w7/)。两者同属共用车辆家族，不能从列车番号单独认定具体车型、所属JR公司或实际编组。图库仅有已登记且为native_png的通用E7素材，不新增W7素材或伪造编组。
