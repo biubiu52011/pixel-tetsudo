@@ -670,3 +670,83 @@ test('urban monorail service numbers never invent a model, formation or livery',
       formation);
   }
 });
+
+test('urban transit service numbers never choose a mixed fleet or a review-only formation',()=>{
+  const names=[
+    'ゆりかもめ/ゆりかもめ_7300系.png',
+    'ゆりかもめ/ゆりかもめ_7500系.png',
+    '宇都宮ライトレール/宇都宮ライトレール_HU300形_ライトライン.png',
+    '山万/山万_1000形_第1編成_こあら1号.png',
+    '山万/山万_1000形_第2編成_こあら2号.png',
+    '山万/山万_1000形_第3編成_こあら3号.png'
+  ];
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const name of names){
+    const file=name.split('/').at(-1);
+    assert.equal(ranges.includes(file),false,file+' has no persistent number band');
+    assert.equal(fs.existsSync('images/列车/'+name),true,name+' must exist');
+    const entry=byPath.get('images/列车/'+name);
+    assert.ok(entry,name+' must remain in the audit index');
+    assert.equal(entry.status,'no_verified_number_mapping',name);
+    assert.deepEqual(entry.directNumberRules,[],name);
+    assert.deepEqual(entry.runtimeNumberRosters,[],name);
+    assert.deepEqual(entry.historicalNumberedSources,[],name);
+
+    const refs=win.VehicleGaragePngMap.findPath('../images/列车/'+name);
+    assert.equal(refs.length,1,name+' must remain inventory-visible');
+    const isYurikamome=name.startsWith('ゆりかもめ/');
+    assert.equal(refs[0].canonicalImage,isYurikamome,name);
+    assert.deepEqual(Array.from(refs[0].lineIds),isYurikamome?['Yurikamome']:[],name);
+  }
+
+  // Current Yurikamome timetables carry no vehicle label. The operator's
+  // present fleet has both series, so a service number cannot choose one.
+  const mixed=win.TrainVehicle.resolve({
+    operator:'Yurikamome',lineId:'Yurikamome',
+    timetableVehicleType:'7300系 / 7500系',
+    serviceDate:'2026-11-23',trainNumber:'504'
+  });
+  assert.equal(mixed.identityStatus,'NARROWED');
+  assert.deepEqual(Array.from(mixed.candidates),
+    ['ゆりかもめ7300系','ゆりかもめ7500系']);
+  assert.equal(mixed.iconPath,'');
+  for(const trainNumber of ['504','2430']){
+    const numberOnly=win.TrainVehicle.resolve({
+      operator:'Yurikamome',lineId:'Yurikamome',
+      serviceDate:'2026-11-23',trainNumber
+    });
+    assert.equal(numberOnly.identityStatus,'UNKNOWN',trainNumber);
+    assert.equal(numberOnly.iconPath,'',trainNumber);
+  }
+  for(const [model,file] of [
+    ['ゆりかもめ7300系','ゆりかもめ_7300系.png'],
+    ['ゆりかもめ7500系','ゆりかもめ_7500系.png']
+  ]){
+    const explicitModel=win.TrainVehicle.resolve({
+      operator:'Yurikamome',lineId:'Yurikamome',
+      timetableVehicleType:model,serviceDate:'2026-11-23'
+    });
+    assert.equal(explicitModel.identityStatus,'EXACT',model);
+    assert.equal(explicitModel.iconPath,'../images/列车/ゆりかもめ/'+file,model);
+  }
+
+  // Utsunomiya's staged trips have no vehicle_kind and its HU300 artwork is
+  // still review-only. Yamaman's three images are formation identities, but
+  // neither a service number nor a bare model label identifies a formation.
+  for(const ctx of [
+    {operator:'UtsunomiyaLightRail',lineId:'UtsunomiyaLRT',trainNumber:'1'},
+    {operator:'UtsunomiyaLightRail',lineId:'UtsunomiyaLRT',
+      timetableVehicleType:'宇都宮ライトレールHU300形',trainNumber:'206'},
+    {operator:'Yamaman',lineId:'YamamanYukarigaoka',trainNumber:'1'},
+    {operator:'Yamaman',lineId:'YamamanYukarigaoka',
+      realtimeVehicleType:'山万1000形',formationId:'第1編成',
+      formationCandidates:['第1編成'],_realtimeVehicleResolution:true}
+  ]){
+    const result=win.TrainVehicle.resolve({...ctx,serviceDate:'2026-11-23'});
+    assert.equal(result.identityStatus,'UNKNOWN',JSON.stringify(ctx));
+    assert.equal(result.iconPath,'',JSON.stringify(ctx));
+  }
+});
