@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### PNG-TOBU-ODPT-SECRET-RECHECK-20261124 — 东武 ODPT 来源阻塞复核（BLOCKED）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 线上回读 | 2026-11-24 JST 只读请求现有 `odpt-proxy?health=1`：`ok=true`、`challengeConfigured=false`、`productionConfigured=false`、`credentialValuesExposed=false`。代理未泄露任何密钥值，但仍无法取得东武 Challenge TrainTimetable。 |
+| 安全结论 | 继续保持失败关闭：0 条响应不能证明任何列车番号缺失，也不能授权新增、缩减或扩张 PNG 号段。未向 Supabase、Edge secrets、号段 CSV 或运行时执行写入。 |
+| 现役入口 | 当前 `main` 保留 `tools/audit-tobu-odpt-number-bands.cjs` 与 `tests/tobu-odpt-number-band-audit.test.cjs`；旧 Notion 记录所链接的独立 workflow 文件已不在当前 `main`，不能把历史 Actions 入口当作现役执行器。专项边界测试 6/6 通过。 |
+| 下一步 | 仍需项目管理员在 Supabase Edge Functions Secrets 安全配置获授权的 `ODPT_CHALLENGE_CONSUMER_KEY`。配置后先用现有代理只读重取并核对完整来源，再独立证明番号与车型／编组／涂装；此前状态保持 BLOCKED。 |
+
 ### PNG-LEGACY-JR59-JR61-THIRD09-ACCEPTANCE-20261123 — 四个旧编号号段批次验收（DONE）
 
 | 项目 | 当前状态 |
