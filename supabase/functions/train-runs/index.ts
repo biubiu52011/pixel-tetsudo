@@ -1221,6 +1221,16 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
     // Other railways retain their existing unique-model evidence checks.
     const verifiedPublishedPng=pngProof && (
       lineId==="TokaidoShinkansen" ||
+      // Hokuriku shares one representative E7 artwork for the officially
+      // documented E7/W7 fleet. The family is not an exact model assignment.
+      (lineId==="HokurikuShinkansen" &&
+       mapped.mapping_level==="official_model_family_plan" &&
+       mapped.vehicle_type==="E7系・W7系" &&
+       pngProof.model==="E7系" &&
+       pngProof.path==="../images/列车/JR東日本/JR東日本_E7系.png" &&
+       !datedVehiclePlan && !conflict &&
+       pngEvidence?.source_type==="official" &&
+       ["A","B"].includes(String(pngEvidence.evidence_grade||""))) ||
       (!datedVehiclePlan && !datedRuleConflict &&
        mapped.mapping_level==="official_service_vehicle_plan" &&
        exactScheduleType===pngProof.model && !conflict &&
@@ -1296,7 +1306,7 @@ function resolveJrEastShinkansenNumber(t: any, serviceDate: string, firstStop: a
       // Only source-dated unique model PNG; never a guessed formation/livery.
       // On JR-Central Shinkansen NEVER bypass the numbered PNG pool via a
       // scheduled vehicle model/dated formation. This is an illustration.
-      vehicle_artwork_path: lineId==="TokaidoShinkansen"
+      vehicle_artwork_path: ["TokaidoShinkansen","HokurikuShinkansen"].includes(lineId)
         ? verifiedPublishedPng
         : datedVehiclePlan ? datedArtwork : verifiedPublishedPng ||
         (ruleType && !conflict && !publishedPlan
