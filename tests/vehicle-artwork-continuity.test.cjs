@@ -577,3 +577,96 @@ test('Hakodate tram car numbers never become persistent service-number bands',()
     assert.equal(serviceNumberOnly.iconPath,'',trainNumber);
   }
 });
+
+test('urban monorail service numbers never invent a model, formation or livery',()=>{
+  const tokyo=[
+    '東京モノレール_10000形.png',
+    '東京モノレール_1000形_1003編成.png',
+    '東京モノレール_1000形_1004編成.png',
+    '東京モノレール_1000形_青帯.png',
+    '東京モノレール_1000形_赤帯.png',
+    '東京モノレール_1000形_橙帯.png',
+    '東京モノレール_2000形.png'
+  ];
+  const shonan=[
+    ['5601','レッド'],['5603','ブルー'],['5605','グリーン'],
+    ['5607','イエロー'],['5609','バイオレット'],
+    ['5611','ブラック'],['5613','ピンク']
+  ];
+  const paths=tokyo.map(name=>'東京モノレール/'+name).concat(
+    shonan.map(([formation,livery])=>
+      `湘南モノレール/湘南モノレール_5000系_${formation}編成_${livery}.png`));
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const path of paths){
+    const file=path.split('/').at(-1);
+    assert.equal(ranges.includes(file),false,file+' has no persistent number band');
+    const entry=byPath.get('images/列车/'+path);
+    assert.ok(entry,path+' must remain in the audit index');
+    assert.equal(entry.status,'no_verified_number_mapping',path);
+    assert.deepEqual(entry.directNumberRules,[],path);
+    assert.deepEqual(entry.runtimeNumberRosters,[],path);
+    assert.deepEqual(entry.historicalNumberedSources,[],path);
+
+    const refs=win.VehicleGaragePngMap.findPath('../images/列车/'+path);
+    assert.equal(refs.length,1,path+' must remain inventory-visible');
+    const isGenericTokyo=/_(?:10000|2000)形\.png$/.test(path);
+    assert.equal(refs[0].canonicalImage,isGenericTokyo,path);
+  }
+
+  // Every Tokyo timetable row currently carries the same three-model label.
+  // It narrows the fleet but cannot choose one of the three illustrations.
+  const tokyoCandidates=win.TrainVehicle.resolve({
+    operator:'TokyoMonorail',lineId:'TokyoMonorail',
+    timetableVehicleType:'1000形 / 2000形 / 10000形',
+    serviceDate:'2026-11-23',trainNumber:'TMH001D'
+  });
+  assert.equal(tokyoCandidates.identityStatus,'NARROWED');
+  assert.equal(tokyoCandidates.iconPath,'');
+  for(const trainNumber of ['TMH001D','TMW222U']){
+    const serviceNumberOnly=win.TrainVehicle.resolve({
+      operator:'TokyoMonorail',lineId:'TokyoMonorail',
+      serviceDate:'2026-11-23',trainNumber
+    });
+    assert.equal(serviceNumberOnly.identityStatus,'UNKNOWN',trainNumber);
+    assert.equal(serviceNumberOnly.iconPath,'',trainNumber);
+  }
+  const exactTokyoModel=win.TrainVehicle.resolve({
+    operator:'TokyoMonorail',lineId:'TokyoMonorail',
+    timetableVehicleType:'10000形',serviceDate:'2026-11-23'
+  });
+  assert.equal(exactTokyoModel.identityStatus,'EXACT');
+  assert.equal(exactTokyoModel.iconPath,
+    '../images/列车/東京モノレール/東京モノレール_10000形.png');
+
+  // The Shonan single-fleet plan establishes only the 5000-series model.
+  // A formation PNG needs independent, mutually consistent formation evidence.
+  const shonanModelOnly=win.TrainVehicle.resolve({
+    operator:'ShonanMonorail',lineId:'ShonanMonorail',
+    timetableVehicleType:'湘南モノレール5000系',serviceDate:'2026-11-23'
+  });
+  assert.equal(shonanModelOnly.identityStatus,'EXACT');
+  assert.equal(shonanModelOnly.iconPath,'');
+  for(const trainNumber of ['SM001','SM541']){
+    const serviceNumberOnly=win.TrainVehicle.resolve({
+      operator:'ShonanMonorail',lineId:'ShonanMonorail',
+      serviceDate:'2026-11-23',trainNumber
+    });
+    assert.equal(serviceNumberOnly.identityStatus,'UNKNOWN',trainNumber);
+    assert.equal(serviceNumberOnly.iconPath,'',trainNumber);
+  }
+  for(const [formation,livery] of shonan){
+    const exactFormation=win.TrainVehicle.resolve({
+      operator:'ShonanMonorail',lineId:'ShonanMonorail',
+      realtimeVehicleType:'湘南モノレール5000系',
+      formationId:formation,formationCandidates:[formation],
+      serviceDate:'2026-11-23',_realtimeVehicleResolution:true
+    });
+    assert.equal(exactFormation.identityStatus,'EXACT',formation);
+    assert.equal(exactFormation.iconPath,
+      `../images/列车/湘南モノレール/湘南モノレール_5000系_${formation}編成_${livery}.png`,
+      formation);
+  }
+});
