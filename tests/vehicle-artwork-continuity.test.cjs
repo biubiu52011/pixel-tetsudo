@@ -750,3 +750,90 @@ test('urban transit service numbers never choose a mixed fleet or a review-only 
     assert.equal(result.iconPath,'',JSON.stringify(ctx));
   }
 });
+
+test('remaining monorail service numbers never elevate fleet references or a formation image',()=>{
+  const paths=[
+    '多摩都市モノレール/多摩都市モノレール_1000系_1102編成_広告ラッピング対応車.png',
+    '多摩都市モノレール/多摩都市モノレール_1000系_標準塗装.png',
+    '千葉都市モノレール/千葉都市モノレール_0形.png',
+    '千葉都市モノレール/千葉都市モノレール_1000形.png'
+  ];
+  const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+  const index=JSON.parse(fs.readFileSync(
+    'data/audits/png-to-train-number-index-2611.json','utf8')).pngIndex;
+  const byPath=new Map(index.map(entry=>[entry.path,entry]));
+  for(const path of paths){
+    const file=path.split('/').at(-1);
+    assert.equal(ranges.includes(file),false,file+' has no persistent number band');
+    assert.equal(fs.existsSync('images/列车/'+path),true,path+' must exist');
+    const entry=byPath.get('images/列车/'+path);
+    assert.ok(entry,path+' must remain in the audit index');
+    assert.equal(entry.status,'no_verified_number_mapping',path);
+    assert.deepEqual(entry.directNumberRules,[],path);
+    assert.deepEqual(entry.runtimeNumberRosters,[],path);
+    assert.deepEqual(entry.historicalNumberedSources,[],path);
+
+    const refs=win.VehicleGaragePngMap.findPath('../images/列车/'+path);
+    assert.equal(refs.length,1,path+' must remain inventory-visible');
+    assert.equal(refs[0].canonicalImage,!path.includes('1102編成'),path);
+  }
+
+  // Tama's official_single_fleet_plan is only a route-fleet reference. A
+  // service number or the short source label cannot authorize either PNG.
+  for(const trainNumber of ['1001','926']){
+    const numberOnly=win.TrainVehicle.resolve({
+      operator:'TamaMonorail',lineId:'TamaMonorail',trainNumber,
+      serviceDate:'2026-11-23'
+    });
+    assert.equal(numberOnly.identityStatus,'UNKNOWN',trainNumber);
+    assert.equal(numberOnly.iconPath,'',trainNumber);
+  }
+  const sourceLabel=win.TrainVehicle.resolve({
+    operator:'TamaMonorail',lineId:'TamaMonorail',
+    timetableVehicleType:'1000系',trainNumber:'1001',serviceDate:'2026-11-23'
+  });
+  assert.equal(sourceLabel.identityStatus,'UNKNOWN');
+  assert.equal(sourceLabel.iconPath,'');
+  const explicitTamaModel=win.TrainVehicle.resolve({
+    operator:'TamaMonorail',lineId:'TamaMonorail',
+    timetableVehicleType:'多摩都市モノレール1000系',serviceDate:'2026-11-23'
+  });
+  assert.equal(explicitTamaModel.identityStatus,'EXACT');
+  assert.equal(explicitTamaModel.iconPath,
+    '../images/列车/多摩都市モノレール/多摩都市モノレール_1000系_標準塗装.png');
+  const tama1102=win.TrainVehicle.resolve({
+    operator:'TamaMonorail',lineId:'TamaMonorail',
+    realtimeVehicleType:'多摩都市モノレール1000系',
+    formationId:'1102編成',formationCandidates:['1102編成'],
+    _realtimeVehicleResolution:true,serviceDate:'2026-11-23'
+  });
+  assert.equal(tama1102.identityStatus,'EXACT');
+  assert.equal(tama1102.iconPath,explicitTamaModel.iconPath,
+    'formation evidence must not elevate the review-only 1102 artwork');
+
+  // Current Chiba templates carry no vehicle label and the operator still
+  // has both 0 and 1000 types, so CM numbers alone must remain neutral.
+  for(const [line,trainNumber] of [
+    ['ChibaMonorail1','CM1001'],['ChibaMonorail1','CM1487'],
+    ['ChibaMonorail2','CM2001'],['ChibaMonorail2','CM2401']
+  ]){
+    const numberOnly=win.TrainVehicle.resolve({
+      operator:'ChibaUrbanMonorail',lineId:line,trainNumber,
+      serviceDate:'2026-11-23'
+    });
+    assert.equal(numberOnly.identityStatus,'UNKNOWN',trainNumber);
+    assert.equal(numberOnly.iconPath,'',trainNumber);
+  }
+  for(const [line,model,file] of [
+    ['ChibaMonorail1','千葉都市モノレール0形','千葉都市モノレール_0形.png'],
+    ['ChibaMonorail2','千葉都市モノレール1000形','千葉都市モノレール_1000形.png']
+  ]){
+    const explicitModel=win.TrainVehicle.resolve({
+      operator:'ChibaUrbanMonorail',lineId:line,
+      timetableVehicleType:model,serviceDate:'2026-11-23'
+    });
+    assert.equal(explicitModel.identityStatus,'EXACT',model);
+    assert.equal(explicitModel.iconPath,
+      '../images/列车/千葉都市モノレール/'+file,model);
+  }
+});
