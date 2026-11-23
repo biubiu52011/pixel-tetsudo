@@ -6,6 +6,15 @@
 
 ## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
 
+### 第五批后续：正式番号证据纠错（2026-11-24，已应用生产）
+
+对照2611上下行总表番号索引及个别列车详情，已在既有 published_train_number_evidence 更新11条错误证据，限定 edition=2611、HokurikuShinkansen、Weekday、原爱称/方向/番号一致、无车型映射的源模板。每条更新必须恰好命中1行，否则事务回滚。生产回读确认11条均已纠正；仍保留 operating_dates=NULL 及 timetable_validity=undated_not_current_verified，不宣称停站或日期已验证。
+
+对应关系（源模板ID：旧番号→正确番号）：
+1945: 35500E→3500E；1948: 35508E→3508E；1949: 35510E→3510E；1941: 35511E→3511E；1950: 35512E→3512E；1951: 35514E→3514E；1942: 35515E→3515E；1952: 35516E→3516E；1943: 35517E→3517E；1953: 35518E→3518E；1944: 35519E→3519E。
+
+依据：[2611下行总表](https://timetables.jreast.co.jp/2611/timetable-v/004d1.html)、[2611上行总表](https://timetables.jreast.co.jp/2611/timetable-v/004u1.html)，以及各记录已更新的官方详情URL。总表完整网页抓取仍返回Cache miss，搜索索引只能验证局部字段，不能视为完整四向时刻表已获取。官方首页明确限制未经授权转载、复制或加工整套时刻数据。后续全量导入须使用可再利用来源或授权数据文件。未新增表或运行时脚本，模板数保持104，审计状态仍为 sparse_review。
+
 用户指定统一入口：[JR东日本东京站](https://timetables.jreast.co.jp/timetable/list1039.html) 的「デジタル時刻表」。北陆与上越共用总表，必须按完整站序/列车名称区分，不能仅凭 E/C 后缀判定线路。
 
 2611 基准： [下行平日](https://timetables.jreast.co.jp/2611/timetable-v/004d1.html) / [下行土休日](https://timetables.jreast.co.jp/2611/timetable-v/004d2.html) / [上行平日](https://timetables.jreast.co.jp/2611/timetable-v/004u1.html) / [上行土休日](https://timetables.jreast.co.jp/2611/timetable-v/004u2.html)。链接中的出版年月必须与运行日期范围一致。当前入口抓取缓存指向2608；2611部分索引可读但四张完整表均未成功取得。严禁以2608或2612填充2611。
