@@ -14,6 +14,7 @@ const SCOPES=[
  'TobuSkytree','Isesaki','Nikko','Kinugawa','Tojo','Ogose','Noda',
  'Utsunomiya','Koizumi','Sano','Kiryu','Kameido','Daishi'
 ];
+const CALENDARS=['Weekday','SaturdayHoliday'];
 // This index is for comparison only. Never turn "in envelope" into actual train stock.
 const WATCH=[
  {model:'50050',png:'東武鉄道_50050型.png',line:'Hanzomon'},
@@ -23,8 +24,11 @@ const WATCH=[
 const tail=s=>String(s||'').split(':').pop();
 function parseNumber(value){
  const str=String(value??'').trim().toUpperCase();
- const match=/^(\d{1,6})([A-Z]{0,2})$/.exec(str);
- return match?{code:str,number:Number(match[1]),suffix:match[2]}:null;
+ // Challenge 2026 includes ordinary digit-leading numbers and Tobu's A-F/Y
+ // operation prefixes. Keep a prefix separate so `A701E` can never satisfy
+ // a published digit-only `701E` envelope.
+ const match=/^([A-FY]?)(\d{1,6})([A-Z]{0,2})$/.exec(str);
+ return match?{code:str,prefix:match[1],number:Number(match[2]),suffix:match[3]}:null;
 }
 function getEnvelopes(csvText){
  const lines=csvText.trimEnd().split(/\r?\n/).slice(1),out=[];
@@ -60,11 +64,14 @@ function inspect(records,sourceInfo={},envelopes=getEnvelopes(fs.readFileSync(CS
   const where=all.get(num.code)||new Set();where.add([railway,calendar,dir].join('|'));all.set(num.code,where);
  }
  const summaries=[...lines].sort((a,b)=>a[0].localeCompare(b[0])).map(([scope,codes])=>{
-  const suffixCounts={};for(const c of codes){const n=parseNumber(c);suffixCounts[n.suffix||'(none)']=(suffixCounts[n.suffix||'(none)']||0)+1;}
-  return {scope,count:codes.size,suffixCounts,firstExamples:[...codes].sort((a,b)=>parseNumber(a).number-parseNumber(b).number).slice(0,5)};
+  const prefixCounts={},suffixCounts={};for(const c of codes){const n=parseNumber(c);
+   prefixCounts[n.prefix||'(none)']=(prefixCounts[n.prefix||'(none)']||0)+1;
+   suffixCounts[n.suffix||'(none)']=(suffixCounts[n.suffix||'(none)']||0)+1;}
+  return {scope,count:codes.size,prefixCounts,suffixCounts,
+   firstExamples:[...codes].sort((a,b)=>parseNumber(a).number-parseNumber(b).number||a.localeCompare(b)).slice(0,5)};
  });
  const matches=envelopes.map(e=>{
-  const matched=[...all.keys()].filter(x=>{const n=parseNumber(x);return n.suffix===e.suffix&&n.number>=e.min&&n.number<=e.max;})
+  const matched=[...all.keys()].filter(x=>{const n=parseNumber(x);return !n.prefix&&n.suffix===e.suffix&&n.number>=e.min&&n.number<=e.max;})
    .sort((a,b)=>parseNumber(a).number-parseNumber(b).number||a.localeCompare(b));
   const railways=[...new Set(matched.flatMap(x=>[...all.get(x)].map(s=>s.split('|')[0])))].sort();
   // No automatic inference from a service's number or railway to its artwork.
@@ -88,7 +95,8 @@ function summary(data){
  for(const x of data.watched||[])s+='| '+x.model+' | '+x.referenceEnvelope+' | '+x.matchedPublishedCodes+
   ' | '+(x.observedRailways.join(', ')||'none')+' | 0 |\n';
  s+='\nGroups (railway / calendar / direction / trainType):\n\n';
- for(const g of data.groups||[])s+='- '+g.scope+': '+g.count+' unique; suffixes '+JSON.stringify(g.suffixCounts)+'\n';
+ for(const g of data.groups||[])s+='- '+g.scope+': '+g.count+' unique; prefixes '+JSON.stringify(g.prefixCounts)+
+  '; suffixes '+JSON.stringify(g.suffixCounts)+'\n';
  if(data.failures?.length)s+='\nUnretrieved scopes: '+JSON.stringify(data.failures)+'\n';
  s+='\n**Do not** shrink a range, publish a new mapping, or infer any specific PNG solely from these counts. Incomplete query coverage cannot prove absence of a train number.\n';
  return s;
@@ -118,16 +126,22 @@ async function fetchScoped(fetcher=globalThis.fetch){
   if(!data)throw Error('Non-array timetable response');
   return data;
  };
- try{
-  records=await make({operator:'Tobu',type:'trainTimetable'});complete=true;
- }catch(e){
-  failures.push({scope:'all',reason:String(e?.message||'unknown').slice(0,75)});
-  for(const scope of SCOPES){
-   const railway='odpt.Railway:Tobu.'+scope;
-   try{records.push(...await make({operator:'Tobu',type:'trainTimetable',railway}));}
-   catch(e){failures.push({scope,reason:String(e?.message||'unknown').slice(0,55)});}
+ // Query every railway/calendar pair explicitly. The unfiltered endpoint can
+ // return exactly 1000 rows while omitting later railways, so a green capped
+ // response is not evidence of complete source coverage.
+ for(const scope of SCOPES){
+  const railway='odpt.Railway:Tobu.'+scope;
+  for(const calendarName of CALENDARS){
+   const calendar='odpt.Calendar:'+calendarName;
+   const label=scope+'/'+calendarName;
+   try{
+    const data=await make({operator:'Tobu',type:'trainTimetable',railway,calendar});
+    records.push(...data);
+    if(data.length>=1000)failures.push({scope:label,reason:'possible 1000-row response cap'});
+   }catch(e){failures.push({scope:label,reason:String(e?.message||'unknown').slice(0,55)});}
   }
  }
+ complete=failures.length===0;
  return {records,complete,failures};
 }
 async function main(argv=process.argv.slice(2)){
@@ -153,4 +167,4 @@ async function main(argv=process.argv.slice(2)){
  return data;
 }
 if(require.main===module)main().catch(e=>{console.error('Tobu audit error',e?.message);process.exitCode=1;});
-module.exports={ORIGIN,PROXY,TIMETABLE,SCOPES,WATCH,parseNumber,getEnvelopes,inspect,summary,fetchScoped,main};
+module.exports={ORIGIN,PROXY,TIMETABLE,SCOPES,CALENDARS,WATCH,parseNumber,getEnvelopes,inspect,summary,fetchScoped,main};

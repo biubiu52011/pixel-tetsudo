@@ -13,9 +13,16 @@ const train=(trainNumber,railway,calendar='odpt.Calendar:Weekday',overrides={})=
  'odpt:trainType':'odpt.TrainType:Tobu.Local',...overrides
 });
 test('accepts only full train numbers, never car/formation IDs or modulo-number aliasing',()=>{
- assert.deepEqual(audit.parseNumber('0452t'),{code:'0452T',number:452,suffix:'T'});
- assert.deepEqual(audit.parseNumber(' 0401N '),{code:'0401N',number:401,suffix:'N'});
- assert.deepEqual(audit.parseNumber('0701E'),{code:'0701E',number:701,suffix:'E'});
+ assert.deepEqual(audit.parseNumber('0452t'),{code:'0452T',prefix:'',number:452,suffix:'T'});
+ assert.deepEqual(audit.parseNumber(' 0401N '),{code:'0401N',prefix:'',number:401,suffix:'N'});
+ assert.deepEqual(audit.parseNumber('0701E'),{code:'0701E',prefix:'',number:701,suffix:'E'});
+ assert.deepEqual(audit.parseNumber('A1002S'),{code:'A1002S',prefix:'A',number:1002,suffix:'S'});
+ assert.deepEqual(audit.parseNumber('C1452T'),{code:'C1452T',prefix:'C',number:1452,suffix:'T'});
+ assert.deepEqual(audit.parseNumber('F1019K'),{code:'F1019K',prefix:'F',number:1019,suffix:'K'});
+ assert.deepEqual(audit.parseNumber('Y1072'),{code:'Y1072',prefix:'Y',number:1072,suffix:''});
+ assert.deepEqual(audit.parseNumber('A1002S'),{code:'A1002S',prefix:'A',number:1002,suffix:'S'});
+ assert.deepEqual(audit.parseNumber('Y1072'),{code:'Y1072',prefix:'Y',number:1072,suffix:''});
+ assert.deepEqual(audit.parseNumber('B1'),{code:'B1',prefix:'B',number:1,suffix:''});
  for(const value of ['50050型','DE10 1109','編成123F','4xxT','50090-1','0452 T','T452'])
   assert.equal(audit.parseNumber(value),null,value);
 });
@@ -26,12 +33,13 @@ test('read-only observed code candidates cannot certify stock, service date or l
   train('0401N','Utsunomiya'),train('0486N','Utsunomiya'),
   train('0701E','Koizumi'),train('0764E','Koizumi'),
   train('0763X','Koizumi'),train('9001T','Tojo'),
-  train('1001','Nikko'),train('0452T','Isesaki','odpt.Calendar:SaturdayHoliday')
+  train('1001','Nikko'),train('0452T','Isesaki','odpt.Calendar:SaturdayHoliday'),
+  train('A0701E','Koizumi')
  ];
  const result=audit.inspect(rows,{complete:false,failures:[{scope:'all',reason:'too large'}]},refs);
  assert.equal(result.status,'observed');
  assert.equal(result.complete,false);
- assert.equal(result.uniqueNumbers,9);
+ assert.equal(result.uniqueNumbers,10);
  assert.deepEqual(result.watched.map(x=>x.matchedPublishedCodes),[2,2,2]);
  assert.deepEqual(result.watched.map(x=>x.verifiedTrainToPng),[0,0,0]);
  assert.ok(result.watched.every(x=>x.modelFieldCrosswalkVerified===false));
@@ -76,11 +84,24 @@ test('configured health permits only existing proxy calls, not a consumer key qu
   calls++;assert.ok(!url.includes('consumerKey'));
   if(url.includes('?health=1'))return {ok:true,json:async()=>({challengeConfigured:true})};
   assert.ok(url.includes('operator=Tobu'));
+  assert.ok(url.includes('railway=odpt.Railway%3ATobu.'));
+  assert.ok(url.includes('calendar=odpt.Calendar%3A'));
   return {ok:true,json:async()=>[train('0452T','Isesaki')]};
  };
  const observation=await audit.fetchScoped(fake);
- assert.equal(calls,2);
- assert.equal(observation.records.length,1);
+ assert.equal(calls,1+audit.SCOPES.length*audit.CALENDARS.length);
+ assert.equal(observation.records.length,audit.SCOPES.length*audit.CALENDARS.length);
  assert.equal(observation.complete,true);
  assert.equal(observation.failures.length,0);
+});
+
+test('a 1000-row scoped response remains incomplete instead of becoming a false green',async()=>{
+ const fake=async(url)=>{
+  if(url.includes('?health=1'))return {ok:true,json:async()=>({challengeConfigured:true})};
+  return {ok:true,json:async()=>Array.from({length:1000},()=>train('0452T','Isesaki'))};
+ };
+ const observation=await audit.fetchScoped(fake);
+ assert.equal(observation.complete,false);
+ assert.equal(observation.failures.length,audit.SCOPES.length*audit.CALENDARS.length);
+ assert.match(observation.failures[0].reason,/1000-row response cap/);
 });

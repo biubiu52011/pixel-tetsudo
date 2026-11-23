@@ -4,16 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
-### PNG-TOBU-ODPT-SECRET-RECHECK-20261124 — 东武 ODPT 来源阻塞复核（BLOCKED）
+### PNG-TOBU-ODPT-TRAIN-TIMETABLE-AUDIT-20261124 — 东武 ODPT TrainTimetable 番号审计（DONE）
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 线上配置 | 2026-11-24 JST 已在 Supabase Edge Functions Secrets 配置 `ODPT_CHALLENGE_CONSUMER_KEY`；只读健康回读为 `ok=true`、`challengeConfigured=true`、`productionConfigured=false`、`credentialValuesExposed=false`。现役 `odpt-proxy` v2 为 `ACTIVE`，线上入口与本地 `index.ts` 仅差文件末尾空行；Supabase 当前契约为 Secret 保存后立即供函数使用，无需因本次配置重部署函数代码。 |
-| 实时源回读 | 东武 `gtfsTripUpdate`、`gtfsAlert`、`gtfsVehicle` 均经现有代理返回 HTTP 200 与 `application/x-protobuf`；本次响应分别为 2355、15、315 字节，均为当次只读快照，不代表固定记录数或长期可用性。 |
-| TrainTimetable 复核 | 同一 Secret 下，东武 `train`、`trainInformation`、`trainTimetable` 仍返回代理 HTTP 502；专项审计对全量和 13 个线路作用域均未取得记录，`--require-observation` 按设计失败。官方目录仍列出 Challenge 2026 的 Tobu TrainTimetable JSON 资源，因此不能把实时 GTFS-RT 成功替代为 TrainTimetable 已完成。 |
-| 安全结论 | 继续保持失败关闭：0 条 TrainTimetable 响应不能证明任何列车番号缺失，也不能授权新增、缩减或扩张 PNG 号段。未修改号段 CSV、车型映射、运行时或生产数据库；密钥值未回读、未写入仓库。 |
-| 现役入口 | 当前 `main` 保留 `tools/audit-tobu-odpt-number-bands.cjs` 与 `tests/tobu-odpt-number-band-audit.test.cjs`；旧 Notion 记录所链接的独立 workflow 文件已不在当前 `main`，不能把历史 Actions 入口当作现役执行器。专项边界测试 6/6 通过。 |
-| 下一步 | 需要在 ODPT Challenge 侧核对该 consumer key 是否同时获准访问 JSON TrainTimetable，或确认上游当前故障；取得至少 1 条可验证 TrainTimetable 记录后再完成号段比较，并独立证明番号与车型／编组／涂装。此前状态保持 BLOCKED。 |
+| 根因与部署 | Secret 配置本身有效；旧代理将以 `odpt:` 开头的 JSON 资源名交给 `new URL` 时误识别为自定义协议，实际没有请求 ODPT HTTPS 主机。统一在允许列表资源前加 `./` 后，`odpt-proxy` v4 已部署为 `ACTIVE`；非成功上游响应只回传数字状态码，不回传正文、URL 或凭据。 |
+| 完整性修正 | 未把无筛选接口恰好返回的 1000 条当作完整结果；现役审计固定查询 13 条铁路×平日／土休日 2 类，并将任一作用域达到 1000 条视为可能截断。东武合法番号的无前缀及 A–F／Y 前缀分别解析，前缀与数字段保持分离，禁止 `A701E` 误命中纯数字 `701E` 包络。 |
+| TrainTimetable 结果 | 2026-11-24 JST 只读取得 6,766 条完整记录、3,405 个唯一番号；来源日期字段出现 `2026-03-14`、`2026-07-03`，0 作用域失败、0 缺番号、0 无法解析番号、0 缺铁路。`--require-observation` 通过。该结果是当次 Challenge 2026 静态来源快照，不是永久时刻表或实车证明。 |
+| 三组包络 | `701–764E` 观察到 63 个小泉线番号；`401–486N` 观察到 86 个日光／宇都宫线番号；`452–2282T` 在本次东武 TrainTimetable 中为 0。三者 `verifiedTrainToPng` 均为 0：番号存在仍不能证明 10030 更新车、20400、50050 的唯一车型／编组／涂装，也不能仅因本次缺失缩短旧历史包络。 |
+| 安全结论 | 本批完成的是来源番号审计，新增 PNG 0、正式号段 0、线路 0；未修改号段 CSV、车型映射或生产数据库，密钥值未回读、未写入仓库。后续若要新增或调整映射，仍须另有番号⇔唯一车型／编组／涂装及适用日期证据。 |
+| 验证 | `odpt-edge-proxy-security` 与 `tobu-odpt-number-band-audit` 共 9 项通过；线上健康状态保持 `challengeConfigured=true`、`credentialValuesExposed=false`，东武 GTFS-Realtime 三路及线路作用域 TrainTimetable 均返回 HTTP 200。 |
 
 ### PNG-LEGACY-JR59-JR61-THIRD09-ACCEPTANCE-20261123 — 四个旧编号号段批次验收（DONE）
 
