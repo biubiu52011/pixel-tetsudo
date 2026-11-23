@@ -924,6 +924,13 @@ window.StationInfoLayout = (function() {
   function plan(items, stationId, stationName, mobile, maxWidth) {
     var entries = prepare(items, stationId, stationName, mobile);
     var columns = 4, cap = maxRows(), row = 0, col = 0;
+    // Named station groups need independent badge rows ONLY when several
+    // distinct outward destinations compete for separate captions.
+    // One alias plus ordinary same-station connections belongs on one
+    // physical four-column row: Machiya = '町屋駅前 ← [SA][C]'.
+    var multiDestination = entries.filter(function(entry) {
+      return !!entry.extra;
+    }).length > 1;
     // Reserve actual badge cells, not destination groups. One named target
     // retains one outside label while its icons wrap 4 per row.
     var planned = entries.map(function(entry) {
@@ -934,7 +941,9 @@ window.StationInfoLayout = (function() {
         if (col === columns) { row++; col = 0; }
         return slot;
       });
-      if (entry.extra && col > 0) { row++; col = 0; }
+      // Do not force unlabelled badges (e.g. Chiyoda 'C') onto the next
+      // row after the station's only unlike-name destination (Arakawa 'SA').
+      if (multiDestination && entry.extra && col > 0) { row++; col = 0; }
       return Object.assign({}, entry, {slots:slots});
     });
     var allSlots = [].concat.apply([], planned.map(function(entry) { return entry.slots; }));

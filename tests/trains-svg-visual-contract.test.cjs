@@ -326,12 +326,15 @@ test('Machiya station and Machiya-Ekimae icons mirror on separate aligned rows',
     setAttribute(k,v){this.attrs[k]=String(v);},
     appendChild(child){this.children.push(child);return child;}};}
   const flatten=n=>[n,...n.children.flatMap(flatten)];
-  const lines=['SA','C'].map(name=>({lineId:name,name,image:name+'.png',
-    toStation:'Machiya-Ekimae',type:'in'}));
+  // Keisei canonical: Arakawa SA connects to Machiya-Ekimae,
+  // while Chiyoda C connects to Machiya under its own station ID.
+  const lines=[
+    {lineId:'SA',name:'SA',image:'SA.png',toStation:'Machiya_Eki_Mae',type:'in'},
+    {lineId:'C',name:'C',image:'C.png',type:'in'}];
   for(const side of ['left','right']){
     const root=node('g');
     const window={currentLang:'ja',
-      RailwayDB:{resolveStationName:s=>s==='Machiya-Ekimae'?'町屋駅前':s},
+      RailwayDB:{resolveStationName:s=>s==='Machiya_Eki_Mae'?'町屋駅前':s},
       ThroughChip:{badgeText:p=>p.name,measureWidth:(s,f)=>String(s).length*f,
         normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]}};
     const ctx=vm.createContext({window,document:{createElementNS:(_n,tag)=>node(tag)},
@@ -348,7 +351,8 @@ test('Machiya station and Machiya-Ekimae icons mirror on separate aligned rows',
     const icons=all.filter(n=>n.tag==='image');
     const destination=all.find(n=>n.tag==='text'&&n.textContent.includes('町屋駅前'));
     assert.ok(name&&destination);assert.equal(icons.length,2);
-    assert.equal(icons[0].attrs.y,icons[1].attrs.y);
+    assert.equal(icons[0].attrs.y,icons[1].attrs.y,
+      'SA and C stay on one row even with different canonical station IDs');
     assert.equal(Number(icons[0].attrs.y)-Number(name.attrs.y),14);
     const edge=side==='left'
       ? Math.max(...icons.map(n=>Number(n.attrs.x)+Number(n.attrs.width)))
@@ -552,4 +556,33 @@ test('moving train captions yield to permanent names and interchange badges',()=
   assert.equal(ctx._protectStaticStationInfoFromTrainCaptions(train,[near,far]),1,
     'reuse static glyph bounds in the unchanged viewport');
   assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels\)/);
+});
+
+test('Keisei Machiya canonical SA and C fit one row and keep other aliases distinct',()=>{
+  const start=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const end=geometrySource.indexOf('})();',start);
+  assert.ok(start>=0&&end>start);
+  const env=vm.createContext({window:{currentLang:'ja',
+    RailwayDB:{resolveStationName:id=>id==='Machiya_Eki_Mae'?'町屋駅前':id},
+    ThroughChip:{measureWidth:(s,font)=>String(s).length*font}},
+    _losGroupKey:()=>null});
+  vm.runInContext(geometrySource.slice(start,end+5),env);
+  const railway=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
+  const items=railway.lines.Keisei.transferStations
+    .filter(t=>t.station==='Machiya')
+    .map(t=>({lineId:t.lineId,name:t.lineId==='Arakawa'?'SA':'C',
+      image:t.lineId+'.png',toStation:t.toStation||'',type:t.type||'in'}));
+  assert.equal(items.length,2);
+  const plan=env.window.StationInfoLayout.plan(items,'Machiya','町屋',true);
+  assert.equal(plan.rows,1,'one alias plus normal connection is one row');
+  assert.equal(plan.shown.length,2,'each canonical service identity remains');
+  assert.equal(plan.shown.filter(group=>group.extra).length,1);
+  assert.deepEqual(Array.from(plan.shown.flatMap(group=>
+    group.slots.map(slot=>[slot.row,slot.col]))),[[0,0],[0,1]]);
+  assert.equal(env.window.StationInfoLayout.reservedRows(items,'Machiya','町屋',true),1);
+  const unrelated=[
+    {lineId:'A',image:'A.png',toStation:'Other1'},
+    {lineId:'B',image:'B.png',toStation:'Other2'}];
+  assert.equal(env.window.StationInfoLayout.plan(unrelated,'Hub','Hub',true).rows,2,
+    'two distinct named destinations still reserve separate rows');
 });

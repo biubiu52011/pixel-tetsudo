@@ -467,7 +467,19 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             // The 4x4 grid may right-align one or two icons in its last
             // columns. Anchor this destination to the actual painted badge
             // edges, never to the empty outer cells of the full grid.
-            var outerBadgeEdge = slots.reduce(function(edge, slot) {
+            // When only one destination differs from the main station,
+            // its caption frames the whole visible row, including ordinary
+            // same-name badges. Otherwise a right-side caption would appear
+            // between [SA] and [C] at Machiya instead of after both.
+            var isSoleDestination = badgePlan.shown.filter(function(group) {
+              return !!group.extra;
+            }).length === 1;
+            var captionSlots = isSoleDestination
+              ? badgePlan.shown.reduce(function(all, group) {
+                  return all.concat(group.slots || []);
+                }, [])
+              : slots;
+            var outerBadgeEdge = captionSlots.reduce(function(edge, slot) {
               var x = badgeX(slot);
               return leftGrid
                 ? Math.min(edge, x)
