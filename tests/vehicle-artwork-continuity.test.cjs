@@ -503,7 +503,14 @@ test('Hakodate tram car numbers never become persistent service-number bands',()
     '函館市電_7000形.png',
     '函館市電_710形_広告車.png',
     '函館市電_710形.png',
-    '函館市電_8000形_広告車.png'
+    '函館市電_8000形_広告車.png',
+    '函館市電_8000形.png',
+    '函館市電_8100形_広告車.png',
+    '函館市電_8100形.png',
+    '函館市電_9600形_9601号車.png',
+    '函館市電_9600形_9604号車.png',
+    '函館市電_9600形_広告車.png',
+    '函館市電_9600形.png'
   ];
   const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
   const index=JSON.parse(fs.readFileSync(
@@ -526,7 +533,12 @@ test('Hakodate tram car numbers never become persistent service-number bands',()
   assert.equal(unknownRefs.length,1);
   assert.equal(unknownRefs[0].lineIds.length,0);
 
-  for(const name of ['函館市電_710形_広告車.png','函館市電_8000形_広告車.png']){
+  for(const name of [
+    '函館市電_710形_広告車.png',
+    '函館市電_8000形_広告車.png',
+    '函館市電_8100形_広告車.png',
+    '函館市電_9600形_広告車.png'
+  ]){
     const refs=win.VehicleGaragePngMap.findPath('../images/列车/函館市電/'+name);
     assert.equal(refs.length,1,name+' must remain inventory-visible');
     assert.equal(refs[0].canonicalImage,false,name+' stays review-only');
@@ -538,7 +550,12 @@ test('Hakodate tram car numbers never become persistent service-number bands',()
   for(const [car,model,file] of [
     ['3001','函館市電3000形（3001号車）','函館市電_3000形_3001号車.png'],
     ['3002','函館市電3000形（3002号車）','函館市電_3000形_3002号車.png'],
-    ['39','函館市電30形（39号車）','函館市電_30形_39号車.png']
+    ['39','函館市電30形（39号車）','函館市電_30形_39号車.png'],
+    ['8001','函館市電8000形','函館市電_8000形.png'],
+    ['8101','函館市電8100形','函館市電_8100形.png'],
+    ['9601','函館市電9600形（9601号車）','函館市電_9600形_9601号車.png'],
+    ['9604','函館市電9600形（9604号車）','函館市電_9600形_9604号車.png'],
+    ['9605','函館市電9600形','函館市電_9600形.png']
   ]){
     const result=win.TrainVehicle.resolve({
       operator:'HakodateCity',lineId:'Hakodate2',
@@ -550,11 +567,13 @@ test('Hakodate tram car numbers never become persistent service-number bands',()
     assert.equal(result.name,model,car);
     assert.equal(result.iconPath,'../images/列车/函館市電/'+file,car);
   }
-  const serviceNumberOnly=win.TrainVehicle.resolve({
-    operator:'HakodateCity',lineId:'Hakodate2',
-    railway:'odpt.Railway:HakodateCity.Hakodate2',
-    trainNumber:'3001',serviceDate:'2026-11-23'
-  });
-  assert.equal(serviceNumberOnly.identityStatus,'UNKNOWN');
-  assert.equal(serviceNumberOnly.iconPath,'');
+  for(const trainNumber of ['3001','8001','8101','9601','9604']){
+    const serviceNumberOnly=win.TrainVehicle.resolve({
+      operator:'HakodateCity',lineId:'Hakodate2',
+      railway:'odpt.Railway:HakodateCity.Hakodate2',
+      trainNumber,serviceDate:'2026-11-23'
+    });
+    assert.equal(serviceNumberOnly.identityStatus,'UNKNOWN',trainNumber);
+    assert.equal(serviceNumberOnly.iconPath,'',trainNumber);
+  }
 });
