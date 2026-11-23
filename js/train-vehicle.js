@@ -6193,6 +6193,33 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
         planned:true,illustrative:true,representativeOnly:true,
         actualVehicleConfirmed:false};
     }
+    // Hokuriku's E7 and W7 have the same basic visual design. Accept only
+    // the exact-number SQL roster's native E7 representative asset, never a
+    // guessed model, operation owner, physical formation or realtime identity.
+    if (p && !identityConfirmed && p.estimated === true &&
+        p.positionSource === "supabase-train-run" &&
+        contextLineId === "HokurikuShinkansen" &&
+        String(p.positionLineId || p.lineId || "") === contextLineId &&
+        p.sourceRailway === "odpt.Railway:JR-East.HokurikuShinkansen") {
+      var hokurikuPath = normalizeGalleryPngPath(p.sqlPlannedNumberPngPath);
+      var hokurikuGarage = window.VehicleGaragePngMap;
+      if (artworkFailed !== true &&
+          p.actualVehicleConfirmed !== true &&
+          p.vehicleResolvedFromRealtime !== true &&
+          !p.vehicleFormationId &&
+          /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(p.serviceDate || "")) &&
+          /^[1-9][0-9]{0,3}E$/.test(String(p.trainNumber || "")) &&
+          hokurikuPath === "../images/列车/JR東日本/JR東日本_E7系.png" &&
+          hokurikuGarage && typeof hokurikuGarage.matchModelPath === "function" &&
+          hokurikuGarage.matchModelPath("E7系",hokurikuPath,contextLineId))
+        return {kind:"vehicle",iconSrc:hokurikuPath,planned:true,
+          illustrative:true,representativeOnly:true,referenceOnly:true,
+          actualVehicleConfirmed:false,illustrationModel:"E7系",
+          illustrationRole:"hokuriku-e7-w7-shared-fleet-example-only",
+          candidateModels:["E7系","W7系"]};
+      return {kind:"unresolved",iconSrc:"",referenceOnly:true,
+        actualVehicleConfirmed:false};
+    }
     var strongRealtimeEvidence = !!(p && p.vehicleResolvedFromRealtime === true &&
       (resolutionSources.indexOf('official-realtime-car-number') >= 0 ||
        resolutionSources.indexOf('roster-physical-id') >= 0));
