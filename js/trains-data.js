@@ -924,28 +924,38 @@ window.StationInfoLayout = (function() {
   function plan(items, stationId, stationName, mobile, maxWidth) {
     var entries = prepare(items, stationId, stationName, mobile);
     var columns = 4, cap = maxRows(), row = 0, col = 0;
-    // Named station groups need independent badge rows ONLY when several
-    // distinct outward destinations compete for separate captions.
-    // One alias plus ordinary same-station connections belongs on one
-    // physical four-column row: Machiya = '町屋駅前 ← [SA][C]'.
-    var multiDestination = entries.filter(function(entry) {
-      return !!entry.extra;
-    }).length > 1;
-    // Reserve actual badge cells, not destination groups. One named target
-    // retains one outside label while its icons wrap 4 per row.
-    var planned = entries.map(function(entry) {
-      if (entry.extra && col > 0) { row++; col = 0; }
+    // The 4x4 grid is physically packed row-major. Destination names are
+    // OUTSIDE the grid and must not consume four cells merely because one
+    // icon has a different station name. Real Saikyo Shinjuku has 11
+    // badges (including Seibu-Shinjuku SS): its layout is 4+4+3, not
+    // 1+4+4+2. Machiya with SA+C is also a single row.
+    var named = entries.filter(function(entry) { return !!entry.extra; });
+    var ordinary = entries.filter(function(entry) { return !entry.extra; });
+    var planned = [];
+    function addEntry(entry) {
       var slots = entry.badges.map(function(part) {
         var slot = {part:part, row:row, col:col};
         col++;
         if (col === columns) { row++; col = 0; }
         return slot;
       });
-      // Do not force unlabelled badges (e.g. Chiyoda 'C') onto the next
-      // row after the station's only unlike-name destination (Arakawa 'SA').
-      if (multiDestination && entry.extra && col > 0) { row++; col = 0; }
-      return Object.assign({}, entry, {slots:slots});
-    });
+      planned.push(Object.assign({}, entry, {slots:slots}));
+    }
+    if (named.length <= 1) {
+      entries.forEach(addEntry);
+    } else {
+      // Different named destinations need distinct rows for their
+      // captions. Fill the preceding row with ordinary connections first,
+      // rather than leaving a nearly-empty SS-style row.
+      named.forEach(function(entry, index) {
+        if (index > 0 && col > 0) {
+          while (col > 0 && ordinary.length) addEntry(ordinary.shift());
+          if (col > 0) { row++; col = 0; }
+        }
+        addEntry(entry);
+      });
+      ordinary.forEach(addEntry);
+    }
     var allSlots = [].concat.apply([], planned.map(function(entry) { return entry.slots; }));
     var visible = allSlots.filter(function(slot) { return slot.row < cap; });
     var hidden = allSlots.length - visible.length, overflowSlot = null;

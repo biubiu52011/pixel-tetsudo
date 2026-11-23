@@ -586,3 +586,129 @@ test('Keisei Machiya canonical SA and C fit one row and keep other aliases disti
   assert.equal(env.window.StationInfoLayout.plan(unrelated,'Hub','Hub',true).rows,2,
     'two distinct named destinations still reserve separate rows');
 });
+
+test('Saikyo Shinjuku 11 services fill 4+4+3, without isolating Seibu-Shinjuku SS',()=>{
+  const source=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
+  const canonical=source.lines.SaikyoKawagoe.transferStations
+    .filter(t=>t.station==='Shinjuku')
+    .map(t=>({lineId:t.lineId,image:t.lineId+'.png',
+      name:t.lineId,toStation:t.toStation||'',type:t.type||'in'}));
+  const reverse=source.lines.SeibuShinjuku.transferStations.find(t=>
+    t.lineId==='SaikyoKawagoe'&&t.toStation==='Shinjuku');
+  assert.ok(reverse,'Saikyo Shinjuku has a walking interchange with Seibu-Shinjuku');
+  canonical.push({lineId:'SeibuShinjuku',name:'SS',
+    image:'seibu.png',toStation:reverse.station,type:'out'});
+  assert.equal(canonical.length,11);
+  const layoutStart=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const layoutEnd=geometrySource.indexOf('})();',layoutStart);
+  const context=vm.createContext({window:{currentLang:'ja',
+    RailwayDB:{resolveStationName:id=>id==='Seibu-Shinjuku'?'西武新宿':id},
+    ThroughChip:{measureWidth:(s,font)=>String(s).length*font}},
+    _losGroupKey:()=>null});
+  vm.runInContext(geometrySource.slice(layoutStart,layoutEnd+5),context);
+  const layout=context.window.StationInfoLayout;
+  const plan=layout.plan(canonical,'Shinjuku','新宿',true);
+  assert.equal(plan.rows,3,'11 transfer icons must occupy 4+4+3, not 1+4+4+2');
+  assert.deepEqual(Array.from(plan.rowUsed.slice(0,3)),[4,4,3]);
+  const firstRow=plan.shown.flatMap(e=>e.slots)
+    .filter(slot=>slot.row===0);
+  assert.equal(firstRow.length,4);
+  assert.ok(firstRow.some(slot=>slot.part.item.lineId==='SeibuShinjuku'));
+  assert.equal(plan.moreText,'');
+  assert.equal(layout.reservedRows(canonical,'Shinjuku','新宿',true),3);
+});
+
+test('named caption remains outside real row after ordinary transfers fill it',()=>{
+  const ls=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const le=geometrySource.indexOf('})();',ls);
+  const rs=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const re=rendererSource.indexOf('  function _isRealtimePositionFresh(',rs);
+  assert.ok(ls>=0&&le>ls&&rs>=0&&re>rs);
+  function node(tag){return{tag,attrs:{},textContent:'',children:[],
+    setAttribute(k,v){this.attrs[k]=String(v);},
+    appendChild(c){this.children.push(c);return c;}};}
+  const flat=n=>[n,...n.children.flatMap(flat)];
+  const canonical=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8'));
+  const items=canonical.lines.SaikyoKawagoe.transferStations
+    .filter(t=>t.station==='Shinjuku')
+    .map(t=>({lineId:t.lineId,name:t.lineId,image:t.lineId+'.png',type:'in'}));
+  items.push({lineId:'SeibuShinjuku',name:'SS',image:'SS.png',
+    toStation:'Seibu-Shinjuku',type:'out'});
+  for(const side of ['left','right']){
+    const root=node('g'),w={currentLang:'ja',
+      RailwayDB:{resolveStationName:id=>id==='Seibu-Shinjuku'?'西武新宿':id},
+      ThroughChip:{measureWidth:(s,f)=>String(s).length*f,
+        badgeText:i=>i.name,normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]}};
+    const ctx=vm.createContext({window:w,document:{createElementNS:(_ns,tag)=>node(tag)},
+      _losGroupKey:()=>null});
+    vm.runInContext(geometrySource.slice(ls,le+5)+
+      '\n'+rendererSource.slice(rs,re),ctx);
+    ctx._renderStationNode({nodes:node('g'),info:root},'svg',{
+      stationId:'Shinjuku',x:220,y:200,side,si:0,color:'#0ac',geometry:{},
+      svgW:440,svgH:800,isMobileView:true,
+      transferMap:{Shinjuku:items},rS:()=> '新宿'
+    });
+    const all=flat(root),images=all.filter(n=>n.tag==='image');
+    assert.equal(images.length,11);
+    const counts=new Map();
+    images.forEach(icon=>counts.set(icon.attrs.y,(counts.get(icon.attrs.y)||0)+1));
+    assert.deepEqual(Array.from(counts.values()),[4,4,3]);
+    const dest=all.find(n=>n.tag==='text'&&n.textContent.includes('西武新宿'));
+    assert.ok(dest);
+    const row=images.filter(n=>n.attrs.y===images[0].attrs.y);
+    const edge=side==='left'
+      ? Math.min(...row.map(n=>Number(n.attrs.x)))
+      : Math.max(...row.map(n=>Number(n.attrs.x)+Number(n.attrs.width)));
+    assert.equal(Math.abs(edge-Number(dest.attrs.x)),3,
+      'named caption must stay outside every icon in its 4-column row');
+    assert.equal(dest.textContent,side==='left'?'西武新宿 · 徒歩 ←':'→ 西武新宿 · 徒歩');
+  }
+});
+
+test('two named destinations reuse ordinary icon slots before starting another caption row',()=>{
+  const start=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const end=geometrySource.indexOf('})();',start);
+  assert.ok(start>=0&&end>start);
+  const ctx=vm.createContext({window:{currentLang:'ja',
+    RailwayDB:{resolveStationName:id=>id},
+    ThroughChip:{measureWidth:(s,font)=>String(s).length*font}},
+    _losGroupKey:()=>null});
+  vm.runInContext(geometrySource.slice(start,end+5),ctx);
+  const icons=[
+    {lineId:'A',image:'a.png',toStation:'Target-A',type:'out'},
+    {lineId:'B',image:'b.png',toStation:'Target-B',type:'out'},
+    ...Array.from({length:6},(_,i)=>({lineId:'N'+i,image:'n'+i+'.png'}))
+  ];
+  const plan=ctx.window.StationInfoLayout.plan(icons,'Hub','Hub',true);
+  assert.equal(plan.rows,2);
+  assert.deepEqual(Array.from(plan.rowUsed.slice(0,2)),[4,4]);
+  const captions=plan.shown.filter(g=>!!g.extra);
+  assert.equal(captions.length,2);
+  assert.equal(captions[0].slots[0].row,0);
+  assert.equal(captions[1].slots[0].row,1);
+});
+
+test('train captions also avoid permanent station circles',()=>{
+  const start=rendererSource.indexOf('  function _protectStaticStationInfoFromTrainCaptions(');
+  const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
+  assert.ok(start>=0&&end>start);
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(start,end),env);
+  const info={querySelectorAll:()=>[]};
+  const circle={getBoundingClientRect:()=>({x:100,y:100,width:30,height:30})};
+  const stationNodes={querySelectorAll:()=>[circle]};
+  const svg={
+    getAttribute:()=> 'loaded',
+    getBoundingClientRect:()=>({x:0,y:0,width:440,height:800}),
+    querySelector:s=>s==='.station-info-layer'?info:
+      s==='.station-node-layer'?stationNodes:null
+  };
+  const layer={ownerSVGElement:svg};
+  const near={attrs:{},getBoundingClientRect:()=>({x:109,y:108,width:36,height:14}),
+    setAttribute(k,v){this.attrs[k]=v;}};
+  const far={attrs:{},getBoundingClientRect:()=>({x:200,y:180,width:40,height:14}),
+    setAttribute(k,v){this.attrs[k]=v;}};
+  assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[near,far]),1);
+  assert.equal(near.attrs.display,'none');
+  assert.equal(far.attrs.display,undefined);
+});

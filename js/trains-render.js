@@ -464,21 +464,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           if (entry.extra) {
             var extraLabel = document.createElementNS(svgNS, "text");
             extraLabel.setAttribute("class", "station-transfer-destination");
-            // The 4x4 grid may right-align one or two icons in its last
-            // columns. Anchor this destination to the actual painted badge
-            // edges, never to the empty outer cells of the full grid.
-            // When only one destination differs from the main station,
-            // its caption frames the whole visible row, including ordinary
-            // same-name badges. Otherwise a right-side caption would appear
-            // between [SA] and [C] at Machiya instead of after both.
-            var isSoleDestination = badgePlan.shown.filter(function(group) {
-              return !!group.extra;
-            }).length === 1;
-            var captionSlots = isSoleDestination
-              ? badgePlan.shown.reduce(function(all, group) {
-                  return all.concat(group.slots || []);
-                }, [])
-              : slots;
+            // Place the arrow OUTSIDE all painted icons in this caption's
+            // rows, including ordinary transfers sharing its four columns.
+            // Using only the named group's single badge caused the right
+            // arrow to overlap its ordinary neighbors; measuring the whole
+            // 4x4 grid introduced the old three-empty-columns gap.
+            var firstRow = slots[0].row, lastRow = slots[slots.length - 1].row;
+            var captionSlots = badgePlan.shown.reduce(function(all, group) {
+              return all.concat((group.slots || []).filter(function(slot) {
+                return slot.row >= firstRow && slot.row <= lastRow;
+              }));
+            }, []);
             var outerBadgeEdge = captionSlots.reduce(function(edge, slot) {
               var x = badgeX(slot);
               return leftGrid
@@ -486,7 +482,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
                 : Math.max(edge, x + slot.part.badgeWidth);
             }, leftGrid ? Infinity : -Infinity);
             extraLabel.setAttribute("x", outerBadgeEdge + (leftGrid ? -3 : 3));
-            var firstRow = slots[0].row, lastRow = slots[slots.length - 1].row;
             extraLabel.setAttribute("y", iy0 +
               (firstRow + lastRow) * window.StationInfoLayout.pitch / 2 + badgeHeight / 2);
             extraLabel.setAttribute("text-anchor", leftGrid ? "end" : "start");
@@ -2827,22 +2822,34 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     var svg = trainLayer && trainLayer.ownerSVGElement;
     if (!svg || !svg.querySelector || !svg.getBoundingClientRect) return 0;
     var staticInfo = svg.querySelector(".station-info-layer");
-    if (!staticInfo || !staticInfo.querySelectorAll) return 0;
+    var stationNodes = svg.querySelector(".station-node-layer");
+    if ((!staticInfo || !staticInfo.querySelectorAll) &&
+        (!stationNodes || !stationNodes.querySelectorAll)) return 0;
     var screen = svg.getBoundingClientRect();
     var key = [screen.x,screen.y,screen.width,screen.height,
       svg.getAttribute && svg.getAttribute("data-font-state")].join("|");
     var cache = trainLayer._stationInfoScreenBounds;
-    if (!cache || cache.key !== key || cache.staticInfo !== staticInfo) {
-      var protectedNodes = staticInfo.querySelectorAll("text, image, rect");
+    if (!cache || cache.key !== key || cache.staticInfo !== staticInfo ||
+        cache.stationNodes !== stationNodes) {
       var bounds = [];
-      for (var i=0;i<protectedNodes.length;i++) {
-        if (!protectedNodes[i].getBoundingClientRect) continue;
-        var b = protectedNodes[i].getBoundingClientRect();
-        if (b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
-            isFinite(b.height) && b.width > 0 && b.height > 0)
-          bounds.push({x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height});
+      function includeBounds(layer, selector) {
+        if (!layer || !layer.querySelectorAll) return;
+        var protectedNodes = layer.querySelectorAll(selector);
+        for (var i=0;i<protectedNodes.length;i++) {
+          if (!protectedNodes[i].getBoundingClientRect) continue;
+          var b = protectedNodes[i].getBoundingClientRect();
+          if (b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
+              isFinite(b.height) && b.width > 0 && b.height > 0)
+            bounds.push({x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height});
+        }
       }
-      cache = {key:key,staticInfo:staticInfo,bounds:bounds};
+      includeBounds(staticInfo, "text, image, rect");
+      // Train destinations must not cover the permanent station circles.
+      // The earlier guard protected labels only, so a caption such as
+      // 新木場 could still be printed across the next stop's marker.
+      includeBounds(stationNodes, "circle[data-station-index]");
+      cache = {key:key,staticInfo:staticInfo,stationNodes:stationNodes,
+        bounds:bounds};
       trainLayer._stationInfoScreenBounds = cache;
     }
     var hidden=0;
