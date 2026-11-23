@@ -880,6 +880,14 @@ if (/Shinkansen$/.test(lineId) &&
           /^https:\/\/www\.jrkyushu-timetable\.jp\/sp\/2611\/[0-9]{4}\/[0-9]{8}\.html\?d=202611[0-9]{2}&t=[A-Za-z0-9]+$/.test(proofUrl) ||
           /^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(proofUrl)
           ))
+        // Hokuriku is jointly operated; both operators publish official
+        // numbers. Keep the November edition/date and E suffix checks scoped
+        // to this line. An accepted URL is number evidence, not a fleet claim.
+        : lineId==="HokurikuShinkansen"
+        ? (/^[0-9]{1,4}E$/.test(proofNumber) && (
+          /^https:\/\/timetables\.jreast\.co\.jp\/(?:en\/)?2611\/(?:timetable-v\/[0-9]{3}[du][12]p?\.html|train\/[0-9]+\/[0-9]+\.html)$/.test(proofUrl) ||
+          /^https:\/\/timetable\.jr-odekake\.net\/train-timetable\/[0-9]+\?date=202611(?:0[1-9]|[12][0-9]|30)$/.test(proofUrl)
+          ))
         : (/^[0-9]{1,5}[BCEM]$/.test(proofNumber) &&
           /^https:\/\/timetables\.jreast\.co\.jp\/2611\/(?:timetable-v|train)\//.test(proofUrl));
       if(!src || proof.line_key!==lineId ||
