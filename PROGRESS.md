@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### PNG-P09-P10-SEIBU-METADATA-ACCEPTANCE-20261123 — 西武 P-09／P-10 受保护素材验收（DONE）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 迁移修正 | 原 P-09／P-10 草案会把线上已形成的后续人工审核结果改回较早结论；生产基线保护触发器在回滚试运行中拒绝该覆盖。两份迁移已改为只读断言：验证四张西武 PNG 的当前身份、保护状态及零正式番号范围，不再执行素材 `UPDATE`。 |
+| 生产登记 | Supabase 已登记 `20261121124500_p09_seibu_review_asset_metadata` 与 `20261121203000_p10_seibu_l00_formation_metadata`（远端版本 `20261123075201`／`20261123075218`）。登记只新增迁移历史；四条素材记录保持原状。 |
+| 回读结论 | 2000 系双色图保持受保护 review 范围素材；トキイロ保持 40000 系 48101F、formation／review；L00 蓝色图保持受保护 generic，第一编成白色图保持受保护 formation。四张 PNG 的 `published_train_png_number_ranges` 均为 0；运行时继续禁止未核实西武特殊涂装或 L00 编成图成为通用番号默认图。 |
+| 验证与交付 | `vehicle-artwork-continuity` 24/24、`git diff --check` 及两份迁移的生产回滚试运行通过；保护修正提交 `cff8909b` 已直接进入 `main`，CI/CD - Pages `45133799582` completed/success。未部署 Edge，也未另行触发 Pages 生产发布。 |
+
 ### PNG-P04-TOBU-ARTWORK-ACCEPTANCE-20261123 — 东武 P-04 图片权限验收（DONE）
 
 | 项目 | 当前状态 |
