@@ -6,6 +6,16 @@
 
 ## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
 
+### 北陆番号 → E7/W7共用车族 → 代表PNG（2026-11-24，生产已应用）
+
+官方依据：[JR East JRE Media 北陆新干线介绍](https://media.jreast.co.jp/articles/4850)、[JR West E7系・W7系](https://www.jr-odekake.net/train/e7_w7/)。两者同属共用车辆家族，不能从列车番号单独认定具体车型、所属JR公司或实际编组。图库仅有已登记且为native_png的通用E7素材，不新增W7素材或伪造编组。
+
+现有 SQL 表写入：evidence_sources（20261124-hokuriku-e7-w7-shared-fleet）；train_timetable_vehicle_mappings 103条 official_model_family_plan，vehicle_type=E7系・W7系，actual_vehicle_confirmed=false；published_train_png_number_ranges 83个去重正式番号，edition=2611、line_key=HokurikuShinkansen、segment_key=2611_e7_w7_shared_fleet_representative，min=max，suffix=E，vehicle_model=E7系仅表示图库分类，requires_exact_roster=true、actual_vehicle_confirmed=false。图片路径 ../images/列车/JR東日本/JR東日本_E7系.png。逐条番号证据与映射回读103/103，实际车辆确认0。另2条历史退役模板无番号证据、不作映射。未将61条未明确运行日的模板升级为日期已验证。覆盖率仅指现存番号，不代表官方全线完整班次。
+
+复用现有 train-runs、sqlPlannedNumberPngPath、selectMarkerArtwork；北陆专属条件验证共用车族证据、番号精确名单、现有原生PNG、2611日期及线路归属，只显示示意图（referenceOnly、representativeOnly、actualVehicleConfirmed=false），不允许未知号码、其他月份、跨线、图片失败或实际车辆冲突时使用该示意图。无新增表、前端脚本或图库。Edge v384 ACTIVE，与main的本次PNG选择逻辑一致；后端条件正反例4/4、前端分支隔离测试10/10通过（非整个测试套件、非HTTP/SVG实测）。
+
+源码提交：[Edge 099c4c8](https://github.com/biubiu52011/pixel-tetsudo/commit/099c4c84078d043c122312f5096f5bcd769f01f0)、[估算器 776cdac](https://github.com/biubiu52011/pixel-tetsudo/commit/776cdacfc5929451cd1eafb028c3d25488eaab02)、[图片选择 79786c4](https://github.com/biubiu52011/pixel-tetsudo/commit/79786c469bb923d8587b797b84d221d89f53b1a5)。全线时刻表及浏览器实际视觉验收仍待完成。
+
 ### 第五批后续：つるぎ14 日期变体纠正（生产已应用）
 
 JR西日本 [1014E休日](https://timetable.jr-odekake.net/train-timetable/249391?date=20261101) 和 [8014E](https://timetable.jr-odekake.net/train-timetable/385411?date=20261107)、[11/21再次确认](https://timetable.jr-odekake.net/train-timetable/380371?date=20261121) 表明，普通金泽终到计划在11月7/14/21/28日改为富山终到计划，而不是爱称服务整体停运。原休日模板移除7/14日，新增同爱称的8014E独立日期变体，保留原平日和休日1014E模板。事务检查30天每天仅1份可用计划、canonical停站视图5条。未改车型/PNG。SQL记录 [6c44ce6](../../supabase/queries/hokuriku_2611_tsurugi14_date_variant_20261124.sql)。现有模板105、正式番号证据103、休日模板21，仍未全量覆盖。
