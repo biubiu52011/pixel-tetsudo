@@ -97,3 +97,25 @@ test('existing SQL is the only Shinkansen PNG roster, not broad frontend ranges'
   assert.match(edge,/pngProof\.model/);
   assert.doesNotMatch(generic,/NishiKyushuShinkansen|TohokuShinkansen/);
 });
+
+test('Hokuriku official number evidence accepts both JR operators without broadening other lines',()=>{
+  const edge=fs.readFileSync('supabase/functions/train-runs/index.ts','utf8');
+  const expression=edge.match(/const validOfficialNumber = ([\s\S]*?);\n\s*if\(!src/);
+  assert.ok(expression);
+  const valid=new Function('lineId','proofNumber','proofUrl','return '+expression[1]);
+  const line='HokurikuShinkansen';
+  const east='https://timetables.jreast.co.jp/2611/timetable-v/004d1.html';
+  const english='https://timetables.jreast.co.jp/en/2611/train/095/098582.html';
+  const west='https://timetable.jr-odekake.net/train-timetable/249231?date=20261121';
+  assert.equal(valid(line,'3501E',east),true);
+  assert.equal(valid(line,'3504E',english),true);
+  assert.equal(valid(line,'1E',west),true);
+  for(const [n,u] of [
+    ['35501E',east],['501C',east],['501E',east.replace('2611','2612')],
+    ['1E',west.replace('20261121','20261031')],
+    ['1E',west.replace('20261121','20261131')],
+    ['1E',west.replace('jr-odekake.net','jr-odekake.net.evil.example')]
+  ]) assert.equal(valid(line,n,u),false,n+' '+u);
+  assert.equal(valid('JoetsuShinkansen','1E',west),false);
+  assert.equal(valid('JoetsuShinkansen','301C',east),true);
+});
