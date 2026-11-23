@@ -6,6 +6,16 @@
 
 ## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
 
+### 第五批后续：北陆共同运营官方番号证据兼容（2026-11-24）
+
+生产 Edge v382 的番号来源正则拒绝北陆 JR West 官方URL（38条）及 JR East 英文URL（1条），任一不匹配会抛出 INVALID_SHINKANSEN_OFFICIAL_NUMBER_EVIDENCE，使整个请求进入 DB_QUERY_FAILED。此问题独立于停站覆盖率。保留各记录的来源日历、方向、线路、证据类型核验。
+
+- 3503E（1937/135515）番号证据改用 [JR East 2611 详情](https://timetables.jreast.co.jp/2611/train/095/098491.html)，3504E（1946/135517）改用 [JR East 2611 英文详情](https://timetables.jreast.co.jp/en/2611/train/095/098582.html)。只变更番号证据URL，原始停站来源及时间未更改；不能据此推定完整日期或停站已经核对。
+- 现有 train-runs 番号校验对 HokurikuShinkansen 独立接纳 JR East 2611 日/英页面与 JR West 20261101–30 个别列车页，限定1–4位数字加 E；不放宽其他线路或其他月份，不授予车型/PNG证据。
+- 实际数据库102条番号证据全部通过新校验，7个反例拒绝；现有测试文件添加回归用例并独立运行通过。未运行整个测试套件。
+- GitHub main [源码修复 342a576](https://github.com/biubiu52011/pixel-tetsudo/commit/342a57654d75f15251676d9328af535cf2ac2740)，[回归测试 f6b4f97](https://github.com/biubiu52011/pixel-tetsudo/commit/f6b4f97afb8093969d2ca957d15fe4306511933a)。生产以v382现有文件为基础仅应用同一校验变更，v383 ACTIVE，回读该校验与main一致；此前生产与main已有其他差异，未擅自整体覆盖。数据库104模板、102番号证据、成员边界异常0、显式日期重复0。
+- ODPT 官方 [JR East Train Timetable](https://ckan.odpt.org/en/dataset/jreast__r_train_timetable) 明确不含新干线。2611四张总表完整页面仍读取失败；不复制其他月份数据，不声明全量覆盖。公共接口 HTTP 和 Safari/SVG 仍未完成实测，保留 sparse_review。
+
 ### 第五批后续：正式番号证据纠错（2026-11-24，已应用生产）
 
 对照2611上下行总表番号索引及个别列车详情，已在既有 published_train_number_evidence 更新11条错误证据，限定 edition=2611、HokurikuShinkansen、Weekday、原爱称/方向/番号一致、无车型映射的源模板。每条更新必须恰好命中1行，否则事务回滚。生产回读确认11条均已纠正；仍保留 operating_dates=NULL 及 timetable_validity=undated_not_current_verified，不宣称停站或日期已验证。
