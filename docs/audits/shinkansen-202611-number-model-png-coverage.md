@@ -6,6 +6,12 @@
 
 ## 2026-11-24 秋田新干线：总表审计及95/96定点修复
 
+### 后续：16/20/23/25/28号运行范围补齐（2026-11-24，生产已应用）
+
+本轮重新检索11月单车日历索引及12月版保留的11月下旬日期： [3016M](https://timetables.jreast.co.jp/2611/train/030/033674.html)、[3020M](https://timetables.jreast.co.jp/2611/train/110/111195.html)、[3023M](https://timetables.jreast.co.jp/2611/train/010/010075.html)、[3025M](https://timetables.jreast.co.jp/2611/train/010/010088.html)、[3028M](https://timetables.jreast.co.jp/2611/train/010/010092.html)。索引保留运行日（含其他时刻运行日期），但完整HTML及逐日时变标记仍无法读取。将5份旧模板限定11/1–30，保持所有停站时刻及canonical undated_not_current_verified；日期资格不等于时刻验证。事务执行、逐条回读通过。[SQL](../../supabase/queries/akita_2611_last_five_daily_service_dates_20261124.sql)（58afe62）。
+
+现有45模板均有非空日期数组、44个唯一番号、45番号证据及45车型映射、精确PNG缺失0、实际车组确认0。按全月日期资格模拟，平日32–40条、休日33–37条，正式番号日内重复0。Canonical date_verified=0（不得将日期字段有值视为停站时刻已核实）。生产Edge v384已有新干线跨日历白名单合并，检查源代码确认11月选中日期可纳入原平日模板，无需改前端/Edge。最新可见实际秋田请求10:38:10 JST HTTP 200，仅为日志中的实际请求，非本轮修改后的休日验收。此前各批日期证据尚未全部独立复查，55等缺失班次、日期时变及12月范围仍待核实；保留sparse_review。
+
 ### 后续：26/59号临时列车日期校正（2026-11-24，生产已应用）
 
 11月版[5026M详情](https://timetables.jreast.co.jp/2611/train/050/051821.html)明确列出11/1、3、6、8、13、15、22、23、29；[5059M详情](https://timetables.jreast.co.jp/2611/train/050/050181.html)明确列出11/20、21，[新干线下行休日表](https://timetables.jreast.co.jp/2611/timetable-v/003d2p.html)的5059M运行日列交叉一致。12月版5026M详情仅保留11月下旬，不可替代11月版整月范围。基于本次实际获取的官方搜索索引，更新783/5026M与770/5059M日期数组，停站时钟及canonical undated_not_current_verified不变。[SQL](../../supabase/queries/akita_2611_komachi26_59_operating_dates_20261124.sql)（72a9148）。
