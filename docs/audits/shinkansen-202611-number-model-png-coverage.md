@@ -4,6 +4,16 @@
 **范围**：Supabase `pnupwfmgbtxqhpzsrhfn` 中现有 10 条 `%Shinkansen` 线路的 `manual_timetable_templates`；`2611` 为 JR 东日本 2026 年 11 月出版版本。  
 **规范**：[Notion《全线路列车番号→车型→PNG 覆盖率审计》](https://app.notion.com/p/PNG-40ed1daae25681a4ad4eca747b1586b6?source=copy_link)。
 
+## 2026-11-24 秋田新干线：总表审计及95/96定点修复
+
+生产45模板（44平日分类/1休日分类），45番号证据、44个唯一番号、45份E6车型映射，精确PNG无缺失。522事件、站序/时钟逆序0；原10站图仅为线路示意，95/96与はやぶさ联挂运行的仙台—盛冈中间停站未完整表达，不能把图面简化当成实际不停站。
+
+已应用并回读：
+- 792 / 3096M 终到东京→仙台，仅目的地修正；依据 [2611官方详情](https://timetables.jreast.co.jp/2611/train/030/030472.html)。[SQL](../../supabase/queries/akita_2611_komachi96_destination_20261124.sql)。
+- 774 / 3095M 与792既有事件的9个发车时间由arrival改为departure，保留时钟、事件序列及Canonical关联；95依据[详情1](https://timetables.jreast.co.jp/2611/train/020/021881.html)、[详情2](https://timetables.jreast.co.jp/2611/train/020/021882.html)、[下行平日总表](https://timetables.jreast.co.jp/2611/timetable-v/003d1.html)、[下行休日总表](https://timetables.jreast.co.jp/2611/timetable-v/003d2p.html)复用原模板，明确11月1–30日范围。96时刻存在多种日期变体，未扩展其运行日。不提升原canonical itinerary validity，未补全共线区段的物理停站。[SQL](../../supabase/queries/akita_2611_komachi95_96_event_roles_20261124.sql)。
+- 原44平日可用/6休日可用，现44/7；8份非空日期模板、37份日期未知。12月需要独立核对，不延用11月白名单。45模板/45番号/45E6映射不变。
+- 003/258四向总表可获得部分搜索索引，完整HTML抓取仍未成功；49/55/67等存在但运行日限定、停站及变体待确认，不按番号全月复制。仍为sparse_review；未批量转载官网时刻表。无新增前端或数据库表。上一轮09:00:31 JST HTTP 200；本轮修改后实际HTTP及SVG未验收。
+
 ## 2026-11-24 北陆新干线：改用四向数字时刻总表审计（第五批，未导入时刻）
 
 ### 北陆映射发布后错误排查（2026-11-24）
