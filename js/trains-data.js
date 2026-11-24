@@ -1328,6 +1328,15 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     // 空港 2 站也被长支线拖成拐弯竖列）——每条支线独立画法：非 junction 站 ≤4 → 水平直线横排（h），
     // >4 → 竖列（v）；竖列支线放左、横排支线放右（全部横排时保持全左，鹤见线不回归）；
     // Junction station label placement is now resolved from branch exits by the shared L3 renderer.
+    // Straight high-speed route maps reserve a complete train-caption lane
+    // on either side of the rail. The old 11-unit lane only fit the PNG;
+    // centered destination text crossed the permanent station circle.
+    // Keep branch/fusion/loop geometry under its existing layout contract.
+    var _extensionsForCorridor = /Shinkansen$/.test(lineId) ? _fusionExtensionLines(lineId) : null;
+    var trainCorridor = /Shinkansen$/.test(lineId) && !isLoop && !isSixShapedLoop &&
+      !isSkytreeYFork && !branchLines.length &&
+      !(_extensionsForCorridor && _extensionsForCorridor.length) && !line.trackLayout
+      ? {laneGap:42, captionWidth:60, stationClearance:76} : null;
     var _branchModes = []; // 每支线 'h' 横排 / 'v' 竖列
     var _hasVCol = false;
     for (var _bmi = 0; _bmi < branchLines.length; _bmi++) {
@@ -1733,6 +1742,17 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
         svgW = Math.max(_baseW, mainCx + 12 + _rightNeed + _rightPad);
       }
       
+      if (trainCorridor) {
+        // Reserve the name/transfer column outside the left train lane.
+        // Route-derived only: no timetable snapshot can resize the canvas.
+        var maxStationNameWidth = stations.reduce(function(max,id) {
+          var name = window.RailwayDB && window.RailwayDB.resolveStationName
+            ? window.RailwayDB.resolveStationName(id,window.currentLang) || id : id;
+          return Math.max(max,_measureRouteText(name,16));
+        },0);
+        mainCx = Math.max(mainCx,Math.ceil(maxStationNameWidth)+trainCorridor.stationClearance+4);
+        svgW = Math.max(svgW,mainCx+trainCorridor.stationClearance+4);
+      }
       // 全线按统一 sp 定位车站，换乘和支线预留不再单独拉长个别区间。
       for (var i = 0; i < stations.length; i++) {
         if (isSkytreeYFork) {
@@ -2012,6 +2032,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
       throughChipMaxWidth: throughChipMaxWidth,
       isSixShapedLoop: isSixShapedLoop,
       trackLayout: line.trackLayout || null,
+      trainCorridor: trainCorridor,
       sixLoopStartIndex: isSixShapedLoop ? hikarigaokaIdx + 1 : null,
       sixTailEndIndex: isSixShapedLoop ? hikarigaokaIdx : null,
       sixTopology: isSixShapedLoop ? "one-line-open-tail-and-closed-loop" : null,
