@@ -12,6 +12,12 @@
 
 SVG十线统一使用常规11单位方向通道；前轮宽通道及标签漂移改动均已撤销。共用碰撞函数仍可隐藏终点文字，实际浏览器无法接入，尚无其余线路可见/隐藏标签计数。本轮不再修改几何或成组逻辑，以免重复已发生的显示回归。
 
+### 后续：山形剩余6份截断模板及94号日期变体（2026-11-24，生产已应用）
+
+逐车检索取得JR East 2611完整详情：[9086M](https://timetables.jreast.co.jp/2611/train/025/025631.html)、[6094M](https://timetables.jreast.co.jp/2611/train/125/128301.html)、[136M](https://timetables.jreast.co.jp/2611/train/030/030251.html)、[148M](https://timetables.jreast.co.jp/2611/train/030/030191.html)、[158M](https://timetables.jreast.co.jp/2611/train/030/030152.html)、[160M](https://timetables.jreast.co.jp/2611/train/030/030141.html)。旧记录逐个车站/时钟与官方详情匹配后，补齐到发角色与福岛后区间；更新原6份模板及Canonical成员边界。[SQL](../../supabase/queries/yamagata_2611_six_truncated_services_20261124.sql)（e59c53e）。9086M/727限定11/1、3、6、13、20、23、27；6094M/730限定11/20、23、终到上野，二者date_verified。136/148/158/160为11月版基础时刻，日期变体未逐日核验，保持undated_not_current_verified。注意148号2612详情郡山和宇都宫时钟与2611不同，不能混用。
+
+[9094M官方详情](https://timetables.jreast.co.jp/2611/train/035/035132.html)证实11/1、22东京终到；新增135527，9物理停站，Canonical source_only/date_verified、番号证据9094M。仅证实番号及日期时刻，未复制6094M车型证据或精确PNG。[SQL](../../supabase/queries/yamagata_2611_9094m_tokyo_variant_20261124.sql)（b404a74）。独立SQL回读47模板、574停站记录、终点空值0、末站不一致0、date_verified=6；94两份日期不相交。未执行实际HTTP/SVG验收，仍保留sparse_review。
+
 ## 2026-11-24 秋田新干线：总表审计及95/96定点修复
 
 ### 后续：5055M 单日官方完整时刻及E6映射（2026-11-24，生产已应用）
