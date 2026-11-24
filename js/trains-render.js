@@ -2784,67 +2784,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (rawIcon) icon.setAttribute('transform', rawIcon);
       else icon.removeAttribute('transform');
       markerById[id] = icon;
-    }
-    // Group the full, fixed component BEFORE applying static-caption
-    // clipping. A temporarily obstructed destination must not remove its
-    // footprint from collision detection or split an otherwise valid group.
-    Object.keys(markerById).forEach(function(id) {
-      var icon=markerById[id], label=captionById[id];
-      var parts=[icon,label]
-        .filter(Boolean).map(function(node) {
-          return node.getBoundingClientRect ? node.getBoundingClientRect() : null;
-        }).filter(function(b) {
-          return b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
-            isFinite(b.height) && b.width>0 && b.height>0;
-        });
-      if (!parts.length) return;
-      var left=Math.min.apply(null,parts.map(function(b){return b.x;}));
-      var top=Math.min.apply(null,parts.map(function(b){return b.y;}));
-      var right=Math.max.apply(null,parts.map(function(b){return b.x+b.width;}));
-      var bottom=Math.max.apply(null,parts.map(function(b){return b.y+b.height;}));
-      components.push({id:id,artwork:String(icon.tagName||'').toLowerCase()==='image',
+      var parts = [icon, captionById[id]].filter(Boolean).map(function(node) {
+        return node.getBoundingClientRect ? node.getBoundingClientRect() : null;
+      }).filter(function(b) {
+        return b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
+          isFinite(b.height) && b.width > 0 && b.height > 0;
+      });
+      if (!parts.length) continue;
+      var left = Math.min.apply(null, parts.map(function(b) { return b.x; }));
+      var top = Math.min.apply(null, parts.map(function(b) { return b.y; }));
+      var right = Math.max.apply(null, parts.map(function(b) { return b.x + b.width; }));
+      var bottom = Math.max.apply(null, parts.map(function(b) { return b.y + b.height; }));
+      components.push({id:id, artwork:String(icon.tagName || '').toLowerCase() === 'image',
         box:{x:left,y:top,width:right-left,height:bottom-top}});
-    });
-    // The +N plate is itself part of the representative component.
-    // Recompute groups until no plate creates another visible collision.
-    // The number of visible representatives strictly decreases on merging.
+    }
     var folded = _groupNearbyTrainMarkers(components);
-    var byId=Object.create(null);
-    components.forEach(function(c){byId[c.id]=c;});
-    var badgeLayout=Object.create(null);
-    var staticBounds=_trainStaticScreenBounds(trainLayer);
-    function unionBox(a,b) {
-      var x=Math.min(a.x,b.x),y=Math.min(a.y,b.y);
-      return {x:x,y:y,width:Math.max(a.x+a.width,b.x+b.width)-x,
-        height:Math.max(a.y+a.height,b.y+b.height)-y};
-    }
-    for(var pass=0;pass<=components.length;pass++) {
-      var members=Object.create(null);
-      Object.keys(folded).forEach(function(id){
-        folded[id].slice(1).forEach(function(child){members[child]=true;});
-      });
-      badgeLayout=Object.create(null);
-      var visible=components.filter(function(c){return !members[c.id];}).map(function(c){
-        var ids=folded[c.id];
-        if(!ids)return c;
-        var marker=markerById[c.id].getBoundingClientRect();
-        var badge=_trainFoldBadgePlacement(marker,c.box,ids.length,staticBounds);
-        badgeLayout[c.id]=badge;
-        return {id:c.id,artwork:c.artwork,box:unionBox(c.box,badge.box)};
-      });
-      var joined=_groupNearbyTrainMarkers(visible);
-      if(!Object.keys(joined).length)break;
-      Object.keys(joined).forEach(function(id){
-        var all=[];
-        joined[id].forEach(function(member){
-          (folded[member]||[member]).forEach(function(child){
-            if(all.indexOf(child)<0)all.push(child);
-          });
-          delete folded[member];
-        });
-        folded[id]=[id].concat(all.filter(function(child){return child!==id;}).sort());
-      });
-    }
     Object.keys(folded).forEach(function(root) {
       folded[root].slice(1).forEach(function(id) {
         var unit = _trainUnitContainer(markerById[id]);
@@ -2853,42 +2807,24 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         unit.setAttribute('data-train-fold-hidden', 'true');
       });
     });
-    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels, markerById);
-    _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix, badgeLayout);
-  }
-
-  // Badge coordinates are measured in screen pixels, then converted back to
-  // its own train group. A compact, fixed placement preserves the marker,
-  // arrow and destination alignment. Prefer a clear position above the
-  // component; use the other vertical edge only if static content blocks it.
-  function _trainFoldBadgePlacement(marker,component,count,staticBounds) {
-    var w=count>100?32:count>10?28:24,h=16;
-    var cx=marker.x+marker.width/2,cy=marker.y+marker.height/2;
-    var candidates=[{x:cx-w/2,y:component.y-h-3,width:w,height:h},
-      {x:cx-w/2,y:component.y+component.height+3,width:w,height:h}];
-    function fits(b) {
-      if(!staticBounds)return true;
-      var s=staticBounds.screen;
-      return b.x>=s.x+2&&b.y>=s.y+2&&b.x+b.width<=s.x+s.width-2&&
-        b.y+b.height<=s.y+s.height-2&&!staticBounds.bounds.some(function(a){
-          return b.x<a.right+2&&b.x+b.width>a.x-2&&
-            b.y<a.bottom+2&&b.y+b.height>a.y-2;
-        });
-    }
-    var b=candidates.find(fits)||candidates[0];
-    return {box:b,dx:b.x+w/2-cx,dy:b.y+h/2-cy,width:w,height:h};
+    _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix);
+    // Train destination captions have lower visual priority than permanent
+    // railway station names and interchange icons. A train marker and its
+    // accessible label remain present even when its caption cannot fit.
+    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels);
   }
 
   // Reuse the station glyph bounds while the frame stays at the same viewport
   // position. Rebuilding every text/image rect on each train animation frame
   // caused layout thrashing on long Japanese commuter routes.
-  function _trainStaticScreenBounds(trainLayer) {
+  function _protectStaticStationInfoFromTrainCaptions(trainLayer, labels) {
+    if (!labels || !labels.length) return 0;
     var svg = trainLayer && trainLayer.ownerSVGElement;
-    if (!svg || !svg.querySelector || !svg.getBoundingClientRect) return null;
+    if (!svg || !svg.querySelector || !svg.getBoundingClientRect) return 0;
     var staticInfo = svg.querySelector(".station-info-layer");
     var stationNodes = svg.querySelector(".station-node-layer");
     if ((!staticInfo || !staticInfo.querySelectorAll) &&
-        (!stationNodes || !stationNodes.querySelectorAll)) return null;
+        (!stationNodes || !stationNodes.querySelectorAll)) return 0;
     var screen = svg.getBoundingClientRect();
     var key = [screen.x,screen.y,screen.width,screen.height,
       svg.getAttribute && svg.getAttribute("data-font-state")].join("|");
@@ -2916,27 +2852,21 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         bounds:bounds};
       trainLayer._stationInfoScreenBounds = cache;
     }
-    return {screen:screen,bounds:cache.bounds};
-  }
-
-  function _protectStaticStationInfoFromTrainCaptions(trainLayer, labels, markerById) {
-    if(!labels||!labels.length)return 0;
-    var fixed=_trainStaticScreenBounds(trainLayer);
-    if(!fixed)return 0;
     var hidden=0;
-    for(var c=0;c<labels.length;c++) {
+    for (var c=0;c<labels.length;c++) {
       var label=labels[c];
-      var unit=_trainUnitContainer(label);
-      if(!label||!label.getBoundingClientRect||
-         (unit&&unit.getAttribute('data-train-fold-hidden')==='true'))continue;
-      var b=label.getBoundingClientRect();
-      if(!b||!(b.width>0&&b.height>0))continue;
-      // Never independently relocate a destination. Static station glyphs
-      // remain legible; the fold list and accessible marker retain the text.
-      if(fixed.bounds.some(function(a){
-        return b.x<a.right+2&&b.x+b.width>a.x-2&&
-          b.y<a.bottom+2&&b.y+b.height>a.y-2;
-      })) {label.setAttribute('display','none');hidden++;}
+      if (!label || !label.getBoundingClientRect) continue;
+      var box=label.getBoundingClientRect();
+      if (!box || !(box.width > 0 && box.height > 0)) continue;
+      var intersects=cache.bounds.some(function(b) {
+        // Two screen pixels of visual separation between train and station.
+        return box.x < b.right+2 && box.x+box.width > b.x-2 &&
+          box.y < b.bottom+2 && box.y+box.height > b.y-2;
+      });
+      if (intersects) {
+        label.setAttribute("display","none");
+        hidden++;
+      }
     }
     return hidden;
   }
@@ -3033,7 +2963,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     layer._cancelTrainFoldGesture = clearPending;
   }
 
-  function _syncTrainFoldBadges(layer, folded, groups, markers, matrix, badgeLayout) {
+  function _syncTrainFoldBadges(layer, folded, groups, markers, matrix) {
     _bindTrainFoldBadgeActivation(layer);
     layer._foldBadgeGroups = groups;
     layer._foldBadgeMarkers = markers;
@@ -3049,10 +2979,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (!unit) return;
       var badge=document.createElementNS(ns,'g');
       badge.setAttribute('data-train-fold-badge',id);
-      var placement=badgeLayout&&badgeLayout[id];
-      var w=placement?placement.width:24,h=placement?placement.height:16;
-      var dx=placement?placement.dx:0,dy=placement?placement.dy:-24;
-      badge.setAttribute('transform','translate('+(dx/sx)+','+(dy/sy)+') scale('+(1/sx)+','+(1/sy)+')');
+      badge.setAttribute('transform','translate(0,'+(-24/sy)+') scale('+(1/sx)+','+(1/sy)+')');
       badge._foldTrainIds = ids.slice();
       badge.setAttribute('role','button');badge.setAttribute('tabindex','0');
       badge.setAttribute('pointer-events','all');
@@ -3064,15 +2991,15 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       badge.style.userSelect='none';
       badge.style.outline='none';
       var plate=document.createElementNS(ns,'rect');
-      plate.setAttribute('x',-w/2);plate.setAttribute('y',-h/2);
-      plate.setAttribute('width',w);plate.setAttribute('height',h);
+      plate.setAttribute('x',-16);plate.setAttribute('y',-10);
+      plate.setAttribute('width',32);plate.setAttribute('height',20);
       plate.setAttribute('rx',10);plate.setAttribute('fill','#fff');
       plate.setAttribute('stroke','#64748b');
       plate.setAttribute('stroke-width','1.5');
       badge.appendChild(plate);
       var labelText=document.createElementNS(ns,'text');
-      labelText.setAttribute('x',0);labelText.setAttribute('y',3.5);
-      labelText.setAttribute('text-anchor','middle');labelText.setAttribute('font-size','11');
+      labelText.setAttribute('x',0);labelText.setAttribute('y',4);
+      labelText.setAttribute('text-anchor','middle');labelText.setAttribute('font-size','12');
       labelText.setAttribute('font-weight','400');
       labelText.setAttribute('fill','#334155');
       labelText.textContent='+'+(ids.length-1);
@@ -3146,13 +3073,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             iconBox.appendChild(placeholder);
           }
         }
-        // A collision-hidden/missing SVG label is not missing service data.
-        // Preserve the actual terminal in the fold list without inventing one.
-        var actualTerminal = !_isLoopDirName(p.railDirection) || _isOedoTailTrain(lineId,p)
-          ? _trainDestText(p.destinationStation || p.destinationStationUrn) : '';
         var captionBase=popupCaption||
           _uetsuFoldDestinationCaption(p,lineId,lang)||
-          actualTerminal||
           (lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
@@ -3520,7 +3442,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // Keep direction (兼容测试截取锚点；说明见下方中文注释)。
   // 无论运行方向如何，都将方向和目的地居中放在图标下方。
   function _trainLabelY(labelPos, py, moveDir) {
-    if (labelPos === 'dir') return py + 19;
+    if (labelPos === 'dir') return py + 21;
     return py + 32;
   }
 
