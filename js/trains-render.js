@@ -249,7 +249,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       // Dual-track station labels share the same left-side marker corridor.
       // Hachiko uses this side mode, so retain the mobile clearance here too.
       tx = o.x - (isMobileView ? 20 : 12);
-      if (geometry.trainCorridor) tx = o.x - geometry.trainCorridor.stationClearance;
       ty = o.y;
       anchor = "end";
     }
@@ -557,8 +556,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         else if (anchor === "end") { mX = o.x + _dotR + 14; mAlign = "start"; mY = o.y - mH / 2; }
         else if (anchor === "start") { mX = o.x - _dotR - 14; mAlign = "end"; mY = o.y - mH / 2; }
         else { mX = o.x + _dotR + 14; mAlign = "start"; mY = o.y - mH / 2; }
-        if (geometry.trainCorridor && mAlign === "start")
-          mX = o.x + geometry.trainCorridor.stationClearance;
         drawGroup(middle, mX, mY, mAlign, chipWidth);
       }
       if (down.length) {
@@ -2390,14 +2387,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     
     // TrainTrackLayout owns target geometry; this marker owns interpolation.
     var layout = (window.TrainTrackLayout && window.TrainTrackLayout.resolveAll)
-      ? window.TrainTrackLayout.resolveAll(positions, stationCoords, geometry, lineId, Object.assign({
+      ? window.TrainTrackLayout.resolveAll(positions, stationCoords, geometry, lineId, {
           getDisplayMoveDir: _trainMoveDir,
           fusionBaseIdx: _fusionBaseIdx,
           // Up/down use symmetric side lanes; image, arrow and destination
           // stay one component when detecting collisions.
           laneGap: isLoop ? 9 : 11,
           stackGap: isLoop ? 7 : 8
-        },geometry.trainCorridor ? {laneGap:geometry.trainCorridor.laneGap} : {}))
+        })
       : null;
     
     var _adjacentGaps = [];
@@ -3602,20 +3599,6 @@ function _isTrainArtworkFailureActive(trainUid, p) {
     else trainLayer.appendChild(labelGroup);
     try {
       var _bbox = labelGroup.getBBox();
-      var corridor = trainLayer.ownerSVGElement && trainLayer.ownerSVGElement.__geometry &&
-        trainLayer.ownerSVGElement.__geometry.trainCorridor;
-      if (corridor && !_sixLane && _bbox.width > corridor.captionWidth &&
-          typeof ldir.getComputedTextLength === "function") {
-        // Preserve the full name, including long translated names, within
-        // its reserved direction lane. Do not shift the label independently.
-        var textWidth = ldir.getComputedTextLength();
-        var desired = corridor.captionWidth - (_bbox.width - textWidth);
-        if (textWidth > 0 && desired > 0 && desired < textWidth) {
-          ldir.setAttribute("textLength", String(desired));
-          ldir.setAttribute("lengthAdjust", "spacingAndGlyphs");
-          _bbox = labelGroup.getBBox();
-        }
-      }
       var _offsetX = px - (_bbox.x + _bbox.width / 2);
       if (_sixLane) {
         var _actualLane = _sixTrainDirectionLane(trainLayer, p, lineId, px, py, _bbox.width, moveDir);
