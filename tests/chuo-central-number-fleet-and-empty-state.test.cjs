@@ -13,10 +13,9 @@ function loadReferenceMatcher(){
   ]) vm.runInContext(fs.readFileSync(path,'utf8'),context,{filename:path});
   return window;
 }
-// This is a synthetic test fixture, not a claim that 801M is published in 2611.
 function plannedSqlRun(changes={}){
   return {
-    trainNumber:'801M',positionLineId:'ChuoCentral',displayLineId:'ChuoCentral',
+    trainNumber:'701M',positionLineId:'ChuoCentral',displayLineId:'ChuoCentral',
     serviceDate:'2026-11-11',calendarType:'weekday',
     positionSource:'supabase-train-run',estimated:true,
     officialNumberVerified:true,timetableDateVerified:true,
@@ -37,16 +36,64 @@ test('ChuoCentral 315 PNG belongs to its own approved reference gallery',()=>{
 });
 test('dated, numbered Nagoya–Nakatsugawa SQL commuter train selects only a reference PNG',()=>{
   const w=loadReferenceMatcher(),p=plannedSqlRun();
-  const result=w.TrainNumberPngRanges.match('801M','ChuoCentral',p);
+  const result=w.TrainNumberPngRanges.match('701M','ChuoCentral',p);
   assert.ok(result);
   assert.equal(result.model,'315系');
   assert.equal(result.pngPath,png);
   assert.equal(result.illustrative,true);
   assert.equal(result.referenceOnly,true);
   assert.equal(result.actualVehicleConfirmed,false);
-  assert.equal(w.TrainNumberPngRanges.match('801M','ChuoMain',p),null);
-  const holiday=plannedSqlRun({serviceDate:'2026-11-03',calendarType:'holiday'});
-  assert.ok(w.TrainNumberPngRanges.match('801M','ChuoCentral',holiday));
+  assert.equal(result.numberReference?.numberClass,'ordinary-315');
+  assert.equal(result.numberReference?.exactRoster,true);
+  assert.equal(w.TrainNumberPngRanges.match('701M','ChuoMain',p),null);
+  const holiday=plannedSqlRun({trainNumber:'3701M',serviceDate:'2026-11-03',
+    calendarType:'holiday'});
+  assert.ok(w.TrainNumberPngRanges.match('3701M','ChuoCentral',holiday));
+  assert.equal(w.TrainNumberPngRanges.match('801M','ChuoCentral',
+    plannedSqlRun({trainNumber:'801M'})),null,
+  'a pattern-compatible number outside the exact roster stays unmapped');
+});
+test('Chuo 2026-03 exact roster preserves all four calendar-direction lists',()=>{
+  const api=loadReferenceMatcher().TrainNumberPngRanges;
+  const roster=api.jrCentralChuo202603NumberRoster;
+  assert.equal(roster.revision,'2026-03-14');
+  assert.deepEqual([
+    roster.ordinary315.weekday.Outbound.length,
+    roster.ordinary315.weekday.Inbound.length,
+    roster.ordinary315.holiday.Outbound.length,
+    roster.ordinary315.holiday.Inbound.length
+  ],[136,139,132,133]);
+  assert.deepEqual(Array.from(roster.homeLiner383.weekday.Outbound),
+    ['2681M','2683M']);
+  assert.deepEqual(Array.from(roster.homeLiner383.weekday.Inbound),
+    ['2682M','2684M']);
+  assert.equal(api.findJrCentralChuo202603Number(
+    '701M','weekday','Outbound')?.numberClass,'ordinary-315');
+  assert.equal(api.findJrCentralChuo202603Number(
+    '701M','holiday','Outbound'),null);
+  assert.equal(api.findJrCentralChuo202603Number(
+    '2682M','weekday','Inbound')?.numberClass,'home-liner-383');
+});
+test('exact weekday Home Liner numbers select the scoped 383 reference PNG',()=>{
+  const w=loadReferenceMatcher();
+  const png383='../images/列车/JR東海/JR東海_383系.png';
+  for(const [n,direction] of [['2681M','Outbound'],['2682M','Inbound'],
+    ['2683M','Outbound'],['2684M','Inbound']]){
+    const stops=direction==='Outbound'
+      ?['Nagoya','JRC-TokaidoCentral-067','JRC-ChuoCentral-020']
+      :['JRC-ChuoCentral-020','JRC-TokaidoCentral-067','Nagoya'];
+    const p=plannedSqlRun({trainNumber:n,
+      trainType:'odpt.TrainType:JR-Central.HomeLiner',
+      railDirection:'odpt.RailDirection:'+direction,scheduledStopKeys:stops});
+    const result=w.TrainNumberPngRanges.match(n,'ChuoCentral',p);
+    assert.equal(result?.model,'383系',n);
+    assert.equal(result?.pngPath,png383,n);
+    assert.equal(result?.numberReference?.numberClass,'home-liner-383',n);
+    assert.equal(result?.actualVehicleConfirmed,false,n);
+  }
+  assert.equal(w.TrainNumberPngRanges.match('2685M','ChuoCentral',
+    plannedSqlRun({trainNumber:'2685M',
+      trainType:'odpt.TrainType:JR-Central.HomeLiner'})),null);
 });
 test('existing 2611 Shinano SQL numbers select the scoped JR Central 383 reference PNG',()=>{
   const w=loadReferenceMatcher();
@@ -89,7 +136,7 @@ test('number-only, live, other operator, other month, limited express and unknow
     {realtimeVehicleType:'313系'}
   ];
   for(const change of rejected)
-    assert.equal(w.TrainNumberPngRanges.match('801M','ChuoCentral',
+    assert.equal(w.TrainNumberPngRanges.match('701M','ChuoCentral',
       plannedSqlRun(change)),null,JSON.stringify(change));
   assert.equal(w.TrainNumberPngRanges.match('1001M','ChuoCentral',
     plannedSqlRun()),null,'caller train number must equal SQL source');

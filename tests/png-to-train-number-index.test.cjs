@@ -19,7 +19,7 @@ test('PNG-first number index reproduces original sources, no new mapping authori
  assert.equal(JSON.stringify(index),JSON.stringify(actual));
  assert.equal(index.summary.galleryPng,601);
  assert.equal(index.summary.catalogRules,423);
- assert.equal(index.summary.imagesInRuntimeRosters,12);
+ assert.equal(index.summary.imagesInRuntimeRosters,13);
  assert.equal(index.summary.imagesInTobuRuntimeRosters,11);
  assert.equal(rows.length,new Set(rows.map(x=>x.path)).size);
  assert.equal(index.summary.missingPhysicalPngReferences,0);
@@ -80,6 +80,29 @@ test('JR Central Kansai 315 uses only the 251 transcribed exact roster occurrenc
  assert.deepEqual(groups.map(x=>x.explicitDocumentedNumberCount),[65,62,64,60]);
  assert.equal(index.summary.jrCentralKansai315ExactRosterOccurrences,251);
  for(const group of groups){
+   assert.equal(group.authority,'private_unofficial_exact_roster');
+   assert.equal(group.actualVehicleConfirmed,false);
+   assert.equal(group.exactContiguousBands.reduce((sum,x)=>sum+x.count,0),
+     group.explicitDocumentedNumberCount);
+ }
+});
+test('JR Central Chuo uses only the 540 ordinary and 4 Home Liner roster occurrences',()=>{
+ const jrc315=get('JR東海_315系.png');
+ const ordinary=jrc315.runtimeNumberRosters.filter(x=>
+   x.lineId==='ChuoCentral'&&x.numberFamily==='ordinary-315');
+ assert.equal(ordinary.length,4);
+ assert.deepEqual(ordinary.map(x=>x.explicitDocumentedNumberCount),
+   [136,139,132,133]);
+ assert.equal(ordinary.reduce((sum,x)=>
+   sum+x.explicitDocumentedNumberCount,0),540);
+ const jrc383=get('JR東海_383系.png');
+ const liners=jrc383.runtimeNumberRosters.filter(x=>
+   x.lineId==='ChuoCentral'&&x.numberFamily==='home-liner-383');
+ assert.equal(liners.length,2);
+ assert.deepEqual(liners.map(x=>x.explicitDocumentedNumberCount),[2,2]);
+ assert.equal(index.summary.jrCentralChuo315ExactRosterOccurrences,540);
+ assert.equal(index.summary.jrCentralChuo383HomeLinerExactRosterOccurrences,4);
+ for(const group of [...ordinary,...liners]){
    assert.equal(group.authority,'private_unofficial_exact_roster');
    assert.equal(group.actualVehicleConfirmed,false);
    assert.equal(group.exactContiguousBands.reduce((sum,x)=>sum+x.count,0),

@@ -126,6 +126,64 @@
       });
     return null;
   }
+  // JR Central Chuo line (Nagoya area) public-number reference, 2026-03-14.
+  // The four private, unofficial operation tables publish finite weekday /
+  // holiday and outbound / inbound number rosters. They do not publish a
+  // complete all-stop timetable and do not prove an observed physical set.
+  // Runtime use therefore still requires an independently dated SQL run,
+  // exact source/calendar/direction, ordered canonical stops and compatible
+  // vehicle evidence.
+  // https://yoke4000.main.jp/jru/chuouWD.html
+  // https://yoke4000.main.jp/jru/chuouWU.html
+  // https://yoke4000.main.jp/jru/chuouHD.html
+  // https://yoke4000.main.jp/jru/chuouHU.html
+  var jrcChuo202603NumberRoster=Object.freeze({
+    revision:"2026-03-14",
+    sourceStatus:"private-unofficial-observation-reference",
+    ordinary315:Object.freeze({
+      weekday:Object.freeze({
+        Outbound:frozenNumberList("701M 601M 603M 703M 605M 607M 2701M 609M 101M 611M 705M 103M 2703M 613M 105M 707M 107M 109M 615M 111M 709M 113M 711M 115M 117M 617M 119M 121M 2705M 619M 123M 2901M 125M 2801M 621M 2903M 127M 623M 2905M 129M 2803M 625M 2907M 627M 2909M 131M 2805M 629M 2911M 631M 2913M 133M 2807M 633M 2915M 635M 2917M 135M 2809M 637M 2919M 639M 2921M 137M 2811M 641M 2923M 139M 643M 2925M 141M 2601M 645M 143M 2707M 647M 145M 2709M 147M 1601M 2711M 649M 149M 2713M 651M 151M 2715M 653M 1603M 2717M 655M 153M 2719M 657M 155M 2721M 659M 1605M 2723M 661M 157M 2725M 663M 159M 2727M 665M 1607M 2729M 667M 161M 2731M 669M 163M 2733M 671M 165M 2735M 673M 167M 675M 2737M 169M 677M 171M 2739M 679M 681M 2741M 173M 683M 2743M 685M 687M 689M 691M 175M"),
+        Inbound:frozenNumberList("100M 600M 102M 602M 104M 604M 700M 106M 702M 606M 608M 704M 610M 612M 2700M 1600M 614M 616M 2702M 108M 618M 2704M 1602M 620M 622M 2706M 110M 624M 2708M 112M 2710M 114M 626M 116M 2712M 118M 120M 628M 122M 2714M 124M 630M 2900M 126M 706M 128M 2902M 632M 2904M 634M 2800M 130M 2906M 636M 2908M 638M 2802M 132M 2910M 640M 2912M 642M 2804M 134M 2914M 644M 2916M 646M 2806M 136M 2918M 138M 648M 2920M 650M 2808M 140M 2922M 142M 652M 2716M 144M 654M 2600M 146M 148M 2718M 150M 656M 2720M 152M 154M 658M 156M 660M 2722M 662M 158M 2602M 664M 160M 2724M 162M 666M 2726M 164M 668M 2604M 670M 166M 2728M 168M 672M 2730M 170M 674M 2606M 676M 172M 2732M 174M 678M 2734M 176M 680M 682M 2736M 178M 684M 708M 180M 686M 182M 710M 184M 688M 186M 712M 188M")
+      }),
+      holiday:Object.freeze({
+        Outbound:frozenNumberList("3701M 3601M 3603M 3703M 3605M 5701M 3607M 3101M 3609M 5703M 3705M 3611M 3103M 5705M 3613M 3105M 3707M 3107M 3709M 3109M 3111M 3615M 3113M 3115M 5707M 3617M 3117M 5901M 3119M 5801M 3619M 5903M 3121M 3621M 5905M 3123M 5803M 3623M 5907M 3625M 5909M 3125M 5805M 3627M 5911M 3629M 5913M 3127M 5807M 3631M 5915M 3633M 5917M 3129M 5809M 3635M 5919M 3637M 5921M 3131M 5811M 3639M 5923M 3133M 3641M 5925M 3135M 5601M 3643M 3137M 5709M 3645M 3139M 5711M 3141M 3143M 5713M 3647M 3145M 5715M 3649M 3147M 5717M 3651M 3149M 5719M 3653M 3151M 5121M 3655M 3153M 5723M 3657M 3155M 5725M 3659M 3157M 5727M 3661M 3159M 5729M 3663M 3161M 5731M 3665M 3163M 5733M 3667M 3165M 5735M 3669M 3167M 5737M 3671M 3169M 3673M 5739M 3171M 3675M 3173M 5741M 3677M 3679M 5743M 3175M 3681M 5745M 3683M 3685M 3687M 3689M 175M"),
+        Inbound:frozenNumberList("3100M 3600M 3102M 3602M 3104M 3604M 3700M 3106M 3702M 3606M 3608M 3704M 3610M 5700M 3612M 5702M 3108M 3614M 5704M 3616M 5706M 3618M 5708M 3110M 5710M 3112M 3620M 3114M 5712M 3116M 3118M 3622M 3120M 5714M 3122M 3624M 5900M 3124M 3706M 3126M 5902M 3626M 5904M 3628M 5800M 3128M 5906M 3630M 5908M 3632M 5802M 3130M 5910M 3634M 5912M 3636M 5804M 3132M 5914M 3638M 5916M 3640M 5806M 3134M 5918M 3136M 3642M 5920M 3644M 5808M 3138M 5922M 3140M 3646M 5716M 3142M 3648M 5600M 3144M 3146M 5718M 3148M 3650M 5720M 3150M 3152M 3652M 3154M 3654M 5722M 3656M 3156M 5602M 3658M 3158M 5724M 3160M 3660M 5726M 3162M 3662M 5604M 3664M 3164M 5728M 3166M 3666M 5730M 3168M 3668M 5606M 3670M 3170M 5732M 3172M 3672M 5734M 3174M 3674M 3676M 5736M 3176M 3678M 3708M 3178M 3680M 3180M 3710M 3182M 3682M 3184M 3712M 3186M")
+      })
+    }),
+    homeLiner383:Object.freeze({
+      weekday:Object.freeze({
+        Outbound:frozenNumberList("2681M 2683M"),
+        Inbound:frozenNumberList("2682M 2684M")
+      }),
+      holiday:Object.freeze({Outbound:frozenNumberList(""),Inbound:frozenNumberList("")})
+    })
+  });
+  function findJrCentralChuo202603Number(trainNumber,calendar,direction){
+    var number=String(trainNumber||"").trim().toUpperCase();
+    var cal=String(calendar||"").trim().toLowerCase();
+    var dir=String(direction||"").split(/[.:]/).pop();
+    if(!number||!["weekday","holiday"].includes(cal)||
+       !["Outbound","Inbound"].includes(dir))return null;
+    var sourceUrl="https://yoke4000.main.jp/jru/chuou"+
+      (cal==="holiday"?"H":"W")+(dir==="Outbound"?"D":"U")+".html";
+    if(jrcChuo202603NumberRoster.ordinary315[cal][dir].indexOf(number)>=0)
+      return Object.freeze({
+        trainNumber:number,lineId:"ChuoCentral",calendarType:cal,
+        direction:dir,numberClass:"ordinary-315",vehicleFamily:"315系",
+        rosterRevision:jrcChuo202603NumberRoster.revision,
+        sourceStatus:jrcChuo202603NumberRoster.sourceStatus,
+        sourceUrl:sourceUrl,exactRoster:true,actualVehicleConfirmed:false
+      });
+    if(jrcChuo202603NumberRoster.homeLiner383[cal][dir].indexOf(number)>=0)
+      return Object.freeze({
+        trainNumber:number,lineId:"ChuoCentral",calendarType:cal,
+        direction:dir,numberClass:"home-liner-383",vehicleFamily:"383系",
+        rosterRevision:jrcChuo202603NumberRoster.revision,
+        sourceStatus:jrcChuo202603NumberRoster.sourceStatus,
+        sourceUrl:sourceUrl,exactRoster:true,actualVehicleConfirmed:false
+      });
+    return null;
+  }
   // Exact JR Y/A to Tozai K/S ownership index, 2026-11 2611 edition.
   // Linked by calendar, Nakano/NishiFunabashi station and 0-8 minute
   // stop boundary in existing SQL. NOT a verified physical carset.
@@ -4297,6 +4355,8 @@
       var dayCal=(day===0||day===6||date==="2026-11-03"||
         date==="2026-11-23")?"holiday":"weekday";
       if(calendar!==dayCal)return null;
+      var chuoNumberReference=findJrCentralChuo202603Number(
+        number,calendar,direction);
       // The existing SQL range pool contains eight exact 2611 Shinano
       // services. Keep this finite list source-backed; do not infer a broad
       // 1000M range from the service name or timetable family.
@@ -4344,7 +4404,44 @@
           sourceUrl:shinanoSources[number],planned:true,representative:true,
           referenceOnly:true,illustrative:true,actualVehicleConfirmed:false};
       }
+      if(type==="HomeLiner"){
+        if(!chuoNumberReference||
+           chuoNumberReference.numberClass!=="home-liner-383")return null;
+        var linerIndex={"Nagoya":0,"JRC-TokaidoCentral-067":1};
+        for(var lj=3;lj<=20;lj++)
+          linerIndex["JRC-ChuoCentral-"+String(lj).padStart(3,"0")]=lj-1;
+        var linerStops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys.map(function(s){
+          return String(s||"").split(".").pop();
+        }):[];
+        if(linerStops.length<2||linerStops.some(function(key,i){
+          return !Object.prototype.hasOwnProperty.call(linerIndex,key)||
+            (i>0&&(direction==="Inbound"
+              ?linerIndex[key]>=linerIndex[linerStops[i-1]]
+              :linerIndex[key]<=linerIndex[linerStops[i-1]]));
+        }))return null;
+        var linerPlan=p.vehiclePlan;
+        if(linerPlan&&Array.isArray(linerPlan.models)&&linerPlan.models.length&&
+           (linerPlan.models.length!==1||linerPlan.models[0]!=="383系"))return null;
+        if(Array.isArray(p.plannedVehicleCandidates)&&
+           p.plannedVehicleCandidates.length&&
+           (p.plannedVehicleCandidates.length!==1||
+            p.plannedVehicleCandidates[0]!=="383系"))return null;
+        if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
+          return v&&String(v).trim()!=="383系";
+        }))return null;
+        var linerPng="../images/列车/JR東海/JR東海_383系.png";
+        var linerGallery=root.VehicleGaragePngMap;
+        if(!linerGallery||
+           !linerGallery.matchModelPath("383系",linerPng,line))return null;
+        return {trainNumber:number,lineId:line,model:"383系",pngPath:linerPng,
+          source:"jr-central-chuo-202603-home-liner-exact-number-reference",
+          sourceUrl:chuoNumberReference.sourceUrl,
+          numberReference:chuoNumberReference,planned:true,representative:true,
+          referenceOnly:true,illustrative:true,actualVehicleConfirmed:false};
+      }
       if(!["Local","Rapid","SectionRapid","SpecialRapid"].includes(type))return null;
+      if(!chuoNumberReference||
+         chuoNumberReference.numberClass!=="ordinary-315")return null;
       // Restrict to a complete SQL journey contained entirely inside the
       // 20 canonical Nagoya–Nakatsugawa stations. Never use a segment from
       // an extended Shinano or Nakatsugawa–Shiojiri service as proof.
@@ -4373,8 +4470,9 @@
       var gallery=root.VehicleGaragePngMap;
       if(!gallery||!gallery.matchModelPath("315系",png,line))return null;
       return {trainNumber:number,lineId:line,model:"315系",pngPath:png,
-        source:"jr-central-chuo-line-fleet-reference",
-        sourceUrl:"https://jr-central.co.jp/news/release/_pdf/000041578.pdf",
+        source:"jr-central-chuo-202603-exact-number-reference",
+        sourceUrl:chuoNumberReference.sourceUrl,
+        numberReference:chuoNumberReference,
         planned:true,representative:true,referenceOnly:true,
         illustrative:true,actualVehicleConfirmed:false};
     }
@@ -5985,6 +6083,8 @@
 
   root.TrainNumberPngRanges=Object.freeze({
     version:"20261105-kashima-sql-2611-v1",match:match,
+    jrCentralChuo202603NumberRoster:jrcChuo202603NumberRoster,
+    findJrCentralChuo202603Number:findJrCentralChuo202603Number,
     jrCentralKansai202603NumberRoster:jrcKansai202603NumberRoster,
     findJrCentralKansai202603Number:findJrCentralKansai202603Number,
     verifyJoetsuService:verifyJoetsuService,

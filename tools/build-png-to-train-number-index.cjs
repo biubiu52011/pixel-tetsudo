@@ -29,7 +29,7 @@ function buildIndex(input) {
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
-    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster;');
+    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
   // 2611 M-03 guard fixtures: not claims that a train used these cars.
   // A shared S train number is insufficient if vehicle sources disagree.
@@ -348,6 +348,82 @@ function buildIndex(input) {
       jrc315.runtimeNumberRosters.push(group);
     }
   }
+  // JR Central Chuo 2026-03 exact public-number roster. As with Kansai,
+  // this is a finite private-source reference rather than an all-stop
+  // timetable or a physical formation observation. Replay the production
+  // SQL/date/route guards for every 315 and 383 Home Liner number.
+  const jrcChuo=win.__pngIndexJrcChuo202603;
+  const jrcChuo315=get('../images/列车/JR東海/JR東海_315系.png',
+    'runtime-jrc-chuo-315');
+  const jrcChuo383=get('../images/列车/JR東海/JR東海_383系.png',
+    'runtime-jrc-chuo-383');
+  if(!jrcChuo||!jrcChuo315||jrcChuo315.quarantined||
+     !jrcChuo383||jrcChuo383.quarantined)
+    throw Error('JR Central Chuo exact number roster unavailable');
+  let jrcChuo315Accepted=0,jrcChuo383Accepted=0;
+  const chuoRoute=['Nagoya','JRC-TokaidoCentral-067'];
+  for(let i=3;i<=20;i++)
+    chuoRoute.push('JRC-ChuoCentral-'+String(i).padStart(3,'0'));
+  for(const calendar of ['weekday','holiday']){
+    for(const direction of ['Outbound','Inbound']){
+      const stops=direction==='Outbound'?chuoRoute:chuoRoute.slice().reverse();
+      const common={lineId:'ChuoCentral',calendarType:calendar,direction,
+        validFrom:'2026-03-14',validTo:null,numberFormat:'full_exact',
+        referenceOnly:true,illustrative:true,actualVehicleConfirmed:false,
+        guardDescription:'Production match() additionally requires dated JR-Central SQL, exact source railway, calendar, direction, type and ordered canonical stops'};
+      const sourceUrl='https://yoke4000.main.jp/jru/chuou'+
+        (calendar==='holiday'?'H':'W')+(direction==='Outbound'?'D':'U')+'.html';
+      const ordinary={...common,authority:'private_unofficial_exact_roster',
+        numberFamily:'ordinary-315',model:'315系',sourceUrl,numbers:[]};
+      for(const number of jrcChuo.ordinary315[calendar][direction]||[]){
+        const result=win.TrainNumberPngRanges.match(number,'ChuoCentral',{
+          trainNumber:number,positionLineId:'ChuoCentral',
+          displayLineId:'ChuoCentral',serviceDate:jrcDates[calendar],
+          calendarType:calendar,positionSource:'supabase-train-run',
+          estimated:true,officialNumberVerified:true,
+          timetableDateVerified:true,timetableValidity:'date_verified',
+          sourceRailway:'odpt.Railway:JR-Central.Chuo',
+          trainOperator:'JR-Central',
+          trainType:'odpt.TrainType:JR-Central.Local',
+          railDirection:'odpt.RailDirection:'+direction,
+          scheduledStopKeys:stops
+        });
+        if(!result||result.pngPath!==
+            '../images/列车/JR東海/JR東海_315系.png'||
+           result.numberReference?.exactRoster!==true)
+          throw Error('JR Central Chuo 315 exact number rejected: '+
+            calendar+' '+direction+' '+number);
+        ordinary.numbers.push(number);++jrcChuo315Accepted;
+      }
+      jrcChuo315.runtimeNumberRosters.push(ordinary);
+      const liners=jrcChuo.homeLiner383[calendar][direction]||[];
+      if(liners.length){
+        const homeLiner={...common,authority:'private_unofficial_exact_roster',
+          numberFamily:'home-liner-383',model:'383系',sourceUrl,numbers:[]};
+        for(const number of liners){
+          const result=win.TrainNumberPngRanges.match(number,'ChuoCentral',{
+            trainNumber:number,positionLineId:'ChuoCentral',
+            displayLineId:'ChuoCentral',serviceDate:jrcDates[calendar],
+            calendarType:calendar,positionSource:'supabase-train-run',
+            estimated:true,officialNumberVerified:true,
+            timetableDateVerified:true,timetableValidity:'date_verified',
+            sourceRailway:'odpt.Railway:JR-Central.Chuo',
+            trainOperator:'JR-Central',
+            trainType:'odpt.TrainType:JR-Central.HomeLiner',
+            railDirection:'odpt.RailDirection:'+direction,
+            scheduledStopKeys:stops
+          });
+          if(!result||result.pngPath!==
+              '../images/列车/JR東海/JR東海_383系.png'||
+             result.numberReference?.exactRoster!==true)
+            throw Error('JR Central Chuo Home Liner exact number rejected: '+
+              calendar+' '+direction+' '+number);
+          homeLiner.numbers.push(number);++jrcChuo383Accepted;
+        }
+        jrcChuo383.runtimeNumberRosters.push(homeLiner);
+      }
+    }
+  }
   // Historic SOURCE-level SQL vehicle evidence: keep its original number,
   // operator, calendar, direction and revision, never promote a July source
   // to an authorized November carset or a broad train number range.
@@ -474,6 +550,7 @@ function buildIndex(input) {
       historical:'Historical dated_schedule_rule is source-scoped, not proof that that train operated today',
       Tobu:'Helper rules are existing production references; family and operator are not physical vehicle confirmations',
       JR_Central_Kansai:'Private exact-number roster; complete stop clocks and actual vehicle remain unverified',
+      JR_Central_Chuo:'Private exact-number roster; complete stop clocks and actual vehicle remain unverified',
       missing:'No supported number evidence for this image; preserve neutral marker',
       observedTrainset:'No map here asserts an actual vehicle/carset or livery'
     },
@@ -486,6 +563,8 @@ function buildIndex(input) {
       quarantinedImages:quarantined,imagesWithNoNumberEvidence:none,
       tobuMatcherAcceptedCalls:tobuAccepted,tobuMatcherRejectedCalls:tobuMissed,
       jrCentralKansai315ExactRosterOccurrences:jrcKansaiAccepted,
+      jrCentralChuo315ExactRosterOccurrences:jrcChuo315Accepted,
+      jrCentralChuo383HomeLinerExactRosterOccurrences:jrcChuo383Accepted,
       missingPhysicalPngReferences:unknownPaths.length
     },
     missingPhysicalPngReferences:unknownPaths,
