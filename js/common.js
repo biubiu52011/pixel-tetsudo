@@ -24,26 +24,8 @@
     return h + ':' + (m < 10 ? '0' : '') + m;
   };
 
-  // 全局未处理 Promise 拒绝兜底——消除 "Uncaught (in promise)" 控制台噪音。
-  // 第三方/遗留代码（如旧版 ODPT 响应 reject）的遗漏路径不再刷红字，只留 debug 记录。
-  if (typeof window.addEventListener === "function") {
-    window.addEventListener("unhandledrejection", function(e) {
-      try { if (e && typeof e.preventDefault === "function") e.preventDefault(); } catch(_e) {}
-      var r = e && e.reason;
-      var msg = "unknown rejection";
-      if (r) {
-        if (typeof r === "object" && r !== null) {
-          if (r.message) msg = r.message;
-          else if (r.code !== undefined) msg = "code=" + r.code;
-          else if (r.httpStatus !== undefined) msg = "httpStatus=" + r.httpStatus + " code=" + (r.code !== undefined ? r.code : "-");
-          else { try { msg = JSON.stringify(r); } catch(_e2) { msg = String(r); } }
-        } else {
-          try { msg = String(r); } catch(_e3) { msg = "non-string rejection"; }
-        }
-      }
-      console.debug("[PixelTetsudo] unhandledrejection:", msg);
-    });
-  }
+  // Leave unhandled rejections visible to browser diagnostics.
+
 })();
 
   // canonical 运营商键规范化：LOS 格式（UNDERSCORE_UPPER）↔ 标准格式（JR-East）。

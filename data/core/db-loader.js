@@ -809,12 +809,8 @@ function load() {
     loadAfterFirstPaint();
   }
 
-  // ========== 未处理 Promise 拒绝监听器 ==========
-  // 捕获逃出内部 catch 块的 ODPT fetch 或异步错误。
-  window.addEventListener('unhandledrejection', function(event) {
-    console.warn('[PixelTetsudo] Unhandled promise rejection:', event.reason ? event.reason.message || event.reason : event.reason);
-    event.preventDefault();
-  });
+  // Handle expected failures at their source; preserve native error reporting.
+
 })();
 
 /*

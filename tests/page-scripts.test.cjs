@@ -118,3 +118,11 @@ test('CSP permits dynamic inline CSS but keeps script execution and resource res
     assert.ok(directives.has('connect-src') && directives.has('img-src') && directives.has('frame-src'), page);
   }
 });
+
+
+test('shared runtime preserves native unhandled rejection reporting', () => {
+  for (const asset of ['js/common.js', 'data/core/db-loader.js']) {
+    const source = fs.readFileSync(path.join(root, asset), 'utf8');
+    assert.doesNotMatch(source, /addEventListener\s*\(\s*['"]unhandledrejection['"]/, asset);
+  }
+});
