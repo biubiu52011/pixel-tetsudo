@@ -29,7 +29,7 @@ function buildIndex(input) {
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
-    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster;');
+    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
   // 2611 M-03 guard fixtures: not claims that a train used these cars.
   // A shared S train number is insufficient if vehicle sources disagree.
@@ -293,6 +293,61 @@ function buildIndex(input) {
       }
     }
   }
+  // JR Central Kansai 2026-03 exact public-number roster. The private source
+  // supplies number/calendar/direction and vehicle family, but not a complete
+  // all-stop timetable. Keep it as a finite runtime reference and replay the
+  // production matcher's SQL/date/route guards for every number. Rapid Mie is
+  // recorded by the front-end roster but deliberately has no PNG index entry
+  // while its KiHa75 artwork remains under review.
+  const jrcKansai=win.__pngIndexJrcKansai202603;
+  const jrc315=get('../images/列车/JR東海/JR東海_315系.png',
+    'runtime-jrc-kansai-315');
+  if(!jrcKansai||!jrc315||jrc315.quarantined)
+    throw Error('JR Central Kansai exact number roster unavailable');
+  let jrcKansaiAccepted=0;
+  const jrcDates={weekday:'2026-11-11',holiday:'2026-11-23'};
+  const jrcRoute=['Nagoya','Hatta','Kuwana','Yokkaichi','Kameyama'];
+  for(const calendar of ['weekday','holiday']){
+    for(const direction of ['Outbound','Inbound']){
+      const numbers=jrcKansai.ordinary315[calendar][direction]||[];
+      const group={authority:'private_unofficial_exact_roster',
+        lineId:'KansaiCentral',calendarType:calendar,
+        direction,numberFamily:'ordinary-315',model:'315系',
+        sourceUrl:calendar==='holiday'
+          ?'https://yoke4000.main.jp/jru/kansaiH.html'
+          :'https://yoke4000.main.jp/jru/kansaiW.html',
+        validFrom:'2026-03-14',validTo:null,numberFormat:'full_exact',
+        numbers:[],referenceOnly:true,illustrative:true,
+        actualVehicleConfirmed:false,
+        guardDescription:'Production match() additionally requires dated JR-Central SQL, exact source railway, calendar, direction, type and ordered canonical stops'};
+      for(const number of numbers){
+        const numeric=Number(String(number).slice(0,-1));
+        const type=(numeric>=2350&&numeric<=2361)||
+          (numeric>=5351&&numeric<=5361)?'SectionRapid':
+          (numeric>=2300&&numeric<=2315)||
+          (numeric>=5300&&numeric<=5315)?'Rapid':'Local';
+        const stops=direction==='Outbound'?jrcRoute:jrcRoute.slice().reverse();
+        const result=win.TrainNumberPngRanges.match(number,'KansaiCentral',{
+          trainNumber:number,positionLineId:'KansaiCentral',
+          displayLineId:'KansaiCentral',serviceDate:jrcDates[calendar],
+          calendarType:calendar,positionSource:'supabase-train-run',
+          estimated:true,officialNumberVerified:true,
+          timetableDateVerified:true,timetableValidity:'date_verified',
+          sourceRailway:'odpt.Railway:JR-Central.Kansai',
+          trainOperator:'JR-Central',
+          trainType:'odpt.TrainType:JR-Central.'+type,
+          railDirection:'odpt.RailDirection:'+direction,
+          scheduledStopKeys:stops
+        });
+        if(!result||result.pngPath!=='../images/列车/JR東海/JR東海_315系.png'||
+           result.numberReference?.exactRoster!==true)
+          throw Error('JR Central Kansai exact number rejected: '+
+            calendar+' '+direction+' '+number);
+        group.numbers.push(number);++jrcKansaiAccepted;
+      }
+      jrc315.runtimeNumberRosters.push(group);
+    }
+  }
   // Historic SOURCE-level SQL vehicle evidence: keep its original number,
   // operator, calendar, direction and revision, never promote a July source
   // to an authorized November carset or a broad train number range.
@@ -397,6 +452,9 @@ function buildIndex(input) {
       ++any;asset.status='historical_source_number_only_not_current_verified';
     }else{++none;asset.status='no_verified_number_mapping';}
   }
+  const existingHelperRuntime=assets.filter(asset=>
+    asset.runtimeNumberRosters.some(roster=>
+      roster.authority==='existing_frontend_helper')).length;
   if(catalog.rules.length!==423||datedSource.rows.length!==200)
     throw Error('Source evidence counts changed; refresh and reassess');
   // Quarantined paths may still have suspicious legacy rules; keep them
@@ -415,16 +473,19 @@ function buildIndex(input) {
       directNumbers:'Exact number lists still need source/line/date/calendar/formation guards',
       historical:'Historical dated_schedule_rule is source-scoped, not proof that that train operated today',
       Tobu:'Helper rules are existing production references; family and operator are not physical vehicle confirmations',
+      JR_Central_Kansai:'Private exact-number roster; complete stop clocks and actual vehicle remain unverified',
       missing:'No supported number evidence for this image; preserve neutral marker',
       observedTrainset:'No map here asserts an actual vehicle/carset or livery'
     },
     summary:{
       galleryPng:assets.length,catalogRules:catalog.rules.length,
-      imagesInDirectRules:direct,imagesInTobuRuntimeRosters:runtime,
+      imagesInDirectRules:direct,imagesInRuntimeRosters:runtime,
+      imagesInTobuRuntimeRosters:existingHelperRuntime,
       imagesWithHistoricalSqlLinks:historical,
       imagesWithAnyNumberReferenceIncludingHistory:any,
       quarantinedImages:quarantined,imagesWithNoNumberEvidence:none,
       tobuMatcherAcceptedCalls:tobuAccepted,tobuMatcherRejectedCalls:tobuMissed,
+      jrCentralKansai315ExactRosterOccurrences:jrcKansaiAccepted,
       missingPhysicalPngReferences:unknownPaths.length
     },
     missingPhysicalPngReferences:unknownPaths,

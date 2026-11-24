@@ -19,6 +19,8 @@ test('PNG-first number index reproduces original sources, no new mapping authori
  assert.equal(JSON.stringify(index),JSON.stringify(actual));
  assert.equal(index.summary.galleryPng,601);
  assert.equal(index.summary.catalogRules,423);
+ assert.equal(index.summary.imagesInRuntimeRosters,12);
+ assert.equal(index.summary.imagesInTobuRuntimeRosters,11);
  assert.equal(rows.length,new Set(rows.map(x=>x.path)).size);
  assert.equal(index.summary.missingPhysicalPngReferences,0);
 });
@@ -67,6 +69,21 @@ test('Tobu Skytree SPACIA X and Nikko source-owned exact rosters are preserved',
    assert.equal(g.exactContiguousBands.reduce((sum,x)=>sum+x.count,0),
      g.explicitDocumentedNumberCount,
      'exhaustive exact islands; cannot synthesize holes');
+ }
+});
+test('JR Central Kansai 315 uses only the 251 transcribed exact roster occurrences',()=>{
+ const jrc=get('JR東海_315系.png');
+ const groups=jrc.runtimeNumberRosters.filter(x=>
+   x.lineId==='KansaiCentral'&&x.numberFamily==='ordinary-315');
+ assert.equal(groups.length,4);
+ assert.equal(groups.reduce((sum,x)=>sum+x.explicitDocumentedNumberCount,0),251);
+ assert.deepEqual(groups.map(x=>x.explicitDocumentedNumberCount),[65,62,64,60]);
+ assert.equal(index.summary.jrCentralKansai315ExactRosterOccurrences,251);
+ for(const group of groups){
+   assert.equal(group.authority,'private_unofficial_exact_roster');
+   assert.equal(group.actualVehicleConfirmed,false);
+   assert.equal(group.exactContiguousBands.reduce((sum,x)=>sum+x.count,0),
+     group.explicitDocumentedNumberCount);
  }
 });
 test('historical dated schedule sources are not turned into current-number bands',()=>{

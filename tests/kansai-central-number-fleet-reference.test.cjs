@@ -44,6 +44,40 @@ test('KansaiCentral owns only the approved 315 and HC85 reference art',()=>{
   assert.equal(w.VehicleGaragePngMap.matchModelPath('HC85系',pngHC85,'KiseiCentral'),true);
 });
 
+test('2026-03 Kansai source numbers are stored as exact weekday and holiday rosters',()=>{
+  const w=loadMatcher();
+  const api=w.TrainNumberPngRanges;
+  const roster=api.jrCentralKansai202603NumberRoster;
+  assert.equal(roster.revision,'2026-03-14');
+  assert.deepEqual([
+    roster.ordinary315.weekday.Outbound.length,
+    roster.ordinary315.weekday.Inbound.length,
+    roster.ordinary315.holiday.Outbound.length,
+    roster.ordinary315.holiday.Inbound.length
+  ],[65,62,64,60]);
+  assert.deepEqual([
+    roster.mie.weekday.Outbound.length,roster.mie.weekday.Inbound.length,
+    roster.mie.holiday.Outbound.length,roster.mie.holiday.Inbound.length
+  ],[13,13,13,13]);
+  for(const [calendar,direction,number] of [
+    ['weekday','Outbound','1301G'],['weekday','Inbound','364G'],
+    ['holiday','Outbound','4301G'],['holiday','Inbound','3360G']
+  ]){
+    const ref=api.findJrCentralKansai202603Number(number,calendar,direction);
+    assert.equal(ref?.numberClass,'ordinary-315',number);
+    assert.equal(ref?.exactRoster,true,number);
+    assert.equal(ref?.actualVehicleConfirmed,false,number);
+  }
+  assert.equal(api.findJrCentralKansai202603Number(
+    '2901D','weekday','Outbound')?.numberClass,'rapid-mie');
+  assert.equal(api.findJrCentralKansai202603Number(
+    '8951D','holiday','Outbound')?.serviceDateVerified,false);
+  assert.equal(api.findJrCentralKansai202603Number(
+    '8951D','weekday','Outbound'),null,'special service date is not generalized');
+  assert.equal(api.findJrCentralKansai202603Number(
+    '2371G','weekday','Outbound'),null,'well-formed but unlisted G number is rejected');
+});
+
 test('dated Kansai ordinary and rapid G runs select a planned 315 illustration',()=>{
   const w=loadMatcher();
   for(const [number,type] of [['1301G','Local'],['2301G','Rapid'],['2351G','SectionRapid']]){
@@ -96,4 +130,7 @@ test('source, date, route, identity and conflicting vehicle evidence remain stri
     null,'Mie remains unresolved while the KiHa75 artwork is unreviewed');
   assert.equal(w.TrainNumberPngRanges.match('3003D','KansaiCentral',
     run('KansaiCentral','3003D')),null,'unreviewed Nanki number is not inferred');
+  assert.equal(w.TrainNumberPngRanges.match('2371G','KansaiCentral',
+    run('KansaiCentral','2371G')),
+    null,'a pattern-looking G number outside the source roster is not invented');
 });

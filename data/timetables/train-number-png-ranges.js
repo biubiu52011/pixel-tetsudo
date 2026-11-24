@@ -47,6 +47,85 @@
  */
 (function(root){
   "use strict";
+  function frozenNumberList(text){
+    return Object.freeze(String(text||"").trim().split(/\s+/).filter(Boolean));
+  }
+  // JR Central Kansai line train-number reference, 2026-03-14 revision.
+  // These are literal public train numbers transcribed from a private,
+  // unofficial working table. They are useful as a finite roster check, but
+  // do not create a timetable, prove a service date or identify a physical
+  // formation. Runtime PNG selection still requires a dated SQL train run,
+  // exact direction/calendar agreement and every existing evidence guard.
+  // https://yoke4000.main.jp/jru/kansaiW.html
+  // https://yoke4000.main.jp/jru/kansaiH.html
+  var jrcKansai202603NumberRoster=Object.freeze({
+    revision:"2026-03-14",
+    sourceStatus:"private-unofficial-observation-reference",
+    ordinary315:Object.freeze({
+      weekday:Object.freeze({
+        Outbound:frozenNumberList("1301G 1303G 1305G 1307G 1309G 301G 1311G 303G 305G 1313G 307G 2301G 309G 311G 2303G 313G 315G 2305G 317G 319G 2307G 321G 323G 2309G 325G 327G 2311G 329G 331G 2313G 333G 335G 337G 2315G 1315G 1317G 339G 2351G 341G 1319G 343G 1321G 1323G 1325G 345G 2353G 1327G 347G 349G 2355G 1329G 351G 353G 2357G 355G 357G 2359G 359G 361G 2361G 363G 1331G 365G 1333G 367G"),
+        Inbound:frozenNumberList("1300G 300G 1302G 1304G 1306G 1308G 1310G 2350G 302G 2352G 304G 2354G 306G 1312G 1314G 308G 1316G 310G 312G 2300G 314G 316G 2302G 318G 320G 2304G 322G 324G 2306G 326G 328G 2308G 330G 332G 2310G 334G 336G 2312G 338G 340G 342G 2314G 1318G 344G 1320G 346G 1322G 1324G 348G 1326G 350G 1328G 352G 1330G 354G 356G 1332G 358G 360G 1334G 362G 364G")
+      }),
+      holiday:Object.freeze({
+        Outbound:frozenNumberList("4301G 4303G 4305G 4307G 3301G 3303G 4309G 4311G 3305G 3307G 5301G 3309G 3311G 5303G 3313G 3315G 5305G 3317G 3319G 5307G 3321G 3323G 5309G 3325G 3327G 5311G 3329G 3331G 5313G 3333G 3335G 3337G 5315G 4313G 4315G 3339G 5351G 3341G 4317G 3343G 4319G 4321G 4323G 3345G 5353G 4325G 3347G 3349G 5355G 4327G 3351G 3353G 5357G 3355G 3357G 5359G 3359G 3361G 5361G 3363G 4329G 3365G 4331G 3367G"),
+        Inbound:frozenNumberList("4300G 3300G 4302G 4304G 4306G 4308G 4310G 4312G 4314G 4316G 3302G 4318G 3304G 4320G 4322G 3306G 3308G 5300G 3310G 3312G 5302G 3314G 3316G 5304G 3318G 3320G 5306G 3322G 3324G 5308G 3326G 3328G 5310G 3330G 3332G 5312G 3334G 3336G 3338G 5314G 4324G 3340G 4326G 3342G 4328G 4330G 3344G 4332G 3346G 4334G 3348G 4336G 3350G 3352G 4338G 3354G 3356G 4340G 3358G 3360G")
+      })
+    }),
+    mie:Object.freeze({
+      weekday:Object.freeze({
+        Outbound:frozenNumberList("2901D 2903D 2905D 2907D 2909D 2911D 2913D 2915D 2917D 2919D 2921D 2923D 2925D"),
+        Inbound:frozenNumberList("2902D 2904D 2906D 2908D 2910D 2912D 2914D 2916D 2918D 2920D 2922D 2924D 2926D")
+      }),
+      holiday:Object.freeze({
+        Outbound:frozenNumberList("2901D 2903D 2905D 2907D 2909D 2911D 2913D 2915D 2917D 2919D 2921D 2923D 2925D"),
+        Inbound:frozenNumberList("2902D 2904D 2906D 2908D 2910D 2912D 2914D 2916D 2918D 2920D 2922D 2924D 2926D")
+      }),
+      specialDateUnverified:frozenNumberList("8951D")
+    })
+  });
+  function findJrCentralKansai202603Number(trainNumber,calendar,direction){
+    var number=String(trainNumber||"").trim().toUpperCase();
+    var cal=String(calendar||"").trim().toLowerCase();
+    var dir=String(direction||"").split(/[.:]/).pop();
+    if(!number||!["weekday","holiday"].includes(cal)||
+       !["Outbound","Inbound"].includes(dir))return null;
+    var ordinary=jrcKansai202603NumberRoster.ordinary315[cal][dir];
+    if(ordinary.indexOf(number)>=0)return Object.freeze({
+      trainNumber:number,lineId:"KansaiCentral",calendarType:cal,
+      direction:dir,numberClass:"ordinary-315",vehicleFamily:"315系",
+      rosterRevision:jrcKansai202603NumberRoster.revision,
+      sourceStatus:jrcKansai202603NumberRoster.sourceStatus,
+      sourceUrl:cal==="holiday"?
+        "https://yoke4000.main.jp/jru/kansaiH.html":
+        "https://yoke4000.main.jp/jru/kansaiW.html",
+      exactRoster:true,actualVehicleConfirmed:false
+    });
+    var mie=jrcKansai202603NumberRoster.mie[cal][dir];
+    if(mie.indexOf(number)>=0)return Object.freeze({
+      trainNumber:number,lineId:"KansaiCentral",calendarType:cal,
+      direction:dir,numberClass:"rapid-mie",vehicleFamily:"キハ75",
+      rosterRevision:jrcKansai202603NumberRoster.revision,
+      sourceStatus:jrcKansai202603NumberRoster.sourceStatus,
+      sourceUrl:cal==="holiday"?
+        "https://yoke4000.main.jp/jru/kansaiH.html":
+        "https://yoke4000.main.jp/jru/kansaiW.html",
+      exactRoster:true,artworkStatus:"review-blocked",
+      actualVehicleConfirmed:false
+    });
+    if(cal==="holiday"&&dir==="Outbound"&&
+       jrcKansai202603NumberRoster.mie.specialDateUnverified.indexOf(number)>=0)
+      return Object.freeze({
+        trainNumber:number,lineId:"KansaiCentral",calendarType:cal,
+        direction:dir,numberClass:"rapid-mie-special-date-unverified",
+        vehicleFamily:"キハ75",
+        rosterRevision:jrcKansai202603NumberRoster.revision,
+        sourceStatus:jrcKansai202603NumberRoster.sourceStatus,
+        sourceUrl:"https://yoke4000.main.jp/jru/kansaiH.html",
+        exactRoster:true,serviceDateVerified:false,
+        artworkStatus:"review-blocked",actualVehicleConfirmed:false
+      });
+    return null;
+  }
   // Exact JR Y/A to Tozai K/S ownership index, 2026-11 2611 edition.
   // Linked by calendar, Nakano/NishiFunabashi station and 0-8 minute
   // stop boundary in existing SQL. NOT a verified physical carset.
@@ -4339,6 +4418,8 @@
       if(stops.length<2||positions.some(function(i){return i<0;})||
          positions.some(function(i,j){return j>0&&(direction==="Outbound"
            ?i<=positions[j-1]:i>=positions[j-1]);}))return null;
+      var numberReference=line==="KansaiCentral"
+        ?findJrCentralKansai202603Number(number,calendar,direction):null;
       var model="",png="",url="",source="";
       if(type==="LimitedExpress"&&["3001D","3002D"].includes(number)&&
          ((number==="3001D"&&direction==="Outbound")||
@@ -4349,7 +4430,7 @@
         source="jr-central-nanki-hc85-fleet-reference";
       }else if(line==="KansaiCentral"&&
                ["Local","Rapid","SectionRapid"].includes(type)&&
-               /^[1-9][0-9]{0,4}G$/.test(number)&&
+               numberReference&&numberReference.numberClass==="ordinary-315"&&
                ((Number(number.slice(0,-1))%2===0)===(direction==="Inbound"))){
         // The private March 2026 operation tables list every non-Mie,
         // non-limited-express Nagoya-area Kansai-line working as 315(4).
@@ -4373,7 +4454,8 @@
       var gallery=root.VehicleGaragePngMap;
       if(!gallery||!gallery.matchModelPath(model,png,line))return null;
       return {trainNumber:number,lineId:line,model:model,pngPath:png,
-        source:source,sourceUrl:url,planned:true,representative:true,
+        source:source,sourceUrl:url,numberReference:numberReference,
+        planned:true,representative:true,
         referenceOnly:true,illustrative:true,actualVehicleConfirmed:false};
     }
     if(line==="TokaidoCentral"){
@@ -5903,6 +5985,8 @@
 
   root.TrainNumberPngRanges=Object.freeze({
     version:"20261105-kashima-sql-2611-v1",match:match,
+    jrCentralKansai202603NumberRoster:jrcKansai202603NumberRoster,
+    findJrCentralKansai202603Number:findJrCentralKansai202603Number,
     verifyJoetsuService:verifyJoetsuService,
     verifyKamaishiService:verifyKamaishiService,
     verifyKashimaService:verifyKashimaService,
