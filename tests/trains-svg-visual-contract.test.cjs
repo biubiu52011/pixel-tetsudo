@@ -712,3 +712,37 @@ test('train captions also avoid permanent station circles',()=>{
   assert.equal(near.attrs.display,'none');
   assert.equal(far.attrs.display,undefined);
 });
+
+test('destination captions relocate near station circles without covering trains or static info',()=>{
+  const start=rendererSource.indexOf('  function _protectStaticStationInfoFromTrainCaptions(');
+  const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
+  const env=vm.createContext({});
+  vm.runInContext(rendererSource.slice(start,end),env);
+  const station={getBoundingClientRect:()=>({x:100,y:100,width:30,height:30})};
+  const marker={getBoundingClientRect:()=>({x:105,y:82,width:40,height:16})};
+  const svg={
+    getBoundingClientRect:()=>({x:0,y:0,width:440,height:800}),
+    querySelector:s=>s==='.station-node-layer'?{querySelectorAll:()=>[station]}:null
+  };
+  for(const line of ['HokurikuShinkansen','AkitaShinkansen']){
+    for(const scale of [1,.5]){
+      const layer={ownerSVGElement:svg,querySelectorAll:()=>[marker]};
+      const label={attrs:{'data-label-raw-transform':'translate(-20,0)'},
+        parentNode:{getScreenCTM:()=>({a:scale,d:scale,b:0,c:0})},
+        getBoundingClientRect:()=>({x:109,y:108,width:36,height:14}),
+        getAttribute(k){return this.attrs[k]??null;},setAttribute(k,v){this.attrs[k]=v;}};
+      assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[label]),0,line);
+      assert.equal(label.attrs.display,undefined);
+      const match=/^translate\(([-\d.]+),([-\d.]+)\)/.exec(label.attrs.transform);
+      assert.ok(match);
+      const x=109+Number(match[1])*scale,y=108+Number(match[2])*scale;
+      for(const b of [station,marker].map(n=>n.getBoundingClientRect()))
+        assert.ok(x>=b.x+b.width+2||x+36<=b.x-2||y>=b.y+b.height+2||y+14<=b.y-2);
+      assert.equal(label.attrs['data-label-raw-transform'],'translate(-20,0)');
+      // Special corridor geometry keeps the existing hide-on-overlap rule.
+      label.attrs['data-six-direction-visible']='true';
+      assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[label]),1);
+      assert.equal(label.attrs.display,'none');
+    }
+  }
+});
