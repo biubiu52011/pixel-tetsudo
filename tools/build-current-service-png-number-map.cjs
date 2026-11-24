@@ -76,8 +76,10 @@ function derive(index,fleet){
       activeWithoutNumber.push(record);
     }
   }
-  mapped.sort((a,b)=>a.png.localeCompare(b.png));
-  activeWithoutNumber.sort((a,b)=>a.png.localeCompare(b.png));
+  // Match the generated PNG index's explicit English collation so artifacts
+  // are byte-stable on Windows and Linux regardless of the host locale.
+  mapped.sort((a,b)=>a.png.localeCompare(b.png,'en'));
+  activeWithoutNumber.sort((a,b)=>a.png.localeCompare(b.png,'en'));
   const indexedPhysical=new Set([...mapped,...activeWithoutNumber,...pendingStatus,...quarantine].map(x=>x.png));
   if(indexedPhysical.size!==601)throw Error('Lost a physical PNG in status partition');
   const summary={
