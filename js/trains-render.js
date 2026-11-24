@@ -2784,20 +2784,27 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (rawIcon) icon.setAttribute('transform', rawIcon);
       else icon.removeAttribute('transform');
       markerById[id] = icon;
-      var parts = [icon, captionById[id]].filter(Boolean).map(function(node) {
-        return node.getBoundingClientRect ? node.getBoundingClientRect() : null;
-      }).filter(function(b) {
-        return b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
-          isFinite(b.height) && b.width > 0 && b.height > 0;
-      });
-      if (!parts.length) continue;
-      var left = Math.min.apply(null, parts.map(function(b) { return b.x; }));
-      var top = Math.min.apply(null, parts.map(function(b) { return b.y; }));
-      var right = Math.max.apply(null, parts.map(function(b) { return b.x + b.width; }));
-      var bottom = Math.max.apply(null, parts.map(function(b) { return b.y + b.height; }));
-      components.push({id:id, artwork:String(icon.tagName || '').toLowerCase() === 'image',
-        box:{x:left,y:top,width:right-left,height:bottom-top}});
     }
+    // Normalize every complete unit before measuring overlap. Never move
+    // a caption after folding: that would invalidate the measured group.
+    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels, markerById);
+    Object.keys(markerById).forEach(function(id) {
+      var icon=markerById[id], label=captionById[id];
+      var parts=[icon,label && label.getAttribute('display')!=='none' ? label : null]
+        .filter(Boolean).map(function(node) {
+          return node.getBoundingClientRect ? node.getBoundingClientRect() : null;
+        }).filter(function(b) {
+          return b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
+            isFinite(b.height) && b.width>0 && b.height>0;
+        });
+      if (!parts.length) return;
+      var left=Math.min.apply(null,parts.map(function(b){return b.x;}));
+      var top=Math.min.apply(null,parts.map(function(b){return b.y;}));
+      var right=Math.max.apply(null,parts.map(function(b){return b.x+b.width;}));
+      var bottom=Math.max.apply(null,parts.map(function(b){return b.y+b.height;}));
+      components.push({id:id,artwork:String(icon.tagName||'').toLowerCase()==='image',
+        box:{x:left,y:top,width:right-left,height:bottom-top}});
+    });
     var folded = _groupNearbyTrainMarkers(components);
     Object.keys(folded).forEach(function(root) {
       folded[root].slice(1).forEach(function(id) {
@@ -2808,16 +2815,12 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
     });
     _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix);
-    // Train destination captions have lower visual priority than permanent
-    // railway station names and interchange icons. A train marker and its
-    // accessible label remain present even when its caption cannot fit.
-    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels);
   }
 
   // Reuse the station glyph bounds while the frame stays at the same viewport
   // position. Rebuilding every text/image rect on each train animation frame
   // caused layout thrashing on long Japanese commuter routes.
-  function _protectStaticStationInfoFromTrainCaptions(trainLayer, labels) {
+  function _protectStaticStationInfoFromTrainCaptions(trainLayer, labels, markerById) {
     if (!labels || !labels.length) return 0;
     var svg = trainLayer && trainLayer.ownerSVGElement;
     if (!svg || !svg.querySelector || !svg.getBoundingClientRect) return 0;
@@ -2852,10 +2855,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         bounds:bounds};
       trainLayer._stationInfoScreenBounds = cache;
     }
-    // Keep the normal centered caption whenever possible. When it hits
-    // a station, try a nearby free position within the same train unit
-    // instead of immediately discarding passenger-facing information.
-    var occupied = [], hidden=0;
+    // A destination is part of its train component, not a free-floating
+    // label. Only use fixed positions attached to the actual marker edges.
+    // Resolve static obstacles here; OTHER trains are handled exclusively
+    // by the subsequent component-level fold pass, using final bounds.
+    var hidden=0;
     function rect(b) {
       return b && isFinite(b.x) && isFinite(b.y) && b.width>0 && b.height>0
         ? {x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height} : null;
@@ -2864,54 +2868,50 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       return box.x < b.right+2 && box.right > b.x-2 &&
         box.y < b.bottom+2 && box.bottom > b.y-2;
     }
-    function visible(node) {
-      var unit=node && node.closest && node.closest('[data-train-component-id]');
-      return !unit || unit.getAttribute('data-train-fold-hidden')!=='true';
+    function fits(box) {
+      return box.x>=screen.x+2 && box.right<=screen.x+screen.width-2 &&
+        box.y>=screen.y+2 && box.bottom<=screen.y+screen.height-2 &&
+        !cache.bounds.some(function(b){return overlaps(box,b);});
     }
-    if(trainLayer.querySelectorAll) {
-      Array.prototype.forEach.call(trainLayer.querySelectorAll('[data-train-id], [data-train-fold-badge]'),function(node) {
-        if (!visible(node) || !node.getBoundingClientRect) return;
-        var b=rect(node.getBoundingClientRect());if(b)occupied.push(b);
-      });
-    }
-    // Reserve all already-clear captions before relocating obstructed ones.
-    var pending=[];
-    for (var c=0;c<labels.length;c++) {
+    for(var c=0;c<labels.length;c++) {
       var label=labels[c];
-      if (!label || !visible(label) || !label.getBoundingClientRect) continue;
+      if(!label || !label.getBoundingClientRect)continue;
       var box=rect(label.getBoundingClientRect());
-      if (!box) continue;
-      if(cache.bounds.some(function(b){return overlaps(box,b);}))
-        pending.push({label:label,box:box});
-      else occupied.push(box);
-    }
-    pending.forEach(function(item) {
-      var label=item.label, box=item.box;
+      if(!box)continue;
+      if(fits(box))continue;
       var raw=label.getAttribute && label.getAttribute('data-label-raw-transform');
+      var id=label.getAttribute && label.getAttribute('data-train-label-for');
+      var icon=markerById && markerById[id];
+      var anchor=icon && icon.getBoundingClientRect && rect(icon.getBoundingClientRect());
       var parent=label.parentNode;
       var matrix=parent && parent.getScreenCTM && parent.getScreenCTM();
-      // Six-shaped corridor captions have their own reserved lanes.
-      // Do not move them out of those lanes or apply offsets under rotation.
       var placed=false;
-      if(raw!=null && matrix && matrix.a>0 && matrix.d>0 &&
-          Math.abs(matrix.b||0)<1e-6 && Math.abs(matrix.c||0)<1e-6 &&
-          label.getAttribute('data-six-direction-visible')!=='true') {
-        var blockers=cache.bounds.concat(occupied);
-        var moves=[[0,-12],[0,12],[0,-24],[0,24],[-16,0],[16,0],
-          [-24,-12],[24,-12],[-24,12],[24,12],[-36,0],[36,0],
-          [0,-36],[0,36],[-40,-24],[40,-24],[-40,24],[40,24]];
-        for(var j=0;j<moves.length;j++) {
-          var dx=moves[j][0],dy=moves[j][1];
-          var candidate={x:box.x+dx,y:box.y+dy,right:box.right+dx,bottom:box.bottom+dy};
-          if(candidate.x<screen.x+2 || candidate.right>screen.x+screen.width-2 ||
-             candidate.y<screen.y+2 || candidate.bottom>screen.y+screen.height-2 ||
-             blockers.some(function(b){return overlaps(candidate,b);}))continue;
-          label.setAttribute('transform','translate('+(dx/matrix.a)+','+(dy/matrix.d)+') '+raw);
-          occupied.push(candidate);placed=true;break;
+      if(anchor && raw!=null && matrix && matrix.a>0 && matrix.d>0 &&
+         Math.abs(matrix.b||0)<1e-6 && Math.abs(matrix.c||0)<1e-6 &&
+         label.getAttribute('data-six-direction-visible')!=='true') {
+        var w=box.right-box.x,h=box.bottom-box.y;
+        var cx=(anchor.x+anchor.right)/2,cy=(anchor.y+anchor.bottom)/2;
+        // Use a fixed gap in layout units, with a minimum screen separation.
+        // Prefer below, then above; lateral alternatives remain centered
+        // vertically against the SAME marker. No arbitrary offset search.
+        var gapX=Math.max(2,4*matrix.a),gapY=Math.max(2,4*matrix.d);
+        var candidates=[
+          [cx-w/2,anchor.bottom+gapY],
+          [cx-w/2,anchor.y-gapY-h],
+          [anchor.x-gapX-w,cy-h/2],
+          [anchor.right+gapX,cy-h/2]
+        ];
+        for(var j=0;j<candidates.length;j++) {
+          var nx=candidates[j][0],ny=candidates[j][1];
+          var candidate={x:nx,y:ny,right:nx+w,bottom:ny+h};
+          if(!fits(candidate))continue;
+          label.setAttribute('transform','translate('+((nx-box.x)/matrix.a)+','+
+            ((ny-box.y)/matrix.d)+') '+raw);
+          placed=true;break;
         }
       }
-      if (!placed) {label.setAttribute('display','none');hidden++;}
-    });
+      if(!placed){label.setAttribute('display','none');hidden++;}
+    }
     return hidden;
   }
 
@@ -3023,7 +3023,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (!unit) return;
       var badge=document.createElementNS(ns,'g');
       badge.setAttribute('data-train-fold-badge',id);
-      badge.setAttribute('transform','translate(0,'+(-24/sy)+') scale('+(1/sx)+','+(1/sy)+')');
+      // Keep +N above the measured complete surviving unit, including
+      // an above-marker destination caption. Never overlap its own text.
+      var unitBox=unit.getBoundingClientRect && unit.getBoundingClientRect();
+      var markerBox=markers[id].getBoundingClientRect && markers[id].getBoundingClientRect();
+      var offset=unitBox && markerBox && unitBox.height>0 && markerBox.height>0
+        ? Math.min(-24,unitBox.y-(markerBox.y+markerBox.height/2)-12) : -24;
+      badge.setAttribute('transform','translate(0,'+(offset/sy)+') scale('+(1/sx)+','+(1/sy)+')');
       badge._foldTrainIds = ids.slice();
       badge.setAttribute('role','button');badge.setAttribute('tabindex','0');
       badge.setAttribute('pointer-events','all');
