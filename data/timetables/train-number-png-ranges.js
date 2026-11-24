@@ -4329,6 +4329,64 @@
       var fujikyuLabel=/^(\d{3})\s+フジサン特急(?:\s|$)/.exec(number);
       if(fujikyuLabel)number=fujikyuLabel[1];
     }
+    if(line==="Minobu"){
+      // November official public number + March 2026 operating fleet evidence.
+      // Only 3642G is presently in the SQL sample; Fujikawa exact numbers
+      // are admitted only if independently imported/date-verified later.
+      var p=context||{},date=String(p.serviceDate||"").slice(0,10);
+      var op=String(p.trainOperator||p.operator||"");
+      var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
+      var direction=String(p.railDirection||p.direction||"").split(/[.:]/).pop();
+      var calendar=sourceCalendar(p);
+      if(number!==String(p.trainNumber||"").trim().toUpperCase()||
+         !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+         p.positionSource!=="supabase-train-run"||p.estimated!==true||
+         p.officialNumberVerified!==true||p.timetableDateVerified!==true||
+         p.timetableValidity!=="date_verified"||
+         p.sourceRailway!=="odpt.Railway:JR-Central.Minobu"||
+         (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
+         !["Inbound","Outbound"].includes(direction)||!calendar||
+         p.vehicleIdentityStatus==="EXACT")return null;
+      var day=new Date(date+"T00:00:00Z").getUTCDay();
+      var dayCal=(day===0||day===6||date==="2026-11-03"||
+        date==="2026-11-23")?"holiday":"weekday";
+      if(calendar!==dayCal)return null;
+      var model="",url="";
+      if(number==="3642G"&&type==="Local"&&direction==="Inbound"){
+        model="313系";
+        url="https://tokaido-unyo-shizuoka.com/unyo/202603/vl313-202603.html?alloc=1";
+      }else if(/^40(?:0[1-9]|1[0-4])M$/.test(number)&&type==="LimitedExpress"&&
+        ((Number(number.slice(0,-1))%2===0)===(direction==="Inbound"))){
+        model="373系";
+        url="https://www.jr-plus.co.jp/news/2025/10/000563/";
+      }else return null;
+      var corridor=["JRC-TokaidoCentral-009"];
+      for(var j=2;j<=38;j++)corridor.push(j===5?"Fujine":"JRC-Minobu-"+String(j).padStart(3,"0"));
+      corridor.push("Kofu");
+      var stops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys.map(function(s){
+        return String(s||"").split(".").pop();
+      }):[];
+      var ix=stops.map(function(s){return corridor.indexOf(s);});
+      if(stops.length<2||ix.some(function(i){return i<0;})||
+         ix.some(function(i,k){return k>0&&(direction==="Inbound"?i>=ix[k-1]:i<=ix[k-1]);})||
+         ix[0]!== (direction==="Inbound"?38:0)||
+         ix[ix.length-1]!== (direction==="Inbound"?0:38))return null;
+      var plan=p.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==model))return null;
+      if(Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length&&
+         (p.plannedVehicleCandidates.length!==1||p.plannedVehicleCandidates[0]!==model))return null;
+      if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
+        return v&&String(v).trim()!==model;
+      }))return null;
+      var png="../images/列车/JR東海/JR東海_"+model+".png";
+      var gallery=root.VehicleGaragePngMap;
+      if(!gallery||!gallery.matchModelPath(model,png,line))return null;
+      return {trainNumber:number,lineId:line,model:model,pngPath:png,
+        source:"jr-central-minobu-2611-number-fleet-reference",sourceUrl:url,
+        planned:true,representative:true,referenceOnly:true,
+        illustrative:true,actualVehicleConfirmed:false};
+    }
     if(line==="ChuoCentral"){
       // Published JR Central line-fleet policy: since 2023 all ordinary and
       // rapid trains on Nagoya–Nakatsugawa use 315 series. This is a line
