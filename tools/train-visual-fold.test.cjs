@@ -12,7 +12,7 @@ function extract(start,end) {
 }
 const functions=extract('  function _groupNearbyTrainMarkers(entries, distance) {',
   '  // The SVG badges are rebuilt as collision layout moves.');
-const badgeSource=extract('  function _syncTrainFoldBadges(layer, folded, groups, markers, matrix) {',
+const badgeSource=extract('  function _syncTrainFoldBadges(layer, folded, groups, markers, matrix, badgeLayout) {',
   '  // 折叠视图是展示分组，绝不是连挂编组或合并运行。');
 function node(tag) {
   const attrs=Object.create(null);
