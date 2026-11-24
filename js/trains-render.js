@@ -667,6 +667,18 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         ? Number(position.stationIndex) : NaN;
       return isFinite(stationIndex) && stationIndex >= 0 && stationIndex < stationCoords.length;
     });
+    // The source-ranked list can contain repeated snapshots of the exact
+    // same stable identity. Keep the first valid position (realtime first).
+    // Never deduplicate by public train number or by visual proximity:
+    // different portions and cross-line reference records need evidence.
+    var seen = Object.create(null);
+    valid = valid.filter(function(p) {
+      var id = p && (p.runningChainId || p.trainId || p.sourceTrainId || p.timetableObjectId);
+      if (!id) return true;
+      if (seen[id]) return false;
+      seen[id] = true;
+      return true;
+    });
     // Published coupling can group only two verifiably co-located portions
     // on the same corridor. After the junction each retains its own number,
     // destination and stable source ID. Do not alter upstream identities.
@@ -898,8 +910,35 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       stationNodeLayers: svg.querySelectorAll(".station-node-layer").length,
       stationInfoLayers: svg.querySelectorAll(".station-info-layer").length,
       stationInfoGroups: svg.querySelectorAll(".station-info").length,
-      trainLayers: svg.querySelectorAll(".train-layer").length
+      trainLayers: svg.querySelectorAll(".train-layer").length,
+      trainVisibility: _auditTrainVisibility(svg)
     };
+  }
+
+  // Read-only snapshot of the ACTUAL SVG, not a simulated service count.
+  function _auditTrainVisibility(svg) {
+    var units = svg.querySelectorAll("[data-train-unit-id]");
+    var rows = [], seen = Object.create(null);
+    for (var i=0;i<units.length;i++) {
+      var unit=units[i], id=unit.getAttribute("data-train-unit-id");
+      var marker=unit.querySelector("[data-train-id]");
+      var label=unit.querySelector("[data-train-label-for]");
+      var caption=label&&label.querySelector(".train-label-dir");
+      var p=marker&&marker._trainPosition;
+      var state=unit.getAttribute("data-train-fold-hidden")==="true"?"folded":
+        !label?"missing-label":label.getAttribute("display")==="none"?"hidden-label":"visible";
+      seen[id]=(seen[id]||0)+1;
+      rows.push({id:id,number:p&&p.trainNumber||null,
+        destination:p&&p.destinationStation||null,
+        caption:caption&&caption.textContent||null,state:state,
+        obstacle:label&&label.getAttribute("data-caption-obstacle")||null,
+        coupling:p&&p.coupling&&p.coupling.phase||null});
+    }
+    return {units:rows.length,visible:rows.filter(function(r){return r.state==="visible";}).length,
+      folded:rows.filter(function(r){return r.state==="folded";}).length,
+      hiddenLabels:rows.filter(function(r){return r.state==="hidden-label";}).length,
+      missingLabels:rows.filter(function(r){return r.state==="missing-label";}).length,
+      duplicateIds:Object.keys(seen).filter(function(id){return seen[id]>1;}),rows:rows};
   }
 
   function renderTrainMap(el, line, lineId, renderOptions) {
@@ -2767,6 +2806,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var raw = label.getAttribute('data-label-raw-transform');
       if (raw != null) label.setAttribute('transform', raw);
       label.removeAttribute('display');
+      label.removeAttribute('data-caption-obstacle');
       captionById[label.getAttribute('data-train-label-for')] = label;
     }
     var markerById = Object.create(null), components = [];
@@ -2840,7 +2880,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var b = protectedNodes[i].getBoundingClientRect();
           if (b && isFinite(b.x) && isFinite(b.y) && isFinite(b.width) &&
               isFinite(b.height) && b.width > 0 && b.height > 0)
-            bounds.push({x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height});
+            bounds.push({x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height,
+              kind:layer===stationNodes?"station-circle":
+                "station-info:"+String(protectedNodes[i].tagName||"").toLowerCase()});
         }
       }
       includeBounds(staticInfo, "text, image, rect");
@@ -2858,13 +2900,14 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       if (!label || !label.getBoundingClientRect) continue;
       var box=label.getBoundingClientRect();
       if (!box || !(box.width > 0 && box.height > 0)) continue;
-      var intersects=cache.bounds.some(function(b) {
+      var obstacle=cache.bounds.find(function(b) {
         // Two screen pixels of visual separation between train and station.
         return box.x < b.right+2 && box.x+box.width > b.x-2 &&
           box.y < b.bottom+2 && box.y+box.height > b.y-2;
       });
-      if (intersects) {
+      if (obstacle) {
         label.setAttribute("display","none");
+        label.setAttribute("data-caption-obstacle",obstacle.kind);
         hidden++;
       }
     }
@@ -3075,6 +3118,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         }
         var captionBase=popupCaption||
           _uetsuFoldDestinationCaption(p,lineId,lang)||
+          _foldSourceDestination(p,lineId)||
           (lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
@@ -3481,6 +3525,22 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         Math.min(x, junctionX + geom.loopRectW - width - 3)),
       y: rightRail ? py + 17 : py - 14
     };
+  }
+
+  // A folded train's destination is a source fact, even if its SVG label
+  // was not generated. Loop direction is not a terminal.
+  function _foldSourceDestination(p,lineId) {
+    if (!p) return "";
+    if (_isOedoTailTrain(lineId,p)) {
+      var tail=String(p.destinationStation||"").split(/[:.]/).pop();
+      return tail?_trainDestText(tail==="Hikarigaoka"?"Hikarigaoka":"Tochomae"):"";
+    }
+    var dn=String(p.railDirection||"").split(/[:.]/).pop();
+    if (_isLoopDirName(p.railDirection)) {
+      var entry=LOOP_DIR_NAMES[dn],lang=window.currentLang||"ja";
+      return entry&&(entry[lang]||entry.ja)||"";
+    }
+    return _trainDestText(p.destinationStation);
   }
 
   function _trainLabelSignature(p, lineId) {
