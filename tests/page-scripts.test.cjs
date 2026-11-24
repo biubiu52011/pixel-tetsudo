@@ -92,3 +92,23 @@ test('scoped train indexes are inert, owned by a line, and loader handles switch
   assert.match(page, /TrainsDetailLoader\.isReady\(lineId\)/);
   assert.match(page, /TrainsDetailLoader\.load\(lineId\)/);
 });
+
+test('Codex annotation stylesheet is narrowly allowlisted without relaxing script or style attributes', () => {
+  // https://github.com/openai/codex/issues/52761: exact stylesheet hash;
+  // remove or update only after testing the affected Codex release.
+  const hash = 'sha256-WO55anZ1V8A0G22bY2t72RV4dI79SLI4VnYLgsEeWUc=';
+  for (const page of Object.keys(spec.pages)) {
+    const html = fs.readFileSync(path.join(root, 'pages', page + '.html'), 'utf8');
+    const csp = html.match(/http-equiv="Content-Security-Policy"\s+content="([^"]+)"/i);
+    assert.ok(csp, page + ' CSP');
+    const directives = new Map(csp[1].split(';').map(s => s.trim()).filter(Boolean).map(s => {
+      const [name, ...values] = s.split(/\s+/);
+      return [name, values];
+    }));
+    assert.deepEqual(directives.get('style-src'), ["'self'"], page);
+    assert.deepEqual(directives.get('style-src-elem'), ["'self'", "'" + hash + "'"], page);
+    assert.ok(!directives.has('style-src-attr'), page + ' style attributes must inherit strict style-src');
+    assert.ok(!csp[1].includes("'unsafe-inline'"), page + ' arbitrary inline content forbidden');
+    assert.deepEqual(directives.get('script-src'), page.startsWith('tourism-') ? ["'self'", 'blob:'] : ["'self'"], page);
+  }
+});
