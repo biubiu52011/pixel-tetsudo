@@ -555,7 +555,7 @@ test('moving train captions yield to permanent names and interchange badges',()=
   assert.equal(far.attrs.display,undefined);
   assert.equal(ctx._protectStaticStationInfoFromTrainCaptions(train,[near,far]),1,
     'reuse static glyph bounds in the unchanged viewport');
-  assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels\)/);
+  assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels, markerById\)/);
 });
 
 test('Keisei Machiya canonical SA and C fit one row and keep other aliases distinct',()=>{
@@ -713,36 +713,57 @@ test('train captions also avoid permanent station circles',()=>{
   assert.equal(far.attrs.display,undefined);
 });
 
-test('destination captions relocate near station circles without covering trains or static info',()=>{
-  const start=rendererSource.indexOf('  function _protectStaticStationInfoFromTrainCaptions(');
+test('destination captions use attached marker edges at any scale and are measured before folding',()=>{
+  const start=rendererSource.indexOf('  function _groupNearbyTrainMarkers(');
   const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
-  const env=vm.createContext({});
+  const groups=[];
+  const env=vm.createContext({
+    _trainUnitContainer:node=>node.parentNode,
+    _syncTrainFoldBadges:(_layer,folded)=>groups.push(folded)
+  });
   vm.runInContext(rendererSource.slice(start,end),env);
   const station={getBoundingClientRect:()=>({x:100,y:100,width:30,height:30})};
-  const marker={getBoundingClientRect:()=>({x:105,y:82,width:40,height:16})};
   const svg={
     getBoundingClientRect:()=>({x:0,y:0,width:440,height:800}),
     querySelector:s=>s==='.station-node-layer'?{querySelectorAll:()=>[station]}:null
   };
   for(const line of ['HokurikuShinkansen','AkitaShinkansen']){
     for(const scale of [1,.5]){
-      const layer={ownerSVGElement:svg,querySelectorAll:()=>[marker]};
-      const label={attrs:{'data-label-raw-transform':'translate(-20,0)'},
-        parentNode:{getScreenCTM:()=>({a:scale,d:scale,b:0,c:0})},
-        getBoundingClientRect:()=>({x:109,y:108,width:36,height:14}),
-        getAttribute(k){return this.attrs[k]??null;},setAttribute(k,v){this.attrs[k]=v;}};
-      assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[label]),0,line);
-      assert.equal(label.attrs.display,undefined);
-      const match=/^translate\(([-\d.]+),([-\d.]+)\)/.exec(label.attrs.transform);
-      assert.ok(match);
-      const x=109+Number(match[1])*scale,y=108+Number(match[2])*scale;
-      for(const b of [station,marker].map(n=>n.getBoundingClientRect()))
-        assert.ok(x>=b.x+b.width+2||x+36<=b.x-2||y>=b.y+b.height+2||y+14<=b.y-2);
-      assert.equal(label.attrs['data-label-raw-transform'],'translate(-20,0)');
-      // Special corridor geometry keeps the existing hide-on-overlap rule.
-      label.attrs['data-six-direction-visible']='true';
-      assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[label]),1);
-      assert.equal(label.attrs.display,'none');
+      const matrix={a:scale,d:scale,b:0,c:0};
+      function node(attrs,box,parentNode){
+        return {attrs:{...attrs},parentNode,tagName:'image',
+          getAttribute(k){return this.attrs[k]??null;},
+          setAttribute(k,v){this.attrs[k]=String(v);},
+          removeAttribute(k){delete this.attrs[k];},
+          getBoundingClientRect(){
+            if(this.attrs.display==='none')return{x:0,y:0,width:0,height:0};
+            const m=/^translate\(([-\d.]+),([-\d.]+)\) translate/.exec(this.attrs.transform||'');
+            return {...box,x:box.x+(m?Number(m[1])*scale:0),y:box.y+(m?Number(m[2])*scale:0)};
+          }};
+      }
+      const ua=node({},{}),ub=node({},{});ua.getScreenCTM=ub.getScreenCTM=()=>matrix;
+      const a=node({'data-train-id':'a'},{x:105,y:82,width:40,height:16},ua);
+      const b=node({'data-train-id':'b'},{x:110,y:59,width:30,height:14},ub);
+      const la=node({'data-train-label-for':'a','data-label-raw-transform':'translate(-20,0)'},{x:109,y:108,width:36,height:14},ua);
+      const lb=node({'data-train-label-for':'b','data-label-raw-transform':'translate(-20,0)'},{x:110,y:40,width:30,height:14},ub);
+      const layer={ownerSVGElement:svg,getScreenCTM:()=>matrix,
+        querySelectorAll:s=>s==='[data-train-id]'?[a,b]:s==='[data-train-label-for]'?[la,lb]:[]};
+      // Original component boxes are disjoint. The fixed above-marker
+      // fallback intersects B, so grouping must use the final rectangles.
+      env._resolveTrainLabelCollisions(layer);
+      assert.equal(la.attrs.display,undefined,line);
+      const q=la.getBoundingClientRect(),m=a.getBoundingClientRect();
+      assert.ok(Math.abs(q.x+q.width/2-(m.x+m.width/2))<.001);
+      assert.ok(Math.abs(m.y-q.y-q.height-Math.max(2,4*scale))<.001);
+      assert.equal(la.attrs['data-label-raw-transform'],'translate(-20,0)');
+      assert.equal(JSON.stringify(groups.at(-1)),JSON.stringify({a:['a','b']}));
+      assert.equal(ub.attrs['data-train-fold-hidden'],'true');
+      // Reflow restores previously folded components before remeasuring.
+      la.attrs['data-six-direction-visible']='true';
+      env._resolveTrainLabelCollisions(layer);
+      assert.equal(la.attrs.display,'none');
+      assert.equal(ub.attrs['data-train-fold-hidden'],undefined);
+      assert.equal(JSON.stringify(groups.at(-1)),'{}');
     }
   }
 });
