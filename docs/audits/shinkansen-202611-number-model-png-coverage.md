@@ -6,6 +6,14 @@
 
 ## 2026-11-24 秋田新干线：总表审计及95/96定点修复
 
+### 后续：旧模板到发事件角色修复与数据链路回放（2026-11-24，生产已应用）
+
+实际SQL检查36份全arrival旧模板，共442事件：36个唯一始发事件、113个相邻同站双事件的第二事件、36个唯一终到事件、144个单独中间站事件；同站超过两次/逆序时钟0。仅把前两类149条改为departure，保留原车站、时钟和序列、不合并事件。其余单独中间站事件不推断到发性质。全线45模板522事件，departure字段非空213条，始发缺发车0、终到缺到达0、逆序时钟0、全arrival模板0、空站点0。原日期、Canonical及车型证据不变。[SQL](../../supabase/queries/akita_2611_normalize_legacy_event_roles_20261124.sql)（69f346f）。
+
+从生产SQL读取45模板，按11/24平日32条与11/28休日36条构造接口契约回放（非实际HTTP响应），用真实 odpt-unified 转换器、TrainPositionEstimator、TrainVehicle 和实际图库选择器。09/13/18/21时平日7/7、8/8、9/9、8/8，休日8/8、11/11、9/9、8/8全部选择E6系，无JS异常。仅数据链路测试，不代表DOM/SVG视觉验收、官方时刻准确性或实际车组确认。
+
+本轮实际公开来源查证：[11月版55号详情](https://timetables.jreast.co.jp/2611/train/045/047211.html)索引明确10/31与11/21运行，上野—盛岡—秋田；[11月新干线休日表](https://timetables.jreast.co.jp/2611/timetable-v/003d2.html)列出5055M，[田泽湖线休日表](https://timetables.jreast.co.jp/2611/timetable-v/258d2p.html)确认联挂5055B。完整详情读取Cache miss，检索没有提供所有停站时刻，不创建猜测模板；23/25等时变及12月范围仍待补全。已有运行日期数组不等于官方时刻验证；保留 sparse_review，不新增前端脚本或数据表。
+
 ### 后续：16/20/23/25/28号运行范围补齐（2026-11-24，生产已应用）
 
 本轮重新检索11月单车日历索引及12月版保留的11月下旬日期： [3016M](https://timetables.jreast.co.jp/2611/train/030/033674.html)、[3020M](https://timetables.jreast.co.jp/2611/train/110/111195.html)、[3023M](https://timetables.jreast.co.jp/2611/train/010/010075.html)、[3025M](https://timetables.jreast.co.jp/2611/train/010/010088.html)、[3028M](https://timetables.jreast.co.jp/2611/train/010/010092.html)。索引保留运行日（含其他时刻运行日期），但完整HTML及逐日时变标记仍无法读取。将5份旧模板限定11/1–30，保持所有停站时刻及canonical undated_not_current_verified；日期资格不等于时刻验证。事务执行、逐条回读通过。[SQL](../../supabase/queries/akita_2611_last_five_daily_service_dates_20261124.sql)（58afe62）。
