@@ -2852,22 +2852,66 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         bounds:bounds};
       trainLayer._stationInfoScreenBounds = cache;
     }
-    var hidden=0;
+    // Keep the normal centered caption whenever possible. When it hits
+    // a station, try a nearby free position within the same train unit
+    // instead of immediately discarding passenger-facing information.
+    var occupied = [], hidden=0;
+    function rect(b) {
+      return b && isFinite(b.x) && isFinite(b.y) && b.width>0 && b.height>0
+        ? {x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height} : null;
+    }
+    function overlaps(box,b) {
+      return box.x < b.right+2 && box.right > b.x-2 &&
+        box.y < b.bottom+2 && box.bottom > b.y-2;
+    }
+    function visible(node) {
+      var unit=node && node.closest && node.closest('[data-train-component-id]');
+      return !unit || unit.getAttribute('data-train-fold-hidden')!=='true';
+    }
+    if(trainLayer.querySelectorAll) {
+      Array.prototype.forEach.call(trainLayer.querySelectorAll('[data-train-id], [data-train-fold-badge]'),function(node) {
+        if (!visible(node) || !node.getBoundingClientRect) return;
+        var b=rect(node.getBoundingClientRect());if(b)occupied.push(b);
+      });
+    }
+    // Reserve all already-clear captions before relocating obstructed ones.
+    var pending=[];
     for (var c=0;c<labels.length;c++) {
       var label=labels[c];
-      if (!label || !label.getBoundingClientRect) continue;
-      var box=label.getBoundingClientRect();
-      if (!box || !(box.width > 0 && box.height > 0)) continue;
-      var intersects=cache.bounds.some(function(b) {
-        // Two screen pixels of visual separation between train and station.
-        return box.x < b.right+2 && box.x+box.width > b.x-2 &&
-          box.y < b.bottom+2 && box.y+box.height > b.y-2;
-      });
-      if (intersects) {
-        label.setAttribute("display","none");
-        hidden++;
-      }
+      if (!label || !visible(label) || !label.getBoundingClientRect) continue;
+      var box=rect(label.getBoundingClientRect());
+      if (!box) continue;
+      if(cache.bounds.some(function(b){return overlaps(box,b);}))
+        pending.push({label:label,box:box});
+      else occupied.push(box);
     }
+    pending.forEach(function(item) {
+      var label=item.label, box=item.box;
+      var raw=label.getAttribute && label.getAttribute('data-label-raw-transform');
+      var parent=label.parentNode;
+      var matrix=parent && parent.getScreenCTM && parent.getScreenCTM();
+      // Six-shaped corridor captions have their own reserved lanes.
+      // Do not move them out of those lanes or apply offsets under rotation.
+      var placed=false;
+      if(raw!=null && matrix && matrix.a>0 && matrix.d>0 &&
+          Math.abs(matrix.b||0)<1e-6 && Math.abs(matrix.c||0)<1e-6 &&
+          label.getAttribute('data-six-direction-visible')!=='true') {
+        var blockers=cache.bounds.concat(occupied);
+        var moves=[[0,-12],[0,12],[0,-24],[0,24],[-16,0],[16,0],
+          [-24,-12],[24,-12],[-24,12],[24,12],[-36,0],[36,0],
+          [0,-36],[0,36],[-40,-24],[40,-24],[-40,24],[40,24]];
+        for(var j=0;j<moves.length;j++) {
+          var dx=moves[j][0],dy=moves[j][1];
+          var candidate={x:box.x+dx,y:box.y+dy,right:box.right+dx,bottom:box.bottom+dy};
+          if(candidate.x<screen.x+2 || candidate.right>screen.x+screen.width-2 ||
+             candidate.y<screen.y+2 || candidate.bottom>screen.y+screen.height-2 ||
+             blockers.some(function(b){return overlaps(candidate,b);}))continue;
+          label.setAttribute('transform','translate('+(dx/matrix.a)+','+(dy/matrix.d)+') '+raw);
+          occupied.push(candidate);placed=true;break;
+        }
+      }
+      if (!placed) {label.setAttribute('display','none');hidden++;}
+    });
     return hidden;
   }
 
@@ -3073,8 +3117,13 @@ function _isTrainArtworkFailureActive(trainUid, p) {
             iconBox.appendChild(placeholder);
           }
         }
+        // A collision-hidden/missing SVG label is not missing service data.
+        // Preserve the actual terminal in the fold list without inventing one.
+        var actualTerminal = !_isLoopDirName(p.railDirection) || _isOedoTailTrain(lineId,p)
+          ? _trainDestText(p.destinationStation || p.destinationStationUrn) : '';
         var captionBase=popupCaption||
           _uetsuFoldDestinationCaption(p,lineId,lang)||
+          actualTerminal||
           (lang==='en'?'Direction unknown':/^zh/.test(lang)?'方向待判定':lang==='ko'?'방향 미확인':'方向未確認');
         var caption=document.createElement('div');
         caption.className='train-fold-train-info';
