@@ -54,3 +54,36 @@ No model/PVG number range or actual vehicle/formation is inferred.
 
 Current acceptance must remain **sampled**, not full-day verified or
 all-stops complete. Sources are individual 2026-Nov planned services.
+
+## Minobu follow-up — 2026-11-25
+
+The November JR East published line tables show these aggregate train-column counts
+(not a republished timetable or an assertion of actual operation):
+
+| Calendar | Inbound (Kofu to Fuji) | Outbound (Fuji to Kofu) | Total | Fujikawa |
+|---|---:|---:|---:|---:|
+| Weekday | 70 | 71 | 141 | 14 |
+| SaturdayHoliday | 67 | 68 | 135 | 14 |
+
+Source tables: https://timetables.jreast.co.jp/2611/timetable-v/109u1.html,
+https://timetables.jreast.co.jp/2611/timetable-v/109u2.html,
+https://timetables.jreast.co.jp/2611/timetable-v/109d1.html,
+https://timetables.jreast.co.jp/2611/timetable-v/109d2.html.
+
+- SQL currently has one inbound sample per calendar (3642G), no outbound or
+  limited-express plan. Two exact November train-number-only evidence rows were
+  registered in `published_train_number_evidence`, without changing stop clocks
+  or calendar scope. The source itinerary remains six selected stops.
+- `published_railway_planned_fleet_model_scope` now records Fujikawa 373 series,
+  representative three cars, as a route/service fleet model candidate, not a
+  train-specific PNG mapping or actual formation. Model/route references:
+  https://www.n-sharyo.co.jp/business/tetsudo/pages/jrc373.htm,
+  https://www.jr-plus.co.jp/news/2026/04/000711/,
+  https://www.jr-plus.co.jp/news/2025/10/000563/.
+- Existing TokyoGTFS railway feed explicitly covers JR Central only on Gotemba
+  and Tokaido up to Numazu (https://mkuran.pl/gtfs/); it cannot supply Minobu.
+- Full-day acceptance remains blocked. Neither date-verified sample nor exact
+  number evidence establishes a complete timetable or individual vehicle identity.
+  Do not bulk-import the commercial published table or assign a generic 313-series
+  image based solely on a G suffix. The existing authorized importer is the
+  intended route for an independently licensed complete dataset.
