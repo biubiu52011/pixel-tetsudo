@@ -6,6 +6,12 @@
 
 ## 2026-11-24 秋田新干线：总表审计及95/96定点修复
 
+### 后续：26/59号临时列车日期校正（2026-11-24，生产已应用）
+
+11月版[5026M详情](https://timetables.jreast.co.jp/2611/train/050/051821.html)明确列出11/1、3、6、8、13、15、22、23、29；[5059M详情](https://timetables.jreast.co.jp/2611/train/050/050181.html)明确列出11/20、21，[新干线下行休日表](https://timetables.jreast.co.jp/2611/timetable-v/003d2p.html)的5059M运行日列交叉一致。12月版5026M详情仅保留11月下旬，不可替代11月版整月范围。基于本次实际获取的官方搜索索引，更新783/5026M与770/5059M日期数组，停站时钟及canonical undated_not_current_verified不变。[SQL](../../supabase/queries/akita_2611_komachi26_59_operating_dates_20261124.sql)（72a9148）。
+
+回读：45模板，40非空日期、5未知（こまち23、こまち25、こまち16、こまち20、こまち28），平日32–40、休日28–32可用，日期重复0；45番号证据、45车型映射，精确PNG缺失0。23/25与16/20/28已在平休日番号索引找到，但完整HTML仍无法获取、运行日与时变条件未逐列充分对应；本轮不扩大其日期，不创建55/67缺失模板。已有非空日期数量仅是结构统计，不表示先前所有日期证据已独立复核。保留sparse_review；实际HTTP/浏览器SVG未验收。
+
 ### 后续：33/18/24/32/34号每日运行范围恢复（2026-11-24，生产已应用）
 
 本轮实际检索JR East 2611官方索引：[田泽湖线下行平日总表](https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html)、[下行休日总表](https://timetables.jreast.co.jp/2611/timetable-v/258d2p.html)、[新干线上行平日总表](https://timetables.jreast.co.jp/2611/timetable-v/003u1p.html)、[上行休日总表](https://timetables.jreast.co.jp/2611/timetable-v/003u2p.html)、[田泽湖线上行休日总表](https://timetables.jreast.co.jp/2611/timetable-v/258u2p.html)，核对五趟常规班次的全日基础运行与时变列。更新763/3033M、780/3018M、782/3024M、785/3032M、786/3034M的11月1–30日运行范围；仍保留旧停站时刻和canonical undated_not_current_verified，完整HTML直读失败，不声称精确时刻验证。[SQL](../../supabase/queries/akita_2611_five_daily_service_dates_batch07_20261124.sql)（8f52851）。
