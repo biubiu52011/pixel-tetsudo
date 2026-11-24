@@ -111,6 +111,12 @@
     ["jrc-tokaido-central-315-sql-reference","315系","JR東海/JR東海_315系.png","TokaidoCentral",0],
     ["jrc-tokaido-central-373-sql-reference","373系","JR東海/JR東海_373系.png","TokaidoCentral",0]
   );
+  // Minobu representative planned art: 313 series one-man local and
+  // 373 series Fujikawa. This does not identify a physical formation.
+  table.push(
+    ["jrc-minobu-313-planned-reference","313系","JR東海/JR東海_313系.png","Minobu",0],
+    ["jrc-minobu-373-fujikawa-reference","373系","JR東海/JR東海_373系.png","Minobu",0]
+  );
   // JR Central 315: approved artwork for ChuoCentral reference display,
   // not evidence of a particular train number or an actual-day formation.
   table.push(
