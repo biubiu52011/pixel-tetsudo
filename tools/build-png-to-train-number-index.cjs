@@ -380,7 +380,11 @@ function buildIndex(input) {
       group.explicitServiceDateNumberCount=group.dateVerifiedServiceNumbers.length;
     }
   }
-  const assets=[...byPath.values()].sort((a,b)=>a.path.localeCompare(b.path));
+  // Keep generated JSON/CSV ordering independent of the host's default
+  // locale.  CI generated the existing snapshot under English collation,
+  // so request that same collation explicitly on Windows and Linux.
+  const assets=[...byPath.values()].sort((a,b)=>
+    a.path.localeCompare(b.path,'en'));
   let direct=0,runtime=0,historical=0,any=0,none=0,quarantined=0;
   for(const asset of assets){
     if(asset.directNumberRules.length)++direct;

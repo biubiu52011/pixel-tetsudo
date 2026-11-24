@@ -74,9 +74,10 @@ const shinkansenPathFromEstimator=new Function('lineId','tt',
 // This gives ChuoCentral's 383-series gallery rule its actual boolean, with
 // NO new train numbers, no physical vehicle claim and no fallback inference.
 const centralStart=estimatorSource.indexOf(
-  'Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")');
-const centralEnd=estimatorSource.indexOf(
-  ' ||\n Boolean(saganoDisplayNumber)',centralStart);
+  'Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral"||');
+const saganoMarker=estimatorSource.indexOf(
+  'Boolean(saganoDisplayNumber)',centralStart);
+const centralEnd=estimatorSource.lastIndexOf(' ||',saganoMarker);
 if(centralStart<0 || centralEnd<=centralStart)
   throw Error('Estimator JR-Central official number gate moved');
 const centralNumberFromEstimator=new Function('lineId','tt',
