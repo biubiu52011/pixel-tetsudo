@@ -93,10 +93,9 @@ test('scoped train indexes are inert, owned by a line, and loader handles switch
   assert.match(page, /TrainsDetailLoader\.load\(lineId\)/);
 });
 
-test('Codex annotation stylesheet is narrowly allowlisted without relaxing script or style attributes', () => {
-  // https://github.com/openai/codex/issues/52761: exact stylesheet hash;
-  // remove or update only after testing the affected Codex release.
-  const hash = 'sha256-WO55anZ1V8A0G22bY2t72RV4dI79SLI4VnYLgsEeWUc=';
+test('CSP permits dynamic inline CSS but keeps script execution and resource restrictions', () => {
+  // Browser annotation tools and dynamic SVG/HTML styles must not depend on
+  // a version-specific stylesheet hash. Never extend this exception to scripts.
   for (const page of Object.keys(spec.pages)) {
     const html = fs.readFileSync(path.join(root, 'pages', page + '.html'), 'utf8');
     const csp = html.match(/http-equiv="Content-Security-Policy"\s+content="([^"]+)"/i);
@@ -105,10 +104,17 @@ test('Codex annotation stylesheet is narrowly allowlisted without relaxing scrip
       const [name, ...values] = s.split(/\s+/);
       return [name, values];
     }));
-    assert.deepEqual(directives.get('style-src'), ["'self'"], page);
-    assert.deepEqual(directives.get('style-src-elem'), ["'self'", "'" + hash + "'"], page);
-    assert.ok(!directives.has('style-src-attr'), page + ' style attributes must inherit strict style-src');
-    assert.ok(!csp[1].includes("'unsafe-inline'"), page + ' arbitrary inline content forbidden');
+    assert.deepEqual(directives.get('style-src'), ["'self'", "'unsafe-inline'"], page);
+    assert.ok(!directives.has('style-src-elem') && !directives.has('style-src-attr'),
+      page + ' style directives must inherit the compatible policy');
+    assert.deepEqual(directives.get('default-src'), ["'self'"], page);
     assert.deepEqual(directives.get('script-src'), page.startsWith('tourism-') ? ["'self'", 'blob:'] : ["'self'"], page);
+    assert.deepEqual(directives.get('object-src'), ["'none'"], page);
+    assert.deepEqual(directives.get('font-src'), ["'self'"], page);
+    for (const [name, values] of directives) {
+      if (name !== 'style-src') assert.ok(!values.includes("'unsafe-inline'"), page + ' ' + name);
+      assert.ok(!values.some(value => value.includes('sha256-')), page + ' no version-specific annotation hashes');
+    }
+    assert.ok(directives.has('connect-src') && directives.has('img-src') && directives.has('frame-src'), page);
   }
 });
