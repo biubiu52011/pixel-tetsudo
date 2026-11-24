@@ -6,6 +6,12 @@
 
 ## 2026-11-24 秋田新干线：总表审计及95/96定点修复
 
+### 后续：13/29/45/63/65号临时列车日期限制（2026-11-24，生产已应用）
+
+依据JR官方搜索索引：[13号详情](https://timetables.jreast.co.jp/2611/train/110/111601.html)、[258d2p](https://timetables.jreast.co.jp/2611/timetable-v/258d2p.html)（29/45）、[45号跨版本日期佐证](https://timetables.jreast.co.jp/2612/train/130/130611.html)、[63号详情](https://timetables.jreast.co.jp/2611/train/045/047221.html)、[258d1p](https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html)（65号基础运行日和时变），修正753/5013M、761/5029M、768/5045M、772/5063M、773/8065M的11月运行日。完整页面访问仍为Cache miss；日期范围基于索引可读条件，未验证全部停站时刻及变体，保持 canonical undated_not_current_verified。事务执行与日期数组逐条回读完成。[SQL](../../supabase/queries/akita_2611_five_more_limited_dates_20261124.sql)（5c55b26）。
+
+生产45模板，29明确日期、16未知，平日34–41、休日19–22可用，日期重复0；45番号证据、45车型映射，精确PNG缺失0。未新增前端或数据库表。剩余49/55/67等须核实其11月是否实际运行，不能把仅12月以后运行的列车误认成11月缺失班次。保留 sparse_review。
+
 ### 后续：十一趟常规列车休日范围恢复（2026-11-24，生产已应用）
 
 JR East 2611 [258d1p](https://timetables.jreast.co.jp/2611/timetable-v/258d1p.html)、[258d2](https://timetables.jreast.co.jp/2611/timetable-v/258d2.html)、[003d2p](https://timetables.jreast.co.jp/2611/timetable-v/003d2p.html)、[258u1p](https://timetables.jreast.co.jp/2611/timetable-v/258u1p.html)、[258u2p](https://timetables.jreast.co.jp/2611/timetable-v/258u2p.html) 索引确认27/31/35/37/39/41与36/38/42/44/96常规运行及若干时变条件。复用原11份模板，将 operating_dates 限定11/1–30；不新增时刻、模板或车型映射，不升级 canonical validity。SQL事务及回读成功，[SQL记录](../../supabase/queries/akita_2611_eleven_daily_service_dates_20261124.sql) (6d8c46e)。
