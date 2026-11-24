@@ -4299,6 +4299,83 @@
         planned:true,representative:true,referenceOnly:true,
         illustrative:true,actualVehicleConfirmed:false};
     }
+    if(line==="KansaiCentral"||line==="KiseiCentral"){
+      // JR Central states that every Hida and Nanki service has used HC85
+      // since the 2023 replacement was completed.  Keep this rule narrower
+      // than that fleet statement: only the two dated Nanki SQL numbers
+      // currently present in the audited pool are admitted here.
+      // https://company.jr-central.co.jp/sustainability/social/conventional-line/
+      var p=context||{},date=String(p.serviceDate||"").slice(0,10);
+      var op=String(p.trainOperator||p.operator||"");
+      var direction=String(p.railDirection||p.direction||"").split(/[.:]/).pop();
+      var calendar=sourceCalendar(p);
+      var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
+      var railway=line==="KansaiCentral"?"Kansai":"Kisei";
+      if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+         number!==String(p.trainNumber||"").trim().toUpperCase()||
+         p.positionSource!=="supabase-train-run"||p.estimated!==true||
+         p.officialNumberVerified!==true||p.timetableDateVerified!==true||
+         p.timetableValidity!=="date_verified"||
+         p.sourceRailway!=="odpt.Railway:JR-Central."+railway||
+         (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
+         !["Inbound","Outbound"].includes(direction)||!calendar||
+         p.vehicleIdentityStatus==="EXACT")return null;
+      var day=new Date(date+"T00:00:00Z").getUTCDay();
+      var dayCal=(day===0||day===6||date==="2026-11-03"||
+        date==="2026-11-23")?"holiday":"weekday";
+      if(calendar!==dayCal)return null;
+      var corridor=line==="KansaiCentral"
+        ?["Nagoya","Hatta","Haruda","Kanie","Hisakazu","Yatomi",
+          "Nagashima","Kuwana","Asahi-Kansai","Tomi-da","Tomita-Hama",
+          "Yokkaichi","Minami-Yokkaichi","Kawarada","Kawano","Kasa-Tou",
+          "Ida-Kawa","Kameyama"]
+        :["Kameyama"].concat(Array.from({length:39},function(_,i){
+          return "JRC-KiseiCentral-"+String(i+2).padStart(3,"0");
+        }),["Shingu"]);
+      var stops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys.map(function(s){
+        return String(s||"").split(".").pop();
+      }):[];
+      var positions=stops.map(function(key){return corridor.indexOf(key);});
+      if(stops.length<2||positions.some(function(i){return i<0;})||
+         positions.some(function(i,j){return j>0&&(direction==="Outbound"
+           ?i<=positions[j-1]:i>=positions[j-1]);}))return null;
+      var model="",png="",url="",source="";
+      if(type==="LimitedExpress"&&["3001D","3002D"].includes(number)&&
+         ((number==="3001D"&&direction==="Outbound")||
+          (number==="3002D"&&direction==="Inbound"))){
+        model="HC85系";
+        png="../images/列车/JR東海/JR東海_HC85系.png";
+        url="https://company.jr-central.co.jp/sustainability/social/conventional-line/";
+        source="jr-central-nanki-hc85-fleet-reference";
+      }else if(line==="KansaiCentral"&&
+               ["Local","Rapid","SectionRapid"].includes(type)&&
+               /^[1-9][0-9]{0,4}G$/.test(number)&&
+               ((Number(number.slice(0,-1))%2===0)===(direction==="Inbound"))){
+        // The private March 2026 operation tables list every non-Mie,
+        // non-limited-express Nagoya-area Kansai-line working as 315(4).
+        // This remains a planned fleet illustration, never an observation.
+        model="315系";
+        png="../images/列车/JR東海/JR東海_315系.png";
+        url=calendar==="holiday"?"https://yoke4000.main.jp/jru/kansaiH.html":
+          "https://yoke4000.main.jp/jru/kansaiW.html";
+        source="jr-central-kansai-315-line-fleet-reference";
+      }else return null;
+      var plan=p.vehiclePlan;
+      if(plan&&Array.isArray(plan.models)&&plan.models.length&&
+         (plan.models.length!==1||plan.models[0]!==model))return null;
+      if(Array.isArray(p.plannedVehicleCandidates)&&
+         p.plannedVehicleCandidates.length&&
+         (p.plannedVehicleCandidates.length!==1||
+          p.plannedVehicleCandidates[0]!==model))return null;
+      if([p.realtimeVehicleType,p.realtimeDerivedVehicleType].some(function(v){
+        return v&&String(v).trim()!==model;
+      }))return null;
+      var gallery=root.VehicleGaragePngMap;
+      if(!gallery||!gallery.matchModelPath(model,png,line))return null;
+      return {trainNumber:number,lineId:line,model:model,pngPath:png,
+        source:source,sourceUrl:url,planned:true,representative:true,
+        referenceOnly:true,illustrative:true,actualVehicleConfirmed:false};
+    }
     if(line==="TokaidoCentral"){
       // Number->series ILLUSTRATIONS only; never actual carset confirmation.
       // 2026-03 timetable references: https://yoke4000.main.jp/jru/hamaW.html

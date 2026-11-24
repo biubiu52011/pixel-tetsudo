@@ -116,6 +116,15 @@
   table.push(
     ["jrc-chuo-central-315-line-fleet-reference","315系","JR東海/JR東海_315系.png","ChuoCentral",0]
   );
+  // JR Central Kansai line references.  The 315 artwork is limited to
+  // ordinary/rapid G-number SQL runs; HC85 is limited to the dated Nanki
+  // numbers admitted by TrainNumberPngRanges.  Neither row identifies an
+  // actual-day physical formation.
+  table.push(
+    ["jrc-kansai-central-315-line-fleet-reference","315系","JR東海/JR東海_315系.png","KansaiCentral",0],
+    ["jrc-kansai-central-hc85-nanki-reference","HC85系","JR東海/JR東海_HC85系.png","KansaiCentral",0],
+    ["jrc-kisei-central-hc85-nanki-reference","HC85系","JR東海/JR東海_HC85系.png","KiseiCentral",0]
+  );
   // Gotemba 2611 number ranges use the 315 front as a line-level planned
   // reference only.  The line also has 313-series workings; this entry
   // authorizes the already audited PNG for the Gotemba diagram without
@@ -255,8 +264,8 @@
       rule.path===asPath(path) && rule.lineIds.indexOf(String(lineId||""))>=0;
   }
   root.VehicleGaragePngMap=Object.freeze({
-    version:"20261115-tobu-koizumi-reference-v1",totalPng:601,
-    mappedPng:601,canonicalEntries:624,alternatePng:1,
+    version:"20261125-jrc-kansai-reference-v1",totalPng:601,
+    mappedPng:601,canonicalEntries:627,alternatePng:1,
     unassigned:Object.freeze(unassigned.map(function(p){return prefix+p;})),
     alternates:Object.freeze(alternates.map(function(r){return prefix+r[2];})),
     hasPng:function(path){return !!assets[asPath(path)];},

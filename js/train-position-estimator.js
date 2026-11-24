@@ -2570,15 +2570,23 @@
               // The existing JR-Central authorized SQL importer signs the
               // canonical train number with a dated, source-scoped itinerary.
               // It does NOT assign a physical vehicle or manufacture a run.
-              Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")&&
+              Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral"||
+                lineId==="KansaiCentral"||lineId==="KiseiCentral")&&
               tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&
               tt._timetableValidity==="date_verified"&&
-              (lineId==="ChuoCentral"
-                ?(tt["odpt:railway"]==="odpt.Railway:JR-Central.Chuo"&&
-                  /^[1-9][0-9]{0,4}M$/.test(String(publicTrainNumber||"")))
-                :(tt["odpt:railway"]==="odpt.Railway:JR-Central.Tokaido"&&
-                  /^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||""))))&&
+              ((lineId==="ChuoCentral"&&
+                tt["odpt:railway"]==="odpt.Railway:JR-Central.Chuo"&&
+                /^[1-9][0-9]{0,4}M$/.test(String(publicTrainNumber||"")))||
+               (lineId==="TokaidoCentral"&&
+                tt["odpt:railway"]==="odpt.Railway:JR-Central.Tokaido"&&
+                /^[1-9][0-9]{0,4}[FM]$/.test(String(publicTrainNumber||"")))||
+               (lineId==="KansaiCentral"&&
+                tt["odpt:railway"]==="odpt.Railway:JR-Central.Kansai"&&
+                /^[1-9][0-9]{0,4}[DG]$/.test(String(publicTrainNumber||"")))||
+               (lineId==="KiseiCentral"&&
+                tt["odpt:railway"]==="odpt.Railway:JR-Central.Kisei"&&
+                /^[1-9][0-9]{0,4}D$/.test(String(publicTrainNumber||""))))&&
               String(publicTrainNumber||"")===String(run.trainNumber||"")) ||
  Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
               tt._timetableDateVerified===true&&

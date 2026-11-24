@@ -119,8 +119,9 @@ test('missing timetable is announced from an audited SQL status, not inferred fr
 
 test('ChuoCentral SQL public numbers are admitted only after date, source, and exact-number checks',()=>{
   const estimator=fs.readFileSync('js/train-position-estimator.js','utf8');
-  const begin=estimator.indexOf('Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral")&&');
-  const end=estimator.indexOf(' ||\\n Boolean(saganoDisplayNumber)'.replace('\\n','\n'),begin);
+  const begin=estimator.indexOf('Boolean((lineId==="TokaidoCentral"||lineId==="ChuoCentral"||');
+  const marker=estimator.indexOf('Boolean(saganoDisplayNumber)',begin);
+  const end=estimator.lastIndexOf(' ||',marker);
   assert.ok(begin>0&&end>begin,'missing canonical JR Central SQL number guard');
   const predicate=new Function('lineId','tt','publicTrainNumber','run',
     'return '+estimator.slice(begin,end));
@@ -141,4 +142,12 @@ test('ChuoCentral SQL public numbers are admitted only after date, source, and e
     {...tt,'odpt:railway':'odpt.Railway:JR-Central.Tokaido'},
     '3201F',{trainNumber:'3201F'}),true,
     'source-correct dated TokaidoCentral F-number rule remains intact');
+  assert.equal(predicate('KansaiCentral',
+    {...tt,'odpt:railway':'odpt.Railway:JR-Central.Kansai'},
+    '3001D',{trainNumber:'3001D'}),true,
+    'source-correct dated KansaiCentral D-number is admitted');
+  assert.equal(predicate('KiseiCentral',
+    {...tt,'odpt:railway':'odpt.Railway:JR-Central.Kisei'},
+    '3002D',{trainNumber:'3002D'}),true,
+    'source-correct dated KiseiCentral D-number is admitted');
 });
