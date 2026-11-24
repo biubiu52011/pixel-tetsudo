@@ -100,3 +100,38 @@ ctx.layout(noCaption.layer);
 assert.equal(noCaption.units[1].getAttribute('visibility'),'hidden');
 assert.match(render,/caption\.textContent=captionBase;/);
 console.log('whole-component collision and folding: PASS');
+
+
+/* Source priority and actual visibility auditing: no number-based merge. */
+const prep=extract('  function _trainPositionRank(p) {','  // 服务走廊记录');
+const diag=extract('  function _auditTrainVisibility(svg) {','  function renderTrainMap(');
+const fallback=extract('  function _foldSourceDestination(p,lineId) {','  function _trainLabelSignature(');
+const auditCtx={window:{currentLang:'zh'},_isOedoTailTrain:()=>false,
+  _isLoopDirName:s=>s==='InnerLoop',LOOP_DIR_NAMES:{InnerLoop:{zh:'内环'}},
+  _trainDestText:s=>s==='Tokyo'?'东京':s||''};
+vm.runInNewContext(prep+diag+fallback+
+  '\nthis.prepare=_prepareTrainPositions;this.audit=_auditTrainVisibility;this.fallback=_foldSourceDestination;',auditCtx);
+const snapshot=[
+  {runningChainId:'same',trainNumber:'27',stationIndex:2,estimated:true,positionSource:'supabase-train-run'},
+  {runningChainId:'same',trainNumber:'27',stationIndex:1,estimated:false,positionSource:'realtime-api'},
+  {runningChainId:'other',trainNumber:'27',stationIndex:2,estimated:true,positionSource:'supabase-train-run'}
+];
+const prepared=auditCtx.prepare(snapshot,[{},{},{}]);
+assert.equal(prepared.length,2);
+assert.equal(prepared[0].positionSource,'realtime-api');
+assert.equal(prepared[1].runningChainId,'other');
+assert.equal(auditCtx.fallback({destinationStation:'Tokyo'},'HokurikuShinkansen'),'东京');
+assert.equal(auditCtx.fallback({destinationStation:'Tokyo',railDirection:'InnerLoop'},'Yamanote'),'内环');
+const auditFixture=fixture();
+auditFixture.units.forEach(u=>{u.querySelector=sel=>u.children.find(c=>sel==='[data-train-id]'?c.getAttribute('data-train-id'):c.getAttribute('data-train-label-for'))||null;});
+auditFixture.labels.forEach(l=>{l.querySelector=()=>({textContent:'东京'});});
+auditFixture.labels[0].setAttribute('display','none');
+auditFixture.labels[0].setAttribute('data-caption-obstacle','station-circle');
+auditFixture.units[1].setAttribute('data-train-fold-hidden','true');
+const vis=auditCtx.audit({querySelectorAll:()=>auditFixture.units});
+assert.equal(vis.hiddenLabels,1);
+assert.equal(vis.folded,1);
+assert.equal(vis.visible,1);
+assert.equal(vis.rows[0].obstacle,'station-circle');
+assert.equal(vis.duplicateIds.length,0);
+console.log('train identity priority, folded source destination, visibility audit: PASS');
