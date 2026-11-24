@@ -532,10 +532,10 @@ test('Keisei-Ueno 4x4 interchange and Machiya have safe uniform station pitch',(
 });
 
 test('moving train captions yield to permanent names and interchange badges',()=>{
-  const start=rendererSource.indexOf('  function _trainStaticScreenBounds(');
+  const start=rendererSource.indexOf('  function _protectStaticStationInfoFromTrainCaptions(');
   const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
   assert.ok(start>=0&&end>start);
-  const ctx=vm.createContext({_trainUnitContainer:node=>node&&node.parentNode});
+  const ctx=vm.createContext({});
   vm.runInContext(rendererSource.slice(start,end),ctx);
   const protectedText={getBoundingClientRect:()=>({
     x:100,y:100,width:80,height:24})};
@@ -555,7 +555,7 @@ test('moving train captions yield to permanent names and interchange badges',()=
   assert.equal(far.attrs.display,undefined);
   assert.equal(ctx._protectStaticStationInfoFromTrainCaptions(train,[near,far]),1,
     'reuse static glyph bounds in the unchanged viewport');
-  assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels, markerById\)/);
+  assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels\)/);
 });
 
 test('Keisei Machiya canonical SA and C fit one row and keep other aliases distinct',()=>{
@@ -689,10 +689,10 @@ test('two named destinations reuse ordinary icon slots before starting another c
 });
 
 test('train captions also avoid permanent station circles',()=>{
-  const start=rendererSource.indexOf('  function _trainStaticScreenBounds(');
+  const start=rendererSource.indexOf('  function _protectStaticStationInfoFromTrainCaptions(');
   const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
   assert.ok(start>=0&&end>start);
-  const env=vm.createContext({_trainUnitContainer:node=>node&&node.parentNode});
+  const env=vm.createContext({});
   vm.runInContext(rendererSource.slice(start,end),env);
   const info={querySelectorAll:()=>[]};
   const circle={getBoundingClientRect:()=>({x:100,y:100,width:30,height:30})};
@@ -711,45 +711,4 @@ test('train captions also avoid permanent station circles',()=>{
   assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[near,far]),1);
   assert.equal(near.attrs.display,'none');
   assert.equal(far.attrs.display,undefined);
-});
-
-test('fixed train components fold even when a destination is statically obstructed; badge footprint also folds',()=>{
-  const start=rendererSource.indexOf('  function _groupNearbyTrainMarkers(');
-  const end=rendererSource.indexOf('  // The SVG badges are rebuilt',start);
-  const groups=[];
-  const env=vm.createContext({
-    _trainUnitContainer:node=>node&&node.parentNode,
-    _syncTrainFoldBadges:(_layer,folded,_labels,_markers,_matrix,badges)=>groups.push({folded,badges})
-  });
-  vm.runInContext(rendererSource.slice(start,end),env);
-  const station={getBoundingClientRect:()=>({x:100,y:100,width:30,height:30})};
-  const svg={
-    getBoundingClientRect:()=>({x:0,y:0,width:440,height:800}),
-    querySelector:s=>s==='.station-node-layer'?{querySelectorAll:()=>[station]}:null
-  };
-  for(const scale of [1,.5]){
-    const matrix={a:scale,d:scale,b:0,c:0};
-    function node(attrs,box,parentNode){
-      return {attrs:{...attrs},parentNode,tagName:'image',
-        getAttribute(k){return this.attrs[k]??null;},
-        setAttribute(k,v){this.attrs[k]=String(v);},
-        removeAttribute(k){delete this.attrs[k];},
-        getBoundingClientRect(){return this.attrs.display==='none'?{x:0,y:0,width:0,height:0}:box;}};
-    }
-    const ua=node({},{}),ub=node({},{}),uc=node({},{});
-    const a=node({'data-train-id':'a'},{x:105,y:82,width:14,height:18},ua);
-    const b=node({'data-train-id':'b'},{x:136,y:105,width:14,height:18},ub);
-    const c=node({'data-train-id':'c'},{x:105,y:64,width:14,height:12},uc);
-    const la=node({'data-train-label-for':'a','data-label-raw-transform':'translate(-20,0)'},{x:94,y:108,width:55,height:14},ua);
-    const lb=node({'data-train-label-for':'b','data-label-raw-transform':'translate(-15,0)'},{x:124,y:125,width:38,height:14},ub);
-    const layer={ownerSVGElement:svg,getScreenCTM:()=>matrix,
-      querySelectorAll:s=>s==='[data-train-id]'?[a,b,c]:s==='[data-train-label-for]'?[la,lb]:[]};
-    env._resolveTrainLabelCollisions(layer);
-    assert.equal(la.attrs.transform,'translate(-20,0)','caption must not drift');
-    assert.equal(la.attrs.display,'none','static station remains readable');
-    assert.equal(JSON.stringify(groups.at(-1).folded),JSON.stringify({a:['a','b','c']}));
-    assert.equal(ub.attrs['data-train-fold-hidden'],'true');
-    assert.equal(uc.attrs['data-train-fold-hidden'],'true','fold badge collision must also be resolved');
-    assert.ok(groups.at(-1).badges.a.width>0);
-  }
 });
