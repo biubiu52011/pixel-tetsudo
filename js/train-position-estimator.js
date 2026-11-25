@@ -2589,7 +2589,6 @@
                 /^[1-9][0-9]{0,4}D$/.test(String(publicTrainNumber||"")))||
                (lineId==="Minobu"&&
                 tt["odpt:railway"]==="odpt.Railway:JR-Central.Minobu"&&
-                /^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(String(tt._serviceDate||""))&&
                 /^(?:3642G|40(?:0[1-9]|1[0-4])M)$/.test(String(publicTrainNumber||""))))&&
               String(publicTrainNumber||"")===String(run.trainNumber||"")) ||
  Boolean(saganoDisplayNumber) || Boolean(tt._positionSource==="supabase-train-run"&&
