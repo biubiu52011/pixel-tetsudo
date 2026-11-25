@@ -234,7 +234,8 @@
       ],
       operator:"JR-Central",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-Central.Gotemba"],
-      validFrom:"2026-11-01",validTo:"2026-11-30",
+      // Number observations remain reference evidence after the source month.
+      validFrom:"2026-11-01",
       referenceOnly:true,illustrative:true,
       // Keep the canonical gallery model label here so the final asset
       // authorization can be checked against VehicleGaragePngMap.
@@ -4339,7 +4340,7 @@
       var direction=String(p.railDirection||p.direction||"").split(/[.:]/).pop();
       var calendar=sourceCalendar(p);
       if(number!==String(p.trainNumber||"").trim().toUpperCase()||
-         !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+         !/^\d{4}-\d{2}-\d{2}$/.test(date)||date<"2026-03-14"||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
          p.officialNumberVerified!==true||p.timetableDateVerified!==true||
          p.timetableValidity!=="date_verified"||
@@ -4347,10 +4348,8 @@
          (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
          !["Inbound","Outbound"].includes(direction)||!calendar||
          p.vehicleIdentityStatus==="EXACT")return null;
-      var day=new Date(date+"T00:00:00Z").getUTCDay();
-      var dayCal=(day===0||day===6||date==="2026-11-03"||
-        date==="2026-11-23")?"holiday":"weekday";
-      if(calendar!==dayCal)return null;
+      // Use the calendar of the independently date-verified timetable;
+      // the reference matcher does not maintain a second holiday calendar.
       var model="",url="";
       if(number==="3642G"&&type==="Local"&&direction==="Inbound"){
         model="313系";
@@ -4400,7 +4399,7 @@
       var calendar=sourceCalendar(p);
       if(!/^[1-9][0-9]{0,4}M$/.test(number)||
          number!==String(p.trainNumber||"").trim().toUpperCase()||
-         !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+         !/^\d{4}-\d{2}-\d{2}$/.test(date)||date<"2026-03-14"||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
          p.officialNumberVerified!==true||
          p.timetableDateVerified!==true||
@@ -4409,10 +4408,8 @@
          (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
          !["Inbound","Outbound"].includes(direction)||!calendar||
          p.vehicleIdentityStatus==="EXACT")return null;
-      var day=new Date(date+"T00:00:00Z").getUTCDay();
-      var dayCal=(day===0||day===6||date==="2026-11-03"||
-        date==="2026-11-23")?"holiday":"weekday";
-      if(calendar!==dayCal)return null;
+      // Use the calendar of the independently date-verified timetable;
+      // the reference matcher does not maintain a second holiday calendar.
       var chuoNumberReference=findJrCentralChuo202603Number(
         number,calendar,direction);
       // The existing SQL range pool contains eight exact 2611 Shinano
@@ -4546,7 +4543,7 @@
       var calendar=sourceCalendar(p);
       var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
       var railway=line==="KansaiCentral"?"Kansai":"Kisei";
-      if(!/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<"2026-03-14"||
          number!==String(p.trainNumber||"").trim().toUpperCase()||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
          p.officialNumberVerified!==true||p.timetableDateVerified!==true||
@@ -4555,10 +4552,8 @@
          (op&&op!=="JR-Central"&&op!=="odpt.Operator:JR-Central")||
          !["Inbound","Outbound"].includes(direction)||!calendar||
          p.vehicleIdentityStatus==="EXACT")return null;
-      var day=new Date(date+"T00:00:00Z").getUTCDay();
-      var dayCal=(day===0||day===6||date==="2026-11-03"||
-        date==="2026-11-23")?"holiday":"weekday";
-      if(calendar!==dayCal)return null;
+      // Use the calendar of the independently date-verified timetable;
+      // the reference matcher does not maintain a second holiday calendar.
       var corridor=line==="KansaiCentral"
         ?["Nagoya","Hatta","Haruda","Kanie","Hisakazu","Yatomi",
           "Nagashima","Kuwana","Asahi-Kansai","Tomi-da","Tomita-Hama",
@@ -4625,7 +4620,7 @@
       var direction=String(p.railDirection||p.direction||"").split(/[.:]/).pop();
       var type=String(p.trainType||p.typeName||"").split(/[.:]/).pop();
       if(!m||number!==String(p.trainNumber||"").trim().toUpperCase()||
-         !/^2026-11-(?:0[1-9]|[12][0-9]|30)$/.test(date)||
+         !/^\d{4}-\d{2}-\d{2}$/.test(date)||date<"2026-03-14"||
          p.positionSource!=="supabase-train-run"||p.estimated!==true||
          p.officialNumberVerified!==true||
          p.timetableDateVerified!==true||
@@ -4635,10 +4630,7 @@
          !["Local","Rapid","SectionRapid","SpecialRapid"].includes(type)||
          !["Inbound","Outbound"].includes(direction)||!calendar||
          p.vehicleIdentityStatus==="EXACT")return null;
-      var weekday=new Date(date+"T00:00:00Z").getUTCDay();
-      var calendarOnDate=(weekday===0||weekday===6||
-         date==="2026-11-03"||date==="2026-11-23")?"holiday":"weekday";
-      if(calendar!==calendarOnDate)return null;
+      // Calendar comes from the date-verified timetable.
       var n=Number(m[1]),suffix=m[2];
       if((n%2===0)!==(direction==="Inbound"))return null;
       var stops=Array.isArray(p.scheduledStopKeys)?p.scheduledStopKeys:[];
@@ -6140,7 +6132,7 @@
   }
 
   root.TrainNumberPngRanges=Object.freeze({
-    version:"20261105-kashima-sql-2611-v1",match:match,
+    version:"20261126-jrc-fleet-reference-no-month-expiry",match:match,
     jrCentralChuo202603NumberRoster:jrcChuo202603NumberRoster,
     findJrCentralChuo202603Number:findJrCentralChuo202603Number,
     jrCentralKansai202603NumberRoster:jrcKansai202603NumberRoster,
