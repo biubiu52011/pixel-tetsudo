@@ -109,3 +109,36 @@ Independent journey cross-checks:
 - This original selection of factual anchors does not claim permission to
   reproduce a full line timetable. Coverage remains sampled and must not be
   accepted as a complete daily or all-stops schedule.
+
+### 4003M follow-up: single-service stopping-pattern reconciliation
+
+The 4003M sample is expanded in place from three anchors to the eleven passenger
+stops on Minobu between Fuji and Kofu, using independently cross-checked
+scheduled facts from the November weekday/holiday diagrams and journey
+references. The original three anchors and 30 explicit operating dates are
+preserved; intermediate arrival clocks not separately confirmed remain null.
+West Fujinomiya is a passing station on this service. No through segment,
+actual dispatch, individual formation, or full-day roster is inferred.
+
+Cross-checks: https://timetables.jreast.co.jp/2611/timetable-v/109d1p.html,
+https://timetables.jreast.co.jp/2611/timetable-v/109d2p.html,
+https://jr-group.jp/fujikawa-timetable/,
+https://transit.yahoo.co.jp/search/result/%E4%B8%8B%E9%83%A8%E6%B8%A9%E6%B3%89-%E9%9D%99.
+The last two are third-party journey references, not operator publications.
+This is a single train-specific factual verification, not a reproduction of
+all daily timetable columns. The complete line remains unaccepted.
+
+### Full-day source availability recheck (2026-11-25)
+
+- The Yamanashi regional GTFS and Minobu municipal feeds describe bus routes,
+  not JR Central Minobu rail: https://gtfs-data.jp/search?target_feed=org1%2Arosenbus.
+- JR Central's March 7, 2026 update publishes date-specific station schedules
+  and scheduled clocks for individual trains: https://jr-central.co.jp/news/release/_pdf/000044764.pdf.
+  Access to the historical JSON endpoint referenced by the earlier October
+  evidence was not verified on this date; no recurring plan or reuse license
+  is inferred from the official website's availability.
+- Transit API advertises a public CORS-enabled API and a license catalog
+  (https://api.transit.ls8h.com/), but its feed list and JR data acquisition
+  statement could not be retrieved in this audit. Minobu coverage and
+  republication rights are unverified; do not activate it as a data provider.
+- Commercial timetable licensing route: https://www.kotsu.co.jp/service/jikoku_solution/data_sales/.
