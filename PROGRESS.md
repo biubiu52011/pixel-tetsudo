@@ -4,6 +4,15 @@
 
 # Pixel Tetsudo 工程进度
 
+### CI-PNG-INDEX-MINOBU-SYNC-20261126 — 身延线图库派生索引与跨平台契约整理（LOCAL-READY）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 失败根因 | `CI/CD - Pages` run `45595553384` 的 verify job 在 `build-png-to-train-number-index.cjs --check` 失败；身延线新增 313／373 系计划图库范围后，派生 JSON 索引未同步。 |
+| 修复 | 使用现有生成器重建唯一派生索引；只新增两张既有 JR 东海 PNG 的 `Minobu` 线路范围与对应 gallery ID，不新增号段、实车或编组授权，汇总计数保持不变。 |
+| 整理 | JR50 历史迁移继续严格限定 `TokaidoCentral`；测试改为区分旧迁移范围与共享 373 图片的新身延线计划范围，并用 `split(/\r?\n/)` 消除 Windows CRLF 假失败。 |
+| 验证 | 生成器 `--check`、PNG 反向索引、JR50、身延线运行时号段及相关派生映射回归通过后再直接提交并推送 `main`；不执行 Supabase 写入、Edge 部署或额外 Pages 发布。 |
+
 ### JRC-CHUO-202603-EXACT-TRAIN-NUMBERS — JR 东海中央线名古屋口精确番号（DONE）
 
 | 项目 | 当前状态 |

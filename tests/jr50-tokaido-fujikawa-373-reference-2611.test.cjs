@@ -24,13 +24,17 @@ test('JR50 public Fujikawa number range and 373 model have explicit source links
  assert.match(sql,/recommend\.jr-central\.co\.jp\/oshi-tabi\/contents025\.html/);
 });
 
-test('JR50 remains limited to the existing TokaidoCentral 373 PNG scope',()=>{
+test('JR50 migration stays Tokaido-scoped while shared 373 art has a separate Minobu plan scope',()=>{
  const asset=index.pngIndex.find(x=>x.path===path);
  assert.ok(asset,'373 PNG not present in single original gallery index');
  assert.ok(asset.lineScopes.includes('TokaidoCentral'));
- assert.ok(!asset.lineScopes.includes('Minobu'), 'do not create a new Minobu ownership rule');
+ assert.ok(asset.lineScopes.includes('Minobu'));
+ assert.ok(asset.galleryIds.includes('jrc-tokaido-central-373-sql-reference'));
+ assert.ok(asset.galleryIds.includes('jrc-minobu-373-fujikawa-reference'));
  assert.ok(asset.canonicalModels.includes('373系'));
  assert.equal(asset.quarantined,false);
+ assert.equal(asset.directNumberRules.length,0,
+   'gallery scope alone must not create a train-number authority');
  assert.match(sql,/'2611','TokaidoCentral','png_band\/TokaidoCentral\/4001-4014M',4001,4014,'M',NULL/);
  assert.doesNotMatch(sql,/'2611','Minobu','png_band/);
  assert.match(sql,/requires_exact_roster=FALSE AND actual_vehicle_confirmed=FALSE/);
@@ -38,14 +42,14 @@ test('JR50 remains limited to the existing TokaidoCentral 373 PNG scope',()=>{
 });
 
 test('JR50 promotes exactly one numbered gallery CSV row without a second truth table',()=>{
- const rows=csv.trimEnd().split('\n');
+ const rows=csv.trimEnd().split(/\r?\n/);
  assert.equal(rows.filter(row=>row.startsWith(prefix)).length,1);
  assert.equal(rows.filter(row=>row.startsWith('JR,JR東海,'+path+',')).length,1);
  assert.ok(!triage.includes('"'+path+'"'),
    '373 already has a sourced reference and cannot remain in no-number triage');
  // All unnumbered PNGs must have exactly one pending source-investigation row.
  assert.equal(rows.filter(row=>row.endsWith(',无号段')).length,
-   triage.trimEnd().split('\n').length-1);
+   triage.trimEnd().split(/\r?\n/).length-1);
  assert.ok(sql.includes('INSERT INTO public.published_train_png_number_ranges'));
  assert.ok(!sql.includes('CREATE TABLE'));
 });
