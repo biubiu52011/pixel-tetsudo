@@ -18,7 +18,7 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-test('active documentation has no missing relative link targets', () => {
+test('现役文档不存在缺失的相对链接目标', () => {
   for (const relativePath of activeDocuments) {
     const source = read(relativePath);
     const directory = path.dirname(path.join(root, relativePath));
@@ -28,13 +28,13 @@ test('active documentation has no missing relative link targets', () => {
       assert.equal(
         fs.existsSync(path.resolve(directory, link)),
         true,
-        `${relativePath} links to missing ${link}`,
+        `${relativePath} 链接到缺失目标 ${link}`,
       );
     }
   }
 });
 
-test('component index names the current trains-page owners', () => {
+test('组件索引列出当前列车页所有者', () => {
   const components = read('docs/COMPONENTS.md');
   const trainsPage = read('pages/trains.html');
   const owners = [
@@ -47,7 +47,7 @@ test('component index names the current trains-page owners', () => {
     'js/trains-page.js',
   ];
   for (const owner of owners) {
-    assert.equal(fs.existsSync(path.join(root, owner)), true, `${owner} is missing`);
+    assert.equal(fs.existsSync(path.join(root, owner)), true, `${owner} 不存在`);
     assert.match(components, new RegExp(owner.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(trainsPage, /src="\.\.\/js\/through-chip\.js\?v=/);
@@ -55,10 +55,10 @@ test('component index names the current trains-page owners', () => {
   assert.doesNotMatch(components, /through-chip\.js[^\n]*(?:removed|\u5df2\u6536\u56de)/i);
 });
 
-test('active policy documents are present at the repository root', () => {
+test('现役规范文档存在于仓库根目录', () => {
   for (const relativePath of ['AGENTS.md', 'ENGINEERING.md', 'PROGRESS.md']) {
-    assert.equal(fs.existsSync(path.join(root, relativePath)), true, `${relativePath} is missing`);
+    assert.equal(fs.existsSync(path.join(root, relativePath)), true, `${relativePath} 不存在`);
   }
   assert.match(read('README.md'), /^# Pixel Tetsudo/m);
-  assert.match(read('README.md'), /^## Architecture at a glance/m);
+  assert.match(read('README.md'), /^## 架构概览/m);
 });

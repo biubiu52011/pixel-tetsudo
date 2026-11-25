@@ -1,10 +1,9 @@
-// Pixel Tetsudo — canonical generated-artifact entry point.
+// Pixel Tetsudo — canonical 生成产物统一入口。
 //
-// Keep data generation in one command so a source change cannot leave the
-// file:// bundles and the static config bundle out of sync.
-// Usage:
-//   node data/core/generate-all.js          regenerate all active artifacts
-//   node data/core/generate-all.js --check  verify all active artifacts
+// 将数据生成集中在一个命令中，避免源变更后 file:// 数据包与静态配置包失去同步。
+// 用法：
+//   node data/core/generate-all.js          重新生成全部现役产物
+//   node data/core/generate-all.js --check  检查全部现役产物
 'use strict';
 
 const fileData = require('./gen-file-data.js');

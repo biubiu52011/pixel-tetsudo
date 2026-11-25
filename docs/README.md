@@ -1,33 +1,27 @@
-# Documentation index
+# 文档索引
 
-## Active documents
+## 现役文档
 
-These files describe the current repository and must be checked against the
-current source when their area changes:
+下列文件描述当前仓库。它们所属区域变更时，必须同时对照当前源码核对：
 
-| Document | Responsibility |
+| 文档 | 职责 |
 | --- | --- |
-| [`../README.md`](../README.md) | Project entry point and development commands |
-| [`../AGENTS.md`](../AGENTS.md) | Delivery procedure for coding agents |
-| [`../ENGINEERING.md`](../ENGINEERING.md) | Durable architecture, data and validation rules |
-| [`COMPONENTS.md`](COMPONENTS.md) | Current module ownership, APIs and load relationships |
-| [`../PROGRESS.md`](../PROGRESS.md) | Execution status and evidence log |
+| [`../README.md`](../README.md) | 项目入口与开发命令 |
+| [`../AGENTS.md`](../AGENTS.md) | 代码智能体交付流程 |
+| [`../ENGINEERING.md`](../ENGINEERING.md) | 长期架构、数据和验证规则 |
+| [`COMPONENTS.md`](COMPONENTS.md) | 当前模块所有权、API 与加载关系 |
+| [`../PROGRESS.md`](../PROGRESS.md) | 执行状态和证据日志 |
 
-## Historical documents
+## 历史文档
 
-Files under `docs/audits/`, dated implementation notes, SQL migration reports,
-and other documents whose names contain an explicit date are evidence snapshots.
-They describe the commit, source material and deployment state recorded at that
-time. They are not current architecture or current production acceptance unless
-the active documents explicitly say so.
+`docs/audits/` 下的文件、带日期的实施记录、SQL 迁移报告，以及文件名含有明确
+日期的其他文档，都是证据快照。它们描述当时的提交、来源材料和部署状态。
+除非现役文档明确说明，它们不是当前架构或当前生产验收证据。
 
-When a historical conclusion is replaced, keep the original evidence intact and
-link the newer conclusion from `PROGRESS.md` or the relevant current document.
-Do not silently rewrite an old audit to make it describe current HEAD.
+历史结论被替代时，保留原始证据，并从 `PROGRESS.md` 或相关现役文档链接新结论。
+不得默默改写旧审计，使其看起来像在描述当前 HEAD。
 
-## Maintenance rule
+## 维护规则
 
-Current-state claims must name their owner and avoid embedding deploy-version or
-production-health assertions that can become stale. Verify time-sensitive state
-from the live system and record it in `PROGRESS.md`; keep `COMPONENTS.md` focused
-on source-level ownership.
+现状声明必须指明所有者，避免在组件索引中嵌入会过期的部署版本或生产健康断言。
+时效状态应从线上系统验证后记入 `PROGRESS.md`；`COMPONENTS.md` 只保持源码级所有权。

@@ -1,164 +1,133 @@
-# Pixel Tetsudo engineering rules
+# Pixel Tetsudo 工程规范
 
-This document defines durable architecture, data and validation rules. Read it
-together with [`AGENTS.md`](AGENTS.md), [`PROGRESS.md`](PROGRESS.md), and
-[`docs/COMPONENTS.md`](docs/COMPONENTS.md) before making a change. Current code
-is evidence of local implementation; only live-system readback is evidence of
-current deployment.
+本文件定义长期架构、数据和验证规则。修改前同时阅读 [`AGENTS.md`](AGENTS.md)、
+[`PROGRESS.md`](PROGRESS.md) 和 [`docs/COMPONENTS.md`](docs/COMPONENTS.md)。
+当前代码只能证明本地实现；只有线上系统回读才能证明当前部署状态。
 
-## 1. Document ownership
+## 1. 文档职责
 
-| Document | Responsibility |
+| 文档 | 唯一职责 |
 | --- | --- |
-| `README.md` | Project entry point and supported development commands |
-| `AGENTS.md` | Delivery procedure and authorization boundaries |
-| `ENGINEERING.md` | Durable architecture, data and validation policy |
-| `docs/COMPONENTS.md` | Current source-level module ownership and dependencies |
-| `PROGRESS.md` | Task status, evidence, deployment state and remaining work |
-| `docs/README.md` | Active versus historical documentation classification |
+| `README.md` | 项目入口与受支持的开发命令 |
+| `AGENTS.md` | 交付流程与授权边界 |
+| `ENGINEERING.md` | 长期架构、数据和验证规范 |
+| `docs/COMPONENTS.md` | 当前源码级模块所有权和依赖 |
+| `PROGRESS.md` | 任务状态、证据、部署状态和剩余工作 |
+| `docs/README.md` | 现役与历史文档分类 |
 
-Dated audits and reports are immutable evidence snapshots. They do not override
-current source or the active documents.
+带日期的审计和报告是不可默默改写的证据快照。它们不能覆盖当前源码或现役文档。
 
-## 2. Product and architecture boundaries
+## 2. 产品与架构边界
 
-The seven product pages are `home`, `history`, `realtime`, `trains`, and the
-three tourism detail pages. Shared behavior is fixed in its owner rather than by
-page-specific patches.
+七个产品页面包括 `home`、`history`、`realtime`、`trains` 和三个观光详情页。
+共享行为必须在其所有者中修正，不得使用页面专属补丁。
 
 ```text
-canonical railway/tourism data -> generated artifacts -> DataLoader / RailwayDB
-ODPT observations + SQL timetable plans -> ODPTClient -> DataFusion / estimator
-vehicle evidence -> TrainOperationEvidence / TrainVehicle -> renderer
-shared UI component -> page controller -> page
+canonical 铁路/观光数据 -> 生成产物 -> DataLoader / RailwayDB
+ODPT 观测 + SQL 时刻表计划 -> ODPTClient -> DataFusion / 位置推定
+车辆证据 -> TrainOperationEvidence / TrainVehicle -> 渲染器
+共享 UI 组件 -> 页面控制器 -> 页面
 ```
 
-The current browser runtime uses ordered classic scripts and `window.*` public
-facades. This is an explicit compatibility model, not permission to add another
-global owner. New work must use the existing owner and public facade. A future
-module migration must preserve behavior, enumerate consumers, and remove the
-replaced path after verification.
+当前浏览器运行时使用按顺序加载的经典脚本和 `window.*` 公共门面。这是明确的
+兼容模型，不是添加另一个全局所有者的许可。新工作必须复用现有所有者和公共门面。
+未来的模块迁移必须保持行为、列出所有消费者，并在验证后删除被替代路径。
 
-## 3. Canonical data and generated artifacts
+## 3. Canonical 数据与生成产物
 
-- `data/core/railway_data.json` owns railway identity, stations, coordinates,
-  order, transfers, service boundaries and presentation metadata.
-- `data/core/station_i18n.json` owns canonical station translations.
-- `data/core/tourism_data.json` owns tourism facts.
-- `.compact.json`, `.file.js`, `data-config-bundle.js`, catalogs and audit
-  indexes are generated artifacts. Do not edit them as independent facts.
-- External aliases adapt known external identifiers to existing canonical
-  entities. They must not create stations, reorder topology or hide bad source
-  data.
+- `data/core/railway_data.json` 拥有铁路身份、车站、坐标、顺序、换乘、运行边界和展示元数据。
+- `data/core/station_i18n.json` 拥有 canonical 车站翻译。
+- `data/core/tourism_data.json` 拥有观光事实。
+- `.compact.json`、`.file.js`、`data-config-bundle.js`、目录和审计索引都是生成产物，
+  不得作为独立事实编辑。
+- 外部别名只能将已知外部标识适配到现存 canonical 实体，不得新建车站、改变拓扑或掩盖坏数据。
 
-When a canonical source changes, run its existing generator and commit the
-required artifacts together. `node data/core/generate-all.js --check` must work
-on supported Windows and CI checkouts; newline style alone is not data drift.
+canonical 源变更后，运行现有生成器，并将必需产物与源同时提交。
+`node data/core/generate-all.js --check` 必须能在受支持的 Windows 和 CI 检出中运行；
+单纯换行风格不是数据偏差。
 
-## 4. Plans, observations and evidence
+## 4. 计划、观测与证据
 
-Supabase timetable data represents published plans: revision, effective dates,
-service calendar, exceptions, train number, stops and planned times. It is not
-proof that a train ran, where it is, how late it is, or which physical formation
-operated it.
+Supabase 时刻表数据代表公布计划：修订版本、生效日期、运行日历、例外、车次、停站和
+计划到发时间。它不能证明列车已实际开行、实际位置、实际延误或当班物理编成。
 
-Use each source for its own question:
-
-| Source state | Position behavior | Timetable behavior |
+| 来源状态 | 位置行为 | 时刻表行为 |
 | --- | --- | --- |
-| Valid realtime observation | Prefer the observation for the same train/segment | A valid plan remains queryable |
-| Partial realtime coverage | Use observations where covered; scoped plan estimates may fill gaps | Preserve plan date and revision |
-| No realtime observation | Estimate only from a valid plan and label it as estimated | Return the valid plan if available |
-| Stale or failed realtime | Mark stale/unavailable; do not present it as current | Do not destroy the plan |
+| 有效实时观测 | 同列车/区间优先观测 | 有效计划仍可查询 |
+| 部分实时覆盖 | 已覆盖范围使用观测，缺口可有范围地推定 | 保留计划日期与版本 |
+| 无实时观测 | 仅从有效计划推定，并标明“推定” | 有有效计划就返回 |
+| 实时过期或失败 | 标明过期/不可用，不得冒充当前观测 | 不删除计划 |
 
-Vehicle artwork follows the same separation. An evidence-backed unique planned
-model may be shown as a plan reference. Multiple candidates stay unresolved; do
-not pick the first drawable image. Representative artwork is never proof of the
-actual formation.
+车辆图片使用同样的分离规则。有证据的唯一计划车型可作为计划参考展示；多个候选必须
+保持未解析，不得选择第一张可绘制图片。代表图永远不是实际编成证据。
 
-## 5. Unique responsibility and root-cause repair
+## 5. 唯一职责与根因修复
 
-A reported line, station, train or page is a symptom sample, not the default
-repair boundary. Determine the cause, owner and triggering conditions, then
-inspect other consumers and inputs with those conditions.
+用户报告的线路、车站、列车或页面是症状样本，不是默认修复边界。先确定根因、所有者和
+触发条件，再检查具有相同条件的其他消费者和输入。
 
-Repair the original owner. Do not add `fix.js`, `patch.js`, a v2 renderer,
-runtime canonical-data correction, HTML hotfix scripts, page CSS overrides,
-shadow tables, or a second timetable/fusion chain. If a real railway difference
-requires special data, express it in the canonical source or the existing
-evidence-scoped rule system and cite its boundary.
+必须修复原始所有者。不得新建 `fix.js`、`patch.js`、v2 renderer、运行时 canonical
+数据修正、HTML 热修脚本、页面 CSS 覆盖、影子表或第二条时刻表/融合链。若真实铁路差异
+需要特殊数据，应在 canonical 源或现有有范围的证据规则中表达，并记录其边界。
 
-The owner matrix is maintained in `docs/COMPONENTS.md`. Before deleting or
-splitting an owner, search all direct and indirect consumers, including dynamic
-script templates and tests.
+所有权矩阵维护在 `docs/COMPONENTS.md`。删除或拆分所有者前，搜索全部直接和间接
+消费者，包括动态脚本模板和测试。
 
-## 6. UI and runtime rules
+## 6. UI 与运行时规则
 
-- `SiteShell` owns shared header, navigation, language entry and footer.
-- `LineCard`, `DataState`, `OperatorFilterBar`, `ThroughChip`, `TransferBadge`
-  and `TourismDetailCore` own their internal DOM and behavior.
-- Page controllers assemble capabilities; they do not duplicate business
-  algorithms or patch component internals.
-- `RouteSearch` owns topology search, `RouteTimetable` owns planned connection
-  timing, and `SearchUI` owns interaction.
-- `DataFusion` owns source fusion, `TrainPositionEstimator` owns plan-based
-  position estimation, `RunningChainResolver` owns evidenced through-running,
-  and `TrainVehicle` owns vehicle/artwork resolution.
-- Renderers consume resolved results; they do not infer vehicle identity,
-  timetable truth or canonical topology.
+- `SiteShell` 拥有共享 Header、导航、语言入口和 Footer。
+- `LineCard`、`DataState`、`OperatorFilterBar`、`ThroughChip`、`TransferBadge` 和
+  `TourismDetailCore` 拥有各自内部 DOM 与行为。
+- 页面控制器只组装能力，不复制业务算法，也不修补组件内部。
+- `RouteSearch` 拥有拓扑搜索，`RouteTimetable` 拥有计划接续时间，`SearchUI` 拥有交互。
+- `DataFusion` 拥有来源融合，`TrainPositionEstimator` 拥有计划位置推定，
+  `RunningChainResolver` 拥有有证据的运行链，`TrainVehicle` 拥有车型/图片解析。
+- 渲染器只消费已解析结果，不推断车辆身份、时刻表真值或 canonical 拓扑。
 
-Preserve mobile layout, language changes, online/offline recovery, BFCache,
-late-data and stale-data behavior when changing shared runtime code.
+修改共享运行时代码时，保留移动端布局、语言切换、在线/离线恢复、BFCache、延迟数据和
+过期数据恢复能力。
 
-## 7. Implementation workflow
+## 7. 实施流程
 
-1. Check the actual Git root, branch, upstream, status and recent history.
-2. Preserve unrelated and untracked user work.
-3. Record the known symptom, owner, affected consumers and authorization scope.
-4. Modify the canonical owner and required generated artifacts only.
-5. Verify the known symptom, equivalent inputs and normal boundary cases.
-6. Update the existing `PROGRESS.md` task entry with local, commit/push, CI and
-   production states kept separate.
-7. Commit and push directly to `main` when authorized. Do not create a PR unless
-   the user explicitly requests one.
+1. 检查实际 Git 根目录、分支、上游、状态和近期历史。
+2. 保留无关改动和未跟踪的用户文件。
+3. 记录已知症状、所有者、受影响消费者和授权范围。
+4. 只修改 canonical 所有者和必需生成产物。
+5. 验证已知症状、同类输入和正常边界场景。
+6. 在现有 `PROGRESS.md` 任务条目中分开记录本地、提交/推送、CI 和生产状态。
+7. 获得授权时直接提交并推送 `main`。用户未明确要求时不创建拉取请求。
 
-If a normal push is rejected, report the exact error. Do not force-push, rewrite
-history, weaken protections or create a fallback branch/PR without direction.
+普通推送被拒绝时报告准确错误。不强制推送、改写历史、弱化保护或自动创建备用分支/拉取请求。
 
-## 8. Validation by change type
+## 8. 按变更类型验证
 
-| Change | Required local evidence |
+| 变更 | 必需本地证据 |
 | --- | --- |
-| Markdown | Links, anchors, paths, API/module claims, active versus historical status |
-| Generator | Syntax, check mode, content-drift negative test, Windows/CI newline behavior |
-| JS/HTML/CSS | Syntax, owner tests, affected pages, mobile/language/lifecycle behavior |
-| Canonical data | Source evidence, identity/relationship integrity, artifact synchronization, guards |
-| Timetable/fusion | Revision, calendar, cross-day, exceptions, realtime priority, stale recovery, provenance |
-| Production release | All applicable local evidence plus deployment and public-resource/browser readback |
+| Markdown | 链接、锚点、路径、API/模块声明、现役与历史状态 |
+| 生成器 | 语法、检查模式、内容偏差负例、Windows/CI 换行行为 |
+| JS/HTML/CSS | 语法、所有者测试、受影响页面、移动端/语言/生命周期 |
+| Canonical 数据 | 来源证据、身份/关系完整性、产物同步、守卫测试 |
+| 时刻表/融合 | 版本、日历、跨日、例外、实时优先级、过期恢复、来源 |
+| 生产发布 | 全部适用本地证据，再加部署、公开资源与浏览器回读 |
 
-Never weaken tests or refresh a baseline merely to turn a failure green. A hash,
-unit test, simulation, local screenshot or API replay is not live production or
-device acceptance. State unverified boundaries explicitly.
+不得为获得绿灯而弱化测试或刷新基线。哈希、单元测试、模拟、本地截图或 API 回放都不是
+线上生产或真实设备验收。必须明确说明未验证边界。
 
-## 9. Delivery and production authorization
+## 9. 交付与生产授权
 
-An authorized ordinary change uses a normal commit and push to `main`. A push
-may run CI, but it does not authorize any of the following:
+已授权的普通变更使用普通提交并推送到 `main`。推送可能运行 CI，但不授权：
 
-- Pages production publication or rollback;
-- Supabase writes or migrations;
-- Edge Function deployment;
-- release/version registration;
-- changes to branch protection or workflow authorization gates.
+- Pages 生产发布或回滚；
+- Supabase 写入或迁移；
+- Edge Function 部署；
+- Release/版本登记；
+- 分支保护或工作流授权门禁变更。
 
-Those actions require separate explicit authorization and current-system
-verification. Scheduled evidence jobs remain read-only and deliver reviewable
-artifacts; they do not create branches, PRs or production facts.
+上述操作需要单独明确授权和当前系统验证。定时证据任务保持只读，仅交付可评审产物；
+不创建分支、拉取请求或生产事实。
 
-## 10. Completion language
+## 10. 完成用语
 
-Report implementation, local validation, commit/push, CI, deployment and live
-acceptance separately. `DONE` means the declared scope and required validation
-are complete; it does not imply deployment. If equivalent affected inputs or a
-required environment remain unverified, use `PARTIAL`, `REVIEW`, or an explicit
-limitation instead of claiming a universal fix.
+实现、本地验证、提交/推送、CI、部署和线上验收必须分开报告。`DONE` 表示所声明范围及
+必需验证已完成，不暗示已部署。如果同类受影响输入或必需环境仍未验证，使用 `PARTIAL`、
+`REVIEW` 或明确限制，不得声称通用修复完成。

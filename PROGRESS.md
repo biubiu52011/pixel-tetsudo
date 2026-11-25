@@ -4,6 +4,16 @@
 
 # Pixel Tetsudo 工程进度
 
+### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 用户需求 | 仓库中需要人类阅读的主要代码注释和 Markdown 应使用中文，而不只是交互回复使用中文。 |
+| 范围 | 将现役 `README.md`、`AGENTS.md`、`ENGINEERING.md`、`docs/README.md` 与 `docs/COMPONENTS.md` 转为中文；同步转换统一生成入口的主要注释、维护者日志与新增契约测试名称。代码标识符、API、协议字段、命令、路径和第三方专有名词保留原文。 |
+| 历史边界 | 不为统一语言而改写历史审计、来源引文、用户可见翻译数据或外部返回文本；不执行全仓库机械翻译。 |
+| 验证 | 现役文档链接/所有权、生成文本换行、架构所有权和页面脚本契约 16/16 通过；三个生成入口语法检查、`node data/core/generate-all.js --check` 与 `git diff --check` 通过。文案变更不代表浏览器或生产验收。 |
+| 交付边界 | 完成本地验证后与本条一并普通提交并推送 `main`；不执行 Pages 生产发布、Supabase/Edge 操作或 Release 登记。 |
+
 ### DOCS-CANONICAL-REFRESH-20261126 — 现役文档真相源与 Windows 生成校验收敛（CI-VERIFIED）
 
 | 项目 | 当前状态 |

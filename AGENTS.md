@@ -1,42 +1,40 @@
-# Pixel Tetsudo: repository-wide instructions for coding agents
+# Pixel Tetsudo：代码智能体全仓库规则
 
-These rules apply to all files and all automated coding sessions. Read
-`ENGINEERING.md`, `PROGRESS.md`, and `docs/COMPONENTS.md` before making a
-change. User instructions and protected GitHub rules take precedence; never
-bypass repository security.
+本规则适用于全部文件和所有自动化开发会话。修改前必须阅读
+`ENGINEERING.md`、`PROGRESS.md` 和 `docs/COMPONENTS.md`。用户明确指令与
+GitHub 受保护规则优先；不得绕过仓库安全。
 
-## Default delivery: direct commit, not a pull request
+## 默认交付：直接提交，不创建拉取请求
 
-- For authorized code edits, use the existing `main` as the integration target:
-  inspect the current branch, preserve concurrent changes, test locally, then
-  create a normal commit and push to `main` without force. A push to `main` runs
-  CI but does not authorize a Pages production release.
-- Never create a feature branch, pull request (including draft PR), temporary
-  integration branch, or additional CI dispatch by default. Only use a PR when
-  the user expressly requests that workflow.
-- Do not merge via an unnecessary PR when a normal, authorized fast-forward
-  commit/push is permitted.
-- If GitHub rejects a normal direct update because of branch protection or
-  required checks, stop and report the exact GitHub error. Do not force-push,
-  rewrite history, alter protections, create a fallback PR, or repeatedly retry
-  unless the user chooses a different procedure.
-- If the current workspace has unfinished or unrelated work, preserve it.
-  Check `git status`, `git branch --show-current`, and `git log` before editing;
-  never reset, delete, or overwrite a colleague's changes to make a push possible.
-- Run relevant local tests before committing. Do not weaken contracts or tests
-  to obtain a green result. Clearly state incomplete work or failing gates.
-- A read-only review request does not authorize commits. Production Pages
-  releases, Supabase writes/migrations, Edge deployments, and release
-  registration always require separate explicit authorization.
+- 对已授权的代码修改，使用现有 `main` 作为集成目标：检查当前分支，
+  保留并行改动，完成本地验证，然后创建普通提交并不强制地推送到
+  `main`。推送 `main` 会运行 CI，但不等于授权 Pages 生产发布。
+- 默认不得创建功能分支、拉取请求（包括草稿）、临时集成分支或额外的
+  CI 调度。只有用户明确要求该流程时才使用拉取请求。
+- 普通且已授权的快进提交/推送可以完成时，不得通过不必要的拉取请求
+  进行合并。
+- GitHub 因分支保护或必需检查拒绝普通直接更新时，应停止并报告准确错误。
+  不得强制推送、改写历史、更改保护、自动创建备用拉取请求或反复重试，
+  除非用户选择其他流程。
+- 当前工作区存在未完成或无关工作时必须保留。编辑前检查 `git status`、
+  `git branch --show-current` 和 `git log`；不得为了推送而重置、删除或
+  覆盖他人改动。
+- 提交前运行相关本地测试。不得为获得绿灯而弱化契约或测试；必须清楚说明
+  未完成工作或失败门禁。
+- 只读评审不授权提交。Pages 生产发布、Supabase 写入/迁移、Edge 部署和
+  Release 登记始终需要单独明确授权。
 
-## Background evidence synchronization
+## 人类可读内容的语言
 
-Scheduled source/evidence checks must not create auto-generated branches or
-suggest pull requests. If a reviewable snapshot differs, retain a CI artifact or
-diff for human review. Only a subsequently authorized and verified ordinary
-commit/push may update `main`. Never silently turn scheduled observations into
-production facts.
+- 现役 Markdown、主要代码注释、测试名称和面向维护者的诊断信息优先使用中文。
+- 代码标识符、公共 API、外部协议字段、命令、路径和第三方专有名词保留原文。
+- 不为统一语言而改写历史审计、来源引文、用户可见翻译数据或外部返回文本。
 
-For architecture, canonical railway data, ODPT/SQL authority, and regression
-requirements, follow `ENGINEERING.md`. These instructions define the delivery
-procedure, not a second runtime architecture.
+## 后台证据同步
+
+定时来源/证据检查不得创建自动分支或建议拉取请求。若可评审快照发生差异，
+应保留 CI Artifact 或差异供人工审查。只有随后获得授权且验证过的普通提交/
+推送才能更新 `main`。不得默默将定时来源观察转换为生产事实。
+
+架构、canonical 铁路数据、ODPT/SQL 权威性与回归要求遵循 `ENGINEERING.md`。
+本文件只定义交付流程，不构成第二套运行时架构。
