@@ -4,7 +4,7 @@
 
 # Pixel Tetsudo 工程进度
 
-### DOCS-CANONICAL-REFRESH-20261126 — 现役文档真相源与 Windows 生成校验收敛（LOCAL-VERIFIED）
+### DOCS-CANONICAL-REFRESH-20261126 — 现役文档真相源与 Windows 生成校验收敛（CI-VERIFIED）
 
 | 项目 | 当前状态 |
 | --- | --- |
@@ -12,6 +12,7 @@
 | 根因与范围 | 现役规范仅保留在外层同步目录，与 Git 源码分离；组件文档混入了截至 2026-10-21 的部署快照；生成器使用字节级文本比较却没有归一化检出换行。影响所有文档消费者与 Windows 本地生成校验，不改铁路数据、时刻表、车型或页面运行逻辑。 |
 | 修正 | 将 `AGENTS.md`、精简后的 `ENGINEERING.md`、按当前脚本链重写的 `docs/COMPONENTS.md` 和文档索引纳入 Git；把 `README.md` 恢复为真实项目入口。生成产物比较只归一化 LF/CRLF，仍拒绝任何内容差异，并为三类活动生成产物固定 LF 属性。 |
 | 验证 | `node data/core/generate-all.js --check` 通过；现役文档链接／组件所有权与换行回归 5/5 通过；架构所有权、页面脚本、运行日与 PNG 安全回归 129/129 通过；`git diff --check` 通过。产品运行文件未改；`browser runtime: NOT VERIFIED`。 |
+| 交付 | 实施提交 `6634dda7` 已普通推送 `main`；`CI/CD - Pages` run `45667528164` completed/success。外层线下目录已仅同步本轮 12 个受控文件，并与当时 HEAD 的 2443/2443 个 Git Blob 一致；替换前文件保存于 `.work/backups/docs-canonical-refresh-6634dda7`。 |
 | 发布边界 | 本任务只授权普通 `main` 提交/推送。不执行 Pages 生产发布、Supabase 写入/迁移、Edge 部署或 Release 登记。 |
 
 ### CI-PNG-INDEX-MINOBU-SYNC-20261126 — 身延线图库派生索引与跨平台契约整理（LOCAL-READY）
