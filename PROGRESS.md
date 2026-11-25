@@ -13,6 +13,11 @@
 - 浅草线：官方公告确认2026-11-21改点，旧名单不得无限延长；改点后完整番号尚未取得，保留旧数据和日期门控，待官方 TrainTimetable 或直通来源核对。
 
 
+- 第二轮直通复核（2026-11-26）：[日比谷 THライナー只读 SQL](supabase/queries/metro_hibiya_th_liner_number_evidence_readonly.sql) 对照[东武官方时刻表](https://www.tobu.co.jp/railway/th/timetable/)及[车型目录](https://www.tobu.co.jp/corporation/rail/vehicles/index.html/)，14/14 个日历／番号记录各有唯一模板、五个官方停站时刻吻合；11个不重复完整番号。去掉A/B后，1645T及1841T分别与普通A1645T及A1841T冲突，不得入纯号段；其余9个数字后缀在当前模板内无其他车种冲突，可作为70090型计划参考候选。通用素材已回读可用，日比谷尚无该PNG正式号段。禁止由此认定实际编组或无限期延长日期。
+- 千代田MSE 18个、 有乐町S-TRAIN 7个、副都心S-TRAIN 5个完整番号已有官方服务车型计划，但模板来源修订日为空且素材为review／formation，尚不能直接授予PNG。横滨蓝线563个、绿线462个完整番号已有SQL模板；绿线为10000形单一车型计划，但两张批次图均为review，蓝线未解析，保留未映射。各线路车主／车型观测表本次无TokyoMetro／Toei／Yokohama运营商记录。
+- 浅草线官方改点公告已检索到；生产代理源代码已有Toei TrainTimetable允许入口，但本环境DNS无法访问代理，改点后的完整名单未取得。Asakusa、Shinjuku、Oedo无正式manual_timetable_templates，不等于没有ODPT时刻表。未将缺失来源当作零列车，也未修改现有runtime或生产SQL。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
