@@ -87,3 +87,25 @@ https://timetables.jreast.co.jp/2611/timetable-v/109d2.html.
   Do not bulk-import the commercial published table or assign a generic 313-series
   image based solely on a G suffix. The existing authorized importer is the
   intended route for an independently licensed complete dataset.
+
+## Minobu additional independent sample — Fujikawa 3 (4003M), 2026-11
+
+This is a narrowly selected three-anchor factual sample, not a copy of a full
+commercial timetable or a complete stopping pattern. The public number 4003M
+and limited-express service appear on both November regular line diagrams:
+https://timetables.jreast.co.jp/2611/timetable-v/109d1.html and
+https://timetables.jreast.co.jp/2611/timetable-v/109d2.html.
+Independent journey cross-checks:
+- Fuji departure 10:15 and Minobu arrival 11:09:
+  https://wwwjp.jorudan.com.cn/time/to/%E5%AF%8C%E5%A3%AB_%E8%BA%AB%E5%BB%B6/?r=%E3%81%B5%E3%81%98%E3%81%8B%E3%82%8F
+- Minobu departure 11:10 and Kofu arrival 12:05:
+  https://www.jorudan.co.jp/time/to/%E8%BA%AB%E5%BB%B6_%E7%94%B2%E5%BA%9C/?r=%E3%81%B5%E3%81%98%E3%81%8B%E3%82%8F
+- Date-edition cross-check of regular October 2026 service:
+  https://jr-group.jp/fujikawa-timetable/ (regular service, not actual dispatch).
+- SQL scope: Fuji (index 0) to Kofu (38), Outbound; only the Minobu segment,
+  no invented Shizuoka–Fuji continuation or intermediate stop clocks.
+- The weekday/holiday November dates represent the published regular plan,
+  not observed operation. Model is a 373-series representative reference only.
+- This original selection of factual anchors does not claim permission to
+  reproduce a full line timetable. Coverage remains sampled and must not be
+  accepted as a complete daily or all-stops schedule.
