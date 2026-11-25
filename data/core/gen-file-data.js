@@ -5,6 +5,7 @@
 // The JSON files remain the single source of truth (Freeze Rule untouched).
 const fs = require('fs');
 const path = require('path');
+const { sameGeneratedText } = require('./generated-text.js');
 const dir = __dirname;
 
 const pairs = [
@@ -51,7 +52,7 @@ function checkArtifacts(artifacts = buildArtifacts()) {
   for (const artifact of artifacts) {
     const target = path.join(dir, artifact.file);
     const actual = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
-    if (actual !== artifact.content) {
+    if (!sameGeneratedText(actual, artifact.content)) {
       console.error('stale generated artifact:', artifact.file);
       synchronized = false;
     }

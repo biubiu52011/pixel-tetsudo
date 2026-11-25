@@ -3,6 +3,7 @@
 // so concatenation is safe as long as order is preserved.
 const fs = require('fs');
 const path = require('path');
+const { sameGeneratedText } = require('./generated-text.js');
 const dir = __dirname;
 
 const order = [
@@ -36,7 +37,7 @@ function writeBundle(expected = buildBundle()) {
 function checkBundle(expected = buildBundle()) {
   const target = path.join(dir, 'data-config-bundle.js');
   const actual = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
-  if (actual !== expected) {
+  if (!sameGeneratedText(actual, expected)) {
     console.error('data-config-bundle.js is stale; run node data/core/generate-all.js');
     return false;
   }

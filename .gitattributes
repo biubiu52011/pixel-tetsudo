@@ -1,0 +1,3 @@
+data/core/*.compact.json text eol=lf
+data/core/*.file.js text eol=lf
+data/core/data-config-bundle.js text eol=lf
