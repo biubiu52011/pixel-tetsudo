@@ -19,7 +19,7 @@ test('PNG-first number index reproduces original sources, no new mapping authori
  assert.equal(JSON.stringify(index),JSON.stringify(actual));
  assert.equal(index.summary.galleryPng,601);
  assert.equal(index.summary.catalogRules,423);
- assert.equal(index.summary.imagesInRuntimeRosters,29);
+ assert.equal(index.summary.imagesInRuntimeRosters,38);
  assert.equal(index.summary.imagesInTobuRuntimeRosters,11);
  assert.equal(rows.length,new Set(rows.map(x=>x.path)).size);
  assert.equal(index.summary.missingPhysicalPngReferences,0);

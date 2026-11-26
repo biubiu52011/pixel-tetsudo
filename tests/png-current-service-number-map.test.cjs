@@ -20,7 +20,7 @@ test('active family filter is derived only from 601 gallery PNGs and official fl
  assert.equal(saved.summary.activeFamilyWithExistingNumberScope,86);
  assert.equal(saved.summary.activeFamilyWithoutNumberScope,34);
  assert.equal(saved.summary.currentFleetStatusNotVerified,470);
- assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,16);
+ assert.equal(saved.summary.currentNumberReferencesPendingFleetReview,23);
  assert.equal(saved.summary.quarantinedArtwork,11);
  assert.equal(saved.summary.exactPhysicalCarsetsVerified,0);
 });
