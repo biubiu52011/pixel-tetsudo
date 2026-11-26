@@ -113,7 +113,8 @@ test('source, date, route, identity and conflicting vehicle evidence remain stri
   const rejected=[
     {officialNumberVerified:false},{timetableDateVerified:false},
     {timetableValidity:'unverified'},{positionSource:'realtime-api'},
-    {estimated:false},{serviceDate:'2026-12-11'},
+    {estimated:false},{serviceDate:'2026-03-13'},{serviceDate:''},
+    {serviceDate:'2026-12-11',timetableDateVerified:false},
     {calendarType:'holiday'},
     {sourceRailway:'odpt.Railway:JR-Central.Tokaido'},
     {trainOperator:'JR-West'},{vehicleIdentityStatus:'EXACT'},
@@ -125,6 +126,10 @@ test('source, date, route, identity and conflicting vehicle evidence remain stri
   for(const change of rejected)
     assert.equal(w.TrainNumberPngRanges.match('1301G','KansaiCentral',
       run('KansaiCentral','1301G',change)),null,JSON.stringify(change));
+  const later=w.TrainNumberPngRanges.match('1301G','KansaiCentral',
+    run('KansaiCentral','1301G',{serviceDate:'2026-12-11'}));
+  assert.equal(later?.model,'315系');
+  assert.equal(later?.actualVehicleConfirmed,false);
   assert.equal(w.TrainNumberPngRanges.match('2901D','KansaiCentral',
     run('KansaiCentral','2901D')),
     null,'Mie remains unresolved while the KiHa75 artwork is unreviewed');

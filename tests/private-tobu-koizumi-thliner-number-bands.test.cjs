@@ -22,7 +22,7 @@ test('Koizumi and TH LINER source envelopes are reference-only and do not promot
  assert.ok(fs.existsSync(png1)); assert.ok(fs.existsSync(png2));
  const output=csv.trim().split('\n');
  const t1=output.filter(x=>x.startsWith('私铁,東武鉄道,'+png1+','));
- const t2=output.filter(x=>x.startsWith('私铁,東武鉄道,'+png2+','));
+ const t2=output.filter(x=>x.startsWith('私铁,東武鉄道,'+png2+',TobuSkytree,'));
  assert.deepEqual(t1,['私铁,東武鉄道,'+png1+',Koizumi,0701,0764,E,full,纯号段（东武小泉线历史参考；日期车型条件保留）']);
  assert.deepEqual(t2,['私铁,東武鉄道,'+png2+',TobuSkytree,4041,4947,T,metro-prefixed,纯号段（东武TH LINER；服务类型条件保留）']);
 });

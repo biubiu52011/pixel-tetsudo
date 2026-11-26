@@ -26,7 +26,7 @@ test('three formal JR pure bands duplicate only the original scoped JS rules',()
   assert.equal(rule[0].actual_vehicle_confirmed,false);
   if(x.line==='Gotemba') {
     assert.equal(rule[0].valid_from,'2026-11-01');
-    assert.equal(rule[0].valid_to,'2026-11-30');
+    assert.equal(rule[0].valid_to,null); // 参考名单不按月人为截断
   } else {
     // JR through-service K/F/S is not an invented dated formation: its
     // all-date range still needs a compatible model and railway provenance.

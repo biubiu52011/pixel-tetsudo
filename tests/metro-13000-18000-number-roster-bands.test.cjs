@@ -50,8 +50,8 @@ test('two Metro S-band SQL rows derive from the actual 2611 full-number rosters'
   const row=['地铁','東京メトロ',path,x.line,
    String(x.min).padStart(4,'0'),String(x.max).padStart(4,'0'),
    'S','metro-prefixed','纯号段（既有完整番号名单及日期运营方守卫保留）'].join(',');
-  assert.ok(csv.includes(row),path+' numbered inventory missing');
-  assert.equal(csv.filter(y=>y.startsWith('地铁,東京メトロ,'+path+',')).length,1);
+  assert.ok(!csv.includes(row),path+' 已退役包络不得重新生成');
+  assert.equal(csv.filter(y=>y.startsWith('地铁,東京メトロ,'+path+',')).length,x.line==='Hibiya'?442:216);
  }
  assert.ok(migration.includes("asset_scope='generic'"));
  assert.ok(migration.includes('ON CONFLICT (edition,line_key,segment_key,min_number,max_number,suffix) DO NOTHING'));
@@ -90,4 +90,31 @@ test('original runtime only grants a Metro PNG for the exact scoped roster',()=>
       null,x.line+' wrong source cannot borrow PNG: '+JSON.stringify(changed));
   }
  }
+});
+
+test('现行生成清单逐键对应四组原始名单和九个THライナー参考番号',()=>{
+ const source=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
+ const roster=JSON.parse(source.split('\n').find(s=>s.includes('var tobuMetroThroughNumberRoster=')).trim()
+   .replace(/^var tobuMetroThroughNumberRoster=/,'').replace(/;$/,''));
+ const actual=(path,line,suffix)=>{
+  const rows=csv.map(r=>r.split(',')).filter(c=>c[2]===path&&c[3]===line&&c[6]===suffix&&c[8].startsWith('纯号段'));
+  const keys=[];
+  for(const r of rows)for(let n=+r[4];n<=+r[5];n++)keys.push(n);
+  assert.equal(new Set(keys).size,keys.length);
+  return keys.sort((a,b)=>a-b);
+ };
+ for(const [line,suffix,path,count] of [
+  ['Hibiya','S','images/列车/東京メトロ/東京メトロ_13000系.png',455],
+  ['Hanzomon','S','images/列车/東京メトロ/東京メトロ_18000系.png',216],
+  ['Hanzomon','K','images/列车/東急電鉄/東急電鉄_2020系.png',396],
+  ['Hanzomon','T','images/列车/東武鉄道/東武鉄道_50050型.png',188]
+ ]){
+  const expected=[...new Set([...roster[line].weekday,...roster[line].holiday]
+    .filter(x=>new RegExp('^[AB][0-9]{3,4}'+suffix+'$').test(x))
+    .map(x=>Number(x.slice(1,-1))))].sort((a,b)=>a-b);
+  assert.equal(expected.length,count);
+  assert.deepEqual(actual(path,line,suffix),expected);
+ }
+ assert.deepEqual(actual('images/列车/東武鉄道/東武鉄道_70090型.png','Hibiya','T'),
+   [643,845,947,1743,1845,1847,1941,1945,2043]);
 });

@@ -32,9 +32,10 @@ test('Tokyu 2020 November K bands keep exact roster guards',()=>{
   const wanted=['私铁','東急電鉄',png,b.line,String(b.min).padStart(4,'0'),
     String(b.max).padStart(4,'0'),'K','metro-prefixed',
     '纯号段（东急2020原有精确名单与日期车型守卫保留）'].join(',');
-  assert.ok(csv.split('\n').includes(wanted));
+  if(b.line==='Hanzomon')assert.ok(!csv.split(/\r?\n/).includes(wanted));
+  else assert.ok(csv.split(/\r?\n/).includes(wanted));
  }
- assert.equal(csv.split('\n').filter(x=>x.startsWith('私铁,東急電鉄,'+png+',')).length,2);
+ assert.equal(csv.split(/\r?\n/).filter(x=>x.startsWith('私铁,東急電鉄,'+png+',')).length,158);
  assert.ok(src.includes("asset_scope='generic'"));
  assert.ok(src.includes('actual_vehicle_confirmed=FALSE'));
  assert.doesNotMatch(src,/UPDATE\s+public\.vehicle_image_assets/i);

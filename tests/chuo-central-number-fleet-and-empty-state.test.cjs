@@ -115,14 +115,15 @@ test('existing 2611 Shinano SQL numbers select the scoped JR Central 383 referen
   }
   assert.equal(w.VehicleGaragePngMap.matchModelPath('383系',png383,'ChuoCentral'),true);
 });
-test('number-only, live, other operator, other month, limited express and unknown segments cannot pick 315',()=>{
+test('番号、实时来源、其他运营方、修订日前及不明区间不能选择315参考图',()=>{
   const w=loadReferenceMatcher(),p=plannedSqlRun();
   const rejected=[
     {officialNumberVerified:undefined},{officialNumberVerified:false},{timetableDateVerified:false},
     {timetableValidity:'unverified'},{estimated:false},
     {positionSource:'realtime-api'},
     {sourceRailway:'odpt.Railway:JR-East.Chuo'},
-    {trainOperator:'JR-East'},{serviceDate:'2026-12-11'},
+    {trainOperator:'JR-East'},{serviceDate:'2026-03-13'},{serviceDate:''},
+    {serviceDate:'2026-12-11',timetableDateVerified:false},
     {calendarType:'holiday'},
     {trainType:'odpt.TrainType:JR-Central.LimitedExpress'},
     {trainType:'odpt.TrainType:JR-Central.HomeLiner'},
@@ -138,6 +139,10 @@ test('number-only, live, other operator, other month, limited express and unknow
   for(const change of rejected)
     assert.equal(w.TrainNumberPngRanges.match('701M','ChuoCentral',
       plannedSqlRun(change)),null,JSON.stringify(change));
+  const later=w.TrainNumberPngRanges.match('701M','ChuoCentral',
+    plannedSqlRun({serviceDate:'2026-12-11'}));
+  assert.equal(later?.model,'315系');
+  assert.equal(later?.actualVehicleConfirmed,false);
   assert.equal(w.TrainNumberPngRanges.match('1001M','ChuoCentral',
     plannedSqlRun()),null,'caller train number must equal SQL source');
 });

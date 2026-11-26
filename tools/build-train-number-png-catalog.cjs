@@ -738,7 +738,7 @@ function jrE233Saikyo315GotembaSqlSeedBands(c){
     g315.min!==2226||g315.max!==5550||g315.suffix!=='MG'||
     g315.format!=='full'||g315.train_type!=='Local'||
     g315.line_ids.join()!=='Gotemba'||
-    g315.valid_from!=='2026-11-01'||g315.valid_to!=='2026-11-30'||
+    g315.valid_from!=='2026-11-01'||g315.valid_to!==null||
     g315.operator!=='JR-Central'||
     g315.source_railways?.join()!=='odpt.Railway:JR-Central.Gotemba'||
     g315.published_numbers?.length!==88||
@@ -2204,6 +2204,48 @@ function lateVerifiedSourceSqlSeedBands(){
  return refs;
 }
 
+// 生产迁移已替换四条旧参考包络。由既有生成器读取迁移和原始名单，
+// 保留历史快照及运行时证据门控，不用纯号段推断实际编组。
+function applyMetroNumberPrecision(byPng){
+ const sql=read('supabase/migrations/20261126040253_metro_number_reference_precision_and_seibu_candidates.sql');
+ const roster=JSON.parse(read(JS).split('\n').find(x=>x.includes('var tobuMetroThroughNumberRoster=')).trim()
+   .replace(/^var tobuMetroThroughNumberRoster=/,'').replace(/;$/,''));
+ const re=/\('(Hibiya|Hanzomon)','([SKT])',(\d+),(\d+),'\.\.\/(images\/列车\/[^']+)',(\d+),(\d+),ARRAY\[([0-9,]+)\]::int\[\]\)/g;
+ const scopes=[...sql.matchAll(re)];
+ if(scopes.length!==4)throw Error('地铁精确化迁移范围变化');
+ let rows=0,keys=0;
+ for(const [,line,suffix,lo,hi,png,expectedKeys,expectedBands,numbers] of scopes){
+  const ns=numbers.split(',').map(Number);
+  const live=[...new Set([...roster[line].weekday,...roster[line].holiday]
+    .filter(x=>new RegExp('^[AB][0-9]{3,4}'+suffix+'$').test(x))
+    .map(x=>Number(x.slice(1,-1))))].sort((a,b)=>a-b);
+  if(JSON.stringify(ns)!==JSON.stringify(live)||ns.length!==+expectedKeys||ns[0]!==+lo||ns.at(-1)!==+hi)
+   throw Error('地铁番号名单与生产迁移不一致 '+line+'/'+suffix);
+  const source=byPng.get(png);
+  if(!source)throw Error('地铁PNG不存在 '+png);
+  const match=b=>b[0]===line&&+b[1]===+lo&&+b[2]===+hi&&b[3]===suffix&&b[4]==='metro-prefixed'&&b[5].startsWith('纯号段');
+  const old=source.filter(match);
+  if(old.length!==1)throw Error('地铁旧包络未唯一定位 '+line+'/'+suffix);
+  const pad=n=>String(n).padStart(4,'0');
+  const next=compactNumberBands(ns.map(n=>[line,pad(n),pad(n),suffix,'metro-prefixed',old[0][5]]));
+  if(next.length!==+expectedBands)throw Error('地铁精确段数量不一致 '+line+'/'+suffix);
+  byPng.set(png,source.filter(b=>!match(b)).concat(next));
+  rows+=next.length;keys+=ns.length;
+ }
+ if(rows!==1003||keys!==1255)throw Error('地铁精确化验收数量变化');
+ const th=sql.match(/th_keys IS DISTINCT FROM ARRAY\[([0-9,]+)\]/);
+ const thNumbers=th?.[1].split(',').map(Number);
+ if(thNumbers?.length!==9||new Set(thNumbers).size!==9||thNumbers.includes(1645)||thNumbers.includes(1841))
+  throw Error('THライナー无冲突数字名单变化');
+ const target=byPng.get('images/列车/東武鉄道/東武鉄道_70090型.png');
+ if(!target||target.some(b=>b[0]==='Hibiya'&&b[3]==='T'&&b[5].startsWith('纯号段')))
+  throw Error('THライナー参考号段重复或素材缺失');
+ for(const n of thNumbers){
+  const p=String(n).padStart(4,'0');
+  target.push(['Hibiya',p,p,'T','metro-prefixed','纯号段（东武TH LINER；服务类型条件保留）']);
+ }
+}
+
 function pngFirstInventoryCsv(paths,c){
  const uniq=[...new Set(paths.filter(p=>/^images\/列车\/.+\.png$/i.test(p)))];
  const metro=new Set(['東京メトロ','都営地下鉄','横浜市交通局']);
@@ -2236,6 +2278,7 @@ function pngFirstInventoryCsv(paths,c){
   if(!byPng.has(ref.png))throw Error('SQL source PNG missing from gallery: '+ref.png);
   byPng.get(ref.png).push([ref.line,ref.from,ref.to,ref.suffix,ref.format,ref.status]);
  }
+ applyMetroNumberPrecision(byPng);
  const records=[['分类','运营方目录','PNG路径','线路','起始番号','结束番号','后缀','号码格式','状态']];
  uniq.sort((a,b)=>order.indexOf(category(operator(a)))-order.indexOf(category(operator(b)))||
   (a<b?-1:a>b?1:0));
@@ -2344,7 +2387,7 @@ function jrGotemba315ExactReplacementSqlBands(c){
  if(!r||r.origin!=='frontend_js'||r.png!==png||
  r.line_ids.join()!=='Gotemba'||r.suffix!=='MG'||r.format!=='full'||
  r.operator!=='JR-Central'||r.train_type!=='Local'||
- r.valid_from!=='2026-11-01'||r.valid_to!=='2026-11-30'||
+ r.valid_from!=='2026-11-01'||r.valid_to!==null||
  r.actual_vehicle_confirmed!==false||
  r.runtime_guards?.illustrative!==true||
  r.runtime_guards?.referenceOnly!==true||
