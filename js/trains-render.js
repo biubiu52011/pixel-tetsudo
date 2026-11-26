@@ -341,14 +341,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       var badgePlan = window.StationInfoLayout.plan(
         txLines, o.stationId, _sName, isMobileView, _available);
       var rows = badgePlan.rows;
-      var gridW = badgePlan.gridWidth;
       // 町屋 SVG: left '町屋駅前 ← [SA][C]', right '[SA][C] → 町屋駅前'.
       // The main-station label is on the first row; the icon grid below.
       // Left station-name right edge = icons' right edge.
       // Right station-name left edge = icons' left edge.
       // Alias name and outward arrow extend beyond the icon block.
-      var ix0 = _align === "end" ? _edge - gridW
-        : _align === "start" ? _edge : _edge - gridW / 2;
       // Keep the station-name edge EXACT even if x becomes negative or
       // exceeds layoutWidth. The unified post-render content-fit keeps all
       // labels inside the fixed viewport without breaking alignment.
@@ -377,17 +374,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         badgeGroup.setAttribute("data-reference-x", String(_edge));
         infoGroup.appendChild(badgeGroup);
         var leftGrid = _align === "end" && side !== "top" && side !== "bottom";
-        var physicalCol = function(slot) {
-          return leftGrid ? slot.col + 4 - badgePlan.rowUsed[slot.row] : slot.col;
-        };
         var badgeX = function(slot) {
-          var col = physicalCol(slot);
-          // Ordinary icons and the +N overflow cell share the same grid.
-          // +N has no part object; its reserved column width is its slot.
-          var partWidth = slot.part ? slot.part.badgeWidth : badgePlan.colWidths[col];
-          // Right-align the actual badge within every left-side grid cell.
-          return ix0 + badgePlan.colOffsets[col] +
-            (leftGrid ? badgePlan.colWidths[col] - partWidth : 0);
+          var width = badgePlan.rowWidths[slot.row];
+          var start = _align === "end" ? _edge - width
+            : _align === "start" ? _edge : _edge - width / 2;
+          return start + badgePlan.rowOffsets[slot.row][slot.col];
         };
         badgePlan.shown.forEach(function(entry) {
           var slots = entry.slots || [];

@@ -784,6 +784,32 @@ function _getTransferMap(lineId, staticRevision) {
       });
     });
   }
+  // TokaidoMain is the hidden physical trunk, not an additional passenger
+  // service. Its station list includes tracks that JT passes without stopping.
+  // Reuse the actual passenger service only at its canonical stops, and
+  // never show the current JT service as a transfer to itself.
+  Object.keys(map).forEach(function(stationId) {
+    var items = map[stationId];
+    var operating = src.Tokaido;
+    map[stationId] = items.reduce(function(out,item) {
+      if (item.lineId !== "TokaidoMain") { out.push(item); return out; }
+      var targetStation = item.toStation || stationId;
+      if (lineId === "Tokaido" || !operating ||
+          (operating.stations || []).indexOf(targetStation) < 0) return out;
+      if (items.some(function(peer) {
+        return peer.lineId === "Tokaido" && (peer.toStation || stationId) === targetStation;
+      }) || out.some(function(peer) {
+        return peer.lineId === "Tokaido" && (peer.toStation || stationId) === targetStation;
+      })) return out;
+      out.push(Object.assign({},item,{
+        lineId:"Tokaido",image:transferArtwork("Tokaido"),
+        name:window.RailwayDB && window.RailwayDB.resolveLineName
+          ? window.RailwayDB.resolveLineName("Tokaido",_langNow) : operating.name || "Tokaido",
+        operator:operating.operator || "",code:operating.code || "",color:operating.color || ""
+      }));
+      return out;
+    },[]);
+  });
   _transferMapCache = { lineId: lineId, lang: _langNow, systemKey: _systemKey, staticKey: staticKey, map: map };
   return map;
 }
@@ -957,20 +983,25 @@ window.StationInfoLayout = (function() {
     var rowUsed = Array(cap).fill(0);
     visible.forEach(function(slot) { rowUsed[slot.row] = Math.max(rowUsed[slot.row], slot.col + 1); });
     if (overflowSlot) rowUsed[overflowSlot.row] = Math.max(rowUsed[overflowSlot.row], overflowSlot.col + 1);
-    // Reserve space for either standard or right-aligned (left-side) cell
-    // coordinates; fallback text badges must not overlap neighboring badges.
-    var colWidth = Array(columns).fill(ICON);
+    // Four badges per row, four rows maximum. Widths belong to the row,
+    // not to a shared column: a text badge must never open gaps in other rows.
+    var rowSlotWidths = Array.from({length:cap}, function(){return [];});
     visible.concat(overflowSlot ? [overflowSlot] : []).forEach(function(slot) {
-      var w = slot === overflowSlot ? measure("+" + hidden, FONT.overflow) : slot.part.badgeWidth;
-      colWidth[slot.col] = Math.max(colWidth[slot.col], w);
-      colWidth[slot.col + columns - rowUsed[slot.row]] =
-        Math.max(colWidth[slot.col + columns - rowUsed[slot.row]], w);
+      rowSlotWidths[slot.row][slot.col] = slot === overflowSlot
+        ? Math.max(ICON,measure("+" + hidden, FONT.overflow)) : slot.part.badgeWidth;
     });
-    var colOffsets = [], gridWidth = 0;
-    for (var i = 0; i < columns; i++) {
-      colOffsets[i] = gridWidth;
-      gridWidth += colWidth[i] + (i === columns - 1 ? 0 : GAP);
-    }
+    var rowWidths = [], rowOffsets = [], gridWidth = 0;
+    rowSlotWidths.forEach(function(widths, rowIndex) {
+      var offsets = [], width = 0;
+      widths.forEach(function(w, i) {
+        if (i) width += GAP;
+        offsets[i] = width;
+        width += w;
+      });
+      rowOffsets[rowIndex] = offsets;
+      rowWidths[rowIndex] = width;
+      gridWidth = Math.max(gridWidth,width);
+    });
     var labelWidth = shown.reduce(function(mx, entry) {
       return Math.max(mx, entry.extra ? measure(entry.extra, mobile ? FONT.extra.mobile : FONT.extra.desktop) : 0);
     }, 0);
@@ -978,7 +1009,7 @@ window.StationInfoLayout = (function() {
     visible.forEach(function(slot) { finalRow = Math.max(finalRow, slot.row); });
     if (overflowSlot) finalRow = Math.max(finalRow, overflowSlot.row);
     return {shown:shown, perRow:columns, rows:finalRow+1, rowUsed:rowUsed,
-      colWidths:colWidth, colOffsets:colOffsets, gridWidth:gridWidth,
+      rowWidths:rowWidths, rowOffsets:rowOffsets, gridWidth:gridWidth,
       totalWidth:gridWidth+(labelWidth ? labelWidth+3 : 0), contentWidth:gridWidth,
       moreText:hidden ? "+"+hidden : "",
       overflowRow:overflowSlot ? overflowSlot.row : 0,

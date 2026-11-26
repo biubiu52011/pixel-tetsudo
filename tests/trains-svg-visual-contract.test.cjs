@@ -208,8 +208,7 @@ test('unlike-name transfers render outer destination, arrow, then inside badges'
         fontSizes:{badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}},
         textColor:()=> '#fff',
         plan:()=>({shown:[entry],rows:1,gridWidth:70,perRow:4,
-          rowUsed:[1,0,0,0],colOffsets:[0,18,36,54],
-          colWidths:[16,16,16,16]})},
+          rowUsed:[1,0,0,0],rowWidths:[16,0,0,0],rowOffsets:[[0],[],[],[]]})},
       ThroughChip:{badgeText:()=> 'JK',normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]},
       RailwayDB:{resolveStationName:name=>name}};
     const document={createElementNS:(_ns,tag)=>makeNode(tag)};
@@ -274,7 +273,8 @@ test('station name and near-track icon edge share the same outer annotation base
         badge:{mobile:10,desktop:9},extra:{mobile:9,desktop:8}
       },textColor:()=> '#fff',
       plan:()=>({shown:[entry],rows:Math.ceil(count/4),gridWidth:70,
-        colOffsets:[0,18,36,54],colWidths:[16,16,16,16],rowUsed,perRow:4})},
+        rowOffsets:rowUsed.map(n=>Array.from({length:n},(_,i)=>i*18)),
+        rowWidths:rowUsed.map(n=>n?18*n-2:0),rowUsed,perRow:4})},
       ThroughChip:{badgeText:()=> 'X',normalize:()=>[],layoutRow:()=>[],layoutGroup:()=>[]},
       RailwayDB:{resolveStationName:id=>id}};
     const context=vm.createContext({window,document:{createElementNS:(_ns,tag)=>create(tag)}});
@@ -711,4 +711,41 @@ test('train captions also avoid permanent station circles',()=>{
   assert.equal(env._protectStaticStationInfoFromTrainCaptions(layer,[near,far]),1);
   assert.equal(near.attrs.display,'none');
   assert.equal(far.attrs.display,undefined);
+});
+
+
+test('wide UenoTokyo text badge affects only its own row, keeping both edges compact',()=>{
+  const ls=geometrySource.indexOf('window.StationInfoLayout = (function() {');
+  const le=geometrySource.indexOf('})();',ls);
+  const rs=rendererSource.indexOf('  function _outwardWalkTransferArrow(');
+  const re=rendererSource.indexOf('  function _isRealtimePositionFresh(',rs);
+  function node(tag){return{tag,attrs:{},textContent:'',children:[],
+    setAttribute(k,v){this.attrs[k]=String(v);},appendChild(c){this.children.push(c);return c;}};}
+  const flat=n=>[n,...n.children.flatMap(flat)];
+  const items=Array.from({length:12},(_,i)=>({lineId:'L'+i,name:'L'+i,image:'l'+i+'.png'}));
+  items[8]={lineId:'UenoTokyo',name:'上野东京',color:'#9358b6'};
+  for(const side of ['left','right']){
+    const w={currentLang:'zh',ThroughChip:{measureWidth:(s,f)=>String(s).length*f,
+      badgeText:i=>i.name,normalize:()=>[],layoutGroup:()=>[],layoutRow:()=>[]}};
+    const ctx=vm.createContext({window:w,document:{createElementNS:(_ns,tag)=>node(tag)},_losGroupKey:()=>null});
+    vm.runInContext(geometrySource.slice(ls,le+5)+'\n'+rendererSource.slice(rs,re),ctx);
+    const plan=w.StationInfoLayout.plan(items,'Tokyo','东京',true);
+    assert.deepEqual(Array.from(plan.rowWidths),[70,70,102,0]);
+    const info=node('g');
+    ctx._renderStationNode({nodes:node('g'),info},'svg',{
+      stationId:'Tokyo',x:220,y:200,side,si:0,color:'#9ac',geometry:{},
+      svgW:440,svgH:800,isMobileView:true,transferMap:{Tokyo:items},rS:()=> '东京'});
+    const all=flat(info),edge=Number(all.find(n=>n.attrs['data-station-label']==='Tokyo').attrs.x);
+    const glyphs=all.filter(n=>n.tag==='image'||n.tag==='rect'&&n.attrs.fill==='#9358b6');
+    assert.equal(glyphs.length,12);
+    const rows=new Map();
+    glyphs.forEach(n=>{const y=Number(n.attrs.y);if(!rows.has(y))rows.set(y,[]);rows.get(y).push(n);});
+    assert.equal(rows.size,3);
+    for(const row of rows.values()){
+      row.sort((a,b)=>Number(a.attrs.x)-Number(b.attrs.x));
+      assert.equal(row.length,4);
+      for(let i=1;i<row.length;i++)assert.equal(Number(row[i].attrs.x)-Number(row[i-1].attrs.x)-Number(row[i-1].attrs.width),2);
+      assert.equal(side==='left'?Number(row.at(-1).attrs.x)+Number(row.at(-1).attrs.width):Number(row[0].attrs.x),edge);
+    }
+  }
 });

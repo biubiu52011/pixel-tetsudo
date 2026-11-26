@@ -106,3 +106,20 @@ test('vertical-branch geometry reserves caption clearance even in reversed stati
     'NambuBranch terminal comes first in the canonical source order');
   assert.equal(lines.NambuBranch.stations.at(-1),'Shitte');
 });
+
+
+test('JT passenger transfer never displays the hidden trunk or itself',()=>{
+  const jt=getMap('Tokaido'),jy=getMap('Yamanote');
+  for(const items of Object.values(jt)){
+    assert.equal(items.some(item=>item.lineId==='TokaidoMain'||item.lineId==='Tokaido'),false);
+  }
+  for(const station of ['Tokyo','Shimbashi','Shinagawa']){
+    assert.equal(at(jy,station,'Tokaido').length,1);
+    assert.equal(at(jy,station,'TokaidoMain').length,0);
+  }
+  for(const station of ['Yurakucho','Hamamatsucho','Tamachi']){
+    assert.equal(at(jy,station,'Tokaido').length,0);
+    assert.equal(at(jy,station,'TokaidoMain').length,0);
+  }
+  assert.equal(at(getMap('Gotemba'),'Kozu','Tokaido').length,1);
+});
