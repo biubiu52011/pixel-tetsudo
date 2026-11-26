@@ -270,86 +270,122 @@ select count(*) as sample_rows,count(d.id) as number_found,
  or d.destination_urns is distinct from array['odpt.Station:Tokyu.Meguro.Hiyoshi']::text[]) as mismatches
 from samples s left join db d on d.train_number=s.number;
 
--- 2026-03-14平日日吉6、7、9、12时台上行；独立运用表交叉核验，不作物理车辆确认。
+-- 2026-03-14日吉上行：平日6、7、9、12、23时台及土休日7时台；独立运用表交叉核验，不作物理车辆确认。
 -- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/06/departure
 -- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/07/departure
 -- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/09/departure
 -- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/12/departure
-with samples(number,dep,arr,kind,dest) as (values
-('207-062','06:02','06:18','Express','NishiTakashimadaira'),
-('437-062','06:06','06:31','Local','NishiTakashimadaira'),
-('642-062','06:11','06:28','Express','UrawaMisono'),
-('638-062','06:14','06:38','Local','UrawaMisono'),
-('431-062','06:22','06:45','Local','NishiTakashimadaira'),
-('360-062','06:25','06:49','Local','UrawaMisono'),
-('633-062','06:31','06:53','Local','NishiTakashimadaira'),
-('241-062','06:34','07:04','Local','NishiTakashimadaira'),
-('236-062','06:40','06:57','Express','UrawaMisono'),
-('582-062','06:45','07:09','Local','UrawaMisono'),
-('580-062','06:49','07:15','Local','Hatogaya'),
-('439-062','06:55','07:12','Express','NishiTakashimadaira'),
-('443-062','06:57','07:24','Local','NishiTakashimadaira'),
-('238-062','07:01','07:21','Express','UrawaMisono'),
-('334-064','07:04','07:27','Local','UrawaMisono'),
-('352-072','07:08','07:34','Local','Hatogaya'),
-('447-072','07:11','07:38','Local','NishiTakashimadaira'),
-('635-072','07:14','07:31','Express','NishiTakashimadaira'),
-('445-072','07:17','07:44','Local','NishiTakashimadaira'),
-('230-072','07:21','07:41','Express','UrawaMisono'),
-('449-072','07:23','07:49','Local','NishiTakashimadaira'),
-('362-072','07:28','07:54','Local','Hatogaya'),
-('202-072','07:31','07:51','Express','UrawaMisono'),
-('340-072','07:33','07:59','Local','UrawaMisono'),
-('639-072','07:36','07:56','Express','NishiTakashimadaira'),
-('453-072','07:39','08:05','Local','NishiTakashimadaira'),
-('451-072','07:43','08:10','Local','NishiTakashimadaira'),
-('240-072','07:46','08:07','Express','UrawaMisono'),
-('336-072','07:48','08:15','Local','Hatogaya'),
-('631-072','07:51','08:12','Express','Takashimadaira'),
-('356-072','07:54','08:20','Local','OjiKamiya'),
-('455-072','07:56','08:17','Express','NishiTakashimadaira'),
-('433-072','07:58','08:25','Local','Takashimadaira'),
-('441-092','09:03','09:30','Local','NishiTakashimadaira'),
-('212-082','09:06','09:25','Express','UrawaMisono'),
-('437-092','09:09','09:33','Local','Takashimadaira'),
-('346-092','09:14','09:40','Local','UrawaMisono'),
-('213-092','09:17','09:36','Express','NishiTakashimadaira'),
-('435-092','09:20','09:44','Local','Takashimadaira'),
-('594-092','09:25','09:51','Local','UrawaMisono'),
-('431-092','09:30','09:48','Express','NishiTakashimadaira'),
-('485-092','09:33','09:56','Local','NishiTakashimadaira'),
-('481-092','09:40','10:05','Local','NishiTakashimadaira'),
-('217-092','09:45','10:03','Express','NishiTakashimadaira'),
-('360-092','09:48','10:10','Local','UrawaMisono'),
-('487-092','09:54','10:16','Local','NishiTakashimadaira'),
-('205-092','09:58','10:23','Local','NishiTakashimadaira'),
-('588-112','12:04','12:21','Express','UrawaMisono'),
-('461-122','12:07','12:29','Local','NishiTakashimadaira'),
-('336-122','12:13','12:38','Local','AkabaneIwabuchi'),
-('639-122','12:19','12:36','Express','NishiTakashimadaira'),
-('354-122','12:22','12:44','Local','UrawaMisono'),
-('431-122','12:28','12:53','Local','NishiTakashimadaira'),
-('212-122','12:34','12:51','Express','AkabaneIwabuchi'),
-('481-122','12:37','12:59','Local','NishiTakashimadaira'),
-('346-122','12:43','13:08','Local','UrawaMisono'),
-('227-122','12:49','13:06','Express','NishiTakashimadaira'),
-('360-122','12:52','13:14','Local','AkabaneIwabuchi'),
-('469-122','12:58','13:23','Local','NishiTakashimadaira')
+-- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/23/departure
+-- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/saturdayholiday/downstream/07/departure
+with samples(cal,number,dep,arr,kind,dest) as (values
+('Weekday','207-062','06:02','06:18','Express','NishiTakashimadaira'),
+('Weekday','437-062','06:06','06:31','Local','NishiTakashimadaira'),
+('Weekday','642-062','06:11','06:28','Express','UrawaMisono'),
+('Weekday','638-062','06:14','06:38','Local','UrawaMisono'),
+('Weekday','431-062','06:22','06:45','Local','NishiTakashimadaira'),
+('Weekday','360-062','06:25','06:49','Local','UrawaMisono'),
+('Weekday','633-062','06:31','06:53','Local','NishiTakashimadaira'),
+('Weekday','241-062','06:34','07:04','Local','NishiTakashimadaira'),
+('Weekday','236-062','06:40','06:57','Express','UrawaMisono'),
+('Weekday','582-062','06:45','07:09','Local','UrawaMisono'),
+('Weekday','580-062','06:49','07:15','Local','Hatogaya'),
+('Weekday','439-062','06:55','07:12','Express','NishiTakashimadaira'),
+('Weekday','443-062','06:57','07:24','Local','NishiTakashimadaira'),
+('Weekday','238-062','07:01','07:21','Express','UrawaMisono'),
+('Weekday','334-064','07:04','07:27','Local','UrawaMisono'),
+('Weekday','352-072','07:08','07:34','Local','Hatogaya'),
+('Weekday','447-072','07:11','07:38','Local','NishiTakashimadaira'),
+('Weekday','635-072','07:14','07:31','Express','NishiTakashimadaira'),
+('Weekday','445-072','07:17','07:44','Local','NishiTakashimadaira'),
+('Weekday','230-072','07:21','07:41','Express','UrawaMisono'),
+('Weekday','449-072','07:23','07:49','Local','NishiTakashimadaira'),
+('Weekday','362-072','07:28','07:54','Local','Hatogaya'),
+('Weekday','202-072','07:31','07:51','Express','UrawaMisono'),
+('Weekday','340-072','07:33','07:59','Local','UrawaMisono'),
+('Weekday','639-072','07:36','07:56','Express','NishiTakashimadaira'),
+('Weekday','453-072','07:39','08:05','Local','NishiTakashimadaira'),
+('Weekday','451-072','07:43','08:10','Local','NishiTakashimadaira'),
+('Weekday','240-072','07:46','08:07','Express','UrawaMisono'),
+('Weekday','336-072','07:48','08:15','Local','Hatogaya'),
+('Weekday','631-072','07:51','08:12','Express','Takashimadaira'),
+('Weekday','356-072','07:54','08:20','Local','OjiKamiya'),
+('Weekday','455-072','07:56','08:17','Express','NishiTakashimadaira'),
+('Weekday','433-072','07:58','08:25','Local','Takashimadaira'),
+('Weekday','441-092','09:03','09:30','Local','NishiTakashimadaira'),
+('Weekday','212-082','09:06','09:25','Express','UrawaMisono'),
+('Weekday','437-092','09:09','09:33','Local','Takashimadaira'),
+('Weekday','346-092','09:14','09:40','Local','UrawaMisono'),
+('Weekday','213-092','09:17','09:36','Express','NishiTakashimadaira'),
+('Weekday','435-092','09:20','09:44','Local','Takashimadaira'),
+('Weekday','594-092','09:25','09:51','Local','UrawaMisono'),
+('Weekday','431-092','09:30','09:48','Express','NishiTakashimadaira'),
+('Weekday','485-092','09:33','09:56','Local','NishiTakashimadaira'),
+('Weekday','481-092','09:40','10:05','Local','NishiTakashimadaira'),
+('Weekday','217-092','09:45','10:03','Express','NishiTakashimadaira'),
+('Weekday','360-092','09:48','10:10','Local','UrawaMisono'),
+('Weekday','487-092','09:54','10:16','Local','NishiTakashimadaira'),
+('Weekday','205-092','09:58','10:23','Local','NishiTakashimadaira'),
+('Weekday','588-112','12:04','12:21','Express','UrawaMisono'),
+('Weekday','461-122','12:07','12:29','Local','NishiTakashimadaira'),
+('Weekday','336-122','12:13','12:38','Local','AkabaneIwabuchi'),
+('Weekday','639-122','12:19','12:36','Express','NishiTakashimadaira'),
+('Weekday','354-122','12:22','12:44','Local','UrawaMisono'),
+('Weekday','431-122','12:28','12:53','Local','NishiTakashimadaira'),
+('Weekday','212-122','12:34','12:51','Express','AkabaneIwabuchi'),
+('Weekday','481-122','12:37','12:59','Local','NishiTakashimadaira'),
+('Weekday','346-122','12:43','13:08','Local','UrawaMisono'),
+('Weekday','227-122','12:49','13:06','Express','NishiTakashimadaira'),
+('Weekday','360-122','12:52','13:14','Local','AkabaneIwabuchi'),
+('Weekday','469-122','12:58','13:23','Local','NishiTakashimadaira'),
+('Weekday','461-232','23:08','23:30','Local','NishiTakashimadaira'),
+('Weekday','481-232','23:14','23:39','Local','NishiTakashimadaira'),
+('Weekday','580-232','23:19','23:36','Express','UrawaMisono'),
+('Weekday','586-232','23:24','23:46','Local','UrawaMisono'),
+('Weekday','231-232','23:29','23:33','Local','MusashiKosugi'),
+('Weekday','471-232','23:32','23:54','Local','Takashimadaira'),
+('Weekday','594-232','23:36','23:58','Local','Hatogaya'),
+('Weekday','340-232','23:49','00:11','Local','Meguro'),
+('SaturdayHoliday','443-072','07:04','07:26','Local','NishiTakashimadaira'),
+('SaturdayHoliday','332-072','07:10','07:32','Local','Hatogaya'),
+('SaturdayHoliday','206-072','07:19','07:46','Local','Hatogaya'),
+('SaturdayHoliday','445-072','07:24','07:43','Express','NishiTakashimadaira'),
+('SaturdayHoliday','340-072','07:27','07:49','Local','UrawaMisono'),
+('SaturdayHoliday','447-072','07:31','07:53','Local','NishiTakashimadaira'),
+('SaturdayHoliday','352-072','07:35','07:57','Local','UrawaMisono'),
+('SaturdayHoliday','635-072','07:39','08:02','Local','NishiTakashimadaira'),
+('SaturdayHoliday','334-074','07:45','08:07','Local','UrawaMisono'),
+('SaturdayHoliday','336-072','07:50','08:12','Local','UrawaMisono'),
+('SaturdayHoliday','453-072','07:56','08:21','Local','NishiTakashimadaira')
 ), db as (
- select t.id,t.train_number,t.train_type_urn,t.destination_urns,
+ select t.id,t.calendar_urn,t.train_number,t.train_type_urn,t.destination_urns,
  min(s.departure_clock) filter(where s.departure_station_urn='odpt.Station:Tokyu.Meguro.Hiyoshi') as dep,
- min(s.arrival_clock) filter(where s.arrival_station_urn='odpt.Station:Tokyu.Meguro.Meguro') as arr
+ min(s.arrival_clock) filter(where s.arrival_station_urn='odpt.Station:Tokyu.Meguro.Meguro') as arr,
+ min(s.arrival_clock) filter(where s.arrival_station_urn='odpt.Station:Tokyu.Meguro.MusashiKosugi') as kosugi_arr
  from public.manual_timetable_templates t join public.manual_timetable_template_stops s on s.template_id=t.id
  where t.line_key='TokyuMeguro' and t.direction_urn='odpt.RailDirection:Inbound'
- and t.calendar_urn='odpt.Calendar:Weekday'
- group by t.id,t.train_number,t.train_type_urn,t.destination_urns
+ and t.calendar_urn in ('odpt.Calendar:Weekday','odpt.Calendar:SaturdayHoliday')
+ group by t.id,t.calendar_urn,t.train_number,t.train_type_urn,t.destination_urns
 ), candidates as (
- select s.number,s.dep,s.arr as published_arr,d.train_number as import_id,d.arr as database_arr,
- count(d.id) over(partition by s.number) as candidate_count
- from samples s left join db d on s.dep=d.dep
+ select s.cal,s.number,s.dep,s.arr as published_arr,s.dest,d.train_number as import_id,
+ case when s.dest='MusashiKosugi' then d.kosugi_arr else d.arr end as database_arr,
+ count(d.id) over(partition by s.cal,s.number,s.dep) as candidate_count
+ from samples s left join db d on d.calendar_urn='odpt.Calendar:'||s.cal and s.dep=d.dep
  and d.train_type_urn='odpt.TrainType:Tokyu.'||s.kind
- and d.destination_urns=array[case when s.dest in ('NishiTakashimadaira','Takashimadaira') then 'odpt.Station:Toei.Mita.' when s.dest in ('OjiKamiya','AkabaneIwabuchi') then 'odpt.Station:TokyoMetro.Namboku.' else 'odpt.Station:SaitamaRailway.SaitamaRailway.' end||s.dest]::text[]
-)
-select *,case when candidate_count=1 and published_arr=database_arr then 'exact_boundary_candidate'
+ and d.destination_urns=array[case when s.dest in ('NishiTakashimadaira','Takashimadaira') then 'odpt.Station:Toei.Mita.'
+ when s.dest in ('OjiKamiya','AkabaneIwabuchi') then 'odpt.Station:TokyoMetro.Namboku.'
+ when s.dest in ('Meguro','MusashiKosugi') then 'odpt.Station:Tokyu.Meguro.'
+ else 'odpt.Station:SaitamaRailway.SaitamaRailway.' end||s.dest]::text[]
+), classified as (
+ select *,case when candidate_count=1 and published_arr=database_arr then 'exact_boundary_candidate'
+ when candidate_count=1 and database_arr is null then 'missing_boundary_clock'
  when candidate_count=1 then 'arrival_clock_conflict' else 'unresolved' end as status
-from candidates order by dep,number;
+ from candidates
+)
+select * from classified order by cal,case when left(dep,2)='00' then '24'||substring(dep,3) else dep end,number;
+
+-- 已发现终点前截断的深夜样本：只读列出实际停站，避免将跨午夜误作时刻缺失的唯一原因。
+select t.train_number,s.stop_sequence,s.arrival_station_urn,s.departure_station_urn,s.arrival_clock,s.departure_clock
+from public.manual_timetable_templates t join public.manual_timetable_template_stops s on s.template_id=t.id
+where t.line_key='TokyuMeguro' and t.calendar_urn='odpt.Calendar:Weekday'
+and t.train_number in ('TKYMeguroIW237','TKYMeguroIW240')
+order by t.train_number,s.stop_sequence;
