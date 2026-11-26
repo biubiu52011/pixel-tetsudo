@@ -320,6 +320,36 @@ function buildIndex(input) {
       numberFormat:'full_exact',numbers:numbers.slice(),referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false,guardDescription:'Requires exact full ODPT number, realtime Toei trainOwner, exact source railway and nonconflicting model; not future timetable verification'});
   }
+  // 官方同号对账：只登记明确实时车型条件下的候选，不将同号分配给任一批次。
+  const mixed=win.TrainNumberPngRanges.toeiMixedOfficialEvidence;
+  const mixedRules=catalog.rules.filter(r=>r.origin==='frontend_js'&&r.operator==='Toei'&&
+    r.runtime_guards?.requireExplicitModelEvidence===true&&
+    Object.hasOwn(mixed.lines,r.line_ids[0])&&r.weekday_numbers&&r.holiday_numbers);
+  if(mixedRules.length!==8)throw Error('Toei mixed source rules changed');
+  for(const r of mixedRules){
+    const line=r.line_ids[0],asset=get(r.png,'runtime-toei-mixed-official');
+    if(!asset||asset.quarantined)throw Error('Toei model artwork unavailable');
+    for(const calendar of ['weekday','holiday']){
+      const numbers=r[calendar+'_numbers'];
+      if(numbers.length!==mixed.lines[line][calendar][0])throw Error('Official Toei roster count drift');
+      for(const number of numbers){
+        const m=win.TrainNumberPngRanges.match(number,line,{
+          trainNumber:number,positionLineId:line,displayLineId:line,
+          trainOwner:line==='Oedo'?'':'odpt.TrainOwner:Toei',trainOperator:'Toei',
+          sourceRailway:'odpt.Railway:Toei.'+line,positionSource:'realtime-api',
+          realtimeVehicleType:r.model,estimated:false,calendarType:calendar,
+          serviceDate:calendar==='weekday'?'2026-12-01':'2026-12-06',vehicleIdentityStatus:'UNKNOWN'
+        });
+        if(!m||m.pngPath!=='../'+asset.path||m.actualVehicleConfirmed!==false||m.referenceOnly!==true)
+          throw Error('Official mixed Toei replay rejected '+line+' '+r.model+' '+number);
+      }
+      asset.runtimeNumberRosters.push({authority:'official_operator_timetable_live_owner_model_guarded',
+        lineId:line,calendarType:calendar,numberFamily:'explicit-model-reference',corridor:null,
+        model:r.model,sourceUrl:mixed.sourceUrl,validFrom:mixed.observedOn,validTo:null,
+        numberFormat:'full_exact',numbers:numbers.slice(),referenceOnly:true,illustrative:true,
+        actualVehicleConfirmed:false,guardDescription:'Requires exact full ODPT number, realtime Toei owner (Oedo standalone exception) AND explicit compatible model; overlapping model candidates are not assignments'});
+    }
+  }
   // JR Central Kansai 2026-03 exact public-number roster. The private source
   // supplies number/calendar/direction and vehicle family, but not a complete
   // all-stop timetable. Keep it as a finite runtime reference and replay the

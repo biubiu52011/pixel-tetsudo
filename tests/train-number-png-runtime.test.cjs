@@ -3257,6 +3257,7 @@ test('Tokyo Metro / Mita source-number rosters stay independent of staged Toei l
      realtimeVehicleType:r.requireExplicitModelEvidence?r.model:''});
    assert.equal(root.TrainNumberPngRanges.match(num,line,p)?.model,r.model,line);
    assert.equal(root.VehicleGaragePngMap.matchModelPath(r.model,r.pngPath,line),true);
+   // 三田新版要求明确实时车主；此处旧测试未提供车主，仍须拒绝。
    assert.equal(root.TrainNumberPngRanges.match(num,line,{...p,serviceDate:'2026-12-05'}),null,line);
    assert.equal(root.TrainNumberPngRanges.match(num,line,{
      ...p,sourceRailway:'odpt.Railway:TokyoMetro.Tozai'}),null,line);
@@ -3294,7 +3295,7 @@ test('Toei Asakusa/Shinjuku/Oedo staged numbers only authorize owner-scoped disp
     for(const bad of [{trainOwner:'Keio'}, {trainOwner:''},
       {sourceRailway:'odpt.Railway:Toei.Mita'},
       {positionSource:'supabase-train-run',estimated:true},
-      {serviceDate:line==='Asakusa'?'2026-11-21':'2026-12-01'}]){
+      {serviceDate:'2026-10-31'}]){
       if(line==='Oedo'&&Object.prototype.hasOwnProperty.call(bad,'trainOwner')&&
          bad.trainOwner==='')continue; // source-only owner for standalone Oedo
       assert.equal(root.TrainNumberPngRanges.match(n,line,{...p,...bad}),null,
@@ -4072,4 +4073,48 @@ test('浅草线11月24日官方名册逐号回放，仅实时都营车主可获�
   assert.equal(root.TrainNumberPngRanges.match(n,'Asakusa',p(n,'weekday')),null,n);
  assert.equal(root.TrainNumberPngRanges.match('1327Ta','Asakusa',p('1327Ta','weekday'))?.model,'都営5500形');
  assert.equal(root.TrainNumberPngRanges.match('1300T','Asakusa',p('1300T','weekday',{calendarType:'',serviceDate:'2026-12-01'}))?.referenceOnly,true);
+});
+
+test('都营混合车型官方逐号对账，实时车主与具体车型双重约束',()=>{
+ const {getRows}=require('../tools/build-train-number-png-catalog.cjs');
+ const ev=root.TrainNumberPngRanges.toeiMixedOfficialEvidence;
+ const rules=getRows().filter(r=>r.operator==='Toei'&&r.requireExplicitModelEvidence&&
+  Object.hasOwn(ev.lines,r.lineIds[0])&&r.weekdayNumbers&&r.holidayNumbers);
+ assert.equal(rules.length,8);
+ for(const r of rules){
+  const line=r.lineIds[0],e=ev.lines[line];
+  assert.equal(new Set([...r.weekdayNumbers,...r.holidayNumbers]).size,e.union);
+  for(const cal of ['weekday','holiday']){
+   const numbers=r[cal+'Numbers'],other=cal==='weekday'?'holiday':'weekday';
+   assert.equal(numbers.length,e[cal][0]);
+   assert.equal(crypto.createHash('sha256').update([...numbers].sort().join(' ')).digest('hex'),e[cal][1],line+' official roster hash');
+   const p=(n,mods={})=>live({trainNumber:n,positionLineId:line,displayLineId:line,
+     sourceRailway:'odpt.Railway:Toei.'+line,trainOperator:'Toei',
+     trainOwner:line==='Oedo'?'':'odpt.TrainOwner:Toei',
+     realtimeVehicleType:r.model,serviceDate:cal==='weekday'?'2026-12-01':'2026-12-06',
+     calendarType:cal,...mods});
+   for(const n of numbers){
+    const m=root.TrainNumberPngRanges.match(n,line,p(n));
+    assert.equal(m?.pngPath,r.pngPath,line+' '+n);
+    assert.equal(m.referenceOnly,true);assert.equal(m.actualVehicleConfirmed,false);
+    if(!r[other+'Numbers'].includes(n))
+     assert.equal(root.TrainNumberPngRanges.match(n,line,p(n,{calendarType:other})),null,line+' wrong calendar '+n);
+   }
+   const n=numbers[0];
+   for(const bad of [{trainOwner:'Keio'},{trainOperator:'Keio'},{sourceRailway:'odpt.Railway:Toei.Asakusa'},
+    {positionLineId:'Asakusa'},{displayLineId:'Asakusa'},{estimated:true},{positionSource:'supabase-train-run'},
+    {vehicleIdentityStatus:'EXACT'},{actualVehicleConfirmed:true},{vehicleResolvedUpstream:true},
+    {calendarType:'unknown'},{realtimeVehicleType:''},{realtimeDerivedVehicleType:'foreign-model'},
+    {plannedVehicleCandidates:['foreign-model']},{vehiclePlan:{status:'PLANNED_MODEL',models:[r.model,'foreign-model']}}])
+     assert.equal(root.TrainNumberPngRanges.match(n,line,p(n,bad)),null,line+' '+JSON.stringify(bad));
+   if(line!=='Oedo')assert.equal(root.TrainNumberPngRanges.match(n,line,p(n,{trainOwner:''})),null,line);
+   if(line==='Oedo')for(const tail of ['1','2'])
+    assert.equal(root.TrainNumberPngRanges.match(n+tail,line,p(n+tail)),null,line+' no synthetic suffix');
+   if(line==='Mita')assert.equal(root.TrainNumberPngRanges.match(n,line,p(n,{serviceDate:'2026-11-16',trainOwner:'Tokyu'})),null,'historical Mita foreign-owner conflict');
+   if(line==='Shinjuku'||line==='Oedo'){
+    const generic=line==='Shinjuku'?'都営10-300形':r.model.split('（')[0];
+    assert.equal(root.TrainNumberPngRanges.match(n,line,p(n,{realtimeVehicleType:generic})),null,'generic label never picks batch');
+   }
+  }
+ }
 });
