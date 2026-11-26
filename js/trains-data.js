@@ -125,19 +125,9 @@ function getLinesData() {
 
 function getRealtimePositions(lineId) {
   var positions = _getBasePositions(lineId);
-  // 此映射读取原始位置。使用与 DataFusion 和几何层相同的
-  // 物理区段权威投影关联服务。
-  if(window.SharedTrackPairs && window.SharedTrackPairs.projectPosition){
-    positions=positions.slice();
-    var known={};positions.forEach(function(p){var id=p.runningChainId||p.trainId;if(id)known[id]=true;});
-    window.SharedTrackPairs.getSharedLines(lineId).forEach(function(peer){
-      _getBasePositions(peer).forEach(function(p){
-        var id=p.runningChainId||p.trainId;if(id&&known[id])return;
-        var projected=window.SharedTrackPairs.projectPosition(lineId,peer,p);
-        if(projected){positions.push(projected);if(id)known[id]=true;}
-      });
-    });
-  }
+  // 与 DataFusion 共用物理区段合并器；保留来源身份和实时优先级。
+  if(window.SharedTrackPairs&&window.SharedTrackPairs.mergePositions)
+    positions=window.SharedTrackPairs.mergePositions(lineId,positions,_getBasePositions);
   var ext = _fusionExtensionLines(lineId);
   if (ext && ext.length > 0) {
     var all = positions.slice();
@@ -1062,16 +1052,26 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
   return lineId + (_isMobileView() ? "__m" : "__d");
 };
 
-  // Physical track sharing, not station-name overlap. Official Tokyo Metro:
-  // https://www.tokyometro.jp/corporate/enterprise/passenger_rail/transportation/lines/index.html
-  // Fukutoshin uses Yurakucho tracks Wakoshi--Kotake (8.3 km).
+  // 物理共轨，不按站名重合或直通关系猜测。区间两端均为实际共轨边界。
   var _SHARED_TRACK_SECTIONS = [
+    // https://www.tokyometro.jp/corporate/enterprise/passenger_rail/transportation/lines/index.html
     {lines:['Yurakucho','Fukutoshin'],from:'Wakoshi',to:'Kotake-Mukaihara'},
-    {lines:['Namboku','Mita'],from:'Meguro',to:'Shirokane-Takanawa'}
+    // https://www.tokyometro.jp/ticket/particularcase/meguro_shiroganetakanawa/index.html
+    {lines:['Namboku','Mita'],from:'Meguro',to:'Shirokane-Takanawa'},
+    // https://toyokeizai.net/articles/-/402518?display=b
+    {lines:['SaikyoKawagoe','ShonanShinjuku'],from:'Osaki',to:'Ikebukuro'},
+    // https://room-p.net/webtrip/japan/jreast/shonanshinjuku/shonanshinjuku.html
+    // 戸塚以南存在分岐，不把未逐轨核实的区段自动延伸。
+    {lines:['Yokosuka','ShonanShinjuku'],from:'Nishi-Oi',to:'Totsuka'},
+    // https://yukemuri-milkyway.com/line-guide-jreast-takasaki/
+    {lines:['Takasaki','UtsunomiyaJR'],from:'Tokyo',to:'Omiya'},
+    // 两个项目地图重叠的常磐本线区间；不包括独立的常磐缓行线。
+    // https://www.tokyo-train-master.com/jl-joban-local
+    {lines:['Joban','JobanMain'],from:'Toride',to:'Tsuchiura'}
   ];
   function _sharedLinesData() {
     return window.RailwayDB && window.RailwayDB.getAllLines ? window.RailwayDB.getAllLines() :
-      window.DataLayer && window.DataLayer.getAllLines ? window.DataLayer.getAllLines() : {};
+      window.DataLayer && window.DataLayer.getAllLines ? window.DataLayer.getAllLines() : window.UNIFIED_LINES || {};
   }
   function _sharedSections(lineId, partner, allLines) {
     var all=allLines||_sharedLinesData(), own=(all[lineId]||{}).stations||[];
@@ -1080,32 +1080,110 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     }).map(function(s){
       var peer=s.lines.filter(function(id){return id!==lineId;})[0];
       var other=(all[peer]||{}).stations||[], a=own.indexOf(s.from), b=own.indexOf(s.to);
-      if(a<0||b<0||other.indexOf(s.from)<0||other.indexOf(s.to)<0)return null;
+      var c=other.indexOf(s.from), d=other.indexOf(s.to);
+      if(a<0||b<0||c<0||d<0||a===b||c===d)return null;
       var ids=own.slice(Math.min(a,b),Math.max(a,b)+1);
-      if(ids.some(function(id){return other.indexOf(id)<0;}))return null;
-      return {partner:peer,start:Math.min(a,b),end:Math.max(a,b),stations:ids};
+      var peerIds=other.slice(Math.min(c,d),Math.max(c,d)+1);
+      var orientation=(b>a)===(d>c)?1:-1;
+      if(orientation<0)peerIds.reverse();
+      // 两站之间的站序也必须完全一致；仅同名端点不足以共轨。
+      if(ids.length!==peerIds.length||ids.some(function(id,i){return id!==peerIds[i];}))return null;
+      return {partner:peer,start:Math.min(a,b),end:Math.max(a,b),stations:ids,orientation:orientation};
     }).filter(Boolean);
   }
   function _findSharedSegments(line, allLines) {
     return _sharedSections(line.id||line.lineId||line.name,null,allLines);
   }
+  function _sharedStationIndex(list,value) {
+    function key(v){return String(v||'').split('.').pop().replace(/[-_\s]/g,'').toLowerCase();}
+    var n=key(value);
+    if(!n)return -1;
+    return list.findIndex(function(id){return key(id)===n;});
+  }
   function _projectSharedPosition(lineId, sourceId, p, allLines) {
+    if(!p||p.fusionRole==='shared-track'||p.fusionLineId||
+       (p.positionLineId||p.lineId)!==sourceId||p.stationIndex==null)return null;
     var all=allLines||_sharedLinesData(), own=(all[lineId]||{}).stations||[];
     var source=(all[sourceId]||{}).stations||[];
     var from=Number(p.stationIndex), to=p.segmentToIndex==null?from:Number(p.segmentToIndex);
     var progress=p.segmentProgress==null?0:Number(p.segmentProgress);
-    if(!Number.isFinite(from)||!Number.isFinite(to)||!Number.isFinite(progress)||progress<0||progress>1)return null;
+    if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||
+       from>=source.length||to>=source.length||!Number.isFinite(progress)||progress<0||progress>1)return null;
+    var live=p.positionSource==='realtime-api'&&p.estimated!==true;
+    // ODPT from/to 是实际区段证据；数据层常常没有 segmentToIndex。
+    // 不把离开共轨边界的列车留在另一张地图的边界车站。
+    if(live&&p.sourceToStation){
+      var liveTo=_sharedStationIndex(source,p.sourceToStation);
+      var liveFrom=p.sourceFromStation?_sharedStationIndex(source,p.sourceFromStation):from;
+      if(liveFrom!==from||liveTo<0||(to!==from&&to!==liveTo))return null;
+      to=liveTo;
+    }else if(live&&p.sourceFromStation&&_sharedStationIndex(source,p.sourceFromStation)!==from)return null;
     var coordinate=from+(to-from)*progress, lo=Math.floor(coordinate), hi=Math.ceil(coordinate);
-    if(!_sharedSections(lineId,sourceId,all).some(function(s){
-      return s.stations.indexOf(source[lo])>=0&&s.stations.indexOf(source[hi])>=0;
-    }))return null;
+    var section=_sharedSections(lineId,sourceId,all).find(function(s){
+      if(s.stations.indexOf(source[lo])<0||s.stations.indexOf(source[hi])<0)return false;
+      return !live||to===from||
+        (s.stations.indexOf(source[from])>=0&&s.stations.indexOf(source[to])>=0);
+    });
+    if(!section)return null;
     var a=own.indexOf(source[lo]), b=own.indexOf(source[hi]);
     if(a<0||b<0||lo!==hi&&Math.abs(b-a)!==1)return null;
-    var at=a+(b-a)*(coordinate-lo), forward=to>=from;
-    var base=forward?Math.floor(at):Math.ceil(at), target=forward?Math.ceil(at):Math.floor(at);
+    var at=a+(b-a)*(coordinate-lo);
+    var direction=Math.sign(to-from)*section.orientation;
+    if(!direction){
+      var dest=_sharedStationIndex(source,p.destinationStation);
+      var rd=String(p.railDirection||'').split(/[.:]/).pop();
+      var named=_sharedStationIndex(source,rd);
+      var step=dest>=0&&dest!==from?Math.sign(dest-from):named>=0&&named!==from?Math.sign(named-from):
+        rd==='Inbound'?-1:rd==='Outbound'?1:0;
+      direction=step*section.orientation;
+    }
+    var base=direction<0?Math.ceil(at):Math.floor(at);
+    var target=direction<0?Math.floor(at):Math.ceil(at);
+    // 实时 from/to 未提供区段进度时，仅沿用已有站点定位，不假造中点。
+    if(target===base&&to!==from&&direction&&section.stations.indexOf(own[base+direction])>=0)
+      target=base+direction;
     return Object.assign({},p,{stationIndex:base,segmentToIndex:target===base?null:target,
-      segmentProgress:Math.abs(at-base),stationId:own[base],
-      sharedFromLineId:sourceId,fusionRole:'shared-track'});
+      segmentProgress:Math.abs(at-base),stationId:own[base],displayLineId:lineId,
+      sharedFromLineId:sourceId,fusionRole:'shared-track',sharedTrackDirection:direction,
+      sharedTrackSource:{stationIndex:p.stationIndex,segmentToIndex:p.segmentToIndex,
+        segmentProgress:p.segmentProgress,stationId:p.stationId,displayLineId:p.displayLineId}});
+  }
+  // 还原并重放投影。素材选择器只在物理区段再次验证成功后使用原线路权限。
+  function _restoreSharedSourcePosition(p,lineId) {
+    if(!p||p.fusionRole!=='shared-track'||!p.sharedTrackSource||
+       p.displayLineId!==lineId||!p.sharedFromLineId||
+       (p.positionLineId||p.lineId)!==p.sharedFromLineId)return null;
+    var sourceId=p.sharedFromLineId, raw=Object.assign({},p,p.sharedTrackSource,{displayLineId:sourceId});
+    delete raw.fusionRole;delete raw.sharedFromLineId;delete raw.sharedTrackDirection;delete raw.sharedTrackSource;
+    var replay=_projectSharedPosition(lineId,sourceId,raw);
+    if(!replay||replay.stationIndex!==p.stationIndex||replay.segmentToIndex!==p.segmentToIndex||
+       replay.stationId!==p.stationId||replay.segmentProgress!==p.segmentProgress||
+       replay.sharedTrackDirection!==p.sharedTrackDirection)return null;
+    return raw;
+  }
+  // 统一融合层和渲染层的合并。只按稳定来源/已核实运行链去重，
+  // 不把不同运营商碰巧相同的车次号合并。实时优先于时刻表推定。
+  function _mergeSharedPositions(lineId, ownPositions, readPeer) {
+    var out=[],byId=Object.create(null);
+    function add(p, projected){
+      if(!p)return;
+      var id=String(p.runningChainId||p.trainId||p.sourceTrainId||p.timetableObjectId||'').trim();
+      if(!id){if(!projected)out.push(p);return;}
+      if(!Object.prototype.hasOwnProperty.call(byId,id)){byId[id]=out.length;out.push(p);return;}
+      var i=byId[id],cur=out[i],nr=_positionSourceRank(p),cr=_positionSourceRank(cur);
+      var nt=Date.parse(p.sourceUpdatedAt||''),ct=Date.parse(cur.sourceUpdatedAt||'');
+      if(nr<cr||(nr===cr&&nr===0&&isFinite(nt)&&isFinite(ct)&&nt>ct)||
+         (!projected&&cur.fusionRole!=='shared-track'&&nr===cr&&!(nr===0&&isFinite(nt)&&isFinite(ct)&&nt<ct)&&
+          _preferTrainPosition(p,cur)===p))out[i]=p;
+    }
+    (ownPositions||[]).forEach(function(p){add(p,false);});
+    _sharedSections(lineId).forEach(function(s){
+      (readPeer(s.partner)||[]).forEach(function(p){
+        var projected=_projectSharedPosition(lineId,s.partner,p);
+        if(projected)add(projected,true);
+      });
+    });
+    return out;
   }
 
   // 支线 junction 站解析——支线站表中第一个出现在主干站表的站。
@@ -2097,5 +2175,7 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
     isSharedStation:function(lineId,stationId,partner){
       return _sharedSections(lineId,partner).some(function(s){return s.stations.indexOf(stationId)>=0;});
     },
-    projectPosition:_projectSharedPosition
+    projectPosition:_projectSharedPosition,
+    restoreSourcePosition:_restoreSharedSourcePosition,
+    mergePositions:_mergeSharedPositions
   };

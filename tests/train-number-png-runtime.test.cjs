@@ -4118,3 +4118,34 @@ test('都营混合车型官方逐号对账，实时车主与具体车型双重�
   }
  }
 });
+
+test('physical shared-track marker preserves original source-approved PNG and rejects forged projection',()=>{
+ const data=fs.readFileSync('js/trains-data.js','utf8');
+ const a=data.indexOf('  // 物理共轨，不按站名'),b=data.indexOf('  // 支线 junction',a),e=data.indexOf('  window.SharedTrackPairs = {');
+ assert.ok(a>=0&&b>a&&e>=0);
+ root.UNIFIED_LINES=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
+ vm.runInContext(data.slice(a,b)+data.slice(e),ctx);
+ const shared=root.SharedTrackPairs;
+ const p=live({trainNumber:'1020T',positionLineId:'Mita',displayLineId:'Mita',
+  sourceRailway:'odpt.Railway:Toei.Mita',trainOperator:'Toei',trainOwner:'odpt.TrainOwner:Toei',
+  realtimeVehicleType:'都営6500形',serviceDate:'2026-11-26',calendarType:'weekday',
+  stationIndex:0,stationId:'Meguro',sourceFromStation:'Meguro',sourceToStation:'Shirokanedai',
+  segmentToIndex:null,segmentProgress:0,railDirection:'Outbound'});
+ const raw=root.TrainVehicle.selectMarkerArtwork(p,false);
+ assert.equal(raw.kind,'vehicle');
+ assert.ok(raw.iconSrc.endsWith('都営地下鉄_6500形.png'));
+ const q=shared.projectPosition('Namboku','Mita',p);
+ assert.ok(q);assert.equal(q.positionLineId,'Mita');
+ const projected=marker(q,'Namboku');
+ assert.equal(projected.kind,'vehicle');assert.equal(projected.iconSrc,raw.iconSrc);
+ assert.equal(projected.planned,true);
+ assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(q)?.pngPath,raw.iconSrc);
+ assert.equal(marker({...q,trainOwner:'Tokyu'},'Namboku').kind,'unresolved');
+ assert.equal(marker({...q,vehicleArtworkConflict:true},'Namboku').kind,'unresolved');
+ assert.equal(marker({...q,stationIndex:7},'Namboku').kind,'unresolved');
+ assert.equal(marker({...q,sourceToStation:'Mita'},'Namboku').kind,'unresolved');
+ assert.equal(marker(q,'Chiyoda').kind,'unresolved');
+ assert.equal(root.TrainVehicle.selectMarkerArtwork(q,true).kind,'unresolved');
+ assert.equal(marker({...p,displayLineId:'Namboku'},'Namboku').kind,'unresolved','mere display id cannot borrow source PNG');
+ delete root.SharedTrackPairs;delete root.UNIFIED_LINES;
+});

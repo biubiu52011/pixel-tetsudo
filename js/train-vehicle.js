@@ -5527,6 +5527,11 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   // A direct ODPT/SQL train NUMBER range is a display-image reference.
   // Do not transform it into an operating number or assert a live carset.
   function lookupTrainNumberRangePng(p,numberBandStatus) {
+    if(p&&p.fusionRole==="shared-track"){
+      var shared=window.SharedTrackPairs;
+      var original=shared&&shared.restoreSourcePosition&&shared.restoreSourcePosition(p,p.displayLineId);
+      return original?lookupTrainNumberRangePng(original,numberBandStatus):null;
+    }
     if (!p || !p.trainNumber ||
         !(p.positionSource === "realtime-api" ||
           p.positionSource === "supabase-train-run" ||
@@ -6026,6 +6031,14 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
   }
 
   function selectMarkerArtwork(p, artworkFailed) {
+    // 共轨投影不是另一条线路的车辆授权。重放物理区段后，以原始来源
+    // 调用同一选择器，完整保留冲突、实际身份、车型、日期和图库守卫。
+    if(p&&p.fusionRole==="shared-track"){
+      var shared=window.SharedTrackPairs;
+      var original=shared&&shared.restoreSourcePosition&&shared.restoreSourcePosition(p,p.displayLineId);
+      return original?selectMarkerArtwork(original,artworkFailed):
+        {kind:"unresolved",iconSrc:"",referenceOnly:true,actualVehicleConfirmed:false,reason:"invalid-shared-track-projection"};
+    }
     // Rinkai realtime positions owned by TWR require the TWR Rinkai
     // railway provenance. Otherwise a K/F/S range borrowed from JR's
     // through-service inventory can silently return a valid-looking

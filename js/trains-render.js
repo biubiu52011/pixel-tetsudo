@@ -1065,7 +1065,11 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var _allL = (window.RailwayDB && window.RailwayDB.getAllLines) ? window.RailwayDB.getAllLines() : null;
           var _partners = window.SharedTrackPairs.getSharedLines(lineId) || [];
           if (_allL && _partners.length > 0) {
-            _sharedColor = _allL[_partners[0]].color || '';
+            var _stationPartner=_partners.find(function(peer){
+              return window.SharedTrackPairs.isSharedStation(lineId,stationId,peer);
+            });
+            if(_stationPartner&&_allL[_stationPartner])
+              _sharedColor = (window.LineOperationSystemsResolveColor&&window.LineOperationSystemsResolveColor(_stationPartner))||_allL[_stationPartner].color||'';
           }
         }
         _renderStationNode(stationLayers, svgNS, {
@@ -2062,6 +2066,17 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   function _trainMarkerTitle(p, lineId) {
     var tip = [];
     var lang = String(window.currentLang || "ja").toLowerCase();
+    if(p&&p.fusionRole==='shared-track'&&window.SharedTrackPairs&&window.SharedTrackPairs.restoreSourcePosition){
+      var raw=window.SharedTrackPairs.restoreSourcePosition(p,lineId);
+      if(raw){
+        var sourceId=raw.positionLineId||raw.lineId;
+        var all=window.RailwayDB&&window.RailwayDB.getAllLines?window.RailwayDB.getAllLines():window.UNIFIED_LINES||{};
+        var sourceLine=all[sourceId]||{};
+        var name=(lang==='en'&&sourceLine.nameEn)||sourceLine.name||sourceId;
+        var prefix=/^zh/.test(lang)?'共线 · 来源线路：':lang==='en'?'Shared track · source line: ':lang==='ko'?'공용 선로 · 출처 노선: ':'共用区間・所属路線：';
+        return prefix+name+' | '+_trainMarkerTitle(raw,sourceId);
+      }
+    }
     // A Shinkansen service name / service number is not the operating train number.
     if ((lineId === "Gono" || lineId === "Hakushin") && p &&
         p.officialNumberVerified === true &&
@@ -3400,6 +3415,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   }
 
   function _sourceIndexTrainMoveDir(p, lineId) {
+    // 共轨站表可能正好反向。投影的物理方向优先于来源线路方向名称。
+    if(p&&p.fusionRole==='shared-track'&&p.sharedTrackDirection)
+      return p.sharedTrackDirection<0?'up':'down';
     var dn = String(p.railDirection || '').split(/[:.]/).pop(); // 同时拆冒号和点号（odpt:RailDirection:Waseda 和 TokyoMetro.YoyogiUehara 两种格式）
     // 支线可能从来源的最后一个车站绘制（成田--我孫子）。
     // 标签跟随屏幕上的运行方向，而不是父线路的索引顺序。

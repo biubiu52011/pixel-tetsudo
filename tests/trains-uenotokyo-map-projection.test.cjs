@@ -57,3 +57,83 @@ test('trains outside the displayed corridor are not pinned to its endpoints', ()
   assert.equal(project(train('Shinagawa','Kawasaki',0.5,'Ofuna')).length,0);
   assert.equal(project(train('Ueno','Tokyo',0.5)).length,1);
 });
+
+/* 同一物理共轨权威被数据融合、详情渲染和车辆 PNG 选择器使用。 */
+const trainData=fs.readFileSync(path.join(root,'js/trains-data.js'),'utf8');
+const fusionSource=fs.readFileSync(path.join(root,'js/data-fusion.js'),'utf8');
+const sharedStart=trainData.indexOf('  // 物理共轨，不按站名');
+const sharedEnd=trainData.indexOf('  // 支线 junction',sharedStart);
+const rankStart=trainData.indexOf('function _isFreshRealtimePosition(');
+const rankEnd=trainData.indexOf('function _getBasePositions(',rankStart);
+const exportStart=trainData.indexOf('  window.SharedTrackPairs = {');
+assert.ok(sharedStart>=0&&sharedEnd>sharedStart&&rankStart>=0&&rankEnd>rankStart&&exportStart>=0);
+const sharedContext={window:{UNIFIED_LINES:all},Date,console};
+vm.runInNewContext(trainData.slice(rankStart,rankEnd)+trainData.slice(sharedStart,sharedEnd)+
+ trainData.slice(exportStart),sharedContext);
+const shared=sharedContext.window.SharedTrackPairs;
+const pos=(lid,from,to,progress,mods={})=>({positionLineId:lid,trainId:'id:'+lid+':'+from,
+ trainNumber:'1234T',stationIndex:all[lid].stations.indexOf(from),stationId:from,
+ segmentToIndex:to==null?null:all[lid].stations.indexOf(to),segmentProgress:progress,
+ positionSource:'train-timetable',estimated:true,...mods});
+test('six verified shared sections are symmetric; adjacent but separate tracks are not',()=>{
+ const pairs=[['Yurakucho','Fukutoshin','Wakoshi','Kotake-Mukaihara'],
+  ['Namboku','Mita','Meguro','Shirokane-Takanawa'],
+  ['SaikyoKawagoe','ShonanShinjuku','Osaki','Ikebukuro'],
+  ['Yokosuka','ShonanShinjuku','Nishi-Oi','Totsuka'],
+  ['Takasaki','UtsunomiyaJR','Tokyo','Omiya'],['Joban','JobanMain','Toride','Tsuchiura']];
+ for(const [a,b,first,last] of pairs)for(const [host,peer] of [[a,b],[b,a]]){
+   assert.ok(shared.getSharedLines(host).includes(peer),host+' '+peer);
+   for(const st of [first,last])assert.ok(shared.isSharedStation(host,st,peer));
+   const p=pos(peer,first,null,0),q=shared.projectPosition(host,peer,p);
+   assert.ok(q);assert.equal(q.stationIndex,all[host].stations.indexOf(first));
+   assert.equal(q.positionLineId,peer);assert.equal(q.displayLineId,host);
+   assert.equal(shared.restoreSourcePosition(q,host).stationIndex,p.stationIndex);
+ }
+ assert.equal(shared.isSharedStation('Yurakucho','Ikebukuro','Fukutoshin'),false);
+ assert.equal(shared.isSharedStation('Yurakucho','Senkawa','Fukutoshin'),false);
+ assert.equal(shared.getSharedLines('Yamanote').length,0);
+ assert.equal(shared.getSharedLines('JobanLocal').length,0);
+ assert.equal(shared.isSharedStation('ShonanShinjuku','Akabane','SaikyoKawagoe'),false);
+ assert.equal(shared.isSharedStation('ShonanShinjuku','Ofuna','Yokosuka'),false);
+});
+test('raw ODPT from/to must be inside actual common tracks; departures and arrivals outside fail closed',()=>{
+ const live={positionSource:'realtime-api',estimated:false,sourceRailway:'odpt.Railway:TokyoMetro.Fukutoshin'};
+ const p=pos('Fukutoshin','Hikawadai',null,0,{...live,sourceFromStation:'odpt.Station:TokyoMetro.Fukutoshin.Hikawadai',sourceToStation:'odpt.Station:TokyoMetro.Fukutoshin.KotakeMukaihara'});
+ const q=shared.projectPosition('Yurakucho','Fukutoshin',p);
+ assert.ok(q);assert.equal(q.segmentToIndex,5);assert.equal(q.segmentProgress,0);
+ assert.equal(shared.restoreSourcePosition(q,'Yurakucho').sourceRailway,p.sourceRailway);
+ for(const [from,to] of [['Kotake-Mukaihara','Senkawa'],['Senkawa','Kotake-Mukaihara']])
+  assert.equal(shared.projectPosition('Yurakucho','Fukutoshin',pos('Fukutoshin',from,null,0,{...live,sourceFromStation:from,sourceToStation:to})),null);
+ assert.equal(shared.projectPosition('Mita','Namboku',pos('Namboku','Shirokane-Takanawa',null,0,{...live,sourceToStation:'Azabu-Juban'})),null);
+ assert.equal(shared.projectPosition('Yurakucho','Fukutoshin',{...p,stationIndex:null}),null);
+ assert.equal(shared.projectPosition('Yurakucho','Fukutoshin',{...p,sourceToStation:'unknown'}),null);
+ assert.equal(shared.projectPosition('Yurakucho','Fukutoshin',{...p,positionLineId:'Namboku'}),null);
+ assert.equal(shared.restoreSourcePosition({...q,stationIndex:12},'Yurakucho'),null);
+ assert.equal(shared.restoreSourcePosition({...q,displayLineId:'Mita'},'Mita'),null);
+ assert.equal(shared.projectPosition('Fukutoshin','Yurakucho',q),null,'projection never chains');
+});
+test('reverse station order maps direction and estimates never stick outside a shared boundary',()=>{
+ const p=pos('SaikyoKawagoe','Shibuya','Shinjuku',0.25,{railDirection:'Outbound'});
+ const q=shared.projectPosition('ShonanShinjuku','SaikyoKawagoe',p);
+ assert.equal(q.stationIndex,all.ShonanShinjuku.stations.indexOf('Shibuya'));
+ assert.equal(q.segmentToIndex,all.ShonanShinjuku.stations.indexOf('Shinjuku'));
+ assert.equal(q.segmentProgress,0.25);assert.equal(q.sharedTrackDirection,-1);
+ assert.equal(shared.restoreSourcePosition(q,'ShonanShinjuku').segmentProgress,0.25);
+ assert.equal(shared.projectPosition('ShonanShinjuku','SaikyoKawagoe',pos('SaikyoKawagoe','Ikebukuro','Itabashi',0.2)),null);
+ assert.equal(shared.projectPosition('Mita','Namboku',pos('Namboku','Shirokane-Takanawa','Azabu-Juban',0.1)),null);
+ assert.ok(shared.projectPosition('Mita','Namboku',pos('Namboku','Meguro','Shirokane-Takanawa',0.75)));
+});
+test('shared position merge preserves identity, prefers fresh live and drops departed peer projections',()=>{
+ const a=pos('Mita','Meguro','Shirokanedai',0.2,{runningChainId:'chain:1'});
+ const b=pos('Namboku','Meguro',null,0,{runningChainId:'chain:1',positionSource:'realtime-api',estimated:false,sourceToStation:'Shirokanedai'});
+ const different=pos('Namboku','Shirokanedai',null,0,{trainId:'different',trainNumber:a.trainNumber});
+ let merged=shared.mergePositions('Mita',[a],()=>[b,different]);
+ assert.equal(merged.length,2);assert.equal(merged[0].positionLineId,'Namboku');
+ assert.equal(merged[0].fusionRole,'shared-track');assert.equal(merged[1].trainId,'different');
+ assert.equal(shared.mergePositions('Mita',[a],()=>[{...b,sourceValidUntil:'2000-01-01T00:00:00Z'}])[0],a);
+ merged=shared.mergePositions('Mita',[a],()=>[pos('Namboku','Azabu-Juban',null,0)]);
+ assert.equal(merged.length,1);assert.equal(merged[0],a);
+ assert.match(fusionSource,/_shared\.mergePositions\(lineId,_rtPositions/);
+ assert.match(fusionSource,/_sharedPartners\.indexOf\(_tlLine\)>=0\)continue/);
+ assert.match(trainData,/SharedTrackPairs\.mergePositions\(lineId,positions,_getBasePositions\)/);
+});

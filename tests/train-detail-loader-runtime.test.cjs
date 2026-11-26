@@ -8,7 +8,7 @@ const core = spec.lazy.trains;
 const scopes = spec.lazyScopes.trains;
 const source = fs.readFileSync('js/trains-detail-loader.js', 'utf8');
 
-function fixture() {
+function fixture(shared) {
   const append = [];
   const events = [];
   const nodes = core.map(path => ({
@@ -32,7 +32,7 @@ function fixture() {
       }
     }
   };
-  const window = { dispatchEvent(event) { events.push(event.type); } };
+  const window = { SharedTrackPairs:shared, dispatchEvent(event) { events.push(event.type); } };
   vm.runInNewContext(source, {
     window, document, console, Promise, Set, CustomEvent: function(type) { this.type = type; },
     requestAnimationFrame(fn) { fn(); }, setTimeout(fn) { setImmediate(fn); }
@@ -89,4 +89,12 @@ test('existing SQL first artwork and evidence channels remain connected', () => 
   }
   assert.ok(client.includes('_sqlVehicleArtworkPath'));
   assert.ok(client.includes('_sqlCandidateArtworkPath'));
+});
+
+test('verified shared track loads only direct partner indexes, in manifest order',async()=>{
+ const f=fixture({getSharedLines(id){return id==='SaikyoKawagoe'?['ShonanShinjuku']:id==='ShonanShinjuku'?['SaikyoKawagoe','Yokosuka']:[];}});
+ await f.loader.load('SaikyoKawagoe');
+ assert.deepEqual(f.append,core.filter(p=>!scopes[p]||scopes[p].some(x=>['SaikyoKawagoe','ShonanShinjuku'].includes(x))).map(p=>'../'+p+'?v=000000000000'));
+ assert.ok(f.append.some(p=>p.includes('jreast-shonan-mixed-number-index')));
+ assert.ok(!f.append.some(p=>p.includes('jreast-sobu-yokosuka-number-index')),'no transitive partner loading');
 });

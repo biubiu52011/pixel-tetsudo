@@ -10,11 +10,18 @@
     var template = document.getElementById("pt-trains-detail-assets");
     if (!template || !template.content) throw new Error("Train assets missing");
     var urls = [];
+    // 共轨投影用原线路编号索引；只加载直接伙伴，不递归扩大冷加载范围。
+    var ids=[id];
+    var shared=window.SharedTrackPairs;
+    if(shared&&shared.getSharedLines)(shared.getSharedLines(id)||[]).forEach(function(peer){
+      if(/^[A-Za-z0-9._:-]{1,100}$/.test(peer)&&ids.indexOf(peer)<0)ids.push(peer);
+    });
     Array.prototype.forEach.call(template.content.querySelectorAll("[data-script-src]"), function(node) {
       var scope = node.getAttribute("data-line-scope");
-      if (scope && scope.split(",").indexOf(id) < 0) return;
       var excluded = node.getAttribute("data-line-exclude-scope");
-      if (excluded && excluded.split(",").indexOf(id) >= 0) return;
+      if(!ids.some(function(lid){
+        return (!scope||scope.split(",").indexOf(lid)>=0)&&(!excluded||excluded.split(",").indexOf(lid)<0);
+      }))return;
       var url = node.getAttribute("data-script-src");
       if (!/^\.\.\/(?:js|data)\/[a-zA-Z0-9_./-]+\.js\?v=[a-f0-9]{12}$/.test(url) ||
           url.indexOf("..", 3) !== -1) throw new Error("Invalid train asset URL");

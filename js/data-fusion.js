@@ -961,31 +961,15 @@
       // Attach running-chain resolution context (transient, not persistent)
 
       var _rtPositions = (odptData.realtimePositions[lineId] || []).slice();
+      var _shared = window.SharedTrackPairs;
+      var _sharedPartners = _shared&&_shared.getSharedLines ? _shared.getSharedLines(lineId) : [];
+      if(_shared&&_shared.mergePositions)
+        _rtPositions=_shared.mergePositions(lineId,_rtPositions,function(peer){return odptData.realtimePositions[peer]||[];});
       var _ownStations = line.stations || [];
-      // Reuse station positions across shared-track and through-service checks.
-      // First occurrence wins, matching Array#indexOf on the original list.
       var _ownStationIndex = new Map();
-      _ownStations.forEach(function(name, index) {
-        if (!_ownStationIndex.has(name)) _ownStationIndex.set(name, index);
-      });
-      var _existingIds = {};
-      _rtPositions.forEach(function(p) { var _id = _positionIdentity(p); if (_id) _existingIds[_id] = true; });
-
-      var _sharedPartners = (window.SharedTrackPairs && window.SharedTrackPairs.getSharedLines) ? window.SharedTrackPairs.getSharedLines(lineId) : [];
-      for (var _sp = 0; _sp < _sharedPartners.length; _sp++) {
-        var _spLine = _sharedPartners[_sp];
-        var _spPositions = odptData.realtimePositions[_spLine] || [];
-        _spPositions.forEach(function(p) {
-          var _pid = _positionIdentity(p);
-          if (_pid && _existingIds[_pid]) return;
-          var _copy = window.SharedTrackPairs.projectPosition
-            ? window.SharedTrackPairs.projectPosition(lineId,_spLine,p) : null;
-          if(_copy){
-            _rtPositions.push(_copy);
-            if(_pid) _existingIds[_pid]=true;
-          }
-        });
-      }
+      _ownStations.forEach(function(name,index){if(!_ownStationIndex.has(name))_ownStationIndex.set(name,index);});
+      var _existingIds = Object.create(null);
+      _rtPositions.forEach(function(p){var id=_positionIdentity(p);if(id)_existingIds[id]=true;});
 
       // Direct canonical through neighbours are independent of shared-track
       // membership.  The old nesting made this path unreachable for lines with
@@ -993,6 +977,8 @@
       var _throughLines = _directThroughLines(lineId);
       for (var _tl = 0; _tl < _throughLines.length; _tl++) {
         var _tlLine = _throughLines[_tl];
+        // 共轨伙伴已按实际区段处理，禁止用普通直通边界再投影一次。
+        if(_sharedPartners.indexOf(_tlLine)>=0)continue;
         var _tlPositions = odptData.realtimePositions[_tlLine] || [];
         _tlPositions.forEach(function(p) {
           var _pid = _positionIdentity(p);
