@@ -269,3 +269,38 @@ select count(*) as sample_rows,count(d.id) as number_found,
  or d.train_type_urn is distinct from ('odpt.TrainType:Tokyu.'||s.kind)
  or d.destination_urns is distinct from array['odpt.Station:Tokyu.Meguro.Hiyoshi']::text[]) as mismatches
 from samples s left join db d on d.train_number=s.number;
+
+-- 2026-03-14平日日吉6时台上行；独立运用表交叉核验，不作物理车辆确认。
+-- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/06/departure
+with samples(number,dep,arr,kind,dest) as (values
+('207-062','06:02','06:18','Express','NishiTakashimadaira'),
+('437-062','06:06','06:31','Local','NishiTakashimadaira'),
+('642-062','06:11','06:28','Express','UrawaMisono'),
+('638-062','06:14','06:38','Local','UrawaMisono'),
+('431-062','06:22','06:45','Local','NishiTakashimadaira'),
+('360-062','06:25','06:49','Local','UrawaMisono'),
+('633-062','06:31','06:53','Local','NishiTakashimadaira'),
+('241-062','06:34','07:04','Local','NishiTakashimadaira'),
+('236-062','06:40','06:57','Express','UrawaMisono'),
+('582-062','06:45','07:09','Local','UrawaMisono'),
+('580-062','06:49','07:15','Local','Hatogaya'),
+('439-062','06:55','07:12','Express','NishiTakashimadaira'),
+('443-062','06:57','07:24','Local','NishiTakashimadaira')
+), db as (
+ select t.id,t.train_number,t.train_type_urn,t.destination_urns,
+ min(s.departure_clock) filter(where s.departure_station_urn='odpt.Station:Tokyu.Meguro.Hiyoshi') as dep,
+ min(s.arrival_clock) filter(where s.arrival_station_urn='odpt.Station:Tokyu.Meguro.Meguro') as arr
+ from public.manual_timetable_templates t join public.manual_timetable_template_stops s on s.template_id=t.id
+ where t.line_key='TokyuMeguro' and t.direction_urn='odpt.RailDirection:Inbound'
+ and t.calendar_urn='odpt.Calendar:Weekday'
+ group by t.id,t.train_number,t.train_type_urn,t.destination_urns
+), candidates as (
+ select s.number,s.dep,s.arr as published_arr,d.train_number as import_id,d.arr as database_arr,
+ count(d.id) over(partition by s.number) as candidate_count
+ from samples s left join db d on s.dep=d.dep
+ and d.train_type_urn='odpt.TrainType:Tokyu.'||s.kind
+ and d.destination_urns=array[case when s.dest='NishiTakashimadaira' then 'odpt.Station:Toei.Mita.' else 'odpt.Station:SaitamaRailway.SaitamaRailway.' end||s.dest]::text[]
+)
+select *,case when candidate_count=1 and published_arr=database_arr then 'exact_boundary_candidate'
+ when candidate_count=1 then 'arrival_clock_conflict' else 'unresolved' end as status
+from candidates order by dep,number;
