@@ -43,6 +43,9 @@
 - 验证：隔离JS环境以原始仓库源码执行20项相关断言（两项非本次范围的页面/SQL谓词测试未运行；物理文件存在由路径适配，不代表实际工作区全量测试）；两项御殿场生成函数分别返回2及35段，CSV新迁移转换逐键及无关行对账通过，目录和反向索引由原生成器完整重建。当前环境无法完整检出仓库，未执行全量Node测试或整个库存生成流程；状态仍PARTIAL，需GitHub CI验收。未执行额外生产数据库写入、部署、运行时修改。
  
 
+- CI/CD 后续（2026-11-26）：提交 `aa306d00` 的 [run 45754861276](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/45754861276) 已完成，gallery、build 均通过，verify 在第77步因现役车型派生清单过期失败，deploy 未运行。复用 `build-current-service-png-number-map.cjs` 完整重建现役 JSON/CSV；唯一内容差异为御殿场315系 js-0001 的 validTo 同步为 null，601张素材分区及120张已验证现役车型统计不变。隔离JS环境运行现役清单六项测试通过（PNG路径与Git树核对）；使用同一输入重新运行JR东日本专用生成器，JSON blob SHA 与现有Git对象完全一致，CSV亦一致，无须改动。未改变运行时、车型证明、时刻表或数据库。用户已授权处理CI/CD，沿既有 main 推送触发全套检查及自动Pages部署，不改变门禁；本次正式CI和部署结果待回读。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
