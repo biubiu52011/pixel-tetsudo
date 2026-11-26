@@ -4129,7 +4129,7 @@ test('都营混合车型官方逐号对账，实时车主与具体车型双重�
 
 test('physical shared-track marker preserves original source-approved PNG and rejects forged projection',()=>{
  const data=fs.readFileSync('js/trains-data.js','utf8');
- const a=data.indexOf('  // 物理共轨，不按站名'),b=data.indexOf('  // 支线 junction',a),e=data.indexOf('  window.SharedTrackPairs = {');
+ const a=data.indexOf('  var _SHARED_TRACK_SECTIONS = ['),b=data.indexOf('  // 支线 junction',a),e=data.indexOf('  window.SharedTrackPairs = {');
  assert.ok(a>=0&&b>a&&e>=0);
  root.UNIFIED_LINES=JSON.parse(fs.readFileSync('data/core/railway_data.compact.json','utf8')).lines;
  vm.runInContext(data.slice(a,b)+data.slice(e),ctx);
