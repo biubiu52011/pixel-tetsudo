@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {owner,format,inspect,summary}=require('../tools/audit-toei-odpt-live.cjs');
+const {owner,format,inspect,inspectTimetable,summary,timetableSummary}=require('../tools/audit-toei-odpt-live.cjs');
 const rows=[
  {lineIds:['Asakusa'],sourceRailways:['odpt.Railway:Toei.Asakusa'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1008T','1702TA'],holidayNumbers:['1008T']},
  {lineIds:['Shinjuku'],sourceRailways:['odpt.Railway:Toei.Shinjuku'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1031T'],holidayNumbers:[]},
@@ -50,4 +50,42 @@ test('unavailable official response cannot be silently treated as an empty verif
  const result=inspect([],rows);
  assert.equal(result.returned,0);
  assert.equal(result.officialCrosswalkVerifiedCount,0);
+});
+
+test('都营官方时刻表按来源日历与完整番号对账，不猜车主或运营日期',()=>{
+ const row=(line,number,calendar,own,metadata={})=>({
+  'odpt:railway':'odpt.Railway:Toei.'+line,'odpt:trainNumber':number,
+  'odpt:calendar':calendar,'odpt:trainOwner':own,...metadata
+ });
+ const weekday='odpt.Calendar:Weekday',holiday='odpt.Calendar:SaturdayHoliday';
+ const records=[
+  row('Asakusa','1008T',weekday,'odpt.TrainOwner:Toei',{'dc:date':'2026-11-21'}),
+  row('Asakusa','1008T',weekday,'odpt.TrainOwner:Toei'),
+  row('Asakusa','1702TA',holiday,''),
+  row('Asakusa','1008',weekday,''),
+  row('Asakusa','1008T',holiday,'odpt.TrainOwner:Keikyu'),
+  row('Oedo','1001A1',weekday,''),
+  row('Oedo','1001A',weekday,''),
+  row('Mita','1202T','odpt.Calendar:Special',''),
+  row('Mita','',weekday,''),
+  row('Mita','1202T','','')
+ ];
+ const before=JSON.stringify(records),r=inspectTimetable(records,rows);
+ assert.equal(JSON.stringify(records),before);
+ assert.equal(r.status,'observed');assert.equal(r.returned,10);
+ assert.equal(r.officialCrosswalkVerifiedCount,0);
+ assert.equal(r.currentServiceDateVerified,false);assert.equal(r.actualVehicleConfirmed,false);
+ assert.deepEqual(r.lines.Asakusa.sourceMetadata['dc:date'],['2026-11-21']);
+ const g=r.lines.Asakusa.groups.find(x=>x.owner==='Toei');
+ assert.equal(g.records,2);assert.deepEqual(g.numbers,['1008T']);assert.deepEqual(g.literalOverlap,['1008T']);
+ const h=r.lines.Asakusa.groups.find(x=>x.calendar===holiday&&!x.owner);
+ assert.deepEqual(h.notInOldRoster,['1702TA']);
+ assert.equal(r.lines.Asakusa.missingOwner,2);
+ assert.deepEqual(r.lines.Oedo.groups[0].literalOverlap,['1001A']);
+ assert.deepEqual(r.lines.Oedo.groups[0].notInOldRoster,['1001A1']);
+ assert.equal(r.lines.Mita.groups[0].legacyCalendarComparable,false);
+ assert.equal(r.lines.Mita.missingNumber,1);assert.equal(r.lines.Mita.missingCalendar,1);
+ assert.equal(inspectTimetable([],rows).status,'empty-response');
+ assert.throws(()=>inspectTimetable({},rows),TypeError);
+ assert.match(timetableSummary(r),/不证明同运营日/);
 });
