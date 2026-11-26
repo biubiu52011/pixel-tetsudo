@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {owner,format,inspect,inspectTimetable,summary,timetableSummary}=require('../tools/audit-toei-odpt-live.cjs');
+const {owner,format,inspect,inspectTimetable,summary,timetableSummary,fetchTimetablesByLine}=require('../tools/audit-toei-odpt-live.cjs');
 const rows=[
  {lineIds:['Asakusa'],sourceRailways:['odpt.Railway:Toei.Asakusa'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1008T','1702TA'],holidayNumbers:['1008T']},
  {lineIds:['Shinjuku'],sourceRailways:['odpt.Railway:Toei.Shinjuku'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1031T'],holidayNumbers:[]},
@@ -88,4 +88,27 @@ test('都营官方时刻表按来源日历与完整番号对账，不猜车主�
  assert.equal(inspectTimetable([],rows).status,'empty-response');
  assert.throws(()=>inspectTimetable({},rows),TypeError);
  assert.match(timetableSummary(r),/不证明同运营日/);
+});
+
+test('逐线请求区分空响应、范围不符与网络失败，不重复合并返回的他线数据',async()=>{
+ const calls=[];
+ const fetcher=async url=>{
+  calls.push(url);
+  const line=url.split('Toei.').pop();
+  if(line==='Oedo')throw Error('unavailable');
+  const rec=(l,n)=>({'odpt:railway':'odpt.Railway:Toei.'+l,'odpt:trainNumber':n,'odpt:calendar':'odpt.Calendar:Weekday'});
+  const data=line==='Asakusa'?[rec(line,'1008T'),rec('Mita','1202T')]:
+   line==='Mita'?[rec('Asakusa','1008T')]:[];
+  return {ok:true,text:async()=>JSON.stringify(data)};
+ };
+ const r=await fetchTimetablesByLine(fetcher,rows);
+ assert.equal(calls.length,4);
+ assert.equal(r.returned,1);
+ assert.equal(r.queries.Asakusa.status,'mixed-scope');
+ assert.equal(r.queries.Mita.status,'scope-mismatch');
+ assert.equal(r.queries.Shinjuku.status,'empty-response');
+ assert.equal(r.queries.Oedo.status,'source-unavailable');
+ assert.equal(r.coverageComplete,false);
+ assert.equal(r.lines.Mita.count,0);
+ assert.equal(r.officialCrosswalkVerifiedCount,0);
 });

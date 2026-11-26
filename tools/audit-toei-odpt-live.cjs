@@ -101,6 +101,26 @@ function inspectTimetable(records,rows=getRows(),date=new Date().toISOString()){
  }
  return result;
 }
+// 运营商级响应可能不覆盖四线；逐线路查询并记录各自响应范围，禁止把缺失当作零列车。
+async function fetchTimetablesByLine(fetcher=globalThis.fetch,rows=getRows()){
+ const records=[],queries={};
+ await Promise.all(LINES.map(async line=>{
+  const railway='odpt.Railway:Toei.'+line;
+  const url=TIMETABLE_SOURCE+'&odpt:railway='+railway;
+  try{
+   const data=await fetchOfficial(fetcher,url);
+   if(!Array.isArray(data))throw TypeError('Expected array');
+   const own=data.filter(r=>r&&r['odpt:railway']===railway);
+   queries[line]={status:!data.length?'empty-response':!own.length?'scope-mismatch':own.length!==data.length?'mixed-scope':'observed',
+    returned:data.length,matching:own.length,source:url};
+   records.push(...own);
+  }catch(e){queries[line]={status:'source-unavailable',source:url,error:String(e&&e.name||'Error')+': '+String(e&&e.message||'').slice(0,100).replace(/https?:\/\/\S+/g,'[url]')};}
+ }));
+ const result=inspectTimetable(records,rows);
+ result.queries=Object.fromEntries(LINES.map(line=>[line,queries[line]]));
+ result.coverageComplete=false;
+ return result;
+}
 function timetableSummary(r){
  let s='\n## 都营官方列车时刻表（只读）\n\n状态: **'+r.status+'**\n\n';
  if(r.status!=='observed')return s+(r.error||'无可验证记录')+'\n';
@@ -108,6 +128,10 @@ function timetableSummary(r){
  for(const [line,v] of Object.entries(r.lines)){
   const uniq=key=>new Set(v.groups.flatMap(g=>g[key])).size;
   s+='| '+line+' | '+v.count+' | '+uniq('numbers')+' | '+v.missingOwner+' | '+v.vehicleTypeProvided+' | '+uniq('literalOverlap')+' | '+uniq('notInOldRoster')+' |\n';
+ }
+ if(r.queries){
+  s+='\n逐线路响应：'+JSON.stringify(r.queries)+'\n';
+  s+='来源日期字段：'+JSON.stringify(Object.fromEntries(Object.entries(r.lines).map(([k,v])=>[k,v.sourceMetadata])))+'\n';
  }
  return s+'\n字面交集不证明同运营日、官方接续或实车车型。来源日期元数据不自动当作有效期。\n署名：東京都交通局・公共交通オープンデータ協議会 (CC BY 4.0)。\n';
 }
@@ -142,9 +166,9 @@ async function main(argv){
  // 复用原审计入口和产物，不另建生产数据源；离线 --file 不触发网络。
  if(!opt('--file')||opt('--timetable-file')){
   try{
-   const input=opt('--timetable-file')?JSON.parse(fs.readFileSync(opt('--timetable-file'),'utf8')):
-    await fetchOfficial(globalThis.fetch,TIMETABLE_SOURCE);
-   result.timetable=inspectTimetable(input);
+   result.timetable=opt('--timetable-file')?
+    inspectTimetable(JSON.parse(fs.readFileSync(opt('--timetable-file'),'utf8'))):
+    await fetchTimetablesByLine();
   }catch(e){result.timetable={status:'source-unavailable',source:TIMETABLE_SOURCE,
    officialCrosswalkVerifiedCount:0,currentServiceDateVerified:false,actualVehicleConfirmed:false,
    error:String(e&&e.name||'Error').slice(0,40)+': '+String(e&&e.message||'').slice(0,100).replace(/https?:\/\/\S+/g,'[url]')};}
@@ -155,4 +179,4 @@ async function main(argv){
  console.log(report);return result;
 }
 if(require.main===module)main(process.argv.slice(2)).catch(e=>{console.error(e);process.exitCode=1;});
-module.exports={SOURCE,TIMETABLE_SOURCE,LINES,owner,format,inspect,inspectTimetable,summary,timetableSummary,fetchOfficial,main};
+module.exports={SOURCE,TIMETABLE_SOURCE,LINES,owner,format,inspect,inspectTimetable,summary,timetableSummary,fetchOfficial,fetchTimetablesByLine,main};
