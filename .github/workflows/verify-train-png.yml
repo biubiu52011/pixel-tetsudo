@@ -284,6 +284,7 @@ jobs:
           node --check tools/build-png-to-train-number-index.cjs
           node tools/build-png-to-train-number-index.cjs --check
           node --test tests/png-to-train-number-index.test.cjs
+          node --test tests/metro-yurakucho-fukutoshin-live-model-reference.test.cjs tests/metro-seibu-6000-yurakucho-gallery-scope.test.cjs tests/metro-namboku-mita-saitama-live-model-reference.test.cjs
           node --test tests/rinkai-70-000-71-000-t-numbers-2611.test.cjs
           node --test tests/third-kashima-rinkai-8000-official-normal-service-2611.test.cjs
           node --test tests/private-keikyu-2100-202512-official-a-c-reference-2611.test.cjs
