@@ -122,8 +122,10 @@ test('static manifest, cold loader and SHA asset revisions are complete',()=>{
   manifest.lazy.trains.indexOf('data/timetables/jreast-suigun-number-index.js')+1);
  const page=fs.readFileSync('pages/trains.html','utf8');
  assert.match(page,/jreast-tadami-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Tadami"/);
- assert.match(fs.readFileSync('js/trains-detail-loader.js','utf8'),
-  /scope\.split\(","\)\.indexOf\(id\)/);
+ const loader=fs.readFileSync('js/trains-detail-loader.js','utf8');
+ assert.match(loader,/ids\.some\(function\(lid\)/);
+ assert.match(loader,/scope\.split\(","\)\.indexOf\(lid\)/);
+ assert.match(loader,/excluded\.split\(","\)\.indexOf\(lid\)/);
  for(const asset of [path,'data/timetables/vehicle-garage-png-map.js','js/train-position-estimator.js']){
   const b=Buffer.from(fs.readFileSync(asset,'utf8').replace(/\r\n/g,'\n')),sha=crypto.createHash('sha1')
    .update('blob '+b.length+'\0').update(b).digest('hex').slice(0,12);
