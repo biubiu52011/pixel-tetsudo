@@ -27,6 +27,10 @@
 - 西武池袋／西武有乐町／港未来线原编号含内部标识（SII、SY、MM等），不当作官方公开车次号。东急东横1397条模板有2026-03-14修订日期、1225个六位等纯数字来源标识，源为mini-tokyo-3d，未证实可与地铁A/B＋后缀直接转换，不猜号码转换。以上只读核对，无运行时修改、无生产SQL写入、无部署；素材review保护继续有效。
  
 
+- 第五轮都营复核（2026-11-26）：[四线精确名单／SQL只读对账](supabase/queries/toei_subway_number_roster_reconciliation_readonly.sql) 已执行。三田T平日319／土休日278，双方独有0，去重511；另有东急K99、相铁G53个完整番号。浅草旧名单370个（T294、TA37、TB39），277条参考区间覆盖370/370，额外数字键0，跨PNG冲突0；保留11月20日截止，不延长。新宿347个、大江户527个原隔离参考番号尚无纯号段，现有规则分别要求10-300次车、12-000／12-600具体车型证据，不重复建名单。三线合计1385个未建立纯号段的完整号码并不代表1385个可唯一映射车型。
+- 官方资料重新核实：東京都交通局・公共交通オープンデータ協議会 [TrainTimetable](https://ckan.odpt.org/en/dataset/r_train_timetable-toei) 与 [Train](https://ckan.odpt.org/en/dataset/r_train_location-toei) 均明确大江户省略末尾1/2（1001A1→1001A），Train实时位置排除目黑—白金高轮；不得据省略号码猜完整番号或批次。车型见 https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/ 。6500及5500通用素材可用；6300、新宿两批和大江户四类素材仍为review。京王新线408、东急目黑889、相铁新横滨328个既有来源标识均无修订日，不强行转换为都营番号；新宿、浅草、大江户无正式manual模板，不据此认定无列车。此次核对官方数据目录而非取得完整当前API数据，未更新浅草改点后名册或实时交叉表。只读SQL执行成功，未写生产、未改运行时。
+ 
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
