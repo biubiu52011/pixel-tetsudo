@@ -2863,10 +2863,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
     });
     _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix);
-    // Train destination captions have lower visual priority than permanent
-    // railway station names and interchange icons. A train marker and its
-    // accessible label remain present even when its caption cannot fit.
-    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels);
+    // Temporarily disable station/caption collision hiding for visual review.
+    // Train-to-train folding remains unchanged.
   }
 
   // Reuse the station glyph bounds while the frame stays at the same viewport
