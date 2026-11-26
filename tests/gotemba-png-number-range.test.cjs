@@ -97,6 +97,23 @@ test('Gotemba planned local selects the scoped 315 reference marker', () => {
   assert.match(marker.iconSrc, /JR東海_315系\.png$/);
   assert.equal(marker.illustrative, true);
   assert.equal(marker.actualVehicleConfirmed, false);
+
+  // 跨月复用有限番号车型参考，不得将其变成未来时刻表或实车证明。
+  const later={...planned,serviceDate:'2026-12-11'};
+  const laterMarker=scope.TrainVehicle.selectMarkerArtwork(later,false);
+  assert.equal(laterMarker.kind,'vehicle');
+  assert.equal(laterMarker.illustrative,true);
+  assert.equal(laterMarker.actualVehicleConfirmed,false);
+  for(const changes of [
+    {serviceDate:'2026-10-31'},
+    {trainNumber:'2523M'},
+    {sourceRailway:''},
+    {trainOperator:'JR-East'},
+    {trainType:'odpt.TrainType:JR-Central.LimitedExpress'}
+  ]) {
+    assert.notEqual(scope.TrainVehicle.selectMarkerArtwork({...later,...changes},false).kind,
+      'vehicle',JSON.stringify(changes));
+  }
 });
 
 console.log('Gotemba PNG number-range contract passed');

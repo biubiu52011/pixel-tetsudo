@@ -124,11 +124,53 @@ function isExpectedAllDateNumberBand(p,spec){
     String(match.pngPath||'')===String(spec.iconSrc||''));
 }
 
+// 开放截止日期的精确番号参考与实际运营日证明是两件事。
+// 仅复用现有规则所有者的有限番号名单，要求明确参考/示意标记及来源边界。
+// 不将某次历史计划改成未来有效时刻表；这里只审计已给定位置的图片选择。
+function isExpectedOpenEndedNumberReference(p,spec,sourceRules){
+  if(!spec||spec.kind!=='vehicle'||spec.planned!==true||spec.illustrative!==true)return false;
+  const rules=window.TrainNumberPngRanges;
+  const q={...p,serviceDate:'2027-11-16'};
+  const match=rules.match(q.trainNumber,q.positionLineId,q);
+  if(!match||match.planned!==true||match.representative!==true||
+    match.pngPath!==spec.iconSrc)return false;
+  const candidates=sourceRules.filter(r=>
+    r.numberFormat==='full'&&r.referenceOnly===true&&r.illustrative===true&&
+    /^\d{4}-\d{2}-\d{2}$/.test(r.validFrom||'')&&
+    !r.validTo&&!r.operatingDates&&!r.officialMonth&&!r.officialMonthNumbers&&
+    r.lineIds.length===1&&r.lineIds[0]===p.positionLineId&&
+    r.operator===p.trainOperator&&Array.isArray(r.sourceRailways)&&
+    r.sourceRailways.includes(p.sourceRailway)&&
+    r.trainType===String(p.trainType||'').split(/[.:]/).pop()&&
+    r.model===match.model&&r.pngPath===spec.iconSrc&&
+    Array.isArray(r.publishedNumbers)&&r.publishedNumbers.includes(p.trainNumber));
+  if(candidates.length!==1)return false;
+  const r=candidates[0];
+  const prior=new Date(r.validFrom+'T12:00:00Z');
+  prior.setUTCDate(prior.getUTCDate()-1);
+  // 在原名单数值范围内找一个确实不存在的完整番号，禁止区间填空。
+  let absent='';
+  for(let n=r.from;n<=r.to&&!absent;n++)for(const suffix of r.suffixes){
+    const number=String(n)+suffix;
+    if(!r.publishedNumbers.includes(number)){absent=number;break;}
+  }
+  if(!absent)return false;
+  return [
+    {serviceDate:prior.toISOString().slice(0,10)},
+    {sourceRailway:''},
+    {trainOperator:'foreign-operator'},
+    {trainType:'odpt.TrainType:'+p.trainOperator+'.LimitedExpress'},
+    {trainNumber:absent}
+  ].every(change=>replay({...q,...change}).kind!=='vehicle');
+}
+
 // Reuse the same production module loader from the live Edge audit; do not
 // introduce a separate PNG selector or a second train-number authority.
 module.exports={position,replay,calendarOf,window};
 
 if(require.main===module){
+// 同一现役JS源的既有只读提取器，不新增映射真相源。
+const sourceRules=require('./build-train-number-png-catalog.cjs').getRows();
 const report={
   schemaVersion:1,serviceDate:date,
   scope:'explicit operating_dates source templates ONLY; reconstructed minimal SQL position; not total daily services, not live browser rendering',
@@ -142,7 +184,8 @@ const report={
   caveats:[
     'Source date membership does not prove every day of a broad timetable.',
     'Extra adapter fields, issued vehiclePlan evidence and browser image-load success are not replayed.',
-    'A representative PNG never proves the exact model, livery, formation or physical train.'
+    'A representative PNG never proves the exact model, livery, formation or physical train.',
+    'Open-ended exact-number references only verify artwork for a supplied position, not the changed service date or a future timetable.'
   ]
 };
 const allKeys=new Set(),positiveKeys=new Set(),assetPaths=new Set();
@@ -150,7 +193,7 @@ const probes=[
   'wrong-display-line','missing-source-railway','future-service-date',
   'reversed-direction','removed-validity','opposite-calendar'
 ];
-for(const kind of probes)report.negativeProbes[kind]={tested:0,stillImage:0,allowedStillImage:0,unexpectedStillImage:0};
+for(const kind of probes)report.negativeProbes[kind]={tested:0,stillImage:0,allowedStillImage:0,openEndedReferenceStillImage:0,unexpectedStillImage:0};
 for(const row of data.rows){
   const key=serviceKey(row);allKeys.add(key);
   const line=report.byLine[row.line_key]||(
@@ -183,6 +226,8 @@ for(const row of data.rows){
         ++report.negativeProbes[kind].stillImage;
         if(kind==='future-service-date'&&isExpectedAllDateNumberBand(p,probed))
           ++report.negativeProbes[kind].allowedStillImage;
+        else if(kind==='future-service-date'&&isExpectedOpenEndedNumberReference(p,probed,sourceRules))
+          ++report.negativeProbes[kind].openEndedReferenceStillImage;
         else ++report.negativeProbes[kind].unexpectedStillImage;
       }
     }
