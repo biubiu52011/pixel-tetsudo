@@ -4357,6 +4357,72 @@
   }
   var warnedNumberBandConflicts=Object.create(null);
   var warnedNumberBandConflictCount=0;
+  // 千代田线K/E及区间列车完整番号：2026-11-26生产旧模板只读快照，来源修订日均未知。
+  // 不由S1/S2等末位推断车型，不将旧名单变成已验证的现行时刻表。05系限绫濑—北绫濑两站的来源记录。
+  // 实时位置、准确番号、车主、明确车型和车种必须同时一致；实际编组仍未知。
+  var chiyodaLiveEvidence=Object.freeze({
+    observedOn:"2026-11-26",source:"manual_timetable_templates/undated-readonly-snapshot",
+    groups:[{"lineId":"Chiyoda","calendar":"holiday","family":"jr","trainType":"Express","numbers":["A1003K","A1027K","A1029K","A1113K","A1123K","A1201K","A1427K","A1813K","A2215K","A705K","A823K"]},{"lineId":"Chiyoda","calendar":"holiday","family":"jr","trainType":"Local","numbers":["A1005K","A1021K","A1111K","A1205K","A1215K","A1221K","A1225K","A1305K","A1311K","A1417K","A1425K","A1505K","A1511K","A1515K","A1521K","A1711K","A1715K","A1717K","A1725K","A1811K","A1821K","A1827K","A1917K","A1923K","A1925K","A1929K","A2003K","A2015K","A2111K","A2127K","A2217K","A2223K","A2229K","A2311K","A401K","A415K","A501K","A503K","A505K","A509K","A517K","A519K","A621K","A623K","A709K","A711K","A715K","A717K","A725K","A727K","A803K","A819K","A821K","A829K","A911K","A915K","A925K","B1001K","B1011K","B1023K","B1105K","B1115K","B1121K","B1125K","B1203K","B1211K","B1227K","B1305K","B1313K","B1315K","B1323K","B1325K","B1329K","B1401K","B1405K","B1411K","B1421K","B1525K","B1605K","B1611K","B1615K","B1617K","B1621K","B1627K","B1711K","B1713K","B1723K","B1729K","B1817K","B1825K","B1903K","B1905K","B1911K","B1915K","B1921K","B2013K","B2017K","B2027K","B2029K","B2101K","B2115K","B2123K","B2125K","B2211K","B2227K","B2317K","B2323K","B2329K","B2411K","B401K","B515K","B603K","B605K","B609K","B617K","B701K","B719K","B721K","B723K","B809K","B811K","B813K","B815K","B825K","B903K","B905K","B917K","B919K","B921K","B927K","B929K"]},{"lineId":"Chiyoda","calendar":"holiday","family":"jr","trainType":"SemiExpress","numbers":["A1403K","A1513K","A1523K","A1529K","A1601K","A1705K","A801K"]},{"lineId":"Chiyoda","calendar":"holiday","family":"mse","trainType":"LimitedExpress","numbers":["A1003E","A1505E","A1906E","A2016E","A801E","B1002E","B1606E","B1716E","B808E"]},{"lineId":"Chiyoda","calendar":"holiday","family":"odakyu","trainType":"Express","numbers":["A1349E","A1363E","A2049E","A2059E","A755E"]},{"lineId":"Chiyoda","calendar":"holiday","family":"odakyu","trainType":"Local","numbers":["A1245E","A1445E","A1749E","A1763E","A1861E","A2063E","A2265E","A441E","A945E","B1045E","B1149E","B1163E","B1345E","B1549E","B1563E","B1859E","B1949E","B1963E","B2053E","B2263E","B2365E","B641E","B645E","B649E","B861E"]},{"lineId":"Chiyoda","calendar":"holiday","family":"odakyu","trainType":"SemiExpress","numbers":["A741E","A849E"]},{"lineId":"Chiyoda","calendar":"holiday","family":"shuttle","trainType":"Local","numbers":["A1096S1","A1096S2","A1096S3","A1096S4","A1196S1","A1196S2","A1196S3","A1296S1","A1296S2","A1396S1","A1396S2","A1396S3","A1496S1","A1496S2","A1496S3","A1596S1","A1596S2","A1596S3","A1696S1","A1696S2","A1696S3","A1796S1","A1796S2","A1896S1","A1896S2","A1996S1","A1996S2","A2096S1","A2096S2","A2096S3","A2196S1","A2196S2","A2196S3","A2196S4","A2296S1","A2296S2","A2296S3","A2396S1","A2396S2","A2396S3","A2396S4","A596S1","A596S2","A596S3","A696S1","A696S2","A696S3","A696S4","A796S1","A796S2","A796S3","A896S1","A896S2","A896S3","A896S4","A996S1","A996S2","B1096S1","B1096S2","B1096S3","B1096S4","B1196S1","B1196S2","B1296S1","B1296S2","B1296S3","B1396S1","B1396S2","B1396S3","B1496S1","B1496S2","B1496S3","B1596S1","B1596S2","B1596S3","B1696S1","B1696S2","B1796S1","B1796S2","B1796S3","B1996S1","B1996S2","B1996S3","B2096S1","B2096S2","B2196S1","B2196S2","B2196S3","B2196S4","B2296S1","B2296S2","B2296S3","B2296S4","B2396S1","B2396S2","B2396S3","B2496S1","B2496S2","B596S1","B596S2","B596S3","B696S1","B696S2","B696S3","B796S1","B796S2","B796S3","B796S4","B896S1","B896S2","B896S3","B996S1","B996S2","B996S3"]},{"lineId":"Chiyoda","calendar":"weekday","family":"jr","trainType":"Express","numbers":["A1031K","A1223K","A1227K","A1621K","A1803K","A2027K","A927K"]},{"lineId":"Chiyoda","calendar":"weekday","family":"jr","trainType":"Local","numbers":["A1009K","A1013K","A1017K","A1029K","A1101K","A1103K","A1105K","A1107K","A1121K","A1209K","A1213K","A1217K","A1229K","A1301K","A1303K","A1307K","A1309K","A1405K","A1413K","A1421K","A1429K","A1507K","A1509K","A1517K","A1613K","A1615K","A1705K","A1727K","A1817K","A1831K","A1929K","A2101K","A2105K","A2109K","A2131K","A2203K","A2215K","A2221K","A2229K","A2309K","A401K","A415K","A501K","A609K","A617K","A619K","A621K","A623K","A625K","A701K","A707K","A711K","A715K","A727K","A729K","A731K","A813K","A821K","A903K","A905K","A919K","B1003K","B1005K","B1007K","B1021K","B1023K","B1027K","B1109K","B1113K","B1117K","B1129K","B1201K","B1203K","B1207K","B1221K","B1231K","B1305K","B1309K","B1313K","B1329K","B1403K","B1407K","B1409K","B1417K","B1423K","B1427K","B1501K","B1505K","B1513K","B1521K","B1529K","B1607K","B1613K","B1617K","B1631K","B1703K","B1709K","B1715K","B1719K","B1729K","B1805K","B1823K","B1827K","B1901K","B1907K","B1917K","B1921K","B2003K","B2005K","B2009K","B2013K","B2015K","B2031K","B2119K","B2129K","B2205K","B2209K","B2301K","B2303K","B2315K","B2321K","B2331K","B2409K","B2429K","B401K","B509K","B613K","B615K","B701K","B703K","B719K","B721K","B723K","B801K","B805K","B807K","B811K","B815K","B817K","B825K","B827K","B909K","B913K","B929K","B931K"]},{"lineId":"Chiyoda","calendar":"weekday","family":"jr","trainType":"SemiExpress","numbers":["A1431K","A1503K","A1601K","A1623K","A1629K","A1707K","A1809K","A1813K","A1815K","A1919K","A603K","A605K","A807K","A823K"]},{"lineId":"Chiyoda","calendar":"weekday","family":"mse","trainType":"LimitedExpress","numbers":["A1711E","A1812E","A1913E","A2014E","A2115E","A901E","B1402E","B607E","B809E"]},{"lineId":"Chiyoda","calendar":"weekday","family":"odakyu","trainType":"Express","numbers":["A1153E","A1751E","A2143E","A2147E"]},{"lineId":"Chiyoda","calendar":"weekday","family":"odakyu","trainType":"Local","numbers":["A1051E","A1245E","A1251E","A1445E","A1451E","A1651E","A1761E","A1853E","A1947E","A1965E","A2057E","A2265E","A441E","A741E","A749E","A755E","A761E","A843E","A847E","A851E","A853E","A859E","A865E","A945E","A957E","A963E","B1045E","B1057E","B1151E","B1345E","B1351E","B1551E","B1645E","B1651E","B1653E","B1661E","B1663E","B1743E","B1747E","B1849E","B1861E","B1865E","B1943E","B1953E","B1957E","B2047E","B2065E","B2157E","B2365E","B541E","B549E","B553E","B561E","B643E","B645E","B651E","B747E","B757E","B759E","B763E","B765E","B951E","B953E","B965E"]},{"lineId":"Chiyoda","calendar":"weekday","family":"odakyu","trainType":"SemiExpress","numbers":["A1745E","A1843E","A1949E","A1961E","A2257E","A565E"]},{"lineId":"Chiyoda","calendar":"weekday","family":"shuttle","trainType":"Local","numbers":["A1096S1","A1096S2","A1196S1","A1196S2","A1196S3","A1296S1","A1296S2","A1396S1","A1396S2","A1496S1","A1496S2","A1496S3","A1596S1","A1596S2","A1796S1","A1796S2","A1796S3","A1896S1","A1896S2","A1996S1","A1996S2","A1996S3","A1996S4","A2096S1","A2096S2","A2096S3","A2096S4","A2096S5","A2196S1","A2196S2","A2196S3","A2296S1","A2296S2","A2296S3","A2296S4","A2396S1","A2396S2","A2396S3","A2396S4","A596S1","A596S2","A596S3","A596S4","A696S1","A696S2","A696S3","A696S4","A796S1","A796S2","A796S3","A896S1","A896S2","A896S3","A896S4","A996S1","A996S2","A996S3","A996S4","B1096S1","B1096S2","B1096S3","B1196S1","B1196S2","B1296S1","B1296S2","B1396S1","B1396S2","B1496S1","B1496S2","B1496S3","B1596S1","B1596S2","B1796S1","B1796S2","B1796S3","B1796S4","B1896S1","B1896S2","B1996S1","B1996S2","B1996S3","B2096S1","B2096S2","B2096S3","B2096S4","B2096S5","B2196S1","B2196S2","B2196S3","B2196S4","B2296S1","B2296S2","B2296S3","B2396S1","B2396S2","B2396S3","B2396S4","B2496S1","B2496S2","B596S1","B596S2","B596S3","B696S1","B696S2","B696S3","B696S4","B796S1","B796S2","B796S3","B796S4","B896S1","B896S2","B896S3","B896S4","B996S1","B996S2","B996S3"]},{"lineId":"ChiyodaBranch","calendar":"holiday","family":"jr","trainType":"Local","numbers":["B1105K","B1125K","B1211K","B1305K","B1605K","B1711K","B1817K","B1903K","B1915K","B2115K","B2125K","B605K","B721K","B723K","B811K","B905K","B921K"]},{"lineId":"ChiyodaBranch","calendar":"holiday","family":"odakyu","trainType":"Local","numbers":["B2053E","B2263E"]},{"lineId":"ChiyodaBranch","calendar":"holiday","family":"shuttle","trainType":"Local","numbers":["B1096S1","B1096S2","B1096S3","B1096S4","B1196S1","B1196S2","B1296S1","B1296S2","B1296S3","B1396S1","B1396S2","B1396S3","B1496S1","B1496S2","B1496S3","B1596S1","B1596S2","B1596S3","B1696S1","B1696S2","B1796S1","B1796S2","B1796S3","B1996S1","B1996S2","B1996S3","B2096S1","B2096S2","B2196S1","B2196S2","B2196S3","B2196S4","B2296S1","B2296S2","B2296S3","B2296S4","B2396S1","B2396S2","B2396S3","B2496S1","B2496S2","B596S1","B596S2","B596S3","B696S1","B696S2","B696S3","B796S1","B796S2","B796S3","B796S4","B896S1","B896S2","B896S3","B996S1","B996S2","B996S3"]},{"lineId":"ChiyodaBranch","calendar":"weekday","family":"jr","trainType":"Local","numbers":["B1003K","B1007K","B1109K","B1113K","B1203K","B1207K","B1309K","B1329K","B1407K","B1409K","B1513K","B1529K","B1703K","B1709K","B1805K","B1907K","B1921K","B2003K","B2009K","B2331K","B701K","B807K","B909K"]},{"lineId":"ChiyodaBranch","calendar":"weekday","family":"odakyu","trainType":"Local","numbers":["B1151E","B1351E","B1651E","B1661E","B1663E","B1743E","B651E"]},{"lineId":"ChiyodaBranch","calendar":"weekday","family":"shuttle","trainType":"Local","numbers":["B1096S1","B1096S2","B1096S3","B1196S1","B1196S2","B1296S1","B1296S2","B1396S1","B1396S2","B1496S1","B1496S2","B1496S3","B1596S1","B1596S2","B1796S1","B1796S2","B1796S3","B1796S4","B1896S1","B1896S2","B1996S1","B1996S2","B1996S3","B2096S1","B2096S2","B2096S3","B2096S4","B2096S5","B2196S1","B2196S2","B2196S3","B2196S4","B2296S1","B2296S2","B2296S3","B2396S1","B2396S2","B2396S3","B2396S4","B2496S1","B2496S2","B596S1","B596S2","B596S3","B696S1","B696S2","B696S3","B696S4","B796S1","B796S2","B796S3","B796S4","B896S1","B896S2","B896S3","B896S4","B996S1","B996S2","B996S3"]}],
+    models:{
+      jr:[{owner:"JR-East",model:"E233系2000番台",png:"../images/列车/JR東日本/JR東日本_E233系_2000番台.png",url:"https://www.jreast.co.jp/train/local/e233.html"}],
+      odakyu:[{owner:"Odakyu",model:"小田急4000形",png:"../images/列车/小田急電鉄/小田急電鉄_4000形_標準色.png",url:"https://www.jametro.or.jp/subway/japan/tmetro/guide.html"}],
+      mse:[{owner:"Odakyu",model:"小田急60000形",png:"../images/列车/小田急電鉄/小田急電鉄_60000形_MSE.png",url:"https://www.odakyu.jp/romancecar/features/line_up/60000/seat/"}],
+      shuttle:[
+        {owner:"TokyoMetro",model:"東京メトロ05系（千代田支線）",png:"../images/列车/東京メトロ/東京メトロ_05系_区間列車車両.png",url:"https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/chiyoda_05/index.html"},
+        {owner:"TokyoMetro",model:"東京メトロ16000系",png:"../images/列车/東京メトロ/東京メトロ_16000系.png",url:"https://www.jametro.or.jp/subway/japan/tmetro/guide.html"}
+      ]
+    }
+  });
+  function chiyodaModelLabel(value){
+    var m=String(value||"").trim().replace(/\(/g,"（").replace(/\)/g,"）");
+    if(m==="小田急60000形 MSE"||m==="小田急60000系（MSE）"||m==="小田急60000形（MSE）")return "小田急60000形";
+    if(m==="小田急電鉄4000形")return "小田急4000形";
+    if(m==="東京メトロ05系（区間列車車両）")return "東京メトロ05系（千代田支線）";
+    return m;
+  }
+  function matchChiyodaLiveModel(number,line,p){
+    p=p||{};
+    var date=String(p.serviceDate||"").slice(0,10),cal=sourceCalendar(p);
+    var owner=String(p.trainOwner||"").replace(/^odpt\.(?:Operator|TrainOwner):/,"");
+    var operator=String(p.trainOperator||p.operator||"").replace(/^odpt\.Operator:/,"");
+    var type=String(p.trainType||"").split(/[.:]/).pop();
+    var model=chiyodaModelLabel(p.realtimeVehicleType);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<chiyodaLiveEvidence.observedOn||!cal||
+       p.positionSource!=="realtime-api"||p.estimated!==false||
+       p.positionLineId!==line||(p.displayLineId&&p.displayLineId!==line)||
+       p.sourceRailway!=="odpt.Railway:TokyoMetro."+line||
+       operator!=="TokyoMetro"||!owner||!model||
+       String(p.trainNumber||"").trim().toUpperCase()!==number||
+       p.vehicleIdentityStatus==="EXACT"||p.vehicleResolvedUpstream===true||
+       p.vehicleResolvedFromRealtime===true||p.actualVehicleConfirmed===true||
+       p.vehicleFormationId||p.vehicleFormationConflict||
+       (Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length))return null;
+    var g=chiyodaLiveEvidence.groups.find(function(x){
+      return x.lineId===line&&x.calendar===cal&&x.trainType===type&&x.numbers.indexOf(number)>=0;
+    });
+    if(!g)return null;
+    var item=chiyodaLiveEvidence.models[g.family].find(function(x){return x.owner===owner&&x.model===model;});
+    if(!item||!root.VehicleGaragePngMap||
+       !root.VehicleGaragePngMap.matchModelPath(model,item.png,line))return null;
+    var derived=chiyodaModelLabel(p.realtimeDerivedVehicleType);
+    if(derived&&derived!==model)return null;
+    var plan=p.vehiclePlan;
+    if(plan&&(plan.confirmed===true||plan.status==="PLANNED_MODEL")&&
+       (!Array.isArray(plan.models)||plan.models.length!==1||chiyodaModelLabel(plan.models[0])!==model))return null;
+    if(Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length&&
+       !p.plannedVehicleCandidates.some(function(x){return chiyodaModelLabel(x)===model;}))return null;
+    // 区间番号源记录已经核对只含绫濑/北绫濑；任何明确站点反证仍阻断。
+    if(g.family==="shuttle"){
+      var stationFields=[p.stationId,p.fromStation,p.toStation,p.originStation,p.destinationStation];
+      if(stationFields.some(function(v){
+        return typeof v==="string"&&v&&["Ayase","KitaAyase"].indexOf(v.split(".").pop())<0;
+      }))return null;
+    }
+    return {trainNumber:number,lineId:line,model:model,pngPath:item.png,
+      source:"chiyoda-live-owner-explicit-model-reference",sourceUrl:item.url,
+      sourceObservationDate:chiyodaLiveEvidence.observedOn,sourceTimetableRevision:null,
+      planned:true,representative:true,referenceOnly:true,illustrative:true,actualVehicleConfirmed:false};
+  }
   function match(trainNumber,lineId,context){
     if(String(lineId||'')==='TobuUtsunomiya')
       return root.TobuUtsunomiyaPng ?
@@ -4380,6 +4446,9 @@
       return matchTobuMetroThrough2611(String(trainNumber||"").trim().toUpperCase(),String(lineId),context);
     var number=String(trainNumber||"").trim().toUpperCase();
     var line=String(lineId||"").trim();
+    if((line==="Chiyoda"||line==="ChiyodaBranch")&&
+       /^[AB][0-9]{3,4}(?:[KE]|S[0-9]+)$/.test(number))
+      return matchChiyodaLiveModel(number,line,context);
     if(line==="Noda")return matchNodaFiveCar20261104(number,context);
     if(line==="Fujikyu"){
       var fujikyuLabel=/^(\d{3})\s+フジサン特急(?:\s|$)/.exec(number);
@@ -5149,6 +5218,20 @@
     for(var i=0;i<rows.length;i++){
       var row=rows[i];
       if(row.lineIds.indexOf(line)<0)continue;
+      // 已有千代田/常磐参考号段不得无视明确的车主或第二车型反证。
+      if((line==="Chiyoda"||line==="ChiyodaBranch"||line==="JobanLocal")&&row.allowedModelLabels){
+        var cp=context||{},co=String(cp.trainOwner||"").replace(/^odpt\.(?:Operator|TrainOwner):/,"");
+        var expectedOwner=line==="JobanLocal"?
+          ({K:"JR-East",S:"TokyoMetro",E:"Odakyu"})[row.suffixes]:"TokyoMetro";
+        if(co&&expectedOwner&&co!==expectedOwner)continue;
+        if(cp.trainNumber&&String(cp.trainNumber).trim().toUpperCase()!==number)continue;
+        if(cp.displayLineId&&cp.displayLineId!==line)continue;
+        if([cp.realtimeVehicleType,cp.realtimeDerivedVehicleType].some(function(x){
+          return x&&row.allowedModelLabels.indexOf(chiyodaModelLabel(x))<0;
+        }))continue;
+        var ct=String(cp.trainType||cp.typeName||"").split(/[.:]/).pop();
+        if(ct==="LimitedExpress"||ct==="特急"||ct==="limited express")continue;
+      }
       // 同一浅草线责任规则按来源修订日选择名册；旧版继续保留历史审计边界。
       var asakusaOfficial=line==="Asakusa"&&row.sourceEvidence==="staged-tokyo-gtfs-20261112-unverified"&&
         String(context&&context.serviceDate||"").slice(0,10)>=toeiAsakusaOfficialRoster.sourceRevisionDate;

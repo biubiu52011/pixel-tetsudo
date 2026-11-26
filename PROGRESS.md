@@ -91,6 +91,9 @@
 - 第十四轮／东西线05系批次与JR直通（2026-11-26）：[东京Metro官方现役车型](https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html) 区分05系4～7次/8～13次、07及15000系。复用原两条规则js-0089（JR Y/A方向/日历精确直通索引）和js-0091（东西线S完整番号及原日期/来源守卫），共享四型明确车型图，取消JR S仅凭车主默认15000；裸05系/10両/05N系不选批次、仅推定型号不能授权05批次。两批次与非JR车主守卫由原图库复核，冲突不授图。同步规范车型目录：家族无图、两批次仅保留对应计划图，不声称实际编组。原目录与反向索引重建逐字节复现后由原生成器完整生成；库存CSV复用原compactNumberBands按新增条件行增量生成，仅05两批及07三张库存行变化，未执行整个依赖全仓库的库存生成入口。原历史纯号段及日期不变。601图、423静态规则、跨源冲突0，映射PNG103（99→101→103）；现役快照仍120已核实，待审有番号15。隔离实际公共查找入口54项回归断言通过，原有测试的S号正例增加独立车型证据并保留负例；原生成器重建现役JSON/CSV，缓存SHA同步。未写生产SQL，未额外部署，全量CI待验收。
 
 
+- 第十五轮／千代田线与常磐缓行（2026-11-26）：生产[只读来源查询](supabase/queries/metro_chiyoda_live_model_roster_readonly.sql) 核对22组，千代田K315／E普通106／E特急18／区间变体231，支线K40／E普通9／区间变体116（均为日历/车型族/车种/番号组合，合计835，不等于不重复实体列车）。区间变体仅纳入绫濑—北绫濑两站记录，千代田233条原S数字末位中排除2条非双站记录。原始S1等后缀保持，不截断或猜编组。依据[Metro05系](https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/chiyoda_05/index.html)、[日本地下铁协会车辆资料](https://www.jametro.or.jp/subway/japan/tmetro/guide.html)、[JR E233](https://www.jreast.co.jp/train/local/e233.html)、[小田急MSE](https://www.odakyu.jp/romancecar/features/line_up/60000/seat/) 复用现有匹配器，新增明确实时车主/车型/车种/日历/原番号门禁，05系只允许来源双站区间、反证站点拒绝；普通E和特急E不混用。旧S及常磐K/S/E参考修复明确车主和第二车型冲突，旧日期范围不延长。原模板修订日全空；新增实时条件分支不授予现行/未来时刻表或实际编组证明。1182次正向回放通过，公共入口专项98项断言通过；原生成器重建反向及现役清单，601图、423静态规则不变，运行时名册PNG24→29、有番号参考103→104、待审现役有番号15→16。缓存同步，无生产SQL写入、无额外部署、正式CI待验收。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |

@@ -29,7 +29,7 @@ function buildIndex(input) {
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
-    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__hanzomonLiveModelEvidence=hanzomonLiveModelEvidence; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
+    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__hanzomonLiveModelEvidence=hanzomonLiveModelEvidence; root.__chiyodaLiveEvidence=chiyodaLiveEvidence; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
   // 2611 M-03 guard fixtures: not claims that a train used these cars.
   // A shared S train number is insufficient if vehicle sources disagree.
@@ -324,6 +324,36 @@ function buildIndex(input) {
         actualVehicleConfirmed:false,guardDescription:'Original exact S roster + live owner, source, calendar, explicit compatible model; no future timetable or physical vehicle confirmation'});
     }
   }
+  // 千代田旧模板名单仅用于有明确实时车主/车型的参考回放；保持完整末位和车种。
+  const ch=win.__chiyodaLiveEvidence;
+  const chGroups=new Map();
+  for(const group of ch.groups)for(const item of ch.models[group.family]){
+    const asset=get(item.png,'runtime-chiyoda-live-model');
+    if(!asset||asset.quarantined)throw Error('千代田车型图不可用 '+item.model);
+    for(const number of group.numbers){
+      const m=win.TrainNumberPngRanges.match(number,group.lineId,{
+        trainNumber:number,positionLineId:group.lineId,displayLineId:group.lineId,
+        sourceRailway:'odpt.Railway:TokyoMetro.'+group.lineId,trainOperator:'TokyoMetro',
+        trainOwner:'odpt.TrainOwner:'+item.owner,trainType:group.trainType,
+        calendarType:group.calendar,serviceDate:group.calendar==='weekday'?'2026-11-26':'2026-11-29',
+        positionSource:'realtime-api',estimated:false,realtimeVehicleType:item.model
+      });
+      if(!m||m.pngPath!==item.png||m.referenceOnly!==true||m.actualVehicleConfirmed!==false)
+        throw Error('千代田条件回放失败 '+group.lineId+' '+number+' '+item.model);
+    }
+    const key=[group.lineId,group.calendar,group.family,item.model].join('|');
+    let entry=chGroups.get(key);
+    if(!entry){
+      entry={authority:'undated_template_live_owner_model_guarded',lineId:group.lineId,
+        calendarType:group.calendar,numberFamily:group.family+'-explicit-model-reference',corridor:'chiyoda',
+        model:item.model,sourceUrl:item.url,validFrom:ch.observedOn,validTo:null,
+        numberFormat:'full_exact',numbers:[],referenceOnly:true,illustrative:true,actualVehicleConfirmed:false,
+        guardDescription:'Undated exact template number with service type, calendar, live owner and explicit model; not a verified current timetable or physical carset'};
+      chGroups.set(key,entry);asset.runtimeNumberRosters.push(entry);
+    }
+    entry.numbers.push(...group.numbers);
+  }
+  for(const entry of chGroups.values())entry.numbers=[...new Set(entry.numbers)].sort();
   // 浅草线新版官方名册使用同一运行时责任规则；历史SQL/静态JS条目不改写。
   const asakusa=win.TrainNumberPngRanges.toeiAsakusaOfficialRoster;
   const asakusaPng=get('../images/列车/都営地下鉄/都営地下鉄_5500形.png','runtime-asakusa-official');
