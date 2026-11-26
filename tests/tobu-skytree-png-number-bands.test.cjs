@@ -295,3 +295,38 @@ test('private ninth batch Skytree 70000 PNG bands include only original T-owner 
   p('A1009T','Local',{vehicleIdentityStatus:'EXACT'})
  ])assert.equal(ranges.match(ctx.trainNumber,'TobuSkytree',ctx),null);
 });
+
+test('日比谷线THライナー复用官方时刻对账的完整番号、日历和车型参考',()=>{
+ const sql=fs.readFileSync('supabase/queries/metro_hibiya_th_liner_number_evidence_readonly.sql','utf8');
+ const rows=[...sql.matchAll(/\('(Weekday|SaturdayHoliday)','([AB]\d+T)',\d+,ARRAY\[/g)];
+ assert.equal(rows.length,14);
+ const match=(num,cal,mods={})=>{
+  const x={...p(num,'THLiner'),positionLineId:'Hibiya',displayLineId:'Hibiya',
+   sourceRailway:'odpt.Railway:TokyoMetro.Hibiya',trainOperator:'TokyoMetro',
+   trainType:'odpt.TrainType:TokyoMetro.TH-LINER',calendarType:cal,
+   serviceDate:cal==='weekday'?'2026-11-13':'2026-11-14',...mods};
+  return ranges.match(num,'Hibiya',x);
+ };
+ const keys=new Set(rows.map(r=>(r[1]==='Weekday'?'weekday':'holiday')+':'+r[2]));
+ for(const [,raw,num] of rows){
+  const cal=raw==='Weekday'?'weekday':'holiday';
+  const m=match(num,cal);
+  assert.ok(m,num);assert.equal(m.serviceFamily,'th_liner');
+  assert.equal(m.model,'東武70090型');assert.ok(m.pngPath.endsWith('70090型.png'));
+  assert.equal(m.referenceOnly,true);assert.equal(m.actualVehicleConfirmed,false);
+  assert.equal(garage.matchModelPath(m.model,m.pngPath,'Hibiya'),true);
+  assert.ok(match(num,cal,{trainType:'odpt.TrainType:Tobu.THLiner'}),num);
+  const other=cal==='weekday'?'holiday':'weekday';
+  if(!keys.has(other+':'+num))assert.equal(match(num,other),null,num+' 错误日历');
+  for(const mods of [
+   {trainType:'odpt.TrainType:TokyoMetro.Local'},
+   {trainOwner:'odpt.Operator:TokyoMetro'},
+   {sourceRailway:'odpt.Railway:TokyoMetro.Hanzomon'},
+   {serviceDate:'2026-12-01'},
+   {vehicleIdentityStatus:'EXACT'},
+   {realtimeVehicleType:'東武70000系'}
+  ])assert.equal(match(num,cal,mods),null,num);
+ }
+ for(const num of ['A1645T','A1841T','B9999T','1645T','1841T'])
+  assert.equal(match(num,'holiday'),null,num+' 不猜前缀或车种');
+});

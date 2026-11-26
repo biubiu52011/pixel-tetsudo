@@ -4123,8 +4123,14 @@
       if(!roster||roster.indexOf(number)<0)return null;
     }
     var trainType=String(p.trainType||"").split(/[.:]/).pop();
-    if(!["Local","Express","SemiExpress","SectionExpress","SectionSemiExpress"].includes(trainType))return null;
+    // 日比谷线THライナー：复用原有完整番号名单，并保留官方五站时刻对账确认的车种/日历边界。
+    var thLinerNumbers={"weekday":["A643T","A845T","B1743T","B1847T","B1845T","B1941T","B2043T"],"holiday":["A845T","A947T","B1645T","B1743T","B1841T","B1847T","B1945T"]};
+    var thLiner=lineId==="Hibiya"&&thLinerNumbers[cal].indexOf(number)>=0;
+    var thType=trainType==="TH-LINER"||trainType==="THLiner";
+    if(thType!==thLiner)return null;
+    if(!thLiner&&!["Local","Express","SemiExpress","SectionExpress","SectionSemiExpress"].includes(trainType))return null;
     var item=tobuThroughOwnerReference(corridor,number),gallery=root.VehicleGaragePngMap;
+    if(thLiner&&(!item||item.model!=="東武70090型"))return null;
     if(!item||!gallery||!gallery.matchModelPath(item.model,item.png,lineId))return null;
     var opCode=String(p.operationCode||"").toUpperCase().trim();
     if(/^[0-9]{1,2}[KST]$/.test(opCode)&&opCode.slice(-1)!==number.slice(-1))return null;
@@ -4132,10 +4138,10 @@
     if(vehicleOwner&&vehicleOwner!==item.owner)return null;
     if((p.realtimeVehicleType&&p.realtimeVehicleType!==item.model)||
        (p.realtimeDerivedVehicleType&&p.realtimeDerivedVehicleType!==item.model))return null;
-    return {lineId:lineId,trainNumber:number,serviceFamily:"ordinary",
+    return {lineId:lineId,trainNumber:number,serviceFamily:thLiner?"th_liner":"ordinary",
       referenceCorridor:corridor,referenceOwner:item.owner,
-      candidateModels:item.candidates.slice(),model:item.model,pngPath:item.png,
-      sourceUrl:item.url,source:"tobu-metro-tokyu-working-owner-reference",
+      candidateModels:thLiner?[item.model]:item.candidates.slice(),model:item.model,pngPath:item.png,
+      sourceUrl:thLiner?"https://www.tobu.co.jp/railway/th/timetable/":item.url,source:"tobu-metro-tokyu-working-owner-reference",
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
