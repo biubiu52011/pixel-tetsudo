@@ -3254,10 +3254,17 @@ test('Tokyo Metro / Mita source-number rosters stay independent of staged Toei l
    const line=r.lineIds[0],num=r.weekdayNumbers[0];
    const p=live({trainNumber:num,positionLineId:line,displayLineId:line,
      sourceRailway:r.sourceRailways[0],trainOperator:r.operator,
+     // live() 默认是JR特急；地下铁普通列车必须提供真实车种上下文。
+     trainType:'odpt.TrainType:'+r.operator+'.Local',
      calendarType:'weekday',serviceDate:'2026-11-05',
      realtimeVehicleType:r.requireExplicitModelEvidence?r.model:''});
    assert.equal(root.TrainNumberPngRanges.match(num,line,p)?.model,r.model,line);
    assert.equal(root.VehicleGaragePngMap.matchModelPath(r.model,r.pngPath,line),true);
+   if(line==='Chiyoda'||line==='ChiyodaBranch'){
+     assert.equal(root.TrainNumberPngRanges.match(num,line,{
+       ...p,trainType:'odpt.TrainType:JR-East.LimitedExpress'}),null,
+       '不允许以普通列车番号为特急分配车型 '+line);
+   }
    // 三田新版要求明确实时车主；此处旧测试未提供车主，仍须拒绝。
    assert.equal(root.TrainNumberPngRanges.match(num,line,{...p,serviceDate:'2026-12-05'}),null,line);
    assert.equal(root.TrainNumberPngRanges.match(num,line,{
