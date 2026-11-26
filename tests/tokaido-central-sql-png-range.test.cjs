@@ -26,6 +26,16 @@ test('M train numbers match indicative Hamamatsu-Toyohashi family only',()=>{
   ['934M','313系'],['936M','313系']])
   assert.equal(match(num,{railDirection:'odpt.RailDirection:Inbound'})?.pngPath,png(model));
  assert.equal(match('925M',{serviceDate:'2026-11-15',calendarType:'holiday'})?.model,'373系');
+ // 921M 等共通番号在平日和土休日来源均存在；日历由已核实SQL提供。
+ const holiday={serviceDate:'2026-11-15',calendarType:'holiday'};
+ assert.equal(match('921M',holiday)?.model,'315系');
+ assert.match(match('921M',holiday).sourceUrl,/hamaH\.html$/);
+ assert.equal(match('1943M')?.model,'313系');
+ assert.equal(match('1943M',holiday),null);
+ assert.equal(match('3943M'),null);
+ assert.equal(match('3943M',holiday)?.model,'313系');
+ assert.equal(match('3944M',{...holiday,railDirection:'odpt.RailDirection:Inbound'})?.model,'313系');
+ assert.equal(match('3944M',{railDirection:'odpt.RailDirection:Inbound'}),null);
 });
 test('F numbers respect Maibara holiday ranges, 313 exclusions and directions',()=>{
  const h={serviceDate:'2026-11-15',calendarType:'holiday',
@@ -47,7 +57,8 @@ test('reject incorrect SQL, calendars, lines, trains, candidates and types',()=>
   {timetableDateVerified:false},{timetableValidity:'undated_not_current_verified'},
   {officialNumberVerified:false},{positionSource:'realtime-api'},{estimated:false},
   {sourceRailway:'odpt.Railway:JR-East.Tokaido'},{trainOperator:'JR-East'},
-  {vehicleIdentityStatus:'EXACT'},{calendarType:'holiday'},
+  {vehicleIdentityStatus:'EXACT'},{calendarType:''},
+  {calendarType:'holiday',timetableDateVerified:false},
   {scheduledStopKeys:['Toyohashi']},{railDirection:'odpt.RailDirection:Inbound'},
   {trainType:'odpt.TrainType:JR-Central.LimitedExpress'},
   {plannedVehicleCandidates:['313系']},{realtimeVehicleType:'313系'},
