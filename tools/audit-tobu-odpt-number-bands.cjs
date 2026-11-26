@@ -101,6 +101,16 @@ function summary(data){
  s+='\n**Do not** shrink a range, publish a new mapping, or infer any specific PNG solely from these counts. Incomplete query coverage cannot prove absence of a train number.\n';
  return s;
 }
+async function fetchTimetableScope(fetcher,params){
+  const url=new URL(PROXY);for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);
+  const response=await fetcher(url.toString(),{headers:{Origin:ORIGIN,Accept:'application/json'},
+   signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw Error('HTTP '+response.status);
+  const body=await response.json();
+  const data=Array.isArray(body)?body:Array.isArray(body?.data)?body.data:null;
+  if(!data)throw Error('Non-array timetable response');
+  return data;
+}
 async function fetchScoped(fetcher=globalThis.fetch){
  const failures=[];let records=[];let complete=false;
  // Health probe reports only whether a secret is configured; never its value.
@@ -116,16 +126,7 @@ async function fetchScoped(fetcher=globalThis.fetch){
  }catch(e){
   return {records,complete,failures:[{scope:'proxy-health',reason:String(e?.message||'unavailable').slice(0,95)}]};
  }
- const make=async(params)=>{
-  const url=new URL(PROXY);for(const [k,v] of Object.entries(params))url.searchParams.set(k,v);
-  const response=await fetcher(url.toString(),{headers:{Origin:ORIGIN,Accept:'application/json'},
-   signal:AbortSignal.timeout(15000)});
-  if(!response.ok)throw Error('HTTP '+response.status);
-  const body=await response.json();
-  const data=Array.isArray(body)?body:Array.isArray(body?.data)?body.data:null;
-  if(!data)throw Error('Non-array timetable response');
-  return data;
- };
+
  // Query every railway/calendar pair explicitly. The unfiltered endpoint can
  // return exactly 1000 rows while omitting later railways, so a green capped
  // response is not evidence of complete source coverage.
@@ -135,7 +136,7 @@ async function fetchScoped(fetcher=globalThis.fetch){
    const calendar='odpt.Calendar:'+calendarName;
    const label=scope+'/'+calendarName;
    try{
-    const data=await make({operator:'Tobu',type:'trainTimetable',railway,calendar});
+    const data=await fetchTimetableScope(fetcher,{operator:'Tobu',type:'trainTimetable',railway,calendar});
     records.push(...data);
     if(data.length>=1000)failures.push({scope:label,reason:'possible 1000-row response cap'});
    }catch(e){failures.push({scope:label,reason:String(e?.message||'unknown').slice(0,55)});}
@@ -167,4 +168,4 @@ async function main(argv=process.argv.slice(2)){
  return data;
 }
 if(require.main===module)main().catch(e=>{console.error('Tobu audit error',e?.message);process.exitCode=1;});
-module.exports={ORIGIN,PROXY,TIMETABLE,SCOPES,CALENDARS,WATCH,parseNumber,getEnvelopes,inspect,summary,fetchScoped,main};
+module.exports={ORIGIN,PROXY,TIMETABLE,SCOPES,CALENDARS,WATCH,parseNumber,getEnvelopes,inspect,summary,fetchTimetableScope,fetchScoped,main};

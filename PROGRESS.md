@@ -12,6 +12,8 @@
 - 生产只读检查15个有旧模板的线路键（含目黑线），所有 source_revision_date/revision_id 为空且无对应 timetable_revisions 记录。扩充既有地下铁覆盖只读查询，未伪造生效日期、未写生产库。版本缺失仍需逐条重新导入/核验来源。
 
 
+- 同批继续：545e4c5 两项CI（45884936800、45884936871）通过。来源批次复查：ODPT API 7线路6864条均保留唯一source_trip_id；手工JS 8线路6355条仅986条保留源ID、476条有物理服务键，8个原文件路径在main提交历史中均无记录。现有timetable_revisions与timetable_number_verifications未找到对应来源记录。官方目录 https://ckan.odpt.org/dataset/r_train_timetable-tokyometro 已确认，原始API内容在本会话无法直接读取（容器DNS失败）。复用ODPT代理请求函数，新增独立版本内容指纹审计入口，接入已有外部只读CI，按7线×2日历输出完整内容一致性及来源日期元数据。SQL快照14组已计算，未恢复任何来源修订日期；不以观测日期、导入日或单纯哈希吻合替代生效日证明。
+
 ### TOEI-GTFS-TRAIN-NUMBER-DECODE-20261127 — 都营实时完整列车番号解码（LOCAL-VERIFIED）
 
 - 根因：都营 GTFS-Realtime `trip_id` 同时编码完整列车番号和两位运用番号；旧适配器只把 `03T` 一类运用番号写入 `odpt:trainNumber`，导致 `403T` 等已经核验的精确番号无法命中。

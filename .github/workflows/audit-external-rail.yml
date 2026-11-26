@@ -14,6 +14,8 @@ on:
       - 'tools/audit-tobu-odpt-number-bands.cjs'
       - 'tests/tobu-odpt-number-band-audit.test.cjs'
       - 'tools/audit-toei-odpt-live.cjs'
+      - 'tools/audit-metro-timetable-revision.cjs'
+      - 'supabase/queries/metro_yokohama_final_coverage_review_readonly.sql'
       - 'tests/toei-odpt-number-format-audit.test.cjs'
       - 'supabase/functions/train-runs/index.ts'
       - 'supabase/migrations/20261113183000_tobu_skytree_tokyogtfs_plan_fallback.sql'
@@ -31,6 +33,7 @@ on:
           - tobu
           - toei
           - gtfs-runtime
+          - metro-revision
 
 permissions:
   contents: read
@@ -44,6 +47,7 @@ jobs:
       tobu: ${{ steps.scope.outputs.tobu }}
       toei: ${{ steps.scope.outputs.toei }}
       gtfs: ${{ steps.scope.outputs.gtfs }}
+      metro: ${{ steps.scope.outputs.metro }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,14 +61,15 @@ jobs:
           BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
-          live=0; tobu=0; toei=0; gtfs=0
+          live=0; tobu=0; toei=0; gtfs=0; metro=0
           if [[ "$EVENT" == "workflow_dispatch" ]]; then
             case "$SCOPE" in
-              all) live=1; tobu=1; toei=1; gtfs=1 ;;
+              all) live=1; tobu=1; toei=1; gtfs=1; metro=1 ;;
               live-train) live=1 ;;
               tobu) tobu=1 ;;
               toei) toei=1 ;;
               gtfs-runtime) gtfs=1 ;;
+              metro-revision) metro=1 ;;
               *) echo "::error::Unknown audit scope"; exit 1 ;;
             esac
           else
@@ -73,16 +78,18 @@ jobs:
               before="$(git rev-parse HEAD^ 2>/dev/null || true)"
             fi
             if [[ -z "$before" ]] || ! git cat-file -e "$before^{commit}" 2>/dev/null; then
-              live=1; tobu=1; toei=1; gtfs=1
+              live=1; tobu=1; toei=1; gtfs=1; metro=1
             else
               while IFS= read -r file; do
                 case "$file" in
                   .github/workflows/audit-external-rail.yml)
-                    live=1; tobu=1; toei=1; gtfs=1 ;;
+                    live=1; tobu=1; toei=1; gtfs=1; metro=1 ;;
                   tools/audit-edge-train-runs-runtime.cjs|tools/audit-train-number-png-runtime.cjs|data/api/odpt-unified.js|js/train-vehicle.js|data/timetables/train-number-png-ranges.js)
                     live=1 ;;
                   tools/audit-tobu-odpt-number-bands.cjs|tests/tobu-odpt-number-band-audit.test.cjs)
                     tobu=1 ;;
+                  tools/audit-metro-timetable-revision.cjs|supabase/queries/metro_yokohama_final_coverage_review_readonly.sql)
+                    metro=1 ;;
                   tools/audit-toei-odpt-live.cjs|tests/toei-odpt-number-format-audit.test.cjs)
                     toei=1 ;;
                   supabase/functions/train-runs/index.ts|supabase/migrations/20261113183000_tobu_skytree_tokyogtfs_plan_fallback.sql|supabase/migrations/20261113191000_tobu_noda_tokyogtfs_plan_fallback.sql)
@@ -95,6 +102,7 @@ jobs:
           echo "tobu=$tobu" >> "$GITHUB_OUTPUT"
           echo "toei=$toei" >> "$GITHUB_OUTPUT"
           echo "gtfs=$gtfs" >> "$GITHUB_OUTPUT"
+          echo "metro=$metro" >> "$GITHUB_OUTPUT"
           echo "audit scope live=$live tobu=$tobu toei=$toei gtfs=$gtfs"
 
   live-train:
@@ -203,3 +211,15 @@ jobs:
                       assert not run.get('vehicle_plan_confirmed'), 'GTFS train number is not physical vehicle evidence'
                   print(line,day,'verified',len(runs),'scheduled GTFS source-only trips')
           PY
+
+  metro-revision:
+    needs: detect
+    if: needs.detect.outputs.metro == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exact provenance fingerprint contract
+        run: node tools/audit-metro-timetable-revision.cjs --self-test
+      - name: Compare official ODPT source content without SQL mutation
+        run: node tools/audit-metro-timetable-revision.cjs

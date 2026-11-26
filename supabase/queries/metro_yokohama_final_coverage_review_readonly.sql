@@ -71,3 +71,25 @@ select m.line_key,count(*) as templates,count(m.source_revision_date) as dated,
 from public.manual_timetable_templates m left join public.timetable_revisions r on r.id=m.revision_id
 where m.line_key in ('Ginza','Marunouchi','MarunouchiBranch','Hibiya','Tozai','Chiyoda','ChiyodaBranch','Yurakucho','Hanzomon','Namboku','Fukutoshin','Asakusa','Mita','Shinjuku','Oedo','YokohamaBlue','YokohamaGreen','TokyuMeguro')
 group by 1 order by 1;
+
+-- 2026-11-27 来源批次与原始车次ID可恢复性；导入时间不是改点日期。
+select case when source_path like 'odpt-api:%' then 'ODPT' else 'manual' end as origin,
+ count(*) as templates,count(distinct line_key) as lines,count(nullif(source_trip_id,'')) as trip_ids,
+ count(distinct (line_key,calendar_urn,source_trip_id)) filter(where nullif(source_trip_id,'') is not null) as unique_scoped_ids,
+ count(nullif(physical_service_key,'')) as physical_keys,count(source_revision_date) as dated
+from public.manual_timetable_templates
+where line_key in ('Ginza','Marunouchi','MarunouchiBranch','Hibiya','Tozai','Chiyoda','ChiyodaBranch','Yurakucho','Hanzomon','Namboku','Fukutoshin','Mita','YokohamaBlue','YokohamaGreen','TokyuMeguro')
+group by 1 order by 1;
+
+-- 2026-11-27 ODPT原始ID、线路、日历、番号、方向、种别、终点及完整停站顺序内容指纹。
+-- 仅比较现行官方来源与旧库快照内容；MD5用于非安全内容比较，不用于认证或实际车型判定。
+with source_rows as (
+ select m.id,m.line_key,m.calendar_urn,m.source_trip_id,m.source_revision_date,
+ md5(jsonb_build_array(m.source_trip_id,m.railway_urn,m.calendar_urn,m.train_number,m.direction_urn,m.train_type_urn,coalesce(to_jsonb(m.destination_urns),'[]'::jsonb),
+ coalesce((select jsonb_agg(jsonb_build_array(s.arrival_station_urn,s.departure_station_urn,s.arrival_clock,s.departure_clock) order by s.stop_sequence) from public.manual_timetable_template_stops s where s.template_id=m.id),'[]'::jsonb))::text) as fingerprint
+ from public.manual_timetable_templates m
+ where m.line_key in ('Ginza','Marunouchi','Hibiya','Tozai','Yurakucho','Mita','YokohamaBlue') and m.source_path='odpt-api:v1:'||m.line_key
+)
+select line_key,calendar_urn,count(*) as records,count(distinct source_trip_id) as distinct_ids,count(source_revision_date) as dated,
+ md5(string_agg(fingerprint,'' order by fingerprint collate "C")) as fingerprint
+from source_rows group by 1,2 order by 1,2;
