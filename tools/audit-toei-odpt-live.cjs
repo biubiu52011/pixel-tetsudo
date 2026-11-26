@@ -113,7 +113,28 @@ async function fetchTimetablesByLine(fetcher=globalThis.fetch,rows=getRows()){
    const own=data.filter(r=>r&&r['odpt:railway']===railway);
    queries[line]={status:!data.length?'empty-response':!own.length?'scope-mismatch':own.length!==data.length?'mixed-scope':'observed',
     returned:data.length,matching:own.length,source:url};
-   records.push(...own);
+   // 恰好1000条不能认定完整：按已知官方运营日历独立查询并保留原始记录。
+   if(data.length===1000&&own.length===data.length){
+    const calendars=['odpt.Calendar:Weekday','odpt.Calendar:SaturdayHoliday'];
+    const scoped=await Promise.all(calendars.map(async calendar=>{
+     const subUrl=url+'&odpt:calendar='+calendar;
+     try{
+      const list=await fetchOfficial(fetcher,subUrl);
+      if(!Array.isArray(list))throw TypeError('Expected array');
+      const valid=list.filter(r=>r&&r['odpt:railway']===railway&&r['odpt:calendar']===calendar);
+      return {calendar,source:subUrl,returned:list.length,matching:valid.length,
+       status:!list.length?'empty-response':valid.length!==list.length?'scope-mismatch':list.length>=1000?'possible-cap':'observed',data:valid};
+     }catch(e){return {calendar,source:subUrl,status:'source-unavailable',data:[]};}
+    }));
+    queries[line].calendarQueries=scoped.map(({data,...info})=>info);
+    if(scoped.every(q=>q.status==='observed')){
+     const seen=new Set(),all=[...own,...scoped.flatMap(q=>q.data)];
+     // 仅去除来源ID完全相同的记录；没有ID时以原始JSON严格相等去重。
+     for(const r of all){const id=r['owl:sameAs']||r['@id']||JSON.stringify(r);
+      const key=JSON.stringify([r['odpt:calendar'],id]);if(!seen.has(key)){seen.add(key);records.push(r);}}
+     queries[line].status='calendar-split-observed';
+    }else{queries[line].status='possible-cap';records.push(...own);}
+   }else records.push(...own);
   }catch(e){queries[line]={status:'source-unavailable',source:url,error:String(e&&e.name||'Error')+': '+String(e&&e.message||'').slice(0,100).replace(/https?:\/\/\S+/g,'[url]')};}
  }));
  const result=inspectTimetable(records,rows);

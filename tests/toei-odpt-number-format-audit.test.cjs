@@ -112,3 +112,19 @@ test('逐线请求区分空响应、范围不符与网络失败，不重复合�
  assert.equal(r.lines.Mita.count,0);
  assert.equal(r.officialCrosswalkVerifiedCount,0);
 });
+
+test('达到1000条时按工作日和土休日查询，保留完整来源番号并防止重复计数',async()=>{
+ const calls=[],weekday='odpt.Calendar:Weekday',holiday='odpt.Calendar:SaturdayHoliday';
+ const line='odpt.Railway:Toei.Asakusa';
+ const make=(i,cal)=>({'owl:sameAs':'odpt.TrainTimetable:example.'+cal+'.'+i,'odpt:railway':line,'odpt:calendar':cal,'odpt:trainNumber':String(i)+'T'});
+ const a=Array.from({length:750},(_,i)=>make(i,weekday)),b=Array.from({length:600},(_,i)=>make(i,holiday));
+ const fetcher=async url=>{
+  calls.push(url);
+  const data=!url.includes(line)?[]:url.includes('&odpt:calendar='+weekday)?a:url.includes('&odpt:calendar='+holiday)?b:[...a,...b].slice(0,1000);
+  return {ok:true,text:async()=>JSON.stringify(data)};
+ };
+ const r=await fetchTimetablesByLine(fetcher,rows);
+ assert.equal(calls.length,6);assert.equal(r.lines.Asakusa.count,1350);
+ assert.equal(r.queries.Asakusa.status,'calendar-split-observed');
+ assert.equal(r.coverageComplete,false);
+});
