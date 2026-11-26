@@ -18,6 +18,10 @@
 - 浅草线官方改点公告已检索到；生产代理源代码已有Toei TrainTimetable允许入口，但本环境DNS无法访问代理，改点后的完整名单未取得。Asakusa、Shinjuku、Oedo无正式manual_timetable_templates，不等于没有ODPT时刻表。未将缺失来源当作零列车，也未修改现有runtime或生产SQL。
 
 
+- 第三轮直通复核（2026-11-26）：[东西／千代田／南北线只读对账 SQL](supabase/queries/metro_through_number_reconciliation_readonly.sql) 已生产执行。既有东西线 JR-01 的11个正式 K 数字键全部能在旧模板找到（含507KR、603KR、1703KR等原格式）；不重复建段。东叶2000系 T/TR 原始番号东西线166个／东叶线136个，按现有东西线索引归类分别142／113个数字键，均无连续数字可合并；不把 R 丢失后的索引键当作完整列车身份。常磐缓行 K/S/E 分别193／265／55个数字键，可压缩148／219／51段；千代田 K/E 为233／110个数字键，E 包含MSE服务，不能一律归4000形。南北／埼玉高速 M 为136／113个完整数字键，末两位均仅80、82、84、86、88、90、92、94、96；原80–98M为运用号末两位参考，不能当完整列车番号处理。
+- 接续核对：西船桥同日历、同规范化番号及到发时刻严格相等且双边唯一22对（S12、SR3、T5、TR2）；绫濑5对（K1、S4）；赤羽岩渊无严格相等候选，不证明不存在直通，须核对停站时间差与来源。以上是旧模板接续候选，不授予运行链或实际车辆身份。九组候选均无已填来源修订日，不能仅凭此次对账替换已日期化的2611号段；四个JR 2611常磐缓行官方页面本环境未能获取，保留原映射。东叶车辆及线路证据见 https://www.jametro.or.jp/subway/japan/touyou/guide.html 与 https://www.toyokosoku.co.jp/company/profile ；埼玉高速见 https://www.jametro.or.jp/subway/japan/saitama/guide.html ；JR E233见 https://www.jreast.co.jp/train/local/e233.html 。本轮只新增已执行只读查询并集中更新本条，不写生产SQL、不改运行时、不执行额外部署或发布。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
