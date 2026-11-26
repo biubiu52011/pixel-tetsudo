@@ -93,12 +93,13 @@ test('only the two independent subway shared sections are symmetric',()=>{
  assert.deepEqual(actual,expected,'no other physical shared-track display pairs');
  const excluded=[['SaikyoKawagoe','ShonanShinjuku','Osaki'],
   ['Yokosuka','ShonanShinjuku','Nishi-Oi'],['Takasaki','UtsunomiyaJR','Tokyo'],
-  ['Joban','JobanMain','Toride'],['ChuoRapid','ChuoSobu','Shinjuku'],
+  ['Joban','JobanMain','Toride'],['ChuoRapid','ChuoSobuLocal','Shinjuku'],
   ['Yamanote','KeihinTohoku','Tokyo'],['UenoTokyo','Tokaido','Tokyo']];
  for(const [a,b,st] of excluded)for(const [host,peer] of [[a,b],[b,a]]){
   assert.equal(shared.getSharedLines(host).includes(peer),false,host+' '+peer);
   assert.equal(shared.isSharedStation(host,st,peer),false);
-  if(all[peer]&&all[peer].stations.includes(st))
+  assert.ok(all[host]&&all[peer],host+' '+peer+' must be canonical line IDs');
+  if(all[peer].stations.includes(st))
    assert.equal(shared.projectPosition(host,peer,pos(peer,st,null,0)),null);
  }
  assert.equal(shared.getSharedLines('Yamanote').length,0);
