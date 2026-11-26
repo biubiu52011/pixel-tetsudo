@@ -13916,7 +13916,1831 @@
           "actualVehicleConfirmed": false
         }
       ],
-      "originalRuntimeNumberRosters": [],
+      "originalRuntimeNumberRosters": [
+        {
+          "authority": "undated_template_live_owner_model_guarded",
+          "lineId": "Chiyoda",
+          "calendarType": "holiday",
+          "numberFamily": "jr-explicit-model-reference",
+          "exactContiguousBands": [
+            {
+              "from": "A1003K",
+              "to": "A1003K",
+              "count": 1
+            },
+            {
+              "from": "A1005K",
+              "to": "A1005K",
+              "count": 1
+            },
+            {
+              "from": "A1021K",
+              "to": "A1021K",
+              "count": 1
+            },
+            {
+              "from": "A1027K",
+              "to": "A1027K",
+              "count": 1
+            },
+            {
+              "from": "A1029K",
+              "to": "A1029K",
+              "count": 1
+            },
+            {
+              "from": "A1111K",
+              "to": "A1111K",
+              "count": 1
+            },
+            {
+              "from": "A1113K",
+              "to": "A1113K",
+              "count": 1
+            },
+            {
+              "from": "A1123K",
+              "to": "A1123K",
+              "count": 1
+            },
+            {
+              "from": "A1201K",
+              "to": "A1201K",
+              "count": 1
+            },
+            {
+              "from": "A1205K",
+              "to": "A1205K",
+              "count": 1
+            },
+            {
+              "from": "A1215K",
+              "to": "A1215K",
+              "count": 1
+            },
+            {
+              "from": "A1221K",
+              "to": "A1221K",
+              "count": 1
+            },
+            {
+              "from": "A1225K",
+              "to": "A1225K",
+              "count": 1
+            },
+            {
+              "from": "A1305K",
+              "to": "A1305K",
+              "count": 1
+            },
+            {
+              "from": "A1311K",
+              "to": "A1311K",
+              "count": 1
+            },
+            {
+              "from": "A1403K",
+              "to": "A1403K",
+              "count": 1
+            },
+            {
+              "from": "A1417K",
+              "to": "A1417K",
+              "count": 1
+            },
+            {
+              "from": "A1425K",
+              "to": "A1425K",
+              "count": 1
+            },
+            {
+              "from": "A1427K",
+              "to": "A1427K",
+              "count": 1
+            },
+            {
+              "from": "A1505K",
+              "to": "A1505K",
+              "count": 1
+            },
+            {
+              "from": "A1511K",
+              "to": "A1511K",
+              "count": 1
+            },
+            {
+              "from": "A1513K",
+              "to": "A1513K",
+              "count": 1
+            },
+            {
+              "from": "A1515K",
+              "to": "A1515K",
+              "count": 1
+            },
+            {
+              "from": "A1521K",
+              "to": "A1521K",
+              "count": 1
+            },
+            {
+              "from": "A1523K",
+              "to": "A1523K",
+              "count": 1
+            },
+            {
+              "from": "A1529K",
+              "to": "A1529K",
+              "count": 1
+            },
+            {
+              "from": "A1601K",
+              "to": "A1601K",
+              "count": 1
+            },
+            {
+              "from": "A1705K",
+              "to": "A1705K",
+              "count": 1
+            },
+            {
+              "from": "A1711K",
+              "to": "A1711K",
+              "count": 1
+            },
+            {
+              "from": "A1715K",
+              "to": "A1715K",
+              "count": 1
+            },
+            {
+              "from": "A1717K",
+              "to": "A1717K",
+              "count": 1
+            },
+            {
+              "from": "A1725K",
+              "to": "A1725K",
+              "count": 1
+            },
+            {
+              "from": "A1811K",
+              "to": "A1811K",
+              "count": 1
+            },
+            {
+              "from": "A1813K",
+              "to": "A1813K",
+              "count": 1
+            },
+            {
+              "from": "A1821K",
+              "to": "A1821K",
+              "count": 1
+            },
+            {
+              "from": "A1827K",
+              "to": "A1827K",
+              "count": 1
+            },
+            {
+              "from": "A1917K",
+              "to": "A1917K",
+              "count": 1
+            },
+            {
+              "from": "A1923K",
+              "to": "A1923K",
+              "count": 1
+            },
+            {
+              "from": "A1925K",
+              "to": "A1925K",
+              "count": 1
+            },
+            {
+              "from": "A1929K",
+              "to": "A1929K",
+              "count": 1
+            },
+            {
+              "from": "A2003K",
+              "to": "A2003K",
+              "count": 1
+            },
+            {
+              "from": "A2015K",
+              "to": "A2015K",
+              "count": 1
+            },
+            {
+              "from": "A2111K",
+              "to": "A2111K",
+              "count": 1
+            },
+            {
+              "from": "A2127K",
+              "to": "A2127K",
+              "count": 1
+            },
+            {
+              "from": "A2215K",
+              "to": "A2215K",
+              "count": 1
+            },
+            {
+              "from": "A2217K",
+              "to": "A2217K",
+              "count": 1
+            },
+            {
+              "from": "A2223K",
+              "to": "A2223K",
+              "count": 1
+            },
+            {
+              "from": "A2229K",
+              "to": "A2229K",
+              "count": 1
+            },
+            {
+              "from": "A2311K",
+              "to": "A2311K",
+              "count": 1
+            },
+            {
+              "from": "A401K",
+              "to": "A401K",
+              "count": 1
+            },
+            {
+              "from": "A415K",
+              "to": "A415K",
+              "count": 1
+            },
+            {
+              "from": "A501K",
+              "to": "A501K",
+              "count": 1
+            },
+            {
+              "from": "A503K",
+              "to": "A503K",
+              "count": 1
+            },
+            {
+              "from": "A505K",
+              "to": "A505K",
+              "count": 1
+            },
+            {
+              "from": "A509K",
+              "to": "A509K",
+              "count": 1
+            },
+            {
+              "from": "A517K",
+              "to": "A517K",
+              "count": 1
+            },
+            {
+              "from": "A519K",
+              "to": "A519K",
+              "count": 1
+            },
+            {
+              "from": "A621K",
+              "to": "A621K",
+              "count": 1
+            },
+            {
+              "from": "A623K",
+              "to": "A623K",
+              "count": 1
+            },
+            {
+              "from": "A705K",
+              "to": "A705K",
+              "count": 1
+            },
+            {
+              "from": "A709K",
+              "to": "A709K",
+              "count": 1
+            },
+            {
+              "from": "A711K",
+              "to": "A711K",
+              "count": 1
+            },
+            {
+              "from": "A715K",
+              "to": "A715K",
+              "count": 1
+            },
+            {
+              "from": "A717K",
+              "to": "A717K",
+              "count": 1
+            },
+            {
+              "from": "A725K",
+              "to": "A725K",
+              "count": 1
+            },
+            {
+              "from": "A727K",
+              "to": "A727K",
+              "count": 1
+            },
+            {
+              "from": "A801K",
+              "to": "A801K",
+              "count": 1
+            },
+            {
+              "from": "A803K",
+              "to": "A803K",
+              "count": 1
+            },
+            {
+              "from": "A819K",
+              "to": "A819K",
+              "count": 1
+            },
+            {
+              "from": "A821K",
+              "to": "A821K",
+              "count": 1
+            },
+            {
+              "from": "A823K",
+              "to": "A823K",
+              "count": 1
+            },
+            {
+              "from": "A829K",
+              "to": "A829K",
+              "count": 1
+            },
+            {
+              "from": "A911K",
+              "to": "A911K",
+              "count": 1
+            },
+            {
+              "from": "A915K",
+              "to": "A915K",
+              "count": 1
+            },
+            {
+              "from": "A925K",
+              "to": "A925K",
+              "count": 1
+            },
+            {
+              "from": "B1001K",
+              "to": "B1001K",
+              "count": 1
+            },
+            {
+              "from": "B1011K",
+              "to": "B1011K",
+              "count": 1
+            },
+            {
+              "from": "B1023K",
+              "to": "B1023K",
+              "count": 1
+            },
+            {
+              "from": "B1105K",
+              "to": "B1105K",
+              "count": 1
+            },
+            {
+              "from": "B1115K",
+              "to": "B1115K",
+              "count": 1
+            },
+            {
+              "from": "B1121K",
+              "to": "B1121K",
+              "count": 1
+            },
+            {
+              "from": "B1125K",
+              "to": "B1125K",
+              "count": 1
+            },
+            {
+              "from": "B1203K",
+              "to": "B1203K",
+              "count": 1
+            },
+            {
+              "from": "B1211K",
+              "to": "B1211K",
+              "count": 1
+            },
+            {
+              "from": "B1227K",
+              "to": "B1227K",
+              "count": 1
+            },
+            {
+              "from": "B1305K",
+              "to": "B1305K",
+              "count": 1
+            },
+            {
+              "from": "B1313K",
+              "to": "B1313K",
+              "count": 1
+            },
+            {
+              "from": "B1315K",
+              "to": "B1315K",
+              "count": 1
+            },
+            {
+              "from": "B1323K",
+              "to": "B1323K",
+              "count": 1
+            },
+            {
+              "from": "B1325K",
+              "to": "B1325K",
+              "count": 1
+            },
+            {
+              "from": "B1329K",
+              "to": "B1329K",
+              "count": 1
+            },
+            {
+              "from": "B1401K",
+              "to": "B1401K",
+              "count": 1
+            },
+            {
+              "from": "B1405K",
+              "to": "B1405K",
+              "count": 1
+            },
+            {
+              "from": "B1411K",
+              "to": "B1411K",
+              "count": 1
+            },
+            {
+              "from": "B1421K",
+              "to": "B1421K",
+              "count": 1
+            },
+            {
+              "from": "B1525K",
+              "to": "B1525K",
+              "count": 1
+            },
+            {
+              "from": "B1605K",
+              "to": "B1605K",
+              "count": 1
+            },
+            {
+              "from": "B1611K",
+              "to": "B1611K",
+              "count": 1
+            },
+            {
+              "from": "B1615K",
+              "to": "B1615K",
+              "count": 1
+            },
+            {
+              "from": "B1617K",
+              "to": "B1617K",
+              "count": 1
+            },
+            {
+              "from": "B1621K",
+              "to": "B1621K",
+              "count": 1
+            },
+            {
+              "from": "B1627K",
+              "to": "B1627K",
+              "count": 1
+            },
+            {
+              "from": "B1711K",
+              "to": "B1711K",
+              "count": 1
+            },
+            {
+              "from": "B1713K",
+              "to": "B1713K",
+              "count": 1
+            },
+            {
+              "from": "B1723K",
+              "to": "B1723K",
+              "count": 1
+            },
+            {
+              "from": "B1729K",
+              "to": "B1729K",
+              "count": 1
+            },
+            {
+              "from": "B1817K",
+              "to": "B1817K",
+              "count": 1
+            },
+            {
+              "from": "B1825K",
+              "to": "B1825K",
+              "count": 1
+            },
+            {
+              "from": "B1903K",
+              "to": "B1903K",
+              "count": 1
+            },
+            {
+              "from": "B1905K",
+              "to": "B1905K",
+              "count": 1
+            },
+            {
+              "from": "B1911K",
+              "to": "B1911K",
+              "count": 1
+            },
+            {
+              "from": "B1915K",
+              "to": "B1915K",
+              "count": 1
+            },
+            {
+              "from": "B1921K",
+              "to": "B1921K",
+              "count": 1
+            },
+            {
+              "from": "B2013K",
+              "to": "B2013K",
+              "count": 1
+            },
+            {
+              "from": "B2017K",
+              "to": "B2017K",
+              "count": 1
+            },
+            {
+              "from": "B2027K",
+              "to": "B2027K",
+              "count": 1
+            },
+            {
+              "from": "B2029K",
+              "to": "B2029K",
+              "count": 1
+            },
+            {
+              "from": "B2101K",
+              "to": "B2101K",
+              "count": 1
+            },
+            {
+              "from": "B2115K",
+              "to": "B2115K",
+              "count": 1
+            },
+            {
+              "from": "B2123K",
+              "to": "B2123K",
+              "count": 1
+            },
+            {
+              "from": "B2125K",
+              "to": "B2125K",
+              "count": 1
+            },
+            {
+              "from": "B2211K",
+              "to": "B2211K",
+              "count": 1
+            },
+            {
+              "from": "B2227K",
+              "to": "B2227K",
+              "count": 1
+            },
+            {
+              "from": "B2317K",
+              "to": "B2317K",
+              "count": 1
+            },
+            {
+              "from": "B2323K",
+              "to": "B2323K",
+              "count": 1
+            },
+            {
+              "from": "B2329K",
+              "to": "B2329K",
+              "count": 1
+            },
+            {
+              "from": "B2411K",
+              "to": "B2411K",
+              "count": 1
+            },
+            {
+              "from": "B401K",
+              "to": "B401K",
+              "count": 1
+            },
+            {
+              "from": "B515K",
+              "to": "B515K",
+              "count": 1
+            },
+            {
+              "from": "B603K",
+              "to": "B603K",
+              "count": 1
+            },
+            {
+              "from": "B605K",
+              "to": "B605K",
+              "count": 1
+            },
+            {
+              "from": "B609K",
+              "to": "B609K",
+              "count": 1
+            },
+            {
+              "from": "B617K",
+              "to": "B617K",
+              "count": 1
+            },
+            {
+              "from": "B701K",
+              "to": "B701K",
+              "count": 1
+            },
+            {
+              "from": "B719K",
+              "to": "B719K",
+              "count": 1
+            },
+            {
+              "from": "B721K",
+              "to": "B721K",
+              "count": 1
+            },
+            {
+              "from": "B723K",
+              "to": "B723K",
+              "count": 1
+            },
+            {
+              "from": "B809K",
+              "to": "B809K",
+              "count": 1
+            },
+            {
+              "from": "B811K",
+              "to": "B811K",
+              "count": 1
+            },
+            {
+              "from": "B813K",
+              "to": "B813K",
+              "count": 1
+            },
+            {
+              "from": "B815K",
+              "to": "B815K",
+              "count": 1
+            },
+            {
+              "from": "B825K",
+              "to": "B825K",
+              "count": 1
+            },
+            {
+              "from": "B903K",
+              "to": "B903K",
+              "count": 1
+            },
+            {
+              "from": "B905K",
+              "to": "B905K",
+              "count": 1
+            },
+            {
+              "from": "B917K",
+              "to": "B917K",
+              "count": 1
+            },
+            {
+              "from": "B919K",
+              "to": "B919K",
+              "count": 1
+            },
+            {
+              "from": "B921K",
+              "to": "B921K",
+              "count": 1
+            },
+            {
+              "from": "B927K",
+              "to": "B927K",
+              "count": 1
+            },
+            {
+              "from": "B929K",
+              "to": "B929K",
+              "count": 1
+            }
+          ],
+          "sourceUrl": "https://www.jreast.co.jp/train/local/e233.html",
+          "validFrom": "2026-11-26",
+          "validTo": null,
+          "actualVehicleConfirmed": false
+        },
+        {
+          "authority": "undated_template_live_owner_model_guarded",
+          "lineId": "Chiyoda",
+          "calendarType": "weekday",
+          "numberFamily": "jr-explicit-model-reference",
+          "exactContiguousBands": [
+            {
+              "from": "A1009K",
+              "to": "A1009K",
+              "count": 1
+            },
+            {
+              "from": "A1013K",
+              "to": "A1013K",
+              "count": 1
+            },
+            {
+              "from": "A1017K",
+              "to": "A1017K",
+              "count": 1
+            },
+            {
+              "from": "A1029K",
+              "to": "A1029K",
+              "count": 1
+            },
+            {
+              "from": "A1031K",
+              "to": "A1031K",
+              "count": 1
+            },
+            {
+              "from": "A1101K",
+              "to": "A1101K",
+              "count": 1
+            },
+            {
+              "from": "A1103K",
+              "to": "A1103K",
+              "count": 1
+            },
+            {
+              "from": "A1105K",
+              "to": "A1105K",
+              "count": 1
+            },
+            {
+              "from": "A1107K",
+              "to": "A1107K",
+              "count": 1
+            },
+            {
+              "from": "A1121K",
+              "to": "A1121K",
+              "count": 1
+            },
+            {
+              "from": "A1209K",
+              "to": "A1209K",
+              "count": 1
+            },
+            {
+              "from": "A1213K",
+              "to": "A1213K",
+              "count": 1
+            },
+            {
+              "from": "A1217K",
+              "to": "A1217K",
+              "count": 1
+            },
+            {
+              "from": "A1223K",
+              "to": "A1223K",
+              "count": 1
+            },
+            {
+              "from": "A1227K",
+              "to": "A1227K",
+              "count": 1
+            },
+            {
+              "from": "A1229K",
+              "to": "A1229K",
+              "count": 1
+            },
+            {
+              "from": "A1301K",
+              "to": "A1301K",
+              "count": 1
+            },
+            {
+              "from": "A1303K",
+              "to": "A1303K",
+              "count": 1
+            },
+            {
+              "from": "A1307K",
+              "to": "A1307K",
+              "count": 1
+            },
+            {
+              "from": "A1309K",
+              "to": "A1309K",
+              "count": 1
+            },
+            {
+              "from": "A1405K",
+              "to": "A1405K",
+              "count": 1
+            },
+            {
+              "from": "A1413K",
+              "to": "A1413K",
+              "count": 1
+            },
+            {
+              "from": "A1421K",
+              "to": "A1421K",
+              "count": 1
+            },
+            {
+              "from": "A1429K",
+              "to": "A1429K",
+              "count": 1
+            },
+            {
+              "from": "A1431K",
+              "to": "A1431K",
+              "count": 1
+            },
+            {
+              "from": "A1503K",
+              "to": "A1503K",
+              "count": 1
+            },
+            {
+              "from": "A1507K",
+              "to": "A1507K",
+              "count": 1
+            },
+            {
+              "from": "A1509K",
+              "to": "A1509K",
+              "count": 1
+            },
+            {
+              "from": "A1517K",
+              "to": "A1517K",
+              "count": 1
+            },
+            {
+              "from": "A1601K",
+              "to": "A1601K",
+              "count": 1
+            },
+            {
+              "from": "A1613K",
+              "to": "A1613K",
+              "count": 1
+            },
+            {
+              "from": "A1615K",
+              "to": "A1615K",
+              "count": 1
+            },
+            {
+              "from": "A1621K",
+              "to": "A1621K",
+              "count": 1
+            },
+            {
+              "from": "A1623K",
+              "to": "A1623K",
+              "count": 1
+            },
+            {
+              "from": "A1629K",
+              "to": "A1629K",
+              "count": 1
+            },
+            {
+              "from": "A1705K",
+              "to": "A1705K",
+              "count": 1
+            },
+            {
+              "from": "A1707K",
+              "to": "A1707K",
+              "count": 1
+            },
+            {
+              "from": "A1727K",
+              "to": "A1727K",
+              "count": 1
+            },
+            {
+              "from": "A1803K",
+              "to": "A1803K",
+              "count": 1
+            },
+            {
+              "from": "A1809K",
+              "to": "A1809K",
+              "count": 1
+            },
+            {
+              "from": "A1813K",
+              "to": "A1813K",
+              "count": 1
+            },
+            {
+              "from": "A1815K",
+              "to": "A1815K",
+              "count": 1
+            },
+            {
+              "from": "A1817K",
+              "to": "A1817K",
+              "count": 1
+            },
+            {
+              "from": "A1831K",
+              "to": "A1831K",
+              "count": 1
+            },
+            {
+              "from": "A1919K",
+              "to": "A1919K",
+              "count": 1
+            },
+            {
+              "from": "A1929K",
+              "to": "A1929K",
+              "count": 1
+            },
+            {
+              "from": "A2027K",
+              "to": "A2027K",
+              "count": 1
+            },
+            {
+              "from": "A2101K",
+              "to": "A2101K",
+              "count": 1
+            },
+            {
+              "from": "A2105K",
+              "to": "A2105K",
+              "count": 1
+            },
+            {
+              "from": "A2109K",
+              "to": "A2109K",
+              "count": 1
+            },
+            {
+              "from": "A2131K",
+              "to": "A2131K",
+              "count": 1
+            },
+            {
+              "from": "A2203K",
+              "to": "A2203K",
+              "count": 1
+            },
+            {
+              "from": "A2215K",
+              "to": "A2215K",
+              "count": 1
+            },
+            {
+              "from": "A2221K",
+              "to": "A2221K",
+              "count": 1
+            },
+            {
+              "from": "A2229K",
+              "to": "A2229K",
+              "count": 1
+            },
+            {
+              "from": "A2309K",
+              "to": "A2309K",
+              "count": 1
+            },
+            {
+              "from": "A401K",
+              "to": "A401K",
+              "count": 1
+            },
+            {
+              "from": "A415K",
+              "to": "A415K",
+              "count": 1
+            },
+            {
+              "from": "A501K",
+              "to": "A501K",
+              "count": 1
+            },
+            {
+              "from": "A603K",
+              "to": "A603K",
+              "count": 1
+            },
+            {
+              "from": "A605K",
+              "to": "A605K",
+              "count": 1
+            },
+            {
+              "from": "A609K",
+              "to": "A609K",
+              "count": 1
+            },
+            {
+              "from": "A617K",
+              "to": "A617K",
+              "count": 1
+            },
+            {
+              "from": "A619K",
+              "to": "A619K",
+              "count": 1
+            },
+            {
+              "from": "A621K",
+              "to": "A621K",
+              "count": 1
+            },
+            {
+              "from": "A623K",
+              "to": "A623K",
+              "count": 1
+            },
+            {
+              "from": "A625K",
+              "to": "A625K",
+              "count": 1
+            },
+            {
+              "from": "A701K",
+              "to": "A701K",
+              "count": 1
+            },
+            {
+              "from": "A707K",
+              "to": "A707K",
+              "count": 1
+            },
+            {
+              "from": "A711K",
+              "to": "A711K",
+              "count": 1
+            },
+            {
+              "from": "A715K",
+              "to": "A715K",
+              "count": 1
+            },
+            {
+              "from": "A727K",
+              "to": "A727K",
+              "count": 1
+            },
+            {
+              "from": "A729K",
+              "to": "A729K",
+              "count": 1
+            },
+            {
+              "from": "A731K",
+              "to": "A731K",
+              "count": 1
+            },
+            {
+              "from": "A807K",
+              "to": "A807K",
+              "count": 1
+            },
+            {
+              "from": "A813K",
+              "to": "A813K",
+              "count": 1
+            },
+            {
+              "from": "A821K",
+              "to": "A821K",
+              "count": 1
+            },
+            {
+              "from": "A823K",
+              "to": "A823K",
+              "count": 1
+            },
+            {
+              "from": "A903K",
+              "to": "A903K",
+              "count": 1
+            },
+            {
+              "from": "A905K",
+              "to": "A905K",
+              "count": 1
+            },
+            {
+              "from": "A919K",
+              "to": "A919K",
+              "count": 1
+            },
+            {
+              "from": "A927K",
+              "to": "A927K",
+              "count": 1
+            },
+            {
+              "from": "B1003K",
+              "to": "B1003K",
+              "count": 1
+            },
+            {
+              "from": "B1005K",
+              "to": "B1005K",
+              "count": 1
+            },
+            {
+              "from": "B1007K",
+              "to": "B1007K",
+              "count": 1
+            },
+            {
+              "from": "B1021K",
+              "to": "B1021K",
+              "count": 1
+            },
+            {
+              "from": "B1023K",
+              "to": "B1023K",
+              "count": 1
+            },
+            {
+              "from": "B1027K",
+              "to": "B1027K",
+              "count": 1
+            },
+            {
+              "from": "B1109K",
+              "to": "B1109K",
+              "count": 1
+            },
+            {
+              "from": "B1113K",
+              "to": "B1113K",
+              "count": 1
+            },
+            {
+              "from": "B1117K",
+              "to": "B1117K",
+              "count": 1
+            },
+            {
+              "from": "B1129K",
+              "to": "B1129K",
+              "count": 1
+            },
+            {
+              "from": "B1201K",
+              "to": "B1201K",
+              "count": 1
+            },
+            {
+              "from": "B1203K",
+              "to": "B1203K",
+              "count": 1
+            },
+            {
+              "from": "B1207K",
+              "to": "B1207K",
+              "count": 1
+            },
+            {
+              "from": "B1221K",
+              "to": "B1221K",
+              "count": 1
+            },
+            {
+              "from": "B1231K",
+              "to": "B1231K",
+              "count": 1
+            },
+            {
+              "from": "B1305K",
+              "to": "B1305K",
+              "count": 1
+            },
+            {
+              "from": "B1309K",
+              "to": "B1309K",
+              "count": 1
+            },
+            {
+              "from": "B1313K",
+              "to": "B1313K",
+              "count": 1
+            },
+            {
+              "from": "B1329K",
+              "to": "B1329K",
+              "count": 1
+            },
+            {
+              "from": "B1403K",
+              "to": "B1403K",
+              "count": 1
+            },
+            {
+              "from": "B1407K",
+              "to": "B1407K",
+              "count": 1
+            },
+            {
+              "from": "B1409K",
+              "to": "B1409K",
+              "count": 1
+            },
+            {
+              "from": "B1417K",
+              "to": "B1417K",
+              "count": 1
+            },
+            {
+              "from": "B1423K",
+              "to": "B1423K",
+              "count": 1
+            },
+            {
+              "from": "B1427K",
+              "to": "B1427K",
+              "count": 1
+            },
+            {
+              "from": "B1501K",
+              "to": "B1501K",
+              "count": 1
+            },
+            {
+              "from": "B1505K",
+              "to": "B1505K",
+              "count": 1
+            },
+            {
+              "from": "B1513K",
+              "to": "B1513K",
+              "count": 1
+            },
+            {
+              "from": "B1521K",
+              "to": "B1521K",
+              "count": 1
+            },
+            {
+              "from": "B1529K",
+              "to": "B1529K",
+              "count": 1
+            },
+            {
+              "from": "B1607K",
+              "to": "B1607K",
+              "count": 1
+            },
+            {
+              "from": "B1613K",
+              "to": "B1613K",
+              "count": 1
+            },
+            {
+              "from": "B1617K",
+              "to": "B1617K",
+              "count": 1
+            },
+            {
+              "from": "B1631K",
+              "to": "B1631K",
+              "count": 1
+            },
+            {
+              "from": "B1703K",
+              "to": "B1703K",
+              "count": 1
+            },
+            {
+              "from": "B1709K",
+              "to": "B1709K",
+              "count": 1
+            },
+            {
+              "from": "B1715K",
+              "to": "B1715K",
+              "count": 1
+            },
+            {
+              "from": "B1719K",
+              "to": "B1719K",
+              "count": 1
+            },
+            {
+              "from": "B1729K",
+              "to": "B1729K",
+              "count": 1
+            },
+            {
+              "from": "B1805K",
+              "to": "B1805K",
+              "count": 1
+            },
+            {
+              "from": "B1823K",
+              "to": "B1823K",
+              "count": 1
+            },
+            {
+              "from": "B1827K",
+              "to": "B1827K",
+              "count": 1
+            },
+            {
+              "from": "B1901K",
+              "to": "B1901K",
+              "count": 1
+            },
+            {
+              "from": "B1907K",
+              "to": "B1907K",
+              "count": 1
+            },
+            {
+              "from": "B1917K",
+              "to": "B1917K",
+              "count": 1
+            },
+            {
+              "from": "B1921K",
+              "to": "B1921K",
+              "count": 1
+            },
+            {
+              "from": "B2003K",
+              "to": "B2003K",
+              "count": 1
+            },
+            {
+              "from": "B2005K",
+              "to": "B2005K",
+              "count": 1
+            },
+            {
+              "from": "B2009K",
+              "to": "B2009K",
+              "count": 1
+            },
+            {
+              "from": "B2013K",
+              "to": "B2013K",
+              "count": 1
+            },
+            {
+              "from": "B2015K",
+              "to": "B2015K",
+              "count": 1
+            },
+            {
+              "from": "B2031K",
+              "to": "B2031K",
+              "count": 1
+            },
+            {
+              "from": "B2119K",
+              "to": "B2119K",
+              "count": 1
+            },
+            {
+              "from": "B2129K",
+              "to": "B2129K",
+              "count": 1
+            },
+            {
+              "from": "B2205K",
+              "to": "B2205K",
+              "count": 1
+            },
+            {
+              "from": "B2209K",
+              "to": "B2209K",
+              "count": 1
+            },
+            {
+              "from": "B2301K",
+              "to": "B2301K",
+              "count": 1
+            },
+            {
+              "from": "B2303K",
+              "to": "B2303K",
+              "count": 1
+            },
+            {
+              "from": "B2315K",
+              "to": "B2315K",
+              "count": 1
+            },
+            {
+              "from": "B2321K",
+              "to": "B2321K",
+              "count": 1
+            },
+            {
+              "from": "B2331K",
+              "to": "B2331K",
+              "count": 1
+            },
+            {
+              "from": "B2409K",
+              "to": "B2409K",
+              "count": 1
+            },
+            {
+              "from": "B2429K",
+              "to": "B2429K",
+              "count": 1
+            },
+            {
+              "from": "B401K",
+              "to": "B401K",
+              "count": 1
+            },
+            {
+              "from": "B509K",
+              "to": "B509K",
+              "count": 1
+            },
+            {
+              "from": "B613K",
+              "to": "B613K",
+              "count": 1
+            },
+            {
+              "from": "B615K",
+              "to": "B615K",
+              "count": 1
+            },
+            {
+              "from": "B701K",
+              "to": "B701K",
+              "count": 1
+            },
+            {
+              "from": "B703K",
+              "to": "B703K",
+              "count": 1
+            },
+            {
+              "from": "B719K",
+              "to": "B719K",
+              "count": 1
+            },
+            {
+              "from": "B721K",
+              "to": "B721K",
+              "count": 1
+            },
+            {
+              "from": "B723K",
+              "to": "B723K",
+              "count": 1
+            },
+            {
+              "from": "B801K",
+              "to": "B801K",
+              "count": 1
+            },
+            {
+              "from": "B805K",
+              "to": "B805K",
+              "count": 1
+            },
+            {
+              "from": "B807K",
+              "to": "B807K",
+              "count": 1
+            },
+            {
+              "from": "B811K",
+              "to": "B811K",
+              "count": 1
+            },
+            {
+              "from": "B815K",
+              "to": "B815K",
+              "count": 1
+            },
+            {
+              "from": "B817K",
+              "to": "B817K",
+              "count": 1
+            },
+            {
+              "from": "B825K",
+              "to": "B825K",
+              "count": 1
+            },
+            {
+              "from": "B827K",
+              "to": "B827K",
+              "count": 1
+            },
+            {
+              "from": "B909K",
+              "to": "B909K",
+              "count": 1
+            },
+            {
+              "from": "B913K",
+              "to": "B913K",
+              "count": 1
+            },
+            {
+              "from": "B929K",
+              "to": "B929K",
+              "count": 1
+            },
+            {
+              "from": "B931K",
+              "to": "B931K",
+              "count": 1
+            }
+          ],
+          "sourceUrl": "https://www.jreast.co.jp/train/local/e233.html",
+          "validFrom": "2026-11-26",
+          "validTo": null,
+          "actualVehicleConfirmed": false
+        },
+        {
+          "authority": "undated_template_live_owner_model_guarded",
+          "lineId": "ChiyodaBranch",
+          "calendarType": "holiday",
+          "numberFamily": "jr-explicit-model-reference",
+          "exactContiguousBands": [
+            {
+              "from": "B1105K",
+              "to": "B1105K",
+              "count": 1
+            },
+            {
+              "from": "B1125K",
+              "to": "B1125K",
+              "count": 1
+            },
+            {
+              "from": "B1211K",
+              "to": "B1211K",
+              "count": 1
+            },
+            {
+              "from": "B1305K",
+              "to": "B1305K",
+              "count": 1
+            },
+            {
+              "from": "B1605K",
+              "to": "B1605K",
+              "count": 1
+            },
+            {
+              "from": "B1711K",
+              "to": "B1711K",
+              "count": 1
+            },
+            {
+              "from": "B1817K",
+              "to": "B1817K",
+              "count": 1
+            },
+            {
+              "from": "B1903K",
+              "to": "B1903K",
+              "count": 1
+            },
+            {
+              "from": "B1915K",
+              "to": "B1915K",
+              "count": 1
+            },
+            {
+              "from": "B2115K",
+              "to": "B2115K",
+              "count": 1
+            },
+            {
+              "from": "B2125K",
+              "to": "B2125K",
+              "count": 1
+            },
+            {
+              "from": "B605K",
+              "to": "B605K",
+              "count": 1
+            },
+            {
+              "from": "B721K",
+              "to": "B721K",
+              "count": 1
+            },
+            {
+              "from": "B723K",
+              "to": "B723K",
+              "count": 1
+            },
+            {
+              "from": "B811K",
+              "to": "B811K",
+              "count": 1
+            },
+            {
+              "from": "B905K",
+              "to": "B905K",
+              "count": 1
+            },
+            {
+              "from": "B921K",
+              "to": "B921K",
+              "count": 1
+            }
+          ],
+          "sourceUrl": "https://www.jreast.co.jp/train/local/e233.html",
+          "validFrom": "2026-11-26",
+          "validTo": null,
+          "actualVehicleConfirmed": false
+        },
+        {
+          "authority": "undated_template_live_owner_model_guarded",
+          "lineId": "ChiyodaBranch",
+          "calendarType": "weekday",
+          "numberFamily": "jr-explicit-model-reference",
+          "exactContiguousBands": [
+            {
+              "from": "B1003K",
+              "to": "B1003K",
+              "count": 1
+            },
+            {
+              "from": "B1007K",
+              "to": "B1007K",
+              "count": 1
+            },
+            {
+              "from": "B1109K",
+              "to": "B1109K",
+              "count": 1
+            },
+            {
+              "from": "B1113K",
+              "to": "B1113K",
+              "count": 1
+            },
+            {
+              "from": "B1203K",
+              "to": "B1203K",
+              "count": 1
+            },
+            {
+              "from": "B1207K",
+              "to": "B1207K",
+              "count": 1
+            },
+            {
+              "from": "B1309K",
+              "to": "B1309K",
+              "count": 1
+            },
+            {
+              "from": "B1329K",
+              "to": "B1329K",
+              "count": 1
+            },
+            {
+              "from": "B1407K",
+              "to": "B1407K",
+              "count": 1
+            },
+            {
+              "from": "B1409K",
+              "to": "B1409K",
+              "count": 1
+            },
+            {
+              "from": "B1513K",
+              "to": "B1513K",
+              "count": 1
+            },
+            {
+              "from": "B1529K",
+              "to": "B1529K",
+              "count": 1
+            },
+            {
+              "from": "B1703K",
+              "to": "B1703K",
+              "count": 1
+            },
+            {
+              "from": "B1709K",
+              "to": "B1709K",
+              "count": 1
+            },
+            {
+              "from": "B1805K",
+              "to": "B1805K",
+              "count": 1
+            },
+            {
+              "from": "B1907K",
+              "to": "B1907K",
+              "count": 1
+            },
+            {
+              "from": "B1921K",
+              "to": "B1921K",
+              "count": 1
+            },
+            {
+              "from": "B2003K",
+              "to": "B2003K",
+              "count": 1
+            },
+            {
+              "from": "B2009K",
+              "to": "B2009K",
+              "count": 1
+            },
+            {
+              "from": "B2331K",
+              "to": "B2331K",
+              "count": 1
+            },
+            {
+              "from": "B701K",
+              "to": "B701K",
+              "count": 1
+            },
+            {
+              "from": "B807K",
+              "to": "B807K",
+              "count": 1
+            },
+            {
+              "from": "B909K",
+              "to": "B909K",
+              "count": 1
+            }
+          ],
+          "sourceUrl": "https://www.jreast.co.jp/train/local/e233.html",
+          "validFrom": "2026-11-26",
+          "validTo": null,
+          "actualVehicleConfirmed": false
+        }
+      ],
       "datedNamedServiceNumbers": [],
       "existingAdapterExactNumberRefs": [],
       "ambiguousYamagataLineNumberCandidates": [],
