@@ -2645,7 +2645,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "tokyu-3000-plan": ["TokyuMeguro", "TokyuShinYokohama", "Mita", "Namboku"],
   "tokyu-3020": ["TokyuMeguro", "TokyuShinYokohama"],
   "yokohama-y500": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho_Seibu", "Ikebukuro"],
-  "seibu-6000-fukutoshin": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin"],
+  "seibu-6000-fukutoshin": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho"],
   "seibu-40000": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho", "SeibuChichibu", "SeibuShinjuku"],
   "seibu-20000": ["Ikebukuro", "SeibuShinjuku", "Seibu_Sayama"],
   "seibu-30000": ["Ikebukuro", "SeibuShinjuku", "Seibu_Sayama"],
