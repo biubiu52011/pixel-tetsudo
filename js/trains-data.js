@@ -1052,22 +1052,14 @@ var _geomKey = typeof _geomKey === "function" ? _geomKey : function(lineId) {
   return lineId + (_isMobileView() ? "__m" : "__d");
 };
 
-  // 物理共轨，不按站名重合或直通关系猜测。区间两端均为实际共轨边界。
+  // shared_track 仅用于独立运营线路实际共用同一组物理轨道的区间。
+  // 独立复复线、既有线路串联的运营系统、同线不同区段及直通关系均不纳入。
+  // 站名或站序重合不是共轨依据；只允许显式核实的白名单区间。
   var _SHARED_TRACK_SECTIONS = [
     // https://www.tokyometro.jp/corporate/enterprise/passenger_rail/transportation/lines/index.html
     {lines:['Yurakucho','Fukutoshin'],from:'Wakoshi',to:'Kotake-Mukaihara'},
     // https://www.tokyometro.jp/ticket/particularcase/meguro_shiroganetakanawa/index.html
-    {lines:['Namboku','Mita'],from:'Meguro',to:'Shirokane-Takanawa'},
-    // https://toyokeizai.net/articles/-/402518?display=b
-    {lines:['SaikyoKawagoe','ShonanShinjuku'],from:'Osaki',to:'Ikebukuro'},
-    // https://room-p.net/webtrip/japan/jreast/shonanshinjuku/shonanshinjuku.html
-    // 戸塚以南存在分岐，不把未逐轨核实的区段自动延伸。
-    {lines:['Yokosuka','ShonanShinjuku'],from:'Nishi-Oi',to:'Totsuka'},
-    // https://yukemuri-milkyway.com/line-guide-jreast-takasaki/
-    {lines:['Takasaki','UtsunomiyaJR'],from:'Tokyo',to:'Omiya'},
-    // 两个项目地图重叠的常磐本线区间；不包括独立的常磐缓行线。
-    // https://www.tokyo-train-master.com/jl-joban-local
-    {lines:['Joban','JobanMain'],from:'Toride',to:'Tsuchiura'}
+    {lines:['Namboku','Mita'],from:'Meguro',to:'Shirokane-Takanawa'}
   ];
   function _sharedLinesData() {
     return window.RailwayDB && window.RailwayDB.getAllLines ? window.RailwayDB.getAllLines() :
