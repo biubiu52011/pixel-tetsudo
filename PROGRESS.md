@@ -31,6 +31,10 @@
 - 官方资料重新核实：東京都交通局・公共交通オープンデータ協議会 [TrainTimetable](https://ckan.odpt.org/en/dataset/r_train_timetable-toei) 与 [Train](https://ckan.odpt.org/en/dataset/r_train_location-toei) 均明确大江户省略末尾1/2（1001A1→1001A），Train实时位置排除目黑—白金高轮；不得据省略号码猜完整番号或批次。车型见 https://www.kotsu.metro.tokyo.jp/about/koukai/vehicle_outline/model_diagram/ 。6500及5500通用素材可用；6300、新宿两批和大江户四类素材仍为review。京王新线408、东急目黑889、相铁新横滨328个既有来源标识均无修订日，不强行转换为都营番号；新宿、浅草、大江户无正式manual模板，不据此认定无列车。此次核对官方数据目录而非取得完整当前API数据，未更新浅草改点后名册或实时交叉表。只读SQL执行成功，未写生产、未改运行时。
  
 
+- 第六轮横滨与全局验收（2026-11-26）：[17线路键及横滨SQL只读验收](supabase/queries/metro_yokohama_final_coverage_review_readonly.sql) 已执行。官方[横滨市营GTFS目录](https://ckan.odpt.org/dataset/yokohama_municipal_train) 存在20251226版，有效2025-12-26～2026-12-31，无须人为按月份拆分。既有蓝线698条模板（平369／休329）、去重563，绿线605条（平336／休269）、去重462；均未登记来源修订日，尚未取得新版压缩包进行逐号和时刻核验。蓝线a280/b283，绿线a193/b188/c40/d41；a/c对应Inbound，b/d对应Outbound，c/d并非可丢弃的车型标记。蓝线五种generic素材、绿线两种review素材均可用；绿线10000形已有605条单一车型计划记录，但不能据此授予1次或2次车PNG。车辆资料：https://www.city.yokohama.lg.jp/kotsu/tanoshimou/otanoshimi/sharyosyoukai.html ，2026年运营概况：https://www.city.yokohama.lg.jp/kotsu/kigyo/gaiyou/subway.html 。蓝线无唯一车型证据，两线保持零正式号段。
+- 本次审计范围为东京Metro 9线加两支线、都营4线、横滨2线，共17个线路键（并非全国地下铁）。生产2611合计2605条参考号段、9个有号段线路键、8个无号段线路键，同线路同后缀跨PNG区间冲突0，实际车辆确认0。只读验收状态：范围内六轮对账完成；运行时/生产数据变更未实施。四个待精确化包络（Hibiya S、Hanzomon S/K/T）可按首轮已验证的1255个数字后缀组合分成1003段，净增999行；仍需授权执行。THライナー9个无纯号段冲突的候选可另行准备新增参考（2个冲突番号须保留前缀/车种）；池袋62条旧F-Liner错误候选已完成修正预检。不得把旧版浅草、未定日期模板、批次素材或接续候选升级为现行实车。其余事项按缺少来源/车型证据归类，不继续重复收集既有正确名单。未写生产数据库，未改运行时，CI尚未验收。
+ 
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
