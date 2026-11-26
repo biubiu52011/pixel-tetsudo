@@ -29,7 +29,7 @@ function buildIndex(input) {
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
-    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__hanzomonLiveModelEvidence=hanzomonLiveModelEvidence; root.__chiyodaLiveEvidence=chiyodaLiveEvidence; root.__yurakuchoFukutoshinLiveEvidence=yurakuchoFukutoshinLiveEvidence; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
+    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__hanzomonLiveModelEvidence=hanzomonLiveModelEvidence; root.__chiyodaLiveEvidence=chiyodaLiveEvidence; root.__yurakuchoFukutoshinLiveEvidence=yurakuchoFukutoshinLiveEvidence; root.__nambokuMitaLiveEvidence=nambokuMitaLiveEvidence; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
   // 2611 M-03 guard fixtures: not claims that a train used these cars.
   // A shared S train number is insufficient if vehicle sources disagree.
@@ -354,17 +354,17 @@ function buildIndex(input) {
     entry.numbers.push(...group.numbers);
   }
   for(const entry of chGroups.values())entry.numbers=[...new Set(entry.numbers)].sort();
-  const yf=win.__yurakuchoFukutoshinLiveEvidence;
+  for(const yf of [win.__yurakuchoFukutoshinLiveEvidence,win.__nambokuMitaLiveEvidence]){
   const yfGroups=new Map();
   for(const group of yf.groups)for(const item of yf.models){
-    if(item.family!==(group.suffix==='K2'?'K':group.suffix)||!item.lines.includes(group.lineId)||
+    if(item.family!==(group.suffix==='K2'?'K':group.suffix==='S2'?'S':group.suffix)||!item.lines.includes(group.lineId)||
        (group.trainType==='S-TRAIN'&&item.model!=='西武40000系'))continue;
-    const asset=get(item.png,'runtime-yurakucho-fukutoshin-live-model');
+    const asset=get(item.png,'runtime-'+(yf.corridor||'yurakucho-fukutoshin')+'-live-model');
     if(!asset||asset.quarantined)throw Error('Metro through artwork unavailable '+item.model);
     for(const number of group.numbers){
       const m=win.TrainNumberPngRanges.match(number,group.lineId,{
         trainNumber:number,positionLineId:group.lineId,displayLineId:group.lineId,
-        sourceRailway:'odpt.Railway:TokyoMetro.'+group.lineId,trainOperator:'TokyoMetro',
+        sourceRailway:yf.providers?yf.providers[group.lineId].railway:'odpt.Railway:TokyoMetro.'+group.lineId,trainOperator:yf.providers?yf.providers[group.lineId].operator:'TokyoMetro',
         trainOwner:'odpt.TrainOwner:'+item.owner,trainType:group.trainType,
         calendarType:group.calendar,serviceDate:group.calendar==='weekday'?'2026-11-26':'2026-11-29',
         positionSource:'realtime-api',estimated:false,realtimeVehicleType:item.model
@@ -377,7 +377,7 @@ function buildIndex(input) {
     if(!entry){
       entry={authority:'undated_template_live_owner_model_guarded',lineId:group.lineId,
         calendarType:group.calendar,numberFamily:group.suffix+'-'+group.trainType+'-explicit-model-reference',
-        corridor:'yurakucho-fukutoshin',model:item.model,sourceUrl:item.url,validFrom:yf.observedOn,
+        corridor:yf.corridor||'yurakucho-fukutoshin',model:item.model,sourceUrl:item.url,validFrom:yf.observedOn,
         validTo:null,numberFormat:'full_exact',numbers:[],referenceOnly:true,illustrative:true,
         actualVehicleConfirmed:false,guardDescription:'Exact undated template number, service type, calendar and explicit live owner/model required; not current timetable or physical identity proof'};
       yfGroups.set(key,entry);asset.runtimeNumberRosters.push(entry);
@@ -385,6 +385,7 @@ function buildIndex(input) {
     entry.numbers.push(...group.numbers);
   }
   for(const entry of yfGroups.values())entry.numbers=[...new Set(entry.numbers)].sort();
+  }
   // 浅草线新版官方名册使用同一运行时责任规则；历史SQL/静态JS条目不改写。
   const asakusa=win.TrainNumberPngRanges.toeiAsakusaOfficialRoster;
   const asakusaPng=get('../images/列车/都営地下鉄/都営地下鉄_5500形.png','runtime-asakusa-official');
@@ -649,6 +650,11 @@ function buildIndex(input) {
     for(const roster of asset.runtimeNumberRosters){
       roster.explicitDocumentedNumberCount=roster.numbers.length;
       roster.exactContiguousBands=exactBands(roster.numbers);
+      if(roster.corridor==='namboku-mita-saitama'){
+        for(const number of roster.numbers)if(/^[AB][0-9]+S2$/.test(number))
+          roster.exactContiguousBands.push({from:number,to:number,count:1});
+        roster.exactContiguousBands.sort((a,b)=>a.from.localeCompare(b.from));
+      }
       delete roster.numbers;
     }
     for(const group of asset.historicalNumberedSources){

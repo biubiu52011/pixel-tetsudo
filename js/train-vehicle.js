@@ -2160,8 +2160,8 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "東京メトロ9000系",
     "iconName": "東京メトロ9000系",
     "asset": "../images/列车/東京メトロ/東京メトロ_9000系.png",
-    "lineIds": ["Namboku"],
-    "lineAliases": { "Namboku": ["東京メトロ9000系"] },
+    "lineIds": ["Namboku", "SaitamaRapid"],
+    "lineAliases": { "Namboku": ["東京メトロ9000系"], "SaitamaRapid": ["東京メトロ9000系"] },
     "aliases": []
   },
   "metro-10000": {
@@ -2635,7 +2635,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "odakyu-3000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
   "odakyu-8000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
   "tokyu-2020-10": ["TokyuDenEn"],
-  "tokyu-5080": ["TokyuMeguro"],
+  "tokyu-5080": ["TokyuMeguro", "Namboku", "Mita", "SaitamaRapid"],
   "tokyu-6020": ["TokyuOimachi"],
   "tokyu-7000": ["TokyuIkegami", "TokyuTamagawa"],
   "tokyu-1000-1500-plan": ["TokyuIkegami", "TokyuTamagawa"],
@@ -2643,7 +2643,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "tokyu-5000": ["TokyuToyoko", "TokyuDenEn"],
   "tokyu-5050": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho", "Yurakucho_Seibu", "Ikebukuro"],
   "tokyu-3000-plan": ["TokyuMeguro", "TokyuShinYokohama", "Mita", "Namboku"],
-  "tokyu-3020": ["TokyuMeguro", "TokyuShinYokohama"],
+  "tokyu-3020": ["TokyuMeguro", "TokyuShinYokohama", "Namboku", "Mita", "SaitamaRapid"],
   "yokohama-y500": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho_Seibu", "Ikebukuro"],
   "seibu-6000-fukutoshin": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho"],
   "seibu-40000": ["Ikebukuro", "Yurakucho_Seibu", "Fukutoshin", "Yurakucho", "SeibuChichibu", "SeibuShinjuku"],

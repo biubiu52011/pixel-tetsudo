@@ -1,0 +1,2 @@
+-- 只读；47组2035条日历/车种/完整番号组合，来源修订日全空。
+select line_key,case when calendar_urn like '%Weekday' then 'weekday' else 'holiday' end cal,regexp_replace(train_type_urn,'^.*\.','') type,substring(train_number from '[A-Z]+[0-9]*$') suffix,array_agg(distinct train_number order by train_number) numbers,count(source_revision_date) dated from public.manual_timetable_templates where line_key in ('Namboku','Mita','SaitamaRapid') and calendar_urn in ('odpt.Calendar:Weekday','odpt.Calendar:SaturdayHoliday') group by 1,2,3,4 order by 1,2,3,4;
