@@ -82,6 +82,9 @@
 - 共轨CI首次运行45767956636：图库及build通过，水郡线既有静态测试固定旧变量id导致断言失败，现按直接共轨伙伴逐一检查的lid更新断言，仍验证逗号作用域和原SHA校验；未放宽生产规则。
 
 
+- 第十二轮车型图库作用域（2026-11-26）：依据[东京Metro现役车辆目录](https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/index.html)、[横滨市车型目录](https://www.city.yokohama.lg.jp/kotsu/tanoshimou/otanoshimi/sharyosyoukai.html)及[相铁车辆图鉴](https://www.sotetsu.co.jp/life/gallery/train/)，在原图库责任脚本中区分东西线05系4～7/8～13次、横滨10000形1/2次，补充原未分配批次素材的作用域，10000系8両仅登记候选作用域；纠正相铁20000系目黑线/南北/三田错误作用域，保留20000/21000同图隔离。批次图不得以普通家族标签匹配，所有批次仍非canonical；不增加番号规则或实际车辆确认。原反向JSON/CSV完整复现后由原生成器重建，6张图的元数据变更、601图库和423规则统计不变，现役固定日期清单逐字节不变。隔离执行新增回归测试25项断言通过，页面缓存哈希同步。未取得后续时刻表完整证据，未擅自延长11月30日截止；无生产SQL写入、无额外Pages发布。全量CI待验收。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
