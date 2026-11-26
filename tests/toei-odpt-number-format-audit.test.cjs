@@ -1,6 +1,8 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),vm=require('node:vm');
 const {owner,format,inspect,inspectTimetable,summary,timetableSummary,fetchTimetablesByLine}=require('../tools/audit-toei-odpt-live.cjs');
+const adapter=fs.readFileSync('data/api/odpt-unified.js','utf8');
 const rows=[
  {lineIds:['Asakusa'],sourceRailways:['odpt.Railway:Toei.Asakusa'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1008T','1702TA'],holidayNumbers:['1008T']},
  {lineIds:['Shinjuku'],sourceRailways:['odpt.Railway:Toei.Shinjuku'],operator:'Toei',requireRealtimeToeiOwner:true,weekdayNumbers:['1031T'],holidayNumbers:[]},
@@ -16,6 +18,28 @@ test('classifies source train numbers without converting 4-digit or Oedo suffix'
  assert.equal(owner('odpt.TrainOwner:Toei'),'Toei');
  assert.equal(owner('odpt.Operator:Toei'),'Toei');
  assert.equal(owner('odpt.TrainOwner:Keio'),'Keio');
+});
+test('都营 GTFS trip_id 分离完整列车番号和两位运用番号',()=>{
+ const start=adapter.indexOf('    function _toeiGtfsServiceNumber(');
+ const end=adapter.indexOf('    function _toeiGtfsRailDirection(',start);
+ assert.ok(start>0&&end>start,'应能提取都营 GTFS 番号解码器');
+ const codec=vm.createContext({});
+ vm.runInContext(adapter.slice(start,end),codec,{filename:'odpt-unified.js:toei-number-codec'});
+ const samples=[
+  ['100403T0','403T','03T'],['100509TB','509TB','09T'],
+  ['201842G0','1842G','42G'],['300460K0','460K','60K'],
+  ['400501B0','501B','01B'],['120509T0','509T','09T'],
+  ['403T','403T','03T']
+ ];
+ for(const [tripId,trainNumber,operationCode] of samples){
+  assert.equal(codec._toeiGtfsTrainNumber(tripId),trainNumber,tripId);
+  assert.equal(codec._toeiGtfsServiceNumber(tripId),operationCode,tripId);
+ }
+ assert.equal(codec._toeiGtfsTrainNumber('ODPT0001'),'');
+ assert.equal(codec._toeiGtfsTrainNumber('100403T9'),'');
+ assert.equal((adapter.match(/var trainNumber = _toeiGtfsTrainNumber\(tripId\);/g)||[]).length,2);
+ assert.equal((adapter.match(/"odpt:trainNumber": trainNumber \|\| serviceNumber/g)||[]).length,2);
+ assert.equal((adapter.match(/"odpt:operationCode": serviceNumber \|\| ""/g)||[]).length,2);
 });
 test('source railway, raw number and actual train owner must remain independent',()=>{
  const records=[

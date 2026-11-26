@@ -1130,13 +1130,24 @@
         return "missing-vehicle-identity";
     }
     function _toeiGtfsServiceNumber(value) {
-        // 都营 GTFS-RT 的 trip/vehicle id 形如 120509T0、231842G0、431817A0：
-        // 前半段是 feed 内部的时间/线路编码，末尾两位加运用字母才是
-        // 既有运用表的公开服务号（09T、42G、17A）。
-        // A/B 是大江户线方向运用，G 是三田线相铁运用；不能把整个 GTFS
-        // trip_id 当作列车号，否则无法与 SQL/运用表车次关联。
+        // 都营 GTFS-RT 的 trip/vehicle id 形如 100403T0、201842G0、401817A0：
+        // 末尾两位加运用字母是运用番号（03T、42G、17A），不是完整列车番号。
+        // A/B 是大江户线方向运用，G 是三田线相铁运用。运用番号只用于
+        // 实时合并和所属方判定，不能覆盖下面从官方静态 GTFS 解码出的列车番号。
         var m = String(value || "").toUpperCase().match(/([0-9]{2})([ABGKNHT])[A-Z0-9]*$/);
         return m ? m[1] + m[2] : "";
+    }
+    function _toeiGtfsTrainNumber(value) {
+        // 官方静态 GTFS（feed_version=20261120）的 trip_id 编码为：
+        // 线路位 + source occurrence 位 + 零填充列车番号 + 可选末尾 0。
+        // 例：100403T0 -> 403T、100509TB -> 509TB、400501B0 -> 501B。
+        // 10/11 等现行前缀和 12/13 等旧前缀都只属于 feed 内部标识，
+        // 不能作为公开列车番号的一部分。没有满足该契约时保持空值，避免
+        // 把不透明 trip_id 或运用番号伪装成完整列车番号。
+        var raw = String(value || "").trim().toUpperCase();
+        if (/^[0-9]{3,4}[ABGKNHT](?:[AB])?$/.test(raw)) return raw;
+        var match = raw.match(/^(?:1[0-3]|2[0-3]|3[0-3]|4[0-3])0*([0-9]{3,4}[ABGKNHT](?:[AB])?)(?:0)?$/);
+        return match ? match[1] : "";
     }
     function _toeiGtfsRailDirection(lineId, trip) {
         var directionId = Number(_gtfsField(trip, 6));
@@ -1215,6 +1226,7 @@
             var code = lineId === "Asakusa" ? "Asakusa" : lineId === "Mita" ? "Mita" : lineId === "Shinjuku" ? "Shinjuku" : lineId === "Oedo" ? "Oedo" : lineId === "Arakawa" ? "Arakawa" : "NipporiToneri";
             var observed = Number(_gtfsField(vehicle, 5)) || feedTime;
             var id = _gtfsText(entity, 1) || tripId || _gtfsText(vehicleDesc, 1) || (lineId + "-" + station);
+            var trainNumber = _toeiGtfsTrainNumber(tripId);
             var serviceNumber = _toeiGtfsServiceNumber(tripId);
             var physicalCar = vehicleId && vehicleId !== tripId ? vehicleId : "";
             var vehicleType = _toeiGtfsVehicleType(lineId, vehicleId, vehicleLabel, tripId);
@@ -1223,7 +1235,7 @@
                 "owl:sameAs": "gtfs:Toei:" + id,
                 "odpt:operator": "odpt.Operator:Toei",
                 "odpt:railway": "odpt.Railway:Toei." + code,
-                "odpt:trainNumber": serviceNumber || String(tripId || id),
+                "odpt:trainNumber": trainNumber || serviceNumber || String(tripId || id),
                 "odpt:operationCode": serviceNumber || "",
                 "gtfs:tripId": String(tripId || ""),
                 "gtfs:vehicleId": String(vehicleId || ""),
@@ -1380,6 +1392,7 @@
             }
             var observed = Number(_gtfsField(update, 4)) || Date.now() / 1000;
             var entityId = _gtfsText(entity, 1) || tripId || (lineId + "-trip-update");
+            var trainNumber = _toeiGtfsTrainNumber(tripId);
             var serviceNumber = _toeiGtfsServiceNumber(tripId);
             var vehicleId = _gtfsText(vehicle, 1), vehicleLabel = _gtfsText(vehicle, 2);
             var vehicleType = _toeiGtfsVehicleType(lineId, vehicleId, vehicleLabel, tripId);
@@ -1389,7 +1402,7 @@
                 "odpt:operator": "odpt.Operator:Toei",
                 "odpt:railway": "odpt.Railway:Toei." + code,
                 "odpt:trainOwner": _toeiGtfsTrainOwner(lineId, tripId),
-                "odpt:trainNumber": serviceNumber || tripId,
+                "odpt:trainNumber": trainNumber || serviceNumber || tripId,
                 "odpt:operationCode": serviceNumber || "",
                 "gtfs:tripId": String(tripId || ""),
                 "gtfs:vehicleId": String(vehicleId || ""),

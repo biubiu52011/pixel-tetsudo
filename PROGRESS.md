@@ -4,6 +4,14 @@
 
 # Pixel Tetsudo 工程进度
 
+### TOEI-GTFS-TRAIN-NUMBER-DECODE-20261127 — 都营实时完整列车番号解码（LOCAL-VERIFIED）
+
+- 根因：都营 GTFS-Realtime `trip_id` 同时编码完整列车番号和两位运用番号；旧适配器只把 `03T` 一类运用番号写入 `odpt:trainNumber`，导致 `403T` 等已经核验的精确番号无法命中。
+- 修正：按官方静态 GTFS `feed_version=20261120` 解码完整番号，例如 `100403T0 -> 403T`、`100509TB -> 509TB`；两位值继续保留为 `odpt:operationCode`，供实时合并和所属方判定。VehiclePosition 与 TripUpdate 使用同一契约。
+- 并行成果：保留最新 `main` 已完成的浅草线官方现行名单以及三田／新宿／大江户对账和车型门控；本批不覆盖名单、不根据番号猜具体编成。
+- 验证：都营／番号／页面脚本相关 135 项、部署产物／动态解析／代理安全 14 项全部通过；生成物、页面脚本清单与 PNG 派生索引检查通过。
+- 交付边界：只修改适配器、测试、审计文档和页面缓存；不写 Supabase、不部署 Edge Function、不执行 Pages 生产发布。
+
 ### METRO-NUMBER-BANDS-PRECISION-20261126 — 日比谷／半蔵門番号宽号段精确化（PARTIAL：生产迁移已验证，CI待验收）
 
 - 来源：`main` 6c0ee5a3 的 `data/timetables/train-number-png-ranges.js` 原有平日／土休日完整番号名单。仅提取既有四组参考 PNG 的数字及后缀，不修改原始 A/B 前缀、日历、线路、来源、车型证据或实际车辆身份。
