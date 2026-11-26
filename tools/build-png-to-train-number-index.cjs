@@ -261,7 +261,7 @@ function buildIndex(input) {
       for(const number of groups[calendar]||[]){
         const rail=lineId==='Hibiya'
           ?'odpt.Railway:TokyoMetro.Hibiya':'odpt.Railway:TokyoMetro.Hanzomon';
-        const result=win.TrainNumberPngRanges.match(number,lineId,{
+        const data={
           trainNumber:number,positionLineId:lineId,displayLineId:lineId,
           sourceRailway:rail,trainOperator:'TokyoMetro',
           trainType:'odpt.TrainType:TokyoMetro.Local',
@@ -269,18 +269,23 @@ function buildIndex(input) {
           positionSource:'supabase-train-run',estimated:true,
           vehicleIdentityStatus:'UNKNOWN',vehicleResolvedUpstream:false,
           vehicleResolvedFromRealtime:false,actualVehicleConfirmed:false
-        });
+        };
+        let result=win.TrainNumberPngRanges.match(number,lineId,data);
+        // 仍由运行时完整番号和车种守卫裁定，不在反向索引另建名册。
+        if(!result&&lineId==='Hibiya')result=win.TrainNumberPngRanges.match(number,lineId,
+          {...data,trainType:'odpt.TrainType:TokyoMetro.TH-LINER'});
         if(!result||!result.pngPath)continue;
+        const family=result.serviceFamily==='th_liner'?'th_liner':'through';
         const asset=get(result.pngPath,'runtime-metro-through-'+lineId);
         if(!asset||asset.quarantined)continue;
         if(result.planned!==true||result.actualVehicleConfirmed!==false)
           throw Error('Existing through matcher roles changed');
         ++tobuAccepted;
-        const key=[asset.path,lineId,calendar,'through',result.referenceCorridor||''].join('|');
+        const key=[asset.path,lineId,calendar,family,result.referenceCorridor||''].join('|');
         let group=rosterGroups.get(key);
         if(!group){
           group={authority:'existing_frontend_helper',lineId,
-            calendarType:calendar,numberFamily:'through',
+            calendarType:calendar,numberFamily:family,
             corridor:result.referenceCorridor||null,
             model:result.model||null,sourceUrl:result.sourceUrl||null,
             validFrom:'2026-11-02',validTo:'2026-11-30',
