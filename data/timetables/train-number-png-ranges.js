@@ -4118,6 +4118,32 @@
       "東京メトロ8000系":"../images/列车/東京メトロ/東京メトロ_8000系.png",
       "東京メトロ18000系":"../images/列车/東京メトロ/東京メトロ_18000系.png"
     })});
+  // A legacy month's roster stays a historical reference. Beyond that
+  // month, a CURRENT source observation may independently authorize only
+  // an approved model illustration (never the old timetable or a carset).
+  function metroCrossMonthLive(p,number,line,operator,owner,labels){
+    p=p||{};
+    var date=String(p.serviceDate||"").slice(0,10);
+    var model=String(p.realtimeVehicleType||"").trim();
+    var normalizedOwner=String(p.trainOwner||"").replace(/^odpt\.(?:Operator|TrainOwner):/,"");
+    var normalizedOperator=String(p.trainOperator||p.operator||"").replace(/^odpt\.Operator:/,"");
+    var plan=p.vehiclePlan;
+    return /^\d{4}-\d{2}-\d{2}$/.test(date)&&date>"2026-11-30"&&
+      !!sourceCalendar(p)&&p.positionSource==="realtime-api"&&p.estimated===false&&
+      p.positionLineId===line&&(!p.displayLineId||p.displayLineId===line)&&
+      normalizedOperator===operator&&normalizedOwner===owner&&
+      String(p.trainNumber||"").trim().toUpperCase()===number&&
+      !!model&&labels.indexOf(model)>=0&&
+      (!p.realtimeDerivedVehicleType||String(p.realtimeDerivedVehicleType).trim()===model)&&
+      p.vehicleIdentityStatus!=="EXACT"&&p.vehicleResolvedUpstream!==true&&
+      p.vehicleResolvedFromRealtime!==true&&p.actualVehicleConfirmed!==true&&
+      !p.vehicleFormationId&&!p.vehicleFormationConflict&&
+      !(Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length)&&
+      (!(plan&&(plan.confirmed===true||plan.status==="PLANNED_MODEL"))||
+        (Array.isArray(plan.models)&&plan.models.length===1&&plan.models[0]===model))&&
+      (!(Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length)||
+        p.plannedVehicleCandidates.indexOf(model)>=0);
+  }
   function matchTobuMetroThrough2611(number,lineId,p){
     p=p||{};
     var corridor=lineId==="Hibiya"?"hibiya":
@@ -4137,6 +4163,8 @@
       p.positionSource==="realtime-api"&&p.estimated===false&&owner==="TokyoMetro"&&
       String(p.trainNumber||"").trim().toUpperCase()===number&&
       Object.prototype.hasOwnProperty.call(hanzomonLiveModelEvidence.models,explicitModel);
+    var crossMonthItem=tobuThroughOwnerReference(corridor,number);
+    var crossMonthLive=!!crossMonthItem&&metroCrossMonthLive(p,number,lineId,provider,crossMonthItem.owner,[crossMonthItem.model]);
     if(line!==lineId||String(p.displayLineId||line)!==lineId||
        p.sourceRailway!==railway||
        (operator&&operator!==provider&&operator!=="odpt.Operator:"+provider)||
@@ -4146,7 +4174,7 @@
        p.vehicleResolvedFromRealtime===true||p.actualVehicleConfirmed===true||
        p.vehicleFormationId||p.vehicleFormationConflict||
        (Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length)||
-       date<"2026-11-02"||(date>"2026-11-30"&&!liveHanzomon)||!cal)return null;
+       date<"2026-11-02"||(date>"2026-11-30"&&!liveHanzomon&&!crossMonthLive)||!cal)return null;
     if(lineId==="TokyuDenEn"){
       // No verified Tokyu<->Metro exact timetable crosswalk exists here.
       // Admit current realtime source-format train numbers only.
@@ -4185,7 +4213,8 @@
       referenceCorridor:corridor,referenceOwner:item.owner,
       candidateModels:thLiner?[item.model]:item.candidates.slice(),model:item.model,pngPath:item.png,
       sourceUrl:thLiner?"https://www.tobu.co.jp/railway/th/timetable/":item.url,
-      source:liveHanzomon?"hanzomon-live-owner-explicit-model-reference":"tobu-metro-tokyu-working-owner-reference",
+      source:liveHanzomon?"hanzomon-live-owner-explicit-model-reference":
+        crossMonthLive?"metro-cross-month-live-model-reference":"tobu-metro-tokyu-working-owner-reference",
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
@@ -5457,7 +5486,19 @@
         var serviceDate=String(context&&context.serviceDate||"").slice(0,10);
         if(!/^\d{4}-\d{2}-\d{2}$/.test(serviceDate)||serviceDate<row.validFrom)continue;
       }
-      if(row.validTo && String(context&&context.serviceDate||"").slice(0,10)>row.validTo)continue;
+      var metroCarry=false;
+      if(row.validTo && String(context&&context.serviceDate||"").slice(0,10)>row.validTo){
+        // Keep old SQL estimates and number-only lookups expired. Only the
+        // live model evidence may carry these Metro reference rows forward.
+        var metroOwner=line==="Tozai"?({S:"TokyoMetro",K:"JR-East",T:"ToyoRapid"})[row.suffixes]:"TokyoMetro";
+        if(row.operator==="TokyoMetro"&&row.validTo==="2026-11-30"&&
+           ["Ginza","Marunouchi","MarunouchiBranch","Tozai","Chiyoda","ChiyodaBranch","Namboku","Yurakucho","Fukutoshin"].indexOf(line)>=0&&
+           Array.isArray(row.allowedModelLabels)&&row.sourceRailways&&
+           row.sourceRailways.indexOf(String(context&&context.sourceRailway||""))>=0&&
+           metroCrossMonthLive(context,number,line,"TokyoMetro",metroOwner,row.allowedModelLabels))
+          metroCarry=true;
+        else continue;
+      }
       if(row.excludedServiceDatesByNumber){
         var excluded= row.excludedServiceDatesByNumber[number];
         if(Array.isArray(excluded) && excluded.indexOf(
@@ -5837,10 +5878,15 @@
       }
       var pngKey=String(selectedPng||"").replace(/^(?:\.\.\/)+/,"");
       if(!pngKey)continue;
+      if(metroCarry&&(!root.VehicleGaragePngMap||!root.VehicleGaragePngMap.matchModelPath(selectedModel,selectedPng,line)))continue;
       var pngMatch={trainNumber:number,lineId:line,model:selectedModel,
         pngPath:selectedPng,source:"train-number-range",
         dateScope:row.dateScope||"",
         planned:true,representative:true};
+      if(metroCarry){
+        pngMatch.source="metro-cross-month-live-model-reference";
+        pngMatch.referenceOnly=true;pngMatch.illustrative=true;pngMatch.actualVehicleConfirmed=false;
+      }
       if(row.tozaiMetroMixedFleet){
         pngMatch.referenceOnly=true;pngMatch.illustrative=true;pngMatch.actualVehicleConfirmed=false;
       }

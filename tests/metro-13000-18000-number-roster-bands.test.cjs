@@ -118,3 +118,17 @@ test('现行生成清单逐键对应四组原始名单和九个THライナー参
  assert.deepEqual(actual('images/列车/東武鉄道/東武鉄道_70090型.png','Hibiya','T'),
    [643,845,947,1743,1845,1847,1941,1945,2043]);
 });
+
+
+test('Metro cross-month live model illustration does not renew old SQL timetables',()=>{
+ const root={},ctx=vm.createContext({window:root,Date,console:{log(){},debug(){},warn(){},error(){}}});
+ for(const file of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])
+  vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
+ for(const [line,num,model,owner] of [["Hibiya","A1006S","東京メトロ13000系","TokyoMetro"],["Hanzomon","A1093S","東京メトロ18000系","TokyoMetro"],["Ginza","A1001","東京メトロ1000系","TokyoMetro"],["Marunouchi","A1001","東京メトロ2000系","TokyoMetro"],["MarunouchiBranch","A1013","東京メトロ2000系","TokyoMetro"],["Chiyoda","A1001S","東京メトロ16000系","TokyoMetro"],["ChiyodaBranch","B1005S","東京メトロ16000系","TokyoMetro"],["Namboku","A1030S","東京メトロ9000系","TokyoMetro"]]){
+  const p={positionLineId:line,displayLineId:line,sourceRailway:'odpt.Railway:TokyoMetro.'+line,trainOperator:'TokyoMetro',trainOwner:owner,trainNumber:num,trainType:'Local',serviceDate:'2026-12-01',calendarType:'weekday',positionSource:'realtime-api',estimated:false,realtimeVehicleType:model};
+  const match=changes=>root.TrainNumberPngRanges.match(num,line,{...p,...changes});
+  const result=match({});assert.equal(result?.model,model,line);assert.equal(result.referenceOnly,true,line);assert.equal(result.actualVehicleConfirmed,false,line);
+  assert.equal(root.TrainVehicle.selectMarkerArtwork(p,false).kind,'vehicle',line);
+  for(const change of [{positionSource:'supabase-train-run',estimated:true},{trainOwner:'Wrong'},{realtimeVehicleType:''},{realtimeDerivedVehicleType:'wrong'},{sourceRailway:'odpt.Railway:TokyoMetro.Unknown'}])assert.equal(match(change),null,line+JSON.stringify(change));
+ }
+});

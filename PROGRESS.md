@@ -4,6 +4,14 @@
 
 # Pixel Tetsudo 工程进度
 
+### METRO-CROSS-MONTH-PROVENANCE-20261127 — 地下铁跨月实时参考与版本缺失（PARTIAL）
+
+- 11月30日到期的既有番号名册及旧SQL不续期。已有图库许可、来源线路、实时非推定、明确车主和车型、完整番号及日历一致时，允许跨月的参考图；不确认具体编成，不升级旧时刻表。日比谷、半藏门及银座、丸之内、千代田、南北等旧规则采用同一证据门控，保留旧守卫和已存在的独立实时规则。
+- 本地用现有名册构造8个跨月正例和40个反例回放；非真实实时采样。测试同步覆盖真实标记选择。已保留 SQL 历史名册及生成索引的原始有效期。
+- 来源核对：东京Metro 2026-03-14 改点（https://www.tokyometro.jp/info/files/20260314_daiyakaisei.pdf、https://www.tokyometro.jp/news/2025/222471.html），银座/丸之内 2026-09-19（https://www.tokyometro.jp/news/2026/224976.html）；都营浅草线 2026-11-21（https://www.kotsu.metro.tokyo.jp/pickup_information/news/subway/2026/sub_p_2026102012843_h.html）。公告不是旧模板逐条来源证明。
+- 生产只读检查15个有旧模板的线路键（含目黑线），所有 source_revision_date/revision_id 为空且无对应 timetable_revisions 记录。扩充既有地下铁覆盖只读查询，未伪造生效日期、未写生产库。版本缺失仍需逐条重新导入/核验来源。
+
+
 ### TOEI-GTFS-TRAIN-NUMBER-DECODE-20261127 — 都营实时完整列车番号解码（LOCAL-VERIFIED）
 
 - 根因：都营 GTFS-Realtime `trip_id` 同时编码完整列车番号和两位运用番号；旧适配器只把 `03T` 一类运用番号写入 `odpt:trainNumber`，导致 `403T` 等已经核验的精确番号无法命中。

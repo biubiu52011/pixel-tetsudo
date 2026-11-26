@@ -61,3 +61,13 @@ SELECT jsonb_build_object(
  'wide_ranges_pending',(SELECT old_wide_rows FROM ready),
  'seibu_labels_pending',(SELECT n FROM pending_seibu)
 ) audit;
+
+
+-- 2026-11-27：旧模板缺来源修订日，不能由导入时间或运营方改点公告推定逐条版本。
+-- 只读检查现有 revision 外键、有效日起及来源内容哈希；没有明确绑定的记录不得批量升级。
+select m.line_key,count(*) as templates,count(m.source_revision_date) as dated,
+ count(m.revision_id) as revision_linked,count(r.effective_from) as linked_effective_date,
+ count(*) filter(where r.line_id=m.line_key and r.effective_from is not null and r.source_content_hash is not null) as linked_hashed_revision
+from public.manual_timetable_templates m left join public.timetable_revisions r on r.id=m.revision_id
+where m.line_key in ('Ginza','Marunouchi','MarunouchiBranch','Hibiya','Tozai','Chiyoda','ChiyodaBranch','Yurakucho','Hanzomon','Namboku','Fukutoshin','Asakusa','Mita','Shinjuku','Oedo','YokohamaBlue','YokohamaGreen','TokyuMeguro')
+group by 1 order by 1;
