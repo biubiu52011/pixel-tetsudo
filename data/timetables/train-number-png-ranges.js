@@ -219,6 +219,14 @@
     "東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png",
     "東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"
   });
+  // 东西线Metro车主的四种车型/批次共用番号族，完整车型证据才允许选择对应图。
+  // 05系裸名称或10両仅代表家族；不得默认前期车或后期车。
+  var tozaiMetroArtwork=Object.freeze({
+    "東京メトロ15000系":"../images/列车/東京メトロ/東京メトロ_15000系.png",
+    "東京メトロ07系":"../images/列车/東京メトロ/東京メトロ_07系.png",
+    "東京メトロ05系（4～7次車）":"../images/列车/東京メトロ/東京メトロ_05系_4～7次車.png",
+    "東京メトロ05系（8～13次車）":"../images/列车/東京メトロ/東京メトロ_05系_8～13次車.png"
+  });
   var rows=[
     // Gotemba 2611 SQL: ordinary local numbers from the imported TokyoGTFS
     // timetable. The line has mixed 313/315-series operation; use the
@@ -1854,14 +1862,15 @@
     // 2026-11 JR Chuo-Sobu through Tozai: on JR source segments the
     // official number changes from Metro S or JR K to Y/A. Y/A themselves
     // do NOT identify the owner. Apply only exact stop-linked indexed numbers.
-    // 15000 is one representative Metro S fleet; 05/07 share its duties.
+    // S仅确认车主家族；05/07/15000必须有独立型号依据，不再默认15000。
     {lineIds:["ChuoSobuLocal"],numberFormat:"full",from:400,to:2599,
       suffixes:"YA",trainType:"Local",operator:"JR-East",
       sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:JR-East.ChuoSobuLocal"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
       numberIndex:"chuo-sobu-tozai",throughOwner:"S",
-      allowedModelLabels:["東京メトロ15000系"],
+      allowedModelLabels:Object.keys(tozaiMetroArtwork),exactModelArtworkMap:tozaiMetroArtwork,
+      tozaiMetroMixedFleet:true,referenceOnly:true,illustrative:true,
       model:"東京メトロ15000系",
       pngPath:"../images/列车/東京メトロ/東京メトロ_15000系.png"},
     {lineIds:["ChuoSobuLocal"],numberFormat:"full",from:400,to:2599,
@@ -1877,15 +1886,14 @@
     // an optional R after the S/K/T ownership suffix (e.g. B711KR).
     // Keep the original full public number; never turn it into an operation ID.
     // S is Tokyo Metro ownership, not a 15000-series identity. Metro
-    // still uses 05/07/15000 stock; only reviewed 07/15000 illustrations
-    // may be selected when the independent source model is known.
+    // 05/07/15000均需独立型号依据；05系须明确外观批次。
     {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
       suffixes:"S",excludeTrainType:"LimitedExpress",
       operator:"TokyoMetro",sourceOperatorFallback:true,
       sourceRailways:["odpt.Railway:TokyoMetro.Tozai"],
       validFrom:"2026-11-01",validTo:"2026-11-30",
-      allowedModelLabels:["東京メトロ15000系","東京メトロ07系"],
-      exactModelArtworkMap:{"東京メトロ15000系":"../images/列车/東京メトロ/東京メトロ_15000系.png","東京メトロ07系":"../images/列车/東京メトロ/東京メトロ_07系.png"},
+      allowedModelLabels:Object.keys(tozaiMetroArtwork),exactModelArtworkMap:tozaiMetroArtwork,
+      tozaiMetroMixedFleet:true,referenceOnly:true,illustrative:true,
       model:"東京メトロ15000系",
       pngPath:"../images/列车/東京メトロ/東京メトロ_15000系.png"},
     {lineIds:["Tozai"],numberFormat:"metro-prefixed",from:400,to:2599,
@@ -4336,6 +4344,11 @@
   // inference; mixed or unknown source labels remain unresolved.
   function canonicalRinkaiMixedModelLabel(label,row){
     var raw=String(label||"").trim();
+    if(row&&row.tozaiMetroMixedFleet){
+      raw=raw.replace(/\(/g,"（").replace(/\)/g,"）");
+      if(/^東京メトロ(?:07|15000)系（10両）$/.test(raw))return raw.replace(/（10両）$/,"");
+      return raw;
+    }
     if(!row||!row.exactModelArtworkMap||
        row.lineIds.indexOf("Rinkai")<0)return raw;
     if(raw==="70-000形")return "東京臨海高速鉄道70-000形";
@@ -5613,6 +5626,12 @@
       var twrPoolDisplayDefault="";
       if(row.exactModelArtworkMap){
         if(!context)continue;
+        if(row.tozaiMetroMixedFleet){
+          var metroOwner=String(context.trainOwner||"").replace(/^odpt\.(?:Operator|TrainOwner):/,"");
+          if(metroOwner&&metroOwner!=="TokyoMetro")continue;
+          if(context.trainNumber&&String(context.trainNumber).trim().toUpperCase()!==number)continue;
+          if(context.displayLineId&&context.displayLineId!==line)continue;
+        }
         var modelObservations=[context.realtimeVehicleType,
           context.realtimeDerivedVehicleType].map(function(m){
             return canonicalRinkaiMixedModelLabel(m,row);
@@ -5666,6 +5685,22 @@
           selectedPng=row.exactModelArtworkMap[selectedModel];
         }
         if(!selectedPng)continue;
+        if(row.tozaiMetroMixedFleet){
+          // 批次图须有明确实时型号或已确认单型号计划；推定/裸车型不证明批次。
+          if(/^東京メトロ05系（/.test(selectedModel)&&
+             canonicalRinkaiMixedModelLabel(context.realtimeVehicleType,row)!==selectedModel&&
+             !(planScoped&&planLabels.length===1&&
+               canonicalRinkaiMixedModelLabel(planLabels[0],row)===selectedModel))continue;
+          var metroGallery=root.VehicleGaragePngMap;
+          if(!metroGallery||!metroGallery.matchModelPath(selectedModel,selectedPng,line))continue;
+          var metroCandidates=context.plannedVehicleCandidates;
+          if(Array.isArray(metroCandidates)&&metroCandidates.length&&
+             !metroCandidates.some(function(m){
+               var label=canonicalRinkaiMixedModelLabel(m,row);
+               return label===selectedModel||(/^東京メトロ05系（/.test(selectedModel)&&
+                 /^東京メトロ05系(?:（10両）)?$/.test(label));
+             }))continue;
+        }
       }
       var pngKey=String(selectedPng||"").replace(/^(?:\.\.\/)+/,"");
       if(!pngKey)continue;
@@ -5673,6 +5708,9 @@
         pngPath:selectedPng,source:"train-number-range",
         dateScope:row.dateScope||"",
         planned:true,representative:true};
+      if(row.tozaiMetroMixedFleet){
+        pngMatch.referenceOnly=true;pngMatch.illustrative=true;pngMatch.actualVehicleConfirmed=false;
+      }
       if(toeiMixedOfficial){
         pngMatch.source="toei-mixed-official-number-live-model-reference";
         pngMatch.sourceUrl=toeiMixedOfficialEvidence.sourceUrl;

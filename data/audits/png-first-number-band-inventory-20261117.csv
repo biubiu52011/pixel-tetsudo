@@ -2293,9 +2293,12 @@ JR,JR西日本,images/列车/JR西日本/JR西日本_キハ40系_UYM.png,,,,,,�
 JR,JR西日本,images/列车/JR西日本/JR西日本_キハ41系.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_キハ47系_SAK.png,,,,,,无号段
 JR,JR西日本,images/列车/JR西日本/JR西日本_キハ87系.png,,,,,,无号段
-地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_4～7次車.png,,,,,,无号段
-地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_8～13次車.png,,,,,,无号段
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_4～7次車.png,ChuoSobuLocal,0400,2599,YA,full,额外车型条件
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_4～7次車.png,Tozai,0400,2599,S,metro-prefixed,额外车型条件
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_8～13次車.png,ChuoSobuLocal,0400,2599,YA,full,额外车型条件
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_8～13次車.png,Tozai,0400,2599,S,metro-prefixed,额外车型条件
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_05系_区間列車車両.png,ChiyodaBranch,0709,2305,S,metro-prefixed,原有条件约束
+地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_07系.png,ChuoSobuLocal,0400,2599,YA,full,额外车型条件
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_07系.png,Tozai,0400,2599,S,metro-prefixed,额外车型条件
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_08系.png,,,,,,无号段
 地铁,東京メトロ,images/列车/東京メトロ/東京メトロ_10000系.png,Fukutoshin,0403,2361,S,metro-prefixed,原有条件约束

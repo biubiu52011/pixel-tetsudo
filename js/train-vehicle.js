@@ -2302,17 +2302,17 @@ Object.assign(CANONICAL_VEHICLES,{
   },
   "tokyu-3000-plan": {displayName:"東急3000系",iconName:"東急3000系",asset:null,plannedAsset:"../images/列车/東急電鉄/東急電鉄_3000系_リニューアル車.png",lineAliases:{Mita:["東急3000系"],Namboku:["東急3000系"],TokyuMeguro:["東急3000系"],TokyuShinYokohama:["東急3000系"]},aliases:["東急3000系"]},
   "saitama-2000": {displayName:"埼玉高速2000系",iconName:"埼玉高速2000系",asset:"../images/列车/埼玉高速鉄道/埼玉高速鉄道_2000系.png",aliases:["埼玉高速鉄道2000系"]},
+  // 05系家族保留无图身份；两个批次图不再作为整个系列的默认车头。
+  "metro-05-tozai-family": {
+    displayName:"東京メトロ05系",iconName:"東京メトロ05系",asset:null,plannedAsset:null,
+    lineIds:["Tozai","ChuoSobuLocal"],
+    lineAliases:{Tozai:["東京メトロ05系(10両)","東京メトロ05系"],ChuoSobuLocal:["東京メトロ05系(10両)","東京メトロ05系"]},
+    aliases:["東京メトロ05系(10両)","東京メトロ05N系"]
+  },
   "subway-fleet-1": {
-    "displayName": "東京メトロ05系",
-    "iconName": "東京メトロ05系",
-    "asset": null,
-    "plannedAsset": "../images/列车/東京メトロ/東京メトロ_05系_4～7次車.png",
-    "lineIds": ["Tozai", "ChuoSobuLocal"],
-    "lineAliases": { "Tozai": ["東京メトロ05系(10両)", "東京メトロ05系"], "ChuoSobuLocal": ["東京メトロ05系(10両)", "東京メトロ05系"] },
-    "aliases": [
-      "東京メトロ05系(10両)",
-      "東京メトロ05N系"
-    ]
+    displayName:"東京メトロ05系（4～7次車）",iconName:"東京メトロ05系（4～7次車）",asset:null,
+    plannedAsset:"../images/列车/東京メトロ/東京メトロ_05系_4～7次車.png",
+    lineIds:["Tozai","ChuoSobuLocal"],aliases:[],plannedOnly:true
   },
   "subway-fleet-3": {
     "displayName": "都営12-000形",
@@ -2929,7 +2929,7 @@ var UNREGISTERED_ARTWORK_CATALOG = [
   { id: "artwork-inventory-131", displayName: "图库待审・山万・山万_1000形_第1編成_こあら1号", iconName: "图库待审・山万・山万_1000形_第1編成_こあら1号", asset: null, plannedAsset: "../images/列车/山万/山万_1000形_第1編成_こあら1号.png", aliases: [], operatorDirectory: "山万", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-132", displayName: "图库待审・山万・山万_1000形_第2編成_こあら2号", iconName: "图库待审・山万・山万_1000形_第2編成_こあら2号", asset: null, plannedAsset: "../images/列车/山万/山万_1000形_第2編成_こあら2号.png", aliases: [], operatorDirectory: "山万", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-133", displayName: "图库待审・山万・山万_1000形_第3編成_こあら3号", iconName: "图库待审・山万・山万_1000形_第3編成_こあら3号", asset: null, plannedAsset: "../images/列车/山万/山万_1000形_第3編成_こあら3号.png", aliases: [], operatorDirectory: "山万", artworkStatus: "pending-source-review", plannedOnly: true },
-  { id: "artwork-inventory-134", displayName: "图库待审・東京メトロ・東京メトロ_05系_8～13次車", iconName: "图库待审・東京メトロ・東京メトロ_05系_8～13次車", asset: null, plannedAsset: "../images/列车/東京メトロ/東京メトロ_05系_8～13次車.png", aliases: [], operatorDirectory: "東京メトロ", artworkStatus: "pending-source-review", plannedOnly: true },
+  { id: "artwork-inventory-134", displayName: "東京メトロ05系（8～13次車）", iconName: "東京メトロ05系（8～13次車）", asset: null, plannedAsset: "../images/列车/東京メトロ/東京メトロ_05系_8～13次車.png", lineIds:["Tozai","ChuoSobuLocal"], aliases: [], operatorDirectory: "東京メトロ", artworkStatus: "batch-reference-only", plannedOnly: true },
   { id: "artwork-inventory-135", displayName: "图库待审・東京メトロ・東京メトロ_10000系_8両編成", iconName: "图库待审・東京メトロ・東京メトロ_10000系_8両編成", asset: null, plannedAsset: "../images/列车/東京メトロ/東京メトロ_10000系_8両編成.png", aliases: [], operatorDirectory: "東京メトロ", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-136", displayName: "图库待审・東京モノレール・東京モノレール_1000形_1004編成", iconName: "图库待审・東京モノレール・東京モノレール_1000形_1004編成", asset: null, plannedAsset: "../images/列车/東京モノレール/東京モノレール_1000形_1004編成.png", aliases: [], operatorDirectory: "東京モノレール", artworkStatus: "pending-source-review", plannedOnly: true },
   { id: "artwork-inventory-137", displayName: "图库待审・東京モノレール・東京モノレール_1000形_橙帯", iconName: "图库待审・東京モノレール・東京モノレール_1000形_橙帯", asset: null, plannedAsset: "../images/列车/東京モノレール/東京モノレール_1000形_橙帯.png", aliases: [], operatorDirectory: "東京モノレール", artworkStatus: "pending-source-review", plannedOnly: true },

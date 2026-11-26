@@ -716,7 +716,8 @@ test('Chuo-Sobu subway number crosswalk resolves exact Y/A source trains without
       sourceRailway:'odpt.Railway:JR-East.ChuoSobuLocal',
       trainType:'odpt.TrainType:JR-East.Local',trainOperator:'JR-East',
       railDirection:direction,serviceDate:'2026-11-04',calendarType:calendar,
-      serviceId:calendar==='weekday'?'odpt.Calendar:Weekday':'odpt.Calendar:SaturdayHoliday'});
+      serviceId:calendar==='weekday'?'odpt.Calendar:Weekday':'odpt.Calendar:SaturdayHoliday',
+      ...(model==='東京メトロ15000系'?{realtimeVehicleType:model}:{})});
     const chosen=root.TrainVehicle.lookupTrainNumberRangePng(p);
     assert.ok(chosen,num+' / '+direction+' / '+calendar);
     assert.equal(chosen.trainNumber,num,'public JR segment number must not be rewritten');
@@ -759,7 +760,7 @@ test('Tozai through representative PNG rejects wrong JR segment numbers, directi
     {positionLineId:'ChuoRapid'},{sourceRailway:'odpt.Railway:TokyoMetro.Tozai'},
     {trainOperator:'TokyoMetro'},{trainType:'odpt.TrainType:JR-East.LimitedExpress'},
     {serviceDate:'2026-12-01'},{serviceDate:'2026-10-31'},
-    {realtimeVehicleType:'東京メトロ07系'},
+    {realtimeVehicleType:'東京メトロ13000系'},
     {vehiclePlan:{status:'PLANNED_MODEL',confirmed:true,models:['E231系800番台']}}
   ]){
     assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live({...base,...change})),null,
@@ -3216,7 +3217,7 @@ test('mixed Tozai S still needs model proof; Rinkai 8x uses a date-free pool',()
    serviceDate:'2026-11-04',calendarType:'weekday',
    trainType:'odpt.TrainType:TokyoMetro.Rapid'};
  assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(live(tozai)),null);
- for(const model of ['東京メトロ15000系','東京メトロ07系']){
+ for(const model of ['東京メトロ15000系','東京メトロ07系','東京メトロ05系（4～7次車）','東京メトロ05系（8～13次車）']){
   const p=live({...tozai,realtimeVehicleType:model});
   assert.equal(root.TrainVehicle.lookupTrainNumberRangePng(p)?.model,model);
  }

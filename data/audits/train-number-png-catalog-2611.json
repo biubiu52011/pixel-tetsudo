@@ -23,7 +23,7 @@
     "sql_assets_pending_review": 5,
     "frontend_guard_only_rules": 9,
     "frontend_rules_with_additional_source_fields": 127,
-    "frontend_additional_source_keys": 24,
+    "frontend_additional_source_keys": 25,
     "frontend_official_month_rosters": 4,
     "frontend_singleton_candidates": 1,
     "model_label_differences": 14,
@@ -16119,10 +16119,22 @@
       "requires_compatible_plan": false,
       "runtime_guards": {
         "allowedModelLabels": [
-          "東京メトロ15000系"
+          "東京メトロ15000系",
+          "東京メトロ07系",
+          "東京メトロ05系（4～7次車）",
+          "東京メトロ05系（8～13次車）"
         ],
+        "exactModelArtworkMap": {
+          "東京メトロ15000系": "../images/列车/東京メトロ/東京メトロ_15000系.png",
+          "東京メトロ07系": "../images/列车/東京メトロ/東京メトロ_07系.png",
+          "東京メトロ05系（4～7次車）": "../images/列车/東京メトロ/東京メトロ_05系_4～7次車.png",
+          "東京メトロ05系（8～13次車）": "../images/列车/東京メトロ/東京メトロ_05系_8～13次車.png"
+        },
+        "illustrative": true,
+        "referenceOnly": true,
         "sourceOperatorFallback": true,
-        "throughOwner": "S"
+        "throughOwner": "S",
+        "tozaiMetroMixedFleet": true
       },
       "evidence_kind": "external-index",
       "actual_vehicle_confirmed": false
@@ -16203,14 +16215,21 @@
       "runtime_guards": {
         "allowedModelLabels": [
           "東京メトロ15000系",
-          "東京メトロ07系"
+          "東京メトロ07系",
+          "東京メトロ05系（4～7次車）",
+          "東京メトロ05系（8～13次車）"
         ],
         "exactModelArtworkMap": {
           "東京メトロ15000系": "../images/列车/東京メトロ/東京メトロ_15000系.png",
-          "東京メトロ07系": "../images/列车/東京メトロ/東京メトロ_07系.png"
+          "東京メトロ07系": "../images/列车/東京メトロ/東京メトロ_07系.png",
+          "東京メトロ05系（4～7次車）": "../images/列车/東京メトロ/東京メトロ_05系_4～7次車.png",
+          "東京メトロ05系（8～13次車）": "../images/列车/東京メトロ/東京メトロ_05系_8～13次車.png"
         },
         "excludeTrainType": "LimitedExpress",
-        "sourceOperatorFallback": true
+        "illustrative": true,
+        "referenceOnly": true,
+        "sourceOperatorFallback": true,
+        "tozaiMetroMixedFleet": true
       },
       "evidence_kind": "range-with-runtime-guards",
       "actual_vehicle_confirmed": false

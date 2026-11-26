@@ -120,7 +120,7 @@ test('front-end PNG range metadata retains every source-specific guard and quali
  const owner=getRows();
  const represented=new Set(["lineIds","numberFormat","from","to","suffixes","model","pngPath","trainType","trainTypes","numberIndex","publishedNumbers","weekdayNumbers","holidayNumbers","officialMonth","officialMonthNumbers","calendarType","operatingDates","validFrom","validTo","operator","sourceRailways","sourceRailwaysIfPresent","directionNumberParity","requireCompatiblePlan"]);
  assert.equal(c.summary.frontend_rules_with_additional_source_fields,127);
- assert.equal(c.summary.frontend_additional_source_keys,24);
+ assert.equal(c.summary.frontend_additional_source_keys,25);
  assert.equal(owner.length,132);
  owner.forEach((row,i)=>{
   const rule=c.rules.find(r=>r.id==='js-'+String(i+1).padStart(4,'0'));
@@ -130,7 +130,7 @@ test('front-end PNG range metadata retains every source-specific guard and quali
  });
  const tozai=c.rules.find(r=>r.id==='js-0091');
  assert.equal(tozai.runtime_guards.excludeTrainType,'LimitedExpress');
- assert.deepEqual(tozai.runtime_guards.allowedModelLabels,['東京メトロ15000系','東京メトロ07系']);
+ assert.deepEqual(tozai.runtime_guards.allowedModelLabels,['東京メトロ15000系','東京メトロ07系','東京メトロ05系（4～7次車）','東京メトロ05系（8～13次車）']);
  const kashima=c.rules.find(r=>r.id==='js-0084');
  assert.deepEqual(kashima.runtime_guards.allowedModelLabels,['E235系1000番台']);
 });
@@ -194,7 +194,12 @@ test('Tozai S and TWR 8x tail artwork stays model-evidence gated',()=>{
  const twr=c.rules.find(x=>x.id==='js-0058');
  const metro=c.rules.find(x=>x.id==='js-0091');
  assert.deepEqual(twr.runtime_guards.exactModelArtworkMap,{"東京臨海高速鉄道70-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_70-000形.png","東京臨海高速鉄道71-000形":"../images/列车/東京臨海高速鉄道/東京臨海高速鉄道_71-000形.png"});
- assert.deepEqual(metro.runtime_guards.exactModelArtworkMap,{"東京メトロ15000系":"../images/列车/東京メトロ/東京メトロ_15000系.png","東京メトロ07系":"../images/列车/東京メトロ/東京メトロ_07系.png"});
+ const metroMap={"東京メトロ15000系":"../images/列车/東京メトロ/東京メトロ_15000系.png","東京メトロ07系":"../images/列车/東京メトロ/東京メトロ_07系.png","東京メトロ05系（4～7次車）":"../images/列车/東京メトロ/東京メトロ_05系_4～7次車.png","東京メトロ05系（8～13次車）":"../images/列车/東京メトロ/東京メトロ_05系_8～13次車.png"};
+ assert.deepEqual(metro.runtime_guards.exactModelArtworkMap,metroMap);
+ const jrMetro=c.rules.find(x=>x.id==='js-0089');
+ assert.deepEqual(jrMetro.runtime_guards.exactModelArtworkMap,metroMap);
+ assert.equal(jrMetro.number_index,'chuo-sobu-tozai');
+ assert.equal(jrMetro.runtime_guards.tozaiMetroMixedFleet,true);
  assert.equal(twr.evidence_kind,'range-with-runtime-guards');
  assert.equal(metro.evidence_kind,'range-with-runtime-guards');
  assert.equal(twr.actual_vehicle_confirmed,false);
