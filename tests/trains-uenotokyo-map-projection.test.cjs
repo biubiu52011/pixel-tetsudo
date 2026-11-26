@@ -61,7 +61,7 @@ test('trains outside the displayed corridor are not pinned to its endpoints', ()
 /* 同一物理共轨权威被数据融合、详情渲染和车辆 PNG 选择器使用。 */
 const trainData=fs.readFileSync(path.join(root,'js/trains-data.js'),'utf8');
 const fusionSource=fs.readFileSync(path.join(root,'js/data-fusion.js'),'utf8');
-const sharedStart=trainData.indexOf('  // 物理共轨，不按站名');
+const sharedStart=trainData.indexOf('  var _SHARED_TRACK_SECTIONS = [');
 const sharedEnd=trainData.indexOf('  // 支线 junction',sharedStart);
 const rankStart=trainData.indexOf('function _isFreshRealtimePosition(');
 const rankEnd=trainData.indexOf('function _getBasePositions(',rankStart);
@@ -75,12 +75,9 @@ const pos=(lid,from,to,progress,mods={})=>({positionLineId:lid,trainId:'id:'+lid
  trainNumber:'1234T',stationIndex:all[lid].stations.indexOf(from),stationId:from,
  segmentToIndex:to==null?null:all[lid].stations.indexOf(to),segmentProgress:progress,
  positionSource:'train-timetable',estimated:true,...mods});
-test('six verified shared sections are symmetric; adjacent but separate tracks are not',()=>{
+test('only the two independent subway shared sections are symmetric',()=>{
  const pairs=[['Yurakucho','Fukutoshin','Wakoshi','Kotake-Mukaihara'],
-  ['Namboku','Mita','Meguro','Shirokane-Takanawa'],
-  ['SaikyoKawagoe','ShonanShinjuku','Osaki','Ikebukuro'],
-  ['Yokosuka','ShonanShinjuku','Nishi-Oi','Totsuka'],
-  ['Takasaki','UtsunomiyaJR','Tokyo','Omiya'],['Joban','JobanMain','Toride','Tsuchiura']];
+  ['Namboku','Mita','Meguro','Shirokane-Takanawa']];
  for(const [a,b,first,last] of pairs)for(const [host,peer] of [[a,b],[b,a]]){
    assert.ok(shared.getSharedLines(host).includes(peer),host+' '+peer);
    for(const st of [first,last])assert.ok(shared.isSharedStation(host,st,peer));
@@ -91,6 +88,19 @@ test('six verified shared sections are symmetric; adjacent but separate tracks a
  }
  assert.equal(shared.isSharedStation('Yurakucho','Ikebukuro','Fukutoshin'),false);
  assert.equal(shared.isSharedStation('Yurakucho','Senkawa','Fukutoshin'),false);
+ const expected=new Set(pairs.flatMap(([a,b])=>[a+':'+b,b+':'+a]));
+ const actual=new Set(Object.keys(all).flatMap(a=>Array.from(shared.getSharedLines(a),b=>a+':'+b)));
+ assert.deepEqual(actual,expected,'no other physical shared-track display pairs');
+ const excluded=[['SaikyoKawagoe','ShonanShinjuku','Osaki'],
+  ['Yokosuka','ShonanShinjuku','Nishi-Oi'],['Takasaki','UtsunomiyaJR','Tokyo'],
+  ['Joban','JobanMain','Toride'],['ChuoRapid','ChuoSobu','Shinjuku'],
+  ['Yamanote','KeihinTohoku','Tokyo'],['UenoTokyo','Tokaido','Tokyo']];
+ for(const [a,b,st] of excluded)for(const [host,peer] of [[a,b],[b,a]]){
+  assert.equal(shared.getSharedLines(host).includes(peer),false,host+' '+peer);
+  assert.equal(shared.isSharedStation(host,st,peer),false);
+  if(all[peer]&&all[peer].stations.includes(st))
+   assert.equal(shared.projectPosition(host,peer,pos(peer,st,null,0)),null);
+ }
  assert.equal(shared.getSharedLines('Yamanote').length,0);
  assert.equal(shared.getSharedLines('JobanLocal').length,0);
  assert.equal(shared.isSharedStation('ShonanShinjuku','Akabane','SaikyoKawagoe'),false);
@@ -112,14 +122,25 @@ test('raw ODPT from/to must be inside actual common tracks; departures and arriv
  assert.equal(shared.restoreSourcePosition({...q,displayLineId:'Mita'},'Mita'),null);
  assert.equal(shared.projectPosition('Fukutoshin','Yurakucho',q),null,'projection never chains');
 });
-test('reverse station order maps direction and estimates never stick outside a shared boundary',()=>{
- const p=pos('SaikyoKawagoe','Shibuya','Shinjuku',0.25,{railDirection:'Outbound'});
- const q=shared.projectPosition('ShonanShinjuku','SaikyoKawagoe',p);
- assert.equal(q.stationIndex,all.ShonanShinjuku.stations.indexOf('Shibuya'));
- assert.equal(q.segmentToIndex,all.ShonanShinjuku.stations.indexOf('Shinjuku'));
- assert.equal(q.segmentProgress,0.25);assert.equal(q.sharedTrackDirection,-1);
- assert.equal(shared.restoreSourcePosition(q,'ShonanShinjuku').segmentProgress,0.25);
- assert.equal(shared.projectPosition('ShonanShinjuku','SaikyoKawagoe',pos('SaikyoKawagoe','Ikebukuro','Itabashi',0.2)),null);
+test('reverse station order maps direction on a retained shared pair; estimates never stick outside a boundary',()=>{
+ const p=pos('Namboku','Meguro','Shirokanedai',0.25,{railDirection:'Outbound'});
+ const own=all.Mita.stations, peer=all.Namboku.stations;
+ const orientation=Math.sign(own.indexOf('Shirokanedai')-own.indexOf('Meguro'))*
+  Math.sign(peer.indexOf('Shirokanedai')-peer.indexOf('Meguro'));
+ const reversed=orientation<0?own.slice():own.slice().reverse();
+ const fixture={...all,Mita:{...all.Mita,stations:reversed}};
+ const q=shared.projectPosition('Mita','Namboku',p,fixture);
+ assert.ok(q);
+ assert.equal(q.stationIndex,reversed.indexOf('Meguro'));
+ assert.equal(q.segmentToIndex,reversed.indexOf('Shirokanedai'));
+ assert.equal(q.segmentProgress,0.25);
+ assert.equal(q.sharedTrackDirection,-Math.sign(p.segmentToIndex-p.stationIndex));
+ const original=sharedContext.window.UNIFIED_LINES;
+ try {
+  sharedContext.window.UNIFIED_LINES=fixture;
+  assert.equal(shared.restoreSourcePosition(q,'Mita').segmentProgress,0.25);
+ } finally { sharedContext.window.UNIFIED_LINES=original; }
+ assert.equal(shared.projectPosition('ShonanShinjuku','SaikyoKawagoe',pos('SaikyoKawagoe','Shibuya','Shinjuku',0.25)),null);
  assert.equal(shared.projectPosition('Mita','Namboku',pos('Namboku','Shirokane-Takanawa','Azabu-Juban',0.1)),null);
  assert.ok(shared.projectPosition('Mita','Namboku',pos('Namboku','Meguro','Shirokane-Takanawa',0.75)));
 });
