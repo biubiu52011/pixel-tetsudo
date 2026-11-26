@@ -10,7 +10,7 @@ const fs = require('node:fs');
 const csv = fs.readFileSync('data/audits/png-first-number-band-inventory-20261117.csv','utf8');
 const index = JSON.parse(fs.readFileSync('data/audits/png-to-train-number-index-2611.json','utf8'));
 const byPng = new Map(index.pngIndex.map(entry => [entry.path, entry]));
-const rows = csv.trimEnd().split('\n').slice(1)
+const rows = csv.trimEnd().split(/\r?\n/).slice(1)
   .filter(row => row.startsWith('私铁,')).map(row => row.split(','));
 const rowsByPng = new Map();
 for (const row of rows) {
@@ -72,8 +72,15 @@ const expectedReferencedPngs = [
   'images/列车/秩父鉄道/秩父鉄道_C58形_363号機.png',
 ].sort();
 
-test('private railway category fixes the 246-PNG inventory and 219 unresolved gaps', () => {
-  assert.equal(rows.length, 638, 'review duplicate range rows when the inventory changes');
+test('私铁246张PNG及217张未解析素材保持不变，精确化号段无重复', () => {
+  // 已执行的地铁精确化迁移：东急2020 Hanzomon 1→157，东武50050 1→188，
+  // 东武70090 Hibiya 0→9；其余私铁清单保持原状。
+  assert.equal(rows.length, 638 + (157 - 1) + (188 - 1) + 9);
+  assert.equal(new Set(rows.map(row => row.join(','))).size, rows.length,
+    '私铁号段不得出现重复行');
+  assert.equal(rowsByPng.get('images/列车/東急電鉄/東急電鉄_2020系.png').filter(row => row[3] === 'Hanzomon').length, 157);
+  assert.equal(rowsByPng.get('images/列车/東武鉄道/東武鉄道_50050型.png').filter(row => row[3] === 'Hanzomon').length, 188);
+  assert.equal(rowsByPng.get('images/列车/東武鉄道/東武鉄道_70090型.png').filter(row => row[3] === 'Hibiya').length, 9);
   assert.equal(rowsByPng.size, 246);
   const counts = {};
   const missing = [];

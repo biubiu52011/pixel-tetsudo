@@ -46,6 +46,9 @@
 - CI/CD 后续（2026-11-26）：提交 `aa306d00` 的 [run 45754861276](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/45754861276) 已完成，gallery、build 均通过，verify 在第77步因现役车型派生清单过期失败，deploy 未运行。复用 `build-current-service-png-number-map.cjs` 完整重建现役 JSON/CSV；唯一内容差异为御殿场315系 js-0001 的 validTo 同步为 null，601张素材分区及120张已验证现役车型统计不变。隔离JS环境运行现役清单六项测试通过（PNG路径与Git树核对）；使用同一输入重新运行JR东日本专用生成器，JSON blob SHA 与现有Git对象完全一致，CSV亦一致，无须改动。未改变运行时、车型证明、时刻表或数据库。用户已授权处理CI/CD，沿既有 main 推送触发全套检查及自动Pages部署，不改变门禁；本次正式CI和部署结果待回读。
 
 
+- CI 二次后续：`1869e3ff` 的 [run 45755413234](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/45755413234) 已通过原第77步现役清单及JR东日本清单检查，gallery/build通过；后续第79步私铁库存计数仍引用旧638行。逐PNG与精确化前清单比较确认，仅东急2020（2→158）、东武50050（1→188）、东武70090（1→10）三张私铁素材变化，净增352行。修正既有私铁测试，明确按迁移差额解释990行，同时新增全行去重及三组线路精确段计数断言；246张素材、217张未解析及原车型守卫不变。专项隔离测试2/2通过，PNG路径来自完整Git树。等待本次全套CI及自动Pages部署回读，不修改生产数据或工作流门禁。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
