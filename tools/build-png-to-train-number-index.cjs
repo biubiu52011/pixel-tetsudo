@@ -298,6 +298,28 @@ function buildIndex(input) {
       }
     }
   }
+  // 浅草线新版官方名册使用同一运行时责任规则；历史SQL/静态JS条目不改写。
+  const asakusa=win.TrainNumberPngRanges.toeiAsakusaOfficialRoster;
+  const asakusaPng=get('../images/列车/都営地下鉄/都営地下鉄_5500形.png','runtime-asakusa-official');
+  if(!asakusa||!asakusaPng||asakusaPng.quarantined)throw Error('Asakusa official evidence missing');
+  for(const calendar of ['weekday','holiday']){
+    const numbers=asakusa[calendar],date=calendar==='weekday'?'2026-11-26':'2026-11-29';
+    for(const number of numbers){
+      const match=win.TrainNumberPngRanges.match(number,'Asakusa',{
+        trainNumber:number,positionLineId:'Asakusa',displayLineId:'Asakusa',
+        trainOwner:'odpt.TrainOwner:Toei',trainOperator:'Toei',
+        sourceRailway:'odpt.Railway:Toei.Asakusa',positionSource:'realtime-api',
+        estimated:false,calendarType:calendar,serviceDate:date,vehicleIdentityStatus:'UNKNOWN'
+      });
+      if(!match||match.pngPath!=='../'+asakusaPng.path||match.actualVehicleConfirmed!==false||match.referenceOnly!==true)
+        throw Error('Official Asakusa replay rejected '+calendar+' '+number);
+    }
+    asakusaPng.runtimeNumberRosters.push({authority:'official_operator_timetable_live_owner_guarded',
+      lineId:'Asakusa',calendarType:calendar,numberFamily:'5500-live-owner-reference',corridor:null,
+      model:'都営5500形',sourceUrl:asakusa.sourceUrl,validFrom:asakusa.sourceRevisionDate,validTo:null,
+      numberFormat:'full_exact',numbers:numbers.slice(),referenceOnly:true,illustrative:true,
+      actualVehicleConfirmed:false,guardDescription:'Requires exact full ODPT number, realtime Toei trainOwner, exact source railway and nonconflicting model; not future timetable verification'});
+  }
   // JR Central Kansai 2026-03 exact public-number roster. The private source
   // supplies number/calendar/direction and vehicle family, but not a complete
   // all-stop timetable. Keep it as a finite runtime reference and replay the

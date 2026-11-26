@@ -3294,7 +3294,7 @@ test('Toei Asakusa/Shinjuku/Oedo staged numbers only authorize owner-scoped disp
     for(const bad of [{trainOwner:'Keio'}, {trainOwner:''},
       {sourceRailway:'odpt.Railway:Toei.Mita'},
       {positionSource:'supabase-train-run',estimated:true},
-      {serviceDate:'2026-12-01'}]){
+      {serviceDate:line==='Asakusa'?'2026-11-21':'2026-12-01'}]){
       if(line==='Oedo'&&Object.prototype.hasOwnProperty.call(bad,'trainOwner')&&
          bad.trainOwner==='')continue; // source-only owner for standalone Oedo
       assert.equal(root.TrainNumberPngRanges.match(n,line,{...p,...bad}),null,
@@ -4043,4 +4043,33 @@ test('P-03 Tobu 250 artwork in review scope cannot be selected from model label'
   assert.equal(root.TrainIcons.resolveVehicleArtwork(model,'2026-11-21'),null);
   assert.equal(root.VehicleGaragePngMap.hasPng(p),true);
   assert.equal(root.VehicleGaragePngMap.matchModelPath(model,p,'TobuIsesaki'),false);
+});
+
+test('浅草线11月24日官方名册逐号回放，仅实时都营车主可获得5500形参考图',()=>{
+ const r=root.TrainNumberPngRanges.toeiAsakusaOfficialRoster;
+ assert.equal(r.weekday.length,190);assert.equal(r.holiday.length,182);
+ assert.equal(new Set([...r.weekday,...r.holiday]).size,344);
+ assert.equal(crypto.createHash('sha256').update(r.weekday.join(' ')).digest('hex'),'c90391b5496969f3205bee54b388ecf87aa6921cd5481668a7de372eba4b7e83');
+ assert.equal(crypto.createHash('sha256').update(r.holiday.join(' ')).digest('hex'),'637b638b6a3c5b0cf2b99b2a71e2507d5565177d1eefa5f7487ecc8dda005f8d');
+ const p=(n,cal,mods={})=>live({trainNumber:n,positionLineId:'Asakusa',displayLineId:'Asakusa',
+  trainOwner:'odpt.TrainOwner:Toei',trainOperator:'Toei',sourceRailway:'odpt.Railway:Toei.Asakusa',
+  serviceDate:cal==='weekday'?'2026-11-26':'2026-11-29',calendarType:cal,...mods});
+ for(const cal of ['weekday','holiday'])for(const n of r[cal]){
+  const m=root.TrainNumberPngRanges.match(n,'Asakusa',p(n,cal));
+  assert.equal(m?.model,'都営5500形',cal+n);
+  assert.equal(m.referenceOnly,true);assert.equal(m.actualVehicleConfirmed,false);
+  assert.equal(m.sourceRevisionDate,'2026-11-24');
+  const other=cal==='weekday'?'holiday':'weekday';
+  if(!r[other].includes(n))assert.equal(root.TrainNumberPngRanges.match(n,'Asakusa',p(n,other)),null,n);
+ }
+ for(const mods of [{trainOwner:'Keikyu'},{trainOwner:''},{trainOperator:'Keisei'},
+  {sourceRailway:'odpt.Railway:Toei.Mita'},{positionLineId:'Mita'},{displayLineId:'Mita'},
+  {estimated:true},{positionSource:'supabase-train-run'},{serviceDate:'2026-11-23'},
+  {calendarType:'unknown'},{vehicleIdentityStatus:'EXACT'},{vehicleResolvedUpstream:true},
+  {realtimeVehicleType:'京急1000形'},{plannedVehicleCandidates:['京急1000形']}])
+   assert.equal(root.TrainNumberPngRanges.match('1300T','Asakusa',p('1300T','weekday',mods)),null,JSON.stringify(mods));
+ for(const n of ['1008T','1327T','1300H','1300','9999T'])
+  assert.equal(root.TrainNumberPngRanges.match(n,'Asakusa',p(n,'weekday')),null,n);
+ assert.equal(root.TrainNumberPngRanges.match('1327Ta','Asakusa',p('1327Ta','weekday'))?.model,'都営5500形');
+ assert.equal(root.TrainNumberPngRanges.match('1300T','Asakusa',p('1300T','weekday',{calendarType:'',serviceDate:'2026-12-01'}))?.referenceOnly,true);
 });
