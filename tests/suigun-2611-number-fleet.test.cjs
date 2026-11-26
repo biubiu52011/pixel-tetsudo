@@ -156,7 +156,9 @@ test('canonical manifest, relative page script, SHA-12 and migration safety',()=
  // Before this regression fix both the main and branch skipped this
  // script, silently replacing certified art with an unresolved dot.
  const detail=fs.readFileSync('js/trains-detail-loader.js','utf8');
- assert.match(detail,/scope\.split\(","\)\.indexOf\(id\)/);
+ // 冷加载按当前线路及已核实直接共轨伙伴逐一检查，仍以逗号分隔作用域。
+ assert.match(detail,/scope\.split\(","\)\.indexOf\(lid\)/);
+ assert.match(detail,/ids\.some\(function\(lid\)/);
  assert.match(html,/jreast-suigun-number-index\.js\?v=[a-f0-9]{12}" data-line-scope="Suigun,SuigunBranch"/);
  assert.doesNotMatch(html,/data-line-scope="Suigun\|SuigunBranch"/);
  for(const file of [path,'js/train-vehicle.js','data/timetables/vehicle-garage-png-map.js']){

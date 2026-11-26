@@ -79,6 +79,9 @@
 - 第十一轮／物理共轨（2026-11-26）：6ebbccb全量CI与部署通过。检查已有SharedTrackPairs、DataFusion、trains-data、TrainVehicle与延迟索引加载，确认原来仅2组地下铁共轨，重复合并且边界实时from/to未被检查、跨图PNG被阻断。复用原责任配置与投影函数，增加严格连续站序、正反向投影、原始来源坐标回放、实时from/to区间门禁、稳定运行链/来源ID去重及实时优先；统一融合和渲染合并，跳过共轨伙伴的重复直通边界投影。已有南北/三田、有乐町/副都心，加埼京/湘南新宿大崎—池袋（https://toyokeizai.net/articles/-/402518?display=b）、横须贺/湘南新宿西大井—户塚（https://room-p.net/webtrip/japan/jreast/shonanshinjuku/shonanshinjuku.html，户塚以南暂不扩）、宇都宫/高崎东京—大宫（https://yukemuri-milkyway.com/line-guide-jreast-takasaki/）、常磐/常磐本线取手—土浦（https://www.tokyo-train-master.com/jl-joban-local）。保留原线路番号、所属、来源时间、实际身份及图库授权；只在已验证共轨投影回放成立时调用原线路素材选择器，拒绝伪造投影或冲突、未知型号保持中性。SVG按本站实际伙伴着色，逆序方向校正，标题区分来源；详情索引只补直接共轨伙伴而不递归加载。专项覆盖6组双向、分岔出入、实时/推定、重复和错图；页面哈希同步，无SQL写入。其他共轨尤其不同站表的多层复合线路待独立核实，不能仅凭同站名或直通自动注册。
 
 
+- 共轨CI首次运行45767956636：图库及build通过，水郡线既有静态测试固定旧变量id导致断言失败，现按直接共轨伙伴逐一检查的lid更新断言，仍验证逗号作用域和原SHA校验；未放宽生产规则。
+
+
 ### DOCS-CHINESE-MAINTAINER-TEXT-20261126 — 现役文档与主要维护文字中文化（LOCAL-VERIFIED）
 
 | 项目 | 当前状态 |
