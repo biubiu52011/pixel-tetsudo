@@ -270,9 +270,11 @@ select count(*) as sample_rows,count(d.id) as number_found,
  or d.destination_urns is distinct from array['odpt.Station:Tokyu.Meguro.Hiyoshi']::text[]) as mismatches
 from samples s left join db d on d.train_number=s.number;
 
--- 2026-03-14平日日吉6、7时台上行；独立运用表交叉核验，不作物理车辆确认。
+-- 2026-03-14平日日吉6、7、9、12时台上行；独立运用表交叉核验，不作物理车辆确认。
 -- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/06/departure
 -- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/07/departure
+-- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/09/departure
+-- https://www.train.chokopy.net/unyo-search/Meguro/2026-03-14/weekday/downstream/12/departure
 with samples(number,dep,arr,kind,dest) as (values
 ('207-062','06:02','06:18','Express','NishiTakashimadaira'),
 ('437-062','06:06','06:31','Local','NishiTakashimadaira'),
@@ -306,7 +308,33 @@ with samples(number,dep,arr,kind,dest) as (values
 ('631-072','07:51','08:12','Express','Takashimadaira'),
 ('356-072','07:54','08:20','Local','OjiKamiya'),
 ('455-072','07:56','08:17','Express','NishiTakashimadaira'),
-('433-072','07:58','08:25','Local','Takashimadaira')
+('433-072','07:58','08:25','Local','Takashimadaira'),
+('441-092','09:03','09:30','Local','NishiTakashimadaira'),
+('212-082','09:06','09:25','Express','UrawaMisono'),
+('437-092','09:09','09:33','Local','Takashimadaira'),
+('346-092','09:14','09:40','Local','UrawaMisono'),
+('213-092','09:17','09:36','Express','NishiTakashimadaira'),
+('435-092','09:20','09:44','Local','Takashimadaira'),
+('594-092','09:25','09:51','Local','UrawaMisono'),
+('431-092','09:30','09:48','Express','NishiTakashimadaira'),
+('485-092','09:33','09:56','Local','NishiTakashimadaira'),
+('481-092','09:40','10:05','Local','NishiTakashimadaira'),
+('217-092','09:45','10:03','Express','NishiTakashimadaira'),
+('360-092','09:48','10:10','Local','UrawaMisono'),
+('487-092','09:54','10:16','Local','NishiTakashimadaira'),
+('205-092','09:58','10:23','Local','NishiTakashimadaira'),
+('588-112','12:04','12:21','Express','UrawaMisono'),
+('461-122','12:07','12:29','Local','NishiTakashimadaira'),
+('336-122','12:13','12:38','Local','AkabaneIwabuchi'),
+('639-122','12:19','12:36','Express','NishiTakashimadaira'),
+('354-122','12:22','12:44','Local','UrawaMisono'),
+('431-122','12:28','12:53','Local','NishiTakashimadaira'),
+('212-122','12:34','12:51','Express','AkabaneIwabuchi'),
+('481-122','12:37','12:59','Local','NishiTakashimadaira'),
+('346-122','12:43','13:08','Local','UrawaMisono'),
+('227-122','12:49','13:06','Express','NishiTakashimadaira'),
+('360-122','12:52','13:14','Local','AkabaneIwabuchi'),
+('469-122','12:58','13:23','Local','NishiTakashimadaira')
 ), db as (
  select t.id,t.train_number,t.train_type_urn,t.destination_urns,
  min(s.departure_clock) filter(where s.departure_station_urn='odpt.Station:Tokyu.Meguro.Hiyoshi') as dep,
@@ -320,7 +348,7 @@ with samples(number,dep,arr,kind,dest) as (values
  count(d.id) over(partition by s.number) as candidate_count
  from samples s left join db d on s.dep=d.dep
  and d.train_type_urn='odpt.TrainType:Tokyu.'||s.kind
- and d.destination_urns=array[case when s.dest in ('NishiTakashimadaira','Takashimadaira') then 'odpt.Station:Toei.Mita.' when s.dest='OjiKamiya' then 'odpt.Station:TokyoMetro.Namboku.' else 'odpt.Station:SaitamaRailway.SaitamaRailway.' end||s.dest]::text[]
+ and d.destination_urns=array[case when s.dest in ('NishiTakashimadaira','Takashimadaira') then 'odpt.Station:Toei.Mita.' when s.dest in ('OjiKamiya','AkabaneIwabuchi') then 'odpt.Station:TokyoMetro.Namboku.' else 'odpt.Station:SaitamaRailway.SaitamaRailway.' end||s.dest]::text[]
 )
 select *,case when candidate_count=1 and published_arr=database_arr then 'exact_boundary_candidate'
  when candidate_count=1 then 'arrival_clock_conflict' else 'unresolved' end as status
