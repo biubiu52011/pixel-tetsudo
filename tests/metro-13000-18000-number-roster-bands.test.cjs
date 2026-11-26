@@ -25,7 +25,7 @@ test('two Metro S-band SQL rows derive from the actual 2611 full-number rosters'
   const path='images/列车/東京メトロ/'+x.name;
   const item=idx.find(y=>y.path===path);
   assert.ok(item&&!item.quarantined&&fs.existsSync(path),path);
-  const rosters=item.runtimeNumberRosters.filter(y=>y.lineId===x.line);
+  const rosters=item.runtimeNumberRosters.filter(y=>y.lineId===x.line&&y.authority==='existing_frontend_helper');
   assert.equal(rosters.length,2,path+' weekday and holiday');
   const totals=Object.fromEntries(rosters.map(y=>[y.calendarType,y.explicitDocumentedNumberCount]));
   assert.equal(totals.weekday,x.weekday);

@@ -29,7 +29,7 @@ function buildIndex(input) {
   new Function('window','console',garageCode)(win,silence);
   const rangeCode=instrument(rangesSource,
     'root.TrainNumberPngRanges=Object.freeze({',
-    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
+    'root.__pngIndexTobuNumbers=tobuSkytreeNumbers; root.__pngIndexMetroThrough=tobuMetroThroughNumberRoster; root.__hanzomonLiveModelEvidence=hanzomonLiveModelEvidence; root.__pngIndexJrcKansai202603=jrcKansai202603NumberRoster; root.__pngIndexJrcChuo202603=jrcChuo202603NumberRoster;');
   new Function('window','console',rangeCode)(win,silence);
   // 2611 M-03 guard fixtures: not claims that a train used these cars.
   // A shared S train number is insufficient if vehicle sources disagree.
@@ -296,6 +296,32 @@ function buildIndex(input) {
         }
         group.numbers.push(number);
       }
+    }
+  }
+  // 半藏门：逐字回放原名单S号与明确实时车型组合，重叠候选不是实际番号分配。
+  const hz=win.__hanzomonLiveModelEvidence;
+  for(const [model,png] of Object.entries(hz.models)){
+    const asset=get(png,'runtime-hanzomon-live-model');
+    if(!asset||asset.quarantined)throw Error('半藏门车型图不可用');
+    for(const calendar of ['weekday','holiday']){
+      const numbers=win.__pngIndexMetroThrough.Hanzomon[calendar].filter(n=>/^[AB][0-9]{3,4}S$/.test(n));
+      for(const number of numbers){
+        const m=win.TrainNumberPngRanges.match(number,'Hanzomon',{
+          trainNumber:number,positionLineId:'Hanzomon',displayLineId:'Hanzomon',
+          sourceRailway:'odpt.Railway:TokyoMetro.Hanzomon',trainOperator:'TokyoMetro',
+          trainOwner:'odpt.TrainOwner:TokyoMetro',trainType:'Local',calendarType:calendar,
+          serviceDate:calendar==='weekday'?'2026-12-01':'2026-12-06',
+          positionSource:'realtime-api',estimated:false,realtimeVehicleType:model
+        });
+        if(!m||m.pngPath!==png||m.referenceOnly!==true||m.actualVehicleConfirmed!==false||
+           m.source!=='hanzomon-live-owner-explicit-model-reference')
+          throw Error('半藏门实时车型回放失败 '+number+' '+model);
+      }
+      asset.runtimeNumberRosters.push({authority:'existing_frontend_live_owner_model_guarded',
+        lineId:'Hanzomon',calendarType:calendar,numberFamily:'explicit-model-reference',
+        corridor:'oshiage',model,sourceUrl:hz.sourceUrl,validFrom:hz.observedOn,validTo:null,
+        numberFormat:'full_exact',numbers:numbers.slice(),referenceOnly:true,illustrative:true,
+        actualVehicleConfirmed:false,guardDescription:'Original exact S roster + live owner, source, calendar, explicit compatible model; no future timetable or physical vehicle confirmation'});
     }
   }
   // 浅草线新版官方名册使用同一运行时责任规则；历史SQL/静态JS条目不改写。

@@ -4101,6 +4101,15 @@
   // The owner suffix is a working-company reference. Train substitution,
   // an unresolved inter-company number change, and a changed carset must
   // never be upgraded to EXACT identity or a runningChainId.
+  // 半藏门线同一S番号可能属于不同车型；只有实时车主与明确车型同时存在才选择对应参考图。
+  // 旧名单仅为有限参考范围，不证明改点后的时刻表或当天编组。
+  var hanzomonLiveModelEvidence=Object.freeze({observedOn:"2026-11-26",
+    sourceUrl:"https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/",
+    models:Object.freeze({
+      "東京メトロ08系":"../images/列车/東京メトロ/東京メトロ_08系.png",
+      "東京メトロ8000系":"../images/列车/東京メトロ/東京メトロ_8000系.png",
+      "東京メトロ18000系":"../images/列车/東京メトロ/東京メトロ_18000系.png"
+    })});
   function matchTobuMetroThrough2611(number,lineId,p){
     p=p||{};
     var corridor=lineId==="Hibiya"?"hibiya":
@@ -4113,6 +4122,13 @@
     var provider=lineId==="TokyuDenEn"?"Tokyu":"TokyoMetro";
     var operator=String(p.trainOperator||p.operator||"");
     var date=String(p.serviceDate||"").slice(0,10),cal=sourceCalendar(p);
+    var owner=String(p.trainOwner||"").replace(/^odpt\.(?:Operator|TrainOwner):/,"");
+    var explicitModel=String(p.realtimeVehicleType||"").trim();
+    var liveHanzomon=lineId==="Hanzomon"&&/^[AB][0-9]{3,4}S$/.test(number)&&
+      /^\d{4}-\d{2}-\d{2}$/.test(date)&&date>=hanzomonLiveModelEvidence.observedOn&&
+      p.positionSource==="realtime-api"&&p.estimated===false&&owner==="TokyoMetro"&&
+      String(p.trainNumber||"").trim().toUpperCase()===number&&
+      Object.prototype.hasOwnProperty.call(hanzomonLiveModelEvidence.models,explicitModel);
     if(line!==lineId||String(p.displayLineId||line)!==lineId||
        p.sourceRailway!==railway||
        (operator&&operator!==provider&&operator!=="odpt.Operator:"+provider)||
@@ -4122,7 +4138,7 @@
        p.vehicleResolvedFromRealtime===true||p.actualVehicleConfirmed===true||
        p.vehicleFormationId||p.vehicleFormationConflict||
        (Array.isArray(p.vehicleFormationCandidates)&&p.vehicleFormationCandidates.length)||
-       date<"2026-11-02"||date>"2026-11-30"||!cal)return null;
+       date<"2026-11-02"||(date>"2026-11-30"&&!liveHanzomon)||!cal)return null;
     if(lineId==="TokyuDenEn"){
       // No verified Tokyu<->Metro exact timetable crosswalk exists here.
       // Admit current realtime source-format train numbers only.
@@ -4140,17 +4156,28 @@
     if(!thLiner&&!["Local","Express","SemiExpress","SectionExpress","SectionSemiExpress"].includes(trainType))return null;
     var item=tobuThroughOwnerReference(corridor,number),gallery=root.VehicleGaragePngMap;
     if(thLiner&&(!item||item.model!=="東武70090型"))return null;
-    if(!item||!gallery||!gallery.matchModelPath(item.model,item.png,lineId))return null;
+    if(!item||!gallery)return null;
     var opCode=String(p.operationCode||"").toUpperCase().trim();
     if(/^[0-9]{1,2}[KST]$/.test(opCode)&&opCode.slice(-1)!==number.slice(-1))return null;
-    var vehicleOwner=String(p.trainOwner||"").replace(/^odpt.Operator:/,"");
-    if(vehicleOwner&&vehicleOwner!==item.owner)return null;
+    if(owner&&owner!==item.owner)return null;
+    if(liveHanzomon){
+      if(item.owner!=="TokyoMetro"||item.candidates.indexOf(explicitModel)<0)return null;
+      item.model=explicitModel;item.png=hanzomonLiveModelEvidence.models[explicitModel];
+      item.url=hanzomonLiveModelEvidence.sourceUrl;
+    }
+    if(!gallery.matchModelPath(item.model,item.png,lineId))return null;
     if((p.realtimeVehicleType&&p.realtimeVehicleType!==item.model)||
        (p.realtimeDerivedVehicleType&&p.realtimeDerivedVehicleType!==item.model))return null;
+    var vp=p.vehiclePlan;
+    if(liveHanzomon&&vp&&(vp.confirmed===true||vp.status==="PLANNED_MODEL")&&
+       (!Array.isArray(vp.models)||vp.models.length!==1||vp.models[0]!==item.model))return null;
+    if(liveHanzomon&&Array.isArray(p.plannedVehicleCandidates)&&p.plannedVehicleCandidates.length&&
+       p.plannedVehicleCandidates.indexOf(item.model)<0)return null;
     return {lineId:lineId,trainNumber:number,serviceFamily:thLiner?"th_liner":"ordinary",
       referenceCorridor:corridor,referenceOwner:item.owner,
       candidateModels:thLiner?[item.model]:item.candidates.slice(),model:item.model,pngPath:item.png,
-      sourceUrl:thLiner?"https://www.tobu.co.jp/railway/th/timetable/":item.url,source:"tobu-metro-tokyu-working-owner-reference",
+      sourceUrl:thLiner?"https://www.tobu.co.jp/railway/th/timetable/":item.url,
+      source:liveHanzomon?"hanzomon-live-owner-explicit-model-reference":"tobu-metro-tokyu-working-owner-reference",
       planned:true,representative:true,referenceOnly:true,illustrative:true,
       actualVehicleConfirmed:false};
   }
