@@ -16741,6 +16741,10 @@
     "Miyakonojo": {
       "lat": 31.52167,
       "lng": 131.06167
+    },
+    "Nakano-Shimbashi": {
+      "lat": 35.691675,
+      "lng": 139.674023
     }
   },
   "lines": {
@@ -23121,10 +23125,11 @@
         {
           "lineId": "ChuoSobuLocal",
           "handoverStations": [
-            "Nakano"
+            "Nakano",
+            "Nishi-Funabashi"
           ],
           "evidence": {
-            "source": "Tokyo Metro through-service network + canonical handover station",
+            "source": "Tokyo Metro official Tozai timetable (weekday through service at Nishi-Funabashi): https://www.tokyometro.jp/station/nishi-funabashi/timetable/index.html",
             "confidence": "HIGH"
           }
         },
@@ -23734,7 +23739,7 @@
         2
       ],
       "throughServices": [
-        "KeioMain"
+        "KeioShin"
       ],
       "transferStations": [
         {
@@ -23947,12 +23952,12 @@
       },
       "serviceBoundaries": [
         {
-          "lineId": "KeioMain",
+          "lineId": "KeioShin",
           "handoverStations": [
             "Shinjuku"
           ],
           "evidence": {
-            "source": "ThroughService direct relation + join station",
+            "source": "Keio official route map https://www.keio.co.jp/global/routes/ ; physical through route via Keio New Line",
             "confidence": "HIGH"
           }
         }
@@ -26289,7 +26294,7 @@
       "region": "Kanagawa Area",
       "type": "straight",
       "image": "../images/鉄道/横浜市交通局/ブルーライン.png",
-      "durationTotalMin": 26,
+      "durationTotalMin": 55,
       "branchOf": null,
       "stations": [
         "Shonandai",
@@ -26326,17 +26331,35 @@
         "Azamino"
       ],
       "durations": [
+        3,
+        2,
+        1,
+        1,
+        2,
+        2,
+        1,
         2,
         2,
         2,
         2,
         2,
+        1,
+        1,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
         2,
         2,
         2,
         2,
         2,
-        2,
+        3,
+        3,
+        1,
         2,
         2
       ],
@@ -30127,10 +30150,11 @@
         {
           "lineId": "Tozai",
           "handoverStations": [
-            "Nakano"
+            "Nakano",
+            "Nishi-Funabashi"
           ],
           "evidence": {
-            "source": "Tokyo Metro through-service network + canonical handover station",
+            "source": "Tokyo Metro official Tozai timetable (weekday through service at Nishi-Funabashi): https://www.tokyometro.jp/station/nishi-funabashi/timetable/index.html",
             "confidence": "HIGH"
           }
         }
@@ -32327,7 +32351,7 @@
         2
       ],
       "throughServices": [
-        "Shinjuku"
+        "KeioShin"
       ],
       "transferStations": [
         {
@@ -32451,12 +32475,12 @@
       },
       "serviceBoundaries": [
         {
-          "lineId": "Shinjuku",
+          "lineId": "KeioShin",
           "handoverStations": [
-            "Shinjuku"
+            "Sasazuka"
           ],
           "evidence": {
-            "source": "ThroughService direct relation + join station",
+            "source": "Keio official route map https://www.keio.co.jp/global/routes/ ; physical through route via Keio New Line",
             "confidence": "HIGH"
           }
         }
@@ -32583,7 +32607,10 @@
         2,
         2
       ],
-      "throughServices": [],
+      "throughServices": [
+        "Shinjuku",
+        "KeioMain"
+      ],
       "transferStations": [
         {
           "station": "Shinjuku",
@@ -32668,7 +32695,28 @@
         ],
         "operatorGroup": "KEIO"
       },
-      "serviceBoundaries": []
+      "serviceBoundaries": [
+        {
+          "lineId": "Shinjuku",
+          "handoverStations": [
+            "Shinjuku"
+          ],
+          "evidence": {
+            "source": "Keio official route map https://www.keio.co.jp/global/routes/ ; physical through route via Keio New Line",
+            "confidence": "HIGH"
+          }
+        },
+        {
+          "lineId": "KeioMain",
+          "handoverStations": [
+            "Sasazuka"
+          ],
+          "evidence": {
+            "source": "Keio official route map https://www.keio.co.jp/global/routes/ ; physical through route via Keio New Line",
+            "confidence": "HIGH"
+          }
+        }
+      ]
     },
     "KeioTakao": {
       "name": "KeioTakao",
