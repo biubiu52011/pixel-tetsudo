@@ -940,7 +940,9 @@ var CANONICAL_VEHICLES = {
   "tobu-70090": { displayName: "東武70090型", iconName: "東武70090型", asset: "../images/列车/東武鉄道/東武鉄道_70090型.png", aliases: ["東武70090型","東武70090系","東武70090系（TH-LINER）","東武70090系(TH-LINER)",
       "東武70090系（THライナー専用・日比谷線直通）"] },
   "sotetsu-13000-8": { displayName: "相鉄13000系", iconName: "相鉄13000系", asset: "../images/列车/相模鉄道/相模鉄道_13000系_YOKOHAMA_NAVYBLUE.png", aliases: ["相鉄13000系(8両)","相鉄13000系"] },
-  "sotetsu-20000-10": { displayName: "相鉄20000系", iconName: "相鉄20000系", asset: "../images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png", lineIds:["Toyoko","TokyuMeguro","Mita","Namboku"], aliases: ["相鉄20000系(10両)","相鉄20000系（10両）"] },
+  // 相铁官方车型图鉴将 20000 系限定为东横线直通 10 辆编组；
+  // 目黑线、三田线和南北线使用 21000 系，不能共用 20000 系的线路范围。
+  "sotetsu-20000-10": { displayName: "相鉄20000系", iconName: "相鉄20000系", asset: "../images/列车/相模鉄道/相模鉄道_20000系_YOKOHAMA_NAVYBLUE.png", lineIds:["SotetsuMain","SotetsuIzumino","SotetsuShin-Yokohama","Fukutoshin","TokyuToyoko","Toyoko","MinatoMirai"], aliases: ["相鉄20000系(10両)","相鉄20000系（10両）"] },
   "sotetsu-21000": { displayName: "相鉄21000系", iconName: "相鉄21000系", asset: "../images/列车/相模鉄道/相模鉄道_21000系.png", lineIds:["Meguro","TokyuMeguro","Mita","Namboku"], aliases: ["相鉄21000系", "相鉄21000系(8両)"] },
 
   "jr-east-209-500-keiyo": {
@@ -2659,7 +2661,7 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "tobu-9000": ["Tojo", "Yurakucho", "Fukutoshin"],
   "tobu-9050": ["Tojo", "Yurakucho", "Fukutoshin"],
   "sotetsu-13000-8": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "SotetsuJRDirect"],
-  "sotetsu-20000-10": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Fukutoshin", "Toyoko", "TokyuMeguro", "Mita", "Namboku"],
+  "sotetsu-20000-10": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Fukutoshin", "TokyuToyoko", "Toyoko", "MinatoMirai"],
   "sotetsu-21000": ["SotetsuMain", "SotetsuIzumino", "SotetsuShin-Yokohama", "Meguro", "TokyuMeguro", "Mita", "Namboku"],
   "sotetsu-12000": ["SotetsuMain", "SotetsuIzumino", "SotetsuJRDirect", "SaikyoKawagoe"],
   "jr-east-209-3000-hachiko-kawagoe": ["Hachiko", "Kawagoe"],

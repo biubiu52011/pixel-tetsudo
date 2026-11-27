@@ -246,6 +246,23 @@ test('byte-identical Sotetsu model aliases stay quarantined from number-to-PNG m
   }
 });
 
+test('Sotetsu 20000 and 21000 canonical scopes follow their distinct through routes',()=>{
+  const series20000=win.TrainVehicle.resolveCanonicalVehicle('相鉄20000系');
+  const series21000=win.TrainVehicle.resolveCanonicalVehicle('相鉄21000系');
+  assert.deepEqual(Array.from(series20000?.lineIds||[]),[
+    'SotetsuMain','SotetsuIzumino','SotetsuShin-Yokohama',
+    'Fukutoshin','TokyuToyoko','Toyoko','MinatoMirai'
+  ]);
+  assert.deepEqual(Array.from(series21000?.lineIds||[]),[
+    'SotetsuMain','SotetsuIzumino','SotetsuShin-Yokohama',
+    'Meguro','TokyuMeguro','Mita','Namboku'
+  ]);
+  for(const line of ['TokyuMeguro','Mita','Namboku'])
+    assert.equal(series20000.lineIds.includes(line),false,'20000 must not enter '+line);
+  for(const line of ['Fukutoshin','TokyuToyoko','Toyoko','MinatoMirai'])
+    assert.equal(series21000.lineIds.includes(line),false,'21000 must not enter '+line);
+});
+
 test('Sotetsu livery and formation artwork require explicit number evidence',()=>{
   const ranges=fs.readFileSync('data/timetables/train-number-png-ranges.js','utf8');
   const names=[
