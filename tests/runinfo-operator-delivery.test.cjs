@@ -309,3 +309,21 @@ test("Subway TripUpdate merges cannot cross railway or different trip, even with
   assert.equal(ctx.merge([({...p})],[right,{...right}])[0]["odpt:vehicleType"],undefined);
   assert.equal(ctx.merge([({...p})],[{...right,"gtfs:tripUpdateValidUntil":"2000-01-01T00:00:00Z"}])[0]["odpt:vehicleType"],undefined);
 });
+
+test("Yokohama TripUpdate preserves vehicle-type evidence for exact trip merge",()=>{
+ const a=source.indexOf("    function _decodeGenericGtfsTripUpdates("),b=source.indexOf("    function fetchGenericGtfsTripUpdates(",a);
+ const c=source.indexOf("    function _yokohamaGtfsTrainNumber("),d=source.indexOf("    function _decodeGenericGtfsPositions(",c);
+ const e=source.indexOf("    function _toeiGtfsVehicleEvidenceKind("),g=source.indexOf("    function _toeiGtfsServiceNumber(",e);
+ const h=alertHarness();
+ const ctx={Date,Uint8Array,LINE_RAILWAY_CODE:{YokohamaBlue:"Blue"},_gtfsReadMessage:h.read,_gtfsNested:h.nested,_gtfsText:h.text,_gtfsField:h.field,_gtfsRepeated:h.repeated,_subwayAlertLineId:h.subway,_gtfsOrderedStops:xs=>xs,_toeiTripUpdateStop:()=>({}),_gtfsStationFromLine:()=>"",_toeiGtfsIso:n=>new Date(n*1000).toISOString()};
+ vm.runInNewContext(source.slice(c,d)+source.slice(e,g)+source.slice(a,b)+"\nthis.decodeUpdate=_decodeGenericGtfsTripUpdates;",ctx);
+ const trip=join(blob(1,"b02113b"),blob(5,"bn32-01"),number(6,1));
+ function payload(label){return feed(join(blob(1,"update"),blob(3,join(blob(1,trip),blob(3,blob(2,label))))));}
+ const row=ctx.decodeUpdate(payload("3000R形"),"YokohamaMunicipal")[0];
+ assert.equal(row["odpt:vehicleType"],"横浜市営地下鉄3000R形");
+ assert.equal(row["gtfs:vehicleEvidenceKind"],"physical-vehicle-label");
+ const neutral=ctx.decodeUpdate(payload("6"),"YokohamaMunicipal")[0];
+ assert.equal(neutral["odpt:vehicleType"],"");
+ assert.equal(neutral.vehicleCarNumber,"");
+ assert.equal(neutral["gtfs:rawVehicleLabel"],"6");
+});

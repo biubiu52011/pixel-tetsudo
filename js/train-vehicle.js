@@ -3989,16 +3989,20 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       physicalCarConflict);
     var realtimeCandidateLabels = Array.isArray(ctx.realtimeVehicleCandidates)
       ? ctx.realtimeVehicleCandidates.join(' / ') : '';
-    // Official Yokohama fleet guide: the Green Line is exclusively 10000
-    // series, but first/second batches are visually distinct review assets.
-    // Keep a family candidate (not an exact batch/formation or PNG).
+    // Official Yokohama fleet guide: Green is 10000 series; Blue uses
+    // 3000-series and 4000-series. Family evidence never selects a
+    // particular batch, formation or PNG without a train-level source.
     // https://www.city.yokohama.lg.jp/kotsu/tanoshimou/otanoshimi/sharyosyoukai.html
     if (!hasExplicitVehicle && !realtimeCandidateLabels &&
         ctx._realtimeVehicleResolution === true &&
-        normOp(ctx.operator) === "YokohamaMunicipal" &&
-        ctx.lineId === "YokohamaGreen" &&
-        ctx.railway === "odpt.Railway:YokohamaMunicipal.Green")
-      realtimeCandidateLabels = "横浜市営10000形";
+        normOp(ctx.operator) === "YokohamaMunicipal") {
+      if(ctx.lineId === "YokohamaGreen" &&
+         ctx.railway === "odpt.Railway:YokohamaMunicipal.Green")
+        realtimeCandidateLabels = "横浜市営10000形";
+      if(ctx.lineId === "YokohamaBlue" &&
+         ctx.railway === "odpt.Railway:YokohamaMunicipal.Blue")
+        realtimeCandidateLabels = "横浜市営3000形 / 横浜市営4000形";
+    }
     var toeiFleet = hasExplicitVehicle ? null : resolveToeiOwnerSingleFleet(ctx);
     var toeiFleetCandidates = hasExplicitVehicle || toeiFleet
       ? [] : resolveToeiOwnerFleetCandidates(ctx);

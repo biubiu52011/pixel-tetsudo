@@ -37,3 +37,19 @@ test('Yokohama Green live identity retains official 10000 family without authori
  const bad=w.TrainVehicle.resolveRealtime({...input,railway:'odpt.Railway:YokohamaMunicipal.Blue'}).vehicleResult;
  assert.ok(!bad.candidates.includes('横浜市営10000形'));
 });
+
+test('Yokohama Blue family candidates remain neutral, explicit subtype selects only matching PNG',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ const input={operator:'YokohamaMunicipal',railway:'odpt.Railway:YokohamaMunicipal.Blue',lineId:'YokohamaBlue',trainNumber:'2113b',positionSource:'realtime-api',vehicleEvidenceKind:'trip-id-only'};
+ const family=w.TrainVehicle.resolveRealtime(input).vehicleResult;
+ assert.equal(family.identityStatus,'NARROWED');
+ assert.ok(family.candidates.includes('横浜市営3000形'));
+ assert.ok(family.candidates.includes('横浜市営4000形'));
+ assert.ok(!family.iconPath);
+ for(const model of ['3000N','3000R','3000S','3000V','4000']){
+  const r=w.TrainVehicle.resolveRealtime({...input,realtimeVehicleType:'横浜市営地下鉄'+model+'形',vehicleEvidenceKind:'physical-vehicle-label'}).vehicleResult;
+  assert.equal(r.identityStatus,'EXACT');
+  assert.equal(r.iconPath,'../images/列车/横浜市交通局/横浜市交通局_'+model+'形.png');
+ }
+});

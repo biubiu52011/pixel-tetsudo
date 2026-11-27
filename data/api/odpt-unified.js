@@ -1780,6 +1780,8 @@
             var vehicleId = _gtfsText(vehicle, 1), vehicleLabel = _gtfsText(vehicle, 2);
             var number = operator==="YokohamaMunicipal" ? _yokohamaGtfsTrainNumber(lineId,tripId) : "";
             var physicalLabel = operator==="YokohamaMunicipal" && /^[46]$/.test(vehicleLabel) ? "" : vehicleLabel;
+            var yokoUpdateModel = operator==="YokohamaMunicipal" ?
+                _gtfsVehicleType(operator,lineId,vehicleId,physicalLabel,tripId) : "";
             rows.push({
                 "@id": "gtfs-trip-update:" + operator + ":" + entityId,
                 "owl:sameAs": "gtfs-trip-update:" + operator + ":" + entityId,
@@ -1796,6 +1798,9 @@
                 "vehicleCarNumber": vehicleId && vehicleId !== tripId ? vehicleId : (physicalLabel && physicalLabel !== tripId ? physicalLabel : ""),
                 "vehicleLabel": String(physicalLabel || ""),
                 "gtfs:rawVehicleLabel": String(vehicleLabel || ""),
+                "odpt:vehicleType": yokoUpdateModel,
+                "gtfs:vehicleEvidenceKind": operator==="YokohamaMunicipal" ?
+                    _toeiGtfsVehicleEvidenceKind(vehicleId,physicalLabel,tripId,yokoUpdateModel) : "",
                 "gtfs:tripUpdateTimestamp": _toeiGtfsIso(observed),
                 "gtfs:tripUpdateValidUntil": _toeiGtfsIso(observed + 60)
             });
