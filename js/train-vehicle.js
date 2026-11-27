@@ -5069,7 +5069,32 @@ function resolveTimetableRun(run, tt, lineId, line, serviceDateOverride) {
       vehResult = resolve(vehCtx);
     }
     if(vehResult.identityStatus==='EXACT'&&!vehResult.iconPath){
-      vehResult.vehiclePlan=resolveTimetableVehiclePlan(vehResult.name,{lineId:lineId,operator:line.operator,serviceDate:serviceDate,source:'known-model-representative',_plannedArtworkInventory:true});
+      // A dated Tozai 05-series formation determines the front-design
+      // reference, not a different observed series or a formation-specific PNG.
+      // https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/tozai_05/index.html
+      // https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/tozai_05new/index.html
+      var referenceModel=vehResult.name,referenceSource='';
+      var observedFormations=Object.keys(_assignmentFormations);
+      if(lineId==='Tozai' &&
+         tt['odpt:railway']==='odpt.Railway:TokyoMetro.Tozai' &&
+         referenceModel==='東京メトロ05系' &&
+         _resolvedEvidence && _resolvedEvidence.decisive===true &&
+         normOp(_resolvedEvidence.operator)==='TokyoMetro' &&
+         String(_resolvedEvidence.observedDate||'')===String(serviceDate||'') &&
+         /^https:\/\/loo-ool\.com\/rail\/MT\//.test(String(_resolvedEvidence.sourceUrl||'')) &&
+         observedFormations.length===1) {
+        var formationMatch=String(observedFormations[0]).trim().match(/^(?:05-1|05)?(\d{2})F$/i);
+        var formationNumber=formationMatch?Number(formationMatch[1]):0;
+        if(formationNumber>=14&&formationNumber<=43){
+          referenceModel=formationNumber<=24?'東京メトロ05系（4～7次車）':'東京メトロ05系（8～13次車）';
+          referenceSource=_resolvedEvidence.sourceUrl;
+        }
+      }
+      vehResult.vehiclePlan=resolveTimetableVehiclePlan(referenceModel,{lineId:lineId,operator:line.operator,serviceDate:serviceDate,source:'known-model-representative',sourceUrl:referenceSource,_plannedArtworkInventory:true});
+      if(referenceSource && vehResult.vehiclePlan){
+        if(!vehResult.vehiclePlan.garagePngMapped)vehResult.vehiclePlan.iconPath='';
+        vehResult.vehiclePlan.actualVehicleConfirmed=false;
+      }
     } else if(vehResult.identityStatus!=='EXACT'){
       // Sayama SQL history is undated. Reuse the canonical reference
       // roster (101 / dated 7000 / 8-10-car event stock), never the old
