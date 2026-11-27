@@ -3465,7 +3465,8 @@
                 var alertEndpointType = ep.alert ? "alert" : (ep.gtfsAlert ? "gtfsAlert" : "");
                 if (alertEndpointType) {
                     var infoResult = delayFetch.then(function(data) {
-                        return { ok: true, data: data || [] };
+                        // A missing TrainInformation endpoint is not a successful feed.
+                        return { ok: !!ep.trainInformation, data: data || [] };
                     }).catch(function(error) {
                         return { ok: false, data: [], error: error };
                     });

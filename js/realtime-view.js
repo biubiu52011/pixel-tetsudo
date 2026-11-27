@@ -411,12 +411,13 @@
         value=window.RunInfoEvaluator.extractLinks(value).cleanText;
       if(!value)return;
       if(official || lang==="ja" || !/^ja(?:-|$)/i.test(part.sourceLang||"")){
-        html.push('<div class="rs-cause-official">'+escapeHtml(value)+'</div>');
+        var sourceLang=official ? lang : (part.sourceLang || "ja");
+        html.push('<div class="rs-cause-official" lang="'+escapeHtml(sourceLang)+'">'+escapeHtml(value)+'</div>');
         return;
       }
       // Do not use line-wide inferred summaries for individual missing
       // paragraphs: they could replace a separate GTFS title or description.
-      var rendered=_translatedText(value,lang,{lineId:opts && opts.lineId});
+      var rendered=_translatedText(value,lang,parts.length===1 ? opts : {lineId:opts && opts.lineId});
       if(rendered.indexOf("rs-cause-untranslated")>=0){
         var index=missing.length;
         missing.push(value);

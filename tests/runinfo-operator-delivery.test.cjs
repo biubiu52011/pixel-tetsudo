@@ -6,7 +6,7 @@ const vm=require("node:vm");
 const path=require("node:path");
 const source=fs.readFileSync(path.resolve(__dirname,"../data/api/odpt-unified.js"),"utf8");
 
-function isolatedDelayLoader(fetchResult,initial){
+function isolatedDelayLoader(fetchResult,initial,extra){
   const a=source.indexOf("    function loadRealtimeData(");
   const b=source.indexOf("    // ========== 加载时刻表数据",a);
   assert.ok(a>=0&&b>a,"ODPT loader boundaries");
@@ -26,6 +26,7 @@ function isolatedDelayLoader(fetchResult,initial){
     _rebuildRealtimePositionViews:()=>{},
     _activeRealtimeOperators:{},_activeRealtimeLineIds:{}
   };
+  Object.assign(ctx,extra||{});
   vm.runInNewContext(source.slice(a,b)+"\nthis.run=loadRealtimeData;",ctx);
   return {run:ctx.run,window:w,updates};
 }
@@ -84,4 +85,26 @@ test("ODPT cooldown rejects already queued requests rather than suspending for m
   assert.equal(outcomes.length,2);
   assert.ok(outcomes.every(r=>r.status==="rejected"));
   assert.equal(count,1,"the queued second request was not sent during cooldown");
+});
+
+test("Alert-only operator failure is not masked by an absent TrainInformation endpoint",async()=>{
+  const loader=isolatedDelayLoader(()=>Promise.resolve([]),{},{
+    ODPT_ENDPOINTS:{AlertOnly:{gtfsAlert:"alert"}},
+    fetchGenericGtfsAlerts:()=>Promise.reject(Object.assign(new Error("HTTP 403"),{httpStatus:403}))
+  });
+  await loader.run(true);
+  await pause(75);
+  assert.equal(loader.window.ODPT_DELAY_DATA.AlertOnly,null);
+  assert.equal(loader.window.ODPT_REALTIME_STATUS["AlertOnly:delay"].ok,false);
+  assert.equal(loader.window.ODPT_REALTIME_STATUS["AlertOnly:delay"].status,403);
+});
+test("Alert-only successful empty feed remains empty, not an invented normal status",async()=>{
+  const loader=isolatedDelayLoader(()=>Promise.resolve([]),{},{
+    ODPT_ENDPOINTS:{AlertOnly:{gtfsAlert:"alert"}},
+    fetchGenericGtfsAlerts:()=>Promise.resolve([])
+  });
+  await loader.run(true);
+  await pause(75);
+  assert.equal(loader.window.ODPT_REALTIME_STATUS["AlertOnly:delay"].ok,true);
+  assert.equal(loader.window.ODPT_DELAY_DATA.AlertOnly.length,0);
 });

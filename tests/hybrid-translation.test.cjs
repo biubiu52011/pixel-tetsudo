@@ -128,3 +128,13 @@ test('mixed-language alert fields preserve the official paragraph and queue only
   assert.equal(r.missing[0],'作業員が確認しています。');
   assert.match(r.html,/作業員が確認しています。/);
 });
+
+test('single missing official body retains the established verified-summary fallback',()=>{
+  const delay=boot(),code=source('js/realtime-view.js');
+  const start=code.indexOf('  function _untranslatedOfficialText('),end=code.indexOf('  function renderFilterBar(',start);
+  const context={window:{DelayTranslator:delay},t:k=>k,escapeHtml:String,_needsJaTranslate:()=>true};
+  vm.runInNewContext(code.slice(start,end)+'\nthis.renderParts=_renderOfficialParts;',context);
+  const r=context.renderParts([{source:'埼京線は、上り線の一部の列車に遅れが出ております。',sourceLang:'ja',translations:{ja:'埼京線は、上り線の一部の列車に遅れが出ております。'}}],'zh',{lineId:'SaikyoKawagoe',status:'delayed',direction:'up'});
+  assert.match(r.html,/rs-translation-summary-note/);
+  assert.equal(r.missing.length,0);
+});

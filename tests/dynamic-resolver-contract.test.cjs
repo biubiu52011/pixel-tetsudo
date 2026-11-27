@@ -179,10 +179,16 @@ test('DataFusion never treats failed ODPT request with retained payload as live'
     _normalizeOperator(op){return op;},
     pickRecords(rows){return rows;},
     evaluateRecord(){return {status:'delayed',source:'odpt'};},
-    recordText(rec){return rec['odpt:trainInformationText'];}
+    recordText(rec){const v=rec['odpt:trainInformationText'];return typeof v==='string'?v:v.ja;}
   };
-  vm.runInNewContext(source.slice(start,end)+'\nthis.readLive=getApiDelayInfo;',env);
+  const helperStart=source.indexOf('  function officialDetailParts(rec) {');
+  const helperEnd=source.indexOf('  function resolveCanonicalStation(name) {',helperStart);
+  assert.ok(helperStart>=0&&helperEnd>helperStart);
+  vm.runInNewContext(source.slice(helperStart,helperEnd)+source.slice(start,end)+'\nthis.readLive=getApiDelayInfo;',env);
   assert.equal(env.readLive({operator:'Seibu'},'SeibuShinjuku').status,'delayed');
+  env.odptData.delayInfo.Seibu[0]['odpt:trainInformationText']={ja:'事故による遅延',en:'Official delay'};
+  const localized=env.readLive({operator:'Seibu'},'SeibuShinjuku');
+  assert.equal(localized.officialDetailParts[0].translations.en,'Official delay');
   phase='failed';
   assert.equal(env.readLive({operator:'Seibu'},'SeibuShinjuku'),null);
   phase='stale';
