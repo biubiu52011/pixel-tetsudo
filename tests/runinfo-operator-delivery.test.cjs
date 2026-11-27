@@ -132,8 +132,8 @@ function number(n,v){return Buffer.concat([vint(n*8),vint(v)]);}
 function blob(n,v){const b=Buffer.from(v);return Buffer.concat([vint(n*8+2),vint(b.length),b]);}
 const join=(...parts)=>Buffer.concat(parts);
 function feed(...entities){return join(blob(1,join(blob(1,"2.0"),number(2,0),number(3,Math.floor(Date.now()/1000)))),...entities.map(e=>blob(2,e)));}
-function alertEntity(id,start,end,direction){
-  const selector=join(blob(2,"odpt.Railway:TokyoMetro.Ginza"),...(direction==null?[]:[number(6,direction)]));
+function alertEntity(id,start,end,direction,route="odpt.Railway:TokyoMetro.Ginza",stop=""){
+  const selector=join(blob(2,route),...(direction==null?[]:[number(6,direction)]),...(stop?[blob(5,stop)]:[]));
   const ja=blob(1,join(blob(1,"運転見合わせ"),blob(2,"ja")));
   const en=blob(1,join(blob(1,"Official suspension"),blob(2,"en")));
   const alert=join(blob(1,join(number(1,start),number(2,end))),blob(5,selector),number(7,1),blob(10,join(ja,en)));
@@ -201,4 +201,20 @@ test("Subway alert selectors use exact operator and railway identities, not stat
   assert.equal(subway("Toei","A","","odpt.Station:TokyoMetro.Ginza.Asakusa"),"");
   assert.equal(subway("Toei","S","101234",""),"Shinjuku");
   assert.equal(subway("YokohamaMunicipal","","","G01"),"YokohamaGreen");
+});
+
+test("Official static GTFS numeric route IDs are operator-scoped and complete",()=>{
+  const {subway,decode}=alertHarness();
+  const metro=["Ginza","Marunouchi","Hibiya","Tozai","Chiyoda","Yurakucho","Hanzomon","Namboku","Fukutoshin"];
+  const toei=["Asakusa","Mita","Shinjuku","Oedo","Nippori_Toneri","Arakawa"];
+  metro.forEach((id,i)=>assert.equal(subway("TokyoMetro",String(i+1),"",""),id));
+  toei.forEach((id,i)=>assert.equal(subway("Toei",String(i+1),"",""),id));
+  assert.equal(subway("YokohamaMunicipal","1","",""),"");
+  assert.equal(subway("TokyoMetro","2","","Mb03"),"MarunouchiBranch");
+  assert.equal(subway("TokyoMetro","2","unknownTrip",""),"");
+  const now=Math.floor(Date.now()/1000);
+  const whole=decode(feed(alertEntity("whole",now-60,now+600,null,"2")),"TokyoMetro");
+  assert.deepEqual(Array.from(whole,r=>r["odpt:railway"]),["odpt.Railway:TokyoMetro.Marunouchi","odpt.Railway:TokyoMetro.MarunouchiBranch"]);
+  const branch=decode(feed(alertEntity("branch",now-60,now+600,null,"2","Mb03")),"TokyoMetro");
+  assert.deepEqual(Array.from(branch,r=>r["odpt:railway"]),["odpt.Railway:TokyoMetro.MarunouchiBranch"]);
 });

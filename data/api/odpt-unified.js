@@ -1798,6 +1798,15 @@
             YokohamaMunicipal: {B:"Blue",G:"Green"}
         };
         if (!symbolCodes[operator]) return "";
+        // Verified 2026-11-27 directly against the official routes.txt:
+        // ODPT TokyoMetro/data/TokyoMetro-Train-GTFS.zip (9 routes)
+        // and api-public ODPT Toei/data/Toei-Train-GTFS.zip (6 routes).
+        // These IDs are feed-local, not railway planning numbers.
+        // Yokohama's official ZIP returned 404; do not guess numeric IDs.
+        var numericCodes = {
+            TokyoMetro: {"1":"Ginza","2":"Marunouchi","3":"Hibiya","4":"Tozai","5":"Chiyoda","6":"Yurakucho","7":"Hanzomon","8":"Namboku","9":"Fukutoshin"},
+            Toei: {"1":"Asakusa","2":"Mita","3":"Shinjuku","4":"Oedo","5":"NipporiToneri","6":"Arakawa"}
+        };
         var canonical = Object.create(null);
         Object.keys(LINE_TO_OPERATOR).forEach(function(id){
             if (LINE_TO_OPERATOR[id] !== operator) return;
@@ -1812,7 +1821,8 @@
             canonical.NIPPORITONERI = "Nippori_Toneri";
         function resolveCode(code){
             var k=String(code||"").toUpperCase();
-            return canonical[k] || canonical[String(symbolCodes[operator][k]||"").toUpperCase()] || "";
+            var named = symbolCodes[operator][k] || (numericCodes[operator] || {})[k] || "";
+            return canonical[k] || canonical[String(named).toUpperCase()] || "";
         }
         function route(value) {
             var raw=String(value||"").trim();
@@ -1831,6 +1841,13 @@
             return m ? resolveCode(m[1]) : "";
         }
         var r=route(routeId), s=stop(stopId);
+        // Official Metro route_id 2 covers Marunouchi including its branch.
+        // A scoped branch station resolves to the branch, not the parent.
+        var sharedMarunouchi = operator === "TokyoMetro" && String(routeId || "").trim() === "2";
+        if(sharedMarunouchi && (stopId || tripId)){
+            if(s === "MarunouchiBranch" || s === "Marunouchi") return s;
+            return ""; // no branch-specific evidence for an opaque trip/stop
+        }
         // An explicit but unknown route must not be overridden by a guess.
         if (routeId && !r) return "";
         // A foreign operator's qualified stop cannot be attached here.
@@ -1900,7 +1917,7 @@
                     (selector.tripId ? "trip" : (selector.directionId != null ? "direction" :
                         (selector.routeId ? "line" : "unknown")));
                 var id = "gtfs-alert:" + operator + ":" + entityId + ":" + selectorIndex;
-                rows.push({
+                var row = {
                     "@id": id,
                     "owl:sameAs": id,
                     "odpt:operator": "odpt.Operator:" + operator,
@@ -1931,7 +1948,21 @@
                     // the incident start (which can be days earlier).
                     "dc:date": feedTimestamp ? _toeiGtfsIso(feedTimestamp) : new Date().toISOString(),
                     "dct:valid": period.end ? _toeiGtfsIso(period.end) : ""
-                });
+                };
+                rows.push(row);
+                // Static Metro GTFS has one Marunouchi route. The local
+                // topology and JSON TrainInformation expose a separate Mb
+                // branch, so only the unambiguous route-wide GTFS scope
+                // covers both. Never copy a stop/trip-scoped alert.
+                if(operator==="TokyoMetro" && String(selector.routeId).trim()==="2" &&
+                    lineId==="Marunouchi" && !selector.stopId && !selector.tripId &&
+                    LINE_TO_OPERATOR.MarunouchiBranch==="TokyoMetro"){
+                    rows.push(Object.assign({},row,{
+                        "@id":id+":MarunouchiBranch",
+                        "owl:sameAs":id+":MarunouchiBranch",
+                        "odpt:railway":"odpt.Railway:TokyoMetro."+LINE_RAILWAY_CODE.MarunouchiBranch
+                    }));
+                }
             });
         });
         return rows;
