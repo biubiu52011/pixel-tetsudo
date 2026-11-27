@@ -164,3 +164,25 @@ test('Tozai dated 05 formation selects only its front-design reference',()=>{
  assert.equal(lookup('A1315S','2026-11-28').marker.kind,'unresolved');
  assert.equal(lookup('A1315S','2026-10-24','odpt.Railway:TokyoMetro.Chiyoda').marker.kind,'unresolved');
 });
+
+test('Tozai history counts distinct earlier service days; no guess or PNG authorization',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ vm.runInNewContext(fs.readFileSync('js/train-vehicle.js','utf8'),ctx);
+ const p={lineId:'Tozai',positionLineId:'Tozai',displayLineId:'Tozai',sourceRailway:'odpt.Railway:TokyoMetro.Tozai',trainOperator:'TokyoMetro',trainNumber:'A1315S',serviceDate:'2026-11-28',calendarType:'holiday',vehicleIdentityStatus:'UNKNOWN'};
+ const fn=w.TrainVehicle.getTozaiHistoricalModelDistribution;
+ const stable=fn(p);
+ assert.equal(stable.sampleDays,3);assert.equal(stable.counts['05'],3);
+ assert.equal(stable.holdoutCorrect,3);assert.equal(stable.historicalMajority,'');
+ assert.equal(stable.authorizesPNG,false);assert.equal(stable.actualVehicleConfirmed,false);
+ const mixed=fn({...p,trainNumber:'A1325S'});
+ for(const model of ['05','07','15000'])assert.equal(mixed.counts[model],1);
+ assert.equal(mixed.holdoutCorrect,0);
+ assert.equal(fn({...p,serviceDate:'2026-10-17'}).sampleDays,1);
+ assert.equal(fn({...p,serviceDate:'2026-11-27',calendarType:'weekday'}).sampleDays,0);
+ for(const bad of [{displayLineId:'Chiyoda'},{sourceRailway:'odpt.Railway:TokyoMetro.Chiyoda'},{trainNumber:'A1303K'},{vehicleIdentityStatus:'EXACT'},{trainOwner:'JR-East'}])assert.equal(fn({...p,...bad}),null);
+ const row=(date,model)=>({networkKey:'tozai',operator:'TokyoMetro',sourceUrl:'https://loo-ool.com/rail/MT/',validDate:date,observedDate:date,operationCode:'15S',vehicleType:'東京メトロ'+model+'系(10両)',calendarType:'holiday'});
+ w.VEHICLE_OPERATION_EVIDENCE=[row('2026-10-24','05'),row('2026-10-31','05'),row('2026-11-07','05'),row('2026-11-28','15000')];
+ const qualified=fn(p);assert.equal(qualified.sampleDays,5);assert.equal(qualified.historicalMajority,'05');assert.equal(qualified.authorizesPNG,false);
+ w.VEHICLE_OPERATION_EVIDENCE=[...w.VEHICLE_OPERATION_EVIDENCE,row('2026-10-31','15000')];
+ assert.equal(fn(p).sampleDays,4);assert.equal(fn(p).historicalMajority,'');
+});
