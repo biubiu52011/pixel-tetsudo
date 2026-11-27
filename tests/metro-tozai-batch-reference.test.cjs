@@ -81,6 +81,13 @@ test('东西线 SQL 计划按 K/T 列车番号显示计划图，S/SR 无车型�
   };
  }
 
+ const render=fs.readFileSync('js/trains-render.js','utf8');
+ const labelStart=render.indexOf('  function _trainFleetPlanLabel(');
+ const labelEnd=render.indexOf('  function _uetsuFoldDestinationCaption(',labelStart);
+ assert.ok(labelStart>=0&&labelEnd>labelStart,'车型说明函数缺失');
+ vm.runInNewContext(render.slice(labelStart,labelEnd),ctx,
+  {filename:'js/trains-render.js:tozai-plan-label'});
+
  const cases=[
   ['A1854T','../images/列车/東葉高速鉄道/東葉高速鉄道_2000系.png'],
   ['A1852T','../images/列车/東葉高速鉄道/東葉高速鉄道_2000系.png'],
@@ -100,11 +107,29 @@ test('东西线 SQL 计划按 K/T 列车番号显示计划图，S/SR 无车型�
   assert.equal(artwork.kind,'vehicle',trainNumber);
   assert.equal(artwork.iconSrc,png,trainNumber);
   assert.equal(artwork.planned,true,trainNumber);
+  const labelled={...p,vehiclePlan:undefined,vehicleResolution:{
+   ...p.vehicleResolution,vehiclePlan:{
+    lineId:'Tozai',status:'PLANNED_CANDIDATES',confirmed:false,
+    models:['東京メトロ05系','東京メトロ07系','東京メトロ15000系']
+   }
+  }};
+  labelled._markerSpec={kind:'vehicle',iconSrc:artwork.iconSrc,planned:true};
+  const label=ctx._trainFleetPlanLabel(labelled,'Tozai','zh');
+  assert.match(label,/列车番号计划车型参考（非当日实车）/);
+  assert.match(label,trainNumber.endsWith('K')?/E231系800番台/:/東葉高速2000系/);
+  assert.doesNotMatch(label,/東京メトロ05系|東京メトロ07系|東京メトロ15000系/);
  }
  for(const trainNumber of ['A1849SR','A1885S','B1823S']){
   const p=plannedPosition(trainNumber);
   assert.equal(p.vehicleIdentityStatus,'UNKNOWN');
   assert.equal(w.TrainVehicle.selectMarkerArtwork(p,false).kind,'unresolved',trainNumber);
+  const label=ctx._trainFleetPlanLabel({...p,vehiclePlan:undefined,
+   _markerSpec:{kind:'unresolved',iconSrc:'',planned:false},
+   vehicleResolution:{...p.vehicleResolution,vehiclePlan:{
+    lineId:'Tozai',status:'PLANNED_CANDIDATES',confirmed:false,
+    models:['東京メトロ05系','東京メトロ07系','東京メトロ15000系']
+   }}},'Tozai','zh');
+  assert.match(label,/東京メトロ05系 \/ 東京メトロ07系 \/ 東京メトロ15000系/);
  }
  for(const trainNumber of ['A1854T','A1803K']){
   const p=plannedPosition(trainNumber,'2026-12-01');

@@ -1476,7 +1476,8 @@ function _isTrainArtworkFailureActive(trainUid, p) {
   // this B/C train uses the single illustrative E231-500 image. Announce
   // its reference-only scope in the accessible text, not as actual stock.
   function _trainMarkerAccessibleDescription(p, lineId, spec) {
-    var title = _trainMarkerTitle(p, lineId);
+    var title = _trainMarkerTitle(spec
+      ? Object.assign({}, p, {_markerSpec:spec}) : p, lineId);
     if (!spec || spec.illustrative !== true) return title;
     var lang = window.currentLang || "ja";
     if(spec.illustrationRole==="tobu-branch-working-fleet-example-not-observed") {
@@ -1653,10 +1654,32 @@ function _isTrainArtworkFailureActive(trainUid, p) {
 
   function _trainFleetPlanLabel(p, lineId, lang) {
     if (!p) return "";
+    var markerSpec = p._markerSpec;
     // Fixed Tojo/Ogose PNGs replace all multi-model candidate labels.
     // Only the verified physical identity or labelled reference PNG is shown.
     if(lineId==="Tojo"||lineId==="Ogose")return "";
     var plan = p.vehiclePlan || (p.vehicleResolution && p.vehicleResolution.vehiclePlan);
+    // 东西线 K/T 的完整列车番号已经选择了唯一计划参考图时，标题必须
+    // 使用同一个番号映射结果。不能继续显示 SQL 中面向 S 运用的
+    // 05／07／15000 系通用候选，否则图片正确但说明仍会指向错误车队。
+    if (lineId === "Tozai" && markerSpec && markerSpec.kind === "vehicle" &&
+        markerSpec.planned === true) {
+      var tozaiModel = markerSpec.iconSrc ===
+        "../images/列车/JR東日本/JR東日本_E231系_800番台.png"
+          ? "JR E231系800番台"
+          : markerSpec.iconSrc ===
+            "../images/列车/東葉高速鉄道/東葉高速鉄道_2000系.png"
+            ? "東葉高速2000系" : "";
+      if (tozaiModel) {
+        lang = String(lang || "ja").toLowerCase();
+        var tozaiPrefix = /^zh/.test(lang)
+          ? "列车番号计划车型参考（非当日实车）："
+          : lang === "en" ? "Train-number scheduled model reference (not actual-day stock): "
+          : lang === "ko" ? "열차번호 계획 차종 참고(당일 실차 아님): "
+          : "列車番号による計画車種参考（当日の実車ではありません）：";
+        return tozaiPrefix + tozaiModel;
+      }
+    }
     if (lineId === "Kawagoe" && p.timetableDateVerified === true) {
       var kawagoeRef = p.sqlPublishedNumberFleetReference || {};
       if (kawagoeRef.source === "sql-jreast-kawagoe-2611-shared-fleet" &&
@@ -3150,7 +3173,7 @@ function _isTrainArtworkFailureActive(trainUid, p) {
           var fleetText = _trainFoldExactVehicleLabel(p,lineId,lang) ||
             _seibuCommuterCandidatesLabel(p,lineId,lang) ||
             _shonanFleetCandidatesLabel(p,lineId,lang) ||
-            _trainFleetPlanLabel(p,lineId,lang);
+            _trainFleetPlanLabel(Object.assign({},p,{_markerSpec:markerSpec}),lineId,lang);
           var modelName=_trainFoldModelName(fleetText);
           var icon=document.createElement('img');
           icon.className='train-fold-vehicle-image';
