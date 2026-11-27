@@ -69,3 +69,36 @@ test('Through fleet candidates on Toei use actual owner and source railway witho
   assert.ok(!bad.candidates.some(c=>expected.includes(c)));
  }
 });
+
+test('Asakusa K/H through fleets preserve ambiguity and reject conflicting owner',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ for(const [owner,num,code,models] of [
+ ['Keisei','2007K','07K',['京成3000形','京成3100形','京成3400形','京成3700形']],
+ ['Keikyu','2081H','81H',['京急1000形','京急600形','京急1500形']]
+ ]){
+  const p={lineId:'Asakusa',operator:'Toei',railway:'odpt.Railway:Toei.Asakusa',trainOwner:owner,trainNumber:num,operationCode:code,positionSource:'realtime-api',vehicleEvidenceKind:'trip-id-only'};
+  const r=w.TrainVehicle.resolveRealtime(p).vehicleResult;
+  assert.equal(r.identityStatus,'NARROWED');assert.deepEqual(Array.from(r.candidates).sort(),models.sort());assert.ok(!r.iconPath);
+  const bad=w.TrainVehicle.resolveRealtime({...p,operationCode:'21N'}).vehicleResult;
+  assert.ok(!bad.candidates.some(c=>models.includes(c)));
+  for(const model of models.filter(x=>x!=='京急1000形')){
+   const exact=w.TrainVehicle.resolveRealtime({...p,realtimeVehicleType:model}).vehicleResult;
+   assert.equal(exact.identityStatus,'EXACT');assert.equal(exact.name,model);assert.ok(exact.iconPath);
+  }
+ }
+});
+test('Metro mixed fleets require scoped independent owner, not a guessed PNG',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ for(const line of ['Yurakucho','Fukutoshin'])for(const [owner,number,models] of [
+  ['TokyoMetro','A1749S',['東京メトロ10000系','東京メトロ17000系']],
+  ['Seibu','A1806M',['西武6000系','西武40000系']]
+ ]){
+  const p={lineId:line,operator:'TokyoMetro',railway:'odpt.Railway:TokyoMetro.'+line,trainOwner:owner,trainNumber:number,positionSource:'realtime-api'};
+  const r=w.TrainVehicle.resolveRealtime(p).vehicleResult;
+  assert.equal(r.identityStatus,'NARROWED');assert.deepEqual(Array.from(r.candidates).sort(),models.sort());assert.ok(!r.iconPath);
+  const bad=w.TrainVehicle.resolveRealtime({...p,trainOwner:''}).vehicleResult;
+  assert.ok(!bad.iconPath);
+ }
+});

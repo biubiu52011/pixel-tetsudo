@@ -2084,6 +2084,16 @@ function resolveToeiOwnerFleetCandidates(ctx) {
       ctx.railway === "odpt.Railway:Toei."+ctx.lineId) {
     if (ctx.lineId === "Shinjuku" && owner === "Keio" && /^\d{2}K$/.test(code))
       return ["京王9000系（9030系）","京王5000系"];
+    // Current eight-car through fleet, checked 2026-11-27. Candidate
+    // families only: a K/H operation does not prove a particular model.
+    // https://www.keisei.co.jp/keisei/keisei_museum/pictbook/
+    // https://www.keikyu.co.jp/ride/train/
+    // https://4gousya.net/line/8204.php
+    // 3200 has not been verified in regular through service.
+    if (ctx.lineId === "Asakusa" && owner === "Keisei" && /^\d{2}K$/.test(code))
+      return ["京成3000形","京成3100形","京成3400形","京成3700形"];
+    if (ctx.lineId === "Asakusa" && owner === "Keikyu" && /^\d{2}H$/.test(code))
+      return ["京急1000形","京急600形","京急1500形"];
     if (ctx.lineId === "Asakusa" && owner === "Hokuso" && /^\d{2}N$/.test(code))
       return ["北総7300形","北総7500形","北総7800形","千葉ニュータウン9100形","千葉ニュータウン9200形","千葉ニュータウン9800形"];
   }
@@ -2598,8 +2608,8 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "new-shuttle-2000-05": ["NewShuttle"],
   "new-shuttle-2000-06": ["NewShuttle"],
   "new-shuttle-2000-07": ["NewShuttle"],
-  "keikyu-1500": ["Keikyu", "KeikyuAirport", "KeikyuKurihama", "KeikyuZushi", "Daishi_Keikyu"],
-  "keikyu-600": ["Keikyu", "KeikyuAirport", "KeikyuKurihama", "KeikyuZushi"],
+  "keikyu-1500": ["Keikyu", "KeikyuAirport", "KeikyuKurihama", "KeikyuZushi", "Daishi_Keikyu", "Asakusa"],
+  "keikyu-600": ["Keikyu", "KeikyuAirport", "KeikyuKurihama", "KeikyuZushi", "Asakusa"],
   "keikyu-2100": ["Keikyu", "KeikyuAirport", "KeikyuKurihama"],
   "keio-7000": ["KeioMain", "KeioShin", "KeioSagami", "KeioTakao", "KeioKeibajo", "KeioZoo"],
   "keio-8000": ["KeioMain", "KeioShin", "KeioSagami", "KeioTakao", "KeioKeibajo", "KeioZoo"],
@@ -2643,8 +2653,8 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "keisei-80000": ["Keisei"],
   "keisei-8800": ["Keisei"],
   "keisei-8900": ["Keisei"],
-  "keisei-3400": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara"],
-  "keisei-3700": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara"],
+  "keisei-3400": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "Asakusa"],
+  "keisei-3700": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "Asakusa"],
   "odakyu-4000": ["Odawara", "OdakyuEnoshima", "OdakyuTama", "Chiyoda", "ChiyodaBranch", "JobanLocal"],
   "odakyu-5000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
   "odakyu-1000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
@@ -4017,6 +4027,22 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       if(ctx.lineId === "YokohamaBlue" &&
          ctx.railway === "odpt.Railway:YokohamaMunicipal.Blue")
         realtimeCandidateLabels = "横浜市営3000形 / 横浜市営4000形";
+    }
+    // Metro family evidence requires a genuine source railway and owner.
+    // No live position is manufactured from a timetable or alert.
+    // https://www.tokyometro.jp/corporate/enterprise/passenger_rail/cars/working/yur-fuk_10000/index.html
+    if (!hasExplicitVehicle && !realtimeCandidateLabels &&
+        ctx._realtimeVehicleResolution === true &&
+        normOp(ctx.operator) === "TokyoMetro" &&
+        /^(Yurakucho|Fukutoshin)$/.test(ctx.lineId || "") &&
+        ctx.railway === "odpt.Railway:TokyoMetro."+ctx.lineId) {
+      var metroOwner = normOp(ctx.trainOwner);
+      var metroNumber = String(ctx.trainNumber || "").toUpperCase();
+      if(metroOwner==="TokyoMetro" && /^[AB]\d{3,4}S$/.test(metroNumber))
+        realtimeCandidateLabels="東京メトロ10000系 / 東京メトロ17000系";
+      if(metroOwner==="Seibu" && /^[AB]\d{3,4}M$/.test(metroNumber) &&
+          !/S[- ]?TRAIN/i.test(String(ctx.trainType||"")))
+        realtimeCandidateLabels="西武6000系 / 西武40000系";
     }
     var toeiFleet = hasExplicitVehicle ? null : resolveToeiOwnerSingleFleet(ctx);
     var toeiFleetCandidates = hasExplicitVehicle || toeiFleet
