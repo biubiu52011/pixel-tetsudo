@@ -357,8 +357,13 @@ test('Keikyu owner codes and consist length never select a fleet PNG',()=>{
   // neither the exact model nor the 1000-series sub-type shown by the PNG.
   const keikyu1000=win.TrainVehicle.resolveCanonicalVehicle('京急1000形');
   assert.equal(keikyu1000?.asset||null,null,'planned 1200 artwork is not actual sub-type proof');
-  assert.equal(keikyu1000?.plannedAsset,
-    '../images/列车/京浜急行電鉄/京浜急行電鉄_1000形_1200番台.png');
+  assert.equal(keikyu1000?.plannedAsset,null,'family identity cannot use subtype artwork');
+  const batch1200=win.TrainVehicle.resolveCanonicalVehicle('京急1000形（1200番台）');
+  const batchPath='../images/列车/京浜急行電鉄/京浜急行電鉄_1000形_1200番台.png';
+  assert.equal(batch1200?.asset||null,null,'1200 remains a reference asset');
+  assert.equal(batch1200?.plannedAsset,batchPath);
+  assert.equal(win.VehicleGaragePngMap.findModel('京急1000形','Asakusa').length,0);
+  assert.equal(win.VehicleGaragePngMap.findModel('京急1000形（1200番台）','Asakusa')[0].canonicalImage,false);
 
   for(const name of ['京浜急行電鉄_1000形_1300番台.png',
     '京浜急行電鉄_1000形_1500番台.png','京浜急行電鉄_1000形_1800番台.png']){
