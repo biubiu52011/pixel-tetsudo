@@ -282,3 +282,30 @@ test("Yokohama live section routes, numbered stations and public trip-number cro
   assert.equal(ctx.direction("YokohamaMunicipal",{1:"b02117a",6:1}),"odpt.RailDirection:YokohamaMunicipal.Inbound");
   assert.equal(ctx.direction("YokohamaMunicipal",{1:"b02113b",6:1}),"");
 });
+
+test("Toei repeated trip ID cannot become a physical model; explicit Yokohama subtype stays exact",()=>{
+  const a=source.indexOf("    function _toeiOedo600VehicleType("),b=source.indexOf("    function _toeiGtfsVehicleEvidenceKind(",a);
+  const c=source.indexOf("    function _gtfsVehicleType("),d=source.indexOf("    function _gtfsDirection(",c);
+  const ctx={};vm.runInNewContext(source.slice(a,b)+source.slice(c,d)+"\nthis.toei=_toeiGtfsVehicleType;this.yoko=_gtfsVehicleType;",ctx);
+  assert.equal(ctx.toei("Asakusa","105500T0","","105500T0"),"");
+  assert.equal(ctx.toei("Asakusa","","105500t0","105500T0"),"");
+  assert.equal(ctx.toei("Asakusa","5501F","","105500T0"),"都営5500形");
+  assert.equal(ctx.toei("Mita","201943G0","","201943G0"),"相鉄21000系");
+  for(const suffix of ["N","R","S","V"])assert.equal(ctx.yoko("YokohamaMunicipal","YokohamaBlue","","3000"+suffix+"形","b02113b"),"横浜市営地下鉄3000"+suffix+"形");
+  assert.equal(ctx.yoko("YokohamaMunicipal","YokohamaBlue","","3000N形 3000R形",""),"");
+  assert.equal(ctx.yoko("YokohamaMunicipal","YokohamaGreen","","3000N形",""),"");
+});
+test("Subway TripUpdate merges cannot cross railway or different trip, even with same number",()=>{
+  const a=source.indexOf("    function _mergeGtfsTripUpdates("),b=source.indexOf("    function fetchToeiGtfsTripUpdates(",a);
+  const ctx={Date,_toeiGtfsTerminalFromPosition:()=>{throw Error("unexpected fallback");}};
+  vm.runInNewContext(source.slice(a,b)+"\nthis.merge=_mergeGtfsTripUpdates;",ctx);
+  const row=(railway,trip,number,extra={})=>({"odpt:railway":"odpt.Railway:"+railway,"gtfs:tripId":trip,"odpt:trainNumber":number,...extra});
+  const p=row("YokohamaMunicipal.Blue","b02113b","2113b");
+  const wrong=row("YokohamaMunicipal.Green","b02113b","2113b",{"odpt:vehicleType":"横浜市営地下鉄10000形"});
+  const other=row("YokohamaMunicipal.Blue","other","2113b",{"odpt:vehicleType":"横浜市営地下鉄4000形"});
+  assert.equal(ctx.merge([({...p})],[wrong,other])[0]["odpt:vehicleType"],undefined);
+  const right=row("YokohamaMunicipal.Blue","b02113b","2113b",{"odpt:vehicleType":"横浜市営地下鉄4000形","odpt:toStation":"odpt.Station:YokohamaMunicipal.Blue.Shonandai"});
+  assert.equal(ctx.merge([({...p})],[wrong,right])[0]["odpt:vehicleType"],"横浜市営地下鉄4000形");
+  assert.equal(ctx.merge([({...p})],[right,{...right}])[0]["odpt:vehicleType"],undefined);
+  assert.equal(ctx.merge([({...p})],[{...right,"gtfs:tripUpdateValidUntil":"2000-01-01T00:00:00Z"}])[0]["odpt:vehicleType"],undefined);
+});

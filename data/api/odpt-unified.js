@@ -1086,6 +1086,11 @@
         return "都営12-600形";
     }
     function _toeiGtfsVehicleType(lineId, vehicleId, vehicleLabel, tripId) {
+        // The observed Toei feed repeats trip_id as vehicle_id. Strip it
+        // before any physical-car pattern; its digits are service identity.
+        var tripKey=String(tripId||"").trim().toUpperCase();
+        if(tripKey && String(vehicleId||"").trim().toUpperCase()===tripKey)vehicleId="";
+        if(tripKey && String(vehicleLabel||"").trim().toUpperCase()===tripKey)vehicleLabel="";
         var raw = String(vehicleId || "") + " " + String(vehicleLabel || "");
         var upper = raw.toUpperCase();
         // 都営車の実車号は feed により `12611` / `12-611` / `12-611F`
@@ -1445,7 +1450,21 @@
         if (!Array.isArray(positions) || !Array.isArray(updates) || !updates.length) return positions || [];
         var byTrip = Object.create(null), byScopedNumber = Object.create(null), byNumber = Object.create(null);
         var byScopedOperation = Object.create(null), byScopedVehicle = Object.create(null);
+        // Subway feeds reuse service numbers across runs. For those feeds
+        // index exact full railway+trip identity, and mark duplicates ambiguous.
+        var subwayTrips=Object.create(null),subwayNumbers=Object.create(null);
+        function uniquePut(index,key,row){
+            if(!key)return;
+            if(Object.prototype.hasOwnProperty.call(index,key))index[key]=null;
+            else index[key]=row;
+        }
         updates.forEach(function(update) {
+            var sourceRailway=String(update["odpt:railway"]||"");
+            if(/^odpt\.Railway:(?:Toei|YokohamaMunicipal)\./.test(sourceRailway)){
+                var st=String(update["gtfs:tripId"]||""),sn=String(update["odpt:trainNumber"]||"");
+                if(st)uniquePut(subwayTrips,sourceRailway+"::"+st,update);
+                if(sn)uniquePut(subwayNumbers,sourceRailway+"::"+sn,update);
+            }
             var tripId = String(update["gtfs:tripId"] || ""), number = String(update["odpt:trainNumber"] || "");
             var railway = String(update["odpt:railway"] || "").split(".").pop();
             var operation = String(update["odpt:operationCode"] || ""), vehicle = String(update["gtfs:vehicleId"] || update.vehicleCarNumber || "");
@@ -1464,10 +1483,25 @@
                 (operation && byScopedOperation[railway + "::" + operation]) ||
                 (vehicle && byScopedVehicle[railway + "::" + vehicle]) ||
                 (number && byNumber[number]);
+            var sourceRailway=String(position["odpt:railway"]||"");
+            if(/^odpt\.Railway:(?:Toei|YokohamaMunicipal)\./.test(sourceRailway)){
+                // Only identical trip IDs may join when both are available.
+                // A missing trip ID may use a unique full number on the same railway.
+                update=(tripId&&subwayTrips[sourceRailway+"::"+tripId])||null;
+                if(!update&&number){
+                    var sameNumber=subwayNumbers[sourceRailway+"::"+number];
+                    if(sameNumber&&(!tripId||!sameNumber["gtfs:tripId"]))update=sameNumber;
+                }
+                if(update){
+                    var expires=Date.parse(update["gtfs:tripUpdateValidUntil"]||"");
+                    if(isFinite(expires)&&expires<Date.now())update=null;
+                }
+            }
             if (!update) return position;
             if (update["odpt:destinationStation"] && update["odpt:destinationStation"].length) position["odpt:destinationStation"] = update["odpt:destinationStation"];
             if (update["odpt:toStation"]) position["odpt:toStation"] = update["odpt:toStation"];
-            if (!position["odpt:toStation"] && !update["odpt:toStation"]) {
+            if (/^odpt\.Railway:Toei\./.test(sourceRailway) &&
+                !position["odpt:toStation"] && !update["odpt:toStation"]) {
                 var inferredTerminal = _toeiGtfsTerminalFromPosition(position, update);
                 if (inferredTerminal) {
                     var positionRailwayCode = String(position["odpt:railway"] || "").split(".").pop();
@@ -1482,7 +1516,11 @@
             if (!position["odpt:railDirection"] && update["odpt:railDirection"]) position["odpt:railDirection"] = update["odpt:railDirection"];
             if (!position["gtfs:vehicleId"] && update["gtfs:vehicleId"]) position["gtfs:vehicleId"] = update["gtfs:vehicleId"];
             if (!position.vehicleCarNumber && update.vehicleCarNumber) position.vehicleCarNumber = update.vehicleCarNumber;
-            if (!position["gtfs:vehicleEvidenceKind"] && update["gtfs:vehicleEvidenceKind"]) {
+            if (update["gtfs:vehicleEvidenceKind"] &&
+                (!position["gtfs:vehicleEvidenceKind"] ||
+                 (position["gtfs:vehicleEvidenceKind"] === "trip-id-only" &&
+                  /^physical-vehicle-/.test(update["gtfs:vehicleEvidenceKind"]) &&
+                  !!update.vehicleCarNumber))) {
                 position["gtfs:vehicleEvidenceKind"] = update["gtfs:vehicleEvidenceKind"];
             }
             position["gtfs:tripUpdateTimestamp"] = update["gtfs:tripUpdateTimestamp"] || "";
@@ -1613,7 +1651,7 @@
             var labels = [vehicleId, vehicleLabel].filter(function(v) {
                 return v && String(v).trim() !== String(tripId || "").trim();
             }).join(" ");
-            var models = lineId === "YokohamaBlue" ? ["3000","4000"] :
+            var models = lineId === "YokohamaBlue" ? ["3000N","3000R","3000S","3000V","3000","4000"] :
                 lineId === "YokohamaGreen" ? ["10000"] : [];
             var hits = models.filter(function(model) {
                 return new RegExp("(?:^|[^0-9])"+model+"(?:型|形|系|\\s*series)(?![0-9])","i").test(labels);

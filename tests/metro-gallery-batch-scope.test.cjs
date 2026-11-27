@@ -25,3 +25,15 @@ test('地下铁批次素材区分与相铁直通线路门禁',()=>{
   assert.ok(!g.matchModelPath(model,p('相模鉄道',file),line));
  }
 });
+
+test('Yokohama Green live identity retains official 10000 family without authorizing batch PNG',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ const input={operator:'YokohamaMunicipal',railway:'odpt.Railway:YokohamaMunicipal.Green',lineId:'YokohamaGreen',trainNumber:'2143b',positionSource:'realtime-api',vehicleEvidenceKind:'trip-id-only'};
+ const r=w.TrainVehicle.resolveRealtime(input).vehicleResult;
+ assert.ok(r.candidates.includes('横浜市営10000形'));
+ assert.equal(r.identityStatus,'NARROWED');
+ assert.ok(!r.iconPath);
+ const bad=w.TrainVehicle.resolveRealtime({...input,railway:'odpt.Railway:YokohamaMunicipal.Blue'}).vehicleResult;
+ assert.ok(!bad.candidates.includes('横浜市営10000形'));
+});
