@@ -145,3 +145,22 @@ test('Hanzomon dated fleet evidence distinguishes Tokyu and Tobu and rejects cro
  assert.ok(w.TrainVehicle.resolveCanonicalVehicle('東急2020系').lineIds.includes('Hanzomon'));
  assert.ok(!w.TrainVehicle.resolveCanonicalVehicle('東急5000系（8両）').lineIds.includes('Hanzomon'));
 });
+
+test('Tozai dated 05 formation selects only its front-design reference',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ function lookup(number,date,railway='odpt.Railway:TokyoMetro.Tozai'){
+   const r=w.TrainVehicle.resolveTimetableRun({trainNumber:number,calendar:'odpt.Calendar:SaturdayHoliday',trainType:'odpt.TrainType:TokyoMetro.Local'},{'odpt:railway':railway,'odpt:operator':'odpt.Operator:TokyoMetro',_positionSource:'supabase-train-run'},'Tozai',{operator:'TokyoMetro'},date);
+   const x=r.vehicleResult;
+   return {x,marker:w.TrainVehicle.selectMarkerArtwork({lineId:'Tozai',positionLineId:'Tozai',displayLineId:'Tozai',trainNumber:number,serviceDate:date,calendarType:'holiday',positionSource:'supabase-train-run',sourceRailway:railway,trainOperator:'TokyoMetro',estimated:true,vehicleIdentityStatus:x.identityStatus,vehicleResolvedUpstream:x.identityStatus==='EXACT',vehicleResolution:x,vehiclePlan:x.vehiclePlan,vehicleType:x.name,vehicleFormationId:r.assignmentFormations.length===1?r.assignmentFormations[0]:'',vehicleFormationCandidates:r.assignmentFormations},false)};
+ }
+ for(const [n,batch] of [['A1315S','8～13'],['A1325S','4～7']]){
+   const r=lookup(n,'2026-10-24');
+   assert.equal(r.x.name,'東京メトロ05系');
+   assert.equal(r.marker.iconSrc,'../images/列车/東京メトロ/東京メトロ_05系_'+batch+'次車.png');
+   assert.equal(r.marker.planned,true);
+   assert.equal(r.x.vehiclePlan.actualVehicleConfirmed,false);
+ }
+ assert.equal(lookup('A1315S','2026-11-28').marker.kind,'unresolved');
+ assert.equal(lookup('A1315S','2026-10-24','odpt.Railway:TokyoMetro.Chiyoda').marker.kind,'unresolved');
+});
