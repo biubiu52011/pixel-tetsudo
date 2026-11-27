@@ -1715,11 +1715,16 @@
         return Array.isArray(value) ? value : [value];
     }
     function _gtfsTranslatedString(fields, no) {
-        var result = {}, rows = _gtfsRepeated(fields, no);
-        rows.forEach(function(bytes) {
-            var translation = _gtfsReadMessage(bytes, true);
-            var text = _gtfsText(translation, 1), language = _gtfsText(translation, 2) || "ja";
-            if (text) result[language] = text;
+        var result = Object.create(null);
+        // Alert field is a TranslatedString message. Its field 1 contains
+        // repeated Translation messages (text=1, language=2), not raw text.
+        _gtfsRepeated(fields, no).forEach(function(bytes) {
+            var container = _gtfsReadMessage(bytes, true);
+            _gtfsRepeated(container, 1).forEach(function(entry) {
+                var translation = _gtfsReadMessage(entry, true);
+                var text = _gtfsText(translation, 1), language = _gtfsText(translation, 2) || "und";
+                if (text && text.trim()) result[language] = text;
+            });
         });
         return result;
     }
