@@ -218,3 +218,42 @@ test("Official static GTFS numeric route IDs are operator-scoped and complete",(
   const branch=decode(feed(alertEntity("branch",now-60,now+600,null,"2","Mb03")),"TokyoMetro");
   assert.deepEqual(Array.from(branch,r=>r["odpt:railway"]),["odpt.Railway:TokyoMetro.MarunouchiBranch"]);
 });
+
+// Existing offline/live audit harness, using the same production decoder.
+test("Subway vehicle model evidence never comes from timetable trip digits",()=>{
+  const a=source.indexOf("    function _gtfsVehicleType("),b=source.indexOf("    function _gtfsDirection(",a);
+  const ctx={};vm.runInNewContext(source.slice(a,b)+"\nthis.model=_gtfsVehicleType;",ctx);
+  assert.equal(ctx.model("YokohamaMunicipal","YokohamaBlue","trip4000","","trip4000"),"");
+  assert.equal(ctx.model("YokohamaMunicipal","YokohamaBlue","","4000形","trip4000"),"横浜市営地下鉄4000形");
+  assert.equal(ctx.model("YokohamaMunicipal","YokohamaBlue","","3000形 4000形",""),"");
+  assert.equal(ctx.model("YokohamaMunicipal","YokohamaGreen","","4000形",""),"");
+  assert.equal(ctx.model("YokohamaMunicipal","YokohamaGreen","","10000形",""),"横浜市営地下鉄10000形");
+  const {subway}=alertHarness();
+  assert.equal(subway("Toei","1","",""),"Asakusa");
+  const decoder=source.slice(source.indexOf("    function _decodeGenericGtfsPositions("),source.indexOf("    function fetchGenericGtfsPositions("));
+  assert.match(decoder,/stopId = _gtfsText\(vehicle, 7\)/);
+});
+test("Live GTFS Alert binary observation: subway VehiclePosition source fields",{skip:process.env.PT_LIVE_RUNINFO_AUDIT!=="1",timeout:60000},async()=>{
+  const h=alertHarness();
+  const results=await Promise.all([["Toei","train"],["YokohamaMunicipal","gtfsVehicle"]].map(async ([operator,type])=>{
+    try{
+      const resp=await fetch("https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/odpt-proxy?operator="+operator+"&type="+type,{headers:{Origin:"https://biubiu52011.github.io",Accept:"application/x-protobuf"},signal:AbortSignal.timeout(20000)});
+      if(!resp.ok)return {operator,http:resp.status};
+      const bytes=new Uint8Array(await resp.arrayBuffer()), raw=h.read(bytes,true),header=h.nested(raw,1,true);
+      const counts={},samples={},mapped={};let hasStop=0,hasCoordinates=0,physicalDistinct=0,entities=0;
+      for(const entry of h.repeated(raw,2)){
+        const v=h.nested(h.read(entry,true),4,true);if(!Object.keys(v).length)continue;
+        entities++;const trip=h.nested(v,1,true),desc=h.nested(v,8,true),pos=h.nested(v,2,true);
+        const route=h.text(trip,5),tripId=h.text(trip,1),stop=h.text(v,7),id=h.text(desc,1),label=h.text(desc,2);
+        if(stop)hasStop++;if(Object.keys(pos).length)hasCoordinates++;if(id&&id!==tripId)physicalDistinct++;
+        const line=h.subway(operator,route,tripId,stop),key=route||"(no route)";
+        counts[key]=(counts[key]||0)+1; mapped[line||"(unresolved)"]=(mapped[line||"(unresolved)"]||0)+1;
+        const bucket=samples[line||key]||(samples[line||key]=[]);
+        if(bucket.length<4)bucket.push({route,tripId,stop,id,label,direction:h.field(trip,6),sequence:h.field(v,3),status:h.field(v,4),timestamp:h.field(v,5)});
+      }
+      return {operator,http:resp.status,version:h.text(header,1),timestamp:h.field(header,3),entities,hasStop,hasCoordinates,physicalDistinct,counts,mapped,samples};
+    }catch(e){return {operator,error:String(e.message)};}
+  }));
+  console.log("LIVE_SUBWAY_VEHICLE_AUDIT "+JSON.stringify(results));
+  assert.equal(results.filter(r=>r.http===200&&r.version).length,2);
+});

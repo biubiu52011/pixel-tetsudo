@@ -1232,7 +1232,10 @@
             var vehicleId = _gtfsText(vehicleDesc, 1);
             var vehicleLabel = _gtfsText(vehicleDesc, 2);
             var lat = _gtfsFloat(_gtfsField(position, 1)), lon = _gtfsFloat(_gtfsField(position, 2));
-            var lineId = _toeiGtfsLineId(routeId, tripId, stopId) || _toeiGtfsLineFromPosition(lat, lon);
+            // An explicit route is authoritative; do not let a trip-prefix
+            // heuristic or nearest track override its operator-scoped identity.
+            var lineId = routeId ? _subwayAlertLineId("Toei", routeId, "", stopId) :
+                (_toeiGtfsLineId("", tripId, stopId) || _toeiGtfsLineFromPosition(lat, lon));
             if (!lineId) return;
             var station = _toeiStationFromGtfs(lineId, stopId, lat, lon);
             if (!station) return;
@@ -1383,7 +1386,8 @@
             if (!Object.keys(update).length) return;
             var trip = _gtfsNested(update, 1), vehicle = _gtfsNested(update, 3);
             var tripId = _gtfsText(trip, 1), routeId = _gtfsText(trip, 5), stopUpdates = _gtfsOrderedStops(_gtfsRepeated(update, 2).map(_toeiTripUpdateStop));
-            var lineId = _toeiGtfsLineId(routeId, tripId, "");
+            var lineId = routeId ? _subwayAlertLineId("Toei", routeId, "", "") :
+                _toeiGtfsLineId("", tripId, "");
             if (!lineId) return;
             var code = lineId === "Nippori_Toneri" ? "NipporiToneri" : lineId;
             var terminal = "", origin = "";
@@ -1581,8 +1585,17 @@
             if (hakodateCar === "39") return "函館市電30形";
         }
         if (operator === "YokohamaMunicipal") {
-            if (/3000[A-Z]?|YOKOHAMA.*3000/.test(upper)) return "横浜市営地下鉄3000形";
-            if (/4000|YOKOHAMA.*4000/.test(upper)) return "横浜市営地下鉄4000形";
+            // A timetable trip or operation number is not a physical car.
+            // Accept only explicit model labels, never a substring of a trip ID.
+            var labels = [vehicleId, vehicleLabel].filter(function(v) {
+                return v && String(v).trim() !== String(tripId || "").trim();
+            }).join(" ");
+            var models = lineId === "YokohamaBlue" ? ["3000","4000"] :
+                lineId === "YokohamaGreen" ? ["10000"] : [];
+            var hits = models.filter(function(model) {
+                return new RegExp("(?:^|[^0-9])"+model+"(?:型|形|系|\\s*series)(?![0-9])","i").test(labels);
+            });
+            return hits.length === 1 ? "横浜市営地下鉄"+hits[0]+"形" : "";
         }
         // Tobu Kameido / Daishi share renewed 2-car 10000 and 10030
         // workings. Only an EXPLICIT series label on the vehicle may select
@@ -1622,10 +1635,12 @@
             var entity = _gtfsReadMessage(entityBytes), vehicle = _gtfsNested(entity, 4);
             if (!Object.keys(vehicle).length) return;
             var trip = _gtfsNested(vehicle, 1), position = _gtfsNested(vehicle, 2), desc = _gtfsNested(vehicle, 8);
-            var routeId = _gtfsText(trip, 5), tripId = _gtfsText(trip, 1), stopId = _gtfsText(vehicle, 6);
+            var routeId = _gtfsText(trip, 5), tripId = _gtfsText(trip, 1), stopId = _gtfsText(vehicle, 7);
             var vehicleId = _gtfsText(desc, 1), vehicleLabel = _gtfsText(desc, 2);
             var lat = _gtfsFloat(_gtfsField(position, 1)), lon = _gtfsFloat(_gtfsField(position, 2));
-            var lineId = _gtfsLineIdForOperator(operator, routeId, tripId, stopId);
+            var lineId = operator === "YokohamaMunicipal" ?
+                _subwayAlertLineId(operator, routeId, tripId, stopId) :
+                _gtfsLineIdForOperator(operator, routeId, tripId, stopId);
             if (!lineId) return;
             var station = _gtfsStationFromLine(lineId, stopId, lat, lon);
             if (!station) return;
@@ -1646,6 +1661,9 @@
                 "vehicleCarNumber": vehicleId && vehicleId !== tripId ? vehicleId : (vehicleLabel && vehicleLabel !== tripId ? vehicleLabel : ""),
                 "vehicleLabel": String(vehicleLabel || ""),
                 "odpt:vehicleType": _gtfsVehicleType(operator, lineId, vehicleId, vehicleLabel, tripId),
+                "gtfs:currentStopSequence": Number(_gtfsField(vehicle, 3)) || 0,
+                "gtfs:stopId": stopId,
+                "gtfs:vehicleEvidenceKind": _toeiGtfsVehicleEvidenceKind(vehicleId, vehicleLabel, tripId, _gtfsVehicleType(operator, lineId, vehicleId, vehicleLabel, tripId)),
                 "dc:date": _toeiGtfsIso(observed, feedTime),
                 "dct:valid": _toeiGtfsIso(observed + 60, feedTime),
                 "odpt:frequency": 30,
@@ -1669,7 +1687,10 @@
             var trip = _gtfsNested(update, 1), vehicle = _gtfsNested(update, 3);
             var tripId = _gtfsText(trip, 1), routeId = _gtfsText(trip, 5);
             var stops = _gtfsOrderedStops(_gtfsRepeated(update, 2).map(_toeiTripUpdateStop));
-            var lineId = _gtfsLineIdForOperator(operator, routeId, tripId, stops.length ? stops[0].stopId : "");
+            var firstStopId = stops.length ? stops[0].stopId : "";
+            var lineId = operator === "YokohamaMunicipal" ?
+                _subwayAlertLineId(operator, routeId, tripId, firstStopId) :
+                _gtfsLineIdForOperator(operator, routeId, tripId, firstStopId);
             if (!lineId) return;
             var code = LINE_RAILWAY_CODE[lineId] || lineId, origin = "", terminal = "";
             if (stops.length) {
