@@ -130,3 +130,18 @@ test('Metro through fleets separate Tokyu and Yokohama owners and exclude unveri
   assert.equal(r.identityStatus,'NARROWED');assert.deepEqual(Array.from(r.candidates).sort(),models.sort());assert.ok(!r.iconPath);
  }
 });
+
+test('Hanzomon dated fleet evidence distinguishes Tokyu and Tobu and rejects cross-line/date leakage',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ vm.runInNewContext(fs.readFileSync('js/train-vehicle.js','utf8'),ctx);
+ const p=w.TrainOperationEvidence.providers.find(x=>x.id==='denentoshi-dated-formations');
+ const input={lineId:'Hanzomon',railway:'odpt.Railway:TokyoMetro.Hanzomon',serviceDate:'2026-04-18'};
+ assert.equal(p.resolveEvidence('50T',input).operator,'Tobu');
+ assert.equal(p.resolveEvidence('66T',input).vehicleType,'東武50000系(10両)');
+ assert.equal(p.resolveEvidence('01K',input).operator,'Tokyu');
+ assert.equal(p.resolveEvidence('50T',{...input,lineId:'Tojo',railway:'odpt.Railway:Tobu.Tojo'}),null);
+ assert.equal(p.resolveEvidence('50T',{...input,railway:'odpt.Railway:Tobu.Tojo'}),null);
+ assert.equal(p.resolveEvidence('50T',{...input,serviceDate:'2026-11-27'}),null);
+ assert.ok(w.TrainVehicle.resolveCanonicalVehicle('東急2020系').lineIds.includes('Hanzomon'));
+ assert.ok(!w.TrainVehicle.resolveCanonicalVehicle('東急5000系（8両）').lineIds.includes('Hanzomon'));
+});
