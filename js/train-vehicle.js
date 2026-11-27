@@ -2272,6 +2272,17 @@ Object.assign(CANONICAL_VEHICLES,{
     "artworkReviewRequired": true,
     "aliases": ["東急5000系(10両)", "東急5000系（10両）"]
   },
+  // The Toyoko 8-car 5000 family is a distinct candidate. Existing
+  // Den-en-toshi 5000 PNG must not stand in for this through-service stock.
+  "tokyu-5000-toyoko-8-family": {
+    "displayName": "東急5000系（8両）",
+    "iconName": "東急5000系（8両）",
+    "asset": null,
+    "plannedAsset": null,
+    "candidateOnly": true,
+    "lineIds": ["TokyuToyoko","Fukutoshin"],
+    "aliases": ["東急5000系(8両)"]
+  },
   "yokohama-y500": {
     "displayName": "横浜高速Y500系",
     "iconName": "横浜高速Y500系",
@@ -2364,8 +2375,19 @@ Object.assign(CANONICAL_VEHICLES,{
     "displayName": "京急1000形",
     "iconName": "京急1000形",
     "asset": null,
-    "plannedAsset": "../images/列车/京浜急行電鉄/京浜急行電鉄_1000形_1200番台.png",
+    "plannedAsset": null,
+    "candidateOnly": true,
     "aliases": ["京急1000形", "京急新1000形"]
+  },
+  // The 1200 image is a subtype reference, not the entire 1000 family.
+  // Keep its existing review/reference status; do not promote other batches.
+  "keikyu-1000-1200-reference": {
+    "displayName": "京急1000形（1200番台）",
+    "iconName": "京急1000形（1200番台）",
+    "asset": null,
+    "plannedAsset": "../images/列车/京浜急行電鉄/京浜急行電鉄_1000形_1200番台.png",
+    "lineIds": ["Asakusa","Keikyu","KeikyuAirport","KeikyuKurihama","KeikyuZushi"],
+    "aliases": ["京急1000形1200番台","京急新1000形1200番台","京急新1000形（1200番台）"]
   },
   "tokyu-1000-plan": {
     "displayName": "東急1000系",
@@ -4043,6 +4065,18 @@ function _canonicalVehicleIconPath(name, serviceDate) {
       if(metroOwner==="Seibu" && /^[AB]\d{3,4}M$/.test(metroNumber) &&
           !/S[- ]?TRAIN/i.test(String(ctx.trainType||"")))
         realtimeCandidateLabels="西武6000系 / 西武40000系";
+      // 90000 has entered Tojo service, but underground through operation
+      // has not been established. Existing official current through roster:
+      // https://www.tobu.co.jp/corporation/rail/vehicles/
+      // https://4gousya.net/line/8207.php
+      if(metroOwner==="Tobu" && /^[AB]\d{3,4}T$/.test(metroNumber))
+        realtimeCandidateLabels="東武9000系 / 東武9050系 / 東武50070系";
+      if(ctx.lineId==="Fukutoshin" && /^[AB]\d{3,4}K$/.test(metroNumber)) {
+        if(metroOwner==="Tokyu")
+          realtimeCandidateLabels="東急5050系 / 東急5000系（8両）";
+        if(metroOwner==="YokohamaMinatomiraiRailway")
+          realtimeCandidateLabels="横浜高速Y500系";
+      }
     }
     var toeiFleet = hasExplicitVehicle ? null : resolveToeiOwnerSingleFleet(ctx);
     var toeiFleetCandidates = hasExplicitVehicle || toeiFleet

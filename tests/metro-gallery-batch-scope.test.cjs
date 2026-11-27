@@ -102,3 +102,31 @@ test('Metro mixed fleets require scoped independent owner, not a guessed PNG',()
   assert.ok(!bad.iconPath);
  }
 });
+
+test('Keikyu 1000 family cannot select the 1200 subtype artwork by default',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ const p={lineId:'Asakusa',operator:'Toei',railway:'odpt.Railway:Toei.Asakusa',trainOwner:'Keikyu',trainNumber:'2021H',operationCode:'21H',positionSource:'realtime-api',vehicleEvidenceKind:'physical-vehicle-label'};
+ const family=w.TrainVehicle.resolveRealtime({...p,realtimeVehicleType:'京急1000形'}).vehicleResult;
+ assert.equal(family.name,'京急1000形');assert.ok(!family.iconPath);
+ const batch=w.TrainVehicle.resolveRealtime({...p,realtimeVehicleType:'京急1000形1200番台'}).vehicleResult;
+ assert.equal(batch.name,'京急1000形（1200番台）');
+ const png='../images/列车/京浜急行電鉄/京浜急行電鉄_1000形_1200番台.png';
+ assert.equal(batch.iconPath,png);
+ assert.equal(w.VehicleGaragePngMap.findModel('京急1000形','Asakusa').length,0);
+ assert.equal(w.VehicleGaragePngMap.findModel('京急1000形（1200番台）','Asakusa')[0].canonicalImage,false);
+});
+test('Metro through fleets separate Tokyu and Yokohama owners and exclude unverified Tojo 90000',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ for(const [line,owner,number,models] of [
+ ['Yurakucho','Tobu','A1913T',['東武9000系','東武9050系','東武50070系']],
+ ['Fukutoshin','Tobu','A1913T',['東武9000系','東武9050系','東武50070系']],
+ ['Fukutoshin','Tokyu','A1003K',['東急5050系','東急5000系（8両）']],
+ ['Fukutoshin','YokohamaMinatomiraiRailway','A1003K',['横浜高速Y500系']]
+ ]){
+  const p={lineId:line,operator:'TokyoMetro',railway:'odpt.Railway:TokyoMetro.'+line,trainOwner:owner,trainNumber:number,positionSource:'realtime-api'};
+  const r=w.TrainVehicle.resolveRealtime(p).vehicleResult;
+  assert.equal(r.identityStatus,'NARROWED');assert.deepEqual(Array.from(r.candidates).sort(),models.sort());assert.ok(!r.iconPath);
+ }
+});
