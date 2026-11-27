@@ -1582,6 +1582,14 @@
         }
         return best;
     }
+    // Observed GTFS b02113b/g02143b and official ODPT TrainTimetable
+    // 2113b/2143b, b02117a->2117a. Keep leading zeros in the public
+    // four-digit portion; preserve the original GTFS trip ID separately.
+    function _yokohamaGtfsTrainNumber(lineId, tripId) {
+        var m=String(tripId||"").match(/^([bg])0(\d{4}[ab])$/i);
+        if(!m||m[1].toLowerCase()!==(lineId==="YokohamaBlue"?"b":lineId==="YokohamaGreen"?"g":""))return "";
+        return m[2].toLowerCase();
+    }
     function _gtfsVehicleType(operator, lineId, vehicleId, vehicleLabel, tripId) {
         var upper = (String(vehicleId || "") + " " + String(vehicleLabel || "") + " " + String(tripId || "")).toUpperCase();
         if (operator === "HakodateCity") {
@@ -1636,14 +1644,6 @@
             if (/30000/.test(upper)) return "東武30000系";
         }
         return "";
-    }
-    // Observed GTFS b02113b/g02143b and official ODPT TrainTimetable
-    // 2113b/2143b, b02117a->2117a. Keep leading zeros in the public
-    // four-digit portion; preserve the original GTFS trip ID separately.
-    function _yokohamaGtfsTrainNumber(lineId, tripId) {
-        var m=String(tripId||"").match(/^([bg])0(\d{4}[ab])$/i);
-        if(!m||m[1].toLowerCase()!==(lineId==="YokohamaBlue"?"b":lineId==="YokohamaGreen"?"g":""))return "";
-        return m[2].toLowerCase();
     }
     function _gtfsDirection(operator, trip) {
         var value = Number(_gtfsField(trip, 6));
