@@ -555,7 +555,15 @@ test('moving train captions yield to permanent names and interchange badges',()=
   assert.equal(far.attrs.display,undefined);
   assert.equal(ctx._protectStaticStationInfoFromTrainCaptions(train,[near,far]),1,
     'reuse static glyph bounds in the unchanged viewport');
-  assert.match(rendererSource,/_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels\)/);
+  const resolverStart=rendererSource.indexOf('  function _resolveTrainLabelCollisions(');
+  const resolverEnd=rendererSource.indexOf(
+    '  function _protectStaticStationInfoFromTrainCaptions(',resolverStart);
+  assert.ok(resolverStart>=0&&resolverEnd>resolverStart);
+  const resolverSource=rendererSource.slice(resolverStart,resolverEnd);
+  assert.match(resolverSource,
+    /_syncTrainFoldBadges\([\s\S]*?_protectStaticStationInfoFromTrainCaptions\(trainLayer, labels\)/,
+    'production collision pass must invoke the tested station protection');
+  assert.doesNotMatch(resolverSource,/disable station\/caption collision hiding/);
 });
 
 test('Keisei Machiya canonical SA and C fit one row and keep other aliases distinct',()=>{

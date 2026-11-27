@@ -2854,8 +2854,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
       });
     });
     _syncTrainFoldBadges(trainLayer, folded, captionById, markerById, matrix);
-    // Temporarily disable station/caption collision hiding for visual review.
-    // Train-to-train folding remains unchanged.
+    // 列车终点文字的视觉优先级低于固定站名、换乘标志和站点圆环。
+    // 灰点及无障碍说明仍保留，只隐藏确实无法安全放置的可见文字。
+    _protectStaticStationInfoFromTrainCaptions(trainLayer, labels);
   }
 
   // Reuse the station glyph bounds while the frame stays at the same viewport
