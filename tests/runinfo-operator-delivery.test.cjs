@@ -115,9 +115,16 @@ function alertHarness(){
   const alertStart=source.indexOf("    function _gtfsRepeated(");
   const alertEnd=source.indexOf("    function _decodeToeiGtfsAlerts(",alertStart);
   assert.ok(readStart>=0&&readEnd>readStart&&alertStart>=0&&alertEnd>alertStart);
-  const ctx={Date,Uint8Array,TextDecoder,LINE_RAILWAY_CODE:{},_toeiGtfsIso:n=>new Date(n*1000).toISOString(),
-    _toeiGtfsLineId:()=>"",_gtfsLineIdForOperator:()=>""};
-  vm.runInNewContext(source.slice(readStart,readEnd)+source.slice(alertStart,alertEnd)+"\nthis.decode=_decodeGtfsAlerts;this.read=_gtfsReadMessage;this.text=_gtfsText;this.nested=_gtfsNested;this.field=_gtfsField;this.repeated=_gtfsRepeated;",ctx);
+  const toEnd=source.indexOf("    function _toeiStationLocation(",readEnd);
+  const genericStart=source.indexOf("    function _gtfsLineIdForOperator(");
+  const genericEnd=source.indexOf("    function _gtfsStationFromLine(",genericStart);
+  const registry=["LINE_TO_OPERATOR","LINE_RAILWAY_CODE"].map(name=>{
+    const a=source.indexOf("var "+name+" = {"),b=source.indexOf("};",a);
+    assert.ok(a>=0&&b>a);
+    return source.slice(a,b+2);
+  }).join("\n");
+  const ctx={Date,Uint8Array,TextDecoder,_toeiGtfsIso:n=>new Date(n*1000).toISOString()};
+  vm.runInNewContext(registry+source.slice(readStart,toEnd)+source.slice(genericStart,genericEnd)+source.slice(alertStart,alertEnd)+"\nthis.decode=_decodeGtfsAlerts;this.read=_gtfsReadMessage;this.text=_gtfsText;this.nested=_gtfsNested;this.field=_gtfsField;this.repeated=_gtfsRepeated;this.subway=_subwayAlertLineId;",ctx);
   return ctx;
 }
 function vint(n){const a=[];while(n>=128){a.push((n%128)|128);n=Math.floor(n/128);}a.push(n);return Buffer.from(a);}
@@ -166,9 +173,32 @@ test("Live GTFS Alert binary observation through existing proxy",{skip:process.e
       alerts.forEach(a=>{Object.keys(a).forEach(k=>fields[k]=(fields[k]||0)+1);
         for(const k of [10,11]) h.repeated(a,k).forEach(v=>h.repeated(h.read(v,true),1).forEach(t=>{const lang=h.text(h.read(t,true),2)||"und";languages[lang]=(languages[lang]||0)+1;}));});
       const rows=h.decode(bytes,operator);
-      return {operator,http:resp.status,bytes:bytes.length,version:h.text(header,1),timestamp:h.field(header,3)||null,entities:entities.length,alerts:alerts.length,activeRows:rows.length,fields,languages};
+      const mappings=["TokyoMetro","Toei","YokohamaMunicipal"].includes(operator)?rows.map(r=>({route:r["pt:routeId"],trip:r["pt:tripId"],stop:r["pt:stopId"],railway:r["odpt:railway"],scope:r["pt:alertScope"]})):undefined;
+      return {operator,http:resp.status,bytes:bytes.length,version:h.text(header,1),timestamp:h.field(header,3)||null,entities:entities.length,alerts:alerts.length,activeRows:rows.length,fields,languages,mappings};
     }catch(e){return {operator,error:String(e.message)};}
   }));
   console.log("LIVE_RUNINFO_AUDIT "+JSON.stringify(results));
   assert.equal(results.filter(r=>r.http===200&&r.version&&!r.error).length,endpoints.length);
+});
+
+test("Subway alert selectors use exact operator and railway identities, not station name substrings",()=>{
+  const {subway}=alertHarness();
+  const metro={G:"Ginza",M:"Marunouchi",Mb:"MarunouchiBranch",H:"Hibiya",T:"Tozai",C:"Chiyoda",Y:"Yurakucho",Z:"Hanzomon",N:"Namboku",F:"Fukutoshin"};
+  for(const [symbol,id] of Object.entries(metro)){
+    assert.equal(subway("TokyoMetro","odpt.Railway:TokyoMetro."+id,"",""),id);
+    assert.equal(subway("TokyoMetro",symbol,"",""),id);
+  }
+  for(const id of ["Asakusa","Mita","Shinjuku","Oedo","Arakawa"])assert.equal(subway("Toei","odpt.Railway:Toei."+id,"",""),id);
+  assert.equal(subway("Toei","odpt.Railway:Toei.NipporiToneri","",""),"Nippori_Toneri");
+  assert.equal(subway("YokohamaMunicipal","odpt.Railway:YokohamaMunicipal.Blue","",""),"YokohamaBlue");
+  assert.equal(subway("YokohamaMunicipal","odpt.Railway:YokohamaMunicipal.Green","",""),"YokohamaGreen");
+  assert.equal(subway("TokyoMetro","","","odpt.Station:TokyoMetro.Ginza.Asakusa"),"Ginza");
+  assert.equal(subway("TokyoMetro","","","Mb03"),"MarunouchiBranch");
+  assert.equal(subway("TokyoMetro","","","Asakusa"),"");
+  assert.equal(subway("TokyoMetro","odpt.Railway:Toei.Asakusa","","G01"),"");
+  assert.equal(subway("TokyoMetro","G","","odpt.Station:TokyoMetro.Hibiya.Ginza"),"");
+  assert.equal(subway("TokyoMetro","unknown","","G01"),"");
+  assert.equal(subway("Toei","A","","odpt.Station:TokyoMetro.Ginza.Asakusa"),"");
+  assert.equal(subway("Toei","S","101234",""),"Shinjuku");
+  assert.equal(subway("YokohamaMunicipal","","","G01"),"YokohamaGreen");
 });

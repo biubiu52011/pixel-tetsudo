@@ -1788,26 +1788,63 @@
         valid.sort(function(a,b){return (b.end || Infinity)-(a.end || Infinity);});
         return valid[0] || null;
     }
-    function _tokyoMetroGtfsLineId(routeId, tripId, stopId) {
-        var raw = [routeId, tripId, stopId].map(function(v) { return String(v || ""); }).join(" ");
-        var upper = raw.toUpperCase();
-        if (/MARUNOUCHI.*(?:BRANCH|BRANCHLINE)|(^|[^A-Z])MB([^A-Z]|$)/.test(upper)) return "MarunouchiBranch";
-        var named = [
-            ["GINZA", "Ginza"], ["MARUNOUCHI", "Marunouchi"], ["TOZAI", "Tozai"],
-            ["HIBIYA", "Hibiya"], ["CHIYODA", "Chiyoda"], ["YURAKUCHO", "Yurakucho"],
-            ["HANZOMON", "Hanzomon"], ["NAMBOKU", "Namboku"], ["FUKUTOSHIN", "Fukutoshin"]
-        ];
-        for (var ni = 0; ni < named.length; ni++) {
-            if (upper.indexOf(named[ni][0]) >= 0) return named[ni][1];
-        }
-        var symbols = {
-            G: "Ginza", M: "Marunouchi", T: "Tozai", H: "Hibiya", C: "Chiyoda",
-            Y: "Yurakucho", Z: "Hanzomon", N: "Namboku", F: "Fukutoshin"
+    // Alert mapping is stricter than vehicle-position heuristics. A source
+    // route or scoped station must resolve to one exact operator/railway.
+    // Do not search arbitrary trip IDs or station names for line substrings.
+    function _subwayAlertLineId(operator, routeId, tripId, stopId) {
+        var symbolCodes = {
+            TokyoMetro: {G:"Ginza",M:"Marunouchi",MB:"MarunouchiBranch",H:"Hibiya",T:"Tozai",C:"Chiyoda",Y:"Yurakucho",Z:"Hanzomon",N:"Namboku",F:"Fukutoshin"},
+            Toei: {A:"Asakusa",I:"Mita",S:"Shinjuku",E:"Oedo",K:"Arakawa",NT:"NipporiToneri"},
+            YokohamaMunicipal: {B:"Blue",G:"Green"}
         };
-        for (var symbol in symbols) {
-            if (new RegExp("(^|[^A-Z])" + symbol + "([^A-Z]|$)").test(upper)) return symbols[symbol];
+        if (!symbolCodes[operator]) return "";
+        var canonical = Object.create(null);
+        Object.keys(LINE_TO_OPERATOR).forEach(function(id){
+            if (LINE_TO_OPERATOR[id] !== operator) return;
+            var code = LINE_RAILWAY_CODE[id] || id;
+            var key = String(code).toUpperCase();
+            // Prefer a true canonical identity rather than compatibility
+            // aliases or a topology branch sharing its parent's source ID.
+            if (!canonical[key] || id === code || id === "Nippori_Toneri")
+                canonical[key] = id;
+        });
+        if (operator === "Toei" && LINE_TO_OPERATOR.Nippori_Toneri === operator)
+            canonical.NIPPORITONERI = "Nippori_Toneri";
+        function resolveCode(code){
+            var k=String(code||"").toUpperCase();
+            return canonical[k] || canonical[String(symbolCodes[operator][k]||"").toUpperCase()] || "";
         }
+        function route(value) {
+            var raw=String(value||"").trim();
+            if (!raw) return "";
+            var m=raw.match(/^(?:odpt\.Railway:)?([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$/i);
+            if (m) return m[1].toLowerCase()===operator.toLowerCase() ? resolveCode(m[2]) : "";
+            return /^[A-Za-z0-9_-]+$/.test(raw) ? resolveCode(raw) : "";
+        }
+        function stop(value) {
+            var raw=String(value||"").trim();
+            if (!raw) return "";
+            var m=raw.match(/^(?:odpt\.Station:)?([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)\.[^.]+(?:\..+)?$/i);
+            if (m) return m[1].toLowerCase()===operator.toLowerCase() ? resolveCode(m[2]) : "";
+            // Explicit station numbering, not a bare station name.
+            m=raw.match(/^([A-Za-z]{1,2})[-_]?\d{2}$/);
+            return m ? resolveCode(m[1]) : "";
+        }
+        var r=route(routeId), s=stop(stopId);
+        // An explicit but unknown route must not be overridden by a guess.
+        if (routeId && !r) return "";
+        // A foreign operator's qualified stop cannot be attached here.
+        if (stopId && /^(?:odpt\.Station:)?[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\./i.test(stopId) && !s) return "";
+        if (r && s && r !== s) return "";
+        if (r || s) return r || s;
+        // Toei's established trip-number prefix is used only for trip-only
+        // selectors, never to override an explicit railway or stop.
+        if (operator === "Toei" && !routeId && !stopId && /^(10|11|12|13|20|21|22|23|30|31|32|33|40|41|42|43|60|61|66|67)[0-9]+[A-Za-z0-9_-]*$/.test(String(tripId||"")))
+            return _toeiGtfsLineId("",tripId,"");
         return "";
+    }
+    function _tokyoMetroGtfsLineId(routeId, tripId, stopId) {
+        return _subwayAlertLineId("TokyoMetro",routeId,tripId,stopId);
     }
     function _twrGtfsLineId(routeId, tripId, stopId) {
         var raw = [routeId, tripId, stopId].map(function(v) { return String(v || ""); }).join(" ");
@@ -1847,8 +1884,8 @@
             var selectors = _toeiAlertSelectors(alert);
             if (!selectors.length) selectors = [{ routeId: "", tripId: "", stopId: "" }];
             selectors.forEach(function(selector, selectorIndex) {
-                var lineId = operator === "Toei"
-                    ? _toeiGtfsLineId(selector.routeId, selector.tripId, selector.stopId)
+                var lineId = operator === "Toei" || operator === "YokohamaMunicipal"
+                    ? _subwayAlertLineId(operator, selector.routeId, selector.tripId, selector.stopId)
                     : operator === "TWR"
                         ? _twrGtfsLineId(selector.routeId, selector.tripId, selector.stopId)
                         : operator === "MIR"
