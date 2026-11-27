@@ -7596,10 +7596,16 @@ function resolveEvidence(trainNumber,ctx){
  if(!/Tozai|ChuoSobu|ToyoRapid|東西|中央.*総武|東葉/i.test(hay))return null;
  var k=String(ctx.operationCode||publicOp(trainNumber)||"").toUpperCase();if(!/^(?:0[3579]|11)K$|^(?:50|52|54|56|58|60|62|64|66|68)T$|^(?:02|1[3579]|2[13579]|3[13579]|4[13579]|5[13579]|6[13579]|7[13579]|8[13579]|9[1357])S$/.test(k))return null;
  var suffix=k.slice(-1);
- if(suffix==="K")return {operator:"JR-East",vehicleType:"JR E231系800番台(10両)",operationCode:k,grade:"C",sourceUrl:SOURCE,provenance:"Tozai operation ownership / fleet constraint",observedDate:"2026-04-16"};
+ if(suffix==="K")return {operator:"JR-East",vehicleType:"JR E231系800番台(10両)",operationCode:k,
+  grade:"C",sourceUrl:SOURCE,evidenceRole:"operation-family",
+  provenance:"Tozai operation ownership / fleet constraint",observedDate:"2026-04-16"};
  if(suffix==="T"&&k==="52T"&&String(ctx.serviceDate||"").slice(0,10)==="2026-10-24")return null;
- if(suffix==="T")return {operator:"ToyoRapid",vehicleType:"東葉高速2000系(10両)",operationCode:k,grade:"C",sourceUrl:SOURCE,provenance:"Tozai operation ownership / fleet constraint",observedDate:"2026-04-16"};
- return {operator:"TokyoMetro",operationCode:k,grade:"C",sourceUrl:SOURCE,provenance:"Tozai operation ownership; Metro fleet remains multi-model",observedDate:"2026-04-16"};
+ if(suffix==="T")return {operator:"ToyoRapid",vehicleType:"東葉高速2000系(10両)",operationCode:k,
+  grade:"C",sourceUrl:SOURCE,evidenceRole:"operation-family",
+  provenance:"Tozai operation ownership / fleet constraint",observedDate:"2026-04-16"};
+ return {operator:"TokyoMetro",operationCode:k,grade:"C",sourceUrl:SOURCE,
+  evidenceRole:"operation-family",
+  provenance:"Tozai operation ownership; Metro fleet remains multi-model",observedDate:"2026-04-16"};
 }
 registerEvidenceProvider({id:"tozai-operation-ownership-2026",grade:"C",resolveEvidence:resolveEvidence});
 })();
