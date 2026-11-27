@@ -257,3 +257,28 @@ test("Live GTFS Alert binary observation: subway VehiclePosition source fields",
   console.log("LIVE_SUBWAY_VEHICLE_AUDIT "+JSON.stringify(results));
   assert.equal(results.filter(r=>r.http===200&&r.version).length,2);
 });
+
+test("Yokohama live section routes, numbered stations and public trip-number crosswalk",()=>{
+  const {subway}=alertHarness();
+  for(const route of ["bn32-01","bn01-32","bn32-09"])assert.equal(subway("YokohamaMunicipal",route,"","B17"),"YokohamaBlue");
+  for(const route of ["gn10-01","gn01-10"])assert.equal(subway("YokohamaMunicipal",route,"","G06"),"YokohamaGreen");
+  assert.equal(subway("YokohamaMunicipal","gn10-01","","B17"),"");
+  assert.equal(subway("YokohamaMunicipal","gn32-01","",""),"");
+  const a=source.indexOf("    function _gtfsStationFromLine("),b=source.indexOf("    function _gtfsVehicleType(",a);
+  const c=source.indexOf("    function _yokohamaGtfsTrainNumber("),d=source.indexOf("    function _decodeGenericGtfsPositions(",c);
+  const blue=Array.from({length:32},(_,i)=>"B"+String(i+1).padStart(2,"0"));
+  const green=Array.from({length:10},(_,i)=>"G"+String(i+1).padStart(2,"0"));
+  blue[0]="Shonandai";blue[16]="Kannai";blue[31]="Azamino";
+  green[0]="Nakayama";green[9]="Hiyoshi";
+  const ctx={window:{UNIFIED_LINES:{YokohamaBlue:{stations:blue},YokohamaGreen:{stations:green}}},_gtfsField:(v,k)=>v[k],_gtfsText:(v,k)=>v[k],_toeiStationLocation:()=>null};
+  vm.runInNewContext(source.slice(a,b)+source.slice(c,d)+"\nthis.station=_gtfsStationFromLine;this.number=_yokohamaGtfsTrainNumber;this.direction=_gtfsDirection;",ctx);
+  assert.equal(ctx.station("YokohamaBlue","B17",NaN,NaN),"Kannai");
+  assert.equal(ctx.station("YokohamaGreen","G10",NaN,NaN),"Hiyoshi");
+  assert.equal(ctx.station("YokohamaBlue","G10",NaN,NaN),"");
+  assert.equal(ctx.number("YokohamaBlue","b02113b"),"2113b");
+  assert.equal(ctx.number("YokohamaGreen","g02143b"),"2143b");
+  assert.equal(ctx.number("YokohamaBlue","g02143b"),"");
+  assert.equal(ctx.direction("YokohamaMunicipal",{1:"b02113b",6:0}),"odpt.RailDirection:YokohamaMunicipal.Outbound");
+  assert.equal(ctx.direction("YokohamaMunicipal",{1:"b02117a",6:1}),"odpt.RailDirection:YokohamaMunicipal.Inbound");
+  assert.equal(ctx.direction("YokohamaMunicipal",{1:"b02113b",6:1}),"");
+});

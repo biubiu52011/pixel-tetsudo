@@ -1534,6 +1534,21 @@
         var line = all[lineId], stations = line && Array.isArray(line.stations) ? line.stations : [];
         if (!stations.length) return "";
         var raw = String(stopId || ""), shortStop = raw.split(/[.:/]/).pop();
+        // Official B01..B32 and G01..G10 correspond to the existing
+        // canonical order (Shonandai->Azamino / Nakayama->Hiyoshi).
+        // Require the complete ordered topology; never use a partial array.
+        if (lineId === "YokohamaBlue" || lineId === "YokohamaGreen") {
+            var numbered = raw.match(/^([BG])(\d{2})$/i);
+            if(numbered){
+                var blue=lineId==="YokohamaBlue", expected=blue?32:10;
+                var ix=Number(numbered[2])-1;
+                if(numbered[1].toUpperCase()!==(blue?"B":"G") || ix<0 || ix>=expected ||
+                    stations.length!==expected ||
+                    stations[0] !== (blue?"Shonandai":"Nakayama") ||
+                    stations[expected-1] !== (blue?"Azamino":"Hiyoshi"))return "";
+                return stations[ix];
+            }
+        }
         // GTFS stop_id spelling is not guaranteed to preserve the canonical
         // station punctuation (for example KitaSenju vs Kita-Senju). Scope the
         // comparison to this railway, then normalize separators only; do not
@@ -1622,8 +1637,24 @@
         }
         return "";
     }
+    // Observed GTFS b02113b/g02143b and official ODPT TrainTimetable
+    // 2113b/2143b, b02117a->2117a. Keep leading zeros in the public
+    // four-digit portion; preserve the original GTFS trip ID separately.
+    function _yokohamaGtfsTrainNumber(lineId, tripId) {
+        var m=String(tripId||"").match(/^([bg])0(\d{4}[ab])$/i);
+        if(!m||m[1].toLowerCase()!==(lineId==="YokohamaBlue"?"b":lineId==="YokohamaGreen"?"g":""))return "";
+        return m[2].toLowerCase();
+    }
     function _gtfsDirection(operator, trip) {
         var value = Number(_gtfsField(trip, 6));
+        // Current Yokohama GTFS direction=0 (b) is ODPT Outbound,
+        // direction=1 (a) is Inbound; verified against official timetable.
+        if(operator==="YokohamaMunicipal"){
+            var suffix=_gtfsText(trip,1).slice(-1).toLowerCase();
+            if((value===0&&suffix==="b")||(value===1&&suffix==="a"))
+                return "odpt.RailDirection:"+operator+"."+(value===0?"Outbound":"Inbound");
+            return "";
+        }
         if (value !== 0 && value !== 1) return "";
         return "odpt.RailDirection:" + operator + "." + (value === 1 ? "Outbound" : "Inbound");
     }
@@ -1647,23 +1678,30 @@
             var code = LINE_RAILWAY_CODE[lineId] || lineId;
             var observed = Number(_gtfsField(vehicle, 5)) || feedTime;
             var id = _gtfsText(entity, 1) || tripId || vehicleId || (lineId + "-" + station);
+            var yoko = operator === "YokohamaMunicipal";
+            var number = yoko ? _yokohamaGtfsTrainNumber(lineId,tripId) : "";
+            // Yokohama vehicle.label is observed as 4/6, not a car ID.
+            var physicalLabel = yoko && /^[46]$/.test(vehicleLabel) ? "" : vehicleLabel;
+            var physicalId = vehicleId && vehicleId !== tripId ? vehicleId : "";
+            var model = _gtfsVehicleType(operator,lineId,vehicleId,physicalLabel,tripId);
             rows.push({
                 "@id": "gtfs:" + operator + ":" + id,
                 "owl:sameAs": "gtfs:" + operator + ":" + id,
                 "odpt:operator": "odpt.Operator:" + operator,
                 "odpt:railway": "odpt.Railway:" + operator + "." + code,
-                "odpt:trainNumber": String(tripId || id),
+                "odpt:trainNumber": number || String(tripId || id),
                 "gtfs:tripId": String(tripId || ""),
                 "gtfs:vehicleId": String(vehicleId || ""),
                 "odpt:fromStation": "odpt.Station:" + operator + "." + code + "." + station,
                 "odpt:railDirection": _gtfsDirection(operator, trip),
                 "odpt:trainType": "odpt.TrainType:" + operator + ".Local",
-                "vehicleCarNumber": vehicleId && vehicleId !== tripId ? vehicleId : (vehicleLabel && vehicleLabel !== tripId ? vehicleLabel : ""),
-                "vehicleLabel": String(vehicleLabel || ""),
-                "odpt:vehicleType": _gtfsVehicleType(operator, lineId, vehicleId, vehicleLabel, tripId),
+                "vehicleCarNumber": physicalId || (physicalLabel && physicalLabel !== tripId ? physicalLabel : ""),
+                "vehicleLabel": String(physicalLabel || ""),
+                "gtfs:rawVehicleLabel": String(vehicleLabel || ""),
+                "odpt:vehicleType": model,
                 "gtfs:currentStopSequence": Number(_gtfsField(vehicle, 3)) || 0,
                 "gtfs:stopId": stopId,
-                "gtfs:vehicleEvidenceKind": _toeiGtfsVehicleEvidenceKind(vehicleId, vehicleLabel, tripId, _gtfsVehicleType(operator, lineId, vehicleId, vehicleLabel, tripId)),
+                "gtfs:vehicleEvidenceKind": _toeiGtfsVehicleEvidenceKind(vehicleId, physicalLabel, tripId, model),
                 "dc:date": _toeiGtfsIso(observed, feedTime),
                 "dct:valid": _toeiGtfsIso(observed + 60, feedTime),
                 "odpt:frequency": 30,
@@ -1702,12 +1740,14 @@
             var observed = Number(_gtfsField(update, 4)) || Date.now() / 1000;
             var entityId = _gtfsText(entity, 1) || tripId || (lineId + "-trip-update");
             var vehicleId = _gtfsText(vehicle, 1), vehicleLabel = _gtfsText(vehicle, 2);
+            var number = operator==="YokohamaMunicipal" ? _yokohamaGtfsTrainNumber(lineId,tripId) : "";
+            var physicalLabel = operator==="YokohamaMunicipal" && /^[46]$/.test(vehicleLabel) ? "" : vehicleLabel;
             rows.push({
                 "@id": "gtfs-trip-update:" + operator + ":" + entityId,
                 "owl:sameAs": "gtfs-trip-update:" + operator + ":" + entityId,
                 "odpt:operator": "odpt.Operator:" + operator,
                 "odpt:railway": "odpt.Railway:" + operator + "." + code,
-                "odpt:trainNumber": String(tripId || entityId),
+                "odpt:trainNumber": number || String(tripId || entityId),
                 "gtfs:tripId": String(tripId || ""),
                 "gtfs:vehicleId": String(vehicleId || ""),
                 "odpt:fromStation": origin ? "odpt.Station:" + operator + "." + code + "." + origin : "",
@@ -1715,8 +1755,9 @@
                 "odpt:destinationStation": terminal ? ["odpt.Station:" + operator + "." + code + "." + terminal] : [],
                 "odpt:railDirection": _gtfsDirection(operator, trip),
                 "odpt:delay": delay == null ? null : Math.round(delay / 60),
-                "vehicleCarNumber": vehicleId && vehicleId !== tripId ? vehicleId : (vehicleLabel && vehicleLabel !== tripId ? vehicleLabel : ""),
-                "vehicleLabel": String(vehicleLabel || ""),
+                "vehicleCarNumber": vehicleId && vehicleId !== tripId ? vehicleId : (physicalLabel && physicalLabel !== tripId ? physicalLabel : ""),
+                "vehicleLabel": String(physicalLabel || ""),
+                "gtfs:rawVehicleLabel": String(vehicleLabel || ""),
                 "gtfs:tripUpdateTimestamp": _toeiGtfsIso(observed),
                 "gtfs:tripUpdateValidUntil": _toeiGtfsIso(observed + 60)
             });
@@ -1848,6 +1889,17 @@
         function route(value) {
             var raw=String(value||"").trim();
             if (!raw) return "";
+            // Live Yokohama feed uses section routes, e.g. bn32-01,
+            // bn32-09, gn10-01. Range bounds prevent cross-line guesses.
+            if(operator==="YokohamaMunicipal"){
+                var section=raw.match(/^([bg])n(\d{2})-(\d{2})$/i);
+                if(section){
+                    var max=section[1].toLowerCase()==="b"?32:10;
+                    var first=Number(section[2]),last=Number(section[3]);
+                    return first>=1&&first<=max&&last>=1&&last<=max&&first!==last ?
+                        resolveCode(section[1].toUpperCase()) : "";
+                }
+            }
             var m=raw.match(/^(?:odpt\.Railway:)?([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$/i);
             if (m) return m[1].toLowerCase()===operator.toLowerCase() ? resolveCode(m[2]) : "";
             return /^[A-Za-z0-9_-]+$/.test(raw) ? resolveCode(raw) : "";
