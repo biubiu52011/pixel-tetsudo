@@ -53,3 +53,19 @@ test('Yokohama Blue family candidates remain neutral, explicit subtype selects o
   assert.equal(r.iconPath,'../images/列车/横浜市交通局/横浜市交通局_'+model+'形.png');
  }
 });
+
+test('Through fleet candidates on Toei use actual owner and source railway without assigning a PNG',()=>{
+ const w={},ctx={window:w,console:{log(){},warn(){},debug(){},error(){}}};
+ for(const f of ['data/timetables/vehicle-garage-png-map.js','data/timetables/train-number-png-ranges.js','js/train-vehicle.js'])vm.runInNewContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+ for(const [line,owner,number,operation,expected] of [
+ ['Shinjuku','Keio','2078K','78K',['京王9000系（9030系）','京王5000系']],
+ ['Asakusa','Hokuso','2121N','21N',['北総7300形','北総7500形','北総7800形','千葉ニュータウン9100形','千葉ニュータウン9200形','千葉ニュータウン9800形']]
+ ]){
+  const p={lineId:line,operator:'Toei',railway:'odpt.Railway:Toei.'+line,trainOwner:owner,trainNumber:number,operationCode:operation,positionSource:'realtime-api',vehicleEvidenceKind:'trip-id-only'};
+  const r=w.TrainVehicle.resolveRealtime(p).vehicleResult;
+  assert.equal(r.identityStatus,'NARROWED');
+  assert.deepEqual(Array.from(r.candidates).sort(),expected.sort());assert.ok(!r.iconPath);
+  const bad=w.TrainVehicle.resolveRealtime({...p,railway:'odpt.Railway:Toei.Mita'}).vehicleResult;
+  assert.ok(!bad.candidates.some(c=>expected.includes(c)));
+ }
+});

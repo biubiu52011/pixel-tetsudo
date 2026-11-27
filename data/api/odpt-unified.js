@@ -1291,15 +1291,12 @@
         return /^[\x20-\x7e]+$/.test(text) ? text : "";
     }
     function _toeiTripUpdateStop(bytes) {
-        var stop = _gtfsReadMessage(bytes), stopId = _gtfsPrintableText(_gtfsField(stop, 2));
-        var arrival = _gtfsNested(stop, 3), departure = _gtfsNested(stop, 4);
-        // 当前都营 feed 的紧凑布局为
-        // stop_sequence=1、arrival=2、departure=3、schedule_relationship=5，
-        // 没有 stop_id；标准布局仍由上面的分支兼容。
-        if (!stopId && !Object.keys(departure).length && Object.keys(_gtfsNested(stop, 2)).length) {
-            arrival = _gtfsNested(stop, 2);
-            departure = _gtfsNested(stop, 3);
-        }
+        // GTFS-RT StopTimeUpdate: arrival=2, departure=3, stop_id=4.
+        // Never parse the stop_id string as an event, or binary event bytes
+        // as a station. Toei's omitted stop_id uses the same field numbers.
+        var stop = _gtfsReadMessage(bytes);
+        var stopId = _gtfsPrintableText(_gtfsField(stop, 4));
+        var arrival = _gtfsNested(stop, 2), departure = _gtfsNested(stop, 3);
         var event = Object.keys(departure).length ? departure : arrival;
         var delay = _gtfsField(event, 1), time = _gtfsField(event, 2);
         return {

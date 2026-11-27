@@ -2072,6 +2072,21 @@ function resolveOperationPng(ctx) {
 function resolveToeiOwnerFleetCandidates(ctx) {
   if (!ctx || normOp(ctx.operator) !== "Toei") return [];
   var owner = String(ctx.trainOwner || "").replace(/^odpt\.(?:Operator|TrainOwner):/, "");
+  // Current operator fleet is a candidate scope, not a daily assignment.
+  // Keio official guide / 2023-04-21 press release: 9030 and 5000
+  // serve the Shinjuku through route. Hokuso official current fleet guide
+  // lists 7300/7500/7800 and Chiba New Town 9100/9200/9800.
+  // https://www.keio.co.jp/keiofan/museum/exist/
+  // https://www.keio.co.jp/news/update/news_release/news_release2023/pdf/nr20230421_555.pdf
+  // https://www.hokuso-railway.co.jp/trackside/train/
+  var code = _toeiOperationCode(ctx);
+  if (ctx._realtimeVehicleResolution === true &&
+      ctx.railway === "odpt.Railway:Toei."+ctx.lineId) {
+    if (ctx.lineId === "Shinjuku" && owner === "Keio" && /^\d{2}K$/.test(code))
+      return ["京王9000系（9030系）","京王5000系"];
+    if (ctx.lineId === "Asakusa" && owner === "Hokuso" && /^\d{2}N$/.test(code))
+      return ["北総7300形","北総7500形","北総7800形","千葉ニュータウン9100形","千葉ニュータウン9200形","千葉ニュータウン9800形"];
+  }
   if (owner !== "Toei") return [];
   var entry = _toeiOperationLibraryEntry(ctx);
   return entry ? entry.candidates.slice() : [];
@@ -2750,12 +2765,12 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "remaining-fleet-extra-8": ["TobuNikko"],
   "remaining-fleet-extra-12": ["TobuIsesaki"],
   "remaining-fleet-extra-13": ["Noda"],
-  "subway-fleet-6": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess"],
-  "subway-fleet-7": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess"],
-  "subway-fleet-8": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess"],
-  "subway-fleet-9": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess"],
-  "subway-fleet-10": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess"],
-  "subway-fleet-11": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess"]
+  "subway-fleet-6": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess", "Asakusa"],
+  "subway-fleet-7": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess", "Asakusa"],
+  "subway-fleet-8": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess", "Asakusa"],
+  "subway-fleet-9": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess", "Asakusa"],
+  "subway-fleet-10": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess", "Asakusa"],
+  "subway-fleet-11": ["Keisei", "KeiseiOshiage", "KeiseiChiba", "KeiseiChihara", "NaritaSkyAccess", "Asakusa"]
 };
 Object.keys(VEHICLE_LINE_SCOPE_OVERRIDES).forEach(function(id) {
   if (CANONICAL_VEHICLES[id]) CANONICAL_VEHICLES[id].lineIds = VEHICLE_LINE_SCOPE_OVERRIDES[id].slice();

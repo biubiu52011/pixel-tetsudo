@@ -327,3 +327,19 @@ test("Yokohama TripUpdate preserves vehicle-type evidence for exact trip merge",
  assert.equal(neutral.vehicleCarNumber,"");
  assert.equal(neutral["gtfs:rawVehicleLabel"],"6");
 });
+
+test("GTFS standard StopTimeUpdate reads field 4 station and fields 2/3 times, including no stop_id",()=>{
+ const h=alertHarness();
+ const a=source.indexOf("    function _gtfsPrintableText("),b=source.indexOf("    function _gtfsOrderedStops(",a);
+ const ctx={_gtfsReadMessage:h.read,_gtfsNested:h.nested,_gtfsText:h.text,_gtfsField:h.field};
+ vm.runInNewContext(source.slice(a,b)+"\nthis.stop=_toeiTripUpdateStop;",ctx);
+ const n=1795783200,arrival=blob(2,join(number(1,60),number(2,n))),departure=blob(3,join(number(1,90),number(2,n+30)));
+ const standard=ctx.stop(join(number(1,17),arrival,departure,blob(4,"B17")));
+ assert.equal(standard.stopId,"B17");assert.equal(standard.sequence,17);assert.equal(standard.delay,90);assert.equal(standard.time,n+30);
+ const toei=ctx.stop(join(number(1,3),arrival,departure));
+ assert.equal(toei.stopId,"");assert.equal(toei.delay,90);
+ const arrivalOnly=ctx.stop(join(number(1,2),arrival,blob(4,"G02")));
+ assert.equal(arrivalOnly.stopId,"G02");assert.equal(arrivalOnly.delay,60);
+ const stationOnly=ctx.stop(join(number(1,2),blob(4,"G02")));
+ assert.equal(stationOnly.stopId,"G02");assert.equal(stationOnly.delay,null);
+});
