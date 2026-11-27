@@ -37,3 +37,33 @@ test('all railway lines have four language names and generated copies match', ()
     }
   }
 });
+
+
+test('Other 展示组已登记14线的车站坐标、顺序、反向索引及展示元数据完整', () => {
+  const railway = JSON.parse(read('data/core/railway_data.json'));
+  const names = JSON.parse(read('data/core/station_i18n.json'));
+  const ids = ["Yurikamome","MinatoMirai","Rinkai","TsukubaExpress","TamaMonorail","NewShuttle","TokyoMonorail","ChibaMonorail1","ChibaMonorail2","ShonanMonorail","ToyoRapid","SaitamaRapid","UtsunomiyaLRT","HojoRailway"];
+  for (const id of ids) {
+    const line = railway.lines[id];
+    assert.equal(new Set(line.stations).size, line.stations.length, id);
+    for (const [index, station] of line.stations.entries()) {
+      assert.ok(Number.isFinite(railway.stations[station]?.lat) && Number.isFinite(railway.stations[station]?.lng), id + '/' + station);
+      assert.ok(railway.stationLines[station]?.includes(id), id + '/' + station);
+      assert.equal(railway.lineStationOrder[id]?.[station], index, id + '/' + station);
+      for (const lang of ['ja','en','zh','ko']) assert.ok(names[station]?.[lang], station + '/' + lang);
+    }
+    for (const lang of ['nameJa','nameEn','nameZh','nameKo']) assert.ok(line.presentation?.[lang], id + '/' + lang);
+  }
+  assert.equal(railway.name_map['流山セントラルパーク'], 'Nagareyama-Central-Park');
+  assert.equal(railway.name_map['柏の葉キャンパス'], 'Kashiwanoha-Campus');
+  assert.equal(names['Nagareyama-Central-Park'].ja, '流山セントラルパーク');
+  assert.ok(Math.abs(railway.stations.Yashio.lat - 35.80756) < 0.001);
+  for (const id of ["Hashira","Nagase","Kashiwa-No-Ha","Mirai-Daira","Midori-No"]) {
+    assert.ok(!railway.stations[id] && !railway.stationLines[id], id);
+    assert.ok(!Object.hasOwn(railway.lineStationOrder.TsukubaExpress, id), id);
+  }
+  assert.equal(railway.lines.ChibaMonorail1.presentation.code, 'CM');
+  assert.equal(railway.lines.ChibaMonorail2.presentation.code, 'CM');
+  assert.equal(railway.lines.ShonanMonorail.presentation.code, 'SMR');
+  assert.equal(railway.lines.UtsunomiyaLRT.presentation.code, '');
+});

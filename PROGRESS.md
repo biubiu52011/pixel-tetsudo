@@ -4,6 +4,14 @@
 
 # Pixel Tetsudo 工程进度
 
+### OTHER-RAILWAY-TOPOLOGY-20261128 — 其他铁路既有14线静态数据纠正（PARTIAL）
+
+- 现有 Other 展示组16线，非全国第三部门铁道名录。生产只读对账：14线已登记且站序与 canonical 一致；12线有计划模板，仅ゆりかもめ991条有来源修订日，均缺 revision_id。14线实时 API 开关关闭。函馆2/5未登记，23个不同停留场坐标为 null，留待独立核验。
+- 筑波快线保留既有 SQL 车站 ID 和顺序，移除5个无实际线路成员的旧坐标及成员键（旧翻译保留），补齐5个真实车站坐标和索引；修正流山セントラルパーク及柏の葉キャンパス名称映射。埼玉高速8站补齐成员和顺序。ニューシャトル12站、东京单轨5站补坐标，共22站。
+- 坐标来源：筑波官方站序 https://www.mir.co.jp/route_map/index.html ，公开站点坐标 https://en.wikipedia.org/wiki/Yashio_Station 、流山セントラルパーク駅公开百科站点坐标35.854500,139.915194、https://en.wikipedia.org/wiki/Kashiwanoha-campus_Station 、https://mapfan.com/spots/SCH%2CJ%2CQ9T 、https://mapfan.com/spots/SCH%2CJ%2C09T ；ニューシャトル站序 https://www.new-shuttle.jp/station/ 与坐标 https://osanpo.info/g/line99321 ；东京单轨坐标对应车站公开百科、https://github.com/schmurt/TokyoTrains/blob/main/tokyo_stations_dataset （昭和島）及 https://mapfan.com/spots/SCH%2CJ%2C8R4 （新整備場）。这些为地图站点参考，不声明测绘精度。
+- 展示：复用既有图片路径、颜色、四语名，补齐千叶1/2号线（CM）、湘南（SMR）、宇都宫（无字母前缀）四线 presentation；保留内部 code 和 Other 排序契约。千叶CM、湘南SMR参考运营商公开站号资料 https://chiba-monorail.co.jp/index.php/post-87141/ 、https://www.shonan-monorail.co.jp/transfer/pdf/transfer-st-ofuna.pdf 。
+- 验证：完整 Git Blob 源快照上逐站断言14线164条站点记录坐标/成员/顺序/四语及展示字段；原站序、其余线路对象不变。按 gen-file-data 原算法生成两组产物，更新 loader 和7页面缓存指纹，扩充既有 i18n 回归测试。容器 DNS 无法解析 github.com，未完整检出运行 Node 全套测试。无生产数据库写入、无手动 Pages/Edge 部署。CI及生产回读未验收；函馆坐标、时刻表版本与实际实时覆盖仍待处理。
+
 ### TOZAI-KT-NUMBER-PLANNED-ART-20261127 — 东西线 K/T 番号计划图映射（LOCAL-VERIFIED）
 
 - 现场：生产页面的 SQL 推定列车全部显示灰点；只读接口返回 `partial=true`、589 条 `date_unverified_runs`、0 条 `date_verified_runs`，因此本批不把这些记录声明成现行时刻表或实际编成。
