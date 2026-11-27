@@ -7,3 +7,6 @@ Tourism prose, tips, names, opening hours and interface copy are saved as review
 `DelayTranslator` uses authoritative RailwayDB station/line names and composes complete cause/line/direction/scope/effect sentences for Japanese source reports. A whole-clause existing template is the second option. If independent verified impact data exists, it may display a clearly labelled structured summary, not a claimed full translation. Unknown clauses, forecasts, and uncertain identity never produce a claimed translated notice.
 
 No remote translation service, API key, local server or network proxy is used. The old `translateRemote` API is retained as a Promise-returning local alias. Regression: `tests/hybrid-translation.test.cjs`.
+
+## Official multilingual data
+ODPT TrainInformation keeps each original language map through fusion. GTFS-RT Alert retains header and description maps independently. The displayed locale selects a nonempty official value before any translation; zh maps to zh-Hans, never zh-Hant. A missing field alone may use the existing offline engine and cached on-device fallback, retaining the original if unavailable. A single-record official status may be displayed without changing the canonical status evaluator; aggregate and threshold semantics remain authoritative. Identifiers and station/line identity remain outside free-text translation.

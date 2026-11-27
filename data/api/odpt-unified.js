@@ -1842,6 +1842,8 @@
                     "pt:gtfsEffectCode": effectCode,
                     "odpt:trainInformationStatus": status,
                     "odpt:trainInformationText": text,
+                    "pt:alertHeaderTranslations": header,
+                    "pt:alertDescriptionTranslations": description,
                     "odpt:trainInformationCause": cause,
                     "gtfs:causeCode": Number(_gtfsField(alert, 6)) || null,
                     "odpt:trainInformationEffect": effect,

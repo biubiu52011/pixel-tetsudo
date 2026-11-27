@@ -563,9 +563,31 @@
     }
     return null;
   }
+  // Exact target locale only; never treat Traditional Chinese as Simplified.
+  function officialText(value, lang) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return "";
+    var key = String(lang || window.currentLang || "ja").toLowerCase().replace(/_/g, "-");
+    var aliases = {zh:"zh-hans", "zh-cn":"zh-hans", "zh-sg":"zh-hans",
+      "zh-tw":"zh-hant", "zh-hk":"zh-hant", "zh-mo":"zh-hant",
+      "ja-jp":"ja", "en-us":"en", "en-gb":"en", "ko-kr":"ko"};
+    function normalize(k) {
+      k=String(k).toLowerCase().replace(/_/g,"-");
+      return aliases[k] || k;
+    }
+    var wanted=normalize(key);
+    var keys=Object.keys(value);
+    for(var i=0;i<keys.length;i++){
+      var k=keys[i], v=value[k];
+      if(normalize(k)===wanted && typeof v==="string" && v.trim()) return v;
+    }
+    return "";
+  }
   // ---- 主入口 ----
   function translate(text,opts,lang) {
     lang=(lang||window.currentLang||"ja").toLowerCase();opts=opts||{};
+    var official=officialText(opts.officialText || text,lang);
+    if(official)return {translated:official,matched:true,complete:true,provider:"official"};
+    if(text && typeof text==="object") text=officialText(text,"ja") || "";
     if(!text||lang==="ja"||["zh","ko","en"].indexOf(lang)<0)return {translated:text,matched:false};
     var source=String(text).trim();
     if(!source)return {translated:text,matched:false};
@@ -590,6 +612,7 @@
   function translateRemote(text,opts,lang){return Promise.resolve(translate(text,opts,lang));}
 
   window.DelayTranslator = {
+    officialText: officialText,
     translate: translate,
     translateRemote: translateRemote,
     translateFragment: _replaceFragment

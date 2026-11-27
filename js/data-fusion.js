@@ -730,6 +730,26 @@
     return "";
   }
 
+  // Preserve official translations separately from the stable evaluation source.
+  // GTFS title and description may have different language coverage.
+  function officialDetailParts(rec) {
+    var values = rec["pt:sourceType"] === "gtfs-alert" &&
+      (rec["pt:alertHeaderTranslations"] || rec["pt:alertDescriptionTranslations"])
+      ? [rec["pt:alertHeaderTranslations"], rec["pt:alertDescriptionTranslations"]]
+      : [rec["odpt:trainInformationText"] || rec["odpt:text"]];
+    return values.map(function(value){
+      var map = value && typeof value === "object" && !Array.isArray(value) ? value : null;
+      var source = typeof value === "string" ? value : "";
+      var sourceLang = "ja";
+      if(map){
+        var keys=Object.keys(map).filter(function(k){return typeof map[k]==="string" && map[k].trim();});
+        sourceLang=keys.indexOf("ja")>=0?"ja":keys.indexOf("ja-JP")>=0?"ja-JP":keys[0]||"";
+        source=map[sourceLang]||"";
+      }
+      return {source:source,sourceLang:sourceLang,translations:map};
+    }).filter(function(part){return !!part.source.trim();});
+  }
+
   function resolveCanonicalStation(name) {
     var resolver = window.StationResolver;
     if (!resolver || typeof resolver.resolve !== "function") return null;
@@ -879,7 +899,7 @@
       if(!evaluated.length)return null;
       var primary=evaluated[0],result=Object.assign({},primary.info);
       function unique(values){return values.filter(function(v,i){return values.indexOf(v)===i;});}
-      var allImpacts=[],allEvents=[],allTimes=[],allDetails=[],allRanges=[];
+      var allImpacts=[],allEvents=[],allTimes=[],allDetails=[],allRanges=[],allOfficialParts=[];
       evaluated.forEach(function(item){
         var e=item.info,rec=item.rec;
         if(Array.isArray(e.impacts))allImpacts=allImpacts.concat(e.impacts);
@@ -888,6 +908,7 @@
         if(date&&isFinite(Date.parse(date)))allTimes.push(date);
         var body=recordText(rec);
         if(body)allDetails.push(body);
+        allOfficialParts=allOfficialParts.concat(officialDetailParts(rec));
         if(e.interval)allRanges.push(e.interval);
       });
       result.impacts=allImpacts.filter(function(item,index,rows){
@@ -899,6 +920,14 @@
       result.events=allEvents;
       result.interval=unique(allRanges).join("、")||null;
       result.detail=unique(allDetails).join("\n\n");
+      result.officialDetailParts=allOfficialParts.filter(function(part,index,rows){
+        return rows.findIndex(function(other){return JSON.stringify(other)===JSON.stringify(part);})===index;
+      });
+      // A single official status describes the aggregate only when there
+      // are no competing records. Keep existing severity/threshold logic.
+      var officialStatus=primary.rec["odpt:trainInformationStatus"];
+      if(evaluated.length===1 && officialStatus && typeof officialStatus==="object")
+        result.officialStatusTranslations=officialStatus;
       result.recordsCount=evaluated.length;
       result.sourceUpdatedAt=allTimes.length?allTimes.sort(function(a,b){return Date.parse(b)-Date.parse(a);})[0]:null;
       result.validUntil=primary.rec["dct:valid"]||null;

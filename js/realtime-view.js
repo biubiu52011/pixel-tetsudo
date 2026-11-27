@@ -88,6 +88,9 @@
     }
     var s = window.DataState && window.DataState.STATUS_META && window.DataState.STATUS_META[status] ? window.DataState.STATUS_META[status] : STATUS_META[status] || STATUS_META.no_data;
     var statusText = t("status." + status) || status;
+    if (window.DelayTranslator && window.DelayTranslator.officialText && ["normal","delayed","suspended","info","notice"].indexOf(status)>=0) {
+      statusText = window.DelayTranslator.officialText(delayInfo.officialStatusTranslations,window.currentLang || "ja") || statusText;
+    }
     // Reporting-threshold clearance is not a guarantee of zero delay.
     // Show the official threshold beside the neutral ○ rather than a broad
     // unqualified "normal" claim.
@@ -187,6 +190,7 @@
     causeSection.querySelector(".rs-section-title").textContent = _detailTitles[(window.currentLang || "ja")] || "運行情報";
     var causeHtml;
     var _transSource = "";
+    var _missingOfficialParts = [];
     // 官网网页来源只保留正文，不再展示 URL 链接行。
     var _srcText = delayInfo.detail || cause || "";
     var _exLinks = [];
@@ -206,7 +210,16 @@
       causeHtml = '<span class="rs-text-muted">' + t("status.no_data") + '</span>';
     } else if (_cleanSrc) {
       _transSource = _cleanSrc;
-      causeHtml = _translatedText(_cleanSrc, window.currentLang || "ja", _translationOpts(lineId, status, Object.assign({}, delayInfo, { cause: cause })));
+      var translationOpts = _translationOpts(lineId,status,Object.assign({},delayInfo,{cause:cause}));
+      var parts = delayInfo.officialDetailParts;
+      if (Array.isArray(parts) && parts.length) {
+        var selected = _renderOfficialParts(parts,window.currentLang || "ja",translationOpts);
+        causeHtml = selected.html;
+        _missingOfficialParts = selected.missing;
+        _transSource = "";
+      } else {
+        causeHtml = _translatedText(_cleanSrc, window.currentLang || "ja", translationOpts);
+      }
     } else {
       causeHtml = '<span class="rs-text-muted">' + escapeHtml(t(status === "normal" ? "status.normal" : "status.none")) + '</span>';
     }
@@ -219,6 +232,19 @@
       var _translationRevision = (_bodyTextEl._ptTranslationRevision || 0) + 1;
       _bodyTextEl._ptTranslationRevision = _translationRevision;
       _bodyTextEl.innerHTML = causeHtml;
+      // Each missing field is independent; official siblings never reach
+      // the translator, even when the remaining paragraph is untranslated.
+      if (window.SiteAutoTranslate && _missingOfficialParts.length) {
+        _missingOfficialParts.forEach(function(part,index){
+          var targetLang=window.currentLang || "ja";
+          window.SiteAutoTranslate.translateText(part,targetLang).then(function(translated){
+            if(!translated || _bodyTextEl._ptTranslationRevision!==_translationRevision ||
+                window.currentLang!==targetLang || !_bodyTextEl.isConnected)return;
+            var el=_bodyTextEl.querySelector('[data-pt-missing-official="'+index+'"]');
+            if(el){el.textContent=translated;el.setAttribute("lang",targetLang);}
+          }).catch(function(){});
+        });
+      }
       if (_transSource && window.SiteAutoTranslate &&
           (window.currentLang || "ja") !== "ja" &&
           _bodyTextEl.querySelector(".rs-cause-untranslated")) {
@@ -369,6 +395,35 @@
       ? '<div class="rs-text-muted rs-translation-summary-note">'
           + escapeHtml(t("status.translation_summary"))+'</div>' : '';
     return '<div class="rs-cause-translated">'+note+escapeHtml(tr)+'</div>';
+  }
+
+  function _renderOfficialParts(parts, lang, opts) {
+    var missing=[],seen=Object.create(null),html=[];
+    parts.forEach(function(part){
+      var official=window.DelayTranslator && window.DelayTranslator.officialText
+        ? window.DelayTranslator.officialText(part.translations,lang) : "";
+      var source=part.source || "";
+      var value=official || source;
+      if(!value || seen[value])return;
+      seen[value]=true;
+      // URL extraction must remain consistent with the existing report UI.
+      if(window.RunInfoEvaluator && window.RunInfoEvaluator.extractLinks)
+        value=window.RunInfoEvaluator.extractLinks(value).cleanText;
+      if(!value)return;
+      if(official || lang==="ja" || !/^ja(?:-|$)/i.test(part.sourceLang||"")){
+        html.push('<div class="rs-cause-official">'+escapeHtml(value)+'</div>');
+        return;
+      }
+      // Do not use line-wide inferred summaries for individual missing
+      // paragraphs: they could replace a separate GTFS title or description.
+      var rendered=_translatedText(value,lang,{lineId:opts && opts.lineId});
+      if(rendered.indexOf("rs-cause-untranslated")>=0){
+        var index=missing.length;
+        missing.push(value);
+        html.push('<div data-pt-missing-official="'+index+'" lang="ja">'+escapeHtml(value)+'</div>');
+      }else html.push(rendered);
+    });
+    return {html:html.join(""),missing:missing};
   }
 
   function renderFilterBar(linesObj) {

@@ -107,3 +107,24 @@ test('modal displays a scoped summary instead of translation-unavailable placeho
   assert.match(html,/上行列车出现延误/);
   assert.doesNotMatch(html,/rs-cause-untranslated|无法翻译/);
 });
+
+test('official ODPT translations bypass the offline engine and respect Chinese scripts',()=>{
+  const d=boot(),map={ja:'一部列車遅延','zh-Hans':'部分列车晚点','zh-Hant':'部分列車誤點',en:'Official wording',ko:'일부 열차 지연'};
+  assert.equal(d.translate(map,{},'zh').translated,map['zh-Hans']);
+  assert.equal(d.translate('unknown',{officialText:map},'en').provider,'official');
+  assert.equal(d.officialText(map,'zh-TW'),map['zh-Hant']);
+  assert.equal(d.officialText({'zh-Hant':'繁體'},'zh'),'');
+  assert.equal(d.officialText({en:'   '},'en'),'');
+});
+test('mixed-language alert fields preserve the official paragraph and queue only the missing one',()=>{
+  const delay=boot(),code=source('js/realtime-view.js');
+  const start=code.indexOf('  function _untranslatedOfficialText(');
+  const end=code.indexOf('  function renderFilterBar(',start);
+  const context={window:{DelayTranslator:delay},t:k=>k,escapeHtml:x=>String(x).replace(/</g,'&lt;'),_needsJaTranslate:()=>true};
+  vm.runInNewContext(code.slice(start,end)+'\nthis.renderParts=_renderOfficialParts;',context);
+  const r=context.renderParts([{source:'遅延',sourceLang:'ja',translations:{ja:'遅延','zh-Hans':'官方晚点'}},{source:'作業員が確認しています。',sourceLang:'ja',translations:{ja:'作業員が確認しています。'}}],'zh',{});
+  assert.match(r.html,/官方晚点/);
+  assert.equal(r.missing.length,1);
+  assert.equal(r.missing[0],'作業員が確認しています。');
+  assert.match(r.html,/作業員が確認しています。/);
+});
