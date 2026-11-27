@@ -2683,13 +2683,13 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "odakyu-2000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
   "odakyu-3000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
   "odakyu-8000": ["Odawara", "OdakyuEnoshima", "OdakyuTama"],
-  "tokyu-2020-10": ["TokyuDenEn"],
+  "tokyu-2020-10": ["TokyuDenEn","Hanzomon","TobuSkytree","TobuIsesaki","TobuNikko"],
   "tokyu-5080": ["TokyuMeguro", "Namboku", "Mita", "SaitamaRapid"],
   "tokyu-6020": ["TokyuOimachi"],
   "tokyu-7000": ["TokyuIkegami", "TokyuTamagawa"],
   "tokyu-1000-1500-plan": ["TokyuIkegami", "TokyuTamagawa"],
   "tokyu-1000-plan": ["TokyuIkegami", "TokyuTamagawa"],
-  "tokyu-5000": ["TokyuToyoko", "TokyuDenEn"],
+  "tokyu-5000": ["TokyuDenEn","Hanzomon","TobuSkytree","TobuIsesaki","TobuNikko"],
   "tokyu-5050": ["TokyuToyoko", "MinatoMirai", "Fukutoshin", "Yurakucho", "Yurakucho_Seibu", "Ikebukuro"],
   "tokyu-3000-plan": ["TokyuMeguro", "TokyuShinYokohama", "Mita", "Namboku"],
   "tokyu-3020": ["TokyuMeguro", "TokyuShinYokohama", "Namboku", "Mita", "SaitamaRapid"],
@@ -2701,8 +2701,8 @@ var VEHICLE_LINE_SCOPE_OVERRIDES = {
   "seibu-9000": ["SeibuTamako"],
   "seibu-001": ["Ikebukuro", "SeibuChichibu", "Seibu_Sayama"],
   "saitama-2000": ["SaitamaRapid", "Namboku"],
-  "tobu-50000-10": ["Tojo"],
-  "tobu-50050-10": ["TobuIsesaki", "TobuSkytree", "Hanzomon"],
+  "tobu-50000-10": ["Tojo","TobuSkytree","TobuIsesaki","TobuNikko","Hanzomon","TokyuDenEn"],
+  "tobu-50050-10": ["TobuIsesaki","TobuSkytree","TobuNikko","Hanzomon","TokyuDenEn"],
   "tobu-70090": ["TobuIsesaki", "TobuSkytree", "Hibiya"],
   "tobu-50070": ["Tojo", "Yurakucho", "Fukutoshin"],
   "tobu-9000": ["Tojo", "Yurakucho", "Fukutoshin"],
@@ -7282,10 +7282,20 @@ var rows={"2026-04-18":{
 "68T":["東武50050系(10両)","5005055F"],"74T":["東武50050系(10両)","5005059F"]
 }};
 function code(n){var m=String(n||"").toUpperCase().match(/(?:^|[^0-9])((?:[0-4][0-9]K|(?:5[0-9]|6[0-9]|7[0-9]|8[0-2])T))(?:[^0-9A-Z]|$)/);return m?m[1]:"";}
-function network(ctx){return /DenEn|Denentoshi|Hanzomon|Tobu|田園都市|半蔵門/i.test([ctx.lineId,ctx.railway,ctx.destinationStation].join("|"));}
+// An observation in the Den-en-toshi/Hanzomon through corridor is not
+// evidence for an unrelated Tobu operation (e.g. the Tojo Line).
+function network(ctx){
+ var line=String(ctx.lineId||""),railway=String(ctx.railway||"");
+ var lines=/^(?:TokyuDenEn|Hanzomon|TobuSkytree|TobuIsesaki|TobuNikko)$/;
+ var railways=/^odpt\.Railway:(?:Tokyu\.Denentoshi|TokyoMetro\.Hanzomon|Tobu\.(?:Isesaki|Skytree|Nikko))$/;
+ return !!(line||railway)&&(!line||lines.test(line))&&(!railway||railways.test(railway));
+}
 function resolveEvidence(trainNumber,ctx){ctx=ctx||{};if(!network(ctx))return null;
- var d=String(ctx.serviceDate||"").slice(0,10),r=rows[d]&&rows[d][code(trainNumber)];if(!r)return null;
- return {operator:"Tokyu",vehicleType:r[0],formationId:r[1],grade:"C",sourceUrl:SOURCE,
+ var d=String(ctx.serviceDate||"").slice(0,10),k=code(trainNumber),r=rows[d]&&rows[d][k];if(!r)return null;
+ // Vehicle ownership comes from the observed model, not the host railway.
+ var owner=/^東武/.test(r[0])?"Tobu":/^東急/.test(r[0])?"Tokyu":"";
+ if(!owner)return null;
+ return {operator:owner,vehicleType:r[0],formationId:r[1],operationCode:k,grade:"C",sourceUrl:SOURCE,
  provenance:"loo-ool dated Den-en-toshi/Hanzomon operation observation",observedDate:d};}
 registerEvidenceProvider({id:"denentoshi-dated-formations",grade:"C",resolveEvidence:resolveEvidence});
 })();
