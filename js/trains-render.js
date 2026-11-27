@@ -1680,6 +1680,34 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         return tozaiPrefix + tozaiModel;
       }
     }
+    // Historical assignment distribution is diagnostic only: never an
+    // observed or planned vehicle identity and never a PNG authorization.
+    if (lineId === "Tozai" && window.TrainVehicle &&
+        typeof window.TrainVehicle.getTozaiHistoricalModelDistribution === "function" &&
+        (!markerSpec || markerSpec.kind !== "vehicle")) {
+      var history = window.TrainVehicle.getTozaiHistoricalModelDistribution(
+        Object.assign({},p,{displayLineId:lineId}));
+      if (history) {
+        var historyLang=String(lang||"ja").toLowerCase();
+        var historyPrefix=/^zh/.test(historyLang)?"历史同星期配车统计（非当天实车）：":
+          historyLang==="en"?"Historical same-weekday assignments (not today's stock): ":
+          historyLang==="ko"?"같은 요일 과거 배차 (당일 실차 아님): ":
+          "同曜日の過去充当統計（当日の実車ではありません）：";
+        var historySuffix=/^zh/.test(historyLang)?"；样本不足或不稳定，未确定车型":
+          historyLang==="en"?"; insufficient or unstable evidence; model unconfirmed":
+          historyLang==="ko"?"; 표본 부족 또는 변동, 차종 미확인":
+          "・標本不足または変動あり、車種未確定";
+        if(history.status==="historical-majority")historySuffix=/^zh/.test(historyLang)?
+          "；历史多数车型 "+history.historicalMajority+"系（仅统计参考）":
+          historyLang==="en"?"; historical majority "+history.historicalMajority+" series (statistics only)":
+          historyLang==="ko"?"; 과거 다수 차종 "+history.historicalMajority+"계 (통계 참고)":
+          "・過去の多数形式 "+history.historicalMajority+"系（統計参考のみ）";
+        return historyPrefix+history.sampleDays+
+          (/^zh/.test(historyLang)?"日":historyLang==="en"?" days":historyLang==="ko"?"일":"日")+
+          " / 05系 "+history.counts["05"]+" / 07系 "+history.counts["07"]+
+          " / 15000系 "+history.counts["15000"]+historySuffix;
+      }
+    }
     if (lineId === "Kawagoe" && p.timetableDateVerified === true) {
       var kawagoeRef = p.sqlPublishedNumberFleetReference || {};
       if (kawagoeRef.source === "sql-jreast-kawagoe-2611-shared-fleet" &&
