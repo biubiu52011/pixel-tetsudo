@@ -55,3 +55,18 @@ the Origin header. In-memory per-isolate rate limiting and cache reduce
 pressure but do not give a hard account-wide quota. Add a gateway-managed
 rate limit/WAF and monitor ODPT quota use before making this proxy the
 only production route. Keep supported resource types and operators narrow.
+
+## 2026-11-27 production readiness checkpoint (Metro P1)
+
+Read-only Supabase function-edge logs, trailing 24 hours at approximately 19:57 JST:
+
+| Operator | HTTP 200 | HTTP 503 | HTTP 403 |
+| --- | ---: | ---: | ---: |
+| Tobu (Challenge) | 26 | 0 | 0 |
+| TokyoMetro (Production) | 0 | 18 | 0 |
+| Toei (Production) | 0 | 8 | 1 |
+| TWR (Production) | 0 | 26 | 0 |
+
+The deployed proxy checks `ODPT_PRODUCTION_CONSUMER_KEY` for Production routes and returns HTTP 503 / `ODPT_PROXY_NOT_CONFIGURED` when the environment value is missing. Upstream failures are translated to 502 or 429, not 503. The log pattern therefore indicates the Production secret is not available to the function; Challenge has successful observed requests. HTTP 403 is an independent origin restriction. No key values were retrieved or logged.
+
+**Rollout gate: BLOCKED.** Keep strict mode disabled and the current browser path unchanged until the Production secret is provisioned by the project owner and both provider environments pass the health and actual resource probes described above. A passing Pages CI run alone is not proof of provider availability. The project integration cannot provision secrets or rotate ODPT credentials. Do not copy the previously exposed client credential into a new secret as a substitute for rotation.
