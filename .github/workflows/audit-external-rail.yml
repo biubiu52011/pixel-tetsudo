@@ -118,6 +118,11 @@ jobs:
           node --check tools/audit-edge-train-runs-runtime.cjs
           node tools/audit-train-number-png-runtime.cjs --strict > /tmp/train-png-offline.json
           node -e "const r=require('/tmp/train-png-offline.json');if(r.sampleRows!==174||r.returnVehicleRows!==89||r.safetyIssues.length||r.negativeProbes['future-service-date'].allowedStillImage!==3||r.negativeProbes['future-service-date'].unexpectedStillImage)process.exit(1);console.log(JSON.stringify({sourceRows:r.sampleRows,svgPng:r.returnVehicleRows,neutral:r.returnNeutralRows}));"
+      - name: Observe live GTFS Alert binary field coverage (non-blocking)
+        continue-on-error: true
+        env:
+          PT_LIVE_RUNINFO_AUDIT: '1'
+        run: node --test --test-name-pattern="Live GTFS Alert binary observation" tests/runinfo-operator-delivery.test.cjs
       - name: Probe live Edge (read-only) through actual browser adapter and SVG selector
         run: |
           node tools/audit-edge-train-runs-runtime.cjs \

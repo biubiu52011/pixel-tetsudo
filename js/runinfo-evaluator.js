@@ -365,7 +365,7 @@
       evidence.push({type:"THROUGH_SUSPENSION_OVERRIDES_GENERIC_SUSPENSION"});
     }
     // GTFS NO_SERVICE for a trip/stop is not a full-line suspension.
-    if((input.alertScope==="trip"||input.alertScope==="stop")&&structured==="suspended"){
+    if((input.alertScope==="trip"||input.alertScope==="stop"||input.alertScope==="direction")&&structured==="suspended"){
       structured="delayed";evidence.push({type:"GTFS_PARTIAL_NO_SERVICE",scope:input.alertScope});
     }
     // A structured category can describe a FUTURE engineering notice.

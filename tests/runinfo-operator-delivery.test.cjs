@@ -108,3 +108,67 @@ test("Alert-only successful empty feed remains empty, not an invented normal sta
   assert.equal(loader.window.ODPT_REALTIME_STATUS["AlertOnly:delay"].ok,true);
   assert.equal(loader.window.ODPT_DELAY_DATA.AlertOnly.length,0);
 });
+
+function alertHarness(){
+  const readStart=source.indexOf("    function _gtfsField(");
+  const readEnd=source.indexOf("    function _toeiGtfsLineId(",readStart);
+  const alertStart=source.indexOf("    function _gtfsRepeated(");
+  const alertEnd=source.indexOf("    function _decodeToeiGtfsAlerts(",alertStart);
+  assert.ok(readStart>=0&&readEnd>readStart&&alertStart>=0&&alertEnd>alertStart);
+  const ctx={Date,Uint8Array,TextDecoder,LINE_RAILWAY_CODE:{},_toeiGtfsIso:n=>new Date(n*1000).toISOString(),
+    _toeiGtfsLineId:()=>"",_gtfsLineIdForOperator:()=>""};
+  vm.runInNewContext(source.slice(readStart,readEnd)+source.slice(alertStart,alertEnd)+"\nthis.decode=_decodeGtfsAlerts;this.read=_gtfsReadMessage;this.text=_gtfsText;this.nested=_gtfsNested;this.field=_gtfsField;this.repeated=_gtfsRepeated;",ctx);
+  return ctx;
+}
+function vint(n){const a=[];while(n>=128){a.push((n%128)|128);n=Math.floor(n/128);}a.push(n);return Buffer.from(a);}
+function number(n,v){return Buffer.concat([vint(n*8),vint(v)]);}
+function blob(n,v){const b=Buffer.from(v);return Buffer.concat([vint(n*8+2),vint(b.length),b]);}
+const join=(...parts)=>Buffer.concat(parts);
+function feed(...entities){return join(blob(1,join(blob(1,"2.0"),number(2,0),number(3,Math.floor(Date.now()/1000)))),...entities.map(e=>blob(2,e)));}
+function alertEntity(id,start,end,direction){
+  const selector=join(blob(2,"odpt.Railway:TokyoMetro.Ginza"),...(direction==null?[]:[number(6,direction)]));
+  const ja=blob(1,join(blob(1,"運転見合わせ"),blob(2,"ja")));
+  const en=blob(1,join(blob(1,"Official suspension"),blob(2,"en")));
+  const alert=join(blob(1,join(number(1,start),number(2,end))),blob(5,selector),number(7,1),blob(10,join(ja,en)));
+  return join(blob(1,id),blob(5,alert));
+}
+test("GTFS alert decoder distinguishes an empty valid feed from invalid or truncated protobuf",()=>{
+  const {decode}=alertHarness();
+  assert.equal(decode(feed(),"TokyoMetro").length,0);
+  assert.throws(()=>decode(Buffer.from([]),"TokyoMetro"),/header/);
+  assert.throws(()=>decode(Buffer.from([10,13,10,3,50,46,48,16]),"TokyoMetro"),/Truncated/);
+  assert.throws(()=>decode(blob(1,join(blob(1,"2.0"),number(2,1))),"TokyoMetro"),/incremental/);
+});
+test("GTFS alerts honor exact validity windows and preserve scoped official text",()=>{
+  const {decode}=alertHarness(),now=Math.floor(Date.now()/1000);
+  const data=feed(alertEntity("future",now+120,now+600),alertEntity("expired",now-600,now-120),alertEntity("current",now-60,now+600,0));
+  const rows=decode(data,"TokyoMetro");
+  assert.equal(rows.length,1);
+  assert.equal(rows[0]["odpt:railway"],"odpt.Railway:TokyoMetro.Ginza");
+  assert.equal(rows[0]["pt:alertScope"],"direction");
+  assert.equal(rows[0]["pt:directionId"],0);
+  assert.equal(rows[0]["pt:alertHeaderTranslations"].en,"Official suspension");
+  const ev=require("../js/runinfo-evaluator.js");
+  assert.equal(ev.evaluate({structuredStatus:"Suspension",alertScope:"direction",text:"運転見合わせ"}).status,"delayed");
+});
+test("Live GTFS Alert binary observation through existing proxy",{skip:process.env.PT_LIVE_RUNINFO_AUDIT!=="1",timeout:60000},async()=>{
+  const h=alertHarness();
+  const endpoints=[["JR-East","gtfsAlert"],["Tobu","gtfsAlert"],["Keio","gtfsAlert"],["TokyoMetro","alert"],["Toei","alert"],["YokohamaMunicipal","gtfsAlert"],["TWR","alert"],["MIR","alert"],["TamaMonorail","alert"],["HakodateCity","gtfsAlert"]];
+  const results=await Promise.all(endpoints.map(async ([operator,type])=>{
+    try{
+      const resp=await fetch("https://pnupwfmgbtxqhpzsrhfn.supabase.co/functions/v1/odpt-proxy?operator="+encodeURIComponent(operator)+"&type="+type,{headers:{Origin:"https://biubiu52011.github.io",Accept:"application/x-protobuf"},signal:AbortSignal.timeout(20000)});
+      if(!resp.ok)return {operator,http:resp.status};
+      const bytes=new Uint8Array(await resp.arrayBuffer()), raw=h.read(bytes,true),header=h.nested(raw,1,true);
+      const entities=h.repeated(raw,2), alerts=entities.map(e=>h.nested(h.read(e,true),5,true)).filter(a=>Object.keys(a).length);
+      // The observation reports actual source field coverage, not assumed
+      // route matches: this isolated harness does not load the station DB.
+      const fields={},languages={};
+      alerts.forEach(a=>{Object.keys(a).forEach(k=>fields[k]=(fields[k]||0)+1);
+        for(const k of [10,11]) h.repeated(a,k).forEach(v=>h.repeated(h.read(v,true),1).forEach(t=>{const lang=h.text(h.read(t,true),2)||"und";languages[lang]=(languages[lang]||0)+1;}));});
+      const rows=h.decode(bytes,operator);
+      return {operator,http:resp.status,bytes:bytes.length,version:h.text(header,1),timestamp:h.field(header,3)||null,entities:entities.length,alerts:alerts.length,activeRows:rows.length,fields,languages};
+    }catch(e){return {operator,error:String(e.message)};}
+  }));
+  console.log("LIVE_RUNINFO_AUDIT "+JSON.stringify(results));
+  assert.equal(results.filter(r=>r.http===200&&r.version&&!r.error).length,endpoints.length);
+});

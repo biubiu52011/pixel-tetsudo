@@ -896,44 +896,57 @@
         for (var i = 0; i < bytes.length; i++) out += String.fromCharCode(bytes[i]);
         return out;
     }
-    function _gtfsReadVarint(bytes, state) {
+    function _gtfsReadVarint(bytes, state, strict) {
         var value = 0, shift = 0, b;
         while (state.i < bytes.length) {
             b = bytes[state.i++];
             value += (b & 0x7f) * Math.pow(2, shift);
             if (!(b & 0x80)) return value;
             shift += 7;
-            if (shift > 53) return value;
+            if (shift > 53) {
+                if (strict) throw new Error("GTFS varint exceeds safe range");
+                return value;
+            }
         }
+        if (strict) throw new Error("Truncated GTFS varint");
         return value;
     }
-    function _gtfsReadMessage(bytes) {
+    function _gtfsReadMessage(bytes, strict) {
         var fields = {}, state = { i: 0 };
         while (state.i < bytes.length) {
-            var tag = _gtfsReadVarint(bytes, state);
+            var tag = _gtfsReadVarint(bytes, state, strict);
             var no = Math.floor(tag / 8), wire = tag % 8, value;
-            if (!no) break;
-            if (wire === 0) value = _gtfsReadVarint(bytes, state);
+            if (!no) {
+                if (strict) throw new Error("Invalid GTFS field tag");
+                break;
+            }
+            if (wire === 0) value = _gtfsReadVarint(bytes, state, strict);
             else if (wire === 1) {
                 value = bytes.slice(state.i, state.i + 8);
                 state.i += 8;
             } else if (wire === 2) {
-                var len = _gtfsReadVarint(bytes, state);
+                var len = _gtfsReadVarint(bytes, state, strict);
+                if (strict && (!Number.isSafeInteger(len) || len > bytes.length - state.i))
+                    throw new Error("Truncated GTFS message");
                 value = bytes.slice(state.i, state.i + len);
                 state.i += len;
             } else if (wire === 5) {
                 value = bytes.slice(state.i, state.i + 4);
                 state.i += 4;
             } else {
+                if (strict) throw new Error("Unsupported GTFS wire type");
                 break;
             }
+            if (strict && state.i > bytes.length) throw new Error("Truncated GTFS field");
             _gtfsPush(fields, no, value);
         }
         return fields;
     }
-    function _gtfsNested(fields, no) {
+    function _gtfsNested(fields, no, strict) {
         var value = _gtfsField(fields, no);
-        return value && value.length != null ? _gtfsReadMessage(value) : {};
+        if (strict && value != null && !(value instanceof Uint8Array))
+            throw new Error("Invalid GTFS nested message");
+        return value && value.length != null ? _gtfsReadMessage(value, strict) : {};
     }
     function _gtfsText(fields, no) {
         var value = _gtfsField(fields, no);
@@ -1704,7 +1717,7 @@
     function _gtfsTranslatedString(fields, no) {
         var result = {}, rows = _gtfsRepeated(fields, no);
         rows.forEach(function(bytes) {
-            var translation = _gtfsReadMessage(bytes);
+            var translation = _gtfsReadMessage(bytes, true);
             var text = _gtfsText(translation, 1), language = _gtfsText(translation, 2) || "ja";
             if (text) result[language] = text;
         });
@@ -1740,29 +1753,35 @@
     function _toeiAlertSelectors(alert) {
         var selectors = [];
         _gtfsRepeated(alert, 5).forEach(function(bytes) {
-            var selector = _gtfsReadMessage(bytes), trip = _gtfsNested(selector, 4);
+            var selector = _gtfsReadMessage(bytes, true), trip = _gtfsNested(selector, 4, true);
+            var direction = _gtfsField(selector, 6);
+            if (direction == null) direction = _gtfsField(trip, 6);
             selectors.push({
-                routeId: _gtfsText(selector, 2),
+                routeId: _gtfsText(selector, 2) || _gtfsText(trip, 5),
                 tripId: _gtfsText(trip, 1),
-                stopId: _gtfsText(selector, 5)
+                stopId: _gtfsText(selector, 5),
+                directionId: direction === 0 || direction === 1 ? direction : null
             });
         });
         return selectors;
     }
     function _toeiAlertPeriods(alert) {
         return _gtfsRepeated(alert, 1).map(function(bytes) {
-            var period = _gtfsReadMessage(bytes);
+            var period = _gtfsReadMessage(bytes, true);
             return {
                 start: Number(_gtfsField(period, 1)) || 0,
                 end: Number(_gtfsField(period, 2)) || 0
             };
         });
     }
-    function _toeiAlertValidPeriod(periods) {
-        var now = Date.now() / 1000, valid = periods.filter(function(period) {
-            return (!period.end || period.end >= now - 300) && (!period.start || period.start <= now + 300);
+    function _toeiAlertValidPeriod(periods, now) {
+        if (!periods.length) return {start:0,end:0};
+        var valid = periods.filter(function(period) {
+            return (!period.start || period.start <= now) && (!period.end || period.end >= now);
         });
-        return valid[0] || periods[0] || { start: 0, end: 0 };
+        // Overlapping periods keep the longest currently active validity.
+        valid.sort(function(a,b){return (b.end || Infinity)-(a.end || Infinity);});
+        return valid[0] || null;
     }
     function _tokyoMetroGtfsLineId(routeId, tripId, stopId) {
         var raw = [routeId, tripId, stopId].map(function(v) { return String(v || ""); }).join(" ");
@@ -1794,16 +1813,26 @@
         return /TSUKUBA|つくば|MIR|(^|[^A-Z])TX([^A-Z]|$)/i.test(raw) ? "TsukubaExpress" : "";
     }
     function _decodeGtfsAlerts(buffer, operator) {
-        var feed = _gtfsReadMessage(new Uint8Array(buffer)), entities = _gtfsRepeated(feed, 2), rows = [];
-        var feedHeader = _gtfsNested(feed, 1), feedTimestamp = Number(_gtfsField(feedHeader, 3)) || 0;
+        var feed = _gtfsReadMessage(new Uint8Array(buffer), true), entities = _gtfsRepeated(feed, 2), rows = [];
+        var feedHeader = _gtfsNested(feed, 1, true), feedTimestamp = Number(_gtfsField(feedHeader, 3)) || 0;
+        if (!/^[12]\.0$/.test(_gtfsText(feedHeader, 1)))
+            throw new Error("Missing or unsupported GTFS-RT feed header");
+        // This loader replaces snapshots, so an incremental feed cannot be
+        // accepted as a complete empty or all-clear result.
+        var incrementality = _gtfsField(feedHeader, 2);
+        if (incrementality != null && incrementality !== 0)
+            throw new Error("Unsupported incremental GTFS-RT alert feed");
+        var now = Date.now() / 1000;
         entities.forEach(function(entityBytes) {
-            var entity = _gtfsReadMessage(entityBytes), alert = _gtfsNested(entity, 5);
+            var entity = _gtfsReadMessage(entityBytes, true);
+            if (_gtfsField(entity, 2) === 1) return;
+            var alert = _gtfsNested(entity, 5, true);
             if (!Object.keys(alert).length) return;
-            var entityId = _gtfsText(entity, 1), periods = _toeiAlertPeriods(alert), now = Date.now() / 1000;
-            if (periods.length && !periods.some(function(p) {
-                return (!p.start || p.start <= now + 300) && (!p.end || p.end >= now - 300);
-            })) return;
-            var period = _toeiAlertValidPeriod(periods), header = _gtfsTranslatedString(alert, 10);
+            var entityId = _gtfsText(entity, 1), periods = _toeiAlertPeriods(alert);
+            if (!entityId) throw new Error("Missing GTFS-RT alert entity ID");
+            var period = _toeiAlertValidPeriod(periods, now);
+            if (!period) return;
+            var header = _gtfsTranslatedString(alert, 10);
             var description = _gtfsTranslatedString(alert, 11), text = _gtfsAlertText(header, description);
             var cause = _gtfsAlertCause(_gtfsField(alert, 6)), effect = _gtfsAlertEffect(_gtfsField(alert, 7));
             var effectCode = Number(_gtfsField(alert, 7)) || 0;
@@ -1826,7 +1855,8 @@
                 // A trip/stop alert has no whole-line authority. If route
                 // identity cannot be resolved, never broadcast to all lines.
                 var alertScope = selector.stopId ? "stop" :
-                    (selector.tripId ? "trip" : (selector.routeId ? "line" : "unknown"));
+                    (selector.tripId ? "trip" : (selector.directionId != null ? "direction" :
+                        (selector.routeId ? "line" : "unknown")));
                 var id = "gtfs-alert:" + operator + ":" + entityId + ":" + selectorIndex;
                 rows.push({
                     "@id": id,
@@ -1839,6 +1869,7 @@
                     "pt:tripId": selector.tripId || "",
                     "pt:routeId": selector.routeId || "",
                     "pt:stopId": selector.stopId || "",
+                    "pt:directionId": selector.directionId == null ? null : selector.directionId,
                     "pt:gtfsEffectCode": effectCode,
                     "odpt:trainInformationStatus": status,
                     "odpt:trainInformationText": text,
