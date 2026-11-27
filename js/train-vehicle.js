@@ -7805,6 +7805,88 @@ function resolveEvidence(trainNumber,ctx){
   provenance:historical?"historical dated Tozai formation observation":"dated Tozai formation observation",observedDate:d};
 }
 registerEvidenceProvider({id:"tozai-dated-formations",grade:"C",resolveEvidence:resolveEvidence});
+// Historical distribution is independent of identity resolution. Count
+// distinct prior service days, not repeated trips or duplicate source rows.
+// Same weekday + calendar, 90-day window: don't mix Saturday and weekday
+// workings. A missing sample or inconsistent observation is not evidence.
+var tozaiHistorySources=null,tozaiHistoryIndex=null;
+function tozaiHistoryDateDay(d){
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return null;
+ var t=Date.parse(d+"T00:00:00Z");
+ return isFinite(t)?new Date(t).getUTCDay():null;
+}
+function tozaiHistoryData(){
+ var current=[window.VEHICLE_OPERATION_EVIDENCE,window.VEHICLE_DATED_EVIDENCE];
+ if(tozaiHistorySources&&current.every(function(x,i){return x===tozaiHistorySources[i];}))return tozaiHistoryIndex;
+ var index=Object.create(null);
+ function add(date,code,raw,cal){
+  if(!/^\d{2}S$/.test(code)||tozaiHistoryDateDay(date)===null)return;
+  var model=modelName(raw).match(/^東京メトロ(05|07|15000)系(?:[（(]10両[）)])?$/);
+  if(!model)return;
+  var day=tozaiHistoryDateDay(date);
+  // An ordinary weekday requires explicit calendar evidence; weekends
+  // are holiday workings. Never guess weekday vs Japanese public holiday.
+  var calendar=cal==="weekday"||cal==="holiday"?cal:(day===0||day===6?"holiday":"");
+  if(!calendar)return;
+  var group=index[code]||(index[code]=Object.create(null));
+  var rec=group[date]||(group[date]={calendar:calendar,models:Object.create(null)});
+  if(rec.calendar!==calendar)rec.calendar="";
+  rec.models[model[1]]=true;
+ }
+ Object.keys(rows).forEach(function(d){Object.keys(rows[d]).forEach(function(op){
+   add(d,op,rows[d][op][0],d==="2026-04-16"?"weekday":"");
+ });});
+ Object.keys(historicalTozaiRows).forEach(function(d){Object.keys(historicalTozaiRows[d]).forEach(function(op){
+   add(d,op,historicalTozaiRows[d][op][0],"");
+ });});
+ current.forEach(function(records){(Array.isArray(records)?records:[]).forEach(function(r){
+  if(!r||String(r.networkKey||"").toLowerCase()!=="tozai"||r.operator!=="TokyoMetro"||
+     !/^https:\/\/loo-ool\.com\/rail\/MT\//.test(String(r.sourceUrl||""))||
+     (r.observedDate&&r.observedDate!==r.validDate)||
+     /^timetable|family|reference/i.test(String(r.evidenceRole||"")))return;
+  add(String(r.validDate||""),String(r.operationCode||""),String(r.vehicleType||""),r.calendarType);
+ });});
+ tozaiHistorySources=current;tozaiHistoryIndex=index;return index;
+}
+function getTozaiHistoricalModelDistribution(p){
+ if(!p||String(p.displayLineId||p.positionLineId||p.lineId||"")!=="Tozai"||
+    String(p.positionLineId||p.lineId||"")!=="Tozai"||
+    p.sourceRailway!=="odpt.Railway:TokyoMetro.Tozai"||
+    (p.trainOperator&&String(p.trainOperator).replace(/^odpt\.Operator:/,"")!=="TokyoMetro")||
+    (p.trainOwner&&String(p.trainOwner).replace(/^odpt\.(?:Operator|TrainOwner):/,"")!=="TokyoMetro")||
+    (p.vehicleIdentityStatus||(p.vehicleResolution||{}).identityStatus)==="EXACT"||
+    p.vehicleArtworkConflict===true||
+    !/^[AB]\d{3,4}S(?:R)?$/i.test(String(p.trainNumber||""))||
+    !/^(weekday|holiday)$/.test(String(p.calendarType||"")))return null;
+ var date=String(p.serviceDate||""),day=tozaiHistoryDateDay(date);
+ if(day===null)return null;
+ var code=publicOp(p.trainNumber,{}),group=tozaiHistoryData()[code]||{},samples=[];
+ Object.keys(group).sort().forEach(function(d){
+  var r=group[d],ms=Object.keys(r.models);
+  if(d<date&&tozaiHistoryDateDay(d)===day&&r.calendar===p.calendarType&&ms.length===1&&
+     Date.parse(date+"T00:00:00Z")-Date.parse(d+"T00:00:00Z")<=90*86400000)samples.push(ms[0]);
+ });
+ var counts={"05":0,"07":0,"15000":0};
+ samples.forEach(function(m){counts[m]++;});
+ var sorted=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];});
+ var top=sorted[0],n=samples.length,correct=0;
+ samples.forEach(function(held){
+  var other=Object.assign({},counts);other[held]--;
+  var rank=Object.keys(other).sort(function(a,b){return other[b]-other[a];});
+  if(other[rank[0]]>other[rank[1]]&&rank[0]===held)correct++;
+ });
+ // Historical confidence is not physical identity. Never authorize an
+ // image or formation here: further independent model/batch approval is
+ // required before an inferred PNG is enabled.
+ var qualified=n>=5&&counts[top]/n>=0.8&&correct/n>=0.8;
+ return {operationCode:code,sampleDays:n,counts:counts,
+   historicalMajority:qualified?top:"",
+   holdoutCorrect:correct,holdoutTotal:n,
+   status:qualified?"historical-majority":"insufficient-evidence",
+   actualVehicleConfirmed:false,authorizesPNG:false,formationId:null};
+}
+window.TrainVehicle.getTozaiHistoricalModelDistribution=getTozaiHistoricalModelDistribution;
+
 })();
 
 (function(){"use strict";
