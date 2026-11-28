@@ -54,3 +54,14 @@ test('unrelated lines do not acquire any of these source-date rules', () => {
     {id:'any'}, {id:'historical-date',operating_dates:[]}
   ]), ['any','historical-date']);
 });
+
+test('Keio racecourse legacy rows cannot masquerade as date-specific plans', () => {
+  const rows=[{id:'old-weekday',source_path:'https://w.atwiki.jp/keio_unyo/pages/76.html'},
+    {id:'old-holiday',source_path:'https://w.atwiki.jp/keio_unyo/pages/78.html',operating_dates:null},
+    {id:'retired',operating_dates:[]},
+    {id:'race-only',operating_dates:['2026-11-30']},
+    {id:'verified-day',operating_dates:['2026-11-16']}];
+  assert.deepEqual(retained('KeioKeibajo',rows),['verified-day']);
+  assert.deepEqual(Array.from(filter(rows,'KeioKeibajo','2026-11-30'),r=>r.id),['race-only']);
+  assert.deepEqual(Array.from(filter(rows,'KeioKeibajo','2026-12-01'),r=>r.id),[]);
+});

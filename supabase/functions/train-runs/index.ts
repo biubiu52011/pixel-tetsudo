@@ -81,6 +81,11 @@ function filterDateScopedTemplates(templates: any[], lineId: string, serviceDate
     row.operating_dates.some((date: any) => String(date).slice(0, 10) === serviceDate);
   return templates.filter((row: any) => {
     const source = String(row.source_path || "");
+    // Keio Keibajo has normal weekdays, non-racing holidays, race days
+    // and exceptional weekday race service. Undated legacy rows cannot
+    // establish the applicable timetable. Retain them in SQL for audit,
+    // admit only explicitly date-scoped plans (never a guessed calendar).
+    if (lineId === "KeioKeibajo") return operatesOnDate(row);
     // A finite 2026-11 sampled diagram must not recur in another month.
     // Fukuchiyama explicit [] also retires obsolete historical sources.
     if (lineId === "Fukuchiyama" &&
