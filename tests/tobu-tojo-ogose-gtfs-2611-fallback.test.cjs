@@ -28,9 +28,9 @@ test('Tojo/Ogose GTFS source-only plans retain trip and stop integrity checks',(
 test('Existing train-runs service gates Tojo and Ogose by checksum and active service day',()=>{
   assert.match(edge,/Tojo: "Tobu\.Tojo\."/);
   assert.match(edge,/Ogose: "Tobu\.Ogose\."/);
-  assert.match(edge,/tobu_tokyogtfs_active_trip_ids/);
-  assert.match(edge,/tobuGtfsActiveTripIds\?\.has\(String\(t\.source_trip_id\)\)/);
-  assert.match(edge,/TOBU_GTFS_DATE_SCOPE_UNAVAILABLE/);
+  assert.match(edge,/tokyogtfs_active_trip_ids/);
+  assert.match(edge,/tokyoGtfsActiveTripIds\?\.has\(String\(t\.source_trip_id\)\)/);
+  assert.match(edge,/TOKYO_GTFS_DATE_SCOPE_UNAVAILABLE/);
   assert.match(migration,/WHEN 'Tojo' THEN 'Tobu\.Tojo'/);
   assert.match(migration,/WHEN 'Ogose' THEN 'Tobu\.Ogose'/);
 });

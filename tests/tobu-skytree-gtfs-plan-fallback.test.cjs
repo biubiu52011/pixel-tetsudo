@@ -26,11 +26,11 @@ test('date-scoped private RPC prevents service calendar and stale-feed leakage',
  assert.match(sql,/p_service_date BETWEEN f\.service_start AND f\.service_end/);
  assert.match(sql,/REVOKE ALL ON FUNCTION public\.tobu_skytree_active_gtfs_trip_ids\(date\)/);
  assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.tobu_skytree_active_gtfs_trip_ids\(date\)\s+TO service_role/);
- assert.match(edge,/db\.rpc\("tobu_tokyogtfs_active_trip_ids"/);
- assert.match(edge,/tobuGtfsActiveTripIds\?\.has\(String\(t\.source_trip_id\)\)/);
+ assert.match(edge,/db\.rpc\("tokyogtfs_active_trip_ids"/);
+ assert.match(edge,/tokyoGtfsActiveTripIds\?\.has\(String\(t\.source_trip_id\)\)/);
  assert.match(sharedSql,/tobu_tokyogtfs_active_trip_ids\(/);
  assert.match(sharedSql,/WHEN 'TobuSkytree' THEN 'Tobu.TobuSkytree'/);
- assert.match(edge,/t\.source_path === tobuGtfsSource/);
+ assert.match(edge,/t\.source_path === tokyoGtfsSource/);
  assert.ok(sql.includes(feed) && edge.includes(feed));
 });
 test('preserve public train number independently from unverified stock labels',()=>{

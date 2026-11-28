@@ -26,8 +26,8 @@ test('shared date-scoped RPC allowlists both Tobu routes, and stays service-role
   assert.match(sql,/p_service_date BETWEEN f\.service_start AND f\.service_end/);
   assert.match(sql,/REVOKE ALL ON FUNCTION public\.tobu_tokyogtfs_active_trip_ids\(text,date\)/);
   assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.tobu_tokyogtfs_active_trip_ids\(text,date\)\s+TO service_role/);
-  assert.match(edge,/db\.rpc\("tobu_tokyogtfs_active_trip_ids"/);
+  assert.match(edge,/db\.rpc\("tokyogtfs_active_trip_ids"/);
   assert.match(edge,/p_line_key: lineId/);
   assert.match(edge,/Noda: "Tobu\.TobuUrbanPark\."/);
-  assert.match(edge,/t\.source_path === tobuGtfsSource/);
+  assert.match(edge,/t\.source_path === tokyoGtfsSource/);
 });

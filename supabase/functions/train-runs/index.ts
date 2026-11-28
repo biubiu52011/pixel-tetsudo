@@ -272,28 +272,31 @@ async function readManualTemplateRuns(
   let selectedRevision: any = null;
   const calendars = serviceCalendars(serviceDate);
   const revisionRows = await loadRevisionRows(db,lineId);
-  // The TokyoGTFS 2026-11 Tobu source is not a day-invariant timetable:
+  // The TokyoGTFS 2026-11 source is not a day-invariant timetable:
   // require exact route, service day and feed checksum before projecting plans.
   // Train numbers and trip IDs never establish actual rolling stock.
-  const tobuGtfsTripPrefixes: Record<string,string> = {
+  const tokyoGtfsTripPrefixes: Record<string,string> = {
     TobuSkytree: "Tobu.TobuSkytree.",
     Noda: "Tobu.TobuUrbanPark.",
     Tojo: "Tobu.Tojo.",
     Ogose: "Tobu.Ogose.",
+    KeioMain: "Keio.Keio.",
+    KeioInokashira: "Keio.Inokashira.",
+    KeioTakao: "Keio.Takao.",
   };
-  const tobuGtfsTripPrefix = tobuGtfsTripPrefixes[lineId] || null;
-  const tobuGtfsSource = "gtfs-stage:TokyoGTFS:" +
+  const tokyoGtfsTripPrefix = tokyoGtfsTripPrefixes[lineId] || null;
+  const tokyoGtfsSource = "gtfs-stage:TokyoGTFS:" +
     "bb1bf605817e7a3a65caffbcd019843aa0ffd5cb3b2c9fbb0444c8b3072ff87f:" +
     lineId;
-  let tobuGtfsActiveTripIds: Set<string> | null = null;
-  if (tobuGtfsTripPrefix) {
-    const { data, error } = await db.rpc("tobu_tokyogtfs_active_trip_ids", {
+  let tokyoGtfsActiveTripIds: Set<string> | null = null;
+  if (tokyoGtfsTripPrefix) {
+    const { data, error } = await db.rpc("tokyogtfs_active_trip_ids", {
       p_line_key: lineId, p_service_date: serviceDate
     });
     if (error || !Array.isArray(data) || data.length > 2000 ||
-        data.some((row:any) => typeof row.trip_id !== "string" || !row.trip_id.startsWith(tobuGtfsTripPrefix)))
-      throw new Error("TOBU_GTFS_DATE_SCOPE_UNAVAILABLE");
-    tobuGtfsActiveTripIds = new Set(data.map((row:any) => row.trip_id));
+        data.some((row:any) => typeof row.trip_id !== "string" || !row.trip_id.startsWith(tokyoGtfsTripPrefix)))
+      throw new Error("TOKYO_GTFS_DATE_SCOPE_UNAVAILABLE");
+    tokyoGtfsActiveTripIds = new Set(data.map((row:any) => row.trip_id));
   }
   for (const calendar of calendars) {
     const revision = selectRevision(
@@ -315,13 +318,13 @@ async function readManualTemplateRuns(
       query = revision ? query.eq('revision_id',revision.id) : query.is('revision_id',null);
       return query.order("id").range(first,last);
     });
-    if (tobuGtfsTripPrefix) {
+    if (tokyoGtfsTripPrefix) {
       // Fail closed on unexpected imported revisions / source identifiers.
       // A route-wide fleet list cannot substitute for a GTFS service date.
       selected = selected.filter((t:any) =>
-        t.source_path === tobuGtfsSource &&
+        t.source_path === tokyoGtfsSource &&
         !!t.source_trip_id &&
-        tobuGtfsActiveTripIds?.has(String(t.source_trip_id)));
+        tokyoGtfsActiveTripIds?.has(String(t.source_trip_id)));
     }
     // All JR-Central CONVENTIONAL imports are date-specific. A matching
     // weekday/holiday label alone is not proof that a train operates today.
