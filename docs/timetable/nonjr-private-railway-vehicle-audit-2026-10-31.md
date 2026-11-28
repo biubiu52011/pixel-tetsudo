@@ -157,3 +157,12 @@ NewShuttle、TsukubaExpress 和千叶单轨的线路级候选规则可在新视�
 - 前端代码与数据库 SQL 已推送 `main`；未测试公网浏览器端到端时序，也未宣称已补完未知车型。
 
 下一步需对7条未接入的线路先确认合法来源；对5条已配置外部接口的线路，实际核验 API 是否能提供准确的平日/土休日出版计划。车型方面则优先寻找**按列车计划运用号、来源版本**的具体车型关联规则，尤其京急、西武、京成、相铁、东京地铁；不能凭公司只有一个候选车型就冒充列车计划车型。
+
+## 2026-11-28 私铁 P0：登记口径修复及京王来源分流
+
+### P0-01（已修复）
+生产迁移 [20261128073842_nonjr_canonical_registry_readiness_p0.sql](../../supabase/migrations/20261128073842_nonjr_canonical_registry_readiness_p0.sql) 修改原有两个审计视图，不建立平行表。登记以 canonical railway_lines 的 timetable_operator 优先、ODPT operator 兜底，保留官方身份复核优先级与源 operator。修复后 96 条非 JR 登记线路全部进入审计，13 条无同名计划、61,068 条计划模板；原来完全遗漏的 ChichibuMain、Enoshima、HojoRailway、KoizumiBranch、ShintetsuAo、UtsunomiyaLRT 均已纳入。四个审计视图均 security_invoker/security_barrier，anon/authenticated 无 SELECT，service_role 可读。未写入任何时刻或车型。
+
+### P0-02（来源已定位，运行接入尚未完成）
+已有 gtfs_stage TokyoGTFS 固定版本，Keio.Inokashira 630/548（平日/土休日）、Keio.Keio 873/802、Keio.Takao 219/222，共 3294 trips，均有非空 train_number。不得把隔离记录统计为正式运行计划。高尾线源有 2 条 Meidaimae 停站记录，必须核实直通或站点归属；京王本线部分 headsign 指向其他线路，需核对实际跨线边界，不能用本线最后站冒充全程终点。KeioKeibajo 现有 208 条（108/100）canonical plans 全为 undated_not_current_verified；不启用未经复核的 SQL fallback。官方站点/时刻表：https://www.keio.co.jp/train/station/ 。ODPT 官方 GTFS 另有 Challenge 2026 限定许可：https://ckan.odpt.org/dataset/?organization=keio&q=2026&res_format=GTFS%2FGTFS-JP 。不要与第三方 MIT 来源混用。
+后续按原有 TokyoGTFS 校验流程执行：校验站序、番号、跨线目的地、日期例外及来源有效期；经官方来源校验后，复用现有服务端读取流程和日期白名单模式。当前 train-runs 的 GTFS 白名单为 Tobu 专用，不应把京王硬塞入东武命名空间或仅切换 fallback=true。未改 API 能力配置，未部署 Edge Function，未执行公网浏览器回归。
