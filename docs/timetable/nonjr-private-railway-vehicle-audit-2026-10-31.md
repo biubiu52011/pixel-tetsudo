@@ -166,3 +166,10 @@ NewShuttle、TsukubaExpress 和千叶单轨的线路级候选规则可在新视�
 ### P0-02（来源已定位，运行接入尚未完成）
 已有 gtfs_stage TokyoGTFS 固定版本，Keio.Inokashira 630/548（平日/土休日）、Keio.Keio 873/802、Keio.Takao 219/222，共 3294 trips，均有非空 train_number。不得把隔离记录统计为正式运行计划。高尾线源有 2 条 Meidaimae 停站记录，必须核实直通或站点归属；京王本线部分 headsign 指向其他线路，需核对实际跨线边界，不能用本线最后站冒充全程终点。KeioKeibajo 现有 208 条（108/100）canonical plans 全为 undated_not_current_verified；不启用未经复核的 SQL fallback。官方站点/时刻表：https://www.keio.co.jp/train/station/ 。ODPT 官方 GTFS 另有 Challenge 2026 限定许可：https://ckan.odpt.org/dataset/?organization=keio&q=2026&res_format=GTFS%2FGTFS-JP 。不要与第三方 MIT 来源混用。
 后续按原有 TokyoGTFS 校验流程执行：校验站序、番号、跨线目的地、日期例外及来源有效期；经官方来源校验后，复用现有服务端读取流程和日期白名单模式。当前 train-runs 的 GTFS 白名单为 Tobu 专用，不应把京王硬塞入东武命名空间或仅切换 fallback=true。未改 API 能力配置，未部署 Edge Function，未执行公网浏览器回归。
+
+### P0-02 继续核验（2026-11-28）
+- TokyoGTFS checksum 固定来源共 3294 trips、40526 stop_times；KeioMain 1675 / 23460，KeioInokashira 1178 / 14035，KeioTakao 441 / 3031。按 canonical SQL 站序（含明确拼写别名 HirayamajoshiKoen/Musashinodai/ShimoKitazawa）、方向、时刻格式/先后、停站序号核查，3292 班通过结构校验。高尾线 7501、7503 SaturdayHoliday 含跨线 Meidaimae，整班不进入白名单，不改变原始来源。
+- 官方 https://www.keio.co.jp/train/station/ 与 https://transfer-train.navitime.biz/pdf/keio/timetable/20260816/1556.pdf ：井之头线吉祥寺往涩谷方向两日历班次数及首班时刻一致（平日296、土休日268，首班04:52）。仅为一站一方向抽验，PDF截图抓取失败，非逐班/全线官方核验；不能据此授权实际车型。
+- 新增共用日期 RPC [tokyogtfs_active_trip_ids](../../supabase/migrations/20261128074912_tokyogtfs_shared_date_scope_keio_p0.sql)，[权限收敛](../../supabase/migrations/20261128074950_tokyogtfs_shared_date_scope_private_stage_privileges.sql) 保留既有私有 stage 访问边界，service_role 实际执行 548 条，anon/authenticated 无权限。旧 Tobu RPC 留作线上兼容；4条东武线路在平日、土曜、祝日、超期的16组 trip_id 差集均为0。
+- [共用接入代码及测试](https://github.com/biubiu52011/pixel-tetsudo/commit/2617619105a206d120c87cf3fe705085cb832581) 已进入 main。2026-11-27/28/23 京王本线 873/802/802，井之头 630/548/548，高尾 219/220/220；超期2027-11-03三线均0。
+- 生产 train-runs v386 与仓库 main 源文件不同，尚未合并两端差异；CI [46123093017](https://github.com/biubiu52011/pixel-tetsudo/actions/runs/46123093017) 在 SendaiAirportTransit 无 rank、SendaiAirport 无 icon 等 canonical 检查提前失败，未完成新增测试。未覆盖线上函数，未导入正式京王模板，未开启 fallback。竞马场线仍待活动日及时刻版本核验。后续应先处理部署差异与 CI 阻塞，再接入校验通过的源计划；不将源候选标记为实际运行或已确认车型。
