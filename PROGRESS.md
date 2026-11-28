@@ -12,6 +12,8 @@
 - 展示：复用既有图片路径、颜色、四语名，补齐千叶1/2号线（CM）、湘南（SMR）、宇都宫（无字母前缀）四线 presentation；保留内部 code 和 Other 排序契约。千叶CM、湘南SMR参考运营商公开站号资料 https://chiba-monorail.co.jp/index.php/post-87141/ 、https://www.shonan-monorail.co.jp/transfer/pdf/transfer-st-ofuna.pdf 。
 - 验证：完整 Git Blob 源快照上逐站断言14线164条站点记录坐标/成员/顺序/四语及展示字段；原站序、其余线路对象不变。按 gen-file-data 原算法生成两组产物，更新 loader 和7页面缓存指纹，扩充既有 i18n 回归测试。容器 DNS 无法解析 github.com，未完整检出运行 Node 全套测试。无生产数据库写入、无手动 Pages/Edge 部署。CI及生产回读未验收；函馆坐标、时刻表版本与实际实时覆盖仍待处理。
 
+- 同批继续（第三部门未接入线路）：回读当前 canonical 283线／4292个站点坐标记录，TX及ニューシャトル17个原缺失坐标和站序已修复，compact 与 file.js 按原生成算法核对一致。生产只读复核大洗鹿島／湊／いすみ／真岡／わたらせ渓谷5个线路键，正式线路注册、站表及模板均0，既有2611参考号段合计18、实车确认0。取得[5线74站的来源及身份候选审计数据](data/audits/third-sector-topology-source-20261128.json)，按运营商公开站序与国土交通省N02 2024第三方转换坐标逐站唯一匹配，保留同名及距离候选而非自动合并。大洗鹿島线物理边界止于鹿島サッカースタジアム，鹿島神宮属JR直通，球场站临时营业；いすみ全线停运、代行巴士、2027年秋预计恢复，不启用历史列车计划；真岡SL替代日历、わたらせ11月30日版本截止须独立处理。仅新增来源审计快照并更新本条，不修改canonical、生成产物、运行时或生产库；完整检出仍因DNS不可用，未运行全量测试或部署。
+
 ### TOZAI-KT-NUMBER-PLANNED-ART-20261127 — 东西线 K/T 番号计划图映射（LOCAL-VERIFIED）
 
 - 现场：生产页面的 SQL 推定列车全部显示灰点；只读接口返回 `partial=true`、589 条 `date_unverified_runs`、0 条 `date_verified_runs`，因此本批不把这些记录声明成现行时刻表或实际编成。

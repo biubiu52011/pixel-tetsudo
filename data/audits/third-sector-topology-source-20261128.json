@@ -1,0 +1,772 @@
+{
+  "as_of": "2026-11-28",
+  "status": "review_only_not_runtime",
+  "canonical_commit": "c56034666782bc3bef36d04a27ca6366ae5fe68e",
+  "canonical_blob_sha": "71fd7c75196d5d1818bff7df02ddc8da27f04605",
+  "coordinates_source": {
+    "original": "国土交通省 国土数値情報 鉄道データ（N02）令和6年",
+    "original_url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2024.html",
+    "derived_url": "https://github.com/antfu/mlit-json/blob/main/data/stations.json",
+    "derived_blob_sha": "d1ae554ae4b907867981323a955042c4741a8e69",
+    "note": "第三方转换后的站点代表坐标；非官方站序，站序按各运营商资料重新排列，不声明测绘精度。"
+  },
+  "guard": "只读审计资料，不是 canonical 输入、有效时刻表或实际运营/编成证据。同名500米候选须人工审核，不自动合并。",
+  "lines": [
+    {
+      "line_key": "OaraiKashima",
+      "operator_ja": "鹿島臨海鉄道",
+      "line_name_ja": "大洗鹿島線",
+      "official_source_url": "https://www.rintetsu.co.jp/timetable",
+      "published_timetable_from": "2026-03-14",
+      "published_timetable_to": null,
+      "rail_service_suspended": false,
+      "registered_in_production_sql": false,
+      "sql_station_rows": 0,
+      "sql_timetable_templates": 0,
+      "sql_reference_ranges_2611": 8,
+      "actual_vehicle_confirmed": 0,
+      "notes": "物理线路终点鹿島サッカースタジアム；鹿島神宮为JR鹿島線直通区间，不计为本线物理站；球场站临时营业，需官方日期例外。",
+      "stations": [
+        {
+          "index": 0,
+          "name_ja": "水戸",
+          "lat": 36.370887,
+          "lng": 140.477563,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Mito",
+              "distance_m": 32,
+              "line_ids": [
+                "Suigun",
+                "JobanMain"
+              ]
+            }
+          ],
+          "near_candidate_ids": [
+            "Mito"
+          ]
+        },
+        {
+          "index": 1,
+          "name_ja": "東水戸",
+          "lat": 36.361907,
+          "lng": 140.515783,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 2,
+          "name_ja": "常澄",
+          "lat": 36.34071,
+          "lng": 140.558915,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 3,
+          "name_ja": "大洗",
+          "lat": 36.315365,
+          "lng": 140.562665,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 4,
+          "name_ja": "涸沼",
+          "lat": 36.266123,
+          "lng": 140.527413,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 5,
+          "name_ja": "鹿島旭",
+          "lat": 36.224495,
+          "lng": 140.51264,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 6,
+          "name_ja": "徳宿",
+          "lat": 36.19034,
+          "lng": 140.514475,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 7,
+          "name_ja": "新鉾田",
+          "lat": 36.152665,
+          "lng": 140.520395,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 8,
+          "name_ja": "北浦湖畔",
+          "lat": 36.120465,
+          "lng": 140.536815,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 9,
+          "name_ja": "大洋",
+          "lat": 36.108295,
+          "lng": 140.576465,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 10,
+          "name_ja": "鹿島灘",
+          "lat": 36.075575,
+          "lng": 140.596815,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 11,
+          "name_ja": "鹿島大野",
+          "lat": 36.050715,
+          "lng": 140.60986,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 12,
+          "name_ja": "長者ヶ浜潮騒はまなす公園前",
+          "lat": 36.03129,
+          "lng": 140.618855,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 13,
+          "name_ja": "荒野台",
+          "lat": 36.016925,
+          "lng": 140.625215,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 14,
+          "name_ja": "鹿島サッカースタジアム",
+          "lat": 35.993065,
+          "lng": 140.63591,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Kashima-Soccer-Stadium",
+              "distance_m": 1,
+              "line_ids": [
+                "Kashima"
+              ]
+            }
+          ],
+          "near_candidate_ids": [
+            "Kashima-Soccer-Stadium"
+          ]
+        }
+      ]
+    },
+    {
+      "line_key": "HitachinakaMinato",
+      "operator_ja": "ひたちなか海浜鉄道",
+      "line_name_ja": "湊線",
+      "official_source_url": "https://hitachinaka-rail.co.jp/timetable/",
+      "published_timetable_from": "2026-03-14",
+      "published_timetable_to": null,
+      "rail_service_suspended": false,
+      "registered_in_production_sql": false,
+      "sql_station_rows": 0,
+      "sql_timetable_templates": 0,
+      "sql_reference_ranges_2611": 2,
+      "actual_vehicle_confirmed": 0,
+      "notes": "现有线路图片 images/鉄道/ひたちなか海浜鉄道/湊線.png；尚未导入时刻表。改点公告 https://www.hitachinaka-rail.co.jp/blog/2026/02/17/9301.html",
+      "stations": [
+        {
+          "index": 0,
+          "name_ja": "勝田",
+          "lat": 36.393267,
+          "lng": 140.524367,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Katsuta",
+              "distance_m": 91,
+              "line_ids": [
+                "JobanMain"
+              ]
+            }
+          ],
+          "near_candidate_ids": [
+            "Katsuta"
+          ]
+        },
+        {
+          "index": 1,
+          "name_ja": "工機前",
+          "lat": 36.388127,
+          "lng": 140.52465,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 2,
+          "name_ja": "金上",
+          "lat": 36.382426,
+          "lng": 140.533925,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 3,
+          "name_ja": "中根",
+          "lat": 36.367452,
+          "lng": 140.562095,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 4,
+          "name_ja": "高田の鉄橋",
+          "lat": 36.352491,
+          "lng": 140.580203,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 5,
+          "name_ja": "那珂湊",
+          "lat": 36.345535,
+          "lng": 140.587663,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 6,
+          "name_ja": "殿山",
+          "lat": 36.349435,
+          "lng": 140.601012,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 7,
+          "name_ja": "平磯",
+          "lat": 36.357515,
+          "lng": 140.607584,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 8,
+          "name_ja": "美乃浜学園",
+          "lat": 36.372109,
+          "lng": 140.616912,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 9,
+          "name_ja": "磯崎",
+          "lat": 36.37775,
+          "lng": 140.617934,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 10,
+          "name_ja": "阿字ヶ浦",
+          "lat": 36.383434,
+          "lng": 140.612345,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        }
+      ]
+    },
+    {
+      "line_key": "Isumi",
+      "operator_ja": "いすみ鉄道",
+      "line_name_ja": "いすみ線",
+      "official_source_url": "https://isumirail.co.jp/rosenzu-2",
+      "published_timetable_from": null,
+      "published_timetable_to": null,
+      "rail_service_suspended": true,
+      "registered_in_production_sql": false,
+      "sql_station_rows": 0,
+      "sql_timetable_templates": 0,
+      "sql_reference_ranges_2611": 1,
+      "actual_vehicle_confirmed": 0,
+      "notes": "全线铁路停运，代行巴士，官方预计2027年秋恢复；不得导入历史铁路时刻作为当前列车。https://isumirail.co.jp/unkoualert",
+      "stations": [
+        {
+          "index": 0,
+          "name_ja": "大原",
+          "lat": 35.250847,
+          "lng": 140.391033,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Ohara",
+              "distance_m": 18,
+              "line_ids": [
+                "Sotobo"
+              ]
+            }
+          ],
+          "near_candidate_ids": [
+            "Ohara"
+          ]
+        },
+        {
+          "index": 1,
+          "name_ja": "西大原",
+          "lat": 35.260515,
+          "lng": 140.377975,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 2,
+          "name_ja": "上総東",
+          "lat": 35.26329,
+          "lng": 140.344905,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 3,
+          "name_ja": "新田野",
+          "lat": 35.27599,
+          "lng": 140.328525,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 4,
+          "name_ja": "国吉",
+          "lat": 35.280425,
+          "lng": 140.31399,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 5,
+          "name_ja": "上総中川",
+          "lat": 35.282705,
+          "lng": 140.28056,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 6,
+          "name_ja": "城見ヶ丘",
+          "lat": 35.29172,
+          "lng": 140.252465,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 7,
+          "name_ja": "大多喜",
+          "lat": 35.286535,
+          "lng": 140.24384,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 8,
+          "name_ja": "小谷松",
+          "lat": 35.268975,
+          "lng": 140.25104,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 9,
+          "name_ja": "東総元",
+          "lat": 35.259445,
+          "lng": 140.24763,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 10,
+          "name_ja": "久我原",
+          "lat": 35.25022,
+          "lng": 140.247665,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 11,
+          "name_ja": "総元",
+          "lat": 35.24057,
+          "lng": 140.24036,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 12,
+          "name_ja": "西畑",
+          "lat": 35.250527,
+          "lng": 140.215177,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 13,
+          "name_ja": "上総中野",
+          "lat": 35.25004,
+          "lng": 140.199595,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        }
+      ]
+    },
+    {
+      "line_key": "Moka",
+      "operator_ja": "真岡鐵道",
+      "line_name_ja": "真岡線",
+      "official_source_url": "https://www.moka-railway.co.jp/timetable/",
+      "published_timetable_from": "2023-03-18",
+      "published_timetable_to": null,
+      "rail_service_suspended": false,
+      "registered_in_production_sql": false,
+      "sql_station_rows": 0,
+      "sql_timetable_templates": 0,
+      "sql_reference_ranges_2611": 1,
+      "actual_vehicle_confirmed": 0,
+      "notes": "官方页面注明SL及临时列车运行日的2130、131部分区间运休与6103替代，需运行日历，不能每天套用。",
+      "stations": [
+        {
+          "index": 0,
+          "name_ja": "下館",
+          "lat": 36.304125,
+          "lng": 139.978185,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 1,
+          "name_ja": "下館二高前",
+          "lat": 36.319325,
+          "lng": 139.97208,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 2,
+          "name_ja": "折本",
+          "lat": 36.340635,
+          "lng": 139.971185,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 3,
+          "name_ja": "ひぐち",
+          "lat": 36.358475,
+          "lng": 139.970375,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 4,
+          "name_ja": "久下田",
+          "lat": 36.376,
+          "lng": 139.97163,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 5,
+          "name_ja": "寺内",
+          "lat": 36.4109,
+          "lng": 139.980115,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 6,
+          "name_ja": "真岡",
+          "lat": 36.439135,
+          "lng": 140.002625,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 7,
+          "name_ja": "北真岡",
+          "lat": 36.44907,
+          "lng": 140.014015,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 8,
+          "name_ja": "西田井",
+          "lat": 36.45333,
+          "lng": 140.048645,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 9,
+          "name_ja": "北山",
+          "lat": 36.45565,
+          "lng": 140.067495,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 10,
+          "name_ja": "益子",
+          "lat": 36.462855,
+          "lng": 140.088535,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 11,
+          "name_ja": "七井",
+          "lat": 36.491795,
+          "lng": 140.094335,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 12,
+          "name_ja": "多田羅",
+          "lat": 36.51598,
+          "lng": 140.089845,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 13,
+          "name_ja": "市塙",
+          "lat": 36.53812,
+          "lng": 140.110195,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 14,
+          "name_ja": "笹原田",
+          "lat": 36.53396,
+          "lng": 140.14474,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 15,
+          "name_ja": "天矢場",
+          "lat": 36.52932,
+          "lng": 140.15601,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 16,
+          "name_ja": "茂木",
+          "lat": 36.530815,
+          "lng": 140.181425,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        }
+      ]
+    },
+    {
+      "line_key": "WataraseKeikoku",
+      "operator_ja": "わたらせ渓谷鐵道",
+      "line_name_ja": "わたらせ渓谷線",
+      "official_source_url": "https://watetsu.com/rail-info/time-table.php",
+      "published_timetable_from": "2026-04-20",
+      "published_timetable_to": "2026-11-30",
+      "rail_service_suspended": false,
+      "registered_in_production_sql": false,
+      "sql_station_rows": 0,
+      "sql_timetable_templates": 0,
+      "sql_reference_ranges_2611": 6,
+      "actual_vehicle_confirmed": 0,
+      "notes": "已公布时刻表有效至11月30日；12月起须独立核验新版本；观光列车有特定运营日。",
+      "stations": [
+        {
+          "index": 0,
+          "name_ja": "桐生",
+          "lat": 36.411097,
+          "lng": 139.333253,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 1,
+          "name_ja": "下新田",
+          "lat": 36.407777,
+          "lng": 139.315087,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 2,
+          "name_ja": "相老",
+          "lat": 36.410307,
+          "lng": 139.304407,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Aioi",
+              "distance_m": 57,
+              "line_ids": [
+                "Kiryu"
+              ]
+            }
+          ],
+          "near_candidate_ids": [
+            "Aioi"
+          ]
+        },
+        {
+          "index": 3,
+          "name_ja": "運動公園",
+          "lat": 36.42041,
+          "lng": 139.30086,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Undokoen-Miyazaki",
+              "distance_m": 885481,
+              "line_ids": [
+                "Nichinan"
+              ]
+            }
+          ],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 4,
+          "name_ja": "大間々",
+          "lat": 36.434615,
+          "lng": 139.27755,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 5,
+          "name_ja": "上神梅",
+          "lat": 36.47007,
+          "lng": 139.257725,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 6,
+          "name_ja": "本宿",
+          "lat": 36.481425,
+          "lng": 139.259345,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 7,
+          "name_ja": "水沼",
+          "lat": 36.49985,
+          "lng": 139.277595,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 8,
+          "name_ja": "花輪",
+          "lat": 36.52083,
+          "lng": 139.3077,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 9,
+          "name_ja": "中野",
+          "lat": 36.524275,
+          "lng": 139.317165,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Nakano",
+              "distance_m": 96192,
+              "line_ids": [
+                "ChuoRapid",
+                "Tozai",
+                "ChuoSobuLocal"
+              ]
+            }
+          ],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 10,
+          "name_ja": "小中",
+          "lat": 36.535655,
+          "lng": 139.337795,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 11,
+          "name_ja": "神戸",
+          "lat": 36.537505,
+          "lng": 139.356565,
+          "canonical_same_name_candidates": [
+            {
+              "id": "Kobe",
+              "distance_m": 430489,
+              "line_ids": [
+                "TokaidoKansai",
+                "SanyoMain",
+                "SensekiTohoku"
+              ]
+            }
+          ],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 12,
+          "name_ja": "沢入",
+          "lat": 36.58063,
+          "lng": 139.396285,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 13,
+          "name_ja": "原向",
+          "lat": 36.61731,
+          "lng": 139.42053,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 14,
+          "name_ja": "通洞",
+          "lat": 36.636865,
+          "lng": 139.43965,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 15,
+          "name_ja": "足尾",
+          "lat": 36.641915,
+          "lng": 139.447775,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        },
+        {
+          "index": 16,
+          "name_ja": "間藤",
+          "lat": 36.65354,
+          "lng": 139.45009,
+          "canonical_same_name_candidates": [],
+          "near_candidate_ids": []
+        }
+      ]
+    }
+  ]
+}
