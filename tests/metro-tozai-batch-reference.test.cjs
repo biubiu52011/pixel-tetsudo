@@ -130,6 +130,7 @@ test('东西线 SQL 计划按 K/T 列车番号显示计划图，S/SR 无车型�
     models:['東京メトロ05系','東京メトロ07系','東京メトロ15000系']
    }}},'Tozai','zh');
   assert.match(label,/東京メトロ05系 \/ 東京メトロ07系 \/ 東京メトロ15000系/);
+  assert.doesNotMatch(label,/历史同星期配车统计（非当天实车）：0日/);
  }
  for(const trainNumber of ['A1854T','A1803K']){
   const p=plannedPosition(trainNumber,'2026-12-01');

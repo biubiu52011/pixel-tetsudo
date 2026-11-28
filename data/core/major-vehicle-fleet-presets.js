@@ -34,6 +34,9 @@
   // Carefully scoped to operator-owned principal stock, not a promise that
   // *every* train on the line is operated by these families.
   var rows = [
+    // SAT owns SAT721; JR-East through stock has a separate owner scope.
+    {id:'sendai-airport-sat', operator:'SendaiAirportTransit', lineIds:['SendaiAirport'],
+      models:['SAT721系'], sourceUrl:'https://www.senat.co.jp/question/qa03'},
     {id:'jr-yamanote', operator:'JR-East', lineIds:['Yamanote'], serviceTypes:['Local'],
       models:['E235系0番台（山手線）'], sourceUrl:JR_E235},
     {id:'jr-keihin-tohoku', operator:'JR-East', lineIds:['KeihinTohoku'],
@@ -667,6 +670,8 @@
   // when the upstream timetable explicitly supplies a different trainOwner.
   // Network presence or a suffix on the public train number alone is not proof.
   var throughRows = [
+    {operator:'SendaiAirportTransit', lineIds:['SendaiAirport'], vehicleOwner:'JR-East',
+      models:['E721系500番台'], sourceUrl:'https://www.jreast.co.jp/train/local/e721.html'},
     // Only a source-provided trainOwner admits cross-company rolling stock.
     // Route-level candidates cannot identify an actual run, formation or PNG.
     // Tobu 50070/9000/9050 is not eligible on the Seibu Yurakucho corridor.

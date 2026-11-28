@@ -1687,7 +1687,9 @@ function _isTrainArtworkFailureActive(trainUid, p) {
         (!markerSpec || markerSpec.kind !== "vehicle")) {
       var history = window.TrainVehicle.getTozaiHistoricalModelDistribution(
         Object.assign({},p,{displayLineId:lineId}));
-      if (history) {
+      // Zero observations are not an assignment distribution. Retain the
+      // existing candidate-fleet label rather than masking it with zero counts.
+      if (history && Number(history.sampleDays) > 0) {
         var historyLang=String(lang||"ja").toLowerCase();
         var historyPrefix=/^zh/.test(historyLang)?"历史同星期配车统计（非当天实车）：":
           historyLang==="en"?"Historical same-weekday assignments (not today's stock): ":

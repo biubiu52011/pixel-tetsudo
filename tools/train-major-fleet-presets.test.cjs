@@ -497,3 +497,12 @@ const modelUnknown=run('Tojo','Tobu','LimitedExpress');
 assert.equal(modelUnknown.identityStatus,'UNKNOWN');
 assert.ok(!modelUnknown.vehiclePlan?.models?.length);
 console.log('major fleet presets: PASS ('+entries.length+' operator-owned groups, '+seen.size+' line scopes)');
+
+// Airport line and the JR through owner must not inherit one another's stock.
+const sat=presets.lookup('SendaiAirport','SendaiAirportTransit','odpt.TrainType:SendaiAirportTransit.Local');
+assert.deepEqual(Array.from(sat.vehicleCandidates),['SAT721系']);
+assert.equal(sat.planOverride,false);
+const satJr=presets.lookup('SendaiAirport','SendaiAirportTransit','odpt.TrainType:SendaiAirportTransit.Local',{trainOwner:'JR-East'});
+assert.deepEqual(Array.from(satJr.vehicleCandidates),['E721系500番台']);
+assert.equal(satJr.planOverride,false);
+assert.ok(!satJr.iconPath && !satJr.vehicleType);
