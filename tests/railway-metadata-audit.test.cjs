@@ -27,7 +27,7 @@ test('review-locked artwork stays quarantined from automatic SQL model-artwork s
   }
 });
 test('verified static routes have a full SQL station list without fake timetable API coverage', () => {
-  for (const [lineId, count] of [['Enoshima',15],['UtsunomiyaLRT',19],['ChichibuMain',37]]) {
+  for (const [lineId, count] of [['Enoshima',15],['UtsunomiyaLRT',19],['ChichibuMain',37],['SendaiAirport',4]]) {
     const row = snapshot.railway_lines.find(x => x.id === lineId);
     assert.ok(row, lineId);
     assert.equal(row.timetable_api_enabled, false, lineId);

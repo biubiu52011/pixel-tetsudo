@@ -2,7 +2,7 @@
   "schema_version": 1,
   "snapshot_date": "2026-11-16",
   "project_name": "像素铁道",
-  "source": "Supabase read-only SQL through connected project; static audit fixture, NOT live CI connection",
+  "source": "Supabase read-only SQL through connected project; static audit fixture, NOT live CI connection; SendaiAirport registry and station order refreshed by read-only SQL on 2026-11-28; other historical rows unchanged",
   "railway_lines": [
     {
       "id": "Agatsuma",
@@ -404,6 +404,13 @@
       "sql_planned_fallback_enabled": true
     },
     {
+      "id": "JRTozai",
+      "timetable_operator": "JR-West",
+      "timetable_api_enabled": false,
+      "realtime_position_api_enabled": false,
+      "sql_planned_fallback_enabled": true
+    },
+    {
       "id": "Joban",
       "timetable_operator": "JR-East",
       "timetable_api_enabled": true,
@@ -434,13 +441,6 @@
     {
       "id": "JoetsuShinkansen",
       "timetable_operator": "JR-East",
-      "timetable_api_enabled": false,
-      "realtime_position_api_enabled": false,
-      "sql_planned_fallback_enabled": true
-    },
-    {
-      "id": "JRTozai",
-      "timetable_operator": "JR-West",
       "timetable_api_enabled": false,
       "realtime_position_api_enabled": false,
       "sql_planned_fallback_enabled": true
@@ -1216,13 +1216,6 @@
       "sql_planned_fallback_enabled": true
     },
     {
-      "id": "Seibu_Sayama",
-      "timetable_operator": "Seibu",
-      "timetable_api_enabled": false,
-      "realtime_position_api_enabled": false,
-      "sql_planned_fallback_enabled": true
-    },
-    {
       "id": "SeibuChichibu",
       "timetable_operator": "Seibu",
       "timetable_api_enabled": false,
@@ -1270,6 +1263,20 @@
       "timetable_api_enabled": false,
       "realtime_position_api_enabled": false,
       "sql_planned_fallback_enabled": true
+    },
+    {
+      "id": "Seibu_Sayama",
+      "timetable_operator": "Seibu",
+      "timetable_api_enabled": false,
+      "realtime_position_api_enabled": false,
+      "sql_planned_fallback_enabled": true
+    },
+    {
+      "id": "SendaiAirport",
+      "timetable_operator": "SendaiAirportTransit",
+      "timetable_api_enabled": false,
+      "realtime_position_api_enabled": false,
+      "sql_planned_fallback_enabled": false
     },
     {
       "id": "Senseki",
@@ -1447,13 +1454,6 @@
       "sql_planned_fallback_enabled": true
     },
     {
-      "id": "Tobu_Kameido",
-      "timetable_operator": "Tobu",
-      "timetable_api_enabled": false,
-      "realtime_position_api_enabled": false,
-      "sql_planned_fallback_enabled": true
-    },
-    {
       "id": "TobuIsesaki",
       "timetable_operator": "Tobu",
       "timetable_api_enabled": true,
@@ -1476,6 +1476,13 @@
     },
     {
       "id": "TobuUtsunomiya",
+      "timetable_operator": "Tobu",
+      "timetable_api_enabled": false,
+      "realtime_position_api_enabled": false,
+      "sql_planned_fallback_enabled": true
+    },
+    {
+      "id": "Tobu_Kameido",
       "timetable_operator": "Tobu",
       "timetable_api_enabled": false,
       "realtime_position_api_enabled": false,
@@ -7709,6 +7716,12 @@
       "Shijo-mae",
       "Shin-toyosu",
       "Toyosu"
+    ],
+    "SendaiAirport": [
+      "Natori",
+      "Morisekinoshita",
+      "Mitazono",
+      "Sendai-Airport"
     ]
   },
   "vehicle_image_assets": [

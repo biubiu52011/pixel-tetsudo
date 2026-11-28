@@ -68,7 +68,7 @@
       "KyotoMunicipal", "KobeMunicipal", "SapporoMunicipal", "SendaiMunicipal", "FukuokaMunicipal",
       // Third-sector and Other rail
       "MinatoMirai", "Rinkai", "TsukubaExpress", "ToyoRapid", "SaitamaRapidRailway",
-      "HojoRailway", "TWR", "MIR", "Yurikamome", "TamaMonorail",
+      "HojoRailway", "SendaiAirportTransit", "TWR", "MIR", "Yurikamome", "TamaMonorail",
       "TokyoMonorail", "SaitamaNewUrbanTransit", "ChibaUrbanMonorail", "ShonanMonorail", "UtsunomiyaLightRail",
       "HakodateCity",
       // Private Rail
