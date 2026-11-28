@@ -16813,6 +16813,18 @@
     "Shin-Seibijo": {
       "lat": 35.5427192,
       "lng": 139.7871116
+    },
+    "Morisekinoshita": {
+      "lat": 38.165349,
+      "lng": 140.896127
+    },
+    "Mitazono": {
+      "lat": 38.159698,
+      "lng": 140.917281
+    },
+    "Sendai-Airport": {
+      "lat": 38.137292,
+      "lng": 140.929435
     }
   },
   "lines": {
@@ -37004,7 +37016,8 @@
       ],
       "durations": [],
       "throughServices": [
-        "Kamaishi"
+        "Kamaishi",
+        "SendaiAirport"
       ],
       "transferStations": [
         {
@@ -37120,6 +37133,12 @@
           "lineId": "JobanMain",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Natori",
+          "lineId": "SendaiAirport",
+          "type": "in/out",
+          "note": "仙台空港アクセス線直通は個別列車の時刻表に従う"
         }
       ],
       "nameZh": "东北本线",
@@ -42263,6 +42282,12 @@
           "lineId": "TohokuMain",
           "type": "in",
           "note": ""
+        },
+        {
+          "station": "Natori",
+          "lineId": "SendaiAirport",
+          "type": "in",
+          "note": "名取駅で乗換"
         }
       ],
       "nameZh": "常磐线",
@@ -54510,6 +54535,66 @@
       },
       "timetableDataStatus": "station_topology_only",
       "sourceQuality": "official_station_order_mlit2024_coords"
+    },
+    "SendaiAirport": {
+      "name": "SendaiAirport",
+      "nameJa": "仙台空港線",
+      "nameZh": "仙台机场线",
+      "nameEn": "Sendai Airport Line",
+      "nameKo": "센다이공항선",
+      "code": null,
+      "color": "#0950A2",
+      "operator": "SendaiAirportTransit",
+      "region": "Miyagi Area",
+      "type": "straight",
+      "image": "",
+      "durationTotalMin": 11,
+      "branchOf": null,
+      "stations": [
+        "Natori",
+        "Morisekinoshita",
+        "Mitazono",
+        "Sendai-Airport"
+      ],
+      "durations": [
+        3,
+        3,
+        5
+      ],
+      "throughServices": [
+        "TohokuMain"
+      ],
+      "transferStations": [
+        {
+          "station": "Natori",
+          "lineId": "TohokuMain",
+          "type": "in/out",
+          "note": "仙台空港アクセス線は名取からJR東北本線へ直通（個別列車の時刻表に従う）"
+        },
+        {
+          "station": "Natori",
+          "lineId": "JobanMain",
+          "type": "in",
+          "note": "名取駅で乗換"
+        }
+      ],
+      "sourceQuality": "topology_verified_times_approximate",
+      "timetableDataStatus": "station_topology_only",
+      "durationReference": "https://www.senat.co.jp/timetable/natori/",
+      "presentation": {
+        "nameJa": "仙台空港線",
+        "nameZh": "仙台机场线",
+        "nameEn": "Sendai Airport Line",
+        "nameKo": "센다이공항선",
+        "color": "#0950A2",
+        "icon": "",
+        "code": "",
+        "order": 1,
+        "lineIds": [
+          "SendaiAirport"
+        ],
+        "operatorGroup": "SENDAI_AIRPORT_TRANSIT"
+      }
     }
   },
   "name_map": {
@@ -58127,7 +58212,10 @@
     "武州中川": "CR-Bushu-Nakagawa",
     "武州日野": "CR-Bushu-Hino",
     "白久": "CR-Shiroku",
-    "三峰口": "CR-Mitsumineguchi"
+    "三峰口": "CR-Mitsumineguchi",
+    "杜せきのした": "Morisekinoshita",
+    "美田園": "Mitazono",
+    "仙台空港": "Sendai-Airport"
   },
   "stationLines": {
     "Omiya": [
@@ -64034,7 +64122,8 @@
     ],
     "Natori": [
       "JobanMain",
-      "TohokuMain"
+      "TohokuMain",
+      "SendaiAirport"
     ],
     "Minami-Sendai": [
       "JobanMain",
@@ -72550,6 +72639,15 @@
     ],
     "Urawa-Misono": [
       "SaitamaRapid"
+    ],
+    "Morisekinoshita": [
+      "SendaiAirport"
+    ],
+    "Mitazono": [
+      "SendaiAirport"
+    ],
+    "Sendai-Airport": [
+      "SendaiAirport"
     ]
   },
   "lineStationOrder": {
@@ -78492,6 +78590,12 @@
       "Tozuka-Angyo": 5,
       "Higashi-Kawaguchi": 6,
       "Urawa-Misono": 7
+    },
+    "SendaiAirport": {
+      "Natori": 0,
+      "Morisekinoshita": 1,
+      "Mitazono": 2,
+      "Sendai-Airport": 3
     }
   },
   "line_types": {

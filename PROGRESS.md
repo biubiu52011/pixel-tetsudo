@@ -4,6 +4,11 @@
 
 # Pixel Tetsudo 工程进度
 
+### TS-08 — 都市型第三部门铁路（PARTIAL）
+
+- 仙台空港铁道物理线路名取—仙台空港4站，复用名取、新增3站及四语，名取—仙台属于JR东北本线直通。官方站序及时间参考 https://www.senat.co.jp/timetable/natori/ 、https://www.senat.co.jp/timetable/sendaiair/ ；出资者 https://www.senat.co.jp/company/ 。新增坐标参考 https://www.rosenzu.net/ （仙台空港線）；保留名取原坐标。蓝色暂用展示色，未确认官方符号或PNG不伪造。区间分钟仅静态参考，不是现行时刻表。
+- 生成 canonical、compact、file.js；四语运营商名与拓扑回归断言。SQL注册脚本仅拓扑，不开启计划/实时能力；SAT721及JR E721-500仅候选不绑定实际车次。其余都市型线路、正式时刻表、完整CI与生产验收待核验。
+
 ### OTHER-RAILWAY-TOPOLOGY-20261128 — 其他铁路既有14线静态数据纠正（PARTIAL）
 
 - 现有 Other 展示组16线，非全国第三部门铁道名录。生产只读对账：14线已登记且站序与 canonical 一致；12线有计划模板，仅ゆりかもめ991条有来源修订日，均缺 revision_id。14线实时 API 开关关闭。函馆2/5未登记，23个不同停留场坐标为 null，留待独立核验。

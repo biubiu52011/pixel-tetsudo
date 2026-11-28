@@ -67,3 +67,22 @@ test('Other 展示组已登记14线的车站坐标、顺序、反向索引及展
   assert.equal(railway.lines.ShonanMonorail.presentation.code, 'SMR');
   assert.equal(railway.lines.UtsunomiyaLRT.presentation.code, '');
 });
+
+
+test('Sendai Airport physical boundary and reciprocal transfer', () => {
+  const d=JSON.parse(read('data/core/railway_data.json'));
+  const i=JSON.parse(read('data/core/station_i18n.json'));
+  const l=d.lines.SendaiAirport;
+  assert.deepEqual(l.stations,['Natori','Morisekinoshita','Mitazono','Sendai-Airport']);
+  assert.equal(l.operator,'SendaiAirportTransit');
+  assert.equal(l.timetableDataStatus,'station_topology_only');
+  assert.equal(l.presentation.code,'');
+  for (const [index,s] of l.stations.entries()) {
+    assert.ok(Number.isFinite(d.stations[s].lat)&&Number.isFinite(d.stations[s].lng));
+    assert.ok(d.stationLines[s].includes('SendaiAirport'));
+    assert.equal(d.lineStationOrder.SendaiAirport[s],index);
+    for(const lang of ['ja','zh','ko','en']) assert.ok(i[s][lang]);
+  }
+  assert.ok(d.lines.TohokuMain.throughServices.includes('SendaiAirport'));
+  assert.ok(d.lines.TohokuMain.transferStations.some(x=>x.station==='Natori'&&x.lineId==='SendaiAirport'));
+});
