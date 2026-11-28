@@ -19,3 +19,11 @@ test('Keio and Tobu use one exact feed/date/route gate, not realtime evidence',(
  assert.ok(acl.includes('TO service_role'));
  assert.ok(!sql.includes('UPDATE public.railway_lines'));
 });
+
+test('Keio source spelling aliases are in the shared runtime config',()=>{
+ const cfg=fs.readFileSync('data/core/runtime-config.js','utf8');
+ const bundle=fs.readFileSync('data/core/data-config-bundle.js','utf8');
+ for(const s of ['"HirayamajoshiKoen": "Hiyamajo-koen"','"Musashinodai": "Musashidai"']){
+  assert.ok(cfg.includes(s)); assert.ok(bundle.includes(s));
+ }
+});

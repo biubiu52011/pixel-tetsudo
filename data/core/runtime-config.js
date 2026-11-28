@@ -372,6 +372,8 @@
     // Komi is a legacy spelling of the Koumi station identifier.
     "Komii": { "Misato": "Misato-Koumi", "Komi": "Koumi" },
     "Tojo": { "Oyama": "Ooyama" },
+    // Keio source URNs and canonical station IDs differ in these spellings.
+    "KeioMain": { "HirayamajoshiKoen": "Hiyamajo-koen", "Musashinodai": "Musashidai" },
     "Ogose": { "Kawakado": "Kawa_kaku" },
     // JR Kyushu Kashii: 酒殿 is not Tobu Sakado; preserve the ODPT source token.
     "KashiiLine": { "Sakado": "Sakado-Fukuoka" },
